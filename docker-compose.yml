@@ -1,58 +1,58 @@
 version: '3'
 
 services:
-  gaiadnode0:
-    container_name: gaiadnode0
-    image: "tendermint/gaiadnode"
+  linkdnode0:
+    container_name: linkdnode0
+    image: "line/linkdnode"
     ports:
       - "26656-26657:26656-26657"
     environment:
       - ID=0
-      - LOG=${LOG:-gaiad.log}
+      - LOG=${LOG:-linkd.log}
     volumes:
-      - ./build:/gaiad:Z
+      - ./build:/linkd:Z
     networks:
       localnet:
         ipv4_address: 192.168.10.2
 
-  gaiadnode1:
-    container_name: gaiadnode1
-    image: "tendermint/gaiadnode"
+  linkdnode1:
+    container_name: linkdnode1
+    image: "line/linkdnode"
     ports:
       - "26659-26660:26656-26657"
     environment:
       - ID=1
-      - LOG=${LOG:-gaiad.log}
+      - LOG=${LOG:-linkd.log}
     volumes:
-      - ./build:/gaiad:Z
+      - ./build:/linkd:Z
     networks:
       localnet:
         ipv4_address: 192.168.10.3
 
-  gaiadnode2:
-    container_name: gaiadnode2
-    image: "tendermint/gaiadnode"
+  linkdnode2:
+    container_name: linkdnode2
+    image: "line/linkdnode"
     environment:
       - ID=2
-      - LOG=${LOG:-gaiad.log}
+      - LOG=${LOG:-linkd.log}
     ports:
       - "26661-26662:26656-26657"
     volumes:
-      - ./build:/gaiad:Z
+      - ./build:/linkd:Z
     networks:
       localnet:
         ipv4_address: 192.168.10.4
 
-  gaiadnode3:
-    container_name: gaiadnode3
-    image: "tendermint/gaiadnode"
+  linkdnode3:
+    container_name: linkdnode3
+    image: "line/linkdnode"
     environment:
       - ID=3
-      - LOG=${LOG:-gaiad.log}
+      - LOG=${LOG:-linkd.log}
     ports:
       - "26663-26664:26656-26657"
     volumes:
-      - ./build:/gaiad:Z
+      - ./build:/linkd:Z
     networks:
       localnet:
         ipv4_address: 192.168.10.5

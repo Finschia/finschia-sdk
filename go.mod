@@ -1,4 +1,4 @@
-module github.com/cosmos/gaia
+module github.com/line/link
 
 go 1.12
 
@@ -8,6 +8,7 @@ require (
 	github.com/cosmos/go-bip39 v0.0.0-20180819234021-555e2067c45d // indirect
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/golang/mock v1.3.1 // indirect
+	github.com/golangci/golangci-lint v1.17.1 // indirect
 	github.com/gorilla/mux v1.7.3 // indirect
 	github.com/magiconair/properties v1.8.1 // indirect
 	github.com/mattn/go-isatty v0.0.8 // indirect
@@ -21,7 +22,6 @@ require (
 	github.com/prometheus/procfs v0.0.3 // indirect
 	github.com/rakyll/statik v0.1.6 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20190704165056-9c2d0518ed81 // indirect
-	github.com/snikch/goodman v0.0.0-20171125024755-10e37e294daa
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/viper v1.4.0
@@ -35,4 +35,5 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/appengine v1.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20190701230453-710ae3a149df // indirect
+	gopkg.in/yaml.v2 v2.2.2
 )

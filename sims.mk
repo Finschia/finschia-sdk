@@ -3,39 +3,39 @@
 ########################################
 ### Simulations
 
-SIMAPP = github.com/cosmos/gaia/app
+SIMAPP = github.com/line/link/app
 
-sim-gaia-nondeterminism:
+sim-link-nondeterminism:
 	@echo "Running nondeterminism test..."
 	@go test -mod=readonly $(SIMAPP) -run TestAppStateDeterminism -Enabled=true \
 		-NumBlocks=100 -BlockSize=200 -Commit=true -v -timeout 24h
 
-sim-gaia-custom-genesis-fast:
+sim-link-custom-genesis-fast:
 	@echo "Running custom genesis simulation..."
-	@echo "By default, ${HOME}/.gaiad/config/genesis.json will be used."
-	@go test -mod=readonly $(SIMAPP) -run TestFullGaiaSimulation -Genesis=${HOME}/.gaiad/config/genesis.json \
+	@echo "By default, ${HOME}/.linkd/config/genesis.json will be used."
+	@go test -mod=readonly $(SIMAPP) -run TestFulllinkSimulation -Genesis=${HOME}/.linkd/config/genesis.json \
 		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
 
-sim-gaia-fast:
-	@echo "Running quick Gaia simulation. This may take several minutes..."
-	@go test -mod=readonly $(SIMAPP) -run TestFullGaiaSimulation -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
+sim-link-fast:
+	@echo "Running quick link simulation. This may take several minutes..."
+	@go test -mod=readonly $(SIMAPP) -run TestFulllinkSimulation -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
 
-sim-gaia-import-export: runsim
-	@echo "Running Gaia import/export simulation. This may take several minutes..."
-	$(GOPATH)/bin/runsim $(SIMAPP) 25 5 TestGaiaImportExport
+sim-link-import-export: runsim
+	@echo "Running link import/export simulation. This may take several minutes..."
+	$(GOPATH)/bin/runsim $(SIMAPP) 25 5 TestlinkImportExport
 
-sim-gaia-simulation-after-import: runsim
-	@echo "Running Gaia simulation-after-import. This may take several minutes..."
-	$(GOPATH)/bin/runsim $(SIMAPP) 25 5 TestGaiaSimulationAfterImport
+sim-link-simulation-after-import: runsim
+	@echo "Running link simulation-after-import. This may take several minutes..."
+	$(GOPATH)/bin/runsim $(SIMAPP) 25 5 TestlinkSimulationAfterImport
 
-sim-gaia-custom-genesis-multi-seed: runsim
+sim-link-custom-genesis-multi-seed: runsim
 	@echo "Running multi-seed custom genesis simulation..."
-	@echo "By default, ${HOME}/.gaiad/config/genesis.json will be used."
-	$(GOPATH)/bin/runsim $(SIMAPP) -g ${HOME}/.gaiad/config/genesis.json 400 5 TestFullGaiaSimulation
+	@echo "By default, ${HOME}/.linkd/config/genesis.json will be used."
+	$(GOPATH)/bin/runsim $(SIMAPP) -g ${HOME}/.linkd/config/genesis.json 400 5 TestFulllinkSimulation
 
-sim-gaia-multi-seed: runsim
-	@echo "Running multi-seed Gaia simulation. This may take awhile!"
-	$(GOPATH)/bin/runsim $(SIMAPP) 400 5 TestFullGaiaSimulation
+sim-link-multi-seed: runsim
+	@echo "Running multi-seed link simulation. This may take awhile!"
+	$(GOPATH)/bin/runsim $(SIMAPP) 400 5 TestFulllinkSimulation
 
 sim-benchmark-invariants:
 	@echo "Running simulation invariant benchmarks..."
@@ -46,17 +46,17 @@ sim-benchmark-invariants:
 SIM_NUM_BLOCKS ?= 500
 SIM_BLOCK_SIZE ?= 200
 SIM_COMMIT ?= true
-sim-gaia-benchmark:
-	@echo "Running Gaia benchmark for numBlocks=$(SIM_NUM_BLOCKS), blockSize=$(SIM_BLOCK_SIZE). This may take awhile!"
-	@go test -mod=readonly -benchmem -run=^$$ $(SIMAPP) -bench ^BenchmarkFullGaiaSimulation$$  \
+sim-link-benchmark:
+	@echo "Running link benchmark for numBlocks=$(SIM_NUM_BLOCKS), blockSize=$(SIM_BLOCK_SIZE). This may take awhile!"
+	@go test -mod=readonly -benchmem -run=^$$ $(SIMAPP) -bench ^BenchmarkFulllinkSimulation$$  \
 		-Enabled=true -NumBlocks=$(SIM_NUM_BLOCKS) -BlockSize=$(SIM_BLOCK_SIZE) -Commit=$(SIM_COMMIT) -timeout 24h
 
-sim-gaia-profile:
-	@echo "Running Gaia benchmark for numBlocks=$(SIM_NUM_BLOCKS), blockSize=$(SIM_BLOCK_SIZE). This may take awhile!"
-	@go test -mod=readonly -benchmem -run=^$$ $(SIMAPP) -bench ^BenchmarkFullGaiaSimulation$$ \
+sim-link-profile:
+	@echo "Running link benchmark for numBlocks=$(SIM_NUM_BLOCKS), blockSize=$(SIM_BLOCK_SIZE). This may take awhile!"
+	@go test -mod=readonly -benchmem -run=^$$ $(SIMAPP) -bench ^BenchmarkFulllinkSimulation$$ \
 		-Enabled=true -NumBlocks=$(SIM_NUM_BLOCKS) -BlockSize=$(SIM_BLOCK_SIZE) -Commit=$(SIM_COMMIT) -timeout 24h -cpuprofile cpu.out -memprofile mem.out
 
 
-.PHONY: runsim sim-gaia-nondeterminism sim-gaia-custom-genesis-fast sim-gaia-fast sim-gaia-import-export \
-	sim-gaia-simulation-after-import sim-gaia-custom-genesis-multi-seed sim-gaia-multi-seed \
-	sim-benchmark-invariants sim-gaia-benchmark sim-gaia-profile
+.PHONY: runsim sim-link-nondeterminism sim-link-custom-genesis-fast sim-link-fast sim-link-import-export \
+	sim-link-simulation-after-import sim-link-custom-genesis-multi-seed sim-link-multi-seed \
+	sim-benchmark-invariants sim-link-benchmark sim-link-profile

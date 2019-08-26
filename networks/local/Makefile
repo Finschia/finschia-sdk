@@ -1,7 +1,7 @@
-# Makefile for the "gaiadnode" docker image.
+# Makefile for the "linkdnode" docker image.
 
 all:
-	docker build --tag tendermint/gaiadnode gaiadnode
+	docker build --tag line/linkdnode linkdnode
 
 .PHONY: all
 
