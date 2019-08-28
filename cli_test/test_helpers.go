@@ -16,7 +16,7 @@ import (
 
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/line/link/app"
+	"github.com/link-chain/link/app"
 
 	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/codec"

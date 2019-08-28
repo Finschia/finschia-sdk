@@ -52,12 +52,12 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 ########################################
 ### Process linker flags
 
-ldflags = -X github.com/line/link/version.Name=link \
-		  -X github.com/line/link/version.ServerName=linkd \
-		  -X github.com/line/link/version.ClientName=linkcli \
-		  -X github.com/line/link/version.Version=$(VERSION) \
-		  -X github.com/line/link/version.Commit=$(COMMIT) \
-		  -X "github.com/line/link/version.BuildTags=$(build_tags_comma_sep)"
+ldflags = -X github.com/link-chain/link/version.Name=link \
+		  -X github.com/link-chain/link/version.ServerName=linkd \
+		  -X github.com/link-chain/link/version.ClientName=linkcli \
+		  -X github.com/link-chain/link/version.Version=$(VERSION) \
+		  -X github.com/link-chain/link/version.Commit=$(COMMIT) \
+		  -X "github.com/link-chain/link/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq ($(WITH_CLEVELDB),yes)
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
@@ -148,7 +148,7 @@ lint: golangci-lint
 format:
 	find . -name '*.go' -type f -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs gofmt -w -s
 	find . -name '*.go' -type f -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs misspell -w
-	find . -name '*.go' -type f -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs goimports -w -local github.com/line/link
+	find . -name '*.go' -type f -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs goimports -w -local github.com/link-chain/link
 
 benchmark:
 	@go test -mod=readonly -bench=. ./...

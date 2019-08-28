@@ -20,7 +20,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	link "github.com/line/link/app"
+	link "github.com/link-chain/link/app"
 )
 
 func runHackCmd(cmd *cobra.Command, args []string) error {

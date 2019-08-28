@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/line/link/version"
+	"github.com/link-chain/link/version"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -15,7 +15,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/link/app"
+	"github.com/link-chain/link/app"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"

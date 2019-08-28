@@ -23,7 +23,7 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/line/link/app"
+	"github.com/link-chain/link/app"
 )
 
 func main() {

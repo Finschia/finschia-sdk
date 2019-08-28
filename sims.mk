@@ -3,7 +3,7 @@
 ########################################
 ### Simulations
 
-SIMAPP = github.com/line/link/app
+SIMAPP = github.com/link-chain/link/app
 
 sim-link-nondeterminism:
 	@echo "Running nondeterminism test..."

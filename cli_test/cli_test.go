@@ -19,7 +19,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/link/app"
+	"github.com/link-chain/link/app"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/tests"
