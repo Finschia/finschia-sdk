@@ -25,17 +25,17 @@ TBD
 
 ## Commit message and Pull Request message
 
-- Please follow [Conventional Commit](https://www.conventionalcommits.org) to release note automation.
-- Don't mention or link BTS of internal service that can't accessable from public.
-- Please use english only.
+- Follow [Conventional Commit](https://www.conventionalcommits.org) to release note automation.
+- Don't mention or link that can't accessable from public.
+- Use English only. Because this project will be published to the world-wide open-source world. But no worries. We are fully aware of that most of us are not the English-native.
 
 ## Pull Request Process
 
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a 
    build.
-2. Update the README.md with details of changes to the interface, this includes new environment 
+2. Update the [README.md](README.md) with details of changes to the interface, this includes new environment 
    variables, exposed ports, useful file locations and container parameters.
-3. Please fill out every Pull request template's sections. It makes reviewers to review your PR easier.
-4. You may merge the Pull Request in once you have the sign-off of two other developers, or if you 
+3. Fill out all sections of the pull request template. That makes it easier to review your PR for the reviewers.
+4. You may merge the pull request in once you have the sign-off of two other developers, or if you 
    do not have permission to do that, you may request the second reviewer to merge it for you.
 
