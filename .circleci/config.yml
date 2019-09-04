@@ -2,18 +2,110 @@
 #
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
-jobs:
-  build:
-    docker:
-      - image: circleci/golang:1.12
 
-    working_directory: /go/src/github.com/link-chain/link
+defaults: &linux_defaults
+  working_directory: /go/src/github.com/link-chain/link
+  docker:
+    - image: circleci/golang:1.12
+      environment:
+        GO111MODULE: 'on'
+
+
+jobs:
+  setup_dependencies:
+    <<: *linux_defaults
+    steps:
+      - run: mkdir -p /tmp/workspace/bin
+      - run: mkdir -p /tmp/workspace/profiles
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: binaries
+          command: |
+            export PATH=/tmp/workspace/bin:$PATH
+            make go-mod-cache
+            make install
+      - save_cache:
+          key: dependency-cache-mod-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: tools
+          command: |
+            make get-tools
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - bin
+  unit_test:
+    <<: *linux_defaults
+    parallelism: 2
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+
+      - run:
+          name: Test unittest
+          command: |
+            make check-unit
+  integration_test:
+    <<: *linux_defaults
+    parallelism: 1
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: Test cli
+          command: |
+            export BUILDDIR=`pwd`/build
+            make check-build
+  localnet:
+    working_directory: /home/circleci/.go_workspace/src/github.com/link-chain/link
+    machine:
+      image: circleci/classic:latest
+    environment:
+      GOPATH: /home/circleci/.go_workspace/
+      GOOS: linux
+      GOARCH: amd64
+      GO_VERSION: "1.12.5"
+    parallelism: 1
     steps:
       - checkout
+      - run:
+          name: run localnet and exit on failure
+          command: |
+            pushd /tmp
+            wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
+            sudo tar -xvf go$GO_VERSION.linux-amd64.tar.gz
+            sudo rm -rf /usr/local/go
+            sudo mv go /usr/local
+            popd
+            set -x
+            make get-tools
+            make build-linux
+            make build-docker-linkdnode
+            make localnet-start
+            ./contrib/localnet-blocks-test.sh 40 5 10 localhost
 
-      # specify any bash command here prefixed with `run: `
-      - run: make get-tools
-      - run: make install
-      - run: make check-unit
-      - run: make check-race
-      - run: make check-build
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - setup_dependencies
+      - unit_test:
+          requires:
+            - setup_dependencies
+      - integration_test:
+          requires:
+            - setup_dependencies
+      - localnet
