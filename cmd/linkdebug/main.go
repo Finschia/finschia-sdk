@@ -135,8 +135,11 @@ func runPubKeyCmd(cmd *cobra.Command, args []string) error {
 	if pubKeyI == nil {
 		copy(pubKey[:], pubkeyBytes)
 	} else {
-		pubKey = pubKeyI.(ed25519.PubKeyEd25519)
-		pubkeyBytes = pubKey[:]
+		if pubKey, ok := pubKeyI.(ed25519.PubKeyEd25519); ok {
+			pubkeyBytes = pubKey[:]
+		} else {
+			panic("Only ed25519 is supported")
+		}
 	}
 
 	cdc := link.MakeCodec()

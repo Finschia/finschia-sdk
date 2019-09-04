@@ -175,7 +175,7 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 
 	return []simulation.WeightedOperation{
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightDeductFee, &v, nil,
 					func(_ *rand.Rand) {
@@ -183,10 +183,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			authsim.SimulateDeductFee(app.accountKeeper, app.supplyKeeper),
+			Op: authsim.SimulateDeductFee(app.accountKeeper, app.supplyKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgSend, &v, nil,
 					func(_ *rand.Rand) {
@@ -194,10 +194,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			bank.SimulateMsgSend(app.accountKeeper, app.bankKeeper),
+			Op: bank.SimulateMsgSend(app.accountKeeper, app.bankKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightSingleInputMsgMultiSend, &v, nil,
 					func(_ *rand.Rand) {
@@ -205,10 +205,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			bank.SimulateSingleInputMsgMultiSend(app.accountKeeper, app.bankKeeper),
+			Op: bank.SimulateSingleInputMsgMultiSend(app.accountKeeper, app.bankKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgSetWithdrawAddress, &v, nil,
 					func(_ *rand.Rand) {
@@ -216,10 +216,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			distrsim.SimulateMsgSetWithdrawAddress(app.accountKeeper, app.distrKeeper),
+			Op: distrsim.SimulateMsgSetWithdrawAddress(app.accountKeeper, app.distrKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgWithdrawDelegationReward, &v, nil,
 					func(_ *rand.Rand) {
@@ -227,10 +227,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			distrsim.SimulateMsgWithdrawDelegatorReward(app.accountKeeper, app.distrKeeper),
+			Op: distrsim.SimulateMsgWithdrawDelegatorReward(app.accountKeeper, app.distrKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgWithdrawValidatorCommission, &v, nil,
 					func(_ *rand.Rand) {
@@ -238,10 +238,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			distrsim.SimulateMsgWithdrawValidatorCommission(app.accountKeeper, app.distrKeeper),
+			Op: distrsim.SimulateMsgWithdrawValidatorCommission(app.accountKeeper, app.distrKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightSubmitVotingSlashingTextProposal, &v, nil,
 					func(_ *rand.Rand) {
@@ -249,10 +249,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			govsim.SimulateSubmittingVotingAndSlashingForProposal(app.govKeeper, govsim.SimulateTextProposalContent),
+			Op: govsim.SimulateSubmittingVotingAndSlashingForProposal(app.govKeeper, govsim.SimulateTextProposalContent),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightSubmitVotingSlashingCommunitySpendProposal, &v, nil,
 					func(_ *rand.Rand) {
@@ -260,10 +260,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			govsim.SimulateSubmittingVotingAndSlashingForProposal(app.govKeeper, distrsim.SimulateCommunityPoolSpendProposalContent(app.distrKeeper)),
+			Op: govsim.SimulateSubmittingVotingAndSlashingForProposal(app.govKeeper, distrsim.SimulateCommunityPoolSpendProposalContent(app.distrKeeper)),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightSubmitVotingSlashingParamChangeProposal, &v, nil,
 					func(_ *rand.Rand) {
@@ -271,10 +271,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			govsim.SimulateSubmittingVotingAndSlashingForProposal(app.govKeeper, paramsim.SimulateParamChangeProposalContent),
+			Op: govsim.SimulateSubmittingVotingAndSlashingForProposal(app.govKeeper, paramsim.SimulateParamChangeProposalContent),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgDeposit, &v, nil,
 					func(_ *rand.Rand) {
@@ -282,10 +282,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			govsim.SimulateMsgDeposit(app.govKeeper),
+			Op: govsim.SimulateMsgDeposit(app.govKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgCreateValidator, &v, nil,
 					func(_ *rand.Rand) {
@@ -293,10 +293,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			stakingsim.SimulateMsgCreateValidator(app.accountKeeper, app.stakingKeeper),
+			Op: stakingsim.SimulateMsgCreateValidator(app.accountKeeper, app.stakingKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgEditValidator, &v, nil,
 					func(_ *rand.Rand) {
@@ -304,10 +304,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			stakingsim.SimulateMsgEditValidator(app.stakingKeeper),
+			Op: stakingsim.SimulateMsgEditValidator(app.stakingKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgDelegate, &v, nil,
 					func(_ *rand.Rand) {
@@ -315,10 +315,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			stakingsim.SimulateMsgDelegate(app.accountKeeper, app.stakingKeeper),
+			Op: stakingsim.SimulateMsgDelegate(app.accountKeeper, app.stakingKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgUndelegate, &v, nil,
 					func(_ *rand.Rand) {
@@ -326,10 +326,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			stakingsim.SimulateMsgUndelegate(app.accountKeeper, app.stakingKeeper),
+			Op: stakingsim.SimulateMsgUndelegate(app.accountKeeper, app.stakingKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgBeginRedelegate, &v, nil,
 					func(_ *rand.Rand) {
@@ -337,10 +337,10 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			stakingsim.SimulateMsgBeginRedelegate(app.accountKeeper, app.stakingKeeper),
+			Op: stakingsim.SimulateMsgBeginRedelegate(app.accountKeeper, app.stakingKeeper),
 		},
 		{
-			func(_ *rand.Rand) int {
+			Weight: func(_ *rand.Rand) int {
 				var v int
 				ap.GetOrGenerate(cdc, OpWeightMsgUnjail, &v, nil,
 					func(_ *rand.Rand) {
@@ -348,7 +348,7 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			slashingsim.SimulateMsgUnjail(app.slashingKeeper),
+			Op: slashingsim.SimulateMsgUnjail(app.slashingKeeper),
 		},
 	}
 }
@@ -713,7 +713,7 @@ func TestAppStateDeterminism(t *testing.T) {
 			app := NewLinkApp(logger, db, nil, true, 0)
 
 			// Run randomized simulation
-			simulation.SimulateFromSeed(
+			_, _, _ = simulation.SimulateFromSeed(
 				t, os.Stdout, app.BaseApp, appStateFn, seed, testAndRunTxs(app),
 				[]sdk.Invariant{}, 1, numBlocks, exportParamsHeight,
 				blockSize, "", false, commit, lean,

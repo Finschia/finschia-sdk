@@ -3,13 +3,12 @@ package app
 import (
 	"fmt"
 
-	"github.com/tendermint/tendermint/crypto/secp256k1"
-
-	"github.com/link-chain/link/app"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/tendermint/tendermint/crypto/secp256k1"
+
+	"github.com/link-chain/link/app"
 )
 
 // This will fail half the time with the second output being 173
@@ -31,7 +30,10 @@ func ExampleTxSendSize() {
 	fee := auth.NewStdFee(gas, coins)
 	signBytes := auth.StdSignBytes("example-chain-ID",
 		1, 1, fee, []sdk.Msg{msg1}, "")
-	sig, _ := priv1.Sign(signBytes)
+	sig, err := priv1.Sign(signBytes)
+	if err != nil {
+		panic(err)
+	}
 	sigs := []auth.StdSignature{{nil, sig}}
 	tx := auth.NewStdTx([]sdk.Msg{msg1}, fee, sigs, "")
 	fmt.Println(len(cdc.MustMarshalBinaryBare([]sdk.Msg{msg1})))
