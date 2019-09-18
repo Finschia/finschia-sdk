@@ -2,18 +2,24 @@ package clitest
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
+	"net"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	tmclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/stretchr/testify/require"
 
+	tmctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/link-chain/link/app"
@@ -42,6 +48,11 @@ const (
 	keyBaz       = "baz"
 	keyVesting   = "vesting"
 	keyFooBarBaz = "foobarbaz"
+)
+
+const (
+	namePrefix        = "node"
+	networkNamePrefix = "line-linkdnode-testnet-"
 )
 
 var (
@@ -79,18 +90,24 @@ type Fixtures struct {
 	LinkdHome     string
 	LinkcliHome   string
 	P2PAddr       string
+	P2PPort       string
+	Moniker       string
+	BridgeIP      string
 	T             *testing.T
 }
 
 // NewFixtures creates a new instance of Fixtures with many vars set
 func NewFixtures(t *testing.T) *Fixtures {
-	tmpDir, err := ioutil.TempDir("", "link_integration_"+t.Name()+"_")
+	tmpDir := path.Join(os.ExpandEnv("$HOME"), ".linktest")
+	err := os.MkdirAll(tmpDir, os.ModePerm)
+	require.NoError(t, err)
+	tmpDir, err = ioutil.TempDir(tmpDir, "link_integration_"+t.Name()+"_")
 	require.NoError(t, err)
 
 	servAddr, port, err := server.FreeTCPAddr()
 	require.NoError(t, err)
 
-	p2pAddr, _, err := server.FreeTCPAddr()
+	p2pAddr, p2pPort, err := server.FreeTCPAddr()
 	require.NoError(t, err)
 
 	buildDir := os.Getenv("BUILDDIR")
@@ -110,12 +127,28 @@ func NewFixtures(t *testing.T) *Fixtures {
 		RPCAddr:       servAddr,
 		P2PAddr:       p2pAddr,
 		Port:          port,
+		P2PPort:       p2pPort,
+		Moniker:       "", // initialized by LDInit
+		BridgeIP:      "",
 	}
+}
+
+func (f Fixtures) Clone() *Fixtures {
+	newF := NewFixtures(f.T)
+	newF.ChainID = f.ChainID
+
+	tests.ExecuteT(newF.T, fmt.Sprintf("cp -r %s/ %s/", f.RootDir, newF.RootDir), "")
+
+	return newF
 }
 
 // GenesisFile returns the path of the genesis file
 func (f Fixtures) GenesisFile() string {
 	return filepath.Join(f.LinkdHome, "config", "genesis.json")
+}
+
+func (f Fixtures) PrivValidatorKeyFile() string {
+	return filepath.Join(f.LinkdHome, "config", "priv_validator_key.json")
 }
 
 // GenesisFile returns the application's genesis state
@@ -140,7 +173,7 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 	// ensure keystore has foo and bar keys
 	f.KeysDelete(keyFoo)
 	f.KeysDelete(keyBar)
-	f.KeysDelete(keyBar)
+	f.KeysDelete(keyBaz)
 	f.KeysDelete(keyFooBarBaz)
 	f.KeysAdd(keyFoo)
 	f.KeysAdd(keyBar)
@@ -152,15 +185,15 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 	// ensure that CLI output is in JSON format
 	f.CLIConfig("output", "json")
 
-	// NOTE: GDInit sets the ChainID
-	f.GDInit(keyFoo)
+	// NOTE: LDInit sets the ChainID
+	f.LDInit(keyFoo)
 
 	f.CLIConfig("chain-id", f.ChainID)
 	f.CLIConfig("broadcast-mode", "block")
-	f.CLIConfig("trust-node", "true")
 
 	// start an account with tokens
 	f.AddGenesisAccount(f.KeyAddress(keyFoo), startCoins)
+	//f.AddGenesisAccount(f.KeyAddress(keyBar), startCoins)
 	f.AddGenesisAccount(
 		f.KeyAddress(keyVesting), startCoins,
 		fmt.Sprintf("--vesting-amount=%s", vestingCoins),
@@ -178,7 +211,7 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 func (f *Fixtures) Cleanup(dirs ...string) {
 	clean := append(dirs, f.RootDir)
 	for _, d := range clean {
-		require.NoError(f.T, os.RemoveAll(d))
+		_ = os.RemoveAll(d)
 	}
 }
 
@@ -198,9 +231,10 @@ func (f *Fixtures) UnsafeResetAll(flags ...string) {
 	require.NoError(f.T, err)
 }
 
-// GDInit is linkd init
-// NOTE: GDInit sets the ChainID for the Fixtures instance
-func (f *Fixtures) GDInit(moniker string, flags ...string) {
+// LDInit is linkd init
+// NOTE: LDInit sets the ChainID for the Fixtures instance
+func (f *Fixtures) LDInit(moniker string, flags ...string) {
+	f.Moniker = moniker
 	cmd := fmt.Sprintf("%s init -o --home=%s %s", f.LinkdBinary, f.LinkdHome, moniker)
 	_, stderr := tests.ExecuteT(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 
@@ -234,8 +268,8 @@ func (f *Fixtures) CollectGenTxs(flags ...string) {
 	executeWriteCheckErr(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
-// GDStart runs linkd start with the appropriate flags and returns a process
-func (f *Fixtures) GDStart(flags ...string) *tests.Process {
+// LDStart runs linkd start with the appropriate flags and returns a process
+func (f *Fixtures) LDStart(flags ...string) *tests.Process {
 	cmd := fmt.Sprintf("%s start --home=%s --rpc.laddr=%v --p2p.laddr=%v", f.LinkdBinary, f.LinkdHome, f.RPCAddr, f.P2PAddr)
 	proc := tests.GoExecuteTWithStdout(f.T, addFlags(cmd, flags))
 	tests.WaitForTMStart(f.Port)
@@ -243,8 +277,8 @@ func (f *Fixtures) GDStart(flags ...string) *tests.Process {
 	return proc
 }
 
-// GDTendermint returns the results of linkd tendermint [query]
-func (f *Fixtures) GDTendermint(query string) string {
+// LDTendermint returns the results of linkd tendermint [query]
+func (f *Fixtures) LDTendermint(query string) string {
 	cmd := fmt.Sprintf("%s tendermint %s --home=%s", f.LinkdBinary, query, f.LinkdHome)
 	success, stdout, stderr := executeWriteRetStdStreams(f.T, cmd)
 	require.Empty(f.T, stderr)
@@ -690,6 +724,36 @@ func (f *Fixtures) QueryTotalSupplyOf(denom string, flags ...string) sdk.Int {
 }
 
 //___________________________________________________________________________________
+// tendermint rpc
+func (f *Fixtures) NetInfo(flags ...string) *tmctypes.ResultNetInfo {
+	tmc := tmclient.NewHTTP(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
+	err := tmc.Start()
+	require.NoError(f.T, err)
+	defer func() {
+		err := tmc.Stop()
+		require.NoError(f.T, err)
+	}()
+
+	netInfo, err := tmc.NetInfo()
+	require.NoError(f.T, err)
+	return netInfo
+}
+
+func (f *Fixtures) Status(flags ...string) *tmctypes.ResultStatus {
+	tmc := tmclient.NewHTTP(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
+	err := tmc.Start()
+	require.NoError(f.T, err)
+	defer func() {
+		err := tmc.Stop()
+		require.NoError(f.T, err)
+	}()
+
+	netInfo, err := tmc.Status()
+	require.NoError(f.T, err)
+	return netInfo
+}
+
+//___________________________________________________________________________________
 // executors
 
 func executeWriteCheckErr(t *testing.T, cmdStr string, writes ...string) {
@@ -768,4 +832,293 @@ func unmarshalStdTx(t *testing.T, s string) (stdTx auth.StdTx) {
 	cdc := app.MakeCodec()
 	require.Nil(t, cdc.UnmarshalJSON([]byte(s), &stdTx))
 	return
+}
+
+//___________________________________________________________________________________
+// Fixture Group
+
+type FixtureGroup struct {
+	T                  *testing.T
+	DockerImage        string
+	fixturesMap        map[string]*Fixtures
+	networkName        string
+	subnet             string
+	genesisFileContent []byte
+}
+
+func NewFixtureGroup(t *testing.T) *FixtureGroup {
+	fg := &FixtureGroup{
+		T:           t,
+		DockerImage: "line/linkdnode-integtest",
+		fixturesMap: make(map[string]*Fixtures),
+	}
+
+	fg.networkName = networkNamePrefix + t.Name()
+
+	return fg
+}
+
+func InitFixturesGroup(t *testing.T, subnet string, numOfNodes ...int) *FixtureGroup {
+	nodeNumber := 4
+	if numOfNodes != nil && len(numOfNodes) == 1 {
+		nodeNumber = numOfNodes[0]
+	}
+	fg := NewFixtureGroup(t)
+	fg.initNodes(subnet, nodeNumber)
+	fg.createNetwork()
+	return fg
+}
+
+func (fg *FixtureGroup) createNetwork() {
+	cmd := fmt.Sprintf("docker network create %s --subnet %s/24", fg.networkName, fg.subnet)
+	_, _ = tests.ExecuteT(fg.T, cmd, "")
+}
+
+func (fg *FixtureGroup) rmNetwork() {
+	cmd := fmt.Sprintf("docker network rm %s", fg.networkName)
+	_, _ = tests.ExecuteT(fg.T, cmd, "")
+}
+
+func (fg *FixtureGroup) initNodes(subnet string, numberOfNodes int) {
+	t := fg.T
+	chainID := t.Name()
+
+	fg.subnet = subnet
+
+	stdout, _ := tests.ExecuteT(t, fmt.Sprintf("docker images %s -q", fg.DockerImage), "")
+	if len(stdout) == 0 {
+		panic(errors.New("docker image is not found"))
+	}
+
+	// Initialize temporary directories
+	gentxDir, err := ioutil.TempDir("", "")
+	require.NoError(t, err)
+	defer func() {
+		require.NoError(t, os.RemoveAll(gentxDir))
+	}()
+
+	for idx := 0; idx < numberOfNodes; idx++ {
+		name := fmt.Sprintf("%s-%s%d", t.Name(), namePrefix, idx)
+		f := NewFixtures(t)
+		f.UnsafeResetAll()
+		f.LDInit(name, fmt.Sprintf("--chain-id %s", chainID))
+		fg.fixturesMap[name] = f
+		ip, err := calculateIP(subnet, idx+2)
+		require.NoError(fg.T, err)
+		f.BridgeIP = ip
+	}
+	for name, f := range fg.fixturesMap {
+		f.KeysDelete(name)
+		f.KeysAdd(name)
+		f.CLIConfig("output", "json")
+		f.CLIConfig("chain-id", f.ChainID)
+		f.CLIConfig("broadcast-mode", "block")
+	}
+
+	for _, f := range fg.fixturesMap {
+		for nameInner, fInner := range fg.fixturesMap {
+			f.AddGenesisAccount(fInner.KeyAddress(nameInner), startCoins)
+		}
+	}
+
+	for name, f := range fg.fixturesMap {
+		gentxDoc := filepath.Join(gentxDir, fmt.Sprintf("%s.json", name))
+		f.GenTx(name, fmt.Sprintf("--output-document=%s --ip=%s", gentxDoc, f.BridgeIP))
+	}
+
+	for _, f := range fg.fixturesMap {
+		f.CollectGenTxs(fmt.Sprintf("--gentx-dir=%s", gentxDir))
+		f.ValidateGenesis()
+		if len(fg.genesisFileContent) == 0 {
+			fg.genesisFileContent, err = ioutil.ReadFile(f.GenesisFile())
+			require.NoError(t, err)
+		}
+	}
+	for _, f := range fg.fixturesMap {
+		err := ioutil.WriteFile(f.GenesisFile(), fg.genesisFileContent, os.ModePerm)
+		require.NoError(t, err)
+	}
+}
+
+func (fg *FixtureGroup) LDStopContainers() {
+	wg := &sync.WaitGroup{}
+	wg.Add(len(fg.fixturesMap))
+
+	for _, f := range fg.fixturesMap {
+		copyedF := f
+		go func() {
+			fg.LDStopContainer(copyedF)
+			wg.Done()
+		}()
+	}
+
+	if timeout := waitTimeout(wg, time.Minute); timeout {
+		panic(errors.New("linkd stop containers failed"))
+	}
+}
+
+func (fg *FixtureGroup) LDStartContainers() {
+	wg := &sync.WaitGroup{}
+	wg.Add(len(fg.fixturesMap))
+
+	for _, f := range fg.fixturesMap {
+		_ = fg.LDStartContainer(f)
+	}
+
+	for _, f := range fg.fixturesMap {
+		copyedF := f
+		go func() {
+			tests.WaitForTMStart(copyedF.Port)
+			tests.WaitForNextNBlocksTM(1, copyedF.Port)
+			wg.Done()
+		}()
+	}
+	if timeout := waitTimeout(wg, time.Minute); timeout {
+		panic(errors.New("linkd start containers failed"))
+	}
+}
+
+func (fg *FixtureGroup) LDStartContainer(f *Fixtures, flags ...string) *tests.Process {
+	dockerCommand := "docker run --rm --name %s --network %s --ip %s -p %s:26656 -p %s:26657 -v %s/integration-test:/linkd:Z -v %s:/testhome:Z line/linkdnode-integtest start --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656"
+	dockerCommand = fmt.Sprintf(dockerCommand, f.Moniker, fg.networkName, f.BridgeIP, f.P2PPort, f.Port, f.BuildDir, f.LinkdHome)
+	proc := tests.GoExecuteTWithStdout(f.T, addFlags(dockerCommand, flags))
+
+	return proc
+}
+
+func (fg *FixtureGroup) LDStopContainer(f *Fixtures) {
+	cmd := "docker ps --filter name=%s --filter status=running -q"
+	cmd = fmt.Sprintf(cmd, f.Moniker)
+	stdout, _ := tests.ExecuteT(f.T, cmd, "")
+	containerID := stdout
+	if len(stdout) > 0 {
+		cmd := "docker stop %s"
+		cmd = fmt.Sprintf(cmd, containerID)
+		stdout, stderr := tests.ExecuteT(f.T, cmd, "")
+		if stdout != containerID {
+			panic(stderr)
+		}
+	}
+}
+
+func (fg *FixtureGroup) WaitForContainer(f *Fixtures) {
+	cmd := "docker ps --filter name=%s --filter status=running -q"
+	cmd = fmt.Sprintf(cmd, f.Moniker)
+
+	var err error
+	fmt.Printf("Wait for the container[%s] boot up\n", f.Moniker)
+	for i := 0; i < 100; i++ {
+		time.Sleep(time.Millisecond * 100)
+		stdout, stderr := tests.ExecuteT(f.T, cmd, "")
+
+		if len(stdout) > 0 {
+			return
+		}
+		err = errors.New(stderr)
+	}
+	// still haven't started up?! panic!
+	panic(err)
+}
+
+func (fg *FixtureGroup) AddFullNode() *Fixtures {
+
+	t := fg.T
+	idx := len(fg.fixturesMap)
+	chainID := fg.T.Name()
+
+	name := fmt.Sprintf("%s-%s%d", t.Name(), namePrefix, idx)
+	f := NewFixtures(t)
+
+	// Initialize linkd
+	{
+		f.UnsafeResetAll()
+		f.LDInit(name, fmt.Sprintf("--chain-id %s", chainID))
+		ip, err := calculateIP(fg.subnet, idx+2)
+		require.NoError(fg.T, err)
+		f.BridgeIP = ip
+	}
+
+	// Initialize linkcli
+	{
+		f.KeysDelete(name)
+		f.KeysAdd(name)
+		f.CLIConfig("output", "json")
+		f.CLIConfig("chain-id", f.ChainID)
+		f.CLIConfig("broadcast-mode", "block")
+	}
+
+	// Copy the genesis.json
+	{
+		if len(fg.genesisFileContent) == 0 {
+			panic("genesis file is not loaded")
+		}
+		err := ioutil.WriteFile(f.GenesisFile(), fg.genesisFileContent, os.ModePerm)
+		require.NoError(t, err)
+	}
+
+	// Collect the persistent peers from the network
+	var persistentPeers []string
+	{
+		for _, other := range fg.fixturesMap {
+			statusInfo := other.Status()
+			id := string(statusInfo.NodeInfo.ID())
+			persistentPeers = append(persistentPeers, fmt.Sprintf("%s@%s:%d", id, other.BridgeIP, 26656))
+		}
+	}
+
+	// Add fixture to the group
+	fg.fixturesMap[name] = f
+
+	// Start linkd
+	fg.LDStartContainer(f, fmt.Sprintf("--p2p.persistent_peers %s", strings.Join(persistentPeers, ",")))
+
+	tests.WaitForTMStart(f.Port)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	return f
+}
+
+func (fg *FixtureGroup) Fixture(index int) *Fixtures {
+	name := fmt.Sprintf("%s-%s%d", fg.T.Name(), namePrefix, index)
+	if f, ok := fg.fixturesMap[name]; ok {
+		return f
+	}
+	return nil
+}
+
+func (fg *FixtureGroup) Cleanup() {
+	fg.LDStopContainers()
+	fg.rmNetwork()
+	for _, f := range fg.fixturesMap {
+		f.Cleanup()
+	}
+}
+
+// waitTimeout waits for the waitgroup for the specified max timeout.
+// Returns true if waiting timed out.
+func waitTimeout(wg *sync.WaitGroup, timeout time.Duration) bool {
+	c := make(chan struct{})
+	go func() {
+		defer close(c)
+		wg.Wait()
+	}()
+	select {
+	case <-c:
+		return false // completed normally
+	case <-time.After(timeout):
+		return true // timed out
+	}
+}
+
+func calculateIP(ip string, i int) (string, error) {
+	ipv4 := net.ParseIP(ip).To4()
+	if ipv4 == nil {
+		return "", fmt.Errorf("%v: non ipv4 address", ip)
+	}
+
+	for j := 0; j < i; j++ {
+		ipv4[3]++
+	}
+
+	return ipv4.String(), nil
 }

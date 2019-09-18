@@ -49,7 +49,6 @@ jobs:
       - restore_cache:
           keys:
             - dependency-cache-mod-{{ checksum "go.sum" }}
-
       - run:
           name: Test unittest
           command: |
@@ -69,10 +68,54 @@ jobs:
           command: |
             export BUILDDIR=`pwd`/build
             make check-build
-  localnet:
+  setup_docker_and_binary:
     working_directory: /home/circleci/.go_workspace/src/github.com/link-chain/link
     machine:
       image: circleci/classic:latest
+      docker_layer_caching: true
+    environment:
+      GOPATH: /home/circleci/.go_workspace/
+      GOOS: linux
+      GOARCH: amd64
+      GO_VERSION: "1.12.5"
+    steps:
+      - restore_cache:
+          keys:
+            - go-cache-setup-1.12.5
+      - run:
+          name: run setup go
+          command: |
+            set -x
+            mkdir -p /tmp/gobinary
+            pushd /tmp/gobinary
+            wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
+            sudo tar -xvf go$GO_VERSION.linux-amd64.tar.gz
+            sudo rm -rf /usr/local/go
+            sudo mv go /usr/local
+            popd
+      - checkout
+      - restore_cache:
+          keys:
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: run build binary
+          command: |
+            go mod download
+      - save_cache:
+          key: go-cache-setup-1.12.5
+          paths:
+            - "/tmp/gobinary"
+      - save_cache:
+          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}
+          paths:
+            - "/home/circleci/.go_workspace/go/pkg/mod"
+
+
+  integration_multi_node_test:
+    working_directory: /home/circleci/.go_workspace/src/github.com/link-chain/link
+    machine:
+      image: circleci/classic:latest
+      docker_layer_caching: true
     environment:
       GOPATH: /home/circleci/.go_workspace/
       GOOS: linux
@@ -81,20 +124,82 @@ jobs:
     parallelism: 1
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - go-cache-setup-1.12.5
+      - restore_cache:
+          keys:
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}
       - run:
-          name: run localnet and exit on failure
+          name: copy go compiler
           command: |
-            pushd /tmp
-            wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
-            sudo tar -xvf go$GO_VERSION.linux-amd64.tar.gz
+            pushd /tmp/gobinary
             sudo rm -rf /usr/local/go
             sudo mv go /usr/local
             popd
+      - run:
+          name: build binary
+          command: |
+            set -x
+            make build
+      - run:
+          name: build docker image
+          command: |
+            set -x
+            make build-docker-integration
+      - run:
+          name: run integration test for multi node and exit on failure
+          command: |
+            set -x
+            docker network prune -f
+            make check-build-integration
+  localnet:
+    working_directory: /home/circleci/.go_workspace/src/github.com/link-chain/link
+    machine:
+      image: circleci/classic:latest
+      docker_layer_caching: true
+    environment:
+      GOPATH: /home/circleci/.go_workspace/
+      GOOS: linux
+      GOARCH: amd64
+      GO_VERSION: "1.12.5"
+    parallelism: 1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-cache-setup-1.12.5
+      - restore_cache:
+          keys:
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: copy go compiler
+          command: |
+            pushd /tmp/gobinary
+            sudo rm -rf /usr/local/go
+            sudo mv go /usr/local
+            popd
+      - run:
+          name: get tools
+          command: |
             set -x
             make get-tools
+      - run:
+          name: build binaries for linux
+          command: |
+            set -x
             make build-linux
+      - run:
+          name: build docker image
+          command: |
+            set -x
             make build-docker-testnet
             make build-conf-testnet
+      - run:
+          name: run localnet and exit on failure
+          command: |
+            set -x
+            docker network prune -f
             make start-testnet
             ./contrib/localnet-blocks-test.sh 40 5 10 localhost
 
@@ -109,4 +214,12 @@ workflows:
       - integration_test:
           requires:
             - setup_dependencies
-      - localnet
+
+      - setup_docker_and_binary
+      - localnet:
+          requires:
+            - setup_docker_and_binary
+      - integration_multi_node_test:
+          requires:
+            - setup_docker_and_binary
+

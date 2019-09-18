@@ -6,17 +6,20 @@ FROM golang:alpine AS build-env
 
 # Set up dependencies
 ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python
+RUN apk add --no-cache $PACKAGES
 
 # Set working directory for the build
-WORKDIR /go/src/github.com/cosmos/link
+WORKDIR /linkchain-build
+
+COPY ./go.mod /linkchain-build/go.mod
+COPY ./go.sum /linkchain-build/go.sum
+RUN go mod download
 
 # Add source files
 COPY . .
 
 # Install minimum necessary dependencies, build Cosmos SDK, remove packages
-RUN apk add --no-cache $PACKAGES && \
-    make tools && \
-    make install
+RUN  make install
 
 # Final image
 FROM alpine:edge
@@ -29,5 +32,9 @@ WORKDIR /root
 COPY --from=build-env /go/bin/linkd /usr/bin/linkd
 COPY --from=build-env /go/bin/linkcli /usr/bin/linkcli
 
+ENTRYPOINT ["/usr/bin/wrapper.sh"]
+
 # Run linkd by default, omit entrypoint to ease using container with linkcli
-CMD ["linkd"]
+CMD ["start"]
+
+COPY wrapper.sh /usr/bin/wrapper.sh

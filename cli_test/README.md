@@ -50,3 +50,13 @@ This boilerplate above:
 - Most `query` and `tx` commands take a variadic `flags` argument. This pattern allows for the creation of a general function which is easily modified by adding flags. See the `TxSend` function and its use for a good example.
 - `Tx*` functions follow a general pattern and return `(success bool, stdout string, stderr string)`. This allows for easy testing of multiple different flag configurations. See `TestLinkCLICreateValidator` or `TestLinkCLISubmitProposal` for a good example of the pattern.
 
+### Notes multi-nodes tests
+
+- To enable multi-nodes integration test, [Docker](https://www.docker.com) is required.
+
+- Test state for a network is stored on the `FixtureGroup` object. And the FixtureGroup consists of multiple `Fixtures` which is explained above
+
+- One test function has one docker network with predefined ip range subnet(ex: `192.168.0.0/24`). If you want to add a test function then, please make sure the subnet does not overlap others subnet
+
+- Sometimes if you exit a test early there can be still running docker container. But don't worry it will be stoped and replaced by new container which is generated for the test case when the test function executed.
+

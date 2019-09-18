@@ -93,8 +93,8 @@ else
 endif
 
 install: go.sum
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/linkd
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/linkcli
+	go install $(BUILD_FLAGS) ./cmd/linkd
+	go install $(BUILD_FLAGS) ./cmd/linkcli
 
 install-debug: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/linkdebug
@@ -173,6 +173,16 @@ start-testnet: stop-testnet
 # Stop testnet
 stop-testnet:
 	docker-compose down
+
+########################################
+### Integration Test with multi containers
+
+build-docker-integration:
+	docker build --tag line/linkdnode-integtest .
+
+check-build-integration:
+	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_multi_node_test -v
+
 
 ########################################
 ### Simulation

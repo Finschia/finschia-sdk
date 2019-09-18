@@ -31,6 +31,7 @@ import (
 )
 
 func TestLinkCLIKeysAddMultisig(t *testing.T) {
+
 	t.Parallel()
 	f := InitFixtures(t)
 
@@ -99,7 +100,7 @@ func TestLinkCLIMinimumFees(t *testing.T) {
 		sdk.NewDecCoinFromDec(feeDenom, minGasPrice),
 		sdk.NewDecCoinFromDec(fee2Denom, minGasPrice),
 	)
-	proc := f.GDStart(fees)
+	proc := f.LDStart(fees)
 	defer proc.Stop(false)
 
 	barAddr := f.KeyAddress(keyBar)
@@ -132,7 +133,7 @@ func TestLinkCLIGasPrices(t *testing.T) {
 
 	// start linkd server with minimum fees
 	minGasPrice, _ := sdk.NewDecFromStr("0.000006")
-	proc := f.GDStart(fmt.Sprintf("--minimum-gas-prices=%s", sdk.NewDecCoinFromDec(feeDenom, minGasPrice)))
+	proc := f.LDStart(fmt.Sprintf("--minimum-gas-prices=%s", sdk.NewDecCoinFromDec(feeDenom, minGasPrice)))
 	defer proc.Stop(false)
 
 	barAddr := f.KeyAddress(keyBar)
@@ -166,7 +167,7 @@ func TestLinkCLIFeesDeduction(t *testing.T) {
 
 	// start linkd server with minimum fees
 	minGasPrice, _ := sdk.NewDecFromStr("0.000006")
-	proc := f.GDStart(fmt.Sprintf("--minimum-gas-prices=%s", sdk.NewDecCoinFromDec(feeDenom, minGasPrice)))
+	proc := f.LDStart(fmt.Sprintf("--minimum-gas-prices=%s", sdk.NewDecCoinFromDec(feeDenom, minGasPrice)))
 	defer proc.Stop(false)
 
 	// Save key addresses for later use
@@ -218,7 +219,7 @@ func TestLinkCLISend(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	// Save key addresses for later use
@@ -287,7 +288,7 @@ func TestLinkCLIGasAuto(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -347,7 +348,7 @@ func TestLinkCLICreateValidator(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	barAddr := f.KeyAddress(keyBar)
@@ -438,7 +439,7 @@ func TestLinkCLIQueryRewards(t *testing.T) {
 	require.NoError(t, genDoc.SaveAs(genFile))
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -453,7 +454,7 @@ func TestLinkCLIQuerySupply(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	totalSupply := f.QueryTotalSupply()
@@ -470,7 +471,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	f.QueryGovParamDeposit()
@@ -613,7 +614,7 @@ func TestLinkCLISubmitParamChangeProposal(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
 
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -696,7 +697,7 @@ func TestLinkCLISubmitCommunityPoolSpendProposal(t *testing.T) {
 	genDoc.AppState, err = cdc.MarshalJSON(genesisState)
 	require.NoError(t, genDoc.SaveAs(genFile))
 
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -762,7 +763,7 @@ func TestLinkCLIQueryTxPagination(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -812,7 +813,7 @@ func TestLinkCLIValidateSignatures(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -862,7 +863,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -946,7 +947,7 @@ func TestLinkCLIMultisignInsufficientCosigners(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server with minimum fees
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooBarBazAddr := f.KeyAddress(keyFooBarBaz)
@@ -999,7 +1000,7 @@ func TestLinkCLIEncode(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	cdc := app.MakeCodec()
@@ -1037,7 +1038,7 @@ func TestLinkCLIMultisignSortSignatures(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server with minimum fees
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooBarBazAddr := f.KeyAddress(keyFooBarBaz)
@@ -1102,7 +1103,7 @@ func TestLinkCLIMultisign(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server with minimum fees
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	fooBarBazAddr := f.KeyAddress(keyFooBarBaz)
@@ -1212,7 +1213,7 @@ func TestLinkdCollectGentxs(t *testing.T) {
 	f.CLIConfig("output", "json")
 
 	// Run init
-	f.GDInit(keyFoo)
+	f.LDInit(keyFoo)
 
 	// Customise genesis.json
 
@@ -1259,7 +1260,7 @@ func TestLinkdAddGenesisAccount(t *testing.T) {
 	f.CLIConfig("output", "json")
 
 	// Run init
-	f.GDInit(keyFoo)
+	f.LDInit(keyFoo)
 
 	// Add account to genesis.json
 	bazCoins := sdk.Coins{
@@ -1288,7 +1289,7 @@ func TestSlashingGetParams(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	params := f.QuerySlashingParams()
@@ -1296,7 +1297,7 @@ func TestSlashingGetParams(t *testing.T) {
 	require.Equal(t, int64(100), params.SignedBlocksWindow)
 	require.Equal(t, sdk.NewDecWithPrec(5, 1), params.MinSignedPerWindow)
 
-	sinfo := f.QuerySigningInfo(f.GDTendermint("show-validator"))
+	sinfo := f.QuerySigningInfo(f.LDTendermint("show-validator"))
 	require.Equal(t, int64(0), sinfo.StartHeight)
 	require.False(t, sinfo.Tombstoned)
 
@@ -1309,7 +1310,7 @@ func TestValidateGenesis(t *testing.T) {
 	f := InitFixtures(t)
 
 	// start linkd server
-	proc := f.GDStart()
+	proc := f.LDStart()
 	defer proc.Stop(false)
 
 	f.ValidateGenesis()
