@@ -29,9 +29,10 @@ make check-build                # integration test (/cli_test)
 ### Test Net
 ```
 make build-linux                # Cross-compile the binaries for linux/amd64
-make build-docker-linkdnode     # Build docker image for local test
-make localnet-start             # Boot up local test network with 4 validator nodes
-make localnet-stop              # Stop the network
+make build-docker-testnet      # Build docker image for testnet
+make build-conf-testnet        # Build configurations for testnet
+make start-testnet             # Boot up testnet network with 4 validator nodes
+make stop-testnet              # Stop the testnet
 ```
 
 

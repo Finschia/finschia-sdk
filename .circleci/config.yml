@@ -93,8 +93,9 @@ jobs:
             set -x
             make get-tools
             make build-linux
-            make build-docker-linkdnode
-            make localnet-start
+            make build-docker-testnet
+            make build-conf-testnet
+            make start-testnet
             ./contrib/localnet-blocks-test.sh 40 5 10 localhost
 
 workflows:

@@ -23,7 +23,7 @@ fi
 ##
 ## Run binary with all parameters
 ##
-export LINKDHOME="/linkd/node${ID}/linkd"
+export LINKDHOME="${LINKDHOME:-/linkd/node${ID}/linkd}"
 
 if [ -d "`dirname ${LINKDHOME}/${LOG}`" ]; then
   "$BINARY" --home "$LINKDHOME" "$@" | tee "${LINKDHOME}/${LOG}"

@@ -157,16 +157,21 @@ benchmark:
 ########################################
 ### Local validator nodes using docker and docker-compose
 
-build-docker-linkdnode:
-	$(MAKE) -C networks/local
+build-docker-testnet:
+	$(MAKE) -C  $(CURDIR)/networks/local
+
+build-conf-testnet:
+	rm -rf $(CURDIR)/build/gentxs
+	rm -rf $(CURDIR)/build/node*
+	docker run --rm -v $(CURDIR)/build:/linkd:Z line/linkdnode testnet --v 4 -o . --starting-ip-address 192.168.10.2
+
 
 # Run a 4-node testnet locally
-localnet-start: localnet-stop
-	@if ! [ -f build/node0/linkd/config/genesis.json ]; then docker run --rm -v $(CURDIR)/build:/linkd:Z line/linkdnode testnet --v 4 -o . --starting-ip-address 192.168.10.2 ; fi
+start-testnet: stop-testnet
 	docker-compose up -d
 
 # Stop testnet
-localnet-stop:
+stop-testnet:
 	docker-compose down
 
 ########################################
