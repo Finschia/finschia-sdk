@@ -14,6 +14,8 @@ import (
 	"testing"
 	"time"
 
+	tokenModule "github.com/link-chain/link/x/token"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 
@@ -452,6 +454,14 @@ func (f *Fixtures) TxGovSubmitCommunityPoolSpendProposal(
 }
 
 //___________________________________________________________________________________
+// linkcli tx token
+
+func (f *Fixtures) TxTokenPublish(from string, symbol, name string, amount uint64, mintable bool, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token publish %s %s %s %d %t %v", f.LinkcliBinary, from, symbol, name, amount, mintable, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+//___________________________________________________________________________________
 // linkcli query account
 
 // QueryAccount is linkcli query account
@@ -721,6 +731,19 @@ func (f *Fixtures) QueryTotalSupplyOf(denom string, flags ...string) sdk.Int {
 	err := cdc.UnmarshalJSON([]byte(res), &supplyOf)
 	require.NoError(f.T, err)
 	return supplyOf
+}
+
+//___________________________________________________________________________________
+// query token
+func (f *Fixtures) QueryToken(denom string, flags ...string) tokenModule.Token {
+	cmd := fmt.Sprintf("%s query token symbol %s %s", f.LinkcliBinary, denom, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var token tokenModule.Token
+	err := cdc.UnmarshalJSON([]byte(res), &token)
+	require.NoError(f.T, err)
+	return token
 }
 
 //___________________________________________________________________________________

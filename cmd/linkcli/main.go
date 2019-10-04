@@ -66,7 +66,6 @@ func main() {
 		client.LineBreak,
 		keys.Commands(),
 		client.LineBreak,
-		version.Cmd,
 		client.NewCompletionCmd(rootCmd, true),
 		version.Cmd,
 	)

@@ -101,7 +101,7 @@ func TestLinkCLIMinimumFees(t *testing.T) {
 		sdk.NewDecCoinFromDec(fee2Denom, minGasPrice),
 	)
 	proc := f.LDStart(fees)
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	barAddr := f.KeyAddress(keyBar)
 
@@ -134,7 +134,7 @@ func TestLinkCLIGasPrices(t *testing.T) {
 	// start linkd server with minimum fees
 	minGasPrice, _ := sdk.NewDecFromStr("0.000006")
 	proc := f.LDStart(fmt.Sprintf("--minimum-gas-prices=%s", sdk.NewDecCoinFromDec(feeDenom, minGasPrice)))
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	barAddr := f.KeyAddress(keyBar)
 
@@ -168,7 +168,7 @@ func TestLinkCLIFeesDeduction(t *testing.T) {
 	// start linkd server with minimum fees
 	minGasPrice, _ := sdk.NewDecFromStr("0.000006")
 	proc := f.LDStart(fmt.Sprintf("--minimum-gas-prices=%s", sdk.NewDecCoinFromDec(feeDenom, minGasPrice)))
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	// Save key addresses for later use
 	fooAddr := f.KeyAddress(keyFoo)
@@ -220,7 +220,7 @@ func TestLinkCLISend(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	// Save key addresses for later use
 	fooAddr := f.KeyAddress(keyFoo)
@@ -289,7 +289,7 @@ func TestLinkCLIGasAuto(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
 	barAddr := f.KeyAddress(keyBar)
@@ -349,7 +349,7 @@ func TestLinkCLICreateValidator(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	barAddr := f.KeyAddress(keyBar)
 	barVal := sdk.ValAddress(barAddr)
@@ -440,7 +440,7 @@ func TestLinkCLIQueryRewards(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
 	rewards := f.QueryRewards(fooAddr)
@@ -455,7 +455,7 @@ func TestLinkCLIQuerySupply(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	totalSupply := f.QueryTotalSupply()
 	totalSupplyOf := f.QueryTotalSupplyOf(fooDenom)
@@ -472,7 +472,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	f.QueryGovParamDeposit()
 	f.QueryGovParamVoting()
@@ -615,7 +615,7 @@ func TestLinkCLISubmitParamChangeProposal(t *testing.T) {
 	f := InitFixtures(t)
 
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
 	fooAcc := f.QueryAccount(fooAddr)
@@ -698,7 +698,7 @@ func TestLinkCLISubmitCommunityPoolSpendProposal(t *testing.T) {
 	require.NoError(t, genDoc.SaveAs(genFile))
 
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
 	fooAcc := f.QueryAccount(fooAddr)
@@ -764,7 +764,7 @@ func TestLinkCLIQueryTxPagination(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
 	barAddr := f.KeyAddress(keyBar)
@@ -814,7 +814,7 @@ func TestLinkCLIValidateSignatures(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
 	barAddr := f.KeyAddress(keyBar)
@@ -864,7 +864,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
 	barAddr := f.KeyAddress(keyBar)
@@ -948,7 +948,7 @@ func TestLinkCLIMultisignInsufficientCosigners(t *testing.T) {
 
 	// start linkd server with minimum fees
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooBarBazAddr := f.KeyAddress(keyFooBarBaz)
 	barAddr := f.KeyAddress(keyBar)
@@ -1001,7 +1001,7 @@ func TestLinkCLIEncode(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	cdc := app.MakeCodec()
 
@@ -1039,7 +1039,7 @@ func TestLinkCLIMultisignSortSignatures(t *testing.T) {
 
 	// start linkd server with minimum fees
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooBarBazAddr := f.KeyAddress(keyFooBarBaz)
 	barAddr := f.KeyAddress(keyBar)
@@ -1104,7 +1104,7 @@ func TestLinkCLIMultisign(t *testing.T) {
 
 	// start linkd server with minimum fees
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooBarBazAddr := f.KeyAddress(keyFooBarBaz)
 	bazAddr := f.KeyAddress(keyBaz)
@@ -1290,7 +1290,7 @@ func TestSlashingGetParams(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	params := f.QuerySlashingParams()
 	require.Equal(t, time.Duration(120000000000), params.MaxEvidenceAge)
@@ -1311,10 +1311,29 @@ func TestValidateGenesis(t *testing.T) {
 
 	// start linkd server
 	proc := f.LDStart()
-	defer proc.Stop(false)
+	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	f.ValidateGenesis()
 
 	// Cleanup testing directories
+	f.Cleanup()
+}
+
+func TestLinkCLIToken(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	f.TxTokenPublish(keyFoo, "cony", "itiscony", 10000, true, "-y")
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	token := f.QueryToken("cony")
+	require.Equal(t, "itiscony", token.Name)
+	require.Equal(t, "cony", token.Symbol)
+	require.Equal(t, true, token.Mintable)
+
 	f.Cleanup()
 }

@@ -3,11 +3,12 @@
 package clitest
 
 import (
+	"testing"
+
 	"github.com/cosmos/cosmos-sdk/tests"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/privval"
-	"testing"
 )
 
 func TestMultiValidatorAndSendTokens(t *testing.T) {
