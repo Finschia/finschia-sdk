@@ -4,11 +4,22 @@
 version: 2
 
 defaults: &linux_defaults
-  working_directory: /go/src/github.com/link-chain/link
+  working_directory: /go/src/github.com/line/link
   docker:
     - image: circleci/golang:1.12
       environment:
         GO111MODULE: 'on'
+
+machine_defaults: &machine_defaults
+  working_directory: /home/circleci/.go_workspace/src/github.com/line/link
+  machine:
+    image: circleci/classic:latest
+    docker_layer_caching: true
+  environment:
+    GOPATH: /home/circleci/.go_workspace/
+    GOOS: linux
+    GOARCH: amd64
+    GO_VERSION: "1.12.5"
 
 
 jobs:
@@ -69,70 +80,49 @@ jobs:
             export BUILDDIR=`pwd`/build
             make check-build
   setup_docker_and_binary:
-    working_directory: /home/circleci/.go_workspace/src/github.com/link-chain/link
-    machine:
-      image: circleci/classic:latest
-      docker_layer_caching: true
-    environment:
-      GOPATH: /home/circleci/.go_workspace/
-      GOOS: linux
-      GOARCH: amd64
-      GO_VERSION: "1.12.5"
+    <<: *machine_defaults
     steps:
+      - checkout
       - restore_cache:
           keys:
-            - go-cache-setup-1.12.5
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
       - run:
           name: run setup go
           command: |
             set -x
-            mkdir -p /tmp/gobinary
-            pushd /tmp/gobinary
-            wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
-            sudo tar -xvf go$GO_VERSION.linux-amd64.tar.gz
-            sudo rm -rf /usr/local/go
-            sudo mv go /usr/local
-            popd
-      - checkout
-      - restore_cache:
-          keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}
+            if [ "$(go version)" != "go version go1.12.5 linux/amd64" ]; then
+                mkdir -p /tmp/gobinary
+                pushd /tmp/gobinary
+                wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
+                sudo tar -xvf go$GO_VERSION.linux-amd64.tar.gz
+                sudo rm -rf /usr/local/go
+                sudo cp -r go /usr/local
+                popd
+            fi
       - run:
-          name: run build binary
+          name: build binaries
           command: |
-            go mod download
+            set -x
+            make build-linux
+            make build
       - save_cache:
-          key: go-cache-setup-1.12.5
+          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
           paths:
+            - "/home/circleci/.go_workspace/pkg/mod"
             - "/tmp/gobinary"
-      - save_cache:
-          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}
-          paths:
-            - "/home/circleci/.go_workspace/go/pkg/mod"
 
 
   integration_multi_node_test:
-    working_directory: /home/circleci/.go_workspace/src/github.com/link-chain/link
-    machine:
-      image: circleci/classic:latest
-      docker_layer_caching: true
-    environment:
-      GOPATH: /home/circleci/.go_workspace/
-      GOOS: linux
-      GOARCH: amd64
-      GO_VERSION: "1.12.5"
-    parallelism: 1
+    <<: *machine_defaults
     steps:
       - checkout
       - restore_cache:
           keys:
-            - go-cache-setup-1.12.5
-      - restore_cache:
-          keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
       - run:
           name: copy go compiler
           command: |
+            set -x
             pushd /tmp/gobinary
             sudo rm -rf /usr/local/go
             sudo mv go /usr/local
@@ -154,36 +144,20 @@ jobs:
             docker network prune -f
             make check-build-integration
   localnet:
-    working_directory: /home/circleci/.go_workspace/src/github.com/link-chain/link
-    machine:
-      image: circleci/classic:latest
-      docker_layer_caching: true
-    environment:
-      GOPATH: /home/circleci/.go_workspace/
-      GOOS: linux
-      GOARCH: amd64
-      GO_VERSION: "1.12.5"
-    parallelism: 1
+    <<: *machine_defaults
     steps:
       - checkout
       - restore_cache:
           keys:
-            - go-cache-setup-1.12.5
-      - restore_cache:
-          keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
       - run:
           name: copy go compiler
           command: |
+            set -x
             pushd /tmp/gobinary
             sudo rm -rf /usr/local/go
             sudo mv go /usr/local
             popd
-      - run:
-          name: get tools
-          command: |
-            set -x
-            make get-tools
       - run:
           name: build binaries for linux
           command: |
@@ -208,14 +182,13 @@ workflows:
   build_and_test:
     jobs:
       - setup_dependencies
+      - setup_docker_and_binary
       - unit_test:
           requires:
             - setup_dependencies
       - integration_test:
           requires:
             - setup_dependencies
-
-      - setup_docker_and_binary
       - localnet:
           requires:
             - setup_docker_and_binary
