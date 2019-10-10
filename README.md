@@ -26,7 +26,12 @@ make check-race                 # run unit test with -race option
 make check-build                # integration test (/cli_test)
 ```
 
-### Test Net
+### Solo Node
+```
+./initialize.sh
+```
+
+### Local Test Net
 ```
 make build-linux                # Cross-compile the binaries for linux/amd64
 make build-docker-testnet      # Build docker image for testnet
