@@ -5,7 +5,6 @@ import (
 )
 
 var _ sdk.Msg = (*MsgPublishToken)(nil)
-var _ sdk.Msg = (*MsgTransfer)(nil)
 var _ sdk.Msg = (*MsgMint)(nil)
 var _ sdk.Msg = (*MsgBurn)(nil)
 
@@ -53,42 +52,6 @@ func (msg MsgPublishToken) GetSignBytes() []byte {
 
 func (msg MsgPublishToken) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Owner}
-}
-
-func NewMsgTransfer(from, to sdk.AccAddress, amount sdk.Coins) MsgTransfer {
-	return MsgTransfer{
-		From:   from,
-		To:     to,
-		Amount: amount,
-	}
-}
-
-type MsgTransfer struct {
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Amount sdk.Coins      `json:"amount"`
-}
-
-func (MsgTransfer) Route() string { return RouterKey }
-
-func (MsgTransfer) Type() string { return "transfer_token" }
-
-func (msg MsgTransfer) ValidateBasic() sdk.Error {
-	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("amount is not valid")
-	}
-	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("To address cannot be empty")
-	}
-	return nil
-}
-
-func (msg MsgTransfer) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
-
-func (msg MsgTransfer) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.From}
 }
 
 func NewMsgMint(to sdk.AccAddress, amount sdk.Coins) MsgMint {

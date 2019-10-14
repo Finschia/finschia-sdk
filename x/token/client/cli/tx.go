@@ -24,7 +24,6 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	}
 	txCmd.AddCommand(
 		PublishTxCmd(cdc),
-		TransferTxCmd(cdc),
 		MintTxCmd(cdc),
 		BurnTxCmd(cdc),
 	)
@@ -54,35 +53,6 @@ func PublishTxCmd(cdc *codec.Codec) *cobra.Command {
 
 			// build and sign the transaction, then broadcast to Tendermint
 			msg := types.NewMsgPublishToken(name, symbol, sdk.NewInt(amount), to, mintable)
-			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
-		},
-	}
-
-	return client.PostCommands(cmd)[0]
-}
-
-func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "transfer [from_key_or_address] [to] [amount]",
-		Short: "Create and sign a transfer token tx",
-		Args:  cobra.ExactArgs(3),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
-
-			to, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
-
-			// parse coins trying to be sent
-			coins, err := sdk.ParseCoins(args[2])
-			if err != nil {
-				return err
-			}
-
-			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgTransfer(cliCtx.GetFromAddress(), to, coins)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

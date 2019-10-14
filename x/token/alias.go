@@ -16,7 +16,6 @@ type (
 	Token = types.Token
 
 	MsgPublishToken = types.MsgPublishToken
-	MsgTransfer     = types.MsgTransfer
 	MsgMint         = types.MsgMint
 	MsgBurn         = types.MsgBurn
 

@@ -12,8 +12,6 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		switch msg := msg.(type) {
 		case MsgPublishToken:
 			return handleMsgPublishToken(ctx, keeper, msg)
-		case MsgTransfer:
-			return handleMsgTransfer(ctx, keeper, msg)
 		case MsgMint:
 			return handleMsgMint(ctx, keeper, msg)
 		case MsgBurn:
@@ -48,23 +46,6 @@ func handleMsgPublishToken(ctx sdk.Context, keeper Keeper, msg MsgPublishToken) 
 			sdk.NewAttribute(AttributeKeyOwner, msg.Owner.String()),
 			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(AttributeKeyMintable, strconv.FormatBool(msg.Mintable)),
-		),
-	)
-	return sdk.Result{Events: ctx.EventManager().Events()}
-}
-
-func handleMsgTransfer(ctx sdk.Context, keeper Keeper, msg MsgTransfer) sdk.Result {
-
-	err := keeper.bankKeeper.SendCoins(ctx, msg.From, msg.To, msg.Amount)
-	if err != nil {
-		return err.Result()
-	}
-	ctx.EventManager().EmitEvent(
-		sdk.NewEvent(
-			EventTypeTransferToken,
-			sdk.NewAttribute(AttributeKeyFrom, msg.From.String()),
-			sdk.NewAttribute(AttributeKeyTo, msg.To.String()),
-			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 		),
 	)
 	return sdk.Result{Events: ctx.EventManager().Events()}
