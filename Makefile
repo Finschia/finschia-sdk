@@ -99,7 +99,11 @@ install: go.sum
 install-debug: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/linkdebug
 
+update-swagger-docs:
+	statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
 
+run-swagger-server:
+	linkcli rest-server --trust-node=true
 
 ########################################
 ### Tools & dependencies

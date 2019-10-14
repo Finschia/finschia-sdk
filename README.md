@@ -43,3 +43,18 @@ make stop-testnet              # Stop the testnet
 
 ### Current Status
 The most of development is in progress for testing tendermint/cosmos-sdk.
+
+
+## API documentation
+
+### Run the API documentation server
+```shell script
+make install && linkcli rest-server --trust-node=true
+```
+then visit [http://localhost:1317/swagger-ui/#/](http://localhost:1317/swagger-ui/#/)
+
+### Update the API documentation
+Update [swagger.yaml](./client/lcd/swagger-ui/swagger.yaml) then:
+```shell script
+make update-swagger-docs && make install
+```
