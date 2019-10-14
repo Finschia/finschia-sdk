@@ -990,10 +990,10 @@ func (fg *FixtureGroup) LDStartContainers() {
 	}
 
 	for _, f := range fg.fixturesMap {
-		copyedF := f
+		port := f.Port
 		go func() {
-			tests.WaitForTMStart(copyedF.Port)
-			tests.WaitForNextNBlocksTM(1, copyedF.Port)
+			tests.WaitForTMStart(port)
+			tests.WaitForNextNBlocksTM(1, port)
 			wg.Done()
 		}()
 	}
