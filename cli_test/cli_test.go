@@ -417,6 +417,7 @@ func TestLinkCLICreateValidator(t *testing.T) {
 }
 
 func TestLinkCLIQueryRewards(t *testing.T) {
+	t.Skip("Due to removing mint module")
 	t.Parallel()
 	f := InitFixtures(t)
 	cdc := app.MakeCodec()
@@ -467,6 +468,7 @@ func TestLinkCLIQuerySupply(t *testing.T) {
 }
 
 func TestLinkCLISubmitProposal(t *testing.T) {
+	t.Skip("Due to removing gov module")
 	t.Parallel()
 	f := InitFixtures(t)
 
@@ -611,6 +613,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 }
 
 func TestLinkCLISubmitParamChangeProposal(t *testing.T) {
+	t.Skip("Due to removing gov module")
 	t.Parallel()
 	f := InitFixtures(t)
 
@@ -675,6 +678,7 @@ func TestLinkCLISubmitParamChangeProposal(t *testing.T) {
 }
 
 func TestLinkCLISubmitCommunityPoolSpendProposal(t *testing.T) {
+	t.Skip("Due to removing mint module")
 	t.Parallel()
 	f := InitFixtures(t)
 
@@ -1285,6 +1289,7 @@ func TestLinkdAddGenesisAccount(t *testing.T) {
 }
 
 func TestSlashingGetParams(t *testing.T) {
+	t.Skip("Due to removing slashing module")
 	t.Parallel()
 	f := InitFixtures(t)
 
