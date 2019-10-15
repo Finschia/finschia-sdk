@@ -23,6 +23,14 @@ machine_defaults: &machine_defaults
 
 
 jobs:
+  fmt:
+    <<: *linux_defaults
+    steps:
+      - checkout
+      - run:
+          name: check formatting
+          command: if [[ -n "$(gofmt -l .)" ]]; then gofmt -l .; exit 1; fi
+
   setup_dependencies:
     <<: *linux_defaults
     steps:
@@ -181,8 +189,13 @@ workflows:
   version: 2
   build_and_test:
     jobs:
-      - setup_dependencies
-      - setup_docker_and_binary
+      - fmt
+      - setup_dependencies:
+          requires:
+            - fmt
+      - setup_docker_and_binary:
+          requires:
+            - fmt
       - unit_test:
           requires:
             - setup_dependencies

@@ -19,8 +19,8 @@ import (
 )
 
 var (
-	_ module.AppModule           = AppModule{}
-	_ module.AppModuleBasic      = AppModuleBasic{}
+	_ module.AppModule      = AppModule{}
+	_ module.AppModuleBasic = AppModuleBasic{}
 )
 
 // AppModuleBasic app module basics object
@@ -102,8 +102,8 @@ type AppModule struct {
 func NewAppModule(keeper Keeper) AppModule {
 
 	return AppModule{
-		AppModuleBasic:      AppModuleBasic{},
-		keeper:              keeper,
+		AppModuleBasic: AppModuleBasic{},
+		keeper:         keeper,
 	}
 }
 
