@@ -1,24 +1,22 @@
 ---
-swagger: "2.0"
+openapi: "3.0.1"
 info:
-  version: "1.0"
+  version: "2.0-0.0.1"
   title: LINK-Lite for Cosmos (a)
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
+  - name: Tendermint RPC
+    description: Tendermint APIs, such as query blocks, transactions and node status
   - name: Transactions
     description: Search, encode, or broadcast transactions.
-  - name: Tendermint RPC
-    description: Tendermint APIs, such as query blocks, transactions and validatorset
   - name: Auth
     description: Authenticate accounts
   - name: Bank
     description: Create and broadcast transactions
-schemes:
-  - https
-host: link.network
-securityDefinitions:
-  kms:
-    type: basic
+  - name: Supply
+    description: Supply module APIs
+servers:
+  - url: http://localhost:1317
 paths:
   /node_info:
     get:
@@ -26,70 +24,74 @@ paths:
       summary: The properties of the connected node
       tags:
         - Tendermint RPC
-      produces:
-        - application/json
       responses:
         200:
           description: Node status
-          schema:
-            type: object
-            properties:
-              application_version:
+          content:
+            application/json:
+              schema:
+                type: object
                 properties:
-                  build_tags:
-                    type: string
-                  client_name:
-                    type: string
-                  commit:
-                    type: string
-                  go:
-                    type: string
-                  name:
-                    type: string
-                  server_name:
-                    type: string
-                  version:
-                    type: string
-              node_info:
-                properties:
-                  id:
-                    type: string
-                  moniker:
-                    type: string
-                    example: validator-name
-                  protocol_version:
-                    properties:
-                      p2p:
-                        type: string
-                        example: 7
-                      block:
-                        type: string
-                        example: 10
-                      app:
-                        type: string
-                        example: 0
-                  network:
-                    type: string
-                    example: gaia-2
-                  channels:
-                    type: string
-                  listen_addr:
-                    type: string
-                    example: 192.168.56.1:26656
-                  version:
-                    description: Tendermint version
-                    type: string
-                    example: 0.15.0
-                  other:
-                    description: more information on versions
+                  application_version:
                     type: object
                     properties:
-                      tx_index:
+                      build_tags:
                         type: string
-                        example: on
-                      rpc_address:
+                      client_name:
                         type: string
-                        example: tcp://0.0.0.0:26657
+                      commit:
+                        type: string
+                      go:
+                        type: string
+                      name:
+                        type: string
+                      server_name:
+                        type: string
+                      version:
+                        type: string
+                  node_info:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      moniker:
+                        type: string
+                        description: validator name
+                        example: validator-name
+                      protocol_version:
+                        type: object
+                        properties:
+                          p2p:
+                            type: string
+                            example: "7"
+                          block:
+                            type: string
+                            example: "10"
+                          app:
+                            type: string
+                            example: "0"
+                      network:
+                        type: string
+                        example: link
+                      channels:
+                        type: string
+                      listen_addr:
+                        type: string
+                        example: 192.168.56.1:26656
+                      version:
+                        type: string
+                        description: Tendermint version
+                        example: 0.15.0
+                      other:
+                        type: object
+                        properties:
+                          tx_index:
+                            type: string
+                            example: "true"
+                          rpc_address:
+                            type: string
+                            example: tcp://0.0.0.0:26657
+                        description: more information on versions
         500:
           description: Failed to query node status
   /syncing:
@@ -98,16 +100,16 @@ paths:
       tags:
         - Tendermint RPC
       description: Get if the node is currently syning with other nodes
-      produces:
-        - application/json
       responses:
         200:
           description: Node syncing status
-          schema:
-            type: object
-            properties:
-              syncing:
-                type: boolean
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  syncing:
+                    type: boolean
         500:
           description: Server internal error
   /blocks/latest:
@@ -115,13 +117,13 @@ paths:
       summary: Get the latest block
       tags:
         - Tendermint RPC
-      produces:
-        - application/json
       responses:
         200:
           description: The latest block
-          schema:
-            $ref: "#/definitions/BlockQuery"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockQuery'
         500:
           description: Server internal error
   /blocks/{height}:
@@ -129,99 +131,64 @@ paths:
       summary: Get a block at a certain height
       tags:
         - Tendermint RPC
-      produces:
-        - application/json
       parameters:
-        - in: path
-          name: height
+        - name: height
+          in: path
           description: Block height
           required: true
-          type: number
-          x-example: 1
+          schema:
+            type: number
+          example: 1
       responses:
         200:
           description: The block at a specific height
-          schema:
-            $ref: "#/definitions/BlockQuery"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BlockQuery'
+        400:
+          description: Invalid height
         404:
           description: Request block height doesn't
-        400:
-          description: Invalid height
         500:
           description: Server internal error
-  /validatorsets/latest:
+  /txs/genesis:
     get:
-      summary: Get the latest validator set
+      summary: Get genesis transactions
       tags:
-        - Tendermint RPC
-      produces:
-        - application/json
+        - Transactions
       responses:
         200:
-          description: The validator set at the latest block height
-          schema:
-            type: object
-            properties:
-              block_height:
-                type: string
-              validators:
+          description: Genesis transactions
+          content:
+            application/json:
+              schema:
                 type: array
                 items:
-                  $ref: "#/definitions/TendermintValidator"
+                  $ref: '#/components/schemas/Tx'
         500:
-          description: Server internal error
-  /validatorsets/{height}:
-    get:
-      summary: Get a validator set a certain height
-      tags:
-        - Tendermint RPC
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: height
-          description: Block height
-          required: true
-          type: number
-          x-example: 1
-      responses:
-        200:
-          description: The validator set at a specific block height
-          schema:
-            type: object
-            properties:
-              block_height:
-                type: string
-              validators:
-                type: array
-                items:
-                  $ref: "#/definitions/TendermintValidator"
-        404:
-          description: Block at height not available
-        400:
-          description: Invalid height
-        500:
-          description: Server internal error
+          description: Internal Server Error
   /txs/{hash}:
     get:
       summary: Get a Tx by hash
       tags:
         - Transactions
       description: Retrieve a transaction using its hash.
-      produces:
-        - application/json
       parameters:
-        - in: path
-          name: hash
+        - name: hash
+          in: path
           description: Tx hash
           required: true
-          type: string
-          x-example: BCBE20E8D46758B96AE5883B792858296AC06E51435490FBDCAE25A72B3CC76B
+          schema:
+            type: string
+          example: BCBE20E8D46758B96AE5883B792858296AC06E51435490FBDCAE25A72B3CC76B
       responses:
         200:
           description: Tx with the provided hash
-          schema:
-            $ref: "#/definitions/TxQuery"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TxQuery'
         500:
           description: Internal Server Error
   /txs:
@@ -230,34 +197,39 @@ paths:
         - Transactions
       summary: Search transactions
       description: Search transactions by events.
-      produces:
-        - application/json
       parameters:
-        - in: query
-          name: message.action
-          type: string
-          description: "transaction events such as 'message.action=send' which results in the following endpoint: 'GET /txs?message.action=send'. note that each module documents its own events. look for xx_events.md in the corresponding cosmos-sdk/docs/spec directory"
-          x-example: "send"
-        - in: query
-          name: message.sender
-          type: string
-          description: "transaction tags with sender: 'GET /txs?message.action=send&message.sender=cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv'"
-          x-example: "cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
-        - in: query
-          name: page
+        - name: message.action
+          in: query
+          description: 'transaction events such as ''message.action=send'' which results
+          in the following endpoint: ''GET /txs?message.action=send'''
+          schema:
+            type: string
+          example: send
+        - name: message.sender
+          in: query
+          description: 'transaction tags with sender: ''GET /txs?message.action=send&message.sender=cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv'''
+          schema:
+            type: string
+          example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: page
+          in: query
           description: Page number
-          type: integer
-          x-example: 1
-        - in: query
-          name: limit
+          schema:
+            type: integer
+          example: 1
+        - name: limit
+          in: query
           description: Maximum number of items per page
-          type: integer
-          x-example: 1
+          schema:
+            type: integer
+          example: 1
       responses:
         200:
           description: All txs matching the provided events
-          schema:
-            $ref: "#/definitions/PaginatedQueryTxs"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQueryTxs'
         400:
           description: Invalid search events
         500:
@@ -267,190 +239,727 @@ paths:
         - Transactions
       summary: Broadcast a signed tx
       description: Broadcast a signed tx to a full node
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: txBroadcast
-          description: The tx must be a signed StdTx. The supported broadcast modes include `"block"`(return after tx commit), `"sync"`(return afer CheckTx) and `"async"`(return right away).
-          required: true
-          schema:
-            type: object
-            properties:
-              tx:
-                $ref: "#/definitions/StdTx"
-              mode:
-                type: string
-                example: block
+      requestBody:
+        description: The tx must be a signed StdTx. The supported broadcast modes
+          include `"block"`(return after tx commit), `"sync"`(return afer CheckTx)
+          and `"async"`(return right away).
+          Supported MSGs are `MsgSend`, `MsgPublishToken`, `MsgMint`, `MsgBurn`
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tx:
+                  $ref: '#/components/schemas/StdTx'
+                mode:
+                  type: string
+                  example: block
+        required: true
       responses:
         200:
-          description: Tx broadcasting result
-          schema:
-            $ref: "#/definitions/BroadcastTxCommitResult"
+          description: Tx broadcasting result of block mode
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/BroadcastTxBlockResult'
+                  - $ref: '#/components/schemas/BroadcastTxSyncResult'
+                  - $ref: '#/components/schemas/BroadcastTxAsyncResult'
         500:
           description: Internal Server Error
-  /txs/encode:
-    post:
+      x-codegen-request-body-name: txBroadcast
+  /auth/accounts/genesis:
+    get:
       tags:
-        - Transactions
-      summary: Encode a transaction to the Amino wire format
-      description: Encode a transaction (signed or not) from JSON to base64-encoded Amino serialized bytes
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: body
-          name: tx
-          description: The tx to encode
-          required: true
-          schema:
-            type: object
-            properties:
-              tx:
-                $ref: "#/definitions/StdTx"
+        - Auth
+      summary: Get the account information at genesis
       responses:
         200:
-          description: The tx was successfully decoded and re-encoded
-          schema:
-            type: object
-            properties:
-              tx:
-                type: string
-                example: The base64-encoded Amino-serialized bytes for the tx
-        400:
-          description: The tx was malformated
+          description: Account information at genesis
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenesisAccount'
         500:
-          description: Server internal error
-  /txs/decode:
-    post:
+          description: Server internel error
+  /auth/accounts/{address}:
+    get:
       tags:
-        - Transactions
-      summary: Decode a transaction from the Amino wire format
-      description: Decode a transaction (signed or not) from base64-encoded Amino serialized bytes to JSON
-      consumes:
-        - application/json
-      produces:
-        - application/json
+        - Auth
+      summary: Get the account information on blockchain
       parameters:
-        - in: body
-          name: tx
-          description: The tx to decode
+        - name: address
+          in: path
+          description: Account address
           required: true
           schema:
-            type: object
-            properties:
-              tx:
-                type: string
-                example: SvBiXe4KPqijYZoKFFHEzJ8c2HPAfv2EFUcIhx0yPagwEhTy0vPA+GGhCEslKXa4Af0uB+mfShoMCgVzdGFrZRIDMTAwEgQQwJoM
+            type: string
+          example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
       responses:
         200:
-          description: The tx was successfully decoded
-          schema:
-            $ref: "#/definitions/StdTx"
-        400:
-          description: The tx was malformated
+          description: Account information on the blockchain
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
         500:
-          description: Server internal error
+          description: Server internel error
   /bank/balances/{address}:
     get:
       summary: Get the account balances
       tags:
         - Bank
-      produces:
-        - application/json
       parameters:
-        - in: path
-          name: address
+        - name: address
+          in: path
           description: Account address in bech32 format
           required: true
-          type: string
-          x-example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+          schema:
+            type: string
+          example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
       responses:
         200:
           description: Account balances
-          schema:
-            type: array
-            items:
-              $ref: "#/definitions/Coin"
-        500:
-          description: Server internal error
-  /bank/accounts/{address}/transfers:
-    post:
-      summary: Send coins from one account to another
-      tags:
-        - Bank
-      consumes:
-        - application/json
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: address
-          description: Account address in bech32 format
-          required: true
-          type: string
-          x-example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
-        - in: body
-          name: account
-          description: The sender and tx information
-          required: true
-          schema:
-            type: object
-            properties:
-              base_req:
-                $ref: "#/definitions/BaseReq"
-              amount:
-                type: array
-                items:
-                  $ref: "#/definitions/Coin"
-      responses:
-        202:
-          description: Tx was succesfully generated
-          schema:
-            $ref: "#/definitions/StdTx"
-        400:
-          description: Invalid request
-        500:
-          description: Server internal error
-  /auth/accounts/{address}:
-    get:
-      summary: Get the account information on blockchain
-      tags:
-        - Auth
-      produces:
-        - application/json
-      parameters:
-        - in: path
-          name: address
-          description: Account address
-          required: true
-          type: string
-          x-example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
-      responses:
-        200:
-          description: Account information on the blockchain
-          schema:
-            type: object
-            properties:
-              type:
-                type: string
-              value:
+          content:
+            application/json:
+              schema:
                 type: object
                 properties:
-                  account_number:
+                  height:
                     type: string
-                  address:
-                    type: string
-                  coins:
+                    example: "100"
+                  result:
                     type: array
                     items:
-                      $ref: "#/definitions/Coin"
-                  public_key:
-                    $ref: "#/definitions/PublicKey"
-                  sequence:
-                    type: string
+                      $ref: '#/components/schemas/Coin'
         500:
-          description: Server internel error
+          description: Server internal error
+          content: {}
+  /bank/balances/{address}/{denomination}:
+    get:
+      tags:
+        - Bank
+      summary: Get the account balances of a single coin denomination
+      parameters:
+        - name: address
+          in: path
+          description: Account address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: denomination
+          in: path
+          description: Coin denomination
+          required: true
+          schema:
+            type: string
+          example: link
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: Account balances
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: string
+                    example: "100"
+        500:
+          description: Server internal error
+  /supply/total:
+    get:
+      tags:
+        - Supply
+      summary: Total supply of coins in the chain
+      parameters:
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Coin'
+        500:
+          description: Internal Server Error
+  /supply/total/{denomination}:
+    get:
+      tags:
+        - Supply
+      summary: Total supply of a single coin denomination
+      parameters:
+        - name: denomination
+          in: path
+          description: Coin denomination
+          required: true
+          schema:
+            type: string
+          example: link
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: string
+                    example: "100"
+        400:
+          description: Invalid coin denomination
+          content: {}
+        500:
+          description: Internal Server Error
+          content: {}
+components:
+  schemas:
+    Hash:
+      type: string
+      example: "777467B3B9FF7918B15D374EC0510AADE8026D3B91795AFA25B50888199DFD20"
+    Address:
+      type: string
+      description: bech32 encoded address
+      example: "cosmos1ffxp9g0qcp6quqjhq6cmdz69ztnu3khx524uhp"
+    ValidatorAddress:
+      type: string
+      description: bech32 encoded address
+      example: "cosmosvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l"
+    Timestamp:
+      type: string
+      example: 2019-08-25T10:04:50.357159306Z
+    Signature:
+      type: string
+      description: base64
+      example: "7uTC74QlknqYWEwg7Vn6M8Om7FuZ0EO4bjvuj6rwH1mTUJrRuMMZvAAqT9VjNgP0RA/TDp6u/92AqrZfXJSpBQ=="
+    Coin:
+      type: object
+      properties:
+        denom:
+          type: string
+          example: link
+        amount:
+          type: string
+          example: "50"
+    PublicKey:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "tendermint/PubKeySecp256k1"
+        value:
+          type: string
+          example: "AmtHHdw+9xASQejvAzOwj/BT8AumZGJHWKKb4Gg5hssC"
+    KVPair:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+    Account:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "cosmos-sdk/Account"
+        value:
+          type: object
+          properties:
+            account_number:
+              type: string
+              example: "1"
+            address:
+              $ref: '#/components/schemas/Address'
+            coins:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+            public_key:
+              $ref: '#/components/schemas/PublicKey'
+            sequence:
+              type: string
+              example: "11"
+    GenesisAccount:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "cosmos-sdk/GenesisAccount"
+        value:
+          type: object
+          properties:
+            address:
+              $ref: '#/components/schemas/Address'
+            coins:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+            sequence:
+              type: string
+              example: "0"
+            account_number:
+              type: string
+              example: "0"
+            original_vesting:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+            delegated_free:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+            delegated_vesting:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+            start_time:
+              type: string
+              example: "0"
+            end_time:
+              type: string
+              example: "0"
+            module_name:
+              type: string
+            module_permissions:
+              type: array
+              items:
+                type: string
+    BlockID:
+      type: object
+      properties:
+        hash:
+          $ref: '#/components/schemas/Hash'
+        parts:
+          type: object
+          properties:
+            total:
+              type: string
+              example: "1"
+            hash:
+              $ref: '#/components/schemas/Hash'
+    BlockHeader:
+      type: object
+      properties:
+        chain_id:
+          type: string
+          example: link-0001
+        height:
+          type: string
+          example: "1"
+        time:
+          $ref: '#/components/schemas/Timestamp'
+        num_txs:
+          type: string
+          example: "0"
+        last_block_id:
+          $ref: '#/components/schemas/BlockID'
+        total_txs:
+          type: string
+          example: "35"
+        last_commit_hash:
+          $ref: '#/components/schemas/Hash'
+        data_hash:
+          $ref: '#/components/schemas/Hash'
+        validators_hash:
+          $ref: '#/components/schemas/Hash'
+        next_validators_hash:
+          $ref: '#/components/schemas/Hash'
+        consensus_hash:
+          $ref: '#/components/schemas/Hash'
+        app_hash:
+          $ref: '#/components/schemas/Hash'
+        last_results_hash:
+          $ref: '#/components/schemas/Hash'
+        evidence_hash:
+          $ref: '#/components/schemas/Hash'
+        proposer_address:
+          $ref: '#/components/schemas/ValidatorAddress'
+        version:
+          type: object
+          properties:
+            block:
+              type: string
+              example: "10"
+            app:
+              type: string
+              example: "0"
+    Block:
+      type: object
+      properties:
+        header:
+          $ref: '#/components/schemas/BlockHeader'
+        data:
+          type: object
+          properties:
+            txs:
+              type: array
+              items:
+                $ref: '#/components/schemas/Tx'
+        evidence:
+          type: array
+          items:
+            type: string
+        last_commit:
+          type: object
+          properties:
+            block_id:
+              $ref: '#/components/schemas/BlockID'
+            precommits:
+              type: array
+              items:
+                type: object
+                properties:
+                  validator_address:
+                    type: string
+                  validator_index:
+                    type: string
+                    example: "0"
+                  height:
+                    type: string
+                    example: "0"
+                  round:
+                    type: string
+                    example: "0"
+                  timestamp:
+                    $ref: '#/components/schemas/Timestamp'
+                  type:
+                    type: number
+                    example: 2.0
+                  block_id:
+                    $ref: '#/components/schemas/BlockID'
+                  signature:
+                    $ref: '#/components/schemas/Signature'
+    BlockQuery:
+      type: object
+      properties:
+        block_meta:
+          type: object
+          properties:
+            header:
+              $ref: '#/components/schemas/BlockHeader'
+            block_id:
+              $ref: '#/components/schemas/BlockID'
+        block:
+          $ref: '#/components/schemas/Block'
+    MsgSend:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "cosmos-sdk/MsgSend"
+        value:
+          type: object
+          properties:
+            from_address:
+              $ref: '#/components/schemas/Address'
+            to_address:
+              $ref: '#/components/schemas/Address'
+            amount:
+              $ref: '#/components/schemas/Coin'
+    MsgPublishToken:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgPublishToken"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "LINK Token"
+            symbol:
+              type: string
+              example: "LINKT"
+            amount:
+              type: string
+              example: "1000000"
+            owner:
+              $ref: '#/components/schemas/Address'
+            mintable:
+              type: boolean
+              example: false
+    MsgMint:
+      type: object
+      description: msg of token mint
+      properties:
+        type:
+          type: string
+          example: "link/MsgMint"
+        value:
+          type: object
+          properties:
+            to:
+              type: string
+              example: "LINK Token"
+            amount:
+              type: string
+              example: "1000000LINKT"
+    MsgBurn:
+      type: object
+      description: msg of token burn
+      properties:
+        type:
+          type: string
+          example: "link/MsgBurn"
+        value:
+          type: object
+          properties:
+            from:
+              type: string
+              example: "LINK Token"
+            amount:
+              type: string
+              example: "1000000LINKT"
+    MsgCreateValidator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "cosmos-sdk/MsgCreateValidator"
+        value:
+          type: object
+          properties:
+            description:
+              type: object
+              properties:
+                moniker:
+                  type: string
+                identity:
+                  type: string
+                website:
+                  type: string
+                details:
+                  type: string
+            commission:
+              type: object
+              properties:
+                rate:
+                  type: string
+                max_rate:
+                  type: string
+                max_change_rate:
+                  type: string
+            min_self_delegation:
+              type: string
+              example: "1"
+            delegator_address:
+              $ref: '#/components/schemas/Address'
+            validator_address:
+              $ref: '#/components/schemas/ValidatorAddress'
+            pubkey:
+              type: string
+              example: "cosmosvalconspub1zcjduepqxe4h4luwpmj96lqgfke8qdfhcwhdsjpvdpjk2x6x4y534l5wkmpsrtm99f"
+            value:
+              $ref: '#/components/schemas/Coin'
+    StdTx:
+      type: object
+      properties:
+        msg:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/MsgSend'
+              - $ref: '#/components/schemas/MsgPublishToken'
+              - $ref: '#/components/schemas/MsgMint'
+              - $ref: '#/components/schemas/MsgBurn'
+              - $ref: '#/components/schemas/MsgCreateValidator'
+        fee:
+          type: object
+          properties:
+            gas:
+              type: string
+              example: "2000"
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+        memo:
+          type: string
+        signatures:
+          type: array
+          items:
+            type: object
+            properties:
+              signature:
+                $ref: '#/components/schemas/Signature'
+              pub_key:
+                $ref: '#/components/schemas/PublicKey'
+    Tx:
+      type: object
+      properties:
+        type:
+          type: string
+          example: cosmos-sdk/StdTx
+        value:
+          $ref: '#/components/schemas/StdTx'
+    TxQuery:
+      type: object
+      properties:
+        height:
+          type: string
+          example: "368"
+        txhash:
+          $ref: '#/components/schemas/Hash'
+        tx:
+          $ref: '#/components/schemas/Tx'
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              msg_index:
+                type: integer
+              success:
+                type: boolean
+              log:
+                type: string
+        raw_log:
+          type: string
+          example: '[{"msg_index":0,"success":true,"log":""}]'
+        gas_wanted:
+          type: string
+          example: "200000"
+        gas_used:
+          type: string
+          example: "26354"
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/KVPair'
+    PaginatedQueryTxs:
+      type: object
+      properties:
+        total_count:
+          type: string
+          example: "1"
+        count:
+          type: string
+          example: "1"
+        page_number:
+          type: string
+          example: "1"
+        page_total:
+          type: string
+          example: "1"
+        limit:
+          type: string
+          example: "30"
+        txs:
+          type: array
+          items:
+            $ref: '#/components/schemas/TxQuery'
+    BroadcastTxBlockResult:
+      type: object
+      properties:
+        height:
+          type: string
+          example: "368"
+        txhash:
+          type: string
+          example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              msg_index:
+                type: integer
+              success:
+                type: boolean
+              log:
+                type: string
+        raw_log:
+          type: string
+          example: '[{"msg_index":0,"success":true,"log":""}]'
+        gas_wanted:
+          type: string
+          example: "200000"
+        gas_used:
+          type: string
+          example: "26354"
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/KVPair'
+    BroadcastTxSyncResult:
+      type: object
+      properties:
+        height:
+          type: number
+          example: 0.0
+        txhash:
+          type: string
+          example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              msg_index:
+                type: integer
+              success:
+                type: boolean
+              log:
+                type: string
+        raw_log:
+          type: string
+          example: '[{"msg_index":0,"success":true,"log":""}]'
+    BroadcastTxAsyncResult:
+      type: object
+      properties:
+        height:
+          type: number
+          example: 0.0
+        txhash:
+          type: string
+          example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
