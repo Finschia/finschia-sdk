@@ -55,7 +55,7 @@ func TestDefParam(t *testing.T) {
 		require.Equal(t, confField, expectedStr, failMsg)
 		expectedInt := intParam + 1
 		expectedConfField := fmt.Sprintf(listenLoopbackIngressPortTemplate, expectedInt)
-		require.Equal(t, DefIfLTEZero(&confField, listenLoopbackIngressPortTemplate, intParam, expectedInt),
+		require.Equal(t, DefFormatSetIfLTEZero(&confField, listenLoopbackIngressPortTemplate, intParam, expectedInt),
 			expectedInt, failMsg)
 		require.Equal(t, confField, expectedConfField, failMsg)
 	}
@@ -66,7 +66,7 @@ func TestDefParam(t *testing.T) {
 		require.Equal(t, DefIfEmpty(&confField, strParam, ""), strParam, failMsg)
 		require.Equal(t, confField, strParam, failMsg)
 		expectedConfField := fmt.Sprintf(listenLoopbackIngressPortTemplate, intParam)
-		require.Equal(t, DefIfLTEZero(&confField, listenLoopbackIngressPortTemplate, intParam, -1),
+		require.Equal(t, DefFormatSetIfLTEZero(&confField, listenLoopbackIngressPortTemplate, intParam, -1),
 			intParam, failMsg)
 		require.Equal(t, confField, expectedConfField, failMsg)
 	}

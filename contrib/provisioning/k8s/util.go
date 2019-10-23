@@ -37,7 +37,7 @@ func ErrCheckedStrArrParam(param []string, err error) []string {
 
 }
 
-func DefIfLTEZero(confField *string, format string, defVal int, setVal int) int {
+func DefFormatSetIfLTEZero(confField *string, format string, defVal int, setVal int) int {
 	if !(setVal <= 0) {
 		*confField = fmt.Sprintf(format, setVal)
 		return setVal
@@ -49,10 +49,10 @@ func DefIfLTEZero(confField *string, format string, defVal int, setVal int) int 
 func DefIfEmpty(confField *string, defVal string, setVal string) string {
 	if TrimSpace(setVal) != "" {
 		*confField = setVal
-		return setVal
+	} else {
+		*confField = defVal
 	}
-	*confField = defVal
-	return defVal
+	return *confField
 }
 
 func RandomHash() (hash.Hash, error) {

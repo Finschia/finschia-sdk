@@ -16,27 +16,29 @@ import (
 )
 
 var (
-	flagChainID              = "ChainID"
 	flagAction               = "Action"
-	flagNodeIPs              = "NodeIPs"
-	flagConfHomePath         = "ConfHomePath"
-	flagLinkdBinDirName      = "LinkdBinDirName"
+	flagChainID              = "ChainID"
 	flagCliBinDirName        = "CliBinDirName"
+	flagConfDirName          = "ConfDirName"
+	flagConfHomePath         = "ConfHomePath"
+	flagDBDir                = "DBDir"
+	flagK8STemplateFilePath  = "K8STemplateFilePath"
+	flagLinkdBinDirName      = "LinkdBinDirName"
+	flagLinkDockerImageUrl   = "LinkDockerImageUrl"
+	flagNodeABCIPort         = "NodeABCIPort"
+	flagNodeIPs              = "NodeIPs"
 	flagNodeP2PPort          = "NodeP2PPort"
 	flagNodeRestAPIPort      = "NodeRestAPIPort"
-	flagNodeABCIPort         = "NodeABCIPort"
-	flagPrometheusTurnOn     = "PrometheusTurnOn"
 	flagPrometheusListenPort = "PrometheusListenPort"
-	flagConfDirName          = "ConfDirName"
-	flagK8STemplateFilePath  = "K8STemplateFilePath"
-	flagLinkDockerImageUrl   = "LinkDockerImageUrl"
+	flagPrometheusTurnOn     = "PrometheusTurnOn"
 )
 
-const defLinkDockerImageUrl = "docker-registry.linecorp.com/link-network/v2/linkdnode:latest"
-const defK8STemplateFilePath = "./contrib/provisioning/k8s/deploy-validator-template.yaml"
 const defConfDirName = "/config"
 const defConfigurationFileExt = ".json"
 const defConsensusTimeoutCommit = 5
+const defDBDir = "data"
+const defK8STemplateFilePath = "./contrib/provisioning/k8s/deploy-validator-template.yaml"
+const defLinkDockerImageUrl = "docker-registry.linecorp.com/link-network/v2/linkdnode:latest"
 const defMinGasPrices = 0.000006
 const defNodeABCIPort = 25658
 const defNodeP2PPort = 25656
@@ -84,17 +86,18 @@ func Init() *cobra.Command {
 			confDirName := ErrCheckedStrParam(cmd.Flags().GetString(flagConfDirName))
 			k8STemplateFilePath := ErrCheckedStrParam(cmd.Flags().GetString(flagK8STemplateFilePath))
 			linkDockerImageUrl := ErrCheckedStrParam(cmd.Flags().GetString(flagLinkDockerImageUrl))
+			dbDir := ErrCheckedStrParam(cmd.Flags().GetString(flagDBDir))
 
 			tmConfig := server.NewDefaultContext().Config
 			tmConfig.Instrumentation.Prometheus = prometheusTurnOn
 			tmConfig.BaseConfig.ProfListenAddress = fmt.Sprintf("localhost:%d", defProfilingPort)
 			tmConfig.Consensus.TimeoutCommit = defConsensusTimeoutCommit * time.Second
 			tmConfig.TxIndex.IndexAllTags = defTxIndexIndexAllTags
-
-			prometheusListenPort = DefIfLTEZero(&tmConfig.Instrumentation.PrometheusListenAddr, listenLoopbackIngressPortTemplate, defPrometheusListenPort, prometheusListenPort)
-			nodeP2PPort = DefIfLTEZero(&tmConfig.P2P.ListenAddress, listenAllIngressPortTemplate, defNodeP2PPort, nodeP2PPort)
-			nodeRestAPIPort = DefIfLTEZero(&tmConfig.RPC.ListenAddress, listenAllIngressPortTemplate, defNodeRestAPIPort, nodeRestAPIPort)
-			nodeABCIPort = DefIfLTEZero(&tmConfig.BaseConfig.ProxyApp, listenLoopbackIngressPortTemplate, defNodeABCIPort, nodeABCIPort)
+			DefIfEmpty(&tmConfig.DBPath, defDBDir, dbDir)
+			prometheusListenPort = DefFormatSetIfLTEZero(&tmConfig.Instrumentation.PrometheusListenAddr, listenLoopbackIngressPortTemplate, defPrometheusListenPort, prometheusListenPort)
+			nodeP2PPort = DefFormatSetIfLTEZero(&tmConfig.P2P.ListenAddress, listenAllIngressPortTemplate, defNodeP2PPort, nodeP2PPort)
+			nodeRestAPIPort = DefFormatSetIfLTEZero(&tmConfig.RPC.ListenAddress, listenAllIngressPortTemplate, defNodeRestAPIPort, nodeRestAPIPort)
+			nodeABCIPort = DefFormatSetIfLTEZero(&tmConfig.BaseConfig.ProxyApp, listenLoopbackIngressPortTemplate, defNodeABCIPort, nodeABCIPort)
 
 			hash, err := RandomHash()
 			if err != nil {
@@ -103,7 +106,7 @@ func Init() *cobra.Command {
 			DefIfEmpty(&chainID, fmt.Sprintf("%s-%s-%s-%s-%s", prefixForChainId,
 				prefixForP2PPort+strconv.Itoa(nodeP2PPort), prefixPortRestAPIPort+strconv.Itoa(nodeRestAPIPort),
 				prefixABCIPort+strconv.Itoa(nodeABCIPort), hex.EncodeToString(hash.Sum(nil)))[:50], chainID)
-			DefIfEmpty(&confHomePath, confHomePath, defOutputDir+"/"+chainID)
+			DefIfEmpty(&confHomePath, defOutputDir+"/"+chainID, confHomePath)
 
 			m := NewBuildMetaData(nodes, confHomePath, chainID, confDirName, linkCliDir, linkdDir, nodeP2PPort,
 				nodeRestAPIPort, nodeABCIPort, prometheusListenPort, tmConfig, k8STemplateFilePath, linkDockerImageUrl)
@@ -128,6 +131,7 @@ func Init() *cobra.Command {
 	cmd.Flags().BoolP(flagPrometheusTurnOn, "p", defPrometheusTurnOn, "turn on prometheus feature")
 	cmd.Flags().IntP(flagNodeRestAPIPort, "r", defNodeRestAPIPort, "input RPC port")
 	cmd.Flags().StringP(flagK8STemplateFilePath, "t", defK8STemplateFilePath, "input k8s template file path")
+	cmd.Flags().StringP(flagDBDir, "u", defDBDir, "input Database directory path")
 
 	return cmd
 }
@@ -149,7 +153,7 @@ func buildConfForK8s(cmd *cobra.Command, cdc *codec.Codec, tmConfig *tmconfig.Co
 	); err != nil {
 		return err
 	}
-	cmd.PrintErrf("Successfully initialized for [%d]nodes configuration files at %s\n", m.NumNodes, m.ConfHomePath)
+	cmd.Printf("Successfully initialized for [%d]nodes configuration files at %s\n", m.NumNodes, m.ConfHomePath)
 	return nil
 }
 
