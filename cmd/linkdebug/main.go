@@ -37,7 +37,7 @@ func init() {
 
 var rootCmd = &cobra.Command{
 	Use:          "linkdebug",
-	Short:        "Link debug tool",
+	Short:        "LINK debug tool",
 	SilenceUsage: true,
 }
 

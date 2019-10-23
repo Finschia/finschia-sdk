@@ -10,7 +10,7 @@ require (
 	github.com/golang/mock v1.3.1 // indirect
 	github.com/golangci/golangci-lint v1.19.1 // indirect
 	github.com/gorilla/mux v1.7.3
-	github.com/magiconair/properties v1.8.1 // indirect
+	github.com/magiconair/properties v1.8.1
 	github.com/otiai10/copy v1.0.1
 	github.com/otiai10/curr v0.0.0-20190513014714-f5a3d24e5776 // indirect
 	github.com/pelletier/go-toml v1.4.0 // indirect
@@ -27,5 +27,5 @@ require (
 	github.com/tendermint/tm-db v0.1.1
 	google.golang.org/appengine v1.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20190701230453-710ae3a149df // indirect
-	gopkg.in/yaml.v2 v2.2.2
+	gopkg.in/yaml.v2 v2.2.4
 )

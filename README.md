@@ -1,8 +1,8 @@
-# Link Network Version2
+# LINK Network Version2
 
 [![Project Status: WIP – Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](https://www.repostatus.org/badges/latest/wip.svg)](https://www.repostatus.org/#wip)
 
-This repository hosts `Link`, alternative implementation of the Link Network.
+This repository hosts `LINK`, alternative implementation of the LINK Network.
 
 **Node**: Requires [Go 1.12+](https://golang.org/dl/)
 
@@ -14,7 +14,7 @@ This repository hosts `Link`, alternative implementation of the Link Network.
 ```
 make get-tools                  # install tools
 ```
-### Build & Install Link
+### Build & Install LINK
 ```
 make install                    # build and install binaries
 ```
