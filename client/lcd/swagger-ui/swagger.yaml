@@ -850,6 +850,12 @@ components:
           example: "368"
         txhash:
           $ref: '#/components/schemas/Hash'
+        index:
+          type: integer
+          example: 1
+        code:
+          type: integer
+          example: 0
         tx:
           $ref: '#/components/schemas/Tx'
         logs:

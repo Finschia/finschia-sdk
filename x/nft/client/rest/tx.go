@@ -3,14 +3,15 @@ package rest
 import (
 	"net/http"
 
+	"github.com/gorilla/mux"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/link-chain/link/x/nft/internal/types"
 
-	"github.com/gorilla/mux"
+	"github.com/link-chain/link/x/auth/client/utils"
+	"github.com/link-chain/link/x/nft/internal/types"
 )
 
 func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router,

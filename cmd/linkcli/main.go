@@ -10,13 +10,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
-	"github.com/link-chain/link/app"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	authcmd "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
-	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 
@@ -26,7 +23,9 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 
+	"github.com/link-chain/link/app"
 	linklcd "github.com/link-chain/link/client/lcd"
+	authclient "github.com/link-chain/link/x/auth/client"
 )
 
 func main() {
@@ -91,12 +90,12 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 	}
 
 	queryCmd.AddCommand(
-		authcmd.GetAccountCmd(cdc),
+		authclient.GetAccountCmd(cdc),
 		client.LineBreak,
 		rpc.ValidatorCommand(cdc),
 		rpc.BlockCommand(),
-		authcmd.QueryTxsByEventsCmd(cdc),
-		authcmd.QueryTxCmd(cdc),
+		authclient.QueryTxsByEventsCmd(cdc),
+		authclient.QueryTxCmd(cdc),
 		client.LineBreak,
 	)
 
@@ -115,11 +114,11 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 	txCmd.AddCommand(
 		bankcmd.SendTxCmd(cdc),
 		client.LineBreak,
-		authcmd.GetSignCommand(cdc),
-		authcmd.GetMultiSignCommand(cdc),
+		authclient.GetSignCommand(cdc),
+		authclient.GetMultiSignCommand(cdc),
 		client.LineBreak,
-		authcmd.GetBroadcastCommand(cdc),
-		authcmd.GetEncodeCommand(cdc),
+		authclient.GetBroadcastCommand(cdc),
+		authclient.GetEncodeCommand(cdc),
 		client.LineBreak,
 	)
 
@@ -145,7 +144,7 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 // NOTE: If making updates here you also need to update the test helper in client/lcd/test_helper.go
 func registerRoutes(rs *lcd.RestServer) {
 	client.RegisterRoutes(rs.CliCtx, rs.Mux)
-	authrest.RegisterTxRoutes(rs.CliCtx, rs.Mux)
+	authclient.RegisterTxRoutes(rs.CliCtx, rs.Mux)
 	app.ModuleBasics.RegisterRESTRoutes(rs.CliCtx, rs.Mux)
 }
 

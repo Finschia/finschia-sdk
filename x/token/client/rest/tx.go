@@ -1,14 +1,16 @@
 package rest
 
 import (
-	"github.com/gorilla/mux"
-	"github.com/link-chain/link/x/token/types"
 	"net/http"
+
+	"github.com/gorilla/mux"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+
+	"github.com/link-chain/link/x/auth/client/utils"
+	"github.com/link-chain/link/x/token/types"
 )
 
 // SendReq defines the properties of a send request's body.
