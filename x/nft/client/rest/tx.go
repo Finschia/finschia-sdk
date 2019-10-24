@@ -1,14 +1,14 @@
 package rest
 
 import (
+	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/link-chain/link/client"
 	"net/http"
 
-	"github.com/gorilla/mux"
-
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/gorilla/mux"
 
 	"github.com/link-chain/link/x/auth/client/utils"
 	"github.com/link-chain/link/x/nft/internal/types"
@@ -49,7 +49,7 @@ type transferNFTReq struct {
 	Recipient string       `json:"recipient"`
 }
 
-func transferNFTHandler(cdc *codec.Codec, cliCtx context.CLIContext) http.HandlerFunc {
+func transferNFTHandler(cdc *codec.Codec, cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req transferNFTReq
 		if !rest.ReadRESTReq(w, r, cdc, &req) {
@@ -79,7 +79,7 @@ type editNFTMetadataReq struct {
 	TokenURI string       `json:"tokenURI"`
 }
 
-func editNFTMetadataHandler(cdc *codec.Codec, cliCtx context.CLIContext) http.HandlerFunc {
+func editNFTMetadataHandler(cdc *codec.Codec, cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req editNFTMetadataReq
 		if !rest.ReadRESTReq(w, r, cdc, &req) {
@@ -106,7 +106,7 @@ type mintNFTReq struct {
 	TokenURI  string         `json:"tokenURI"`
 }
 
-func mintNFTHandler(cdc *codec.Codec, cliCtx context.CLIContext) http.HandlerFunc {
+func mintNFTHandler(cdc *codec.Codec, cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req mintNFTReq
 		if !rest.ReadRESTReq(w, r, cdc, &req) {
@@ -131,7 +131,7 @@ type burnNFTReq struct {
 	ID      string       `json:"id"`
 }
 
-func burnNFTHandler(cdc *codec.Codec, cliCtx context.CLIContext) http.HandlerFunc {
+func burnNFTHandler(cdc *codec.Codec, cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req burnNFTReq
 		if !rest.ReadRESTReq(w, r, cdc, &req) {

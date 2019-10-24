@@ -5,13 +5,11 @@ import (
 	"github.com/spf13/cobra"
 	"strconv"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-
-	"github.com/link-chain/link/x/auth/client/utils"
+	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+	"github.com/link-chain/link/client"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -38,7 +36,7 @@ func PublishTxCmd(cdc *codec.Codec) *cobra.Command {
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
 			to := cliCtx.FromAddress
 			symbol := args[1]
@@ -68,7 +66,7 @@ func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
 			// parse coins trying to be sent
 			coins, err := sdk.ParseCoins(args[1])
@@ -92,7 +90,7 @@ func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
 			// parse coins trying to be sent
 			coins, err := sdk.ParseCoins(args[1])

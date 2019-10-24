@@ -2,7 +2,7 @@
 openapi: "3.0.1"
 info:
   version: "2.0-0.0.1"
-  title: LINK-Lite for Cosmos (a)
+  title: LINK-Lite for Cosmos
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
   - name: Tendermint RPC
@@ -117,6 +117,14 @@ paths:
       summary: Get the latest block
       tags:
         - Tendermint RPC
+      parameters:
+        - name: extended
+          in: query
+          description: Whether to translate transaction data in the response
+          required: false
+          schema:
+            type: string
+          example: true
       responses:
         200:
           description: The latest block
@@ -139,6 +147,13 @@ paths:
           schema:
             type: number
           example: 1
+        - name: extended
+          in: query
+          description: Whether to translate transaction data in the response
+          required: false
+          schema:
+            type: string
+          example: true
       responses:
         200:
           description: The block at a specific height

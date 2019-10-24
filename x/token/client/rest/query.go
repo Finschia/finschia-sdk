@@ -1,16 +1,16 @@
 package rest
 
 import (
+	"github.com/link-chain/link/client"
 	"github.com/link-chain/link/x/token/types"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
-func QueryTokensRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func QueryTokensRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)

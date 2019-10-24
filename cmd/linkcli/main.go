@@ -6,10 +6,8 @@ import (
 	"os"
 	"path"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/keys"
-	"github.com/cosmos/cosmos-sdk/client/lcd"
-	"github.com/cosmos/cosmos-sdk/client/rpc"
+	"github.com/link-chain/link/app"
+	"github.com/link-chain/link/client"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -23,8 +21,6 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/link-chain/link/app"
-	linklcd "github.com/link-chain/link/client/lcd"
 	authclient "github.com/link-chain/link/x/auth/client"
 )
 
@@ -59,14 +55,14 @@ func main() {
 
 	// Construct Root Command
 	rootCmd.AddCommand(
-		rpc.StatusCommand(),
+		client.StatusCommand(),
 		client.ConfigCmd(app.DefaultCLIHome),
 		queryCmd(cdc),
 		txCmd(cdc),
 		client.LineBreak,
-		linklcd.ServeCommand(cdc, registerRoutes),
+		client.ServeCommand(cdc, registerRoutes),
 		client.LineBreak,
-		keys.Commands(),
+		client.Commands(),
 		client.LineBreak,
 		client.NewCompletionCmd(rootCmd, true),
 		version.Cmd,
@@ -92,8 +88,8 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 	queryCmd.AddCommand(
 		authclient.GetAccountCmd(cdc),
 		client.LineBreak,
-		rpc.ValidatorCommand(cdc),
-		rpc.BlockCommand(),
+		client.ValidatorCommand(cdc),
+		client.BlockCommand(cdc),
 		authclient.QueryTxsByEventsCmd(cdc),
 		authclient.QueryTxCmd(cdc),
 		client.LineBreak,
@@ -142,7 +138,7 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 // registerRoutes registers the routes from the different modules for the LCD.
 // NOTE: details on the routes added for each module are in the module documentation
 // NOTE: If making updates here you also need to update the test helper in client/lcd/test_helper.go
-func registerRoutes(rs *lcd.RestServer) {
+func registerRoutes(rs *client.RestServer) {
 	client.RegisterRoutes(rs.CliCtx, rs.Mux)
 	authclient.RegisterTxRoutes(rs.CliCtx, rs.Mux)
 	app.ModuleBasics.RegisterRESTRoutes(rs.CliCtx, rs.Mux)

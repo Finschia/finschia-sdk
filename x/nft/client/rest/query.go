@@ -2,18 +2,18 @@ package rest
 
 import (
 	"fmt"
+	"github.com/link-chain/link/client"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/link-chain/link/x/nft/internal/types"
 )
 
-func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router, cdc *codec.Codec, queryRoute string) {
+func registerQueryRoutes(cliCtx client.CLIContext, r *mux.Router, cdc *codec.Codec, queryRoute string) {
 
 	// Get the total supply of a collection
 	r.HandleFunc(
@@ -46,7 +46,7 @@ func registerQueryRoutes(cliCtx context.CLIContext, r *mux.Router, cdc *codec.Co
 	).Methods("GET")
 }
 
-func getSupply(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func getSupply(cdc *codec.Codec, cliCtx client.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		denom := mux.Vars(r)["denom"]
 
@@ -67,7 +67,7 @@ func getSupply(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) h
 	}
 }
 
-func getOwner(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func getOwner(cdc *codec.Codec, cliCtx client.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		address, err := sdk.AccAddressFromBech32(mux.Vars(r)["delegatorAddr"])
 		if err != nil {
@@ -92,7 +92,7 @@ func getOwner(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) ht
 	}
 }
 
-func getOwnerByDenom(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func getOwnerByDenom(cdc *codec.Codec, cliCtx client.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		denom := vars["denom"]
@@ -119,7 +119,7 @@ func getOwnerByDenom(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute str
 	}
 }
 
-func getCollection(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func getCollection(cdc *codec.Codec, cliCtx client.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		denom := mux.Vars(r)["denom"]
 
@@ -140,7 +140,7 @@ func getCollection(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute strin
 	}
 }
 
-func getDenoms(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func getDenoms(cdc *codec.Codec, cliCtx client.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		res, _, err := cliCtx.QueryWithData(fmt.Sprintf("custom/%s/denoms", queryRoute), nil)
@@ -153,7 +153,7 @@ func getDenoms(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) h
 	}
 }
 
-func getNFT(cdc *codec.Codec, cliCtx context.CLIContext, queryRoute string) http.HandlerFunc {
+func getNFT(cdc *codec.Codec, cliCtx client.CLIContext, queryRoute string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		denom := vars["denom"]

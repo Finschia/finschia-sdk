@@ -22,13 +22,13 @@ import (
 
 	"github.com/link-chain/link/app"
 
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/tests"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/genaccounts"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
+	"github.com/link-chain/link/client"
 )
 
 func TestLinkCLIKeysAddMultisig(t *testing.T) {
@@ -1032,7 +1032,7 @@ func TestLinkCLIEncode(t *testing.T) {
 	decodedBytes, err := base64.StdEncoding.DecodeString(trimmedBase64)
 	require.Nil(t, err)
 
-	// Check that the transaction decodes as epxceted
+	// Check that the transaction decodes as expected
 	var decodedTx auth.StdTx
 	require.Nil(t, cdc.UnmarshalBinaryLengthPrefixed(decodedBytes, &decodedTx))
 	require.Equal(t, "deadbeef", decodedTx.Memo)

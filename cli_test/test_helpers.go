@@ -17,7 +17,7 @@ import (
 
 	tokenModule "github.com/link-chain/link/x/token"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/link-chain/link/client"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/stretchr/testify/require"
@@ -27,7 +27,6 @@ import (
 
 	"github.com/link-chain/link/app"
 
-	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -336,7 +335,7 @@ func (f *Fixtures) KeysShow(name string, flags ...string) keys.KeyOutput {
 	cmd := fmt.Sprintf("%s keys show --home=%s %s", f.LinkcliBinary, f.LinkcliHome, name)
 	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
 	var ko keys.KeyOutput
-	err := clientkeys.UnmarshalJSON([]byte(out), &ko)
+	err := client.UnmarshalJSON([]byte(out), &ko)
 	require.NoError(f.T, err)
 	return ko
 }

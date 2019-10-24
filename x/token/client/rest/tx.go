@@ -1,11 +1,10 @@
 package rest
 
 import (
+	"github.com/gorilla/mux"
+	"github.com/link-chain/link/client"
 	"net/http"
 
-	"github.com/gorilla/mux"
-
-	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
@@ -23,7 +22,7 @@ type PublishReq struct {
 }
 
 // SendRequestHandlerFn - http request handler to send coins to a address.
-func PublishRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func PublishRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
 		symbol := vars["symbol"]
