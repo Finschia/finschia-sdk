@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/link-chain/link/types"
 	"io/ioutil"
 	"net"
 	"os"
@@ -77,6 +78,14 @@ var (
 		sdk.NewCoin(feeDenom, sdk.TokensFromConsensusPower(500000)),
 	)
 )
+
+func init() {
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
+	config.Seal()
+}
 
 //___________________________________________________________________________________
 // Fixtures
