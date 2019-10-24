@@ -195,21 +195,7 @@ check-build-integration:
 include sims.mk
 
 
-########################################
-### Utilities
-
-build-utils:
-	$(MAKE) -C $(CURDIR)/contrib/cmd build
-
-install-utils:
-	$(MAKE) -C $(CURDIR)/contrib/cmd install
-
-clean-utils:
-	$(MAKE) -C $(CURDIR)/contrib/cmd clean
-
-
 .PHONY: all build-linux install install-debug \
 	go-mod-cache draw-deps clean build \
-	build-utils install-utils clean-utils \
 	check check-all check-build check-cover check-unit check-race
 

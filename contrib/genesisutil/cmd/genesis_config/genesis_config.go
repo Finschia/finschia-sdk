@@ -1,5 +1,3 @@
-// +build genesis_config
-
 package main
 
 import (
