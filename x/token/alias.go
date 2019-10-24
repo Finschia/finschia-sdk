@@ -13,7 +13,8 @@ const (
 )
 
 type (
-	Token = types.Token
+	Token  = types.Token
+	Tokens = types.Tokens
 
 	MsgPublishToken = types.MsgPublishToken
 	MsgMint         = types.MsgMint
@@ -35,15 +36,14 @@ var (
 	ErrTokenPermissionMint = types.ErrTokenPermissionMint
 	ErrTokenPermissionBurn = types.ErrTokenPermissionBurn
 
-	EventTypePublishToken  = types.EventTypePublishToken
-	EventTypeTransferToken = types.EventTypeTransferToken
-	EventTypeMintToken     = types.EventTypeMintToken
-	EventTypeBurnToken     = types.EventTypeBurnToken
-	AttributeKeyName       = types.AttributeKeyName
-	AttributeKeySymbol     = types.AttributeKeySymbol
-	AttributeKeyOwner      = types.AttributeKeyOwner
-	AttributeKeyAmount     = types.AttributeKeyAmount
-	AttributeKeyMintable   = types.AttributeKeyMintable
-	AttributeKeyFrom       = types.AttributeKeyFrom
-	AttributeKeyTo         = types.AttributeKeyTo
+	EventTypePublishToken = types.EventTypePublishToken
+	EventTypeMintToken    = types.EventTypeMintToken
+	EventTypeBurnToken    = types.EventTypeBurnToken
+	AttributeKeyName      = types.AttributeKeyName
+	AttributeKeySymbol    = types.AttributeKeySymbol
+	AttributeKeyOwner     = types.AttributeKeyOwner
+	AttributeKeyAmount    = types.AttributeKeyAmount
+	AttributeKeyMintable  = types.AttributeKeyMintable
+	AttributeKeyFrom      = types.AttributeKeyFrom
+	AttributeKeyTo        = types.AttributeKeyTo
 )

@@ -1,6 +1,8 @@
 package types
 
 import (
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -14,4 +16,14 @@ type Token struct {
 
 func (t Token) String() string {
 	return string(codec.MustMarshalJSONIndent(ModuleCdc, t))
+}
+
+type Tokens []Token
+
+func (tokens Tokens) String() string {
+	var tokenStrings []string
+	for _, t := range tokens {
+		tokenStrings = append(tokenStrings, t.String())
+	}
+	return strings.Join(tokenStrings, ",")
 }

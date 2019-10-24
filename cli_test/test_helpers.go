@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/link-chain/link/types"
 	"io/ioutil"
 	"net"
 	"os"
@@ -14,6 +13,8 @@ import (
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/link-chain/link/types"
 
 	tokenModule "github.com/link-chain/link/x/token"
 
@@ -759,6 +760,17 @@ func (f *Fixtures) QueryTokenExpectEmpty(denom string, flags ...string) {
 	cmd := fmt.Sprintf("%s query token symbol %s %s", f.LinkcliBinary, denom, f.Flags())
 	_, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.NotEmpty(f.T, errStr)
+}
+
+func (f *Fixtures) QueryTokens(flags ...string) tokenModule.Tokens {
+	cmd := fmt.Sprintf("%s query token symbols %s", f.LinkcliBinary, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var tokens tokenModule.Tokens
+	err := cdc.UnmarshalJSON([]byte(res), &tokens)
+	require.NoError(f.T, err)
+	return tokens
 }
 
 //___________________________________________________________________________________

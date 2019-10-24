@@ -17,7 +17,10 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 
-	cmd.AddCommand(GetTokenCmd(cdc))
+	cmd.AddCommand(
+		GetTokenCmd(cdc),
+		GetTokensCmd(cdc),
+	)
 
 	return cmd
 }
@@ -42,6 +45,27 @@ func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			return cliCtx.PrintOutput(token)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
+}
+
+func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "symbols",
+		Short: "Query all symbol",
+		Args:  cobra.ExactArgs(0),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			tokenGetter := types.NewTokenRetriever(cliCtx)
+
+			tokens, err := tokenGetter.GetAllTokens()
+			if err != nil {
+				return err
+			}
+
+			return cliCtx.PrintOutput(tokens)
 		},
 	}
 

@@ -1,9 +1,10 @@
 package cli
 
 import (
+	"strconv"
+
 	"github.com/link-chain/link/x/token/types"
 	"github.com/spf13/cobra"
-	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"

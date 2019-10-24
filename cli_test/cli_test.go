@@ -6,7 +6,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/link-chain/link/types"
 	"io/ioutil"
 	"os"
 	"path"
@@ -14,6 +13,8 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/link-chain/link/types"
 
 	"github.com/tendermint/tendermint/crypto/ed25519"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -1348,6 +1349,19 @@ func TestLinkCLIToken(t *testing.T) {
 		require.Equal(t, "itiscony", token.Name)
 		require.Equal(t, "conycony", token.Symbol)
 		require.Equal(t, true, token.Mintable)
+
+		f.TxTokenPublish(keyFoo, "brownbrown", "itisbrown", 20000, true, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		allTokens := f.QueryTokens()
+
+		require.Equal(t, "itiscony", allTokens[1].Name)
+		require.Equal(t, "conycony", allTokens[1].Symbol)
+		require.Equal(t, true, allTokens[1].Mintable)
+
+		require.Equal(t, "itisbrown", allTokens[0].Name)
+		require.Equal(t, "brownbrown", allTokens[0].Symbol)
+		require.Equal(t, true, allTokens[0].Mintable)
 	}
 	f.Cleanup()
 }

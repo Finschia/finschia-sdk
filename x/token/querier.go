@@ -2,6 +2,7 @@ package token
 
 import (
 	"fmt"
+
 	"github.com/link-chain/link/x/token/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -16,6 +17,8 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 		switch path[0] {
 		case types.QueryToken:
 			return queryToken(ctx, req, keeper)
+		case types.QueryAllTokens:
+			return queryAllTokens(ctx, req, keeper)
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown token query endpoint")
 		}
@@ -36,6 +39,17 @@ func queryToken(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, 
 	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, token)
 	if err2 != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+	}
+
+	return bz, nil
+}
+
+func queryAllTokens(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	tokens := keeper.GetAllTokens(ctx)
+
+	bz, err := codec.MarshalJSONIndent(keeper.cdc, tokens)
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
 	}
 
 	return bz, nil

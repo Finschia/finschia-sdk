@@ -59,7 +59,7 @@ func (k Keeper) GetToken(ctx sdk.Context, symbol string) (token Token, err sdk.E
 	return token, nil
 }
 
-func (k Keeper) GetAllTokens(ctx sdk.Context) []Token {
+func (k Keeper) GetAllTokens(ctx sdk.Context) Tokens {
 	var tokens []Token
 	appendToken := func(token Token) (stop bool) {
 		tokens = append(tokens, token)
@@ -112,12 +112,4 @@ func (k Keeper) BurnToken(ctx sdk.Context, amount sdk.Coin, from sdk.AccAddress)
 	}
 
 	return nil
-}
-
-func (k Keeper) GetSupply(ctx sdk.Context, symbol string) (amount sdk.Int, err sdk.Error) {
-	_, err = k.GetToken(ctx, symbol)
-	if err != nil {
-		return sdk.NewInt(0), err
-	}
-	return k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(symbol), nil
 }

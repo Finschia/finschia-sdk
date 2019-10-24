@@ -5,8 +5,9 @@ import (
 )
 
 const (
-	QuerierRoute = "token"
-	QueryToken   = "tokens"
+	QuerierRoute   = "token"
+	QueryToken     = "tokens"
+	QueryAllTokens = "all_tokens"
 )
 
 type QueryTokenParams struct {
@@ -38,6 +39,11 @@ func (ar TokenRetriever) GetToken(symbol string) (Token, error) {
 	return token, err
 }
 
+func (ar TokenRetriever) GetAllTokens() (Tokens, error) {
+	tokens, _, err := ar.GetAllTokensWithHeight()
+	return tokens, err
+}
+
 func (ar TokenRetriever) GetTokenWithHeight(symbol string) (Token, int64, error) {
 	bs, err := ModuleCdc.MarshalJSON(NewQueryTokenParams(symbol))
 	if err != nil {
@@ -55,6 +61,22 @@ func (ar TokenRetriever) GetTokenWithHeight(symbol string) (Token, int64, error)
 	}
 
 	return token, height, nil
+}
+
+func (ar TokenRetriever) GetAllTokensWithHeight() (Tokens, int64, error) {
+	var tokens Tokens
+
+	res, height, err := ar.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", QuerierRoute, QueryAllTokens), nil)
+	if err != nil {
+		return tokens, 0, err
+	}
+
+	err = ModuleCdc.UnmarshalJSON(res, &tokens)
+	if err != nil {
+		return tokens, 0, err
+	}
+
+	return tokens, height, nil
 }
 
 func (ar TokenRetriever) EnsureExists(symbol string) error {

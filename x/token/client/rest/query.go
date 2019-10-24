@@ -1,12 +1,14 @@
 package rest
 
 import (
+	"net/http"
+
 	"github.com/link-chain/link/client"
 	"github.com/link-chain/link/x/token/types"
-	"net/http"
 
 	"github.com/gorilla/mux"
 
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
@@ -42,5 +44,28 @@ func QueryTokensRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, token)
+	}
+}
+
+func QueryAllTokensRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		tokenGetter := types.NewTokenRetriever(cliCtx)
+
+		tokens, height, err := tokenGetter.GetAllTokensWithHeight()
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, tokens)
 	}
 }
