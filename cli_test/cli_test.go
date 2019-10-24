@@ -1333,14 +1333,22 @@ func TestLinkCLIToken(t *testing.T) {
 	proc := f.LDStart()
 	defer func() { require.NoError(t, proc.Stop(false)) }()
 
-	f.TxTokenPublish(keyFoo, "cony", "itiscony", 10000, true, "-y")
-	tests.WaitForNextNBlocksTM(1, f.Port)
+	{
+		f.TxTokenPublish(keyFoo, "cony", "itiscony", 10000, true, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
 
-	token := f.QueryToken("cony")
-	require.Equal(t, "itiscony", token.Name)
-	require.Equal(t, "cony", token.Symbol)
-	require.Equal(t, true, token.Mintable)
+		f.QueryTokenExpectEmpty("cony")
+	}
 
+	{
+		f.TxTokenPublish(keyFoo, "conycony", "itiscony", 10000, true, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryToken("conycony")
+		require.Equal(t, "itiscony", token.Name)
+		require.Equal(t, "conycony", token.Symbol)
+		require.Equal(t, true, token.Mintable)
+	}
 	f.Cleanup()
 }
 

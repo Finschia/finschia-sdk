@@ -756,6 +756,12 @@ func (f *Fixtures) QueryToken(denom string, flags ...string) tokenModule.Token {
 	return token
 }
 
+func (f *Fixtures) QueryTokenExpectEmpty(denom string, flags ...string) {
+	cmd := fmt.Sprintf("%s query token symbol %s %s", f.LinkcliBinary, denom, f.Flags())
+	_, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.NotEmpty(f.T, errStr)
+}
+
 //___________________________________________________________________________________
 // tendermint rpc
 func (f *Fixtures) NetInfo(flags ...string) *tmctypes.ResultNetInfo {

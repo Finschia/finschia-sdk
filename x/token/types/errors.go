@@ -12,6 +12,8 @@ const (
 	CodeTokenNotMintable    sdk.CodeType = 3
 	CodeTokenPermissionMint sdk.CodeType = 4
 	CodeTokenPermissionBurn sdk.CodeType = 5
+
+	CodeTokenSymbolLength sdk.CodeType = 6
 )
 
 func ErrTokenExist(codespace sdk.CodespaceType) sdk.Error {
@@ -32,4 +34,8 @@ func ErrTokenPermissionMint(codespace sdk.CodespaceType) sdk.Error {
 
 func ErrTokenPermissionBurn(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenPermissionBurn, "account does not have permissions to burn tokens")
+}
+
+func ErrTokenSymbolLength(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenSymbolLength, "the length of token symbol should be 6+")
 }

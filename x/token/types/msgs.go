@@ -43,6 +43,10 @@ func (msg MsgPublishToken) ValidateBasic() sdk.Error {
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
+
+	if len(msg.Symbol) <= 5 {
+		return ErrTokenSymbolLength(DefaultCodespace)
+	}
 	return nil
 }
 
