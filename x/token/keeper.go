@@ -3,8 +3,9 @@ package token
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/supply"
+
+	"github.com/link-chain/link/x/bank"
 )
 
 type Keeper struct {

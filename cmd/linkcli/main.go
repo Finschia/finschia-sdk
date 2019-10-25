@@ -2,18 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/link-chain/link/types"
 	"os"
 	"path"
-
-	"github.com/link-chain/link/app"
-	"github.com/link-chain/link/client"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/bank"
-	bankcmd "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -21,7 +11,15 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+
+	"github.com/link-chain/link/app"
+	"github.com/link-chain/link/client"
+	"github.com/link-chain/link/types"
 	authclient "github.com/link-chain/link/x/auth/client"
+	"github.com/link-chain/link/x/bank"
 )
 
 func main() {
@@ -108,7 +106,7 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		bankcmd.SendTxCmd(cdc),
+		bank.SendTxCmd(cdc),
 		client.LineBreak,
 		authclient.GetSignCommand(cdc),
 		authclient.GetMultiSignCommand(cdc),
