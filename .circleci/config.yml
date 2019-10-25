@@ -228,6 +228,20 @@ jobs:
             docker network prune -f
             make start-testnet
             ./contrib/localnet-blocks-test.sh 40 5 10 localhost
+  semantic_release:
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - run: yarn global add --no-progress --non-interactive "semantic-release" "@semantic-release/exec"
+      - run: $(yarn global bin)/semantic-release
+
+  deploy:
+    docker:
+      - image: circleci/golang:1.12
+    steps:
+      - checkout
+      - run: curl -sL https://git.io/goreleaser | bash
 
 workflows:
   version: 2
@@ -261,3 +275,17 @@ workflows:
       - integration_multi_node_test:
           requires:
             - setup_docker_and_binary
+      - semantic_release:
+          requires:
+            - unit_test
+            - integration_test
+            - integration_multi_node_test
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - semantic_release
+          filters:
+            branches:
+              only: master
