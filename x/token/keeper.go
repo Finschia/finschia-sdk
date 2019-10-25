@@ -3,25 +3,23 @@ package token
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/supply"
-
-	"github.com/link-chain/link/x/bank"
+	"github.com/link-chain/link/x/token/types"
 )
 
 type Keeper struct {
-	bankKeeper bank.Keeper
+	supplyKeeper types.SupplyKeeper
 
-	supplyKeeper supply.Keeper
+	iamKeeper types.IamKeeper
 
 	storeKey sdk.StoreKey
 
 	cdc *codec.Codec
 }
 
-func NewKeeper(cdc *codec.Codec, bankKeeper bank.Keeper, supplyKeeper supply.Keeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(cdc *codec.Codec, supplyKeeper types.SupplyKeeper, iamKeeper types.IamKeeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
-		bankKeeper:   bankKeeper,
 		supplyKeeper: supplyKeeper,
+		iamKeeper:    iamKeeper.WithPrefix(ModuleName),
 		storeKey:     storeKey,
 		cdc:          cdc,
 	}
@@ -32,6 +30,12 @@ func (k Keeper) GetModuleAddress() sdk.AccAddress {
 }
 
 func (k Keeper) SetToken(ctx sdk.Context, token Token) sdk.Error {
+
+	if token.Mintable {
+		k.iamKeeper.GrantPermission(ctx, token.Owner, NewMintPermission(token.Symbol))
+		k.iamKeeper.GrantPermission(ctx, token.Owner, NewBurnPermission(token.Symbol))
+	}
+
 	store := ctx.KVStore(k.storeKey)
 	if store.Has([]byte(token.Symbol)) {
 		return ErrTokenExist(DefaultCodespace)
@@ -87,7 +91,39 @@ func (k Keeper) IterateTokens(ctx sdk.Context, process func(Token) (stop bool)) 
 	}
 }
 
+func (k Keeper) AddPermission(ctx sdk.Context, addr sdk.AccAddress, perm PermissionI) {
+	k.iamKeeper.GrantPermission(ctx, addr, perm)
+}
+
+func (k Keeper) RevokePermission(ctx sdk.Context, addr sdk.AccAddress, perm PermissionI) sdk.Error {
+	if !k.HasPermission(ctx, addr, perm) {
+		return ErrTokenPermission(DefaultCodespace)
+	}
+	k.iamKeeper.RevokePermission(ctx, addr, perm)
+	return nil
+}
+
+func (k Keeper) HasPermission(ctx sdk.Context, addr sdk.AccAddress, perm PermissionI) bool {
+	return k.iamKeeper.HasPermission(ctx, addr, perm)
+}
+
+func (k Keeper) InheritPermission(ctx sdk.Context, parent, child sdk.AccAddress) {
+	k.iamKeeper.InheritPermission(ctx, parent, child)
+}
+
+func (k Keeper) GrantPermission(ctx sdk.Context, from, to sdk.AccAddress, perm PermissionI) sdk.Error {
+	if !k.HasPermission(ctx, from, perm) {
+		return ErrTokenPermission(DefaultCodespace)
+	}
+	k.AddPermission(ctx, to, perm)
+	return nil
+}
+
 func (k Keeper) MintToken(ctx sdk.Context, amount sdk.Coin, to sdk.AccAddress) sdk.Error {
+	if !k.HasPermission(ctx, to, NewMintPermission(amount.Denom)) {
+		return ErrTokenPermissionMint(DefaultCodespace)
+	}
+
 	err := k.supplyKeeper.MintCoins(ctx, ModuleName, sdk.NewCoins(amount))
 	if err != nil {
 		return err
@@ -101,6 +137,9 @@ func (k Keeper) MintToken(ctx sdk.Context, amount sdk.Coin, to sdk.AccAddress) s
 }
 
 func (k Keeper) BurnToken(ctx sdk.Context, amount sdk.Coin, from sdk.AccAddress) sdk.Error {
+	if !k.HasPermission(ctx, from, NewBurnPermission(amount.Denom)) {
+		return ErrTokenPermissionBurn(DefaultCodespace)
+	}
 
 	err := k.supplyKeeper.SendCoinsFromAccountToModule(ctx, from, ModuleName, sdk.NewCoins(amount))
 	if err != nil {

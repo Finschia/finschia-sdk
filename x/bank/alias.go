@@ -31,6 +31,7 @@ var (
 type (
 	Keeper               = cbank.Keeper
 	AccountKeeper        = types.AccountKeeper
+	BaseKeeper           = cbank.BaseKeeper
 	CosmosAppModuleBasic = cbank.AppModuleBasic
 	CosmosAppModule      = cbank.AppModule
 	MsgMultiSend         = cbank.MsgMultiSend

@@ -10,10 +10,10 @@ const (
 	CodeTokenExist          sdk.CodeType = 1
 	CodeTokenNotExist       sdk.CodeType = 2
 	CodeTokenNotMintable    sdk.CodeType = 3
-	CodeTokenPermissionMint sdk.CodeType = 4
-	CodeTokenPermissionBurn sdk.CodeType = 5
-
-	CodeTokenSymbolLength sdk.CodeType = 6
+	CodeTokenPermission     sdk.CodeType = 4
+	CodeTokenPermissionMint sdk.CodeType = 5
+	CodeTokenPermissionBurn sdk.CodeType = 6
+	CodeTokenSymbolLength   sdk.CodeType = 7
 )
 
 func ErrTokenExist(codespace sdk.CodespaceType) sdk.Error {
@@ -26,6 +26,10 @@ func ErrTokenNotExist(codespace sdk.CodespaceType) sdk.Error {
 
 func ErrTokenNotMintable(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenNotMintable, "token is not mintable")
+}
+
+func ErrTokenPermission(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenPermission, "account does not have permissions")
 }
 
 func ErrTokenPermissionMint(codespace sdk.CodespaceType) sdk.Error {

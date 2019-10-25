@@ -2,6 +2,7 @@ package token
 
 import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
+	"github.com/link-chain/link/x/iam"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -22,6 +23,8 @@ type testInput struct {
 	ctx    sdk.Context
 	keeper Keeper
 	ak     auth.AccountKeeper
+	bk     bank.BaseKeeper
+	iam    iam.Keeper
 }
 
 func newTestCodec() *codec.Codec {
@@ -30,6 +33,7 @@ func newTestCodec() *codec.Codec {
 	auth.RegisterCodec(cdc)
 	bank.RegisterCodec(cdc)
 	supply.RegisterCodec(cdc)
+	iam.RegisterCodec(cdc)
 	codec.RegisterCrypto(cdc)
 	return cdc
 }
@@ -41,6 +45,7 @@ func setupTestInput(t *testing.T) testInput {
 	tkeyParams := sdk.NewTransientStoreKey(params.TStoreKey)
 
 	keySupply := sdk.NewKVStoreKey(supply.StoreKey)
+	keyIam := sdk.NewKVStoreKey(iam.StoreKey)
 
 	keyLrc := sdk.NewKVStoreKey(StoreKey)
 
@@ -51,6 +56,7 @@ func setupTestInput(t *testing.T) testInput {
 	ms.MountStoreWithDB(tkeyParams, sdk.StoreTypeTransient, db)
 	ms.MountStoreWithDB(keyLrc, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keySupply, sdk.StoreTypeIAVL, db)
+	ms.MountStoreWithDB(keyIam, sdk.StoreTypeIAVL, db)
 	err := ms.LoadLatestVersion()
 	require.NoError(t, err)
 
@@ -67,6 +73,7 @@ func setupTestInput(t *testing.T) testInput {
 	// add keepers
 	accountKeeper := auth.NewAccountKeeper(cdc, keyAuth, authSubspace, auth.ProtoBaseAccount)
 	bankKeeper := bank.NewBaseKeeper(accountKeeper, bankSubspace, bank.DefaultCodespace, blacklistedAddrs)
+	iamKeeper := iam.NewKeeper(cdc, keyIam)
 
 	// module account permissions
 	maccPerms := map[string][]string{
@@ -74,11 +81,10 @@ func setupTestInput(t *testing.T) testInput {
 	}
 
 	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, bankKeeper, maccPerms)
-	keeper := NewKeeper(cdc, bankKeeper, supplyKeeper, keyLrc)
+	keeper := NewKeeper(cdc, supplyKeeper, iamKeeper.WithPrefix(ModuleName), keyLrc)
 
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
+	supplyKeeper.SetSupply(ctx, supply.NewSupply(sdk.NewCoins()))
 
-	keeper.supplyKeeper.SetSupply(ctx, supply.NewSupply(sdk.NewCoins()))
-
-	return testInput{cdc: cdc, ctx: ctx, keeper: keeper, ak: accountKeeper}
+	return testInput{cdc: cdc, ctx: ctx, keeper: keeper, ak: accountKeeper, bk: bankKeeper}
 }

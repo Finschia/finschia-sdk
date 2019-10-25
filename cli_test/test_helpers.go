@@ -466,8 +466,28 @@ func (f *Fixtures) TxGovSubmitCommunityPoolSpendProposal(
 //___________________________________________________________________________________
 // linkcli tx token
 
-func (f *Fixtures) TxTokenPublish(from string, symbol, name string, amount uint64, mintable bool, flags ...string) (bool, string, string) {
+func (f *Fixtures) TxTokenPublish(from string, symbol, name string, amount int64, mintable bool, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx token publish %s %s %s %d %t %v", f.LinkcliBinary, from, symbol, name, amount, mintable, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxTokenMint(to, amount string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token mint %s %s %v", f.LinkcliBinary, to, amount, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxTokenBurn(from, amount string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token burn %s %s %v", f.LinkcliBinary, from, amount, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxTokenGrantPerm(from string, to sdk.AccAddress, resource, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token grant %s %s %s %s %v", f.LinkcliBinary, from, to, resource, action, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxTokenRevokePerm(from string, resource, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token revoke %s %s %s %v", f.LinkcliBinary, from, resource, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
@@ -760,6 +780,17 @@ func (f *Fixtures) QueryTokenExpectEmpty(denom string, flags ...string) {
 	cmd := fmt.Sprintf("%s query token symbol %s %s", f.LinkcliBinary, denom, f.Flags())
 	_, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.NotEmpty(f.T, errStr)
+
+}
+func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, flags ...string) tokenModule.Permissions {
+	cmd := fmt.Sprintf("%s query token perm %s %s", f.LinkcliBinary, addr, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var pms tokenModule.Permissions
+	err := cdc.UnmarshalJSON([]byte(res), &pms)
+	require.NoError(f.T, err)
+	return pms
 }
 
 func (f *Fixtures) QueryTokens(flags ...string) tokenModule.Tokens {

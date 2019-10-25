@@ -16,6 +16,10 @@ func NewHandler(keeper Keeper) sdk.Handler {
 			return handleMsgMint(ctx, keeper, msg)
 		case MsgBurn:
 			return handleMsgBurn(ctx, keeper, msg)
+		case MsgGrantPermission:
+			return handleMsgGrant(ctx, keeper, msg)
+		case MsgRevokePermission:
+			return handleMsgRevoke(ctx, keeper, msg)
 		default:
 			errMsg := fmt.Sprintf("Unrecognized  Msg type: %v", msg.Type())
 			return sdk.ErrUnknownRequest(errMsg).Result()
@@ -38,7 +42,7 @@ func handleMsgPublishToken(ctx sdk.Context, keeper Keeper, msg MsgPublishToken) 
 		return err.Result()
 	}
 
-	ctx.EventManager().EmitEvent(
+	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventTypePublishToken,
 			sdk.NewAttribute(AttributeKeyName, msg.Name),
@@ -47,68 +51,101 @@ func handleMsgPublishToken(ctx sdk.Context, keeper Keeper, msg MsgPublishToken) 
 			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 			sdk.NewAttribute(AttributeKeyMintable, strconv.FormatBool(msg.Mintable)),
 		),
-	)
+		sdk.NewEvent(
+			EventTypeMintToken,
+			sdk.NewAttribute(AttributeKeyTo, msg.Owner.String()),
+			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
+		),
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
+		),
+	})
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }
 
 func handleMsgMint(ctx sdk.Context, keeper Keeper, msg MsgMint) sdk.Result {
 	for _, amount := range msg.Amount {
-		token, err := keeper.GetToken(ctx, amount.Denom)
-		if err != nil {
-			return err.Result()
-		}
-
-		if !token.Owner.Equals(msg.To) {
-			return ErrTokenPermissionMint(DefaultCodespace).Result()
-		}
-
-		if !token.Mintable {
-			return ErrTokenNotMintable(DefaultCodespace).Result()
-		}
-
-		err = keeper.MintToken(ctx, amount, msg.To)
+		err := keeper.MintToken(ctx, amount, msg.To)
 		if err != nil {
 			return err.Result()
 		}
 	}
 
-	ctx.EventManager().EmitEvent(
+	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventTypeMintToken,
 			sdk.NewAttribute(AttributeKeyTo, msg.To.String()),
 			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 		),
-	)
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
+		),
+	})
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }
 
 func handleMsgBurn(ctx sdk.Context, keeper Keeper, msg MsgBurn) sdk.Result {
 	for _, amount := range msg.Amount {
-		token, err := keeper.GetToken(ctx, amount.Denom)
-		if err != nil {
-			return err.Result()
-		}
-
-		if !token.Owner.Equals(msg.From) {
-			return ErrTokenPermissionBurn(DefaultCodespace).Result()
-		}
-
-		if !token.Mintable {
-			return ErrTokenNotMintable(DefaultCodespace).Result()
-		}
-
-		err = keeper.BurnToken(ctx, amount, msg.From)
+		err := keeper.BurnToken(ctx, amount, msg.From)
 		if err != nil {
 			return err.Result()
 		}
 	}
 
-	ctx.EventManager().EmitEvent(
+	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventTypeBurnToken,
 			sdk.NewAttribute(AttributeKeyFrom, msg.From.String()),
 			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 		),
-	)
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
+		),
+	})
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgGrant(ctx sdk.Context, keeper Keeper, msg MsgGrantPermission) sdk.Result {
+	err := keeper.GrantPermission(ctx, msg.From, msg.To, msg.Permission)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			EventTypeGrantPermToken,
+			sdk.NewAttribute(AttributeKeyFrom, msg.From.String()),
+			sdk.NewAttribute(AttributeKeyTo, msg.To.String()),
+			sdk.NewAttribute(AttributeKeyResource, msg.Permission.GetResource()),
+			sdk.NewAttribute(AttributeKeyAction, msg.Permission.GetAction()),
+		),
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
+		),
+	})
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+func handleMsgRevoke(ctx sdk.Context, keeper Keeper, msg MsgRevokePermission) sdk.Result {
+	err := keeper.RevokePermission(ctx, msg.From, msg.Permission)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			EventTypeRevokePermToken,
+			sdk.NewAttribute(AttributeKeyFrom, msg.From.String()),
+			sdk.NewAttribute(AttributeKeyResource, msg.Permission.GetResource()),
+			sdk.NewAttribute(AttributeKeyAction, msg.Permission.GetAction()),
+		),
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
+		),
+	})
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }

@@ -1333,7 +1333,6 @@ func TestLinkCLIToken(t *testing.T) {
 	// start linkd server
 	proc := f.LDStart()
 	defer func() { require.NoError(t, proc.Stop(false)) }()
-
 	{
 		f.TxTokenPublish(keyFoo, "cony", "itiscony", 10000, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
@@ -1350,6 +1349,17 @@ func TestLinkCLIToken(t *testing.T) {
 		require.Equal(t, "conycony", token.Symbol)
 		require.Equal(t, true, token.Mintable)
 
+		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
+		require.Equal(t, "conycony", pms[0].GetResource())
+		require.Equal(t, "conycony", pms[1].GetResource())
+		if pms[0].GetAction() == "mint" {
+			require.Equal(t, "mint", pms[0].GetAction())
+			require.Equal(t, "burn", pms[1].GetAction())
+		} else {
+			require.Equal(t, "mint", pms[1].GetAction())
+			require.Equal(t, "burn", pms[0].GetAction())
+		}
+
 		f.TxTokenPublish(keyFoo, "brownbrown", "itisbrown", 20000, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
@@ -1362,6 +1372,76 @@ func TestLinkCLIToken(t *testing.T) {
 		require.Equal(t, "itisbrown", allTokens[0].Name)
 		require.Equal(t, "brownbrown", allTokens[0].Symbol)
 		require.Equal(t, true, allTokens[0].Mintable)
+
+	}
+
+}
+func TestLinkCLITokenMintBurnPerm(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+	barAddr := f.KeyAddress(keyBar)
+	amount := int64(2000000)
+	// Create Account bar
+	{
+		sendTokens := sdk.TokensFromConsensusPower(1)
+		f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y")
+	}
+	// Publish Token and check the amount
+	{
+		f.TxTokenPublish(keyFoo, "marshallcoin", "itismarshalcoin", amount, true, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryToken("marshallcoin")
+		require.Equal(t, "itismarshalcoin", token.Name)
+		require.Equal(t, "marshallcoin", token.Symbol)
+		require.Equal(t, true, token.Mintable)
+
+		require.Equal(t, sdk.NewInt(amount), f.QueryTotalSupplyOf("marshallcoin"))
+		require.Equal(t, sdk.NewInt(amount), f.QueryAccount(fooAddr).Coins.AmountOf("marshallcoin"))
+	}
+	// Mint/Burn by token owner
+	{
+		f.TxTokenMint(keyFoo, "100marshallcoin", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.Equal(t, sdk.NewInt(amount+100), f.QueryTotalSupplyOf("marshallcoin"))
+		require.Equal(t, sdk.NewInt(amount+100), f.QueryAccount(fooAddr).Coins.AmountOf("marshallcoin"))
+
+		f.TxTokenBurn(keyFoo, "200marshallcoin", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.Equal(t, sdk.NewInt(amount-100), f.QueryTotalSupplyOf("marshallcoin"))
+		require.Equal(t, sdk.NewInt(amount-100), f.QueryAccount(fooAddr).Coins.AmountOf("marshallcoin"))
+	}
+
+	// Fail due to insufficient and permission
+	{
+		_, stdOut, _ := f.TxTokenBurn(keyFoo, "2000000marshallcoin", "-y")
+		require.Contains(t, stdOut, "insufficient account funds")
+		_, stdOut, _ = f.TxTokenMint(keyBar, "100marshallcoin", "-y")
+		require.Contains(t, stdOut, "account does not have permissions")
+	}
+
+	// Grant Permission to bar, Revoke Permission from foo
+	{
+		f.TxTokenGrantPerm(keyFoo, barAddr, "marshallcoin", "mint", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		f.TxTokenMint(keyBar, "100marshallcoin", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.Equal(t, sdk.NewInt(amount), f.QueryTotalSupplyOf("marshallcoin"))
+		require.Equal(t, sdk.NewInt(100), f.QueryAccount(barAddr).Coins.AmountOf("marshallcoin"))
+
+		f.TxTokenRevokePerm(keyFoo, "marshallcoin", "mint", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		_, stdOut, _ := f.TxTokenMint(keyFoo, "100marshallcoin", "-y")
+		require.Contains(t, stdOut, "account does not have permissions")
+
 	}
 	f.Cleanup()
 }

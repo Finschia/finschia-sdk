@@ -11,6 +11,11 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgPublishToken{}, "link/MsgPublishToken", nil)
 	cdc.RegisterConcrete(MsgMint{}, "link/MsgMint", nil)
 	cdc.RegisterConcrete(MsgBurn{}, "link/MsgBurn", nil)
+	cdc.RegisterConcrete(MsgGrantPermission{}, "link/GrantPermission", nil)
+	cdc.RegisterConcrete(MsgRevokePermission{}, "link/RevokePermission", nil)
+	cdc.RegisterInterface((*PermissionI)(nil), nil)
+	cdc.RegisterConcrete(&Permission{}, "link/TokenPermission", nil)
+
 }
 
 func init() {

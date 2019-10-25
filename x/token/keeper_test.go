@@ -51,7 +51,7 @@ func TestGetAllTokens(t *testing.T) {
 
 func TestPublishTokenAndSendTokens(t *testing.T) {
 	input := setupTestInput(t)
-	_, ctx, keeper, ak := input.cdc, input.ctx, input.keeper, input.ak
+	_, ctx, keeper, ak, bk := input.cdc, input.ctx, input.keeper, input.ak, input.bk
 
 	// Register account 1
 	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -85,46 +85,46 @@ func TestPublishTokenAndSendTokens(t *testing.T) {
 		require.Equal(t, addr1, token.Owner)
 
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
-		require.Equal(t, int64(999), keeper.bankKeeper.GetCoins(ctx, addr1).AmountOf("link").Int64())
+		require.Equal(t, int64(999), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
 	}
 
 	// Transfer Token
 	{
-		require.NoError(t, keeper.bankKeeper.SendCoins(ctx, addr1, addr2, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(100)))))
-		require.Equal(t, int64(899), keeper.bankKeeper.GetCoins(ctx, addr1).AmountOf("link").Int64())
-		require.Equal(t, int64(100), keeper.bankKeeper.GetCoins(ctx, addr2).AmountOf("link").Int64())
+		require.NoError(t, bk.SendCoins(ctx, addr1, addr2, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(100)))))
+		require.Equal(t, int64(899), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
+		require.Equal(t, int64(100), bk.GetCoins(ctx, addr2).AmountOf("link").Int64())
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
 	}
 
 	// Transfer Token again
 	{
-		require.NoError(t, keeper.bankKeeper.SendCoins(ctx, addr1, addr2, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(100)))))
-		require.Equal(t, int64(799), keeper.bankKeeper.GetCoins(ctx, addr1).AmountOf("link").Int64())
-		require.Equal(t, int64(200), keeper.bankKeeper.GetCoins(ctx, addr2).AmountOf("link").Int64())
+		require.NoError(t, bk.SendCoins(ctx, addr1, addr2, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(100)))))
+		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
+		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf("link").Int64())
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
 	}
 
 	// Mint Token
 	{
 		require.NoError(t, keeper.MintToken(ctx, sdk.NewCoin("link", sdk.NewInt(100)), addr1))
-		require.Equal(t, int64(899), keeper.bankKeeper.GetCoins(ctx, addr1).AmountOf("link").Int64())
-		require.Equal(t, int64(200), keeper.bankKeeper.GetCoins(ctx, addr2).AmountOf("link").Int64())
+		require.Equal(t, int64(899), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
+		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf("link").Int64())
 		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
 	}
 
 	// Burn Token
 	{
 		require.NoError(t, keeper.BurnToken(ctx, sdk.NewCoin("link", sdk.NewInt(100)), addr1))
-		require.Equal(t, int64(799), keeper.bankKeeper.GetCoins(ctx, addr1).AmountOf("link").Int64())
-		require.Equal(t, int64(200), keeper.bankKeeper.GetCoins(ctx, addr2).AmountOf("link").Int64())
+		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
+		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf("link").Int64())
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
 	}
 
 	// Burn Token again amount > has --> fail
 	{
 		require.Error(t, keeper.BurnToken(ctx, sdk.NewCoin("link", sdk.NewInt(800)), addr1))
-		require.Equal(t, int64(799), keeper.bankKeeper.GetCoins(ctx, addr1).AmountOf("link").Int64())
-		require.Equal(t, int64(200), keeper.bankKeeper.GetCoins(ctx, addr2).AmountOf("link").Int64())
+		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
+		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf("link").Int64())
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
 	}
 

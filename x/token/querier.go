@@ -19,6 +19,8 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 			return queryToken(ctx, req, keeper)
 		case types.QueryAllTokens:
 			return queryAllTokens(ctx, req, keeper)
+		case types.QueryPerm:
+			return queryAccountPermission(ctx, req, keeper)
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown token query endpoint")
 		}
@@ -48,6 +50,20 @@ func queryAllTokens(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]by
 	tokens := keeper.GetAllTokens(ctx)
 
 	bz, err := codec.MarshalJSONIndent(keeper.cdc, tokens)
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
+	}
+	return bz, nil
+}
+func queryAccountPermission(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	var params QueryAccountPermissionParams
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	pms := keeper.iamKeeper.GetPermissions(ctx, params.Addr)
+
+	bz, err := codec.MarshalJSONIndent(keeper.cdc, pms)
 	if err != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
 	}

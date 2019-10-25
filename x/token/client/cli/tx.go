@@ -3,6 +3,7 @@ package cli
 import (
 	"strconv"
 
+	"errors"
 	"github.com/link-chain/link/x/token/types"
 	"github.com/spf13/cobra"
 
@@ -26,6 +27,8 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		PublishTxCmd(cdc),
 		MintTxCmd(cdc),
 		BurnTxCmd(cdc),
+		GrantPermTxCmd(cdc),
+		RevokePermTxCmd(cdc),
 	)
 	return txCmd
 }
@@ -101,6 +104,56 @@ func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
 
 			// build and sign the transaction, then broadcast to Tendermint
 			msg := types.NewMsgBurn(cliCtx.GetFromAddress(), coins)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "grant [from_key_or_address] [to] [token] [action]",
+		Short: "Create and sign a burn token tx",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			to, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+			perm := types.Permission{Resource: args[2], Action: args[3]}
+			if !perm.Validate() {
+				return errors.New("permission invalid")
+			}
+
+			// build and sign the transaction, then broadcast to Tendermint
+			msg := types.NewMsgGrantPermission(cliCtx.GetFromAddress(), to, perm)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "revoke [from_key_or_address] [token] [action]",
+		Short: "Create and sign a burn token tx",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			perm := types.Permission{Resource: args[1], Action: args[2]}
+			if !perm.Validate() {
+				return errors.New("permission invalid")
+			}
+
+			// build and sign the transaction, then broadcast to Tendermint
+			msg := types.NewMsgRevokePermission(cliCtx.GetFromAddress(), perm)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

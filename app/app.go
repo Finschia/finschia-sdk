@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/link-chain/link/x/iam"
 	"io"
 	"os"
 
@@ -47,6 +48,7 @@ var (
 		params.AppModuleBasic{},
 		supply.AppModuleBasic{},
 		token.AppModuleBasic{},
+		iam.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -86,6 +88,7 @@ type LinkApp struct {
 	stakingKeeper staking.Keeper
 	paramsKeeper  params.Keeper
 	tokenKeeper   token.Keeper
+	iamKeeper     iam.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -106,6 +109,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.StoreKey,
 		params.StoreKey,
 		token.StoreKey,
+		iam.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -122,6 +126,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	bankSubspace := app.paramsKeeper.Subspace(bank.DefaultParamspace)
 	stakingSubspace := app.paramsKeeper.Subspace(staking.DefaultParamspace)
 
+	app.iamKeeper = iam.NewKeeper(cdc, keys[iam.StoreKey])
+
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, keys[auth.StoreKey], authSubspace, auth.ProtoBaseAccount)
 	app.bankKeeper = bank.NewBaseKeeper(app.accountKeeper, bankSubspace, bank.DefaultCodespace, app.ModuleAccountAddrs())
@@ -130,7 +136,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.cdc, keys[staking.StoreKey], tkeys[staking.TStoreKey],
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.bankKeeper, app.supplyKeeper, keys[token.StoreKey])
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), keys[token.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
