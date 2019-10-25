@@ -30,6 +30,9 @@ make check-build                # integration test (/cli_test)
 ```
 ./initialize.sh
 ```
+```
+linkcli tx send jack $(linkcli keys show alice -a) 1link -y #password: 1234567890
+```
 
 ### Local Test Net
 ```
