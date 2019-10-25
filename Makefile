@@ -112,6 +112,7 @@ get-tools:
 	go get github.com/rakyll/statik
 	go get -u github.com/client9/misspell/cmd/misspell
 	go get github.com/golangci/golangci-lint/cmd/golangci-lint
+	go get github.com/cosmos/tools/cmd/runsim@v1.0.0
 
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"

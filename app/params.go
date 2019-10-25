@@ -4,7 +4,6 @@ package app
 const (
 	StakePerAccount                                    = "stake_per_account"
 	InitiallyBondedValidators                          = "initially_bonded_validators"
-	OpWeightDeductFee                                  = "op_weight_deduct_fee"
 	OpWeightMsgSend                                    = "op_weight_msg_send"
 	OpWeightSingleInputMsgMultiSend                    = "op_weight_single_input_msg_multisend"
 	OpWeightMsgSetWithdrawAddress                      = "op_weight_msg_set_withdraw_address"

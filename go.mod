@@ -6,9 +6,10 @@ require (
 	github.com/btcsuite/btcd v0.0.0-20190523000118-16327141da8c // indirect
 	github.com/cosmos/cosmos-sdk v0.37.0
 	github.com/cosmos/go-bip39 v0.0.0-20180819234021-555e2067c45d // indirect
+	github.com/cosmos/tools/cmd/runsim v1.0.0 // indirect
 	github.com/go-kit/kit v0.9.0 // indirect
 	github.com/golang/mock v1.3.1 // indirect
-	github.com/golangci/golangci-lint v1.19.1 // indirect
+	github.com/golangci/golangci-lint v1.21.0 // indirect
 	github.com/gorilla/mux v1.7.3
 	github.com/magiconair/properties v1.8.1
 	github.com/otiai10/copy v1.0.1

@@ -13,29 +13,29 @@ sim-link-nondeterminism:
 sim-link-custom-genesis-fast:
 	@echo "Running custom genesis simulation..."
 	@echo "By default, ${HOME}/.linkd/config/genesis.json will be used."
-	@go test -mod=readonly $(SIMAPP) -run TestFulllinkSimulation -Genesis=${HOME}/.linkd/config/genesis.json \
+	@go test -mod=readonly $(SIMAPP) -run TestFullAppSimulation -Genesis=${HOME}/.linkd/config/genesis.json \
 		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
 
 sim-link-fast:
 	@echo "Running quick link simulation. This may take several minutes..."
-	@go test -mod=readonly $(SIMAPP) -run TestFulllinkSimulation -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
+	@go test -mod=readonly $(SIMAPP) -run TestFullAppSimulation -Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
 
 sim-link-import-export: runsim
 	@echo "Running link import/export simulation. This may take several minutes..."
-	$(GOPATH)/bin/runsim $(SIMAPP) 25 5 TestlinkImportExport
+	$(GOPATH)/bin/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) 25 5 TestAppImportExport
 
 sim-link-simulation-after-import: runsim
 	@echo "Running link simulation-after-import. This may take several minutes..."
-	$(GOPATH)/bin/runsim $(SIMAPP) 25 5 TestlinkSimulationAfterImport
+	$(GOPATH)/bin/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) 25 5 TestAppSimulationAfterImport
 
 sim-link-custom-genesis-multi-seed: runsim
 	@echo "Running multi-seed custom genesis simulation..."
 	@echo "By default, ${HOME}/.linkd/config/genesis.json will be used."
-	$(GOPATH)/bin/runsim $(SIMAPP) -g ${HOME}/.linkd/config/genesis.json 400 5 TestFulllinkSimulation
+	$(GOPATH)/bin/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -g ${HOME}/.linkd/config/genesis.json 400 5 TestFullAppSimulation
 
 sim-link-multi-seed: runsim
 	@echo "Running multi-seed link simulation. This may take awhile!"
-	$(GOPATH)/bin/runsim $(SIMAPP) 400 5 TestFulllinkSimulation
+	$(GOPATH)/bin/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) 400 5 TestFullAppSimulation
 
 sim-benchmark-invariants:
 	@echo "Running simulation invariant benchmarks..."

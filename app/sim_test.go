@@ -21,7 +21,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/simapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	authsim "github.com/cosmos/cosmos-sdk/x/auth/simulation"
 	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
@@ -171,17 +170,6 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 	}
 
 	return []simulation.WeightedOperation{
-		{
-			Weight: func(_ *rand.Rand) int {
-				var v int
-				ap.GetOrGenerate(cdc, OpWeightDeductFee, &v, nil,
-					func(_ *rand.Rand) {
-						v = 5
-					})
-				return v
-			}(nil),
-			Op: authsim.SimulateDeductFee(app.accountKeeper, app.supplyKeeper),
-		},
 		{
 			Weight: func(_ *rand.Rand) int {
 				var v int
@@ -408,7 +396,7 @@ func TestAppImportExport(t *testing.T) {
 	}()
 
 	app := NewLinkApp(logger, db, nil, true, 0, fauxMerkleModeOpt)
-	require.Equal(t, "SimApp", app.Name())
+	require.Equal(t, "LinkApp", app.Name())
 
 	// Run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(getSimulateFromSeedInput(t, os.Stdout, app))
@@ -457,7 +445,7 @@ func TestAppImportExport(t *testing.T) {
 	}()
 
 	newApp := NewLinkApp(log.NewNopLogger(), newDB, nil, true, 0, fauxMerkleModeOpt)
-	require.Equal(t, "SimApp", newApp.Name())
+	require.Equal(t, "LinkApp", newApp.Name())
 
 	var genesisState simapp.GenesisState
 	err = app.cdc.UnmarshalJSON(appState, &genesisState)

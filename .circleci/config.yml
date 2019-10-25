@@ -119,6 +119,50 @@ jobs:
             - "/home/circleci/.go_workspace/pkg/mod"
             - "/tmp/gobinary"
 
+  sim-link-nondeterminism:
+    <<: *linux_defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: test individual module simulations
+          command: |
+            make get-tools
+            make sim-link-nondeterminism
+
+  sim-link-simulation-after-import:
+    <<: *linux_defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: test simulation after import
+          command: |
+            make get-tools
+            make sim-link-simulation-after-import
+
+  sim-link-multi-seed:
+    <<: *linux_defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: test multi-seed simulation
+          command: |
+            make get-tools
+            make sim-link-multi-seed
 
   integration_multi_node_test:
     <<: *machine_defaults
@@ -205,7 +249,15 @@ workflows:
       - localnet:
           requires:
             - setup_docker_and_binary
+      - sim-link-nondeterminism:
+          requires:
+            - setup_dependencies
+      - sim-link-simulation-after-import:
+          requires:
+            - setup_dependencies
+      - sim-link-multi-seed:
+          requires:
+            - setup_dependencies
       - integration_multi_node_test:
           requires:
             - setup_docker_and_binary
-
