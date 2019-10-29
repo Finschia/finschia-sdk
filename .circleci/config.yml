@@ -164,6 +164,21 @@ jobs:
             make get-tools
             make sim-link-multi-seed
 
+  sim-link-multi-seed-short:
+    <<: *linux_defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: test multi-seed simulation (short)
+          command: |
+            make get-tools
+            make sim-link-multi-seed-short
+
   integration_multi_node_test:
     <<: *machine_defaults
     steps:
@@ -272,6 +287,15 @@ workflows:
       - sim-link-multi-seed:
           requires:
             - setup_dependencies
+          filters:
+            branches:
+              only: master
+      - sim-link-multi-seed-short:
+          requires:
+            - setup_dependencies
+          filters:
+            branches:
+              ignore: master
       - integration_multi_node_test:
           requires:
             - setup_docker_and_binary
