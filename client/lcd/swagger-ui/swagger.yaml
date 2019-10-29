@@ -15,6 +15,8 @@ tags:
     description: Create and broadcast transactions
   - name: Supply
     description: Supply module APIs
+  - name: Token
+    description: Token query APIs
 servers:
   - url: http://localhost:1317
 paths:
@@ -474,6 +476,69 @@ paths:
         500:
           description: Internal Server Error
           content: {}
+  /token/tokens/{symbol}:
+    get:
+      tags:
+        - Token
+      summary: Get the token details
+      parameters:
+        - name: symbol
+          in: path
+          description: Coin denomination
+          required: true
+          schema:
+            type: string
+          example: test-cony
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/Token'
+        500:
+          description: Internal Server Error
+  /token/tokens:
+    get:
+      tags:
+        - Token
+      summary: Get all tokens
+      parameters:
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Token'
+        500:
+          description: Internal Server Error
 components:
   schemas:
     Hash:
@@ -503,6 +568,20 @@ components:
         amount:
           type: string
           example: "50"
+    Token:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "test-cony"
+        symbol:
+          type: string
+          example: "itisconytesttoken"
+        owner:
+          $ref: '#/components/schemas/Address'
+        mintable:
+          type: boolean
+          example: true
     PublicKey:
       type: object
       properties:
