@@ -25,13 +25,24 @@ make check-unit                 # unit test
 make check-race                 # run unit test with -race option
 make check-build                # integration test (/cli_test)
 ```
+## Run
 
-### Solo Node
+### Solo Node (Only for the Debug and Local Test)
 ```
 ./initialize.sh
 ```
 ```
+linkcli status # check the status of node
 linkcli tx send jack $(linkcli keys show alice -a) 1link -y #password: 1234567890
+```
+
+### Solo Node With Docker (Only for the Debug and Local Test)
+```
+docker build -t line/link .
+./initialize_docker.sh
+```
+```
+docker run --net=host -v ${HOME}/.linkcli:/root/.linkcli line/link linkcli status
 ```
 
 ### Local Test Net
