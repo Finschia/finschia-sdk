@@ -930,7 +930,7 @@ type FixtureGroup struct {
 func NewFixtureGroup(t *testing.T) *FixtureGroup {
 	fg := &FixtureGroup{
 		T:           t,
-		DockerImage: "line/linkdnode-integtest",
+		DockerImage: "line/link",
 		fixturesMap: make(map[string]*Fixtures),
 	}
 
@@ -1060,8 +1060,9 @@ func (fg *FixtureGroup) LDStartContainers() {
 }
 
 func (fg *FixtureGroup) LDStartContainer(f *Fixtures, flags ...string) *tests.Process {
-	dockerCommand := "docker run --rm --name %s --network %s --ip %s -p %s:26656 -p %s:26657 -v %s/integration-test:/linkd:Z -v %s:/testhome:Z line/linkdnode-integtest start --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656"
-	dockerCommand = fmt.Sprintf(dockerCommand, f.Moniker, fg.networkName, f.BridgeIP, f.P2PPort, f.Port, f.BuildDir, f.LinkdHome)
+	dockerCommand := "docker run --rm --name %s --network %s --ip %s -p %s:26656 -p %s:26657 -v %s:/root/.linkd:Z -v %s:/root/.linkcli:Z line/link linkd start --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656"
+	dockerCommand = fmt.Sprintf(dockerCommand, f.Moniker, fg.networkName, f.BridgeIP, f.P2PPort, f.Port, f.LinkdHome, f.LinkcliHome)
+	fg.T.Log(dockerCommand)
 	proc := tests.GoExecuteTWithStdout(f.T, addFlags(dockerCommand, flags))
 
 	return proc

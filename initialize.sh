@@ -1,38 +1,37 @@
 #!/usr/bin/env sh
 set -ex
 
+LINKCLI=${LINKCLI:-linkcli}
+LINKD=${LINKD:-linkd}
+
 PASSWORD="1234567890"
 # initialize
 rm -rf ~/.linkd ~/.linkcli
 
 # Configure your CLI to eliminate need for chain-id flag
-linkcli config chain-id link
-linkcli config output json
-linkcli config indent true
-linkcli config trust-node true
+${LINKCLI} config chain-id link
+${LINKCLI} config output json
+${LINKCLI} config indent true
+${LINKCLI} config trust-node true
 
 # Initialize configuration files and genesis file
 # moniker is the name of your node
-linkd init solo --chain-id link
+${LINKD} init solo --chain-id link
 
 
-# Copy the `Address` output here and save it for later use
-# [optional] add "--ledger" at the end to use a Ledger Nano S
-linkcli keys add jack  <<< ${PASSWORD} <<< ${PASSWORD}
-
-# Copy the `Address` output here and save it for later use
-linkcli keys add alice  <<< ${PASSWORD} <<< ${PASSWORD}
+echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add jack
+echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add alice
 
 # Add both accounts, with coins to the genesis file
-linkd add-genesis-account $(linkcli keys show jack -a) 1000link,100000000stake
-linkd add-genesis-account $(linkcli keys show alice -a) 1000link,100000000stake 
+${LINKD} add-genesis-account $(${LINKCLI} keys show jack -a) 1000link,100000000stake
+${LINKD} add-genesis-account $(${LINKCLI} keys show alice -a) 1000link,100000000stake
 
 
-linkd gentx --name jack <<< ${PASSWORD}
+echo ${PASSWORD} | ${LINKD} gentx --name jack
 
-linkd collect-gentxs
+${LINKD} collect-gentxs
 
-linkd validate-genesis
+${LINKD} validate-genesis
 
-# linkd start
-linkd start --log_level *:debug
+# ${LINKD} start
+${LINKD} start --log_level *:debug --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656

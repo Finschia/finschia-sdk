@@ -183,7 +183,7 @@ stop-testnet:
 ### Integration Test with multi containers
 
 build-docker-integration:
-	docker build --tag line/linkdnode-integtest .
+	docker build --tag line/link .
 
 check-build-integration:
 	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_multi_node_test -v
