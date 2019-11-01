@@ -75,7 +75,7 @@ func TestPublishTokenAndSendTokens(t *testing.T) {
 	{
 		token := Token{Name: "name", Symbol: "link", Owner: addr1, Mintable: true}
 		require.NoError(t, keeper.SetToken(ctx, token))
-		require.NoError(t, keeper.MintToken(ctx, sdk.NewCoin("link", sdk.NewInt(999)), addr1))
+		require.NoError(t, keeper.MintTokenWithPermission(ctx, sdk.NewCoin("link", sdk.NewInt(999)), addr1))
 
 		token, err := keeper.GetToken(ctx, "link")
 		require.NoError(t, err)
@@ -106,7 +106,7 @@ func TestPublishTokenAndSendTokens(t *testing.T) {
 
 	// Mint Token
 	{
-		require.NoError(t, keeper.MintToken(ctx, sdk.NewCoin("link", sdk.NewInt(100)), addr1))
+		require.NoError(t, keeper.MintTokenWithPermission(ctx, sdk.NewCoin("link", sdk.NewInt(100)), addr1))
 		require.Equal(t, int64(899), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
 		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf("link").Int64())
 		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
@@ -114,7 +114,7 @@ func TestPublishTokenAndSendTokens(t *testing.T) {
 
 	// Burn Token
 	{
-		require.NoError(t, keeper.BurnToken(ctx, sdk.NewCoin("link", sdk.NewInt(100)), addr1))
+		require.NoError(t, keeper.BurnTokenWithPermission(ctx, sdk.NewCoin("link", sdk.NewInt(100)), addr1))
 		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
 		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf("link").Int64())
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
@@ -122,7 +122,7 @@ func TestPublishTokenAndSendTokens(t *testing.T) {
 
 	// Burn Token again amount > has --> fail
 	{
-		require.Error(t, keeper.BurnToken(ctx, sdk.NewCoin("link", sdk.NewInt(800)), addr1))
+		require.Error(t, keeper.BurnTokenWithPermission(ctx, sdk.NewCoin("link", sdk.NewInt(800)), addr1))
 		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
 		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf("link").Int64())
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())

@@ -1341,6 +1341,18 @@ func TestLinkCLIToken(t *testing.T) {
 	}
 
 	{
+		f.TxTokenPublish(keyFoo, "brownbrown", "itisbrown", 10000, false, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryToken("brownbrown")
+		require.Equal(t, "itisbrown", token.Name)
+		require.Equal(t, "brownbrown", token.Symbol)
+		require.Equal(t, false, token.Mintable)
+
+		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf("brownbrown"))
+	}
+
+	{
 		f.TxTokenPublish(keyFoo, "conycony", "itiscony", 10000, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
@@ -1348,6 +1360,8 @@ func TestLinkCLIToken(t *testing.T) {
 		require.Equal(t, "itiscony", token.Name)
 		require.Equal(t, "conycony", token.Symbol)
 		require.Equal(t, true, token.Mintable)
+
+		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf("conycony"))
 
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
 		require.Equal(t, "conycony", pms[0].GetResource())

@@ -35,9 +35,8 @@ func handleMsgPublishToken(ctx sdk.Context, keeper Keeper, msg MsgPublishToken) 
 	if err != nil {
 		return err.Result()
 	}
-	newToken := sdk.NewCoin(msg.Symbol, msg.Amount)
 
-	err = keeper.MintToken(ctx, newToken, token.Owner)
+	err = keeper.MintTokenWithOutPermission(ctx, sdk.NewCoin(msg.Symbol, msg.Amount), token.Owner)
 	if err != nil {
 		return err.Result()
 	}
@@ -66,7 +65,7 @@ func handleMsgPublishToken(ctx sdk.Context, keeper Keeper, msg MsgPublishToken) 
 
 func handleMsgMint(ctx sdk.Context, keeper Keeper, msg MsgMint) sdk.Result {
 	for _, amount := range msg.Amount {
-		err := keeper.MintToken(ctx, amount, msg.To)
+		err := keeper.MintTokenWithPermission(ctx, amount, msg.To)
 		if err != nil {
 			return err.Result()
 		}
@@ -88,7 +87,7 @@ func handleMsgMint(ctx sdk.Context, keeper Keeper, msg MsgMint) sdk.Result {
 
 func handleMsgBurn(ctx sdk.Context, keeper Keeper, msg MsgBurn) sdk.Result {
 	for _, amount := range msg.Amount {
-		err := keeper.BurnToken(ctx, amount, msg.From)
+		err := keeper.BurnTokenWithPermission(ctx, amount, msg.From)
 		if err != nil {
 			return err.Result()
 		}

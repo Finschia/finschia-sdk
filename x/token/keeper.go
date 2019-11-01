@@ -119,11 +119,17 @@ func (k Keeper) GrantPermission(ctx sdk.Context, from, to sdk.AccAddress, perm P
 	return nil
 }
 
-func (k Keeper) MintToken(ctx sdk.Context, amount sdk.Coin, to sdk.AccAddress) sdk.Error {
+func (k Keeper) MintTokenWithPermission(ctx sdk.Context, amount sdk.Coin, to sdk.AccAddress) sdk.Error {
 	if !k.HasPermission(ctx, to, NewMintPermission(amount.Denom)) {
 		return ErrTokenPermissionMint(DefaultCodespace)
 	}
+	return k.mintToken(ctx, amount, to)
+}
+func (k Keeper) MintTokenWithOutPermission(ctx sdk.Context, amount sdk.Coin, to sdk.AccAddress) sdk.Error {
+	return k.mintToken(ctx, amount, to)
+}
 
+func (k Keeper) mintToken(ctx sdk.Context, amount sdk.Coin, to sdk.AccAddress) sdk.Error {
 	err := k.supplyKeeper.MintCoins(ctx, ModuleName, sdk.NewCoins(amount))
 	if err != nil {
 		return err
@@ -136,7 +142,19 @@ func (k Keeper) MintToken(ctx sdk.Context, amount sdk.Coin, to sdk.AccAddress) s
 	return nil
 }
 
-func (k Keeper) BurnToken(ctx sdk.Context, amount sdk.Coin, from sdk.AccAddress) sdk.Error {
+func (k Keeper) BurnTokenWithPermission(ctx sdk.Context, amount sdk.Coin, from sdk.AccAddress) sdk.Error {
+	if !k.HasPermission(ctx, from, NewBurnPermission(amount.Denom)) {
+		return ErrTokenPermissionBurn(DefaultCodespace)
+	}
+	return k.burnToken(ctx, amount, from)
+
+}
+
+func (k Keeper) BurnTokenWithOutPermission(ctx sdk.Context, amount sdk.Coin, from sdk.AccAddress) sdk.Error {
+	return k.burnToken(ctx, amount, from)
+}
+
+func (k Keeper) burnToken(ctx sdk.Context, amount sdk.Coin, from sdk.AccAddress) sdk.Error {
 	if !k.HasPermission(ctx, from, NewBurnPermission(amount.Denom)) {
 		return ErrTokenPermissionBurn(DefaultCodespace)
 	}
