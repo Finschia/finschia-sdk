@@ -4,6 +4,7 @@ import (
 	"strconv"
 
 	"errors"
+
 	"github.com/link-chain/link/x/token/types"
 	"github.com/spf13/cobra"
 
@@ -65,7 +66,7 @@ func PublishTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [to_key_or_address] [amount]",
+		Use:   "mint [to_key_or_address] [amount_with_denom]",
 		Short: "Create and sign a mint token tx",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -89,7 +90,7 @@ func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [from_key_or_address] [amount]",
+		Use:   "burn [from_key_or_address] [amount_with_denom]",
 		Short: "Create and sign a burn token tx",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
