@@ -24,11 +24,11 @@ import (
 
 var (
 	// application's name
-	Name = ""
+	Name = "link"
 	// server binary name
-	ServerName = "<appd>"
+	ServerName = "linkd"
 	// client binary name
-	ClientName = "<appcli>"
+	ClientName = "linkcli"
 	// application's version string
 	Version = ""
 	// commit

@@ -34,5 +34,3 @@ COPY --from=build-env /go/bin/linkcli /usr/bin/linkcli
 
 # Run linkd by default, omit entrypoint to ease using container with linkcli
 CMD ["linkd"]
-
-EXPOSE 26656-26657

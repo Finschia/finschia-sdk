@@ -8,67 +8,148 @@ This repository hosts `LINK`, alternative implementation of the LINK Network.
 
 **Warnings**: Initial development is in progress, but there has not yet been a stable.
 
-## Quick Start
-
-### Prerequisite
+# Quick Start
+**Build Docker Image**
 ```
-make get-tools                  # install tools
-```
-### Build & Install LINK
-```
-make install                    # build and install binaries
+make build-docker                # build docker image
 ```
 
-### Test
+**Configure**
 ```
-make check-unit                 # unit test
-make check-race                 # run unit test with -race option
-make check-build                # integration test (/cli_test)
-```
-## Run
-
-### Solo Node (Only for the Debug and Local Test)
-```
-./initialize.sh
-```
-```
-linkcli status # check the status of node
-linkcli tx send jack $(linkcli keys show alice -a) 1link -y #password: 1234567890
+./.initialize.sh docker          # prepare keys, validators, initial state, etc.
 ```
 
-### Solo Node With Docker (Only for the Debug and Local Test)
+**Run**
 ```
-docker build -t line/link .
-./initialize_docker.sh
-```
-```
-docker run --net=host -v ${HOME}/.linkcli:/root/.linkcli line/link linkcli status
+docker-compose up                # Run a Node and Rest
 ```
 
-### Local Test Net
+**visit with your browser**
+* Node: http://localhost:26657/
+* REST: http://localhost:1317/swagger-ui/
+
+# Step by Step
+
+## Build and Test
+**Prerequisite**
 ```
-make build-linux                # Cross-compile the binaries for linux/amd64
-make build-docker-testnet      # Build docker image for testnet
-make build-conf-testnet        # Build configurations for testnet
-make start-testnet             # Boot up testnet network with 4 validator nodes
-make stop-testnet              # Stop the testnet
+make get-tools                   # install tools
+```
+**Build & Install LINK**
+```
+make install                     # build and install binaries
 ```
 
+**Test**
+```
+make test-unit                   # unit test
+make test-unit-race              # run unit test with -race option
+make test-integration            # integration test (/cli_test#cli_test)
+make test-integration-multi-node # integration test (/cli_test#cli_multi_node_test)
+```
 
-### Current Status
+## Configure
+
+**Set Up Configuration**
+```
+./.initialize.sh                 # prepare keys, validators, initial state, etc.
+```
+**.initialize.sh**
+
+**WARNING**: Do not use it for production. Use it only for local testing 
+```bash
+#!/usr/bin/env sh
+set -ex
+
+if [[ $1 == "docker" ]]
+then
+    LINKCLI="docker run -i --net=host -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link linkcli"
+    LINKD="docker run -i -p 26656:26656 -p 26657:26657 -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link linkd"
+fi
+
+LINKCLI=${LINKCLI:-linkcli}
+LINKD=${LINKD:-linkd}
+
+PASSWORD="1234567890"
+# initialize
+rm -rf ~/.linkd ~/.linkcli
+
+# Configure your CLI to eliminate need for chain-id flag
+${LINKCLI} config chain-id link
+${LINKCLI} config output json
+${LINKCLI} config indent true
+${LINKCLI} config trust-node true
+
+# Initialize configuration files and genesis file
+# moniker is the name of your node
+${LINKD} init solo --chain-id link
+
+
+echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add jack
+echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add alice
+
+# Add both accounts, with coins to the genesis file
+${LINKD} add-genesis-account $(${LINKCLI} keys show jack -a) 1000link,100000000stake
+${LINKD} add-genesis-account $(${LINKCLI} keys show alice -a) 1000link,100000000stake
+
+
+echo ${PASSWORD} | ${LINKD} gentx --name jack
+
+${LINKD} collect-gentxs
+
+${LINKD} validate-genesis
+```
+
+**Check the home of linkd**
+```
+ls ${HOME}/.linkd/config
+```
+* You must have these files
+```
+app.toml	config.toml	genesis.json	gentx	node_key.json	priv_validator_key.json
+```
+
+## Run the node
+
+**Start the Node**
+```
+linkd start                 # Start a validator
+```
+Check Node: http://localhost:26657/
+
+**Start Rest Server**
+```
+linkcli rest-server         # Start a rest server connecting to the validator
+```
+Check Rest Server: http://localhost:1317/swagger-ui/
+
+**Query/SendTx with cli**
+```
+linkcli status                                              # check the status of node
+linkcli tx send jack $(linkcli keys show alice -a) 1link -y # password: 1234567890
+linkcli query account $(linkcli keys show jack -a)          # Get account
+```
+
+# Local Test Network
+
+## local test network with 4 validators
+
+**Build Docker Image**
+```
+make build-docker
+```
+**Start the testnet**
+```
+make testnet-start          
+```
+**Test the liveness**
+```
+make testnet-test
+```
+**Stop the testnet**
+```
+make testnet-stop
+```
+
+# Current Status
 The most of development is in progress for testing tendermint/cosmos-sdk.
-
-
-## API documentation
-
-### Run the API documentation server
-```shell script
-make install && linkcli rest-server --trust-node=true
-```
-then visit [http://localhost:1317/swagger-ui/#/](http://localhost:1317/swagger-ui/#/)
-
-### Update the API documentation
-Update [swagger.yaml](./client/lcd/swagger-ui/swagger.yaml) then:
-```shell script
-make update-swagger-docs && make install
-```

@@ -14,30 +14,6 @@ export GO111MODULE = on
 ########################################
 ### Process build tags
 
-build_tags = netgo
-ifeq ($(LEDGER_ENABLED),true)
-  ifeq ($(OS),Windows_NT)
-    GCCEXE = $(shell where gcc.exe 2> NUL)
-    ifeq ($(GCCEXE),)
-      $(error gcc.exe not installed for ledger support, please install or set LEDGER_ENABLED=false)
-    else
-      build_tags += ledger
-    endif
-  else
-    UNAME_S = $(shell uname -s)
-    ifeq ($(UNAME_S),OpenBSD)
-      $(warning OpenBSD detected, disabling ledger support (https://github.com/cosmos/cosmos-sdk/issues/1988))
-    else
-      GCC = $(shell command -v gcc 2> /dev/null)
-      ifeq ($(GCC),)
-        $(error gcc not installed for ledger support, please install or set LEDGER_ENABLED=false)
-      else
-        build_tags += ledger
-      endif
-    endif
-  endif
-endif
-
 ifeq ($(WITH_CLEVELDB),yes)
   build_tags += gcc
 endif
@@ -52,10 +28,7 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 ########################################
 ### Process linker flags
 
-ldflags = -X github.com/link-chain/link/version.Name=link \
-		  -X github.com/link-chain/link/version.ServerName=linkd \
-		  -X github.com/link-chain/link/version.ClientName=linkcli \
-		  -X github.com/link-chain/link/version.Version=$(VERSION) \
+ldflags = -X github.com/link-chain/link/version.Version=$(VERSION) \
 		  -X github.com/link-chain/link/version.Commit=$(COMMIT) \
 		  -X "github.com/link-chain/link/version.BuildTags=$(build_tags_comma_sep)"
 
@@ -69,28 +42,26 @@ BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 
 
 ########################################
+### Lint
+lint: golangci-lint
+	golangci-lint run
+	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
+	go mod verify
+
+########################################
 ### Build
 
-all: install lint check
+all: install lint test-unit
 
 build: go.sum
-ifeq ($(OS),Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/linkd.exe ./cmd/linkd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli.exe ./cmd/linkcli
-else
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
-endif
 
-build-linux: go.sum
-	LEDGER_ENABLED=false GOOS=linux GOARCH=amd64 $(MAKE) build
+build-docker:
+	docker build -t line/link .
 
-build-contract-tests-hooks:
-ifeq ($(OS),Windows_NT)
-	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests.exe ./cmd/contract_tests
-else
-	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests ./cmd/contract_tests
-endif
+build-swagger-docs: statik
+	statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
 
 install: go.sum
 	go install $(BUILD_FLAGS) ./cmd/linkd
@@ -99,11 +70,8 @@ install: go.sum
 install-debug: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/linkdebug
 
-update-swagger-docs:
-	statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
-
-run-swagger-server:
-	linkcli rest-server --trust-node=true
+clean:
+	rm -rf  build/
 
 ########################################
 ### Tools & dependencies
@@ -114,6 +82,12 @@ get-tools:
 	go get github.com/golangci/golangci-lint/cmd/golangci-lint
 	go get github.com/cosmos/tools/cmd/runsim@v1.0.0
 
+golangci-lint:
+	@go get github.com/golangci/golangci-lint/cmd/golangci-lint
+
+statik:
+	@go get github.com/rakyll/statik
+
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
 	@go mod download
@@ -122,72 +96,54 @@ go.sum: go.mod
 	@echo "--> Ensure dependencies have not been modified"
 	@go mod verify
 
-clean:
-	rm -rf  build/
 
 ########################################
 ### Testing
 
+test: test-all
 
-check: check-unit check-build
-check-all: check check-race check-cover
+test-all: test-unit-all test-integration-all
 
-check-unit:
-	@VERSION=$(VERSION) go test -mod=readonly -tags='ledger test_ledger_mock' ./...
+test-integration-all: test-integration test-integration-multi-node
 
-check-race:
-	@VERSION=$(VERSION) go test -mod=readonly -race -tags='ledger test_ledger_mock' ./...
+test-unit-all: test-unit test-unit-race test-unit-cover
 
-check-cover:
-	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic -tags='ledger test_ledger_mock' ./...
+test-unit:
+	@go test -mod=readonly  ./...
 
-check-build: build
+test-unit-race:
+	@go test -mod=readonly -race  ./...
+
+test-unit-cover:
+	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+test-integration: build
 	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_test -v
 
-
-lint: golangci-lint
-	golangci-lint run
-	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
-	go mod verify
-
-format:
-	find . -name '*.go' -type f -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs gofmt -w -s
-	find . -name '*.go' -type f -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs misspell -w
-	find . -name '*.go' -type f -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs goimports -w -local github.com/link-chain/link
-
-benchmark:
-	@go test -mod=readonly -bench=. ./...
-
-
-########################################
-### Local validator nodes using docker and docker-compose
-
-build-docker-testnet:
-	$(MAKE) -C  $(CURDIR)/networks/local
-
-build-conf-testnet:
-	rm -rf $(CURDIR)/build/gentxs
-	rm -rf $(CURDIR)/build/node*
-	docker run --rm -v $(CURDIR)/build:/linkd:Z line/linkdnode testnet --v 4 -o . --starting-ip-address 192.168.10.2
-
-
-# Run a 4-node testnet locally
-start-testnet: stop-testnet
-	docker-compose up -d
-
-# Stop testnet
-stop-testnet:
-	docker-compose down
-
-########################################
-### Integration Test with multi containers
-
-build-docker-integration:
-	docker build --tag line/link .
-
-check-build-integration:
+test-integration-multi-node: build-docker
 	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_multi_node_test -v
 
+
+########################################
+### Local TestNet using docker-compose
+
+# Run a 4-node testnet locally
+testnet-start:
+	$(MAKE) -C  $(CURDIR)/networks/local testnet-start
+
+# Run a solo-node testnet locally
+testnet-start-solo:
+	$(MAKE) -C  $(CURDIR)/networks/local testnet-start-solo
+
+# Stop testnet
+testnet-stop:
+	$(MAKE) -C  $(CURDIR)/networks/local testnet-stop
+
+testnet-test:
+	$(MAKE) -C  $(CURDIR)/networks/local testnet-test
+
+run-swagger-server:
+	linkcli rest-server --trust-node=true
 
 ########################################
 ### Simulation
@@ -196,7 +152,7 @@ check-build-integration:
 include sims.mk
 
 
-.PHONY: all build-linux install install-debug \
-	go-mod-cache draw-deps clean build \
-	check check-all check-build check-cover check-unit check-race
-
+.PHONY: all install install-debug go-mod-cache clean build\
+    test test-all test-integration-all test-unit-all \
+    test-unit test-unit-race test-unit-cover \
+    test-integration test-integration-multi-node

@@ -1,6 +1,12 @@
 #!/usr/bin/env sh
 set -ex
 
+if [[ $1 == "docker" ]]
+then
+    LINKCLI="docker run -i --net=host -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link linkcli"
+    LINKD="docker run -i -p 26656:26656 -p 26657:26657 -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link linkd"
+fi
+
 LINKCLI=${LINKCLI:-linkcli}
 LINKD=${LINKD:-linkd}
 
@@ -33,5 +39,4 @@ ${LINKD} collect-gentxs
 
 ${LINKD} validate-genesis
 
-# ${LINKD} start
-${LINKD} start --log_level *:debug --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656
+# ${LINKD} start --log_level *:debug --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656

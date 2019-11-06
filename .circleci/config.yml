@@ -71,7 +71,7 @@ jobs:
       - run:
           name: Test unittest
           command: |
-            make check-unit
+            make test-unit
   integration_test:
     <<: *linux_defaults
     parallelism: 1
@@ -86,7 +86,7 @@ jobs:
           name: Test cli
           command: |
             export BUILDDIR=`pwd`/build
-            make check-build
+            make test-integration
   setup_docker_and_binary:
     <<: *machine_defaults
     steps:
@@ -111,7 +111,6 @@ jobs:
           name: build binaries
           command: |
             set -x
-            make build-linux
             make build
       - save_cache:
           key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
@@ -203,13 +202,13 @@ jobs:
           name: build docker image
           command: |
             set -x
-            make build-docker-integration
+            make build-docker
       - run:
           name: run integration test for multi node and exit on failure
           command: |
             set -x
             docker network prune -f
-            make check-build-integration
+            make test-integration-multi-node
   localnet:
     <<: *machine_defaults
     steps:
@@ -226,23 +225,17 @@ jobs:
             sudo mv go /usr/local
             popd
       - run:
-          name: build binaries for linux
-          command: |
-            set -x
-            make build-linux
-      - run:
           name: build docker image
           command: |
             set -x
-            make build-docker-testnet
-            make build-conf-testnet
+            make build-docker
       - run:
           name: run localnet and exit on failure
           command: |
             set -x
             docker network prune -f
-            make start-testnet
-            ./contrib/localnet-blocks-test.sh 40 5 10 localhost
+            make testnet-start
+            ./networks/local/localnet-blocks-test.sh 40 5 10 localhost
   semantic_release:
     docker:
       - image: circleci/node:10
