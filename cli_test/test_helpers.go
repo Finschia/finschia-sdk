@@ -14,6 +14,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/spf13/viper"
+
 	"github.com/link-chain/link/types"
 
 	tokenModule "github.com/link-chain/link/x/token"
@@ -23,6 +25,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	cfg "github.com/tendermint/tendermint/config"
 	tmctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
@@ -511,6 +514,27 @@ func (f *Fixtures) QueryAccount(address sdk.AccAddress, flags ...string) auth.Ba
 }
 
 //___________________________________________________________________________________
+// linkcli query tx
+
+// QueryTx is linkcli query tx
+func (f *Fixtures) QueryTx(hash string) *sdk.TxResponse {
+	cmd := fmt.Sprintf("%s query tx %s %v", f.LinkcliBinary, hash, f.Flags())
+	out, _ := tests.ExecuteT(f.T, cmd, "")
+	var result sdk.TxResponse
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &result)
+	require.NoError(f.T, err, "out %v\n, err %v", out, err)
+	return &result
+}
+
+// QueryTxInvalid query tx with wrong hash and compare expected error
+func (f *Fixtures) QueryTxInvalid(expectedErr error, hash string) {
+	cmd := fmt.Sprintf("%s query tx %s %v", f.LinkcliBinary, hash, f.Flags())
+	_, err := tests.ExecuteT(f.T, cmd, "")
+	require.EqualError(f.T, expectedErr, err)
+}
+
+//___________________________________________________________________________________
 // linkcli query txs
 
 // QueryTxs is linkcli query txs
@@ -915,6 +939,12 @@ func unmarshalStdTx(t *testing.T, s string) (stdTx auth.StdTx) {
 	return
 }
 
+func unmarshalTxResponse(t *testing.T, s string) (txResp sdk.TxResponse) {
+	cdc := app.MakeCodec()
+	require.Nil(t, cdc.UnmarshalJSON([]byte(s), &txResp))
+	return
+}
+
 //___________________________________________________________________________________
 // Fixture Group
 
@@ -1102,7 +1132,7 @@ func (fg *FixtureGroup) WaitForContainer(f *Fixtures) {
 	panic(err)
 }
 
-func (fg *FixtureGroup) AddFullNode() *Fixtures {
+func (fg *FixtureGroup) AddFullNode(flags ...string) *Fixtures {
 
 	t := fg.T
 	idx := len(fg.fixturesMap)
@@ -1136,6 +1166,25 @@ func (fg *FixtureGroup) AddFullNode() *Fixtures {
 		}
 		err := ioutil.WriteFile(f.GenesisFile(), fg.genesisFileContent, os.ModePerm)
 		require.NoError(t, err)
+	}
+
+	// Configure for invisible options
+	{
+		if len(flags) > 0 {
+			configFilePath := filepath.Join(f.LinkdHome, "config/config.toml")
+
+			conf := cfg.DefaultConfig()
+			err := viper.Unmarshal(conf)
+			require.NoError(t, err)
+
+			for _, flag := range flags {
+				if flag == "--mempool.broadcast=false" {
+					conf.Mempool.Broadcast = false
+				}
+			}
+
+			cfg.WriteConfigFile(configFilePath, conf)
+		}
 	}
 
 	// Collect the persistent peers from the network
