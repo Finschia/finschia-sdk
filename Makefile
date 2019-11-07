@@ -114,6 +114,7 @@ test-unit:
 test-unit-race:
 	@go test -mod=readonly -race  ./...
 
+# `coverage.txt` is used in CircleCi config for the coverage report so if someone updates one, please updates the other too
 test-unit-cover:
 	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic ./...
 

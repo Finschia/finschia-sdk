@@ -1,7 +1,4 @@
-# Golang CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
+version: 2.1
 
 defaults: &linux_defaults
   working_directory: /go/src/github.com/line/link
@@ -20,7 +17,6 @@ machine_defaults: &machine_defaults
     GOOS: linux
     GOARCH: amd64
     GO_VERSION: "1.12.5"
-
 
 jobs:
   fmt:
@@ -68,10 +64,8 @@ jobs:
       - restore_cache:
           keys:
             - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run:
-          name: Test unittest
-          command: |
-            make test-unit
+      - run: make test-unit-cover
+      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage.txt -F "unittest" -Z
   integration_test:
     <<: *linux_defaults
     parallelism: 1
@@ -252,7 +246,7 @@ jobs:
       - run: curl -sL https://git.io/goreleaser | bash
 
 workflows:
-  version: 2
+  version: 2.1
   build_and_test:
     jobs:
       - fmt
