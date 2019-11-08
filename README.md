@@ -52,64 +52,37 @@ make test-integration-multi-node # integration test (/cli_test#cli_multi_node_te
 
 ## Configure
 
-**Set Up Configuration**
-```
+Configuring to run a node should be done following steps.
+
+- init chain
+- add genesis account
+- make the node be a validator
+-  genesis TXs
+
+For more informations [here](docs/getting-started/setting-up-local-network.md#running-a-local-network).
+
+<br />
+
+The configuring steps are also in a script file(`.initialize.sh`).
+
+```shell
 ./.initialize.sh                 # prepare keys, validators, initial state, etc.
 ```
-**.initialize.sh**
-
 **WARNING**: Do not use it for production. Use it only for local testing 
-```bash
-#!/usr/bin/env sh
-set -ex
 
-if [[ $1 == "docker" ]]
-then
-    LINKCLI="docker run -i --net=host -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link linkcli"
-    LINKD="docker run -i -p 26656:26656 -p 26657:26657 -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link linkd"
-fi
+<br />
 
-LINKCLI=${LINKCLI:-linkcli}
-LINKD=${LINKD:-linkd}
+If the configuring steps are done, the following files should be in the home dir.
 
-PASSWORD="1234567890"
-# initialize
-rm -rf ~/.linkd ~/.linkcli
+- Check the home of linkd**
 
-# Configure your CLI to eliminate need for chain-id flag
-${LINKCLI} config chain-id link
-${LINKCLI} config output json
-${LINKCLI} config indent true
-${LINKCLI} config trust-node true
-
-# Initialize configuration files and genesis file
-# moniker is the name of your node
-${LINKD} init solo --chain-id link
-
-
-echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add jack
-echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add alice
-
-# Add both accounts, with coins to the genesis file
-${LINKD} add-genesis-account $(${LINKCLI} keys show jack -a) 1000link,100000000stake
-${LINKD} add-genesis-account $(${LINKCLI} keys show alice -a) 1000link,100000000stake
-
-
-echo ${PASSWORD} | ${LINKD} gentx --name jack
-
-${LINKD} collect-gentxs
-
-${LINKD} validate-genesis
-```
-
-**Check the home of linkd**
-```
-ls ${HOME}/.linkd/config
-```
-* You must have these files
-```
-app.toml	config.toml	genesis.json	gentx	node_key.json	priv_validator_key.json
-```
+  ```
+  ls ${HOME}/.linkd/config
+  ```
+- You must have these files
+  ```
+  app.toml	config.toml	genesis.json	gentx	node_key.json	priv_validator_key.json
+  ```
 
 ## Run the node
 
