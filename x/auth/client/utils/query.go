@@ -3,13 +3,19 @@ package utils
 import (
 	"encoding/hex"
 	"errors"
+	"fmt"
+	"net/http"
+	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	sdk "github.com/link-chain/link/x/auth/client/internal/types"
@@ -183,4 +189,85 @@ func parseTx(cdc *codec.Codec, txBytes []byte) (sdk.Tx, error) {
 	}
 
 	return tx, nil
+}
+
+// ParseHTTPArgs parses the request's URL and returns a slice containing all
+// arguments pairs. It separates page and limit used for pagination.
+func ParseHTTPArgs(r *http.Request) (tags []string, page, limit int, err error) {
+	tags = make([]string, 0, len(r.Form))
+	for key, values := range r.Form {
+		if key == "page" || key == "limit" || key == "height.from" || key == "height.to" {
+			continue
+		}
+
+		var value string
+		value, err = url.QueryUnescape(values[0])
+		if err != nil {
+			return tags, page, limit, err
+		}
+
+		var tag string
+		if key == tmtypes.TxHeightKey {
+			tag = fmt.Sprintf("%s=%s", key, value)
+		} else {
+			tag = fmt.Sprintf("%s='%s'", key, value)
+		}
+		tags = append(tags, tag)
+	}
+
+	if len(tags) == 0 {
+		return tags, page, limit, errors.New("must declare at least one event to search")
+	}
+
+	heightFromStr := r.FormValue("height.from")
+	if heightFromStr != "" {
+		heightFrom, err := strconv.ParseInt(heightFromStr, 10, 64)
+		switch {
+		case err != nil:
+			return tags, page, limit, err
+		case heightFrom <= 0:
+			return tags, page, limit, errors.New("height.from must greater than 0")
+		default:
+			tags = append(tags, fmt.Sprintf("%s>=%d", tmtypes.TxHeightKey, heightFrom))
+		}
+	}
+
+	heightToStr := r.FormValue("height.to")
+	if heightToStr != "" {
+		heightTo, err := strconv.ParseInt(heightToStr, 10, 64)
+		switch {
+		case err != nil:
+			return tags, page, limit, err
+		case heightTo <= 0:
+			return tags, page, limit, errors.New("height.to must greater than 0")
+		default:
+			tags = append(tags, fmt.Sprintf("%s<=%d", tmtypes.TxHeightKey, heightTo))
+		}
+	}
+
+	pageStr := r.FormValue("page")
+	if pageStr == "" {
+		page = rest.DefaultPage
+	} else {
+		page, err = strconv.Atoi(pageStr)
+		if err != nil {
+			return tags, page, limit, err
+		} else if page <= 0 {
+			return tags, page, limit, errors.New("page must greater than 0")
+		}
+	}
+
+	limitStr := r.FormValue("limit")
+	if limitStr == "" {
+		limit = rest.DefaultLimit
+	} else {
+		limit, err = strconv.Atoi(limitStr)
+		if err != nil {
+			return tags, page, limit, err
+		} else if limit <= 0 {
+			return tags, page, limit, errors.New("limit must greater than 0")
+		}
+	}
+
+	return tags, page, limit, nil
 }

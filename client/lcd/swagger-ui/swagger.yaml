@@ -240,6 +240,18 @@ paths:
           schema:
             type: integer
           example: 1
+        - name: height.from
+          in: query
+          description: block height filter
+          schema:
+            type: integer
+          required: false
+        - name: height.to
+          in: query
+          description: block height filter
+          schema:
+            type: integer
+          required: false
       responses:
         200:
           description: All txs matching the provided events

@@ -18,9 +18,11 @@ import (
 )
 
 const (
-	flagTags  = "tags"
-	flagPage  = "page"
-	flagLimit = "limit"
+	flagTags       = "tags"
+	flagPage       = "page"
+	flagLimit      = "limit"
+	flagHeightFrom = "height-from"
+	flagHeightTo   = "height-to"
 )
 
 // *****
@@ -31,13 +33,14 @@ const (
 // QueryTxsByEventsCmd returns a command to search through transactions by events.
 func QueryTxsByEventsCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "txs",
+		Use:   "txs --tags '<key>:<value>[&<key>:<value>]'",
 		Short: "Query for paginated transactions that match a set of tags",
 		Long: strings.TrimSpace(`
 Search for transactions that match the exact given tags where results are paginated.
 
 Example:
-$ <appcli> query txs --tags '<tag1>:<value1>&<tag2>:<value2>' --page 1 --limit 30
+$ <appcli> query txs --tags 'message.action:send&message.sender=yoshi' --page 1 --limit 30
+$ <appcli> query txs --tags 'message.action:send&message.sender=yoshi' --height-from 77 --height-to 79
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			tagsStr := viper.GetString(flagTags)
@@ -65,6 +68,18 @@ $ <appcli> query txs --tags '<tag1>:<value1>&<tag2>:<value2>' --page 1 --limit 3
 					tag = fmt.Sprintf("%s='%s'", keyValue[0], keyValue[1])
 				}
 
+				tmTags = append(tmTags, tag)
+			}
+
+			heightFrom := viper.GetInt64(flagHeightFrom)
+			if heightFrom > 0 {
+				tag := fmt.Sprintf("%s>=%d", tmtypes.TxHeightKey, heightFrom)
+				tmTags = append(tmTags, tag)
+			}
+
+			heightTo := viper.GetInt64(flagHeightTo)
+			if heightTo > 0 {
+				tag := fmt.Sprintf("%s<=%d", tmtypes.TxHeightKey, heightTo)
 				tmTags = append(tmTags, tag)
 			}
 
@@ -102,6 +117,9 @@ $ <appcli> query txs --tags '<tag1>:<value1>&<tag2>:<value2>' --page 1 --limit 3
 	cmd.Flags().Uint32(flagPage, rest.DefaultPage, "Query a specific page of paginated results")
 	cmd.Flags().Uint32(flagLimit, rest.DefaultLimit, "Query number of transactions results per page returned")
 	_ = cmd.MarkFlagRequired(flagTags)
+
+	cmd.Flags().Int64(flagHeightFrom, 0, "Filter from a specific block height")
+	cmd.Flags().Int64(flagHeightTo, 0, "Filter to a specific block height")
 
 	return cmd
 }
