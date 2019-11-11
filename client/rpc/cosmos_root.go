@@ -15,4 +15,6 @@ func RegisterRPCRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc("/blocks/{height}", BlockRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/validatorsets/latest", rpc.LatestValidatorSetRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/validatorsets/{height}", rpc.ValidatorSetRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/genesis/genutil/gentxs", QueryGenesisTxRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/genesis/app_state/accounts", QueryGenesisAccountRequestHandlerFn(cliCtx)).Methods("GET")
 }

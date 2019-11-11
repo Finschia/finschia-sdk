@@ -87,9 +87,11 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 
 	queryCmd.AddCommand(
 		authclient.GetAccountCmd(cdc),
+		client.QueryGenesisAccountCmd(cdc),
 		client.LineBreak,
 		client.ValidatorCommand(cdc),
 		client.BlockCommand(cdc),
+		client.QueryGenesisTxCmd(cdc),
 		authclient.QueryTxsByEventsCmd(cdc),
 		authclient.QueryTxCmd(cdc),
 		client.LineBreak,

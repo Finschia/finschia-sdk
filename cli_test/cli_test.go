@@ -1574,3 +1574,85 @@ func TestBech32Prefix(t *testing.T) {
 	require.Equal(t, types.Bech32PrefixAccAddr, addr.String()[:4])
 	require.Equal(t, types.Bech32PrefixAccAddr, acc.Address[:4])
 }
+
+func TestGenesisAccounts(t *testing.T) {
+	genesisAccounts := [29]string{"alice", "bob", "bohr", "carol", "charlie", "dave", "einstein", "ellen", "eve", "frank",
+		"heisenberg", "isaac", "ivan", "jack", "justin", "mallet", "mallory", "marvin", "oscar",
+		"pat", "pauli", "peggy", "schrödinger", "steve", "trent", "trudy", "victor", "walter", "zoe"}
+
+	t.Parallel()
+	f := InitFixtures(t)
+
+	for _, acc := range genesisAccounts {
+		f.KeysAdd(acc)
+		f.AddGenesisAccount(f.KeyAddress(acc), startCoins)
+	}
+
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	totalGenesisAccount := len(genesisAccounts) + 2
+
+	// page=1, limit=30
+	page := 1
+	limit := 30
+	genAccs := f.QueryGenesisAccount(page, limit)
+	require.Equal(t, 30, len(genAccs))
+
+	// page=1, limit=1
+	page = 1
+	limit = 1
+	genAccs = f.QueryGenesisAccount(page, limit)
+	require.Equal(t, 1, len(genAccs))
+
+	// page=16, limit=2
+	page = 16
+	limit = 2
+	genAccs = f.QueryGenesisAccount(page, limit)
+	require.Equal(t, 1, len(genAccs))
+
+	// page=0, limit=30
+	page = 0
+	limit = 30
+	f.QueryGenesisAccountInvalid(errors.New("ERROR: The page must greater than 0"), page, limit)
+
+	// page=1, limit=0
+	page = 1
+	limit = 0
+	f.QueryGenesisAccountInvalid(errors.New("ERROR: The limit must greater than 0"), page, limit)
+
+	// page=16, limit=3
+	page = 16
+	limit = 3
+	pages := ((totalGenesisAccount - 1) / limit) + 1
+	errMsg := fmt.Sprintf("ERROR: The page should be within [1, %d] range, given %d", pages, page)
+	f.QueryGenesisAccountInvalid(errors.New(errMsg), page, limit)
+
+	// page =-1, limit = 10
+	page = -1
+	limit = 10
+	f.QueryGenesisAccountInvalid(errors.New("ERROR: The page must greater than 0"), page, limit)
+
+	// page =-1, limit = 10
+	page = 1
+	limit = -1
+	f.QueryGenesisAccountInvalid(errors.New("ERROR: The limit must greater than 0"), page, limit)
+
+	// page=1, limit=1(string type)
+	pageStr := "1"
+	limitStr := "1"
+	genAccs = f.QueryGenesisAccountByStrParams(pageStr, limitStr)
+	require.Equal(t, 1, len(genAccs))
+
+	// page=-1, limit=1(string type)
+	pageStr = "-1"
+	limitStr = "1"
+	f.QueryGenesisAccountInvalidByStrParams(errors.New("ERROR: The page must greater than 0"), pageStr, limitStr)
+
+	// page=1, limit=-1(string type)
+	pageStr = "1"
+	limitStr = "-1"
+	f.QueryGenesisAccountInvalidByStrParams(errors.New("ERROR: The limit must greater than 0"), pageStr, limitStr)
+
+	f.Cleanup()
+}

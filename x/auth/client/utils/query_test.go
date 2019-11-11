@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/hex"
+	"encoding/json"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -21,6 +22,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 
+	"github.com/link-chain/link/types"
 	"github.com/link-chain/link/x/auth/client/utils/mocks"
 )
 
@@ -126,6 +128,86 @@ func TestQueryTxResponseContainsIndexAndCode(t *testing.T) {
 	assert.Equal(t, index, res.Index)
 	assert.Equal(t, hashString, res.TxHash)
 	assert.Equal(t, uint32(0), res.Code)
+}
+
+func TestQueryGenesisTxs(t *testing.T) {
+	cdc := setupCodec()
+	mockClient := &mocks.Client{}
+	cliCtx := context.CLIContext{
+		Client:    mockClient,
+		TrustNode: true,
+		Codec:     cdc,
+	}
+
+	// exist genesis tx
+	genesisDoc := tmtypes.GenesisDoc{
+		AppState: json.RawMessage(`{"genutil":{"gentxs":[{"type":"cosmos-sdk/StdTx","value":{"memo":"test_genesis"}}]}}`),
+	}
+	genesisResult := ctypes.ResultGenesis{
+		Genesis: &genesisDoc,
+	}
+	mockClient.On("Genesis").Return(&genesisResult, nil)
+
+	genesisTxs, _ := QueryGenesisTx(cliCtx)
+	assert.NotEmpty(t, genesisTxs)
+
+	// not exist genesis tx
+	genesisDoc = tmtypes.GenesisDoc{
+		AppState: json.RawMessage(`{"genutil":{"gentxs":[]}`),
+	}
+	genesisResult = ctypes.ResultGenesis{
+		Genesis: &genesisDoc,
+	}
+	mockClient.On("Genesis").Return(&genesisResult, nil)
+	genesisTxs, _ = QueryGenesisTx(cliCtx)
+	assert.Empty(t, genesisTxs)
+
+}
+
+func TestQueryGenesisAccount(t *testing.T) {
+
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+
+	cdc := setupCodec()
+	mockClient := &mocks.Client{}
+	cliCtx := context.CLIContext{
+		Client:    mockClient,
+		TrustNode: true,
+		Codec:     cdc,
+	}
+
+	// exist genesis account
+	genesisDoc := tmtypes.GenesisDoc{
+		AppState: json.RawMessage(`{"accounts":[{"address":"link19rqsvml8ldr0yrhaewgv9smcdvrew5pah9j5t5","coins":[]}]}`),
+	}
+	genesisResult := ctypes.ResultGenesis{
+		Genesis: &genesisDoc,
+	}
+	mockClient.On("Genesis").Return(&genesisResult, nil)
+	genesisAccounts, err := QueryGenesisAccount(cliCtx, 1, 2)
+	assert.NoError(t, err)
+	assert.Equal(t, 1, len(genesisAccounts))
+
+	// no exist page
+	genesisAccounts, err = QueryGenesisAccount(cliCtx, 2, 1)
+	assert.Error(t, err)
+	assert.Equal(t, 0, len(genesisAccounts))
+
+	// page=0
+	genesisAccounts, err = QueryGenesisAccount(cliCtx, 0, 1)
+	assert.Error(t, err)
+	assert.Equal(t, 0, len(genesisAccounts))
+
+	// page=-1
+	genesisAccounts, err = QueryGenesisAccount(cliCtx, -1, 1)
+	assert.Error(t, err)
+	assert.Equal(t, 0, len(genesisAccounts))
+
+	// limit=-1
+	genesisAccounts, err = QueryGenesisAccount(cliCtx, 1, -1)
+	assert.Error(t, err)
+	assert.Equal(t, 0, len(genesisAccounts))
 }
 
 func TestParseHTTPArgs(t *testing.T) {

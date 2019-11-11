@@ -38,6 +38,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/tests"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	atypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
@@ -949,6 +950,58 @@ func (f *Fixtures) QueryTokens(flags ...string) tokenModule.Tokens {
 	err := cdc.UnmarshalJSON([]byte(res), &tokens)
 	require.NoError(f.T, err)
 	return tokens
+}
+
+func (f *Fixtures) QueryGenesisTxs(flags ...string) []sdk.Tx {
+	cmd := fmt.Sprintf("%s query genesis-txs %s", f.LinkcliBinary, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var txs []sdk.Tx
+	err := cdc.UnmarshalJSON([]byte(res), &txs)
+	require.NoError(f.T, err)
+	return txs
+}
+
+func (f *Fixtures) QueryGenesisAccount(page, limit int, flags ...string) []atypes.BaseAccount {
+	cmd := fmt.Sprintf("%s query genesis-accounts --page=%d --limit=%d %s", f.LinkcliBinary, page, limit, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var accounts []atypes.BaseAccount
+	err := cdc.UnmarshalJSON([]byte(res), &accounts)
+	require.NoError(f.T, err)
+	return accounts
+}
+
+func (f *Fixtures) QueryGenesisAccountByStrParams(page, limit string, flags ...string) []atypes.BaseAccount {
+	cmd := fmt.Sprintf("%s query genesis-accounts --page=%s --limit=%s %s", f.LinkcliBinary, page, limit, f.Flags())
+	return execQueryGenesisAccount(f, cmd)
+}
+
+func execQueryGenesisAccount(f *Fixtures, cmd string) []atypes.BaseAccount {
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var accounts []atypes.BaseAccount
+	err := cdc.UnmarshalJSON([]byte(res), &accounts)
+	require.NoError(f.T, err)
+	return accounts
+}
+
+func (f *Fixtures) QueryGenesisAccountInvalid(expectedErr error, page, limit int, flags ...string) {
+	cmd := fmt.Sprintf("%s query genesis-accounts --page=%d --limit=%d %s", f.LinkcliBinary, page, limit, f.Flags())
+	execQueryGenesisAccountInvalid(f, cmd, expectedErr)
+}
+
+func (f *Fixtures) QueryGenesisAccountInvalidByStrParams(expectedErr error, page, limit string, flags ...string) {
+	cmd := fmt.Sprintf("%s query genesis-accounts --page=%s --limit=%s %s", f.LinkcliBinary, page, limit, f.Flags())
+	execQueryGenesisAccountInvalid(f, cmd, expectedErr)
+}
+
+func execQueryGenesisAccountInvalid(f *Fixtures, cmd string, expectedErr error) {
+	_, err := tests.ExecuteT(f.T, cmd, "")
+	require.EqualError(f.T, expectedErr, err)
 }
 
 //___________________________________________________________________________________

@@ -17,9 +17,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	gtypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
 	sdk "github.com/link-chain/link/x/auth/client/internal/types"
 )
+
+const MaxPerPage = 100
 
 // *****
 // Original code: `github.com/cosmos/cosmos-sdk/x/auth/client/utils/query.go`
@@ -118,6 +121,107 @@ func QueryTx(cliCtx context.CLIContext, hashHexStr string) (sdk.TxResponse, erro
 	}
 
 	return out, nil
+}
+
+func QueryGenesisTx(cliCtx context.CLIContext) ([]sdk.Tx, error) {
+	node, err := cliCtx.GetNode()
+	if err != nil {
+		return []sdk.Tx{}, nil
+	}
+
+	resultGenesis, err := node.Genesis()
+	if err != nil {
+		return []sdk.Tx{}, err
+	}
+
+	appState, err := gtypes.GenesisStateFromGenDoc(cliCtx.Codec, *resultGenesis.Genesis)
+	if err != nil {
+		return []sdk.Tx{}, err
+	}
+
+	genState := gtypes.GetGenesisStateFromAppState(cliCtx.Codec, appState)
+	genTxs := make([]sdk.Tx, len(genState.GenTxs))
+	for i, tx := range genState.GenTxs {
+		err := cliCtx.Codec.UnmarshalJSON(tx, &genTxs[i])
+		if err != nil {
+			return []sdk.Tx{}, err
+		}
+	}
+	return genTxs, nil
+}
+
+func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) ([]types.BaseAccount, error) {
+	node, err := cliCtx.GetNode()
+	if err != nil {
+		return []types.BaseAccount{}, err
+	}
+
+	resultGenesis, err := node.Genesis()
+	if err != nil {
+		return []types.BaseAccount{}, err
+	}
+
+	appState, err := gtypes.GenesisStateFromGenDoc(cliCtx.Codec, *resultGenesis.Genesis)
+	if err != nil {
+		return []types.BaseAccount{}, err
+	}
+
+	var genAccounts []types.BaseAccount
+	cliCtx.Codec.MustUnmarshalJSON(appState["accounts"], &genAccounts)
+	totalCount := len(genAccounts)
+
+	perPage, err = validatePerPage(perPage)
+	if err != nil {
+		return []types.BaseAccount{}, err
+	}
+
+	page, err = validatePage(page, perPage, totalCount)
+	if err != nil {
+		return []types.BaseAccount{}, err
+	}
+	start, end := getCountIndexRange(page, perPage, totalCount)
+
+	return genAccounts[start:end], nil
+}
+
+func validatePage(page, perPage, totalCount int) (int, error) {
+	if page < 1 {
+		return 1, fmt.Errorf("The page must greater than 0")
+	}
+
+	pages := ((totalCount - 1) / perPage) + 1
+	if pages == 0 {
+		pages = 1
+	}
+	if page < 0 || page > pages {
+		return 1, fmt.Errorf("The page should be within [1, %d] range, given %d", pages, page)
+	}
+
+	return page, nil
+}
+
+func validatePerPage(perPage int) (int, error) {
+	if perPage < 1 {
+		return 1, fmt.Errorf("The limit must greater than 0")
+	}
+
+	if perPage > MaxPerPage {
+		return MaxPerPage, nil
+	}
+	return perPage, nil
+}
+
+func getCountIndexRange(page, perPage, totalCount int) (int, int) {
+	start := (page - 1) * perPage
+	end := start + perPage
+	if start < 0 {
+		return 0, end
+	}
+	if end > totalCount {
+		end = totalCount
+	}
+
+	return start, end
 }
 
 // formatTxResults parses the indexed txs into a slice of TxResponse objects.
