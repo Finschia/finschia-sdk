@@ -42,6 +42,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+
+	"github.com/link-chain/link/x/lrc3"
+
+	nft "github.com/link-chain/link/x/nft"
 )
 
 const (
@@ -398,6 +402,42 @@ func (f *Fixtures) TxMultisign(fileName, name string, signaturesFiles []string,
 		fileName, name, strings.Join(signaturesFiles, " "),
 	)
 	return executeWriteRetStdStreams(f.T, cmd)
+}
+
+// TxLRC3Generate is linkcli tx lrc3
+func (f *Fixtures) TxLRC3Init(denom string, from string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 init %s --from %s %v", f.LinkcliBinary, denom, from, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+// TxLRC3Mint is linkcli tx lrc3
+func (f *Fixtures) TxLRC3Mint(denom, to, from, testTokenURI1 string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 mint %s %s %s --from %s %v", f.LinkcliBinary, denom, testTokenURI1, to, from, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+// TxLRC3Burn is linkcli tx lrc3
+func (f *Fixtures) TxLRC3Burn(denom string, tokenId int, from string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 burn %s %d --from %s %v", f.LinkcliBinary, denom, tokenId, from, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+// TxLRC3Approve is linkcli tx lrc3
+func (f *Fixtures) TxLRC3Approve(denom string, tokenId int, to string, sender string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 approve %s %d %s --from %s %v", f.LinkcliBinary, denom, tokenId, to, sender, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+// TxLRC3Transfer is linkcli tx lrc3
+func (f *Fixtures) TxLRC3Transfer(denom string, tokenId int, to string, from string, sender string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 transfer %s %s %s %d --from %s %v", f.LinkcliBinary, from, to, denom, tokenId, sender, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+// TxLRC3SetApprovalForAll is linkcli tx lrc3
+func (f *Fixtures) TxLRC3SetApprovalForAll(denom string, operator string, approved bool, sender string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 setApprovalForAll %s %s %t --from %s %v", f.LinkcliBinary, denom, operator, approved, sender, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
 //___________________________________________________________________________________
@@ -787,6 +827,87 @@ func (f *Fixtures) QueryTotalSupplyOf(denom string, flags ...string) sdk.Int {
 	err := cdc.UnmarshalJSON([]byte(res), &supplyOf)
 	require.NoError(f.T, err)
 	return supplyOf
+}
+
+// QueryLRC3
+func (f *Fixtures) QueryLRC3(denom string, flags ...string) nft.Collection {
+	cmd := fmt.Sprintf("%s query lrc3 get %s %v", f.LinkcliBinary, denom, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
+	var lrc3 nft.Collection
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &lrc3)
+	require.NoError(f.T, err)
+
+	return lrc3
+}
+
+// QueryAllLRC3
+func (f *Fixtures) QueryAllLRC3(flags ...string) nft.Collections {
+	cmd := fmt.Sprintf("%s query lrc3 getAll %v", f.LinkcliBinary, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
+	var initRes map[string]json.RawMessage
+	var allLRC3 nft.Collections
+	err := json.Unmarshal([]byte(out), &initRes)
+	require.NoError(f.T, err)
+	cdc := codec.New()
+	codec.RegisterCrypto(cdc)
+
+	for _, value := range initRes {
+		var lrc3 nft.Collection
+		err = cdc.UnmarshalJSON(value, &lrc3)
+		require.NoError(f.T, err, "value %v, err %v", value, err)
+		allLRC3 = append(allLRC3, lrc3)
+	}
+
+	return allLRC3
+}
+
+// QueryLRC3BalanceOf
+func (f *Fixtures) QueryLRC3BalanceOf(symbol, owner string, flags ...string) lrc3.TokenBalance {
+	cmd := fmt.Sprintf("%s query lrc3 balanceOf %s %s %v", f.LinkcliBinary, symbol, owner, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
+	var balance lrc3.TokenBalance
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &balance)
+	require.NoError(f.T, err)
+
+	return balance
+}
+
+// QueryLRC3OwnerOf
+func (f *Fixtures) QueryLRC3OwnerOf(symbol string, tokenId int, flags ...string) lrc3.TokenOwner {
+	cmd := fmt.Sprintf("%s query lrc3 ownerOf %s %d %v", f.LinkcliBinary, symbol, tokenId, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
+	var owner lrc3.TokenOwner
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &owner)
+	require.NoError(f.T, err)
+
+	return owner
+}
+
+// QueryLRC3getApproved
+func (f *Fixtures) QueryLRC3getApproved(symbol string, tokenId int, flags ...string) lrc3.Approval {
+	cmd := fmt.Sprintf("%s query lrc3 getApproved %s %d %v", f.LinkcliBinary, symbol, tokenId, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
+	var approve lrc3.Approval
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &approve)
+	require.NoError(f.T, err)
+
+	return approve
+}
+
+// QueryLRC3IsApprovedForAll
+func (f *Fixtures) QueryLRC3IsApprovedForAll(symbol string, owner, operator string, flags ...string) lrc3.OperatorApprovals {
+	cmd := fmt.Sprintf("%s query lrc3 isApprovedForAll %s %s %s %v", f.LinkcliBinary, symbol, owner, operator, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
+	var operatorApprovals lrc3.OperatorApprovals
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &operatorApprovals)
+	require.NoError(f.T, err)
+
+	return operatorApprovals
 }
 
 //___________________________________________________________________________________

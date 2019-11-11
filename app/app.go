@@ -24,6 +24,8 @@ import (
 
 	"github.com/link-chain/link/version"
 	"github.com/link-chain/link/x/bank"
+	"github.com/link-chain/link/x/lrc3"
+	"github.com/link-chain/link/x/nft"
 	"github.com/link-chain/link/x/token"
 )
 
@@ -49,6 +51,7 @@ var (
 		supply.AppModuleBasic{},
 		token.AppModuleBasic{},
 		iam.AppModuleBasic{},
+		lrc3.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -90,6 +93,9 @@ type LinkApp struct {
 	tokenKeeper   token.Keeper
 	iamKeeper     iam.Keeper
 
+	lrc3Keeper lrc3.Keeper
+	nftKeeper  nft.Keeper
+
 	// the module manager
 	mm *module.Manager
 }
@@ -110,6 +116,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		params.StoreKey,
 		token.StoreKey,
 		iam.StoreKey,
+		nft.StoreKey, lrc3.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -137,6 +144,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
 	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), keys[token.StoreKey])
+	app.nftKeeper = nft.NewKeeper(app.cdc, keys[nft.StoreKey])
+	app.lrc3Keeper = lrc3.NewKeeper(app.cdc, app.nftKeeper, keys[lrc3.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -148,6 +157,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		staking.NewAppModule(app.stakingKeeper, nil, app.accountKeeper, app.supplyKeeper),
 		token.NewAppModule(app.tokenKeeper),
+		nft.NewAppModule(app.nftKeeper),
+		lrc3.NewAppModule(app.lrc3Keeper),
 	)
 
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
@@ -158,7 +169,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		genaccounts.ModuleName, staking.ModuleName,
 		auth.ModuleName, bank.ModuleName,
 		supply.ModuleName, genutil.ModuleName,
-		token.ModuleName,
+		token.ModuleName, lrc3.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())

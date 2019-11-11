@@ -1460,6 +1460,111 @@ func TestLinkCLITokenMintBurnPerm(t *testing.T) {
 	f.Cleanup()
 }
 
+func TestLRC3Simulation(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer proc.Stop(false)
+
+	testDenom1 := "test_denom1"
+
+	testTokenURI := "testToken_URI"
+
+	fooAddr := f.KeyAddress(keyFoo)
+	barAddr := f.KeyAddress(keyBar)
+
+	// generate lrc3
+	success, _, _ := f.TxLRC3Init(testDenom1, fooAddr.String(), "-y")
+	require.True(t, success)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	deployed1 := f.QueryLRC3(testDenom1)
+
+	require.Equal(t, deployed1.Denom, testDenom1)
+	require.Empty(t, deployed1.NFTs)
+
+	// mint token
+	success, _, _ = f.TxLRC3Mint(testDenom1, fooAddr.String(), fooAddr.String(), testTokenURI, "-y")
+	require.True(t, success)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	// check balance
+	fooBalance := f.QueryLRC3BalanceOf(testDenom1, fooAddr.String())
+	require.Equal(t, 1, fooBalance.Amount)
+	require.Equal(t, fooAddr.String(), fooBalance.Address.String())
+
+	token0Owner := f.QueryLRC3OwnerOf(testDenom1, 0)
+	require.Equal(t, testDenom1, token0Owner.Denom)
+	require.Equal(t, "0", token0Owner.TokenId)
+	require.Equal(t, fooAddr.String(), token0Owner.Address.String())
+
+	// approve
+	success, _, _ = f.TxLRC3Approve(testDenom1, 0, barAddr.String(), fooAddr.String(), "-y")
+	require.True(t, success)
+
+	// check approve
+	approve := f.QueryLRC3getApproved(testDenom1, 0)
+	require.Equal(t, "0", approve.TokenId)
+	require.Equal(t, barAddr.String(), approve.ApprovedAddress.String())
+
+	// transfer(success)
+	success, _, _ = f.TxLRC3Transfer(testDenom1, 0, barAddr.String(), fooAddr.String(), fooAddr.String(), "-y")
+	require.True(t, success)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	// check balance
+	fooBalance = f.QueryLRC3BalanceOf(testDenom1, fooAddr.String())
+	require.Equal(t, fooAddr.String(), fooBalance.Address.String())
+	require.Equal(t, 0, fooBalance.Amount)
+	barBalance := f.QueryLRC3BalanceOf(testDenom1, barAddr.String())
+	require.Equal(t, 1, barBalance.Amount)
+	require.Equal(t, barAddr.String(), barBalance.Address.String())
+	token0Owner = f.QueryLRC3OwnerOf(testDenom1, 0)
+	require.Equal(t, testDenom1, token0Owner.Denom)
+	require.Equal(t, "0", token0Owner.TokenId)
+	require.Equal(t, barAddr.String(), token0Owner.Address.String())
+
+	// mint token
+	success, _, _ = f.TxLRC3Mint(testDenom1, fooAddr.String(), fooAddr.String(), testTokenURI, "-y")
+	require.True(t, success)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	fooBalance = f.QueryLRC3BalanceOf(testDenom1, fooAddr.String())
+	require.Equal(t, fooAddr.String(), fooBalance.Address.String())
+	require.Equal(t, 1, fooBalance.Amount)
+
+	token0Owner = f.QueryLRC3OwnerOf(testDenom1, 1)
+	require.Equal(t, testDenom1, token0Owner.Denom)
+	require.Equal(t, "1", token0Owner.TokenId)
+	require.Equal(t, fooAddr.String(), token0Owner.Address.String())
+
+	// setApprovalAll
+	success, _, _ = f.TxLRC3SetApprovalForAll(testDenom1, barAddr.String(), true, fooAddr.String(), "-y")
+	require.True(t, success)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	// check operator approval
+	operatorApprovals := f.QueryLRC3IsApprovedForAll(testDenom1, fooAddr.String(), barAddr.String())
+	require.Equal(t, testDenom1, operatorApprovals.Denom)
+	require.Equal(t, fooAddr.String(), operatorApprovals.OwnerAddress.String())
+	require.Equal(t, 1, len(operatorApprovals.Operators))
+	require.Equal(t, barAddr.String(), operatorApprovals.Operators[0].String())
+
+	// mint token
+	success, _, _ = f.TxLRC3Mint(testDenom1, fooAddr.String(), fooAddr.String(), testTokenURI, "-y")
+	require.True(t, success)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	// burn token
+	success, _, _ = f.TxLRC3Burn(testDenom1, 2, fooAddr.String(), "-y")
+	require.True(t, success)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	f.Cleanup()
+}
+
 func TestBech32Prefix(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
