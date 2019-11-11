@@ -125,7 +125,7 @@ paths:
           description: Whether to translate transaction data in the response
           required: false
           schema:
-            type: string
+            type: boolean
           example: true
       responses:
         200:
@@ -147,14 +147,14 @@ paths:
           description: Block height
           required: true
           schema:
-            type: number
+            type: integer
           example: 1
         - name: extended
           in: query
           description: Whether to translate transaction data in the response
           required: false
           schema:
-            type: string
+            type: boolean
           example: true
       responses:
         200:
