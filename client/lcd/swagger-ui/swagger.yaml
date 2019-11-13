@@ -7,6 +7,8 @@ info:
 tags:
   - name: Tendermint RPC
     description: Tendermint APIs, such as query blocks, transactions and node status
+  - name: Genesis State
+    description: Query gentxs, accounts from genesis data
   - name: Transactions
     description: Search, encode, or broadcast transactions.
   - name: Auth
@@ -169,14 +171,14 @@ paths:
           description: Request block height doesn't
         500:
           description: Server internal error
-  /txs/genesis:
+  /genesis/genutil/gentxs:
     get:
-      summary: Get genesis transactions
+      summary: Get gentxs from genesis data
       tags:
-        - Transactions
+        - Genesis State
       responses:
         200:
-          description: Genesis transactions
+          description: Gentxs in genesis data
           content:
             application/json:
               schema:
@@ -185,6 +187,35 @@ paths:
                   $ref: '#/components/schemas/Tx'
         500:
           description: Internal Server Error
+  /genesis/app_state/accounts:
+    get:
+      tags:
+        - Genesis State
+      parameters:
+        - name: page
+          in: query
+          description: Page number(start to 1)
+          schema:
+            type: integer
+          example: 1
+        - name: limit
+          in: query
+          description: Maximum number of items per page(default=30, maximum=100)
+          schema:
+            type: integer
+          example: 1
+      summary: Get accounts from genesis data
+      responses:
+        200:
+          description: Accounts in genesis data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenesisAccount'
+        500:
+          description: Server internal error
   /txs/{hash}:
     get:
       summary: Get a Tx by hash
@@ -297,22 +328,6 @@ paths:
         500:
           description: Internal Server Error
       x-codegen-request-body-name: txBroadcast
-  /auth/accounts/genesis:
-    get:
-      tags:
-        - Auth
-      summary: Get the account information at genesis
-      responses:
-        200:
-          description: Account information at genesis
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GenesisAccount'
-        500:
-          description: Server internel error
   /auth/accounts/{address}:
     get:
       tags:
@@ -636,48 +651,20 @@ components:
     GenesisAccount:
       type: object
       properties:
-        type:
+        address:
+          $ref: '#/components/schemas/Address'
+        coins:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+        public_key:
+          $ref: '#/components/schemas/PublicKey'
+        account_number:
           type: string
-          example: "cosmos-sdk/GenesisAccount"
-        value:
-          type: object
-          properties:
-            address:
-              $ref: '#/components/schemas/Address'
-            coins:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            sequence:
-              type: string
-              example: "0"
-            account_number:
-              type: string
-              example: "0"
-            original_vesting:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            delegated_free:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            delegated_vesting:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            start_time:
-              type: string
-              example: "0"
-            end_time:
-              type: string
-              example: "0"
-            module_name:
-              type: string
-            module_permissions:
-              type: array
-              items:
-                type: string
+          example: "0"
+        sequence:
+          type: string
+          example: "0"
     BlockID:
       type: object
       properties:
