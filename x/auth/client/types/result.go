@@ -6,6 +6,7 @@ import (
 	"math"
 	"strings"
 
+	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 )
 
@@ -138,5 +139,25 @@ func NewSearchTxsResult(totalCount, count, page, limit int, txs []TxResponse) Se
 		PageTotal:  int(math.Ceil(float64(totalCount) / float64(limit))),
 		Limit:      limit,
 		Txs:        txs,
+	}
+}
+
+type SearchGenesisAccountResult struct {
+	TotalCount int                 `json:"total_count"`
+	Count      int                 `json:"count"`
+	PageNumber int                 `json:"page_number"`
+	PageTotal  int                 `json:"page_total"`
+	Limit      int                 `json:"limit"`
+	Accounts   []types.BaseAccount `json:"accounts"`
+}
+
+func NewSearchGenesisAccountResult(totalCount, count, page, limit int, accounts []types.BaseAccount) SearchGenesisAccountResult {
+	return SearchGenesisAccountResult{
+		TotalCount: totalCount,
+		Count:      count,
+		PageNumber: page,
+		PageTotal:  int(math.Ceil(float64(totalCount) / float64(limit))),
+		Limit:      limit,
+		Accounts:   accounts,
 	}
 }

@@ -38,11 +38,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/tests"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	atypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+	atypes "github.com/link-chain/link/x/auth/client/types"
 
 	"github.com/link-chain/link/x/lrc3"
 
@@ -963,27 +963,21 @@ func (f *Fixtures) QueryGenesisTxs(flags ...string) []sdk.Tx {
 	return txs
 }
 
-func (f *Fixtures) QueryGenesisAccount(page, limit int, flags ...string) []atypes.BaseAccount {
+func (f *Fixtures) QueryGenesisAccount(page, limit int, flags ...string) atypes.SearchGenesisAccountResult {
 	cmd := fmt.Sprintf("%s query genesis-accounts --page=%d --limit=%d %s", f.LinkcliBinary, page, limit, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var accounts []atypes.BaseAccount
-	err := cdc.UnmarshalJSON([]byte(res), &accounts)
-	require.NoError(f.T, err)
-	return accounts
+	return execQueryGenesisAccount(f, cmd)
 }
 
-func (f *Fixtures) QueryGenesisAccountByStrParams(page, limit string, flags ...string) []atypes.BaseAccount {
+func (f *Fixtures) QueryGenesisAccountByStrParams(page, limit string, flags ...string) atypes.SearchGenesisAccountResult {
 	cmd := fmt.Sprintf("%s query genesis-accounts --page=%s --limit=%s %s", f.LinkcliBinary, page, limit, f.Flags())
 	return execQueryGenesisAccount(f, cmd)
 }
 
-func execQueryGenesisAccount(f *Fixtures, cmd string) []atypes.BaseAccount {
+func execQueryGenesisAccount(f *Fixtures, cmd string) atypes.SearchGenesisAccountResult {
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
-	var accounts []atypes.BaseAccount
+	var accounts atypes.SearchGenesisAccountResult
 	err := cdc.UnmarshalJSON([]byte(res), &accounts)
 	require.NoError(f.T, err)
 	return accounts

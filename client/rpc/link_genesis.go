@@ -55,11 +55,11 @@ func QueryGenesisTxCmd(cdc *codec.Codec) *cobra.Command {
 func QueryGenesisAccountCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "genesis-accounts",
-		Short: "Query for genesis accounts.",
+		Short: "Query for paginated genesis accounts.",
 		Long: strings.TrimSpace(`
 		Query genesis accounts that occurred when the chain first started.
 		Example:
-		$ <appcli> query genesis-account
+		$ <appcli> query genesis-account --page 1 --limit 30
 		`),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			page := viper.GetInt(flagPage)

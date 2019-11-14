@@ -19,7 +19,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	gtypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	sdk "github.com/link-chain/link/x/auth/client/internal/types"
+	sdk "github.com/link-chain/link/x/auth/client/types"
 )
 
 const MaxPerPage = 100
@@ -150,20 +150,20 @@ func QueryGenesisTx(cliCtx context.CLIContext) ([]sdk.Tx, error) {
 	return genTxs, nil
 }
 
-func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) ([]types.BaseAccount, error) {
+func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) (sdk.SearchGenesisAccountResult, error) {
 	node, err := cliCtx.GetNode()
 	if err != nil {
-		return []types.BaseAccount{}, err
+		return sdk.SearchGenesisAccountResult{}, err
 	}
 
 	resultGenesis, err := node.Genesis()
 	if err != nil {
-		return []types.BaseAccount{}, err
+		return sdk.SearchGenesisAccountResult{}, err
 	}
 
 	appState, err := gtypes.GenesisStateFromGenDoc(cliCtx.Codec, *resultGenesis.Genesis)
 	if err != nil {
-		return []types.BaseAccount{}, err
+		return sdk.SearchGenesisAccountResult{}, err
 	}
 
 	var genAccounts []types.BaseAccount
@@ -172,16 +172,17 @@ func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) ([]types.
 
 	perPage, err = validatePerPage(perPage)
 	if err != nil {
-		return []types.BaseAccount{}, err
+		return sdk.SearchGenesisAccountResult{}, err
 	}
 
 	page, err = validatePage(page, perPage, totalCount)
 	if err != nil {
-		return []types.BaseAccount{}, err
+		return sdk.SearchGenesisAccountResult{}, err
 	}
 	start, end := getCountIndexRange(page, perPage, totalCount)
+	resultAccounts := genAccounts[start:end]
 
-	return genAccounts[start:end], nil
+	return sdk.NewSearchGenesisAccountResult(totalCount, len(resultAccounts), page, perPage, resultAccounts), nil
 }
 
 func validatePage(page, perPage, totalCount int) (int, error) {

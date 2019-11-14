@@ -1596,20 +1596,35 @@ func TestGenesisAccounts(t *testing.T) {
 	// page=1, limit=30
 	page := 1
 	limit := 30
-	genAccs := f.QueryGenesisAccount(page, limit)
-	require.Equal(t, 30, len(genAccs))
+	res := f.QueryGenesisAccount(page, limit)
+	require.Equal(t, 30, len(res.Accounts))
+	require.Equal(t, 31, res.TotalCount)
+	require.Equal(t, 30, res.Count)
+	require.Equal(t, 1, res.PageNumber)
+	require.Equal(t, 2, res.PageTotal)
+	require.Equal(t, 30, res.Limit)
 
 	// page=1, limit=1
 	page = 1
 	limit = 1
-	genAccs = f.QueryGenesisAccount(page, limit)
-	require.Equal(t, 1, len(genAccs))
+	res = f.QueryGenesisAccount(page, limit)
+	require.Equal(t, 1, len(res.Accounts))
+	require.Equal(t, 31, res.TotalCount)
+	require.Equal(t, 1, res.Count)
+	require.Equal(t, 1, res.PageNumber)
+	require.Equal(t, 31, res.PageTotal)
+	require.Equal(t, 1, res.Limit)
 
 	// page=16, limit=2
 	page = 16
 	limit = 2
-	genAccs = f.QueryGenesisAccount(page, limit)
-	require.Equal(t, 1, len(genAccs))
+	res = f.QueryGenesisAccount(page, limit)
+	require.Equal(t, 1, len(res.Accounts))
+	require.Equal(t, 31, res.TotalCount)
+	require.Equal(t, 1, res.Count)
+	require.Equal(t, 16, res.PageNumber)
+	require.Equal(t, 16, res.PageTotal)
+	require.Equal(t, 2, res.Limit)
 
 	// page=0, limit=30
 	page = 0
@@ -1641,8 +1656,13 @@ func TestGenesisAccounts(t *testing.T) {
 	// page=1, limit=1(string type)
 	pageStr := "1"
 	limitStr := "1"
-	genAccs = f.QueryGenesisAccountByStrParams(pageStr, limitStr)
-	require.Equal(t, 1, len(genAccs))
+	res = f.QueryGenesisAccountByStrParams(pageStr, limitStr)
+	require.Equal(t, 1, len(res.Accounts))
+	require.Equal(t, 31, res.TotalCount)
+	require.Equal(t, 1, res.Count)
+	require.Equal(t, 1, res.PageNumber)
+	require.Equal(t, 31, res.PageTotal)
+	require.Equal(t, 1, res.Limit)
 
 	// page=-1, limit=1(string type)
 	pageStr = "-1"

@@ -185,29 +185,29 @@ func TestQueryGenesisAccount(t *testing.T) {
 		Genesis: &genesisDoc,
 	}
 	mockClient.On("Genesis").Return(&genesisResult, nil)
-	genesisAccounts, err := QueryGenesisAccount(cliCtx, 1, 2)
+	res, err := QueryGenesisAccount(cliCtx, 1, 2)
 	assert.NoError(t, err)
-	assert.Equal(t, 1, len(genesisAccounts))
+	assert.Equal(t, 1, len(res.Accounts))
 
 	// no exist page
-	genesisAccounts, err = QueryGenesisAccount(cliCtx, 2, 1)
+	res, err = QueryGenesisAccount(cliCtx, 2, 1)
 	assert.Error(t, err)
-	assert.Equal(t, 0, len(genesisAccounts))
+	assert.Equal(t, 0, len(res.Accounts))
 
 	// page=0
-	genesisAccounts, err = QueryGenesisAccount(cliCtx, 0, 1)
+	res, err = QueryGenesisAccount(cliCtx, 0, 1)
 	assert.Error(t, err)
-	assert.Equal(t, 0, len(genesisAccounts))
+	assert.Equal(t, 0, len(res.Accounts))
 
 	// page=-1
-	genesisAccounts, err = QueryGenesisAccount(cliCtx, -1, 1)
+	res, err = QueryGenesisAccount(cliCtx, -1, 1)
 	assert.Error(t, err)
-	assert.Equal(t, 0, len(genesisAccounts))
+	assert.Equal(t, 0, len(res.Accounts))
 
 	// limit=-1
-	genesisAccounts, err = QueryGenesisAccount(cliCtx, 1, -1)
+	res, err = QueryGenesisAccount(cliCtx, 1, -1)
 	assert.Error(t, err)
-	assert.Equal(t, 0, len(genesisAccounts))
+	assert.Equal(t, 0, len(res.Accounts))
 }
 
 func TestParseHTTPArgs(t *testing.T) {
