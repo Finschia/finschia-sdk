@@ -999,6 +999,38 @@ func execQueryGenesisAccountInvalid(f *Fixtures, cmd string, expectedErr error) 
 }
 
 //___________________________________________________________________________________
+// linkcli mempool
+
+// MempoolNumUnconfirmedTxs is linkcli mempool num-unconfirmed-txs
+func (f *Fixtures) MempoolNumUnconfirmedTxs(flags ...string) *tmctypes.ResultUnconfirmedTxs {
+	cmd := fmt.Sprintf("%s mempool num-unconfirmed-txs %v", f.LinkcliBinary, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
+	var result tmctypes.ResultUnconfirmedTxs
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &result)
+	require.NoError(f.T, err, "out %v\n, err %v", out, err)
+	return &result
+}
+
+// MempoolUnconfirmedTxHashes is linkcli mempool unconfirmed-txs --hash
+type ResultUnconfirmedTxHashes struct {
+	Count      int      `json:"n_txs"`
+	Total      int      `json:"total"`
+	TotalBytes int64    `json:"total_bytes"`
+	Txs        []string `json:"txs"`
+}
+
+func (f *Fixtures) MempoolUnconfirmedTxHashes(flags ...string) *ResultUnconfirmedTxHashes {
+	cmd := fmt.Sprintf("%s mempool unconfirmed-txs --hash %v", f.LinkcliBinary, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
+	var result ResultUnconfirmedTxHashes
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &result)
+	require.NoError(f.T, err, "out %v\n, err %v", out, err)
+	return &result
+}
+
+//___________________________________________________________________________________
 // tendermint rpc
 func (f *Fixtures) NetInfo(flags ...string) *tmctypes.ResultNetInfo {
 	tmc := tmclient.NewHTTP(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")

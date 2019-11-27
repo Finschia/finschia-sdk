@@ -56,6 +56,7 @@ func main() {
 	// Construct Root Command
 	rootCmd.AddCommand(
 		client.StatusCommand(),
+		client.MempoolCmd(cdc),
 		client.ConfigCmd(app.DefaultCLIHome),
 		queryCmd(cdc),
 		txCmd(cdc),

@@ -171,6 +171,53 @@ paths:
           description: Request block height doesn't
         500:
           description: Server internal error
+  /num_unconfirmed_txs:
+    get:
+      summary: Get the number of unconfirmed transactions
+      tags:
+        - Tendermint RPC
+      description: Get the status about mempool of the connected node. Result may vary depending on the node.
+      responses:
+        200:
+          description: Status about unconfirmed transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnconfirmedTransactionsResponse'
+        500:
+          description: Server internal error
+  /unconfirmed_txs:
+    get:
+      summary: Get the list of unconfirmed transactions
+      tags:
+        - Tendermint RPC
+      description: Get the tx list from mempool of the connected node. Result may vary depending on the node.
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of unconfirmed transactions to return (max 100)
+          required: false
+          schema:
+            type: integer
+          example: 30
+        - name: hash
+          in: query
+          description: Return tx as hash
+          required: false
+          schema:
+            type: boolean
+          example: true
+      responses:
+        200:
+          description: List of unconfirmed transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnconfirmedTransactionsResponse'
+        400:
+          description: Bad request
+        500:
+          description: Server internal error
   /genesis/genutil/gentxs:
     get:
       summary: Get gentxs from genesis data
@@ -1062,3 +1109,27 @@ components:
         txhash:
           type: string
           example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
+    UnconfirmedTransactionsResponse:
+        type: "object"
+        required:
+          - "n_txs"
+          - "total"
+          - "total_bytes"
+          - "txs"
+        properties:
+          n_txs:
+            type: "string"
+            example: "0"
+          total:
+            type: "string"
+            example: "0"
+          total_bytes:
+            type: "string"
+            example: "0"
+          txs:
+            type: array
+            x-nullable: true
+            items:
+              type: string
+              x-nullable: true
+            example: '[]'

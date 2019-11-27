@@ -1676,3 +1676,55 @@ func TestGenesisAccounts(t *testing.T) {
 
 	f.Cleanup()
 }
+
+func TestLinkCLIMempool(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	// Save key addresses for later use
+	fooAddr := f.KeyAddress(keyFoo)
+	barAddr := f.KeyAddress(keyBar)
+
+	fooAcc := f.QueryAccount(fooAddr)
+	startTokens := sdk.TokensFromConsensusPower(50)
+	require.Equal(t, startTokens, fooAcc.GetCoins().AmountOf(denom))
+
+	// Send some tokens from one account to the other
+	sendTokens := sdk.TokensFromConsensusPower(10)
+	success, stdout, stderr := f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y", "-b sync")
+	require.True(t, success)
+	require.NotEmpty(t, stdout)
+	require.Empty(t, stderr)
+
+	// check mempool size
+	{
+		result := f.MempoolNumUnconfirmedTxs()
+		require.Equal(t, 1, result.Count)
+		require.Equal(t, 1, result.Total)
+		require.Empty(t, result.Txs)
+	}
+
+	// check mempool txs
+	{
+		result := f.MempoolUnconfirmedTxHashes()
+		require.Equal(t, 1, result.Count)
+		require.Equal(t, 1, result.Total)
+
+		txHash := unmarshalTxResponse(t, stdout).TxHash
+		require.Equal(t, txHash, result.Txs[0])
+	}
+
+	// Ensure account balances match expected
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	barAcc := f.QueryAccount(barAddr)
+	require.Equal(t, sendTokens, barAcc.GetCoins().AmountOf(denom))
+	fooAcc = f.QueryAccount(fooAddr)
+	require.Equal(t, startTokens.Sub(sendTokens), fooAcc.GetCoins().AmountOf(denom))
+
+	f.Cleanup()
+}

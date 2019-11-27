@@ -80,6 +80,7 @@ var (
 	GetChainHeight                     = rpc.GetChainHeight
 	BlockRequestHandlerFn              = rpc.BlockRequestHandlerFn
 	LatestBlockRequestHandlerFn        = rpc.LatestBlockRequestHandlerFn
+	MempoolCmd                         = rpc.MempoolCmd
 	RegisterRPCRoutes                  = rpc.RegisterRPCRoutes
 	StatusCommand                      = client.StatusCommand
 	NodeInfoRequestHandlerFn           = client.NodeInfoRequestHandlerFn
