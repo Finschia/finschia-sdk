@@ -132,10 +132,6 @@ test-integration-multi-node: build-docker
 testnet-start:
 	$(MAKE) -C  $(CURDIR)/networks/local testnet-start
 
-# Run a solo-node testnet locally
-testnet-start-solo:
-	$(MAKE) -C  $(CURDIR)/networks/local testnet-start-solo
-
 # Stop testnet
 testnet-stop:
 	$(MAKE) -C  $(CURDIR)/networks/local testnet-stop
