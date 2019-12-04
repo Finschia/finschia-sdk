@@ -58,7 +58,7 @@ var (
 		auth.FeeCollectorName:     nil,
 		staking.BondedPoolName:    {supply.Burner, supply.Staking},
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
-		token.ModuleName:          {supply.Minter, supply.Burner, supply.Staking},
+		token.ModuleName:          {supply.Minter, supply.Burner},
 	}
 )
 
@@ -142,7 +142,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.cdc, keys[staking.StoreKey], tkeys[staking.TStoreKey],
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), keys[token.StoreKey])
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, keys[token.StoreKey])
 	app.safetyboxKeeper = safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.bankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified

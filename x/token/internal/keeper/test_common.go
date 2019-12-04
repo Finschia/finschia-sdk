@@ -1,8 +1,9 @@
-package token
+package keeper
 
 import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	"github.com/link-chain/link/x/iam"
+	"github.com/link-chain/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -18,18 +19,18 @@ import (
 	"github.com/link-chain/link/x/bank"
 )
 
-type testInput struct {
-	cdc    *codec.Codec
-	ctx    sdk.Context
-	keeper Keeper
-	ak     auth.AccountKeeper
-	bk     bank.BaseKeeper
-	iam    iam.Keeper
+type TestInput struct {
+	Cdc    *codec.Codec
+	Ctx    sdk.Context
+	Keeper Keeper
+	Ak     auth.AccountKeeper
+	Bk     bank.BaseKeeper
+	Iam    iam.Keeper
 }
 
 func newTestCodec() *codec.Codec {
 	cdc := codec.New()
-	RegisterCodec(cdc)
+	types.RegisterCodec(cdc)
 	auth.RegisterCodec(cdc)
 	bank.RegisterCodec(cdc)
 	supply.RegisterCodec(cdc)
@@ -38,7 +39,7 @@ func newTestCodec() *codec.Codec {
 	return cdc
 }
 
-func setupTestInput(t *testing.T) testInput {
+func SetupTestInput(t *testing.T) TestInput {
 
 	keyAuth := sdk.NewKVStoreKey(auth.StoreKey)
 	keyParams := sdk.NewKVStoreKey(params.StoreKey)
@@ -47,7 +48,7 @@ func setupTestInput(t *testing.T) testInput {
 	keySupply := sdk.NewKVStoreKey(supply.StoreKey)
 	keyIam := sdk.NewKVStoreKey(iam.StoreKey)
 
-	keyLrc := sdk.NewKVStoreKey(StoreKey)
+	keyLrc := sdk.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
@@ -77,14 +78,14 @@ func setupTestInput(t *testing.T) testInput {
 
 	// module account permissions
 	maccPerms := map[string][]string{
-		ModuleName: {supply.Burner, supply.Minter, supply.Staking},
+		types.ModuleName: {supply.Burner, supply.Minter},
 	}
 
 	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, bankKeeper, maccPerms)
-	keeper := NewKeeper(cdc, supplyKeeper, iamKeeper.WithPrefix(ModuleName), keyLrc)
+	keeper := NewKeeper(cdc, supplyKeeper, iamKeeper.WithPrefix(types.ModuleName), accountKeeper, keyLrc)
 
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
 	supplyKeeper.SetSupply(ctx, supply.NewSupply(sdk.NewCoins()))
 
-	return testInput{cdc: cdc, ctx: ctx, keeper: keeper, ak: accountKeeper, bk: bankKeeper}
+	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: bankKeeper}
 }

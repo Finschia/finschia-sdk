@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	auth "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	supply "github.com/cosmos/cosmos-sdk/x/supply/exported"
 	iam "github.com/link-chain/link/x/iam/exported"
 )
@@ -22,4 +23,14 @@ type SupplyKeeper interface {
 	GetSupply(sdk.Context) supply.SupplyI
 	SendCoinsFromModuleToAccount(sdk.Context, string, sdk.AccAddress, sdk.Coins) sdk.Error
 	SendCoinsFromAccountToModule(sdk.Context, sdk.AccAddress, string, sdk.Coins) sdk.Error
+}
+
+type AccountKeeper interface {
+	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) auth.Account
+
+	GetAccount(ctx sdk.Context, addr sdk.AccAddress) auth.Account
+	GetAllAccounts(ctx sdk.Context) []auth.Account
+	SetAccount(ctx sdk.Context, acc auth.Account)
+
+	IterateAccounts(ctx sdk.Context, process func(auth.Account) bool)
 }

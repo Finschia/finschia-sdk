@@ -552,6 +552,69 @@ paths:
         500:
           description: Internal Server Error
           content: {}
+  /token/collections/{symbol}:
+    get:
+      tags:
+        - Collection
+      summary: Get the Collection details
+      parameters:
+        - name: symbol
+          in: path
+          description: Collection symbol
+          required: true
+          schema:
+            type: string
+          example: conydkv
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/Collection'
+        500:
+          description: Internal Server Error
+  /token/collections:
+    get:
+      tags:
+        - Collection
+      summary: Get all Collections
+      parameters:
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Collection'
+        500:
+          description: Internal Server Error
   /token/tokens/{symbol}:
     get:
       tags:
@@ -711,12 +774,22 @@ components:
           example: "test-cony"
         symbol:
           type: string
-          example: "itisconytesttoken"
-        owner:
-          $ref: '#/components/schemas/Address'
+          example: "conydkv"
         mintable:
           type: boolean
           example: true
+        decimals:
+          type: string
+          example: "8"
+        token_uri:
+          type: string
+          example: "example.com/token_uri"
+    Collection:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: "conydkv"
     SafetyBox:
       type: object
       properties:
@@ -942,13 +1015,13 @@ components:
               $ref: '#/components/schemas/Address'
             amount:
               $ref: '#/components/schemas/Coin'
-    MsgPublishToken:
+    MsgIssue:
       type: object
       description: msg of token creation
       properties:
         type:
           type: string
-          example: "link/MsgPublishToken"
+          example: "link/MsgIssue"
         value:
           type: object
           properties:
@@ -958,14 +1031,98 @@ components:
             symbol:
               type: string
               example: "LINKT"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
             amount:
               type: string
               example: "1000000"
-            owner:
-              $ref: '#/components/schemas/Address'
             mintable:
               type: boolean
               example: false
+            decimals:
+              type: string
+              example: "8"
+    MsgIssueCollection:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgIssue"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "LINK Token"
+            symbol:
+              type: string
+              example: "LINKT"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            amount:
+              type: string
+              example: "1000000"
+            mintable:
+              type: boolean
+              example: false
+            decimals:
+              type: string
+              example: "8"
+            token_id:
+              type: string
+              example: "00000001"
+    MsgIssueNFT:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgIssue"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "LINK Token"
+            symbol:
+              type: string
+              example: "LINKT"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+    MsgIssueNFTCollection:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgIssue"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "LINK Token"
+            symbol:
+              type: string
+              example: "LINKT"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            token_id:
+              type: string
+              example: "00000001"
     MsgMint:
       type: object
       description: msg of token mint

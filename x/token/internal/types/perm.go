@@ -7,8 +7,8 @@ import (
 var _ PermissionI = (*Permission)(nil)
 
 const (
-	MintAction = "mint"
-	BurnAction = "burn"
+	MintAction  = "mint"
+	IssueAction = "issue"
 )
 
 type PermissionI interface {
@@ -21,10 +21,6 @@ type Permissions []PermissionI
 
 func (pms Permissions) String() string {
 	return fmt.Sprintf("%#v", pms)
-}
-
-type ActionPermissionI interface {
-	GetAction() string
 }
 
 type Permission struct {
@@ -53,6 +49,7 @@ func (p Permission) Equal(res, act string) bool {
 	}
 	return false
 }
+
 func NewMintPermission(resource string) PermissionI {
 	return &Permission{
 		Action:   MintAction,
@@ -60,9 +57,9 @@ func NewMintPermission(resource string) PermissionI {
 	}
 }
 
-func NewBurnPermission(resource string) PermissionI {
+func NewIssuePermission(resource string) PermissionI {
 	return &Permission{
-		Action:   BurnAction,
+		Action:   IssueAction,
 		Resource: resource,
 	}
 }

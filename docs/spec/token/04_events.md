@@ -1,60 +1,135 @@
 # Events
-
+**Not fully documented yet** 
 The token module emits the following events:
 
 
-### MsgPublishToken
+### MsgIssue
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {ownerAddress}           | 
+| message          | action         | issue_token              |
+| grant_perm       | to             | {ownerAddress}           |
+| grant_perm       | perm_resource  | {symbol}                 |
+| grant_perm       | perm_action    | issue                    |
+| grant_perm       | perm_action    | mint                     |
+| issue_token      | name           | name                     |
+| issue_token      | symbol         | symbol                   |
+| issue_token      | owner          | {ownerAddress}           |
+| issue_token      | amount         | {amount}                 |
+| issue_token      | mintable       | {mintable}               |
+| issue_token      | decimals       | {decimals}               |
+| issue_token      | token_uri      | {token_uri}              |
+| issue_token      | token_type     | ft                       |
+| mint_token       | amount         | {amount}{symbol}         |
+| mint_token       | to             | {ownerAddress}           |
+| occupy_symbol    | symbol         | {symbol}                 |
+| occupy_symbol    | owner          | {ownerAddress}           |
 
-| Type     | Attribute Key | Attribute Value    |
-|----------|---------------|--------------------|
-| transfer | recipient     | {recipientAddress} |
-| transfer | amount        | {amount}           |
-| message  | module        | token              |
-| message  | sender        | {senderAddress}    | *fixme* https://github.com/line/link/issues/118
-| message  | action        | publich_token      |
-| publish_token | name     | name               |
-| publish_token | symbol   | token symbol       |
-| publish_token | owner    | {ownerAddress}     |
-| publish_token | amount   | {amount}           |
-| publish_token | mintable | {boolean}          |
+### MsgIssueCollection                                                   
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {ownerAddress}           | 
+| message          | action         | issue_token_collection   |
+| grant_perm       | to             | {ownerAddress}           |
+| grant_perm       | perm_resource  | {symbol}                 |
+| grant_perm       | perm_action    | issue                    |
+| grant_perm       | perm_action    | mint                     |
+| issue_token      | name           | name                     |
+| issue_token      | symbol         | {symbol}{tokenid}        |
+| issue_token      | owner          | {ownerAddress}           |
+| issue_token      | amount         | {amount}                 |
+| issue_token      | mintable       | {mintable}               |
+| issue_token      | decimals       | {decimals}               |
+| issue_token      | token_uri      | {token_uri}              |
+| issue_token      | token_type     | cft                      |
+| mint_token       | amount         | {amount}{symbol}{tokenid}|
+| mint_token       | to             | {ownerAddress}           |
+| occupy_symbol    | symbol         | {symbol}                 |
+| occupy_symbol    | owner          | {ownerAddress}           |
+
+### MsgIssueNFT
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {ownerAddress}           | 
+| message          | action         | issue_nft                |
+| grant_perm       | to             | {ownerAddress}           |
+| grant_perm       | perm_resource  | {symbol}                 |
+| grant_perm       | perm_action    | issue                    |
+| issue_token      | name           | name                     |
+| issue_token      | symbol         | symbol                   |
+| issue_token      | owner          | {ownerAddress}           |
+| issue_token      | amount         | 1                        |
+| issue_token      | mintable       | false                    |
+| issue_token      | decimals       | 0                        |
+| issue_token      | token_uri      | {token_uri}              |
+| issue_token      | token_type     | nft                      |
+| mint_token       | amount         | {amount}{symbol}         |
+| mint_token       | to             | {ownerAddress}           |
+| occupy_symbol    | symbol         | {symbol}                 |
+| occupy_symbol    | owner          | {ownerAddress}           |
+
+### MsgIssueNFTCollection                                                   
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {ownerAddress}           | 
+| message          | action         | issue_nft_collection     |
+| grant_perm       | to             | {ownerAddress}           |
+| grant_perm       | perm_resource  | {symbol}                 |
+| grant_perm       | perm_action    | issue                    |
+| grant_perm       | perm_action    | mint                     |
+| issue_token      | name           | name                     |
+| issue_token      | symbol         | {symbol}{tokenid}        |
+| issue_token      | owner          | {ownerAddress}           |
+| issue_token      | amount         | 1                        |
+| issue_token      | mintable       | false                    |
+| issue_token      | decimals       | 0                        |
+| issue_token      | token_uri      | {token_uri}              |
+| issue_token      | token_type     | cnft                     |
+| mint_token       | amount         | {amount}{symbol}{tokenid}|
+| mint_token       | to             | {ownerAddress}           |
+| occupy_symbol    | symbol         | {symbol}                 |
+| occupy_symbol    | owner          | {ownerAddress}           |
 
 ### MsgMint
-| Type     | Attribute Key | Attribute Value    |
-|----------|---------------|--------------------|
-| transfer | recipient     | {recipientAddress} |
-| transfer | amount        | {amount}           |
-| message  | module        | token              |
-| message  | sender        | {senderAddress}    | 
-| message  | action        | mint_token         |
-| mint_token | to          | {recipientAddress} |
-| mint_token | amount      | {amount}           |
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {ownerAddress}           | 
+| message          | action         | mint_token               |
+| mint_token       | amount         | {amount}{symbol}         |
+| mint_token       | to             | {ownerAddress}           |
 
 ### MsgBurn
-| Type     | Attribute Key | Attribute Value    |
-|----------|---------------|--------------------|
-| transfer | recipient     | {recipientAddress} |
-| transfer | amount        | {amount}           |
-| message  | module        | token              |
-| message  | sender        | {senderAddress}    | 
-| message  | action        | burn_token         |
-| burn_token | from        | {senderAddress}    |
-| burn_token | amount      | {amount}           |
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {ownerAddress}           | 
+| message          | action         | burn_token               |
+| burn_token       | amount         | {amount}{symbol}         |
+| burn_token       | from           | {ownerAddress}           |
 
 ### MsgGrantPermission
-| Type     | Attribute Key | Attribute Value    |
-|----------|---------------|--------------------|
-| message  | module        | token              |
-| message  | action        | grant_perm         |
-| grant_perm | from        | {senderAddress}    |
-| grant_perm | to          | {recipientAddress} |
-| grant_perm | resource    | {token}            |
-| grant_perm | action      | {mint/burn}        |
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | grant_permission         |
+| grant_perm       | from           | {fromAddress}            |
+| grant_perm       | to             | {toAddress}              |
+| grant_perm       | perm_resource  | {symbol}                 |
+| grant_perm       | perm_action    | issue/burn               |
 
 ### MsgRevokePermission
-| Type     | Attribute Key | Attribute Value    |
-|----------|---------------|--------------------|
-| message  | module        | token              |
-| message  | action        | revoke_perm        |
-| revoke_perm | from       | {senderAddress}    |
-| revoke_perm | resource   | {token}            |
-| revoke_perm | action     | {mint/burn}        |
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | revoke_permission        |
+| revoke_perm      | from           | {fromAddress}            |
+| revoke_perm      | perm_resource  | {symbol}                 |
+| revoke_perm      | perm_action    | issue/burn               |
+

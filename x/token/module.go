@@ -5,6 +5,7 @@ import (
 	"github.com/link-chain/link/client"
 	"github.com/link-chain/link/x/token/client/cli"
 	"github.com/link-chain/link/x/token/client/rest"
+	"github.com/link-chain/link/x/token/internal/keeper"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -64,11 +65,11 @@ func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 // app module
 type AppModule struct {
 	AppModuleBasic
-	keeper Keeper
+	keeper keeper.Keeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(keeper Keeper) AppModule {
+func NewAppModule(keeper keeper.Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{},
 		keeper:         keeper,
@@ -93,7 +94,7 @@ func (AppModule) QuerierRoute() string { return RouterKey }
 
 // module querier
 func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return NewQuerier(am.keeper)
+	return keeper.NewQuerier(am.keeper)
 }
 
 // module init-genesis
