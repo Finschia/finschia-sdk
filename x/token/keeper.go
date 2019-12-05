@@ -70,13 +70,13 @@ func (k Keeper) GetAllTokens(ctx sdk.Context) Tokens {
 		tokens = append(tokens, token)
 		return false
 	}
-	k.IterateTokens(ctx, appendToken)
+	k.IterateTokens(ctx, "", appendToken)
 	return tokens
 }
 
-func (k Keeper) IterateTokens(ctx sdk.Context, process func(Token) (stop bool)) {
+func (k Keeper) IterateTokens(ctx sdk.Context, denom string, process func(Token) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, TokenSymbolKeyPrefix)
+	iter := sdk.KVStorePrefixIterator(store, TokenSymbolKey(denom))
 	defer iter.Close()
 	for {
 		if !iter.Valid() {
