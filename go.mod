@@ -1,6 +1,6 @@
 module github.com/link-chain/link
 
-go 1.12
+go 1.13
 
 require (
 	github.com/btcsuite/btcd v0.0.0-20190523000118-16327141da8c // indirect
@@ -32,7 +32,6 @@ require (
 	golang.org/x/crypto v0.0.0-20190923035154-9ee001bba392 // indirect
 	golang.org/x/net v0.0.0-20190923162816-aa69164e4478 // indirect
 	golang.org/x/text v0.3.2 // indirect
-	google.golang.org/appengine v1.4.0 // indirect
 	google.golang.org/genproto v0.0.0-20190701230453-710ae3a149df // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 	gopkg.in/yaml.v2 v2.2.4

@@ -3,7 +3,7 @@ version: 2.1
 defaults: &linux_defaults
   working_directory: /go/src/github.com/line/link
   docker:
-    - image: circleci/golang:1.12
+    - image: circleci/golang:1.13.4
       environment:
         GO111MODULE: 'on'
 
@@ -16,7 +16,7 @@ machine_defaults: &machine_defaults
     GOPATH: /home/circleci/.go_workspace/
     GOOS: linux
     GOARCH: amd64
-    GO_VERSION: "1.12.5"
+    GO_VERSION: "1.13.4"
 
 jobs:
   check-skippable-pr:
@@ -164,12 +164,12 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
       - run:
           name: run setup go
           command: |
             set -x
-            if [ "$(go version)" != "go version go1.12.5 linux/amd64" ]; then
+            if [ "$(go version)" != "go version go1.13.4 linux/amd64" ]; then
                 mkdir -p /tmp/gobinary
                 pushd /tmp/gobinary
                 wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
@@ -184,7 +184,7 @@ jobs:
             set -x
             make build
       - save_cache:
-          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
+          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
           paths:
             - "/home/circleci/.go_workspace/pkg/mod"
             - "/tmp/gobinary"
@@ -255,7 +255,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
       - run:
           name: copy go compiler
           command: |
@@ -286,7 +286,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
       - run:
           name: copy go compiler
           command: |
