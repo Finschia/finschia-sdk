@@ -1,7 +1,7 @@
 ---
 openapi: "3.0.1"
 info:
-  version: "2.0-0.0.1"
+  version: "2.0-0.0.2"
   title: LINK-Lite for Cosmos
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
@@ -19,6 +19,8 @@ tags:
     description: Supply module APIs
   - name: Token
     description: Token query APIs
+  - name: Safety Box
+    description: Create/query safety box and grant/revoke permissions
 servers:
   - url: http://localhost:1317
 paths:
@@ -613,6 +615,65 @@ paths:
                       $ref: '#/components/schemas/Token'
         500:
           description: Internal Server Error
+  /safetybox/{id}:
+    get:
+      tags:
+        - Safety Box
+      Summary: Get a safety box
+      parameters:
+        - name: id
+          in: path
+          description: safety box id
+          required: true
+          schema:
+            type: string
+          example: "yoshi"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/SafetyBox'
+  /safetybox/{id}/permission/{address}:
+    get:
+      tags:
+        - Safety Box
+      Summary: Get a list of permissions of the user for the safety box
+      parameters:
+        - name: id
+          in: path
+          description: safety box id
+          required: true
+          schema:
+            type: string
+          example: "yoshi"
+        - name: address
+          in: path
+          description: account address
+          required: true
+          schema:
+            type: string
+          example: "link1l7pjfdcv6u8w6aaajc3wl6palg4jzh0ae6xcre"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/SafetyBoxPermissions'
 components:
   schemas:
     Hash:
@@ -654,6 +715,43 @@ components:
         owner:
           $ref: '#/components/schemas/Address'
         mintable:
+          type: boolean
+          example: true
+    SafetyBox:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "yoshi"
+        owner:
+          $ref: '#/components/schemas/Address'
+        address:
+          $ref: '#/components/schemas/Address'
+        total_allocation:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+        cumulative_allocation:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+        total_issuance:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+    SafetyBoxPermissions:
+      type: object
+      properties:
+        is_operator:
+          type: boolean
+          example: true
+        is_allocator:
+          type: boolean
+          example: true
+        is_issuer:
+          type: boolean
+          example: true
+        is_returner:
           type: boolean
           example: true
     PublicKey:

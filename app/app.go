@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/link-chain/link/x/iam"
+	"github.com/link-chain/link/x/safetybox"
 	"io"
 	"os"
 
@@ -52,6 +53,7 @@ var (
 		token.AppModuleBasic{},
 		iam.AppModuleBasic{},
 		lrc3.AppModuleBasic{},
+		safetybox.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -93,8 +95,9 @@ type LinkApp struct {
 	tokenKeeper   token.Keeper
 	iamKeeper     iam.Keeper
 
-	lrc3Keeper lrc3.Keeper
-	nftKeeper  nft.Keeper
+	lrc3Keeper      lrc3.Keeper
+	nftKeeper       nft.Keeper
+	safetyboxKeeper safetybox.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -111,12 +114,16 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	bApp.SetAppVersion(version.Version)
 
 	keys := sdk.NewKVStoreKeys(
-		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
+		bam.MainStoreKey,
+		auth.StoreKey,
+		staking.StoreKey,
 		supply.StoreKey,
 		params.StoreKey,
 		token.StoreKey,
 		iam.StoreKey,
-		nft.StoreKey, lrc3.StoreKey,
+		nft.StoreKey,
+		lrc3.StoreKey,
+		safetybox.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -146,6 +153,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), keys[token.StoreKey])
 	app.nftKeeper = nft.NewKeeper(app.cdc, keys[nft.StoreKey])
 	app.lrc3Keeper = lrc3.NewKeeper(app.cdc, app.nftKeeper, keys[lrc3.StoreKey])
+	app.safetyboxKeeper = safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.bankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -159,6 +167,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		token.NewAppModule(app.tokenKeeper),
 		nft.NewAppModule(app.nftKeeper),
 		lrc3.NewAppModule(app.lrc3Keeper),
+		safetybox.NewAppModule(app.safetyboxKeeper),
 	)
 
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
@@ -166,10 +175,15 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	app.mm.SetOrderInitGenesis(
-		genaccounts.ModuleName, staking.ModuleName,
-		auth.ModuleName, bank.ModuleName,
-		supply.ModuleName, genutil.ModuleName,
-		token.ModuleName, lrc3.ModuleName,
+		genaccounts.ModuleName,
+		staking.ModuleName,
+		auth.ModuleName,
+		bank.ModuleName,
+		supply.ModuleName,
+		genutil.ModuleName,
+		token.ModuleName,
+		lrc3.ModuleName,
+		safetybox.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())

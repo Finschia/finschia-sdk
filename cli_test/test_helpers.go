@@ -18,6 +18,7 @@ import (
 
 	"github.com/link-chain/link/types"
 
+	safetyBoxModule "github.com/link-chain/link/x/safetybox"
 	tokenModule "github.com/link-chain/link/x/token"
 
 	"github.com/link-chain/link/client"
@@ -59,6 +60,15 @@ const (
 	keyBaz       = "baz"
 	keyVesting   = "vesting"
 	keyFooBarBaz = "foobarbaz"
+
+	denomStake = "stake2"
+	denomLink  = "link"
+	userTina   = "tina"
+	userKevin  = "kevin"
+	userRinah  = "rinah"
+	userBrian  = "brian"
+	userEvelyn = "evelyn"
+	userSam    = "sam"
 )
 
 const (
@@ -68,6 +78,8 @@ const (
 
 var (
 	totalCoins = sdk.NewCoins(
+		sdk.NewCoin(denomLink, sdk.TokensFromConsensusPower(6000)),
+		sdk.NewCoin(denomStake, sdk.TokensFromConsensusPower(600000000)),
 		sdk.NewCoin(fee2Denom, sdk.TokensFromConsensusPower(2000000)),
 		sdk.NewCoin(feeDenom, sdk.TokensFromConsensusPower(2000000)),
 		sdk.NewCoin(fooDenom, sdk.TokensFromConsensusPower(2000)),
@@ -84,6 +96,12 @@ var (
 
 	vestingCoins = sdk.NewCoins(
 		sdk.NewCoin(feeDenom, sdk.TokensFromConsensusPower(500000)),
+	)
+
+	// coins we set during ./.initialize.sh
+	defaultCoins = sdk.NewCoins(
+		sdk.NewCoin(denomLink, sdk.TokensFromConsensusPower(1000)),
+		sdk.NewCoin(denomStake, sdk.TokensFromConsensusPower(100000000)),
 	)
 )
 
@@ -204,6 +222,20 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 	f.KeysAdd(keyFooBarBaz, "--multisig-threshold=2", fmt.Sprintf(
 		"--multisig=%s,%s,%s", keyFoo, keyBar, keyBaz))
 
+	// ensure keystore to have user keys
+	f.KeysDelete(userTina)
+	f.KeysDelete(userKevin)
+	f.KeysDelete(userRinah)
+	f.KeysDelete(userBrian)
+	f.KeysDelete(userEvelyn)
+	f.KeysDelete(userSam)
+	f.KeysAdd(userTina)
+	f.KeysAdd(userKevin)
+	f.KeysAdd(userRinah)
+	f.KeysAdd(userBrian)
+	f.KeysAdd(userEvelyn)
+	f.KeysAdd(userSam)
+
 	// ensure that CLI output is in JSON format
 	f.CLIConfig("output", "json")
 
@@ -222,6 +254,14 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 		fmt.Sprintf("--vesting-start-time=%d", time.Now().UTC().UnixNano()),
 		fmt.Sprintf("--vesting-end-time=%d", time.Now().Add(60*time.Second).UTC().UnixNano()),
 	)
+
+	// add genesis accounts for testing
+	f.AddGenesisAccount(f.KeyAddress(userTina), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(userKevin), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(userRinah), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(userBrian), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(userEvelyn), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(userSam), defaultCoins)
 
 	f.GenTx(keyFoo)
 	f.CollectGenTxs()
@@ -535,6 +575,53 @@ func (f *Fixtures) TxTokenGrantPerm(from string, to sdk.AccAddress, resource, ac
 func (f *Fixtures) TxTokenRevokePerm(from string, resource, action string, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx token revoke %s %s %s %v", f.LinkcliBinary, from, resource, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+//___________________________________________________________________________________
+// linkcli tx safety box
+
+func (f *Fixtures) TxSafetyBoxCreate(id, address string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx safetybox create %s %s %v", f.LinkcliBinary, id, address, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxSafetyBoxRole(id, action, role, from, to string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx safetybox role %s %s %s %s %s %v", f.LinkcliBinary, id, action, role, from, to, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxSafetyBoxSendCoins(id, action, denom string, amount int64, address, issuerAddress string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx safetybox sendcoins %s %s %s %d %s %s %v", f.LinkcliBinary, id, action, denom, amount, address, issuerAddress, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+//___________________________________________________________________________________
+// linkcli query safetybox
+
+func (f *Fixtures) QuerySafetyBox(id string, flags ...string) safetyBoxModule.SafetyBox {
+	cmd := fmt.Sprintf("%s query safetybox get %s %v", f.LinkcliBinary, id, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+
+	cdc := app.MakeCodec()
+	var sb safetyBoxModule.SafetyBox
+	err := cdc.UnmarshalJSON([]byte(res), &sb)
+	require.NoError(f.T, err)
+
+	return sb
+}
+
+func (f *Fixtures) QuerySafetyBoxRole(id, role, address string, flags ...string) safetyBoxModule.MsgSafetyBoxRoleResponse {
+	cmd := fmt.Sprintf("%s query safetybox role %s %s %s %v", f.LinkcliBinary, id, role, address, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+
+	cdc := app.MakeCodec()
+	var pms safetyBoxModule.MsgSafetyBoxRoleResponse
+	err := cdc.UnmarshalJSON([]byte(res), &pms)
+	require.NoError(f.T, err)
+
+	return pms
 }
 
 //___________________________________________________________________________________
@@ -913,6 +1000,7 @@ func (f *Fixtures) QueryLRC3IsApprovedForAll(symbol string, owner, operator stri
 
 //___________________________________________________________________________________
 // query token
+
 func (f *Fixtures) QueryToken(denom string, flags ...string) tokenModule.Token {
 	cmd := fmt.Sprintf("%s query token symbol %s %s", f.LinkcliBinary, denom, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
@@ -930,6 +1018,7 @@ func (f *Fixtures) QueryTokenExpectEmpty(denom string, flags ...string) {
 	require.NotEmpty(f.T, errStr)
 
 }
+
 func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, flags ...string) tokenModule.Permissions {
 	cmd := fmt.Sprintf("%s query token perm %s %s", f.LinkcliBinary, addr, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
