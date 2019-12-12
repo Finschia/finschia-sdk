@@ -322,6 +322,22 @@ jobs:
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
 
+  contract_tests:
+    <<: *linux_defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Get Node.js and test REST implementation against swagger documentation
+          command: |
+            go get github.com/snikch/goodman/cmd/goodman
+            ./contrib/get_node.sh && make contract-tests
 workflows:
   version: 2.1
   build_and_test:
@@ -363,6 +379,9 @@ workflows:
           filters:
             branches:
               ignore: master
+      - contract_tests:
+          requires:
+            - setup_dependencies
       - integration_multi_node_test:
           requires:
             - setup_docker_and_binary

@@ -9,6 +9,7 @@ VERSION :=v0.1.0
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
 
+
 export GO111MODULE = on
 
 ########################################
@@ -56,6 +57,9 @@ all: install lint test-unit
 build: go.sum
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
+
+build-contract-tests-hooks:
+	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests ./cmd/contract_tests
 
 build-docker:
 	docker build -t line/link .
@@ -141,6 +145,33 @@ testnet-test:
 
 run-swagger-server:
 	linkcli rest-server --trust-node=true
+
+setup-contract-tests-data: build build-swagger-docs build-contract-tests-hooks
+	echo 'Prepare data for the contract tests' ; \
+	./lcd_test/testdata/prepare_dredd.sh ; \
+	./lcd_test/testdata/prepare_chain_state.sh
+
+start-link: setup-contract-tests-data
+	./build/linkd --home /tmp/contract_tests/.linkd start &
+	@sleep 5s
+	./lcd_test/testdata/wait-for-it.sh localhost 26657
+
+setup-transactions: start-link
+	@bash ./lcd_test/testdata/setup.sh
+
+contract-tests: setup-transactions
+	@echo "Running LINK LCD for contract tests"
+	dredd && pkill linkd
+
+run-lcd-contract-tests:
+	@echo "Running LINK LCD for contract tests"
+	./build/linkcli rest-server --laddr tcp://0.0.0.0:1317 --home /tmp/contract_tests/.linkcli --node http://localhost:26657 --chain-id lcd --trust-node true
+
+dredd-test:
+	cp ./client/lcd/swagger-ui/swagger_OSS_2_0.yaml /tmp/contract_tests/swagger_OSS_2_0.yaml
+	@bash ./lcd_test/testdata/setup.sh
+	./lcd_test/testdata/wait-for-it.sh localhost 26657
+	dredd && pkill linkd
 
 ########################################
 ### Simulation
