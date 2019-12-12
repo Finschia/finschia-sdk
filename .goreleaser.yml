@@ -43,7 +43,6 @@ archives:
     amd64: x86_64
   files:
     - LICENSE
-    - CHANGELOG.md
     - docs/getting-started/*
 checksum:
   name_template: 'checksums.txt'
