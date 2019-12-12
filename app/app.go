@@ -25,8 +25,6 @@ import (
 
 	"github.com/link-chain/link/version"
 	"github.com/link-chain/link/x/bank"
-	"github.com/link-chain/link/x/lrc3"
-	"github.com/link-chain/link/x/nft"
 	"github.com/link-chain/link/x/token"
 )
 
@@ -52,7 +50,6 @@ var (
 		supply.AppModuleBasic{},
 		token.AppModuleBasic{},
 		iam.AppModuleBasic{},
-		lrc3.AppModuleBasic{},
 		safetybox.AppModuleBasic{},
 	)
 
@@ -87,16 +84,13 @@ type LinkApp struct {
 	tkeys map[string]*sdk.TransientStoreKey
 
 	// keepers
-	accountKeeper auth.AccountKeeper
-	bankKeeper    bank.Keeper
-	supplyKeeper  supply.Keeper
-	stakingKeeper staking.Keeper
-	paramsKeeper  params.Keeper
-	tokenKeeper   token.Keeper
-	iamKeeper     iam.Keeper
-
-	lrc3Keeper      lrc3.Keeper
-	nftKeeper       nft.Keeper
+	accountKeeper   auth.AccountKeeper
+	bankKeeper      bank.Keeper
+	supplyKeeper    supply.Keeper
+	stakingKeeper   staking.Keeper
+	paramsKeeper    params.Keeper
+	tokenKeeper     token.Keeper
+	iamKeeper       iam.Keeper
 	safetyboxKeeper safetybox.Keeper
 
 	// the module manager
@@ -121,8 +115,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		params.StoreKey,
 		token.StoreKey,
 		iam.StoreKey,
-		nft.StoreKey,
-		lrc3.StoreKey,
 		safetybox.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
@@ -151,8 +143,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
 	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), keys[token.StoreKey])
-	app.nftKeeper = nft.NewKeeper(app.cdc, keys[nft.StoreKey])
-	app.lrc3Keeper = lrc3.NewKeeper(app.cdc, app.nftKeeper, keys[lrc3.StoreKey])
 	app.safetyboxKeeper = safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.bankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
@@ -165,8 +155,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		staking.NewAppModule(app.stakingKeeper, nil, app.accountKeeper, app.supplyKeeper),
 		token.NewAppModule(app.tokenKeeper),
-		nft.NewAppModule(app.nftKeeper),
-		lrc3.NewAppModule(app.lrc3Keeper),
 		safetybox.NewAppModule(app.safetyboxKeeper),
 	)
 
@@ -182,7 +170,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.ModuleName,
 		genutil.ModuleName,
 		token.ModuleName,
-		lrc3.ModuleName,
 		safetybox.ModuleName,
 	)
 
