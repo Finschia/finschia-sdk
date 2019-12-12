@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/link-chain/link/x/iam"
+	"github.com/link-chain/link/x/safetybox"
 	"io"
 	"os"
 
@@ -49,6 +50,7 @@ var (
 		supply.AppModuleBasic{},
 		token.AppModuleBasic{},
 		iam.AppModuleBasic{},
+		safetybox.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -56,7 +58,7 @@ var (
 		auth.FeeCollectorName:     nil,
 		staking.BondedPoolName:    {supply.Burner, supply.Staking},
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
-		token.ModuleName:          {supply.Minter, supply.Burner, supply.Staking},
+		token.ModuleName:          {supply.Minter, supply.Burner},
 	}
 )
 
@@ -82,13 +84,14 @@ type LinkApp struct {
 	tkeys map[string]*sdk.TransientStoreKey
 
 	// keepers
-	accountKeeper auth.AccountKeeper
-	bankKeeper    bank.Keeper
-	supplyKeeper  supply.Keeper
-	stakingKeeper staking.Keeper
-	paramsKeeper  params.Keeper
-	tokenKeeper   token.Keeper
-	iamKeeper     iam.Keeper
+	accountKeeper   auth.AccountKeeper
+	bankKeeper      bank.Keeper
+	supplyKeeper    supply.Keeper
+	stakingKeeper   staking.Keeper
+	paramsKeeper    params.Keeper
+	tokenKeeper     token.Keeper
+	iamKeeper       iam.Keeper
+	safetyboxKeeper safetybox.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -105,11 +108,14 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	bApp.SetAppVersion(version.Version)
 
 	keys := sdk.NewKVStoreKeys(
-		bam.MainStoreKey, auth.StoreKey, staking.StoreKey,
+		bam.MainStoreKey,
+		auth.StoreKey,
+		staking.StoreKey,
 		supply.StoreKey,
 		params.StoreKey,
 		token.StoreKey,
 		iam.StoreKey,
+		safetybox.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -136,7 +142,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.cdc, keys[staking.StoreKey], tkeys[staking.TStoreKey],
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), keys[token.StoreKey])
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, keys[token.StoreKey])
+	app.safetyboxKeeper = safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.bankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -148,6 +155,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		staking.NewAppModule(app.stakingKeeper, nil, app.accountKeeper, app.supplyKeeper),
 		token.NewAppModule(app.tokenKeeper),
+		safetybox.NewAppModule(app.safetyboxKeeper),
 	)
 
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
@@ -155,10 +163,14 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	app.mm.SetOrderInitGenesis(
-		genaccounts.ModuleName, staking.ModuleName,
-		auth.ModuleName, bank.ModuleName,
-		supply.ModuleName, genutil.ModuleName,
+		genaccounts.ModuleName,
+		staking.ModuleName,
+		auth.ModuleName,
+		bank.ModuleName,
+		supply.ModuleName,
+		genutil.ModuleName,
 		token.ModuleName,
+		safetybox.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())

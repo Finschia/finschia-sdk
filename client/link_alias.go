@@ -75,9 +75,12 @@ var (
 	NewRestServer                      = client.NewRestServer
 	ServeCommand                       = lcd.ServeCommand
 	BlockCommand                       = rpc.BlockCommand
+	QueryGenesisAccountCmd             = rpc.QueryGenesisAccountCmd
+	QueryGenesisTxCmd                  = rpc.QueryGenesisTxCmd
 	GetChainHeight                     = rpc.GetChainHeight
 	BlockRequestHandlerFn              = rpc.BlockRequestHandlerFn
 	LatestBlockRequestHandlerFn        = rpc.LatestBlockRequestHandlerFn
+	MempoolCmd                         = rpc.MempoolCmd
 	RegisterRPCRoutes                  = rpc.RegisterRPCRoutes
 	StatusCommand                      = client.StatusCommand
 	NodeInfoRequestHandlerFn           = client.NodeInfoRequestHandlerFn

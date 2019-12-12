@@ -3,17 +3,27 @@ package main
 import (
 	"fmt"
 	"github.com/link-chain/link/contrib/provisioning/k8s"
+	"github.com/link-chain/link/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"
 	"os"
 	"os/user"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 var cfgFile string
 
 func main() {
 
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
+	config.SetCoinType(types.CoinType)
+	config.SetFullFundraiserPath(types.FullFundraiserPath)
+	config.Seal()
 	// rootCmd represents the base command when called without any subcommands
 	var rootCmd = &cobra.Command{
 		Use:   "provisioning",

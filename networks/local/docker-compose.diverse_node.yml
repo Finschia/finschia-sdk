@@ -1,0 +1,113 @@
+version: '3'
+
+services:
+
+  seed_node:
+    container_name: seednode
+    image: "line/link"
+    volumes:
+      - ./build/node_seed/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.200
+
+  sentry0:
+    container_name: sentry0
+    image: "line/link"
+    ports:
+      - "26656-26657:26656-26657"
+    volumes:
+      - ./build/node_sentry0/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.2
+
+  sentry1:
+    container_name: sentry1
+    image: "line/link"
+    ports:
+      - "26659-26660:26656-26657"
+    volumes:
+      - ./build/node_sentry1/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.3
+
+  sentry2:
+    container_name: sentry2
+    image: "line/link"
+    ports:
+      - "26661-26662:26656-26657"
+    volumes:
+      - ./build/node_sentry2/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.4
+
+  sentry3:
+    container_name: sentry3
+    image: "line/link"
+    ports:
+      - "26663-26664:26656-26657"
+    volumes:
+      - ./build/node_sentry3/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.5
+
+
+  validator0:
+    container_name: validator0
+    image: "line/link"
+    volumes:
+      - ./build/node_validator0/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.102
+
+  validator1:
+    container_name: validator1
+    image: "line/link"
+    volumes:
+      - ./build/node_validator1/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.103
+
+  validator2:
+    container_name: validator2
+    image: "line/link"
+    volumes:
+      - ./build/node_validator2/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.104
+
+  validator3:
+    container_name: validator3
+    image: "line/link"
+    volumes:
+      - ./build/node_validator3/linkd:/root/.linkd
+    command: linkd start
+    networks:
+      localnet:
+        ipv4_address: 192.168.10.105
+
+
+networks:
+  localnet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+      -
+        subnet: 192.168.10.0/16
+

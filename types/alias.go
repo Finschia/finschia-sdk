@@ -5,9 +5,7 @@ import (
 )
 
 const (
-	AddrLen            = sdk.AddrLen            // 20
-	CoinType           = sdk.CoinType           // 118
-	FullFundraiserPath = sdk.FullFundraiserPath //"44'/118'/0'/0/0"
+	AddrLen = sdk.AddrLen // 20
 
 	PrefixPublic    = sdk.PrefixPublic    // "pub"
 	PrefixValidator = sdk.PrefixValidator // "val"

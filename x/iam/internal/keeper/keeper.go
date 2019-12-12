@@ -34,6 +34,7 @@ func (k Keeper) GetAccountPermission(ctx sdk.Context, addr sdk.AccAddress) (accP
 	}
 	return types.NewAccountPermission(addr)
 }
+
 func (k Keeper) GetPermissions(ctx sdk.Context, addr sdk.AccAddress) (pms []exported.PermissionI) {
 	accPerm := k.GetAccountPermission(ctx, addr)
 	return accPerm.GetPermissions()

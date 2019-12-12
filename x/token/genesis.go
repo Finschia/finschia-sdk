@@ -16,11 +16,7 @@ func NewGenesisState(tokens []Token) GenesisState {
 func DefaultGenesisState() GenesisState { return NewGenesisState(nil) }
 
 func InitGenesis(ctx sdk.Context, keeper Keeper, data GenesisState) {
-	for _, token := range data.Tokens {
-		if err := keeper.SetToken(ctx, token); err != nil {
-			panic(err)
-		}
-	}
+	//TODO: fill it with permission
 }
 
 func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {

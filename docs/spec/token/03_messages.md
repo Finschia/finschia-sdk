@@ -1,21 +1,60 @@
 # Messages
+## MsgIssue
 
-## MsgPublishToken
+**Issue token messages are to create a new token on Link Chain**
+- See [symbol rule](01_concept.md#Rule for defining symbols) for the details
+- The first issuer for the token symbol occupies the symbol and the issue permission is granted to the issuer
+- An issuer who granted issue permission can issue collective tokens
+- Mint permission is granted to the token issuer when the token is mintable
+- The identifier for the collective token is defined by the concatenation of the symbol and the token id
 
-
+### MsgIssue
 ```golang
-type MsgPublishToken struct {
+type MsgIssue struct {
 	Name     string         `json:"name"`
 	Symbol   string         `json:"symbol"`
-	Amount   int64          `json:"amount"`
 	Owner    sdk.AccAddress `json:"owner"`
+	TokenURI string         `json:"token_uri"`
+	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
+	Decimals sdk.Int        `json:"decimals"`
 }
 ```
 
-**Publishing token is to create a new token on Link Chain**
-- Mint/Burn for the token is granted to the token owner
-- Token is issued and added to the token owner
+### MsgIssueCollection
+```golang
+type MsgIssueCollection struct {
+	Name     string         `json:"name"`
+	Symbol   string         `json:"symbol"`
+	Owner    sdk.AccAddress `json:"owner"`
+	TokenURI string         `json:"token_uri"`
+	Amount   sdk.Int        `json:"amount"`
+	Mintable bool           `json:"mintable"`
+	Decimals sdk.Int        `json:"decimals"`
+	TokenID string          `json:"token_id"`
+}
+```
+
+
+### MsgIssueNFT
+```golang
+type MsgIssueNFT struct {
+	Name     string         `json:"name"`
+	Symbol   string         `json:"symbol"`
+	Owner    sdk.AccAddress `json:"owner"`
+	TokenURI string         `json:"token_uri"`
+}
+```
+### MsgIssueNFTCollection
+```golang
+type MsgIssueNFTCollection struct {
+	Name     string         `json:"name"`
+	Symbol   string         `json:"symbol"`
+	Owner    sdk.AccAddress `json:"owner"`
+	TokenURI string         `json:"token_uri"`
+	TokenID string          `json:"token_id"`
+}
+```
 
 
 ## MsgMint
@@ -40,7 +79,7 @@ type MsgBurn struct {
 }
 ```
 **Burn message is to decrease the total supply of the token**
-- Signer of this message must has permission 
+- Signer of this message must have the amount of the tokens
 - Token is subtracted from the `From` account 
 
 ##MsgGrantPermission

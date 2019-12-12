@@ -58,7 +58,7 @@ func QueryTxsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		events, page, limit, err = rest.ParseHTTPArgs(r)
+		events, page, limit, err = utils.ParseHTTPArgs(r)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return

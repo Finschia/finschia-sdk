@@ -37,6 +37,10 @@ sim-link-multi-seed: runsim
 	@echo "Running multi-seed link simulation. This may take awhile!"
 	$(GOPATH)/bin/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) 400 5 TestFullAppSimulation
 
+sim-link-multi-seed-short: runsim
+	@echo "Running short multi-seed link simulation. This may take awhile!"
+	$(GOPATH)/bin/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) 40 5 TestFullAppSimulation
+
 sim-benchmark-invariants:
 	@echo "Running simulation invariant benchmarks..."
 	@go test -mod=readonly $(SIMAPP) -benchmem -bench=BenchmarkInvariants -run=^$ \

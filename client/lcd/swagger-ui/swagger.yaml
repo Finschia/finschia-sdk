@@ -1,12 +1,14 @@
 ---
 openapi: "3.0.1"
 info:
-  version: "2.0-0.0.1"
+  version: "2.0-0.0.2"
   title: LINK-Lite for Cosmos
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
   - name: Tendermint RPC
     description: Tendermint APIs, such as query blocks, transactions and node status
+  - name: Genesis State
+    description: Query gentxs, accounts from genesis data
   - name: Transactions
     description: Search, encode, or broadcast transactions.
   - name: Auth
@@ -15,6 +17,10 @@ tags:
     description: Create and broadcast transactions
   - name: Supply
     description: Supply module APIs
+  - name: Token
+    description: Token query APIs
+  - name: Safety Box
+    description: Create/query safety box and grant/revoke permissions
 servers:
   - url: http://localhost:1317
 paths:
@@ -123,7 +129,7 @@ paths:
           description: Whether to translate transaction data in the response
           required: false
           schema:
-            type: string
+            type: boolean
           example: true
       responses:
         200:
@@ -145,14 +151,14 @@ paths:
           description: Block height
           required: true
           schema:
-            type: number
+            type: integer
           example: 1
         - name: extended
           in: query
           description: Whether to translate transaction data in the response
           required: false
           schema:
-            type: string
+            type: boolean
           example: true
       responses:
         200:
@@ -167,14 +173,61 @@ paths:
           description: Request block height doesn't
         500:
           description: Server internal error
-  /txs/genesis:
+  /num_unconfirmed_txs:
     get:
-      summary: Get genesis transactions
+      summary: Get the number of unconfirmed transactions
       tags:
-        - Transactions
+        - Tendermint RPC
+      description: Get the status about mempool of the connected node. Result may vary depending on the node.
       responses:
         200:
-          description: Genesis transactions
+          description: Status about unconfirmed transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnconfirmedTransactionsResponse'
+        500:
+          description: Server internal error
+  /unconfirmed_txs:
+    get:
+      summary: Get the list of unconfirmed transactions
+      tags:
+        - Tendermint RPC
+      description: Get the tx list from mempool of the connected node. Result may vary depending on the node.
+      parameters:
+        - name: limit
+          in: query
+          description: Maximum number of unconfirmed transactions to return (max 100)
+          required: false
+          schema:
+            type: integer
+          example: 30
+        - name: hash
+          in: query
+          description: Return tx as hash
+          required: false
+          schema:
+            type: boolean
+          example: true
+      responses:
+        200:
+          description: List of unconfirmed transactions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnconfirmedTransactionsResponse'
+        400:
+          description: Bad request
+        500:
+          description: Server internal error
+  /genesis/genutil/gentxs:
+    get:
+      summary: Get gentxs from genesis data
+      tags:
+        - Genesis State
+      responses:
+        200:
+          description: Gentxs in genesis data
           content:
             application/json:
               schema:
@@ -183,6 +236,35 @@ paths:
                   $ref: '#/components/schemas/Tx'
         500:
           description: Internal Server Error
+  /genesis/app_state/accounts:
+    get:
+      tags:
+        - Genesis State
+      parameters:
+        - name: page
+          in: query
+          description: Page number(start to 1)
+          schema:
+            type: integer
+          example: 1
+        - name: limit
+          in: query
+          description: Maximum number of items per page(default=30, maximum=100)
+          schema:
+            type: integer
+          example: 1
+      summary: Get accounts from genesis data
+      responses:
+        200:
+          description: Accounts in genesis data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GenesisAccount'
+        500:
+          description: Server internal error
   /txs/{hash}:
     get:
       summary: Get a Tx by hash
@@ -238,6 +320,18 @@ paths:
           schema:
             type: integer
           example: 1
+        - name: height.from
+          in: query
+          description: block height filter
+          schema:
+            type: integer
+          required: false
+        - name: height.to
+          in: query
+          description: block height filter
+          schema:
+            type: integer
+          required: false
       responses:
         200:
           description: All txs matching the provided events
@@ -283,22 +377,6 @@ paths:
         500:
           description: Internal Server Error
       x-codegen-request-body-name: txBroadcast
-  /auth/accounts/genesis:
-    get:
-      tags:
-        - Auth
-      summary: Get the account information at genesis
-      responses:
-        200:
-          description: Account information at genesis
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GenesisAccount'
-        500:
-          description: Server internel error
   /auth/accounts/{address}:
     get:
       tags:
@@ -474,6 +552,191 @@ paths:
         500:
           description: Internal Server Error
           content: {}
+  /token/collections/{symbol}:
+    get:
+      tags:
+        - Collection
+      summary: Get the Collection details
+      parameters:
+        - name: symbol
+          in: path
+          description: Collection symbol
+          required: true
+          schema:
+            type: string
+          example: conydkv
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/Collection'
+        500:
+          description: Internal Server Error
+  /token/collections:
+    get:
+      tags:
+        - Collection
+      summary: Get all Collections
+      parameters:
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Collection'
+        500:
+          description: Internal Server Error
+  /token/tokens/{symbol}:
+    get:
+      tags:
+        - Token
+      summary: Get the token details
+      parameters:
+        - name: symbol
+          in: path
+          description: Coin denomination
+          required: true
+          schema:
+            type: string
+          example: test-cony
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/Token'
+        500:
+          description: Internal Server Error
+  /token/tokens:
+    get:
+      tags:
+        - Token
+      summary: Get all tokens
+      parameters:
+        - name: height
+          in: query
+          description: block height
+          schema:
+            type: integer
+          required: false
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Token'
+        500:
+          description: Internal Server Error
+  /safetybox/{id}:
+    get:
+      tags:
+        - Safety Box
+      Summary: Get a safety box
+      parameters:
+        - name: id
+          in: path
+          description: safety box id
+          required: true
+          schema:
+            type: string
+          example: "yoshi"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/SafetyBox'
+  /safetybox/{id}/permission/{address}:
+    get:
+      tags:
+        - Safety Box
+      Summary: Get a list of permissions of the user for the safety box
+      parameters:
+        - name: id
+          in: path
+          description: safety box id
+          required: true
+          schema:
+            type: string
+          example: "yoshi"
+        - name: address
+          in: path
+          description: account address
+          required: true
+          schema:
+            type: string
+          example: "link1l7pjfdcv6u8w6aaajc3wl6palg4jzh0ae6xcre"
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/SafetyBoxPermissions'
 components:
   schemas:
     Hash:
@@ -503,6 +766,67 @@ components:
         amount:
           type: string
           example: "50"
+    Token:
+      type: object
+      properties:
+        name:
+          type: string
+          example: "test-cony"
+        symbol:
+          type: string
+          example: "conydkv"
+        mintable:
+          type: boolean
+          example: true
+        decimals:
+          type: string
+          example: "8"
+        token_uri:
+          type: string
+          example: "example.com/token_uri"
+    Collection:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: "conydkv"
+    SafetyBox:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "yoshi"
+        owner:
+          $ref: '#/components/schemas/Address'
+        address:
+          $ref: '#/components/schemas/Address'
+        total_allocation:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+        cumulative_allocation:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+        total_issuance:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+    SafetyBoxPermissions:
+      type: object
+      properties:
+        is_operator:
+          type: boolean
+          example: true
+        is_allocator:
+          type: boolean
+          example: true
+        is_issuer:
+          type: boolean
+          example: true
+        is_returner:
+          type: boolean
+          example: true
     PublicKey:
       type: object
       properties:
@@ -545,48 +869,20 @@ components:
     GenesisAccount:
       type: object
       properties:
-        type:
+        address:
+          $ref: '#/components/schemas/Address'
+        coins:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+        public_key:
+          $ref: '#/components/schemas/PublicKey'
+        account_number:
           type: string
-          example: "cosmos-sdk/GenesisAccount"
-        value:
-          type: object
-          properties:
-            address:
-              $ref: '#/components/schemas/Address'
-            coins:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            sequence:
-              type: string
-              example: "0"
-            account_number:
-              type: string
-              example: "0"
-            original_vesting:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            delegated_free:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            delegated_vesting:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            start_time:
-              type: string
-              example: "0"
-            end_time:
-              type: string
-              example: "0"
-            module_name:
-              type: string
-            module_permissions:
-              type: array
-              items:
-                type: string
+          example: "0"
+        sequence:
+          type: string
+          example: "0"
     BlockID:
       type: object
       properties:
@@ -719,13 +1015,13 @@ components:
               $ref: '#/components/schemas/Address'
             amount:
               $ref: '#/components/schemas/Coin'
-    MsgPublishToken:
+    MsgIssue:
       type: object
       description: msg of token creation
       properties:
         type:
           type: string
-          example: "link/MsgPublishToken"
+          example: "link/MsgIssue"
         value:
           type: object
           properties:
@@ -735,14 +1031,98 @@ components:
             symbol:
               type: string
               example: "LINKT"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
             amount:
               type: string
               example: "1000000"
-            owner:
-              $ref: '#/components/schemas/Address'
             mintable:
               type: boolean
               example: false
+            decimals:
+              type: string
+              example: "8"
+    MsgIssueCollection:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgIssue"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "LINK Token"
+            symbol:
+              type: string
+              example: "LINKT"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            amount:
+              type: string
+              example: "1000000"
+            mintable:
+              type: boolean
+              example: false
+            decimals:
+              type: string
+              example: "8"
+            token_id:
+              type: string
+              example: "00000001"
+    MsgIssueNFT:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgIssue"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "LINK Token"
+            symbol:
+              type: string
+              example: "LINKT"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+    MsgIssueNFTCollection:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgIssue"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "LINK Token"
+            symbol:
+              type: string
+              example: "LINKT"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            token_id:
+              type: string
+              example: "00000001"
     MsgMint:
       type: object
       description: msg of token mint
@@ -984,3 +1364,27 @@ components:
         txhash:
           type: string
           example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
+    UnconfirmedTransactionsResponse:
+        type: "object"
+        required:
+          - "n_txs"
+          - "total"
+          - "total_bytes"
+          - "txs"
+        properties:
+          n_txs:
+            type: "string"
+            example: "0"
+          total:
+            type: "string"
+            example: "0"
+          total_bytes:
+            type: "string"
+            example: "0"
+          txs:
+            type: array
+            x-nullable: true
+            items:
+              type: string
+              x-nullable: true
+            example: '[]'

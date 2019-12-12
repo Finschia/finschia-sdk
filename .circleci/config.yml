@@ -1,12 +1,9 @@
-# Golang CircleCI 2.0 configuration file
-#
-# Check https://circleci.com/docs/2.0/language-go/ for more details
-version: 2
+version: 2.1
 
 defaults: &linux_defaults
   working_directory: /go/src/github.com/line/link
   docker:
-    - image: circleci/golang:1.12
+    - image: circleci/golang:1.13.4
       environment:
         GO111MODULE: 'on'
 
@@ -19,10 +16,86 @@ machine_defaults: &machine_defaults
     GOPATH: /home/circleci/.go_workspace/
     GOOS: linux
     GOARCH: amd64
-    GO_VERSION: "1.12.5"
-
+    GO_VERSION: "1.13.4"
 
 jobs:
+  check-skippable-pr:
+    docker:
+      - image: alpine:3.7
+    steps:
+      - run: apk add --no-cache bash curl jq
+      - run:
+          shell: /bin/bash
+          name: Check skippable PR
+          command: |
+            required_env_vars=(
+              "GITHUB_TOKEN"
+              "CIRCLE_PROJECT_USERNAME"
+              "CIRCLE_PROJECT_REPONAME"
+              "CIRCLE_TOKEN"
+              "CIRCLE_BUILD_NUM"
+            )
+            PR_NUMBER=$(echo $CIRCLE_PULL_REQUEST | sed -e 's#.*/pull/##')
+
+            for required_env_var in ${required_env_vars[@]}; do
+              if [[ -z "${!required_env_var}" ]]; then
+                printf "${required_env_var} not provided, but that doesn't mean we should skip CI.\n"
+                exit 0
+              fi
+            done
+
+            # Since we're piggybacking off of an existing OAuth var, tweak the var for our uses
+            token=$(printf "${GITHUB_TOKEN}" | cut -d':' -f1)
+
+            headers="Authorization: token $token"
+            api_endpoint="https://api.github.com/repos/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}/pulls/${PR_NUMBER}"
+
+            # Fetch PR metadata from Github's API and parse fields from json
+            github_res=$(curl --silent --header "${headers}" "${api_endpoint}" | jq '{mergeable_state: .mergeable_state, title: .title}')
+            mergeable_state=$(printf "${github_res}" | jq '.mergeable_state')
+            title=$(printf "${github_res}" | jq '.title' | tr '[:upper:]' '[:lower:]')
+            echo "${title}"
+
+            if [[ "${title}" == "null" && "${mergeable_state}" == "null" ]]; then
+              printf "Couldn't fetch info on PR, but that doesn't mean we should skip CI.\n"
+              exit 0
+            fi
+
+            cancel_running_jobs=0
+
+            if [[ "${mergeable_state}" == "\"draft\"" ]]; then
+              printf "PR is a draft, skipping CI!\n"
+              cancel_running_jobs=1
+            fi
+
+            for skip_token in '[skip ci]' '[ci skip]' '[wip]' 'WIP' 'wip' '🚧'; do
+              if [[ ${title} == *"${skip_token}"* ]]; then
+                printf "Found \"${skip_token}\" in PR title, skipping CI!\n"
+                cancel_running_jobs=1
+              fi
+            done
+
+            if [[ "${cancel_running_jobs}" == 1 ]]; then
+              printf "Attempting to cancel any running jobs"
+              CIRCLE_API_BASE_URL="https://circleci.com/api/v1.1/project/github/${CIRCLE_PROJECT_USERNAME}/${CIRCLE_PROJECT_REPONAME}"
+              AUTH_PARAMS="circle-token=${CIRCLE_TOKEN}"
+              SELF_BUILD_NUM="${CIRCLE_BUILD_NUM}"
+
+              all_jobs=$(curl --silent --show-error "${CIRCLE_API_BASE_URL}/tree/${CIRCLE_BRANCH}?${AUTH_PARAMS}")
+
+              running_jobs=$(echo "${all_jobs}" | jq "map(if .status == \"running\" or .status == \"not_running\"  then .build_num else \"None\" end) - [${SELF_BUILD_NUM}] - [\"None\"] | .[]")
+
+              for buildNum in $running_jobs; do
+                printf "Canceling ${buildNum}"
+                curl --silent --show-error --request POST "${CIRCLE_API_BASE_URL}/${buildNum}/cancel?${AUTH_PARAMS}" > /dev/null
+              done
+              exit 1
+            else
+              printf "No reason to skip CI, let's go!"
+            fi
+
+            exit 0
+
   fmt:
     <<: *linux_defaults
     steps:
@@ -68,10 +141,8 @@ jobs:
       - restore_cache:
           keys:
             - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run:
-          name: Test unittest
-          command: |
-            make check-unit
+      - run: make test-unit-cover
+      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage.txt -F "unittest" -Z
   integration_test:
     <<: *linux_defaults
     parallelism: 1
@@ -86,19 +157,19 @@ jobs:
           name: Test cli
           command: |
             export BUILDDIR=`pwd`/build
-            make check-build
+            make test-integration
   setup_docker_and_binary:
     <<: *machine_defaults
     steps:
       - checkout
       - restore_cache:
           keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
       - run:
           name: run setup go
           command: |
             set -x
-            if [ "$(go version)" != "go version go1.12.5 linux/amd64" ]; then
+            if [ "$(go version)" != "go version go1.13.4 linux/amd64" ]; then
                 mkdir -p /tmp/gobinary
                 pushd /tmp/gobinary
                 wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
@@ -111,10 +182,9 @@ jobs:
           name: build binaries
           command: |
             set -x
-            make build-linux
             make build
       - save_cache:
-          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
+          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
           paths:
             - "/home/circleci/.go_workspace/pkg/mod"
             - "/tmp/gobinary"
@@ -164,13 +234,28 @@ jobs:
             make get-tools
             make sim-link-multi-seed
 
+  sim-link-multi-seed-short:
+    <<: *linux_defaults
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: test multi-seed simulation (short)
+          command: |
+            make get-tools
+            make sim-link-multi-seed-short
+
   integration_multi_node_test:
     <<: *machine_defaults
     steps:
       - checkout
       - restore_cache:
           keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
       - run:
           name: copy go compiler
           command: |
@@ -188,20 +273,20 @@ jobs:
           name: build docker image
           command: |
             set -x
-            make build-docker-integration
+            make build-docker
       - run:
           name: run integration test for multi node and exit on failure
           command: |
             set -x
             docker network prune -f
-            make check-build-integration
+            make test-integration-multi-node
   localnet:
     <<: *machine_defaults
     steps:
       - checkout
       - restore_cache:
           keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.12.5
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
       - run:
           name: copy go compiler
           command: |
@@ -211,23 +296,17 @@ jobs:
             sudo mv go /usr/local
             popd
       - run:
-          name: build binaries for linux
-          command: |
-            set -x
-            make build-linux
-      - run:
           name: build docker image
           command: |
             set -x
-            make build-docker-testnet
-            make build-conf-testnet
+            make build-docker
       - run:
           name: run localnet and exit on failure
           command: |
             set -x
             docker network prune -f
-            make start-testnet
-            ./contrib/localnet-blocks-test.sh 40 5 10 localhost
+            make testnet-start
+            ./networks/local/localnet-blocks-test.sh 40 5 10 localhost
   semantic_release:
     docker:
       - image: circleci/node:10
@@ -243,11 +322,30 @@ jobs:
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
 
+  contract_tests:
+    <<: *linux_defaults
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - attach_workspace:
+          at: /tmp/workspace
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run:
+          name: Get Node.js and test REST implementation against swagger documentation
+          command: |
+            go get github.com/snikch/goodman/cmd/goodman
+            ./contrib/get_node.sh && make contract-tests
 workflows:
-  version: 2
+  version: 2.1
   build_and_test:
     jobs:
-      - fmt
+      - check-skippable-pr
+      - fmt:
+          requires:
+            - check-skippable-pr
       - setup_dependencies:
           requires:
             - fmt
@@ -270,6 +368,18 @@ workflows:
           requires:
             - setup_dependencies
       - sim-link-multi-seed:
+          requires:
+            - setup_dependencies
+          filters:
+            branches:
+              only: master
+      - sim-link-multi-seed-short:
+          requires:
+            - setup_dependencies
+          filters:
+            branches:
+              ignore: master
+      - contract_tests:
           requires:
             - setup_dependencies
       - integration_multi_node_test:

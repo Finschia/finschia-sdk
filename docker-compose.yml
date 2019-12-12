@@ -2,60 +2,29 @@ version: '3'
 
 services:
   linkdnode0:
-    container_name: linkdnode0
-    image: "line/linkdnode"
+    container_name: linkdnode
+    image: "line/link"
     ports:
       - "26656-26657:26656-26657"
-    environment:
-      - ID=0
-      - LOG=${LOG:-linkd.log}
     volumes:
-      - ./build:/linkd:Z
+      - ${HOME}/.linkd:/root/.linkd
+    command: linkd start --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656
     networks:
       localnet:
         ipv4_address: 192.168.10.2
 
   linkdnode1:
-    container_name: linkdnode1
-    image: "line/linkdnode"
+    container_name: lcd
+    image: "line/link"
     ports:
-      - "26659-26660:26656-26657"
-    environment:
-      - ID=1
-      - LOG=${LOG:-linkd.log}
+      - "1317:1317"
     volumes:
-      - ./build:/linkd:Z
+      - ${HOME}/.linkd:/root/.linkd
+      - ${HOME}/.linkcli:/root/.linkcli
+    command: linkcli rest-server --node=tcp://192.168.10.2:26657  --laddr=tcp://0.0.0.0:1317
     networks:
       localnet:
         ipv4_address: 192.168.10.3
-
-  linkdnode2:
-    container_name: linkdnode2
-    image: "line/linkdnode"
-    environment:
-      - ID=2
-      - LOG=${LOG:-linkd.log}
-    ports:
-      - "26661-26662:26656-26657"
-    volumes:
-      - ./build:/linkd:Z
-    networks:
-      localnet:
-        ipv4_address: 192.168.10.4
-
-  linkdnode3:
-    container_name: linkdnode3
-    image: "line/linkdnode"
-    environment:
-      - ID=3
-      - LOG=${LOG:-linkd.log}
-    ports:
-      - "26663-26664:26656-26657"
-    volumes:
-      - ./build:/linkd:Z
-    networks:
-      localnet:
-        ipv4_address: 192.168.10.5
 
 networks:
   localnet:
@@ -65,4 +34,3 @@ networks:
       config:
       -
         subnet: 192.168.10.0/16
-

@@ -6,6 +6,8 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
+	"github.com/link-chain/link/types"
+	sbox "github.com/link-chain/link/x/safetybox"
 	"io/ioutil"
 	"os"
 	"path"
@@ -13,8 +15,6 @@ import (
 	"strings"
 	"testing"
 	"time"
-
-	"github.com/link-chain/link/types"
 
 	"github.com/tendermint/tendermint/crypto/ed25519"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -65,7 +65,7 @@ func TestLinkCLIKeysAddRecover(t *testing.T) {
 
 	exitSuccess, _, _ = f.KeysAddRecover("test-recover", "dentist task convince chimney quality leave banana trade firm crawl eternal easily")
 	require.True(t, exitSuccess)
-	require.Equal(t, "link1qcfdf69js922qrdr4yaww3ax7gjml6pdc74cja", f.KeyAddress("test-recover").String())
+	require.Equal(t, "link1h894xgljpjzu98we894ld2740ty88krpnarupg", f.KeyAddress("test-recover").String())
 
 	// Cleanup testing directories
 	f.Cleanup()
@@ -76,16 +76,16 @@ func TestLinkCLIKeysAddRecoverHDPath(t *testing.T) {
 	f := InitFixtures(t)
 
 	f.KeysAddRecoverHDPath("test-recoverHD1", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 0, 0)
-	require.Equal(t, "link1qcfdf69js922qrdr4yaww3ax7gjml6pdc74cja", f.KeyAddress("test-recoverHD1").String())
+	require.Equal(t, "link1h894xgljpjzu98we894ld2740ty88krpnarupg", f.KeyAddress("test-recoverHD1").String())
 
 	f.KeysAddRecoverHDPath("test-recoverH2", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 1, 5)
-	require.Equal(t, "link1pdfav2cjhry9k79nu6r8kgknnjtq6a7r3cmljv", f.KeyAddress("test-recoverH2").String())
+	require.Equal(t, "link1jjcgpg4gsmh56v5g8ze5c67thyp7yvv60p2uez", f.KeyAddress("test-recoverH2").String())
 
 	f.KeysAddRecoverHDPath("test-recoverH3", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 1, 17)
-	require.Equal(t, "link1909k354n6wl8ujzu6kmh49w4d02ax7qv2cvhtm", f.KeyAddress("test-recoverH3").String())
+	require.Equal(t, "link156zw8rc3pc30x5v30z7kghvaq2xpcx0d8ewg0f", f.KeyAddress("test-recoverH3").String())
 
 	f.KeysAddRecoverHDPath("test-recoverH4", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 2, 17)
-	require.Equal(t, "link1v9plmhvyhgxk3th9ydacm7j4z357s3nh7qssxr", f.KeyAddress("test-recoverH4").String())
+	require.Equal(t, "link1uz2mpws58feve9804vf7xkkt3aar9cg7kwh7hd", f.KeyAddress("test-recoverH4").String())
 
 	// Cleanup testing directories
 	f.Cleanup()
@@ -1326,57 +1326,484 @@ func TestValidateGenesis(t *testing.T) {
 	f.Cleanup()
 }
 
-func TestLinkCLIToken(t *testing.T) {
+func TestLinkCLISafetyBox(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
 
 	// start linkd server
 	proc := f.LDStart()
 	defer func() { require.NoError(t, proc.Stop(false)) }()
-	{
-		f.TxTokenPublish(keyFoo, "cony", "itiscony", 10000, true, "-y")
-		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.QueryTokenExpectEmpty("cony")
+	var result bool
+	//var stdout string
+
+	id := "some_safety_box"
+	rinahTheOwnerAddress := f.KeyAddress(userRinah).String()
+
+	// create a safety box w/ user rinah as the owner
+	{
+		result, _, _ = f.TxSafetyBoxCreate(id, rinahTheOwnerAddress, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
 	}
 
+	// rinah is the owner
 	{
-		f.TxTokenPublish(keyFoo, "conycony", "itiscony", 10000, true, "-y")
-		tests.WaitForNextNBlocksTM(1, f.Port)
-
-		token := f.QueryToken("conycony")
-		require.Equal(t, "itiscony", token.Name)
-		require.Equal(t, "conycony", token.Symbol)
-		require.Equal(t, true, token.Mintable)
-
-		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
-		require.Equal(t, "conycony", pms[0].GetResource())
-		require.Equal(t, "conycony", pms[1].GetResource())
-		if pms[0].GetAction() == "mint" {
-			require.Equal(t, "mint", pms[0].GetAction())
-			require.Equal(t, "burn", pms[1].GetAction())
-		} else {
-			require.Equal(t, "mint", pms[1].GetAction())
-			require.Equal(t, "burn", pms[0].GetAction())
-		}
-
-		f.TxTokenPublish(keyFoo, "brownbrown", "itisbrown", 20000, true, "-y")
-		tests.WaitForNextNBlocksTM(1, f.Port)
-
-		allTokens := f.QueryTokens()
-
-		require.Equal(t, "itiscony", allTokens[1].Name)
-		require.Equal(t, "conycony", allTokens[1].Symbol)
-		require.Equal(t, true, allTokens[1].Mintable)
-
-		require.Equal(t, "itisbrown", allTokens[0].Name)
-		require.Equal(t, "brownbrown", allTokens[0].Symbol)
-		require.Equal(t, true, allTokens[0].Mintable)
-
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleOwner, rinahTheOwnerAddress)
+		require.True(t, sbr.HasRole)
 	}
 
+	// rinah is not in any other roles
+	{
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleOperator, rinahTheOwnerAddress)
+		require.False(t, sbr.HasRole)
+
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleAllocator, rinahTheOwnerAddress)
+		require.False(t, sbr.HasRole)
+
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, rinahTheOwnerAddress)
+		require.False(t, sbr.HasRole)
+
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleReturner, rinahTheOwnerAddress)
+		require.False(t, sbr.HasRole)
+	}
+
+	// query the safety box
+	{
+		sb := f.QuerySafetyBox(id)
+		require.Equal(t, sb.ID, id)
+		require.Equal(t, sb.Owner.String(), rinahTheOwnerAddress)
+	}
+
+	// any coin transfer to the safety box from the owner should fail
+	{
+		resultAllocation, stdoutAllocation, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, denomLink, int64(1), rinahTheOwnerAddress, "", "-y")
+		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, denomLink, int64(1), rinahTheOwnerAddress, "", "-y")
+		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), rinahTheOwnerAddress, rinahTheOwnerAddress, "-y")
+		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, denomLink, int64(1), rinahTheOwnerAddress, "", "-y")
+
+		// test all four txs in a single block to reduce the testing time
+		// check the error message to get expected errors
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.True(t, resultAllocation)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionAllocate(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutAllocation, "\\\\\\\"")[9],
+		)
+
+		require.True(t, resultRecall)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionRecall(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutRecall, "\\\\\\\"")[9],
+		)
+
+		require.True(t, resultIssue)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutIssue, "\\\\\\\"")[9],
+		)
+
+		require.True(t, resultReturn)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionReturn(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutReturn, "\\\\\\\"")[9],
+		)
+	}
+
+	// the owner registers an operator
+	{
+		// register user tina as an operator
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleOperator, rinahTheOwnerAddress, f.KeyAddress(userTina).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// tina is now an operator
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleOperator, f.KeyAddress(userTina).String())
+		require.True(t, sbr.HasRole)
+	}
+
+	// the owner can't register allocator, issuer and returner
+	{
+		// registering as allocator, issuer and returner should fail
+		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, rinahTheOwnerAddress, f.KeyAddress(userKevin).String(), "-y")
+		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, rinahTheOwnerAddress, f.KeyAddress(userKevin).String(), "-y")
+		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, rinahTheOwnerAddress, f.KeyAddress(userKevin).String(), "-y")
+
+		// test all four txs in a single block to reduce the testing time
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.True(t, resultAllocator)
+		require.True(t, resultIssuer)
+		require.True(t, resultReturner)
+
+		// kevin should not have the role
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(userKevin).String())
+		require.False(t, sbr.HasRole)
+
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userKevin).String())
+		require.False(t, sbr.HasRole)
+
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(userKevin).String())
+		require.False(t, sbr.HasRole)
+	}
+
+	// any coin transfer to the safety box from the operator should fail
+	{
+		resultAllocate, stdoutAllocate, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), f.KeyAddress(userKevin).String(), f.KeyAddress(userKevin).String(), "-y")
+		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+
+		// test all four txs in a single block to reduce the testing time
+		// check the error message to get expected errors
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.True(t, resultAllocate)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionAllocate(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutAllocate, "\\\\\\\"")[9],
+		)
+
+		require.True(t, resultRecall)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionRecall(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutRecall, "\\\\\\\"")[9],
+		)
+
+		require.True(t, resultIssue)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutIssue, "\\\\\\\"")[9],
+		)
+
+		require.True(t, resultReturn)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionReturn(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutReturn, "\\\\\\\"")[9],
+		)
+	}
+
+	// an operator registers an allocator
+	{
+		// tina, the operator registers kevin as an allocator
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(userTina).String(), f.KeyAddress(userKevin).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// kevin is now an operator
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(userKevin).String())
+		require.True(t, sbr.HasRole)
+	}
+
+	// an allocator can't be an issuer or a returner
+	{
+		// try registering kevin as a returner should fail
+		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(userTina).String(), f.KeyAddress(userKevin).String(), "-y")
+
+		// try registering kevin as an issuer should fail
+		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(userTina).String(), f.KeyAddress(userKevin).String(), "-y")
+
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.True(t, resultReturner)
+		require.True(t, resultIssuer)
+
+		// kevin is not a returner
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(userKevin).String())
+		require.False(t, sbr.HasRole)
+
+		// kevin is not an issuer
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userKevin).String())
+		require.False(t, sbr.HasRole)
+	}
+
+	// an allocator is able to allocate coins to the safety box
+	{
+		// kevin allocates 1link to the safety box
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// check the safety box balance
+		sb := f.QuerySafetyBox(id)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins(nil), sb.TotalIssuance)
+
+		// check the kevin's balance
+		kevinAccount := f.QueryAccount(f.KeyAddress(userKevin))
+		require.Equal(t, kevinAccount.Coins,
+			sdk.Coins{
+				sdk.Coin{denomLink, sdk.NewInt(999999999)},
+				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+			},
+		)
+	}
+
+	// an operator registers an issuer
+	{
+		// tina, the operator registers brian as an issuer
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(userTina).String(), f.KeyAddress(userBrian).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// brian is now an issuer
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userBrian).String())
+		require.True(t, sbr.HasRole)
+	}
+
+	// an issuer can't be an allocator or a returner
+	{
+		// try registering brian as an allocator should fail
+		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(userTina).String(), f.KeyAddress(userBrian).String(), "-y")
+
+		// try registering brian as a returner should fail
+		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(userTina).String(), f.KeyAddress(userBrian).String(), "-y")
+
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.True(t, resultAllocator)
+		require.True(t, resultReturner)
+
+		// brian is not an allocator
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(userBrian).String())
+		require.False(t, sbr.HasRole)
+
+		// brian is not a returner
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(userBrian).String())
+		require.False(t, sbr.HasRole)
+	}
+
+	// an issuer is able to issue coins from the safety box to itself
+	{
+		// brian issues 1link from the safety box to himself
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), f.KeyAddress(userBrian).String(), f.KeyAddress(userBrian).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// check the safety box balance
+		sb := f.QuerySafetyBox(id)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.TotalIssuance)
+
+		// check the brian's balance
+		brianAccount := f.QueryAccount(f.KeyAddress(userBrian))
+		require.Equal(
+			t,
+			sdk.Coins{
+				sdk.Coin{denomLink, sdk.NewInt(1000000001)},
+				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+			},
+			brianAccount.Coins,
+		)
+	}
+
+	// an issuer is able to issue coins from the safety box to another issuer
+	{
+		// kevin allocates 1 link to the safety box
+		_, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+
+		// tina, the operator registers sam as an issuer
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(userTina).String(), f.KeyAddress(userSam).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// sam is now an issuer
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userSam).String())
+		require.True(t, sbr.HasRole)
+
+		// brian issues 1link from the safety box to Sam
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), f.KeyAddress(userBrian).String(), f.KeyAddress(userSam).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// check the safety box balance
+		sb := f.QuerySafetyBox(id)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.TotalIssuance)
+
+		// check the sam's balance
+		samAccount := f.QueryAccount(f.KeyAddress(userSam))
+		require.Equal(
+			t,
+			sdk.Coins{
+				sdk.Coin{denomLink, sdk.NewInt(1000000001)},
+				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+			},
+			samAccount.Coins,
+		)
+	}
+
+	// an issuer try issuing coins from the safety box to non-issuer should fail
+	{
+		// sam issues 1link from the safety box to non-issuer, evelyn
+		result, stdout, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), f.KeyAddress(userSam).String(), f.KeyAddress(userEvelyn).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+	}
+
+	// an operator registers a returner
+	{
+		// tina, the operator registers evelyn as a returner
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(userTina).String(), f.KeyAddress(userEvelyn).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// evelyn is now a returner
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(userEvelyn).String())
+		require.True(t, sbr.HasRole)
+	}
+
+	// a returner can't be an issuer or an allocator
+	{
+		// try registering evelyn as an allocator should fail
+		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(userTina).String(), f.KeyAddress(userEvelyn).String(), "-y")
+
+		// try registering evelyn as an issuer should fail
+		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(userTina).String(), f.KeyAddress(userEvelyn).String(), "-y")
+
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.True(t, resultAllocator)
+		require.True(t, resultIssuer)
+
+		// evelyn is not an allocator
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(userEvelyn).String())
+		require.False(t, sbr.HasRole)
+
+		// evelyn is not an issuer
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userEvelyn).String())
+		require.False(t, sbr.HasRole)
+	}
+
+	// a returner is able to return coins to the safety box
+	{
+		// evelyn returns 1link to the safety box
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, denomLink, int64(1), f.KeyAddress(userEvelyn).String(), "", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// check the safety box balance
+		sb := f.QuerySafetyBox(id)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(1)}}, sb.TotalIssuance)
+
+		// check the evelyn's balance
+		evelynAccount := f.QueryAccount(f.KeyAddress(userEvelyn))
+		require.Equal(
+			t,
+			sdk.Coins{
+				sdk.Coin{denomLink, sdk.NewInt(999999999)},
+				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+			},
+			evelynAccount.Coins,
+		)
+	}
+
+	// an allocator is able to recall coins from the safety box
+	{
+		// kevin recalls 1link from the safety box
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		// check the safety box balance
+		sb := f.QuerySafetyBox(id)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(1)}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(1)}}, sb.TotalIssuance)
+
+		// check the kevin's balance
+		kevinAccount := f.QueryAccount(f.KeyAddress(userKevin))
+		require.Equal(t,
+			kevinAccount.Coins,
+			sdk.Coins{
+				sdk.Coin{denomLink, sdk.NewInt(999999999)},
+				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+			},
+		)
+	}
 }
-func TestLinkCLITokenMintBurnPerm(t *testing.T) {
+
+func TestLinkCLIMempool(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	// Save key addresses for later use
+	fooAddr := f.KeyAddress(keyFoo)
+	barAddr := f.KeyAddress(keyBar)
+
+	fooAcc := f.QueryAccount(fooAddr)
+	startTokens := sdk.TokensFromConsensusPower(50)
+	require.Equal(t, startTokens, fooAcc.GetCoins().AmountOf(denom))
+
+	// Send some tokens from one account to the other
+	sendTokens := sdk.TokensFromConsensusPower(10)
+	success, stdout, stderr := f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y", "-b sync")
+	require.True(t, success)
+	require.NotEmpty(t, stdout)
+	require.Empty(t, stderr)
+
+	// check mempool size
+	{
+		result := f.MempoolNumUnconfirmedTxs()
+		require.Equal(t, 1, result.Count)
+		require.Equal(t, 1, result.Total)
+		require.Empty(t, result.Txs)
+	}
+
+	// check mempool txs
+	{
+		result := f.MempoolUnconfirmedTxHashes()
+		require.Equal(t, 1, result.Count)
+		require.Equal(t, 1, result.Total)
+
+		txHash := unmarshalTxResponse(t, stdout).TxHash
+		require.Equal(t, txHash, result.Txs[0])
+	}
+
+	// Ensure account balances match expected
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	barAcc := f.QueryAccount(barAddr)
+	require.Equal(t, sendTokens, barAcc.GetCoins().AmountOf(denom))
+	fooAcc = f.QueryAccount(fooAddr)
+	require.Equal(t, startTokens.Sub(sendTokens), fooAcc.GetCoins().AmountOf(denom))
+
+	f.Cleanup()
+}
+
+func TestLinkCLITokenIssue(t *testing.T) {
+
+	const (
+		symbolCony   = "cony"
+		symbolBrown  = "brown"
+		symbolShort  = "s"
+		symbolShort2 = "ss"
+		symbolLong   = "ssssss"
+	)
+
 	t.Parallel()
 	f := InitFixtures(t)
 
@@ -1385,73 +1812,321 @@ func TestLinkCLITokenMintBurnPerm(t *testing.T) {
 	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
+	fooSuffix := types.AccAddrSuffix(fooAddr)
+
+	// Try to issue token with short < 3 or long > 5. Expect fails
+	{
+		f.TxTokenIssue(keyFoo, symbolShort, "test", 10000, 6, true, "-y")
+		f.TxTokenIssue(keyFoo, symbolShort2, "test", 10000, 6, true, "-y")
+		f.TxTokenIssue(keyFoo, symbolLong, "test", 10000, 6, true, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		f.QueryTokenExpectEmpty(symbolShort)
+		f.QueryTokenExpectEmpty(symbolShort2)
+		f.QueryTokenExpectEmpty(symbolLong)
+		f.QueryTokenExpectEmpty(symbolShort + fooSuffix)
+		f.QueryTokenExpectEmpty(symbolShort2 + fooSuffix)
+		f.QueryTokenExpectEmpty(symbolLong + fooSuffix)
+	}
+
+	// Issue Token brown. The token symbol extended with the account address suffix
+	{
+		f.TxTokenIssue(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryToken(symbolBrown + fooSuffix)
+		require.Equal(t, "itisbrown", token.Name)
+		require.Equal(t, symbolBrown+fooSuffix, token.Symbol)
+		require.Equal(t, int64(6), token.Decimals.Int64())
+		require.Equal(t, false, token.Mintable)
+
+		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix))
+	}
+
+	// Issue Token cony. The token symbol extended with the account address suffix
+	{
+		f.TxTokenIssue(keyFoo, symbolCony, "itiscony", 10000, 6, true, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryToken(symbolCony + fooSuffix)
+		require.Equal(t, "itiscony", token.Name)
+		require.Equal(t, symbolCony+fooSuffix, token.Symbol)
+		require.Equal(t, int64(6), token.Decimals.Int64())
+		require.Equal(t, true, token.Mintable)
+
+		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolCony+fooSuffix))
+	}
+
+	// Query for all tokens
+	{
+		allTokens := f.QueryTokens()
+		require.Equal(t, 2, len(allTokens))
+
+		require.Equal(t, "itisbrown", allTokens[0].Name)
+		require.Equal(t, symbolBrown+fooSuffix, allTokens[0].Symbol)
+		require.Equal(t, int64(6), allTokens[0].Decimals.Int64())
+		require.Equal(t, false, allTokens[0].Mintable)
+
+		require.Equal(t, "itiscony", allTokens[1].Name)
+		require.Equal(t, symbolCony+fooSuffix, allTokens[1].Symbol)
+		require.Equal(t, int64(6), allTokens[1].Decimals.Int64())
+		require.Equal(t, true, allTokens[1].Mintable)
+
+	}
+
+	// Query permissions for foo account
+	{
+		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
+		require.Equal(t, 3, len(pms))
+		require.Equal(t, symbolBrown+fooSuffix, pms[0].GetResource())
+		require.Equal(t, "issue", pms[0].GetAction())
+		require.Equal(t, symbolCony+fooSuffix, pms[1].GetResource())
+		require.Equal(t, "issue", pms[1].GetAction())
+		require.Equal(t, symbolCony+fooSuffix, pms[2].GetResource())
+		require.Equal(t, "mint", pms[2].GetAction())
+	}
+
+	// Query permissions for bar account
+	{
+		pms := f.QueryAccountPermission(f.KeyAddress(keyBar))
+		require.Equal(t, 0, len(pms))
+	}
+
+}
+func TestLinkCLITokenMintBurn(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	const (
+		symbolCony = "cony"
+	)
+
+	const (
+		initAmount    = 2000000
+		initAmountStr = "2000000"
+		mintAmount    = 200
+		mintAmountStr = "200"
+		burnAmount    = 100
+		burnAmountStr = "100"
+	)
+
+	fooAddr := f.KeyAddress(keyFoo)
 	barAddr := f.KeyAddress(keyBar)
-	amount := int64(2000000)
+
+	symbolConyFoo := symbolCony + types.AccAddrSuffix(fooAddr)
 	// Create Account bar
 	{
 		sendTokens := sdk.TokensFromConsensusPower(1)
 		f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y")
 	}
-	// Publish Token and check the amount
+	// Issue a Token and check the amount
 	{
-		f.TxTokenPublish(keyFoo, "marshallcoin", "itismarshalcoin", amount, true, "-y")
+		f.TxTokenIssue(keyFoo, symbolCony, "itiscony", initAmount, 6, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		token := f.QueryToken("marshallcoin")
-		require.Equal(t, "itismarshalcoin", token.Name)
-		require.Equal(t, "marshallcoin", token.Symbol)
+		token := f.QueryToken(symbolConyFoo)
+		require.Equal(t, "itiscony", token.Name)
+		require.Equal(t, symbolConyFoo, token.Symbol)
+		require.Equal(t, int64(6), token.Decimals.Int64())
 		require.Equal(t, true, token.Mintable)
 
-		require.Equal(t, sdk.NewInt(amount), f.QueryTotalSupplyOf("marshallcoin"))
-		require.Equal(t, sdk.NewInt(amount), f.QueryAccount(fooAddr).Coins.AmountOf("marshallcoin"))
+		require.Equal(t, int64(initAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
 	}
 	// Mint/Burn by token owner
 	{
-		f.TxTokenMint(keyFoo, "100marshallcoin", "-y")
+		f.TxTokenMint(keyFoo, mintAmountStr+symbolConyFoo, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, sdk.NewInt(amount+100), f.QueryTotalSupplyOf("marshallcoin"))
-		require.Equal(t, sdk.NewInt(amount+100), f.QueryAccount(fooAddr).Coins.AmountOf("marshallcoin"))
+		require.Equal(t, int64(initAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
 
-		f.TxTokenBurn(keyFoo, "200marshallcoin", "-y")
+		f.TxTokenBurn(keyFoo, burnAmountStr+symbolConyFoo, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, sdk.NewInt(amount-100), f.QueryTotalSupplyOf("marshallcoin"))
-		require.Equal(t, sdk.NewInt(amount-100), f.QueryAccount(fooAddr).Coins.AmountOf("marshallcoin"))
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
 	}
 
-	// Fail due to insufficient and permission
+	// Mint/Burn Fail
 	{
-		_, stdOut, _ := f.TxTokenBurn(keyFoo, "2000000marshallcoin", "-y")
-		require.Contains(t, stdOut, "insufficient account funds")
-		_, stdOut, _ = f.TxTokenMint(keyBar, "100marshallcoin", "-y")
-		require.Contains(t, stdOut, "account does not have permissions")
-	}
-
-	// Grant Permission to bar, Revoke Permission from foo
-	{
-		f.TxTokenGrantPerm(keyFoo, barAddr, "marshallcoin", "mint", "-y")
-		tests.WaitForNextNBlocksTM(1, f.Port)
-
-		f.TxTokenMint(keyBar, "100marshallcoin", "-y")
-		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, sdk.NewInt(amount), f.QueryTotalSupplyOf("marshallcoin"))
-		require.Equal(t, sdk.NewInt(100), f.QueryAccount(barAddr).Coins.AmountOf("marshallcoin"))
-
-		f.TxTokenRevokePerm(keyFoo, "marshallcoin", "mint", "-y")
-		tests.WaitForNextNBlocksTM(1, f.Port)
-
-		_, stdOut, _ := f.TxTokenMint(keyFoo, "100marshallcoin", "-y")
+		//Foo try to burn but insufficient
+		_, stdOut, _ := f.TxTokenBurn(keyFoo, initAmountStr+initAmountStr+symbolConyFoo, "-y")
+		require.Contains(t, stdOut, "not enough coins")
+		//bar try to mint but has no permission
+		_, stdOut, _ = f.TxTokenMint(keyBar, mintAmountStr+symbolConyFoo, "-y")
 		require.Contains(t, stdOut, "account does not have permissions")
 
+		//Amount not changed
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
 	}
+
+	// Grant Permission to bar
+	{
+		f.TxTokenGrantPerm(keyFoo, barAddr, symbolConyFoo, "mint", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		f.TxTokenMint(keyBar, mintAmountStr+symbolConyFoo, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
+	}
+
+	// Revoke permission from foo
+	{
+		f.TxTokenRevokePerm(keyFoo, symbolConyFoo, "mint", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		_, stdOut, _ := f.TxTokenMint(keyFoo, mintAmountStr+symbolConyFoo, "-y")
+		require.Contains(t, stdOut, "account does not have permissions")
+
+		// Amount not changed
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
+	}
+
+	// Burn from bar without permissions
+	{
+		f.TxTokenBurn(keyBar, burnAmountStr+symbolConyFoo, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(mintAmount-burnAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
+	}
+
 	f.Cleanup()
 }
 
-func TestBech32Prefix(t *testing.T) {
+func TestLinkCLITokenCollection(t *testing.T) {
+
+	const (
+		symbolCony  = "cony"
+		symbolBrown = "brown"
+	)
+
+	const (
+		tokenID01 = "00000001"
+		tokenID02 = "00000002"
+		tokenID03 = "00000003"
+		tokenID04 = "00000004"
+		tokenID05 = "00000005"
+	)
+
 	t.Parallel()
 	f := InitFixtures(t)
-	addr := f.KeyAddress(keyFoo)
-	acc := f.KeysShow(keyFoo)
-	require.Equal(t, types.Bech32PrefixAccPub, acc.PubKey[:7])
-	require.Equal(t, types.Bech32PrefixAccAddr, addr.String()[:4])
-	require.Equal(t, types.Bech32PrefixAccAddr, acc.Address[:4])
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+	fooSuffix := types.AccAddrSuffix(fooAddr)
+	barAddr := f.KeyAddress(keyBar)
+	//barSuffix := types.AccAddrSuffix(barAddr)
+
+	// Create Account bar
+	{
+		sendTokens := sdk.TokensFromConsensusPower(1)
+		f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y")
+	}
+	// Issue collective token brown with token id
+	{
+		f.TxTokenIssueCollection(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, tokenID01, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		f.QueryTokenExpectEmpty(symbolBrown + fooSuffix)
+		token := f.QueryToken(symbolBrown + fooSuffix + tokenID01)
+		require.Equal(t, "itisbrown", token.Name)
+		require.Equal(t, symbolBrown+fooSuffix+tokenID01, token.Symbol)
+		require.Equal(t, int64(6), token.Decimals.Int64())
+		require.Equal(t, false, token.Mintable)
+		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix+tokenID01))
+	}
+	{
+		f.TxTokenIssueCollection(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, tokenID02, "-y")
+		f.TxTokenIssueCollection(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, tokenID03, "-y")
+
+		collection := f.QueryCollection(symbolBrown + fooSuffix)
+		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[0].Symbol)
+		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[1].Symbol)
+		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[2].Symbol)
+	}
+
+	// Bar cannot issue with the collection symbol
+	{
+		// set the symbol with fooSuffix
+		f.TxTokenIssueCollection(keyBar, symbolBrown+fooSuffix, "itisbrown", 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		f.QueryTokenExpectEmpty(symbolBrown + fooSuffix + tokenID04)
+	}
+
+	// Bar can issue collective token when granted the issue permission
+	{
+		f.TxTokenGrantPerm(keyFoo, barAddr, symbolBrown+fooSuffix, "issue", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		f.TxTokenIssueCollection(keyBar, symbolBrown+fooSuffix, "itisbrown", 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryToken(symbolBrown + fooSuffix + tokenID04)
+		require.Equal(t, symbolBrown+fooSuffix+tokenID04, token.Symbol)
+	}
+}
+
+func TestLinkCLITokenNFT(t *testing.T) {
+
+	const (
+		symbolBrown = "brown"
+	)
+
+	const (
+		tokenID01 = "00000001"
+		tokenID02 = "00000002"
+		tokenID03 = "00000003"
+	)
+
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+	fooSuffix := types.AccAddrSuffix(fooAddr)
+	barAddr := f.KeyAddress(keyBar)
+
+	// Create Account bar
+	{
+		sendTokens := sdk.TokensFromConsensusPower(1)
+		f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y")
+	}
+	// Issue nft
+	{
+		f.TxTokenIssueNFT(keyFoo, symbolBrown, "itisbrown", "uri:itisbrown", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryToken(symbolBrown + fooSuffix)
+		require.Equal(t, "itisbrown", token.Name)
+		require.Equal(t, symbolBrown+fooSuffix, token.Symbol)
+		require.Equal(t, int64(0), token.Decimals.Int64())
+		require.Equal(t, false, token.Mintable)
+		require.Equal(t, "uri:itisbrown", token.TokenURI)
+		require.Equal(t, sdk.NewInt(1), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix))
+	}
+	// Issue Collective NFT for the collection
+	{
+		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, "itisbrown", "uri:itisbrown", tokenID01, "-y")
+		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, "itisbrown", "uri:itisbrown", tokenID02, "-y")
+		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, "itisbrown", "uri:itisbrown", tokenID03, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		collection := f.QueryCollection(symbolBrown + fooSuffix)
+		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[0].Symbol)
+		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[1].Symbol)
+		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[2].Symbol)
+		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[3].Symbol)
+	}
 }

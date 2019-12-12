@@ -34,6 +34,8 @@ func main() {
 	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
 	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
 	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
+	config.SetCoinType(types.CoinType)
+	config.SetFullFundraiserPath(types.FullFundraiserPath)
 	config.Seal()
 
 	// TODO: setup keybase, viper object, etc. to be passed into
@@ -54,6 +56,7 @@ func main() {
 	// Construct Root Command
 	rootCmd.AddCommand(
 		client.StatusCommand(),
+		client.MempoolCmd(cdc),
 		client.ConfigCmd(app.DefaultCLIHome),
 		queryCmd(cdc),
 		txCmd(cdc),
@@ -85,9 +88,11 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 
 	queryCmd.AddCommand(
 		authclient.GetAccountCmd(cdc),
+		client.QueryGenesisAccountCmd(cdc),
 		client.LineBreak,
 		client.ValidatorCommand(cdc),
 		client.BlockCommand(cdc),
+		client.QueryGenesisTxCmd(cdc),
 		authclient.QueryTxsByEventsCmd(cdc),
 		authclient.QueryTxCmd(cdc),
 		client.LineBreak,

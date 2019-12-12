@@ -7,10 +7,11 @@
 
 ```golang
 type Token struct {
-	Name     string         `json:"name"`
-	Symbol   string         `json:"symbol"`
-	Owner    sdk.AccAddress `json:"owner"`
-	Mintable bool           `json:"mintable"`
+	Name     string    `json:"name"`
+	Symbol   string    `json:"symbol"`
+	Mintable bool      `json:"mintable"`
+	Decimals sdk.Int   `json:"decimals"`
+	TokenURI string    `json:"token_uri"`
 }
 ```
 

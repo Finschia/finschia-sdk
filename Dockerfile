@@ -1,7 +1,7 @@
 # Simple usage with a mounted data directory:
-# > docker build -t link .
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.linkd:/root/.linkd -v ~/.linkcli:/root/.linkcli link linkd init
-# > docker run -it -p 46657:46657 -p 46656:46656 -v ~/.linkd:/root/.linkd -v ~/.linkcli:/root/.linkcli link linkd start
+# > docker build -t line/link .
+# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.linkd:/root/.linkd -v ~/.linkcli:/root/.linkcli line/link linkd init
+# > docker run -it -p 26656:26656 -p 26657:26657 -v ~/.linkd:/root/.linkd -v ~/.linkcli:/root/.linkcli line/link linkd start --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656
 FROM golang:alpine AS build-env
 
 # Set up dependencies
@@ -32,9 +32,5 @@ WORKDIR /root
 COPY --from=build-env /go/bin/linkd /usr/bin/linkd
 COPY --from=build-env /go/bin/linkcli /usr/bin/linkcli
 
-ENTRYPOINT ["/usr/bin/wrapper.sh"]
-
 # Run linkd by default, omit entrypoint to ease using container with linkcli
-CMD ["start"]
-
-COPY wrapper.sh /usr/bin/wrapper.sh
+CMD ["linkd"]
