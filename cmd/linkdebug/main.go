@@ -14,11 +14,11 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
-	link "github.com/link-chain/link/app"
+	link "github.com/line/link/app"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/link-chain/link/types"
+	"github.com/line/link/types"
 )
 
 func init() {

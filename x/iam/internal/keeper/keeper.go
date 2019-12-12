@@ -4,8 +4,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/link-chain/link/x/iam/exported"
-	"github.com/link-chain/link/x/iam/internal/types"
+	"github.com/line/link/x/iam/exported"
+	"github.com/line/link/x/iam/internal/types"
 )
 
 type Keeper struct {

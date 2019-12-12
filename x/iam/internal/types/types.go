@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/link-chain/link/x/iam/exported"
+	"github.com/line/link/x/iam/exported"
 )
 
 type AccountPermissionI interface {

@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/link-chain/link/x/token/internal/types"
+	"github.com/line/link/x/token/internal/types"
 )
 
 func (k Keeper) OccupySymbol(ctx sdk.Context, symbol string, owner sdk.AccAddress) sdk.Error {

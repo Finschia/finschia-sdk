@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/link-chain/link/x/token/internal/types"
+	"github.com/line/link/x/token/internal/types"
 )
 
 func (k Keeper) MintTokens(ctx sdk.Context, amount sdk.Coins, to sdk.AccAddress) sdk.Error {

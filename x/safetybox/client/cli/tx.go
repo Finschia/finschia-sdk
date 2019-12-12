@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/link-chain/link/client"
-	"github.com/link-chain/link/x/safetybox/internal/types"
+	"github.com/line/link/client"
+	"github.com/line/link/x/safetybox/internal/types"
 	"github.com/spf13/cobra"
 	"strconv"
 )

@@ -31,7 +31,7 @@ import (
 	stakingsim "github.com/cosmos/cosmos-sdk/x/staking/simulation"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/link-chain/link/x/bank"
+	"github.com/line/link/x/bank"
 )
 
 func init() {

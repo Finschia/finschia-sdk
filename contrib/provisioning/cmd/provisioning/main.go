@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/link-chain/link/contrib/provisioning/k8s"
-	"github.com/link-chain/link/types"
+	"github.com/line/link/contrib/provisioning/k8s"
+	"github.com/line/link/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"log"

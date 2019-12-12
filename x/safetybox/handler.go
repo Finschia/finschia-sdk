@@ -2,7 +2,7 @@ package safetybox
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/link-chain/link/x/safetybox/internal/types"
+	"github.com/line/link/x/safetybox/internal/types"
 )
 
 func NewHandler(keeper Keeper) sdk.Handler {

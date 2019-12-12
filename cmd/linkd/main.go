@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/link-chain/link/version"
+	"github.com/line/link/version"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -15,7 +15,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/link-chain/link/app"
+	"github.com/line/link/app"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -26,8 +26,8 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	"github.com/link-chain/link/client"
-	"github.com/link-chain/link/types"
+	"github.com/line/link/client"
+	"github.com/line/link/types"
 )
 
 // linkd custom flags

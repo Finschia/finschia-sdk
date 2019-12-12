@@ -20,7 +20,7 @@ import (
 	"github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/types"
 
-	"github.com/link-chain/link/app"
+	"github.com/line/link/app"
 )
 
 const (

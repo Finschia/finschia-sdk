@@ -3,11 +3,11 @@
 First of all, thank you so much for taking your time to contribute!
 It will be amazing if you could help us by doing any of the following:
 
-- File an issue in [the issue tracker](https://github.com/link-chain/link/issues) to report bugs and propose new features and
+- File an issue in [the issue tracker](https://github.com/line/link/issues) to report bugs and propose new features and
   improvements.
-- Ask a question by creating a new issue in [the issue tracker](https://github.com/link-chain/link/issues).
-  - Browse [the list of previously answered questions](https://github.com/link-chain/link/issues?q=label%3Aquestion).
-- Contribute your work by sending [a pull request](https://github.com/link-chain/link/pulls).
+- Ask a question by creating a new issue in [the issue tracker](https://github.com/line/link/issues).
+  - Browse [the list of previously answered questions](https://github.com/line/link/issues?q=label%3Aquestion).
+- Contribute your work by sending [a pull request](https://github.com/line/link/pulls).
 
 ## Contributor license agreement
 
@@ -17,7 +17,7 @@ the ICLA (individual contributor license agreement). Please
 
 ## Code of conduct
 
-We expect contributors to follow [our code of conduct](https://github.com/link-chain/link/blob/master/CODE_OF_CONDUCT.md).
+We expect contributors to follow [our code of conduct](https://github.com/line/link/blob/master/CODE_OF_CONDUCT.md).
 
 ## Setting up your IDE
 

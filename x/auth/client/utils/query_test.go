@@ -22,8 +22,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 
-	"github.com/link-chain/link/types"
-	"github.com/link-chain/link/x/auth/client/utils/mocks"
+	"github.com/line/link/types"
+	"github.com/line/link/x/auth/client/utils/mocks"
 )
 
 type mockNodeResponses struct {

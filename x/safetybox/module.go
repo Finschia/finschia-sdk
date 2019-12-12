@@ -2,8 +2,8 @@ package safetybox
 
 import (
 	"encoding/json"
-	"github.com/link-chain/link/x/safetybox/client/cli"
-	"github.com/link-chain/link/x/safetybox/client/rest"
+	"github.com/line/link/x/safetybox/client/cli"
+	"github.com/line/link/x/safetybox/client/rest"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"

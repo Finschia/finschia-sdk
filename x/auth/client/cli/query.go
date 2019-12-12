@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/link-chain/link/x/auth/client/utils"
+	"github.com/line/link/x/auth/client/utils"
 )
 
 const (

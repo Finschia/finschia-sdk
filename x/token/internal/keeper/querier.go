@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"fmt"
-	"github.com/link-chain/link/x/token/internal/types"
+	"github.com/line/link/x/token/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"

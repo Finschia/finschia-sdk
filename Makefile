@@ -29,9 +29,9 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 ########################################
 ### Process linker flags
 
-ldflags = -X github.com/link-chain/link/version.Version=$(VERSION) \
-		  -X github.com/link-chain/link/version.Commit=$(COMMIT) \
-		  -X "github.com/link-chain/link/version.BuildTags=$(build_tags_comma_sep)"
+ldflags = -X github.com/line/link/version.Version=$(VERSION) \
+		  -X github.com/line/link/version.Commit=$(COMMIT) \
+		  -X "github.com/line/link/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq ($(WITH_CLEVELDB),yes)
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb

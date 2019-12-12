@@ -6,8 +6,8 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/link-chain/link/types"
-	sbox "github.com/link-chain/link/x/safetybox"
+	"github.com/line/link/types"
+	sbox "github.com/line/link/x/safetybox"
 	"io/ioutil"
 	"os"
 	"path"
@@ -21,7 +21,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/link-chain/link/app"
+	"github.com/line/link/app"
 
 	"github.com/cosmos/cosmos-sdk/tests"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -29,7 +29,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genaccounts"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
-	"github.com/link-chain/link/client"
+	"github.com/line/link/client"
 )
 
 func TestLinkCLIKeysAddMultisig(t *testing.T) {

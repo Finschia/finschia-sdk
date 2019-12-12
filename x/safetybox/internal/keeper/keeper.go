@@ -5,8 +5,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	cbank "github.com/cosmos/cosmos-sdk/x/bank"
-	iam "github.com/link-chain/link/x/iam/exported"
-	"github.com/link-chain/link/x/safetybox/internal/types"
+	iam "github.com/line/link/x/iam/exported"
+	"github.com/line/link/x/safetybox/internal/types"
 	"github.com/tendermint/tendermint/crypto"
 )
 

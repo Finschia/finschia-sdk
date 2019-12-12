@@ -2,7 +2,7 @@ package exported
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/link-chain/link/x/token/internal/types"
+	"github.com/line/link/x/token/internal/types"
 )
 
 type TokenKeeper interface {

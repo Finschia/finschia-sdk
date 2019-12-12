@@ -2,8 +2,8 @@ package cli
 
 import (
 	"errors"
-	linktype "github.com/link-chain/link/types"
-	"github.com/link-chain/link/x/token/internal/types"
+	linktype "github.com/line/link/types"
+	"github.com/line/link/x/token/internal/types"
 	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/link-chain/link/client"
+	"github.com/line/link/client"
 )
 
 var (

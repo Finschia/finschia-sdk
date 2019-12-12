@@ -1,11 +1,11 @@
 package rest
 
 import (
-	clienttypes "github.com/link-chain/link/x/token/client/internal/types"
+	clienttypes "github.com/line/link/x/token/client/internal/types"
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/link-chain/link/client"
+	"github.com/line/link/client"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"

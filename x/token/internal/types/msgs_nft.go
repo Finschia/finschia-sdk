@@ -3,7 +3,7 @@ package types
 import (
 	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/link-chain/link/types"
+	"github.com/line/link/types"
 )
 
 var _ sdk.Msg = (*MsgIssueNFT)(nil)

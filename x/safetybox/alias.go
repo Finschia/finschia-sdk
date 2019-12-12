@@ -1,8 +1,8 @@
 package safetybox
 
 import (
-	"github.com/link-chain/link/x/safetybox/internal/keeper"
-	"github.com/link-chain/link/x/safetybox/internal/types"
+	"github.com/line/link/x/safetybox/internal/keeper"
+	"github.com/line/link/x/safetybox/internal/types"
 )
 
 const (

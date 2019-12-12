@@ -16,12 +16,12 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/link-chain/link/types"
+	"github.com/line/link/types"
 
-	safetyBoxModule "github.com/link-chain/link/x/safetybox"
-	tokenModule "github.com/link-chain/link/x/token"
+	safetyBoxModule "github.com/line/link/x/safetybox"
+	tokenModule "github.com/line/link/x/token"
 
-	"github.com/link-chain/link/client"
+	"github.com/line/link/client"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/stretchr/testify/require"
@@ -30,7 +30,7 @@ import (
 	tmctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/link-chain/link/app"
+	"github.com/line/link/app"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys"
@@ -43,7 +43,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	atypes "github.com/link-chain/link/x/auth/client/types"
+	atypes "github.com/line/link/x/auth/client/types"
 )
 
 const (

@@ -19,7 +19,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	gtypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	sdk "github.com/link-chain/link/x/auth/client/types"
+	sdk "github.com/line/link/x/auth/client/types"
 )
 
 const MaxPerPage = 100

@@ -18,8 +18,8 @@ import (
 	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/params"
 
-	"github.com/link-chain/link/x/bank/internal/keeper/mocks"
-	"github.com/link-chain/link/x/bank/internal/types"
+	"github.com/line/link/x/bank/internal/keeper/mocks"
+	"github.com/line/link/x/bank/internal/types"
 )
 
 type testInput struct {

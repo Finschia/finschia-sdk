@@ -3,7 +3,7 @@ package bank
 import (
 	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	cbankcli "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-	"github.com/link-chain/link/x/bank/internal/types"
+	"github.com/line/link/x/bank/internal/types"
 )
 
 const (

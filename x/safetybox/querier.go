@@ -3,7 +3,7 @@ package safetybox
 import (
 	"fmt"
 
-	"github.com/link-chain/link/x/safetybox/internal/types"
+	"github.com/line/link/x/safetybox/internal/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 

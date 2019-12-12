@@ -12,12 +12,12 @@ builds:
   env:
     - CGO_ENABLED=0
   ldflags:
-    - -X github.com/link-chain/link/version.Name=link
-    - -X github.com/link-chain/link/version.ServerName=linkd
-    - -X github.com/link-chain/link/version.ClientName=linkcli
-    - -X github.com/link-chain/link/version.Version={{ .Version }}
-    - -X github.com/link-chain/link/version.Commit={{ .FullCommit }}
-    - -X "github.com/link-chain/link/version.BuildTags=netgo,ledger"
+    - -X github.com/line/link/version.Name=link
+    - -X github.com/line/link/version.ServerName=linkd
+    - -X github.com/line/link/version.ClientName=linkcli
+    - -X github.com/line/link/version.Version={{ .Version }}
+    - -X github.com/line/link/version.Commit={{ .FullCommit }}
+    - -X "github.com/line/link/version.BuildTags=netgo,ledger"
 -
   id: "linkd"
   main: ./cmd/linkd
@@ -28,12 +28,12 @@ builds:
     - -mod=readonly
     - -tags="netgo ledger"
   ldflags:
-    - -X github.com/link-chain/link/version.Name=link
-    - -X github.com/link-chain/link/version.ServerName=linkd
-    - -X github.com/link-chain/link/version.ClientName=linkcli
-    - -X github.com/link-chain/link/version.Version={{ .Version }}
-    - -X github.com/link-chain/link/version.Commit={{ .FullCommit }}
-    - -X "github.com/link-chain/link/version.BuildTags=netgo,ledger"
+    - -X github.com/line/link/version.Name=link
+    - -X github.com/line/link/version.ServerName=linkd
+    - -X github.com/line/link/version.ClientName=linkcli
+    - -X github.com/line/link/version.Version={{ .Version }}
+    - -X github.com/line/link/version.Commit={{ .FullCommit }}
+    - -X "github.com/line/link/version.BuildTags=netgo,ledger"
 archives:
 - replacements:
     darwin: Darwin

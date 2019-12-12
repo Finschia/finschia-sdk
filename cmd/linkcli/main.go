@@ -15,11 +15,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 
-	"github.com/link-chain/link/app"
-	"github.com/link-chain/link/client"
-	"github.com/link-chain/link/types"
-	authclient "github.com/link-chain/link/x/auth/client"
-	"github.com/link-chain/link/x/bank"
+	"github.com/line/link/app"
+	"github.com/line/link/client"
+	"github.com/line/link/types"
+	authclient "github.com/line/link/x/auth/client"
+	"github.com/line/link/x/bank"
 )
 
 func main() {
