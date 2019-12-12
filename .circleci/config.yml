@@ -317,7 +317,7 @@ jobs:
 
   deploy:
     docker:
-      - image: circleci/golang:1.12
+      - image: circleci/golang:1.13.4
     steps:
       - checkout
       - run: curl -sL https://git.io/goreleaser | bash
