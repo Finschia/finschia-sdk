@@ -100,24 +100,25 @@ func (n *Node) writeK8STemplate() *Deployment {
 }
 
 type BuildMetaData struct {
-	InputNodeIp, ValidatorIDs, GenFiles, NodeNickNames                                                          []string
-	PubKeys                                                                                                     []crypto.PubKey
-	Accs                                                                                                        []genaccounts.GenesisAccount
-	NumNodes                                                                                                    int
-	ConfHomePath, ChainID, ConfDirName, CliBinDirName, LinkdBinDirName, k8STemplateFilePath, linkDockerImageUrl string
-	NodeP2PPort, NodeRestAPIPort, NodeABCIPort, PrometheusListenPort                                            int
-	TmConfig                                                                                                    *tmconfig.Config
+	InputNodeIp, ValidatorIDs, GenFiles, NodeNickNames                 []string
+	PubKeys                                                            []crypto.PubKey
+	Accs                                                               []genaccounts.GenesisAccount
+	NumNodes                                                           int
+	ConfHomePath, ChainID, ConfDirName, CliBinDirName, LinkdBinDirName string
+	k8STemplateFilePath, filebeatTemplateFilePath, linkDockerImageUrl  string
+	NodeP2PPort, NodeRestAPIPort, NodeABCIPort, PrometheusListenPort   int
+	TmConfig                                                           *tmconfig.Config
 }
 
-func NewBuildMetaData(inputNodes []string, confHomePath, chainID, confDirName, cliBinDirName,
-	linkdBinDirName string, nodeP2PPort, nodeRestAPIPort, nodeABCIPort, prometheusListenPort int,
-	tmConfig *tmconfig.Config, k8STemplateFilePath string, linkDockerImageUrl string) BuildMetaData {
+func NewBuildMetaData(inputNodes []string, confHomePath, chainID, confDirName, cliBinDirName, linkdBinDirName string,
+	nodeP2PPort, nodeRestAPIPort, nodeABCIPort, prometheusListenPort int, tmConfig *tmconfig.Config,
+	k8STemplateFilePath string, filebeatTemplateFilePath string, linkDockerImageUrl string) BuildMetaData {
 	numNodes := len(inputNodes)
 	return BuildMetaData{inputNodes, make([]string, numNodes), make([]string, numNodes),
 		make([]string, numNodes), make([]crypto.PubKey, numNodes),
-		make([]genaccounts.GenesisAccount, numNodes), numNodes, confHomePath, chainID,
-		confDirName, cliBinDirName, linkdBinDirName,
-		k8STemplateFilePath, linkDockerImageUrl, nodeP2PPort,
-		nodeRestAPIPort,
+		make([]genaccounts.GenesisAccount, numNodes), numNodes, confHomePath,
+		chainID, confDirName, cliBinDirName, linkdBinDirName,
+		k8STemplateFilePath, filebeatTemplateFilePath,
+		linkDockerImageUrl, nodeP2PPort, nodeRestAPIPort,
 		nodeABCIPort, prometheusListenPort, tmConfig}
 }
