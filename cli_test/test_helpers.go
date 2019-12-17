@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -330,7 +331,7 @@ func (f *Fixtures) CollectGenTxs(flags ...string) {
 func (f *Fixtures) LDStart(flags ...string) *tests.Process {
 	cmd := fmt.Sprintf("%s start --home=%s --rpc.laddr=%v --p2p.laddr=%v", f.LinkdBinary, f.LinkdHome, f.RPCAddr, f.P2PAddr)
 	proc := tests.GoExecuteTWithStdout(f.T, addFlags(cmd, flags))
-	tests.WaitForTMStart(f.Port)
+	WaitForTMStart(f.Port)
 	tests.WaitForNextNBlocksTM(1, f.Port)
 	return proc
 }
@@ -1324,7 +1325,7 @@ func (fg *FixtureGroup) LDStartContainers() {
 	for _, f := range fg.fixturesMap {
 		port := f.Port
 		go func() {
-			tests.WaitForTMStart(port)
+			WaitForTMStart(port)
 			tests.WaitForNextNBlocksTM(1, port)
 			wg.Done()
 		}()
@@ -1448,7 +1449,7 @@ func (fg *FixtureGroup) AddFullNode(flags ...string) *Fixtures {
 	// Start linkd
 	fg.LDStartContainer(f, fmt.Sprintf("--p2p.persistent_peers %s", strings.Join(persistentPeers, ",")))
 
-	tests.WaitForTMStart(f.Port)
+	WaitForTMStart(f.Port)
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	return f
@@ -1497,4 +1498,45 @@ func calculateIP(ip string, i int) (string, error) {
 	}
 
 	return ipv4.String(), nil
+}
+
+// wait for tendermint to start by querying tendermint
+func WaitForTMStart(port string) {
+	url := fmt.Sprintf("http://localhost:%v/block", port)
+	WaitForStart(url)
+}
+
+// WaitForStart waits for the node to start by pinging the url
+// every 100ms for 10s until it returns 200. If it takes longer than 5s,
+// it panics.
+func WaitForStart(url string) {
+	var err error
+
+	// ping the status endpoint a few times a second
+	// for a few seconds until we get a good response.
+	// otherwise something probably went wrong
+	// 2 ^ 10 = 1024 --> approximately 200 secs
+	wait := 1
+	for i := 0; i < 10; i++ {
+		// 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8, 25.6, 51.2, 102.4
+		time.Sleep(time.Millisecond * 100 * time.Duration(wait))
+
+		var res *http.Response
+		res, err = http.Get(url) //nolint:gosec Error is arising in testing files, accepting nolint
+		if err != nil || res == nil {
+			continue
+		}
+		err = res.Body.Close()
+		if err != nil {
+			panic(err)
+		}
+
+		if res.StatusCode == http.StatusOK {
+			// good!
+			return
+		}
+		wait *= 2
+	}
+	// still haven't started up?! panic!
+	panic(err)
 }
