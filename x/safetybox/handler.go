@@ -167,7 +167,7 @@ func handleMsgSafetyBoxRegisterAllocator(ctx sdk.Context, keeper Keeper, msg Msg
 			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
-			sdk.NewAttribute(AttributeKeySafetyBoxGrantAllocatePermission, RoleAllocator),
+			sdk.NewAttribute(AttributeKeySafetyBoxGrantAllocatorPermission, RoleAllocator),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -190,7 +190,7 @@ func handleMsgSafetyBoxDeregisterAllocator(ctx sdk.Context, keeper Keeper, msg M
 			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
-			sdk.NewAttribute(AttributeKeySafetyBoxRevokeAllocatePermission, RoleAllocator),
+			sdk.NewAttribute(AttributeKeySafetyBoxRevokeAllocatorPermission, RoleAllocator),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -213,7 +213,7 @@ func handleMsgSafetyBoxRegisterOperator(ctx sdk.Context, keeper Keeper, msg MsgS
 			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, msg.SafetyBoxOwner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
-			sdk.NewAttribute(AttributeKeySafetyBoxGrantRecallPermission, RoleOperator),
+			sdk.NewAttribute(AttributeKeySafetyBoxGrantOperatorPermission, RoleOperator),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -236,7 +236,7 @@ func handleMsgSafetyBoxDeregisterOperator(ctx sdk.Context, keeper Keeper, msg Ms
 			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, msg.SafetyBoxOwner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
-			sdk.NewAttribute(AttributeKeySafetyBoxRevokeRecallPermission, RoleOperator),
+			sdk.NewAttribute(AttributeKeySafetyBoxRevokeOperatorPermission, RoleOperator),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -259,7 +259,7 @@ func handleMsgSafetyBoxRegisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSaf
 			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
-			sdk.NewAttribute(AttributeKeySafetyBoxGrantIssuePermission, RoleIssuer),
+			sdk.NewAttribute(AttributeKeySafetyBoxGrantIssuerPermission, RoleIssuer),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -282,7 +282,7 @@ func handleMsgSafetyBoxDeregisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgS
 			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
-			sdk.NewAttribute(AttributeKeySafetyBoxRevokeIssuePermission, RoleIssuer),
+			sdk.NewAttribute(AttributeKeySafetyBoxRevokeIssuerPermission, RoleIssuer),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -305,7 +305,7 @@ func handleMsgSafetyBoxRegisterReturner(ctx sdk.Context, keeper Keeper, msg MsgS
 			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
-			sdk.NewAttribute(AttributeKeySafetyBoxGrantReturnPermission, RoleReturner),
+			sdk.NewAttribute(AttributeKeySafetyBoxGrantReturnerPermission, RoleReturner),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -328,7 +328,7 @@ func handleMsgSafetyBoxDeregisterReturner(ctx sdk.Context, keeper Keeper, msg Ms
 			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
-			sdk.NewAttribute(AttributeKeySafetyBoxRevokeReturnPermission, RoleReturner),
+			sdk.NewAttribute(AttributeKeySafetyBoxRevokeReturnerPermission, RoleReturner),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,

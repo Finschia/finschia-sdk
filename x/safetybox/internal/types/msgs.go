@@ -206,7 +206,7 @@ type MsgSafetyBoxRegisterIssuer struct {
 
 func (MsgSafetyBoxRegisterIssuer) Route() string { return RouterKey }
 
-func (MsgSafetyBoxRegisterIssuer) Type() string { return MsgTypeSafetyBoxGrantIssuePermission }
+func (MsgSafetyBoxRegisterIssuer) Type() string { return MsgTypeSafetyBoxGrantIssuerPermission }
 
 func (msgSbPermission MsgSafetyBoxRegisterIssuer) ValidateBasic() sdk.Error {
 	return validateBasic(msgSbPermission.SafetyBoxId, msgSbPermission.Operator, msgSbPermission.Address)
@@ -232,7 +232,7 @@ type MsgSafetyBoxRegisterReturner struct {
 
 func (MsgSafetyBoxRegisterReturner) Route() string { return RouterKey }
 
-func (MsgSafetyBoxRegisterReturner) Type() string { return MsgTypeSafetyBoxGrantReturnPermission }
+func (MsgSafetyBoxRegisterReturner) Type() string { return MsgTypeSafetyBoxGrantReturnerPermission }
 
 func (msgSbPermission MsgSafetyBoxRegisterReturner) ValidateBasic() sdk.Error {
 	return validateBasic(msgSbPermission.SafetyBoxId, msgSbPermission.Operator, msgSbPermission.Address)
@@ -258,9 +258,7 @@ type MsgSafetyBoxRegisterAllocator struct {
 
 func (MsgSafetyBoxRegisterAllocator) Route() string { return RouterKey }
 
-func (MsgSafetyBoxRegisterAllocator) Type() string {
-	return MsgTypeSafetyBoxGrantAllocatePermission
-}
+func (MsgSafetyBoxRegisterAllocator) Type() string { return MsgTypeSafetyBoxGrantAllocatorPermission }
 
 func (msgSbPermission MsgSafetyBoxRegisterAllocator) ValidateBasic() sdk.Error {
 	return validateBasic(msgSbPermission.SafetyBoxId, msgSbPermission.Operator, msgSbPermission.Address)
@@ -286,7 +284,7 @@ type MsgSafetyBoxRegisterOperator struct {
 
 func (MsgSafetyBoxRegisterOperator) Route() string { return RouterKey }
 
-func (MsgSafetyBoxRegisterOperator) Type() string { return MsgTypeSafetyBoxGrantRecallPermission }
+func (MsgSafetyBoxRegisterOperator) Type() string { return MsgTypeSafetyBoxGrantOperatorPermission }
 
 func (msgSbPermission MsgSafetyBoxRegisterOperator) ValidateBasic() sdk.Error {
 	return validateBasic(msgSbPermission.SafetyBoxId, msgSbPermission.SafetyBoxOwner, msgSbPermission.Address)
@@ -328,7 +326,7 @@ type MsgSafetyBoxDeregisterIssuer struct {
 
 func (MsgSafetyBoxDeregisterIssuer) Route() string { return RouterKey }
 
-func (MsgSafetyBoxDeregisterIssuer) Type() string { return MsgTypeSafetyBoxRevokeIssuePermission }
+func (MsgSafetyBoxDeregisterIssuer) Type() string { return MsgTypeSafetyBoxRevokeIssuerPermission }
 
 func (msgSbPermission MsgSafetyBoxDeregisterIssuer) ValidateBasic() sdk.Error {
 	return validateBasic(msgSbPermission.SafetyBoxId, msgSbPermission.Operator, msgSbPermission.Address)
@@ -354,7 +352,7 @@ type MsgSafetyBoxDeregisterReturner struct {
 
 func (MsgSafetyBoxDeregisterReturner) Route() string { return RouterKey }
 
-func (MsgSafetyBoxDeregisterReturner) Type() string { return MsgTypeSafetyBoxRevokeReturnPermission }
+func (MsgSafetyBoxDeregisterReturner) Type() string { return MsgTypeSafetyBoxRevokeReturnerPermission }
 
 func (msgSbPermission MsgSafetyBoxDeregisterReturner) ValidateBasic() sdk.Error {
 	return validateBasic(msgSbPermission.SafetyBoxId, msgSbPermission.Operator, msgSbPermission.Address)
@@ -380,9 +378,7 @@ type MsgSafetyBoxDeregisterAllocator struct {
 
 func (MsgSafetyBoxDeregisterAllocator) Route() string { return RouterKey }
 
-func (MsgSafetyBoxDeregisterAllocator) Type() string {
-	return MsgTypeSafetyBoxRevokeAllocatePermission
-}
+func (MsgSafetyBoxDeregisterAllocator) Type() string { return MsgTypeSafetyBoxRevokeAllocatorPermission }
 
 func (msgSbPermission MsgSafetyBoxDeregisterAllocator) ValidateBasic() sdk.Error {
 	return validateBasic(msgSbPermission.SafetyBoxId, msgSbPermission.Operator, msgSbPermission.Address)
@@ -402,13 +398,13 @@ func NewMsgSafetyBoxDeregisterOperator(safetyBoxId string, operator, address sdk
 
 type MsgSafetyBoxDeregisterOperator struct {
 	SafetyBoxId    string         `json:"safety_box_id"`
-	SafetyBoxOwner sdk.AccAddress `json:"operator"`
+	SafetyBoxOwner sdk.AccAddress `json:"safety_box_owner"`
 	Address        sdk.AccAddress `json:"address"`
 }
 
 func (MsgSafetyBoxDeregisterOperator) Route() string { return RouterKey }
 
-func (MsgSafetyBoxDeregisterOperator) Type() string { return MsgTypeSafetyBoxRevokeRecallPermission }
+func (MsgSafetyBoxDeregisterOperator) Type() string { return MsgTypeSafetyBoxRevokeOperatorPermission }
 
 func (msgSbPermission MsgSafetyBoxDeregisterOperator) ValidateBasic() sdk.Error {
 	return validateBasic(msgSbPermission.SafetyBoxId, msgSbPermission.SafetyBoxOwner, msgSbPermission.Address)

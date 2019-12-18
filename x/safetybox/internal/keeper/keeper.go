@@ -210,147 +210,181 @@ func (k Keeper) sendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coin
 	return nil
 }
 
-func (k Keeper) GrantPermission(ctx sdk.Context, safetyBoxId string, by sdk.AccAddress, acc sdk.AccAddress, action string) sdk.Error {
+func (k Keeper) GrantPermission(ctx sdk.Context, safetyBoxId string, by sdk.AccAddress, acc sdk.AccAddress, role string) sdk.Error {
 	// reject self-grant
 	if by.Equals(acc) {
 		return types.ErrSafetyBoxSelfPermission(types.DefaultCodespace)
 	}
 
-	// grant operator
-	if action == types.RoleOperator {
-		// check whitelist permission
-		whitelistOperatorsPermission := types.NewWhitelistOperatorsPermission(safetyBoxId)
-		if !k.iamKeeper.HasPermission(ctx, by, whitelistOperatorsPermission) {
-			return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
-		}
-
-		if k.IsOperator(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace)
-		}
-		if k.IsAllocator(ctx, safetyBoxId, acc) || k.IsIssuer(ctx, safetyBoxId, acc) || k.IsReturner(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace)
-		}
-		k.iamKeeper.GrantPermission(ctx, acc, types.NewWhitelistOtherRolesPermission(safetyBoxId))
-	}
-
-	// grant issuer
-	if action == types.RoleIssuer {
-		// check whitelist permission
-		whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
-		if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-			return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
-		}
-
-		if k.IsIssuer(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace)
-		}
-		if k.IsOperator(ctx, safetyBoxId, acc) || k.IsReturner(ctx, safetyBoxId, acc) || k.IsAllocator(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace)
-		}
-		k.iamKeeper.GrantPermission(ctx, acc, types.NewIssuePermission(safetyBoxId))
-	}
-
-	// grant returner
-	if action == types.RoleReturner {
-		// check whitelist permission
-		whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
-		if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-			return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
-		}
-
-		if k.IsReturner(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace)
-		}
-		if k.IsOperator(ctx, safetyBoxId, acc) || k.IsIssuer(ctx, safetyBoxId, acc) || k.IsAllocator(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace)
-		}
-		k.iamKeeper.GrantPermission(ctx, acc, types.NewReturnPermission(safetyBoxId))
-	}
-
-	// grant allocator
-	if action == types.RoleAllocator {
-		// check whitelist permission
-		whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
-		if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-			return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
-		}
-
-		if k.IsAllocator(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace)
-		}
-		if k.IsOperator(ctx, safetyBoxId, acc) || k.IsIssuer(ctx, safetyBoxId, acc) || k.IsReturner(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace)
-		}
-		k.iamKeeper.GrantPermission(ctx, acc, types.NewAllocatePermission(safetyBoxId))
-		k.iamKeeper.GrantPermission(ctx, acc, types.NewRecallPermission(safetyBoxId))
+	// grant
+	if role == types.RoleOperator {
+		return k.grantOperator(ctx, safetyBoxId, by, acc)
+	} else if role == types.RoleAllocator {
+		return k.grantAllocator(ctx, safetyBoxId, by, acc)
+	} else if role == types.RoleIssuer {
+		return k.grantIssuer(ctx, safetyBoxId, by, acc)
+	} else if role == types.RoleReturner {
+		return k.grantReturner(ctx, safetyBoxId, by, acc)
 	}
 
 	return nil
 }
 
-func (k Keeper) RevokePermission(ctx sdk.Context, safetyBoxId string, by sdk.AccAddress, acc sdk.AccAddress, action string) sdk.Error {
+func (k Keeper) grantOperator(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
+	// check whitelist permission
+	whitelistOperatorsPermission := types.NewWhitelistOperatorsPermission(safetyBoxId)
+	if !k.iamKeeper.HasPermission(ctx, by, whitelistOperatorsPermission) {
+		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
+	}
+
+	// check if the target is eligible
+	if k.IsOperator(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace)
+	}
+	if k.IsAllocator(ctx, safetyBoxId, acc) || k.IsIssuer(ctx, safetyBoxId, acc) || k.IsReturner(ctx, safetyBoxId, acc) || k.IsOwner(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace)
+	}
+
+	// grant
+	k.iamKeeper.GrantPermission(ctx, acc, types.NewWhitelistOtherRolesPermission(safetyBoxId))
+	return nil
+}
+
+func (k Keeper) grantAllocator(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
+	// check whitelist permission
+	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
+	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
+		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
+	}
+
+	// check if the target is eligible
+	if k.IsAllocator(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace)
+	}
+	if k.IsOperator(ctx, safetyBoxId, acc) || k.IsIssuer(ctx, safetyBoxId, acc) || k.IsReturner(ctx, safetyBoxId, acc) || k.IsOwner(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace)
+	}
+
+	// grant - allocator may allocate and recall
+	k.iamKeeper.GrantPermission(ctx, acc, types.NewAllocatePermission(safetyBoxId))
+	k.iamKeeper.GrantPermission(ctx, acc, types.NewRecallPermission(safetyBoxId))
+	return nil
+}
+
+func (k Keeper) grantIssuer(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
+	// check whitelist permission
+	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
+	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
+		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
+	}
+
+	// check if the target is eligible
+	if k.IsIssuer(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace)
+	}
+	if k.IsOperator(ctx, safetyBoxId, acc) || k.IsReturner(ctx, safetyBoxId, acc) || k.IsAllocator(ctx, safetyBoxId, acc) || k.IsOwner(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace)
+	}
+
+	// grant
+	k.iamKeeper.GrantPermission(ctx, acc, types.NewIssuePermission(safetyBoxId))
+	return nil
+}
+
+func (k Keeper) grantReturner(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
+	// check whitelist permission
+	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
+	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
+		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
+	}
+
+	// check if the target is eligible
+	if k.IsReturner(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace)
+	}
+	if k.IsOperator(ctx, safetyBoxId, acc) || k.IsIssuer(ctx, safetyBoxId, acc) || k.IsAllocator(ctx, safetyBoxId, acc) || k.IsOwner(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace)
+	}
+
+	// grant
+	k.iamKeeper.GrantPermission(ctx, acc, types.NewReturnPermission(safetyBoxId))
+	return nil
+}
+
+func (k Keeper) RevokePermission(ctx sdk.Context, safetyBoxId string, by sdk.AccAddress, acc sdk.AccAddress, role string) sdk.Error {
 	// reject self-revoke
 	if by.Equals(acc) {
 		return types.ErrSafetyBoxSelfPermission(types.DefaultCodespace)
 	}
 
-	// revoke operator
-	if action == types.RoleOperator {
-		// check whitelist permission
-		whitelistOperatorsPermission := types.NewWhitelistOperatorsPermission(safetyBoxId)
-		if !k.iamKeeper.HasPermission(ctx, by, whitelistOperatorsPermission) {
-			return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
-		}
-
-		if !k.IsOperator(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace)
-		}
-		k.iamKeeper.RevokePermission(ctx, acc, types.NewWhitelistOtherRolesPermission(safetyBoxId))
+	// revoke
+	if role == types.RoleOperator {
+		return k.revokeOperator(ctx, safetyBoxId, by, acc)
+	} else if role == types.RoleAllocator {
+		return k.revokeAllocator(ctx, safetyBoxId, by, acc)
+	} else if role == types.RoleIssuer {
+		return k.revokeIssuer(ctx, safetyBoxId, by, acc)
+	} else if role == types.RoleReturner {
+		return k.revokeReturner(ctx, safetyBoxId, by, acc)
 	}
 
-	// revoke issuer
-	if action == types.RoleIssuer {
-		// check whitelist permission
-		whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
-		if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-			return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
-		}
+	return nil
+}
 
-		if !k.IsIssuer(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace)
-		}
-		k.iamKeeper.RevokePermission(ctx, acc, types.NewIssuePermission(safetyBoxId))
+func (k Keeper) revokeOperator(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
+	// check whitelist permission
+	whitelistOperatorsPermission := types.NewWhitelistOperatorsPermission(safetyBoxId)
+	if !k.iamKeeper.HasPermission(ctx, by, whitelistOperatorsPermission) {
+		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
 	}
 
-	// revoke returner
-	if action == types.RoleReturner {
-		// check whitelist permission
-		whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
-		if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-			return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
-		}
+	if !k.IsOperator(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace)
+	}
+	k.iamKeeper.RevokePermission(ctx, acc, types.NewWhitelistOtherRolesPermission(safetyBoxId))
+	return nil
+}
 
-		if !k.IsReturner(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace)
-		}
-		k.iamKeeper.RevokePermission(ctx, acc, types.NewReturnPermission(safetyBoxId))
+func (k Keeper) revokeAllocator(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
+	// check whitelist permission
+	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
+	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
+		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
 	}
 
-	// revoke allocator
-	if action == types.RoleAllocator {
-		// check whitelist permission
-		whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
-		if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-			return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
-		}
+	if !k.IsAllocator(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace)
+	}
+	k.iamKeeper.RevokePermission(ctx, acc, types.NewAllocatePermission(safetyBoxId))
+	k.iamKeeper.RevokePermission(ctx, acc, types.NewRecallPermission(safetyBoxId))
+	return nil
+}
 
-		if !k.IsAllocator(ctx, safetyBoxId, acc) {
-			return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace)
-		}
-		k.iamKeeper.RevokePermission(ctx, acc, types.NewAllocatePermission(safetyBoxId))
-		k.iamKeeper.RevokePermission(ctx, acc, types.NewRecallPermission(safetyBoxId))
+func (k Keeper) revokeIssuer(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
+	// check whitelist permission
+	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
+	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
+		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
 	}
 
+	if !k.IsIssuer(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace)
+	}
+	k.iamKeeper.RevokePermission(ctx, acc, types.NewIssuePermission(safetyBoxId))
+	return nil
+}
+
+func (k Keeper) revokeReturner(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
+	// check whitelist permission
+	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxId)
+	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
+		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace)
+	}
+
+	if !k.IsReturner(ctx, safetyBoxId, acc) {
+		return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace)
+	}
+	k.iamKeeper.RevokePermission(ctx, acc, types.NewReturnPermission(safetyBoxId))
 	return nil
 }
 
