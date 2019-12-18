@@ -1338,7 +1338,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	//var stdout string
 
 	id := "some_safety_box"
-	rinahTheOwnerAddress := f.KeyAddress(userRinah).String()
+	rinahTheOwnerAddress := f.KeyAddress(UserRinah).String()
 
 	// create a safety box w/ user rinah as the owner
 	{
@@ -1377,10 +1377,10 @@ func TestLinkCLISafetyBox(t *testing.T) {
 
 	// any coin transfer to the safety box from the owner should fail
 	{
-		resultAllocation, stdoutAllocation, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, denomLink, int64(1), rinahTheOwnerAddress, "", "-y")
-		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, denomLink, int64(1), rinahTheOwnerAddress, "", "-y")
-		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), rinahTheOwnerAddress, rinahTheOwnerAddress, "-y")
-		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, denomLink, int64(1), rinahTheOwnerAddress, "", "-y")
+		resultAllocation, stdoutAllocation, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomLink, int64(1), rinahTheOwnerAddress, "", "-y")
+		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, DenomLink, int64(1), rinahTheOwnerAddress, "", "-y")
+		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), rinahTheOwnerAddress, rinahTheOwnerAddress, "-y")
+		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, DenomLink, int64(1), rinahTheOwnerAddress, "", "-y")
 
 		// test all four txs in a single block to reduce the testing time
 		// check the error message to get expected errors
@@ -1418,21 +1418,21 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// the owner registers an operator
 	{
 		// register user tina as an operator
-		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleOperator, rinahTheOwnerAddress, f.KeyAddress(userTina).String(), "-y")
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleOperator, rinahTheOwnerAddress, f.KeyAddress(UserTina).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// tina is now an operator
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleOperator, f.KeyAddress(userTina).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleOperator, f.KeyAddress(UserTina).String())
 		require.True(t, sbr.HasRole)
 	}
 
 	// the owner can't register allocator, issuer and returner
 	{
 		// registering as allocator, issuer and returner should fail
-		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, rinahTheOwnerAddress, f.KeyAddress(userKevin).String(), "-y")
-		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, rinahTheOwnerAddress, f.KeyAddress(userKevin).String(), "-y")
-		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, rinahTheOwnerAddress, f.KeyAddress(userKevin).String(), "-y")
+		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, rinahTheOwnerAddress, f.KeyAddress(UserKevin).String(), "-y")
+		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, rinahTheOwnerAddress, f.KeyAddress(UserKevin).String(), "-y")
+		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, rinahTheOwnerAddress, f.KeyAddress(UserKevin).String(), "-y")
 
 		// test all four txs in a single block to reduce the testing time
 		tests.WaitForNextNBlocksTM(1, f.Port)
@@ -1442,22 +1442,22 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultReturner)
 
 		// kevin should not have the role
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(userKevin).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(UserKevin).String())
 		require.False(t, sbr.HasRole)
 
-		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userKevin).String())
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(UserKevin).String())
 		require.False(t, sbr.HasRole)
 
-		sbr = f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(userKevin).String())
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(UserKevin).String())
 		require.False(t, sbr.HasRole)
 	}
 
 	// any coin transfer to the safety box from the operator should fail
 	{
-		resultAllocate, stdoutAllocate, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
-		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
-		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), f.KeyAddress(userKevin).String(), f.KeyAddress(userKevin).String(), "-y")
-		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+		resultAllocate, stdoutAllocate, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), f.KeyAddress(UserKevin).String(), "-y")
+		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 
 		// test all four txs in a single block to reduce the testing time
 		// check the error message to get expected errors
@@ -1495,22 +1495,22 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// an operator registers an allocator
 	{
 		// tina, the operator registers kevin as an allocator
-		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(userTina).String(), f.KeyAddress(userKevin).String(), "-y")
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(UserTina).String(), f.KeyAddress(UserKevin).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// kevin is now an operator
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(userKevin).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(UserKevin).String())
 		require.True(t, sbr.HasRole)
 	}
 
 	// an allocator can't be an issuer or a returner
 	{
 		// try registering kevin as a returner should fail
-		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(userTina).String(), f.KeyAddress(userKevin).String(), "-y")
+		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(UserTina).String(), f.KeyAddress(UserKevin).String(), "-y")
 
 		// try registering kevin as an issuer should fail
-		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(userTina).String(), f.KeyAddress(userKevin).String(), "-y")
+		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(UserTina).String(), f.KeyAddress(UserKevin).String(), "-y")
 
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
@@ -1518,33 +1518,33 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultIssuer)
 
 		// kevin is not a returner
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(userKevin).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(UserKevin).String())
 		require.False(t, sbr.HasRole)
 
 		// kevin is not an issuer
-		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userKevin).String())
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(UserKevin).String())
 		require.False(t, sbr.HasRole)
 	}
 
 	// an allocator is able to allocate coins to the safety box
 	{
 		// kevin allocates 1link to the safety box
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.CumulativeAllocation)
 		require.Equal(t, sdk.Coins(nil), sb.TotalIssuance)
 
 		// check the kevin's balance
-		kevinAccount := f.QueryAccount(f.KeyAddress(userKevin))
+		kevinAccount := f.QueryAccount(f.KeyAddress(UserKevin))
 		require.Equal(t, kevinAccount.Coins,
 			sdk.Coins{
-				sdk.Coin{denomLink, sdk.NewInt(999999999)},
-				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+				sdk.Coin{DenomLink, sdk.NewInt(999999999)},
+				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
 			},
 		)
 	}
@@ -1552,22 +1552,22 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// an operator registers an issuer
 	{
 		// tina, the operator registers brian as an issuer
-		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(userTina).String(), f.KeyAddress(userBrian).String(), "-y")
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(UserTina).String(), f.KeyAddress(UserBrian).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// brian is now an issuer
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userBrian).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(UserBrian).String())
 		require.True(t, sbr.HasRole)
 	}
 
 	// an issuer can't be an allocator or a returner
 	{
 		// try registering brian as an allocator should fail
-		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(userTina).String(), f.KeyAddress(userBrian).String(), "-y")
+		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(UserTina).String(), f.KeyAddress(UserBrian).String(), "-y")
 
 		// try registering brian as a returner should fail
-		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(userTina).String(), f.KeyAddress(userBrian).String(), "-y")
+		resultReturner, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(UserTina).String(), f.KeyAddress(UserBrian).String(), "-y")
 
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
@@ -1575,34 +1575,34 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultReturner)
 
 		// brian is not an allocator
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(userBrian).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(UserBrian).String())
 		require.False(t, sbr.HasRole)
 
 		// brian is not a returner
-		sbr = f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(userBrian).String())
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(UserBrian).String())
 		require.False(t, sbr.HasRole)
 	}
 
 	// an issuer is able to issue coins from the safety box to itself
 	{
 		// brian issues 1link from the safety box to himself
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), f.KeyAddress(userBrian).String(), f.KeyAddress(userBrian).String(), "-y")
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserBrian).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.OneInt()}}, sb.TotalIssuance)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.TotalIssuance)
 
 		// check the brian's balance
-		brianAccount := f.QueryAccount(f.KeyAddress(userBrian))
+		brianAccount := f.QueryAccount(f.KeyAddress(UserBrian))
 		require.Equal(
 			t,
 			sdk.Coins{
-				sdk.Coin{denomLink, sdk.NewInt(1000000001)},
-				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+				sdk.Coin{DenomLink, sdk.NewInt(1000000001)},
+				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
 			},
 			brianAccount.Coins,
 		)
@@ -1611,35 +1611,35 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// an issuer is able to issue coins from the safety box to another issuer
 	{
 		// kevin allocates 1 link to the safety box
-		_, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+		_, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 
 		// tina, the operator registers sam as an issuer
-		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(userTina).String(), f.KeyAddress(userSam).String(), "-y")
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(UserTina).String(), f.KeyAddress(UserSam).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// sam is now an issuer
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userSam).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(UserSam).String())
 		require.True(t, sbr.HasRole)
 
 		// brian issues 1link from the safety box to Sam
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), f.KeyAddress(userBrian).String(), f.KeyAddress(userSam).String(), "-y")
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserSam).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.TotalIssuance)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.TotalIssuance)
 
 		// check the sam's balance
-		samAccount := f.QueryAccount(f.KeyAddress(userSam))
+		samAccount := f.QueryAccount(f.KeyAddress(UserSam))
 		require.Equal(
 			t,
 			sdk.Coins{
-				sdk.Coin{denomLink, sdk.NewInt(1000000001)},
-				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+				sdk.Coin{DenomLink, sdk.NewInt(1000000001)},
+				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
 			},
 			samAccount.Coins,
 		)
@@ -1648,7 +1648,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// an issuer try issuing coins from the safety box to non-issuer should fail
 	{
 		// sam issues 1link from the safety box to non-issuer, evelyn
-		result, stdout, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, denomLink, int64(1), f.KeyAddress(userSam).String(), f.KeyAddress(userEvelyn).String(), "-y")
+		result, stdout, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), f.KeyAddress(UserSam).String(), f.KeyAddress(UserEvelyn).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 		require.Contains(
@@ -1661,22 +1661,22 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// an operator registers a returner
 	{
 		// tina, the operator registers evelyn as a returner
-		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(userTina).String(), f.KeyAddress(userEvelyn).String(), "-y")
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleReturner, f.KeyAddress(UserTina).String(), f.KeyAddress(UserEvelyn).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// evelyn is now a returner
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(userEvelyn).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(UserEvelyn).String())
 		require.True(t, sbr.HasRole)
 	}
 
 	// a returner can't be an issuer or an allocator
 	{
 		// try registering evelyn as an allocator should fail
-		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(userTina).String(), f.KeyAddress(userEvelyn).String(), "-y")
+		resultAllocator, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleAllocator, f.KeyAddress(UserTina).String(), f.KeyAddress(UserEvelyn).String(), "-y")
 
 		// try registering evelyn as an issuer should fail
-		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(userTina).String(), f.KeyAddress(userEvelyn).String(), "-y")
+		resultIssuer, _, _ := f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(UserTina).String(), f.KeyAddress(UserEvelyn).String(), "-y")
 
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
@@ -1684,34 +1684,34 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultIssuer)
 
 		// evelyn is not an allocator
-		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(userEvelyn).String())
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(UserEvelyn).String())
 		require.False(t, sbr.HasRole)
 
 		// evelyn is not an issuer
-		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(userEvelyn).String())
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(UserEvelyn).String())
 		require.False(t, sbr.HasRole)
 	}
 
 	// a returner is able to return coins to the safety box
 	{
 		// evelyn returns 1link to the safety box
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, denomLink, int64(1), f.KeyAddress(userEvelyn).String(), "", "-y")
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, DenomLink, int64(1), f.KeyAddress(UserEvelyn).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(1)}}, sb.TotalIssuance)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(1)}}, sb.TotalIssuance)
 
 		// check the evelyn's balance
-		evelynAccount := f.QueryAccount(f.KeyAddress(userEvelyn))
+		evelynAccount := f.QueryAccount(f.KeyAddress(UserEvelyn))
 		require.Equal(
 			t,
 			sdk.Coins{
-				sdk.Coin{denomLink, sdk.NewInt(999999999)},
-				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+				sdk.Coin{DenomLink, sdk.NewInt(999999999)},
+				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
 			},
 			evelynAccount.Coins,
 		)
@@ -1720,23 +1720,23 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// an allocator is able to recall coins from the safety box
 	{
 		// kevin recalls 1link from the safety box
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, denomLink, int64(1), f.KeyAddress(userKevin).String(), "", "-y")
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(1)}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{denomLink, sdk.NewInt(1)}}, sb.TotalIssuance)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(1)}}, sb.TotalAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
+		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(1)}}, sb.TotalIssuance)
 
 		// check the kevin's balance
-		kevinAccount := f.QueryAccount(f.KeyAddress(userKevin))
+		kevinAccount := f.QueryAccount(f.KeyAddress(UserKevin))
 		require.Equal(t,
 			kevinAccount.Coins,
 			sdk.Coins{
-				sdk.Coin{denomLink, sdk.NewInt(999999999)},
-				sdk.Coin{denomStake, sdk.NewInt(100000000000000)},
+				sdk.Coin{DenomLink, sdk.NewInt(999999999)},
+				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
 			},
 		)
 	}
