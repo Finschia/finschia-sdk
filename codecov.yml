@@ -71,3 +71,4 @@ ignore:
   - "*.sh"
   - "*.png"
   - "x/**/test_common.go"
+  - "contrib/**/*"

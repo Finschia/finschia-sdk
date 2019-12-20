@@ -1,9 +1,11 @@
 package keeper
 
 import (
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/x/token/internal/types"
+	"github.com/tendermint/tendermint/libs/log"
 	"strconv"
 )
 
@@ -23,6 +25,10 @@ func NewKeeper(cdc *codec.Codec, supplyKeeper types.SupplyKeeper, iamKeeper type
 		storeKey:      storeKey,
 		cdc:           cdc,
 	}
+}
+
+func (k Keeper) Logger(ctx sdk.Context) log.Logger {
+	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
 func (k Keeper) IssueFT(ctx sdk.Context, token types.Token, amount sdk.Int, owner sdk.AccAddress) sdk.Error {

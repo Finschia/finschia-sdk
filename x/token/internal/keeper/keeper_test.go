@@ -55,6 +55,8 @@ func TestGetAllTokens(t *testing.T) {
 			require.Equal(t, int64(400), keeper.accountKeeper.GetAccount(ctx, addr1).GetCoins().AmountOf("link4").Int64())
 		}
 	}
+
+	keeper.Logger(ctx).Info("test", "test", "success")
 }
 
 func TestIssueTokenAndSendTokens(t *testing.T) {
@@ -79,7 +81,7 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 		require.Equal(t, uint64(1), ak.GetAccount(ctx, addr2).GetAccountNumber())
 	}
 
-	// Publish a token
+	// Issue a token
 	{
 		token := types.NewFT("name", "link", sdk.NewInt(8), true)
 		require.NoError(t, keeper.IssueFT(ctx, token, sdk.NewInt(900), addr1))
@@ -96,6 +98,11 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf("link").Int64())
 		require.Equal(t, int64(999), bk.GetCoins(ctx, addr1).AmountOf("link").Int64())
+	}
+	// Issue a token again FAIL
+	{
+		token := types.NewFT("name", "link", sdk.NewInt(8), true)
+		require.Error(t, keeper.IssueFT(ctx, token, sdk.NewInt(900), addr1))
 	}
 
 	// Transfer Token
@@ -166,6 +173,11 @@ func TestIssueNFTAndSendTokens(t *testing.T) {
 	{
 		token := types.NewNFT("name", "linknft", "metadata")
 		require.NoError(t, keeper.IssueNFT(ctx, token, addr1))
+	}
+	// Issue a nft again FAIL
+	{
+		token := types.NewNFT("name", "linknft", "metadata")
+		require.Error(t, keeper.IssueNFT(ctx, token, addr1))
 	}
 
 	// Test

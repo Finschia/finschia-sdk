@@ -2130,3 +2130,62 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[3].Symbol)
 	}
 }
+
+func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+	fooSuffix := types.AccAddrSuffix(fooAddr)
+
+	success, stdout, stderr := f.TxTokenIssue(fooAddr.String(), "test", "test", 10000, 6, true, "--generate-only")
+	require.True(t, success)
+	require.Empty(t, stderr)
+	msg := unmarshalStdTx(t, stdout)
+	require.True(t, msg.Fee.Gas > 0)
+	require.Equal(t, len(msg.Msgs), 1)
+
+	// Write the output to disk
+	unsignedTxFile := WriteToNewTempFile(t, stdout)
+	defer os.Remove(unsignedTxFile.Name())
+
+	// Test sign --validate-signatures
+	success, stdout, _ = f.TxSign(keyFoo, unsignedTxFile.Name(), "--validate-signatures")
+	require.False(t, success)
+	require.Equal(t, fmt.Sprintf("Signers:\n  0: %v\n\nSignatures:\n\n", fooAddr.String()), stdout)
+
+	// Test sign
+	success, stdout, _ = f.TxSign(keyFoo, unsignedTxFile.Name())
+	require.True(t, success)
+	msg = unmarshalStdTx(t, stdout)
+	require.Equal(t, len(msg.Msgs), 1)
+	require.Equal(t, 1, len(msg.GetSignatures()))
+	require.Equal(t, fooAddr.String(), msg.GetSigners()[0].String())
+
+	// Write the output to disk
+	signedTxFile := WriteToNewTempFile(t, stdout)
+	defer os.Remove(signedTxFile.Name())
+
+	// Test sign --validate-signatures
+	success, stdout, _ = f.TxSign(keyFoo, signedTxFile.Name(), "--validate-signatures")
+	require.True(t, success)
+	require.Equal(t, fmt.Sprintf("Signers:\n  0: %v\n\nSignatures:\n  0: %v\t\t\t[OK]\n\n", fooAddr.String(),
+		fooAddr.String()), stdout)
+
+	f.QueryTokenExpectEmpty("test" + fooSuffix)
+
+	// Test broadcast
+	success, stdout, _ = f.TxBroadcast(signedTxFile.Name())
+	require.True(t, success)
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	token := f.QueryToken("test" + fooSuffix)
+	require.Equal(t, "test", token.Name)
+	require.Equal(t, int64(6), token.Decimals.Int64())
+
+	f.Cleanup()
+}

@@ -13,6 +13,11 @@ var _ sdk.Msg = (*MsgBurn)(nil)
 var _ sdk.Msg = (*MsgGrantPermission)(nil)
 var _ sdk.Msg = (*MsgRevokePermission)(nil)
 
+var _ json.Marshaler = (*MsgIssue)(nil)
+var _ json.Unmarshaler = (*MsgIssue)(nil)
+var _ json.Marshaler = (*MsgIssueCollection)(nil)
+var _ json.Unmarshaler = (*MsgIssueCollection)(nil)
+
 type MsgIssue struct {
 	MsgIssueCommon
 	Amount   sdk.Int `json:"amount"`
@@ -34,6 +39,11 @@ func NewMsgIssue(name, symbol, tokenURI string, owner sdk.AccAddress, amount sdk
 func (msg MsgIssue) MarshalJSON() ([]byte, error) {
 	type msgAlias MsgIssue
 	return json.Marshal((msgAlias)(msg))
+}
+
+func (msg *MsgIssue) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgIssue
+	return json.Unmarshal(data, msgAlias(msg))
 }
 
 func (msg MsgIssue) Route() string { return RouterKey }
@@ -86,6 +96,11 @@ func NewMsgIssueCollection(name, symbol, tokenURI string, owner sdk.AccAddress, 
 func (msg MsgIssueCollection) MarshalJSON() ([]byte, error) {
 	type msgAlias MsgIssueCollection
 	return json.Marshal((msgAlias)(msg))
+}
+
+func (msg *MsgIssueCollection) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgIssueCollection
+	return json.Unmarshal(data, msgAlias(msg))
 }
 
 func (msg MsgIssueCollection) Type() string { return "issue_token_collection" }
@@ -280,6 +295,18 @@ func (msg MsgIssueCommon) ValidateBasic() sdk.Error {
 
 type MsgCollection struct {
 	TokenID string `json:"token_id"`
+}
+
+// ATTENTION: to avoid embedded serialization implement this custom JSON marshaler
+// see https://github.com/tendermint/go-amino/issues/269
+func (msg MsgCollection) MarshalJSON() ([]byte, error) {
+	type msgAlias MsgCollection
+	return json.Marshal((msgAlias)(msg))
+}
+
+func (msg *MsgCollection) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgCollection
+	return json.Unmarshal(data, msgAlias(msg))
 }
 
 func (msg MsgCollection) ValidateBasic() sdk.Error {

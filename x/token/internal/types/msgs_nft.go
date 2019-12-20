@@ -9,6 +9,11 @@ import (
 var _ sdk.Msg = (*MsgIssueNFT)(nil)
 var _ sdk.Msg = (*MsgIssueNFTCollection)(nil)
 
+var _ json.Marshaler = (*MsgIssueNFT)(nil)
+var _ json.Unmarshaler = (*MsgIssueNFT)(nil)
+var _ json.Marshaler = (*MsgIssueNFTCollection)(nil)
+var _ json.Unmarshaler = (*MsgIssueNFTCollection)(nil)
+
 type MsgIssueNFT struct {
 	MsgIssueCommon
 }
@@ -24,6 +29,11 @@ func NewMsgIssueNFT(name, symbol, tokenURI string, owner sdk.AccAddress) MsgIssu
 func (msg MsgIssueNFT) MarshalJSON() ([]byte, error) {
 	type msgAlias MsgIssueNFT
 	return json.Marshal((msgAlias)(msg))
+}
+
+func (msg *MsgIssueNFT) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgIssueNFT
+	return json.Unmarshal(data, msgAlias(msg))
 }
 
 func (msg MsgIssueNFT) Route() string { return RouterKey }
@@ -62,6 +72,11 @@ func NewMsgIssueNFTCollection(name, symbol, tokenURI string, owner sdk.AccAddres
 func (msg MsgIssueNFTCollection) MarshalJSON() ([]byte, error) {
 	type msgAlias MsgIssueNFTCollection
 	return json.Marshal((msgAlias)(msg))
+}
+
+func (msg *MsgIssueNFTCollection) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgIssueNFTCollection
+	return json.Unmarshal(data, msgAlias(msg))
 }
 
 func (msg MsgIssueNFTCollection) Type() string { return "issue_nft_collection" }
