@@ -1520,6 +1520,7 @@ func WaitForStart(url string) {
 	for i := 0; i < 10; i++ {
 		// 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8, 25.6, 51.2, 102.4
 		time.Sleep(time.Millisecond * 100 * time.Duration(wait))
+		wait *= 2
 
 		var res *http.Response
 		res, err = http.Get(url) //nolint:gosec Error is arising in testing files, accepting nolint
@@ -1535,7 +1536,6 @@ func WaitForStart(url string) {
 			// good!
 			return
 		}
-		wait *= 2
 	}
 	// still haven't started up?! panic!
 	panic(err)
