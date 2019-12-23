@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/link-chain/link/x/iam"
-	"github.com/link-chain/link/x/safetybox"
+	"github.com/line/link/x/iam"
+	"github.com/line/link/x/safetybox"
 	"io"
 	"os"
 
@@ -23,9 +23,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/link-chain/link/version"
-	"github.com/link-chain/link/x/bank"
-	"github.com/link-chain/link/x/token"
+	"github.com/line/link/version"
+	"github.com/line/link/x/bank"
+	"github.com/line/link/x/token"
 )
 
 const appName = "LinkApp"

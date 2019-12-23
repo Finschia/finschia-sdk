@@ -3,8 +3,8 @@ package token
 import (
 	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	testCommon "github.com/link-chain/link/x/token/internal/keeper"
-	"github.com/link-chain/link/x/token/internal/types"
+	testCommon "github.com/line/link/x/token/internal/keeper"
+	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"

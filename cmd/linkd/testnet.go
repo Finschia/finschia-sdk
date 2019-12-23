@@ -28,7 +28,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/link-chain/link/client"
+	"github.com/line/link/client"
 )
 
 var (

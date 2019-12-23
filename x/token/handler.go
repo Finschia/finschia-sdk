@@ -3,13 +3,14 @@ package token
 import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	linktypes "github.com/link-chain/link/types"
-	"github.com/link-chain/link/x/token/internal/keeper"
-	"github.com/link-chain/link/x/token/internal/types"
+	linktypes "github.com/line/link/types"
+	"github.com/line/link/x/token/internal/keeper"
+	"github.com/line/link/x/token/internal/types"
 )
 
 func NewHandler(keeper keeper.Keeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
+		keeper.Logger(ctx).Debug("message", "decoded message", msg)
 		switch msg := msg.(type) {
 		case MsgIssue:
 			return handleMsgIssue(ctx, keeper, msg)

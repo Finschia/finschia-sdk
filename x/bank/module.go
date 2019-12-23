@@ -3,13 +3,13 @@ package bank
 import (
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/gorilla/mux"
-	"github.com/link-chain/link/x/bank/client/rest"
+	"github.com/line/link/x/bank/client/rest"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/link-chain/link/x/bank/internal/keeper"
+	"github.com/line/link/x/bank/internal/keeper"
 )
 
 var (

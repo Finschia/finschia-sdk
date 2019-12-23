@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 
-	"github.com/link-chain/link/x/bank/internal/types"
+	"github.com/line/link/x/bank/internal/types"
 )
 
 func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {

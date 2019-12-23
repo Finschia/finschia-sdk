@@ -7,8 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
-	"github.com/link-chain/link/app"
-	"github.com/link-chain/link/x/bank"
+	"github.com/line/link/app"
+	"github.com/line/link/x/bank"
 )
 
 // This will fail half the time with the second output being 173

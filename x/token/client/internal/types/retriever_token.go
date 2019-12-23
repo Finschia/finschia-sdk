@@ -2,7 +2,7 @@ package types
 
 import (
 	"fmt"
-	"github.com/link-chain/link/x/token/internal/types"
+	"github.com/line/link/x/token/internal/types"
 )
 
 type TokenRetriever struct {

@@ -1,8 +1,8 @@
 package iam
 
 import (
-	"github.com/link-chain/link/x/iam/internal/keeper"
-	"github.com/link-chain/link/x/iam/internal/types"
+	"github.com/line/link/x/iam/internal/keeper"
+	"github.com/line/link/x/iam/internal/types"
 )
 
 const (

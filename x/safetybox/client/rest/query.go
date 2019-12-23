@@ -5,7 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"
-	"github.com/link-chain/link/x/safetybox/internal/types"
+	"github.com/line/link/x/safetybox/internal/types"
 	"net/http"
 )
 

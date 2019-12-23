@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	auth "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	supply "github.com/cosmos/cosmos-sdk/x/supply/exported"
-	iam "github.com/link-chain/link/x/iam/exported"
+	iam "github.com/line/link/x/iam/exported"
 )
 
 type IamKeeper interface {

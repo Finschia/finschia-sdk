@@ -2,8 +2,8 @@ package client
 
 import (
 	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/link-chain/link/client/lcd"
-	"github.com/link-chain/link/client/rpc"
+	"github.com/line/link/client/lcd"
+	"github.com/line/link/client/rpc"
 )
 
 const (

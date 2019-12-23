@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 
-	"github.com/link-chain/link/x/bank/internal/types"
+	"github.com/line/link/x/bank/internal/types"
 )
 
 const (

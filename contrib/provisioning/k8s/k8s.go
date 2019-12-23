@@ -8,7 +8,7 @@ import (
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/genaccounts"
-	"github.com/link-chain/link/app"
+	"github.com/line/link/app"
 	"github.com/spf13/cobra"
 	tmconfig "github.com/tendermint/tendermint/config"
 	"strconv"
@@ -16,21 +16,22 @@ import (
 )
 
 var (
-	flagAction               = "Action"
-	flagChainID              = "ChainID"
-	flagCliBinDirName        = "CliBinDirName"
-	flagConfDirName          = "ConfDirName"
-	flagConfHomePath         = "ConfHomePath"
-	flagDBDir                = "DBDir"
-	flagK8STemplateFilePath  = "K8STemplateFilePath"
-	flagLinkdBinDirName      = "LinkdBinDirName"
-	flagLinkDockerImageUrl   = "LinkDockerImageUrl"
-	flagNodeABCIPort         = "NodeABCIPort"
-	flagNodeIPs              = "NodeIPs"
-	flagNodeP2PPort          = "NodeP2PPort"
-	flagNodeRestAPIPort      = "NodeRestAPIPort"
-	flagPrometheusListenPort = "PrometheusListenPort"
-	flagPrometheusTurnOn     = "PrometheusTurnOn"
+	flagAction                   = "Action"
+	flagChainID                  = "ChainID"
+	flagCliBinDirName            = "CliBinDirName"
+	flagConfDirName              = "ConfDirName"
+	flagConfHomePath             = "ConfHomePath"
+	flagDBDir                    = "DBDir"
+	flagK8STemplateFilePath      = "K8STemplateFilePath"
+	flagFilebeatTemplateFilePath = "filebeatTemplateFilePath"
+	flagLinkdBinDirName          = "LinkdBinDirName"
+	flagLinkDockerImageUrl       = "LinkDockerImageUrl"
+	flagNodeABCIPort             = "NodeABCIPort"
+	flagNodeIPs                  = "NodeIPs"
+	flagNodeP2PPort              = "NodeP2PPort"
+	flagNodeRestAPIPort          = "NodeRestAPIPort"
+	flagPrometheusListenPort     = "PrometheusListenPort"
+	flagPrometheusTurnOn         = "PrometheusTurnOn"
 )
 
 const defConfDirName = "/config"
@@ -38,6 +39,7 @@ const defConfigurationFileExt = ".json"
 const defConsensusTimeoutCommit = 5
 const defDBDir = "data"
 const defK8STemplateFilePath = "./contrib/provisioning/k8s/deploy-validator-template.yaml"
+const defFilebeatTemplateFilePath = "./contrib/provisioning/k8s/filebeat-validator-template.yaml"
 const defLinkDockerImageUrl = "docker-registry.linecorp.com/link-network/v2/linkdnode:latest"
 const defMinGasPrices = 0.000006
 const defNodeABCIPort = 25658
@@ -46,8 +48,8 @@ const defNodeRestAPIPort = 25657
 const defOutputDir = "./build"
 const defPrivateKeySeedFileName = "key_seed"
 const defProfilingPort = 25660
-const defPrometheusListenPort = 25660
-const defPrometheusTurnOn = false
+const defPrometheusListenPort = 25661
+const defPrometheusTurnOn = true
 const defTxIndexIndexAllTags = false
 const genTxsDefaultDir = "gentxs"
 const listenAllIngressPortTemplate = "tcp://0.0.0.0:%d"
@@ -85,6 +87,7 @@ func Init() *cobra.Command {
 			confHomePath := ErrCheckedStrParam(cmd.Flags().GetString(flagConfHomePath))
 			confDirName := ErrCheckedStrParam(cmd.Flags().GetString(flagConfDirName))
 			k8STemplateFilePath := ErrCheckedStrParam(cmd.Flags().GetString(flagK8STemplateFilePath))
+			filebeatTemplateFilePath := ErrCheckedStrParam(cmd.Flags().GetString(flagFilebeatTemplateFilePath))
 			linkDockerImageUrl := ErrCheckedStrParam(cmd.Flags().GetString(flagLinkDockerImageUrl))
 			dbDir := ErrCheckedStrParam(cmd.Flags().GetString(flagDBDir))
 
@@ -109,7 +112,7 @@ func Init() *cobra.Command {
 			DefIfEmpty(&confHomePath, defOutputDir+"/"+chainID, confHomePath)
 
 			m := NewBuildMetaData(nodes, confHomePath, chainID, confDirName, linkCliDir, linkdDir, nodeP2PPort,
-				nodeRestAPIPort, nodeABCIPort, prometheusListenPort, tmConfig, k8STemplateFilePath, linkDockerImageUrl)
+				nodeRestAPIPort, nodeABCIPort, prometheusListenPort, tmConfig, k8STemplateFilePath, filebeatTemplateFilePath, linkDockerImageUrl)
 
 			return buildConfForK8s(cmd, app.MakeCodec(), tmConfig, &m, minGasPrices)
 		},
@@ -131,6 +134,7 @@ func Init() *cobra.Command {
 	cmd.Flags().BoolP(flagPrometheusTurnOn, "p", defPrometheusTurnOn, "turn on prometheus feature")
 	cmd.Flags().IntP(flagNodeRestAPIPort, "r", defNodeRestAPIPort, "input RPC port")
 	cmd.Flags().StringP(flagK8STemplateFilePath, "t", defK8STemplateFilePath, "input k8s template file path")
+	cmd.Flags().StringP(flagFilebeatTemplateFilePath, "z", defFilebeatTemplateFilePath, "input filebeat template file path")
 	cmd.Flags().StringP(flagDBDir, "u", defDBDir, "input Database directory path")
 
 	return cmd
@@ -143,6 +147,7 @@ func buildConfForK8s(cmd *cobra.Command, cdc *codec.Codec, tmConfig *tmconfig.Co
 
 	for nidx := 0; nidx < m.NumNodes; nidx++ {
 		NewNode(m, nidx).process(tmConfig, serverConfig, cdc).writeK8STemplate()
+		NewTemplateObject("./build/%s/deployments/filebeat-%d.yaml").MakeTemplate(m, nidx)
 	}
 
 	if err := InitGenFiles(cdc, app.ModuleBasics, m.ChainID, m.Accs, m.GenFiles, m.NumNodes); err != nil {

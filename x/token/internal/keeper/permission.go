@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/link-chain/link/x/token/internal/types"
+	"github.com/line/link/x/token/internal/types"
 )
 
 func (k Keeper) AddPermission(ctx sdk.Context, addr sdk.AccAddress, perm types.PermissionI) {

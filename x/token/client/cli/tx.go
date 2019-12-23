@@ -2,8 +2,8 @@ package cli
 
 import (
 	"errors"
-	linktype "github.com/link-chain/link/types"
-	"github.com/link-chain/link/x/token/internal/types"
+	linktype "github.com/line/link/types"
+	"github.com/line/link/x/token/internal/types"
 	"github.com/spf13/viper"
 
 	"github.com/spf13/cobra"
@@ -12,7 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/link-chain/link/client"
+	"github.com/line/link/client"
 )
 
 var (
@@ -53,7 +53,43 @@ func IssueTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "issue [from_key_or_address] [symbol] [name]",
 		Short: "Create and sign an issue token tx",
-		Args:  cobra.ExactArgs(3),
+		Long: `
+[Issue a token command]
+The token symbol is extended with AAS(Account Address Suffix)
+		symbol <- [symbol][AAS]
+To query or send the token, you should remember the extended symbol
+If you have a permission to issue a specific symbol, by set option '--address-suffix=false',
+If you want to issue a token for a symbol without the suffix, set option '--address-suffix=false'
+For that, you have to get the issue permission for the symbol
+
+
+[Fungible Token]
+linkcli tx token issue [from_key_or_address] [symbol] [name]
+--decimals=[decimals]
+--mintable=[mintable]
+--total-supply=[initial amount of the token]
+--token-uri=[metadata for the token]
+
+[Collective Fungible Token]
+linkcli tx token issue [from_key_or_address] [symbol] [name]
+--decimals=[decimals]
+--mintable=[mintable]
+--total-supply=[initial amount of the token]
+--token-uri=[metadata for the token]
+--token-id=[token-id]
+
+[NonFungible Token]
+linkcli tx token issue [from_key_or_address] [symbol] [name]
+--fungible=false
+--token-uri=[metadata for the token]
+
+[Collective NonFungible Token]
+linkcli tx token issue [from_key_or_address] [symbol] [name]
+--fungible=false
+--token-uri=[metadata for the token]
+--token-id=[token-id]
+`,
+		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)

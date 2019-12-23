@@ -2,7 +2,7 @@ package types
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/link-chain/link/x/iam/exported"
+	"github.com/line/link/x/iam/exported"
 )
 
 var ModuleCdc = codec.New()

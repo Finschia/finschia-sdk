@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/link-chain/link/x/iam/internal/types"
+	"github.com/line/link/x/iam/internal/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"

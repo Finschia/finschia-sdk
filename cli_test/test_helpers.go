@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
+	"net/http"
 	"os"
 	"path"
 	"path/filepath"
@@ -16,12 +17,12 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/link-chain/link/types"
+	"github.com/line/link/types"
 
-	safetyBoxModule "github.com/link-chain/link/x/safetybox"
-	tokenModule "github.com/link-chain/link/x/token"
+	safetyBoxModule "github.com/line/link/x/safetybox"
+	tokenModule "github.com/line/link/x/token"
 
-	"github.com/link-chain/link/client"
+	"github.com/line/link/client"
 	tmclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/stretchr/testify/require"
@@ -30,7 +31,7 @@ import (
 	tmctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/link-chain/link/app"
+	"github.com/line/link/app"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys"
@@ -43,7 +44,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	atypes "github.com/link-chain/link/x/auth/client/types"
+	atypes "github.com/line/link/x/auth/client/types"
 )
 
 const (
@@ -57,14 +58,14 @@ const (
 	keyVesting   = "vesting"
 	keyFooBarBaz = "foobarbaz"
 
-	denomStake = "stake2"
-	denomLink  = "link"
-	userTina   = "tina"
-	userKevin  = "kevin"
-	userRinah  = "rinah"
-	userBrian  = "brian"
-	userEvelyn = "evelyn"
-	userSam    = "sam"
+	DenomStake = "stake2"
+	DenomLink  = "link"
+	UserTina   = "tina"
+	UserKevin  = "kevin"
+	UserRinah  = "rinah"
+	UserBrian  = "brian"
+	UserEvelyn = "evelyn"
+	UserSam    = "sam"
 )
 
 const (
@@ -74,8 +75,8 @@ const (
 
 var (
 	totalCoins = sdk.NewCoins(
-		sdk.NewCoin(denomLink, sdk.TokensFromConsensusPower(6000)),
-		sdk.NewCoin(denomStake, sdk.TokensFromConsensusPower(600000000)),
+		sdk.NewCoin(DenomLink, sdk.TokensFromConsensusPower(6000)),
+		sdk.NewCoin(DenomStake, sdk.TokensFromConsensusPower(600000000)),
 		sdk.NewCoin(fee2Denom, sdk.TokensFromConsensusPower(2000000)),
 		sdk.NewCoin(feeDenom, sdk.TokensFromConsensusPower(2000000)),
 		sdk.NewCoin(fooDenom, sdk.TokensFromConsensusPower(2000)),
@@ -96,8 +97,8 @@ var (
 
 	// coins we set during ./.initialize.sh
 	defaultCoins = sdk.NewCoins(
-		sdk.NewCoin(denomLink, sdk.TokensFromConsensusPower(1000)),
-		sdk.NewCoin(denomStake, sdk.TokensFromConsensusPower(100000000)),
+		sdk.NewCoin(DenomLink, sdk.TokensFromConsensusPower(1000)),
+		sdk.NewCoin(DenomStake, sdk.TokensFromConsensusPower(100000000)),
 	)
 )
 
@@ -219,18 +220,18 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 		"--multisig=%s,%s,%s", keyFoo, keyBar, keyBaz))
 
 	// ensure keystore to have user keys
-	f.KeysDelete(userTina)
-	f.KeysDelete(userKevin)
-	f.KeysDelete(userRinah)
-	f.KeysDelete(userBrian)
-	f.KeysDelete(userEvelyn)
-	f.KeysDelete(userSam)
-	f.KeysAdd(userTina)
-	f.KeysAdd(userKevin)
-	f.KeysAdd(userRinah)
-	f.KeysAdd(userBrian)
-	f.KeysAdd(userEvelyn)
-	f.KeysAdd(userSam)
+	f.KeysDelete(UserTina)
+	f.KeysDelete(UserKevin)
+	f.KeysDelete(UserRinah)
+	f.KeysDelete(UserBrian)
+	f.KeysDelete(UserEvelyn)
+	f.KeysDelete(UserSam)
+	f.KeysAdd(UserTina)
+	f.KeysAdd(UserKevin)
+	f.KeysAdd(UserRinah)
+	f.KeysAdd(UserBrian)
+	f.KeysAdd(UserEvelyn)
+	f.KeysAdd(UserSam)
 
 	// ensure that CLI output is in JSON format
 	f.CLIConfig("output", "json")
@@ -252,12 +253,12 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 	)
 
 	// add genesis accounts for testing
-	f.AddGenesisAccount(f.KeyAddress(userTina), defaultCoins)
-	f.AddGenesisAccount(f.KeyAddress(userKevin), defaultCoins)
-	f.AddGenesisAccount(f.KeyAddress(userRinah), defaultCoins)
-	f.AddGenesisAccount(f.KeyAddress(userBrian), defaultCoins)
-	f.AddGenesisAccount(f.KeyAddress(userEvelyn), defaultCoins)
-	f.AddGenesisAccount(f.KeyAddress(userSam), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(UserTina), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(UserKevin), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(UserRinah), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(UserBrian), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(UserEvelyn), defaultCoins)
+	f.AddGenesisAccount(f.KeyAddress(UserSam), defaultCoins)
 
 	f.GenTx(keyFoo)
 	f.CollectGenTxs()
@@ -330,7 +331,7 @@ func (f *Fixtures) CollectGenTxs(flags ...string) {
 func (f *Fixtures) LDStart(flags ...string) *tests.Process {
 	cmd := fmt.Sprintf("%s start --home=%s --rpc.laddr=%v --p2p.laddr=%v", f.LinkdBinary, f.LinkdHome, f.RPCAddr, f.P2PAddr)
 	proc := tests.GoExecuteTWithStdout(f.T, addFlags(cmd, flags))
-	tests.WaitForTMStart(f.Port)
+	WaitForTMStart(f.Port)
 	tests.WaitForNextNBlocksTM(1, f.Port)
 	return proc
 }
@@ -1324,7 +1325,7 @@ func (fg *FixtureGroup) LDStartContainers() {
 	for _, f := range fg.fixturesMap {
 		port := f.Port
 		go func() {
-			tests.WaitForTMStart(port)
+			WaitForTMStart(port)
 			tests.WaitForNextNBlocksTM(1, port)
 			wg.Done()
 		}()
@@ -1448,7 +1449,7 @@ func (fg *FixtureGroup) AddFullNode(flags ...string) *Fixtures {
 	// Start linkd
 	fg.LDStartContainer(f, fmt.Sprintf("--p2p.persistent_peers %s", strings.Join(persistentPeers, ",")))
 
-	tests.WaitForTMStart(f.Port)
+	WaitForTMStart(f.Port)
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	return f
@@ -1497,4 +1498,45 @@ func calculateIP(ip string, i int) (string, error) {
 	}
 
 	return ipv4.String(), nil
+}
+
+// wait for tendermint to start by querying tendermint
+func WaitForTMStart(port string) {
+	url := fmt.Sprintf("http://localhost:%v/block", port)
+	WaitForStart(url)
+}
+
+// WaitForStart waits for the node to start by pinging the url
+// every 100ms for 10s until it returns 200. If it takes longer than 5s,
+// it panics.
+func WaitForStart(url string) {
+	var err error
+
+	// ping the status endpoint a few times a second
+	// for a few seconds until we get a good response.
+	// otherwise something probably went wrong
+	// 2 ^ 10 = 1024 --> approximately 200 secs
+	wait := 1
+	for i := 0; i < 10; i++ {
+		// 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8, 25.6, 51.2, 102.4
+		time.Sleep(time.Millisecond * 100 * time.Duration(wait))
+		wait *= 2
+
+		var res *http.Response
+		res, err = http.Get(url) //nolint:gosec Error is arising in testing files, accepting nolint
+		if err != nil || res == nil {
+			continue
+		}
+		err = res.Body.Close()
+		if err != nil {
+			panic(err)
+		}
+
+		if res.StatusCode == http.StatusOK {
+			// good!
+			return
+		}
+	}
+	// still haven't started up?! panic!
+	panic(err)
 }

@@ -2,10 +2,10 @@ package token
 
 import (
 	"encoding/json"
-	"github.com/link-chain/link/client"
-	"github.com/link-chain/link/x/token/client/cli"
-	"github.com/link-chain/link/x/token/client/rest"
-	"github.com/link-chain/link/x/token/internal/keeper"
+	"github.com/line/link/client"
+	"github.com/line/link/x/token/client/cli"
+	"github.com/line/link/x/token/client/rest"
+	"github.com/line/link/x/token/internal/keeper"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
