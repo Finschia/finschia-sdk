@@ -35,8 +35,12 @@ func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (typ
 		return types.SafetyBox{}, err
 	}
 
+	if len(msg.SafetyBoxDenoms) > 1 {
+		return types.SafetyBox{}, types.ErrSafetyBoxTooManyCoinDenoms(types.DefaultCodespace)
+	}
+
 	// create new safety box
-	sb := types.NewSafetyBox(msg.SafetyBoxOwner, msg.SafetyBoxId, newSafetyBoxAccount)
+	sb := types.NewSafetyBox(msg.SafetyBoxOwner, msg.SafetyBoxId, newSafetyBoxAccount, msg.SafetyBoxDenoms)
 
 	// reject if the safety box id exists
 	store := ctx.KVStore(k.storeKey)
@@ -76,9 +80,25 @@ func (k Keeper) GetSafetyBox(ctx sdk.Context, safetyBoxId string) (types.SafetyB
 	return sb, nil
 }
 
+func (k Keeper) validDenom(coins sdk.Coins, denoms []string) sdk.Error {
+	// safety box accepts only one type of coins
+	if len(coins) != 1 || len(denoms) != 1 {
+		return types.ErrSafetyBoxTooManyCoinDenoms(types.DefaultCodespace)
+	}
+	if coins[0].Denom != denoms[0] {
+		return types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace)
+	}
+	return nil
+}
+
 func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) sdk.Error {
 	sb, err := k.get(ctx, msg.SafetyBoxId)
 	if err != nil {
+		return err
+	}
+
+	// safety box accepts only one type of coins
+	if err = k.validDenom(msg.Coins, sb.Denoms); err != nil {
 		return err
 	}
 
@@ -108,6 +128,11 @@ func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) s
 func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallCoins) sdk.Error {
 	sb, err := k.get(ctx, msg.SafetyBoxId)
 	if err != nil {
+		return err
+	}
+
+	// safety box accepts only one type of coins
+	if err = k.validDenom(msg.Coins, sb.Denoms); err != nil {
 		return err
 	}
 
@@ -144,6 +169,11 @@ func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) sdk.Err
 		return err
 	}
 
+	// safety box accepts only one type of coins
+	if err = k.validDenom(msg.Coins, sb.Denoms); err != nil {
+		return err
+	}
+
 	// both issuer and issuee must be issuers
 	issuerAddress := msg.FromAddress
 	toAddress := msg.ToAddress
@@ -172,6 +202,11 @@ func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) sdk.Err
 func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) sdk.Error {
 	sb, err := k.get(ctx, msg.SafetyBoxId)
 	if err != nil {
+		return err
+	}
+
+	// safety box accepts only one type of coins
+	if err = k.validDenom(msg.Coins, sb.Denoms); err != nil {
 		return err
 	}
 

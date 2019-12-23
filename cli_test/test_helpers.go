@@ -592,8 +592,8 @@ func (f *Fixtures) TxTokenRevokePerm(from string, resource, action string, flags
 //___________________________________________________________________________________
 // linkcli tx safety box
 
-func (f *Fixtures) TxSafetyBoxCreate(id, address string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox create %s %s %v", f.LinkcliBinary, id, address, f.Flags())
+func (f *Fixtures) TxSafetyBoxCreate(id, address, denom string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx safetybox create %s %s %s %v", f.LinkcliBinary, id, address, denom, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 

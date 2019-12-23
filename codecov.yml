@@ -24,7 +24,7 @@ coverage:
           - !x/
       default:
         # basic
-        target: 50
+        target: 51
         threshold: 1% # allow this much decrease on project
         base: auto
         # advanced

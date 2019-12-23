@@ -4,13 +4,14 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func NewMsgSafetyBoxCreate(safetyBoxId string, safetyBoxOwner sdk.AccAddress) MsgSafetyBoxCreate {
-	return MsgSafetyBoxCreate{safetyBoxId, safetyBoxOwner}
+func NewMsgSafetyBoxCreate(safetyBoxId string, safetyBoxOwner sdk.AccAddress, safetyBoxDenoms []string) MsgSafetyBoxCreate {
+	return MsgSafetyBoxCreate{safetyBoxId, safetyBoxOwner, safetyBoxDenoms}
 }
 
 type MsgSafetyBoxCreate struct {
-	SafetyBoxId    string         `json:"safety_box_id"`
-	SafetyBoxOwner sdk.AccAddress `json:"safety_box_owner"`
+	SafetyBoxId     string         `json:"safety_box_id"`
+	SafetyBoxOwner  sdk.AccAddress `json:"safety_box_owner"`
+	SafetyBoxDenoms []string       `json:"safety_box_denoms"`
 }
 
 func (msgSbCreate MsgSafetyBoxCreate) Route() string { return RouterKey }
@@ -24,6 +25,10 @@ func (msgSbCreate MsgSafetyBoxCreate) ValidateBasic() sdk.Error {
 
 	if msgSbCreate.SafetyBoxOwner.Empty() {
 		return ErrSafetyBoxOwnerRequired(DefaultCodespace)
+	}
+
+	if len(msgSbCreate.SafetyBoxDenoms) == 0 {
+		return ErrSafetyBoxDenomRequired(DefaultCodespace)
 	}
 
 	return nil
