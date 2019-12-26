@@ -81,6 +81,10 @@ func (msg *MsgIssueNFTCollection) UnmarshalJSON(data []byte) error {
 
 func (msg MsgIssueNFTCollection) Type() string { return "issue_nft_collection" }
 
+func (msg MsgIssueNFTCollection) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
 func (msg MsgIssueNFTCollection) ValidateBasic() sdk.Error {
 	if err := msg.MsgIssueNFT.ValidateBasic(); err != nil {
 		return err
