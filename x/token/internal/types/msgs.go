@@ -105,6 +105,10 @@ func (msg *MsgIssueCollection) UnmarshalJSON(data []byte) error {
 
 func (msg MsgIssueCollection) Type() string { return "issue_token_collection" }
 
+func (msg MsgIssueCollection) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
 func (msg MsgIssueCollection) ValidateBasic() sdk.Error {
 	if err := msg.MsgIssue.ValidateBasic(); err != nil {
 		return err

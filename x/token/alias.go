@@ -46,6 +46,7 @@ var (
 
 	ErrTokenPermission    = types.ErrTokenPermission
 	ErrInvalidTokenSymbol = types.ErrInvalidTokenSymbol
+	ErrTokenExist         = types.ErrTokenExist
 
 	NewIssuePermission = types.NewIssuePermission
 

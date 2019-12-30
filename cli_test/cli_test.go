@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"github.com/line/link/types"
 	sbox "github.com/line/link/x/safetybox"
+	token "github.com/line/link/x/token"
 	"io/ioutil"
 	"os"
 	"path"
@@ -2185,6 +2186,18 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[0].Symbol)
 		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[1].Symbol)
 		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[2].Symbol)
+	}
+
+	// cannot issue the same token
+	{
+		_, stdout, _ := f.TxTokenIssueCollection(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, tokenID02, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.Contains(
+			t,
+			strings.Split(token.ErrTokenExist(token.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
 	}
 
 	// Bar cannot issue with the collection symbol
