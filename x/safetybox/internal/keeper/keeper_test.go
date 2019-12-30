@@ -141,6 +141,25 @@ func TestSafetyBox(t *testing.T) {
 		require.NoError(t, err)
 	}
 
+	// revoke error case
+	{
+		// RevokePermission(ctx sdk.Context, safetyBoxId string, by sdk.AccAddress, acc sdk.AccAddress, action string) sdk.Error
+		err = keeper.RevokePermission(ctx, safetyBoxId, owner, owner, types.RoleOperator)
+		require.EqualError(t, err, types.ErrSafetyBoxSelfPermission(types.DefaultCodespace).Error())
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator2, owner, types.RoleAllocator)
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace).Error())
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleAllocator)
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleIssuer)
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleReturner)
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+	}
+
 	// check permission of the operator2
 	{
 		require.False(t, keeper.IsOwner(ctx, safetyBoxId, operator2))

@@ -72,3 +72,4 @@ ignore:
   - "*.png"
   - "x/**/test_common.go"
   - "contrib/**/*"
+  - "x/**/module.go"

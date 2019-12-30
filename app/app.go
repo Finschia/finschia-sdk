@@ -1,6 +1,7 @@
 package app
 
 import (
+	"github.com/line/link/x/account"
 	"github.com/line/link/x/iam"
 	"github.com/line/link/x/safetybox"
 	"io"
@@ -51,6 +52,7 @@ var (
 		token.AppModuleBasic{},
 		iam.AppModuleBasic{},
 		safetybox.AppModuleBasic{},
+		account.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -156,6 +158,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		staking.NewAppModule(app.stakingKeeper, nil, app.accountKeeper, app.supplyKeeper),
 		token.NewAppModule(app.tokenKeeper),
 		safetybox.NewAppModule(app.safetyboxKeeper),
+		account.NewAppModule(app.accountKeeper),
 	)
 
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
@@ -171,6 +174,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		genutil.ModuleName,
 		token.ModuleName,
 		safetybox.ModuleName,
+		account.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())

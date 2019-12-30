@@ -1,0 +1,54 @@
+package cli
+
+import (
+	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/line/link/client"
+	"github.com/line/link/x/account/internal/types"
+	"github.com/line/link/x/auth/client/utils"
+	"github.com/spf13/cobra"
+)
+
+// GetTxCmd returns the transaction commands for this module
+func GetTxCmd(cdc *codec.Codec) *cobra.Command {
+	txCmd := &cobra.Command{
+		Use:                        types.ModuleName,
+		Short:                      "Account commands",
+		DisableFlagParsing:         true,
+		SuggestionsMinimumDistance: 2,
+		RunE:                       client.ValidateCmd,
+	}
+	txCmd.AddCommand(
+		CreateAccountCmd(cdc),
+	)
+	return txCmd
+}
+
+func CreateAccountCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "create-account [from_key_or_address] [target_address]",
+		Short: "Create an account having target_address",
+		Args:  cobra.ExactArgs(2),
+		RunE:  makeCreateAccountCmd(cdc),
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func makeCreateAccountCmd(cdc *codec.Codec) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+		cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+		target, err := sdk.AccAddressFromBech32(args[1])
+		if err != nil {
+			return err
+		}
+
+		// build and sign the transaction, then broadcast to Tendermint
+		msg := types.NewMsgCreateAccount(cliCtx.GetFromAddress(), target)
+		return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+	}
+}
