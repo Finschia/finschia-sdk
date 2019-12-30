@@ -92,21 +92,26 @@ func checkSafetyBoxBalance(t *testing.T, k Keeper, ctx sdk.Context, safetyBoxId 
 	sb, err := k.GetSafetyBox(ctx, safetyBoxId)
 	require.NoError(t, err)
 
+	// only accepts one type of coins
+	require.LessOrEqual(t, len(sb.TotalAllocation), 1)
+	require.LessOrEqual(t, len(sb.CumulativeAllocation), 1)
+	require.LessOrEqual(t, len(sb.TotalIssuance), 1)
+
 	var taExpected, caExpected, tiExpected sdk.Coins
 	if ta == 0 {
 		taExpected = sdk.Coins(nil)
 	} else {
-		taExpected = sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(ta)}}
+		taExpected = sdk.Coins{sdk.Coin{Denom: sb.Denoms[0], Amount: sdk.NewInt(ta)}}
 	}
 	if ca == 0 {
 		caExpected = sdk.Coins(nil)
 	} else {
-		caExpected = sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(ca)}}
+		caExpected = sdk.Coins{sdk.Coin{Denom: sb.Denoms[0], Amount: sdk.NewInt(ca)}}
 	}
 	if ti == 0 {
 		tiExpected = sdk.Coins(nil)
 	} else {
-		tiExpected = sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(ti)}}
+		tiExpected = sdk.Coins{sdk.Coin{Denom: sb.Denoms[0], Amount: sdk.NewInt(ti)}}
 	}
 
 	require.Equal(t, taExpected, sb.TotalAllocation)

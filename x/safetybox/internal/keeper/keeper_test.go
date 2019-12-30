@@ -12,7 +12,7 @@ const (
 	safetyBoxId = "test_safety_box_id"
 )
 
-// ToDo: check emitted events in the unit tests
+// ToDo: check emitted events in the unit tests https://github.com/line/link/issues/270
 func TestSafetyBox(t *testing.T) {
 	input := SetupTestInput(t)
 	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
@@ -33,8 +33,9 @@ func TestSafetyBox(t *testing.T) {
 	{
 		// NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (types.SafetyBox, sdk.Error)
 		sb, err = keeper.NewSafetyBox(ctx, types.MsgSafetyBoxCreate{
-			SafetyBoxId:    safetyBoxId,
-			SafetyBoxOwner: owner,
+			SafetyBoxId:     safetyBoxId,
+			SafetyBoxOwner:  owner,
+			SafetyBoxDenoms: []string{"link"},
 		})
 		require.NoError(t, err)
 		require.Equal(t, owner, sb.Owner)
@@ -47,10 +48,21 @@ func TestSafetyBox(t *testing.T) {
 	// duplicated ID is not allowed
 	{
 		sb, err = keeper.NewSafetyBox(ctx, types.MsgSafetyBoxCreate{
-			SafetyBoxId:    safetyBoxId,
-			SafetyBoxOwner: owner,
+			SafetyBoxId:     safetyBoxId,
+			SafetyBoxOwner:  owner,
+			SafetyBoxDenoms: []string{"link"},
 		})
 		require.EqualError(t, err, types.ErrSafetyBoxAccountExist(types.DefaultCodespace).Error())
+	}
+
+	// multiple denoms not allowed
+	{
+		sb, err = keeper.NewSafetyBox(ctx, types.MsgSafetyBoxCreate{
+			SafetyBoxId:     "new_id",
+			SafetyBoxOwner:  owner,
+			SafetyBoxDenoms: []string{"link", "stake"},
+		})
+		require.EqualError(t, err, types.ErrSafetyBoxTooManyCoinDenoms(types.DefaultCodespace).Error())
 	}
 
 	// query the safety box
@@ -81,7 +93,6 @@ func TestSafetyBox(t *testing.T) {
 		ak.SetAccount(ctx, acc)
 	}
 	require.NotNil(t, ak.GetAccount(ctx, operator))
-	require.Equal(t, uint64(2), ak.GetAccount(ctx, operator).GetAccountNumber())
 
 	// the owner registers the operator
 	{
@@ -106,7 +117,6 @@ func TestSafetyBox(t *testing.T) {
 		ak.SetAccount(ctx, acc)
 	}
 	require.NotNil(t, ak.GetAccount(ctx, operator2))
-	require.Equal(t, uint64(3), ak.GetAccount(ctx, operator2).GetAccountNumber())
 
 	// the owner registers second operator (multiple operators are allowed)
 	{
@@ -131,6 +141,25 @@ func TestSafetyBox(t *testing.T) {
 		require.NoError(t, err)
 	}
 
+	// revoke error case
+	{
+		// RevokePermission(ctx sdk.Context, safetyBoxId string, by sdk.AccAddress, acc sdk.AccAddress, action string) sdk.Error
+		err = keeper.RevokePermission(ctx, safetyBoxId, owner, owner, types.RoleOperator)
+		require.EqualError(t, err, types.ErrSafetyBoxSelfPermission(types.DefaultCodespace).Error())
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator2, owner, types.RoleAllocator)
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace).Error())
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleAllocator)
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleIssuer)
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleReturner)
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+	}
+
 	// check permission of the operator2
 	{
 		require.False(t, keeper.IsOwner(ctx, safetyBoxId, operator2))
@@ -147,7 +176,6 @@ func TestSafetyBox(t *testing.T) {
 		ak.SetAccount(ctx, acc)
 	}
 	require.NotNil(t, ak.GetAccount(ctx, allocator))
-	require.Equal(t, uint64(4), ak.GetAccount(ctx, allocator).GetAccountNumber())
 
 	// issuer1
 	issuer1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -156,7 +184,6 @@ func TestSafetyBox(t *testing.T) {
 		ak.SetAccount(ctx, acc)
 	}
 	require.NotNil(t, ak.GetAccount(ctx, issuer1))
-	require.Equal(t, uint64(5), ak.GetAccount(ctx, issuer1).GetAccountNumber())
 
 	// issuer2
 	issuer2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -165,7 +192,6 @@ func TestSafetyBox(t *testing.T) {
 		ak.SetAccount(ctx, acc)
 	}
 	require.NotNil(t, ak.GetAccount(ctx, issuer2))
-	require.Equal(t, uint64(6), ak.GetAccount(ctx, issuer2).GetAccountNumber())
 
 	// returner
 	returner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -174,7 +200,6 @@ func TestSafetyBox(t *testing.T) {
 		ak.SetAccount(ctx, acc)
 	}
 	require.NotNil(t, ak.GetAccount(ctx, returner))
-	require.Equal(t, uint64(7), ak.GetAccount(ctx, returner).GetAccountNumber())
 
 	// the owner cannot register allocator, issuer or returner
 	{
@@ -222,6 +247,17 @@ func TestSafetyBox(t *testing.T) {
 	// allocation
 	// Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) sdk.Error
 	{
+		// the safety box balance check
+		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 0, 0, 0)
+
+		// unable to allocate other coins
+		err = keeper.Allocate(ctx, types.MsgSafetyBoxAllocateCoins{
+			SafetyBoxId:      safetyBoxId,
+			AllocatorAddress: allocator,
+			Coins:            sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(3)}},
+		})
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 0, 0, 0)
 
@@ -286,6 +322,17 @@ func TestSafetyBox(t *testing.T) {
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 3, 3, 0)
 
+		// unable to recalls other coins
+		err = keeper.Recall(ctx, types.MsgSafetyBoxRecallCoins{
+			SafetyBoxId:      safetyBoxId,
+			AllocatorAddress: allocator,
+			Coins:            sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(1)}},
+		})
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+
+		// the safety box balance check
+		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 3, 3, 0)
+
 		// the allocator recalls from the safety box
 		err = keeper.Recall(ctx, types.MsgSafetyBoxRecallCoins{
 			SafetyBoxId:      safetyBoxId,
@@ -347,6 +394,18 @@ func TestSafetyBox(t *testing.T) {
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 0)
 
+		// unable to issue other coins
+		err = keeper.Issue(ctx, types.MsgSafetyBoxIssueCoins{
+			SafetyBoxId: safetyBoxId,
+			ToAddress:   issuer1,
+			FromAddress: issuer1,
+			Coins:       sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(1)}},
+		})
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+
+		// the safety box balance check
+		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 0)
+
 		// issuer1 request issuance to issuer1
 		err = keeper.Issue(ctx, types.MsgSafetyBoxIssueCoins{
 			SafetyBoxId: safetyBoxId,
@@ -355,6 +414,18 @@ func TestSafetyBox(t *testing.T) {
 			Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
 		require.NoError(t, err)
+
+		// the safety box balance check
+		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 1)
+
+		// unable to issue other coins
+		err = keeper.Issue(ctx, types.MsgSafetyBoxIssueCoins{
+			SafetyBoxId: safetyBoxId,
+			ToAddress:   issuer2,
+			FromAddress: issuer1,
+			Coins:       sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(1)}},
+		})
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 1)
@@ -423,6 +494,17 @@ func TestSafetyBox(t *testing.T) {
 	// return
 	// Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) sdk.Error
 	{
+		// the safety box balance check
+		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 2)
+
+		// unable to return other coins
+		err = keeper.Return(ctx, types.MsgSafetyBoxReturnCoins{
+			SafetyBoxId:     safetyBoxId,
+			ReturnerAddress: returner,
+			Coins:           sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(1)}},
+		})
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 2)
 

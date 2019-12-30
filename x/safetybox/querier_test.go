@@ -18,8 +18,9 @@ func TestSafetyBoxQuerierSafetyBox(t *testing.T) {
 	// create a box
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	msgSbCreate := MsgSafetyBoxCreate{
-		SafetyBoxId:    SafetyBoxTestId,
-		SafetyBoxOwner: owner,
+		SafetyBoxId:     SafetyBoxTestId,
+		SafetyBoxOwner:  owner,
+		SafetyBoxDenoms: []string{"link"},
 	}
 	r := h(input.Ctx, msgSbCreate)
 	require.True(t, r.IsOK())
@@ -56,8 +57,9 @@ func TestSafetyBoxQuerierRole(t *testing.T) {
 	// create a box
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	msgSbCreate := MsgSafetyBoxCreate{
-		SafetyBoxId:    SafetyBoxTestId,
-		SafetyBoxOwner: owner,
+		SafetyBoxId:     SafetyBoxTestId,
+		SafetyBoxOwner:  owner,
+		SafetyBoxDenoms: []string{"link"},
 	}
 	r := h(input.Ctx, msgSbCreate)
 	require.True(t, r.IsOK())

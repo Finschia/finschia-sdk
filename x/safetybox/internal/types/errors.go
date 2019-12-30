@@ -26,6 +26,9 @@ const (
 	CodeSafetyBoxRecallMoreThanAllocated sdk.CodeType = 18
 	CodeSafetyBoxCoinsRequired           sdk.CodeType = 19
 	CodeSafetyBoxInvalidRole             sdk.CodeType = 20
+	CodeSafetyBoxDenomRequired           sdk.CodeType = 21
+	CodeSafetyBoxOnlyOneDenomAllowed     sdk.CodeType = 22
+	CodeSafetyBoxIncorrectDenom          sdk.CodeType = 23
 )
 
 func ErrSafetyBoxIdRequired(codespace sdk.CodespaceType) sdk.Error {
@@ -110,4 +113,16 @@ func ErrSafetyBoxCoinsRequired(codespace sdk.CodespaceType) sdk.Error {
 
 func ErrSafetyBoxInvalidRole(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeSafetyBoxInvalidRole, "Invalid role")
+}
+
+func ErrSafetyBoxDenomRequired(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeSafetyBoxDenomRequired, "Must specify a denom to create a safety box")
+}
+
+func ErrSafetyBoxTooManyCoinDenoms(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeSafetyBoxOnlyOneDenomAllowed, "Only one coin denom is allowed")
+}
+
+func ErrSafetyBoxIncorrectDenom(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeSafetyBoxIncorrectDenom, "The safety box doesn't accept the denom")
 }

@@ -60,6 +60,8 @@ var (
 	ErrSafetyBoxPermissionRecall   = types.ErrSafetyBoxPermissionRecall
 	ErrSafetyBoxPermissionIssue    = types.ErrSafetyBoxPermissionIssue
 	ErrSafetyBoxPermissionReturn   = types.ErrSafetyBoxPermissionReturn
+	ErrSafetyBoxIncorrectDenom     = types.ErrSafetyBoxIncorrectDenom
+	ErrSafetyBoxTooManyCoinDenoms  = types.ErrSafetyBoxTooManyCoinDenoms
 
 	AttributeKeySafetyBoxId                        = types.AttributeKeySafetyBoxId
 	AttributeKeySafetyBoxOwner                     = types.AttributeKeySafetyBoxOwner

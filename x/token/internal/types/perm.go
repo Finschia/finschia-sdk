@@ -24,8 +24,8 @@ func (pms Permissions) String() string {
 }
 
 type Permission struct {
-	Action   string
-	Resource string
+	Action   string `json:"action"`
+	Resource string `json:"resource"`
 }
 
 func (p Permission) Validate() bool {

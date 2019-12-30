@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/line/link/x/account"
 	"os"
 	"path"
 
@@ -113,6 +114,8 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 	txCmd.AddCommand(
 		bank.SendTxCmd(cdc),
 		client.LineBreak,
+		account.CreateAccountTxCmd(cdc),
+		client.LineBreak,
 		authclient.GetSignCommand(cdc),
 		authclient.GetMultiSignCommand(cdc),
 		client.LineBreak,
@@ -124,11 +127,11 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 	// add modules' tx commands
 	app.ModuleBasics.AddTxCommands(txCmd, cdc)
 
-	// remove auth and bank commands as they're mounted under the root tx command
+	// remove auth and bank and account commands as they're mounted under the root tx command
 	var cmdsToRemove []*cobra.Command
 
 	for _, cmd := range txCmd.Commands() {
-		if cmd.Use == auth.ModuleName || cmd.Use == bank.ModuleName {
+		if cmd.Use == auth.ModuleName || cmd.Use == bank.ModuleName || cmd.Use == account.ModuleName {
 			cmdsToRemove = append(cmdsToRemove, cmd)
 		}
 	}

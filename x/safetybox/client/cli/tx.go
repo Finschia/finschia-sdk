@@ -9,6 +9,7 @@ import (
 	"github.com/line/link/x/safetybox/internal/types"
 	"github.com/spf13/cobra"
 	"strconv"
+	"strings"
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -31,21 +32,18 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func SafetyBoxCreateTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [id] [owner_address]",
-		Short: "Create a safety box with ID and Owner",
-		Args:  cobra.ExactArgs(2),
+		Use:   "create [id] [owner_address] [denom]",
+		Short: "Create a safety box with ID, owner and the coin denom. Only one owner and denom is allowed.",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[1]).WithCodec(cdc)
 			safetyBoxId := args[0]
-
-			safetyBoxOwner, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
+			safetyBoxOwner := cliCtx.FromAddress
+			safetyBoxDenoms := strings.Split(args[2], ",")
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.MsgSafetyBoxCreate{SafetyBoxId: safetyBoxId, SafetyBoxOwner: safetyBoxOwner}
+			msg := types.MsgSafetyBoxCreate{SafetyBoxId: safetyBoxId, SafetyBoxOwner: safetyBoxOwner, SafetyBoxDenoms: safetyBoxDenoms}
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

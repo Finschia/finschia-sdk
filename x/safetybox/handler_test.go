@@ -13,7 +13,6 @@ const (
 	SafetyBoxTestId = "test_safety_box_id"
 )
 
-// ToDo: MsgSafetyBoxAllocateCoins, MsgSafetyBoxRecallCoins, MsgSafetyBoxIssueCoins, MsgSafetyBoxReturnCoins
 func TestHandler(t *testing.T) {
 	input := testCommon.SetupTestInput(t)
 	ctx, keeper := input.Ctx, input.Keeper
@@ -28,8 +27,9 @@ func TestHandler(t *testing.T) {
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	msgSbCreate := MsgSafetyBoxCreate{
-		SafetyBoxId:    SafetyBoxTestId,
-		SafetyBoxOwner: owner,
+		SafetyBoxId:     SafetyBoxTestId,
+		SafetyBoxOwner:  owner,
+		SafetyBoxDenoms: []string{"link"},
 	}
 	res = h(ctx, msgSbCreate)
 	require.True(t, res.IsOK())
@@ -84,6 +84,50 @@ func TestHandler(t *testing.T) {
 		Address:     returner,
 	}
 	res = h(ctx, msgSbRegisterReturner)
+	require.True(t, res.IsOK())
+
+	// put some coins to all
+	_, err := input.Bk.AddCoins(ctx, allocator, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	require.NoError(t, err)
+	_, err = input.Bk.AddCoins(ctx, issuer1, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	require.NoError(t, err)
+	_, err = input.Bk.AddCoins(ctx, issuer2, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	require.NoError(t, err)
+	_, err = input.Bk.AddCoins(ctx, returner, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	require.NoError(t, err)
+
+	// allocate, issue, return and recall
+	msgSbAllocate := MsgSafetyBoxAllocateCoins{
+		SafetyBoxId:      SafetyBoxTestId,
+		AllocatorAddress: allocator,
+		Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
+	}
+	res = h(ctx, msgSbAllocate)
+	require.True(t, res.IsOK())
+
+	msgSbIssue := MsgSafetyBoxIssueCoins{
+		SafetyBoxId: SafetyBoxTestId,
+		FromAddress: issuer1,
+		ToAddress:   issuer2,
+		Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
+	}
+	res = h(ctx, msgSbIssue)
+	require.True(t, res.IsOK())
+
+	msgSbReturn := MsgSafetyBoxReturnCoins{
+		SafetyBoxId:     SafetyBoxTestId,
+		ReturnerAddress: returner,
+		Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
+	}
+	res = h(ctx, msgSbReturn)
+	require.True(t, res.IsOK())
+
+	msgSbRecall := MsgSafetyBoxRecallCoins{
+		SafetyBoxId:      SafetyBoxTestId,
+		AllocatorAddress: allocator,
+		Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
+	}
+	res = h(ctx, msgSbRecall)
 	require.True(t, res.IsOK())
 
 	// the operator deregisters allocator, issuers and returner

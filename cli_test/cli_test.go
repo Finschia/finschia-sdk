@@ -1339,11 +1339,12 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	//var stdout string
 
 	id := "some_safety_box"
+	denom := DenomLink
 	rinahTheOwnerAddress := f.KeyAddress(UserRinah).String()
 
 	// create a safety box w/ user rinah as the owner
 	{
-		result, _, _ = f.TxSafetyBoxCreate(id, rinahTheOwnerAddress, "-y")
+		result, _, _ = f.TxSafetyBoxCreate(id, rinahTheOwnerAddress, denom, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 	}
@@ -1374,6 +1375,19 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		sb := f.QuerySafetyBox(id)
 		require.Equal(t, sb.ID, id)
 		require.Equal(t, sb.Owner.String(), rinahTheOwnerAddress)
+	}
+
+	// create a safety box w/ multiple denoms should fail
+	{
+		result, stdoutBoxCreate, _ := f.TxSafetyBoxCreate("new_id", rinahTheOwnerAddress, DenomLink+","+DenomStake, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxTooManyCoinDenoms(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdoutBoxCreate, "\\\\\\\"")[9],
+		)
 	}
 
 	// any coin transfer to the safety box from the owner should fail
@@ -1740,6 +1754,124 @@ func TestLinkCLISafetyBox(t *testing.T) {
 				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
 			},
 		)
+	}
+
+	// can't allocate, recall, issue nor return coins other than specified denom in the safety box
+	{
+		// current balances
+		sb := f.QuerySafetyBox(id)
+		initialBalances := []sdk.Coins{
+			sb.TotalAllocation,
+			sb.CumulativeAllocation,
+			sb.TotalIssuance,
+			f.QueryAccount(f.KeyAddress(UserKevin)).Coins,  // kevin, an allocator
+			f.QueryAccount(f.KeyAddress(UserBrian)).Coins,  // brian, an issuer
+			f.QueryAccount(f.KeyAddress(UserSam)).Coins,    // sam, an issuer
+			f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins, // evelyn, a returner
+		}
+
+		// kevin allocates 1stake2 to the safety box, should fail
+		result, stdout, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomStake, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+
+		// brian issues 1stake2 from the safety box to Sam, should fail
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomStake, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserSam).String(), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+
+		// evelyn returns 1stake2 to the safety box, should fail
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, DenomStake, int64(1), f.KeyAddress(UserEvelyn).String(), "", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+
+		// kevin recalls 1stake2 from the safety box, should fail
+		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, DenomStake, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+
+		// no balance should have changed
+		sb = f.QuerySafetyBox(id)
+		finalBalances := []sdk.Coins{
+			sb.TotalAllocation,
+			sb.CumulativeAllocation,
+			sb.TotalIssuance,
+			f.QueryAccount(f.KeyAddress(UserKevin)).Coins,  // kevin, an allocator
+			f.QueryAccount(f.KeyAddress(UserBrian)).Coins,  // brian, an issuer
+			f.QueryAccount(f.KeyAddress(UserSam)).Coins,    // sam, an issuer
+			f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins, // evelyn, a returner
+		}
+		require.Equal(t, initialBalances, finalBalances)
+	}
+
+	// deregister roles
+	{
+		// tina, the operator deregisters kevin as an allocator
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.DeregisterRole, sbox.RoleAllocator, f.KeyAddress(UserTina).String(), f.KeyAddress(UserKevin).String(), "-y")
+		require.True(t, result)
+
+		// tina, the operator deregisters brian as an allocator
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.DeregisterRole, sbox.RoleIssuer, f.KeyAddress(UserTina).String(), f.KeyAddress(UserBrian).String(), "-y")
+		require.True(t, result)
+
+		// tina, the operator deregisters sam as an allocator
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.DeregisterRole, sbox.RoleIssuer, f.KeyAddress(UserTina).String(), f.KeyAddress(UserSam).String(), "-y")
+		require.True(t, result)
+
+		// tina, the operator deregisters evelyn as a returner
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.DeregisterRole, sbox.RoleReturner, f.KeyAddress(UserTina).String(), f.KeyAddress(UserEvelyn).String(), "-y")
+		require.True(t, result)
+
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// kevin is not an allocator anymore
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleAllocator, f.KeyAddress(UserKevin).String())
+		require.False(t, sbr.HasRole)
+
+		// brian is not an issuer anymore
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(UserBrian).String())
+		require.False(t, sbr.HasRole)
+
+		// sam is not an issuer anymore
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleIssuer, f.KeyAddress(UserSam).String())
+		require.False(t, sbr.HasRole)
+
+		// evelyn is not a returner anymore
+		sbr = f.QuerySafetyBoxRole(id, sbox.RoleReturner, f.KeyAddress(UserEvelyn).String())
+		require.False(t, sbr.HasRole)
+	}
+
+	// deregister operator
+	{
+		// rinah, the owner of the safety box deregisters tina as an operator
+		result, _, _ = f.TxSafetyBoxRole(id, sbox.DeregisterRole, sbox.RoleOperator, f.KeyAddress(UserRinah).String(), f.KeyAddress(UserTina).String(), "-y")
+		require.True(t, result)
+
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// tina is not an operator anymore
+		sbr := f.QuerySafetyBoxRole(id, sbox.RoleOperator, f.KeyAddress(UserTina).String())
+		require.False(t, sbr.HasRole)
 	}
 }
 
