@@ -2,7 +2,7 @@
 openapi: "3.0.1"
 info:
   version: "2.0-0.0.2"
-  title: LINK-Lite for Cosmos
+  title: LINK-Lite for link network
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
   - name: Tendermint RPC
@@ -352,7 +352,7 @@ paths:
         description: The tx must be a signed StdTx. The supported broadcast modes
           include `"block"`(return after tx commit), `"sync"`(return afer CheckTx)
           and `"async"`(return right away).
-          Supported MSGs are `MsgSend`, `MsgPublishToken`, `MsgMint`, `MsgBurn`
+          Supported MSGs are `MsgSend`, `MsgIssue`, `MsgIssueNFT`, `MsgIssueCollection`, `MsgIssueNFTCollection`, `MsgMint`, `MsgBurn`
         content:
           application/json:
             schema:
@@ -1204,7 +1204,10 @@ components:
           items:
             oneOf:
               - $ref: '#/components/schemas/MsgSend'
-              - $ref: '#/components/schemas/MsgPublishToken'
+              - $ref: '#/components/schemas/MsgIssue'
+              - $ref: '#/components/schemas/MsgIssueCollection'
+              - $ref: '#/components/schemas/MsgIssueNFT'
+              - $ref: '#/components/schemas/MsgIssueNFTCollection'
               - $ref: '#/components/schemas/MsgMint'
               - $ref: '#/components/schemas/MsgBurn'
               - $ref: '#/components/schemas/MsgCreateValidator'
