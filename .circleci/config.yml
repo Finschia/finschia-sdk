@@ -349,42 +349,71 @@ workflows:
       - setup_dependencies:
           requires:
             - fmt
-      - setup_docker_and_binary:
-          requires:
-            - fmt
       - unit_test:
           requires:
             - setup_dependencies
       - integration_test:
           requires:
             - setup_dependencies
+      - contract_tests:
+          requires:
+            - setup_dependencies
+      - setup_docker_and_binary:
+          requires:
+            - fmt
+          filters:
+            branches:
+              only:
+                - master
+                - /rc-.*/
       - localnet:
           requires:
             - setup_docker_and_binary
+          filters:
+            branches:
+              only:
+                - master
+                - /rc-.*/
+      - integration_multi_node_test:
+          requires:
+            - setup_docker_and_binary
+          filters:
+            branches:
+              only:
+                - master
+                - /rc-.*/
       - sim-link-nondeterminism:
           requires:
             - setup_dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - /rc-.*/
       - sim-link-simulation-after-import:
           requires:
             - setup_dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - /rc-.*/
       - sim-link-multi-seed:
           requires:
             - setup_dependencies
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - /rc-.*/
       - sim-link-multi-seed-short:
           requires:
             - setup_dependencies
           filters:
             branches:
-              ignore: master
-      - contract_tests:
-          requires:
-            - setup_dependencies
-      - integration_multi_node_test:
-          requires:
-            - setup_docker_and_binary
+              only:
+                - master
+                - /rc-.*/
       - semantic_release:
           requires:
             - unit_test
