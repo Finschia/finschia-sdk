@@ -118,3 +118,12 @@ func checkSafetyBoxBalance(t *testing.T, k Keeper, ctx sdk.Context, safetyBoxId 
 	require.Equal(t, caExpected, sb.CumulativeAllocation)
 	require.Equal(t, tiExpected, sb.TotalIssuance)
 }
+
+// testing events - the order of events only matter in the test
+func VerifyEventFunc(t *testing.T, expected sdk.Events, actual sdk.Events) {
+	require.Equal(
+		t,
+		sdk.StringifyEvents(expected.ToABCIEvents()).String(),
+		sdk.StringifyEvents(actual.ToABCIEvents()).String(),
+	)
+}
