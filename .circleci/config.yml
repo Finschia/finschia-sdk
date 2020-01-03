@@ -365,7 +365,8 @@ workflows:
             branches:
               only:
                 - master
-                - /rc-.*/
+                - develop
+                - /hotfix-.*/
       - localnet:
           requires:
             - setup_docker_and_binary
@@ -373,7 +374,8 @@ workflows:
             branches:
               only:
                 - master
-                - /rc-.*/
+                - develop
+                - /hotfix-.*/
       - integration_multi_node_test:
           requires:
             - setup_docker_and_binary
@@ -381,7 +383,8 @@ workflows:
             branches:
               only:
                 - master
-                - /rc-.*/
+                - develop
+                - /hotfix-.*/
       - sim-link-nondeterminism:
           requires:
             - setup_dependencies
@@ -389,7 +392,8 @@ workflows:
             branches:
               only:
                 - master
-                - /rc-.*/
+                - develop
+                - /hotfix-.*/
       - sim-link-simulation-after-import:
           requires:
             - setup_dependencies
@@ -397,7 +401,8 @@ workflows:
             branches:
               only:
                 - master
-                - /rc-.*/
+                - develop
+                - /hotfix-.*/
       - sim-link-multi-seed:
           requires:
             - setup_dependencies
@@ -405,7 +410,8 @@ workflows:
             branches:
               only:
                 - master
-                - /rc-.*/
+                - develop
+                - /hotfix-.*/
       - sim-link-multi-seed-short:
           requires:
             - setup_dependencies
@@ -413,12 +419,19 @@ workflows:
             branches:
               only:
                 - master
-                - /rc-.*/
+                - develop
+                - /hotfix-.*/
       - semantic_release:
           requires:
             - unit_test
+            - contract_tests
             - integration_test
+            - localnet
             - integration_multi_node_test
+            - sim-link-nondeterminism
+            - sim-link-simulation-after-import
+            - sim-link-multi-seed
+            - sim-link-multi-seed-short
           filters:
             branches:
               only: master
