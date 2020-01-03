@@ -13,12 +13,12 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 
 	"github.com/line/link/app"
 	"github.com/line/link/client"
 	"github.com/line/link/types"
+	"github.com/line/link/version"
 	authclient "github.com/line/link/x/auth/client"
 	"github.com/line/link/x/bank"
 )
