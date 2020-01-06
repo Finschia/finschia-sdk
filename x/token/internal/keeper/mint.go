@@ -8,15 +8,16 @@ import (
 
 func (k Keeper) MintTokens(ctx sdk.Context, amount sdk.Coins, to sdk.AccAddress) sdk.Error {
 	for _, coin := range amount {
-		if !k.HasPermission(ctx, to, types.NewMintPermission(coin.Denom)) {
-			return types.ErrTokenPermissionMint(types.DefaultCodespace)
-		}
 		token, err := k.GetToken(ctx, coin.Denom)
 		if err != nil {
 			return err
 		}
 		if !token.Mintable {
-			return types.ErrTokenNotMintable(types.DefaultCodespace)
+			return types.ErrTokenNotMintable(types.DefaultCodespace, token.Symbol)
+		}
+		perm := types.NewMintPermission(coin.Denom)
+		if !k.HasPermission(ctx, to, perm) {
+			return types.ErrTokenPermission(types.DefaultCodespace, to, perm)
 		}
 	}
 	return k.mintTokens(ctx, amount, to)

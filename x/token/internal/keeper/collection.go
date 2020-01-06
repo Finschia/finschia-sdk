@@ -7,7 +7,7 @@ import (
 
 func (k Keeper) OccupySymbol(ctx sdk.Context, symbol string, owner sdk.AccAddress) sdk.Error {
 	if k.ExistCollection(ctx, symbol) {
-		return types.ErrCollectionExist(types.DefaultCodespace)
+		return types.ErrCollectionExist(types.DefaultCodespace, symbol)
 	}
 
 	err := k.SetCollection(ctx, types.NewCollection(symbol))
@@ -44,7 +44,7 @@ func (k Keeper) GetCollection(ctx sdk.Context, denom string) (collection types.C
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.CollectionKey(denom))
 	if bz == nil {
-		return collection, types.ErrCollectionNotExist(types.DefaultCodespace)
+		return collection, types.ErrCollectionNotExist(types.DefaultCodespace, denom)
 	}
 
 	collection = k.mustDecodeCollection(bz)
@@ -64,7 +64,7 @@ func (k Keeper) GetAllCollections(ctx sdk.Context) types.Collections {
 func (k Keeper) SetCollection(ctx sdk.Context, collection types.Collection) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(types.CollectionKey(collection.Symbol)) {
-		return types.ErrCollectionExist(types.DefaultCodespace)
+		return types.ErrCollectionExist(types.DefaultCodespace, collection.Symbol)
 	}
 
 	store.Set(types.CollectionKey(collection.Symbol), k.cdc.MustMarshalBinaryBare(collection))

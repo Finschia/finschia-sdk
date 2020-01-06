@@ -15,6 +15,7 @@ type PermissionI interface {
 	GetResource() string
 	GetAction() string
 	Equal(string, string) bool
+	String() string
 }
 
 type Permissions []PermissionI
@@ -48,6 +49,10 @@ func (p Permission) Equal(res, act string) bool {
 		return true
 	}
 	return false
+}
+
+func (p Permission) String() string {
+	return fmt.Sprintf("%s-%s", p.GetResource(), p.GetAction())
 }
 
 func NewMintPermission(resource string) PermissionI {

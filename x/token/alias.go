@@ -44,9 +44,7 @@ var (
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec
 
-	ErrTokenPermission    = types.ErrTokenPermission
-	ErrInvalidTokenSymbol = types.ErrInvalidTokenSymbol
-	ErrTokenExist         = types.ErrTokenExist
+	ErrTokenExist = types.ErrTokenExist
 
 	NewIssuePermission = types.NewIssuePermission
 

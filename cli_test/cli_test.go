@@ -2091,7 +2091,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		require.Contains(t, stdOut, "not enough coins")
 		//bar try to mint but has no permission
 		_, stdOut, _ = f.TxTokenMint(keyBar, mintAmountStr+symbolConyFoo, "-y")
-		require.Contains(t, stdOut, "account does not have permissions")
+		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", barAddr, symbolConyFoo+"-mint"))
 
 		//Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
@@ -2115,7 +2115,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		_, stdOut, _ := f.TxTokenMint(keyFoo, mintAmountStr+symbolConyFoo, "-y")
-		require.Contains(t, stdOut, "account does not have permissions")
+		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", fooAddr, symbolConyFoo+"-mint"))
 
 		// Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
@@ -2196,7 +2196,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 		require.Contains(
 			t,
-			strings.Split(token.ErrTokenExist(token.DefaultCodespace).Result().Log, "\""),
+			strings.Split(token.ErrTokenExist(token.DefaultCodespace, symbolBrown+fooSuffix+tokenID02).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 	}
