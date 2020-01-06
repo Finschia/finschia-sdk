@@ -85,7 +85,7 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 						Address:        toAddress,
 					}
 				} else {
-					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace)
+					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 				}
 			case types.RoleAllocator:
 				if action == types.RegisterRole {
@@ -101,7 +101,7 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 						Address:     toAddress,
 					}
 				} else {
-					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace)
+					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 				}
 			case types.RoleIssuer:
 				if action == types.RegisterRole {
@@ -117,7 +117,7 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 						Address:     toAddress,
 					}
 				} else {
-					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace)
+					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 				}
 			case types.RoleReturner:
 				if action == types.RegisterRole {
@@ -133,10 +133,10 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 						Address:     toAddress,
 					}
 				} else {
-					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace)
+					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 				}
 			default:
-				return types.ErrSafetyBoxInvalidRole(types.DefaultCodespace)
+				return types.ErrSafetyBoxInvalidRole(types.DefaultCodespace, role)
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
@@ -180,7 +180,7 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 				msg = types.NewMsgSafetyBoxRecallCoins(safetyBoxId, address, coins)
 			case types.ActionIssue:
 				if len(args) < 6 {
-					return types.ErrSafetyBoxNeedsIssuerAddress(types.DefaultCodespace)
+					return types.ErrSafetyBoxIssuerAddressRequired(types.DefaultCodespace)
 				}
 				toAddress, err := sdk.AccAddressFromBech32(args[5])
 				if err != nil {
@@ -190,7 +190,7 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 			case types.ActionReturn:
 				msg = types.NewMsgSafetyBoxReturnCoins(safetyBoxId, address, coins)
 			default:
-				return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace)
+				return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint

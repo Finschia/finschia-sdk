@@ -21,7 +21,7 @@ func TestHandler(t *testing.T) {
 
 	res := h(ctx, sdk.NewTestMsg())
 	require.False(t, res.IsOK())
-	require.Error(t, ErrSafetyBoxInvalidMsgType(DefaultCodespace))
+	require.Error(t, ErrSafetyBoxInvalidMsgType(DefaultCodespace, sdk.NewTestMsg().Type()))
 
 	// create a box
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())

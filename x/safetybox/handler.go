@@ -35,7 +35,7 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		case MsgSafetyBoxDeregisterReturner:
 			return handleMsgSafetyBoxDeregisterReturner(ctx, keeper, msg)
 		default:
-			return ErrSafetyBoxInvalidMsgType(types.DefaultCodespace).Result()
+			return ErrSafetyBoxInvalidMsgType(types.DefaultCodespace, msg.Type()).Result()
 		}
 	}
 }
