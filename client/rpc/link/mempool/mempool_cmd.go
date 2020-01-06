@@ -1,12 +1,9 @@
-package rpc
+package mempool
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"net/http"
-	"strconv"
-
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -16,14 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-)
-
-const (
-	flagHash = "hash"
-
-	defaultLimit = 30
 )
 
 // MempoolCmd can return different results for each node.
@@ -60,7 +50,10 @@ func NumUnconfirmedTxsCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	cmd.Flags().StringP(flags.FlagNode, "n", "tcp://localhost:26657", "Node to connect to")
-	viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	err := viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	if err != nil {
+		panic(err)
+	}
 	cmd.Flags().Bool(flags.FlagIndentResponse, false, "Add indent to JSON response")
 	return cmd
 }
@@ -90,19 +83,6 @@ func getNumUnconfirmedTxsCmd(cliCtx context.CLIContext) ([]byte, error) {
 	return cdc.MarshalJSON(res)
 }
 
-// REST handler for num unconfirmed txs
-func NumUnconfirmedTxsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		output, err := getNumUnconfirmedTxsCmd(cliCtx)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		rest.PostProcessResponseBare(w, cliCtx, output)
-	}
-}
-
 // UnconfirmedTxsCmd returns the command to return the unconfirmed txs from the mempool.
 func UnconfirmedTxsCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
@@ -126,7 +106,10 @@ func UnconfirmedTxsCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	cmd.Flags().StringP(flags.FlagNode, "n", "tcp://localhost:26657", "Node to connect to")
-	viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	err := viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	if err != nil {
+		panic(err)
+	}
 	cmd.Flags().Bool(flags.FlagIndentResponse, false, "Add indent to JSON response")
 	cmd.Flags().Int32(flagLimit, defaultLimit, "Maximum number of unconfirmed transactions to return (max 100)")
 	cmd.Flags().Bool(flagHash, false, "Return tx as hash")
@@ -177,42 +160,4 @@ func getUnconfirmedTxsCmd(cliCtx context.CLIContext, limit int, hash bool) ([]by
 	}
 
 	return cdc.MarshalJSON(unconfirmedTxs)
-}
-
-// REST handler for unconfirmed txs
-func UnconfirmedTxsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		limit, hash, err := parseHTTPArgs(r)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
-		}
-
-		output, err := getUnconfirmedTxsCmd(cliCtx, limit, hash)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		rest.PostProcessResponseBare(w, cliCtx, output)
-	}
-}
-
-func parseHTTPArgs(r *http.Request) (limit int, hash bool, err error) {
-	limitStr := r.FormValue("limit")
-	if limitStr == "" {
-		limit = defaultLimit
-	} else {
-		limit, err = strconv.Atoi(limitStr)
-		if err != nil {
-			return limit, hash, err
-		}
-	}
-
-	hashStr := r.FormValue("hash")
-	if hashStr == "true" {
-		hash = true
-	}
-
-	return limit, hash, nil
 }

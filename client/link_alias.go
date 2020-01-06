@@ -4,6 +4,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/line/link/client/lcd"
 	"github.com/line/link/client/rpc"
+	"github.com/line/link/client/rpc/link/block"
+	"github.com/line/link/client/rpc/link/genesis"
+	"github.com/line/link/client/rpc/link/mempool"
 )
 
 const (
@@ -74,13 +77,13 @@ var (
 	NewInMemoryKeyBase                 = client.NewInMemoryKeyBase
 	NewRestServer                      = client.NewRestServer
 	ServeCommand                       = lcd.ServeCommand
-	BlockCommand                       = rpc.BlockCommand
-	QueryGenesisAccountCmd             = rpc.QueryGenesisAccountCmd
-	QueryGenesisTxCmd                  = rpc.QueryGenesisTxCmd
-	GetChainHeight                     = rpc.GetChainHeight
-	BlockRequestHandlerFn              = rpc.BlockRequestHandlerFn
-	LatestBlockRequestHandlerFn        = rpc.LatestBlockRequestHandlerFn
-	MempoolCmd                         = rpc.MempoolCmd
+	BlockCommand                       = block.Command
+	BlockWithResultCommand             = block.WithTxResultCommand
+	QueryGenesisAccountCmd             = genesis.QueryGenesisAccountCmd
+	QueryGenesisTxCmd                  = genesis.QueryGenesisTxCmd
+	BlockRequestHandlerFn              = block.RequestHandlerFn
+	LatestBlockRequestHandlerFn        = block.LatestBlockRequestHandlerFn
+	MempoolCmd                         = mempool.MempoolCmd
 	RegisterRPCRoutes                  = rpc.RegisterRPCRoutes
 	StatusCommand                      = client.StatusCommand
 	NodeInfoRequestHandlerFn           = client.NodeInfoRequestHandlerFn
