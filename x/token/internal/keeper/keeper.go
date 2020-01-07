@@ -71,10 +71,10 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.Token, amount sdk.Int, owne
 
 func (k Keeper) IssueNFT(ctx sdk.Context, token types.Token, owner sdk.AccAddress) sdk.Error {
 
-	if !k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(token.Symbol).IsZero() {
-		return types.ErrTokenNFTExist(types.DefaultCodespace)
-	}
-
+	//TODO: move it to the invariant check https://github.com/line/link/issues/322
+	//if !k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(token.Symbol).IsZero() {
+	//	return types.ErrTokenNFTExist(types.DefaultCodespace)
+	//}
 	err := k.SetToken(ctx, token)
 	if err != nil {
 		return err

@@ -82,7 +82,7 @@ type MsgBurn struct {
 - Signer of this message must have the amount of the tokens
 - Token is subtracted from the `From` account 
 
-##MsgGrantPermission
+## MsgGrantPermission
 
 ```golang
 type MsgGrantPermission struct {
@@ -95,7 +95,7 @@ type MsgGrantPermission struct {
 **Grant Permission is to give a permission to the `To` account**
 - `From` account must has the permission
 
-##MsgRevokePermission
+## MsgRevokePermission
 
 ```golang
 type MsgRevokePermission struct {

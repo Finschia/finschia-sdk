@@ -9,7 +9,7 @@ func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
 
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(types.TokenSymbolKey(token.Symbol)) {
-		return types.ErrTokenExist(types.DefaultCodespace)
+		return types.ErrTokenExist(types.DefaultCodespace, token.Symbol)
 	}
 	store.Set(types.TokenSymbolKey(token.Symbol), k.cdc.MustMarshalBinaryBare(token))
 	return nil
@@ -19,7 +19,7 @@ func (k Keeper) GetToken(ctx sdk.Context, symbol string) (token types.Token, err
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.TokenSymbolKey(symbol))
 	if bz == nil {
-		return token, types.ErrTokenNotExist(types.DefaultCodespace)
+		return token, types.ErrTokenNotExist(types.DefaultCodespace, symbol)
 	}
 
 	token = k.mustDecodeToken(bz)

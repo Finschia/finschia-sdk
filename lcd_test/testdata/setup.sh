@@ -16,7 +16,6 @@ sed -i.bak -e "s/${REPLACE_ADDR}/${DYNAMIC_JACK_ADDR}/g" ${SWAGGER}
 sed -i.bak -e "s/${REPLACE_ADDR}/${DYNAMIC_JACK_ADDR}/g" ${SWAGGER}
 sleep 3s
 SEND_TX_HASH=$(echo ${PASSWORD} | ./build/linkcli tx send --home ${HOME} ${DYNAMIC_JACK_ADDR} ${DYNAMIC_JACK_ADDR} ${AMOUNT} --chain-id ${CHAIN_ID} --yes -b block | awk '/txhash.*/{print $2}')
-echo $SEND_TX_HASH
 sleep 3s
 PUBLISH_TX_HASH=$(echo ${PASSWORD} | ./build/linkcli --home ${HOME} tx token issue jack cony lcdtoken --decimals=0 --mintable=true --total-supply=10000 --chain-id ${CHAIN_ID} --yes -b block | awk '/txhash.*/{print $2}')
 sed -i.bak -e "s/${REPLACE_PUBLISH_TX_HASH}/${PUBLISH_TX_HASH}/g" ${SWAGGER}

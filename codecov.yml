@@ -12,7 +12,6 @@ comment:
   behavior: default  # update if exists else create new
   require_changes: no
 
-
 coverage:
   status:
     project:
@@ -70,6 +69,12 @@ ignore:
   - "*.yaml"
   - "*.sh"
   - "*.png"
+  - "*_test.go"
   - "x/**/test_common.go"
   - "contrib/**/*"
+  - "client/rpc/**/*_wrapper.go"
+  - "client/rpc/**/*_alias.go"
+  - "client/rpc/mock/*.go"
+  - "statik.go"
+  - "root.go"
   - "x/**/module.go"

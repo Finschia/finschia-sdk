@@ -349,47 +349,89 @@ workflows:
       - setup_dependencies:
           requires:
             - fmt
-      - setup_docker_and_binary:
-          requires:
-            - fmt
       - unit_test:
           requires:
             - setup_dependencies
       - integration_test:
           requires:
             - setup_dependencies
+      - contract_tests:
+          requires:
+            - setup_dependencies
+      - setup_docker_and_binary:
+          requires:
+            - fmt
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+                - /hotfix-.*/
       - localnet:
           requires:
             - setup_docker_and_binary
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+                - /hotfix-.*/
+      - integration_multi_node_test:
+          requires:
+            - setup_docker_and_binary
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+                - /hotfix-.*/
       - sim-link-nondeterminism:
           requires:
             - setup_dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+                - /hotfix-.*/
       - sim-link-simulation-after-import:
           requires:
             - setup_dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+                - /hotfix-.*/
       - sim-link-multi-seed:
           requires:
             - setup_dependencies
           filters:
             branches:
-              only: master
+              only:
+                - master
+                - develop
+                - /hotfix-.*/
       - sim-link-multi-seed-short:
           requires:
             - setup_dependencies
           filters:
             branches:
-              ignore: master
-      - contract_tests:
-          requires:
-            - setup_dependencies
-      - integration_multi_node_test:
-          requires:
-            - setup_docker_and_binary
+              only:
+                - master
+                - develop
+                - /hotfix-.*/
       - semantic_release:
           requires:
             - unit_test
+            - contract_tests
             - integration_test
+            - localnet
             - integration_multi_node_test
+            - sim-link-nondeterminism
+            - sim-link-simulation-after-import
+            - sim-link-multi-seed
+            - sim-link-multi-seed-short
           filters:
             branches:
               only: master

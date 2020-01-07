@@ -4,11 +4,12 @@
 ### Setup flags
 
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
-# VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
-VERSION :=v0.1.0
+BASE_VERSION := $(shell git describe --tags $(shell git rev-list --tags --max-count=1))
+BASE_VERSION := $(if $(BASE_VERSION), $(BASE_VERSION), v0.0.0)
+VERSION := $(BASE_VERSION)-$(shell basename $(shell git symbolic-ref -q HEAD --short))+$(shell date '+%Y%m%d%H%M%S')
+VERSION := $(strip $(VERSION))
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
-
 
 export GO111MODULE = on
 
@@ -123,10 +124,10 @@ test-unit-cover:
 	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 test-integration: build
-	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_test -v
+	@go test -mod=readonly `go list ./cli_test/...` -tags=cli_test -v
 
 test-integration-multi-node: build-docker
-	@go test -mod=readonly -p 4 `go list ./cli_test/...` -tags=cli_multi_node_test -v
+	@go test -mod=readonly `go list ./cli_test/...` -tags=cli_multi_node_test -v
 
 
 ########################################

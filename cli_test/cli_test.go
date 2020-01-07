@@ -1379,13 +1379,14 @@ func TestLinkCLISafetyBox(t *testing.T) {
 
 	// create a safety box w/ multiple denoms should fail
 	{
+		tooManyDenoms := []string{DenomLink, DenomStake}
 		result, stdoutBoxCreate, _ := f.TxSafetyBoxCreate("new_id", rinahTheOwnerAddress, DenomLink+","+DenomStake, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxTooManyCoinDenoms(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxTooManyCoinDenoms(sbox.DefaultCodespace, tooManyDenoms).Result().Log, "\""),
 			strings.Split(stdoutBoxCreate, "\\\\\\\"")[9],
 		)
 	}
@@ -1404,28 +1405,28 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultAllocation)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionAllocate(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionAllocate(sbox.DefaultCodespace, rinahTheOwnerAddress).Result().Log, "\""),
 			strings.Split(stdoutAllocation, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultRecall)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionRecall(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionRecall(sbox.DefaultCodespace, rinahTheOwnerAddress).Result().Log, "\""),
 			strings.Split(stdoutRecall, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultIssue)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace, rinahTheOwnerAddress).Result().Log, "\""),
 			strings.Split(stdoutIssue, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultReturn)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionReturn(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionReturn(sbox.DefaultCodespace, rinahTheOwnerAddress).Result().Log, "\""),
 			strings.Split(stdoutReturn, "\\\\\\\"")[9],
 		)
 	}
@@ -1481,28 +1482,28 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultAllocate)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionAllocate(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionAllocate(sbox.DefaultCodespace, f.KeyAddress(UserKevin).String()).Result().Log, "\""),
 			strings.Split(stdoutAllocate, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultRecall)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionRecall(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionRecall(sbox.DefaultCodespace, f.KeyAddress(UserKevin).String()).Result().Log, "\""),
 			strings.Split(stdoutRecall, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultIssue)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace, f.KeyAddress(UserKevin).String()).Result().Log, "\""),
 			strings.Split(stdoutIssue, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultReturn)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionReturn(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionReturn(sbox.DefaultCodespace, f.KeyAddress(UserKevin).String()).Result().Log, "\""),
 			strings.Split(stdoutReturn, "\\\\\\\"")[9],
 		)
 	}
@@ -1668,7 +1669,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace, f.KeyAddress(UserEvelyn).String()).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 	}
@@ -1776,7 +1777,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace, DenomLink, DenomStake).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 
@@ -1786,7 +1787,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace, DenomLink, DenomStake).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 
@@ -1796,7 +1797,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace, DenomLink, DenomStake).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 
@@ -1806,7 +1807,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace).Result().Log, "\""),
+			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace, DenomLink, DenomStake).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 
@@ -2090,7 +2091,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		require.Contains(t, stdOut, "not enough coins")
 		//bar try to mint but has no permission
 		_, stdOut, _ = f.TxTokenMint(keyBar, mintAmountStr+symbolConyFoo, "-y")
-		require.Contains(t, stdOut, "account does not have permissions")
+		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", barAddr, symbolConyFoo+"-mint"))
 
 		//Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
@@ -2114,7 +2115,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		_, stdOut, _ := f.TxTokenMint(keyFoo, mintAmountStr+symbolConyFoo, "-y")
-		require.Contains(t, stdOut, "account does not have permissions")
+		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", fooAddr, symbolConyFoo+"-mint"))
 
 		// Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
@@ -2195,7 +2196,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 		require.Contains(
 			t,
-			strings.Split(token.ErrTokenExist(token.DefaultCodespace).Result().Log, "\""),
+			strings.Split(token.ErrTokenExist(token.DefaultCodespace, symbolBrown+fooSuffix+tokenID02).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 	}

@@ -40,12 +40,12 @@ func checkPermissionAndOccupyIfEmpty(ctx sdk.Context, keeper keeper.Keeper, symb
 
 		ownerStr := owner.String()
 		if symbol[len(symbol)-linktypes.AccAddrSuffixLen:] != ownerStr[len(ownerStr)-linktypes.AccAddrSuffixLen:] {
-			return ErrInvalidTokenSymbol(DefaultCodespace)
+			return types.ErrTokenPermission(DefaultCodespace, owner, types.NewIssuePermission(symbol))
 		}
 
 		err := keeper.OccupySymbol(ctx, symbol, owner)
 		if err != nil {
-			return ErrTokenPermission(DefaultCodespace)
+			return err
 		}
 	}
 	return nil

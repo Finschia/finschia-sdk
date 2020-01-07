@@ -2,7 +2,7 @@
 openapi: "3.0.1"
 info:
   version: "2.0-0.0.2"
-  title: LINK-Lite for Cosmos
+  title: LINK-Lite for link network
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
   - name: Tendermint RPC
@@ -171,6 +171,39 @@ paths:
           description: Invalid height
         404:
           description: Request block height doesn't
+        500:
+          description: Server internal error
+  /blocks_with_tx_results/{from_height}:
+    get:
+      summary: Get blocks with tx result from from_height to from_height+fetchsize.
+      tags:
+        - Tendermint RPC
+      parameters:
+        - name: from_height
+          in: path
+          description: Block height which you want to start fetching
+          required: true
+          schema:
+            type: integer
+          example: 1
+        - name: fetchsize
+          in: query
+          description: Item count you want to fetch at once, default/maxmimum count is 20
+          required: false
+          schema:
+            type: integer
+          example: 20
+      responses:
+        200:
+          description: return blocks and txResult of block
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HasMoreBlockWithTxResultResponse'
+        400:
+          description: Invalid height
+        404:
+          description: The requested block height doesn't exist.
         500:
           description: Server internal error
   /num_unconfirmed_txs:
@@ -352,7 +385,7 @@ paths:
         description: The tx must be a signed StdTx. The supported broadcast modes
           include `"block"`(return after tx commit), `"sync"`(return afer CheckTx)
           and `"async"`(return right away).
-          Supported MSGs are `MsgSend`, `MsgPublishToken`, `MsgMint`, `MsgBurn`
+          Supported MSGs are `MsgSend`, `MsgIssue`, `MsgIssueNFT`, `MsgIssueCollection`, `MsgIssueNFTCollection`, `MsgMint`, `MsgBurn`
         content:
           application/json:
             schema:
@@ -682,7 +715,7 @@ paths:
     get:
       tags:
         - Safety Box
-      Summary: Get a safety box
+      summary: Get a safety box
       parameters:
         - name: id
           in: path
@@ -708,7 +741,7 @@ paths:
     get:
       tags:
         - Safety Box
-      Summary: Get a list of permissions of the user for the safety box
+      summary: Get a list of permissions of the user for the safety box
       parameters:
         - name: id
           in: path
@@ -1204,7 +1237,10 @@ components:
           items:
             oneOf:
               - $ref: '#/components/schemas/MsgSend'
-              - $ref: '#/components/schemas/MsgPublishToken'
+              - $ref: '#/components/schemas/MsgIssue'
+              - $ref: '#/components/schemas/MsgIssueCollection'
+              - $ref: '#/components/schemas/MsgIssueNFT'
+              - $ref: '#/components/schemas/MsgIssueNFTCollection'
               - $ref: '#/components/schemas/MsgMint'
               - $ref: '#/components/schemas/MsgBurn'
               - $ref: '#/components/schemas/MsgCreateValidator'
@@ -1332,6 +1368,42 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KVPair'
+    HasMoreBlockWithTxResultResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlockWithTxResult'
+        hasMore:
+          type: boolean
+      required:
+        - "items"
+        - "hasMore"
+    BlockWithTxResult:
+      type: "object"
+      required:
+        - "block"
+        - "txResults"
+      properties:
+        block:
+          $ref: '#/components/schemas/BlockQuery'
+        txResults:
+          type: "object"
+          properties:
+            hash:
+              type: "string"
+              nullable: false
+            height:
+              type: "string"
+              nullable: false
+            index:
+              type: "integer"
+              nullable: false
+            tx_result:
+              type: "object"
+              nullable: false
+          nullable: true
     BroadcastTxSyncResult:
       type: object
       properties:
@@ -1365,26 +1437,26 @@ components:
           type: string
           example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
     UnconfirmedTransactionsResponse:
-        type: "object"
-        required:
-          - "n_txs"
-          - "total"
-          - "total_bytes"
-          - "txs"
-        properties:
-          n_txs:
-            type: "string"
-            example: "0"
-          total:
-            type: "string"
-            example: "0"
-          total_bytes:
-            type: "string"
-            example: "0"
-          txs:
-            type: array
+      type: "object"
+      required:
+        - "n_txs"
+        - "total"
+        - "total_bytes"
+        - "txs"
+      properties:
+        n_txs:
+          type: "string"
+          example: "0"
+        total:
+          type: "string"
+          example: "0"
+        total_bytes:
+          type: "string"
+          example: "0"
+        txs:
+          type: array
+          x-nullable: true
+          items:
+            type: string
             x-nullable: true
-            items:
-              type: string
-              x-nullable: true
-            example: '[]'
+          example: '[]'

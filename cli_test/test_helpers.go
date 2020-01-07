@@ -331,6 +331,13 @@ func (f *Fixtures) CollectGenTxs(flags ...string) {
 func (f *Fixtures) LDStart(flags ...string) *tests.Process {
 	cmd := fmt.Sprintf("%s start --home=%s --rpc.laddr=%v --p2p.laddr=%v", f.LinkdBinary, f.LinkdHome, f.RPCAddr, f.P2PAddr)
 	proc := tests.GoExecuteTWithStdout(f.T, addFlags(cmd, flags))
+	defer func() {
+		if v := recover(); v != nil {
+			stdout, stderr, _ := proc.ReadAll()
+			f.T.Log(stdout)
+			f.T.Log(stderr)
+		}
+	}()
 	WaitForTMStart(f.Port)
 	tests.WaitForNextNBlocksTM(1, f.Port)
 	return proc

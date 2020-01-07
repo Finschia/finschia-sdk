@@ -12,7 +12,6 @@ const (
 	safetyBoxId = "test_safety_box_id"
 )
 
-// ToDo: check emitted events in the unit tests https://github.com/line/link/issues/270
 func TestSafetyBox(t *testing.T) {
 	input := SetupTestInput(t)
 	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
@@ -52,17 +51,24 @@ func TestSafetyBox(t *testing.T) {
 			SafetyBoxOwner:  owner,
 			SafetyBoxDenoms: []string{"link"},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxAccountExist(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxAccountExist(types.DefaultCodespace, safetyBoxId).Error())
 	}
 
 	// multiple denoms not allowed
 	{
+		tooManyDenoms := []string{"link", "stake"}
 		sb, err = keeper.NewSafetyBox(ctx, types.MsgSafetyBoxCreate{
 			SafetyBoxId:     "new_id",
 			SafetyBoxOwner:  owner,
-			SafetyBoxDenoms: []string{"link", "stake"},
+			SafetyBoxDenoms: tooManyDenoms,
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxTooManyCoinDenoms(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxTooManyCoinDenoms(types.DefaultCodespace, tooManyDenoms).Error())
+	}
+
+	// query non-exist safety box
+	{
+		sb, err = keeper.GetSafetyBox(ctx, "no-box")
+		require.EqualError(t, err, types.ErrSafetyBoxNotExist(types.DefaultCodespace, "no-box").Error())
 	}
 
 	// query the safety box
@@ -145,19 +151,19 @@ func TestSafetyBox(t *testing.T) {
 	{
 		// RevokePermission(ctx sdk.Context, safetyBoxId string, by sdk.AccAddress, acc sdk.AccAddress, action string) sdk.Error
 		err = keeper.RevokePermission(ctx, safetyBoxId, owner, owner, types.RoleOperator)
-		require.EqualError(t, err, types.ErrSafetyBoxSelfPermission(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxSelfPermission(types.DefaultCodespace, owner.String()).Error())
 
 		err = keeper.RevokePermission(ctx, safetyBoxId, operator2, owner, types.RoleAllocator)
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, operator2.String()).Error())
 
 		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleAllocator)
-		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace, operator2.String()).Error())
 
 		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleIssuer)
-		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace, operator2.String()).Error())
 
 		err = keeper.RevokePermission(ctx, safetyBoxId, operator, operator2, types.RoleReturner)
-		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace, operator2.String()).Error())
 	}
 
 	// check permission of the operator2
@@ -204,13 +210,13 @@ func TestSafetyBox(t *testing.T) {
 	// the owner cannot register allocator, issuer or returner
 	{
 		err = keeper.GrantPermission(ctx, safetyBoxId, owner, allocator, types.RoleAllocator)
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, owner.String()).Error())
 
 		err = keeper.GrantPermission(ctx, safetyBoxId, owner, issuer1, types.RoleIssuer)
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, owner.String()).Error())
 
 		err = keeper.GrantPermission(ctx, safetyBoxId, owner, returner, types.RoleReturner)
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, owner.String()).Error())
 	}
 
 	// the operator registers allocator, issuers and returner
@@ -256,7 +262,7 @@ func TestSafetyBox(t *testing.T) {
 			AllocatorAddress: allocator,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(3)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace, "link", "stake2").Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 0, 0, 0)
@@ -278,28 +284,28 @@ func TestSafetyBox(t *testing.T) {
 			AllocatorAddress: owner,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(3)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace, owner.String()).Error())
 
 		err = keeper.Allocate(ctx, types.MsgSafetyBoxAllocateCoins{
 			SafetyBoxId:      safetyBoxId,
 			AllocatorAddress: operator,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace, operator.String()).Error())
 
 		err = keeper.Allocate(ctx, types.MsgSafetyBoxAllocateCoins{
 			SafetyBoxId:      safetyBoxId,
 			AllocatorAddress: issuer1,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(3)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace, issuer1.String()).Error())
 
 		err = keeper.Allocate(ctx, types.MsgSafetyBoxAllocateCoins{
 			SafetyBoxId:      safetyBoxId,
 			AllocatorAddress: returner,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(3)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace, returner.String()).Error())
 
 		// the safety box balance check - no changes
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 3, 3, 0)
@@ -328,7 +334,7 @@ func TestSafetyBox(t *testing.T) {
 			AllocatorAddress: allocator,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace, "link", "stake2").Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 3, 3, 0)
@@ -350,39 +356,42 @@ func TestSafetyBox(t *testing.T) {
 			AllocatorAddress: owner,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace, owner.String()).Error())
 
 		err = keeper.Recall(ctx, types.MsgSafetyBoxRecallCoins{
 			SafetyBoxId:      safetyBoxId,
 			AllocatorAddress: operator,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace, operator.String()).Error())
 
 		err = keeper.Recall(ctx, types.MsgSafetyBoxRecallCoins{
 			SafetyBoxId:      safetyBoxId,
 			AllocatorAddress: issuer1,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace, issuer1.String()).Error())
 
 		err = keeper.Recall(ctx, types.MsgSafetyBoxRecallCoins{
 			SafetyBoxId:      safetyBoxId,
 			AllocatorAddress: returner,
 			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace, returner.String()).Error())
 
 		// the safety box balance check - no changes
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 0)
 
 		// insufficient fund
+		sb, err := keeper.GetSafetyBox(ctx, safetyBoxId)
+		require.NoError(t, err)
+		toRecall := sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1000)}}
 		err = keeper.Recall(ctx, types.MsgSafetyBoxRecallCoins{
 			SafetyBoxId:      safetyBoxId,
 			AllocatorAddress: allocator,
-			Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1000)}},
+			Coins:            toRecall,
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxRecallMoreThanAllocated(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxRecallMoreThanAllocated(types.DefaultCodespace, sb.TotalAllocation, toRecall).Error())
 
 		// the safety box balance check - no changes
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 0)
@@ -401,7 +410,7 @@ func TestSafetyBox(t *testing.T) {
 			FromAddress: issuer1,
 			Coins:       sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace, "link", "stake2").Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 0)
@@ -425,7 +434,7 @@ func TestSafetyBox(t *testing.T) {
 			FromAddress: issuer1,
 			Coins:       sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace, "link", "stake2").Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 1)
@@ -449,7 +458,7 @@ func TestSafetyBox(t *testing.T) {
 			FromAddress: owner,
 			Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace, owner.String()).Error())
 
 		err = keeper.Issue(ctx, types.MsgSafetyBoxIssueCoins{
 			SafetyBoxId: safetyBoxId,
@@ -457,7 +466,7 @@ func TestSafetyBox(t *testing.T) {
 			FromAddress: operator,
 			Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace, operator.String()).Error())
 
 		err = keeper.Issue(ctx, types.MsgSafetyBoxIssueCoins{
 			SafetyBoxId: safetyBoxId,
@@ -465,7 +474,7 @@ func TestSafetyBox(t *testing.T) {
 			FromAddress: allocator,
 			Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace, allocator.String()).Error())
 
 		err = keeper.Issue(ctx, types.MsgSafetyBoxIssueCoins{
 			SafetyBoxId: safetyBoxId,
@@ -473,7 +482,7 @@ func TestSafetyBox(t *testing.T) {
 			FromAddress: returner,
 			Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace, returner.String()).Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 2)
@@ -503,7 +512,7 @@ func TestSafetyBox(t *testing.T) {
 			ReturnerAddress: returner,
 			Coins:           sdk.Coins{sdk.Coin{Denom: "stake2", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace, "link", "stake2").Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 2)
@@ -525,39 +534,42 @@ func TestSafetyBox(t *testing.T) {
 			ReturnerAddress: owner,
 			Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace, owner.String()).Error())
 
 		err = keeper.Return(ctx, types.MsgSafetyBoxReturnCoins{
 			SafetyBoxId:     safetyBoxId,
 			ReturnerAddress: operator,
 			Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace, operator.String()).Error())
 
 		err = keeper.Return(ctx, types.MsgSafetyBoxReturnCoins{
 			SafetyBoxId:     safetyBoxId,
 			ReturnerAddress: allocator,
 			Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace, allocator.String()).Error())
 
 		err = keeper.Return(ctx, types.MsgSafetyBoxReturnCoins{
 			SafetyBoxId:     safetyBoxId,
 			ReturnerAddress: issuer1,
 			Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace, issuer1.String()).Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 1)
 
 		// insufficient fund
+		sb, err := keeper.GetSafetyBox(ctx, safetyBoxId)
+		require.NoError(t, err)
+		toReturn := sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1000)}}
 		err = keeper.Return(ctx, types.MsgSafetyBoxReturnCoins{
 			SafetyBoxId:     safetyBoxId,
 			ReturnerAddress: returner,
-			Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1000)}},
+			Coins:           toReturn,
 		})
-		require.EqualError(t, err, types.ErrSafetyBoxReturnMoreThanIssued(types.DefaultCodespace).Error())
+		require.EqualError(t, err, types.ErrSafetyBoxReturnMoreThanIssued(types.DefaultCodespace, sb.TotalIssuance, toReturn).Error())
 
 		// the safety box balance check
 		checkSafetyBoxBalance(t, keeper, ctx, safetyBoxId, 2, 3, 1)
@@ -692,5 +704,101 @@ func TestSafetyBox(t *testing.T) {
 		pms, err = keeper.GetPermissions(ctx, safetyBoxId, types.RoleReturner, returner)
 		require.NoError(t, err)
 		require.True(t, pms.HasRole)
+	}
+
+	// try get invalid role permission -> should fail w/ ErrSafetyBoxInvalidRole
+	{
+		invalidRole := "invalidRole"
+		pms, err = keeper.GetPermissions(ctx, safetyBoxId, invalidRole, returner)
+		require.EqualError(t, err, types.ErrSafetyBoxInvalidRole(types.DefaultCodespace, invalidRole).Error())
+		require.False(t, pms.HasRole)
+	}
+
+	// try grant the same permission again -> all should fail w/ ErrSafetyBoxHasPermissionAlready
+	{
+		err = keeper.GrantPermission(ctx, safetyBoxId, owner, operator, types.RoleOperator)
+		require.EqualError(t, err, types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace, operator.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, allocator, types.RoleAllocator)
+		require.EqualError(t, err, types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace, allocator.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, issuer1, types.RoleIssuer)
+		require.EqualError(t, err, types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace, issuer1.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, returner, types.RoleReturner)
+		require.EqualError(t, err, types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace, returner.String()).Error())
+	}
+
+	// try grant other permissions again -> all should fail w/ ErrSafetyBoxHasOtherPermission
+	{
+		err = keeper.GrantPermission(ctx, safetyBoxId, owner, operator2, types.RoleOperator)
+		require.NoError(t, err)
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, operator2, types.RoleAllocator)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, operator2.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, operator2, types.RoleIssuer)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, operator2.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, operator2, types.RoleReturner)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, operator2.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, allocator, types.RoleIssuer)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, allocator.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, allocator, types.RoleReturner)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, allocator.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, owner, allocator, types.RoleOperator)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, allocator.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, issuer1, types.RoleAllocator)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, issuer1.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, issuer1, types.RoleReturner)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, issuer1.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, owner, issuer1, types.RoleOperator)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, issuer1.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, returner, types.RoleAllocator)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, returner.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, operator, returner, types.RoleIssuer)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, returner.String()).Error())
+
+		err = keeper.GrantPermission(ctx, safetyBoxId, owner, returner, types.RoleOperator)
+		require.EqualError(t, err, types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, returner.String()).Error())
+	}
+
+	// revoke permissions
+	{
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, allocator, types.RoleAllocator)
+		require.NoError(t, err)
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, issuer1, types.RoleIssuer)
+		require.NoError(t, err)
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, operator, returner, types.RoleReturner)
+		require.NoError(t, err)
+
+		err = keeper.RevokePermission(ctx, safetyBoxId, owner, operator, types.RoleOperator)
+		require.NoError(t, err)
+
+		pms, err = keeper.GetPermissions(ctx, safetyBoxId, types.RoleOperator, operator)
+		require.NoError(t, err)
+		require.False(t, pms.HasRole)
+
+		pms, err = keeper.GetPermissions(ctx, safetyBoxId, types.RoleAllocator, allocator)
+		require.NoError(t, err)
+		require.False(t, pms.HasRole)
+
+		pms, err = keeper.GetPermissions(ctx, safetyBoxId, types.RoleIssuer, issuer1)
+		require.NoError(t, err)
+		require.False(t, pms.HasRole)
+
+		pms, err = keeper.GetPermissions(ctx, safetyBoxId, types.RoleReturner, returner)
+		require.NoError(t, err)
+		require.False(t, pms.HasRole)
 	}
 }

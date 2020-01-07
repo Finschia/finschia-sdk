@@ -290,14 +290,14 @@ func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
 
 		tests.WaitForNextNBlocksTM(1, f1.Port)
 
-		bazAcc := f2.QueryAccount(bazAddr)
-		require.Equal(t, startTokens.Sub(sendTokens), bazAcc.GetCoins().AmountOf(denom))
-
 		// DeliverTx results
 		txResult1 := f1.QueryTx(sendResp1.TxHash)
 		require.Equal(t, txResult1.Logs[0].Success, true)
 
 		txResult2 := f1.QueryTx(sendResp2.TxHash)
 		require.Equal(t, txResult2.Logs[0].Success, false)
+
+		bazAcc := f2.QueryAccount(bazAddr)
+		require.Equal(t, startTokens.Sub(sendTokens), bazAcc.GetCoins().AmountOf(denom))
 	}
 }

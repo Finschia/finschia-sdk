@@ -27,7 +27,7 @@ const (
 
 func ValidateReg(symbol string, reg *regexp.Regexp) error {
 	if !reg.MatchString(symbol) {
-		return fmt.Errorf("invalid symbol: %s", symbol)
+		return fmt.Errorf("symbol [%s] mismatched to [%s]", symbol, reg.String())
 	}
 	return nil
 }

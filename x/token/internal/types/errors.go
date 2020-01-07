@@ -7,69 +7,66 @@ import (
 const (
 	DefaultCodespace sdk.CodespaceType = ModuleName
 
-	CodeTokenExist              sdk.CodeType = 1
-	CodeTokenNotExist           sdk.CodeType = 2
-	CodeTokenNotMintable        sdk.CodeType = 3
-	CodeTokenPermission         sdk.CodeType = 4
-	CodeTokenPermissionMint     sdk.CodeType = 5
-	CodeTokenInvalidTokenName   sdk.CodeType = 6
-	CodeTokenInvalidTokenSymbol sdk.CodeType = 7
-	CodeTokenInvalidTokenID     sdk.CodeType = 8
-	CodeTokenInvalidDecimals    sdk.CodeType = 9
-	CodeTokenNFTExist           sdk.CodeType = 10
-	CodeCollectionDenomExist    sdk.CodeType = 11
-	CodeCollectionDenomNotExist sdk.CodeType = 12
-	CodeTokenInvalidFT          sdk.CodeType = 13
+	//Token
+	CodeTokenExist       sdk.CodeType = 100
+	CodeTokenNotExist    sdk.CodeType = 101
+	CodeTokenNotMintable sdk.CodeType = 102
+
+	//Token invalidation
+	CodeTokenInvalidTokenName   sdk.CodeType = 200
+	CodeTokenInvalidTokenSymbol sdk.CodeType = 201
+	CodeTokenInvalidTokenID     sdk.CodeType = 202
+	CodeTokenInvalidDecimals    sdk.CodeType = 203
+	CodeTokenInvalidFT          sdk.CodeType = 204
+
+	//Collection
+	CodeCollectionDenomExist    sdk.CodeType = 300
+	CodeCollectionDenomNotExist sdk.CodeType = 301
+
+	//Permission
+	CodeTokenPermission sdk.CodeType = 400
 )
 
-func ErrTokenExist(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenExist, "token symbol already exist")
+func ErrTokenExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenExist, "token [%s] already exists", symbol)
 }
 
-func ErrTokenNotExist(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotExist, "token symbol is not exist")
+func ErrTokenNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotExist, "token [%s] does not exist", symbol)
 }
 
-func ErrTokenNotMintable(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotMintable, "token is not mintable")
+func ErrTokenNotMintable(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotMintable, "token [%s] is not mintable", symbol)
 }
 
-func ErrTokenPermission(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenPermission, "account does not have permissions")
+func ErrInvalidTokenName(codespace sdk.CodespaceType, name string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidTokenName, "token name [%s] should not be empty", name)
 }
 
-func ErrTokenPermissionMint(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenPermissionMint, "account does not have permissions to mint tokens")
+func ErrInvalidTokenSymbol(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidTokenSymbol, msg)
 }
 
-func ErrTokenInvalidDecimals(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidDecimals, "invalid decimals")
+func ErrInvalidTokenID(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidTokenID, msg)
 }
 
-func ErrInvalidTokenName(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenName, "invalid token name")
+func ErrInvalidTokenDecimals(codespace sdk.CodespaceType, decimals sdk.Int) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidDecimals, "token decimals [%s] should be within the range in 0 ~ 18", decimals.String())
 }
 
-func ErrInvalidTokenSymbol(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenSymbol, "invalid symbol format")
+func ErrInvalidIssueFT(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidFT, "Issuing token with amount[1], decimals[0], mintable[false] prohibited. Issue nft token instead.")
 }
 
-func ErrInvalidTokenID(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenID, "invalid token-id format")
+func ErrCollectionExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionDenomExist, "collection [%s] already exists", symbol)
 }
 
-func ErrTokenNFTExist(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNFTExist, "the supply of the nft is not 0")
+func ErrCollectionNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionDenomNotExist, "collection [%s] does not exists", symbol)
 }
 
-func ErrCollectionExist(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionDenomExist, "collection already exist")
-}
-
-func ErrCollectionNotExist(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionDenomNotExist, "collection is not exist")
-}
-
-func ErrInvalidFTExist(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidFT, "invalid ft setting. issue nft instead")
+func ErrTokenPermission(codespace sdk.CodespaceType, account sdk.AccAddress, permission PermissionI) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
 }

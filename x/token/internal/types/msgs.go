@@ -56,11 +56,11 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 	}
 
 	if msg.Amount.Equal(sdk.NewInt(1)) && msg.Decimals.Equal(sdk.NewInt(0)) && !msg.Mintable {
-		return ErrInvalidFTExist(DefaultCodespace)
+		return ErrInvalidIssueFT(DefaultCodespace)
 	}
 
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
-		return ErrTokenInvalidDecimals(DefaultCodespace)
+		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
 	}
 
 	coin := sdk.NewCoin(msg.Symbol, msg.Amount)
@@ -221,7 +221,7 @@ func (msg MsgGrantPermission) ValidateBasic() sdk.Error {
 	}
 
 	if len(msg.Permission.GetAction()) <= 0 || len(msg.Permission.GetResource()) <= 0 {
-		return ErrTokenPermission(DefaultCodespace)
+		return types.ErrInvalidPermission("resource and action should not be empty")
 	}
 	return nil
 }
@@ -256,7 +256,7 @@ func (msg MsgRevokePermission) ValidateBasic() sdk.Error {
 	}
 
 	if len(msg.Permission.GetAction()) <= 0 || len(msg.Permission.GetResource()) <= 0 {
-		return ErrTokenPermission(DefaultCodespace)
+		return types.ErrInvalidPermission("resource and action should not be empty")
 	}
 	return nil
 }
@@ -286,10 +286,10 @@ func NewMsgIssueCommon(name, symbol, tokenURI string, owner sdk.AccAddress) MsgI
 }
 func (msg MsgIssueCommon) ValidateBasic() sdk.Error {
 	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace)
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 	if len(msg.Name) == 0 {
-		return ErrInvalidTokenName(DefaultCodespace)
+		return ErrInvalidTokenName(DefaultCodespace, msg.Name)
 	}
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
@@ -315,7 +315,7 @@ func (msg *MsgCollection) UnmarshalJSON(data []byte) error {
 
 func (msg MsgCollection) ValidateBasic() sdk.Error {
 	if err := types.ValidateSymbolTokenID(msg.TokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace)
+		return ErrInvalidTokenID(DefaultCodespace, err.Error())
 	}
 	return nil
 }

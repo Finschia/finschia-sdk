@@ -1,7 +1,6 @@
 package token
 
 import (
-	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	testCommon "github.com/line/link/x/token/internal/keeper"
 	"github.com/line/link/x/token/internal/types"
@@ -55,6 +54,8 @@ func TestHandlerIssueFT(t *testing.T) {
 		msg := types.NewMsgIssue(description, suffixAddr1, tokenuri, addr1, amount, decimals, true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
+		require.Equal(t, types.DefaultCodespace, res.Codespace)
+		require.Equal(t, types.CodeTokenExist, res.Code)
 	}
 }
 
@@ -73,6 +74,8 @@ func TestHandlerIssueNFT(t *testing.T) {
 		msg := types.NewMsgIssueNFT(description, suffixAddr1, tokenuri, addr1)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
+		require.Equal(t, types.DefaultCodespace, res.Codespace)
+		require.Equal(t, types.CodeTokenExist, res.Code)
 	}
 }
 
@@ -91,6 +94,8 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr1, amount, decimals, true, "00000001")
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
+		require.Equal(t, types.DefaultCodespace, res.Codespace)
+		require.Equal(t, types.CodeTokenExist, res.Code)
 	}
 	{
 		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr1, amount, decimals, true, "00000002")
@@ -101,6 +106,8 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr2, amount, decimals, true, "00000003")
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
+		require.Equal(t, types.DefaultCodespace, res.Codespace)
+		require.Equal(t, types.CodeTokenPermission, res.Code)
 	}
 
 	permission := types.Permission{
@@ -127,47 +134,9 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr1, amount, decimals, true, "00000004")
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
+		require.Equal(t, types.DefaultCodespace, res.Codespace)
+		require.Equal(t, types.CodeCollectionDenomExist, res.Code)
 	}
-
-}
-
-type attr struct {
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
-type event struct {
-	Type       string `json:"type"`
-	Attributes []attr `json:"attributes"`
-}
-
-func getEvents(rawEvents sdk.Events) []event {
-	var events []event
-	for _, re := range rawEvents {
-
-		var attrs []attr
-		for _, a := range re.Attributes {
-			attrs = append(attrs, attr{
-				Key:   string(a.GetKey()),
-				Value: string(a.GetValue()),
-			},
-			)
-		}
-
-		events = append(events, event{
-			Type:       re.Type,
-			Attributes: attrs,
-		})
-	}
-	return events
-}
-
-func mustMarshalJson(v interface{}) string {
-	bz, err := json.MarshalIndent(v, "", "\t")
-	if err != nil {
-		panic(err)
-	}
-	return string(bz)
 }
 
 func TestEvents(t *testing.T) {
