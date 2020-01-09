@@ -22,7 +22,7 @@ tags:
   - name: Safety Box
     description: Create/query safety box and grant/revoke permissions
 servers:
-  - url: http://localhost:1317
+  - url: /
 paths:
   /node_info:
     get:
