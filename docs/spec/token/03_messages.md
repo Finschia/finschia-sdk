@@ -2,7 +2,7 @@
 ## MsgIssue
 
 **Issue token messages are to create a new token on Link Chain**
-- See [symbol rule](01_concept.md#Rule for defining symbols) for the details
+- See [symbol rule](01_concept.md#rule-for-defining-symbols) for the details
 - The first issuer for the token symbol occupies the symbol and the issue permission is granted to the issuer
 - An issuer who granted issue permission can issue collective tokens
 - Mint permission is granted to the token issuer when the token is mintable
