@@ -47,7 +47,7 @@ func TestWithTxResultRequestHandlerFn(t *testing.T) {
 		require.Equal(t, http.StatusOK, statusCode)
 		require.Equal(t, false, hasErr)
 		require.Equal(t, false, output.(*cdc.HasMoreResponseWrapper).HasMore)
-		require.Equal(t, fromBlockHeightInt64, output.(*cdc.HasMoreResponseWrapper).Items[0].Block.Block.Height)
+		require.Equal(t, fromBlockHeightInt64, output.(*cdc.HasMoreResponseWrapper).Items[0].ResultBlock.Block.Height)
 	}
 
 	t.Logf("could not fetch latestBlock, return statusCode %d", http.StatusInternalServerError)

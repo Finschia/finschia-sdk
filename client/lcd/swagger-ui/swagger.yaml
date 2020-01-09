@@ -199,7 +199,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HasMoreBlockWithTxResultResponse'
+                $ref: '#/components/schemas/HasMoreResultBlockWithTxResponses'
         400:
           description: Invalid height
         404:
@@ -1368,42 +1368,28 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/KVPair'
-    HasMoreBlockWithTxResultResponse:
+    HasMoreResultBlockWithTxResponses:
       type: object
       properties:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/BlockWithTxResult'
-        hasMore:
+            $ref: '#/components/schemas/ResultBlockWithTxResponse'
+        has_more:
           type: boolean
       required:
         - "items"
         - "hasMore"
-    BlockWithTxResult:
+    ResultBlockWithTxResponse:
       type: "object"
       required:
         - "block"
         - "txResults"
       properties:
-        block:
+        result_block:
           $ref: '#/components/schemas/BlockQuery'
-        txResults:
-          type: "object"
-          properties:
-            hash:
-              type: "string"
-              nullable: false
-            height:
-              type: "string"
-              nullable: false
-            index:
-              type: "integer"
-              nullable: false
-            tx_result:
-              type: "object"
-              nullable: false
-          nullable: true
+        tx_responses:
+          $ref: '#/components/schemas/TxQuery'
     BroadcastTxSyncResult:
       type: object
       properties:
