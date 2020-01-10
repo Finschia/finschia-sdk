@@ -93,6 +93,9 @@ golangci-lint:
 statik:
 	@go get github.com/rakyll/statik
 
+yq:
+	@go get github.com/mikefarah/yq/v2@v2.4.1
+
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
 	@go mod download
@@ -147,7 +150,7 @@ testnet-test:
 run-swagger-server:
 	linkcli rest-server --trust-node=true
 
-setup-contract-tests-data: build build-swagger-docs build-contract-tests-hooks
+setup-contract-tests-data: build build-swagger-docs build-contract-tests-hooks yq
 	echo 'Prepare data for the contract tests' ; \
 	./lcd_test/testdata/prepare_dredd.sh ; \
 	./lcd_test/testdata/prepare_chain_state.sh
@@ -162,17 +165,22 @@ setup-transactions: start-link
 
 contract-tests: setup-transactions
 	@echo "Running LINK LCD for contract tests"
-	dredd && pkill linkd
+	@bash ./lcd_test/testdata/generate_tx_iteratively.sh &
+	dredd && pkill linkd || true
+	pkill -f ./lcd_test/testdata/generate_tx_iteratively.sh
 
 run-lcd-contract-tests:
 	@echo "Running LINK LCD for contract tests"
-	./build/linkcli rest-server --laddr tcp://0.0.0.0:1317 --home /tmp/contract_tests/.linkcli --node http://localhost:26657 --chain-id lcd --trust-node true
+	lsof -i tcp:1317 | grep -v PID | awk '{print $$2}' | xargs kill || true
+	./build/linkcli rest-server --laddr tcp://0.0.0.0:1317 --home /tmp/contract_tests/.linkcli --node http://localhost:26657 --chain-id lcd --trust-node || true
 
 dredd-test:
-	cp ./client/lcd/swagger-ui/swagger_OSS_2_0.yaml /tmp/contract_tests/swagger_OSS_2_0.yaml
-	@bash ./lcd_test/testdata/setup.sh
+	cp client/lcd/swagger-ui/swagger.yaml /tmp/contract_tests/swagger.yaml
+	@bash ./lcd_test/testdata/replace_symbols.sh --replace_tx_hash
+	@bash ./lcd_test/testdata/generate_tx_iteratively.sh &
 	./lcd_test/testdata/wait-for-it.sh localhost 26657
-	dredd && pkill linkd
+	dredd || true
+	pkill -f ./lcd_test/testdata/generate_tx_iteratively.sh
 
 ########################################
 ### Simulation

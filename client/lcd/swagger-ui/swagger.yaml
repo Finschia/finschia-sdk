@@ -31,74 +31,18 @@ paths:
       tags:
         - Tendermint RPC
       responses:
-        200:
+        "200":
           description: Node status
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  application_version:
-                    type: object
-                    properties:
-                      build_tags:
-                        type: string
-                      client_name:
-                        type: string
-                      commit:
-                        type: string
-                      go:
-                        type: string
-                      name:
-                        type: string
-                      server_name:
-                        type: string
-                      version:
-                        type: string
                   node_info:
-                    type: object
-                    properties:
-                      id:
-                        type: string
-                      moniker:
-                        type: string
-                        description: validator name
-                        example: validator-name
-                      protocol_version:
-                        type: object
-                        properties:
-                          p2p:
-                            type: string
-                            example: "7"
-                          block:
-                            type: string
-                            example: "10"
-                          app:
-                            type: string
-                            example: "0"
-                      network:
-                        type: string
-                        example: link
-                      channels:
-                        type: string
-                      listen_addr:
-                        type: string
-                        example: 192.168.56.1:26656
-                      version:
-                        type: string
-                        description: Tendermint version
-                        example: 0.15.0
-                      other:
-                        type: object
-                        properties:
-                          tx_index:
-                            type: string
-                            example: "true"
-                          rpc_address:
-                            type: string
-                            example: tcp://0.0.0.0:26657
-                        description: more information on versions
-        500:
+                    $ref: '#/components/schemas/NodeInfo'
+                  application_version:
+                    $ref: '#/components/schemas/ApplicationVersion'
+        "500":
           description: Failed to query node status
   /syncing:
     get:
@@ -107,7 +51,7 @@ paths:
         - Tendermint RPC
       description: Get if the node is currently syning with other nodes
       responses:
-        200:
+        "200":
           description: Node syncing status
           content:
             application/json:
@@ -116,7 +60,7 @@ paths:
                 properties:
                   syncing:
                     type: boolean
-        500:
+        "500":
           description: Server internal error
   /blocks/latest:
     get:
@@ -132,13 +76,13 @@ paths:
             type: boolean
           example: true
       responses:
-        200:
+        "200":
           description: The latest block
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlockQuery'
-        500:
+        "500":
           description: Server internal error
   /blocks/{height}:
     get:
@@ -152,7 +96,7 @@ paths:
           required: true
           schema:
             type: integer
-          example: 1
+          example: 2
         - name: extended
           in: query
           description: Whether to translate transaction data in the response
@@ -161,17 +105,17 @@ paths:
             type: boolean
           example: true
       responses:
-        200:
+        "200":
           description: The block at a specific height
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/BlockQuery'
-        400:
+        "400":
           description: Invalid height
-        404:
+        "404":
           description: Request block height doesn't
-        500:
+        "500":
           description: Server internal error
   /blocks_with_tx_results/{from_height}:
     get:
@@ -185,7 +129,7 @@ paths:
           required: true
           schema:
             type: integer
-          example: 1
+          example: 2
         - name: fetchsize
           in: query
           description: Item count you want to fetch at once, default/maxmimum count is 20
@@ -213,13 +157,35 @@ paths:
         - Tendermint RPC
       description: Get the status about mempool of the connected node. Result may vary depending on the node.
       responses:
-        200:
+        "200":
           description: Status about unconfirmed transactions
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnconfirmedTransactionsResponse'
-        500:
+                type: "object"
+                required:
+                  - "n_txs"
+                  - "total"
+                  - "total_bytes"
+                  - "txs"
+                properties:
+                  n_txs:
+                    type: "string"
+                    description: the number of transactions in the mempool
+                    example: "1"
+                  total:
+                    type: "string"
+                    description: the number of transactions in the mempool
+                    example: "1"
+                  total_bytes:
+                    type: "string"
+                    description: the total size of all txs in the mempool
+                    example: "196"
+                  txs:
+                    type: string
+                    description: this field is always null in /num_unconfirmed_txs
+                    nullable: true
+        "500":
           description: Server internal error
   /unconfirmed_txs:
     get:
@@ -243,15 +209,38 @@ paths:
             type: boolean
           example: true
       responses:
-        200:
+        "200":
           description: List of unconfirmed transactions
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnconfirmedTransactionsResponse'
-        400:
+                type: "object"
+                required:
+                  - "n_txs"
+                  - "total"
+                  - "total_bytes"
+                  - "txs"
+                properties:
+                  n_txs:
+                    type: "string"
+                    description: the number of transactions in the mempool
+                    example: "1"
+                  total:
+                    type: "string"
+                    description: the number of transactions in the mempool
+                    example: "1"
+                  total_bytes:
+                    type: "string"
+                    description: the total size of all txs in the mempool
+                    example: "196"
+                  txs:
+                    type: array
+                    nullable: true
+                    items:
+                      $ref: '#/components/schemas/Hash'
+        "400":
           description: Bad request
-        500:
+        "500":
           description: Server internal error
   /genesis/genutil/gentxs:
     get:
@@ -259,7 +248,7 @@ paths:
       tags:
         - Genesis State
       responses:
-        200:
+        "200":
           description: Gentxs in genesis data
           content:
             application/json:
@@ -267,7 +256,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Tx'
-        500:
+        "500":
           description: Internal Server Error
   /genesis/app_state/accounts:
     get:
@@ -277,26 +266,47 @@ paths:
         - name: page
           in: query
           description: Page number(start to 1)
+          required: false
           schema:
             type: integer
           example: 1
         - name: limit
           in: query
           description: Maximum number of items per page(default=30, maximum=100)
+          required: false
           schema:
             type: integer
           example: 1
       summary: Get accounts from genesis data
+      description: get genesis accounts in genesis data
       responses:
-        200:
+        "200":
           description: Accounts in genesis data
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/GenesisAccount'
-        500:
+                type: object
+                properties:
+                  total_count:
+                    type: string
+                    example: "1"
+                  count:
+                    type: string
+                    example: "1"
+                  page_number:
+                    type: string
+                    example: "1"
+                  page_total:
+                    type: string
+                    example: "1"
+                  limit:
+                    type: string
+                    example: "30"
+                  accounts:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/GenesisAccount'
+        "500":
           description: Server internal error
   /txs/{hash}:
     get:
@@ -313,13 +323,13 @@ paths:
             type: string
           example: BCBE20E8D46758B96AE5883B792858296AC06E51435490FBDCAE25A72B3CC76B
       responses:
-        200:
+        "200":
           description: Tx with the provided hash
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/TxQuery'
-        500:
+        "500":
           description: Internal Server Error
   /txs:
     get:
@@ -331,50 +341,56 @@ paths:
         - name: message.action
           in: query
           description: 'transaction events such as ''message.action=send'' which results
-          in the following endpoint: ''GET /txs?message.action=send'''
+          in the following endpoint: ''GET /txs?message.action=send'' message.action or message.sender must be parameter'
+          required: false
           schema:
             type: string
           example: send
         - name: message.sender
           in: query
-          description: 'transaction tags with sender: ''GET /txs?message.action=send&message.sender=cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv'''
+          description: 'transaction tags with sender: ''GET /txs?message.action=send&message.sender=link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv'' message.action or message.sender must be parameter'
+          required: false
           schema:
             type: string
-          example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
         - name: page
           in: query
           description: Page number
+          required: false
           schema:
             type: integer
           example: 1
         - name: limit
           in: query
           description: Maximum number of items per page
+          required: false
           schema:
             type: integer
-          example: 1
+          example: 50
         - name: height.from
           in: query
           description: block height filter
+          required: false
           schema:
             type: integer
-          required: false
+          example: 1
         - name: height.to
           in: query
           description: block height filter
+          required: false
           schema:
             type: integer
-          required: false
+          example: 100
       responses:
-        200:
+        "200":
           description: All txs matching the provided events
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/PaginatedQueryTxs'
-        400:
+        "400":
           description: Invalid search events
-        500:
+        "500":
           description: Internal Server Error
     post:
       tags:
@@ -398,7 +414,7 @@ paths:
                   example: block
         required: true
       responses:
-        200:
+        "200":
           description: Tx broadcasting result of block mode
           content:
             application/json:
@@ -407,7 +423,7 @@ paths:
                   - $ref: '#/components/schemas/BroadcastTxBlockResult'
                   - $ref: '#/components/schemas/BroadcastTxSyncResult'
                   - $ref: '#/components/schemas/BroadcastTxAsyncResult'
-        500:
+        "500":
           description: Internal Server Error
       x-codegen-request-body-name: txBroadcast
   /auth/accounts/{address}:
@@ -422,21 +438,28 @@ paths:
           required: true
           schema:
             type: string
-          example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: Account information on the blockchain
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Account'
-        500:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: 3
+                  result:
+                    $ref: '#/components/schemas/Account'
+        "500":
           description: Server internel error
   /bank/balances/{address}:
     get:
@@ -450,15 +473,16 @@ paths:
           required: true
           schema:
             type: string
-          example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: Account balances
           content:
             application/json:
@@ -472,7 +496,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Coin'
-        500:
+        "500":
           description: Server internal error
           content: {}
   /bank/balances/{address}/{denomination}:
@@ -487,7 +511,7 @@ paths:
           required: true
           schema:
             type: string
-          example: cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
         - name: denomination
           in: path
           description: Coin denomination
@@ -497,12 +521,13 @@ paths:
           example: link
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: Account balances
           content:
             application/json:
@@ -515,7 +540,7 @@ paths:
                   result:
                     type: string
                     example: "100"
-        500:
+        "500":
           description: Server internal error
   /supply/total:
     get:
@@ -525,12 +550,13 @@ paths:
       parameters:
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
@@ -544,7 +570,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Coin'
-        500:
+        "500":
           description: Internal Server Error
   /supply/total/{denomination}:
     get:
@@ -561,12 +587,13 @@ paths:
           example: link
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
@@ -579,10 +606,10 @@ paths:
                   result:
                     type: string
                     example: "100"
-        400:
+        "400":
           description: Invalid coin denomination
           content: {}
-        500:
+        "500":
           description: Internal Server Error
           content: {}
   /token/collections/{symbol}:
@@ -597,15 +624,16 @@ paths:
           required: true
           schema:
             type: string
-          example: conydkv
+          example: "conydkv"
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
@@ -616,8 +644,8 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    $ref: '#/components/schemas/Collection'
-        500:
+                    $ref: '#/components/schemas/CollectionToken'
+        "500":
           description: Internal Server Error
   /token/collections:
     get:
@@ -627,12 +655,13 @@ paths:
       parameters:
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
@@ -645,8 +674,8 @@ paths:
                   result:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Collection'
-        500:
+                      $ref: '#/components/schemas/CollectionToken'
+        "500":
           description: Internal Server Error
   /token/tokens/{symbol}:
     get:
@@ -660,15 +689,16 @@ paths:
           required: true
           schema:
             type: string
-          example: test-cony
+          example: "conydkv"
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
@@ -680,7 +710,7 @@ paths:
                     example: "100"
                   result:
                     $ref: '#/components/schemas/Token'
-        500:
+        "500":
           description: Internal Server Error
   /token/tokens:
     get:
@@ -690,12 +720,13 @@ paths:
       parameters:
         - name: height
           in: query
-          description: block height
+          description: block height (if block height is 0 or be omitted, queries latest block)
           schema:
             type: integer
           required: false
+          example: 0
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
@@ -709,7 +740,7 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/Token'
-        500:
+        "500":
           description: Internal Server Error
   /safetybox/{id}:
     get:
@@ -723,9 +754,9 @@ paths:
           required: true
           schema:
             type: string
-          example: "yoshi"
+          example: "my_safety_box"
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
@@ -736,8 +767,14 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    $ref: '#/components/schemas/SafetyBox'
-  /safetybox/{id}/permission/{address}:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: "safetybox"
+                      value:
+                        $ref: '#/components/schemas/SafetyBox'
+  /safetybox/{id}/role/{role}/{address}:
     get:
       tags:
         - Safety Box
@@ -749,16 +786,23 @@ paths:
           required: true
           schema:
             type: string
-          example: "yoshi"
+          example: "my_safety_box"
+        - name: role
+          in: path
+          description: role of safetybox
+          required: true
+          schema:
+            type: string
+          example: "operator"
         - name: address
           in: path
           description: account address
           required: true
           schema:
             type: string
-          example: "link1l7pjfdcv6u8w6aaajc3wl6palg4jzh0ae6xcre"
+          example: "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
       responses:
-        200:
+        "200":
           description: OK
           content:
             application/json:
@@ -772,24 +816,43 @@ paths:
                     $ref: '#/components/schemas/SafetyBoxPermissions'
 components:
   schemas:
+    #-------------------------------
+    # Base Models
+    #-------------------------------
     Hash:
       type: string
       example: "777467B3B9FF7918B15D374EC0510AADE8026D3B91795AFA25B50888199DFD20"
     Address:
       type: string
       description: bech32 encoded address
-      example: "cosmos1ffxp9g0qcp6quqjhq6cmdz69ztnu3khx524uhp"
+      example: "link1ffxp9g0qcp6quqjhq6cmdz69ztnu3khx524uhp"
     ValidatorAddress:
       type: string
       description: bech32 encoded address
-      example: "cosmosvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l"
+      example: "linkvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l"
     Timestamp:
       type: string
-      example: 2019-08-25T10:04:50.357159306Z
+      example: "2019-08-25T10:04:50.357159306Z"
     Signature:
       type: string
       description: base64
       example: "7uTC74QlknqYWEwg7Vn6M8Om7FuZ0EO4bjvuj6rwH1mTUJrRuMMZvAAqT9VjNgP0RA/TDp6u/92AqrZfXJSpBQ=="
+    PublicKey:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "tendermint/PubKeySecp256k1"
+        value:
+          type: string
+          example: "AmtHHdw+9xASQejvAzOwj/BT8AumZGJHWKKb4Gg5hssC"
+    KVPair:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
     Coin:
       type: object
       properties:
@@ -799,12 +862,560 @@ components:
         amount:
           type: string
           example: "50"
+    Vote:
+      type: object
+      properties:
+        block_id:
+          $ref: '#/components/schemas/BlockID'
+        height:
+          type: string
+          example: "0"
+        round:
+          type: string
+          example: "0"
+        signature:
+          $ref: '#/components/schemas/Signature'
+        timestamp:
+          $ref: '#/components/schemas/Timestamp'
+        type:
+          type: integer
+          description: Prevote (1), Precommit (2)
+          example: 2
+        validator_address:
+          $ref: '#/components/schemas/ValidatorAddress'
+        validator_index:
+          type: string
+          example: "0"
+
+
+    #-------------------------------
+    # Node Info Models
+    #-------------------------------
+    NodeInfo:
+      type: object
+      properties:
+        protocol_version:
+          type: object
+          properties:
+            p2p:
+              type: string
+              description: version of the p2p protocol
+              example: "7"
+            block:
+              type: string
+              description: version of the block protocol
+              example: "10"
+            app:
+              type: string
+              description: version of the app protocol
+              example: "0"
+        id:
+          type: string
+          description: authenticated identifier
+          example: "f412d9c118b98b41364130e9caf4ddbae3083b82"
+        listen_addr:
+          type: string
+          description: accepting incoming address of node
+          example: 192.168.56.2:26656
+        network:
+          type: string
+          description: network/chain ID
+          example: link
+        version:
+          type: string
+          description: Tendermint version
+          example: 0.15.0
+        channels:
+          type: string
+          description: channels this node knows about
+          example: "4020212223303800"
+        moniker:
+          type: string
+          description: validator name
+          example: validator-name
+        other:
+          type: object
+          properties:
+            tx_index:
+              type: string
+              description: tx indexing is enabled
+              example: "on"
+            rpc_address:
+              type: string
+              description: accepting incoming address of rpc
+              example: tcp://0.0.0.0:26657
+          description: more information on versions
+    ApplicationVersion:
+      type: object
+      properties:
+        name:
+          type: string
+          example: ""
+        server_name:
+          type: string
+          example: "<appd>"
+        client_name:
+          type: string
+          example: "<appcli>"
+        version:
+          type: string
+          example: ""
+        commit:
+          type: string
+          description: "git commit"
+          example: ""
+        build_tags:
+          type: string
+          example: ""
+        go:
+          type: string
+          example: "go version go1.13.5 linux/amd64"
+
+    #-------------------------------
+    # Block Models
+    #-------------------------------
+    BlockQuery:
+      type: object
+      properties:
+        block:
+          $ref: '#/components/schemas/Block'
+        block_meta:
+          type: object
+          properties:
+            block_id:
+              $ref: '#/components/schemas/BlockID'
+            header:
+              $ref: '#/components/schemas/BlockHeader'
+    Block:
+      type: object
+      properties:
+        data:
+          type: object
+          description: a wrapper for a list of transactions
+          properties:
+            txs:
+              type: array
+              items:
+                $ref: '#/components/schemas/Tx'
+        evidence:
+          type: object
+          description: a list of evidence of malfeasance. There is currently only a single type, the DuplicateVoteEvidence
+          properties:
+            evidence:
+              type: array
+              items:
+                $ref: '#/components/schemas/DuplicateVoteEvidence'
+        header:
+          $ref: '#/components/schemas/BlockHeader'
+        last_commit:
+          type: object
+          description: the set of signatures of validators that committed the last block
+          properties:
+            block_id:
+              $ref: '#/components/schemas/BlockID'
+            precommits:
+              type: array
+              items:
+                $ref: '#/components/schemas/Vote'
+              nullable: true
+    BlockOnlyTxHash:
+      type: object
+      properties:
+        data:
+          type: object
+          description: a wrapper for a list of transactions
+          properties:
+            txs:
+              type: array
+              items:
+                $ref: '#/components/schemas/Hash'
+        evidence:
+          type: object
+          description: a list of evidence of malfeasance. There is currently only a single type, the DuplicateVoteEvidence
+          properties:
+            evidence:
+              type: array
+              items:
+                $ref: '#/components/schemas/DuplicateVoteEvidence'
+        header:
+          $ref: '#/components/schemas/BlockHeader'
+        last_commit:
+          type: object
+          description: the set of signatures of validators that committed the last block
+          properties:
+            block_id:
+              $ref: '#/components/schemas/BlockID'
+            precommits:
+              type: array
+              items:
+                $ref: '#/components/schemas/Vote'
+              nullable: true
+    BlockHeader:
+      type: object
+      description: contains merkle hashes for various chain states
+      properties:
+        app_hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: MerkleRoot of state after txs from the previous block
+        chain_id:
+          type: string
+          example: link-0001
+        consensus_hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: Hash of the amino-encoding of a subset of the consensus params for current block
+        data_hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: MerkleRoot of the hashes of transactions included in the block
+        evidence_hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: MerkleRoot of the evidence of Byzantine behaviour included in this block
+        height:
+          type: string
+          example: "1"
+        last_block_id:
+          $ref: '#/components/schemas/BlockID'
+        last_commit_hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: MerkleRoot of the commit from the last block's validators
+        last_results_hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: MerkleRoot of the results of the transactions in the previous block
+        next_validators_hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: MerkleRoot of the next validator set that will be the validator set that commits the next block
+        num_txs:
+          type: string
+          example: "35"
+        proposer_address:
+          allOf:
+            - $ref: '#/components/schemas/ValidatorAddress'
+            - description: original proposer of the block
+        time:
+          $ref: '#/components/schemas/Timestamp'
+        total_txs:
+          type: string
+          example: "35"
+        validators_hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: MerkleRoot of the current validator set that is committing the block
+        version:
+          type: object
+          properties:
+            block:
+              type: string
+              example: "10"
+            app:
+              type: string
+              example: "0"
+    BlockID:
+      type: object
+      properties:
+        hash:
+          allOf:
+            - $ref: '#/components/schemas/Hash'
+            - description: Merkle root of the block header
+        parts:
+          type: object
+          properties:
+            hash:
+              allOf:
+                - $ref: '#/components/schemas/Hash'
+                - description: Merkle root of the block parts
+            total:
+              type: string
+              description: Number of the block parts
+              example: "1"
+
+    #-------------------------------
+    # Transaction Models
+    #-------------------------------
+    PaginatedQueryTxs:
+      type: object
+      properties:
+        total_count:
+          type: string
+          description: Count of all txs
+          example: "1"
+        count:
+          type: string
+          description: Count of txs in current page
+          example: "1"
+        page_number:
+          type: string
+          description: Index of current page, start from 1
+          example: "1"
+        page_total:
+          type: string
+          description: Count of total pages
+          example: "1"
+        limit:
+          type: string
+          description: Max count txs per page
+          example: "30"
+        txs:
+          type: array
+          description: List of txs in current page
+          items:
+            $ref: '#/components/schemas/TxQuery'
+          nullabel: true
+    TxQuery:
+      type: object
+      properties:
+        height:
+          type: string
+          example: "368"
+        txhash:
+          $ref: '#/components/schemas/Hash'
+        index:
+          type: integer
+          example: 1
+        code:
+          type: integer
+          description: Response code
+          example: 0
+        raw_log:
+          type: string
+          description: The raw string output of the logger
+          example: '[{"msg_index":0,"success":true,"log":""}]'
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              msg_index:
+                type: integer
+              success:
+                type: boolean
+              log:
+                type: string
+        gas_wanted:
+          type: string
+          description: Amount of gas requested for transaction
+          example: "200000"
+        gas_used:
+          type: string
+          description: Amount of gas consumed by transaction
+          example: "26354"
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        tx:
+          $ref: '#/components/schemas/Tx'
+        timestamp:
+          $ref: '#/components/schemas/Timestamp'
+    Event:
+      type: object
+      properties:
+        type:
+          type: string
+          description: categorize the event for a particular tx
+        attributes:
+          type: array
+          items:
+            $ref: '#/components/schemas/KVPair'
+    Tx:
+      type: object
+      properties:
+        type:
+          type: string
+          example: cosmos-sdk/StdTx
+        value:
+          $ref: '#/components/schemas/StdTx'
+    StdTx:
+      type: object
+      properties:
+        msg:
+          type: array
+          items:
+            # Because Dredd doesn't support anyOf, You have to add new Msg example to MsgExamples for dredd test
+            anyOf:
+              - $ref: '#/components/schemas/MsgSend'
+              - $ref: '#/components/schemas/MsgIssue'
+              - $ref: '#/components/schemas/MsgIssueCollection'
+              - $ref: '#/components/schemas/MsgIssueNFT'
+              - $ref: '#/components/schemas/MsgIssueNFTCollection'
+              - $ref: '#/components/schemas/MsgMint'
+              - $ref: '#/components/schemas/MsgBurn'
+              - $ref: '#/components/schemas/MsgCreateValidator'
+              - $ref: '#/components/schemas/MsgSafetyBoxCreate'
+              - $ref: '#/components/schemas/MsgSafetyBoxAllocateCoins'
+              - $ref: '#/components/schemas/MsgSafetyBoxRecallCoins'
+              - $ref: '#/components/schemas/MsgSafetyBoxIssueCoins'
+              - $ref: '#/components/schemas/MsgSafetyBoxReturnCoins'
+              - $ref: '#/components/schemas/MsgSafetyBoxRegisterOperator'
+              - $ref: '#/components/schemas/MsgSafetyBoxDeregisterOperator'
+              - $ref: '#/components/schemas/MsgSafetyBoxRegisterAllocator'
+              - $ref: '#/components/schemas/MsgSafetyBoxDeregisterAllocator'
+              - $ref: '#/components/schemas/MsgSafetyBoxRegisterIssuer'
+              - $ref: '#/components/schemas/MsgSafetyBoxDeregisterIssuer'
+              - $ref: '#/components/schemas/MsgSafetyBoxRegisterReturner'
+              - $ref: '#/components/schemas/MsgSafetyBoxDeregisterReturner'
+          example:
+            $ref: '#/components/examples/MsgExamples'
+        fee:
+          type: object
+          properties:
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+            gas:
+              type: string
+              example: "30000"
+        signatures:
+          type: array
+          items:
+            type: object
+            properties:
+              pub_key:
+                $ref: '#/components/schemas/PublicKey'
+              signature:
+                $ref: '#/components/schemas/Signature'
+        memo:
+          type: string
+
+
+    #-------------------------------
+    # Block With Transaction Models
+    #-------------------------------
+    HasMoreBlockWithTxResultResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/BlockWithTxResult'
+        hasMore:
+          type: boolean
+      required:
+        - "items"
+        - "hasMore"
+    BlockWithTxResult:
+      type: "object"
+      required:
+        - "block"
+        - "txResults"
+      properties:
+        block:
+          type: object
+          properties:
+            block:
+              $ref: '#/components/schemas/BlockOnlyTxHash'
+            block_meta:
+              type: object
+              properties:
+                block_id:
+                  $ref: '#/components/schemas/BlockID'
+                header:
+                  $ref: '#/components/schemas/BlockHeader'
+        txResults:
+          type: "array"
+          itmes:
+            type: "object"
+            properties:
+              hash:
+                type: "string"
+                nullable: false
+              height:
+                type: "string"
+                nullable: false
+              index:
+                type: "integer"
+                nullable: false
+              tx_result:
+                type: "object"
+                nullable: false
+            nullable: true
+
+
+    #-------------------------------
+    # Evidence Models
+    #-------------------------------
+    DuplicateVoteEvidence:
+      type: object
+      description: Evidence a validator signed two conflicting votes
+      properties:
+        type:
+          type: string
+          example: "tendermint/DuplicateVoteEvidence"
+        value:
+          type: object
+          properties:
+            PubKey:
+              $ref: '#/components/schemas/PublicKey'
+            VoteA:
+              $ref: '#/components/schemas/Vote'
+            VoteB:
+              $ref: '#/components/schemas/Vote'
+
+    #-------------------------------
+    # Account Models
+    #-------------------------------
+    Account:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "cosmos-sdk/Account"
+        value:
+          type: object
+          properties:
+            address:
+              $ref: '#/components/schemas/Address'
+            coins:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+            public_key:
+              $ref: '#/components/schemas/PublicKey'
+            account_number:
+              type: string
+              description: A number specified when the account was first created
+              example: "1"
+            sequence:
+              type: string
+              description: An increasing number each time you sign a message with a given account
+              example: "11"
+    GenesisAccount:
+      type: object
+      properties:
+        address:
+          $ref: '#/components/schemas/Address'
+        coins:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coin'
+        public_key:
+          type: object
+          nullable: true
+          example: null
+        account_number:
+          type: string
+          description: A number specified when the account was first created
+          example: "0"
+        sequence:
+          type: string
+          description: An increasing number each time you sign a message with a given account
+          example: "0"
+
+    #-------------------------------
+    # Token Models
+    #-------------------------------
     Token:
       type: object
       properties:
         name:
           type: string
-          example: "test-cony"
+          example: "conydkv"
         symbol:
           type: string
           example: "conydkv"
@@ -823,216 +1434,137 @@ components:
         symbol:
           type: string
           example: "conydkv"
+    CollectionToken:
+      type: object
+      properties:
+        collection:
+          $ref: '#/components/schemas/Collection'
+        tokens:
+          type: array
+          items:
+            $ref: '#/components/schemas/Token'
+
+    #-------------------------------
+    # Safety Box Models
+    #-------------------------------
     SafetyBox:
       type: object
       properties:
         id:
-          type: string
-          example: "yoshi"
+          $ref: '#/components/schemas/SafetyBoxId'
         owner:
-          $ref: '#/components/schemas/Address'
+          allOf:
+            - $ref: '#/components/schemas/Address'
+            - description: owner of the safetybox
         address:
-          $ref: '#/components/schemas/Address'
+          allOf:
+            - $ref: '#/components/schemas/Address'
+            - description: address of the safetybox
+        denoms:
+          type: array
+          itmes:
+            type: string
+            example: "link"
         total_allocation:
           type: array
+          description: current total allocation amount
           items:
             $ref: '#/components/schemas/Coin'
         cumulative_allocation:
           type: array
+          description: cumulative total allocation amount
           items:
             $ref: '#/components/schemas/Coin'
         total_issuance:
           type: array
+          description: current total issuance amount
           items:
             $ref: '#/components/schemas/Coin'
     SafetyBoxPermissions:
       type: object
       properties:
-        is_operator:
+        has_role:
           type: boolean
           example: true
-        is_allocator:
-          type: boolean
-          example: true
-        is_issuer:
-          type: boolean
-          example: true
-        is_returner:
-          type: boolean
-          example: true
-    PublicKey:
+    SafetyBoxId:
+      type: string
+      description: id of the safetybox
+      example: "my_safety_box"
+
+    #-------------------------------
+    # BroadcastTx Result Models
+    #-------------------------------
+    BroadcastTxBlockResult:
       type: object
       properties:
-        type:
-          type: string
-          example: "tendermint/PubKeySecp256k1"
-        value:
-          type: string
-          example: "AmtHHdw+9xASQejvAzOwj/BT8AumZGJHWKKb4Gg5hssC"
-    KVPair:
-      type: object
-      properties:
-        key:
-          type: string
-        value:
-          type: string
-    Account:
-      type: object
-      properties:
-        type:
-          type: string
-          example: "cosmos-sdk/Account"
-        value:
-          type: object
-          properties:
-            account_number:
-              type: string
-              example: "1"
-            address:
-              $ref: '#/components/schemas/Address'
-            coins:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-            public_key:
-              $ref: '#/components/schemas/PublicKey'
-            sequence:
-              type: string
-              example: "11"
-    GenesisAccount:
-      type: object
-      properties:
-        address:
-          $ref: '#/components/schemas/Address'
-        coins:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coin'
-        public_key:
-          $ref: '#/components/schemas/PublicKey'
-        account_number:
-          type: string
-          example: "0"
-        sequence:
-          type: string
-          example: "0"
-    BlockID:
-      type: object
-      properties:
-        hash:
-          $ref: '#/components/schemas/Hash'
-        parts:
-          type: object
-          properties:
-            total:
-              type: string
-              example: "1"
-            hash:
-              $ref: '#/components/schemas/Hash'
-    BlockHeader:
-      type: object
-      properties:
-        chain_id:
-          type: string
-          example: link-0001
         height:
           type: string
-          example: "1"
-        time:
-          $ref: '#/components/schemas/Timestamp'
-        num_txs:
+          example: "368"
+        txhash:
+          $ref: '#/components/schemas/Hash'
+        raw_log:
           type: string
-          example: "0"
-        last_block_id:
-          $ref: '#/components/schemas/BlockID'
-        total_txs:
-          type: string
-          example: "35"
-        last_commit_hash:
-          $ref: '#/components/schemas/Hash'
-        data_hash:
-          $ref: '#/components/schemas/Hash'
-        validators_hash:
-          $ref: '#/components/schemas/Hash'
-        next_validators_hash:
-          $ref: '#/components/schemas/Hash'
-        consensus_hash:
-          $ref: '#/components/schemas/Hash'
-        app_hash:
-          $ref: '#/components/schemas/Hash'
-        last_results_hash:
-          $ref: '#/components/schemas/Hash'
-        evidence_hash:
-          $ref: '#/components/schemas/Hash'
-        proposer_address:
-          $ref: '#/components/schemas/ValidatorAddress'
-        version:
-          type: object
-          properties:
-            block:
-              type: string
-              example: "10"
-            app:
-              type: string
-              example: "0"
-    Block:
-      type: object
-      properties:
-        header:
-          $ref: '#/components/schemas/BlockHeader'
-        data:
-          type: object
-          properties:
-            txs:
-              type: array
-              items:
-                $ref: '#/components/schemas/Tx'
-        evidence:
+          description: The raw string output of the logger
+          example: '[{"msg_index":0,"success":true,"log":""}]'
+        logs:
           type: array
           items:
-            type: string
-        last_commit:
-          type: object
-          properties:
-            block_id:
-              $ref: '#/components/schemas/BlockID'
-            precommits:
-              type: array
-              items:
-                type: object
-                properties:
-                  validator_address:
-                    type: string
-                  validator_index:
-                    type: string
-                    example: "0"
-                  height:
-                    type: string
-                    example: "0"
-                  round:
-                    type: string
-                    example: "0"
-                  timestamp:
-                    $ref: '#/components/schemas/Timestamp'
-                  type:
-                    type: number
-                    example: 2.0
-                  block_id:
-                    $ref: '#/components/schemas/BlockID'
-                  signature:
-                    $ref: '#/components/schemas/Signature'
-    BlockQuery:
+            type: object
+            properties:
+              msg_index:
+                type: integer
+              success:
+                type: boolean
+              log:
+                type: string
+        gas_wanted:
+          type: string
+          description: Amount of gas requested for transaction
+          example: "200000"
+        gas_used:
+          type: string
+          description: Amount of gas consumed by transaction
+          example: "26354"
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+    BroadcastTxSyncResult:
       type: object
       properties:
-        block_meta:
-          type: object
-          properties:
-            header:
-              $ref: '#/components/schemas/BlockHeader'
-            block_id:
-              $ref: '#/components/schemas/BlockID'
-        block:
-          $ref: '#/components/schemas/Block'
+        height:
+          type: string
+          example: "0"
+        txhash:
+          $ref: '#/components/schemas/Hash'
+        raw_log:
+          type: string
+          description: The raw string output of the logger
+          example: '[{"msg_index":0,"success":true,"log":""}]'
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              msg_index:
+                type: integer
+              success:
+                type: boolean
+              log:
+                type: string
+    BroadcastTxAsyncResult:
+      type: object
+      properties:
+        height:
+          type: string
+          example: "0"
+        txhash:
+          $ref: '#/components/schemas/Hash'
+
+    #-------------------------------
+    # Message Models
+    #-------------------------------
+    # If you want to add new Msg, You have to add new Msg example to MsgExamples for dredd test
     MsgSend:
       type: object
       properties:
@@ -1060,10 +1592,10 @@ components:
           properties:
             name:
               type: string
-              example: "LINK Token"
+              example: "cony"
             symbol:
               type: string
-              example: "LINKT"
+              example: "conydkv"
             owner:
               $ref: '#/components/schemas/Address'
             token_uri:
@@ -1074,26 +1606,26 @@ components:
               example: "1000000"
             mintable:
               type: boolean
-              example: false
+              example: true
             decimals:
               type: string
               example: "8"
     MsgIssueCollection:
       type: object
-      description: msg of token creation
+      description: msg of collection token creation
       properties:
         type:
           type: string
-          example: "link/MsgIssue"
+          example: "link/MsgIssueCollection"
         value:
           type: object
           properties:
             name:
               type: string
-              example: "LINK Token"
+              example: "cony"
             symbol:
               type: string
-              example: "LINKT"
+              example: "conydkv"
             owner:
               $ref: '#/components/schemas/Address'
             token_uri:
@@ -1104,7 +1636,7 @@ components:
               example: "1000000"
             mintable:
               type: boolean
-              example: false
+              example: true
             decimals:
               type: string
               example: "8"
@@ -1113,20 +1645,20 @@ components:
               example: "00000001"
     MsgIssueNFT:
       type: object
-      description: msg of token creation
+      description: msg of non-fungible token creation
       properties:
         type:
           type: string
-          example: "link/MsgIssue"
+          example: "link/MsgIssueNFT"
         value:
           type: object
           properties:
             name:
               type: string
-              example: "LINK Token"
+              example: "cony"
             symbol:
               type: string
-              example: "LINKT"
+              example: "conydkv"
             owner:
               $ref: '#/components/schemas/Address'
             token_uri:
@@ -1134,20 +1666,20 @@ components:
               example: "example.com/token_uri"
     MsgIssueNFTCollection:
       type: object
-      description: msg of token creation
+      description: msg of non-fungible collection token creation
       properties:
         type:
           type: string
-          example: "link/MsgIssue"
+          example: "link/MsgIssueNFTCollection"
         value:
           type: object
           properties:
             name:
               type: string
-              example: "LINK Token"
+              example: "cony"
             symbol:
               type: string
-              example: "LINKT"
+              example: "conydkv"
             owner:
               $ref: '#/components/schemas/Address'
             token_uri:
@@ -1167,11 +1699,9 @@ components:
           type: object
           properties:
             to:
-              type: string
-              example: "LINK Token"
+              $ref: '#/components/schemas/Address'
             amount:
-              type: string
-              example: "1000000LINKT"
+              $ref: '#/components/schemas/Coin'
     MsgBurn:
       type: object
       description: msg of token burn
@@ -1183,11 +1713,9 @@ components:
           type: object
           properties:
             from:
-              type: string
-              example: "LINK Token"
+              $ref: '#/components/schemas/Address'
             amount:
-              type: string
-              example: "1000000LINKT"
+              $ref: '#/components/schemas/Coin'
     MsgCreateValidator:
       type: object
       properties:
@@ -1202,23 +1730,39 @@ components:
               properties:
                 moniker:
                   type: string
+                  description: name
+                  example: "node3"
                 identity:
                   type: string
+                  description: optional identity signature (ex. UPort or Keybase)
+                  example: ""
                 website:
                   type: string
+                  description: optional website link
+                  example: ""
                 details:
                   type: string
+                  description: optional details
+                  example: ""
             commission:
               type: object
+              description: initial commission rates to be used for creating a validator
               properties:
                 rate:
                   type: string
+                  description: the commission rate charged to delegators, as a fraction
+                  example: "0.000000000000000000"
                 max_rate:
                   type: string
+                  description: maximum commission rate which validator can ever charge, as a fraction
+                  example: "0.000000000000000000"
                 max_change_rate:
                   type: string
+                  description: maximum daily increase of the validator commission, as a fraction
+                  example: "0.000000000000000000"
             min_self_delegation:
               type: string
+              description: The minimum self delegation required on the validator
               example: "1"
             delegator_address:
               $ref: '#/components/schemas/Address'
@@ -1226,237 +1770,420 @@ components:
               $ref: '#/components/schemas/ValidatorAddress'
             pubkey:
               type: string
-              example: "cosmosvalconspub1zcjduepqxe4h4luwpmj96lqgfke8qdfhcwhdsjpvdpjk2x6x4y534l5wkmpsrtm99f"
+              example: "linkvalconspub1zcjduepqxe4h4luwpmj96lqgfke8qdfhcwhdsjpvdpjk2x6x4y534l5wkmpsrtm99f"
             value:
-              $ref: '#/components/schemas/Coin'
-    StdTx:
-      type: object
-      properties:
-        msg:
-          type: array
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/MsgSend'
-              - $ref: '#/components/schemas/MsgIssue'
-              - $ref: '#/components/schemas/MsgIssueCollection'
-              - $ref: '#/components/schemas/MsgIssueNFT'
-              - $ref: '#/components/schemas/MsgIssueNFTCollection'
-              - $ref: '#/components/schemas/MsgMint'
-              - $ref: '#/components/schemas/MsgBurn'
-              - $ref: '#/components/schemas/MsgCreateValidator'
-        fee:
-          type: object
-          properties:
-            gas:
-              type: string
-              example: "2000"
-            amount:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-        memo:
-          type: string
-        signatures:
-          type: array
-          items:
-            type: object
-            properties:
-              signature:
-                $ref: '#/components/schemas/Signature'
-              pub_key:
-                $ref: '#/components/schemas/PublicKey'
-    Tx:
+              allOf:
+                - $ref: '#/components/schemas/Coin'
+                - description: self description value
+    MsgSafetyBoxCreate:
       type: object
       properties:
         type:
           type: string
-          example: cosmos-sdk/StdTx
+          example: "safetybox/MsgCreate"
         value:
-          $ref: '#/components/schemas/StdTx'
-    TxQuery:
-      type: object
-      properties:
-        height:
-          type: string
-          example: "368"
-        txhash:
-          $ref: '#/components/schemas/Hash'
-        index:
-          type: integer
-          example: 1
-        code:
-          type: integer
-          example: 0
-        tx:
-          $ref: '#/components/schemas/Tx'
-        logs:
-          type: array
-          items:
-            type: object
-            properties:
-              msg_index:
-                type: integer
-              success:
-                type: boolean
-              log:
-                type: string
-        raw_log:
-          type: string
-          example: '[{"msg_index":0,"success":true,"log":""}]'
-        gas_wanted:
-          type: string
-          example: "200000"
-        gas_used:
-          type: string
-          example: "26354"
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/KVPair'
-    PaginatedQueryTxs:
-      type: object
-      properties:
-        total_count:
-          type: string
-          example: "1"
-        count:
-          type: string
-          example: "1"
-        page_number:
-          type: string
-          example: "1"
-        page_total:
-          type: string
-          example: "1"
-        limit:
-          type: string
-          example: "30"
-        txs:
-          type: array
-          items:
-            $ref: '#/components/schemas/TxQuery'
-    BroadcastTxBlockResult:
-      type: object
-      properties:
-        height:
-          type: string
-          example: "368"
-        txhash:
-          type: string
-          example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
-        logs:
-          type: array
-          items:
-            type: object
-            properties:
-              msg_index:
-                type: integer
-              success:
-                type: boolean
-              log:
-                type: string
-        raw_log:
-          type: string
-          example: '[{"msg_index":0,"success":true,"log":""}]'
-        gas_wanted:
-          type: string
-          example: "200000"
-        gas_used:
-          type: string
-          example: "26354"
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/KVPair'
-    HasMoreBlockWithTxResultResponse:
-      type: object
-      properties:
-        items:
-          type: array
-          items:
-            $ref: '#/components/schemas/BlockWithTxResult'
-        hasMore:
-          type: boolean
-      required:
-        - "items"
-        - "hasMore"
-    BlockWithTxResult:
-      type: "object"
-      required:
-        - "block"
-        - "txResults"
-      properties:
-        block:
-          $ref: '#/components/schemas/BlockQuery'
-        txResults:
-          type: "object"
+          type: object
           properties:
-            hash:
-              type: "string"
-              nullable: false
-            height:
-              type: "string"
-              nullable: false
-            index:
-              type: "integer"
-              nullable: false
-            tx_result:
-              type: "object"
-              nullable: false
-          nullable: true
-    BroadcastTxSyncResult:
-      type: object
-      properties:
-        height:
-          type: number
-          example: 0.0
-        txhash:
-          type: string
-          example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
-        logs:
-          type: array
-          items:
-            type: object
-            properties:
-              msg_index:
-                type: integer
-              success:
-                type: boolean
-              log:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            safety_box_owner:
+              $ref: '#/components/schemas/Address'
+            safety_box_denoms:
+              type: array
+              items:
                 type: string
-        raw_log:
-          type: string
-          example: '[{"msg_index":0,"success":true,"log":""}]'
-    BroadcastTxAsyncResult:
+                example: "link"
+    MsgSafetyBoxAllocateCoins:
       type: object
       properties:
-        height:
-          type: number
-          example: 0.0
-        txhash:
+        type:
           type: string
-          example: D085138D913993919295FF4B0A9107F1F2CDE0D37A87CE0644E217CBF3B49656
-    UnconfirmedTransactionsResponse:
-      type: "object"
-      required:
-        - "n_txs"
-        - "total"
-        - "total_bytes"
-        - "txs"
+          example: "safetybox/MsgAllocate"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            allocator_address:
+              $ref: '#/components/schemas/Address'
+            coins:
+              type:
+                array
+              items:
+                $ref: '#/components/schemas/Coin'
+    MsgSafetyBoxRecallCoins:
+      type: object
       properties:
-        n_txs:
-          type: "string"
-          example: "0"
-        total:
-          type: "string"
-          example: "0"
-        total_bytes:
-          type: "string"
-          example: "0"
-        txs:
-          type: array
-          x-nullable: true
-          items:
-            type: string
-            x-nullable: true
-          example: '[]'
+        type:
+          type: string
+          example: "safetybox/MsgRecall"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            allocator_address:
+              $ref: '#/components/schemas/Address'
+            coins:
+              type:
+                array
+              items:
+                $ref: '#/components/schemas/Coin'
+    MsgSafetyBoxIssueCoins:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgIssue"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            from_address:
+              $ref: '#/components/schemas/Address'
+            to_address:
+              $ref: '#/components/schemas/Address'
+            coins:
+              type:
+                array
+              items:
+                $ref: '#/components/schemas/Coin'
+    MsgSafetyBoxReturnCoins:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgReturn"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            returner_address:
+              $ref: '#/components/schemas/Address'
+            coins:
+              type:
+                array
+              items:
+                $ref: '#/components/schemas/Coin'
+    MsgSafetyBoxRegisterOperator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgGrantOperatorPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            safety_box_owner:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxDeregisterOperator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRevokeOperatorPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            safety_box_owner:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxRegisterAllocator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgGrantAllocatorPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxDeregisterAllocator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRevokeAllocatorPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxRegisterIssuer:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgGrantIssuerPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxDeregisterIssuer:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRevokeIssuerPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxRegisterReturner:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgGrantReturnerPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxDeregisterReturner:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRevokeReturnerPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+
+  examples:
+    # If you want to add new Msg, You have to add new Msg example to MsgExamples for dredd test
+    MsgExamples:
+      value: [
+      {
+        "type": "cosmos-sdk/MsgSend",
+        "value": {
+          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "amount": [
+          {
+            "denom": "link",
+            "amount": "1"
+          }
+          ]
+        }
+      },
+      {
+        "type": "link/MsgIssue",
+        "value": {
+          "name": "cony",
+          "symbol": "conydkv",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri",
+          "amount": "1000000",
+          "mintable": true,
+          "decimals": "8"
+        }
+      },
+      {
+        "type": "link/MsgIssueCollection",
+        "value": {
+          "name": "cony",
+          "symbol": "conydk2",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri",
+          "amount": "1000000",
+          "mintable": true,
+          "decimals": "8",
+          "token_id": "00000001"
+        }
+      },
+      {
+        "type": "link/MsgIssueNFT",
+        "value": {
+          "name": "cony",
+          "symbol": "conydk3",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri"
+        }
+      },
+      {
+        "type": "link/MsgIssueNFTCollection",
+        "value": {
+          "name": "cony",
+          "symbol": "conydk4",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri",
+          "token_id": "00000001"
+        }
+      },
+      {
+        "type": "link/MsgMint",
+        "value": {
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "amount": [{
+                       "denom": "conydkv",
+                       "amount": "1"
+                     }]
+        }
+      },
+      {
+        "type": "link/MsgBurn",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "amount": [{
+                       "denom": "conydkv",
+                       "amount": "1"
+                     }]
+        }
+      },
+      {
+        "type": "safetybox/MsgCreate",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "safety_box_owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "safety_box_denoms": ["link"]
+        }
+      },
+      {
+        "type": "safetybox/MsgGrantOperatorPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "safety_box_owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgGrantAllocatorPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgGrantIssuerPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgGrantReturnerPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkreturnormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgAllocate",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "allocator_address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "coins": [{
+            "denom": "link",
+            "amount": "2"
+          }]
+        }
+      },
+      {
+        "type": "safetybox/MsgIssue",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "from_address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to_address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "coins": [{
+            "denom": "link",
+            "amount": "2"
+          }]
+        }
+      },
+      {
+        "type": "safetybox/MsgReturn",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "returner_address": "linkreturnormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "coins": [{
+            "denom": "link",
+            "amount": "1"
+          }]
+        }
+      },
+      {
+        "type": "safetybox/MsgRecall",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "allocator_address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "coins": [{
+            "denom": "link",
+            "amount": "1"
+          }]
+        }
+      },
+      {
+        "type": "safetybox/MsgRevokeReturnerPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkreturnormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgRevokeIssuerPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgRevokeAllocatorPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgRevokeOperatorPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "safety_box_owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      }
+      ]

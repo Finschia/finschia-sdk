@@ -1,0 +1,12 @@
+{
+  "type": "cosmos-sdk/StdTx",
+  "value": {
+    "msg": "MsgExamples",
+    "fee": {
+      "amount": [],
+      "gas": "1000000"
+    },
+    "signatures": null,
+    "memo": ""
+  }
+}
