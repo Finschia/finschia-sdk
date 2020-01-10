@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/golang/mock/gomock"
 	. "github.com/line/link/client/rpc/mock"
 	"github.com/stretchr/testify/require"
+	"github.com/tendermint/tendermint/abci/types"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 	"testing"
+	"time"
 )
 
 const (
@@ -30,7 +33,7 @@ func TestValidateBlock(t *testing.T) {
 
 	t.Log("TrustNode is true", checkMark)
 	{
-		_, mockTendermint, mockCliCtx, rb, bu, _, _ := prepare(t)
+		_, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
 
 		mockCliCtx.EXPECT().TrustNode().Return(true).Times(1)
 		mockTendermint.EXPECT().ValidateBlock(gomock.Any(), gomock.Any()).Times(0)
@@ -41,7 +44,7 @@ func TestValidateBlock(t *testing.T) {
 
 	t.Log("TrustNode is false", checkMark)
 	{
-		check, mockTendermint, mockCliCtx, rb, bu, _, _ := prepare(t)
+		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
 
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
@@ -56,7 +59,7 @@ func TestValidateBlockFail(t *testing.T) {
 
 	t.Log("TrustNode is false and Verify return error")
 	{
-		check, mockTendermint, mockCliCtx, rb, bu, _, _ := prepare(t)
+		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
 
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		verifyErr := fmt.Errorf("verify failed")
@@ -68,7 +71,7 @@ func TestValidateBlockFail(t *testing.T) {
 	}
 	t.Log("TrustNode is false and ValidateBlockMeta return error")
 	{
-		check, mockTendermint, mockCliCtx, rb, bu, _, _ := prepare(t)
+		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
 
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		validateMetaErr := fmt.Errorf("ValidateBlockMeta failed")
@@ -80,7 +83,7 @@ func TestValidateBlockFail(t *testing.T) {
 	}
 	t.Log("TrustNode is false and ValidateBlock return error")
 	{
-		check, mockTendermint, mockCliCtx, rb, bu, _, _ := prepare(t)
+		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
 
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
@@ -93,7 +96,7 @@ func TestValidateBlockFail(t *testing.T) {
 }
 
 func TestIndentJSONRB(t *testing.T) {
-	_, _, mockCliCtx, _, bu, _, mockCodecUtil := prepare(t)
+	_, _, mockCliCtx, _, bu, _, mockCodecUtil, _ := prepare(t)
 
 	expectedJSON := []byte("good")
 	var expectedErr error = nil
@@ -122,7 +125,7 @@ func TestIndentJSONRB(t *testing.T) {
 }
 
 func TestInjectByteToJsonTxs(t *testing.T) {
-	_, _, _, _, bu, _, _ := prepare(t)
+	_, _, _, _, bu, _, _, _ := prepare(t)
 	bs := []byte(`{
 	"block": {
 		"data": {
@@ -182,7 +185,7 @@ func TestCalcFetchBlockHeight(t *testing.T) {
 func TestFetchBlock(t *testing.T) {
 	t.Log("normal case", checkMark)
 	{
-		check, mockTendermint, mockCliCtx, rb, bu, mockClient, _ := prepare(t)
+		check, mockTendermint, mockCliCtx, rb, bu, mockClient, _, _ := prepare(t)
 		latestBlockHeight := int64(19)
 
 		mockCliCtx.EXPECT().GetNode().Return(mockClient, nil).Times(1)
@@ -192,15 +195,39 @@ func TestFetchBlock(t *testing.T) {
 		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(nil).Times(1)
 		mockTendermint.EXPECT().ValidateBlock(rb.Block, check).Return(nil).Times(1)
 		actual, err := bu.fetchBlock(latestBlockHeight)
-		require.Equal(t, rb, actual.Block)
+		require.Equal(t, rb, actual.ResultBlock)
 		require.Equal(t, nil, err)
 	}
 }
 
+func TestFormatTxResult(t *testing.T) {
+	tn := time.Now()
+	t.Log("normal case")
+	{
+		_, _, _, rb, bu, _, mockCodecUtil, resTx := prepare(t)
+		mockCodecUtil.EXPECT().UnmarshalBinaryLengthPrefixed(gomock.Any()).Return(auth.StdTx{}, nil).Times(1)
+
+		txRes, err := bu.formatTxResult(resTx, tn.Format(time.RFC3339))
+		require.Equal(t, nil, err)
+		require.Equal(t, txRes.Height, rb.Block.Height)
+	}
+
+	t.Log("UnmarshalBinaryLengthPrefixed error case")
+	{
+		_, _, _, _, bu, _, mockCodecUtil, resTx := prepare(t)
+		unmarshalBinaryLengthPrefixedErr := fmt.Errorf("unmarshalBinaryLengthPrefixedErr")
+		var stdTx auth.StdTx
+		mockCodecUtil.EXPECT().UnmarshalBinaryLengthPrefixed(gomock.Any()).Return(stdTx, unmarshalBinaryLengthPrefixedErr).Times(1)
+
+		txRes, err := bu.formatTxResult(resTx, tn.Format(time.RFC3339))
+		require.Equal(t, unmarshalBinaryLengthPrefixedErr, err)
+		require.Nil(t, txRes)
+	}
+}
 func TestLatestBlockHeight(t *testing.T) {
 	t.Log("normal case", checkMark)
 	{
-		_, _, mockCliCtx, _, bu, mockClient, _ := prepare(t)
+		_, _, mockCliCtx, _, bu, mockClient, _, _ := prepare(t)
 		mockCliCtx.EXPECT().GetNode().Return(mockClient, nil).Times(1)
 		fromBlockHeightInt64 := int64(1)
 		rs := &ctypes.ResultStatus{
@@ -215,22 +242,33 @@ func TestLatestBlockHeight(t *testing.T) {
 		require.Equal(t, nil, err)
 	}
 }
-func prepare(t *testing.T) (tmtypes.SignedHeader, *MockTendermint, *MockCLIContext, *ctypes.ResultBlock, *Util, *MockClient, *MockCodec) {
+func prepare(t *testing.T) (tmtypes.SignedHeader, *MockTendermint, *MockCLIContext, *ctypes.ResultBlock, *Util, *MockClient, *MockCodec, *ctypes.ResultTx) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	check := tmtypes.SignedHeader{}
 	mockTendermint := NewMockTendermint(ctrl)
 	mockCliCtx := NewMockCLIContext(ctrl)
 	mockClient := NewMockClient(ctrl)
+	blockHeight := int64(123)
 	rb := &ctypes.ResultBlock{
 		Block: &tmtypes.Block{
-			Header: tmtypes.Header{Height: 123},
+			Header: tmtypes.Header{Height: blockHeight},
 		},
 		BlockMeta: &tmtypes.BlockMeta{
 			BlockID: tmtypes.BlockID{},
 			Header:  tmtypes.Header{},
 		},
 	}
+	resTx := &ctypes.ResultTx{
+		Hash:     []byte(`txhash`),
+		Height:   blockHeight,
+		Index:    0,
+		TxResult: types.ResponseDeliverTx{},
+		Tx:       nil,
+		Proof:    tmtypes.TxProof{},
+	}
+
 	mockCodecUtil := NewMockCodec(ctrl)
-	return check, mockTendermint, mockCliCtx, rb, &Util{lcdc: mockCodecUtil, ltmtl: mockTendermint, lcliCtx: mockCliCtx}, mockClient, mockCodecUtil
+	bu := &Util{lcdc: mockCodecUtil, ltmtl: mockTendermint, lcliCtx: mockCliCtx}
+	return check, mockTendermint, mockCliCtx, rb, bu, mockClient, mockCodecUtil, resTx
 }

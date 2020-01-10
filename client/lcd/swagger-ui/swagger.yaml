@@ -143,7 +143,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HasMoreBlockWithTxResultResponse'
+                $ref: '#/components/schemas/HasMoreResultBlockWithTxResponses'
         400:
           description: Invalid height
         404:
@@ -1165,7 +1165,7 @@ components:
           description: List of txs in current page
           items:
             $ref: '#/components/schemas/TxQuery'
-          nullabel: true
+          nullable: true
     TxQuery:
       type: object
       properties:
@@ -1282,60 +1282,39 @@ components:
                 $ref: '#/components/schemas/Signature'
         memo:
           type: string
+          example: "26354"
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/KVPair'
+
 
 
     #-------------------------------
     # Block With Transaction Models
     #-------------------------------
-    HasMoreBlockWithTxResultResponse:
+    HasMoreResultBlockWithTxResponses:
       type: object
       properties:
         items:
           type: array
           items:
-            $ref: '#/components/schemas/BlockWithTxResult'
-        hasMore:
+            $ref: '#/components/schemas/ResultBlockWithTxResponse'
+        has_more:
           type: boolean
       required:
         - "items"
         - "hasMore"
-    BlockWithTxResult:
+    ResultBlockWithTxResponse:
       type: "object"
       required:
         - "block"
         - "txResults"
       properties:
-        block:
-          type: object
-          properties:
-            block:
-              $ref: '#/components/schemas/BlockOnlyTxHash'
-            block_meta:
-              type: object
-              properties:
-                block_id:
-                  $ref: '#/components/schemas/BlockID'
-                header:
-                  $ref: '#/components/schemas/BlockHeader'
-        txResults:
-          type: "array"
-          itmes:
-            type: "object"
-            properties:
-              hash:
-                type: "string"
-                nullable: false
-              height:
-                type: "string"
-                nullable: false
-              index:
-                type: "integer"
-                nullable: false
-              tx_result:
-                type: "object"
-                nullable: false
-            nullable: true
-
+        result_block:
+          $ref: '#/components/schemas/BlockQuery'
+        tx_responses:
+          $ref: '#/components/schemas/TxQuery'
 
     #-------------------------------
     # Evidence Models
@@ -1462,7 +1441,7 @@ components:
             - description: address of the safetybox
         denoms:
           type: array
-          itmes:
+          items:
             type: string
             example: "link"
         total_allocation:

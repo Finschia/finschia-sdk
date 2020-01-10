@@ -4,11 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/client/context"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	cu "github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	cdc "github.com/line/link/client/rpc/link/block/codec"
 	lct "github.com/line/link/client/rpc/link/block/context"
 	ltp "github.com/line/link/client/rpc/link/block/proxy"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	"sync"
+	"time"
 )
 
 type Util struct {
@@ -98,7 +101,7 @@ func (u *Util) fetchByBlockHeights(latestBlockHeight *int64, fromBlockHeight *in
 	}
 
 	fbh := NewFetchInfo(latestBlockHeight, fromBlockHeight, fetchSize)
-	blockWithTxResults := make([]*cdc.FetchResult, fbh.fetchItemCnt)
+	fetchResultWithTxRes := make([]*cdc.FetchResultWithTxRes, fbh.fetchItemCnt)
 	blockFetchErrors := make([]error, fbh.fetchItemCnt)
 	var blockConcurrency sync.WaitGroup
 	blockConcurrency.Add(int(fbh.fetchItemCnt))
@@ -114,7 +117,7 @@ func (u *Util) fetchByBlockHeights(latestBlockHeight *int64, fromBlockHeight *in
 			if err != nil {
 				panic(err)
 			}
-			blockWithTxResults[idx] = fetchResult
+			fetchResultWithTxRes[idx] = fetchResult
 		}(idx, blockHeightCursor)
 	}
 	blockConcurrency.Wait()
@@ -123,43 +126,57 @@ func (u *Util) fetchByBlockHeights(latestBlockHeight *int64, fromBlockHeight *in
 			return nil, blockFetchErr
 		}
 	}
-	blockWithRxResultsWrapper = &cdc.HasMoreResponseWrapper{Items: blockWithTxResults, HasMore: fbh.hasMore}
+	blockWithRxResultsWrapper = &cdc.HasMoreResponseWrapper{Items: fetchResultWithTxRes, HasMore: fbh.hasMore}
 	return
 }
 
-func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResult, error) {
+func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResultWithTxRes, error) {
 	client, err := u.lcliCtx.GetNode()
 	if err != nil {
 		panic(err)
 	}
 
-	block, err := client.Block(&fetchBlockHeight)
+	resBlock, err := client.Block(&fetchBlockHeight)
 	if err != nil {
 		return nil, err
 	}
-	fetchTxsCnt := len(block.Block.Txs)
-	txResults := make([]*ctypes.ResultTx, fetchTxsCnt)
+	fetchTxsCnt := len(resBlock.Block.Txs)
+	txResponses := make([]*sdk.TxResponse, fetchTxsCnt)
 	txFetchErrors := make([]error, fetchTxsCnt)
-	err = u.ValidateBlock(block)
+
+	err = u.ValidateBlock(resBlock)
 	if err != nil {
 		return nil, err
 	}
+
 	var txConcurrency sync.WaitGroup
 	txConcurrency.Add(fetchTxsCnt)
-	for idx, tx := range block.Block.Txs {
-		go func(idx int, txHash []byte) {
+	var rbt = resBlock.Block.Time.Format(time.RFC3339)
+	for idx, tx := range resBlock.Block.Txs {
+		go func(idx int, txHash []byte, timestamp string) {
 			defer txConcurrency.Done()
 			defer func() {
 				if err := recover(); err != nil {
 					txFetchErrors[idx] = fmt.Errorf("an error occurred while fetching a tx by hash(%x), err(%s)", txHash, err)
 				}
 			}()
-			txResult, err := client.Tx(txHash, u.lcliCtx.TrustNode())
+			resTx, err := client.Tx(txHash, u.lcliCtx.TrustNode())
 			if err != nil {
 				panic(err)
 			}
-			txResults[idx] = txResult
-		}(idx, tx.Hash())
+
+			if !u.lcliCtx.TrustNode() {
+				if err = cu.ValidateTxResult(u.lcliCtx.CosmosCliCtx(), resTx); err != nil {
+					panic(err)
+				}
+			}
+
+			txRes, err := u.formatTxResult(resTx, timestamp)
+			if err != nil {
+				panic(err)
+			}
+			txResponses[idx] = txRes
+		}(idx, tx.Hash(), rbt)
 	}
 	txConcurrency.Wait()
 
@@ -168,5 +185,22 @@ func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResult, error) {
 			return nil, txFetchErr
 		}
 	}
-	return &cdc.FetchResult{Block: block, TxResults: txResults}, nil
+	return &cdc.FetchResultWithTxRes{ResultBlock: resBlock, TxResponses: txResponses}, nil
+}
+
+func (u *Util) formatTxResult(resTx *ctypes.ResultTx, timestamp string) (*sdk.TxResponse, error) {
+	tx, err := u.parseResTx(resTx.Tx)
+	if err != nil {
+		return nil, err
+	}
+	resultTx := sdk.NewResponseResultTx(resTx, tx, timestamp)
+	return &resultTx, nil
+}
+
+func (u *Util) parseResTx(txBytes []byte) (sdk.Tx, error) {
+	tx, err := u.lcdc.UnmarshalBinaryLengthPrefixed(txBytes)
+	if err != nil {
+		return nil, err
+	}
+	return tx, nil
 }

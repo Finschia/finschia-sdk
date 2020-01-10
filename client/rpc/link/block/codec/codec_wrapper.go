@@ -2,6 +2,7 @@ package codec
 
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 )
@@ -34,11 +35,11 @@ func (cw *Wrapper) UnmarshalBinaryLengthPrefixed(txBytes []byte) (tx auth.StdTx,
 }
 
 type HasMoreResponseWrapper struct {
-	Items   []*FetchResult `json:"items"`
-	HasMore bool           `json:"hasMore"`
+	Items   []*FetchResultWithTxRes `json:"items"`
+	HasMore bool                    `json:"has_more"`
 }
 
-type FetchResult struct {
-	Block     *ctypes.ResultBlock `json:"block"`
-	TxResults []*ctypes.ResultTx  `json:"txResults"`
+type FetchResultWithTxRes struct {
+	ResultBlock *ctypes.ResultBlock `json:"result_block"`
+	TxResponses []*sdk.TxResponse   `json:"tx_responses"`
 }
