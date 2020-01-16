@@ -6,7 +6,6 @@ import (
 )
 
 func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
-
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(types.TokenSymbolKey(token.Symbol)) {
 		return types.ErrTokenExist(types.DefaultCodespace, token.Symbol)
@@ -15,9 +14,20 @@ func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
 	return nil
 }
 
+func (k Keeper) ModifyToken(ctx sdk.Context, token types.Token) sdk.Error {
+	store := ctx.KVStore(k.storeKey)
+	tsk := types.TokenSymbolKey(token.Symbol)
+	if !store.Has(tsk) {
+		return types.ErrTokenNotExist(types.DefaultCodespace, token.Symbol)
+	}
+	store.Set(tsk, k.cdc.MustMarshalBinaryBare(token))
+	return nil
+}
+
 func (k Keeper) GetToken(ctx sdk.Context, symbol string) (token types.Token, err sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.TokenSymbolKey(symbol))
+	tsk := types.TokenSymbolKey(symbol)
+	bz := store.Get(tsk)
 	if bz == nil {
 		return token, types.ErrTokenNotExist(types.DefaultCodespace, symbol)
 	}

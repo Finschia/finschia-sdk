@@ -12,6 +12,7 @@ var _ sdk.Msg = (*MsgMint)(nil)
 var _ sdk.Msg = (*MsgBurn)(nil)
 var _ sdk.Msg = (*MsgGrantPermission)(nil)
 var _ sdk.Msg = (*MsgRevokePermission)(nil)
+var _ sdk.Msg = (*MsgModifyTokenURI)(nil)
 
 var _ json.Marshaler = (*MsgIssue)(nil)
 var _ json.Unmarshaler = (*MsgIssue)(nil)
@@ -252,7 +253,7 @@ func (MsgRevokePermission) Type() string { return "revoke_permission" }
 
 func (msg MsgRevokePermission) ValidateBasic() sdk.Error {
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("addresses cannot be empty")
+		return sdk.ErrInvalidAddress("address cannot be empty")
 	}
 
 	if len(msg.Permission.GetAction()) <= 0 || len(msg.Permission.GetResource()) <= 0 {

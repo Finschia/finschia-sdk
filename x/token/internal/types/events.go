@@ -1,12 +1,14 @@
 package types
 
 var (
-	EventTypeIssueToken      = "issue_token"
-	EventTypeMintToken       = "mint_token"
-	EventTypeBurnToken       = "burn_token"
-	EventTypeGrantPermToken  = "grant_perm_token"
-	EventTypeRevokePermToken = "revoke_perm_token"
-	EventTypeOccupySymbol    = "occupy_symbol"
+	EventTypeIssueToken              = "issue_token"
+	EventTypeMintToken               = "mint_token"
+	EventTypeBurnToken               = "burn_token"
+	EventTypeGrantPermToken          = "grant_perm_token"
+	EventTypeModifyTokenURI          = "modify_token_uri_token"
+	EventTypeModifyTokenURIPermToken = "modify_token_uri_perm_token"
+	EventTypeRevokePermToken         = "revoke_perm_token"
+	EventTypeOccupySymbol            = "occupy_symbol"
 
 	AttributeKeyName      = "name"
 	AttributeKeySymbol    = "symbol"

@@ -17,6 +17,9 @@ const (
 	tokenuri    = "tokenuri"
 )
 
+var verifyEventFunc = func(t *testing.T, expected sdk.Events, actual sdk.Events) {
+	require.Equal(t, sdk.StringifyEvents(expected.ToABCIEvents()).String(), sdk.StringifyEvents(actual.ToABCIEvents()).String())
+}
 var (
 	amount      = sdk.NewInt(1000)
 	decimals    = sdk.NewInt(6)
@@ -37,6 +40,23 @@ func TestHandlerUnrecognized(t *testing.T) {
 	require.False(t, res.IsOK())
 	require.True(t, strings.Contains(res.Log, "Unrecognized  Msg type"))
 	require.False(t, res.Code.IsOK())
+}
+
+func TestHandlerModifyTokenURI(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper := input.Ctx, input.Keeper
+	modifyTokenURI := "modifyTokenURI"
+	h := NewHandler(keeper)
+
+	t.Log("token not exist")
+	{
+		ctx = ctx.WithEventManager(sdk.NewEventManager())
+		res := h(ctx, types.NewMsgModifyTokenURI(addr1, suffixAddr1, modifyTokenURI, "tokenId0"))
+		require.False(t, res.Code.IsOK())
+		require.Equal(t, types.DefaultCodespace, res.Codespace)
+		require.Equal(t, types.CodeTokenNotExist, res.Code)
+		verifyEventFunc(t, nil, res.Events)
+	}
 }
 
 func TestHandlerIssueFT(t *testing.T) {
@@ -150,10 +170,6 @@ func TestEvents(t *testing.T) {
 
 	tokenAddr := sdk.AccAddress(crypto.AddressHash([]byte("token")))
 
-	verifyEventFunc := func(t *testing.T, expected sdk.Events, actual sdk.Events) {
-		require.Equal(t, sdk.StringifyEvents(expected.ToABCIEvents()).String(), sdk.StringifyEvents(actual.ToABCIEvents()).String())
-	}
-
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	{
 		symbol := "t01" + suffixAddr1
@@ -171,6 +187,9 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("perm_resource", symbol)),
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("perm_action", "mint")),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_resource", symbol)),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_action", types.ModifyActionName)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("name", description)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("owner", addr1.String())),
@@ -213,6 +232,9 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("issue_token", sdk.NewAttribute("token_type", "nft")),
 			sdk.NewEvent("mint_token", sdk.NewAttribute("amount", sdk.NewInt(1).String()+symbol)),
 			sdk.NewEvent("mint_token", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_resource", symbol)),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_action", types.ModifyActionName)),
 			sdk.NewEvent("occupy_symbol", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("occupy_symbol", sdk.NewAttribute("owner", addr1.String())),
 			sdk.NewEvent("transfer", sdk.NewAttribute("recipient", addr1.String())),
@@ -220,6 +242,7 @@ func TestEvents(t *testing.T) {
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
+
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	{
 		symbol := "t03" + suffixAddr1
@@ -248,6 +271,9 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("issue_token", sdk.NewAttribute("token_type", "cft")),
 			sdk.NewEvent("mint_token", sdk.NewAttribute("amount", amount.String()+symbolWithID)),
 			sdk.NewEvent("mint_token", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_resource", symbolWithID)),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_action", types.ModifyActionName)),
 			sdk.NewEvent("occupy_symbol", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("occupy_symbol", sdk.NewAttribute("owner", addr1.String())),
 			sdk.NewEvent("transfer", sdk.NewAttribute("recipient", addr1.String())),
@@ -255,6 +281,7 @@ func TestEvents(t *testing.T) {
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
+
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	{
 		symbol := "t04" + suffixAddr1
@@ -280,6 +307,9 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("issue_token", sdk.NewAttribute("token_type", "cnft")),
 			sdk.NewEvent("mint_token", sdk.NewAttribute("amount", sdk.NewInt(1).String()+symbolWithID)),
 			sdk.NewEvent("mint_token", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_resource", symbolWithID)),
+			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_action", types.ModifyActionName)),
 			sdk.NewEvent("occupy_symbol", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("occupy_symbol", sdk.NewAttribute("owner", addr1.String())),
 			sdk.NewEvent("transfer", sdk.NewAttribute("recipient", addr1.String())),

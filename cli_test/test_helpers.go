@@ -18,7 +18,6 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/line/link/types"
-
 	safetyBoxModule "github.com/line/link/x/safetybox"
 	tokenModule "github.com/line/link/x/token"
 
@@ -555,7 +554,6 @@ func (f *Fixtures) TxGovSubmitCommunityPoolSpendProposal(
 
 //___________________________________________________________________________________
 // linkcli tx token
-
 func (f *Fixtures) TxTokenIssue(from string, symbol, name string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx token issue %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, symbol, name, amount, decimals, mintable, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
@@ -578,6 +576,18 @@ func (f *Fixtures) TxTokenIssueNFTCollection(from string, symbol, name string, t
 
 func (f *Fixtures) TxTokenMint(to, amount string, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx token mint %s %s %v", f.LinkcliBinary, to, amount, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) logResult(isSuccess bool, stdOut, stdErr string) {
+	if !isSuccess {
+		f.T.Error(stdErr)
+	} else {
+		f.T.Log(stdOut)
+	}
+}
+func (f *Fixtures) ModifyTokenURI(owner, symbol, tokenURI, tokenID string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token modify-token-uri %s %s %s %s %v", f.LinkcliBinary, owner, symbol, tokenURI, tokenID, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 

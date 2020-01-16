@@ -71,6 +71,7 @@ ignore:
   - "*.png"
   - "*_test.go"
   - "x/**/test_common.go"
+  - "*_cmd.go"
   - "contrib/**/*"
   - "client/rpc/**/*_wrapper.go"
   - "client/rpc/**/*_alias.go"

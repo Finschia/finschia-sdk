@@ -12,6 +12,7 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgIssueNFT{}, "link/MsgIssueNFT", nil)
 	cdc.RegisterConcrete(MsgIssueCollection{}, "link/MsgIssueCollection", nil)
 	cdc.RegisterConcrete(MsgIssueNFTCollection{}, "link/MsgIssueNFTCollection", nil)
+	cdc.RegisterConcrete(MsgModifyTokenURI{}, "link/MsgModifyTokenURI", nil)
 	cdc.RegisterConcrete(MsgMint{}, "link/MsgMint", nil)
 	cdc.RegisterConcrete(MsgBurn{}, "link/MsgBurn", nil)
 	cdc.RegisterConcrete(MsgGrantPermission{}, "link/MsgGrantPermission", nil)

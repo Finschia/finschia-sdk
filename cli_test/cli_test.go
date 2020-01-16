@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"github.com/line/link/types"
 	sbox "github.com/line/link/x/safetybox"
-	token "github.com/line/link/x/token"
+	"github.com/line/link/x/token"
 	"io/ioutil"
 	"os"
 	"path"
@@ -32,6 +32,51 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/line/link/client"
 )
+
+func TestModifyTokenURI(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+	defer f.Cleanup()
+
+	const (
+		tck       = "brown"
+		tokenID01 = "00000001"
+	)
+
+	barAddr := f.KeyAddress(keyBar)
+	t.Log("Modify tokenURI and set empty string to tokenURI")
+	{
+		sendTokens := sdk.TokensFromConsensusPower(1)
+		f.logResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
+
+		firstTokenURI := "uri:itisbrown"
+		f.logResult(f.TxTokenIssueNFTCollection(keyFoo, tck, "itisbrown", firstTokenURI, tokenID01, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		symbol := tck + types.AccAddrSuffix(f.KeyAddress(keyFoo))
+		denom := symbol + tokenID01
+		firstResult := f.QueryCollection(symbol)
+		require.Equal(t, denom, firstResult.Tokens[0].Symbol)
+		require.Equal(t, firstTokenURI, firstResult.Tokens[0].TokenURI)
+
+		secondTokenURI := firstTokenURI + "modified"
+		f.logResult(f.ModifyTokenURI(keyFoo, symbol, secondTokenURI, tokenID01, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		secondResult := f.QueryCollection(symbol)
+		require.Equal(t, secondTokenURI, secondResult.Tokens[0].TokenURI)
+
+		var thirdTokenURI string
+		f.logResult(f.ModifyTokenURI(keyFoo, symbol, thirdTokenURI, tokenID01, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		thirdResult := f.QueryCollection(symbol)
+		require.Equal(t, thirdTokenURI, thirdResult.Tokens[0].TokenURI)
+		require.Equal(t, "", thirdResult.Tokens[0].TokenURI)
+	}
+}
 
 func TestLinkCLIKeysAddMultisig(t *testing.T) {
 
@@ -2011,13 +2056,17 @@ func TestLinkCLITokenIssue(t *testing.T) {
 	// Query permissions for foo account
 	{
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
-		require.Equal(t, 3, len(pms))
+		require.Equal(t, 5, len(pms))
 		require.Equal(t, symbolBrown+fooSuffix, pms[0].GetResource())
 		require.Equal(t, "issue", pms[0].GetAction())
-		require.Equal(t, symbolCony+fooSuffix, pms[1].GetResource())
-		require.Equal(t, "issue", pms[1].GetAction())
+		require.Equal(t, symbolBrown+fooSuffix, pms[1].GetResource())
+		require.Equal(t, "modify", pms[1].GetAction())
 		require.Equal(t, symbolCony+fooSuffix, pms[2].GetResource())
-		require.Equal(t, "mint", pms[2].GetAction())
+		require.Equal(t, "issue", pms[2].GetAction())
+		require.Equal(t, symbolCony+fooSuffix, pms[3].GetResource())
+		require.Equal(t, "mint", pms[3].GetAction())
+		require.Equal(t, symbolCony+fooSuffix, pms[4].GetResource())
+		require.Equal(t, "modify", pms[4].GetAction())
 	}
 
 	// Query permissions for bar account

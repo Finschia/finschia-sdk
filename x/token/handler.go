@@ -28,6 +28,8 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgGrant(ctx, keeper, msg)
 		case MsgRevokePermission:
 			return handleMsgRevoke(ctx, keeper, msg)
+		case MsgModifyTokenURI:
+			return handleMsgModifyTokenURI(ctx, keeper, msg)
 		default:
 			errMsg := fmt.Sprintf("Unrecognized  Msg type: %v", msg.Type())
 			return sdk.ErrUnknownRequest(errMsg).Result()
@@ -212,6 +214,22 @@ func handleMsgRevoke(ctx sdk.Context, keeper keeper.Keeper, msg MsgRevokePermiss
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
+		),
+	})
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgModifyTokenURI(ctx sdk.Context, keeper keeper.Keeper, msg MsgModifyTokenURI) sdk.Result {
+	err := keeper.ModifyTokenURI(ctx, msg.Owner, msg.Symbol+msg.TokenID, msg.TokenURI)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String()),
 		),
 	})
 	return sdk.Result{Events: ctx.EventManager().Events()}

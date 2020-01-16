@@ -30,6 +30,7 @@ type (
 	MsgBurn               = types.MsgBurn
 	MsgGrantPermission    = types.MsgGrantPermission
 	MsgRevokePermission   = types.MsgRevokePermission
+	MsgModifyTokenURI     = types.MsgModifyTokenURI
 
 	PermissionI = types.PermissionI
 	Permissions = types.Permissions
@@ -46,7 +47,8 @@ var (
 
 	ErrTokenExist = types.ErrTokenExist
 
-	NewIssuePermission = types.NewIssuePermission
+	NewIssuePermission          = types.NewIssuePermission
+	NewModifyTokenURIPermission = types.NewModifyTokenURIPermission
 
 	NewKeeper = keeper.NewKeeper
 )

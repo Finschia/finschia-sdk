@@ -45,6 +45,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		BurnTxCmd(cdc),
 		GrantPermTxCmd(cdc),
 		RevokePermTxCmd(cdc),
+		ModifyTokenURICmd(cdc),
 	)
 	return txCmd
 }

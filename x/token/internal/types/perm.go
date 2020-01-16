@@ -68,3 +68,10 @@ func NewIssuePermission(resource string) PermissionI {
 		Resource: resource,
 	}
 }
+
+func NewModifyTokenURIPermission(resource string) PermissionI {
+	return &Permission{
+		Action:   ModifyActionName,
+		Resource: resource,
+	}
+}
