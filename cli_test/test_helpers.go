@@ -607,6 +607,24 @@ func (f *Fixtures) TxTokenRevokePerm(from string, resource, action string, flags
 }
 
 //___________________________________________________________________________________
+// linkcli tx proxy
+
+func (f *Fixtures) TxProxySendCoinsFrom(proxy, onBehalfOf, to, denom string, amount sdk.Int, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx proxy send-coins-from %s %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, to, denom, amount.String(), f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxProxyApproveCoins(proxy, onBehalfOf, denom string, amount sdk.Int, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx proxy approve %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, amount.String(), f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxProxyDisapproveCoins(proxy, onBehalfOf, denom string, amount sdk.Int, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx proxy disapprove %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, amount.String(), f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+//___________________________________________________________________________________
 // linkcli tx safety box
 
 func (f *Fixtures) TxSafetyBoxCreate(id, address, denom string, flags ...string) (bool, string, string) {

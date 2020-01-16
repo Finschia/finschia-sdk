@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/line/link/types"
+	proxy "github.com/line/link/x/proxy"
 	sbox "github.com/line/link/x/safetybox"
 	tokenmodule "github.com/line/link/x/token"
 	"io/ioutil"
@@ -1372,6 +1373,174 @@ func TestValidateGenesis(t *testing.T) {
 	f.Cleanup()
 }
 
+func TestLinkCLIProxy(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+	defer f.Cleanup()
+
+	denom := DenomLink
+	tinaTheProxy := f.KeyAddress(UserTina).String()
+	rinahTheOnBehalfOf := f.KeyAddress(UserRinah).String()
+	evelynTheReceiver := f.KeyAddress(UserEvelyn).String()
+
+	// rinahTheOnBehalfOf's initial balance
+	t.Logf("[Proxy] Initial balance check for the OnBeHalfOf")
+	initialBalance := f.QueryAccount(f.KeyAddress(UserRinah)).Coins
+	{
+		require.Equal(t, initialBalance, defaultCoins)
+	}
+
+	// `tinaTheProxy` tries to send coins to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	t.Logf("[Proxy] The proxy tries to send coins to the receiver on behalf of the coin owner - should fail")
+	{
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sdk.NewInt(5), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as it's not approved with ErrProxyNotExist
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+
+	// `rinahTheOnBehalfOf` approves 5 link for `tinaTheProxy`
+	t.Logf("[Proxy] The coin owner approves 5 link for the proxy")
+	{
+		result, _, stderr := f.TxProxyApproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, sdk.NewInt(5), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should succeed
+		require.True(t, result)
+		require.Equal(t, "", stderr)
+	}
+
+	// 'tinaTheProxy' tries to send 6 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	t.Logf("[Proxy] The proxy tries to send 5 link to the receiver on behalf of the coin owner - should fail")
+	{
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sdk.NewInt(6), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as it's more than approved
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, sdk.NewInt(5), sdk.NewInt(6)).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+
+	// `tinaTheProxy` sends 2 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	t.Logf("[Proxy] The proxy sends 2 link to the receiver on behalf of the coin owner")
+	sentAmount1 := sdk.NewInt(2)
+	{
+		result, _, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sentAmount1, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should succeed
+		require.True(t, result)
+		require.Equal(t, "", stderr)
+	}
+
+	// check balance of `rinahTheOnBehalfOf` and `evelynTheReceiver`
+	t.Logf("[Proxy] Check balances to confirm")
+	{
+		diff := sdk.Coins{sdk.Coin{DenomLink, sentAmount1}}
+		rinahBalance := f.QueryAccount(f.KeyAddress(UserRinah)).Coins
+		require.Equal(t, rinahBalance, defaultCoins.Sub(diff))
+		evelynBalance := f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins
+		require.Equal(t, evelynBalance, defaultCoins.Add(diff))
+	}
+
+	// `rinahTheOnBehalfOf` tries to disapprove 4 link from `tinaTheProxy`
+	t.Logf("[Proxy] The coin owner disapproves 4 link from the proxy - should fail")
+	{
+		result, stdout, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, sdk.NewInt(4), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as only 3 approved coins are left
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, sdk.NewInt(3), sdk.NewInt(4)).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+
+	// `rinahTheOnBehalfOf` disapprove 1 link from `tinaTheProxy`
+	t.Logf("[Proxy] The coin owner disapproves 1 link from the proxy")
+	{
+		result, _, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, sdk.NewInt(1), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should succeed
+		require.True(t, result)
+		require.Equal(t, "", stderr)
+	}
+
+	// `tinaTheProxy` sends 2 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	t.Logf("[Proxy] The proxy sends 2 link to the receiver on behalf of the coin owner")
+	sentAmount2 := sdk.NewInt(2)
+	{
+		result, _, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sentAmount2, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should succeed
+		require.True(t, result)
+		require.Equal(t, "", stderr)
+	}
+
+	// check balance of `rinahTheOnBehalfOf` and `evelynTheReceiver`
+	t.Logf("[Proxy] Check balances to confirm")
+	{
+		diff := sdk.Coins{sdk.Coin{DenomLink, sentAmount1.Add(sentAmount2)}}
+		rinahBalance := f.QueryAccount(f.KeyAddress(UserRinah)).Coins
+		require.Equal(t, rinahBalance, defaultCoins.Sub(diff))
+		evelynBalance := f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins
+		require.Equal(t, evelynBalance, defaultCoins.Add(diff))
+	}
+
+	// 'tinaTheProxy' tries to send 1 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	t.Logf("[Proxy] The proxy tries to send 1 link to the receiver on behalf of the coin owner - should fail")
+	{
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sdk.NewInt(1), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as there is no coin approved (all sent!)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+
+	// 'onBehalfOf' tries to disapprove 1 link from `proxy`
+	t.Logf("[Proxy] The coin owner tries to disapprove 1 link from the proxy - should fail")
+	{
+		result, stdout, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, sdk.NewInt(1), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as there is no coin approved (all sent!)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+}
+
 func TestLinkCLISafetyBox(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
@@ -1381,7 +1550,6 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	var result bool
-	//var stdout string
 
 	id := "some_safety_box"
 	denom := DenomLink
