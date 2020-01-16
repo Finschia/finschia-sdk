@@ -12,6 +12,7 @@ var (
 
 	AttributeKeyName      = "name"
 	AttributeKeySymbol    = "symbol"
+	AttributeKeyDenom     = "denom"
 	AttributeKeyOwner     = "owner"
 	AttributeKeyAmount    = "amount"
 	AttributeKeyDecimals  = "decimals"
@@ -23,10 +24,10 @@ var (
 	AttributeKeyResource  = "perm_resource"
 	AttributeKeyAction    = "perm_action"
 
-	AttributeValueTokenTypeFT   = "ft"
-	AttributeValueTokenTypeNFT  = "nft"
-	AttributeValueTokenTypeCFT  = "cft"
-	AttributeValueTokenTypeCNFT = "cnft"
+	AttributeValueTokenTypeFT    = "ft"
+	AttributeValueTokenTypeNFT   = "nft"
+	AttributeValueTokenTypeIDFT  = "idft"
+	AttributeValueTokenTypeIDNFT = "idnft"
 
 	AttributeValueCategory = ModuleName
 )

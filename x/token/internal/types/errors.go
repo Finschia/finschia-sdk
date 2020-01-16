@@ -18,6 +18,7 @@ const (
 	CodeTokenInvalidTokenID     sdk.CodeType = 202
 	CodeTokenInvalidDecimals    sdk.CodeType = 203
 	CodeTokenInvalidFT          sdk.CodeType = 204
+	CodeTokenInvalidTokenType   sdk.CodeType = 205
 
 	//Collection
 	CodeCollectionDenomExist    sdk.CodeType = 300
@@ -57,6 +58,10 @@ func ErrInvalidTokenDecimals(codespace sdk.CodespaceType, decimals sdk.Int) sdk.
 
 func ErrInvalidIssueFT(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidFT, "Issuing token with amount[1], decimals[0], mintable[false] prohibited. Issue nft token instead.")
+}
+
+func ErrInvalidTokenType(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidTokenType, msg)
 }
 
 func ErrCollectionExist(codespace sdk.CodespaceType, symbol string) sdk.Error {

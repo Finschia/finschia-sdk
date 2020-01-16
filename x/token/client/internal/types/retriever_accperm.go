@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	context "github.com/line/link/client"
 	"github.com/line/link/x/token/internal/types"
 )
 
@@ -14,14 +15,14 @@ func NewAccountPermissionRetriever(querier types.NodeQuerier) AccountPermissionR
 	return AccountPermissionRetriever{querier: querier}
 }
 
-func (ar AccountPermissionRetriever) GetAccountPermission(addr sdk.AccAddress) (types.Permissions, error) {
-	pms, _, err := ar.GetAccountPermissionWithHeight(addr)
+func (ar AccountPermissionRetriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddress) (types.Permissions, error) {
+	pms, _, err := ar.GetAccountPermissionWithHeight(ctx, addr)
 	return pms, err
 }
 
-func (ar AccountPermissionRetriever) GetAccountPermissionWithHeight(addr sdk.AccAddress) (types.Permissions, int64, error) {
+func (ar AccountPermissionRetriever) GetAccountPermissionWithHeight(ctx context.CLIContext, addr sdk.AccAddress) (types.Permissions, int64, error) {
 	var pms types.Permissions
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryAccountPermissionParams(addr))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccountPermissionParams(addr))
 	if err != nil {
 		return pms, 0, err
 	}
@@ -31,7 +32,7 @@ func (ar AccountPermissionRetriever) GetAccountPermissionWithHeight(addr sdk.Acc
 		return pms, height, err
 	}
 
-	if err := types.ModuleCdc.UnmarshalJSON(res, &pms); err != nil {
+	if err := ctx.Codec.UnmarshalJSON(res, &pms); err != nil {
 		return pms, height, err
 	}
 

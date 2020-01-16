@@ -25,11 +25,11 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 		mockMultiStore.EXPECT().GetKVStore(gomock.Any()).Return(mockKvStore).Times(2)
 		mockKvStore.EXPECT().Get(persistedTokenSymbolKey).Return(persistedTokenJSON).Times(1)
 		mockKvStore.EXPECT().Has(persistedTokenSymbolKey).Return(true).Times(1)
-		mockIamKeeper.EXPECT().HasPermission(cliCtx, addr1, types.NewModifyTokenURIPermission(persistedToken.Symbol)).
+		mockIamKeeper.EXPECT().HasPermission(cliCtx, addr1, types.NewModifyTokenURIPermission(persistedToken.GetDenom())).
 			Return(true).Times(1)
 		mockKvStore.EXPECT().Set(persistedTokenSymbolKey, cd.MustMarshalBinaryBare(tokenURIModifiedToken)).Times(1)
 
-		err := keeper.ModifyTokenURI(cliCtx, addr1, persistedToken.Symbol, tokenURIModifiedToken.TokenURI)
+		err := keeper.ModifyTokenURI(cliCtx, addr1, persistedToken.GetDenom(), tokenURIModifiedToken.GetTokenURI())
 		require.NoError(t, err)
 	}
 	t.Log("could not found persisted token")
@@ -41,7 +41,7 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 		mockIamKeeper.EXPECT().HasPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true).Times(0)
 		mockKvStore.EXPECT().Has(gomock.Any()).Times(0)
 		mockKvStore.EXPECT().Set(gomock.Any(), gomock.Any()).Times(0)
-		err := keeper.ModifyTokenURI(cliCtx, addr1, persistedToken.Symbol, persistedToken.TokenURI)
+		err := keeper.ModifyTokenURI(cliCtx, addr1, persistedToken.GetDenom(), persistedToken.GetTokenURI())
 		require.Error(t, err)
 	}
 	t.Log("missing tokenSymbolKey in modifying step")
@@ -50,11 +50,11 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 
 		mockMultiStore.EXPECT().GetKVStore(gomock.Any()).Return(mockKvStore).Times(2)
 		mockKvStore.EXPECT().Get(tsk).Return(ttJSON).Times(1)
-		mockIamKeeper.EXPECT().HasPermission(cliCtx, addr1, types.NewModifyTokenURIPermission(tt.Symbol)).Return(true).Times(1)
+		mockIamKeeper.EXPECT().HasPermission(cliCtx, addr1, types.NewModifyTokenURIPermission(tt.GetDenom())).Return(true).Times(1)
 		mockKvStore.EXPECT().Has(tsk).Return(false).Times(1)
 		mockKvStore.EXPECT().Set(gomock.Any(), gomock.Any()).Times(0)
 
-		err := keeper.ModifyTokenURI(cliCtx, addr1, tt.Symbol, tt.TokenURI)
+		err := keeper.ModifyTokenURI(cliCtx, addr1, tt.GetDenom(), tt.GetTokenURI())
 		require.Error(t, err)
 	}
 	t.Log("failed - no permission")
@@ -63,18 +63,18 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 
 		mockMultiStore.EXPECT().GetKVStore(gomock.Any()).Return(mockKvStore).Times(1)
 		mockKvStore.EXPECT().Get(tsk).Return(ttJSON).Times(1)
-		mockIamKeeper.EXPECT().HasPermission(cliCtx, addr1, types.NewModifyTokenURIPermission(tt.Symbol)).Return(false).Times(1)
+		mockIamKeeper.EXPECT().HasPermission(cliCtx, addr1, types.NewModifyTokenURIPermission(tt.GetDenom())).Return(false).Times(1)
 		mockKvStore.EXPECT().Set(gomock.Any(), gomock.Any()).Times(0)
 
-		err := keeper.ModifyTokenURI(cliCtx, addr1, tt.Symbol, tt.TokenURI)
+		err := keeper.ModifyTokenURI(cliCtx, addr1, tt.GetDenom(), tt.GetTokenURI())
 		require.Error(t, err)
 	}
 }
 
 func prepare(ctrl *gomock.Controller) (sdk.AccAddress, *codec.Codec, *mock_types.MockIamKeeper, Keeper,
-	*mock_types.MockMultiStore, sdk.Context, *mock_types.MockKVStore, types.Token, []byte, []byte, types.Token) {
+	*mock_types.MockMultiStore, sdk.Context, *mock_types.MockKVStore, types.NFT, []byte, []byte, types.NFT) {
 	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	cd := codec.New()
+	cd := types.ModuleCdc
 	mockIamKeeper := mock_types.NewMockIamKeeper(ctrl)
 	keeper := Keeper{
 		supplyKeeper:  mock_types.NewMockSupplyKeeper(ctrl),
@@ -89,23 +89,20 @@ func prepare(ctrl *gomock.Controller) (sdk.AccAddress, *codec.Codec, *mock_types
 
 	mockKvStore := mock_types.NewMockKVStore(ctrl)
 	tokenSymbol := "testSymbol"
-	tt := types.Token{
-		Name:     "testToken",
-		Symbol:   tokenSymbol,
-		Mintable: false,
-		Decimals: sdk.Int{},
-		TokenURI: "",
-	}
+	tt := types.NewNFT(
+		"testToken",
+		tokenSymbol,
+		"",
+		addr1,
+	)
+	tokenURIModifiedToken := types.NewNFT(
+		"testToken",
+		tokenSymbol,
+		"modified",
+		addr1,
+	)
 
-	tokenURIModifiedToken := types.Token{
-		Name:     "testToken",
-		Symbol:   tokenSymbol,
-		Mintable: false,
-		Decimals: sdk.Int{},
-		TokenURI: "modified",
-	}
-
-	tsk := types.TokenSymbolKey(tt.Symbol)
+	tsk := types.TokenDenomKey(tt.Symbol)
 	ttJSON := cd.MustMarshalBinaryBare(tt)
 	return addr1, cd, mockIamKeeper, keeper, mockMultiStore, cliCtx, mockKvStore, tt, tsk, ttJSON, tokenURIModifiedToken
 }

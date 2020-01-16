@@ -83,8 +83,7 @@ func handleMsgIssueCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssu
 		return err.Result()
 	}
 
-	symbol := linktypes.SymbolCollectionToken(msg.Symbol, msg.TokenID)
-	token := NewFT(msg.Name, symbol, msg.Decimals, msg.Mintable)
+	token := NewIDFT(msg.Name, msg.Symbol, msg.Decimals, msg.Mintable, msg.TokenID)
 	err := keeper.IssueFT(ctx, token, msg.Amount, msg.Owner)
 	if err != nil {
 		return err.Result()
@@ -93,7 +92,7 @@ func handleMsgIssueCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssu
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueToken,
-			sdk.NewAttribute(types.AttributeKeyTokenType, types.AttributeValueTokenTypeCFT),
+			sdk.NewAttribute(types.AttributeKeyTokenType, types.AttributeValueTokenTypeIDFT),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -110,7 +109,7 @@ func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueNFT) s
 		return err.Result()
 	}
 
-	token := NewNFT(msg.Name, msg.Symbol, msg.TokenURI)
+	token := NewNFT(msg.Name, msg.Symbol, msg.TokenURI, msg.Owner)
 	err := keeper.IssueNFT(ctx, token, msg.Owner)
 	if err != nil {
 		return err.Result()
@@ -135,8 +134,7 @@ func handleMsgIssueNFTCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgI
 		return err.Result()
 	}
 
-	symbol := linktypes.SymbolCollectionToken(msg.Symbol, msg.TokenID)
-	token := NewNFT(msg.Name, symbol, msg.TokenURI)
+	token := NewIDNFT(msg.Name, msg.Symbol, msg.TokenURI, msg.Owner, msg.TokenID)
 	err := keeper.IssueNFT(ctx, token, msg.Owner)
 	if err != nil {
 		return err.Result()
@@ -145,7 +143,7 @@ func handleMsgIssueNFTCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgI
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueToken,
-			sdk.NewAttribute(types.AttributeKeyTokenType, types.AttributeValueTokenTypeCNFT),
+			sdk.NewAttribute(types.AttributeKeyTokenType, types.AttributeValueTokenTypeIDNFT),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,

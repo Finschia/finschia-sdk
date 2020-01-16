@@ -31,21 +31,20 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-func (k Keeper) IssueFT(ctx sdk.Context, token types.Token, amount sdk.Int, owner sdk.AccAddress) sdk.Error {
+func (k Keeper) IssueFT(ctx sdk.Context, token types.FT, amount sdk.Int, owner sdk.AccAddress) sdk.Error {
 	err := k.SetToken(ctx, token)
 	if err != nil {
 		return err
 	}
 
-	mintPerm := types.NewMintPermission(token.Symbol)
-	if token.Mintable {
+	mintPerm := types.NewMintPermission(token.GetDenom())
+	if token.GetMintable() {
 		k.AddPermission(ctx, owner, mintPerm)
 	}
 
-	tokenUriModifyPerm := types.NewModifyTokenURIPermission(token.Symbol)
+	tokenUriModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
 	k.AddPermission(ctx, owner, tokenUriModifyPerm)
-
-	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.Symbol, amount)), owner)
+	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), amount)), owner)
 	if err != nil {
 		return err
 	}
@@ -53,13 +52,13 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.Token, amount sdk.Int, owne
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueToken,
-			sdk.NewAttribute(types.AttributeKeyName, token.Name),
-			sdk.NewAttribute(types.AttributeKeySymbol, token.Symbol),
+			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyDenom, token.GetDenom()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
-			sdk.NewAttribute(types.AttributeKeyMintable, strconv.FormatBool(token.Mintable)),
-			sdk.NewAttribute(types.AttributeKeyDecimals, token.Decimals.String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, token.TokenURI),
+			sdk.NewAttribute(types.AttributeKeyMintable, strconv.FormatBool(token.GetMintable())),
+			sdk.NewAttribute(types.AttributeKeyDecimals, token.GetDecimals().String()),
 		),
 		sdk.NewEvent(
 			types.EventTypeGrantPermToken,
@@ -78,7 +77,7 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.Token, amount sdk.Int, owne
 	return nil
 }
 
-func (k Keeper) IssueNFT(ctx sdk.Context, token types.Token, owner sdk.AccAddress) sdk.Error {
+func (k Keeper) IssueNFT(ctx sdk.Context, token types.NFT, owner sdk.AccAddress) sdk.Error {
 
 	//TODO: move it to the invariant check https://github.com/line/link/issues/322
 	//if !k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(token.Symbol).IsZero() {
@@ -89,24 +88,22 @@ func (k Keeper) IssueNFT(ctx sdk.Context, token types.Token, owner sdk.AccAddres
 		return err
 	}
 
-	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.Symbol, sdk.NewInt(1))), owner)
+	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), sdk.NewInt(1))), owner)
 	if err != nil {
 		return err
 	}
 
-	tokenUriModifyPerm := types.NewModifyTokenURIPermission(token.Symbol)
+	tokenUriModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
 	k.AddPermission(ctx, owner, tokenUriModifyPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueToken,
-			sdk.NewAttribute(types.AttributeKeyName, token.Name),
-			sdk.NewAttribute(types.AttributeKeySymbol, token.Symbol),
+			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyDenom, token.GetDenom()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyAmount, sdk.NewInt(1).String()),
-			sdk.NewAttribute(types.AttributeKeyMintable, strconv.FormatBool(token.Mintable)),
-			sdk.NewAttribute(types.AttributeKeyDecimals, token.Decimals.String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, token.TokenURI),
+			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
 		),
 		sdk.NewEvent(
 			types.EventTypeModifyTokenURIPermToken,
@@ -119,18 +116,22 @@ func (k Keeper) IssueNFT(ctx sdk.Context, token types.Token, owner sdk.AccAddres
 	return nil
 }
 
-func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenURI string) sdk.Error {
-	token, err := k.GetToken(ctx, symbol)
+func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, denom, tokenURI string) sdk.Error {
+	token, err := k.GetToken(ctx, denom)
 	if err != nil {
 		return err
 	}
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.Symbol)
+	nft, ok := token.(types.NFT)
+	if !ok {
+		return types.ErrInvalidTokenType(types.DefaultCodespace, fmt.Sprintf("token with symbol[%s] and token-id [%s] is not nft", token.GetSymbol(), token.GetTokenID()))
+	}
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(nft.GetDenom())
 	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
 		return types.ErrTokenPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
 	}
+	nft.SetTokenURI(tokenURI)
 
-	token.TokenURI = tokenURI
-	err = k.ModifyToken(ctx, token)
+	err = k.ModifyToken(ctx, nft)
 	if err != nil {
 		return err
 	}
@@ -138,10 +139,11 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, to
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyTokenURI,
-			sdk.NewAttribute(types.AttributeKeyName, token.Name),
-			sdk.NewAttribute(types.AttributeKeySymbol, token.Symbol),
+			sdk.NewAttribute(types.AttributeKeyName, nft.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, nft.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyDenom, nft.GetDenom()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, token.TokenURI),
+			sdk.NewAttribute(types.AttributeKeyTokenURI, nft.GetTokenURI()),
 		),
 	})
 	return nil

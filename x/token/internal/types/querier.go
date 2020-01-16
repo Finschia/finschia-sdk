@@ -17,15 +17,16 @@ type NodeQuerier interface {
 }
 
 type QueryTokenParams struct {
-	Symbol string `json:"symbol"`
+	Symbol  string `json:"symbol"`
+	TokenID string `json:"token_id"`
 }
 
 func (r QueryTokenParams) String() string {
-	return r.Symbol
+	return r.Symbol + r.TokenID
 }
 
-func NewQueryTokenParams(symbol string) QueryTokenParams {
-	return QueryTokenParams{Symbol: symbol}
+func NewQueryTokenParams(symbol, tokenID string) QueryTokenParams {
+	return QueryTokenParams{Symbol: symbol, TokenID: tokenID}
 }
 
 type QuerySupplyParams struct {

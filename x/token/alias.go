@@ -17,6 +17,9 @@ type (
 	Token  = types.Token
 	Tokens = types.Tokens
 
+	FT  = types.FT
+	NFT = types.NFT
+
 	Collection            = types.Collection
 	Collections           = types.Collections
 	CollectionWithTokens  = types.CollectionWithTokens
@@ -39,8 +42,10 @@ type (
 )
 
 var (
-	NewFT  = types.NewFT
-	NewNFT = types.NewNFT
+	NewFT    = types.NewFT
+	NewNFT   = types.NewNFT
+	NewIDFT  = types.NewIDFT
+	NewIDNFT = types.NewIDNFT
 
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec

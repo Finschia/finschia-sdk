@@ -31,19 +31,24 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "token [symbol]",
-		Short: "Query token",
-		Args:  cobra.ExactArgs(1),
+		Use:   "token [symbol] [token-id]",
+		Short: "Query token with its symbol and token-id. token-id is optional",
+		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
 
 			symbol := args[0]
-			if err := tokenGetter.EnsureExists(symbol); err != nil {
+
+			tokenID := ""
+			if len(args) == 2 {
+				tokenID = args[1]
+			}
+			if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
 				return err
 			}
 
-			token, err := tokenGetter.GetToken(symbol)
+			token, err := tokenGetter.GetToken(cliCtx, symbol, tokenID)
 			if err != nil {
 				return err
 			}
@@ -64,7 +69,7 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
 
-			tokens, err := tokenGetter.GetAllTokens()
+			tokens, err := tokenGetter.GetAllTokens(cliCtx)
 			if err != nil {
 				return err
 			}
@@ -86,11 +91,11 @@ func GetCollectionCmd(cdc *codec.Codec) *cobra.Command {
 			collectionGetter := clienttypes.NewCollectionRetriever(cliCtx)
 
 			symbol := args[0]
-			if err := collectionGetter.EnsureExists(symbol); err != nil {
+			if err := collectionGetter.EnsureExists(cliCtx, symbol); err != nil {
 				return err
 			}
 
-			collection, err := collectionGetter.GetCollection(symbol)
+			collection, err := collectionGetter.GetCollection(cliCtx, symbol)
 			if err != nil {
 				return err
 			}
@@ -111,7 +116,7 @@ func GetCollectionsCmd(cdc *codec.Codec) *cobra.Command {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			collectionGetter := clienttypes.NewCollectionRetriever(cliCtx)
 
-			collections, err := collectionGetter.GetAllCollections()
+			collections, err := collectionGetter.GetAllCollections(cliCtx)
 			if err != nil {
 				return err
 			}
@@ -133,11 +138,11 @@ func GetSupplyCmd(cdc *codec.Codec) *cobra.Command {
 			supplyGetter := clienttypes.NewSupplyRetriever(cliCtx)
 
 			symbol := args[0]
-			if err := supplyGetter.EnsureExists(symbol); err != nil {
+			if err := supplyGetter.EnsureExists(cliCtx, symbol); err != nil {
 				return err
 			}
 
-			supply, err := supplyGetter.GetSupply(symbol)
+			supply, err := supplyGetter.GetSupply(cliCtx, symbol)
 			if err != nil {
 				return err
 			}
@@ -162,7 +167,7 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			pms, err := permGetter.GetAccountPermission(addr)
+			pms, err := permGetter.GetAccountPermission(cliCtx, addr)
 			if err != nil {
 				return err
 			}

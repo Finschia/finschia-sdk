@@ -9,7 +9,7 @@ type TokenKeeper interface {
 	GetModuleAddress() sdk.AccAddress
 	SetToken(sdk.Context, types.Token) sdk.Error
 	GetToken(sdk.Context, string) (types.Token, sdk.Error)
-	GetAllTokens(sdk.Context) []types.Token
+	GetAllTokens(sdk.Context) types.Tokens
 	IterateTokens(sdk.Context, func(types.Token) bool)
 	AddPermission(sdk.Context, sdk.AccAddress, types.PermissionI)
 	RemovePermission(sdk.Context, sdk.AccAddress, types.PermissionI) sdk.Error

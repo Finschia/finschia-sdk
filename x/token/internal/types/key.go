@@ -8,14 +8,14 @@ const (
 )
 
 var (
-	TokenSymbolKeyPrefix = []byte{0x00}
-	CollectionKeyPrefix  = []byte{0x01}
+	TokenDenomKeyPrefix = []byte{0x00}
+	CollectionKeyPrefix = []byte{0x01}
 )
 
-func TokenSymbolKey(symbol string) []byte {
-	return append(TokenSymbolKeyPrefix, []byte(symbol)...)
+func TokenDenomKey(denom string) []byte {
+	return append(TokenDenomKeyPrefix, []byte(denom)...)
 }
 
-func CollectionKey(symbol string) []byte {
-	return append(CollectionKeyPrefix, []byte(symbol)...)
+func CollectionKey(denom string) []byte {
+	return append(CollectionKeyPrefix, []byte(denom)...)
 }

@@ -12,8 +12,14 @@ func (k Keeper) MintTokens(ctx sdk.Context, amount sdk.Coins, to sdk.AccAddress)
 		if err != nil {
 			return err
 		}
-		if !token.Mintable {
-			return types.ErrTokenNotMintable(types.DefaultCodespace, token.Symbol)
+
+		ft, ok := token.(types.FT)
+		if !ok {
+			return types.ErrTokenNotMintable(types.DefaultCodespace, token.GetDenom())
+		}
+
+		if !ft.GetMintable() {
+			return types.ErrTokenNotMintable(types.DefaultCodespace, ft.GetDenom())
 		}
 		perm := types.NewMintPermission(coin.Denom)
 		if !k.HasPermission(ctx, to, perm) {

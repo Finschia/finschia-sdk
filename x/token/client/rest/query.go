@@ -12,6 +12,7 @@ import (
 )
 
 func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
+	r.HandleFunc("/token/tokens/{symbol}/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/tokens/{symbol}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/tokens", QueryAllTokensRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/supply/{symbol}", QuerySupplysRequestHandlerFn(cliCtx)).Methods("GET")
@@ -24,6 +25,10 @@ func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
 		symbol := vars["symbol"]
+		tokenID := ""
+		if tokenIDVal, ok := vars["token_id"]; ok {
+			tokenID = tokenIDVal
+		}
 
 		if len(symbol) == 0 {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "symbol length > 2")
@@ -37,12 +42,12 @@ func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
 
-		if err := tokenGetter.EnsureExists(symbol); err != nil {
+		if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		token, height, err := tokenGetter.GetTokenWithHeight(symbol)
+		token, height, err := tokenGetter.GetTokenWithHeight(cliCtx, symbol, tokenID)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -65,7 +70,7 @@ func QueryAllTokensRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc 
 
 		tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
 
-		tokens, height, err := tokenGetter.GetAllTokensWithHeight()
+		tokens, height, err := tokenGetter.GetAllTokensWithHeight(cliCtx)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -95,12 +100,12 @@ func QueryCollectionRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc 
 
 		collectionGetter := clienttypes.NewCollectionRetriever(cliCtx)
 
-		if err := collectionGetter.EnsureExists(symbol); err != nil {
+		if err := collectionGetter.EnsureExists(cliCtx, symbol); err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		collection, height, err := collectionGetter.GetCollectionWithHeight(symbol)
+		collection, height, err := collectionGetter.GetCollectionWithHeight(cliCtx, symbol)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -123,7 +128,7 @@ func QueryAllCollectionsRequestHandlerFn(cliCtx context.CLIContext) http.Handler
 
 		collectionGetter := clienttypes.NewCollectionRetriever(cliCtx)
 
-		collections, height, err := collectionGetter.GetAllCollectionsWithHeight()
+		collections, height, err := collectionGetter.GetAllCollectionsWithHeight(cliCtx)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -153,12 +158,12 @@ func QuerySupplysRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		supplyGetter := clienttypes.NewSupplyRetriever(cliCtx)
 
-		if err := supplyGetter.EnsureExists(symbol); err != nil {
+		if err := supplyGetter.EnsureExists(cliCtx, symbol); err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		supply, height, err := supplyGetter.GetSupplyWithHeight(symbol)
+		supply, height, err := supplyGetter.GetSupplyWithHeight(cliCtx, symbol)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return

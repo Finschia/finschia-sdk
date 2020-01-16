@@ -949,8 +949,12 @@ func (f *Fixtures) QueryTotalSupplyOf(denom string, flags ...string) sdk.Int {
 //___________________________________________________________________________________
 // query token
 
-func (f *Fixtures) QueryToken(denom string, flags ...string) tokenModule.Token {
-	cmd := fmt.Sprintf("%s query token token %s %s", f.LinkcliBinary, denom, f.Flags())
+func (f *Fixtures) QueryToken(symbol, tokenID string, flags ...string) tokenModule.Token {
+	cmd := fmt.Sprintf("%s query token token %s %s", f.LinkcliBinary, symbol, f.Flags())
+	if len(tokenID) != 0 {
+		cmd = fmt.Sprintf("%s query token token %s %s %s", f.LinkcliBinary, symbol, tokenID, f.Flags())
+	}
+	cmd = addFlags(cmd, flags)
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
@@ -960,8 +964,8 @@ func (f *Fixtures) QueryToken(denom string, flags ...string) tokenModule.Token {
 	return token
 }
 
-func (f *Fixtures) QueryCollection(denom string, flags ...string) tokenModule.CollectionWithTokens {
-	cmd := fmt.Sprintf("%s query token collection %s %s", f.LinkcliBinary, denom, f.Flags())
+func (f *Fixtures) QueryCollection(symbol string, flags ...string) tokenModule.CollectionWithTokens {
+	cmd := fmt.Sprintf("%s query token collection %s %s", f.LinkcliBinary, symbol, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
@@ -971,8 +975,12 @@ func (f *Fixtures) QueryCollection(denom string, flags ...string) tokenModule.Co
 	return collection
 }
 
-func (f *Fixtures) QueryTokenExpectEmpty(denom string, flags ...string) {
-	cmd := fmt.Sprintf("%s query token token %s %s", f.LinkcliBinary, denom, f.Flags())
+func (f *Fixtures) QueryTokenExpectEmpty(symbol, tokenID string, flags ...string) {
+	cmd := fmt.Sprintf("%s query token token %s %s", f.LinkcliBinary, symbol, f.Flags())
+	if len(tokenID) != 0 {
+		cmd = fmt.Sprintf("%s query token token %s %s %s", f.LinkcliBinary, symbol, tokenID, f.Flags())
+	}
+	cmd = addFlags(cmd, flags)
 	_, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.NotEmpty(f.T, errStr)
 

@@ -677,6 +677,50 @@ paths:
                       $ref: '#/components/schemas/CollectionToken'
         "500":
           description: Internal Server Error
+  /token/tokens/{symbol}/{token_id}:
+    get:
+      tags:
+        - Token
+      summary: Get the token details
+      parameters:
+        - name: symbol
+          in: path
+          description: Coin denomination
+          required: true
+          schema:
+            type: string
+          example: "conydkv"
+        - name: token_id
+          in: path
+          description: token id
+          required: true
+          schema:
+            type: string
+          example: "00000001"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    oneOf:
+                      - $ref: '#/components/schemas/TokenIDFT'
+                      - $ref: '#/components/schemas/TokenIDNFT'
+        "500":
+          description: Internal Server Error
   /token/tokens/{symbol}:
     get:
       tags:
@@ -709,7 +753,9 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    $ref: '#/components/schemas/Token'
+                    oneOf:
+                      - $ref: '#/components/schemas/TokenFT'
+                      - $ref: '#/components/schemas/TokenNFT'
         "500":
           description: Internal Server Error
   /token/tokens:
@@ -739,7 +785,11 @@ paths:
                   result:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Token'
+                      oneOf:
+                        - $ref: '#/components/schemas/TokenFT'
+                        - $ref: '#/components/schemas/TokenNFT'
+                        - $ref: '#/components/schemas/TokenIDFT'
+                        - $ref: '#/components/schemas/TokenIDNFT'
         "500":
           description: Internal Server Error
   /safetybox/{id}:
@@ -1389,24 +1439,94 @@ components:
     #-------------------------------
     # Token Models
     #-------------------------------
-    Token:
+    TokenFT:
       type: object
       properties:
-        name:
+        type:
           type: string
-          example: "conydkv"
-        symbol:
+          example: "link/FT"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "test-cony"
+            symbol:
+              type: string
+              example: "conydkv"
+            mintable:
+              type: boolean
+              example: true
+            decimals:
+              type: string
+              example: "8"
+    TokenNFT:
+      type: object
+      properties:
+        type:
           type: string
-          example: "conydkv"
-        mintable:
-          type: boolean
-          example: true
-        decimals:
+          example: "link/NFT"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "test-cony"
+            symbol:
+              type: string
+              example: "conydkv"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+    TokenIDFT:
+      type: object
+      properties:
+        type:
           type: string
-          example: "8"
-        token_uri:
+          example: "link/IDFT"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "test-cony"
+            symbol:
+              type: string
+              example: "conydkv"
+            mintable:
+              type: boolean
+              example: true
+            decimals:
+              type: string
+              example: "8"
+            token_id:
+              type: string
+              example: "00000001"
+    TokenIDNFT:
+      type: object
+      properties:
+        type:
           type: string
-          example: "example.com/token_uri"
+          example: "link/FT"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "test-cony"
+            symbol:
+              type: string
+              example: "conydkv"
+            owner:
+              $ref: '#/components/schemas/Address'
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            token_id:
+              type: string
+              example: "00000001"
     Collection:
       type: object
       properties:
@@ -1421,7 +1541,11 @@ components:
         tokens:
           type: array
           items:
-            $ref: '#/components/schemas/Token'
+            oneOf:
+              - $ref: '#/components/schemas/TokenFT'
+              - $ref: '#/components/schemas/TokenNFT'
+              - $ref: '#/components/schemas/TokenIDFT'
+              - $ref: '#/components/schemas/TokenIDNFT'
 
     #-------------------------------
     # Safety Box Models
