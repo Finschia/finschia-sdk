@@ -24,18 +24,6 @@ func NewMsgIssueNFT(name, symbol, tokenURI string, owner sdk.AccAddress) MsgIssu
 	}
 }
 
-// ATTENTION: to avoid embedded serialization implement this custom JSON marshaler
-// see https://github.com/tendermint/go-amino/issues/269
-func (msg MsgIssueNFT) MarshalJSON() ([]byte, error) {
-	type msgAlias MsgIssueNFT
-	return json.Marshal((msgAlias)(msg))
-}
-
-func (msg *MsgIssueNFT) UnmarshalJSON(data []byte) error {
-	type msgAlias *MsgIssueNFT
-	return json.Unmarshal(data, msgAlias(msg))
-}
-
 func (msg MsgIssueNFT) Route() string { return RouterKey }
 
 func (msg MsgIssueNFT) Type() string { return "issue_nft" }
@@ -65,18 +53,6 @@ func NewMsgIssueNFTCollection(name, symbol, tokenURI string, owner sdk.AccAddres
 		MsgIssueNFT:   NewMsgIssueNFT(name, symbol, tokenURI, owner),
 		MsgCollection: NewMsgCollection(tokenID),
 	}
-}
-
-// ATTENTION: to avoid embedded serialization implement this custom JSON marshaler
-// see https://github.com/tendermint/go-amino/issues/269
-func (msg MsgIssueNFTCollection) MarshalJSON() ([]byte, error) {
-	type msgAlias MsgIssueNFTCollection
-	return json.Marshal((msgAlias)(msg))
-}
-
-func (msg *MsgIssueNFTCollection) UnmarshalJSON(data []byte) error {
-	type msgAlias *MsgIssueNFTCollection
-	return json.Unmarshal(data, msgAlias(msg))
 }
 
 func (msg MsgIssueNFTCollection) Type() string { return "issue_nft_collection" }
