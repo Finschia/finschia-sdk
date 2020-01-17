@@ -58,7 +58,7 @@ func handleMsgIssue(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssue) sdk.Res
 		return err.Result()
 	}
 
-	token := NewFT(msg.Name, msg.Symbol, msg.Decimals, msg.Mintable)
+	token := NewFT(msg.Name, msg.Symbol, msg.TokenURI, msg.Decimals, msg.Mintable)
 	err := keeper.IssueFT(ctx, token, msg.Amount, msg.Owner)
 	if err != nil {
 		return err.Result()
@@ -83,7 +83,7 @@ func handleMsgIssueCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssu
 		return err.Result()
 	}
 
-	token := NewIDFT(msg.Name, msg.Symbol, msg.Decimals, msg.Mintable, msg.TokenID)
+	token := NewIDFT(msg.Name, msg.Symbol, msg.TokenURI, msg.Decimals, msg.Mintable, msg.TokenID)
 	err := keeper.IssueFT(ctx, token, msg.Amount, msg.Owner)
 	if err != nil {
 		return err.Result()

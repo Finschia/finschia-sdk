@@ -30,7 +30,7 @@ func TestGetAllTokens(t *testing.T) {
 
 	t.Log("issue a token")
 	{
-		token := types.NewFT(defaultName, defaultSymbol, sdk.NewInt(defaultDecimals), true)
+		token := types.NewFT(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, keeper.IssueFT(ctx, token, sdk.NewInt(defaultAmount), addr1))
 		tokens := keeper.GetAllTokens(ctx)
 		require.Equal(t, defaultName, tokens[0].GetName())
@@ -41,21 +41,29 @@ func TestGetAllTokens(t *testing.T) {
 	}
 	t.Log("issue tokens and get tokens")
 	{
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, defaultSymbol+"1", sdk.NewInt(defaultDecimals), true), sdk.NewInt(100), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, defaultSymbol+"2", sdk.NewInt(defaultDecimals), true), sdk.NewInt(200), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, defaultSymbol+"3", sdk.NewInt(defaultDecimals), true), sdk.NewInt(300), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, defaultSymbol+"4", sdk.NewInt(defaultDecimals), true), sdk.NewInt(400), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, defaultSymbol+"1", defaultTokenURI+"1", sdk.NewInt(defaultDecimals), true), sdk.NewInt(100), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, defaultSymbol+"2", defaultTokenURI+"2", sdk.NewInt(defaultDecimals), true), sdk.NewInt(200), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, defaultSymbol+"3", defaultTokenURI+"3", sdk.NewInt(defaultDecimals), true), sdk.NewInt(300), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, defaultSymbol+"4", defaultTokenURI+"4", sdk.NewInt(defaultDecimals), true), sdk.NewInt(400), addr1))
 		tokens := keeper.GetAllTokens(ctx)
 		{
 			require.Equal(t, defaultName, tokens[0].GetName())
 			require.Equal(t, defaultSymbol, tokens[0].GetSymbol())
 			require.Equal(t, true, tokens[0].(types.FT).GetMintable())
+			require.Equal(t, defaultTokenURI, tokens[0].GetTokenURI())
 		}
 		{
 			require.Equal(t, defaultSymbol+"1", tokens[1].GetSymbol())
 			require.Equal(t, defaultSymbol+"2", tokens[2].GetSymbol())
 			require.Equal(t, defaultSymbol+"3", tokens[3].GetSymbol())
 			require.Equal(t, defaultSymbol+"4", tokens[4].GetSymbol())
+		}
+
+		{
+			require.Equal(t, defaultTokenURI+"1", tokens[1].GetTokenURI())
+			require.Equal(t, defaultTokenURI+"2", tokens[2].GetTokenURI())
+			require.Equal(t, defaultTokenURI+"3", tokens[3].GetTokenURI())
+			require.Equal(t, defaultTokenURI+"4", tokens[4].GetTokenURI())
 		}
 
 		{
@@ -91,13 +99,14 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 
 	t.Log("Issue a token")
 	{
-		setuptoken := types.NewFT(defaultName, defaultSymbol, sdk.NewInt(defaultDecimals), true)
-		require.NoError(t, keeper.IssueFT(ctx, setuptoken, sdk.NewInt(900), addr1))
+		setupToken := types.NewFT(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+		require.NoError(t, keeper.IssueFT(ctx, setupToken, sdk.NewInt(900), addr1))
 
 		token, err := keeper.GetToken(ctx, defaultSymbol)
 		require.NoError(t, err)
 		require.Equal(t, defaultName, token.GetName())
 		require.Equal(t, defaultSymbol, token.GetSymbol())
+		require.Equal(t, defaultTokenURI, token.GetTokenURI())
 		require.Equal(t, int64(defaultDecimals), token.(types.FT).GetDecimals().Int64())
 		require.Equal(t, true, token.(types.FT).GetMintable())
 		require.Equal(t, int64(900), keeper.accountKeeper.GetAccount(ctx, addr1).GetCoins().AmountOf(defaultSymbol).Int64())
@@ -109,7 +118,7 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 	}
 	t.Log("Issue a token again FAIL")
 	{
-		token := types.NewFT(defaultName, defaultSymbol, sdk.NewInt(defaultDecimals), true)
+		token := types.NewFT(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
 		require.Error(t, keeper.IssueFT(ctx, token, sdk.NewInt(900), addr1))
 	}
 
@@ -315,13 +324,13 @@ func TestGetPrefixedTokens(t *testing.T) {
 	require.Equal(t, uint64(0), ak.GetAccount(ctx, addr1).GetAccountNumber())
 
 	{
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLink+"1", sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLink+"2", sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLink+"3", sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixCony+"1", sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixCony+"2", sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLine+"1", sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLine+"2", sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLink+"1", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLink+"2", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLink+"3", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixCony+"1", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixCony+"2", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLine+"1", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueFT(ctx, types.NewFT(defaultName, symbolPrefixLine+"2", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
 	}
 	{
 		tokens := keeper.GetAllTokens(ctx)

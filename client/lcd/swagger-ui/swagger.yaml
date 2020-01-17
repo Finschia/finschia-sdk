@@ -1454,6 +1454,9 @@ components:
             symbol:
               type: string
               example: "conydkv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
             mintable:
               type: boolean
               example: true
@@ -1469,14 +1472,14 @@ components:
         value:
           type: object
           properties:
+            owner:
+              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "test-cony"
             symbol:
               type: string
               example: "conydkv"
-            owner:
-              $ref: '#/components/schemas/Address'
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1495,6 +1498,9 @@ components:
             symbol:
               type: string
               example: "conydkv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
             mintable:
               type: boolean
               example: true
@@ -1513,14 +1519,14 @@ components:
         value:
           type: object
           properties:
+            owner:
+              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "test-cony"
             symbol:
               type: string
               example: "conydkv"
-            owner:
-              $ref: '#/components/schemas/Address'
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1693,14 +1699,14 @@ components:
         value:
           type: object
           properties:
+            owner:
+              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "cony"
             symbol:
               type: string
               example: "conydkv"
-            owner:
-              $ref: '#/components/schemas/Address'
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1723,14 +1729,14 @@ components:
         value:
           type: object
           properties:
+            owner:
+              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "cony"
             symbol:
               type: string
               example: "conydkv"
-            owner:
-              $ref: '#/components/schemas/Address'
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1756,14 +1762,14 @@ components:
         value:
           type: object
           properties:
+            owner:
+              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "cony"
             symbol:
               type: string
               example: "conydkv"
-            owner:
-              $ref: '#/components/schemas/Address'
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1777,14 +1783,14 @@ components:
         value:
           type: object
           properties:
+            owner:
+              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "cony"
             symbol:
               type: string
               example: "conydkv"
-            owner:
-              $ref: '#/components/schemas/Address'
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -2218,9 +2224,9 @@ components:
           "safety_box_id": "my_safety_box",
           "allocator_address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "coins": [{
-            "denom": "link",
-            "amount": "2"
-          }]
+                      "denom": "link",
+                      "amount": "2"
+                    }]
         }
       },
       {
@@ -2230,9 +2236,9 @@ components:
           "from_address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to_address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "coins": [{
-            "denom": "link",
-            "amount": "2"
-          }]
+                      "denom": "link",
+                      "amount": "2"
+                    }]
         }
       },
       {
@@ -2241,9 +2247,9 @@ components:
           "safety_box_id": "my_safety_box",
           "returner_address": "linkreturnormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "coins": [{
-            "denom": "link",
-            "amount": "1"
-          }]
+                      "denom": "link",
+                      "amount": "1"
+                    }]
         }
       },
       {
@@ -2252,9 +2258,9 @@ components:
           "safety_box_id": "my_safety_box",
           "allocator_address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "coins": [{
-            "denom": "link",
-            "amount": "1"
-          }]
+                      "denom": "link",
+                      "amount": "1"
+                    }]
         }
       },
       {

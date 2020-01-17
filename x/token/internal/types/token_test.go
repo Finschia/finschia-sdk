@@ -8,23 +8,27 @@ import (
 )
 
 const (
-	defaultName     = "description"
+	defaultName     = "name"
 	defaultSymbol   = "linktkn"
 	defaultTokenURI = "token-uri"
 	defaultDecimals = 6
 	defaultTokenID  = "00000001"
 )
 
+var (
+	defaultAddr = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+)
+
 func TestToken(t *testing.T) {
 	// NewXX with arguments.
 	// Serialize it and Deserialize to other variable.
 	// Compare both are the same.
-
 	{
-		token := NewFT(defaultName, defaultSymbol, sdk.NewInt(defaultDecimals), true)
+		token := NewFT(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
 		require.Equal(t, defaultName, token.GetName())
 		require.Equal(t, defaultSymbol, token.GetSymbol())
 		require.Equal(t, defaultSymbol, token.GetDenom())
+		require.Equal(t, defaultTokenURI, token.GetTokenURI())
 		require.Equal(t, int64(defaultDecimals), token.GetDecimals().Int64())
 		require.Equal(t, true, token.GetMintable())
 
@@ -42,13 +46,12 @@ func TestToken(t *testing.T) {
 
 	}
 	{
-		addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-		token := NewNFT(defaultName, defaultSymbol, defaultTokenURI, addr)
+		token := NewNFT(defaultName, defaultSymbol, defaultTokenURI, defaultAddr)
 		require.Equal(t, defaultName, token.GetName())
 		require.Equal(t, defaultSymbol, token.GetSymbol())
 		require.Equal(t, defaultSymbol, token.GetDenom())
 		require.Equal(t, defaultTokenURI, token.GetTokenURI())
-		require.Equal(t, addr, token.GetOwner())
+		require.Equal(t, defaultAddr, token.GetOwner())
 
 		var token2 NFT
 		bz, err := ModuleCdc.MarshalJSON(token)
@@ -63,13 +66,14 @@ func TestToken(t *testing.T) {
 		require.Equal(t, token.GetOwner(), token2.GetOwner())
 	}
 	{
-		token := NewIDFT(defaultName, defaultSymbol, sdk.NewInt(defaultDecimals), true, defaultTokenID)
+		token := NewIDFT(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true, defaultTokenID)
 		require.Equal(t, defaultName, token.GetName())
 		require.Equal(t, defaultSymbol, token.GetSymbol())
 		require.Equal(t, defaultSymbol+defaultTokenID, token.GetDenom())
 		require.Equal(t, int64(defaultDecimals), token.GetDecimals().Int64())
 		require.Equal(t, true, token.GetMintable())
 		require.Equal(t, defaultTokenID, token.GetTokenID())
+		require.Equal(t, defaultTokenURI, token.GetTokenURI())
 
 		var token2 FT
 		bz, err := ModuleCdc.MarshalJSON(token)
@@ -85,13 +89,13 @@ func TestToken(t *testing.T) {
 		require.Equal(t, token.GetTokenID(), token2.GetTokenID())
 	}
 	{
-		addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-		token := NewIDNFT(defaultName, defaultSymbol, defaultTokenURI, addr, defaultTokenID)
+
+		token := NewIDNFT(defaultName, defaultSymbol, defaultTokenURI, defaultAddr, defaultTokenID)
 		require.Equal(t, defaultName, token.GetName())
 		require.Equal(t, defaultSymbol, token.GetSymbol())
 		require.Equal(t, defaultSymbol+defaultTokenID, token.GetDenom())
 		require.Equal(t, defaultTokenURI, token.GetTokenURI())
-		require.Equal(t, addr, token.GetOwner())
+		require.Equal(t, defaultAddr, token.GetOwner())
 		require.Equal(t, defaultTokenID, token.GetTokenID())
 
 		var token2 NFT
