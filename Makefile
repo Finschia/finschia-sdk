@@ -69,7 +69,7 @@ build-swagger-docs: statik versioning-swagger-docs
 	statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
 
 versioning-swagger-docs:
-	sed -ri 's/version: "[^\s]+"/version: "$(strip $(BASE_VERSION))"/' client/lcd/swagger-ui/swagger.yaml
+	perl -pi -e 's/version: "v[^\s]+"/version: "$(strip $(BASE_VERSION))"/' client/lcd/swagger-ui/swagger.yaml
 
 install: go.sum
 	go install $(BUILD_FLAGS) ./cmd/linkd
