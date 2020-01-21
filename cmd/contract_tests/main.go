@@ -34,16 +34,6 @@ func main() {
 		makeExpectedEvidenceNull(t)
 	})
 
-	h.Before("/blocks_with_tx_results/{from_height} > Get blocks with tx result from from_height to from_height+fetchsize. > 200 > application/json", func(t *transaction.Transaction) {
-		expected := unmarshaler.UnmarshalJSON(&t.Expected.Body)
-		body := expected.GetProperty("items").([]interface{})
-		for i := 0; i < len(body); i++ {
-			body[i].(map[string]interface{})["block"].(map[string]interface{})["block"].(map[string]interface{})["evidence"].(map[string]interface{})["evidence"] = nil
-		}
-		newBody, _ := json.Marshal(expected.Body)
-		t.Expected.Body = string(newBody)
-	})
-
 	// dredd can not validate items inside array in 12.1.0, so validate them in hook
 	h.BeforeEachValidation(func(t *transaction.Transaction) {
 		compareEachBody(t)

@@ -39,7 +39,7 @@ func newTestCodec() *codec.Codec {
 	return cdc
 }
 
-func SetupTestInput(t *testing.T) TestInput {
+func SetupTestInput(t *testing.T) *TestInput {
 
 	keyAuth := sdk.NewKVStoreKey(auth.StoreKey)
 	keyParams := sdk.NewKVStoreKey(params.StoreKey)
@@ -87,5 +87,5 @@ func SetupTestInput(t *testing.T) TestInput {
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
 	supplyKeeper.SetSupply(ctx, supply.NewSupply(sdk.NewCoins()))
 
-	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: bankKeeper}
+	return &TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: bankKeeper}
 }

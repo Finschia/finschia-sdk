@@ -139,7 +139,7 @@ paths:
           example: 20
       responses:
         200:
-          description: return blocks and txResult of block
+          description: return blocks and tx_response of block
           content:
             application/json:
               schema:
@@ -624,7 +624,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "conydkv"
+          example: "conyxxv"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -689,7 +689,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "conydkv"
+          example: "con2xxv"
         - name: token_id
           in: path
           description: token id
@@ -733,7 +733,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "conydkv"
+          example: "conyxxv"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -1036,6 +1036,50 @@ components:
               $ref: '#/components/schemas/BlockID'
             header:
               $ref: '#/components/schemas/BlockHeader'
+    ResultBlockBlock:
+      type: object
+      properties:
+        block:
+          $ref: '#/components/schemas/BlockStringTx'
+        block_meta:
+          type: object
+          properties:
+            block_id:
+              $ref: '#/components/schemas/BlockID'
+            header:
+              $ref: '#/components/schemas/BlockHeader'
+    BlockStringTx:
+      type: object
+      properties:
+        data:
+          type: object
+          description: a wrapper for a list of transactions
+          properties:
+            txs:
+              type: array
+              items:
+                $ref: '#/components/schemas/Hash'
+        evidence:
+          type: object
+          description: a list of evidence of malfeasance. There is currently only a single type, the DuplicateVoteEvidence
+          properties:
+            evidence:
+              type: array
+              items:
+                $ref: '#/components/schemas/DuplicateVoteEvidence'
+        header:
+          $ref: '#/components/schemas/BlockHeader'
+        last_commit:
+          type: object
+          description: the set of signatures of validators that committed the last block
+          properties:
+            block_id:
+              $ref: '#/components/schemas/BlockID'
+            precommits:
+              type: array
+              items:
+                $ref: '#/components/schemas/Vote'
+              nullable: true
     Block:
       type: object
       properties:
@@ -1068,38 +1112,8 @@ components:
               items:
                 $ref: '#/components/schemas/Vote'
               nullable: true
-    BlockOnlyTxHash:
-      type: object
-      properties:
-        data:
-          type: object
-          description: a wrapper for a list of transactions
-          properties:
-            txs:
-              type: array
-              items:
-                $ref: '#/components/schemas/Hash'
-        evidence:
-          type: object
-          description: a list of evidence of malfeasance. There is currently only a single type, the DuplicateVoteEvidence
-          properties:
-            evidence:
-              type: array
-              items:
-                $ref: '#/components/schemas/DuplicateVoteEvidence'
-        header:
-          $ref: '#/components/schemas/BlockHeader'
-        last_commit:
-          type: object
-          description: the set of signatures of validators that committed the last block
-          properties:
-            block_id:
-              $ref: '#/components/schemas/BlockID'
-            precommits:
-              type: array
-              items:
-                $ref: '#/components/schemas/Vote'
-              nullable: true
+    ResultBlock:
+      $ref: '#/components/schemas/ResultBlockBlock'
     BlockHeader:
       type: object
       description: contains merkle hashes for various chain states
@@ -1216,6 +1230,45 @@ components:
           items:
             $ref: '#/components/schemas/TxQuery'
           nullable: true
+    TxResponse:
+      type: object
+      properties:
+        height:
+          type: string
+          example: "368"
+        txhash:
+          $ref: '#/components/schemas/Hash'
+        raw_log:
+          type: string
+          description: The raw string output of the logger
+          example: '[{"msg_index":0,"success":true,"log":""}]'
+        logs:
+          type: array
+          items:
+            type: object
+            properties:
+              msg_index:
+                type: integer
+              success:
+                type: boolean
+              log:
+                type: string
+        gas_wanted:
+          type: string
+          description: Amount of gas requested for transaction
+          example: "200000"
+        gas_used:
+          type: string
+          description: Amount of gas consumed by transaction
+          example: "26354"
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/Event'
+        tx:
+          $ref: '#/components/schemas/Tx'
+        timestamp:
+          $ref: '#/components/schemas/Timestamp'
     TxQuery:
       type: object
       properties:
@@ -1290,6 +1343,7 @@ components:
             anyOf:
               - $ref: '#/components/schemas/MsgSend'
               - $ref: '#/components/schemas/MsgIssue'
+              - $ref: '#/components/schemas/MsgModifyTokenURI'
               - $ref: '#/components/schemas/MsgIssueCollection'
               - $ref: '#/components/schemas/MsgIssueNFT'
               - $ref: '#/components/schemas/MsgIssueNFTCollection'
@@ -1333,11 +1387,6 @@ components:
         memo:
           type: string
           example: "26354"
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/KVPair'
-
 
 
     #-------------------------------
@@ -1354,17 +1403,20 @@ components:
           type: boolean
       required:
         - "items"
-        - "hasMore"
+        - "has_more"
     ResultBlockWithTxResponse:
       type: "object"
-      required:
-        - "block"
-        - "txResults"
       properties:
         result_block:
-          $ref: '#/components/schemas/BlockQuery'
+          $ref: '#/components/schemas/ResultBlock'
         tx_responses:
-          $ref: '#/components/schemas/TxQuery'
+          type: array
+          nullable: true
+          example: null
+          items:
+            $ref: '#/components/schemas/TxResponse'
+      required:
+        - "result_block"
 
     #-------------------------------
     # Evidence Models
@@ -1453,10 +1505,7 @@ components:
               example: "test-cony"
             symbol:
               type: string
-              example: "conydkv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
+              example: "conyxxv"
             mintable:
               type: boolean
               example: true
@@ -1479,7 +1528,7 @@ components:
               example: "test-cony"
             symbol:
               type: string
-              example: "conydkv"
+              example: "conyxxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1497,10 +1546,7 @@ components:
               example: "test-cony"
             symbol:
               type: string
-              example: "conydkv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
+              example: "conyxxv"
             mintable:
               type: boolean
               example: true
@@ -1526,7 +1572,7 @@ components:
               example: "test-cony"
             symbol:
               type: string
-              example: "conydkv"
+              example: "conyxxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1538,7 +1584,7 @@ components:
       properties:
         symbol:
           type: string
-          example: "conydkv"
+          example: "conyxxv"
     CollectionToken:
       type: object
       properties:
@@ -1706,7 +1752,7 @@ components:
               example: "cony"
             symbol:
               type: string
-              example: "conydkv"
+              example: "conyxxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1719,6 +1765,27 @@ components:
             decimals:
               type: string
               example: "8"
+    MsgModifyTokenURI:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgModifyTokenURI"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            token_id:
+              type: string
+              example: "00000001"
     MsgIssueCollection:
       type: object
       description: msg of collection token creation
@@ -1736,7 +1803,7 @@ components:
               example: "cony"
             symbol:
               type: string
-              example: "conydkv"
+              example: "conyxxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1769,7 +1836,7 @@ components:
               example: "cony"
             symbol:
               type: string
-              example: "conydkv"
+              example: "conyxxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1790,7 +1857,7 @@ components:
               example: "cony"
             symbol:
               type: string
-              example: "conydkv"
+              example: "conyxxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -2118,7 +2185,7 @@ components:
         "type": "link/MsgIssue",
         "value": {
           "name": "cony",
-          "symbol": "conydkv",
+          "symbol": "conyxxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
           "amount": "1000000",
@@ -2127,10 +2194,19 @@ components:
         }
       },
       {
+        "type": "link/MsgModifyTokenURI",
+        "value": {
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "conyxxv",
+          "token_uri": "example.com/token_uri",
+          "token_id": ""
+        }
+      },
+      {
         "type": "link/MsgIssueCollection",
         "value": {
           "name": "cony",
-          "symbol": "conydk2",
+          "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
           "amount": "1000000",
@@ -2143,7 +2219,7 @@ components:
         "type": "link/MsgIssueNFT",
         "value": {
           "name": "cony",
-          "symbol": "conydk3",
+          "symbol": "con3xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri"
         }
@@ -2152,7 +2228,7 @@ components:
         "type": "link/MsgIssueNFTCollection",
         "value": {
           "name": "cony",
-          "symbol": "conydk4",
+          "symbol": "con4xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
           "token_id": "00000001"
@@ -2163,7 +2239,7 @@ components:
         "value": {
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "denom": "conydkv",
+                       "denom": "conyxxv",
                        "amount": "1"
                      }]
         }
@@ -2173,7 +2249,7 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "denom": "conydkv",
+                       "denom": "conyxxv",
                        "amount": "1"
                      }]
         }

@@ -121,17 +121,14 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, denom, tok
 	if err != nil {
 		return err
 	}
-	nft, ok := token.(types.NFT)
-	if !ok {
-		return types.ErrInvalidTokenType(types.DefaultCodespace, fmt.Sprintf("token with symbol[%s] and token-id [%s] is not nft", token.GetSymbol(), token.GetTokenID()))
-	}
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(nft.GetDenom())
+
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
 	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
 		return types.ErrTokenPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
 	}
-	nft.SetTokenURI(tokenURI)
+	token.SetTokenURI(tokenURI)
 
-	err = k.ModifyToken(ctx, nft)
+	err = k.ModifyToken(ctx, token)
 	if err != nil {
 		return err
 	}
@@ -139,11 +136,11 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, denom, tok
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyTokenURI,
-			sdk.NewAttribute(types.AttributeKeyName, nft.GetName()),
-			sdk.NewAttribute(types.AttributeKeySymbol, nft.GetSymbol()),
-			sdk.NewAttribute(types.AttributeKeyDenom, nft.GetDenom()),
+			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyDenom, token.GetDenom()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, nft.GetTokenURI()),
+			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
 		),
 	})
 	return nil

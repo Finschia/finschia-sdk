@@ -13,7 +13,8 @@ import (
 
 const (
 	symbolCony  = "cony"
-	description = "description"
+	symbolBrown = "brown"
+	name        = "description"
 	tokenuri    = "tokenuri"
 )
 
@@ -21,13 +22,15 @@ var verifyEventFunc = func(t *testing.T, expected sdk.Events, actual sdk.Events)
 	require.Equal(t, sdk.StringifyEvents(expected.ToABCIEvents()).String(), sdk.StringifyEvents(actual.ToABCIEvents()).String())
 }
 var (
-	amount      = sdk.NewInt(1000)
-	decimals    = sdk.NewInt(6)
-	priv1       = secp256k1.GenPrivKey()
-	addr1       = sdk.AccAddress(priv1.PubKey().Address())
-	suffixAddr1 = symbolCony + addr1.String()[len(addr1.String())-3:]
-	priv2       = secp256k1.GenPrivKey()
-	addr2       = sdk.AccAddress(priv2.PubKey().Address())
+	amount   = sdk.NewInt(1000)
+	decimals = sdk.NewInt(6)
+	priv1    = secp256k1.GenPrivKey()
+	addr1    = sdk.AccAddress(priv1.PubKey().Address())
+	symbol1  = symbolCony + addr1.String()[len(addr1.String())-3:]
+	symbol2  = symbolBrown + addr1.String()[len(addr1.String())-3:]
+
+	priv2 = secp256k1.GenPrivKey()
+	addr2 = sdk.AccAddress(priv2.PubKey().Address())
 )
 
 func TestHandlerUnrecognized(t *testing.T) {
@@ -42,20 +45,47 @@ func TestHandlerUnrecognized(t *testing.T) {
 	require.False(t, res.Code.IsOK())
 }
 
+type handlerTestSuite struct {
+	ti *testCommon.TestInput
+}
+
+//This prevents you from being affected by the previous Context.
+//There is no need to explicitly clear the previous context every time.
+//It means that you can focus on writing your testing code what you want to prove.
+func (ht *handlerTestSuite) handleNewMsg(msg sdk.Msg) sdk.Result {
+	ht.ti.Ctx = ht.ti.Ctx.WithEventManager(sdk.NewEventManager())
+	h := NewHandler(ht.ti.Keeper)
+	return h(ht.ti.Ctx, msg)
+}
+
 func TestHandlerModifyTokenURI(t *testing.T) {
-	input := testCommon.SetupTestInput(t)
-	ctx, keeper := input.Ctx, input.Keeper
+	h := handlerTestSuite{testCommon.SetupTestInput(t)}
 	modifyTokenURI := "modifyTokenURI"
-	h := NewHandler(keeper)
 
 	t.Log("token not exist")
 	{
-		ctx = ctx.WithEventManager(sdk.NewEventManager())
-		res := h(ctx, types.NewMsgModifyTokenURI(addr1, suffixAddr1, modifyTokenURI, "tokenId0"))
+		res := h.handleNewMsg(types.NewMsgModifyTokenURI(addr1, symbol1, modifyTokenURI, "tokenId0"))
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
 		require.Equal(t, types.CodeTokenNotExist, res.Code)
 		verifyEventFunc(t, nil, res.Events)
+	}
+	t.Log("modify token for FT")
+	{
+		require.True(t, h.handleNewMsg(types.NewMsgIssue(name, symbol1, tokenuri, addr1, amount, decimals, true)).Code.IsOK())
+		res := h.handleNewMsg(types.NewMsgModifyTokenURI(addr1, symbol1, modifyTokenURI, ""))
+		require.True(t, res.Code.IsOK())
+		require.Equal(t, types.EventTypeModifyTokenURI, res.Events[0].Type)
+		require.Equal(t, modifyTokenURI, string(res.Events[0].Attributes[4].Value))
+	}
+
+	t.Log("modify token for NFT")
+	{
+		require.True(t, h.handleNewMsg(types.NewMsgIssueNFT(name, symbol2, tokenuri, addr1)).Code.IsOK())
+		res := h.handleNewMsg(types.NewMsgModifyTokenURI(addr1, symbol2, modifyTokenURI, ""))
+		require.True(t, res.Code.IsOK())
+		require.Equal(t, types.EventTypeModifyTokenURI, res.Events[0].Type)
+		require.Equal(t, modifyTokenURI, string(res.Events[0].Attributes[4].Value))
 	}
 }
 
@@ -66,12 +96,12 @@ func TestHandlerIssueFT(t *testing.T) {
 	h := NewHandler(keeper)
 
 	{
-		msg := types.NewMsgIssue(description, suffixAddr1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssue(name, symbol1, tokenuri, addr1, amount, decimals, true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssue(description, suffixAddr1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssue(name, symbol1, tokenuri, addr1, amount, decimals, true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -86,12 +116,12 @@ func TestHandlerIssueNFT(t *testing.T) {
 	h := NewHandler(keeper)
 
 	{
-		msg := types.NewMsgIssueNFT(description, suffixAddr1, tokenuri, addr1)
+		msg := types.NewMsgIssueNFT(name, symbol1, tokenuri, addr1)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueNFT(description, suffixAddr1, tokenuri, addr1)
+		msg := types.NewMsgIssueNFT(name, symbol1, tokenuri, addr1)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -106,24 +136,24 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 	h := NewHandler(keeper)
 
 	{
-		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr1, amount, decimals, true, "00000001")
+		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr1, amount, decimals, true, "00000001")
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr1, amount, decimals, true, "00000001")
+		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr1, amount, decimals, true, "00000001")
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
 		require.Equal(t, types.CodeTokenExist, res.Code)
 	}
 	{
-		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr1, amount, decimals, true, "00000002")
+		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr1, amount, decimals, true, "00000002")
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr2, amount, decimals, true, "00000003")
+		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr2, amount, decimals, true, "00000003")
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -132,7 +162,7 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 
 	permission := types.Permission{
 		Action:   "issue",
-		Resource: suffixAddr1,
+		Resource: symbol1,
 	}
 
 	{
@@ -141,7 +171,7 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr2, amount, decimals, true, "00000003")
+		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr2, amount, decimals, true, "00000003")
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -151,7 +181,7 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCollection(description, suffixAddr1, tokenuri, addr1, amount, decimals, true, "00000004")
+		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr1, amount, decimals, true, "00000004")
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -161,19 +191,15 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 
 func TestEvents(t *testing.T) {
 	input := testCommon.SetupTestInput(t)
-
 	ctx, keeper := input.Ctx, input.Keeper
-
 	h := NewHandler(keeper)
-
-	suffixAddr1 = addr1.String()[len(addr1.String())-3:]
-
+	suffixAddr1 := addr1.String()[len(addr1.String())-3:]
 	tokenAddr := sdk.AccAddress(crypto.AddressHash([]byte("token")))
 
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	{
 		symbol := "t01" + suffixAddr1
-		msg := types.NewMsgIssue(description, symbol, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssue(name, symbol, tokenuri, addr1, amount, decimals, true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 
@@ -190,7 +216,7 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_resource", symbol)),
 			sdk.NewEvent(types.EventTypeModifyTokenURIPermToken, sdk.NewAttribute("perm_action", types.ModifyActionName)),
-			sdk.NewEvent("issue_token", sdk.NewAttribute("name", description)),
+			sdk.NewEvent("issue_token", sdk.NewAttribute("name", name)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("denom", symbol)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("owner", addr1.String())),
@@ -211,7 +237,7 @@ func TestEvents(t *testing.T) {
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	{
 		symbol := "t02" + suffixAddr1
-		msg := types.NewMsgIssueNFT(description, symbol, tokenuri, addr1)
+		msg := types.NewMsgIssueNFT(name, symbol, tokenuri, addr1)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 
@@ -222,7 +248,7 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("perm_resource", symbol)),
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("perm_action", "issue")),
-			sdk.NewEvent("issue_token", sdk.NewAttribute("name", description)),
+			sdk.NewEvent("issue_token", sdk.NewAttribute("name", name)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("denom", symbol)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("owner", addr1.String())),
@@ -245,7 +271,7 @@ func TestEvents(t *testing.T) {
 	{
 		symbol := "t03" + suffixAddr1
 		symbolWithID := symbol + "00000001"
-		msg := types.NewMsgIssueCollection(description, symbol, tokenuri, addr1, amount, decimals, true, "00000001")
+		msg := types.NewMsgIssueCollection(name, symbol, tokenuri, addr1, amount, decimals, true, "00000001")
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 
@@ -259,7 +285,7 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("perm_resource", symbolWithID)),
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("perm_action", "mint")),
-			sdk.NewEvent("issue_token", sdk.NewAttribute("name", description)),
+			sdk.NewEvent("issue_token", sdk.NewAttribute("name", name)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("denom", symbolWithID)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("owner", addr1.String())),
@@ -284,7 +310,7 @@ func TestEvents(t *testing.T) {
 	{
 		symbol := "t04" + suffixAddr1
 		symbolWithID := symbol + "00000001"
-		msg := types.NewMsgIssueNFTCollection(description, symbol, tokenuri, addr1, "00000001")
+		msg := types.NewMsgIssueNFTCollection(name, symbol, tokenuri, addr1, "00000001")
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 
@@ -295,7 +321,7 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("perm_resource", symbol)),
 			sdk.NewEvent("grant_perm_token", sdk.NewAttribute("perm_action", "issue")),
-			sdk.NewEvent("issue_token", sdk.NewAttribute("name", description)),
+			sdk.NewEvent("issue_token", sdk.NewAttribute("name", name)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("denom", symbolWithID)),
 			sdk.NewEvent("issue_token", sdk.NewAttribute("owner", addr1.String())),
