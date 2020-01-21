@@ -93,7 +93,7 @@ func (t BaseFT) String() string {
 
 var _ NFT = (*BaseNFT)(nil)
 var _ json.Marshaler = (*BaseNFT)(nil)
-var _ json.Unmarshaler = (*BaseFT)(nil)
+var _ json.Unmarshaler = (*BaseNFT)(nil)
 
 type BaseNFT struct {
 	*BaseToken
