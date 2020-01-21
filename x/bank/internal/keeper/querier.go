@@ -2,41 +2,49 @@ package keeper
 
 import (
 	"fmt"
+	"github.com/line/link/x/bank/internal/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	cbank "github.com/cosmos/cosmos-sdk/x/bank"
-
-	"github.com/line/link/x/bank/internal/types"
 )
 
 const (
-	QueryBalanceOf = "balance_of"
+	// query balance path
+	QueryBalance = "balances"
 )
 
-func NewQuerier(k cbank.Keeper, fallbackQuerier sdk.Querier) sdk.Querier {
+// NewQuerier returns a new sdk.Keeper instance.
+func NewQuerier(k Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, sdk.Error) {
 		switch path[0] {
-		case QueryBalanceOf:
-			return queryBalanceOf(ctx, req, k)
+		case QueryBalance:
+			return queryBalance(ctx, req, k)
 
 		default:
-			return fallbackQuerier(ctx, path, req)
+			return nil, sdk.ErrUnknownRequest("unknown bank query endpoint")
 		}
 	}
 }
 
-// queryBalanceOf fetch an account's balance of given denomination for the supplied height.
+// queryBalance fetch an account's balance for the supplied height.
 // Height and account address are passed as first and second path components respectively.
-func queryBalanceOf(ctx sdk.Context, req abci.RequestQuery, k cbank.Keeper) ([]byte, sdk.Error) {
-	var params types.QueryBalanceOfParams
+func queryBalance(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, sdk.Error) {
+	var params types.QueryBalanceParams
 
 	if err := types.ModuleCdc.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
+	if len(params.Denom) == 0 {
+		bz, err := codec.MarshalJSONIndent(types.ModuleCdc, k.GetCoins(ctx, params.Address))
+		if err != nil {
+			return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
+		}
+
+		return bz, nil
+	}
 	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, k.GetCoins(ctx, params.Address).AmountOf(params.Denom))
 	if err != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))

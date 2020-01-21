@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/params"
 
-	"github.com/line/link/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 )
 
 type TestInput struct {

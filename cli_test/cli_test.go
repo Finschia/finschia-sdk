@@ -825,30 +825,30 @@ func TestLinkCLIQueryTxPagination(t *testing.T) {
 	accFoo := f.QueryAccount(fooAddr)
 	seq := accFoo.GetSequence()
 
-	for i := 1; i <= 30; i++ {
+	for i := 1; i <= 4; i++ {
 		success, _, _ := f.TxSend(keyFoo, barAddr, sdk.NewInt64Coin(fooDenom, int64(i)), fmt.Sprintf("--sequence=%d", seq), "-y")
 		require.True(t, success)
 		seq++
 	}
 
 	// perPage = 15, 2 pages
-	txsPage1 := f.QueryTxs(1, 15, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPage1.Txs, 15)
-	require.Equal(t, txsPage1.Count, 15)
-	txsPage2 := f.QueryTxs(2, 15, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPage2.Txs, 15)
+	txsPage1 := f.QueryTxs(1, 2, fmt.Sprintf("message.sender:%s", fooAddr))
+	require.Len(t, txsPage1.Txs, 2)
+	require.Equal(t, txsPage1.Count, 2)
+	txsPage2 := f.QueryTxs(2, 2, fmt.Sprintf("message.sender:%s", fooAddr))
+	require.Len(t, txsPage2.Txs, 2)
 	require.NotEqual(t, txsPage1.Txs, txsPage2.Txs)
 
 	// perPage = 16, 2 pages
-	txsPage1 = f.QueryTxs(1, 16, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPage1.Txs, 16)
-	txsPage2 = f.QueryTxs(2, 16, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPage2.Txs, 14)
+	txsPage1 = f.QueryTxs(1, 3, fmt.Sprintf("message.sender:%s", fooAddr))
+	require.Len(t, txsPage1.Txs, 3)
+	txsPage2 = f.QueryTxs(2, 3, fmt.Sprintf("message.sender:%s", fooAddr))
+	require.Len(t, txsPage2.Txs, 1)
 	require.NotEqual(t, txsPage1.Txs, txsPage2.Txs)
 
 	// perPage = 50
 	txsPageFull := f.QueryTxs(1, 50, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPageFull.Txs, 30)
+	require.Len(t, txsPageFull.Txs, 4)
 	require.Equal(t, txsPageFull.Txs, append(txsPage1.Txs, txsPage2.Txs...))
 
 	// perPage = 0

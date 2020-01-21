@@ -16,3 +16,11 @@ type AccountKeeper interface {
 
 	IterateAccounts(ctx sdk.Context, process func(exported.Account) bool)
 }
+
+// BankKeeper defines the expected bank keeper (noalias)
+type BankKeeper interface {
+	GetCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	HasCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) bool
+	SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Error)
+	AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Error)
+}

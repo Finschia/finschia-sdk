@@ -1725,7 +1725,7 @@ components:
       properties:
         type:
           type: string
-          example: "cosmos-sdk/MsgSend"
+          example: "link/MsgSend"
         value:
           type: object
           properties:
@@ -2169,7 +2169,7 @@ components:
     MsgExamples:
       value: [
       {
-        "type": "cosmos-sdk/MsgSend",
+        "type": "link/MsgSend",
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",

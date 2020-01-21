@@ -24,8 +24,15 @@ func ExampleTxSendSize() {
 	addr2 := sdk.AccAddress(priv2.PubKey().Address())
 	coins := sdk.Coins{sdk.NewCoin("denom", sdk.NewInt(10))}
 	msg1 := bank.MsgMultiSend{
-		Inputs:  []bank.Input{bank.NewInput(addr1, coins)},
-		Outputs: []bank.Output{bank.NewOutput(addr2, coins)},
+		Inputs: []bank.Input{{
+			Address: addr1,
+			Coins:   coins,
+		}},
+
+		Outputs: []bank.Output{{
+			Address: addr2,
+			Coins:   coins,
+		}},
 	}
 	fee := auth.NewStdFee(gas, coins)
 	signBytes := auth.StdSignBytes("example-chain-ID",
