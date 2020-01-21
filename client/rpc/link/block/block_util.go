@@ -160,7 +160,7 @@ func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResultWithTxRes, er
 					txFetchErrors[idx] = fmt.Errorf("an error occurred while fetching a tx by hash(%x), err(%s)", txHash, err)
 				}
 			}()
-			resTx, err := client.Tx(txHash, u.lcliCtx.TrustNode())
+			resTx, err := client.Tx(txHash, !u.lcliCtx.TrustNode())
 			if err != nil {
 				panic(err)
 			}
