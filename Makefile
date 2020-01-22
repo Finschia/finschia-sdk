@@ -159,6 +159,7 @@ setup-contract-tests-data: build build-swagger-docs build-contract-tests-hooks y
 	./lcd_test/testdata/prepare_chain_state.sh
 
 start-link: setup-contract-tests-data
+	pkill linkd || true
 	./build/linkd --home /tmp/contract_tests/.linkd start &
 	@sleep 5s
 	./lcd_test/testdata/wait-for-it.sh localhost 26657
@@ -169,8 +170,7 @@ setup-transactions: start-link
 contract-tests: setup-transactions
 	@echo "Running LINK LCD for contract tests"
 	@bash ./lcd_test/testdata/generate_tx_iteratively.sh &
-	dredd && pkill linkd || true
-	pkill -f ./lcd_test/testdata/generate_tx_iteratively.sh
+	./lcd_test/testdata/run_dredd.sh
 
 run-lcd-contract-tests:
 	@echo "Running LINK LCD for contract tests"
@@ -182,8 +182,11 @@ dredd-test:
 	@bash ./lcd_test/testdata/replace_symbols.sh --replace_tx_hash
 	@bash ./lcd_test/testdata/generate_tx_iteratively.sh &
 	./lcd_test/testdata/wait-for-it.sh localhost 26657
-	dredd || true
-	pkill -f ./lcd_test/testdata/generate_tx_iteratively.sh
+	dredd; pkill -f ./lcd_test/testdata/generate_tx_iteratively.sh
+
+stop-dredd-test:
+	pkill linkcli || true
+	pkill -9 linkd || true
 
 ########################################
 ### Simulation
