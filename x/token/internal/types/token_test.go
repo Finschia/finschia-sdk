@@ -41,6 +41,7 @@ func TestToken(t *testing.T) {
 		require.Equal(t, token.GetName(), token2.GetName())
 		require.Equal(t, token.GetSymbol(), token2.GetSymbol())
 		require.Equal(t, token.GetDenom(), token2.GetDenom())
+		require.Equal(t, token.GetTokenURI(), token2.GetTokenURI())
 		require.Equal(t, token.GetDecimals().Int64(), token2.GetDecimals().Int64())
 		require.Equal(t, token.GetMintable(), token2.GetMintable())
 
@@ -84,6 +85,7 @@ func TestToken(t *testing.T) {
 		require.Equal(t, token.GetName(), token2.GetName())
 		require.Equal(t, token.GetSymbol(), token2.GetSymbol())
 		require.Equal(t, token.GetDenom(), token2.GetDenom())
+		require.Equal(t, token.GetTokenURI(), token2.GetTokenURI())
 		require.Equal(t, token.GetDecimals().Int64(), token2.GetDecimals().Int64())
 		require.Equal(t, token.GetMintable(), token2.GetMintable())
 		require.Equal(t, token.GetTokenID(), token2.GetTokenID())

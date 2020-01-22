@@ -192,6 +192,7 @@ func (t BaseFT) MarshalJSON() ([]byte, error) {
 	}{
 		Name:     t.Name,
 		Symbol:   t.Symbol,
+		TokenURI: t.TokenURI,
 		Decimals: t.Decimals,
 		Mintable: t.Mintable,
 	})
@@ -229,6 +230,7 @@ func (t BaseIDFT) MarshalJSON() ([]byte, error) {
 	}{
 		Name:     t.Name,
 		Symbol:   t.Symbol,
+		TokenURI: t.TokenURI,
 		Decimals: t.Decimals,
 		Mintable: t.Mintable,
 		TokenID:  t.TokenID,
