@@ -131,6 +131,18 @@ jobs:
           root: /tmp/workspace
           paths:
             - bin
+  lint:
+    <<: *linux_defaults
+    parallelism: 1
+    steps:
+      - attach_workspace:
+          at: /tmp/workspace
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run: go get github.com/golangci/golangci-lint/cmd/golangci-lint
+      - run: make lint
   unit_test:
     <<: *linux_defaults
     parallelism: 2
@@ -346,9 +358,12 @@ workflows:
       - fmt:
           requires:
             - check-skippable-pr
-      - setup_dependencies:
+      - lint:
           requires:
             - fmt
+      - setup_dependencies:
+          requires:
+            - lint
       - unit_test:
           requires:
             - setup_dependencies

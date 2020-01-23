@@ -7,7 +7,7 @@ import (
 func CompareJSONFormat(expected interface{}, actual interface{}) bool {
 	switch expected.(type) {
 	case []interface{}:
-		array1 := expected.([]interface{})
+		array1, _ := expected.([]interface{})
 		array2, ok := actual.([]interface{})
 		if !ok {
 			go log.Println("One is an array but not the other")
@@ -27,7 +27,7 @@ func CompareJSONFormat(expected interface{}, actual interface{}) bool {
 		return true
 
 	case map[string]interface{}:
-		map1 := expected.(map[string]interface{})
+		map1, _ := expected.(map[string]interface{})
 		map2, ok := actual.(map[string]interface{})
 		if !ok {
 			go log.Println("One is an object but not the other")
