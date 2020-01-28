@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"os"
@@ -14,8 +13,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto/ed25519"
-
 	"github.com/tendermint/tendermint/libs/log"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -86,14 +83,6 @@ func runHackCmd(cmd *cobra.Command, args []string) error {
 		}
 		checkHeight = (topHeight + bottomHeight) / 2
 	}
-}
-
-func base64ToPub(b64 string) ed25519.PubKeyEd25519 {
-	data, _ := base64.StdEncoding.DecodeString(b64)
-	var pubKey ed25519.PubKeyEd25519
-	copy(pubKey[:], data)
-	return pubKey
-
 }
 
 func hexToBytes(h string) []byte {

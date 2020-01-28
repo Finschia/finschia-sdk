@@ -2,7 +2,6 @@ package block
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/golang/mock/gomock"
@@ -23,10 +22,7 @@ const (
 )
 
 var (
-	fromHeight       = int64(1)
-	verifyErr        = errors.New("height must be greater than 0")
-	blockMetadataErr = errors.New("header heights are mismatched")
-	blockErr         = errors.New("data hash doesn't match header")
+	fromHeight = int64(1)
 )
 
 func TestValidateBlock(t *testing.T) {

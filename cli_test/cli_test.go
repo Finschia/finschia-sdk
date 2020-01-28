@@ -300,7 +300,7 @@ func TestLinkCLISend(t *testing.T) {
 	)
 	require.Empty(t, stderr)
 	require.True(t, success)
-	msg := unmarshalStdTx(f.T, stdout)
+	msg := UnmarshalStdTx(f.T, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Len(t, msg.Msgs, 1)
 	require.Len(t, msg.GetSignatures(), 0)
@@ -417,7 +417,7 @@ func TestLinkCLICreateValidator(t *testing.T) {
 
 	require.True(f.T, success)
 	require.Empty(f.T, stderr)
-	msg := unmarshalStdTx(f.T, stdout)
+	msg := UnmarshalStdTx(f.T, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -510,8 +510,8 @@ func TestLinkCLIQuerySupply(t *testing.T) {
 	totalSupply := f.QueryTotalSupply()
 	totalSupplyOf := f.QueryTotalSupplyOf(fooDenom)
 
-	require.Equal(t, totalCoins, totalSupply)
-	require.True(sdk.IntEq(t, totalCoins.AmountOf(fooDenom), totalSupplyOf))
+	require.Equal(t, TotalCoins, totalSupply)
+	require.True(sdk.IntEq(t, TotalCoins.AmountOf(fooDenom), totalSupplyOf))
 
 	f.Cleanup()
 }
@@ -544,7 +544,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 		fooAddr.String(), "Text", "Test", "test", sdk.NewCoin(denom, proposalTokens), "--generate-only", "-y")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg := unmarshalStdTx(t, stdout)
+	msg := UnmarshalStdTx(t, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -583,7 +583,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	success, stdout, stderr = f.TxGovDeposit(1, fooAddr.String(), sdk.NewCoin(denom, depositTokens), "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -618,7 +618,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	success, stdout, stderr = f.TxGovVote(1, gov.OptionYes, fooAddr.String(), "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -885,7 +885,7 @@ func TestLinkCLIValidateSignatures(t *testing.T) {
 	success, stdout, stderr = f.TxSign(keyFoo, unsignedTxFile.Name())
 	require.True(t, success)
 	require.Empty(t, stderr)
-	stdTx := unmarshalStdTx(t, stdout)
+	stdTx := UnmarshalStdTx(t, stdout)
 	require.Equal(t, len(stdTx.Msgs), 1)
 	require.Equal(t, 1, len(stdTx.GetSignatures()))
 	require.Equal(t, fooAddr.String(), stdTx.GetSigners()[0].String())
@@ -900,7 +900,7 @@ func TestLinkCLIValidateSignatures(t *testing.T) {
 
 	// modify the transaction
 	stdTx.Memo = "MODIFIED-ORIGINAL-TX-BAD"
-	bz := marshalStdTx(t, stdTx)
+	bz := MarshalStdTx(t, stdTx)
 	modSignedTxFile := WriteToNewTempFile(t, string(bz))
 	defer os.Remove(modSignedTxFile.Name())
 
@@ -927,7 +927,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	success, stdout, stderr := f.TxSend(fooAddr.String(), barAddr, sdk.NewCoin(denom, sendTokens), "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg := unmarshalStdTx(t, stdout)
+	msg := UnmarshalStdTx(t, stdout)
 	require.Equal(t, msg.Fee.Gas, uint64(client.DefaultGasLimit))
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -936,7 +936,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	success, stdout, stderr = f.TxSend(fooAddr.String(), barAddr, sdk.NewCoin(denom, sendTokens), "--gas=100", "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.Equal(t, msg.Fee.Gas, uint64(100))
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -945,7 +945,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	success, stdout, stderr = f.TxSend(fooAddr.String(), barAddr, sdk.NewCoin(denom, sendTokens), "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.True(t, msg.Fee.Gas > 0)
 	require.Equal(t, len(msg.Msgs), 1)
 
@@ -961,7 +961,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	// Test sign
 	success, stdout, _ = f.TxSign(keyFoo, unsignedTxFile.Name())
 	require.True(t, success)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 1, len(msg.GetSignatures()))
 	require.Equal(t, fooAddr.String(), msg.GetSigners()[0].String())
@@ -2126,7 +2126,7 @@ func TestLinkCLIMempool(t *testing.T) {
 		require.Equal(t, 1, result.Count)
 		require.Equal(t, 1, result.Total)
 
-		txHash := unmarshalTxResponse(t, stdout).TxHash
+		txHash := UnmarshalTxResponse(t, stdout).TxHash
 		require.Equal(t, txHash, result.Txs[0])
 	}
 
@@ -2524,7 +2524,7 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 	success, stdout, stderr := f.TxTokenIssue(fooAddr.String(), "test", "test", 10000, 6, true, "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg := unmarshalStdTx(t, stdout)
+	msg := UnmarshalStdTx(t, stdout)
 	require.True(t, msg.Fee.Gas > 0)
 	require.Equal(t, len(msg.Msgs), 1)
 
@@ -2540,7 +2540,7 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 	// Test sign
 	success, stdout, _ = f.TxSign(keyFoo, unsignedTxFile.Name())
 	require.True(t, success)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 1, len(msg.GetSignatures()))
 	require.Equal(t, fooAddr.String(), msg.GetSigners()[0].String())

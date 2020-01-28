@@ -73,7 +73,7 @@ const (
 )
 
 var (
-	totalCoins = sdk.NewCoins(
+	TotalCoins = sdk.NewCoins(
 		sdk.NewCoin(DenomLink, sdk.TokensFromConsensusPower(6000)),
 		sdk.NewCoin(DenomStake, sdk.TokensFromConsensusPower(600000000)),
 		sdk.NewCoin(fee2Denom, sdk.TokensFromConsensusPower(2000000)),
@@ -1215,20 +1215,20 @@ func WriteToNewTempFile(t *testing.T, s string) *os.File {
 	return fp
 }
 
-func marshalStdTx(t *testing.T, stdTx auth.StdTx) []byte {
+func MarshalStdTx(t *testing.T, stdTx auth.StdTx) []byte {
 	cdc := app.MakeCodec()
 	bz, err := cdc.MarshalBinaryBare(stdTx)
 	require.NoError(t, err)
 	return bz
 }
 
-func unmarshalStdTx(t *testing.T, s string) (stdTx auth.StdTx) {
+func UnmarshalStdTx(t *testing.T, s string) (stdTx auth.StdTx) {
 	cdc := app.MakeCodec()
 	require.Nil(t, cdc.UnmarshalJSON([]byte(s), &stdTx))
 	return
 }
 
-func unmarshalTxResponse(t *testing.T, s string) (txResp sdk.TxResponse) {
+func UnmarshalTxResponse(t *testing.T, s string) (txResp sdk.TxResponse) {
 	cdc := app.MakeCodec()
 	require.Nil(t, cdc.UnmarshalJSON([]byte(s), &txResp))
 	return
