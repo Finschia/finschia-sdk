@@ -27,10 +27,10 @@ func TestHandlerSend(t *testing.T) {
 	h := NewHandler(input.K)
 
 	const (
-		length3Denom = "foo"
-		length5Denom = "f2345"
-		length6Denom = "f23456"
-		length8Denom = "f2345678"
+		length3Denom  = "foo"
+		length5Denom  = "f2345"
+		length6Denom  = "f23456"
+		length5Denom2 = "f2346"
 	)
 
 	addr1 := sdk.AccAddress([]byte("addr1"))
@@ -79,7 +79,7 @@ func TestHandlerSend(t *testing.T) {
 
 		outputs := []Output{
 			types.NewOutput(addr1, sdk.NewCoins(sdk.NewInt64Coin(length3Denom, 7))),
-			types.NewOutput(addr2, sdk.NewCoins(sdk.NewInt64Coin(length8Denom, 2))),
+			types.NewOutput(addr2, sdk.NewCoins(sdk.NewInt64Coin(length5Denom2, 2))),
 		}
 		msg := types.NewMsgMultiSend(inputs, outputs)
 		require.Panics(t, func() { h(ctx, msg) })
@@ -110,6 +110,7 @@ func TestHandlerSendRestricted(t *testing.T) {
 	{
 		coins := sdk.NewCoins(sdk.NewInt64Coin(length3Denom, 10))
 		msg := types.NewMsgSend(addr1, addr2, coins)
+		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.IsOK())
 	}
@@ -117,8 +118,7 @@ func TestHandlerSendRestricted(t *testing.T) {
 	{
 		coins := sdk.NewCoins(sdk.NewInt64Coin(length8Denom, 10))
 		msg := types.NewMsgSend(addr1, addr2, coins)
-		res := h(ctx, msg)
-		require.False(t, res.IsOK())
+		require.Error(t, msg.ValidateBasic())
 	}
 
 	{

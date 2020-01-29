@@ -147,3 +147,68 @@ The token module emits the following events:
 | revoke_perm      | perm_resource  | {symbol}                 |
 | revoke_perm      | perm_action    | issue/burn               |
 
+### MsgTransferFT
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | revoke_permission        |
+| message          | module         | bank                     |
+| transfer_ft      | from           | {fromAddress}            |
+| transfer_ft      | to             | {toAddress}              |
+| transfer_ft      | symbol         | {symbol}                 |
+| transfer_ft      | amount         | {amount}                 |
+
+### MsgTransferIDFT
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | revoke_permission        |
+| message          | module         | bank                     |
+| transfer_idft    | from           | {fromAddress}            |
+| transfer_idft    | to             | {toAddress}              |
+| transfer_idft    | symbol         | {symbol}                 |
+| transfer_idft    | token_id       | {token_id}               |
+| transfer_idft    | amount         | {amount}                 |
+
+### MsgTransferNFT
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | revoke_permission        |
+| transfer_nft     | from           | {fromAddress}            |
+| transfer_nft     | to             | {toAddress}              |
+| transfer_nft     | symbol         | {symbol}                 |
+
+### MsgTransferIDNFT
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | revoke_permission        |
+| transfer_idnft   | from           | {fromAddress}            |
+| transfer_idnft   | to             | {toAddress}              |
+| transfer_idnft   | symbol         | {symbol}                 |
+| transfer_idnft   | token_id       | {token_id}               |
+
+### MsgAttach
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | revoke_permission        |
+| attach_token     | from           | {fromAddress}            |
+| attach_token     | to_token       | {toTokenDenom}           |
+| attach_token     | token          | {tokenDenom}             |
+
+### MsgDetach
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | revoke_permission        |
+| detach_token     | from           | {fromAddress}            |
+| detach_token     | to             | {toAddress}              |
+| detach_token     | token          | {tokenDenom}             |

@@ -10,6 +10,9 @@ const (
 	QueryPerms       = "perms"
 	QueryCollections = "collections"
 	QuerySupply      = "supply"
+	QueryParent      = "parent"
+	QueryRoot        = "root"
+	QueryChildren    = "children"
 )
 
 type NodeQuerier interface {

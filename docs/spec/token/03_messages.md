@@ -106,3 +106,106 @@ type MsgRevokePermission struct {
 
 **Revoke Permission is to dump a permission from the `From` account**
 - `From` account must has the permission
+
+
+## MsgTransferFT
+
+```golang
+type MsgTransferFT struct {
+	FromAddress sdk.AccAddress `json:"from_address" yaml:"from_address"`
+	ToAddress   sdk.AccAddress `json:"to_address" yaml:"to_address"`
+	TokenSymbol string         `json:"token_symbol"`
+	Amount      sdk.Int        `json:"amount" yaml:"amount"`
+}
+```
+
+**Transfer message is to transfer a non-reserved fungible token**
+- Signer of this message must have the amount of the tokens
+- Token is subtracted from the `FromAddress` account
+- Token is added to the `ToAddress` account
+
+
+## MsgTransferIDFT
+
+```golang
+type MsgTransferFT struct {
+	FromAddress sdk.AccAddress `json:"from_address" yaml:"from_address"`
+	ToAddress   sdk.AccAddress `json:"to_address" yaml:"to_address"`
+	TokenSymbol string         `json:"token_symbol"`
+	TokenID     string         `json:"token_id"`
+	Amount      sdk.Int        `json:"amount" yaml:"amount"`
+}
+```
+
+**Transfer message is to transfer a collective non-reserved fungible token**
+- Signer of this message must have the amount of the tokens
+- Token is subtracted from the `FromAddress` account
+- Token is added to the `ToAddress` account
+
+
+## MsgTransferNFT
+
+```golang
+type MsgTransferNFT struct {
+	FromAddress sdk.AccAddress `json:"from_address"`
+	ToAddress   sdk.AccAddress `json:"to_address"`
+	TokenSymbol string         `json:"token_symbol"`
+}
+```
+
+**TransferNFT message is to transfer a non-fungible token**
+- Signer of this message must have the token
+- Token is subtracted from the `FromAddress` account
+- Token is added to the `ToAddress` account
+
+
+## MsgTransferIDNFT
+
+```golang
+type MsgTransferIDNFT struct {
+	FromAddress sdk.AccAddress `json:"from_address"`
+	ToAddress   sdk.AccAddress `json:"to_address"`
+	TokenSymbol string         `json:"token_symbol"`
+	TokenID     string         `json:"token_id"`
+}
+```
+
+**TransferIDNFT message is to transfer a collective non-fungible token**
+- Signer of this message must have the token
+- Token is subtracted from the `FromAddress` account
+- Token is added to the `ToAddress` account
+
+
+## MsgAttach
+
+```golang
+type MsgAttach struct {
+	FromAddress sdk.AccAddress `json:"from_address"`
+	Symbol      string         `json:"symbol"`
+	ToTokenID   string         `json:"to_token_id"`
+	TokenID     string         `json:"token_id"`
+}
+```
+
+**Attach message is to attach a non-fungible token to another non-fungible token**
+- Signer of this message must have the token
+- The token having TokenID is attached to the token having ToTokenID
+- If the owner of the ToToken is different with From, the owner of the Token is changed to the owner of ToToken
+- Cannot attach a child token of some other to any token
+
+
+## MsgDetach
+
+```golang
+type MsgDetach struct {
+	FromAddress sdk.AccAddress `json:"from_address"`
+	To          sdk.AccAddress `json:"to"`
+	Symbol      string         `json:"symbol"`
+	TokenID     string         `json:"token_id"`
+}
+```
+
+**Detach message is to detach a non-fungible token from another parent token**
+- Signer of this message must have the token
+- The token of TokenID will be owned by To
+- Cannot detach a non-child token from any token

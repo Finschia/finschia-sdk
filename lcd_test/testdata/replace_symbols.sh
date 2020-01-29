@@ -20,6 +20,7 @@ replace_address operator ${REPLACE_OPERATOR_ADDR}
 replace_address allocator ${REPLACE_ALLOCATOR_ADDR}
 replace_address issuer ${REPLACE_ISSUER_ADDR}
 replace_address returner ${REPLACE_RETURNER_ADDR}
+replace_address somebody ${REPLACE_SOMEBODY_ADDR}
 replace_address proxy ${REPLACE_PROXY_ADDR}
 replace_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
 

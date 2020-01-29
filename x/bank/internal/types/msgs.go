@@ -1,7 +1,9 @@
 package types
 
 import (
+	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/link/types"
 )
 
 // RouterKey is they name of the bank module
@@ -193,11 +195,10 @@ func ValidateInputsOutputs(inputs []Input, outputs []Output) sdk.Error {
 	return nil
 }
 func validateDenomination(coins sdk.Coins) sdk.Error {
-	//TODO: enable when https://github.com/line/link/pull/391 is ready
-	//for _, coin := range coins {
-	//	if err := types.ValidateSymbolReserved(coin.Denom); err != nil {
-	//		return types.ErrInvalidDenom(fmt.Sprintf("invalid denom [%s] send message supports 3~5 length denom only", coin.Denom))
-	//	}
-	//}
+	for _, coin := range coins {
+		if err := types.ValidateSymbolReserved(coin.Denom); err != nil {
+			return types.ErrInvalidDenom(fmt.Sprintf("invalid denom [%s] send message supports 3~5 length denom only", coin.Denom))
+		}
+	}
 	return nil
 }

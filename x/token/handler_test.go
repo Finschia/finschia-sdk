@@ -28,9 +28,10 @@ var (
 	addr1    = sdk.AccAddress(priv1.PubKey().Address())
 	symbol1  = symbolCony + addr1.String()[len(addr1.String())-3:]
 	symbol2  = symbolBrown + addr1.String()[len(addr1.String())-3:]
-
-	priv2 = secp256k1.GenPrivKey()
-	addr2 = sdk.AccAddress(priv2.PubKey().Address())
+	tokenId1 = "item0001"
+	tokenId2 = "item0002"
+	priv2    = secp256k1.GenPrivKey()
+	addr2    = sdk.AccAddress(priv2.PubKey().Address())
 )
 
 func TestHandlerUnrecognized(t *testing.T) {
@@ -375,4 +376,118 @@ func TestEvents(t *testing.T) {
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
+}
+
+func TestHandleTransfer(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper, ak, bk := input.Ctx, input.Keeper, input.Ak, input.Bk
+
+	h := NewHandler(keeper)
+
+	bk.SetSendEnabled(ctx, true)
+
+	acc := ak.NewAccountWithAddress(ctx, addr1)
+	err := acc.SetCoins(sdk.NewCoins(sdk.NewInt64Coin(symbol1, 100)))
+	require.NoError(t, err)
+	ak.SetAccount(ctx, acc)
+
+	msg := types.NewMsgTransferFT(addr1, addr2, symbol1, sdk.NewInt(10))
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+}
+
+func TestHandleTransferError(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, ak, bk := input.Ctx, input.Ak, input.Bk
+
+	bk.SetSendEnabled(ctx, true)
+
+	acc := ak.NewAccountWithAddress(ctx, addr1)
+	err := acc.SetCoins(sdk.NewCoins(sdk.NewInt64Coin("link", 100)))
+	require.NoError(t, err)
+	ak.SetAccount(ctx, acc)
+
+	msg := types.NewMsgTransferFT(addr1, addr2, "link", sdk.NewInt(10))
+	require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Only user defined token is possible: link").Error())
+}
+
+func TestHandleTransferIDFT(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper := input.Ctx, input.Keeper
+
+	h := NewHandler(keeper)
+
+	{
+		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr1, amount, decimals, true, tokenId1)
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferIDFT(addr1, addr2, symbol1, tokenId1, amount)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+}
+
+func TestHandleTransferNFT(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
+
+	h := NewHandler(keeper)
+
+	bk.SetSendEnabled(ctx, true)
+
+	{
+		msg := types.NewMsgIssueNFT(name, symbol1, tokenuri, addr1)
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferNFT(addr1, addr2, symbol1)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+}
+
+func TestHandleTransferIDNFT(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
+
+	h := NewHandler(keeper)
+
+	bk.SetSendEnabled(ctx, true)
+
+	{
+		msg := types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenId1)
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferIDNFT(addr1, addr2, symbol1, tokenId1)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+}
+
+func TestHandleAttachDetach(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
+
+	h := NewHandler(keeper)
+
+	bk.SetSendEnabled(ctx, true)
+
+	{
+		msg := types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenId1)
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg = types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenId2)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgAttach(addr1, symbol1, tokenId1, tokenId2)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+
+	msg2 := types.NewMsgDetach(addr1, addr1, symbol1, tokenId2)
+	res2 := h(ctx, msg2)
+	require.True(t, res2.Code.IsOK())
 }

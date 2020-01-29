@@ -4,6 +4,12 @@ source "./lcd_test/testdata/common.sh"
 
 JACK_ADDR="$(./build/linkcli --home /tmp/contract_tests/.linkcli keys show jack -a)"
 
+create_only_address () {
+  # create address
+  echo ${PASSWORD} | echo ${PASSWORD} | ./build/linkcli --home /tmp/contract_tests/.linkcli keys add "$1"
+  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_tests/.linkcli keys show "$1" -a)"
+}
+
 set_test_address () {
   # create address
   echo ${PASSWORD} | echo ${PASSWORD} | ./build/linkcli --home /tmp/contract_tests/.linkcli keys add "$1"
@@ -28,6 +34,7 @@ set_test_address operator ${REPLACE_OPERATOR_ADDR}
 set_test_address allocator ${REPLACE_ALLOCATOR_ADDR}
 set_test_address issuer ${REPLACE_ISSUER_ADDR}
 set_test_address returner ${REPLACE_RETURNER_ADDR}
+create_only_address somebody ${REPLACE_SOMEBODY_ADDR}
 set_test_address proxy ${REPLACE_PROXY_ADDR}
 set_test_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
 

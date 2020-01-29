@@ -30,8 +30,20 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgRevoke(ctx, keeper, msg)
 		case MsgModifyTokenURI:
 			return handleMsgModifyTokenURI(ctx, keeper, msg)
+		case MsgTransferFT:
+			return handleMsgTransferFT(ctx, keeper, msg)
+		case MsgTransferIDFT:
+			return handleMsgTransferIDFT(ctx, keeper, msg)
+		case MsgTransferNFT:
+			return handleMsgTransferNFT(ctx, keeper, msg)
+		case MsgTransferIDNFT:
+			return handleMsgTransferIDNFT(ctx, keeper, msg)
+		case MsgAttach:
+			return handleMsgAttach(ctx, keeper, msg)
+		case MsgDetach:
+			return handleMsgDetach(ctx, keeper, msg)
 		default:
-			errMsg := fmt.Sprintf("Unrecognized  Msg type: %v", msg.Type())
+			errMsg := fmt.Sprintf("Unrecognized  Msg type: %T", msg)
 			return sdk.ErrUnknownRequest(errMsg).Result()
 		}
 	}
@@ -230,5 +242,107 @@ func handleMsgModifyTokenURI(ctx sdk.Context, keeper keeper.Keeper, msg MsgModif
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String()),
 		),
 	})
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgTransferFT(ctx sdk.Context, k keeper.Keeper, msg types.MsgTransferFT) sdk.Result {
+	err := k.TransferFT(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol, msg.Amount)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgTransferIDFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransferIDFT) sdk.Result {
+	err := keeper.TransferIDFT(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol, msg.TokenID, msg.Amount)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgTransferNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransferNFT) sdk.Result {
+	err := keeper.TransferNFT(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgTransferIDNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransferIDNFT) sdk.Result {
+	err := keeper.TransferIDNFT(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol, msg.TokenID)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgAttach(ctx sdk.Context, keeper keeper.Keeper, msg MsgAttach) sdk.Result {
+	err := keeper.Attach(ctx, msg.FromAddress, msg.Symbol, msg.ToTokenID, msg.TokenID)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgDetach(ctx sdk.Context, keeper keeper.Keeper, msg MsgDetach) sdk.Result {
+	err := keeper.Detach(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol, msg.TokenID)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+		),
+	)
+
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }

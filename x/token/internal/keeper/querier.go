@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-// creates a querier for auth REST endpoints
+// creates a querier for token REST endpoints
 func NewQuerier(keeper Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, sdk.Error) {
 		switch path[0] {
@@ -21,6 +21,12 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 			return queryCollections(ctx, req, keeper)
 		case types.QuerySupply:
 			return querySupply(ctx, req, keeper)
+		case types.QueryParent:
+			return queryParent(ctx, req, keeper)
+		case types.QueryRoot:
+			return queryRoot(ctx, req, keeper)
+		case types.QueryChildren:
+			return queryChildren(ctx, req, keeper)
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown token query endpoint")
 		}
@@ -153,5 +159,71 @@ func queryAllCollections(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) 
 	if err != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
 	}
+	return bz, nil
+}
+
+func queryParent(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	var params types.QueryTokenParams
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	token, err := keeper.ParentOf(ctx, params.Symbol, params.TokenID)
+	if err != nil {
+		return nil, err
+	}
+	if token == nil {
+		return nil, nil
+	}
+
+	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, token)
+	if err2 != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+	}
+
+	return bz, nil
+}
+
+func queryRoot(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	var params types.QueryTokenParams
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	token, err := keeper.RootOf(ctx, params.Symbol, params.TokenID)
+	if err != nil {
+		return nil, err
+	}
+	if token == nil {
+		return nil, nil
+	}
+
+	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, token)
+	if err2 != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+	}
+
+	return bz, nil
+}
+
+func queryChildren(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	var params types.QueryTokenParams
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	tokens, err := keeper.ChildrenOf(ctx, params.Symbol, params.TokenID)
+	if err != nil {
+		return nil, err
+	}
+	if tokens == nil {
+		return nil, nil
+	}
+
+	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, tokens)
+	if err2 != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+	}
+
 	return bz, nil
 }

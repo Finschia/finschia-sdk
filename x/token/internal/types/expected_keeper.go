@@ -34,3 +34,12 @@ type AccountKeeper interface {
 
 	IterateAccounts(ctx sdk.Context, process func(auth.Account) bool)
 }
+
+type BankKeeper interface {
+	GetCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	SetCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) sdk.Error
+	HasCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) bool
+
+	SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Error)
+	AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, sdk.Error)
+}

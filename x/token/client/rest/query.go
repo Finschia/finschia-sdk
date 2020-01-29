@@ -18,6 +18,9 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/token/supply/{symbol}", QuerySupplysRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/collections/{symbol}", QueryCollectionRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/collections", QueryAllCollectionsRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/parent/{symbol}/{token_id}", QueryParentRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/root/{symbol}/{token_id}", QueryRootRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/children/{symbol}/{token_id}", QueryChildrenRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
 func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
@@ -172,5 +175,125 @@ func QuerySupplysRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, supply)
+	}
+}
+
+func QueryParentRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+		tokenID := vars["token_id"]
+
+		if len(symbol) == 0 {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, "symbol absent")
+			return
+		}
+
+		if len(tokenID) == 0 {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, "token_id absent")
+			return
+		}
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
+
+		if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		token, height, err := tokenGetter.GetParent(cliCtx, symbol, tokenID)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, token)
+	}
+}
+
+func QueryRootRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+		tokenID := vars["token_id"]
+
+		if len(symbol) == 0 {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, "symbol absent")
+			return
+		}
+
+		if len(tokenID) == 0 {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, "token_id absent")
+			return
+		}
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
+
+		if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		token, height, err := tokenGetter.GetRoot(cliCtx, symbol, tokenID)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, token)
+	}
+}
+
+func QueryChildrenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+		tokenID := vars["token_id"]
+
+		if len(symbol) == 0 {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, "symbol absent")
+			return
+		}
+
+		if len(tokenID) == 0 {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, "token_id absent")
+			return
+		}
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
+
+		if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+			return
+		}
+
+		tokens, height, err := tokenGetter.GetChildren(cliCtx, symbol, tokenID)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, tokens)
 	}
 }

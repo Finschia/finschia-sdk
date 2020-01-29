@@ -7,8 +7,6 @@ import (
 )
 
 func TestMsgs(t *testing.T) {
-	t.Skip() //TODO: enable when https://github.com/line/link/pull/391 is ready
-
 	const (
 		length3Denom = "foo"
 		length5Denom = "f2345"

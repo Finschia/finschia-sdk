@@ -353,3 +353,433 @@ func TestGetPrefixedTokens(t *testing.T) {
 		require.Equal(t, 5, len(tokens))
 	}
 }
+
+func TestAttachDetachScenario(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
+
+	const (
+		defaultTokenURI = ""
+		rightSymbol     = "symbol1"
+		diffSymbol      = "symbol2"
+		token1Id        = "id1"
+		token2Id        = "id2"
+		token3Id        = "id3"
+		token4Id        = "id4"
+		token5Id        = "id5"
+		token6Id        = "id6"
+		token7Symbol    = rightSymbol
+	)
+
+	//
+	// preparation: create account
+	//
+	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr1)
+		ak.SetAccount(ctx, acc)
+	}
+	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr2)
+		ak.SetAccount(ctx, acc)
+	}
+
+	// issue 6 tokens
+	// token1 = symbol1id1 by addr1
+	// token2 = symbol1id2 by addr1
+	// token3 = symbol1id3 by addr1
+	// token4 = symbol1id4 by addr1
+	// token5 = symbol2id5 by addr1
+	// token6 = symbol1id6 by addr2
+	// token7 = symbol1 by addr1
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr1, token1Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr1, token2Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr1, token3Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr1, token4Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, diffSymbol, defaultTokenURI, addr1, token5Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr2, token6Id), addr2)
+	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, token7Symbol, defaultTokenURI, addr1), addr1)
+
+	//
+	// attach success cases
+	//
+
+	// attach token1 <- token2 (basic case) : success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token2Id))
+
+	// attach token2 <- token3 (attach to a child): success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token2Id, token3Id))
+
+	// attach token1 <- token4 (attach to a root): success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token4Id))
+
+	// verify the relations
+
+	// root of token1 is nil
+	rootOfToken1, err1 := keeper.RootOf(ctx, rightSymbol, token1Id)
+	require.NoError(t, err1)
+	require.Equal(t, rootOfToken1, (*types.BaseIDNFT)(nil))
+
+	// root of token2 is token1
+	rootOfToken2, err2 := keeper.RootOf(ctx, rightSymbol, token2Id)
+	require.NoError(t, err2)
+	require.Equal(t, rootOfToken2.TokenID, token1Id)
+
+	// root of token3 is token1
+	rootOfToken3, err3 := keeper.RootOf(ctx, rightSymbol, token3Id)
+	require.NoError(t, err3)
+	require.Equal(t, rootOfToken3.TokenID, token1Id)
+
+	// root of token4 is token1
+	rootOfToken4, err4 := keeper.RootOf(ctx, rightSymbol, token4Id)
+	require.NoError(t, err4)
+	require.Equal(t, rootOfToken4.TokenID, token1Id)
+
+	// parent of token1 is nil
+	parentOfToken1, err5 := keeper.ParentOf(ctx, rightSymbol, token1Id)
+	require.NoError(t, err5)
+	require.Equal(t, parentOfToken1, (*types.BaseIDNFT)(nil))
+
+	// parent of token2 is token1
+	parentOfToken2, err6 := keeper.ParentOf(ctx, rightSymbol, token2Id)
+	require.NoError(t, err6)
+	require.Equal(t, parentOfToken2.TokenID, token1Id)
+
+	// parent of token3 is token2
+	parentOfToken3, err7 := keeper.ParentOf(ctx, rightSymbol, token3Id)
+	require.NoError(t, err7)
+	require.Equal(t, parentOfToken3.TokenID, token2Id)
+
+	// parent of token4 is token1
+	parentOfToken4, err8 := keeper.ParentOf(ctx, rightSymbol, token4Id)
+	require.NoError(t, err8)
+	require.Equal(t, parentOfToken4.TokenID, token1Id)
+
+	// children of token1 are token2, token4
+	childrenOfToken1, err9 := keeper.ChildrenOf(ctx, rightSymbol, token1Id)
+	require.NoError(t, err9)
+	require.Equal(t, len(childrenOfToken1), 2)
+	require.True(t, (childrenOfToken1[0].GetTokenID() == token2Id && childrenOfToken1[1].GetTokenID() == token4Id) || (childrenOfToken1[0].GetTokenID() == token4Id && childrenOfToken1[1].GetTokenID() == token2Id))
+
+	// child of token2 is token3
+	childrenOfToken2, err10 := keeper.ChildrenOf(ctx, rightSymbol, token2Id)
+	require.NoError(t, err10)
+	require.Equal(t, len(childrenOfToken2), 1)
+	require.True(t, childrenOfToken2[0].GetTokenID() == token3Id)
+
+	// child of token3 is empty
+	childrenOfToken3, err11 := keeper.ChildrenOf(ctx, rightSymbol, token3Id)
+	require.NoError(t, err11)
+	require.Equal(t, len(childrenOfToken3), 0)
+
+	// child of token4 is empty
+	childrenOfToken4, err12 := keeper.ChildrenOf(ctx, rightSymbol, token4Id)
+	require.NoError(t, err12)
+	require.Equal(t, len(childrenOfToken4), 0)
+
+	//
+	// attach error cases
+	//
+
+	// attach non-root token : failure
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token6Id, token2Id), types.ErrTokenAlreadyAChild(types.DefaultCodespace, rightSymbol+token2Id).Error())
+
+	// attach non-exist token : failure
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token5Id), types.ErrTokenNotExist(types.DefaultCodespace, rightSymbol+token5Id).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token5Id, token1Id), types.ErrTokenNotExist(types.DefaultCodespace, rightSymbol+token5Id).Error())
+
+	// attach non-mine token : failure
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token6Id), types.ErrTokenNotOwnedBy(types.DefaultCodespace, rightSymbol+token6Id, addr1).Error())
+
+	// attach non-IDNFT : failure
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, ""), types.ErrTokenNotIDNF(types.DefaultCodespace, rightSymbol).Error())
+
+	// attach to itself : failure
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token1Id), types.ErrCannotAttachToItself(types.DefaultCodespace, rightSymbol+token1Id).Error())
+
+	// attach to a descendant : failure
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token2Id, token1Id), types.ErrCannotAttachToADescendant(types.DefaultCodespace, rightSymbol+token1Id, rightSymbol+token2Id).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token3Id, token1Id), types.ErrCannotAttachToADescendant(types.DefaultCodespace, rightSymbol+token1Id, rightSymbol+token3Id).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token4Id, token1Id), types.ErrCannotAttachToADescendant(types.DefaultCodespace, rightSymbol+token1Id, rightSymbol+token4Id).Error())
+
+	//
+	// detach error cases
+	//
+
+	// detach not a child : failure
+	require.EqualError(t, keeper.Detach(ctx, addr1, addr1, rightSymbol, token1Id), types.ErrTokenNotAChild(types.DefaultCodespace, rightSymbol+token1Id).Error())
+
+	// detach non-mine token : failure
+	require.EqualError(t, keeper.Detach(ctx, addr1, addr1, rightSymbol, token6Id), types.ErrTokenNotOwnedBy(types.DefaultCodespace, rightSymbol+token6Id, addr1).Error())
+
+	// detach non-exist token : failure
+	require.EqualError(t, keeper.Detach(ctx, addr1, addr1, rightSymbol, token5Id), types.ErrTokenNotExist(types.DefaultCodespace, rightSymbol+token5Id).Error())
+
+	//
+	// detach success cases
+	//
+
+	// detach single child
+	require.NoError(t, keeper.Detach(ctx, addr1, addr1, rightSymbol, token4Id))
+
+	// detach a child having child
+	require.NoError(t, keeper.Detach(ctx, addr1, addr1, rightSymbol, token2Id))
+
+	// detach child and transfer to other
+	require.NoError(t, keeper.Detach(ctx, addr1, addr2, rightSymbol, token3Id))
+
+	//
+	// verify the relations
+	//
+	// parent of token2 is nil
+	parentOfToken2, err6 = keeper.ParentOf(ctx, rightSymbol, token2Id)
+	require.NoError(t, err6)
+	require.Equal(t, parentOfToken2, (*types.BaseIDNFT)(nil))
+
+	// parent of token3 is nil
+	parentOfToken3, err7 = keeper.ParentOf(ctx, rightSymbol, token3Id)
+	require.NoError(t, err7)
+	require.Equal(t, parentOfToken3, (*types.BaseIDNFT)(nil))
+
+	// parent of token4 is nil
+	parentOfToken4, err8 = keeper.ParentOf(ctx, rightSymbol, token4Id)
+	require.NoError(t, err8)
+	require.Equal(t, parentOfToken4, (*types.BaseIDNFT)(nil))
+
+	// children of token1 is empty
+	childrenOfToken1, err1 = keeper.ChildrenOf(ctx, rightSymbol, token1Id)
+	require.NoError(t, err1)
+	require.Equal(t, len(childrenOfToken1), 0)
+
+	// owner of token3 is addr2
+	token3, err13 := keeper.GetToken(ctx, rightSymbol+token3Id)
+	require.NoError(t, err13)
+	require.Equal(t, (token3.(*types.BaseIDNFT)).Owner, addr2)
+}
+
+func TestTransferIDFTScenario(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
+
+	const (
+		defaultTokenURI = ""
+		Symbol          = "symbol1"
+		tokenID         = "00000001"
+	)
+
+	//
+	// preparation: create account
+	//
+	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr1)
+		ak.SetAccount(ctx, acc)
+	}
+	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr2)
+		ak.SetAccount(ctx, acc)
+	}
+
+	// issue idf token
+	_ = keeper.IssueFT(ctx, types.NewIDFT(defaultName, Symbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true, tokenID), sdk.NewInt(defaultAmount), addr1)
+
+	//
+	// transfer success cases
+	//
+	require.NoError(t, keeper.TransferIDFT(ctx, addr1, addr2, Symbol, tokenID, sdk.NewInt(10)))
+
+	//
+	// transfer failure cases
+	//
+	// Insufficient coins
+	require.EqualError(t, keeper.TransferIDFT(ctx, addr1, addr2, Symbol, tokenID, sdk.NewInt(defaultAmount+10)), sdk.ErrInsufficientCoins("insufficient account funds; 990symbol100000001 < 1010symbol100000001").Error())
+}
+
+func TestTransferNFTScenario(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
+
+	const (
+		defaultTokenURI = ""
+		Symbol          = "symbol1"
+	)
+
+	//
+	// preparation: create account
+	//
+	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr1)
+		ak.SetAccount(ctx, acc)
+	}
+	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr2)
+		ak.SetAccount(ctx, acc)
+	}
+
+	// issue nf token
+	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, Symbol, defaultTokenURI, addr1), addr1)
+
+	//
+	// transfer success cases
+	//
+	require.NoError(t, keeper.TransferNFT(ctx, addr1, addr2, Symbol))
+
+	//
+	// transfer failure cases
+	//
+	// Insufficient coins
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, "Symbol2"), types.ErrTokenNotExist(types.DefaultCodespace, "Symbol2").Error())
+}
+
+func TestTransferIDNFTScenario(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
+
+	const (
+		defaultTokenURI = ""
+		rightSymbol     = "symbol1"
+		diffSymbol      = "symbol2"
+		token1Id        = "id1"
+		token2Id        = "id2"
+		token3Id        = "id3"
+		token4Id        = "id4"
+		token5Id        = "id5"
+		token6Id        = "id6"
+		token7Symbol    = rightSymbol
+	)
+
+	//
+	// preparation: create account
+	//
+	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr1)
+		ak.SetAccount(ctx, acc)
+	}
+	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr2)
+		ak.SetAccount(ctx, acc)
+	}
+
+	// issue 6 tokens
+	// token1 = symbol1id1 by addr1
+	// token2 = symbol1id2 by addr1
+	// token3 = symbol1id3 by addr1
+	// token4 = symbol1id4 by addr1
+	// token5 = symbol2id5 by addr1
+	// token6 = symbol1id6 by addr2
+	// token7 = symbol1 by addr1
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr1, token1Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr1, token2Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr1, token3Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr1, token4Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, diffSymbol, defaultTokenURI, addr1, token5Id), addr1)
+	_ = keeper.IssueNFT(ctx, types.NewIDNFT(defaultName, rightSymbol, defaultTokenURI, addr2, token6Id), addr2)
+	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, token7Symbol, defaultTokenURI, addr1), addr1)
+
+	// attach token1 <- token2 (basic case) : success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token2Id))
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token2Id, token3Id))
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token4Id))
+
+	//
+	// transfer failure cases
+	//
+
+	// transfer non-exist token : failure
+	require.EqualError(t, keeper.TransferIDNFT(ctx, addr1, addr2, rightSymbol, token5Id), types.ErrTokenNotExist(types.DefaultCodespace, rightSymbol+token5Id).Error())
+
+	// transfer a child : failure
+	require.EqualError(t, keeper.TransferIDNFT(ctx, addr1, addr2, rightSymbol, token2Id), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, rightSymbol+token2Id).Error())
+	require.EqualError(t, keeper.TransferIDNFT(ctx, addr1, addr2, rightSymbol, token3Id), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, rightSymbol+token3Id).Error())
+	require.EqualError(t, keeper.TransferIDNFT(ctx, addr1, addr2, rightSymbol, token4Id), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, rightSymbol+token4Id).Error())
+
+	// transfer non-mine : failure
+	require.EqualError(t, keeper.TransferIDNFT(ctx, addr1, addr2, rightSymbol, token6Id), types.ErrTokenNotOwnedBy(types.DefaultCodespace, rightSymbol+token6Id, addr1).Error())
+
+	//
+	// transfer success cases
+	//
+	require.NoError(t, keeper.TransferIDNFT(ctx, addr1, addr2, rightSymbol, token1Id))
+	require.NoError(t, keeper.TransferIDNFT(ctx, addr2, addr1, rightSymbol, token1Id))
+	require.NoError(t, keeper.TransferIDNFT(ctx, addr1, addr2, rightSymbol, token1Id))
+
+	// verify the owner of transferred tokens
+	// owner of token1 is addr2
+	token1, err1 := keeper.GetToken(ctx, rightSymbol+token1Id)
+	require.NoError(t, err1)
+	require.Equal(t, (token1.(*types.BaseIDNFT)).Owner, addr2)
+
+	// owner of token2 is addr2
+	token2, err2 := keeper.GetToken(ctx, rightSymbol+token2Id)
+	require.NoError(t, err2)
+	require.Equal(t, (token2.(*types.BaseIDNFT)).Owner, addr2)
+
+	// owner of token3 is addr2
+	token3, err3 := keeper.GetToken(ctx, rightSymbol+token3Id)
+	require.NoError(t, err3)
+	require.Equal(t, (token3.(*types.BaseIDNFT)).Owner, addr2)
+
+	// owner of token4 is addr2
+	token4, err4 := keeper.GetToken(ctx, rightSymbol+token4Id)
+	require.NoError(t, err4)
+	require.Equal(t, (token4.(*types.BaseIDNFT)).Owner, addr2)
+}
+
+// This test is from cosmos/x/bank/internal/keeper_test.go
+func TestTransferFT(t *testing.T) {
+	input := SetupTestInput(t)
+	ctx := input.Ctx
+
+	addr := sdk.AccAddress([]byte("addr1"))
+	addr2 := sdk.AccAddress([]byte("addr2"))
+	acc := input.Ak.NewAccountWithAddress(ctx, addr)
+
+	// Test GetCoins/SetCoins
+	input.Ak.SetAccount(ctx, acc)
+	require.True(t, input.Keeper.bankKeeper.GetCoins(ctx, addr).IsEqual(sdk.NewCoins()))
+
+	require.NoError(t, input.Keeper.bankKeeper.SetCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 10))))
+	require.True(t, input.Keeper.bankKeeper.GetCoins(ctx, addr).IsEqual(sdk.NewCoins(sdk.NewInt64Coin("foocoin", 10))))
+
+	// Test HasCoins
+	require.True(t, input.Keeper.bankKeeper.HasCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 10))))
+	require.True(t, input.Keeper.bankKeeper.HasCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 5))))
+	require.False(t, input.Keeper.bankKeeper.HasCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 15))))
+	require.False(t, input.Keeper.bankKeeper.HasCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("barcoin", 5))))
+
+	require.NoError(t, input.Keeper.bankKeeper.SetCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 15))))
+
+	// Test SendCoins
+	_, err := input.Keeper.bankKeeper.SubtractCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 5)))
+	require.NoError(t, err)
+	_, err = input.Keeper.bankKeeper.AddCoins(ctx, addr2, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 5)))
+	require.NoError(t, err)
+	require.True(t, input.Keeper.bankKeeper.GetCoins(ctx, addr).IsEqual(sdk.NewCoins(sdk.NewInt64Coin("foocoin", 10))))
+	require.True(t, input.Keeper.bankKeeper.GetCoins(ctx, addr2).IsEqual(sdk.NewCoins(sdk.NewInt64Coin("foocoin", 5))))
+
+	_, err = input.Keeper.bankKeeper.SubtractCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 50)))
+	require.Implements(t, (*sdk.Error)(nil), err)
+	require.True(t, input.Keeper.bankKeeper.GetCoins(ctx, addr).IsEqual(sdk.NewCoins(sdk.NewInt64Coin("foocoin", 10))))
+	require.True(t, input.Keeper.bankKeeper.GetCoins(ctx, addr2).IsEqual(sdk.NewCoins(sdk.NewInt64Coin("foocoin", 5))))
+
+	_, err = input.Keeper.bankKeeper.AddCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("barcoin", 30)))
+	require.NoError(t, err)
+	_, err = input.Keeper.bankKeeper.SubtractCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("barcoin", 10), sdk.NewInt64Coin("foocoin", 5)))
+	require.NoError(t, err)
+	_, err = input.Keeper.bankKeeper.AddCoins(ctx, addr2, sdk.NewCoins(sdk.NewInt64Coin("barcoin", 10), sdk.NewInt64Coin("foocoin", 5)))
+	require.NoError(t, err)
+	require.True(t, input.Keeper.bankKeeper.GetCoins(ctx, addr).IsEqual(sdk.NewCoins(sdk.NewInt64Coin("barcoin", 20), sdk.NewInt64Coin("foocoin", 5))))
+	require.True(t, input.Keeper.bankKeeper.GetCoins(ctx, addr2).IsEqual(sdk.NewCoins(sdk.NewInt64Coin("barcoin", 10), sdk.NewInt64Coin("foocoin", 10))))
+
+	// validate coins with invalid denoms or negative values cannot be sent
+	// NOTE: We must use the Coin literal as the constructor does not allow
+	// negative values.
+	_, err = input.Keeper.bankKeeper.SubtractCoins(ctx, addr, sdk.Coins{sdk.Coin{Denom: "FOOCOIN", Amount: sdk.NewInt(-5)}})
+	require.Error(t, err)
+}

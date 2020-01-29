@@ -11,6 +11,8 @@ import (
 func TestMsgBasics(t *testing.T) {
 	cdc := ModuleCdc
 	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+
 	addrSuffix := types.AccAddrSuffix(addr)
 	{
 		msg := NewMsgIssue("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
@@ -174,5 +176,131 @@ func TestMsgBasics(t *testing.T) {
 
 		require.Equal(t, msg.From, msg2.From)
 		require.Equal(t, msg.Permission, msg2.Permission)
+	}
+
+	{
+		msg := NewMsgTransferFT(addr, addr, "mytoken", sdk.NewInt(4))
+		require.Equal(t, "transfer-ft", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgTransferFT{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.FromAddress, msg2.FromAddress)
+		require.Equal(t, msg.ToAddress, msg2.ToAddress)
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+		require.Equal(t, msg.Amount, msg2.Amount)
+	}
+
+	{
+		msg := NewMsgTransferIDFT(addr, addr2, "symbol", "00000001", sdk.NewInt(1))
+		require.Equal(t, "transfer-idft", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgTransferIDFT{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.FromAddress, msg2.FromAddress)
+		require.Equal(t, msg.ToAddress, msg2.ToAddress)
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+		require.Equal(t, msg.TokenID, msg2.TokenID)
+		require.Equal(t, msg.Amount, msg2.Amount)
+	}
+
+	{
+		msg := NewMsgTransferNFT(addr, addr2, "symbol")
+		require.Equal(t, "transfer-nft", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgTransferNFT{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.FromAddress, msg2.FromAddress)
+		require.Equal(t, msg.ToAddress, msg2.ToAddress)
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+	}
+
+	{
+		msg := NewMsgTransferIDNFT(addr, addr2, "symbol", "00000001")
+		require.Equal(t, "transfer-idnft", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgTransferIDNFT{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.FromAddress, msg2.FromAddress)
+		require.Equal(t, msg.ToAddress, msg2.ToAddress)
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+		require.Equal(t, msg.TokenID, msg2.TokenID)
+	}
+
+	{
+		msg := NewMsgAttach(addr, "symbol", "item0001", "item0002")
+		require.Equal(t, "attach", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgAttach{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.FromAddress, msg2.FromAddress)
+		require.Equal(t, msg.ToTokenID, msg2.ToTokenID)
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+		require.Equal(t, msg.TokenID, msg2.TokenID)
+	}
+
+	{
+		msg := NewMsgDetach(addr, addr2, "symbol", "item0001")
+		require.Equal(t, "detach", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgDetach{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.FromAddress, msg2.FromAddress)
+		require.Equal(t, msg.ToAddress, msg2.ToAddress)
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+		require.Equal(t, msg.TokenID, msg2.TokenID)
 	}
 }

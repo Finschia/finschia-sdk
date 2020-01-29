@@ -13,15 +13,17 @@ type Keeper struct {
 	supplyKeeper  types.SupplyKeeper
 	iamKeeper     types.IamKeeper
 	accountKeeper types.AccountKeeper
+	bankKeeper    types.BankKeeper
 	storeKey      sdk.StoreKey
 	cdc           *codec.Codec
 }
 
-func NewKeeper(cdc *codec.Codec, supplyKeeper types.SupplyKeeper, iamKeeper types.IamKeeper, accountKeeper types.AccountKeeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(cdc *codec.Codec, supplyKeeper types.SupplyKeeper, iamKeeper types.IamKeeper, accountKeeper types.AccountKeeper, bankKeeper types.BankKeeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
 		supplyKeeper:  supplyKeeper,
 		iamKeeper:     iamKeeper.WithPrefix(types.ModuleName),
 		accountKeeper: accountKeeper,
+		bankKeeper:    bankKeeper,
 		storeKey:      storeKey,
 		cdc:           cdc,
 	}

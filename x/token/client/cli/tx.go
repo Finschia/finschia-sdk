@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/spf13/viper"
@@ -46,6 +47,12 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		GrantPermTxCmd(cdc),
 		RevokePermTxCmd(cdc),
 		ModifyTokenURICmd(cdc),
+		TransferTxCmd(cdc),
+		TransferIDFTTxCmd(cdc),
+		TransferNFTTxCmd(cdc),
+		TransferIDNFTTxCmd(cdc),
+		AttachTxCmd(cdc),
+		DetachTxCmd(cdc),
 	)
 	return txCmd
 }
@@ -239,6 +246,147 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 
 			// build and sign the transaction, then broadcast to Tendermint
 			msg := types.NewMsgRevokePermission(cliCtx.GetFromAddress(), perm)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer-ft [from_key_or_address] [to_address] [symbol] [amount]",
+		Short: "Create and sign a tx transferring non-reserved fungible tokens",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			to, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			amount, ok := sdk.NewIntFromString(args[3])
+			if !ok {
+				return types.ErrInvalidAmount(types.DefaultCodespace, args[3])
+			}
+
+			msg := types.NewMsgTransferFT(cliCtx.GetFromAddress(), to, args[2], amount)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	cmd = client.PostCommands(cmd)[0]
+
+	return cmd
+}
+
+func TransferIDFTTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer-idft [from_key_or_address] [to_address] [symbol] [token_id] [amount]",
+		Short: "Create and sign a tx transferring non-reserved collective fungible tokens",
+		Args:  cobra.ExactArgs(5),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			to, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			amount, ok := sdk.NewIntFromString(args[4])
+			if !ok {
+				return types.ErrInvalidAmount(types.DefaultCodespace, args[4])
+			}
+
+			msg := types.NewMsgTransferIDFT(cliCtx.GetFromAddress(), to, args[2], args[3], amount)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	cmd = client.PostCommands(cmd)[0]
+
+	return cmd
+}
+
+func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer-nft [from_key_or_address] [to_address] [symbol]",
+		Short: "Create and sign a tx transferring a non-fungible token.",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			to, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgTransferNFT(cliCtx.GetFromAddress(), to, args[2])
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func TransferIDNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer-idnft [from_key_or_address] [to_address] [symbol] [token_id]",
+		Short: "Create and sign a tx transferring a collective non-fungible token",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			to, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgTransferIDNFT(cliCtx.GetFromAddress(), to, args[2], args[3])
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func AttachTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "attach [from_key_or_address] [symbol] [to_token_id] [token_id]",
+		Short: "Create and sign a tx attaching a token to other",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			msg := types.NewMsgAttach(cliCtx.GetFromAddress(), args[1], args[2], args[3])
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "detach [from_key_or_address] [to_address] [symbol] [token_id]",
+		Short: "Create and sign a tx detaching a token",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			to, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgDetach(cliCtx.GetFromAddress(), to, args[2], args[3])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

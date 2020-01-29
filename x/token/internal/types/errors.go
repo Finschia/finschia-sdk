@@ -18,7 +18,7 @@ const (
 	CodeTokenInvalidTokenID     sdk.CodeType = 202
 	CodeTokenInvalidDecimals    sdk.CodeType = 203
 	CodeTokenInvalidFT          sdk.CodeType = 204
-	CodeTokenInvalidTokenType   sdk.CodeType = 205
+	CodeTokenInvalidAmount      sdk.CodeType = 205
 
 	//Collection
 	CodeCollectionDenomExist    sdk.CodeType = 300
@@ -26,6 +26,16 @@ const (
 
 	//Permission
 	CodeTokenPermission sdk.CodeType = 400
+
+	// Composability
+	CodeTokenAlreadyAChild             sdk.CodeType = 500
+	CodeTokenNotAChild                 sdk.CodeType = 501
+	CodeTokenNotOwnedBy                sdk.CodeType = 502
+	CodeTokenChildNotTransferable      sdk.CodeType = 503
+	CodeTokenNotNF                     sdk.CodeType = 504
+	CodeTokenNotIDNF                   sdk.CodeType = 505
+	CodeTokenCannotAttachToItself      sdk.CodeType = 506
+	CodeTokenCannotAttachToADescendant sdk.CodeType = 507
 )
 
 func ErrTokenExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
@@ -60,8 +70,8 @@ func ErrInvalidIssueFT(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidFT, "Issuing token with amount[1], decimals[0], mintable[false] prohibited. Issue nft token instead.")
 }
 
-func ErrInvalidTokenType(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenType, msg)
+func ErrInvalidAmount(codespace sdk.CodespaceType, amount string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidAmount, "invalid token amount [%s]", amount)
 }
 
 func ErrCollectionExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
@@ -74,4 +84,36 @@ func ErrCollectionNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error
 
 func ErrTokenPermission(codespace sdk.CodespaceType, account sdk.AccAddress, permission PermissionI) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
+}
+
+func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenAlreadyAChild, "token [%s] is already a child of some other", denom)
+}
+
+func ErrTokenNotAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotAChild, "token [%s] is not a child of some other", denom)
+}
+
+func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner sdk.AccAddress) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is not owned by [%s]", denom, owner.String())
+}
+
+func ErrTokenNotNF(codespace sdk.CodespaceType, denom string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotNF, "token [%s] is not a NF token", denom)
+}
+
+func ErrTokenNotIDNF(codespace sdk.CodespaceType, denom string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotIDNF, "token [%s] is not a IDNF token", denom)
+}
+
+func ErrTokenCannotTransferChildToken(codespace sdk.CodespaceType, denom string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenChildNotTransferable, "cannot transfer a child token [%s]", denom)
+}
+
+func ErrCannotAttachToItself(codespace sdk.CodespaceType, denom string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenCannotAttachToItself, "cannot attach token [%s] to itself", denom)
+}
+
+func ErrCannotAttachToADescendant(codespace sdk.CodespaceType, tokenDenom string, descendantDenom string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenCannotAttachToADescendant, "cannot attach token [%s] to a descendant [%s]", tokenDenom, descendantDenom)
 }

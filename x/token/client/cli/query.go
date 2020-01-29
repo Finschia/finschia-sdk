@@ -24,6 +24,9 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		GetCollectionsCmd(cdc),
 		GetSupplyCmd(cdc),
 		GetPermsCmd(cdc),
+		GetParentCmd(cdc),
+		GetRootCmd(cdc),
+		GetChildrenCmd(cdc),
 	)
 
 	return cmd
@@ -173,6 +176,90 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			return cliCtx.PrintOutput(pms)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
+}
+
+func GetParentCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "parent [symbol] [token-id]",
+		Short: "Query parent token with symbol and token-id",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
+
+			symbol := args[0]
+			tokenID := args[1]
+
+			if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+				return err
+			}
+
+			token, _, err := tokenGetter.GetParent(cliCtx, symbol, tokenID)
+			if err != nil {
+				return err
+			}
+
+			return cliCtx.PrintOutput(token)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
+}
+
+func GetRootCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "root [symbol] [token-id]",
+		Short: "Query root token with symbol and token-id",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
+
+			symbol := args[0]
+			tokenID := args[1]
+
+			if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+				return err
+			}
+
+			token, _, err := tokenGetter.GetRoot(cliCtx, symbol, tokenID)
+			if err != nil {
+				return err
+			}
+
+			return cliCtx.PrintOutput(token)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
+}
+
+func GetChildrenCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "children [symbol] [token-id]",
+		Short: "Query children tokens with symbol and token-id",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
+
+			symbol := args[0]
+			tokenID := args[1]
+
+			if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+				return err
+			}
+
+			tokens, _, err := tokenGetter.GetChildren(cliCtx, symbol, tokenID)
+			if err != nil {
+				return err
+			}
+
+			return cliCtx.PrintOutput(tokens)
 		},
 	}
 
