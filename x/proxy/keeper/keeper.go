@@ -24,16 +24,16 @@ func NewKeeper(cdc *codec.Codec, bankKeeper cbank.Keeper, accountKeeper auth.Acc
 
 // approve coins for `by` to be transferred on behalf of `onBehalfOf`
 func (k Keeper) ApproveCoins(ctx sdk.Context, msg types.MsgProxyApproveCoins) sdk.Error {
-	// convert the request as a proxy
-	requestAllowance := types.NewProxyAllowance(msg.Proxy, msg.OnBehalfOf, msg.Denom, msg.Amount)
+	requestDenom := types.NewProxyDenom(msg.Proxy, msg.OnBehalfOf, msg.Denom)
+	requestAllowance := types.NewProxyAllowance(requestDenom, msg.Amount)
 
-	if !k.hasProxyAllowance(ctx, requestAllowance) {
+	if !k.hasProxyAllowance(ctx, requestAllowance.ProxyDenom) {
 		// if Proxy of `by` does not exist, save new approval proxy
 		k.setProxyAllowance(ctx, requestAllowance)
 		return nil
 	}
 
-	px, err := k.getProxyAllowance(ctx, requestAllowance)
+	px, err := k.GetProxyAllowance(ctx, requestAllowance.ProxyDenom)
 	if err != nil {
 		return err
 	}
@@ -49,9 +49,10 @@ func (k Keeper) ApproveCoins(ctx sdk.Context, msg types.MsgProxyApproveCoins) sd
 
 // disapprove coins for `by` to be transferred on behalf of `onBehalfOf`
 func (k Keeper) DisapproveCoins(ctx sdk.Context, msg types.MsgProxyDisapproveCoins) sdk.Error {
-	requestAllowance := types.NewProxyAllowance(msg.Proxy, msg.OnBehalfOf, msg.Denom, msg.Amount)
+	requestDenom := types.NewProxyDenom(msg.Proxy, msg.OnBehalfOf, msg.Denom)
+	requestAllowance := types.NewProxyAllowance(requestDenom, msg.Amount)
 
-	px, err := k.getProxyAllowance(ctx, requestAllowance)
+	px, err := k.GetProxyAllowance(ctx, requestAllowance.ProxyDenom)
 	if err != nil {
 		return err
 	}
@@ -70,16 +71,24 @@ func (k Keeper) DisapproveCoins(ctx sdk.Context, msg types.MsgProxyDisapproveCoi
 	if err != nil {
 		return nil
 	}
-	k.setProxyAllowance(ctx, newAllowance)
+
+	// if succeed, update or delete the proxy
+	if newAllowance.Amount.Equal(sdk.ZeroInt()) {
+		k.deleteProxyAllowance(ctx, newAllowance.ProxyDenom)
+	} else {
+		k.setProxyAllowance(ctx, newAllowance)
+	}
+
 	return nil
 }
 
 func (k Keeper) SendCoinsFrom(ctx sdk.Context, msg types.MsgProxySendCoinsFrom) sdk.Error {
 	// convert the request as a proxy
-	requestAllowance := types.NewProxyAllowance(msg.Proxy, msg.OnBehalfOf, msg.Denom, msg.Amount)
+	requestDenom := types.NewProxyDenom(msg.Proxy, msg.OnBehalfOf, msg.Denom)
+	requestAllowance := types.NewProxyAllowance(requestDenom, msg.Amount)
 
 	// get a proxy compatible with the request
-	px, err := k.getProxyAllowance(ctx, requestAllowance)
+	px, err := k.GetProxyAllowance(ctx, requestAllowance.ProxyDenom)
 	if err != nil {
 		return err
 	}
@@ -106,7 +115,7 @@ func (k Keeper) SendCoinsFrom(ctx sdk.Context, msg types.MsgProxySendCoinsFrom) 
 		return err
 	}
 	if newAllowance.Amount.Equal(sdk.ZeroInt()) {
-		k.deleteProxyAllowance(ctx, newAllowance)
+		k.deleteProxyAllowance(ctx, newAllowance.ProxyDenom)
 	} else {
 		k.setProxyAllowance(ctx, newAllowance)
 	}
@@ -114,23 +123,23 @@ func (k Keeper) SendCoinsFrom(ctx sdk.Context, msg types.MsgProxySendCoinsFrom) 
 	return nil
 }
 
-func (k Keeper) hasProxyAllowance(ctx sdk.Context, pa types.ProxyAllowance) bool {
+func (k Keeper) hasProxyAllowance(ctx sdk.Context, pd types.ProxyDenom) bool {
 	store := ctx.KVStore(k.storeKey)
-	return store.Has(k.proxyAllowanceKeyOf(pa))
+	return store.Has(k.proxyAllowanceKeyOf(pd))
 }
 
 func (k Keeper) setProxyAllowance(ctx sdk.Context, pa types.ProxyAllowance) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(k.proxyAllowanceKeyOf(pa), k.cdc.MustMarshalBinaryBare(pa))
+	store.Set(k.proxyAllowanceKeyOf(pa.ProxyDenom), k.cdc.MustMarshalBinaryBare(pa))
 }
 
-func (k Keeper) getProxyAllowance(ctx sdk.Context, pa types.ProxyAllowance) (types.ProxyAllowance, sdk.Error) {
+func (k Keeper) GetProxyAllowance(ctx sdk.Context, pd types.ProxyDenom) (types.ProxyAllowance, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
 
 	// retrieve the proxy
-	bz := store.Get(k.proxyAllowanceKeyOf(pa))
+	bz := store.Get(k.proxyAllowanceKeyOf(pd))
 	if bz == nil {
-		return types.ProxyAllowance{}, types.ErrProxyNotExist(types.DefaultCodespace, pa.Proxy.String(), pa.OnBehalfOf.String())
+		return types.ProxyAllowance{}, types.ErrProxyNotExist(types.DefaultCodespace, pd.Proxy.String(), pd.OnBehalfOf.String())
 	}
 	r := &types.ProxyAllowance{}
 	k.cdc.MustUnmarshalBinaryBare(bz, r)
@@ -138,14 +147,14 @@ func (k Keeper) getProxyAllowance(ctx sdk.Context, pa types.ProxyAllowance) (typ
 	return *r, nil
 }
 
-func (k Keeper) deleteProxyAllowance(ctx sdk.Context, pa types.ProxyAllowance) {
+func (k Keeper) deleteProxyAllowance(ctx sdk.Context, pd types.ProxyDenom) {
 	store := ctx.KVStore(k.storeKey)
-	store.Delete(k.proxyAllowanceKeyOf(pa))
+	store.Delete(k.proxyAllowanceKeyOf(pd))
 }
 
 // proxy key pattern: #{proxy_address}:#{denom}:#{on_behalf_of_address}
 // to extend to query by each from left as prefix
-func (k Keeper) proxyAllowanceKeyOf(pa types.ProxyAllowance) []byte {
-	prefixed := pa.Proxy.String() + ":" + pa.Denom + ":" + pa.OnBehalfOf.String()
+func (k Keeper) proxyAllowanceKeyOf(pd types.ProxyDenom) []byte {
+	prefixed := pd.Proxy.String() + ":" + pd.Denom + ":" + pd.OnBehalfOf.String()
 	return types.ProxyKey(prefixed)
 }

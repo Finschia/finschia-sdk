@@ -18,6 +18,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/line/link/types"
+	proxyModule "github.com/line/link/x/proxy"
 	safetyBoxModule "github.com/line/link/x/safetybox"
 	tokenModule "github.com/line/link/x/token"
 
@@ -622,6 +623,22 @@ func (f *Fixtures) TxProxyApproveCoins(proxy, onBehalfOf, denom string, amount s
 func (f *Fixtures) TxProxyDisapproveCoins(proxy, onBehalfOf, denom string, amount sdk.Int, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx proxy disapprove %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, amount.String(), f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+//___________________________________________________________________________________
+// linkcli query proxy
+
+func (f *Fixtures) QueryProxyAllowance(proxy, onBehalfOf, denom string, flags ...string) proxyModule.Allowance {
+	cmd := fmt.Sprintf("%s query proxy allowance %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+
+	cdc := app.MakeCodec()
+	var allowance proxyModule.Allowance
+	err := cdc.UnmarshalJSON([]byte(res), &allowance)
+	require.NoError(f.T, err)
+
+	return allowance
 }
 
 //___________________________________________________________________________________

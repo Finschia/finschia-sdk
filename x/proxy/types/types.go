@@ -1,9 +1,13 @@
 package types
 
 import (
+	"encoding/json"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
+
+var _ json.Marshaler = (*ProxyAllowance)(nil)
+var _ json.Unmarshaler = (*ProxyAllowance)(nil)
 
 type ProxyDenom struct {
 	Proxy      sdk.AccAddress `json:"proxy"`
@@ -30,8 +34,28 @@ type ProxyAllowance struct {
 	Amount sdk.Int `json:"amount"`
 }
 
-func NewProxyAllowance(proxy, onBehalfOf sdk.AccAddress, denom string, amount sdk.Int) ProxyAllowance {
-	return ProxyAllowance{NewProxyDenom(proxy, onBehalfOf, denom), amount}
+func NewProxyAllowance(pxd ProxyDenom, amount sdk.Int) ProxyAllowance {
+	return ProxyAllowance{pxd, amount}
+}
+
+// wrapper for nested structure as a work around to amino/json serializer mismatch
+func (pa ProxyAllowance) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Proxy      sdk.AccAddress `json:"proxy"`
+		OnBehalfOf sdk.AccAddress `json:"on_behalf_of"`
+		Denom      string         `json:"denom"`
+		Amount     sdk.Int        `json:"amount"`
+	}{
+		Proxy:      pa.Proxy,
+		OnBehalfOf: pa.OnBehalfOf,
+		Denom:      pa.Denom,
+		Amount:     pa.Amount,
+	})
+}
+
+func (pa *ProxyAllowance) UnmarshalJSON(data []byte) error {
+	type msgAlias *ProxyAllowance
+	return json.Unmarshal(data, msgAlias(pa))
 }
 
 func (pa ProxyAllowance) AddAllowance(pa2 ProxyAllowance) (ProxyAllowance, sdk.Error) {
@@ -39,7 +63,7 @@ func (pa ProxyAllowance) AddAllowance(pa2 ProxyAllowance) (ProxyAllowance, sdk.E
 		return ProxyAllowance{}, ErrProxyDenomDoesNotMatch(DefaultCodespace, pa, pa2)
 	}
 
-	return NewProxyAllowance(pa.Proxy, pa.OnBehalfOf, pa.Denom, pa.Amount.Add(pa2.Amount)), nil
+	return NewProxyAllowance(pa.ProxyDenom, pa.Amount.Add(pa2.Amount)), nil
 }
 
 func (pa ProxyAllowance) SubAllowance(pa2 ProxyAllowance) (ProxyAllowance, sdk.Error) {
@@ -51,7 +75,7 @@ func (pa ProxyAllowance) SubAllowance(pa2 ProxyAllowance) (ProxyAllowance, sdk.E
 		return ProxyAllowance{}, ErrProxyNotEnoughApprovedCoins(DefaultCodespace, pa.Amount, pa2.Amount)
 	}
 
-	return NewProxyAllowance(pa.Proxy, pa.OnBehalfOf, pa.Denom, pa.Amount.Sub(pa2.Amount)), nil
+	return NewProxyAllowance(pa.ProxyDenom, pa.Amount.Sub(pa2.Amount)), nil
 }
 
 func (pa ProxyAllowance) GT(pa2 ProxyAllowance) (bool, sdk.Error) {
@@ -86,7 +110,6 @@ func (pa ProxyAllowance) LTE(pa2 ProxyAllowance) (bool, sdk.Error) {
 	return pa.Amount.LTE(pa2.Amount), nil
 }
 
-// all properties are the same except the amount
 func (pa ProxyAllowance) HasSameProxyDenom(pa2 ProxyAllowance) bool {
 	return pa.ProxyDenom.Equals(pa2.ProxyDenom)
 }

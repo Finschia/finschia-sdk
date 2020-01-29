@@ -1,20 +1,5 @@
 # Messages
 
-## Base Msg
-
-`MsgProxy` is base msg for other msgs in the proxy module. 
-However, `MsgProxy` isn't being used as it is.   
-
-### MsgProxy
-```golang
-type MsgProxy struct {
-	Proxy      sdk.AccAddress `json:"proxy"`
-	OnBehalfOf sdk.AccAddress `json:"on_behalf_of"`
-	Denom      string         `json:"denom"`
-	Amount     sdk.Int        `json:"amount"`
-}
-```
-
 ## Approve and DisApprove
 
 `MsgProxyApproveCoins` and `MsgProxyDisapproveCoins` are to approve/disapprove coins 
@@ -25,14 +10,20 @@ to the proxy. The proxy may send approved coins on behalf of approving account.
 ### MsgProxyApproveCoins
 ```golang
 type MsgProxyApproveCoins struct {
-	MsgProxy
+    Proxy      sdk.AccAddress `json:"proxy"`
+    OnBehalfOf sdk.AccAddress `json:"on_behalf_of"`
+    Denom      string         `json:"denom"`
+    Amount     sdk.Int        `json:"amount"`
 }
 ```
 
 ### MsgProxyDisapproveCoins
 ```golang
 type MsgProxyDisapproveCoins struct {
-	MsgProxy
+    Proxy      sdk.AccAddress `json:"proxy"`
+    OnBehalfOf sdk.AccAddress `json:"on_behalf_of"`
+    Denom      string         `json:"denom"`
+    Amount     sdk.Int        `json:"amount"`
 }
 ```
 
@@ -45,7 +36,10 @@ type MsgProxyDisapproveCoins struct {
 ### MsgProxySendCoinsFrom
 ```golang
 type MsgProxySendCoinsFrom struct {
-	MsgProxy
-	ToAddress sdk.AccAddress `json:"to_address"`
+    Proxy      sdk.AccAddress   `json:"proxy"`
+    OnBehalfOf sdk.AccAddress   `json:"on_behalf_of"`
+    Denom      string           `json:"denom"`
+    Amount     sdk.Int          `json:"amount"`
+    ToAddress  sdk.AccAddress   `json:"to_address"`
 }
 ```

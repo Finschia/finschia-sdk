@@ -1394,10 +1394,11 @@ func TestLinkCLIProxy(t *testing.T) {
 		require.Equal(t, initialBalance, defaultCoins)
 	}
 
-	// `tinaTheProxy` tries to send coins to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
-	t.Logf("[Proxy] The proxy tries to send coins to the receiver on behalf of the coin owner - should fail")
+	// `tinaTheProxy` tries to send 5 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	fiveCoins := sdk.NewInt(5)
+	t.Logf("[Proxy] The proxy tries to send %d link to the receiver on behalf of the coin owner - should fail", fiveCoins)
 	{
-		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sdk.NewInt(5), "-y")
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, fiveCoins, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		// should fail as it's not approved with ErrProxyNotExist
@@ -1411,9 +1412,10 @@ func TestLinkCLIProxy(t *testing.T) {
 	}
 
 	// `rinahTheOnBehalfOf` approves 5 link for `tinaTheProxy`
-	t.Logf("[Proxy] The coin owner approves 5 link for the proxy")
+	approved := sdk.NewInt(5)
+	t.Logf("[Proxy] The coin owner approves %d link for the proxy", approved)
 	{
-		result, _, stderr := f.TxProxyApproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, sdk.NewInt(5), "-y")
+		result, _, stderr := f.TxProxyApproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, approved, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		// should succeed
@@ -1421,25 +1423,36 @@ func TestLinkCLIProxy(t *testing.T) {
 		require.Equal(t, "", stderr)
 	}
 
-	// 'tinaTheProxy' tries to send 6 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
-	t.Logf("[Proxy] The proxy tries to send 5 link to the receiver on behalf of the coin owner - should fail")
+	// check the allowance
+	t.Logf("[Proxy] Check the allowance - should be %d", approved)
 	{
-		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sdk.NewInt(6), "-y")
+		allowance := f.QueryProxyAllowance(tinaTheProxy, rinahTheOnBehalfOf, denom)
+		require.Equal(t, tinaTheProxy, allowance.Proxy.String())
+		require.Equal(t, rinahTheOnBehalfOf, allowance.OnBehalfOf.String())
+		require.Equal(t, denom, allowance.Denom)
+		require.Equal(t, approved, allowance.Amount)
+	}
+
+	// 'tinaTheProxy' tries to send 6 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	sixCoins := sdk.NewInt(6)
+	t.Logf("[Proxy] The proxy tries to send %d link to the receiver on behalf of the coin owner - should fail", sixCoins)
+	{
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sixCoins, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		// should fail as it's more than approved
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, sdk.NewInt(5), sdk.NewInt(6)).Result().Log, "\""),
+			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, approved, sixCoins).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 		require.Equal(t, "", stderr)
 	}
 
 	// `tinaTheProxy` sends 2 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
-	t.Logf("[Proxy] The proxy sends 2 link to the receiver on behalf of the coin owner")
 	sentAmount1 := sdk.NewInt(2)
+	t.Logf("[Proxy] The proxy sends %d link to the receiver on behalf of the coin owner", sentAmount1)
 	{
 		result, _, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sentAmount1, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
@@ -1447,6 +1460,16 @@ func TestLinkCLIProxy(t *testing.T) {
 		// should succeed
 		require.True(t, result)
 		require.Equal(t, "", stderr)
+	}
+
+	// check the allowance
+	t.Logf("[Proxy] Check the allowance - should be %d", approved.Sub(sentAmount1))
+	{
+		allowance := f.QueryProxyAllowance(tinaTheProxy, rinahTheOnBehalfOf, denom)
+		require.Equal(t, tinaTheProxy, allowance.Proxy.String())
+		require.Equal(t, rinahTheOnBehalfOf, allowance.OnBehalfOf.String())
+		require.Equal(t, denom, allowance.Denom)
+		require.Equal(t, approved.Sub(sentAmount1), allowance.Amount)
 	}
 
 	// check balance of `rinahTheOnBehalfOf` and `evelynTheReceiver`
@@ -1460,25 +1483,27 @@ func TestLinkCLIProxy(t *testing.T) {
 	}
 
 	// `rinahTheOnBehalfOf` tries to disapprove 4 link from `tinaTheProxy`
-	t.Logf("[Proxy] The coin owner disapproves 4 link from the proxy - should fail")
+	fourCoins := sdk.NewInt(4)
+	t.Logf("[Proxy] The coin owner disapproves %d link from the proxy - should fail", fourCoins)
 	{
-		result, stdout, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, sdk.NewInt(4), "-y")
+		result, stdout, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, fourCoins, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		// should fail as only 3 approved coins are left
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, sdk.NewInt(3), sdk.NewInt(4)).Result().Log, "\""),
+			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, approved.Sub(sentAmount1), fourCoins).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 		require.Equal(t, "", stderr)
 	}
 
 	// `rinahTheOnBehalfOf` disapprove 1 link from `tinaTheProxy`
-	t.Logf("[Proxy] The coin owner disapproves 1 link from the proxy")
+	disapproved := sdk.OneInt()
+	t.Logf("[Proxy] The coin owner disapproves %d link from the proxy", disapproved)
 	{
-		result, _, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, sdk.NewInt(1), "-y")
+		result, _, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, disapproved, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		// should succeed
@@ -1486,9 +1511,19 @@ func TestLinkCLIProxy(t *testing.T) {
 		require.Equal(t, "", stderr)
 	}
 
+	// check the allowance
+	t.Logf("[Proxy] Check the allowance - should be %d", approved.Sub(sentAmount1).Sub(disapproved))
+	{
+		allowance := f.QueryProxyAllowance(tinaTheProxy, rinahTheOnBehalfOf, denom)
+		require.Equal(t, tinaTheProxy, allowance.Proxy.String())
+		require.Equal(t, rinahTheOnBehalfOf, allowance.OnBehalfOf.String())
+		require.Equal(t, denom, allowance.Denom)
+		require.Equal(t, approved.Sub(sentAmount1).Sub(disapproved), allowance.Amount)
+	}
+
 	// `tinaTheProxy` sends 2 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
-	t.Logf("[Proxy] The proxy sends 2 link to the receiver on behalf of the coin owner")
 	sentAmount2 := sdk.NewInt(2)
+	t.Logf("[Proxy] The proxy sends %d link to the receiver on behalf of the coin owner", sentAmount2)
 	{
 		result, _, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sentAmount2, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
@@ -1509,9 +1544,10 @@ func TestLinkCLIProxy(t *testing.T) {
 	}
 
 	// 'tinaTheProxy' tries to send 1 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
-	t.Logf("[Proxy] The proxy tries to send 1 link to the receiver on behalf of the coin owner - should fail")
+	oneCoin := sdk.NewInt(1)
+	t.Logf("[Proxy] The proxy tries to send %d link to the receiver on behalf of the coin owner - should fail", oneCoin)
 	{
-		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sdk.NewInt(1), "-y")
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, oneCoin, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		// should fail as there is no coin approved (all sent!)
@@ -1525,9 +1561,9 @@ func TestLinkCLIProxy(t *testing.T) {
 	}
 
 	// 'onBehalfOf' tries to disapprove 1 link from `proxy`
-	t.Logf("[Proxy] The coin owner tries to disapprove 1 link from the proxy - should fail")
+	t.Logf("[Proxy] The coin owner tries to disapprove %d link from the proxy - should fail", oneCoin)
 	{
-		result, stdout, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, sdk.NewInt(1), "-y")
+		result, stdout, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, oneCoin, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		// should fail as there is no coin approved (all sent!)

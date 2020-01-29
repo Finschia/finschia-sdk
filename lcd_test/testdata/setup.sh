@@ -28,6 +28,8 @@ set_test_address operator ${REPLACE_OPERATOR_ADDR}
 set_test_address allocator ${REPLACE_ALLOCATOR_ADDR}
 set_test_address issuer ${REPLACE_ISSUER_ADDR}
 set_test_address returner ${REPLACE_RETURNER_ADDR}
+set_test_address proxy ${REPLACE_PROXY_ADDR}
+set_test_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
 
 ./lcd_test/testdata/replace_symbols.sh
 
@@ -40,10 +42,12 @@ echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append 
 echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from allocator --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
 echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from issuer --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
 echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from returner --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from on_behalf_of --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from proxy --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
 echo "Request: $(cat ${SIGNED_TX})"
 
 # broadcast transaction that has all messages
-./build/linkcli tx broadcast --home ${HOME} ${SIGNED_TX} --chain-id ${CHAIN_ID} --yes -b block > ${TMP_TX_RESULT}
+  ./build/linkcli tx broadcast --home ${HOME} ${SIGNED_TX} --chain-id ${CHAIN_ID} --yes -b block > ${TMP_TX_RESULT}
 if [ "$(cat ${TMP_TX_RESULT} | awk '/code:/{print $2}')" -ne "0" ]
 then
   echo "ERROR: $(cat ${TMP_TX_RESULT})"

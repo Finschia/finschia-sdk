@@ -91,18 +91,11 @@ func (am AppModule) NewQuerierHandler() sdk.Querier {
 	return NewQuerier(am.keeper)
 }
 
-// ToDo: Implement init genesis https://github.com/line/link/issues/191
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
-	//var genesisState GenesisState
-	//ModuleCdc.MustUnmarshalJSON(data, &genesisState)
-	//InitGenesis(ctx, am.keeper, genesisState)
 	return []abci.ValidatorUpdate{}
 }
 
-// ToDo: Implement export genesis https://github.com/line/link/issues/191
 func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	//gs := ExportGenesis(ctx, am.keeper)
-	//return ModuleCdc.MustMarshalJSON(gs)
 	return ModuleCdc.MustMarshalJSON(nil)
 }
 

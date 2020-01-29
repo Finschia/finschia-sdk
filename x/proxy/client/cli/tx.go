@@ -31,8 +31,8 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func ProxyApproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "approve [proxy] [on_behalf_of] [denom] [amount]",
-		Short: "Approve [proxy] to send [amount] [denom] coins on behalf of [on_behalf_of]",
+		Use:   "approve [proxy_key_or_address] [on_behalf_of] [denom] [amount]",
+		Short: "Approve [proxy_key_or_address] to send [amount] [denom] coins on behalf of [on_behalf_of]",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
@@ -60,8 +60,8 @@ func ProxyApproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 
 func ProxyDisapproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disapprove [proxy] [on_behalf_of] [denom] [amount]",
-		Short: "Disapprove [proxy] to send [amount] [denom] coins on behalf of [on_behalf_of]",
+		Use:   "disapprove [proxy_key_or_address] [on_behalf_of] [denom] [amount]",
+		Short: "Disapprove [proxy_key_or_address] to send [amount] [denom] coins on behalf of [on_behalf_of]",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
@@ -89,8 +89,8 @@ func ProxyDisapproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 
 func ProxySendCoinsFromCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "send-coins-from [proxy] [on_behalf_of] [to] [denom] [amount]",
-		Short: "Send [amount] [denom] coins to [to] on behalf of [on_behalf_of] by [proxy]",
+		Use:   "send-coins-from [proxy] [on_behalf_of_key_or_address] [to] [denom] [amount]",
+		Short: "Send [amount] [denom] coins to [to] on behalf of [on_behalf_of_key_or_address] by [proxy]",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))

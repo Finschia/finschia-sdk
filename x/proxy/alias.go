@@ -13,7 +13,8 @@ const (
 )
 
 type (
-	Keeper = keeper.Keeper
+	Keeper    = keeper.Keeper
+	Allowance = types.ProxyAllowance
 )
 
 var (
