@@ -15,30 +15,10 @@ comment:
 coverage:
   status:
     project:
-      modules:
-        paths:
-          - x/
-      app:
-        paths:
-          - !x/
       default:
         # basic
-        target: 51
+        target: 55
         threshold: 1% # allow this much decrease on project
-        base: auto
-        # advanced
-        branches: null
-        if_no_uploads: error
-        if_not_found: success
-        if_ci_failed: error
-        only_pulls: false
-        flags: null
-        paths: null
-    patch:
-      default:
-        # basic
-        target: 50
-        threshold: null
         base: auto
         # advanced
         branches: null
