@@ -1027,6 +1027,9 @@ components:
     Hash:
       type: string
       example: "777467B3B9FF7918B15D374EC0510AADE8026D3B91795AFA25B50888199DFD20"
+    TxRawBytes:
+      type: string
+      example: "xgEoKBapCkKoo2GaChS2my5DK+RgEQ03CbfRW6C85wq7ghIUU4hjl6Z9oF+CU1w/4Fx2n960/9caEAoFc3Rha2USBzEwMDAwMDASEAoKCgVzdGFrZRIBMhDAmgwaagom61rphyECIiyPf6uWu4iAalRUn/RY54xrSrddwTuakZurtRW/ejkSQNukHLnuYa/x1XiETwBMxBzsHA8DlDvKNP0SJL3gu7mwGIR+4LLT4OMLjEZnOuGVFUCm1ROHwGaNhrIUCcZ7u28="
     Address:
       type: string
       description: bech32 encoded address
@@ -1208,12 +1211,12 @@ components:
       properties:
         data:
           type: object
-          description: a wrapper for a list of transactions
+          description: a wrapper for transaction raw byte list
           properties:
             txs:
               type: array
               items:
-                $ref: '#/components/schemas/Hash'
+                $ref: '#/components/schemas/TxRawBytes'
         evidence:
           type: object
           description: a list of evidence of malfeasance. There is currently only a single type, the DuplicateVoteEvidence
