@@ -1,6 +1,8 @@
 package rest
 
 import (
+	"fmt"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	clienttypes "github.com/line/link/x/token/client/internal/types"
 	"net/http"
 
@@ -12,45 +14,34 @@ import (
 )
 
 func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
-	r.HandleFunc("/token/tokens/{symbol}/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/tokens/{symbol}/supply", QuerySupplyRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/tokens/{symbol}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/token/tokens", QueryAllTokensRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/token/supply/{symbol}", QuerySupplysRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/collections/{symbol}/tokens/{token_id}/supply", QueryCollectionTokenSupplyRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/collections/{symbol}/tokens/{token_type}/count", QueryCountRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/collections/{symbol}/tokens/{token_id}", QueryCollectionTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/collections/{symbol}/tokens", QueryCollectionTokensRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/collections/{symbol}", QueryCollectionRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/token/collections", QueryAllCollectionsRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/collections", QuerCollectionsRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/permissions/{address}", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/parent/{symbol}/{token_id}", QueryParentRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/root/{symbol}/{token_id}", QueryRootRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/children/{symbol}/{token_id}", QueryChildrenRequestHandlerFn(cliCtx)).Methods("GET")
 }
-
 func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
 		symbol := vars["symbol"]
-		tokenID := ""
-		if tokenIDVal, ok := vars["token_id"]; ok {
-			tokenID = tokenIDVal
-		}
-
-		if len(symbol) == 0 {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, "symbol length > 2")
-			return
-		}
 
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
 			return
 		}
 
-		tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
+		retriever := clienttypes.NewRetriever(cliCtx)
 
-		if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
-		}
-
-		token, height, err := tokenGetter.GetTokenWithHeight(cliCtx, symbol, tokenID)
+		token, height, err := retriever.GetToken(cliCtx, symbol, "")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -62,7 +53,33 @@ func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-func QueryAllTokensRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func QueryCollectionTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+		tokenID := vars["token_id"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		token, height, err := retriever.GetToken(cliCtx, symbol, tokenID)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, token)
+	}
+}
+
+func QueryTokensRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -71,9 +88,9 @@ func QueryAllTokensRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc 
 			return
 		}
 
-		tokenGetter := clienttypes.NewTokenRetriever(cliCtx)
+		retriever := clienttypes.NewRetriever(cliCtx)
 
-		tokens, height, err := tokenGetter.GetAllTokensWithHeight(cliCtx)
+		tokens, height, err := retriever.GetTokens(cliCtx)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -85,30 +102,44 @@ func QueryAllTokensRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc 
 	}
 }
 
-func QueryCollectionRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryCollectionTokensRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
 		symbol := vars["symbol"]
-
-		if len(symbol) == 0 {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, "symbol length > 2")
-			return
-		}
 
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
 			return
 		}
 
-		collectionGetter := clienttypes.NewCollectionRetriever(cliCtx)
+		retriever := clienttypes.NewRetriever(cliCtx)
 
-		if err := collectionGetter.EnsureExists(cliCtx, symbol); err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+		collection, height, err := retriever.GetCollection(cliCtx, symbol)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
 		}
 
-		collection, height, err := collectionGetter.GetCollectionWithHeight(cliCtx, symbol)
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, collection.Tokens)
+	}
+}
+func QueryCollectionRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		collection, height, err := retriever.GetCollection(cliCtx, symbol)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -120,7 +151,7 @@ func QueryCollectionRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc 
 	}
 }
 
-func QueryAllCollectionsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func QuerCollectionsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 
@@ -129,9 +160,9 @@ func QueryAllCollectionsRequestHandlerFn(cliCtx context.CLIContext) http.Handler
 			return
 		}
 
-		collectionGetter := clienttypes.NewCollectionRetriever(cliCtx)
+		collectionGetter := clienttypes.NewRetriever(cliCtx)
 
-		collections, height, err := collectionGetter.GetAllCollectionsWithHeight(cliCtx)
+		collections, height, err := collectionGetter.GetCollections(cliCtx)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -143,30 +174,20 @@ func QueryAllCollectionsRequestHandlerFn(cliCtx context.CLIContext) http.Handler
 	}
 }
 
-func QuerySupplysRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QuerySupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
 		symbol := vars["symbol"]
-
-		if len(symbol) == 0 {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, "symbol length should be greater than 2")
-			return
-		}
 
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
 			return
 		}
 
-		supplyGetter := clienttypes.NewSupplyRetriever(cliCtx)
+		retriever := clienttypes.NewRetriever(cliCtx)
 
-		if err := supplyGetter.EnsureExists(cliCtx, symbol); err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
-		}
-
-		supply, height, err := supplyGetter.GetSupplyWithHeight(cliCtx, symbol)
+		supply, height, err := retriever.GetSupply(cliCtx, symbol, "")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -175,6 +196,86 @@ func QuerySupplysRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, supply)
+	}
+}
+func QueryCollectionTokenSupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+		tokenID := vars["token_id"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		supply, height, err := retriever.GetSupply(cliCtx, symbol, tokenID)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, supply)
+	}
+}
+
+func QueryCountRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+		tokenID := vars["token_type"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		nftcount, height, err := retriever.GetCollectionNFTCount(cliCtx, symbol, tokenID)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, nftcount)
+	}
+}
+
+func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		addr, err := sdk.AccAddressFromBech32(vars["address"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("address cannot parsed: %s", err))
+			return
+		}
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		nftcount, height, err := retriever.GetAccountPermission(cliCtx, addr)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, nftcount)
 	}
 }
 

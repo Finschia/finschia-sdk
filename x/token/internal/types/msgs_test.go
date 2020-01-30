@@ -58,7 +58,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Owner, msg2.Owner)
 	}
 	{
-		msg := NewMsgIssueCollection("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true, "tokenid0")
+		msg := NewMsgIssueCollection("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true, "0okenid0")
 		require.Equal(t, "issue_token_collection", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -103,7 +103,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.TokenID, msg2.TokenID)
 	}
 	{
-		msg := NewMsgMint(addr, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(1))))
+		msg := NewMsgMint(addr, addr, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(1))))
 		require.Equal(t, "mint_token", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -200,8 +200,8 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgTransferIDFT(addr, addr2, "symbol", "00000001", sdk.NewInt(1))
-		require.Equal(t, "transfer-idft", msg.Type())
+		msg := NewMsgTransferCFT(addr, addr2, "symbol", "00000001", sdk.NewInt(1))
+		require.Equal(t, "transfer-cft", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -209,7 +209,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgTransferIDFT{}
+		msg2 := MsgTransferCFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -242,8 +242,8 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgTransferIDNFT(addr, addr2, "symbol", "00000001")
-		require.Equal(t, "transfer-idnft", msg.Type())
+		msg := NewMsgTransferCNFT(addr, addr2, "symbol", "00000001")
+		require.Equal(t, "transfer-cnft", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -251,7 +251,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgTransferIDNFT{}
+		msg2 := MsgTransferCNFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -302,5 +302,50 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.ToAddress, msg2.ToAddress)
 		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.TokenID, msg2.TokenID)
+	}
+}
+
+func TestMsgModifyTokenURI_ValidateBasicMsgBasics(t *testing.T) {
+	cdc := ModuleCdc
+	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	const ModifyActionName = "modify_token"
+	t.Log("normal case")
+	{
+		msg := NewMsgModifyTokenURI(addr, "symbol", "tokenURI", "tokenid0")
+		require.Equal(t, ModifyActionName, msg.Type())
+		require.Equal(t, ModuleName, msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+		msg2 := MsgModifyTokenURI{}
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+		require.Equal(t, msg.TokenURI, msg2.TokenURI)
+		require.Equal(t, msg.Owner, msg2.Owner)
+		require.Equal(t, msg.TokenID, msg2.TokenID)
+	}
+	t.Log("empty symbol found")
+	{
+		msg := NewMsgModifyTokenURI(addr, "", "tokenURI", "tokenid0")
+		require.Error(t, msg.ValidateBasic())
+	}
+	t.Log("empty owner")
+	{
+		msg := NewMsgModifyTokenURI(nil, "symbol", "tokenURI", "tokenid0")
+		require.Error(t, msg.ValidateBasic())
+	}
+	t.Log("invalid symbol found")
+	{
+		msg := NewMsgModifyTokenURI(addr, "invalidsymbol2198721987", "tokenURI", "tokenid0")
+		require.Error(t, msg.ValidateBasic())
+	}
+	t.Log("invalid tokenid found")
+	{
+		msg := NewMsgModifyTokenURI(addr, "symbol", "tokenURI", "tokenid")
+		require.Error(t, msg.ValidateBasic())
 	}
 }

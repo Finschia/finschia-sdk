@@ -21,6 +21,36 @@ type MsgIssue struct {
 }
 ```
 
+### MsgIssueNFT
+```golang
+type MsgIssueNFT struct {
+	Name     string         `json:"name"`
+	Symbol   string         `json:"symbol"`
+	Owner    sdk.AccAddress `json:"owner"`
+	TokenURI string         `json:"token_uri"`
+}
+```
+
+### MsgCreateCollection
+```golang
+type MsgCreateCollection struct {
+	Name     string         `json:"name"`
+	Symbol   string         `json:"symbol"`
+	Owner    sdk.AccAddress `json:"owner"`
+}
+```
+
+### MsgIssueNFTCollection
+```golang
+type MsgIssueNFTCollection struct {
+	Name     string         `json:"name"`
+	Symbol   string         `json:"symbol"`
+	Owner    sdk.AccAddress `json:"owner"`
+	TokenURI string         `json:"token_uri"`
+	TokenID string          `json:"token_id"`
+}
+```
+
 ### MsgIssueCollection
 ```golang
 type MsgIssueCollection struct {
@@ -35,42 +65,45 @@ type MsgIssueCollection struct {
 }
 ```
 
+## Mint
 
-### MsgIssueNFT
-```golang
-type MsgIssueNFT struct {
-	Name     string         `json:"name"`
-	Symbol   string         `json:"symbol"`
-	Owner    sdk.AccAddress `json:"owner"`
-	TokenURI string         `json:"token_uri"`
-}
-```
-### MsgIssueNFTCollection
-```golang
-type MsgIssueNFTCollection struct {
-	Name     string         `json:"name"`
-	Symbol   string         `json:"symbol"`
-	Owner    sdk.AccAddress `json:"owner"`
-	TokenURI string         `json:"token_uri"`
-	TokenID string          `json:"token_id"`
-}
-```
+**Mint message is to increase the total supply of the token**
+- Signer of this message must have permission 
+- Minted token is added to the `To` account
 
-
-## MsgMint
+### MsgMint
 
 ```golang
 type MsgMint struct {
+	From   sdk.AccAddress `json:"from"`
 	To     sdk.AccAddress `json:"to"`
 	Amount sdk.Coins      `json:"amount"`
 }
 ```
+### MsgMintCollection
 
-**Mint message is to increase the total supply of the token**
-- Signer of this message must has permission 
-- Minted token is added to the `To` account
+```golang
+type MsgMintCollection struct {
+	From   sdk.AccAddress            `json:"from"`
+	To     sdk.AccAddress            `json:"to"`
+	Amount linktype.CoinWithTokenIDs `json:"amount"`
+}
 
-## MsgBurn
+type CoinWithTokenIDs []CoinWithTokenID
+
+type CoinWithTokenID struct {
+	Symbol  string  `json:"symbol"`
+	TokenID string  `json:"token_id"`
+	Amount  sdk.Int `json:"amount"`
+}
+```
+
+## Burn
+**Burn message is to decrease the total supply of the token**
+- Signer of this message must have the amount of the tokens
+- Token is subtracted from the `From` account 
+
+### MsgBurn
 
 ```golang
 type MsgBurn struct {
@@ -78,9 +111,22 @@ type MsgBurn struct {
 	Amount sdk.Coins      `json:"amount"`
 }
 ```
-**Burn message is to decrease the total supply of the token**
-- Signer of this message must have the amount of the tokens
-- Token is subtracted from the `From` account 
+### MsgBurnCollection
+
+```golang
+type MsgBurnCollection struct {
+	From   sdk.AccAddress            `json:"from"`
+	Amount linktype.CoinWithTokenIDs `json:"amount"`
+}
+
+type CoinWithTokenIDs []CoinWithTokenID
+
+type CoinWithTokenID struct {
+	Symbol  string  `json:"symbol"`
+	TokenID string  `json:"token_id"`
+	Amount  sdk.Int `json:"amount"`
+}
+```
 
 ## MsgGrantPermission
 
@@ -125,10 +171,10 @@ type MsgTransferFT struct {
 - Token is added to the `ToAddress` account
 
 
-## MsgTransferIDFT
+## MsgTransferCFT
 
 ```golang
-type MsgTransferFT struct {
+type MsgTransferCFT struct {
 	FromAddress sdk.AccAddress `json:"from_address" yaml:"from_address"`
 	ToAddress   sdk.AccAddress `json:"to_address" yaml:"to_address"`
 	TokenSymbol string         `json:"token_symbol"`
@@ -159,10 +205,10 @@ type MsgTransferNFT struct {
 - Token is added to the `ToAddress` account
 
 
-## MsgTransferIDNFT
+## MsgTransferCNFT
 
 ```golang
-type MsgTransferIDNFT struct {
+type MsgTransferCNFT struct {
 	FromAddress sdk.AccAddress `json:"from_address"`
 	ToAddress   sdk.AccAddress `json:"to_address"`
 	TokenSymbol string         `json:"token_symbol"`
@@ -170,7 +216,7 @@ type MsgTransferIDNFT struct {
 }
 ```
 
-**TransferIDNFT message is to transfer a collective non-fungible token**
+**TransferCNFT message is to transfer a collective non-fungible token**
 - Signer of this message must have the token
 - Token is subtracted from the `FromAddress` account
 - Token is added to the `ToAddress` account

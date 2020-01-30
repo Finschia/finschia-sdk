@@ -21,9 +21,9 @@ type TokenKeeper interface {
 	GetSupply(sdk.Context, string) (sdk.Int, sdk.Error)
 	ModifyTokenURI(sdk.Context, sdk.AccAddress, string, string) sdk.Error
 	TransferFT(sdk.Context, sdk.AccAddress, sdk.AccAddress, string, sdk.Int) sdk.Error
-	TransferIDFT(sdk.Context, sdk.AccAddress, sdk.AccAddress, string, string, sdk.Int) sdk.Error
+	TransferCFT(sdk.Context, sdk.AccAddress, sdk.AccAddress, string, string, sdk.Int) sdk.Error
 	TransferNFT(sdk.Context, sdk.AccAddress, sdk.AccAddress, string) sdk.Error
-	TransferIDNFT(sdk.Context, sdk.AccAddress, sdk.AccAddress, string, string) sdk.Error
+	TransferCNFT(sdk.Context, sdk.AccAddress, sdk.AccAddress, string, string) sdk.Error
 	Attach(sdk.Context, sdk.AccAddress, string, string, string) sdk.Error
 	Detach(sdk.Context, sdk.AccAddress, sdk.AccAddress, string, string) sdk.Error
 }

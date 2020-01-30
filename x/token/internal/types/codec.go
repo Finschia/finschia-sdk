@@ -8,6 +8,7 @@ var ModuleCdc = codec.New()
 
 // RegisterCodec registers concrete types on the Amino codec
 func RegisterCodec(cdc *codec.Codec) {
+	cdc.RegisterConcrete(MsgCreateCollection{}, "link/MsgCreateCollection", nil)
 	cdc.RegisterConcrete(MsgIssue{}, "link/MsgIssue", nil)
 	cdc.RegisterConcrete(MsgIssueNFT{}, "link/MsgIssueNFT", nil)
 	cdc.RegisterConcrete(MsgIssueCollection{}, "link/MsgIssueCollection", nil)
@@ -15,12 +16,14 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgModifyTokenURI{}, "link/MsgModifyTokenURI", nil)
 	cdc.RegisterConcrete(MsgMint{}, "link/MsgMint", nil)
 	cdc.RegisterConcrete(MsgBurn{}, "link/MsgBurn", nil)
+	cdc.RegisterConcrete(MsgMintCollection{}, "link/MsgMintCollection", nil)
+	cdc.RegisterConcrete(MsgBurnCollection{}, "link/MsgBurnCollection", nil)
 	cdc.RegisterConcrete(MsgGrantPermission{}, "link/MsgGrantPermission", nil)
 	cdc.RegisterConcrete(MsgRevokePermission{}, "link/MsgRevokePermission", nil)
 	cdc.RegisterConcrete(MsgTransferFT{}, "link/MsgTransferFT", nil)
-	cdc.RegisterConcrete(MsgTransferIDFT{}, "link/MsgTransferIDFT", nil)
+	cdc.RegisterConcrete(MsgTransferCFT{}, "link/MsgTransferCFT", nil)
 	cdc.RegisterConcrete(MsgTransferNFT{}, "link/MsgTransferNFT", nil)
-	cdc.RegisterConcrete(MsgTransferIDNFT{}, "link/MsgTransferIDNFT", nil)
+	cdc.RegisterConcrete(MsgTransferCNFT{}, "link/MsgTransferCNFT", nil)
 	cdc.RegisterConcrete(MsgAttach{}, "link/MsgAttach", nil)
 	cdc.RegisterConcrete(MsgDetach{}, "link/MsgDetach", nil)
 	cdc.RegisterInterface((*PermissionI)(nil), nil)
@@ -31,8 +34,12 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterInterface((*NFT)(nil), nil)
 	cdc.RegisterConcrete(&BaseFT{}, "link/FT", nil)
 	cdc.RegisterConcrete(&BaseNFT{}, "link/NFT", nil)
-	cdc.RegisterConcrete(&BaseIDFT{}, "link/IDFT", nil)
-	cdc.RegisterConcrete(&BaseIDNFT{}, "link/IDNFT", nil)
+
+	cdc.RegisterInterface((*Collection)(nil), nil)
+	cdc.RegisterConcrete(&BaseCollection{}, "link/Collection", nil)
+	cdc.RegisterInterface((*CollectiveToken)(nil), nil)
+	cdc.RegisterConcrete(&BaseCollectiveFT{}, "link/CFT", nil)
+	cdc.RegisterConcrete(&BaseCollectiveNFT{}, "link/CNFT", nil)
 }
 
 func init() {

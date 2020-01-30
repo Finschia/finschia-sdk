@@ -32,7 +32,7 @@ func (k Keeper) TransferFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddre
 	return nil
 }
 
-func (k Keeper) TransferIDFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
+func (k Keeper) TransferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
 	coin := sdk.NewCoins(sdk.NewCoin(symbol+tokenID, amount))
 	_, err := k.bankKeeper.SubtractCoins(ctx, from, coin)
 	if err != nil {
@@ -46,7 +46,7 @@ func (k Keeper) TransferIDFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeTransferIDFT,
+			types.EventTypeTransferCFT,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
@@ -61,20 +61,20 @@ func (k Keeper) TransferIDFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 func (k Keeper) TransferNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.GetToken(ctx, symbol)
+	token, err := k.GetToken(ctx, symbol, "")
 	if err != nil {
 		return err
 	}
 
-	nft, ok := token.(*types.BaseNFT)
+	tokenNF, ok := token.(*types.BaseNFT)
 	if !ok {
 		return types.ErrTokenNotNF(types.DefaultCodespace, token.GetDenom())
 	}
-	if !from.Equals(nft.Owner) {
+	if !from.Equals(tokenNF.Owner) {
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 	if !from.Equals(to) {
-		if err := k.moveNFToken(ctx, store, from, to, nft); err != nil {
+		if err := k.moveNFToken(ctx, store, from, to, tokenNF); err != nil {
 			return err
 		}
 	}
@@ -91,34 +91,34 @@ func (k Keeper) TransferNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddr
 	return nil
 }
 
-func (k Keeper) TransferIDNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+func (k Keeper) TransferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.GetToken(ctx, symbol+tokenID)
+	token, err := k.GetToken(ctx, symbol, tokenID)
 	if err != nil {
 		return err
 	}
 
-	idnft, ok := token.(*types.BaseIDNFT)
+	tokenIDNF, ok := token.(types.CollectiveNFT)
 	if !ok {
-		panic(fmt.Sprintf("the token is not IDNFT even though it has token - %s, tokentype ", symbol+tokenID))
+		panic(fmt.Sprintf("the token is not CNFT even though it has token - %s, tokentype ", symbol+tokenID))
 	}
-	childToParentKey := types.TokenChildToParentKey(idnft)
+	childToParentKey := types.TokenChildToParentKey(tokenIDNF)
 	if store.Has(childToParentKey) {
 		return types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, token.GetDenom())
 	}
-	if !from.Equals(idnft.Owner) {
+	if !from.Equals(tokenIDNF.GetOwner()) {
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 	if !from.Equals(to) {
-		if err := k.moveIDNFToken(ctx, store, from, to, idnft); err != nil {
+		if err := k.moveCNFToken(ctx, store, from, to, tokenIDNF); err != nil {
 			return err
 		}
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeTransferIDNFT,
+			types.EventTypeTransferCNFT,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
@@ -153,10 +153,10 @@ func (k Keeper) moveNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddr
 	return k.ModifyToken(ctx, token)
 }
 
-func (k Keeper) moveIDNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddress, to sdk.AccAddress, token *types.BaseIDNFT) sdk.Error {
-	children, _ := k.ChildrenOf(ctx, token.Symbol, token.GetTokenID())
+func (k Keeper) moveCNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddress, to sdk.AccAddress, token types.CollectiveNFT) sdk.Error {
+	children, _ := k.ChildrenOf(ctx, token.GetSymbol(), token.GetTokenID())
 	for _, child := range children {
-		err := k.moveIDNFToken(ctx, store, from, to, child.(*types.BaseIDNFT))
+		err := k.moveCNFToken(ctx, store, from, to, child.(types.CollectiveNFT))
 		if err != nil {
 			return err
 		}
@@ -167,6 +167,6 @@ func (k Keeper) moveIDNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAd
 		return err
 	}
 
-	token.Owner = to
+	token.SetOwner(to)
 	return k.ModifyToken(ctx, token)
 }

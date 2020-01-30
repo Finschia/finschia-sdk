@@ -29,7 +29,7 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 			Return(true).Times(1)
 		mockKvStore.EXPECT().Set(persistedTokenSymbolKey, cd.MustMarshalBinaryBare(tokenURIModifiedToken)).Times(1)
 
-		err := keeper.ModifyTokenURI(cliCtx, addr1, persistedToken.GetDenom(), tokenURIModifiedToken.GetTokenURI())
+		err := keeper.ModifyTokenURI(cliCtx, addr1, persistedToken.GetSymbol(), persistedToken.GetTokenID(), tokenURIModifiedToken.GetTokenURI())
 		require.NoError(t, err)
 	}
 	t.Log("could not found persisted token")
@@ -41,7 +41,7 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 		mockIamKeeper.EXPECT().HasPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true).Times(0)
 		mockKvStore.EXPECT().Has(gomock.Any()).Times(0)
 		mockKvStore.EXPECT().Set(gomock.Any(), gomock.Any()).Times(0)
-		err := keeper.ModifyTokenURI(cliCtx, addr1, persistedToken.GetDenom(), persistedToken.GetTokenURI())
+		err := keeper.ModifyTokenURI(cliCtx, addr1, persistedToken.GetSymbol(), persistedToken.GetTokenID(), persistedToken.GetTokenURI())
 		require.Error(t, err)
 	}
 	t.Log("missing tokenSymbolKey in modifying step")
@@ -54,7 +54,7 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 		mockKvStore.EXPECT().Has(tsk).Return(false).Times(1)
 		mockKvStore.EXPECT().Set(gomock.Any(), gomock.Any()).Times(0)
 
-		err := keeper.ModifyTokenURI(cliCtx, addr1, tt.GetDenom(), tt.GetTokenURI())
+		err := keeper.ModifyTokenURI(cliCtx, addr1, tt.GetSymbol(), tt.GetTokenID(), tt.GetTokenURI())
 		require.Error(t, err)
 	}
 	t.Log("failed - no permission")
@@ -66,7 +66,7 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 		mockIamKeeper.EXPECT().HasPermission(cliCtx, addr1, types.NewModifyTokenURIPermission(tt.GetDenom())).Return(false).Times(1)
 		mockKvStore.EXPECT().Set(gomock.Any(), gomock.Any()).Times(0)
 
-		err := keeper.ModifyTokenURI(cliCtx, addr1, tt.GetDenom(), tt.GetTokenURI())
+		err := keeper.ModifyTokenURI(cliCtx, addr1, tt.GetSymbol(), tt.GetTokenID(), tt.GetTokenURI())
 		require.Error(t, err)
 	}
 }
@@ -102,7 +102,7 @@ func prepare(ctrl *gomock.Controller) (sdk.AccAddress, *codec.Codec, *mock_types
 		addr1,
 	)
 
-	tsk := types.TokenDenomKey(tt.Symbol)
+	tsk := types.TokenDenomKey(tt.GetSymbol())
 	ttJSON := cd.MustMarshalBinaryBare(tt)
 	return addr1, cd, mockIamKeeper, keeper, mockMultiStore, cliCtx, mockKvStore, tt, tsk, ttJSON, tokenURIModifiedToken
 }

@@ -13,14 +13,16 @@ import (
 func NewQuerier(keeper Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, sdk.Error) {
 		switch path[0] {
-		case types.QueryTokens:
-			return queryTokens(ctx, req, keeper)
 		case types.QueryPerms:
 			return queryAccountPermission(ctx, req, keeper)
+		case types.QueryTokens:
+			return queryTokens(ctx, req, keeper)
 		case types.QueryCollections:
 			return queryCollections(ctx, req, keeper)
 		case types.QuerySupply:
 			return querySupply(ctx, req, keeper)
+		case types.QueryNFTCount:
+			return queryNFTCount(ctx, req, keeper)
 		case types.QueryParent:
 			return queryParent(ctx, req, keeper)
 		case types.QueryRoot:
@@ -33,47 +35,11 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 	}
 }
 
-func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	if len(req.Data) == 0 {
-		return queryAllTokens(ctx, req, keeper)
-	}
-	return queryToken(ctx, req, keeper)
-}
-
-func queryToken(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	var params types.QueryTokenParams
-	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
-		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
-	}
-
-	token, err := keeper.GetToken(ctx, params.String())
-	if err != nil {
-		return nil, err
-	}
-
-	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, token)
-	if err2 != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
-	}
-
-	return bz, nil
-}
-
-func queryAllTokens(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	tokens := keeper.GetAllTokens(ctx)
-
-	bz, err := codec.MarshalJSONIndent(keeper.cdc, tokens)
-	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
-	}
-	return bz, nil
-}
-
 func queryAccountPermission(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
 	if len(req.Data) == 0 {
 		return nil, sdk.ErrUnknownRequest("data is nil")
 	}
-	var params types.QueryAccountPermissionParams
+	var params types.QueryAccAddressParams
 	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
@@ -88,13 +54,67 @@ func queryAccountPermission(ctx sdk.Context, req abci.RequestQuery, keeper Keepe
 	return bz, nil
 }
 
-func querySupply(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	var params types.QuerySupplyParams
+func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	if len(req.Data) == 0 {
+		tokens := keeper.GetAllTokens(ctx)
 
+		bz, err := codec.MarshalJSONIndent(keeper.cdc, tokens)
+		if err != nil {
+			return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
+		}
+		return bz, nil
+	}
+	var params types.QuerySymbolTokenIDParams
 	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	supply, err := keeper.GetSupply(ctx, params.String())
+
+	token, err := keeper.GetToken(ctx, params.Symbol, params.TokenID)
+	if err != nil {
+		return nil, err
+	}
+
+	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, token)
+	if err2 != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+	}
+
+	return bz, nil
+}
+
+func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	if len(req.Data) == 0 {
+		collections := keeper.GetAllCollections(ctx)
+
+		bz, err := codec.MarshalJSONIndent(keeper.cdc, collections)
+		if err != nil {
+			return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
+		}
+		return bz, nil
+	}
+	var params types.QuerySymbolParams
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	collection, err := keeper.GetCollection(ctx, params.Symbol)
+	if err != nil {
+		return nil, err
+	}
+	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, collection)
+	if err2 != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+	}
+
+	return bz, nil
+}
+
+func querySupply(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	var params types.QuerySymbolTokenIDParams
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+	supply, err := keeper.GetSupply(ctx, params.Symbol, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -107,33 +127,16 @@ func querySupply(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte,
 	return bz, nil
 }
 
-func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	if len(req.Data) == 0 {
-		return queryAllCollections(ctx, req, keeper)
-	}
-	return queryCollection(ctx, req, keeper)
-}
-
-func queryCollection(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	var params types.QueryCollectionParams
+func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	var params types.QuerySymbolTokenIDParams
 	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-
-	var err sdk.Error
-	var collection types.Collection
-	collection, err = keeper.GetCollection(ctx, params.String())
+	count, err := keeper.GetNFTCount(ctx, params.Symbol, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
-	var tokens types.Tokens
-	tokens = keeper.GetPrefixedTokens(ctx, params.String())
-	collectionWithTokens := types.CollectionWithTokens{
-		Collection: collection,
-		Tokens:     tokens,
-	}
-
-	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, collectionWithTokens)
+	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, count)
 	if err2 != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
 	}
@@ -141,29 +144,8 @@ func queryCollection(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]b
 	return bz, nil
 }
 
-func queryAllCollections(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	collections := keeper.GetAllCollections(ctx)
-
-	var collectionsWithTokens types.CollectionsWithTokens
-	for _, collection := range collections {
-		var tokens types.Tokens
-		tokens = keeper.GetPrefixedTokens(ctx, collection.Symbol)
-		collectionWithTokens := types.CollectionWithTokens{
-			Collection: collection,
-			Tokens:     tokens,
-		}
-		collectionsWithTokens = append(collectionsWithTokens, collectionWithTokens)
-	}
-
-	bz, err := codec.MarshalJSONIndent(keeper.cdc, collectionsWithTokens)
-	if err != nil {
-		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
-	}
-	return bz, nil
-}
-
 func queryParent(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	var params types.QueryTokenParams
+	var params types.QuerySymbolTokenIDParams
 	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
@@ -185,7 +167,7 @@ func queryParent(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte,
 }
 
 func queryRoot(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	var params types.QueryTokenParams
+	var params types.QuerySymbolTokenIDParams
 	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
@@ -207,7 +189,7 @@ func queryRoot(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, s
 }
 
 func queryChildren(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
-	var params types.QueryTokenParams
+	var params types.QuerySymbolTokenIDParams
 	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}

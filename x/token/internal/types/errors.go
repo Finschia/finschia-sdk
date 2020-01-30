@@ -21,8 +21,8 @@ const (
 	CodeTokenInvalidAmount      sdk.CodeType = 205
 
 	//Collection
-	CodeCollectionDenomExist    sdk.CodeType = 300
-	CodeCollectionDenomNotExist sdk.CodeType = 301
+	CodeCollectionExist    sdk.CodeType = 300
+	CodeCollectionNotExist sdk.CodeType = 301
 
 	//Permission
 	CodeTokenPermission sdk.CodeType = 400
@@ -75,17 +75,24 @@ func ErrInvalidAmount(codespace sdk.CodespaceType, amount string) sdk.Error {
 }
 
 func ErrCollectionExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionDenomExist, "collection [%s] already exists", symbol)
+	return sdk.NewError(codespace, CodeCollectionExist, "collection [%s] already exists", symbol)
 }
 
 func ErrCollectionNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionDenomNotExist, "collection [%s] does not exists", symbol)
+	return sdk.NewError(codespace, CodeCollectionNotExist, "collection [%s] does not exists", symbol)
 }
 
 func ErrTokenPermission(codespace sdk.CodespaceType, account sdk.AccAddress, permission PermissionI) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
 }
 
+func ErrCollectionTokenExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenExist, "token symbol[%s] token-id[%s] already exists", symbol, tokenID)
+}
+
+func ErrCollectionTokenNotExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotExist, "token symbol[%s] token-id[%s] does not exist", symbol, tokenID)
+}
 func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenAlreadyAChild, "token [%s] is already a child of some other", denom)
 }

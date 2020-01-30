@@ -39,6 +39,11 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.FT, amount sdk.Int, owner s
 		return err
 	}
 
+	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), amount)), owner)
+	if err != nil {
+		return err
+	}
+
 	mintPerm := types.NewMintPermission(token.GetDenom())
 	if token.GetMintable() {
 		k.AddPermission(ctx, owner, mintPerm)
@@ -46,10 +51,6 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.FT, amount sdk.Int, owner s
 
 	tokenUriModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
 	k.AddPermission(ctx, owner, tokenUriModifyPerm)
-	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), amount)), owner)
-	if err != nil {
-		return err
-	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -118,12 +119,38 @@ func (k Keeper) IssueNFT(ctx sdk.Context, token types.NFT, owner sdk.AccAddress)
 	return nil
 }
 
-func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, denom, tokenURI string) sdk.Error {
-	token, err := k.GetToken(ctx, denom)
+func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) sdk.Error {
+	err := k.SetCollection(ctx, collection)
 	if err != nil {
 		return err
 	}
 
+	perm := types.NewIssuePermission(collection.GetSymbol())
+	k.AddPermission(ctx, owner, perm)
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeCreateCollection,
+			sdk.NewAttribute(types.AttributeKeyName, collection.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, collection.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
+		),
+		sdk.NewEvent(
+			types.EventTypeGrantPermToken,
+			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyResource, perm.GetResource()),
+			sdk.NewAttribute(types.AttributeKeyAction, perm.GetAction()),
+		),
+	})
+
+	return nil
+}
+
+func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenID, tokenURI string) sdk.Error {
+	token, err := k.GetToken(ctx, symbol, tokenID)
+	if err != nil {
+		return err
+	}
 	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
 	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
 		return types.ErrTokenPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)

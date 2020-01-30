@@ -4,7 +4,7 @@
     "msg": "MsgExamples",
     "fee": {
       "amount": [],
-      "gas": "1000000"
+      "gas": "2000000"
     },
     "signatures": null,
     "memo": ""

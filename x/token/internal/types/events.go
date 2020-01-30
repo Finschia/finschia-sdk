@@ -8,13 +8,13 @@ var (
 	EventTypeModifyTokenURI          = "modify_token_uri_token"
 	EventTypeModifyTokenURIPermToken = "modify_token_uri_perm_token"
 	EventTypeRevokePermToken         = "revoke_perm_token"
-	EventTypeOccupySymbol            = "occupy_symbol"
+	EventTypeCreateCollection        = "create_collection"
 	EventTypeAttachToken             = "attach_token"
 	EventTypeDetachToken             = "detach_token"
 	EventTypeTransfer                = "transfer"
-	EventTypeTransferIDFT            = "transfer_idft"
+	EventTypeTransferCFT             = "transfer_cft"
 	EventTypeTransferNFT             = "transfer_nft"
-	EventTypeTransferIDNFT           = "transfer_idnft"
+	EventTypeTransferCNFT            = "transfer_cnft"
 
 	AttributeKeyName      = "name"
 	AttributeKeySymbol    = "symbol"
@@ -32,10 +32,10 @@ var (
 	AttributeKeyAction    = "perm_action"
 	AttributeKeyToTokenID = "to_token_id"
 
-	AttributeValueTokenTypeFT    = "ft"
-	AttributeValueTokenTypeNFT   = "nft"
-	AttributeValueTokenTypeIDFT  = "idft"
-	AttributeValueTokenTypeIDNFT = "idnft"
+	AttributeValueTokenTypeFT   = "ft"
+	AttributeValueTokenTypeNFT  = "nft"
+	AttributeValueTokenTypeCFT  = "cft"
+	AttributeValueTokenTypeCNFT = "cnft"
 
 	AttributeValueCategory = ModuleName
 )

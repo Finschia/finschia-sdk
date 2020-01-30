@@ -3,83 +3,11 @@ package types
 import (
 	"encoding/json"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/types"
 	linktype "github.com/line/link/types"
 )
 
-var _ sdk.Msg = (*MsgIssueNFT)(nil)
-var _ sdk.Msg = (*MsgIssueNFTCollection)(nil)
 var _ sdk.Msg = (*MsgAttach)(nil)
 var _ sdk.Msg = (*MsgDetach)(nil)
-
-var _ json.Marshaler = (*MsgIssueNFT)(nil)
-var _ json.Unmarshaler = (*MsgIssueNFT)(nil)
-var _ json.Marshaler = (*MsgIssueNFTCollection)(nil)
-var _ json.Unmarshaler = (*MsgIssueNFTCollection)(nil)
-
-type MsgIssueNFT struct {
-	MsgIssueCommon
-}
-
-func NewMsgIssueNFT(name, symbol, tokenURI string, owner sdk.AccAddress) MsgIssueNFT {
-	return MsgIssueNFT{
-		MsgIssueCommon: NewMsgIssueCommon(name, symbol, tokenURI, owner),
-	}
-}
-
-func (msg MsgIssueNFT) Route() string { return RouterKey }
-
-func (msg MsgIssueNFT) Type() string { return "issue_nft" }
-
-func (msg MsgIssueNFT) ValidateBasic() sdk.Error {
-	if err := msg.MsgIssueCommon.ValidateBasic(); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (msg MsgIssueNFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
-
-func (msg MsgIssueNFT) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.Owner}
-}
-
-type MsgIssueNFTCollection struct {
-	MsgIssueNFT
-	MsgCollection
-}
-
-func NewMsgIssueNFTCollection(name, symbol, tokenURI string, owner sdk.AccAddress, tokenID string) MsgIssueNFTCollection {
-	return MsgIssueNFTCollection{
-		MsgIssueNFT:   NewMsgIssueNFT(name, symbol, tokenURI, owner),
-		MsgCollection: NewMsgCollection(tokenID),
-	}
-}
-
-func (msg MsgIssueNFTCollection) Type() string { return "issue_nft_collection" }
-
-func (msg MsgIssueNFTCollection) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
-
-func (msg MsgIssueNFTCollection) ValidateBasic() sdk.Error {
-	if err := msg.MsgIssueNFT.ValidateBasic(); err != nil {
-		return err
-	}
-
-	if err := msg.MsgCollection.ValidateBasic(); err != nil {
-		return err
-	}
-
-	coin := sdk.NewCoin(types.SymbolCollectionToken(msg.Symbol, msg.TokenID), sdk.NewInt(1))
-	if !coin.IsValid() {
-		return sdk.ErrInvalidCoins(coin.String())
-	}
-
-	return nil
-}
 
 type MsgAttach struct {
 	FromAddress sdk.AccAddress `json:"from_address"`
@@ -138,6 +66,7 @@ func (msg MsgAttach) ValidateBasic() sdk.Error {
 	if msg.ToTokenID == msg.TokenID {
 		return ErrCannotAttachToItself(DefaultCodespace, msg.Symbol+msg.TokenID)
 	}
+
 	return nil
 }
 

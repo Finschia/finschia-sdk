@@ -23,15 +23,15 @@ func CollectionKey(denom string) []byte {
 	return append(CollectionKeyPrefix, []byte(denom)...)
 }
 
-func TokenChildToParentKey(token *BaseIDNFT) []byte {
+func TokenChildToParentKey(token Token) []byte {
 	return append(TokenChildToParentKeyPrefix, []byte(token.GetDenom())...)
 }
 
-func TokenParentToChildKey(token *BaseIDNFT) []byte {
+func TokenParentToChildKey(token Token) []byte {
 	return append(TokenParentToChildKeyPrefix, []byte(token.GetDenom())...)
 }
 
-func TokenParentToChildSubKey(token *BaseIDNFT) []byte {
+func TokenParentToChildSubKey(token Token) []byte {
 	return append(TokenParentToChildSubKeyPrefix, []byte(token.GetDenom())...)
 }
 

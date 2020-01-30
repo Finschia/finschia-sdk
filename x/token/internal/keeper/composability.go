@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 )
 
@@ -15,12 +16,12 @@ func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 		return types.ErrCannotAttachToItself(types.DefaultCodespace, symbol+tokenID)
 	}
 
-	token, err := k.getIDNFT(ctx, symbol+tokenID)
+	token, err := k.getCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return err
 	}
 
-	if !from.Equals(token.Owner) {
+	if !from.Equals(token.GetOwner()) {
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 
@@ -35,7 +36,7 @@ func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 	if err != nil {
 		return err
 	}
-	toToken, err := k.getIDNFT(ctx, symbol+toTokenID)
+	toToken, err := k.getCNFT(ctx, symbol, toTokenID)
 	if err != nil {
 		return err
 	}
@@ -50,13 +51,13 @@ func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 		panic("token is already a child of some other")
 	}
 
-	if !from.Equals(toToken.Owner) {
-		if err := k.moveIDNFToken(ctx, store, from, toToken.Owner, token); err != nil {
+	if !from.Equals(toToken.GetOwner()) {
+		if err := k.moveCNFToken(ctx, store, from, toToken.GetOwner(), token); err != nil {
 			return err
 		}
 	}
 
-	store.Set(childToParentKey, k.encodeToken(toToken))
+	store.Set(childToParentKey, k.mustEncodeTokenDenom(toToken.GetDenom()))
 	childrenStore.Set(parentToChildSubKey, ChildExists)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -75,12 +76,12 @@ func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.getIDNFT(ctx, symbol+tokenID)
+	token, err := k.getCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return err
 	}
 
-	if !from.Equals(token.Owner) {
+	if !from.Equals(token.GetOwner()) {
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 
@@ -90,7 +91,10 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 	}
 
 	bz := store.Get(childToParentKey)
-	parentToken, err := k.decodeToken(ctx, bz)
+	parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
+	ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
+
+	parentToken, err := k.getCNFT(ctx, ticker+suffix, tokenID)
 	if err != nil {
 		return err
 	}
@@ -103,7 +107,7 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 	}
 
 	if !from.Equals(to) {
-		if err := k.moveIDNFToken(ctx, store, from, to, token); err != nil {
+		if err := k.moveCNFToken(ctx, store, from, to, token); err != nil {
 			return err
 		}
 	}
@@ -123,10 +127,10 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (*types.BaseIDNFT, sdk.Error) {
+func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.CollectiveNFT, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.getIDNFT(ctx, symbol+tokenID)
+	token, err := k.getCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +138,10 @@ func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (*types.B
 
 	for childToParentKey := types.TokenChildToParentKey(token); store.Has(childToParentKey); {
 		bz := store.Get(childToParentKey)
-		token, err = k.decodeToken(ctx, bz)
+		parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
+		ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
+
+		token, err = k.getCNFT(ctx, ticker+suffix, tokenID)
 		if err != nil {
 			return nil, err
 		}
@@ -147,17 +154,20 @@ func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (*types.B
 	return token, nil
 }
 
-func (k Keeper) ParentOf(ctx sdk.Context, symbol string, tokenID string) (*types.BaseIDNFT, sdk.Error) {
+func (k Keeper) ParentOf(ctx sdk.Context, symbol string, tokenID string) (types.CollectiveNFT, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.getIDNFT(ctx, symbol+tokenID)
+	token, err := k.getCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err
 	}
 	childToParentKey := types.TokenChildToParentKey(token)
 	if store.Has(childToParentKey) {
 		bz := store.Get(childToParentKey)
-		return k.decodeToken(ctx, bz)
+		parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
+		ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
+
+		return k.getCNFT(ctx, ticker+suffix, tokenID)
 	}
 	return nil, nil
 }
@@ -165,7 +175,7 @@ func (k Keeper) ParentOf(ctx sdk.Context, symbol string, tokenID string) (*types
 func (k Keeper) ChildrenOf(ctx sdk.Context, symbol string, tokenID string) (types.Tokens, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.getIDNFT(ctx, symbol+tokenID)
+	token, err := k.getCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +189,9 @@ func (k Keeper) ChildrenOf(ctx sdk.Context, symbol string, tokenID string) (type
 			break
 		}
 		tokenDenom := types.ParentToChildSubKeyToToken(parentToChildKey, iter.Key())
-		childToken, err := k.getIDNFT(ctx, tokenDenom)
+		ticker, suffix, tokenID := linktype.ParseDenom(tokenDenom)
+
+		childToken, err := k.getCNFT(ctx, ticker+suffix, tokenID)
 		if err != nil {
 			panic("child token does not exist")
 		}
@@ -189,26 +201,26 @@ func (k Keeper) ChildrenOf(ctx sdk.Context, symbol string, tokenID string) (type
 	return result, nil
 }
 
-func (k Keeper) getIDNFT(ctx sdk.Context, tokenDenom string) (*types.BaseIDNFT, sdk.Error) {
-	token, err := k.GetToken(ctx, tokenDenom)
+func (k Keeper) getCNFT(ctx sdk.Context, symbol, tokenID string) (types.CollectiveNFT, sdk.Error) {
+	token, err := k.GetToken(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err
 	}
-	tokenNFT, ok := token.(*types.BaseIDNFT)
+	tokenNFT, ok := token.(*types.BaseCollectiveNFT)
 	if !ok {
 		return nil, types.ErrTokenNotIDNF(types.DefaultCodespace, token.GetDenom())
 	}
 	return tokenNFT, nil
 }
 
-func (k Keeper) encodeToken(token *types.BaseIDNFT) []byte {
-	return k.cdc.MustMarshalBinaryBare(token.GetDenom())
+func (k Keeper) mustEncodeTokenDenom(denom string) []byte {
+	return k.cdc.MustMarshalBinaryBare(denom)
 }
 
-func (k Keeper) decodeToken(ctx sdk.Context, tokenByte []byte) (*types.BaseIDNFT, sdk.Error) {
-	var tokenDenom string
-	k.cdc.MustUnmarshalBinaryBare(tokenByte, &tokenDenom)
-	return k.getIDNFT(ctx, tokenDenom)
+func (k Keeper) mustDecodeTokenDenom(ctx sdk.Context, tokenByte []byte) string {
+	var denom string
+	k.cdc.MustUnmarshalBinaryBare(tokenByte, &denom)
+	return denom
 }
 
 func (k Keeper) decodeOwner(tokenByte []byte) (owner sdk.AccAddress) {

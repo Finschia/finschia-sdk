@@ -25,9 +25,8 @@ replace_address proxy ${REPLACE_PROXY_ADDR}
 replace_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
 
 replace_token_symbol "alcd"${JACK_ADDR:40} ${REPLACE_TOKEN_SYMBOL} FT
-replace_token_symbol "blcd"${JACK_ADDR:40} ${REPLACE_COLLECTION_SYMBOL} FT_COLLECTION
+replace_token_symbol "blcd"${JACK_ADDR:40} ${REPLACE_COLLECTION_SYMBOL} COLLECTION
 replace_token_symbol "clcd"${JACK_ADDR:40} ${REPLACE_NFT_SYMBOL} NFT
-replace_token_symbol "dlcd"${JACK_ADDR:40} ${REPLACE_NFT_COLLECTION_SYMBOL} NFT_COLLECTION
 
 if [ "${REPLACE_OPTION}" == "--replace_tx_hash" ]
 then

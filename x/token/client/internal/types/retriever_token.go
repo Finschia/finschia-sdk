@@ -25,7 +25,7 @@ func (ar TokenRetriever) GetAllTokens(ctx context.CLIContext) (types.Tokens, err
 }
 
 func (ar TokenRetriever) GetTokenWithHeight(ctx context.CLIContext, symbol, tokenID string) (types.Token, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenParams(symbol, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -67,7 +67,7 @@ func (ar TokenRetriever) EnsureExists(ctx context.CLIContext, symbol, tokenID st
 }
 
 func (ar TokenRetriever) GetParent(ctx context.CLIContext, symbol, tokenID string) (types.Token, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenParams(symbol, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -86,7 +86,7 @@ func (ar TokenRetriever) GetParent(ctx context.CLIContext, symbol, tokenID strin
 }
 
 func (ar TokenRetriever) GetRoot(ctx context.CLIContext, symbol, tokenID string) (types.Token, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenParams(symbol, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -105,7 +105,7 @@ func (ar TokenRetriever) GetRoot(ctx context.CLIContext, symbol, tokenID string)
 }
 
 func (ar TokenRetriever) GetChildren(ctx context.CLIContext, symbol, tokenID string) (types.Tokens, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenParams(symbol, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
 	if err != nil {
 		return nil, 0, err
 	}

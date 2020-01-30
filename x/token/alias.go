@@ -17,27 +17,33 @@ type (
 	Token  = types.Token
 	Tokens = types.Tokens
 
-	FT  = types.FT
-	NFT = types.NFT
+	FT              = types.FT
+	NFT             = types.NFT
+	CollectiveToken = types.CollectiveToken
 
-	Collection            = types.Collection
-	Collections           = types.Collections
-	CollectionWithTokens  = types.CollectionWithTokens
-	CollectionsWithTokens = types.CollectionsWithTokens
+	Collection  = types.BaseCollection
+	Collections = types.Collections
 
-	MsgIssue              = types.MsgIssue
-	MsgIssueCollection    = types.MsgIssueCollection
-	MsgIssueNFT           = types.MsgIssueNFT
-	MsgIssueNFTCollection = types.MsgIssueNFTCollection
-	MsgMint               = types.MsgMint
-	MsgBurn               = types.MsgBurn
-	MsgGrantPermission    = types.MsgGrantPermission
-	MsgRevokePermission   = types.MsgRevokePermission
-	MsgModifyTokenURI     = types.MsgModifyTokenURI
-	MsgTransferFT         = types.MsgTransferFT
-	MsgTransferIDFT       = types.MsgTransferIDFT
-	MsgTransferNFT        = types.MsgTransferNFT
-	MsgTransferIDNFT      = types.MsgTransferIDNFT
+	MsgIssue    = types.MsgIssue
+	MsgIssueNFT = types.MsgIssueNFT
+	MsgMint     = types.MsgMint
+	MsgBurn     = types.MsgBurn
+
+	MsgCreateCollection    = types.MsgCreateCollection
+	MsgIssueCollection     = types.MsgIssueCollection
+	MsgIssueNFTCollection  = types.MsgIssueNFTCollection
+	MsgCollectionTokenMint = types.MsgMintCollection
+	MsgCollectionTokenBurn = types.MsgBurnCollection
+
+	MsgGrantPermission  = types.MsgGrantPermission
+	MsgRevokePermission = types.MsgRevokePermission
+
+	MsgModifyTokenURI = types.MsgModifyTokenURI
+
+	MsgTransferFT   = types.MsgTransferFT
+	MsgTransferCFT  = types.MsgTransferCFT
+	MsgTransferNFT  = types.MsgTransferNFT
+	MsgTransferCNFT = types.MsgTransferCNFT
 
 	MsgAttach = types.MsgAttach
 	MsgDetach = types.MsgDetach
@@ -49,15 +55,14 @@ type (
 )
 
 var (
-	NewFT    = types.NewFT
-	NewNFT   = types.NewNFT
-	NewIDFT  = types.NewIDFT
-	NewIDNFT = types.NewIDNFT
+	NewFT  = types.NewFT
+	NewNFT = types.NewNFT
 
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec
 
-	ErrTokenExist = types.ErrTokenExist
+	ErrTokenExist           = types.ErrTokenExist
+	ErrCollectionTokenExist = types.ErrCollectionTokenExist
 
 	NewIssuePermission          = types.NewIssuePermission
 	NewModifyTokenURIPermission = types.NewModifyTokenURIPermission

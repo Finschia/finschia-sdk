@@ -11,12 +11,8 @@ tags:
     description: Query gentxs, accounts from genesis data
   - name: Transactions
     description: Search, encode, or broadcast transactions.
-  - name: Auth
-    description: Authenticate accounts
-  - name: Bank
-    description: Create and broadcast transactions
-  - name: Supply
-    description: Supply module APIs
+  - name: Coin
+    description: Coin query APIs
   - name: Token
     description: Token query APIs
   - name: Safety Box
@@ -431,7 +427,7 @@ paths:
   /auth/accounts/{address}:
     get:
       tags:
-        - Auth
+        - Coin
       summary: Get the account information on blockchain
       parameters:
         - name: address
@@ -467,7 +463,7 @@ paths:
     get:
       summary: Get the account balances
       tags:
-        - Bank
+        - Coin
       parameters:
         - name: address
           in: path
@@ -504,7 +500,7 @@ paths:
   /bank/balances/{address}/{denomination}:
     get:
       tags:
-        - Bank
+        - Coin
       summary: Get the account balances of a single coin denomination
       parameters:
         - name: address
@@ -547,7 +543,7 @@ paths:
   /supply/total:
     get:
       tags:
-        - Supply
+        - Coin
       summary: Total supply of coins in the chain
       parameters:
         - name: height
@@ -577,7 +573,7 @@ paths:
   /supply/total/{denomination}:
     get:
       tags:
-        - Supply
+        - Coin
       summary: Total supply of a single coin denomination
       parameters:
         - name: denomination
@@ -614,15 +610,15 @@ paths:
         "500":
           description: Internal Server Error
           content: {}
-  /token/collections/{symbol}:
+  /token/tokens/{symbol}/supply:
     get:
       tags:
-        - Collection
-      summary: Get the Collection details
+        - Token
+      summary: Total supply of a single fungible token
       parameters:
         - name: symbol
           in: path
-          description: Collection symbol
+          description: Coin denomination
           required: true
           schema:
             type: string
@@ -646,81 +642,8 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    $ref: '#/components/schemas/CollectionToken'
-        "500":
-          description: Internal Server Error
-  /token/collections:
-    get:
-      tags:
-        - Collection
-      summary: Get all Collections
-      parameters:
-        - name: height
-          in: query
-          description: block height (if block height is 0 or be omitted, queries latest block)
-          schema:
-            type: integer
-          required: false
-          example: 0
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  height:
                     type: string
                     example: "100"
-                  result:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/CollectionToken'
-        "500":
-          description: Internal Server Error
-  /token/tokens/{symbol}/{token_id}:
-    get:
-      tags:
-        - Token
-      summary: Get the token details
-      parameters:
-        - name: symbol
-          in: path
-          description: Coin denomination
-          required: true
-          schema:
-            type: string
-          example: "con2xxv"
-        - name: token_id
-          in: path
-          description: token id
-          required: true
-          schema:
-            type: string
-          example: "00000001"
-        - name: height
-          in: query
-          description: block height (if block height is 0 or be omitted, queries latest block)
-          schema:
-            type: integer
-          required: false
-          example: 0
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  height:
-                    type: string
-                    example: "100"
-                  result:
-                    oneOf:
-                      - $ref: '#/components/schemas/TokenIDFT'
-                      - $ref: '#/components/schemas/TokenIDNFT'
         "500":
           description: Internal Server Error
   /token/tokens/{symbol}:
@@ -790,30 +713,35 @@ paths:
                       oneOf:
                         - $ref: '#/components/schemas/TokenFT'
                         - $ref: '#/components/schemas/TokenNFT'
-                        - $ref: '#/components/schemas/TokenIDFT'
-                        - $ref: '#/components/schemas/TokenIDNFT'
         "500":
           description: Internal Server Error
-  /token/parent/{symbol}/{token_id}:
+  /token/collections/{symbol}/tokens/{token_id}/supply:
     get:
       tags:
         - Token
-      summary: Get the parent token of the given token
+      summary: Total supply of a single fungible token of the collection
       parameters:
         - name: symbol
           in: path
-          description: Token symbol
+          description: symbol for the collection
           required: true
           schema:
             type: string
-          example: "con4xxv"
+          example: "con2xxv"
         - name: token_id
           in: path
           description: token id
           required: true
           schema:
             type: string
-          example: "00000003"
+          example: "00000001"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
       responses:
         "200":
           description: OK
@@ -826,29 +754,37 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    $ref: '#/components/schemas/TokenIDNFT2'
+                    type: string
+                    example: "100"
         "500":
           description: Internal Server Error
-  /token/root/{symbol}/{token_id}:
+  /token/collections/{symbol}/tokens/{token_type}/count:
     get:
       tags:
         - Token
-      summary: Get the root parent token of the given token
+      summary: Total count of nonfungible tokens of the collection for the base-id
       parameters:
         - name: symbol
           in: path
-          description: Token symbol
+          description: symbol for the collection
           required: true
           schema:
             type: string
-          example: "con4xxv"
-        - name: token_id
+          example: "con2xxv"
+        - name: token_type
           in: path
           description: token id
           required: true
           schema:
             type: string
-          example: "00000003"
+          example: "moon"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
       responses:
         "200":
           description: OK
@@ -861,29 +797,74 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    $ref: '#/components/schemas/TokenIDNFT2'
+                    type: string
+                    example: "100"
         "500":
           description: Internal Server Error
-  /token/children/{symbol}/{token_id}:
+  /token/collections/{symbol}/tokens/{token_id}:
     get:
       tags:
         - Token
-      summary: Get the child tokens of the given token
+      summary: Get the collection token details
       parameters:
         - name: symbol
           in: path
-          description: Token symbol
+          description: symbol for the collection
           required: true
           schema:
             type: string
-          example: "con4xxv"
+          example: "con2xxv"
         - name: token_id
           in: path
           description: token id
           required: true
           schema:
             type: string
-          example: "00000002"
+          example: "00000001"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    oneOf:
+                      - $ref: '#/components/schemas/TokenCFT'
+                      - $ref: '#/components/schemas/TokenCNFT'
+        "500":
+          description: Internal Server Error
+  /token/collections/{symbol}/tokens:
+    get:
+      tags:
+        - Token
+      summary: Get all collection tokens
+      parameters:
+        - name: symbol
+          in: path
+          description: symbol for the collection
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
       responses:
         "200":
           description: OK
@@ -898,7 +879,181 @@ paths:
                   result:
                     type: array
                     items:
-                      $ref: '#/components/schemas/TokenIDNFT3'
+                      oneOf:
+                        - $ref: '#/components/schemas/TokenCFT'
+                        - $ref: '#/components/schemas/TokenCNFT'
+        "500":
+          description: Internal Server Error
+  /token/collections/{symbol}:
+    get:
+      tags:
+        - Token
+      summary: Get the Collection details
+      parameters:
+        - name: symbol
+          in: path
+          description: symbol for the collection
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/Collection'
+        "500":
+          description: Internal Server Error
+  /token/collections:
+    get:
+      tags:
+        - Token
+      summary: Get all Collections
+      parameters:
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Collection'
+        "500":
+          description: Internal Server Error
+  /token/parent/{symbol}/{token_id}:
+    get:
+      tags:
+        - Token
+      summary: Get the parent token of the given token
+      parameters:
+        - name: symbol
+          in: path
+          description: Token symbol
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: token_id
+          in: path
+          description: token id
+          required: true
+          schema:
+            type: string
+          example: "a0000003"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/TokenCNFT'
+        "500":
+          description: Internal Server Error
+  /token/root/{symbol}/{token_id}:
+    get:
+      tags:
+        - Token
+      summary: Get the root parent token of the given token
+      parameters:
+        - name: symbol
+          in: path
+          description: Token symbol
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: token_id
+          in: path
+          description: token id
+          required: true
+          schema:
+            type: string
+          example: "a0000003"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/TokenCNFT'
+        "500":
+          description: Internal Server Error
+  /token/children/{symbol}/{token_id}:
+    get:
+      tags:
+        - Token
+      summary: Get the child tokens of the given token
+      parameters:
+        - name: symbol
+          in: path
+          description: Token symbol
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: token_id
+          in: path
+          description: token id
+          required: true
+          schema:
+            type: string
+          example: "a0000002"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/TokenCNFT3'
         "500":
           description: Internal Server Error
   /safetybox/{id}:
@@ -1067,6 +1222,18 @@ components:
         denom:
           type: string
           example: link
+        amount:
+          type: string
+          example: "50"
+    CoinWithTokenID:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: link
+        token_id:
+          type: string
+          example: "00000001"
         amount:
           type: string
           example: "50"
@@ -1500,6 +1667,7 @@ components:
             # Because Dredd doesn't support anyOf, You have to add new Msg example to MsgExamples for dredd test
             anyOf:
               - $ref: '#/components/schemas/MsgSend'
+              - $ref: '#/components/schemas/MsgCreateCollection'
               - $ref: '#/components/schemas/MsgIssue'
               - $ref: '#/components/schemas/MsgModifyTokenURI'
               - $ref: '#/components/schemas/MsgIssueCollection'
@@ -1507,6 +1675,8 @@ components:
               - $ref: '#/components/schemas/MsgIssueNFTCollection'
               - $ref: '#/components/schemas/MsgMint'
               - $ref: '#/components/schemas/MsgBurn'
+              - $ref: '#/components/schemas/MsgMintCollection'
+              - $ref: '#/components/schemas/MsgBurnCollection'
               - $ref: '#/components/schemas/MsgCreateValidator'
               - $ref: '#/components/schemas/MsgSafetyBoxCreate'
               - $ref: '#/components/schemas/MsgSafetyBoxAllocateCoins'
@@ -1523,9 +1693,9 @@ components:
               - $ref: '#/components/schemas/MsgSafetyBoxDeregisterReturner'
               - $ref: '#/components/schemas/MsgCreateAccount'
               - $ref: '#/components/schemas/MsgTransferFT'
-              - $ref: '#/components/schemas/MsgTransferIDFT'
+              - $ref: '#/components/schemas/MsgTransferCFT'
               - $ref: '#/components/schemas/MsgTransferNFT'
-              - $ref: '#/components/schemas/MsgTransferIDNFT'
+              - $ref: '#/components/schemas/MsgTransferCNFT'
               - $ref: '#/components/schemas/MsgAttach'
               - $ref: '#/components/schemas/MsgDetach'
           example:
@@ -1667,7 +1837,7 @@ components:
           properties:
             name:
               type: string
-              example: "test-cony"
+              example: "cony"
             symbol:
               type: string
               example: "conyxxv"
@@ -1690,28 +1860,28 @@ components:
               $ref: '#/components/schemas/Address'
             name:
               type: string
-              example: "test-cony"
+              example: "cony"
             symbol:
               type: string
               example: "conyxxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
-    TokenIDFT:
+    TokenCFT:
       type: object
       properties:
         type:
           type: string
-          example: "link/IDFT"
+          example: "link/CFT"
         value:
           type: object
           properties:
             name:
               type: string
-              example: "test-cony"
+              example: "cony"
             symbol:
               type: string
-              example: "conyxxv"
+              example: "con2xxv"
             mintable:
               type: boolean
               example: true
@@ -1721,12 +1891,35 @@ components:
             token_id:
               type: string
               example: "00000001"
-    TokenIDNFT:
+    TokenCNFT:
       type: object
       properties:
         type:
           type: string
-          example: "link/IDNFT"
+          example: "link/CNFT"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            name:
+              type: string
+              example: "cony"
+            symbol:
+              type: string
+              example: "con2xxv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            token_id:
+              type: string
+              example: "a0000001"
+    TokenCNFT2:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/CNFT"
         value:
           type: object
           properties:
@@ -1743,13 +1936,13 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "00000001"
-    TokenIDNFT2:
+              example: "a0000002"
+    TokenCNFT3:
       type: object
       properties:
         type:
           type: string
-          example: "link/IDNFT"
+          example: "link/CNFT"
         value:
           type: object
           properties:
@@ -1766,49 +1959,28 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "00000002"
-    TokenIDNFT3:
-      type: object
-      properties:
-        type:
-          type: string
-          example: "link/IDNFT"
-        value:
-          type: object
-          properties:
-            owner:
-              $ref: '#/components/schemas/Address'
-            name:
-              type: string
-              example: "test-cony"
-            symbol:
-              type: string
-              example: "con4xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
-            token_id:
-              type: string
-              example: "00000003"
+              example: "a0000003"
     Collection:
       type: object
       properties:
-        symbol:
+        type:
           type: string
-          example: "conyxxv"
-    CollectionToken:
-      type: object
-      properties:
-        collection:
-          $ref: '#/components/schemas/Collection'
-        tokens:
-          type: array
-          items:
-            oneOf:
-              - $ref: '#/components/schemas/TokenFT'
-              - $ref: '#/components/schemas/TokenNFT'
-              - $ref: '#/components/schemas/TokenIDFT'
-              - $ref: '#/components/schemas/TokenIDNFT'
+          example: "link/Collection"
+        value:
+          type: object
+          properties:
+            name:
+              type: string
+              example: "cony"
+            symbol:
+              type: string
+              example: "con2xxv"
+            tokens:
+              type: array
+              items:
+                oneOf:
+                  - $ref: '#/components/schemas/TokenCFT'
+                  - $ref: '#/components/schemas/TokenCNFT'
 
     #-------------------------------
     # Proxy Models
@@ -1968,6 +2140,24 @@ components:
               $ref: '#/components/schemas/Address'
             amount:
               $ref: '#/components/schemas/Coin'
+    MsgCreateCollection:
+      type: object
+      description: msg of collection creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgCreateCollection"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            name:
+              type: string
+              example: "cony"
+            symbol:
+              type: string
+              example: "con2xxv"
     MsgIssue:
       type: object
       description: msg of token creation
@@ -2036,7 +2226,7 @@ components:
               example: "cony"
             symbol:
               type: string
-              example: "conyxxv"
+              example: "con2xxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -2069,7 +2259,7 @@ components:
               example: "cony"
             symbol:
               type: string
-              example: "conyxxv"
+              example: "con3xxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -2090,13 +2280,13 @@ components:
               example: "cony"
             symbol:
               type: string
-              example: "con4xxv"
+              example: "con2xxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "00000001"
+              example: "a0000001"
     MsgMint:
       type: object
       description: msg of token mint
@@ -2107,10 +2297,14 @@ components:
         value:
           type: object
           properties:
+            from:
+              $ref: '#/components/schemas/Address'
             to:
               $ref: '#/components/schemas/Address'
             amount:
-              $ref: '#/components/schemas/Coin'
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
     MsgBurn:
       type: object
       description: msg of token burn
@@ -2124,7 +2318,43 @@ components:
             from:
               $ref: '#/components/schemas/Address'
             amount:
-              $ref: '#/components/schemas/Coin'
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+    MsgMintCollection:
+      type: object
+      description: msg of token mint
+      properties:
+        type:
+          type: string
+          example: "link/MsgMintCollection"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            to:
+              $ref: '#/components/schemas/Address'
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/CoinWithTokenID'
+    MsgBurnCollection:
+      type: object
+      description: msg of token burn
+      properties:
+        type:
+          type: string
+          example: "link/MsgBurnCollection"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/CoinWithTokenID'
     MsgCreateValidator:
       type: object
       properties:
@@ -2428,12 +2658,12 @@ components:
             amount:
               type: string
               example: "10"
-    MsgTransferIDFT:
+    MsgTransferCFT:
       type: object
       properties:
         type:
           type: string
-          example: "link/MsgTransferIDFT"
+          example: "link/MsgTransferCFT"
         value:
           type: object
           properties:
@@ -2466,12 +2696,12 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-    MsgTransferIDNFT:
+    MsgTransferCNFT:
       type: object
       properties:
         type:
           type: string
-          example: "link/MsgTransferIDNFT"
+          example: "link/MsgTransferCNFT"
         value:
           type: object
           properties:
@@ -2555,12 +2785,50 @@ components:
         }
       },
       {
+        "type": "link/MsgMint",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "amount": [{
+                       "denom": "conyxxv",
+                       "amount": "1"
+                     }]
+        }
+      },
+      {
+        "type": "link/MsgBurn",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "amount": [{
+                       "denom": "conyxxv",
+                       "amount": "1"
+                     }]
+        }
+      },
+      {
+        "type": "link/MsgIssueNFT",
+        "value": {
+          "name": "cony",
+          "symbol": "con3xxv",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri"
+        }
+      },
+      {
         "type": "link/MsgModifyTokenURI",
         "value": {
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "conyxxv",
           "token_uri": "example.com/token_uri",
           "token_id": ""
+        }
+      },
+      {
+        "type": "link/MsgCreateCollection",
+        "value": {
+          "name": "cony",
+          "symbol": "con2xxv",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
         }
       },
       {
@@ -2577,60 +2845,78 @@ components:
         }
       },
       {
-        "type": "link/MsgIssueNFT",
+        "type": "link/MsgIssueNFTCollection",
         "value": {
           "name": "cony",
-          "symbol": "con3xxv",
+          "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri"
+          "token_uri": "example.com/token_uri",
+          "token_id": "a0000001"
         }
       },
       {
         "type": "link/MsgIssueNFTCollection",
         "value": {
           "name": "cony",
-          "symbol": "con4xxv",
+          "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_id": "00000001"
+          "token_id": "a0000002"
         }
       },
       {
         "type": "link/MsgIssueNFTCollection",
         "value": {
           "name": "cony",
-          "symbol": "con4xxv",
+          "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_id": "00000002"
+          "token_id": "a0000003"
+        }
+      },
+      {
+        "type": "link/MsgIssueCollection",
+        "value": {
+          "name": "cony",
+          "symbol": "con2xxv",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri",
+          "amount": "1000000",
+          "mintable": true,
+          "decimals": "8",
+          "token_id": ""
         }
       },
       {
         "type": "link/MsgIssueNFTCollection",
         "value": {
           "name": "cony",
-          "symbol": "con4xxv",
+          "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_id": "00000003"
+          "token_id": ""
         }
       },
+
       {
-        "type": "link/MsgMint",
+        "type": "link/MsgMintCollection",
         "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "denom": "conyxxv",
+                       "symbol": "con2xxv",
+                       "token_id": "00000001",
                        "amount": "1"
                      }]
         }
       },
       {
-        "type": "link/MsgBurn",
+        "type": "link/MsgBurnCollection",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "denom": "conyxxv",
+                       "symbol": "con2xxv",
+                       "token_id": "00000001",
                        "amount": "1"
                      }]
         }
@@ -2769,7 +3055,7 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferIDFT",
+        "type": "link/MsgTransferCFT",
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2787,21 +3073,21 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferIDNFT",
+        "type": "link/MsgTransferCNFT",
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con4xxv",
-          "token_id": "00000001"
+          "symbol": "con2xxv",
+          "token_id": "a0000001"
         }
       },
       {
         "type": "link/MsgAttach",
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con4xxv",
-          "to_token_id": "00000002",
-          "token_id": "00000003"
+          "symbol": "con2xxv",
+          "to_token_id": "a0000002",
+          "token_id": "a0000003"
         }
       },
       {
@@ -2809,17 +3095,17 @@ components:
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con4xxv",
-          "token_id": "00000003"
+          "symbol": "con2xxv",
+          "token_id": "a0000003"
         }
       },
       {
         "type": "link/MsgAttach",
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con4xxv",
-          "to_token_id": "00000002",
-          "token_id": "00000003"
+          "symbol": "con2xxv",
+          "to_token_id": "a0000002",
+          "token_id": "a0000003"
         }
       },
       {
@@ -2849,5 +3135,5 @@ components:
           "amount": "1",
           "to_address": "link1pxjrsfqam3nuf75v2mh4atshaze2nlmjnqc99m"
         }
-      }
+        }
       ]

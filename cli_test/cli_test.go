@@ -44,7 +44,7 @@ func TestModifyTokenURI(t *testing.T) {
 
 	const (
 		tck       = "brown"
-		tokenID01 = "00000001"
+		tokenID01 = "a0000001"
 	)
 
 	barAddr := f.KeyAddress(keyBar)
@@ -54,11 +54,14 @@ func TestModifyTokenURI(t *testing.T) {
 		f.logResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
 
 		firstTokenURI := "uri:itisbrown"
+
+		symbol := tck + types.AccAddrSuffix(f.KeyAddress(keyFoo))
+		f.TxTokenCreateCollection(keyFoo, tck, "itisbrown", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
 		f.logResult(f.TxTokenIssueNFTCollection(keyFoo, tck, "itisbrown", firstTokenURI, tokenID01, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		symbol := tck + types.AccAddrSuffix(f.KeyAddress(keyFoo))
 		denom := symbol + tokenID01
-		firstResult := f.QueryToken(symbol, tokenID01).(tokenmodule.NFT)
+		firstResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
 		require.Equal(t, denom, firstResult.GetDenom())
 		require.Equal(t, firstTokenURI, firstResult.GetTokenURI())
 
@@ -66,14 +69,14 @@ func TestModifyTokenURI(t *testing.T) {
 		f.logResult(f.ModifyTokenURI(keyFoo, symbol, secondTokenURI, tokenID01, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		secondResult := f.QueryToken(symbol, tokenID01).(tokenmodule.NFT)
+		secondResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
 		require.Equal(t, secondTokenURI, secondResult.GetTokenURI())
 
 		var thirdTokenURI string
 		f.logResult(f.ModifyTokenURI(keyFoo, symbol, thirdTokenURI, tokenID01, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		thirdResult := f.QueryToken(symbol, tokenID01).(tokenmodule.NFT)
+		thirdResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
 		require.Equal(t, thirdTokenURI, thirdResult.GetTokenURI())
 		require.Equal(t, "", thirdResult.GetTokenURI())
 	}
@@ -2207,12 +2210,12 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		f.TxTokenIssue(keyFoo, symbolLong, description, amount, decimals, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.QueryTokenExpectEmpty(symbolShort, "")
-		f.QueryTokenExpectEmpty(symbolShort2, "")
-		f.QueryTokenExpectEmpty(symbolLong, "")
-		f.QueryTokenExpectEmpty(symbolShort+fooSuffix, "")
-		f.QueryTokenExpectEmpty(symbolShort2+fooSuffix, "")
-		f.QueryTokenExpectEmpty(symbolLong+fooSuffix, "")
+		f.QueryTokenExpectEmpty(symbolShort)
+		f.QueryTokenExpectEmpty(symbolShort2)
+		f.QueryTokenExpectEmpty(symbolLong)
+		f.QueryTokenExpectEmpty(symbolShort + fooSuffix)
+		f.QueryTokenExpectEmpty(symbolShort2 + fooSuffix)
+		f.QueryTokenExpectEmpty(symbolLong + fooSuffix)
 	}
 
 	// Issue Token brown. The token symbol extended with the account address suffix
@@ -2220,7 +2223,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		f.TxTokenIssue(keyFoo, symbolBrown, description, amount, decimals, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		token := f.QueryToken(symbolBrown+fooSuffix, "")
+		token := f.QueryToken(symbolBrown + fooSuffix)
 		require.Equal(t, description, token.GetName())
 		require.Equal(t, symbolBrown+fooSuffix, token.GetSymbol())
 		require.Equal(t, symbolBrown+fooSuffix, token.GetDenom())
@@ -2235,7 +2238,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		f.TxTokenIssue(keyFoo, symbolCony, description, amount, decimals, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		token := f.QueryToken(symbolCony+fooSuffix, "")
+		token := f.QueryToken(symbolCony + fooSuffix)
 		require.Equal(t, description, token.GetName())
 		require.Equal(t, symbolCony+fooSuffix, token.GetSymbol())
 		require.Equal(t, symbolCony+fooSuffix, token.GetDenom())
@@ -2267,17 +2270,13 @@ func TestLinkCLITokenIssue(t *testing.T) {
 	// Query permissions for foo account
 	{
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
-		require.Equal(t, 5, len(pms))
+		require.Equal(t, 3, len(pms))
 		require.Equal(t, symbolBrown+fooSuffix, pms[0].GetResource())
-		require.Equal(t, "issue", pms[0].GetAction())
-		require.Equal(t, symbolBrown+fooSuffix, pms[1].GetResource())
-		require.Equal(t, "modify", pms[1].GetAction())
+		require.Equal(t, "modify", pms[0].GetAction())
+		require.Equal(t, symbolCony+fooSuffix, pms[1].GetResource())
+		require.Equal(t, "mint", pms[1].GetAction())
 		require.Equal(t, symbolCony+fooSuffix, pms[2].GetResource())
-		require.Equal(t, "issue", pms[2].GetAction())
-		require.Equal(t, symbolCony+fooSuffix, pms[3].GetResource())
-		require.Equal(t, "mint", pms[3].GetAction())
-		require.Equal(t, symbolCony+fooSuffix, pms[4].GetResource())
-		require.Equal(t, "modify", pms[4].GetAction())
+		require.Equal(t, "modify", pms[2].GetAction())
 	}
 
 	// Query permissions for bar account
@@ -2322,7 +2321,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenIssue(keyFoo, symbolCony, description, initAmount, 6, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		token := f.QueryToken(symbolConyFoo, "")
+		token := f.QueryToken(symbolConyFoo)
 		require.Equal(t, description, token.GetName())
 		require.Equal(t, symbolConyFoo, token.GetSymbol())
 		require.Equal(t, symbolConyFoo, token.GetDenom())
@@ -2334,7 +2333,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 	}
 	// Mint/Burn by token owner
 	{
-		f.TxTokenMint(keyFoo, mintAmountStr+symbolConyFoo, "-y")
+		f.TxTokenMint(keyFoo, fooAddr, mintAmountStr+symbolConyFoo, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.Equal(t, int64(initAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
 		require.Equal(t, int64(initAmount+mintAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
@@ -2351,7 +2350,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		_, stdOut, _ := f.TxTokenBurn(keyFoo, initAmountStr+initAmountStr+symbolConyFoo, "-y")
 		require.Contains(t, stdOut, "not enough coins")
 		//bar try to mint but has no permission
-		_, stdOut, _ = f.TxTokenMint(keyBar, mintAmountStr+symbolConyFoo, "-y")
+		_, stdOut, _ = f.TxTokenMint(keyBar, barAddr, mintAmountStr+symbolConyFoo, "-y")
 		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", barAddr, symbolConyFoo+"-mint"))
 
 		//Amount not changed
@@ -2364,7 +2363,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenGrantPerm(keyFoo, barAddr, symbolConyFoo, "mint", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.TxTokenMint(keyBar, mintAmountStr+symbolConyFoo, "-y")
+		f.TxTokenMint(keyBar, barAddr, mintAmountStr+symbolConyFoo, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
 		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
@@ -2375,7 +2374,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenRevokePerm(keyFoo, symbolConyFoo, "mint", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		_, stdOut, _ := f.TxTokenMint(keyFoo, mintAmountStr+symbolConyFoo, "-y")
+		_, stdOut, _ := f.TxTokenMint(keyFoo, fooAddr, mintAmountStr+symbolConyFoo, "-y")
 		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", fooAddr, symbolConyFoo+"-mint"))
 
 		// Amount not changed
@@ -2425,13 +2424,18 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		sendTokens := sdk.TokensFromConsensusPower(1)
 		f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y")
 	}
+	// Create Collection
+	{
+		f.TxTokenCreateCollection(keyFoo, tickerBrown, description, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
 	// Issue collective token brown with token id
 	{
 		f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID01, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.QueryTokenExpectEmpty(tickerBrown+fooAddrSuffix, "")
-		token := f.QueryToken(tickerBrown+fooAddrSuffix, tokenID01)
+		f.QueryTokenExpectEmpty(tickerBrown + fooAddrSuffix)
+		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID01)
 		require.Equal(t, description, token.GetName())
 		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
 		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID01, token.GetDenom())
@@ -2459,7 +2463,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 		require.Contains(
 			t,
-			strings.Split(tokenmodule.ErrTokenExist(tokenmodule.DefaultCodespace, tickerBrown+fooAddrSuffix+tokenID02).Result().Log, "\""),
+			strings.Split(tokenmodule.ErrCollectionTokenExist(tokenmodule.DefaultCodespace, tickerBrown+fooAddrSuffix, tokenID02).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 	}
@@ -2470,7 +2474,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.QueryTokenExpectEmpty(tickerBrown+fooAddrSuffix, tokenID04)
+		f.QueryTokenCollectionExpectEmpty(tickerBrown+fooAddrSuffix, tokenID04)
 	}
 
 	// Bar can issue collective token when granted the issue permission
@@ -2480,7 +2484,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		token := f.QueryToken(tickerBrown+fooAddrSuffix, tokenID04)
+		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID04)
 		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
 		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID04, token.GetDenom())
 	}
@@ -2491,9 +2495,9 @@ func TestLinkCLITokenNFT(t *testing.T) {
 
 	const (
 		symbolBrown = "brown"
-		tokenID01   = "00000001"
-		tokenID02   = "00000002"
-		tokenID03   = "00000003"
+		tokenID01   = "a0000001"
+		tokenID02   = "a0000002"
+		tokenID03   = "a0000003"
 		description = "description"
 		tokenuri    = "uri:itisbrown"
 	)
@@ -2519,12 +2523,17 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		f.TxTokenIssueNFT(keyFoo, symbolBrown, description, tokenuri, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		token := f.QueryToken(symbolBrown+fooSuffix, "")
+		token := f.QueryToken(symbolBrown + fooSuffix)
 		require.Equal(t, description, token.GetName())
 		require.Equal(t, symbolBrown+fooSuffix, token.GetSymbol())
 		require.Equal(t, symbolBrown+fooSuffix, token.GetDenom())
 		require.Equal(t, tokenuri, token.(tokenmodule.NFT).GetTokenURI())
 		require.Equal(t, sdk.NewInt(1), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix))
+	}
+	// Create Collection
+	{
+		f.TxTokenCreateCollection(keyFoo, symbolBrown, description, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
 	}
 	// Issue Collective NFT for the collection
 	{
@@ -2533,14 +2542,13 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, description, tokenuri, tokenID03, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		collection := f.QueryCollection(symbolBrown + fooSuffix)
+		require.Equal(t, 3, len(collection.Tokens))
 		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[0].GetSymbol())
-		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[0].GetDenom())
+		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[0].GetDenom())
 		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[1].GetSymbol())
-		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[1].GetDenom())
+		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[1].GetDenom())
 		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[2].GetSymbol())
-		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[2].GetDenom())
-		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[3].GetSymbol())
-		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[3].GetDenom())
+		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[2].GetDenom())
 	}
 
 	f.Cleanup()
@@ -2591,14 +2599,14 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 	require.Equal(t, fmt.Sprintf("Signers:\n  0: %v\n\nSignatures:\n  0: %v\t\t\t[OK]\n\n", fooAddr.String(),
 		fooAddr.String()), stdout)
 
-	f.QueryTokenExpectEmpty("test"+fooSuffix, "")
+	f.QueryTokenExpectEmpty("test" + fooSuffix)
 
 	// Test broadcast
 	success, stdout, _ = f.TxBroadcast(signedTxFile.Name())
 	require.True(t, success)
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
-	token := f.QueryToken("test"+fooSuffix, "")
+	token := f.QueryToken("test" + fooSuffix)
 	require.Equal(t, "test", token.GetName())
 	require.Equal(t, int64(6), token.(tokenmodule.FT).GetDecimals().Int64())
 
