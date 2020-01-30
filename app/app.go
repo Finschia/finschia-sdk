@@ -48,6 +48,7 @@ var (
 		genutil.AppModuleBasic{},
 		auth.AppModuleBasic{},
 		bank.AppModuleBasic{},
+		cosmosbank.AppModuleBasic{},
 		staking.AppModuleBasic{},
 		params.AppModuleBasic{},
 		supply.AppModuleBasic{},
@@ -168,8 +169,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		safetybox.NewAppModule(app.safetyboxKeeper),
 		account.NewAppModule(app.accountKeeper),
 		proxy.NewAppModule(app.proxyKeeper),
+		cosmosbank.NewAppModule(app.cosmosbankKeeper, app.accountKeeper),
 	)
-
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -185,9 +186,22 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		safetybox.ModuleName,
 		account.ModuleName,
 		proxy.ModuleName,
+		cosmosbank.ModuleName,
 	)
 
-	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
+	//XXX: exclude cosmosbank route
+	//app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
+	for _, m := range app.mm.Modules {
+		if m.Name() == cosmosbank.ModuleName {
+			continue
+		}
+		if m.Route() != "" {
+			app.Router().AddRoute(m.Route(), m.NewHandler())
+		}
+		if m.QuerierRoute() != "" {
+			app.QueryRouter().AddRoute(m.QuerierRoute(), m.NewQuerierHandler())
+		}
+	}
 
 	// initialize stores
 	app.MountKVStores(keys)

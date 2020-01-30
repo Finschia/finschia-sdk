@@ -2,5 +2,5 @@ package types
 
 const (
 	// module name
-	ModuleName = "bank"
+	ModuleName = "coin"
 )
