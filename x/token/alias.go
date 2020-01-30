@@ -17,19 +17,36 @@ type (
 	Token  = types.Token
 	Tokens = types.Tokens
 
-	Collection            = types.Collection
-	Collections           = types.Collections
-	CollectionWithTokens  = types.CollectionWithTokens
-	CollectionsWithTokens = types.CollectionsWithTokens
+	FT              = types.FT
+	NFT             = types.NFT
+	CollectiveToken = types.CollectiveToken
 
-	MsgIssue              = types.MsgIssue
-	MsgIssueCollection    = types.MsgIssueCollection
-	MsgIssueNFT           = types.MsgIssueNFT
-	MsgIssueNFTCollection = types.MsgIssueNFTCollection
-	MsgMint               = types.MsgMint
-	MsgBurn               = types.MsgBurn
-	MsgGrantPermission    = types.MsgGrantPermission
-	MsgRevokePermission   = types.MsgRevokePermission
+	Collection  = types.BaseCollection
+	Collections = types.Collections
+
+	MsgIssue    = types.MsgIssue
+	MsgIssueNFT = types.MsgIssueNFT
+	MsgMint     = types.MsgMint
+	MsgBurn     = types.MsgBurn
+
+	MsgCreateCollection    = types.MsgCreateCollection
+	MsgIssueCollection     = types.MsgIssueCollection
+	MsgIssueNFTCollection  = types.MsgIssueNFTCollection
+	MsgCollectionTokenMint = types.MsgMintCollection
+	MsgCollectionTokenBurn = types.MsgBurnCollection
+
+	MsgGrantPermission  = types.MsgGrantPermission
+	MsgRevokePermission = types.MsgRevokePermission
+
+	MsgModifyTokenURI = types.MsgModifyTokenURI
+
+	MsgTransferFT   = types.MsgTransferFT
+	MsgTransferCFT  = types.MsgTransferCFT
+	MsgTransferNFT  = types.MsgTransferNFT
+	MsgTransferCNFT = types.MsgTransferCNFT
+
+	MsgAttach = types.MsgAttach
+	MsgDetach = types.MsgDetach
 
 	PermissionI = types.PermissionI
 	Permissions = types.Permissions
@@ -44,9 +61,11 @@ var (
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec
 
-	ErrTokenExist = types.ErrTokenExist
+	ErrTokenExist           = types.ErrTokenExist
+	ErrCollectionTokenExist = types.ErrCollectionTokenExist
 
-	NewIssuePermission = types.NewIssuePermission
+	NewIssuePermission          = types.NewIssuePermission
+	NewModifyTokenURIPermission = types.NewModifyTokenURIPermission
 
 	NewKeeper = keeper.NewKeeper
 )

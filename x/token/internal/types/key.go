@@ -8,14 +8,33 @@ const (
 )
 
 var (
-	TokenSymbolKeyPrefix = []byte{0x00}
-	CollectionKeyPrefix  = []byte{0x01}
+	TokenDenomKeyPrefix            = []byte{0x00}
+	CollectionKeyPrefix            = []byte{0x01}
+	TokenChildToParentKeyPrefix    = []byte{0x02}
+	TokenParentToChildKeyPrefix    = []byte{0x03}
+	TokenParentToChildSubKeyPrefix = []byte{0x04}
 )
 
-func TokenSymbolKey(symbol string) []byte {
-	return append(TokenSymbolKeyPrefix, []byte(symbol)...)
+func TokenDenomKey(denom string) []byte {
+	return append(TokenDenomKeyPrefix, []byte(denom)...)
 }
 
-func CollectionKey(symbol string) []byte {
-	return append(CollectionKeyPrefix, []byte(symbol)...)
+func CollectionKey(denom string) []byte {
+	return append(CollectionKeyPrefix, []byte(denom)...)
+}
+
+func TokenChildToParentKey(token Token) []byte {
+	return append(TokenChildToParentKeyPrefix, []byte(token.GetDenom())...)
+}
+
+func TokenParentToChildKey(token Token) []byte {
+	return append(TokenParentToChildKeyPrefix, []byte(token.GetDenom())...)
+}
+
+func TokenParentToChildSubKey(token Token) []byte {
+	return append(TokenParentToChildSubKeyPrefix, []byte(token.GetDenom())...)
+}
+
+func ParentToChildSubKeyToToken(prefix []byte, key []byte) (tokenDenom string) {
+	return string(key[len(prefix)+1:])
 }

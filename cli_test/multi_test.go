@@ -66,7 +66,7 @@ func TestMultiValidatorAndSendTokens(t *testing.T) {
 		)
 		require.Empty(t, stderr)
 		require.True(t, success)
-		msg := unmarshalStdTx(f.T, stdout)
+		msg := UnmarshalStdTx(f.T, stdout)
 		require.NotZero(t, msg.Fee.Gas)
 		require.Len(t, msg.Msgs, 1)
 		require.Len(t, msg.GetSignatures(), 0)
@@ -241,7 +241,7 @@ func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
 		require.Empty(t, stderr)
 
 		// CheckTx passed
-		sendResp1 := unmarshalTxResponse(t, stdout1)
+		sendResp1 := UnmarshalTxResponse(t, stdout1)
 		require.Equal(t, sendResp1.Logs[0].Success, true)
 
 		nodeOption := fmt.Sprintf("--node=%s", f1.RPCAddr)
@@ -251,7 +251,7 @@ func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
 		require.Empty(t, stderr)
 
 		// Commit new block
-		sendResp2 := unmarshalTxResponse(t, stdout2)
+		sendResp2 := UnmarshalTxResponse(t, stdout2)
 		require.Equal(t, sendResp2.Logs[0].Success, true)
 
 		tests.WaitForNextNBlocksTM(1, f1.Port)
@@ -282,10 +282,10 @@ func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
 		require.Empty(t, stderr)
 
 		// CheckTx results
-		sendResp1 := unmarshalTxResponse(t, stdout1)
+		sendResp1 := UnmarshalTxResponse(t, stdout1)
 		require.Equal(t, sendResp1.Logs[0].Success, true)
 
-		sendResp2 := unmarshalTxResponse(t, stdout2)
+		sendResp2 := UnmarshalTxResponse(t, stdout2)
 		require.Equal(t, sendResp2.Logs[0].Success, true)
 
 		tests.WaitForNextNBlocksTM(1, f1.Port)

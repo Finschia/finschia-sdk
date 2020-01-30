@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/params"
 
-	"github.com/line/link/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 )
 
 type TestInput struct {
@@ -39,7 +39,7 @@ func newTestCodec() *codec.Codec {
 	return cdc
 }
 
-func SetupTestInput(t *testing.T) TestInput {
+func SetupTestInput(t *testing.T) *TestInput {
 
 	keyAuth := sdk.NewKVStoreKey(auth.StoreKey)
 	keyParams := sdk.NewKVStoreKey(params.StoreKey)
@@ -82,10 +82,10 @@ func SetupTestInput(t *testing.T) TestInput {
 	}
 
 	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, bankKeeper, maccPerms)
-	keeper := NewKeeper(cdc, supplyKeeper, iamKeeper.WithPrefix(types.ModuleName), accountKeeper, keyLrc)
+	keeper := NewKeeper(cdc, supplyKeeper, iamKeeper.WithPrefix(types.ModuleName), accountKeeper, bankKeeper, keyLrc)
 
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
 	supplyKeeper.SetSupply(ctx, supply.NewSupply(sdk.NewCoins()))
 
-	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: bankKeeper}
+	return &TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: bankKeeper}
 }

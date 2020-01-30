@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	types "github.com/line/link/x/safetybox/internal/types"
+	"github.com/line/link/x/safetybox/internal/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -15,8 +15,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	bank "github.com/line/link/x/bank"
-	iam "github.com/line/link/x/iam"
+	"github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/line/link/x/iam"
 )
 
 type TestInput struct {

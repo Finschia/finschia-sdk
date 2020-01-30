@@ -32,7 +32,7 @@ func TestBlackListedAddrs(t *testing.T) {
 	app := NewLinkApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0)
 
 	for acc := range maccPerms {
-		require.True(t, app.bankKeeper.BlacklistedAddr(app.supplyKeeper.GetModuleAddress(acc)))
+		require.True(t, app.cosmosbankKeeper.BlacklistedAddr(app.supplyKeeper.GetModuleAddress(acc)))
 	}
 }
 

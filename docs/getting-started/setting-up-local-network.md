@@ -138,7 +138,7 @@ JSON path is `app_state.genutil.gentxs.item.value.memo`
         "gentxs": [
           {
 
-            "memo": "0dc4cd6d7b719051b9cd6e64fc9a7a0f18ff55c0@10.231.253.192:26656"
+            "memo": "0dc4cd6d7b719051b9cd6e64fc9a7a0f18ff55c0@[ip]:26656"
           }
         ]
       }

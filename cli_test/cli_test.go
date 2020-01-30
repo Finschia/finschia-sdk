@@ -7,8 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/line/link/types"
+	proxy "github.com/line/link/x/proxy"
 	sbox "github.com/line/link/x/safetybox"
-	token "github.com/line/link/x/token"
+	tokenmodule "github.com/line/link/x/token"
 	"io/ioutil"
 	"os"
 	"path"
@@ -32,6 +33,54 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/line/link/client"
 )
+
+func TestModifyTokenURI(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+	defer f.Cleanup()
+
+	const (
+		tck       = "brown"
+		tokenID01 = "a0000001"
+	)
+
+	barAddr := f.KeyAddress(keyBar)
+	t.Log("Modify tokenURI and set empty string to tokenURI")
+	{
+		sendTokens := sdk.TokensFromConsensusPower(1)
+		f.logResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
+
+		firstTokenURI := "uri:itisbrown"
+
+		symbol := tck + types.AccAddrSuffix(f.KeyAddress(keyFoo))
+		f.TxTokenCreateCollection(keyFoo, tck, "itisbrown", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		f.logResult(f.TxTokenIssueNFTCollection(keyFoo, tck, "itisbrown", firstTokenURI, tokenID01, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		denom := symbol + tokenID01
+		firstResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
+		require.Equal(t, denom, firstResult.GetDenom())
+		require.Equal(t, firstTokenURI, firstResult.GetTokenURI())
+
+		secondTokenURI := firstTokenURI + "modified"
+		f.logResult(f.ModifyTokenURI(keyFoo, symbol, secondTokenURI, tokenID01, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		secondResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
+		require.Equal(t, secondTokenURI, secondResult.GetTokenURI())
+
+		var thirdTokenURI string
+		f.logResult(f.ModifyTokenURI(keyFoo, symbol, thirdTokenURI, tokenID01, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		thirdResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
+		require.Equal(t, thirdTokenURI, thirdResult.GetTokenURI())
+		require.Equal(t, "", thirdResult.GetTokenURI())
+	}
+}
 
 func TestLinkCLIKeysAddMultisig(t *testing.T) {
 
@@ -254,7 +303,7 @@ func TestLinkCLISend(t *testing.T) {
 	)
 	require.Empty(t, stderr)
 	require.True(t, success)
-	msg := unmarshalStdTx(f.T, stdout)
+	msg := UnmarshalStdTx(f.T, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Len(t, msg.Msgs, 1)
 	require.Len(t, msg.GetSignatures(), 0)
@@ -371,7 +420,7 @@ func TestLinkCLICreateValidator(t *testing.T) {
 
 	require.True(f.T, success)
 	require.Empty(f.T, stderr)
-	msg := unmarshalStdTx(f.T, stdout)
+	msg := UnmarshalStdTx(f.T, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -464,8 +513,8 @@ func TestLinkCLIQuerySupply(t *testing.T) {
 	totalSupply := f.QueryTotalSupply()
 	totalSupplyOf := f.QueryTotalSupplyOf(fooDenom)
 
-	require.Equal(t, totalCoins, totalSupply)
-	require.True(sdk.IntEq(t, totalCoins.AmountOf(fooDenom), totalSupplyOf))
+	require.Equal(t, TotalCoins, totalSupply)
+	require.True(sdk.IntEq(t, TotalCoins.AmountOf(fooDenom), totalSupplyOf))
 
 	f.Cleanup()
 }
@@ -498,7 +547,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 		fooAddr.String(), "Text", "Test", "test", sdk.NewCoin(denom, proposalTokens), "--generate-only", "-y")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg := unmarshalStdTx(t, stdout)
+	msg := UnmarshalStdTx(t, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -537,7 +586,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	success, stdout, stderr = f.TxGovDeposit(1, fooAddr.String(), sdk.NewCoin(denom, depositTokens), "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -572,7 +621,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	success, stdout, stderr = f.TxGovVote(1, gov.OptionYes, fooAddr.String(), "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.NotZero(t, msg.Fee.Gas)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -779,30 +828,30 @@ func TestLinkCLIQueryTxPagination(t *testing.T) {
 	accFoo := f.QueryAccount(fooAddr)
 	seq := accFoo.GetSequence()
 
-	for i := 1; i <= 30; i++ {
+	for i := 1; i <= 4; i++ {
 		success, _, _ := f.TxSend(keyFoo, barAddr, sdk.NewInt64Coin(fooDenom, int64(i)), fmt.Sprintf("--sequence=%d", seq), "-y")
 		require.True(t, success)
 		seq++
 	}
 
 	// perPage = 15, 2 pages
-	txsPage1 := f.QueryTxs(1, 15, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPage1.Txs, 15)
-	require.Equal(t, txsPage1.Count, 15)
-	txsPage2 := f.QueryTxs(2, 15, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPage2.Txs, 15)
+	txsPage1 := f.QueryTxs(1, 2, fmt.Sprintf("message.sender:%s", fooAddr))
+	require.Len(t, txsPage1.Txs, 2)
+	require.Equal(t, txsPage1.Count, 2)
+	txsPage2 := f.QueryTxs(2, 2, fmt.Sprintf("message.sender:%s", fooAddr))
+	require.Len(t, txsPage2.Txs, 2)
 	require.NotEqual(t, txsPage1.Txs, txsPage2.Txs)
 
 	// perPage = 16, 2 pages
-	txsPage1 = f.QueryTxs(1, 16, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPage1.Txs, 16)
-	txsPage2 = f.QueryTxs(2, 16, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPage2.Txs, 14)
+	txsPage1 = f.QueryTxs(1, 3, fmt.Sprintf("message.sender:%s", fooAddr))
+	require.Len(t, txsPage1.Txs, 3)
+	txsPage2 = f.QueryTxs(2, 3, fmt.Sprintf("message.sender:%s", fooAddr))
+	require.Len(t, txsPage2.Txs, 1)
 	require.NotEqual(t, txsPage1.Txs, txsPage2.Txs)
 
 	// perPage = 50
 	txsPageFull := f.QueryTxs(1, 50, fmt.Sprintf("message.sender:%s", fooAddr))
-	require.Len(t, txsPageFull.Txs, 30)
+	require.Len(t, txsPageFull.Txs, 4)
 	require.Equal(t, txsPageFull.Txs, append(txsPage1.Txs, txsPage2.Txs...))
 
 	// perPage = 0
@@ -839,7 +888,7 @@ func TestLinkCLIValidateSignatures(t *testing.T) {
 	success, stdout, stderr = f.TxSign(keyFoo, unsignedTxFile.Name())
 	require.True(t, success)
 	require.Empty(t, stderr)
-	stdTx := unmarshalStdTx(t, stdout)
+	stdTx := UnmarshalStdTx(t, stdout)
 	require.Equal(t, len(stdTx.Msgs), 1)
 	require.Equal(t, 1, len(stdTx.GetSignatures()))
 	require.Equal(t, fooAddr.String(), stdTx.GetSigners()[0].String())
@@ -854,7 +903,7 @@ func TestLinkCLIValidateSignatures(t *testing.T) {
 
 	// modify the transaction
 	stdTx.Memo = "MODIFIED-ORIGINAL-TX-BAD"
-	bz := marshalStdTx(t, stdTx)
+	bz := MarshalStdTx(t, stdTx)
 	modSignedTxFile := WriteToNewTempFile(t, string(bz))
 	defer os.Remove(modSignedTxFile.Name())
 
@@ -881,7 +930,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	success, stdout, stderr := f.TxSend(fooAddr.String(), barAddr, sdk.NewCoin(denom, sendTokens), "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg := unmarshalStdTx(t, stdout)
+	msg := UnmarshalStdTx(t, stdout)
 	require.Equal(t, msg.Fee.Gas, uint64(client.DefaultGasLimit))
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -890,7 +939,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	success, stdout, stderr = f.TxSend(fooAddr.String(), barAddr, sdk.NewCoin(denom, sendTokens), "--gas=100", "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.Equal(t, msg.Fee.Gas, uint64(100))
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 0, len(msg.GetSignatures()))
@@ -899,7 +948,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	success, stdout, stderr = f.TxSend(fooAddr.String(), barAddr, sdk.NewCoin(denom, sendTokens), "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.True(t, msg.Fee.Gas > 0)
 	require.Equal(t, len(msg.Msgs), 1)
 
@@ -915,7 +964,7 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	// Test sign
 	success, stdout, _ = f.TxSign(keyFoo, unsignedTxFile.Name())
 	require.True(t, success)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 1, len(msg.GetSignatures()))
 	require.Equal(t, fooAddr.String(), msg.GetSigners()[0].String())
@@ -1327,6 +1376,210 @@ func TestValidateGenesis(t *testing.T) {
 	f.Cleanup()
 }
 
+func TestLinkCLIProxy(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+	defer f.Cleanup()
+
+	denom := DenomLink
+	tinaTheProxy := f.KeyAddress(UserTina).String()
+	rinahTheOnBehalfOf := f.KeyAddress(UserRinah).String()
+	evelynTheReceiver := f.KeyAddress(UserEvelyn).String()
+
+	// rinahTheOnBehalfOf's initial balance
+	t.Logf("[Proxy] Initial balance check for the OnBeHalfOf")
+	initialBalance := f.QueryAccount(f.KeyAddress(UserRinah)).Coins
+	{
+		require.Equal(t, initialBalance, defaultCoins)
+	}
+
+	// `tinaTheProxy` tries to send 5 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	fiveCoins := sdk.NewInt(5)
+	t.Logf("[Proxy] The proxy tries to send %d link to the receiver on behalf of the coin owner - should fail", fiveCoins)
+	{
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, fiveCoins, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as it's not approved with ErrProxyNotExist
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+
+	// `rinahTheOnBehalfOf` approves 5 link for `tinaTheProxy`
+	approved := sdk.NewInt(5)
+	t.Logf("[Proxy] The coin owner approves %d link for the proxy", approved)
+	{
+		result, _, stderr := f.TxProxyApproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, approved, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should succeed
+		require.True(t, result)
+		require.Equal(t, "", stderr)
+	}
+
+	// check the allowance
+	t.Logf("[Proxy] Check the allowance - should be %d", approved)
+	{
+		allowance := f.QueryProxyAllowance(tinaTheProxy, rinahTheOnBehalfOf, denom)
+		require.Equal(t, tinaTheProxy, allowance.Proxy.String())
+		require.Equal(t, rinahTheOnBehalfOf, allowance.OnBehalfOf.String())
+		require.Equal(t, denom, allowance.Denom)
+		require.Equal(t, approved, allowance.Amount)
+	}
+
+	// 'tinaTheProxy' tries to send 6 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	sixCoins := sdk.NewInt(6)
+	t.Logf("[Proxy] The proxy tries to send %d link to the receiver on behalf of the coin owner - should fail", sixCoins)
+	{
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sixCoins, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as it's more than approved
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, approved, sixCoins).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+
+	// `tinaTheProxy` sends 2 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	sentAmount1 := sdk.NewInt(2)
+	t.Logf("[Proxy] The proxy sends %d link to the receiver on behalf of the coin owner", sentAmount1)
+	{
+		result, _, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sentAmount1, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should succeed
+		require.True(t, result)
+		require.Equal(t, "", stderr)
+	}
+
+	// check the allowance
+	t.Logf("[Proxy] Check the allowance - should be %d", approved.Sub(sentAmount1))
+	{
+		allowance := f.QueryProxyAllowance(tinaTheProxy, rinahTheOnBehalfOf, denom)
+		require.Equal(t, tinaTheProxy, allowance.Proxy.String())
+		require.Equal(t, rinahTheOnBehalfOf, allowance.OnBehalfOf.String())
+		require.Equal(t, denom, allowance.Denom)
+		require.Equal(t, approved.Sub(sentAmount1), allowance.Amount)
+	}
+
+	// check balance of `rinahTheOnBehalfOf` and `evelynTheReceiver`
+	t.Logf("[Proxy] Check balances to confirm")
+	{
+		diff := sdk.Coins{sdk.Coin{DenomLink, sentAmount1}}
+		rinahBalance := f.QueryAccount(f.KeyAddress(UserRinah)).Coins
+		require.Equal(t, rinahBalance, defaultCoins.Sub(diff))
+		evelynBalance := f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins
+		require.Equal(t, evelynBalance, defaultCoins.Add(diff))
+	}
+
+	// `rinahTheOnBehalfOf` tries to disapprove 4 link from `tinaTheProxy`
+	fourCoins := sdk.NewInt(4)
+	t.Logf("[Proxy] The coin owner disapproves %d link from the proxy - should fail", fourCoins)
+	{
+		result, stdout, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, fourCoins, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as only 3 approved coins are left
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, approved.Sub(sentAmount1), fourCoins).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+
+	// `rinahTheOnBehalfOf` disapprove 1 link from `tinaTheProxy`
+	disapproved := sdk.OneInt()
+	t.Logf("[Proxy] The coin owner disapproves %d link from the proxy", disapproved)
+	{
+		result, _, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, disapproved, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should succeed
+		require.True(t, result)
+		require.Equal(t, "", stderr)
+	}
+
+	// check the allowance
+	t.Logf("[Proxy] Check the allowance - should be %d", approved.Sub(sentAmount1).Sub(disapproved))
+	{
+		allowance := f.QueryProxyAllowance(tinaTheProxy, rinahTheOnBehalfOf, denom)
+		require.Equal(t, tinaTheProxy, allowance.Proxy.String())
+		require.Equal(t, rinahTheOnBehalfOf, allowance.OnBehalfOf.String())
+		require.Equal(t, denom, allowance.Denom)
+		require.Equal(t, approved.Sub(sentAmount1).Sub(disapproved), allowance.Amount)
+	}
+
+	// `tinaTheProxy` sends 2 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	sentAmount2 := sdk.NewInt(2)
+	t.Logf("[Proxy] The proxy sends %d link to the receiver on behalf of the coin owner", sentAmount2)
+	{
+		result, _, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, sentAmount2, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should succeed
+		require.True(t, result)
+		require.Equal(t, "", stderr)
+	}
+
+	// check balance of `rinahTheOnBehalfOf` and `evelynTheReceiver`
+	t.Logf("[Proxy] Check balances to confirm")
+	{
+		diff := sdk.Coins{sdk.Coin{DenomLink, sentAmount1.Add(sentAmount2)}}
+		rinahBalance := f.QueryAccount(f.KeyAddress(UserRinah)).Coins
+		require.Equal(t, rinahBalance, defaultCoins.Sub(diff))
+		evelynBalance := f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins
+		require.Equal(t, evelynBalance, defaultCoins.Add(diff))
+	}
+
+	// 'tinaTheProxy' tries to send 1 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
+	oneCoin := sdk.NewInt(1)
+	t.Logf("[Proxy] The proxy tries to send %d link to the receiver on behalf of the coin owner - should fail", oneCoin)
+	{
+		result, stdout, stderr := f.TxProxySendCoinsFrom(tinaTheProxy, rinahTheOnBehalfOf, evelynTheReceiver, denom, oneCoin, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as there is no coin approved (all sent!)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+
+	// 'onBehalfOf' tries to disapprove 1 link from `proxy`
+	t.Logf("[Proxy] The coin owner tries to disapprove %d link from the proxy - should fail", oneCoin)
+	{
+		result, stdout, stderr := f.TxProxyDisapproveCoins(tinaTheProxy, rinahTheOnBehalfOf, denom, oneCoin, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// should fail as there is no coin approved (all sent!)
+		require.True(t, result)
+		require.Contains(
+			t,
+			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(stdout, "\\\\\\\"")[9],
+		)
+		require.Equal(t, "", stderr)
+	}
+}
+
 func TestLinkCLISafetyBox(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
@@ -1336,7 +1589,6 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	var result bool
-	//var stdout string
 
 	id := "some_safety_box"
 	denom := DenomLink
@@ -1913,7 +2165,7 @@ func TestLinkCLIMempool(t *testing.T) {
 		require.Equal(t, 1, result.Count)
 		require.Equal(t, 1, result.Total)
 
-		txHash := unmarshalTxResponse(t, stdout).TxHash
+		txHash := UnmarshalTxResponse(t, stdout).TxHash
 		require.Equal(t, txHash, result.Txs[0])
 	}
 
@@ -1936,6 +2188,9 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		symbolShort  = "s"
 		symbolShort2 = "ss"
 		symbolLong   = "ssssss"
+		description  = "description"
+		amount       = 10000
+		decimals     = 6
 	)
 
 	t.Parallel()
@@ -1950,9 +2205,9 @@ func TestLinkCLITokenIssue(t *testing.T) {
 
 	// Try to issue token with short < 3 or long > 5. Expect fails
 	{
-		f.TxTokenIssue(keyFoo, symbolShort, "test", 10000, 6, true, "-y")
-		f.TxTokenIssue(keyFoo, symbolShort2, "test", 10000, 6, true, "-y")
-		f.TxTokenIssue(keyFoo, symbolLong, "test", 10000, 6, true, "-y")
+		f.TxTokenIssue(keyFoo, symbolShort, description, amount, decimals, true, "-y")
+		f.TxTokenIssue(keyFoo, symbolShort2, description, amount, decimals, true, "-y")
+		f.TxTokenIssue(keyFoo, symbolLong, description, amount, decimals, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenExpectEmpty(symbolShort)
@@ -1965,30 +2220,32 @@ func TestLinkCLITokenIssue(t *testing.T) {
 
 	// Issue Token brown. The token symbol extended with the account address suffix
 	{
-		f.TxTokenIssue(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, "-y")
+		f.TxTokenIssue(keyFoo, symbolBrown, description, amount, decimals, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryToken(symbolBrown + fooSuffix)
-		require.Equal(t, "itisbrown", token.Name)
-		require.Equal(t, symbolBrown+fooSuffix, token.Symbol)
-		require.Equal(t, int64(6), token.Decimals.Int64())
-		require.Equal(t, false, token.Mintable)
+		require.Equal(t, description, token.GetName())
+		require.Equal(t, symbolBrown+fooSuffix, token.GetSymbol())
+		require.Equal(t, symbolBrown+fooSuffix, token.GetDenom())
+		require.Equal(t, int64(decimals), token.(tokenmodule.FT).GetDecimals().Int64())
+		require.Equal(t, false, token.(tokenmodule.FT).GetMintable())
 
-		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix))
+		require.Equal(t, sdk.NewInt(amount), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix))
 	}
 
 	// Issue Token cony. The token symbol extended with the account address suffix
 	{
-		f.TxTokenIssue(keyFoo, symbolCony, "itiscony", 10000, 6, true, "-y")
+		f.TxTokenIssue(keyFoo, symbolCony, description, amount, decimals, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryToken(symbolCony + fooSuffix)
-		require.Equal(t, "itiscony", token.Name)
-		require.Equal(t, symbolCony+fooSuffix, token.Symbol)
-		require.Equal(t, int64(6), token.Decimals.Int64())
-		require.Equal(t, true, token.Mintable)
+		require.Equal(t, description, token.GetName())
+		require.Equal(t, symbolCony+fooSuffix, token.GetSymbol())
+		require.Equal(t, symbolCony+fooSuffix, token.GetDenom())
+		require.Equal(t, int64(decimals), token.(tokenmodule.FT).GetDecimals().Int64())
+		require.Equal(t, true, token.(tokenmodule.FT).GetMintable())
 
-		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolCony+fooSuffix))
+		require.Equal(t, sdk.NewInt(amount), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolCony+fooSuffix))
 	}
 
 	// Query for all tokens
@@ -1996,15 +2253,17 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		allTokens := f.QueryTokens()
 		require.Equal(t, 2, len(allTokens))
 
-		require.Equal(t, "itisbrown", allTokens[0].Name)
-		require.Equal(t, symbolBrown+fooSuffix, allTokens[0].Symbol)
-		require.Equal(t, int64(6), allTokens[0].Decimals.Int64())
-		require.Equal(t, false, allTokens[0].Mintable)
+		require.Equal(t, description, allTokens[0].GetName())
+		require.Equal(t, symbolBrown+fooSuffix, allTokens[0].GetSymbol())
+		require.Equal(t, symbolBrown+fooSuffix, allTokens[0].GetDenom())
+		require.Equal(t, int64(decimals), allTokens[0].(tokenmodule.FT).GetDecimals().Int64())
+		require.Equal(t, false, allTokens[0].(tokenmodule.FT).GetMintable())
 
-		require.Equal(t, "itiscony", allTokens[1].Name)
-		require.Equal(t, symbolCony+fooSuffix, allTokens[1].Symbol)
-		require.Equal(t, int64(6), allTokens[1].Decimals.Int64())
-		require.Equal(t, true, allTokens[1].Mintable)
+		require.Equal(t, description, allTokens[1].GetName())
+		require.Equal(t, symbolCony+fooSuffix, allTokens[1].GetSymbol())
+		require.Equal(t, symbolCony+fooSuffix, allTokens[1].GetDenom())
+		require.Equal(t, int64(decimals), allTokens[1].(tokenmodule.FT).GetDecimals().Int64())
+		require.Equal(t, true, allTokens[1].(tokenmodule.FT).GetMintable())
 
 	}
 
@@ -2013,11 +2272,11 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
 		require.Equal(t, 3, len(pms))
 		require.Equal(t, symbolBrown+fooSuffix, pms[0].GetResource())
-		require.Equal(t, "issue", pms[0].GetAction())
+		require.Equal(t, "modify", pms[0].GetAction())
 		require.Equal(t, symbolCony+fooSuffix, pms[1].GetResource())
-		require.Equal(t, "issue", pms[1].GetAction())
+		require.Equal(t, "mint", pms[1].GetAction())
 		require.Equal(t, symbolCony+fooSuffix, pms[2].GetResource())
-		require.Equal(t, "mint", pms[2].GetAction())
+		require.Equal(t, "modify", pms[2].GetAction())
 	}
 
 	// Query permissions for bar account
@@ -2026,6 +2285,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		require.Equal(t, 0, len(pms))
 	}
 
+	f.Cleanup()
 }
 func TestLinkCLITokenMintBurn(t *testing.T) {
 	t.Parallel()
@@ -2037,15 +2297,14 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 
 	const (
 		symbolCony = "cony"
-	)
 
-	const (
 		initAmount    = 2000000
 		initAmountStr = "2000000"
 		mintAmount    = 200
 		mintAmountStr = "200"
 		burnAmount    = 100
 		burnAmountStr = "100"
+		description   = "decription"
 	)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -2059,21 +2318,22 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 	}
 	// Issue a Token and check the amount
 	{
-		f.TxTokenIssue(keyFoo, symbolCony, "itiscony", initAmount, 6, true, "-y")
+		f.TxTokenIssue(keyFoo, symbolCony, description, initAmount, 6, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryToken(symbolConyFoo)
-		require.Equal(t, "itiscony", token.Name)
-		require.Equal(t, symbolConyFoo, token.Symbol)
-		require.Equal(t, int64(6), token.Decimals.Int64())
-		require.Equal(t, true, token.Mintable)
+		require.Equal(t, description, token.GetName())
+		require.Equal(t, symbolConyFoo, token.GetSymbol())
+		require.Equal(t, symbolConyFoo, token.GetDenom())
+		require.Equal(t, int64(6), token.(tokenmodule.FT).GetDecimals().Int64())
+		require.Equal(t, true, token.(tokenmodule.FT).GetMintable())
 
 		require.Equal(t, int64(initAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
 		require.Equal(t, int64(initAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
 	}
 	// Mint/Burn by token owner
 	{
-		f.TxTokenMint(keyFoo, mintAmountStr+symbolConyFoo, "-y")
+		f.TxTokenMint(keyFoo, fooAddr, mintAmountStr+symbolConyFoo, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.Equal(t, int64(initAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
 		require.Equal(t, int64(initAmount+mintAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
@@ -2090,7 +2350,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		_, stdOut, _ := f.TxTokenBurn(keyFoo, initAmountStr+initAmountStr+symbolConyFoo, "-y")
 		require.Contains(t, stdOut, "not enough coins")
 		//bar try to mint but has no permission
-		_, stdOut, _ = f.TxTokenMint(keyBar, mintAmountStr+symbolConyFoo, "-y")
+		_, stdOut, _ = f.TxTokenMint(keyBar, barAddr, mintAmountStr+symbolConyFoo, "-y")
 		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", barAddr, symbolConyFoo+"-mint"))
 
 		//Amount not changed
@@ -2103,7 +2363,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenGrantPerm(keyFoo, barAddr, symbolConyFoo, "mint", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.TxTokenMint(keyBar, mintAmountStr+symbolConyFoo, "-y")
+		f.TxTokenMint(keyBar, barAddr, mintAmountStr+symbolConyFoo, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
 		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
@@ -2114,7 +2374,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenRevokePerm(keyFoo, symbolConyFoo, "mint", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		_, stdOut, _ := f.TxTokenMint(keyFoo, mintAmountStr+symbolConyFoo, "-y")
+		_, stdOut, _ := f.TxTokenMint(keyFoo, fooAddr, mintAmountStr+symbolConyFoo, "-y")
 		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", fooAddr, symbolConyFoo+"-mint"))
 
 		// Amount not changed
@@ -2137,16 +2397,14 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 func TestLinkCLITokenCollection(t *testing.T) {
 
 	const (
-		symbolCony  = "cony"
-		symbolBrown = "brown"
-	)
-
-	const (
-		tokenID01 = "00000001"
-		tokenID02 = "00000002"
-		tokenID03 = "00000003"
-		tokenID04 = "00000004"
-		tokenID05 = "00000005"
+		tickerCony  = "cony"
+		tickerBrown = "brown"
+		tokenID01   = "00000001"
+		tokenID02   = "00000002"
+		tokenID03   = "00000003"
+		tokenID04   = "00000004"
+		tokenID05   = "00000005"
+		description = "description"
 	)
 
 	t.Parallel()
@@ -2157,7 +2415,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
-	fooSuffix := types.AccAddrSuffix(fooAddr)
+	fooAddrSuffix := types.AccAddrSuffix(fooAddr)
 	barAddr := f.KeyAddress(keyBar)
 	//barSuffix := types.AccAddrSuffix(barAddr)
 
@@ -2166,72 +2424,82 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		sendTokens := sdk.TokensFromConsensusPower(1)
 		f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y")
 	}
+	// Create Collection
+	{
+		f.TxTokenCreateCollection(keyFoo, tickerBrown, description, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
 	// Issue collective token brown with token id
 	{
-		f.TxTokenIssueCollection(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, tokenID01, "-y")
+		f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID01, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.QueryTokenExpectEmpty(symbolBrown + fooSuffix)
-		token := f.QueryToken(symbolBrown + fooSuffix + tokenID01)
-		require.Equal(t, "itisbrown", token.Name)
-		require.Equal(t, symbolBrown+fooSuffix+tokenID01, token.Symbol)
-		require.Equal(t, int64(6), token.Decimals.Int64())
-		require.Equal(t, false, token.Mintable)
-		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix+tokenID01))
+		f.QueryTokenExpectEmpty(tickerBrown + fooAddrSuffix)
+		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID01)
+		require.Equal(t, description, token.GetName())
+		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
+		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID01, token.GetDenom())
+		require.Equal(t, int64(6), token.(tokenmodule.FT).GetDecimals().Int64())
+		require.Equal(t, false, token.(tokenmodule.FT).GetMintable())
+		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(tickerBrown+fooAddrSuffix+tokenID01))
 	}
 	{
-		f.TxTokenIssueCollection(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, tokenID02, "-y")
-		f.TxTokenIssueCollection(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, tokenID03, "-y")
+		f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID02, "-y")
+		f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID03, "-y")
 
-		collection := f.QueryCollection(symbolBrown + fooSuffix)
-		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[0].Symbol)
-		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[1].Symbol)
-		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[2].Symbol)
+		collection := f.QueryCollection(tickerBrown + fooAddrSuffix)
+		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[0].GetSymbol())
+		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID01, collection.Tokens[0].GetDenom())
+		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[1].GetSymbol())
+		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID02, collection.Tokens[1].GetDenom())
+		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[2].GetSymbol())
+		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID03, collection.Tokens[2].GetDenom())
 	}
 
 	// cannot issue the same token
 	{
-		_, stdout, _ := f.TxTokenIssueCollection(keyFoo, symbolBrown, "itisbrown", 10000, 6, false, tokenID02, "-y")
+		_, stdout, _ := f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID02, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		require.Contains(
 			t,
-			strings.Split(token.ErrTokenExist(token.DefaultCodespace, symbolBrown+fooSuffix+tokenID02).Result().Log, "\""),
+			strings.Split(tokenmodule.ErrCollectionTokenExist(tokenmodule.DefaultCodespace, tickerBrown+fooAddrSuffix, tokenID02).Result().Log, "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 	}
 
 	// Bar cannot issue with the collection symbol
 	{
-		// set the symbol with fooSuffix
-		f.TxTokenIssueCollection(keyBar, symbolBrown+fooSuffix, "itisbrown", 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
+		// set the symbol with fooAddrSuffix
+		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.QueryTokenExpectEmpty(symbolBrown + fooSuffix + tokenID04)
+		f.QueryTokenCollectionExpectEmpty(tickerBrown+fooAddrSuffix, tokenID04)
 	}
 
 	// Bar can issue collective token when granted the issue permission
 	{
-		f.TxTokenGrantPerm(keyFoo, barAddr, symbolBrown+fooSuffix, "issue", "-y")
+		f.TxTokenGrantPerm(keyFoo, barAddr, tickerBrown+fooAddrSuffix, "issue", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.TxTokenIssueCollection(keyBar, symbolBrown+fooSuffix, "itisbrown", 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
+		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		token := f.QueryToken(symbolBrown + fooSuffix + tokenID04)
-		require.Equal(t, symbolBrown+fooSuffix+tokenID04, token.Symbol)
+		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID04)
+		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
+		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID04, token.GetDenom())
 	}
+	f.Cleanup()
 }
 
 func TestLinkCLITokenNFT(t *testing.T) {
 
 	const (
 		symbolBrown = "brown"
-	)
-
-	const (
-		tokenID01 = "00000001"
-		tokenID02 = "00000002"
-		tokenID03 = "00000003"
+		tokenID01   = "a0000001"
+		tokenID02   = "a0000002"
+		tokenID03   = "a0000003"
+		description = "description"
+		tokenuri    = "uri:itisbrown"
 	)
 
 	t.Parallel()
@@ -2252,29 +2520,38 @@ func TestLinkCLITokenNFT(t *testing.T) {
 	}
 	// Issue nft
 	{
-		f.TxTokenIssueNFT(keyFoo, symbolBrown, "itisbrown", "uri:itisbrown", "-y")
+		f.TxTokenIssueNFT(keyFoo, symbolBrown, description, tokenuri, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryToken(symbolBrown + fooSuffix)
-		require.Equal(t, "itisbrown", token.Name)
-		require.Equal(t, symbolBrown+fooSuffix, token.Symbol)
-		require.Equal(t, int64(0), token.Decimals.Int64())
-		require.Equal(t, false, token.Mintable)
-		require.Equal(t, "uri:itisbrown", token.TokenURI)
+		require.Equal(t, description, token.GetName())
+		require.Equal(t, symbolBrown+fooSuffix, token.GetSymbol())
+		require.Equal(t, symbolBrown+fooSuffix, token.GetDenom())
+		require.Equal(t, tokenuri, token.(tokenmodule.NFT).GetTokenURI())
 		require.Equal(t, sdk.NewInt(1), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix))
+	}
+	// Create Collection
+	{
+		f.TxTokenCreateCollection(keyFoo, symbolBrown, description, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
 	}
 	// Issue Collective NFT for the collection
 	{
-		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, "itisbrown", "uri:itisbrown", tokenID01, "-y")
-		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, "itisbrown", "uri:itisbrown", tokenID02, "-y")
-		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, "itisbrown", "uri:itisbrown", tokenID03, "-y")
+		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, description, tokenuri, tokenID01, "-y")
+		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, description, tokenuri, tokenID02, "-y")
+		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, description, tokenuri, tokenID03, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		collection := f.QueryCollection(symbolBrown + fooSuffix)
-		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[0].Symbol)
-		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[1].Symbol)
-		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[2].Symbol)
-		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[3].Symbol)
+		require.Equal(t, 3, len(collection.Tokens))
+		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[0].GetSymbol())
+		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[0].GetDenom())
+		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[1].GetSymbol())
+		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[1].GetDenom())
+		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[2].GetSymbol())
+		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[2].GetDenom())
 	}
+
+	f.Cleanup()
 }
 
 func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
@@ -2291,7 +2568,7 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 	success, stdout, stderr := f.TxTokenIssue(fooAddr.String(), "test", "test", 10000, 6, true, "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
-	msg := unmarshalStdTx(t, stdout)
+	msg := UnmarshalStdTx(t, stdout)
 	require.True(t, msg.Fee.Gas > 0)
 	require.Equal(t, len(msg.Msgs), 1)
 
@@ -2307,7 +2584,7 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 	// Test sign
 	success, stdout, _ = f.TxSign(keyFoo, unsignedTxFile.Name())
 	require.True(t, success)
-	msg = unmarshalStdTx(t, stdout)
+	msg = UnmarshalStdTx(t, stdout)
 	require.Equal(t, len(msg.Msgs), 1)
 	require.Equal(t, 1, len(msg.GetSignatures()))
 	require.Equal(t, fooAddr.String(), msg.GetSigners()[0].String())
@@ -2330,8 +2607,8 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	token := f.QueryToken("test" + fooSuffix)
-	require.Equal(t, "test", token.Name)
-	require.Equal(t, int64(6), token.Decimals.Int64())
+	require.Equal(t, "test", token.GetName())
+	require.Equal(t, int64(6), token.(tokenmodule.FT).GetDecimals().Int64())
 
 	f.Cleanup()
 }

@@ -26,13 +26,13 @@ func SafetyBoxQueryHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 		safetyBoxGetter := types.NewSafetyBoxRetriever(cliCtx)
 
-		sb, err := safetyBoxGetter.GetSafetyBox(safetyBoxId)
+		sb, height, err := safetyBoxGetter.GetSafetyBox(safetyBoxId)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 			return
 		}
 
-		rest.PostProcessResponse(w, cliCtx, sb)
+		rest.PostProcessResponse(w, cliCtx.WithHeight(height), sb)
 	}
 }
 
@@ -71,11 +71,11 @@ func SafetyBoxRoleQueryHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		permGetter := types.NewAccountPermissionRetriever(cliCtx)
-		pms, err := permGetter.GetAccountPermissions(safetyBoxId, role, addr)
+		pms, height, err := permGetter.GetAccountPermissions(safetyBoxId, role, addr)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 		}
 
-		rest.PostProcessResponse(w, cliCtx, pms)
+		rest.PostProcessResponse(w, cliCtx.WithHeight(height), pms)
 	}
 }

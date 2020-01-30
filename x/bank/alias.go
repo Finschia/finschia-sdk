@@ -1,40 +1,25 @@
 package bank
 
 import (
-	cbank "github.com/cosmos/cosmos-sdk/x/bank"
-	cbankcli "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
+	"github.com/line/link/x/bank/client/cli"
+	"github.com/line/link/x/bank/internal/keeper"
 	"github.com/line/link/x/bank/internal/types"
 )
 
 const (
-	DefaultCodespace  = cbank.DefaultCodespace
-	ModuleName        = cbank.ModuleName
-	DefaultParamspace = cbank.DefaultParamspace
-)
-
-var (
-	// functions aliases
-	RegisterCodec                   = types.RegisterCodec
-	NewBaseKeeper                   = cbank.NewBaseKeeper
-	NewCosmosAppModule              = cbank.NewAppModule
-	SimulateMsgSend                 = cbank.SimulateMsgSend
-	SimulateSingleInputMsgMultiSend = cbank.SimulateSingleInputMsgMultiSend
-
-	// functions of client
-	SendTxCmd = cbankcli.SendTxCmd
-	// variable aliases
-	ModuleCdc = types.ModuleCdc
-	NewInput  = cbank.NewInput
-	NewOutput = cbank.NewOutput
+	ModuleName = types.ModuleName
 )
 
 type (
-	Keeper               = cbank.Keeper
-	AccountKeeper        = types.AccountKeeper
-	BaseKeeper           = cbank.BaseKeeper
-	CosmosAppModuleBasic = cbank.AppModuleBasic
-	CosmosAppModule      = cbank.AppModule
-	MsgMultiSend         = cbank.MsgMultiSend
-	Input                = cbank.Input
-	Output               = cbank.Output
+	Keeper = keeper.Keeper
+
+	MsgMultiSend = types.MsgMultiSend
+
+	Input  = types.Input
+	Output = types.Output
+)
+
+var (
+	SendTxCmd = cli.SendTxCmd
+	NewKeeper = keeper.NewKeeper
 )

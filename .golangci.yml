@@ -1,6 +1,10 @@
 linters:
   disable-all: true
   enable:
+    - bodyclose
+    - deadcode
+    - depguard
+    - dogsled
     - errcheck
     - govet
     - golint
@@ -12,7 +16,9 @@ linters:
     - unconvert
 
 linters-settings:
-
+  dogsled:
+    # checks assignments with too many blank identifiers; default is 2
+    max-blank-identifiers: 7
   errcheck:
     # report about not checking of errors in type assetions: `a := b.(MyStruct)`;
     # default is false: such cases aren't reported by default.

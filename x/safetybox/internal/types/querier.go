@@ -36,9 +36,9 @@ func NewSafetyBoxRetriever(querier NodeQuerier) SafetyBoxRetriever {
 	return SafetyBoxRetriever{querier: querier}
 }
 
-func (sbr SafetyBoxRetriever) GetSafetyBox(safetyBoxId string) (SafetyBox, error) {
-	sb, _, err := sbr.GetSafetyBoxWithHeight(safetyBoxId)
-	return sb, err
+func (sbr SafetyBoxRetriever) GetSafetyBox(safetyBoxId string) (SafetyBox, int64, error) {
+	sb, height, err := sbr.GetSafetyBoxWithHeight(safetyBoxId)
+	return sb, height, err
 }
 
 func (sbr SafetyBoxRetriever) GetSafetyBoxWithHeight(safetyBoxId string) (SafetyBox, int64, error) {
@@ -82,9 +82,9 @@ func NewAccountPermissionRetriever(querier NodeQuerier) AccountPermissionRetriev
 	return AccountPermissionRetriever{querier: querier}
 }
 
-func (apr AccountPermissionRetriever) GetAccountPermissions(id, role string, addr sdk.AccAddress) (MsgSafetyBoxRoleResponse, error) {
-	pms, _, err := apr.GetAccountPermissionsWithHeight(id, role, addr)
-	return pms, err
+func (apr AccountPermissionRetriever) GetAccountPermissions(id, role string, addr sdk.AccAddress) (MsgSafetyBoxRoleResponse, int64, error) {
+	pms, height, err := apr.GetAccountPermissionsWithHeight(id, role, addr)
+	return pms, height, err
 }
 
 func (apr AccountPermissionRetriever) GetAccountPermissionsWithHeight(id, role string, addr sdk.AccAddress) (MsgSafetyBoxRoleResponse, int64, error) {

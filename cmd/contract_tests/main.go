@@ -1,43 +1,89 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"github.com/line/link/cmd/contract_tests/unmarshaler"
+	"github.com/line/link/cmd/contract_tests/verifier"
 	"github.com/snikch/goodman/hooks"
 	"github.com/snikch/goodman/transaction"
+	"io/ioutil"
 )
+
+const swaggerYAMLPath = "/tmp/contract_tests/swagger.yaml"
 
 func main() {
 	// This must be compiled beforehand and given to dredd as parameter, in the meantime the server should be running
 	h := hooks.NewHooks()
 	server := hooks.NewServer(hooks.NewHooksRunner(h))
-	h.BeforeAll(func(t []*transaction.Transaction) {
-		fmt.Println("Sleep 5 seconds before all modification")
-	})
+
+	// TODO: dredd only runs happy path test, so we have to skip when status code is not 200
+	//  We have to add test of non-200 cases using another method
 	h.BeforeEach(func(t *transaction.Transaction) {
-		fmt.Println("before each modification")
+		if t.Expected.StatusCode != "200" {
+			t.Skip = true
+		}
 	})
-	h.Before("/version > GET", func(t *transaction.Transaction) {
-		fmt.Println("before version TEST")
+
+	// It is difficult to reproduce the evidence, so skip to validate evidence
+	h.Before("/blocks/latest > Get the latest block > 200 > application/json", func(t *transaction.Transaction) {
+		makeExpectedEvidenceNull(t)
 	})
-	h.Before("/node_version > GET", func(t *transaction.Transaction) {
-		fmt.Println("before node_version TEST")
+
+	h.Before("/blocks/{height} > Get a block at a certain height > 200 > application/json", func(t *transaction.Transaction) {
+		makeExpectedEvidenceNull(t)
 	})
+
+	// dredd can not validate items inside array in 12.1.0, so validate them in hook
 	h.BeforeEachValidation(func(t *transaction.Transaction) {
-		fmt.Println("before each validation modification")
+		compareEachBody(t)
 	})
-	h.BeforeValidation("/node_version > GET", func(t *transaction.Transaction) {
-		fmt.Println("before validation node_version TEST")
+
+	// Sometimes unconfirmed tx may not be there, so skip if not
+	h.BeforeValidation("/unconfirmed_txs > Get the list of unconfirmed transactions > 200 > application/json", func(t *transaction.Transaction) {
+		actual := unmarshaler.UnmarshalJSON(&t.Real.Body)
+		if actual.GetProperty("txs") == nil {
+			t.Skip = true
+		}
 	})
-	h.After("/node_version > GET", func(t *transaction.Transaction) {
-		fmt.Println("after node_version TEST")
+
+	// dredd can not parsing items in anyOf in 12.1.0, so add messages to expected body for verification
+	h.BeforeValidation("/txs/{hash} > Get a Tx by hash > 200 > application/json", func(t *transaction.Transaction) {
+		addMsgExamplesToExpected(t)
+		compareEachBody(t)
 	})
-	h.AfterEach(func(t *transaction.Transaction) {
-		fmt.Println("after each modification")
-	})
-	h.AfterAll(func(t []*transaction.Transaction) {
-		fmt.Println("after all modification")
-	})
+
 	server.Serve()
 	defer server.Listener.Close()
 	fmt.Print(h)
+}
+
+func makeExpectedEvidenceNull(t *transaction.Transaction) {
+	expected := unmarshaler.UnmarshalJSON(&t.Expected.Body)
+	expected.SetProperty([]string{"block", "evidence", "evidence"}, nil)
+	newBody, _ := json.Marshal(expected.Body)
+	t.Expected.Body = string(newBody)
+}
+
+func addMsgExamplesToExpected(t *transaction.Transaction) {
+	bytes, err := ioutil.ReadFile(swaggerYAMLPath)
+	if err != nil {
+		panic(err)
+	}
+	yamlString := string(bytes)
+	swaggerYAML := unmarshaler.UnmarshalYAML(&yamlString)
+	value := swaggerYAML.GetProperty("components", "examples", "MsgExamples", "value")
+
+	expected := unmarshaler.UnmarshalJSON(&t.Expected.Body)
+	expected.SetProperty([]string{"tx", "value", "msg"}, value)
+	newBody, _ := json.Marshal(expected.Body)
+	t.Expected.Body = string(newBody)
+}
+
+func compareEachBody(t *transaction.Transaction) {
+	expected := unmarshaler.UnmarshalJSON(&t.Expected.Body)
+	actual := unmarshaler.UnmarshalJSON(&t.Real.Body)
+	if !verifier.CompareJSONFormat(expected.Body, actual.Body) {
+		t.Fail = true
+	}
 }

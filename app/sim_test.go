@@ -31,7 +31,7 @@ import (
 	stakingsim "github.com/cosmos/cosmos-sdk/x/staking/simulation"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/line/link/x/bank"
+	cosmosbank "github.com/cosmos/cosmos-sdk/x/bank"
 )
 
 func init() {
@@ -179,7 +179,7 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			Op: bank.SimulateMsgSend(app.accountKeeper, app.bankKeeper),
+			Op: cosmosbank.SimulateMsgSend(app.accountKeeper, app.cosmosbankKeeper),
 		},
 		{
 			Weight: func(_ *rand.Rand) int {
@@ -190,7 +190,7 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 					})
 				return v
 			}(nil),
-			Op: bank.SimulateSingleInputMsgMultiSend(app.accountKeeper, app.bankKeeper),
+			Op: cosmosbank.SimulateSingleInputMsgMultiSend(app.accountKeeper, app.cosmosbankKeeper),
 		},
 		{
 			Weight: func(_ *rand.Rand) int {

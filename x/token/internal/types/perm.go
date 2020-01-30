@@ -7,8 +7,9 @@ import (
 var _ PermissionI = (*Permission)(nil)
 
 const (
-	MintAction  = "mint"
-	IssueAction = "issue"
+	MintAction   = "mint"
+	IssueAction  = "issue"
+	ModifyAction = "modify"
 )
 
 type PermissionI interface {
@@ -65,6 +66,13 @@ func NewMintPermission(resource string) PermissionI {
 func NewIssuePermission(resource string) PermissionI {
 	return &Permission{
 		Action:   IssueAction,
+		Resource: resource,
+	}
+}
+
+func NewModifyTokenURIPermission(resource string) PermissionI {
+	return &Permission{
+		Action:   ModifyAction,
 		Resource: resource,
 	}
 }

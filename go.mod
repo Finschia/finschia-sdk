@@ -35,5 +35,5 @@ require (
 	golang.org/x/text v0.3.2 // indirect
 	google.golang.org/genproto v0.0.0-20190701230453-710ae3a149df // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
-	gopkg.in/yaml.v2 v2.2.4
+	gopkg.in/yaml.v3 v3.0.0-20191120175047-4206685974f2
 )

@@ -7,6 +7,7 @@ import (
 const (
 	CodeError             sdk.CodeType = 1
 	CodeInvalidPermission sdk.CodeType = 2
+	CodeInvalidDenom      sdk.CodeType = 3
 
 	CodespaceLink sdk.CodespaceType = "link"
 )
@@ -21,4 +22,7 @@ func newErrorWithLinkCodespace(code sdk.CodeType, format string, args ...interfa
 
 func ErrInvalidPermission(msg string) sdk.Error {
 	return newErrorWithLinkCodespace(CodeInvalidPermission, msg)
+}
+func ErrInvalidDenom(msg string) sdk.Error {
+	return newErrorWithLinkCodespace(CodeInvalidDenom, msg)
 }

@@ -65,8 +65,11 @@ build-contract-tests-hooks:
 build-docker:
 	docker build -t line/link .
 
-build-swagger-docs: statik
+build-swagger-docs: statik versioning-swagger-docs
 	statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
+
+versioning-swagger-docs:
+	perl -pi -e 's/version: "v[^\s]+"/version: "$(strip $(BASE_VERSION))"/' client/lcd/swagger-ui/swagger.yaml
 
 install: go.sum
 	go install $(BUILD_FLAGS) ./cmd/linkd
@@ -92,6 +95,9 @@ golangci-lint:
 
 statik:
 	@go get github.com/rakyll/statik
+
+yq:
+	@go get github.com/mikefarah/yq/v2@v2.4.1
 
 go-mod-cache: go.sum
 	@echo "--> Download go modules to local cache"
@@ -147,12 +153,13 @@ testnet-test:
 run-swagger-server:
 	linkcli rest-server --trust-node=true
 
-setup-contract-tests-data: build build-swagger-docs build-contract-tests-hooks
+setup-contract-tests-data: build build-swagger-docs build-contract-tests-hooks yq
 	echo 'Prepare data for the contract tests' ; \
 	./lcd_test/testdata/prepare_dredd.sh ; \
 	./lcd_test/testdata/prepare_chain_state.sh
 
 start-link: setup-contract-tests-data
+	pkill linkd || true
 	./build/linkd --home /tmp/contract_tests/.linkd start &
 	@sleep 5s
 	./lcd_test/testdata/wait-for-it.sh localhost 26657
@@ -162,17 +169,24 @@ setup-transactions: start-link
 
 contract-tests: setup-transactions
 	@echo "Running LINK LCD for contract tests"
-	dredd && pkill linkd
+	@bash ./lcd_test/testdata/generate_tx_iteratively.sh &
+	./lcd_test/testdata/run_dredd.sh
 
 run-lcd-contract-tests:
 	@echo "Running LINK LCD for contract tests"
-	./build/linkcli rest-server --laddr tcp://0.0.0.0:1317 --home /tmp/contract_tests/.linkcli --node http://localhost:26657 --chain-id lcd --trust-node true
+	lsof -i tcp:1317 | grep -v PID | awk '{print $$2}' | xargs kill || true
+	./build/linkcli rest-server --laddr tcp://0.0.0.0:1317 --home /tmp/contract_tests/.linkcli --node http://localhost:26657 --chain-id lcd --trust-node || true
 
 dredd-test:
-	cp ./client/lcd/swagger-ui/swagger_OSS_2_0.yaml /tmp/contract_tests/swagger_OSS_2_0.yaml
-	@bash ./lcd_test/testdata/setup.sh
+	cp client/lcd/swagger-ui/swagger.yaml /tmp/contract_tests/swagger.yaml
+	@bash ./lcd_test/testdata/replace_symbols.sh --replace_tx_hash
+	@bash ./lcd_test/testdata/generate_tx_iteratively.sh &
 	./lcd_test/testdata/wait-for-it.sh localhost 26657
-	dredd && pkill linkd
+	dredd; pkill -f ./lcd_test/testdata/generate_tx_iteratively.sh
+
+stop-dredd-test:
+	pkill linkcli || true
+	pkill -9 linkd || true
 
 ########################################
 ### Simulation

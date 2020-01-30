@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/link/client"
 )
 
 const (
@@ -10,56 +11,38 @@ const (
 	QueryPerms       = "perms"
 	QueryCollections = "collections"
 	QuerySupply      = "supply"
+	QueryNFTCount    = "nftcount"
+	QueryParent      = "parent"
+	QueryRoot        = "root"
+	QueryChildren    = "children"
 )
 
 type NodeQuerier interface {
 	QueryWithData(path string, data []byte) ([]byte, int64, error)
+	WithHeight(height int64) client.CLIContext
 }
 
-type QueryTokenParams struct {
+type QuerySymbolParams struct {
 	Symbol string `json:"symbol"`
 }
 
-func (r QueryTokenParams) String() string {
-	return r.Symbol
+func NewQuerySymbolParams(symbol string) QuerySymbolParams {
+	return QuerySymbolParams{Symbol: symbol}
 }
 
-func NewQueryTokenParams(symbol string) QueryTokenParams {
-	return QueryTokenParams{Symbol: symbol}
+type QuerySymbolTokenIDParams struct {
+	Symbol  string `json:"symbol"`
+	TokenID string `json:"token_id"`
 }
 
-type QuerySupplyParams struct {
-	Symbol string `json:"symbol"`
+func NewQuerySymbolTokenIDParams(symbol, tokenID string) QuerySymbolTokenIDParams {
+	return QuerySymbolTokenIDParams{Symbol: symbol, TokenID: tokenID}
 }
 
-func (r QuerySupplyParams) String() string {
-	return r.Symbol
-}
-
-func NewQuerySupplyParams(symbol string) QuerySupplyParams {
-	return QuerySupplyParams{Symbol: symbol}
-}
-
-type QueryAccountPermissionParams struct {
+type QueryAccAddressParams struct {
 	Addr sdk.AccAddress `json:"addr"`
 }
 
-func (r QueryAccountPermissionParams) String() string {
-	return r.Addr.String()
-}
-
-func NewQueryAccountPermissionParams(addr sdk.AccAddress) QueryAccountPermissionParams {
-	return QueryAccountPermissionParams{Addr: addr}
-}
-
-type QueryCollectionParams struct {
-	Symbol string `json:"symbol"`
-}
-
-func (r QueryCollectionParams) String() string {
-	return r.Symbol
-}
-
-func NewQueryCollectionParams(symbol string) QueryCollectionParams {
-	return QueryCollectionParams{Symbol: symbol}
+func NewQueryAccAddressParams(addr sdk.AccAddress) QueryAccAddressParams {
+	return QueryAccAddressParams{Addr: addr}
 }

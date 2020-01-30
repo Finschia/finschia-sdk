@@ -7,59 +7,107 @@ import (
 
 func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
 
-	store := ctx.KVStore(k.storeKey)
-	if store.Has(types.TokenSymbolKey(token.Symbol)) {
-		return types.ErrTokenExist(types.DefaultCodespace, token.Symbol)
+	if len(token.GetTokenID()) == 0 {
+		return k.setToken(ctx, token)
 	}
-	store.Set(types.TokenSymbolKey(token.Symbol), k.cdc.MustMarshalBinaryBare(token))
+	return k.setTokenToCollection(ctx, token)
+
+}
+
+func (k Keeper) setToken(ctx sdk.Context, token types.Token) sdk.Error {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.TokenDenomKey(token.GetSymbol())
+	if store.Has(tokenKey) {
+		return types.ErrTokenExist(types.DefaultCodespace, token.GetSymbol())
+	}
+	store.Set(tokenKey, k.cdc.MustMarshalBinaryBare(token))
 	return nil
 }
 
-func (k Keeper) GetToken(ctx sdk.Context, symbol string) (token types.Token, err sdk.Error) {
-	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.TokenSymbolKey(symbol))
-	if bz == nil {
-		return token, types.ErrTokenNotExist(types.DefaultCodespace, symbol)
+func (k Keeper) setTokenToCollection(ctx sdk.Context, token types.Token) sdk.Error {
+	c, err := k.GetCollection(ctx, token.GetSymbol())
+	if err != nil {
+		return err
 	}
-
-	token = k.mustDecodeToken(bz)
-	return token, nil
+	c, err = c.AddToken(token)
+	if err != nil {
+		return err
+	}
+	err = k.UpdateCollection(ctx, c)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (k Keeper) GetAllTokens(ctx sdk.Context) types.Tokens {
-	return k.GetPrefixedTokens(ctx, "")
+func (k Keeper) GetToken(ctx sdk.Context, symbol, tokenID string) (types.Token, sdk.Error) {
+	if len(tokenID) == 0 {
+		return k.getToken(ctx, symbol)
+	}
+	return k.getTokenFromCollection(ctx, symbol, tokenID)
 }
 
-func (k Keeper) GetPrefixedTokens(ctx sdk.Context, prefix string) types.Tokens {
-	var tokens types.Tokens
+func (k Keeper) getToken(ctx sdk.Context, denom string) (types.Token, sdk.Error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.TokenDenomKey(denom))
+	if bz == nil {
+		return nil, types.ErrTokenNotExist(types.DefaultCodespace, denom)
+	}
+	return k.mustDecodeToken(bz), nil
+}
+func (k Keeper) getTokenFromCollection(ctx sdk.Context, symbol, tokenID string) (types.Token, sdk.Error) {
+	c, err := k.GetCollection(ctx, symbol)
+	if err != nil {
+		return nil, err
+	}
+	return c.GetToken(tokenID)
+}
+
+func (k Keeper) ModifyToken(ctx sdk.Context, token types.Token) sdk.Error {
+	if len(token.GetTokenID()) == 0 {
+		return k.modifyToken(ctx, token)
+	}
+	return k.modifyTokenToCollection(ctx, token)
+}
+
+func (k Keeper) modifyToken(ctx sdk.Context, token types.Token) sdk.Error {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.TokenDenomKey(token.GetSymbol())
+	if !store.Has(tokenKey) {
+		return types.ErrTokenNotExist(types.DefaultCodespace, token.GetSymbol())
+	}
+	store.Set(tokenKey, k.cdc.MustMarshalBinaryBare(token))
+	return nil
+}
+
+func (k Keeper) modifyTokenToCollection(ctx sdk.Context, token types.Token) sdk.Error {
+	c, err := k.GetCollection(ctx, token.GetSymbol())
+	if err != nil {
+		return err
+	}
+	c, err = c.UpdateToken(token)
+	if err != nil {
+		return err
+	}
+	err = k.UpdateCollection(ctx, c)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (k Keeper) GetAllTokens(ctx sdk.Context) (tokens types.Tokens) {
 	appendToken := func(token types.Token) (stop bool) {
 		tokens = append(tokens, token)
 		return false
 	}
-	k.IterateTokens(ctx, prefix, appendToken)
+	k.IterateTokens(ctx, "", appendToken)
 	return tokens
 }
 
-func (k Keeper) GetSupply(ctx sdk.Context, symbol string) (supply sdk.Int, err sdk.Error) {
-	if _, err = k.GetToken(ctx, symbol); err != nil {
-		return sdk.NewInt(0), err
-	}
-	return k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(symbol), nil
-}
-
-func (k Keeper) GetTokenWithSupply(ctx sdk.Context, symbol string) (token types.Token, supply sdk.Int, err sdk.Error) {
-	token, err = k.GetToken(ctx, symbol)
-	if err != nil {
-		return token, supply, err
-	}
-	supply = k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(symbol)
-
-	return token, supply, nil
-}
-
-func (k Keeper) IterateTokens(ctx sdk.Context, denom string, process func(types.Token) (stop bool)) {
+func (k Keeper) IterateTokens(ctx sdk.Context, prefix string, process func(types.Token) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.TokenSymbolKey(denom))
+	iter := sdk.KVStorePrefixIterator(store, types.TokenDenomKey(prefix))
 	defer iter.Close()
 	for {
 		if !iter.Valid() {
@@ -74,8 +122,14 @@ func (k Keeper) IterateTokens(ctx sdk.Context, denom string, process func(types.
 	}
 }
 
-func (k Keeper) mustDecodeToken(tokenByte []byte) types.Token {
-	var token types.Token
+func (k Keeper) GetSupply(ctx sdk.Context, symbol, tokenID string) (supply sdk.Int, err sdk.Error) {
+	if _, err = k.GetToken(ctx, symbol, tokenID); err != nil {
+		return sdk.NewInt(0), err
+	}
+	return k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(symbol + tokenID), nil
+}
+
+func (k Keeper) mustDecodeToken(tokenByte []byte) (token types.Token) {
 	err := k.cdc.UnmarshalBinaryBare(tokenByte, &token)
 	if err != nil {
 		panic(err)

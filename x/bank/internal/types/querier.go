@@ -5,12 +5,12 @@ import (
 )
 
 // QueryBalanceOfParams defines the params for querying an account balance.
-type QueryBalanceOfParams struct {
+type QueryBalanceParams struct {
 	Address sdk.AccAddress
 	Denom   string
 }
 
 // NewQueryBalanceOfParams creates a new instance of QueryBalanceParams.
-func NewQueryBalanceOfParams(addr sdk.AccAddress, denom string) QueryBalanceOfParams {
-	return QueryBalanceOfParams{Address: addr, Denom: denom}
+func NewQueryBalanceParams(addr sdk.AccAddress, denom string) QueryBalanceParams {
+	return QueryBalanceParams{Address: addr, Denom: denom}
 }

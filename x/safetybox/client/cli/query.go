@@ -35,12 +35,12 @@ func GetSafetyBoxCmd(cdc *codec.Codec) *cobra.Command {
 			safetyBoxGetter := types.NewSafetyBoxRetriever(cliCtx)
 
 			id := args[0]
-			sb, err := safetyBoxGetter.GetSafetyBox(id)
+			sb, height, err := safetyBoxGetter.GetSafetyBox(id)
 			if err != nil {
 				return err
 			}
 
-			return cliCtx.PrintOutput(sb)
+			return cliCtx.WithHeight(height).PrintOutput(sb)
 		},
 	}
 
@@ -63,12 +63,12 @@ func GetRoleCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			pms, err := permGetter.GetAccountPermissions(id, role, addr)
+			pms, height, err := permGetter.GetAccountPermissions(id, role, addr)
 			if err != nil {
 				return err
 			}
 
-			return cliCtx.PrintOutput(pms)
+			return cliCtx.WithHeight(height).PrintOutput(pms)
 		},
 	}
 
