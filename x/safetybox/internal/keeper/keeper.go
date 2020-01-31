@@ -252,17 +252,18 @@ func (k Keeper) GrantPermission(ctx sdk.Context, safetyBoxId string, by sdk.AccA
 	}
 
 	// grant
-	if role == types.RoleOperator {
+	switch role {
+	case types.RoleOperator:
 		return k.grantOperator(ctx, safetyBoxId, by, acc)
-	} else if role == types.RoleAllocator {
+	case types.RoleAllocator:
 		return k.grantAllocator(ctx, safetyBoxId, by, acc)
-	} else if role == types.RoleIssuer {
+	case types.RoleIssuer:
 		return k.grantIssuer(ctx, safetyBoxId, by, acc)
-	} else if role == types.RoleReturner {
+	case types.RoleReturner:
 		return k.grantReturner(ctx, safetyBoxId, by, acc)
+	default:
+		return nil
 	}
-
-	return nil
 }
 
 func (k Keeper) grantOperator(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {
@@ -353,17 +354,18 @@ func (k Keeper) RevokePermission(ctx sdk.Context, safetyBoxId string, by sdk.Acc
 	}
 
 	// revoke
-	if role == types.RoleOperator {
+	switch role {
+	case types.RoleOperator:
 		return k.revokeOperator(ctx, safetyBoxId, by, acc)
-	} else if role == types.RoleAllocator {
+	case types.RoleAllocator:
 		return k.revokeAllocator(ctx, safetyBoxId, by, acc)
-	} else if role == types.RoleIssuer {
+	case types.RoleIssuer:
 		return k.revokeIssuer(ctx, safetyBoxId, by, acc)
-	} else if role == types.RoleReturner {
+	case types.RoleReturner:
 		return k.revokeReturner(ctx, safetyBoxId, by, acc)
+	default:
+		return nil
 	}
-
-	return nil
 }
 
 func (k Keeper) revokeOperator(ctx sdk.Context, safetyBoxId string, by, acc sdk.AccAddress) sdk.Error {

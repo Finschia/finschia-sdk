@@ -5,6 +5,7 @@ linters:
     - deadcode
     - depguard
     - dogsled
+    - gocritic
     - errcheck
     - govet
     - golint

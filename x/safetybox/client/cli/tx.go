@@ -72,67 +72,72 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 			var msg sdk.Msg
 			switch role {
 			case types.RoleOperator:
-				if action == types.RegisterRole {
+				switch action {
+				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterOperator{
 						SafetyBoxId:    safetyBoxId,
 						SafetyBoxOwner: fromAddress,
 						Address:        toAddress,
 					}
-				} else if action == types.DeregisterRole {
+				case types.DeregisterRole:
 					msg = types.MsgSafetyBoxDeregisterOperator{
 						SafetyBoxId:    safetyBoxId,
 						SafetyBoxOwner: fromAddress,
 						Address:        toAddress,
 					}
-				} else {
+				default:
 					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 				}
 			case types.RoleAllocator:
-				if action == types.RegisterRole {
+				switch action {
+				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterAllocator{
 						SafetyBoxId: safetyBoxId,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
-				} else if action == types.DeregisterRole {
+				case types.DeregisterRole:
 					msg = types.MsgSafetyBoxDeregisterAllocator{
 						SafetyBoxId: safetyBoxId,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
-				} else {
+				default:
 					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 				}
 			case types.RoleIssuer:
-				if action == types.RegisterRole {
+				switch action {
+				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterIssuer{
 						SafetyBoxId: safetyBoxId,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
-				} else if action == types.DeregisterRole {
+				case types.DeregisterRole:
 					msg = types.MsgSafetyBoxDeregisterIssuer{
 						SafetyBoxId: safetyBoxId,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
-				} else {
+				default:
 					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 				}
 			case types.RoleReturner:
-				if action == types.RegisterRole {
+				switch action {
+
+				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterReturner{
 						SafetyBoxId: safetyBoxId,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
-				} else if action == types.DeregisterRole {
+				case types.DeregisterRole:
 					msg = types.MsgSafetyBoxDeregisterReturner{
 						SafetyBoxId: safetyBoxId,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
-				} else {
+				default:
 					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 				}
 			default:

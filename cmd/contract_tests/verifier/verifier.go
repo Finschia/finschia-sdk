@@ -5,44 +5,42 @@ import (
 )
 
 func CompareJSONFormat(expected interface{}, actual interface{}) bool {
-	switch expected.(type) {
+	switch v := expected.(type) {
 	case []interface{}:
-		array1, _ := expected.([]interface{})
 		array2, ok := actual.([]interface{})
 		if !ok {
 			go log.Println("One is an array but not the other")
 			return false
 		}
-		if array1 == nil || array2 == nil {
+		if v == nil || array2 == nil {
 			go log.Println("Array can not be null")
 			return false
 		}
 
-		minLen := min(len(array1), len(array2))
+		minLen := min(len(v), len(array2))
 		for i := 0; i < minLen; i++ {
-			if !CompareJSONFormat(array1[i], array2[i]) {
+			if !CompareJSONFormat(v[i], array2[i]) {
 				return false
 			}
 		}
 		return true
 
 	case map[string]interface{}:
-		map1, _ := expected.(map[string]interface{})
 		map2, ok := actual.(map[string]interface{})
 		if !ok {
 			go log.Println("One is an object but not the other")
 			return false
 		}
-		if map1 == nil || map2 == nil {
+		if v == nil || map2 == nil {
 			go log.Println("Object can not be null")
 			return false
 		}
-		if len(map1) != len(map2) {
+		if len(v) != len(map2) {
 			go log.Println("Objects have different size")
 			return false
 		}
 
-		for key, val1 := range map1 {
+		for key, val1 := range v {
 			if val2, ok := map2[key]; ok {
 				if !CompareJSONFormat(val1, val2) {
 					return false
@@ -55,7 +53,7 @@ func CompareJSONFormat(expected interface{}, actual interface{}) bool {
 		return true
 
 	default:
-		if expected == "" {
+		if v == "" {
 			return true
 		}
 		switch actual.(type) {

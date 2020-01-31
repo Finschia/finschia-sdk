@@ -37,7 +37,7 @@ func (msg MsgGrantPermission) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("from, to address can not be the same")
 	}
 
-	if len(msg.Permission.GetAction()) <= 0 || len(msg.Permission.GetResource()) <= 0 {
+	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
 		return types.ErrInvalidPermission("resource and action should not be empty")
 	}
 	return nil
@@ -69,7 +69,7 @@ func (msg MsgRevokePermission) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("address cannot be empty")
 	}
 
-	if len(msg.Permission.GetAction()) <= 0 || len(msg.Permission.GetResource()) <= 0 {
+	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
 		return types.ErrInvalidPermission("resource and action should not be empty")
 	}
 	return nil
