@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/x/token/internal/types"
 )
@@ -66,15 +65,15 @@ func (k Keeper) TransferNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddr
 		return err
 	}
 
-	tokenNF, ok := token.(*types.BaseNFT)
+	nft, ok := token.(*types.BaseNFT)
 	if !ok {
-		return types.ErrTokenNotNF(types.DefaultCodespace, token.GetDenom())
+		return types.ErrTokenNotNFT(types.DefaultCodespace, token.GetDenom())
 	}
-	if !from.Equals(tokenNF.Owner) {
+	if !from.Equals(nft.Owner) {
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 	if !from.Equals(to) {
-		if err := k.moveNFToken(ctx, store, from, to, tokenNF); err != nil {
+		if err := k.moveNFToken(ctx, store, from, to, nft); err != nil {
 			return err
 		}
 	}
@@ -99,19 +98,19 @@ func (k Keeper) TransferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 		return err
 	}
 
-	tokenIDNF, ok := token.(types.CollectiveNFT)
+	cnft, ok := token.(types.CollectiveNFT)
 	if !ok {
-		panic(fmt.Sprintf("the token is not CNFT even though it has token - %s, tokentype ", symbol+tokenID))
+		return types.ErrTokenNotCNFT(types.DefaultCodespace, token.GetDenom())
 	}
-	childToParentKey := types.TokenChildToParentKey(tokenIDNF)
+	childToParentKey := types.TokenChildToParentKey(cnft)
 	if store.Has(childToParentKey) {
 		return types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, token.GetDenom())
 	}
-	if !from.Equals(tokenIDNF.GetOwner()) {
+	if !from.Equals(cnft.GetOwner()) {
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 	if !from.Equals(to) {
-		if err := k.moveCNFToken(ctx, store, from, to, tokenIDNF); err != nil {
+		if err := k.moveCNFToken(ctx, store, from, to, cnft); err != nil {
 			return err
 		}
 	}
