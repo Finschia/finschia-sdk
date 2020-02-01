@@ -1,9 +1,10 @@
 package verifier
 
 import (
+	"testing"
+
 	"github.com/line/link/cmd/contract_tests/unmarshaler"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestElementType(t *testing.T) {
