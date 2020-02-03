@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	context "github.com/line/link/client"
 	"github.com/line/link/x/token/internal/types"
 )

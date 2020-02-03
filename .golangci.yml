@@ -7,6 +7,7 @@ linters:
     - dogsled
     - goconst
     - gocritic
+    - goimports
     - errcheck
     - govet
     - golint

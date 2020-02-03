@@ -2,9 +2,10 @@ package types
 
 import (
 	"encoding/json"
-	linktype "github.com/line/link/types"
 	"sort"
 	"strings"
+
+	linktype "github.com/line/link/types"
 )
 
 const (

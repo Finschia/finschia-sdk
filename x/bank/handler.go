@@ -2,6 +2,7 @@ package bank
 
 import (
 	"fmt"
+
 	"github.com/line/link/x/bank/internal/keeper"
 	"github.com/line/link/x/bank/internal/types"
 

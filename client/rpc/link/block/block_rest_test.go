@@ -2,14 +2,15 @@ package block
 
 import (
 	"fmt"
+	"net/http"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
 	"github.com/line/link/client/rpc/mock"
 	"github.com/stretchr/testify/require"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
-	"net/http"
-	"testing"
 )
 
 func TestRequestHandlerFn(t *testing.T) {

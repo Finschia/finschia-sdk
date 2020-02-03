@@ -3,6 +3,9 @@ package block
 import (
 	"encoding/json"
 	"fmt"
+	"testing"
+	"time"
+
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/golang/mock/gomock"
 	. "github.com/line/link/client/rpc/mock"
@@ -10,8 +13,6 @@ import (
 	"github.com/tendermint/tendermint/abci/types"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
-	"testing"
-	"time"
 )
 
 const (

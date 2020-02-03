@@ -5,12 +5,13 @@
 package mock
 
 import (
+	reflect "reflect"
+
 	context "github.com/cosmos/cosmos-sdk/client/context"
 	codec "github.com/cosmos/cosmos-sdk/codec"
 	gomock "github.com/golang/mock/gomock"
 	client "github.com/tendermint/tendermint/rpc/client"
 	types "github.com/tendermint/tendermint/types"
-	reflect "reflect"
 )
 
 // MockCLIContext is a mock of CLIContext interface

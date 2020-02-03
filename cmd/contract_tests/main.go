@@ -3,11 +3,12 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
+
 	"github.com/line/link/cmd/contract_tests/unmarshaler"
 	"github.com/line/link/cmd/contract_tests/verifier"
 	"github.com/snikch/goodman/hooks"
 	"github.com/snikch/goodman/transaction"
-	"io/ioutil"
 )
 
 const swaggerYAMLPath = "/tmp/contract_tests/swagger.yaml"

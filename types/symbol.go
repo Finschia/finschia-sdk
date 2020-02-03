@@ -2,8 +2,9 @@ package types
 
 import (
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"regexp"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (

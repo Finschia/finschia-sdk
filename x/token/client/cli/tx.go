@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"

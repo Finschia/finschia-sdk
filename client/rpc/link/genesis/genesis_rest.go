@@ -1,10 +1,11 @@
 package genesis
 
 import (
+	"net/http"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	genutilrest "github.com/cosmos/cosmos-sdk/x/genutil/client/rest"
-	"net/http"
 
 	"github.com/line/link/x/auth/client/utils"
 )

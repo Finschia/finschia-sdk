@@ -5,9 +5,10 @@
 package mock
 
 import (
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	types "github.com/tendermint/tendermint/types"
-	reflect "reflect"
 )
 
 // MockTendermint is a mock of Tendermint interface

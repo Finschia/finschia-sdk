@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	context "github.com/line/link/client"
 	"github.com/line/link/x/token/internal/types"

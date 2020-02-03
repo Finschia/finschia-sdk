@@ -5,9 +5,10 @@
 package mock
 
 import (
+	reflect "reflect"
+
 	auth "github.com/cosmos/cosmos-sdk/x/auth"
 	gomock "github.com/golang/mock/gomock"
-	reflect "reflect"
 )
 
 // MockCodec is a mock of Codec interface

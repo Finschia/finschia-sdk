@@ -6,13 +6,14 @@ package mock
 
 import (
 	context "context"
+	reflect "reflect"
+
 	gomock "github.com/golang/mock/gomock"
 	common "github.com/tendermint/tendermint/libs/common"
 	log "github.com/tendermint/tendermint/libs/log"
 	client "github.com/tendermint/tendermint/rpc/client"
 	types "github.com/tendermint/tendermint/rpc/core/types"
 	types0 "github.com/tendermint/tendermint/types"
-	reflect "reflect"
 )
 
 // MockClient is a mock of Client interface
