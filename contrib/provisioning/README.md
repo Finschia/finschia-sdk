@@ -11,7 +11,7 @@ go run ./contrib/provisioning/cmd/provisioning/main.go k8s -n 24656 -e 24658 -r 
 ```
 # If you want to provisioning custom configured testnet
 ```bash
-go run ./contrib/provisioning/cmd/provisioning/main.go k8s -a build -c jeehong -m 0.000003stake -n 24656 -e 24658 -r 24657 -i 10.231.253.192,10.231.253.193,10.231.253.195,10.231.224.247
+go run ./contrib/provisioning/cmd/provisioning/main.go k8s -a build -c jeehong -m 0.000003stake -n 24656 -e 24658 -r 24657 -i 192.168.253.192,192.168.253.193,192.168.253.195,192.168.224.247
 ```
 # Install provisioning tool
 ```bash
@@ -47,4 +47,3 @@ kubectl get po -l p2p-port=26656 -o custom-columns='NAME:metadata.name' --no-hea
 ```
 # Reference
 https://medium.com/@dwdraju/copy-files-folders-to-and-from-kubernetes-pod-s-all-cases-d4a5749111b7
-

@@ -30,7 +30,7 @@ func main() {
 		Use:   "provisioning",
 		Short: "It can be used for provisioning LINK BlockChain Nodes to anywhere",
 		Long: `It can be used for provisioning LINK BlockChain Nodes to anywhere
-	e.g) provisioning  k8s -a build -c link-chain -m 0.000003stake -n 24656 -e 24658 -r 24657 -i 10.231.253.192,10.231.253.193,10.231.253.195,10.231.224.247`,
+	e.g) provisioning  k8s -a build -c link-chain -m 0.000003stake -n 24656 -e 24658 -r 24657 -i 192.168.253.192,192.168.253.193,192.168.253.195,192.168.224.247`,
 		// Uncomment the following line if your bare application
 		// has an action associated with it:
 		//	Run: func(cmd *cobra.Command, args []string) { },
