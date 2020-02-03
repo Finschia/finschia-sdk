@@ -18,7 +18,6 @@ import (
 //    - modify Tags of `Code` in TxResponse
 // *****
 
-//nolint
 type TxResponse struct {
 	Height    int64           `json:"height"`
 	TxHash    string          `json:"txhash"`

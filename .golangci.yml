@@ -11,6 +11,7 @@ linters:
     - errcheck
     - govet
     - golint
+    - gosec
     - gofmt
     - gocyclo
     - maligned

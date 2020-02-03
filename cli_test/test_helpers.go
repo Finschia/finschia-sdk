@@ -1648,7 +1648,8 @@ func WaitForStart(url string) {
 		wait *= 2
 
 		var res *http.Response
-		res, err = http.Get(url) //nolint:gosec Error is arising in testing files, accepting nolint
+		/* #nosec */
+		res, err = http.Get(url) //Error is arising in testing files
 		if err != nil || res == nil {
 			continue
 		}
