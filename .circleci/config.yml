@@ -332,6 +332,7 @@ jobs:
       - image: circleci/golang:1.13.4
     steps:
       - checkout
+      - run: make build-swagger-docs
       - run: curl -sL https://git.io/goreleaser | bash
 
   contract_tests:
