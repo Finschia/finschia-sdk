@@ -5,14 +5,17 @@ linters:
     - deadcode
     - depguard
     - dogsled
+    - errcheck
     - goconst
     - gocritic
+    - gofmt
     - goimports
-    - errcheck
-    - govet
     - golint
     - gosec
-    - gofmt
+    - gosimple
+    - govet
+    - errcheck
+    - golint
     - gocyclo
     - maligned
     - misspell

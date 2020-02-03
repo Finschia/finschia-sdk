@@ -72,7 +72,7 @@ func Init() *cobra.Command {
 		Short: "generate configurations of link for provisioning on K8S",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var action = ErrCheckedStrParam(cmd.Flags().GetString(flagAction))
-			if availableActions[action] != true {
+			if !availableActions[action] {
 				return fmt.Errorf("requires a valid action Name %s", action)
 			}
 			chainID := ErrCheckedStrParam(cmd.Flags().GetString(flagChainID))

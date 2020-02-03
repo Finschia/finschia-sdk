@@ -1342,7 +1342,7 @@ func NewFixtureGroup(t *testing.T) *FixtureGroup {
 
 func InitFixturesGroup(t *testing.T, subnet string, numOfNodes ...int) *FixtureGroup {
 	nodeNumber := 4
-	if numOfNodes != nil && len(numOfNodes) == 1 {
+	if len(numOfNodes) == 1 {
 		nodeNumber = numOfNodes[0]
 	}
 	fg := NewFixtureGroup(t)
