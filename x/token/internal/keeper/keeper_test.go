@@ -113,7 +113,7 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 		require.Equal(t, true, token.(types.FT).GetMintable())
 		require.Equal(t, int64(900), keeper.accountKeeper.GetAccount(ctx, addr1).GetCoins().AmountOf(defaultSymbol).Int64())
 
-		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(99))), addr1))
+		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(99))), addr1, addr1))
 
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(999), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
@@ -142,26 +142,33 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 
 	t.Log("Mint Token")
 	{
-		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(100))), addr1))
+		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(100))), addr1, addr1))
 		require.Equal(t, int64(899), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
+	}
+	t.Log("Mint Token from addr1 to addr2")
+	{
+		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(100))), addr1, addr2))
+		require.Equal(t, int64(899), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(300), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(1199), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 	}
 
 	t.Log("Burn Token")
 	{
 		require.NoError(t, keeper.BurnTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(100))), addr1))
 		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
-		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
-		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(300), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 	}
 
 	t.Log("Burn Token again amount > has --> fail")
 	{
 		require.Error(t, keeper.BurnTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(800))), addr1))
 		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
-		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
-		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(300), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 	}
 
 }
@@ -210,7 +217,7 @@ func TestIssueNFTAndSendTokens(t *testing.T) {
 	}
 	t.Log("Mint token -> fail. it is nft")
 	{
-		require.Error(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(99))), addr1))
+		require.Error(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(99))), addr1, addr1))
 		require.Equal(t, int64(1), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(1), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
 	}
@@ -284,11 +291,18 @@ func TestCollectionAndPermission(t *testing.T) {
 		require.Equal(t, resource01, collection.GetSymbol())
 
 		{
+			// Mint from addr1 to addr1
 			require.NoError(t, keeper.IssueFT(ctx, types.NewCollectiveFT(collection, defaultName, "00000001", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-			require.NoError(t, keeper.MintCollectionTokens(ctx, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00000001", sdk.NewInt(defaultAmount))), addr1))
+			require.NoError(t, keeper.MintCollectionTokens(ctx, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00000001", sdk.NewInt(defaultAmount))), addr1, addr1))
 			supply, err := keeper.GetSupply(ctx, resource01, "00000001")
 			require.NoError(t, err)
 			require.Equal(t, int64(defaultAmount+defaultAmount), supply.Int64())
+
+			// Mint from addr1 to addr2
+			require.NoError(t, keeper.MintCollectionTokens(ctx, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00000001", sdk.NewInt(defaultAmount))), addr1, addr2))
+			supply, err = keeper.GetSupply(ctx, resource01, "00000001")
+			require.NoError(t, err)
+			require.Equal(t, int64(defaultAmount+defaultAmount+defaultAmount), supply.Int64())
 
 			collection, err := keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
@@ -836,7 +850,7 @@ func TestTransferFT(t *testing.T) {
 	require.EqualError(t, keeper.IssueFT(ctx, types.NewFT("testtoken3", tokenSymbol3, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr), types.ErrTokenExist(types.DefaultCodespace, tokenSymbol3).Error())
 	_, err := keeper.GetToken(ctx, tokenSymbol4, "")
 	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, tokenSymbol4).Error())
-	require.EqualError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(tokenSymbol3, sdk.NewInt(1))), addr), types.ErrTokenNotMintable(types.DefaultCodespace, tokenSymbol3).Error())
+	require.EqualError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(tokenSymbol3, sdk.NewInt(1))), addr, addr), types.ErrTokenNotMintable(types.DefaultCodespace, tokenSymbol3).Error())
 
 	// TransferFT success case
 	require.NoError(t, keeper.TransferFT(ctx, addr, addr2, tokenSymbol3, sdk.NewInt(1)))

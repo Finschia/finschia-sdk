@@ -8,33 +8,33 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) MintTokens(ctx sdk.Context, amount sdk.Coins, to sdk.AccAddress) sdk.Error {
+func (k Keeper) MintTokens(ctx sdk.Context, amount sdk.Coins, from, to sdk.AccAddress) sdk.Error {
 	for _, coin := range amount {
 		token, err := k.GetToken(ctx, coin.Denom, "")
 		if err != nil {
 			return err
 		}
-		if err := k.isMintable(ctx, token, to); err != nil {
+		if err := k.isMintable(ctx, token, from); err != nil {
 			return err
 		}
 	}
 	return k.mintTokens(ctx, amount, to)
 }
-func (k Keeper) MintCollectionTokens(ctx sdk.Context, amount linktype.CoinWithTokenIDs, to sdk.AccAddress) sdk.Error {
+func (k Keeper) MintCollectionTokens(ctx sdk.Context, amount linktype.CoinWithTokenIDs, from, to sdk.AccAddress) sdk.Error {
 	for _, coin := range amount {
 		symbol, tokenID := coin.Symbol, coin.TokenID
 		token, err := k.GetToken(ctx, symbol, tokenID)
 		if err != nil {
 			return err
 		}
-		if err := k.isMintable(ctx, token, to); err != nil {
+		if err := k.isMintable(ctx, token, from); err != nil {
 			return err
 		}
 	}
 	return k.mintTokens(ctx, amount.ToCoins(), to)
 }
 
-func (k Keeper) isMintable(ctx sdk.Context, token types.Token, to sdk.AccAddress) sdk.Error {
+func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) sdk.Error {
 
 	ft, ok := token.(types.FT)
 	if !ok {
@@ -45,8 +45,8 @@ func (k Keeper) isMintable(ctx sdk.Context, token types.Token, to sdk.AccAddress
 		return types.ErrTokenNotMintable(types.DefaultCodespace, ft.GetDenom())
 	}
 	perm := types.NewMintPermission(ft.GetDenom())
-	if !k.HasPermission(ctx, to, perm) {
-		return types.ErrTokenPermission(types.DefaultCodespace, to, perm)
+	if !k.HasPermission(ctx, from, perm) {
+		return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
 	}
 	return nil
 }

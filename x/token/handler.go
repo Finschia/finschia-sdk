@@ -178,7 +178,7 @@ func handleMsgCreateCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgCre
 }
 
 func handleMsgMint(ctx sdk.Context, keeper keeper.Keeper, msg MsgMint) sdk.Result {
-	err := keeper.MintTokens(ctx, msg.Amount, msg.To)
+	err := keeper.MintTokens(ctx, msg.Amount, msg.From, msg.To)
 	if err != nil {
 		return err.Result()
 	}
@@ -210,7 +210,7 @@ func handleMsgBurn(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurn) sdk.Resul
 }
 
 func handleMsgMintCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgCollectionTokenMint) sdk.Result {
-	err := keeper.MintCollectionTokens(ctx, msg.Amount, msg.To)
+	err := keeper.MintCollectionTokens(ctx, msg.Amount, msg.From, msg.To)
 	if err != nil {
 		return err.Result()
 	}
