@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"os"
+	"os/user"
+
 	"github.com/line/link/contrib/provisioning/k8s"
 	"github.com/line/link/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"log"
-	"os"
-	"os/user"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

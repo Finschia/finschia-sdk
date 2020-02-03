@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
@@ -8,8 +11,6 @@ import (
 	"github.com/line/link/client"
 	"github.com/line/link/x/safetybox/internal/types"
 	"github.com/spf13/cobra"
-	"strconv"
-	"strings"
 )
 
 // GetTxCmd returns the transaction commands for this module

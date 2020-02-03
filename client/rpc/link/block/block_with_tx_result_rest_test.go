@@ -2,6 +2,11 @@ package block
 
 import (
 	"fmt"
+	"net/http"
+	"net/url"
+	"strconv"
+	"testing"
+
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
 	cdc "github.com/line/link/client/rpc/link/block/codec"
@@ -9,10 +14,6 @@ import (
 	"github.com/stretchr/testify/require"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
-	"net/http"
-	"net/url"
-	"strconv"
-	"testing"
 )
 
 func TestWithTxResultRequestHandlerFn(t *testing.T) {

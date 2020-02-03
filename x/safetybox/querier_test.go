@@ -2,13 +2,14 @@ package safetybox
 
 import (
 	"fmt"
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	testCommon "github.com/line/link/x/safetybox/internal/keeper"
-	types "github.com/line/link/x/safetybox/internal/types"
+	"github.com/line/link/x/safetybox/internal/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"testing"
 )
 
 func TestSafetyBoxQuerierSafetyBox(t *testing.T) {

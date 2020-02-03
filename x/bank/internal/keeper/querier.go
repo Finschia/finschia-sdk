@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+
 	"github.com/line/link/x/bank/internal/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"

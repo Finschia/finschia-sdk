@@ -3,11 +3,12 @@ package block
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/types"
-	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

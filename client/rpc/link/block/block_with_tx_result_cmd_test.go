@@ -2,6 +2,11 @@ package block
 
 import (
 	"fmt"
+	"math"
+	"strconv"
+	"strings"
+	"testing"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/golang/mock/gomock"
@@ -11,10 +16,6 @@ import (
 	"github.com/stretchr/testify/require"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
-	"math"
-	"strconv"
-	"strings"
-	"testing"
 )
 
 const ballotX = "\u2717"

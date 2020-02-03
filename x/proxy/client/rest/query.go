@@ -1,12 +1,13 @@
 package rest
 
 import (
+	"net/http"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"
 	"github.com/line/link/x/proxy/types"
-	"net/http"
 )
 
 func ProxyQueryAllowanceHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {

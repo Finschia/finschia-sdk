@@ -2,9 +2,10 @@ package block
 
 import (
 	"fmt"
-	cdc "github.com/line/link/client/rpc/link/block/codec"
 	"net/http"
 	"strconv"
+
+	cdc "github.com/line/link/client/rpc/link/block/codec"
 
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/gorilla/mux"

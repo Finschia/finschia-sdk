@@ -2,6 +2,7 @@ package safetybox
 
 import (
 	"encoding/json"
+
 	"github.com/line/link/x/safetybox/client/cli"
 	"github.com/line/link/x/safetybox/client/rest"
 

@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"github.com/line/link/x/account"
 	"os"
 	"path"
+
+	"github.com/line/link/x/account"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

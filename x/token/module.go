@@ -2,6 +2,7 @@ package token
 
 import (
 	"encoding/json"
+
 	"github.com/line/link/client"
 	"github.com/line/link/x/token/client/cli"
 	"github.com/line/link/x/token/client/rest"

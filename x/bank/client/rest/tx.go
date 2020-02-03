@@ -1,8 +1,9 @@
 package rest
 
 import (
-	"github.com/line/link/x/bank/internal/types"
 	"net/http"
+
+	"github.com/line/link/x/bank/internal/types"
 
 	"github.com/gorilla/mux"
 

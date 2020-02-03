@@ -3,6 +3,9 @@ package k8s
 import (
 	"encoding/json"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -11,8 +14,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	tmconfig "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
-	"os"
-	"path/filepath"
 )
 
 type Node struct {
