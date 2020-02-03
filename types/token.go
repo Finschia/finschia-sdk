@@ -77,7 +77,6 @@ func (coins CoinWithTokenIDs) ToCoins() sdk.Coins {
 	return sdkCoins
 }
 
-//nolint
 func (coins CoinWithTokenIDs) Len() int           { return len(coins) }
 func (coins CoinWithTokenIDs) Less(i, j int) bool { return coins[i].GetDenom() < coins[j].GetDenom() }
 func (coins CoinWithTokenIDs) Swap(i, j int)      { coins[i], coins[j] = coins[j], coins[i] }
