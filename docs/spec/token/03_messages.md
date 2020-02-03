@@ -68,7 +68,7 @@ type MsgIssueCollection struct {
 ## Mint
 
 **Mint message is to increase the total supply of the token**
-- Signer of this message must have permission 
+- Signer(From) of this message must have permission 
 - Minted token is added to the `To` account
 
 ### MsgMint
@@ -100,7 +100,7 @@ type CoinWithTokenID struct {
 
 ## Burn
 **Burn message is to decrease the total supply of the token**
-- Signer of this message must have the amount of the tokens
+- Signer(From) of this message must have the amount of the tokens
 - Token is subtracted from the `From` account 
 
 ### MsgBurn
