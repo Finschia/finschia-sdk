@@ -125,7 +125,7 @@ func Init() *cobra.Command {
 	cmd.Flags().StringP(flagCliBinDirName, "d", "linkcli", "input linkcli binary home dir Name in confHomeDir")
 	cmd.Flags().IntP(flagNodeABCIPort, "e", defNodeABCIPort, "input ABCI interface communication port")
 	cmd.Flags().StringP(flagConfDirName, "f", defConfDirName, "input defConfDirName")
-	cmd.Flags().StringSliceP(flagNodeIPs, "i", []string{"10.231.253.192", "10.231.253.193", "10.231.253.195", "10.231.224.247"}, "input node's ip list")
+	cmd.Flags().StringSliceP(flagNodeIPs, "i", []string{"192.168.253.192", "192.168.253.193", "192.168.253.195", "192.168.224.247"}, "input node's ip list")
 	cmd.Flags().StringP(flagLinkdBinDirName, "k", "linkd", "input linkd binary home dir Name in confHomeDir")
 	cmd.Flags().IntP(flagPrometheusListenPort, "l", defPrometheusListenPort, "input Prometheus Listen port")
 	cmd.Flags().StringP(server.FlagMinGasPrices, "m", fmt.Sprintf("%f%s", defMinGasPrices, sdk.DefaultBondDenom),
