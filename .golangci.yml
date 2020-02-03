@@ -6,6 +6,7 @@ linters:
     - depguard
     - dogsled
     - goconst
+    - gocritic
     - errcheck
     - govet
     - golint
