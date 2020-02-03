@@ -663,3 +663,49 @@ func (_m *Client) Validators(height *int64) (*core_types.ResultValidators, error
 
 	return r0, r1
 }
+
+// Tendermint v0.32.8, Cosmos-sdk v0.37.5
+func (_m *Client) UnconfirmedTxs(limit int) (*core_types.ResultUnconfirmedTxs, error) {
+	ret := _m.Called(limit)
+
+	var r0 *core_types.ResultUnconfirmedTxs
+	if rf, ok := ret.Get(0).(func(int) *core_types.ResultUnconfirmedTxs); ok {
+		r0 = rf(limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*core_types.ResultUnconfirmedTxs)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(int) error); ok {
+		r1 = rf(limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Tendermint v0.32.8, Cosmos-sdk v0.37.5
+func (_m *Client) NumUnconfirmedTxs() (*core_types.ResultUnconfirmedTxs, error) {
+	ret := _m.Called()
+
+	var r0 *core_types.ResultUnconfirmedTxs
+	if rf, ok := ret.Get(0).(func() *core_types.ResultUnconfirmedTxs); ok {
+		r0 = rf()
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*core_types.ResultUnconfirmedTxs)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func() error); ok {
+		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}

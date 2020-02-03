@@ -241,6 +241,7 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 
 	f.CLIConfig("chain-id", f.ChainID)
 	f.CLIConfig("broadcast-mode", "block")
+	f.CLIConfig("trust-node", "true")
 
 	// start an account with tokens
 	f.AddGenesisAccount(f.KeyAddress(keyFoo), startCoins)

@@ -1578,6 +1578,8 @@ components:
                 type: boolean
               log:
                 type: string
+              events:
+                type: array
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction
@@ -1624,6 +1626,8 @@ components:
                 type: boolean
               log:
                 type: string
+              events:
+                type: array
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction
@@ -2077,6 +2081,8 @@ components:
                 type: boolean
               log:
                 type: string
+              events:
+                type: array
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction
