@@ -5,12 +5,13 @@
 package types
 
 import (
+	io "io"
+	reflect "reflect"
+
 	types "github.com/cosmos/cosmos-sdk/store/types"
 	gomock "github.com/golang/mock/gomock"
 	types0 "github.com/tendermint/tendermint/abci/types"
 	tm_db "github.com/tendermint/tm-db"
-	io "io"
-	reflect "reflect"
 )
 
 // MockStore is a mock of Store interface

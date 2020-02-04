@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
@@ -74,7 +75,7 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 			aas := viper.GetBool(flagAAS)
 
 			if aas {
-				symbol = symbol + owner.String()[len(owner.String())-linktype.AccAddrSuffixLen:]
+				symbol += owner.String()[len(owner.String())-linktype.AccAddrSuffixLen:]
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
@@ -147,7 +148,7 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 			aas := viper.GetBool(flagAAS)
 
 			if aas {
-				symbol = symbol + to.String()[len(to.String())-linktype.AccAddrSuffixLen:]
+				symbol += to.String()[len(to.String())-linktype.AccAddrSuffixLen:]
 			}
 
 			if err := linktype.ValidateSymbolUserDefined(symbol); err != nil {

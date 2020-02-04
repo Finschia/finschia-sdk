@@ -20,12 +20,12 @@ func NewBlockFetchInfo(inclusiveFromHeight int64, exclusiveToHeight int64, hasMo
 }
 
 func NewFetchInfo(latestBlockHeight *int64, fromHeight *int64, fetchSize *int8) (fetchBlockHeight FetchInfo) {
-	exclusiveToBlockHeight := *fromHeight + int64(*fetchSize)
-	if *latestBlockHeight > exclusiveToBlockHeight-1 {
+	switch exclusiveToBlockHeight := *fromHeight + int64(*fetchSize); {
+	case *latestBlockHeight > exclusiveToBlockHeight-1:
 		fetchBlockHeight = NewBlockFetchInfo(*fromHeight, exclusiveToBlockHeight, true)
-	} else if *latestBlockHeight == exclusiveToBlockHeight-1 {
+	case *latestBlockHeight == exclusiveToBlockHeight-1:
 		fetchBlockHeight = NewBlockFetchInfo(*fromHeight, exclusiveToBlockHeight, false)
-	} else {
+	default:
 		fetchBlockHeight = NewBlockFetchInfo(*fromHeight, *latestBlockHeight+1, false)
 	}
 	return

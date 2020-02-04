@@ -1,11 +1,12 @@
 package block
 
 import (
+	"testing"
+
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestCommand(t *testing.T) {

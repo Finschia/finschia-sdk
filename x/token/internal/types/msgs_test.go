@@ -1,11 +1,12 @@
 package types
 
 import (
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"testing"
 )
 
 func TestMsgBasics(t *testing.T) {
@@ -38,6 +39,26 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Mintable, msg2.Mintable)
 	}
 	{
+		msg := NewMsgIssue("name", "s", "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "symbol [s] mismatched to [^[a-z][a-z0-9]{5,7}$]").Error())
+	}
+	{
+		msg := NewMsgIssue("", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenName(DefaultCodespace, "").Error())
+	}
+	{
+		msg := NewMsgIssueCollection("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true, "1234")
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1234] mismatched to [^[a-z0-9]{8}$]").Error())
+	}
+	{
+		msg := NewMsgIssue("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(19), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenDecimals(DefaultCodespace, sdk.NewInt(19)).Error())
+	}
+	{
+		msg := NewMsgIssue("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(0), false)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidIssueFT(DefaultCodespace).Error())
+	}
+	{
 		msg := NewMsgIssueNFT("name", "symb"+addrSuffix, "tokenuri", addr)
 		require.Equal(t, "issue_nft", msg.Type())
 		require.Equal(t, "token", msg.Route())
@@ -56,6 +77,10 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.TokenURI, msg2.TokenURI)
 		require.Equal(t, msg.Owner, msg2.Owner)
+	}
+	{
+		msg := NewMsgIssueNFT("", "symb"+addrSuffix, "tokenuri", addr)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenName(DefaultCodespace, "").Error())
 	}
 	{
 		msg := NewMsgIssueCollection("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true, "0okenid0")

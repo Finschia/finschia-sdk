@@ -5,12 +5,13 @@
 package types
 
 import (
+	reflect "reflect"
+
 	types "github.com/cosmos/cosmos-sdk/types"
 	exported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	exported0 "github.com/cosmos/cosmos-sdk/x/supply/exported"
 	gomock "github.com/golang/mock/gomock"
 	exported1 "github.com/line/link/x/iam/exported"
-	reflect "reflect"
 )
 
 // MockIamKeeper is a mock of IamKeeper interface

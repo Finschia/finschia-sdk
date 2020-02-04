@@ -7,7 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/line/link/types"
-	proxy "github.com/line/link/x/proxy"
+	"github.com/line/link/x/proxy"
 	sbox "github.com/line/link/x/safetybox"
 	tokenmodule "github.com/line/link/x/token"
 	"io/ioutil"

@@ -1,7 +1,7 @@
 ---
 openapi: "3.0.1"
 info:
-  version: "v1.3.2"
+  version: "v1.4.0"
   title: LINK-Lite for link network
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
@@ -1578,6 +1578,8 @@ components:
                 type: boolean
               log:
                 type: string
+              events:
+                type: array
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction
@@ -1624,6 +1626,8 @@ components:
                 type: boolean
               log:
                 type: string
+              events:
+                type: array
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction
@@ -2077,6 +2081,8 @@ components:
                 type: boolean
               log:
                 type: string
+              events:
+                type: array
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction

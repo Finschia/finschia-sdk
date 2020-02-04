@@ -2,6 +2,7 @@ package proxy
 
 import (
 	"encoding/json"
+
 	"github.com/line/link/x/proxy/client/cli"
 	"github.com/line/link/x/proxy/client/rest"
 

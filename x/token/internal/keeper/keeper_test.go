@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"testing"
 )
 
 const (
@@ -112,7 +113,7 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 		require.Equal(t, true, token.(types.FT).GetMintable())
 		require.Equal(t, int64(900), keeper.accountKeeper.GetAccount(ctx, addr1).GetCoins().AmountOf(defaultSymbol).Int64())
 
-		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(99))), addr1))
+		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(99))), addr1, addr1))
 
 		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(999), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
@@ -141,26 +142,33 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 
 	t.Log("Mint Token")
 	{
-		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(100))), addr1))
+		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(100))), addr1, addr1))
 		require.Equal(t, int64(899), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
+	}
+	t.Log("Mint Token from addr1 to addr2")
+	{
+		require.NoError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(100))), addr1, addr2))
+		require.Equal(t, int64(899), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(300), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(1199), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 	}
 
 	t.Log("Burn Token")
 	{
 		require.NoError(t, keeper.BurnTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(100))), addr1))
 		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
-		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
-		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(300), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 	}
 
 	t.Log("Burn Token again amount > has --> fail")
 	{
 		require.Error(t, keeper.BurnTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(800))), addr1))
 		require.Equal(t, int64(799), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
-		require.Equal(t, int64(200), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
-		require.Equal(t, int64(999), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(300), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
+		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 	}
 
 }
@@ -209,7 +217,7 @@ func TestIssueNFTAndSendTokens(t *testing.T) {
 	}
 	t.Log("Mint token -> fail. it is nft")
 	{
-		require.Error(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(99))), addr1))
+		require.Error(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(99))), addr1, addr1))
 		require.Equal(t, int64(1), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(1), bk.GetCoins(ctx, addr1).AmountOf(defaultSymbol).Int64())
 	}
@@ -283,11 +291,18 @@ func TestCollectionAndPermission(t *testing.T) {
 		require.Equal(t, resource01, collection.GetSymbol())
 
 		{
+			// Mint from addr1 to addr1
 			require.NoError(t, keeper.IssueFT(ctx, types.NewCollectiveFT(collection, defaultName, "00000001", defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-			require.NoError(t, keeper.MintCollectionTokens(ctx, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00000001", sdk.NewInt(defaultAmount))), addr1))
+			require.NoError(t, keeper.MintCollectionTokens(ctx, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00000001", sdk.NewInt(defaultAmount))), addr1, addr1))
 			supply, err := keeper.GetSupply(ctx, resource01, "00000001")
 			require.NoError(t, err)
 			require.Equal(t, int64(defaultAmount+defaultAmount), supply.Int64())
+
+			// Mint from addr1 to addr2
+			require.NoError(t, keeper.MintCollectionTokens(ctx, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00000001", sdk.NewInt(defaultAmount))), addr1, addr2))
+			supply, err = keeper.GetSupply(ctx, resource01, "00000001")
+			require.NoError(t, err)
+			require.Equal(t, int64(defaultAmount+defaultAmount+defaultAmount), supply.Int64())
 
 			collection, err := keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
@@ -401,6 +416,7 @@ func TestAttachDetachScenario(t *testing.T) {
 		token5Id        = "id000005"
 		token6Id        = "id000006"
 		token7Symbol    = rightSymbol
+		tokenCFT        = "00000001"
 	)
 
 	//
@@ -441,6 +457,7 @@ func TestAttachDetachScenario(t *testing.T) {
 	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection2, defaultName, token5Id, defaultTokenURI, addr1), addr1)
 	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token6Id, defaultTokenURI, addr2), addr2)
 	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, token7Symbol, defaultTokenURI, addr1), addr1)
+	_ = keeper.IssueFT(ctx, types.NewCollectiveFT(collection, "testtoken", tokenCFT, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr1)
 
 	//
 	// attach success cases
@@ -519,6 +536,10 @@ func TestAttachDetachScenario(t *testing.T) {
 	require.NoError(t, err12)
 	require.Equal(t, len(childrenOfToken4), 0)
 
+	// query failure cases
+	_, err = keeper.ParentOf(ctx, rightSymbol, tokenCFT)
+	require.EqualError(t, err, types.ErrTokenNotCNFT(types.DefaultCodespace, rightSymbol+tokenCFT).Error())
+
 	//
 	// attach error cases
 	//
@@ -534,7 +555,7 @@ func TestAttachDetachScenario(t *testing.T) {
 	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token6Id), types.ErrTokenNotOwnedBy(types.DefaultCodespace, rightSymbol+token6Id, addr1).Error())
 
 	// attach non-CNFT : failure
-	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, ""), types.ErrTokenNotIDNF(types.DefaultCodespace, rightSymbol).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, ""), types.ErrTokenNotCNFT(types.DefaultCodespace, rightSymbol).Error())
 
 	// attach to itself : failure
 	require.EqualError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token1Id), types.ErrCannotAttachToItself(types.DefaultCodespace, rightSymbol+token1Id).Error())
@@ -649,6 +670,7 @@ func TestTransferNFTScenario(t *testing.T) {
 	const (
 		defaultTokenURI = ""
 		Symbol          = "symbol1"
+		FTSymbol        = "symbol2"
 	)
 
 	//
@@ -668,6 +690,9 @@ func TestTransferNFTScenario(t *testing.T) {
 	// issue nf token
 	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, Symbol, defaultTokenURI, addr1), addr1)
 
+	// issue ft
+	_ = keeper.IssueFT(ctx, types.NewFT(defaultName, FTSymbol, defaultTokenURI, sdk.NewInt(0), true), sdk.NewInt(10), addr1)
+
 	//
 	// transfer success cases
 	//
@@ -678,6 +703,12 @@ func TestTransferNFTScenario(t *testing.T) {
 	//
 	// Insufficient coins
 	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, "Symbol2"), types.ErrTokenNotExist(types.DefaultCodespace, "Symbol2").Error())
+
+	// Not NFT case
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, FTSymbol), types.ErrTokenNotNFT(types.DefaultCodespace, FTSymbol).Error())
+
+	// Not owned by
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, Symbol), types.ErrTokenNotOwnedBy(types.DefaultCodespace, Symbol, addr1).Error())
 }
 
 func TestTransferCNFTScenario(t *testing.T) {
@@ -694,6 +725,7 @@ func TestTransferCNFTScenario(t *testing.T) {
 		token4Id        = "id000004"
 		token5Id        = "id000005"
 		token6Id        = "id000006"
+		tokenCFT        = "00000001"
 		token7Symbol    = rightSymbol
 	)
 
@@ -734,6 +766,7 @@ func TestTransferCNFTScenario(t *testing.T) {
 	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token4Id, defaultTokenURI, addr1), addr1)
 	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection2, defaultName, token5Id, defaultTokenURI, addr1), addr1)
 	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token6Id, defaultTokenURI, addr2), addr2)
+	_ = keeper.IssueFT(ctx, types.NewCollectiveFT(collection, "testtoken", tokenCFT, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr1)
 	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, token7Symbol, defaultTokenURI, addr1), addr1)
 
 	// attach token1 <- token2 (basic case) : success
@@ -755,6 +788,9 @@ func TestTransferCNFTScenario(t *testing.T) {
 
 	// transfer non-mine : failure
 	require.EqualError(t, keeper.TransferCNFT(ctx, addr1, addr2, rightSymbol, token6Id), types.ErrTokenNotOwnedBy(types.DefaultCodespace, rightSymbol+token6Id, addr1).Error())
+
+	// transfer-cnft cft : failure
+	require.EqualError(t, keeper.TransferCNFT(ctx, addr1, addr2, rightSymbol, tokenCFT), types.ErrTokenNotCNFT(types.DefaultCodespace, rightSymbol+tokenCFT).Error())
 
 	//
 	// transfer success cases
@@ -789,10 +825,36 @@ func TestTransferCNFTScenario(t *testing.T) {
 func TestTransferFT(t *testing.T) {
 	input := SetupTestInput(t)
 	ctx := input.Ctx
+	keeper := input.Keeper
+
+	const (
+		tokenSymbol1 = "symbol1"
+		tokenSymbol2 = "symbol2"
+		tokenSymbol3 = "symbol3"
+		tokenSymbol4 = "symbol4"
+	)
 
 	addr := sdk.AccAddress([]byte("addr1"))
 	addr2 := sdk.AccAddress([]byte("addr2"))
 	acc := input.Ak.NewAccountWithAddress(ctx, addr)
+
+	// preparation
+	require.NoError(t, keeper.SetCollection(ctx, types.NewCollection(tokenSymbol1, "name")))
+	require.NoError(t, keeper.IssueFT(ctx, types.NewFT("testtoken3", tokenSymbol3, "", sdk.NewInt(0), false), sdk.NewInt(1000), addr))
+
+	// Test error cases
+	// etc failure cases
+	require.EqualError(t, keeper.SetCollection(ctx, types.NewCollection(tokenSymbol1, "name")), types.ErrCollectionExist(types.DefaultCodespace, tokenSymbol1).Error())
+	require.EqualError(t, keeper.UpdateCollection(ctx, types.NewCollection(tokenSymbol2, "name")), types.ErrCollectionNotExist(types.DefaultCodespace, tokenSymbol2).Error())
+	require.EqualError(t, keeper.RevokePermission(ctx, addr2, types.NewIssuePermission("")), types.ErrTokenPermission(types.DefaultCodespace, addr2, types.NewIssuePermission("")).Error())
+	require.EqualError(t, keeper.IssueFT(ctx, types.NewFT("testtoken3", tokenSymbol3, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr), types.ErrTokenExist(types.DefaultCodespace, tokenSymbol3).Error())
+	_, err := keeper.GetToken(ctx, tokenSymbol4, "")
+	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, tokenSymbol4).Error())
+	require.EqualError(t, keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(tokenSymbol3, sdk.NewInt(1))), addr, addr), types.ErrTokenNotMintable(types.DefaultCodespace, tokenSymbol3).Error())
+
+	// TransferFT success case
+	require.NoError(t, keeper.TransferFT(ctx, addr, addr2, tokenSymbol3, sdk.NewInt(1)))
+	require.NoError(t, keeper.TransferFT(ctx, addr2, addr, tokenSymbol3, sdk.NewInt(1)))
 
 	// Test GetCoins/SetCoins
 	input.Ak.SetAccount(ctx, acc)
@@ -810,7 +872,7 @@ func TestTransferFT(t *testing.T) {
 	require.NoError(t, input.Keeper.bankKeeper.SetCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 15))))
 
 	// Test SendCoins
-	_, err := input.Keeper.bankKeeper.SubtractCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 5)))
+	_, err = input.Keeper.bankKeeper.SubtractCoins(ctx, addr, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 5)))
 	require.NoError(t, err)
 	_, err = input.Keeper.bankKeeper.AddCoins(ctx, addr2, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 5)))
 	require.NoError(t, err)

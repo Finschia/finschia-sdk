@@ -241,6 +241,7 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 
 	f.CLIConfig("chain-id", f.ChainID)
 	f.CLIConfig("broadcast-mode", "block")
+	f.CLIConfig("trust-node", "true")
 
 	// start an account with tokens
 	f.AddGenesisAccount(f.KeyAddress(keyFoo), startCoins)
@@ -1341,7 +1342,7 @@ func NewFixtureGroup(t *testing.T) *FixtureGroup {
 
 func InitFixturesGroup(t *testing.T, subnet string, numOfNodes ...int) *FixtureGroup {
 	nodeNumber := 4
-	if numOfNodes != nil && len(numOfNodes) == 1 {
+	if len(numOfNodes) == 1 {
 		nodeNumber = numOfNodes[0]
 	}
 	fg := NewFixtureGroup(t)
@@ -1394,6 +1395,7 @@ func (fg *FixtureGroup) initNodes(subnet string, numberOfNodes int) {
 		f.CLIConfig("output", "json")
 		f.CLIConfig("chain-id", f.ChainID)
 		f.CLIConfig("broadcast-mode", "block")
+		f.CLIConfig("trust-node", "true")
 	}
 
 	for _, f := range fg.fixturesMap {
@@ -1527,6 +1529,7 @@ func (fg *FixtureGroup) AddFullNode(flags ...string) *Fixtures {
 		f.CLIConfig("output", "json")
 		f.CLIConfig("chain-id", f.ChainID)
 		f.CLIConfig("broadcast-mode", "block")
+		f.CLIConfig("trust-node", "true")
 	}
 
 	// Copy the genesis.json
@@ -1647,7 +1650,8 @@ func WaitForStart(url string) {
 		wait *= 2
 
 		var res *http.Response
-		res, err = http.Get(url) //nolint:gosec Error is arising in testing files, accepting nolint
+		/* #nosec */
+		res, err = http.Get(url) //Error is arising in testing files
 		if err != nil || res == nil {
 			continue
 		}

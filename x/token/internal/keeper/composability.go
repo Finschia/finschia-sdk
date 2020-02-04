@@ -208,7 +208,7 @@ func (k Keeper) getCNFT(ctx sdk.Context, symbol, tokenID string) (types.Collecti
 	}
 	tokenNFT, ok := token.(*types.BaseCollectiveNFT)
 	if !ok {
-		return nil, types.ErrTokenNotIDNF(types.DefaultCodespace, token.GetDenom())
+		return nil, types.ErrTokenNotCNFT(types.DefaultCodespace, token.GetDenom())
 	}
 	return tokenNFT, nil
 }

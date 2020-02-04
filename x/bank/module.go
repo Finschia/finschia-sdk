@@ -2,6 +2,7 @@ package bank
 
 import (
 	"encoding/json"
+
 	"github.com/line/link/x/bank/client/cli"
 	"github.com/line/link/x/bank/client/rest"
 	"github.com/line/link/x/bank/internal/keeper"

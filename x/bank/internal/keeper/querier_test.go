@@ -2,8 +2,9 @@ package keeper
 
 import (
 	"fmt"
-	"github.com/line/link/x/bank/internal/types"
 	"testing"
+
+	"github.com/line/link/x/bank/internal/types"
 
 	"github.com/stretchr/testify/require"
 

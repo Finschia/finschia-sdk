@@ -1,12 +1,13 @@
 package proxy
 
 import (
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	testCommon "github.com/line/link/x/proxy/keeper"
 	"github.com/line/link/x/proxy/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"testing"
 )
 
 func TestHandler(t *testing.T) {

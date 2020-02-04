@@ -2,9 +2,10 @@ package types
 
 import (
 	"encoding/json"
-	linktype "github.com/line/link/types"
 	"sort"
 	"strings"
+
+	linktype "github.com/line/link/types"
 )
 
 const (
@@ -136,7 +137,7 @@ func (ts Tokens) GetNFTs() (tokens Tokens) {
 		return tokens
 	}
 	if startIndex != -1 && strings.Compare(ts.IDAtIndex(startIndex), start) < 0 {
-		startIndex = startIndex + 1
+		startIndex += 1
 	}
 
 	return ts[startIndex:]
@@ -152,14 +153,14 @@ func (ts Tokens) Iterate(prefix string, process func(Token) (stop bool)) {
 	end := prefix + strings.Repeat(LargestAlphanum, postLen)
 	_, startIndex := BinarySearch(ts, start)
 	if startIndex != -1 && strings.Compare(ts.IDAtIndex(startIndex), start) < 0 {
-		startIndex = startIndex + 1
+		startIndex += 1
 	}
 	_, endIndex := BinarySearch(ts, end)
 	if endIndex != -1 && strings.Compare(ts.IDAtIndex(endIndex), end) > 0 {
-		endIndex = endIndex - 1
+		endIndex -= 1
 	}
 
-	for index := startIndex; index >= 0 && index <= endIndex; index = index + 1 {
+	for index := startIndex; index >= 0 && index <= endIndex; index += 1 {
 		if process(ts[index]) {
 			return
 		}
@@ -202,8 +203,7 @@ func NextTokenID(tokenID string, prefix string) (nextTokenID string) {
 	var toCharStr = "0123456789abcdefghijklmnopqrstuvwxyz"
 	const toCharStrLength = 36 //int32(len(toCharStr))
 
-	var tokenIDInt []int32
-	tokenIDInt = make([]int32, len(tokenID))
+	tokenIDInt := make([]int32, len(tokenID))
 
 	for idx, char := range tokenID {
 		if char >= '0' && char <= '9' {
@@ -212,7 +212,7 @@ func NextTokenID(tokenID string, prefix string) (nextTokenID string) {
 			tokenIDInt[idx] = char - 'a' + 10
 		}
 	}
-	for idx := len(tokenIDInt) - 1; idx >= 0; idx = idx - 1 {
+	for idx := len(tokenIDInt) - 1; idx >= 0; idx -= 1 {
 		char := tokenIDInt[idx] + 1
 		if char < (int32)(toCharStrLength) {
 			tokenIDInt[idx] = char

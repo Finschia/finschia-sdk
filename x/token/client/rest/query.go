@@ -2,9 +2,10 @@ package rest
 
 import (
 	"fmt"
+	"net/http"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	clienttypes "github.com/line/link/x/token/client/internal/types"
-	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/line/link/client"

@@ -2,13 +2,14 @@ package proxy
 
 import (
 	"fmt"
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	testCommon "github.com/line/link/x/proxy/keeper"
 	"github.com/line/link/x/proxy/types"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"testing"
 )
 
 func TestProxyQuerierAllowance(t *testing.T) {

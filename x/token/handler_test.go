@@ -1,6 +1,9 @@
 package token
 
 import (
+	"strings"
+	"testing"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	linktype "github.com/line/link/types"
 	testCommon "github.com/line/link/x/token/internal/keeper"
@@ -8,8 +11,6 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
-	"strings"
-	"testing"
 )
 
 const (

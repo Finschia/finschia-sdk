@@ -1,20 +1,23 @@
 package types
 
 var (
-	EventTypeIssueToken              = "issue_token"
-	EventTypeMintToken               = "mint_token"
-	EventTypeBurnToken               = "burn_token"
-	EventTypeGrantPermToken          = "grant_perm_token"
-	EventTypeModifyTokenURI          = "modify_token_uri_token"
+	EventTypeIssueToken     = "issue_token"
+	EventTypeMintToken      = "mint_token"
+	EventTypeBurnToken      = "burn_token"
+	EventTypeGrantPermToken = "grant_perm_token"
+	/* #nosec */
+	EventTypeModifyTokenURI = "modify_token_uri_token"
+	/* #nosec */
 	EventTypeModifyTokenURIPermToken = "modify_token_uri_perm_token"
-	EventTypeRevokePermToken         = "revoke_perm_token"
-	EventTypeCreateCollection        = "create_collection"
-	EventTypeAttachToken             = "attach_token"
-	EventTypeDetachToken             = "detach_token"
-	EventTypeTransfer                = "transfer"
-	EventTypeTransferCFT             = "transfer_cft"
-	EventTypeTransferNFT             = "transfer_nft"
-	EventTypeTransferCNFT            = "transfer_cnft"
+	/* #nosec */
+	EventTypeRevokePermToken  = "revoke_perm_token"
+	EventTypeCreateCollection = "create_collection"
+	EventTypeAttachToken      = "attach_token"
+	EventTypeDetachToken      = "detach_token"
+	EventTypeTransfer         = "transfer"
+	EventTypeTransferCFT      = "transfer_cft"
+	EventTypeTransferNFT      = "transfer_nft"
+	EventTypeTransferCNFT     = "transfer_cnft"
 
 	AttributeKeyName      = "name"
 	AttributeKeySymbol    = "symbol"

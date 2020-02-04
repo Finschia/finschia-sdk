@@ -3,6 +3,9 @@ package k8s
 import (
 	"encoding/hex"
 	"fmt"
+	"strconv"
+	"time"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
@@ -11,8 +14,6 @@ import (
 	"github.com/line/link/app"
 	"github.com/spf13/cobra"
 	tmconfig "github.com/tendermint/tendermint/config"
-	"strconv"
-	"time"
 )
 
 var (
@@ -71,7 +72,7 @@ func Init() *cobra.Command {
 		Short: "generate configurations of link for provisioning on K8S",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var action = ErrCheckedStrParam(cmd.Flags().GetString(flagAction))
-			if availableActions[action] != true {
+			if !availableActions[action] {
 				return fmt.Errorf("requires a valid action Name %s", action)
 			}
 			chainID := ErrCheckedStrParam(cmd.Flags().GetString(flagChainID))
@@ -124,7 +125,7 @@ func Init() *cobra.Command {
 	cmd.Flags().StringP(flagCliBinDirName, "d", "linkcli", "input linkcli binary home dir Name in confHomeDir")
 	cmd.Flags().IntP(flagNodeABCIPort, "e", defNodeABCIPort, "input ABCI interface communication port")
 	cmd.Flags().StringP(flagConfDirName, "f", defConfDirName, "input defConfDirName")
-	cmd.Flags().StringSliceP(flagNodeIPs, "i", []string{"10.231.253.192", "10.231.253.193", "10.231.253.195", "10.231.224.247"}, "input node's ip list")
+	cmd.Flags().StringSliceP(flagNodeIPs, "i", []string{"192.168.253.192", "192.168.253.193", "192.168.253.195", "192.168.224.247"}, "input node's ip list")
 	cmd.Flags().StringP(flagLinkdBinDirName, "k", "linkd", "input linkd binary home dir Name in confHomeDir")
 	cmd.Flags().IntP(flagPrometheusListenPort, "l", defPrometheusListenPort, "input Prometheus Listen port")
 	cmd.Flags().StringP(server.FlagMinGasPrices, "m", fmt.Sprintf("%f%s", defMinGasPrices, sdk.DefaultBondDenom),

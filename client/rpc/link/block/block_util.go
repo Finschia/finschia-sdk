@@ -3,6 +3,9 @@ package block
 import (
 	"encoding/json"
 	"fmt"
+	"sync"
+	"time"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	cu "github.com/cosmos/cosmos-sdk/x/auth/client/utils"
@@ -10,8 +13,6 @@ import (
 	lct "github.com/line/link/client/rpc/link/block/context"
 	ltp "github.com/line/link/client/rpc/link/block/proxy"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
-	"sync"
-	"time"
 )
 
 type Util struct {

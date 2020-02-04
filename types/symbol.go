@@ -2,15 +2,18 @@ package types
 
 import (
 	"fmt"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"regexp"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 const (
 	reSymbolString            = `[a-z][a-z0-9]{2,15}`
 	reSymbolStringReserved    = `[a-z][a-z0-9]{2,4}`
 	reSymbolStringUserDefined = `[a-z][a-z0-9]{5,7}`
-	reSymbolStringTokenID     = `[a-z0-9]{8}`
+	/* #nosec */
+	reSymbolStringTokenID = `[a-z0-9]{8}`
+	/* #nosec */
 	reSymbolStringBaseTokenID = `[a-z0-9]{4}`
 )
 

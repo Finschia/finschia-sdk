@@ -2,9 +2,10 @@ package k8s
 
 import (
 	"fmt"
+	"testing"
+
 	. "github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 const checkMark = "\u2713"

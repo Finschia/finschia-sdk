@@ -6,9 +6,16 @@ linters:
     - depguard
     - dogsled
     - errcheck
-    - govet
-    - golint
+    - goconst
+    - gocritic
     - gofmt
+    - goimports
+    - golint
+    - gosec
+    - gosimple
+    - govet
+    - errcheck
+    - golint
     - gocyclo
     - maligned
     - misspell

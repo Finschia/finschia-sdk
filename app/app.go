@@ -1,12 +1,13 @@
 package app
 
 import (
+	"io"
+	"os"
+
 	"github.com/line/link/x/account"
 	"github.com/line/link/x/bank"
 	"github.com/line/link/x/iam"
 	"github.com/line/link/x/safetybox"
-	"io"
-	"os"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"

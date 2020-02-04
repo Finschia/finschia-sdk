@@ -1,10 +1,11 @@
 package bank
 
 import (
-	"github.com/line/link/x/bank/internal/keeper"
-	"github.com/line/link/x/bank/internal/types"
 	"strings"
 	"testing"
+
+	"github.com/line/link/x/bank/internal/keeper"
+	"github.com/line/link/x/bank/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
