@@ -49,9 +49,14 @@ func getPreparedCollection(symbol, name string, t *testing.T) Collection {
 
 func TestCollection_AddToken(t *testing.T) {
 	collection := NewCollection(defaultSymbol, defaultSymbol)
-	collection, err := collection.AddToken(NewCollectiveFT(collection, defaultName, "00000001", defaultTokenURI, sdk.NewInt(0), true))
+	cft := NewCollectiveFT(collection, defaultName, "00000001", defaultTokenURI, sdk.NewInt(0), true)
+	collection, err := collection.AddToken(cft)
+	require.Equal(t, 1, len(collection.GetAllTokens()))
+	require.Equal(t, cft, collection.GetFTokens()[0].(*BaseCollectiveFT))
 	require.NoError(t, err)
-	collection, err = collection.AddToken(NewCollectiveFT(collection, defaultName, "00000001", defaultTokenURI, sdk.NewInt(0), true))
+	collection, err = collection.AddToken(cft)
+	require.Equal(t, 1, len(collection.GetAllTokens()))
+	require.Equal(t, cft, collection.GetFTokens()[0].(*BaseCollectiveFT))
 	require.Error(t, err)
 }
 
@@ -69,8 +74,11 @@ func TestCollection_UpdateToken(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "changed", token2.GetTokenURI())
 
-	token = NewCollectiveFT(collection, defaultName, "00000002", defaultTokenURI, sdk.NewInt(0), true)
-	collection, err = collection.UpdateToken(token)
+	updateToken := NewCollectiveFT(collection, defaultName, "00000002", defaultTokenURI, sdk.NewInt(0), true)
+	collection, err = collection.UpdateToken(updateToken)
+	require.NotEqual(t, token, updateToken)
+	require.Equal(t, 1, len(collection.GetAllTokens()))
+	require.Equal(t, token, collection.GetFTokens()[0].(*BaseCollectiveFT))
 	require.Error(t, err)
 }
 

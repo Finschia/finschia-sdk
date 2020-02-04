@@ -338,12 +338,11 @@ jobs:
   contract_tests:
     <<: *linux_defaults
     steps:
+      - run: rm -rf /tmp/contract_tests
+      - run: mkdir -p /tmp/contract_tests
       - attach_workspace:
           at: /tmp/workspace
       - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
       - run:
           name: Get Node.js and test REST implementation against swagger documentation
           command: |

@@ -20,6 +20,9 @@ linters:
     - maligned
     - nakedret
     - prealloc
+    - scopelint
+    - staticcheck
+    - structcheck
     - errcheck
     - golint
     - gocyclo

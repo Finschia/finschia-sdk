@@ -150,6 +150,7 @@ var cmdTestTable = []struct {
 
 func TestParseCmdParams(t *testing.T) {
 	for _, testingOption := range cmdTestTable {
+		testingOption := testingOption
 		t.Logf("%s, args %s, fromBlockHeight %d", testingOption.msg, strings.Join(testingOption.args, ","),
 			testingOption.fromBlockHeight)
 		{
