@@ -128,7 +128,7 @@ func (u *Util) fetchByBlockHeights(latestBlockHeight *int64, fromBlockHeight *in
 		}
 	}
 	blockWithRxResultsWrapper = &cdc.HasMoreResponseWrapper{Items: fetchResultWithTxRes, HasMore: fbh.hasMore}
-	return
+	return blockWithRxResultsWrapper, nil
 }
 
 func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResultWithTxRes, error) {

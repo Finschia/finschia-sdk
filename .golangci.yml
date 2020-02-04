@@ -16,6 +16,9 @@ linters:
     - govet
     - ineffassign
     - interfacer
+    - misspell
+    - maligned
+    - nakedret
     - errcheck
     - golint
     - gocyclo

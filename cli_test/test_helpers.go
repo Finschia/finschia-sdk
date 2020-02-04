@@ -264,7 +264,7 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 	f.GenTx(keyFoo)
 	f.CollectGenTxs()
 
-	return
+	return f
 }
 
 // Cleanup is meant to be run at the end of a test to clean up an remaining test state
