@@ -60,15 +60,15 @@ func (u *Util) InjectByteToJsonTxs(blockResponse []byte, byteTxs [][]byte) (bloc
 	if err := json.Unmarshal(blockResponse, &block); err != nil {
 		return nil, err
 	}
-	var totalTxJSON []map[string]interface{}
+	totalTxJSON := make([]map[string]interface{}, len(byteTxs))
 	// load translated txs as a map
-	for _, byteTx := range byteTxs {
+	for idx, byteTx := range byteTxs {
 		var txJSON map[string]interface{}
 		if err := json.Unmarshal(byteTx, &txJSON); err != nil {
 			return nil, err
 		}
 		// generate a slice to inject
-		totalTxJSON = append(totalTxJSON, txJSON)
+		totalTxJSON[idx] = txJSON
 	}
 
 	// inject the translated transactions

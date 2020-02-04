@@ -19,6 +19,7 @@ linters:
     - misspell
     - maligned
     - nakedret
+    - prealloc
     - errcheck
     - golint
     - gocyclo
@@ -63,7 +64,15 @@ linters-settings:
     # Default is to use a neutral variety of English.
     # Setting locale to US will correct the British spelling of 'colour' to 'color'.
     locale: US
+  prealloc:
+    # XXX: we don't recommend using this linter before doing performance profiling.
+    # For most programs usage of prealloc will be a premature optimization.
 
+    # Report preallocation suggestions only on simple loops that have no returns/breaks/continues/gotos in them.
+    # True by default.
+    simple: false
+    range-loops: true # Report preallocation suggestions on range loops, true by default
+    for-loops: true # Report preallocation suggestions on for loops, false by default
 run:
   # default concurrency is a available CPU number
   concurrency: 4

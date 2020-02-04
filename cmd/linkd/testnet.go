@@ -112,10 +112,8 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 	linkConfig := srvconfig.DefaultConfig()
 	linkConfig.MinGasPrices = minGasPrices
 
-	var (
-		accs     []genaccounts.GenesisAccount
-		genFiles []string
-	)
+	accs := make([]genaccounts.GenesisAccount, numValidators)
+	genFiles := make([]string, numValidators)
 
 	// generate private keys, node IDs, and initial transactions
 	for i := 0; i < numValidators; i++ {
