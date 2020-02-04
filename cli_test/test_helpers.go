@@ -1395,6 +1395,7 @@ func (fg *FixtureGroup) initNodes(subnet string, numberOfNodes int) {
 		f.CLIConfig("output", "json")
 		f.CLIConfig("chain-id", f.ChainID)
 		f.CLIConfig("broadcast-mode", "block")
+		f.CLIConfig("trust-node", "true")
 	}
 
 	for _, f := range fg.fixturesMap {
@@ -1528,6 +1529,7 @@ func (fg *FixtureGroup) AddFullNode(flags ...string) *Fixtures {
 		f.CLIConfig("output", "json")
 		f.CLIConfig("chain-id", f.ChainID)
 		f.CLIConfig("broadcast-mode", "block")
+		f.CLIConfig("trust-node", "true")
 	}
 
 	// Copy the genesis.json
