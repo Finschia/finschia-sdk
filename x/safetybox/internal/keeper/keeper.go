@@ -463,7 +463,7 @@ func (k Keeper) GetPermissions(ctx sdk.Context, safetyBoxId, role string, acc sd
 	return types.MsgSafetyBoxRoleResponse{HasRole: hasRole}, nil
 }
 
-func (k Keeper) IsOwner(ctx sdk.Context, safetyBoxId string, acc sdk.AccAddress) bool {
+func (k Keeper) IsOwner(ctx sdk.Context, safetyBoxId string, acc sdk.Address) bool {
 	sb, err := k.get(ctx, safetyBoxId)
 	if err != nil {
 		return false

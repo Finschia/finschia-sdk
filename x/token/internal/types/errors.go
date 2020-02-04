@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -82,7 +84,7 @@ func ErrCollectionNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error
 	return sdk.NewError(codespace, CodeCollectionNotExist, "collection [%s] does not exists", symbol)
 }
 
-func ErrTokenPermission(codespace sdk.CodespaceType, account sdk.AccAddress, permission PermissionI) sdk.Error {
+func ErrTokenPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission PermissionI) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
 }
 
@@ -101,8 +103,8 @@ func ErrTokenNotAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenNotAChild, "token [%s] is not a child of some other", denom)
 }
 
-func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner sdk.AccAddress) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is not owned by [%s]", denom, owner.String())
+func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner fmt.Stringer) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is being not owned by [%s]", denom, owner.String())
 }
 
 func ErrTokenNotNFT(codespace sdk.CodespaceType, denom string) sdk.Error {

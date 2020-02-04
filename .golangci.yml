@@ -14,6 +14,8 @@ linters:
     - gosec
     - gosimple
     - govet
+    - ineffassign
+    - interfacer
     - errcheck
     - golint
     - gocyclo

@@ -12,6 +12,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/genaccounts"
 	"github.com/line/link/app"
+	"github.com/rcrowley/go-metrics"
 	"github.com/spf13/cobra"
 	tmconfig "github.com/tendermint/tendermint/config"
 )
@@ -141,7 +142,7 @@ func Init() *cobra.Command {
 	return cmd
 }
 
-func buildConfForK8s(cmd *cobra.Command, cdc *codec.Codec, tmConfig *tmconfig.Config, m *BuildMetaData, minGasPrices string) error {
+func buildConfForK8s(logger metrics.Logger, cdc *codec.Codec, tmConfig *tmconfig.Config, m *BuildMetaData, minGasPrices string) error {
 
 	serverConfig := srvconfig.DefaultConfig()
 	DefIfEmpty(&serverConfig.MinGasPrices, minGasPrices, fmt.Sprintf("%f%s", defMinGasPrices, sdk.DefaultBondDenom))
@@ -159,7 +160,7 @@ func buildConfForK8s(cmd *cobra.Command, cdc *codec.Codec, tmConfig *tmconfig.Co
 	); err != nil {
 		return err
 	}
-	cmd.Printf("Successfully initialized for [%d]nodes configuration files at %s\n", m.NumNodes, m.ConfHomePath)
+	logger.Printf("Successfully initialized for [%d]nodes configuration files at %s\n", m.NumNodes, m.ConfHomePath)
 	return nil
 }
 

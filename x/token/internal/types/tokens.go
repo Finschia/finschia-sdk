@@ -204,7 +204,6 @@ func NextTokenID(tokenID string, prefix string) (nextTokenID string) {
 	const toCharStrLength = 36 //int32(len(toCharStr))
 
 	tokenIDInt := make([]int32, len(tokenID))
-
 	for idx, char := range tokenID {
 		if char >= '0' && char <= '9' {
 			tokenIDInt[idx] = char - '0'
