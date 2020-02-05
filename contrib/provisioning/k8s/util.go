@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"hash"
-	. "strings"
+	"strings"
 	"time"
 )
 
@@ -47,7 +47,7 @@ func DefFormatSetIfLTEZero(confField *string, format string, defVal int, setVal 
 }
 
 func DefIfEmpty(confField *string, defVal string, setVal string) string {
-	if TrimSpace(setVal) != "" {
+	if strings.TrimSpace(setVal) != "" {
 		*confField = setVal
 	} else {
 		*confField = defVal

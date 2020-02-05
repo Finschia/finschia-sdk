@@ -23,7 +23,7 @@ import (
 func runHackCmd(cmd *cobra.Command, args []string) error {
 
 	if len(args) != 1 {
-		return fmt.Errorf("Expected 1 arg")
+		return fmt.Errorf("expected 1 arg")
 	}
 
 	// ".linkd"

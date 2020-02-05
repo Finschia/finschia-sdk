@@ -66,11 +66,11 @@ func LoadGenesisConfig(configFile string) (config GenesisConfig, err error) {
 	viper.SetConfigFile(configFile)
 
 	if err := viper.ReadInConfig(); err != nil {
-		return config, fmt.Errorf("Fatal error config file: %s \n", err)
+		return config, fmt.Errorf("fatal error config file: %s", err)
 	}
 
 	if err := viper.Unmarshal(&config); err != nil {
-		return config, fmt.Errorf("Fatal error config file: %s \n", err)
+		return config, fmt.Errorf("fatal error config file: %s", err)
 	}
 
 	return config, nil

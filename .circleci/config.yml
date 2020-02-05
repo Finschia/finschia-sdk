@@ -127,16 +127,10 @@ jobs:
           name: tools
           command: |
             make get-tools
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - bin
   lint:
     <<: *linux_defaults
     parallelism: 1
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -147,8 +141,6 @@ jobs:
     <<: *linux_defaults
     parallelism: 2
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -159,8 +151,6 @@ jobs:
     <<: *linux_defaults
     parallelism: 1
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -204,8 +194,6 @@ jobs:
   sim-link-nondeterminism:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -219,8 +207,6 @@ jobs:
   sim-link-simulation-after-import:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -234,8 +220,6 @@ jobs:
   sim-link-multi-seed:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -249,8 +233,6 @@ jobs:
   sim-link-multi-seed-short:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -340,8 +322,6 @@ jobs:
     steps:
       - run: rm -rf /tmp/contract_tests
       - run: mkdir -p /tmp/contract_tests
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - run:
           name: Get Node.js and test REST implementation against swagger documentation
@@ -368,9 +348,7 @@ workflows:
       - integration_test:
           requires:
             - setup_dependencies
-      - contract_tests:
-          requires:
-            - setup_dependencies
+      - contract_tests
       - setup_docker_and_binary:
           requires:
             - fmt

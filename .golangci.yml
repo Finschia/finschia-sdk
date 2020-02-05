@@ -23,14 +23,15 @@ linters:
     - scopelint
     - staticcheck
     - structcheck
-    - errcheck
-    - golint
+    - stylecheck
     - gocyclo
-    - maligned
-    - misspell
-    - ineffassign
     - unconvert
 
+issues:
+  exclude-rules:
+    - text: "ST1003:"
+      linters:
+        - stylecheck
 linters-settings:
   dogsled:
     # checks assignments with too many blank identifiers; default is 2
