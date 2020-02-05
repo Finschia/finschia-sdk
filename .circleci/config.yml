@@ -333,7 +333,7 @@ jobs:
     steps:
       - checkout
       - run: make build-swagger-docs
-      - run: curl -sL https://git.io/goreleaser | bash
+      - run: curl -sL https://git.io/goreleaser | bash -s -- --skip-validate --rm-dist
 
   contract_tests:
     <<: *linux_defaults
