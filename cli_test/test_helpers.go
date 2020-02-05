@@ -334,7 +334,11 @@ func (f *Fixtures) LDStart(flags ...string) *tests.Process {
 	proc := tests.GoExecuteTWithStdout(f.T, addFlags(cmd, flags))
 	defer func() {
 		if v := recover(); v != nil {
-			stdout, stderr, _ := proc.ReadAll()
+			stdout, stderr, err := proc.ReadAll()
+			if err != nil {
+				fmt.Println(err)
+				f.T.Fail()
+			}
 			f.T.Log(stdout)
 			f.T.Log(stderr)
 		}
@@ -586,7 +590,7 @@ func (f *Fixtures) TxTokenMint(from string, to sdk.AccAddress, amount string, fl
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
-func (f *Fixtures) logResult(isSuccess bool, stdOut, stdErr string) {
+func (f *Fixtures) LogResult(isSuccess bool, stdOut, stdErr string) {
 	if !isSuccess {
 		f.T.Error(stdErr)
 	} else {

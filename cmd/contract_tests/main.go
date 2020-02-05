@@ -62,7 +62,10 @@ func main() {
 func makeExpectedEvidenceNull(t *transaction.Transaction) {
 	expected := unmarshaler.UnmarshalJSON(&t.Expected.Body)
 	expected.SetProperty([]string{"block", "evidence", "evidence"}, nil)
-	newBody, _ := json.Marshal(expected.Body)
+	newBody, err := json.Marshal(expected.Body)
+	if err != nil {
+		panic(fmt.Sprintf("fail to marshal expected body with %s", err))
+	}
 	t.Expected.Body = string(newBody)
 }
 
@@ -77,7 +80,10 @@ func addMsgExamplesToExpected(t *transaction.Transaction) {
 
 	expected := unmarshaler.UnmarshalJSON(&t.Expected.Body)
 	expected.SetProperty([]string{"tx", "value", "msg"}, value)
-	newBody, _ := json.Marshal(expected.Body)
+	newBody, err := json.Marshal(expected.Body)
+	if err != nil {
+		panic(fmt.Sprintf("fail to marshal expected body with %s", err))
+	}
 	t.Expected.Body = string(newBody)
 }
 

@@ -153,7 +153,11 @@ func (k Keeper) moveNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddr
 }
 
 func (k Keeper) moveCNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddress, to sdk.AccAddress, token types.CollectiveNFT) sdk.Error {
-	children, _ := k.ChildrenOf(ctx, token.GetSymbol(), token.GetTokenID())
+	children, err := k.ChildrenOf(ctx, token.GetSymbol(), token.GetTokenID())
+	if err != nil {
+		return err
+	}
+
 	for _, child := range children {
 		err := k.moveCNFToken(ctx, store, from, to, child.(types.CollectiveNFT))
 		if err != nil {

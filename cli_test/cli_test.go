@@ -51,14 +51,14 @@ func TestModifyTokenURI(t *testing.T) {
 	t.Log("Modify tokenURI and set empty string to tokenURI")
 	{
 		sendTokens := sdk.TokensFromConsensusPower(1)
-		f.logResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
+		f.LogResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
 
 		firstTokenURI := "uri:itisbrown"
 
 		symbol := tck + types.AccAddrSuffix(f.KeyAddress(keyFoo))
 		f.TxTokenCreateCollection(keyFoo, tck, "itisbrown", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.logResult(f.TxTokenIssueNFTCollection(keyFoo, tck, "itisbrown", firstTokenURI, tokenID01, "-y"))
+		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, tck, "itisbrown", firstTokenURI, tokenID01, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		denom := symbol + tokenID01
 		firstResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
@@ -66,14 +66,14 @@ func TestModifyTokenURI(t *testing.T) {
 		require.Equal(t, firstTokenURI, firstResult.GetTokenURI())
 
 		secondTokenURI := firstTokenURI + "modified"
-		f.logResult(f.ModifyTokenURI(keyFoo, symbol, secondTokenURI, tokenID01, "-y"))
+		f.LogResult(f.ModifyTokenURI(keyFoo, symbol, secondTokenURI, tokenID01, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		secondResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
 		require.Equal(t, secondTokenURI, secondResult.GetTokenURI())
 
 		var thirdTokenURI string
-		f.logResult(f.ModifyTokenURI(keyFoo, symbol, thirdTokenURI, tokenID01, "-y"))
+		f.LogResult(f.ModifyTokenURI(keyFoo, symbol, thirdTokenURI, tokenID01, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		thirdResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)

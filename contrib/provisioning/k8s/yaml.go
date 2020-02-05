@@ -165,8 +165,14 @@ func (k *DeploymentTemplate) Write() (*Deployment, error) {
 	deploy.DeploymentSpec.DeploymentSpecTemplate.Spec.NodeSelector = NodeSelector{strconv.Itoa(k.Node.Idx)}
 	container := &deploy.DeploymentSpec.DeploymentSpecTemplate.Spec.Containers[0]
 	container.Image = k.Node.MetaData.linkDockerImageUrl
-	container.LivenessProbe.HttpGet.Port, _ = strconv.Atoi(deploy.MetaData.Labels.RestAPIPort)
-	container.ReadinessProbe.HttpGet.Port, _ = strconv.Atoi(deploy.MetaData.Labels.RestAPIPort)
+	container.LivenessProbe.HttpGet.Port, err = strconv.Atoi(deploy.MetaData.Labels.RestAPIPort)
+	if err != nil {
+		panic(err)
+	}
+	container.ReadinessProbe.HttpGet.Port, err = strconv.Atoi(deploy.MetaData.Labels.RestAPIPort)
+	if err != nil {
+		panic(err)
+	}
 	container.Env[0].Value = k.BinaryHome()
 	container.Env[1].Value = k.LinkdHome()
 	container.Env[2].Value = strconv.Itoa(k.Node.Idx)

@@ -83,7 +83,8 @@ func prepareForRest(t *testing.T, fromBlockHeight string) (*mock.MockClient, *mo
 	mockTendermint := mock.NewMockTendermint(ctrl)
 	mockCliContext := mock.NewMockCLIContext(ctrl)
 
-	fromBlockHeightInt64, _ := strconv.ParseInt(fromBlockHeight, 10, 64)
+	fromBlockHeightInt64, err := strconv.ParseInt(fromBlockHeight, 10, 64)
+	require.NoError(t, err)
 	rs := &ctypes.ResultStatus{
 		SyncInfo: ctypes.SyncInfo{
 			LatestBlockHeight: fromBlockHeightInt64,

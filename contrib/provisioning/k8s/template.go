@@ -21,15 +21,28 @@ func (to *TemplateObject) MakeFilebeatResultPath(chainId string, validatorOrder 
 
 func (to *TemplateObject) MakeTemplate(metaData *BuildMetaData, validatorOrder int) {
 	sourceTemplateFilePath := metaData.filebeatTemplateFilePath
-	sourceTemplateFile, _ := template.ParseFiles(sourceTemplateFilePath)
+	sourceTemplateFile, err := template.ParseFiles(sourceTemplateFilePath)
+	if err != nil {
+		panic(err)
+	}
 
 	destinationTemplateFilePath := to.MakeFilebeatResultPath(metaData.ChainID, validatorOrder)
-	destinationTemplateFile, _ := os.Create(destinationTemplateFilePath)
+	destinationTemplateFile, err := os.Create(destinationTemplateFilePath)
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		err := destinationTemplateFile.Close()
+		fmt.Println(err)
+	}()
 
 	var configMap = make(map[string]string)
 	configMap["logPath"] = fmt.Sprintf("/linkd/%s/node%d/linkd/linkd.log", metaData.ChainID, validatorOrder)
 	configMap["validatorOrder"] = strconv.Itoa(validatorOrder)
 
-	_ = sourceTemplateFile.Execute(destinationTemplateFile, configMap)
-	_ = destinationTemplateFile.Close()
+	err = sourceTemplateFile.Execute(destinationTemplateFile, configMap)
+	if err != nil {
+		panic(err)
+	}
+
 }

@@ -35,7 +35,8 @@ func TestHandler(t *testing.T) {
 	res = h(ctx, msgSbCreate)
 	require.True(t, res.IsOK())
 
-	sb, _ := keeper.GetSafetyBox(ctx, SafetyBoxTestId)
+	sb, err := keeper.GetSafetyBox(ctx, SafetyBoxTestId)
+	require.NoError(t, err)
 	safetyBoxAddress := sb.Address
 
 	// check emitted events
@@ -202,7 +203,7 @@ func TestHandler(t *testing.T) {
 	testCommon.VerifyEventFunc(t, e, res.Events)
 
 	// put some coins to all
-	_, err := input.Bk.AddCoins(ctx, allocator, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	_, err = input.Bk.AddCoins(ctx, allocator, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
 	require.NoError(t, err)
 	_, err = input.Bk.AddCoins(ctx, issuer1, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
 	require.NoError(t, err)

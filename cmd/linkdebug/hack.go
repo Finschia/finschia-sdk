@@ -86,7 +86,11 @@ func runHackCmd(cmd *cobra.Command, args []string) error {
 }
 
 func hexToBytes(h string) []byte {
-	trouble, _ := hex.DecodeString(h)
+	trouble, err := hex.DecodeString(h)
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
 	return trouble
 
 }

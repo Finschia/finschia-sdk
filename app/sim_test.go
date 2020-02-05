@@ -269,8 +269,16 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 	logger := log.NewNopLogger()
 
 	var db dbm.DB
-	dir, _ := ioutil.TempDir("", "goleveldb-app-sim")
-	db, _ = sdk.NewLevelDB("Simulation", dir)
+	dir, err := ioutil.TempDir("", "goleveldb-app-sim")
+	if err != nil {
+		fmt.Println(err)
+		b.Fail()
+	}
+	db, err = sdk.NewLevelDB("Simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		b.Fail()
+	}
 	defer func() {
 		db.Close()
 		_ = os.RemoveAll(dir)
@@ -337,8 +345,16 @@ func TestFullAppSimulation(t *testing.T) {
 	}
 
 	var db dbm.DB
-	dir, _ := ioutil.TempDir("", "goleveldb-app-sim")
-	db, _ = sdk.NewLevelDB("Simulation", dir)
+	dir, err := ioutil.TempDir("", "goleveldb-app-sim")
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	db, err = sdk.NewLevelDB("Simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 
 	defer func() {
 		db.Close()
@@ -395,9 +411,16 @@ func TestAppImportExport(t *testing.T) {
 	}
 
 	var db dbm.DB
-	dir, _ := ioutil.TempDir("", "goleveldb-app-sim")
-	db, _ = sdk.NewLevelDB("Simulation", dir)
-
+	dir, err := ioutil.TempDir("", "goleveldb-app-sim")
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	db, err = sdk.NewLevelDB("Simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	defer func() {
 		db.Close()
 		_ = os.RemoveAll(dir)
@@ -444,9 +467,16 @@ func TestAppImportExport(t *testing.T) {
 	require.NoError(t, err)
 	fmt.Printf("Importing genesis...\n")
 
-	newDir, _ := ioutil.TempDir("", "goleveldb-app-sim-2")
-	newDB, _ := sdk.NewLevelDB("Simulation-2", dir)
-
+	newDir, err := ioutil.TempDir("", "goleveldb-app-sim-2")
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	newDB, err := sdk.NewLevelDB("Simulation-2", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	defer func() {
 		newDB.Close()
 		os.RemoveAll(newDir)
@@ -513,12 +543,21 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		logger = log.NewNopLogger()
 	}
 
-	dir, _ := ioutil.TempDir("", "goleveldb-app-sim")
-	db, _ := sdk.NewLevelDB("Simulation", dir)
-
+	dir, err := ioutil.TempDir("", "goleveldb-app-sim")
+	defer func() {
+		os.RemoveAll(dir)
+	}()
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	db, err := sdk.NewLevelDB("Simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	defer func() {
 		db.Close()
-		os.RemoveAll(dir)
 	}()
 
 	app := NewLinkApp(logger, db, nil, true, 0, fauxMerkleModeOpt)
@@ -571,12 +610,21 @@ func TestAppSimulationAfterImport(t *testing.T) {
 
 	fmt.Printf("Importing genesis...\n")
 
-	newDir, _ := ioutil.TempDir("", "goleveldb-app-sim-2")
-	newDB, _ := sdk.NewLevelDB("Simulation-2", dir)
-
+	newDir, err := ioutil.TempDir("", "goleveldb-app-sim-2")
+	defer func() {
+		os.RemoveAll(newDir)
+	}()
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	newDB, err := sdk.NewLevelDB("Simulation-2", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	defer func() {
 		newDB.Close()
-		os.RemoveAll(newDir)
 	}()
 
 	newApp := NewLinkApp(log.NewNopLogger(), newDB, nil, true, 0, fauxMerkleModeOpt)
@@ -609,12 +657,16 @@ func TestAppStateDeterminism(t *testing.T) {
 			app := NewLinkApp(logger, db, nil, true, 0)
 
 			// Run randomized simulation
-			_, _, _ = simulation.SimulateFromSeed(
+			_, _, err := simulation.SimulateFromSeed(
 				t, os.Stdout, app.BaseApp, appStateFn, seed, testAndRunTxs(app),
 				[]sdk.Invariant{}, 1, numBlocks, exportParamsHeight,
 				blockSize, "", false, commit, lean,
 				false, false, app.ModuleAccountAddrs(),
 			)
+			if err != nil {
+				fmt.Println(err)
+				t.Fail()
+			}
 			appHash := app.LastCommitID().Hash
 			appHashList[j] = appHash
 		}
@@ -626,12 +678,22 @@ func TestAppStateDeterminism(t *testing.T) {
 
 func BenchmarkInvariants(b *testing.B) {
 	logger := log.NewNopLogger()
-	dir, _ := ioutil.TempDir("", "goleveldb-app-invariant-bench")
-	db, _ := sdk.NewLevelDB("simulation", dir)
+	dir, err := ioutil.TempDir("", "goleveldb-app-invariant-bench")
+	if err != nil {
+		fmt.Println(err)
+		b.Fail()
+	}
+	defer func() {
+		os.RemoveAll(dir)
+	}()
+	db, err := sdk.NewLevelDB("simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		b.Fail()
+	}
 
 	defer func() {
 		db.Close()
-		os.RemoveAll(dir)
 	}()
 
 	app := NewLinkApp(logger, db, nil, true, 0)

@@ -222,11 +222,3 @@ func (k Keeper) mustDecodeTokenDenom(ctx sdk.Context, tokenByte []byte) string {
 	k.cdc.MustUnmarshalBinaryBare(tokenByte, &denom)
 	return denom
 }
-
-func (k Keeper) decodeOwner(tokenByte []byte) (owner sdk.AccAddress) {
-	err := k.cdc.UnmarshalBinaryBare(tokenByte, &owner)
-	if err != nil {
-		panic(err)
-	}
-	return owner
-}

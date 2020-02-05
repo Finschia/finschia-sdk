@@ -450,14 +450,22 @@ func TestAttachDetachScenario(t *testing.T) {
 	// token5 = symbol2id5 by addr1
 	// token6 = symbol1id6 by addr2
 	// token7 = symbol1 by addr1
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token1Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token2Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token3Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token4Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection2, defaultName, token5Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token6Id, defaultTokenURI, addr2), addr2)
-	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, token7Symbol, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueFT(ctx, types.NewCollectiveFT(collection, "testtoken", tokenCFT, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr1)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token1Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token2Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token3Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token4Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection2, defaultName, token5Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token6Id, defaultTokenURI, addr2), addr2)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewNFT(defaultName, token7Symbol, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueFT(ctx, types.NewCollectiveFT(collection, "testtoken", tokenCFT, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr1)
+	require.NoError(t, err)
 
 	//
 	// attach success cases
@@ -649,7 +657,8 @@ func TestTransferCFTScenario(t *testing.T) {
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(Symbol, "name"), addr1))
 	collection, err := keeper.GetCollection(ctx, Symbol)
 	require.NoError(t, err)
-	_ = keeper.IssueFT(ctx, types.NewCollectiveFT(collection, defaultName, tokenID, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1)
+	err = keeper.IssueFT(ctx, types.NewCollectiveFT(collection, defaultName, tokenID, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1)
+	require.NoError(t, err)
 
 	//
 	// transfer success cases
@@ -688,10 +697,12 @@ func TestTransferNFTScenario(t *testing.T) {
 	}
 
 	// issue nf token
-	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, Symbol, defaultTokenURI, addr1), addr1)
+	err := keeper.IssueNFT(ctx, types.NewNFT(defaultName, Symbol, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
 
 	// issue ft
-	_ = keeper.IssueFT(ctx, types.NewFT(defaultName, FTSymbol, defaultTokenURI, sdk.NewInt(0), true), sdk.NewInt(10), addr1)
+	err = keeper.IssueFT(ctx, types.NewFT(defaultName, FTSymbol, defaultTokenURI, sdk.NewInt(0), true), sdk.NewInt(10), addr1)
+	require.NoError(t, err)
 
 	//
 	// transfer success cases
@@ -760,14 +771,22 @@ func TestTransferCNFTScenario(t *testing.T) {
 	// token5 = symbol2id5 by addr1
 	// token6 = symbol1id6 by addr2
 	// token7 = symbol1 by addr1
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token1Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token2Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token3Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token4Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection2, defaultName, token5Id, defaultTokenURI, addr1), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token6Id, defaultTokenURI, addr2), addr2)
-	_ = keeper.IssueFT(ctx, types.NewCollectiveFT(collection, "testtoken", tokenCFT, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr1)
-	_ = keeper.IssueNFT(ctx, types.NewNFT(defaultName, token7Symbol, defaultTokenURI, addr1), addr1)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token1Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token2Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token3Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token4Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection2, defaultName, token5Id, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewCollectiveNFT(collection, defaultName, token6Id, defaultTokenURI, addr2), addr2)
+	require.NoError(t, err)
+	err = keeper.IssueFT(ctx, types.NewCollectiveFT(collection, "testtoken", tokenCFT, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr1)
+	require.NoError(t, err)
+	err = keeper.IssueNFT(ctx, types.NewNFT(defaultName, token7Symbol, defaultTokenURI, addr1), addr1)
+	require.NoError(t, err)
 
 	// attach token1 <- token2 (basic case) : success
 	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token2Id))

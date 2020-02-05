@@ -133,9 +133,12 @@ func TestInjectByteToJsonTxs(t *testing.T) {
 	byteTxa = append(byteTxa, []byte(tx))
 
 	block, err := bu.InjectByteToJsonTxs(bs, byteTxa)
-	actual, _ := json.Marshal(block["block"].(map[string]interface{})["data"].(map[string]interface{})["txs"])
+	require.NoError(t, err)
+	actual, err := json.Marshal(block["block"].(map[string]interface{})["data"].(map[string]interface{})["txs"])
+	require.NoError(t, err)
 	var result []map[string]interface{}
-	_ = json.Unmarshal(actual, &result)
+	err = json.Unmarshal(actual, &result)
+	require.NoError(t, err)
 	require.Equal(t, txType, result[0]["type"])
 	require.Equal(t, txMemo, result[0]["value"].(map[string]interface{})["memo"])
 	require.Equal(t, nil, err)

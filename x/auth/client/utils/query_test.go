@@ -32,19 +32,21 @@ type mockNodeResponses struct {
 	resTxSearch *ctypes.ResultTxSearch
 }
 
-func setupMockNodeResponses(hashString string, height int64, index uint32, cdc *codec.Codec) mockNodeResponses {
-	hash, _ := hex.DecodeString(hashString)
+func setupMockNodeResponses(t *testing.T, hashString string, height int64, index uint32, cdc *codec.Codec) mockNodeResponses {
+	hash, err := hex.DecodeString(hashString)
+	assert.NoError(t, err)
 
 	stdTx := &auth.StdTx{
 		Memo: "empty tx",
 	}
 
-	bz, _ := cdc.MarshalBinaryLengthPrefixed(stdTx)
+	bz, err := cdc.MarshalBinaryLengthPrefixed(stdTx)
+	assert.NoError(t, err)
 	resTx := &ctypes.ResultTx{
 		Hash:     hash,
 		Height:   height,
 		Index:    index,
-		TxResult: abci.ResponseDeliverTx{},
+		TxResult: abci.ResponseDeliverTx{Log: "[]"},
 		Tx:       bz,
 	}
 	resBlock := &ctypes.ResultBlock{
@@ -81,7 +83,7 @@ func TestQueryTxsByEventsResponseContainsIndexAndCode(t *testing.T) {
 	index := uint32(10)
 
 	cdc := setupCodec()
-	nodeResponses := setupMockNodeResponses(hashString, height, index, cdc)
+	nodeResponses := setupMockNodeResponses(t, hashString, height, index, cdc)
 
 	mockClient := &mocks.Client{}
 	cliCtx := context.CLIContext{
@@ -93,8 +95,8 @@ func TestQueryTxsByEventsResponseContainsIndexAndCode(t *testing.T) {
 	mockClient.On("TxSearch", "tx.height=0", !cliCtx.TrustNode, 1, 30).Return(nodeResponses.resTxSearch, nil)
 	mockClient.On("Block", &nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
 
-	res, _ := QueryTxsByEvents(cliCtx, []string{"tx.height=0"}, 1, 30)
-
+	res, err := QueryTxsByEvents(cliCtx, []string{"tx.height=0"}, 1, 30)
+	assert.NoError(t, err)
 	assert.Equal(t, 1, res.Count)
 	assert.Equal(t, height, res.Txs[0].Height)
 	assert.Equal(t, index, res.Txs[0].Index)
@@ -109,7 +111,7 @@ func TestQueryTxResponseContainsIndexAndCode(t *testing.T) {
 	index := uint32(10)
 
 	cdc := setupCodec()
-	nodeResponses := setupMockNodeResponses(hashString, height, index, cdc)
+	nodeResponses := setupMockNodeResponses(t, hashString, height, index, cdc)
 
 	mockClient := &mocks.Client{}
 	cliCtx := context.CLIContext{
@@ -118,12 +120,13 @@ func TestQueryTxResponseContainsIndexAndCode(t *testing.T) {
 		Codec:     cdc,
 	}
 
-	hash, _ := hex.DecodeString(hashString)
+	hash, err := hex.DecodeString(hashString)
+	assert.NoError(t, err)
 	mockClient.On("Tx", hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
 	mockClient.On("Block", &nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
 
-	res, _ := QueryTx(cliCtx, hashString)
-
+	res, err := QueryTx(cliCtx, hashString)
+	assert.NoError(t, err)
 	assert.Equal(t, height, res.Height)
 	assert.Equal(t, index, res.Index)
 	assert.Equal(t, hashString, res.TxHash)
@@ -148,7 +151,8 @@ func TestQueryGenesisTxs(t *testing.T) {
 	}
 	mockClient.On("Genesis").Return(&genesisResult, nil)
 
-	genesisTxs, _ := QueryGenesisTx(cliCtx)
+	genesisTxs, err := QueryGenesisTx(cliCtx)
+	assert.NoError(t, err)
 	assert.NotEmpty(t, genesisTxs)
 
 	// not exist genesis tx
@@ -159,9 +163,9 @@ func TestQueryGenesisTxs(t *testing.T) {
 		Genesis: &genesisDoc,
 	}
 	mockClient.On("Genesis").Return(&genesisResult, nil)
-	genesisTxs, _ = QueryGenesisTx(cliCtx)
+	genesisTxs, err = QueryGenesisTx(cliCtx)
 	assert.Empty(t, genesisTxs)
-
+	assert.Error(t, err)
 }
 
 func TestQueryGenesisAccount(t *testing.T) {
