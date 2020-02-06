@@ -30,8 +30,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingsim "github.com/cosmos/cosmos-sdk/x/staking/simulation"
 	"github.com/cosmos/cosmos-sdk/x/supply"
-
-	cosmosbank "github.com/cosmos/cosmos-sdk/x/bank"
 )
 
 func init() {
@@ -178,28 +176,29 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 	}
 
 	return []simulation.WeightedOperation{
-		{
-			Weight: func(_ *rand.Rand) int {
-				var v int
-				ap.GetOrGenerate(cdc, OpWeightMsgSend, &v, nil,
-					func(_ *rand.Rand) {
-						v = 100
-					})
-				return v
-			}(nil),
-			Op: cosmosbank.SimulateMsgSend(app.accountKeeper, app.cosmosbankKeeper),
-		},
-		{
-			Weight: func(_ *rand.Rand) int {
-				var v int
-				ap.GetOrGenerate(cdc, OpWeightSingleInputMsgMultiSend, &v, nil,
-					func(_ *rand.Rand) {
-						v = 10
-					})
-				return v
-			}(nil),
-			Op: cosmosbank.SimulateSingleInputMsgMultiSend(app.accountKeeper, app.cosmosbankKeeper),
-		},
+		//TODO: implement SimulateMsgXXX for link bank module
+		//{
+		//	Weight: func(_ *rand.Rand) int {
+		//		var v int
+		//		ap.GetOrGenerate(cdc, OpWeightMsgSend, &v, nil,
+		//			func(_ *rand.Rand) {
+		//				v = 100
+		//			})
+		//		return v
+		//	}(nil),
+		//	Op: cosmosbank.SimulateMsgSend(app.accountKeeper, app.cosmosbankKeeper),
+		//},
+		//{
+		//	Weight: func(_ *rand.Rand) int {
+		//		var v int
+		//		ap.GetOrGenerate(cdc, OpWeightSingleInputMsgMultiSend, &v, nil,
+		//			func(_ *rand.Rand) {
+		//				v = 10
+		//			})
+		//		return v
+		//	}(nil),
+		//	Op: cosmosbank.SimulateSingleInputMsgMultiSend(app.accountKeeper, app.cosmosbankKeeper),
+		//},
 		{
 			Weight: func(_ *rand.Rand) int {
 				var v int
