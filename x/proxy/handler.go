@@ -7,6 +7,7 @@ import (
 
 func NewHandler(keeper Keeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
+		ctx = ctx.WithEventManager(sdk.NewEventManager())
 		switch msg := msg.(type) {
 		case types.MsgProxyApproveCoins:
 			return handleMsgProxyApproveCoins(ctx, keeper, msg)
