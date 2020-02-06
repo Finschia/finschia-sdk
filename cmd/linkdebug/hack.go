@@ -21,7 +21,6 @@ import (
 )
 
 func runHackCmd(cmd *cobra.Command, args []string) error {
-
 	if len(args) != 1 {
 		return fmt.Errorf("expected 1 arg")
 	}
@@ -92,5 +91,4 @@ func hexToBytes(h string) []byte {
 		os.Exit(1)
 	}
 	return trouble
-
 }

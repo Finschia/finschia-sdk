@@ -130,7 +130,6 @@ func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueNFT) s
 }
 
 func handleMsgIssueNFTCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueNFTCollection) sdk.Result {
-
 	collection, err := keeper.GetCollection(ctx, msg.Symbol)
 	if err != nil {
 		return err.Result()

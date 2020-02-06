@@ -34,7 +34,6 @@ func (p permission) GetAction() string {
 }
 
 func TestKeeper(t *testing.T) {
-
 	testInput := setupTestInput(t)
 	_, ctx, keeper := testInput.cdc, testInput.ctx, testInput.keeper
 
@@ -144,7 +143,6 @@ func TestAccountPermissionInheritanceGenerations(t *testing.T) {
 		keeper.SetAccountPermission(ctx, accPerm1)
 		keeper.SetAccountPermission(ctx, accPerm2)
 		keeper.SetAccountPermission(ctx, accPerm3)
-
 	}
 
 	{
@@ -160,7 +158,6 @@ func TestAccountPermissionInheritanceGenerations(t *testing.T) {
 		require.True(t, accPerm3.HasPermission(perm1))
 		require.True(t, accPerm3.HasPermission(perm2))
 		require.True(t, accPerm3.HasPermission(perm3))
-
 	}
 
 	{
@@ -196,5 +193,4 @@ func TestAccountPermissionInheritanceGenerations(t *testing.T) {
 		require.True(t, accPerm3.HasPermission(perm2))
 		require.True(t, accPerm3.HasPermission(perm3))
 	}
-
 }

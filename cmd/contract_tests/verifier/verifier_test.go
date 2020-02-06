@@ -111,7 +111,6 @@ func TestArray(t *testing.T) {
 			require.Equal(t, tt.expected, CompareJSONFormat(data1.Body, data2.Body))
 		}
 	}
-
 }
 
 func TestObject(t *testing.T) {

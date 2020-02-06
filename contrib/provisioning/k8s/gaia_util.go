@@ -27,7 +27,6 @@ import (
 
 func InitGenFiles(cdc *codec.Codec, mbm module.BasicManager, chainID string,
 	accs []genaccounts.GenesisAccount, genFiles []string, numValidators int) error {
-
 	appGenState := mbm.DefaultGenesis()
 
 	// set the accounts in the genesis state
@@ -58,7 +57,6 @@ func CollectGenFiles(
 	monikers, nodeIDs []string, valPubKeys []crypto.PubKey,
 	numValidators int, outputDir, nodeDirPrefix, nodeDaemonHome string,
 	genAccIterator genutiltypes.GenesisAccountsIterator) error {
-
 	var appState json.RawMessage
 	genTime := tmtime.Now()
 

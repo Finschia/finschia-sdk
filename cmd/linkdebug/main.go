@@ -22,7 +22,6 @@ import (
 )
 
 func init() {
-
 	config := sdk.GetConfig()
 	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
 	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
@@ -127,10 +126,8 @@ func runPubKeyCmd(cmd *cobra.Command, args []string) error {
 								bech32 Cons: %v`,
 							err, err2, err3, err4, err5)
 					}
-
 				}
 			}
-
 		}
 	}
 
@@ -196,7 +193,6 @@ func runAddrCmd(cmd *cobra.Command, args []string) error {
 			bech32 acc: %v
 			bech32 val: %v
 			`, err, err2, err3)
-
 			}
 		}
 	}

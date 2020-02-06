@@ -52,7 +52,6 @@ func TestValidateCmd(t *testing.T) {
 }
 
 func TestProcess(t *testing.T) {
-
 	t.Log("normal case", checkMark)
 	{
 		args, mockCliContext, mockClient, mockTendermint, mockCodec, rb := prepareCMD(t)

@@ -157,7 +157,6 @@ func GetCollectionTokensCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query all collection tokens with collection symbol",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 

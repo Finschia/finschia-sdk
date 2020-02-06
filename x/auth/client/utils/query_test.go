@@ -169,7 +169,6 @@ func TestQueryGenesisTxs(t *testing.T) {
 }
 
 func TestQueryGenesisAccount(t *testing.T) {
-
 	config := sdk.GetConfig()
 	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
 

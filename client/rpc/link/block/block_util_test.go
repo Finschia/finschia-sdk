@@ -27,7 +27,6 @@ var (
 )
 
 func TestValidateBlock(t *testing.T) {
-
 	t.Log("TrustNode is true", checkMark)
 	{
 		_, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
@@ -53,7 +52,6 @@ func TestValidateBlock(t *testing.T) {
 }
 
 func TestValidateBlockFail(t *testing.T) {
-
 	t.Log("TrustNode is false and Verify return error")
 	{
 		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
@@ -101,7 +99,6 @@ func TestIndentJSONRB(t *testing.T) {
 
 	t.Log("Indent is false", checkMark)
 	{
-
 		mockCliCtx.EXPECT().Indent().Return(false).Times(1)
 		mockCodecUtil.EXPECT().MarshalJSONIndent(gomock.Any()).Times(0)
 		mockCodecUtil.EXPECT().MarshalJSON(resultBlock).Return(expectedJSON, expectedErr).Times(1)
@@ -145,7 +142,6 @@ func TestInjectByteToJsonTxs(t *testing.T) {
 }
 
 func TestCalcFetchBlockHeight(t *testing.T) {
-
 	t.Log("ChainBlockHeight greaterThanEqual request ", checkMark)
 	{
 		latestBlockHeight := int64(21)

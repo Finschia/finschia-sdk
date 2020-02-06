@@ -192,7 +192,6 @@ func (msg MsgModifyTokenURI) GetSignBytes() []byte {
 func (msg MsgModifyTokenURI) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 
 func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
-
 	if msg.Symbol == "" {
 		return sdk.ErrInvalidAddress("symbol cannot be empty")
 	}

@@ -41,7 +41,6 @@ func newTestCodec() *codec.Codec {
 }
 
 func SetupTestInput(t *testing.T) *TestInput {
-
 	keyAuth := sdk.NewKVStoreKey(auth.StoreKey)
 	keyParams := sdk.NewKVStoreKey(params.StoreKey)
 	tkeyParams := sdk.NewTransientStoreKey(params.TStoreKey)

@@ -14,7 +14,6 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgProxyApproveCoins{}, "proxy/MsgProxyApproveCoins", nil)
 	cdc.RegisterConcrete(MsgProxyDisapproveCoins{}, "proxy/MsgProxyDisapproveCoins", nil)
 	cdc.RegisterConcrete(MsgProxySendCoinsFrom{}, "proxy/MsgProxySendCoinsFrom", nil)
-
 }
 
 func init() {

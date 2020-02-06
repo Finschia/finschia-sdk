@@ -44,5 +44,4 @@ func (to *TemplateObject) MakeTemplate(metaData *BuildMetaData, validatorOrder i
 	if err != nil {
 		panic(err)
 	}
-
 }

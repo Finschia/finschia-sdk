@@ -26,7 +26,6 @@ func ErrCheckedBoolParam(param bool, err error) bool {
 		panic(err)
 	}
 	return param
-
 }
 
 func ErrCheckedStrArrParam(param []string, err error) []string {
@@ -34,7 +33,6 @@ func ErrCheckedStrArrParam(param []string, err error) []string {
 		panic(err)
 	}
 	return param
-
 }
 
 func DefFormatSetIfLTEZero(confField *string, format string, defVal int, setVal int) int {

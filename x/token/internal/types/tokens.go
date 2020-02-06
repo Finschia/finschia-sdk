@@ -52,7 +52,6 @@ func (ts Tokens) Update(token Token) (Tokens, bool) {
 		return ts, false
 	}
 	return append(append(ts[:index], token), ts[index+1:]...), true
-
 }
 func (ts Tokens) Remove(tokenID string) (Tokens, bool) {
 	index := ts.find(tokenID)
@@ -130,7 +129,6 @@ func (ts Tokens) GetFTs() (tokens Tokens) {
 }
 
 func (ts Tokens) GetNFTs() (tokens Tokens) {
-
 	start := "1" + strings.Repeat(SmallestAlphanum, TokenIDLength-1)
 	_, startIndex := BinarySearch(ts, start)
 	if startIndex == -1 {

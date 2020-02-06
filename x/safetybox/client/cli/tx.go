@@ -125,7 +125,6 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 				}
 			case types.RoleReturner:
 				switch action {
-
 				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterReturner{
 						SafetyBoxID: safetyBoxID,

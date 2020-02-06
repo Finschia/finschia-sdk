@@ -143,7 +143,6 @@ func Init() *cobra.Command {
 }
 
 func buildConfForK8s(logger metrics.Logger, cdc *codec.Codec, tmConfig *tmconfig.Config, m *BuildMetaData, minGasPrices string) error {
-
 	serverConfig := srvconfig.DefaultConfig()
 	DefIfEmpty(&serverConfig.MinGasPrices, minGasPrices, fmt.Sprintf("%f%s", defMinGasPrices, sdk.DefaultBondDenom))
 

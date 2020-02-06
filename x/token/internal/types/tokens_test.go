@@ -60,11 +60,9 @@ func TestTokens_NextTokenID(t *testing.T) {
 	require.Equal(t, "", ts.NextTokenID("1234567890"))
 	require.Equal(t, "linl", ts.NextBaseID())
 	require.Equal(t, NextTokenID("link", ""), ts.NextBaseID())
-
 }
 
 func TestTokens_Iterate(t *testing.T) {
-
 	ts := Tokens{}
 	require.Equal(t, 0, ts.GetTokens("link").Len())
 	require.Equal(t, 0, ts.GetTokens("").Len())

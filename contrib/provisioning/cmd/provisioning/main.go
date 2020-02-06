@@ -17,7 +17,6 @@ import (
 var cfgFile string
 
 func main() {
-
 	config := sdk.GetConfig()
 	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
 	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
@@ -60,7 +59,6 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-
 		usr, err := user.Current()
 		if err != nil {
 			log.Fatal(err)

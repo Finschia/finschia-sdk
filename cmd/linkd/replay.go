@@ -36,7 +36,6 @@ func replayCmd() *cobra.Command {
 }
 
 func replayTxs(rootDir string) error {
-
 	if false {
 		// Copy the rootDir to a new directory, to preserve the old one.
 		fmt.Fprintln(os.Stderr, "Copying rootdir over")

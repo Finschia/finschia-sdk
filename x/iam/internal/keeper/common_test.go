@@ -29,7 +29,6 @@ func newTestCodec() *codec.Codec {
 }
 
 func setupTestInput(t *testing.T) testInput {
-
 	keyIam := sdk.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()

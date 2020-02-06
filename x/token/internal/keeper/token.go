@@ -6,12 +6,10 @@ import (
 )
 
 func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
-
 	if len(token.GetTokenID()) == 0 {
 		return k.setToken(ctx, token)
 	}
 	return k.setTokenToCollection(ctx, token)
-
 }
 
 func (k Keeper) setToken(ctx sdk.Context, token types.Token) sdk.Error {

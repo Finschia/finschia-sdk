@@ -33,7 +33,6 @@ func TestToken(t *testing.T) {
 		require.Equal(t, token.GetTokenURI(), token2.GetTokenURI())
 		require.Equal(t, token.GetDecimals().Int64(), token2.GetDecimals().Int64())
 		require.Equal(t, token.GetMintable(), token2.GetMintable())
-
 	}
 	{
 		token := NewNFT(defaultName, defaultSymbol, defaultTokenURI, defaultAddr)

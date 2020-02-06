@@ -170,7 +170,6 @@ func TestIssueTokenAndSendTokens(t *testing.T) {
 		require.Equal(t, int64(300), bk.GetCoins(ctx, addr2).AmountOf(defaultSymbol).Int64())
 		require.Equal(t, int64(1099), keeper.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(defaultSymbol).Int64())
 	}
-
 }
 
 func TestIssueNFTAndSendTokens(t *testing.T) {
@@ -311,7 +310,6 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, resource01, token.GetSymbol())
 			require.Equal(t, "00000002", token.GetTokenID())
-
 		}
 		{
 			collection, err := keeper.GetCollection(ctx, resource01)
@@ -343,7 +341,6 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.Equal(t, resource01, token.GetSymbol())
 			require.Equal(t, "a0010000", token.GetTokenID())
 		}
-
 	}
 	{
 		require.NoError(t, keeper.GrantPermission(ctx, addr1, addr2, issuePerm))

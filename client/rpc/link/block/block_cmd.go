@@ -131,7 +131,6 @@ func GetBlock(util *Util, cursor *int64, isConvertBlockTxToJSON bool) ([]byte, e
 	}
 	// deserialize transactions from Amino and serialize to JSON
 	if isConvertBlockTxToJSON {
-
 		byteTxs, err := aminoToJSONTxs(util.lcliCtx.Codec(), &block.Block.Data.Txs)
 		if err != nil {
 			return nil, err

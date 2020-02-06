@@ -172,7 +172,6 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 				} else {
 					msg = types.NewMsgIssueCollection(name, symbol, tokenURI, to, sdk.NewInt(supply), sdk.NewInt(decimals), mintable, tokenID)
 				}
-
 			}
 			// build and sign the transaction, then broadcast to Tendermint
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})

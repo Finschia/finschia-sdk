@@ -137,7 +137,6 @@ func (k *DeploymentTemplate) outputFileName() string {
 	return fmt.Sprintf("validator-%d.yaml", k.Node.Idx)
 }
 func (k *DeploymentTemplate) Write() (*Deployment, error) {
-
 	deploy := &Deployment{}
 	bytes, err := ioutil.ReadFile(k.Node.MetaData.k8STemplateFilePath)
 	if err != nil {
@@ -186,7 +185,6 @@ func (k *DeploymentTemplate) Write() (*Deployment, error) {
 	err = os.MkdirAll(k.DeployPath(), dirPermission)
 	if err != nil {
 		return deploy, fmt.Errorf(fmt.Sprintf("Could not prepare persist path - %s, reason - %s", k.DeployPath(), err))
-
 	}
 	k8sTemplateFilePath := fmt.Sprintf("%s/%s", k.DeployPath(), k.outputFileName())
 	err = ioutil.WriteFile(k8sTemplateFilePath, d, dirPermission)

@@ -104,5 +104,4 @@ func (app *LinkApp) prepForZeroHeightGenesis(ctx sdk.Context, jailWhiteList []st
 	iter.Close()
 
 	_ = app.stakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
-
 }

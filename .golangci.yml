@@ -28,6 +28,7 @@ linters:
     - unused
     - varcheck
     - gocyclo
+    - whitespace
 
 issues:
   exclude-rules:

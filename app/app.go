@@ -108,7 +108,6 @@ type LinkApp struct {
 // NewLinkApp returns a reference to an initialized LinkApp.
 func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	invCheckPeriod uint, baseAppOptions ...func(*bam.BaseApp)) *LinkApp {
-
 	cdc := MakeCodec()
 
 	bApp := bam.NewBaseApp(appName, logger, db, auth.DefaultTxDecoder(cdc), baseAppOptions...)

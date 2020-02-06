@@ -447,7 +447,6 @@ func (f *Fixtures) TxEncode(fileName string, flags ...string) (bool, string, str
 // TxMultisign is linkcli tx multisign
 func (f *Fixtures) TxMultisign(fileName, name string, signaturesFiles []string,
 	flags ...string) (bool, string, string) {
-
 	cmd := fmt.Sprintf("%s tx multisign %v %s %s %s", f.LinkcliBinary, f.Flags(),
 		fileName, name, strings.Join(signaturesFiles, " "),
 	)
@@ -535,7 +534,6 @@ func (f *Fixtures) TxGovVote(proposalID int, option gov.VoteOption, from string,
 func (f *Fixtures) TxGovSubmitParamChangeProposal(
 	from, proposalPath string, deposit sdk.Coin, flags ...string,
 ) (bool, string, string) {
-
 	cmd := fmt.Sprintf(
 		"%s tx gov submit-proposal param-change %s --from=%s %v",
 		f.LinkcliBinary, proposalPath, from, f.Flags(),
@@ -549,7 +547,6 @@ func (f *Fixtures) TxGovSubmitParamChangeProposal(
 func (f *Fixtures) TxGovSubmitCommunityPoolSpendProposal(
 	from, proposalPath string, deposit sdk.Coin, flags ...string,
 ) (bool, string, string) {
-
 	cmd := fmt.Sprintf(
 		"%s tx gov submit-proposal community-pool-spend %s --from=%s %v",
 		f.LinkcliBinary, proposalPath, from, f.Flags(),
@@ -1509,7 +1506,6 @@ func (fg *FixtureGroup) WaitForContainer(f *Fixtures) {
 }
 
 func (fg *FixtureGroup) AddFullNode(flags ...string) *Fixtures {
-
 	t := fg.T
 	idx := len(fg.fixturesMap)
 	chainID := fg.T.Name()

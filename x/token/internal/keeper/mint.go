@@ -35,7 +35,6 @@ func (k Keeper) MintCollectionTokens(ctx sdk.Context, amount linktype.CoinWithTo
 }
 
 func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) sdk.Error {
-
 	ft, ok := token.(types.FT)
 	if !ok {
 		return types.ErrTokenNotMintable(types.DefaultCodespace, token.GetDenom())
