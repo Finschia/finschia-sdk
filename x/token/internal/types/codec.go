@@ -6,6 +6,12 @@ import (
 
 var ModuleCdc = codec.New()
 
+func init() {
+	ModuleCdc = codec.New()
+	RegisterCodec(ModuleCdc)
+	ModuleCdc.Seal()
+}
+
 // RegisterCodec registers concrete types on the Amino codec
 func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgCreateCollection{}, "link/MsgCreateCollection", nil)
@@ -40,10 +46,4 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterInterface((*CollectiveToken)(nil), nil)
 	cdc.RegisterConcrete(&BaseCollectiveFT{}, "link/CFT", nil)
 	cdc.RegisterConcrete(&BaseCollectiveNFT{}, "link/CNFT", nil)
-}
-
-func init() {
-	ModuleCdc = codec.New()
-	RegisterCodec(ModuleCdc)
-	ModuleCdc.Seal()
 }

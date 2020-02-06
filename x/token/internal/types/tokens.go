@@ -137,7 +137,7 @@ func (ts Tokens) GetNFTs() (tokens Tokens) {
 		return tokens
 	}
 	if startIndex != -1 && strings.Compare(ts.IDAtIndex(startIndex), start) < 0 {
-		startIndex += 1
+		startIndex++
 	}
 
 	return ts[startIndex:]
@@ -153,14 +153,14 @@ func (ts Tokens) Iterate(prefix string, process func(Token) (stop bool)) {
 	end := prefix + strings.Repeat(LargestAlphanum, postLen)
 	_, startIndex := BinarySearch(ts, start)
 	if startIndex != -1 && strings.Compare(ts.IDAtIndex(startIndex), start) < 0 {
-		startIndex += 1
+		startIndex++
 	}
 	_, endIndex := BinarySearch(ts, end)
 	if endIndex != -1 && strings.Compare(ts.IDAtIndex(endIndex), end) > 0 {
-		endIndex -= 1
+		endIndex--
 	}
 
-	for index := startIndex; index >= 0 && index <= endIndex; index += 1 {
+	for index := startIndex; index >= 0 && index <= endIndex; index++ {
 		if process(ts[index]) {
 			return
 		}
@@ -211,7 +211,7 @@ func NextTokenID(tokenID string, prefix string) (nextTokenID string) {
 			tokenIDInt[idx] = char - 'a' + 10
 		}
 	}
-	for idx := len(tokenIDInt) - 1; idx >= 0; idx -= 1 {
+	for idx := len(tokenIDInt) - 1; idx >= 0; idx-- {
 		char := tokenIDInt[idx] + 1
 		if char < (int32)(toCharStrLength) {
 			tokenIDInt[idx] = char

@@ -32,7 +32,7 @@ func querySafetyBox(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]by
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	sb, err := keeper.GetSafetyBox(ctx, params.SafetyBoxId)
+	sb, err := keeper.GetSafetyBox(ctx, params.SafetyBoxID)
 	if err != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("Can not get the safety box", err.Error()))
 	}
@@ -51,7 +51,7 @@ func queryAccountRole(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	pms, err := keeper.GetPermissions(ctx, params.SafetyBoxId, params.Role, params.Address)
+	pms, err := keeper.GetPermissions(ctx, params.SafetyBoxID, params.Role, params.Address)
 	if err != nil {
 		return nil, err
 	}

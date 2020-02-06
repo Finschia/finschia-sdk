@@ -131,7 +131,7 @@ func writeGenTx(n *Node, addr types2.AccAddress, cdc *codec.Codec) error {
 		PubKey:            n.PubKey(),
 		Value:             types2.NewCoin(types2.DefaultBondDenom, types2.TokensFromConsensusPower(100)),
 	}}, auth.StdFee{}, []auth.StdSignature{}, fmt.Sprintf("%s@%s:%d", n.MetaData.ValidatorIDs[n.Idx],
-		n.InputNodeIp(), n.MetaData.NodeP2PPort))
+		n.InputNodeIP(), n.MetaData.NodeP2PPort))
 
 	signedTx, err := auth.NewTxBuilderFromCLI().WithChainID(n.MetaData.ChainID).WithMemo(tx.Memo).WithKeybase(kb).
 		SignStdTx(n.Name, client.DefaultKeyPass, tx, false)

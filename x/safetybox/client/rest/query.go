@@ -15,8 +15,8 @@ func SafetyBoxQueryHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 
 		vars := mux.Vars(r)
-		safetyBoxId := vars["id"]
-		if len(safetyBoxId) == 0 {
+		safetyBoxID := vars["id"]
+		if len(safetyBoxID) == 0 {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "SafetyBoxId is required")
 			return
 		}
@@ -27,7 +27,7 @@ func SafetyBoxQueryHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 		safetyBoxGetter := types.NewSafetyBoxRetriever(cliCtx)
 
-		sb, height, err := safetyBoxGetter.GetSafetyBox(safetyBoxId)
+		sb, height, err := safetyBoxGetter.GetSafetyBox(safetyBoxID)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 			return
@@ -42,8 +42,8 @@ func SafetyBoxRoleQueryHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 
 		vars := mux.Vars(r)
-		safetyBoxId := vars["id"]
-		if len(safetyBoxId) == 0 {
+		safetyBoxID := vars["id"]
+		if len(safetyBoxID) == 0 {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, "SafetyBoxId is required")
 			return
 		}
@@ -72,7 +72,7 @@ func SafetyBoxRoleQueryHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		}
 
 		permGetter := types.NewAccountPermissionRetriever(cliCtx)
-		pms, height, err := permGetter.GetAccountPermissions(safetyBoxId, role, addr)
+		pms, height, err := permGetter.GetAccountPermissions(safetyBoxID, role, addr)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusNotFound, err.Error())
 		}

@@ -5,7 +5,6 @@ import (
 )
 
 var (
-	// functions aliases
 	GenerateOrBroadcastMsgs    = cosmosutils.GenerateOrBroadcastMsgs
 	GetTxEncoder               = cosmosutils.GetTxEncoder
 	WriteGenerateStdTxResponse = cosmosutils.WriteGenerateStdTxResponse

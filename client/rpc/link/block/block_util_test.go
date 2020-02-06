@@ -71,7 +71,7 @@ func TestValidateBlockFail(t *testing.T) {
 		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
 
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
-		validateMetaErr := fmt.Errorf("ValidateBlockMeta failed")
+		validateMetaErr := fmt.Errorf("validateBlockMeta failed")
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
 		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(validateMetaErr).Times(1)
 		mockTendermint.EXPECT().ValidateBlock(gomock.Any(), gomock.Any()).Times(0)
@@ -85,7 +85,7 @@ func TestValidateBlockFail(t *testing.T) {
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
 		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(nil).Times(1)
-		validateBlockErr := fmt.Errorf("ValidateBlock failed")
+		validateBlockErr := fmt.Errorf("validateBlock failed")
 		mockTendermint.EXPECT().ValidateBlock(rb.Block, check).Return(validateBlockErr).Times(1)
 		err := bu.ValidateBlock(rb)
 		require.Equal(t, validateBlockErr, err)
@@ -132,7 +132,7 @@ func TestInjectByteToJsonTxs(t *testing.T) {
 	var byteTxa [][]byte = nil
 	byteTxa = append(byteTxa, []byte(tx))
 
-	block, err := bu.InjectByteToJsonTxs(bs, byteTxa)
+	block, err := bu.InjectByteToJSONTxs(bs, byteTxa)
 	require.NoError(t, err)
 	actual, err := json.Marshal(block["block"].(map[string]interface{})["data"].(map[string]interface{})["txs"])
 	require.NoError(t, err)

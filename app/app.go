@@ -35,13 +35,13 @@ import (
 const appName = "LinkApp"
 
 var (
-	// default home directories for linkcli
+	// DefaultCLIHome for linkcli
 	DefaultCLIHome = os.ExpandEnv("$HOME/.linkcli")
 
-	// default home directories for linkd
+	// DefaultNodeHome for linkd
 	DefaultNodeHome = os.ExpandEnv("$HOME/.linkd")
 
-	// The module BasicManager is in charge of setting up basic,
+	// ModuleBasics is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration
 	// and genesis verification.
 	ModuleBasics = module.NewBasicManager(

@@ -50,8 +50,8 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.FT, amount sdk.Int, owner s
 		k.AddPermission(ctx, owner, mintPerm)
 	}
 
-	tokenUriModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
-	k.AddPermission(ctx, owner, tokenUriModifyPerm)
+	modifyTokenURIPermission := types.NewModifyTokenURIPermission(token.GetDenom())
+	k.AddPermission(ctx, owner, modifyTokenURIPermission)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -73,8 +73,8 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.FT, amount sdk.Int, owner s
 		sdk.NewEvent(
 			types.EventTypeModifyTokenURIPermToken,
 			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, tokenUriModifyPerm.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, tokenUriModifyPerm.GetAction()),
+			sdk.NewAttribute(types.AttributeKeyResource, modifyTokenURIPermission.GetResource()),
+			sdk.NewAttribute(types.AttributeKeyAction, modifyTokenURIPermission.GetAction()),
 		),
 	})
 
@@ -97,8 +97,8 @@ func (k Keeper) IssueNFT(ctx sdk.Context, token types.NFT, owner sdk.AccAddress)
 		return err
 	}
 
-	tokenUriModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
-	k.AddPermission(ctx, owner, tokenUriModifyPerm)
+	modifyTokenURIPermission := types.NewModifyTokenURIPermission(token.GetDenom())
+	k.AddPermission(ctx, owner, modifyTokenURIPermission)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -112,8 +112,8 @@ func (k Keeper) IssueNFT(ctx sdk.Context, token types.NFT, owner sdk.AccAddress)
 		sdk.NewEvent(
 			types.EventTypeModifyTokenURIPermToken,
 			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, tokenUriModifyPerm.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, tokenUriModifyPerm.GetAction()),
+			sdk.NewAttribute(types.AttributeKeyResource, modifyTokenURIPermission.GetResource()),
+			sdk.NewAttribute(types.AttributeKeyAction, modifyTokenURIPermission.GetAction()),
 		),
 	})
 

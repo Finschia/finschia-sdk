@@ -43,7 +43,7 @@ func (gc GenesisConfig) ChangeDenomOf(v interface{}, path string) (cnt int) {
 		if intf != denom {
 			log.Printf("%vdenom: %v -> %v\n", path, intf, denom)
 			elem.SetString(denom)
-			cnt += 1
+			cnt++
 		}
 	case reflect.Slice:
 		for i := 0; i < elem.Len(); i++ {
@@ -53,7 +53,7 @@ func (gc GenesisConfig) ChangeDenomOf(v interface{}, path string) (cnt int) {
 				if field.Interface() != denom {
 					log.Printf("%v[%v].denom : %v -> %v\n", path, i, field, denom)
 					field.SetString(denom)
-					cnt += 1
+					cnt++
 				}
 			}
 		}

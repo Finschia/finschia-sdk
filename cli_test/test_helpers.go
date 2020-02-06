@@ -467,20 +467,20 @@ func (f *Fixtures) TxLRC3Mint(denom, to, from, testTokenURI1 string, flags ...st
 }
 
 // TxLRC3Burn is linkcli tx lrc3
-func (f *Fixtures) TxLRC3Burn(denom string, tokenId int, from string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx lrc3 burn %s %d --from %s %v", f.LinkcliBinary, denom, tokenId, from, f.Flags())
+func (f *Fixtures) TxLRC3Burn(denom string, tokenID int, from string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 burn %s %d --from %s %v", f.LinkcliBinary, denom, tokenID, from, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
 // TxLRC3Approve is linkcli tx lrc3
-func (f *Fixtures) TxLRC3Approve(denom string, tokenId int, to string, sender string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx lrc3 approve %s %d %s --from %s %v", f.LinkcliBinary, denom, tokenId, to, sender, f.Flags())
+func (f *Fixtures) TxLRC3Approve(denom string, tokenID int, to string, sender string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 approve %s %d %s --from %s %v", f.LinkcliBinary, denom, tokenID, to, sender, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
 // TxLRC3Transfer is linkcli tx lrc3
-func (f *Fixtures) TxLRC3Transfer(denom string, tokenId int, to string, from string, sender string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx lrc3 transfer %s %s %s %d --from %s %v", f.LinkcliBinary, from, to, denom, tokenId, sender, f.Flags())
+func (f *Fixtures) TxLRC3Transfer(denom string, tokenID int, to string, from string, sender string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx lrc3 transfer %s %s %s %d --from %s %v", f.LinkcliBinary, from, to, denom, tokenID, sender, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
@@ -570,8 +570,8 @@ func (f *Fixtures) TxTokenIssue(from string, symbol, name string, amount int64, 
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
-func (f *Fixtures) TxTokenIssueNFT(from string, symbol, name string, tokenUri string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token issue %s %s %s --token-uri=%s --fungible=false %v", f.LinkcliBinary, from, symbol, name, tokenUri, f.Flags())
+func (f *Fixtures) TxTokenIssueNFT(from string, symbol, name string, tokenURI string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token issue %s %s %s --token-uri=%s --fungible=false %v", f.LinkcliBinary, from, symbol, name, tokenURI, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
@@ -580,8 +580,8 @@ func (f *Fixtures) TxTokenIssueCollection(from string, symbol, name string, amou
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
-func (f *Fixtures) TxTokenIssueNFTCollection(from string, symbol, name string, tokenUri string, tokenID string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token issue %s %s %s --token-uri=%s --token-id=%s --fungible=false %v", f.LinkcliBinary, from, symbol, name, tokenUri, tokenID, f.Flags())
+func (f *Fixtures) TxTokenIssueNFTCollection(from string, symbol, name string, tokenURI string, tokenID string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token issue %s %s %s --token-uri=%s --token-id=%s --fungible=false %v", f.LinkcliBinary, from, symbol, name, tokenURI, tokenID, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 

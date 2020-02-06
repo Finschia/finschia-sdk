@@ -15,9 +15,9 @@ type SafetyBox struct {
 	TotalIssuance        sdk.Coins      `json:"total_issuance"`
 }
 
-func NewSafetyBox(owner sdk.AccAddress, safetyBoxId string, address sdk.AccAddress, denoms []string) SafetyBox {
+func NewSafetyBox(owner sdk.AccAddress, safetyBoxID string, address sdk.AccAddress, denoms []string) SafetyBox {
 	return SafetyBox{
-		safetyBoxId,
+		safetyBoxID,
 		owner,
 		address,
 		denoms,

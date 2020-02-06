@@ -72,7 +72,7 @@ func TestHandlerCreateAccount(t *testing.T) {
 
 	// invalid message
 	{
-		msg := safetybox.MsgSafetyBoxCreate{SafetyBoxId: "noid", SafetyBoxOwner: addr1}
+		msg := safetybox.MsgSafetyBoxCreate{SafetyBoxID: "noid", SafetyBoxOwner: addr1}
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 	}

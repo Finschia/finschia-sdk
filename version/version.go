@@ -23,17 +23,17 @@ import (
 )
 
 var (
-	// application's name
+	// Name application's name
 	Name = "link"
-	// server binary name
+	// ServerName server binary name
 	ServerName = "linkd"
-	// client binary name
+	// ClientName client binary name
 	ClientName = "linkcli"
-	// application's version string
+	// Version application's version string
 	Version = ""
-	// commit
+	// Commit commit
 	Commit = ""
-	// build tags
+	// BuildTags build tags
 	BuildTags = ""
 )
 

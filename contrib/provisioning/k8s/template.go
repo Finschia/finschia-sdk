@@ -15,8 +15,8 @@ func NewTemplateObject(templateOutputPath string) *TemplateObject {
 	return &TemplateObject{templateOutputPath}
 }
 
-func (to *TemplateObject) MakeFilebeatResultPath(chainId string, validatorOrder int) string {
-	return fmt.Sprintf(to.templateOutputPath, chainId, validatorOrder)
+func (to *TemplateObject) MakeFilebeatResultPath(chainID string, validatorOrder int) string {
+	return fmt.Sprintf(to.templateOutputPath, chainID, validatorOrder)
 }
 
 func (to *TemplateObject) MakeTemplate(metaData *BuildMetaData, validatorOrder int) {

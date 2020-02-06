@@ -19,7 +19,7 @@ var (
 	MsgTypeSafetyBoxRevokeReturnerPermission  = "safety_box_revoke_returner_permission"
 	MsgTypeSafetyBoxRevokeAllocatorPermission = "safety_box_revoke_allocator_permission"
 
-	AttributeKeySafetyBoxId                        = "safety_box_id"
+	AttributeKeySafetyBoxID                        = "safety_box_id"
 	AttributeKeySafetyBoxOwner                     = "safety_box_owner"
 	AttributeKeySafetyBoxAddress                   = "safety_box_address"
 	AttributeKeySafetyBoxAllocatorAddress          = "safety_box_allocator_address"

@@ -51,7 +51,6 @@ const (
 )
 
 var (
-	// functions aliases
 	NewCLIContextWithFrom              = client.NewCLIContextWithFrom
 	NewCLIContext                      = client.NewCLIContext
 	GetFromFields                      = client.GetFromFields
@@ -83,7 +82,7 @@ var (
 	QueryGenesisTxCmd                  = genesis.QueryGenesisTxCmd
 	BlockRequestHandlerFn              = block.RequestHandlerFn
 	LatestBlockRequestHandlerFn        = block.LatestBlockRequestHandlerFn
-	MempoolCmd                         = mempool.MempoolCmd
+	MempoolCmd                         = mempool.Command
 	RegisterRPCRoutes                  = rpc.RegisterRPCRoutes
 	StatusCommand                      = client.StatusCommand
 	NodeInfoRequestHandlerFn           = client.NodeInfoRequestHandlerFn
@@ -98,7 +97,6 @@ var (
 	GetString                          = client.GetString
 	PrintPrefixed                      = client.PrintPrefixed
 
-	// variable aliases
 	LineBreak  = client.LineBreak
 	GasFlagVar = client.GasFlagVar
 

@@ -17,8 +17,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 )
 
-// MempoolCmd can return different results for each node.
-func MempoolCmd(cdc *codec.Codec) *cobra.Command {
+// Command can return different results for each node.
+func Command(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "mempool",
 		Short: "Query remote node for mempool",

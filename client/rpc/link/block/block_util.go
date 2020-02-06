@@ -55,7 +55,7 @@ func (u *Util) IndentJSON(res interface{}) ([]byte, error) {
 }
 
 // inject translated transactions to block data
-func (u *Util) InjectByteToJsonTxs(blockResponse []byte, byteTxs [][]byte) (block map[string]interface{}, err error) {
+func (u *Util) InjectByteToJSONTxs(blockResponse []byte, byteTxs [][]byte) (block map[string]interface{}, err error) {
 	// load block response as a map
 	if err := json.Unmarshal(blockResponse, &block); err != nil {
 		return nil, err

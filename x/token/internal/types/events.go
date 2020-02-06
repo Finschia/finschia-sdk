@@ -5,11 +5,11 @@ var (
 	EventTypeMintToken      = "mint_token"
 	EventTypeBurnToken      = "burn_token"
 	EventTypeGrantPermToken = "grant_perm_token"
-	/* #nosec */
+	//EventTypeModifyTokenURI #nosec
 	EventTypeModifyTokenURI = "modify_token_uri_token"
-	/* #nosec */
+	//EventTypeModifyTokenURIPermToken #nosec
 	EventTypeModifyTokenURIPermToken = "modify_token_uri_perm_token"
-	/* #nosec */
+	//EventTypeRevokePermToken #nosec
 	EventTypeRevokePermToken  = "revoke_perm_token"
 	EventTypeCreateCollection = "create_collection"
 	EventTypeAttachToken      = "attach_token"

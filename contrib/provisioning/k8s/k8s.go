@@ -27,7 +27,7 @@ var (
 	flagK8STemplateFilePath      = "K8STemplateFilePath"
 	flagFilebeatTemplateFilePath = "filebeatTemplateFilePath"
 	flagLinkdBinDirName          = "LinkdBinDirName"
-	flagLinkDockerImageUrl       = "LinkDockerImageUrl"
+	flagLinkDockerImageURL       = "LinkDockerImageUrl"
 	flagNodeABCIPort             = "NodeABCIPort"
 	flagNodeIPs                  = "NodeIPs"
 	flagNodeP2PPort              = "NodeP2PPort"
@@ -42,7 +42,7 @@ const defConsensusTimeoutCommit = 5
 const defDBDir = "data"
 const defK8STemplateFilePath = "./contrib/provisioning/k8s/deploy-validator-template.yaml"
 const defFilebeatTemplateFilePath = "./contrib/provisioning/k8s/filebeat-validator-template.yaml"
-const defLinkDockerImageUrl = "docker-registry.linecorp.com/link-network/v2/linkdnode:latest"
+const defLinkDockerImageURL = "docker-registry.linecorp.com/link-network/v2/linkdnode:latest"
 const defMinGasPrices = 0.000006
 const defNodeABCIPort = 25658
 const defNodeP2PPort = 25656
@@ -59,7 +59,7 @@ const listenLoopbackIngressPortTemplate = "tcp://127.0.0.1:%d"
 const nodeDirPerm = 0755
 const nodeDirPrefix = "node"
 const prefixABCIPort = "abci-"
-const prefixForChainId = "k8s-chain"
+const prefixForChainID = "k8s-chain"
 const prefixForP2PPort = "p2p-"
 const prefixPortRestAPIPort = "rpc-"
 
@@ -90,7 +90,7 @@ func Init() *cobra.Command {
 			confDirName := ErrCheckedStrParam(cmd.Flags().GetString(flagConfDirName))
 			k8STemplateFilePath := ErrCheckedStrParam(cmd.Flags().GetString(flagK8STemplateFilePath))
 			filebeatTemplateFilePath := ErrCheckedStrParam(cmd.Flags().GetString(flagFilebeatTemplateFilePath))
-			linkDockerImageUrl := ErrCheckedStrParam(cmd.Flags().GetString(flagLinkDockerImageUrl))
+			linkDockerImageURL := ErrCheckedStrParam(cmd.Flags().GetString(flagLinkDockerImageURL))
 			dbDir := ErrCheckedStrParam(cmd.Flags().GetString(flagDBDir))
 
 			tmConfig := server.NewDefaultContext().Config
@@ -108,20 +108,20 @@ func Init() *cobra.Command {
 			if err != nil {
 				panic(err)
 			}
-			DefIfEmpty(&chainID, fmt.Sprintf("%s-%s-%s-%s-%s", prefixForChainId,
+			DefIfEmpty(&chainID, fmt.Sprintf("%s-%s-%s-%s-%s", prefixForChainID,
 				prefixForP2PPort+strconv.Itoa(nodeP2PPort), prefixPortRestAPIPort+strconv.Itoa(nodeRestAPIPort),
 				prefixABCIPort+strconv.Itoa(nodeABCIPort), hex.EncodeToString(hash.Sum(nil)))[:50], chainID)
 			DefIfEmpty(&confHomePath, defOutputDir+"/"+chainID, confHomePath)
 
 			m := NewBuildMetaData(nodes, confHomePath, chainID, confDirName, linkCliDir, linkdDir, nodeP2PPort,
-				nodeRestAPIPort, nodeABCIPort, prometheusListenPort, tmConfig, k8STemplateFilePath, filebeatTemplateFilePath, linkDockerImageUrl)
+				nodeRestAPIPort, nodeABCIPort, prometheusListenPort, tmConfig, k8STemplateFilePath, filebeatTemplateFilePath, linkDockerImageURL)
 
 			return buildConfForK8s(cmd, app.MakeCodec(), tmConfig, &m, minGasPrices)
 		},
 	}
 
 	cmd.Flags().StringP(flagAction, "a", "build", "the action Name what you want to do")
-	cmd.Flags().StringP(flagLinkDockerImageUrl, "b", defLinkDockerImageUrl, "input linkd docker image url")
+	cmd.Flags().StringP(flagLinkDockerImageURL, "b", defLinkDockerImageURL, "input linkd docker image url")
 	cmd.Flags().StringP(flagChainID, "c", "", "input ChainID")
 	cmd.Flags().StringP(flagCliBinDirName, "d", "linkcli", "input linkcli binary home dir Name in confHomeDir")
 	cmd.Flags().IntP(flagNodeABCIPort, "e", defNodeABCIPort, "input ABCI interface communication port")

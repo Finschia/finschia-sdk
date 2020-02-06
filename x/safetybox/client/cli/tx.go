@@ -39,12 +39,12 @@ func SafetyBoxCreateTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[1]).WithCodec(cdc)
-			safetyBoxId := args[0]
+			safetyBoxID := args[0]
 			safetyBoxOwner := cliCtx.FromAddress
 			safetyBoxDenoms := strings.Split(args[2], ",")
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.MsgSafetyBoxCreate{SafetyBoxId: safetyBoxId, SafetyBoxOwner: safetyBoxOwner, SafetyBoxDenoms: safetyBoxDenoms}
+			msg := types.MsgSafetyBoxCreate{SafetyBoxID: safetyBoxID, SafetyBoxOwner: safetyBoxOwner, SafetyBoxDenoms: safetyBoxDenoms}
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -59,7 +59,7 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			safetyBoxId, action, role := args[0], args[1], args[2]
+			safetyBoxID, action, role := args[0], args[1], args[2]
 			cliCtx := client.NewCLIContextWithFrom(args[3]).WithCodec(cdc)
 			fromAddress, err := sdk.AccAddressFromBech32(args[3])
 			if err != nil {
@@ -76,13 +76,13 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 				switch action {
 				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterOperator{
-						SafetyBoxId:    safetyBoxId,
+						SafetyBoxID:    safetyBoxID,
 						SafetyBoxOwner: fromAddress,
 						Address:        toAddress,
 					}
 				case types.DeregisterRole:
 					msg = types.MsgSafetyBoxDeregisterOperator{
-						SafetyBoxId:    safetyBoxId,
+						SafetyBoxID:    safetyBoxID,
 						SafetyBoxOwner: fromAddress,
 						Address:        toAddress,
 					}
@@ -93,13 +93,13 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 				switch action {
 				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterAllocator{
-						SafetyBoxId: safetyBoxId,
+						SafetyBoxID: safetyBoxID,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
 				case types.DeregisterRole:
 					msg = types.MsgSafetyBoxDeregisterAllocator{
-						SafetyBoxId: safetyBoxId,
+						SafetyBoxID: safetyBoxID,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
@@ -110,13 +110,13 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 				switch action {
 				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterIssuer{
-						SafetyBoxId: safetyBoxId,
+						SafetyBoxID: safetyBoxID,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
 				case types.DeregisterRole:
 					msg = types.MsgSafetyBoxDeregisterIssuer{
-						SafetyBoxId: safetyBoxId,
+						SafetyBoxID: safetyBoxID,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
@@ -128,13 +128,13 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 
 				case types.RegisterRole:
 					msg = types.MsgSafetyBoxRegisterReturner{
-						SafetyBoxId: safetyBoxId,
+						SafetyBoxID: safetyBoxID,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
 				case types.DeregisterRole:
 					msg = types.MsgSafetyBoxDeregisterReturner{
-						SafetyBoxId: safetyBoxId,
+						SafetyBoxID: safetyBoxID,
 						Operator:    fromAddress,
 						Address:     toAddress,
 					}
@@ -160,7 +160,7 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 		Args:  cobra.RangeArgs(5, 6),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			safetyBoxId, action := args[0], args[1]
+			safetyBoxID, action := args[0], args[1]
 
 			denom := args[2]
 			amount, err := strconv.ParseInt(args[3], 10, 0)
@@ -181,9 +181,9 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 			var msg sdk.Msg
 			switch action {
 			case types.ActionAllocate:
-				msg = types.NewMsgSafetyBoxAllocateCoins(safetyBoxId, address, coins)
+				msg = types.NewMsgSafetyBoxAllocateCoins(safetyBoxID, address, coins)
 			case types.ActionRecall:
-				msg = types.NewMsgSafetyBoxRecallCoins(safetyBoxId, address, coins)
+				msg = types.NewMsgSafetyBoxRecallCoins(safetyBoxID, address, coins)
 			case types.ActionIssue:
 				if len(args) < 6 {
 					return types.ErrSafetyBoxIssuerAddressRequired(types.DefaultCodespace)
@@ -192,9 +192,9 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 				if err != nil {
 					return err
 				}
-				msg = types.NewMsgSafetyBoxIssueCoins(safetyBoxId, address, toAddress, coins)
+				msg = types.NewMsgSafetyBoxIssueCoins(safetyBoxID, address, toAddress, coins)
 			case types.ActionReturn:
-				msg = types.NewMsgSafetyBoxReturnCoins(safetyBoxId, address, coins)
+				msg = types.NewMsgSafetyBoxReturnCoins(safetyBoxID, address, coins)
 			default:
 				return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
 			}

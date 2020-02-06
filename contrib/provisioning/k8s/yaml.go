@@ -11,20 +11,20 @@ import (
 )
 
 type Deployment struct {
-	ApiVersion     string `yaml:"apiVersion"`
+	APIVersion     string `yaml:"apiVersion"`
 	Kind           string
 	MetaData       DeploymentMetadata `yaml:"metadata"`
 	DeploymentSpec DeploymentSpec     `yaml:"spec"`
 }
-type HttpGet struct {
+type HTTPGet struct {
 	Port int
 	Path string
 }
 type LivenessProbe struct {
-	HttpGet HttpGet `yaml:"httpGet"`
+	HTTPGet HTTPGet `yaml:"httpGet"`
 }
 type ReadinessProbe struct {
-	HttpGet             HttpGet `yaml:"httpGet"`
+	HTTPGet             HTTPGet `yaml:"httpGet"`
 	InitialDelaySeconds int     `yaml:"initialDelaySeconds"`
 	PeriodSeconds       int     `yaml:"periodSeconds"`
 }
@@ -59,7 +59,7 @@ type VolumeMount struct {
 type PodMatchLabels struct {
 	ValidatorOrder string `yaml:"validator-order"`
 	P2PPort        string `yaml:"p2p-port"`
-	ChainId        string `yaml:"chain-id"`
+	ChainID        string `yaml:"chain-id"`
 }
 type DeploymentSelector struct {
 	MatchLabels PodMatchLabels `yaml:"matchLabels"`
@@ -73,7 +73,7 @@ type DeploymentSpecTemplate struct {
 		Containers    []Container
 		NodeSelector  NodeSelector `yaml:"nodeSelector"`
 		HostNetwork   bool         `yaml:"hostNetwork"`
-		DnsPolicy     string       `yaml:"dnsPolicy"`
+		DNSPolicy     string       `yaml:"dnsPolicy"`
 		RestartPolicy string       `yaml:"restartPolicy"`
 		Volumes       []Volume     `yaml:"volumes"`
 	}
@@ -94,7 +94,7 @@ type PodMetadata struct {
 	Labels struct {
 		ValidatorOrder string `yaml:"validator-order"`
 		P2PPort        string `yaml:"p2p-port"`
-		ChainId        string `yaml:"chain-id"`
+		ChainID        string `yaml:"chain-id"`
 	}
 }
 type DeploymentLabels struct {
@@ -102,7 +102,7 @@ type DeploymentLabels struct {
 	P2PPort        string `yaml:"p2p-port"`
 	ABCIPort       string `yaml:"abci-port"`
 	RestAPIPort    string `yaml:"restapi-port"`
-	ChainId        string `yaml:"chain-id"`
+	ChainID        string `yaml:"chain-id"`
 }
 type DeploymentMetadata struct {
 	Labels DeploymentLabels `yaml:"labels"`
@@ -151,25 +151,25 @@ func (k *DeploymentTemplate) Write() (*Deployment, error) {
 	deploy.MetaData.Labels.P2PPort = strconv.Itoa(k.Node.MetaData.NodeP2PPort)
 	deploy.MetaData.Labels.ABCIPort = strconv.Itoa(k.Node.MetaData.NodeABCIPort)
 	deploy.MetaData.Labels.RestAPIPort = strconv.Itoa(k.Node.MetaData.NodeRestAPIPort)
-	deploy.MetaData.Labels.ChainId = k.Node.MetaData.ChainID
+	deploy.MetaData.Labels.ChainID = k.Node.MetaData.ChainID
 	deploy.MetaData.Name = k.DeployName()
 
 	deploy.DeploymentSpec.DeploymentSelector.MatchLabels.ValidatorOrder = strconv.Itoa(k.Node.Idx)
 	deploy.DeploymentSpec.DeploymentSelector.MatchLabels.P2PPort = strconv.Itoa(k.Node.MetaData.NodeP2PPort)
-	deploy.DeploymentSpec.DeploymentSelector.MatchLabels.ChainId = k.Node.MetaData.ChainID
+	deploy.DeploymentSpec.DeploymentSelector.MatchLabels.ChainID = k.Node.MetaData.ChainID
 
 	deploy.DeploymentSpec.DeploymentSpecTemplate.Metadata.Labels.ValidatorOrder = strconv.Itoa(k.Node.Idx)
 	deploy.DeploymentSpec.DeploymentSpecTemplate.Metadata.Labels.P2PPort = strconv.Itoa(k.Node.MetaData.NodeP2PPort)
-	deploy.DeploymentSpec.DeploymentSpecTemplate.Metadata.Labels.ChainId = k.Node.MetaData.ChainID
+	deploy.DeploymentSpec.DeploymentSpecTemplate.Metadata.Labels.ChainID = k.Node.MetaData.ChainID
 
 	deploy.DeploymentSpec.DeploymentSpecTemplate.Spec.NodeSelector = NodeSelector{strconv.Itoa(k.Node.Idx)}
 	container := &deploy.DeploymentSpec.DeploymentSpecTemplate.Spec.Containers[0]
-	container.Image = k.Node.MetaData.linkDockerImageUrl
-	container.LivenessProbe.HttpGet.Port, err = strconv.Atoi(deploy.MetaData.Labels.RestAPIPort)
+	container.Image = k.Node.MetaData.linkDockerImageURL
+	container.LivenessProbe.HTTPGet.Port, err = strconv.Atoi(deploy.MetaData.Labels.RestAPIPort)
 	if err != nil {
 		panic(err)
 	}
-	container.ReadinessProbe.HttpGet.Port, err = strconv.Atoi(deploy.MetaData.Labels.RestAPIPort)
+	container.ReadinessProbe.HTTPGet.Port, err = strconv.Atoi(deploy.MetaData.Labels.RestAPIPort)
 	if err != nil {
 		panic(err)
 	}

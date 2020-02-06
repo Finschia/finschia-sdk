@@ -50,7 +50,7 @@ func handleMsgSafetyBoxCreate(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxCr
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxCreate,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, sb.ID),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, sb.ID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, sb.Owner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAddress, sb.Address.String()),
 		),
@@ -72,7 +72,7 @@ func handleMsgSafetyBoxAllocateCoins(ctx sdk.Context, keeper Keeper, msg MsgSafe
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxAllocatorAddress, msg.AllocatorAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionAllocate),
 			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msg.Coins.String()),
@@ -95,7 +95,7 @@ func handleMsgSafetyBoxRecallCoins(ctx sdk.Context, keeper Keeper, msg MsgSafety
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxAllocatorAddress, msg.AllocatorAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionRecall),
 			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msg.Coins.String()),
@@ -118,7 +118,7 @@ func handleMsgSafetyBoxIssueCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyB
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxIssueFromAddress, msg.FromAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxIssueToAddress, msg.ToAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionIssue),
@@ -142,7 +142,7 @@ func handleMsgSafetyBoxReturnCoins(ctx sdk.Context, keeper Keeper, msg MsgSafety
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxReturnerAddress, msg.ReturnerAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionReturn),
 			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msg.Coins.String()),
@@ -157,7 +157,7 @@ func handleMsgSafetyBoxReturnCoins(ctx sdk.Context, keeper Keeper, msg MsgSafety
 }
 
 func handleMsgSafetyBoxRegisterAllocator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterAllocator) sdk.Result {
-	err := keeper.GrantPermission(ctx, msg.SafetyBoxId, msg.Operator, msg.Address, RoleAllocator)
+	err := keeper.GrantPermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleAllocator)
 	if err != nil {
 		return err.Result()
 	}
@@ -165,7 +165,7 @@ func handleMsgSafetyBoxRegisterAllocator(ctx sdk.Context, keeper Keeper, msg Msg
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantAllocatorPermission, RoleAllocator),
@@ -180,7 +180,7 @@ func handleMsgSafetyBoxRegisterAllocator(ctx sdk.Context, keeper Keeper, msg Msg
 }
 
 func handleMsgSafetyBoxDeregisterAllocator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterAllocator) sdk.Result {
-	err := keeper.RevokePermission(ctx, msg.SafetyBoxId, msg.Operator, msg.Address, RoleAllocator)
+	err := keeper.RevokePermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleAllocator)
 	if err != nil {
 		return err.Result()
 	}
@@ -188,7 +188,7 @@ func handleMsgSafetyBoxDeregisterAllocator(ctx sdk.Context, keeper Keeper, msg M
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeAllocatorPermission, RoleAllocator),
@@ -203,7 +203,7 @@ func handleMsgSafetyBoxDeregisterAllocator(ctx sdk.Context, keeper Keeper, msg M
 }
 
 func handleMsgSafetyBoxRegisterOperator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterOperator) sdk.Result {
-	err := keeper.GrantPermission(ctx, msg.SafetyBoxId, msg.SafetyBoxOwner, msg.Address, RoleOperator)
+	err := keeper.GrantPermission(ctx, msg.SafetyBoxID, msg.SafetyBoxOwner, msg.Address, RoleOperator)
 	if err != nil {
 		return err.Result()
 	}
@@ -211,7 +211,7 @@ func handleMsgSafetyBoxRegisterOperator(ctx sdk.Context, keeper Keeper, msg MsgS
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, msg.SafetyBoxOwner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantOperatorPermission, RoleOperator),
@@ -226,7 +226,7 @@ func handleMsgSafetyBoxRegisterOperator(ctx sdk.Context, keeper Keeper, msg MsgS
 }
 
 func handleMsgSafetyBoxDeregisterOperator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterOperator) sdk.Result {
-	err := keeper.RevokePermission(ctx, msg.SafetyBoxId, msg.SafetyBoxOwner, msg.Address, RoleOperator)
+	err := keeper.RevokePermission(ctx, msg.SafetyBoxID, msg.SafetyBoxOwner, msg.Address, RoleOperator)
 	if err != nil {
 		return err.Result()
 	}
@@ -234,7 +234,7 @@ func handleMsgSafetyBoxDeregisterOperator(ctx sdk.Context, keeper Keeper, msg Ms
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, msg.SafetyBoxOwner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeOperatorPermission, RoleOperator),
@@ -249,7 +249,7 @@ func handleMsgSafetyBoxDeregisterOperator(ctx sdk.Context, keeper Keeper, msg Ms
 }
 
 func handleMsgSafetyBoxRegisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterIssuer) sdk.Result {
-	err := keeper.GrantPermission(ctx, msg.SafetyBoxId, msg.Operator, msg.Address, RoleIssuer)
+	err := keeper.GrantPermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleIssuer)
 	if err != nil {
 		return err.Result()
 	}
@@ -257,7 +257,7 @@ func handleMsgSafetyBoxRegisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSaf
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantIssuerPermission, RoleIssuer),
@@ -272,7 +272,7 @@ func handleMsgSafetyBoxRegisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSaf
 }
 
 func handleMsgSafetyBoxDeregisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterIssuer) sdk.Result {
-	err := keeper.RevokePermission(ctx, msg.SafetyBoxId, msg.Operator, msg.Address, RoleIssuer)
+	err := keeper.RevokePermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleIssuer)
 	if err != nil {
 		return err.Result()
 	}
@@ -280,7 +280,7 @@ func handleMsgSafetyBoxDeregisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgS
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeIssuerPermission, RoleIssuer),
@@ -295,7 +295,7 @@ func handleMsgSafetyBoxDeregisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgS
 }
 
 func handleMsgSafetyBoxRegisterReturner(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterReturner) sdk.Result {
-	err := keeper.GrantPermission(ctx, msg.SafetyBoxId, msg.Operator, msg.Address, RoleReturner)
+	err := keeper.GrantPermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleReturner)
 	if err != nil {
 		return err.Result()
 	}
@@ -303,7 +303,7 @@ func handleMsgSafetyBoxRegisterReturner(ctx sdk.Context, keeper Keeper, msg MsgS
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantReturnerPermission, RoleReturner),
@@ -318,7 +318,7 @@ func handleMsgSafetyBoxRegisterReturner(ctx sdk.Context, keeper Keeper, msg MsgS
 }
 
 func handleMsgSafetyBoxDeregisterReturner(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterReturner) sdk.Result {
-	err := keeper.RevokePermission(ctx, msg.SafetyBoxId, msg.Operator, msg.Address, RoleReturner)
+	err := keeper.RevokePermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleReturner)
 	if err != nil {
 		return err.Result()
 	}
@@ -326,7 +326,7 @@ func handleMsgSafetyBoxDeregisterReturner(ctx sdk.Context, keeper Keeper, msg Ms
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msg.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msg.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msg.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeReturnerPermission, RoleReturner),

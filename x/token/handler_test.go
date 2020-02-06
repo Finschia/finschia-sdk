@@ -30,8 +30,8 @@ var (
 	addr1    = sdk.AccAddress(priv1.PubKey().Address())
 	symbol1  = symbolCony + addr1.String()[len(addr1.String())-3:]
 	symbol2  = symbolBrown + addr1.String()[len(addr1.String())-3:]
-	tokenId1 = "item0001"
-	tokenId2 = "item0002"
+	tokenID1 = "item0001"
+	tokenID2 = "item0002"
 	priv2    = secp256k1.GenPrivKey()
 	addr2    = sdk.AccAddress(priv2.PubKey().Address())
 )
@@ -513,12 +513,12 @@ func TestHandleTransferCFT(t *testing.T) {
 		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr1, amount, decimals, true, tokenId1)
+		msg := types.NewMsgIssueCollection(name, symbol1, tokenuri, addr1, amount, decimals, true, tokenID1)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 
-	msg := types.NewMsgTransferCFT(addr1, addr2, symbol1, tokenId1, amount)
+	msg := types.NewMsgTransferCFT(addr1, addr2, symbol1, tokenID1, amount)
 	res := h(ctx, msg)
 	require.True(t, res.Code.IsOK())
 }
@@ -554,12 +554,12 @@ func TestHandleTransferCNFT(t *testing.T) {
 		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenId1)
+		msg := types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenID1)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 
-	msg := types.NewMsgTransferCNFT(addr1, addr2, symbol1, tokenId1)
+	msg := types.NewMsgTransferCNFT(addr1, addr2, symbol1, tokenID1)
 	res := h(ctx, msg)
 	require.True(t, res.Code.IsOK())
 }
@@ -576,19 +576,19 @@ func TestHandleAttachDetach(t *testing.T) {
 		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenId1)
+		msg := types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenID1)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg = types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenId2)
+		msg = types.NewMsgIssueNFTCollection(name, symbol1, tokenuri, addr1, tokenID2)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 
-	msg := types.NewMsgAttach(addr1, symbol1, tokenId1, tokenId2)
+	msg := types.NewMsgAttach(addr1, symbol1, tokenID1, tokenID2)
 	res := h(ctx, msg)
 	require.True(t, res.Code.IsOK())
 
-	msg2 := types.NewMsgDetach(addr1, addr1, symbol1, tokenId2)
+	msg2 := types.NewMsgDetach(addr1, addr1, symbol1, tokenID2)
 	res2 := h(ctx, msg2)
 	require.True(t, res2.Code.IsOK())
 }

@@ -73,9 +73,8 @@ func parseCmdParamsOptional(args []string) (*int64, bool) {
 		// [extended] only
 		if args[0] == "extended" {
 			return nil, true
-		} else {
-			extended = false
 		}
+		extended = false
 
 		// [height] only
 		h, err := strconv.Atoi(args[0])
@@ -133,13 +132,13 @@ func GetBlock(util *Util, cursor *int64, isConvertBlockTxToJSON bool) ([]byte, e
 	// deserialize transactions from Amino and serialize to JSON
 	if isConvertBlockTxToJSON {
 
-		byteTxs, err := aminoToJsonTxs(util.lcliCtx.Codec(), &block.Block.Data.Txs)
+		byteTxs, err := aminoToJSONTxs(util.lcliCtx.Codec(), &block.Block.Data.Txs)
 		if err != nil {
 			return nil, err
 		}
 
 		// deserialize transactions from Amino and serialize to JSON
-		txInjectedBlockResponse, err := util.InjectByteToJsonTxs(blockResponse, byteTxs)
+		txInjectedBlockResponse, err := util.InjectByteToJSONTxs(blockResponse, byteTxs)
 		if err != nil {
 			return nil, err
 		}
@@ -149,7 +148,7 @@ func GetBlock(util *Util, cursor *int64, isConvertBlockTxToJSON bool) ([]byte, e
 }
 
 // deserialize transactions from Amino and serialize to JSON
-func aminoToJsonTxs(cdc *codec.Codec, txs *types.Txs) (result [][]byte, err error) {
+func aminoToJSONTxs(cdc *codec.Codec, txs *types.Txs) (result [][]byte, err error) {
 	// for each transaction in the transaction slice
 	for _, aminoSerializedTx := range *txs {
 		// tx is amino serialized but not base64 encoded in memory
@@ -160,12 +159,12 @@ func aminoToJsonTxs(cdc *codec.Codec, txs *types.Txs) (result [][]byte, err erro
 		}
 
 		// Serialize to JSON
-		if bz, err := cdc.MarshalJSON(aminoDeserializedTx); err != nil {
+		bz, err := cdc.MarshalJSON(aminoDeserializedTx)
+		if err != nil {
 			return nil, err
-		} else {
-			// collect as a slice
-			result = append(result, bz)
 		}
+		// collect as a slice
+		result = append(result, bz)
 	}
 	return
 }
