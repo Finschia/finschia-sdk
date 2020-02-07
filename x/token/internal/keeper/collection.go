@@ -1,7 +1,11 @@
 package keeper
 
 import (
+	"fmt"
+	"strconv"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 )
 
@@ -62,6 +66,28 @@ func (k Keeper) UpdateCollection(ctx sdk.Context, collection types.Collection) s
 	return nil
 }
 
+func (k Keeper) SetTokenType(ctx sdk.Context, symbol, tokenType string) sdk.Error {
+	collection, err := k.GetCollection(ctx, symbol)
+	if err != nil {
+		return err
+	}
+	store := ctx.KVStore(k.storeKey)
+	if store.Has(types.TokenTypeKey(collection.GetSymbol(), tokenType)) {
+		return types.ErrCollectionTokenTypeExist(types.DefaultCodespace, collection.GetSymbol(), tokenType)
+	}
+	store.Set(types.TokenTypeKey(collection.GetSymbol(), tokenType), types.KeyExist)
+	return nil
+}
+
+func (k Keeper) HasTokenType(ctx sdk.Context, symbol, tokenType string) bool {
+	collection, err := k.GetCollection(ctx, symbol)
+	if err != nil {
+		return false
+	}
+	store := ctx.KVStore(k.storeKey)
+	return store.Has(types.TokenTypeKey(collection.GetSymbol(), tokenType))
+}
+
 func (k Keeper) IterateCollections(ctx sdk.Context, symbol string, process func(types.Collection) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 	iter := sdk.KVStorePrefixIterator(store, types.CollectionKey(symbol))
@@ -90,4 +116,185 @@ func (k Keeper) mustDecodeCollection(collectionByte []byte) types.Collection {
 		token.(types.CollectiveToken).SetCollection(collection)
 	}
 	return collection
+}
+
+func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) sdk.Error {
+	err := k.SetCollection(ctx, collection)
+	if err != nil {
+		return err
+	}
+
+	perm := types.NewIssuePermission(collection.GetSymbol())
+	k.AddPermission(ctx, owner, perm)
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeCreateCollection,
+			sdk.NewAttribute(types.AttributeKeyName, collection.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, collection.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
+		),
+		sdk.NewEvent(
+			types.EventTypeGrantPermToken,
+			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyResource, perm.GetResource()),
+			sdk.NewAttribute(types.AttributeKeyAction, perm.GetAction()),
+		),
+	})
+
+	return nil
+}
+
+func (k Keeper) IssueFTCollection(ctx sdk.Context, token types.CollectiveFT, amount sdk.Int, owner sdk.AccAddress) sdk.Error {
+	err := k.setTokenToCollection(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), amount)), owner)
+	if err != nil {
+		return err
+	}
+
+	mintPerm := types.NewMintPermission(token.GetDenom())
+	if token.GetMintable() {
+		k.AddPermission(ctx, owner, mintPerm)
+	}
+
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
+	k.AddPermission(ctx, owner, tokenURIModifyPerm)
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeIssueCFT,
+			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
+			sdk.NewAttribute(types.AttributeKeyMintable, strconv.FormatBool(token.GetMintable())),
+			sdk.NewAttribute(types.AttributeKeyDecimals, token.GetDecimals().String()),
+			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
+		),
+		sdk.NewEvent(
+			types.EventTypeGrantPermToken,
+			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyResource, mintPerm.GetResource()),
+			sdk.NewAttribute(types.AttributeKeyAction, mintPerm.GetAction()),
+		),
+		sdk.NewEvent(
+			types.EventTypeGrantPermToken,
+			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyResource, tokenURIModifyPerm.GetResource()),
+			sdk.NewAttribute(types.AttributeKeyAction, tokenURIModifyPerm.GetAction()),
+		),
+	})
+
+	return nil
+}
+
+func (k Keeper) MintCollectionTokens(ctx sdk.Context, amount linktype.CoinWithTokenIDs, from, to sdk.AccAddress) sdk.Error {
+	for _, coin := range amount {
+		symbol, tokenID := coin.Symbol, coin.TokenID
+		token, err := k.GetToken(ctx, symbol, tokenID)
+		if err != nil {
+			return err
+		}
+		if err := k.isMintable(ctx, token, from); err != nil {
+			return err
+		}
+	}
+	err := k.mintTokens(ctx, amount.ToCoins(), to)
+	if err != nil {
+		return err
+	}
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeMintCFT,
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
+		),
+	})
+	return nil
+}
+func (k Keeper) BurnCollectionTokens(ctx sdk.Context, amount linktype.CoinWithTokenIDs, from sdk.AccAddress) sdk.Error {
+	coins := amount.ToCoins()
+	if !k.hasEnoughCoins(ctx, coins, from) {
+		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", from, amount))
+	}
+
+	err := k.burnTokens(ctx, coins, from)
+	if err != nil {
+		return err
+	}
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeBurnCFT,
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+		),
+	})
+	return nil
+}
+
+func (k Keeper) IssueCNFT(ctx sdk.Context, symbol, tokenType string, owner sdk.AccAddress) sdk.Error {
+	err := k.SetTokenType(ctx, symbol, tokenType)
+	if err != nil {
+		return err
+	}
+
+	mintPerm := types.NewMintPermission(symbol + tokenType)
+	k.AddPermission(ctx, owner, mintPerm)
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeIssueCNFT,
+			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
+			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType),
+		),
+		sdk.NewEvent(
+			types.EventTypeGrantPermToken,
+			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyResource, mintPerm.GetResource()),
+			sdk.NewAttribute(types.AttributeKeyAction, mintPerm.GetAction()),
+		),
+	})
+
+	return nil
+}
+
+func (k Keeper) MintCollectionNFT(ctx sdk.Context, token types.CollectiveNFT, from sdk.AccAddress) sdk.Error {
+	err := k.setTokenToCollection(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), sdk.NewInt(1))), token.GetOwner())
+	if err != nil {
+		return err
+	}
+
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
+	k.AddPermission(ctx, token.GetOwner(), tokenURIModifyPerm)
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeMintCNFT,
+			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeyTo, token.GetOwner().String()),
+			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
+		),
+		sdk.NewEvent(
+			types.EventTypeGrantPermToken,
+			sdk.NewAttribute(types.AttributeKeyTo, token.GetOwner().String()),
+			sdk.NewAttribute(types.AttributeKeyResource, tokenURIModifyPerm.GetResource()),
+			sdk.NewAttribute(types.AttributeKeyAction, tokenURIModifyPerm.GetAction()),
+		),
+	})
+
+	return nil
 }

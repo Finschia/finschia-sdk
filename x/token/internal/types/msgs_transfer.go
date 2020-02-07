@@ -9,13 +9,10 @@ import (
 
 var _ sdk.Msg = (*MsgTransferFT)(nil)
 var _ sdk.Msg = (*MsgTransferCFT)(nil)
-var _ sdk.Msg = (*MsgTransferNFT)(nil)
 var _ sdk.Msg = (*MsgTransferCNFT)(nil)
 
 var _ json.Marshaler = (*MsgTransferCFT)(nil)
 var _ json.Unmarshaler = (*MsgTransferCFT)(nil)
-var _ json.Marshaler = (*MsgTransferNFT)(nil)
-var _ json.Unmarshaler = (*MsgTransferNFT)(nil)
 var _ json.Marshaler = (*MsgTransferCNFT)(nil)
 var _ json.Unmarshaler = (*MsgTransferCNFT)(nil)
 
@@ -121,58 +118,6 @@ func (msg MsgTransferCFT) GetSignBytes() []byte {
 }
 
 func (msg MsgTransferCFT) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.FromAddress}
-}
-
-type MsgTransferNFT struct {
-	FromAddress sdk.AccAddress `json:"from_address"`
-	ToAddress   sdk.AccAddress `json:"to_address"`
-	Symbol      string         `json:"symbol"`
-}
-
-func NewMsgTransferNFT(from sdk.AccAddress, to sdk.AccAddress, symbol string) MsgTransferNFT {
-	return MsgTransferNFT{
-		FromAddress: from,
-		ToAddress:   to,
-		Symbol:      symbol,
-	}
-}
-
-func (msg MsgTransferNFT) MarshalJSON() ([]byte, error) {
-	type msgAlias MsgTransferNFT
-	return json.Marshal(msgAlias(msg))
-}
-
-func (msg *MsgTransferNFT) UnmarshalJSON(data []byte) error {
-	type msgAlias *MsgTransferNFT
-	return json.Unmarshal(data, msgAlias(msg))
-}
-
-func (MsgTransferNFT) Route() string { return RouterKey }
-
-func (MsgTransferNFT) Type() string { return "transfer-nft" }
-
-func (msg MsgTransferNFT) ValidateBasic() sdk.Error {
-	if msg.FromAddress.Empty() {
-		return sdk.ErrInvalidAddress("FromAddress cannot be empty")
-	}
-
-	if msg.ToAddress.Empty() {
-		return sdk.ErrInvalidAddress("ToAddress cannot be empty")
-	}
-
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return sdk.ErrInvalidCoins("Only user defined token is possible: " + msg.Symbol)
-	}
-
-	return nil
-}
-
-func (msg MsgTransferNFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
-
-func (msg MsgTransferNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.FromAddress}
 }
 

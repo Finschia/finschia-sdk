@@ -47,10 +47,6 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenName(DefaultCodespace, "").Error())
 	}
 	{
-		msg := NewMsgIssueCollection("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true, "1234")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1234] mismatched to [^[a-z0-9]{8}$]").Error())
-	}
-	{
 		msg := NewMsgIssue("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(19), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenDecimals(DefaultCodespace, sdk.NewInt(19)).Error())
 	}
@@ -59,8 +55,8 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidIssueFT(DefaultCodespace).Error())
 	}
 	{
-		msg := NewMsgIssueNFT("name", "symb"+addrSuffix, "tokenuri", addr)
-		require.Equal(t, "issue_nft", msg.Type())
+		msg := NewMsgIssueCFT("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.Equal(t, "issue_ft_collection", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -68,31 +64,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgIssueNFT{}
-
-		err := cdc.UnmarshalJSON(b, &msg2)
-		require.NoError(t, err)
-
-		require.Equal(t, msg.Name, msg2.Name)
-		require.Equal(t, msg.Symbol, msg2.Symbol)
-		require.Equal(t, msg.TokenURI, msg2.TokenURI)
-		require.Equal(t, msg.Owner, msg2.Owner)
-	}
-	{
-		msg := NewMsgIssueNFT("", "symb"+addrSuffix, "tokenuri", addr)
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenName(DefaultCodespace, "").Error())
-	}
-	{
-		msg := NewMsgIssueCollection("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true, "0okenid0")
-		require.Equal(t, "issue_token_collection", msg.Type())
-		require.Equal(t, "token", msg.Route())
-		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
-		require.Equal(t, addr, msg.GetSigners()[0])
-		require.NoError(t, msg.ValidateBasic())
-
-		b := msg.GetSignBytes()
-
-		msg2 := MsgIssueCollection{}
+		msg2 := MsgIssueCFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -104,11 +76,10 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Amount, msg.Amount)
 		require.Equal(t, msg.Decimals, msg2.Decimals)
 		require.Equal(t, msg.Mintable, msg2.Mintable)
-		require.Equal(t, msg.TokenID, msg2.TokenID)
 	}
 	{
-		msg := NewMsgIssueNFTCollection("name", "symb"+addrSuffix, "tokenuri", addr, "tokenid0")
-		require.Equal(t, "issue_nft_collection", msg.Type())
+		msg := NewMsgMintCNFT("name", "symb"+addrSuffix, "tokenuri", "toke", addr, addr)
+		require.Equal(t, "mint_nft_collection", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -116,7 +87,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgIssueNFTCollection{}
+		msg2 := MsgMintCNFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -124,12 +95,12 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Name, msg2.Name)
 		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.TokenURI, msg2.TokenURI)
-		require.Equal(t, msg.Owner, msg2.Owner)
-		require.Equal(t, msg.TokenID, msg2.TokenID)
+		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.TokenType, msg2.TokenType)
 	}
 	{
 		msg := NewMsgMint(addr, addr, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(1))))
-		require.Equal(t, "mint_token", msg.Type())
+		require.Equal(t, "mint", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -147,7 +118,7 @@ func TestMsgBasics(t *testing.T) {
 	}
 	{
 		msg := NewMsgBurn(addr, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(1))))
-		require.Equal(t, "burn_token", msg.Type())
+		require.Equal(t, "burn", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -166,7 +137,7 @@ func TestMsgBasics(t *testing.T) {
 	{
 		addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 		msg := NewMsgGrantPermission(addr, addr2, Permission{Action: "issue", Resource: "resource"})
-		require.Equal(t, "grant_permission", msg.Type())
+		require.Equal(t, "grant_perm", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -186,7 +157,7 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgRevokePermission(addr, Permission{Action: "issue", Resource: "resource"})
-		require.Equal(t, "revoke_permission", msg.Type())
+		require.Equal(t, "revoke_perm", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -244,26 +215,6 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.TokenID, msg2.TokenID)
 		require.Equal(t, msg.Amount, msg2.Amount)
-	}
-
-	{
-		msg := NewMsgTransferNFT(addr, addr2, "symbol")
-		require.Equal(t, "transfer-nft", msg.Type())
-		require.Equal(t, "token", msg.Route())
-		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
-		require.Equal(t, addr, msg.GetSigners()[0])
-		require.NoError(t, msg.ValidateBasic())
-
-		b := msg.GetSignBytes()
-
-		msg2 := MsgTransferNFT{}
-
-		err := cdc.UnmarshalJSON(b, &msg2)
-		require.NoError(t, err)
-
-		require.Equal(t, msg.FromAddress, msg2.FromAddress)
-		require.Equal(t, msg.ToAddress, msg2.ToAddress)
-		require.Equal(t, msg.Symbol, msg2.Symbol)
 	}
 
 	{

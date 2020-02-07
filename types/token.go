@@ -18,7 +18,7 @@ func NewCoinWithTokenID(symbol, tokenID string, amount sdk.Int) CoinWithTokenID 
 		panic(err)
 	}
 
-	if err := ValidateSymbolTokenID(tokenID); err != nil {
+	if err := ValidateTokenID(tokenID); err != nil {
 		panic(err)
 	}
 
@@ -46,7 +46,7 @@ func (coin CoinWithTokenID) IsValid() bool {
 		return false
 	}
 
-	if err := ValidateSymbolTokenID(coin.TokenID); err != nil {
+	if err := ValidateTokenID(coin.TokenID); err != nil {
 		return false
 	}
 	return true

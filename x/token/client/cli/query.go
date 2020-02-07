@@ -179,7 +179,7 @@ func GetCollectionTokenSupplyCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "supply-token-collection [symbol] [token-id]",
 		Short: "Query supply of collection token with collection symbol and tokens's token-id.",
-		Args:  cobra.RangeArgs(1, 2),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
@@ -201,9 +201,9 @@ func GetCollectionTokenSupplyCmd(cdc *codec.Codec) *cobra.Command {
 }
 func GetCollectionTokenCountCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "count-token-collection [symbol] [base-id]",
+		Use:   "count-token-collection [symbol] [token-type]",
 		Short: "Query count of collection tokens with collection symbol and the base-id.",
-		Args:  cobra.RangeArgs(1, 2),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
@@ -226,9 +226,9 @@ func GetCollectionTokenCountCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetSupplyCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "supply-token [symbol] ",
+		Use:   "supply-token [symbol]",
 		Short: "Query supply of collection token with collection symbol and token's token-id",
-		Args:  cobra.RangeArgs(1, 2),
+		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)

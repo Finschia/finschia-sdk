@@ -86,7 +86,6 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte,
 func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
 	if len(req.Data) == 0 {
 		collections := keeper.GetAllCollections(ctx)
-
 		bz, err := codec.MarshalJSONIndent(keeper.cdc, collections)
 		if err != nil {
 			return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))

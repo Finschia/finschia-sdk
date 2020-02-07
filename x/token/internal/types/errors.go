@@ -23,8 +23,10 @@ const (
 	CodeTokenInvalidAmount      sdk.CodeType = 205
 
 	//Collection
-	CodeCollectionExist    sdk.CodeType = 300
-	CodeCollectionNotExist sdk.CodeType = 301
+	CodeCollectionExist             sdk.CodeType = 300
+	CodeCollectionNotExist          sdk.CodeType = 301
+	CodeCollectionTokenTypeExist    sdk.CodeType = 302
+	CodeCollectionTokenTypeNotExist sdk.CodeType = 303
 
 	//Permission
 	CodeTokenPermission sdk.CodeType = 400
@@ -95,6 +97,15 @@ func ErrCollectionTokenExist(codespace sdk.CodespaceType, symbol, tokenID string
 func ErrCollectionTokenNotExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenNotExist, "token symbol[%s] token-id[%s] does not exist", symbol, tokenID)
 }
+
+func ErrCollectionTokenTypeExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenTypeExist, "token type for symbol[%s] token-type[%s] already exists", symbol, tokenType)
+}
+
+func ErrCollectionTokenTypeNotExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenTypeNotExist, "token type for symbol[%s] token-type[%s] does not exist", symbol, tokenType)
+}
+
 func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenAlreadyAChild, "token [%s] is already a child of some other", denom)
 }

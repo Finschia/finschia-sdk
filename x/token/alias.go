@@ -17,23 +17,22 @@ type (
 	Token  = types.Token
 	Tokens = types.Tokens
 
-	FT              = types.FT
-	NFT             = types.NFT
-	CollectiveToken = types.CollectiveToken
+	FT            = types.FT
+	CollectiveNFT = types.CollectiveNFT
 
 	Collection  = types.BaseCollection
 	Collections = types.Collections
 
-	MsgIssue    = types.MsgIssue
-	MsgIssueNFT = types.MsgIssueNFT
-	MsgMint     = types.MsgMint
-	MsgBurn     = types.MsgBurn
+	MsgIssue = types.MsgIssue
+	MsgMint  = types.MsgMint
+	MsgBurn  = types.MsgBurn
 
-	MsgCreateCollection    = types.MsgCreateCollection
-	MsgIssueCollection     = types.MsgIssueCollection
-	MsgIssueNFTCollection  = types.MsgIssueNFTCollection
-	MsgCollectionTokenMint = types.MsgMintCollection
-	MsgCollectionTokenBurn = types.MsgBurnCollection
+	MsgCreateCollection = types.MsgCreateCollection
+	MsgIssueCFT         = types.MsgIssueCFT
+	MsgIssueCNFT        = types.MsgIssueCNFT
+	MsgMintCNFT         = types.MsgMintCNFT
+	MsgMintCFT          = types.MsgMintCFT
+	MsgBurnCFT          = types.MsgBurnCFT
 
 	MsgGrantPermission  = types.MsgGrantPermission
 	MsgRevokePermission = types.MsgRevokePermission
@@ -42,30 +41,19 @@ type (
 
 	MsgTransferFT   = types.MsgTransferFT
 	MsgTransferCFT  = types.MsgTransferCFT
-	MsgTransferNFT  = types.MsgTransferNFT
 	MsgTransferCNFT = types.MsgTransferCNFT
 
 	MsgAttach = types.MsgAttach
 	MsgDetach = types.MsgDetach
 
-	PermissionI = types.PermissionI
 	Permissions = types.Permissions
 
 	Keeper = keeper.Keeper
 )
 
 var (
-	NewFT  = types.NewFT
-	NewNFT = types.NewNFT
-
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec
-
-	ErrTokenExist           = types.ErrTokenExist
-	ErrCollectionTokenExist = types.ErrCollectionTokenExist
-
-	NewIssuePermission          = types.NewIssuePermission
-	NewModifyTokenURIPermission = types.NewModifyTokenURIPermission
 
 	NewKeeper = keeper.NewKeeper
 )

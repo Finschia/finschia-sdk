@@ -43,42 +43,36 @@ func TestNextTokenID(t *testing.T) {
 
 func TestTokens_NextTokenID(t *testing.T) {
 	ts := Tokens{}
-	collection := NewCollection("link", "linktest")
 	ts = ts.Append(
-		NewCollectiveFT(collection, defaultName, "link0001", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0002", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0003", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0004", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0005", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0006", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0007", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0008", defaultTokenURI, sdk.NewInt(0), true),
+		&BaseCollectiveFT{"link0002", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"link0003", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"link0004", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"link0005", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"link0006", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"link0007", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"link0008", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
 	)
 	require.Equal(t, "link0009", ts.NextTokenID(""))
 	require.Equal(t, "link0009", ts.NextTokenID("link"))
 
 	require.Equal(t, "", ts.NextTokenID("1234567890"))
-	require.Equal(t, "linl", ts.NextBaseID())
-	require.Equal(t, NextTokenID("link", ""), ts.NextBaseID())
+	require.Equal(t, "linl", ts.NextTokenTypeForNFT())
+	require.Equal(t, NextTokenID("link", ""), ts.NextTokenTypeForNFT())
 }
-
 func TestTokens_Iterate(t *testing.T) {
 	ts := Tokens{}
-	require.Equal(t, 0, ts.GetTokens("link").Len())
-	require.Equal(t, 0, ts.GetTokens("").Len())
-	collection := NewCollection("link", "linktest")
 	ts = ts.Append(
-		NewCollectiveFT(collection, defaultName, "link0001", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0002", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "link0003", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "cony0003", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "conyxxx3", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "conyzzzy", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "conyzzzz", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "line0001", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "line0002", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "line0003", defaultTokenURI, sdk.NewInt(0), true),
-		NewCollectiveFT(collection, defaultName, "linezzzz", defaultTokenURI, sdk.NewInt(0), true),
+		&BaseCollectiveFT{"link0001", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"link0002", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"link0003", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"cony0003", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"conyxxx3", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"conyzzzy", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"conyzzzz", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"line0001", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"line0002", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"line0003", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
+		&BaseCollectiveFT{"linezzzz", defaultTokenURI, sdk.NewInt(0), true, defaultName, "link0002"},
 	)
 
 	require.Equal(t, 3, ts.GetTokens("link").Len())

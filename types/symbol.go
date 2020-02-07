@@ -12,18 +12,21 @@ const (
 	reSymbolStringReserved    = `[a-z][a-z0-9]{2,4}`
 	reSymbolStringUserDefined = `[a-z][a-z0-9]{5,7}`
 	/* #nosec */
-	reSymbolStringTokenID = `[a-z0-9]{8}`
+	reTokenIDString = `[a-z0-9]{8}`
 	/* #nosec */
-	reSymbolStringBaseTokenID = `[a-z0-9]{4}`
+	reTokenTypeNFTString = `[a-z1-9][a-z0-9]{3}`
+	/* #nosec */
+	reTokenTypeFTString = `0[a-z0-9]{3}`
 )
 
 var (
 	reSymbol                = regexp.MustCompile(fmt.Sprintf(`^%s$`, reSymbolString))
 	reSymbolReserved        = regexp.MustCompile(fmt.Sprintf(`^%s$`, reSymbolStringReserved))
 	reSymbolUserDefined     = regexp.MustCompile(fmt.Sprintf(`^%s$`, reSymbolStringUserDefined))
-	reSymbolTokenID         = regexp.MustCompile(fmt.Sprintf(`^%s$`, reSymbolStringTokenID))
-	reSymbolBaseTokenID     = regexp.MustCompile(fmt.Sprintf(`^%s$`, reSymbolStringBaseTokenID))
-	reSymbolCollectionToken = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, reSymbolStringUserDefined, reSymbolStringTokenID))
+	reTokenID               = regexp.MustCompile(fmt.Sprintf(`^%s$`, reTokenIDString))
+	reTokenTypeNFT          = regexp.MustCompile(fmt.Sprintf(`^%s$`, reTokenTypeNFTString))
+	reTokenTypeFT           = regexp.MustCompile(fmt.Sprintf(`^%s$`, reTokenTypeFTString))
+	reSymbolCollectionToken = regexp.MustCompile(fmt.Sprintf(`^%s%s$`, reSymbolStringUserDefined, reTokenIDString))
 )
 
 const (
@@ -44,8 +47,9 @@ func ValidateSymbolCollectionToken(symbol string) error {
 	return ValidateReg(symbol, reSymbolCollectionToken)
 }
 func ValidateSymbolUserDefined(symbol string) error { return ValidateReg(symbol, reSymbolUserDefined) }
-func ValidateSymbolTokenID(symbol string) error     { return ValidateReg(symbol, reSymbolTokenID) }
-func ValidateSymbolBaseTokenID(symbol string) error { return ValidateReg(symbol, reSymbolBaseTokenID) }
+func ValidateTokenID(symbol string) error           { return ValidateReg(symbol, reTokenID) }
+func ValidateTokenTypeNFT(symbol string) error      { return ValidateReg(symbol, reTokenTypeNFT) }
+func ValidateTokenTypeFT(symbol string) error       { return ValidateReg(symbol, reTokenTypeFT) }
 
 func SymbolCollectionToken(collection, tokenID string) string {
 	return fmt.Sprintf("%s%s", collection, tokenID)

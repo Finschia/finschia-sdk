@@ -73,7 +73,7 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 }
 
 func prepare(ctrl *gomock.Controller) (sdk.AccAddress, *codec.Codec, *mock_types.MockIamKeeper, Keeper,
-	*mock_types.MockMultiStore, sdk.Context, *mock_types.MockKVStore, types.NFT, []byte, []byte, types.NFT) {
+	*mock_types.MockMultiStore, sdk.Context, *mock_types.MockKVStore, types.FT, []byte, []byte, types.FT) {
 	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	cd := types.ModuleCdc
 	mockIamKeeper := mock_types.NewMockIamKeeper(ctrl)
@@ -90,17 +90,19 @@ func prepare(ctrl *gomock.Controller) (sdk.AccAddress, *codec.Codec, *mock_types
 
 	mockKvStore := mock_types.NewMockKVStore(ctrl)
 	tokenSymbol := "testSymbol"
-	tt := types.NewNFT(
+	tt := types.NewFT(
 		"testToken",
 		tokenSymbol,
 		"",
-		addr1,
+		sdk.NewInt(0),
+		true,
 	)
-	tokenURIModifiedToken := types.NewNFT(
+	tokenURIModifiedToken := types.NewFT(
 		"testToken",
 		tokenSymbol,
 		"modified",
-		addr1,
+		sdk.NewInt(0),
+		true,
 	)
 
 	tsk := types.TokenDenomKey(tt.GetSymbol())

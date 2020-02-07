@@ -63,44 +63,6 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 	return nil
 }
 
-var _ sdk.Msg = (*MsgIssueNFT)(nil)
-
-type MsgIssueNFT struct {
-	Name     string         `json:"name"`
-	Symbol   string         `json:"symbol"`
-	Owner    sdk.AccAddress `json:"owner"`
-	TokenURI string         `json:"token_uri"`
-}
-
-func NewMsgIssueNFT(name, symbol, tokenURI string, owner sdk.AccAddress) MsgIssueNFT {
-	return MsgIssueNFT{
-		Name:     name,
-		Symbol:   symbol,
-		Owner:    owner,
-		TokenURI: tokenURI,
-	}
-}
-
-func (msg MsgIssueNFT) Route() string                { return RouterKey }
-func (msg MsgIssueNFT) Type() string                 { return "issue_nft" }
-func (msg MsgIssueNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
-func (msg MsgIssueNFT) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
-
-func (msg MsgIssueNFT) ValidateBasic() sdk.Error {
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-	}
-	if len(msg.Name) == 0 {
-		return ErrInvalidTokenName(DefaultCodespace, msg.Name)
-	}
-	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
-	}
-	return nil
-}
-
 var _ sdk.Msg = (*MsgMint)(nil)
 
 type MsgMint struct {
@@ -117,7 +79,7 @@ func NewMsgMint(from, to sdk.AccAddress, amount sdk.Coins) MsgMint {
 	}
 }
 func (MsgMint) Route() string                    { return RouterKey }
-func (MsgMint) Type() string                     { return "mint_token" }
+func (MsgMint) Type() string                     { return "mint" }
 func (msg MsgMint) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
 func (msg MsgMint) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
@@ -150,7 +112,7 @@ func NewMsgBurn(from sdk.AccAddress, amount sdk.Coins) MsgBurn {
 	}
 }
 func (MsgBurn) Route() string                    { return RouterKey }
-func (MsgBurn) Type() string                     { return "burn_token" }
+func (MsgBurn) Type() string                     { return "burn" }
 func (msg MsgBurn) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
 func (msg MsgBurn) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
@@ -205,7 +167,7 @@ func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
 	}
 
 	if msg.TokenID != "" {
-		if err := types.ValidateSymbolTokenID(msg.TokenID); err != nil {
+		if err := types.ValidateTokenID(msg.TokenID); err != nil {
 			return sdk.ErrInvalidAddress(fmt.Sprintf("invalid tokenId pattern found %s", msg.TokenID))
 		}
 	}

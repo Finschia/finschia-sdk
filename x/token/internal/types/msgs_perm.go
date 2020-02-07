@@ -22,7 +22,7 @@ type MsgGrantPermission struct {
 }
 
 func (MsgGrantPermission) Route() string                    { return RouterKey }
-func (MsgGrantPermission) Type() string                     { return "grant_permission" }
+func (MsgGrantPermission) Type() string                     { return "grant_perm" }
 func (msg MsgGrantPermission) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
 func (msg MsgGrantPermission) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
@@ -58,7 +58,7 @@ type MsgRevokePermission struct {
 }
 
 func (MsgRevokePermission) Route() string                    { return RouterKey }
-func (MsgRevokePermission) Type() string                     { return "revoke_permission" }
+func (MsgRevokePermission) Type() string                     { return "revoke_perm" }
 func (msg MsgRevokePermission) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
 func (msg MsgRevokePermission) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))

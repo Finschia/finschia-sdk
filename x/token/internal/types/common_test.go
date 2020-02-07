@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	defaultName     = "name"
-	defaultSymbol   = "linktkn"
-	defaultTokenURI = "token-uri"
-	defaultDecimals = 6
-	defaultTokenID  = "00000001"
+	defaultName      = "name"
+	defaultSymbol    = "linktkn"
+	defaultTokenURI  = "token-uri"
+	defaultDecimals  = 6
+	defaultTokenType = "a000"
 )
 
 var (

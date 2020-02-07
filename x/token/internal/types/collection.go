@@ -22,8 +22,8 @@ type Collection interface {
 	DeleteToken(Token) (Collection, sdk.Error)
 	HasToken(string) bool
 	NextTokenID(string) string
-	NextBaseID() string
-	NexTokenIDForFT() string
+	NextTokenTypeNFT() string
+	NextTokenTypeFT() string
 	String() string
 }
 type BaseCollection struct {
@@ -44,10 +44,8 @@ func (c BaseCollection) GetName() string   { return c.Name }
 
 func (c BaseCollection) GetAllTokens() Tokens {
 	var tokens Tokens
-	for _, token := range c.Tokens {
-		token.(CollectiveToken).SetCollection(&c)
-		tokens = append(tokens, token)
-	}
+	tokens = append(tokens, c.GetFTokens()...)
+	tokens = append(tokens, c.GetNFTokens()...)
 	return tokens.Sort()
 }
 
@@ -112,12 +110,12 @@ func (c BaseCollection) NextTokenID(prefix string) string {
 	return c.Tokens.NextTokenID(prefix)
 }
 
-func (c BaseCollection) NextBaseID() string {
-	return c.Tokens.NextBaseID()
+func (c BaseCollection) NextTokenTypeNFT() string {
+	return c.Tokens.NextTokenTypeForNFT()
 }
 
-func (c BaseCollection) NexTokenIDForFT() string {
-	return c.Tokens.NextTokenID(FungibleFlag)
+func (c BaseCollection) NextTokenTypeFT() string {
+	return c.Tokens.NextTokenTypeForFT()
 }
 
 func (c BaseCollection) String() string {
@@ -139,24 +137,27 @@ func (collections Collections) String() string {
 }
 
 var _ Token = (*BaseCollectiveNFT)(nil)
-var _ NFT = (*BaseCollectiveNFT)(nil)
 var _ CollectiveToken = (*BaseCollectiveNFT)(nil)
 var _ json.Marshaler = (*BaseCollectiveNFT)(nil)
 var _ json.Unmarshaler = (*BaseCollectiveNFT)(nil)
 
 type CollectiveToken interface {
 	Token
+	GetTokenType() string
+	GetTokenIndex() string
 	SetCollection(Collection)
 }
 
 type CollectiveNFT interface {
-	NFT
-	SetCollection(Collection)
+	CollectiveToken
+	GetOwner() sdk.AccAddress
+	SetOwner(sdk.AccAddress)
 }
 
 type CollectiveFT interface {
-	FT
-	SetCollection(Collection)
+	CollectiveToken
+	GetMintable() bool
+	GetDecimals() sdk.Int
 }
 
 type BaseCollectiveNFT struct {
@@ -169,13 +170,8 @@ type BaseCollectiveNFT struct {
 	symbol string
 }
 
-func NewCollectiveNFT(collection Collection, name, tokenID, tokenURI string, owner sdk.AccAddress) NFT {
-	if tokenID == "" {
-		tokenID = collection.NextBaseID()
-	}
-	if len(tokenID) == BaseTokenIDLength {
-		tokenID = collection.NextTokenID(tokenID)
-	}
+func NewCollectiveNFT(collection Collection, name, tokenType, tokenURI string, owner sdk.AccAddress) CollectiveNFT {
+	tokenID := collection.NextTokenID(tokenType)
 	return &BaseCollectiveNFT{
 		TokenID:  tokenID,
 		TokenURI: tokenURI,
@@ -190,6 +186,8 @@ func (t BaseCollectiveNFT) GetDenom() string               { return t.symbol + t
 func (t BaseCollectiveNFT) GetTokenURI() string            { return t.TokenURI }
 func (t BaseCollectiveNFT) GetOwner() sdk.AccAddress       { return t.Owner }
 func (t BaseCollectiveNFT) GetTokenID() string             { return t.TokenID }
+func (t BaseCollectiveNFT) GetTokenType() string           { return t.TokenID[:BaseTokenIDLength] }
+func (t BaseCollectiveNFT) GetTokenIndex() string          { return t.TokenID[BaseTokenIDLength:] }
 func (t *BaseCollectiveNFT) SetOwner(owner sdk.AccAddress) { t.Owner = owner }
 func (t *BaseCollectiveNFT) SetTokenURI(tokenURI string)   { t.TokenURI = tokenURI }
 func (t *BaseCollectiveNFT) SetCollection(c Collection)    { t.symbol = c.GetSymbol() }
@@ -212,10 +210,8 @@ type BaseCollectiveFT struct {
 	symbol string
 }
 
-func NewCollectiveFT(collection Collection, name, tokenID string, tokenURI string, decimals sdk.Int, mintable bool) FT {
-	if tokenID == "" {
-		tokenID = collection.NexTokenIDForFT()
-	}
+func NewCollectiveFT(collection Collection, name, tokenURI string, decimals sdk.Int, mintable bool) CollectiveFT {
+	tokenID := collection.NextTokenTypeFT() + "0000"
 	return &BaseCollectiveFT{
 		TokenID:  tokenID,
 		TokenURI: tokenURI,
@@ -232,6 +228,83 @@ func (t BaseCollectiveFT) GetTokenURI() string          { return t.TokenURI }
 func (t BaseCollectiveFT) GetMintable() bool            { return t.Mintable }
 func (t BaseCollectiveFT) GetDecimals() sdk.Int         { return t.Decimals }
 func (t BaseCollectiveFT) GetTokenID() string           { return t.TokenID }
+func (t BaseCollectiveFT) GetTokenType() string         { return t.TokenID[:BaseTokenIDLength] }
+func (t BaseCollectiveFT) GetTokenIndex() string        { return t.TokenID[BaseTokenIDLength:] }
 func (t *BaseCollectiveFT) SetTokenURI(tokenURI string) { t.TokenURI = tokenURI }
 func (t *BaseCollectiveFT) SetCollection(c Collection)  { t.symbol = c.GetSymbol() }
 func (t BaseCollectiveFT) String() string               { return "" }
+
+//---------------------------------------------------------
+// Custom json (un)marshaler to avoid go-amino, go-json bug
+// see https://github.com/line/link/pull/354
+//---------------------------------------------------------
+func (t BaseCollectiveFT) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Name     string  `json:"name"`
+		Symbol   string  `json:"symbol"`
+		TokenURI string  `json:"token_uri"`
+		Decimals sdk.Int `json:"decimals"`
+		Mintable bool    `json:"mintable"`
+		TokenID  string  `json:"token_id"`
+	}{
+		Name:     t.GetName(),
+		Symbol:   t.GetSymbol(),
+		TokenURI: t.GetTokenURI(),
+		Decimals: t.GetDecimals(),
+		Mintable: t.GetMintable(),
+		TokenID:  t.GetTokenID(),
+	})
+}
+func (t *BaseCollectiveFT) UnmarshalJSON(data []byte) error {
+	rawStruct := struct {
+		Name     string  `json:"name"`
+		Symbol   string  `json:"symbol"`
+		TokenURI string  `json:"token_uri"`
+		Decimals sdk.Int `json:"decimals"`
+		Mintable bool    `json:"mintable"`
+		TokenID  string  `json:"token_id"`
+	}{}
+	if err := json.Unmarshal(data, &rawStruct); err != nil {
+		return err
+	}
+	t.Name = rawStruct.Name
+	t.symbol = rawStruct.Symbol
+	t.TokenURI = rawStruct.TokenURI
+	t.Decimals = rawStruct.Decimals
+	t.Mintable = rawStruct.Mintable
+	t.TokenID = rawStruct.TokenID
+	return nil
+}
+func (t BaseCollectiveNFT) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Name     string         `json:"name"`
+		Symbol   string         `json:"symbol"`
+		TokenURI string         `json:"token_uri"`
+		Owner    sdk.AccAddress `json:"owner"`
+		TokenID  string         `json:"token_id"`
+	}{
+		Name:     t.GetName(),
+		Symbol:   t.GetSymbol(),
+		TokenURI: t.GetTokenURI(),
+		Owner:    t.GetOwner(),
+		TokenID:  t.GetTokenID(),
+	})
+}
+func (t *BaseCollectiveNFT) UnmarshalJSON(data []byte) error {
+	rawStruct := struct {
+		Name     string         `json:"name"`
+		Symbol   string         `json:"symbol"`
+		TokenURI string         `json:"token_uri"`
+		Owner    sdk.AccAddress `json:"owner"`
+		TokenID  string         `json:"token_id"`
+	}{}
+	if err := json.Unmarshal(data, &rawStruct); err != nil {
+		return err
+	}
+	t.Name = rawStruct.Name
+	t.symbol = rawStruct.Symbol
+	t.TokenURI = rawStruct.TokenURI
+	t.Owner = rawStruct.Owner
+	t.TokenID = rawStruct.TokenID
+	return nil
+}
