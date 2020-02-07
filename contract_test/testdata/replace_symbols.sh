@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
-source "./lcd_test/testdata/common.sh"
+source "./contract_test/testdata/common.sh"
 
-JACK_ADDR="$(./build/linkcli --home /tmp/contract_tests/.linkcli keys show jack -a)"
+JACK_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show jack -a)"
 REPLACE_OPTION=$1
 
 replace_address () {
-  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_tests/.linkcli keys show "$1" -a)"
+  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show "$1" -a)"
   sed -i.bak -e "s/$2/${ACTUAL_ADDR}/g" ${SWAGGER}
   echo "Replaced dummy with actual ADDR of $1 : ${ACTUAL_ADDR}"
 }
@@ -30,7 +30,7 @@ replace_token_symbol "clcd"${JACK_ADDR:40} ${REPLACE_NFT_SYMBOL} NFT
 
 if [ "${REPLACE_OPTION}" == "--replace_tx_hash" ]
 then
- ALL_MSG_TX_HASH=$(cat '/tmp/contract_tests/all_msg_tx_hash.txt')
+ ALL_MSG_TX_HASH=$(cat '/tmp/contract_test/all_msg_tx_hash.txt')
  sed -i.bak -e "s/${REPLACE_TX_HASH}/${ALL_MSG_TX_HASH}/g" ${SWAGGER}
  echo "Replaced dummy with actual ALL_MSG_TX_HASH ${ALL_MSG_TX_HASH}"
 fi

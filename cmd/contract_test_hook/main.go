@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/line/link/cmd/contract_tests/unmarshaler"
-	"github.com/line/link/cmd/contract_tests/verifier"
+	"github.com/line/link/contract_test/unmarshaler"
+	"github.com/line/link/contract_test/verifier"
 	"github.com/snikch/goodman/hooks"
 	"github.com/snikch/goodman/transaction"
 )
 
-const swaggerYAMLPath = "/tmp/contract_tests/swagger.yaml"
+const swaggerYAMLPath = "/tmp/contract_test/swagger.yaml"
 
 func main() {
 	// This must be compiled beforehand and given to dredd as parameter, in the meantime the server should be running

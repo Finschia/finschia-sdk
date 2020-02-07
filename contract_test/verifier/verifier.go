@@ -9,11 +9,11 @@ func CompareJSONFormat(expected interface{}, actual interface{}) bool {
 	case []interface{}:
 		array2, ok := actual.([]interface{})
 		if !ok {
-			go log.Println("One is an array but not the other")
+			log.Printf("Expected is an array but actual is not (expected: %v, actual: %v)", v, actual)
 			return false
 		}
 		if v == nil || array2 == nil {
-			go log.Println("Array can not be null")
+			log.Println("Array can not be null")
 			return false
 		}
 
@@ -28,15 +28,15 @@ func CompareJSONFormat(expected interface{}, actual interface{}) bool {
 	case map[string]interface{}:
 		map2, ok := actual.(map[string]interface{})
 		if !ok {
-			go log.Println("One is an object but not the other")
+			log.Printf("Expected is an object but actual is not (expected: %v, actual: %v)", v, actual)
 			return false
 		}
 		if v == nil || map2 == nil {
-			go log.Println("Object can not be null")
+			log.Println("Object can not be null")
 			return false
 		}
 		if len(v) != len(map2) {
-			go log.Println("Objects have different size")
+			log.Printf("Objects have different size: (expected: %d, actual: %d)", len(v), len(map2))
 			return false
 		}
 
@@ -46,7 +46,7 @@ func CompareJSONFormat(expected interface{}, actual interface{}) bool {
 					return false
 				}
 			} else {
-				go log.Println("Objects have different properties")
+				log.Printf("Expected has %v property but actual is not", key)
 				return false
 			}
 		}
@@ -58,10 +58,10 @@ func CompareJSONFormat(expected interface{}, actual interface{}) bool {
 		}
 		switch actual.(type) {
 		case []interface{}:
-			go log.Println("One is element type but another is array")
+			log.Printf("Expected is element type but actual is array (expected: %v, actual: %v)", v, actual)
 			return false
 		case map[string]interface{}:
-			go log.Println("One is element type but another is object")
+			log.Printf("Expected is element type but actual is object (expected: %v, actual: %v)", v, actual)
 			return false
 		}
 		return true

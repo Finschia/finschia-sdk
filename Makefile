@@ -59,8 +59,8 @@ build: go.sum
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
 
-build-contract-tests-hooks:
-	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_tests ./cmd/contract_tests
+build-contract-test-hook:
+	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_test_hook ./cmd/contract_test_hook
 
 build-docker:
 	docker build -t line/link .
@@ -153,40 +153,39 @@ testnet-test:
 run-swagger-server:
 	linkcli rest-server --trust-node=true
 
-setup-contract-tests-data: build build-swagger-docs build-contract-tests-hooks yq
+setup-contract-test-data: build build-swagger-docs build-contract-test-hook yq
 	echo 'Prepare data for the contract tests' ; \
-	./lcd_test/testdata/prepare_dredd.sh ; \
-	./lcd_test/testdata/prepare_chain_state.sh
+	./contract_test/testdata/prepare_dredd.sh ; \
+	./contract_test/testdata/prepare_chain_state.sh
 
-start-link: setup-contract-tests-data
+start-link: setup-contract-test-data
 	pkill linkd || true
-	./build/linkd --home /tmp/contract_tests/.linkd start &
+	./build/linkd --home /tmp/contract_test/.linkd start &
 	@sleep 5s
-	./lcd_test/testdata/wait-for-it.sh localhost 26657
+	./contract_test/testdata/wait-for-it.sh localhost 26657
 
 setup-transactions: start-link
-	@bash ./lcd_test/testdata/setup.sh
+	@bash ./contract_test/testdata/setup.sh
 
-contract-tests: setup-transactions
+contract-test: setup-transactions
 	@echo "Running LINK LCD for contract tests"
-	@bash ./lcd_test/testdata/generate_tx_iteratively.sh &
-	./lcd_test/testdata/run_dredd.sh
+	@bash ./contract_test/testdata/generate_tx_iteratively.sh &
+	./contract_test/testdata/run_dredd.sh
 
-run-lcd-contract-tests:
+run-lcd-contract-test:
 	@echo "Running LINK LCD for contract tests"
 	lsof -i tcp:1317 | grep -v PID | awk '{print $$2}' | xargs kill || true
-	./build/linkcli rest-server --laddr tcp://0.0.0.0:1317 --home /tmp/contract_tests/.linkcli --node http://localhost:26657 --chain-id lcd --trust-node || true
+	./build/linkcli rest-server --laddr tcp://0.0.0.0:1317 --home /tmp/contract_test/.linkcli --node http://localhost:26657 --chain-id lcd --trust-node || true
 
 dredd-test:
-	cp client/lcd/swagger-ui/swagger.yaml /tmp/contract_tests/swagger.yaml
-	@bash ./lcd_test/testdata/replace_symbols.sh --replace_tx_hash
-	@bash ./lcd_test/testdata/generate_tx_iteratively.sh &
-	./lcd_test/testdata/wait-for-it.sh localhost 26657
-	dredd; pkill -f ./lcd_test/testdata/generate_tx_iteratively.sh
+	cp client/lcd/swagger-ui/swagger.yaml /tmp/contract_test/swagger.yaml
+	@bash ./contract_test/testdata/replace_symbols.sh --replace_tx_hash
+	@bash ./contract_test/testdata/generate_tx_iteratively.sh &
+	./contract_test/testdata/wait-for-it.sh localhost 26657
+	dredd; pkill -f ./contract_test/testdata/generate_tx_iteratively.sh
 
 stop-dredd-test:
-	pkill linkcli || true
-	pkill -9 linkd || true
+	./contract_test/testdata/stop_dredd_test.sh
 
 ########################################
 ### Simulation

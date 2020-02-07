@@ -317,17 +317,17 @@ jobs:
       - run: make build-swagger-docs
       - run: curl -sL https://git.io/goreleaser | bash -s -- --skip-validate --rm-dist
 
-  contract_tests:
+  contract_test:
     <<: *linux_defaults
     steps:
-      - run: rm -rf /tmp/contract_tests
-      - run: mkdir -p /tmp/contract_tests
+      - run: rm -rf /tmp/contract_test
+      - run: mkdir -p /tmp/contract_test
       - checkout
       - run:
           name: Get Node.js and test REST implementation against swagger documentation
           command: |
             go get github.com/snikch/goodman/cmd/goodman
-            ./contrib/get_node.sh && make contract-tests
+            ./contrib/get_node.sh && make contract-test
 workflows:
   version: 2.1
   build_and_test:
@@ -348,7 +348,7 @@ workflows:
       - integration_test:
           requires:
             - setup_dependencies
-      - contract_tests
+      - contract_test
       - setup_docker_and_binary:
           requires:
             - fmt
@@ -415,7 +415,7 @@ workflows:
       - semantic_release:
           requires:
             - unit_test
-            - contract_tests
+            - contract_test
             - integration_test
             - localnet
             - integration_multi_node_test

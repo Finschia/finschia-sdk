@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-source "./lcd_test/testdata/common.sh"
-ADDR="$(./build/linkcli --home /tmp/contract_tests/.linkcli keys show jack -a)"
+source "./contract_test/testdata/common.sh"
+ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show jack -a)"
 memo="."
 while true
 do

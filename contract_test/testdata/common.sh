@@ -16,5 +16,5 @@ REPLACE_COLLECTION_SYMBOL="con2xxv"
 REPLACE_NFT_SYMBOL="con3xxv"
 REPLACE_MSG_EXAMPLES="\"MsgExamples\""
 CHAIN_ID="lcd"
-HOME="/tmp/contract_tests/.linkcli"
-SWAGGER='/tmp/contract_tests/swagger.yaml'
+HOME="/tmp/contract_test/.linkcli"
+SWAGGER='/tmp/contract_test/swagger.yaml'

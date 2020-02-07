@@ -1,19 +1,19 @@
 #!/usr/bin/env bash
-source "./lcd_test/testdata/common.sh"
+source "./contract_test/testdata/common.sh"
 
 
-JACK_ADDR="$(./build/linkcli --home /tmp/contract_tests/.linkcli keys show jack -a)"
+JACK_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show jack -a)"
 
 create_only_address () {
   # create address
-  echo ${PASSWORD} | echo ${PASSWORD} | ./build/linkcli --home /tmp/contract_tests/.linkcli keys add "$1"
-  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_tests/.linkcli keys show "$1" -a)"
+  echo ${PASSWORD} | echo ${PASSWORD} | ./build/linkcli --home /tmp/contract_test/.linkcli keys add "$1"
+  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show "$1" -a)"
 }
 
 set_test_address () {
   # create address
-  echo ${PASSWORD} | echo ${PASSWORD} | ./build/linkcli --home /tmp/contract_tests/.linkcli keys add "$1"
-  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_tests/.linkcli keys show "$1" -a)"
+  echo ${PASSWORD} | echo ${PASSWORD} | ./build/linkcli --home /tmp/contract_test/.linkcli keys add "$1"
+  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show "$1" -a)"
 
   # register the account
   SEND_TX_HASH=$(echo ${PASSWORD} | ./build/linkcli tx send --home ${HOME} ${JACK_ADDR} ${ACTUAL_ADDR} 10link --chain-id ${CHAIN_ID} --yes -b block | awk '/txhash.*/{print $2}')
@@ -24,11 +24,11 @@ set_test_address () {
 sleep 3s
 
 # prepare test files
-ALL_MSG_TX='/tmp/contract_tests/all_msg_tx.json'
-SIGNED_TX='/tmp/contract_tests/signed_tx.json'
-TMP_TX_RESULT='/tmp/contract_tests/tmp_result.txt'
+ALL_MSG_TX='/tmp/contract_test/all_msg_tx.json'
+SIGNED_TX='/tmp/contract_test/signed_tx.json'
+TMP_TX_RESULT='/tmp/contract_test/tmp_result.txt'
 cp client/lcd/swagger-ui/swagger.yaml ${SWAGGER}
-cp ./lcd_test/testdata/all_msg_tx.json ${ALL_MSG_TX}
+cp ./contract_test/testdata/all_msg_tx.json ${ALL_MSG_TX}
 
 set_test_address operator ${REPLACE_OPERATOR_ADDR}
 set_test_address allocator ${REPLACE_ALLOCATOR_ADDR}
@@ -38,7 +38,7 @@ create_only_address somebody ${REPLACE_SOMEBODY_ADDR}
 set_test_address proxy ${REPLACE_PROXY_ADDR}
 set_test_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
 
-./lcd_test/testdata/replace_symbols.sh
+./contract_test/testdata/replace_symbols.sh
 
 # copy MsgExamples from swagger.yaml to all_msg_tx.json
 sed -i.bak -e "s%${REPLACE_MSG_EXAMPLES}%$(yq read -j ${SWAGGER} components.examples.MsgExamples.value)%g" ${ALL_MSG_TX}
@@ -62,7 +62,7 @@ then
 fi
 ALL_MSG_TX_HASH=$(cat ${TMP_TX_RESULT}  | awk '/txhash/{print $2}')
 echo "All messages have been processed: ${ALL_MSG_TX_HASH}"
-echo ${ALL_MSG_TX_HASH} > '/tmp/contract_tests/all_msg_tx_hash.txt'
+echo ${ALL_MSG_TX_HASH} > '/tmp/contract_test/all_msg_tx_hash.txt'
 
 # change tx hash to check message format in dredd test (/txs/{hash})
 sed -i.bak -e "s/${REPLACE_TX_HASH}/${ALL_MSG_TX_HASH}/g" ${SWAGGER}
