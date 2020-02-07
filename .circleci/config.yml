@@ -351,7 +351,7 @@ workflows:
       - contract_test
       - setup_docker_and_binary:
           requires:
-            - fmt
+            - lint
           filters:
             branches:
               only:

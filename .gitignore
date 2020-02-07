@@ -9,6 +9,7 @@
 .idea
 
 # Build
+output
 vendor
 build
 tools/bin/*
