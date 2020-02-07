@@ -38,7 +38,6 @@ func newTestCodec() *codec.Codec {
 }
 
 func setupTestInput(t *testing.T) TestInput {
-
 	keyAuth := sdk.NewKVStoreKey(auth.StoreKey)
 	keyParams := sdk.NewKVStoreKey(params.StoreKey)
 	tkeyParams := sdk.NewTransientStoreKey(params.TStoreKey)
@@ -72,7 +71,7 @@ func TestHandlerCreateAccount(t *testing.T) {
 
 	// invalid message
 	{
-		msg := safetybox.MsgSafetyBoxCreate{SafetyBoxId: "noid", SafetyBoxOwner: addr1}
+		msg := safetybox.MsgSafetyBoxCreate{SafetyBoxID: "noid", SafetyBoxOwner: addr1}
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 	}

@@ -13,12 +13,12 @@ const (
 	QueryAccountRole = "role"
 )
 
-func NewQuerySafetyBoxParams(safetyBoxId string) QuerySafetyBoxParams {
-	return QuerySafetyBoxParams{safetyBoxId}
+func NewQuerySafetyBoxParams(safetyBoxID string) QuerySafetyBoxParams {
+	return QuerySafetyBoxParams{safetyBoxID}
 }
 
 type QuerySafetyBoxParams struct {
-	SafetyBoxId string `json:"safety_box_id"`
+	SafetyBoxID string `json:"safety_box_id"`
 }
 
 func (qsb QuerySafetyBoxParams) String() string {
@@ -37,13 +37,13 @@ func NewSafetyBoxRetriever(querier NodeQuerier) SafetyBoxRetriever {
 	return SafetyBoxRetriever{querier: querier}
 }
 
-func (sbr SafetyBoxRetriever) GetSafetyBox(safetyBoxId string) (SafetyBox, int64, error) {
-	sb, height, err := sbr.GetSafetyBoxWithHeight(safetyBoxId)
+func (sbr SafetyBoxRetriever) GetSafetyBox(safetyBoxID string) (SafetyBox, int64, error) {
+	sb, height, err := sbr.GetSafetyBoxWithHeight(safetyBoxID)
 	return sb, height, err
 }
 
-func (sbr SafetyBoxRetriever) GetSafetyBoxWithHeight(safetyBoxId string) (SafetyBox, int64, error) {
-	bs, err := ModuleCdc.MarshalJSON(NewQuerySafetyBoxParams(safetyBoxId))
+func (sbr SafetyBoxRetriever) GetSafetyBoxWithHeight(safetyBoxID string) (SafetyBox, int64, error) {
+	bs, err := ModuleCdc.MarshalJSON(NewQuerySafetyBoxParams(safetyBoxID))
 	if err != nil {
 		return SafetyBox{}, 0, err
 	}
@@ -62,7 +62,7 @@ func (sbr SafetyBoxRetriever) GetSafetyBoxWithHeight(safetyBoxId string) (Safety
 }
 
 type QueryAccountRoleParams struct {
-	SafetyBoxId string         `json:"safety_box_id"`
+	SafetyBoxID string         `json:"safety_box_id"`
 	Role        string         `json:"role"`
 	Address     sdk.AccAddress `json:"address"`
 }

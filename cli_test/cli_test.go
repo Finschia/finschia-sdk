@@ -44,39 +44,43 @@ func TestModifyTokenURI(t *testing.T) {
 
 	const (
 		tck       = "brown"
-		tokenID01 = "a0000001"
+		tokenType = "1001"
+		tokenID01 = "10010001"
 	)
 
+	fooAddr := f.KeyAddress(keyFoo)
 	barAddr := f.KeyAddress(keyBar)
 	t.Log("Modify tokenURI and set empty string to tokenURI")
 	{
 		sendTokens := sdk.TokensFromConsensusPower(1)
-		f.logResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
+		f.LogResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
 
 		firstTokenURI := "uri:itisbrown"
 
 		symbol := tck + types.AccAddrSuffix(f.KeyAddress(keyFoo))
 		f.TxTokenCreateCollection(keyFoo, tck, "itisbrown", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.logResult(f.TxTokenIssueNFTCollection(keyFoo, tck, "itisbrown", firstTokenURI, tokenID01, "-y"))
+		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, symbol, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		f.LogResult(f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbol, "itisbrown", firstTokenURI, tokenType, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		denom := symbol + tokenID01
-		firstResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
+		firstResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.CollectiveNFT)
 		require.Equal(t, denom, firstResult.GetDenom())
 		require.Equal(t, firstTokenURI, firstResult.GetTokenURI())
 
 		secondTokenURI := firstTokenURI + "modified"
-		f.logResult(f.ModifyTokenURI(keyFoo, symbol, secondTokenURI, tokenID01, "-y"))
+		f.LogResult(f.ModifyTokenURI(keyFoo, symbol, secondTokenURI, tokenID01, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		secondResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
+		secondResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.CollectiveNFT)
 		require.Equal(t, secondTokenURI, secondResult.GetTokenURI())
 
 		var thirdTokenURI string
-		f.logResult(f.ModifyTokenURI(keyFoo, symbol, thirdTokenURI, tokenID01, "-y"))
+		f.LogResult(f.ModifyTokenURI(keyFoo, symbol, thirdTokenURI, tokenID01, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		thirdResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.NFT)
+		thirdResult := f.QueryTokenCollection(symbol, tokenID01).(tokenmodule.CollectiveNFT)
 		require.Equal(t, thirdTokenURI, thirdResult.GetTokenURI())
 		require.Equal(t, "", thirdResult.GetTokenURI())
 	}
@@ -2399,11 +2403,10 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	const (
 		tickerCony  = "cony"
 		tickerBrown = "brown"
-		tokenID01   = "00000001"
-		tokenID02   = "00000002"
-		tokenID03   = "00000003"
-		tokenID04   = "00000004"
-		tokenID05   = "00000005"
+		tokenID01   = "00010000"
+		tokenID02   = "00020000"
+		tokenID03   = "00030000"
+		tokenID04   = "00040000"
 		description = "description"
 	)
 
@@ -2431,7 +2434,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	}
 	// Issue collective token brown with token id
 	{
-		f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID01, "-y")
+		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenExpectEmpty(tickerBrown + fooAddrSuffix)
@@ -2444,8 +2447,8 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(tickerBrown+fooAddrSuffix+tokenID01))
 	}
 	{
-		f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID02, "-y")
-		f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID03, "-y")
+		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
+		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
 
 		collection := f.QueryCollection(tickerBrown + fooAddrSuffix)
 		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[0].GetSymbol())
@@ -2456,22 +2459,10 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID03, collection.Tokens[2].GetDenom())
 	}
 
-	// cannot issue the same token
-	{
-		_, stdout, _ := f.TxTokenIssueCollection(keyFoo, tickerBrown, description, 10000, 6, false, tokenID02, "-y")
-		tests.WaitForNextNBlocksTM(1, f.Port)
-
-		require.Contains(
-			t,
-			strings.Split(tokenmodule.ErrCollectionTokenExist(tokenmodule.DefaultCodespace, tickerBrown+fooAddrSuffix, tokenID02).Result().Log, "\""),
-			strings.Split(stdout, "\\\\\\\"")[9],
-		)
-	}
-
 	// Bar cannot issue with the collection symbol
 	{
 		// set the symbol with fooAddrSuffix
-		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
+		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenCollectionExpectEmpty(tickerBrown+fooAddrSuffix, tokenID04)
@@ -2481,7 +2472,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	{
 		f.TxTokenGrantPerm(keyFoo, barAddr, tickerBrown+fooAddrSuffix, "issue", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, tokenID04, "--address-suffix=false", "-y")
+		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID04)
@@ -2495,9 +2486,10 @@ func TestLinkCLITokenNFT(t *testing.T) {
 
 	const (
 		symbolBrown = "brown"
-		tokenID01   = "a0000001"
-		tokenID02   = "a0000002"
-		tokenID03   = "a0000003"
+		tokenType   = "1001"
+		tokenID01   = "10010001"
+		tokenID02   = "10010002"
+		tokenID03   = "10010003"
 		description = "description"
 		tokenuri    = "uri:itisbrown"
 	)
@@ -2518,18 +2510,6 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		sendTokens := sdk.TokensFromConsensusPower(1)
 		f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y")
 	}
-	// Issue nft
-	{
-		f.TxTokenIssueNFT(keyFoo, symbolBrown, description, tokenuri, "-y")
-		tests.WaitForNextNBlocksTM(1, f.Port)
-
-		token := f.QueryToken(symbolBrown + fooSuffix)
-		require.Equal(t, description, token.GetName())
-		require.Equal(t, symbolBrown+fooSuffix, token.GetSymbol())
-		require.Equal(t, symbolBrown+fooSuffix, token.GetDenom())
-		require.Equal(t, tokenuri, token.(tokenmodule.NFT).GetTokenURI())
-		require.Equal(t, sdk.NewInt(1), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix))
-	}
 	// Create Collection
 	{
 		f.TxTokenCreateCollection(keyFoo, symbolBrown, description, "-y")
@@ -2537,9 +2517,11 @@ func TestLinkCLITokenNFT(t *testing.T) {
 	}
 	// Issue Collective NFT for the collection
 	{
-		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, description, tokenuri, tokenID01, "-y")
-		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, description, tokenuri, tokenID02, "-y")
-		f.TxTokenIssueNFTCollection(keyFoo, symbolBrown, description, tokenuri, tokenID03, "-y")
+		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, symbolBrown+fooSuffix, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbolBrown+fooSuffix, description, tokenuri, tokenType, "-y")
+		f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbolBrown+fooSuffix, description, tokenuri, tokenType, "-y")
+		f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbolBrown+fooSuffix, description, tokenuri, tokenType, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		collection := f.QueryCollection(symbolBrown + fooSuffix)
 		require.Equal(t, 3, len(collection.Tokens))

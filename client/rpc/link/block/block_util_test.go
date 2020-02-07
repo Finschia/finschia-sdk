@@ -27,7 +27,6 @@ var (
 )
 
 func TestValidateBlock(t *testing.T) {
-
 	t.Log("TrustNode is true", checkMark)
 	{
 		_, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
@@ -53,7 +52,6 @@ func TestValidateBlock(t *testing.T) {
 }
 
 func TestValidateBlockFail(t *testing.T) {
-
 	t.Log("TrustNode is false and Verify return error")
 	{
 		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
@@ -71,7 +69,7 @@ func TestValidateBlockFail(t *testing.T) {
 		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
 
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
-		validateMetaErr := fmt.Errorf("ValidateBlockMeta failed")
+		validateMetaErr := fmt.Errorf("validateBlockMeta failed")
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
 		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(validateMetaErr).Times(1)
 		mockTendermint.EXPECT().ValidateBlock(gomock.Any(), gomock.Any()).Times(0)
@@ -85,7 +83,7 @@ func TestValidateBlockFail(t *testing.T) {
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
 		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(nil).Times(1)
-		validateBlockErr := fmt.Errorf("ValidateBlock failed")
+		validateBlockErr := fmt.Errorf("validateBlock failed")
 		mockTendermint.EXPECT().ValidateBlock(rb.Block, check).Return(validateBlockErr).Times(1)
 		err := bu.ValidateBlock(rb)
 		require.Equal(t, validateBlockErr, err)
@@ -101,7 +99,6 @@ func TestIndentJSONRB(t *testing.T) {
 
 	t.Log("Indent is false", checkMark)
 	{
-
 		mockCliCtx.EXPECT().Indent().Return(false).Times(1)
 		mockCodecUtil.EXPECT().MarshalJSONIndent(gomock.Any()).Times(0)
 		mockCodecUtil.EXPECT().MarshalJSON(resultBlock).Return(expectedJSON, expectedErr).Times(1)
@@ -132,17 +129,19 @@ func TestInjectByteToJsonTxs(t *testing.T) {
 	var byteTxa [][]byte = nil
 	byteTxa = append(byteTxa, []byte(tx))
 
-	block, err := bu.InjectByteToJsonTxs(bs, byteTxa)
-	actual, _ := json.Marshal(block["block"].(map[string]interface{})["data"].(map[string]interface{})["txs"])
+	block, err := bu.InjectByteToJSONTxs(bs, byteTxa)
+	require.NoError(t, err)
+	actual, err := json.Marshal(block["block"].(map[string]interface{})["data"].(map[string]interface{})["txs"])
+	require.NoError(t, err)
 	var result []map[string]interface{}
-	_ = json.Unmarshal(actual, &result)
+	err = json.Unmarshal(actual, &result)
+	require.NoError(t, err)
 	require.Equal(t, txType, result[0]["type"])
 	require.Equal(t, txMemo, result[0]["value"].(map[string]interface{})["memo"])
 	require.Equal(t, nil, err)
 }
 
 func TestCalcFetchBlockHeight(t *testing.T) {
-
 	t.Log("ChainBlockHeight greaterThanEqual request ", checkMark)
 	{
 		latestBlockHeight := int64(21)

@@ -3,7 +3,7 @@ package verifier
 import (
 	"testing"
 
-	"github.com/line/link/cmd/contract_tests/unmarshaler"
+	"github.com/line/link/contract_test/unmarshaler"
 	"github.com/stretchr/testify/require"
 )
 
@@ -62,6 +62,11 @@ func TestArray(t *testing.T) {
 			true,
 		},
 		{
+			`[]`,
+			`"abc"`,
+			false,
+		},
+		{
 			`"30"`,
 			`"50"`,
 			true,
@@ -111,7 +116,6 @@ func TestArray(t *testing.T) {
 			require.Equal(t, tt.expected, CompareJSONFormat(data1.Body, data2.Body))
 		}
 	}
-
 }
 
 func TestObject(t *testing.T) {
@@ -124,6 +128,16 @@ func TestObject(t *testing.T) {
 			`{"key1":"value1"}`,
 			`{"key1":"value1"}`,
 			true,
+		},
+		{
+			`"key1"`,
+			`{"key1":"value1"}`,
+			false,
+		},
+		{
+			`{"key1":"value1"}`,
+			`"key1"`,
+			false,
 		},
 		{
 			`{"key1":"value1"}`,

@@ -30,8 +30,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingsim "github.com/cosmos/cosmos-sdk/x/staking/simulation"
 	"github.com/cosmos/cosmos-sdk/x/supply"
-
-	cosmosbank "github.com/cosmos/cosmos-sdk/x/bank"
 )
 
 func init() {
@@ -60,7 +58,6 @@ func getSimulateFromSeedInput(tb testing.TB, w io.Writer, app *LinkApp) (
 	testing.TB, io.Writer, *baseapp.BaseApp, simulation.AppStateFn, int64,
 	simulation.WeightedOperations, sdk.Invariants, int, int, int, int, string,
 	bool, bool, bool, bool, bool, map[string]bool) {
-
 	exportParams := exportParamsPath != ""
 
 	return tb, w, app.BaseApp, appStateFn, seed,
@@ -72,7 +69,6 @@ func getSimulateFromSeedInput(tb testing.TB, w io.Writer, app *LinkApp) (
 func appStateFn(
 	r *rand.Rand, accs []simulation.Account,
 ) (appState json.RawMessage, simAccs []simulation.Account, chainID string, genesisTimestamp time.Time) {
-
 	cdc := MakeCodec()
 
 	if genesisTime == 0 {
@@ -118,7 +114,6 @@ func appStateFn(
 func appStateRandomizedFn(
 	r *rand.Rand, accs []simulation.Account, genesisTimestamp time.Time, appParams simulation.AppParams,
 ) (json.RawMessage, []simulation.Account, string) {
-
 	cdc := MakeCodec()
 	genesisState := simapp.NewDefaultGenesisState()
 
@@ -178,28 +173,29 @@ func testAndRunTxs(app *LinkApp) []simulation.WeightedOperation {
 	}
 
 	return []simulation.WeightedOperation{
-		{
-			Weight: func(_ *rand.Rand) int {
-				var v int
-				ap.GetOrGenerate(cdc, OpWeightMsgSend, &v, nil,
-					func(_ *rand.Rand) {
-						v = 100
-					})
-				return v
-			}(nil),
-			Op: cosmosbank.SimulateMsgSend(app.accountKeeper, app.cosmosbankKeeper),
-		},
-		{
-			Weight: func(_ *rand.Rand) int {
-				var v int
-				ap.GetOrGenerate(cdc, OpWeightSingleInputMsgMultiSend, &v, nil,
-					func(_ *rand.Rand) {
-						v = 10
-					})
-				return v
-			}(nil),
-			Op: cosmosbank.SimulateSingleInputMsgMultiSend(app.accountKeeper, app.cosmosbankKeeper),
-		},
+		//TODO: implement SimulateMsgXXX for link bank module
+		//{
+		//	Weight: func(_ *rand.Rand) int {
+		//		var v int
+		//		ap.GetOrGenerate(cdc, OpWeightMsgSend, &v, nil,
+		//			func(_ *rand.Rand) {
+		//				v = 100
+		//			})
+		//		return v
+		//	}(nil),
+		//	Op: cosmosbank.SimulateMsgSend(app.accountKeeper, app.cosmosbankKeeper),
+		//},
+		//{
+		//	Weight: func(_ *rand.Rand) int {
+		//		var v int
+		//		ap.GetOrGenerate(cdc, OpWeightSingleInputMsgMultiSend, &v, nil,
+		//			func(_ *rand.Rand) {
+		//				v = 10
+		//			})
+		//		return v
+		//	}(nil),
+		//	Op: cosmosbank.SimulateSingleInputMsgMultiSend(app.accountKeeper, app.cosmosbankKeeper),
+		//},
 		{
 			Weight: func(_ *rand.Rand) int {
 				var v int
@@ -269,8 +265,16 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 	logger := log.NewNopLogger()
 
 	var db dbm.DB
-	dir, _ := ioutil.TempDir("", "goleveldb-app-sim")
-	db, _ = sdk.NewLevelDB("Simulation", dir)
+	dir, err := ioutil.TempDir("", "goleveldb-app-sim")
+	if err != nil {
+		fmt.Println(err)
+		b.Fail()
+	}
+	db, err = sdk.NewLevelDB("Simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		b.Fail()
+	}
 	defer func() {
 		db.Close()
 		_ = os.RemoveAll(dir)
@@ -337,8 +341,16 @@ func TestFullAppSimulation(t *testing.T) {
 	}
 
 	var db dbm.DB
-	dir, _ := ioutil.TempDir("", "goleveldb-app-sim")
-	db, _ = sdk.NewLevelDB("Simulation", dir)
+	dir, err := ioutil.TempDir("", "goleveldb-app-sim")
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	db, err = sdk.NewLevelDB("Simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 
 	defer func() {
 		db.Close()
@@ -395,9 +407,16 @@ func TestAppImportExport(t *testing.T) {
 	}
 
 	var db dbm.DB
-	dir, _ := ioutil.TempDir("", "goleveldb-app-sim")
-	db, _ = sdk.NewLevelDB("Simulation", dir)
-
+	dir, err := ioutil.TempDir("", "goleveldb-app-sim")
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	db, err = sdk.NewLevelDB("Simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	defer func() {
 		db.Close()
 		_ = os.RemoveAll(dir)
@@ -444,9 +463,16 @@ func TestAppImportExport(t *testing.T) {
 	require.NoError(t, err)
 	fmt.Printf("Importing genesis...\n")
 
-	newDir, _ := ioutil.TempDir("", "goleveldb-app-sim-2")
-	newDB, _ := sdk.NewLevelDB("Simulation-2", dir)
-
+	newDir, err := ioutil.TempDir("", "goleveldb-app-sim-2")
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	newDB, err := sdk.NewLevelDB("Simulation-2", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	defer func() {
 		newDB.Close()
 		os.RemoveAll(newDir)
@@ -498,7 +524,6 @@ func TestAppImportExport(t *testing.T) {
 		fmt.Printf("Compared %d key/value pairs between %s and %s\n", count, storeKeyA, storeKeyB)
 		require.True(t, equal, simapp.GetSimulationLog(storeKeyA.Name(), app.cdc, newApp.cdc, kvA, kvB))
 	}
-
 }
 
 func TestAppSimulationAfterImport(t *testing.T) {
@@ -513,12 +538,21 @@ func TestAppSimulationAfterImport(t *testing.T) {
 		logger = log.NewNopLogger()
 	}
 
-	dir, _ := ioutil.TempDir("", "goleveldb-app-sim")
-	db, _ := sdk.NewLevelDB("Simulation", dir)
-
+	dir, err := ioutil.TempDir("", "goleveldb-app-sim")
+	defer func() {
+		os.RemoveAll(dir)
+	}()
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	db, err := sdk.NewLevelDB("Simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	defer func() {
 		db.Close()
-		os.RemoveAll(dir)
 	}()
 
 	app := NewLinkApp(logger, db, nil, true, 0, fauxMerkleModeOpt)
@@ -571,12 +605,21 @@ func TestAppSimulationAfterImport(t *testing.T) {
 
 	fmt.Printf("Importing genesis...\n")
 
-	newDir, _ := ioutil.TempDir("", "goleveldb-app-sim-2")
-	newDB, _ := sdk.NewLevelDB("Simulation-2", dir)
-
+	newDir, err := ioutil.TempDir("", "goleveldb-app-sim-2")
+	defer func() {
+		os.RemoveAll(newDir)
+	}()
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
+	newDB, err := sdk.NewLevelDB("Simulation-2", dir)
+	if err != nil {
+		fmt.Println(err)
+		t.Fail()
+	}
 	defer func() {
 		newDB.Close()
-		os.RemoveAll(newDir)
 	}()
 
 	newApp := NewLinkApp(log.NewNopLogger(), newDB, nil, true, 0, fauxMerkleModeOpt)
@@ -609,12 +652,16 @@ func TestAppStateDeterminism(t *testing.T) {
 			app := NewLinkApp(logger, db, nil, true, 0)
 
 			// Run randomized simulation
-			_, _, _ = simulation.SimulateFromSeed(
+			_, _, err := simulation.SimulateFromSeed(
 				t, os.Stdout, app.BaseApp, appStateFn, seed, testAndRunTxs(app),
 				[]sdk.Invariant{}, 1, numBlocks, exportParamsHeight,
 				blockSize, "", false, commit, lean,
 				false, false, app.ModuleAccountAddrs(),
 			)
+			if err != nil {
+				fmt.Println(err)
+				t.Fail()
+			}
 			appHash := app.LastCommitID().Hash
 			appHashList[j] = appHash
 		}
@@ -626,12 +673,22 @@ func TestAppStateDeterminism(t *testing.T) {
 
 func BenchmarkInvariants(b *testing.B) {
 	logger := log.NewNopLogger()
-	dir, _ := ioutil.TempDir("", "goleveldb-app-invariant-bench")
-	db, _ := sdk.NewLevelDB("simulation", dir)
+	dir, err := ioutil.TempDir("", "goleveldb-app-invariant-bench")
+	if err != nil {
+		fmt.Println(err)
+		b.Fail()
+	}
+	defer func() {
+		os.RemoveAll(dir)
+	}()
+	db, err := sdk.NewLevelDB("simulation", dir)
+	if err != nil {
+		fmt.Println(err)
+		b.Fail()
+	}
 
 	defer func() {
 		db.Close()
-		os.RemoveAll(dir)
 	}()
 
 	app := NewLinkApp(logger, db, nil, true, 0)
@@ -678,5 +735,4 @@ func BenchmarkInvariants(b *testing.B) {
 		fmt.Println(simErr)
 		b.FailNow()
 	}
-
 }

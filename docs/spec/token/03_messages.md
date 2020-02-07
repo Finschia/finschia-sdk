@@ -21,16 +21,6 @@ type MsgIssue struct {
 }
 ```
 
-### MsgIssueNFT
-```golang
-type MsgIssueNFT struct {
-	Name     string         `json:"name"`
-	Symbol   string         `json:"symbol"`
-	Owner    sdk.AccAddress `json:"owner"`
-	TokenURI string         `json:"token_uri"`
-}
-```
-
 ### MsgCreateCollection
 ```golang
 type MsgCreateCollection struct {
@@ -40,30 +30,28 @@ type MsgCreateCollection struct {
 }
 ```
 
-### MsgIssueNFTCollection
+### MsgIssueCFT
 ```golang
-type MsgIssueNFTCollection struct {
-	Name     string         `json:"name"`
+type MsgIssueCFT struct {
 	Symbol   string         `json:"symbol"`
-	Owner    sdk.AccAddress `json:"owner"`
-	TokenURI string         `json:"token_uri"`
-	TokenID string          `json:"token_id"`
-}
-```
-
-### MsgIssueCollection
-```golang
-type MsgIssueCollection struct {
 	Name     string         `json:"name"`
-	Symbol   string         `json:"symbol"`
 	Owner    sdk.AccAddress `json:"owner"`
 	TokenURI string         `json:"token_uri"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
 	Decimals sdk.Int        `json:"decimals"`
-	TokenID string          `json:"token_id"`
 }
 ```
+
+
+### MsgIssueCNFT
+```golang
+type MsgIssueCNFT struct {
+	Symbol   string         `json:"symbol"`
+	Owner    sdk.AccAddress `json:"owner"`
+}
+```
+
 
 ## Mint
 
@@ -80,10 +68,10 @@ type MsgMint struct {
 	Amount sdk.Coins      `json:"amount"`
 }
 ```
-### MsgMintCollection
+### MsgMintCFT
 
 ```golang
-type MsgMintCollection struct {
+type MsgMintCFT struct {
 	From   sdk.AccAddress            `json:"from"`
 	To     sdk.AccAddress            `json:"to"`
 	Amount linktype.CoinWithTokenIDs `json:"amount"`
@@ -95,6 +83,18 @@ type CoinWithTokenID struct {
 	Symbol  string  `json:"symbol"`
 	TokenID string  `json:"token_id"`
 	Amount  sdk.Int `json:"amount"`
+}
+```
+
+### MsgMintCNFT
+```golang
+type MsgMintCNFT struct {
+	Symbol    string         `json:"symbol"`
+	Name      string         `json:"name"`
+	From      sdk.AccAddress `json:"from"`
+	To        sdk.AccAddress `json:"to"`
+	TokenURI  string         `json:"token_uri"`
+	TokenType string         `json:"token_type"`
 }
 ```
 
@@ -111,10 +111,10 @@ type MsgBurn struct {
 	Amount sdk.Coins      `json:"amount"`
 }
 ```
-### MsgBurnCollection
+### MsgBurnCFT
 
 ```golang
-type MsgBurnCollection struct {
+type MsgBurnCFT struct {
 	From   sdk.AccAddress            `json:"from"`
 	Amount linktype.CoinWithTokenIDs `json:"amount"`
 }
@@ -185,22 +185,6 @@ type MsgTransferCFT struct {
 
 **Transfer message is to transfer a collective non-reserved fungible token**
 - Signer of this message must have the amount of the tokens
-- Token is subtracted from the `FromAddress` account
-- Token is added to the `ToAddress` account
-
-
-## MsgTransferNFT
-
-```golang
-type MsgTransferNFT struct {
-	FromAddress sdk.AccAddress `json:"from_address"`
-	ToAddress   sdk.AccAddress `json:"to_address"`
-	TokenSymbol string         `json:"token_symbol"`
-}
-```
-
-**TransferNFT message is to transfer a non-fungible token**
-- Signer of this message must have the token
 - Token is subtracted from the `FromAddress` account
 - Token is added to the `ToAddress` account
 

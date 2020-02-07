@@ -55,7 +55,6 @@ func TestBalances(t *testing.T) {
 
 	require.NoError(t, input.Cdc.UnmarshalJSON(res, &amount))
 	require.True(t, amount.Equal(sdk.NewInt(10)))
-
 }
 
 func TestQuerierRouteNotFound(t *testing.T) {

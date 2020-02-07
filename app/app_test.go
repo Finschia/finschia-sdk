@@ -37,7 +37,6 @@ func TestBlackListedAddrs(t *testing.T) {
 }
 
 func setGenesis(gapp *LinkApp) error {
-
 	genesisState := simapp.NewDefaultGenesisState()
 	stateBytes, err := codec.MarshalJSONIndent(gapp.cdc, genesisState)
 	if err != nil {

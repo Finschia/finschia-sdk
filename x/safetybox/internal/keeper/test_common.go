@@ -41,7 +41,6 @@ func newTestCodec() *codec.Codec {
 }
 
 func SetupTestInput(t *testing.T) TestInput {
-
 	keyAuth := sdk.NewKVStoreKey(auth.StoreKey)
 	keyParams := sdk.NewKVStoreKey(params.StoreKey)
 	tkeyParams := sdk.NewTransientStoreKey(params.TStoreKey)
@@ -89,8 +88,8 @@ func SetupTestInput(t *testing.T) TestInput {
 	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: bankKeeper}
 }
 
-func checkSafetyBoxBalance(t *testing.T, k Keeper, ctx sdk.Context, safetyBoxId string, ta, ca, ti int64) {
-	sb, err := k.GetSafetyBox(ctx, safetyBoxId)
+func checkSafetyBoxBalance(t *testing.T, k Keeper, ctx sdk.Context, safetyBoxID string, ta, ca, ti int64) {
+	sb, err := k.GetSafetyBox(ctx, safetyBoxID)
 	require.NoError(t, err)
 
 	// only accepts one type of coins

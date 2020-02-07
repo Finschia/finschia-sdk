@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -21,8 +23,10 @@ const (
 	CodeTokenInvalidAmount      sdk.CodeType = 205
 
 	//Collection
-	CodeCollectionExist    sdk.CodeType = 300
-	CodeCollectionNotExist sdk.CodeType = 301
+	CodeCollectionExist             sdk.CodeType = 300
+	CodeCollectionNotExist          sdk.CodeType = 301
+	CodeCollectionTokenTypeExist    sdk.CodeType = 302
+	CodeCollectionTokenTypeNotExist sdk.CodeType = 303
 
 	//Permission
 	CodeTokenPermission sdk.CodeType = 400
@@ -82,7 +86,7 @@ func ErrCollectionNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error
 	return sdk.NewError(codespace, CodeCollectionNotExist, "collection [%s] does not exists", symbol)
 }
 
-func ErrTokenPermission(codespace sdk.CodespaceType, account sdk.AccAddress, permission PermissionI) sdk.Error {
+func ErrTokenPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission PermissionI) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
 }
 
@@ -93,6 +97,15 @@ func ErrCollectionTokenExist(codespace sdk.CodespaceType, symbol, tokenID string
 func ErrCollectionTokenNotExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenNotExist, "token symbol[%s] token-id[%s] does not exist", symbol, tokenID)
 }
+
+func ErrCollectionTokenTypeExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenTypeExist, "token type for symbol[%s] token-type[%s] already exists", symbol, tokenType)
+}
+
+func ErrCollectionTokenTypeNotExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenTypeNotExist, "token type for symbol[%s] token-type[%s] does not exist", symbol, tokenType)
+}
+
 func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenAlreadyAChild, "token [%s] is already a child of some other", denom)
 }
@@ -101,8 +114,8 @@ func ErrTokenNotAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenNotAChild, "token [%s] is not a child of some other", denom)
 }
 
-func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner sdk.AccAddress) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is not owned by [%s]", denom, owner.String())
+func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner fmt.Stringer) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is being not owned by [%s]", denom, owner.String())
 }
 
 func ErrTokenNotNFT(codespace sdk.CodespaceType, denom string) sdk.Error {

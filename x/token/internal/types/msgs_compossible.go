@@ -56,11 +56,11 @@ func (msg MsgAttach) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidCoins(msg.Symbol)
 	}
 
-	if err := linktype.ValidateSymbolTokenID(msg.ToTokenID); err != nil {
+	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
 		return sdk.ErrInvalidCoins(msg.ToTokenID)
 	}
 
-	if err := linktype.ValidateSymbolTokenID(msg.TokenID); err != nil {
+	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
 		return sdk.ErrInvalidCoins(msg.TokenID)
 	}
 
@@ -115,7 +115,7 @@ func (msg MsgDetach) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidCoins(msg.Symbol)
 	}
 
-	if err := linktype.ValidateSymbolTokenID(msg.TokenID); err != nil {
+	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
 		return sdk.ErrInvalidCoins(msg.TokenID)
 	}
 

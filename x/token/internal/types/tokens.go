@@ -14,6 +14,8 @@ const (
 	LargestAlphanum   = "z"
 	TokenIDLength     = linktype.TokenIDLen
 	FungibleFlag      = SmallestAlphanum
+	SmallestFTType    = "0001"
+	SmallestNFTType   = "1001"
 )
 
 type Tokens []Token
@@ -52,7 +54,6 @@ func (ts Tokens) Update(token Token) (Tokens, bool) {
 		return ts, false
 	}
 	return append(append(ts[:index], token), ts[index+1:]...), true
-
 }
 func (ts Tokens) Remove(tokenID string) (Tokens, bool) {
 	index := ts.find(tokenID)
@@ -85,7 +86,8 @@ func (ts Tokens) NextTokenID(prefix string) string {
 	}
 	latestToken := tokens.GetLatest()
 	if latestToken == nil {
-		return prefix + strings.Repeat(SmallestAlphanum, TokenIDLength-len(prefix))
+		return prefix + "0001"
+		//return prefix + strings.Repeat(SmallestAlphanum, TokenIDLength-len(prefix))
 	}
 	nextTokenID := NextTokenID(latestToken.GetTokenID(), prefix)
 	for _, token := range tokens {
@@ -97,17 +99,33 @@ func (ts Tokens) NextTokenID(prefix string) string {
 	return ""
 }
 
-func (ts Tokens) NextBaseID() string {
+func (ts Tokens) NextTokenTypeForNFT() string {
 	latestToken := ts.GetNFTs().GetLatest()
 	if latestToken == nil {
-		return "1" + strings.Repeat(SmallestAlphanum, BaseTokenIDLength-1)
+		return SmallestNFTType
 	}
 	prefix := latestToken.GetTokenID()[:BaseTokenIDLength]
-
 	for nextBaseID := NextTokenID(prefix, ""); nextBaseID != prefix; nextBaseID = NextTokenID(nextBaseID, "") {
-		if nextBaseID[0] == '0' {
+		if nextBaseID[0] == FungibleFlag[0] {
 			nextBaseID = "1" + nextBaseID[1:]
 		}
+		occupied := false
+		ts.Iterate(nextBaseID, func(Token) bool { occupied = true; return true })
+		if !occupied {
+			return nextBaseID
+		}
+	}
+	return ""
+}
+
+func (ts Tokens) NextTokenTypeForFT() string {
+	latestToken := ts.GetFTs().GetLatest()
+	if latestToken == nil {
+		return SmallestFTType
+	}
+
+	prefix := latestToken.GetTokenID()[:BaseTokenIDLength]
+	for nextBaseID := NextTokenID(prefix, FungibleFlag); nextBaseID != prefix; nextBaseID = NextTokenID(nextBaseID, FungibleFlag) {
 		occupied := false
 		ts.Iterate(nextBaseID, func(Token) bool { occupied = true; return true })
 		if !occupied {
@@ -130,17 +148,15 @@ func (ts Tokens) GetFTs() (tokens Tokens) {
 }
 
 func (ts Tokens) GetNFTs() (tokens Tokens) {
-
-	start := "1" + strings.Repeat(SmallestAlphanum, TokenIDLength-1)
-	_, startIndex := BinarySearch(ts, start)
-	if startIndex == -1 {
-		return tokens
-	}
-	if startIndex != -1 && strings.Compare(ts.IDAtIndex(startIndex), start) < 0 {
-		startIndex += 1
-	}
-
-	return ts[startIndex:]
+	ts.Iterate("", func(t Token) bool {
+		if t.GetTokenID()[0] != FungibleFlag[0] {
+			if t.GetTokenID()[BaseTokenIDLength:] != "0000" {
+				tokens = append(tokens, t)
+			}
+		}
+		return false
+	})
+	return tokens
 }
 
 func (ts Tokens) Iterate(prefix string, process func(Token) (stop bool)) {
@@ -153,14 +169,14 @@ func (ts Tokens) Iterate(prefix string, process func(Token) (stop bool)) {
 	end := prefix + strings.Repeat(LargestAlphanum, postLen)
 	_, startIndex := BinarySearch(ts, start)
 	if startIndex != -1 && strings.Compare(ts.IDAtIndex(startIndex), start) < 0 {
-		startIndex += 1
+		startIndex++
 	}
 	_, endIndex := BinarySearch(ts, end)
 	if endIndex != -1 && strings.Compare(ts.IDAtIndex(endIndex), end) > 0 {
-		endIndex -= 1
+		endIndex--
 	}
 
-	for index := startIndex; index >= 0 && index <= endIndex; index += 1 {
+	for index := startIndex; index >= 0 && index <= endIndex; index++ {
 		if process(ts[index]) {
 			return
 		}
@@ -204,7 +220,6 @@ func NextTokenID(tokenID string, prefix string) (nextTokenID string) {
 	const toCharStrLength = 36 //int32(len(toCharStr))
 
 	tokenIDInt := make([]int32, len(tokenID))
-
 	for idx, char := range tokenID {
 		if char >= '0' && char <= '9' {
 			tokenIDInt[idx] = char - '0'
@@ -212,7 +227,7 @@ func NextTokenID(tokenID string, prefix string) (nextTokenID string) {
 			tokenIDInt[idx] = char - 'a' + 10
 		}
 	}
-	for idx := len(tokenIDInt) - 1; idx >= 0; idx -= 1 {
+	for idx := len(tokenIDInt) - 1; idx >= 0; idx-- {
 		char := tokenIDInt[idx] + 1
 		if char < (int32)(toCharStrLength) {
 			tokenIDInt[idx] = char

@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	SafetyBoxTestId = "test_safety_box_id"
+	SafetyBoxTestID = "test_safety_box_id"
 )
 
 func TestHandler(t *testing.T) {
@@ -28,21 +28,22 @@ func TestHandler(t *testing.T) {
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	msgSbCreate := MsgSafetyBoxCreate{
-		SafetyBoxId:     SafetyBoxTestId,
+		SafetyBoxID:     SafetyBoxTestID,
 		SafetyBoxOwner:  owner,
 		SafetyBoxDenoms: []string{"link"},
 	}
 	res = h(ctx, msgSbCreate)
 	require.True(t, res.IsOK())
 
-	sb, _ := keeper.GetSafetyBox(ctx, SafetyBoxTestId)
+	sb, err := keeper.GetSafetyBox(ctx, SafetyBoxTestID)
+	require.NoError(t, err)
 	safetyBoxAddress := sb.Address
 
 	// check emitted events
 	e := sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxCreate,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbCreate.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbCreate.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, msgSbCreate.SafetyBoxOwner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAddress, safetyBoxAddress.String()),
 		),
@@ -60,7 +61,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbRegisterOperator := MsgSafetyBoxRegisterOperator{
-		SafetyBoxId:    SafetyBoxTestId,
+		SafetyBoxID:    SafetyBoxTestID,
 		SafetyBoxOwner: owner,
 		Address:        operator,
 	}
@@ -71,7 +72,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbRegisterOperator.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbRegisterOperator.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, msgSbRegisterOperator.SafetyBoxOwner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbRegisterOperator.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantOperatorPermission, RoleOperator),
@@ -90,7 +91,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbRegisterAllocator := MsgSafetyBoxRegisterAllocator{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Operator:    operator,
 		Address:     allocator,
 	}
@@ -101,7 +102,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbRegisterAllocator.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbRegisterAllocator.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msgSbRegisterAllocator.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbRegisterAllocator.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantAllocatorPermission, RoleAllocator),
@@ -119,7 +120,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbRegisterIssuer := MsgSafetyBoxRegisterIssuer{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Operator:    operator,
 		Address:     issuer1,
 	}
@@ -130,7 +131,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbRegisterIssuer.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbRegisterIssuer.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msgSbRegisterIssuer.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbRegisterIssuer.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantIssuerPermission, RoleIssuer),
@@ -148,7 +149,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbRegisterIssuer = MsgSafetyBoxRegisterIssuer{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Operator:    operator,
 		Address:     issuer2,
 	}
@@ -159,7 +160,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbRegisterIssuer.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbRegisterIssuer.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msgSbRegisterIssuer.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbRegisterIssuer.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantIssuerPermission, RoleIssuer),
@@ -177,7 +178,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbRegisterReturner := MsgSafetyBoxRegisterReturner{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Operator:    operator,
 		Address:     returner,
 	}
@@ -188,7 +189,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbRegisterReturner.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbRegisterReturner.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msgSbRegisterReturner.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbRegisterReturner.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxGrantReturnerPermission, RoleReturner),
@@ -202,7 +203,7 @@ func TestHandler(t *testing.T) {
 	testCommon.VerifyEventFunc(t, e, res.Events)
 
 	// put some coins to all
-	_, err := input.Bk.AddCoins(ctx, allocator, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	_, err = input.Bk.AddCoins(ctx, allocator, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
 	require.NoError(t, err)
 	_, err = input.Bk.AddCoins(ctx, issuer1, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
 	require.NoError(t, err)
@@ -215,7 +216,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbAllocate := MsgSafetyBoxAllocateCoins{
-		SafetyBoxId:      SafetyBoxTestId,
+		SafetyBoxID:      SafetyBoxTestID,
 		AllocatorAddress: allocator,
 		Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 	}
@@ -235,7 +236,7 @@ func TestHandler(t *testing.T) {
 		),
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbAllocate.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbAllocate.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxAllocatorAddress, msgSbAllocate.AllocatorAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionAllocate),
 			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msgSbAllocate.Coins.String()),
@@ -251,7 +252,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbIssue := MsgSafetyBoxIssueCoins{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		FromAddress: issuer1,
 		ToAddress:   issuer2,
 		Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
@@ -272,7 +273,7 @@ func TestHandler(t *testing.T) {
 		),
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbIssue.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbIssue.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxIssueFromAddress, msgSbIssue.FromAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxIssueToAddress, msgSbIssue.ToAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionIssue),
@@ -289,7 +290,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbReturn := MsgSafetyBoxReturnCoins{
-		SafetyBoxId:     SafetyBoxTestId,
+		SafetyBoxID:     SafetyBoxTestID,
 		ReturnerAddress: returner,
 		Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 	}
@@ -309,7 +310,7 @@ func TestHandler(t *testing.T) {
 		),
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbReturn.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbReturn.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxReturnerAddress, msgSbReturn.ReturnerAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionReturn),
 			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msgSbReturn.Coins.String()),
@@ -325,7 +326,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbRecall := MsgSafetyBoxRecallCoins{
-		SafetyBoxId:      SafetyBoxTestId,
+		SafetyBoxID:      SafetyBoxTestID,
 		AllocatorAddress: allocator,
 		Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 	}
@@ -345,7 +346,7 @@ func TestHandler(t *testing.T) {
 		),
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbRecall.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbRecall.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxAllocatorAddress, msgSbRecall.AllocatorAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionRecall),
 			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msgSbRecall.Coins.String()),
@@ -362,7 +363,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbDeregisterAllocator := MsgSafetyBoxDeregisterAllocator{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Operator:    operator,
 		Address:     allocator,
 	}
@@ -373,7 +374,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbDeregisterAllocator.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbDeregisterAllocator.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msgSbDeregisterAllocator.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbDeregisterAllocator.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeAllocatorPermission, RoleAllocator),
@@ -389,7 +390,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbDeregisterIssuer := MsgSafetyBoxDeregisterIssuer{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Operator:    operator,
 		Address:     issuer1,
 	}
@@ -400,7 +401,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbDeregisterIssuer.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbDeregisterIssuer.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msgSbDeregisterIssuer.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbDeregisterIssuer.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeIssuerPermission, RoleIssuer),
@@ -416,7 +417,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbDeregisterIssuer = MsgSafetyBoxDeregisterIssuer{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Operator:    operator,
 		Address:     issuer2,
 	}
@@ -427,7 +428,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbDeregisterIssuer.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbDeregisterIssuer.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msgSbDeregisterIssuer.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbDeregisterIssuer.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeIssuerPermission, RoleIssuer),
@@ -443,7 +444,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbDeregisterReturner := MsgSafetyBoxDeregisterReturner{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Operator:    operator,
 		Address:     returner,
 	}
@@ -454,7 +455,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbDeregisterReturner.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbDeregisterReturner.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOperator, msgSbDeregisterReturner.Operator.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbDeregisterReturner.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeReturnerPermission, RoleReturner),
@@ -471,7 +472,7 @@ func TestHandler(t *testing.T) {
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
 	msgSbDeregisterOperator := MsgSafetyBoxDeregisterOperator{
-		SafetyBoxId:    SafetyBoxTestId,
+		SafetyBoxID:    SafetyBoxTestID,
 		SafetyBoxOwner: owner,
 		Address:        operator,
 	}
@@ -482,7 +483,7 @@ func TestHandler(t *testing.T) {
 	e = sdk.Events{
 		sdk.NewEvent(
 			EventSafetyBoxPermission,
-			sdk.NewAttribute(AttributeKeySafetyBoxId, msgSbDeregisterOperator.SafetyBoxId),
+			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbDeregisterOperator.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, msgSbDeregisterOperator.SafetyBoxOwner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxTarget, msgSbDeregisterOperator.Address.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxRevokeOperatorPermission, RoleOperator),

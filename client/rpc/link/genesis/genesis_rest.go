@@ -20,7 +20,6 @@ func QueryGenesisTxRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc 
 // QueryGenesisAccountRequestHandlerFn implements a REST handler to get the genesis accounts
 func QueryGenesisAccountRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-
 		_, page, limit, err := rest.ParseHTTPArgs(r)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())

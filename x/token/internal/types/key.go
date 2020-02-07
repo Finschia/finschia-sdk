@@ -10,9 +10,14 @@ const (
 var (
 	TokenDenomKeyPrefix            = []byte{0x00}
 	CollectionKeyPrefix            = []byte{0x01}
-	TokenChildToParentKeyPrefix    = []byte{0x02}
-	TokenParentToChildKeyPrefix    = []byte{0x03}
-	TokenParentToChildSubKeyPrefix = []byte{0x04}
+	TokenTypeKeyPrefix             = []byte{0x02}
+	TokenChildToParentKeyPrefix    = []byte{0x03}
+	TokenParentToChildKeyPrefix    = []byte{0x04}
+	TokenParentToChildSubKeyPrefix = []byte{0x05}
+)
+
+var (
+	KeyExist = []byte{0x01}
 )
 
 func TokenDenomKey(denom string) []byte {
@@ -21,6 +26,11 @@ func TokenDenomKey(denom string) []byte {
 
 func CollectionKey(denom string) []byte {
 	return append(CollectionKeyPrefix, []byte(denom)...)
+}
+
+func TokenTypeKey(symbol, tokenType string) []byte {
+	key := append(TokenTypeKeyPrefix, []byte(symbol)...)
+	return append(key, []byte(tokenType)...)
 }
 
 func TokenChildToParentKey(token Token) []byte {

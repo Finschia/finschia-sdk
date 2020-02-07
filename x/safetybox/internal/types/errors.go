@@ -8,8 +8,8 @@ const (
 	DefaultCodespace sdk.CodespaceType = ModuleName
 
 	// Validations
-	CodeSafetyBoxIdExist               sdk.CodeType = 100
-	CodeSafetyBoxIdNotExist            sdk.CodeType = 101
+	CodeSafetyBoxIDExist               sdk.CodeType = 100
+	CodeSafetyBoxIDNotExist            sdk.CodeType = 101
 	CodeSafetyBoxAccountExist          sdk.CodeType = 102
 	CodeSafetyBoxInvalidAction         sdk.CodeType = 103
 	CodeSafetyBoxInvalidMsgType        sdk.CodeType = 104
@@ -36,20 +36,20 @@ const (
 	CodeSafetyBoxOnlyOneDenomAllowed     sdk.CodeType = 302
 )
 
-func ErrSafetyBoxIdRequired(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIdExist, "Safety box ID is required")
+func ErrSafetyBoxIDRequired(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeSafetyBoxIDExist, "Safety box ID is required")
 }
 
 func ErrSafetyBoxOwnerRequired(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIdExist, "Safety box owner is required")
+	return sdk.NewError(codespace, CodeSafetyBoxIDExist, "Safety box owner is required")
 }
 
-func ErrSafetyBoxIdExist(codespace sdk.CodespaceType, safetyBoxId string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIdExist, "Safety box with the ID (%s) exists", safetyBoxId)
+func ErrSafetyBoxIDExist(codespace sdk.CodespaceType, safetyBoxID string) sdk.Error {
+	return sdk.NewError(codespace, CodeSafetyBoxIDExist, "Safety box with the ID (%s) exists", safetyBoxID)
 }
 
-func ErrSafetyBoxNotExist(codespace sdk.CodespaceType, safetyBoxId string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIdNotExist, "Safety box (ID: %s) does not exist", safetyBoxId)
+func ErrSafetyBoxNotExist(codespace sdk.CodespaceType, safetyBoxID string) sdk.Error {
+	return sdk.NewError(codespace, CodeSafetyBoxIDNotExist, "Safety box (ID: %s) does not exist", safetyBoxID)
 }
 
 func ErrSafetyBoxPermissionWhitelist(codespace sdk.CodespaceType, account string) sdk.Error {
@@ -96,8 +96,8 @@ func ErrSafetyBoxDoesNotHavePermission(codespace sdk.CodespaceType, account stri
 	return sdk.NewError(codespace, CodeSafetyBoxDoesNotHavePermission, "The account (%s) does not have the permission", account)
 }
 
-func ErrSafetyBoxAccountExist(codespace sdk.CodespaceType, safetyBoxId string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxAccountExist, "The safety box id (%s) exists - please try different safety box id", safetyBoxId)
+func ErrSafetyBoxAccountExist(codespace sdk.CodespaceType, safetyBoxID string) sdk.Error {
+	return sdk.NewError(codespace, CodeSafetyBoxAccountExist, "The safety box id (%s) exists - please try different safety box id", safetyBoxID)
 }
 
 func ErrSafetyBoxReturnMoreThanIssued(codespace sdk.CodespaceType, has, toReturn sdk.Coins) sdk.Error {

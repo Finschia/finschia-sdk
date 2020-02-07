@@ -9,7 +9,6 @@ import (
 
 	cpm "github.com/otiai10/copy"
 	"github.com/spf13/cobra"
-
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/proxy"
@@ -37,7 +36,6 @@ func replayCmd() *cobra.Command {
 }
 
 func replayTxs(rootDir string) error {
-
 	if false {
 		// Copy the rootDir to a new directory, to preserve the old one.
 		fmt.Fprintln(os.Stderr, "Copying rootdir over")
@@ -116,7 +114,8 @@ func replayTxs(rootDir string) error {
 		return err
 	}
 	defer func() {
-		_ = proxyApp.Stop()
+		err = proxyApp.Stop()
+		fmt.Println(err)
 	}()
 
 	state := tmsm.LoadState(tmDB)

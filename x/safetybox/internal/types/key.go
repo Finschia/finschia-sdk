@@ -11,6 +11,6 @@ var (
 	SafetyBoxKeyPrefix = []byte{0x04}
 )
 
-func SafetyBoxKey(safetyBoxId string) []byte {
-	return append(SafetyBoxKeyPrefix, []byte(safetyBoxId)...)
+func SafetyBoxKey(safetyBoxID string) []byte {
+	return append(SafetyBoxKeyPrefix, []byte(safetyBoxID)...)
 }

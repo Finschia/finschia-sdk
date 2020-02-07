@@ -36,13 +36,15 @@ type TxResponse struct {
 }
 
 // NewResponseResultTx returns a TxResponse given a ResultTx from tendermint
-func NewResponseResultTx(res *ctypes.ResultTx, tx Tx, timestamp string) TxResponse {
+func NewResponseResultTx(res *ctypes.ResultTx, tx Tx, timestamp string) (TxResponse, error) {
 	if res == nil {
-		return TxResponse{}
+		return TxResponse{}, nil
 	}
 
-	parsedLogs, _ := ParseABCILogs(res.TxResult.Log)
-
+	parsedLogs, err := ParseABCILogs(res.TxResult.Log)
+	if err != nil {
+		return TxResponse{}, err
+	}
 	return TxResponse{
 		TxHash:    res.Hash.String(),
 		Height:    res.Height,
@@ -57,7 +59,7 @@ func NewResponseResultTx(res *ctypes.ResultTx, tx Tx, timestamp string) TxRespon
 		Events:    StringifyEvents(res.TxResult.Events),
 		Tx:        tx,
 		Timestamp: timestamp,
-	}
+	}, nil
 }
 
 func (r TxResponse) String() string {

@@ -8,7 +8,6 @@ import (
 )
 
 var (
-	// functions aliases
 	GetAccountCmd       = cosmoscli.GetAccountCmd
 	QueryTxsByEventsCmd = cli.QueryTxsByEventsCmd
 	QueryTxCmd          = cli.QueryTxCmd

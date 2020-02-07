@@ -35,13 +35,13 @@ import (
 const appName = "LinkApp"
 
 var (
-	// default home directories for linkcli
+	// DefaultCLIHome for linkcli
 	DefaultCLIHome = os.ExpandEnv("$HOME/.linkcli")
 
-	// default home directories for linkd
+	// DefaultNodeHome for linkd
 	DefaultNodeHome = os.ExpandEnv("$HOME/.linkd")
 
-	// The module BasicManager is in charge of setting up basic,
+	// ModuleBasics is in charge of setting up basic,
 	// non-dependant module elements, such as codec registration
 	// and genesis verification.
 	ModuleBasics = module.NewBasicManager(
@@ -49,7 +49,6 @@ var (
 		genutil.AppModuleBasic{},
 		auth.AppModuleBasic{},
 		bank.AppModuleBasic{},
-		cosmosbank.AppModuleBasic{},
 		staking.AppModuleBasic{},
 		params.AppModuleBasic{},
 		supply.AppModuleBasic{},
@@ -109,7 +108,6 @@ type LinkApp struct {
 // NewLinkApp returns a reference to an initialized LinkApp.
 func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	invCheckPeriod uint, baseAppOptions ...func(*bam.BaseApp)) *LinkApp {
-
 	cdc := MakeCodec()
 
 	bApp := bam.NewBaseApp(appName, logger, db, auth.DefaultTxDecoder(cdc), baseAppOptions...)
@@ -170,7 +168,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		safetybox.NewAppModule(app.safetyboxKeeper),
 		account.NewAppModule(app.accountKeeper),
 		proxy.NewAppModule(app.proxyKeeper),
-		cosmosbank.NewAppModule(app.cosmosbankKeeper, app.accountKeeper),
 	)
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
 
@@ -187,22 +184,9 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		safetybox.ModuleName,
 		account.ModuleName,
 		proxy.ModuleName,
-		cosmosbank.ModuleName,
 	)
 
-	//XXX: exclude cosmosbank route
-	//app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
-	for _, m := range app.mm.Modules {
-		if m.Name() == cosmosbank.ModuleName {
-			continue
-		}
-		if m.Route() != "" {
-			app.Router().AddRoute(m.Route(), m.NewHandler())
-		}
-		if m.QuerierRoute() != "" {
-			app.QueryRouter().AddRoute(m.QuerierRoute(), m.NewQuerierHandler())
-		}
-	}
+	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
 
 	// initialize stores
 	app.MountKVStores(keys)

@@ -57,39 +57,6 @@ func (k Keeper) TransferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddr
 	return nil
 }
 
-func (k Keeper) TransferNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string) sdk.Error {
-	store := ctx.KVStore(k.storeKey)
-
-	token, err := k.GetToken(ctx, symbol, "")
-	if err != nil {
-		return err
-	}
-
-	nft, ok := token.(*types.BaseNFT)
-	if !ok {
-		return types.ErrTokenNotNFT(types.DefaultCodespace, token.GetDenom())
-	}
-	if !from.Equals(nft.Owner) {
-		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
-	}
-	if !from.Equals(to) {
-		if err := k.moveNFToken(ctx, store, from, to, nft); err != nil {
-			return err
-		}
-	}
-
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeTransferNFT,
-			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
-			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
-			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
-		),
-	})
-
-	return nil
-}
-
 func (k Keeper) TransferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
@@ -142,18 +109,12 @@ func (k Keeper) moveTokenInternal(ctx sdk.Context, from sdk.AccAddress, to sdk.A
 	return nil
 }
 
-func (k Keeper) moveNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddress, to sdk.AccAddress, token *types.BaseNFT) sdk.Error {
-	amount := sdk.NewCoins(sdk.NewInt64Coin(token.GetDenom(), 1))
-	if err := k.moveTokenInternal(ctx, from, to, amount); err != nil {
+func (k Keeper) moveCNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddress, to sdk.AccAddress, token types.CollectiveNFT) sdk.Error {
+	children, err := k.ChildrenOf(ctx, token.GetSymbol(), token.GetTokenID())
+	if err != nil {
 		return err
 	}
 
-	token.Owner = to
-	return k.ModifyToken(ctx, token)
-}
-
-func (k Keeper) moveCNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddress, to sdk.AccAddress, token types.CollectiveNFT) sdk.Error {
-	children, _ := k.ChildrenOf(ctx, token.GetSymbol(), token.GetTokenID())
 	for _, child := range children {
 		err := k.moveCNFToken(ctx, store, from, to, child.(types.CollectiveNFT))
 		if err != nil {

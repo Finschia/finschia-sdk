@@ -5,15 +5,6 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
-
-	if len(token.GetTokenID()) == 0 {
-		return k.setToken(ctx, token)
-	}
-	return k.setTokenToCollection(ctx, token)
-
-}
-
 func (k Keeper) setToken(ctx sdk.Context, token types.Token) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 	tokenKey := types.TokenDenomKey(token.GetSymbol())
@@ -24,10 +15,16 @@ func (k Keeper) setToken(ctx sdk.Context, token types.Token) sdk.Error {
 	return nil
 }
 
-func (k Keeper) setTokenToCollection(ctx sdk.Context, token types.Token) sdk.Error {
+func (k Keeper) setTokenToCollection(ctx sdk.Context, token types.CollectiveToken) sdk.Error {
 	c, err := k.GetCollection(ctx, token.GetSymbol())
 	if err != nil {
 		return err
+	}
+	if t, ok := token.(types.CollectiveNFT); ok {
+		tokenType := t.GetTokenType()
+		if !k.HasTokenType(ctx, token.GetSymbol(), tokenType) {
+			return types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), tokenType)
+		}
 	}
 	c, err = c.AddToken(token)
 	if err != nil {

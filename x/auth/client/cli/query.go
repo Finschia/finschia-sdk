@@ -109,14 +109,22 @@ $ <appcli> query txs --tags 'message.action:send&message.sender=yoshi' --height-
 	}
 
 	cmd.Flags().StringP(flags.FlagNode, "n", "tcp://localhost:26657", "Node to connect to")
-	_ = viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	err := viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	if err != nil {
+		panic(err)
+	}
 	cmd.Flags().Bool(flags.FlagTrustNode, false, "Trust connected full node (don't verify proofs for responses)")
-	_ = viper.BindPFlag(flags.FlagTrustNode, cmd.Flags().Lookup(flags.FlagTrustNode))
-
+	err = viper.BindPFlag(flags.FlagTrustNode, cmd.Flags().Lookup(flags.FlagTrustNode))
+	if err != nil {
+		panic(err)
+	}
 	cmd.Flags().String(flagTags, "", "tag:value list of tags that must match")
 	cmd.Flags().Uint32(flagPage, rest.DefaultPage, "Query a specific page of paginated results")
 	cmd.Flags().Uint32(flagLimit, rest.DefaultLimit, "Query number of transactions results per page returned")
-	_ = cmd.MarkFlagRequired(flagTags)
+	err = cmd.MarkFlagRequired(flagTags)
+	if err != nil {
+		panic(err)
+	}
 
 	cmd.Flags().Int64(flagHeightFrom, 0, "Filter from a specific block height")
 	cmd.Flags().Int64(flagHeightTo, 0, "Filter to a specific block height")
@@ -139,7 +147,7 @@ func QueryTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			if output.Empty() {
-				return fmt.Errorf("No transaction found with hash %s", args[0])
+				return fmt.Errorf("no transaction found with hash %s", args[0])
 			}
 
 			return cliCtx.PrintOutput(output)
@@ -147,9 +155,14 @@ func QueryTxCmd(cdc *codec.Codec) *cobra.Command {
 	}
 
 	cmd.Flags().StringP(flags.FlagNode, "n", "tcp://localhost:26657", "Node to connect to")
-	_ = viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	err := viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	if err != nil {
+		panic(err)
+	}
 	cmd.Flags().Bool(flags.FlagTrustNode, false, "Trust connected full node (don't verify proofs for responses)")
-	_ = viper.BindPFlag(flags.FlagTrustNode, cmd.Flags().Lookup(flags.FlagTrustNode))
-
+	err = viper.BindPFlag(flags.FlagTrustNode, cmd.Flags().Lookup(flags.FlagTrustNode))
+	if err != nil {
+		panic(err)
+	}
 	return cmd
 }

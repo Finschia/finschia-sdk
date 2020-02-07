@@ -127,16 +127,10 @@ jobs:
           name: tools
           command: |
             make get-tools
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - bin
   lint:
     <<: *linux_defaults
     parallelism: 1
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -147,8 +141,6 @@ jobs:
     <<: *linux_defaults
     parallelism: 2
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -159,8 +151,6 @@ jobs:
     <<: *linux_defaults
     parallelism: 1
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -204,8 +194,6 @@ jobs:
   sim-link-nondeterminism:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -219,8 +207,6 @@ jobs:
   sim-link-simulation-after-import:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -234,8 +220,6 @@ jobs:
   sim-link-multi-seed:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -249,8 +233,6 @@ jobs:
   sim-link-multi-seed-short:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
       - checkout
       - restore_cache:
           keys:
@@ -333,22 +315,19 @@ jobs:
     steps:
       - checkout
       - run: make build-swagger-docs
-      - run: curl -sL https://git.io/goreleaser | bash
+      - run: curl -sL https://git.io/goreleaser | bash -s -- --skip-validate --rm-dist
 
-  contract_tests:
+  contract_test:
     <<: *linux_defaults
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
+      - run: rm -rf /tmp/contract_test
+      - run: mkdir -p /tmp/contract_test
       - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
       - run:
           name: Get Node.js and test REST implementation against swagger documentation
           command: |
             go get github.com/snikch/goodman/cmd/goodman
-            ./contrib/get_node.sh && make contract-tests
+            ./contrib/get_node.sh && make contract-test
 workflows:
   version: 2.1
   build_and_test:
@@ -369,12 +348,10 @@ workflows:
       - integration_test:
           requires:
             - setup_dependencies
-      - contract_tests:
-          requires:
-            - setup_dependencies
+      - contract_test
       - setup_docker_and_binary:
           requires:
-            - fmt
+            - lint
           filters:
             branches:
               only:
@@ -438,7 +415,7 @@ workflows:
       - semantic_release:
           requires:
             - unit_test
-            - contract_tests
+            - contract_test
             - integration_test
             - localnet
             - integration_multi_node_test

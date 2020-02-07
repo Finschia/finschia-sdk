@@ -16,7 +16,6 @@ var (
 )
 
 func WithTxResultCommand(cdc *amino.Codec) *cobra.Command {
-
 	cmd := &cobra.Command{
 		Use:   "block-with-tx-result [from_block_height] [fetchsize]",
 		Short: "Get verified data for the block and tx and tx_result from given `from_block_height` to `fetchsize`.",

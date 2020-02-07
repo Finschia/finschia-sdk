@@ -63,7 +63,7 @@ var (
 	ErrSafetyBoxIncorrectDenom     = types.ErrSafetyBoxIncorrectDenom
 	ErrSafetyBoxTooManyCoinDenoms  = types.ErrSafetyBoxTooManyCoinDenoms
 
-	AttributeKeySafetyBoxId                        = types.AttributeKeySafetyBoxId
+	AttributeKeySafetyBoxID                        = types.AttributeKeySafetyBoxID
 	AttributeKeySafetyBoxOwner                     = types.AttributeKeySafetyBoxOwner
 	AttributeKeySafetyBoxAddress                   = types.AttributeKeySafetyBoxAddress
 	AttributeKeySafetyBoxAllocatorAddress          = types.AttributeKeySafetyBoxAllocatorAddress

@@ -9,6 +9,7 @@
 .idea
 
 # Build
+output
 vendor
 build
 tools/bin/*
@@ -45,4 +46,3 @@ dependency-graph.png
 *.aux
 *.out
 *.synctex.gz
-contract_tests/*

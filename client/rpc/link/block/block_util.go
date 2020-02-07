@@ -55,20 +55,20 @@ func (u *Util) IndentJSON(res interface{}) ([]byte, error) {
 }
 
 // inject translated transactions to block data
-func (u *Util) InjectByteToJsonTxs(blockResponse []byte, byteTxs [][]byte) (block map[string]interface{}, err error) {
+func (u *Util) InjectByteToJSONTxs(blockResponse []byte, byteTxs [][]byte) (block map[string]interface{}, err error) {
 	// load block response as a map
 	if err := json.Unmarshal(blockResponse, &block); err != nil {
 		return nil, err
 	}
-	var totalTxJSON []map[string]interface{}
+	totalTxJSON := make([]map[string]interface{}, len(byteTxs))
 	// load translated txs as a map
-	for _, byteTx := range byteTxs {
+	for idx, byteTx := range byteTxs {
 		var txJSON map[string]interface{}
 		if err := json.Unmarshal(byteTx, &txJSON); err != nil {
 			return nil, err
 		}
 		// generate a slice to inject
-		totalTxJSON = append(totalTxJSON, txJSON)
+		totalTxJSON[idx] = txJSON
 	}
 
 	// inject the translated transactions
@@ -128,7 +128,7 @@ func (u *Util) fetchByBlockHeights(latestBlockHeight *int64, fromBlockHeight *in
 		}
 	}
 	blockWithRxResultsWrapper = &cdc.HasMoreResponseWrapper{Items: fetchResultWithTxRes, HasMore: fbh.hasMore}
-	return
+	return blockWithRxResultsWrapper, nil
 }
 
 func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResultWithTxRes, error) {

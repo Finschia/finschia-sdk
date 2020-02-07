@@ -19,7 +19,7 @@ func TestSafetyBoxQuerierSafetyBox(t *testing.T) {
 	// create a box
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	msgSbCreate := MsgSafetyBoxCreate{
-		SafetyBoxId:     SafetyBoxTestId,
+		SafetyBoxID:     SafetyBoxTestID,
 		SafetyBoxOwner:  owner,
 		SafetyBoxDenoms: []string{"link"},
 	}
@@ -27,7 +27,7 @@ func TestSafetyBoxQuerierSafetyBox(t *testing.T) {
 	require.True(t, r.IsOK())
 
 	// query the box
-	params := types.QuerySafetyBoxParams{SafetyBoxId: SafetyBoxTestId}
+	params := types.QuerySafetyBoxParams{SafetyBoxID: SafetyBoxTestID}
 	req := abci.RequestQuery{
 		Path: fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QuerySafetyBox),
 		Data: []byte(params.String()),
@@ -44,7 +44,7 @@ func TestSafetyBoxQuerierSafetyBox(t *testing.T) {
 	require.NoError(t, err2)
 
 	// verify
-	require.Equal(t, SafetyBoxTestId, sb.ID)
+	require.Equal(t, SafetyBoxTestID, sb.ID)
 	require.Equal(t, owner, sb.Owner)
 	require.Equal(t, sdk.Coins(nil), sb.TotalAllocation)
 	require.Equal(t, sdk.Coins(nil), sb.CumulativeAllocation)
@@ -58,7 +58,7 @@ func TestSafetyBoxQuerierRole(t *testing.T) {
 	// create a box
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	msgSbCreate := MsgSafetyBoxCreate{
-		SafetyBoxId:     SafetyBoxTestId,
+		SafetyBoxID:     SafetyBoxTestID,
 		SafetyBoxOwner:  owner,
 		SafetyBoxDenoms: []string{"link"},
 	}
@@ -67,7 +67,7 @@ func TestSafetyBoxQuerierRole(t *testing.T) {
 
 	// check the owner of the box
 	params := types.QueryAccountRoleParams{
-		SafetyBoxId: SafetyBoxTestId,
+		SafetyBoxID: SafetyBoxTestID,
 		Role:        types.RoleOwner,
 		Address:     owner,
 	}

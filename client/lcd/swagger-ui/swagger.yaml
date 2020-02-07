@@ -1,7 +1,7 @@
 ---
 openapi: "3.0.1"
 info:
-  version: "v1.4.0"
+  version: "v1.4.1"
   title: LINK-Lite for link network
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
@@ -399,7 +399,6 @@ paths:
         description: The tx must be a signed StdTx. The supported broadcast modes
           include `"block"`(return after tx commit), `"sync"`(return afer CheckTx)
           and `"async"`(return right away).
-          Supported MSGs are `MsgSend`, `MsgIssue`, `MsgIssueNFT`, `MsgIssueCollection`, `MsgIssueNFTCollection`, `MsgMint`, `MsgBurn`
         content:
           application/json:
             schema:
@@ -734,7 +733,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "00000001"
+          example: "00010000"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -777,7 +776,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "moon"
+          example: "1001"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -820,7 +819,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "00000001"
+          example: "00010000"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -968,7 +967,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "a0000003"
+          example: "10010003"
       responses:
         "200":
           description: OK
@@ -1003,7 +1002,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "a0000003"
+          example: "10010003"
       responses:
         "200":
           description: OK
@@ -1038,7 +1037,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "a0000002"
+          example: "10010002"
       responses:
         "200":
           description: OK
@@ -1580,6 +1579,8 @@ components:
                 type: string
               events:
                 type: array
+                items:
+                  $ref: '#/components/schemas/Event'
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction
@@ -1628,6 +1629,8 @@ components:
                 type: string
               events:
                 type: array
+                items:
+                  $ref: '#/components/schemas/Event'
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction
@@ -1674,13 +1677,13 @@ components:
               - $ref: '#/components/schemas/MsgCreateCollection'
               - $ref: '#/components/schemas/MsgIssue'
               - $ref: '#/components/schemas/MsgModifyTokenURI'
-              - $ref: '#/components/schemas/MsgIssueCollection'
-              - $ref: '#/components/schemas/MsgIssueNFT'
-              - $ref: '#/components/schemas/MsgIssueNFTCollection'
+              - $ref: '#/components/schemas/MsgIssueCFT'
+              - $ref: '#/components/schemas/MsgIssueCNFT'
               - $ref: '#/components/schemas/MsgMint'
               - $ref: '#/components/schemas/MsgBurn'
-              - $ref: '#/components/schemas/MsgMintCollection'
-              - $ref: '#/components/schemas/MsgBurnCollection'
+              - $ref: '#/components/schemas/MsgMintCFT'
+              - $ref: '#/components/schemas/MsgBurnCFT'
+              - $ref: '#/components/schemas/MsgMintCNFT'
               - $ref: '#/components/schemas/MsgCreateValidator'
               - $ref: '#/components/schemas/MsgSafetyBoxCreate'
               - $ref: '#/components/schemas/MsgSafetyBoxAllocateCoins'
@@ -1894,7 +1897,7 @@ components:
               example: "8"
             token_id:
               type: string
-              example: "00000001"
+              example: "00010000"
     TokenCNFT:
       type: object
       properties:
@@ -1917,7 +1920,7 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "a0000001"
+              example: "10010001"
     TokenCNFT2:
       type: object
       properties:
@@ -1940,7 +1943,7 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "a0000002"
+              example: "10010002"
     TokenCNFT3:
       type: object
       properties:
@@ -1963,7 +1966,7 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "a0000003"
+              example: "10010003"
     Collection:
       type: object
       properties:
@@ -2083,6 +2086,8 @@ components:
                 type: string
               events:
                 type: array
+                items:
+                  $ref: '#/components/schemas/Event'
         gas_wanted:
           type: string
           description: Amount of gas requested for transaction
@@ -2214,14 +2219,14 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "00000001"
-    MsgIssueCollection:
+              example: "10010001"
+    MsgIssueCFT:
       type: object
       description: msg of collection token creation
       properties:
         type:
           type: string
-          example: "link/MsgIssueCollection"
+          example: "link/MsgIssueCFT"
         value:
           type: object
           properties:
@@ -2245,41 +2250,34 @@ components:
             decimals:
               type: string
               example: "8"
-            token_id:
-              type: string
-              example: "00000001"
-    MsgIssueNFT:
-      type: object
-      description: msg of non-fungible token creation
-      properties:
-        type:
-          type: string
-          example: "link/MsgIssueNFT"
-        value:
-          type: object
-          properties:
-            owner:
-              $ref: '#/components/schemas/Address'
-            name:
-              type: string
-              example: "cony"
-            symbol:
-              type: string
-              example: "con3xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
-    MsgIssueNFTCollection:
+    MsgIssueCNFT:
       type: object
       description: msg of non-fungible collection token creation
       properties:
         type:
           type: string
-          example: "link/MsgIssueNFTCollection"
+          example: "link/MsgIssueCNFT"
         value:
           type: object
           properties:
             owner:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "con2xxv"
+    MsgMintCNFT:
+      type: object
+      description: msg of non-fungible collection token creation
+      properties:
+        type:
+          type: string
+          example: "link/MsgMintCNFT"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            to:
               $ref: '#/components/schemas/Address'
             name:
               type: string
@@ -2290,9 +2288,9 @@ components:
             token_uri:
               type: string
               example: "example.com/token_uri"
-            token_id:
+            token_type:
               type: string
-              example: "a0000001"
+              example: "1001"
     MsgMint:
       type: object
       description: msg of token mint
@@ -2327,13 +2325,13 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/Coin'
-    MsgMintCollection:
+    MsgMintCFT:
       type: object
       description: msg of token mint
       properties:
         type:
           type: string
-          example: "link/MsgMintCollection"
+          example: "link/MsgMintCFT"
         value:
           type: object
           properties:
@@ -2345,13 +2343,13 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/CoinWithTokenID'
-    MsgBurnCollection:
+    MsgBurnCFT:
       type: object
       description: msg of token burn
       properties:
         type:
           type: string
-          example: "link/MsgBurnCollection"
+          example: "link/MsgBurnCFT"
         value:
           type: object
           properties:
@@ -2682,26 +2680,10 @@ components:
               example: "conyxxv"
             token_id:
               type: string
-              example: "00000001"
+              example: "00010000"
             amount:
               type: string
               example: "10"
-    MsgTransferNFT:
-      type: object
-      properties:
-        type:
-          type: string
-          example: "link/MsgTransferNFT"
-        value:
-          type: object
-          properties:
-            from_address:
-              $ref: '#/components/schemas/Address'
-            to_address:
-              $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
     MsgTransferCNFT:
       type: object
       properties:
@@ -2720,7 +2702,7 @@ components:
               example: "conyxxv"
             token_id:
               type: string
-              example: "00000001"
+              example: "10010001"
     MsgAttach:
       type: object
       properties:
@@ -2737,10 +2719,10 @@ components:
               example: "conyxxv"
             to_token_id:
               type: string
-              example: "00000001"
+              example: "10010001"
             token_id:
               type: string
-              example: "00000001"
+              example: "10010001"
     MsgDetach:
       type: object
       properties:
@@ -2759,7 +2741,7 @@ components:
               example: "conyxxv"
             token_id:
               type: string
-              example: "00000001"
+              example: "10010001"
 
   examples:
     # If you want to add new Msg, You have to add new Msg example to MsgExamples for dredd test
@@ -2812,15 +2794,6 @@ components:
         }
       },
       {
-        "type": "link/MsgIssueNFT",
-        "value": {
-          "name": "cony",
-          "symbol": "con3xxv",
-          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri"
-        }
-      },
-      {
         "type": "link/MsgModifyTokenURI",
         "value": {
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2838,7 +2811,7 @@ components:
         }
       },
       {
-        "type": "link/MsgIssueCollection",
+        "type": "link/MsgIssueCFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2847,41 +2820,50 @@ components:
           "amount": "1000000",
           "mintable": true,
           "decimals": "8",
-          "token_id": "00000001"
         }
       },
       {
-        "type": "link/MsgIssueNFTCollection",
+        "type": "link/MsgIssueCNFT",
+        "value": {
+          "symbol": "con2xxv",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+        }
+      },
+      {
+        "type": "link/MsgMintCNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
-          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_id": "a0000001"
+          "token_type": "1001"
         }
       },
       {
-        "type": "link/MsgIssueNFTCollection",
+        "type": "link/MsgMintCNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
-          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_id": "a0000002"
+          "token_type": "1001"
         }
       },
       {
-        "type": "link/MsgIssueNFTCollection",
+        "type": "link/MsgMintCNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
-          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_id": "a0000003"
+          "token_type": "1001"
         }
       },
       {
-        "type": "link/MsgIssueCollection",
+        "type": "link/MsgIssueCFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2890,39 +2872,28 @@ components:
           "amount": "1000000",
           "mintable": true,
           "decimals": "8",
-          "token_id": ""
-        }
-      },
-      {
-        "type": "link/MsgIssueNFTCollection",
-        "value": {
-          "name": "cony",
-          "symbol": "con2xxv",
-          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
-          "token_id": ""
         }
       },
 
       {
-        "type": "link/MsgMintCollection",
+        "type": "link/MsgMintCFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
                        "symbol": "con2xxv",
-                       "token_id": "00000001",
+                       "token_id": "00010000",
                        "amount": "1"
                      }]
         }
       },
       {
-        "type": "link/MsgBurnCollection",
+        "type": "link/MsgBurnCFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
                        "symbol": "con2xxv",
-                       "token_id": "00000001",
+                       "token_id": "00010000",
                        "amount": "1"
                      }]
         }
@@ -3066,16 +3037,8 @@ components:
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "00000001",
+          "token_id": "00010000",
           "amount": "1"
-        }
-      },
-      {
-        "type": "link/MsgTransferNFT",
-        "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con3xxv",
         }
       },
       {
@@ -3084,7 +3047,7 @@ components:
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "a0000001"
+          "token_id": "10010001"
         }
       },
       {
@@ -3092,8 +3055,8 @@ components:
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "to_token_id": "a0000002",
-          "token_id": "a0000003"
+          "to_token_id": "10010002",
+          "token_id": "10010003"
         }
       },
       {
@@ -3102,7 +3065,7 @@ components:
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "a0000003"
+          "token_id": "10010003"
         }
       },
       {
@@ -3110,8 +3073,8 @@ components:
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "to_token_id": "a0000002",
-          "token_id": "a0000003"
+          "to_token_id": "10010002",
+          "token_id": "10010003"
         }
       },
       {
@@ -3141,5 +3104,5 @@ components:
           "amount": "1",
           "to_address": "link1pxjrsfqam3nuf75v2mh4atshaze2nlmjnqc99m"
         }
-        }
+      }
       ]

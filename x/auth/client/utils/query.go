@@ -187,7 +187,7 @@ func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) (sdk.Sear
 
 func validatePage(page, perPage, totalCount int) (int, error) {
 	if page < 1 {
-		return 1, fmt.Errorf("The page must greater than 0")
+		return 1, fmt.Errorf("the page must greater than 0")
 	}
 
 	pages := ((totalCount - 1) / perPage) + 1
@@ -195,7 +195,7 @@ func validatePage(page, perPage, totalCount int) (int, error) {
 		pages = 1
 	}
 	if page < 0 || page > pages {
-		return 1, fmt.Errorf("The page should be within [1, %d] range, given %d", pages, page)
+		return 1, fmt.Errorf("the page should be within [1, %d] range, given %d", pages, page)
 	}
 
 	return page, nil
@@ -203,7 +203,7 @@ func validatePage(page, perPage, totalCount int) (int, error) {
 
 func validatePerPage(perPage int) (int, error) {
 	if perPage < 1 {
-		return 1, fmt.Errorf("The limit must greater than 0")
+		return 1, fmt.Errorf("the limit must greater than 0")
 	}
 
 	if perPage > MaxPerPage {
@@ -282,7 +282,7 @@ func formatTxResult(cdc *codec.Codec, resTx *ctypes.ResultTx, resBlock *ctypes.R
 		return sdk.TxResponse{}, err
 	}
 
-	return sdk.NewResponseResultTx(resTx, tx, resBlock.Block.Time.Format(time.RFC3339)), nil
+	return sdk.NewResponseResultTx(resTx, tx, resBlock.Block.Time.Format(time.RFC3339))
 }
 
 func parseTx(cdc *codec.Codec, txBytes []byte) (sdk.Tx, error) {

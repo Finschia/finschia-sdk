@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"hash"
-	. "strings"
+	"strings"
 	"time"
 )
 
@@ -26,7 +26,6 @@ func ErrCheckedBoolParam(param bool, err error) bool {
 		panic(err)
 	}
 	return param
-
 }
 
 func ErrCheckedStrArrParam(param []string, err error) []string {
@@ -34,7 +33,6 @@ func ErrCheckedStrArrParam(param []string, err error) []string {
 		panic(err)
 	}
 	return param
-
 }
 
 func DefFormatSetIfLTEZero(confField *string, format string, defVal int, setVal int) int {
@@ -47,7 +45,7 @@ func DefFormatSetIfLTEZero(confField *string, format string, defVal int, setVal 
 }
 
 func DefIfEmpty(confField *string, defVal string, setVal string) string {
-	if TrimSpace(setVal) != "" {
+	if strings.TrimSpace(setVal) != "" {
 		*confField = setVal
 	} else {
 		*confField = defVal

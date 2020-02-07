@@ -52,7 +52,6 @@ func TestValidateCmd(t *testing.T) {
 }
 
 func TestProcess(t *testing.T) {
-
 	t.Log("normal case", checkMark)
 	{
 		args, mockCliContext, mockClient, mockTendermint, mockCodec, rb := prepareCMD(t)
@@ -150,6 +149,7 @@ var cmdTestTable = []struct {
 
 func TestParseCmdParams(t *testing.T) {
 	for _, testingOption := range cmdTestTable {
+		testingOption := testingOption
 		t.Logf("%s, args %s, fromBlockHeight %d", testingOption.msg, strings.Join(testingOption.args, ","),
 			testingOption.fromBlockHeight)
 		{
