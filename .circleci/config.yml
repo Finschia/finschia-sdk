@@ -307,7 +307,7 @@ jobs:
     steps:
       - checkout
       - run: yarn global add --no-progress --non-interactive "semantic-release" "@semantic-release/exec"
-      - run: $(yarn global bin)/semantic-release --no-ci
+      - run: $(yarn global bin)/semantic-release
 
   deploy:
     docker:
