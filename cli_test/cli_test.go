@@ -1381,6 +1381,8 @@ func TestValidateGenesis(t *testing.T) {
 }
 
 func TestLinkCLIProxy(t *testing.T) {
+	t.Skip("Proxy module is not in use")
+
 	t.Parallel()
 	f := InitFixtures(t)
 

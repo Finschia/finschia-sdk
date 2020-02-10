@@ -28,7 +28,6 @@ import (
 
 	cosmosbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/line/link/version"
-	"github.com/line/link/x/proxy"
 	"github.com/line/link/x/token"
 )
 
@@ -56,7 +55,6 @@ var (
 		iam.AppModuleBasic{},
 		safetybox.AppModuleBasic{},
 		account.AppModuleBasic{},
-		proxy.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -99,7 +97,6 @@ type LinkApp struct {
 	tokenKeeper      token.Keeper
 	iamKeeper        iam.Keeper
 	safetyboxKeeper  safetybox.Keeper
-	proxyKeeper      proxy.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -123,7 +120,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		token.StoreKey,
 		iam.StoreKey,
 		safetybox.StoreKey,
-		proxy.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -153,7 +149,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	)
 	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, app.cosmosbankKeeper, keys[token.StoreKey])
 	app.safetyboxKeeper = safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.cosmosbankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
-	app.proxyKeeper = proxy.NewKeeper(app.cdc, app.cosmosbankKeeper, app.accountKeeper, keys[proxy.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -167,7 +162,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		token.NewAppModule(app.tokenKeeper),
 		safetybox.NewAppModule(app.safetyboxKeeper),
 		account.NewAppModule(app.accountKeeper),
-		proxy.NewAppModule(app.proxyKeeper),
 	)
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
 
@@ -183,7 +177,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		token.ModuleName,
 		safetybox.ModuleName,
 		account.ModuleName,
-		proxy.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())

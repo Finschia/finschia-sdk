@@ -1,7 +1,7 @@
 ---
 openapi: "3.0.1"
 info:
-  version: "v1.4.1"
+  version: "v1.5.2"
   title: LINK-Lite for link network
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
@@ -17,8 +17,6 @@ tags:
     description: Token query APIs
   - name: Safety Box
     description: Create/query safety box and grant/revoke permissions
-  - name: Proxy
-    description: Send coins on behalf of other accounts and approve/disapprove coins to do so
 servers:
   - url: /
 paths:
@@ -1127,52 +1125,6 @@ paths:
                     example: "100"
                   result:
                     $ref: '#/components/schemas/SafetyBoxPermissions'
-  /proxy/allowance/{proxy_address}/{on_behalf_of_address}/{denom}:
-    get:
-      tags:
-        - Proxy
-      summary: Get the on_behalf_of address' allowance of denom for proxy_address
-      parameters:
-        - name: proxy_address
-          in: path
-          description: proxy's address
-          required: true
-          schema:
-            type: string
-          example: "link1pxjrsfqam3nuf75v2mh4atshaze2nlmjnqc99m"
-        - name: on_behalf_of_address
-          in: path
-          description: on_behalf_of's address
-          required: true
-          schema:
-            type: string
-          example: "link1n5vsmtppfs4g4ue6zvuj7eqt5ajteu3qrvt0h2"
-        - name: denom
-          in: path
-          description: allowance's denom to query
-          required: true
-          schema:
-            type: string
-          example: "link"
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  height:
-                    type: string
-                    example: "100"
-                  result:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                        example: "proxy/ProxyAllowance"
-                      value:
-                        $ref: '#/components/schemas/ProxyAllowance'
 components:
   schemas:
     #-------------------------------
@@ -1988,28 +1940,6 @@ components:
                 oneOf:
                   - $ref: '#/components/schemas/TokenCFT'
                   - $ref: '#/components/schemas/TokenCNFT'
-
-    #-------------------------------
-    # Proxy Models
-    #-------------------------------
-
-    ProxyAllowance:
-      type: object
-      properties:
-        proxy:
-          allOf:
-            - $ref: '#/components/schemas/Address'
-            - description: Proxy's address
-        on_behalf_of:
-          allOf:
-            - $ref: '#/components/schemas/Address'
-            - description: On behalf of's address
-        denom:
-          type: string
-          example: "link"
-        amount:
-          type: string
-          example: "1"
 
     #-------------------------------
     # Safety Box Models
@@ -3075,34 +3005,6 @@ components:
           "symbol": "con2xxv",
           "to_token_id": "10010002",
           "token_id": "10010003"
-        }
-      },
-      {
-        "type": "proxy/MsgProxyApproveCoins",
-        "value": {
-          "proxy": "link1pxjrsfqam3nuf75v2mh4atshaze2nlmjnqc99m",
-          "on_behalf_of": "link1n5vsmtppfs4g4ue6zvuj7eqt5ajteu3qrvt0h2",
-          "denom": "link",
-          "amount": "5"
-        }
-      },
-      {
-        "type": "proxy/MsgProxyDisapproveCoins",
-        "value": {
-          "proxy": "link1pxjrsfqam3nuf75v2mh4atshaze2nlmjnqc99m",
-          "on_behalf_of": "link1n5vsmtppfs4g4ue6zvuj7eqt5ajteu3qrvt0h2",
-          "denom": "link",
-          "amount": "3"
-        }
-      },
-      {
-        "type": "proxy/MsgProxySendCoinsFrom",
-        "value": {
-          "proxy": "link1pxjrsfqam3nuf75v2mh4atshaze2nlmjnqc99m",
-          "on_behalf_of": "link1n5vsmtppfs4g4ue6zvuj7eqt5ajteu3qrvt0h2",
-          "denom": "link",
-          "amount": "1",
-          "to_address": "link1pxjrsfqam3nuf75v2mh4atshaze2nlmjnqc99m"
         }
       }
       ]

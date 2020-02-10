@@ -21,8 +21,10 @@ replace_address allocator ${REPLACE_ALLOCATOR_ADDR}
 replace_address issuer ${REPLACE_ISSUER_ADDR}
 replace_address returner ${REPLACE_RETURNER_ADDR}
 replace_address somebody ${REPLACE_SOMEBODY_ADDR}
-replace_address proxy ${REPLACE_PROXY_ADDR}
-replace_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
+
+# proxy module not in use as of 2019/2/10
+#replace_address proxy ${REPLACE_PROXY_ADDR}
+#replace_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
 
 replace_token_symbol "alcd"${JACK_ADDR:40} ${REPLACE_TOKEN_SYMBOL} FT
 replace_token_symbol "blcd"${JACK_ADDR:40} ${REPLACE_COLLECTION_SYMBOL} COLLECTION
