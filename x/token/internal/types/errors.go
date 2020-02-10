@@ -27,6 +27,7 @@ const (
 	CodeCollectionNotExist          sdk.CodeType = 301
 	CodeCollectionTokenTypeExist    sdk.CodeType = 302
 	CodeCollectionTokenTypeNotExist sdk.CodeType = 303
+	CodeCollectionTokenTypeFull     sdk.CodeType = 304
 
 	//Permission
 	CodeTokenPermission sdk.CodeType = 400
@@ -104,6 +105,10 @@ func ErrCollectionTokenTypeExist(codespace sdk.CodespaceType, symbol, tokenType 
 
 func ErrCollectionTokenTypeNotExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
 	return sdk.NewError(codespace, CodeCollectionTokenTypeNotExist, "token type for symbol[%s] token-type[%s] does not exist", symbol, tokenType)
+}
+
+func ErrCollectionTokenTypeFull(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenTypeFull, "all token type for symbol[%s] are occupied", symbol)
 }
 
 func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, denom string) sdk.Error {

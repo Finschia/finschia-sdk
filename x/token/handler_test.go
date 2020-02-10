@@ -170,6 +170,13 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 	}
 
 	{
+		//Expect token type is 1001
+		{
+			msg := types.NewMsgIssueCNFT(symbol1, addr1)
+			res := h(ctx, msg)
+			require.True(t, res.Code.IsOK())
+		}
+		//Expect token type is 1002
 		{
 			msg := types.NewMsgIssueCNFT(symbol1, addr1)
 			res := h(ctx, msg)
@@ -225,13 +232,15 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
+
+	//Expect token type is 1003
 	{
 		msg := types.NewMsgIssueCNFT(symbol1, addr2)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1002", addr2, addr2)
+		msg := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1003", addr2, addr2)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -241,7 +250,7 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(name, symbol1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssueCNFT(symbol1, addr1)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)

@@ -89,12 +89,12 @@ func (ts Tokens) NextTokenID(prefix string) string {
 		return prefix + "0001"
 		//return prefix + strings.Repeat(SmallestAlphanum, TokenIDLength-len(prefix))
 	}
-	nextTokenID := NextTokenID(latestToken.GetTokenID(), prefix)
+	nextTokenID := NextID(latestToken.GetTokenID(), prefix)
 	for _, token := range tokens {
 		if nextTokenID != token.GetTokenID() {
 			return nextTokenID
 		}
-		nextTokenID = NextTokenID(nextTokenID, prefix)
+		nextTokenID = NextID(nextTokenID, prefix)
 	}
 	return ""
 }
@@ -105,7 +105,7 @@ func (ts Tokens) NextTokenTypeForNFT() string {
 		return SmallestNFTType
 	}
 	prefix := latestToken.GetTokenID()[:BaseTokenIDLength]
-	for nextBaseID := NextTokenID(prefix, ""); nextBaseID != prefix; nextBaseID = NextTokenID(nextBaseID, "") {
+	for nextBaseID := NextID(prefix, ""); nextBaseID != prefix; nextBaseID = NextID(nextBaseID, "") {
 		if nextBaseID[0] == FungibleFlag[0] {
 			nextBaseID = "1" + nextBaseID[1:]
 		}
@@ -125,7 +125,7 @@ func (ts Tokens) NextTokenTypeForFT() string {
 	}
 
 	prefix := latestToken.GetTokenID()[:BaseTokenIDLength]
-	for nextBaseID := NextTokenID(prefix, FungibleFlag); nextBaseID != prefix; nextBaseID = NextTokenID(nextBaseID, FungibleFlag) {
+	for nextBaseID := NextID(prefix, FungibleFlag); nextBaseID != prefix; nextBaseID = NextID(nextBaseID, FungibleFlag) {
 		occupied := false
 		ts.Iterate(nextBaseID, func(Token) bool { occupied = true; return true })
 		if !occupied {
@@ -212,15 +212,15 @@ func BinarySearch(group Findable, el string) (int, int) {
 	return -1, median
 }
 
-func NextTokenID(tokenID string, prefix string) (nextTokenID string) {
-	if len(prefix) >= len(tokenID) {
-		return prefix[:len(tokenID)]
+func NextID(id string, prefix string) (nextTokenID string) {
+	if len(prefix) >= len(id) {
+		return prefix[:len(id)]
 	}
 	var toCharStr = "0123456789abcdefghijklmnopqrstuvwxyz"
 	const toCharStrLength = 36 //int32(len(toCharStr))
 
-	tokenIDInt := make([]int32, len(tokenID))
-	for idx, char := range tokenID {
+	tokenIDInt := make([]int32, len(id))
+	for idx, char := range id {
 		if char >= '0' && char <= '9' {
 			tokenIDInt[idx] = char - '0'
 		} else {
