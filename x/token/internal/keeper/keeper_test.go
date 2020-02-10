@@ -229,36 +229,40 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.Equal(t, "00010000", token.GetTokenID())
 		}
 		{
-			require.NoError(t, keeper.IssueCNFT(ctx, resource01, "a000", addr1))
+			tokenType, err := keeper.GetNextTokenTypeForCNFT(ctx, resource01)
+			require.NoError(t, err)
+			require.NoError(t, keeper.IssueCNFT(ctx, resource01, tokenType, addr1))
 			collection, err = keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, "a000", defaultTokenURI, addr1), addr1))
+			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1), addr1))
 
-			token, err := keeper.GetToken(ctx, resource01, "a0000001")
+			token, err := keeper.GetToken(ctx, resource01, tokenType+"0001")
 			require.NoError(t, err)
 			require.Equal(t, resource01, token.GetSymbol())
-			require.Equal(t, "a0000001", token.GetTokenID())
+			require.Equal(t, tokenType+"0001", token.GetTokenID())
 
 			collection, err = keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, "a000", defaultTokenURI, addr1), addr1))
-			token, err = keeper.GetToken(ctx, resource01, "a0000002")
+			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1), addr1))
+			token, err = keeper.GetToken(ctx, resource01, tokenType+"0002")
 			require.NoError(t, err)
 			require.Equal(t, resource01, token.GetSymbol())
-			require.Equal(t, "a0000002", token.GetTokenID())
+			require.Equal(t, tokenType+"0002", token.GetTokenID())
 
-			count, err := keeper.GetNFTCount(ctx, resource01, "a0000")
+			count, err := keeper.GetNFTCount(ctx, resource01, tokenType)
 			require.NoError(t, err)
 			require.Equal(t, int64(2), count.Int64())
 
-			require.NoError(t, keeper.IssueCNFT(ctx, resource01, "a001", addr1))
+			tokenType, err = keeper.GetNextTokenTypeForCNFT(ctx, resource01)
+			require.NoError(t, err)
+			require.NoError(t, keeper.IssueCNFT(ctx, resource01, tokenType, addr1))
 			collection, err = keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, "a001", defaultTokenURI, addr1), addr1))
-			token, err = keeper.GetToken(ctx, resource01, "a0010001")
+			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1), addr1))
+			token, err = keeper.GetToken(ctx, resource01, tokenType+"0001")
 			require.NoError(t, err)
 			require.Equal(t, resource01, token.GetSymbol())
-			require.Equal(t, "a0010001", token.GetTokenID())
+			require.Equal(t, tokenType+"0001", token.GetTokenID())
 		}
 	}
 	{

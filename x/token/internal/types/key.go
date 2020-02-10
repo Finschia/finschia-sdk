@@ -16,10 +16,6 @@ var (
 	TokenParentToChildSubKeyPrefix = []byte{0x05}
 )
 
-var (
-	KeyExist = []byte{0x01}
-)
-
 func TokenDenomKey(denom string) []byte {
 	return append(TokenDenomKeyPrefix, []byte(denom)...)
 }

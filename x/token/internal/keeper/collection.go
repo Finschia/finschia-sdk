@@ -75,7 +75,7 @@ func (k Keeper) SetTokenType(ctx sdk.Context, symbol, tokenType string) sdk.Erro
 	if store.Has(types.TokenTypeKey(collection.GetSymbol(), tokenType)) {
 		return types.ErrCollectionTokenTypeExist(types.DefaultCodespace, collection.GetSymbol(), tokenType)
 	}
-	store.Set(types.TokenTypeKey(collection.GetSymbol(), tokenType), types.KeyExist)
+	store.Set(types.TokenTypeKey(collection.GetSymbol(), tokenType), k.cdc.MustMarshalBinaryBare(tokenType))
 	return nil
 }
 
@@ -86,6 +86,21 @@ func (k Keeper) HasTokenType(ctx sdk.Context, symbol, tokenType string) bool {
 	}
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(types.TokenTypeKey(collection.GetSymbol(), tokenType))
+}
+
+func (k Keeper) GetNextTokenTypeForCNFT(ctx sdk.Context, symbol string) (tokenType string, err sdk.Error) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStoreReversePrefixIterator(store, types.TokenTypeKey(symbol, ""))
+	defer iter.Close()
+	if !iter.Valid() {
+		return types.SmallestNFTType, nil
+	}
+	k.cdc.MustUnmarshalBinaryBare(iter.Value(), &tokenType)
+	tokenType = types.NextID(tokenType, "")
+	if tokenType[0] == types.FungibleFlag[0] {
+		return "", types.ErrCollectionTokenTypeFull(types.DefaultCodespace, symbol)
+	}
+	return tokenType, nil
 }
 
 func (k Keeper) IterateCollections(ctx sdk.Context, symbol string, process func(types.Collection) (stop bool)) {

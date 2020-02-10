@@ -99,7 +99,7 @@ func handleMsgIssueCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueCFT) s
 }
 
 func handleMsgIssueCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueCNFT) sdk.Result {
-	collection, err := keeper.GetCollection(ctx, msg.Symbol)
+	_, err := keeper.GetCollection(ctx, msg.Symbol)
 	if err != nil {
 		return err.Result()
 	}
@@ -109,7 +109,10 @@ func handleMsgIssueCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueCNFT)
 		return types.ErrTokenPermission(DefaultCodespace, msg.Owner, perm).Result()
 	}
 
-	tokenType := collection.NextTokenTypeNFT()
+	tokenType, err := keeper.GetNextTokenTypeForCNFT(ctx, msg.Symbol)
+	if err != nil {
+		return err.Result()
+	}
 
 	err = keeper.IssueCNFT(ctx, msg.Symbol, tokenType, msg.Owner)
 	if err != nil {
