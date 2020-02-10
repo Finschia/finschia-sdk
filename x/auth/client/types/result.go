@@ -43,7 +43,7 @@ func NewResponseResultTx(res *ctypes.ResultTx, tx Tx, timestamp string) (TxRespo
 
 	parsedLogs, err := ParseABCILogs(res.TxResult.Log)
 	if err != nil {
-		return TxResponse{}, err
+		parsedLogs = nil
 	}
 	return TxResponse{
 		TxHash:    res.Hash.String(),
