@@ -55,7 +55,7 @@ lint: golangci-lint
 
 all: install lint test-unit
 
-build: go.sum
+build: go.sum build-swagger-docs
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
 
@@ -71,7 +71,7 @@ build-swagger-docs: statik versioning-swagger-docs
 versioning-swagger-docs:
 	perl -pi -e 's/version: "v[^\s]+"/version: "$(strip $(BASE_VERSION))"/' client/lcd/swagger-ui/swagger.yaml
 
-install: go.sum
+install: go.sum build-swagger-docs
 	go install $(BUILD_FLAGS) ./cmd/linkd
 	go install $(BUILD_FLAGS) ./cmd/linkcli
 
@@ -153,7 +153,7 @@ testnet-test:
 run-swagger-server:
 	linkcli rest-server --trust-node=true
 
-setup-contract-test-data: build build-swagger-docs build-contract-test-hook yq
+setup-contract-test-data: build build-contract-test-hook yq
 	echo 'Prepare data for the contract tests' ; \
 	./contract_test/testdata/prepare_dredd.sh ; \
 	./contract_test/testdata/prepare_chain_state.sh
