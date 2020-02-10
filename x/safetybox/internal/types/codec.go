@@ -4,7 +4,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-var ModuleCdc = codec.New()
+var ModuleCdc *codec.Codec
+
+func init() {
+	ModuleCdc = codec.New()
+	RegisterCodec(ModuleCdc)
+	ModuleCdc.Seal()
+}
 
 // RegisterCodec registers concrete types on the Amino codec
 func RegisterCodec(cdc *codec.Codec) {
@@ -24,10 +30,4 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgSafetyBoxDeregisterOperator{}, "safetybox/MsgRevokeOperatorPermission", nil)
 	cdc.RegisterInterface((*PermissionI)(nil), nil)
 	cdc.RegisterConcrete(&Permission{}, "safetybox/perms", nil)
-}
-
-func init() {
-	ModuleCdc = codec.New()
-	RegisterCodec(ModuleCdc)
-	ModuleCdc.Seal()
 }

@@ -4,7 +4,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-var ModuleCdc = codec.New()
+var ModuleCdc *codec.Codec
+
+func init() {
+	ModuleCdc = codec.New()
+	RegisterCodec(ModuleCdc)
+	ModuleCdc.Seal()
+}
 
 // RegisterCodec registers concrete types on the Amino codec
 func RegisterCodec(cdc *codec.Codec) {
@@ -14,10 +20,4 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgProxyApproveCoins{}, "proxy/MsgProxyApproveCoins", nil)
 	cdc.RegisterConcrete(MsgProxyDisapproveCoins{}, "proxy/MsgProxyDisapproveCoins", nil)
 	cdc.RegisterConcrete(MsgProxySendCoinsFrom{}, "proxy/MsgProxySendCoinsFrom", nil)
-}
-
-func init() {
-	ModuleCdc = codec.New()
-	RegisterCodec(ModuleCdc)
-	ModuleCdc.Seal()
 }
