@@ -1,7 +1,7 @@
 ---
 openapi: "3.0.1"
 info:
-  version: "v1.5.2"
+  version: "LINK_BUILD_VERSION"
   title: LINK-Lite for link network
   description: A REST interface for state queries, transaction generation and broadcasting.
 tags:
