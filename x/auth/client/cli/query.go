@@ -39,8 +39,8 @@ func QueryTxsByEventsCmd(cdc *codec.Codec) *cobra.Command {
 Search for transactions that match the exact given tags where results are paginated.
 
 Example:
-$ <appcli> query txs --tags 'message.action:send&message.sender=yoshi' --page 1 --limit 30
-$ <appcli> query txs --tags 'message.action:send&message.sender=yoshi' --height-from 77 --height-to 79
+$ <appcli> query txs --tags 'message.action:send&message.sender:yoshi' --page 1 --limit 30
+$ <appcli> query txs --tags 'message.action:send&message.sender:yoshi' --height-from 77 --height-to 79
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			tagsStr := viper.GetString(flagTags)
