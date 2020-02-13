@@ -152,6 +152,27 @@ linkcli tx token collection-mint-nft [from_key_or_address] [symbol] [token_type]
 	return client.PostCommands(cmd)[0]
 }
 
+func BurnCollectionNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "collection-burn-nft [from_key_or_address] [symbol] [token_id]",
+		Short: "Create and sign an collection-burn-nft tx",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			symbol := args[1]
+			tokenID := args[2]
+
+			// build and sign the transaction, then broadcast to Tendermint
+			msg := types.NewMsgBurnCNFT(symbol, tokenID, cliCtx.GetFromAddress())
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
 func TransferCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-transfer-ft [from_key_or_address] [to_address] [symbol] [token_id] [amount]",

@@ -9,13 +9,14 @@ import (
 )
 
 const (
-	BaseTokenIDLength = 4
-	SmallestAlphanum  = "0"
-	LargestAlphanum   = "z"
-	TokenIDLength     = linktype.TokenIDLen
-	FungibleFlag      = SmallestAlphanum
-	SmallestFTType    = "0001"
-	SmallestNFTType   = "1001"
+	TokenTypeLength  = 4
+	SmallestAlphanum = "0"
+	LargestAlphanum  = "z"
+	TokenIDLength    = linktype.TokenIDLen
+	FungibleFlag     = SmallestAlphanum
+	ReservedEmpty    = "0000"
+	SmallestFTType   = "0001"
+	SmallestNFTType  = "1001"
 )
 
 type Tokens []Token
@@ -104,7 +105,7 @@ func (ts Tokens) NextTokenTypeForNFT() string {
 	if latestToken == nil {
 		return SmallestNFTType
 	}
-	prefix := latestToken.GetTokenID()[:BaseTokenIDLength]
+	prefix := latestToken.GetTokenID()[:TokenTypeLength]
 	for nextBaseID := NextID(prefix, ""); nextBaseID != prefix; nextBaseID = NextID(nextBaseID, "") {
 		if nextBaseID[0] == FungibleFlag[0] {
 			nextBaseID = "1" + nextBaseID[1:]
@@ -124,7 +125,7 @@ func (ts Tokens) NextTokenTypeForFT() string {
 		return SmallestFTType
 	}
 
-	prefix := latestToken.GetTokenID()[:BaseTokenIDLength]
+	prefix := latestToken.GetTokenID()[:TokenTypeLength]
 	for nextBaseID := NextID(prefix, FungibleFlag); nextBaseID != prefix; nextBaseID = NextID(nextBaseID, FungibleFlag) {
 		occupied := false
 		ts.Iterate(nextBaseID, func(Token) bool { occupied = true; return true })
@@ -150,7 +151,7 @@ func (ts Tokens) GetFTs() (tokens Tokens) {
 func (ts Tokens) GetNFTs() (tokens Tokens) {
 	ts.Iterate("", func(t Token) bool {
 		if t.GetTokenID()[0] != FungibleFlag[0] {
-			if t.GetTokenID()[BaseTokenIDLength:] != "0000" {
+			if t.GetTokenID()[TokenTypeLength:] != "0000" {
 				tokens = append(tokens, t)
 			}
 		}

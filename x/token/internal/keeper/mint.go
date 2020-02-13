@@ -73,11 +73,12 @@ func (k Keeper) mintTokens(ctx sdk.Context, amount sdk.Coins, to sdk.AccAddress)
 }
 
 func (k Keeper) BurnTokens(ctx sdk.Context, amount sdk.Coins, from sdk.AccAddress) sdk.Error {
-	if !k.hasEnoughCoins(ctx, amount, from) {
+	err := k.isBurnable(ctx, amount, from)
+	if err != nil {
 		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", from, amount))
 	}
 
-	err := k.burnTokens(ctx, amount, from)
+	err = k.burnTokens(ctx, amount, from)
 	if err != nil {
 		return err
 	}
@@ -88,6 +89,20 @@ func (k Keeper) BurnTokens(ctx sdk.Context, amount sdk.Coins, from sdk.AccAddres
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 		),
 	})
+	return nil
+}
+
+func (k Keeper) isBurnable(ctx sdk.Context, amount sdk.Coins, from sdk.AccAddress) sdk.Error {
+	if !k.hasEnoughCoins(ctx, amount, from) {
+		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", from, amount))
+	}
+
+	for _, coin := range amount {
+		perm := types.NewMintPermission(coin.Denom)
+		if !k.HasPermission(ctx, from, perm) {
+			return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
+		}
+	}
 	return nil
 }
 

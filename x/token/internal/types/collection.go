@@ -186,8 +186,8 @@ func (t BaseCollectiveNFT) GetDenom() string               { return t.symbol + t
 func (t BaseCollectiveNFT) GetTokenURI() string            { return t.TokenURI }
 func (t BaseCollectiveNFT) GetOwner() sdk.AccAddress       { return t.Owner }
 func (t BaseCollectiveNFT) GetTokenID() string             { return t.TokenID }
-func (t BaseCollectiveNFT) GetTokenType() string           { return t.TokenID[:BaseTokenIDLength] }
-func (t BaseCollectiveNFT) GetTokenIndex() string          { return t.TokenID[BaseTokenIDLength:] }
+func (t BaseCollectiveNFT) GetTokenType() string           { return t.TokenID[:TokenTypeLength] }
+func (t BaseCollectiveNFT) GetTokenIndex() string          { return t.TokenID[TokenTypeLength:] }
 func (t *BaseCollectiveNFT) SetOwner(owner sdk.AccAddress) { t.Owner = owner }
 func (t *BaseCollectiveNFT) SetTokenURI(tokenURI string)   { t.TokenURI = tokenURI }
 func (t *BaseCollectiveNFT) SetCollection(c Collection)    { t.symbol = c.GetSymbol() }
@@ -228,8 +228,8 @@ func (t BaseCollectiveFT) GetTokenURI() string          { return t.TokenURI }
 func (t BaseCollectiveFT) GetMintable() bool            { return t.Mintable }
 func (t BaseCollectiveFT) GetDecimals() sdk.Int         { return t.Decimals }
 func (t BaseCollectiveFT) GetTokenID() string           { return t.TokenID }
-func (t BaseCollectiveFT) GetTokenType() string         { return t.TokenID[:BaseTokenIDLength] }
-func (t BaseCollectiveFT) GetTokenIndex() string        { return t.TokenID[BaseTokenIDLength:] }
+func (t BaseCollectiveFT) GetTokenType() string         { return t.TokenID[:TokenTypeLength] }
+func (t BaseCollectiveFT) GetTokenIndex() string        { return t.TokenID[TokenTypeLength:] }
 func (t *BaseCollectiveFT) SetTokenURI(tokenURI string) { t.TokenURI = tokenURI }
 func (t *BaseCollectiveFT) SetCollection(c Collection)  { t.symbol = c.GetSymbol() }
 func (t BaseCollectiveFT) String() string               { return "" }

@@ -25,6 +25,9 @@ func (k Keeper) setTokenToCollection(ctx sdk.Context, token types.CollectiveToke
 		if !k.HasTokenType(ctx, token.GetSymbol(), tokenType) {
 			return types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), tokenType)
 		}
+		if t.GetTokenIndex() == types.ReservedEmpty {
+			return types.ErrCollectionTokenIndexFull(types.DefaultCodespace, token.GetSymbol(), tokenType)
+		}
 	}
 	c, err = c.AddToken(token)
 	if err != nil {

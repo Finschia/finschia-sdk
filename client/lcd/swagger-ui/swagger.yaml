@@ -1636,6 +1636,7 @@ components:
               - $ref: '#/components/schemas/MsgMintCFT'
               - $ref: '#/components/schemas/MsgBurnCFT'
               - $ref: '#/components/schemas/MsgMintCNFT'
+              - $ref: '#/components/schemas/MsgBurnCNFT'
               - $ref: '#/components/schemas/MsgCreateValidator'
               - $ref: '#/components/schemas/MsgSafetyBoxCreate'
               - $ref: '#/components/schemas/MsgSafetyBoxAllocateCoins'
@@ -2221,6 +2222,24 @@ components:
             token_type:
               type: string
               example: "1001"
+    MsgBurnCNFT:
+      type: object
+      description: msg of non-fungible collection token burn
+      properties:
+        type:
+          type: string
+          example: "link/MsgBurnCNFT"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "con2xxv"
+            token_id:
+              type: string
+              example: "10010001"
     MsgMint:
       type: object
       description: msg of token mint
@@ -2790,6 +2809,25 @@ components:
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
           "token_type": "1001"
+        }
+      },
+      {
+        "type": "link/MsgMintCNFT",
+        "value": {
+          "name": "cony",
+          "symbol": "con2xxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri",
+          "token_type": "1001"
+        }
+      },
+      {
+        "type": "link/MsgBurnCNFT",
+        "value": {
+          "symbol": "con2xxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_id": "10010004"
         }
       },
       {

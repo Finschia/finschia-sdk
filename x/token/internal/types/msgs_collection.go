@@ -1,8 +1,6 @@
 package types
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/types"
 	linktype "github.com/line/link/types"
@@ -71,7 +69,7 @@ func NewMsgIssueCFT(name, symbol, tokenURI string, owner sdk.AccAddress, amount 
 }
 
 func (msg MsgIssueCFT) Route() string                { return RouterKey }
-func (msg MsgIssueCFT) Type() string                 { return "issue_ft_collection" }
+func (msg MsgIssueCFT) Type() string                 { return "issue_cft" }
 func (msg MsgIssueCFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 func (msg MsgIssueCFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
@@ -114,7 +112,7 @@ func NewMsgIssueCNFT(symbol string, owner sdk.AccAddress) MsgIssueCNFT {
 }
 
 func (MsgIssueCNFT) Route() string                    { return RouterKey }
-func (MsgIssueCNFT) Type() string                     { return "issue_nft_collection" }
+func (MsgIssueCNFT) Type() string                     { return "issue_cnft" }
 func (msg MsgIssueCNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 func (msg MsgIssueCNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
@@ -154,7 +152,7 @@ func NewMsgMintCNFT(name, symbol, tokenURI string, tokenType string, from, to sd
 }
 
 func (msg MsgMintCNFT) Route() string                { return RouterKey }
-func (msg MsgMintCNFT) Type() string                 { return "mint_nft_collection" }
+func (msg MsgMintCNFT) Type() string                 { return "mint_cnft" }
 func (msg MsgMintCNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
 func (msg MsgMintCNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
@@ -181,26 +179,25 @@ func (msg MsgMintCNFT) ValidateBasic() sdk.Error {
 	return nil
 }
 
-/*
-XXX: not yet supported.
-TODO: when the requirements are fixed. Enable it.
 var _ sdk.Msg = (*MsgBurnCNFT)(nil)
+
 type MsgBurnCNFT struct {
 	Symbol  string         `json:"symbol"`
-	Owner   sdk.AccAddress `json:"owner"`
+	From    sdk.AccAddress `json:"from"`
 	TokenID string         `json:"token_id"`
 }
 
-func NewMsgBurnCNFT(symbol, tokenID string) MsgBurnCNFT {
+func NewMsgBurnCNFT(symbol, tokenID string, owner sdk.AccAddress) MsgBurnCNFT {
 	return MsgBurnCNFT{
 		Symbol:  symbol,
 		TokenID: tokenID,
+		From:    owner,
 	}
 }
 
 func (msg MsgBurnCNFT) Route() string                { return RouterKey }
-func (msg MsgBurnCNFT) Type() string                 { return "burn_nft_collection" }
-func (msg MsgBurnCNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
+func (msg MsgBurnCNFT) Type() string                 { return "burn_cnft" }
+func (msg MsgBurnCNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
 func (msg MsgBurnCNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
@@ -209,7 +206,7 @@ func (msg MsgBurnCNFT) ValidateBasic() sdk.Error {
 	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
-	if msg.Owner.Empty() {
+	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
 
@@ -217,9 +214,13 @@ func (msg MsgBurnCNFT) ValidateBasic() sdk.Error {
 		return ErrInvalidTokenID(DefaultCodespace, err.Error())
 	}
 
+	if err := types.ValidateTokenTypeNFT(msg.TokenID[:TokenTypeLength]); err != nil {
+		return ErrInvalidTokenID(DefaultCodespace, err.Error())
+	}
+
 	return nil
 }
-*/
+
 var _ sdk.Msg = (*MsgMintCFT)(nil)
 
 type MsgMintCFT struct {
@@ -245,15 +246,14 @@ func (msg MsgMintCFT) GetSignBytes() []byte {
 func (msg MsgMintCFT) ValidateBasic() sdk.Error {
 	for _, coin := range msg.Amount {
 		if err := linktype.ValidateSymbolUserDefined(coin.Symbol); err != nil {
-			return ErrInvalidTokenSymbol(DefaultCodespace, fmt.Sprintf("[%s] is invalid token symbol", coin.Symbol))
-		}
-		if coin.TokenID == "" {
-			return ErrInvalidTokenID(DefaultCodespace, "token id cannot be empty")
+			return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 		}
 		if err := linktype.ValidateTokenID(coin.TokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, fmt.Sprintf("[%s] is invalid token id", coin.TokenID))
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
 		}
-
+		if err := linktype.ValidateTokenTypeFT(coin.TokenID[:TokenTypeLength]); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
 		if !coin.IsPositive() {
 			return sdk.ErrInvalidCoins("amount is not valid")
 		}
@@ -292,15 +292,14 @@ func (msg MsgBurnCFT) GetSignBytes() []byte {
 func (msg MsgBurnCFT) ValidateBasic() sdk.Error {
 	for _, coin := range msg.Amount {
 		if err := linktype.ValidateSymbolUserDefined(coin.Symbol); err != nil {
-			return ErrInvalidTokenSymbol(DefaultCodespace, fmt.Sprintf("[%s] is invalid token symbol", coin.Symbol))
-		}
-		if coin.TokenID == "" {
-			return ErrInvalidTokenID(DefaultCodespace, "token id cannot be empty")
+			return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 		}
 		if err := linktype.ValidateTokenID(coin.TokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, fmt.Sprintf("[%s] is invalid token id", coin.TokenID))
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
 		}
-
+		if err := linktype.ValidateTokenTypeFT(coin.TokenID[:TokenTypeLength]); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
 		if !coin.IsPositive() {
 			return sdk.ErrInvalidCoins("amount is not valid")
 		}

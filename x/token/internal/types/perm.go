@@ -8,6 +8,7 @@ var _ PermissionI = (*Permission)(nil)
 
 const (
 	MintAction   = "mint"
+	BurnAction   = "burn"
 	IssueAction  = "issue"
 	ModifyAction = "modify"
 )
@@ -59,6 +60,13 @@ func (p Permission) String() string {
 func NewMintPermission(resource string) PermissionI {
 	return &Permission{
 		Action:   MintAction,
+		Resource: resource,
+	}
+}
+
+func NewBurnPermission(resource string) PermissionI {
+	return &Permission{
+		Action:   BurnAction,
 		Resource: resource,
 	}
 }

@@ -128,6 +128,15 @@ type CoinWithTokenID struct {
 }
 ```
 
+### MsgBurnCNFT
+```golang
+type MsgBurnCNFT struct {
+	Symbol  string         `json:"symbol"`
+	From    sdk.AccAddress `json:"from"`
+	TokenID string         `json:"token_id"`
+}
+```
+
 ## MsgGrantPermission
 
 ```golang

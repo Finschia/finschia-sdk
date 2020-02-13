@@ -25,6 +25,8 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgIssueCFT(ctx, keeper, msg)
 		case MsgMintCNFT:
 			return handleMsgMintCNFT(ctx, keeper, msg)
+		case MsgBurnCNFT:
+			return handleMsgBurnCNFT(ctx, keeper, msg)
 		case MsgIssueCNFT:
 			return handleMsgIssueCNFT(ctx, keeper, msg)
 		case MsgMintCFT:
@@ -136,17 +138,24 @@ func handleMsgMintCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgMintCNFT) s
 		return err.Result()
 	}
 
-	perm := types.NewMintPermission(msg.Symbol + msg.TokenType)
-	if !keeper.HasPermission(ctx, msg.From, perm) {
-		return types.ErrTokenPermission(DefaultCodespace, msg.From, perm).Result()
-	}
-
-	if !keeper.HasTokenType(ctx, msg.Symbol, msg.TokenType) {
-		return types.ErrCollectionTokenTypeNotExist(DefaultCodespace, msg.Symbol, msg.TokenType).Result()
-	}
-
 	token := types.NewCollectiveNFT(collection, msg.Name, msg.TokenType, msg.TokenURI, msg.To)
 	err = keeper.MintCollectionNFT(ctx, token, msg.From)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
+		),
+	})
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgBurnCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurnCNFT) sdk.Result {
+	err := keeper.BurnCollectionNFT(ctx, msg.Symbol, msg.TokenID, msg.From)
 	if err != nil {
 		return err.Result()
 	}

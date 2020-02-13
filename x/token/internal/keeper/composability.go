@@ -10,13 +10,31 @@ import (
 var ChildExists = []byte{1}
 
 func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTokenID string, tokenID string) sdk.Error {
+	err := k.attach(ctx, from, symbol, toTokenID, tokenID)
+	if err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeAttachToken,
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
+			sdk.NewAttribute(types.AttributeKeyToTokenID, toTokenID),
+			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+		),
+	})
+
+	return nil
+}
+func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTokenID string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
 	if toTokenID == tokenID {
 		return types.ErrCannotAttachToItself(types.DefaultCodespace, symbol+tokenID)
 	}
 
-	token, err := k.getCNFT(ctx, symbol, tokenID)
+	token, err := k.GetCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return err
 	}
@@ -36,7 +54,7 @@ func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 	if err != nil {
 		return err
 	}
-	toToken, err := k.getCNFT(ctx, symbol, toTokenID)
+	toToken, err := k.GetCNFT(ctx, symbol, toTokenID)
 	if err != nil {
 		return err
 	}
@@ -60,23 +78,30 @@ func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 	store.Set(childToParentKey, k.mustEncodeTokenDenom(toToken.GetDenom()))
 	childrenStore.Set(parentToChildSubKey, ChildExists)
 
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeAttachToken,
-			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
-			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
-			sdk.NewAttribute(types.AttributeKeyToTokenID, toTokenID),
-			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
-		),
-	})
-
 	return nil
 }
 
 func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+	err := k.detach(ctx, from, to, symbol, tokenID)
+	if err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeDetachToken,
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
+			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
+			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+		),
+	})
+	return nil
+}
+func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.getCNFT(ctx, symbol, tokenID)
+	token, err := k.GetCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return err
 	}
@@ -94,7 +119,7 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 	parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
 	ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
 
-	parentToken, err := k.getCNFT(ctx, ticker+suffix, tokenID)
+	parentToken, err := k.GetCNFT(ctx, ticker+suffix, tokenID)
 	if err != nil {
 		return err
 	}
@@ -114,23 +139,13 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 	store.Delete(childToParentKey)
 	childrenStore.Delete(parentToChildSubKey)
 
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeDetachToken,
-			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
-			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
-			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
-			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
-		),
-	})
-
 	return nil
 }
 
 func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.CollectiveNFT, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.getCNFT(ctx, symbol, tokenID)
+	token, err := k.GetCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -141,7 +156,7 @@ func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.Co
 		parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
 		ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
 
-		token, err = k.getCNFT(ctx, ticker+suffix, tokenID)
+		token, err = k.GetCNFT(ctx, ticker+suffix, tokenID)
 		if err != nil {
 			return nil, err
 		}
@@ -157,7 +172,7 @@ func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.Co
 func (k Keeper) ParentOf(ctx sdk.Context, symbol string, tokenID string) (types.CollectiveNFT, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.getCNFT(ctx, symbol, tokenID)
+	token, err := k.GetCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +182,7 @@ func (k Keeper) ParentOf(ctx sdk.Context, symbol string, tokenID string) (types.
 		parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
 		ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
 
-		return k.getCNFT(ctx, ticker+suffix, tokenID)
+		return k.GetCNFT(ctx, ticker+suffix, tokenID)
 	}
 	return nil, nil
 }
@@ -175,7 +190,7 @@ func (k Keeper) ParentOf(ctx sdk.Context, symbol string, tokenID string) (types.
 func (k Keeper) ChildrenOf(ctx sdk.Context, symbol string, tokenID string) (types.Tokens, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.getCNFT(ctx, symbol, tokenID)
+	token, err := k.GetCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -191,7 +206,7 @@ func (k Keeper) ChildrenOf(ctx sdk.Context, symbol string, tokenID string) (type
 		tokenDenom := types.ParentToChildSubKeyToToken(parentToChildKey, iter.Key())
 		ticker, suffix, tokenID := linktype.ParseDenom(tokenDenom)
 
-		childToken, err := k.getCNFT(ctx, ticker+suffix, tokenID)
+		childToken, err := k.GetCNFT(ctx, ticker+suffix, tokenID)
 		if err != nil {
 			panic("child token does not exist")
 		}
@@ -201,7 +216,7 @@ func (k Keeper) ChildrenOf(ctx sdk.Context, symbol string, tokenID string) (type
 	return result, nil
 }
 
-func (k Keeper) getCNFT(ctx sdk.Context, symbol, tokenID string) (types.CollectiveNFT, sdk.Error) {
+func (k Keeper) GetCNFT(ctx sdk.Context, symbol, tokenID string) (types.CollectiveNFT, sdk.Error) {
 	token, err := k.GetToken(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err

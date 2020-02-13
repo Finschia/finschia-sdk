@@ -276,9 +276,6 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),
 			sdk.NewEvent("issue", sdk.NewAttribute("name", name)),
 			sdk.NewEvent("issue", sdk.NewAttribute("symbol", symbol)),
@@ -287,6 +284,12 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("issue", sdk.NewAttribute("amount", amount.String())),
 			sdk.NewEvent("issue", sdk.NewAttribute("mintable", "true")),
 			sdk.NewEvent("issue", sdk.NewAttribute("decimals", decimals.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -352,9 +355,6 @@ func TestEvents(t *testing.T) {
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
 			sdk.NewEvent("issue_cft", sdk.NewAttribute("name", name)),
 			sdk.NewEvent("issue_cft", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("issue_cft", sdk.NewAttribute("token_id", "00010000")),
@@ -366,6 +366,12 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -417,6 +423,9 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol+"1001")),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.MintAction)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol+"1001")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.BurnAction)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -611,29 +620,63 @@ func TestHandleAttachDetach(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 
-	msg := types.NewMsgAttach(addr1, symbol1, "10010001", "10010002")
-	res := h(ctx, msg)
-	require.True(t, res.Code.IsOK())
-	e := sdk.Events{
-		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
-		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-		sdk.NewEvent("attach_cnft", sdk.NewAttribute("from", addr1.String())),
-		sdk.NewEvent("attach_cnft", sdk.NewAttribute("symbol", symbol1)),
-		sdk.NewEvent("attach_cnft", sdk.NewAttribute("to_token_id", "10010001")),
-		sdk.NewEvent("attach_cnft", sdk.NewAttribute("token_id", "10010002")),
+	{
+		msg := types.NewMsgAttach(addr1, symbol1, "10010001", "10010002")
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("attach", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("attach", sdk.NewAttribute("symbol", symbol1)),
+			sdk.NewEvent("attach", sdk.NewAttribute("to_token_id", "10010001")),
+			sdk.NewEvent("attach", sdk.NewAttribute("token_id", "10010002")),
+		}
+		verifyEventFunc(t, e, res.Events)
 	}
-	verifyEventFunc(t, e, res.Events)
 
-	msg2 := types.NewMsgDetach(addr1, addr1, symbol1, "10010002")
-	res2 := h(ctx, msg2)
-	require.True(t, res2.Code.IsOK())
-	e = sdk.Events{
-		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
-		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-		sdk.NewEvent("detach_cnft", sdk.NewAttribute("from", addr1.String())),
-		sdk.NewEvent("detach_cnft", sdk.NewAttribute("to", addr1.String())),
-		sdk.NewEvent("detach_cnft", sdk.NewAttribute("symbol", symbol1)),
-		sdk.NewEvent("detach_cnft", sdk.NewAttribute("token_id", "10010001")),
+	{
+		msg := types.NewMsgDetach(addr1, addr1, symbol1, "10010002")
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("detach", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("detach", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("detach", sdk.NewAttribute("symbol", symbol1)),
+			sdk.NewEvent("detach", sdk.NewAttribute("token_id", "10010002")),
+		}
+		verifyEventFunc(t, e, res.Events)
 	}
-	verifyEventFunc(t, e, res2.Events)
+
+	//Attach again
+	{
+		msg := types.NewMsgAttach(addr1, symbol1, "10010001", "10010002")
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("attach", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("attach", sdk.NewAttribute("symbol", symbol1)),
+			sdk.NewEvent("attach", sdk.NewAttribute("to_token_id", "10010001")),
+			sdk.NewEvent("attach", sdk.NewAttribute("token_id", "10010002")),
+		}
+		verifyEventFunc(t, e, res.Events)
+	}
+	//Burn token
+	{
+		msg := types.NewMsgBurnCNFT(symbol1, "10010001", addr1)
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("burn_cnft", sdk.NewAttribute("symbol", symbol1)),
+			sdk.NewEvent("burn_cnft", sdk.NewAttribute("token_id", "10010001")),
+			sdk.NewEvent("burn_cnft", sdk.NewAttribute("from", addr1.String())),
+		}
+		verifyEventFunc(t, e, res.Events)
+	}
 }

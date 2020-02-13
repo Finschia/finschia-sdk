@@ -45,14 +45,8 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.FT, amount sdk.Int, owner s
 		return err
 	}
 
-	mintPerm := types.NewMintPermission(token.GetDenom())
-	if token.GetMintable() {
-		k.AddPermission(ctx, owner, mintPerm)
-	}
-
 	modifyTokenURIPermission := types.NewModifyTokenURIPermission(token.GetDenom())
 	k.AddPermission(ctx, owner, modifyTokenURIPermission)
-
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueToken,
@@ -67,16 +61,31 @@ func (k Keeper) IssueFT(ctx sdk.Context, token types.FT, amount sdk.Int, owner s
 		sdk.NewEvent(
 			types.EventTypeGrantPermToken,
 			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, mintPerm.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, mintPerm.GetAction()),
-		),
-		sdk.NewEvent(
-			types.EventTypeGrantPermToken,
-			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyResource, modifyTokenURIPermission.GetResource()),
 			sdk.NewAttribute(types.AttributeKeyAction, modifyTokenURIPermission.GetAction()),
 		),
 	})
+
+	if token.GetMintable() {
+		mintPerm := types.NewMintPermission(token.GetDenom())
+		k.AddPermission(ctx, owner, mintPerm)
+		burnPerm := types.NewBurnPermission(token.GetDenom())
+		k.AddPermission(ctx, owner, burnPerm)
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.EventTypeGrantPermToken,
+				sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
+				sdk.NewAttribute(types.AttributeKeyResource, mintPerm.GetResource()),
+				sdk.NewAttribute(types.AttributeKeyAction, mintPerm.GetAction()),
+			),
+			sdk.NewEvent(
+				types.EventTypeGrantPermToken,
+				sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
+				sdk.NewAttribute(types.AttributeKeyResource, burnPerm.GetResource()),
+				sdk.NewAttribute(types.AttributeKeyAction, burnPerm.GetAction()),
+			),
+		})
+	}
 
 	return nil
 }

@@ -31,6 +31,7 @@ type (
 	MsgIssueCFT         = types.MsgIssueCFT
 	MsgIssueCNFT        = types.MsgIssueCNFT
 	MsgMintCNFT         = types.MsgMintCNFT
+	MsgBurnCNFT         = types.MsgBurnCNFT
 	MsgMintCFT          = types.MsgMintCFT
 	MsgBurnCFT          = types.MsgBurnCFT
 

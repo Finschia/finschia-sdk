@@ -55,12 +55,12 @@ The token module emits the following events:
 | create_collection| symbol         | {symbol}                 |
 | create_collection| owner          | {ownerAddress}           |
 
-### MsgIssueCollection                                                   
+### MsgIssueCFT                                                   
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
 | message          | module         | token                    |
 | message          | sender         | {ownerAddress}           | 
-| message          | action         | issue_ft_collection      |
+| message          | action         | issue_cft                |
 | grant_perm       | to             | {ownerAddress}           |
 | grant_perm       | perm_resource  | {symbol}{token_id}       |
 | grant_perm       | perm_action    | mint                     |
@@ -76,43 +76,43 @@ The token module emits the following events:
 | issue_cft        | decimals       | {decimals}               |
 | issue_cft        | token_uri      | {token_uri}              |
 
-### MsgMintCollection
+### MsgMintCFT
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
 | message          | module         | token                    |
 | message          | sender         | {ownerAddress}           | 
-| message          | action         | mint_token               |
+| message          | action         | mint_cft                 |
 | mint_cft         | amount         | {amount}{symbol}{tokenid}|
 | mint_cft         | from           | {fromAddress}            |
 | mint_cft         | to             | {toAddress}              |
 
-### MsgBurnCollection
+### MsgBurnCFT
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
 | message          | module         | token                    |
 | message          | sender         | {ownerAddress}           | 
-| message          | action         | burn_token               |
+| message          | action         | burn_cft                 |
 | burn_cft         | amount         | {amount}{symbol}{tokenid}|
 | burn_cft         | from           | {fromAddress}            |
 
-### MsgIssueNFTCollection                                                   
+### MsgIssueCNFT
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
 | message          | module         | token                    |
 | message          | sender         | {fromAddress}            | 
-| message          | action         | issue_nft_collection     |
+| message          | action         | issue_cnft               |
 | grant_perm       | to             | {toAddress}              |
 | grant_perm       | perm_resource  | {symbol}                 |
 | grant_perm       | perm_action    | mint                     |
 | issue_cnft       | symbol         | {symbol}                 |
 | issue_cnft       | token_type     | {tokentype}              |
 
-### MsgMintNFTCollection
+### MsgMintCNFT
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
 | message          | module         | token                    |
 | message          | sender         | {fromAddress}            | 
-| message          | action         | mint_token               |
+| message          | action         | mint_cnft                |
 | grant_perm       | to             | {toAddress}              |
 | grant_perm       | perm_resource  | {symbol}{token_id}       |
 | grant_perm       | perm_action    | modify                   |
@@ -122,6 +122,16 @@ The token module emits the following events:
 | mint_cnft        | from           | {fromAddress}            |
 | mint_cnft        | to             | {toAddress}              |
 | mint_cnft        | token_uri      | {token_uri}              |
+
+### MsgBurnCNFT
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {ownerAddress}           | 
+| message          | action         | burn_cnft                |
+| burn_cnft        | symbol         | {symbol}                 |
+| burn_cnft        | from           | {fromAddress}            |
+| burn_cnft        | token_id       | {token_id}               |
 
 
 ### MsgGrantPermission

@@ -2276,13 +2276,15 @@ func TestLinkCLITokenIssue(t *testing.T) {
 	// Query permissions for foo account
 	{
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
-		require.Equal(t, 3, len(pms))
+		require.Equal(t, 4, len(pms))
 		require.Equal(t, symbolBrown+fooSuffix, pms[0].GetResource())
 		require.Equal(t, "modify", pms[0].GetAction())
 		require.Equal(t, symbolCony+fooSuffix, pms[1].GetResource())
-		require.Equal(t, "mint", pms[1].GetAction())
+		require.Equal(t, "modify", pms[1].GetAction())
 		require.Equal(t, symbolCony+fooSuffix, pms[2].GetResource())
-		require.Equal(t, "modify", pms[2].GetAction())
+		require.Equal(t, "mint", pms[2].GetAction())
+		require.Equal(t, symbolCony+fooSuffix, pms[3].GetResource())
+		require.Equal(t, "burn", pms[3].GetAction())
 	}
 
 	// Query permissions for bar account
@@ -2533,6 +2535,13 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[1].GetDenom())
 		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[2].GetSymbol())
 		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[2].GetDenom())
+	}
+	{
+		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0001", "-y")
+		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0002", "-y")
+		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0003", "-y")
+		collection := f.QueryCollection(symbolBrown + fooSuffix)
+		require.Equal(t, 0, len(collection.Tokens))
 	}
 
 	f.Cleanup()

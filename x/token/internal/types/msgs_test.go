@@ -56,7 +56,7 @@ func TestMsgBasics(t *testing.T) {
 	}
 	{
 		msg := NewMsgIssueCFT("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
-		require.Equal(t, "issue_ft_collection", msg.Type())
+		require.Equal(t, "issue_cft", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -79,7 +79,7 @@ func TestMsgBasics(t *testing.T) {
 	}
 	{
 		msg := NewMsgMintCNFT("name", "symb"+addrSuffix, "tokenuri", "toke", addr, addr)
-		require.Equal(t, "mint_nft_collection", msg.Type())
+		require.Equal(t, "mint_cnft", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -97,6 +97,25 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.TokenURI, msg2.TokenURI)
 		require.Equal(t, msg.From, msg2.From)
 		require.Equal(t, msg.TokenType, msg2.TokenType)
+	}
+	{
+		msg := NewMsgBurnCNFT("symb"+addrSuffix, "10010001", addr)
+		require.Equal(t, "burn_cnft", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgBurnCNFT{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.TokenID, msg2.TokenID)
 	}
 	{
 		msg := NewMsgMint(addr, addr, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(1))))
