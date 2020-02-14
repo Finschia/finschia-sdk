@@ -1,7 +1,9 @@
 package rest
 
 import (
+	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/line/link/x/bank/internal/types"
 
@@ -20,38 +22,64 @@ func QueryBalancesRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		bech32addr := vars["address"]
 		denom := vars["denom"] //"" if the key is not exists
 
-		addr, err := sdk.AccAddressFromBech32(bech32addr)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
+		arrBech32addrs := strings.Split(bech32addr, ",")
+		if len(arrBech32addrs) > 1 {
+			addrs := make([]sdk.AccAddress, len(arrBech32addrs))
+
+			for i, bech32addr := range arrBech32addrs {
+				addr, err := sdk.AccAddressFromBech32(bech32addr)
+				if err != nil {
+					rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+					return
+				}
+				addrs[i] = addr
+			}
+
+			params := types.NewQueryBulkBalanceParams(addrs)
+			bz, err := cliCtx.Codec.MarshalJSON(params)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+			queryBalancesRequest(w, r, cliCtx, bz, "bulk_balances")
+		} else {
+			addr, err := sdk.AccAddressFromBech32(bech32addr)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+				return
+			}
+
+			params := types.NewQueryBalanceParams(addr, denom)
+			bz, err := cliCtx.Codec.MarshalJSON(params)
+			if err != nil {
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+
+			queryBalancesRequest(w, r, cliCtx, bz, "balances")
 		}
-
-		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
-		if !ok {
-			return
-		}
-
-		params := types.NewQueryBalanceParams(addr, denom)
-		bz, err := cliCtx.Codec.MarshalJSON(params)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
-		}
-
-		res, height, err := cliCtx.QueryWithData("custom/bank/balances", bz)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		cliCtx = cliCtx.WithHeight(height)
-
-		// the query will return empty if there is no data for this account
-		if len(res) == 0 {
-			rest.PostProcessResponse(w, cliCtx, sdk.Coins{})
-			return
-		}
-
-		rest.PostProcessResponse(w, cliCtx, res)
 	}
+}
+
+func queryBalancesRequest(w http.ResponseWriter, r *http.Request, cliCtx context.CLIContext, bz []byte, path string) {
+	cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+	if !ok {
+		return
+	}
+
+	res, height, err := cliCtx.QueryWithData(fmt.Sprintf("custom/bank/%s", path), bz)
+	if err != nil {
+		rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	cliCtx = cliCtx.WithHeight(height)
+
+	// the query will return empty if there is no data for this account
+	if len(res) == 0 {
+		rest.PostProcessResponse(w, cliCtx, sdk.Coins{})
+		return
+	}
+
+	rest.PostProcessResponse(w, cliCtx, res)
 }
