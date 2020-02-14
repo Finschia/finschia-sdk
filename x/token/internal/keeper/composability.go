@@ -58,7 +58,7 @@ func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 	if err != nil {
 		return err
 	}
-	if rootOfToToken != nil && rootOfToToken.GetTokenID() == tokenID {
+	if rootOfToToken.GetTokenID() == tokenID {
 		return types.ErrCannotAttachToADescendant(types.DefaultCodespace, token.GetDenom(), toToken.GetDenom())
 	}
 
@@ -149,7 +149,6 @@ func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.Co
 	if err != nil {
 		return nil, err
 	}
-	myself := token
 
 	for childToParentKey := types.TokenChildToParentKey(token); store.Has(childToParentKey); {
 		bz := store.Get(childToParentKey)
@@ -163,9 +162,6 @@ func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.Co
 		childToParentKey = types.TokenChildToParentKey(token)
 	}
 
-	if token == myself {
-		return nil, nil
-	}
 	return token, nil
 }
 

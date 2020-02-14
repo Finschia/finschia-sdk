@@ -410,10 +410,10 @@ func TestAttachDetachScenario(t *testing.T) {
 
 	// verify the relations
 
-	// root of token1 is nil
+	// root of token1 is token1
 	rootOfToken1, err1 := keeper.RootOf(ctx, rightSymbol, token1Id)
 	require.NoError(t, err1)
-	require.Nil(t, rootOfToken1)
+	require.Equal(t, rootOfToken1.GetTokenID(), token1Id)
 
 	// root of token2 is token1
 	rootOfToken2, err2 := keeper.RootOf(ctx, rightSymbol, token2Id)

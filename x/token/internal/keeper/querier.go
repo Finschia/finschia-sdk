@@ -176,9 +176,6 @@ func queryRoot(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, s
 	if err != nil {
 		return nil, err
 	}
-	if token == nil {
-		return nil, nil
-	}
 
 	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, token)
 	if err2 != nil {
