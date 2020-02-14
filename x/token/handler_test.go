@@ -563,6 +563,40 @@ func TestHandleTransferCFT(t *testing.T) {
 	verifyEventFunc(t, e, res.Events)
 }
 
+func TestHandleTransferCFTFrom(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper := input.Ctx, input.Keeper
+
+	h := NewHandler(keeper)
+
+	{
+		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		res := h(ctx, createMsg)
+		require.True(t, res.Code.IsOK())
+		msg := types.NewMsgIssueCFT(name, symbol1, tokenuri, addr1, amount, decimals, true)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgApproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferCFTFrom(addr2, addr1, addr2, symbol1, "00010000", amount)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("to", addr2.String())),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("token_id", "00010000")),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("amount", amount.String())),
+	}
+	verifyEventFunc(t, e, res.Events)
+}
+
 func TestHandleTransferCNFT(t *testing.T) {
 	input := testCommon.SetupTestInput(t)
 	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
@@ -593,6 +627,44 @@ func TestHandleTransferCNFT(t *testing.T) {
 		sdk.NewEvent("transfer_cnft", sdk.NewAttribute("to", addr2.String())),
 		sdk.NewEvent("transfer_cnft", sdk.NewAttribute("symbol", symbol1)),
 		sdk.NewEvent("transfer_cnft", sdk.NewAttribute("token_id", "10010001")),
+	}
+	verifyEventFunc(t, e, res.Events)
+}
+
+func TestHandleTransferCNFTFrom(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
+
+	h := NewHandler(keeper)
+
+	bk.SetSendEnabled(ctx, true)
+
+	{
+		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		res := h(ctx, createMsg)
+		require.True(t, res.Code.IsOK())
+		msg := types.NewMsgIssueCNFT(symbol1, addr1)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+		msg3 := types.NewMsgApproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferCNFTFrom(addr2, addr1, addr2, symbol1, "10010001")
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("to", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("token_id", "10010001")),
 	}
 	verifyEventFunc(t, e, res.Events)
 }
@@ -636,9 +708,9 @@ func TestHandleAttachDetach(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgDetach(addr1, addr1, symbol1, "10010002")
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgDetach(addr1, addr1, symbol1, "10010002")
+		res2 := h(ctx, msg2)
+		require.True(t, res2.Code.IsOK())
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -647,7 +719,7 @@ func TestHandleAttachDetach(t *testing.T) {
 			sdk.NewEvent("detach", sdk.NewAttribute("symbol", symbol1)),
 			sdk.NewEvent("detach", sdk.NewAttribute("token_id", "10010002")),
 		}
-		verifyEventFunc(t, e, res.Events)
+		verifyEventFunc(t, e, res2.Events)
 	}
 
 	//Attach again
@@ -679,4 +751,113 @@ func TestHandleAttachDetach(t *testing.T) {
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
+}
+
+func TestHandleAttachFromDetachFrom(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper := input.Ctx, input.Keeper
+
+	h := NewHandler(keeper)
+
+	{
+		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		res := h(ctx, createMsg)
+		require.True(t, res.Code.IsOK())
+		msg := types.NewMsgIssueCNFT(symbol1, addr1)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+		msg2 = types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+		msg3 := types.NewMsgApproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgAttachFrom(addr2, addr1, symbol1, "10010001", "10010002")
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("to_token_id", "10010001")),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("token_id", "10010002")),
+	}
+	verifyEventFunc(t, e, res.Events)
+
+	msg2 := types.NewMsgDetachFrom(addr2, addr1, addr1, symbol1, "10010002")
+	res2 := h(ctx, msg2)
+	require.True(t, res2.Code.IsOK())
+	e = sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("to", addr1.String())),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("token_id", "10010002")),
+	}
+	verifyEventFunc(t, e, res2.Events)
+}
+
+func TestHandleApproveDisapprove(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
+
+	h := NewHandler(keeper)
+
+	bk.SetSendEnabled(ctx, true)
+
+	{
+		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		res := h(ctx, createMsg)
+		require.True(t, res.Code.IsOK())
+		msg := types.NewMsgIssueCNFT(symbol1, addr1)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferCNFTFrom(addr2, addr1, addr2, symbol1, "10010001")
+	res := h(ctx, msg)
+	require.False(t, res.Code.IsOK())
+
+	{
+		msg3 := types.NewMsgApproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg = types.NewMsgTransferCNFTFrom(addr2, addr1, addr2, symbol1, "10010001")
+	res = h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("to", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("token_id", "10010001")),
+	}
+	verifyEventFunc(t, e, res.Events)
+
+	{
+		msg3 := types.NewMsgDisapproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg = types.NewMsgTransferCNFTFrom(addr2, addr1, addr2, symbol1, "10010001")
+	res = h(ctx, msg)
+	require.False(t, res.Code.IsOK())
 }

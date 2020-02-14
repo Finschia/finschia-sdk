@@ -15,6 +15,7 @@ const (
 	QueryParent      = "parent"
 	QueryRoot        = "root"
 	QueryChildren    = "children"
+	QueryIsApproved  = "approved"
 )
 
 type NodeQuerier interface {
@@ -45,4 +46,18 @@ type QueryAccAddressParams struct {
 
 func NewQueryAccAddressParams(addr sdk.AccAddress) QueryAccAddressParams {
 	return QueryAccAddressParams{Addr: addr}
+}
+
+type QueryIsApprovedParams struct {
+	Proxy    sdk.AccAddress `json:"proxy"`
+	Approver sdk.AccAddress `json:"approver"`
+	Symbol   string         `json:"symbol"`
+}
+
+func NewQueryIsApprovedParams(proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) QueryIsApprovedParams {
+	return QueryIsApprovedParams{
+		Proxy:    proxy,
+		Approver: approver,
+		Symbol:   symbol,
+	}
 }

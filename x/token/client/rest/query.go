@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/link/types"
 	clienttypes "github.com/line/link/x/token/client/internal/types"
 
 	"github.com/gorilla/mux"
@@ -28,7 +29,9 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/token/parent/{symbol}/{token_id}", QueryParentRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/root/{symbol}/{token_id}", QueryRootRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/children/{symbol}/{token_id}", QueryChildrenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/approved/{proxy}/{approver}/{symbol}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
 }
+
 func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -397,5 +400,47 @@ func QueryChildrenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, tokens)
+	}
+}
+
+func QueryIsApprovedRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+
+		proxy, err := sdk.AccAddressFromBech32(vars["proxy"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("proxy[%s] cannot parsed: %s", proxy.String(), err))
+			return
+		}
+
+		approver, err := sdk.AccAddressFromBech32(vars["approver"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("approver[%s] cannot parsed: %s", approver.String(), err))
+			return
+		}
+
+		symbol := vars["symbol"]
+		if err := types.ValidateSymbolUserDefined(symbol); err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("invalid symbol[%s]: %s", symbol, err))
+			return
+		}
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		approved, height, err := retriever.IsApproved(cliCtx, proxy, approver, symbol)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, approved)
 	}
 }

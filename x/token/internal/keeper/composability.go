@@ -10,8 +10,7 @@ import (
 var ChildExists = []byte{1}
 
 func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTokenID string, tokenID string) sdk.Error {
-	err := k.attach(ctx, from, symbol, toTokenID, tokenID)
-	if err != nil {
+	if err := k.attach(ctx, from, symbol, toTokenID, tokenID); err != nil {
 		return err
 	}
 
@@ -27,6 +26,30 @@ func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 
 	return nil
 }
+
+func (k Keeper) AttachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol string, toTokenID string, tokenID string) sdk.Error {
+	if !k.IsApproved(ctx, proxy, from, symbol) {
+		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
+	}
+
+	if err := k.attach(ctx, from, symbol, toTokenID, tokenID); err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeAttachFrom,
+			sdk.NewAttribute(types.AttribyteKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
+			sdk.NewAttribute(types.AttributeKeyToTokenID, toTokenID),
+			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+		),
+	})
+
+	return nil
+}
+
 func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTokenID string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
@@ -82,8 +105,7 @@ func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 }
 
 func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
-	err := k.detach(ctx, from, to, symbol, tokenID)
-	if err != nil {
+	if err := k.detach(ctx, from, to, symbol, tokenID); err != nil {
 		return err
 	}
 
@@ -98,6 +120,30 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 	})
 	return nil
 }
+
+func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+	if !k.IsApproved(ctx, proxy, from, symbol) {
+		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
+	}
+
+	if err := k.detach(ctx, from, to, symbol, tokenID); err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeDetachFrom,
+			sdk.NewAttribute(types.AttribyteKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
+			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
+			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+		),
+	})
+
+	return nil
+}
+
 func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 

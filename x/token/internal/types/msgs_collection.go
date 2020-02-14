@@ -309,3 +309,85 @@ func (msg MsgBurnCFT) ValidateBasic() sdk.Error {
 	}
 	return nil
 }
+
+var _ sdk.Msg = (*MsgApproveCollection)(nil)
+
+type MsgApproveCollection struct {
+	Approver sdk.AccAddress `json:"approver"`
+	Proxy    sdk.AccAddress `json:"proxy"`
+	Symbol   string         `json:"symbol"`
+}
+
+func NewMsgApproveCollection(approver sdk.AccAddress, proxy sdk.AccAddress, symbol string) MsgApproveCollection {
+	return MsgApproveCollection{
+		Approver: approver,
+		Proxy:    proxy,
+		Symbol:   symbol,
+	}
+}
+
+func (msg MsgApproveCollection) ValidateBasic() sdk.Error {
+	if msg.Approver.Empty() {
+		return sdk.ErrInvalidAddress("approver cannot be empty")
+	}
+	if msg.Proxy.Empty() {
+		return sdk.ErrInvalidAddress("proxy cannot be empty")
+	}
+	if msg.Approver.Equals(msg.Proxy) {
+		return ErrApproverProxySame(DefaultCodespace, msg.Approver.String())
+	}
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+	}
+	return nil
+}
+
+func (MsgApproveCollection) Route() string { return RouterKey }
+func (MsgApproveCollection) Type() string  { return "approve_collection" }
+func (msg MsgApproveCollection) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Approver}
+}
+func (msg MsgApproveCollection) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
+var _ sdk.Msg = (*MsgDisapproveCollection)(nil)
+
+type MsgDisapproveCollection struct {
+	Approver sdk.AccAddress `json:"approver"`
+	Proxy    sdk.AccAddress `json:"proxy"`
+	Symbol   string         `json:"symbol"`
+}
+
+func NewMsgDisapproveCollection(approver sdk.AccAddress, proxy sdk.AccAddress, symbol string) MsgDisapproveCollection {
+	return MsgDisapproveCollection{
+		Approver: approver,
+		Proxy:    proxy,
+		Symbol:   symbol,
+	}
+}
+
+func (msg MsgDisapproveCollection) ValidateBasic() sdk.Error {
+	if msg.Approver.Empty() {
+		return sdk.ErrInvalidAddress("approver cannot be empty")
+	}
+	if msg.Proxy.Empty() {
+		return sdk.ErrInvalidAddress("proxy cannot be empty")
+	}
+	if msg.Approver.Equals(msg.Proxy) {
+		return ErrApproverProxySame(DefaultCodespace, msg.Approver.String())
+	}
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+	}
+	return nil
+}
+
+func (MsgDisapproveCollection) Route() string { return RouterKey }
+func (MsgDisapproveCollection) Type() string  { return "disapprove_collection" }
+func (msg MsgDisapproveCollection) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Approver}
+}
+func (msg MsgDisapproveCollection) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}

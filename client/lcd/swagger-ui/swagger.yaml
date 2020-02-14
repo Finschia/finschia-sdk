@@ -978,7 +978,7 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    $ref: '#/components/schemas/TokenCNFT'
+                    $ref: '#/components/schemas/TokenCNFT2'
         "500":
           description: Internal Server Error
   /token/root/{symbol}/{token_id}:
@@ -1013,7 +1013,7 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    $ref: '#/components/schemas/TokenCNFT'
+                    $ref: '#/components/schemas/TokenCNFT2'
         "500":
           description: Internal Server Error
   /token/children/{symbol}/{token_id}:
@@ -1051,6 +1051,49 @@ paths:
                     type: array
                     items:
                       $ref: '#/components/schemas/TokenCNFT3'
+        "500":
+          description: Internal Server Error
+  /token/approved/{proxy}/{approver}/{symbol}:
+    get:
+      tags:
+        - Token
+      summary: Get approval status of a proxy for a collection
+      parameters:
+        - name: proxy
+          in: path
+          description: approved proxy address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: approver
+          in: path
+          description: approver address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: symbol
+          in: path
+          description: Token symbol
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: boolean
+                    example: true
         "500":
           description: Internal Server Error
   /safetybox/{id}:
@@ -1890,7 +1933,7 @@ components:
               example: "test-cony"
             symbol:
               type: string
-              example: "con4xxv"
+              example: "con2xxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -1913,13 +1956,36 @@ components:
               example: "test-cony"
             symbol:
               type: string
-              example: "con4xxv"
+              example: "con2xxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
             token_id:
               type: string
               example: "10010003"
+    TokenCNFT4:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/CNFT"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            name:
+              type: string
+              example: "test-cony"
+            symbol:
+              type: string
+              example: "con2xxv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            token_id:
+              type: string
+              example: "10010004"
     Collection:
       type: object
       properties:
@@ -2601,9 +2667,9 @@ components:
         value:
           type: object
           properties:
-            from_address:
+            from:
               $ref: '#/components/schemas/Address'
-            to_address:
+            to:
               $ref: '#/components/schemas/Address'
             symbol:
               type: string
@@ -2620,9 +2686,9 @@ components:
         value:
           type: object
           properties:
-            from_address:
+            from:
               $ref: '#/components/schemas/Address'
-            to_address:
+            to:
               $ref: '#/components/schemas/Address'
             symbol:
               type: string
@@ -2642,9 +2708,54 @@ components:
         value:
           type: object
           properties:
-            from_address:
+            from:
               $ref: '#/components/schemas/Address'
-            to_address:
+            to:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
+            token_id:
+              type: string
+              example: "10010001"
+    MsgTransferCFTFrom:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/MsgTransferCFTFrom"
+        value:
+          type: object
+          properties:
+            proxy:
+              $ref: '#/components/schemas/Address'
+            from:
+              $ref: '#/components/schemas/Address'
+            to:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
+            token_id:
+              type: string
+              example: "00010000"
+            amount:
+              type: string
+              example: "10"
+    MsgTransferCNFTFrom:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/MsgTransferCNFTFrom"
+        value:
+          type: object
+          properties:
+            proxy:
+              $ref: '#/components/schemas/Address'
+            from:
+              $ref: '#/components/schemas/Address'
+            to:
               $ref: '#/components/schemas/Address'
             symbol:
               type: string
@@ -2661,7 +2772,7 @@ components:
         value:
           type: object
           properties:
-            from_address:
+            from:
               $ref: '#/components/schemas/Address'
             symbol:
               type: string
@@ -2681,9 +2792,9 @@ components:
         value:
           type: object
           properties:
-            from_address:
+            from:
               $ref: '#/components/schemas/Address'
-            to_address:
+            to:
               $ref: '#/components/schemas/Address'
             symbol:
               type: string
@@ -2691,6 +2802,81 @@ components:
             token_id:
               type: string
               example: "10010001"
+    MsgAttachFrom:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/MsgAttachFrom"
+        value:
+          type: object
+          properties:
+            proxy:
+              $ref: '#/components/schemas/Address'
+            from:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
+            to_token_id:
+              type: string
+              example: "10010001"
+            token_id:
+              type: string
+              example: "10010001"
+    MsgDetachFrom:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/MsgDetachFrom"
+        value:
+          type: object
+          properties:
+            proxy:
+              $ref: '#/components/schemas/Address'
+            from:
+              $ref: '#/components/schemas/Address'
+            to:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
+            token_id:
+              type: string
+              example: "10010001"
+    MsgApproveCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/MsgApproveCollection"
+        value:
+          type: object
+          properties:
+            approver:
+              $ref: '#/components/schemas/Address'
+            proxy:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
+    MsgDisapproveCollection:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/MsgDisapproveCollection"
+        value:
+          type: object
+          properties:
+            approver:
+              $ref: '#/components/schemas/Address'
+            proxy:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
 
   examples:
     # If you want to add new Msg, You have to add new Msg example to MsgExamples for dredd test
@@ -2768,14 +2954,36 @@ components:
           "token_uri": "example.com/token_uri",
           "amount": "1000000",
           "mintable": true,
-          "decimals": "8",
+          "decimals": "8"
         }
       },
       {
         "type": "link/MsgIssueCNFT",
         "value": {
           "symbol": "con2xxv",
-          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "link/MsgMintCNFT",
+        "value": {
+          "name": "cony",
+          "symbol": "con2xxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri",
+          "token_type": "1001"
+        }
+      },
+      {
+        "type": "link/MsgMintCNFT",
+        "value": {
+          "name": "cony",
+          "symbol": "con2xxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri",
+          "token_type": "1001"
         }
       },
       {
@@ -2827,7 +3035,7 @@ components:
         "value": {
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_id": "10010004"
+          "token_id": "10010005"
         }
       },
       {
@@ -2842,7 +3050,6 @@ components:
           "decimals": "8",
         }
       },
-
       {
         "type": "link/MsgMintCFT",
         "value": {
@@ -2991,10 +3198,18 @@ components:
         }
       },
       {
+        "type": "link/MsgApproveCollection",
+        "value": {
+          "approver": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv"
+        }
+      },
+      {
         "type": "link/MsgTransferFT",
         "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "conyxxv",
           "amount": "1"
         }
@@ -3002,8 +3217,19 @@ components:
       {
         "type": "link/MsgTransferCFT",
         "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv",
+          "token_id": "00010000",
+          "amount": "1"
+        }
+      },
+      {
+        "type": "link/MsgTransferCFTFrom",
+        "value": {
+          "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_id": "00010000",
           "amount": "1"
@@ -3012,16 +3238,26 @@ components:
       {
         "type": "link/MsgTransferCNFT",
         "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_id": "10010001"
         }
       },
       {
+        "type": "link/MsgTransferCNFTFrom",
+        "value": {
+          "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv",
+          "token_id": "10010004"
+        }
+      },
+      {
         "type": "link/MsgAttach",
         "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "to_token_id": "10010002",
           "token_id": "10010003"
@@ -3030,8 +3266,28 @@ components:
       {
         "type": "link/MsgDetach",
         "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv",
+          "token_id": "10010003"
+        }
+      },
+      {
+        "type": "link/MsgAttachFrom",
+        "value": {
+          "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv",
+          "to_token_id": "10010002",
+          "token_id": "10010003"
+        }
+      },
+      {
+        "type": "link/MsgDetachFrom",
+        "value": {
+          "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_id": "10010003"
         }
@@ -3039,10 +3295,18 @@ components:
       {
         "type": "link/MsgAttach",
         "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "to_token_id": "10010002",
           "token_id": "10010003"
+        }
+      },
+      {
+        "type": "link/MsgDisapproveCollection",
+        "value": {
+          "approver": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv"
         }
       }
       ]

@@ -97,7 +97,7 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, to
 	}
 	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
 	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
-		return types.ErrTokenPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
+		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
 	}
 	token.SetTokenURI(tokenURI)
 

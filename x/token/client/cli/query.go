@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"fmt"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/client"
@@ -31,6 +33,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		GetParentCmd(cdc),
 		GetRootCmd(cdc),
 		GetChildrenCmd(cdc),
+		GetIsApproved(cdc),
 	)
 
 	return cmd
@@ -352,6 +355,47 @@ func GetChildrenCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			return cliCtx.PrintOutput(tokens)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
+}
+
+type Approved struct {
+	Approved bool
+}
+
+func (a Approved) String() string {
+	return string(codec.MustMarshalJSONIndent(types.ModuleCdc, a))
+}
+
+var _ fmt.Stringer = (*Approved)(nil)
+
+func GetIsApproved(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "approved [proxy] [approver] [symbol]",
+		Short: "Query whether a proxy is approved by approver on a collection",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			retriever := clienttypes.NewRetriever(cliCtx)
+
+			proxy, err := sdk.AccAddressFromBech32(args[0])
+			if err != nil {
+				return err
+			}
+
+			approver, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			approved, height, err := retriever.IsApproved(cliCtx, proxy, approver, args[2])
+			if err != nil {
+				return err
+			}
+
+			return cliCtx.WithHeight(height).PrintOutput(Approved{Approved: approved})
 		},
 	}
 

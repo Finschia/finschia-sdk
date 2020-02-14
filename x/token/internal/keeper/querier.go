@@ -30,6 +30,8 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 			return queryRoot(ctx, req, keeper)
 		case types.QueryChildren:
 			return queryChildren(ctx, req, keeper)
+		case types.QueryIsApproved:
+			return queryIsApproved(ctx, req, keeper)
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown token query endpoint")
 		}
@@ -202,6 +204,22 @@ func queryChildren(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byt
 	bz, err2 := codec.MarshalJSONIndent(keeper.cdc, tokens)
 	if err2 != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+	}
+
+	return bz, nil
+}
+
+func queryIsApproved(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, sdk.Error) {
+	var params types.QueryIsApprovedParams
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params[Proxy=%s, Approver=%s, Symbol=%s]: %s", params.Proxy.String(), params.Approver.String(), params.Symbol, err))
+	}
+
+	approved := keeper.IsApproved(ctx, params.Proxy, params.Approver, params.Symbol)
+
+	bz, err := codec.MarshalJSONIndent(keeper.cdc, approved)
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
 	}
 
 	return bz, nil

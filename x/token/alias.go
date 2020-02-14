@@ -44,8 +44,17 @@ type (
 	MsgTransferCFT  = types.MsgTransferCFT
 	MsgTransferCNFT = types.MsgTransferCNFT
 
+	MsgTransferCFTFrom  = types.MsgTransferCFTFrom
+	MsgTransferCNFTFrom = types.MsgTransferCNFTFrom
+
 	MsgAttach = types.MsgAttach
 	MsgDetach = types.MsgDetach
+
+	MsgAttachFrom = types.MsgAttachFrom
+	MsgDetachFrom = types.MsgDetachFrom
+
+	MsgApproveCollection    = types.MsgApproveCollection
+	MsgDisapproveCollection = types.MsgDisapproveCollection
 
 	Permissions = types.Permissions
 

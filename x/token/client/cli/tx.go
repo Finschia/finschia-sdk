@@ -57,8 +57,14 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		BurnCollectionFTTxCmd(cdc),
 		TransferCFTTxCmd(cdc),
 		TransferCNFTTxCmd(cdc),
+		TransferCFTFromTxCmd(cdc),
+		TransferCNFTFromTxCmd(cdc),
 		AttachTxCmd(cdc),
 		DetachTxCmd(cdc),
+		AttachFromTxCmd(cdc),
+		DetachFromTxCmd(cdc),
+		ApproveCollectionTxCmd(cdc),
+		DisapproveCollectionTxCmd(cdc),
 	)
 	return txCmd
 }

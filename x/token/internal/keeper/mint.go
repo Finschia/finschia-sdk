@@ -43,7 +43,7 @@ func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddre
 	}
 	perm := types.NewMintPermission(ft.GetDenom())
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
+		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
 	return nil
 }
@@ -98,9 +98,9 @@ func (k Keeper) isBurnable(ctx sdk.Context, amount sdk.Coins, from sdk.AccAddres
 	}
 
 	for _, coin := range amount {
-		perm := types.NewMintPermission(coin.Denom)
+		perm := types.NewBurnPermission(coin.Denom)
 		if !k.HasPermission(ctx, from, perm) {
-			return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
+			return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 		}
 	}
 	return nil

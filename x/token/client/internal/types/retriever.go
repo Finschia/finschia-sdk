@@ -145,3 +145,22 @@ func (r Retriever) GetTokens(ctx context.CLIContext) (types.Tokens, int64, error
 
 	return tokens, height, nil
 }
+
+func (r Retriever) IsApproved(ctx context.CLIContext, proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) (approved bool, height int64, err error) {
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryIsApprovedParams(proxy, approver, symbol))
+	if err != nil {
+		return false, 0, err
+	}
+
+	res, height, err := r.query(types.QueryIsApproved, bs)
+	if err != nil {
+		return false, 0, err
+	}
+
+	err = ctx.Codec.UnmarshalJSON(res, &approved)
+	if err != nil {
+		return false, 0, err
+	}
+
+	return approved, height, nil
+}

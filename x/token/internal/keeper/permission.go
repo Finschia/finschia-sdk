@@ -11,7 +11,7 @@ func (k Keeper) AddPermission(ctx sdk.Context, addr sdk.AccAddress, perm types.P
 
 func (k Keeper) RevokePermission(ctx sdk.Context, addr sdk.AccAddress, perm types.PermissionI) sdk.Error {
 	if !k.HasPermission(ctx, addr, perm) {
-		return types.ErrTokenPermission(types.DefaultCodespace, addr, perm)
+		return types.ErrTokenNoPermission(types.DefaultCodespace, addr, perm)
 	}
 	k.iamKeeper.RevokePermission(ctx, addr, perm)
 
@@ -36,7 +36,7 @@ func (k Keeper) InheritPermission(ctx sdk.Context, parent, child sdk.AccAddress)
 
 func (k Keeper) GrantPermission(ctx sdk.Context, from, to sdk.AccAddress, perm types.PermissionI) sdk.Error {
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
+		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
 	k.AddPermission(ctx, to, perm)
 

@@ -306,7 +306,7 @@ func (k Keeper) MintCollectionNFT(ctx sdk.Context, token types.CollectiveNFT, fr
 
 	perm := types.NewMintPermission(token.GetSymbol() + token.GetTokenType())
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
+		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
 
 	err := k.setTokenToCollection(ctx, token)
@@ -351,11 +351,11 @@ func (k Keeper) BurnCollectionNFT(ctx sdk.Context, symbol, tokenID string, from 
 
 	perm := types.NewBurnPermission(symbol + tokenID[:types.TokenTypeLength])
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
+		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
 
 	if !token.GetOwner().Equals(from) {
-		return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
+		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
 
 	err = k.burnCollectionNFT(ctx, token, from)

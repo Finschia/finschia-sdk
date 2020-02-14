@@ -45,10 +45,22 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgTransferCFT(ctx, keeper, msg)
 		case MsgTransferCNFT:
 			return handleMsgTransferCNFT(ctx, keeper, msg)
+		case MsgTransferCFTFrom:
+			return handleMsgTransferCFTFrom(ctx, keeper, msg)
+		case MsgTransferCNFTFrom:
+			return handleMsgTransferCNFTFrom(ctx, keeper, msg)
 		case MsgAttach:
 			return handleMsgAttach(ctx, keeper, msg)
 		case MsgDetach:
 			return handleMsgDetach(ctx, keeper, msg)
+		case MsgAttachFrom:
+			return handleMsgAttachFrom(ctx, keeper, msg)
+		case MsgDetachFrom:
+			return handleMsgDetachFrom(ctx, keeper, msg)
+		case MsgApproveCollection:
+			return handleMsgApproveCollection(ctx, keeper, msg)
+		case MsgDisapproveCollection:
+			return handleMsgDisapproveCollection(ctx, keeper, msg)
 		default:
 			errMsg := fmt.Sprintf("Unrecognized  Msg type: %T", msg)
 			return sdk.ErrUnknownRequest(errMsg).Result()
@@ -80,7 +92,7 @@ func handleMsgIssueCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueCFT) s
 	}
 	perm := types.NewIssuePermission(collection.GetSymbol())
 	if !keeper.HasPermission(ctx, msg.Owner, perm) {
-		return types.ErrTokenPermission(DefaultCodespace, msg.Owner, perm).Result()
+		return types.ErrTokenNoPermission(DefaultCodespace, msg.Owner, perm).Result()
 	}
 
 	token := types.NewCollectiveFT(collection, msg.Name, msg.TokenURI, msg.Decimals, msg.Mintable)
@@ -108,7 +120,7 @@ func handleMsgIssueCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueCNFT)
 
 	perm := types.NewIssuePermission(msg.Symbol)
 	if !keeper.HasPermission(ctx, msg.Owner, perm) {
-		return types.ErrTokenPermission(DefaultCodespace, msg.Owner, perm).Result()
+		return types.ErrTokenNoPermission(DefaultCodespace, msg.Owner, perm).Result()
 	}
 
 	tokenType, err := keeper.GetNextTokenTypeForCNFT(ctx, msg.Symbol)
@@ -299,7 +311,7 @@ func handleMsgModifyTokenURI(ctx sdk.Context, keeper keeper.Keeper, msg MsgModif
 }
 
 func handleMsgTransferFT(ctx sdk.Context, k keeper.Keeper, msg types.MsgTransferFT) sdk.Result {
-	err := k.TransferFT(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol, msg.Amount)
+	err := k.TransferFT(ctx, msg.From, msg.To, msg.Symbol, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -308,7 +320,7 @@ func handleMsgTransferFT(ctx sdk.Context, k keeper.Keeper, msg types.MsgTransfer
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
 		),
 	)
 
@@ -316,7 +328,7 @@ func handleMsgTransferFT(ctx sdk.Context, k keeper.Keeper, msg types.MsgTransfer
 }
 
 func handleMsgTransferCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransferCFT) sdk.Result {
-	err := keeper.TransferCFT(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol, msg.TokenID, msg.Amount)
+	err := keeper.TransferCFT(ctx, msg.From, msg.To, msg.Symbol, msg.TokenID, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -325,7 +337,7 @@ func handleMsgTransferCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransfer
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
 		),
 	)
 
@@ -333,7 +345,7 @@ func handleMsgTransferCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransfer
 }
 
 func handleMsgTransferCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransferCNFT) sdk.Result {
-	err := keeper.TransferCNFT(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol, msg.TokenID)
+	err := keeper.TransferCNFT(ctx, msg.From, msg.To, msg.Symbol, msg.TokenID)
 	if err != nil {
 		return err.Result()
 	}
@@ -342,7 +354,41 @@ func handleMsgTransferCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransfe
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgTransferCFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransferCFTFrom) sdk.Result {
+	err := keeper.TransferCFTFrom(ctx, msg.Proxy, msg.From, msg.To, msg.Symbol, msg.TokenID, msg.Amount)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Proxy.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgTransferCNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransferCNFTFrom) sdk.Result {
+	err := keeper.TransferCNFTFrom(ctx, msg.Proxy, msg.From, msg.To, msg.Symbol, msg.TokenID)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Proxy.String()),
 		),
 	)
 
@@ -350,7 +396,7 @@ func handleMsgTransferCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgTransfe
 }
 
 func handleMsgAttach(ctx sdk.Context, keeper keeper.Keeper, msg MsgAttach) sdk.Result {
-	err := keeper.Attach(ctx, msg.FromAddress, msg.Symbol, msg.ToTokenID, msg.TokenID)
+	err := keeper.Attach(ctx, msg.From, msg.Symbol, msg.ToTokenID, msg.TokenID)
 	if err != nil {
 		return err.Result()
 	}
@@ -359,7 +405,7 @@ func handleMsgAttach(ctx sdk.Context, keeper keeper.Keeper, msg MsgAttach) sdk.R
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
 		),
 	)
 
@@ -367,7 +413,7 @@ func handleMsgAttach(ctx sdk.Context, keeper keeper.Keeper, msg MsgAttach) sdk.R
 }
 
 func handleMsgDetach(ctx sdk.Context, keeper keeper.Keeper, msg MsgDetach) sdk.Result {
-	err := keeper.Detach(ctx, msg.FromAddress, msg.ToAddress, msg.Symbol, msg.TokenID)
+	err := keeper.Detach(ctx, msg.From, msg.To, msg.Symbol, msg.TokenID)
 	if err != nil {
 		return err.Result()
 	}
@@ -376,7 +422,75 @@ func handleMsgDetach(ctx sdk.Context, keeper keeper.Keeper, msg MsgDetach) sdk.R
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgAttachFrom(ctx sdk.Context, keeper keeper.Keeper, msg MsgAttachFrom) sdk.Result {
+	err := keeper.AttachFrom(ctx, msg.Proxy, msg.From, msg.Symbol, msg.ToTokenID, msg.TokenID)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Proxy.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgDetachFrom(ctx sdk.Context, keeper keeper.Keeper, msg MsgDetachFrom) sdk.Result {
+	err := keeper.DetachFrom(ctx, msg.Proxy, msg.From, msg.To, msg.Symbol, msg.TokenID)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Proxy.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgApproveCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgApproveCollection) sdk.Result {
+	err := keeper.SetApproved(ctx, msg.Proxy, msg.Approver, msg.Symbol)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Approver.String()),
+		),
+	)
+
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgDisapproveCollection(ctx sdk.Context, keeper keeper.Keeper, msg MsgDisapproveCollection) sdk.Result {
+	err := keeper.DeleteApproved(ctx, msg.Proxy, msg.Approver, msg.Symbol)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Approver.String()),
 		),
 	)
 

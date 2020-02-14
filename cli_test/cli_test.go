@@ -6,10 +6,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/line/link/types"
-	"github.com/line/link/x/proxy"
-	sbox "github.com/line/link/x/safetybox"
-	tokenmodule "github.com/line/link/x/token"
 	"io/ioutil"
 	"os"
 	"path"
@@ -17,6 +13,11 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/line/link/types"
+	"github.com/line/link/x/proxy"
+	sbox "github.com/line/link/x/safetybox"
+	tokenmodule "github.com/line/link/x/token"
 
 	"github.com/tendermint/tendermint/crypto/ed25519"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -2391,12 +2392,12 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
 	}
 
-	// Burn from bar without permissions
+	// Burn from bar without permissions; burn failure
 	{
 		f.TxTokenBurn(keyBar, burnAmountStr+symbolConyFoo, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(mintAmount-burnAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
 	}
 
 	f.Cleanup()
