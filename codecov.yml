@@ -17,7 +17,7 @@ coverage:
     project:
       default:
         # basic
-        target: 55
+        target: 65
         threshold: 1% # allow this much decrease on project
         base: auto
         # advanced
@@ -30,7 +30,7 @@ coverage:
         paths: null
     changes: false
   precision: 2
-  range: 45...90
+  range: 50...90
   round: down
 
 parsers:
