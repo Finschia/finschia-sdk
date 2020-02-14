@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/line/link/types"
+	"github.com/line/link/x/bank"
 	"github.com/line/link/x/proxy"
 	sbox "github.com/line/link/x/safetybox"
 	tokenmodule "github.com/line/link/x/token"
@@ -1634,6 +1635,20 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		sb := f.QuerySafetyBox(id)
 		require.Equal(t, sb.ID, id)
 		require.Equal(t, sb.Owner.String(), rinahTheOwnerAddress)
+	}
+
+	// sending coins to the safety box directly should fail
+	{
+		sb := f.QuerySafetyBox(id)
+		result, stdoutSendToBlacklist, _ := f.TxSend(keyFoo, sb.Address, sdk.NewCoin(denom, sdk.OneInt()), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		require.Contains(
+			t,
+			strings.Split(bank.ErrCanNotTransferToBlacklisted(sbox.DefaultCodespace, sb.Address.String()).Result().Log, "\""),
+			strings.Split(stdoutSendToBlacklist, "\\\\\\\"")[9],
+		)
 	}
 
 	// create a safety box w/ multiple denoms should fail

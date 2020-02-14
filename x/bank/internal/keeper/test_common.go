@@ -3,6 +3,7 @@ package keeper
 // DONTCOVER
 
 import (
+	"github.com/line/link/x/bank/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
@@ -33,11 +34,14 @@ func SetupTestInput() TestInput {
 	authCapKey := sdk.NewKVStoreKey("authCapKey")
 	keyParams := sdk.NewKVStoreKey("params")
 	tkeyParams := sdk.NewTransientStoreKey("transient_params")
+	keyBank := sdk.NewKVStoreKey(types.StoreKey)
 
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(authCapKey, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)
+	ms.MountStoreWithDB(keyBank, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(tkeyParams, sdk.StoreTypeTransient, db)
+
 	if err := ms.LoadLatestVersion(); err != nil {
 		panic(err)
 	}
@@ -57,7 +61,7 @@ func SetupTestInput() TestInput {
 	bankKeeper := cbank.NewBaseKeeper(ak, pk.Subspace(cbank.DefaultParamspace), cbank.DefaultCodespace, blacklistedAddrs)
 	bankKeeper.SetSendEnabled(ctx, true)
 
-	keeper := NewKeeper(bankKeeper)
+	keeper := NewKeeper(bankKeeper, keyBank)
 
 	return TestInput{Cdc: cdc, Ctx: ctx, K: keeper, Ak: ak, Pk: pk}
 }

@@ -4,7 +4,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	iam "github.com/line/link/x/iam/exported"
 	"github.com/line/link/x/safetybox/internal/types"
 	"github.com/tendermint/tendermint/crypto"
@@ -14,18 +13,29 @@ type Keeper struct {
 	cdc           *codec.Codec
 	storeKey      sdk.StoreKey
 	iamKeeper     iam.IamKeeper
-	bankKeeper    cbank.Keeper
+	bankKeeper    types.BankKeeper
+	hooks         types.SafetyBoxHooks
 	accountKeeper auth.AccountKeeper
 }
 
-func NewKeeper(cdc *codec.Codec, iamKeeper iam.IamKeeper, bankKeeper cbank.Keeper, accountKeeper auth.AccountKeeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(cdc *codec.Codec, iamKeeper iam.IamKeeper, bankKeeper types.BankKeeper, accountKeeper auth.AccountKeeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
 		cdc:           cdc,
 		storeKey:      storeKey,
 		iamKeeper:     iamKeeper,
 		bankKeeper:    bankKeeper,
+		hooks:         nil,
 		accountKeeper: accountKeeper,
 	}
+}
+
+// Set the hooks
+func (k *Keeper) SetHooks(sh types.SafetyBoxHooks) *Keeper {
+	if k.hooks != nil {
+		panic("cannot set the safety box hooks twice")
+	}
+	k.hooks = sh
+	return k
 }
 
 func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (types.SafetyBox, sdk.Error) {
@@ -51,6 +61,11 @@ func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (typ
 
 	// grant the owner a permission to whitelist operators
 	k.iamKeeper.GrantPermission(ctx, sb.Owner, types.NewWhitelistOperatorsPermission(sb.ID))
+
+	// call the after-creation hooks if any
+	if k.hooks != nil {
+		k.hooks.AfterSafetyBoxCreated(ctx, sb.Address)
+	}
 
 	return sb, nil
 }
@@ -238,10 +253,25 @@ func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) sdk.E
 }
 
 func (k Keeper) sendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coins sdk.Coins) sdk.Error {
-	err := k.bankKeeper.SendCoins(ctx, fromAddr, toAddr, coins)
+	_, err := k.bankKeeper.SubtractCoins(ctx, fromAddr, coins)
 	if err != nil {
 		return err
 	}
+
+	_, err = k.bankKeeper.AddCoins(ctx, toAddr, coins)
+	if err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeTransfer,
+			sdk.NewAttribute(types.AttributeKeySender, fromAddr.String()),
+			sdk.NewAttribute(types.AttributeKeyRecipient, toAddr.String()),
+			sdk.NewAttribute(sdk.AttributeKeyAmount, coins.String()),
+		),
+	})
+
 	return nil
 }
 

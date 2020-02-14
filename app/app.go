@@ -26,7 +26,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	cosmosbank "github.com/cosmos/cosmos-sdk/x/bank"
+	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/line/link/version"
 	"github.com/line/link/x/token"
 )
@@ -88,15 +88,15 @@ type LinkApp struct {
 	tkeys map[string]*sdk.TransientStoreKey
 
 	// keepers
-	accountKeeper    auth.AccountKeeper
-	cosmosbankKeeper cosmosbank.Keeper
-	bankKeeper       bank.Keeper
-	supplyKeeper     supply.Keeper
-	stakingKeeper    staking.Keeper
-	paramsKeeper     params.Keeper
-	tokenKeeper      token.Keeper
-	iamKeeper        iam.Keeper
-	safetyboxKeeper  safetybox.Keeper
+	accountKeeper   auth.AccountKeeper
+	cbankKeeper     cbank.Keeper
+	bankKeeper      bank.Keeper
+	supplyKeeper    supply.Keeper
+	stakingKeeper   staking.Keeper
+	paramsKeeper    params.Keeper
+	tokenKeeper     token.Keeper
+	iamKeeper       iam.Keeper
+	safetyboxKeeper safetybox.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -120,6 +120,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		token.StoreKey,
 		iam.StoreKey,
 		safetybox.StoreKey,
+		bank.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -133,22 +134,29 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// init params keeper and subspaces
 	app.paramsKeeper = params.NewKeeper(app.cdc, keys[params.StoreKey], tkeys[params.TStoreKey], params.DefaultCodespace)
 	authSubspace := app.paramsKeeper.Subspace(auth.DefaultParamspace)
-	bankSubspace := app.paramsKeeper.Subspace(cosmosbank.DefaultParamspace)
+	cbankSubspace := app.paramsKeeper.Subspace(cbank.DefaultParamspace)
 	stakingSubspace := app.paramsKeeper.Subspace(staking.DefaultParamspace)
 
 	app.iamKeeper = iam.NewKeeper(cdc, keys[iam.StoreKey])
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, keys[auth.StoreKey], authSubspace, auth.ProtoBaseAccount)
-	app.cosmosbankKeeper = cosmosbank.NewBaseKeeper(app.accountKeeper, bankSubspace, cosmosbank.DefaultCodespace, app.ModuleAccountAddrs())
-	app.bankKeeper = bank.NewKeeper(app.cosmosbankKeeper)
-	app.supplyKeeper = supply.NewKeeper(app.cdc, keys[supply.StoreKey], app.accountKeeper, app.cosmosbankKeeper, maccPerms)
+	app.cbankKeeper = cbank.NewBaseKeeper(app.accountKeeper, cbankSubspace, cbank.DefaultCodespace, app.ModuleAccountAddrs())
+	app.bankKeeper = bank.NewKeeper(app.cbankKeeper, keys[bank.StoreKey])
+	app.supplyKeeper = supply.NewKeeper(app.cdc, keys[supply.StoreKey], app.accountKeeper, app.cbankKeeper, maccPerms)
 	app.stakingKeeper = staking.NewKeeper(
 		app.cdc, keys[staking.StoreKey], tkeys[staking.TStoreKey],
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, app.cosmosbankKeeper, keys[token.StoreKey])
-	app.safetyboxKeeper = safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.cosmosbankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
+
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, app.cbankKeeper, keys[token.StoreKey])
+	safetyBoxKeeper := safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.cbankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
+
+	// register the safety box hooks
+	// NOTE: safetyBoxKeeper above is passed by reference, so that it will contain these hooks
+	app.safetyboxKeeper = *safetyBoxKeeper.SetHooks(
+		safetybox.NewMultiSafetyBoxHooks(app.tokenKeeper.Hooks(), app.bankKeeper.Hooks()),
+	)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.

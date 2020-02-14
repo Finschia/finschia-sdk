@@ -33,9 +33,10 @@ type (
 )
 
 var (
-	ModuleCdc     = types.ModuleCdc
-	RegisterCodec = types.RegisterCodec
-	NewKeeper     = keeper.NewKeeper
+	ModuleCdc              = types.ModuleCdc
+	RegisterCodec          = types.RegisterCodec
+	NewKeeper              = keeper.NewKeeper
+	NewMultiSafetyBoxHooks = types.NewMultiSafetyBoxHooks
 
 	RoleOwner     = types.RoleOwner
 	RoleOperator  = types.RoleOperator

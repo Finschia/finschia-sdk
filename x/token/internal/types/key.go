@@ -16,8 +16,15 @@ var (
 	TokenChildToParentKeyPrefix    = []byte{0x03}
 	TokenParentToChildKeyPrefix    = []byte{0x04}
 	TokenParentToChildSubKeyPrefix = []byte{0x05}
-	CollectionApprovedKeyPrefix    = []byte{0x06}
+	BlacklistKeyPrefix             = []byte{0x06}
+	CollectionApprovedKeyPrefix    = []byte{0x07}
 )
+
+func BlacklistKey(addr types.AccAddress, action string) []byte {
+	key := append(BlacklistKeyPrefix, addr...)
+	key = append(key, []byte(":"+action)...)
+	return key
+}
 
 func TokenDenomKey(denom string) []byte {
 	return append(TokenDenomKeyPrefix, []byte(denom)...)

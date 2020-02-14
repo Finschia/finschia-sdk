@@ -8,6 +8,7 @@ import (
 
 const (
 	ModuleName = types.ModuleName
+	StoreKey   = types.StoreKey
 )
 
 type (
@@ -20,6 +21,8 @@ type (
 )
 
 var (
-	SendTxCmd = cli.SendTxCmd
-	NewKeeper = keeper.NewKeeper
+	SendTxCmd                      = cli.SendTxCmd
+	NewKeeper                      = keeper.NewKeeper
+	ActionTransferTo               = types.ActionTransferTo
+	ErrCanNotTransferToBlacklisted = types.ErrCanNotTransferToBlacklisted
 )

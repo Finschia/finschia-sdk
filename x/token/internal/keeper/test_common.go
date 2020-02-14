@@ -17,7 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/params"
 
-	"github.com/cosmos/cosmos-sdk/x/bank"
+	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 )
 
 type TestInput struct {
@@ -25,7 +25,7 @@ type TestInput struct {
 	Ctx    sdk.Context
 	Keeper Keeper
 	Ak     auth.AccountKeeper
-	Bk     bank.BaseKeeper
+	Bk     cbank.BaseKeeper
 	Iam    iam.Keeper
 }
 
@@ -33,7 +33,7 @@ func newTestCodec() *codec.Codec {
 	cdc := codec.New()
 	types.RegisterCodec(cdc)
 	auth.RegisterCodec(cdc)
-	bank.RegisterCodec(cdc)
+	cbank.RegisterCodec(cdc)
 	supply.RegisterCodec(cdc)
 	iam.RegisterCodec(cdc)
 	codec.RegisterCrypto(cdc)
@@ -66,14 +66,14 @@ func SetupTestInput(t *testing.T) *TestInput {
 	// init params keeper and subspaces
 	paramsKeeper := params.NewKeeper(cdc, keyParams, tkeyParams, params.DefaultCodespace)
 	authSubspace := paramsKeeper.Subspace(auth.DefaultParamspace)
-	bankSubspace := paramsKeeper.Subspace(bank.DefaultParamspace)
+	cbankSubspace := paramsKeeper.Subspace(cbank.DefaultParamspace)
 
 	blacklistedAddrs := make(map[string]bool)
 	blacklistedAddrs[sdk.AccAddress([]byte("moduleAcc")).String()] = true
 
 	// add keepers
 	accountKeeper := auth.NewAccountKeeper(cdc, keyAuth, authSubspace, auth.ProtoBaseAccount)
-	bankKeeper := bank.NewBaseKeeper(accountKeeper, bankSubspace, bank.DefaultCodespace, blacklistedAddrs)
+	cbankKeeper := cbank.NewBaseKeeper(accountKeeper, cbankSubspace, cbank.DefaultCodespace, blacklistedAddrs)
 	iamKeeper := iam.NewKeeper(cdc, keyIam)
 
 	// module account permissions
@@ -81,11 +81,11 @@ func SetupTestInput(t *testing.T) *TestInput {
 		types.ModuleName: {supply.Burner, supply.Minter},
 	}
 
-	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, bankKeeper, maccPerms)
-	keeper := NewKeeper(cdc, supplyKeeper, iamKeeper.WithPrefix(types.ModuleName), accountKeeper, bankKeeper, keyLrc)
+	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, cbankKeeper, maccPerms)
+	keeper := NewKeeper(cdc, supplyKeeper, iamKeeper.WithPrefix(types.ModuleName), accountKeeper, cbankKeeper, keyLrc)
 
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
 	supplyKeeper.SetSupply(ctx, supply.NewSupply(sdk.NewCoins()))
 
-	return &TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: bankKeeper}
+	return &TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: cbankKeeper}
 }

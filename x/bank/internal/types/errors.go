@@ -10,9 +10,10 @@ import (
 const (
 	DefaultCodespace sdk.CodespaceType = ModuleName
 
-	CodeSendDisabled            sdk.CodeType = 101
-	CodeInvalidInputsOutputs    sdk.CodeType = 102
-	CodeInvalidRequestGetsLimit sdk.CodeType = 103
+	CodeSendDisabled                sdk.CodeType = 101
+	CodeInvalidInputsOutputs        sdk.CodeType = 102
+	CodeCanNotTransferToBlacklisted sdk.CodeType = 103
+	CodeInvalidRequestGetsLimit     sdk.CodeType = 104
 )
 
 // ErrNoInputs is an error
@@ -33,6 +34,10 @@ func ErrInputOutputMismatch(codespace sdk.CodespaceType) sdk.Error {
 // ErrSendDisabled is an error
 func ErrSendDisabled(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeSendDisabled, "send transactions are currently disabled")
+}
+
+func ErrCanNotTransferToBlacklisted(codespace sdk.CodespaceType, addr string) sdk.Error {
+	return sdk.NewError(codespace, CodeCanNotTransferToBlacklisted, "Cannot transfer to safety box addresses (addr: %s)", addr)
 }
 
 // ErrRequestGetsLimit

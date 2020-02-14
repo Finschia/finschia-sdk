@@ -3,6 +3,8 @@ package safetybox
 import (
 	"testing"
 
+	"github.com/line/link/x/safetybox/internal/types"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	testCommon "github.com/line/link/x/safetybox/internal/keeper"
 	"github.com/stretchr/testify/require"
@@ -226,13 +228,10 @@ func TestHandler(t *testing.T) {
 	// check emitted events including SendCoins of Bank module
 	e = sdk.Events{
 		sdk.NewEvent(
-			"transfer",
-			sdk.NewAttribute("recipient", safetyBoxAddress.String()),
+			types.EventTypeTransfer,
+			sdk.NewAttribute(types.AttributeKeySender, msgSbAllocate.AllocatorAddress.String()),
+			sdk.NewAttribute(types.AttributeKeyRecipient, safetyBoxAddress.String()),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msgSbAllocate.Coins.String()),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeySender, msgSbAllocate.AllocatorAddress.String()),
 		),
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
@@ -263,13 +262,10 @@ func TestHandler(t *testing.T) {
 	// check emitted events including SendCoins of Bank module
 	e = sdk.Events{
 		sdk.NewEvent(
-			"transfer",
-			sdk.NewAttribute("recipient", msgSbIssue.ToAddress.String()),
+			types.EventTypeTransfer,
+			sdk.NewAttribute(types.AttributeKeySender, safetyBoxAddress.String()),
+			sdk.NewAttribute(types.AttributeKeyRecipient, msgSbIssue.ToAddress.String()),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msgSbIssue.Coins.String()),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeySender, safetyBoxAddress.String()),
 		),
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
@@ -300,13 +296,10 @@ func TestHandler(t *testing.T) {
 	// check emitted events including SendCoins of Bank module
 	e = sdk.Events{
 		sdk.NewEvent(
-			"transfer",
-			sdk.NewAttribute("recipient", safetyBoxAddress.String()),
+			types.EventTypeTransfer,
+			sdk.NewAttribute(types.AttributeKeySender, msgSbReturn.ReturnerAddress.String()),
+			sdk.NewAttribute(types.AttributeKeyRecipient, safetyBoxAddress.String()),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msgSbReturn.Coins.String()),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeySender, msgSbReturn.ReturnerAddress.String()),
 		),
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,
@@ -336,13 +329,10 @@ func TestHandler(t *testing.T) {
 	// check emitted events including SendCoins of Bank module
 	e = sdk.Events{
 		sdk.NewEvent(
-			"transfer",
-			sdk.NewAttribute("recipient", msgSbRecall.AllocatorAddress.String()),
+			types.EventTypeTransfer,
+			sdk.NewAttribute(types.AttributeKeySender, safetyBoxAddress.String()),
+			sdk.NewAttribute(types.AttributeKeyRecipient, msgSbRecall.AllocatorAddress.String()),
 			sdk.NewAttribute(sdk.AttributeKeyAmount, msgSbReturn.Coins.String()),
-		),
-		sdk.NewEvent(
-			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeySender, safetyBoxAddress.String()),
 		),
 		sdk.NewEvent(
 			EventSafetyBoxSendCoin,

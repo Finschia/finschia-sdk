@@ -2,11 +2,17 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/link/x/bank"
 	"github.com/line/link/x/token/internal/types"
 )
 
 func (k Keeper) TransferFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, amount sdk.Int) sdk.Error {
 	coin := sdk.NewCoins(sdk.NewCoin(symbol, amount))
+
+	// reject if to address is blacklisted (safety box addresses)
+	if k.IsBlacklistedAccountAction(ctx, to, bank.ActionTransferTo) {
+		return bank.ErrCanNotTransferToBlacklisted(types.DefaultCodespace, to.String())
+	}
 
 	_, err := k.bankKeeper.SubtractCoins(ctx, from, coin)
 	if err != nil {

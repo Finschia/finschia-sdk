@@ -6,17 +6,24 @@ import (
 )
 
 type Keeper struct {
-	bk types.BankKeeper
+	bk       types.BankKeeper
+	storeKey sdk.StoreKey
 }
 
-func NewKeeper(bk types.BankKeeper) Keeper {
+func NewKeeper(bk types.BankKeeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
-		bk: bk,
+		bk:       bk,
+		storeKey: storeKey,
 	}
 }
 
 // SendCoins moves coins from one account to another
 func (keeper Keeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
+	// reject if to address is blacklisted (safety box addresses)
+	if keeper.IsBlacklistedAccountAction(ctx, toAddr, types.ActionTransferTo) {
+		return types.ErrCanNotTransferToBlacklisted(types.DefaultCodespace, toAddr.String())
+	}
+
 	_, err := keeper.bk.SubtractCoins(ctx, fromAddr, amt)
 	if err != nil {
 		return err
@@ -60,6 +67,11 @@ func (keeper Keeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, out
 	}
 
 	for _, out := range outputs {
+		// reject if to address is blacklisted (safety box addresses)
+		if keeper.IsBlacklistedAccountAction(ctx, out.Address, types.ActionTransferTo) {
+			return types.ErrCanNotTransferToBlacklisted(types.DefaultCodespace, out.Address.String())
+		}
+
 		_, err := keeper.bk.AddCoins(ctx, out.Address, out.Coins)
 		if err != nil {
 			return err

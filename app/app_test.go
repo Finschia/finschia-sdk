@@ -27,12 +27,12 @@ func TestLinkdExport(t *testing.T) {
 }
 
 // ensure that black listed addresses are properly set in bank keeper
-func TestBlackListedAddrs(t *testing.T) {
+func TestBlacklistedAddrs(t *testing.T) {
 	db := db.NewMemDB()
 	app := NewLinkApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, 0)
 
 	for acc := range maccPerms {
-		require.True(t, app.cosmosbankKeeper.BlacklistedAddr(app.supplyKeeper.GetModuleAddress(acc)))
+		require.True(t, app.cbankKeeper.BlacklistedAddr(app.supplyKeeper.GetModuleAddress(acc)))
 	}
 }
 
