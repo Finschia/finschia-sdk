@@ -29,7 +29,7 @@ func (k Keeper) SetApproved(ctx sdk.Context, proxy sdk.AccAddress, approver sdk.
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeApproveCollection,
-			sdk.NewAttribute(types.AttribyteKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyApprover, approver.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
 		),
@@ -52,7 +52,7 @@ func (k Keeper) DeleteApproved(ctx sdk.Context, proxy sdk.AccAddress, approver s
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeDisapproveCollection,
-			sdk.NewAttribute(types.AttribyteKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyApprover, approver.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
 		),

@@ -39,7 +39,7 @@ func (k Keeper) AttachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAd
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeAttachFrom,
-			sdk.NewAttribute(types.AttribyteKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
 			sdk.NewAttribute(types.AttributeKeyToTokenID, toTokenID),
@@ -133,7 +133,7 @@ func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAd
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeDetachFrom,
-			sdk.NewAttribute(types.AttribyteKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),

@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"fmt"
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -160,7 +159,7 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 	return nil
 }
 
-func (k Keeper) IssueFTCollection(ctx sdk.Context, token types.CollectiveFT, amount sdk.Int, owner sdk.AccAddress) sdk.Error {
+func (k Keeper) IssueCFT(ctx sdk.Context, owner sdk.AccAddress, token types.CollectiveFT, amount sdk.Int) sdk.Error {
 	err := k.setTokenToCollection(ctx, token)
 	if err != nil {
 		return err
@@ -218,7 +217,7 @@ func (k Keeper) IssueFTCollection(ctx sdk.Context, token types.CollectiveFT, amo
 	return nil
 }
 
-func (k Keeper) MintCollectionTokens(ctx sdk.Context, amount linktype.CoinWithTokenIDs, from, to sdk.AccAddress) sdk.Error {
+func (k Keeper) MintCFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
 	for _, coin := range amount {
 		symbol, tokenID := coin.Symbol, coin.TokenID
 		token, err := k.GetToken(ctx, symbol, tokenID)
@@ -236,36 +235,66 @@ func (k Keeper) MintCollectionTokens(ctx sdk.Context, amount linktype.CoinWithTo
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeMintCFT,
-			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
 		),
 	})
 	return nil
 }
-func (k Keeper) BurnCollectionTokens(ctx sdk.Context, amount linktype.CoinWithTokenIDs, from sdk.AccAddress) sdk.Error {
-	coins := amount.ToCoins()
 
-	err := k.isBurnable(ctx, coins, from)
-	if err != nil {
-		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", from, amount))
-	}
-
-	err = k.burnTokens(ctx, coins, from)
-	if err != nil {
+func (k Keeper) BurnCFT(ctx sdk.Context, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
+	if err := k.burnCFTWithCheck(ctx, from, from, amount); err != nil {
 		return err
 	}
+
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeBurnCFT,
-			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
+		),
+	})
+
+	return nil
+}
+
+func (k Keeper) burnCFTWithCheck(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
+	coins := amount.ToCoins()
+
+	if err := k.isBurnable(ctx, permissionOwner, tokenOwner, coins); err != nil {
+		return err
+	}
+
+	if err := k.burnTokens(ctx, tokenOwner, coins); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (k Keeper) BurnCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
+	for _, coin := range amount {
+		if !k.IsApproved(ctx, proxy, from, coin.Symbol) {
+			return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), coin.Symbol)
+		}
+	}
+
+	if err := k.burnCFTWithCheck(ctx, proxy, from, amount); err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeBurnCFTFrom,
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
 		),
 	})
 	return nil
 }
 
-func (k Keeper) IssueCNFT(ctx sdk.Context, symbol, tokenType string, owner sdk.AccAddress) sdk.Error {
+func (k Keeper) IssueCNFT(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenType string) sdk.Error {
 	err := k.SetTokenType(ctx, symbol, tokenType)
 	if err != nil {
 		return err
@@ -299,7 +328,7 @@ func (k Keeper) IssueCNFT(ctx sdk.Context, symbol, tokenType string, owner sdk.A
 	return nil
 }
 
-func (k Keeper) MintCollectionNFT(ctx sdk.Context, token types.CollectiveNFT, from sdk.AccAddress) sdk.Error {
+func (k Keeper) MintCNFT(ctx sdk.Context, from sdk.AccAddress, token types.CollectiveNFT) sdk.Error {
 	if !k.HasTokenType(ctx, token.GetSymbol(), token.GetTokenType()) {
 		return types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), token.GetTokenType())
 	}
@@ -343,43 +372,74 @@ func (k Keeper) MintCollectionNFT(ctx sdk.Context, token types.CollectiveNFT, fr
 	return nil
 }
 
-func (k Keeper) BurnCollectionNFT(ctx sdk.Context, symbol, tokenID string, from sdk.AccAddress) sdk.Error {
+func (k Keeper) BurnCNFT(ctx sdk.Context, from sdk.AccAddress, symbol, tokenID string) sdk.Error {
+	if err := k.burnCNFTWithCheck(ctx, from, from, symbol, tokenID); err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeBurnCNFT,
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
+			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+		),
+	})
+	return nil
+}
+
+func (k Keeper) BurnCNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) sdk.Error {
+	if !k.IsApproved(ctx, proxy, from, symbol) {
+		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
+	}
+
+	if err := k.burnCNFTWithCheck(ctx, proxy, from, symbol, tokenID); err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeBurnCNFTFrom,
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
+			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+		),
+	})
+	return nil
+}
+
+func (k Keeper) burnCNFTWithCheck(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddress, symbol, tokenID string) sdk.Error {
 	token, err := k.GetCNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return err
 	}
 
 	perm := types.NewBurnPermission(symbol + tokenID[:types.TokenTypeLength])
-	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
+	if !k.HasPermission(ctx, permissionOwner, perm) {
+		return types.ErrTokenNoPermission(types.DefaultCodespace, permissionOwner, perm)
 	}
 
-	if !token.GetOwner().Equals(from) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
+	if !token.GetOwner().Equals(tokenOwner) {
+		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, symbol+tokenID, tokenOwner)
 	}
 
-	err = k.burnCollectionNFT(ctx, token, from)
+	err = k.burnCNFT(ctx, token, tokenOwner)
 	if err != nil {
 		return err
 	}
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeBurnCNFT,
-			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
-			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
-			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
-		),
-	})
+
 	return nil
 }
-func (k Keeper) burnCollectionNFT(ctx sdk.Context, token types.CollectiveNFT, from sdk.AccAddress) sdk.Error {
+
+func (k Keeper) burnCNFT(ctx sdk.Context, token types.CollectiveNFT, from sdk.AccAddress) sdk.Error {
 	children, err := k.ChildrenOf(ctx, token.GetSymbol(), token.GetTokenID())
 	if err != nil {
 		return err
 	}
 
 	for _, child := range children {
-		err = k.burnCollectionNFT(ctx, child.(types.CollectiveNFT), from)
+		err = k.burnCNFT(ctx, child.(types.CollectiveNFT), from)
 		if err != nil {
 			return err
 		}
@@ -407,7 +467,7 @@ func (k Keeper) burnCollectionNFT(ctx sdk.Context, token types.CollectiveNFT, fr
 	if err != nil {
 		return err
 	}
-	err = k.burnTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), sdk.NewInt(1))), token.GetOwner())
+	err = k.burnTokens(ctx, token.GetOwner(), sdk.NewCoins(sdk.NewCoin(token.GetDenom(), sdk.NewInt(1))))
 	if err != nil {
 		return err
 	}

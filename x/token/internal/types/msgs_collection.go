@@ -9,16 +9,16 @@ import (
 var _ sdk.Msg = (*MsgCreateCollection)(nil)
 
 type MsgCreateCollection struct {
+	Owner  sdk.AccAddress `json:"owner"`
 	Name   string         `json:"name"`
 	Symbol string         `json:"symbol"`
-	Owner  sdk.AccAddress `json:"owner"`
 }
 
-func NewMsgCreateCollection(name, symbol string, owner sdk.AccAddress) MsgCreateCollection {
+func NewMsgCreateCollection(owner sdk.AccAddress, name, symbol string) MsgCreateCollection {
 	return MsgCreateCollection{
+		Owner:  owner,
 		Name:   name,
 		Symbol: symbol,
-		Owner:  owner,
 	}
 }
 
@@ -47,20 +47,20 @@ func (msg MsgCreateCollection) GetSigners() []sdk.AccAddress {
 var _ sdk.Msg = (*MsgIssueCFT)(nil)
 
 type MsgIssueCFT struct {
+	Owner    sdk.AccAddress `json:"owner"`
 	Symbol   string         `json:"symbol"`
 	Name     string         `json:"name"`
-	Owner    sdk.AccAddress `json:"owner"`
 	TokenURI string         `json:"token_uri"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
 	Decimals sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssueCFT(name, symbol, tokenURI string, owner sdk.AccAddress, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueCFT {
+func NewMsgIssueCFT(owner sdk.AccAddress, name, symbol, tokenURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueCFT {
 	return MsgIssueCFT{
+		Owner:    owner,
 		Symbol:   symbol,
 		Name:     name,
-		Owner:    owner,
 		TokenURI: tokenURI,
 		Amount:   amount,
 		Mintable: mintable,
@@ -100,14 +100,14 @@ func (msg MsgIssueCFT) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgIssueCNFT)(nil)
 
 type MsgIssueCNFT struct {
-	Symbol string         `json:"symbol"`
 	Owner  sdk.AccAddress `json:"owner"`
+	Symbol string         `json:"symbol"`
 }
 
-func NewMsgIssueCNFT(symbol string, owner sdk.AccAddress) MsgIssueCNFT {
+func NewMsgIssueCNFT(owner sdk.AccAddress, symbol string) MsgIssueCNFT {
 	return MsgIssueCNFT{
-		Symbol: symbol,
 		Owner:  owner,
+		Symbol: symbol,
 	}
 }
 
@@ -132,20 +132,20 @@ func (msg MsgIssueCNFT) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgMintCNFT)(nil)
 
 type MsgMintCNFT struct {
-	Symbol    string         `json:"symbol"`
-	Name      string         `json:"name"`
 	From      sdk.AccAddress `json:"from"`
 	To        sdk.AccAddress `json:"to"`
+	Symbol    string         `json:"symbol"`
+	Name      string         `json:"name"`
 	TokenURI  string         `json:"token_uri"`
 	TokenType string         `json:"token_type"`
 }
 
-func NewMsgMintCNFT(name, symbol, tokenURI string, tokenType string, from, to sdk.AccAddress) MsgMintCNFT {
+func NewMsgMintCNFT(from, to sdk.AccAddress, name, symbol, tokenURI string, tokenType string) MsgMintCNFT {
 	return MsgMintCNFT{
-		Symbol:    symbol,
-		Name:      name,
 		From:      from,
 		To:        to,
+		Symbol:    symbol,
+		Name:      name,
 		TokenURI:  tokenURI,
 		TokenType: tokenType,
 	}
@@ -182,16 +182,16 @@ func (msg MsgMintCNFT) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgBurnCNFT)(nil)
 
 type MsgBurnCNFT struct {
-	Symbol  string         `json:"symbol"`
 	From    sdk.AccAddress `json:"from"`
+	Symbol  string         `json:"symbol"`
 	TokenID string         `json:"token_id"`
 }
 
-func NewMsgBurnCNFT(symbol, tokenID string, owner sdk.AccAddress) MsgBurnCNFT {
+func NewMsgBurnCNFT(from sdk.AccAddress, symbol, tokenID string) MsgBurnCNFT {
 	return MsgBurnCNFT{
+		From:    from,
 		Symbol:  symbol,
 		TokenID: tokenID,
-		From:    owner,
 	}
 }
 
@@ -208,6 +208,56 @@ func (msg MsgBurnCNFT) ValidateBasic() sdk.Error {
 	}
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
+	}
+
+	if err := types.ValidateTokenID(msg.TokenID); err != nil {
+		return ErrInvalidTokenID(DefaultCodespace, err.Error())
+	}
+
+	if err := types.ValidateTokenTypeNFT(msg.TokenID[:TokenTypeLength]); err != nil {
+		return ErrInvalidTokenID(DefaultCodespace, err.Error())
+	}
+
+	return nil
+}
+
+var _ sdk.Msg = (*MsgBurnCNFTFrom)(nil)
+
+type MsgBurnCNFTFrom struct {
+	Proxy   sdk.AccAddress `json:"proxy"`
+	From    sdk.AccAddress `json:"from"`
+	Symbol  string         `json:"symbol"`
+	TokenID string         `json:"token_id"`
+}
+
+func NewMsgBurnCNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) MsgBurnCNFTFrom {
+	return MsgBurnCNFTFrom{
+		Proxy:   proxy,
+		From:    from,
+		Symbol:  symbol,
+		TokenID: tokenID,
+	}
+}
+
+func (msg MsgBurnCNFTFrom) Route() string                { return RouterKey }
+func (msg MsgBurnCNFTFrom) Type() string                 { return "burn_cnft_from" }
+func (msg MsgBurnCNFTFrom) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Proxy} }
+func (msg MsgBurnCNFTFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
+func (msg MsgBurnCNFTFrom) ValidateBasic() sdk.Error {
+	if msg.Proxy.Empty() {
+		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+	}
+	if msg.From.Empty() {
+		return sdk.ErrInvalidAddress("From cannot be empty")
+	}
+	if msg.Proxy.Equals(msg.From) {
+		return ErrApproverProxySame(DefaultCodespace, msg.Proxy.String())
+	}
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 
 	if err := types.ValidateTokenID(msg.TokenID); err != nil {
@@ -301,11 +351,61 @@ func (msg MsgBurnCFT) ValidateBasic() sdk.Error {
 			return ErrInvalidTokenID(DefaultCodespace, err.Error())
 		}
 		if !coin.IsPositive() {
-			return sdk.ErrInvalidCoins("amount is not valid")
+			return sdk.ErrInvalidCoins("Amount is not valid")
 		}
 	}
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From address cannot be empty")
+	}
+	return nil
+}
+
+var _ sdk.Msg = (*MsgBurnCFTFrom)(nil)
+
+type MsgBurnCFTFrom struct {
+	Proxy  sdk.AccAddress            `json:"proxy"`
+	From   sdk.AccAddress            `json:"from"`
+	Amount linktype.CoinWithTokenIDs `json:"amount"`
+}
+
+func NewMsgBurnCFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgBurnCFTFrom {
+	return MsgBurnCFTFrom{
+		Proxy:  proxy,
+		From:   from,
+		Amount: amount,
+	}
+}
+
+func (MsgBurnCFTFrom) Route() string                    { return RouterKey }
+func (MsgBurnCFTFrom) Type() string                     { return "burn_cft_from" }
+func (msg MsgBurnCFTFrom) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Proxy} }
+func (msg MsgBurnCFTFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
+func (msg MsgBurnCFTFrom) ValidateBasic() sdk.Error {
+	if msg.Proxy.Empty() {
+		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+	}
+	if msg.From.Empty() {
+		return sdk.ErrInvalidAddress("From cannot be empty")
+	}
+	if msg.Proxy.Equals(msg.From) {
+		return ErrApproverProxySame(DefaultCodespace, msg.Proxy.String())
+	}
+	for _, coin := range msg.Amount {
+		if err := linktype.ValidateSymbolUserDefined(coin.Symbol); err != nil {
+			return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+		}
+		if err := linktype.ValidateTokenID(coin.TokenID); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
+		if err := linktype.ValidateTokenTypeFT(coin.TokenID[:TokenTypeLength]); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
+		if !coin.IsPositive() {
+			return sdk.ErrInvalidCoins("Amount is not valid")
+		}
 	}
 	return nil
 }
@@ -328,10 +428,10 @@ func NewMsgApproveCollection(approver sdk.AccAddress, proxy sdk.AccAddress, symb
 
 func (msg MsgApproveCollection) ValidateBasic() sdk.Error {
 	if msg.Approver.Empty() {
-		return sdk.ErrInvalidAddress("approver cannot be empty")
+		return sdk.ErrInvalidAddress("Approver cannot be empty")
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("proxy cannot be empty")
+		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
 	if msg.Approver.Equals(msg.Proxy) {
 		return ErrApproverProxySame(DefaultCodespace, msg.Approver.String())
@@ -369,10 +469,10 @@ func NewMsgDisapproveCollection(approver sdk.AccAddress, proxy sdk.AccAddress, s
 
 func (msg MsgDisapproveCollection) ValidateBasic() sdk.Error {
 	if msg.Approver.Empty() {
-		return sdk.ErrInvalidAddress("approver cannot be empty")
+		return sdk.ErrInvalidAddress("Approver cannot be empty")
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("proxy cannot be empty")
+		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
 	if msg.Approver.Equals(msg.Proxy) {
 		return ErrApproverProxySame(DefaultCodespace, msg.Approver.String())

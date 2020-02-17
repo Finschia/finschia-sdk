@@ -37,7 +37,7 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgCreateCollection(name, symbol, owner)
+			msg := types.NewMsgCreateCollection(owner, name, symbol)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -49,7 +49,7 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func IssueCollectionNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func IssueCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-issue-nft [from_key_or_address] [symbol]",
 		Short: "Create and sign an collection-issue-nft tx",
@@ -61,14 +61,14 @@ func IssueCollectionNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			to := cliCtx.FromAddress
 			symbol := args[1]
 
-			msg := types.NewMsgIssueCNFT(symbol, to)
+			msg := types.NewMsgIssueCNFT(to, symbol)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
 	return client.PostCommands(cmd)[0]
 }
 
-func IssueCollectionFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func IssueCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-issue-ft [from_key_or_address] [symbol] [name]",
 		Short: "Create and sign an collection-issue-ft tx",
@@ -101,7 +101,7 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
 			}
 
-			msg := types.NewMsgIssueCFT(name, symbol, tokenURI, to, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
+			msg := types.NewMsgIssueCFT(to, name, symbol, tokenURI, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
 
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
@@ -114,7 +114,7 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 	return client.PostCommands(cmd)[0]
 }
 
-func MintCollectionNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func MintCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-mint-nft [from_key_or_address] [to] [symbol] [token_type] [name]",
 		Short: "Create and sign an collection-mint-nft tx",
@@ -142,7 +142,7 @@ linkcli tx token collection-mint-nft [from_key_or_address] [symbol] [token_type]
 				return err
 			}
 
-			msg := types.NewMsgMintCNFT(name, symbol, tokenURI, tokenType, from, to)
+			msg := types.NewMsgMintCNFT(from, to, name, symbol, tokenURI, tokenType)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -152,7 +152,7 @@ linkcli tx token collection-mint-nft [from_key_or_address] [symbol] [token_type]
 	return client.PostCommands(cmd)[0]
 }
 
-func BurnCollectionNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func BurnCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-burn-nft [from_key_or_address] [symbol] [token_id]",
 		Short: "Create and sign an collection-burn-nft tx",
@@ -165,7 +165,33 @@ func BurnCollectionNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			tokenID := args[2]
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurnCNFT(symbol, tokenID, cliCtx.GetFromAddress())
+			msg := types.NewMsgBurnCNFT(cliCtx.GetFromAddress(), symbol, tokenID)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func BurnCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "collection-burn-nft-from [proxy_key_or_address] [from_address] [symbol] [token_id]",
+		Short: "Create and sign an collection-burn-nft-from tx",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+			from, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			symbol := args[2]
+			tokenID := args[3]
+
+			// build and sign the transaction, then broadcast to Tendermint
+			msg := types.NewMsgBurnCNFTFrom(cliCtx.GetFromAddress(), from, symbol, tokenID)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -226,14 +252,14 @@ func TransferCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func TransferCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "collection-transfer-ft-from [proxy_key_or_address] [approver_address] [to_address] [symbol] [token_id] [amount]",
+		Use:   "collection-transfer-ft-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id] [amount]",
 		Short: "Create and sign a tx transferring non-reserved collective fungible tokens by approved proxy",
 		Args:  cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			approver, err := sdk.AccAddressFromBech32(args[1])
+			from, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
@@ -248,7 +274,7 @@ func TransferCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return types.ErrInvalidAmount(types.DefaultCodespace, args[5])
 			}
 
-			msg := types.NewMsgTransferCFTFrom(cliCtx.GetFromAddress(), approver, to, args[3], args[4], amount)
+			msg := types.NewMsgTransferCFTFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4], amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -260,14 +286,14 @@ func TransferCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func TransferCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "collection-transfer-nft-from [proxy_key_or_address] [approver] [to_address] [symbol] [token_id]",
+		Use:   "collection-transfer-nft-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id]",
 		Short: "Create and sign a tx transferring a collective non-fungible token by approved proxy",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			approver, err := sdk.AccAddressFromBech32(args[1])
+			from, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
@@ -277,7 +303,7 @@ func TransferCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgTransferCNFTFrom(cliCtx.GetFromAddress(), approver, to, args[3], args[4])
+			msg := types.NewMsgTransferCNFTFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -324,7 +350,7 @@ func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func MintCollectionFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func MintCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-mint-ft [from_key_or_address] [to] [symbol] [token-id] [amount]",
 		Short: "Create and sign a mint token tx",
@@ -352,9 +378,9 @@ func MintCollectionFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func BurnCollectionFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func BurnCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "collection-burn-ft [from_key_or_address][symbol] [token-id] [amount]",
+		Use:   "collection-burn-ft [from_key_or_address] [symbol] [token-id] [amount]",
 		Short: "Create and sign a mint token tx",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -376,21 +402,49 @@ func BurnCollectionFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
+func BurnCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "collection-burn-ft-from [proxy_key_or_address] [from_address] [symbol] [token-id] [amount]",
+		Short: "Create and sign a mint token tx",
+		Args:  cobra.ExactArgs(5),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+			from, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+			symbol := args[2]
+			tokenID := args[3]
+			amount, ok := sdk.NewIntFromString(args[4])
+			if !ok {
+				return errors.New("invalid amount")
+			}
+
+			// build and sign the transaction, then broadcast to Tendermint
+			msg := types.NewMsgBurnCFTFrom(cliCtx.GetFromAddress(), from, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
 func AttachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "collection-attach-from [proxy_key_or_address] [approver_address] [symbol] [to_token_id] [token_id]",
+		Use:   "collection-attach-from [proxy_key_or_address] [from_address] [symbol] [to_token_id] [token_id]",
 		Short: "Create and sign a tx attaching a token to other by approved proxy",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			approver, err := sdk.AccAddressFromBech32(args[1])
+			from, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
 
-			msg := types.NewMsgAttachFrom(cliCtx.GetFromAddress(), approver, args[2], args[3], args[4])
+			msg := types.NewMsgAttachFrom(cliCtx.GetFromAddress(), from, args[2], args[3], args[4])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -400,14 +454,14 @@ func AttachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "collection-detach-from [proxy_key_or_address] [approver_address] [to_address] [symbol] [token_id]",
+		Use:   "collection-detach-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id]",
 		Short: "Create and sign a tx detaching a token by approved proxy",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			approver, err := sdk.AccAddressFromBech32(args[1])
+			from, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
@@ -417,7 +471,7 @@ func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDetachFrom(cliCtx.GetFromAddress(), approver, to, args[3], args[4])
+			msg := types.NewMsgDetachFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

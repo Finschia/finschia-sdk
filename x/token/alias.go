@@ -32,8 +32,10 @@ type (
 	MsgIssueCNFT        = types.MsgIssueCNFT
 	MsgMintCNFT         = types.MsgMintCNFT
 	MsgBurnCNFT         = types.MsgBurnCNFT
+	MsgBurnCNFTFrom     = types.MsgBurnCNFTFrom
 	MsgMintCFT          = types.MsgMintCFT
 	MsgBurnCFT          = types.MsgBurnCFT
+	MsgBurnCFTFrom      = types.MsgBurnCFTFrom
 
 	MsgGrantPermission  = types.MsgGrantPermission
 	MsgRevokePermission = types.MsgRevokePermission

@@ -90,10 +90,20 @@ The token module emits the following events:
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
 | message          | module         | token                    |
-| message          | sender         | {ownerAddress}           | 
+| message          | sender         | {fromAddress}            | 
 | message          | action         | burn_cft                 |
-| burn_cft         | amount         | {amount}{symbol}{tokenid}|
 | burn_cft         | from           | {fromAddress}            |
+| burn_cft         | amount         | {amount}{symbol}{tokenid}|
+
+### MsgBurnCFTFrom
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {proxyAddress}           | 
+| message          | action         | burn_cft                 |
+| burn_cft_from    | proxy          | {proxyAddress}           |
+| burn_cft_from    | from           | {fromAddress}            |
+| burn_cft_from    | amount         | {amount}{symbol}{tokenid}|
 
 ### MsgIssueCNFT
 | Type             | Attribute Key  | Attribute Value          |
@@ -127,12 +137,22 @@ The token module emits the following events:
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
 | message          | module         | token                    |
-| message          | sender         | {ownerAddress}           | 
+| message          | sender         | {fromAddress}            | 
 | message          | action         | burn_cnft                |
-| burn_cnft        | symbol         | {symbol}                 |
 | burn_cnft        | from           | {fromAddress}            |
+| burn_cnft        | symbol         | {symbol}                 |
 | burn_cnft        | token_id       | {token_id}               |
 
+### MsgBurnCNFTFrom
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {proxyAddress}           | 
+| message          | action         | burn_cnft_from           |
+| burn_cnft_from   | proxy          | {proxyAddress}           |
+| burn_cnft_from   | from           | {fromAddress}            |
+| burn_cnft_from   | symbol         | {symbol}                 |
+| burn_cnft_from   | token_id       | {token_id}               |
 
 ### MsgGrantPermission
 | Type             | Attribute Key  | Attribute Value          |

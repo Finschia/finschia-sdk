@@ -38,7 +38,7 @@ func (k Keeper) TransferFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddre
 }
 
 func (k Keeper) TransferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
-	if err := k.transferCNF(ctx, from, to, symbol, tokenID, amount); err != nil {
+	if err := k.transferCFT(ctx, from, to, symbol, tokenID, amount); err != nil {
 		return err
 	}
 
@@ -56,7 +56,7 @@ func (k Keeper) TransferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddr
 	return nil
 }
 
-func (k Keeper) transferCNF(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
+func (k Keeper) transferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
 	coin := sdk.NewCoins(sdk.NewCoin(symbol+tokenID, amount))
 	_, err := k.bankKeeper.SubtractCoins(ctx, from, coin)
 	if err != nil {
@@ -122,14 +122,14 @@ func (k Keeper) TransferCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
 	}
 
-	if err := k.transferCNF(ctx, from, to, symbol, tokenID, amount); err != nil {
+	if err := k.transferCFT(ctx, from, to, symbol, tokenID, amount); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeTransferCFTFrom,
-			sdk.NewAttribute(types.AttribyteKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
@@ -153,7 +153,7 @@ func (k Keeper) TransferCNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeTransferCNFTFrom,
-			sdk.NewAttribute(types.AttribyteKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),

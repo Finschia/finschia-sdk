@@ -16,7 +16,7 @@ func TestMsgBasics(t *testing.T) {
 
 	addrSuffix := types.AccAddrSuffix(addr)
 	{
-		msg := NewMsgIssue("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, "name", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.Equal(t, "issue_token", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -39,23 +39,23 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Mintable, msg2.Mintable)
 	}
 	{
-		msg := NewMsgIssue("name", "s", "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, "name", "s", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "symbol [s] mismatched to [^[a-z][a-z0-9]{5,7}$]").Error())
 	}
 	{
-		msg := NewMsgIssue("", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, "", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenName(DefaultCodespace, "").Error())
 	}
 	{
-		msg := NewMsgIssue("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(19), true)
+		msg := NewMsgIssue(addr, "name", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(19), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenDecimals(DefaultCodespace, sdk.NewInt(19)).Error())
 	}
 	{
-		msg := NewMsgIssue("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(0), false)
+		msg := NewMsgIssue(addr, "name", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(0), false)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidIssueFT(DefaultCodespace).Error())
 	}
 	{
-		msg := NewMsgIssueCFT("name", "symb"+addrSuffix, "tokenuri", addr, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssueCFT(addr, "name", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.Equal(t, "issue_cft", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -78,7 +78,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Mintable, msg2.Mintable)
 	}
 	{
-		msg := NewMsgMintCNFT("name", "symb"+addrSuffix, "tokenuri", "toke", addr, addr)
+		msg := NewMsgMintCNFT(addr, addr, "name", "symb"+addrSuffix, "tokenuri", "toke")
 		require.Equal(t, "mint_cnft", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -99,7 +99,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.TokenType, msg2.TokenType)
 	}
 	{
-		msg := NewMsgBurnCNFT("symb"+addrSuffix, "10010001", addr)
+		msg := NewMsgBurnCNFT(addr, "symb"+addrSuffix, "10010001")
 		require.Equal(t, "burn_cnft", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -570,6 +570,69 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Proxy, msg2.Proxy)
 		require.Equal(t, msg.Approver, msg2.Approver)
 		require.Equal(t, msg.Symbol, msg2.Symbol)
+	}
+
+	{
+		msg := NewMsgBurnCFTFrom(addr, addr2, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
+		require.Equal(t, "burn_cft_from", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgBurnCFTFrom{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.Proxy, msg2.Proxy)
+		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.Amount, msg2.Amount)
+	}
+
+	{
+		msg := NewMsgBurnCFTFrom(addr, addr, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
+		require.EqualError(t, msg.ValidateBasic(), ErrApproverProxySame(DefaultCodespace, addr.String()).Error())
+
+		msg = NewMsgBurnCFTFrom(nil, addr, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
+		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
+
+		msg = NewMsgBurnCFTFrom(addr, nil, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
+		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+	}
+
+	{
+		msg := NewMsgBurnCNFTFrom(addr, addr2, "symbol", "item0001")
+		require.Equal(t, "burn_cnft_from", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgBurnCNFTFrom{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.Proxy, msg2.Proxy)
+		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.Symbol, msg2.Symbol)
+		require.Equal(t, msg.TokenID, msg2.TokenID)
+	}
+
+	{
+		msg := NewMsgBurnCNFTFrom(addr, addr, "symbol", "item0001")
+		require.EqualError(t, msg.ValidateBasic(), ErrApproverProxySame(DefaultCodespace, addr.String()).Error())
+
+		msg = NewMsgBurnCNFTFrom(nil, addr, "symbol", "item0001")
+		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
+
+		msg = NewMsgBurnCNFTFrom(addr, nil, "symbol", "item0001")
+		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 	}
 }
 

@@ -2172,6 +2172,26 @@ components:
             token_id:
               type: string
               example: "10010001"
+    MsgBurnCNFTFrom:
+      type: object
+      description: msg of non-fungible collection token burn
+      properties:
+        type:
+          type: string
+          example: "link/MsgBurnCNFTFrom"
+        value:
+          type: object
+          properties:
+            proxy:
+              $ref: '#/components/schemas/Address'
+            from:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "con2xxv"
+            token_id:
+              type: string
+              example: "10010001"
     MsgMint:
       type: object
       description: msg of token mint
@@ -2234,6 +2254,24 @@ components:
         value:
           type: object
           properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/CoinWithTokenID'
+    MsgBurnCFTFrom:
+      type: object
+      description: msg of token burn
+      properties:
+        type:
+          type: string
+          example: "link/MsgBurnCFTFrom"
+        value:
+          type: object
+          properties:
+            proxy:
+              $ref: '#/components/schemas/Address'
             from:
               $ref: '#/components/schemas/Address'
             amount:
@@ -2685,6 +2723,17 @@ components:
         }
       },
       {
+        "type": "link/MsgMintCNFT",
+        "value": {
+          "name": "cony",
+          "symbol": "con2xxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_uri": "example.com/token_uri",
+          "token_type": "1001"
+        }
+      },
+      {
         "type": "link/MsgBurnCNFT",
         "value": {
           "symbol": "con2xxv",
@@ -2743,6 +2792,14 @@ components:
         }
       },
       {
+        "type": "link/MsgApproveCollection",
+        "value": {
+          "approver": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv"
+        }
+      },
+      {
         "type": "link/MsgTransferFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2762,11 +2819,21 @@ components:
         }
       },
       {
+        "type": "link/MsgTransferCFT",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv",
+          "token_id": "00010000",
+          "amount": "1"
+        }
+      },
+      {
         "type": "link/MsgTransferCFTFrom",
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_id": "00010000",
           "amount": "1"
@@ -2782,11 +2849,20 @@ components:
         }
       },
       {
+        "type": "link/MsgTransferCNFT",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv",
+          "token_id": "10010006"
+        }
+      },
+      {
         "type": "link/MsgTransferCNFTFrom",
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_id": "10010004"
         }
@@ -2836,6 +2912,27 @@ components:
           "symbol": "con2xxv",
           "to_token_id": "10010002",
           "token_id": "10010003"
+        }
+      },
+      {
+        "type": "link/MsgBurnCNFTFrom",
+        "value": {
+          "symbol": "con2xxv",
+          "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "token_id": "10010006"
+        }
+      },
+      {
+        "type": "link/MsgBurnCFTFrom",
+        "value": {
+          "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "amount": [{
+                       "symbol": "con2xxv",
+                       "token_id": "00010000",
+                       "amount": "1"
+                     }]
         }
       },
       {

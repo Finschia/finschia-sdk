@@ -111,6 +111,7 @@ type MsgBurn struct {
 	Amount sdk.Coins      `json:"amount"`
 }
 ```
+
 ### MsgBurnCFT
 
 ```golang
@@ -131,8 +132,36 @@ type CoinWithTokenID struct {
 ### MsgBurnCNFT
 ```golang
 type MsgBurnCNFT struct {
-	Symbol  string         `json:"symbol"`
 	From    sdk.AccAddress `json:"from"`
+	Symbol  string         `json:"symbol"`
+	TokenID string         `json:"token_id"`
+}
+```
+
+### MsgBurnCFTFrom
+
+```golang
+type MsgBurnCFTFrom struct {
+	Proxy  sdk.AccAddress            `json:"proxy"`
+	From   sdk.AccAddress            `json:"from"`
+	Amount linktype.CoinWithTokenIDs `json:"amount"`
+}
+
+type CoinWithTokenIDs []CoinWithTokenID
+
+type CoinWithTokenID struct {
+	Symbol  string  `json:"symbol"`
+	TokenID string  `json:"token_id"`
+	Amount  sdk.Int `json:"amount"`
+}
+```
+
+### MsgBurnCNFTFrom
+```golang
+type MsgBurnCNFTFrom struct {
+	Proxy  sdk.AccAddress  `json:"proxy"`
+	From    sdk.AccAddress `json:"from"`
+	Symbol  string         `json:"symbol"`
 	TokenID string         `json:"token_id"`
 }
 ```

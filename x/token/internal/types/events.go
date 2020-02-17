@@ -25,6 +25,8 @@ var (
 	EventTypeApproveCollection    = "approve_collection"
 	EventTypeDisapproveCollection = "disapprove_collection"
 	EventTypeBurnCNFT             = "burn_cnft"
+	EventTypeBurnCFTFrom          = "burn_cft_from"
+	EventTypeBurnCNFTFrom         = "burn_cnft_from"
 
 	AttributeKeyName      = "name"
 	AttributeKeySymbol    = "symbol"
@@ -41,7 +43,7 @@ var (
 	AttributeKeyAction    = "perm_action"
 	AttributeKeyToTokenID = "to_token_id"
 	AttributeKeyApprover  = "approver"
-	AttribyteKeyProxy     = "proxy"
+	AttributeKeyProxy     = "proxy"
 
 	AttributeValueCategory = ModuleName
 )

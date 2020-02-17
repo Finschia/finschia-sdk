@@ -27,12 +27,16 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgMintCNFT(ctx, keeper, msg)
 		case MsgBurnCNFT:
 			return handleMsgBurnCNFT(ctx, keeper, msg)
+		case MsgBurnCNFTFrom:
+			return handleMsgBurnCNFTFrom(ctx, keeper, msg)
 		case MsgIssueCNFT:
 			return handleMsgIssueCNFT(ctx, keeper, msg)
 		case MsgMintCFT:
 			return handleMsgMintCFT(ctx, keeper, msg)
 		case MsgBurnCFT:
 			return handleMsgBurnCFT(ctx, keeper, msg)
+		case MsgBurnCFTFrom:
+			return handleMsgBurnCFTFrom(ctx, keeper, msg)
 		case MsgGrantPermission:
 			return handleMsgGrant(ctx, keeper, msg)
 		case MsgRevokePermission:
@@ -96,7 +100,7 @@ func handleMsgIssueCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueCFT) s
 	}
 
 	token := types.NewCollectiveFT(collection, msg.Name, msg.TokenURI, msg.Decimals, msg.Mintable)
-	err = keeper.IssueFTCollection(ctx, token, msg.Amount, msg.Owner)
+	err = keeper.IssueCFT(ctx, msg.Owner, token, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -128,7 +132,7 @@ func handleMsgIssueCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgIssueCNFT)
 		return err.Result()
 	}
 
-	err = keeper.IssueCNFT(ctx, msg.Symbol, tokenType, msg.Owner)
+	err = keeper.IssueCNFT(ctx, msg.Owner, msg.Symbol, tokenType)
 	if err != nil {
 		return err.Result()
 	}
@@ -151,7 +155,7 @@ func handleMsgMintCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgMintCNFT) s
 	}
 
 	token := types.NewCollectiveNFT(collection, msg.Name, msg.TokenType, msg.TokenURI, msg.To)
-	err = keeper.MintCollectionNFT(ctx, token, msg.From)
+	err = keeper.MintCNFT(ctx, msg.From, token)
 	if err != nil {
 		return err.Result()
 	}
@@ -167,7 +171,7 @@ func handleMsgMintCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgMintCNFT) s
 }
 
 func handleMsgBurnCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurnCNFT) sdk.Result {
-	err := keeper.BurnCollectionNFT(ctx, msg.Symbol, msg.TokenID, msg.From)
+	err := keeper.BurnCNFT(ctx, msg.From, msg.Symbol, msg.TokenID)
 	if err != nil {
 		return err.Result()
 	}
@@ -177,6 +181,22 @@ func handleMsgBurnCNFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurnCNFT) s
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
+		),
+	})
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgBurnCNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurnCNFTFrom) sdk.Result {
+	err := keeper.BurnCNFTFrom(ctx, msg.Proxy, msg.From, msg.Symbol, msg.TokenID)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Proxy.String()),
 		),
 	})
 	return sdk.Result{Events: ctx.EventManager().Events()}
@@ -232,7 +252,7 @@ func handleMsgBurn(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurn) sdk.Resul
 }
 
 func handleMsgMintCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgMintCFT) sdk.Result {
-	err := keeper.MintCollectionTokens(ctx, msg.Amount, msg.From, msg.To)
+	err := keeper.MintCFT(ctx, msg.From, msg.To, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -248,7 +268,7 @@ func handleMsgMintCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgMintCFT) sdk
 }
 
 func handleMsgBurnCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurnCFT) sdk.Result {
-	err := keeper.BurnCollectionTokens(ctx, msg.Amount, msg.From)
+	err := keeper.BurnCFT(ctx, msg.From, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -258,6 +278,22 @@ func handleMsgBurnCFT(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurnCFT) sdk
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
+		),
+	})
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgBurnCFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg MsgBurnCFTFrom) sdk.Result {
+	err := keeper.BurnCFTFrom(ctx, msg.Proxy, msg.From, msg.Amount)
+	if err != nil {
+		return err.Result()
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Proxy.String()),
 		),
 	})
 	return sdk.Result{Events: ctx.EventManager().Events()}
@@ -278,6 +314,7 @@ func handleMsgGrant(ctx sdk.Context, keeper keeper.Keeper, msg MsgGrantPermissio
 	})
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }
+
 func handleMsgRevoke(ctx sdk.Context, keeper keeper.Keeper, msg MsgRevokePermission) sdk.Result {
 	err := keeper.RevokePermission(ctx, msg.From, msg.Permission)
 	if err != nil {
