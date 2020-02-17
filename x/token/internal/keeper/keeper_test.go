@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"fmt"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -17,6 +18,75 @@ const (
 	defaultDecimals = 6
 	defaultAmount   = 1000
 )
+
+const (
+	rightSymbol = "symbol1"
+	diffSymbol  = "symbol2"
+	tokentype   = "id00"
+	token1Id    = "id000001"
+	token2Id    = "id000002"
+	token3Id    = "id000003"
+	token4Id    = "id000004"
+	token6Id    = "id000005"
+	token8Id    = "id000008"
+	tokenCFT    = "00010000"
+)
+
+var (
+	addr1 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr2 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr3 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+)
+
+func prepareCollectionTokens(t *testing.T, input *TestInput) {
+	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
+
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr1)
+		ak.SetAccount(ctx, acc)
+	}
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr2)
+		ak.SetAccount(ctx, acc)
+	}
+
+	// prepare collection
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(rightSymbol, "name"), addr1))
+
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(diffSymbol, "name"), addr1))
+
+	// issue 6 tokens
+	// token1 = symbol1id1 by addr1
+	// token2 = symbol1id2 by addr1
+	// token3 = symbol1id3 by addr1
+	// token4 = symbol1id4 by addr1
+	// token5 = symbol2id5 by addr1
+	// token6 = symbol1id6 by addr2
+	// token7 = symbol1 by addr1
+	require.NoError(t, keeper.IssueCNFT(ctx, addr1, rightSymbol, tokentype))
+	require.NoError(t, keeper.IssueCNFT(ctx, addr1, diffSymbol, tokentype))
+	collection, err := keeper.GetCollection(ctx, rightSymbol)
+	require.NoError(t, err)
+	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1)))
+	collection, err = keeper.GetCollection(ctx, rightSymbol)
+	require.NoError(t, err)
+	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1)))
+	collection, err = keeper.GetCollection(ctx, rightSymbol)
+	require.NoError(t, err)
+	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1)))
+	collection, err = keeper.GetCollection(ctx, rightSymbol)
+	require.NoError(t, err)
+	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1)))
+	collection2, err := keeper.GetCollection(ctx, diffSymbol)
+	require.NoError(t, err)
+	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection2, defaultName, tokentype, defaultTokenURI, addr1)))
+	collection, err = keeper.GetCollection(ctx, rightSymbol)
+	require.NoError(t, err)
+	require.NoError(t, keeper.GrantPermission(ctx, addr1, addr2, types.NewMintPermission(rightSymbol+tokentype)))
+	require.NoError(t, keeper.MintCNFT(ctx, addr2, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr2)))
+	require.NoError(t, keeper.IssueCFT(ctx, addr1, types.NewCollectiveFT(collection, defaultName, defaultTokenURI, sdk.NewInt(1), true), sdk.NewInt(10)))
+	require.NoError(t, keeper.MintCFT(ctx, addr1, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(rightSymbol, tokenCFT, sdk.NewInt(1)))))
+}
 
 func TestGetAllTokens(t *testing.T) {
 	input := SetupTestInput(t)
@@ -208,21 +278,21 @@ func TestCollectionAndPermission(t *testing.T) {
 
 		{
 			// Mint from addr1 to addr1
-			require.NoError(t, keeper.IssueFTCollection(ctx, types.NewCollectiveFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
-			require.NoError(t, keeper.MintCollectionTokens(ctx, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00010000", sdk.NewInt(defaultAmount))), addr1, addr1))
+			require.NoError(t, keeper.IssueCFT(ctx, addr1, types.NewCollectiveFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+			require.NoError(t, keeper.MintCFT(ctx, addr1, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00010000", sdk.NewInt(defaultAmount)))))
 			supply, err := keeper.GetSupply(ctx, resource01, "00010000")
 			require.NoError(t, err)
 			require.Equal(t, int64(defaultAmount+defaultAmount), supply.Int64())
 
 			// Mint from addr1 to addr2
-			require.NoError(t, keeper.MintCollectionTokens(ctx, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00010000", sdk.NewInt(defaultAmount))), addr1, addr2))
+			require.NoError(t, keeper.MintCFT(ctx, addr1, addr2, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(resource01, "00010000", sdk.NewInt(defaultAmount)))))
 			supply, err = keeper.GetSupply(ctx, resource01, "00010000")
 			require.NoError(t, err)
 			require.Equal(t, int64(defaultAmount+defaultAmount+defaultAmount), supply.Int64())
 
 			collection, err := keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.IssueFTCollection(ctx, types.NewCollectiveFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1))
+			require.NoError(t, keeper.IssueCFT(ctx, addr1, types.NewCollectiveFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 			token, err := keeper.GetToken(ctx, resource01, "00010000")
 			require.NoError(t, err)
 			require.Equal(t, resource01, token.GetSymbol())
@@ -231,10 +301,10 @@ func TestCollectionAndPermission(t *testing.T) {
 		{
 			tokenType, err := keeper.GetNextTokenTypeForCNFT(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.IssueCNFT(ctx, resource01, tokenType, addr1))
+			require.NoError(t, keeper.IssueCNFT(ctx, addr1, resource01, tokenType))
 			collection, err = keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1), addr1))
+			require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1)))
 
 			token, err := keeper.GetToken(ctx, resource01, tokenType+"0001")
 			require.NoError(t, err)
@@ -243,7 +313,7 @@ func TestCollectionAndPermission(t *testing.T) {
 
 			collection, err = keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1), addr1))
+			require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1)))
 			token, err = keeper.GetToken(ctx, resource01, tokenType+"0002")
 			require.NoError(t, err)
 			require.Equal(t, resource01, token.GetSymbol())
@@ -255,10 +325,10 @@ func TestCollectionAndPermission(t *testing.T) {
 
 			tokenType, err = keeper.GetNextTokenTypeForCNFT(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.IssueCNFT(ctx, resource01, tokenType, addr1))
+			require.NoError(t, keeper.IssueCNFT(ctx, addr1, resource01, tokenType))
 			collection, err = keeper.GetCollection(ctx, resource01)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1), addr1))
+			require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokenType, defaultTokenURI, addr1)))
 			token, err = keeper.GetToken(ctx, resource01, tokenType+"0001")
 			require.NoError(t, err)
 			require.Equal(t, resource01, token.GetSymbol())
@@ -323,73 +393,20 @@ func TestGetPrefixedTokens(t *testing.T) {
 
 func TestAttachDetachScenario(t *testing.T) {
 	input := SetupTestInput(t)
-	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	_, ctx, keeper := input.Cdc, input.Ctx, input.Keeper
 
 	const (
-		defaultTokenURI = ""
-		rightSymbol     = "symbol1"
-		diffSymbol      = "symbol2"
-		tokentype       = "id00"
-		token1Id        = "id000001"
-		token2Id        = "id000002"
-		token3Id        = "id000003"
-		token4Id        = "id000004"
-		token5Id        = "id000001"
-		token6Id        = "id000005"
-		token8Id        = "id000008"
-		tokenCFT        = "00010000"
+		rightSymbol = "symbol1"
+		token1Id    = "id000001"
+		token2Id    = "id000002"
+		token3Id    = "id000003"
+		token4Id    = "id000004"
+		token6Id    = "id000005"
+		token8Id    = "id000008"
+		tokenCFT    = "00010000"
 	)
 
-	//
-	// preparation: create account
-	//
-	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	{
-		acc := ak.NewAccountWithAddress(ctx, addr1)
-		ak.SetAccount(ctx, acc)
-	}
-	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	{
-		acc := ak.NewAccountWithAddress(ctx, addr2)
-		ak.SetAccount(ctx, acc)
-	}
-
-	// prepare collection
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(rightSymbol, "name"), addr1))
-
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(diffSymbol, "name"), addr1))
-
-	// issue 6 tokens
-	// token1 = symbol1id1 by addr1
-	// token2 = symbol1id2 by addr1
-	// token3 = symbol1id3 by addr1
-	// token4 = symbol1id4 by addr1
-	// token5 = symbol2id5 by addr1
-	// token6 = symbol1id6 by addr2
-	// token7 = symbol1 by addr1
-	require.NoError(t, keeper.IssueCNFT(ctx, rightSymbol, tokentype, addr1))
-	require.NoError(t, keeper.IssueCNFT(ctx, diffSymbol, tokentype, addr1))
-	collection, err := keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection2, err := keeper.GetCollection(ctx, diffSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection2, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr2), addr2))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.IssueFTCollection(ctx, types.NewCollectiveFT(collection, "testtoken", "", sdk.NewInt(0), true), sdk.NewInt(1000), addr1))
+	prepareCollectionTokens(t, input)
 
 	//
 	// attach success cases
@@ -406,10 +423,10 @@ func TestAttachDetachScenario(t *testing.T) {
 
 	// verify the relations
 
-	// root of token1 is nil
+	// root of token1 is token1
 	rootOfToken1, err1 := keeper.RootOf(ctx, rightSymbol, token1Id)
 	require.NoError(t, err1)
-	require.Nil(t, rootOfToken1)
+	require.Equal(t, rootOfToken1.GetTokenID(), token1Id)
 
 	// root of token2 is token1
 	rootOfToken2, err2 := keeper.RootOf(ctx, rightSymbol, token2Id)
@@ -469,7 +486,7 @@ func TestAttachDetachScenario(t *testing.T) {
 	require.Equal(t, len(childrenOfToken4), 0)
 
 	// query failure cases
-	_, err = keeper.ParentOf(ctx, rightSymbol, tokenCFT)
+	_, err := keeper.ParentOf(ctx, rightSymbol, tokenCFT)
 	require.EqualError(t, err, types.ErrTokenNotCNFT(types.DefaultCodespace, rightSymbol+tokenCFT).Error())
 
 	//
@@ -578,7 +595,7 @@ func TestTransferCFTScenario(t *testing.T) {
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(Symbol, "name"), addr1))
 	collection, err := keeper.GetCollection(ctx, Symbol)
 	require.NoError(t, err)
-	err = keeper.IssueFTCollection(ctx, types.NewCollectiveFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount), addr1)
+	err = keeper.IssueCFT(ctx, addr1, types.NewCollectiveFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount))
 	require.NoError(t, err)
 
 	//
@@ -595,74 +612,9 @@ func TestTransferCFTScenario(t *testing.T) {
 
 func TestTransferCNFTScenario(t *testing.T) {
 	input := SetupTestInput(t)
-	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	_, ctx, keeper, _ := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	prepareCollectionTokens(t, input)
 
-	const (
-		defaultTokenURI = ""
-		rightSymbol     = "symbol1"
-		diffSymbol      = "symbol2"
-		tokentype       = "id00"
-		token1Id        = "id000001"
-		token2Id        = "id000002"
-		token3Id        = "id000003"
-		token4Id        = "id000004"
-		token6Id        = "id000005"
-		token8Id        = "id000008"
-		tokenCFT        = "00010000"
-	)
-
-	//
-	// preparation: create account
-	//
-	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	{
-		acc := ak.NewAccountWithAddress(ctx, addr1)
-		ak.SetAccount(ctx, acc)
-	}
-	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	{
-		acc := ak.NewAccountWithAddress(ctx, addr2)
-		ak.SetAccount(ctx, acc)
-	}
-
-	// prepare collection
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(rightSymbol, "name"), addr1))
-
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(diffSymbol, "name"), addr1))
-
-	// issue 6 tokens
-	// token1 = symbol1id1 by addr1
-	// token2 = symbol1id2 by addr1
-	// token3 = symbol1id3 by addr1
-	// token4 = symbol1id4 by addr1
-	// token5 = symbol2id5 by addr1
-	// token6 = symbol1id6 by addr2
-	// token7 = symbol1 by addr1
-	require.NoError(t, keeper.IssueCNFT(ctx, rightSymbol, tokentype, addr1))
-	require.NoError(t, keeper.IssueCNFT(ctx, diffSymbol, tokentype, addr1))
-	collection, err := keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection2, err := keeper.GetCollection(ctx, diffSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection2, defaultName, tokentype, defaultTokenURI, addr1), addr1))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.MintCollectionNFT(ctx, types.NewCollectiveNFT(collection, defaultName, tokentype, defaultTokenURI, addr2), addr2))
-	collection, err = keeper.GetCollection(ctx, rightSymbol)
-	require.NoError(t, err)
-	require.NoError(t, keeper.IssueFTCollection(ctx, types.NewCollectiveFT(collection, "testtoken", "", sdk.NewInt(0), true), sdk.NewInt(1000), addr1))
-
-	// attach token1 <- token2 (basic case) : success
 	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token2Id))
 	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token2Id, token3Id))
 	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token4Id))
@@ -714,6 +666,76 @@ func TestTransferCNFTScenario(t *testing.T) {
 	require.Equal(t, token4.(types.CollectiveNFT).GetOwner(), addr2)
 }
 
+func TestApproveDisapproveScenario(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
+
+	const (
+		defaultTokenURI = ""
+		Symbol          = "symbol1"
+		tokentype1      = "1001"
+		tokentype2      = "1002"
+		tokenID0        = "00010000"
+		tokenID1        = "10010001"
+		tokenID2        = "10020001"
+	)
+
+	//
+	// preparation: create account
+	//
+	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr1)
+		ak.SetAccount(ctx, acc)
+	}
+	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr2)
+		ak.SetAccount(ctx, acc)
+	}
+	addr3 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	{
+		acc := ak.NewAccountWithAddress(ctx, addr3)
+		ak.SetAccount(ctx, acc)
+	}
+
+	// prepare collection, CFT, CNFT
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(Symbol, "name"), addr1))
+	collection, err := keeper.GetCollection(ctx, Symbol)
+	require.NoError(t, err)
+	err = keeper.IssueCFT(ctx, addr1, types.NewCollectiveFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount))
+	require.NoError(t, err)
+	err = keeper.IssueCNFT(ctx, addr1, Symbol, tokentype1)
+	require.NoError(t, err)
+	err = keeper.IssueCNFT(ctx, addr1, Symbol, tokentype2)
+	require.NoError(t, err)
+	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokentype1, defaultTokenURI, addr1)))
+	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(collection, defaultName, tokentype2, defaultTokenURI, addr1)))
+
+	// approve test
+	require.EqualError(t, keeper.SetApproved(ctx, addr3, addr1, "symbol2"), types.ErrCollectionNotExist(types.DefaultCodespace, "symbol2").Error())
+	require.NoError(t, keeper.SetApproved(ctx, addr3, addr1, Symbol))
+	require.EqualError(t, keeper.SetApproved(ctx, addr3, addr1, Symbol), types.ErrCollectionAlreadyApproved(types.DefaultCodespace, addr3.String(), addr1.String(), Symbol).Error())
+
+	// attach_from/detach_from test
+	require.EqualError(t, keeper.AttachFrom(ctx, addr2, addr1, Symbol, tokenID1, tokenID2), types.ErrCollectionNotApproved(types.DefaultCodespace, addr2.String(), addr1.String(), Symbol).Error())
+	require.NoError(t, keeper.AttachFrom(ctx, addr3, addr1, Symbol, tokenID1, tokenID2))
+	require.EqualError(t, keeper.DetachFrom(ctx, addr2, addr1, addr2, Symbol, tokenID2), types.ErrCollectionNotApproved(types.DefaultCodespace, addr2.String(), addr1.String(), Symbol).Error())
+	require.NoError(t, keeper.DetachFrom(ctx, addr3, addr1, addr1, Symbol, tokenID2))
+
+	// transfer_from test
+	require.EqualError(t, keeper.TransferCFTFrom(ctx, addr2, addr1, addr2, Symbol, tokenID0, sdk.NewInt(10)), types.ErrCollectionNotApproved(types.DefaultCodespace, addr2.String(), addr1.String(), Symbol).Error())
+	require.NoError(t, keeper.TransferCFTFrom(ctx, addr3, addr1, addr2, Symbol, tokenID0, sdk.NewInt(10)))
+
+	require.EqualError(t, keeper.TransferCNFTFrom(ctx, addr2, addr1, addr2, Symbol, tokenID1), types.ErrCollectionNotApproved(types.DefaultCodespace, addr2.String(), addr1.String(), Symbol).Error())
+	require.NoError(t, keeper.TransferCNFTFrom(ctx, addr3, addr1, addr2, Symbol, tokenID1))
+
+	// disapprove test
+	require.EqualError(t, keeper.DeleteApproved(ctx, addr3, addr1, "symbol2"), types.ErrCollectionNotExist(types.DefaultCodespace, "symbol2").Error())
+	require.NoError(t, keeper.DeleteApproved(ctx, addr3, addr1, Symbol))
+	require.EqualError(t, keeper.DeleteApproved(ctx, addr3, addr1, Symbol), types.ErrCollectionNotApproved(types.DefaultCodespace, addr3.String(), addr1.String(), Symbol).Error())
+}
+
 // This test is from cosmos/x/bank/internal/keeper_test.go
 func TestTransferFT(t *testing.T) {
 	input := SetupTestInput(t)
@@ -739,7 +761,7 @@ func TestTransferFT(t *testing.T) {
 	// etc failure cases
 	require.EqualError(t, keeper.SetCollection(ctx, types.NewCollection(tokenSymbol1, "name")), types.ErrCollectionExist(types.DefaultCodespace, tokenSymbol1).Error())
 	require.EqualError(t, keeper.UpdateCollection(ctx, types.NewCollection(tokenSymbol2, "name")), types.ErrCollectionNotExist(types.DefaultCodespace, tokenSymbol2).Error())
-	require.EqualError(t, keeper.RevokePermission(ctx, addr2, types.NewIssuePermission("")), types.ErrTokenPermission(types.DefaultCodespace, addr2, types.NewIssuePermission("")).Error())
+	require.EqualError(t, keeper.RevokePermission(ctx, addr2, types.NewIssuePermission("")), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewIssuePermission("")).Error())
 	require.EqualError(t, keeper.IssueFT(ctx, types.NewFT("testtoken3", tokenSymbol3, "", sdk.NewInt(0), true), sdk.NewInt(1000), addr), types.ErrTokenExist(types.DefaultCodespace, tokenSymbol3).Error())
 	_, err := keeper.GetToken(ctx, tokenSymbol4, "")
 	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, tokenSymbol4).Error())
@@ -791,4 +813,156 @@ func TestTransferFT(t *testing.T) {
 	// negative values.
 	_, err = input.Keeper.bankKeeper.SubtractCoins(ctx, addr, sdk.Coins{sdk.Coin{Denom: "FOOCOIN", Amount: sdk.NewInt(-5)}})
 	require.Error(t, err)
+}
+
+func TestBurnCNFTScenario(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, _ := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	prepareCollectionTokens(t, input)
+
+	// attach token1 <- token2 (basic case) : success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token2Id))
+	// attach token2 <- token3 (attach to a child): success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token2Id, token3Id))
+	// attach token1 <- token4 (attach to a root): success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token4Id))
+
+	require.NoError(t, keeper.BurnCNFT(ctx, addr1, rightSymbol, token1Id))
+
+	_, err := keeper.GetCNFT(ctx, rightSymbol, token1Id)
+	require.Error(t, err)
+	_, err = keeper.GetCNFT(ctx, rightSymbol, token2Id)
+	require.Error(t, err)
+	_, err = keeper.GetCNFT(ctx, rightSymbol, token3Id)
+	require.Error(t, err)
+	_, err = keeper.GetCNFT(ctx, rightSymbol, token4Id)
+	require.Error(t, err)
+
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr1).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, token1Id)).Int64())
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr1).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, token2Id)).Int64())
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr1).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, token3Id)).Int64())
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr1).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, token4Id)).Int64())
+}
+
+func TestPermission(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, _ := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	prepareCollectionTokens(t, input)
+
+	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(rightSymbol+token1Id[:4])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(rightSymbol+token1Id[:4])).Error())
+	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(rightSymbol+token1Id[:4])))
+	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(rightSymbol+token1Id[:4])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(rightSymbol+token1Id[:4])).Error())
+}
+
+func TestMintBurn(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, _ := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	prepareCollectionTokens(t, input)
+
+	wrongTokenID := "12345678"
+	require.EqualError(t, keeper.MintCNFT(ctx, addr1, types.NewCollectiveNFT(types.NewCollection(diffSymbol, "testname"), "testtoken", wrongTokenID, "", addr1)), types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, diffSymbol, wrongTokenID[:4]).Error())
+	require.EqualError(t, keeper.MintCNFT(ctx, addr3, types.NewCollectiveNFT(types.NewCollection(rightSymbol, "testname"), "testtoken", token1Id, "", addr1)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(rightSymbol+token1Id[:4])).Error())
+
+	require.NoError(t, keeper.BurnCFT(ctx, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(rightSymbol, tokenCFT, sdk.NewInt(1)))))
+	require.EqualError(t, keeper.BurnCNFT(ctx, addr1, rightSymbol, wrongTokenID), types.ErrCollectionTokenNotExist(types.DefaultCodespace, rightSymbol, wrongTokenID).Error())
+	require.EqualError(t, keeper.BurnCNFT(ctx, addr3, rightSymbol, token1Id), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewBurnPermission(rightSymbol+token1Id[:4])).Error())
+}
+
+func TestBurnCNFTFromSuccess(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, _ := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	prepareCollectionTokens(t, input)
+
+	// success case
+	// addr1 has: burn permission, approved
+	// addr2 has: token
+
+	// attach token1 <- token2 (basic case) : success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token2Id))
+	// attach token2 <- token3 (attach to a child): success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token2Id, token3Id))
+	// attach token1 <- token4 (attach to a root): success
+	require.NoError(t, keeper.Attach(ctx, addr1, rightSymbol, token1Id, token4Id))
+
+	// transfer tokens to addr2
+	require.NoError(t, keeper.TransferCNFT(ctx, addr1, addr2, rightSymbol, token1Id))
+	require.NoError(t, keeper.TransferCFT(ctx, addr1, addr2, rightSymbol, tokenCFT, sdk.NewInt(1)))
+
+	// addr2 approves addr1 for the symbol
+	require.NoError(t, keeper.SetApproved(ctx, addr1, addr2, rightSymbol))
+
+	// test burnCNFTFrom
+	require.NoError(t, keeper.BurnCNFTFrom(ctx, addr1, addr2, rightSymbol, token1Id))
+	require.NoError(t, keeper.BurnCFTFrom(ctx, addr1, addr2, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(rightSymbol, tokenCFT, sdk.NewInt(1)))))
+
+	_, err := keeper.GetCNFT(ctx, rightSymbol, token1Id)
+	require.Error(t, err)
+	_, err = keeper.GetCNFT(ctx, rightSymbol, token2Id)
+	require.Error(t, err)
+	_, err = keeper.GetCNFT(ctx, rightSymbol, token3Id)
+	require.Error(t, err)
+	_, err = keeper.GetCNFT(ctx, rightSymbol, token4Id)
+	require.Error(t, err)
+
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr2).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, token1Id)).Int64())
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr2).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, token2Id)).Int64())
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr2).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, token3Id)).Int64())
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr2).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, token4Id)).Int64())
+	require.Equal(t, int64(0), keeper.accountKeeper.GetAccount(ctx, addr2).GetCoins().AmountOf(linktype.SymbolCollectionToken(rightSymbol, tokenCFT)).Int64())
+}
+
+func TestBurnCNFTFromFailure1(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, _ := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	prepareCollectionTokens(t, input)
+
+	// failure case1
+	// addr1 has: burn permission, approved, token
+	// addr2 has: nothing
+
+	// addr2 approves addr1 for the symbol
+	require.NoError(t, keeper.SetApproved(ctx, addr1, addr2, rightSymbol))
+
+	// test burnCNFTFrom, burnCFTFrom fail
+	require.EqualError(t, keeper.BurnCNFTFrom(ctx, addr1, addr2, rightSymbol, token1Id), types.ErrTokenNotOwnedBy(types.DefaultCodespace, rightSymbol+token1Id, addr2).Error())
+	require.EqualError(t, keeper.BurnCFTFrom(ctx, addr1, addr2, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(rightSymbol, tokenCFT, sdk.NewInt(1)))), sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", addr2, linktype.NewCoinWithTokenID(rightSymbol, tokenCFT, sdk.NewInt(1)).ToCoin().String())).Error())
+}
+
+func TestBurnCNFTFromFailure2(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, _ := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	prepareCollectionTokens(t, input)
+
+	// failure case2
+	// addr1 has: burn permission (not approved)
+	// addr2 has: token
+
+	// transfer tokens to addr2
+	require.NoError(t, keeper.TransferCNFT(ctx, addr1, addr2, rightSymbol, token1Id))
+	require.NoError(t, keeper.TransferCFT(ctx, addr1, addr2, rightSymbol, tokenCFT, sdk.NewInt(1)))
+
+	// test burnCNFTFrom fail
+	require.EqualError(t, keeper.BurnCNFTFrom(ctx, addr1, addr2, rightSymbol, token1Id), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), rightSymbol).Error())
+	require.EqualError(t, keeper.BurnCFTFrom(ctx, addr1, addr2, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(rightSymbol, tokenCFT, sdk.NewInt(1)))), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), rightSymbol).Error())
+}
+
+func TestBurnCNFTFromFailure3(t *testing.T) {
+	input := SetupTestInput(t)
+	_, ctx, keeper, _ := input.Cdc, input.Ctx, input.Keeper, input.Ak
+	prepareCollectionTokens(t, input)
+
+	// failure case3
+	// addr2 has: approved (no permission)
+	// addr3 has: token
+
+	// transfer tokens to addr2
+	require.NoError(t, keeper.TransferCNFT(ctx, addr1, addr3, rightSymbol, token1Id))
+	require.NoError(t, keeper.TransferCFT(ctx, addr1, addr3, rightSymbol, tokenCFT, sdk.NewInt(1)))
+
+	// addr3 approves addr2 for the symbol
+	require.NoError(t, keeper.SetApproved(ctx, addr2, addr3, rightSymbol))
+
+	// test burnCNFTFrom fail
+	require.EqualError(t, keeper.BurnCNFTFrom(ctx, addr2, addr3, rightSymbol, token1Id), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(rightSymbol+token1Id[:4])).Error())
+	require.EqualError(t, keeper.BurnCFTFrom(ctx, addr2, addr3, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(rightSymbol, tokenCFT, sdk.NewInt(1)))), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(rightSymbol+tokenCFT)).Error())
 }

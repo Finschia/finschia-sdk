@@ -31,8 +31,11 @@ type (
 	MsgIssueCFT         = types.MsgIssueCFT
 	MsgIssueCNFT        = types.MsgIssueCNFT
 	MsgMintCNFT         = types.MsgMintCNFT
+	MsgBurnCNFT         = types.MsgBurnCNFT
+	MsgBurnCNFTFrom     = types.MsgBurnCNFTFrom
 	MsgMintCFT          = types.MsgMintCFT
 	MsgBurnCFT          = types.MsgBurnCFT
+	MsgBurnCFTFrom      = types.MsgBurnCFTFrom
 
 	MsgGrantPermission  = types.MsgGrantPermission
 	MsgRevokePermission = types.MsgRevokePermission
@@ -43,8 +46,17 @@ type (
 	MsgTransferCFT  = types.MsgTransferCFT
 	MsgTransferCNFT = types.MsgTransferCNFT
 
+	MsgTransferCFTFrom  = types.MsgTransferCFTFrom
+	MsgTransferCNFTFrom = types.MsgTransferCNFTFrom
+
 	MsgAttach = types.MsgAttach
 	MsgDetach = types.MsgDetach
+
+	MsgAttachFrom = types.MsgAttachFrom
+	MsgDetachFrom = types.MsgDetachFrom
+
+	MsgApproveCollection    = types.MsgApproveCollection
+	MsgDisapproveCollection = types.MsgDisapproveCollection
 
 	Permissions = types.Permissions
 

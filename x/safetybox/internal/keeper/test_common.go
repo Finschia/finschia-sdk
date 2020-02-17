@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/cosmos/cosmos-sdk/x/bank"
+	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/line/link/x/iam"
 )
 
@@ -25,7 +25,7 @@ type TestInput struct {
 	Ctx    sdk.Context
 	Keeper Keeper
 	Ak     auth.AccountKeeper
-	Bk     bank.BaseKeeper
+	Bk     cbank.BaseKeeper
 	Iam    iam.Keeper
 }
 
@@ -33,7 +33,7 @@ func newTestCodec() *codec.Codec {
 	cdc := codec.New()
 	types.RegisterCodec(cdc)
 	auth.RegisterCodec(cdc)
-	bank.RegisterCodec(cdc)
+	cbank.RegisterCodec(cdc)
 	supply.RegisterCodec(cdc)
 	iam.RegisterCodec(cdc)
 	codec.RegisterCrypto(cdc)
@@ -64,28 +64,28 @@ func SetupTestInput(t *testing.T) TestInput {
 	// init params keeper and subspaces
 	paramsKeeper := params.NewKeeper(cdc, keyParams, tkeyParams, params.DefaultCodespace)
 	authSubspace := paramsKeeper.Subspace(auth.DefaultParamspace)
-	bankSubspace := paramsKeeper.Subspace(bank.DefaultParamspace)
+	cbankSubspace := paramsKeeper.Subspace(cbank.DefaultParamspace)
 
 	blacklistedAddrs := make(map[string]bool)
 	blacklistedAddrs[sdk.AccAddress([]byte("moduleAcc")).String()] = true
-
-	// add keepers
-	accountKeeper := auth.NewAccountKeeper(cdc, keyAuth, authSubspace, auth.ProtoBaseAccount)
-	bankKeeper := bank.NewBaseKeeper(accountKeeper, bankSubspace, bank.DefaultCodespace, blacklistedAddrs)
-	iamKeeper := iam.NewKeeper(cdc, keyIam)
 
 	// module account permissions
 	maccPerms := map[string][]string{
 		types.ModuleName: {supply.Burner, supply.Minter, supply.Staking},
 	}
 
-	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, bankKeeper, maccPerms)
-	keeper := NewKeeper(cdc, iamKeeper.WithPrefix(types.ModuleName), bankKeeper, accountKeeper, keySafetyBox)
+	// add keepers
+	accountKeeper := auth.NewAccountKeeper(cdc, keyAuth, authSubspace, auth.ProtoBaseAccount)
+	cbankKeeper := cbank.NewBaseKeeper(accountKeeper, cbankSubspace, cbank.DefaultCodespace, blacklistedAddrs)
+	iamKeeper := iam.NewKeeper(cdc, keyIam)
+	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, cbankKeeper, maccPerms)
+
+	keeper := NewKeeper(cdc, iamKeeper.WithPrefix(types.ModuleName), cbankKeeper, accountKeeper, keySafetyBox)
 
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
 	supplyKeeper.SetSupply(ctx, supply.NewSupply(sdk.NewCoins()))
 
-	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: bankKeeper}
+	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: cbankKeeper}
 }
 
 func checkSafetyBoxBalance(t *testing.T, k Keeper, ctx sdk.Context, safetyBoxID string, ta, ca, ti int64) {

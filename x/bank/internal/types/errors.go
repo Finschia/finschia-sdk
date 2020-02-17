@@ -1,6 +1,8 @@
 package types
 
 import (
+	"fmt"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -8,8 +10,10 @@ import (
 const (
 	DefaultCodespace sdk.CodespaceType = ModuleName
 
-	CodeSendDisabled         sdk.CodeType = 101
-	CodeInvalidInputsOutputs sdk.CodeType = 102
+	CodeSendDisabled                sdk.CodeType = 101
+	CodeInvalidInputsOutputs        sdk.CodeType = 102
+	CodeCanNotTransferToBlacklisted sdk.CodeType = 103
+	CodeInvalidRequestGetsLimit     sdk.CodeType = 104
 )
 
 // ErrNoInputs is an error
@@ -30,4 +34,13 @@ func ErrInputOutputMismatch(codespace sdk.CodespaceType) sdk.Error {
 // ErrSendDisabled is an error
 func ErrSendDisabled(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeSendDisabled, "send transactions are currently disabled")
+}
+
+func ErrCanNotTransferToBlacklisted(codespace sdk.CodespaceType, addr string) sdk.Error {
+	return sdk.NewError(codespace, CodeCanNotTransferToBlacklisted, "Cannot transfer to safety box addresses (addr: %s)", addr)
+}
+
+// ErrRequestGetsLimit
+func ErrRequestGetsLimit(codespace sdk.CodespaceType, limit int) sdk.Error {
+	return sdk.NewError(codespace, CodeInvalidRequestGetsLimit, fmt.Sprintf("the gets limit should be %d", limit))
 }

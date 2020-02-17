@@ -1,5 +1,7 @@
 package types
 
+import "github.com/cosmos/cosmos-sdk/types"
+
 const (
 	ModuleName = "token"
 
@@ -14,7 +16,15 @@ var (
 	TokenChildToParentKeyPrefix    = []byte{0x03}
 	TokenParentToChildKeyPrefix    = []byte{0x04}
 	TokenParentToChildSubKeyPrefix = []byte{0x05}
+	BlacklistKeyPrefix             = []byte{0x06}
+	CollectionApprovedKeyPrefix    = []byte{0x07}
 )
+
+func BlacklistKey(addr types.AccAddress, action string) []byte {
+	key := append(BlacklistKeyPrefix, addr...)
+	key = append(key, []byte(":"+action)...)
+	return key
+}
 
 func TokenDenomKey(denom string) []byte {
 	return append(TokenDenomKeyPrefix, []byte(denom)...)
@@ -43,4 +53,8 @@ func TokenParentToChildSubKey(token Token) []byte {
 
 func ParentToChildSubKeyToToken(prefix []byte, key []byte) (tokenDenom string) {
 	return string(key[len(prefix)+1:])
+}
+
+func CollectionApprovedKey(proxy types.AccAddress, approver types.AccAddress, symbol string) []byte {
+	return append(append(append(CollectionApprovedKeyPrefix, proxy.Bytes()...), approver.Bytes()...), symbol...)
 }

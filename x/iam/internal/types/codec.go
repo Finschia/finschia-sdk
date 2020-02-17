@@ -5,7 +5,13 @@ import (
 	"github.com/line/link/x/iam/exported"
 )
 
-var ModuleCdc = codec.New()
+var ModuleCdc *codec.Codec
+
+func init() {
+	ModuleCdc = codec.New()
+	RegisterCodec(ModuleCdc)
+	ModuleCdc.Seal()
+}
 
 // RegisterCodec registers concrete types on the Amino codec
 func RegisterCodec(cdc *codec.Codec) {
@@ -14,10 +20,4 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterInterface((*InheritedAccountPermissionI)(nil), nil)
 	cdc.RegisterConcrete(&InheritedAccountPermission{}, "link/InheritedAccountPermission", nil)
 	cdc.RegisterInterface((*exported.PermissionI)(nil), nil)
-}
-
-func init() {
-	ModuleCdc = codec.New()
-	RegisterCodec(ModuleCdc)
-	ModuleCdc.Seal()
 }

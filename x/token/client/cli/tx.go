@@ -49,15 +49,24 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		RevokePermTxCmd(cdc),
 		ModifyTokenURICmd(cdc),
 		CreateCollectionTxCmd(cdc),
-		IssueCollectionNFTTxCmd(cdc),
-		IssueCollectionFTTxCmd(cdc),
-		MintCollectionNFTTxCmd(cdc),
-		MintCollectionFTTxCmd(cdc),
-		BurnCollectionFTTxCmd(cdc),
+		IssueCNFTTxCmd(cdc),
+		IssueCFTTxCmd(cdc),
+		MintCNFTTxCmd(cdc),
+		BurnCNFTTxCmd(cdc),
+		BurnCNFTFromTxCmd(cdc),
+		MintCFTTxCmd(cdc),
+		BurnCFTTxCmd(cdc),
+		BurnCFTFromTxCmd(cdc),
 		TransferCFTTxCmd(cdc),
 		TransferCNFTTxCmd(cdc),
+		TransferCFTFromTxCmd(cdc),
+		TransferCNFTFromTxCmd(cdc),
 		AttachTxCmd(cdc),
 		DetachTxCmd(cdc),
+		AttachFromTxCmd(cdc),
+		DetachFromTxCmd(cdc),
+		ApproveCollectionTxCmd(cdc),
+		DisapproveCollectionTxCmd(cdc),
 	)
 	return txCmd
 }
@@ -109,7 +118,7 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
 			}
 
-			msg := types.NewMsgIssue(name, symbol, tokenURI, to, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
+			msg := types.NewMsgIssue(to, name, symbol, tokenURI, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

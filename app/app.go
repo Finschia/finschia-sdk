@@ -7,7 +7,6 @@ import (
 	"github.com/line/link/x/account"
 	"github.com/line/link/x/bank"
 	"github.com/line/link/x/iam"
-	"github.com/line/link/x/safetybox"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -26,9 +25,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	cosmosbank "github.com/cosmos/cosmos-sdk/x/bank"
+	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/line/link/version"
-	"github.com/line/link/x/proxy"
 	"github.com/line/link/x/token"
 )
 
@@ -54,9 +52,7 @@ var (
 		supply.AppModuleBasic{},
 		token.AppModuleBasic{},
 		iam.AppModuleBasic{},
-		safetybox.AppModuleBasic{},
 		account.AppModuleBasic{},
-		proxy.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -90,16 +86,14 @@ type LinkApp struct {
 	tkeys map[string]*sdk.TransientStoreKey
 
 	// keepers
-	accountKeeper    auth.AccountKeeper
-	cosmosbankKeeper cosmosbank.Keeper
-	bankKeeper       bank.Keeper
-	supplyKeeper     supply.Keeper
-	stakingKeeper    staking.Keeper
-	paramsKeeper     params.Keeper
-	tokenKeeper      token.Keeper
-	iamKeeper        iam.Keeper
-	safetyboxKeeper  safetybox.Keeper
-	proxyKeeper      proxy.Keeper
+	accountKeeper auth.AccountKeeper
+	cbankKeeper   cbank.Keeper
+	bankKeeper    bank.Keeper
+	supplyKeeper  supply.Keeper
+	stakingKeeper staking.Keeper
+	paramsKeeper  params.Keeper
+	tokenKeeper   token.Keeper
+	iamKeeper     iam.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -122,8 +116,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		params.StoreKey,
 		token.StoreKey,
 		iam.StoreKey,
-		safetybox.StoreKey,
-		proxy.StoreKey,
+		bank.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -137,23 +130,22 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// init params keeper and subspaces
 	app.paramsKeeper = params.NewKeeper(app.cdc, keys[params.StoreKey], tkeys[params.TStoreKey], params.DefaultCodespace)
 	authSubspace := app.paramsKeeper.Subspace(auth.DefaultParamspace)
-	bankSubspace := app.paramsKeeper.Subspace(cosmosbank.DefaultParamspace)
+	cbankSubspace := app.paramsKeeper.Subspace(cbank.DefaultParamspace)
 	stakingSubspace := app.paramsKeeper.Subspace(staking.DefaultParamspace)
 
 	app.iamKeeper = iam.NewKeeper(cdc, keys[iam.StoreKey])
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, keys[auth.StoreKey], authSubspace, auth.ProtoBaseAccount)
-	app.cosmosbankKeeper = cosmosbank.NewBaseKeeper(app.accountKeeper, bankSubspace, cosmosbank.DefaultCodespace, app.ModuleAccountAddrs())
-	app.bankKeeper = bank.NewKeeper(app.cosmosbankKeeper)
-	app.supplyKeeper = supply.NewKeeper(app.cdc, keys[supply.StoreKey], app.accountKeeper, app.cosmosbankKeeper, maccPerms)
+	app.cbankKeeper = cbank.NewBaseKeeper(app.accountKeeper, cbankSubspace, cbank.DefaultCodespace, app.ModuleAccountAddrs())
+	app.bankKeeper = bank.NewKeeper(app.cbankKeeper, keys[bank.StoreKey])
+	app.supplyKeeper = supply.NewKeeper(app.cdc, keys[supply.StoreKey], app.accountKeeper, app.cbankKeeper, maccPerms)
 	app.stakingKeeper = staking.NewKeeper(
 		app.cdc, keys[staking.StoreKey], tkeys[staking.TStoreKey],
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, app.cosmosbankKeeper, keys[token.StoreKey])
-	app.safetyboxKeeper = safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.cosmosbankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
-	app.proxyKeeper = proxy.NewKeeper(app.cdc, app.cosmosbankKeeper, app.accountKeeper, keys[proxy.StoreKey])
+
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, app.cbankKeeper, keys[token.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -165,9 +157,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		staking.NewAppModule(app.stakingKeeper, nil, app.accountKeeper, app.supplyKeeper),
 		token.NewAppModule(app.tokenKeeper),
-		safetybox.NewAppModule(app.safetyboxKeeper),
 		account.NewAppModule(app.accountKeeper),
-		proxy.NewAppModule(app.proxyKeeper),
 	)
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
 
@@ -181,9 +171,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		bank.ModuleName,
 		genutil.ModuleName,
 		token.ModuleName,
-		safetybox.ModuleName,
 		account.ModuleName,
-		proxy.ModuleName,
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())

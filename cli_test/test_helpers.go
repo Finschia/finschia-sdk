@@ -546,6 +546,11 @@ func (f *Fixtures) TxTokenMintNFTCollection(from string, to sdk.AccAddress, symb
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
+func (f *Fixtures) TxTokenBurnNFTCollection(from string, symbol, tokenID string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token collection-burn-nft %s %s %s %v", f.LinkcliBinary, from, symbol, tokenID, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
 func (f *Fixtures) TxTokenMint(from string, to sdk.AccAddress, amount string, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx token mint %s %s %s %v", f.LinkcliBinary, from, to, amount, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)

@@ -43,7 +43,7 @@ func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddre
 	}
 	perm := types.NewMintPermission(ft.GetDenom())
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenPermission(types.DefaultCodespace, from, perm)
+		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
 	return nil
 }
@@ -73,11 +73,12 @@ func (k Keeper) mintTokens(ctx sdk.Context, amount sdk.Coins, to sdk.AccAddress)
 }
 
 func (k Keeper) BurnTokens(ctx sdk.Context, amount sdk.Coins, from sdk.AccAddress) sdk.Error {
-	if !k.hasEnoughCoins(ctx, amount, from) {
+	err := k.isBurnable(ctx, from, from, amount)
+	if err != nil {
 		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", from, amount))
 	}
 
-	err := k.burnTokens(ctx, amount, from)
+	err = k.burnTokens(ctx, from, amount)
 	if err != nil {
 		return err
 	}
@@ -91,11 +92,25 @@ func (k Keeper) BurnTokens(ctx sdk.Context, amount sdk.Coins, from sdk.AccAddres
 	return nil
 }
 
-func (k Keeper) hasEnoughCoins(ctx sdk.Context, amount sdk.Coins, from sdk.AccAddress) bool {
+func (k Keeper) isBurnable(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddress, amount sdk.Coins) sdk.Error {
+	if !k.hasEnoughCoins(ctx, tokenOwner, amount) {
+		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", tokenOwner, amount))
+	}
+
+	for _, coin := range amount {
+		perm := types.NewBurnPermission(coin.Denom)
+		if !k.HasPermission(ctx, permissionOwner, perm) {
+			return types.ErrTokenNoPermission(types.DefaultCodespace, permissionOwner, perm)
+		}
+	}
+	return nil
+}
+
+func (k Keeper) hasEnoughCoins(ctx sdk.Context, from sdk.AccAddress, amount sdk.Coins) bool {
 	return k.accountKeeper.GetAccount(ctx, from).GetCoins().IsAllGTE(amount)
 }
 
-func (k Keeper) burnTokens(ctx sdk.Context, amount sdk.Coins, from sdk.AccAddress) sdk.Error {
+func (k Keeper) burnTokens(ctx sdk.Context, from sdk.AccAddress, amount sdk.Coins) sdk.Error {
 	moduleAddr := k.supplyKeeper.GetModuleAddress(types.ModuleName)
 	if moduleAddr == nil {
 		return sdk.ErrUnknownAddress(fmt.Sprintf("module account %s does not exist", types.ModuleName))

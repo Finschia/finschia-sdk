@@ -36,6 +36,10 @@ var (
 	AttributeKeySafetyBoxGrantReturnerPermission   = "safety_box_grant_returner_permission"
 	AttributeKeySafetyBoxRevokeReturnerPermission  = "safety_box_revoke_returner_permission"
 
+	EventTypeTransfer     = "transfer"
+	AttributeKeyRecipient = "recipient"
+	AttributeKeySender    = "sender"
+
 	AttributeKeySafetyBoxCoins    = "safety_box_coins"
 	AttributeKeySafetyBoxOperator = "safety_box_operator"
 	AttributeKeySafetyBoxTarget   = "safety_box_target"

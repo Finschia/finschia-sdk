@@ -10,20 +10,20 @@ import (
 var _ sdk.Msg = (*MsgIssue)(nil)
 
 type MsgIssue struct {
+	Owner    sdk.AccAddress `json:"owner"`
 	Name     string         `json:"name"`
 	Symbol   string         `json:"symbol"`
-	Owner    sdk.AccAddress `json:"owner"`
 	TokenURI string         `json:"token_uri"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
 	Decimals sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssue(name, symbol, tokenURI string, owner sdk.AccAddress, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssue {
+func NewMsgIssue(owner sdk.AccAddress, name, symbol, tokenURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssue {
 	return MsgIssue{
+		Owner:    owner,
 		Name:     name,
 		Symbol:   symbol,
-		Owner:    owner,
 		TokenURI: tokenURI,
 		Amount:   amount,
 		Mintable: mintable,

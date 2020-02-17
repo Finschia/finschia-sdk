@@ -13,7 +13,8 @@ import (
 
 const (
 	// query balance path
-	QueryBalance = "balances"
+	QueryBalance      = "balances"
+	QueryBulkBalances = "bulk_balances"
 )
 
 // NewQuerier returns a new sdk.Keeper instance.
@@ -22,6 +23,8 @@ func NewQuerier(k Keeper) sdk.Querier {
 		switch path[0] {
 		case QueryBalance:
 			return queryBalance(ctx, req, k)
+		case QueryBulkBalances:
+			return queryBulkBalances(ctx, req, k)
 
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown bank query endpoint")
@@ -47,6 +50,30 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, sdk
 		return bz, nil
 	}
 	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, k.GetCoins(ctx, params.Address).AmountOf(params.Denom))
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
+	}
+
+	return bz, nil
+}
+
+func queryBulkBalances(ctx sdk.Context, req abci.RequestQuery, k Keeper) ([]byte, sdk.Error) {
+	var params types.QueryBulkBalancesParams
+
+	if err := types.ModuleCdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+
+	if len(params.Addresses) > types.RequestGetsLimit {
+		return nil, types.ErrRequestGetsLimit(types.DefaultCodespace, types.RequestGetsLimit).TraceSDK("")
+	}
+
+	res := make([]types.QueryBulkBalancesResult, len(params.Addresses))
+	for idx, addr := range params.Addresses {
+		res[idx] = types.NewQueryBulkBalancesResult(addr, k.GetCoins(ctx, addr))
+	}
+
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, res)
 	if err != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
 	}

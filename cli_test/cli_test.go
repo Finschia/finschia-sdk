@@ -6,10 +6,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/line/link/types"
-	"github.com/line/link/x/proxy"
-	sbox "github.com/line/link/x/safetybox"
-	tokenmodule "github.com/line/link/x/token"
 	"io/ioutil"
 	"os"
 	"path"
@@ -17,6 +13,12 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	"github.com/line/link/types"
+	"github.com/line/link/x/bank"
+	"github.com/line/link/x/proxy"
+	sbox "github.com/line/link/x/safetybox"
+	tokenmodule "github.com/line/link/x/token"
 
 	"github.com/tendermint/tendermint/crypto/ed25519"
 	tmtypes "github.com/tendermint/tendermint/types"
@@ -1381,6 +1383,8 @@ func TestValidateGenesis(t *testing.T) {
 }
 
 func TestLinkCLIProxy(t *testing.T) {
+	t.Skip("SKIP: Proxy module is not in use")
+
 	t.Parallel()
 	f := InitFixtures(t)
 
@@ -1585,6 +1589,8 @@ func TestLinkCLIProxy(t *testing.T) {
 }
 
 func TestLinkCLISafetyBox(t *testing.T) {
+	t.Skip("SKIP: SafetyBox module is not in use")
+
 	t.Parallel()
 	f := InitFixtures(t)
 
@@ -1631,6 +1637,20 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		sb := f.QuerySafetyBox(id)
 		require.Equal(t, sb.ID, id)
 		require.Equal(t, sb.Owner.String(), rinahTheOwnerAddress)
+	}
+
+	// sending coins to the safety box directly should fail
+	{
+		sb := f.QuerySafetyBox(id)
+		result, stdoutSendToBlacklist, _ := f.TxSend(keyFoo, sb.Address, sdk.NewCoin(denom, sdk.OneInt()), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		require.Contains(
+			t,
+			strings.Split(bank.ErrCanNotTransferToBlacklisted(sbox.DefaultCodespace, sb.Address.String()).Result().Log, "\""),
+			strings.Split(stdoutSendToBlacklist, "\\\\\\\"")[9],
+		)
 	}
 
 	// create a safety box w/ multiple denoms should fail
@@ -2274,13 +2294,15 @@ func TestLinkCLITokenIssue(t *testing.T) {
 	// Query permissions for foo account
 	{
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
-		require.Equal(t, 3, len(pms))
+		require.Equal(t, 4, len(pms))
 		require.Equal(t, symbolBrown+fooSuffix, pms[0].GetResource())
 		require.Equal(t, "modify", pms[0].GetAction())
 		require.Equal(t, symbolCony+fooSuffix, pms[1].GetResource())
-		require.Equal(t, "mint", pms[1].GetAction())
+		require.Equal(t, "modify", pms[1].GetAction())
 		require.Equal(t, symbolCony+fooSuffix, pms[2].GetResource())
-		require.Equal(t, "modify", pms[2].GetAction())
+		require.Equal(t, "mint", pms[2].GetAction())
+		require.Equal(t, symbolCony+fooSuffix, pms[3].GetResource())
+		require.Equal(t, "burn", pms[3].GetAction())
 	}
 
 	// Query permissions for bar account
@@ -2387,12 +2409,12 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
 	}
 
-	// Burn from bar without permissions
+	// Burn from bar without permissions; burn failure
 	{
 		f.TxTokenBurn(keyBar, burnAmountStr+symbolConyFoo, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(mintAmount-burnAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
 	}
 
 	f.Cleanup()
@@ -2531,6 +2553,13 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[1].GetDenom())
 		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[2].GetSymbol())
 		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[2].GetDenom())
+	}
+	{
+		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0001", "-y")
+		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0002", "-y")
+		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0003", "-y")
+		collection := f.QueryCollection(symbolBrown + fooSuffix)
+		require.Equal(t, 0, len(collection.Tokens))
 	}
 
 	f.Cleanup()

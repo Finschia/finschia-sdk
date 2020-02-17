@@ -68,3 +68,43 @@ func TestQuerierRouteNotFound(t *testing.T) {
 	_, err := querier(input.Ctx, []string{"notfound"}, req)
 	require.Error(t, err)
 }
+
+func TestBulkBalances(t *testing.T) {
+	input := SetupTestInput()
+	req := abci.RequestQuery{
+		Path: fmt.Sprintf("custom/bank/%s", QueryBulkBalances),
+		Data: []byte{},
+	}
+
+	querier := NewQuerier(input.K)
+
+	res, err := querier(input.Ctx, []string{"bulk_balances"}, req)
+	require.NotNil(t, err)
+	require.Nil(t, res)
+
+	addrs := make([]sdk.AccAddress, 0, 101)
+	_, _, addr := authtypes.KeyTestPubAddr()
+	addrs = append(addrs, addr)
+	req.Data = input.Cdc.MustMarshalJSON(types.NewQueryBulkBalanceParams(addrs))
+	res, err = querier(input.Ctx, []string{"bulk_balances"}, req)
+	require.Nil(t, err)
+	require.NotNil(t, res)
+
+	for i := 0; i < 99; i++ {
+		_, _, addr = authtypes.KeyTestPubAddr()
+		addrs = append(addrs, addr)
+	}
+
+	req.Data = input.Cdc.MustMarshalJSON(types.NewQueryBulkBalanceParams(addrs))
+	res, err = querier(input.Ctx, []string{"bulk_balances"}, req)
+	require.Nil(t, err)
+	require.NotNil(t, res)
+
+	_, _, addr = authtypes.KeyTestPubAddr()
+	addrs = append(addrs, addr)
+
+	req.Data = input.Cdc.MustMarshalJSON(types.NewQueryBulkBalanceParams(addrs))
+	res, err = querier(input.Ctx, []string{"bulk_balances"}, req)
+	require.EqualError(t, err, types.ErrRequestGetsLimit(types.DefaultCodespace, types.RequestGetsLimit).Error())
+	require.Nil(t, res)
+}

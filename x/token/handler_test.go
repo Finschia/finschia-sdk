@@ -70,7 +70,7 @@ func TestHandlerModifyTokenURI(t *testing.T) {
 	}
 	t.Log("modify token for FT")
 	{
-		require.True(t, h.handleNewMsg(types.NewMsgIssue(name, symbol1, tokenuri, addr1, amount, decimals, true)).Code.IsOK())
+		require.True(t, h.handleNewMsg(types.NewMsgIssue(addr1, name, symbol1, tokenuri, amount, decimals, true)).Code.IsOK())
 		res := h.handleNewMsg(types.NewMsgModifyTokenURI(addr1, symbol1, modifyTokenURI, ""))
 		require.True(t, res.Code.IsOK())
 		require.Equal(t, types.EventTypeModifyTokenURI, res.Events[0].Type)
@@ -85,12 +85,12 @@ func TestHandlerIssueFT(t *testing.T) {
 	h := NewHandler(keeper)
 
 	{
-		msg := types.NewMsgIssue(name, symbol1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssue(addr1, name, symbol1, tokenuri, amount, decimals, true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssue(name, symbol1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssue(addr1, name, symbol1, tokenuri, amount, decimals, true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -105,23 +105,23 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 	h := NewHandler(keeper)
 
 	{
-		msg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		msg := types.NewMsgCreateCollection(addr1, name, symbol1)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 
 	{
-		msg := types.NewMsgIssueCFT(name, symbol1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssueCFT(addr1, name, symbol1, tokenuri, amount, decimals, true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(name, symbol1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssueCFT(addr1, name, symbol1, tokenuri, amount, decimals, true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(name, symbol1, tokenuri, addr2, amount, decimals, true)
+		msg := types.NewMsgIssueCFT(addr2, name, symbol1, tokenuri, amount, decimals, true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -139,7 +139,7 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(name, symbol1, tokenuri, addr2, amount, decimals, true)
+		msg := types.NewMsgIssueCFT(addr2, name, symbol1, tokenuri, amount, decimals, true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -149,7 +149,7 @@ func TestHandlerIssueFTCollection(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(name, symbol1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssueCFT(addr1, name, symbol1, tokenuri, amount, decimals, true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -164,7 +164,7 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 	h := NewHandler(keeper)
 
 	{
-		msg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		msg := types.NewMsgCreateCollection(addr1, name, symbol1)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -172,23 +172,23 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 	{
 		//Expect token type is 1001
 		{
-			msg := types.NewMsgIssueCNFT(symbol1, addr1)
+			msg := types.NewMsgIssueCNFT(addr1, symbol1)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		//Expect token type is 1002
 		{
-			msg := types.NewMsgIssueCNFT(symbol1, addr1)
+			msg := types.NewMsgIssueCNFT(addr1, symbol1)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+			msg := types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr2)
+			msg := types.NewMsgMintCNFT(addr1, addr2, name, symbol1, tokenuri, "1001")
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
@@ -203,7 +203,7 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr2, addr2)
+				msg := types.NewMsgMintCNFT(addr2, addr2, name, symbol1, tokenuri, "1001")
 				res := h(ctx, msg)
 				require.True(t, res.Code.IsOK())
 			}
@@ -213,7 +213,7 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+				msg := types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
 				res := h(ctx, msg)
 				require.False(t, res.Code.IsOK())
 				require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -235,12 +235,12 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 
 	//Expect token type is 1003
 	{
-		msg := types.NewMsgIssueCNFT(symbol1, addr2)
+		msg := types.NewMsgIssueCNFT(addr2, symbol1)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1003", addr2, addr2)
+		msg := types.NewMsgMintCNFT(addr2, addr2, name, symbol1, tokenuri, "1003")
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -250,7 +250,7 @@ func TestHandlerIssueNFTCollection(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCNFT(symbol1, addr1)
+		msg := types.NewMsgIssueCNFT(addr1, symbol1)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -266,7 +266,7 @@ func TestEvents(t *testing.T) {
 
 	{
 		symbol := "t01" + suffixAddr1
-		msg := types.NewMsgIssue(name, symbol, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssue(addr1, name, symbol, tokenuri, amount, decimals, true)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -274,9 +274,6 @@ func TestEvents(t *testing.T) {
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),
@@ -287,6 +284,12 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("issue", sdk.NewAttribute("amount", amount.String())),
 			sdk.NewEvent("issue", sdk.NewAttribute("mintable", "true")),
 			sdk.NewEvent("issue", sdk.NewAttribute("decimals", decimals.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -323,7 +326,7 @@ func TestEvents(t *testing.T) {
 
 	{
 		symbol := "t03" + suffixAddr1
-		msg := types.NewMsgCreateCollection(name, symbol, addr1)
+		msg := types.NewMsgCreateCollection(addr1, name, symbol)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -344,7 +347,7 @@ func TestEvents(t *testing.T) {
 	{
 		symbol := "t03" + suffixAddr1
 		symbolWithID := symbol + "00010000"
-		msg := types.NewMsgIssueCFT(name, symbol, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssueCFT(addr1, name, symbol, tokenuri, amount, decimals, true)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -352,9 +355,6 @@ func TestEvents(t *testing.T) {
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
 			sdk.NewEvent("issue_cft", sdk.NewAttribute("name", name)),
 			sdk.NewEvent("issue_cft", sdk.NewAttribute("symbol", symbol)),
 			sdk.NewEvent("issue_cft", sdk.NewAttribute("token_id", "00010000")),
@@ -366,6 +366,12 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -380,9 +386,9 @@ func TestEvents(t *testing.T) {
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("mint_cft", sdk.NewAttribute("amount", amount.String()+symbolWithID)),
 			sdk.NewEvent("mint_cft", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("mint_cft", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("mint_cft", sdk.NewAttribute("amount", amount.String()+symbolWithID)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -397,15 +403,15 @@ func TestEvents(t *testing.T) {
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("burn_cft", sdk.NewAttribute("amount", amount.String()+symbolWithID)),
 			sdk.NewEvent("burn_cft", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("burn_cft", sdk.NewAttribute("amount", amount.String()+symbolWithID)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
 
 	{
 		symbol := "t03" + suffixAddr1
-		msg := types.NewMsgIssueCNFT(symbol, addr1)
+		msg := types.NewMsgIssueCNFT(addr1, symbol)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -417,6 +423,9 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol+"1001")),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.MintAction)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbol+"1001")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.BurnAction)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -424,7 +433,7 @@ func TestEvents(t *testing.T) {
 	{
 		symbol := "t03" + suffixAddr1
 		symbolWithID := symbol + "10010001"
-		msg := types.NewMsgMintCNFT(name, symbol, tokenuri, "1001", addr1, addr1)
+		msg := types.NewMsgMintCNFT(addr1, addr1, name, symbol, tokenuri, "1001")
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -531,10 +540,10 @@ func TestHandleTransferCFT(t *testing.T) {
 	h := NewHandler(keeper)
 
 	{
-		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		createMsg := types.NewMsgCreateCollection(addr1, name, symbol1)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueCFT(name, symbol1, tokenuri, addr1, amount, decimals, true)
+		msg := types.NewMsgIssueCFT(addr1, name, symbol1, tokenuri, amount, decimals, true)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -554,6 +563,40 @@ func TestHandleTransferCFT(t *testing.T) {
 	verifyEventFunc(t, e, res.Events)
 }
 
+func TestHandleTransferCFTFrom(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper := input.Ctx, input.Keeper
+
+	h := NewHandler(keeper)
+
+	{
+		createMsg := types.NewMsgCreateCollection(addr1, name, symbol1)
+		res := h(ctx, createMsg)
+		require.True(t, res.Code.IsOK())
+		msg := types.NewMsgIssueCFT(addr1, name, symbol1, tokenuri, amount, decimals, true)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgApproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferCFTFrom(addr2, addr1, addr2, symbol1, "00010000", amount)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("to", addr2.String())),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("token_id", "00010000")),
+		sdk.NewEvent("transfer_cft_from", sdk.NewAttribute("amount", amount.String())),
+	}
+	verifyEventFunc(t, e, res.Events)
+}
+
 func TestHandleTransferCNFT(t *testing.T) {
 	input := testCommon.SetupTestInput(t)
 	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
@@ -563,13 +606,13 @@ func TestHandleTransferCNFT(t *testing.T) {
 	bk.SetSendEnabled(ctx, true)
 
 	{
-		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		createMsg := types.NewMsgCreateCollection(addr1, name, symbol1)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueCNFT(symbol1, addr1)
+		msg := types.NewMsgIssueCNFT(addr1, symbol1)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+		msg2 := types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 	}
@@ -588,6 +631,44 @@ func TestHandleTransferCNFT(t *testing.T) {
 	verifyEventFunc(t, e, res.Events)
 }
 
+func TestHandleTransferCNFTFrom(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
+
+	h := NewHandler(keeper)
+
+	bk.SetSendEnabled(ctx, true)
+
+	{
+		createMsg := types.NewMsgCreateCollection(addr1, name, symbol1)
+		res := h(ctx, createMsg)
+		require.True(t, res.Code.IsOK())
+		msg := types.NewMsgIssueCNFT(addr1, symbol1)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+		msg3 := types.NewMsgApproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferCNFTFrom(addr2, addr1, addr2, symbol1, "10010001")
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("to", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("token_id", "10010001")),
+	}
+	verifyEventFunc(t, e, res.Events)
+}
+
 func TestHandleAttachDetach(t *testing.T) {
 	input := testCommon.SetupTestInput(t)
 	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
@@ -597,43 +678,257 @@ func TestHandleAttachDetach(t *testing.T) {
 	bk.SetSendEnabled(ctx, true)
 
 	{
-		createMsg := types.NewMsgCreateCollection(name, symbol1, addr1)
+		createMsg := types.NewMsgCreateCollection(addr1, name, symbol1)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueCNFT(symbol1, addr1)
+		msg := types.NewMsgIssueCNFT(addr1, symbol1)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+		msg2 := types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintCNFT(name, symbol1, tokenuri, "1001", addr1, addr1)
+		msg2 = types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 	}
 
-	msg := types.NewMsgAttach(addr1, symbol1, "10010001", "10010002")
+	{
+		msg := types.NewMsgAttach(addr1, symbol1, "10010001", "10010002")
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("attach", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("attach", sdk.NewAttribute("symbol", symbol1)),
+			sdk.NewEvent("attach", sdk.NewAttribute("to_token_id", "10010001")),
+			sdk.NewEvent("attach", sdk.NewAttribute("token_id", "10010002")),
+		}
+		verifyEventFunc(t, e, res.Events)
+	}
+
+	{
+		msg2 := types.NewMsgDetach(addr1, addr1, symbol1, "10010002")
+		res2 := h(ctx, msg2)
+		require.True(t, res2.Code.IsOK())
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("detach", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("detach", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("detach", sdk.NewAttribute("symbol", symbol1)),
+			sdk.NewEvent("detach", sdk.NewAttribute("token_id", "10010002")),
+		}
+		verifyEventFunc(t, e, res2.Events)
+	}
+
+	//Attach again
+	{
+		msg := types.NewMsgAttach(addr1, symbol1, "10010001", "10010002")
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("attach", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("attach", sdk.NewAttribute("symbol", symbol1)),
+			sdk.NewEvent("attach", sdk.NewAttribute("to_token_id", "10010001")),
+			sdk.NewEvent("attach", sdk.NewAttribute("token_id", "10010002")),
+		}
+		verifyEventFunc(t, e, res.Events)
+	}
+	//Burn token
+	{
+		msg := types.NewMsgBurnCNFT(addr1, symbol1, "10010001")
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("burn_cnft", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("burn_cnft", sdk.NewAttribute("symbol", symbol1)),
+			sdk.NewEvent("burn_cnft", sdk.NewAttribute("token_id", "10010001")),
+		}
+		verifyEventFunc(t, e, res.Events)
+	}
+}
+
+func TestHandleAttachFromDetachFrom(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper := input.Ctx, input.Keeper
+
+	h := NewHandler(keeper)
+
+	{
+		createMsg := types.NewMsgCreateCollection(addr1, name, symbol1)
+		res := h(ctx, createMsg)
+		require.True(t, res.Code.IsOK())
+		msg := types.NewMsgIssueCNFT(addr1, symbol1)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+		msg2 = types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+		msg3 := types.NewMsgApproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgAttachFrom(addr2, addr1, symbol1, "10010001", "10010002")
 	res := h(ctx, msg)
 	require.True(t, res.Code.IsOK())
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
-		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-		sdk.NewEvent("attach_cnft", sdk.NewAttribute("from", addr1.String())),
-		sdk.NewEvent("attach_cnft", sdk.NewAttribute("symbol", symbol1)),
-		sdk.NewEvent("attach_cnft", sdk.NewAttribute("to_token_id", "10010001")),
-		sdk.NewEvent("attach_cnft", sdk.NewAttribute("token_id", "10010002")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("to_token_id", "10010001")),
+		sdk.NewEvent("attach_from", sdk.NewAttribute("token_id", "10010002")),
 	}
 	verifyEventFunc(t, e, res.Events)
 
-	msg2 := types.NewMsgDetach(addr1, addr1, symbol1, "10010002")
+	msg2 := types.NewMsgDetachFrom(addr2, addr1, addr1, symbol1, "10010002")
 	res2 := h(ctx, msg2)
 	require.True(t, res2.Code.IsOK())
 	e = sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
-		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-		sdk.NewEvent("detach_cnft", sdk.NewAttribute("from", addr1.String())),
-		sdk.NewEvent("detach_cnft", sdk.NewAttribute("to", addr1.String())),
-		sdk.NewEvent("detach_cnft", sdk.NewAttribute("symbol", symbol1)),
-		sdk.NewEvent("detach_cnft", sdk.NewAttribute("token_id", "10010001")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("to", addr1.String())),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("token_id", "10010002")),
 	}
 	verifyEventFunc(t, e, res2.Events)
+}
+
+func TestHandleApproveDisapprove(t *testing.T) {
+	input := testCommon.SetupTestInput(t)
+	ctx, keeper, bk := input.Ctx, input.Keeper, input.Bk
+
+	h := NewHandler(keeper)
+
+	bk.SetSendEnabled(ctx, true)
+
+	{
+		createMsg := types.NewMsgCreateCollection(addr1, name, symbol1)
+		res := h(ctx, createMsg)
+		require.True(t, res.Code.IsOK())
+		msg := types.NewMsgIssueCNFT(addr1, symbol1)
+		res = h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+		msg2 := types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+		msg2 = types.NewMsgMintCNFT(addr1, addr1, name, symbol1, tokenuri, "1001")
+		res = h(ctx, msg2)
+		require.True(t, res.Code.IsOK())
+		msg3 := types.NewMsgIssueCFT(addr1, name, symbol1, "", sdk.NewInt(10), sdk.NewInt(1), true)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+		msg4 := types.NewMsgMintCFT(addr1, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol1, "00010000", sdk.NewInt(10))))
+		res = h(ctx, msg4)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg := types.NewMsgTransferCNFTFrom(addr2, addr1, addr2, symbol1, "10010001")
+	res := h(ctx, msg)
+	require.False(t, res.Code.IsOK())
+
+	{
+		msg3 := types.NewMsgApproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg = types.NewMsgTransferCNFTFrom(addr2, addr1, addr2, symbol1, "10010001")
+	res = h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("to", addr2.String())),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("transfer_cnft_from", sdk.NewAttribute("token_id", "10010001")),
+	}
+	verifyEventFunc(t, e, res.Events)
+
+	msg2 := types.NewMsgBurnCNFTFrom(addr2, addr1, symbol1, "10010002")
+	res = h(ctx, msg2)
+	require.False(t, res.Code.IsOK()) // addr2 does not have the burn permission
+
+	{
+		permission := types.Permission{
+			Action:   "burn",
+			Resource: symbol1 + "1001",
+		}
+		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg2 = types.NewMsgBurnCNFTFrom(addr2, addr1, symbol1, "10010002")
+	res = h(ctx, msg2)
+	require.True(t, res.Code.IsOK()) // addr2 does not have the burn permission
+
+	e = sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("burn_cnft_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("burn_cnft_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("burn_cnft_from", sdk.NewAttribute("symbol", symbol1)),
+		sdk.NewEvent("burn_cnft_from", sdk.NewAttribute("token_id", "10010002")),
+	}
+	verifyEventFunc(t, e, res.Events)
+
+	msg3 := types.NewMsgBurnCFTFrom(addr2, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol1, "00010000", sdk.NewInt(1))))
+	res = h(ctx, msg3)
+	require.False(t, res.Code.IsOK())
+
+	{
+		permission := types.Permission{
+			Action:   "burn",
+			Resource: symbol1 + "00010000",
+		}
+		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg3 = types.NewMsgBurnCFTFrom(addr2, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol1, "00010000", sdk.NewInt(1))))
+	res = h(ctx, msg3)
+	require.True(t, res.Code.IsOK())
+	e = sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
+		sdk.NewEvent("burn_cft_from", sdk.NewAttribute("proxy", addr2.String())),
+		sdk.NewEvent("burn_cft_from", sdk.NewAttribute("from", addr1.String())),
+		sdk.NewEvent("burn_cft_from", sdk.NewAttribute("amount", linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol1, "00010000", sdk.NewInt(1))).ToCoins().String())),
+	}
+	verifyEventFunc(t, e, res.Events)
+
+	{
+		msg3 := types.NewMsgDisapproveCollection(addr1, addr2, symbol1)
+		res = h(ctx, msg3)
+		require.True(t, res.Code.IsOK())
+	}
+
+	msg = types.NewMsgTransferCNFTFrom(addr2, addr1, addr2, symbol1, "10010001")
+	res = h(ctx, msg)
+	require.False(t, res.Code.IsOK())
+
+	msg2 = types.NewMsgBurnCNFTFrom(addr2, addr1, symbol1, "10010001")
+	res = h(ctx, msg2)
+	require.False(t, res.Code.IsOK())
+
+	msg3 = types.NewMsgBurnCFTFrom(addr2, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol1, "00010000", sdk.NewInt(1))))
+	res = h(ctx, msg3)
+	require.False(t, res.Code.IsOK())
 }

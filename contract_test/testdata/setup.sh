@@ -30,13 +30,17 @@ TMP_TX_RESULT='/tmp/contract_test/tmp_result.txt'
 cp client/lcd/swagger-ui/swagger.yaml ${SWAGGER}
 cp ./contract_test/testdata/all_msg_tx.json ${ALL_MSG_TX}
 
-set_test_address operator ${REPLACE_OPERATOR_ADDR}
-set_test_address allocator ${REPLACE_ALLOCATOR_ADDR}
-set_test_address issuer ${REPLACE_ISSUER_ADDR}
-set_test_address returner ${REPLACE_RETURNER_ADDR}
 create_only_address somebody ${REPLACE_SOMEBODY_ADDR}
-set_test_address proxy ${REPLACE_PROXY_ADDR}
-set_test_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
+
+# safetybox module not in use as of 2019/2/14
+#set_test_address operator ${REPLACE_OPERATOR_ADDR}
+set_test_address allocator ${REPLACE_ALLOCATOR_ADDR}
+#set_test_address issuer ${REPLACE_ISSUER_ADDR}
+#set_test_address returner ${REPLACE_RETURNER_ADDR}
+
+# proxy module not in use as of 2019/2/10
+#set_test_address proxy ${REPLACE_PROXY_ADDR}
+#set_test_address on_behalf_of ${REPLACE_ON_BEHALF_OF_ADDR}
 
 ./contract_test/testdata/replace_symbols.sh
 
@@ -45,12 +49,17 @@ sed -i.bak -e "s%${REPLACE_MSG_EXAMPLES}%$(yq read -j ${SWAGGER} components.exam
 
 # sign transaction that has all messages
 echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${ALL_MSG_TX} --from jack --chain-id ${CHAIN_ID} --output-document ${SIGNED_TX}
-echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from operator --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+
+# safetybox module not in use as of 2019/2/14
+#echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from operator --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
 echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from allocator --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
-echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from issuer --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
-echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from returner --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
-echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from on_behalf_of --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
-echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from proxy --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+#echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from issuer --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+#echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from returner --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+
+# proxy module not in use as of 2019/2/10
+#echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from on_behalf_of --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+#echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from proxy --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+
 echo "Request: $(cat ${SIGNED_TX})"
 
 # broadcast transaction that has all messages

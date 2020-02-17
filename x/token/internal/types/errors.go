@@ -28,6 +28,7 @@ const (
 	CodeCollectionTokenTypeExist    sdk.CodeType = 302
 	CodeCollectionTokenTypeNotExist sdk.CodeType = 303
 	CodeCollectionTokenTypeFull     sdk.CodeType = 304
+	CodeCollectionTokenIndexFull    sdk.CodeType = 305
 
 	//Permission
 	CodeTokenPermission sdk.CodeType = 400
@@ -37,10 +38,14 @@ const (
 	CodeTokenNotAChild                 sdk.CodeType = 501
 	CodeTokenNotOwnedBy                sdk.CodeType = 502
 	CodeTokenChildNotTransferable      sdk.CodeType = 503
-	CodeTokenNotNF                     sdk.CodeType = 504
-	CodeTokenNotIDNF                   sdk.CodeType = 505
-	CodeTokenCannotAttachToItself      sdk.CodeType = 506
-	CodeTokenCannotAttachToADescendant sdk.CodeType = 507
+	CodeTokenNotIDNF                   sdk.CodeType = 504
+	CodeTokenCannotAttachToItself      sdk.CodeType = 505
+	CodeTokenCannotAttachToADescendant sdk.CodeType = 506
+
+	// Proxy
+	CodeTokenApproverProxySame sdk.CodeType = 601
+	CodeTokenNotApproved       sdk.CodeType = 602
+	CodeTokenAlreadyApproved   sdk.CodeType = 603
 )
 
 func ErrTokenExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
@@ -87,7 +92,7 @@ func ErrCollectionNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error
 	return sdk.NewError(codespace, CodeCollectionNotExist, "collection [%s] does not exists", symbol)
 }
 
-func ErrTokenPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission PermissionI) sdk.Error {
+func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission fmt.Stringer) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
 }
 
@@ -111,6 +116,10 @@ func ErrCollectionTokenTypeFull(codespace sdk.CodespaceType, symbol string) sdk.
 	return sdk.NewError(codespace, CodeCollectionTokenTypeFull, "all token type for symbol[%s] are occupied", symbol)
 }
 
+func ErrCollectionTokenIndexFull(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenIndexFull, "all token index for symbol[%s] token-type[%s] are occupied", symbol, tokenType)
+}
+
 func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenAlreadyAChild, "token [%s] is already a child of some other", denom)
 }
@@ -121,10 +130,6 @@ func ErrTokenNotAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
 
 func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner fmt.Stringer) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is being not owned by [%s]", denom, owner.String())
-}
-
-func ErrTokenNotNFT(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotNF, "token [%s] is not a NFT", denom)
 }
 
 func ErrTokenNotCNFT(codespace sdk.CodespaceType, denom string) sdk.Error {
@@ -141,4 +146,16 @@ func ErrCannotAttachToItself(codespace sdk.CodespaceType, denom string) sdk.Erro
 
 func ErrCannotAttachToADescendant(codespace sdk.CodespaceType, tokenDenom string, descendantDenom string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenCannotAttachToADescendant, "cannot attach token [%s] to a descendant [%s]", tokenDenom, descendantDenom)
+}
+
+func ErrApproverProxySame(codespace sdk.CodespaceType, approver string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenApproverProxySame, "approver[%s] is same with proxy", approver)
+}
+
+func ErrCollectionNotApproved(codespace sdk.CodespaceType, proxy string, approver string, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotApproved, "proxy[%s] is not approved by %s on the collection[%s]", proxy, approver, symbol)
+}
+
+func ErrCollectionAlreadyApproved(codespace sdk.CodespaceType, proxy string, approver string, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenAlreadyApproved, "proxy[%s] is already approved by %s on the collection[%s]", proxy, approver, symbol)
 }

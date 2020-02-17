@@ -5,7 +5,7 @@
 
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 BASE_VERSION := $(shell git describe --tags $(shell git rev-list --tags --max-count=1))
-BASE_VERSION := $(if $(BASE_VERSION), $(BASE_VERSION), v0.0.0)
+BASE_VERSION := $(if $(BASE_VERSION),$(BASE_VERSION),v0.0.0)
 VERSION := $(BASE_VERSION)-$(shell basename $(shell git symbolic-ref -q HEAD --short))+$(shell date '+%Y%m%d%H%M%S')
 VERSION := $(strip $(VERSION))
 COMMIT := $(shell git log -1 --format='%H')
@@ -55,7 +55,7 @@ lint: golangci-lint
 
 all: install lint test-unit
 
-build: go.sum
+build: go.sum build-swagger-docs
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
 	go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
 
@@ -65,13 +65,12 @@ build-contract-test-hook:
 build-docker:
 	docker build -t line/link .
 
-build-swagger-docs: statik versioning-swagger-docs
-	statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
+build-swagger-docs: statik
+	@perl -pi -e 's/LINK_BUILD_VERSION/$(BASE_VERSION)/' client/lcd/swagger-ui/swagger.yaml
+	@statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
+	@perl -pi -e 's/$(BASE_VERSION)/LINK_BUILD_VERSION/' client/lcd/swagger-ui/swagger.yaml
 
-versioning-swagger-docs:
-	perl -pi -e 's/version: "v[^\s]+"/version: "$(strip $(BASE_VERSION))"/' client/lcd/swagger-ui/swagger.yaml
-
-install: go.sum
+install: go.sum build-swagger-docs
 	go install $(BUILD_FLAGS) ./cmd/linkd
 	go install $(BUILD_FLAGS) ./cmd/linkcli
 
@@ -153,7 +152,7 @@ testnet-test:
 run-swagger-server:
 	linkcli rest-server --trust-node=true
 
-setup-contract-test-data: build build-swagger-docs build-contract-test-hook yq
+setup-contract-test-data: build build-contract-test-hook yq
 	echo 'Prepare data for the contract tests' ; \
 	./contract_test/testdata/prepare_dredd.sh ; \
 	./contract_test/testdata/prepare_chain_state.sh
