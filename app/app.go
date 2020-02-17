@@ -7,7 +7,6 @@ import (
 	"github.com/line/link/x/account"
 	"github.com/line/link/x/bank"
 	"github.com/line/link/x/iam"
-	"github.com/line/link/x/safetybox"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -53,7 +52,6 @@ var (
 		supply.AppModuleBasic{},
 		token.AppModuleBasic{},
 		iam.AppModuleBasic{},
-		safetybox.AppModuleBasic{},
 		account.AppModuleBasic{},
 	)
 
@@ -88,15 +86,14 @@ type LinkApp struct {
 	tkeys map[string]*sdk.TransientStoreKey
 
 	// keepers
-	accountKeeper   auth.AccountKeeper
-	cbankKeeper     cbank.Keeper
-	bankKeeper      bank.Keeper
-	supplyKeeper    supply.Keeper
-	stakingKeeper   staking.Keeper
-	paramsKeeper    params.Keeper
-	tokenKeeper     token.Keeper
-	iamKeeper       iam.Keeper
-	safetyboxKeeper safetybox.Keeper
+	accountKeeper auth.AccountKeeper
+	cbankKeeper   cbank.Keeper
+	bankKeeper    bank.Keeper
+	supplyKeeper  supply.Keeper
+	stakingKeeper staking.Keeper
+	paramsKeeper  params.Keeper
+	tokenKeeper   token.Keeper
+	iamKeeper     iam.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -119,7 +116,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		params.StoreKey,
 		token.StoreKey,
 		iam.StoreKey,
-		safetybox.StoreKey,
 		bank.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
@@ -150,13 +146,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	)
 
 	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, app.cbankKeeper, keys[token.StoreKey])
-	safetyBoxKeeper := safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.cbankKeeper, app.accountKeeper, keys[safetybox.StoreKey])
-
-	// register the safety box hooks
-	// NOTE: safetyBoxKeeper above is passed by reference, so that it will contain these hooks
-	app.safetyboxKeeper = *safetyBoxKeeper.SetHooks(
-		safetybox.NewMultiSafetyBoxHooks(app.tokenKeeper.Hooks(), app.bankKeeper.Hooks()),
-	)
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -168,7 +157,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		staking.NewAppModule(app.stakingKeeper, nil, app.accountKeeper, app.supplyKeeper),
 		token.NewAppModule(app.tokenKeeper),
-		safetybox.NewAppModule(app.safetyboxKeeper),
 		account.NewAppModule(app.accountKeeper),
 	)
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
@@ -183,7 +171,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		bank.ModuleName,
 		genutil.ModuleName,
 		token.ModuleName,
-		safetybox.ModuleName,
 		account.ModuleName,
 	)
 
