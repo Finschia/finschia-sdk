@@ -1610,7 +1610,6 @@ components:
               - $ref: '#/components/schemas/MsgCreateAccount'
               - $ref: '#/components/schemas/MsgTransferFT'
               - $ref: '#/components/schemas/MsgTransferCFT'
-              - $ref: '#/components/schemas/MsgTransferNFT'
               - $ref: '#/components/schemas/MsgTransferCNFT'
               - $ref: '#/components/schemas/MsgAttach'
               - $ref: '#/components/schemas/MsgDetach'
