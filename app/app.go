@@ -7,6 +7,7 @@ import (
 	"github.com/line/link/x/account"
 	"github.com/line/link/x/bank"
 	"github.com/line/link/x/iam"
+	"github.com/line/link/x/token"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	cmn "github.com/tendermint/tendermint/libs/common"
@@ -27,7 +28,7 @@ import (
 
 	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/line/link/version"
-	"github.com/line/link/x/token"
+	"github.com/line/link/x/collection"
 )
 
 const appName = "LinkApp"
@@ -51,6 +52,7 @@ var (
 		params.AppModuleBasic{},
 		supply.AppModuleBasic{},
 		token.AppModuleBasic{},
+		collection.AppModuleBasic{},
 		iam.AppModuleBasic{},
 		account.AppModuleBasic{},
 	)
@@ -61,6 +63,7 @@ var (
 		staking.BondedPoolName:    {supply.Burner, supply.Staking},
 		staking.NotBondedPoolName: {supply.Burner, supply.Staking},
 		token.ModuleName:          {supply.Minter, supply.Burner},
+		collection.ModuleName:     {supply.Minter, supply.Burner},
 	}
 )
 
@@ -86,14 +89,15 @@ type LinkApp struct {
 	tkeys map[string]*sdk.TransientStoreKey
 
 	// keepers
-	accountKeeper auth.AccountKeeper
-	cbankKeeper   cbank.Keeper
-	bankKeeper    bank.Keeper
-	supplyKeeper  supply.Keeper
-	stakingKeeper staking.Keeper
-	paramsKeeper  params.Keeper
-	tokenKeeper   token.Keeper
-	iamKeeper     iam.Keeper
+	accountKeeper    auth.AccountKeeper
+	cbankKeeper      cbank.Keeper
+	bankKeeper       bank.Keeper
+	supplyKeeper     supply.Keeper
+	stakingKeeper    staking.Keeper
+	paramsKeeper     params.Keeper
+	tokenKeeper      token.Keeper
+	collectionKeeper collection.Keeper
+	iamKeeper        iam.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -115,6 +119,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.StoreKey,
 		params.StoreKey,
 		token.StoreKey,
+		collection.StoreKey,
 		iam.StoreKey,
 		bank.StoreKey,
 	)
@@ -145,7 +150,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
 
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.accountKeeper, app.cbankKeeper, keys[token.StoreKey])
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.cbankKeeper, keys[token.StoreKey])
+	app.collectionKeeper = collection.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(collection.ModuleName), app.cbankKeeper, keys[collection.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
@@ -157,6 +163,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		staking.NewAppModule(app.stakingKeeper, nil, app.accountKeeper, app.supplyKeeper),
 		token.NewAppModule(app.tokenKeeper),
+		collection.NewAppModule(app.collectionKeeper),
 		account.NewAppModule(app.accountKeeper),
 	)
 	app.mm.SetOrderEndBlockers(staking.ModuleName)
@@ -171,6 +178,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		bank.ModuleName,
 		genutil.ModuleName,
 		token.ModuleName,
+		collection.ModuleName,
 		account.ModuleName,
 	)
 

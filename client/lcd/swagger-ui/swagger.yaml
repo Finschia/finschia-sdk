@@ -710,7 +710,7 @@ paths:
                         - $ref: '#/components/schemas/TokenNFT'
         "500":
           description: Internal Server Error
-  /token/collections/{symbol}/tokens/{token_id}/supply:
+  /collection/collections/{symbol}/tokens/{token_id}/supply:
     get:
       tags:
         - Token
@@ -753,7 +753,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/collections/{symbol}/tokens/{token_type}/count:
+  /collection/collections/{symbol}/tokens/{token_type}/count:
     get:
       tags:
         - Token
@@ -796,7 +796,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/collections/{symbol}/tokens/{token_id}:
+  /collection/collections/{symbol}/tokens/{token_id}:
     get:
       tags:
         - Token
@@ -840,7 +840,7 @@ paths:
                       - $ref: '#/components/schemas/TokenCNFT'
         "500":
           description: Internal Server Error
-  /token/collections/{symbol}/tokens:
+  /collection/collections/{symbol}/tokens:
     get:
       tags:
         - Token
@@ -879,7 +879,7 @@ paths:
                         - $ref: '#/components/schemas/TokenCNFT'
         "500":
           description: Internal Server Error
-  /token/collections/{symbol}:
+  /collection/collections/{symbol}:
     get:
       tags:
         - Token
@@ -914,7 +914,7 @@ paths:
                     $ref: '#/components/schemas/Collection'
         "500":
           description: Internal Server Error
-  /token/collections:
+  /collection/collections:
     get:
       tags:
         - Token
@@ -944,7 +944,7 @@ paths:
                       $ref: '#/components/schemas/Collection'
         "500":
           description: Internal Server Error
-  /token/parent/{symbol}/{token_id}:
+  /collection/parent/{symbol}/{token_id}:
     get:
       tags:
         - Token
@@ -979,7 +979,7 @@ paths:
                     $ref: '#/components/schemas/TokenCNFT2'
         "500":
           description: Internal Server Error
-  /token/root/{symbol}/{token_id}:
+  /collection/root/{symbol}/{token_id}:
     get:
       tags:
         - Token
@@ -1014,7 +1014,7 @@ paths:
                     $ref: '#/components/schemas/TokenCNFT2'
         "500":
           description: Internal Server Error
-  /token/children/{symbol}/{token_id}:
+  /collection/children/{symbol}/{token_id}:
     get:
       tags:
         - Token
@@ -1051,7 +1051,7 @@ paths:
                       $ref: '#/components/schemas/TokenCNFT3'
         "500":
           description: Internal Server Error
-  /token/approved/{proxy}/{approver}/{symbol}:
+  /collection/approved/{proxy}/{approver}/{symbol}:
     get:
       tags:
         - Token
@@ -1595,24 +1595,33 @@ components:
             # Because Dredd doesn't support anyOf, You have to add new Msg example to MsgExamples for dredd test
             anyOf:
               - $ref: '#/components/schemas/MsgSend'
-              - $ref: '#/components/schemas/MsgCreateCollection'
+              - $ref: '#/components/schemas/MsgCreate'
               - $ref: '#/components/schemas/MsgIssue'
               - $ref: '#/components/schemas/MsgModifyTokenURI'
+              - $ref: '#/components/schemas/MsgModifyTokenURICollection'
               - $ref: '#/components/schemas/MsgIssueCFT'
               - $ref: '#/components/schemas/MsgIssueCNFT'
               - $ref: '#/components/schemas/MsgMint'
               - $ref: '#/components/schemas/MsgBurn'
               - $ref: '#/components/schemas/MsgMintCFT'
               - $ref: '#/components/schemas/MsgBurnCFT'
+              - $ref: '#/components/schemas/MsgBurnCFTFrom'
               - $ref: '#/components/schemas/MsgMintCNFT'
               - $ref: '#/components/schemas/MsgBurnCNFT'
+              - $ref: '#/components/schemas/MsgBurnCNFTFrom'
               - $ref: '#/components/schemas/MsgCreateValidator'
               - $ref: '#/components/schemas/MsgCreateAccount'
-              - $ref: '#/components/schemas/MsgTransferFT'
+              - $ref: '#/components/schemas/MsgTransfer'
               - $ref: '#/components/schemas/MsgTransferCFT'
+              - $ref: '#/components/schemas/MsgTransferCFTFrom'
               - $ref: '#/components/schemas/MsgTransferCNFT'
+              - $ref: '#/components/schemas/MsgTransferCNFTFrom'
               - $ref: '#/components/schemas/MsgAttach'
+              - $ref: '#/components/schemas/MsgAttachFrom'
               - $ref: '#/components/schemas/MsgDetach'
+              - $ref: '#/components/schemas/MsgDetachFrom'
+              - $ref: '#/components/schemas/MsgApprove'
+              - $ref: '#/components/schemas/MsgDisapprove'
           example:
             $ref: '#/components/examples/MsgExamples'
         fee:
@@ -2013,270 +2022,6 @@ components:
               $ref: '#/components/schemas/Address'
             amount:
               $ref: '#/components/schemas/Coin'
-    MsgCreateCollection:
-      type: object
-      description: msg of collection creation
-      properties:
-        type:
-          type: string
-          example: "link/MsgCreateCollection"
-        value:
-          type: object
-          properties:
-            owner:
-              $ref: '#/components/schemas/Address'
-            name:
-              type: string
-              example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
-    MsgIssue:
-      type: object
-      description: msg of token creation
-      properties:
-        type:
-          type: string
-          example: "link/MsgIssue"
-        value:
-          type: object
-          properties:
-            owner:
-              $ref: '#/components/schemas/Address'
-            name:
-              type: string
-              example: "cony"
-            symbol:
-              type: string
-              example: "conyxxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
-            amount:
-              type: string
-              example: "1000000"
-            mintable:
-              type: boolean
-              example: true
-            decimals:
-              type: string
-              example: "8"
-    MsgModifyTokenURI:
-      type: object
-      description: msg of token creation
-      properties:
-        type:
-          type: string
-          example: "link/MsgModifyTokenURI"
-        value:
-          type: object
-          properties:
-            owner:
-              $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
-            token_id:
-              type: string
-              example: "10010001"
-    MsgIssueCFT:
-      type: object
-      description: msg of collection token creation
-      properties:
-        type:
-          type: string
-          example: "link/MsgIssueCFT"
-        value:
-          type: object
-          properties:
-            owner:
-              $ref: '#/components/schemas/Address'
-            name:
-              type: string
-              example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
-            amount:
-              type: string
-              example: "1000000"
-            mintable:
-              type: boolean
-              example: true
-            decimals:
-              type: string
-              example: "8"
-    MsgIssueCNFT:
-      type: object
-      description: msg of non-fungible collection token creation
-      properties:
-        type:
-          type: string
-          example: "link/MsgIssueCNFT"
-        value:
-          type: object
-          properties:
-            owner:
-              $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "con2xxv"
-    MsgMintCNFT:
-      type: object
-      description: msg of non-fungible collection token creation
-      properties:
-        type:
-          type: string
-          example: "link/MsgMintCNFT"
-        value:
-          type: object
-          properties:
-            from:
-              $ref: '#/components/schemas/Address'
-            to:
-              $ref: '#/components/schemas/Address'
-            name:
-              type: string
-              example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
-            token_type:
-              type: string
-              example: "1001"
-    MsgBurnCNFT:
-      type: object
-      description: msg of non-fungible collection token burn
-      properties:
-        type:
-          type: string
-          example: "link/MsgBurnCNFT"
-        value:
-          type: object
-          properties:
-            from:
-              $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "con2xxv"
-            token_id:
-              type: string
-              example: "10010001"
-    MsgBurnCNFTFrom:
-      type: object
-      description: msg of non-fungible collection token burn
-      properties:
-        type:
-          type: string
-          example: "link/MsgBurnCNFTFrom"
-        value:
-          type: object
-          properties:
-            proxy:
-              $ref: '#/components/schemas/Address'
-            from:
-              $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "con2xxv"
-            token_id:
-              type: string
-              example: "10010001"
-    MsgMint:
-      type: object
-      description: msg of token mint
-      properties:
-        type:
-          type: string
-          example: "link/MsgMint"
-        value:
-          type: object
-          properties:
-            from:
-              $ref: '#/components/schemas/Address'
-            to:
-              $ref: '#/components/schemas/Address'
-            amount:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-    MsgBurn:
-      type: object
-      description: msg of token burn
-      properties:
-        type:
-          type: string
-          example: "link/MsgBurn"
-        value:
-          type: object
-          properties:
-            from:
-              $ref: '#/components/schemas/Address'
-            amount:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
-    MsgMintCFT:
-      type: object
-      description: msg of token mint
-      properties:
-        type:
-          type: string
-          example: "link/MsgMintCFT"
-        value:
-          type: object
-          properties:
-            from:
-              $ref: '#/components/schemas/Address'
-            to:
-              $ref: '#/components/schemas/Address'
-            amount:
-              type: array
-              items:
-                $ref: '#/components/schemas/CoinWithTokenID'
-    MsgBurnCFT:
-      type: object
-      description: msg of token burn
-      properties:
-        type:
-          type: string
-          example: "link/MsgBurnCFT"
-        value:
-          type: object
-          properties:
-            from:
-              $ref: '#/components/schemas/Address'
-            amount:
-              type: array
-              items:
-                $ref: '#/components/schemas/CoinWithTokenID'
-    MsgBurnCFTFrom:
-      type: object
-      description: msg of token burn
-      properties:
-        type:
-          type: string
-          example: "link/MsgBurnCFTFrom"
-        value:
-          type: object
-          properties:
-            proxy:
-              $ref: '#/components/schemas/Address'
-            from:
-              $ref: '#/components/schemas/Address'
-            amount:
-              type: array
-              items:
-                $ref: '#/components/schemas/CoinWithTokenID'
     MsgCreateValidator:
       type: object
       properties:
@@ -2349,12 +2094,60 @@ components:
               $ref: '#/components/schemas/Address'
             target_address:
               $ref: '#/components/schemas/Address'
-    MsgTransferFT:
+    MsgIssue:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "token/MsgIssue"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            name:
+              type: string
+              example: "cony"
+            symbol:
+              type: string
+              example: "conyxxv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            amount:
+              type: string
+              example: "1000000"
+            mintable:
+              type: boolean
+              example: true
+            decimals:
+              type: string
+              example: "8"
+    MsgModifyTokenURI:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "token/MsgModifyTokenURI"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+    MsgTransfer:
       type: object
       properties:
         type:
           type: string
-          example: "link/MsgTransferFT"
+          example: "token/MsgTransfer"
         value:
           type: object
           properties:
@@ -2368,12 +2161,246 @@ components:
             amount:
               type: string
               example: "10"
+    MsgMint:
+      type: object
+      description: msg of token mint
+      properties:
+        type:
+          type: string
+          example: "token/MsgMint"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            to:
+              $ref: '#/components/schemas/Address'
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+    MsgBurn:
+      type: object
+      description: msg of token burn
+      properties:
+        type:
+          type: string
+          example: "token/MsgBurn"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+    MsgCreate:
+      type: object
+      description: msg of collection creation
+      properties:
+        type:
+          type: string
+          example: "collection/MsgCreate"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            name:
+              type: string
+              example: "cony"
+            symbol:
+              type: string
+              example: "con2xxv"
+    MsgModifyTokenURICollection:
+      type: object
+      description: msg of token creation
+      properties:
+        type:
+          type: string
+          example: "collection/MsgModifyTokenURI"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            token_id:
+              type: string
+              example: "10010001"
+    MsgIssueCFT:
+      type: object
+      description: msg of collection token creation
+      properties:
+        type:
+          type: string
+          example: "collection/MsgIssueFT"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            name:
+              type: string
+              example: "cony"
+            symbol:
+              type: string
+              example: "con2xxv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            amount:
+              type: string
+              example: "1000000"
+            mintable:
+              type: boolean
+              example: true
+            decimals:
+              type: string
+              example: "8"
+    MsgIssueCNFT:
+      type: object
+      description: msg of non-fungible collection token creation
+      properties:
+        type:
+          type: string
+          example: "collection/MsgIssueNFT"
+        value:
+          type: object
+          properties:
+            owner:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "con2xxv"
+    MsgMintCNFT:
+      type: object
+      description: msg of non-fungible collection token creation
+      properties:
+        type:
+          type: string
+          example: "collection/MsgMintNFT"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            to:
+              $ref: '#/components/schemas/Address'
+            name:
+              type: string
+              example: "cony"
+            symbol:
+              type: string
+              example: "con2xxv"
+            token_uri:
+              type: string
+              example: "example.com/token_uri"
+            token_type:
+              type: string
+              example: "1001"
+    MsgBurnCNFT:
+      type: object
+      description: msg of non-fungible collection token burn
+      properties:
+        type:
+          type: string
+          example: "collection/MsgBurnNFT"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "con2xxv"
+            token_id:
+              type: string
+              example: "10010001"
+    MsgBurnCNFTFrom:
+      type: object
+      description: msg of non-fungible collection token burn
+      properties:
+        type:
+          type: string
+          example: "collection/MsgBurnNFTFrom"
+        value:
+          type: object
+          properties:
+            proxy:
+              $ref: '#/components/schemas/Address'
+            from:
+              $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "con2xxv"
+            token_id:
+              type: string
+              example: "10010001"
+    MsgMintCFT:
+      type: object
+      description: msg of token mint
+      properties:
+        type:
+          type: string
+          example: "collection/MsgMintFT"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            to:
+              $ref: '#/components/schemas/Address'
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/CoinWithTokenID'
+    MsgBurnCFT:
+      type: object
+      description: msg of token burn
+      properties:
+        type:
+          type: string
+          example: "collection/MsgBurnFT"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/CoinWithTokenID'
+    MsgBurnCFTFrom:
+      type: object
+      description: msg of token burn
+      properties:
+        type:
+          type: string
+          example: "collection/MsgBurnFTFrom"
+        value:
+          type: object
+          properties:
+            proxy:
+              $ref: '#/components/schemas/Address'
+            from:
+              $ref: '#/components/schemas/Address'
+            amount:
+              type: array
+              items:
+                $ref: '#/components/schemas/CoinWithTokenID'
     MsgTransferCFT:
       type: object
       properties:
         type:
           type: string
-          example: "link/MsgTransferCFT"
+          example: "collection/MsgTransferFT"
         value:
           type: object
           properties:
@@ -2395,7 +2422,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgTransferCNFT"
+          example: "collection/MsgTransferNFT"
         value:
           type: object
           properties:
@@ -2414,7 +2441,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgTransferCFTFrom"
+          example: "collection/MsgTransferFTFrom"
         value:
           type: object
           properties:
@@ -2438,7 +2465,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgTransferCNFTFrom"
+          example: "collection/MsgTransferNFTFrom"
         value:
           type: object
           properties:
@@ -2459,7 +2486,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgAttach"
+          example: "collection/MsgAttach"
         value:
           type: object
           properties:
@@ -2479,7 +2506,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgDetach"
+          example: "collection/MsgDetach"
         value:
           type: object
           properties:
@@ -2498,7 +2525,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgAttachFrom"
+          example: "collection/MsgAttachFrom"
         value:
           type: object
           properties:
@@ -2520,7 +2547,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgDetachFrom"
+          example: "collection/MsgDetachFrom"
         value:
           type: object
           properties:
@@ -2536,12 +2563,12 @@ components:
             token_id:
               type: string
               example: "10010001"
-    MsgApproveCollection:
+    MsgApprove:
       type: object
       properties:
         type:
           type: string
-          example: "link/MsgApproveCollection"
+          example: "collection/MsgApprove"
         value:
           type: object
           properties:
@@ -2552,12 +2579,12 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-    MsgDisapproveCollection:
+    MsgDisapprove:
       type: object
       properties:
         type:
           type: string
-          example: "link/MsgDisapproveCollection"
+          example: "collection/MsgDisapprove"
         value:
           type: object
           properties:
@@ -2587,7 +2614,7 @@ components:
         }
       },
       {
-        "type": "link/MsgIssue",
+        "type": "token/MsgIssue",
         "value": {
           "name": "cony",
           "symbol": "conyxxv",
@@ -2599,7 +2626,7 @@ components:
         }
       },
       {
-        "type": "link/MsgMint",
+        "type": "token/MsgMint",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2610,7 +2637,7 @@ components:
         }
       },
       {
-        "type": "link/MsgBurn",
+        "type": "token/MsgBurn",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
@@ -2620,16 +2647,15 @@ components:
         }
       },
       {
-        "type": "link/MsgModifyTokenURI",
+        "type": "token/MsgModifyTokenURI",
         "value": {
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "conyxxv",
           "token_uri": "example.com/token_uri",
-          "token_id": ""
         }
       },
       {
-        "type": "link/MsgCreateCollection",
+        "type": "collection/MsgCreate",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2637,7 +2663,7 @@ components:
         }
       },
       {
-        "type": "link/MsgIssueCFT",
+        "type": "collection/MsgIssueFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2649,14 +2675,14 @@ components:
         }
       },
       {
-        "type": "link/MsgIssueCNFT",
+        "type": "collection/MsgIssueNFT",
         "value": {
           "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
         }
       },
       {
-        "type": "link/MsgMintCNFT",
+        "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2667,7 +2693,7 @@ components:
         }
       },
       {
-        "type": "link/MsgMintCNFT",
+        "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2678,7 +2704,7 @@ components:
         }
       },
       {
-        "type": "link/MsgMintCNFT",
+        "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2689,7 +2715,7 @@ components:
         }
       },
       {
-        "type": "link/MsgMintCNFT",
+        "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2700,7 +2726,7 @@ components:
         }
       },
       {
-        "type": "link/MsgMintCNFT",
+        "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2711,7 +2737,7 @@ components:
         }
       },
       {
-        "type": "link/MsgMintCNFT",
+        "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2722,7 +2748,7 @@ components:
         }
       },
       {
-        "type": "link/MsgMintCNFT",
+        "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2733,7 +2759,7 @@ components:
         }
       },
       {
-        "type": "link/MsgBurnCNFT",
+        "type": "collection/MsgBurnNFT",
         "value": {
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2741,7 +2767,7 @@ components:
         }
       },
       {
-        "type": "link/MsgIssueCFT",
+        "type": "collection/MsgIssueFT",
         "value": {
           "name": "cony",
           "symbol": "con2xxv",
@@ -2753,7 +2779,7 @@ components:
         }
       },
       {
-        "type": "link/MsgMintCFT",
+        "type": "collection/MsgMintFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2765,7 +2791,7 @@ components:
         }
       },
       {
-        "type": "link/MsgBurnCFT",
+        "type": "collection/MsgBurnFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
@@ -2783,7 +2809,7 @@ components:
         }
       },
       {
-        "type": "link/MsgApproveCollection",
+        "type": "collection/MsgApprove",
         "value": {
           "approver": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2791,7 +2817,7 @@ components:
         }
       },
       {
-        "type": "link/MsgApproveCollection",
+        "type": "collection/MsgApprove",
         "value": {
           "approver": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2799,7 +2825,7 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferFT",
+        "type": "token/MsgTransfer",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2808,7 +2834,7 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferCFT",
+        "type": "collection/MsgTransferFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2818,7 +2844,7 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferCFT",
+        "type": "collection/MsgTransferFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2828,7 +2854,7 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferCFTFrom",
+        "type": "collection/MsgTransferFTFrom",
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2839,7 +2865,7 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferCNFT",
+        "type": "collection/MsgTransferNFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2848,7 +2874,7 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferCNFT",
+        "type": "collection/MsgTransferNFT",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2857,7 +2883,7 @@ components:
         }
       },
       {
-        "type": "link/MsgTransferCNFTFrom",
+        "type": "collection/MsgTransferNFTFrom",
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2867,7 +2893,7 @@ components:
         }
       },
       {
-        "type": "link/MsgAttach",
+        "type": "collection/MsgAttach",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
@@ -2876,7 +2902,7 @@ components:
         }
       },
       {
-        "type": "link/MsgDetach",
+        "type": "collection/MsgDetach",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2885,7 +2911,7 @@ components:
         }
       },
       {
-        "type": "link/MsgAttachFrom",
+        "type": "collection/MsgAttachFrom",
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2895,7 +2921,7 @@ components:
         }
       },
       {
-        "type": "link/MsgDetachFrom",
+        "type": "collection/MsgDetachFrom",
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2905,7 +2931,7 @@ components:
         }
       },
       {
-        "type": "link/MsgAttach",
+        "type": "collection/MsgAttach",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
@@ -2914,7 +2940,7 @@ components:
         }
       },
       {
-        "type": "link/MsgBurnCNFTFrom",
+        "type": "collection/MsgBurnNFTFrom",
         "value": {
           "symbol": "con2xxv",
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2923,7 +2949,7 @@ components:
         }
       },
       {
-        "type": "link/MsgBurnCFTFrom",
+        "type": "collection/MsgBurnFTFrom",
         "value": {
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -2935,7 +2961,7 @@ components:
         }
       },
       {
-        "type": "link/MsgDisapproveCollection",
+        "type": "collection/MsgDisapprove",
         "value": {
           "approver": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",

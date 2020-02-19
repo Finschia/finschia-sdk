@@ -59,4 +59,5 @@ ignore:
   - "statik.go"
   - "root.go"
   - "x/**/module.go"
-  - "errors.go"
+  - "x/**/errors.go"
+  - "x/**/key.go"

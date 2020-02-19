@@ -22,7 +22,6 @@ var (
 	flagDecimals    = "decimals"
 	flagMintable    = "mintable"
 	flagTokenURI    = "token-uri"
-	flagTokenType   = "token-type"
 	flagAAS         = "address-suffix"
 )
 
@@ -48,25 +47,6 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		GrantPermTxCmd(cdc),
 		RevokePermTxCmd(cdc),
 		ModifyTokenURICmd(cdc),
-		CreateCollectionTxCmd(cdc),
-		IssueCNFTTxCmd(cdc),
-		IssueCFTTxCmd(cdc),
-		MintCNFTTxCmd(cdc),
-		BurnCNFTTxCmd(cdc),
-		BurnCNFTFromTxCmd(cdc),
-		MintCFTTxCmd(cdc),
-		BurnCFTTxCmd(cdc),
-		BurnCFTFromTxCmd(cdc),
-		TransferCFTTxCmd(cdc),
-		TransferCNFTTxCmd(cdc),
-		TransferCFTFromTxCmd(cdc),
-		TransferCNFTFromTxCmd(cdc),
-		AttachTxCmd(cdc),
-		DetachTxCmd(cdc),
-		AttachFromTxCmd(cdc),
-		DetachFromTxCmd(cdc),
-		ApproveCollectionTxCmd(cdc),
-		DisapproveCollectionTxCmd(cdc),
 	)
 	return txCmd
 }
@@ -150,7 +130,7 @@ func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
 				return types.ErrInvalidAmount(types.DefaultCodespace, args[3])
 			}
 
-			msg := types.NewMsgTransferFT(cliCtx.GetFromAddress(), to, args[2], amount)
+			msg := types.NewMsgTransfer(cliCtx.GetFromAddress(), to, args[2], amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -264,20 +244,16 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func ModifyTokenURICmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "modify-token-uri [owner_address] [symbol] [token_uri] [token_id]",
-		Short: "Modify token_uri of token ",
-		Args:  cobra.RangeArgs(3, 4),
+		Use:   "modify-token-uri [owner_address] [symbol] [token_uri]",
+		Short: "Create and sign a modify token_uri of token tx",
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 			symbol := args[1]
 			tokenURI := args[2]
-			tokenID := ""
-			if len(args) > 3 {
-				tokenID = args[3]
-			}
 
-			msg := types.NewMsgModifyTokenURI(cliCtx.FromAddress, symbol, tokenURI, tokenID)
+			msg := types.NewMsgModifyTokenURI(cliCtx.FromAddress, symbol, tokenURI)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

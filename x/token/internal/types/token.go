@@ -6,26 +6,29 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+type Tokens []Token
+
+func (ts Tokens) String() string {
+	b, err := json.Marshal(ts)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
+
 type Token interface {
 	GetName() string
 	GetSymbol() string
-	GetDenom() string
-	GetTokenID() string
 	GetTokenURI() string
 	SetTokenURI(tokenURI string)
+	GetMintable() bool
+	GetDecimals() sdk.Int
 	String() string
 }
 
-type FT interface {
-	Token
-	GetMintable() bool
-	GetDecimals() sdk.Int
-}
+var _ Token = (*BaseToken)(nil)
 
-var _ Token = (*BaseFT)(nil)
-var _ FT = (*BaseFT)(nil)
-
-type BaseFT struct {
+type BaseToken struct {
 	Name     string  `json:"name"`
 	Symbol   string  `json:"symbol"`
 	TokenURI string  `json:"token_uri"`
@@ -33,8 +36,8 @@ type BaseFT struct {
 	Mintable bool    `json:"mintable"`
 }
 
-func NewFT(name, symbol, tokenURI string, decimals sdk.Int, mintable bool) FT {
-	return &BaseFT{
+func NewToken(name, symbol, tokenURI string, decimals sdk.Int, mintable bool) Token {
+	return &BaseToken{
 		Name:     name,
 		Symbol:   symbol,
 		TokenURI: tokenURI,
@@ -42,17 +45,15 @@ func NewFT(name, symbol, tokenURI string, decimals sdk.Int, mintable bool) FT {
 		Mintable: mintable,
 	}
 }
-func (t BaseFT) GetName() string      { return t.Name }
-func (t BaseFT) GetSymbol() string    { return t.Symbol }
-func (t BaseFT) GetTokenURI() string  { return t.TokenURI }
-func (t BaseFT) GetDenom() string     { return t.Symbol }
-func (t BaseFT) GetMintable() bool    { return t.Mintable }
-func (t BaseFT) GetDecimals() sdk.Int { return t.Decimals }
-func (t BaseFT) GetTokenID() string   { return "" }
-func (t *BaseFT) SetTokenURI(tokenURI string) {
+func (t BaseToken) GetName() string      { return t.Name }
+func (t BaseToken) GetSymbol() string    { return t.Symbol }
+func (t BaseToken) GetTokenURI() string  { return t.TokenURI }
+func (t BaseToken) GetMintable() bool    { return t.Mintable }
+func (t BaseToken) GetDecimals() sdk.Int { return t.Decimals }
+func (t *BaseToken) SetTokenURI(tokenURI string) {
 	t.TokenURI = tokenURI
 }
-func (t BaseFT) String() string {
+func (t BaseToken) String() string {
 	b, err := json.Marshal(t)
 	if err != nil {
 		panic(err)

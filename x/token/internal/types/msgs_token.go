@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/types"
+	linktype "github.com/line/link/types"
 )
 
 var _ sdk.Msg = (*MsgIssue)(nil)
@@ -37,7 +37,7 @@ func (msg MsgIssue) GetSignBytes() []byte         { return sdk.MustSortJSON(Modu
 func (msg MsgIssue) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 
 func (msg MsgIssue) ValidateBasic() sdk.Error {
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 	if len(msg.Name) == 0 {
@@ -45,10 +45,6 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 	}
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
-	}
-
-	if msg.Amount.Equal(sdk.NewInt(1)) && msg.Decimals.Equal(sdk.NewInt(0)) && !msg.Mintable {
-		return ErrInvalidIssueFT(DefaultCodespace)
 	}
 
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
@@ -134,15 +130,13 @@ type MsgModifyTokenURI struct {
 	Owner    sdk.AccAddress `json:"owner"`
 	Symbol   string         `json:"symbol"`
 	TokenURI string         `json:"token_uri"`
-	TokenID  string         `json:"token_id"`
 }
 
-func NewMsgModifyTokenURI(owner sdk.AccAddress, symbol, tokenURI, tokenID string) MsgModifyTokenURI {
+func NewMsgModifyTokenURI(owner sdk.AccAddress, symbol, tokenURI string) MsgModifyTokenURI {
 	return MsgModifyTokenURI{
 		Owner:    owner,
 		Symbol:   symbol,
 		TokenURI: tokenURI,
-		TokenID:  tokenID,
 	}
 }
 
@@ -158,7 +152,7 @@ func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("symbol cannot be empty")
 	}
 
-	if err := types.ValidateSymbol(msg.Symbol); err != nil {
+	if err := linktype.ValidateSymbol(msg.Symbol); err != nil {
 		return sdk.ErrInvalidAddress(fmt.Sprintf("invalid symbol pattern found %s", msg.Symbol))
 	}
 
@@ -166,10 +160,5 @@ func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
 
-	if msg.TokenID != "" {
-		if err := types.ValidateTokenID(msg.TokenID); err != nil {
-			return sdk.ErrInvalidAddress(fmt.Sprintf("invalid tokenId pattern found %s", msg.TokenID))
-		}
-	}
 	return nil
 }

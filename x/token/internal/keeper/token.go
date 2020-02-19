@@ -5,9 +5,18 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) setToken(ctx sdk.Context, token types.Token) sdk.Error {
+func (k Keeper) GetToken(ctx sdk.Context, symbol string) (types.Token, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
-	tokenKey := types.TokenDenomKey(token.GetSymbol())
+	bz := store.Get(types.TokenSymbolKey(symbol))
+	if bz == nil {
+		return nil, types.ErrTokenNotExist(types.DefaultCodespace, symbol)
+	}
+	return k.mustDecodeToken(bz), nil
+}
+
+func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.TokenSymbolKey(token.GetSymbol())
 	if store.Has(tokenKey) {
 		return types.ErrTokenExist(types.DefaultCodespace, token.GetSymbol())
 	}
@@ -15,64 +24,9 @@ func (k Keeper) setToken(ctx sdk.Context, token types.Token) sdk.Error {
 	return nil
 }
 
-func (k Keeper) setTokenToCollection(ctx sdk.Context, token types.CollectiveToken) sdk.Error {
-	c, err := k.GetCollection(ctx, token.GetSymbol())
-	if err != nil {
-		return err
-	}
-	if t, ok := token.(types.CollectiveNFT); ok {
-		tokenType := t.GetTokenType()
-		if !k.HasTokenType(ctx, token.GetSymbol(), tokenType) {
-			return types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), tokenType)
-		}
-		if t.GetTokenIndex() == types.ReservedEmpty {
-			return types.ErrCollectionTokenIndexFull(types.DefaultCodespace, token.GetSymbol(), tokenType)
-		}
-	}
-	c, err = c.AddToken(token)
-	if err != nil {
-		return err
-	}
-	err = k.UpdateCollection(ctx, c)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (k Keeper) GetToken(ctx sdk.Context, symbol, tokenID string) (types.Token, sdk.Error) {
-	if len(tokenID) == 0 {
-		return k.getToken(ctx, symbol)
-	}
-	return k.getTokenFromCollection(ctx, symbol, tokenID)
-}
-
-func (k Keeper) getToken(ctx sdk.Context, denom string) (types.Token, sdk.Error) {
+func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.TokenDenomKey(denom))
-	if bz == nil {
-		return nil, types.ErrTokenNotExist(types.DefaultCodespace, denom)
-	}
-	return k.mustDecodeToken(bz), nil
-}
-func (k Keeper) getTokenFromCollection(ctx sdk.Context, symbol, tokenID string) (types.Token, sdk.Error) {
-	c, err := k.GetCollection(ctx, symbol)
-	if err != nil {
-		return nil, err
-	}
-	return c.GetToken(tokenID)
-}
-
-func (k Keeper) ModifyToken(ctx sdk.Context, token types.Token) sdk.Error {
-	if len(token.GetTokenID()) == 0 {
-		return k.modifyToken(ctx, token)
-	}
-	return k.modifyTokenToCollection(ctx, token)
-}
-
-func (k Keeper) modifyToken(ctx sdk.Context, token types.Token) sdk.Error {
-	store := ctx.KVStore(k.storeKey)
-	tokenKey := types.TokenDenomKey(token.GetSymbol())
+	tokenKey := types.TokenSymbolKey(token.GetSymbol())
 	if !store.Has(tokenKey) {
 		return types.ErrTokenNotExist(types.DefaultCodespace, token.GetSymbol())
 	}
@@ -80,19 +34,31 @@ func (k Keeper) modifyToken(ctx sdk.Context, token types.Token) sdk.Error {
 	return nil
 }
 
-func (k Keeper) modifyTokenToCollection(ctx sdk.Context, token types.Token) sdk.Error {
-	c, err := k.GetCollection(ctx, token.GetSymbol())
+func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenURI string) sdk.Error {
+	token, err := k.GetToken(ctx, symbol)
 	if err != nil {
 		return err
 	}
-	c, err = c.UpdateToken(token)
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetSymbol())
+	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
+		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
+	}
+	token.SetTokenURI(tokenURI)
+
+	err = k.UpdateToken(ctx, token)
 	if err != nil {
 		return err
 	}
-	err = k.UpdateCollection(ctx, c)
-	if err != nil {
-		return err
-	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeModifyTokenURI,
+			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
+			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
+			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
+		),
+	})
 	return nil
 }
 
@@ -101,13 +67,13 @@ func (k Keeper) GetAllTokens(ctx sdk.Context) (tokens types.Tokens) {
 		tokens = append(tokens, token)
 		return false
 	}
-	k.IterateTokens(ctx, "", appendToken)
+	k.iterateTokens(ctx, "", appendToken)
 	return tokens
 }
 
-func (k Keeper) IterateTokens(ctx sdk.Context, prefix string, process func(types.Token) (stop bool)) {
+func (k Keeper) iterateTokens(ctx sdk.Context, prefix string, process func(types.Token) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.TokenDenomKey(prefix))
+	iter := sdk.KVStorePrefixIterator(store, types.TokenSymbolKey(prefix))
 	defer iter.Close()
 	for {
 		if !iter.Valid() {
@@ -122,11 +88,11 @@ func (k Keeper) IterateTokens(ctx sdk.Context, prefix string, process func(types
 	}
 }
 
-func (k Keeper) GetSupply(ctx sdk.Context, symbol, tokenID string) (supply sdk.Int, err sdk.Error) {
-	if _, err = k.GetToken(ctx, symbol, tokenID); err != nil {
+func (k Keeper) GetSupply(ctx sdk.Context, symbol string) (supply sdk.Int, err sdk.Error) {
+	if _, err = k.GetToken(ctx, symbol); err != nil {
 		return sdk.NewInt(0), err
 	}
-	return k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(symbol + tokenID), nil
+	return k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(symbol), nil
 }
 
 func (k Keeper) mustDecodeToken(tokenByte []byte) (token types.Token) {

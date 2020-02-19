@@ -6,16 +6,10 @@ import (
 )
 
 const (
-	QuerierRoute     = "token"
-	QueryTokens      = "tokens"
-	QueryPerms       = "perms"
-	QueryCollections = "collections"
-	QuerySupply      = "supply"
-	QueryNFTCount    = "nftcount"
-	QueryParent      = "parent"
-	QueryRoot        = "root"
-	QueryChildren    = "children"
-	QueryIsApproved  = "approved"
+	QuerierRoute = "token"
+	QueryTokens  = "tokens"
+	QueryPerms   = "perms"
+	QuerySupply  = "supply"
 )
 
 type NodeQuerier interface {
@@ -29,15 +23,6 @@ type QuerySymbolParams struct {
 
 func NewQuerySymbolParams(symbol string) QuerySymbolParams {
 	return QuerySymbolParams{Symbol: symbol}
-}
-
-type QuerySymbolTokenIDParams struct {
-	Symbol  string `json:"symbol"`
-	TokenID string `json:"token_id"`
-}
-
-func NewQuerySymbolTokenIDParams(symbol, tokenID string) QuerySymbolTokenIDParams {
-	return QuerySymbolTokenIDParams{Symbol: symbol, TokenID: tokenID}
 }
 
 type QueryAccAddressParams struct {

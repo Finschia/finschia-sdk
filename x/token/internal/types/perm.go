@@ -9,7 +9,6 @@ var _ PermissionI = (*Permission)(nil)
 const (
 	MintAction   = "mint"
 	BurnAction   = "burn"
-	IssueAction  = "issue"
 	ModifyAction = "modify"
 )
 
@@ -57,29 +56,22 @@ func (p Permission) String() string {
 	return fmt.Sprintf("%s-%s", p.GetResource(), p.GetAction())
 }
 
-func NewMintPermission(resource string) PermissionI {
-	return &Permission{
+func NewMintPermission(resource string) Permission {
+	return Permission{
 		Action:   MintAction,
 		Resource: resource,
 	}
 }
 
-func NewBurnPermission(resource string) PermissionI {
-	return &Permission{
+func NewBurnPermission(resource string) Permission {
+	return Permission{
 		Action:   BurnAction,
 		Resource: resource,
 	}
 }
 
-func NewIssuePermission(resource string) PermissionI {
-	return &Permission{
-		Action:   IssueAction,
-		Resource: resource,
-	}
-}
-
-func NewModifyTokenURIPermission(resource string) PermissionI {
-	return &Permission{
+func NewModifyTokenURIPermission(resource string) Permission {
+	return Permission{
 		Action:   ModifyAction,
 		Resource: resource,
 	}
