@@ -88,7 +88,6 @@ func TestHandlerSend(t *testing.T) {
 }
 
 func TestHandlerSendRestricted(t *testing.T) {
-	t.Skip() //TODO: enable when https://github.com/line/link/pull/391 is ready
 	input := keeper.SetupTestInput()
 	ctx, _, ak := input.Ctx, input.K, input.Ak
 
