@@ -284,6 +284,7 @@ func TransferCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	return cmd
 }
 
+//nolint:dupl
 func TransferCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-transfer-nft-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id]",
@@ -350,6 +351,7 @@ func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
+//nolint:dupl
 func MintCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-mint-ft [from_key_or_address] [to] [symbol] [token-id] [amount]",
@@ -402,6 +404,7 @@ func BurnCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
+//nolint:dupl
 func BurnCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-burn-ft-from [proxy_key_or_address] [from_address] [symbol] [token-id] [amount]",
@@ -452,6 +455,7 @@ func AttachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
+//nolint:dupl
 func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "collection-detach-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id]",

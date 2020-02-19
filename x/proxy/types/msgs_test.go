@@ -8,6 +8,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
 
+//nolint:dupl
 func TestMsgBasics(t *testing.T) {
 	cdc := ModuleCdc
 	proxy := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())

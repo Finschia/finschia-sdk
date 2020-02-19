@@ -10,6 +10,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
 
+//nolint:dupl
 func TestHandler(t *testing.T) {
 	input := testCommon.SetupTestInput(t)
 	ctx, keeper, ak := input.Ctx, input.Keeper, input.Ak

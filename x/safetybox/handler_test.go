@@ -15,6 +15,7 @@ const (
 	SafetyBoxTestID = "test_safety_box_id"
 )
 
+//nolint:dupl
 func TestHandler(t *testing.T) {
 	input := testCommon.SetupTestInput(t)
 	ctx, keeper := input.Ctx, input.Keeper

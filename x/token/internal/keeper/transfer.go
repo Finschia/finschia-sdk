@@ -117,6 +117,7 @@ func (k Keeper) transferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 	return nil
 }
 
+//nolint:dupl
 func (k Keeper) TransferCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
 	if !k.IsApproved(ctx, proxy, from, symbol) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
@@ -141,6 +142,7 @@ func (k Keeper) TransferCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.
 	return nil
 }
 
+//nolint:dupl
 func (k Keeper) TransferCNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	if !k.IsApproved(ctx, proxy, from, symbol) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)

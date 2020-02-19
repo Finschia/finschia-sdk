@@ -30,6 +30,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	return txCmd
 }
 
+//nolint:dupl
 func ProxyApproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "approve [proxy_key_or_address] [on_behalf_of] [denom] [amount]",
@@ -59,6 +60,7 @@ func ProxyApproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
+//nolint:dupl
 func ProxyDisapproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "disapprove [proxy_key_or_address] [on_behalf_of] [denom] [amount]",
