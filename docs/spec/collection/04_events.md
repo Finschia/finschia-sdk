@@ -202,7 +202,6 @@ The token module emits the following events:
 | message          | sender         | {fromAddress}            | 
 | message          | action         | detach                   |
 | detach_cnft      | from           | {fromAddress}            |
-| detach_cnft      | to             | {toAddress}              |
 | detach_cnft      | symbol         | {symbol}                 |
 | detach_cnft      | token_id       | {token_id}               |
 
@@ -226,7 +225,6 @@ The token module emits the following events:
 | message          | action         | detach_from              |
 | detach_cnft_from | proxy          | {proxyAddress}           |
 | detach_cnft_from | from           | {fromAddress}            |
-| detach_cnft_from | to             | {toAddress}              |
 | detach_cnft_from | symbol         | {symbol}                 |
 | detach_cnft_from | token_id       | {token_id}               |
 

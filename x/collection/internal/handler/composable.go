@@ -24,7 +24,7 @@ func handleMsgAttach(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgAttach)
 }
 
 func handleMsgDetach(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDetach) sdk.Result {
-	err := keeper.Detach(ctx, msg.From, msg.To, msg.Symbol, msg.TokenID)
+	err := keeper.Detach(ctx, msg.From, msg.Symbol, msg.TokenID)
 	if err != nil {
 		return err.Result()
 	}
@@ -58,7 +58,7 @@ func handleMsgAttachFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgAtt
 }
 
 func handleMsgDetachFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDetachFrom) sdk.Result {
-	err := keeper.DetachFrom(ctx, msg.Proxy, msg.From, msg.To, msg.Symbol, msg.TokenID)
+	err := keeper.DetachFrom(ctx, msg.Proxy, msg.From, msg.Symbol, msg.TokenID)
 	if err != nil {
 		return err.Result()
 	}

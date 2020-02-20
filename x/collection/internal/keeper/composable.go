@@ -76,6 +76,15 @@ func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 
+	toToken, err := k.GetNFT(ctx, symbol, toTokenID)
+	if err != nil {
+		return err
+	}
+
+	if !from.Equals(toToken.GetOwner()) {
+		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, toToken.GetDenom(), from)
+	}
+
 	// verify token should be a root
 	childToParentKey := types.TokenChildToParentKey(token)
 	if store.Has(childToParentKey) {
@@ -84,10 +93,6 @@ func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 
 	// verify no circulation(toToken must not be a descendant of token)
 	rootOfToToken, err := k.RootOf(ctx, symbol, toTokenID)
-	if err != nil {
-		return err
-	}
-	toToken, err := k.GetNFT(ctx, symbol, toTokenID)
 	if err != nil {
 		return err
 	}
@@ -102,20 +107,14 @@ func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 		panic("token is already a child of some other")
 	}
 
-	if !from.Equals(toToken.GetOwner()) {
-		if err := k.moveCNFToken(ctx, from, toToken.GetOwner(), token); err != nil {
-			return err
-		}
-	}
-
 	store.Set(childToParentKey, k.mustEncodeTokenDenom(toToken.GetDenom()))
 	childrenStore.Set(parentToChildSubKey, ChildExists)
 
 	return nil
 }
 
-func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
-	if err := k.detach(ctx, from, to, symbol, tokenID); err != nil {
+func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+	if err := k.detach(ctx, from, symbol, tokenID); err != nil {
 		return err
 	}
 
@@ -123,7 +122,6 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 		sdk.NewEvent(
 			types.EventTypeDetachToken,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
-			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
 			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
 		),
@@ -132,12 +130,12 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 }
 
 //nolint:dupl
-func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	if !k.IsApproved(ctx, proxy, from, symbol) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
 	}
 
-	if err := k.detach(ctx, from, to, symbol, tokenID); err != nil {
+	if err := k.detach(ctx, from, symbol, tokenID); err != nil {
 		return err
 	}
 
@@ -146,7 +144,6 @@ func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAd
 			types.EventTypeDetachFrom,
 			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
-			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
 			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
 		),
@@ -155,7 +152,7 @@ func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAd
 	return nil
 }
 
-func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
 	token, err := k.GetNFT(ctx, symbol, tokenID)
@@ -188,11 +185,6 @@ func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 		panic("token is not a child of some other")
 	}
 
-	if !from.Equals(to) {
-		if err := k.moveCNFToken(ctx, from, to, token); err != nil {
-			return err
-		}
-	}
 	store.Delete(childToParentKey)
 	childrenStore.Delete(parentToChildSubKey)
 

@@ -21,7 +21,6 @@ type MsgAttach struct {
 
 type MsgDetach struct {
 	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
 	Symbol  string         `json:"symbol"`
 	TokenID string         `json:"token_id"`
 }
@@ -81,10 +80,9 @@ func (msg MsgAttach) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.From}
 }
 
-func NewMsgDetach(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) MsgDetach {
+func NewMsgDetach(from sdk.AccAddress, symbol string, tokenID string) MsgDetach {
 	return MsgDetach{
 		From:    from,
-		To:      to,
 		Symbol:  symbol,
 		TokenID: tokenID,
 	}
@@ -107,10 +105,6 @@ func (MsgDetach) Type() string { return "detach" }
 func (msg MsgDetach) ValidateBasic() sdk.Error {
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From cannot be empty")
-	}
-
-	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("To cannot be empty")
 	}
 
 	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
@@ -199,16 +193,14 @@ func (msg MsgAttachFrom) GetSigners() []sdk.AccAddress {
 type MsgDetachFrom struct {
 	Proxy   sdk.AccAddress `json:"proxy"`
 	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
 	Symbol  string         `json:"symbol"`
 	TokenID string         `json:"token_id"`
 }
 
-func NewMsgDetachFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) MsgDetachFrom {
+func NewMsgDetachFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol string, tokenID string) MsgDetachFrom {
 	return MsgDetachFrom{
 		Proxy:   proxy,
 		From:    from,
-		To:      to,
 		Symbol:  symbol,
 		TokenID: tokenID,
 	}
@@ -234,9 +226,6 @@ func (msg MsgDetachFrom) ValidateBasic() sdk.Error {
 	}
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From cannot be empty")
-	}
-	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("To cannot be empty")
 	}
 	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
 		return sdk.ErrInvalidCoins(msg.Symbol)

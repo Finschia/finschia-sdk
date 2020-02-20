@@ -401,19 +401,14 @@ func AttachTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "detach [from_key_or_address] [to_address] [symbol] [token_id]",
+		Use:   "detach [from_key_or_address] [symbol] [token_id]",
 		Short: "Create and sign a tx detaching a token",
-		Args:  cobra.ExactArgs(4),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			to, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgDetach(cliCtx.GetFromAddress(), to, args[2], args[3])
+			msg := types.NewMsgDetach(cliCtx.GetFromAddress(), args[1], args[2])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -528,9 +523,9 @@ func AttachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 //nolint:dupl
 func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "detach-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id]",
+		Use:   "detach-from [proxy_key_or_address] [from_address] [symbol] [token_id]",
 		Short: "Create and sign a tx detaching a token by approved proxy",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
@@ -540,12 +535,7 @@ func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			to, err := sdk.AccAddressFromBech32(args[2])
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgDetachFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4])
+			msg := types.NewMsgDetachFrom(cliCtx.GetFromAddress(), from, args[2], args[3])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

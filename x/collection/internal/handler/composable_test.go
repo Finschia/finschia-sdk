@@ -59,14 +59,13 @@ func TestHandleAttachDetach(t *testing.T) {
 	}
 
 	{
-		msg2 := types.NewMsgDetach(addr1, addr1, defaultSymbol, defaultTokenID2)
+		msg2 := types.NewMsgDetach(addr1, defaultSymbol, defaultTokenID2)
 		res2 := h(ctx, msg2)
 		require.True(t, res2.Code.IsOK())
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("detach", sdk.NewAttribute("from", addr1.String())),
-			sdk.NewEvent("detach", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("detach", sdk.NewAttribute("symbol", defaultSymbol)),
 			sdk.NewEvent("detach", sdk.NewAttribute("token_id", defaultTokenID2)),
 		}
@@ -139,7 +138,7 @@ func TestHandleAttachFromDetachFrom(t *testing.T) {
 	}
 	verifyEventFunc(t, e, res.Events)
 
-	msg2 := types.NewMsgDetachFrom(addr2, addr1, addr1, defaultSymbol, defaultTokenID2)
+	msg2 := types.NewMsgDetachFrom(addr2, addr1, defaultSymbol, defaultTokenID2)
 	res2 := h(ctx, msg2)
 	require.True(t, res2.Code.IsOK())
 	e = sdk.Events{
@@ -147,7 +146,6 @@ func TestHandleAttachFromDetachFrom(t *testing.T) {
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
 		sdk.NewEvent("detach_from", sdk.NewAttribute("proxy", addr2.String())),
 		sdk.NewEvent("detach_from", sdk.NewAttribute("from", addr1.String())),
-		sdk.NewEvent("detach_from", sdk.NewAttribute("to", addr1.String())),
 		sdk.NewEvent("detach_from", sdk.NewAttribute("symbol", defaultSymbol)),
 		sdk.NewEvent("detach_from", sdk.NewAttribute("token_id", defaultTokenID2)),
 	}

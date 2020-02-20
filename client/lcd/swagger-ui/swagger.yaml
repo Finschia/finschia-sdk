@@ -2512,8 +2512,6 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
-            to:
-              $ref: '#/components/schemas/Address'
             symbol:
               type: string
               example: "conyxxv"
@@ -2554,8 +2552,6 @@ components:
             proxy:
               $ref: '#/components/schemas/Address'
             from:
-              $ref: '#/components/schemas/Address'
-            to:
               $ref: '#/components/schemas/Address'
             symbol:
               type: string
@@ -2905,7 +2901,6 @@ components:
         "type": "collection/MsgDetach",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_id": "10010003"
         }
@@ -2925,7 +2920,6 @@ components:
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_id": "10010003"
         }

@@ -324,7 +324,7 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgDetach(addr, addr2, "symbol", "item0001")
+		msg := NewMsgDetach(addr, "symbol", "item0001")
 		require.Equal(t, "detach", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -339,22 +339,18 @@ func TestMsgBasics(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, msg.From, msg2.From)
-		require.Equal(t, msg.To, msg2.To)
 		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.TokenID, msg2.TokenID)
 	}
 
 	{
-		msg := NewMsgDetach(nil, addr2, "symbol", "item0001")
+		msg := NewMsgDetach(nil, "symbol", "item0001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 
-		msg = NewMsgDetach(addr, nil, "symbol", "item0001")
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
-
-		msg = NewMsgDetach(addr, addr2, "s", "item0001")
+		msg = NewMsgDetach(addr, "s", "item0001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("s").Error())
 
-		msg = NewMsgDetach(addr, addr2, "symbol", "1")
+		msg = NewMsgDetach(addr, "symbol", "1")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("1").Error())
 	}
 
@@ -401,7 +397,7 @@ func TestMsgBasics(t *testing.T) {
 	}
 	//nolint:dupl
 	{
-		msg := NewMsgDetachFrom(addr, addr2, addr2, "symbol", "item0001")
+		msg := NewMsgDetachFrom(addr, addr2, "symbol", "item0001")
 		require.Equal(t, "detach_from", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -417,25 +413,21 @@ func TestMsgBasics(t *testing.T) {
 
 		require.Equal(t, msg.Proxy, msg2.Proxy)
 		require.Equal(t, msg.From, msg2.From)
-		require.Equal(t, msg.To, msg2.To)
 		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.TokenID, msg2.TokenID)
 	}
 
 	{
-		msg := NewMsgDetachFrom(nil, addr2, addr2, "symbol", "item0001")
+		msg := NewMsgDetachFrom(nil, addr2, "symbol", "item0001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
 
-		msg = NewMsgDetachFrom(addr, nil, addr2, "symbol", "item0001")
+		msg = NewMsgDetachFrom(addr, nil, "symbol", "item0001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 
-		msg = NewMsgDetachFrom(addr, addr2, nil, "symbol", "item0001")
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
-
-		msg = NewMsgDetachFrom(addr, addr2, addr2, "s", "item0001")
+		msg = NewMsgDetachFrom(addr, addr2, "s", "item0001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("s").Error())
 
-		msg = NewMsgDetachFrom(addr, addr2, addr2, "symbol", "1")
+		msg = NewMsgDetachFrom(addr, addr2, "symbol", "1")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("1").Error())
 	}
 

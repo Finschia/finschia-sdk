@@ -254,7 +254,6 @@ type MsgAttach struct {
 ```golang
 type MsgDetach struct {
 	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
 	Symbol  string         `json:"symbol"`
 	TokenID string         `json:"token_id"`
 }
@@ -262,7 +261,6 @@ type MsgDetach struct {
 
 **Detach message is to detach a non-fungible token from another parent token**
 - Signer of this message must have the token
-- The token of TokenID will be owned by To
 - Cannot detach a non-child token from any token
 
 
@@ -291,7 +289,6 @@ type MsgAttachFrom struct {
 type MsgDetachFrom struct {
 	Proxy    sdk.AccAddress `json:"proxy"`
 	From     sdk.AccAddress `json:"from"`
-	To       sdk.AccAddress `json:"to"`
 	Symbol   string         `json:"symbol"`
 	TokenID  string         `json:"token_id"`
 }
@@ -299,7 +296,6 @@ type MsgDetachFrom struct {
 
 **Detach message is for a proxy to detach a non-fungible token from another parent token**
 - Signer(`Proxy`) of this message must have been approved by From having the token
-- The token of TokenID will be owned by To
 - Cannot detach a non-child token from any token
 
 

@@ -164,7 +164,7 @@ func (k Keeper) burnCNFTrecursive(ctx sdk.Context, token types.NFT, from sdk.Acc
 		return err
 	}
 	if parent != nil {
-		err = k.detach(ctx, from, from, token.GetSymbol(), token.GetTokenID())
+		err = k.detach(ctx, from, token.GetSymbol(), token.GetTokenID())
 		if err != nil {
 			return err
 		}
