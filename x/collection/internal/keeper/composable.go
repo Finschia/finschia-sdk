@@ -103,7 +103,7 @@ func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 	}
 
 	if !from.Equals(toToken.GetOwner()) {
-		if err := k.moveCNFToken(ctx, store, from, toToken.GetOwner(), token); err != nil {
+		if err := k.moveCNFToken(ctx, from, toToken.GetOwner(), token); err != nil {
 			return err
 		}
 	}
@@ -173,7 +173,7 @@ func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 	}
 
 	bz := store.Get(childToParentKey)
-	parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
+	parentTokenDenom := k.mustDecodeTokenDenom(bz)
 	ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
 
 	parentToken, err := k.GetNFT(ctx, ticker+suffix, tokenID)
@@ -189,7 +189,7 @@ func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, 
 	}
 
 	if !from.Equals(to) {
-		if err := k.moveCNFToken(ctx, store, from, to, token); err != nil {
+		if err := k.moveCNFToken(ctx, from, to, token); err != nil {
 			return err
 		}
 	}
@@ -209,7 +209,7 @@ func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.NF
 
 	for childToParentKey := types.TokenChildToParentKey(token); store.Has(childToParentKey); {
 		bz := store.Get(childToParentKey)
-		parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
+		parentTokenDenom := k.mustDecodeTokenDenom(bz)
 		ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
 
 		token, err = k.GetNFT(ctx, ticker+suffix, tokenID)
@@ -232,7 +232,7 @@ func (k Keeper) ParentOf(ctx sdk.Context, symbol string, tokenID string) (types.
 	childToParentKey := types.TokenChildToParentKey(token)
 	if store.Has(childToParentKey) {
 		bz := store.Get(childToParentKey)
-		parentTokenDenom := k.mustDecodeTokenDenom(ctx, bz)
+		parentTokenDenom := k.mustDecodeTokenDenom(bz)
 		ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
 
 		return k.GetNFT(ctx, ticker+suffix, tokenID)
@@ -273,7 +273,7 @@ func (k Keeper) mustEncodeTokenDenom(denom string) []byte {
 	return k.cdc.MustMarshalBinaryBare(denom)
 }
 
-func (k Keeper) mustDecodeTokenDenom(ctx sdk.Context, tokenByte []byte) string {
+func (k Keeper) mustDecodeTokenDenom(tokenByte []byte) string {
 	var denom string
 	k.cdc.MustUnmarshalBinaryBare(tokenByte, &denom)
 	return denom

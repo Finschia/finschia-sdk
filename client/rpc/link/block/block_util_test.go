@@ -94,7 +94,7 @@ func TestIndentJSONRB(t *testing.T) {
 	_, _, mockCliCtx, _, bu, _, mockCodecUtil, _ := prepare(t)
 
 	expectedJSON := []byte("good")
-	var expectedErr error = nil
+	var expectedErr error
 	resultBlock := &ctypes.ResultBlock{}
 
 	t.Log("Indent is false", checkMark)
@@ -126,7 +126,7 @@ func TestInjectByteToJsonTxs(t *testing.T) {
 			"txs": [{"type":"cosmos-sdk/StdTx","value":{"fee":{"amount":[]}}}]
 		}
 	}}`)
-	var byteTxa [][]byte = nil
+	var byteTxa [][]byte
 	byteTxa = append(byteTxa, []byte(tx))
 
 	block, err := bu.InjectByteToJSONTxs(bs, byteTxa)

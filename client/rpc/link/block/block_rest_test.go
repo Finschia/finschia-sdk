@@ -26,7 +26,7 @@ func TestRequestHandlerFn(t *testing.T) {
 			t.Fatal(err)
 		}
 		req = mux.SetURLVars(req, pathVariable)
-		mockClient, mockCdc, mockTendermint, mockCliCtx, _, rs, fbh, rb := prepareForBlockRest(t)
+		mockClient, mockCdc, mockTendermint, mockCliCtx, rs, fbh, rb := prepareForBlockRest(t)
 
 		mockCliCtx.EXPECT().GetNode().Return(mockClient, nil).Times(1)
 		mockClient.EXPECT().Status().Return(rs, nil).Times(1)
@@ -56,7 +56,7 @@ func TestRequestHandlerFn(t *testing.T) {
 			t.Fatal(err)
 		}
 		req = mux.SetURLVars(req, pathVariable)
-		mockClient, mockCodec, mockTendermint, mockCliContext, _, _, _, _ := prepareForBlockRest(t)
+		mockClient, mockCodec, mockTendermint, mockCliContext, _, _, _ := prepareForBlockRest(t)
 
 		mockCliContext.EXPECT().GetNode().Return(mockClient, nil).Times(1)
 		errMsg := "fetching latestblock of status"
@@ -73,7 +73,7 @@ func TestRequestHandlerFn(t *testing.T) {
 }
 
 func prepareForBlockRest(t *testing.T) (*mock.MockClient, *mock.MockCodec, *mock.MockTendermint, *mock.MockCLIContext,
-	*gomock.Controller, *ctypes.ResultStatus, int64, *ctypes.ResultBlock) {
+	*ctypes.ResultStatus, int64, *ctypes.ResultBlock) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockClient := mock.NewMockClient(ctrl)
@@ -95,5 +95,5 @@ func prepareForBlockRest(t *testing.T) (*mock.MockClient, *mock.MockCodec, *mock
 			Header:  tmtypes.Header{},
 		},
 	}
-	return mockClient, mockCodec, mockTendermint, mockCliContext, ctrl, rs, fromBlockHeightInt64, rb
+	return mockClient, mockCodec, mockTendermint, mockCliContext, rs, fromBlockHeightInt64, rb
 }

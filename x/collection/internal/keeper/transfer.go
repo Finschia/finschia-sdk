@@ -84,7 +84,7 @@ func (k Keeper) transferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 	if !from.Equals(to) {
-		if err := k.moveCNFToken(ctx, store, from, to, cnft); err != nil {
+		if err := k.moveCNFToken(ctx, from, to, cnft); err != nil {
 			return err
 		}
 	}
@@ -154,7 +154,7 @@ func (k Keeper) moveToken(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddres
 	return nil
 }
 
-func (k Keeper) moveCNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAddress, to sdk.AccAddress, token types.NFT) sdk.Error {
+func (k Keeper) moveCNFToken(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, token types.NFT) sdk.Error {
 	if from.Equals(to) {
 		return nil
 	}
@@ -164,7 +164,7 @@ func (k Keeper) moveCNFToken(ctx sdk.Context, store sdk.KVStore, from sdk.AccAdd
 	}
 
 	for _, child := range children {
-		err := k.moveCNFToken(ctx, store, from, to, child.(types.NFT))
+		err := k.moveCNFToken(ctx, from, to, child.(types.NFT))
 		if err != nil {
 			return err
 		}

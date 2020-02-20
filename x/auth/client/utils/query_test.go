@@ -214,23 +214,23 @@ func TestQueryGenesisAccount(t *testing.T) {
 }
 
 func TestParseHTTPArgs(t *testing.T) {
-	reqE0 := mustNewRequest(t, "", "/", nil)
+	reqE0 := mustNewGetRequest(t, "/")
 
-	req0 := mustNewRequest(t, "", "/?foo=faa", nil)
+	req0 := mustNewGetRequest(t, "/?foo=faa")
 
-	req1 := mustNewRequest(t, "", "/?foo=faa&limit=5", nil)
-	req2 := mustNewRequest(t, "", "/?foo=faa&page=5", nil)
-	req3 := mustNewRequest(t, "", "/?foo=faa&page=5&limit=5", nil)
+	req1 := mustNewGetRequest(t, "/?foo=faa&limit=5")
+	req2 := mustNewGetRequest(t, "/?foo=faa&page=5")
+	req3 := mustNewGetRequest(t, "/?foo=faa&page=5&limit=5")
 
-	reqE1 := mustNewRequest(t, "", "/?foo=faa&page=-1", nil)
-	reqE2 := mustNewRequest(t, "", "/?foo=faa&limit=-1", nil)
-	reqE3 := mustNewRequest(t, "", "/?page=5&limit=5", nil)
+	reqE1 := mustNewGetRequest(t, "/?foo=faa&page=-1")
+	reqE2 := mustNewGetRequest(t, "/?foo=faa&limit=-1")
+	reqE3 := mustNewGetRequest(t, "/?page=5&limit=5")
 
-	req4 := mustNewRequest(t, "", "/?foo=faa&height.from=1", nil)
-	req5 := mustNewRequest(t, "", "/?foo=faa&height.to=1", nil)
+	req4 := mustNewGetRequest(t, "/?foo=faa&height.from=1")
+	req5 := mustNewGetRequest(t, "/?foo=faa&height.to=1")
 
-	reqE4 := mustNewRequest(t, "", "/?foo=faa&height.from=-1", nil)
-	reqE5 := mustNewRequest(t, "", "/?foo=faa&height.to=-1", nil)
+	reqE4 := mustNewGetRequest(t, "/?foo=faa&height.from=-1")
+	reqE5 := mustNewGetRequest(t, "/?foo=faa&height.to=-1")
 
 	defaultPage := rest.DefaultPage
 	defaultLimit := rest.DefaultLimit
@@ -285,4 +285,8 @@ func mustNewRequest(t *testing.T, method, url string, body io.Reader) *http.Requ
 	err = req.ParseForm()
 	require.NoError(t, err)
 	return req
+}
+
+func mustNewGetRequest(t *testing.T, url string) *http.Request {
+	return mustNewRequest(t, "GET", url, nil)
 }

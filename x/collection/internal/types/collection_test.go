@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func getPreparedCollection(symbol, name string, t *testing.T) Collection {
+func getPreparedCollection(symbol string, t *testing.T) Collection {
 	var err error
-	collection := NewCollection(symbol, name)
+	collection := NewCollection(symbol, defaultName)
 
 	for idx := 0; idx < 10; idx++ {
 		collection, err = collection.AddToken(NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(0), true))
@@ -63,7 +63,7 @@ func TestCollection_DeleteToken(t *testing.T) {
 }
 
 func TestCollection_NextTokenID(t *testing.T) {
-	collection := getPreparedCollection(defaultSymbol, defaultName, t)
+	collection := getPreparedCollection(defaultSymbol, t)
 	require.Equal(t, "linl", collection.NextTokenTypeNFT())
 	require.Equal(t, "000b", collection.NextTokenTypeFT())
 	require.Equal(t, "link0009", collection.NextTokenID(""))
@@ -71,7 +71,7 @@ func TestCollection_NextTokenID(t *testing.T) {
 }
 
 func TestCollection_GetAllTokens(t *testing.T) {
-	collection := getPreparedCollection(defaultSymbol, defaultName, t)
+	collection := getPreparedCollection(defaultSymbol, t)
 	require.Equal(t, 10, collection.GetFTokens().Len())
 	require.Equal(t, 8, collection.GetNFTokens().Len())
 	require.Equal(t, 18, collection.GetAllTokens().Len())
@@ -80,8 +80,8 @@ func TestCollection_GetAllTokens(t *testing.T) {
 
 func TestCollection_String(t *testing.T) {
 	var collections []Collection
-	collections = append(collections, getPreparedCollection(defaultSymbol, defaultName, t))
-	collections = append(collections, getPreparedCollection(defaultSymbol+"1", defaultName, t))
+	collections = append(collections, getPreparedCollection(defaultSymbol, t))
+	collections = append(collections, getPreparedCollection(defaultSymbol+"1", t))
 
 	_, err := ModuleCdc.MarshalJSON(collections)
 	require.NoError(t, err)

@@ -88,6 +88,7 @@ func SetupTestInput(t *testing.T) TestInput {
 	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: cbankKeeper}
 }
 
+//nolint:unparam
 func checkSafetyBoxBalance(t *testing.T, k Keeper, ctx sdk.Context, safetyBoxID string, ta, ca, ti int64) {
 	sb, err := k.GetSafetyBox(ctx, safetyBoxID)
 	require.NoError(t, err)
