@@ -13,6 +13,9 @@ type IssueKeeper interface {
 }
 
 func (k Keeper) IssueCFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error {
+	if !types.ValidTokenURI(token.GetTokenURI()) {
+		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
+	}
 	err := k.SetToken(ctx, token)
 	if err != nil {
 		return err

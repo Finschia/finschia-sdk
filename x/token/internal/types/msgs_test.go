@@ -1,6 +1,7 @@
 package types
 
 import (
+	"strings"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,6 +14,7 @@ import (
 func TestMsgBasics(t *testing.T) {
 	cdc := ModuleCdc
 	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
 
 	addrSuffix := types.AccAddrSuffix(addr)
 	{
@@ -37,6 +39,10 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Amount, msg.Amount)
 		require.Equal(t, msg.Decimals, msg2.Decimals)
 		require.Equal(t, msg.Mintable, msg2.Mintable)
+	}
+	{
+		msg := NewMsgIssue(addr, "name", "symb"+addrSuffix, length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
 	}
 	{
 		msg := NewMsgIssue(addr, "name", "s", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
@@ -183,6 +189,12 @@ func TestMsgModifyTokenURI_ValidateBasicMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.TokenURI, msg2.TokenURI)
 		require.Equal(t, msg.Owner, msg2.Owner)
+	}
+	t.Log("tokenURI too long")
+	{
+		length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
+		msg := NewMsgModifyTokenURI(addr, "symbol", length1001String)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
 	}
 	t.Log("empty symbol found")
 	{

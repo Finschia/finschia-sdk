@@ -54,6 +54,9 @@ func (msg MsgIssueCFT) ValidateBasic() sdk.Error {
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
 		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
 	}
+	if !ValidTokenURI(msg.TokenURI) {
+		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
+	}
 
 	return nil
 }

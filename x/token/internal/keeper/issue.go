@@ -8,6 +8,9 @@ import (
 )
 
 func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, owner sdk.AccAddress) sdk.Error {
+	if !types.ValidTokenURI(token.GetTokenURI()) {
+		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
+	}
 	err := k.SetToken(ctx, token)
 	if err != nil {
 		return err

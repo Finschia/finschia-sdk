@@ -53,6 +53,10 @@ func (msg MsgMintCNFT) ValidateBasic() sdk.Error {
 		return ErrInvalidTokenID(DefaultCodespace, err.Error())
 	}
 
+	if !ValidTokenURI(msg.TokenURI) {
+		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
+	}
+
 	return nil
 }
 

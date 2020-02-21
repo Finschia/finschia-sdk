@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -15,12 +16,13 @@ const (
 	CodeTokenNotMintable sdk.CodeType = 102
 
 	//Token invalidation
-	CodeTokenInvalidTokenName   sdk.CodeType = 200
-	CodeTokenInvalidTokenSymbol sdk.CodeType = 201
-	CodeTokenInvalidTokenID     sdk.CodeType = 202
-	CodeTokenInvalidDecimals    sdk.CodeType = 203
-	CodeTokenInvalidFT          sdk.CodeType = 204
-	CodeTokenInvalidAmount      sdk.CodeType = 205
+	CodeTokenInvalidTokenName      sdk.CodeType = 200
+	CodeTokenInvalidTokenSymbol    sdk.CodeType = 201
+	CodeTokenInvalidTokenID        sdk.CodeType = 202
+	CodeTokenInvalidDecimals       sdk.CodeType = 203
+	CodeTokenInvalidFT             sdk.CodeType = 204
+	CodeTokenInvalidAmount         sdk.CodeType = 205
+	CodeTokenInvalidTokenURILength sdk.CodeType = 206
 
 	//Collection
 	CodeCollectionExist             sdk.CodeType = 300
@@ -74,6 +76,10 @@ func ErrInvalidIssueFT(codespace sdk.CodespaceType) sdk.Error {
 
 func ErrInvalidAmount(codespace sdk.CodespaceType, amount string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidAmount, "invalid token amount [%s]", amount)
+}
+
+func ErrInvalidTokenURILength(codespace sdk.CodespaceType, tokenURI string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidTokenURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, TokenURIMaxLength, utf8.RuneCountInString(tokenURI))
 }
 
 func ErrCollectionExist(codespace sdk.CodespaceType, symbol string) sdk.Error {

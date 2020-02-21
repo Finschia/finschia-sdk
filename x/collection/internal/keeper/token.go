@@ -85,6 +85,10 @@ func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) sdk.Error {
 }
 
 func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenID, tokenURI string) sdk.Error {
+	if !types.ValidTokenURI(tokenURI) {
+		return types.ErrInvalidTokenURILength(types.DefaultCodespace, tokenURI)
+	}
+
 	token, err := k.GetToken(ctx, symbol, tokenID)
 	if err != nil {
 		return err

@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"strings"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -63,5 +64,24 @@ func TestKeeper_IssueTokenNotMintable(t *testing.T) {
 		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyTokenURIPermission(defaultSymbol)))
 		require.False(t, keeper.HasPermission(ctx, addr1, types.NewMintPermission(defaultSymbol)))
 		require.False(t, keeper.HasPermission(ctx, addr1, types.NewBurnPermission(defaultSymbol)))
+	}
+}
+
+func TestKeeper_IssueTokenTooLongTokenURI(t *testing.T) {
+	ctx := cacheKeeper()
+
+	length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
+
+	t.Log("issue a token with too long token uri")
+	{
+		token := types.NewToken(defaultName, defaultSymbol, length1001String, sdk.NewInt(defaultDecimals), true)
+		require.EqualError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1), types.ErrInvalidTokenURILength(types.DefaultCodespace, length1001String).Error())
+	}
+
+	t.Log("issue a token and update with too long token uri")
+	{
+		token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+		require.NoError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1))
+		require.EqualError(t, keeper.ModifyTokenURI(ctx, addr1, defaultSymbol, length1001String), types.ErrInvalidTokenURILength(types.DefaultCodespace, length1001String).Error())
 	}
 }

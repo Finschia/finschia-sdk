@@ -50,5 +50,9 @@ func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
 			return sdk.ErrInvalidAddress(fmt.Sprintf("invalid tokenId pattern found %s", msg.TokenID))
 		}
 	}
+	if !ValidTokenURI(msg.TokenURI) {
+		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
+	}
+
 	return nil
 }

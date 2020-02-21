@@ -47,6 +47,10 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
 
+	if !ValidTokenURI(msg.TokenURI) {
+		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
+	}
+
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
 		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
 	}
@@ -154,6 +158,10 @@ func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
 
 	if err := linktype.ValidateSymbol(msg.Symbol); err != nil {
 		return sdk.ErrInvalidAddress(fmt.Sprintf("invalid symbol pattern found %s", msg.Symbol))
+	}
+
+	if !ValidTokenURI(msg.TokenURI) {
+		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
 	}
 
 	if msg.Owner.Empty() {

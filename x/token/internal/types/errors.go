@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -15,10 +16,11 @@ const (
 	CodeTokenNotMintable sdk.CodeType = 102
 
 	//Token invalidation
-	CodeTokenInvalidTokenName   sdk.CodeType = 200
-	CodeTokenInvalidTokenSymbol sdk.CodeType = 201
-	CodeTokenInvalidDecimals    sdk.CodeType = 202
-	CodeTokenInvalidAmount      sdk.CodeType = 203
+	CodeTokenInvalidTokenName      sdk.CodeType = 200
+	CodeTokenInvalidTokenSymbol    sdk.CodeType = 201
+	CodeTokenInvalidDecimals       sdk.CodeType = 202
+	CodeTokenInvalidAmount         sdk.CodeType = 203
+	CodeTokenInvalidTokenURILength sdk.CodeType = 204
 
 	//Permission
 	CodeTokenPermission sdk.CodeType = 300
@@ -50,6 +52,10 @@ func ErrInvalidTokenDecimals(codespace sdk.CodespaceType, decimals sdk.Int) sdk.
 
 func ErrInvalidAmount(codespace sdk.CodespaceType, amount string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidAmount, "invalid token amount [%s]", amount)
+}
+
+func ErrInvalidTokenURILength(codespace sdk.CodespaceType, tokenURI string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidTokenURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, TokenURIMaxLength, utf8.RuneCountInString(tokenURI))
 }
 
 func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission fmt.Stringer) sdk.Error {

@@ -40,6 +40,9 @@ func (k Keeper) MintCFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktyp
 }
 
 func (k Keeper) MintCNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error {
+	if !types.ValidTokenURI(token.GetTokenURI()) {
+		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
+	}
 	if !k.hasTokenType(ctx, token.GetSymbol(), token.GetTokenType()) {
 		return types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), token.GetTokenType())
 	}
