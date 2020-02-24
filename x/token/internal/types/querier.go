@@ -9,6 +9,7 @@ const (
 	QuerierRoute = "token"
 	QueryTokens  = "tokens"
 	QueryPerms   = "perms"
+	QueryBalance = "balance"
 	QuerySupply  = "supply"
 )
 
@@ -31,6 +32,15 @@ type QueryAccAddressParams struct {
 
 func NewQueryAccAddressParams(addr sdk.AccAddress) QueryAccAddressParams {
 	return QueryAccAddressParams{Addr: addr}
+}
+
+type QuerySymbolAccAddressParams struct {
+	Symbol string         `json:"symbol"`
+	Addr   sdk.AccAddress `json:"addr"`
+}
+
+func NewQuerySymbolAccAddressParams(symbol string, addr sdk.AccAddress) QuerySymbolAccAddressParams {
+	return QuerySymbolAccAddressParams{Symbol: symbol, Addr: addr}
 }
 
 type QueryIsApprovedParams struct {

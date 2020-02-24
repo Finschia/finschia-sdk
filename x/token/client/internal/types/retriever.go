@@ -39,6 +39,24 @@ func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddr
 	return pms, height, nil
 }
 
+func (r Retriever) GetAccountBalance(ctx context.CLIContext, symbol string, addr sdk.AccAddress) (sdk.Int, int64, error) {
+	var supply sdk.Int
+	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolAccAddressParams(symbol, addr))
+	if err != nil {
+		return supply, 0, err
+	}
+
+	res, height, err := r.query(types.QueryBalance, bs)
+	if err != nil {
+		return supply, height, err
+	}
+
+	if err := ctx.Codec.UnmarshalJSON(res, &supply); err != nil {
+		return supply, height, err
+	}
+
+	return supply, height, nil
+}
 func (r Retriever) GetSupply(ctx context.CLIContext, symbol string) (sdk.Int, int64, error) {
 	var supply sdk.Int
 	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolParams(symbol))

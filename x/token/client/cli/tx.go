@@ -2,6 +2,7 @@ package cli
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	linktype "github.com/line/link/types"
@@ -142,9 +143,9 @@ func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [to_key_or_address] [to] [amount_with_denom]",
+		Use:   "mint [from_key_or_address] [to] [symbol] [amount]",
 		Short: "Create and sign a mint token tx",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
@@ -153,14 +154,14 @@ func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			// parse coins trying to be sent
-			coins, err := sdk.ParseCoins(args[2])
+			symbol := args[2]
+			amount, err := strconv.Atoi(args[3])
 			if err != nil {
 				return err
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgMint(cliCtx.GetFromAddress(), to, coins)
+			msg := types.NewMsgMint(symbol, cliCtx.GetFromAddress(), to, sdk.NewInt(int64(amount)))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -170,21 +171,21 @@ func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [from_key_or_address] [amount_with_denom]",
+		Use:   "burn [from_key_or_address] [symbol] [amount]",
 		Short: "Create and sign a burn token tx",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			// parse coins trying to be sent
-			coins, err := sdk.ParseCoins(args[1])
-			if err != nil {
-				return err
+			symbol := args[1]
+			amount, ok := sdk.NewIntFromString(args[2])
+			if !ok {
+				return types.ErrInvalidAmount(types.DefaultCodespace, args[4])
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurn(cliCtx.GetFromAddress(), coins)
+			msg := types.NewMsgBurn(symbol, cliCtx.GetFromAddress(), amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

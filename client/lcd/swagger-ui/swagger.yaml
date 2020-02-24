@@ -15,6 +15,8 @@ tags:
     description: Coin query APIs
   - name: Token
     description: Token query APIs
+  - name: Collection
+    description: Collection query APIs
 servers:
   - url: /
 paths:
@@ -605,6 +607,49 @@ paths:
         "500":
           description: Internal Server Error
           content: {}
+  /token/tokens/{symbol}/balance/{address}:
+    get:
+      tags:
+        - Token
+      summary: Balance of an address for the symbol
+      parameters:
+        - name: symbol
+          in: path
+          description: Coin denomination
+          required: true
+          schema:
+            type: string
+          example: "conyxxv"
+        - name: address
+          in: path
+          description: Account address
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: string
+                    example: "100"
+        "500":
+          description: Internal Server Error
   /token/tokens/{symbol}/supply:
     get:
       tags:
@@ -713,7 +758,7 @@ paths:
   /collection/collections/{symbol}/tokens/{token_id}/supply:
     get:
       tags:
-        - Token
+        - Collection
       summary: Total supply of a single fungible token of the collection
       parameters:
         - name: symbol
@@ -756,7 +801,7 @@ paths:
   /collection/collections/{symbol}/tokens/{token_type}/count:
     get:
       tags:
-        - Token
+        - Collection
       summary: Total count of nonfungible tokens of the collection for the base-id
       parameters:
         - name: symbol
@@ -799,7 +844,7 @@ paths:
   /collection/collections/{symbol}/tokens/{token_id}:
     get:
       tags:
-        - Token
+        - Collection
       summary: Get the collection token details
       parameters:
         - name: symbol
@@ -843,7 +888,7 @@ paths:
   /collection/collections/{symbol}/tokens:
     get:
       tags:
-        - Token
+        - Collection
       summary: Get all collection tokens
       parameters:
         - name: symbol
@@ -882,7 +927,7 @@ paths:
   /collection/collections/{symbol}:
     get:
       tags:
-        - Token
+        - Collection
       summary: Get the Collection details
       parameters:
         - name: symbol
@@ -917,7 +962,7 @@ paths:
   /collection/collections:
     get:
       tags:
-        - Token
+        - Collection
       summary: Get all Collections
       parameters:
         - name: height
@@ -947,7 +992,7 @@ paths:
   /collection/parent/{symbol}/{token_id}:
     get:
       tags:
-        - Token
+        - Collection
       summary: Get the parent token of the given token
       parameters:
         - name: symbol
@@ -982,7 +1027,7 @@ paths:
   /collection/root/{symbol}/{token_id}:
     get:
       tags:
-        - Token
+        - Collection
       summary: Get the root parent token of the given token
       parameters:
         - name: symbol
@@ -1017,7 +1062,7 @@ paths:
   /collection/children/{symbol}/{token_id}:
     get:
       tags:
-        - Token
+        - Collection
       summary: Get the child tokens of the given token
       parameters:
         - name: symbol
@@ -1054,7 +1099,7 @@ paths:
   /collection/approved/{proxy}/{approver}/{symbol}:
     get:
       tags:
-        - Token
+        - Collection
       summary: Get approval status of a proxy for a collection
       parameters:
         - name: proxy
@@ -2175,10 +2220,12 @@ components:
               $ref: '#/components/schemas/Address'
             to:
               $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
             amount:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
+              type: string
+              example: "10"
     MsgBurn:
       type: object
       description: msg of token burn
@@ -2191,10 +2238,12 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
+            symbol:
+              type: string
+              example: "conyxxv"
             amount:
-              type: array
-              items:
-                $ref: '#/components/schemas/Coin'
+              type: string
+              example: "10"
     MsgCreate:
       type: object
       description: msg of collection creation
@@ -2626,20 +2675,16 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "amount": [{
-                       "denom": "conyxxv",
-                       "amount": "1"
-                     }]
+          "symbol": "conyxxv",
+          "amount": "1000000",
         }
       },
       {
         "type": "token/MsgBurn",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "amount": [{
-                       "denom": "conyxxv",
-                       "amount": "1"
-                     }]
+          "symbol": "conyxxv",
+          "amount": "1000000",
         }
       },
       {

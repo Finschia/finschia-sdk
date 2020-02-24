@@ -39,17 +39,17 @@ func verifyEventFunc(t *testing.T, expected sdk.Events, actual sdk.Events) {
 }
 
 const (
-	symbol     = "token001"
-	coinSymbol = "link"
-	name       = "description"
-	tokenuri   = "tokenuri"
+	defaultName       = "name"
+	defaultSymbol     = "token001"
+	defaultTokenURI   = "token-uri"
+	defaultDecimals   = 6
+	defaultAmount     = 1000
+	defaultSymbolCoin = "link"
 )
 
 var (
-	amount   = sdk.NewInt(1000)
-	decimals = sdk.NewInt(6)
-	addr1    = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	addr2    = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr1 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr2 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 )
 
 func TestHandlerUnrecognized(t *testing.T) {

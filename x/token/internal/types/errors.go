@@ -23,7 +23,19 @@ const (
 	CodeTokenInvalidTokenURILength sdk.CodeType = 204
 
 	//Permission
-	CodeTokenPermission sdk.CodeType = 300
+	CodePermission sdk.CodeType = 300
+
+	//Account
+	CodeAccountExist    sdk.CodeType = 400
+	CodeAccountNotExist sdk.CodeType = 401
+
+	//Bank
+	CodeInsufficientBalance sdk.CodeType = 500
+	CodeInvalidAmount       sdk.CodeType = 501
+
+	//Supply
+	CodeSupplyExist        sdk.CodeType = 600
+	CodeInsufficientSupply sdk.CodeType = 601
 )
 
 func ErrTokenExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
@@ -59,5 +71,24 @@ func ErrInvalidTokenURILength(codespace sdk.CodespaceType, tokenURI string) sdk.
 }
 
 func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission fmt.Stringer) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
+	return sdk.NewError(codespace, CodePermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
+}
+func ErrAccountExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
+	return sdk.NewError(codespace, CodeAccountExist, "account [%s] already exists", acc.String())
+}
+
+func ErrAccountNotExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
+	return sdk.NewError(codespace, CodeAccountNotExist, "account [%s] does not exists", acc.String())
+}
+
+func ErrInsufficientBalance(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeInsufficientBalance, msg)
+}
+
+func ErrSupplyExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeSupplyExist, "supply for token [%s] already exists", symbol)
+}
+
+func ErrInsufficientSupply(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeInsufficientSupply, msg)
 }

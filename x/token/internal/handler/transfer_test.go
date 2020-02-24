@@ -14,14 +14,14 @@ func TestHandleMsgTransfer(t *testing.T) {
 
 	t.Log("Prepare Token Issued")
 	{
-		token := types.NewToken(name, symbol, tokenuri, decimals, true)
-		err := k.IssueToken(ctx, token, amount, addr1)
+		token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1)
 		require.NoError(t, err)
 	}
 
 	t.Log("Transfer Token")
 	{
-		msg := types.NewMsgTransfer(addr1, addr2, symbol, sdk.NewInt(10))
+		msg := types.NewMsgTransfer(addr1, addr2, defaultSymbol, sdk.NewInt(10))
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		e := sdk.Events{
@@ -29,15 +29,15 @@ func TestHandleMsgTransfer(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("transfer", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("transfer", sdk.NewAttribute("to", addr2.String())),
-			sdk.NewEvent("transfer", sdk.NewAttribute("symbol", symbol)),
+			sdk.NewEvent("transfer", sdk.NewAttribute("symbol", defaultSymbol)),
 			sdk.NewEvent("transfer", sdk.NewAttribute("amount", sdk.NewInt(10).String())),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
 	t.Log("Transfer Coin. Expect Fail")
 	{
-		msg := types.NewMsgTransfer(addr1, addr2, coinSymbol, sdk.NewInt(10))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Only user defined token is possible: link").Error())
+		msg := types.NewMsgTransfer(addr1, addr2, defaultSymbolCoin, sdk.NewInt(10))
+		require.EqualError(t, msg.ValidateBasic(), types.ErrInvalidTokenSymbol(types.DefaultCodespace, "symbol [link] mismatched to [^[a-z][a-z0-9]{5,7}$]").Error())
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 	}

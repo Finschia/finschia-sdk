@@ -20,6 +20,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	cmd.AddCommand(
 		GetTokenCmd(cdc),
 		GetTokensCmd(cdc),
+		GetBalanceCmd(cdc),
 		GetSupplyCmd(cdc),
 		GetPermsCmd(cdc),
 	)
@@ -67,6 +68,34 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 
 			cliCtx = cliCtx.WithHeight(height)
 			return cliCtx.PrintOutput(tokens)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
+}
+
+func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "balance [symbol] [addr]",
+		Short: "Query balance of the account",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			retriever := clienttypes.NewRetriever(cliCtx)
+
+			symbol := args[0]
+			addr, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			supply, height, err := retriever.GetAccountBalance(cliCtx, symbol, addr)
+			if err != nil {
+				return err
+			}
+
+			cliCtx = cliCtx.WithHeight(height)
+			return cliCtx.PrintOutput(supply)
 		},
 	}
 

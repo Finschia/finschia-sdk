@@ -18,12 +18,31 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 			return queryAccountPermission(ctx, req, keeper)
 		case types.QueryTokens:
 			return queryTokens(ctx, req, keeper)
+		case types.QueryBalance:
+			return queryBalance(ctx, req, keeper)
 		case types.QuerySupply:
 			return querySupply(ctx, req, keeper)
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown token query endpoint")
 		}
 	}
+}
+
+func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
+	if len(req.Data) == 0 {
+		return nil, sdk.ErrUnknownRequest("data is nil")
+	}
+	var params types.QuerySymbolAccAddressParams
+	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+	supply := keeper.GetBalance(ctx, params.Symbol, params.Addr)
+	bz, err := keeper.MarshalJSONIndent(supply)
+	if err != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
+	}
+
+	return bz, nil
 }
 
 func queryAccountPermission(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
@@ -78,7 +97,7 @@ func querySupply(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	supply, err := keeper.GetSupply(ctx, params.Symbol)
+	supply, err := keeper.GetSupplyInt(ctx, params.Symbol)
 	if err != nil {
 		return nil, err
 	}

@@ -25,4 +25,8 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(&Permission{}, "token/TokenPermission", nil)
 	cdc.RegisterInterface((*Token)(nil), nil)
 	cdc.RegisterConcrete(&BaseToken{}, "token/Token", nil)
+	cdc.RegisterInterface((*Supply)(nil), nil)
+	cdc.RegisterConcrete(&BaseSupply{}, "token/Supply", nil)
+	cdc.RegisterInterface((*Account)(nil), nil)
+	cdc.RegisterConcrete(&BaseAccount{}, "token/Account", nil)
 }

@@ -57,7 +57,7 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenDecimals(DefaultCodespace, sdk.NewInt(19)).Error())
 	}
 	{
-		msg := NewMsgMint(addr, addr, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(1))))
+		msg := NewMsgMint("linkabc", addr, addr, sdk.NewInt(1))
 		require.Equal(t, "mint", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -75,7 +75,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Amount, msg2.Amount)
 	}
 	{
-		msg := NewMsgBurn(addr, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(1))))
+		msg := NewMsgBurn("linkabc", addr, sdk.NewInt(1))
 		require.Equal(t, "burn", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -161,7 +161,7 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("missing recipient address").Error())
 
 		msg = NewMsgTransfer(addr, addr, "m", sdk.NewInt(4))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Only user defined token is possible: m").Error())
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "symbol [m] mismatched to [^[a-z][a-z0-9]{5,7}$]").Error())
 
 		msg = NewMsgTransfer(addr, addr, "mytoken", sdk.NewInt(-1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInsufficientCoins("send amount must be positive").Error())

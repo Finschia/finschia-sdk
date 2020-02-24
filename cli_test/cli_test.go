@@ -2253,7 +2253,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		require.Equal(t, int64(decimals), token.GetDecimals().Int64())
 		require.Equal(t, false, token.GetMintable())
 
-		require.Equal(t, sdk.NewInt(amount), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolBrown+fooSuffix))
+		require.Equal(t, sdk.NewInt(amount), f.QueryBalanceToken(symbolBrown+fooSuffix, fooAddr))
 	}
 
 	// Issue Token cony. The token symbol extended with the account address suffix
@@ -2267,7 +2267,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		require.Equal(t, int64(decimals), token.GetDecimals().Int64())
 		require.Equal(t, true, token.GetMintable())
 
-		require.Equal(t, sdk.NewInt(amount), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(symbolCony+fooSuffix))
+		require.Equal(t, sdk.NewInt(amount), f.QueryBalanceToken(symbolCony+fooSuffix, fooAddr))
 	}
 
 	// Query for all tokens
@@ -2349,34 +2349,34 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		require.Equal(t, int64(6), token.GetDecimals().Int64())
 		require.Equal(t, true, token.GetMintable())
 
-		require.Equal(t, int64(initAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(initAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 	}
 	// Mint/Burn by token owner
 	{
-		f.TxTokenMint(keyFoo, fooAddr, mintAmountStr+symbolConyFoo, "-y")
+		f.TxTokenMint(keyFoo, fooAddr, symbolConyFoo, mintAmountStr, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, int64(initAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(initAmount+mintAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 
-		f.TxTokenBurn(keyFoo, burnAmountStr+symbolConyFoo, "-y")
+		f.TxTokenBurn(keyFoo, symbolConyFoo, burnAmountStr, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 	}
 
 	// Mint/Burn Fail
 	{
 		//Foo try to burn but insufficient
-		_, stdOut, _ := f.TxTokenBurn(keyFoo, initAmountStr+initAmountStr+symbolConyFoo, "-y")
+		_, stdOut, _ := f.TxTokenBurn(keyFoo, symbolConyFoo, initAmountStr+initAmountStr, "-y")
 		require.Contains(t, stdOut, "not enough coins")
 		//bar try to mint but has no permission
-		_, stdOut, _ = f.TxTokenMint(keyBar, barAddr, mintAmountStr+symbolConyFoo, "-y")
+		_, stdOut, _ = f.TxTokenMint(keyBar, barAddr, symbolConyFoo, mintAmountStr, "-y")
 		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", barAddr, symbolConyFoo+"-mint"))
 
 		//Amount not changed
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 	}
 
 	// Grant Permission to bar
@@ -2384,10 +2384,10 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenGrantPerm(keyFoo, barAddr, symbolConyFoo, "mint", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		f.TxTokenMint(keyBar, barAddr, mintAmountStr+symbolConyFoo, "-y")
+		f.TxTokenMint(keyBar, barAddr, symbolConyFoo, mintAmountStr, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(mintAmount), f.QueryBalanceToken(symbolConyFoo, barAddr).Int64())
 	}
 
 	// Revoke permission from foo
@@ -2395,21 +2395,21 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenRevokePerm(keyFoo, symbolConyFoo, "mint", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
-		_, stdOut, _ := f.TxTokenMint(keyFoo, fooAddr, mintAmountStr+symbolConyFoo, "-y")
+		_, stdOut, _ := f.TxTokenMint(keyFoo, fooAddr, symbolConyFoo, mintAmountStr, "-y")
 		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", fooAddr, symbolConyFoo+"-mint"))
 
 		// Amount not changed
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryAccount(fooAddr).Coins.AmountOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
+		require.Equal(t, int64(mintAmount), f.QueryBalanceToken(symbolConyFoo, barAddr).Int64())
 	}
 
 	// Burn from bar without permissions; burn failure
 	{
-		f.TxTokenBurn(keyBar, burnAmountStr+symbolConyFoo, "-y")
+		f.TxTokenBurn(keyBar, symbolConyFoo, burnAmountStr, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QueryTotalSupplyOf(symbolConyFoo).Int64())
-		require.Equal(t, int64(mintAmount), f.QueryAccount(barAddr).Coins.AmountOf(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(mintAmount), f.QueryBalanceToken(symbolConyFoo, barAddr).Int64())
 	}
 
 	f.Cleanup()

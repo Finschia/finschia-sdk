@@ -61,28 +61,6 @@ func TestKeeper_UpdateToken(t *testing.T) {
 	}
 }
 
-func TestKeeper_GetSupply(t *testing.T) {
-	ctx := cacheKeeper()
-	t.Log("No Token. Get Supply")
-	token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
-	{
-		supply, err := keeper.GetSupply(ctx, token.GetSymbol())
-		require.Error(t, err)
-		require.Equal(t, int64(0), supply.Int64())
-	}
-	t.Log("Set Token")
-	{
-		require.NoError(t, keeper.SetToken(ctx, token))
-		require.NoError(t, keeper.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetSymbol(), sdk.NewInt(defaultAmount))), addr1))
-	}
-	t.Log("Token Exist. Get Supply")
-	{
-		supply, err := keeper.GetSupply(ctx, token.GetSymbol())
-		require.NoError(t, err)
-		require.Equal(t, int64(defaultAmount), supply.Int64())
-	}
-}
-
 func TestKeeper_GetAllTokens(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Tokens")

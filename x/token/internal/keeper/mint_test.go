@@ -17,51 +17,51 @@ func TestKeeper_MintTokens(t *testing.T) {
 	}
 	t.Log("Total supply")
 	{
-		supply, err := keeper.GetSupply(ctx, defaultSymbol)
+		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account")
 	{
-		supply := keeper.GetAccountBalance(ctx, defaultSymbol, addr1)
+		supply := keeper.GetBalance(ctx, defaultSymbol, addr1)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 
 	t.Log("Mint Tokens addr1 -> addr1")
 	{
-		err := keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(defaultAmount))), addr1, addr1)
+		err := keeper.MintToken(ctx, defaultSymbol, sdk.NewInt(defaultAmount), addr1, addr1)
 		require.NoError(t, err)
 	}
 	t.Log("Total supply")
 	{
-		supply, err := keeper.GetSupply(ctx, defaultSymbol)
+		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
 		require.Equal(t, int64(defaultAmount+defaultAmount), supply.Int64())
 		require.NoError(t, err)
 	}
 	t.Log("Balance of Account 1")
 	{
-		supply := keeper.GetAccountBalance(ctx, defaultSymbol, addr1)
+		supply := keeper.GetBalance(ctx, defaultSymbol, addr1)
 		require.Equal(t, int64(defaultAmount+defaultAmount), supply.Int64())
 	}
 	t.Log("Mint Tokens addr1 -> addr2")
 	{
-		err := keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(defaultAmount))), addr1, addr2)
+		err := keeper.MintToken(ctx, defaultSymbol, sdk.NewInt(defaultAmount), addr1, addr2)
 		require.NoError(t, err)
 	}
 	t.Log("Total supply")
 	{
-		supply, err := keeper.GetSupply(ctx, defaultSymbol)
+		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
 		require.Equal(t, int64(defaultAmount+defaultAmount+defaultAmount), supply.Int64())
 		require.NoError(t, err)
 	}
 	t.Log("Balance of Account 1")
 	{
-		supply := keeper.GetAccountBalance(ctx, defaultSymbol, addr1)
+		supply := keeper.GetBalance(ctx, defaultSymbol, addr1)
 		require.Equal(t, int64(defaultAmount+defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account 2")
 	{
-		supply := keeper.GetAccountBalance(ctx, defaultSymbol, addr2)
+		supply := keeper.GetBalance(ctx, defaultSymbol, addr2)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 }
@@ -76,7 +76,7 @@ func TestKeeper_MintTokensWithoutPermissions(t *testing.T) {
 
 	t.Log("Mint Tokens by addr2. Expect Fail")
 	{
-		err := keeper.MintTokens(ctx, sdk.NewCoins(sdk.NewCoin(defaultSymbol, sdk.NewInt(defaultAmount))), addr2, addr2)
+		err := keeper.MintToken(ctx, defaultSymbol, sdk.NewInt(defaultAmount), addr2, addr2)
 		require.Error(t, err)
 		require.EqualError(t, err, types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewMintPermission(defaultSymbol)).Error())
 	}

@@ -21,6 +21,9 @@ func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
 		return types.ErrTokenExist(types.DefaultCodespace, token.GetSymbol())
 	}
 	store.Set(tokenKey, k.cdc.MustMarshalBinaryBare(token))
+
+	k.setSupply(ctx, types.DefaultSupply(token.GetSymbol()))
+
 	return nil
 }
 
@@ -90,13 +93,6 @@ func (k Keeper) iterateTokens(ctx sdk.Context, prefix string, process func(types
 		}
 		iter.Next()
 	}
-}
-
-func (k Keeper) GetSupply(ctx sdk.Context, symbol string) (supply sdk.Int, err sdk.Error) {
-	if _, err = k.GetToken(ctx, symbol); err != nil {
-		return sdk.NewInt(0), err
-	}
-	return k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(symbol), nil
 }
 
 func (k Keeper) mustDecodeToken(tokenByte []byte) (token types.Token) {

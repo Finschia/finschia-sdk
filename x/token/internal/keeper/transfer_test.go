@@ -18,18 +18,18 @@ func TestKeeper_Transfer(t *testing.T) {
 	}
 	t.Log("Total supply")
 	{
-		supply, err := keeper.GetSupply(ctx, defaultSymbol)
+		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account 1")
 	{
-		supply := keeper.GetAccountBalance(ctx, defaultSymbol, addr1)
+		supply := keeper.GetBalance(ctx, defaultSymbol, addr1)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account 2")
 	{
-		supply := keeper.GetAccountBalance(ctx, defaultSymbol, addr2)
+		supply := keeper.GetBalance(ctx, defaultSymbol, addr2)
 		require.Equal(t, int64(0), supply.Int64())
 	}
 	t.Log("Transfer Token")
@@ -39,18 +39,18 @@ func TestKeeper_Transfer(t *testing.T) {
 	}
 	t.Log("Total supply")
 	{
-		supply, err := keeper.GetSupply(ctx, defaultSymbol)
+		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account 1")
 	{
-		supply := keeper.GetAccountBalance(ctx, defaultSymbol, addr1)
+		supply := keeper.GetBalance(ctx, defaultSymbol, addr1)
 		require.Equal(t, int64(0), supply.Int64())
 	}
 	t.Log("Balance of Account 2")
 	{
-		supply := keeper.GetAccountBalance(ctx, defaultSymbol, addr2)
+		supply := keeper.GetBalance(ctx, defaultSymbol, addr2)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 }

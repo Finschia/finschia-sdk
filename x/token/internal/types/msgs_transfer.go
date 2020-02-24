@@ -32,7 +32,7 @@ func (msg MsgTransfer) ValidateBasic() sdk.Error {
 	}
 
 	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return sdk.ErrInvalidCoins("Only user defined token is possible: " + msg.Symbol)
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 
 	if !msg.Amount.IsPositive() {

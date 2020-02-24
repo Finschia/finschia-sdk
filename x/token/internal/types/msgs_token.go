@@ -55,9 +55,8 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
 	}
 
-	coin := sdk.NewCoin(msg.Symbol, msg.Amount)
-	if !coin.IsValid() {
-		return sdk.ErrInvalidCoins(coin.String())
+	if msg.Amount.IsNegative() {
+		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
 	}
 
 	return nil
@@ -66,13 +65,15 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgMint)(nil)
 
 type MsgMint struct {
+	Symbol string         `json:"symbol"`
 	From   sdk.AccAddress `json:"from"`
 	To     sdk.AccAddress `json:"to"`
-	Amount sdk.Coins      `json:"amount"`
+	Amount sdk.Int        `json:"amount"`
 }
 
-func NewMsgMint(from, to sdk.AccAddress, amount sdk.Coins) MsgMint {
+func NewMsgMint(symbol string, from, to sdk.AccAddress, amount sdk.Int) MsgMint {
 	return MsgMint{
+		Symbol: symbol,
 		From:   from,
 		To:     to,
 		Amount: amount,
@@ -86,8 +87,11 @@ func (msg MsgMint) GetSignBytes() []byte {
 }
 
 func (msg MsgMint) ValidateBasic() sdk.Error {
-	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("amount is not valid")
+	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+	}
+	if msg.Amount.IsNegative() {
+		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
 	}
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("from address cannot be empty")
@@ -101,12 +105,14 @@ func (msg MsgMint) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgBurn)(nil)
 
 type MsgBurn struct {
+	Symbol string         `json:"symbol"`
 	From   sdk.AccAddress `json:"from"`
-	Amount sdk.Coins      `json:"amount"`
+	Amount sdk.Int        `json:"amount"`
 }
 
-func NewMsgBurn(from sdk.AccAddress, amount sdk.Coins) MsgBurn {
+func NewMsgBurn(symbol string, from sdk.AccAddress, amount sdk.Int) MsgBurn {
 	return MsgBurn{
+		Symbol: symbol,
 		From:   from,
 		Amount: amount,
 	}
@@ -119,8 +125,11 @@ func (msg MsgBurn) GetSignBytes() []byte {
 }
 
 func (msg MsgBurn) ValidateBasic() sdk.Error {
-	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("amount is not valid")
+	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+	}
+	if msg.Amount.IsNegative() {
+		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
 	}
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("from address cannot be empty")

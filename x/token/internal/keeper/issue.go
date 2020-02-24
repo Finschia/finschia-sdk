@@ -16,7 +16,7 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 		return err
 	}
 
-	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetSymbol(), amount)), owner)
+	err = k.MintSupply(ctx, token.GetSymbol(), owner, amount)
 	if err != nil {
 		return err
 	}

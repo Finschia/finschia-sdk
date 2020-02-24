@@ -8,7 +8,7 @@ import (
 )
 
 func handleMsgMint(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMint) sdk.Result {
-	err := keeper.MintTokens(ctx, msg.Amount, msg.From, msg.To)
+	err := keeper.MintToken(ctx, msg.Symbol, msg.Amount, msg.From, msg.To)
 	if err != nil {
 		return err.Result()
 	}
@@ -24,7 +24,7 @@ func handleMsgMint(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMint) sdk
 }
 
 func handleMsgBurn(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurn) sdk.Result {
-	err := keeper.BurnTokens(ctx, msg.Amount, msg.From)
+	err := keeper.BurnToken(ctx, msg.Symbol, msg.Amount, msg.From)
 	if err != nil {
 		return err.Result()
 	}

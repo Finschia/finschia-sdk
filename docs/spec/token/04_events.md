@@ -29,7 +29,8 @@ The token module emits the following events:
 | message          | module         | token                    |
 | message          | sender         | {ownerAddress}           | 
 | message          | action         | mint                     |
-| mint             | amount         | {amount}{symbol}         |
+| mint             | symbol         | {symbol}                 |
+| mint             | amount         | {amount}                 |
 | mint             | from           | {ownerAddress}           |
 | mint             | to             | {toAddress}              |
 
@@ -39,10 +40,11 @@ The token module emits the following events:
 | message          | module         | token                    |
 | message          | sender         | {ownerAddress}           | 
 | message          | action         | burn                     |
-| burn             | amount         | {amount}{symbol}         |
+| burn             | symbol         | {symbol}                 |
+| burn             | amount         | {amount}                 |
 | burn             | from           | {ownerAddress}           |
 
-### MsgTransferFT
+### MsgTransfer
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
 | message          | module         | token                    |

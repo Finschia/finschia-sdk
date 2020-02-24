@@ -534,13 +534,13 @@ func (f *Fixtures) TxTokenIssue(from string, symbol, name string, amount int64, 
 	cmd := fmt.Sprintf("%s tx token issue %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, symbol, name, amount, decimals, mintable, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
-func (f *Fixtures) TxTokenMint(from string, to sdk.AccAddress, amount string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token mint %s %s %s %v", f.LinkcliBinary, from, to, amount, f.Flags())
+func (f *Fixtures) TxTokenMint(from string, to sdk.AccAddress, symbol, amount string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token mint %s %s %s %s %v", f.LinkcliBinary, from, to, symbol, amount, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
-func (f *Fixtures) TxTokenBurn(from, amount string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token burn %s %s %v", f.LinkcliBinary, from, amount, f.Flags())
+func (f *Fixtures) TxTokenBurn(from, symbol, amount string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token burn %s %s %s %v", f.LinkcliBinary, from, symbol, amount, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
@@ -1001,6 +1001,17 @@ func (f *Fixtures) QueryTokens(flags ...string) tokenModule.Tokens {
 	err := cdc.UnmarshalJSON([]byte(res), &tokens)
 	require.NoError(f.T, err)
 	return tokens
+}
+func (f *Fixtures) QueryBalanceToken(symbol string, addr sdk.AccAddress, flags ...string) sdk.Int {
+	cmd := fmt.Sprintf("%s query token balance %s %s %s", f.LinkcliBinary, symbol, addr.String(), f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var supply sdk.Int
+	err := cdc.UnmarshalJSON([]byte(res), &supply)
+	require.NoError(f.T, err)
+
+	return supply
 }
 func (f *Fixtures) QuerySupplyToken(symbol string, flags ...string) sdk.Int {
 	cmd := fmt.Sprintf("%s query token supply %s %s", f.LinkcliBinary, symbol, f.Flags())

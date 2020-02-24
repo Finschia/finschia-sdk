@@ -150,7 +150,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
 	)
 
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(token.ModuleName), app.cbankKeeper, keys[token.StoreKey])
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(token.ModuleName), keys[token.StoreKey])
 	app.collectionKeeper = collection.NewKeeper(app.cdc, app.supplyKeeper, app.iamKeeper.WithPrefix(collection.ModuleName), app.cbankKeeper, keys[collection.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
