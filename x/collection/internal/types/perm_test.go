@@ -8,9 +8,9 @@ import (
 
 func TestPermission(t *testing.T) {
 	issuePerm := NewIssuePermission(defaultSymbol)
-	mintPerm := NewMintPermission(defaultSymbol)
-	burnPerm := NewBurnPermission(defaultSymbol)
-	modifyPerm := NewModifyTokenURIPermission(defaultSymbol)
+	mintPerm := NewMintPermission(defaultSymbol, defaultTokenIDFT)
+	burnPerm := NewBurnPermission(defaultSymbol, defaultTokenIDFT)
+	modifyPerm := NewModifyTokenURIPermission(defaultSymbol, defaultTokenIDFT)
 
 	require.True(t, issuePerm.Validate())
 	require.True(t, mintPerm.Validate())

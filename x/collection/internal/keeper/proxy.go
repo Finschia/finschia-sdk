@@ -15,9 +15,9 @@ type ProxyKeeper interface {
 	DeleteApproved(ctx sdk.Context, proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) sdk.Error
 }
 
-func (k Keeper) IsApproved(ctx sdk.Context, proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) bool {
+func (k Keeper) IsApproved(ctx sdk.Context, symbol string, proxy sdk.AccAddress, approver sdk.AccAddress) bool {
 	store := ctx.KVStore(k.storeKey)
-	approvedKey := types.CollectionApprovedKey(proxy, approver, symbol)
+	approvedKey := types.CollectionApprovedKey(symbol, proxy, approver)
 	return store.Has(approvedKey)
 }
 
@@ -26,7 +26,7 @@ func (k Keeper) SetApproved(ctx sdk.Context, proxy sdk.AccAddress, approver sdk.
 	if !store.Has(types.CollectionKey(symbol)) {
 		return types.ErrCollectionNotExist(types.DefaultCodespace, symbol)
 	}
-	approvedKey := types.CollectionApprovedKey(proxy, approver, symbol)
+	approvedKey := types.CollectionApprovedKey(symbol, proxy, approver)
 	if store.Has(approvedKey) {
 		return types.ErrCollectionAlreadyApproved(types.DefaultCodespace, proxy.String(), approver.String(), symbol)
 	}
@@ -49,7 +49,7 @@ func (k Keeper) DeleteApproved(ctx sdk.Context, proxy sdk.AccAddress, approver s
 	if !store.Has(types.CollectionKey(symbol)) {
 		return types.ErrCollectionNotExist(types.DefaultCodespace, symbol)
 	}
-	approvedKey := types.CollectionApprovedKey(proxy, approver, symbol)
+	approvedKey := types.CollectionApprovedKey(symbol, proxy, approver)
 	if !store.Has(approvedKey) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), approver.String(), symbol)
 	}

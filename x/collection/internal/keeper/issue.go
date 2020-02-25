@@ -8,11 +8,11 @@ import (
 )
 
 type IssueKeeper interface {
-	IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error
-	IssueNFT(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenType string) sdk.Error
+	IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error
+	IssueNFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, tokenType string) sdk.Error
 }
 
-func (k Keeper) IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error {
+func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error {
 	if !types.ValidTokenURI(token.GetTokenURI()) {
 		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
 	}
@@ -21,12 +21,12 @@ func (k Keeper) IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, a
 		return err
 	}
 
-	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), amount)), owner)
+	err = k.MintSupply(ctx, symbol, owner, types.NewCoins(types.NewCoin(token.GetTokenID(), amount)))
 	if err != nil {
 		return err
 	}
 
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol, token.GetTokenID())
 	k.AddPermission(ctx, owner, tokenURIModifyPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -49,9 +49,9 @@ func (k Keeper) IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, a
 		),
 	})
 	if token.GetMintable() {
-		mintPerm := types.NewMintPermission(token.GetDenom())
+		mintPerm := types.NewMintPermission(symbol, token.GetTokenID())
 		k.AddPermission(ctx, owner, mintPerm)
-		burnPerm := types.NewBurnPermission(token.GetDenom())
+		burnPerm := types.NewBurnPermission(symbol, token.GetTokenID())
 		k.AddPermission(ctx, owner, burnPerm)
 
 		ctx.EventManager().EmitEvents(sdk.Events{
@@ -73,7 +73,7 @@ func (k Keeper) IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, a
 	return nil
 }
 
-func (k Keeper) IssueNFT(ctx sdk.Context, owner sdk.AccAddress, symbol string) sdk.Error {
+func (k Keeper) IssueNFT(ctx sdk.Context, symbol string, owner sdk.AccAddress) sdk.Error {
 	tokenType, err := k.getNextTokenType(ctx, symbol)
 	if err != nil {
 		return err
@@ -84,9 +84,9 @@ func (k Keeper) IssueNFT(ctx sdk.Context, owner sdk.AccAddress, symbol string) s
 		return err
 	}
 
-	mintPerm := types.NewMintPermission(symbol + tokenType)
+	mintPerm := types.NewMintPermission(symbol, tokenType)
 	k.AddPermission(ctx, owner, mintPerm)
-	burnPerm := types.NewBurnPermission(symbol + tokenType)
+	burnPerm := types.NewBurnPermission(symbol, tokenType)
 	k.AddPermission(ctx, owner, burnPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{

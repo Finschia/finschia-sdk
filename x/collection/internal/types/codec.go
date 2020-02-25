@@ -46,4 +46,10 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(&BaseCollection{}, "collection/Collection", nil)
 	cdc.RegisterConcrete(&BaseFT{}, "collection/FT", nil)
 	cdc.RegisterConcrete(&BaseNFT{}, "collection/NFT", nil)
+
+	cdc.RegisterInterface((*Account)(nil), nil)
+	cdc.RegisterConcrete(&BaseAccount{}, "collection/Account", nil)
+
+	cdc.RegisterInterface((*Supply)(nil), nil)
+	cdc.RegisterConcrete(&BaseSupply{}, "collection/Supply", nil)
 }

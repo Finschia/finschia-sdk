@@ -13,7 +13,7 @@ func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNF
 	}
 
 	token := types.NewNFT(collection, msg.Name, msg.TokenType, msg.TokenURI, msg.To)
-	err = keeper.MintNFT(ctx, msg.From, token)
+	err = keeper.MintNFT(ctx, msg.Symbol, msg.From, token)
 	if err != nil {
 		return err.Result()
 	}
@@ -29,7 +29,7 @@ func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNF
 }
 
 func handleMsgMintFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintFT) sdk.Result {
-	err := keeper.MintFT(ctx, msg.From, msg.To, msg.Amount)
+	err := keeper.MintFT(ctx, msg.Symbol, msg.From, msg.To, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}

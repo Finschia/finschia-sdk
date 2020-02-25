@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/stretchr/testify/require"
 )
@@ -32,10 +31,10 @@ func TestHandleApproveDisapprove(t *testing.T) {
 		msg2 = types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg3 := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, "", sdk.NewInt(10), sdk.NewInt(1), true)
+		msg3 := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg3)
 		require.True(t, res.Code.IsOK())
-		msg4 := types.NewMsgMintFT(addr1, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(10))))
+		msg4 := types.NewMsgMintFT(defaultSymbol, addr1, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 		res = h(ctx, msg4)
 		require.True(t, res.Code.IsOK())
 	}
@@ -95,7 +94,7 @@ func TestHandleApproveDisapprove(t *testing.T) {
 	}
 	verifyEventFunc(t, e, res.Events)
 
-	msg3 := types.NewMsgBurnFTFrom(addr2, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1))))
+	msg3 := types.NewMsgBurnFTFrom(defaultSymbol, addr2, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 	res = h(ctx, msg3)
 	require.False(t, res.Code.IsOK())
 
@@ -109,7 +108,7 @@ func TestHandleApproveDisapprove(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 
-	msg3 = types.NewMsgBurnFTFrom(addr2, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1))))
+	msg3 = types.NewMsgBurnFTFrom(defaultSymbol, addr2, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 	res = h(ctx, msg3)
 	require.True(t, res.Code.IsOK())
 	e = sdk.Events{
@@ -117,7 +116,7 @@ func TestHandleApproveDisapprove(t *testing.T) {
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
 		sdk.NewEvent("burn_ft_from", sdk.NewAttribute("proxy", addr2.String())),
 		sdk.NewEvent("burn_ft_from", sdk.NewAttribute("from", addr1.String())),
-		sdk.NewEvent("burn_ft_from", sdk.NewAttribute("amount", linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1))).ToCoins().String())),
+		sdk.NewEvent("burn_ft_from", sdk.NewAttribute("amount", types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))).String())),
 	}
 	verifyEventFunc(t, e, res.Events)
 
@@ -135,7 +134,7 @@ func TestHandleApproveDisapprove(t *testing.T) {
 	res = h(ctx, msg2)
 	require.False(t, res.Code.IsOK())
 
-	msg3 = types.NewMsgBurnFTFrom(addr2, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1))))
+	msg3 = types.NewMsgBurnFTFrom(defaultSymbol, addr2, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 	res = h(ctx, msg3)
 	require.False(t, res.Code.IsOK())
 }

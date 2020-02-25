@@ -14,6 +14,8 @@ import (
 func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, sdk.Error) {
 		switch path[0] {
+		case types.QueryBalance:
+			return queryBalance(ctx, req, keeper)
 		case types.QueryPerms:
 			return queryAccountPermission(ctx, req, keeper)
 		case types.QueryTokens:
@@ -33,9 +35,27 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 		case types.QueryIsApproved:
 			return queryIsApproved(ctx, req, keeper)
 		default:
-			return nil, sdk.ErrUnknownRequest("unknown token query endpoint")
+			return nil, sdk.ErrUnknownRequest("unknown collection query endpoint")
 		}
 	}
+}
+
+func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
+	var params types.QuerySymbolTokenIDAccAddressParams
+	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+	}
+	supply, err := keeper.GetBalance(ctx, params.Symbol, params.TokenID, params.Addr)
+	if err != nil {
+		return nil, err
+	}
+
+	bz, err2 := keeper.MarshalJSONIndent(supply)
+	if err2 != nil {
+		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+	}
+
+	return bz, nil
 }
 
 func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
@@ -188,7 +208,7 @@ func queryIsApproved(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params[Proxy=%s, Approver=%s, Symbol=%s]: %s", params.Proxy.String(), params.Approver.String(), params.Symbol, err))
 	}
 
-	approved := keeper.IsApproved(ctx, params.Proxy, params.Approver, params.Symbol)
+	approved := keeper.IsApproved(ctx, params.Symbol, params.Proxy, params.Approver)
 
 	bz, err := keeper.MarshalJSONIndent(approved)
 	if err != nil {
@@ -202,7 +222,7 @@ func querySupply(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	supply, err := keeper.GetSupply(ctx, params.Symbol, params.TokenID)
+	supply, err := keeper.GetSupplyInt(ctx, params.Symbol, params.TokenID)
 	if err != nil {
 		return nil, err
 	}

@@ -20,6 +20,25 @@ func (r Retriever) query(path string, data []byte) ([]byte, int64, error) {
 	return r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", types.QuerierRoute, path), data)
 }
 
+func (r Retriever) GetAccountBalance(ctx context.CLIContext, symbol, tokenID string, addr sdk.AccAddress) (sdk.Int, int64, error) {
+	var balance sdk.Int
+	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolTokenIDAccAddressParams(symbol, tokenID, addr))
+	if err != nil {
+		return balance, 0, err
+	}
+
+	res, height, err := r.query(types.QueryBalance, bs)
+	if err != nil {
+		return balance, height, err
+	}
+
+	if err := ctx.Codec.UnmarshalJSON(res, &balance); err != nil {
+		return balance, height, err
+	}
+
+	return balance, height, nil
+}
+
 func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddress) (types.Permissions, int64, error) {
 	var pms types.Permissions
 	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressParams(addr))

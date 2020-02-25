@@ -19,7 +19,7 @@ func TestKeeper_ModifyTokenURI(t *testing.T) {
 		token := types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
 		err := keeper.SetToken(ctx, token)
 		require.NoError(t, err)
-		keeper.AddPermission(ctx, addr1, types.NewModifyTokenURIPermission(defaultSymbol+defaultTokenIDFT))
+		keeper.AddPermission(ctx, addr1, types.NewModifyTokenURIPermission(defaultSymbol, defaultTokenIDFT))
 	}
 
 	const modifiedTokenURI = "modifiedtokenuri"

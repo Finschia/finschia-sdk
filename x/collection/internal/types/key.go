@@ -1,6 +1,10 @@
 package types
 
-import "github.com/cosmos/cosmos-sdk/types"
+import (
+	"github.com/cosmos/cosmos-sdk/types"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
 const (
 	ModuleName = "collection"
@@ -10,39 +14,43 @@ const (
 )
 
 var (
-	CollectionKeyPrefix            = []byte{0x01}
-	TokenTypeKeyPrefix             = []byte{0x02}
-	TokenChildToParentKeyPrefix    = []byte{0x03}
-	TokenParentToChildKeyPrefix    = []byte{0x04}
-	TokenParentToChildSubKeyPrefix = []byte{0x05}
-	CollectionApprovedKeyPrefix    = []byte{0x06}
+	AccountKeyPrefix            = []byte{0x00}
+	CollectionKeyPrefix         = []byte{0x01}
+	SupplyKeyPrefix             = []byte{0x02}
+	TokenTypeKeyPrefix          = []byte{0x03}
+	TokenChildToParentKeyPrefix = []byte{0x04}
+	TokenParentToChildKeyPrefix = []byte{0x05}
+	CollectionApprovedKeyPrefix = []byte{0x06}
 )
 
-func CollectionKey(denom string) []byte {
-	return append(CollectionKeyPrefix, []byte(denom)...)
+func AccountKey(symbol string, acc sdk.AccAddress) []byte {
+	return append(append(AccountKeyPrefix, []byte(symbol)...), acc...)
+}
+
+func SupplyKey(symbol string) []byte {
+	return append(SupplyKeyPrefix, []byte(symbol)...)
+}
+
+func CollectionKey(symbol string) []byte {
+	return append(CollectionKeyPrefix, []byte(symbol)...)
 }
 
 func TokenTypeKey(symbol, tokenType string) []byte {
-	key := append(TokenTypeKeyPrefix, []byte(symbol)...)
-	return append(key, []byte(tokenType)...)
+	return append(append(TokenTypeKeyPrefix, []byte(symbol)...), []byte(tokenType)...)
 }
 
-func TokenChildToParentKey(token Token) []byte {
-	return append(TokenChildToParentKeyPrefix, []byte(token.GetDenom())...)
+func TokenChildToParentKey(symbol, tokenID string) []byte {
+	return append(append(TokenChildToParentKeyPrefix, []byte(symbol)...), []byte(tokenID)...)
 }
 
-func TokenParentToChildKey(token Token) []byte {
-	return append(TokenParentToChildKeyPrefix, []byte(token.GetDenom())...)
+func TokenParentToChildSubKey(symbol, parent string) []byte {
+	return append(append(TokenParentToChildKeyPrefix, []byte(symbol)...), []byte(parent)...)
 }
 
-func TokenParentToChildSubKey(token Token) []byte {
-	return append(TokenParentToChildSubKeyPrefix, []byte(token.GetDenom())...)
+func TokenParentToChildKey(symbol, parent, child string) []byte {
+	return append(append(append(TokenParentToChildKeyPrefix, []byte(symbol)...), []byte(parent)...), []byte(child)...)
 }
 
-func ParentToChildSubKeyToToken(prefix []byte, key []byte) (tokenDenom string) {
-	return string(key[len(prefix)+1:])
-}
-
-func CollectionApprovedKey(proxy types.AccAddress, approver types.AccAddress, symbol string) []byte {
-	return append(append(append(CollectionApprovedKeyPrefix, proxy.Bytes()...), approver.Bytes()...), symbol...)
+func CollectionApprovedKey(symbol string, proxy types.AccAddress, approver types.AccAddress) []byte {
+	return append(append(append(CollectionApprovedKeyPrefix, []byte(symbol)...), proxy.Bytes()...), approver.Bytes()...)
 }

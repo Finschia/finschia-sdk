@@ -66,9 +66,8 @@ func TestModifyTokenURI(t *testing.T) {
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		f.LogResult(f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbol, "itisbrown", firstTokenURI, tokenType, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		denom := symbol + tokenID01
 		firstResult := f.QueryTokenCollection(symbol, tokenID01).(collectionmodule.NFT)
-		require.Equal(t, denom, firstResult.GetDenom())
+		require.Equal(t, tokenID01, firstResult.GetTokenID())
 		require.Equal(t, firstTokenURI, firstResult.GetTokenURI())
 
 		secondTokenURI := firstTokenURI + "modified"
@@ -2458,10 +2457,10 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID01)
 		require.Equal(t, description, token.GetName())
 		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
-		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID01, token.GetDenom())
+		require.Equal(t, tokenID01, token.GetTokenID())
 		require.Equal(t, int64(6), token.(collectionmodule.FT).GetDecimals().Int64())
 		require.Equal(t, false, token.(collectionmodule.FT).GetMintable())
-		require.Equal(t, sdk.NewInt(10000), f.QueryAccount(f.KeyAddress(keyFoo)).Coins.AmountOf(tickerBrown+fooAddrSuffix+tokenID01))
+		require.Equal(t, sdk.NewInt(10000), f.QueryBalanceCollection(tickerBrown+fooAddrSuffix, tokenID01, fooAddr))
 	}
 	{
 		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
@@ -2469,11 +2468,11 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 		collection := f.QueryCollection(tickerBrown + fooAddrSuffix)
 		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[0].GetSymbol())
-		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID01, collection.Tokens[0].GetDenom())
+		require.Equal(t, tokenID01, collection.Tokens[0].GetTokenID())
 		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[1].GetSymbol())
-		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID02, collection.Tokens[1].GetDenom())
+		require.Equal(t, tokenID02, collection.Tokens[1].GetTokenID())
 		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[2].GetSymbol())
-		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID03, collection.Tokens[2].GetDenom())
+		require.Equal(t, tokenID03, collection.Tokens[2].GetTokenID())
 	}
 
 	// Bar cannot issue with the collection symbol
@@ -2494,7 +2493,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID04)
 		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
-		require.Equal(t, tickerBrown+fooAddrSuffix+tokenID04, token.GetDenom())
+		require.Equal(t, tokenID04, token.GetTokenID())
 	}
 	f.Cleanup()
 }
@@ -2543,11 +2542,11 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		collection := f.QueryCollection(symbolBrown + fooSuffix)
 		require.Equal(t, 3, len(collection.Tokens))
 		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[0].GetSymbol())
-		require.Equal(t, symbolBrown+fooSuffix+tokenID01, collection.Tokens[0].GetDenom())
+		require.Equal(t, tokenID01, collection.Tokens[0].GetTokenID())
 		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[1].GetSymbol())
-		require.Equal(t, symbolBrown+fooSuffix+tokenID02, collection.Tokens[1].GetDenom())
+		require.Equal(t, tokenID02, collection.Tokens[1].GetTokenID())
 		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[2].GetSymbol())
-		require.Equal(t, symbolBrown+fooSuffix+tokenID03, collection.Tokens[2].GetDenom())
+		require.Equal(t, tokenID03, collection.Tokens[2].GetTokenID())
 	}
 	{
 		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0001", "-y")

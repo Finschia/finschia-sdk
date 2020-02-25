@@ -48,6 +48,14 @@ const (
 	CodeTokenApproverProxySame sdk.CodeType = 600
 	CodeTokenNotApproved       sdk.CodeType = 601
 	CodeTokenAlreadyApproved   sdk.CodeType = 602
+
+	//Account
+	CodeAccountExist    sdk.CodeType = 700
+	CodeAccountNotExist sdk.CodeType = 701
+
+	//Bank
+	CodeInsufficientSupply sdk.CodeType = 800
+	CodeInvalidCoin        sdk.CodeType = 801
 )
 
 func ErrTokenNotMintable(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
@@ -118,32 +126,32 @@ func ErrCollectionTokenIndexFull(codespace sdk.CodespaceType, symbol, tokenType 
 	return sdk.NewError(codespace, CodeCollectionTokenIndexFull, "all token index for symbol[%s] token-type[%s] are occupied", symbol, tokenType)
 }
 
-func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenAlreadyAChild, "token [%s] is already a child of some other", denom)
+func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenAlreadyAChild, "token [%s] is already a child of some other", tokenID)
 }
 
-func ErrTokenNotAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotAChild, "token [%s] is not a child of some other", denom)
+func ErrTokenNotAChild(codespace sdk.CodespaceType, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotAChild, "token [%s] is not a child of some other", tokenID)
 }
 
-func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner fmt.Stringer) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token [%s] is being not owned by [%s]", denom, owner.String())
+func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, tokenID string, owner fmt.Stringer) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is being not owned by [%s]", tokenID, owner.String())
 }
 
-func ErrTokenNotNFT(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotIDNF, "token [%s] is not a NFT", denom)
+func ErrTokenNotNFT(codespace sdk.CodespaceType, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotIDNF, "token [%s] is not a NFT", tokenID)
 }
 
-func ErrTokenCannotTransferChildToken(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenChildNotTransferable, "cannot transfer a child token [%s]", denom)
+func ErrTokenCannotTransferChildToken(codespace sdk.CodespaceType, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenChildNotTransferable, "cannot transfer a child token [%s]", tokenID)
 }
 
-func ErrCannotAttachToItself(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenCannotAttachToItself, "cannot attach token [%s] to itself", denom)
+func ErrCannotAttachToItself(codespace sdk.CodespaceType, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenCannotAttachToItself, "cannot attach token [%s] to itself", tokenID)
 }
 
-func ErrCannotAttachToADescendant(codespace sdk.CodespaceType, tokenDenom string, descendantDenom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenCannotAttachToADescendant, "cannot attach token [%s] to a descendant [%s]", tokenDenom, descendantDenom)
+func ErrCannotAttachToADescendant(codespace sdk.CodespaceType, tokenID string, tokenIDdesc string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenCannotAttachToADescendant, "cannot attach token [%s] to a descendant [%s]", tokenID, tokenIDdesc)
 }
 
 func ErrApproverProxySame(codespace sdk.CodespaceType, approver string) sdk.Error {
@@ -156,4 +164,19 @@ func ErrCollectionNotApproved(codespace sdk.CodespaceType, proxy string, approve
 
 func ErrCollectionAlreadyApproved(codespace sdk.CodespaceType, proxy string, approver string, symbol string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenAlreadyApproved, "proxy[%s] is already approved by %s on the collection[%s]", proxy, approver, symbol)
+}
+func ErrAccountExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
+	return sdk.NewError(codespace, CodeAccountExist, "account [%s] already exists", acc.String())
+}
+
+func ErrAccountNotExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
+	return sdk.NewError(codespace, CodeAccountNotExist, "account [%s] does not exists", acc.String())
+}
+
+func ErrInsufficientSupply(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeInsufficientSupply, msg)
+}
+
+func ErrInvalidCoin(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeInvalidCoin, msg)
 }

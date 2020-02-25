@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	linktype "github.com/line/link/types"
 )
 
 func TestKeeper_BurnFT(t *testing.T) {
@@ -34,12 +33,12 @@ func TestMintBurn(t *testing.T) {
 	const (
 		wrongTokenID = "12345678"
 	)
-	require.EqualError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(types.NewCollection(defaultSymbol2, defaultName), defaultName, wrongTokenID, defaultTokenURI, addr1)), types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, defaultSymbol2, wrongTokenID[:4]).Error())
-	require.EqualError(t, keeper.MintNFT(ctx, addr3, types.NewNFT(types.NewCollection(defaultSymbol, defaultName), defaultName, defaultTokenID1, defaultTokenURI, addr1)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol+defaultTokenID1[:4])).Error())
+	require.EqualError(t, keeper.MintNFT(ctx, defaultSymbol2, addr1, types.NewNFT(types.NewCollection(defaultSymbol2, defaultName), defaultName, wrongTokenID, defaultTokenURI, addr1)), types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, defaultSymbol2, wrongTokenID[:4]).Error())
+	require.EqualError(t, keeper.MintNFT(ctx, defaultSymbol, addr3, types.NewNFT(types.NewCollection(defaultSymbol, defaultName), defaultName, defaultTokenID1, defaultTokenURI, addr1)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])).Error())
 
-	require.NoError(t, keeper.BurnFT(ctx, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1)))))
-	require.EqualError(t, keeper.BurnNFT(ctx, addr1, defaultSymbol, wrongTokenID), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, wrongTokenID).Error())
-	require.EqualError(t, keeper.BurnNFT(ctx, addr3, defaultSymbol, defaultTokenID1), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewBurnPermission(defaultSymbol+defaultTokenID1[:4])).Error())
+	require.NoError(t, keeper.BurnFT(ctx, defaultSymbol, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))))
+	require.EqualError(t, keeper.BurnNFT(ctx, defaultSymbol, addr1, wrongTokenID), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, wrongTokenID).Error())
+	require.EqualError(t, keeper.BurnNFT(ctx, defaultSymbol, addr3, defaultTokenID1), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewBurnPermission(defaultSymbol, defaultTokenID1[:4])).Error())
 }
 
 func TestBurnNFTScenario(t *testing.T) {
@@ -53,7 +52,7 @@ func TestBurnNFTScenario(t *testing.T) {
 	// attach token1 <- token4 (attach to a root): success
 	require.NoError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID4))
 
-	require.NoError(t, keeper.BurnNFT(ctx, addr1, defaultSymbol, defaultTokenID1))
+	require.NoError(t, keeper.BurnNFT(ctx, defaultSymbol, addr1, defaultTokenID1))
 
 	_, err := keeper.GetNFT(ctx, defaultSymbol, defaultTokenID1)
 	require.Error(t, err)
@@ -64,10 +63,18 @@ func TestBurnNFTScenario(t *testing.T) {
 	_, err = keeper.GetNFT(ctx, defaultSymbol, defaultTokenID4)
 	require.Error(t, err)
 
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenID1, addr1).Int64())
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenID2, addr1).Int64())
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenID3, addr1).Int64())
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenID4, addr1).Int64())
+	balance, err := keeper.GetBalance(ctx, defaultSymbol, defaultTokenID1, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
+	balance, err = keeper.GetBalance(ctx, defaultSymbol, defaultTokenID2, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
+	balance, err = keeper.GetBalance(ctx, defaultSymbol, defaultTokenID3, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
+	balance, err = keeper.GetBalance(ctx, defaultSymbol, defaultTokenID4, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
 }
 
 func TestBurnNFTFromSuccess(t *testing.T) {
@@ -87,14 +94,14 @@ func TestBurnNFTFromSuccess(t *testing.T) {
 
 	// transfer tokens to addr2
 	require.NoError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID1))
-	require.NoError(t, keeper.TransferFT(ctx, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount)))
+	require.NoError(t, keeper.TransferFT(ctx, addr1, addr2, defaultSymbol, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))))
 
 	// addr2 approves addr1 for the symbol
 	require.NoError(t, keeper.SetApproved(ctx, addr1, addr2, defaultSymbol))
 
 	// test burnNFTFrom
-	require.NoError(t, keeper.BurnNFTFrom(ctx, addr1, addr2, defaultSymbol, defaultTokenID1))
-	require.NoError(t, keeper.BurnFTFrom(ctx, addr1, addr2, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount)))))
+	require.NoError(t, keeper.BurnNFTFrom(ctx, defaultSymbol, addr1, addr2, defaultTokenID1))
+	require.NoError(t, keeper.BurnFTFrom(ctx, defaultSymbol, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))))
 
 	_, err := keeper.GetNFT(ctx, defaultSymbol, defaultTokenID1)
 	require.Error(t, err)
@@ -105,11 +112,21 @@ func TestBurnNFTFromSuccess(t *testing.T) {
 	_, err = keeper.GetNFT(ctx, defaultSymbol, defaultTokenID4)
 	require.Error(t, err)
 
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenID1, addr1).Int64())
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenID2, addr1).Int64())
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenID3, addr1).Int64())
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenID4, addr1).Int64())
-	require.Equal(t, int64(0), keeper.GetAccountBalance(ctx, defaultSymbol, defaultTokenIDFT, addr1).Int64())
+	balance, err := keeper.GetBalance(ctx, defaultSymbol, defaultTokenID1, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
+	balance, err = keeper.GetBalance(ctx, defaultSymbol, defaultTokenID2, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
+	balance, err = keeper.GetBalance(ctx, defaultSymbol, defaultTokenID3, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
+	balance, err = keeper.GetBalance(ctx, defaultSymbol, defaultTokenID4, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
+	balance, err = keeper.GetBalance(ctx, defaultSymbol, defaultTokenIDFT, addr1)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), balance.Int64())
 }
 
 func TestBurnNFTFromFailure1(t *testing.T) {
@@ -124,8 +141,8 @@ func TestBurnNFTFromFailure1(t *testing.T) {
 	require.NoError(t, keeper.SetApproved(ctx, addr1, addr2, defaultSymbol))
 
 	// test burnNFTFrom, burnFTFrom fail
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, addr1, addr2, defaultSymbol, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultSymbol+defaultTokenID1, addr2).Error())
-	require.EqualError(t, keeper.BurnFTFrom(ctx, addr1, addr2, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1)))), sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", addr2, linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1)).ToCoin().String())).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultSymbol, addr1, addr2, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID1, addr2).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultSymbol, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String())).Error())
 }
 
 func TestBurnNFTFromFailure2(t *testing.T) {
@@ -138,11 +155,11 @@ func TestBurnNFTFromFailure2(t *testing.T) {
 
 	// transfer tokens to addr2
 	require.NoError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID1))
-	require.NoError(t, keeper.TransferFT(ctx, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(1)))
+	require.NoError(t, keeper.TransferFT(ctx, addr1, addr2, defaultSymbol, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1))))
 
 	// test burnNFTFrom fail
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, addr1, addr2, defaultSymbol, defaultTokenID1), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultSymbol).Error())
-	require.EqualError(t, keeper.BurnFTFrom(ctx, addr1, addr2, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1)))), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultSymbol).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultSymbol, addr1, addr2, defaultTokenID1), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultSymbol).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultSymbol, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultSymbol).Error())
 }
 
 func TestBurnNFTFromFailure3(t *testing.T) {
@@ -155,12 +172,11 @@ func TestBurnNFTFromFailure3(t *testing.T) {
 
 	// transfer tokens to addr2
 	require.NoError(t, keeper.TransferNFT(ctx, addr1, addr3, defaultSymbol, defaultTokenID1))
-	require.NoError(t, keeper.TransferFT(ctx, addr1, addr3, defaultSymbol, defaultTokenIDFT, sdk.NewInt(1)))
-
+	require.NoError(t, keeper.TransferFT(ctx, addr1, addr3, defaultSymbol, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1))))
 	// addr3 approves addr2 for the symbol
 	require.NoError(t, keeper.SetApproved(ctx, addr2, addr3, defaultSymbol))
 
 	// test burnNFTFrom fail
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, addr2, addr3, defaultSymbol, defaultTokenID1), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultSymbol+defaultTokenID1[:4])).Error())
-	require.EqualError(t, keeper.BurnFTFrom(ctx, addr2, addr3, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(1)))), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultSymbol+defaultTokenIDFT)).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultSymbol, addr2, addr3, defaultTokenID1), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultSymbol, defaultTokenID1[:4])).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultSymbol, addr2, addr3, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultSymbol, defaultTokenIDFT)).Error())
 }

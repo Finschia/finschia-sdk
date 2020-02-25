@@ -22,6 +22,7 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 	if err != nil {
 		return err
 	}
+	k.SetSupply(ctx, types.DefaultSupply(collection.GetSymbol()))
 
 	perm := types.NewIssuePermission(collection.GetSymbol())
 	k.AddPermission(ctx, owner, perm)

@@ -16,20 +16,52 @@ import (
 )
 
 func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
-	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}/supply", QueryCollectionTokenSupplyRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}/supply", QueryTokenSupplyRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_type}/count", QueryCountRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}", QueryCollectionTokenRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections/{symbol}/tokens", QueryCollectionTokensRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections/{symbol}", QueryCollectionRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections", QuerCollectionsRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/permissions/{address}", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/parent/{symbol}/{token_id}", QueryParentRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/root/{symbol}/{token_id}", QueryRootRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/children/{symbol}/{token_id}", QueryChildrenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/approved/{proxy}/{approver}/{symbol}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/balances/{address}/{token_id}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/permissions/{address}", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
-func QueryCollectionTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+		tokenID := vars["token_id"]
+		addr, err := sdk.AccAddressFromBech32(vars["address"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("addr[%s] cannot parsed: %s", vars["address"], err))
+			return
+		}
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		supply, height, err := retriever.GetAccountBalance(cliCtx, symbol, tokenID, addr)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, supply)
+	}
+}
+
+func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -55,7 +87,7 @@ func QueryCollectionTokenRequestHandlerFn(cliCtx client.CLIContext) http.Handler
 	}
 }
 
-func QueryCollectionTokensRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryTokensRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -127,7 +159,7 @@ func QuerCollectionsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc
 	}
 }
 
-func QueryCollectionTokenSupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryTokenSupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)

@@ -10,20 +10,16 @@ import (
 )
 
 type Keeper struct {
-	supplyKeeper types.SupplyKeeper
-	iamKeeper    types.IamKeeper
-	bankKeeper   types.BankKeeper
-	storeKey     sdk.StoreKey
-	cdc          *codec.Codec
+	iamKeeper types.IamKeeper
+	storeKey  sdk.StoreKey
+	cdc       *codec.Codec
 }
 
-func NewKeeper(cdc *codec.Codec, supplyKeeper types.SupplyKeeper, iamKeeper types.IamKeeper, bankKeeper types.BankKeeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(cdc *codec.Codec, iamKeeper types.IamKeeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
-		supplyKeeper: supplyKeeper,
-		iamKeeper:    iamKeeper.WithPrefix(types.ModuleName),
-		bankKeeper:   bankKeeper,
-		storeKey:     storeKey,
-		cdc:          cdc,
+		iamKeeper: iamKeeper.WithPrefix(types.ModuleName),
+		storeKey:  storeKey,
+		cdc:       cdc,
 	}
 }
 

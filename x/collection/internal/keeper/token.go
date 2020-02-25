@@ -26,7 +26,7 @@ func (k Keeper) GetNFT(ctx sdk.Context, symbol, tokenID string) (types.NFT, sdk.
 	}
 	nft, ok := token.(types.NFT)
 	if !ok {
-		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetDenom())
+		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetTokenID())
 	}
 	return nft, nil
 }
@@ -38,7 +38,7 @@ func (k Keeper) GetFT(ctx sdk.Context, symbol, tokenID string) (types.FT, sdk.Er
 	}
 	ft, ok := token.(types.FT)
 	if !ok {
-		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetDenom())
+		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetTokenID())
 	}
 	return ft, nil
 }
@@ -93,7 +93,7 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, to
 	if err != nil {
 		return err
 	}
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol, token.GetTokenID())
 	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
 	}
@@ -115,11 +115,4 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, to
 		),
 	})
 	return nil
-}
-
-func (k Keeper) GetSupply(ctx sdk.Context, symbol, tokenID string) (supply sdk.Int, err sdk.Error) {
-	if _, err = k.GetToken(ctx, symbol, tokenID); err != nil {
-		return sdk.NewInt(0), err
-	}
-	return k.supplyKeeper.GetSupply(ctx).GetTotal().AmountOf(symbol + tokenID), nil
 }

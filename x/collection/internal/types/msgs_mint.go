@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/types"
-	linktype "github.com/line/link/types"
 )
 
 var _ sdk.Msg = (*MsgMintNFT)(nil)
@@ -63,16 +62,16 @@ func (msg MsgMintNFT) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgBurnNFT)(nil)
 
 type MsgBurnNFT struct {
-	From    sdk.AccAddress `json:"from"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	From     sdk.AccAddress `json:"from"`
+	Symbol   string         `json:"symbol"`
+	TokenIDs []string       `json:"token_ids"`
 }
 
-func NewMsgBurnNFT(from sdk.AccAddress, symbol, tokenID string) MsgBurnNFT {
+func NewMsgBurnNFT(from sdk.AccAddress, symbol string, tokenIDs ...string) MsgBurnNFT {
 	return MsgBurnNFT{
-		From:    from,
-		Symbol:  symbol,
-		TokenID: tokenID,
+		From:     from,
+		Symbol:   symbol,
+		TokenIDs: tokenIDs,
 	}
 }
 
@@ -91,12 +90,13 @@ func (msg MsgBurnNFT) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
 
-	if err := types.ValidateTokenID(msg.TokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, err.Error())
-	}
-
-	if err := types.ValidateTokenTypeNFT(msg.TokenID[:TokenTypeLength]); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, err.Error())
+	for _, tokenID := range msg.TokenIDs {
+		if err := types.ValidateTokenID(tokenID); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
+		if err := types.ValidateTokenTypeNFT(tokenID[:TokenTypeLength]); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
 	}
 
 	return nil
@@ -105,18 +105,18 @@ func (msg MsgBurnNFT) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgBurnNFTFrom)(nil)
 
 type MsgBurnNFTFrom struct {
-	Proxy   sdk.AccAddress `json:"proxy"`
-	From    sdk.AccAddress `json:"from"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	Proxy    sdk.AccAddress `json:"proxy"`
+	From     sdk.AccAddress `json:"from"`
+	Symbol   string         `json:"symbol"`
+	TokenIDs []string       `json:"token_ids"`
 }
 
-func NewMsgBurnNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) MsgBurnNFTFrom {
+func NewMsgBurnNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol string, tokenIDs ...string) MsgBurnNFTFrom {
 	return MsgBurnNFTFrom{
-		Proxy:   proxy,
-		From:    from,
-		Symbol:  symbol,
-		TokenID: tokenID,
+		Proxy:    proxy,
+		From:     from,
+		Symbol:   symbol,
+		TokenIDs: tokenIDs,
 	}
 }
 
@@ -141,27 +141,29 @@ func (msg MsgBurnNFTFrom) ValidateBasic() sdk.Error {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 
-	if err := types.ValidateTokenID(msg.TokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, err.Error())
+	for _, tokenID := range msg.TokenIDs {
+		if err := types.ValidateTokenID(tokenID); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
+		if err := types.ValidateTokenTypeNFT(tokenID[:TokenTypeLength]); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
 	}
-
-	if err := types.ValidateTokenTypeNFT(msg.TokenID[:TokenTypeLength]); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, err.Error())
-	}
-
 	return nil
 }
 
 var _ sdk.Msg = (*MsgMintFT)(nil)
 
 type MsgMintFT struct {
-	From   sdk.AccAddress            `json:"from"`
-	To     sdk.AccAddress            `json:"to"`
-	Amount linktype.CoinWithTokenIDs `json:"amount"`
+	Symbol string         `json:"symbol"`
+	From   sdk.AccAddress `json:"from"`
+	To     sdk.AccAddress `json:"to"`
+	Amount Coins          `json:"amount"`
 }
 
-func NewMsgMintFT(from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgMintFT {
+func NewMsgMintFT(symbol string, from, to sdk.AccAddress, amount ...Coin) MsgMintFT {
 	return MsgMintFT{
+		Symbol: symbol,
 		From:   from,
 		To:     to,
 		Amount: amount,
@@ -175,19 +177,12 @@ func (msg MsgMintFT) GetSignBytes() []byte {
 }
 
 func (msg MsgMintFT) ValidateBasic() sdk.Error {
-	for _, coin := range msg.Amount {
-		if err := linktype.ValidateSymbolUserDefined(coin.Symbol); err != nil {
-			return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-		}
-		if err := linktype.ValidateTokenID(coin.TokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
-		}
-		if err := linktype.ValidateTokenTypeFT(coin.TokenID[:TokenTypeLength]); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
-		}
-		if !coin.IsPositive() {
-			return sdk.ErrInvalidCoins("amount is not valid")
-		}
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+	}
+
+	if !msg.Amount.IsValid() {
+		return sdk.ErrInvalidCoins("send amount is invalid: " + msg.Amount.String())
 	}
 
 	if msg.From.Empty() {
@@ -203,12 +198,14 @@ func (msg MsgMintFT) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgBurnFT)(nil)
 
 type MsgBurnFT struct {
-	From   sdk.AccAddress            `json:"from"`
-	Amount linktype.CoinWithTokenIDs `json:"amount"`
+	Symbol string         `json:"symbol"`
+	From   sdk.AccAddress `json:"from"`
+	Amount Coins          `json:"amount"`
 }
 
-func NewMsgBurnFT(from sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgBurnFT {
+func NewMsgBurnFT(symbol string, from sdk.AccAddress, amount ...Coin) MsgBurnFT {
 	return MsgBurnFT{
+		Symbol: symbol,
 		From:   from,
 		Amount: amount,
 	}
@@ -221,20 +218,14 @@ func (msg MsgBurnFT) GetSignBytes() []byte {
 }
 
 func (msg MsgBurnFT) ValidateBasic() sdk.Error {
-	for _, coin := range msg.Amount {
-		if err := linktype.ValidateSymbolUserDefined(coin.Symbol); err != nil {
-			return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-		}
-		if err := linktype.ValidateTokenID(coin.TokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
-		}
-		if err := linktype.ValidateTokenTypeFT(coin.TokenID[:TokenTypeLength]); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
-		}
-		if !coin.IsPositive() {
-			return sdk.ErrInvalidCoins("Amount is not valid")
-		}
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
+
+	if !msg.Amount.IsValid() {
+		return sdk.ErrInvalidCoins("send amount is invalid: " + msg.Amount.String())
+	}
+
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From address cannot be empty")
 	}
@@ -244,13 +235,15 @@ func (msg MsgBurnFT) ValidateBasic() sdk.Error {
 var _ sdk.Msg = (*MsgBurnFTFrom)(nil)
 
 type MsgBurnFTFrom struct {
-	Proxy  sdk.AccAddress            `json:"proxy"`
-	From   sdk.AccAddress            `json:"from"`
-	Amount linktype.CoinWithTokenIDs `json:"amount"`
+	Symbol string         `json:"symbol"`
+	Proxy  sdk.AccAddress `json:"proxy"`
+	From   sdk.AccAddress `json:"from"`
+	Amount Coins          `json:"amount"`
 }
 
-func NewMsgBurnFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgBurnFTFrom {
+func NewMsgBurnFTFrom(symbol string, proxy sdk.AccAddress, from sdk.AccAddress, amount ...Coin) MsgBurnFTFrom {
 	return MsgBurnFTFrom{
+		Symbol: symbol,
 		Proxy:  proxy,
 		From:   from,
 		Amount: amount,
@@ -265,6 +258,9 @@ func (msg MsgBurnFTFrom) GetSignBytes() []byte {
 }
 
 func (msg MsgBurnFTFrom) ValidateBasic() sdk.Error {
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+	}
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
@@ -274,19 +270,8 @@ func (msg MsgBurnFTFrom) ValidateBasic() sdk.Error {
 	if msg.Proxy.Equals(msg.From) {
 		return ErrApproverProxySame(DefaultCodespace, msg.Proxy.String())
 	}
-	for _, coin := range msg.Amount {
-		if err := linktype.ValidateSymbolUserDefined(coin.Symbol); err != nil {
-			return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-		}
-		if err := linktype.ValidateTokenID(coin.TokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
-		}
-		if err := linktype.ValidateTokenTypeFT(coin.TokenID[:TokenTypeLength]); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
-		}
-		if !coin.IsPositive() {
-			return sdk.ErrInvalidCoins("Amount is not valid")
-		}
+	if !msg.Amount.IsValid() {
+		return sdk.ErrInvalidCoins("send amount is invalid: " + msg.Amount.String())
 	}
 	return nil
 }

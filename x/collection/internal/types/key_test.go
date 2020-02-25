@@ -14,6 +14,6 @@ func TestKeys(t *testing.T) {
 	symbol1 := "symbol1"
 	symbol2 := "symbol2"
 
-	require.NotEqual(t, CollectionApprovedKey(addr1, addr2, symbol1), CollectionApprovedKey(addr2, addr1, symbol1))
-	require.NotEqual(t, CollectionApprovedKey(addr1, addr2, symbol1), CollectionApprovedKey(addr1, addr2, symbol2))
+	require.NotEqual(t, CollectionApprovedKey(symbol1, addr1, addr2), CollectionApprovedKey(symbol1, addr2, addr1))
+	require.NotEqual(t, CollectionApprovedKey(symbol1, addr1, addr2), CollectionApprovedKey(symbol2, addr1, addr2))
 }

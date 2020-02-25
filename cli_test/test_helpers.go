@@ -1038,6 +1038,17 @@ func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, flags ...string) 
 
 //___________________________________________________________________________________
 // query collection
+func (f *Fixtures) QueryBalanceCollection(symbol, tokenID string, addr sdk.AccAddress, flags ...string) sdk.Int {
+	cmd := fmt.Sprintf("%s query collection balance %s %s %s %s", f.LinkcliBinary, symbol, tokenID, addr.String(), f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var supply sdk.Int
+	err := cdc.UnmarshalJSON([]byte(res), &supply)
+	require.NoError(f.T, err)
+
+	return supply
+}
 
 func (f *Fixtures) QueryTokenCollection(symbol, tokenID string, flags ...string) collectionModule.Token {
 	cmd := fmt.Sprintf("%s query collection token %s %s %s", f.LinkcliBinary, symbol, tokenID, f.Flags())

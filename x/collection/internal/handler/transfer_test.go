@@ -21,7 +21,7 @@ func TestHandleTransferFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 
-	msg := types.NewMsgTransferFT(addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount))
+	msg := types.NewMsgTransferFT(addr1, addr2, defaultSymbol, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 	res := h(ctx, msg)
 	require.True(t, res.Code.IsOK())
 	e := sdk.Events{
@@ -30,8 +30,7 @@ func TestHandleTransferFT(t *testing.T) {
 		sdk.NewEvent("transfer_ft", sdk.NewAttribute("from", addr1.String())),
 		sdk.NewEvent("transfer_ft", sdk.NewAttribute("to", addr2.String())),
 		sdk.NewEvent("transfer_ft", sdk.NewAttribute("symbol", defaultSymbol)),
-		sdk.NewEvent("transfer_ft", sdk.NewAttribute("token_id", defaultTokenIDFT)),
-		sdk.NewEvent("transfer_ft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String())),
+		sdk.NewEvent("transfer_ft", sdk.NewAttribute("amount", types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)).String())),
 	}
 	verifyEventFunc(t, e, res.Events)
 }
@@ -51,7 +50,7 @@ func TestHandleTransferFTFrom(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 
-	msg := types.NewMsgTransferFTFrom(addr2, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount))
+	msg := types.NewMsgTransferFTFrom(addr2, addr1, addr2, defaultSymbol, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 	res := h(ctx, msg)
 	require.True(t, res.Code.IsOK())
 	e := sdk.Events{
@@ -61,8 +60,7 @@ func TestHandleTransferFTFrom(t *testing.T) {
 		sdk.NewEvent("transfer_ft_from", sdk.NewAttribute("from", addr1.String())),
 		sdk.NewEvent("transfer_ft_from", sdk.NewAttribute("to", addr2.String())),
 		sdk.NewEvent("transfer_ft_from", sdk.NewAttribute("symbol", defaultSymbol)),
-		sdk.NewEvent("transfer_ft_from", sdk.NewAttribute("token_id", defaultTokenIDFT)),
-		sdk.NewEvent("transfer_ft_from", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String())),
+		sdk.NewEvent("transfer_ft_from", sdk.NewAttribute("amount", types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)).String())),
 	}
 	verifyEventFunc(t, e, res.Events)
 }

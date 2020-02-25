@@ -11,8 +11,11 @@ const (
 	defaultTokenURI  = "token-uri"
 	defaultDecimals  = 6
 	defaultTokenType = "a000"
+	defaultTokenIDFT = "00010000"
+	defaultAmount    = 1000
 )
 
 var (
-	defaultAddr = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr1 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr2 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 )

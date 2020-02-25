@@ -24,17 +24,17 @@ func TestCollectionAndPermission(t *testing.T) {
 		{
 			collection, err := keeper.GetCollection(ctx, defaultSymbol)
 			require.NoError(t, err)
-			require.NoError(t, keeper.IssueFT(ctx, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+			require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 			token, err := keeper.GetToken(ctx, defaultSymbol, defaultTokenIDFT)
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
 			require.Equal(t, defaultTokenIDFT, token.GetTokenID())
 		}
 		{
-			require.NoError(t, keeper.IssueNFT(ctx, addr1, defaultSymbol))
+			require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, addr1))
 			collection, err = keeper.GetCollection(ctx, defaultSymbol)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
 
 			token, err := keeper.GetToken(ctx, defaultSymbol, defaultTokenID1)
 			require.NoError(t, err)
@@ -43,7 +43,7 @@ func TestCollectionAndPermission(t *testing.T) {
 
 			collection, err = keeper.GetCollection(ctx, defaultSymbol)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
 			token, err = keeper.GetToken(ctx, defaultSymbol, defaultTokenID2)
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
@@ -53,10 +53,10 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, int64(2), count.Int64())
 
-			require.NoError(t, keeper.IssueNFT(ctx, addr1, defaultSymbol))
+			require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, addr1))
 			collection, err = keeper.GetCollection(ctx, defaultSymbol)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType2, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(collection, defaultName, defaultTokenType2, defaultTokenURI, addr1)))
 			token, err = keeper.GetToken(ctx, defaultSymbol, defaultTokenType2+"0001")
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
@@ -90,7 +90,7 @@ func TestPermission(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultSymbol+defaultTokenID1[:4])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol+defaultTokenID1[:4])).Error())
-	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(defaultSymbol+defaultTokenID1[:4])))
-	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultSymbol+defaultTokenID1[:4])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol+defaultTokenID1[:4])).Error())
+	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])).Error())
+	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])))
+	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])).Error())
 }

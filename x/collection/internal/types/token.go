@@ -9,7 +9,6 @@ import (
 type Token interface {
 	GetName() string
 	GetSymbol() string
-	GetDenom() string
 	GetTokenID() string
 	GetTokenURI() string
 	SetTokenURI(tokenURI string)
@@ -57,7 +56,6 @@ func NewNFT(collection Collection, name, tokenType, tokenURI string, owner sdk.A
 }
 func (t BaseNFT) GetName() string                { return t.Name }
 func (t BaseNFT) GetSymbol() string              { return t.symbol }
-func (t BaseNFT) GetDenom() string               { return t.symbol + t.TokenID }
 func (t BaseNFT) GetTokenURI() string            { return t.TokenURI }
 func (t BaseNFT) GetOwner() sdk.AccAddress       { return t.Owner }
 func (t BaseNFT) GetTokenID() string             { return t.TokenID }
@@ -97,7 +95,6 @@ func NewFT(collection Collection, name, tokenURI string, decimals sdk.Int, minta
 }
 func (t BaseFT) GetName() string              { return t.Name }
 func (t BaseFT) GetSymbol() string            { return t.symbol }
-func (t BaseFT) GetDenom() string             { return t.symbol + t.TokenID }
 func (t BaseFT) GetTokenURI() string          { return t.TokenURI }
 func (t BaseFT) GetMintable() bool            { return t.Mintable }
 func (t BaseFT) GetDecimals() sdk.Int         { return t.Decimals }

@@ -90,40 +90,40 @@ func TestAttachDetachScenario(t *testing.T) {
 
 	// query failure cases
 	_, err := keeper.ParentOf(ctx, defaultSymbol, defaultTokenIDFT)
-	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultSymbol+defaultTokenIDFT).Error())
+	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
 
 	//
 	// attach error cases
 	//
 
 	// attach non-root token : failure
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID2), types.ErrTokenAlreadyAChild(types.DefaultCodespace, defaultSymbol+defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID2), types.ErrTokenAlreadyAChild(types.DefaultCodespace, defaultTokenID2).Error())
 
 	// attach non-exist token : failure
 	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID8), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
 	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID8, defaultTokenID1), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
 
 	// attach non-mine token : failure
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultSymbol+defaultTokenID5, addr1).Error())
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID5, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultSymbol+defaultTokenID5, addr1).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID5, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
 
 	// attach to itself : failure
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID1), types.ErrCannotAttachToItself(types.DefaultCodespace, defaultSymbol+defaultTokenID1).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID1), types.ErrCannotAttachToItself(types.DefaultCodespace, defaultTokenID1).Error())
 
 	// attach to a descendant : failure
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID2, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultSymbol+defaultTokenID1, defaultSymbol+defaultTokenID2).Error())
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID3, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultSymbol+defaultTokenID1, defaultSymbol+defaultTokenID3).Error())
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID4, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultSymbol+defaultTokenID1, defaultSymbol+defaultTokenID4).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID2, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultTokenID1, defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID3, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultTokenID1, defaultTokenID3).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID4, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultTokenID1, defaultTokenID4).Error())
 
 	//
 	// detach error cases
 	//
 
 	// detach not a child : failure
-	require.EqualError(t, keeper.Detach(ctx, addr1, defaultSymbol, defaultTokenID1), types.ErrTokenNotAChild(types.DefaultCodespace, defaultSymbol+defaultTokenID1).Error())
+	require.EqualError(t, keeper.Detach(ctx, addr1, defaultSymbol, defaultTokenID1), types.ErrTokenNotAChild(types.DefaultCodespace, defaultTokenID1).Error())
 
 	// detach non-mine token : failure
-	require.EqualError(t, keeper.Detach(ctx, addr1, defaultSymbol, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultSymbol+defaultTokenID5, addr1).Error())
+	require.EqualError(t, keeper.Detach(ctx, addr1, defaultSymbol, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
 
 	// detach non-exist token : failure
 	require.EqualError(t, keeper.Detach(ctx, addr1, defaultSymbol, defaultTokenID8), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())

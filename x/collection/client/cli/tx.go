@@ -271,9 +271,9 @@ func BurnNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func TransferFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-ft [from_key_or_address] [to_address] [symbol] [token_id] [amount]",
+		Use:   "transfer-ft [from_key_or_address] [to_address] [symbol] [amount]",
 		Short: "Create and sign a tx transferring non-reserved collective fungible tokens",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
@@ -283,12 +283,12 @@ func TransferFTTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[4])
-			if !ok {
-				return types.ErrInvalidAmount(types.DefaultCodespace, args[4])
+			amount, err := types.ParseCoins(args[3])
+			if err != nil {
+				return types.ErrInvalidAmount(types.DefaultCodespace, args[3])
 			}
 
-			msg := types.NewMsgTransferFT(cliCtx.GetFromAddress(), to, args[2], args[3], amount)
+			msg := types.NewMsgTransferFT(cliCtx.GetFromAddress(), to, args[2], amount...)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -322,9 +322,9 @@ func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func TransferFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-ft-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id] [amount]",
+		Use:   "transfer-ft-from [proxy_key_or_address] [from_address] [to_address] [symbol] [amount]",
 		Short: "Create and sign a tx transferring non-reserved collective fungible tokens by approved proxy",
-		Args:  cobra.ExactArgs(6),
+		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
@@ -339,12 +339,12 @@ func TransferFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[5])
-			if !ok {
-				return types.ErrInvalidAmount(types.DefaultCodespace, args[5])
+			amount, err := types.ParseCoins(args[4])
+			if err != nil {
+				return types.ErrInvalidAmount(types.DefaultCodespace, args[4])
 			}
 
-			msg := types.NewMsgTransferFTFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4], amount)
+			msg := types.NewMsgTransferFTFrom(cliCtx.GetFromAddress(), from, to, args[3], amount...)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -436,8 +436,7 @@ func MintFTTxCmd(cdc *codec.Codec) *cobra.Command {
 				return errors.New("invalid amount")
 			}
 
-			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgMintFT(cliCtx.GetFromAddress(), to, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
+			msg := types.NewMsgMintFT(symbol, cliCtx.GetFromAddress(), to, types.NewCoin(tokenID, amount))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -460,8 +459,7 @@ func BurnFTTxCmd(cdc *codec.Codec) *cobra.Command {
 				return errors.New("invalid amount")
 			}
 
-			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurnFT(cliCtx.GetFromAddress(), linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
+			msg := types.NewMsgBurnFT(symbol, cliCtx.GetFromAddress(), types.NewCoin(tokenID, amount))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -490,7 +488,7 @@ func BurnFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurnFTFrom(cliCtx.GetFromAddress(), from, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
+			msg := types.NewMsgBurnFTFrom(symbol, cliCtx.GetFromAddress(), from, types.NewCoin(tokenID, amount))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

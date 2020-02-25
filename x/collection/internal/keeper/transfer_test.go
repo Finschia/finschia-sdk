@@ -16,19 +16,19 @@ func TestTransferFTScenario(t *testing.T) {
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName), addr1))
 	collection, err := keeper.GetCollection(ctx, defaultSymbol)
 	require.NoError(t, err)
-	err = keeper.IssueFT(ctx, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount))
+	err = keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount))
 	require.NoError(t, err)
 
 	//
 	// transfer success cases
 	//
-	require.NoError(t, keeper.TransferFT(ctx, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount/2)))
+	require.NoError(t, keeper.TransferFT(ctx, addr1, addr2, defaultSymbol, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount/2))))
 
 	//
 	// transfer failure cases
 	//
 	// Insufficient coins
-	require.EqualError(t, keeper.TransferFT(ctx, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount)), sdk.ErrInsufficientCoins("insufficient account funds; 500token00100010000 < 1000token00100010000").Error())
+	require.EqualError(t, keeper.TransferFT(ctx, addr1, addr2, defaultSymbol, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))), sdk.ErrInsufficientCoins("insufficient account funds; 500:00010000 < 1000:00010000").Error())
 }
 
 func TestTransferNFTScenario(t *testing.T) {
@@ -47,15 +47,15 @@ func TestTransferNFTScenario(t *testing.T) {
 	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID8), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
 
 	// transfer a child : failure
-	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID2), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, defaultSymbol+defaultTokenID2).Error())
-	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID3), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, defaultSymbol+defaultTokenID3).Error())
-	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID4), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, defaultSymbol+defaultTokenID4).Error())
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID2), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, defaultTokenID2).Error())
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID3), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, defaultTokenID3).Error())
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID4), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, defaultTokenID4).Error())
 
 	// transfer non-mine : failure
-	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultSymbol+defaultTokenID5, addr1).Error())
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
 
-	// transfer-nft ft : failure
-	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenIDFT), types.ErrTokenNotNFT(types.DefaultCodespace, defaultSymbol+defaultTokenIDFT).Error())
+	// transfer-cnft cft : failure
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenIDFT), types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
 
 	//
 	// transfer success cases

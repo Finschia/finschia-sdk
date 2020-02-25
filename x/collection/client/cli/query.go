@@ -20,12 +20,13 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		RunE:                       client.ValidateCmd,
 	}
 	cmd.AddCommand(
-		GetCollectionTokenCmd(cdc),
-		GetCollectionTokensCmd(cdc),
+		GetBalanceCmd(cdc),
+		GetTokenCmd(cdc),
+		GetTokensCmd(cdc),
 		GetCollectionCmd(cdc),
 		GetCollectionsCmd(cdc),
-		GetCollectionTokenSupplyCmd(cdc),
-		GetCollectionTokenCountCmd(cdc),
+		GetTokenSupplyCmd(cdc),
+		GetTokenCountCmd(cdc),
 		GetPermsCmd(cdc),
 		GetParentCmd(cdc),
 		GetRootCmd(cdc),
@@ -34,6 +35,35 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	)
 
 	return cmd
+}
+
+func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "balance [symbol] [token_id] [addr]",
+		Short: "Query balance of the account",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			retriever := clienttypes.NewRetriever(cliCtx)
+
+			symbol := args[0]
+			tokenID := args[1]
+			addr, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+
+			supply, height, err := retriever.GetAccountBalance(cliCtx, symbol, tokenID, addr)
+			if err != nil {
+				return err
+			}
+
+			cliCtx = cliCtx.WithHeight(height)
+			return cliCtx.PrintOutput(supply)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
 }
 
 func GetCollectionCmd(cdc *codec.Codec) *cobra.Command {
@@ -80,7 +110,7 @@ func GetCollectionsCmd(cdc *codec.Codec) *cobra.Command {
 
 	return client.GetCommands(cmd)[0]
 }
-func GetCollectionTokenCmd(cdc *codec.Codec) *cobra.Command {
+func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "token [symbol] [token-id]",
 		Short: "Query collection token with collection symbol and token's token-id",
@@ -105,7 +135,7 @@ func GetCollectionTokenCmd(cdc *codec.Codec) *cobra.Command {
 	return client.GetCommands(cmd)[0]
 }
 
-func GetCollectionTokensCmd(cdc *codec.Codec) *cobra.Command {
+func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tokens [symbol]",
 		Short: "Query all collection tokens with collection symbol",
@@ -129,7 +159,7 @@ func GetCollectionTokensCmd(cdc *codec.Codec) *cobra.Command {
 	return client.GetCommands(cmd)[0]
 }
 
-func GetCollectionTokenSupplyCmd(cdc *codec.Codec) *cobra.Command {
+func GetTokenSupplyCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "supply [symbol] [token-id]",
 		Short: "Query supply of collection token with collection symbol and tokens's token-id.",
@@ -153,7 +183,7 @@ func GetCollectionTokenSupplyCmd(cdc *codec.Codec) *cobra.Command {
 
 	return client.GetCommands(cmd)[0]
 }
-func GetCollectionTokenCountCmd(cdc *codec.Codec) *cobra.Command {
+func GetTokenCountCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "count [symbol] [token-type]",
 		Short: "Query count of collection tokens with collection symbol and the base-id.",

@@ -7,8 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	linktype "github.com/line/link/types"
 )
 
 func TestHandleMsgIssueFT(t *testing.T) {
@@ -227,8 +225,7 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		symbolWithID := defaultSymbol + defaultTokenIDFT
-		msg := types.NewMsgMintFT(addr1, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount))))
+		msg := types.NewMsgMintFT(defaultSymbol, addr1, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -237,14 +234,13 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("mint_ft", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("mint_ft", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("mint_ft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String()+symbolWithID)),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("amount", types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)).String())),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
 
 	{
-		symbolWithID := defaultSymbol + defaultTokenIDFT
-		msg := types.NewMsgBurnFT(addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount))))
+		msg := types.NewMsgBurnFT(defaultSymbol, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -252,7 +248,7 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("burn_ft", sdk.NewAttribute("from", addr1.String())),
-			sdk.NewEvent("burn_ft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String()+symbolWithID)),
+			sdk.NewEvent("burn_ft", sdk.NewAttribute("amount", types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)).String())),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}

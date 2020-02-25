@@ -1,9 +1,7 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/collection/internal/types"
 )
 
@@ -38,7 +36,7 @@ func (k Keeper) Attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTo
 }
 
 func (k Keeper) AttachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol string, toTokenID string, tokenID string) sdk.Error {
-	if !k.IsApproved(ctx, proxy, from, symbol) {
+	if !k.IsApproved(ctx, symbol, proxy, from) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
 	}
 
@@ -60,55 +58,63 @@ func (k Keeper) AttachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAd
 	return nil
 }
 
-func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, toTokenID string, tokenID string) sdk.Error {
+func (k Keeper) attach(ctx sdk.Context, from sdk.AccAddress, symbol string, parentID string, childID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
-	if toTokenID == tokenID {
-		return types.ErrCannotAttachToItself(types.DefaultCodespace, symbol+tokenID)
+	if parentID == childID {
+		return types.ErrCannotAttachToItself(types.DefaultCodespace, childID)
 	}
 
-	token, err := k.GetNFT(ctx, symbol, tokenID)
+	childToken, err := k.GetNFT(ctx, symbol, childID)
 	if err != nil {
 		return err
 	}
 
-	if !from.Equals(token.GetOwner()) {
-		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
+	if !from.Equals(childToken.GetOwner()) {
+		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, childID, from)
 	}
 
-	toToken, err := k.GetNFT(ctx, symbol, toTokenID)
+	toToken, err := k.GetNFT(ctx, symbol, parentID)
 	if err != nil {
 		return err
 	}
 
 	if !from.Equals(toToken.GetOwner()) {
-		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, toToken.GetDenom(), from)
+		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, parentID, from)
 	}
 
 	// verify token should be a root
-	childToParentKey := types.TokenChildToParentKey(token)
+	childToParentKey := types.TokenChildToParentKey(symbol, childID)
 	if store.Has(childToParentKey) {
-		return types.ErrTokenAlreadyAChild(types.DefaultCodespace, token.GetDenom())
+		return types.ErrTokenAlreadyAChild(types.DefaultCodespace, childID)
 	}
 
 	// verify no circulation(toToken must not be a descendant of token)
-	rootOfToToken, err := k.RootOf(ctx, symbol, toTokenID)
+	rootOfToToken, err := k.RootOf(ctx, symbol, parentID)
 	if err != nil {
 		return err
 	}
-	if rootOfToToken.GetTokenID() == tokenID {
-		return types.ErrCannotAttachToADescendant(types.DefaultCodespace, token.GetDenom(), toToken.GetDenom())
+	parentToken, err := k.GetNFT(ctx, symbol, parentID)
+	if err != nil {
+		return err
+	}
+	if rootOfToToken.GetTokenID() == childID {
+		return types.ErrCannotAttachToADescendant(types.DefaultCodespace, childID, parentID)
 	}
 
-	parentToChildKey := types.TokenParentToChildKey(toToken)
-	childrenStore := prefix.NewStore(store, parentToChildKey)
-	parentToChildSubKey := types.TokenParentToChildSubKey(token)
-	if childrenStore.Has(parentToChildSubKey) {
+	parentToChildKey := types.TokenParentToChildKey(symbol, parentID, childID)
+	if store.Has(parentToChildKey) {
 		panic("token is already a child of some other")
 	}
 
-	store.Set(childToParentKey, k.mustEncodeTokenDenom(toToken.GetDenom()))
-	childrenStore.Set(parentToChildSubKey, ChildExists)
+	if !from.Equals(parentToken.GetOwner()) {
+		if err := k.moveNFToken(ctx, symbol, from, parentToken.GetOwner(), childToken); err != nil {
+			return err
+		}
+	}
+
+	store.Set(childToParentKey, k.mustEncodeTokenID(parentID))
+	store.Set(parentToChildKey, k.mustEncodeTokenID(childID))
 
 	return nil
 }
@@ -133,7 +139,7 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, symbol string, toke
 
 //nolint:dupl
 func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol string, tokenID string) sdk.Error {
-	if !k.IsApproved(ctx, proxy, from, symbol) {
+	if !k.IsApproved(ctx, symbol, proxy, from) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
 	}
 
@@ -156,43 +162,40 @@ func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAd
 	return nil
 }
 
-func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, symbol string, tokenID string) (parentTokenID string, err sdk.Error) {
+func (k Keeper) detach(ctx sdk.Context, from sdk.AccAddress, symbol string, childID string) (string, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
 
-	token, err := k.GetNFT(ctx, symbol, tokenID)
+	childToken, err := k.GetNFT(ctx, symbol, childID)
 	if err != nil {
 		return "", err
 	}
 
-	if !from.Equals(token.GetOwner()) {
-		return "", types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
+	if !from.Equals(childToken.GetOwner()) {
+		return "", types.ErrTokenNotOwnedBy(types.DefaultCodespace, childID, from)
 	}
 
-	childToParentKey := types.TokenChildToParentKey(token)
+	childToParentKey := types.TokenChildToParentKey(symbol, childID)
 	if !store.Has(childToParentKey) {
-		return "", types.ErrTokenNotAChild(types.DefaultCodespace, token.GetDenom())
+		return "", types.ErrTokenNotAChild(types.DefaultCodespace, childID)
 	}
 
 	bz := store.Get(childToParentKey)
-	parentTokenDenom := k.mustDecodeTokenDenom(bz)
-	ticker, suffix, parentTokenID := linktype.ParseDenom(parentTokenDenom)
+	parentID := k.mustDecodeTokenID(bz)
 
-	parentToken, err := k.GetNFT(ctx, ticker+suffix, parentTokenID)
+	_, err = k.GetNFT(ctx, symbol, parentID)
 	if err != nil {
 		return "", err
 	}
 
-	parentToChildKey := types.TokenParentToChildKey(parentToken)
-	childrenStore := prefix.NewStore(store, parentToChildKey)
-	parentToChildSubKey := types.TokenParentToChildSubKey(token)
-	if !childrenStore.Has(parentToChildSubKey) {
+	parentToChildKey := types.TokenParentToChildKey(symbol, parentID, childID)
+	if !store.Has(parentToChildKey) {
 		panic("token is not a child of some other")
 	}
 
 	store.Delete(childToParentKey)
-	childrenStore.Delete(parentToChildSubKey)
+	store.Delete(parentToChildKey)
 
-	return parentTokenID, nil
+	return parentID, nil
 }
 
 func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.NFT, sdk.Error) {
@@ -203,16 +206,15 @@ func (k Keeper) RootOf(ctx sdk.Context, symbol string, tokenID string) (types.NF
 		return nil, err
 	}
 
-	for childToParentKey := types.TokenChildToParentKey(token); store.Has(childToParentKey); {
+	for childToParentKey := types.TokenChildToParentKey(symbol, token.GetTokenID()); store.Has(childToParentKey); {
 		bz := store.Get(childToParentKey)
-		parentTokenDenom := k.mustDecodeTokenDenom(bz)
-		ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
+		parentTokenID := k.mustDecodeTokenID(bz)
 
-		token, err = k.GetNFT(ctx, ticker+suffix, tokenID)
+		token, err = k.GetNFT(ctx, symbol, parentTokenID)
 		if err != nil {
 			return nil, err
 		}
-		childToParentKey = types.TokenChildToParentKey(token)
+		childToParentKey = types.TokenChildToParentKey(symbol, token.GetTokenID())
 	}
 
 	return token, nil
@@ -225,52 +227,63 @@ func (k Keeper) ParentOf(ctx sdk.Context, symbol string, tokenID string) (types.
 	if err != nil {
 		return nil, err
 	}
-	childToParentKey := types.TokenChildToParentKey(token)
+	childToParentKey := types.TokenChildToParentKey(symbol, token.GetTokenID())
 	if store.Has(childToParentKey) {
 		bz := store.Get(childToParentKey)
-		parentTokenDenom := k.mustDecodeTokenDenom(bz)
-		ticker, suffix, tokenID := linktype.ParseDenom(parentTokenDenom)
+		parentTokenID := k.mustDecodeTokenID(bz)
 
-		return k.GetNFT(ctx, ticker+suffix, tokenID)
+		return k.GetNFT(ctx, symbol, parentTokenID)
 	}
 	return nil, nil
 }
 
 func (k Keeper) ChildrenOf(ctx sdk.Context, symbol string, tokenID string) (types.Tokens, sdk.Error) {
-	store := ctx.KVStore(k.storeKey)
-
-	token, err := k.GetNFT(ctx, symbol, tokenID)
+	_, err := k.GetNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return nil, err
 	}
+	tokens := k.getChildren(ctx, symbol, tokenID)
 
-	result := make([]types.Token, 0)
-	parentToChildKey := types.TokenParentToChildKey(token)
-	iter := sdk.KVStorePrefixIterator(store, parentToChildKey)
+	return tokens, nil
+}
+
+func (k Keeper) mustEncodeTokenID(tokenID string) []byte {
+	return k.cdc.MustMarshalBinaryBare(tokenID)
+}
+
+func (k Keeper) mustDecodeTokenID(tokenIDByte []byte) (tokenID string) {
+	k.cdc.MustUnmarshalBinaryBare(tokenIDByte, &tokenID)
+	return tokenID
+}
+
+func (k Keeper) getChildren(ctx sdk.Context, symbol, parentID string) (tokens types.Tokens) {
+	getToken := func(tokenID string) bool {
+		token, err := k.GetNFT(ctx, symbol, tokenID)
+		if err != nil {
+			panic(err)
+		}
+		tokens = append(tokens, token)
+		return false
+	}
+
+	k.iterateChildren(ctx, symbol, parentID, getToken)
+
+	return tokens
+}
+
+func (k Keeper) iterateChildren(ctx sdk.Context, symbol, parentID string, process func(string) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	iter := sdk.KVStorePrefixIterator(store, types.TokenParentToChildSubKey(symbol, parentID))
 	defer iter.Close()
 	for {
 		if !iter.Valid() {
-			break
+			return
 		}
-		tokenDenom := types.ParentToChildSubKeyToToken(parentToChildKey, iter.Key())
-		ticker, suffix, tokenID := linktype.ParseDenom(tokenDenom)
-
-		childToken, err := k.GetNFT(ctx, ticker+suffix, tokenID)
-		if err != nil {
-			panic("child token does not exist")
+		val := iter.Value()
+		tokenID := k.mustDecodeTokenID(val)
+		if process(tokenID) {
+			return
 		}
-		result = append(result, childToken)
 		iter.Next()
 	}
-	return result, nil
-}
-
-func (k Keeper) mustEncodeTokenDenom(denom string) []byte {
-	return k.cdc.MustMarshalBinaryBare(denom)
-}
-
-func (k Keeper) mustDecodeTokenDenom(tokenByte []byte) string {
-	var denom string
-	k.cdc.MustUnmarshalBinaryBare(tokenByte, &denom)
-	return denom
 }

@@ -755,6 +755,56 @@ paths:
                         - $ref: '#/components/schemas/TokenNFT'
         "500":
           description: Internal Server Error
+  /collection/collections/{symbol}/balances/{address}/{token_id}:
+    get:
+      tags:
+        - Collection
+      summary: Get the account balances of a single coin denomination
+      parameters:
+        - name: address
+          in: path
+          description: Account address
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: symbol
+          in: path
+          description: symbol for the collection
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: token_id
+          in: path
+          description: token id
+          required: true
+          schema:
+            type: string
+          example: "00010000"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: Account balances
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: string
+                    example: "100"
+        "500":
+          description: Server internal error
   /collection/collections/{symbol}/tokens/{token_id}/supply:
     get:
       tags:
@@ -1190,15 +1240,12 @@ components:
         amount:
           type: string
           example: "50"
-    CoinWithTokenID:
+    LinkCoin:
       type: object
       properties:
-        symbol:
-          type: string
-          example: link
         token_id:
           type: string
-          example: "00000001"
+          example: "00010001"
         amount:
           type: string
           example: "50"
@@ -2338,6 +2385,9 @@ components:
         value:
           type: object
           properties:
+            symbol:
+              type: string
+              example: "con2xxv"
             from:
               $ref: '#/components/schemas/Address'
             to:
@@ -2345,9 +2395,6 @@ components:
             name:
               type: string
               example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
             token_uri:
               type: string
               example: "example.com/token_uri"
@@ -2369,9 +2416,11 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-            token_id:
-              type: string
-              example: "10010001"
+            token_ids:
+              type: array
+              items:
+                type: string
+                example: "10010001"
     MsgBurnCNFTFrom:
       type: object
       description: msg of non-fungible collection token burn
@@ -2389,9 +2438,11 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-            token_id:
-              type: string
-              example: "10010001"
+            token_ids:
+              type: array
+              items:
+                type: string
+                example: "10010001"
     MsgMintCFT:
       type: object
       description: msg of token mint
@@ -2409,7 +2460,7 @@ components:
             amount:
               type: array
               items:
-                $ref: '#/components/schemas/CoinWithTokenID'
+                $ref: '#/components/schemas/LinkCoin'
     MsgBurnCFT:
       type: object
       description: msg of token burn
@@ -2420,12 +2471,15 @@ components:
         value:
           type: object
           properties:
+            symbol:
+              type: string
+              example: "con2xxv"
             from:
               $ref: '#/components/schemas/Address'
             amount:
               type: array
               items:
-                $ref: '#/components/schemas/CoinWithTokenID'
+                $ref: '#/components/schemas/LinkCoin'
     MsgBurnCFTFrom:
       type: object
       description: msg of token burn
@@ -2443,7 +2497,7 @@ components:
             amount:
               type: array
               items:
-                $ref: '#/components/schemas/CoinWithTokenID'
+                $ref: '#/components/schemas/LinkCoin'
     MsgTransferCFT:
       type: object
       properties:
@@ -2460,12 +2514,10 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-            token_id:
-              type: string
-              example: "00010000"
             amount:
-              type: string
-              example: "10"
+              type: array
+              items:
+                $ref: '#/components/schemas/LinkCoin'
     MsgTransferCNFT:
       type: object
       properties:
@@ -2482,9 +2534,11 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-            token_id:
-              type: string
-              example: "10010001"
+            token_ids:
+              type: array
+              items:
+                type: string
+                example: "10010001"
     MsgTransferCFTFrom:
       type: object
       properties:
@@ -2503,12 +2557,10 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-            token_id:
-              type: string
-              example: "00010000"
             amount:
-              type: string
-              example: "10"
+              type: array
+              items:
+                $ref: '#/components/schemas/LinkCoin'
     MsgTransferCNFTFrom:
       type: object
       properties:
@@ -2527,9 +2579,11 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-            token_id:
-              type: string
-              example: "10010001"
+            token_ids:
+              type: array
+              items:
+                type: string
+                example: "10010001"
     MsgAttach:
       type: object
       properties:
@@ -2804,7 +2858,9 @@ components:
         "value": {
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_id": "10010005"
+          "token_ids": [
+            "10010005"
+            ]
         }
       },
       {
@@ -2822,10 +2878,10 @@ components:
       {
         "type": "collection/MsgMintFT",
         "value": {
+          "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "symbol": "con2xxv",
                        "token_id": "00010000",
                        "amount": "1"
                      }]
@@ -2834,9 +2890,9 @@ components:
       {
         "type": "collection/MsgBurnFT",
         "value": {
+          "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "symbol": "con2xxv",
                        "token_id": "00010000",
                        "amount": "1"
                      }]
@@ -2880,8 +2936,10 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "00010000",
-          "amount": "1"
+          "amount": [{
+                       "token_id": "00010000",
+                       "amount": "1"
+                     }]
         }
       },
       {
@@ -2890,8 +2948,10 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "00010000",
-          "amount": "1"
+          "amount": [{
+                       "token_id": "00010000",
+                       "amount": "1"
+                     }]
         }
       },
       {
@@ -2901,8 +2961,10 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "00010000",
-          "amount": "1"
+          "amount": [{
+                       "token_id": "00010000",
+                       "amount": "1"
+                     }]
         }
       },
       {
@@ -2911,7 +2973,9 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "10010001"
+          "token_ids": [
+            "10010001"
+            ]
         }
       },
       {
@@ -2920,7 +2984,9 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "10010006"
+          "token_ids": [
+            "10010006"
+          ]
         }
       },
       {
@@ -2930,7 +2996,9 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "10010004"
+          "token_ids": [
+            "10010004"
+          ]
         }
       },
       {
@@ -2984,16 +3052,18 @@ components:
           "symbol": "con2xxv",
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_id": "10010006"
+          "token_ids": [
+            "10010006"
+          ]
         }
       },
       {
         "type": "collection/MsgBurnFTFrom",
         "value": {
+          "symbol": "con2xxv",
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "symbol": "con2xxv",
                        "token_id": "00010000",
                        "amount": "1"
                      }]

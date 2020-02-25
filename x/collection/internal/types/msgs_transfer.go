@@ -22,20 +22,18 @@ var _ json.Marshaler = (*MsgTransferNFTFrom)(nil)
 var _ json.Unmarshaler = (*MsgTransferNFTFrom)(nil)
 
 type MsgTransferFT struct {
-	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
-	Amount  sdk.Int        `json:"amount"`
+	From   sdk.AccAddress `json:"from"`
+	To     sdk.AccAddress `json:"to"`
+	Symbol string         `json:"symbol"`
+	Amount Coins          `json:"amount"`
 }
 
-func NewMsgTransferFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) MsgTransferFT {
+func NewMsgTransferFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, amount ...Coin) MsgTransferFT {
 	return MsgTransferFT{
-		From:    from,
-		To:      to,
-		Symbol:  symbol,
-		TokenID: tokenID,
-		Amount:  amount,
+		From:   from,
+		To:     to,
+		Symbol: symbol,
+		Amount: amount,
 	}
 }
 
@@ -62,16 +60,12 @@ func (msg MsgTransferFT) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("To cannot be empty")
 	}
 
-	if len(msg.Symbol) == 0 {
-		return sdk.ErrInvalidCoins("Token symbol is empty")
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 
-	if err := types.ValidateSymbolCollectionToken(msg.Symbol + msg.TokenID); err != nil {
-		return sdk.ErrInvalidCoins("Only user defined token is possible: " + msg.Symbol + msg.TokenID)
-	}
-
-	if !msg.Amount.IsPositive() {
-		return sdk.ErrInsufficientCoins("send amount must be positive")
+	if !msg.Amount.IsValid() {
+		return ErrInvalidAmount(DefaultCodespace, "invalid amount")
 	}
 	return nil
 }
@@ -85,18 +79,18 @@ func (msg MsgTransferFT) GetSigners() []sdk.AccAddress {
 }
 
 type MsgTransferNFT struct {
-	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	From     sdk.AccAddress `json:"from"`
+	To       sdk.AccAddress `json:"to"`
+	Symbol   string         `json:"symbol"`
+	TokenIDs []string       `json:"token_ids"`
 }
 
-func NewMsgTransferNFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) MsgTransferNFT {
+func NewMsgTransferNFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenIDs ...string) MsgTransferNFT {
 	return MsgTransferNFT{
-		From:    from,
-		To:      to,
-		Symbol:  symbol,
-		TokenID: tokenID,
+		From:     from,
+		To:       to,
+		Symbol:   symbol,
+		TokenIDs: tokenIDs,
 	}
 }
 
@@ -123,12 +117,13 @@ func (msg MsgTransferNFT) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("To cannot be empty")
 	}
 
-	if len(msg.Symbol) == 0 {
-		return sdk.ErrInvalidCoins("Token symbol is empty")
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
-
-	if err := types.ValidateSymbolCollectionToken(msg.Symbol + msg.TokenID); err != nil {
-		return sdk.ErrInvalidCoins("Only user defined token is possible: " + msg.Symbol + msg.TokenID)
+	for _, tokenID := range msg.TokenIDs {
+		if err := types.ValidateTokenID(tokenID); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
 	}
 
 	return nil
@@ -143,22 +138,20 @@ func (msg MsgTransferNFT) GetSigners() []sdk.AccAddress {
 }
 
 type MsgTransferFTFrom struct {
-	Proxy   sdk.AccAddress `json:"proxy"`
-	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
-	Amount  sdk.Int        `json:"amount"`
+	Proxy  sdk.AccAddress `json:"proxy"`
+	From   sdk.AccAddress `json:"from"`
+	To     sdk.AccAddress `json:"to"`
+	Symbol string         `json:"symbol"`
+	Amount Coins          `json:"amount"`
 }
 
-func NewMsgTransferFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) MsgTransferFTFrom {
+func NewMsgTransferFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, amount ...Coin) MsgTransferFTFrom {
 	return MsgTransferFTFrom{
-		Proxy:   proxy,
-		From:    from,
-		To:      to,
-		Symbol:  symbol,
-		TokenID: tokenID,
-		Amount:  amount,
+		Proxy:  proxy,
+		From:   from,
+		To:     to,
+		Symbol: symbol,
+		Amount: amount,
 	}
 }
 
@@ -189,11 +182,11 @@ func (msg MsgTransferFTFrom) ValidateBasic() sdk.Error {
 	if msg.From.Equals(msg.Proxy) {
 		return ErrApproverProxySame(DefaultCodespace, msg.From.String())
 	}
-	if err := types.ValidateSymbolCollectionToken(msg.Symbol + msg.TokenID); err != nil {
-		return sdk.ErrInvalidCoins("Only user defined token is possible: " + msg.Symbol + msg.TokenID)
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
-	if !msg.Amount.IsPositive() {
-		return sdk.ErrInsufficientCoins("send amount must be positive")
+	if !msg.Amount.IsValid() {
+		return ErrInvalidAmount(DefaultCodespace, "invalid amount")
 	}
 	return nil
 }
@@ -207,20 +200,20 @@ func (msg MsgTransferFTFrom) GetSigners() []sdk.AccAddress {
 }
 
 type MsgTransferNFTFrom struct {
-	Proxy   sdk.AccAddress `json:"proxy"`
-	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	Proxy    sdk.AccAddress `json:"proxy"`
+	From     sdk.AccAddress `json:"from"`
+	To       sdk.AccAddress `json:"to"`
+	Symbol   string         `json:"symbol"`
+	TokenIDs []string       `json:"token_ids"`
 }
 
-func NewMsgTransferNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) MsgTransferNFTFrom {
+func NewMsgTransferNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenIDs ...string) MsgTransferNFTFrom {
 	return MsgTransferNFTFrom{
-		Proxy:   proxy,
-		From:    from,
-		To:      to,
-		Symbol:  symbol,
-		TokenID: tokenID,
+		Proxy:    proxy,
+		From:     from,
+		To:       to,
+		Symbol:   symbol,
+		TokenIDs: tokenIDs,
 	}
 }
 
@@ -251,8 +244,13 @@ func (msg MsgTransferNFTFrom) ValidateBasic() sdk.Error {
 	if msg.From.Equals(msg.Proxy) {
 		return ErrApproverProxySame(DefaultCodespace, msg.From.String())
 	}
-	if err := types.ValidateSymbolCollectionToken(msg.Symbol + msg.TokenID); err != nil {
-		return sdk.ErrInvalidCoins("Only user defined token is possible: " + msg.Symbol + msg.TokenID)
+	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+	}
+	for _, tokenID := range msg.TokenIDs {
+		if err := types.ValidateTokenID(tokenID); err != nil {
+			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		}
 	}
 	return nil
 }

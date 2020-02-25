@@ -57,30 +57,30 @@ func (p Permission) String() string {
 	return fmt.Sprintf("%s-%s", p.GetResource(), p.GetAction())
 }
 
-func NewMintPermission(resource string) Permission {
+func NewMintPermission(symbol, tokenID string) Permission {
 	return Permission{
 		Action:   MintAction,
-		Resource: resource,
+		Resource: symbol + tokenID,
 	}
 }
 
-func NewBurnPermission(resource string) Permission {
+func NewBurnPermission(symbol, tokenID string) Permission {
 	return Permission{
 		Action:   BurnAction,
-		Resource: resource,
+		Resource: symbol + tokenID,
 	}
 }
 
-func NewIssuePermission(resource string) Permission {
+func NewIssuePermission(symbol string) Permission {
 	return Permission{
 		Action:   IssueAction,
-		Resource: resource,
+		Resource: symbol,
 	}
 }
 
-func NewModifyTokenURIPermission(resource string) Permission {
+func NewModifyTokenURIPermission(symbol, tokenID string) Permission {
 	return Permission{
 		Action:   ModifyAction,
-		Resource: resource,
+		Resource: symbol + tokenID,
 	}
 }

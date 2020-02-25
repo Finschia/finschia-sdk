@@ -49,19 +49,20 @@ type MsgIssueNFT struct {
 
 ```golang
 type MsgMintFT struct {
-	From   sdk.AccAddress            `json:"from"`
-	To     sdk.AccAddress            `json:"to"`
-	Amount linktype.CoinWithTokenIDs `json:"amount"`
+	Symbol string         `json:"symbol"`
+	From   sdk.AccAddress `json:"from"`
+	To     sdk.AccAddress `json:"to"`
+	Amount Coins          `json:"amount"`
 }
 
-type CoinWithTokenIDs []CoinWithTokenID
-
-type CoinWithTokenID struct {
-	Symbol  string  `json:"symbol"`
-	TokenID string  `json:"token_id"`
-	Amount  sdk.Int `json:"amount"`
+type Coin struct {
+	Denom  string   `json:"token_id"`
+	Amount sdk.Int  `json:"amount"`
 }
+
+type Coins []Coin
 ```
+
 
 ### MsgMintNFT
 ```golang
@@ -84,25 +85,18 @@ type MsgMintNFT struct {
 
 ```golang
 type MsgBurnFT struct {
-	From   sdk.AccAddress            `json:"from"`
-	Amount linktype.CoinWithTokenIDs `json:"amount"`
-}
-
-type CoinWithTokenIDs []CoinWithTokenID
-
-type CoinWithTokenID struct {
-	Symbol  string  `json:"symbol"`
-	TokenID string  `json:"token_id"`
-	Amount  sdk.Int `json:"amount"`
+	Symbol string         `json:"symbol"`
+	From   sdk.AccAddress `json:"from"`
+	Amount Coins          `json:"amount"`
 }
 ```
 
 ### MsgBurnNFT
 ```golang
 type MsgBurnNFT struct {
-	From    sdk.AccAddress `json:"from"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	From     sdk.AccAddress `json:"from"`
+	Symbol   string         `json:"symbol"`
+	TokenIDs []string       `json:"token_ids"`
 }
 ```
 
@@ -110,27 +104,20 @@ type MsgBurnNFT struct {
 
 ```golang
 type MsgBurnFTFrom struct {
-	Proxy  sdk.AccAddress            `json:"proxy"`
-	From   sdk.AccAddress            `json:"from"`
-	Amount linktype.CoinWithTokenIDs `json:"amount"`
-}
-
-type CoinWithTokenIDs []CoinWithTokenID
-
-type CoinWithTokenID struct {
-	Symbol  string  `json:"symbol"`
-	TokenID string  `json:"token_id"`
-	Amount  sdk.Int `json:"amount"`
+	Symbol string         `json:"symbol"`
+	Proxy  sdk.AccAddress `json:"proxy"`
+	From   sdk.AccAddress `json:"from"`
+	Amount Coins          `json:"amount"`
 }
 ```
 
 ### MsgBurnNFTFrom
 ```golang
 type MsgBurnNFTFrom struct {
-	Proxy  sdk.AccAddress  `json:"proxy"`
-	From    sdk.AccAddress `json:"from"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	Proxy    sdk.AccAddress `json:"proxy"`
+	From     sdk.AccAddress `json:"from"`
+	Symbol   string         `json:"symbol"`
+	TokenIDs []string       `json:"token_ids"`
 }
 ```
 
@@ -163,11 +150,10 @@ type MsgRevokePermission struct {
 ## MsgTransferFT
 ```golang
 type MsgTransferFT struct {
-	From        sdk.AccAddress `json:"from" yaml:"from"`
-	To          sdk.AccAddress `json:"to" yaml:"to"`
-	TokenSymbol string         `json:"token_symbol"`
-	TokenID     string         `json:"token_id"`
-	Amount      sdk.Int        `json:"amount" yaml:"amount"`
+	From   sdk.AccAddress `json:"from"`
+	To     sdk.AccAddress `json:"to"`
+	Symbol string         `json:"symbol"`
+	Amount Coins          `json:"amount"`
 }
 ```
 
@@ -181,10 +167,10 @@ type MsgTransferFT struct {
 
 ```golang
 type MsgTransferNFT struct {
-	From        sdk.AccAddress `json:"from"`
-	To          sdk.AccAddress `json:"to"`
-	TokenSymbol string         `json:"token_symbol"`
-	TokenID     string         `json:"token_id"`
+	From     sdk.AccAddress `json:"from"`
+	To       sdk.AccAddress `json:"to"`
+	Symbol   string         `json:"symbol"`
+	TokenIDs []string       `json:"token_ids"`
 }
 ```
 
@@ -198,12 +184,11 @@ type MsgTransferNFT struct {
 
 ```golang
 type MsgTransferFTFrom struct {
-	Proxy   sdk.AccAddress `json:"proxy"`
-	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
-	Amount  sdk.Int        `json:"amount"`
+	Proxy  sdk.AccAddress `json:"proxy"`
+	From   sdk.AccAddress `json:"from"`
+	To     sdk.AccAddress `json:"to"`
+	Symbol string         `json:"symbol"`
+	Amount Coins          `json:"amount"`
 }
 ```
 
@@ -217,11 +202,11 @@ type MsgTransferFTFrom struct {
 
 ```golang
 type MsgTransferNFTFrom struct {
-	Proxy   sdk.AccAddress `json:"proxy"`
-	From    sdk.AccAddress `json:"from"`
-	To      sdk.AccAddress `json:"to"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	Proxy    sdk.AccAddress `json:"proxy"`
+	From     sdk.AccAddress `json:"from"`
+	To       sdk.AccAddress `json:"to"`
+	Symbol   string         `json:"symbol"`
+	TokenIDs []string       `json:"token_ids"`
 }
 ```
 

@@ -7,6 +7,7 @@ import (
 
 const (
 	QuerierRoute     = ModuleName
+	QueryBalance     = "balance"
 	QueryTokens      = "tokens"
 	QueryPerms       = "perms"
 	QueryCollections = "collections"
@@ -38,6 +39,16 @@ type QuerySymbolTokenIDParams struct {
 
 func NewQuerySymbolTokenIDParams(symbol, tokenID string) QuerySymbolTokenIDParams {
 	return QuerySymbolTokenIDParams{Symbol: symbol, TokenID: tokenID}
+}
+
+type QuerySymbolTokenIDAccAddressParams struct {
+	Symbol  string         `json:"symbol"`
+	TokenID string         `json:"token_id"`
+	Addr    sdk.AccAddress `json:"addr"`
+}
+
+func NewQuerySymbolTokenIDAccAddressParams(symbol, tokenID string, addr sdk.AccAddress) QuerySymbolTokenIDAccAddressParams {
+	return QuerySymbolTokenIDAccAddressParams{Symbol: symbol, TokenID: tokenID, Addr: addr}
 }
 
 type QueryAccAddressParams struct {

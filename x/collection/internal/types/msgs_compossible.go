@@ -19,12 +19,6 @@ type MsgAttach struct {
 	TokenID   string         `json:"token_id"`
 }
 
-type MsgDetach struct {
-	From    sdk.AccAddress `json:"from"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
-}
-
 func NewMsgAttach(from sdk.AccAddress, symbol string, toTokenID string, tokenID string) MsgAttach {
 	return MsgAttach{
 		From:      from,
@@ -66,7 +60,7 @@ func (msg MsgAttach) ValidateBasic() sdk.Error {
 	}
 
 	if msg.ToTokenID == msg.TokenID {
-		return ErrCannotAttachToItself(DefaultCodespace, msg.Symbol+msg.TokenID)
+		return ErrCannotAttachToItself(DefaultCodespace, msg.TokenID)
 	}
 
 	return nil
@@ -78,6 +72,12 @@ func (msg MsgAttach) GetSignBytes() []byte {
 
 func (msg MsgAttach) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.From}
+}
+
+type MsgDetach struct {
+	From    sdk.AccAddress `json:"from"`
+	Symbol  string         `json:"symbol"`
+	TokenID string         `json:"token_id"`
 }
 
 func NewMsgDetach(from sdk.AccAddress, symbol string, tokenID string) MsgDetach {
@@ -176,7 +176,7 @@ func (msg MsgAttachFrom) ValidateBasic() sdk.Error {
 	}
 
 	if msg.ToTokenID == msg.TokenID {
-		return ErrCannotAttachToItself(DefaultCodespace, msg.Symbol+msg.TokenID)
+		return ErrCannotAttachToItself(DefaultCodespace, msg.TokenID)
 	}
 
 	return nil

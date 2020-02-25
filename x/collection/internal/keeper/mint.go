@@ -1,30 +1,27 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 type MintKeeper interface {
-	MintFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error
-	MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error
+	MintFT(ctx sdk.Context, symbol string, from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error
+	MintNFT(ctx sdk.Context, symbol string, from sdk.AccAddress, token types.NFT) sdk.Error
 }
 
-func (k Keeper) MintFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
+func (k Keeper) MintFT(ctx sdk.Context, symbol string, from, to sdk.AccAddress, amount types.Coins) sdk.Error {
 	for _, coin := range amount {
-		symbol, tokenID := coin.Symbol, coin.TokenID
-		token, err := k.GetToken(ctx, symbol, tokenID)
+		token, err := k.GetToken(ctx, symbol, coin.Denom)
 		if err != nil {
 			return err
 		}
-		if err := k.isMintable(ctx, token, from); err != nil {
+		if err := k.isMintable(ctx, symbol, token, from); err != nil {
 			return err
 		}
 	}
-	err := k.mintTokens(ctx, amount.ToCoins(), to)
+	err := k.MintSupply(ctx, symbol, to, amount)
 	if err != nil {
 		return err
 	}
@@ -33,21 +30,21 @@ func (k Keeper) MintFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktype
 			types.EventTypeMintFT,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
-			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
 		),
 	})
 	return nil
 }
 
-func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error {
+func (k Keeper) MintNFT(ctx sdk.Context, symbol string, from sdk.AccAddress, token types.NFT) sdk.Error {
 	if !types.ValidTokenURI(token.GetTokenURI()) {
 		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
 	}
-	if !k.hasTokenType(ctx, token.GetSymbol(), token.GetTokenType()) {
+	if !k.hasTokenType(ctx, symbol, token.GetTokenType()) {
 		return types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), token.GetTokenType())
 	}
 
-	perm := types.NewMintPermission(token.GetSymbol() + token.GetTokenType())
+	perm := types.NewMintPermission(token.GetSymbol(), token.GetTokenType())
 	if !k.HasPermission(ctx, from, perm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
@@ -57,12 +54,12 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) s
 		return err
 	}
 
-	err = k.mintTokens(ctx, sdk.NewCoins(sdk.NewCoin(token.GetDenom(), sdk.NewInt(1))), token.GetOwner())
+	err = k.MintSupply(ctx, symbol, token.GetOwner(), types.OneCoins(token.GetTokenID()))
 	if err != nil {
 		return err
 	}
 
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetDenom())
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol, token.GetTokenID())
 	k.AddPermission(ctx, token.GetOwner(), tokenURIModifyPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -85,42 +82,18 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) s
 
 	return nil
 }
-func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) sdk.Error {
+func (k Keeper) isMintable(ctx sdk.Context, symbol string, token types.Token, from sdk.AccAddress) sdk.Error {
 	ft, ok := token.(types.FT)
 	if !ok {
-		return types.ErrTokenNotMintable(types.DefaultCodespace, token.GetSymbol(), token.GetTokenID())
+		return types.ErrTokenNotMintable(types.DefaultCodespace, symbol, token.GetTokenID())
 	}
 
 	if !ft.GetMintable() {
-		return types.ErrTokenNotMintable(types.DefaultCodespace, token.GetSymbol(), token.GetTokenID())
+		return types.ErrTokenNotMintable(types.DefaultCodespace, symbol, token.GetTokenID())
 	}
-	perm := types.NewMintPermission(ft.GetDenom())
+	perm := types.NewMintPermission(symbol, ft.GetTokenID())
 	if !k.HasPermission(ctx, from, perm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
-	return nil
-}
-
-func (k Keeper) mintTokens(ctx sdk.Context, amount sdk.Coins, to sdk.AccAddress) sdk.Error {
-	err := k.supplyKeeper.MintCoins(ctx, types.ModuleName, amount)
-	if err != nil {
-		return err
-	}
-
-	moduleAddr := k.supplyKeeper.GetModuleAddress(types.ModuleName)
-	if moduleAddr == nil {
-		return sdk.ErrUnknownAddress(fmt.Sprintf("module account %s does not exist", types.ModuleName))
-	}
-
-	_, err = k.bankKeeper.SubtractCoins(ctx, moduleAddr, amount)
-	if err != nil {
-		return err
-	}
-
-	_, err = k.bankKeeper.AddCoins(ctx, to, amount)
-	if err != nil {
-		return err
-	}
-
 	return nil
 }
