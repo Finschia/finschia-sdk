@@ -7,21 +7,21 @@ import (
 	"github.com/line/link/types"
 )
 
-var _ sdk.Msg = (*MsgTransferCFT)(nil)
-var _ sdk.Msg = (*MsgTransferCNFT)(nil)
-var _ sdk.Msg = (*MsgTransferCFTFrom)(nil)
-var _ sdk.Msg = (*MsgTransferCNFTFrom)(nil)
+var _ sdk.Msg = (*MsgTransferFT)(nil)
+var _ sdk.Msg = (*MsgTransferNFT)(nil)
+var _ sdk.Msg = (*MsgTransferFTFrom)(nil)
+var _ sdk.Msg = (*MsgTransferNFTFrom)(nil)
 
-var _ json.Marshaler = (*MsgTransferCFT)(nil)
-var _ json.Unmarshaler = (*MsgTransferCFT)(nil)
-var _ json.Marshaler = (*MsgTransferCNFT)(nil)
-var _ json.Unmarshaler = (*MsgTransferCNFT)(nil)
-var _ json.Marshaler = (*MsgTransferCFTFrom)(nil)
-var _ json.Unmarshaler = (*MsgTransferCFTFrom)(nil)
-var _ json.Marshaler = (*MsgTransferCNFTFrom)(nil)
-var _ json.Unmarshaler = (*MsgTransferCNFTFrom)(nil)
+var _ json.Marshaler = (*MsgTransferFT)(nil)
+var _ json.Unmarshaler = (*MsgTransferFT)(nil)
+var _ json.Marshaler = (*MsgTransferNFT)(nil)
+var _ json.Unmarshaler = (*MsgTransferNFT)(nil)
+var _ json.Marshaler = (*MsgTransferFTFrom)(nil)
+var _ json.Unmarshaler = (*MsgTransferFTFrom)(nil)
+var _ json.Marshaler = (*MsgTransferNFTFrom)(nil)
+var _ json.Unmarshaler = (*MsgTransferNFTFrom)(nil)
 
-type MsgTransferCFT struct {
+type MsgTransferFT struct {
 	From    sdk.AccAddress `json:"from"`
 	To      sdk.AccAddress `json:"to"`
 	Symbol  string         `json:"symbol"`
@@ -29,8 +29,8 @@ type MsgTransferCFT struct {
 	Amount  sdk.Int        `json:"amount"`
 }
 
-func NewMsgTransferCFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) MsgTransferCFT {
-	return MsgTransferCFT{
+func NewMsgTransferFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) MsgTransferFT {
+	return MsgTransferFT{
 		From:    from,
 		To:      to,
 		Symbol:  symbol,
@@ -39,21 +39,21 @@ func NewMsgTransferCFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, to
 	}
 }
 
-func (msg MsgTransferCFT) MarshalJSON() ([]byte, error) {
-	type msgAlias MsgTransferCFT
+func (msg MsgTransferFT) MarshalJSON() ([]byte, error) {
+	type msgAlias MsgTransferFT
 	return json.Marshal(msgAlias(msg))
 }
 
-func (msg *MsgTransferCFT) UnmarshalJSON(data []byte) error {
-	type msgAlias *MsgTransferCFT
+func (msg *MsgTransferFT) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgTransferFT
 	return json.Unmarshal(data, msgAlias(msg))
 }
 
-func (MsgTransferCFT) Route() string { return RouterKey }
+func (MsgTransferFT) Route() string { return RouterKey }
 
-func (MsgTransferCFT) Type() string { return "transfer_cft" }
+func (MsgTransferFT) Type() string { return "transfer_ft" }
 
-func (msg MsgTransferCFT) ValidateBasic() sdk.Error {
+func (msg MsgTransferFT) ValidateBasic() sdk.Error {
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From cannot be empty")
 	}
@@ -76,23 +76,23 @@ func (msg MsgTransferCFT) ValidateBasic() sdk.Error {
 	return nil
 }
 
-func (msg MsgTransferCFT) GetSignBytes() []byte {
+func (msg MsgTransferFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgTransferCFT) GetSigners() []sdk.AccAddress {
+func (msg MsgTransferFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.From}
 }
 
-type MsgTransferCNFT struct {
+type MsgTransferNFT struct {
 	From    sdk.AccAddress `json:"from"`
 	To      sdk.AccAddress `json:"to"`
 	Symbol  string         `json:"symbol"`
 	TokenID string         `json:"token_id"`
 }
 
-func NewMsgTransferCNFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) MsgTransferCNFT {
-	return MsgTransferCNFT{
+func NewMsgTransferNFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) MsgTransferNFT {
+	return MsgTransferNFT{
 		From:    from,
 		To:      to,
 		Symbol:  symbol,
@@ -100,21 +100,21 @@ func NewMsgTransferCNFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, t
 	}
 }
 
-func (msg MsgTransferCNFT) MarshalJSON() ([]byte, error) {
-	type msgAlias MsgTransferCNFT
+func (msg MsgTransferNFT) MarshalJSON() ([]byte, error) {
+	type msgAlias MsgTransferNFT
 	return json.Marshal(msgAlias(msg))
 }
 
-func (msg *MsgTransferCNFT) UnmarshalJSON(data []byte) error {
-	type msgAlias *MsgTransferCNFT
+func (msg *MsgTransferNFT) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgTransferNFT
 	return json.Unmarshal(data, msgAlias(msg))
 }
 
-func (MsgTransferCNFT) Route() string { return RouterKey }
+func (MsgTransferNFT) Route() string { return RouterKey }
 
-func (MsgTransferCNFT) Type() string { return "transfer_cnft" }
+func (MsgTransferNFT) Type() string { return "transfer_nft" }
 
-func (msg MsgTransferCNFT) ValidateBasic() sdk.Error {
+func (msg MsgTransferNFT) ValidateBasic() sdk.Error {
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From cannot be empty")
 	}
@@ -134,15 +134,15 @@ func (msg MsgTransferCNFT) ValidateBasic() sdk.Error {
 	return nil
 }
 
-func (msg MsgTransferCNFT) GetSignBytes() []byte {
+func (msg MsgTransferNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgTransferCNFT) GetSigners() []sdk.AccAddress {
+func (msg MsgTransferNFT) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.From}
 }
 
-type MsgTransferCFTFrom struct {
+type MsgTransferFTFrom struct {
 	Proxy   sdk.AccAddress `json:"proxy"`
 	From    sdk.AccAddress `json:"from"`
 	To      sdk.AccAddress `json:"to"`
@@ -151,8 +151,8 @@ type MsgTransferCFTFrom struct {
 	Amount  sdk.Int        `json:"amount"`
 }
 
-func NewMsgTransferCFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) MsgTransferCFTFrom {
-	return MsgTransferCFTFrom{
+func NewMsgTransferFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) MsgTransferFTFrom {
+	return MsgTransferFTFrom{
 		Proxy:   proxy,
 		From:    from,
 		To:      to,
@@ -162,21 +162,21 @@ func NewMsgTransferCFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.Acc
 	}
 }
 
-func (msg MsgTransferCFTFrom) MarshalJSON() ([]byte, error) {
-	type msgAlias MsgTransferCFTFrom
+func (msg MsgTransferFTFrom) MarshalJSON() ([]byte, error) {
+	type msgAlias MsgTransferFTFrom
 	return json.Marshal(msgAlias(msg))
 }
 
-func (msg *MsgTransferCFTFrom) UnmarshalJSON(data []byte) error {
-	type msgAlias *MsgTransferCFTFrom
+func (msg *MsgTransferFTFrom) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgTransferFTFrom
 	return json.Unmarshal(data, msgAlias(msg))
 }
 
-func (MsgTransferCFTFrom) Route() string { return RouterKey }
+func (MsgTransferFTFrom) Route() string { return RouterKey }
 
-func (MsgTransferCFTFrom) Type() string { return "transfer_cft_from" }
+func (MsgTransferFTFrom) Type() string { return "transfer_ft_from" }
 
-func (msg MsgTransferCFTFrom) ValidateBasic() sdk.Error {
+func (msg MsgTransferFTFrom) ValidateBasic() sdk.Error {
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
@@ -198,15 +198,15 @@ func (msg MsgTransferCFTFrom) ValidateBasic() sdk.Error {
 	return nil
 }
 
-func (msg MsgTransferCFTFrom) GetSignBytes() []byte {
+func (msg MsgTransferFTFrom) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgTransferCFTFrom) GetSigners() []sdk.AccAddress {
+func (msg MsgTransferFTFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Proxy}
 }
 
-type MsgTransferCNFTFrom struct {
+type MsgTransferNFTFrom struct {
 	Proxy   sdk.AccAddress `json:"proxy"`
 	From    sdk.AccAddress `json:"from"`
 	To      sdk.AccAddress `json:"to"`
@@ -214,8 +214,8 @@ type MsgTransferCNFTFrom struct {
 	TokenID string         `json:"token_id"`
 }
 
-func NewMsgTransferCNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) MsgTransferCNFTFrom {
-	return MsgTransferCNFTFrom{
+func NewMsgTransferNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) MsgTransferNFTFrom {
+	return MsgTransferNFTFrom{
 		Proxy:   proxy,
 		From:    from,
 		To:      to,
@@ -224,21 +224,21 @@ func NewMsgTransferCNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.Ac
 	}
 }
 
-func (msg MsgTransferCNFTFrom) MarshalJSON() ([]byte, error) {
-	type msgAlias MsgTransferCNFTFrom
+func (msg MsgTransferNFTFrom) MarshalJSON() ([]byte, error) {
+	type msgAlias MsgTransferNFTFrom
 	return json.Marshal(msgAlias(msg))
 }
 
-func (msg *MsgTransferCNFTFrom) UnmarshalJSON(data []byte) error {
-	type msgAlias *MsgTransferCNFTFrom
+func (msg *MsgTransferNFTFrom) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgTransferNFTFrom
 	return json.Unmarshal(data, msgAlias(msg))
 }
 
-func (MsgTransferCNFTFrom) Route() string { return RouterKey }
+func (MsgTransferNFTFrom) Route() string { return RouterKey }
 
-func (MsgTransferCNFTFrom) Type() string { return "transfer_cnft_from" }
+func (MsgTransferNFTFrom) Type() string { return "transfer_nft_from" }
 
-func (msg MsgTransferCNFTFrom) ValidateBasic() sdk.Error {
+func (msg MsgTransferNFTFrom) ValidateBasic() sdk.Error {
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
@@ -257,10 +257,10 @@ func (msg MsgTransferCNFTFrom) ValidateBasic() sdk.Error {
 	return nil
 }
 
-func (msg MsgTransferCNFTFrom) GetSignBytes() []byte {
+func (msg MsgTransferNFTFrom) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgTransferCNFTFrom) GetSigners() []sdk.AccAddress {
+func (msg MsgTransferNFTFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Proxy}
 }

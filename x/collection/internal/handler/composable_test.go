@@ -32,13 +32,13 @@ func TestHandleAttachDetach(t *testing.T) {
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueCNFT(addr1, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintCNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, "1001")
+		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, "1001")
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintCNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, "1001")
+		msg2 = types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, "1001")
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 	}
@@ -67,6 +67,7 @@ func TestHandleAttachDetach(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("detach", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("detach", sdk.NewAttribute("symbol", defaultSymbol)),
+			sdk.NewEvent("detach", sdk.NewAttribute("from_token_id", defaultTokenID1)),
 			sdk.NewEvent("detach", sdk.NewAttribute("token_id", defaultTokenID2)),
 		}
 		verifyEventFunc(t, e, res2.Events)
@@ -89,15 +90,17 @@ func TestHandleAttachDetach(t *testing.T) {
 	}
 	//Burn token
 	{
-		msg := types.NewMsgBurnCNFT(addr1, defaultSymbol, defaultTokenID1)
+		msg := types.NewMsgBurnNFT(addr1, defaultSymbol, defaultTokenID1)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("burn_cnft", sdk.NewAttribute("from", addr1.String())),
-			sdk.NewEvent("burn_cnft", sdk.NewAttribute("symbol", defaultSymbol)),
-			sdk.NewEvent("burn_cnft", sdk.NewAttribute("token_id", defaultTokenID1)),
+			sdk.NewEvent("burn_nft", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("burn_nft", sdk.NewAttribute("symbol", defaultSymbol)),
+			sdk.NewEvent("burn_nft", sdk.NewAttribute("token_id", defaultTokenID1)),
+			sdk.NewEvent("operation_burn_nft", sdk.NewAttribute("token_id", defaultTokenID1)),
+			sdk.NewEvent("operation_burn_nft", sdk.NewAttribute("token_id", defaultTokenID2)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -110,13 +113,13 @@ func TestHandleAttachFromDetachFrom(t *testing.T) {
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueCNFT(addr1, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintCNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, "1001")
+		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, "1001")
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintCNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, "1001")
+		msg2 = types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, "1001")
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 		msg3 := types.NewMsgApprove(addr1, addr2, defaultSymbol)
@@ -147,6 +150,7 @@ func TestHandleAttachFromDetachFrom(t *testing.T) {
 		sdk.NewEvent("detach_from", sdk.NewAttribute("proxy", addr2.String())),
 		sdk.NewEvent("detach_from", sdk.NewAttribute("from", addr1.String())),
 		sdk.NewEvent("detach_from", sdk.NewAttribute("symbol", defaultSymbol)),
+		sdk.NewEvent("detach_from", sdk.NewAttribute("from_token_id", defaultTokenID1)),
 		sdk.NewEvent("detach_from", sdk.NewAttribute("token_id", defaultTokenID2)),
 	}
 	verifyEventFunc(t, e, res2.Events)

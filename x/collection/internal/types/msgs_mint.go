@@ -6,9 +6,9 @@ import (
 	linktype "github.com/line/link/types"
 )
 
-var _ sdk.Msg = (*MsgMintCNFT)(nil)
+var _ sdk.Msg = (*MsgMintNFT)(nil)
 
-type MsgMintCNFT struct {
+type MsgMintNFT struct {
 	From      sdk.AccAddress `json:"from"`
 	To        sdk.AccAddress `json:"to"`
 	Symbol    string         `json:"symbol"`
@@ -17,8 +17,8 @@ type MsgMintCNFT struct {
 	TokenType string         `json:"token_type"`
 }
 
-func NewMsgMintCNFT(from, to sdk.AccAddress, name, symbol, tokenURI string, tokenType string) MsgMintCNFT {
-	return MsgMintCNFT{
+func NewMsgMintNFT(from, to sdk.AccAddress, name, symbol, tokenURI string, tokenType string) MsgMintNFT {
+	return MsgMintNFT{
 		From:      from,
 		To:        to,
 		Symbol:    symbol,
@@ -28,14 +28,14 @@ func NewMsgMintCNFT(from, to sdk.AccAddress, name, symbol, tokenURI string, toke
 	}
 }
 
-func (msg MsgMintCNFT) Route() string                { return RouterKey }
-func (msg MsgMintCNFT) Type() string                 { return "mint_cnft" }
-func (msg MsgMintCNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
-func (msg MsgMintCNFT) GetSignBytes() []byte {
+func (msg MsgMintNFT) Route() string                { return RouterKey }
+func (msg MsgMintNFT) Type() string                 { return "mint_nft" }
+func (msg MsgMintNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
+func (msg MsgMintNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgMintCNFT) ValidateBasic() sdk.Error {
+func (msg MsgMintNFT) ValidateBasic() sdk.Error {
 	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
@@ -60,30 +60,30 @@ func (msg MsgMintCNFT) ValidateBasic() sdk.Error {
 	return nil
 }
 
-var _ sdk.Msg = (*MsgBurnCNFT)(nil)
+var _ sdk.Msg = (*MsgBurnNFT)(nil)
 
-type MsgBurnCNFT struct {
+type MsgBurnNFT struct {
 	From    sdk.AccAddress `json:"from"`
 	Symbol  string         `json:"symbol"`
 	TokenID string         `json:"token_id"`
 }
 
-func NewMsgBurnCNFT(from sdk.AccAddress, symbol, tokenID string) MsgBurnCNFT {
-	return MsgBurnCNFT{
+func NewMsgBurnNFT(from sdk.AccAddress, symbol, tokenID string) MsgBurnNFT {
+	return MsgBurnNFT{
 		From:    from,
 		Symbol:  symbol,
 		TokenID: tokenID,
 	}
 }
 
-func (msg MsgBurnCNFT) Route() string                { return RouterKey }
-func (msg MsgBurnCNFT) Type() string                 { return "burn_cnft" }
-func (msg MsgBurnCNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
-func (msg MsgBurnCNFT) GetSignBytes() []byte {
+func (msg MsgBurnNFT) Route() string                { return RouterKey }
+func (msg MsgBurnNFT) Type() string                 { return "burn_nft" }
+func (msg MsgBurnNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
+func (msg MsgBurnNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurnCNFT) ValidateBasic() sdk.Error {
+func (msg MsgBurnNFT) ValidateBasic() sdk.Error {
 	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
@@ -102,17 +102,17 @@ func (msg MsgBurnCNFT) ValidateBasic() sdk.Error {
 	return nil
 }
 
-var _ sdk.Msg = (*MsgBurnCNFTFrom)(nil)
+var _ sdk.Msg = (*MsgBurnNFTFrom)(nil)
 
-type MsgBurnCNFTFrom struct {
+type MsgBurnNFTFrom struct {
 	Proxy   sdk.AccAddress `json:"proxy"`
 	From    sdk.AccAddress `json:"from"`
 	Symbol  string         `json:"symbol"`
 	TokenID string         `json:"token_id"`
 }
 
-func NewMsgBurnCNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) MsgBurnCNFTFrom {
-	return MsgBurnCNFTFrom{
+func NewMsgBurnNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) MsgBurnNFTFrom {
+	return MsgBurnNFTFrom{
 		Proxy:   proxy,
 		From:    from,
 		Symbol:  symbol,
@@ -120,14 +120,14 @@ func NewMsgBurnCNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol, token
 	}
 }
 
-func (msg MsgBurnCNFTFrom) Route() string                { return RouterKey }
-func (msg MsgBurnCNFTFrom) Type() string                 { return "burn_cnft_from" }
-func (msg MsgBurnCNFTFrom) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Proxy} }
-func (msg MsgBurnCNFTFrom) GetSignBytes() []byte {
+func (msg MsgBurnNFTFrom) Route() string                { return RouterKey }
+func (msg MsgBurnNFTFrom) Type() string                 { return "burn_nft_from" }
+func (msg MsgBurnNFTFrom) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Proxy} }
+func (msg MsgBurnNFTFrom) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurnCNFTFrom) ValidateBasic() sdk.Error {
+func (msg MsgBurnNFTFrom) ValidateBasic() sdk.Error {
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
@@ -152,29 +152,29 @@ func (msg MsgBurnCNFTFrom) ValidateBasic() sdk.Error {
 	return nil
 }
 
-var _ sdk.Msg = (*MsgMintCFT)(nil)
+var _ sdk.Msg = (*MsgMintFT)(nil)
 
-type MsgMintCFT struct {
+type MsgMintFT struct {
 	From   sdk.AccAddress            `json:"from"`
 	To     sdk.AccAddress            `json:"to"`
 	Amount linktype.CoinWithTokenIDs `json:"amount"`
 }
 
-func NewMsgMintCFT(from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgMintCFT {
-	return MsgMintCFT{
+func NewMsgMintFT(from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgMintFT {
+	return MsgMintFT{
 		From:   from,
 		To:     to,
 		Amount: amount,
 	}
 }
-func (MsgMintCFT) Route() string                    { return RouterKey }
-func (MsgMintCFT) Type() string                     { return "mint_cft" }
-func (msg MsgMintCFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
-func (msg MsgMintCFT) GetSignBytes() []byte {
+func (MsgMintFT) Route() string                    { return RouterKey }
+func (MsgMintFT) Type() string                     { return "mint_ft" }
+func (msg MsgMintFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
+func (msg MsgMintFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgMintCFT) ValidateBasic() sdk.Error {
+func (msg MsgMintFT) ValidateBasic() sdk.Error {
 	for _, coin := range msg.Amount {
 		if err := linktype.ValidateSymbolUserDefined(coin.Symbol); err != nil {
 			return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
@@ -200,27 +200,27 @@ func (msg MsgMintCFT) ValidateBasic() sdk.Error {
 	return nil
 }
 
-var _ sdk.Msg = (*MsgBurnCFT)(nil)
+var _ sdk.Msg = (*MsgBurnFT)(nil)
 
-type MsgBurnCFT struct {
+type MsgBurnFT struct {
 	From   sdk.AccAddress            `json:"from"`
 	Amount linktype.CoinWithTokenIDs `json:"amount"`
 }
 
-func NewMsgBurnCFT(from sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgBurnCFT {
-	return MsgBurnCFT{
+func NewMsgBurnFT(from sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgBurnFT {
+	return MsgBurnFT{
 		From:   from,
 		Amount: amount,
 	}
 }
-func (MsgBurnCFT) Route() string                    { return RouterKey }
-func (MsgBurnCFT) Type() string                     { return "burn_cft" }
-func (msg MsgBurnCFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
-func (msg MsgBurnCFT) GetSignBytes() []byte {
+func (MsgBurnFT) Route() string                    { return RouterKey }
+func (MsgBurnFT) Type() string                     { return "burn_ft" }
+func (msg MsgBurnFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
+func (msg MsgBurnFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurnCFT) ValidateBasic() sdk.Error {
+func (msg MsgBurnFT) ValidateBasic() sdk.Error {
 	for _, coin := range msg.Amount {
 		if err := linktype.ValidateSymbolUserDefined(coin.Symbol); err != nil {
 			return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
@@ -241,30 +241,30 @@ func (msg MsgBurnCFT) ValidateBasic() sdk.Error {
 	return nil
 }
 
-var _ sdk.Msg = (*MsgBurnCFTFrom)(nil)
+var _ sdk.Msg = (*MsgBurnFTFrom)(nil)
 
-type MsgBurnCFTFrom struct {
+type MsgBurnFTFrom struct {
 	Proxy  sdk.AccAddress            `json:"proxy"`
 	From   sdk.AccAddress            `json:"from"`
 	Amount linktype.CoinWithTokenIDs `json:"amount"`
 }
 
-func NewMsgBurnCFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgBurnCFTFrom {
-	return MsgBurnCFTFrom{
+func NewMsgBurnFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) MsgBurnFTFrom {
+	return MsgBurnFTFrom{
 		Proxy:  proxy,
 		From:   from,
 		Amount: amount,
 	}
 }
 
-func (MsgBurnCFTFrom) Route() string                    { return RouterKey }
-func (MsgBurnCFTFrom) Type() string                     { return "burn_cft_from" }
-func (msg MsgBurnCFTFrom) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Proxy} }
-func (msg MsgBurnCFTFrom) GetSignBytes() []byte {
+func (MsgBurnFTFrom) Route() string                    { return RouterKey }
+func (MsgBurnFTFrom) Type() string                     { return "burn_ft_from" }
+func (msg MsgBurnFTFrom) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Proxy} }
+func (msg MsgBurnFTFrom) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurnCFTFrom) ValidateBasic() sdk.Error {
+func (msg MsgBurnFTFrom) ValidateBasic() sdk.Error {
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}

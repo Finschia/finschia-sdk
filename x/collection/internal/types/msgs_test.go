@@ -19,12 +19,12 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
-		msg := NewMsgIssueCFT(addr, "name", "symb"+addrSuffix, length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssueFT(addr, "name", "symb"+addrSuffix, length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
 	}
 	{
-		msg := NewMsgIssueCFT(addr, "name", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
-		require.Equal(t, "issue_cft", msg.Type())
+		msg := NewMsgIssueFT(addr, "name", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
+		require.Equal(t, "issue_ft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -32,7 +32,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgIssueCFT{}
+		msg2 := MsgIssueFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -46,8 +46,8 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Mintable, msg2.Mintable)
 	}
 	{
-		msg := NewMsgIssueCNFT(addr, "symb"+addrSuffix)
-		require.Equal(t, "issue_cnft", msg.Type())
+		msg := NewMsgIssueNFT(addr, "symb"+addrSuffix)
+		require.Equal(t, "issue_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -55,7 +55,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgIssueCNFT{}
+		msg2 := MsgIssueNFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -64,8 +64,8 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Owner, msg2.Owner)
 	}
 	{
-		msg := NewMsgMintCNFT(addr, addr, "name", "symb"+addrSuffix, "tokenuri", "toke")
-		require.Equal(t, "mint_cnft", msg.Type())
+		msg := NewMsgMintNFT(addr, addr, "name", "symb"+addrSuffix, "tokenuri", "toke")
+		require.Equal(t, "mint_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -73,7 +73,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgMintCNFT{}
+		msg2 := MsgMintNFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -85,8 +85,8 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.TokenType, msg2.TokenType)
 	}
 	{
-		msg := NewMsgBurnCNFT(addr, "symb"+addrSuffix, "10010001")
-		require.Equal(t, "burn_cnft", msg.Type())
+		msg := NewMsgBurnNFT(addr, "symb"+addrSuffix, "10010001")
+		require.Equal(t, "burn_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -94,7 +94,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgBurnCNFT{}
+		msg2 := MsgBurnNFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -143,8 +143,8 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Permission, msg2.Permission)
 	}
 	{
-		msg := NewMsgTransferCFT(addr, addr2, "symbol", "00000001", sdk.NewInt(1))
-		require.Equal(t, "transfer_cft", msg.Type())
+		msg := NewMsgTransferFT(addr, addr2, "symbol", "00000001", sdk.NewInt(1))
+		require.Equal(t, "transfer_ft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -152,7 +152,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgTransferCFT{}
+		msg2 := MsgTransferFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -165,25 +165,25 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgTransferCFT(nil, addr2, "symbol", "00000001", sdk.NewInt(1))
+		msg := NewMsgTransferFT(nil, addr2, "symbol", "00000001", sdk.NewInt(1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 
-		msg = NewMsgTransferCFT(addr, nil, "symbol", "00000001", sdk.NewInt(1))
+		msg = NewMsgTransferFT(addr, nil, "symbol", "00000001", sdk.NewInt(1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
 
-		msg = NewMsgTransferCFT(addr, addr2, "", "00000001", sdk.NewInt(1))
+		msg = NewMsgTransferFT(addr, addr2, "", "00000001", sdk.NewInt(1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Token symbol is empty").Error())
 
-		msg = NewMsgTransferCFT(addr, addr2, "symbol", "1", sdk.NewInt(1))
+		msg = NewMsgTransferFT(addr, addr2, "symbol", "1", sdk.NewInt(1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Only user defined token is possible: symbol1").Error())
 
-		msg = NewMsgTransferCFT(addr, addr2, "symbol", "00000001", sdk.NewInt(-1))
+		msg = NewMsgTransferFT(addr, addr2, "symbol", "00000001", sdk.NewInt(-1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInsufficientCoins("send amount must be positive").Error())
 	}
 
 	{
-		msg := NewMsgTransferCNFT(addr, addr2, "symbol", "00000001")
-		require.Equal(t, "transfer_cnft", msg.Type())
+		msg := NewMsgTransferNFT(addr, addr2, "symbol", "00000001")
+		require.Equal(t, "transfer_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -191,7 +191,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgTransferCNFT{}
+		msg2 := MsgTransferNFT{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -203,22 +203,22 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgTransferCNFT(nil, addr2, "symbol", "00000001")
+		msg := NewMsgTransferNFT(nil, addr2, "symbol", "00000001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 
-		msg = NewMsgTransferCNFT(addr, nil, "symbol", "00000001")
+		msg = NewMsgTransferNFT(addr, nil, "symbol", "00000001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
 
-		msg = NewMsgTransferCNFT(addr, addr2, "", "00000001")
+		msg = NewMsgTransferNFT(addr, addr2, "", "00000001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Token symbol is empty").Error())
 
-		msg = NewMsgTransferCNFT(addr, addr2, "symbol", "1")
+		msg = NewMsgTransferNFT(addr, addr2, "symbol", "1")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Only user defined token is possible: symbol1").Error())
 	}
 
 	{
-		msg := NewMsgTransferCFTFrom(addr, addr2, addr2, "symbol", "00000001", sdk.NewInt(1))
-		require.Equal(t, "transfer_cft_from", msg.Type())
+		msg := NewMsgTransferFTFrom(addr, addr2, addr2, "symbol", "00000001", sdk.NewInt(1))
+		require.Equal(t, "transfer_ft_from", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -226,7 +226,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgTransferCFTFrom{}
+		msg2 := MsgTransferFTFrom{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -240,25 +240,25 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgTransferCFTFrom(nil, addr2, addr2, "symbol", "00000001", sdk.NewInt(1))
+		msg := NewMsgTransferFTFrom(nil, addr2, addr2, "symbol", "00000001", sdk.NewInt(1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
 
-		msg = NewMsgTransferCFTFrom(addr, nil, addr2, "symbol", "00000001", sdk.NewInt(1))
+		msg = NewMsgTransferFTFrom(addr, nil, addr2, "symbol", "00000001", sdk.NewInt(1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 
-		msg = NewMsgTransferCFTFrom(addr, addr2, nil, "symbol", "00000001", sdk.NewInt(1))
+		msg = NewMsgTransferFTFrom(addr, addr2, nil, "symbol", "00000001", sdk.NewInt(1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
 
-		msg = NewMsgTransferCFTFrom(addr, addr2, addr2, "symbol", "1", sdk.NewInt(1))
+		msg = NewMsgTransferFTFrom(addr, addr2, addr2, "symbol", "1", sdk.NewInt(1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Only user defined token is possible: symbol1").Error())
 
-		msg = NewMsgTransferCFTFrom(addr, addr2, addr2, "symbol", "00000001", sdk.NewInt(-1))
+		msg = NewMsgTransferFTFrom(addr, addr2, addr2, "symbol", "00000001", sdk.NewInt(-1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInsufficientCoins("send amount must be positive").Error())
 	}
 	//nolint:dupl
 	{
-		msg := NewMsgTransferCNFTFrom(addr, addr2, addr2, "symbol", "00000001")
-		require.Equal(t, "transfer_cnft_from", msg.Type())
+		msg := NewMsgTransferNFTFrom(addr, addr2, addr2, "symbol", "00000001")
+		require.Equal(t, "transfer_nft_from", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -266,7 +266,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgTransferCNFTFrom{}
+		msg2 := MsgTransferNFTFrom{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -279,16 +279,16 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgTransferCNFTFrom(nil, addr2, addr2, "symbol", "00000001")
+		msg := NewMsgTransferNFTFrom(nil, addr2, addr2, "symbol", "00000001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
 
-		msg = NewMsgTransferCNFTFrom(addr, nil, addr2, "symbol", "00000001")
+		msg = NewMsgTransferNFTFrom(addr, nil, addr2, "symbol", "00000001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 
-		msg = NewMsgTransferCNFTFrom(addr, addr2, nil, "symbol", "00000001")
+		msg = NewMsgTransferNFTFrom(addr, addr2, nil, "symbol", "00000001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
 
-		msg = NewMsgTransferCNFTFrom(addr, addr2, addr2, "symbol", "1")
+		msg = NewMsgTransferNFTFrom(addr, addr2, addr2, "symbol", "1")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidCoins("Only user defined token is possible: symbol1").Error())
 	}
 
@@ -479,8 +479,8 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgBurnCFTFrom(addr, addr2, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
-		require.Equal(t, "burn_cft_from", msg.Type())
+		msg := NewMsgBurnFTFrom(addr, addr2, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
+		require.Equal(t, "burn_ft_from", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -488,7 +488,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgBurnCFTFrom{}
+		msg2 := MsgBurnFTFrom{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -499,19 +499,19 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgBurnCFTFrom(addr, addr, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
+		msg := NewMsgBurnFTFrom(addr, addr, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
 		require.EqualError(t, msg.ValidateBasic(), ErrApproverProxySame(DefaultCodespace, addr.String()).Error())
 
-		msg = NewMsgBurnCFTFrom(nil, addr, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
+		msg = NewMsgBurnFTFrom(nil, addr, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
 
-		msg = NewMsgBurnCFTFrom(addr, nil, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
+		msg = NewMsgBurnFTFrom(addr, nil, types.NewCoinWithTokenIDs(types.NewCoinWithTokenID("symbol", "00000001", sdk.NewInt(1))))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 	}
 
 	{
-		msg := NewMsgBurnCNFTFrom(addr, addr2, "symbol", "item0001")
-		require.Equal(t, "burn_cnft_from", msg.Type())
+		msg := NewMsgBurnNFTFrom(addr, addr2, "symbol", "item0001")
+		require.Equal(t, "burn_nft_from", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
 		require.Equal(t, addr, msg.GetSigners()[0])
@@ -519,7 +519,7 @@ func TestMsgBasics(t *testing.T) {
 
 		b := msg.GetSignBytes()
 
-		msg2 := MsgBurnCNFTFrom{}
+		msg2 := MsgBurnNFTFrom{}
 
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
@@ -531,13 +531,13 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgBurnCNFTFrom(addr, addr, "symbol", "item0001")
+		msg := NewMsgBurnNFTFrom(addr, addr, "symbol", "item0001")
 		require.EqualError(t, msg.ValidateBasic(), ErrApproverProxySame(DefaultCodespace, addr.String()).Error())
 
-		msg = NewMsgBurnCNFTFrom(nil, addr, "symbol", "item0001")
+		msg = NewMsgBurnNFTFrom(nil, addr, "symbol", "item0001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
 
-		msg = NewMsgBurnCNFTFrom(addr, nil, "symbol", "item0001")
+		msg = NewMsgBurnNFTFrom(addr, nil, "symbol", "item0001")
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
 	}
 }

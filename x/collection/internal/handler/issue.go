@@ -6,7 +6,7 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgIssueCFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueCFT) sdk.Result {
+func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueFT) sdk.Result {
 	collection, err := keeper.GetCollection(ctx, msg.Symbol)
 	if err != nil {
 		return err.Result()
@@ -17,7 +17,7 @@ func handleMsgIssueCFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssue
 	}
 
 	token := types.NewFT(collection, msg.Name, msg.TokenURI, msg.Decimals, msg.Mintable)
-	err = keeper.IssueCFT(ctx, msg.Owner, token, msg.Amount)
+	err = keeper.IssueFT(ctx, msg.Owner, token, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -33,7 +33,7 @@ func handleMsgIssueCFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssue
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }
 
-func handleMsgIssueCNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueCNFT) sdk.Result {
+func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueNFT) sdk.Result {
 	_, err := keeper.GetCollection(ctx, msg.Symbol)
 	if err != nil {
 		return err.Result()
@@ -44,7 +44,7 @@ func handleMsgIssueCNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssu
 		return types.ErrTokenNoPermission(types.DefaultCodespace, msg.Owner, perm).Result()
 	}
 
-	err = keeper.IssueCNFT(ctx, msg.Owner, msg.Symbol)
+	err = keeper.IssueNFT(ctx, msg.Owner, msg.Symbol)
 	if err != nil {
 		return err.Result()
 	}

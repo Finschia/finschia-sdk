@@ -42,18 +42,18 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	}
 	txCmd.AddCommand(
 		CreateCollectionTxCmd(cdc),
-		IssueCFTTxCmd(cdc),
-		IssueCNFTTxCmd(cdc),
-		MintCFTTxCmd(cdc),
-		MintCNFTTxCmd(cdc),
-		BurnCFTTxCmd(cdc),
-		BurnCFTFromTxCmd(cdc),
-		BurnCNFTTxCmd(cdc),
-		BurnCNFTFromTxCmd(cdc),
-		TransferCFTTxCmd(cdc),
-		TransferCFTFromTxCmd(cdc),
-		TransferCNFTTxCmd(cdc),
-		TransferCNFTFromTxCmd(cdc),
+		IssueFTTxCmd(cdc),
+		IssueNFTTxCmd(cdc),
+		MintFTTxCmd(cdc),
+		MintNFTTxCmd(cdc),
+		BurnFTTxCmd(cdc),
+		BurnFTFromTxCmd(cdc),
+		BurnNFTTxCmd(cdc),
+		BurnNFTFromTxCmd(cdc),
+		TransferFTTxCmd(cdc),
+		TransferFTFromTxCmd(cdc),
+		TransferNFTTxCmd(cdc),
+		TransferNFTFromTxCmd(cdc),
 		AttachTxCmd(cdc),
 		AttachFromTxCmd(cdc),
 		DetachTxCmd(cdc),
@@ -119,7 +119,7 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func IssueCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "issue-nft [from_key_or_address] [symbol]",
 		Short: "Create and sign an issue-nft tx",
@@ -131,14 +131,14 @@ func IssueCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			to := cliCtx.FromAddress
 			symbol := args[1]
 
-			msg := types.NewMsgIssueCNFT(to, symbol)
+			msg := types.NewMsgIssueNFT(to, symbol)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
 	return client.PostCommands(cmd)[0]
 }
 
-func IssueCFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func IssueFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "issue-ft [from_key_or_address] [symbol] [name]",
 		Short: "Create and sign an issue-ft tx",
@@ -171,7 +171,7 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
 			}
 
-			msg := types.NewMsgIssueCFT(to, name, symbol, tokenURI, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
+			msg := types.NewMsgIssueFT(to, name, symbol, tokenURI, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
 
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
@@ -184,7 +184,7 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 	return client.PostCommands(cmd)[0]
 }
 
-func MintCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func MintNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "mint-nft [from_key_or_address] [to] [symbol] [token_type] [name]",
 		Short: "Create and sign an mint-nft tx",
@@ -212,7 +212,7 @@ linkcli tx token mint-nft [from_key_or_address] [symbol] [token_type] [name]
 				return err
 			}
 
-			msg := types.NewMsgMintCNFT(from, to, name, symbol, tokenURI, tokenType)
+			msg := types.NewMsgMintNFT(from, to, name, symbol, tokenURI, tokenType)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -222,7 +222,7 @@ linkcli tx token mint-nft [from_key_or_address] [symbol] [token_type] [name]
 	return client.PostCommands(cmd)[0]
 }
 
-func BurnCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func BurnNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-nft [from_key_or_address] [symbol] [token_id]",
 		Short: "Create and sign an burn-nft tx",
@@ -235,7 +235,7 @@ func BurnCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			tokenID := args[2]
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurnCNFT(cliCtx.GetFromAddress(), symbol, tokenID)
+			msg := types.NewMsgBurnNFT(cliCtx.GetFromAddress(), symbol, tokenID)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -243,7 +243,7 @@ func BurnCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func BurnCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
+func BurnNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-nft-from [proxy_key_or_address] [from_address] [symbol] [token_id]",
 		Short: "Create and sign an burn-nft-from tx",
@@ -261,7 +261,7 @@ func BurnCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 			tokenID := args[3]
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurnCNFTFrom(cliCtx.GetFromAddress(), from, symbol, tokenID)
+			msg := types.NewMsgBurnNFTFrom(cliCtx.GetFromAddress(), from, symbol, tokenID)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -269,7 +269,7 @@ func BurnCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func TransferCFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func TransferFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-ft [from_key_or_address] [to_address] [symbol] [token_id] [amount]",
 		Short: "Create and sign a tx transferring non-reserved collective fungible tokens",
@@ -288,7 +288,7 @@ func TransferCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 				return types.ErrInvalidAmount(types.DefaultCodespace, args[4])
 			}
 
-			msg := types.NewMsgTransferCFT(cliCtx.GetFromAddress(), to, args[2], args[3], amount)
+			msg := types.NewMsgTransferFT(cliCtx.GetFromAddress(), to, args[2], args[3], amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -298,7 +298,7 @@ func TransferCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return cmd
 }
 
-func TransferCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-nft [from_key_or_address] [to_address] [symbol] [token_id]",
 		Short: "Create and sign a tx transferring a collective non-fungible token",
@@ -312,7 +312,7 @@ func TransferCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgTransferCNFT(cliCtx.GetFromAddress(), to, args[2], args[3])
+			msg := types.NewMsgTransferNFT(cliCtx.GetFromAddress(), to, args[2], args[3])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -320,7 +320,7 @@ func TransferCNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func TransferCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
+func TransferFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-ft-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id] [amount]",
 		Short: "Create and sign a tx transferring non-reserved collective fungible tokens by approved proxy",
@@ -344,7 +344,7 @@ func TransferCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return types.ErrInvalidAmount(types.DefaultCodespace, args[5])
 			}
 
-			msg := types.NewMsgTransferCFTFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4], amount)
+			msg := types.NewMsgTransferFTFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4], amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -355,7 +355,7 @@ func TransferCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 }
 
 //nolint:dupl
-func TransferCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
+func TransferNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-nft-from [proxy_key_or_address] [from_address] [to_address] [symbol] [token_id]",
 		Short: "Create and sign a tx transferring a collective non-fungible token by approved proxy",
@@ -374,7 +374,7 @@ func TransferCNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgTransferCNFTFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4])
+			msg := types.NewMsgTransferNFTFrom(cliCtx.GetFromAddress(), from, to, args[3], args[4])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -417,7 +417,7 @@ func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
 }
 
 //nolint:dupl
-func MintCFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func MintFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "mint-ft [from_key_or_address] [to] [symbol] [token-id] [amount]",
 		Short: "Create and sign a mint token tx",
@@ -437,7 +437,7 @@ func MintCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgMintCFT(cliCtx.GetFromAddress(), to, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
+			msg := types.NewMsgMintFT(cliCtx.GetFromAddress(), to, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -445,7 +445,7 @@ func MintCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func BurnCFTTxCmd(cdc *codec.Codec) *cobra.Command {
+func BurnFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-ft [from_key_or_address] [symbol] [token-id] [amount]",
 		Short: "Create and sign a mint token tx",
@@ -461,7 +461,7 @@ func BurnCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurnCFT(cliCtx.GetFromAddress(), linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
+			msg := types.NewMsgBurnFT(cliCtx.GetFromAddress(), linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -470,7 +470,7 @@ func BurnCFTTxCmd(cdc *codec.Codec) *cobra.Command {
 }
 
 //nolint:dupl
-func BurnCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
+func BurnFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-ft-from [proxy_key_or_address] [from_address] [symbol] [token-id] [amount]",
 		Short: "Create and sign a mint token tx",
@@ -490,7 +490,7 @@ func BurnCFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurnCFTFrom(cliCtx.GetFromAddress(), from, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
+			msg := types.NewMsgBurnFTFrom(cliCtx.GetFromAddress(), from, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(symbol, tokenID, amount)))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

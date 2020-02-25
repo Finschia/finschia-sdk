@@ -6,8 +6,8 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgBurnCNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnCNFT) sdk.Result {
-	err := keeper.BurnCNFT(ctx, msg.From, msg.Symbol, msg.TokenID)
+func handleMsgBurnNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnNFT) sdk.Result {
+	err := keeper.BurnNFT(ctx, msg.From, msg.Symbol, msg.TokenID)
 	if err != nil {
 		return err.Result()
 	}
@@ -22,8 +22,8 @@ func handleMsgBurnCNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnC
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }
 
-func handleMsgBurnCNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnCNFTFrom) sdk.Result {
-	err := keeper.BurnCNFTFrom(ctx, msg.Proxy, msg.From, msg.Symbol, msg.TokenID)
+func handleMsgBurnNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnNFTFrom) sdk.Result {
+	err := keeper.BurnNFTFrom(ctx, msg.Proxy, msg.From, msg.Symbol, msg.TokenID)
 	if err != nil {
 		return err.Result()
 	}
@@ -38,8 +38,8 @@ func handleMsgBurnCNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgB
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }
 
-func handleMsgBurnCFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnCFT) sdk.Result {
-	err := keeper.BurnCFT(ctx, msg.From, msg.Amount)
+func handleMsgBurnFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnFT) sdk.Result {
+	err := keeper.BurnFT(ctx, msg.From, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -54,8 +54,8 @@ func handleMsgBurnCFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnCF
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }
 
-func handleMsgBurnCFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnCFTFrom) sdk.Result {
-	err := keeper.BurnCFTFrom(ctx, msg.Proxy, msg.From, msg.Amount)
+func handleMsgBurnFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnFTFrom) sdk.Result {
+	err := keeper.BurnFTFrom(ctx, msg.Proxy, msg.From, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}

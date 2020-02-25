@@ -47,6 +47,7 @@ const (
 	defaultTokenType = "1001"
 	defaultTokenID1  = defaultTokenType + "0001"
 	defaultTokenID2  = defaultTokenType + "0002"
+	defaultTokenID3  = defaultTokenType + "0003"
 	defaultTokenIDFT = "00010000"
 )
 

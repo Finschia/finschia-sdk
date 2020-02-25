@@ -6,20 +6,20 @@ import (
 )
 
 type TransferKeeper interface {
-	TransferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error
-	TransferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error
-	TransferCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error
-	TransferCNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error
+	TransferFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error
+	TransferNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error
+	TransferFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error
+	TransferNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error
 }
 
-func (k Keeper) TransferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
-	if err := k.transferCFT(ctx, from, to, symbol, tokenID, amount); err != nil {
+func (k Keeper) TransferFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
+	if err := k.transferFT(ctx, from, to, symbol, tokenID, amount); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeTransferCFT,
+			types.EventTypeTransferFT,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
@@ -31,7 +31,7 @@ func (k Keeper) TransferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddr
 	return nil
 }
 
-func (k Keeper) transferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
+func (k Keeper) transferFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
 	coin := sdk.NewCoins(sdk.NewCoin(symbol+tokenID, amount))
 	_, err := k.bankKeeper.SubtractCoins(ctx, from, coin)
 	if err != nil {
@@ -46,14 +46,14 @@ func (k Keeper) transferCFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddr
 	return nil
 }
 
-func (k Keeper) TransferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
-	if err := k.transferCNFT(ctx, from, to, symbol, tokenID); err != nil {
+func (k Keeper) TransferNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+	if err := k.transferNFT(ctx, from, to, symbol, tokenID); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeTransferCNFT,
+			types.EventTypeTransferNFT,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
@@ -64,7 +64,7 @@ func (k Keeper) TransferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 	return nil
 }
 
-func (k Keeper) transferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+func (k Keeper) transferNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
 
 	token, err := k.GetToken(ctx, symbol, tokenID)
@@ -72,19 +72,19 @@ func (k Keeper) transferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 		return err
 	}
 
-	cnft, ok := token.(types.NFT)
+	nft, ok := token.(types.NFT)
 	if !ok {
-		return types.ErrTokenNotCNFT(types.DefaultCodespace, token.GetDenom())
+		return types.ErrTokenNotNFT(types.DefaultCodespace, token.GetDenom())
 	}
-	childToParentKey := types.TokenChildToParentKey(cnft)
+	childToParentKey := types.TokenChildToParentKey(nft)
 	if store.Has(childToParentKey) {
 		return types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, token.GetDenom())
 	}
-	if !from.Equals(cnft.GetOwner()) {
+	if !from.Equals(nft.GetOwner()) {
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, token.GetDenom(), from)
 	}
 	if !from.Equals(to) {
-		if err := k.moveCNFToken(ctx, from, to, cnft); err != nil {
+		if err := k.moveNFToken(ctx, from, to, nft); err != nil {
 			return err
 		}
 	}
@@ -92,18 +92,18 @@ func (k Keeper) transferCNFT(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 	return nil
 }
 
-func (k Keeper) TransferCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
+func (k Keeper) TransferFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string, amount sdk.Int) sdk.Error {
 	if !k.IsApproved(ctx, proxy, from, symbol) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
 	}
 
-	if err := k.transferCFT(ctx, from, to, symbol, tokenID, amount); err != nil {
+	if err := k.transferFT(ctx, from, to, symbol, tokenID, amount); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeTransferCFTFrom,
+			types.EventTypeTransferFTFrom,
 			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
@@ -117,18 +117,18 @@ func (k Keeper) TransferCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.
 }
 
 //nolint:dupl
-func (k Keeper) TransferCNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
+func (k Keeper) TransferNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenID string) sdk.Error {
 	if !k.IsApproved(ctx, proxy, from, symbol) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
 	}
 
-	if err := k.transferCNFT(ctx, from, to, symbol, tokenID); err != nil {
+	if err := k.transferNFT(ctx, from, to, symbol, tokenID); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeTransferCNFTFrom,
+			types.EventTypeTransferNFTFrom,
 			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
@@ -154,7 +154,7 @@ func (k Keeper) moveToken(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddres
 	return nil
 }
 
-func (k Keeper) moveCNFToken(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, token types.NFT) sdk.Error {
+func (k Keeper) moveNFToken(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, token types.NFT) sdk.Error {
 	if from.Equals(to) {
 		return nil
 	}
@@ -163,9 +163,15 @@ func (k Keeper) moveCNFToken(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAdd
 		return err
 	}
 
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeOperationTransferNFT,
+			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
+		),
+	})
+
 	for _, child := range children {
-		err := k.moveCNFToken(ctx, from, to, child.(types.NFT))
-		if err != nil {
+		if err := k.moveNFToken(ctx, from, to, child.(types.NFT)); err != nil {
 			return err
 		}
 	}

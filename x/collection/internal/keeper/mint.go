@@ -9,11 +9,11 @@ import (
 )
 
 type MintKeeper interface {
-	MintCFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error
-	MintCNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error
+	MintFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error
+	MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error
 }
 
-func (k Keeper) MintCFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
+func (k Keeper) MintFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
 	for _, coin := range amount {
 		symbol, tokenID := coin.Symbol, coin.TokenID
 		token, err := k.GetToken(ctx, symbol, tokenID)
@@ -30,7 +30,7 @@ func (k Keeper) MintCFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktyp
 	}
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeMintCFT,
+			types.EventTypeMintFT,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
@@ -39,7 +39,7 @@ func (k Keeper) MintCFT(ctx sdk.Context, from, to sdk.AccAddress, amount linktyp
 	return nil
 }
 
-func (k Keeper) MintCNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error {
+func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error {
 	if !types.ValidTokenURI(token.GetTokenURI()) {
 		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
 	}
@@ -67,7 +67,7 @@ func (k Keeper) MintCNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) 
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeMintCNFT,
+			types.EventTypeMintNFT,
 			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
 			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),

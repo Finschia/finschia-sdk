@@ -9,22 +9,22 @@ import (
 )
 
 type BurnKeeper interface {
-	BurnCFT(ctx sdk.Context, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error
-	BurnCNFT(ctx sdk.Context, from sdk.AccAddress, symbol, tokenID string) sdk.Error
-	BurnCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error
-	BurnCNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) sdk.Error
+	BurnFT(ctx sdk.Context, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error
+	BurnNFT(ctx sdk.Context, from sdk.AccAddress, symbol, tokenID string) sdk.Error
+	BurnFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error
+	BurnNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) sdk.Error
 }
 
 var _ BurnKeeper = (*Keeper)(nil)
 
-func (k Keeper) BurnCFT(ctx sdk.Context, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
-	if err := k.burnCFT(ctx, from, from, amount); err != nil {
+func (k Keeper) BurnFT(ctx sdk.Context, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
+	if err := k.burnFT(ctx, from, from, amount); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeBurnCFT,
+			types.EventTypeBurnFT,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
 		),
@@ -33,20 +33,20 @@ func (k Keeper) BurnCFT(ctx sdk.Context, from sdk.AccAddress, amount linktype.Co
 	return nil
 }
 
-func (k Keeper) BurnCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
+func (k Keeper) BurnFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
 	for _, coin := range amount {
 		if !k.IsApproved(ctx, proxy, from, coin.Symbol) {
 			return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), coin.Symbol)
 		}
 	}
 
-	if err := k.burnCFT(ctx, proxy, from, amount); err != nil {
+	if err := k.burnFT(ctx, proxy, from, amount); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeBurnCFTFrom,
+			types.EventTypeBurnFTFrom,
 			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.ToCoins().String()),
@@ -55,7 +55,7 @@ func (k Keeper) BurnCFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccA
 	return nil
 }
 
-func (k Keeper) burnCFT(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
+func (k Keeper) burnFT(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddress, amount linktype.CoinWithTokenIDs) sdk.Error {
 	coins := amount.ToCoins()
 
 	if err := k.isBurnable(ctx, permissionOwner, tokenOwner, coins); err != nil {
@@ -86,14 +86,14 @@ func (k Keeper) hasEnoughCoins(ctx sdk.Context, from sdk.AccAddress, amount sdk.
 	return k.bankKeeper.GetCoins(ctx, from).IsAllGTE(amount)
 }
 
-func (k Keeper) BurnCNFT(ctx sdk.Context, from sdk.AccAddress, symbol, tokenID string) sdk.Error {
-	if err := k.burnCNFT(ctx, from, from, symbol, tokenID); err != nil {
+func (k Keeper) BurnNFT(ctx sdk.Context, from sdk.AccAddress, symbol, tokenID string) sdk.Error {
+	if err := k.burnNFT(ctx, from, from, symbol, tokenID); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeBurnCNFT,
+			types.EventTypeBurnNFT,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
 			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
@@ -102,18 +102,18 @@ func (k Keeper) BurnCNFT(ctx sdk.Context, from sdk.AccAddress, symbol, tokenID s
 	return nil
 }
 
-func (k Keeper) BurnCNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) sdk.Error {
+func (k Keeper) BurnNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, symbol, tokenID string) sdk.Error {
 	if !k.IsApproved(ctx, proxy, from, symbol) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), symbol)
 	}
 
-	if err := k.burnCNFT(ctx, proxy, from, symbol, tokenID); err != nil {
+	if err := k.burnNFT(ctx, proxy, from, symbol, tokenID); err != nil {
 		return err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeBurnCNFTFrom,
+			types.EventTypeBurnNFTFrom,
 			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
@@ -123,7 +123,7 @@ func (k Keeper) BurnCNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.Acc
 	return nil
 }
 
-func (k Keeper) burnCNFT(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddress, symbol, tokenID string) sdk.Error {
+func (k Keeper) burnNFT(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddress, symbol, tokenID string) sdk.Error {
 	token, err := k.GetNFT(ctx, symbol, tokenID)
 	if err != nil {
 		return err
@@ -138,7 +138,7 @@ func (k Keeper) burnCNFT(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAdd
 		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, symbol+tokenID, tokenOwner)
 	}
 
-	err = k.burnCNFTrecursive(ctx, token, tokenOwner)
+	err = k.burnNFTrecursive(ctx, token, tokenOwner)
 	if err != nil {
 		return err
 	}
@@ -146,14 +146,21 @@ func (k Keeper) burnCNFT(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAdd
 	return nil
 }
 
-func (k Keeper) burnCNFTrecursive(ctx sdk.Context, token types.NFT, from sdk.AccAddress) sdk.Error {
+func (k Keeper) burnNFTrecursive(ctx sdk.Context, token types.NFT, from sdk.AccAddress) sdk.Error {
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeOperationBurnNFT,
+			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
+		),
+	})
+
 	children, err := k.ChildrenOf(ctx, token.GetSymbol(), token.GetTokenID())
 	if err != nil {
 		return err
 	}
 
 	for _, child := range children {
-		err = k.burnCNFTrecursive(ctx, child.(types.NFT), from)
+		err = k.burnNFTrecursive(ctx, child.(types.NFT), from)
 		if err != nil {
 			return err
 		}
@@ -164,7 +171,7 @@ func (k Keeper) burnCNFTrecursive(ctx sdk.Context, token types.NFT, from sdk.Acc
 		return err
 	}
 	if parent != nil {
-		err = k.detach(ctx, from, token.GetSymbol(), token.GetTokenID())
+		_, err = k.detach(ctx, from, token.GetSymbol(), token.GetTokenID())
 		if err != nil {
 			return err
 		}

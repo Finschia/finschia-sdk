@@ -2,15 +2,15 @@ package handler
 
 import "testing"
 
-func TestHandleMsgBurnCFT(t *testing.T) {
+func TestHandleMsgBurnFT(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }
-func TestHandleMsgBurnCFTFrom(t *testing.T) {
+func TestHandleMsgBurnFTFrom(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }
-func TestHandleMsgBurnCNFT(t *testing.T) {
+func TestHandleMsgBurnNFT(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }
-func TestHandleMsgBurnCNFTFrom(t *testing.T) {
+func TestHandleMsgBurnNFTFrom(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }

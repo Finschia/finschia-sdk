@@ -2,10 +2,10 @@ package handler
 
 import "testing"
 
-func TestHandleMsgMintCFT(t *testing.T) {
+func TestHandleMsgMintFT(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }
 
-func TestHandleMsgMintCNFT(t *testing.T) {
+func TestHandleMsgMintNFT(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }

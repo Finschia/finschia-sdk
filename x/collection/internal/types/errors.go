@@ -130,8 +130,8 @@ func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner fmt.Str
 	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token [%s] is being not owned by [%s]", denom, owner.String())
 }
 
-func ErrTokenNotCNFT(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotIDNF, "token [%s] is not a CNFT", denom)
+func ErrTokenNotNFT(codespace sdk.CodespaceType, denom string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotIDNF, "token [%s] is not a NFT", denom)
 }
 
 func ErrTokenCannotTransferChildToken(codespace sdk.CodespaceType, denom string) sdk.Error {

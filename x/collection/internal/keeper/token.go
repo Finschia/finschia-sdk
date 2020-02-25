@@ -26,7 +26,7 @@ func (k Keeper) GetNFT(ctx sdk.Context, symbol, tokenID string) (types.NFT, sdk.
 	}
 	nft, ok := token.(types.NFT)
 	if !ok {
-		return nil, types.ErrTokenNotCNFT(types.DefaultCodespace, token.GetDenom())
+		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetDenom())
 	}
 	return nft, nil
 }
@@ -38,7 +38,7 @@ func (k Keeper) GetFT(ctx sdk.Context, symbol, tokenID string) (types.FT, sdk.Er
 	}
 	ft, ok := token.(types.FT)
 	if !ok {
-		return nil, types.ErrTokenNotCNFT(types.DefaultCodespace, token.GetDenom())
+		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetDenom())
 	}
 	return ft, nil
 }

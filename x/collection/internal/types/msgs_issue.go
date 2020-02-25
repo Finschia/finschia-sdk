@@ -5,9 +5,9 @@ import (
 	"github.com/line/link/types"
 )
 
-var _ sdk.Msg = (*MsgIssueCFT)(nil)
+var _ sdk.Msg = (*MsgIssueFT)(nil)
 
-type MsgIssueCFT struct {
+type MsgIssueFT struct {
 	Owner    sdk.AccAddress `json:"owner"`
 	Symbol   string         `json:"symbol"`
 	Name     string         `json:"name"`
@@ -17,8 +17,8 @@ type MsgIssueCFT struct {
 	Decimals sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssueCFT(owner sdk.AccAddress, name, symbol, tokenURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueCFT {
-	return MsgIssueCFT{
+func NewMsgIssueFT(owner sdk.AccAddress, name, symbol, tokenURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
+	return MsgIssueFT{
 		Owner:    owner,
 		Symbol:   symbol,
 		Name:     name,
@@ -29,14 +29,14 @@ func NewMsgIssueCFT(owner sdk.AccAddress, name, symbol, tokenURI string, amount 
 	}
 }
 
-func (msg MsgIssueCFT) Route() string                { return RouterKey }
-func (msg MsgIssueCFT) Type() string                 { return "issue_cft" }
-func (msg MsgIssueCFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
-func (msg MsgIssueCFT) GetSignBytes() []byte {
+func (msg MsgIssueFT) Route() string                { return RouterKey }
+func (msg MsgIssueFT) Type() string                 { return "issue_ft" }
+func (msg MsgIssueFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
+func (msg MsgIssueFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgIssueCFT) ValidateBasic() sdk.Error {
+func (msg MsgIssueFT) ValidateBasic() sdk.Error {
 	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
@@ -61,28 +61,28 @@ func (msg MsgIssueCFT) ValidateBasic() sdk.Error {
 	return nil
 }
 
-var _ sdk.Msg = (*MsgIssueCNFT)(nil)
+var _ sdk.Msg = (*MsgIssueNFT)(nil)
 
-type MsgIssueCNFT struct {
+type MsgIssueNFT struct {
 	Owner  sdk.AccAddress `json:"owner"`
 	Symbol string         `json:"symbol"`
 }
 
-func NewMsgIssueCNFT(owner sdk.AccAddress, symbol string) MsgIssueCNFT {
-	return MsgIssueCNFT{
+func NewMsgIssueNFT(owner sdk.AccAddress, symbol string) MsgIssueNFT {
+	return MsgIssueNFT{
 		Owner:  owner,
 		Symbol: symbol,
 	}
 }
 
-func (MsgIssueCNFT) Route() string                    { return RouterKey }
-func (MsgIssueCNFT) Type() string                     { return "issue_cnft" }
-func (msg MsgIssueCNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
-func (msg MsgIssueCNFT) GetSignBytes() []byte {
+func (MsgIssueNFT) Route() string                    { return RouterKey }
+func (MsgIssueNFT) Type() string                     { return "issue_nft" }
+func (msg MsgIssueNFT) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
+func (msg MsgIssueNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgIssueCNFT) ValidateBasic() sdk.Error {
+func (msg MsgIssueNFT) ValidateBasic() sdk.Error {
 	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}

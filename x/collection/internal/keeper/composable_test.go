@@ -90,7 +90,7 @@ func TestAttachDetachScenario(t *testing.T) {
 
 	// query failure cases
 	_, err := keeper.ParentOf(ctx, defaultSymbol, defaultTokenIDFT)
-	require.EqualError(t, err, types.ErrTokenNotCNFT(types.DefaultCodespace, defaultSymbol+defaultTokenIDFT).Error())
+	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultSymbol+defaultTokenIDFT).Error())
 
 	//
 	// attach error cases
@@ -164,7 +164,7 @@ func TestAttachDetachScenario(t *testing.T) {
 	require.NoError(t, err1)
 	require.Equal(t, len(childrenOfToken1), 0)
 
-	// owner of token3 is addr2
+	// owner of token3 is addr1
 	token3, err13 := keeper.GetToken(ctx, defaultSymbol, defaultTokenID3)
 	require.NoError(t, err13)
 

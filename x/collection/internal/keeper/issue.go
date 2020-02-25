@@ -8,11 +8,11 @@ import (
 )
 
 type IssueKeeper interface {
-	IssueCFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error
-	IssueCNFT(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenType string) sdk.Error
+	IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error
+	IssueNFT(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenType string) sdk.Error
 }
 
-func (k Keeper) IssueCFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error {
+func (k Keeper) IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error {
 	if !types.ValidTokenURI(token.GetTokenURI()) {
 		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
 	}
@@ -31,7 +31,7 @@ func (k Keeper) IssueCFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, 
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeIssueCFT,
+			types.EventTypeIssueFT,
 			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
 			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
@@ -73,7 +73,7 @@ func (k Keeper) IssueCFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, 
 	return nil
 }
 
-func (k Keeper) IssueCNFT(ctx sdk.Context, owner sdk.AccAddress, symbol string) sdk.Error {
+func (k Keeper) IssueNFT(ctx sdk.Context, owner sdk.AccAddress, symbol string) sdk.Error {
 	tokenType, err := k.getNextTokenType(ctx, symbol)
 	if err != nil {
 		return err
@@ -91,7 +91,7 @@ func (k Keeper) IssueCNFT(ctx sdk.Context, owner sdk.AccAddress, symbol string) 
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			types.EventTypeIssueCNFT,
+			types.EventTypeIssueNFT,
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
 			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType),
 		),

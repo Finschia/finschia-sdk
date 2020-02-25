@@ -15,18 +15,18 @@ func TestApproveDisapproveScenario(t *testing.T) {
 		defaultTokenIDFromSymbol2 = defaultTokenType2 + "0001"
 	)
 
-	// prepare collection, CFT, CNFT
+	// prepare collection, FT, NFT
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, "name"), addr1))
 	collection, err := keeper.GetCollection(ctx, defaultSymbol)
 	require.NoError(t, err)
-	err = keeper.IssueCFT(ctx, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount))
+	err = keeper.IssueFT(ctx, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount))
 	require.NoError(t, err)
-	err = keeper.IssueCNFT(ctx, addr1, defaultSymbol)
+	err = keeper.IssueNFT(ctx, addr1, defaultSymbol)
 	require.NoError(t, err)
-	err = keeper.IssueCNFT(ctx, addr1, defaultSymbol)
+	err = keeper.IssueNFT(ctx, addr1, defaultSymbol)
 	require.NoError(t, err)
-	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
-	require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType2, defaultTokenURI, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType2, defaultTokenURI, addr1)))
 
 	// approve test
 	require.EqualError(t, keeper.SetApproved(ctx, addr3, addr1, defaultSymbol2), types.ErrCollectionNotExist(types.DefaultCodespace, defaultSymbol2).Error())
@@ -40,11 +40,11 @@ func TestApproveDisapproveScenario(t *testing.T) {
 	require.NoError(t, keeper.DetachFrom(ctx, addr3, addr1, defaultSymbol, defaultTokenIDFromSymbol2))
 
 	// transfer_from test
-	require.EqualError(t, keeper.TransferCFTFrom(ctx, addr2, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(10)), types.ErrCollectionNotApproved(types.DefaultCodespace, addr2.String(), addr1.String(), defaultSymbol).Error())
-	require.NoError(t, keeper.TransferCFTFrom(ctx, addr3, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(10)))
+	require.EqualError(t, keeper.TransferFTFrom(ctx, addr2, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(10)), types.ErrCollectionNotApproved(types.DefaultCodespace, addr2.String(), addr1.String(), defaultSymbol).Error())
+	require.NoError(t, keeper.TransferFTFrom(ctx, addr3, addr1, addr2, defaultSymbol, defaultTokenIDFT, sdk.NewInt(10)))
 
-	require.EqualError(t, keeper.TransferCNFTFrom(ctx, addr2, addr1, addr2, defaultSymbol, defaultTokenID1), types.ErrCollectionNotApproved(types.DefaultCodespace, addr2.String(), addr1.String(), defaultSymbol).Error())
-	require.NoError(t, keeper.TransferCNFTFrom(ctx, addr3, addr1, addr2, defaultSymbol, defaultTokenID1))
+	require.EqualError(t, keeper.TransferNFTFrom(ctx, addr2, addr1, addr2, defaultSymbol, defaultTokenID1), types.ErrCollectionNotApproved(types.DefaultCodespace, addr2.String(), addr1.String(), defaultSymbol).Error())
+	require.NoError(t, keeper.TransferNFTFrom(ctx, addr3, addr1, addr2, defaultSymbol, defaultTokenID1))
 
 	// disapprove test
 	require.EqualError(t, keeper.DeleteApproved(ctx, addr3, addr1, defaultSymbol2), types.ErrCollectionNotExist(types.DefaultCodespace, defaultSymbol2).Error())

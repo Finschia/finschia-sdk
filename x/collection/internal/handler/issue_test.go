@@ -11,11 +11,11 @@ import (
 	linktype "github.com/line/link/types"
 )
 
-func TestHandleMsgIssueCFT(t *testing.T) {
+func TestHandleMsgIssueFT(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }
 
-func TestHandleMsgIssueCNFT(t *testing.T) {
+func TestHandleMsgIssueNFT(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }
 
@@ -29,17 +29,17 @@ func TestHandlerIssueFT(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgIssueCFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(addr2, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr2, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -57,7 +57,7 @@ func TestHandlerIssueFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(addr2, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr2, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -67,7 +67,7 @@ func TestHandlerIssueFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -87,23 +87,23 @@ func TestHandlerIssueNFT(t *testing.T) {
 	{
 		//Expect token type is 1001
 		{
-			msg := types.NewMsgIssueCNFT(addr1, defaultSymbol)
+			msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		//Expect token type is 1002
 		{
-			msg := types.NewMsgIssueCNFT(addr1, defaultSymbol)
+			msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintCNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+			msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintCNFT(addr1, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+			msg := types.NewMsgMintNFT(addr1, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
@@ -118,7 +118,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintCNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+				msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
 				res := h(ctx, msg)
 				require.True(t, res.Code.IsOK())
 			}
@@ -128,7 +128,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintCNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+				msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
 				res := h(ctx, msg)
 				require.False(t, res.Code.IsOK())
 				require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -150,12 +150,12 @@ func TestHandlerIssueNFT(t *testing.T) {
 
 	//Expect token type is 1003
 	{
-		msg := types.NewMsgIssueCNFT(addr2, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr2, defaultSymbol)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgMintCNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, "1003")
+		msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, "1003")
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -165,7 +165,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueCNFT(addr1, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -197,7 +197,7 @@ func TestEvents(t *testing.T) {
 
 	{
 		symbolWithID := defaultSymbol + defaultTokenIDFT
-		msg := types.NewMsgIssueCFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -205,14 +205,14 @@ func TestEvents(t *testing.T) {
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("issue_cft", sdk.NewAttribute("name", defaultName)),
-			sdk.NewEvent("issue_cft", sdk.NewAttribute("symbol", defaultSymbol)),
-			sdk.NewEvent("issue_cft", sdk.NewAttribute("token_id", defaultTokenIDFT)),
-			sdk.NewEvent("issue_cft", sdk.NewAttribute("owner", addr1.String())),
-			sdk.NewEvent("issue_cft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String())),
-			sdk.NewEvent("issue_cft", sdk.NewAttribute("mintable", "true")),
-			sdk.NewEvent("issue_cft", sdk.NewAttribute("decimals", sdk.NewInt(defaultDecimals).String())),
-			sdk.NewEvent("issue_cft", sdk.NewAttribute("token_uri", defaultTokenURI)),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("name", defaultName)),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("symbol", defaultSymbol)),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("token_id", defaultTokenIDFT)),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("owner", addr1.String())),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String())),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("mintable", "true")),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("decimals", sdk.NewInt(defaultDecimals).String())),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("token_uri", defaultTokenURI)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),
@@ -228,45 +228,45 @@ func TestEvents(t *testing.T) {
 
 	{
 		symbolWithID := defaultSymbol + defaultTokenIDFT
-		msg := types.NewMsgMintCFT(addr1, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount))))
+		msg := types.NewMsgMintFT(addr1, addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount))))
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("mint_cft", sdk.NewAttribute("from", addr1.String())),
-			sdk.NewEvent("mint_cft", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("mint_cft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String()+symbolWithID)),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String()+symbolWithID)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
 
 	{
 		symbolWithID := defaultSymbol + defaultTokenIDFT
-		msg := types.NewMsgBurnCFT(addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount))))
+		msg := types.NewMsgBurnFT(addr1, linktype.NewCoinWithTokenIDs(linktype.NewCoinWithTokenID(defaultSymbol, defaultTokenIDFT, sdk.NewInt(defaultAmount))))
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("burn_cft", sdk.NewAttribute("from", addr1.String())),
-			sdk.NewEvent("burn_cft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String()+symbolWithID)),
+			sdk.NewEvent("burn_ft", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("burn_ft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String()+symbolWithID)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
 
 	{
-		msg := types.NewMsgIssueCNFT(addr1, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("issue_cnft", sdk.NewAttribute("symbol", defaultSymbol)),
-			sdk.NewEvent("issue_cnft", sdk.NewAttribute("token_type", defaultTokenType)),
+			sdk.NewEvent("issue_nft", sdk.NewAttribute("symbol", defaultSymbol)),
+			sdk.NewEvent("issue_nft", sdk.NewAttribute("token_type", defaultTokenType)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", defaultSymbol+defaultTokenType)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.MintAction)),
@@ -279,7 +279,7 @@ func TestEvents(t *testing.T) {
 
 	{
 		symbolWithID := defaultSymbol + defaultTokenID1
-		msg := types.NewMsgMintCNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+		msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -287,12 +287,12 @@ func TestEvents(t *testing.T) {
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
-			sdk.NewEvent("mint_cnft", sdk.NewAttribute("name", defaultName)),
-			sdk.NewEvent("mint_cnft", sdk.NewAttribute("symbol", defaultSymbol)),
-			sdk.NewEvent("mint_cnft", sdk.NewAttribute("token_id", defaultTokenID1)),
-			sdk.NewEvent("mint_cnft", sdk.NewAttribute("from", addr1.String())),
-			sdk.NewEvent("mint_cnft", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("mint_cnft", sdk.NewAttribute("token_uri", defaultTokenURI)),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("name", defaultName)),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("symbol", defaultSymbol)),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("token_id", defaultTokenID1)),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("token_uri", defaultTokenURI)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),

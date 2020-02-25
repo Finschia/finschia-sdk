@@ -6,14 +6,14 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgMintCNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintCNFT) sdk.Result {
+func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNFT) sdk.Result {
 	collection, err := keeper.GetCollection(ctx, msg.Symbol)
 	if err != nil {
 		return err.Result()
 	}
 
 	token := types.NewNFT(collection, msg.Name, msg.TokenType, msg.TokenURI, msg.To)
-	err = keeper.MintCNFT(ctx, msg.From, token)
+	err = keeper.MintNFT(ctx, msg.From, token)
 	if err != nil {
 		return err.Result()
 	}
@@ -28,8 +28,8 @@ func handleMsgMintCNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintC
 	return sdk.Result{Events: ctx.EventManager().Events()}
 }
 
-func handleMsgMintCFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintCFT) sdk.Result {
-	err := keeper.MintCFT(ctx, msg.From, msg.To, msg.Amount)
+func handleMsgMintFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintFT) sdk.Result {
+	err := keeper.MintFT(ctx, msg.From, msg.To, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}

@@ -24,25 +24,25 @@ type (
 	Collections = types.Collections
 
 	MsgCreateCollection = types.MsgCreateCollection
-	MsgIssueCFT         = types.MsgIssueCFT
-	MsgIssueCNFT        = types.MsgIssueCNFT
-	MsgMintCNFT         = types.MsgMintCNFT
-	MsgBurnCNFT         = types.MsgBurnCNFT
-	MsgBurnCNFTFrom     = types.MsgBurnCNFTFrom
-	MsgMintCFT          = types.MsgMintCFT
-	MsgBurnCFT          = types.MsgBurnCFT
-	MsgBurnCFTFrom      = types.MsgBurnCFTFrom
+	MsgIssueFT          = types.MsgIssueFT
+	MsgIssueNFT         = types.MsgIssueNFT
+	MsgMintNFT          = types.MsgMintNFT
+	MsgBurnNFT          = types.MsgBurnNFT
+	MsgBurnNFTFrom      = types.MsgBurnNFTFrom
+	MsgMintFT           = types.MsgMintFT
+	MsgBurnFT           = types.MsgBurnFT
+	MsgBurnFTFrom       = types.MsgBurnFTFrom
 
 	MsgGrantPermission  = types.MsgGrantPermission
 	MsgRevokePermission = types.MsgRevokePermission
 
 	MsgModifyTokenURI = types.MsgModifyTokenURI
 
-	MsgTransferCFT  = types.MsgTransferCFT
-	MsgTransferCNFT = types.MsgTransferCNFT
+	MsgTransferFT  = types.MsgTransferFT
+	MsgTransferNFT = types.MsgTransferNFT
 
-	MsgTransferCFTFrom  = types.MsgTransferCFTFrom
-	MsgTransferCNFTFrom = types.MsgTransferCNFTFrom
+	MsgTransferFTFrom  = types.MsgTransferFTFrom
+	MsgTransferNFTFrom = types.MsgTransferNFTFrom
 
 	MsgAttach = types.MsgAttach
 	MsgDetach = types.MsgDetach

@@ -24,17 +24,17 @@ func TestCollectionAndPermission(t *testing.T) {
 		{
 			collection, err := keeper.GetCollection(ctx, defaultSymbol)
 			require.NoError(t, err)
-			require.NoError(t, keeper.IssueCFT(ctx, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+			require.NoError(t, keeper.IssueFT(ctx, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 			token, err := keeper.GetToken(ctx, defaultSymbol, defaultTokenIDFT)
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
 			require.Equal(t, defaultTokenIDFT, token.GetTokenID())
 		}
 		{
-			require.NoError(t, keeper.IssueCNFT(ctx, addr1, defaultSymbol))
+			require.NoError(t, keeper.IssueNFT(ctx, addr1, defaultSymbol))
 			collection, err = keeper.GetCollection(ctx, defaultSymbol)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
 
 			token, err := keeper.GetToken(ctx, defaultSymbol, defaultTokenID1)
 			require.NoError(t, err)
@@ -43,7 +43,7 @@ func TestCollectionAndPermission(t *testing.T) {
 
 			collection, err = keeper.GetCollection(ctx, defaultSymbol)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType, defaultTokenURI, addr1)))
 			token, err = keeper.GetToken(ctx, defaultSymbol, defaultTokenID2)
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
@@ -53,10 +53,10 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, int64(2), count.Int64())
 
-			require.NoError(t, keeper.IssueCNFT(ctx, addr1, defaultSymbol))
+			require.NoError(t, keeper.IssueNFT(ctx, addr1, defaultSymbol))
 			collection, err = keeper.GetCollection(ctx, defaultSymbol)
 			require.NoError(t, err)
-			require.NoError(t, keeper.MintCNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType2, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(collection, defaultName, defaultTokenType2, defaultTokenURI, addr1)))
 			token, err = keeper.GetToken(ctx, defaultSymbol, defaultTokenType2+"0001")
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
