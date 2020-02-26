@@ -7,12 +7,13 @@ import (
 
 const (
 	defaultName      = "name"
-	defaultSymbol    = "linktkn"
+	defaultSymbol    = "token001"
 	defaultTokenURI  = "token-uri"
 	defaultDecimals  = 6
-	defaultTokenType = "a000"
-	defaultTokenIDFT = "00010000"
 	defaultAmount    = 1000
+	defaultTokenType = "1001"
+	defaultTokenID1  = defaultTokenType + "0001"
+	defaultTokenIDFT = "00010000"
 )
 
 var (

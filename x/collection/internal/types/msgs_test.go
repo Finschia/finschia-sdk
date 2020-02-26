@@ -44,7 +44,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Mintable, msg2.Mintable)
 	}
 	{
-		msg := NewMsgIssueNFT(addr1, "symb"+addrSuffix)
+		msg := NewMsgIssueNFT(addr1, "symb"+addrSuffix, defaultName)
 		require.Equal(t, "issue_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -60,6 +60,7 @@ func TestMsgBasics(t *testing.T) {
 
 		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.Owner, msg2.Owner)
+		require.Equal(t, msg.Name, msg2.Name)
 	}
 	{
 		msg := NewMsgMintNFT(addr1, addr1, "name", "symb"+addrSuffix, "tokenuri", "toke")

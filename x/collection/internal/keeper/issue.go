@@ -16,7 +16,7 @@ func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, to
 	if !types.ValidTokenURI(token.GetTokenURI()) {
 		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
 	}
-	err := k.SetToken(ctx, token)
+	err := k.SetToken(ctx, symbol, token)
 	if err != nil {
 		return err
 	}
@@ -73,27 +73,22 @@ func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, to
 	return nil
 }
 
-func (k Keeper) IssueNFT(ctx sdk.Context, symbol string, owner sdk.AccAddress) sdk.Error {
-	tokenType, err := k.getNextTokenType(ctx, symbol)
+func (k Keeper) IssueNFT(ctx sdk.Context, symbol string, tokenType types.TokenType, owner sdk.AccAddress) sdk.Error {
+	err := k.SetTokenType(ctx, symbol, tokenType)
 	if err != nil {
 		return err
 	}
 
-	err = k.setTokenType(ctx, symbol, tokenType)
-	if err != nil {
-		return err
-	}
-
-	mintPerm := types.NewMintPermission(symbol, tokenType)
+	mintPerm := types.NewMintPermission(symbol, tokenType.GetTokenType())
 	k.AddPermission(ctx, owner, mintPerm)
-	burnPerm := types.NewBurnPermission(symbol, tokenType)
+	burnPerm := types.NewBurnPermission(symbol, tokenType.GetTokenType())
 	k.AddPermission(ctx, owner, burnPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueNFT,
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
-			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType),
+			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType.GetTokenType()),
 		),
 		sdk.NewEvent(
 			types.EventTypeGrantPermToken,
@@ -110,41 +105,4 @@ func (k Keeper) IssueNFT(ctx sdk.Context, symbol string, owner sdk.AccAddress) s
 	})
 
 	return nil
-}
-
-func (k Keeper) setTokenType(ctx sdk.Context, symbol, tokenType string) sdk.Error {
-	collection, err := k.GetCollection(ctx, symbol)
-	if err != nil {
-		return err
-	}
-	store := ctx.KVStore(k.storeKey)
-	if store.Has(types.TokenTypeKey(collection.GetSymbol(), tokenType)) {
-		return types.ErrCollectionTokenTypeExist(types.DefaultCodespace, collection.GetSymbol(), tokenType)
-	}
-	store.Set(types.TokenTypeKey(collection.GetSymbol(), tokenType), k.cdc.MustMarshalBinaryBare(tokenType))
-	return nil
-}
-
-func (k Keeper) hasTokenType(ctx sdk.Context, symbol, tokenType string) bool {
-	collection, err := k.GetCollection(ctx, symbol)
-	if err != nil {
-		return false
-	}
-	store := ctx.KVStore(k.storeKey)
-	return store.Has(types.TokenTypeKey(collection.GetSymbol(), tokenType))
-}
-
-func (k Keeper) getNextTokenType(ctx sdk.Context, symbol string) (tokenType string, err sdk.Error) {
-	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStoreReversePrefixIterator(store, types.TokenTypeKey(symbol, ""))
-	defer iter.Close()
-	if !iter.Valid() {
-		return types.SmallestNFTType, nil
-	}
-	k.cdc.MustUnmarshalBinaryBare(iter.Value(), &tokenType)
-	tokenType = types.NextID(tokenType, "")
-	if tokenType[0] == types.FungibleFlag[0] {
-		return "", types.ErrCollectionTokenTypeFull(types.DefaultCodespace, symbol)
-	}
-	return tokenType, nil
 }

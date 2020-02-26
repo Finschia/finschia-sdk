@@ -146,13 +146,13 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 
 			symbol := args[0]
 
-			collection, height, err := retriever.GetCollection(cliCtx, symbol)
+			tokens, height, err := retriever.GetTokens(cliCtx, symbol)
 			if err != nil {
 				return err
 			}
 
 			cliCtx = cliCtx.WithHeight(height)
-			return cliCtx.PrintOutput(collection.Tokens)
+			return cliCtx.PrintOutput(tokens)
 		},
 	}
 

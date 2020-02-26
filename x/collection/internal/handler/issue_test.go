@@ -85,13 +85,13 @@ func TestHandlerIssueNFT(t *testing.T) {
 	{
 		//Expect token type is 1001
 		{
-			msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
+			msg := types.NewMsgIssueNFT(addr1, defaultSymbol, defaultName)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		//Expect token type is 1002
 		{
-			msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
+			msg := types.NewMsgIssueNFT(addr1, defaultSymbol, defaultName)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
@@ -148,7 +148,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 
 	//Expect token type is 1003
 	{
-		msg := types.NewMsgIssueNFT(addr2, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr2, defaultSymbol, defaultName)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -163,7 +163,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr1, defaultSymbol, defaultName)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -254,7 +254,7 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr1, defaultSymbol, defaultName)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())

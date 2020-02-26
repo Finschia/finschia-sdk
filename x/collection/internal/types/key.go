@@ -17,10 +17,11 @@ var (
 	AccountKeyPrefix            = []byte{0x00}
 	CollectionKeyPrefix         = []byte{0x01}
 	SupplyKeyPrefix             = []byte{0x02}
-	TokenTypeKeyPrefix          = []byte{0x03}
-	TokenChildToParentKeyPrefix = []byte{0x04}
-	TokenParentToChildKeyPrefix = []byte{0x05}
-	CollectionApprovedKeyPrefix = []byte{0x06}
+	TokenKeyPrefix              = []byte{0x03}
+	TokenTypeKeyPrefix          = []byte{0x04}
+	TokenChildToParentKeyPrefix = []byte{0x05}
+	TokenParentToChildKeyPrefix = []byte{0x06}
+	CollectionApprovedKeyPrefix = []byte{0x07}
 )
 
 func AccountKey(symbol string, acc sdk.AccAddress) []byte {
@@ -33,6 +34,10 @@ func SupplyKey(symbol string) []byte {
 
 func CollectionKey(symbol string) []byte {
 	return append(CollectionKeyPrefix, []byte(symbol)...)
+}
+
+func TokenKey(symbol, tokenID string) []byte {
+	return append(append(TokenKeyPrefix, []byte(symbol)...), []byte(tokenID)...)
 }
 
 func TokenTypeKey(symbol, tokenType string) []byte {

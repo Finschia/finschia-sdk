@@ -100,7 +100,7 @@ func QueryTokensRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		collection, height, err := retriever.GetCollection(cliCtx, symbol)
+		tokens, height, err := retriever.GetTokens(cliCtx, symbol)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -108,7 +108,7 @@ func QueryTokensRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		cliCtx = cliCtx.WithHeight(height)
 
-		rest.PostProcessResponse(w, cliCtx, collection.Tokens)
+		rest.PostProcessResponse(w, cliCtx, tokens)
 	}
 }
 func QueryCollectionRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {

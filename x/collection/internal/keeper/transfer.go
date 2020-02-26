@@ -175,6 +175,5 @@ func (k Keeper) moveNFToken(ctx sdk.Context, symbol string, from sdk.AccAddress,
 		return err
 	}
 
-	token.SetOwner(to)
-	return k.UpdateToken(ctx, token)
+	return k.UpdateToken(ctx, symbol, token.SetOwner(to))
 }

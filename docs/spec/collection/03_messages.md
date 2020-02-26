@@ -35,6 +35,7 @@ type MsgIssueFT struct {
 type MsgIssueNFT struct {
 	Symbol   string         `json:"symbol"`
 	Owner    sdk.AccAddress `json:"owner"`
+	Name     string         `json:"name"`
 }
 ```
 

@@ -22,7 +22,7 @@ func TestHandleApproveDisapprove(t *testing.T) {
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueNFT(addr1, defaultSymbol)
+		msg := types.NewMsgIssueNFT(addr1, defaultSymbol, defaultName)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)

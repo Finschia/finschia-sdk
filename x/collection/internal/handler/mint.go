@@ -7,12 +7,17 @@ import (
 )
 
 func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNFT) sdk.Result {
-	collection, err := keeper.GetCollection(ctx, msg.Symbol)
+	_, err := keeper.GetCollection(ctx, msg.Symbol)
 	if err != nil {
 		return err.Result()
 	}
 
-	token := types.NewNFT(collection, msg.Name, msg.TokenType, msg.TokenURI, msg.To)
+	tokenID, err := keeper.GetNextTokenIDNFT(ctx, msg.Symbol, msg.TokenType)
+	if err != nil {
+		return err.Result()
+	}
+
+	token := types.NewNFT(msg.Symbol, tokenID, msg.Name, msg.TokenURI, msg.To)
 	err = keeper.MintNFT(ctx, msg.Symbol, msg.From, token)
 	if err != nil {
 		return err.Result()

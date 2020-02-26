@@ -100,8 +100,8 @@ func TestAttachDetachScenario(t *testing.T) {
 	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID2), types.ErrTokenAlreadyAChild(types.DefaultCodespace, defaultTokenID2).Error())
 
 	// attach non-exist token : failure
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID8), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
-	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID8, defaultTokenID1), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID8), types.ErrTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
+	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID8, defaultTokenID1), types.ErrTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
 
 	// attach non-mine token : failure
 	require.EqualError(t, keeper.Attach(ctx, addr1, defaultSymbol, defaultTokenID1, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
@@ -126,7 +126,7 @@ func TestAttachDetachScenario(t *testing.T) {
 	require.EqualError(t, keeper.Detach(ctx, addr1, defaultSymbol, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
 
 	// detach non-exist token : failure
-	require.EqualError(t, keeper.Detach(ctx, addr1, defaultSymbol, defaultTokenID8), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
+	require.EqualError(t, keeper.Detach(ctx, addr1, defaultSymbol, defaultTokenID8), types.ErrTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
 
 	//
 	// detach success cases

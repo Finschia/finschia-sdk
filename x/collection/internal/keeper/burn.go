@@ -165,7 +165,7 @@ func (k Keeper) burnNFTRecursive(ctx sdk.Context, symbol string, token types.NFT
 		),
 	})
 
-	children, err := k.ChildrenOf(ctx, token.GetSymbol(), token.GetTokenID())
+	children, err := k.ChildrenOf(ctx, symbol, token.GetTokenID())
 	if err != nil {
 		return err
 	}
@@ -177,25 +177,17 @@ func (k Keeper) burnNFTRecursive(ctx sdk.Context, symbol string, token types.NFT
 		}
 	}
 
-	parent, err := k.ParentOf(ctx, token.GetSymbol(), token.GetTokenID())
+	parent, err := k.ParentOf(ctx, symbol, token.GetTokenID())
 	if err != nil {
 		return err
 	}
 	if parent != nil {
-		_, err = k.detach(ctx, from, token.GetSymbol(), token.GetTokenID())
+		_, err = k.detach(ctx, from, symbol, token.GetTokenID())
 		if err != nil {
 			return err
 		}
 	}
-	collection, err := k.GetCollection(ctx, token.GetSymbol())
-	if err != nil {
-		return err
-	}
-	collection, err = collection.DeleteToken(token)
-	if err != nil {
-		return err
-	}
-	err = k.UpdateCollection(ctx, collection)
+	err = k.DeleteToken(ctx, symbol, token.GetTokenID())
 	if err != nil {
 		return err
 	}

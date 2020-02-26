@@ -62,7 +62,7 @@ func TestModifyTokenURI(t *testing.T) {
 		symbol := tck + types.AccAddrSuffix(f.KeyAddress(keyFoo))
 		f.TxTokenCreateCollection(keyFoo, tck, "itisbrown", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, symbol, "-y"))
+		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, symbol, "itisbrown", "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		f.LogResult(f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbol, "itisbrown", firstTokenURI, tokenType, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
@@ -2466,13 +2466,16 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
 		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
 
-		collection := f.QueryCollection(tickerBrown + fooAddrSuffix)
-		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[0].GetSymbol())
-		require.Equal(t, tokenID01, collection.Tokens[0].GetTokenID())
-		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[1].GetSymbol())
-		require.Equal(t, tokenID02, collection.Tokens[1].GetTokenID())
-		require.Equal(t, tickerBrown+fooAddrSuffix, collection.Tokens[2].GetSymbol())
-		require.Equal(t, tokenID03, collection.Tokens[2].GetTokenID())
+		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID01)
+		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
+		require.Equal(t, tokenID01, token.GetTokenID())
+		token = f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID02)
+		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
+		require.Equal(t, tokenID02, token.GetTokenID())
+		token = f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID03)
+		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
+		require.Equal(t, tokenID03, token.GetTokenID())
+
 	}
 
 	// Bar cannot issue with the collection symbol
@@ -2533,27 +2536,21 @@ func TestLinkCLITokenNFT(t *testing.T) {
 	}
 	// Issue Collective NFT for the collection
 	{
-		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, symbolBrown+fooSuffix, "-y"))
+		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, symbolBrown+fooSuffix, description, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbolBrown+fooSuffix, description, tokenuri, tokenType, "-y")
 		f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbolBrown+fooSuffix, description, tokenuri, tokenType, "-y")
 		f.TxTokenMintNFTCollection(keyFoo, fooAddr, symbolBrown+fooSuffix, description, tokenuri, tokenType, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		collection := f.QueryCollection(symbolBrown + fooSuffix)
-		require.Equal(t, 3, len(collection.Tokens))
-		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[0].GetSymbol())
-		require.Equal(t, tokenID01, collection.Tokens[0].GetTokenID())
-		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[1].GetSymbol())
-		require.Equal(t, tokenID02, collection.Tokens[1].GetTokenID())
-		require.Equal(t, symbolBrown+fooSuffix, collection.Tokens[2].GetSymbol())
-		require.Equal(t, tokenID03, collection.Tokens[2].GetTokenID())
-	}
-	{
-		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0001", "-y")
-		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0002", "-y")
-		f.TxTokenBurnNFTCollection(keyFoo, symbolBrown+fooSuffix, tokenType+"0003", "-y")
-		collection := f.QueryCollection(symbolBrown + fooSuffix)
-		require.Equal(t, 0, len(collection.Tokens))
+		token := f.QueryTokenCollection(symbolBrown+fooSuffix, tokenID01)
+		require.Equal(t, symbolBrown+fooSuffix, token.GetSymbol())
+		require.Equal(t, tokenID01, token.GetTokenID())
+		token = f.QueryTokenCollection(symbolBrown+fooSuffix, tokenID02)
+		require.Equal(t, symbolBrown+fooSuffix, token.GetSymbol())
+		require.Equal(t, tokenID02, token.GetTokenID())
+		token = f.QueryTokenCollection(symbolBrown+fooSuffix, tokenID03)
+		require.Equal(t, symbolBrown+fooSuffix, token.GetSymbol())
+		require.Equal(t, tokenID03, token.GetTokenID())
 	}
 
 	f.Cleanup()

@@ -31,6 +31,7 @@ const (
 	CodeCollectionTokenTypeNotExist sdk.CodeType = 303
 	CodeCollectionTokenTypeFull     sdk.CodeType = 304
 	CodeCollectionTokenIndexFull    sdk.CodeType = 305
+	CodeCollectionTokenIDFull       sdk.CodeType = 306
 
 	//Permission
 	CodeTokenPermission sdk.CodeType = 400
@@ -102,28 +103,32 @@ func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, per
 	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
 }
 
-func ErrCollectionTokenExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
+func ErrTokenExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenExist, "token symbol[%s] token-id[%s] already exists", symbol, tokenID)
 }
 
-func ErrCollectionTokenNotExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
+func ErrTokenNotExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenNotExist, "token symbol[%s] token-id[%s] does not exist", symbol, tokenID)
 }
 
-func ErrCollectionTokenTypeExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
+func ErrTokenTypeExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
 	return sdk.NewError(codespace, CodeCollectionTokenTypeExist, "token type for symbol[%s] token-type[%s] already exists", symbol, tokenType)
 }
 
-func ErrCollectionTokenTypeNotExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
+func ErrTokenTypeNotExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
 	return sdk.NewError(codespace, CodeCollectionTokenTypeNotExist, "token type for symbol[%s] token-type[%s] does not exist", symbol, tokenType)
 }
 
-func ErrCollectionTokenTypeFull(codespace sdk.CodespaceType, symbol string) sdk.Error {
+func ErrTokenTypeFull(codespace sdk.CodespaceType, symbol string) sdk.Error {
 	return sdk.NewError(codespace, CodeCollectionTokenTypeFull, "all token type for symbol[%s] are occupied", symbol)
 }
 
-func ErrCollectionTokenIndexFull(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenIndexFull, "all token index for symbol[%s] token-type[%s] are occupied", symbol, tokenType)
+func ErrTokenIndexFull(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenIndexFull, "all non-fungible token index for symbol[%s] token-type[%s] are occupied", symbol, tokenType)
+}
+
+func ErrTokenIDFull(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenIDFull, "all fungible token-id for symbol[%s] are occupied", symbol)
 }
 
 func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, tokenID string) sdk.Error {

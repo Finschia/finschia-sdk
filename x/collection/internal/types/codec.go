@@ -52,4 +52,7 @@ func RegisterCodec(cdc *codec.Codec) {
 
 	cdc.RegisterInterface((*Supply)(nil), nil)
 	cdc.RegisterConcrete(&BaseSupply{}, "collection/Supply", nil)
+
+	cdc.RegisterInterface((*TokenType)(nil), nil)
+	cdc.RegisterConcrete(&BaseTokenType{}, "collection/TokenType", nil)
 }

@@ -2014,12 +2014,6 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-            tokens:
-              type: array
-              items:
-                oneOf:
-                  - $ref: '#/components/schemas/TokenCFT'
-                  - $ref: '#/components/schemas/TokenCNFT'
 
     #-------------------------------
     # BroadcastTx Result Models
@@ -2375,6 +2369,9 @@ components:
             symbol:
               type: string
               example: "con2xxv"
+            name:
+              type: string
+              example: "cony"
     MsgMintCNFT:
       type: object
       description: msg of non-fungible collection token creation
@@ -2773,6 +2770,7 @@ components:
         "type": "collection/MsgIssueNFT",
         "value": {
           "symbol": "con2xxv",
+          "name": "cony",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
         }
       },

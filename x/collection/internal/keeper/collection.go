@@ -11,7 +11,6 @@ type CollectionKeeper interface {
 	GetCollection(ctx sdk.Context, symbol string) (collection types.Collection, err sdk.Error)
 	SetCollection(ctx sdk.Context, collection types.Collection) sdk.Error
 	UpdateCollection(ctx sdk.Context, collection types.Collection) sdk.Error
-	GetNFTCount(ctx sdk.Context, symbol, baseID string) (count sdk.Int, err sdk.Error)
 	GetAllCollections(ctx sdk.Context) types.Collections
 }
 
@@ -81,17 +80,6 @@ func (k Keeper) UpdateCollection(ctx sdk.Context, collection types.Collection) s
 	return nil
 }
 
-func (k Keeper) GetNFTCount(ctx sdk.Context, symbol, baseID string) (count sdk.Int, err sdk.Error) {
-	collection, err := k.GetCollection(ctx, symbol)
-	if err != nil {
-		return count, err
-	}
-	tokens := collection.GetNFTokens()
-	tokens = tokens.GetTokens(baseID)
-	count = sdk.NewInt(int64(tokens.Len()))
-	return count, nil
-}
-
 func (k Keeper) GetAllCollections(ctx sdk.Context) types.Collections {
 	var collections types.Collections
 	appendCollection := func(collection types.Collection) (stop bool) {
@@ -124,10 +112,6 @@ func (k Keeper) mustDecodeCollection(collectionByte []byte) types.Collection {
 	err := k.cdc.UnmarshalBinaryBare(collectionByte, &collection)
 	if err != nil {
 		panic(err)
-	}
-	//XXX:
-	for _, token := range collection.GetAllTokens() {
-		token.(types.Token).SetCollection(collection)
 	}
 	return collection
 }

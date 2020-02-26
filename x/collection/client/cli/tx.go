@@ -121,17 +121,18 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "issue-nft [from_key_or_address] [symbol]",
+		Use:   "issue-nft [from_key_or_address] [symbol] [name]",
 		Short: "Create and sign an issue-nft tx",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
 			to := cliCtx.FromAddress
 			symbol := args[1]
+			name := args[2]
 
-			msg := types.NewMsgIssueNFT(to, symbol)
+			msg := types.NewMsgIssueNFT(to, symbol, name)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

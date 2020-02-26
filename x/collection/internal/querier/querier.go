@@ -63,6 +63,21 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
+	if len(params.TokenID) == 0 {
+		var params types.QuerySymbolParams
+		if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
+			return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
+		}
+		tokens, err := keeper.GetTokens(ctx, params.Symbol)
+		if err != nil {
+			return nil, err
+		}
+		bz, err2 := keeper.MarshalJSONIndent(tokens)
+		if err2 != nil {
+			return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
+		}
+		return bz, nil
+	}
 
 	token, err := keeper.GetToken(ctx, params.Symbol, params.TokenID)
 	if err != nil {

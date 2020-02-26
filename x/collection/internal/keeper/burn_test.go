@@ -33,11 +33,11 @@ func TestMintBurn(t *testing.T) {
 	const (
 		wrongTokenID = "12345678"
 	)
-	require.EqualError(t, keeper.MintNFT(ctx, defaultSymbol2, addr1, types.NewNFT(types.NewCollection(defaultSymbol2, defaultName), defaultName, wrongTokenID, defaultTokenURI, addr1)), types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, defaultSymbol2, wrongTokenID[:4]).Error())
-	require.EqualError(t, keeper.MintNFT(ctx, defaultSymbol, addr3, types.NewNFT(types.NewCollection(defaultSymbol, defaultName), defaultName, defaultTokenID1, defaultTokenURI, addr1)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])).Error())
+	require.EqualError(t, keeper.MintNFT(ctx, defaultSymbol2, addr1, types.NewNFT(defaultSymbol2, wrongTokenID, defaultName, defaultTokenURI, addr1)), types.ErrTokenTypeNotExist(types.DefaultCodespace, defaultSymbol2, wrongTokenID[:4]).Error())
+	require.EqualError(t, keeper.MintNFT(ctx, defaultSymbol, addr3, types.NewNFT(defaultSymbol, defaultTokenID1, defaultName, defaultTokenURI, addr1)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])).Error())
 
 	require.NoError(t, keeper.BurnFT(ctx, defaultSymbol, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))))
-	require.EqualError(t, keeper.BurnNFT(ctx, defaultSymbol, addr1, wrongTokenID), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, wrongTokenID).Error())
+	require.EqualError(t, keeper.BurnNFT(ctx, defaultSymbol, addr1, wrongTokenID), types.ErrTokenNotExist(types.DefaultCodespace, defaultSymbol, wrongTokenID).Error())
 	require.EqualError(t, keeper.BurnNFT(ctx, defaultSymbol, addr3, defaultTokenID1), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewBurnPermission(defaultSymbol, defaultTokenID1[:4])).Error())
 }
 

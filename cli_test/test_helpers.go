@@ -566,8 +566,8 @@ func (f *Fixtures) TxTokenIssueCollection(from string, symbol, name string, amou
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
-func (f *Fixtures) TxTokenIssueNFTCollection(from string, symbol string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection issue-nft %s %s %v", f.LinkcliBinary, from, symbol, f.Flags())
+func (f *Fixtures) TxTokenIssueNFTCollection(from string, symbol, name string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection issue-nft %s %s %s %v", f.LinkcliBinary, from, symbol, name, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 

@@ -14,10 +14,7 @@ func TestTransferFTScenario(t *testing.T) {
 
 	// issue idf token
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName), addr1))
-	collection, err := keeper.GetCollection(ctx, defaultSymbol)
-	require.NoError(t, err)
-	err = keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(collection, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount))
-	require.NoError(t, err)
+	require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 
 	//
 	// transfer success cases
@@ -44,7 +41,7 @@ func TestTransferNFTScenario(t *testing.T) {
 	//
 
 	// transfer non-exist token : failure
-	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID8), types.ErrCollectionTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
+	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID8), types.ErrTokenNotExist(types.DefaultCodespace, defaultSymbol, defaultTokenID8).Error())
 
 	// transfer a child : failure
 	require.EqualError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultSymbol, defaultTokenID2), types.ErrTokenCannotTransferChildToken(types.DefaultCodespace, defaultTokenID2).Error())

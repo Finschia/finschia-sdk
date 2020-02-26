@@ -66,12 +66,14 @@ var _ sdk.Msg = (*MsgIssueNFT)(nil)
 type MsgIssueNFT struct {
 	Owner  sdk.AccAddress `json:"owner"`
 	Symbol string         `json:"symbol"`
+	Name   string         `json:"name"`
 }
 
-func NewMsgIssueNFT(owner sdk.AccAddress, symbol string) MsgIssueNFT {
+func NewMsgIssueNFT(owner sdk.AccAddress, symbol, name string) MsgIssueNFT {
 	return MsgIssueNFT{
 		Owner:  owner,
 		Symbol: symbol,
+		Name:   name,
 	}
 }
 

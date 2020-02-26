@@ -7,28 +7,90 @@ import (
 
 type TokenKeeper interface {
 	GetToken(ctx sdk.Context, symbol, tokenID string) (types.Token, sdk.Error)
-	SetToken(ctx sdk.Context, token types.Token) sdk.Error
-	UpdateToken(ctx sdk.Context, token types.Token) sdk.Error
+	HasToken(ctx sdk.Context, symbol, tokenID string) bool
+	SetToken(ctx sdk.Context, symbol string, token types.Token) sdk.Error
+	DeleteToken(ctx sdk.Context, symbol, tokenID string) sdk.Error
+	UpdateToken(ctx sdk.Context, symbol string, token types.Token) sdk.Error
+	GetTokens(ctx sdk.Context, symbol string) (tokens types.Tokens, err sdk.Error)
+	GetFT(ctx sdk.Context, symbol, tokenID string) (types.FT, sdk.Error)
+	GetFTs(ctx sdk.Context, symbol string) (tokens types.Tokens, err sdk.Error)
+	GetNFT(ctx sdk.Context, symbol, tokenID string) (types.NFT, sdk.Error)
+	GetNFTCount(ctx sdk.Context, symbol, tokenType string) (sdk.Int, sdk.Error)
+	GetNFTs(ctx sdk.Context, symbol, tokenType string) (tokens types.Tokens, err sdk.Error)
+	GetNextTokenIDFT(ctx sdk.Context, symbol string) (string, sdk.Error)
+	GetNextTokenIDNFT(ctx sdk.Context, symbol, tokenType string) (string, sdk.Error)
 }
+
+var _ TokenKeeper = (*Keeper)(nil)
 
 func (k Keeper) GetToken(ctx sdk.Context, symbol, tokenID string) (types.Token, sdk.Error) {
-	c, err := k.GetCollection(ctx, symbol)
-	if err != nil {
-		return nil, err
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.TokenKey(symbol, tokenID)
+	bz := store.Get(tokenKey)
+	if bz == nil {
+		return nil, types.ErrTokenNotExist(types.DefaultCodespace, symbol, tokenID)
 	}
-	return c.GetToken(tokenID)
+	token := k.mustDecodeToken(bz)
+	return token, nil
+}
+func (k Keeper) HasToken(ctx sdk.Context, symbol, tokenID string) bool {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.TokenKey(symbol, tokenID)
+	return store.Has(tokenKey)
 }
 
-func (k Keeper) GetNFT(ctx sdk.Context, symbol, tokenID string) (types.NFT, sdk.Error) {
-	token, err := k.GetToken(ctx, symbol, tokenID)
+func (k Keeper) SetToken(ctx sdk.Context, symbol string, token types.Token) sdk.Error {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.TokenKey(symbol, token.GetTokenID())
+	if store.Has(tokenKey) {
+		return types.ErrTokenExist(types.DefaultCodespace, symbol, token.GetTokenID())
+	}
+	store.Set(tokenKey, k.mustEncodeToken(token))
+	return nil
+}
+
+func (k Keeper) UpdateToken(ctx sdk.Context, symbol string, token types.Token) sdk.Error {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.TokenKey(symbol, token.GetTokenID())
+	if !store.Has(tokenKey) {
+		return types.ErrTokenNotExist(types.DefaultCodespace, symbol, token.GetTokenID())
+	}
+	store.Set(tokenKey, k.mustEncodeToken(token))
+	return nil
+}
+
+func (k Keeper) DeleteToken(ctx sdk.Context, symbol, tokenID string) sdk.Error {
+	store := ctx.KVStore(k.storeKey)
+	tokenKey := types.TokenKey(symbol, tokenID)
+	if !store.Has(tokenKey) {
+		return types.ErrTokenNotExist(types.DefaultCodespace, symbol, tokenID)
+	}
+	store.Delete(tokenKey)
+	return nil
+}
+
+func (k Keeper) GetTokens(ctx sdk.Context, symbol string) (tokens types.Tokens, err sdk.Error) {
+	_, err = k.GetCollection(ctx, symbol)
 	if err != nil {
 		return nil, err
 	}
-	nft, ok := token.(types.NFT)
-	if !ok {
-		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetTokenID())
+	k.iterateToken(ctx, symbol, "", false, func(t types.Token) bool {
+		tokens = append(tokens, t)
+		return false
+	})
+	return tokens, nil
+}
+
+func (k Keeper) GetFTs(ctx sdk.Context, symbol string) (tokens types.Tokens, err sdk.Error) {
+	_, err = k.GetCollection(ctx, symbol)
+	if err != nil {
+		return nil, err
 	}
-	return nft, nil
+	k.iterateToken(ctx, symbol, types.FungibleFlag, false, func(t types.Token) bool {
+		tokens = append(tokens, t)
+		return false
+	})
+	return tokens, nil
 }
 
 func (k Keeper) GetFT(ctx sdk.Context, symbol, tokenID string) (types.FT, sdk.Error) {
@@ -42,46 +104,94 @@ func (k Keeper) GetFT(ctx sdk.Context, symbol, tokenID string) (types.FT, sdk.Er
 	}
 	return ft, nil
 }
-
-func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
-	c, err := k.GetCollection(ctx, token.GetSymbol())
+func (k Keeper) GetNFT(ctx sdk.Context, symbol, tokenID string) (types.NFT, sdk.Error) {
+	token, err := k.GetToken(ctx, symbol, tokenID)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	if t, ok := token.(types.NFT); ok {
-		tokenType := t.GetTokenType()
-		if !k.hasTokenType(ctx, token.GetSymbol(), tokenType) {
-			return types.ErrCollectionTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), tokenType)
-		}
-		if t.GetTokenIndex() == types.ReservedEmpty {
-			return types.ErrCollectionTokenIndexFull(types.DefaultCodespace, token.GetSymbol(), tokenType)
-		}
+	nft, ok := token.(types.NFT)
+	if !ok {
+		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetTokenID())
 	}
-	c, err = c.AddToken(token)
-	if err != nil {
-		return err
-	}
-	err = k.UpdateCollection(ctx, c)
-	if err != nil {
-		return err
-	}
-	return nil
+	return nft, nil
 }
 
-func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) sdk.Error {
-	c, err := k.GetCollection(ctx, token.GetSymbol())
+func (k Keeper) GetNFTs(ctx sdk.Context, symbol, tokenType string) (tokens types.Tokens, err sdk.Error) {
+	_, err = k.GetCollection(ctx, symbol)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	c, err = c.UpdateToken(token)
+	k.iterateToken(ctx, symbol, tokenType, false, func(t types.Token) bool {
+		tokens = append(tokens, t)
+		return false
+	})
+	return tokens, nil
+}
+func (k Keeper) GetNFTCount(ctx sdk.Context, symbol, tokenType string) (sdk.Int, sdk.Error) {
+	_, err := k.GetCollection(ctx, symbol)
 	if err != nil {
-		return err
+		return sdk.ZeroInt(), err
 	}
-	err = k.UpdateCollection(ctx, c)
+	tokens, err := k.GetNFTs(ctx, symbol, tokenType)
 	if err != nil {
-		return err
+		return sdk.ZeroInt(), err
 	}
-	return nil
+	return sdk.NewInt(int64(len(tokens))), nil
+}
+
+func (k Keeper) GetNextTokenIDFT(ctx sdk.Context, symbol string) (string, sdk.Error) {
+	var lastToken types.Token
+	k.iterateToken(ctx, symbol, types.FungibleFlag, true, func(t types.Token) bool {
+		lastToken = t
+		return true
+	})
+
+	if lastToken == nil {
+		return types.SmallestFTType + types.ReservedEmpty, nil
+	}
+	tokenType := nextID(lastToken.GetTokenType(), types.FungibleFlag)
+	if tokenType[0:1] != types.FungibleFlag {
+		return "", types.ErrTokenIDFull(types.DefaultCodespace, symbol)
+	}
+	return tokenType + types.ReservedEmpty, nil
+}
+func (k Keeper) GetNextTokenIDNFT(ctx sdk.Context, symbol, tokenType string) (string, sdk.Error) {
+	var lastToken types.Token
+	k.iterateToken(ctx, symbol, tokenType, true, func(t types.Token) bool {
+		lastToken = t
+		return true
+	})
+
+	if lastToken == nil {
+		return tokenType + types.SmallestTokenIndex, nil
+	}
+	tokenID := nextID(lastToken.GetTokenID(), tokenType)
+	if tokenID[types.TokenTypeLength:] == types.ReservedEmpty {
+		return "", types.ErrTokenIndexFull(types.DefaultCodespace, symbol, tokenType)
+	}
+	return tokenID, nil
+}
+
+func (k Keeper) iterateToken(ctx sdk.Context, symbol, prefix string, reverse bool, process func(types.Token) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+	var iter sdk.Iterator
+	if reverse {
+		iter = sdk.KVStoreReversePrefixIterator(store, types.TokenKey(symbol, prefix))
+	} else {
+		iter = sdk.KVStorePrefixIterator(store, types.TokenKey(symbol, prefix))
+	}
+	defer iter.Close()
+	for {
+		if !iter.Valid() {
+			return
+		}
+		val := iter.Value()
+		token := k.mustDecodeToken(val)
+		if process(token) {
+			return
+		}
+		iter.Next()
+	}
 }
 
 func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenID, tokenURI string) sdk.Error {
@@ -97,9 +207,9 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, to
 	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
 	}
-	token.SetTokenURI(tokenURI)
+	token = token.SetTokenURI(tokenURI)
 
-	err = k.UpdateToken(ctx, token)
+	err = k.UpdateToken(ctx, symbol, token)
 	if err != nil {
 		return err
 	}
@@ -115,4 +225,44 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, to
 		),
 	})
 	return nil
+}
+
+func (k Keeper) mustEncodeToken(token types.Token) (bz []byte) {
+	return k.cdc.MustMarshalBinaryBare(token)
+}
+func (k Keeper) mustDecodeToken(bz []byte) (token types.Token) {
+	k.cdc.MustUnmarshalBinaryBare(bz, &token)
+	return token
+}
+
+func nextID(id string, prefix string) (nextTokenID string) {
+	if len(prefix) >= len(id) {
+		return prefix[:len(id)]
+	}
+	var toCharStr = "0123456789abcdefghijklmnopqrstuvwxyz"
+	const toCharStrLength = 36 //int32(len(toCharStr))
+
+	tokenIDInt := make([]int32, len(id))
+	for idx, char := range id {
+		if char >= '0' && char <= '9' {
+			tokenIDInt[idx] = char - '0'
+		} else {
+			tokenIDInt[idx] = char - 'a' + 10
+		}
+	}
+	for idx := len(tokenIDInt) - 1; idx >= 0; idx-- {
+		char := tokenIDInt[idx] + 1
+		if char < (int32)(toCharStrLength) {
+			tokenIDInt[idx] = char
+			break
+		}
+		tokenIDInt[idx] = 0
+	}
+
+	for _, char := range tokenIDInt {
+		nextTokenID += string(toCharStr[char])
+	}
+	nextTokenID = prefix + nextTokenID[len(prefix):]
+
+	return nextTokenID
 }

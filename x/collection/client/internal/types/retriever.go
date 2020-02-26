@@ -149,6 +149,24 @@ func (r Retriever) GetToken(ctx context.CLIContext, symbol, tokenID string) (typ
 	return token, height, nil
 }
 
+func (r Retriever) GetTokens(ctx context.CLIContext, symbol string) (types.Tokens, int64, error) {
+	var tokens types.Tokens
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolParams(symbol))
+	if err != nil {
+		return tokens, 0, err
+	}
+
+	res, height, err := r.query(types.QueryTokens, bs)
+	if err != nil {
+		return tokens, height, err
+	}
+
+	if err := ctx.Codec.UnmarshalJSON(res, &tokens); err != nil {
+		return tokens, height, err
+	}
+	return tokens, height, nil
+}
+
 func (r Retriever) IsApproved(ctx context.CLIContext, proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) (approved bool, height int64, err error) {
 	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryIsApprovedParams(proxy, approver, symbol))
 	if err != nil {
