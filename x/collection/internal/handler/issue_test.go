@@ -96,19 +96,19 @@ func TestHandlerIssueNFT(t *testing.T) {
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+			msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType2)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintNFT(addr1, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+			msg := types.NewMsgMintNFT(addr1, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType2)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
 			mintPermission := types.Permission{
 				Action:   "mint",
-				Resource: defaultSymbol + defaultTokenType,
+				Resource: defaultSymbol + defaultTokenType2,
 			}
 			{
 				msg := types.NewMsgGrantPermission(addr1, addr2, mintPermission)
@@ -116,7 +116,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+				msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType2)
 				res := h(ctx, msg)
 				require.True(t, res.Code.IsOK())
 			}
@@ -126,7 +126,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+				msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType2)
 				res := h(ctx, msg)
 				require.False(t, res.Code.IsOK())
 				require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -153,7 +153,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, "1003")
+		msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType3)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}

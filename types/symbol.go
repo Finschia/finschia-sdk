@@ -12,9 +12,9 @@ const (
 	reSymbolStringReserved    = `[a-z][a-z0-9]{2,4}`
 	reSymbolStringUserDefined = `[a-z][a-z0-9]{5,7}`
 	/* #nosec */
-	reTokenIDString = `[a-z0-9]{8}`
+	reTokenIDString = `[a-z0-9]{16}`
 	/* #nosec */
-	reTokenTypeNFTString = `[a-z1-9][a-z0-9]{3}`
+	reTokenTypeNFTString = `[a-z1-9][a-z0-9]{7}`
 )
 
 var (
@@ -27,7 +27,6 @@ var (
 
 const (
 	AccAddrSuffixLen = 3
-	TokenIDLen       = 8
 )
 
 func ValidateReg(symbol string, reg *regexp.Regexp) error {

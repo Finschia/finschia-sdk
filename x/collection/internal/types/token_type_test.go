@@ -9,7 +9,7 @@ import (
 func TestTokenType(t *testing.T) {
 	tokenType := NewBaseTokenType(defaultSymbol, defaultTokenType, defaultName)
 
-	require.Equal(t, `{"symbol":"token001","token_type":"1001","name":"name"}`, tokenType.String())
+	require.Equal(t, `{"symbol":"token001","token_type":"10000001","name":"name"}`, tokenType.String())
 
 	var tokenType2 TokenType
 	bz, err := ModuleCdc.MarshalJSON(tokenType)

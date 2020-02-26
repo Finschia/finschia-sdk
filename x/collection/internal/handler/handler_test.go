@@ -39,16 +39,18 @@ var verifyEventFunc = func(t *testing.T, expected sdk.Events, actual sdk.Events)
 }
 
 const (
-	defaultName      = "name"
-	defaultSymbol    = "token001"
-	defaultTokenURI  = "token-uri"
-	defaultDecimals  = 6
-	defaultAmount    = 1000
-	defaultTokenType = "1001"
-	defaultTokenID1  = defaultTokenType + "0001"
-	defaultTokenID2  = defaultTokenType + "0002"
-	defaultTokenID3  = defaultTokenType + "0003"
-	defaultTokenIDFT = "00010000"
+	defaultName       = "name"
+	defaultSymbol     = "token001"
+	defaultTokenURI   = "token-uri"
+	defaultDecimals   = 6
+	defaultAmount     = 1000
+	defaultTokenType  = "10000001"
+	defaultTokenType2 = "10000002"
+	defaultTokenType3 = "10000003"
+	defaultTokenID1   = defaultTokenType + "00000001"
+	defaultTokenID2   = defaultTokenType + "00000002"
+	defaultTokenID3   = defaultTokenType + "00000003"
+	defaultTokenIDFT  = "0000000100000000"
 )
 
 var (

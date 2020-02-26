@@ -14,11 +14,11 @@ import (
 )
 
 var (
-	testDenom1 = "00010000"
-	testDenom2 = "00020000"
-	testDenom3 = "00030000"
-	testDenom4 = "00040000"
-	testDenomA = "000a0000"
+	testDenom1 = "0000000100000000"
+	testDenom2 = "0000000200000000"
+	testDenom3 = "0000000300000000"
+	testDenom4 = "0000000400000000"
+	testDenomA = "0000000a00000000"
 )
 
 // ----------------------------------------------------------------------------
@@ -507,7 +507,7 @@ func TestCoinsIsAnyGTE(t *testing.T) {
 	assert.False(t, Coins{{testDenom2, one}}.IsAnyGTE(Coins{{testDenom1, one}, {testDenom2, two}}))
 	assert.True(t, Coins{{testDenom1, one}, {testDenom2, two}}.IsAnyGTE(Coins{{testDenom1, one}, {testDenom2, one}}))
 	assert.True(t, Coins{{testDenom1, one}, {testDenom2, one}}.IsAnyGTE(Coins{{testDenom1, one}, {testDenom2, two}}))
-	assert.True(t, Coins{{"0xxx0000", one}, {"0yyy0000", one}}.IsAnyGTE(Coins{{testDenom2, one}, {"0ccc0000", one}, {"0yyy0000", one}, {"0zzz0000", one}}))
+	assert.True(t, Coins{{"00000xxx00000000", one}, {"00000yyy00000000", one}}.IsAnyGTE(Coins{{testDenom2, one}, {"00000ccc00000000", one}, {"00000yyy00000000", one}, {"00000zzz00000000", one}}))
 }
 
 //nolint:dupl
@@ -615,7 +615,7 @@ func TestFindDup(t *testing.T) {
 		want int
 	}{
 		{"empty", args{NewCoins()}, -1},
-		{"one coin", args{NewCoins(NewInt64Coin("0xyz0000", 10))}, -1},
+		{"one coin", args{NewCoins(NewInt64Coin("00000xyz00000000", 10))}, -1},
 		{"no dups", args{Coins{abc, def, ghi}}, -1},
 		{"dup at first position", args{Coins{abc, abc, def}}, 1},
 		{"dup after first position", args{Coins{abc, def, def}}, 2},
@@ -641,7 +641,7 @@ func TestMarshalJSONCoins(t *testing.T) {
 	}{
 		{"nil coins", nil, `[]`},
 		{"empty coins", Coins{}, `[]`},
-		{"non-empty coins", NewCoins(NewInt64Coin("0foo0000", 50)), `[{"token_id":"0foo0000","amount":"50"}]`},
+		{"non-empty coins", NewCoins(NewInt64Coin("00000foo00000000", 50)), `[{"token_id":"00000foo00000000","amount":"50"}]`},
 	}
 
 	for _, tc := range testCases {
@@ -668,15 +668,15 @@ func TestParseCoin(t *testing.T) {
 		coinStr    string
 		expectPass bool
 	}{
-		{"1:00010000", true},
-		{"1000:00010000", true},
-		{"21302131270312:00010000", true},
-		{"1:0001000", false},
-		{"100010000", false},
-		{"0001:00010000", true},
-		{"1 : 00010000", false},
-		{"1:000a0000", true},
-		{"1:000A0000", false},
+		{"1:0000000100000000", true},
+		{"1000:0000000100000000", true},
+		{"21302131270312:0000000100000000", true},
+		{"1:000000010000000", false},
+		{"10000000100000000", false},
+		{"0001:0000000100000000", true},
+		{"1 : 0000000100000000", false},
+		{"1:0000000a00000000", true},
+		{"1:0000000A00000000", false},
 	}
 
 	for i, tc := range cases {
@@ -694,10 +694,10 @@ func TestParseCoins(t *testing.T) {
 		coinStr    string
 		expectPass bool
 	}{
-		{"1:00010000", true},
-		{"1:00010000,2:00020000", true},
-		{"1:00010000,2:00020000,3:00030000", true},
-		{"1:00010000 , 2:00020000     , 3:00030000", true},
+		{"1:0000000100000000", true},
+		{"1:0000000100000000,2:0000000200000000", true},
+		{"1:0000000100000000,2:0000000200000000,3:0000000300000000", true},
+		{"1:0000000100000000 , 2:0000000200000000     , 3:0000000300000000", true},
 	}
 
 	for i, tc := range cases {

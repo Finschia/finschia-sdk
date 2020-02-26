@@ -12,7 +12,7 @@ import (
 func TestApproveDisapproveScenario(t *testing.T) {
 	ctx := cacheKeeper()
 	const (
-		defaultTokenIDFromSymbol2 = defaultTokenType2 + "0001"
+		defaultTokenIDFromSymbol2 = defaultTokenType2 + "00000001"
 	)
 
 	// prepare collection, FT, NFT
@@ -21,7 +21,7 @@ func TestApproveDisapproveScenario(t *testing.T) {
 	require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType, defaultName), addr1))
 	require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType2, defaultName), addr1))
 	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID1, defaultName, defaultTokenURI, addr1)))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenType2+"0001", defaultName, defaultTokenURI, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenType2+"00000001", defaultName, defaultTokenURI, addr1)))
 
 	// approve test
 	require.EqualError(t, keeper.SetApproved(ctx, addr3, addr1, defaultSymbol2), types.ErrCollectionNotExist(types.DefaultCodespace, defaultSymbol2).Error())

@@ -48,11 +48,11 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.Equal(t, int64(2), count.Int64())
 
 			require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType2, defaultName), addr1))
-			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenType2+"0001", defaultName, defaultTokenURI, addr1)))
-			token, err = keeper.GetToken(ctx, defaultSymbol, defaultTokenType2+"0001")
+			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenType2+"00000001", defaultName, defaultTokenURI, addr1)))
+			token, err = keeper.GetToken(ctx, defaultSymbol, defaultTokenType2+"00000001")
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
-			require.Equal(t, defaultTokenType2+"0001", token.GetTokenID())
+			require.Equal(t, defaultTokenType2+"00000001", token.GetTokenID())
 		}
 	}
 	{
@@ -82,7 +82,7 @@ func TestPermission(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])).Error())
-	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])))
-	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:4])).Error())
+	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])).Error())
+	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])))
+	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])).Error())
 }

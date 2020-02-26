@@ -46,8 +46,8 @@ func TestModifyTokenURI(t *testing.T) {
 
 	const (
 		tck       = "brown"
-		tokenType = "1001"
-		tokenID01 = "10010001"
+		tokenType = "10000001"
+		tokenID01 = "1000000100000001"
 	)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -2419,10 +2419,10 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	const (
 		tickerCony  = "cony"
 		tickerBrown = "brown"
-		tokenID01   = "00010000"
-		tokenID02   = "00020000"
-		tokenID03   = "00030000"
-		tokenID04   = "00040000"
+		tokenID01   = "0000000100000000"
+		tokenID02   = "0000000200000000"
+		tokenID03   = "0000000300000000"
+		tokenID04   = "0000000400000000"
 		description = "description"
 	)
 
@@ -2505,10 +2505,10 @@ func TestLinkCLITokenNFT(t *testing.T) {
 
 	const (
 		symbolBrown = "brown"
-		tokenType   = "1001"
-		tokenID01   = "10010001"
-		tokenID02   = "10010002"
-		tokenID03   = "10010003"
+		tokenType   = "10000001"
+		tokenID01   = "1000000100000001"
+		tokenID02   = "1000000100000002"
+		tokenID03   = "1000000100000003"
 		description = "description"
 		tokenuri    = "uri:itisbrown"
 	)

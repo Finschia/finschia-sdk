@@ -1,6 +1,20 @@
 package types
 
-import "encoding/json"
+import (
+	"encoding/json"
+)
+
+const (
+	TokenTypeLength    = 8
+	TokenIDLength      = 16
+	SmallestAlphanum   = "0"
+	LargestAlphanum    = "z"
+	FungibleFlag       = SmallestAlphanum
+	ReservedEmpty      = "00000000"
+	SmallestFTType     = "00000001"
+	SmallestNFTType    = "10000001"
+	SmallestTokenIndex = "00000001"
+)
 
 type TokenType interface {
 	GetName() string

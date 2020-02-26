@@ -781,7 +781,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "00010000"
+          example: "0000000100000000"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -824,7 +824,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "00010000"
+          example: "0000000100000000"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -867,7 +867,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "1001"
+          example: "10000001"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -910,7 +910,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "00010000"
+          example: "0000000100000000"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -1058,7 +1058,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "10010003"
+          example: "1000000100000003"
       responses:
         "200":
           description: OK
@@ -1093,7 +1093,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "10010003"
+          example: "1000000100000003"
       responses:
         "200":
           description: OK
@@ -1128,7 +1128,7 @@ paths:
           required: true
           schema:
             type: string
-          example: "10010002"
+          example: "1000000100000002"
       responses:
         "200":
           description: OK
@@ -1906,7 +1906,7 @@ components:
               example: "8"
             token_id:
               type: string
-              example: "00010000"
+              example: "0000000100000000"
     TokenCNFT:
       type: object
       properties:
@@ -1929,7 +1929,7 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "10010001"
+              example: "1000000100000001"
     TokenCNFT2:
       type: object
       properties:
@@ -1952,7 +1952,7 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "10010002"
+              example: "1000000100000002"
     TokenCNFT3:
       type: object
       properties:
@@ -1975,7 +1975,7 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "10010003"
+              example: "1000000100000003"
     TokenCNFT4:
       type: object
       properties:
@@ -1998,7 +1998,7 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "10010004"
+              example: "1000000100000004"
     Collection:
       type: object
       properties:
@@ -2323,7 +2323,7 @@ components:
               example: "example.com/token_uri"
             token_id:
               type: string
-              example: "10010001"
+              example: "1000000100000001"
     MsgIssueCFT:
       type: object
       description: msg of collection token creation
@@ -2397,7 +2397,7 @@ components:
               example: "example.com/token_uri"
             token_type:
               type: string
-              example: "1001"
+              example: "10000001"
     MsgBurnCNFT:
       type: object
       description: msg of non-fungible collection token burn
@@ -2417,7 +2417,7 @@ components:
               type: array
               items:
                 type: string
-                example: "10010001"
+                example: "1000000100000001"
     MsgBurnCNFTFrom:
       type: object
       description: msg of non-fungible collection token burn
@@ -2439,7 +2439,7 @@ components:
               type: array
               items:
                 type: string
-                example: "10010001"
+                example: "1000000100000001"
     MsgMintCFT:
       type: object
       description: msg of token mint
@@ -2535,7 +2535,7 @@ components:
               type: array
               items:
                 type: string
-                example: "10010001"
+                example: "1000000100000001"
     MsgTransferCFTFrom:
       type: object
       properties:
@@ -2580,7 +2580,7 @@ components:
               type: array
               items:
                 type: string
-                example: "10010001"
+                example: "1000000100000001"
     MsgAttach:
       type: object
       properties:
@@ -2597,10 +2597,10 @@ components:
               example: "conyxxv"
             to_token_id:
               type: string
-              example: "10010001"
+              example: "1000000100000001"
             token_id:
               type: string
-              example: "10010001"
+              example: "1000000100000001"
     MsgDetach:
       type: object
       properties:
@@ -2617,7 +2617,7 @@ components:
               example: "conyxxv"
             token_id:
               type: string
-              example: "10010001"
+              example: "1000000100000001"
     MsgAttachFrom:
       type: object
       properties:
@@ -2636,10 +2636,10 @@ components:
               example: "conyxxv"
             to_token_id:
               type: string
-              example: "10010001"
+              example: "1000000100000001"
             token_id:
               type: string
-              example: "10010001"
+              example: "1000000100000001"
     MsgDetachFrom:
       type: object
       properties:
@@ -2658,7 +2658,7 @@ components:
               example: "conyxxv"
             token_id:
               type: string
-              example: "10010001"
+              example: "1000000100000001"
     MsgApprove:
       type: object
       properties:
@@ -2782,7 +2782,7 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_type": "1001"
+          "token_type": "10000001"
         }
       },
       {
@@ -2793,7 +2793,7 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_type": "1001"
+          "token_type": "10000001"
         }
       },
       {
@@ -2804,7 +2804,7 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_type": "1001"
+          "token_type": "10000001"
         }
       },
       {
@@ -2815,7 +2815,7 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_type": "1001"
+          "token_type": "10000001"
         }
       },
       {
@@ -2826,7 +2826,7 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_type": "1001"
+          "token_type": "10000001"
         }
       },
       {
@@ -2837,7 +2837,7 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_type": "1001"
+          "token_type": "10000001"
         }
       },
       {
@@ -2848,7 +2848,7 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_uri": "example.com/token_uri",
-          "token_type": "1001"
+          "token_type": "10000001"
         }
       },
       {
@@ -2857,7 +2857,7 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_ids": [
-            "10010005"
+            "1000000100000005"
             ]
         }
       },
@@ -2880,7 +2880,7 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "token_id": "00010000",
+                       "token_id": "0000000100000000",
                        "amount": "1"
                      }]
         }
@@ -2891,7 +2891,7 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "token_id": "00010000",
+                       "token_id": "0000000100000000",
                        "amount": "1"
                      }]
         }
@@ -2935,7 +2935,7 @@ components:
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "amount": [{
-                       "token_id": "00010000",
+                       "token_id": "0000000100000000",
                        "amount": "1"
                      }]
         }
@@ -2947,7 +2947,7 @@ components:
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "amount": [{
-                       "token_id": "00010000",
+                       "token_id": "0000000100000000",
                        "amount": "1"
                      }]
         }
@@ -2960,7 +2960,7 @@ components:
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "amount": [{
-                       "token_id": "00010000",
+                       "token_id": "0000000100000000",
                        "amount": "1"
                      }]
         }
@@ -2972,7 +2972,7 @@ components:
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_ids": [
-            "10010001"
+            "1000000100000001"
             ]
         }
       },
@@ -2983,7 +2983,7 @@ components:
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_ids": [
-            "10010006"
+            "1000000100000006"
           ]
         }
       },
@@ -2995,7 +2995,7 @@ components:
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
           "token_ids": [
-            "10010004"
+            "1000000100000004"
           ]
         }
       },
@@ -3004,8 +3004,8 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "to_token_id": "10010002",
-          "token_id": "10010003"
+          "to_token_id": "1000000100000002",
+          "token_id": "1000000100000003"
         }
       },
       {
@@ -3013,7 +3013,7 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "10010003"
+          "token_id": "1000000100000003"
         }
       },
       {
@@ -3022,8 +3022,8 @@ components:
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "to_token_id": "10010002",
-          "token_id": "10010003"
+          "to_token_id": "1000000100000002",
+          "token_id": "1000000100000003"
         }
       },
       {
@@ -3032,7 +3032,7 @@ components:
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "token_id": "10010003"
+          "token_id": "1000000100000003"
         }
       },
       {
@@ -3040,8 +3040,8 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "con2xxv",
-          "to_token_id": "10010002",
-          "token_id": "10010003"
+          "to_token_id": "1000000100000002",
+          "token_id": "1000000100000003"
         }
       },
       {
@@ -3051,7 +3051,7 @@ components:
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_ids": [
-            "10010006"
+            "1000000100000006"
           ]
         }
       },
@@ -3062,7 +3062,7 @@ components:
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
-                       "token_id": "00010000",
+                       "token_id": "0000000100000000",
                        "amount": "1"
                      }]
         }
