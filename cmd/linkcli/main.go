@@ -117,6 +117,7 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 		bank.SendTxCmd(cdc),
 		client.LineBreak,
 		account.CreateAccountTxCmd(cdc),
+		account.EmptyTxCmd(cdc),
 		client.LineBreak,
 		authclient.GetSignCommand(cdc),
 		authclient.GetMultiSignCommand(cdc),

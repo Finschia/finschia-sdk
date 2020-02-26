@@ -2614,3 +2614,23 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 
 	f.Cleanup()
 }
+
+func TestLinkCLIEmpty(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+	defer f.Cleanup()
+
+	brianAddr := f.KeyAddress(UserBrian).String()
+
+	t.Logf("[Account] Do nothing with empty message")
+	success, stdout, stderr := f.TxEmpty(brianAddr, "-y")
+	{
+		require.True(t, success)
+		require.NotEmpty(t, stdout)
+		require.Empty(t, stderr)
+	}
+}

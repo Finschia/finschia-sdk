@@ -1702,6 +1702,7 @@ components:
               - $ref: '#/components/schemas/MsgBurnCNFT'
               - $ref: '#/components/schemas/MsgBurnCNFTFrom'
               - $ref: '#/components/schemas/MsgCreateValidator'
+              - $ref: '#/components/schemas/MsgEmpty'
               - $ref: '#/components/schemas/MsgCreateAccount'
               - $ref: '#/components/schemas/MsgTransfer'
               - $ref: '#/components/schemas/MsgTransferCFT'
@@ -2167,6 +2168,17 @@ components:
               allOf:
                 - $ref: '#/components/schemas/Coin'
                 - description: self description value
+    MsgEmpty:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "link/MsgEmpty"
+        value:
+          type: object
+          properties:
+            from:
+              $ref: '#/components/schemas/Address'
     MsgCreateAccount:
       type: object
       properties:
@@ -2901,6 +2913,12 @@ components:
         "value": {
           "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "target_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "account/MsgEmpty",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
         }
       },
       {

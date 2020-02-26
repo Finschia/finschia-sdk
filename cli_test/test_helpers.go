@@ -615,6 +615,14 @@ func (f *Fixtures) TxProxyDisapproveCoins(proxy, onBehalfOf, denom string, amoun
 }
 
 //___________________________________________________________________________________
+// linkcli tx proxy
+
+func (f *Fixtures) TxEmpty(from string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx empty %s %v", f.LinkcliBinary, from, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+//___________________________________________________________________________________
 // linkcli query proxy
 
 func (f *Fixtures) QueryProxyAllowance(proxy, onBehalfOf, denom string, flags ...string) proxyModule.Allowance {

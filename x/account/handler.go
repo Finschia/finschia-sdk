@@ -16,7 +16,8 @@ func NewHandler(k auth.AccountKeeper) sdk.Handler {
 		switch msg := msg.(type) {
 		case types.MsgCreateAccount:
 			return handleMsgCreateAccount(ctx, k, msg)
-
+		case types.MsgEmpty:
+			return handleMsgEmpty(ctx, msg)
 		default:
 			errMsg := fmt.Sprintf("unrecognized account message type: %T", msg)
 			return sdk.ErrUnknownRequest(errMsg).Result()
@@ -42,7 +43,20 @@ func handleMsgCreateAccount(ctx sdk.Context, keeper auth.AccountKeeper, msg type
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.EventCreateAccount),
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+		),
+	})
+	return sdk.Result{Events: ctx.EventManager().Events()}
+}
+
+func handleMsgEmpty(ctx sdk.Context, msg types.MsgEmpty) sdk.Result {
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeyAction, types.EventEmpty),
 		),
 	})
 	return sdk.Result{Events: ctx.EventManager().Events()}
