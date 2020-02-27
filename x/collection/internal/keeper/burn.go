@@ -68,11 +68,9 @@ func (k Keeper) isBurnable(ctx sdk.Context, symbol string, permissionOwner, toke
 		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", tokenOwner, amount))
 	}
 
-	for _, coin := range amount {
-		perm := types.NewBurnPermission(symbol, coin.Denom)
-		if !k.HasPermission(ctx, permissionOwner, perm) {
-			return types.ErrTokenNoPermission(types.DefaultCodespace, permissionOwner, perm)
-		}
+	perm := types.NewBurnPermission(symbol)
+	if !k.HasPermission(ctx, permissionOwner, perm) {
+		return types.ErrTokenNoPermission(types.DefaultCodespace, permissionOwner, perm)
 	}
 	return nil
 }
@@ -140,7 +138,7 @@ func (k Keeper) burnNFT(ctx sdk.Context, symbol string, permissionOwner, tokenOw
 		return err
 	}
 
-	perm := types.NewBurnPermission(symbol, tokenID[:types.TokenTypeLength])
+	perm := types.NewBurnPermission(symbol)
 	if !k.HasPermission(ctx, permissionOwner, perm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, permissionOwner, perm)
 	}

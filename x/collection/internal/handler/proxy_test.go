@@ -68,11 +68,14 @@ func TestHandleApproveDisapprove(t *testing.T) {
 	msg2 := types.NewMsgBurnNFTFrom(addr2, addr1, defaultSymbol, defaultTokenID2)
 	res = h(ctx, msg2)
 	require.False(t, res.Code.IsOK()) // addr2 does not have the burn permission
+	msg3 := types.NewMsgBurnFTFrom(defaultSymbol, addr2, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
+	res = h(ctx, msg3)
+	require.False(t, res.Code.IsOK()) // addr2 does not have the burn permission
 
 	{
 		permission := types.Permission{
 			Action:   "burn",
-			Resource: defaultSymbol + defaultTokenType,
+			Resource: defaultSymbol,
 		}
 		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
 		res := h(ctx, msg)
@@ -93,20 +96,6 @@ func TestHandleApproveDisapprove(t *testing.T) {
 		sdk.NewEvent("operation_burn_nft", sdk.NewAttribute("token_id", defaultTokenID2)),
 	}
 	verifyEventFunc(t, e, res.Events)
-
-	msg3 := types.NewMsgBurnFTFrom(defaultSymbol, addr2, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-	res = h(ctx, msg3)
-	require.False(t, res.Code.IsOK())
-
-	{
-		permission := types.Permission{
-			Action:   "burn",
-			Resource: defaultSymbol + defaultTokenIDFT,
-		}
-		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
-	}
 
 	msg3 = types.NewMsgBurnFTFrom(defaultSymbol, addr2, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
 	res = h(ctx, msg3)

@@ -26,7 +26,7 @@ func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, to
 		return err
 	}
 
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol, token.GetTokenID())
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol)
 	k.AddPermission(ctx, owner, tokenURIModifyPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -41,34 +41,7 @@ func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, to
 			sdk.NewAttribute(types.AttributeKeyDecimals, token.GetDecimals().String()),
 			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
 		),
-		sdk.NewEvent(
-			types.EventTypeGrantPermToken,
-			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, tokenURIModifyPerm.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, tokenURIModifyPerm.GetAction()),
-		),
 	})
-	if token.GetMintable() {
-		mintPerm := types.NewMintPermission(symbol, token.GetTokenID())
-		k.AddPermission(ctx, owner, mintPerm)
-		burnPerm := types.NewBurnPermission(symbol, token.GetTokenID())
-		k.AddPermission(ctx, owner, burnPerm)
-
-		ctx.EventManager().EmitEvents(sdk.Events{
-			sdk.NewEvent(
-				types.EventTypeGrantPermToken,
-				sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-				sdk.NewAttribute(types.AttributeKeyResource, mintPerm.GetResource()),
-				sdk.NewAttribute(types.AttributeKeyAction, mintPerm.GetAction()),
-			),
-			sdk.NewEvent(
-				types.EventTypeGrantPermToken,
-				sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-				sdk.NewAttribute(types.AttributeKeyResource, burnPerm.GetResource()),
-				sdk.NewAttribute(types.AttributeKeyAction, burnPerm.GetAction()),
-			),
-		})
-	}
 
 	return nil
 }
@@ -79,9 +52,9 @@ func (k Keeper) IssueNFT(ctx sdk.Context, symbol string, tokenType types.TokenTy
 		return err
 	}
 
-	mintPerm := types.NewMintPermission(symbol, tokenType.GetTokenType())
+	mintPerm := types.NewMintPermission(symbol)
 	k.AddPermission(ctx, owner, mintPerm)
-	burnPerm := types.NewBurnPermission(symbol, tokenType.GetTokenType())
+	burnPerm := types.NewBurnPermission(symbol)
 	k.AddPermission(ctx, owner, burnPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -89,18 +62,6 @@ func (k Keeper) IssueNFT(ctx sdk.Context, symbol string, tokenType types.TokenTy
 			types.EventTypeIssueNFT,
 			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
 			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType.GetTokenType()),
-		),
-		sdk.NewEvent(
-			types.EventTypeGrantPermToken,
-			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, mintPerm.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, mintPerm.GetAction()),
-		),
-		sdk.NewEvent(
-			types.EventTypeGrantPermToken,
-			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, burnPerm.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, burnPerm.GetAction()),
 		),
 	})
 

@@ -2518,6 +2518,10 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	{
 		f.TxCollectionGrantPerm(keyFoo, barAddr, tickerBrown+fooAddrSuffix, "issue", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
+		f.TxCollectionGrantPerm(keyFoo, barAddr, tickerBrown+fooAddrSuffix, "mint", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		f.TxCollectionGrantPerm(keyFoo, barAddr, tickerBrown+fooAddrSuffix, "burn", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
 		f.TxTokenIssueFTCollection(keyBar, tickerBrown+fooAddrSuffix, description, 40000, 6, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 

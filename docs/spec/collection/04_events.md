@@ -12,6 +12,9 @@ The token module emits the following events:
 | grant_perm       | to             | {ownerAddress}           |
 | grant_perm       | perm_resource  | {symbol}                 |
 | grant_perm       | perm_action    | issue                    |
+| grant_perm       | perm_action    | mint                     |
+| grant_perm       | perm_action    | burn                     |
+| grant_perm       | perm_action    | modify                   |
 | create_collection| name           | {name}                   |
 | create_collection| symbol         | {symbol}                 |
 | create_collection| owner          | {ownerAddress}           |
@@ -22,12 +25,6 @@ The token module emits the following events:
 | message          | module         | collection               |
 | message          | sender         | {ownerAddress}           | 
 | message          | action         | issue_ft                 |
-| grant_perm       | to             | {ownerAddress}           |
-| grant_perm       | perm_resource  | {symbol}{token_id}       |
-| grant_perm       | perm_action    | mint                     |
-| grant_perm       | to             | {ownerAddress}           |
-| grant_perm       | perm_resource  | {symbol}{token_id}       |
-| grant_perm       | perm_action    | modify                   |
 | issue_ft         | name           | {name}                   |
 | issue_ft         | symbol         | {symbol}                 |
 | issue_ft         | token_id       | {tokenid}                |
@@ -72,9 +69,6 @@ The token module emits the following events:
 | message          | module         | collection               |
 | message          | sender         | {fromAddress}            | 
 | message          | action         | issue_nft                |
-| grant_perm       | to             | {toAddress}              |
-| grant_perm       | perm_resource  | {symbol}                 |
-| grant_perm       | perm_action    | mint                     |
 | issue_nft        | symbol         | {symbol}                 |
 | issue_nft        | token_type     | {tokentype}              |
 
@@ -84,9 +78,6 @@ The token module emits the following events:
 | message          | module         | collection               |
 | message          | sender         | {fromAddress}            | 
 | message          | action         | mint_nft                 |
-| grant_perm       | to             | {toAddress}              |
-| grant_perm       | perm_resource  | {symbol}{token_id}       |
-| grant_perm       | perm_action    | modify                   |
 | mint_nft         | name           | {name}                   |
 | mint_nft         | symbol         | {symbol}                 |
 | mint_nft         | token_id       | {tokenid}                |
@@ -124,7 +115,7 @@ The token module emits the following events:
 | grant_perm       | from           | {fromAddress}            |
 | grant_perm       | to             | {toAddress}              |
 | grant_perm       | perm_resource  | {resource}               |
-| grant_perm       | perm_action    | issue/mint/modify        |
+| grant_perm       | perm_action    | issue/mint/burn/modify   |
 
 ### MsgRevokePermission
 | Type             | Attribute Key  | Attribute Value          |
@@ -134,7 +125,7 @@ The token module emits the following events:
 | message          | action         | revoke_permission        |
 | revoke_perm      | from           | {fromAddress}            |
 | revoke_perm      | perm_resource  | {resource}               |
-| revoke_perm      | perm_action    | issue/mint/modify        |
+| revoke_perm      | perm_action    | issue/mint/burn/modify   |
 
 ### MsgTransferFT
 | Type             | Attribute Key  | Attribute Value          |

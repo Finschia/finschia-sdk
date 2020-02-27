@@ -110,7 +110,7 @@ func prepareCollectionTokens(ctx sdk.Context, t *testing.T) {
 	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID3, defaultName, defaultTokenURI, addr1)))
 	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID4, defaultName, defaultTokenURI, addr1)))
 	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol2, addr1, types.NewNFT(defaultSymbol2, defaultTokenID1, defaultName, defaultTokenURI, addr1)))
-	require.NoError(t, keeper.GrantPermission(ctx, addr1, addr2, types.NewMintPermission(defaultSymbol, defaultTokenType)))
+	require.NoError(t, keeper.GrantPermission(ctx, addr1, addr2, types.NewMintPermission(defaultSymbol)))
 	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr2, types.NewNFT(defaultSymbol, defaultTokenID5, defaultName, defaultTokenURI, addr2)))
 	require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, defaultTokenURI, sdk.NewInt(1), true), sdk.NewInt(defaultAmount)))
 }

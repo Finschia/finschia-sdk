@@ -203,7 +203,7 @@ func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, to
 	if err != nil {
 		return err
 	}
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol, token.GetTokenID())
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol)
 	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
 	}

@@ -108,7 +108,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 		{
 			mintPermission := types.Permission{
 				Action:   "mint",
-				Resource: defaultSymbol + defaultTokenType2,
+				Resource: defaultSymbol,
 			}
 			{
 				msg := types.NewMsgGrantPermission(addr1, addr2, mintPermission)
@@ -186,6 +186,9 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", defaultSymbol)),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "issue")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "modify")),
 			sdk.NewEvent("create_collection", sdk.NewAttribute("name", defaultName)),
 			sdk.NewEvent("create_collection", sdk.NewAttribute("symbol", defaultSymbol)),
 			sdk.NewEvent("create_collection", sdk.NewAttribute("owner", addr1.String())),
@@ -194,7 +197,6 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		symbolWithID := defaultSymbol + defaultTokenIDFT
 		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
@@ -211,15 +213,6 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("mintable", "true")),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("decimals", sdk.NewInt(defaultDecimals).String())),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("token_uri", defaultTokenURI)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -263,18 +256,11 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("issue_nft", sdk.NewAttribute("symbol", defaultSymbol)),
 			sdk.NewEvent("issue_nft", sdk.NewAttribute("token_type", defaultTokenType)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", defaultSymbol+defaultTokenType)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.MintAction)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", defaultSymbol+defaultTokenType)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.BurnAction)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
 
 	{
-		symbolWithID := defaultSymbol + defaultTokenID1
 		msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
@@ -289,9 +275,6 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("mint_nft", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("mint_nft", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("mint_nft", sdk.NewAttribute("token_uri", defaultTokenURI)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", symbolWithID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}

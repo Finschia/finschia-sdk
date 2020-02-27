@@ -23,8 +23,15 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 	}
 	k.SetSupply(ctx, types.DefaultSupply(collection.GetSymbol()))
 
-	perm := types.NewIssuePermission(collection.GetSymbol())
-	k.AddPermission(ctx, owner, perm)
+	perms := types.Permissions{
+		types.NewIssuePermission(collection.GetSymbol()),
+		types.NewMintPermission(collection.GetSymbol()),
+		types.NewBurnPermission(collection.GetSymbol()),
+		types.NewModifyTokenURIPermission(collection.GetSymbol()),
+	}
+	for _, perm := range perms {
+		k.AddPermission(ctx, owner, perm)
+	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -36,10 +43,17 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 		sdk.NewEvent(
 			types.EventTypeGrantPermToken,
 			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, perm.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, perm.GetAction()),
+			sdk.NewAttribute(types.AttributeKeyResource, collection.GetSymbol()),
 		),
 	})
+	for _, perm := range perms {
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.EventTypeGrantPermToken,
+				sdk.NewAttribute(types.AttributeKeyAction, perm.GetAction()),
+			),
+		})
+	}
 
 	return nil
 }

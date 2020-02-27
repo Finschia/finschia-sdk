@@ -44,7 +44,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, symbol string, from sdk.AccAddress, tok
 		return types.ErrTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), token.GetTokenType())
 	}
 
-	perm := types.NewMintPermission(token.GetSymbol(), token.GetTokenType())
+	perm := types.NewMintPermission(token.GetSymbol())
 	if !k.HasPermission(ctx, from, perm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
@@ -59,7 +59,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, symbol string, from sdk.AccAddress, tok
 		return err
 	}
 
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol, token.GetTokenID())
+	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol)
 	k.AddPermission(ctx, token.GetOwner(), tokenURIModifyPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -71,12 +71,6 @@ func (k Keeper) MintNFT(ctx sdk.Context, symbol string, from sdk.AccAddress, tok
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, token.GetOwner().String()),
 			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
-		),
-		sdk.NewEvent(
-			types.EventTypeGrantPermToken,
-			sdk.NewAttribute(types.AttributeKeyTo, token.GetOwner().String()),
-			sdk.NewAttribute(types.AttributeKeyResource, tokenURIModifyPerm.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, tokenURIModifyPerm.GetAction()),
 		),
 	})
 
@@ -91,7 +85,7 @@ func (k Keeper) isMintable(ctx sdk.Context, symbol string, token types.Token, fr
 	if !ft.GetMintable() {
 		return types.ErrTokenNotMintable(types.DefaultCodespace, symbol, token.GetTokenID())
 	}
-	perm := types.NewMintPermission(symbol, ft.GetTokenID())
+	perm := types.NewMintPermission(symbol)
 	if !k.HasPermission(ctx, from, perm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}

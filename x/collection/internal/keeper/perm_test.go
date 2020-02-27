@@ -82,7 +82,7 @@ func TestPermission(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])).Error())
-	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])))
-	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol, defaultTokenID1[:types.TokenTypeLength])).Error())
+	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultSymbol)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol)).Error())
+	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(defaultSymbol)))
+	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultSymbol)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultSymbol)).Error())
 }
