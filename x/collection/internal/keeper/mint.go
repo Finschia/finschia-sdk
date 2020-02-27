@@ -37,9 +37,6 @@ func (k Keeper) MintFT(ctx sdk.Context, symbol string, from, to sdk.AccAddress, 
 }
 
 func (k Keeper) MintNFT(ctx sdk.Context, symbol string, from sdk.AccAddress, token types.NFT) sdk.Error {
-	if !types.ValidTokenURI(token.GetTokenURI()) {
-		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
-	}
 	if !k.HasTokenType(ctx, symbol, token.GetTokenType()) {
 		return types.ErrTokenTypeNotExist(types.DefaultCodespace, token.GetSymbol(), token.GetTokenType())
 	}
@@ -59,9 +56,6 @@ func (k Keeper) MintNFT(ctx sdk.Context, symbol string, from sdk.AccAddress, tok
 		return err
 	}
 
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol)
-	k.AddPermission(ctx, token.GetOwner(), tokenURIModifyPerm)
-
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeMintNFT,
@@ -70,7 +64,6 @@ func (k Keeper) MintNFT(ctx sdk.Context, symbol string, from sdk.AccAddress, tok
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, token.GetOwner().String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
 		),
 	})
 

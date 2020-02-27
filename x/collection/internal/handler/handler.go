@@ -34,8 +34,8 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgGrant(ctx, keeper, msg)
 		case types.MsgRevokePermission:
 			return handleMsgRevoke(ctx, keeper, msg)
-		case types.MsgModifyTokenURI:
-			return handleMsgModifyTokenURI(ctx, keeper, msg)
+		case types.MsgModify:
+			return handleMsgModify(ctx, keeper, msg)
 		case types.MsgTransferFT:
 			return handleMsgTransferFT(ctx, keeper, msg)
 		case types.MsgTransferNFT:

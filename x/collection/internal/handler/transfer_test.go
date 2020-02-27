@@ -13,10 +13,10 @@ func TestHandleTransferFT(t *testing.T) {
 	ctx, h := cacheKeeper()
 
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -39,10 +39,10 @@ func TestHandleTransferFTFrom(t *testing.T) {
 	ctx, h := cacheKeeper()
 
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
-		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		msg2 := types.NewMsgApprove(addr1, addr2, defaultSymbol)
@@ -69,13 +69,13 @@ func TestHandleTransferNFT(t *testing.T) {
 	ctx, h := cacheKeeper()
 
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		msg := types.NewMsgIssueNFT(addr1, defaultSymbol, defaultName)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 	}
@@ -99,13 +99,13 @@ func TestHandleTransferNFTFrom(t *testing.T) {
 	ctx, h := cacheKeeper()
 
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		msg := types.NewMsgIssueNFT(addr1, defaultSymbol, defaultName)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 		msg3 := types.NewMsgApprove(addr1, addr2, defaultSymbol)
@@ -133,19 +133,19 @@ func TestHandleTransferNFTChild(t *testing.T) {
 	ctx, h := cacheKeeper()
 
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		msg := types.NewMsgIssueNFT(addr1, defaultSymbol, defaultName)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+		msg2 = types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+		msg2 = types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 		msg3 := types.NewMsgAttach(addr1, defaultSymbol, defaultTokenID1, defaultTokenID2)

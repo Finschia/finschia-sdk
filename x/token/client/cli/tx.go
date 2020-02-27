@@ -47,7 +47,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		BurnTxCmd(cdc),
 		GrantPermTxCmd(cdc),
 		RevokePermTxCmd(cdc),
-		ModifyTokenURICmd(cdc),
+		ModifyTokenCmd(cdc),
 	)
 	return txCmd
 }
@@ -243,18 +243,27 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func ModifyTokenURICmd(cdc *codec.Codec) *cobra.Command {
+func ModifyTokenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "modify-token-uri [owner_address] [symbol] [token_uri]",
-		Short: "Create and sign a modify token_uri of token tx",
-		Args:  cobra.ExactArgs(3),
+		Use:   "modify [owner_address] [symbol] [field] [new_value]",
+		Short: "Create and sign a modify token tx",
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 			symbol := args[1]
-			tokenURI := args[2]
+			field := args[2]
+			newValue := args[3]
 
-			msg := types.NewMsgModifyTokenURI(cliCtx.FromAddress, symbol, tokenURI)
+			msg := types.NewMsgModify(
+				cliCtx.FromAddress,
+				symbol,
+				linktype.NewChanges(linktype.NewChange(field, newValue)),
+			)
+			err := msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

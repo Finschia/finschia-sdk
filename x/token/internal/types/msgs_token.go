@@ -1,8 +1,6 @@
 package types
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	linktype "github.com/line/link/types"
 )
@@ -47,8 +45,12 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
 
-	if !ValidTokenURI(msg.TokenURI) {
+	if !ValidateTokenURI(msg.TokenURI) {
 		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
+	}
+
+	if !ValidateName(msg.Name) {
+		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
 	}
 
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
@@ -134,48 +136,5 @@ func (msg MsgBurn) ValidateBasic() sdk.Error {
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("from address cannot be empty")
 	}
-	return nil
-}
-
-var _ sdk.Msg = (*MsgModifyTokenURI)(nil)
-
-type MsgModifyTokenURI struct {
-	Owner    sdk.AccAddress `json:"owner"`
-	Symbol   string         `json:"symbol"`
-	TokenURI string         `json:"token_uri"`
-}
-
-func NewMsgModifyTokenURI(owner sdk.AccAddress, symbol, tokenURI string) MsgModifyTokenURI {
-	return MsgModifyTokenURI{
-		Owner:    owner,
-		Symbol:   symbol,
-		TokenURI: tokenURI,
-	}
-}
-
-func (msg MsgModifyTokenURI) Route() string { return RouterKey }
-func (msg MsgModifyTokenURI) Type() string  { return "modify_token" }
-func (msg MsgModifyTokenURI) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
-func (msg MsgModifyTokenURI) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
-
-func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
-	if msg.Symbol == "" {
-		return sdk.ErrInvalidAddress("symbol cannot be empty")
-	}
-
-	if err := linktype.ValidateSymbol(msg.Symbol); err != nil {
-		return sdk.ErrInvalidAddress(fmt.Sprintf("invalid symbol pattern found %s", msg.Symbol))
-	}
-
-	if !ValidTokenURI(msg.TokenURI) {
-		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
-	}
-
-	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
-	}
-
 	return nil
 }

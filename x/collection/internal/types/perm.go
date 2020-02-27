@@ -78,7 +78,7 @@ func NewIssuePermission(symbol string) Permission {
 	}
 }
 
-func NewModifyTokenURIPermission(symbol string) Permission {
+func NewModifyPermission(symbol string) Permission {
 	return Permission{
 		Action:   ModifyAction,
 		Resource: symbol,

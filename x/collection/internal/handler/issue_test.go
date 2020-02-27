@@ -21,23 +21,23 @@ func TestHandlerIssueFT(t *testing.T) {
 	ctx, h := cacheKeeper()
 
 	{
-		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
+		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol, defaultImgURI)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 
 	{
-		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueFT(addr2, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr2, defaultName, defaultSymbol, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -55,7 +55,7 @@ func TestHandlerIssueFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueFT(addr2, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr2, defaultName, defaultSymbol, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -65,7 +65,7 @@ func TestHandlerIssueFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -77,7 +77,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 	ctx, h := cacheKeeper()
 
 	{
-		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
+		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol, defaultImgURI)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -96,12 +96,12 @@ func TestHandlerIssueNFT(t *testing.T) {
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType2)
+			msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType2)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintNFT(addr1, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType2)
+			msg := types.NewMsgMintNFT(addr1, addr2, defaultName, defaultSymbol, defaultTokenType2)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
@@ -116,7 +116,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType2)
+				msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenType2)
 				res := h(ctx, msg)
 				require.True(t, res.Code.IsOK())
 			}
@@ -126,7 +126,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType2)
+				msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType2)
 				res := h(ctx, msg)
 				require.False(t, res.Code.IsOK())
 				require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -153,7 +153,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType3)
+		msg := types.NewMsgMintNFT(addr2, addr2, defaultName, defaultSymbol, defaultTokenType3)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -175,7 +175,7 @@ func TestEvents(t *testing.T) {
 	ctx, h := cacheKeeper()
 
 	{
-		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol)
+		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultSymbol, defaultImgURI)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -197,7 +197,7 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, defaultName, defaultSymbol, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -212,7 +212,6 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String())),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("mintable", "true")),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("decimals", sdk.NewInt(defaultDecimals).String())),
-			sdk.NewEvent("issue_ft", sdk.NewAttribute("token_uri", defaultTokenURI)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -261,7 +260,7 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+		msg := types.NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -274,7 +273,6 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("mint_nft", sdk.NewAttribute("token_id", defaultTokenID1)),
 			sdk.NewEvent("mint_nft", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("mint_nft", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("mint_nft", sdk.NewAttribute("token_uri", defaultTokenURI)),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}

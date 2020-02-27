@@ -8,7 +8,7 @@ import (
 )
 
 func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, owner sdk.AccAddress) sdk.Error {
-	if !types.ValidTokenURI(token.GetTokenURI()) {
+	if !types.ValidateTokenURI(token.GetTokenURI()) {
 		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
 	}
 	err := k.SetToken(ctx, token)
@@ -21,7 +21,7 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 		return err
 	}
 
-	modifyTokenURIPermission := types.NewModifyTokenURIPermission(token.GetSymbol())
+	modifyTokenURIPermission := types.NewModifyPermission(token.GetSymbol())
 	k.AddPermission(ctx, owner, modifyTokenURIPermission)
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(

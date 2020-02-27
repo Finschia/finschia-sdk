@@ -20,7 +20,7 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgMintNFT{}, "collection/MsgMintNFT", nil)
 	cdc.RegisterConcrete(MsgBurnNFT{}, "collection/MsgBurnNFT", nil)
 	cdc.RegisterConcrete(MsgBurnNFTFrom{}, "collection/MsgBurnNFTFrom", nil)
-	cdc.RegisterConcrete(MsgModifyTokenURI{}, "collection/MsgModifyTokenURI", nil)
+	cdc.RegisterConcrete(MsgModify{}, "collection/MsgModify", nil)
 	cdc.RegisterConcrete(MsgMintFT{}, "collection/MsgMintFT", nil)
 	cdc.RegisterConcrete(MsgBurnFT{}, "collection/MsgBurnFT", nil)
 	cdc.RegisterConcrete(MsgBurnFTFrom{}, "collection/MsgBurnFTFrom", nil)

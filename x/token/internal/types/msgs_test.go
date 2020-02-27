@@ -10,7 +10,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
 
-//nolint:dupl
+// nolint:dupl
 func TestMsgBasics(t *testing.T) {
 	cdc := ModuleCdc
 	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -43,6 +43,10 @@ func TestMsgBasics(t *testing.T) {
 	{
 		msg := NewMsgIssue(addr, "name", "symb"+addrSuffix, length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
+	}
+	{
+		msg := NewMsgIssue(addr, length1001String, "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidNameLength(DefaultCodespace, length1001String).Error())
 	}
 	{
 		msg := NewMsgIssue(addr, "name", "s", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
@@ -165,50 +169,5 @@ func TestMsgBasics(t *testing.T) {
 
 		msg = NewMsgTransfer(addr, addr, "mytoken", sdk.NewInt(-1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInsufficientCoins("send amount must be positive").Error())
-	}
-}
-
-func TestMsgModifyTokenURI_ValidateBasicMsgBasics(t *testing.T) {
-	cdc := ModuleCdc
-	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	const ModifyActionName = "modify_token"
-	t.Log("normal case")
-	{
-		msg := NewMsgModifyTokenURI(addr, "symbol", "tokenURI")
-		require.Equal(t, ModifyActionName, msg.Type())
-		require.Equal(t, ModuleName, msg.Route())
-		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
-		require.Equal(t, addr, msg.GetSigners()[0])
-		require.NoError(t, msg.ValidateBasic())
-
-		b := msg.GetSignBytes()
-		msg2 := MsgModifyTokenURI{}
-		err := cdc.UnmarshalJSON(b, &msg2)
-		require.NoError(t, err)
-
-		require.Equal(t, msg.Symbol, msg2.Symbol)
-		require.Equal(t, msg.TokenURI, msg2.TokenURI)
-		require.Equal(t, msg.Owner, msg2.Owner)
-	}
-	t.Log("tokenURI too long")
-	{
-		length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
-		msg := NewMsgModifyTokenURI(addr, "symbol", length1001String)
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
-	}
-	t.Log("empty symbol found")
-	{
-		msg := NewMsgModifyTokenURI(addr, "", "tokenURI")
-		require.Error(t, msg.ValidateBasic())
-	}
-	t.Log("empty owner")
-	{
-		msg := NewMsgModifyTokenURI(nil, "symbol", "tokenURI")
-		require.Error(t, msg.ValidateBasic())
-	}
-	t.Log("invalid symbol found")
-	{
-		msg := NewMsgModifyTokenURI(addr, "invalidsymbol2198721987", "tokenURI")
-		require.Error(t, msg.ValidateBasic())
 	}
 }

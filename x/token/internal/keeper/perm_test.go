@@ -13,7 +13,7 @@ func preparePermissions(ctx sdk.Context, t *testing.T) types.Permissions {
 	expected := types.Permissions{
 		types.NewMintPermission(defaultSymbol),
 		types.NewBurnPermission(defaultSymbol),
-		types.NewModifyTokenURIPermission(defaultSymbol),
+		types.NewModifyPermission(defaultSymbol),
 	}
 	t.Log("Prepare Permissions")
 	{
@@ -42,7 +42,7 @@ func TestKeeper_AddPermission(t *testing.T) {
 	ctx = cacheKeeper()
 	keeper.AddPermission(ctx, addr1, types.NewMintPermission(defaultSymbol))
 	keeper.AddPermission(ctx, addr1, types.NewBurnPermission(defaultSymbol))
-	keeper.AddPermission(ctx, addr1, types.NewModifyTokenURIPermission(defaultSymbol))
+	keeper.AddPermission(ctx, addr1, types.NewModifyPermission(defaultSymbol))
 	require.Equal(t, 3, len(keeper.GetPermissions(ctx, addr1)))
 }
 

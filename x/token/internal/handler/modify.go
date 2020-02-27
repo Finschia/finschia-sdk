@@ -6,10 +6,12 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func handleMsgModifyTokenURI(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgModifyTokenURI) sdk.Result {
-	err := keeper.ModifyTokenURI(ctx, msg.Owner, msg.Symbol, msg.TokenURI)
-	if err != nil {
-		return err.Result()
+func handleMsgModify(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgModify) sdk.Result {
+	for _, change := range msg.Changes {
+		err := keeper.ModifyToken(ctx, msg.Owner, msg.Symbol, change)
+		if err != nil {
+			return err.Result()
+		}
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{

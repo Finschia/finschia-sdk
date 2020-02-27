@@ -27,7 +27,7 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 		types.NewIssuePermission(collection.GetSymbol()),
 		types.NewMintPermission(collection.GetSymbol()),
 		types.NewBurnPermission(collection.GetSymbol()),
-		types.NewModifyTokenURIPermission(collection.GetSymbol()),
+		types.NewModifyPermission(collection.GetSymbol()),
 	}
 	for _, perm := range perms {
 		k.AddPermission(ctx, owner, perm)

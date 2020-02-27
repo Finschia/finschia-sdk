@@ -1,51 +1,66 @@
 package handler
 
 import (
-	"bytes"
-	"strings"
 	"testing"
 
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	linktype "github.com/line/link/types"
 )
 
-func TestHandleMsgModifyTokenURI(t *testing.T) {
+func TestHandleMsgModify(t *testing.T) {
 	ctx, h := cacheKeeper()
-	modifyTokenURI := "modifyTokenURI"
+	const (
+		modifiedTokenName = "modifiedTokenName"
+		modifiedTokenURI  = "modifiedTokenURI"
+	)
+	// Given MsgModify
+	msg := types.NewMsgModify(addr1, defaultSymbol, linktype.NewChanges(
+		linktype.NewChange("name", modifiedTokenName),
+		linktype.NewChange("token_uri", modifiedTokenURI),
+	))
 
-	t.Log("token not exist")
+	t.Log("Test with nonexistent token")
 	{
-		res := h(ctx, types.NewMsgModifyTokenURI(addr1, defaultSymbol, modifyTokenURI))
+		// When handle MsgModify
+		res := h(ctx, msg)
+
+		// Then response is error
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
 		require.Equal(t, types.CodeTokenNotExist, res.Code)
 		verifyEventFunc(t, nil, res.Events)
 	}
-	t.Log("modify token for FT")
+
+	t.Log("Test modify token")
 	{
-		res := h(ctx, types.NewMsgIssue(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true))
+		// Given issued token
+		res := h(ctx, types.NewMsgIssue(addr1, defaultName, defaultSymbol, defaultTokenURI,
+			sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true))
 		require.True(t, res.IsOK())
 
-		// TokenURI too long
-		length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
-		res = h(ctx, types.NewMsgModifyTokenURI(addr1, defaultSymbol, length1001String))
-		require.False(t, res.Code.IsOK())
-		require.Equal(t, types.DefaultCodespace, res.Codespace)
-		require.Equal(t, types.CodeTokenInvalidTokenURILength, res.Code)
+		// When handle MsgModify
+		res = h(ctx, msg)
 
-		// success
-		res = h(ctx, types.NewMsgModifyTokenURI(addr1, defaultSymbol, modifyTokenURI))
+		// Then response is success
 		require.True(t, res.Code.IsOK())
-		for _, event := range res.Events {
-			if event.Type == types.EventTypeModifyTokenURI {
-				for _, attr := range event.Attributes {
-					if bytes.Equal(attr.Key, []byte(types.AttributeKeyTokenURI)) {
-						require.Equal(t, modifyTokenURI, string(attr.Value))
-					}
-				}
-			}
+		// And events are returned
+		expectedEvents := sdk.Events{
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyModifiedField, "name")),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyName, modifiedTokenName)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeySymbol, defaultSymbol)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenURI, defaultTokenURI)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyModifiedField, "token_uri")),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyName, modifiedTokenName)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeySymbol, defaultSymbol)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenURI, modifiedTokenURI)),
+			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
+			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}
+		verifyEventFunc(t, expectedEvents, res.Events)
 	}
 }

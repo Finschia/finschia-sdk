@@ -18,9 +18,10 @@ func (ts Tokens) String() string {
 
 type Token interface {
 	GetName() string
+	SetName(name string) Token
 	GetSymbol() string
 	GetTokenURI() string
-	SetTokenURI(tokenURI string)
+	SetTokenURI(tokenURI string) Token
 	GetMintable() bool
 	GetDecimals() sdk.Int
 	String() string
@@ -50,8 +51,13 @@ func (t BaseToken) GetSymbol() string    { return t.Symbol }
 func (t BaseToken) GetTokenURI() string  { return t.TokenURI }
 func (t BaseToken) GetMintable() bool    { return t.Mintable }
 func (t BaseToken) GetDecimals() sdk.Int { return t.Decimals }
-func (t *BaseToken) SetTokenURI(tokenURI string) {
+func (t *BaseToken) SetName(name string) Token {
+	t.Name = name
+	return t
+}
+func (t *BaseToken) SetTokenURI(tokenURI string) Token {
 	t.TokenURI = tokenURI
+	return t
 }
 func (t BaseToken) String() string {
 	b, err := json.Marshal(t)

@@ -15,14 +15,15 @@ const (
 	defaultName       = "name"
 	defaultSymbol     = "token001"
 	defaultSymbol2    = "token002"
-	defaultTokenURI   = "token-uri"
+	defaultImgURI     = "img-uri"
 	defaultDecimals   = 6
 	defaultAmount     = 1000
 	defaultTokenType  = "10000001"
 	defaultTokenType2 = "10000002"
 	defaultTokenType3 = "10000003"
 	defaultTokenType4 = "10000004"
-	defaultTokenID1   = defaultTokenType + "00000001"
+	defaultTokenIndex = "00000001"
+	defaultTokenID1   = defaultTokenType + defaultTokenIndex
 	defaultTokenID2   = defaultTokenType + "00000002"
 	defaultTokenID3   = defaultTokenType + "00000003"
 	defaultTokenID4   = defaultTokenType + "00000004"
@@ -91,9 +92,11 @@ func TestKeeper_MarshalJSONLogger(t *testing.T) {
 
 func prepareCollectionTokens(ctx sdk.Context, t *testing.T) {
 	// prepare collection
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, "name"), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, "name",
+		defaultImgURI), addr1))
 
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol2, "name"), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol2, "name",
+		defaultImgURI), addr1))
 
 	// issue 6 tokens
 	// token1 = symbol1id1 by addr1
@@ -105,14 +108,14 @@ func prepareCollectionTokens(ctx sdk.Context, t *testing.T) {
 	// token7 = symbol1 by addr1
 	require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType, defaultName), addr1))
 	require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol2, types.NewBaseTokenType(defaultSymbol2, defaultTokenType, defaultName), addr1))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID1, defaultName, defaultTokenURI, addr1)))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID2, defaultName, defaultTokenURI, addr1)))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID3, defaultName, defaultTokenURI, addr1)))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID4, defaultName, defaultTokenURI, addr1)))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol2, addr1, types.NewNFT(defaultSymbol2, defaultTokenID1, defaultName, defaultTokenURI, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID1, defaultName, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID2, defaultName, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID3, defaultName, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID4, defaultName, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol2, addr1, types.NewNFT(defaultSymbol2, defaultTokenID1, defaultName, addr1)))
 	require.NoError(t, keeper.GrantPermission(ctx, addr1, addr2, types.NewMintPermission(defaultSymbol)))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr2, types.NewNFT(defaultSymbol, defaultTokenID5, defaultName, defaultTokenURI, addr2)))
-	require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, defaultTokenURI, sdk.NewInt(1), true), sdk.NewInt(defaultAmount)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr2, types.NewNFT(defaultSymbol, defaultTokenID5, defaultName, addr2)))
+	require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, sdk.NewInt(1), true), sdk.NewInt(defaultAmount)))
 }
 
 func verifyTokenFunc(t *testing.T, expected types.Token, actual types.Token) {
@@ -125,7 +128,6 @@ func verifyTokenFunc(t *testing.T, expected types.Token, actual types.Token) {
 		require.Equal(t, e.GetTokenID(), a.GetTokenID())
 		require.Equal(t, e.GetTokenType(), a.GetTokenType())
 		require.Equal(t, e.GetTokenIndex(), a.GetTokenIndex())
-		require.Equal(t, e.GetTokenURI(), a.GetTokenURI())
 		require.Equal(t, e.GetDecimals(), a.GetDecimals())
 		require.Equal(t, e.GetMintable(), a.GetMintable())
 	case types.NFT:
@@ -136,7 +138,6 @@ func verifyTokenFunc(t *testing.T, expected types.Token, actual types.Token) {
 		require.Equal(t, e.GetTokenID(), a.GetTokenID())
 		require.Equal(t, e.GetTokenType(), a.GetTokenType())
 		require.Equal(t, e.GetTokenIndex(), a.GetTokenIndex())
-		require.Equal(t, e.GetTokenURI(), a.GetTokenURI())
 		require.Equal(t, e.GetOwner(), a.GetOwner())
 	default:
 		panic("never happen")

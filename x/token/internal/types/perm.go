@@ -70,7 +70,7 @@ func NewBurnPermission(resource string) Permission {
 	}
 }
 
-func NewModifyTokenURIPermission(resource string) Permission {
+func NewModifyPermission(resource string) Permission {
 	return Permission{
 		Action:   ModifyAction,
 		Resource: resource,

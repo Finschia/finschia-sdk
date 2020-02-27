@@ -36,7 +36,7 @@ type (
 	MsgGrantPermission  = types.MsgGrantPermission
 	MsgRevokePermission = types.MsgRevokePermission
 
-	MsgModifyTokenURI = types.MsgModifyTokenURI
+	MsgModify = types.MsgModify
 
 	MsgTransferFT  = types.MsgTransferFT
 	MsgTransferNFT = types.MsgTransferNFT

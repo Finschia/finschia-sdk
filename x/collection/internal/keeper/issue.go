@@ -12,10 +12,8 @@ type IssueKeeper interface {
 	IssueNFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, tokenType string) sdk.Error
 }
 
-func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error {
-	if !types.ValidTokenURI(token.GetTokenURI()) {
-		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
-	}
+func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, token types.FT,
+	amount sdk.Int) sdk.Error {
 	err := k.SetToken(ctx, symbol, token)
 	if err != nil {
 		return err
@@ -25,9 +23,6 @@ func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, to
 	if err != nil {
 		return err
 	}
-
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol)
-	k.AddPermission(ctx, owner, tokenURIModifyPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -39,7 +34,6 @@ func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, to
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
 			sdk.NewAttribute(types.AttributeKeyMintable, strconv.FormatBool(token.GetMintable())),
 			sdk.NewAttribute(types.AttributeKeyDecimals, token.GetDecimals().String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
 		),
 	})
 

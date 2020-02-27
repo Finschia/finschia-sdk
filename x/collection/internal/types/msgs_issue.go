@@ -11,18 +11,16 @@ type MsgIssueFT struct {
 	Owner    sdk.AccAddress `json:"owner"`
 	Symbol   string         `json:"symbol"`
 	Name     string         `json:"name"`
-	TokenURI string         `json:"token_uri"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
 	Decimals sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssueFT(owner sdk.AccAddress, name, symbol, tokenURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
+func NewMsgIssueFT(owner sdk.AccAddress, name, symbol string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
 	return MsgIssueFT{
 		Owner:    owner,
 		Symbol:   symbol,
 		Name:     name,
-		TokenURI: tokenURI,
 		Amount:   amount,
 		Mintable: mintable,
 		Decimals: decimal,
@@ -53,9 +51,6 @@ func (msg MsgIssueFT) ValidateBasic() sdk.Error {
 
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
 		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
-	}
-	if !ValidTokenURI(msg.TokenURI) {
-		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
 	}
 
 	return nil

@@ -1431,6 +1431,15 @@ components:
         validator_index:
           type: string
           example: "0"
+    Change:
+      type: object
+      properties:
+        field:
+          type: string
+          example: "name"
+        value:
+          type: string
+          example: "new_name"
 
 
     #-------------------------------
@@ -1847,8 +1856,8 @@ components:
               - $ref: '#/components/schemas/MsgSend'
               - $ref: '#/components/schemas/MsgCreate'
               - $ref: '#/components/schemas/MsgIssue'
-              - $ref: '#/components/schemas/MsgModifyTokenURI'
-              - $ref: '#/components/schemas/MsgModifyTokenURICollection'
+              - $ref: '#/components/schemas/MsgModifyToken'
+              - $ref: '#/components/schemas/MsgModifyCollection'
               - $ref: '#/components/schemas/MsgIssueCFT'
               - $ref: '#/components/schemas/MsgIssueCNFT'
               - $ref: '#/components/schemas/MsgMint'
@@ -2039,9 +2048,6 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
     TokenCFT:
       type: object
       properties:
@@ -2083,9 +2089,6 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
             token_id:
               type: string
               example: "1000000100000001"
@@ -2106,9 +2109,6 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
             token_id:
               type: string
               example: "1000000100000002"
@@ -2129,9 +2129,6 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
             token_id:
               type: string
               example: "1000000100000003"
@@ -2152,9 +2149,6 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
             token_id:
               type: string
               example: "1000000100000004"
@@ -2173,6 +2167,9 @@ components:
             symbol:
               type: string
               example: "con2xxv"
+            base_img_uri:
+              type: string
+              example: "example.com/img_uri"
 
     #-------------------------------
     # BroadcastTx Result Models
@@ -2368,9 +2365,6 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
             amount:
               type: string
               example: "1000000"
@@ -2380,13 +2374,13 @@ components:
             decimals:
               type: string
               example: "8"
-    MsgModifyTokenURI:
+    MsgModifyToken:
       type: object
-      description: msg of token creation
+      description: msg to modify token fields
       properties:
         type:
           type: string
-          example: "token/MsgModifyTokenURI"
+          example: "token/MsgModify"
         value:
           type: object
           properties:
@@ -2395,9 +2389,10 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
+            changes:
+              type: array
+              items:
+                $ref: '#/components/schemas/Change'
     MsgTransfer:
       type: object
       properties:
@@ -2473,13 +2468,13 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-    MsgModifyTokenURICollection:
+    MsgModifyCollection:
       type: object
       description: msg of token creation
       properties:
         type:
           type: string
-          example: "collection/MsgModifyTokenURI"
+          example: "collection/MsgModify"
         value:
           type: object
           properties:
@@ -2488,12 +2483,17 @@ components:
             symbol:
               type: string
               example: "conyxxv"
-            token_uri:
+            token_type:
               type: string
-              example: "example.com/token_uri"
-            token_id:
+              example: "10000001"
+            token_index:
               type: string
-              example: "1000000100000001"
+              example: "00000001"
+            changes:
+              type: array
+              items:
+                $ref: '#/components/schemas/Change'
+
     MsgIssueCFT:
       type: object
       description: msg of collection token creation
@@ -2512,9 +2512,6 @@ components:
             symbol:
               type: string
               example: "con2xxv"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
             amount:
               type: string
               example: "1000000"
@@ -2562,9 +2559,6 @@ components:
             name:
               type: string
               example: "cony"
-            token_uri:
-              type: string
-              example: "example.com/token_uri"
             token_type:
               type: string
               example: "10000001"
@@ -2909,11 +2903,16 @@ components:
         }
       },
       {
-        "type": "token/MsgModifyTokenURI",
+        "type": "token/MsgModify",
         "value": {
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "symbol": "conyxxv",
-          "token_uri": "example.com/token_uri",
+          "changes": [
+          {
+            "field": "name",
+            "value":"new_name"
+          }
+          ]
         }
       },
       {
@@ -2922,6 +2921,7 @@ components:
           "name": "cony",
           "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "base_img_uri": "example.com/base_img_uri",
         }
       },
       {
@@ -2930,7 +2930,6 @@ components:
           "name": "cony",
           "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "amount": "1000000",
           "mintable": true,
           "decimals": "8"
@@ -2951,7 +2950,6 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "token_type": "10000001"
         }
       },
@@ -2962,7 +2960,6 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "token_type": "10000001"
         }
       },
@@ -2973,7 +2970,6 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "token_type": "10000001"
         }
       },
@@ -2984,7 +2980,6 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "token_type": "10000001"
         }
       },
@@ -2995,7 +2990,6 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "token_type": "10000001"
         }
       },
@@ -3006,7 +3000,6 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "token_type": "10000001"
         }
       },
@@ -3017,7 +3010,6 @@ components:
           "symbol": "con2xxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "token_type": "10000001"
         }
       },
@@ -3028,7 +3020,22 @@ components:
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_ids": [
             "1000000100000005"
-            ]
+          ]
+        }
+      },
+      {
+        "type": "collection/MsgModify",
+        "value": {
+          "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "symbol": "con2xxv",
+          "token_type": "10000001",
+          "token_index": "00000001",
+          "changes": [
+          {
+            "field": "name",
+            "value":"new_name"
+          }
+          ]
         }
       },
       {
@@ -3037,7 +3044,6 @@ components:
           "name": "cony",
           "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
           "amount": "1000000",
           "mintable": true,
           "decimals": "8",
@@ -3149,7 +3155,7 @@ components:
           "symbol": "con2xxv",
           "token_ids": [
             "1000000100000001"
-            ]
+          ]
         }
       },
       {

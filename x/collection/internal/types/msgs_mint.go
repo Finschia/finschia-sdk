@@ -12,17 +12,15 @@ type MsgMintNFT struct {
 	To        sdk.AccAddress `json:"to"`
 	Symbol    string         `json:"symbol"`
 	Name      string         `json:"name"`
-	TokenURI  string         `json:"token_uri"`
 	TokenType string         `json:"token_type"`
 }
 
-func NewMsgMintNFT(from, to sdk.AccAddress, name, symbol, tokenURI string, tokenType string) MsgMintNFT {
+func NewMsgMintNFT(from, to sdk.AccAddress, name, symbol string, tokenType string) MsgMintNFT {
 	return MsgMintNFT{
 		From:      from,
 		To:        to,
 		Symbol:    symbol,
 		Name:      name,
-		TokenURI:  tokenURI,
 		TokenType: tokenType,
 	}
 }
@@ -51,11 +49,6 @@ func (msg MsgMintNFT) ValidateBasic() sdk.Error {
 	if err := types.ValidateTokenTypeNFT(msg.TokenType); err != nil {
 		return ErrInvalidTokenID(DefaultCodespace, err.Error())
 	}
-
-	if !ValidTokenURI(msg.TokenURI) {
-		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
-	}
-
 	return nil
 }
 

@@ -10,32 +10,38 @@ import (
 const (
 	DefaultCodespace sdk.CodespaceType = ModuleName
 
-	//Token
+	// Token
 	CodeTokenExist       sdk.CodeType = 100
 	CodeTokenNotExist    sdk.CodeType = 101
 	CodeTokenNotMintable sdk.CodeType = 102
 
-	//Token invalidation
+	// Token invalidation
 	CodeTokenInvalidTokenName      sdk.CodeType = 200
 	CodeTokenInvalidTokenSymbol    sdk.CodeType = 201
 	CodeTokenInvalidDecimals       sdk.CodeType = 202
 	CodeTokenInvalidAmount         sdk.CodeType = 203
 	CodeTokenInvalidTokenURILength sdk.CodeType = 204
+	CodeTokenInvalidNameLength     sdk.CodeType = 205
 
-	//Permission
+	// Permission
 	CodePermission sdk.CodeType = 300
 
-	//Account
+	// Account
 	CodeAccountExist    sdk.CodeType = 400
 	CodeAccountNotExist sdk.CodeType = 401
 
-	//Bank
+	// Bank
 	CodeInsufficientBalance sdk.CodeType = 500
 	CodeInvalidAmount       sdk.CodeType = 501
 
-	//Supply
+	// Supply
 	CodeSupplyExist        sdk.CodeType = 600
 	CodeInsufficientSupply sdk.CodeType = 601
+
+	// Modify
+	CodeInvalidChangesFieldCount sdk.CodeType = 701
+	CodeEmptyChanges             sdk.CodeType = 702
+	CodeTokenInvalidChangesField sdk.CodeType = 703
 )
 
 func ErrTokenExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
@@ -66,8 +72,27 @@ func ErrInvalidAmount(codespace sdk.CodespaceType, amount string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidAmount, "invalid token amount [%s]", amount)
 }
 
+func ErrInvalidChangesFieldCount(codespace sdk.CodespaceType, changesFieldCount int) sdk.Error {
+	return sdk.NewError(codespace, CodeInvalidChangesFieldCount,
+		"You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, changesFieldCount)
+}
+
+func ErrEmptyChanges(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeEmptyChanges, "changes is empty")
+}
+
 func ErrInvalidTokenURILength(codespace sdk.CodespaceType, tokenURI string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, TokenURIMaxLength, utf8.RuneCountInString(tokenURI))
+	return sdk.NewError(codespace, CodeTokenInvalidTokenURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, MaxTokenURILength, utf8.RuneCountInString(tokenURI))
+}
+
+func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
+		"invalid name [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", name,
+		MaxTokenNameLength, utf8.RuneCountInString(name))
+}
+
+func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is invalid field of changes", field)
 }
 
 func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission fmt.Stringer) sdk.Error {

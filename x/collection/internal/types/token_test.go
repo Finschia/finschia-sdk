@@ -7,64 +7,55 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestToken(t *testing.T) {
-	// NewXX with arguments.
-	// Serialize it and Deserialize to other variable.
-	// Compare both are the same.
-	{
-		token := NewFT(defaultSymbol, defaultTokenIDFT, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+func TestUnmarshalFT(t *testing.T) {
+	// Given a FT
+	token := NewFT(defaultSymbol, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)
+	var token2 BaseFT
 
-		var token2 BaseFT
-		bz, err := ModuleCdc.MarshalJSON(token)
-		require.NoError(t, err)
-		err = ModuleCdc.UnmarshalJSON(bz, &token2)
-		require.NoError(t, err)
+	// When marshal and unmarshal the FT
+	bz, err := ModuleCdc.MarshalJSON(token)
+	require.NoError(t, err)
+	err = ModuleCdc.UnmarshalJSON(bz, &token2)
+	require.NoError(t, err)
 
-		require.Equal(t, defaultName, token2.GetName())
-		require.Equal(t, defaultSymbol, token2.GetSymbol())
-		require.Equal(t, defaultTokenIDFT, token2.GetTokenID())
-		require.Equal(t, defaultTokenIDFT[:TokenTypeLength], token2.GetTokenType())
-		require.Equal(t, defaultTokenIDFT[TokenTypeLength:], token2.GetTokenIndex())
-		require.Equal(t, defaultTokenURI, token2.GetTokenURI())
-		require.Equal(t, int64(defaultDecimals), token2.GetDecimals().Int64())
-		require.Equal(t, true, token2.GetMintable())
+	// Then the properties are same
+	r := require.New(t)
+	r.EqualValues(defaultName, token.GetName(), token2.GetName())
+	r.Equal(defaultSymbol, token.GetSymbol(), token2.GetSymbol())
+	r.Equal(defaultTokenIDFT, token.GetTokenID(), token2.GetTokenID())
+	r.Equal(defaultTokenIDFT[:TokenTypeLength], token.GetTokenType(), token2.GetTokenType())
+	r.Equal(defaultTokenIDFT[TokenTypeLength:], token.GetTokenIndex(), token2.GetTokenIndex())
+	r.Equal(int64(defaultDecimals), token.GetDecimals().Int64(), token2.GetDecimals().Int64())
+	r.Equal(true, token.GetMintable(), token2.GetMintable())
+}
 
-		require.Equal(t, token.GetName(), token2.GetName())
-		require.Equal(t, token.GetSymbol(), token2.GetSymbol())
-		require.Equal(t, token.GetTokenURI(), token2.GetTokenURI())
-		require.Equal(t, token.GetTokenID(), token2.GetTokenID())
-		require.Equal(t, token.GetTokenType(), token2.GetTokenType())
-		require.Equal(t, token.GetTokenIndex(), token2.GetTokenIndex())
-		require.Equal(t, token.GetDecimals().Int64(), token2.GetDecimals().Int64())
-		require.Equal(t, token.GetMintable(), token2.GetMintable())
+func TestUnmarshalNFT(t *testing.T) {
+	// Given a NFT
+	token := NewNFT(defaultSymbol, defaultTokenID1, defaultName, addr1)
+	var token2 BaseNFT
 
-		token3 := token2.SetTokenURI("modifiedtokenuri")
-		require.Equal(t, defaultTokenURI, token2.GetTokenURI())
-		require.Equal(t, "modifiedtokenuri", token3.GetTokenURI())
-	}
-	{
-		token := NewNFT(defaultSymbol, defaultTokenID1, defaultName, defaultTokenURI, addr1)
+	// When marshal and unmarshal the FT
+	bz, err := ModuleCdc.MarshalJSON(token)
+	require.NoError(t, err)
+	err = ModuleCdc.UnmarshalJSON(bz, &token2)
+	require.NoError(t, err)
 
-		var token2 BaseNFT
-		bz, err := ModuleCdc.MarshalJSON(token)
-		require.NoError(t, err)
-		err = ModuleCdc.UnmarshalJSON(bz, &token2)
-		require.NoError(t, err)
+	// Then the properties are same
+	r := require.New(t)
+	r.Equal(defaultName, token.GetName(), token2.GetName())
+	r.Equal(defaultSymbol, token.GetSymbol(), token2.GetSymbol())
+	r.Equal(defaultTokenID1, token.GetTokenID(), token2.GetTokenID())
+	r.Equal(defaultTokenID1[:TokenTypeLength], token.GetTokenType(), token2.GetTokenType())
+	r.Equal(defaultTokenID1[TokenTypeLength:], token.GetTokenIndex(), token2.GetTokenIndex())
+	r.Equal(addr1, token.GetOwner(), token2.GetOwner())
+}
 
-		require.Equal(t, defaultName, token2.GetName())
-		require.Equal(t, defaultSymbol, token2.GetSymbol())
-		require.Equal(t, defaultTokenID1, token2.GetTokenID())
-		require.Equal(t, defaultTokenID1[:TokenTypeLength], token2.GetTokenType())
-		require.Equal(t, defaultTokenID1[TokenTypeLength:], token2.GetTokenIndex())
-		require.Equal(t, defaultTokenURI, token2.GetTokenURI())
-		require.Equal(t, addr1, token2.GetOwner())
+func TestSetName(t *testing.T) {
+	// Given a FT, NFT
+	tokenFT := NewFT(defaultSymbol, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)
+	tokenNFT := NewNFT(defaultSymbol, defaultTokenID1, defaultName, addr1)
 
-		require.Equal(t, token.GetName(), token2.GetName())
-		require.Equal(t, token.GetSymbol(), token2.GetSymbol())
-		require.Equal(t, token.GetTokenURI(), token2.GetTokenURI())
-		require.Equal(t, token.GetTokenID(), token2.GetTokenID())
-		require.Equal(t, token.GetTokenType(), token2.GetTokenType())
-		require.Equal(t, token.GetTokenIndex(), token2.GetTokenIndex())
-		require.Equal(t, token.GetOwner(), token2.GetOwner())
-	}
+	// When change name, Then they are changed
+	require.Equal(t, "new_name", tokenFT.SetName("new_name").GetName())
+	require.Equal(t, "new_name", tokenNFT.SetName("new_name").GetName())
 }

@@ -10,7 +10,7 @@ func TestPermission(t *testing.T) {
 	issuePerm := NewIssuePermission(defaultSymbol)
 	mintPerm := NewMintPermission(defaultSymbol)
 	burnPerm := NewBurnPermission(defaultSymbol)
-	modifyPerm := NewModifyTokenURIPermission(defaultSymbol)
+	modifyPerm := NewModifyPermission(defaultSymbol)
 
 	require.True(t, issuePerm.Validate())
 	require.True(t, mintPerm.Validate())

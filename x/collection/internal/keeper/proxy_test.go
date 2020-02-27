@@ -16,12 +16,12 @@ func TestApproveDisapproveScenario(t *testing.T) {
 	)
 
 	// prepare collection, FT, NFT
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, "name"), addr1))
-	require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, "name", defaultImgURI), addr1))
+	require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 	require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType, defaultName), addr1))
 	require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType2, defaultName), addr1))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID1, defaultName, defaultTokenURI, addr1)))
-	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenType2+"00000001", defaultName, defaultTokenURI, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID1, defaultName, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenType2+"00000001", defaultName, addr1)))
 
 	// approve test
 	require.EqualError(t, keeper.SetApproved(ctx, addr3, addr1, defaultSymbol2), types.ErrCollectionNotExist(types.DefaultCodespace, defaultSymbol2).Error())

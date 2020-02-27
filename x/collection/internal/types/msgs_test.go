@@ -1,7 +1,6 @@
 package types
 
 import (
-	"strings"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,12 +12,7 @@ func TestMsgBasics(t *testing.T) {
 	cdc := ModuleCdc
 
 	{
-		length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
-		msg := NewMsgIssueFT(addr1, defaultName, defaultSymbol, length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
-	}
-	{
-		msg := NewMsgIssueFT(addr1, defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssueFT(addr1, defaultName, defaultSymbol, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.Equal(t, "issue_ft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -34,7 +28,6 @@ func TestMsgBasics(t *testing.T) {
 
 		require.Equal(t, msg.Name, msg2.Name)
 		require.Equal(t, msg.Symbol, msg2.Symbol)
-		require.Equal(t, msg.TokenURI, msg2.TokenURI)
 		require.Equal(t, msg.Owner, msg2.Owner)
 		require.Equal(t, msg.Amount, msg.Amount)
 		require.Equal(t, msg.Decimals, msg2.Decimals)
@@ -60,7 +53,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Name, msg2.Name)
 	}
 	{
-		msg := NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenURI, defaultTokenType)
+		msg := NewMsgMintNFT(addr1, addr1, defaultName, defaultSymbol, defaultTokenType)
 		require.Equal(t, "mint_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -76,7 +69,6 @@ func TestMsgBasics(t *testing.T) {
 
 		require.Equal(t, msg.Name, msg2.Name)
 		require.Equal(t, msg.Symbol, msg2.Symbol)
-		require.Equal(t, msg.TokenURI, msg2.TokenURI)
 		require.Equal(t, msg.From, msg2.From)
 		require.Equal(t, msg.TokenType, msg2.TokenType)
 	}
@@ -537,56 +529,5 @@ func TestMsgBasics(t *testing.T) {
 
 		msg = NewMsgBurnNFTFrom(addr1, nil, defaultSymbol, defaultTokenID1)
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
-	}
-}
-
-func TestMsgModifyTokenURI_ValidateBasicMsgBasics(t *testing.T) {
-	cdc := ModuleCdc
-	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	const ModifyActionName = "modify_token"
-	t.Log("normal case")
-	{
-		msg := NewMsgModifyTokenURI(addr, defaultSymbol, defaultTokenURI, defaultTokenID1)
-		require.Equal(t, ModifyActionName, msg.Type())
-		require.Equal(t, ModuleName, msg.Route())
-		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
-		require.Equal(t, addr, msg.GetSigners()[0])
-		require.NoError(t, msg.ValidateBasic())
-
-		b := msg.GetSignBytes()
-		msg2 := MsgModifyTokenURI{}
-		err := cdc.UnmarshalJSON(b, &msg2)
-		require.NoError(t, err)
-
-		require.Equal(t, msg.Symbol, msg2.Symbol)
-		require.Equal(t, msg.TokenURI, msg2.TokenURI)
-		require.Equal(t, msg.Owner, msg2.Owner)
-		require.Equal(t, msg.TokenID, msg2.TokenID)
-	}
-	t.Log("empty symbol found")
-	{
-		msg := NewMsgModifyTokenURI(addr, "", defaultTokenURI, defaultTokenID1)
-		require.Error(t, msg.ValidateBasic())
-	}
-	t.Log("empty owner")
-	{
-		msg := NewMsgModifyTokenURI(nil, defaultSymbol, defaultTokenURI, defaultTokenID1)
-		require.Error(t, msg.ValidateBasic())
-	}
-	t.Log("tokenURI too long")
-	{
-		length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
-		msg := NewMsgModifyTokenURI(addr, defaultSymbol, length1001String, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
-	}
-	t.Log("invalid symbol found")
-	{
-		msg := NewMsgModifyTokenURI(addr, "invalidsymbol2198721987", defaultTokenURI, defaultTokenID1)
-		require.Error(t, msg.ValidateBasic())
-	}
-	t.Log("invalid tokenid found")
-	{
-		msg := NewMsgModifyTokenURI(addr, defaultSymbol, defaultTokenURI, "tokenid")
-		require.Error(t, msg.ValidateBasic())
 	}
 }

@@ -1,57 +1,58 @@
 package types
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/types"
+	linktype "github.com/line/link/types"
 )
 
-var _ sdk.Msg = (*MsgModifyTokenURI)(nil)
+var _ sdk.Msg = (*MsgModify)(nil)
 
-type MsgModifyTokenURI struct {
-	Owner    sdk.AccAddress `json:"owner"`
-	Symbol   string         `json:"symbol"`
-	TokenURI string         `json:"token_uri"`
-	TokenID  string         `json:"token_id"`
+type MsgModify struct {
+	Owner      sdk.AccAddress   `json:"owner"`
+	Symbol     string           `json:"symbol"`
+	TokenType  string           `json:"token_type"`
+	TokenIndex string           `json:"token_index"`
+	Changes    linktype.Changes `json:"changes"`
 }
 
-func NewMsgModifyTokenURI(owner sdk.AccAddress, symbol, tokenURI, tokenID string) MsgModifyTokenURI {
-	return MsgModifyTokenURI{
-		Owner:    owner,
-		Symbol:   symbol,
-		TokenURI: tokenURI,
-		TokenID:  tokenID,
+func NewMsgModify(owner sdk.AccAddress, symbol, tokenType, tokenIndex string, changes linktype.Changes) MsgModify {
+	return MsgModify{
+		Owner:      owner,
+		Symbol:     symbol,
+		TokenType:  tokenType,
+		TokenIndex: tokenIndex,
+		Changes:    changes,
 	}
 }
 
-func (msg MsgModifyTokenURI) Route() string { return RouterKey }
-func (msg MsgModifyTokenURI) Type() string  { return "modify_token" }
-func (msg MsgModifyTokenURI) GetSignBytes() []byte {
+func (msg MsgModify) Route() string { return RouterKey }
+func (msg MsgModify) Type() string  { return "modify_token" }
+func (msg MsgModify) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
-func (msg MsgModifyTokenURI) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
+func (msg MsgModify) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 
-func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
-	if msg.Symbol == "" {
-		return sdk.ErrInvalidAddress("symbol cannot be empty")
-	}
-
-	if err := types.ValidateSymbol(msg.Symbol); err != nil {
-		return sdk.ErrInvalidAddress(fmt.Sprintf("invalid symbol pattern found %s", msg.Symbol))
-	}
-
+func (msg MsgModify) ValidateBasic() sdk.Error {
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
 
-	if msg.TokenID != "" {
-		if err := types.ValidateTokenID(msg.TokenID); err != nil {
-			return sdk.ErrInvalidAddress(fmt.Sprintf("invalid tokenId pattern found %s", msg.TokenID))
-		}
+	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, msg.Symbol)
 	}
-	if !ValidTokenURI(msg.TokenURI) {
-		return ErrInvalidTokenURILength(DefaultCodespace, msg.TokenURI)
+	if msg.TokenType != "" && linktype.ValidateTokenTypeNFT(msg.TokenType) != nil {
+		return ErrInvalidTokenType(DefaultCodespace, msg.TokenType)
+	}
+	if msg.TokenIndex != "" && linktype.ValidateTokenIndex(msg.TokenIndex) != nil {
+		return ErrInvalidTokenIndex(DefaultCodespace, msg.TokenIndex)
+	}
+
+	validator := NewChangesValidator()
+	if err := validator.SetMode(msg.TokenType, msg.TokenIndex); err != nil {
+		return err
+	}
+	if err := validator.Validate(msg.Changes); err != nil {
+		return err
 	}
 
 	return nil

@@ -24,13 +24,13 @@ func TestKeeper_IssueToken(t *testing.T) {
 	}
 	t.Log("Permission")
 	{
-		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyTokenURIPermission(defaultSymbol)))
+		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyPermission(defaultSymbol)))
 		require.True(t, keeper.HasPermission(ctx, addr1, types.NewMintPermission(defaultSymbol)))
 		require.True(t, keeper.HasPermission(ctx, addr1, types.NewBurnPermission(defaultSymbol)))
 	}
 	t.Log("Permission only addr1 has the permissions")
 	{
-		require.False(t, keeper.HasPermission(ctx, addr2, types.NewModifyTokenURIPermission(defaultSymbol)))
+		require.False(t, keeper.HasPermission(ctx, addr2, types.NewModifyPermission(defaultSymbol)))
 		require.False(t, keeper.HasPermission(ctx, addr2, types.NewMintPermission(defaultSymbol)))
 		require.False(t, keeper.HasPermission(ctx, addr2, types.NewBurnPermission(defaultSymbol)))
 	}
@@ -59,9 +59,9 @@ func TestKeeper_IssueTokenNotMintable(t *testing.T) {
 		require.NoError(t, err)
 		verifyTokenFunc(t, expected, actual)
 	}
-	t.Log("Permission only addr1 has no mint/burn permisssions")
+	t.Log("Permission only addr1 has no mint/burn permissions")
 	{
-		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyTokenURIPermission(defaultSymbol)))
+		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyPermission(defaultSymbol)))
 		require.False(t, keeper.HasPermission(ctx, addr1, types.NewMintPermission(defaultSymbol)))
 		require.False(t, keeper.HasPermission(ctx, addr1, types.NewBurnPermission(defaultSymbol)))
 	}
@@ -76,12 +76,5 @@ func TestKeeper_IssueTokenTooLongTokenURI(t *testing.T) {
 	{
 		token := types.NewToken(defaultName, defaultSymbol, length1001String, sdk.NewInt(defaultDecimals), true)
 		require.EqualError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1), types.ErrInvalidTokenURILength(types.DefaultCodespace, length1001String).Error())
-	}
-
-	t.Log("issue a token and update with too long token uri")
-	{
-		token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
-		require.NoError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1))
-		require.EqualError(t, keeper.ModifyTokenURI(ctx, addr1, defaultSymbol, length1001String), types.ErrInvalidTokenURILength(types.DefaultCodespace, length1001String).Error())
 	}
 }

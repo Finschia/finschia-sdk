@@ -15,7 +15,7 @@ func init() {
 // RegisterCodec registers concrete types on the Amino codec
 func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgIssue{}, "token/MsgIssue", nil)
-	cdc.RegisterConcrete(MsgModifyTokenURI{}, "token/MsgModifyTokenURI", nil)
+	cdc.RegisterConcrete(MsgModify{}, "token/MsgModify", nil)
 	cdc.RegisterConcrete(MsgMint{}, "token/MsgMint", nil)
 	cdc.RegisterConcrete(MsgBurn{}, "token/MsgBurn", nil)
 	cdc.RegisterConcrete(MsgGrantPermission{}, "token/MsgGrantPermission", nil)

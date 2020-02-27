@@ -8,16 +8,18 @@ import (
 var _ sdk.Msg = (*MsgCreateCollection)(nil)
 
 type MsgCreateCollection struct {
-	Owner  sdk.AccAddress `json:"owner"`
-	Name   string         `json:"name"`
-	Symbol string         `json:"symbol"`
+	Owner      sdk.AccAddress `json:"owner"`
+	Name       string         `json:"name"`
+	Symbol     string         `json:"symbol"`
+	BaseImgURI string         `json:"base_img_uri"`
 }
 
-func NewMsgCreateCollection(owner sdk.AccAddress, name, symbol string) MsgCreateCollection {
+func NewMsgCreateCollection(owner sdk.AccAddress, name, symbol, baseImgURI string) MsgCreateCollection {
 	return MsgCreateCollection{
-		Owner:  owner,
-		Name:   name,
-		Symbol: symbol,
+		Owner:      owner,
+		Name:       name,
+		Symbol:     symbol,
+		BaseImgURI: baseImgURI,
 	}
 }
 
@@ -30,6 +32,9 @@ func (msg MsgCreateCollection) ValidateBasic() sdk.Error {
 	}
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
+	}
+	if !ValidateBaseImgURI(msg.BaseImgURI) {
+		return ErrInvalidBaseImgURILength(DefaultCodespace, msg.BaseImgURI)
 	}
 	return nil
 }

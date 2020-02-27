@@ -194,39 +194,6 @@ func (k Keeper) iterateToken(ctx sdk.Context, symbol, prefix string, reverse boo
 	}
 }
 
-func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenID, tokenURI string) sdk.Error {
-	if !types.ValidTokenURI(tokenURI) {
-		return types.ErrInvalidTokenURILength(types.DefaultCodespace, tokenURI)
-	}
-
-	token, err := k.GetToken(ctx, symbol, tokenID)
-	if err != nil {
-		return err
-	}
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(symbol)
-	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
-	}
-	token = token.SetTokenURI(tokenURI)
-
-	err = k.UpdateToken(ctx, symbol, token)
-	if err != nil {
-		return err
-	}
-
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeModifyTokenURI,
-			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
-			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
-			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
-			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
-		),
-	})
-	return nil
-}
-
 func (k Keeper) mustEncodeToken(token types.Token) (bz []byte) {
 	return k.cdc.MustMarshalBinaryBare(token)
 }

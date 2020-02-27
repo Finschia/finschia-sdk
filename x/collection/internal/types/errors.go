@@ -16,13 +16,16 @@ const (
 	CodeTokenNotMintable sdk.CodeType = 102
 
 	//Token invalidation
-	CodeTokenInvalidTokenName      sdk.CodeType = 200
-	CodeTokenInvalidTokenSymbol    sdk.CodeType = 201
-	CodeTokenInvalidTokenID        sdk.CodeType = 202
-	CodeTokenInvalidDecimals       sdk.CodeType = 203
-	CodeTokenInvalidFT             sdk.CodeType = 204
-	CodeTokenInvalidAmount         sdk.CodeType = 205
-	CodeTokenInvalidTokenURILength sdk.CodeType = 206
+	CodeTokenInvalidTokenName        sdk.CodeType = 200
+	CodeTokenInvalidTokenSymbol      sdk.CodeType = 201
+	CodeTokenInvalidTokenID          sdk.CodeType = 202
+	CodeTokenInvalidDecimals         sdk.CodeType = 203
+	CodeTokenInvalidFT               sdk.CodeType = 204
+	CodeTokenInvalidAmount           sdk.CodeType = 205
+	CodeTokenInvalidBaseImgURILength sdk.CodeType = 206
+	CodeTokenInvalidNameLength       sdk.CodeType = 207
+	CodeTokenInvalidTokenType        sdk.CodeType = 208
+	CodeTokenInvalidTokenIndex       sdk.CodeType = 209
 
 	//Collection
 	CodeCollectionExist             sdk.CodeType = 300
@@ -57,6 +60,12 @@ const (
 	//Bank
 	CodeInsufficientSupply sdk.CodeType = 800
 	CodeInvalidCoin        sdk.CodeType = 801
+
+	// Modify
+	CodeInvalidChangesFieldCount sdk.CodeType = 901
+	CodeEmptyChanges             sdk.CodeType = 902
+	CodeTokenInvalidChangesField sdk.CodeType = 903
+	CodeTokenIndexWithoutType    sdk.CodeType = 904
 )
 
 func ErrTokenNotMintable(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
@@ -68,11 +77,19 @@ func ErrInvalidTokenName(codespace sdk.CodespaceType, name string) sdk.Error {
 }
 
 func ErrInvalidTokenSymbol(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenSymbol, msg)
+	return sdk.NewError(codespace, CodeTokenInvalidTokenSymbol, "invalid symbol pattern found %s", msg)
 }
 
 func ErrInvalidTokenID(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenID, msg)
+	return sdk.NewError(codespace, CodeTokenInvalidTokenID, "invalid token id pattern found %s", msg)
+}
+
+func ErrInvalidTokenType(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidTokenType, "invalid token type pattern found %s", msg)
+}
+
+func ErrInvalidTokenIndex(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidTokenIndex, "invalid token index pattern found %s", msg)
 }
 
 func ErrInvalidTokenDecimals(codespace sdk.CodespaceType, decimals sdk.Int) sdk.Error {
@@ -87,8 +104,33 @@ func ErrInvalidAmount(codespace sdk.CodespaceType, amount string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidAmount, "invalid token amount [%s]", amount)
 }
 
-func ErrInvalidTokenURILength(codespace sdk.CodespaceType, tokenURI string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, TokenURIMaxLength, utf8.RuneCountInString(tokenURI))
+func ErrInvalidChangesFieldCount(codespace sdk.CodespaceType, changesFieldCount int) sdk.Error {
+	return sdk.NewError(codespace, CodeInvalidChangesFieldCount,
+		"You can not change fields more than [%d], current count: [%d]", MaxChangeFieldsCount, changesFieldCount)
+}
+
+func ErrEmptyChanges(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeEmptyChanges, "changes is empty")
+}
+
+func ErrInvalidBaseImgURILength(codespace sdk.CodespaceType, baseImgURI string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidBaseImgURILength,
+		"invalid base_img_uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", baseImgURI,
+		MaxBaseImgURILength, utf8.RuneCountInString(baseImgURI))
+}
+
+func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
+		"invalid name [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", name,
+		MaxTokenNameLength, utf8.RuneCountInString(name))
+}
+
+func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is invalid field of changes", field)
+}
+
+func ErrTokenIndexWithoutType(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenIndexWithoutType, "There is a token index but no token type")
 }
 
 func ErrCollectionExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
@@ -170,6 +212,7 @@ func ErrCollectionNotApproved(codespace sdk.CodespaceType, proxy string, approve
 func ErrCollectionAlreadyApproved(codespace sdk.CodespaceType, proxy string, approver string, symbol string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenAlreadyApproved, "proxy[%s] is already approved by %s on the collection[%s]", proxy, approver, symbol)
 }
+
 func ErrAccountExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
 	return sdk.NewError(codespace, CodeAccountExist, "account [%s] already exists", acc.String())
 }

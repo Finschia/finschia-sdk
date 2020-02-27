@@ -37,38 +37,6 @@ func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) sdk.Error {
 	return nil
 }
 
-func (k Keeper) ModifyTokenURI(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenURI string) sdk.Error {
-	if !types.ValidTokenURI(tokenURI) {
-		return types.ErrInvalidTokenURILength(types.DefaultCodespace, tokenURI)
-	}
-
-	token, err := k.GetToken(ctx, symbol)
-	if err != nil {
-		return err
-	}
-	tokenURIModifyPerm := types.NewModifyTokenURIPermission(token.GetSymbol())
-	if !k.HasPermission(ctx, owner, tokenURIModifyPerm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenURIModifyPerm)
-	}
-	token.SetTokenURI(tokenURI)
-
-	err = k.UpdateToken(ctx, token)
-	if err != nil {
-		return err
-	}
-
-	ctx.EventManager().EmitEvents(sdk.Events{
-		sdk.NewEvent(
-			types.EventTypeModifyTokenURI,
-			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
-			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
-			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetTokenURI()),
-		),
-	})
-	return nil
-}
-
 func (k Keeper) GetAllTokens(ctx sdk.Context) (tokens types.Tokens) {
 	appendToken := func(token types.Token) (stop bool) {
 		tokens = append(tokens, token)

@@ -14,15 +14,17 @@ func TestCollectionAndPermission(t *testing.T) {
 
 	issuePerm := types.NewIssuePermission(defaultSymbol)
 	{
-		require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName), addr1))
+		require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName,
+			defaultImgURI), addr1))
 		require.True(t, keeper.HasPermission(ctx, addr1, issuePerm))
-		require.Error(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName), addr1))
+		require.Error(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName,
+			defaultImgURI), addr1))
 		collection, err := keeper.GetCollection(ctx, defaultSymbol)
 		require.NoError(t, err)
 		require.Equal(t, defaultSymbol, collection.GetSymbol())
 
 		{
-			require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+			require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 			token, err := keeper.GetToken(ctx, defaultSymbol, defaultTokenIDFT)
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
@@ -30,14 +32,14 @@ func TestCollectionAndPermission(t *testing.T) {
 		}
 		{
 			require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType, defaultName), addr1))
-			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID1, defaultName, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID1, defaultName, addr1)))
 
 			token, err := keeper.GetToken(ctx, defaultSymbol, defaultTokenID1)
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
 			require.Equal(t, defaultTokenID1, token.GetTokenID())
 
-			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID2, defaultName, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenID2, defaultName, addr1)))
 			token, err = keeper.GetToken(ctx, defaultSymbol, defaultTokenID2)
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
@@ -48,7 +50,7 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.Equal(t, int64(2), count.Int64())
 
 			require.NoError(t, keeper.IssueNFT(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType2, defaultName), addr1))
-			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenType2+"00000001", defaultName, defaultTokenURI, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, defaultSymbol, addr1, types.NewNFT(defaultSymbol, defaultTokenType2+"00000001", defaultName, addr1)))
 			token, err = keeper.GetToken(ctx, defaultSymbol, defaultTokenType2+"00000001")
 			require.NoError(t, err)
 			require.Equal(t, defaultSymbol, token.GetSymbol())
@@ -63,9 +65,11 @@ func TestCollectionAndPermission(t *testing.T) {
 
 	issuePerm2 := types.NewIssuePermission(defaultSymbol2)
 	{
-		require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol2, defaultName), addr1))
+		require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol2, defaultName,
+			defaultImgURI), addr1))
 		require.True(t, keeper.HasPermission(ctx, addr1, issuePerm2))
-		require.Error(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol2, defaultName), addr1))
+		require.Error(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol2, defaultName,
+			defaultImgURI), addr1))
 		collection, err := keeper.GetCollection(ctx, defaultSymbol2)
 		require.NoError(t, err)
 		require.Equal(t, defaultSymbol2, collection.GetSymbol())

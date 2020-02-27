@@ -13,8 +13,8 @@ func TestTransferFTScenario(t *testing.T) {
 	ctx := cacheKeeper()
 
 	// issue idf token
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName), addr1))
-	require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, defaultTokenURI, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName, defaultImgURI), addr1))
+	require.NoError(t, keeper.IssueFT(ctx, defaultSymbol, addr1, types.NewFT(defaultSymbol, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 
 	//
 	// transfer success cases

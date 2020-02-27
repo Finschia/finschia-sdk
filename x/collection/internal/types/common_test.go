@@ -6,15 +6,16 @@ import (
 )
 
 const (
-	defaultName      = "name"
-	defaultSymbol    = "token001"
-	defaultTokenURI  = "token-uri"
-	defaultDecimals  = 6
-	defaultAmount    = 1000
-	defaultTokenType = "10000001"
-	defaultTokenID1  = defaultTokenType + "00000001"
-	defaultTokenID2  = defaultTokenType + "00000002"
-	defaultTokenIDFT = "0000000100000000"
+	defaultName       = "name"
+	defaultSymbol     = "token001"
+	defaultBaseImgURI = "base-img-uri"
+	defaultDecimals   = 6
+	defaultAmount     = 1000
+	defaultTokenType  = "10000001"
+	defaultTokenIndex = "00000001"
+	defaultTokenID1   = defaultTokenType + defaultTokenIndex
+	defaultTokenID2   = defaultTokenType + "00000002"
+	defaultTokenIDFT  = "0000000100000000"
 )
 
 var (

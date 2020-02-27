@@ -84,27 +84,3 @@ func TestKeeper_GetAllTokens(t *testing.T) {
 		}
 	}
 }
-
-func TestKeeper_ModifyTokenURI(t *testing.T) {
-	ctx := cacheKeeper()
-
-	const modifiedTokenURI = "modifiedtokenuri"
-
-	t.Log("Set Token")
-	token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
-	{
-		require.NoError(t, keeper.SetToken(ctx, token))
-		modifyTokenURIPermission := types.NewModifyTokenURIPermission(token.GetSymbol())
-		keeper.AddPermission(ctx, addr1, modifyTokenURIPermission)
-	}
-	{
-		require.NoError(t, keeper.ModifyTokenURI(ctx, addr1, token.GetSymbol(), modifiedTokenURI))
-	}
-	t.Log("Compare Token")
-	{
-		store := ctx.KVStore(keeper.storeKey)
-		bz := store.Get(types.TokenSymbolKey(token.GetSymbol()))
-		actual := keeper.mustDecodeToken(bz)
-		require.Equal(t, modifiedTokenURI, actual.GetTokenURI())
-	}
-}

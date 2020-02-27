@@ -7,38 +7,46 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestToken(t *testing.T) {
-	// NewXX with arguments.
-	// Serialize it and Deserialize to other variable.
-	// Compare both are the same.
-	{
-		token := NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+func TestUnmarshalToken(t *testing.T) {
+	// Given a token
+	token := NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+	var token2 Token
 
-		var token2 Token
-		bz, err := ModuleCdc.MarshalJSON(token)
-		require.NoError(t, err)
-		err = ModuleCdc.UnmarshalJSON(bz, &token2)
-		require.NoError(t, err)
+	// When marshal and unmarshal the token
+	bz, err := ModuleCdc.MarshalJSON(token)
+	require.NoError(t, err)
+	err = ModuleCdc.UnmarshalJSON(bz, &token2)
+	require.NoError(t, err)
 
-		require.Equal(t, defaultName, token2.GetName())
-		require.Equal(t, defaultSymbol, token2.GetSymbol())
-		require.Equal(t, defaultSymbol, token2.GetSymbol())
-		require.Equal(t, defaultTokenURI, token2.GetTokenURI())
-		require.Equal(t, int64(defaultDecimals), token2.GetDecimals().Int64())
-		require.Equal(t, true, token2.GetMintable())
+	// Then the properties are same
+	r := require.New(t)
+	r.EqualValues(defaultName, token.GetName(), token2.GetName())
+	r.Equal(defaultSymbol, token.GetSymbol(), token2.GetSymbol())
+	r.Equal(defaultTokenURI, token.GetTokenURI(), token2.GetTokenURI())
+	r.Equal(int64(defaultDecimals), token.GetDecimals().Int64(), token2.GetDecimals().Int64())
+	r.Equal(true, token.GetMintable(), token2.GetMintable())
+}
 
-		require.Equal(t, token.GetName(), token2.GetName())
-		require.Equal(t, token.GetSymbol(), token2.GetSymbol())
-		require.Equal(t, token.GetSymbol(), token2.GetSymbol())
-		require.Equal(t, token.GetTokenURI(), token2.GetTokenURI())
-		require.Equal(t, token.GetDecimals().Int64(), token2.GetDecimals().Int64())
-		require.Equal(t, token.GetMintable(), token2.GetMintable())
+func TestSetToken(t *testing.T) {
+	// Given a token
+	token := NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+
+	// When change name and test uri, Then they are changed
+	require.Equal(t, "new_name", token.SetName("new_name").GetName())
+	require.Equal(t, "new_token_uri", token.SetTokenURI("new_token_uri").GetTokenURI())
+}
+
+func TestBaseToken_String(t *testing.T) {
+	token := NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+
+	require.Equal(t, `{"name":"name","symbol":"linktkn","token_uri":"token-uri","decimals":"6","mintable":true}`, token.String())
+}
+
+func TestTokensString(t *testing.T) {
+	tokens := Tokens{
+		NewToken(defaultName, defaultSymbol+"1", defaultTokenURI, sdk.NewInt(defaultDecimals), true),
+		NewToken(defaultName, defaultSymbol+"2", defaultTokenURI, sdk.NewInt(defaultDecimals), true),
 	}
-	{
-		tokens := Tokens{
-			NewToken(defaultName, defaultSymbol+"1", defaultTokenURI, sdk.NewInt(defaultDecimals), true),
-			NewToken(defaultName, defaultSymbol+"2", defaultTokenURI, sdk.NewInt(defaultDecimals), true),
-		}
-		require.Equal(t, `[{"name":"name","symbol":"linktkn1","token_uri":"token-uri","decimals":"6","mintable":true},{"name":"name","symbol":"linktkn2","token_uri":"token-uri","decimals":"6","mintable":true}]`, tokens.String())
-	}
+
+	require.Equal(t, `[{"name":"name","symbol":"linktkn1","token_uri":"token-uri","decimals":"6","mintable":true},{"name":"name","symbol":"linktkn2","token_uri":"token-uri","decimals":"6","mintable":true}]`, tokens.String())
 }

@@ -21,14 +21,16 @@ var (
 	flagTotalSupply = "total-supply"
 	flagDecimals    = "decimals"
 	flagMintable    = "mintable"
-	flagTokenURI    = "token-uri"
 	flagTokenType   = "token-type"
+	flagTokenIndex  = "token-index"
 	flagAAS         = "address-suffix"
 )
 
 const (
 	DefaultDecimals    = 8
 	DefaultTotalSupply = 1
+	DefaultTokenType   = ""
+	DefaultTokenIndex  = ""
 )
 
 // GetTxCmd returns the transaction commands for this module
@@ -62,36 +64,45 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		DisapproveCollectionTxCmd(cdc),
 		GrantPermTxCmd(cdc),
 		RevokePermTxCmd(cdc),
-		ModifyTokenURICmd(cdc),
+		ModifyCmd(cdc),
 	)
 	return txCmd
 }
 
-func ModifyTokenURICmd(cdc *codec.Codec) *cobra.Command {
+func ModifyCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "modify-token-uri [owner_address] [symbol] [token_id] [token_uri]",
-		Short: "Create and sign a modify token_uri of token tx",
+		Use:   "modify [owner_address] [symbol] [field] [new_value]",
+		Short: "Create and sign a modify tx",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 			symbol := args[1]
-			tokenID := args[2]
-			tokenURI := args[3]
+			field := args[2]
+			newValue := args[3]
+			tokenType := viper.GetString(flagTokenType)
+			tokenIndex := viper.GetString(flagTokenIndex)
 
-			msg := types.NewMsgModifyTokenURI(cliCtx.FromAddress, symbol, tokenURI, tokenID)
+			msg := types.NewMsgModify(cliCtx.FromAddress, symbol, tokenType, tokenIndex,
+				linktype.NewChanges(linktype.NewChange(field, newValue)))
+			err := msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
+	cmd.Flags().String(flagTokenType, DefaultTokenType, "token type")
+	cmd.Flags().String(flagTokenIndex, DefaultTokenIndex, "token index")
 
 	return client.PostCommands(cmd)[0]
 }
 
 func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [from_key_or_address] [symbol] [name]",
+		Use:   "create [from_key_or_address] [symbol] [name] [base_img_uri]",
 		Short: "Create and sign an create collection tx",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
@@ -99,6 +110,7 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 			owner := cliCtx.FromAddress
 			symbol := args[1]
 			name := args[2]
+			baseImgURI := args[3]
 
 			aas := viper.GetBool(flagAAS)
 
@@ -107,7 +119,7 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgCreateCollection(owner, name, symbol)
+			msg := types.NewMsgCreateCollection(owner, name, symbol, baseImgURI)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -149,7 +161,6 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 --decimals=[decimals]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
---token-uri=[metadata for the token]
 `,
 		Args: cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -162,7 +173,6 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 			supply := viper.GetInt64(flagTotalSupply)
 			decimals := viper.GetInt64(flagDecimals)
 			mintable := viper.GetBool(flagMintable)
-			tokenURI := viper.GetString(flagTokenURI)
 
 			if err := linktype.ValidateSymbolUserDefined(symbol); err != nil {
 				return err
@@ -172,7 +182,7 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
 			}
 
-			msg := types.NewMsgIssueFT(to, name, symbol, tokenURI, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
+			msg := types.NewMsgIssueFT(to, name, symbol, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
 
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
@@ -180,7 +190,6 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 	cmd.Flags().Int64(flagTotalSupply, DefaultTotalSupply, "total supply")
 	cmd.Flags().Int64(flagDecimals, DefaultDecimals, "set decimals")
 	cmd.Flags().Bool(flagMintable, false, "set mintable")
-	cmd.Flags().String(flagTokenURI, "", "set token-uri")
 
 	return client.PostCommands(cmd)[0]
 }
@@ -192,7 +201,6 @@ func MintNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		Long: `
 [NonFungible Token]
 linkcli tx token mint-nft [from_key_or_address] [symbol] [token_type] [name]
---token-uri=[metadata for the token]
 `,
 		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -207,17 +215,15 @@ linkcli tx token mint-nft [from_key_or_address] [symbol] [token_type] [name]
 			symbol := args[2]
 			tokenType := args[3]
 			name := args[4]
-			tokenURI := viper.GetString(flagTokenURI)
 
 			if err := linktype.ValidateSymbolUserDefined(symbol); err != nil {
 				return err
 			}
 
-			msg := types.NewMsgMintNFT(from, to, name, symbol, tokenURI, tokenType)
+			msg := types.NewMsgMintNFT(from, to, name, symbol, tokenType)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
-	cmd.Flags().String(flagTokenURI, "", "set token-uri")
 	cmd.Flags().String(flagTokenType, "", "token-type for the nft")
 
 	return client.PostCommands(cmd)[0]

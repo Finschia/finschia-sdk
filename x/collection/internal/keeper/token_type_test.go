@@ -26,7 +26,7 @@ func TestKeeper_GetTokenType(t *testing.T) {
 func TestKeeper_SetTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName, defaultImgURI), addr1))
 	t.Log("Set Token Type")
 	expected := types.NewBaseTokenType(defaultSymbol, defaultTokenType, defaultName)
 	{
@@ -58,7 +58,7 @@ func TestKeeper_HasTokenType(t *testing.T) {
 func TestKeeper_UpdateTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName, defaultImgURI), addr1))
 	t.Log("Set Token Type")
 	expected := types.NewBaseTokenType(defaultSymbol, defaultTokenType, defaultName)
 	{
@@ -81,7 +81,7 @@ func TestKeeper_UpdateTokenType(t *testing.T) {
 func TestKeeper_GetNextTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultSymbol, defaultName, defaultImgURI), addr1))
 	t.Log("Set Token Type")
 	{
 		require.NoError(t, keeper.SetTokenType(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType, defaultName)))
