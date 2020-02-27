@@ -8,7 +8,7 @@ import (
 )
 
 type SupplyKeeper interface {
-	GetSupplyInt(ctx sdk.Context, symbol, tokenID string) (supply sdk.Int, err sdk.Error)
+	GetTotalInt(ctx sdk.Context, symbol, tokenID, target string) (supply sdk.Int, err sdk.Error)
 	GetSupply(ctx sdk.Context, symbol string) (supply types.Supply)
 	SetSupply(ctx sdk.Context, supply types.Supply)
 	MintSupply(ctx sdk.Context, symbol string, to sdk.AccAddress, amt types.Coins) sdk.Error
@@ -33,11 +33,22 @@ func (k Keeper) SetSupply(ctx sdk.Context, supply types.Supply) {
 	store.Set(types.SupplyKey(supply.GetSymbol()), b)
 }
 
-func (k Keeper) GetSupplyInt(ctx sdk.Context, symbol, tokenID string) (supply sdk.Int, err sdk.Error) {
+func (k Keeper) GetTotalInt(ctx sdk.Context, symbol, tokenID, target string) (supply sdk.Int, err sdk.Error) {
 	if _, err = k.GetToken(ctx, symbol, tokenID); err != nil {
 		return sdk.NewInt(0), err
 	}
-	return k.GetSupply(ctx, symbol).GetTotal().AmountOf(tokenID), nil
+
+	s := k.GetSupply(ctx, symbol)
+	switch target {
+	case types.QuerySupply:
+		return s.GetTotalSupply().AmountOf(tokenID), nil
+	case types.QueryBurn:
+		return s.GetTotalBurn().AmountOf(tokenID), nil
+	case types.QueryMint:
+		return s.GetTotalMint().AmountOf(tokenID), nil
+	default:
+		return sdk.ZeroInt(), sdk.ErrInternal(fmt.Sprintf("invalid request target to query total %s", target))
+	}
 }
 
 // MintCoins creates new coins from thin air and adds it to the module account.
@@ -49,7 +60,7 @@ func (k Keeper) MintSupply(ctx sdk.Context, symbol string, to sdk.AccAddress, am
 	}
 	supply := k.GetSupply(ctx, symbol)
 	supply = supply.Inflate(amt)
-	if supply.GetTotal().IsAnyNegative() {
+	if supply.GetTotalSupply().IsAnyNegative() {
 		return types.ErrInsufficientSupply(types.DefaultCodespace, fmt.Sprintf("insufficient supply for token [%s]", symbol))
 	}
 
@@ -66,7 +77,7 @@ func (k Keeper) BurnSupply(ctx sdk.Context, symbol string, from sdk.AccAddress, 
 	}
 	supply := k.GetSupply(ctx, symbol)
 	supply = supply.Deflate(amt)
-	if supply.GetTotal().IsAnyNegative() {
+	if supply.GetTotalSupply().IsAnyNegative() {
 		return types.ErrInsufficientSupply(types.DefaultCodespace, fmt.Sprintf("insufficient supply for token [%s]", symbol))
 	}
 	k.SetSupply(ctx, supply)

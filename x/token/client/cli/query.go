@@ -21,7 +21,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		GetTokenCmd(cdc),
 		GetTokensCmd(cdc),
 		GetBalanceCmd(cdc),
-		GetSupplyCmd(cdc),
+		GetTotalCmd(cdc),
 		GetPermsCmd(cdc),
 	)
 
@@ -102,18 +102,19 @@ func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 	return client.GetCommands(cmd)[0]
 }
 
-func GetSupplyCmd(cdc *codec.Codec) *cobra.Command {
+func GetTotalCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "supply [symbol]",
-		Short: "Query supply of token",
-		Args:  cobra.ExactArgs(1),
+		Use:   "total [supply|mint|burn] [symbol]",
+		Short: "Query total supply/mint/burn of token",
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			target := args[0]
+			symbol := args[1]
 
-			supply, height, err := retriever.GetSupply(cliCtx, symbol)
+			supply, height, err := retriever.GetTotal(cliCtx, symbol, target)
 			if err != nil {
 				return err
 			}

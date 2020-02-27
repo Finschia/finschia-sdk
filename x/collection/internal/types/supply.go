@@ -7,8 +7,10 @@ import (
 
 type Supply interface {
 	GetSymbol() string
-	GetTotal() Coins
-	SetTotal(total Coins) Supply
+	GetTotalSupply() Coins
+	SetTotalSupply(total Coins) Supply
+	GetTotalMint() Coins
+	GetTotalBurn() Coins
 
 	Inflate(amount Coins) Supply
 	Deflate(amount Coins) Supply
@@ -20,25 +22,37 @@ type Supply interface {
 var _ Supply = (*BaseSupply)(nil)
 
 type BaseSupply struct {
-	Symbol string `json:"symbol"`
-	Total  Coins  `json:"total"`
+	Symbol      string `json:"symbol"`
+	TotalSupply Coins  `json:"total_supply"`
+	TotalMint   Coins  `json:"total_mint"`
+	TotalBurn   Coins  `json:"total_burn"`
 }
 
 func (supply BaseSupply) GetSymbol() string {
 	return supply.Symbol
 }
 
-func (supply BaseSupply) SetTotal(total Coins) Supply {
-	supply.Total = total
+func (supply BaseSupply) SetTotalSupply(total Coins) Supply {
+	supply.TotalSupply = total
+	supply.TotalMint = total
+	supply.TotalBurn = NewCoins()
 	return supply
 }
 
-func (supply BaseSupply) GetTotal() Coins {
-	return supply.Total
+func (supply BaseSupply) GetTotalSupply() Coins {
+	return supply.TotalSupply
+}
+
+func (supply BaseSupply) GetTotalMint() Coins {
+	return supply.TotalMint
+}
+
+func (supply BaseSupply) GetTotalBurn() Coins {
+	return supply.TotalBurn
 }
 
 func NewSupply(symbol string, total Coins) Supply {
-	return BaseSupply{Symbol: symbol, Total: total}
+	return BaseSupply{Symbol: symbol, TotalSupply: total, TotalMint: total, TotalBurn: NewCoins()}
 }
 
 func DefaultSupply(symbol string) Supply {
@@ -46,12 +60,16 @@ func DefaultSupply(symbol string) Supply {
 }
 
 func (supply BaseSupply) Inflate(amount Coins) Supply {
-	supply.Total = supply.Total.Add(amount...)
+	supply.TotalSupply = supply.TotalSupply.Add(amount...)
+	supply.TotalMint = supply.TotalMint.Add(amount...)
+	supply.checkInvariant()
 	return supply
 }
 
 func (supply BaseSupply) Deflate(amount Coins) Supply {
-	supply.Total = supply.Total.Sub(amount)
+	supply.TotalSupply = supply.TotalSupply.Sub(amount)
+	supply.TotalBurn = supply.TotalBurn.Add(amount...)
+	supply.checkInvariant()
 	return supply
 }
 
@@ -64,8 +82,27 @@ func (supply BaseSupply) String() string {
 }
 
 func (supply BaseSupply) ValidateBasic() error {
-	if !supply.Total.IsValid() {
-		return fmt.Errorf("invalid total supply: %s", supply.Total.String())
+	if !supply.TotalSupply.IsValid() {
+		return fmt.Errorf("invalid total supply: %s", supply.TotalSupply.String())
+	}
+	if !supply.TotalMint.IsValid() {
+		return fmt.Errorf("invalid total mint: %s", supply.TotalMint.String())
+	}
+	if !supply.TotalBurn.IsValid() {
+		return fmt.Errorf("invalid total burn: %s", supply.TotalBurn.String())
 	}
 	return nil
+}
+
+// panic if totalSupply != totalMint - totalBurn
+func (supply BaseSupply) checkInvariant() {
+	if !supply.TotalSupply.IsEqual(supply.TotalMint.Sub(supply.TotalBurn)) {
+		panic(fmt.Sprintf(
+			"Collection [%v]'s total supply [%v] does not match with total mint [%v] - total burn [%v]",
+			supply.GetSymbol(),
+			supply.TotalSupply,
+			supply.TotalMint,
+			supply.TotalBurn,
+		))
+	}
 }

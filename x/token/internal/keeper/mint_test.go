@@ -15,9 +15,9 @@ func TestKeeper_MintTokens(t *testing.T) {
 		token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1))
 	}
-	t.Log("Total supply")
+	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
+		supply, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
@@ -32,9 +32,9 @@ func TestKeeper_MintTokens(t *testing.T) {
 		err := keeper.MintToken(ctx, defaultSymbol, sdk.NewInt(defaultAmount), addr1, addr1)
 		require.NoError(t, err)
 	}
-	t.Log("Total supply")
+	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
+		supply, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
 		require.Equal(t, int64(defaultAmount+defaultAmount), supply.Int64())
 		require.NoError(t, err)
 	}
@@ -48,9 +48,9 @@ func TestKeeper_MintTokens(t *testing.T) {
 		err := keeper.MintToken(ctx, defaultSymbol, sdk.NewInt(defaultAmount), addr1, addr2)
 		require.NoError(t, err)
 	}
-	t.Log("Total supply")
+	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
+		supply, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
 		require.Equal(t, int64(defaultAmount+defaultAmount+defaultAmount), supply.Int64())
 		require.NoError(t, err)
 	}

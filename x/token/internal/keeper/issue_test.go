@@ -34,9 +34,9 @@ func TestKeeper_IssueToken(t *testing.T) {
 		require.False(t, keeper.HasPermission(ctx, addr2, types.NewMintPermission(defaultSymbol)))
 		require.False(t, keeper.HasPermission(ctx, addr2, types.NewBurnPermission(defaultSymbol)))
 	}
-	t.Log("Total supply")
+	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
+		supply, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}

@@ -12,6 +12,8 @@ const (
 	QueryPerms       = "perms"
 	QueryCollections = "collections"
 	QuerySupply      = "supply"
+	QueryMint        = "mint"
+	QueryBurn        = "burn"
 	QueryNFTCount    = "nftcount"
 	QueryParent      = "parent"
 	QueryRoot        = "root"

@@ -561,8 +561,18 @@ func (f *Fixtures) TxTokenCreateCollection(from string, symbol, name string, fla
 	cmd := fmt.Sprintf("%s tx collection create %s %s %s %v", f.LinkcliBinary, from, symbol, name, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
-func (f *Fixtures) TxTokenIssueCollection(from string, symbol, name string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
+func (f *Fixtures) TxTokenIssueFTCollection(from string, symbol, name string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx collection issue-ft %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, symbol, name, amount, decimals, mintable, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxTokenMintFTCollection(from string, to sdk.AccAddress, symbol, tokenID string, amount int64, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection mint-ft %s %s %s %s %d %v", f.LinkcliBinary, from, to.String(), symbol, tokenID, amount, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
+func (f *Fixtures) TxTokenBurnFTCollection(from string, symbol, tokenID string, amount int64, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection burn-ft %s %s %s %d %v", f.LinkcliBinary, from, symbol, tokenID, amount, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
@@ -1010,6 +1020,7 @@ func (f *Fixtures) QueryTokens(flags ...string) tokenModule.Tokens {
 	require.NoError(f.T, err)
 	return tokens
 }
+
 func (f *Fixtures) QueryBalanceToken(symbol string, addr sdk.AccAddress, flags ...string) sdk.Int {
 	cmd := fmt.Sprintf("%s query token balance %s %s %s", f.LinkcliBinary, symbol, addr.String(), f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
@@ -1021,8 +1032,33 @@ func (f *Fixtures) QueryBalanceToken(symbol string, addr sdk.AccAddress, flags .
 
 	return supply
 }
+
 func (f *Fixtures) QuerySupplyToken(symbol string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query token supply %s %s", f.LinkcliBinary, symbol, f.Flags())
+	cmd := fmt.Sprintf("%s query token total supply %s %s", f.LinkcliBinary, symbol, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var supply sdk.Int
+	err := cdc.UnmarshalJSON([]byte(res), &supply)
+	require.NoError(f.T, err)
+
+	return supply
+}
+
+func (f *Fixtures) QueryMintToken(symbol string, flags ...string) sdk.Int {
+	cmd := fmt.Sprintf("%s query token total mint %s %s", f.LinkcliBinary, symbol, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var supply sdk.Int
+	err := cdc.UnmarshalJSON([]byte(res), &supply)
+	require.NoError(f.T, err)
+
+	return supply
+}
+
+func (f *Fixtures) QueryBurnToken(symbol string, flags ...string) sdk.Int {
+	cmd := fmt.Sprintf("%s query token total burn %s %s", f.LinkcliBinary, symbol, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
@@ -1111,8 +1147,30 @@ func (f *Fixtures) QueryCollections(flags ...string) collectionModule.Collection
 
 	return collections
 }
-func (f *Fixtures) QuerySupplyTokenCollection(symbol, tokenID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query collection supply %s %s %s", f.LinkcliBinary, symbol, tokenID, f.Flags())
+func (f *Fixtures) QueryTotalSupplyTokenCollection(symbol, tokenID string, flags ...string) sdk.Int {
+	cmd := fmt.Sprintf("%s query collection total supply %s %s %s", f.LinkcliBinary, symbol, tokenID, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var supply sdk.Int
+	err := cdc.UnmarshalJSON([]byte(res), &supply)
+	require.NoError(f.T, err)
+
+	return supply
+}
+func (f *Fixtures) QueryTotalMintTokenCollection(symbol, tokenID string, flags ...string) sdk.Int {
+	cmd := fmt.Sprintf("%s query collection total mint %s %s %s", f.LinkcliBinary, symbol, tokenID, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var supply sdk.Int
+	err := cdc.UnmarshalJSON([]byte(res), &supply)
+	require.NoError(f.T, err)
+
+	return supply
+}
+func (f *Fixtures) QueryTotalBurnTokenCollection(symbol, tokenID string, flags ...string) sdk.Int {
+	cmd := fmt.Sprintf("%s query collection total burn %s %s %s", f.LinkcliBinary, symbol, tokenID, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()

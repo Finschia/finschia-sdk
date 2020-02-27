@@ -2349,6 +2349,8 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		require.Equal(t, true, token.GetMintable())
 
 		require.Equal(t, int64(initAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount), f.QueryMintToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(0), f.QueryBurnToken(symbolConyFoo).Int64())
 		require.Equal(t, int64(initAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 	}
 	// Mint/Burn by token owner
@@ -2356,11 +2358,15 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenMint(keyFoo, fooAddr, symbolConyFoo, mintAmountStr, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.Equal(t, int64(initAmount+mintAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount), f.QueryMintToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(0), f.QueryBurnToken(symbolConyFoo).Int64())
 		require.Equal(t, int64(initAmount+mintAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 
 		f.TxTokenBurn(keyFoo, symbolConyFoo, burnAmountStr, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount), f.QueryMintToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(burnAmount), f.QueryBurnToken(symbolConyFoo).Int64())
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 	}
 
@@ -2375,6 +2381,8 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 
 		//Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount), f.QueryMintToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(burnAmount), f.QueryBurnToken(symbolConyFoo).Int64())
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 	}
 
@@ -2386,6 +2394,8 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenMint(keyBar, barAddr, symbolConyFoo, mintAmountStr, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount+mintAmount), f.QueryMintToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(burnAmount), f.QueryBurnToken(symbolConyFoo).Int64())
 		require.Equal(t, int64(mintAmount), f.QueryBalanceToken(symbolConyFoo, barAddr).Int64())
 	}
 
@@ -2399,6 +2409,8 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 
 		// Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount+mintAmount), f.QueryMintToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(burnAmount), f.QueryBurnToken(symbolConyFoo).Int64())
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QueryBalanceToken(symbolConyFoo, fooAddr).Int64())
 		require.Equal(t, int64(mintAmount), f.QueryBalanceToken(symbolConyFoo, barAddr).Int64())
 	}
@@ -2408,6 +2420,8 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		f.TxTokenBurn(keyBar, symbolConyFoo, burnAmountStr, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QuerySupplyToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(initAmount+mintAmount+mintAmount), f.QueryMintToken(symbolConyFoo).Int64())
+		require.Equal(t, int64(burnAmount), f.QueryBurnToken(symbolConyFoo).Int64())
 		require.Equal(t, int64(mintAmount), f.QueryBalanceToken(symbolConyFoo, barAddr).Int64())
 	}
 
@@ -2450,7 +2464,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	}
 	// Issue collective token brown with token id
 	{
-		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenExpectEmpty(tickerBrown + fooAddrSuffix)
@@ -2461,27 +2475,40 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, int64(6), token.(collectionmodule.FT).GetDecimals().Int64())
 		require.Equal(t, false, token.(collectionmodule.FT).GetMintable())
 		require.Equal(t, sdk.NewInt(10000), f.QueryBalanceCollection(tickerBrown+fooAddrSuffix, tokenID01, fooAddr))
+		require.Equal(t, sdk.NewInt(10000), f.QueryTotalSupplyTokenCollection(tickerBrown+fooAddrSuffix, tokenID01))
+		require.Equal(t, sdk.NewInt(10000), f.QueryTotalMintTokenCollection(tickerBrown+fooAddrSuffix, tokenID01))
+		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(tickerBrown+fooAddrSuffix, tokenID01))
 	}
 	{
-		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
-		f.TxTokenIssueCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 20000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, tickerBrown+fooAddrSuffix, description, 30000, 6, false, "-y")
 
 		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID01)
 		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
 		require.Equal(t, tokenID01, token.GetTokenID())
+		require.Equal(t, sdk.NewInt(10000), f.QueryTotalSupplyTokenCollection(tickerBrown+fooAddrSuffix, tokenID01))
+		require.Equal(t, sdk.NewInt(10000), f.QueryTotalMintTokenCollection(tickerBrown+fooAddrSuffix, tokenID01))
+		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(tickerBrown+fooAddrSuffix, tokenID01))
+
 		token = f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID02)
 		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
 		require.Equal(t, tokenID02, token.GetTokenID())
+		require.Equal(t, sdk.NewInt(20000), f.QueryTotalSupplyTokenCollection(tickerBrown+fooAddrSuffix, tokenID02))
+		require.Equal(t, sdk.NewInt(20000), f.QueryTotalMintTokenCollection(tickerBrown+fooAddrSuffix, tokenID02))
+		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(tickerBrown+fooAddrSuffix, tokenID02))
+
 		token = f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID03)
 		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
 		require.Equal(t, tokenID03, token.GetTokenID())
-
+		require.Equal(t, sdk.NewInt(30000), f.QueryTotalSupplyTokenCollection(tickerBrown+fooAddrSuffix, tokenID03))
+		require.Equal(t, sdk.NewInt(30000), f.QueryTotalMintTokenCollection(tickerBrown+fooAddrSuffix, tokenID03))
+		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(tickerBrown+fooAddrSuffix, tokenID03))
 	}
 
 	// Bar cannot issue with the collection symbol
 	{
 		// set the symbol with fooAddrSuffix
-		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenCollectionExpectEmpty(tickerBrown+fooAddrSuffix, tokenID04)
@@ -2491,13 +2518,34 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	{
 		f.TxCollectionGrantPerm(keyFoo, barAddr, tickerBrown+fooAddrSuffix, "issue", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.TxTokenIssueCollection(keyBar, tickerBrown+fooAddrSuffix, description, 10000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyBar, tickerBrown+fooAddrSuffix, description, 40000, 6, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryTokenCollection(tickerBrown+fooAddrSuffix, tokenID04)
 		require.Equal(t, tickerBrown+fooAddrSuffix, token.GetSymbol())
 		require.Equal(t, tokenID04, token.GetTokenID())
+		require.Equal(t, sdk.NewInt(40000), f.QueryTotalSupplyTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
+		require.Equal(t, sdk.NewInt(40000), f.QueryTotalMintTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
+		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
 	}
+
+	// Mint and Burn FTs in the collection
+	{
+		f.TxTokenMintFTCollection(keyBar, barAddr, tickerBrown+fooAddrSuffix, tokenID04, int64(1000), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.Equal(t, sdk.NewInt(41000), f.QueryTotalSupplyTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
+		require.Equal(t, sdk.NewInt(41000), f.QueryTotalMintTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
+		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
+
+		f.TxTokenBurnFTCollection(keyBar, tickerBrown+fooAddrSuffix, tokenID04, int64(2000), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.Equal(t, sdk.NewInt(39000), f.QueryTotalSupplyTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
+		require.Equal(t, sdk.NewInt(41000), f.QueryTotalMintTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
+		require.Equal(t, sdk.NewInt(2000), f.QueryTotalBurnTokenCollection(tickerBrown+fooAddrSuffix, tokenID04))
+	}
+
 	f.Cleanup()
 }
 

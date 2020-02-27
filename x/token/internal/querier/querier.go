@@ -20,8 +20,12 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 			return queryTokens(ctx, req, keeper)
 		case types.QueryBalance:
 			return queryBalance(ctx, req, keeper)
+		case types.QueryMint:
+			return queryTotal(ctx, req, keeper, types.QueryMint)
+		case types.QueryBurn:
+			return queryTotal(ctx, req, keeper, types.QueryBurn)
 		case types.QuerySupply:
-			return querySupply(ctx, req, keeper)
+			return queryTotal(ctx, req, keeper, types.QuerySupply)
 		default:
 			return nil, sdk.ErrUnknownRequest("unknown token query endpoint")
 		}
@@ -92,17 +96,18 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 	return bz, nil
 }
 
-func querySupply(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
+func queryTotal(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, sdk.Error) {
 	var params types.QuerySymbolParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	supply, err := keeper.GetSupplyInt(ctx, params.Symbol)
+
+	total, err := keeper.GetTotalInt(ctx, params.Symbol, target)
 	if err != nil {
 		return nil, err
 	}
 
-	bz, err2 := keeper.MarshalJSONIndent(supply)
+	bz, err2 := keeper.MarshalJSONIndent(total)
 	if err2 != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
 	}

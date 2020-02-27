@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	clienttypes "github.com/line/link/x/token/client/internal/types"
+	"github.com/line/link/x/token/internal/types"
 
 	"github.com/gorilla/mux"
 	"github.com/line/link/client"
@@ -15,7 +16,9 @@ import (
 )
 
 func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
-	r.HandleFunc("/token/tokens/{symbol}/supply", QuerySupplyRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/tokens/{symbol}/supply", QueryTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
+	r.HandleFunc("/token/tokens/{symbol}/mint", QueryTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
+	r.HandleFunc("/token/tokens/{symbol}/burn", QueryTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
 	r.HandleFunc("/token/tokens/{symbol}/balance/{address}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/tokens/{symbol}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
@@ -100,7 +103,7 @@ func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-func QuerySupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -113,7 +116,7 @@ func QuerySupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		supply, height, err := retriever.GetSupply(cliCtx, symbol)
+		total, height, err := retriever.GetTotal(cliCtx, symbol, target)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -121,7 +124,7 @@ func QuerySupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		cliCtx = cliCtx.WithHeight(height)
 
-		rest.PostProcessResponse(w, cliCtx, supply)
+		rest.PostProcessResponse(w, cliCtx, total)
 	}
 }
 

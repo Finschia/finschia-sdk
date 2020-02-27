@@ -11,6 +11,8 @@ const (
 	QueryPerms   = "perms"
 	QueryBalance = "balance"
 	QuerySupply  = "supply"
+	QueryMint    = "mint"
+	QueryBurn    = "burn"
 )
 
 type NodeQuerier interface {
@@ -41,18 +43,4 @@ type QuerySymbolAccAddressParams struct {
 
 func NewQuerySymbolAccAddressParams(symbol string, addr sdk.AccAddress) QuerySymbolAccAddressParams {
 	return QuerySymbolAccAddressParams{Symbol: symbol, Addr: addr}
-}
-
-type QueryIsApprovedParams struct {
-	Proxy    sdk.AccAddress `json:"proxy"`
-	Approver sdk.AccAddress `json:"approver"`
-	Symbol   string         `json:"symbol"`
-}
-
-func NewQueryIsApprovedParams(proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) QueryIsApprovedParams {
-	return QueryIsApprovedParams{
-		Proxy:    proxy,
-		Approver: approver,
-		Symbol:   symbol,
-	}
 }

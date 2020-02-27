@@ -112,14 +112,14 @@ func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, symbol, tokenID
 	return nftcount, height, nil
 }
 
-func (r Retriever) GetSupply(ctx context.CLIContext, symbol, tokenID string) (sdk.Int, int64, error) {
+func (r Retriever) GetTotal(ctx context.CLIContext, symbol, tokenID, target string) (sdk.Int, int64, error) {
 	var supply sdk.Int
 	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
 	if err != nil {
 		return supply, 0, err
 	}
 
-	res, height, err := r.query(types.QuerySupply, bs)
+	res, height, err := r.query(target, bs)
 	if err != nil {
 		return supply, height, err
 	}

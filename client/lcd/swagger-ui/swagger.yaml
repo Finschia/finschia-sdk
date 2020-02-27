@@ -686,6 +686,78 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
+  /token/tokens/{symbol}/mint:
+    get:
+      tags:
+        - Token
+      summary: Total mint of a single fungible token
+      parameters:
+        - name: symbol
+          in: path
+          description: Coin denomination
+          required: true
+          schema:
+            type: string
+          example: "conyxxv"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: string
+                    example: "100"
+        "500":
+          description: Internal Server Error
+  /token/tokens/{symbol}/burn:
+    get:
+      tags:
+        - Token
+      summary: Total burn of a single fungible token
+      parameters:
+        - name: symbol
+          in: path
+          description: Coin denomination
+          required: true
+          schema:
+            type: string
+          example: "conyxxv"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: string
+                    example: "100"
+        "500":
+          description: Internal Server Error
   /token/tokens/{symbol}:
     get:
       tags:
@@ -810,6 +882,92 @@ paths:
       tags:
         - Collection
       summary: Total supply of a single fungible token of the collection
+      parameters:
+        - name: symbol
+          in: path
+          description: symbol for the collection
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: token_id
+          in: path
+          description: token id
+          required: true
+          schema:
+            type: string
+          example: "0000000100000000"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: string
+                    example: "100"
+        "500":
+          description: Internal Server Error
+  /collection/collections/{symbol}/tokens/{token_id}/mint:
+    get:
+      tags:
+        - Collection
+      summary: Total mint of a single fungible token of the collection
+      parameters:
+        - name: symbol
+          in: path
+          description: symbol for the collection
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: token_id
+          in: path
+          description: token id
+          required: true
+          schema:
+            type: string
+          example: "0000000100000000"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: string
+                    example: "100"
+        "500":
+          description: Internal Server Error
+  /collection/collections/{symbol}/tokens/{token_id}/burn:
+    get:
+      tags:
+        - Collection
+      summary: Total burn of a single fungible token of the collection
       parameters:
         - name: symbol
           in: path

@@ -25,7 +25,11 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 		case types.QueryNFTCount:
 			return queryNFTCount(ctx, req, keeper)
 		case types.QuerySupply:
-			return querySupply(ctx, req, keeper)
+			return queryTotal(ctx, req, keeper, types.QuerySupply)
+		case types.QueryMint:
+			return queryTotal(ctx, req, keeper, types.QueryMint)
+		case types.QueryBurn:
+			return queryTotal(ctx, req, keeper, types.QueryBurn)
 		case types.QueryParent:
 			return queryParent(ctx, req, keeper)
 		case types.QueryRoot:
@@ -232,12 +236,13 @@ func queryIsApproved(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 
 	return bz, nil
 }
-func querySupply(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
+func queryTotal(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, sdk.Error) {
 	var params types.QuerySymbolTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	supply, err := keeper.GetSupplyInt(ctx, params.Symbol, params.TokenID)
+
+	supply, err := keeper.GetTotalInt(ctx, params.Symbol, params.TokenID, target)
 	if err != nil {
 		return nil, err
 	}

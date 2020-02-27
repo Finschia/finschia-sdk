@@ -5,8 +5,9 @@ import (
 	"net/http"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/types"
+	linktypes "github.com/line/link/types"
 	clienttypes "github.com/line/link/x/collection/client/internal/types"
+	"github.com/line/link/x/collection/internal/types"
 
 	"github.com/gorilla/mux"
 	"github.com/line/link/client"
@@ -16,7 +17,9 @@ import (
 )
 
 func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
-	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}/supply", QueryTokenSupplyRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}/supply", QueryTokenTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}/mint", QueryTokenTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}/burn", QueryTokenTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
 	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_type}/count", QueryCountRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections/{symbol}/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
@@ -159,7 +162,7 @@ func QuerCollectionsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc
 	}
 }
 
-func QueryTokenSupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryTokenTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -173,7 +176,7 @@ func QueryTokenSupplyRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		supply, height, err := retriever.GetSupply(cliCtx, symbol, tokenID)
+		supply, height, err := retriever.GetTotal(cliCtx, symbol, tokenID, target)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -381,7 +384,7 @@ func QueryIsApprovedRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc 
 		}
 
 		symbol := vars["symbol"]
-		if err := types.ValidateSymbolUserDefined(symbol); err != nil {
+		if err := linktypes.ValidateSymbolUserDefined(symbol); err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("invalid symbol[%s]: %s", symbol, err))
 			return
 		}

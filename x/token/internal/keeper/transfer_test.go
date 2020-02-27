@@ -16,9 +16,9 @@ func TestKeeper_Transfer(t *testing.T) {
 		token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1))
 	}
-	t.Log("Total supply")
+	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
+		supply, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
@@ -37,9 +37,9 @@ func TestKeeper_Transfer(t *testing.T) {
 		err := keeper.Transfer(ctx, addr1, addr2, defaultSymbol, sdk.NewInt(defaultAmount))
 		require.NoError(t, err)
 	}
-	t.Log("Total supply")
+	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetSupplyInt(ctx, defaultSymbol)
+		supply, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}

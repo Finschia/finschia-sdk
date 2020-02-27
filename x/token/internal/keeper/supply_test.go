@@ -11,10 +11,10 @@ import (
 
 func verifySupplyFunc(t *testing.T, expected types.Supply, actual types.Supply) {
 	require.Equal(t, expected.GetSymbol(), actual.GetSymbol())
-	require.Equal(t, expected.GetTotal().Int64(), actual.GetTotal().Int64())
+	require.Equal(t, expected.GetTotalSupply().Int64(), actual.GetTotalSupply().Int64())
 }
 
-func TestKeeper_GetSupplyInt(t *testing.T) {
+func TestKeeper_GetTotalInt(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Supply and Token")
 	expected := types.DefaultSupply(defaultSymbol)
@@ -31,11 +31,23 @@ func TestKeeper_GetSupplyInt(t *testing.T) {
 		require.NoError(t, err)
 		verifySupplyFunc(t, expected, actual)
 	}
-	t.Log("Get Supply Int")
+	t.Log("Get Total Supply Int")
 	{
-		actual, err := keeper.GetSupplyInt(ctx, defaultSymbol)
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
 		require.NoError(t, err)
-		require.Equal(t, expected.GetTotal().Int64(), actual.Int64())
+		require.Equal(t, expected.GetTotalSupply().Int64(), actual.Int64())
+	}
+	t.Log("Get Total Mint Int")
+	{
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QueryMint)
+		require.NoError(t, err)
+		require.Equal(t, expected.GetTotalMint().Int64(), actual.Int64())
+	}
+	t.Log("Get Total Burn Int")
+	{
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QueryBurn)
+		require.NoError(t, err)
+		require.Equal(t, expected.GetTotalBurn().Int64(), actual.Int64())
 	}
 }
 
@@ -60,6 +72,24 @@ func TestKeeper_MintSupply(t *testing.T) {
 		balance := keeper.GetBalance(ctx, defaultSymbol, addr1)
 		require.Equal(t, sdk.NewInt(defaultAmount).Int64(), balance.Int64())
 	}
+	t.Log("Get Total Supply Int")
+	{
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
+		require.NoError(t, err)
+		require.Equal(t, sdk.NewInt(defaultAmount), actual)
+	}
+	t.Log("Get Total Mint Int")
+	{
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QueryMint)
+		require.NoError(t, err)
+		require.Equal(t, sdk.NewInt(defaultAmount), actual)
+	}
+	t.Log("Get Total Burn Int")
+	{
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QueryBurn)
+		require.NoError(t, err)
+		require.Equal(t, sdk.ZeroInt(), actual)
+	}
 }
 
 func TestKeeper_BurnSupply(t *testing.T) {
@@ -77,7 +107,7 @@ func TestKeeper_BurnSupply(t *testing.T) {
 	t.Log("Set Balance And Supply")
 	{
 		require.NoError(t, keeper.SetBalance(ctx, defaultSymbol, addr1, sdk.NewInt(defaultAmount)))
-		keeper.setSupply(ctx, types.DefaultSupply(defaultSymbol).SetTotal(sdk.NewInt(defaultAmount)))
+		keeper.setSupply(ctx, types.DefaultSupply(defaultSymbol).SetTotalSupply(sdk.NewInt(defaultAmount)))
 	}
 	t.Log("Burn Supply")
 	{
@@ -87,5 +117,23 @@ func TestKeeper_BurnSupply(t *testing.T) {
 	{
 		balance := keeper.GetBalance(ctx, defaultSymbol, addr1)
 		require.Equal(t, sdk.ZeroInt().Int64(), balance.Int64())
+	}
+	t.Log("Get Total Supply Int")
+	{
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
+		require.NoError(t, err)
+		require.Equal(t, sdk.ZeroInt(), actual)
+	}
+	t.Log("Get Total Mint Int")
+	{
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QueryMint)
+		require.NoError(t, err)
+		require.Equal(t, sdk.NewInt(defaultAmount), actual)
+	}
+	t.Log("Get Total Burn Int")
+	{
+		actual, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QueryBurn)
+		require.NoError(t, err)
+		require.Equal(t, sdk.NewInt(defaultAmount), actual)
 	}
 }

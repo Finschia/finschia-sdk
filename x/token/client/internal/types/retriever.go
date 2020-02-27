@@ -57,23 +57,24 @@ func (r Retriever) GetAccountBalance(ctx context.CLIContext, symbol string, addr
 
 	return supply, height, nil
 }
-func (r Retriever) GetSupply(ctx context.CLIContext, symbol string) (sdk.Int, int64, error) {
-	var supply sdk.Int
+
+func (r Retriever) GetTotal(ctx context.CLIContext, symbol string, target string) (sdk.Int, int64, error) {
+	var total sdk.Int
 	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolParams(symbol))
 	if err != nil {
-		return supply, 0, err
+		return total, 0, err
 	}
 
-	res, height, err := r.query(types.QuerySupply, bs)
+	res, height, err := r.query(target, bs)
 	if err != nil {
-		return supply, height, err
+		return total, height, err
 	}
 
-	if err := ctx.Codec.UnmarshalJSON(res, &supply); err != nil {
-		return supply, height, err
+	if err := ctx.Codec.UnmarshalJSON(res, &total); err != nil {
+		return total, height, err
 	}
 
-	return supply, height, nil
+	return total, height, nil
 }
 
 func (r Retriever) GetToken(ctx context.CLIContext, symbol string) (types.Token, int64, error) {
