@@ -16,11 +16,11 @@ import (
 )
 
 func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
-	r.HandleFunc("/token/tokens/{symbol}/supply", QueryTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
-	r.HandleFunc("/token/tokens/{symbol}/mint", QueryTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
-	r.HandleFunc("/token/tokens/{symbol}/burn", QueryTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
-	r.HandleFunc("/token/tokens/{symbol}/balance/{address}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/token/tokens/{symbol}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/tokens/{contract_id}/supply", QueryTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
+	r.HandleFunc("/token/tokens/{contract_id}/mint", QueryTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
+	r.HandleFunc("/token/tokens/{contract_id}/burn", QueryTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
+	r.HandleFunc("/token/tokens/{contract_id}/balance/{address}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/tokens/{contract_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/permissions/{address}", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 }
@@ -29,7 +29,7 @@ func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
-		symbol := vars["symbol"]
+		contractID := vars["contract_id"]
 
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -38,7 +38,7 @@ func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		token, height, err := retriever.GetToken(cliCtx, symbol)
+		token, height, err := retriever.GetToken(cliCtx, contractID)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -77,7 +77,7 @@ func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
-		symbol := vars["symbol"]
+		contractID := vars["contract_id"]
 		addr, err := sdk.AccAddressFromBech32(vars["address"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -91,7 +91,7 @@ func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		supply, height, err := retriever.GetAccountBalance(cliCtx, symbol, addr)
+		supply, height, err := retriever.GetAccountBalance(cliCtx, contractID, addr)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -107,7 +107,7 @@ func QueryTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.Ha
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
-		symbol := vars["symbol"]
+		contractID := vars["contract_id"]
 
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
@@ -116,7 +116,8 @@ func QueryTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.Ha
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		total, height, err := retriever.GetTotal(cliCtx, symbol, target)
+		total, height, err := retriever.GetTotal(cliCtx, contractID, target)
+
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return

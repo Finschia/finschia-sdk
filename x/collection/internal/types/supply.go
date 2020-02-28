@@ -6,7 +6,7 @@ import (
 )
 
 type Supply interface {
-	GetSymbol() string
+	GetContractID() string
 	GetTotalSupply() Coins
 	SetTotalSupply(total Coins) Supply
 	GetTotalMint() Coins
@@ -22,14 +22,14 @@ type Supply interface {
 var _ Supply = (*BaseSupply)(nil)
 
 type BaseSupply struct {
-	Symbol      string `json:"symbol"`
+	ContractID  string `json:"contract_id"`
 	TotalSupply Coins  `json:"total_supply"`
 	TotalMint   Coins  `json:"total_mint"`
 	TotalBurn   Coins  `json:"total_burn"`
 }
 
-func (supply BaseSupply) GetSymbol() string {
-	return supply.Symbol
+func (supply BaseSupply) GetContractID() string {
+	return supply.ContractID
 }
 
 func (supply BaseSupply) SetTotalSupply(total Coins) Supply {
@@ -51,12 +51,12 @@ func (supply BaseSupply) GetTotalBurn() Coins {
 	return supply.TotalBurn
 }
 
-func NewSupply(symbol string, total Coins) Supply {
-	return BaseSupply{Symbol: symbol, TotalSupply: total, TotalMint: total, TotalBurn: NewCoins()}
+func NewSupply(contractID string, total Coins) Supply {
+	return BaseSupply{ContractID: contractID, TotalSupply: total, TotalMint: total, TotalBurn: NewCoins()}
 }
 
-func DefaultSupply(symbol string) Supply {
-	return NewSupply(symbol, NewCoins())
+func DefaultSupply(contractID string) Supply {
+	return NewSupply(contractID, NewCoins())
 }
 
 func (supply BaseSupply) Inflate(amount Coins) Supply {
@@ -99,7 +99,7 @@ func (supply BaseSupply) checkInvariant() {
 	if !supply.TotalSupply.IsEqual(supply.TotalMint.Sub(supply.TotalBurn)) {
 		panic(fmt.Sprintf(
 			"Collection [%v]'s total supply [%v] does not match with total mint [%v] - total burn [%v]",
-			supply.GetSymbol(),
+			supply.GetContractID(),
 			supply.TotalSupply,
 			supply.TotalMint,
 			supply.TotalBurn,

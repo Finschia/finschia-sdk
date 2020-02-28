@@ -30,7 +30,7 @@ var (
 	EventTypeOperationBurnNFT     = "operation_burn_nft"
 
 	AttributeKeyName          = "name"
-	AttributeKeySymbol        = "symbol"
+	AttributeKeyContractID    = "contract_id"
 	AttributeKeyTokenID       = "token_id"
 	AttributeKeyOwner         = "owner"
 	AttributeKeyAmount        = "amount"

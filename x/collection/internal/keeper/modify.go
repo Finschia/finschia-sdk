@@ -6,28 +6,28 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func (k Keeper) Modify(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenType, tokenIndex string,
+func (k Keeper) Modify(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenType, tokenIndex string,
 	change linktype.Change) sdk.Error {
 	if tokenType != "" {
 		if tokenIndex != "" {
-			return k.modifyToken(ctx, owner, symbol, tokenType+tokenIndex, change)
+			return k.modifyToken(ctx, owner, contractID, tokenType+tokenIndex, change)
 		}
-		return k.modifyTokenType(ctx, owner, symbol, tokenType, change)
+		return k.modifyTokenType(ctx, owner, contractID, tokenType, change)
 	}
 	if tokenIndex == "" {
-		return k.modifyCollection(ctx, owner, symbol, change)
+		return k.modifyCollection(ctx, owner, contractID, change)
 	}
 	return types.ErrTokenIndexWithoutType(types.DefaultCodespace)
 }
 
 //nolint:dupl
-func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, symbol string,
+func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, contractID string,
 	change linktype.Change) sdk.Error {
-	collection, err := k.GetCollection(ctx, symbol)
+	collection, err := k.GetCollection(ctx, contractID)
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(symbol)
+	modifyPerm := types.NewModifyPermission(contractID)
 	if !k.HasPermission(ctx, owner, modifyPerm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, modifyPerm)
 	}
@@ -49,9 +49,9 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, symbol s
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyCollection,
+			sdk.NewAttribute(types.AttributeKeyContractID, collection.GetContractID()),
 			sdk.NewAttribute(types.AttributeKeyModifiedField, change.Field),
 			sdk.NewAttribute(types.AttributeKeyName, collection.GetName()),
-			sdk.NewAttribute(types.AttributeKeySymbol, collection.GetSymbol()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyBaseImgURI, collection.GetBaseImgURI()),
 		),
@@ -60,13 +60,13 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, symbol s
 }
 
 //nolint:dupl
-func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenTypeID string,
+func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenTypeID string,
 	change linktype.Change) sdk.Error {
-	tokenType, err := k.GetTokenType(ctx, symbol, tokenTypeID)
+	tokenType, err := k.GetTokenType(ctx, contractID, tokenTypeID)
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(symbol)
+	modifyPerm := types.NewModifyPermission(contractID)
 	if !k.HasPermission(ctx, owner, modifyPerm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, modifyPerm)
 	}
@@ -78,7 +78,7 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, symbol, t
 		return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
 	}
 
-	err = k.UpdateTokenType(ctx, symbol, tokenType)
+	err = k.UpdateTokenType(ctx, contractID, tokenType)
 	if err != nil {
 		return err
 	}
@@ -86,9 +86,9 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, symbol, t
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyTokenType,
+			sdk.NewAttribute(types.AttributeKeyContractID, tokenType.GetContractID()),
 			sdk.NewAttribute(types.AttributeKeyModifiedField, change.Field),
 			sdk.NewAttribute(types.AttributeKeyName, tokenType.GetName()),
-			sdk.NewAttribute(types.AttributeKeySymbol, tokenType.GetSymbol()),
 			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType.GetTokenType()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 		),
@@ -97,13 +97,13 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, symbol, t
 }
 
 //nolint:dupl
-func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, symbol, tokenID string,
+func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenID string,
 	change linktype.Change) sdk.Error {
-	token, err := k.GetToken(ctx, symbol, tokenID)
+	token, err := k.GetToken(ctx, contractID, tokenID)
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(symbol)
+	modifyPerm := types.NewModifyPermission(contractID)
 	if !k.HasPermission(ctx, owner, modifyPerm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, modifyPerm)
 	}
@@ -115,7 +115,7 @@ func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, symbol, token
 		return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
 	}
 
-	err = k.UpdateToken(ctx, symbol, token)
+	err = k.UpdateToken(ctx, contractID, token)
 	if err != nil {
 		return err
 	}
@@ -123,9 +123,9 @@ func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, symbol, token
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyToken,
+			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
 			sdk.NewAttribute(types.AttributeKeyModifiedField, change.Field),
 			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
-			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 		),

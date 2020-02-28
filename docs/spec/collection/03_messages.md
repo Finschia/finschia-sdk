@@ -2,16 +2,15 @@
 ## MsgIssue
 
 **Issue token messages are to create a new token on Link Chain**
-- The first issuer for the token symbol occupies the symbol and the issue permission is granted to the issuer
+- The new contract id is generated while issuer issues and the issue permission is granted to the issuer
 - An issuer who granted issue permission can issue collective tokens
 - Mint permission is granted to the token issuer when the token is mintable
-- The identifier for the collective token is defined by the concatenation of the symbol and the token id
+- The identifier for the collective token is defined by the concatenation of the contract_id and the token id
 
 ### MsgCreate
 ```golang
 type MsgCreate struct {
 	Name     string         `json:"name"`
-	Symbol   string         `json:"symbol"`
 	Owner    sdk.AccAddress `json:"owner"`
 }
 ```
@@ -19,13 +18,12 @@ type MsgCreate struct {
 ### MsgIssueFT
 ```golang
 type MsgIssueFT struct {
-	Symbol   string         `json:"symbol"`
-	Name     string         `json:"name"`
-	Owner    sdk.AccAddress `json:"owner"`
-	TokenURI string         `json:"token_uri"`
-	Amount   sdk.Int        `json:"amount"`
-	Mintable bool           `json:"mintable"`
-	Decimals sdk.Int        `json:"decimals"`
+	Owner      sdk.AccAddress `json:"owner"`
+	ContractID string         `json:"contract_id"`
+	Name       string         `json:"name"`
+	Amount     sdk.Int        `json:"amount"`
+	Mintable   bool           `json:"mintable"`
+	Decimals   sdk.Int        `json:"decimals"`
 }
 ```
 
@@ -33,9 +31,9 @@ type MsgIssueFT struct {
 ### MsgIssueNFT
 ```golang
 type MsgIssueNFT struct {
-	Symbol   string         `json:"symbol"`
-	Owner    sdk.AccAddress `json:"owner"`
-	Name     string         `json:"name"`
+	Owner      sdk.AccAddress `json:"owner"`
+	ContractID string         `json:"contract_id"`
+	Name       string         `json:"name"`
 }
 ```
 
@@ -50,10 +48,10 @@ type MsgIssueNFT struct {
 
 ```golang
 type MsgMintFT struct {
-	Symbol string         `json:"symbol"`
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Amount Coins          `json:"amount"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     Coins          `json:"amount"`
 }
 
 type Coin struct {
@@ -68,12 +66,11 @@ type Coins []Coin
 ### MsgMintNFT
 ```golang
 type MsgMintNFT struct {
-	Symbol    string         `json:"symbol"`
-	Name      string         `json:"name"`
-	From      sdk.AccAddress `json:"from"`
-	To        sdk.AccAddress `json:"to"`
-	TokenURI  string         `json:"token_uri"`
-	TokenType string         `json:"token_type"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	Name       string         `json:"name"`
+	TokenType  string         `json:"token_type"`
 }
 ```
 
@@ -86,18 +83,18 @@ type MsgMintNFT struct {
 
 ```golang
 type MsgBurnFT struct {
-	Symbol string         `json:"symbol"`
-	From   sdk.AccAddress `json:"from"`
-	Amount Coins          `json:"amount"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	Amount     Coins          `json:"amount"`
 }
 ```
 
 ### MsgBurnNFT
 ```golang
 type MsgBurnNFT struct {
-	From     sdk.AccAddress `json:"from"`
-	Symbol   string         `json:"symbol"`
-	TokenIDs []string       `json:"token_ids"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	TokenIDs   []string       `json:"token_ids"`
 }
 ```
 
@@ -105,20 +102,20 @@ type MsgBurnNFT struct {
 
 ```golang
 type MsgBurnFTFrom struct {
-	Symbol string         `json:"symbol"`
-	Proxy  sdk.AccAddress `json:"proxy"`
-	From   sdk.AccAddress `json:"from"`
-	Amount Coins          `json:"amount"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	Amount     Coins          `json:"amount"`
 }
 ```
 
 ### MsgBurnNFTFrom
 ```golang
 type MsgBurnNFTFrom struct {
-	Proxy    sdk.AccAddress `json:"proxy"`
-	From     sdk.AccAddress `json:"from"`
-	Symbol   string         `json:"symbol"`
-	TokenIDs []string       `json:"token_ids"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	TokenIDs   []string       `json:"token_ids"`
 }
 ```
 
@@ -151,10 +148,10 @@ type MsgRevokePermission struct {
 ## MsgTransferFT
 ```golang
 type MsgTransferFT struct {
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Symbol string         `json:"symbol"`
-	Amount Coins          `json:"amount"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     Coins          `json:"amount"`
 }
 ```
 
@@ -168,10 +165,10 @@ type MsgTransferFT struct {
 
 ```golang
 type MsgTransferNFT struct {
-	From     sdk.AccAddress `json:"from"`
-	To       sdk.AccAddress `json:"to"`
-	Symbol   string         `json:"symbol"`
-	TokenIDs []string       `json:"token_ids"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	TokenIDs   []string       `json:"token_ids"`
 }
 ```
 
@@ -185,11 +182,11 @@ type MsgTransferNFT struct {
 
 ```golang
 type MsgTransferFTFrom struct {
-	Proxy  sdk.AccAddress `json:"proxy"`
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Symbol string         `json:"symbol"`
-	Amount Coins          `json:"amount"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     Coins          `json:"amount"`
 }
 ```
 
@@ -203,11 +200,11 @@ type MsgTransferFTFrom struct {
 
 ```golang
 type MsgTransferNFTFrom struct {
-	Proxy    sdk.AccAddress `json:"proxy"`
-	From     sdk.AccAddress `json:"from"`
-	To       sdk.AccAddress `json:"to"`
-	Symbol   string         `json:"symbol"`
-	TokenIDs []string       `json:"token_ids"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	To         sdk.AccAddress `json:"to"`
+	TokenIDs   []string       `json:"token_ids"`
 }
 ```
 
@@ -221,10 +218,10 @@ type MsgTransferNFTFrom struct {
 
 ```golang
 type MsgAttach struct {
-	From      sdk.AccAddress `json:"from"`
-	Symbol    string         `json:"symbol"`
-	ToTokenID string         `json:"to_token_id"`
-	TokenID   string         `json:"token_id"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	ToTokenID  string         `json:"to_token_id"`
+	TokenID    string         `json:"token_id"`
 }
 ```
 
@@ -239,9 +236,9 @@ type MsgAttach struct {
 
 ```golang
 type MsgDetach struct {
-	From    sdk.AccAddress `json:"from"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	TokenID    string         `json:"token_id"`
 }
 ```
 
@@ -254,11 +251,11 @@ type MsgDetach struct {
 
 ```golang
 type MsgAttachFrom struct {
-	Proxy     sdk.AccAddress `json:"proxy"`
-	From      sdk.AccAddress `json:"from"`
-	Symbol    string         `json:"symbol"`
-	ToTokenID string         `json:"to_token_id"`
-	TokenID   string         `json:"token_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	ToTokenID  string         `json:"to_token_id"`
+	TokenID    string         `json:"token_id"`
 }
 ```
 
@@ -273,10 +270,10 @@ type MsgAttachFrom struct {
 
 ```golang
 type MsgDetachFrom struct {
-	Proxy    sdk.AccAddress `json:"proxy"`
-	From     sdk.AccAddress `json:"from"`
-	Symbol   string         `json:"symbol"`
-	TokenID  string         `json:"token_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	TokenID    string         `json:"token_id"`
 }
 ```
 
@@ -289,9 +286,9 @@ type MsgDetachFrom struct {
 
 ```golang
 type MsgApprove struct {
-	Approver sdk.AccAddress `json:"approver"`
-	Proxy    sdk.AccAddress `json:"proxy"`
-	Symbol   string         `json:"symbol"`
+	Approver   sdk.AccAddress `json:"approver"`
+	ContractID string         `json:"contract_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
 }
 ```
 
@@ -303,9 +300,9 @@ type MsgApprove struct {
 
 ```golang
 type MsgDisapprove struct {
-	Approver sdk.AccAddress `json:"approver"`
-	Proxy    sdk.AccAddress `json:"proxy"`
-	Symbol   string         `json:"symbol"`
+	Approver   sdk.AccAddress `json:"approver"`
+	ContractID string         `json:"contract_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
 }
 ```
 

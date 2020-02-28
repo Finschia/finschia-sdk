@@ -2,7 +2,6 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/types"
 )
 
 var _ sdk.Msg = (*MsgCreateCollection)(nil)
@@ -10,23 +9,18 @@ var _ sdk.Msg = (*MsgCreateCollection)(nil)
 type MsgCreateCollection struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	Name       string         `json:"name"`
-	Symbol     string         `json:"symbol"`
 	BaseImgURI string         `json:"base_img_uri"`
 }
 
-func NewMsgCreateCollection(owner sdk.AccAddress, name, symbol, baseImgURI string) MsgCreateCollection {
+func NewMsgCreateCollection(owner sdk.AccAddress, name, baseImgURI string) MsgCreateCollection {
 	return MsgCreateCollection{
 		Owner:      owner,
 		Name:       name,
-		Symbol:     symbol,
 		BaseImgURI: baseImgURI,
 	}
 }
 
 func (msg MsgCreateCollection) ValidateBasic() sdk.Error {
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-	}
 	if len(msg.Name) == 0 {
 		return ErrInvalidTokenName(DefaultCodespace, msg.Name)
 	}

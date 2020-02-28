@@ -8,15 +8,15 @@ import (
 )
 
 type SupplyKeeper interface {
-	GetTotalInt(ctx sdk.Context, symbol, target string) (sdk.Int, sdk.Error)
-	MintSupply(ctx sdk.Context, symbol string, to sdk.AccAddress, amount sdk.Int) sdk.Error
-	BurnSupply(ctx sdk.Context, symbol string, from sdk.AccAddress, amount sdk.Int) sdk.Error
+	GetTotalInt(ctx sdk.Context, contractID, target string) (sdk.Int, sdk.Error)
+	MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress, amount sdk.Int) sdk.Error
+	BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) sdk.Error
 }
 
 var _ SupplyKeeper = (*Keeper)(nil)
 
-func (k Keeper) GetTotalInt(ctx sdk.Context, symbol, target string) (sdk.Int, sdk.Error) {
-	supply, err := k.getSupply(ctx, symbol)
+func (k Keeper) GetTotalInt(ctx sdk.Context, contractID, target string) (sdk.Int, sdk.Error) {
+	supply, err := k.getSupply(ctx, contractID)
 	if err != nil {
 		return sdk.ZeroInt(), err
 	}
@@ -33,12 +33,12 @@ func (k Keeper) GetTotalInt(ctx sdk.Context, symbol, target string) (sdk.Int, sd
 	}
 }
 
-func (k Keeper) getSupply(ctx sdk.Context, symbol string) (supply types.Supply, err sdk.Error) {
-	if _, err := k.GetToken(ctx, symbol); err != nil {
+func (k Keeper) getSupply(ctx sdk.Context, contractID string) (supply types.Supply, err sdk.Error) {
+	if _, err := k.GetToken(ctx, contractID); err != nil {
 		return nil, err
 	}
 	store := ctx.KVStore(k.storeKey)
-	b := store.Get(types.SupplyKey(symbol))
+	b := store.Get(types.SupplyKey(contractID))
 	if b == nil {
 		panic("stored supply should not have been nil")
 	}
@@ -49,23 +49,23 @@ func (k Keeper) getSupply(ctx sdk.Context, symbol string) (supply types.Supply, 
 func (k Keeper) setSupply(ctx sdk.Context, supply types.Supply) {
 	store := ctx.KVStore(k.storeKey)
 	b := k.cdc.MustMarshalBinaryLengthPrefixed(supply)
-	store.Set(types.SupplyKey(supply.GetSymbol()), b)
+	store.Set(types.SupplyKey(supply.GetContractID()), b)
 }
 
-func (k Keeper) MintSupply(ctx sdk.Context, symbol string, to sdk.AccAddress, amount sdk.Int) sdk.Error {
-	_, err := k.addBalance(ctx, symbol, to, amount)
+func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress, amount sdk.Int) sdk.Error {
+	_, err := k.addBalance(ctx, contractID, to, amount)
 	if err != nil {
 		return err
 	}
 
-	supply, err := k.getSupply(ctx, symbol)
+	supply, err := k.getSupply(ctx, contractID)
 	if err != nil {
 		return err
 	}
 	oldSupplyAmount := supply.GetTotalSupply()
 	newSupplyAmount := oldSupplyAmount.Add(amount)
 	if newSupplyAmount.IsNegative() {
-		return types.ErrInsufficientSupply(types.DefaultCodespace, fmt.Sprintf("insufficient supply for token [%s]; %s < %s", symbol, oldSupplyAmount, amount))
+		return types.ErrInsufficientSupply(types.DefaultCodespace, fmt.Sprintf("insufficient supply for token [%s]; %s < %s", contractID, oldSupplyAmount, amount))
 	}
 	supply = supply.Inflate(amount)
 	k.setSupply(ctx, supply)
@@ -73,20 +73,20 @@ func (k Keeper) MintSupply(ctx sdk.Context, symbol string, to sdk.AccAddress, am
 	return nil
 }
 
-func (k Keeper) BurnSupply(ctx sdk.Context, symbol string, from sdk.AccAddress, amount sdk.Int) sdk.Error {
-	_, err := k.subtractBalance(ctx, symbol, from, amount)
+func (k Keeper) BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) sdk.Error {
+	_, err := k.subtractBalance(ctx, contractID, from, amount)
 	if err != nil {
 		return err
 	}
 
-	supply, err := k.getSupply(ctx, symbol)
+	supply, err := k.getSupply(ctx, contractID)
 	if err != nil {
 		return err
 	}
 	oldSupplyAmount := supply.GetTotalSupply()
 	newSupplyAmount := oldSupplyAmount.Sub(amount)
 	if newSupplyAmount.IsNegative() {
-		return types.ErrInsufficientSupply(types.DefaultCodespace, fmt.Sprintf("insufficient supply for token [%s]; %s < %s", symbol, oldSupplyAmount, amount))
+		return types.ErrInsufficientSupply(types.DefaultCodespace, fmt.Sprintf("insufficient supply for token [%s]; %s < %s", contractID, oldSupplyAmount, amount))
 	}
 	supply = supply.Deflate(amount)
 	k.setSupply(ctx, supply)

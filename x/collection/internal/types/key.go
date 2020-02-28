@@ -24,38 +24,38 @@ var (
 	CollectionApprovedKeyPrefix = []byte{0x07}
 )
 
-func AccountKey(symbol string, acc sdk.AccAddress) []byte {
-	return append(append(AccountKeyPrefix, []byte(symbol)...), acc...)
+func AccountKey(contractID string, acc sdk.AccAddress) []byte {
+	return append(append(AccountKeyPrefix, []byte(contractID)...), acc...)
 }
 
-func SupplyKey(symbol string) []byte {
-	return append(SupplyKeyPrefix, []byte(symbol)...)
+func SupplyKey(contractID string) []byte {
+	return append(SupplyKeyPrefix, []byte(contractID)...)
 }
 
-func CollectionKey(symbol string) []byte {
-	return append(CollectionKeyPrefix, []byte(symbol)...)
+func CollectionKey(contractID string) []byte {
+	return append(CollectionKeyPrefix, []byte(contractID)...)
 }
 
-func TokenKey(symbol, tokenID string) []byte {
-	return append(append(TokenKeyPrefix, []byte(symbol)...), []byte(tokenID)...)
+func TokenKey(contractID, tokenID string) []byte {
+	return append(append(TokenKeyPrefix, []byte(contractID)...), []byte(tokenID)...)
 }
 
-func TokenTypeKey(symbol, tokenType string) []byte {
-	return append(append(TokenTypeKeyPrefix, []byte(symbol)...), []byte(tokenType)...)
+func TokenTypeKey(contractID, tokenType string) []byte {
+	return append(append(TokenTypeKeyPrefix, []byte(contractID)...), []byte(tokenType)...)
 }
 
-func TokenChildToParentKey(symbol, tokenID string) []byte {
-	return append(append(TokenChildToParentKeyPrefix, []byte(symbol)...), []byte(tokenID)...)
+func TokenChildToParentKey(contractID, tokenID string) []byte {
+	return append(append(TokenChildToParentKeyPrefix, []byte(contractID)...), []byte(tokenID)...)
 }
 
-func TokenParentToChildSubKey(symbol, parent string) []byte {
-	return append(append(TokenParentToChildKeyPrefix, []byte(symbol)...), []byte(parent)...)
+func TokenParentToChildSubKey(contractID, parent string) []byte {
+	return append(append(TokenParentToChildKeyPrefix, []byte(contractID)...), []byte(parent)...)
 }
 
-func TokenParentToChildKey(symbol, parent, child string) []byte {
-	return append(append(append(TokenParentToChildKeyPrefix, []byte(symbol)...), []byte(parent)...), []byte(child)...)
+func TokenParentToChildKey(contractID, parent, child string) []byte {
+	return append(append(append(TokenParentToChildKeyPrefix, []byte(contractID)...), []byte(parent)...), []byte(child)...)
 }
 
-func CollectionApprovedKey(symbol string, proxy types.AccAddress, approver types.AccAddress) []byte {
-	return append(append(append(CollectionApprovedKeyPrefix, []byte(symbol)...), proxy.Bytes()...), approver.Bytes()...)
+func CollectionApprovedKey(contractID string, proxy types.AccAddress, approver types.AccAddress) []byte {
+	return append(append(append(CollectionApprovedKeyPrefix, []byte(contractID)...), proxy.Bytes()...), approver.Bytes()...)
 }

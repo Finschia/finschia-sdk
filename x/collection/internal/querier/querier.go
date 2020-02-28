@@ -47,11 +47,11 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 }
 
 func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
-	var params types.QuerySymbolTokenIDAccAddressParams
+	var params types.QueryContractIDTokenIDAccAddressParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	supply, err := keeper.GetBalance(ctx, params.Symbol, params.TokenID, params.Addr)
+	supply, err := keeper.GetBalance(ctx, params.ContractID, params.TokenID, params.Addr)
 	if err != nil {
 		return nil, err
 	}
@@ -66,16 +66,16 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 
 //nolint:dupl
 func queryTokenTypes(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
-	var params types.QuerySymbolTokenIDParams
+	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 	if len(params.TokenID) == 0 {
-		var params types.QuerySymbolParams
+		var params types.QueryContractIDParams
 		if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 			return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 		}
-		tokenTypes, err := keeper.GetTokenTypes(ctx, params.Symbol)
+		tokenTypes, err := keeper.GetTokenTypes(ctx, params.ContractID)
 		if err != nil {
 			return nil, err
 		}
@@ -86,7 +86,7 @@ func queryTokenTypes(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 		return bz, nil
 	}
 
-	tokenType, err := keeper.GetTokenType(ctx, params.Symbol, params.TokenID)
+	tokenType, err := keeper.GetTokenType(ctx, params.ContractID, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -101,16 +101,16 @@ func queryTokenTypes(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 
 //nolint:dupl
 func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
-	var params types.QuerySymbolTokenIDParams
+	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 	if len(params.TokenID) == 0 {
-		var params types.QuerySymbolParams
+		var params types.QueryContractIDParams
 		if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 			return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 		}
-		tokens, err := keeper.GetTokens(ctx, params.Symbol)
+		tokens, err := keeper.GetTokens(ctx, params.ContractID)
 		if err != nil {
 			return nil, err
 		}
@@ -121,7 +121,7 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 		return bz, nil
 	}
 
-	token, err := keeper.GetToken(ctx, params.Symbol, params.TokenID)
+	token, err := keeper.GetToken(ctx, params.ContractID, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -162,12 +162,12 @@ func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keep
 		}
 		return bz, nil
 	}
-	var params types.QuerySymbolParams
+	var params types.QueryContractIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	collection, err := keeper.GetCollection(ctx, params.Symbol)
+	collection, err := keeper.GetCollection(ctx, params.ContractID)
 	if err != nil {
 		return nil, err
 	}
@@ -180,11 +180,11 @@ func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keep
 }
 
 func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
-	var params types.QuerySymbolTokenIDParams
+	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	count, err := keeper.GetNFTCount(ctx, params.Symbol, params.TokenID)
+	count, err := keeper.GetNFTCount(ctx, params.ContractID, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -197,12 +197,12 @@ func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper)
 }
 
 func queryParent(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
-	var params types.QuerySymbolTokenIDParams
+	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	token, err := keeper.ParentOf(ctx, params.Symbol, params.TokenID)
+	token, err := keeper.ParentOf(ctx, params.ContractID, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -219,12 +219,12 @@ func queryParent(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 }
 
 func queryRoot(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
-	var params types.QuerySymbolTokenIDParams
+	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	token, err := keeper.RootOf(ctx, params.Symbol, params.TokenID)
+	token, err := keeper.RootOf(ctx, params.ContractID, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -238,12 +238,12 @@ func queryRoot(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]
 }
 
 func queryChildren(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
-	var params types.QuerySymbolTokenIDParams
+	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	tokens, err := keeper.ChildrenOf(ctx, params.Symbol, params.TokenID)
+	tokens, err := keeper.ChildrenOf(ctx, params.ContractID, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -262,10 +262,10 @@ func queryChildren(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper)
 func queryIsApproved(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
 	var params types.QueryIsApprovedParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
-		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params[Proxy=%s, Approver=%s, Symbol=%s]: %s", params.Proxy.String(), params.Approver.String(), params.Symbol, err))
+		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params[Proxy=%s, Approver=%s, ContractID=%s]: %s", params.Proxy.String(), params.Approver.String(), params.ContractID, err))
 	}
 
-	approved := keeper.IsApproved(ctx, params.Symbol, params.Proxy, params.Approver)
+	approved := keeper.IsApproved(ctx, params.ContractID, params.Proxy, params.Approver)
 
 	bz, err := keeper.MarshalJSONIndent(approved)
 	if err != nil {
@@ -275,12 +275,12 @@ func queryIsApproved(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 	return bz, nil
 }
 func queryTotal(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, sdk.Error) {
-	var params types.QuerySymbolTokenIDParams
+	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	supply, err := keeper.GetTotalInt(ctx, params.Symbol, params.TokenID, target)
+	supply, err := keeper.GetTotalInt(ctx, params.ContractID, params.TokenID, target)
 	if err != nil {
 		return nil, err
 	}

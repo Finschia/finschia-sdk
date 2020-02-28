@@ -8,23 +8,23 @@ import (
 
 type Account interface {
 	GetAddress() sdk.AccAddress
-	GetSymbol() string
+	GetContractID() string
 	GetCoins() Coins
 	SetCoins(Coins) Account
 	String() string
 }
 
 type BaseAccount struct {
-	Address sdk.AccAddress `json:"address"`
-	Symbol  string         `json:"symbol"`
-	Coins   Coins          `json:"tokens"`
+	Address    sdk.AccAddress `json:"address"`
+	ContractID string         `json:"contract_id"`
+	Coins      Coins          `json:"tokens"`
 }
 
-func NewBaseAccountWithAddress(symbol string, addr sdk.AccAddress) *BaseAccount {
+func NewBaseAccountWithAddress(contractID string, addr sdk.AccAddress) *BaseAccount {
 	return &BaseAccount{
-		Symbol:  symbol,
-		Address: addr,
-		Coins:   NewCoins(),
+		ContractID: contractID,
+		Address:    addr,
+		Coins:      NewCoins(),
 	}
 }
 
@@ -36,8 +36,8 @@ func (acc BaseAccount) String() string {
 	return string(b)
 }
 
-func (acc BaseAccount) GetSymbol() string {
-	return acc.Symbol
+func (acc BaseAccount) GetContractID() string {
+	return acc.ContractID
 }
 
 func (acc BaseAccount) GetAddress() sdk.AccAddress {

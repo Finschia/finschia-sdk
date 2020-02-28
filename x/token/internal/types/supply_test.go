@@ -10,10 +10,10 @@ import (
 
 func TestSupply(t *testing.T) {
 	var supply Supply
-	supply = DefaultSupply(defaultSymbol)
+	supply = DefaultSupply(defaultContractID)
 
 	// create default
-	require.Equal(t, defaultSymbol, supply.GetSymbol())
+	require.Equal(t, defaultContractID, supply.GetContractID())
 	require.Equal(t, sdk.ZeroInt(), supply.GetTotalSupply())
 	require.Equal(t, sdk.ZeroInt(), supply.GetTotalMint())
 	require.Equal(t, sdk.ZeroInt(), supply.GetTotalBurn())
@@ -41,8 +41,8 @@ func TestSupply(t *testing.T) {
 
 	// total
 	expected := fmt.Sprintf(
-		`{"symbol":"%s","total_supply":"%s","total_mint":"%s","total_burn":"%s"}`,
-		defaultSymbol,
+		`{"contract_id":"%s","total_supply":"%s","total_mint":"%s","total_burn":"%s"}`,
+		defaultContractID,
 		initialSupply.Add(toInflate).Sub(toDeflate),
 		initialSupply.Add(toInflate),
 		toDeflate,

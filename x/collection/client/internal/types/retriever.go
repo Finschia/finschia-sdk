@@ -20,9 +20,9 @@ func (r Retriever) query(path string, data []byte) ([]byte, int64, error) {
 	return r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", types.QuerierRoute, path), data)
 }
 
-func (r Retriever) GetAccountBalance(ctx context.CLIContext, symbol, tokenID string, addr sdk.AccAddress) (sdk.Int, int64, error) {
+func (r Retriever) GetAccountBalance(ctx context.CLIContext, contractID, tokenID string, addr sdk.AccAddress) (sdk.Int, int64, error) {
 	var balance sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolTokenIDAccAddressParams(symbol, tokenID, addr))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDTokenIDAccAddressParams(contractID, tokenID, addr))
 	if err != nil {
 		return balance, 0, err
 	}
@@ -58,9 +58,9 @@ func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddr
 	return pms, height, nil
 }
 
-func (r Retriever) GetCollection(ctx context.CLIContext, symbol string) (types.BaseCollection, int64, error) {
+func (r Retriever) GetCollection(ctx context.CLIContext, contractID string) (types.BaseCollection, int64, error) {
 	var collection types.BaseCollection
-	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolParams(symbol))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDParams(contractID))
 	if err != nil {
 		return collection, 0, err
 	}
@@ -93,9 +93,9 @@ func (r Retriever) GetCollections(ctx context.CLIContext) (types.Collections, in
 	return collections, height, nil
 }
 
-func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, symbol, tokenID string) (sdk.Int, int64, error) {
+func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, contractID, tokenID string) (sdk.Int, int64, error) {
 	var nftcount sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
 	if err != nil {
 		return nftcount, 0, err
 	}
@@ -112,9 +112,9 @@ func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, symbol, tokenID
 	return nftcount, height, nil
 }
 
-func (r Retriever) GetTotal(ctx context.CLIContext, symbol, tokenID, target string) (sdk.Int, int64, error) {
+func (r Retriever) GetTotal(ctx context.CLIContext, contractID, tokenID, target string) (sdk.Int, int64, error) {
 	var supply sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
 	if err != nil {
 		return supply, 0, err
 	}
@@ -131,9 +131,9 @@ func (r Retriever) GetTotal(ctx context.CLIContext, symbol, tokenID, target stri
 	return supply, height, nil
 }
 
-func (r Retriever) GetToken(ctx context.CLIContext, symbol, tokenID string) (types.Token, int64, error) {
+func (r Retriever) GetToken(ctx context.CLIContext, contractID, tokenID string) (types.Token, int64, error) {
 	var token types.Token
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
 	if err != nil {
 		return token, 0, err
 	}
@@ -149,9 +149,9 @@ func (r Retriever) GetToken(ctx context.CLIContext, symbol, tokenID string) (typ
 	return token, height, nil
 }
 
-func (r Retriever) GetTokens(ctx context.CLIContext, symbol string) (types.Tokens, int64, error) {
+func (r Retriever) GetTokens(ctx context.CLIContext, contractID string) (types.Tokens, int64, error) {
 	var tokens types.Tokens
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolParams(symbol))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDParams(contractID))
 	if err != nil {
 		return tokens, 0, err
 	}
@@ -167,9 +167,9 @@ func (r Retriever) GetTokens(ctx context.CLIContext, symbol string) (types.Token
 	return tokens, height, nil
 }
 
-func (r Retriever) GetTokenType(ctx context.CLIContext, symbol, tokenTypeID string) (types.TokenType, int64, error) {
+func (r Retriever) GetTokenType(ctx context.CLIContext, contractID, tokenTypeID string) (types.TokenType, int64, error) {
 	var tokenType types.TokenType
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenTypeID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenTypeID))
 	if err != nil {
 		return tokenType, 0, err
 	}
@@ -185,9 +185,9 @@ func (r Retriever) GetTokenType(ctx context.CLIContext, symbol, tokenTypeID stri
 	return tokenType, height, nil
 }
 
-func (r Retriever) GetTokenTypes(ctx context.CLIContext, symbol string) (types.TokenTypes, int64, error) {
+func (r Retriever) GetTokenTypes(ctx context.CLIContext, contractID string) (types.TokenTypes, int64, error) {
 	var tokenTypes types.TokenTypes
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolParams(symbol))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDParams(contractID))
 	if err != nil {
 		return tokenTypes, 0, err
 	}
@@ -203,8 +203,8 @@ func (r Retriever) GetTokenTypes(ctx context.CLIContext, symbol string) (types.T
 	return tokenTypes, height, nil
 }
 
-func (r Retriever) IsApproved(ctx context.CLIContext, proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) (approved bool, height int64, err error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryIsApprovedParams(proxy, approver, symbol))
+func (r Retriever) IsApproved(ctx context.CLIContext, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) (approved bool, height int64, err error) {
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryIsApprovedParams(contractID, proxy, approver))
 	if err != nil {
 		return false, 0, err
 	}
@@ -222,15 +222,15 @@ func (r Retriever) IsApproved(ctx context.CLIContext, proxy sdk.AccAddress, appr
 	return approved, height, nil
 }
 
-func (r Retriever) EnsureExists(ctx context.CLIContext, symbol, tokenID string) error {
-	if _, _, err := r.GetToken(ctx, symbol, tokenID); err != nil {
+func (r Retriever) EnsureExists(ctx context.CLIContext, contractID, tokenID string) error {
+	if _, _, err := r.GetToken(ctx, contractID, tokenID); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r Retriever) GetParent(ctx context.CLIContext, symbol, tokenID string) (types.Token, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
+func (r Retriever) GetParent(ctx context.CLIContext, contractID, tokenID string) (types.Token, int64, error) {
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -248,8 +248,8 @@ func (r Retriever) GetParent(ctx context.CLIContext, symbol, tokenID string) (ty
 	return token, height, nil
 }
 
-func (r Retriever) GetRoot(ctx context.CLIContext, symbol, tokenID string) (types.Token, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
+func (r Retriever) GetRoot(ctx context.CLIContext, contractID, tokenID string) (types.Token, int64, error) {
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
 	if err != nil {
 		return nil, 0, err
 	}
@@ -267,8 +267,8 @@ func (r Retriever) GetRoot(ctx context.CLIContext, symbol, tokenID string) (type
 	return token, height, nil
 }
 
-func (r Retriever) GetChildren(ctx context.CLIContext, symbol, tokenID string) (types.Tokens, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenID))
+func (r Retriever) GetChildren(ctx context.CLIContext, contractID, tokenID string) (types.Tokens, int64, error) {
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
 	if err != nil {
 		return nil, 0, err
 	}

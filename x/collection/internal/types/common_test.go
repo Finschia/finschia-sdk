@@ -7,7 +7,7 @@ import (
 
 const (
 	defaultName       = "name"
-	defaultSymbol     = "token001"
+	defaultContractID = "abcdef01"
 	defaultBaseImgURI = "base-img-uri"
 	defaultDecimals   = 6
 	defaultAmount     = 1000

@@ -8,9 +8,9 @@ import (
 
 func TestPermission(t *testing.T) {
 	// Given permissions
-	mintPerm := NewMintPermission(defaultSymbol)
-	burnPerm := NewBurnPermission(defaultSymbol)
-	modifyPerm := NewModifyPermission(defaultSymbol)
+	mintPerm := NewMintPermission(defaultContractID)
+	burnPerm := NewBurnPermission(defaultContractID)
+	modifyPerm := NewModifyPermission(defaultContractID)
 
 	require.True(t, mintPerm.Validate())
 	require.True(t, burnPerm.Validate())
@@ -30,20 +30,20 @@ func TestPermission(t *testing.T) {
 }
 
 func TestPermissionString(t *testing.T) {
-	mintPerm := NewMintPermission(defaultSymbol)
-	burnPerm := NewBurnPermission(defaultSymbol)
-	modifyPerm := NewModifyPermission(defaultSymbol)
+	mintPerm := NewMintPermission(defaultContractID)
+	burnPerm := NewBurnPermission(defaultContractID)
+	modifyPerm := NewModifyPermission(defaultContractID)
 
-	require.Equal(t, mintPerm.String(), defaultSymbol+"-mint")
-	require.Equal(t, burnPerm.String(), defaultSymbol+"-burn")
-	require.Equal(t, modifyPerm.String(), defaultSymbol+"-modify")
+	require.Equal(t, mintPerm.String(), defaultContractID+"-mint")
+	require.Equal(t, burnPerm.String(), defaultContractID+"-burn")
+	require.Equal(t, modifyPerm.String(), defaultContractID+"-modify")
 }
 
 func TestPermissionsString(t *testing.T) {
 	perms := Permissions{
-		NewMintPermission(defaultSymbol),
-		NewBurnPermission(defaultSymbol),
-		NewModifyPermission(defaultSymbol),
+		NewMintPermission(defaultContractID),
+		NewBurnPermission(defaultContractID),
+		NewModifyPermission(defaultContractID),
 	}
 
 	require.Equal(t, `types.Permissions{types.Permission{Action:"mint", Resource:"linktkn"}, types.Permission{Action:"burn", Resource:"linktkn"}, types.Permission{Action:"modify", Resource:"linktkn"}}`, perms.String())

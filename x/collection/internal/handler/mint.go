@@ -7,18 +7,18 @@ import (
 )
 
 func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNFT) sdk.Result {
-	_, err := keeper.GetCollection(ctx, msg.Symbol)
+	_, err := keeper.GetCollection(ctx, msg.ContractID)
 	if err != nil {
 		return err.Result()
 	}
 
-	tokenID, err := keeper.GetNextTokenIDNFT(ctx, msg.Symbol, msg.TokenType)
+	tokenID, err := keeper.GetNextTokenIDNFT(ctx, msg.ContractID, msg.TokenType)
 	if err != nil {
 		return err.Result()
 	}
 
-	token := types.NewNFT(msg.Symbol, tokenID, msg.Name, msg.To)
-	err = keeper.MintNFT(ctx, msg.Symbol, msg.From, token)
+	token := types.NewNFT(msg.ContractID, tokenID, msg.Name, msg.To)
+	err = keeper.MintNFT(ctx, msg.ContractID, msg.From, token)
 	if err != nil {
 		return err.Result()
 	}
@@ -34,7 +34,7 @@ func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNF
 }
 
 func handleMsgMintFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintFT) sdk.Result {
-	err := keeper.MintFT(ctx, msg.Symbol, msg.From, msg.To, msg.Amount)
+	err := keeper.MintFT(ctx, msg.ContractID, msg.From, msg.To, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}

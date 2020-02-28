@@ -10,28 +10,28 @@ type TokenID string
 
 type Account interface {
 	GetAddress() sdk.AccAddress
-	GetSymbol() string
+	GetContractID() string
 	GetBalance() sdk.Int
 	SetBalance(amount sdk.Int) Account
 	String() string
 }
 
 type BaseAccount struct {
-	Symbol  string         `json:"symbol"`
-	Address sdk.AccAddress `json:"address"`
-	Amount  sdk.Int        `json:"amount"`
+	ContractID string         `json:"contract_id"`
+	Address    sdk.AccAddress `json:"address"`
+	Amount     sdk.Int        `json:"amount"`
 }
 
-func NewBaseAccountWithAddress(symbol string, addr sdk.AccAddress) *BaseAccount {
+func NewBaseAccountWithAddress(contractID string, addr sdk.AccAddress) *BaseAccount {
 	return &BaseAccount{
-		Symbol:  symbol,
-		Address: addr,
-		Amount:  sdk.ZeroInt(),
+		ContractID: contractID,
+		Address:    addr,
+		Amount:     sdk.ZeroInt(),
 	}
 }
 
-func (acc BaseAccount) GetSymbol() string {
-	return acc.Symbol
+func (acc BaseAccount) GetContractID() string {
+	return acc.ContractID
 }
 
 func (acc BaseAccount) String() string {

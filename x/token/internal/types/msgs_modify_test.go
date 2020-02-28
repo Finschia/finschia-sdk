@@ -5,13 +5,14 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	linktype "github.com/line/link/types"
+	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
 
 const (
-	ModifyMsgType = "modify_token"
-	DefaultSymbol = "symbol"
+	ModifyMsgType     = "modify_token"
+	DefaultContractID = "abcd1234"
 )
 
 func TestNewMsgModify(t *testing.T) {
@@ -33,7 +34,7 @@ func TestMarshalMsgModify(t *testing.T) {
 	require.NoError(t, err)
 
 	// Then they are equal
-	require.Equal(t, msg.Symbol, msg2.Symbol)
+	require.Equal(t, msg.ContractID, msg2.ContractID)
 	require.Equal(t, msg.Changes, msg2.Changes)
 	require.Equal(t, msg.Owner, msg2.Owner)
 }
@@ -44,27 +45,27 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		msg := AMsgModify().Build()
 		require.NoError(t, msg.ValidateBasic())
 	}
-	t.Log("empty symbol found")
+	t.Log("empty contractID found")
 	{
-		msg := AMsgModify().Symbol("").Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "").Error())
+		msg := AMsgModify().ContractID("").Build()
+		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "").Error())
 	}
 	t.Log("empty owner")
 	{
 		msg := AMsgModify().Owner(nil).Build()
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("owner address cannot be empty").Error())
 	}
-	t.Log("invalid symbol found")
+	t.Log("invalid contractID found")
 	{
-		invalidSymbol := "invalidsymbol2198721987"
-		msg := AMsgModify().Symbol(invalidSymbol).Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, invalidSymbol).Error())
+		invalidContractID := "invalid2198721987"
+		msg := AMsgModify().ContractID(invalidContractID).Build()
+		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, invalidContractID).Error())
 	}
 	t.Log("tokenURI too long")
 	{
 		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"token_uri": length1001String})).Build()
 
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidImageURILength(DefaultCodespace, length1001String).Error())
 	}
 	t.Log("name too long")
 	{
@@ -97,7 +98,7 @@ func AMsgModify() *MsgModifyBuilder {
 	return &MsgModifyBuilder{
 		msgModify: NewMsgModify(
 			sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()),
-			DefaultSymbol,
+			DefaultContractID,
 			linktype.NewChangesWithMap(map[string]string{
 				"name":      "new_name",
 				"token_uri": "new_torken_uri",
@@ -119,8 +120,8 @@ func (b *MsgModifyBuilder) Owner(owner sdk.AccAddress) *MsgModifyBuilder {
 	return b
 }
 
-func (b *MsgModifyBuilder) Symbol(symbol string) *MsgModifyBuilder {
-	b.msgModify.Symbol = symbol
+func (b *MsgModifyBuilder) ContractID(contractID string) *MsgModifyBuilder {
+	b.msgModify.ContractID = contractID
 	return b
 }
 

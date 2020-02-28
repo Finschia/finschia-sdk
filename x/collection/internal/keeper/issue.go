@@ -8,18 +8,17 @@ import (
 )
 
 type IssueKeeper interface {
-	IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error
-	IssueNFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, tokenType string) sdk.Error
+	IssueFT(ctx sdk.Context, contractID string, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error
+	IssueNFT(ctx sdk.Context, contractID string, owner sdk.AccAddress, tokenType string) sdk.Error
 }
 
-func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, token types.FT,
-	amount sdk.Int) sdk.Error {
-	err := k.SetToken(ctx, symbol, token)
+func (k Keeper) IssueFT(ctx sdk.Context, contractID string, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error {
+	err := k.SetToken(ctx, contractID, token)
 	if err != nil {
 		return err
 	}
 
-	err = k.MintSupply(ctx, symbol, owner, types.NewCoins(types.NewCoin(token.GetTokenID(), amount)))
+	err = k.MintSupply(ctx, contractID, owner, types.NewCoins(types.NewCoin(token.GetTokenID(), amount)))
 	if err != nil {
 		return err
 	}
@@ -27,8 +26,8 @@ func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, to
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueFT,
+			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
 			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
-			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
@@ -40,21 +39,21 @@ func (k Keeper) IssueFT(ctx sdk.Context, symbol string, owner sdk.AccAddress, to
 	return nil
 }
 
-func (k Keeper) IssueNFT(ctx sdk.Context, symbol string, tokenType types.TokenType, owner sdk.AccAddress) sdk.Error {
-	err := k.SetTokenType(ctx, symbol, tokenType)
+func (k Keeper) IssueNFT(ctx sdk.Context, contractID string, tokenType types.TokenType, owner sdk.AccAddress) sdk.Error {
+	err := k.SetTokenType(ctx, contractID, tokenType)
 	if err != nil {
 		return err
 	}
 
-	mintPerm := types.NewMintPermission(symbol)
+	mintPerm := types.NewMintPermission(contractID)
 	k.AddPermission(ctx, owner, mintPerm)
-	burnPerm := types.NewBurnPermission(symbol)
+	burnPerm := types.NewBurnPermission(contractID)
 	k.AddPermission(ctx, owner, burnPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueNFT,
-			sdk.NewAttribute(types.AttributeKeySymbol, symbol),
+			sdk.NewAttribute(types.AttributeKeyContractID, contractID),
 			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType.GetTokenType()),
 		),
 	})

@@ -39,9 +39,9 @@ func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddr
 	return pms, height, nil
 }
 
-func (r Retriever) GetAccountBalance(ctx context.CLIContext, symbol string, addr sdk.AccAddress) (sdk.Int, int64, error) {
+func (r Retriever) GetAccountBalance(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (sdk.Int, int64, error) {
 	var supply sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolAccAddressParams(symbol, addr))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressContractIDParams(contractID, addr))
 	if err != nil {
 		return supply, 0, err
 	}
@@ -57,10 +57,9 @@ func (r Retriever) GetAccountBalance(ctx context.CLIContext, symbol string, addr
 
 	return supply, height, nil
 }
-
-func (r Retriever) GetTotal(ctx context.CLIContext, symbol string, target string) (sdk.Int, int64, error) {
+func (r Retriever) GetTotal(ctx context.CLIContext, contractID string, target string) (sdk.Int, int64, error) {
 	var total sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQuerySymbolParams(symbol))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDParams(contractID))
 	if err != nil {
 		return total, 0, err
 	}
@@ -77,9 +76,9 @@ func (r Retriever) GetTotal(ctx context.CLIContext, symbol string, target string
 	return total, height, nil
 }
 
-func (r Retriever) GetToken(ctx context.CLIContext, symbol string) (types.Token, int64, error) {
+func (r Retriever) GetToken(ctx context.CLIContext, contractID string) (types.Token, int64, error) {
 	var token types.Token
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolParams(symbol))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDParams(contractID))
 	if err != nil {
 		return token, 0, err
 	}

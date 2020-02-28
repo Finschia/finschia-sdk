@@ -5,13 +5,13 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	linktype "github.com/line/link/types"
+	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
 
 const (
 	ModifyMsgType = "modify_token"
-	DefaultID     = "symbol"
 )
 
 func TestNewMsgModify(t *testing.T) {
@@ -33,7 +33,7 @@ func TestMarshalMsgModify(t *testing.T) {
 	require.NoError(t, err)
 
 	// Then they are equal
-	require.Equal(t, msg.Symbol, msg2.Symbol)
+	require.Equal(t, msg.ContractID, msg2.ContractID)
 	require.Equal(t, msg.TokenIndex, msg2.TokenIndex)
 	require.Equal(t, msg.TokenType, msg2.TokenType)
 	require.Equal(t, msg.Changes, msg2.Changes)
@@ -46,22 +46,22 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		msg := AMsgModify().Build()
 		require.NoError(t, msg.ValidateBasic())
 	}
-	t.Log("empty symbol found")
+	t.Log("empty contractID found")
 	{
-		msg := AMsgModify().Symbol("").Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "").Error())
+		msg := AMsgModify().Contract("").Build()
+		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "").Error())
 	}
 	t.Log("empty owner")
 	{
 		msg := AMsgModify().Owner(nil).Build()
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("owner address cannot be empty").Error())
 	}
-	t.Log("invalid symbol found")
+	t.Log("invalid contractID found")
 	{
-		msg := AMsgModify().Symbol("0123456789001234567890").Build()
+		msg := AMsgModify().Contract("0123456789001234567890").Build()
 		require.EqualError(t,
 			msg.ValidateBasic(),
-			ErrInvalidTokenSymbol(DefaultCodespace, msg.Symbol).Error())
+			contract.ErrInvalidContractID(contract.ContractCodeSpace, msg.ContractID).Error())
 	}
 	t.Log("img uri too long")
 	{
@@ -127,7 +127,7 @@ func AMsgModify() *MsgModifyBuilder {
 	return &MsgModifyBuilder{
 		msgModify: NewMsgModify(
 			sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()),
-			defaultSymbol,
+			defaultContractID,
 			"",
 			"",
 			linktype.NewChangesWithMap(map[string]string{
@@ -151,8 +151,8 @@ func (b *MsgModifyBuilder) Owner(owner sdk.AccAddress) *MsgModifyBuilder {
 	return b
 }
 
-func (b *MsgModifyBuilder) Symbol(symbol string) *MsgModifyBuilder {
-	b.msgModify.Symbol = symbol
+func (b *MsgModifyBuilder) Contract(contractID string) *MsgModifyBuilder {
+	b.msgModify.ContractID = contractID
 	return b
 }
 

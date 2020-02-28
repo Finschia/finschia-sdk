@@ -27,31 +27,31 @@ type NodeQuerier interface {
 	WithHeight(height int64) client.CLIContext
 }
 
-type QuerySymbolParams struct {
-	Symbol string `json:"symbol"`
+type QueryContractIDParams struct {
+	ContractID string `json:"contract_id"`
 }
 
-func NewQuerySymbolParams(symbol string) QuerySymbolParams {
-	return QuerySymbolParams{Symbol: symbol}
+func NewQueryContractIDParams(contractID string) QueryContractIDParams {
+	return QueryContractIDParams{ContractID: contractID}
 }
 
-type QuerySymbolTokenIDParams struct {
-	Symbol  string `json:"symbol"`
-	TokenID string `json:"token_id"`
+type QueryContractIDTokenIDParams struct {
+	ContractID string `json:"contract_id"`
+	TokenID    string `json:"token_id"`
 }
 
-func NewQuerySymbolTokenIDParams(symbol, tokenID string) QuerySymbolTokenIDParams {
-	return QuerySymbolTokenIDParams{Symbol: symbol, TokenID: tokenID}
+func NewQueryContractIDTokenIDParams(contractID, tokenID string) QueryContractIDTokenIDParams {
+	return QueryContractIDTokenIDParams{ContractID: contractID, TokenID: tokenID}
 }
 
-type QuerySymbolTokenIDAccAddressParams struct {
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
-	Addr    sdk.AccAddress `json:"addr"`
+type QueryContractIDTokenIDAccAddressParams struct {
+	ContractID string         `json:"contract_id"`
+	TokenID    string         `json:"token_id"`
+	Addr       sdk.AccAddress `json:"addr"`
 }
 
-func NewQuerySymbolTokenIDAccAddressParams(symbol, tokenID string, addr sdk.AccAddress) QuerySymbolTokenIDAccAddressParams {
-	return QuerySymbolTokenIDAccAddressParams{Symbol: symbol, TokenID: tokenID, Addr: addr}
+func NewQueryContractIDTokenIDAccAddressParams(contractID, tokenID string, addr sdk.AccAddress) QueryContractIDTokenIDAccAddressParams {
+	return QueryContractIDTokenIDAccAddressParams{ContractID: contractID, TokenID: tokenID, Addr: addr}
 }
 
 type QueryAccAddressParams struct {
@@ -63,15 +63,15 @@ func NewQueryAccAddressParams(addr sdk.AccAddress) QueryAccAddressParams {
 }
 
 type QueryIsApprovedParams struct {
-	Proxy    sdk.AccAddress `json:"proxy"`
-	Approver sdk.AccAddress `json:"approver"`
-	Symbol   string         `json:"symbol"`
+	ContractID string         `json:"contract_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	Approver   sdk.AccAddress `json:"approver"`
 }
 
-func NewQueryIsApprovedParams(proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) QueryIsApprovedParams {
+func NewQueryIsApprovedParams(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) QueryIsApprovedParams {
 	return QueryIsApprovedParams{
-		Proxy:    proxy,
-		Approver: approver,
-		Symbol:   symbol,
+		ContractID: contractID,
+		Proxy:      proxy,
+		Approver:   approver,
 	}
 }

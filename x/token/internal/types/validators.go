@@ -8,8 +8,9 @@ import (
 )
 
 const (
-	MaxTokenURILength    = 1000
+	MaxImageURILength    = 1000
 	MaxTokenNameLength   = 1000
+	MaxTokenSymbolLength = 5
 	MaxChangeFieldsCount = 100
 )
 
@@ -26,8 +27,8 @@ func ValidateName(name string) bool {
 	return utf8.RuneCountInString(name) < MaxTokenNameLength
 }
 
-func ValidateTokenURI(tokenURI string) bool {
-	return utf8.RuneCountInString(tokenURI) < MaxTokenURILength
+func ValidateImageURI(tokenURI string) bool {
+	return utf8.RuneCountInString(tokenURI) < MaxImageURILength
 }
 
 type ChangesValidator struct {
@@ -44,8 +45,8 @@ func NewChangesValidator() *ChangesValidator {
 		return nil
 	}
 	hs[AttributeKeyTokenURI] = func(value string) sdk.Error {
-		if !ValidateTokenURI(value) {
-			return ErrInvalidTokenURILength(DefaultCodespace, value)
+		if !ValidateImageURI(value) {
+			return ErrInvalidImageURILength(DefaultCodespace, value)
 		}
 		return nil
 	}

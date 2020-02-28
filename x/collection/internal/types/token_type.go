@@ -6,9 +6,7 @@ import (
 
 const (
 	TokenTypeLength    = 8
-	TokenIDLength      = 16
 	SmallestAlphanum   = "0"
-	LargestAlphanum    = "z"
 	FungibleFlag       = SmallestAlphanum
 	ReservedEmpty      = "00000000"
 	SmallestFTType     = "00000001"
@@ -19,22 +17,22 @@ const (
 type TokenType interface {
 	GetName() string
 	SetName(string) TokenType
-	GetSymbol() string
+	GetContractID() string
 	GetTokenType() string
 	String() string
 }
 
 type BaseTokenType struct {
-	Symbol    string `json:"symbol"`
-	TokenType string `json:"token_type"`
-	Name      string `json:"name"`
+	ContractID string `json:"contract_id"`
+	TokenType  string `json:"token_type"`
+	Name       string `json:"name"`
 }
 
-func NewBaseTokenType(symbol, tokenType, name string) TokenType {
+func NewBaseTokenType(contractID, tokenType, name string) TokenType {
 	return &BaseTokenType{
-		Symbol:    symbol,
-		TokenType: tokenType,
-		Name:      name,
+		ContractID: contractID,
+		TokenType:  tokenType,
+		Name:       name,
 	}
 }
 func (t BaseTokenType) GetName() string { return t.Name }
@@ -42,8 +40,8 @@ func (t BaseTokenType) SetName(name string) TokenType {
 	t.Name = name
 	return t
 }
-func (t BaseTokenType) GetSymbol() string    { return t.Symbol }
-func (t BaseTokenType) GetTokenType() string { return t.TokenType }
+func (t BaseTokenType) GetContractID() string { return t.ContractID }
+func (t BaseTokenType) GetTokenType() string  { return t.TokenType }
 func (t BaseTokenType) String() string {
 	b, err := json.Marshal(t)
 	if err != nil {

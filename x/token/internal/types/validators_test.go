@@ -25,11 +25,11 @@ func TestValidateName(t *testing.T) {
 func TestValidateTokenURI(t *testing.T) {
 	t.Log("Given valid token_uri")
 	{
-		require.True(t, ValidateTokenURI(length990String))
+		require.True(t, ValidateImageURI(length990String))
 	}
 	t.Log("Given invalid token_uri")
 	{
-		require.False(t, ValidateTokenURI(length1001String))
+		require.False(t, ValidateImageURI(length1001String))
 	}
 }
 
@@ -60,7 +60,7 @@ func TestValidateChanges(t *testing.T) {
 		require.EqualError(
 			t,
 			validator.Validate(changes),
-			ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error(),
+			ErrInvalidImageURILength(DefaultCodespace, length1001String).Error(),
 		)
 	}
 	t.Log("Test with invalid changes field")

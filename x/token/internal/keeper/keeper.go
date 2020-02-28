@@ -5,22 +5,29 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/link/x/contract"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/tendermint/tendermint/libs/log"
 )
 
 type Keeper struct {
-	iamKeeper types.IamKeeper
-	storeKey  sdk.StoreKey
-	cdc       *codec.Codec
+	iamKeeper      types.IamKeeper
+	storeKey       sdk.StoreKey
+	contractKeeper contract.Keeper
+	cdc            *codec.Codec
 }
 
-func NewKeeper(cdc *codec.Codec, iamKeeper types.IamKeeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(cdc *codec.Codec, iamKeeper types.IamKeeper, contractKeeper contract.Keeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
-		iamKeeper: iamKeeper.WithPrefix(types.ModuleName),
-		storeKey:  storeKey,
-		cdc:       cdc,
+		iamKeeper:      iamKeeper.WithPrefix(types.ModuleName),
+		storeKey:       storeKey,
+		contractKeeper: contractKeeper,
+		cdc:            cdc,
 	}
+}
+
+func (k Keeper) NewContractID(ctx sdk.Context) string {
+	return k.contractKeeper.NewContractID(ctx)
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {

@@ -5,12 +5,13 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/types"
+	"github.com/line/link/x/contract"
 )
 
-var _ sdk.Msg = (*MsgTransferFT)(nil)
-var _ sdk.Msg = (*MsgTransferNFT)(nil)
-var _ sdk.Msg = (*MsgTransferFTFrom)(nil)
-var _ sdk.Msg = (*MsgTransferNFTFrom)(nil)
+var _ contract.Msg = (*MsgTransferFT)(nil)
+var _ contract.Msg = (*MsgTransferNFT)(nil)
+var _ contract.Msg = (*MsgTransferFTFrom)(nil)
+var _ contract.Msg = (*MsgTransferNFTFrom)(nil)
 
 var _ json.Marshaler = (*MsgTransferFT)(nil)
 var _ json.Unmarshaler = (*MsgTransferFT)(nil)
@@ -22,18 +23,18 @@ var _ json.Marshaler = (*MsgTransferNFTFrom)(nil)
 var _ json.Unmarshaler = (*MsgTransferNFTFrom)(nil)
 
 type MsgTransferFT struct {
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Symbol string         `json:"symbol"`
-	Amount Coins          `json:"amount"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     Coins          `json:"amount"`
 }
 
-func NewMsgTransferFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, amount ...Coin) MsgTransferFT {
+func NewMsgTransferFT(from sdk.AccAddress, contractID string, to sdk.AccAddress, amount ...Coin) MsgTransferFT {
 	return MsgTransferFT{
-		From:   from,
-		To:     to,
-		Symbol: symbol,
-		Amount: amount,
+		From:       from,
+		ContractID: contractID,
+		To:         to,
+		Amount:     amount,
 	}
 }
 
@@ -51,17 +52,19 @@ func (MsgTransferFT) Route() string { return RouterKey }
 
 func (MsgTransferFT) Type() string { return "transfer_ft" }
 
+func (msg MsgTransferFT) GetContractID() string { return msg.ContractID }
+
 func (msg MsgTransferFT) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
+
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From cannot be empty")
 	}
 
 	if msg.To.Empty() {
 		return sdk.ErrInvalidAddress("To cannot be empty")
-	}
-
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 
 	if !msg.Amount.IsValid() {
@@ -79,18 +82,18 @@ func (msg MsgTransferFT) GetSigners() []sdk.AccAddress {
 }
 
 type MsgTransferNFT struct {
-	From     sdk.AccAddress `json:"from"`
-	To       sdk.AccAddress `json:"to"`
-	Symbol   string         `json:"symbol"`
-	TokenIDs []string       `json:"token_ids"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	TokenIDs   []string       `json:"token_ids"`
 }
 
-func NewMsgTransferNFT(from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenIDs ...string) MsgTransferNFT {
+func NewMsgTransferNFT(from sdk.AccAddress, contractID string, to sdk.AccAddress, tokenIDs ...string) MsgTransferNFT {
 	return MsgTransferNFT{
-		From:     from,
-		To:       to,
-		Symbol:   symbol,
-		TokenIDs: tokenIDs,
+		From:       from,
+		ContractID: contractID,
+		To:         to,
+		TokenIDs:   tokenIDs,
 	}
 }
 
@@ -108,7 +111,13 @@ func (MsgTransferNFT) Route() string { return RouterKey }
 
 func (MsgTransferNFT) Type() string { return "transfer_nft" }
 
+func (msg MsgTransferNFT) GetContractID() string { return msg.ContractID }
+
 func (msg MsgTransferNFT) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
+
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From cannot be empty")
 	}
@@ -117,9 +126,6 @@ func (msg MsgTransferNFT) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("To cannot be empty")
 	}
 
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-	}
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {
 			return ErrInvalidTokenID(DefaultCodespace, err.Error())
@@ -138,20 +144,20 @@ func (msg MsgTransferNFT) GetSigners() []sdk.AccAddress {
 }
 
 type MsgTransferFTFrom struct {
-	Proxy  sdk.AccAddress `json:"proxy"`
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Symbol string         `json:"symbol"`
-	Amount Coins          `json:"amount"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     Coins          `json:"amount"`
 }
 
-func NewMsgTransferFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, amount ...Coin) MsgTransferFTFrom {
+func NewMsgTransferFTFrom(proxy sdk.AccAddress, contractID string, from sdk.AccAddress, to sdk.AccAddress, amount ...Coin) MsgTransferFTFrom {
 	return MsgTransferFTFrom{
-		Proxy:  proxy,
-		From:   from,
-		To:     to,
-		Symbol: symbol,
-		Amount: amount,
+		Proxy:      proxy,
+		ContractID: contractID,
+		From:       from,
+		To:         to,
+		Amount:     amount,
 	}
 }
 
@@ -169,7 +175,12 @@ func (MsgTransferFTFrom) Route() string { return RouterKey }
 
 func (MsgTransferFTFrom) Type() string { return "transfer_ft_from" }
 
+func (msg MsgTransferFTFrom) GetContractID() string { return msg.ContractID }
+
 func (msg MsgTransferFTFrom) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
@@ -181,9 +192,6 @@ func (msg MsgTransferFTFrom) ValidateBasic() sdk.Error {
 	}
 	if msg.From.Equals(msg.Proxy) {
 		return ErrApproverProxySame(DefaultCodespace, msg.From.String())
-	}
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 	if !msg.Amount.IsValid() {
 		return ErrInvalidAmount(DefaultCodespace, "invalid amount")
@@ -200,20 +208,20 @@ func (msg MsgTransferFTFrom) GetSigners() []sdk.AccAddress {
 }
 
 type MsgTransferNFTFrom struct {
-	Proxy    sdk.AccAddress `json:"proxy"`
-	From     sdk.AccAddress `json:"from"`
-	To       sdk.AccAddress `json:"to"`
-	Symbol   string         `json:"symbol"`
-	TokenIDs []string       `json:"token_ids"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	To         sdk.AccAddress `json:"to"`
+	TokenIDs   []string       `json:"token_ids"`
 }
 
-func NewMsgTransferNFTFrom(proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, symbol string, tokenIDs ...string) MsgTransferNFTFrom {
+func NewMsgTransferNFTFrom(proxy sdk.AccAddress, contractID string, from sdk.AccAddress, to sdk.AccAddress, tokenIDs ...string) MsgTransferNFTFrom {
 	return MsgTransferNFTFrom{
-		Proxy:    proxy,
-		From:     from,
-		To:       to,
-		Symbol:   symbol,
-		TokenIDs: tokenIDs,
+		Proxy:      proxy,
+		ContractID: contractID,
+		From:       from,
+		To:         to,
+		TokenIDs:   tokenIDs,
 	}
 }
 
@@ -231,7 +239,12 @@ func (MsgTransferNFTFrom) Route() string { return RouterKey }
 
 func (MsgTransferNFTFrom) Type() string { return "transfer_nft_from" }
 
+func (msg MsgTransferNFTFrom) GetContractID() string { return msg.ContractID }
+
 func (msg MsgTransferNFTFrom) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
@@ -243,9 +256,6 @@ func (msg MsgTransferNFTFrom) ValidateBasic() sdk.Error {
 	}
 	if msg.From.Equals(msg.Proxy) {
 		return ErrApproverProxySame(DefaultCodespace, msg.From.String())
-	}
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
 	}
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {

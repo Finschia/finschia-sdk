@@ -7,22 +7,22 @@ import (
 )
 
 func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueFT) sdk.Result {
-	_, err := keeper.GetCollection(ctx, msg.Symbol)
+	_, err := keeper.GetCollection(ctx, msg.ContractID)
 	if err != nil {
 		return err.Result()
 	}
-	perm := types.NewIssuePermission(msg.Symbol)
+	perm := types.NewIssuePermission(msg.ContractID)
 	if !keeper.HasPermission(ctx, msg.Owner, perm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, msg.Owner, perm).Result()
 	}
 
-	tokenID, err := keeper.GetNextTokenIDFT(ctx, msg.Symbol)
+	tokenID, err := keeper.GetNextTokenIDFT(ctx, msg.ContractID)
 	if err != nil {
 		return err.Result()
 	}
 
-	token := types.NewFT(msg.Symbol, tokenID, msg.Name, msg.Decimals, msg.Mintable)
-	err = keeper.IssueFT(ctx, msg.Symbol, msg.Owner, token, msg.Amount)
+	token := types.NewFT(msg.ContractID, tokenID, msg.Name, msg.Decimals, msg.Mintable)
+	err = keeper.IssueFT(ctx, msg.ContractID, msg.Owner, token, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -39,23 +39,23 @@ func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueF
 }
 
 func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueNFT) sdk.Result {
-	_, err := keeper.GetCollection(ctx, msg.Symbol)
+	_, err := keeper.GetCollection(ctx, msg.ContractID)
 	if err != nil {
 		return err.Result()
 	}
 
-	perm := types.NewIssuePermission(msg.Symbol)
+	perm := types.NewIssuePermission(msg.ContractID)
 	if !keeper.HasPermission(ctx, msg.Owner, perm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, msg.Owner, perm).Result()
 	}
 
-	tokenTypeID, err := keeper.GetNextTokenType(ctx, msg.Symbol)
+	tokenTypeID, err := keeper.GetNextTokenType(ctx, msg.ContractID)
 	if err != nil {
 		return err.Result()
 	}
 
-	tokenType := types.NewBaseTokenType(msg.Symbol, tokenTypeID, msg.Name)
-	err = keeper.IssueNFT(ctx, msg.Symbol, tokenType, msg.Owner)
+	tokenType := types.NewBaseTokenType(msg.ContractID, tokenTypeID, msg.Name)
+	err = keeper.IssueNFT(ctx, msg.ContractID, tokenType, msg.Owner)
 	if err != nil {
 		return err.Result()
 	}

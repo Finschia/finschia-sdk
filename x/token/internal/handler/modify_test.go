@@ -3,6 +3,7 @@ package handler
 import (
 	"testing"
 
+	"github.com/line/link/x/contract"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 
@@ -12,12 +13,14 @@ import (
 
 func TestHandleMsgModify(t *testing.T) {
 	ctx, h := cacheKeeper()
+
+	contractID := contract.SampleContractID
 	const (
 		modifiedTokenName = "modifiedTokenName"
 		modifiedTokenURI  = "modifiedTokenURI"
 	)
 	// Given MsgModify
-	msg := types.NewMsgModify(addr1, defaultSymbol, linktype.NewChanges(
+	msg := types.NewMsgModify(addr1, contractID, linktype.NewChanges(
 		linktype.NewChange("name", modifiedTokenName),
 		linktype.NewChange("token_uri", modifiedTokenURI),
 	))
@@ -37,9 +40,15 @@ func TestHandleMsgModify(t *testing.T) {
 	t.Log("Test modify token")
 	{
 		// Given issued token
-		res := h(ctx, types.NewMsgIssue(addr1, defaultName, defaultSymbol, defaultTokenURI,
+		res := h(ctx, types.NewMsgIssue(addr1, defaultName, defaultSymbol, defaultImageURI,
 			sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true))
 		require.True(t, res.IsOK())
+		contractID := GetMadeContractID(res.Events)
+
+		msg := types.NewMsgModify(addr1, contractID, linktype.NewChanges(
+			linktype.NewChange("name", modifiedTokenName),
+			linktype.NewChange("token_uri", modifiedTokenURI),
+		))
 
 		// When handle MsgModify
 		res = h(ctx, msg)
@@ -48,14 +57,14 @@ func TestHandleMsgModify(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 		// And events are returned
 		expectedEvents := sdk.Events{
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyModifiedField, "name")),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyName, modifiedTokenName)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeySymbol, defaultSymbol)),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenURI, defaultTokenURI)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenURI, defaultImageURI)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyModifiedField, "token_uri")),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyName, modifiedTokenName)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeySymbol, defaultSymbol)),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenURI, modifiedTokenURI)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),

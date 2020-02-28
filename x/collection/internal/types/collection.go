@@ -9,7 +9,7 @@ type Findable interface {
 	Len() int
 }
 type Collection interface {
-	GetSymbol() string
+	GetContractID() string
 	GetName() string
 	SetName(name string) Collection
 	GetBaseImgURI() string
@@ -17,21 +17,21 @@ type Collection interface {
 	String() string
 }
 type BaseCollection struct {
-	Symbol     string `json:"symbol"`
+	ContractID string `json:"contract_id"`
 	Name       string `json:"name"`
 	BaseImgURI string `json:"base_img_uri"`
 }
 
-func NewCollection(symbol, name, baseImgURI string) Collection {
+func NewCollection(contractID, name, baseImgURI string) Collection {
 	return &BaseCollection{
-		Symbol:     symbol,
+		ContractID: contractID,
 		Name:       name,
 		BaseImgURI: baseImgURI,
 	}
 }
 
-func (c BaseCollection) GetSymbol() string { return c.Symbol }
-func (c BaseCollection) GetName() string   { return c.Name }
+func (c BaseCollection) GetContractID() string { return c.ContractID }
+func (c BaseCollection) GetName() string       { return c.Name }
 func (c *BaseCollection) SetName(name string) Collection {
 	c.Name = name
 	return c

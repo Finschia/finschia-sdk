@@ -12,13 +12,13 @@ import (
 func TestKeeper_GetBalance(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Set Account")
-	acc := types.NewBaseAccountWithAddress(defaultSymbol, addr1)
+	acc := types.NewBaseAccountWithAddress(defaultContractID, addr1)
 	{
 		require.NoError(t, keeper.SetAccount(ctx, acc))
 	}
 	t.Log("Get Balance")
 	{
-		balance := keeper.GetBalance(ctx, defaultSymbol, addr1)
+		balance := keeper.GetBalance(ctx, defaultContractID, addr1)
 		require.Equal(t, balance.Int64(), acc.GetBalance().Int64())
 	}
 }
@@ -27,31 +27,31 @@ func TestKeeper_HasBalance(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Set Account")
 	var acc types.Account
-	acc = types.NewBaseAccountWithAddress(defaultSymbol, addr1)
+	acc = types.NewBaseAccountWithAddress(defaultContractID, addr1)
 	acc = acc.SetBalance(sdk.NewInt(defaultAmount))
 	{
 		require.NoError(t, keeper.SetAccount(ctx, acc))
 	}
 	t.Log("Has Balance")
 	{
-		require.True(t, keeper.HasBalance(ctx, defaultSymbol, addr1, sdk.NewInt(defaultAmount)))
+		require.True(t, keeper.HasBalance(ctx, defaultContractID, addr1, sdk.NewInt(defaultAmount)))
 	}
 }
 
 func TestKeeper_SetBalance(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Set Account")
-	acc := types.NewBaseAccountWithAddress(defaultSymbol, addr1)
+	acc := types.NewBaseAccountWithAddress(defaultContractID, addr1)
 	{
 		require.NoError(t, keeper.SetAccount(ctx, acc))
 	}
 	t.Log("Set Balance")
 	{
-		require.NoError(t, keeper.SetBalance(ctx, defaultSymbol, addr1, sdk.NewInt(defaultAmount)))
+		require.NoError(t, keeper.SetBalance(ctx, defaultContractID, addr1, sdk.NewInt(defaultAmount)))
 	}
 	t.Log("Get Balance")
 	{
-		balance := keeper.GetBalance(ctx, defaultSymbol, addr1)
+		balance := keeper.GetBalance(ctx, defaultContractID, addr1)
 		require.Equal(t, sdk.NewInt(defaultAmount).Int64(), balance.Int64())
 	}
 }
@@ -59,19 +59,19 @@ func TestKeeper_SetBalance(t *testing.T) {
 func TestKeeper_AddBalance(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Set Account")
-	acc := types.NewBaseAccountWithAddress(defaultSymbol, addr1)
+	acc := types.NewBaseAccountWithAddress(defaultContractID, addr1)
 	{
 		require.NoError(t, keeper.SetAccount(ctx, acc))
 	}
 	t.Log("Add Balance")
 	{
-		added, err := keeper.AddBalance(ctx, defaultSymbol, addr1, sdk.NewInt(defaultAmount))
+		added, err := keeper.AddBalance(ctx, defaultContractID, addr1, sdk.NewInt(defaultAmount))
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount).Int64(), added.Int64())
 	}
 	t.Log("Get Balance")
 	{
-		balance := keeper.GetBalance(ctx, defaultSymbol, addr1)
+		balance := keeper.GetBalance(ctx, defaultContractID, addr1)
 		require.Equal(t, sdk.NewInt(defaultAmount).Int64(), balance.Int64())
 	}
 }
@@ -79,23 +79,23 @@ func TestKeeper_AddBalance(t *testing.T) {
 func TestKeeper_SubtractBalance(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Set Account")
-	acc := types.NewBaseAccountWithAddress(defaultSymbol, addr1)
+	acc := types.NewBaseAccountWithAddress(defaultContractID, addr1)
 	{
 		require.NoError(t, keeper.SetAccount(ctx, acc))
 	}
 	t.Log("Set Balance")
 	{
-		require.NoError(t, keeper.SetBalance(ctx, defaultSymbol, addr1, sdk.NewInt(defaultAmount)))
+		require.NoError(t, keeper.SetBalance(ctx, defaultContractID, addr1, sdk.NewInt(defaultAmount)))
 	}
 	t.Log("Subtract Balance")
 	{
-		sub, err := keeper.SubtractBalance(ctx, defaultSymbol, addr1, sdk.NewInt(defaultAmount))
+		sub, err := keeper.SubtractBalance(ctx, defaultContractID, addr1, sdk.NewInt(defaultAmount))
 		require.NoError(t, err)
 		require.Equal(t, sdk.ZeroInt().Int64(), sub.Int64())
 	}
 	t.Log("Get Balance")
 	{
-		balance := keeper.GetBalance(ctx, defaultSymbol, addr1)
+		balance := keeper.GetBalance(ctx, defaultContractID, addr1)
 		require.Equal(t, sdk.ZeroInt().Int64(), balance.Int64())
 	}
 }
@@ -103,21 +103,21 @@ func TestKeeper_SubtractBalance(t *testing.T) {
 func TestKeeper_SendToken(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Set Account")
-	acc := types.NewBaseAccountWithAddress(defaultSymbol, addr1)
+	acc := types.NewBaseAccountWithAddress(defaultContractID, addr1)
 	{
 		require.NoError(t, keeper.SetAccount(ctx, acc))
 	}
 	t.Log("Set Balance")
 	{
-		require.NoError(t, keeper.SetBalance(ctx, defaultSymbol, addr1, sdk.NewInt(defaultAmount)))
+		require.NoError(t, keeper.SetBalance(ctx, defaultContractID, addr1, sdk.NewInt(defaultAmount)))
 	}
 	t.Log("Send Balance")
 	{
-		require.NoError(t, keeper.Send(ctx, defaultSymbol, addr1, addr2, sdk.NewInt(defaultAmount)))
+		require.NoError(t, keeper.Send(ctx, defaultContractID, addr1, addr2, sdk.NewInt(defaultAmount)))
 	}
 	t.Log("Get Balance")
 	{
-		require.Equal(t, sdk.ZeroInt().Int64(), keeper.GetBalance(ctx, defaultSymbol, addr1).Int64())
-		require.Equal(t, sdk.NewInt(defaultAmount).Int64(), keeper.GetBalance(ctx, defaultSymbol, addr2).Int64())
+		require.Equal(t, sdk.ZeroInt().Int64(), keeper.GetBalance(ctx, defaultContractID, addr1).Int64())
+		require.Equal(t, sdk.NewInt(defaultAmount).Int64(), keeper.GetBalance(ctx, defaultContractID, addr2).Int64())
 	}
 }

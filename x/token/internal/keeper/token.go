@@ -5,33 +5,33 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) GetToken(ctx sdk.Context, symbol string) (types.Token, sdk.Error) {
+func (k Keeper) GetToken(ctx sdk.Context, contractID string) (types.Token, sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.TokenSymbolKey(symbol))
+	bz := store.Get(types.TokenKey(contractID))
 	if bz == nil {
-		return nil, types.ErrTokenNotExist(types.DefaultCodespace, symbol)
+		return nil, types.ErrTokenNotExist(types.DefaultCodespace, contractID)
 	}
 	return k.mustDecodeToken(bz), nil
 }
 
 func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
-	tokenKey := types.TokenSymbolKey(token.GetSymbol())
+	tokenKey := types.TokenKey(token.GetContractID())
 	if store.Has(tokenKey) {
-		return types.ErrTokenExist(types.DefaultCodespace, token.GetSymbol())
+		return types.ErrTokenExist(types.DefaultCodespace, token.GetContractID())
 	}
 	store.Set(tokenKey, k.cdc.MustMarshalBinaryBare(token))
 
-	k.setSupply(ctx, types.DefaultSupply(token.GetSymbol()))
+	k.setSupply(ctx, types.DefaultSupply(token.GetContractID()))
 
 	return nil
 }
 
 func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
-	tokenKey := types.TokenSymbolKey(token.GetSymbol())
+	tokenKey := types.TokenKey(token.GetContractID())
 	if !store.Has(tokenKey) {
-		return types.ErrTokenNotExist(types.DefaultCodespace, token.GetSymbol())
+		return types.ErrTokenNotExist(types.DefaultCodespace, token.GetContractID())
 	}
 	store.Set(tokenKey, k.cdc.MustMarshalBinaryBare(token))
 	return nil
@@ -48,7 +48,7 @@ func (k Keeper) GetAllTokens(ctx sdk.Context) (tokens types.Tokens) {
 
 func (k Keeper) iterateTokens(ctx sdk.Context, prefix string, process func(types.Token) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.TokenSymbolKey(prefix))
+	iter := sdk.KVStorePrefixIterator(store, types.TokenKey(prefix))
 	defer iter.Close()
 	for {
 		if !iter.Valid() {

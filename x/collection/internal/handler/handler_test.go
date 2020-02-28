@@ -8,6 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	testCommon "github.com/line/link/x/collection/internal/keeper"
+	"github.com/line/link/x/collection/internal/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
@@ -40,7 +41,6 @@ var verifyEventFunc = func(t *testing.T, expected sdk.Events, actual sdk.Events)
 
 const (
 	defaultName       = "name"
-	defaultSymbol     = "token001"
 	defaultImgURI     = "img-uri"
 	defaultDecimals   = 6
 	defaultAmount     = 1000
@@ -58,6 +58,17 @@ var (
 	addr1 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	addr2 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 )
+
+func GetMadeContractID(events sdk.Events) string {
+	for _, event := range events.ToABCIEvents() {
+		for _, attr := range event.Attributes {
+			if string(attr.Key) == types.AttributeKeyContractID {
+				return string(attr.Value)
+			}
+		}
+	}
+	return ""
+}
 
 func TestHandlerUnrecognized(t *testing.T) {
 	ctx, h := cacheKeeper()

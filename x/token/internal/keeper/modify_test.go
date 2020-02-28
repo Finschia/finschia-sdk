@@ -16,9 +16,9 @@ func TestModifyTokenName(t *testing.T) {
 	tokenURIChange := linktype.NewChange("token_uri", modifiedTokenURI)
 
 	ctx := cacheKeeper()
-	token := aToken(defaultSymbol)
-	tokenWithoutPerm := aToken(defaultSymbol + "2")
-	modifyPermission := types.NewModifyPermission(token.GetSymbol())
+	token := aToken(defaultContractID)
+	tokenWithoutPerm := aToken(defaultContractID + "2")
+	modifyPermission := types.NewModifyPermission(token.GetContractID())
 
 	// Given Token And Permission
 	require.NoError(t, keeper.SetToken(ctx, token))
@@ -27,46 +27,46 @@ func TestModifyTokenName(t *testing.T) {
 	t.Logf("Test to modify name for token to %s", modifiedTokenName)
 	{
 		// When modify token name
-		require.NoError(t, keeper.ModifyToken(ctx, addr1, token.GetSymbol(), nameChange))
+		require.NoError(t, keeper.ModifyToken(ctx, addr1, token.GetContractID(), nameChange))
 
 		// Then token name is modified
 		store := ctx.KVStore(keeper.storeKey)
-		bz := store.Get(types.TokenSymbolKey(token.GetSymbol()))
+		bz := store.Get(types.TokenKey(token.GetContractID()))
 		actual := keeper.mustDecodeToken(bz)
 		require.Equal(t, modifiedTokenName, actual.GetName())
 	}
 	t.Logf("Test to modify token uri for token to %s", modifiedTokenURI)
 	{
 		// When modify token uri
-		require.NoError(t, keeper.ModifyToken(ctx, addr1, token.GetSymbol(), tokenURIChange))
+		require.NoError(t, keeper.ModifyToken(ctx, addr1, token.GetContractID(), tokenURIChange))
 
 		// Then token uri is modified
 		store := ctx.KVStore(keeper.storeKey)
-		bz := store.Get(types.TokenSymbolKey(token.GetSymbol()))
+		bz := store.Get(types.TokenKey(token.GetContractID()))
 		actual := keeper.mustDecodeToken(bz)
-		require.Equal(t, modifiedTokenURI, actual.GetTokenURI())
+		require.Equal(t, modifiedTokenURI, actual.GetImageURI())
 	}
-	t.Log("Test with nonexistent symbol")
+	t.Log("Test with nonexistent contractID")
 	{
-		// Given nonexistent symbol
-		nonExistentSymbols := "symbol2"
+		// Given nonexistent contractID
+		nonExistentcontractID := "abcd1234"
 
-		// When modify token name with invalid symbol, Then error is occurred
-		require.EqualError(t, keeper.ModifyToken(ctx, addr1, nonExistentSymbols, nameChange),
-			types.ErrTokenNotExist(types.DefaultCodespace, nonExistentSymbols).Error())
+		// When modify token name with invalid contractID, Then error is occurred
+		require.EqualError(t, keeper.ModifyToken(ctx, addr1, nonExistentcontractID, nameChange),
+			types.ErrTokenNotExist(types.DefaultCodespace, nonExistentcontractID).Error())
 	}
 	t.Log("Test without permission")
 	{
 		// Given Token without Permission
 		require.NoError(t, keeper.SetToken(ctx, tokenWithoutPerm))
-		invalidPerm := types.NewModifyPermission(tokenWithoutPerm.GetSymbol())
+		invalidPerm := types.NewModifyPermission(tokenWithoutPerm.GetContractID())
 
 		// When modify token name with invalid permission, Then error is occurred
-		require.EqualError(t, keeper.ModifyToken(ctx, addr1, tokenWithoutPerm.GetSymbol(), nameChange),
+		require.EqualError(t, keeper.ModifyToken(ctx, addr1, tokenWithoutPerm.GetContractID(), nameChange),
 			types.ErrTokenNoPermission(types.DefaultCodespace, addr1, invalidPerm).Error())
 	}
 }
 
-func aToken(symbol string) types.Token {
-	return types.NewToken(defaultName, symbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+func aToken(contractID string) types.Token {
+	return types.NewToken(contractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 }

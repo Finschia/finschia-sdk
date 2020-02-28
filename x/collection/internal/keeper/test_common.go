@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link/x/contract"
 	"github.com/line/link/x/iam"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -15,11 +16,14 @@ import (
 func TestKeeper() (sdk.Context, store.CommitMultiStore, Keeper) {
 	keyIam := sdk.NewKVStoreKey(iam.StoreKey)
 	keyCollection := sdk.NewKVStoreKey(types.StoreKey)
+	keyContract := sdk.NewKVStoreKey(contract.StoreKey)
 
 	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(keyCollection, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyIam, sdk.StoreTypeIAVL, db)
+	ms.MountStoreWithDB(keyContract, sdk.StoreTypeIAVL, db)
+
 	if err := ms.LoadLatestVersion(); err != nil {
 		panic(err)
 	}
@@ -32,7 +36,7 @@ func TestKeeper() (sdk.Context, store.CommitMultiStore, Keeper) {
 
 	// add keepers
 	iamKeeper := iam.NewKeeper(cdc, keyIam)
-	keeper := NewKeeper(cdc, iamKeeper.WithPrefix(types.ModuleName), keyCollection)
+	keeper := NewKeeper(cdc, iamKeeper.WithPrefix(types.ModuleName), contract.NewContractKeeper(cdc, keyContract), keyCollection)
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
 
 	return ctx, ms, keeper

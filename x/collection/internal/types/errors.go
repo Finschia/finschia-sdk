@@ -17,15 +17,14 @@ const (
 
 	//Token invalidation
 	CodeTokenInvalidTokenName        sdk.CodeType = 200
-	CodeTokenInvalidTokenSymbol      sdk.CodeType = 201
-	CodeTokenInvalidTokenID          sdk.CodeType = 202
-	CodeTokenInvalidDecimals         sdk.CodeType = 203
-	CodeTokenInvalidFT               sdk.CodeType = 204
-	CodeTokenInvalidAmount           sdk.CodeType = 205
-	CodeTokenInvalidBaseImgURILength sdk.CodeType = 206
-	CodeTokenInvalidNameLength       sdk.CodeType = 207
-	CodeTokenInvalidTokenType        sdk.CodeType = 208
-	CodeTokenInvalidTokenIndex       sdk.CodeType = 209
+	CodeTokenInvalidTokenID          sdk.CodeType = 201
+	CodeTokenInvalidDecimals         sdk.CodeType = 202
+	CodeTokenInvalidFT               sdk.CodeType = 203
+	CodeTokenInvalidAmount           sdk.CodeType = 204
+	CodeTokenInvalidBaseImgURILength sdk.CodeType = 205
+	CodeTokenInvalidNameLength       sdk.CodeType = 206
+	CodeTokenInvalidTokenType        sdk.CodeType = 207
+	CodeTokenInvalidTokenIndex       sdk.CodeType = 208
 
 	//Collection
 	CodeCollectionExist             sdk.CodeType = 300
@@ -68,16 +67,12 @@ const (
 	CodeTokenIndexWithoutType    sdk.CodeType = 904
 )
 
-func ErrTokenNotMintable(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotMintable, "token symbol[%s] token-id[%s] is not mintable", symbol, tokenID)
+func ErrTokenNotMintable(codespace sdk.CodespaceType, contractID, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotMintable, "token contract_id[%s] token-id[%s] is not mintable", contractID, tokenID)
 }
 
 func ErrInvalidTokenName(codespace sdk.CodespaceType, name string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidTokenName, "token name [%s] should not be empty", name)
-}
-
-func ErrInvalidTokenSymbol(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenSymbol, "invalid symbol pattern found %s", msg)
 }
 
 func ErrInvalidTokenID(codespace sdk.CodespaceType, msg string) sdk.Error {
@@ -133,44 +128,44 @@ func ErrTokenIndexWithoutType(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenIndexWithoutType, "There is a token index but no token type")
 }
 
-func ErrCollectionExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionExist, "collection [%s] already exists", symbol)
+func ErrCollectionExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionExist, "collection [%s] already exists", contractID)
 }
 
-func ErrCollectionNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionNotExist, "collection [%s] does not exists", symbol)
+func ErrCollectionNotExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionNotExist, "collection [%s] does not exists", contractID)
 }
 
 func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission fmt.Stringer) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
 }
 
-func ErrTokenExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenExist, "token symbol[%s] token-id[%s] already exists", symbol, tokenID)
+func ErrTokenExist(codespace sdk.CodespaceType, contractID, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenExist, "token contract_id[%s] token-id[%s] already exists", contractID, tokenID)
 }
 
-func ErrTokenNotExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotExist, "token symbol[%s] token-id[%s] does not exist", symbol, tokenID)
+func ErrTokenNotExist(codespace sdk.CodespaceType, contractID, tokenID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotExist, "token contract_id[%s] token-id[%s] does not exist", contractID, tokenID)
 }
 
-func ErrTokenTypeExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenTypeExist, "token type for symbol[%s] token-type[%s] already exists", symbol, tokenType)
+func ErrTokenTypeExist(codespace sdk.CodespaceType, contractID, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenTypeExist, "token type for contract_id[%s] token-type[%s] already exists", contractID, tokenType)
 }
 
-func ErrTokenTypeNotExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenTypeNotExist, "token type for symbol[%s] token-type[%s] does not exist", symbol, tokenType)
+func ErrTokenTypeNotExist(codespace sdk.CodespaceType, contractID, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenTypeNotExist, "token type for contract_id[%s] token-type[%s] does not exist", contractID, tokenType)
 }
 
-func ErrTokenTypeFull(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenTypeFull, "all token type for symbol[%s] are occupied", symbol)
+func ErrTokenTypeFull(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenTypeFull, "all token type for contract_id[%s] are occupied", contractID)
 }
 
-func ErrTokenIndexFull(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenIndexFull, "all non-fungible token index for symbol[%s] token-type[%s] are occupied", symbol, tokenType)
+func ErrTokenIndexFull(codespace sdk.CodespaceType, contractID, tokenType string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenIndexFull, "all non-fungible token index for contract_id[%s] token-type[%s] are occupied", contractID, tokenType)
 }
 
-func ErrTokenIDFull(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenIDFull, "all fungible token-id for symbol[%s] are occupied", symbol)
+func ErrTokenIDFull(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeCollectionTokenIDFull, "all fungible token-id for contract_id[%s] are occupied", contractID)
 }
 
 func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, tokenID string) sdk.Error {
@@ -205,12 +200,12 @@ func ErrApproverProxySame(codespace sdk.CodespaceType, approver string) sdk.Erro
 	return sdk.NewError(codespace, CodeTokenApproverProxySame, "approver[%s] is same with proxy", approver)
 }
 
-func ErrCollectionNotApproved(codespace sdk.CodespaceType, proxy string, approver string, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotApproved, "proxy[%s] is not approved by %s on the collection[%s]", proxy, approver, symbol)
+func ErrCollectionNotApproved(codespace sdk.CodespaceType, proxy string, approver string, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotApproved, "proxy[%s] is not approved by %s on the collection[%s]", proxy, approver, contractID)
 }
 
-func ErrCollectionAlreadyApproved(codespace sdk.CodespaceType, proxy string, approver string, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenAlreadyApproved, "proxy[%s] is already approved by %s on the collection[%s]", proxy, approver, symbol)
+func ErrCollectionAlreadyApproved(codespace sdk.CodespaceType, proxy string, approver string, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenAlreadyApproved, "proxy[%s] is already approved by %s on the collection[%s]", proxy, approver, contractID)
 }
 
 func ErrAccountExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {

@@ -2,20 +2,20 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	linktype "github.com/line/link/types"
+	"github.com/line/link/x/contract"
 )
 
-var _ sdk.Msg = (*MsgTransfer)(nil)
+var _ contract.Msg = (*MsgTransfer)(nil)
 
 type MsgTransfer struct {
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Symbol string         `json:"symbol"`
-	Amount sdk.Int        `json:"amount"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     sdk.Int        `json:"amount"`
 }
 
-func NewMsgTransfer(from, to sdk.AccAddress, symbol string, amount sdk.Int) MsgTransfer {
-	return MsgTransfer{From: from, To: to, Symbol: symbol, Amount: amount}
+func NewMsgTransfer(from sdk.AccAddress, to sdk.AccAddress, contractID string, amount sdk.Int) MsgTransfer {
+	return MsgTransfer{From: from, To: to, ContractID: contractID, Amount: amount}
 }
 
 func (msg MsgTransfer) Route() string { return RouterKey }
@@ -23,16 +23,16 @@ func (msg MsgTransfer) Route() string { return RouterKey }
 func (msg MsgTransfer) Type() string { return "transfer_ft" }
 
 func (msg MsgTransfer) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
+
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("missing sender address")
+		return sdk.ErrInvalidAddress("from cannot be empty")
 	}
 
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("missing recipient address")
-	}
-
-	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
+		return sdk.ErrInvalidAddress("to cannot be empty")
 	}
 
 	if !msg.Amount.IsPositive() {
@@ -47,4 +47,8 @@ func (msg MsgTransfer) GetSignBytes() []byte {
 
 func (msg MsgTransfer) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.From}
+}
+
+func (msg MsgTransfer) GetContractID() string {
+	return msg.ContractID
 }

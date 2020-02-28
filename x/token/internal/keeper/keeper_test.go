@@ -12,11 +12,12 @@ import (
 )
 
 const (
-	defaultName     = "name"
-	defaultSymbol   = "token001"
-	defaultTokenURI = "token-uri"
-	defaultDecimals = 6
-	defaultAmount   = 1000
+	defaultName       = "name"
+	defaultSymbol     = "BTC"
+	defaultContractID = "token001"
+	defaultImageURI   = "image-uri"
+	defaultDecimals   = 6
+	defaultAmount     = 1000
 )
 
 var (
@@ -47,9 +48,9 @@ func cacheKeeper() sdk.Context {
 }
 
 func verifyTokenFunc(t *testing.T, expected types.Token, actual types.Token) {
-	require.Equal(t, expected.GetSymbol(), actual.GetSymbol())
+	require.Equal(t, expected.GetContractID(), actual.GetContractID())
 	require.Equal(t, expected.GetName(), actual.GetName())
-	require.Equal(t, expected.GetTokenURI(), actual.GetTokenURI())
+	require.Equal(t, expected.GetImageURI(), actual.GetImageURI())
 	require.Equal(t, expected.GetDecimals(), actual.GetDecimals())
 	require.Equal(t, expected.GetMintable(), actual.GetMintable())
 }

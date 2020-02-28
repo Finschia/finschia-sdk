@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/types"
+	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
@@ -16,9 +16,8 @@ func TestMsgBasics(t *testing.T) {
 	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
 
-	addrSuffix := types.AccAddrSuffix(addr)
 	{
-		msg := NewMsgIssue(addr, "name", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, "name", "BTC", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.Equal(t, "issue_token", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -34,34 +33,46 @@ func TestMsgBasics(t *testing.T) {
 
 		require.Equal(t, msg.Name, msg2.Name)
 		require.Equal(t, msg.Symbol, msg2.Symbol)
-		require.Equal(t, msg.TokenURI, msg2.TokenURI)
+		require.Equal(t, msg.ImageURI, msg2.ImageURI)
 		require.Equal(t, msg.Owner, msg2.Owner)
 		require.Equal(t, msg.Amount, msg.Amount)
 		require.Equal(t, msg.Decimals, msg2.Decimals)
 		require.Equal(t, msg.Mintable, msg2.Mintable)
 	}
 	{
-		msg := NewMsgIssue(addr, "name", "symb"+addrSuffix, length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenURILength(DefaultCodespace, length1001String).Error())
+		msg := NewMsgIssue(addr, "name", "BTC", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidImageURILength(DefaultCodespace, length1001String).Error())
 	}
 	{
-		msg := NewMsgIssue(addr, length1001String, "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, "name", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "").Error())
+	}
+	{
+		msg := NewMsgIssue(addr, "name", "123456789012345678901", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "123456789012345678901").Error())
+	}
+	{
+		msg := NewMsgIssue(addr, "name", "BCD_A", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "BCD_A").Error())
+	}
+	{
+		msg := NewMsgIssue(addr, "name", "12", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "12").Error())
+	}
+	{
+		msg := NewMsgIssue(addr, length1001String, "BTC", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidNameLength(DefaultCodespace, length1001String).Error())
 	}
 	{
-		msg := NewMsgIssue(addr, "name", "s", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "symbol [s] mismatched to [^[a-z][a-z0-9]{5,7}$]").Error())
-	}
-	{
-		msg := NewMsgIssue(addr, "", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, "", "BTC", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenName(DefaultCodespace, "").Error())
 	}
 	{
-		msg := NewMsgIssue(addr, "name", "symb"+addrSuffix, "tokenuri", sdk.NewInt(1), sdk.NewInt(19), true)
+		msg := NewMsgIssue(addr, "name", "BTC", "tokenuri", sdk.NewInt(1), sdk.NewInt(19), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenDecimals(DefaultCodespace, sdk.NewInt(19)).Error())
 	}
 	{
-		msg := NewMsgMint("linkabc", addr, addr, sdk.NewInt(1))
+		msg := NewMsgMint(addr, contract.SampleContractID, addr, sdk.NewInt(1))
 		require.Equal(t, "mint", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -79,7 +90,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Amount, msg2.Amount)
 	}
 	{
-		msg := NewMsgBurn("linkabc", addr, sdk.NewInt(1))
+		msg := NewMsgBurn(addr, contract.SampleContractID, sdk.NewInt(1))
 		require.Equal(t, "burn", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -137,7 +148,7 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgTransfer(addr, addr, "mytoken", sdk.NewInt(4))
+		msg := NewMsgTransfer(addr, addr, contract.SampleContractID, sdk.NewInt(4))
 		require.Equal(t, "transfer_ft", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -152,22 +163,22 @@ func TestMsgBasics(t *testing.T) {
 		require.NoError(t, err)
 
 		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.ContractID, msg2.ContractID)
 		require.Equal(t, msg.To, msg2.To)
-		require.Equal(t, msg.Symbol, msg2.Symbol)
 		require.Equal(t, msg.Amount, msg2.Amount)
 	}
 
 	{
-		msg := NewMsgTransfer(nil, addr, "mytoken", sdk.NewInt(4))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("missing sender address").Error())
+		msg := NewMsgTransfer(nil, addr, contract.SampleContractID, sdk.NewInt(4))
+		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("from cannot be empty").Error())
 
-		msg = NewMsgTransfer(addr, nil, "mytoken", sdk.NewInt(4))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("missing recipient address").Error())
+		msg = NewMsgTransfer(addr, nil, contract.SampleContractID, sdk.NewInt(4))
+		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("to cannot be empty").Error())
 
 		msg = NewMsgTransfer(addr, addr, "m", sdk.NewInt(4))
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "symbol [m] mismatched to [^[a-z][a-z0-9]{5,7}$]").Error())
+		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "m").Error())
 
-		msg = NewMsgTransfer(addr, addr, "mytoken", sdk.NewInt(-1))
+		msg = NewMsgTransfer(addr, addr, contract.SampleContractID, sdk.NewInt(-1))
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInsufficientCoins("send amount must be positive").Error())
 	}
 }

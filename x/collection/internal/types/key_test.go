@@ -11,9 +11,9 @@ import (
 func TestKeys(t *testing.T) {
 	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	symbol1 := "symbol1"
-	symbol2 := "symbol2"
+	contractID1 := "abcdef012"
+	contractID2 := "abcdef013"
 
-	require.NotEqual(t, CollectionApprovedKey(symbol1, addr1, addr2), CollectionApprovedKey(symbol1, addr2, addr1))
-	require.NotEqual(t, CollectionApprovedKey(symbol1, addr1, addr2), CollectionApprovedKey(symbol2, addr1, addr2))
+	require.NotEqual(t, CollectionApprovedKey(contractID1, addr1, addr2), CollectionApprovedKey(contractID1, addr2, addr1))
+	require.NotEqual(t, CollectionApprovedKey(contractID1, addr1, addr2), CollectionApprovedKey(contractID2, addr1, addr2))
 }

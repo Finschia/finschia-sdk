@@ -6,20 +6,23 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link/x/contract"
 	"github.com/tendermint/tendermint/libs/log"
 )
 
 type Keeper struct {
-	iamKeeper types.IamKeeper
-	storeKey  sdk.StoreKey
-	cdc       *codec.Codec
+	iamKeeper      types.IamKeeper
+	contractKeeper contract.Keeper
+	storeKey       sdk.StoreKey
+	cdc            *codec.Codec
 }
 
-func NewKeeper(cdc *codec.Codec, iamKeeper types.IamKeeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(cdc *codec.Codec, iamKeeper types.IamKeeper, contractKeeper contract.Keeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
-		iamKeeper: iamKeeper.WithPrefix(types.ModuleName),
-		storeKey:  storeKey,
-		cdc:       cdc,
+		iamKeeper:      iamKeeper.WithPrefix(types.ModuleName),
+		contractKeeper: contractKeeper,
+		storeKey:       storeKey,
+		cdc:            cdc,
 	}
 }
 

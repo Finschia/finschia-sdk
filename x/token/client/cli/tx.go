@@ -5,7 +5,6 @@ import (
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/spf13/viper"
 
@@ -16,6 +15,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/line/link/client"
+
+	linktype "github.com/line/link/types"
 )
 
 var (
@@ -23,7 +24,6 @@ var (
 	flagDecimals    = "decimals"
 	flagMintable    = "mintable"
 	flagTokenURI    = "token-uri"
-	flagAAS         = "address-suffix"
 )
 
 const (
@@ -54,20 +54,15 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func IssueTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "issue [from_key_or_address] [symbol] [name]",
+		Use:   "issue [from_key_or_address] [name] [symbol]",
 		Short: "Create and sign an issue token tx",
 		Long: `
 [Issue a token command]
-The token symbol is extended with AAS(Account Address Suffix)
-		symbol <- [symbol][AAS]
-To query or send the token, you should remember the extended symbol
-If you have a permission to issue a specific symbol, by set option '--address-suffix=false',
-If you want to issue a token for a symbol without the suffix, set option '--address-suffix=false'
-For that, you have to get the issue permission for the symbol
+To query or send the token, you should remember the contract id
 
 
 [Fungible Token]
-linkcli tx token issue [from_key_or_address] [symbol] [name]
+linkcli tx token issue [from_key_or_address] [name]
 --decimals=[decimals]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
@@ -79,21 +74,12 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
 			to := cliCtx.FromAddress
-			symbol := args[1]
-			name := args[2]
+			name := args[1]
+			symbol := args[2]
 			supply := viper.GetInt64(flagTotalSupply)
 			decimals := viper.GetInt64(flagDecimals)
 			mintable := viper.GetBool(flagMintable)
 			tokenURI := viper.GetString(flagTokenURI)
-			aas := viper.GetBool(flagAAS)
-
-			if aas {
-				symbol += to.String()[len(to.String())-linktype.AccAddrSuffixLen:]
-			}
-
-			if err := linktype.ValidateSymbolUserDefined(symbol); err != nil {
-				return err
-			}
 
 			if decimals < 0 || decimals > 18 {
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
@@ -107,14 +93,13 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 	cmd.Flags().Int64(flagDecimals, DefaultDecimals, "set decimals")
 	cmd.Flags().Bool(flagMintable, false, "set mintable")
 	cmd.Flags().String(flagTokenURI, "", "set token-uri")
-	cmd.Flags().Bool(flagAAS, true, "attach address suffix to symbol")
 
 	return client.PostCommands(cmd)[0]
 }
 
 func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer [from_key_or_address] [to_address] [symbol] [amount]",
+		Use:   "transfer [from_key_or_address] [to_address] [contract_id] [amount]",
 		Short: "Create and sign a tx transferring non-reserved fungible tokens",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -143,25 +128,27 @@ func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [from_key_or_address] [to] [symbol] [amount]",
+		Use:   "mint [from_key_or_address] [contract_id] [to] [amount]",
 		Short: "Create and sign a mint token tx",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
-			to, err := sdk.AccAddressFromBech32(args[1])
+
+			contractID := args[1]
+
+			to, err := sdk.AccAddressFromBech32(args[2])
 			if err != nil {
 				return err
 			}
 
-			symbol := args[2]
 			amount, err := strconv.Atoi(args[3])
 			if err != nil {
 				return err
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgMint(symbol, cliCtx.GetFromAddress(), to, sdk.NewInt(int64(amount)))
+			msg := types.NewMsgMint(cliCtx.GetFromAddress(), contractID, to, sdk.NewInt(int64(amount)))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -171,21 +158,21 @@ func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [from_key_or_address] [symbol] [amount]",
+		Use:   "burn [from_key_or_address] [contract_id] [amount]",
 		Short: "Create and sign a burn token tx",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			symbol := args[1]
+			contractID := args[1]
 			amount, ok := sdk.NewIntFromString(args[2])
 			if !ok {
 				return types.ErrInvalidAmount(types.DefaultCodespace, args[4])
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurn(symbol, cliCtx.GetFromAddress(), amount)
+			msg := types.NewMsgBurn(cliCtx.GetFromAddress(), contractID, amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -245,19 +232,19 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func ModifyTokenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "modify [owner_address] [symbol] [field] [new_value]",
+		Use:   "modify [owner_address] [contract_id] [field] [new_value]",
 		Short: "Create and sign a modify token tx",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
-			symbol := args[1]
+			contractID := args[1]
 			field := args[2]
 			newValue := args[3]
 
 			msg := types.NewMsgModify(
 				cliCtx.FromAddress,
-				symbol,
+				contractID,
 				linktype.NewChanges(linktype.NewChange(field, newValue)),
 			)
 			err := msg.ValidateBasic()

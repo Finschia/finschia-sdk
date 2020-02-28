@@ -8,7 +8,7 @@ import (
 
 func handleMsgModify(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgModify) sdk.Result {
 	for _, change := range msg.Changes {
-		if err := keeper.Modify(ctx, msg.Owner, msg.Symbol, msg.TokenType, msg.TokenIndex, change); err != nil {
+		if err := keeper.Modify(ctx, msg.Owner, msg.ContractID, msg.TokenType, msg.TokenIndex, change); err != nil {
 			return err.Result()
 		}
 	}

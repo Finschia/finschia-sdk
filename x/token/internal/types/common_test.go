@@ -6,10 +6,11 @@ import (
 )
 
 const (
-	defaultName     = "name"
-	defaultSymbol   = "linktkn"
-	defaultTokenURI = "token-uri"
-	defaultDecimals = 6
+	defaultName       = "name"
+	defaultContractID = "linktkn"
+	defaultSymbol     = "BTC"
+	defaultImageURI   = "image-uri"
+	defaultDecimals   = 6
 )
 
 var (

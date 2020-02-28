@@ -15,7 +15,7 @@ func TestSupply(t *testing.T) {
 	supply = DefaultSupply(defaultTokenIDFT)
 
 	// create default
-	require.Equal(t, defaultTokenIDFT, supply.GetSymbol())
+	require.Equal(t, defaultTokenIDFT, supply.GetContractID())
 	require.Equal(t, NewCoins(), supply.GetTotalSupply())
 	require.Equal(t, NewCoins(), supply.GetTotalMint())
 	require.Equal(t, NewCoins(), supply.GetTotalBurn())
@@ -49,7 +49,7 @@ func TestSupply(t *testing.T) {
 	tb, err3 := json.Marshal(NewCoins(NewCoin(defaultTokenIDFT, sdk.NewInt(4))))
 	require.NoError(t, err3)
 	expected := fmt.Sprintf(
-		`{"symbol":"%s","total_supply":%v,"total_mint":%v,"total_burn":%v}`,
+		`{"contract_id":"%s","total_supply":%v,"total_mint":%v,"total_burn":%v}`,
 		defaultTokenIDFT,
 		string(ts),
 		string(tm),
@@ -59,7 +59,7 @@ func TestSupply(t *testing.T) {
 }
 
 func TestSupplyMarshalYAML(t *testing.T) {
-	supply := DefaultSupply(defaultSymbol)
+	supply := DefaultSupply(defaultContractID)
 	coins := NewCoins(NewCoin(defaultTokenIDFT, sdk.OneInt()))
 	supply = supply.Inflate(coins)
 
@@ -67,8 +67,8 @@ func TestSupplyMarshalYAML(t *testing.T) {
 	require.NoError(t, err)
 
 	expected := fmt.Sprintf(
-		`{"symbol":"%s","total_supply":%s,"total_mint":%s,"total_burn":%s}`,
-		defaultSymbol,
+		`{"contract_id":"%s","total_supply":%s,"total_mint":%s,"total_burn":%s}`,
+		defaultContractID,
 		string(bzCoins),
 		string(bzCoins),
 		[]Coin{},

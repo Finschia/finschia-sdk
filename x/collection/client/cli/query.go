@@ -41,21 +41,21 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "balance [symbol] [token_id] [addr]",
+		Use:   "balance [contract_id] [token_id] [addr]",
 		Short: "Query balance of the account",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 			tokenID := args[1]
 			addr, err := sdk.AccAddressFromBech32(args[2])
 			if err != nil {
 				return err
 			}
 
-			supply, height, err := retriever.GetAccountBalance(cliCtx, symbol, tokenID, addr)
+			supply, height, err := retriever.GetAccountBalance(cliCtx, contractID, tokenID, addr)
 			if err != nil {
 				return err
 			}
@@ -70,15 +70,15 @@ func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetCollectionCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "collection [symbol]",
+		Use:   "collection [contract_id]",
 		Short: "Query collection",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
-			collection, height, err := retriever.GetCollection(cliCtx, symbol)
+			contractID := args[0]
+			collection, height, err := retriever.GetCollection(cliCtx, contractID)
 			if err != nil {
 				return err
 			}
@@ -114,16 +114,16 @@ func GetCollectionsCmd(cdc *codec.Codec) *cobra.Command {
 }
 func GetTokenTypeCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "tokentype [symbol] [token-type]",
-		Short: "Query collection token-type with collection symbol and token-type",
+		Use:   "tokentype [contract_id] [token-type]",
+		Short: "Query collection token-type with collection contract_id and token-type",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 			tokenTypeID := args[1]
-			tokenType, height, err := retriever.GetTokenType(cliCtx, symbol, tokenTypeID)
+			tokenType, height, err := retriever.GetTokenType(cliCtx, contractID, tokenTypeID)
 			if err != nil {
 				return err
 			}
@@ -139,16 +139,16 @@ func GetTokenTypeCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetTokenTypesCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "tokentypes [symbol]",
-		Short: "Query all collection token-types with collection symbol",
+		Use:   "tokentypes [contract_id]",
+		Short: "Query all collection token-types with collection contract_id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 
-			tokenTypes, height, err := retriever.GetTokenTypes(cliCtx, symbol)
+			tokenTypes, height, err := retriever.GetTokenTypes(cliCtx, contractID)
 			if err != nil {
 				return err
 			}
@@ -163,16 +163,16 @@ func GetTokenTypesCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "token [symbol] [token-id]",
-		Short: "Query collection token with collection symbol and token's token-id",
+		Use:   "token [contract_id] [token_id]",
+		Short: "Query collection token with collection contractID and token's token_id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 			tokenID := args[1]
-			token, height, err := retriever.GetToken(cliCtx, symbol, tokenID)
+			token, height, err := retriever.GetToken(cliCtx, contractID, tokenID)
 			if err != nil {
 				return err
 			}
@@ -188,16 +188,16 @@ func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "tokens [symbol]",
-		Short: "Query all collection tokens with collection symbol",
+		Use:   "tokens [contract_id]",
+		Short: "Query all collection tokens with collection contractID",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 
-			tokens, height, err := retriever.GetTokens(cliCtx, symbol)
+			tokens, height, err := retriever.GetTokens(cliCtx, contractID)
 			if err != nil {
 				return err
 			}
@@ -212,18 +212,18 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetTokenTotalCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "total [supply|mint|burn] [symbol] [token-id]",
-		Short: "Query supply/mint/burn of collection token with collection symbol and tokens's token-id.",
+		Use:   "total [supply|mint|burn] [contract_id] [token_id]",
+		Short: "Query supply/mint/burn of collection token with contract-id and tokens's token_id.",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			target := args[0]
-			symbol := args[1]
+			contractID := args[1]
 			tokenID := args[2]
 
-			supply, height, err := retriever.GetTotal(cliCtx, symbol, tokenID, target)
+			supply, height, err := retriever.GetTotal(cliCtx, contractID, tokenID, target)
 			if err != nil {
 				return err
 			}
@@ -237,17 +237,17 @@ func GetTokenTotalCmd(cdc *codec.Codec) *cobra.Command {
 }
 func GetTokenCountCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "count [symbol] [token-type]",
-		Short: "Query count of collection tokens with collection symbol and the base-id.",
+		Use:   "count [contract_id] [token_type]",
+		Short: "Query count of collection tokens with collection contractID and the type_type.",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 			baseID := args[1]
 
-			supply, height, err := retriever.GetCollectionNFTCount(cliCtx, symbol, baseID)
+			supply, height, err := retriever.GetCollectionNFTCount(cliCtx, contractID, baseID)
 			if err != nil {
 				return err
 			}
@@ -288,21 +288,21 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetParentCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "parent [symbol] [token-id]",
-		Short: "Query parent token with symbol and token-id",
+		Use:   "parent [contract_id] [token-id]",
+		Short: "Query parent token with contractID and token-id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			tokenGetter := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 			tokenID := args[1]
 
-			if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+			if err := tokenGetter.EnsureExists(cliCtx, contractID, tokenID); err != nil {
 				return err
 			}
 
-			token, _, err := tokenGetter.GetParent(cliCtx, symbol, tokenID)
+			token, _, err := tokenGetter.GetParent(cliCtx, contractID, tokenID)
 			if err != nil {
 				return err
 			}
@@ -316,21 +316,21 @@ func GetParentCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetRootCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "root [symbol] [token-id]",
-		Short: "Query root token with symbol and token-id",
+		Use:   "root [contract_id] [token-id]",
+		Short: "Query root token with contractID and token-id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			tokenGetter := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 			tokenID := args[1]
 
-			if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+			if err := tokenGetter.EnsureExists(cliCtx, contractID, tokenID); err != nil {
 				return err
 			}
 
-			token, _, err := tokenGetter.GetRoot(cliCtx, symbol, tokenID)
+			token, _, err := tokenGetter.GetRoot(cliCtx, contractID, tokenID)
 			if err != nil {
 				return err
 			}
@@ -344,21 +344,21 @@ func GetRootCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetChildrenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "children [symbol] [token-id]",
-		Short: "Query children tokens with symbol and token-id",
+		Use:   "children [contract_id] [token-id]",
+		Short: "Query children tokens with contractID and token-id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			tokenGetter := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 			tokenID := args[1]
 
-			if err := tokenGetter.EnsureExists(cliCtx, symbol, tokenID); err != nil {
+			if err := tokenGetter.EnsureExists(cliCtx, contractID, tokenID); err != nil {
 				return err
 			}
 
-			tokens, _, err := tokenGetter.GetChildren(cliCtx, symbol, tokenID)
+			tokens, _, err := tokenGetter.GetChildren(cliCtx, contractID, tokenID)
 			if err != nil {
 				return err
 			}
@@ -382,24 +382,26 @@ var _ fmt.Stringer = (*Approved)(nil)
 
 func GetIsApproved(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "approved [proxy] [approver] [symbol]",
+		Use:   "approved [contract_id] [proxy] [approver]",
 		Short: "Query whether a proxy is approved by approver on a collection",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			proxy, err := sdk.AccAddressFromBech32(args[0])
+			contractID := args[0]
+
+			proxy, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
 
-			approver, err := sdk.AccAddressFromBech32(args[1])
+			approver, err := sdk.AccAddressFromBech32(args[2])
 			if err != nil {
 				return err
 			}
 
-			approved, height, err := retriever.IsApproved(cliCtx, proxy, approver, args[2])
+			approved, height, err := retriever.IsApproved(cliCtx, contractID, proxy, approver)
 			if err != nil {
 				return err
 			}

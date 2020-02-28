@@ -36,11 +36,11 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 	if len(req.Data) == 0 {
 		return nil, sdk.ErrUnknownRequest("data is nil")
 	}
-	var params types.QuerySymbolAccAddressParams
+	var params types.QueryAccAddressContractIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	supply := keeper.GetBalance(ctx, params.Symbol, params.Addr)
+	supply := keeper.GetBalance(ctx, params.ContractID, params.Addr)
 	bz, err := keeper.MarshalJSONIndent(supply)
 	if err != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err.Error()))
@@ -78,12 +78,12 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 		}
 		return bz, nil
 	}
-	var params types.QuerySymbolParams
+	var params types.QueryContractIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	token, err := keeper.GetToken(ctx, params.Symbol)
+	token, err := keeper.GetToken(ctx, params.ContractID)
 	if err != nil {
 		return nil, err
 	}
@@ -97,12 +97,12 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 }
 
 func queryTotal(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, sdk.Error) {
-	var params types.QuerySymbolParams
+	var params types.QueryContractIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
 
-	total, err := keeper.GetTotalInt(ctx, params.Symbol, target)
+	total, err := keeper.GetTotalInt(ctx, params.ContractID, target)
 	if err != nil {
 		return nil, err
 	}

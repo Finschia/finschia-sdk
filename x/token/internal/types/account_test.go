@@ -9,9 +9,9 @@ import (
 
 func TestAccount(t *testing.T) {
 	var acc Account
-	acc = NewBaseAccountWithAddress(defaultSymbol, addr1)
+	acc = NewBaseAccountWithAddress(defaultContractID, addr1)
 
-	require.Equal(t, defaultSymbol, acc.GetSymbol())
+	require.Equal(t, defaultContractID, acc.GetContractID())
 	require.Equal(t, addr1, acc.GetAddress())
 	require.Equal(t, sdk.ZeroInt(), acc.GetBalance())
 

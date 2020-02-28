@@ -6,15 +6,15 @@ import (
 )
 
 type AccountKeeper interface {
-	NewAccountWithAddress(ctx sdk.Context, symbol string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
-	GetOrNewAccount(ctx sdk.Context, symbol string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
-	GetAccount(ctx sdk.Context, symbol string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
+	NewAccountWithAddress(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
+	GetOrNewAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
+	GetAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
 	SetAccount(ctx sdk.Context, acc types.Account) sdk.Error
 	UpdateAccount(ctx sdk.Context, acc types.Account) sdk.Error
 }
 
-func (k Keeper) NewAccountWithAddress(ctx sdk.Context, symbol string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
-	acc = types.NewBaseAccountWithAddress(symbol, addr)
+func (k Keeper) NewAccountWithAddress(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
+	acc = types.NewBaseAccountWithAddress(contractID, addr)
 	if err = k.SetAccount(ctx, acc); err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func (k Keeper) NewAccountWithAddress(ctx sdk.Context, symbol string, addr sdk.A
 
 func (k Keeper) SetAccount(ctx sdk.Context, acc types.Account) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
-	accKey := types.AccountKey(acc.GetSymbol(), acc.GetAddress())
+	accKey := types.AccountKey(acc.GetContractID(), acc.GetAddress())
 	if store.Has(accKey) {
 		return types.ErrAccountExist(types.DefaultCodespace, acc.GetAddress())
 	}
@@ -33,7 +33,7 @@ func (k Keeper) SetAccount(ctx sdk.Context, acc types.Account) sdk.Error {
 
 func (k Keeper) UpdateAccount(ctx sdk.Context, acc types.Account) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
-	accKey := types.AccountKey(acc.GetSymbol(), acc.GetAddress())
+	accKey := types.AccountKey(acc.GetContractID(), acc.GetAddress())
 	if !store.Has(accKey) {
 		return types.ErrAccountNotExist(types.DefaultCodespace, acc.GetAddress())
 	}
@@ -41,10 +41,10 @@ func (k Keeper) UpdateAccount(ctx sdk.Context, acc types.Account) sdk.Error {
 	return nil
 }
 
-func (k Keeper) GetOrNewAccount(ctx sdk.Context, symbol string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
-	acc, err = k.GetAccount(ctx, symbol, addr)
+func (k Keeper) GetOrNewAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
+	acc, err = k.GetAccount(ctx, contractID, addr)
 	if err != nil {
-		acc, err = k.NewAccountWithAddress(ctx, symbol, addr)
+		acc, err = k.NewAccountWithAddress(ctx, contractID, addr)
 		if err != nil {
 			return nil, err
 		}
@@ -52,9 +52,9 @@ func (k Keeper) GetOrNewAccount(ctx sdk.Context, symbol string, addr sdk.AccAddr
 	return acc, nil
 }
 
-func (k Keeper) GetAccount(ctx sdk.Context, symbol string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
+func (k Keeper) GetAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
 	store := ctx.KVStore(k.storeKey)
-	accKey := types.AccountKey(symbol, addr)
+	accKey := types.AccountKey(contractID, addr)
 	if !store.Has(accKey) {
 		return nil, types.ErrAccountNotExist(types.DefaultCodespace, addr)
 	}

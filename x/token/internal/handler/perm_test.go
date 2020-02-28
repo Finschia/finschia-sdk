@@ -13,12 +13,12 @@ func TestHandleMsgGrant(t *testing.T) {
 
 	t.Log("Prepare Token Issued")
 	{
-		token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1)
 		require.NoError(t, err)
 	}
 
-	permission := types.NewMintPermission(defaultSymbol)
+	permission := types.NewMintPermission(defaultContractID)
 	t.Log("Grant Permission")
 	{
 		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
@@ -43,12 +43,12 @@ func TestHandleMsgRevoke(t *testing.T) {
 
 	t.Log("Prepare Token Issued")
 	{
-		token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1)
 		require.NoError(t, err)
 	}
 
-	permission := types.NewMintPermission(defaultSymbol)
+	permission := types.NewMintPermission(defaultContractID)
 	t.Log("Revoke Permission")
 	{
 		msg := types.NewMsgRevokePermission(addr1, permission)

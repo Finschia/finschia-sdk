@@ -5,26 +5,27 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	linktype "github.com/line/link/types"
+	"github.com/line/link/x/contract"
 )
 
-var _ sdk.Msg = (*MsgAttach)(nil)
-var _ sdk.Msg = (*MsgDetach)(nil)
-var _ sdk.Msg = (*MsgAttachFrom)(nil)
-var _ sdk.Msg = (*MsgDetachFrom)(nil)
+var _ contract.Msg = (*MsgAttach)(nil)
+var _ contract.Msg = (*MsgDetach)(nil)
+var _ contract.Msg = (*MsgAttachFrom)(nil)
+var _ contract.Msg = (*MsgDetachFrom)(nil)
 
 type MsgAttach struct {
-	From      sdk.AccAddress `json:"from"`
-	Symbol    string         `json:"symbol"`
-	ToTokenID string         `json:"to_token_id"`
-	TokenID   string         `json:"token_id"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	ToTokenID  string         `json:"to_token_id"`
+	TokenID    string         `json:"token_id"`
 }
 
-func NewMsgAttach(from sdk.AccAddress, symbol string, toTokenID string, tokenID string) MsgAttach {
+func NewMsgAttach(from sdk.AccAddress, contractID string, toTokenID string, tokenID string) MsgAttach {
 	return MsgAttach{
-		From:      from,
-		Symbol:    symbol,
-		ToTokenID: toTokenID,
-		TokenID:   tokenID,
+		From:       from,
+		ContractID: contractID,
+		ToTokenID:  toTokenID,
+		TokenID:    tokenID,
 	}
 }
 
@@ -42,13 +43,15 @@ func (MsgAttach) Route() string { return RouterKey }
 
 func (MsgAttach) Type() string { return "attach" }
 
+func (msg MsgAttach) GetContractID() string { return msg.ContractID }
+
 func (msg MsgAttach) ValidateBasic() sdk.Error {
-	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
 	}
 
-	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return sdk.ErrInvalidCoins(msg.Symbol)
+	if msg.From.Empty() {
+		return sdk.ErrInvalidAddress("From cannot be empty")
 	}
 
 	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
@@ -75,16 +78,16 @@ func (msg MsgAttach) GetSigners() []sdk.AccAddress {
 }
 
 type MsgDetach struct {
-	From    sdk.AccAddress `json:"from"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	TokenID    string         `json:"token_id"`
 }
 
-func NewMsgDetach(from sdk.AccAddress, symbol string, tokenID string) MsgDetach {
+func NewMsgDetach(from sdk.AccAddress, contractID string, tokenID string) MsgDetach {
 	return MsgDetach{
-		From:    from,
-		Symbol:  symbol,
-		TokenID: tokenID,
+		From:       from,
+		ContractID: contractID,
+		TokenID:    tokenID,
 	}
 }
 
@@ -102,13 +105,15 @@ func (MsgDetach) Route() string { return RouterKey }
 
 func (MsgDetach) Type() string { return "detach" }
 
+func (msg MsgDetach) GetContractID() string { return msg.ContractID }
+
 func (msg MsgDetach) ValidateBasic() sdk.Error {
-	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
 	}
 
-	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return sdk.ErrInvalidCoins(msg.Symbol)
+	if msg.From.Empty() {
+		return sdk.ErrInvalidAddress("From cannot be empty")
 	}
 
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
@@ -127,20 +132,20 @@ func (msg MsgDetach) GetSigners() []sdk.AccAddress {
 }
 
 type MsgAttachFrom struct {
-	Proxy     sdk.AccAddress `json:"proxy"`
-	From      sdk.AccAddress `json:"from"`
-	Symbol    string         `json:"symbol"`
-	ToTokenID string         `json:"to_token_id"`
-	TokenID   string         `json:"token_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	ToTokenID  string         `json:"to_token_id"`
+	TokenID    string         `json:"token_id"`
 }
 
-func NewMsgAttachFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol string, toTokenID string, tokenID string) MsgAttachFrom {
+func NewMsgAttachFrom(proxy sdk.AccAddress, contractID string, from sdk.AccAddress, toTokenID string, tokenID string) MsgAttachFrom {
 	return MsgAttachFrom{
-		Proxy:     proxy,
-		From:      from,
-		Symbol:    symbol,
-		ToTokenID: toTokenID,
-		TokenID:   tokenID,
+		Proxy:      proxy,
+		ContractID: contractID,
+		From:       from,
+		ToTokenID:  toTokenID,
+		TokenID:    tokenID,
 	}
 }
 
@@ -158,15 +163,17 @@ func (MsgAttachFrom) Route() string { return RouterKey }
 
 func (MsgAttachFrom) Type() string { return "attach_from" }
 
+func (msg MsgAttachFrom) GetContractID() string { return msg.ContractID }
+
 func (msg MsgAttachFrom) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From cannot be empty")
-	}
-	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return sdk.ErrInvalidCoins(msg.Symbol)
 	}
 	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
 		return sdk.ErrInvalidCoins(msg.ToTokenID)
@@ -191,18 +198,18 @@ func (msg MsgAttachFrom) GetSigners() []sdk.AccAddress {
 }
 
 type MsgDetachFrom struct {
-	Proxy   sdk.AccAddress `json:"proxy"`
-	From    sdk.AccAddress `json:"from"`
-	Symbol  string         `json:"symbol"`
-	TokenID string         `json:"token_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	TokenID    string         `json:"token_id"`
 }
 
-func NewMsgDetachFrom(proxy sdk.AccAddress, from sdk.AccAddress, symbol string, tokenID string) MsgDetachFrom {
+func NewMsgDetachFrom(proxy sdk.AccAddress, contractID string, from sdk.AccAddress, tokenID string) MsgDetachFrom {
 	return MsgDetachFrom{
-		Proxy:   proxy,
-		From:    from,
-		Symbol:  symbol,
-		TokenID: tokenID,
+		Proxy:      proxy,
+		ContractID: contractID,
+		From:       from,
+		TokenID:    tokenID,
 	}
 }
 
@@ -220,15 +227,17 @@ func (MsgDetachFrom) Route() string { return RouterKey }
 
 func (MsgDetachFrom) Type() string { return "detach_from" }
 
+func (msg MsgDetachFrom) GetContractID() string { return msg.ContractID }
+
 func (msg MsgDetachFrom) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
 	if msg.Proxy.Empty() {
 		return sdk.ErrInvalidAddress("Proxy cannot be empty")
 	}
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("From cannot be empty")
-	}
-	if err := linktype.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return sdk.ErrInvalidCoins(msg.Symbol)
 	}
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
 		return sdk.ErrInvalidCoins(msg.TokenID)

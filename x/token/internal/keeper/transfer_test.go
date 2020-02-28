@@ -13,44 +13,44 @@ func TestKeeper_Transfer(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Issue Token")
 	{
-		token := types.NewToken(defaultName, defaultSymbol, defaultTokenURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1))
 	}
 	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
+		supply, err := keeper.GetTotalInt(ctx, defaultContractID, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account 1")
 	{
-		supply := keeper.GetBalance(ctx, defaultSymbol, addr1)
+		supply := keeper.GetBalance(ctx, defaultContractID, addr1)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account 2")
 	{
-		supply := keeper.GetBalance(ctx, defaultSymbol, addr2)
+		supply := keeper.GetBalance(ctx, defaultContractID, addr2)
 		require.Equal(t, int64(0), supply.Int64())
 	}
 	t.Log("Transfer Token")
 	{
-		err := keeper.Transfer(ctx, addr1, addr2, defaultSymbol, sdk.NewInt(defaultAmount))
+		err := keeper.Transfer(ctx, addr1, addr2, defaultContractID, sdk.NewInt(defaultAmount))
 		require.NoError(t, err)
 	}
 	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
+		supply, err := keeper.GetTotalInt(ctx, defaultContractID, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account 1")
 	{
-		supply := keeper.GetBalance(ctx, defaultSymbol, addr1)
+		supply := keeper.GetBalance(ctx, defaultContractID, addr1)
 		require.Equal(t, int64(0), supply.Int64())
 	}
 	t.Log("Balance of Account 2")
 	{
-		supply := keeper.GetBalance(ctx, defaultSymbol, addr2)
+		supply := keeper.GetBalance(ctx, defaultContractID, addr2)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 }

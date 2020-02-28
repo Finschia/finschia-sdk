@@ -8,24 +8,25 @@ import (
 )
 
 func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, owner sdk.AccAddress) sdk.Error {
-	if !types.ValidateTokenURI(token.GetTokenURI()) {
-		return types.ErrInvalidTokenURILength(types.DefaultCodespace, token.GetTokenURI())
+	if !types.ValidateImageURI(token.GetImageURI()) {
+		return types.ErrInvalidImageURILength(types.DefaultCodespace, token.GetImageURI())
 	}
 	err := k.SetToken(ctx, token)
 	if err != nil {
 		return err
 	}
 
-	err = k.MintSupply(ctx, token.GetSymbol(), owner, amount)
+	err = k.MintSupply(ctx, token.GetContractID(), owner, amount)
 	if err != nil {
 		return err
 	}
 
-	modifyTokenURIPermission := types.NewModifyPermission(token.GetSymbol())
+	modifyTokenURIPermission := types.NewModifyPermission(token.GetContractID())
 	k.AddPermission(ctx, owner, modifyTokenURIPermission)
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueToken,
+			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
 			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
 			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
@@ -42,9 +43,9 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 	})
 
 	if token.GetMintable() {
-		mintPerm := types.NewMintPermission(token.GetSymbol())
+		mintPerm := types.NewMintPermission(token.GetContractID())
 		k.AddPermission(ctx, owner, mintPerm)
-		burnPerm := types.NewBurnPermission(token.GetSymbol())
+		burnPerm := types.NewBurnPermission(token.GetContractID())
 		k.AddPermission(ctx, owner, burnPerm)
 		ctx.EventManager().EmitEvents(sdk.Events{
 			sdk.NewEvent(

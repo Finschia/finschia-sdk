@@ -20,12 +20,12 @@ type NodeQuerier interface {
 	WithHeight(height int64) client.CLIContext
 }
 
-type QuerySymbolParams struct {
-	Symbol string `json:"symbol"`
+type QueryContractIDParams struct {
+	ContractID string `json:"contract_id"`
 }
 
-func NewQuerySymbolParams(symbol string) QuerySymbolParams {
-	return QuerySymbolParams{Symbol: symbol}
+func NewQueryContractIDParams(contractID string) QueryContractIDParams {
+	return QueryContractIDParams{ContractID: contractID}
 }
 
 type QueryAccAddressParams struct {
@@ -36,11 +36,11 @@ func NewQueryAccAddressParams(addr sdk.AccAddress) QueryAccAddressParams {
 	return QueryAccAddressParams{Addr: addr}
 }
 
-type QuerySymbolAccAddressParams struct {
-	Symbol string         `json:"symbol"`
-	Addr   sdk.AccAddress `json:"addr"`
+type QueryAccAddressContractIDParams struct {
+	Addr       sdk.AccAddress `json:"addr"`
+	ContractID string         `json:"contract_id"`
 }
 
-func NewQuerySymbolAccAddressParams(symbol string, addr sdk.AccAddress) QuerySymbolAccAddressParams {
-	return QuerySymbolAccAddressParams{Symbol: symbol, Addr: addr}
+func NewQueryAccAddressContractIDParams(contractID string, addr sdk.AccAddress) QueryAccAddressContractIDParams {
+	return QueryAccAddressContractIDParams{Addr: addr, ContractID: contractID}
 }

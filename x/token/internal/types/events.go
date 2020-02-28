@@ -11,6 +11,7 @@ var (
 
 	AttributeKeyName          = "name"
 	AttributeKeySymbol        = "symbol"
+	AttributeKeyContractID    = "contract_id"
 	AttributeKeyOwner         = "owner"
 	AttributeKeyAmount        = "amount"
 	AttributeKeyDecimals      = "decimals"

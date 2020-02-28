@@ -7,10 +7,10 @@ import (
 )
 
 func TestPermission(t *testing.T) {
-	issuePerm := NewIssuePermission(defaultSymbol)
-	mintPerm := NewMintPermission(defaultSymbol)
-	burnPerm := NewBurnPermission(defaultSymbol)
-	modifyPerm := NewModifyPermission(defaultSymbol)
+	issuePerm := NewIssuePermission(defaultContractID)
+	mintPerm := NewMintPermission(defaultContractID)
+	burnPerm := NewBurnPermission(defaultContractID)
+	modifyPerm := NewModifyPermission(defaultContractID)
 
 	require.True(t, issuePerm.Validate())
 	require.True(t, mintPerm.Validate())

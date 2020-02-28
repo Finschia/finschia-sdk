@@ -607,19 +607,19 @@ paths:
         "500":
           description: Internal Server Error
           content: {}
-  /token/tokens/{symbol}/balance/{address}:
+  /token/tokens/{contract_id}/balance/{address}:
     get:
       tags:
         - Token
-      summary: Balance of an address for the symbol
+      summary: Balance of an address for the contract
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
           description: Coin denomination
           required: true
           schema:
             type: string
-          example: "conyxxv"
+          example: "9be17165"
         - name: address
           in: path
           description: Account address
@@ -650,19 +650,19 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/tokens/{symbol}/supply:
+  /token/tokens/{contract_id}/supply:
     get:
       tags:
         - Token
       summary: Total supply of a single fungible token
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
           description: Coin denomination
           required: true
           schema:
             type: string
-          example: "conyxxv"
+          example: "9be17165"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -686,19 +686,19 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/tokens/{symbol}/mint:
+  /token/tokens/{contract_id}/mint:
     get:
       tags:
         - Token
       summary: Total mint of a single fungible token
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
           description: Coin denomination
           required: true
           schema:
             type: string
-          example: "conyxxv"
+          example: "9be17165"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -722,19 +722,19 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/tokens/{symbol}/burn:
+  /token/tokens/{contract_id}/burn:
     get:
       tags:
         - Token
       summary: Total burn of a single fungible token
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
           description: Coin denomination
           required: true
           schema:
             type: string
-          example: "conyxxv"
+          example: "9be17165"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -758,19 +758,19 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/tokens/{symbol}:
+  /token/tokens/{contract_id}:
     get:
       tags:
         - Token
       summary: Get the token details
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
           description: Coin denomination
           required: true
           schema:
             type: string
-          example: "conyxxv"
+          example: "9be17165"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -825,7 +825,7 @@ paths:
                         - $ref: '#/components/schemas/TokenFT'
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}/balances/{address}/{token_id}:
+  /collection/collections/{contract_id}/balances/{address}/{token_id}:
     get:
       tags:
         - Collection
@@ -838,13 +838,13 @@ paths:
           schema:
             type: string
           example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_id
           in: path
           description: token id
@@ -875,19 +875,19 @@ paths:
                     example: "100"
         "500":
           description: Server internal error
-  /collection/collections/{symbol}/tokens/{token_id}/supply:
+  /collection/collections/{contract_id}/tokens/{token_id}/supply:
     get:
       tags:
         - Collection
       summary: Total supply of a single fungible token of the collection
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_id
           in: path
           description: token id
@@ -918,19 +918,19 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}/tokens/{token_id}/mint:
+  /collection/collections/{contract_id}/tokens/{token_id}/mint:
     get:
       tags:
         - Collection
       summary: Total mint of a single fungible token of the collection
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_id
           in: path
           description: token id
@@ -961,19 +961,19 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}/tokens/{token_id}/burn:
+  /collection/collections/{contract_id}/tokens/{token_id}/burn:
     get:
       tags:
         - Collection
       summary: Total burn of a single fungible token of the collection
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_id
           in: path
           description: token id
@@ -1004,19 +1004,19 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}/tokens/{token_type}/count:
+  /collection/collections/{contract_id}/tokens/{token_type}/count:
     get:
       tags:
         - Collection
       summary: Total count of nonfungible tokens of the collection for the base-id
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_type
           in: path
           description: token id
@@ -1047,19 +1047,19 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}/tokens/{token_id}:
+  /collection/collections/{contract_id}/tokens/{token_id}:
     get:
       tags:
         - Collection
       summary: Get the collection token details
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_id
           in: path
           description: token id
@@ -1091,19 +1091,19 @@ paths:
                       - $ref: '#/components/schemas/TokenCNFT'
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}/tokens:
+  /collection/collections/{contract_id}/tokens:
     get:
       tags:
         - Collection
       summary: Get all collection tokens
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -1129,19 +1129,19 @@ paths:
                         - $ref: '#/components/schemas/TokenType'
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}/tokentypes/{token_type}:
+  /collection/collections/{contract_id}/tokentypes/{token_type}:
     get:
       tags:
         - Collection
       summary: Get the collection token details
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_type
           in: path
           description: token type
@@ -1172,19 +1172,19 @@ paths:
                       - $ref: '#/components/schemas/TokenType'
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}/tokentypes:
+  /collection/collections/{contract_id}/tokentypes:
     get:
       tags:
         - Collection
       summary: Get all collection tokens
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -1211,19 +1211,19 @@ paths:
                         - $ref: '#/components/schemas/TokenCNFT'
         "500":
           description: Internal Server Error
-  /collection/collections/{symbol}:
+  /collection/collections/{contract_id}:
     get:
       tags:
         - Collection
       summary: Get the Collection details
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: symbol for the collection
+          description: contract_id for the collection
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)
@@ -1276,19 +1276,19 @@ paths:
                       $ref: '#/components/schemas/Collection'
         "500":
           description: Internal Server Error
-  /collection/parent/{symbol}/{token_id}:
+  /collection/parent/{contract_id}/{token_id}:
     get:
       tags:
         - Collection
       summary: Get the parent token of the given token
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: Token symbol
+          description: Token contract_id
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_id
           in: path
           description: token id
@@ -1311,19 +1311,19 @@ paths:
                     $ref: '#/components/schemas/TokenCNFT2'
         "500":
           description: Internal Server Error
-  /collection/root/{symbol}/{token_id}:
+  /collection/root/{contract_id}/{token_id}:
     get:
       tags:
         - Collection
       summary: Get the root parent token of the given token
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: Token symbol
+          description: Token contract_id
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_id
           in: path
           description: token id
@@ -1346,19 +1346,19 @@ paths:
                     $ref: '#/components/schemas/TokenCNFT2'
         "500":
           description: Internal Server Error
-  /collection/children/{symbol}/{token_id}:
+  /collection/children/{contract_id}/{token_id}:
     get:
       tags:
         - Collection
       summary: Get the child tokens of the given token
       parameters:
-        - name: symbol
+        - name: contract_id
           in: path
-          description: Token symbol
+          description: Token contract_id
           required: true
           schema:
             type: string
-          example: "con2xxv"
+          example: "678c146a"
         - name: token_id
           in: path
           description: token id
@@ -1383,12 +1383,19 @@ paths:
                       $ref: '#/components/schemas/TokenCNFT3'
         "500":
           description: Internal Server Error
-  /collection/approved/{proxy}/{approver}/{symbol}:
+  /collection/approved/{contract_id}/{proxy}/{approver}:
     get:
       tags:
         - Collection
       summary: Get approval status of a proxy for a collection
       parameters:
+        - name: contract_id
+          in: path
+          description: Token contract_id
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
         - name: proxy
           in: path
           description: approved proxy address in bech32 format
@@ -1403,13 +1410,6 @@ paths:
           schema:
             type: string
           example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
-        - name: symbol
-          in: path
-          description: Token symbol
-          required: true
-          schema:
-            type: string
-          example: "con2xxv"
       responses:
         "200":
           description: OK
@@ -2098,12 +2098,12 @@ components:
         value:
           type: object
           properties:
+            contract_id:
+              type: string
+              example: "9be17165"
             name:
               type: string
               example: "cony"
-            symbol:
-              type: string
-              example: "conyxxv"
             mintable:
               type: boolean
               example: true
@@ -2122,9 +2122,9 @@ components:
             name:
               type: string
               example: "cony"
-            symbol:
+            contract_id:
               type: string
-              example: "con2xxv"
+              example: "9be17165"
             token_type:
               type: string
               example: "10000001"
@@ -2137,12 +2137,12 @@ components:
         value:
           type: object
           properties:
+            contract_id:
+              type: string
+              example: "678c146a"
             name:
               type: string
               example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
             mintable:
               type: boolean
               example: true
@@ -2161,14 +2161,14 @@ components:
         value:
           type: object
           properties:
+            contract_id:
+              type: string
+              example: "678c146a"
             owner:
               $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
             token_id:
               type: string
               example: "1000000100000001"
@@ -2181,14 +2181,14 @@ components:
         value:
           type: object
           properties:
+            contract_id:
+              type: string
+              example: "678c146a"
             owner:
               $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "test-cony"
-            symbol:
-              type: string
-              example: "con2xxv"
             token_id:
               type: string
               example: "1000000100000002"
@@ -2201,14 +2201,14 @@ components:
         value:
           type: object
           properties:
+            contract_id:
+              type: string
+              example: "678c146a"
             owner:
               $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "test-cony"
-            symbol:
-              type: string
-              example: "con2xxv"
             token_id:
               type: string
               example: "1000000100000003"
@@ -2221,14 +2221,14 @@ components:
         value:
           type: object
           properties:
+            contract_id:
+              type: string
+              example: "678c146a"
             owner:
               $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "test-cony"
-            symbol:
-              type: string
-              example: "con2xxv"
             token_id:
               type: string
               example: "1000000100000004"
@@ -2241,12 +2241,12 @@ components:
         value:
           type: object
           properties:
+            contract_id:
+              type: string
+              example: "678c146a"
             name:
               type: string
               example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
             base_img_uri:
               type: string
               example: "example.com/img_uri"
@@ -2439,12 +2439,15 @@ components:
           properties:
             owner:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             name:
               type: string
               example: "cony"
             symbol:
               type: string
-              example: "conyxxv"
+              example: "BTC"
             amount:
               type: string
               example: "1000000"
@@ -2466,9 +2469,9 @@ components:
           properties:
             owner:
               $ref: '#/components/schemas/Address'
-            symbol:
+            contract_id:
               type: string
-              example: "conyxxv"
+              example: "9be17165"
             changes:
               type: array
               items:
@@ -2484,11 +2487,11 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             to:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
             amount:
               type: string
               example: "10"
@@ -2504,11 +2507,11 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             to:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
             amount:
               type: string
               example: "10"
@@ -2524,9 +2527,9 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
-            symbol:
+            contract_id:
               type: string
-              example: "conyxxv"
+              example: "9be17165"
             amount:
               type: string
               example: "10"
@@ -2545,9 +2548,6 @@ components:
             name:
               type: string
               example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
     MsgModifyCollection:
       type: object
       description: msg of token creation
@@ -2560,9 +2560,9 @@ components:
           properties:
             owner:
               $ref: '#/components/schemas/Address'
-            symbol:
+            contract_id:
               type: string
-              example: "conyxxv"
+              example: "9be17165"
             token_type:
               type: string
               example: "10000001"
@@ -2586,12 +2586,12 @@ components:
           properties:
             owner:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "678c146a"
             name:
               type: string
               example: "cony"
-            symbol:
-              type: string
-              example: "con2xxv"
             amount:
               type: string
               example: "1000000"
@@ -2613,9 +2613,9 @@ components:
           properties:
             owner:
               $ref: '#/components/schemas/Address'
-            symbol:
+            contract_id:
               type: string
-              example: "con2xxv"
+              example: "678c146a"
             name:
               type: string
               example: "cony"
@@ -2629,11 +2629,11 @@ components:
         value:
           type: object
           properties:
-            symbol:
-              type: string
-              example: "con2xxv"
             from:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "678c146a"
             to:
               $ref: '#/components/schemas/Address'
             name:
@@ -2654,9 +2654,9 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
-            symbol:
+            contract_id:
               type: string
-              example: "con2xxv"
+              example: "678c146a"
             token_ids:
               type: array
               items:
@@ -2674,11 +2674,11 @@ components:
           properties:
             proxy:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "678c146a"
             from:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "con2xxv"
             token_ids:
               type: array
               items:
@@ -2696,6 +2696,9 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "678c146a"
             to:
               $ref: '#/components/schemas/Address'
             amount:
@@ -2712,11 +2715,11 @@ components:
         value:
           type: object
           properties:
-            symbol:
-              type: string
-              example: "con2xxv"
             from:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "678c146a"
             amount:
               type: array
               items:
@@ -2750,11 +2753,11 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             to:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
             amount:
               type: array
               items:
@@ -2770,11 +2773,11 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             to:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
             token_ids:
               type: array
               items:
@@ -2791,13 +2794,13 @@ components:
           properties:
             proxy:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             from:
               $ref: '#/components/schemas/Address'
             to:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
             amount:
               type: array
               items:
@@ -2813,13 +2816,13 @@ components:
           properties:
             proxy:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             from:
               $ref: '#/components/schemas/Address'
             to:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
             token_ids:
               type: array
               items:
@@ -2836,9 +2839,9 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
-            symbol:
+            contract_id:
               type: string
-              example: "conyxxv"
+              example: "9be17165"
             to_token_id:
               type: string
               example: "1000000100000001"
@@ -2856,9 +2859,9 @@ components:
           properties:
             from:
               $ref: '#/components/schemas/Address'
-            symbol:
+            contract_id:
               type: string
-              example: "conyxxv"
+              example: "9be17165"
             token_id:
               type: string
               example: "1000000100000001"
@@ -2873,11 +2876,11 @@ components:
           properties:
             proxy:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             from:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
             to_token_id:
               type: string
               example: "1000000100000001"
@@ -2895,11 +2898,11 @@ components:
           properties:
             proxy:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             from:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
             token_id:
               type: string
               example: "1000000100000001"
@@ -2914,11 +2917,11 @@ components:
           properties:
             approver:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             proxy:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
     MsgDisapprove:
       type: object
       properties:
@@ -2930,11 +2933,11 @@ components:
           properties:
             approver:
               $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
             proxy:
               $ref: '#/components/schemas/Address'
-            symbol:
-              type: string
-              example: "conyxxv"
 
   examples:
     # If you want to add new Msg, You have to add new Msg example to MsgExamples for dredd test
@@ -2957,9 +2960,9 @@ components:
         "type": "token/MsgIssue",
         "value": {
           "name": "cony",
-          "symbol": "conyxxv",
+          "symbol": "BTC",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_uri": "example.com/token_uri",
+          "image_uri": "example.com/token_uri",
           "amount": "1000000",
           "mintable": true,
           "decimals": "8"
@@ -2970,7 +2973,7 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "conyxxv",
+          "contract_id": "9be17165",
           "amount": "1000000",
         }
       },
@@ -2978,7 +2981,7 @@ components:
         "type": "token/MsgBurn",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "conyxxv",
+          "contract_id": "9be17165",
           "amount": "1000000",
         }
       },
@@ -2986,7 +2989,7 @@ components:
         "type": "token/MsgModify",
         "value": {
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "conyxxv",
+          "contract_id": "9be17165",
           "changes": [
           {
             "field": "name",
@@ -2999,7 +3002,6 @@ components:
         "type": "collection/MsgCreate",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "base_img_uri": "example.com/base_img_uri",
         }
@@ -3008,7 +3010,7 @@ components:
         "type": "collection/MsgIssueFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": "1000000",
           "mintable": true,
@@ -3018,7 +3020,7 @@ components:
       {
         "type": "collection/MsgIssueNFT",
         "value": {
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "name": "cony",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
         }
@@ -3027,7 +3029,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_type": "10000001"
@@ -3037,7 +3039,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_type": "10000001"
@@ -3047,7 +3049,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_type": "10000001"
@@ -3057,7 +3059,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_type": "10000001"
@@ -3067,7 +3069,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_type": "10000001"
@@ -3077,7 +3079,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_type": "10000001"
@@ -3087,7 +3089,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_type": "10000001"
@@ -3096,7 +3098,7 @@ components:
       {
         "type": "collection/MsgBurnNFT",
         "value": {
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_ids": [
             "1000000100000005"
@@ -3107,7 +3109,7 @@ components:
         "type": "collection/MsgModify",
         "value": {
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "token_type": "10000001",
           "token_index": "00000001",
           "changes": [
@@ -3122,7 +3124,7 @@ components:
         "type": "collection/MsgIssueFT",
         "value": {
           "name": "cony",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": "1000000",
           "mintable": true,
@@ -3132,7 +3134,7 @@ components:
       {
         "type": "collection/MsgMintFT",
         "value": {
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
@@ -3144,7 +3146,7 @@ components:
       {
         "type": "collection/MsgBurnFT",
         "value": {
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
                        "token_id": "0000000100000000",
@@ -3170,7 +3172,7 @@ components:
         "value": {
           "approver": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv"
+          "contract_id": "678c146a"
         }
       },
       {
@@ -3178,7 +3180,7 @@ components:
         "value": {
           "approver": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv"
+          "contract_id": "678c146a"
         }
       },
       {
@@ -3186,7 +3188,7 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "conyxxv",
+          "contract_id": "9be17165",
           "amount": "1"
         }
       },
@@ -3195,7 +3197,7 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "amount": [{
                        "token_id": "0000000100000000",
                        "amount": "1"
@@ -3207,7 +3209,7 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "amount": [{
                        "token_id": "0000000100000000",
                        "amount": "1"
@@ -3220,7 +3222,7 @@ components:
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "amount": [{
                        "token_id": "0000000100000000",
                        "amount": "1"
@@ -3232,7 +3234,7 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "token_ids": [
             "1000000100000001"
           ]
@@ -3243,7 +3245,7 @@ components:
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "token_ids": [
             "1000000100000006"
           ]
@@ -3255,7 +3257,7 @@ components:
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "token_ids": [
             "1000000100000004"
           ]
@@ -3265,7 +3267,7 @@ components:
         "type": "collection/MsgAttach",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "to_token_id": "1000000100000002",
           "token_id": "1000000100000003"
         }
@@ -3274,7 +3276,7 @@ components:
         "type": "collection/MsgDetach",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "token_id": "1000000100000003"
         }
       },
@@ -3283,7 +3285,7 @@ components:
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "to_token_id": "1000000100000002",
           "token_id": "1000000100000003"
         }
@@ -3293,7 +3295,7 @@ components:
         "value": {
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "token_id": "1000000100000003"
         }
       },
@@ -3301,7 +3303,7 @@ components:
         "type": "collection/MsgAttach",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "to_token_id": "1000000100000002",
           "token_id": "1000000100000003"
         }
@@ -3309,7 +3311,7 @@ components:
       {
         "type": "collection/MsgBurnNFTFrom",
         "value": {
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "token_ids": [
@@ -3320,7 +3322,7 @@ components:
       {
         "type": "collection/MsgBurnFTFrom",
         "value": {
-          "symbol": "con2xxv",
+          "contract_id": "678c146a",
           "proxy": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "from": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [{
@@ -3334,7 +3336,7 @@ components:
         "value": {
           "approver": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "proxy": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "symbol": "con2xxv"
+          "contract_id": "678c146a"
         }
       }
       ]

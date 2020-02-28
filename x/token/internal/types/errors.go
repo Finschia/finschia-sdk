@@ -17,11 +17,11 @@ const (
 
 	// Token invalidation
 	CodeTokenInvalidTokenName      sdk.CodeType = 200
-	CodeTokenInvalidTokenSymbol    sdk.CodeType = 201
-	CodeTokenInvalidDecimals       sdk.CodeType = 202
-	CodeTokenInvalidAmount         sdk.CodeType = 203
-	CodeTokenInvalidTokenURILength sdk.CodeType = 204
-	CodeTokenInvalidNameLength     sdk.CodeType = 205
+	CodeTokenInvalidDecimals       sdk.CodeType = 201
+	CodeTokenInvalidAmount         sdk.CodeType = 202
+	CodeTokenInvalidImageURILength sdk.CodeType = 203
+	CodeTokenInvalidNameLength     sdk.CodeType = 204
+	CodeTokenInvalidSymbol         sdk.CodeType = 205
 
 	// Permission
 	CodePermission sdk.CodeType = 300
@@ -44,24 +44,20 @@ const (
 	CodeTokenInvalidChangesField sdk.CodeType = 703
 )
 
-func ErrTokenExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenExist, "token [%s] already exists", symbol)
+func ErrTokenExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenExist, "token [%s] already exists", contractID)
 }
 
-func ErrTokenNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotExist, "token [%s] does not exist", symbol)
+func ErrTokenNotExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotExist, "token [%s] does not exist", contractID)
 }
 
-func ErrTokenNotMintable(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotMintable, "token [%s] is not mintable", symbol)
+func ErrTokenNotMintable(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotMintable, "token [%s] is not mintable", contractID)
 }
 
 func ErrInvalidTokenName(codespace sdk.CodespaceType, name string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidTokenName, "token name [%s] should not be empty", name)
-}
-
-func ErrInvalidTokenSymbol(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenSymbol, msg)
 }
 
 func ErrInvalidTokenDecimals(codespace sdk.CodespaceType, decimals sdk.Int) sdk.Error {
@@ -81,8 +77,12 @@ func ErrEmptyChanges(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeEmptyChanges, "changes is empty")
 }
 
-func ErrInvalidTokenURILength(codespace sdk.CodespaceType, tokenURI string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, MaxTokenURILength, utf8.RuneCountInString(tokenURI))
+func ErrInvalidImageURILength(codespace sdk.CodespaceType, tokenURI string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidImageURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, MaxImageURILength, utf8.RuneCountInString(tokenURI))
+}
+
+func ErrInvalidTokenSymbol(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidSymbol, "invalid token symbol [%s]", symbol)
 }
 
 func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
@@ -110,8 +110,8 @@ func ErrInsufficientBalance(codespace sdk.CodespaceType, msg string) sdk.Error {
 	return sdk.NewError(codespace, CodeInsufficientBalance, msg)
 }
 
-func ErrSupplyExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeSupplyExist, "supply for token [%s] already exists", symbol)
+func ErrSupplyExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeSupplyExist, "supply for token [%s] already exists", contractID)
 }
 
 func ErrInsufficientSupply(codespace sdk.CodespaceType, msg string) sdk.Error {

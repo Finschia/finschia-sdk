@@ -7,7 +7,7 @@ import (
 )
 
 func handleMsgCreateCollection(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgCreateCollection) sdk.Result {
-	collection := types.NewCollection(msg.Symbol, msg.Name, msg.BaseImgURI)
+	collection := types.NewCollection(keeper.NewContractID(ctx), msg.Name, msg.BaseImgURI)
 	err := keeper.CreateCollection(ctx, collection, msg.Owner)
 	if err != nil {
 		return err.Result()

@@ -2,26 +2,29 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/types"
+	"github.com/line/link/x/contract"
 )
 
-var _ sdk.Msg = (*MsgApprove)(nil)
+var _ contract.Msg = (*MsgApprove)(nil)
 
 type MsgApprove struct {
-	Approver sdk.AccAddress `json:"approver"`
-	Proxy    sdk.AccAddress `json:"proxy"`
-	Symbol   string         `json:"symbol"`
+	Approver   sdk.AccAddress `json:"approver"`
+	ContractID string         `json:"contract_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
 }
 
-func NewMsgApprove(approver sdk.AccAddress, proxy sdk.AccAddress, symbol string) MsgApprove {
+func NewMsgApprove(approver sdk.AccAddress, contractID string, proxy sdk.AccAddress) MsgApprove {
 	return MsgApprove{
-		Approver: approver,
-		Proxy:    proxy,
-		Symbol:   symbol,
+		Approver:   approver,
+		ContractID: contractID,
+		Proxy:      proxy,
 	}
 }
 
 func (msg MsgApprove) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return nil
+	}
 	if msg.Approver.Empty() {
 		return sdk.ErrInvalidAddress("Approver cannot be empty")
 	}
@@ -31,14 +34,12 @@ func (msg MsgApprove) ValidateBasic() sdk.Error {
 	if msg.Approver.Equals(msg.Proxy) {
 		return ErrApproverProxySame(DefaultCodespace, msg.Approver.String())
 	}
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-	}
 	return nil
 }
 
-func (MsgApprove) Route() string { return RouterKey }
-func (MsgApprove) Type() string  { return "approve_collection" }
+func (MsgApprove) Route() string             { return RouterKey }
+func (MsgApprove) Type() string              { return "approve_collection" }
+func (msg MsgApprove) GetContractID() string { return msg.ContractID }
 func (msg MsgApprove) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Approver}
 }
@@ -46,23 +47,26 @@ func (msg MsgApprove) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-var _ sdk.Msg = (*MsgDisapprove)(nil)
+var _ contract.Msg = (*MsgDisapprove)(nil)
 
 type MsgDisapprove struct {
-	Approver sdk.AccAddress `json:"approver"`
-	Proxy    sdk.AccAddress `json:"proxy"`
-	Symbol   string         `json:"symbol"`
+	Approver   sdk.AccAddress `json:"approver"`
+	ContractID string         `json:"contract_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
 }
 
-func NewMsgDisapprove(approver sdk.AccAddress, proxy sdk.AccAddress, symbol string) MsgDisapprove {
+func NewMsgDisapprove(approver sdk.AccAddress, contractID string, proxy sdk.AccAddress) MsgDisapprove {
 	return MsgDisapprove{
-		Approver: approver,
-		Proxy:    proxy,
-		Symbol:   symbol,
+		Approver:   approver,
+		ContractID: contractID,
+		Proxy:      proxy,
 	}
 }
 
 func (msg MsgDisapprove) ValidateBasic() sdk.Error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
 	if msg.Approver.Empty() {
 		return sdk.ErrInvalidAddress("Approver cannot be empty")
 	}
@@ -72,14 +76,12 @@ func (msg MsgDisapprove) ValidateBasic() sdk.Error {
 	if msg.Approver.Equals(msg.Proxy) {
 		return ErrApproverProxySame(DefaultCodespace, msg.Approver.String())
 	}
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-	}
 	return nil
 }
 
-func (MsgDisapprove) Route() string { return RouterKey }
-func (MsgDisapprove) Type() string  { return "disapprove_collection" }
+func (MsgDisapprove) Route() string             { return RouterKey }
+func (MsgDisapprove) Type() string              { return "disapprove_collection" }
+func (msg MsgDisapprove) GetContractID() string { return msg.ContractID }
 func (msg MsgDisapprove) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Approver}
 }

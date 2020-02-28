@@ -12,7 +12,7 @@ type Supply interface {
 	SetTotalSupply(total sdk.Int) Supply
 	GetTotalBurn() sdk.Int
 	GetTotalMint() sdk.Int
-	GetSymbol() string
+	GetContractID() string
 
 	Inflate(amount sdk.Int) Supply
 	Deflate(amount sdk.Int) Supply
@@ -21,18 +21,18 @@ type Supply interface {
 }
 
 type BaseSupply struct {
-	Symbol      string  `json:"symbol"`
+	ContractID  string  `json:"contract_id"`
 	TotalSupply sdk.Int `json:"total_supply"`
 	TotalMint   sdk.Int `json:"total_mint"`
 	TotalBurn   sdk.Int `json:"total_burn"`
 }
 
-func NewSupply(symbol string, total sdk.Int) Supply {
-	return BaseSupply{symbol, total, total, sdk.ZeroInt()}
+func NewSupply(contractID string, total sdk.Int) Supply {
+	return BaseSupply{contractID, total, total, sdk.ZeroInt()}
 }
 
-func DefaultSupply(symbol string) Supply {
-	return NewSupply(symbol, sdk.ZeroInt())
+func DefaultSupply(contractID string) Supply {
+	return NewSupply(contractID, sdk.ZeroInt())
 }
 
 func (supply BaseSupply) SetTotalSupply(total sdk.Int) Supply {
@@ -42,8 +42,8 @@ func (supply BaseSupply) SetTotalSupply(total sdk.Int) Supply {
 	return supply
 }
 
-func (supply BaseSupply) GetSymbol() string {
-	return supply.Symbol
+func (supply BaseSupply) GetContractID() string {
+	return supply.ContractID
 }
 
 func (supply BaseSupply) GetTotalSupply() sdk.Int {
@@ -85,7 +85,7 @@ func (supply BaseSupply) checkInvariant() {
 	if !supply.TotalSupply.Equal(supply.TotalMint.Sub(supply.TotalBurn)) {
 		panic(fmt.Sprintf(
 			"Token [%v]'s total supply [%v] does not match with total mint [%v] - total burn [%v]",
-			supply.GetSymbol(),
+			supply.GetContractID(),
 			supply.TotalSupply,
 			supply.TotalMint,
 			supply.TotalBurn,

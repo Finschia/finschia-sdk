@@ -30,15 +30,15 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "token [symbol]",
-		Short: "Query token with its symbol",
+		Use:   "token [contract_id]",
+		Short: "Query token with its contract_id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
-			token, height, err := retriever.GetToken(cliCtx, symbol)
+			contractID := args[0]
+			token, height, err := retriever.GetToken(cliCtx, contractID)
 			if err != nil {
 				return err
 			}
@@ -76,20 +76,20 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "balance [symbol] [addr]",
+		Use:   "balance [contract_id] [addr]",
 		Short: "Query balance of the account",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			symbol := args[0]
+			contractID := args[0]
 			addr, err := sdk.AccAddressFromBech32(args[1])
 			if err != nil {
 				return err
 			}
 
-			supply, height, err := retriever.GetAccountBalance(cliCtx, symbol, addr)
+			supply, height, err := retriever.GetAccountBalance(cliCtx, contractID, addr)
 			if err != nil {
 				return err
 			}
@@ -104,7 +104,7 @@ func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetTotalCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "total [supply|mint|burn] [symbol]",
+		Use:   "total [supply|mint|burn] [contract_id] ",
 		Short: "Query total supply/mint/burn of token",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -112,9 +112,10 @@ func GetTotalCmd(cdc *codec.Codec) *cobra.Command {
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			target := args[0]
-			symbol := args[1]
+			contractID := args[1]
 
-			supply, height, err := retriever.GetTotal(cliCtx, symbol, target)
+			supply, height, err := retriever.GetTotal(cliCtx, contractID, target)
+
 			if err != nil {
 				return err
 			}
