@@ -230,6 +230,7 @@ func TestEvents(t *testing.T) {
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("contract_id", contractID)),
 			sdk.NewEvent("mint_ft", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("mint_ft", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("mint_ft", sdk.NewAttribute("amount", types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)).String())),

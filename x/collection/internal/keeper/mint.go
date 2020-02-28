@@ -27,6 +27,7 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddre
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeMintFT,
+			sdk.NewAttribute(types.AttributeKeyContractID, contractID),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),

@@ -11,10 +11,10 @@
 ### MsgIssue
 ```golang
 type MsgIssue struct {
-	Name     string         `json:"name"`
-	Symbol   string         `json:"symbol"`
 	Owner    sdk.AccAddress `json:"owner"`
-	TokenURI string         `json:"token_uri"`
+	Name     string         `json:"name"`
+    Symbol   string         `json:"symbol"`
+	ImageURI string         `json:"image_uri"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
 	Decimals sdk.Int        `json:"decimals"`
@@ -30,9 +30,10 @@ type MsgIssue struct {
 
 ```golang
 type MsgMint struct {
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Amount sdk.Coins      `json:"amount"`
+	From       sdk.AccAddress `json:"from"`
+    ContractID string         `json:"contract_id"`     
+	To         sdk.AccAddress `json:"to"`
+	Amount     sdk.Coins      `json:"amount"`
 }
 ```
 
@@ -45,8 +46,9 @@ type MsgMint struct {
 
 ```golang
 type MsgBurn struct {
-	From   sdk.AccAddress `json:"from"`
-	Amount sdk.Coins      `json:"amount"`
+	From       sdk.AccAddress `json:"from"`
+    ContractID string         `json:"contract_id"`   
+	Amount     sdk.Coins      `json:"amount"`
 }
 ```
 
@@ -81,10 +83,10 @@ type MsgRevokePermission struct {
 
 ```golang
 type MsgTransfer struct {
-	From        sdk.AccAddress `json:"from" yaml:"from"`
-	To          sdk.AccAddress `json:"to" yaml:"to"`
-	TokenSymbol string         `json:"token_symbol"`
-	Amount      sdk.Int        `json:"amount" yaml:"amount"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     sdk.Int        `json:"amount"`
 }
 ```
 
