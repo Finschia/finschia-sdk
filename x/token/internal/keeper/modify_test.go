@@ -12,8 +12,10 @@ import (
 func TestModifyTokenName(t *testing.T) {
 	const modifiedTokenName = "modifiedTokenName"
 	const modifiedTokenURI = "modifiedTokenURI"
-	nameChange := linktype.NewChange("name", modifiedTokenName)
-	tokenURIChange := linktype.NewChange("token_uri", modifiedTokenURI)
+	changes := linktype.NewChanges(
+		linktype.NewChange("name", modifiedTokenName),
+		linktype.NewChange("token_uri", modifiedTokenURI),
+	)
 
 	ctx := cacheKeeper()
 	token := aToken(defaultContractID)
@@ -24,10 +26,10 @@ func TestModifyTokenName(t *testing.T) {
 	require.NoError(t, keeper.SetToken(ctx, token))
 	keeper.AddPermission(ctx, addr1, modifyPermission)
 
-	t.Logf("Test to modify name for token to %s", modifiedTokenName)
+	t.Log("Test to modify token")
 	{
 		// When modify token name
-		require.NoError(t, keeper.ModifyToken(ctx, addr1, token.GetContractID(), nameChange))
+		require.NoError(t, keeper.ModifyToken(ctx, addr1, token.GetContractID(), changes))
 
 		// Then token name is modified
 		store := ctx.KVStore(keeper.storeKey)
@@ -35,24 +37,13 @@ func TestModifyTokenName(t *testing.T) {
 		actual := keeper.mustDecodeToken(bz)
 		require.Equal(t, modifiedTokenName, actual.GetName())
 	}
-	t.Logf("Test to modify token uri for token to %s", modifiedTokenURI)
-	{
-		// When modify token uri
-		require.NoError(t, keeper.ModifyToken(ctx, addr1, token.GetContractID(), tokenURIChange))
-
-		// Then token uri is modified
-		store := ctx.KVStore(keeper.storeKey)
-		bz := store.Get(types.TokenKey(token.GetContractID()))
-		actual := keeper.mustDecodeToken(bz)
-		require.Equal(t, modifiedTokenURI, actual.GetImageURI())
-	}
-	t.Log("Test with nonexistent contractID")
+	t.Log("Test with nonexistent contract")
 	{
 		// Given nonexistent contractID
 		nonExistentcontractID := "abcd1234"
 
 		// When modify token name with invalid contractID, Then error is occurred
-		require.EqualError(t, keeper.ModifyToken(ctx, addr1, nonExistentcontractID, nameChange),
+		require.EqualError(t, keeper.ModifyToken(ctx, addr1, nonExistentcontractID, changes),
 			types.ErrTokenNotExist(types.DefaultCodespace, nonExistentcontractID).Error())
 	}
 	t.Log("Test without permission")
@@ -62,7 +53,7 @@ func TestModifyTokenName(t *testing.T) {
 		invalidPerm := types.NewModifyPermission(tokenWithoutPerm.GetContractID())
 
 		// When modify token name with invalid permission, Then error is occurred
-		require.EqualError(t, keeper.ModifyToken(ctx, addr1, tokenWithoutPerm.GetContractID(), nameChange),
+		require.EqualError(t, keeper.ModifyToken(ctx, addr1, tokenWithoutPerm.GetContractID(), changes),
 			types.ErrTokenNoPermission(types.DefaultCodespace, addr1, invalidPerm).Error())
 	}
 }

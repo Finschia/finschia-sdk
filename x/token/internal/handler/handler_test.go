@@ -40,7 +40,7 @@ func verifyEventFunc(t *testing.T, expected sdk.Events, actual sdk.Events) {
 
 const (
 	defaultName       = "name"
-	defaultContractID = "token001"
+	defaultContractID = "9be17165"
 	defaultSymbol     = "BTC"
 	defaultImageURI   = "image-uri"
 	defaultDecimals   = 6

@@ -117,6 +117,16 @@ func TestModifyCollection(t *testing.T) {
 		// Then the uri is modified
 		require.Equal(t, modifiedURI, f.QueryCollection(contractID).GetBaseImgURI())
 	}
+	t.Log("Modify token type")
+	{
+		// When modify token name
+		modifiedName := firstName + "modified"
+		f.LogResult(f.TxCollectionModify(keyFoo, contractID, tokenType, "", "name", modifiedName, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// Then the name is modified
+		require.Equal(t, modifiedName, f.QueryTokenTypeCollection(contractID, tokenType).GetName())
+	}
 	t.Log("Modify token")
 	{
 		// When modify token name

@@ -54,3 +54,12 @@ The token module emits the following events:
 | transfer_ft      | to             | {toAddress}              |
 | transfer_ft      | symbol         | {symbol}                 |
 | transfer_ft      | amount         | {amount}                 |
+
+### MsgModify
+| Type                  | Attribute Key  | Attribute Value       |
+|-----------------------|----------------|-----------------------|
+| message               | module         | token                 |
+| message               | sender         | {ownerAddress}        | 
+| message               | action         | modify_token          |
+| modify_token          | contract_id    | {contract_id}         |
+| modify_token          | {modifiedField}| {modifiedValue}       |

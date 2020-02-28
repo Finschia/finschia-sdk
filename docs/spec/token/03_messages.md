@@ -92,3 +92,16 @@ type MsgTransfer struct {
 - Signer of this message must have the amount of the tokens
 - Token is subtracted from the `From` account
 - Token is added to the `To` account
+
+## MsgModify
+
+```golang
+type MsgModify struct {
+	Owner      sdk.AccAddress   `json:"owner"`
+	ContractID string           `json:"contract_id"`
+	Changes    linktype.Changes `json:"changes"`
+}
+```
+
+**Modify message is to modify fields of token**
+- `Owner` is the signer

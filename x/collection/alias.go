@@ -20,6 +20,8 @@ type (
 	FT  = types.FT
 	NFT = types.NFT
 
+	TokenType = types.TokenType
+
 	Collection  = types.BaseCollection
 	Collections = types.Collections
 

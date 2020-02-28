@@ -7,10 +7,8 @@ import (
 )
 
 func handleMsgModify(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgModify) sdk.Result {
-	for _, change := range msg.Changes {
-		if err := keeper.Modify(ctx, msg.Owner, msg.ContractID, msg.TokenType, msg.TokenIndex, change); err != nil {
-			return err.Result()
-		}
+	if err := keeper.Modify(ctx, msg.Owner, msg.ContractID, msg.TokenType, msg.TokenIndex, msg.Changes); err != nil {
+		return err.Result()
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{

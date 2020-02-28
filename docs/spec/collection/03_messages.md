@@ -308,3 +308,18 @@ type MsgDisapprove struct {
 
 **Disapprove message is to withdraw proxy's approval for a collection**
 - `Approver` is the signer
+
+## MsgModify
+
+```golang
+type MsgModify struct {
+	Owner      sdk.AccAddress   `json:"owner"`
+	ContractID string           `json:"contract_id"`
+	TokenType  string           `json:"token_type"`
+	TokenIndex string           `json:"token_index"`
+	Changes    linktype.Changes `json:"changes"`
+}
+```
+
+**Modify message is to modify fields of collection, token type, CFT or CNFT**
+- `Owner` is the signer

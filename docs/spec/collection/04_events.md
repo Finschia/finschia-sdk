@@ -242,3 +242,20 @@ The token module emits the following events:
 | disapprove_collection | approver       | {approverAddress}     |
 | disapprove_collection | proxy          | {proxyAddress}        |
 | disapprove_collection | symbol         | {symbol}              |
+
+### MsgModify
+| Type                  | Attribute Key  | Attribute Value       |
+|-----------------------|----------------|-----------------------|
+| message               | module         | collection            |
+| message               | sender         | {ownerAddress}        | 
+| message               | action         | modify_collection     |
+| message               | action         | modify_token_type     |
+| message               | action         | modify_token          |
+| modify_collection     | contract_id    | {contract_id}         |
+| modify_collection     | {modifiedField}| {modifiedValue}       |
+| modify_token_type     | contract_id    | {contract_id}         |
+| modify_token_type     | token_type     | {token_type}          |
+| modify_token_type     | {modifiedField}| {modifiedValue}       |
+| modify_token          | contract_id    | {contract_id}         |
+| modify_token          | token_id       | {token_id}            |
+| modify_token          | {modifiedField}| {modifiedValue}       |

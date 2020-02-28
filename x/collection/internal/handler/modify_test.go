@@ -57,15 +57,8 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 		// And events are returned
 		expectedEvents := sdk.Events{
 			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyModifiedField, "name")),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyName, modifiedName)),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyBaseImgURI, defaultImgURI)),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyModifiedField, "base_img_uri")),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyName, modifiedName)),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
-			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyBaseImgURI, modifiedImgURI)),
+			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute("name", modifiedName)),
+			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute("base_img_uri", modifiedImgURI)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}
@@ -117,10 +110,8 @@ func TestHandleMsgModifyForToken(t *testing.T) {
 		// And events are returned
 		expectedEvents := sdk.Events{
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyModifiedField, "name")),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyName, modifiedTokenName)),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenID, defaultTokenID1)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("name", modifiedTokenName)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}
@@ -170,10 +161,8 @@ func TestHandleMsgModifyForTokenType(t *testing.T) {
 		// And events are returned
 		expectedEvents := sdk.Events{
 			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
-			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute(types.AttributeKeyModifiedField, "name")),
-			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute(types.AttributeKeyName, modifiedTokenName)),
 			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute(types.AttributeKeyTokenType, defaultTokenType)),
-			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
+			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute("name", modifiedTokenName)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}

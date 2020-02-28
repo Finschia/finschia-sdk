@@ -14,7 +14,7 @@ import (
 const (
 	defaultName       = "name"
 	defaultSymbol     = "BTC"
-	defaultContractID = "token001"
+	defaultContractID = "9be17165"
 	defaultImageURI   = "image-uri"
 	defaultDecimals   = 6
 	defaultAmount     = 1000

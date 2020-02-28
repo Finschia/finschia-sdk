@@ -1131,6 +1131,18 @@ func (f *Fixtures) QueryTokensCollection(contractID string, flags ...string) col
 	return tokens
 }
 
+func (f *Fixtures) QueryTokenTypeCollection(contractID, tokenTypeID string, flags ...string) collectionModule.TokenType {
+	cmd := fmt.Sprintf("%s query collection tokentype %s %s %s", f.LinkcliBinary, contractID, tokenTypeID, f.Flags())
+	cmd = addFlags(cmd, flags)
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var tokenType collectionModule.TokenType
+	err := cdc.UnmarshalJSON([]byte(res), &tokenType)
+	require.NoError(f.T, err)
+	return tokenType
+}
+
 func (f *Fixtures) QueryCollection(contractID string, flags ...string) collectionModule.Collection {
 	cmd := fmt.Sprintf("%s query collection collection %s %s", f.LinkcliBinary, contractID, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")

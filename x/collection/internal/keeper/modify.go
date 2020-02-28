@@ -7,22 +7,22 @@ import (
 )
 
 func (k Keeper) Modify(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenType, tokenIndex string,
-	change linktype.Change) sdk.Error {
+	changes linktype.Changes) sdk.Error {
 	if tokenType != "" {
 		if tokenIndex != "" {
-			return k.modifyToken(ctx, owner, contractID, tokenType+tokenIndex, change)
+			return k.modifyToken(ctx, owner, contractID, tokenType+tokenIndex, changes)
 		}
-		return k.modifyTokenType(ctx, owner, contractID, tokenType, change)
+		return k.modifyTokenType(ctx, owner, contractID, tokenType, changes)
 	}
 	if tokenIndex == "" {
-		return k.modifyCollection(ctx, owner, contractID, change)
+		return k.modifyCollection(ctx, owner, contractID, changes)
 	}
 	return types.ErrTokenIndexWithoutType(types.DefaultCodespace)
 }
 
 //nolint:dupl
 func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, contractID string,
-	change linktype.Change) sdk.Error {
+	changes linktype.Changes) sdk.Error {
 	collection, err := k.GetCollection(ctx, contractID)
 	if err != nil {
 		return err
@@ -32,36 +32,40 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, contract
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, modifyPerm)
 	}
 
-	switch change.Field {
-	case types.AttributeKeyName:
-		collection = collection.SetName(change.Value)
-	case types.AttributeKeyBaseImgURI:
-		collection = collection.SetBaseImgURI(change.Value)
-	default:
-		return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
-	}
-
-	err = k.UpdateCollection(ctx, collection)
-	if err != nil {
-		return err
-	}
-
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyCollection,
 			sdk.NewAttribute(types.AttributeKeyContractID, collection.GetContractID()),
-			sdk.NewAttribute(types.AttributeKeyModifiedField, change.Field),
-			sdk.NewAttribute(types.AttributeKeyName, collection.GetName()),
-			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyBaseImgURI, collection.GetBaseImgURI()),
 		),
 	})
+
+	for _, change := range changes {
+		switch change.Field {
+		case types.AttributeKeyName:
+			collection = collection.SetName(change.Value)
+		case types.AttributeKeyBaseImgURI:
+			collection = collection.SetBaseImgURI(change.Value)
+		default:
+			return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
+		}
+
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.EventTypeModifyCollection,
+				sdk.NewAttribute(change.Field, change.Value),
+			),
+		})
+	}
+	err = k.UpdateCollection(ctx, collection)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 //nolint:dupl
 func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenTypeID string,
-	change linktype.Change) sdk.Error {
+	changes linktype.Changes) sdk.Error {
 	tokenType, err := k.GetTokenType(ctx, contractID, tokenTypeID)
 	if err != nil {
 		return err
@@ -71,34 +75,39 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractI
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, modifyPerm)
 	}
 
-	switch change.Field {
-	case types.AttributeKeyName:
-		tokenType = tokenType.SetName(change.Value)
-	default:
-		return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
-	}
-
-	err = k.UpdateTokenType(ctx, contractID, tokenType)
-	if err != nil {
-		return err
-	}
-
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyTokenType,
 			sdk.NewAttribute(types.AttributeKeyContractID, tokenType.GetContractID()),
-			sdk.NewAttribute(types.AttributeKeyModifiedField, change.Field),
-			sdk.NewAttribute(types.AttributeKeyName, tokenType.GetName()),
 			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType.GetTokenType()),
-			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 		),
 	})
+
+	for _, change := range changes {
+		switch change.Field {
+		case types.AttributeKeyName:
+			tokenType = tokenType.SetName(change.Value)
+		default:
+			return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
+		}
+
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.EventTypeModifyTokenType,
+				sdk.NewAttribute(change.Field, change.Value),
+			),
+		})
+	}
+	err = k.UpdateTokenType(ctx, contractID, tokenType)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 //nolint:dupl
 func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenID string,
-	change linktype.Change) sdk.Error {
+	changes linktype.Changes) sdk.Error {
 	token, err := k.GetToken(ctx, contractID, tokenID)
 	if err != nil {
 		return err
@@ -108,27 +117,31 @@ func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID, t
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, modifyPerm)
 	}
 
-	switch change.Field {
-	case types.AttributeKeyName:
-		token = token.SetName(change.Value)
-	default:
-		return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
-	}
-
-	err = k.UpdateToken(ctx, contractID, token)
-	if err != nil {
-		return err
-	}
-
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyToken,
 			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
-			sdk.NewAttribute(types.AttributeKeyModifiedField, change.Field),
-			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
-			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
 		),
 	})
+
+	for _, change := range changes {
+		switch change.Field {
+		case types.AttributeKeyName:
+			token = token.SetName(change.Value)
+		default:
+			return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
+		}
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.EventTypeModifyToken,
+				sdk.NewAttribute(change.Field, change.Value),
+			),
+		})
+	}
+	err = k.UpdateToken(ctx, contractID, token)
+	if err != nil {
+		return err
+	}
 	return nil
 }

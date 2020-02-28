@@ -7,7 +7,7 @@ import (
 )
 
 func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID string,
-	change linktype.Change) sdk.Error {
+	changes linktype.Changes) sdk.Error {
 	token, err := k.GetToken(ctx, contractID)
 	if err != nil {
 		return err
@@ -18,27 +18,31 @@ func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID st
 		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenModifyPerm)
 	}
 
-	switch change.Field {
-	case types.AttributeKeyName:
-		token = token.SetName(change.Value)
-	case types.AttributeKeyTokenURI:
-		token = token.SetImageURI(change.Value)
-	}
-
-	err = k.UpdateToken(ctx, token)
-	if err != nil {
-		return err
-	}
-
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyToken,
 			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
-			sdk.NewAttribute(types.AttributeKeyModifiedField, change.Field),
-			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
-			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyTokenURI, token.GetImageURI()),
 		),
 	})
+
+	for _, change := range changes {
+		switch change.Field {
+		case types.AttributeKeyName:
+			token = token.SetName(change.Value)
+		case types.AttributeKeyTokenURI:
+			token = token.SetImageURI(change.Value)
+		}
+
+		ctx.EventManager().EmitEvents(sdk.Events{
+			sdk.NewEvent(
+				types.EventTypeModifyToken,
+				sdk.NewAttribute(change.Field, change.Value),
+			),
+		})
+	}
+	err = k.UpdateToken(ctx, token)
+	if err != nil {
+		return err
+	}
 	return nil
 }

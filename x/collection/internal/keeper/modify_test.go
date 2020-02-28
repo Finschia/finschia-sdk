@@ -15,8 +15,10 @@ func TestModifyCollection(t *testing.T) {
 		modifiedName = "modifiedName"
 		modifiedURI  = "modifiedURI"
 	)
-	nameChange := linktype.NewChange("name", modifiedName)
-	imgURIChange := linktype.NewChange("base_img_uri", modifiedURI)
+	changes := linktype.NewChanges(
+		linktype.NewChange("name", modifiedName),
+		linktype.NewChange("base_img_uri", modifiedURI),
+	)
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
@@ -26,32 +28,22 @@ func TestModifyCollection(t *testing.T) {
 	modifyPermission := types.NewModifyPermission(collection.GetContractID())
 	keeper.AddPermission(ctx, addr1, modifyPermission)
 
-	t.Logf("Test to modify name of collection to %s", modifiedName)
+	t.Log("Test to modify collection")
 	{
-		// When modify collection name
-		require.NoError(t, keeper.modifyCollection(ctx, addr1, defaultContractID, nameChange))
+		// When modify collection
+		require.NoError(t, keeper.modifyCollection(ctx, addr1, defaultContractID, changes))
 
-		// Then collection name is modified
+		// Then collection is modified
 		store := ctx.KVStore(keeper.storeKey)
 		bz := store.Get(types.CollectionKey(collection.GetContractID()))
 		actual := keeper.mustDecodeCollection(bz)
 		require.Equal(t, modifiedName, actual.GetName())
-	}
-	t.Logf("Test to modify img uri of collection to %s", modifiedURI)
-	{
-		// When modify img uri
-		require.NoError(t, keeper.modifyCollection(ctx, addr1, defaultContractID, imgURIChange))
-
-		// Then img uri is modified
-		store := ctx.KVStore(keeper.storeKey)
-		bz := store.Get(types.CollectionKey(collection.GetContractID()))
-		actual := keeper.mustDecodeCollection(bz)
 		require.Equal(t, modifiedURI, actual.GetBaseImgURI())
 	}
 	t.Log("Test with nonexistent contract")
 	{
 		// Given nonexistent contract, When modify collection name with invalid contract, Then error is occurred
-		require.EqualError(t, keeper.modifyCollection(ctx, addr1, nonExistentID, nameChange),
+		require.EqualError(t, keeper.modifyCollection(ctx, addr1, nonExistentID, changes),
 			types.ErrCollectionNotExist(types.DefaultCodespace, nonExistentID).Error())
 	}
 	t.Log("Test without permission")
@@ -60,7 +52,7 @@ func TestModifyCollection(t *testing.T) {
 		invalidUser := addr2
 
 		// When modify collection name with invalid permission, Then error is occurred
-		require.EqualError(t, keeper.modifyCollection(ctx, invalidUser, collection.GetContractID(), nameChange),
+		require.EqualError(t, keeper.modifyCollection(ctx, invalidUser, collection.GetContractID(), changes),
 			types.ErrTokenNoPermission(types.DefaultCodespace, invalidUser, modifyPermission).Error())
 	}
 }
@@ -68,8 +60,12 @@ func TestModifyCollection(t *testing.T) {
 func TestModifyTokenType(t *testing.T) {
 	const modifiedName = "modifiedName"
 	const modifiedURI = "modifiedURI"
-	nameChange := linktype.NewChange("name", modifiedName)
-	imgURIChange := linktype.NewChange("base_img_uri", modifiedURI)
+	validChanges := linktype.NewChanges(
+		linktype.NewChange("name", modifiedName),
+	)
+	invalidChanges := linktype.NewChanges(
+		linktype.NewChange("base_img_uri", modifiedURI),
+	)
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
@@ -79,25 +75,25 @@ func TestModifyTokenType(t *testing.T) {
 	modifyPermission := types.NewModifyPermission(collection.GetContractID())
 	keeper.AddPermission(ctx, addr1, modifyPermission)
 
-	t.Logf("Test to modify name of token type to %s", modifiedName)
+	t.Log("Test to modify token type with valid fields")
 	{
 		// When modify token type name
-		require.NoError(t, keeper.modifyTokenType(ctx, addr1, defaultContractID, defaultTokenType, nameChange))
+		require.NoError(t, keeper.modifyTokenType(ctx, addr1, defaultContractID, defaultTokenType, validChanges))
 
 		// Then collection name is modified
 		actual, err := keeper.GetTokenType(ctx, defaultContractID, defaultTokenType)
 		require.NoError(t, err)
 		require.Equal(t, modifiedName, actual.GetName())
 	}
-	t.Log("Test to modify img uri of token type")
+	t.Log("Test to modify token type with invalid fields")
 	{
-		require.EqualError(t, keeper.modifyTokenType(ctx, addr1, defaultContractID, defaultTokenType, imgURIChange),
-			types.ErrInvalidChangesField(types.DefaultCodespace, imgURIChange.Field).Error())
+		require.EqualError(t, keeper.modifyTokenType(ctx, addr1, defaultContractID, defaultTokenType, invalidChanges),
+			types.ErrInvalidChangesField(types.DefaultCodespace, "base_img_uri").Error())
 	}
 	t.Log("Test with nonexistent contract")
 	{
 		// Given nonexistent token type, When modify token type name with invalid contract, Then error is occurred
-		require.EqualError(t, keeper.modifyTokenType(ctx, addr1, defaultContractID, nonExistentID, nameChange),
+		require.EqualError(t, keeper.modifyTokenType(ctx, addr1, defaultContractID, nonExistentID, validChanges),
 			types.ErrTokenTypeNotExist(types.DefaultCodespace, defaultContractID, nonExistentID).Error())
 	}
 	t.Log("Test without permission")
@@ -106,7 +102,7 @@ func TestModifyTokenType(t *testing.T) {
 		invalidUser := addr2
 
 		// When modify token type name with invalid permission, Then error is occurred
-		require.EqualError(t, keeper.modifyTokenType(ctx, invalidUser, defaultContractID, defaultTokenType, nameChange),
+		require.EqualError(t, keeper.modifyTokenType(ctx, invalidUser, defaultContractID, defaultTokenType, validChanges),
 			types.ErrTokenNoPermission(types.DefaultCodespace, invalidUser, modifyPermission).Error())
 	}
 }
@@ -114,8 +110,12 @@ func TestModifyTokenType(t *testing.T) {
 func TestModifyToken(t *testing.T) {
 	const modifiedName = "modifiedName"
 	const modifiedURI = "modifiedURI"
-	nameChange := linktype.NewChange("name", modifiedName)
-	imgURIChange := linktype.NewChange("base_img_uri", modifiedURI)
+	validChanges := linktype.NewChanges(
+		linktype.NewChange("name", modifiedName),
+	)
+	invalidChanges := linktype.NewChanges(
+		linktype.NewChange("base_img_uri", modifiedURI),
+	)
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
@@ -128,25 +128,25 @@ func TestModifyToken(t *testing.T) {
 	token, err := keeper.GetToken(ctx, defaultContractID, defaultTokenID1)
 	require.NoError(t, err)
 
-	t.Logf("Test to modify name of token to %s", modifiedName)
+	t.Log("Test to modify token with valid changes")
 	{
 		// When modify token name
-		require.NoError(t, keeper.modifyToken(ctx, addr1, defaultContractID, token.GetTokenID(), nameChange))
+		require.NoError(t, keeper.modifyToken(ctx, addr1, defaultContractID, token.GetTokenID(), validChanges))
 
 		// Then token name is modified
 		actual, err := keeper.GetToken(ctx, defaultContractID, token.GetTokenID())
 		require.NoError(t, err)
 		require.Equal(t, modifiedName, actual.GetName())
 	}
-	t.Log("Test to modify img uri")
+	t.Log("Test to modify token with invalid changes")
 	{
-		require.EqualError(t, keeper.modifyToken(ctx, addr1, defaultContractID, token.GetTokenID(), imgURIChange),
-			types.ErrInvalidChangesField(types.DefaultCodespace, imgURIChange.Field).Error())
+		require.EqualError(t, keeper.modifyToken(ctx, addr1, defaultContractID, token.GetTokenID(), invalidChanges),
+			types.ErrInvalidChangesField(types.DefaultCodespace, "base_img_uri").Error())
 	}
 	t.Log("Test with nonexistent contract")
 	{
 		// Given nonexistent token id, When modify token name with invalid contract, Then error is occurred
-		require.EqualError(t, keeper.modifyToken(ctx, addr1, defaultContractID, nonExistentID, nameChange),
+		require.EqualError(t, keeper.modifyToken(ctx, addr1, defaultContractID, nonExistentID, validChanges),
 			types.ErrTokenNotExist(types.DefaultCodespace, token.GetContractID(), nonExistentID).Error())
 	}
 	t.Log("Test without permission")
@@ -155,25 +155,26 @@ func TestModifyToken(t *testing.T) {
 		invalidUser := addr2
 
 		// When modify token name with invalid permission, Then error is occurred
-		require.EqualError(t, keeper.modifyToken(ctx, invalidUser, defaultContractID, token.GetTokenID(),
-			nameChange), types.ErrTokenNoPermission(types.DefaultCodespace, invalidUser, modifyPermission).Error())
+		require.EqualError(t, keeper.modifyToken(ctx, invalidUser, defaultContractID, token.GetTokenID(), validChanges),
+			types.ErrTokenNoPermission(types.DefaultCodespace, invalidUser, modifyPermission).Error())
 	}
 }
 
 func TestModify(t *testing.T) {
 	const modifiedName = "modifiedName"
-	nameChange := linktype.NewChange("name", modifiedName)
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
-
+	changes := linktype.NewChanges(
+		linktype.NewChange("name", modifiedName),
+	)
 	// Given permission
 	modifyPermission := types.NewModifyPermission(defaultContractID)
 	keeper.AddPermission(ctx, addr1, modifyPermission)
 
 	t.Logf("Test to modify name of collection to %s", modifiedName)
 	{
-		// Given contract of collection, When modify collection name
-		require.NoError(t, keeper.Modify(ctx, addr1, defaultContractID, "", "", nameChange))
+		// When modify collection name
+		require.NoError(t, keeper.Modify(ctx, addr1, defaultContractID, "", "", changes))
 
 		// Then collection name is modified
 		store := ctx.KVStore(keeper.storeKey)
@@ -183,8 +184,8 @@ func TestModify(t *testing.T) {
 	}
 	t.Logf("Test to modify name of token type to %s", modifiedName)
 	{
-		// Given contract of token type, When modify token type name
-		require.NoError(t, keeper.Modify(ctx, addr1, defaultContractID, defaultTokenType, "", nameChange))
+		// When modify token type name
+		require.NoError(t, keeper.Modify(ctx, addr1, defaultContractID, defaultTokenType, "", changes))
 
 		// Then token type name is modified
 		actual, err := keeper.GetTokenType(ctx, defaultContractID, defaultTokenType)
@@ -193,8 +194,8 @@ func TestModify(t *testing.T) {
 	}
 	t.Logf("Test to modify name of token to %s", modifiedName)
 	{
-		// Given contract of token, When modify token name
-		require.NoError(t, keeper.Modify(ctx, addr1, defaultContractID, defaultTokenType, defaultTokenIndex, nameChange))
+		// When modify token name
+		require.NoError(t, keeper.Modify(ctx, addr1, defaultContractID, defaultTokenType, defaultTokenIndex, changes))
 
 		// Then token name is modified
 		actual, err := keeper.GetToken(ctx, defaultContractID, defaultTokenID1)
@@ -203,8 +204,7 @@ func TestModify(t *testing.T) {
 	}
 	t.Log("Test with only token index not token type")
 	{
-		// When modify token name
-		require.EqualError(t, keeper.Modify(ctx, addr1, defaultContractID, "", defaultTokenIndex, nameChange),
-			types.ErrTokenIndexWithoutType(types.DefaultCodespace).Error())
+		// When modify token name, Then error is occurred
+		require.EqualError(t, keeper.Modify(ctx, addr1, defaultContractID, "", defaultTokenIndex, changes), types.ErrTokenIndexWithoutType(types.DefaultCodespace).Error())
 	}
 }

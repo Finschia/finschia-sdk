@@ -40,7 +40,7 @@ func TestHandleMsgModify(t *testing.T) {
 	t.Log("Test modify token")
 	{
 		// Given issued token
-		res := h(ctx, types.NewMsgIssue(addr1, defaultName, defaultSymbol, defaultImageURI,
+		res := h(ctx, types.NewMsgIssue(addr1, defaultName, defaultContractID, defaultImageURI,
 			sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true))
 		require.True(t, res.IsOK())
 		contractID := GetMadeContractID(res.Events)
@@ -57,16 +57,9 @@ func TestHandleMsgModify(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 		// And events are returned
 		expectedEvents := sdk.Events{
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyModifiedField, "name")),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyName, modifiedTokenName)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenURI, defaultImageURI)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyModifiedField, "token_uri")),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyName, modifiedTokenName)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyOwner, addr1.String())),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenURI, modifiedTokenURI)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, defaultContractID)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("name", modifiedTokenName)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("token_uri", modifiedTokenURI)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}
