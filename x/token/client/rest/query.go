@@ -16,13 +16,13 @@ import (
 )
 
 func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
-	r.HandleFunc("/token/tokens/{contract_id}/supply", QueryTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
-	r.HandleFunc("/token/tokens/{contract_id}/mint", QueryTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
-	r.HandleFunc("/token/tokens/{contract_id}/burn", QueryTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
-	r.HandleFunc("/token/tokens/{contract_id}/balance/{address}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/token/tokens/{contract_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/{contract_id}/supply", QueryTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
+	r.HandleFunc("/token/{contract_id}/mint", QueryTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
+	r.HandleFunc("/token/{contract_id}/burn", QueryTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
+	r.HandleFunc("/token/{contract_id}/accounts/{address}/balance", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/{contract_id}/accounts/{address}/permissions", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/{contract_id}/token", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/token/permissions/{address}", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
 func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {

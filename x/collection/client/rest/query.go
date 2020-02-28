@@ -16,22 +16,23 @@ import (
 )
 
 func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
-	r.HandleFunc("/collection/collections/{contract_id}/tokens/{token_id}/supply", QueryTokenTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}/tokens/{token_id}/mint", QueryTokenTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}/tokens/{token_id}/burn", QueryTokenTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}/tokens/{token_type}/count", QueryCountRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}/tokens/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}/tokentypes/{token_type}", QueryTokenTypeRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}/tokentypes", QueryTokenTypesRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}", QueryCollectionRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/fts/{token_id}/supply", QueryTokenTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/fts/{token_id}/mint", QueryTokenTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/fts/{token_id}/burn", QueryTokenTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/fts/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/nfts/{token_id}/parent", QueryParentRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/nfts/{token_id}/root", QueryRootRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/nfts/{token_id}/children", QueryChildrenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/nfts/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/count", QueryCountRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}", QueryTokenTypeRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/tokentypes", QueryTokenTypesRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/accounts/{address}/permissions", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/accounts/{address}/proxies/{approver}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/accounts/{address}/balances/{token_id}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/collection", QueryCollectionRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections", QuerCollectionsRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/parent/{contract_id}/{token_id}", QueryParentRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/root/{contract_id}/{token_id}", QueryRootRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/children/{contract_id}/{token_id}", QueryChildrenRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/approved/{contract_id}/{proxy}/{approver}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections/{contract_id}/balances/{address}/{token_id}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/permissions/{address}", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
 func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
@@ -271,6 +272,7 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
 		addr, err := sdk.AccAddressFromBech32(vars["address"])
+		contractID := vars["contract_id"]
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("address cannot parsed: %s", err))
 			return
@@ -283,15 +285,21 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		nftcount, height, err := retriever.GetAccountPermission(cliCtx, addr)
+		pms, height, err := retriever.GetAccountPermission(cliCtx, addr)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
 		}
+		var pmsPerContract types.Permissions
+		for _, pm := range pms {
+			if pm.GetResource() == contractID {
+				pmsPerContract = append(pmsPerContract, pm)
+			}
+		}
 
 		cliCtx = cliCtx.WithHeight(height)
 
-		rest.PostProcessResponse(w, cliCtx, nftcount)
+		rest.PostProcessResponse(w, cliCtx, pmsPerContract)
 	}
 }
 
@@ -423,7 +431,7 @@ func QueryIsApprovedRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc 
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
 
-		proxy, err := sdk.AccAddressFromBech32(vars["proxy"])
+		proxy, err := sdk.AccAddressFromBech32(vars["address"])
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("proxy[%s] cannot parsed: %s", proxy.String(), err))
 			return

@@ -607,7 +607,7 @@ paths:
         "500":
           description: Internal Server Error
           content: {}
-  /token/tokens/{contract_id}/balance/{address}:
+  /token/{contract_id}/accounts/{address}/balance:
     get:
       tags:
         - Token
@@ -650,7 +650,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/tokens/{contract_id}/supply:
+  /token/{contract_id}/supply:
     get:
       tags:
         - Token
@@ -686,7 +686,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/tokens/{contract_id}/mint:
+  /token/{contract_id}/mint:
     get:
       tags:
         - Token
@@ -722,7 +722,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/tokens/{contract_id}/burn:
+  /token/{contract_id}/burn:
     get:
       tags:
         - Token
@@ -758,7 +758,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /token/tokens/{contract_id}:
+  /token/{contract_id}/token:
     get:
       tags:
         - Token
@@ -825,7 +825,7 @@ paths:
                         - $ref: '#/components/schemas/TokenFT'
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}/balances/{address}/{token_id}:
+  /collection/{contract_id}/accounts/{address}/balances/{token_id}:
     get:
       tags:
         - Collection
@@ -875,7 +875,7 @@ paths:
                     example: "100"
         "500":
           description: Server internal error
-  /collection/collections/{contract_id}/tokens/{token_id}/supply:
+  /collection/{contract_id}/fts/{token_id}/supply:
     get:
       tags:
         - Collection
@@ -918,7 +918,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}/tokens/{token_id}/mint:
+  /collection/{contract_id}/fts/{token_id}/mint:
     get:
       tags:
         - Collection
@@ -961,7 +961,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}/tokens/{token_id}/burn:
+  /collection/{contract_id}/fts/{token_id}/burn:
     get:
       tags:
         - Collection
@@ -1004,7 +1004,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}/tokens/{token_type}/count:
+  /collection/{contract_id}/tokentypes/{token_type}/count:
     get:
       tags:
         - Collection
@@ -1047,7 +1047,7 @@ paths:
                     example: "100"
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}/tokens/{token_id}:
+  /collection/{contract_id}/fts/{token_id}:
     get:
       tags:
         - Collection
@@ -1086,12 +1086,52 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    oneOf:
-                      - $ref: '#/components/schemas/TokenCFT'
-                      - $ref: '#/components/schemas/TokenCNFT'
+                    $ref: '#/components/schemas/TokenCFT'
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}/tokens:
+  /collection/{contract_id}/nfts/{token_id}:
+    get:
+      tags:
+        - Collection
+      summary: Get the collection token details
+      parameters:
+        - name: contract_id
+          in: path
+          description: contract_id for the collection
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
+        - name: token_id
+          in: path
+          description: token id
+          required: true
+          schema:
+            type: string
+          example: "1000000100000001"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/TokenCNFT'
+        "500":
+          description: Internal Server Error
+  /collection/{contract_id}/tokens:
     get:
       tags:
         - Collection
@@ -1129,7 +1169,7 @@ paths:
                         - $ref: '#/components/schemas/TokenType'
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}/tokentypes/{token_type}:
+  /collection/{contract_id}/tokentypes/{token_type}:
     get:
       tags:
         - Collection
@@ -1168,11 +1208,10 @@ paths:
                     type: string
                     example: "100"
                   result:
-                    oneOf:
-                      - $ref: '#/components/schemas/TokenType'
+                    $ref: '#/components/schemas/TokenType'
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}/tokentypes:
+  /collection/{contract_id}/tokentypes:
     get:
       tags:
         - Collection
@@ -1206,12 +1245,10 @@ paths:
                   result:
                     type: array
                     items:
-                      oneOf:
-                        - $ref: '#/components/schemas/TokenCFT'
-                        - $ref: '#/components/schemas/TokenCNFT'
+                      $ref: '#/components/schemas/TokenType'
         "500":
           description: Internal Server Error
-  /collection/collections/{contract_id}:
+  /collection/{contract_id}/collection:
     get:
       tags:
         - Collection
@@ -1276,7 +1313,7 @@ paths:
                       $ref: '#/components/schemas/Collection'
         "500":
           description: Internal Server Error
-  /collection/parent/{contract_id}/{token_id}:
+  /collection/{contract_id}/nfts/{token_id}/parent:
     get:
       tags:
         - Collection
@@ -1311,7 +1348,7 @@ paths:
                     $ref: '#/components/schemas/TokenCNFT2'
         "500":
           description: Internal Server Error
-  /collection/root/{contract_id}/{token_id}:
+  /collection/{contract_id}/nfts/{token_id}/root:
     get:
       tags:
         - Collection
@@ -1346,7 +1383,7 @@ paths:
                     $ref: '#/components/schemas/TokenCNFT2'
         "500":
           description: Internal Server Error
-  /collection/children/{contract_id}/{token_id}:
+  /collection/{contract_id}/nfts/{token_id}/children:
     get:
       tags:
         - Collection
@@ -1383,7 +1420,7 @@ paths:
                       $ref: '#/components/schemas/TokenCNFT3'
         "500":
           description: Internal Server Error
-  /collection/approved/{contract_id}/{proxy}/{approver}:
+  /collection/{contract_id}/accounts/{address}/proxies/{approver}:
     get:
       tags:
         - Collection
@@ -1396,7 +1433,7 @@ paths:
           schema:
             type: string
           example: "678c146a"
-        - name: proxy
+        - name: address
           in: path
           description: approved proxy address in bech32 format
           required: true
