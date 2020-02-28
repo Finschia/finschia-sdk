@@ -15,4 +15,5 @@ func init() {
 // Register concrete types on codec
 func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgCreateAccount{}, "account/MsgCreateAccount", nil)
+	cdc.RegisterConcrete(MsgEmpty{}, "account/MsgEmpty", nil)
 }

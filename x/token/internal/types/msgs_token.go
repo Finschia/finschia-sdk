@@ -1,10 +1,9 @@
 package types
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/types"
+	"github.com/line/link/x/contract"
 )
 
 var _ sdk.Msg = (*MsgIssue)(nil)
@@ -13,18 +12,18 @@ type MsgIssue struct {
 	Owner    sdk.AccAddress `json:"owner"`
 	Name     string         `json:"name"`
 	Symbol   string         `json:"symbol"`
-	TokenURI string         `json:"token_uri"`
+	ImageURI string         `json:"image_uri"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
 	Decimals sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssue(owner sdk.AccAddress, name, symbol, tokenURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssue {
+func NewMsgIssue(owner sdk.AccAddress, name, symbol, imageURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssue {
 	return MsgIssue{
 		Owner:    owner,
 		Name:     name,
 		Symbol:   symbol,
-		TokenURI: tokenURI,
+		ImageURI: imageURI,
 		Amount:   amount,
 		Mintable: mintable,
 		Decimals: decimal,
@@ -37,45 +36,51 @@ func (msg MsgIssue) GetSignBytes() []byte         { return sdk.MustSortJSON(Modu
 func (msg MsgIssue) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 
 func (msg MsgIssue) ValidateBasic() sdk.Error {
-	if err := types.ValidateSymbolUserDefined(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, err.Error())
-	}
 	if len(msg.Name) == 0 {
 		return ErrInvalidTokenName(DefaultCodespace, msg.Name)
 	}
 	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
+		return sdk.ErrInvalidAddress("owner cannot be empty")
 	}
 
-	if msg.Amount.Equal(sdk.NewInt(1)) && msg.Decimals.Equal(sdk.NewInt(0)) && !msg.Mintable {
-		return ErrInvalidIssueFT(DefaultCodespace)
+	if !ValidateName(msg.Name) {
+		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
+	}
+
+	if err := types.ValidateTokenSymbol(msg.Symbol); err != nil {
+		return ErrInvalidTokenSymbol(DefaultCodespace, msg.Symbol)
+	}
+
+	if !ValidateImageURI(msg.ImageURI) {
+		return ErrInvalidImageURILength(DefaultCodespace, msg.ImageURI)
 	}
 
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
 		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
 	}
 
-	coin := sdk.NewCoin(msg.Symbol, msg.Amount)
-	if !coin.IsValid() {
-		return sdk.ErrInvalidCoins(coin.String())
+	if msg.Amount.IsNegative() {
+		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
 	}
 
 	return nil
 }
 
-var _ sdk.Msg = (*MsgMint)(nil)
+var _ contract.Msg = (*MsgMint)(nil)
 
 type MsgMint struct {
-	From   sdk.AccAddress `json:"from"`
-	To     sdk.AccAddress `json:"to"`
-	Amount sdk.Coins      `json:"amount"`
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     sdk.Int        `json:"amount"`
 }
 
-func NewMsgMint(from, to sdk.AccAddress, amount sdk.Coins) MsgMint {
+func NewMsgMint(from sdk.AccAddress, contractID string, to sdk.AccAddress, amount sdk.Int) MsgMint {
 	return MsgMint{
-		From:   from,
-		To:     to,
-		Amount: amount,
+		From:       from,
+		ContractID: contractID,
+		To:         to,
+		Amount:     amount,
 	}
 }
 func (MsgMint) Route() string                    { return RouterKey }
@@ -86,29 +91,37 @@ func (msg MsgMint) GetSignBytes() []byte {
 }
 
 func (msg MsgMint) ValidateBasic() sdk.Error {
-	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("amount is not valid")
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
+	if msg.Amount.IsNegative() {
+		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("from address cannot be empty")
+		return sdk.ErrInvalidAddress("from cannot be empty")
 	}
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("to address cannot be empty")
+		return sdk.ErrInvalidAddress("to cannot be empty")
 	}
 	return nil
 }
-
-var _ sdk.Msg = (*MsgBurn)(nil)
-
-type MsgBurn struct {
-	From   sdk.AccAddress `json:"from"`
-	Amount sdk.Coins      `json:"amount"`
+func (msg MsgMint) GetContractID() string {
+	return msg.ContractID
 }
 
-func NewMsgBurn(from sdk.AccAddress, amount sdk.Coins) MsgBurn {
+var _ contract.Msg = (*MsgBurn)(nil)
+
+type MsgBurn struct {
+	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
+	Amount     sdk.Int        `json:"amount"`
+}
+
+func NewMsgBurn(from sdk.AccAddress, contractID string, amount sdk.Int) MsgBurn {
 	return MsgBurn{
-		From:   from,
-		Amount: amount,
+		From:       from,
+		ContractID: contractID,
+		Amount:     amount,
 	}
 }
 func (MsgBurn) Route() string                    { return RouterKey }
@@ -119,57 +132,18 @@ func (msg MsgBurn) GetSignBytes() []byte {
 }
 
 func (msg MsgBurn) ValidateBasic() sdk.Error {
-	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("amount is not valid")
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("from address cannot be empty")
+		return sdk.ErrInvalidAddress("owner cannot be empty")
+	}
+	if msg.Amount.IsNegative() {
+		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
 	}
 	return nil
 }
 
-var _ sdk.Msg = (*MsgModifyTokenURI)(nil)
-
-type MsgModifyTokenURI struct {
-	Owner    sdk.AccAddress `json:"owner"`
-	Symbol   string         `json:"symbol"`
-	TokenURI string         `json:"token_uri"`
-	TokenID  string         `json:"token_id"`
-}
-
-func NewMsgModifyTokenURI(owner sdk.AccAddress, symbol, tokenURI, tokenID string) MsgModifyTokenURI {
-	return MsgModifyTokenURI{
-		Owner:    owner,
-		Symbol:   symbol,
-		TokenURI: tokenURI,
-		TokenID:  tokenID,
-	}
-}
-
-func (msg MsgModifyTokenURI) Route() string { return RouterKey }
-func (msg MsgModifyTokenURI) Type() string  { return "modify_token" }
-func (msg MsgModifyTokenURI) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
-}
-func (msg MsgModifyTokenURI) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
-
-func (msg MsgModifyTokenURI) ValidateBasic() sdk.Error {
-	if msg.Symbol == "" {
-		return sdk.ErrInvalidAddress("symbol cannot be empty")
-	}
-
-	if err := types.ValidateSymbol(msg.Symbol); err != nil {
-		return sdk.ErrInvalidAddress(fmt.Sprintf("invalid symbol pattern found %s", msg.Symbol))
-	}
-
-	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
-	}
-
-	if msg.TokenID != "" {
-		if err := types.ValidateTokenID(msg.TokenID); err != nil {
-			return sdk.ErrInvalidAddress(fmt.Sprintf("invalid tokenId pattern found %s", msg.TokenID))
-		}
-	}
-	return nil
+func (msg MsgBurn) GetContractID() string {
+	return msg.ContractID
 }

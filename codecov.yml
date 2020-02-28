@@ -17,7 +17,7 @@ coverage:
     project:
       default:
         # basic
-        target: 65
+        target: 70
         threshold: 1% # allow this much decrease on project
         base: auto
         # advanced
@@ -59,4 +59,5 @@ ignore:
   - "statik.go"
   - "root.go"
   - "x/**/module.go"
-  - "errors.go"
+  - "x/**/errors.go"
+  - "x/**/key.go"

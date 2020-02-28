@@ -2,9 +2,9 @@ package cli
 
 import (
 	"errors"
+	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/spf13/viper"
 
@@ -15,6 +15,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/line/link/client"
+
+	linktype "github.com/line/link/types"
 )
 
 var (
@@ -22,8 +24,6 @@ var (
 	flagDecimals    = "decimals"
 	flagMintable    = "mintable"
 	flagTokenURI    = "token-uri"
-	flagTokenType   = "token-type"
-	flagAAS         = "address-suffix"
 )
 
 const (
@@ -47,46 +47,22 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		BurnTxCmd(cdc),
 		GrantPermTxCmd(cdc),
 		RevokePermTxCmd(cdc),
-		ModifyTokenURICmd(cdc),
-		CreateCollectionTxCmd(cdc),
-		IssueCNFTTxCmd(cdc),
-		IssueCFTTxCmd(cdc),
-		MintCNFTTxCmd(cdc),
-		BurnCNFTTxCmd(cdc),
-		BurnCNFTFromTxCmd(cdc),
-		MintCFTTxCmd(cdc),
-		BurnCFTTxCmd(cdc),
-		BurnCFTFromTxCmd(cdc),
-		TransferCFTTxCmd(cdc),
-		TransferCNFTTxCmd(cdc),
-		TransferCFTFromTxCmd(cdc),
-		TransferCNFTFromTxCmd(cdc),
-		AttachTxCmd(cdc),
-		DetachTxCmd(cdc),
-		AttachFromTxCmd(cdc),
-		DetachFromTxCmd(cdc),
-		ApproveCollectionTxCmd(cdc),
-		DisapproveCollectionTxCmd(cdc),
+		ModifyTokenCmd(cdc),
 	)
 	return txCmd
 }
 
 func IssueTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "issue [from_key_or_address] [symbol] [name]",
+		Use:   "issue [from_key_or_address] [name] [symbol]",
 		Short: "Create and sign an issue token tx",
 		Long: `
 [Issue a token command]
-The token symbol is extended with AAS(Account Address Suffix)
-		symbol <- [symbol][AAS]
-To query or send the token, you should remember the extended symbol
-If you have a permission to issue a specific symbol, by set option '--address-suffix=false',
-If you want to issue a token for a symbol without the suffix, set option '--address-suffix=false'
-For that, you have to get the issue permission for the symbol
+To query or send the token, you should remember the contract id
 
 
 [Fungible Token]
-linkcli tx token issue [from_key_or_address] [symbol] [name]
+linkcli tx token issue [from_key_or_address] [name]
 --decimals=[decimals]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
@@ -98,21 +74,12 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
 			to := cliCtx.FromAddress
-			symbol := args[1]
-			name := args[2]
+			name := args[1]
+			symbol := args[2]
 			supply := viper.GetInt64(flagTotalSupply)
 			decimals := viper.GetInt64(flagDecimals)
 			mintable := viper.GetBool(flagMintable)
 			tokenURI := viper.GetString(flagTokenURI)
-			aas := viper.GetBool(flagAAS)
-
-			if aas {
-				symbol += to.String()[len(to.String())-linktype.AccAddrSuffixLen:]
-			}
-
-			if err := linktype.ValidateSymbolUserDefined(symbol); err != nil {
-				return err
-			}
 
 			if decimals < 0 || decimals > 18 {
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
@@ -126,14 +93,13 @@ linkcli tx token issue [from_key_or_address] [symbol] [name]
 	cmd.Flags().Int64(flagDecimals, DefaultDecimals, "set decimals")
 	cmd.Flags().Bool(flagMintable, false, "set mintable")
 	cmd.Flags().String(flagTokenURI, "", "set token-uri")
-	cmd.Flags().Bool(flagAAS, true, "attach address suffix to symbol")
 
 	return client.PostCommands(cmd)[0]
 }
 
 func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer [from_key_or_address] [to_address] [symbol] [amount]",
+		Use:   "transfer [from_key_or_address] [to_address] [contract_id] [amount]",
 		Short: "Create and sign a tx transferring non-reserved fungible tokens",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -150,7 +116,7 @@ func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
 				return types.ErrInvalidAmount(types.DefaultCodespace, args[3])
 			}
 
-			msg := types.NewMsgTransferFT(cliCtx.GetFromAddress(), to, args[2], amount)
+			msg := types.NewMsgTransfer(cliCtx.GetFromAddress(), to, args[2], amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -162,25 +128,27 @@ func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint [to_key_or_address] [to] [amount_with_denom]",
+		Use:   "mint [from_key_or_address] [contract_id] [to] [amount]",
 		Short: "Create and sign a mint token tx",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
-			to, err := sdk.AccAddressFromBech32(args[1])
+
+			contractID := args[1]
+
+			to, err := sdk.AccAddressFromBech32(args[2])
 			if err != nil {
 				return err
 			}
 
-			// parse coins trying to be sent
-			coins, err := sdk.ParseCoins(args[2])
+			amount, err := strconv.Atoi(args[3])
 			if err != nil {
 				return err
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgMint(cliCtx.GetFromAddress(), to, coins)
+			msg := types.NewMsgMint(cliCtx.GetFromAddress(), contractID, to, sdk.NewInt(int64(amount)))
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -190,21 +158,21 @@ func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "burn [from_key_or_address] [amount_with_denom]",
+		Use:   "burn [from_key_or_address] [contract_id] [amount]",
 		Short: "Create and sign a burn token tx",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			// parse coins trying to be sent
-			coins, err := sdk.ParseCoins(args[1])
-			if err != nil {
-				return err
+			contractID := args[1]
+			amount, ok := sdk.NewIntFromString(args[2])
+			if !ok {
+				return types.ErrInvalidAmount(types.DefaultCodespace, args[4])
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgBurn(cliCtx.GetFromAddress(), coins)
+			msg := types.NewMsgBurn(cliCtx.GetFromAddress(), contractID, amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -262,22 +230,27 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func ModifyTokenURICmd(cdc *codec.Codec) *cobra.Command {
+func ModifyTokenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "modify-token-uri [owner_address] [symbol] [token_uri] [token_id]",
-		Short: "Modify token_uri of token ",
-		Args:  cobra.RangeArgs(3, 4),
+		Use:   "modify [owner_address] [contract_id] [field] [new_value]",
+		Short: "Create and sign a modify token tx",
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
-			symbol := args[1]
-			tokenURI := args[2]
-			tokenID := ""
-			if len(args) > 3 {
-				tokenID = args[3]
-			}
+			contractID := args[1]
+			field := args[2]
+			newValue := args[3]
 
-			msg := types.NewMsgModifyTokenURI(cliCtx.FromAddress, symbol, tokenURI, tokenID)
+			msg := types.NewMsgModify(
+				cliCtx.FromAddress,
+				contractID,
+				linktype.NewChanges(linktype.NewChange(field, newValue)),
+			)
+			err := msg.ValidateBasic()
+			if err != nil {
+				return err
+			}
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

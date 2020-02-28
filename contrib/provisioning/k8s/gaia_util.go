@@ -115,7 +115,7 @@ func WriteFile(dir string, name string, contents []byte) error {
 	return nil
 }
 
-func writeGenTx(n *Node, addr types2.AccAddress, cdc *codec.Codec) error {
+func writeGenTx(n *Node, addr types2.AccAddress, cdc *codec.Codec) {
 	kb, err := keys.NewKeyBaseFromDir(n.cliBinDirNameFullPath())
 	if err != nil {
 		panic(err)
@@ -147,7 +147,6 @@ func writeGenTx(n *Node, addr types2.AccAddress, cdc *codec.Codec) error {
 		_ = os.RemoveAll(n.MetaData.ConfHomePath)
 		panic(err)
 	}
-	return nil
 }
 
 func buildGenesisAcc(nodeDirName string, addr types2.AccAddress) genaccounts.GenesisAccount {

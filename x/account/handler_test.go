@@ -90,3 +90,23 @@ func TestHandlerCreateAccount(t *testing.T) {
 		require.False(t, res.Code.IsOK())
 	}
 }
+
+func TestHandlerEmpty(t *testing.T) {
+	input := setupTestInput(t)
+	ctx, keeper := input.Ctx, input.Ak
+
+	h := NewHandler(keeper)
+
+	// message test
+	{
+		msg := types.MsgEmpty{From: addr1}
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+	}
+
+	// invalid message
+	{
+		msg := types.MsgEmpty{From: nil}
+		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("missing signer address").Error())
+	}
+}

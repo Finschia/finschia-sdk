@@ -6,7 +6,9 @@ import (
 	"github.com/line/link/client"
 	"github.com/line/link/x/token/client/cli"
 	"github.com/line/link/x/token/client/rest"
+	"github.com/line/link/x/token/internal/handler"
 	"github.com/line/link/x/token/internal/keeper"
+	"github.com/line/link/x/token/internal/querier"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -88,14 +90,14 @@ func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 func (AppModule) Route() string { return RouterKey }
 
 // module handler
-func (am AppModule) NewHandler() sdk.Handler { return NewHandler(am.keeper) }
+func (am AppModule) NewHandler() sdk.Handler { return handler.NewHandler(am.keeper) }
 
 // module querier route name
 func (AppModule) QuerierRoute() string { return RouterKey }
 
 // module querier
 func (am AppModule) NewQuerierHandler() sdk.Querier {
-	return keeper.NewQuerier(am.keeper)
+	return querier.NewQuerier(am.keeper)
 }
 
 // module init-genesis

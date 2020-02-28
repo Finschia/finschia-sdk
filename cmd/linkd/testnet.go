@@ -230,8 +230,6 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 			return err
 		}
 
-		// TODO: Rename config file to server.toml as it's not particular to Link
-		// (REF: https://github.com/cosmos/cosmos-sdk/issues/4125).
 		linkConfigFilePath := filepath.Join(nodeDir, "config/linkd.toml")
 		srvconfig.WriteConfigFile(linkConfigFilePath, linkConfig)
 	}

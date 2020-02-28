@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"unicode/utf8"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -9,153 +10,110 @@ import (
 const (
 	DefaultCodespace sdk.CodespaceType = ModuleName
 
-	//Token
+	// Token
 	CodeTokenExist       sdk.CodeType = 100
 	CodeTokenNotExist    sdk.CodeType = 101
 	CodeTokenNotMintable sdk.CodeType = 102
 
-	//Token invalidation
-	CodeTokenInvalidTokenName   sdk.CodeType = 200
-	CodeTokenInvalidTokenSymbol sdk.CodeType = 201
-	CodeTokenInvalidTokenID     sdk.CodeType = 202
-	CodeTokenInvalidDecimals    sdk.CodeType = 203
-	CodeTokenInvalidFT          sdk.CodeType = 204
-	CodeTokenInvalidAmount      sdk.CodeType = 205
+	// Token invalidation
+	CodeTokenInvalidTokenName      sdk.CodeType = 200
+	CodeTokenInvalidDecimals       sdk.CodeType = 201
+	CodeTokenInvalidAmount         sdk.CodeType = 202
+	CodeTokenInvalidImageURILength sdk.CodeType = 203
+	CodeTokenInvalidNameLength     sdk.CodeType = 204
+	CodeTokenInvalidSymbol         sdk.CodeType = 205
 
-	//Collection
-	CodeCollectionExist             sdk.CodeType = 300
-	CodeCollectionNotExist          sdk.CodeType = 301
-	CodeCollectionTokenTypeExist    sdk.CodeType = 302
-	CodeCollectionTokenTypeNotExist sdk.CodeType = 303
-	CodeCollectionTokenTypeFull     sdk.CodeType = 304
-	CodeCollectionTokenIndexFull    sdk.CodeType = 305
+	// Permission
+	CodePermission sdk.CodeType = 300
 
-	//Permission
-	CodeTokenPermission sdk.CodeType = 400
+	// Account
+	CodeAccountExist    sdk.CodeType = 400
+	CodeAccountNotExist sdk.CodeType = 401
 
-	// Composability
-	CodeTokenAlreadyAChild             sdk.CodeType = 500
-	CodeTokenNotAChild                 sdk.CodeType = 501
-	CodeTokenNotOwnedBy                sdk.CodeType = 502
-	CodeTokenChildNotTransferable      sdk.CodeType = 503
-	CodeTokenNotIDNF                   sdk.CodeType = 504
-	CodeTokenCannotAttachToItself      sdk.CodeType = 505
-	CodeTokenCannotAttachToADescendant sdk.CodeType = 506
+	// Bank
+	CodeInsufficientBalance sdk.CodeType = 500
+	CodeInvalidAmount       sdk.CodeType = 501
 
-	// Proxy
-	CodeTokenApproverProxySame sdk.CodeType = 601
-	CodeTokenNotApproved       sdk.CodeType = 602
-	CodeTokenAlreadyApproved   sdk.CodeType = 603
+	// Supply
+	CodeSupplyExist        sdk.CodeType = 600
+	CodeInsufficientSupply sdk.CodeType = 601
+
+	// Modify
+	CodeInvalidChangesFieldCount sdk.CodeType = 701
+	CodeEmptyChanges             sdk.CodeType = 702
+	CodeTokenInvalidChangesField sdk.CodeType = 703
 )
 
-func ErrTokenExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenExist, "token [%s] already exists", symbol)
+func ErrTokenExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenExist, "token [%s] already exists", contractID)
 }
 
-func ErrTokenNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotExist, "token [%s] does not exist", symbol)
+func ErrTokenNotExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotExist, "token [%s] does not exist", contractID)
 }
 
-func ErrTokenNotMintable(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotMintable, "token [%s] is not mintable", symbol)
+func ErrTokenNotMintable(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenNotMintable, "token [%s] is not mintable", contractID)
 }
 
 func ErrInvalidTokenName(codespace sdk.CodespaceType, name string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidTokenName, "token name [%s] should not be empty", name)
 }
 
-func ErrInvalidTokenSymbol(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenSymbol, msg)
-}
-
-func ErrInvalidTokenID(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenID, msg)
-}
-
 func ErrInvalidTokenDecimals(codespace sdk.CodespaceType, decimals sdk.Int) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidDecimals, "token decimals [%s] should be within the range in 0 ~ 18", decimals.String())
-}
-
-func ErrInvalidIssueFT(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidFT, "Issuing token with amount[1], decimals[0], mintable[false] prohibited. Issue nft token instead.")
 }
 
 func ErrInvalidAmount(codespace sdk.CodespaceType, amount string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidAmount, "invalid token amount [%s]", amount)
 }
 
-func ErrCollectionExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionExist, "collection [%s] already exists", symbol)
+func ErrInvalidChangesFieldCount(codespace sdk.CodespaceType, changesFieldCount int) sdk.Error {
+	return sdk.NewError(codespace, CodeInvalidChangesFieldCount,
+		"You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, changesFieldCount)
 }
 
-func ErrCollectionNotExist(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionNotExist, "collection [%s] does not exists", symbol)
+func ErrEmptyChanges(codespace sdk.CodespaceType) sdk.Error {
+	return sdk.NewError(codespace, CodeEmptyChanges, "changes is empty")
+}
+
+func ErrInvalidImageURILength(codespace sdk.CodespaceType, tokenURI string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidImageURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, MaxImageURILength, utf8.RuneCountInString(tokenURI))
+}
+
+func ErrInvalidTokenSymbol(codespace sdk.CodespaceType, symbol string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidSymbol, "invalid token symbol [%s]", symbol)
+}
+
+func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
+		"invalid name [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", name,
+		MaxTokenNameLength, utf8.RuneCountInString(name))
+}
+
+func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is invalid field of changes", field)
 }
 
 func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission fmt.Stringer) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenPermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
+	return sdk.NewError(codespace, CodePermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
+}
+func ErrAccountExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
+	return sdk.NewError(codespace, CodeAccountExist, "account [%s] already exists", acc.String())
 }
 
-func ErrCollectionTokenExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenExist, "token symbol[%s] token-id[%s] already exists", symbol, tokenID)
+func ErrAccountNotExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
+	return sdk.NewError(codespace, CodeAccountNotExist, "account [%s] does not exists", acc.String())
 }
 
-func ErrCollectionTokenNotExist(codespace sdk.CodespaceType, symbol, tokenID string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotExist, "token symbol[%s] token-id[%s] does not exist", symbol, tokenID)
+func ErrInsufficientBalance(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeInsufficientBalance, msg)
 }
 
-func ErrCollectionTokenTypeExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenTypeExist, "token type for symbol[%s] token-type[%s] already exists", symbol, tokenType)
+func ErrSupplyExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
+	return sdk.NewError(codespace, CodeSupplyExist, "supply for token [%s] already exists", contractID)
 }
 
-func ErrCollectionTokenTypeNotExist(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenTypeNotExist, "token type for symbol[%s] token-type[%s] does not exist", symbol, tokenType)
-}
-
-func ErrCollectionTokenTypeFull(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenTypeFull, "all token type for symbol[%s] are occupied", symbol)
-}
-
-func ErrCollectionTokenIndexFull(codespace sdk.CodespaceType, symbol, tokenType string) sdk.Error {
-	return sdk.NewError(codespace, CodeCollectionTokenIndexFull, "all token index for symbol[%s] token-type[%s] are occupied", symbol, tokenType)
-}
-
-func ErrTokenAlreadyAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenAlreadyAChild, "token [%s] is already a child of some other", denom)
-}
-
-func ErrTokenNotAChild(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotAChild, "token [%s] is not a child of some other", denom)
-}
-
-func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, denom string, owner fmt.Stringer) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is being not owned by [%s]", denom, owner.String())
-}
-
-func ErrTokenNotCNFT(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotIDNF, "token [%s] is not a CNFT", denom)
-}
-
-func ErrTokenCannotTransferChildToken(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenChildNotTransferable, "cannot transfer a child token [%s]", denom)
-}
-
-func ErrCannotAttachToItself(codespace sdk.CodespaceType, denom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenCannotAttachToItself, "cannot attach token [%s] to itself", denom)
-}
-
-func ErrCannotAttachToADescendant(codespace sdk.CodespaceType, tokenDenom string, descendantDenom string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenCannotAttachToADescendant, "cannot attach token [%s] to a descendant [%s]", tokenDenom, descendantDenom)
-}
-
-func ErrApproverProxySame(codespace sdk.CodespaceType, approver string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenApproverProxySame, "approver[%s] is same with proxy", approver)
-}
-
-func ErrCollectionNotApproved(codespace sdk.CodespaceType, proxy string, approver string, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotApproved, "proxy[%s] is not approved by %s on the collection[%s]", proxy, approver, symbol)
-}
-
-func ErrCollectionAlreadyApproved(codespace sdk.CodespaceType, proxy string, approver string, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenAlreadyApproved, "proxy[%s] is already approved by %s on the collection[%s]", proxy, approver, symbol)
+func ErrInsufficientSupply(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeInsufficientSupply, msg)
 }

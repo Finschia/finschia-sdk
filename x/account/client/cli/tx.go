@@ -22,6 +22,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	}
 	txCmd.AddCommand(
 		CreateAccountCmd(cdc),
+		EmptyCmd(cdc),
 	)
 	return txCmd
 }
@@ -32,6 +33,17 @@ func CreateAccountCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Create an account having target_address",
 		Args:  cobra.ExactArgs(2),
 		RunE:  makeCreateAccountCmd(cdc),
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func EmptyCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "empty [from_key_or_address]",
+		Short: "Do nothing",
+		Args:  cobra.ExactArgs(1),
+		RunE:  makeEmptyCmd(cdc),
 	}
 
 	return client.PostCommands(cmd)[0]
@@ -49,6 +61,16 @@ func makeCreateAccountCmd(cdc *codec.Codec) func(cmd *cobra.Command, args []stri
 
 		// build and sign the transaction, then broadcast to Tendermint
 		msg := types.NewMsgCreateAccount(cliCtx.GetFromAddress(), target)
+		return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+	}
+}
+
+func makeEmptyCmd(cdc *codec.Codec) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+		cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+
+		msg := types.NewMsgEmpty(cliCtx.GetFromAddress())
 		return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 	}
 }

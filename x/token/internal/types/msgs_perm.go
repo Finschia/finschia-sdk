@@ -2,7 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/types"
+	linktype "github.com/line/link/types"
 )
 
 var _ sdk.Msg = (*MsgGrantPermission)(nil)
@@ -38,7 +38,7 @@ func (msg MsgGrantPermission) ValidateBasic() sdk.Error {
 	}
 
 	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
-		return types.ErrInvalidPermission("resource and action should not be empty")
+		return linktype.ErrInvalidPermission("resource and action should not be empty")
 	}
 	return nil
 }
@@ -70,7 +70,7 @@ func (msg MsgRevokePermission) ValidateBasic() sdk.Error {
 	}
 
 	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
-		return types.ErrInvalidPermission("resource and action should not be empty")
+		return linktype.ErrInvalidPermission("resource and action should not be empty")
 	}
 	return nil
 }

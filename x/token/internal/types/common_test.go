@@ -6,13 +6,13 @@ import (
 )
 
 const (
-	defaultName      = "name"
-	defaultSymbol    = "linktkn"
-	defaultTokenURI  = "token-uri"
-	defaultDecimals  = 6
-	defaultTokenType = "a000"
+	defaultName       = "name"
+	defaultContractID = "linktkn"
+	defaultSymbol     = "BTC"
+	defaultImageURI   = "image-uri"
+	defaultDecimals   = 6
 )
 
 var (
-	defaultAddr = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr1 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 )

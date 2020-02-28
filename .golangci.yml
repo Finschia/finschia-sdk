@@ -24,10 +24,12 @@ linters:
     - stylecheck
     - typecheck
     - unconvert
+    - unparam
     - unused
     - varcheck
     - gocyclo
     - whitespace
+    - dupl
 
 issues:
   exclude-rules:

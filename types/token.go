@@ -1,115 +1,29 @@
 package types
 
-import (
-	"fmt"
-	"sort"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-)
-
-type CoinWithTokenID struct {
-	Symbol  string  `json:"symbol"`
-	TokenID string  `json:"token_id"`
-	Amount  sdk.Int `json:"amount"`
+type Change struct {
+	Field string `json:"field"`
+	Value string `json:"value"`
 }
 
-func NewCoinWithTokenID(symbol, tokenID string, amount sdk.Int) CoinWithTokenID {
-	if err := ValidateSymbolUserDefined(symbol); err != nil {
-		panic(err)
-	}
-
-	if err := ValidateTokenID(tokenID); err != nil {
-		panic(err)
-	}
-
-	return CoinWithTokenID{
-		Symbol:  symbol,
-		TokenID: tokenID,
-		Amount:  amount,
+func NewChange(field string, value string) Change {
+	return Change{
+		Field: field,
+		Value: value,
 	}
 }
 
-func (coin CoinWithTokenID) ToCoin() sdk.Coin {
-	return sdk.NewCoin(coin.GetDenom(), coin.Amount)
+type Changes []Change
+
+func NewChanges(changes ...Change) Changes {
+	return changes
 }
 
-func (coin CoinWithTokenID) GetDenom() string {
-	return fmt.Sprintf("%v%v", coin.Symbol, coin.TokenID)
-}
-
-func (coin CoinWithTokenID) String() string {
-	return fmt.Sprintf("%v%v%v", coin.Amount, coin.Symbol, coin.TokenID)
-}
-
-func (coin CoinWithTokenID) IsValid() bool {
-	if err := ValidateSymbolUserDefined(coin.Symbol); err != nil {
-		return false
+func NewChangesWithMap(changesMap map[string]string) Changes {
+	changes := make([]Change, len(changesMap))
+	idx := 0
+	for k, v := range changesMap {
+		changes[idx] = Change{Field: k, Value: v}
+		idx++
 	}
-
-	if err := ValidateTokenID(coin.TokenID); err != nil {
-		return false
-	}
-	return true
-}
-
-func (coin CoinWithTokenID) IsPositive() bool {
-	return coin.Amount.Sign() == 1
-}
-
-func (coin CoinWithTokenID) IsNegative() bool {
-	return coin.Amount.Sign() == -1
-}
-
-type CoinWithTokenIDs []CoinWithTokenID
-
-func NewCoinWithTokenIDs(coins ...CoinWithTokenID) CoinWithTokenIDs {
-	var newCoins = CoinWithTokenIDs(coins)
-	return newCoins.Sort()
-}
-
-func (coins CoinWithTokenIDs) ToCoins() sdk.Coins {
-	var sdkCoins sdk.Coins
-
-	for _, coin := range coins {
-		sdkCoins = append(sdkCoins, coin.ToCoin())
-	}
-
-	return sdkCoins
-}
-
-func (coins CoinWithTokenIDs) Len() int           { return len(coins) }
-func (coins CoinWithTokenIDs) Less(i, j int) bool { return coins[i].GetDenom() < coins[j].GetDenom() }
-func (coins CoinWithTokenIDs) Swap(i, j int)      { coins[i], coins[j] = coins[j], coins[i] }
-
-var _ sort.Interface = CoinWithTokenIDs{}
-
-func (coins CoinWithTokenIDs) Sort() CoinWithTokenIDs {
-	sort.Sort(coins)
-	return coins
-}
-
-func (coins CoinWithTokenIDs) IsValid() bool {
-	switch len(coins) {
-	case 0:
-		return true
-	case 1:
-		return coins[0].IsValid() && coins[0].IsPositive()
-	default:
-		lowDenom := coins[0].GetDenom()
-		for _, coin := range coins[1:] {
-			if !coin.IsValid() {
-				return false
-			}
-			if !coin.IsPositive() {
-				return false
-			}
-			if coin.GetDenom() <= lowDenom {
-				return false
-			}
-
-			lowDenom = coin.GetDenom()
-		}
-
-		return true
-	}
+	return NewChanges(changes...)
 }

@@ -55,9 +55,7 @@ func (n *Node) process(tmConfig *tmconfig.Config, cosConfig *srvconfig.Config, c
 		panic(err)
 	}
 	n.MetaData.Accs[n.Idx] = buildGenesisAcc(n.Name, addr)
-	if err := writeGenTx(n, addr, cdc); err != nil {
-		panic(err)
-	}
+	writeGenTx(n, addr, cdc)
 	srvconfig.WriteConfigFile(filepath.Join(n.linkdDirFullPath(), n.MetaData.ConfDirName)+"/app.toml", cosConfig)
 	return n
 }

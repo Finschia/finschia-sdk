@@ -6,16 +6,13 @@ import (
 )
 
 const (
-	QuerierRoute     = "token"
-	QueryTokens      = "tokens"
-	QueryPerms       = "perms"
-	QueryCollections = "collections"
-	QuerySupply      = "supply"
-	QueryNFTCount    = "nftcount"
-	QueryParent      = "parent"
-	QueryRoot        = "root"
-	QueryChildren    = "children"
-	QueryIsApproved  = "approved"
+	QuerierRoute = "token"
+	QueryTokens  = "tokens"
+	QueryPerms   = "perms"
+	QueryBalance = "balance"
+	QuerySupply  = "supply"
+	QueryMint    = "mint"
+	QueryBurn    = "burn"
 )
 
 type NodeQuerier interface {
@@ -23,21 +20,12 @@ type NodeQuerier interface {
 	WithHeight(height int64) client.CLIContext
 }
 
-type QuerySymbolParams struct {
-	Symbol string `json:"symbol"`
+type QueryContractIDParams struct {
+	ContractID string `json:"contract_id"`
 }
 
-func NewQuerySymbolParams(symbol string) QuerySymbolParams {
-	return QuerySymbolParams{Symbol: symbol}
-}
-
-type QuerySymbolTokenIDParams struct {
-	Symbol  string `json:"symbol"`
-	TokenID string `json:"token_id"`
-}
-
-func NewQuerySymbolTokenIDParams(symbol, tokenID string) QuerySymbolTokenIDParams {
-	return QuerySymbolTokenIDParams{Symbol: symbol, TokenID: tokenID}
+func NewQueryContractIDParams(contractID string) QueryContractIDParams {
+	return QueryContractIDParams{ContractID: contractID}
 }
 
 type QueryAccAddressParams struct {
@@ -48,16 +36,11 @@ func NewQueryAccAddressParams(addr sdk.AccAddress) QueryAccAddressParams {
 	return QueryAccAddressParams{Addr: addr}
 }
 
-type QueryIsApprovedParams struct {
-	Proxy    sdk.AccAddress `json:"proxy"`
-	Approver sdk.AccAddress `json:"approver"`
-	Symbol   string         `json:"symbol"`
+type QueryAccAddressContractIDParams struct {
+	Addr       sdk.AccAddress `json:"addr"`
+	ContractID string         `json:"contract_id"`
 }
 
-func NewQueryIsApprovedParams(proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) QueryIsApprovedParams {
-	return QueryIsApprovedParams{
-		Proxy:    proxy,
-		Approver: approver,
-		Symbol:   symbol,
-	}
+func NewQueryAccAddressContractIDParams(contractID string, addr sdk.AccAddress) QueryAccAddressContractIDParams {
+	return QueryAccAddressContractIDParams{Addr: addr, ContractID: contractID}
 }

@@ -153,8 +153,8 @@ run-swagger-server:
 	linkcli rest-server --trust-node=true
 
 setup-contract-test-data: build build-contract-test-hook yq
-	echo 'Prepare data for the contract tests' ; \
-	./contract_test/testdata/prepare_dredd.sh ; \
+	echo 'Prepare data for the contract tests'
+	./contract_test/testdata/prepare_dredd.sh
 	./contract_test/testdata/prepare_chain_state.sh
 
 start-link: setup-contract-test-data

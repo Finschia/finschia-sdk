@@ -7,7 +7,7 @@ import (
 
 // When a safety box is created, blacklist its address
 func (k Keeper) AfterSafetyBoxCreated(ctx sdk.Context, sbAddress sdk.AccAddress) {
-	k.BlacklistAccountAction(ctx, sbAddress, bank.ActionTransferTo)
+	k.SetBlackList(ctx, sbAddress, bank.ActionTransferTo)
 }
 
 //_________________________________________________________________________________________

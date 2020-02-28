@@ -1,6 +1,6 @@
 package types
 
-import "github.com/cosmos/cosmos-sdk/types"
+import sdk "github.com/cosmos/cosmos-sdk/types"
 
 const (
 	ModuleName = "token"
@@ -10,51 +10,26 @@ const (
 )
 
 var (
-	TokenDenomKeyPrefix            = []byte{0x00}
-	CollectionKeyPrefix            = []byte{0x01}
-	TokenTypeKeyPrefix             = []byte{0x02}
-	TokenChildToParentKeyPrefix    = []byte{0x03}
-	TokenParentToChildKeyPrefix    = []byte{0x04}
-	TokenParentToChildSubKeyPrefix = []byte{0x05}
-	BlacklistKeyPrefix             = []byte{0x06}
-	CollectionApprovedKeyPrefix    = []byte{0x07}
+	TokenKeyPrefix     = []byte{0x00}
+	BlacklistKeyPrefix = []byte{0x01}
+	AccountKeyPrefix   = []byte{0x02}
+	SupplyKeyPrefix    = []byte{0x03}
 )
 
-func BlacklistKey(addr types.AccAddress, action string) []byte {
+func BlacklistKey(addr sdk.AccAddress, action string) []byte {
 	key := append(BlacklistKeyPrefix, addr...)
 	key = append(key, []byte(":"+action)...)
 	return key
 }
 
-func TokenDenomKey(denom string) []byte {
-	return append(TokenDenomKeyPrefix, []byte(denom)...)
+func TokenKey(contractID string) []byte {
+	return append(TokenKeyPrefix, []byte(contractID)...)
 }
 
-func CollectionKey(denom string) []byte {
-	return append(CollectionKeyPrefix, []byte(denom)...)
+func AccountKey(contractID string, acc sdk.AccAddress) []byte {
+	return append(append(AccountKeyPrefix, []byte(contractID)...), acc...)
 }
 
-func TokenTypeKey(symbol, tokenType string) []byte {
-	key := append(TokenTypeKeyPrefix, []byte(symbol)...)
-	return append(key, []byte(tokenType)...)
-}
-
-func TokenChildToParentKey(token Token) []byte {
-	return append(TokenChildToParentKeyPrefix, []byte(token.GetDenom())...)
-}
-
-func TokenParentToChildKey(token Token) []byte {
-	return append(TokenParentToChildKeyPrefix, []byte(token.GetDenom())...)
-}
-
-func TokenParentToChildSubKey(token Token) []byte {
-	return append(TokenParentToChildSubKeyPrefix, []byte(token.GetDenom())...)
-}
-
-func ParentToChildSubKeyToToken(prefix []byte, key []byte) (tokenDenom string) {
-	return string(key[len(prefix)+1:])
-}
-
-func CollectionApprovedKey(proxy types.AccAddress, approver types.AccAddress, symbol string) []byte {
-	return append(append(append(CollectionApprovedKeyPrefix, proxy.Bytes()...), approver.Bytes()...), symbol...)
+func SupplyKey(contractID string) []byte {
+	return append(SupplyKeyPrefix, []byte(contractID)...)
 }

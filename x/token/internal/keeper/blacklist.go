@@ -5,7 +5,7 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) BlacklistAccountAction(ctx sdk.Context, addr sdk.AccAddress, action string) {
+func (k Keeper) SetBlackList(ctx sdk.Context, addr sdk.AccAddress, action string) {
 	store := ctx.KVStore(k.storeKey)
 
 	// value is just a key w/o the module prefix
@@ -13,7 +13,7 @@ func (k Keeper) BlacklistAccountAction(ctx sdk.Context, addr sdk.AccAddress, act
 	store.Set(types.BlacklistKey(addr, action), []byte(v))
 }
 
-func (k Keeper) IsBlacklistedAccountAction(ctx sdk.Context, addr sdk.AccAddress, action string) bool {
+func (k Keeper) IsBlacklisted(ctx sdk.Context, addr sdk.AccAddress, action string) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(types.BlacklistKey(addr, action))
 }

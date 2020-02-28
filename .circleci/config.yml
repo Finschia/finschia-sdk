@@ -139,7 +139,7 @@ jobs:
       - run: make lint
   unit_test:
     <<: *linux_defaults
-    parallelism: 2
+    parallelism: 1
     steps:
       - checkout
       - restore_cache:

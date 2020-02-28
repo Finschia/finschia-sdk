@@ -13,6 +13,7 @@ const (
 	safetyBoxID = "test_safety_box_id"
 )
 
+//nolint:dupl
 func TestSafetyBox(t *testing.T) {
 	input := SetupTestInput(t)
 	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak

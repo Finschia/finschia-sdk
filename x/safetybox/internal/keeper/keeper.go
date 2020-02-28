@@ -140,6 +140,7 @@ func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) s
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
+//nolint:dupl
 func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallCoins) sdk.Error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
@@ -214,6 +215,7 @@ func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) sdk.Err
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
+//nolint:dupl
 func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) sdk.Error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
