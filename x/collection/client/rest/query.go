@@ -23,6 +23,8 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_type}/count", QueryCountRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections/{symbol}/tokens/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections/{symbol}/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/tokentypes/{token_type}", QueryTokenTypeRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/collections/{symbol}/tokentypes", QueryTokenTypesRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections/{symbol}", QueryCollectionRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/collections", QuerCollectionsRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/parent/{symbol}/{token_id}", QueryParentRequestHandlerFn(cliCtx)).Methods("GET")
@@ -61,6 +63,57 @@ func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, supply)
+	}
+}
+
+func QueryTokenTypeRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+		tokenTypeID := vars["token_type"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		tokenType, height, err := retriever.GetTokenType(cliCtx, symbol, tokenTypeID)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, tokenType)
+	}
+}
+
+func QueryTokenTypesRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		symbol := vars["symbol"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		tokenTypes, height, err := retriever.GetTokenTypes(cliCtx, symbol)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, tokenTypes)
 	}
 }
 

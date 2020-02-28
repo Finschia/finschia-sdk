@@ -23,6 +23,8 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		GetBalanceCmd(cdc),
 		GetTokenCmd(cdc),
 		GetTokensCmd(cdc),
+		GetTokenTypeCmd(cdc),
+		GetTokenTypesCmd(cdc),
 		GetCollectionCmd(cdc),
 		GetCollectionsCmd(cdc),
 		GetTokenTotalCmd(cdc),
@@ -110,6 +112,55 @@ func GetCollectionsCmd(cdc *codec.Codec) *cobra.Command {
 
 	return client.GetCommands(cmd)[0]
 }
+func GetTokenTypeCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "tokentype [symbol] [token-type]",
+		Short: "Query collection token-type with collection symbol and token-type",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			retriever := clienttypes.NewRetriever(cliCtx)
+
+			symbol := args[0]
+			tokenTypeID := args[1]
+			tokenType, height, err := retriever.GetTokenType(cliCtx, symbol, tokenTypeID)
+			if err != nil {
+				return err
+			}
+
+			cliCtx = cliCtx.WithHeight(height)
+
+			return cliCtx.PrintOutput(tokenType)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
+}
+
+func GetTokenTypesCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "tokentypes [symbol]",
+		Short: "Query all collection token-types with collection symbol",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			retriever := clienttypes.NewRetriever(cliCtx)
+
+			symbol := args[0]
+
+			tokenTypes, height, err := retriever.GetTokenTypes(cliCtx, symbol)
+			if err != nil {
+				return err
+			}
+
+			cliCtx = cliCtx.WithHeight(height)
+			return cliCtx.PrintOutput(tokenTypes)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
+}
+
 func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "token [symbol] [token-id]",

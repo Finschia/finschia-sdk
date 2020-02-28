@@ -105,3 +105,13 @@ func (t BaseFT) String() string {
 	}
 	return string(b)
 }
+
+type Tokens []Token
+
+func (ts Tokens) String() string {
+	b, err := json.Marshal(ts)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}

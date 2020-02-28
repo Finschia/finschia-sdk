@@ -792,7 +792,6 @@ paths:
                   result:
                     oneOf:
                       - $ref: '#/components/schemas/TokenFT'
-                      - $ref: '#/components/schemas/TokenNFT'
         "500":
           description: Internal Server Error
   /token/tokens:
@@ -824,7 +823,6 @@ paths:
                     items:
                       oneOf:
                         - $ref: '#/components/schemas/TokenFT'
-                        - $ref: '#/components/schemas/TokenNFT'
         "500":
           description: Internal Server Error
   /collection/collections/{symbol}/balances/{address}/{token_id}:
@@ -1094,6 +1092,87 @@ paths:
         "500":
           description: Internal Server Error
   /collection/collections/{symbol}/tokens:
+    get:
+      tags:
+        - Collection
+      summary: Get all collection tokens
+      parameters:
+        - name: symbol
+          in: path
+          description: symbol for the collection
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/TokenType'
+        "500":
+          description: Internal Server Error
+  /collection/collections/{symbol}/tokentypes/{token_type}:
+    get:
+      tags:
+        - Collection
+      summary: Get the collection token details
+      parameters:
+        - name: symbol
+          in: path
+          description: symbol for the collection
+          required: true
+          schema:
+            type: string
+          example: "con2xxv"
+        - name: token_type
+          in: path
+          description: token type
+          required: true
+          schema:
+            type: string
+          example: "10000001"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    oneOf:
+                      - $ref: '#/components/schemas/TokenType'
+        "500":
+          description: Internal Server Error
+  /collection/collections/{symbol}/tokentypes:
     get:
       tags:
         - Collection
@@ -2015,7 +2094,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/FT"
+          example: "token/Token"
         value:
           type: object
           properties:
@@ -2031,29 +2110,30 @@ components:
             decimals:
               type: string
               example: "8"
-    TokenNFT:
+    TokenType:
       type: object
       properties:
         type:
           type: string
-          example: "link/NFT"
+          example: "collection/TokenType"
         value:
           type: object
           properties:
-            owner:
-              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "cony"
             symbol:
               type: string
-              example: "conyxxv"
+              example: "con2xxv"
+            token_type:
+              type: string
+              example: "10000001"
     TokenCFT:
       type: object
       properties:
         type:
           type: string
-          example: "link/CFT"
+          example: "collection/FT"
         value:
           type: object
           properties:
@@ -2077,7 +2157,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/CNFT"
+          example: "collection/NFT"
         value:
           type: object
           properties:
@@ -2097,7 +2177,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/CNFT"
+          example: "collection/NFT"
         value:
           type: object
           properties:
@@ -2117,7 +2197,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/CNFT"
+          example: "collection/NFT"
         value:
           type: object
           properties:
@@ -2137,7 +2217,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/CNFT"
+          example: "collection/NFT"
         value:
           type: object
           properties:
@@ -2157,7 +2237,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/Collection"
+          example: "collection/Collection"
         value:
           type: object
           properties:

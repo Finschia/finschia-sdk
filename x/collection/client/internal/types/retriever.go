@@ -167,6 +167,42 @@ func (r Retriever) GetTokens(ctx context.CLIContext, symbol string) (types.Token
 	return tokens, height, nil
 }
 
+func (r Retriever) GetTokenType(ctx context.CLIContext, symbol, tokenTypeID string) (types.TokenType, int64, error) {
+	var tokenType types.TokenType
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolTokenIDParams(symbol, tokenTypeID))
+	if err != nil {
+		return tokenType, 0, err
+	}
+
+	res, height, err := r.query(types.QueryTokenTypes, bs)
+	if err != nil {
+		return tokenType, height, err
+	}
+
+	if err := ctx.Codec.UnmarshalJSON(res, &tokenType); err != nil {
+		return tokenType, height, err
+	}
+	return tokenType, height, nil
+}
+
+func (r Retriever) GetTokenTypes(ctx context.CLIContext, symbol string) (types.TokenTypes, int64, error) {
+	var tokenTypes types.TokenTypes
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQuerySymbolParams(symbol))
+	if err != nil {
+		return tokenTypes, 0, err
+	}
+
+	res, height, err := r.query(types.QueryTokenTypes, bs)
+	if err != nil {
+		return tokenTypes, height, err
+	}
+
+	if err := ctx.Codec.UnmarshalJSON(res, &tokenTypes); err != nil {
+		return tokenTypes, height, err
+	}
+	return tokenTypes, height, nil
+}
+
 func (r Retriever) IsApproved(ctx context.CLIContext, proxy sdk.AccAddress, approver sdk.AccAddress, symbol string) (approved bool, height int64, err error) {
 	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryIsApprovedParams(proxy, approver, symbol))
 	if err != nil {

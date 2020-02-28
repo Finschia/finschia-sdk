@@ -8,6 +8,7 @@ import (
 
 type TokenTypeKeeper interface {
 	GetNextTokenType(ctx sdk.Context, symbol string) (tokenType string, err sdk.Error)
+	GetTokenTypes(ctx sdk.Context, symbol string) (types.TokenTypes, sdk.Error)
 	GetTokenType(ctx sdk.Context, symbol, tokenType string) (types.TokenType, sdk.Error)
 	HasTokenType(ctx sdk.Context, symbol, tokenType string) bool
 	SetTokenType(ctx sdk.Context, symbol string, token types.TokenType) sdk.Error
@@ -51,6 +52,18 @@ func (k Keeper) GetTokenType(ctx sdk.Context, symbol string, tokenTypeID string)
 	}
 	tokenType := k.mustDecodeTokenType(bz)
 	return tokenType, nil
+}
+
+func (k Keeper) GetTokenTypes(ctx sdk.Context, symbol string) (tokenTypes types.TokenTypes, err sdk.Error) {
+	_, err = k.GetCollection(ctx, symbol)
+	if err != nil {
+		return nil, err
+	}
+	k.iterateTokenTypes(ctx, symbol, "", false, func(t types.TokenType) bool {
+		tokenTypes = append(tokenTypes, t)
+		return false
+	})
+	return tokenTypes, nil
 }
 
 func (k Keeper) HasTokenType(ctx sdk.Context, symbol, tokenType string) bool {

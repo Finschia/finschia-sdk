@@ -88,6 +88,14 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 		require.NoError(t, keeper.SetTokenType(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType2, defaultName)))
 		require.NoError(t, keeper.SetTokenType(ctx, defaultSymbol, types.NewBaseTokenType(defaultSymbol, defaultTokenType3, defaultName)))
 	}
+	t.Log("Get TokenTypes")
+	{
+		tokenTypes, err := keeper.GetTokenTypes(ctx, defaultSymbol)
+		require.NoError(t, err)
+		require.Equal(t, tokenTypes[0].GetTokenType(), defaultTokenType)
+		require.Equal(t, tokenTypes[1].GetTokenType(), defaultTokenType2)
+		require.Equal(t, tokenTypes[2].GetTokenType(), defaultTokenType3)
+	}
 	t.Log("Get Next Token Type")
 	{
 		tokenType, err := keeper.GetNextTokenType(ctx, defaultSymbol)

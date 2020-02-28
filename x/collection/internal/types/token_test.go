@@ -27,6 +27,8 @@ func TestUnmarshalFT(t *testing.T) {
 	r.Equal(defaultTokenIDFT[TokenTypeLength:], token.GetTokenIndex(), token2.GetTokenIndex())
 	r.Equal(int64(defaultDecimals), token.GetDecimals().Int64(), token2.GetDecimals().Int64())
 	r.Equal(true, token.GetMintable(), token2.GetMintable())
+
+	r.Equal(`{"symbol":"token001","token_id":"0000000100000000","decimals":"6","mintable":true,"name":"name"}`, token.String())
 }
 
 func TestUnmarshalNFT(t *testing.T) {

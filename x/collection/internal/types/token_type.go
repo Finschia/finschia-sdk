@@ -51,3 +51,13 @@ func (t BaseTokenType) String() string {
 	}
 	return string(b)
 }
+
+type TokenTypes []TokenType
+
+func (ts TokenTypes) String() string {
+	b, err := json.Marshal(ts)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
