@@ -13,7 +13,7 @@
 type MsgIssue struct {
 	Owner    sdk.AccAddress `json:"owner"`
 	Name     string         `json:"name"`
-    Symbol   string         `json:"symbol"`
+	Symbol   string         `json:"symbol"`
 	ImageURI string         `json:"image_uri"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
@@ -31,9 +31,9 @@ type MsgIssue struct {
 ```golang
 type MsgMint struct {
 	From       sdk.AccAddress `json:"from"`
-    ContractID string         `json:"contract_id"`     
+	ContractID string         `json:"contract_id"`     
 	To         sdk.AccAddress `json:"to"`
-	Amount     sdk.Coins      `json:"amount"`
+	Amount     sdk.Int        `json:"amount"`
 }
 ```
 
@@ -47,8 +47,8 @@ type MsgMint struct {
 ```golang
 type MsgBurn struct {
 	From       sdk.AccAddress `json:"from"`
-    ContractID string         `json:"contract_id"`   
-	Amount     sdk.Coins      `json:"amount"`
+	ContractID string         `json:"contract_id"`   
+	Amount     sdk.Int        `json:"amount"`
 }
 ```
 
