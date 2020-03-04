@@ -559,6 +559,11 @@ func (f *Fixtures) TxTokenModify(owner, contractID, field, newValue string, flag
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
+func (f *Fixtures) TxTokenTransfer(from string, to sdk.AccAddress, symbol string, amount int64, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token transfer %s %s %s %d %v", f.LinkcliBinary, from, to, symbol, amount, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
 //___________________________________________________________________________________
 // linkcli tx collection
 

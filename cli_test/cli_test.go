@@ -2295,6 +2295,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	fooAddr := f.KeyAddress(keyFoo)
+	barAddr := f.KeyAddress(keyBar)
 
 	// Issue Token.
 	{
@@ -2365,6 +2366,24 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		require.Equal(t, 0, len(pms))
 		pms = f.QueryAccountPermission(f.KeyAddress(keyBar), contractID2)
 		require.Equal(t, 0, len(pms))
+	}
+
+	// Transfer Token
+	{
+		f.TxTokenTransfer(keyFoo, barAddr, contractID1, amount/2, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		balance := f.QueryBalanceToken(contractID1, barAddr)
+		require.Equal(t, int64(amount/2), balance.Int64())
+
+		const keyMarshall = "marshall"
+		f.KeysDelete(keyMarshall)
+		f.KeysAdd(keyMarshall)
+		marshallAddr := f.KeyAddress(keyMarshall)
+		f.TxTokenTransfer(keyBar, marshallAddr, contractID1, amount/4, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		tinaAccount := f.QueryAccount(marshallAddr)
+		require.Equal(t, marshallAddr.String(), tinaAccount.Address.String())
 	}
 
 	f.Cleanup()

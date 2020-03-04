@@ -153,8 +153,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	)
 
 	contractKeeper := contract.NewContractKeeper(cdc, keys[contract.StoreKey])
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(token.ModuleName), contractKeeper, keys[token.StoreKey])
-	app.collectionKeeper = collection.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(collection.ModuleName), contractKeeper, keys[collection.StoreKey])
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.accountKeeper, app.iamKeeper.WithPrefix(token.ModuleName), contractKeeper, keys[token.StoreKey])
+	app.collectionKeeper = collection.NewKeeper(app.cdc, app.accountKeeper, app.iamKeeper.WithPrefix(collection.ModuleName), contractKeeper, keys[collection.StoreKey])
 
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.

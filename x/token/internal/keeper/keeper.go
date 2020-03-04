@@ -11,14 +11,16 @@ import (
 )
 
 type Keeper struct {
+	accountKeeper  types.AccountKeeper
 	iamKeeper      types.IamKeeper
 	storeKey       sdk.StoreKey
 	contractKeeper contract.Keeper
 	cdc            *codec.Codec
 }
 
-func NewKeeper(cdc *codec.Codec, iamKeeper types.IamKeeper, contractKeeper contract.Keeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(cdc *codec.Codec, accountKeeper types.AccountKeeper, iamKeeper types.IamKeeper, contractKeeper contract.Keeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
+		accountKeeper:  accountKeeper,
 		iamKeeper:      iamKeeper.WithPrefix(types.ModuleName),
 		storeKey:       storeKey,
 		contractKeeper: contractKeeper,
