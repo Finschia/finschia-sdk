@@ -23,6 +23,7 @@ const (
 var (
 	addr1 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	addr2 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr3 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 )
 
 var (

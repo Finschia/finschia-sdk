@@ -142,7 +142,7 @@ func TestBurnNFTFromFailure1(t *testing.T) {
 
 	// test burnNFTFrom, burnFTFrom fail
 	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID1, addr2).Error())
-	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String())).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String())).Error())
 }
 
 func TestBurnNFTFromFailure2(t *testing.T) {

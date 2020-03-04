@@ -31,6 +31,7 @@ func TestCoin(t *testing.T) {
 	require.Panics(t, func() { NewCoin(strings.ToUpper(testDenomA), sdk.NewInt(10)) })
 	require.Equal(t, sdk.NewInt(5), NewInt64Coin(testDenom1, 5).Amount)
 	require.Equal(t, sdk.NewInt(5), NewCoin(testDenom1, sdk.NewInt(5)).Amount)
+	require.Equal(t, OneCoins(testDenom1)[0].Amount.Int64(), int64(1))
 }
 
 func TestIsEqualCoin(t *testing.T) {

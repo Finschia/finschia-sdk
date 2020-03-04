@@ -115,6 +115,9 @@ func TestKeeper_SendToken(t *testing.T) {
 	{
 		require.NoError(t, keeper.Send(ctx, defaultContractID, addr1, addr2, sdk.NewInt(defaultAmount)))
 	}
+	{
+		require.EqualError(t, keeper.Send(ctx, defaultContractID, addr3, addr2, sdk.NewInt(1)), types.ErrInsufficientBalance(types.DefaultCodespace, "insufficient account funds for token [9be17165]; 0 < 1").Error())
+	}
 	t.Log("Get Balance")
 	{
 		require.Equal(t, sdk.ZeroInt().Int64(), keeper.GetBalance(ctx, defaultContractID, addr1).Int64())

@@ -11,9 +11,10 @@ const (
 	DefaultCodespace sdk.CodespaceType = ModuleName
 
 	//Token
-	CodeTokenExist       sdk.CodeType = 100
-	CodeTokenNotExist    sdk.CodeType = 101
-	CodeTokenNotMintable sdk.CodeType = 102
+	CodeTokenExist        sdk.CodeType = 100
+	CodeTokenNotExist     sdk.CodeType = 101
+	CodeTokenNotMintable  sdk.CodeType = 102
+	CodeTokenInsufficient sdk.CodeType = 103
 
 	//Token invalidation
 	CodeTokenInvalidTokenName        sdk.CodeType = 200
@@ -222,4 +223,8 @@ func ErrInsufficientSupply(codespace sdk.CodespaceType, msg string) sdk.Error {
 
 func ErrInvalidCoin(codespace sdk.CodespaceType, msg string) sdk.Error {
 	return sdk.NewError(codespace, CodeInvalidCoin, msg)
+}
+
+func ErrInsufficientToken(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInsufficient, msg)
 }

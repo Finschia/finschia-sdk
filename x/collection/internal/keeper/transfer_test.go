@@ -25,7 +25,7 @@ func TestTransferFTScenario(t *testing.T) {
 	// transfer failure cases
 	//
 	// Insufficient coins
-	require.EqualError(t, keeper.TransferFT(ctx, defaultContractID, addr1, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))), sdk.ErrInsufficientCoins("insufficient account funds; 500:0000000100000000 < 1000:0000000100000000").Error())
+	require.EqualError(t, keeper.TransferFT(ctx, defaultContractID, addr1, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))), types.ErrInsufficientToken(types.DefaultCodespace, "insufficient account funds[abcdef01]; 500:0000000100000000 < 1000:0000000100000000").Error())
 }
 
 func TestTransferNFTScenario(t *testing.T) {
