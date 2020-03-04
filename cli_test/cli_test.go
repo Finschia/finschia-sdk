@@ -2343,21 +2343,27 @@ func TestLinkCLITokenIssue(t *testing.T) {
 
 	// Query permissions for foo account
 	{
-		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo))
-		require.Equal(t, 4, len(pms))
+		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo), contractID1)
+		require.Equal(t, 1, len(pms))
 		require.Equal(t, contractID1, pms[0].GetResource())
 		require.Equal(t, "modify", pms[0].GetAction())
+	}
+	{
+		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo), contractID2)
+		require.Equal(t, 3, len(pms))
+		require.Equal(t, contractID2, pms[0].GetResource())
+		require.Equal(t, "modify", pms[0].GetAction())
 		require.Equal(t, contractID2, pms[1].GetResource())
-		require.Equal(t, "modify", pms[1].GetAction())
+		require.Equal(t, "mint", pms[1].GetAction())
 		require.Equal(t, contractID2, pms[2].GetResource())
-		require.Equal(t, "mint", pms[2].GetAction())
-		require.Equal(t, contractID2, pms[3].GetResource())
-		require.Equal(t, "burn", pms[3].GetAction())
+		require.Equal(t, "burn", pms[2].GetAction())
 	}
 
 	// Query permissions for bar account
 	{
-		pms := f.QueryAccountPermission(f.KeyAddress(keyBar))
+		pms := f.QueryAccountPermission(f.KeyAddress(keyBar), contractID1)
+		require.Equal(t, 0, len(pms))
+		pms = f.QueryAccountPermission(f.KeyAddress(keyBar), contractID2)
 		require.Equal(t, 0, len(pms))
 	}
 

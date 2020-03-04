@@ -1076,8 +1076,8 @@ func (f *Fixtures) QueryBurnToken(contractID string, flags ...string) sdk.Int {
 	return supply
 }
 
-func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, flags ...string) tokenModule.Permissions {
-	cmd := fmt.Sprintf("%s query token perm %s %s", f.LinkcliBinary, addr, f.Flags())
+func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, contractID string, flags ...string) tokenModule.Permissions {
+	cmd := fmt.Sprintf("%s query token perm %s %s %s", f.LinkcliBinary, addr, contractID, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
