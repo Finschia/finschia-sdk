@@ -20,6 +20,10 @@ func (k Keeper) NewContractID(ctx sdk.Context) string {
 	return k.contractKeeper.NewContractID(ctx)
 }
 
+func (k Keeper) HasContractID(ctx sdk.Context, contractID string) bool {
+	return k.contractKeeper.HasContractID(ctx, contractID)
+}
+
 func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) sdk.Error {
 	err := k.SetCollection(ctx, collection)
 	if err != nil {

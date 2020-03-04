@@ -32,8 +32,8 @@ func TestHandleMsgModify(t *testing.T) {
 
 		// Then response is error
 		require.False(t, res.Code.IsOK())
-		require.Equal(t, types.DefaultCodespace, res.Codespace)
-		require.Equal(t, types.CodeTokenNotExist, res.Code)
+		require.Equal(t, contract.ContractCodeSpace, res.Codespace)
+		require.Equal(t, contract.CodeContractNotExist, res.Code)
 		verifyEventFunc(t, nil, res.Events)
 	}
 

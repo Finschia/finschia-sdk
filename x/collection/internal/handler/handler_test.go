@@ -40,6 +40,7 @@ var verifyEventFunc = func(t *testing.T, expected sdk.Events, actual sdk.Events)
 }
 
 const (
+	defaultContractID = "9be17165"
 	defaultName       = "name"
 	defaultImgURI     = "img-uri"
 	defaultDecimals   = 6

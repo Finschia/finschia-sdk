@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -20,7 +21,7 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 	var contractID string
 
 	// Given MsgModify
-	msg := types.NewMsgModify(addr1, "abcd1234", "", "", linktype.NewChanges(
+	msg := types.NewMsgModify(addr1, defaultContractID, "", "", linktype.NewChanges(
 		linktype.NewChange("name", modifiedName),
 		linktype.NewChange("base_img_uri", modifiedImgURI),
 	))
@@ -32,8 +33,8 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 
 		// Then response is error
 		require.False(t, res.Code.IsOK())
-		require.Equal(t, types.DefaultCodespace, res.Codespace)
-		require.Equal(t, types.CodeCollectionNotExist, res.Code)
+		require.Equal(t, contract.ContractCodeSpace, res.Codespace)
+		require.Equal(t, contract.CodeContractNotExist, res.Code)
 		verifyEventFunc(t, nil, res.Events)
 	}
 

@@ -29,6 +29,9 @@ func NewKeeper(cdc *codec.Codec, iamKeeper types.IamKeeper, contractKeeper contr
 func (k Keeper) NewContractID(ctx sdk.Context) string {
 	return k.contractKeeper.NewContractID(ctx)
 }
+func (k Keeper) HasContractID(ctx sdk.Context, contractID string) bool {
+	return k.contractKeeper.HasContractID(ctx, contractID)
+}
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
