@@ -66,6 +66,7 @@ const (
 	CodeEmptyChanges             sdk.CodeType = 902
 	CodeTokenInvalidChangesField sdk.CodeType = 903
 	CodeTokenIndexWithoutType    sdk.CodeType = 904
+	CodeTokenTypeFTWithoutIndex  sdk.CodeType = 905
 )
 
 func ErrTokenNotMintable(codespace sdk.CodespaceType, contractID, tokenID string) sdk.Error {
@@ -127,6 +128,11 @@ func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error
 
 func ErrTokenIndexWithoutType(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenIndexWithoutType, "There is a token index but no token type")
+}
+
+func ErrTokenTypeFTWithoutIndex(codespace sdk.CodespaceType, tokenTypeFT string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenTypeFTWithoutIndex, "There is a token type of ft [%s] but no token index",
+		tokenTypeFT)
 }
 
 func ErrCollectionExist(codespace sdk.CodespaceType, contractID string) sdk.Error {

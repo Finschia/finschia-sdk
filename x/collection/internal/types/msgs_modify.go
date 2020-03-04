@@ -43,8 +43,13 @@ func (msg MsgModify) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
 
-	if msg.TokenType != "" && linktype.ValidateTokenTypeNFT(msg.TokenType) != nil {
-		return ErrInvalidTokenType(DefaultCodespace, msg.TokenType)
+	if msg.TokenType != "" {
+		if err := linktype.ValidateTokenType(msg.TokenType); err != nil {
+			return ErrInvalidTokenType(DefaultCodespace, msg.TokenType)
+		}
+		if linktype.ValidateTokenTypeFT(msg.TokenType) == nil && msg.TokenIndex == "" {
+			return ErrTokenTypeFTWithoutIndex(DefaultCodespace, msg.TokenType)
+		}
 	}
 	if msg.TokenIndex != "" && linktype.ValidateTokenIndex(msg.TokenIndex) != nil {
 		return ErrInvalidTokenIndex(DefaultCodespace, msg.TokenIndex)

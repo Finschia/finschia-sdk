@@ -88,8 +88,13 @@ func TestModifyCollection(t *testing.T) {
 		tokenType    = "10000001"
 		tokenIndex   = "00000001"
 		tokenID      = tokenType + tokenIndex
+		tokenTypeFT  = "00000001"
+		tokenIndexFT = "00000000"
+		tokenIDFT    = tokenTypeFT + tokenIndexFT
 		firstName    = "itisbrown"
 		firstBaseURI = "uri:itisbrown"
+		amount       = 10000
+		decimals     = 6
 	)
 
 	fooAddr := f.KeyAddress(keyFoo)
@@ -97,9 +102,13 @@ func TestModifyCollection(t *testing.T) {
 	// Given user
 	sendTokens := sdk.TokensFromConsensusPower(1)
 	f.LogResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
-	// And collection and NFT
+	// And collection
 	f.TxTokenCreateCollection(keyFoo, firstName, firstBaseURI, "-y")
 	tests.WaitForNextNBlocksTM(1, f.Port)
+	// And FT
+	f.LogResult(f.TxTokenIssueFTCollection(keyFoo, contractID, firstName, amount, decimals, true, "-y"))
+	tests.WaitForNextNBlocksTM(1, f.Port)
+	// And NFT
 	f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, contractID, firstName, "-y"))
 	tests.WaitForNextNBlocksTM(1, f.Port)
 	f.LogResult(f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), firstName, tokenType, "-y"))
@@ -127,7 +136,7 @@ func TestModifyCollection(t *testing.T) {
 		// Then the name is modified
 		require.Equal(t, modifiedName, f.QueryTokenTypeCollection(contractID, tokenType).GetName())
 	}
-	t.Log("Modify token")
+	t.Log("Modify nft token")
 	{
 		// When modify token name
 		modifiedName := firstName + "modified"
@@ -136,6 +145,16 @@ func TestModifyCollection(t *testing.T) {
 
 		// Then the name is modified
 		require.Equal(t, modifiedName, f.QueryTokenCollection(contractID, tokenID).(collectionmodule.NFT).GetName())
+	}
+	t.Log("Modify ft token")
+	{
+		// When modify token name
+		modifiedName := firstName + "modified"
+		f.LogResult(f.TxCollectionModify(keyFoo, contractID, tokenTypeFT, tokenIndexFT, "name", modifiedName, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// Then the name is modified
+		require.Equal(t, modifiedName, f.QueryTokenCollection(contractID, tokenIDFT).(collectionmodule.FT).GetName())
 	}
 	f.Cleanup()
 }
