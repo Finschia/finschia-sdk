@@ -7,20 +7,20 @@ import (
 
 const (
 	/* #nosec */
-	reTokenIDString = `[a-z0-9]{16}`
-	/* #nosec */
 	reSymbolStringReserved = `[a-z][a-z0-9]{2,4}`
 	/* #nosec */
 	reUserTokenSymbolString = `[a-zA-Z0-9]{3,20}`
 
 	/* #nosec */
-	reTokenTypeString = `[a-z0-9]{8}`
+	reTokenIDString = `[a-f0-9]{16}`
 	/* #nosec */
-	reTokenTypeFTString = `0[a-z0-9]{7}`
+	reTokenTypeString = `[a-f0-9]{8}`
 	/* #nosec */
-	reTokenTypeNFTString = `[a-z1-9][a-z0-9]{7}`
+	reTokenTypeFTString = `0[a-f0-9]{7}`
 	/* #nosec */
-	reTokenIndexString = `[a-z0-9]{8}`
+	reTokenTypeNFTString = `[a-f1-9][a-f0-9]{7}`
+	/* #nosec */
+	reTokenIndexString = `[a-f0-9]{8}`
 )
 
 var (

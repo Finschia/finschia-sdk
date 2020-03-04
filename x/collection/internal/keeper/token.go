@@ -206,8 +206,8 @@ func nextID(id string, prefix string) (nextTokenID string) {
 	if len(prefix) >= len(id) {
 		return prefix[:len(id)]
 	}
-	var toCharStr = "0123456789abcdefghijklmnopqrstuvwxyz"
-	const toCharStrLength = 36 //int32(len(toCharStr))
+	var toCharStr = "0123456789abcdef"
+	const toCharStrLength = 16 //int32(len(toCharStr))
 
 	tokenIDInt := make([]int32, len(id))
 	for idx, char := range id {

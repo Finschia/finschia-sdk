@@ -203,7 +203,7 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "").Error())
 
 		msg = NewMsgTransferNFT(addr1, defaultContractID, addr2, "1")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-z0-9]{16}$]").Error())
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
 	}
 
 	{
@@ -280,7 +280,7 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
 
 		msg = NewMsgTransferNFTFrom(addr1, defaultContractID, addr2, addr2, "1")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-z0-9]{16}$]").Error())
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
 	}
 
 	{
