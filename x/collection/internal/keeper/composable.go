@@ -17,11 +17,29 @@ type ComposeKeeper interface {
 	ChildrenOf(ctx sdk.Context, contractID string, tokenID string) (types.Tokens, sdk.Error)
 }
 
+func (k Keeper) eventRootChanged(ctx sdk.Context, contractID string, tokenID string) {
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeOperationRootChanged,
+			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+		),
+	})
+
+	children := k.getChildren(ctx, contractID, tokenID)
+	for _, child := range children {
+		k.eventRootChanged(ctx, contractID, child.GetTokenID())
+	}
+}
+
 func (k Keeper) Attach(ctx sdk.Context, contractID string, from sdk.AccAddress, toTokenID string, tokenID string) sdk.Error {
 	if err := k.attach(ctx, contractID, from, toTokenID, tokenID); err != nil {
 		return err
 	}
 
+	newRoot, err := k.RootOf(ctx, contractID, toTokenID)
+	if err != nil {
+		return err
+	}
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeAttachToken,
@@ -29,8 +47,12 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyToTokenID, toTokenID),
 			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+			sdk.NewAttribute(types.AttributeKeyOldRoot, tokenID),
+			sdk.NewAttribute(types.AttributeKeyNewRoot, newRoot.GetTokenID()),
 		),
 	})
+
+	k.eventRootChanged(ctx, contractID, tokenID)
 
 	return nil
 }
@@ -44,6 +66,11 @@ func (k Keeper) AttachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddr
 		return err
 	}
 
+	newRoot, err := k.RootOf(ctx, contractID, toTokenID)
+	if err != nil {
+		return err
+	}
+
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeAttachFrom,
@@ -52,8 +79,12 @@ func (k Keeper) AttachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddr
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyToTokenID, toTokenID),
 			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+			sdk.NewAttribute(types.AttributeKeyOldRoot, tokenID),
+			sdk.NewAttribute(types.AttributeKeyNewRoot, newRoot.GetTokenID()),
 		),
 	})
+
+	k.eventRootChanged(ctx, contractID, tokenID)
 
 	return nil
 }
@@ -120,6 +151,11 @@ func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 }
 
 func (k Keeper) Detach(ctx sdk.Context, contractID string, from sdk.AccAddress, tokenID string) sdk.Error {
+	oldRoot, err := k.RootOf(ctx, contractID, tokenID)
+	if err != nil {
+		return err
+	}
+
 	parentTokenID, err := k.detach(ctx, contractID, from, tokenID)
 	if err != nil {
 		return err
@@ -132,13 +168,23 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyFromTokenID, parentTokenID),
 			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+			sdk.NewAttribute(types.AttributeKeyOldRoot, oldRoot.GetTokenID()),
+			sdk.NewAttribute(types.AttributeKeyNewRoot, tokenID),
 		),
 	})
+
+	k.eventRootChanged(ctx, contractID, tokenID)
+
 	return nil
 }
 
 //nolint:dupl
 func (k Keeper) DetachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, tokenID string) sdk.Error {
+	oldRoot, err := k.RootOf(ctx, contractID, tokenID)
+	if err != nil {
+		return err
+	}
+
 	if !k.IsApproved(ctx, contractID, proxy, from) {
 		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), contractID)
 	}
@@ -156,8 +202,12 @@ func (k Keeper) DetachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddr
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyFromTokenID, parentTokenID),
 			sdk.NewAttribute(types.AttributeKeyTokenID, tokenID),
+			sdk.NewAttribute(types.AttributeKeyOldRoot, oldRoot.GetTokenID()),
+			sdk.NewAttribute(types.AttributeKeyNewRoot, tokenID),
 		),
 	})
+
+	k.eventRootChanged(ctx, contractID, tokenID)
 
 	return nil
 }
