@@ -26,23 +26,23 @@ func NewHandler(k auth.AccountKeeper) sdk.Handler {
 }
 
 func handleMsgCreateAccount(ctx sdk.Context, keeper auth.AccountKeeper, msg types.MsgCreateAccount) sdk.Result {
-	if keeper.GetAccount(ctx, msg.TargetAddress) != nil {
+	if keeper.GetAccount(ctx, msg.Target) != nil {
 		return types.ErrAccountAlreadyExist(types.DefaultCodespace).Result()
 	}
 
-	acc := keeper.NewAccountWithAddress(ctx, msg.TargetAddress)
+	acc := keeper.NewAccountWithAddress(ctx, msg.Target)
 
 	keeper.SetAccount(ctx, acc)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventCreateAccount,
-			sdk.NewAttribute(types.AttributeKeyCreateAccountFrom, msg.FromAddress.String()),
-			sdk.NewAttribute(types.AttributeKeyCreateAccountTarget, msg.TargetAddress.String()),
+			sdk.NewAttribute(types.AttributeKeyCreateAccountFrom, msg.From.String()),
+			sdk.NewAttribute(types.AttributeKeyCreateAccountTarget, msg.Target.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
-			sdk.NewAttribute(sdk.AttributeKeySender, msg.FromAddress.String()),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.EventCreateAccount),
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 		),

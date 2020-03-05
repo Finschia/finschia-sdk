@@ -2375,9 +2375,9 @@ components:
         value:
           type: object
           properties:
-            from_address:
+            from:
               $ref: '#/components/schemas/Address'
-            to_address:
+            to:
               $ref: '#/components/schemas/Address'
             amount:
               $ref: '#/components/schemas/Coin'
@@ -2460,9 +2460,9 @@ components:
         value:
           type: object
           properties:
-            from_address:
+            from:
               $ref: '#/components/schemas/Address'
-            target_address:
+            target:
               $ref: '#/components/schemas/Address'
     MsgIssue:
       type: object
@@ -2983,8 +2983,8 @@ components:
       {
         "type": "link/MsgSend",
         "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "to_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": [
           {
             "denom": "link",
@@ -3194,8 +3194,8 @@ components:
       {
         "type": "account/MsgCreateAccount",
         "value": {
-          "from_address": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "target_address": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv"
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "target": "linksomebodympp92x9hyzz9wrgf94r6j9h5f06pxxv"
         }
       },
       {

@@ -12,16 +12,16 @@ const RouterKey = ModuleName
 
 // MsgSend - high level transaction of the coin module
 type MsgSend struct {
-	FromAddress sdk.AccAddress `json:"from_address" yaml:"from_address"`
-	ToAddress   sdk.AccAddress `json:"to_address" yaml:"to_address"`
-	Amount      sdk.Coins      `json:"amount" yaml:"amount"`
+	From   sdk.AccAddress `json:"from"`
+	To     sdk.AccAddress `json:"to"`
+	Amount sdk.Coins      `json:"amount"`
 }
 
 var _ sdk.Msg = MsgSend{}
 
 // NewMsgSend - construct arbitrary multi-in, multi-out send msg.
 func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins) MsgSend {
-	return MsgSend{FromAddress: fromAddr, ToAddress: toAddr, Amount: amount}
+	return MsgSend{From: fromAddr, To: toAddr, Amount: amount}
 }
 
 // Route Implements Msg.
@@ -32,10 +32,10 @@ func (msg MsgSend) Type() string { return "send" }
 
 // ValidateBasic Implements Msg.
 func (msg MsgSend) ValidateBasic() sdk.Error {
-	if msg.FromAddress.Empty() {
+	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("missing sender address")
 	}
-	if msg.ToAddress.Empty() {
+	if msg.To.Empty() {
 		return sdk.ErrInvalidAddress("missing recipient address")
 	}
 	if !msg.Amount.IsValid() {
@@ -57,7 +57,7 @@ func (msg MsgSend) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg MsgSend) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msg.FromAddress}
+	return []sdk.AccAddress{msg.From}
 }
 
 // MsgMultiSend - high level transaction of the coin module

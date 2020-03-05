@@ -30,7 +30,7 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 
 // Handle MsgSend.
 func handleMsgSend(ctx sdk.Context, k keeper.Keeper, msg types.MsgSend) sdk.Result {
-	err := k.SendCoins(ctx, msg.FromAddress, msg.ToAddress, msg.Amount)
+	err := k.SendCoins(ctx, msg.From, msg.To, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}
@@ -39,7 +39,7 @@ func handleMsgSend(ctx sdk.Context, k keeper.Keeper, msg types.MsgSend) sdk.Resu
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
-			sdk.NewAttribute(types.AttributeKeySender, msg.FromAddress.String()),
+			sdk.NewAttribute(types.AttributeKeySender, msg.From.String()),
 		),
 	)
 

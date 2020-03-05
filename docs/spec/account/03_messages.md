@@ -16,8 +16,8 @@ type MsgEmpty struct {
 
 ```golang
 type MsgCreateAccount struct {
-	FromAddress   sdk.AccAddress `json:"from_address" yaml:"from_address"`
-	TargetAddress sdk.AccAddress `json:"target_address" yaml:"target_address"`
+	From   sdk.AccAddress `json:"from"`
+	Target sdk.AccAddress `json:"target"`
 }
 ```
 
