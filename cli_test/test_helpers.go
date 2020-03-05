@@ -530,8 +530,8 @@ func (f *Fixtures) TxGovSubmitCommunityPoolSpendProposal(
 //___________________________________________________________________________________
 // linkcli tx token
 
-func (f *Fixtures) TxTokenIssue(from string, name string, symbol string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token issue %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, name, symbol, amount, decimals, mintable, f.Flags())
+func (f *Fixtures) TxTokenIssue(from string, to sdk.AccAddress, name string, symbol string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token issue %s %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, to.String(), name, symbol, amount, decimals, mintable, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 func (f *Fixtures) TxTokenMint(from string, contractID string, to string, amount string, flags ...string) (bool, string, string) {
@@ -572,8 +572,8 @@ func (f *Fixtures) TxTokenCreateCollection(from string, name, baseImgURI string,
 	cmd := fmt.Sprintf("%s tx collection create %s %s %s %v", f.LinkcliBinary, from, name, baseImgURI, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
-func (f *Fixtures) TxTokenIssueFTCollection(from string, contractID, name string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection issue-ft %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, contractID, name, amount, decimals, mintable, f.Flags())
+func (f *Fixtures) TxTokenIssueFTCollection(from string, contractID string, to sdk.AccAddress, name string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection issue-ft %s %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, contractID, to.String(), name, amount, decimals, mintable, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 

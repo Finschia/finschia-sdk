@@ -40,7 +40,7 @@ func TestHandleMsgModify(t *testing.T) {
 	t.Log("Test modify token")
 	{
 		// Given issued token
-		res := h(ctx, types.NewMsgIssue(addr1, defaultName, defaultContractID, defaultImageURI,
+		res := h(ctx, types.NewMsgIssue(addr1, addr1, defaultName, defaultContractID, defaultImageURI,
 			sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true))
 		require.True(t, res.IsOK())
 		contractID := GetMadeContractID(res.Events)

@@ -34,7 +34,7 @@ func TestHandleApproveDisapprove(t *testing.T) {
 		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg3 := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg3 := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg3)
 		require.True(t, res.Code.IsOK())
 		msg4 := types.NewMsgMintFT(addr1, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))

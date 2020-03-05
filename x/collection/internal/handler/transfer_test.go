@@ -19,7 +19,7 @@ func TestHandleTransferFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
-		msg := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -48,7 +48,7 @@ func TestHandleTransferFTFrom(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
-		msg := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		msg2 := types.NewMsgApprove(addr1, contractID, addr2)

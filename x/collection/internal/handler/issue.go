@@ -22,7 +22,7 @@ func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueF
 	}
 
 	token := types.NewFT(msg.ContractID, tokenID, msg.Name, msg.Decimals, msg.Mintable)
-	err = keeper.IssueFT(ctx, msg.ContractID, msg.Owner, token, msg.Amount)
+	err = keeper.IssueFT(ctx, msg.ContractID, msg.Owner, msg.To, token, msg.Amount)
 	if err != nil {
 		return err.Result()
 	}

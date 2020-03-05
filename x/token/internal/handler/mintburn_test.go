@@ -15,7 +15,7 @@ func TestHandleMsgMint(t *testing.T) {
 	{
 		k.NewContractID(ctx)
 		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
-		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1)
+		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1)
 		require.NoError(t, err)
 	}
 
@@ -44,7 +44,7 @@ func TestHandleMsgBurn(t *testing.T) {
 	{
 		k.NewContractID(ctx)
 		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
-		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1)
+		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1)
 		require.NoError(t, err)
 	}
 

@@ -13,7 +13,7 @@ func TestMsgBasics(t *testing.T) {
 	cdc := ModuleCdc
 
 	{
-		msg := NewMsgIssueFT(addr1, defaultContractID, defaultName, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssueFT(addr1, addr1, defaultContractID, defaultName, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.Equal(t, "issue_ft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())

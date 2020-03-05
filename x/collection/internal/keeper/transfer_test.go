@@ -14,7 +14,7 @@ func TestTransferFTScenario(t *testing.T) {
 
 	// issue idf token
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
-	require.NoError(t, keeper.IssueFT(ctx, defaultContractID, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+	require.NoError(t, keeper.IssueFT(ctx, defaultContractID, addr1, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 
 	//
 	// transfer success cases

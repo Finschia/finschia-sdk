@@ -53,11 +53,12 @@ func TestModifyToken(t *testing.T) {
 	)
 
 	barAddr := f.KeyAddress(keyBar)
+	fooAddr := f.KeyAddress(keyFoo)
 	// Given user
 	sendTokens := sdk.TokensFromConsensusPower(1)
 	f.LogResult(f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y"))
 	// And token
-	f.TxTokenIssue(keyFoo, name, symbol, amount, decimals, true, "-y")
+	f.TxTokenIssue(keyFoo, fooAddr, name, symbol, amount, decimals, true, "-y")
 	tests.WaitForNextNBlocksTM(1, f.Port)
 	firstResult := f.QueryToken(contractID)
 	require.Equal(t, name, firstResult.GetName())
@@ -106,7 +107,7 @@ func TestModifyCollection(t *testing.T) {
 	f.TxTokenCreateCollection(keyFoo, firstName, firstBaseURI, "-y")
 	tests.WaitForNextNBlocksTM(1, f.Port)
 	// And FT
-	f.LogResult(f.TxTokenIssueFTCollection(keyFoo, contractID, firstName, amount, decimals, true, "-y"))
+	f.LogResult(f.TxTokenIssueFTCollection(keyFoo, contractID, fooAddr, firstName, amount, decimals, true, "-y"))
 	tests.WaitForNextNBlocksTM(1, f.Port)
 	// And NFT
 	f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, contractID, firstName, "-y"))
@@ -2299,7 +2300,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 
 	// Issue Token.
 	{
-		f.TxTokenIssue(keyFoo, description, symbol, amount, decimals, false, "-y")
+		f.TxTokenIssue(keyFoo, fooAddr, description, symbol, amount, decimals, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryToken(contractID1)
@@ -2313,7 +2314,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 
 	// Issue Token.
 	{
-		f.TxTokenIssue(keyFoo, description, symbol, amount, decimals, true, "-y")
+		f.TxTokenIssue(keyFoo, fooAddr, description, symbol, amount, decimals, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryToken(contractID2)
@@ -2419,7 +2420,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 	}
 	// Issue a Token and check the amount
 	{
-		f.TxTokenIssue(keyFoo, description, symbol, initAmount, 6, true, "-y")
+		f.TxTokenIssue(keyFoo, fooAddr, description, symbol, initAmount, 6, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryToken(contractID)
@@ -2543,7 +2544,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	}
 	// Issue collective token brown with token id
 	{
-		f.TxTokenIssueFTCollection(keyFoo, contractID1, description, 10000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, 10000, 6, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenExpectEmpty(contractID1)
@@ -2559,8 +2560,8 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(contractID1, tokenID01))
 	}
 	{
-		f.TxTokenIssueFTCollection(keyFoo, contractID1, description, 20000, 6, false, "-y")
-		f.TxTokenIssueFTCollection(keyFoo, contractID1, description, 30000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, 20000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, 30000, 6, false, "-y")
 
 		token := f.QueryTokenCollection(contractID1, tokenID01)
 		require.Equal(t, contractID1, token.GetContractID())
@@ -2586,7 +2587,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 	// Bar cannot issue with the collection
 	{
-		f.TxTokenIssueFTCollection(keyBar, contractID1, description, 10000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyBar, contractID1, barAddr, description, 10000, 6, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenCollectionExpectEmpty(contractID1, tokenID04)
@@ -2600,7 +2601,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		f.TxCollectionGrantPerm(keyFoo, barAddr, contractID1, "burn", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.TxTokenIssueFTCollection(keyBar, contractID1, description, 40000, 6, true, "-y")
+		f.TxTokenIssueFTCollection(keyBar, contractID1, barAddr, description, 40000, 6, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryTokenCollection(contractID1, tokenID04)
@@ -2697,7 +2698,7 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 
 	fooAddr := f.KeyAddress(keyFoo)
 
-	success, stdout, stderr := f.TxTokenIssue(fooAddr.String(), "test", "BTC", 10000, 6, true, "--generate-only")
+	success, stdout, stderr := f.TxTokenIssue(fooAddr.String(), fooAddr, "test", "BTC", 10000, 6, true, "--generate-only")
 	require.True(t, success)
 	require.Empty(t, stderr)
 	msg := UnmarshalStdTx(t, stdout)

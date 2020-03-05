@@ -12,6 +12,7 @@
 ```golang
 type MsgIssue struct {
 	Owner    sdk.AccAddress `json:"owner"`
+	To       sdk.AccAddress `json:"to"`
 	Name     string         `json:"name"`
 	Symbol   string         `json:"symbol"`
 	ImageURI string         `json:"image_uri"`

@@ -2476,9 +2476,8 @@ components:
           properties:
             owner:
               $ref: '#/components/schemas/Address'
-            contract_id:
-              type: string
-              example: "9be17165"
+            to:
+              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "cony"
@@ -2626,6 +2625,8 @@ components:
             contract_id:
               type: string
               example: "678c146a"
+            to:
+              $ref: '#/components/schemas/Address'
             name:
               type: string
               example: "cony"
@@ -2999,6 +3000,7 @@ components:
           "name": "cony",
           "symbol": "BTC",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "image_uri": "example.com/token_uri",
           "amount": "1000000",
           "mintable": true,
@@ -3049,6 +3051,7 @@ components:
           "name": "cony",
           "contract_id": "678c146a",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": "1000000",
           "mintable": true,
           "decimals": "8"
@@ -3163,6 +3166,7 @@ components:
           "name": "cony",
           "contract_id": "678c146a",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "amount": "1000000",
           "mintable": true,
           "decimals": "8",

@@ -10,6 +10,7 @@ var _ sdk.Msg = (*MsgIssue)(nil)
 
 type MsgIssue struct {
 	Owner    sdk.AccAddress `json:"owner"`
+	To       sdk.AccAddress `json:"to"`
 	Name     string         `json:"name"`
 	Symbol   string         `json:"symbol"`
 	ImageURI string         `json:"image_uri"`
@@ -18,9 +19,10 @@ type MsgIssue struct {
 	Decimals sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssue(owner sdk.AccAddress, name, symbol, imageURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssue {
+func NewMsgIssue(owner, to sdk.AccAddress, name, symbol, imageURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssue {
 	return MsgIssue{
 		Owner:    owner,
+		To:       to,
 		Name:     name,
 		Symbol:   symbol,
 		ImageURI: imageURI,
@@ -41,6 +43,10 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 	}
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner cannot be empty")
+	}
+
+	if msg.To.Empty() {
+		return sdk.ErrInvalidAddress("to cannot be empty")
 	}
 
 	if !ValidateName(msg.Name) {

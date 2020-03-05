@@ -20,6 +20,7 @@ type MsgCreate struct {
 type MsgIssueFT struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
 	Name       string         `json:"name"`
 	Amount     sdk.Int        `json:"amount"`
 	Mintable   bool           `json:"mintable"`

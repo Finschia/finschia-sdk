@@ -10,16 +10,18 @@ var _ contract.Msg = (*MsgIssueFT)(nil)
 type MsgIssueFT struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
 	Name       string         `json:"name"`
 	Amount     sdk.Int        `json:"amount"`
 	Mintable   bool           `json:"mintable"`
 	Decimals   sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssueFT(owner sdk.AccAddress, contractID string, name string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
+func NewMsgIssueFT(owner, to sdk.AccAddress, contractID string, name string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
 	return MsgIssueFT{
 		Owner:      owner,
 		ContractID: contractID,
+		To:         to,
 		Name:       name,
 		Amount:     amount,
 		Mintable:   mintable,
@@ -44,6 +46,9 @@ func (msg MsgIssueFT) ValidateBasic() sdk.Error {
 	}
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
+	}
+	if msg.To.Empty() {
+		return sdk.ErrInvalidAddress("to address cannot be empty")
 	}
 
 	if msg.Amount.Equal(sdk.NewInt(1)) && msg.Decimals.Equal(sdk.NewInt(0)) && !msg.Mintable {

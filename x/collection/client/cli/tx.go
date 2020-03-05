@@ -145,7 +145,7 @@ func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func IssueFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "issue-ft [from_key_or_address] [contract_id] [name]",
+		Use:   "issue-ft [from_key_or_address] [contract_id] [to] [name]",
 		Short: "Create and sign an issue-ft tx",
 		Long: `
 [Fungible Token]
@@ -154,14 +154,18 @@ linkcli tx token issue [from_key_or_address] [contract_id] [name]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
 `,
-		Args: cobra.ExactArgs(3),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
-			to := cliCtx.FromAddress
+			owner := cliCtx.FromAddress
 			contractID := args[1]
-			name := args[2]
+			to, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+			name := args[3]
 			supply := viper.GetInt64(flagTotalSupply)
 			decimals := viper.GetInt64(flagDecimals)
 			mintable := viper.GetBool(flagMintable)
@@ -170,7 +174,7 @@ linkcli tx token issue [from_key_or_address] [contract_id] [name]
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
 			}
 
-			msg := types.NewMsgIssueFT(to, contractID, name, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
+			msg := types.NewMsgIssueFT(owner, to, contractID, name, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
 
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},

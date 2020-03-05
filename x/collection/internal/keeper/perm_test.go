@@ -24,7 +24,7 @@ func TestCollectionAndPermission(t *testing.T) {
 		require.Equal(t, defaultContractID, collection.GetContractID())
 
 		{
-			require.NoError(t, keeper.IssueFT(ctx, defaultContractID, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+			require.NoError(t, keeper.IssueFT(ctx, defaultContractID, addr1, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 			token, err := keeper.GetToken(ctx, defaultContractID, defaultTokenIDFT)
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())

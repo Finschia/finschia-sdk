@@ -29,6 +29,7 @@ The token module emits the following events:
 | issue_ft         | name           | {name}                   |
 | issue_ft         | token_id       | {tokenid}                |
 | issue_ft         | owner          | {ownerAddress}           |
+| issue_ft         | to             | {toAddress}              |
 | issue_ft         | amount         | {amount}                 |
 | issue_ft         | mintable       | {mintable}               |
 | issue_ft         | decimals       | {decimals}               |
