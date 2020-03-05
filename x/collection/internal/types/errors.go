@@ -67,6 +67,7 @@ const (
 	CodeTokenInvalidChangesField sdk.CodeType = 903
 	CodeTokenIndexWithoutType    sdk.CodeType = 904
 	CodeTokenTypeFTWithoutIndex  sdk.CodeType = 905
+	CodeDuplicateChangesField    sdk.CodeType = 906
 )
 
 func ErrTokenNotMintable(codespace sdk.CodespaceType, contractID, tokenID string) sdk.Error {
@@ -123,7 +124,11 @@ func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
 }
 
 func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is invalid field of changes", field)
+	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is a invalid field of changes", field)
+}
+
+func ErrDuplicateChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
+	return sdk.NewError(codespace, CodeDuplicateChangesField, "[%s] is a duplicate field of changes", field)
 }
 
 func ErrTokenIndexWithoutType(codespace sdk.CodespaceType) sdk.Error {

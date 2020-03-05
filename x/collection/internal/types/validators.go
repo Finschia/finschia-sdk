@@ -69,13 +69,16 @@ func (c *ChangesValidator) Validate(changes linktype.Changes) sdk.Error {
 		return ErrInvalidChangesFieldCount(DefaultCodespace, len(changes))
 	}
 
-	validator := NewChangesValidator()
+	checkedFields := map[string]bool{}
 	for _, change := range changes {
 		if !c.modifiableFields[change.Field] {
 			return ErrInvalidChangesField(DefaultCodespace, change.Field)
 		}
+		if checkedFields[change.Field] {
+			return ErrDuplicateChangesField(DefaultCodespace, change.Field)
+		}
 
-		validateHandler, ok := validator.handlers[change.Field]
+		validateHandler, ok := c.handlers[change.Field]
 		if !ok {
 			return ErrInvalidChangesField(DefaultCodespace, change.Field)
 		}
@@ -83,6 +86,7 @@ func (c *ChangesValidator) Validate(changes linktype.Changes) sdk.Error {
 		if err := validateHandler(change.Value); err != nil {
 			return err
 		}
+		checkedFields[change.Field] = true
 	}
 	return nil
 }

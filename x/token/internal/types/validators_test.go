@@ -65,9 +65,12 @@ func TestValidateChanges(t *testing.T) {
 	}
 	t.Log("Test with invalid changes field")
 	{
+		// Given changes with invalid fields
 		changes := linktype.NewChanges(
 			linktype.NewChange("invalid_field", "value"),
 		)
+
+		// Then error is occurred
 		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesField(DefaultCodespace, "invalid_field").Error())
 	}
 	t.Log("Test with changes more than max")
@@ -76,6 +79,18 @@ func TestValidateChanges(t *testing.T) {
 		changeList := make([]linktype.Change, MaxChangeFieldsCount+1)
 		changes := linktype.Changes(changeList)
 
+		// Then error is occurred
 		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesFieldCount(DefaultCodespace, len(changeList)).Error())
+	}
+	t.Log("Test with duplicate fields")
+	{
+		// Given changes with duplicate fields
+		changes := linktype.NewChanges(
+			linktype.NewChange("name", "value"),
+			linktype.NewChange("name", "value2"),
+		)
+
+		// Then error is occurred
+		require.EqualError(t, validator.Validate(changes), ErrDuplicateChangesField(DefaultCodespace, "name").Error())
 	}
 }

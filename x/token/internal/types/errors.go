@@ -42,6 +42,7 @@ const (
 	CodeInvalidChangesFieldCount sdk.CodeType = 701
 	CodeEmptyChanges             sdk.CodeType = 702
 	CodeTokenInvalidChangesField sdk.CodeType = 703
+	CodeDuplicateChangesField    sdk.CodeType = 704
 )
 
 func ErrTokenExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
@@ -93,6 +94,10 @@ func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
 
 func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is invalid field of changes", field)
+}
+
+func ErrDuplicateChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
+	return sdk.NewError(codespace, CodeDuplicateChangesField, "[%s] is a duplicate field of changes", field)
 }
 
 func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission fmt.Stringer) sdk.Error {
