@@ -28,13 +28,11 @@ const (
 	defaultTokenID3    = defaultTokenType + "00000003"
 	defaultTokenID4    = defaultTokenType + "00000004"
 	defaultTokenID5    = defaultTokenType + "00000005"
-	defaultTokenID6    = defaultTokenType + "00000006"
 	defaultTokenID8    = defaultTokenType + "00000008"
 	defaultTokenIDFT   = "0000000100000000"
 	defaultTokenIDFT2  = "0000000200000000"
 	defaultTokenIDFT3  = "0000000300000000"
 	defaultTokenIDFT4  = "0000000400000000"
-	defaultTokenIDFT5  = "0000000500000000"
 )
 
 var (

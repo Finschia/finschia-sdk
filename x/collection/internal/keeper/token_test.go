@@ -170,17 +170,59 @@ func TestKeeper_GeTokens(t *testing.T) {
 			verifyTokenFunc(t, allTokens[index], actual[index])
 		}
 	}
+}
+
+func TestKeeper_GetNextTokenIDFT(t *testing.T) {
+	ctx := cacheKeeper()
+	t.Log("Prepare collection")
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
 	t.Log("Get Next Token ID FT")
 	{
 		tokenID, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
 		require.NoError(t, err)
-		require.Equal(t, defaultTokenIDFT5, tokenID)
+		require.Equal(t, defaultTokenIDFT, tokenID)
+	}
+	t.Log("Issue a token and get next token id")
+	{
+		require.NoError(t, keeper.SetToken(ctx, defaultContractID, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)))
+		tokenID, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
+		require.NoError(t, err)
+		require.Equal(t, defaultTokenIDFT2, tokenID)
+	}
+	t.Log("Set Full")
+	{
+		keeper.setNextTokenTypeFT(ctx, defaultContractID, "0zzzzzzz")
+		_, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
+		require.Error(t, err)
+	}
+}
+func TestKeeper_GetNextTokenIDNFT(t *testing.T) {
+	ctx := cacheKeeper()
+	t.Log("Prepare collection")
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
+	t.Log("Prepare Token Type")
+	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)
+	{
+		require.NoError(t, keeper.SetTokenType(ctx, defaultContractID, expected))
 	}
 	t.Log("Get Next Token ID NFT")
 	{
 		tokenID, err := keeper.GetNextTokenIDNFT(ctx, defaultContractID, defaultTokenType)
 		require.NoError(t, err)
-		require.Equal(t, defaultTokenID6, tokenID)
+		require.Equal(t, defaultTokenID1, tokenID)
+	}
+	t.Log("Issue a token and get next token id")
+	{
+		require.NoError(t, keeper.SetToken(ctx, defaultContractID, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)))
+		tokenID, err := keeper.GetNextTokenIDNFT(ctx, defaultContractID, defaultTokenType)
+		require.NoError(t, err)
+		require.Equal(t, defaultTokenID2, tokenID)
+	}
+	t.Log("Set Full")
+	{
+		keeper.setNextTokenIndexNFT(ctx, defaultContractID, defaultTokenType, "zzzzzzzz")
+		_, err := keeper.GetNextTokenIDNFT(ctx, defaultContractID, defaultTokenType)
+		require.Error(t, err)
 	}
 }
 

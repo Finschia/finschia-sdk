@@ -27,6 +27,8 @@ func (k Keeper) SetTokenType(ctx sdk.Context, contractID string, tokenType types
 		return types.ErrTokenTypeExist(types.DefaultCodespace, contractID, tokenType.GetTokenType())
 	}
 	store.Set(types.TokenTypeKey(contractID, tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
+	k.setNextTokenTypeNFT(ctx, contractID, tokenType.GetTokenType())
+	k.setNextTokenIndexNFT(ctx, contractID, tokenType.GetTokenType(), types.ReservedEmpty)
 	return nil
 }
 
@@ -73,16 +75,10 @@ func (k Keeper) HasTokenType(ctx sdk.Context, contractID, tokenType string) bool
 }
 
 func (k Keeper) GetNextTokenType(ctx sdk.Context, contractID string) (tokenType string, err sdk.Error) {
-	var lastTokenType types.TokenType
-	k.iterateTokenTypes(ctx, contractID, "", true, func(t types.TokenType) bool {
-		lastTokenType = t
-		return true
-	})
-
-	if lastTokenType == nil {
-		return types.SmallestNFTType, nil
+	tokenType, err = k.getNextTokenTypeNFT(ctx, contractID)
+	if err != nil {
+		return "", err
 	}
-	tokenType = nextID(lastTokenType.GetTokenType(), "")
 	if tokenType[0] == types.FungibleFlag[0] {
 		return "", types.ErrTokenTypeFull(types.DefaultCodespace, contractID)
 	}

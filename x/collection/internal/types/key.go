@@ -22,6 +22,9 @@ var (
 	TokenChildToParentKeyPrefix = []byte{0x05}
 	TokenParentToChildKeyPrefix = []byte{0x06}
 	CollectionApprovedKeyPrefix = []byte{0x07}
+	NextTokenTypeFTKeyPrefix    = []byte{0x08}
+	NextTokenTypeNFTKeyPrefix   = []byte{0x09}
+	NextTokenIDNFTKeyPrefix     = []byte{0x0a}
 )
 
 func AccountKey(contractID string, acc sdk.AccAddress) []byte {
@@ -58,4 +61,14 @@ func TokenParentToChildKey(contractID, parent, child string) []byte {
 
 func CollectionApprovedKey(contractID string, proxy types.AccAddress, approver types.AccAddress) []byte {
 	return append(append(append(CollectionApprovedKeyPrefix, []byte(contractID)...), proxy.Bytes()...), approver.Bytes()...)
+}
+
+func NextTokenTypeFTKey(contractID string) []byte {
+	return append(NextTokenTypeFTKeyPrefix, []byte(contractID)...)
+}
+func NextTokenTypeNFTKey(contractID string) []byte {
+	return append(NextTokenTypeNFTKeyPrefix, []byte(contractID)...)
+}
+func NextTokenIDNFTKey(contractID, tokenType string) []byte {
+	return append(append(NextTokenIDNFTKeyPrefix, []byte(contractID)...), []byte(tokenType)...)
 }

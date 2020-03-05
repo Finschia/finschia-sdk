@@ -89,6 +89,8 @@ func (k Keeper) SetCollection(ctx sdk.Context, collection types.Collection) sdk.
 	}
 
 	store.Set(types.CollectionKey(collection.GetContractID()), k.cdc.MustMarshalBinaryBare(collection))
+	k.setNextTokenTypeFT(ctx, collection.GetContractID(), types.ReservedEmpty)
+	k.setNextTokenTypeNFT(ctx, collection.GetContractID(), types.ReservedEmptyNFT)
 	return nil
 }
 

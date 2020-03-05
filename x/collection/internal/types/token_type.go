@@ -10,6 +10,7 @@ const (
 	FungibleFlag       = SmallestAlphanum
 	ReservedEmpty      = "00000000"
 	SmallestFTType     = "00000001"
+	ReservedEmptyNFT   = "10000000"
 	SmallestNFTType    = "10000001"
 	SmallestTokenIndex = "00000001"
 )

@@ -46,6 +46,12 @@ func (k Keeper) SetToken(ctx sdk.Context, contractID string, token types.Token) 
 		return types.ErrTokenExist(types.DefaultCodespace, contractID, token.GetTokenID())
 	}
 	store.Set(tokenKey, k.mustEncodeToken(token))
+	tokenType := token.GetTokenType()
+	if tokenType[0] == types.FungibleFlag[0] {
+		k.setNextTokenTypeFT(ctx, contractID, tokenType)
+	} else {
+		k.setNextTokenIndexNFT(ctx, contractID, tokenType, token.GetTokenIndex())
+	}
 	return nil
 }
 
@@ -139,37 +145,78 @@ func (k Keeper) GetNFTCount(ctx sdk.Context, contractID, tokenType string) (sdk.
 	return sdk.NewInt(int64(len(tokens))), nil
 }
 
-func (k Keeper) GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, sdk.Error) {
-	var lastToken types.Token
-	k.iterateToken(ctx, contractID, types.FungibleFlag, true, func(t types.Token) bool {
-		lastToken = t
-		return true
-	})
+func (k Keeper) setNextTokenTypeFT(ctx sdk.Context, contractID, tokenType string) {
+	store := ctx.KVStore(k.storeKey)
+	tokenType = nextID(tokenType, "")
+	store.Set(types.NextTokenTypeFTKey(contractID), k.mustEncodeString(tokenType))
+}
+func (k Keeper) setNextTokenTypeNFT(ctx sdk.Context, contractID, tokenType string) {
+	store := ctx.KVStore(k.storeKey)
+	tokenType = nextID(tokenType, "")
+	store.Set(types.NextTokenTypeNFTKey(contractID), k.mustEncodeString(tokenType))
+}
+func (k Keeper) setNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType, tokenIndex string) {
+	store := ctx.KVStore(k.storeKey)
+	tokenIndex = nextID(tokenIndex, "")
+	store.Set(types.NextTokenIDNFTKey(contractID, tokenType), k.mustEncodeString(tokenIndex))
+}
 
-	if lastToken == nil {
-		return types.SmallestFTType + types.ReservedEmpty, nil
+func (k Keeper) getNextTokenTypeFT(ctx sdk.Context, contractID string) (tokenType string, error sdk.Error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.NextTokenTypeFTKey(contractID))
+	if bz == nil {
+		panic("next token type for ft should be exist")
 	}
-	tokenType := nextID(lastToken.GetTokenType(), types.FungibleFlag)
-	if tokenType[0:1] != types.FungibleFlag {
+	tokenType = k.mustDecodeString(bz)
+	if tokenType[0] != types.FungibleFlag[0] {
+		return "", types.ErrTokenTypeFull(types.DefaultCodespace, contractID)
+	}
+	return tokenType, nil
+}
+
+func (k Keeper) getNextTokenTypeNFT(ctx sdk.Context, contractID string) (tokenType string, error sdk.Error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.NextTokenTypeNFTKey(contractID))
+	if bz == nil {
+		panic("next token type for nft should be exist")
+	}
+	tokenType = k.mustDecodeString(bz)
+	if tokenType == types.ReservedEmpty {
+		return "", types.ErrTokenTypeFull(types.DefaultCodespace, contractID)
+	}
+	return tokenType, nil
+}
+
+func (k Keeper) getNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType string) (tokenIndex string, error sdk.Error) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.NextTokenIDNFTKey(contractID, tokenType))
+	if bz == nil {
+		panic("next token id for nft token type should be exist")
+	}
+	tokenIndex = k.mustDecodeString(bz)
+	if tokenIndex == types.ReservedEmpty {
+		return "", types.ErrTokenIndexFull(types.DefaultCodespace, contractID, tokenType)
+	}
+	return tokenIndex, nil
+}
+
+func (k Keeper) GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, sdk.Error) {
+	tokenType, err := k.getNextTokenTypeFT(ctx, contractID)
+	if err != nil {
 		return "", types.ErrTokenIDFull(types.DefaultCodespace, contractID)
 	}
 	return tokenType + types.ReservedEmpty, nil
 }
 func (k Keeper) GetNextTokenIDNFT(ctx sdk.Context, contractID, tokenType string) (string, sdk.Error) {
-	var lastToken types.Token
-	k.iterateToken(ctx, contractID, tokenType, true, func(t types.Token) bool {
-		lastToken = t
-		return true
-	})
-
-	if lastToken == nil {
-		return tokenType + types.SmallestTokenIndex, nil
+	tokenIndex, err := k.getNextTokenIndexNFT(ctx, contractID, tokenType)
+	if err != nil {
+		return "", err
 	}
-	tokenID := nextID(lastToken.GetTokenID(), tokenType)
-	if tokenID[types.TokenTypeLength:] == types.ReservedEmpty {
+
+	if tokenIndex == types.ReservedEmpty {
 		return "", types.ErrTokenIndexFull(types.DefaultCodespace, contractID, tokenType)
 	}
-	return tokenID, nil
+	return tokenType + tokenIndex, nil
 }
 
 func (k Keeper) iterateToken(ctx sdk.Context, contractID, prefix string, reverse bool, process func(types.Token) (stop bool)) {

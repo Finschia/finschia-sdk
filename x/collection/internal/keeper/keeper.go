@@ -43,3 +43,12 @@ func (k Keeper) MarshalJSON(o interface{}) ([]byte, error) {
 func (k Keeper) MarshalJSONIndent(o interface{}) ([]byte, error) {
 	return k.cdc.MarshalJSONIndent(o, "", "  ")
 }
+
+func (k Keeper) mustEncodeString(str string) []byte {
+	return k.cdc.MustMarshalBinaryBare(str)
+}
+
+func (k Keeper) mustDecodeString(bz []byte) (str string) {
+	k.cdc.MustUnmarshalBinaryBare(bz, &str)
+	return str
+}

@@ -82,6 +82,12 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
+	t.Log("Get Next Token Type")
+	{
+		tokenType, err := keeper.GetNextTokenType(ctx, defaultContractID)
+		require.NoError(t, err)
+		require.Equal(t, defaultTokenType, tokenType)
+	}
 	t.Log("Set Token Type")
 	{
 		require.NoError(t, keeper.SetTokenType(ctx, defaultContractID, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)))
@@ -101,5 +107,11 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 		tokenType, err := keeper.GetNextTokenType(ctx, defaultContractID)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenType4, tokenType)
+	}
+	t.Log("Set Full")
+	{
+		keeper.setNextTokenTypeNFT(ctx, defaultContractID, "zzzzzzzz")
+		_, err := keeper.getNextTokenTypeNFT(ctx, defaultContractID)
+		require.Error(t, err)
 	}
 }

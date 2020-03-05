@@ -113,8 +113,8 @@ func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 		}
 	}
 
-	store.Set(childToParentKey, k.mustEncodeTokenID(parentID))
-	store.Set(parentToChildKey, k.mustEncodeTokenID(childID))
+	store.Set(childToParentKey, k.mustEncodeString(parentID))
+	store.Set(parentToChildKey, k.mustEncodeString(childID))
 
 	return nil
 }
@@ -180,7 +180,7 @@ func (k Keeper) detach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	}
 
 	bz := store.Get(childToParentKey)
-	parentID := k.mustDecodeTokenID(bz)
+	parentID := k.mustDecodeString(bz)
 
 	_, err = k.GetNFT(ctx, contractID, parentID)
 	if err != nil {
@@ -208,7 +208,7 @@ func (k Keeper) RootOf(ctx sdk.Context, contractID string, tokenID string) (type
 
 	for childToParentKey := types.TokenChildToParentKey(contractID, token.GetTokenID()); store.Has(childToParentKey); {
 		bz := store.Get(childToParentKey)
-		parentTokenID := k.mustDecodeTokenID(bz)
+		parentTokenID := k.mustDecodeString(bz)
 
 		token, err = k.GetNFT(ctx, contractID, parentTokenID)
 		if err != nil {
@@ -230,7 +230,7 @@ func (k Keeper) ParentOf(ctx sdk.Context, contractID string, tokenID string) (ty
 	childToParentKey := types.TokenChildToParentKey(contractID, token.GetTokenID())
 	if store.Has(childToParentKey) {
 		bz := store.Get(childToParentKey)
-		parentTokenID := k.mustDecodeTokenID(bz)
+		parentTokenID := k.mustDecodeString(bz)
 
 		return k.GetNFT(ctx, contractID, parentTokenID)
 	}
@@ -245,15 +245,6 @@ func (k Keeper) ChildrenOf(ctx sdk.Context, contractID string, tokenID string) (
 	tokens := k.getChildren(ctx, contractID, tokenID)
 
 	return tokens, nil
-}
-
-func (k Keeper) mustEncodeTokenID(tokenID string) []byte {
-	return k.cdc.MustMarshalBinaryBare(tokenID)
-}
-
-func (k Keeper) mustDecodeTokenID(tokenIDByte []byte) (tokenID string) {
-	k.cdc.MustUnmarshalBinaryBare(tokenIDByte, &tokenID)
-	return tokenID
 }
 
 func (k Keeper) getChildren(ctx sdk.Context, contractID, parentID string) (tokens types.Tokens) {
@@ -280,7 +271,7 @@ func (k Keeper) iterateChildren(ctx sdk.Context, contractID, parentID string, pr
 			return
 		}
 		val := iter.Value()
-		tokenID := k.mustDecodeTokenID(val)
+		tokenID := k.mustDecodeString(val)
 		if process(tokenID) {
 			return
 		}
