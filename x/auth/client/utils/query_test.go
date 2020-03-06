@@ -181,8 +181,14 @@ func TestQueryGenesisAccount(t *testing.T) {
 	}
 
 	// exist genesis account
+	var addr string
+	if types.Bech32MainPrefix == "link" {
+		addr = "link19rqsvml8ldr0yrhaewgv9smcdvrew5pah9j5t5"
+	} else if types.Bech32MainPrefix == "tlink" {
+		addr = "tlink19rqsvml8ldr0yrhaewgv9smcdvrew5panjryj3"
+	}
 	genesisDoc := tmtypes.GenesisDoc{
-		AppState: json.RawMessage(`{"accounts":[{"address":"link19rqsvml8ldr0yrhaewgv9smcdvrew5pah9j5t5","coins":[]}]}`),
+		AppState: json.RawMessage(`{"accounts":[{"address":"` + addr + `","coins":[]}]}`),
 	}
 	genesisResult := ctypes.ResultGenesis{
 		Genesis: &genesisDoc,

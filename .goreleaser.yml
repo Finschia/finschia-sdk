@@ -11,13 +11,15 @@ builds:
   binary: build/linkcli
   env:
     - CGO_ENABLED=0
+  flags:
+    - -tags=testnet
   ldflags:
     - -X github.com/line/link/version.Name=link
     - -X github.com/line/link/version.ServerName=linkd
     - -X github.com/line/link/version.ClientName=linkcli
     - -X github.com/line/link/version.Version={{ .Version }}
     - -X github.com/line/link/version.Commit={{ .FullCommit }}
-    - -X "github.com/line/link/version.BuildTags=netgo,ledger"
+    - -X "github.com/line/link/version.BuildTags=netgo,ledger,testnet"
 -
   id: "linkd"
   main: ./cmd/linkd
@@ -26,14 +28,14 @@ builds:
     - CGO_ENABLED=0
   flags:
     - -mod=readonly
-    - -tags="netgo ledger"
+    - -tags=netgo ledger testnet
   ldflags:
     - -X github.com/line/link/version.Name=link
     - -X github.com/line/link/version.ServerName=linkd
     - -X github.com/line/link/version.ClientName=linkcli
     - -X github.com/line/link/version.Version={{ .Version }}
     - -X github.com/line/link/version.Commit={{ .FullCommit }}
-    - -X "github.com/line/link/version.BuildTags=netgo,ledger"
+    - -X "github.com/line/link/version.BuildTags=netgo,ledger,testnet"
 archives:
 - replacements:
     darwin: Darwin
