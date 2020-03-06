@@ -9,9 +9,10 @@
 
 ### MsgCreate
 ```golang
-type MsgCreate struct {
-	Name     string         `json:"name"`
-	Owner    sdk.AccAddress `json:"owner"`
+type MsgCreateCollection struct {
+	Owner      sdk.AccAddress `json:"owner"`
+	Name       string         `json:"name"`
+	BaseImgURI string         `json:"base_img_uri"`
 }
 ```
 
