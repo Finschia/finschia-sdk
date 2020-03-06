@@ -1,9 +1,9 @@
-// +build !testnet
+// +build testnet
 
 package types
 
 const (
-	Bech32MainPrefix = "link"
+	Bech32MainPrefix = "tink"
 
 	Bech32PrefixAccAddr  = Bech32MainPrefix
 	Bech32PrefixAccPub   = Bech32MainPrefix + PrefixPublic
