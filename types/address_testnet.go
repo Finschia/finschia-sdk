@@ -3,7 +3,7 @@
 package types
 
 const (
-	Bech32MainPrefix = "tink"
+	Bech32MainPrefix = "tlink"
 
 	Bech32PrefixAccAddr  = Bech32MainPrefix
 	Bech32PrefixAccPub   = Bech32MainPrefix + PrefixPublic
