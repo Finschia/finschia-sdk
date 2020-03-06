@@ -24,22 +24,22 @@ func TestCollectionAndPermission(t *testing.T) {
 		require.Equal(t, defaultContractID, collection.GetContractID())
 
 		{
-			require.NoError(t, keeper.IssueFT(ctx, defaultContractID, addr1, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+			require.NoError(t, keeper.IssueFT(ctx, addr1, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 			token, err := keeper.GetToken(ctx, defaultContractID, defaultTokenIDFT)
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())
 			require.Equal(t, defaultTokenIDFT, token.GetTokenID())
 		}
 		{
-			require.NoError(t, keeper.IssueNFT(ctx, defaultContractID, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName), addr1))
-			require.NoError(t, keeper.MintNFT(ctx, defaultContractID, addr1, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)))
+			require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName), addr1))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)))
 
 			token, err := keeper.GetToken(ctx, defaultContractID, defaultTokenID1)
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())
 			require.Equal(t, defaultTokenID1, token.GetTokenID())
 
-			require.NoError(t, keeper.MintNFT(ctx, defaultContractID, addr1, types.NewNFT(defaultContractID, defaultTokenID2, defaultName, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID2, defaultName, addr1)))
 			token, err = keeper.GetToken(ctx, defaultContractID, defaultTokenID2)
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())
@@ -49,8 +49,8 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, int64(2), count.Int64())
 
-			require.NoError(t, keeper.IssueNFT(ctx, defaultContractID, types.NewBaseTokenType(defaultContractID, defaultTokenType2, defaultName), addr1))
-			require.NoError(t, keeper.MintNFT(ctx, defaultContractID, addr1, types.NewNFT(defaultContractID, defaultTokenType2+"00000001", defaultName, addr1)))
+			require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType2, defaultName), addr1))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenType2+"00000001", defaultName, addr1)))
 			token, err = keeper.GetToken(ctx, defaultContractID, defaultTokenType2+"00000001")
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())

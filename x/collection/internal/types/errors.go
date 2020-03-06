@@ -189,7 +189,7 @@ func ErrTokenNotAChild(codespace sdk.CodespaceType, tokenID string) sdk.Error {
 }
 
 func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, tokenID string, owner fmt.Stringer) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is being not owned by [%s]", tokenID, owner.String())
+	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token [%s] is being not owned by [%s]", tokenID, owner.String())
 }
 
 func ErrTokenNotNFT(codespace sdk.CodespaceType, tokenID string) sdk.Error {

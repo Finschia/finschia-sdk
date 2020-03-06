@@ -9,12 +9,76 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+func prepareCreateCollection() (sdk.Context, sdk.Handler, string) {
+	ctx, h := cacheKeeper()
+	var contractID string
+	msg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+	res := h(ctx, msg)
+	contractID = GetMadeContractID(res.Events)
+
+	return ctx, h, contractID
+}
+
+func prepareFT() (sdk.Context, sdk.Handler, string) {
+	ctx, h, contractID := prepareCreateCollection()
+
+	msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+	_ = h(ctx, msg)
+
+	return ctx, h, contractID
+}
+
+func prepareNFT(mintTo sdk.AccAddress) (sdk.Context, sdk.Handler, string) {
+	ctx, h, contractID := prepareCreateCollection()
+
+	msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+	_ = h(ctx, msg)
+
+	msg2 := types.NewMsgMintNFT(addr1, contractID, mintTo, "sword1", "10000001")
+	_ = h(ctx, msg2)
+
+	types.NewMsgMintNFT(addr1, contractID, mintTo, "sword2", "10000001")
+	_ = h(ctx, msg2)
+
+	return ctx, h, contractID
+}
+
 func TestHandleMsgIssueFT(t *testing.T) {
-	t.Log("implement me - ", t.Name())
+	ctx, h, contractID := prepareCreateCollection()
+
+	msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("contract_id", contractID)),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("name", defaultName)),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("token_id", defaultTokenIDFT)),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("owner", addr1.String())),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("to", addr1.String())),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("amount", "1000")),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("mintable", "true")),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("decimals", "6")),
+	}
+	verifyEventFunc(t, e, res.Events)
 }
 
 func TestHandleMsgIssueNFT(t *testing.T) {
-	t.Log("implement me - ", t.Name())
+	ctx, h, contractID := prepareCreateCollection()
+
+	msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+		sdk.NewEvent("issue_nft", sdk.NewAttribute("contract_id", contractID)),
+		sdk.NewEvent("issue_nft", sdk.NewAttribute("token_type", defaultTokenType)),
+	}
+	verifyEventFunc(t, e, res.Events)
 }
 
 func TestHandlerIssueFT(t *testing.T) {

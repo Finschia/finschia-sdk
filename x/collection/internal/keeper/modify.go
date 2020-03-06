@@ -78,7 +78,7 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractI
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyTokenType,
-			sdk.NewAttribute(types.AttributeKeyContractID, tokenType.GetContractID()),
+			sdk.NewAttribute(types.AttributeKeyContractID, contractID),
 			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType.GetTokenType()),
 		),
 	})
@@ -98,7 +98,7 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractI
 			),
 		})
 	}
-	err = k.UpdateTokenType(ctx, contractID, tokenType)
+	err = k.UpdateTokenType(ctx, tokenType)
 	if err != nil {
 		return err
 	}
@@ -139,7 +139,7 @@ func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID, t
 			),
 		})
 	}
-	err = k.UpdateToken(ctx, contractID, token)
+	err = k.UpdateToken(ctx, token)
 	if err != nil {
 		return err
 	}

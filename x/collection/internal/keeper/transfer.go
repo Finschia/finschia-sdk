@@ -175,5 +175,5 @@ func (k Keeper) moveNFToken(ctx sdk.Context, contractID string, from sdk.AccAddr
 		return err
 	}
 
-	return k.UpdateToken(ctx, contractID, token.SetOwner(to))
+	return k.UpdateToken(ctx, token.SetOwner(to))
 }

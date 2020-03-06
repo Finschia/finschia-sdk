@@ -30,6 +30,7 @@ func TestKeeper() (sdk.Context, store.CommitMultiStore, Keeper) {
 	ms.MountStoreWithDB(keyIam, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyContract, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(tkeyParams, sdk.StoreTypeTransient, db)
+
 	if err := ms.LoadLatestVersion(); err != nil {
 		panic(err)
 	}

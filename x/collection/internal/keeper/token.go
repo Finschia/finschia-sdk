@@ -8,9 +8,9 @@ import (
 type TokenKeeper interface {
 	GetToken(ctx sdk.Context, contractID, tokenID string) (types.Token, sdk.Error)
 	HasToken(ctx sdk.Context, contractID, tokenID string) bool
-	SetToken(ctx sdk.Context, contractID string, token types.Token) sdk.Error
+	SetToken(ctx sdk.Context, token types.Token) sdk.Error
 	DeleteToken(ctx sdk.Context, contractID, tokenID string) sdk.Error
-	UpdateToken(ctx sdk.Context, contractID string, token types.Token) sdk.Error
+	UpdateToken(ctx sdk.Context, token types.Token) sdk.Error
 	GetTokens(ctx sdk.Context, contractID string) (tokens types.Tokens, err sdk.Error)
 	GetFT(ctx sdk.Context, contractID, tokenID string) (types.FT, sdk.Error)
 	GetFTs(ctx sdk.Context, contractID string) (tokens types.Tokens, err sdk.Error)
@@ -39,27 +39,27 @@ func (k Keeper) HasToken(ctx sdk.Context, contractID, tokenID string) bool {
 	return store.Has(tokenKey)
 }
 
-func (k Keeper) SetToken(ctx sdk.Context, contractID string, token types.Token) sdk.Error {
+func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
-	tokenKey := types.TokenKey(contractID, token.GetTokenID())
+	tokenKey := types.TokenKey(token.GetContractID(), token.GetTokenID())
 	if store.Has(tokenKey) {
-		return types.ErrTokenExist(types.DefaultCodespace, contractID, token.GetTokenID())
+		return types.ErrTokenExist(types.DefaultCodespace, token.GetContractID(), token.GetTokenID())
 	}
 	store.Set(tokenKey, k.mustEncodeToken(token))
 	tokenType := token.GetTokenType()
 	if tokenType[0] == types.FungibleFlag[0] {
-		k.setNextTokenTypeFT(ctx, contractID, tokenType)
+		k.setNextTokenTypeFT(ctx, token.GetContractID(), tokenType)
 	} else {
-		k.setNextTokenIndexNFT(ctx, contractID, tokenType, token.GetTokenIndex())
+		k.setNextTokenIndexNFT(ctx, token.GetContractID(), tokenType, token.GetTokenIndex())
 	}
 	return nil
 }
 
-func (k Keeper) UpdateToken(ctx sdk.Context, contractID string, token types.Token) sdk.Error {
+func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) sdk.Error {
 	store := ctx.KVStore(k.storeKey)
-	tokenKey := types.TokenKey(contractID, token.GetTokenID())
+	tokenKey := types.TokenKey(token.GetContractID(), token.GetTokenID())
 	if !store.Has(tokenKey) {
-		return types.ErrTokenNotExist(types.DefaultCodespace, contractID, token.GetTokenID())
+		return types.ErrTokenNotExist(types.DefaultCodespace, token.GetContractID(), token.GetTokenID())
 	}
 	store.Set(tokenKey, k.mustEncodeToken(token))
 	return nil

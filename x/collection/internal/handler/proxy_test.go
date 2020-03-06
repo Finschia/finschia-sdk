@@ -8,6 +8,11 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func approve(approver, proxy sdk.AccAddress, contractID string, ctx sdk.Context, h sdk.Handler) {
+	approveMsg := types.NewMsgApprove(approver, contractID, proxy)
+	_ = h(ctx, approveMsg)
+}
+
 func TestHandleMsgApprove(t *testing.T) {
 	t.Log("implement me - ", t.Name())
 }

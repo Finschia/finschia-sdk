@@ -30,7 +30,7 @@ func TestKeeper_SetTokenType(t *testing.T) {
 	t.Log("Set Token Type")
 	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)
 	{
-		require.NoError(t, keeper.SetTokenType(ctx, defaultContractID, expected))
+		require.NoError(t, keeper.SetTokenType(ctx, expected))
 	}
 	t.Log("Compare Token Type")
 	{
@@ -62,12 +62,12 @@ func TestKeeper_UpdateTokenType(t *testing.T) {
 	t.Log("Set Token Type")
 	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)
 	{
-		require.NoError(t, keeper.SetTokenType(ctx, defaultContractID, expected))
+		require.NoError(t, keeper.SetTokenType(ctx, expected))
 	}
 	t.Log("Update Token Type")
 	{
 		expected = expected.SetName("modifiedname")
-		require.NoError(t, keeper.UpdateTokenType(ctx, defaultContractID, expected))
+		require.NoError(t, keeper.UpdateTokenType(ctx, expected))
 	}
 
 	t.Log("Get Token Type")
@@ -90,9 +90,9 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 	}
 	t.Log("Set Token Type")
 	{
-		require.NoError(t, keeper.SetTokenType(ctx, defaultContractID, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)))
-		require.NoError(t, keeper.SetTokenType(ctx, defaultContractID, types.NewBaseTokenType(defaultContractID, defaultTokenType2, defaultName)))
-		require.NoError(t, keeper.SetTokenType(ctx, defaultContractID, types.NewBaseTokenType(defaultContractID, defaultTokenType3, defaultName)))
+		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)))
+		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType2, defaultName)))
+		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType3, defaultName)))
 	}
 	t.Log("Get TokenTypes")
 	{

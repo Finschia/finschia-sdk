@@ -18,7 +18,7 @@ func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNF
 	}
 
 	token := types.NewNFT(msg.ContractID, tokenID, msg.Name, msg.To)
-	err = keeper.MintNFT(ctx, msg.ContractID, msg.From, token)
+	err = keeper.MintNFT(ctx, msg.From, token)
 	if err != nil {
 		return err.Result()
 	}

@@ -7,7 +7,7 @@ import (
 
 type MintKeeper interface {
 	MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount types.Coins) sdk.Error
-	MintNFT(ctx sdk.Context, contractID string, from sdk.AccAddress, token types.NFT) sdk.Error
+	MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error
 }
 
 func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount types.Coins) sdk.Error {
@@ -16,7 +16,7 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddre
 		if err != nil {
 			return err
 		}
-		if err := k.isMintable(ctx, contractID, token, from); err != nil {
+		if err := k.isMintable(ctx, token, from); err != nil {
 			return err
 		}
 	}
@@ -36,8 +36,8 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddre
 	return nil
 }
 
-func (k Keeper) MintNFT(ctx sdk.Context, contractID string, from sdk.AccAddress, token types.NFT) sdk.Error {
-	if !k.HasTokenType(ctx, contractID, token.GetTokenType()) {
+func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error {
+	if !k.HasTokenType(ctx, token.GetContractID(), token.GetTokenType()) {
 		return types.ErrTokenTypeNotExist(types.DefaultCodespace, token.GetContractID(), token.GetTokenType())
 	}
 
@@ -46,12 +46,12 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, from sdk.AccAddress,
 		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
 
-	err := k.SetToken(ctx, contractID, token)
+	err := k.SetToken(ctx, token)
 	if err != nil {
 		return err
 	}
 
-	err = k.MintSupply(ctx, contractID, token.GetOwner(), types.OneCoins(token.GetTokenID()))
+	err = k.MintSupply(ctx, token.GetContractID(), token.GetOwner(), types.OneCoins(token.GetTokenID()))
 	if err != nil {
 		return err
 	}
@@ -69,16 +69,17 @@ func (k Keeper) MintNFT(ctx sdk.Context, contractID string, from sdk.AccAddress,
 
 	return nil
 }
-func (k Keeper) isMintable(ctx sdk.Context, contractID string, token types.Token, from sdk.AccAddress) sdk.Error {
+func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) sdk.Error {
 	ft, ok := token.(types.FT)
 	if !ok {
-		return types.ErrTokenNotMintable(types.DefaultCodespace, contractID, token.GetTokenID())
+		// It should never happen.
+		panic("fungible token data type is not FT")
 	}
 
 	if !ft.GetMintable() {
-		return types.ErrTokenNotMintable(types.DefaultCodespace, contractID, token.GetTokenID())
+		return types.ErrTokenNotMintable(types.DefaultCodespace, token.GetContractID(), token.GetTokenID())
 	}
-	perm := types.NewMintPermission(contractID)
+	perm := types.NewMintPermission(token.GetContractID())
 	if !k.HasPermission(ctx, from, perm) {
 		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
 	}
