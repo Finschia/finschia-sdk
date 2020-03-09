@@ -262,18 +262,18 @@ jobs:
           name: build binary
           command: |
             set -x
-            make build BUILD_TAGS=testnet
+            make build
       - run:
           name: build docker image
           command: |
             set -x
-            make build-docker BUILD_TAGS=testnet
+            make build-docker
       - run:
           name: run integration test for multi node and exit on failure
           command: |
             set -x
             docker network prune -f
-            make test-integration-multi-node BUILD_TAGS=testnet
+            make test-integration-multi-node
   localnet:
     <<: *machine_defaults
     steps:
