@@ -28,6 +28,13 @@ func (k Keeper) SetAccount(ctx sdk.Context, acc types.Account) sdk.Error {
 		return types.ErrAccountExist(types.DefaultCodespace, acc.GetAddress())
 	}
 	store.Set(accKey, k.cdc.MustMarshalBinaryBare(acc))
+
+	// Set Account if not exists yet
+	account := k.accountKeeper.GetAccount(ctx, acc.GetAddress())
+	if account == nil {
+		account = k.accountKeeper.NewAccountWithAddress(ctx, acc.GetAddress())
+		k.accountKeeper.SetAccount(ctx, account)
+	}
 	return nil
 }
 

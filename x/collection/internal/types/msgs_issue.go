@@ -10,17 +10,21 @@ var _ contract.Msg = (*MsgIssueFT)(nil)
 type MsgIssueFT struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	ContractID string         `json:"contract_id"`
+	To         sdk.AccAddress `json:"to"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 	Amount     sdk.Int        `json:"amount"`
 	Mintable   bool           `json:"mintable"`
 	Decimals   sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssueFT(owner sdk.AccAddress, contractID string, name string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
+func NewMsgIssueFT(owner, to sdk.AccAddress, contractID string, name, meta string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
 	return MsgIssueFT{
 		Owner:      owner,
 		ContractID: contractID,
+		To:         to,
 		Name:       name,
+		Meta:       meta,
 		Amount:     amount,
 		Mintable:   mintable,
 		Decimals:   decimal,
@@ -45,6 +49,9 @@ func (msg MsgIssueFT) ValidateBasic() sdk.Error {
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
 	}
+	if msg.To.Empty() {
+		return sdk.ErrInvalidAddress("to address cannot be empty")
+	}
 
 	if msg.Amount.Equal(sdk.NewInt(1)) && msg.Decimals.Equal(sdk.NewInt(0)) && !msg.Mintable {
 		return ErrInvalidIssueFT(DefaultCodespace)
@@ -63,13 +70,15 @@ type MsgIssueNFT struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	ContractID string         `json:"contract_id"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 }
 
-func NewMsgIssueNFT(owner sdk.AccAddress, contractID, name string) MsgIssueNFT {
+func NewMsgIssueNFT(owner sdk.AccAddress, contractID, name, meta string) MsgIssueNFT {
 	return MsgIssueNFT{
 		Owner:      owner,
 		ContractID: contractID,
 		Name:       name,
+		Meta:       meta,
 	}
 }
 

@@ -60,9 +60,7 @@ func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress
 	}
 	supply := k.GetSupply(ctx, contractID)
 	supply = supply.Inflate(amt)
-	if supply.GetTotalSupply().IsAnyNegative() {
-		return types.ErrInsufficientSupply(types.DefaultCodespace, fmt.Sprintf("insufficient supply for token [%s]", contractID))
-	}
+	// supply should never be negative. Big.Int.Add will be panic if it becomes overflow
 
 	k.SetSupply(ctx, supply)
 	return nil

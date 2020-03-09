@@ -96,7 +96,7 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		// When validate basic, Then error is occurred
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesFieldCount(DefaultCodespace, len(changeList)).Error())
 	}
-	t.Log("Test with token type")
+	t.Log("Test with nft token type")
 	{
 		msg := AMsgModify().TokenType(defaultTokenType).Build()
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesField(DefaultCodespace, "base_img_uri").Error())
@@ -106,7 +106,7 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 			Build()
 		require.NoError(t, msg.ValidateBasic())
 	}
-	t.Log("Test with token type and index")
+	t.Log("Test with nft token type and index")
 	{
 		msg := AMsgModify().TokenType(defaultTokenType).TokenIndex(defaultTokenIndex).Build()
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesField(DefaultCodespace, "base_img_uri").Error())
@@ -115,6 +115,33 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 			Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).
 			Build()
 		require.NoError(t, msg.ValidateBasic())
+	}
+	t.Log("Test with ft token type and index")
+	{
+		msg := AMsgModify().TokenType(defaultTokenTypeFT).TokenIndex(defaultTokenIndex).Build()
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesField(DefaultCodespace, "base_img_uri").Error())
+
+		msg = AMsgModify().TokenType(defaultTokenTypeFT).TokenIndex(defaultTokenIndex).
+			Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).
+			Build()
+		require.NoError(t, msg.ValidateBasic())
+	}
+	t.Log("Test with ft token type and not index")
+	{
+		msg := AMsgModify().TokenType(defaultTokenTypeFT).Build()
+		require.EqualError(t, msg.ValidateBasic(), ErrTokenTypeFTWithoutIndex(DefaultCodespace, defaultTokenTypeFT).Error())
+	}
+	t.Log("Test with invalid token type")
+	{
+		invalidTokenType := "010101"
+		msg := AMsgModify().TokenType(invalidTokenType).Build()
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenType(DefaultCodespace, invalidTokenType).Error())
+	}
+	t.Log("Test with invalid token index")
+	{
+		invalidTokenIndex := "010101"
+		msg := AMsgModify().TokenIndex(invalidTokenIndex).Build()
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenIndex(DefaultCodespace, invalidTokenIndex).Error())
 	}
 	t.Log("Test with token index not token type")
 	{

@@ -13,7 +13,7 @@ func TestMsgBasics(t *testing.T) {
 	cdc := ModuleCdc
 
 	{
-		msg := NewMsgIssueFT(addr1, defaultContractID, defaultName, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssueFT(addr1, addr1, defaultContractID, defaultName, defaultMeta, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.Equal(t, "issue_ft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -35,7 +35,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Mintable, msg2.Mintable)
 	}
 	{
-		msg := NewMsgIssueNFT(addr1, defaultContractID, defaultName)
+		msg := NewMsgIssueNFT(addr1, defaultContractID, defaultName, defaultMeta)
 		require.Equal(t, "issue_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -54,7 +54,7 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Name, msg2.Name)
 	}
 	{
-		msg := NewMsgMintNFT(addr1, defaultContractID, addr1, defaultName, defaultTokenType)
+		msg := NewMsgMintNFT(addr1, defaultContractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		require.Equal(t, "mint_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -203,7 +203,7 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "").Error())
 
 		msg = NewMsgTransferNFT(addr1, defaultContractID, addr2, "1")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-z0-9]{16}$]").Error())
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
 	}
 
 	{
@@ -280,7 +280,7 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
 
 		msg = NewMsgTransferNFTFrom(addr1, defaultContractID, addr2, addr2, "1")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-z0-9]{16}$]").Error())
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
 	}
 
 	{

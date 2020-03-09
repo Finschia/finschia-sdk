@@ -9,13 +9,15 @@ var _ sdk.Msg = (*MsgCreateCollection)(nil)
 type MsgCreateCollection struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 	BaseImgURI string         `json:"base_img_uri"`
 }
 
-func NewMsgCreateCollection(owner sdk.AccAddress, name, baseImgURI string) MsgCreateCollection {
+func NewMsgCreateCollection(owner sdk.AccAddress, name, meta, baseImgURI string) MsgCreateCollection {
 	return MsgCreateCollection{
 		Owner:      owner,
 		Name:       name,
+		Meta:       meta,
 		BaseImgURI: baseImgURI,
 	}
 }

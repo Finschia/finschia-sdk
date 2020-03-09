@@ -7,7 +7,7 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, owner sdk.AccAddress) sdk.Error {
+func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, owner, to sdk.AccAddress) sdk.Error {
 	if !types.ValidateImageURI(token.GetImageURI()) {
 		return types.ErrInvalidImageURILength(types.DefaultCodespace, token.GetImageURI())
 	}
@@ -16,7 +16,7 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 		return err
 	}
 
-	err = k.MintSupply(ctx, token.GetContractID(), owner, amount)
+	err = k.MintSupply(ctx, token.GetContractID(), to, amount)
 	if err != nil {
 		return err
 	}
@@ -30,6 +30,7 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
 			sdk.NewAttribute(types.AttributeKeySymbol, token.GetSymbol()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
+			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
 			sdk.NewAttribute(types.AttributeKeyMintable, strconv.FormatBool(token.GetMintable())),
 			sdk.NewAttribute(types.AttributeKeyDecimals, token.GetDecimals().String()),

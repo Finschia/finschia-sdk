@@ -17,12 +17,14 @@ func TestHandleMsgModify(t *testing.T) {
 	contractID := contract.SampleContractID
 	const (
 		modifiedTokenName = "modifiedTokenName"
-		modifiedTokenURI  = "modifiedTokenURI"
+		modifiedImgURI    = "modifiedImgURI"
+		modifiedMeta      = "modifiedMeta"
 	)
 	// Given MsgModify
 	msg := types.NewMsgModify(addr1, contractID, linktype.NewChanges(
 		linktype.NewChange("name", modifiedTokenName),
-		linktype.NewChange("token_uri", modifiedTokenURI),
+		linktype.NewChange("img_uri", modifiedImgURI),
+		linktype.NewChange("meta", modifiedMeta),
 	))
 
 	t.Log("Test with nonexistent token")
@@ -32,22 +34,23 @@ func TestHandleMsgModify(t *testing.T) {
 
 		// Then response is error
 		require.False(t, res.Code.IsOK())
-		require.Equal(t, types.DefaultCodespace, res.Codespace)
-		require.Equal(t, types.CodeTokenNotExist, res.Code)
+		require.Equal(t, contract.ContractCodeSpace, res.Codespace)
+		require.Equal(t, contract.CodeContractNotExist, res.Code)
 		verifyEventFunc(t, nil, res.Events)
 	}
 
 	t.Log("Test modify token")
 	{
 		// Given issued token
-		res := h(ctx, types.NewMsgIssue(addr1, defaultName, defaultContractID, defaultImageURI,
+		res := h(ctx, types.NewMsgIssue(addr1, addr1, defaultName, defaultContractID, defaultMeta, defaultImageURI,
 			sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true))
 		require.True(t, res.IsOK())
 		contractID := GetMadeContractID(res.Events)
 
 		msg := types.NewMsgModify(addr1, contractID, linktype.NewChanges(
 			linktype.NewChange("name", modifiedTokenName),
-			linktype.NewChange("token_uri", modifiedTokenURI),
+			linktype.NewChange("img_uri", modifiedImgURI),
+			linktype.NewChange("meta", modifiedMeta),
 		))
 
 		// When handle MsgModify
@@ -59,7 +62,8 @@ func TestHandleMsgModify(t *testing.T) {
 		expectedEvents := sdk.Events{
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, defaultContractID)),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("name", modifiedTokenName)),
-			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("token_uri", modifiedTokenURI)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("img_uri", modifiedImgURI)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("meta", modifiedMeta)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}

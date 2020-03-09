@@ -7,6 +7,142 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestKeeper_Attach(t *testing.T) {
+	ctx := cacheKeeper()
+	prepareCollectionTokens(ctx, t)
+
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID1), types.ErrCannotAttachToItself(types.DefaultCodespace, defaultTokenID1).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID6), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, keeper.Attach(ctx, wrongContractID, addr1, defaultTokenID1, defaultTokenID2), types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID2), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID2, addr2).Error())
+
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID6, defaultTokenID1), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID1, addr2).Error())
+
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID2), types.ErrTokenAlreadyAChild(types.DefaultCodespace, defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultTokenID1, defaultTokenID2).Error())
+}
+
+func TestKeeper_AttachFrom(t *testing.T) {
+	ctx := cacheKeeper()
+	prepareCollectionTokens(ctx, t)
+
+	require.EqualError(t, keeper.AttachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1, defaultTokenID2), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultContractID).Error())
+	prepareProxy(ctx, t)
+	require.NoError(t, keeper.AttachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1, defaultTokenID2))
+}
+
+func TestKeeper_Detach(t *testing.T) {
+	ctx := cacheKeeper()
+	prepareCollectionTokens(ctx, t)
+
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID6), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, keeper.Detach(ctx, wrongContractID, addr1, defaultTokenID1), types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID1).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr2, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID1, addr2).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID1), types.ErrTokenNotAChild(types.DefaultCodespace, defaultTokenID1).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenIDFT), types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID2))
+}
+
+func TestKeeper_DetachFrom(t *testing.T) {
+	ctx := cacheKeeper()
+	prepareCollectionTokens(ctx, t)
+
+	require.EqualError(t, keeper.DetachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID2), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultContractID).Error())
+	prepareProxy(ctx, t)
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.DetachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID2))
+}
+
+func TestKeeper_RootOf(t *testing.T) {
+	ctx := cacheKeeper()
+	prepareCollectionTokens(ctx, t)
+
+	_, err := keeper.RootOf(ctx, defaultContractID, defaultTokenID6)
+	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+
+	_, err = keeper.RootOf(ctx, wrongContractID, defaultTokenID1)
+	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID1).Error())
+
+	_, err = keeper.RootOf(ctx, defaultContractID, defaultTokenIDFT)
+	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+
+	nft, err := keeper.RootOf(ctx, defaultContractID, defaultTokenID1)
+	require.NoError(t, err)
+	require.Equal(t, nft.GetContractID(), defaultContractID)
+	require.Equal(t, nft.GetTokenID(), defaultTokenID1)
+
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID3))
+
+	nft, err = keeper.RootOf(ctx, defaultContractID, defaultTokenID3)
+	require.NoError(t, err)
+	require.Equal(t, nft.GetContractID(), defaultContractID)
+	require.Equal(t, nft.GetTokenID(), defaultTokenID1)
+}
+
+func TestKeeper_ParentOf(t *testing.T) {
+	ctx := cacheKeeper()
+	prepareCollectionTokens(ctx, t)
+
+	_, err := keeper.ParentOf(ctx, defaultContractID, defaultTokenID6)
+	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+
+	_, err = keeper.ParentOf(ctx, wrongContractID, defaultTokenID1)
+	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID1).Error())
+
+	_, err = keeper.ParentOf(ctx, defaultContractID, defaultTokenIDFT)
+	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+
+	nft, err := keeper.ParentOf(ctx, defaultContractID, defaultTokenID1)
+	require.NoError(t, err)
+	require.Equal(t, nft, nil)
+
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID3))
+
+	nft, err = keeper.ParentOf(ctx, defaultContractID, defaultTokenID3)
+	require.NoError(t, err)
+	require.Equal(t, nft.GetContractID(), defaultContractID)
+	require.Equal(t, nft.GetTokenID(), defaultTokenID2)
+}
+
+func TestKeeper_ChildrenOf(t *testing.T) {
+	ctx := cacheKeeper()
+	prepareCollectionTokens(ctx, t)
+
+	_, err := keeper.ChildrenOf(ctx, defaultContractID, defaultTokenID6)
+	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+
+	_, err = keeper.ChildrenOf(ctx, wrongContractID, defaultTokenID1)
+	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID1).Error())
+
+	_, err = keeper.ChildrenOf(ctx, defaultContractID, defaultTokenIDFT)
+	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+
+	tokens, err := keeper.ChildrenOf(ctx, defaultContractID, defaultTokenID1)
+	require.NoError(t, err)
+	require.Equal(t, len(tokens), 0)
+
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID3))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID4))
+
+	tokens, err = keeper.ChildrenOf(ctx, defaultContractID, defaultTokenID1)
+	require.NoError(t, err)
+	require.Equal(t, len(tokens), 2)
+	require.Equal(t, tokens[0].GetTokenID(), defaultTokenID2)
+	require.Equal(t, tokens[1].GetTokenID(), defaultTokenID4)
+
+	tokens, err = keeper.ChildrenOf(ctx, defaultContractID, defaultTokenID2)
+	require.NoError(t, err)
+	require.Equal(t, len(tokens), 1)
+	require.Equal(t, tokens[0].GetTokenID(), defaultTokenID3)
+}
+
 func TestAttachDetachScenario(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)

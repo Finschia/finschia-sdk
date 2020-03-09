@@ -31,6 +31,7 @@ func TestCoin(t *testing.T) {
 	require.Panics(t, func() { NewCoin(strings.ToUpper(testDenomA), sdk.NewInt(10)) })
 	require.Equal(t, sdk.NewInt(5), NewInt64Coin(testDenom1, 5).Amount)
 	require.Equal(t, sdk.NewInt(5), NewCoin(testDenom1, sdk.NewInt(5)).Amount)
+	require.Equal(t, OneCoins(testDenom1)[0].Amount.Int64(), int64(1))
 }
 
 func TestIsEqualCoin(t *testing.T) {
@@ -507,7 +508,7 @@ func TestCoinsIsAnyGTE(t *testing.T) {
 	assert.False(t, Coins{{testDenom2, one}}.IsAnyGTE(Coins{{testDenom1, one}, {testDenom2, two}}))
 	assert.True(t, Coins{{testDenom1, one}, {testDenom2, two}}.IsAnyGTE(Coins{{testDenom1, one}, {testDenom2, one}}))
 	assert.True(t, Coins{{testDenom1, one}, {testDenom2, one}}.IsAnyGTE(Coins{{testDenom1, one}, {testDenom2, two}}))
-	assert.True(t, Coins{{"00000xxx00000000", one}, {"00000yyy00000000", one}}.IsAnyGTE(Coins{{testDenom2, one}, {"00000ccc00000000", one}, {"00000yyy00000000", one}, {"00000zzz00000000", one}}))
+	assert.True(t, Coins{{"00000aaa00000000", one}, {"00000bbb00000000", one}}.IsAnyGTE(Coins{{testDenom2, one}, {"00000ccc00000000", one}, {"00000bbb00000000", one}, {"00000ddd00000000", one}}))
 }
 
 //nolint:dupl
@@ -615,7 +616,7 @@ func TestFindDup(t *testing.T) {
 		want int
 	}{
 		{"empty", args{NewCoins()}, -1},
-		{"one coin", args{NewCoins(NewInt64Coin("00000xyz00000000", 10))}, -1},
+		{"one coin", args{NewCoins(NewInt64Coin("00000abc00000000", 10))}, -1},
 		{"no dups", args{Coins{abc, def, ghi}}, -1},
 		{"dup at first position", args{Coins{abc, abc, def}}, 1},
 		{"dup after first position", args{Coins{abc, def, def}}, 2},
@@ -641,7 +642,7 @@ func TestMarshalJSONCoins(t *testing.T) {
 	}{
 		{"nil coins", nil, `[]`},
 		{"empty coins", Coins{}, `[]`},
-		{"non-empty coins", NewCoins(NewInt64Coin("00000foo00000000", 50)), `[{"token_id":"00000foo00000000","amount":"50"}]`},
+		{"non-empty coins", NewCoins(NewInt64Coin("00000fee00000000", 50)), `[{"token_id":"00000fee00000000","amount":"50"}]`},
 	}
 
 	for _, tc := range testCases {

@@ -9,26 +9,31 @@ import (
 
 const (
 	MaxImageURILength    = 1000
-	MaxTokenNameLength   = 1000
-	MaxTokenSymbolLength = 5
+	MaxTokenNameLength   = 20
+	MaxTokenMetaLength   = 1000
 	MaxChangeFieldsCount = 100
 )
 
 var (
 	TokenModifiableFields = ModifiableFields{
 		AttributeKeyName:     true,
-		AttributeKeyTokenURI: true,
+		AttributeKeyMeta:     true,
+		AttributeKeyImageURI: true,
 	}
 )
 
 type ModifiableFields map[string]bool
 
 func ValidateName(name string) bool {
-	return utf8.RuneCountInString(name) < MaxTokenNameLength
+	return utf8.RuneCountInString(name) <= MaxTokenNameLength
 }
 
-func ValidateImageURI(tokenURI string) bool {
-	return utf8.RuneCountInString(tokenURI) < MaxImageURILength
+func ValidateMeta(meta string) bool {
+	return utf8.RuneCountInString(meta) <= MaxTokenMetaLength
+}
+
+func ValidateImageURI(imageURI string) bool {
+	return utf8.RuneCountInString(imageURI) <= MaxImageURILength
 }
 
 type ChangesValidator struct {
@@ -44,9 +49,15 @@ func NewChangesValidator() *ChangesValidator {
 		}
 		return nil
 	}
-	hs[AttributeKeyTokenURI] = func(value string) sdk.Error {
+	hs[AttributeKeyImageURI] = func(value string) sdk.Error {
 		if !ValidateImageURI(value) {
 			return ErrInvalidImageURILength(DefaultCodespace, value)
+		}
+		return nil
+	}
+	hs[AttributeKeyMeta] = func(value string) sdk.Error {
+		if !ValidateMeta(value) {
+			return ErrInvalidMetaLength(DefaultCodespace, value)
 		}
 		return nil
 	}
@@ -65,13 +76,16 @@ func (c *ChangesValidator) Validate(changes linktype.Changes) sdk.Error {
 		return ErrInvalidChangesFieldCount(DefaultCodespace, len(changes))
 	}
 
-	validator := NewChangesValidator()
+	checkedFields := map[string]bool{}
 	for _, change := range changes {
 		if !c.modifiableFields[change.Field] {
 			return ErrInvalidChangesField(DefaultCodespace, change.Field)
 		}
+		if checkedFields[change.Field] {
+			return ErrDuplicateChangesField(DefaultCodespace, change.Field)
+		}
 
-		validateHandler, ok := validator.handlers[change.Field]
+		validateHandler, ok := c.handlers[change.Field]
 		if !ok {
 			return ErrInvalidChangesField(DefaultCodespace, change.Field)
 		}
@@ -79,6 +93,7 @@ func (c *ChangesValidator) Validate(changes linktype.Changes) sdk.Error {
 		if err := validateHandler(change.Value); err != nil {
 			return err
 		}
+		checkedFields[change.Field] = true
 	}
 	return nil
 }

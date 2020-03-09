@@ -32,6 +32,13 @@ func (k Keeper) SetApproved(ctx sdk.Context, contractID string, proxy sdk.AccAdd
 	}
 	store.Set(approvedKey, ApprovedValue)
 
+	// Set Account if not exists yet
+	account := k.accountKeeper.GetAccount(ctx, proxy)
+	if account == nil {
+		account = k.accountKeeper.NewAccountWithAddress(ctx, proxy)
+		k.accountKeeper.SetAccount(ctx, account)
+	}
+
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeApproveCollection,

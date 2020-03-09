@@ -12,10 +12,8 @@ import (
 )
 
 var (
-	OneCoin   = func(denom string) Coin { return NewCoin(denom, sdk.NewInt(1)) }
-	OneCoins  = func(denom string) Coins { return NewCoins(OneCoin(denom)) }
-	ZeroCoin  = func(denom string) Coin { return NewCoin(denom, sdk.NewInt(0)) }
-	ZeroCoins = func(denom string) Coins { return NewCoins(ZeroCoin(denom)) }
+	OneCoin  = func(denom string) Coin { return NewCoin(denom, sdk.NewInt(1)) }
+	OneCoins = func(denom string) Coins { return NewCoins(OneCoin(denom)) }
 )
 
 //-----------------------------------------------------------------------------
@@ -600,7 +598,7 @@ func (coins Coins) Sort() Coins {
 
 var (
 	// Denominations can be 3 ~ 16 characters long.
-	reDnmString = `[a-z0-9]{16}`
+	reDnmString = `[a-f0-9]{16}`
 	reDnm       = regexp.MustCompile(fmt.Sprintf(`^%s$`, reDnmString))
 	reAmt       = `[[:digit:]]+`
 	reSpc       = `:`

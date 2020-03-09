@@ -9,7 +9,7 @@ const (
 	QuerierRoute     = ModuleName
 	QueryBalance     = "balance"
 	QueryTokens      = "tokens"
-	QueryTokenTypes  = "tokentypess"
+	QueryTokenTypes  = "tokentypes"
 	QueryPerms       = "perms"
 	QueryCollections = "collections"
 	QuerySupply      = "supply"

@@ -22,7 +22,7 @@ func TestKeeper_GetTotalInt(t *testing.T) {
 		store := ctx.KVStore(keeper.storeKey)
 		b := keeper.cdc.MustMarshalBinaryLengthPrefixed(expected)
 		store.Set(types.SupplyKey(expected.GetContractID()), b)
-		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		store.Set(types.TokenKey(expected.GetContractID()), keeper.cdc.MustMarshalBinaryBare(token))
 	}
 	t.Log("Get Supply")
@@ -55,7 +55,7 @@ func TestKeeper_MintSupply(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Token")
 	{
-		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, keeper.SetToken(ctx, token))
 	}
 	t.Log("Set Account")
@@ -96,7 +96,7 @@ func TestKeeper_BurnSupply(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Token")
 	{
-		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, keeper.SetToken(ctx, token))
 	}
 	t.Log("Set Account")

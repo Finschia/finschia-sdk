@@ -530,8 +530,8 @@ func (f *Fixtures) TxGovSubmitCommunityPoolSpendProposal(
 //___________________________________________________________________________________
 // linkcli tx token
 
-func (f *Fixtures) TxTokenIssue(from string, name string, symbol string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token issue %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, name, symbol, amount, decimals, mintable, f.Flags())
+func (f *Fixtures) TxTokenIssue(from string, to sdk.AccAddress, name, meta string, symbol string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token issue %s %s %s %s --total-supply=%d --decimals=%d --mintable=%t --meta=%s %v", f.LinkcliBinary, from, to.String(), name, symbol, amount, decimals, mintable, meta, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 func (f *Fixtures) TxTokenMint(from string, contractID string, to string, amount string, flags ...string) (bool, string, string) {
@@ -559,16 +559,21 @@ func (f *Fixtures) TxTokenModify(owner, contractID, field, newValue string, flag
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
+func (f *Fixtures) TxTokenTransfer(from string, to sdk.AccAddress, symbol string, amount int64, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token transfer %s %s %s %d %v", f.LinkcliBinary, from, to, symbol, amount, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
+}
+
 //___________________________________________________________________________________
 // linkcli tx collection
 
-func (f *Fixtures) TxTokenCreateCollection(from string, name, baseImgURI string, flags ...string) (bool, string,
+func (f *Fixtures) TxTokenCreateCollection(from string, name, meta, baseImgURI string, flags ...string) (bool, string,
 	string) {
-	cmd := fmt.Sprintf("%s tx collection create %s %s %s %v", f.LinkcliBinary, from, name, baseImgURI, f.Flags())
+	cmd := fmt.Sprintf("%s tx collection create %s %s %s %s %v", f.LinkcliBinary, from, name, meta, baseImgURI, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
-func (f *Fixtures) TxTokenIssueFTCollection(from string, contractID, name string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection issue-ft %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, contractID, name, amount, decimals, mintable, f.Flags())
+func (f *Fixtures) TxTokenIssueFTCollection(from string, contractID string, to sdk.AccAddress, name, meta string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection issue-ft %s %s %s %s %s --total-supply=%d --decimals=%d --mintable=%t %v", f.LinkcliBinary, from, contractID, to.String(), name, meta, amount, decimals, mintable, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
@@ -582,13 +587,13 @@ func (f *Fixtures) TxTokenBurnFTCollection(from string, contractID, tokenID stri
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
-func (f *Fixtures) TxTokenIssueNFTCollection(from string, contractID, name string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection issue-nft %s %s %s %v", f.LinkcliBinary, from, contractID, name, f.Flags())
+func (f *Fixtures) TxTokenIssueNFTCollection(from string, contractID, name, meta string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection issue-nft %s %s %s %s %v", f.LinkcliBinary, from, contractID, name, meta, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
-func (f *Fixtures) TxTokenMintNFTCollection(from string, contractID string, to string, name string, tokenType string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection mint-nft %s %s %s %s %s %v", f.LinkcliBinary, from, contractID, to, tokenType, name, f.Flags())
+func (f *Fixtures) TxTokenMintNFTCollection(from string, contractID string, to string, name, meta string, tokenType string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection mint-nft %s %s %s %s %s %s %v", f.LinkcliBinary, from, contractID, to, tokenType, name, meta, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags), client.DefaultKeyPass)
 }
 
@@ -1076,8 +1081,8 @@ func (f *Fixtures) QueryBurnToken(contractID string, flags ...string) sdk.Int {
 	return supply
 }
 
-func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, flags ...string) tokenModule.Permissions {
-	cmd := fmt.Sprintf("%s query token perm %s %s", f.LinkcliBinary, addr, f.Flags())
+func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, contractID string, flags ...string) tokenModule.Permissions {
+	cmd := fmt.Sprintf("%s query token perm %s %s %s", f.LinkcliBinary, addr, contractID, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()

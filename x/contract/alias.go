@@ -6,7 +6,8 @@ import (
 )
 
 const (
-	ContractCodeSpace = types.DefaultCodespace
+	ContractCodeSpace    = types.DefaultCodespace
+	CodeContractNotExist = types.CodeContractNotExist
 
 	ModuleName       = types.ModuleName
 	StoreKey         = types.StoreKey
@@ -20,5 +21,6 @@ type (
 
 var (
 	ErrInvalidContractID = types.ErrInvalidContractID
+	ErrContractNotExist  = types.ErrContractNotExist
 	NewContractKeeper    = keeper.NewContractKeeper
 )

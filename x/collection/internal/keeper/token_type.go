@@ -11,35 +11,37 @@ type TokenTypeKeeper interface {
 	GetTokenTypes(ctx sdk.Context, contractID string) (types.TokenTypes, sdk.Error)
 	GetTokenType(ctx sdk.Context, contractID, tokenType string) (types.TokenType, sdk.Error)
 	HasTokenType(ctx sdk.Context, contractID, tokenType string) bool
-	SetTokenType(ctx sdk.Context, contractID string, token types.TokenType) sdk.Error
-	UpdateTokenType(ctx sdk.Context, contractID string, token types.TokenType) sdk.Error
+	SetTokenType(ctx sdk.Context, token types.TokenType) sdk.Error
+	UpdateTokenType(ctx sdk.Context, token types.TokenType) sdk.Error
 }
 
 var _ TokenTypeKeeper = (*Keeper)(nil)
 
-func (k Keeper) SetTokenType(ctx sdk.Context, contractID string, tokenType types.TokenType) sdk.Error {
-	_, err := k.GetCollection(ctx, contractID)
+func (k Keeper) SetTokenType(ctx sdk.Context, tokenType types.TokenType) sdk.Error {
+	_, err := k.GetCollection(ctx, tokenType.GetContractID())
 	if err != nil {
 		return err
 	}
 	store := ctx.KVStore(k.storeKey)
-	if store.Has(types.TokenTypeKey(contractID, tokenType.GetTokenType())) {
-		return types.ErrTokenTypeExist(types.DefaultCodespace, contractID, tokenType.GetTokenType())
+	if store.Has(types.TokenTypeKey(tokenType.GetContractID(), tokenType.GetTokenType())) {
+		return types.ErrTokenTypeExist(types.DefaultCodespace, tokenType.GetContractID(), tokenType.GetTokenType())
 	}
-	store.Set(types.TokenTypeKey(contractID, tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
+	store.Set(types.TokenTypeKey(tokenType.GetContractID(), tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
+	k.setNextTokenTypeNFT(ctx, tokenType.GetContractID(), tokenType.GetTokenType())
+	k.setNextTokenIndexNFT(ctx, tokenType.GetContractID(), tokenType.GetTokenType(), types.ReservedEmpty)
 	return nil
 }
 
-func (k Keeper) UpdateTokenType(ctx sdk.Context, contractID string, tokenType types.TokenType) sdk.Error {
-	_, err := k.GetCollection(ctx, contractID)
+func (k Keeper) UpdateTokenType(ctx sdk.Context, tokenType types.TokenType) sdk.Error {
+	_, err := k.GetCollection(ctx, tokenType.GetContractID())
 	if err != nil {
 		return err
 	}
 	store := ctx.KVStore(k.storeKey)
-	if !store.Has(types.TokenTypeKey(contractID, tokenType.GetTokenType())) {
-		return types.ErrTokenTypeNotExist(types.DefaultCodespace, contractID, tokenType.GetTokenType())
+	if !store.Has(types.TokenTypeKey(tokenType.GetContractID(), tokenType.GetTokenType())) {
+		return types.ErrTokenTypeNotExist(types.DefaultCodespace, tokenType.GetContractID(), tokenType.GetTokenType())
 	}
-	store.Set(types.TokenTypeKey(contractID, tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
+	store.Set(types.TokenTypeKey(tokenType.GetContractID(), tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
 	return nil
 }
 
@@ -73,16 +75,10 @@ func (k Keeper) HasTokenType(ctx sdk.Context, contractID, tokenType string) bool
 }
 
 func (k Keeper) GetNextTokenType(ctx sdk.Context, contractID string) (tokenType string, err sdk.Error) {
-	var lastTokenType types.TokenType
-	k.iterateTokenTypes(ctx, contractID, "", true, func(t types.TokenType) bool {
-		lastTokenType = t
-		return true
-	})
-
-	if lastTokenType == nil {
-		return types.SmallestNFTType, nil
+	tokenType, err = k.getNextTokenTypeNFT(ctx, contractID)
+	if err != nil {
+		return "", err
 	}
-	tokenType = nextID(lastTokenType.GetTokenType(), "")
 	if tokenType[0] == types.FungibleFlag[0] {
 		return "", types.ErrTokenTypeFull(types.DefaultCodespace, contractID)
 	}

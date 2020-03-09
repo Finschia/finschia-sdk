@@ -1,11 +1,50 @@
 package handler
 
-import "testing"
+import (
+	"testing"
+
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/link/x/collection/internal/types"
+	"github.com/stretchr/testify/require"
+)
 
 func TestHandleMsgMintFT(t *testing.T) {
-	t.Log("implement me - ", t.Name())
+	ctx, h, contractID := prepareFT()
+
+	{
+		burnMsg := types.NewMsgMintFT(addr1, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(100)))
+		res := h(ctx, burnMsg)
+		require.True(t, res.Code.IsOK())
+
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("to", addr1.String())),
+			sdk.NewEvent("mint_ft", sdk.NewAttribute("amount", types.NewCoins(types.NewCoin("0000000100000000", sdk.NewInt(100))).String())),
+		}
+		verifyEventFunc(t, e, res.Events)
+	}
 }
 
 func TestHandleMsgMintNFT(t *testing.T) {
-	t.Log("implement me - ", t.Name())
+	ctx, h, contractID := prepareNFT(addr1)
+
+	{
+		msg := types.NewMsgMintNFT(addr1, contractID, addr1, "shield", "", "10000001")
+		res := h(ctx, msg)
+		require.True(t, res.Code.IsOK())
+
+		e := sdk.Events{
+			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
+			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("name", "shield")),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("token_id", defaultTokenID3)),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("from", addr1.String())),
+			sdk.NewEvent("mint_nft", sdk.NewAttribute("to", addr1.String())),
+		}
+		verifyEventFunc(t, e, res.Events)
+	}
 }

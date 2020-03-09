@@ -9,6 +9,7 @@ const (
 	defaultName       = "name"
 	defaultContractID = "linktkn"
 	defaultSymbol     = "BTC"
+	defaultMeta       = "{}"
 	defaultImageURI   = "image-uri"
 	defaultDecimals   = 6
 )

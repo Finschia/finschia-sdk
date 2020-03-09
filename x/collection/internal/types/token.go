@@ -8,12 +8,14 @@ import (
 
 type Token interface {
 	GetName() string
-	SetName(name string) Token
+	SetName(name string)
 	GetContractID() string
 	GetTokenID() string
 	GetTokenType() string
 	GetTokenIndex() string
 	String() string
+	GetMeta() string
+	SetMeta(meta string)
 }
 
 type FT interface {
@@ -25,7 +27,7 @@ type FT interface {
 type NFT interface {
 	Token
 	GetOwner() sdk.AccAddress
-	SetOwner(sdk.AccAddress) Token
+	SetOwner(sdk.AccAddress)
 }
 
 var _ Token = (*BaseNFT)(nil)
@@ -35,14 +37,16 @@ type BaseNFT struct {
 	TokenID    string         `json:"token_id"`
 	Owner      sdk.AccAddress `json:"owner"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 }
 
-func NewNFT(contractID, tokenID, name string, owner sdk.AccAddress) NFT {
+func NewNFT(contractID, tokenID, name, meta string, owner sdk.AccAddress) NFT {
 	return &BaseNFT{
 		ContractID: contractID,
 		TokenID:    tokenID,
 		Owner:      owner,
 		Name:       name,
+		Meta:       meta,
 	}
 }
 func (t BaseNFT) GetName() string          { return t.Name }
@@ -51,13 +55,11 @@ func (t BaseNFT) GetOwner() sdk.AccAddress { return t.Owner }
 func (t BaseNFT) GetTokenID() string       { return t.TokenID }
 func (t BaseNFT) GetTokenType() string     { return t.TokenID[:TokenTypeLength] }
 func (t BaseNFT) GetTokenIndex() string    { return t.TokenID[TokenTypeLength:] }
-func (t *BaseNFT) SetName(name string) Token {
+func (t *BaseNFT) SetName(name string) {
 	t.Name = name
-	return t
 }
-func (t *BaseNFT) SetOwner(owner sdk.AccAddress) Token {
+func (t *BaseNFT) SetOwner(owner sdk.AccAddress) {
 	t.Owner = owner
-	return t
 }
 func (t BaseNFT) String() string {
 	b, err := json.Marshal(t)
@@ -65,6 +67,10 @@ func (t BaseNFT) String() string {
 		panic(err)
 	}
 	return string(b)
+}
+func (t BaseNFT) GetMeta() string { return t.Meta }
+func (t *BaseNFT) SetMeta(meta string) {
+	t.Meta = meta
 }
 
 var _ Token = (*BaseFT)(nil)
@@ -76,15 +82,17 @@ type BaseFT struct {
 	Decimals   sdk.Int `json:"decimals"`
 	Mintable   bool    `json:"mintable"`
 	Name       string  `json:"name"`
+	Meta       string  `json:"meta"`
 }
 
-func NewFT(contractID, tokenID, name string, decimals sdk.Int, mintable bool) FT {
+func NewFT(contractID, tokenID, name, meta string, decimals sdk.Int, mintable bool) FT {
 	return &BaseFT{
 		ContractID: contractID,
 		TokenID:    tokenID,
 		Decimals:   decimals,
 		Mintable:   mintable,
 		Name:       name,
+		Meta:       meta,
 	}
 }
 func (t BaseFT) GetName() string       { return t.Name }
@@ -94,9 +102,8 @@ func (t BaseFT) GetDecimals() sdk.Int  { return t.Decimals }
 func (t BaseFT) GetTokenID() string    { return t.TokenID }
 func (t BaseFT) GetTokenType() string  { return t.TokenID[:TokenTypeLength] }
 func (t BaseFT) GetTokenIndex() string { return t.TokenID[TokenTypeLength:] }
-func (t *BaseFT) SetName(name string) Token {
+func (t *BaseFT) SetName(name string) {
 	t.Name = name
-	return t
 }
 func (t BaseFT) String() string {
 	b, err := json.Marshal(t)
@@ -104,6 +111,10 @@ func (t BaseFT) String() string {
 		panic(err)
 	}
 	return string(b)
+}
+func (t BaseFT) GetMeta() string { return t.Meta }
+func (t *BaseFT) SetMeta(meta string) {
+	t.Meta = meta
 }
 
 type Tokens []Token

@@ -68,7 +68,7 @@ func (k Keeper) SubtractBalance(ctx sdk.Context, contractID string, addr sdk.Acc
 func (k Keeper) subtractBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, sdk.Error) {
 	acc, err := k.GetAccount(ctx, contractID, addr)
 	if err != nil {
-		return sdk.ZeroInt(), err
+		return sdk.ZeroInt(), types.ErrInsufficientBalance(types.DefaultCodespace, fmt.Sprintf("insufficient account funds for token [%s]; 0 < %s", contractID, amt))
 	}
 	oldBalance := acc.GetBalance()
 	newBalance := oldBalance.Sub(amt)

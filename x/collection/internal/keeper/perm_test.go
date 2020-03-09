@@ -15,31 +15,31 @@ func TestCollectionAndPermission(t *testing.T) {
 	issuePerm := types.NewIssuePermission(defaultContractID)
 	{
 		require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName,
-			defaultImgURI), addr1))
+			defaultMeta, defaultImgURI), addr1))
 		require.True(t, keeper.HasPermission(ctx, addr1, issuePerm))
 		require.Error(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName,
-			defaultImgURI), addr1))
+			defaultMeta, defaultImgURI), addr1))
 		collection, err := keeper.GetCollection(ctx, defaultContractID)
 		require.NoError(t, err)
 		require.Equal(t, defaultContractID, collection.GetContractID())
 
 		{
-			require.NoError(t, keeper.IssueFT(ctx, defaultContractID, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
+			require.NoError(t, keeper.IssueFT(ctx, addr1, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true), sdk.NewInt(defaultAmount)))
 			token, err := keeper.GetToken(ctx, defaultContractID, defaultTokenIDFT)
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())
 			require.Equal(t, defaultTokenIDFT, token.GetTokenID())
 		}
 		{
-			require.NoError(t, keeper.IssueNFT(ctx, defaultContractID, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName), addr1))
-			require.NoError(t, keeper.MintNFT(ctx, defaultContractID, addr1, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)))
+			require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta), addr1))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)))
 
 			token, err := keeper.GetToken(ctx, defaultContractID, defaultTokenID1)
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())
 			require.Equal(t, defaultTokenID1, token.GetTokenID())
 
-			require.NoError(t, keeper.MintNFT(ctx, defaultContractID, addr1, types.NewNFT(defaultContractID, defaultTokenID2, defaultName, addr1)))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID2, defaultName, defaultMeta, addr1)))
 			token, err = keeper.GetToken(ctx, defaultContractID, defaultTokenID2)
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())
@@ -49,8 +49,8 @@ func TestCollectionAndPermission(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, int64(2), count.Int64())
 
-			require.NoError(t, keeper.IssueNFT(ctx, defaultContractID, types.NewBaseTokenType(defaultContractID, defaultTokenType2, defaultName), addr1))
-			require.NoError(t, keeper.MintNFT(ctx, defaultContractID, addr1, types.NewNFT(defaultContractID, defaultTokenType2+"00000001", defaultName, addr1)))
+			require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType2, defaultName, defaultMeta), addr1))
+			require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenType2+"00000001", defaultName, defaultMeta, addr1)))
 			token, err = keeper.GetToken(ctx, defaultContractID, defaultTokenType2+"00000001")
 			require.NoError(t, err)
 			require.Equal(t, defaultContractID, token.GetContractID())
@@ -66,10 +66,10 @@ func TestCollectionAndPermission(t *testing.T) {
 	issuePerm2 := types.NewIssuePermission(defaultContractID2)
 	{
 		require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID2, defaultName,
-			defaultImgURI), addr1))
+			defaultMeta, defaultImgURI), addr1))
 		require.True(t, keeper.HasPermission(ctx, addr1, issuePerm2))
 		require.Error(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID2, defaultName,
-			defaultImgURI), addr1))
+			defaultMeta, defaultImgURI), addr1))
 		collection, err := keeper.GetCollection(ctx, defaultContractID2)
 		require.NoError(t, err)
 		require.Equal(t, defaultContractID2, collection.GetContractID())

@@ -28,8 +28,10 @@ var (
 	EventTypeBurnFTFrom           = "burn_ft_from"
 	EventTypeBurnNFTFrom          = "burn_nft_from"
 	EventTypeOperationBurnNFT     = "operation_burn_nft"
+	EventTypeOperationRootChanged = "operation_root_changed"
 
 	AttributeKeyName        = "name"
+	AttributeKeyMeta        = "meta"
 	AttributeKeyContractID  = "contract_id"
 	AttributeKeyTokenID     = "token_id"
 	AttributeKeyOwner       = "owner"
@@ -46,6 +48,8 @@ var (
 	AttributeKeyFromTokenID = "from_token_id"
 	AttributeKeyApprover    = "approver"
 	AttributeKeyProxy       = "proxy"
+	AttributeKeyOldRoot     = "old_root_token_id"
+	AttributeKeyNewRoot     = "new_root_token_id"
 
 	AttributeValueCategory = ModuleName
 )

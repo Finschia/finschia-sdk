@@ -11,9 +11,10 @@ const (
 	DefaultCodespace sdk.CodespaceType = ModuleName
 
 	//Token
-	CodeTokenExist       sdk.CodeType = 100
-	CodeTokenNotExist    sdk.CodeType = 101
-	CodeTokenNotMintable sdk.CodeType = 102
+	CodeTokenExist        sdk.CodeType = 100
+	CodeTokenNotExist     sdk.CodeType = 101
+	CodeTokenNotMintable  sdk.CodeType = 102
+	CodeTokenInsufficient sdk.CodeType = 103
 
 	//Token invalidation
 	CodeTokenInvalidTokenName        sdk.CodeType = 200
@@ -25,6 +26,7 @@ const (
 	CodeTokenInvalidNameLength       sdk.CodeType = 206
 	CodeTokenInvalidTokenType        sdk.CodeType = 207
 	CodeTokenInvalidTokenIndex       sdk.CodeType = 208
+	CodeTokenInvalidImageURILength   sdk.CodeType = 209
 
 	//Collection
 	CodeCollectionExist             sdk.CodeType = 300
@@ -65,6 +67,8 @@ const (
 	CodeEmptyChanges             sdk.CodeType = 902
 	CodeTokenInvalidChangesField sdk.CodeType = 903
 	CodeTokenIndexWithoutType    sdk.CodeType = 904
+	CodeTokenTypeFTWithoutIndex  sdk.CodeType = 905
+	CodeDuplicateChangesField    sdk.CodeType = 906
 )
 
 func ErrTokenNotMintable(codespace sdk.CodespaceType, contractID, tokenID string) sdk.Error {
@@ -114,6 +118,12 @@ func ErrInvalidBaseImgURILength(codespace sdk.CodespaceType, baseImgURI string) 
 		MaxBaseImgURILength, utf8.RuneCountInString(baseImgURI))
 }
 
+func ErrInvalidMetaLength(codespace sdk.CodespaceType, meta string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
+		"invalid meta [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", meta,
+		MaxTokenMetaLength, utf8.RuneCountInString(meta))
+}
+
 func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
 		"invalid name [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", name,
@@ -121,11 +131,20 @@ func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
 }
 
 func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is invalid field of changes", field)
+	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is a invalid field of changes", field)
+}
+
+func ErrDuplicateChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
+	return sdk.NewError(codespace, CodeDuplicateChangesField, "[%s] is a duplicate field of changes", field)
 }
 
 func ErrTokenIndexWithoutType(codespace sdk.CodespaceType) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenIndexWithoutType, "There is a token index but no token type")
+}
+
+func ErrTokenTypeFTWithoutIndex(codespace sdk.CodespaceType, tokenTypeFT string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenTypeFTWithoutIndex, "There is a token type of ft [%s] but no token index",
+		tokenTypeFT)
 }
 
 func ErrCollectionExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
@@ -177,7 +196,7 @@ func ErrTokenNotAChild(codespace sdk.CodespaceType, tokenID string) sdk.Error {
 }
 
 func ErrTokenNotOwnedBy(codespace sdk.CodespaceType, tokenID string, owner fmt.Stringer) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token is being not owned by [%s]", tokenID, owner.String())
+	return sdk.NewError(codespace, CodeTokenNotOwnedBy, "token [%s] is being not owned by [%s]", tokenID, owner.String())
 }
 
 func ErrTokenNotNFT(codespace sdk.CodespaceType, tokenID string) sdk.Error {
@@ -222,4 +241,8 @@ func ErrInsufficientSupply(codespace sdk.CodespaceType, msg string) sdk.Error {
 
 func ErrInvalidCoin(codespace sdk.CodespaceType, msg string) sdk.Error {
 	return sdk.NewError(codespace, CodeInvalidCoin, msg)
+}
+
+func ErrInsufficientToken(codespace sdk.CodespaceType, msg string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInsufficient, msg)
 }

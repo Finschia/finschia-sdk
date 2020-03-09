@@ -12,9 +12,9 @@ import (
 func TestKeeper_IssueToken(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Issue Token")
-	expected := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+	expected := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 	{
-		require.NoError(t, keeper.IssueToken(ctx, expected, sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueToken(ctx, expected, sdk.NewInt(defaultAmount), addr1, addr1))
 	}
 	t.Log("Get Token")
 	{
@@ -50,9 +50,9 @@ func TestKeeper_IssueToken(t *testing.T) {
 func TestKeeper_IssueTokenNotMintable(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Issue a Token Not Mintable")
-	expected := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), false)
+	expected := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), false)
 	{
-		require.NoError(t, keeper.IssueToken(ctx, expected, sdk.NewInt(defaultAmount), addr1))
+		require.NoError(t, keeper.IssueToken(ctx, expected, sdk.NewInt(defaultAmount), addr1, addr1))
 	}
 	{
 		actual, err := keeper.GetToken(ctx, defaultContractID)
@@ -74,7 +74,7 @@ func TestKeeper_IssueTokenTooLongTokenURI(t *testing.T) {
 
 	t.Log("issue a token with too long token uri")
 	{
-		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, length1001String, sdk.NewInt(defaultDecimals), true)
-		require.EqualError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1), types.ErrInvalidImageURILength(types.DefaultCodespace, length1001String).Error())
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, length1001String, sdk.NewInt(defaultDecimals), true)
+		require.EqualError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1), types.ErrInvalidImageURILength(types.DefaultCodespace, length1001String).Error())
 	}
 }

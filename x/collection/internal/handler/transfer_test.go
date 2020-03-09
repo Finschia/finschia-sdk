@@ -14,12 +14,12 @@ func TestHandleTransferFT(t *testing.T) {
 
 	var contractID string
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
-		msg := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -43,12 +43,12 @@ func TestHandleTransferFTFrom(t *testing.T) {
 
 	var contractID string
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
-		msg := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		msg2 := types.NewMsgApprove(addr1, contractID, addr2)
@@ -76,15 +76,15 @@ func TestHandleTransferNFT(t *testing.T) {
 
 	var contractID string
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
-		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 	}
@@ -109,15 +109,15 @@ func TestHandleTransferNFTFrom(t *testing.T) {
 
 	var contractID string
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
-		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 		msg3 := types.NewMsgApprove(addr1, contractID, addr2)
@@ -146,21 +146,21 @@ func TestHandleTransferNFTChild(t *testing.T) {
 
 	var contractID string
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
-		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
+		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
+		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
 		msg3 := types.NewMsgAttach(addr1, contractID, defaultTokenID1, defaultTokenID2)

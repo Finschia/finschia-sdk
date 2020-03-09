@@ -272,11 +272,11 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
 		addr, err := sdk.AccAddressFromBech32(vars["address"])
-		contractID := vars["contract_id"]
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("address cannot parsed: %s", err))
 			return
 		}
+		contractID := vars["contract_id"]
 
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {

@@ -67,7 +67,7 @@ func (k Keeper) burnFT(ctx sdk.Context, contractID string, permissionOwner, toke
 
 func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount types.Coins) sdk.Error {
 	if !k.HasCoins(ctx, contractID, tokenOwner, amount) {
-		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", tokenOwner, amount))
+		return types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", tokenOwner, amount))
 	}
 
 	perm := types.NewBurnPermission(contractID)

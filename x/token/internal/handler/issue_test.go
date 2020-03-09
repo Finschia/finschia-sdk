@@ -24,7 +24,7 @@ func TestHandleMsgIssue(t *testing.T) {
 
 	t.Log("Issue Token")
 	{
-		msg := types.NewMsgIssue(addr1, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssue(addr1, addr1, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -40,6 +40,7 @@ func TestHandleMsgIssue(t *testing.T) {
 			sdk.NewEvent("issue", sdk.NewAttribute("name", defaultName)),
 			sdk.NewEvent("issue", sdk.NewAttribute("symbol", defaultSymbol)),
 			sdk.NewEvent("issue", sdk.NewAttribute("owner", addr1.String())),
+			sdk.NewEvent("issue", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("issue", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String())),
 			sdk.NewEvent("issue", sdk.NewAttribute("mintable", "true")),
 			sdk.NewEvent("issue", sdk.NewAttribute("decimals", sdk.NewInt(defaultDecimals).String())),
@@ -55,7 +56,7 @@ func TestHandleMsgIssue(t *testing.T) {
 
 	t.Log("Issue Token Again Expect Success")
 	{
-		msg := types.NewMsgIssue(addr1, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssue(addr1, addr1, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}

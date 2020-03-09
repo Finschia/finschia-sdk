@@ -11,7 +11,7 @@ import (
 func TestKeeper_GetToken(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Token")
-	expected := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+	expected := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 	{
 		store := ctx.KVStore(keeper.storeKey)
 		store.Set(types.TokenKey(expected.GetContractID()), keeper.cdc.MustMarshalBinaryBare(expected))
@@ -27,7 +27,7 @@ func TestKeeper_GetToken(t *testing.T) {
 func TestKeeper_SetToken(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Set Token")
-	expected := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+	expected := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 	{
 		require.NoError(t, keeper.SetToken(ctx, expected))
 	}
@@ -43,12 +43,12 @@ func TestKeeper_SetToken(t *testing.T) {
 func TestKeeper_UpdateToken(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Set Token")
-	token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+	token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 	{
 		require.NoError(t, keeper.SetToken(ctx, token))
 	}
 	t.Log("Update Token")
-	expected := types.NewToken(token.GetContractID(), "modifiedname", "BTC", "modifiedtokenuri", sdk.NewInt(defaultDecimals), true)
+	expected := types.NewToken(token.GetContractID(), "modifiedname", "BTC", "{}", "modifiedtokenuri", sdk.NewInt(defaultDecimals), true)
 	{
 		require.NoError(t, keeper.UpdateToken(ctx, expected))
 	}
@@ -65,10 +65,10 @@ func TestKeeper_GetAllTokens(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Tokens")
 	expected := types.Tokens{
-		types.NewToken(defaultContractID+"1", defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true),
-		types.NewToken(defaultContractID+"2", defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true),
-		types.NewToken(defaultContractID+"3", defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true),
-		types.NewToken(defaultContractID+"4", defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true),
+		types.NewToken(defaultContractID+"1", defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true),
+		types.NewToken(defaultContractID+"2", defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true),
+		types.NewToken(defaultContractID+"3", defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true),
+		types.NewToken(defaultContractID+"4", defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true),
 	}
 	{
 		store := ctx.KVStore(keeper.storeKey)

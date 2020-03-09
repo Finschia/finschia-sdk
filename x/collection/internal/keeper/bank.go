@@ -55,14 +55,14 @@ func (k Keeper) SubtractCoins(ctx sdk.Context, contractID string, addr sdk.AccAd
 
 	acc, err := k.GetAccount(ctx, contractID, addr)
 	if err != nil {
-		return types.ZeroCoins(contractID), err
+		return nil, types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("insufficient account funds[%s]; account has no coin", contractID))
 	}
 	oldCoins := acc.GetCoins()
 
 	newCoins, hasNeg := oldCoins.SafeSub(amt)
 	if hasNeg {
-		return amt, sdk.ErrInsufficientCoins(
-			fmt.Sprintf("insufficient account funds; %s < %s", oldCoins, amt),
+		return amt, types.ErrInsufficientToken(types.DefaultCodespace,
+			fmt.Sprintf("insufficient account funds[%s]; %s < %s", contractID, oldCoins, amt),
 		)
 	}
 
@@ -79,19 +79,13 @@ func (k Keeper) AddCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress
 	oldCoins := k.GetCoins(ctx, contractID, addr)
 	newCoins := oldCoins.Add(amt...)
 
-	if newCoins.IsAnyNegative() {
-		return amt, sdk.ErrInsufficientCoins(
-			fmt.Sprintf("insufficient account funds; %s < %s", oldCoins, amt),
-		)
-	}
-
 	err := k.SetCoins(ctx, contractID, addr, newCoins)
 	return newCoins, err
 }
 
 func (k Keeper) SetCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) sdk.Error {
 	if !amt.IsValid() {
-		return sdk.ErrInvalidCoins(amt.String())
+		return types.ErrInvalidCoin(types.DefaultCodespace, amt.String())
 	}
 
 	acc, err := k.GetOrNewAccount(ctx, contractID, addr)

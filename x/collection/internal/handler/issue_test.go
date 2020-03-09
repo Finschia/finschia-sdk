@@ -9,12 +9,76 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+func prepareCreateCollection() (sdk.Context, sdk.Handler, string) {
+	ctx, h := cacheKeeper()
+	var contractID string
+	msg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
+	res := h(ctx, msg)
+	contractID = GetMadeContractID(res.Events)
+
+	return ctx, h, contractID
+}
+
+func prepareFT() (sdk.Context, sdk.Handler, string) {
+	ctx, h, contractID := prepareCreateCollection()
+
+	msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+	_ = h(ctx, msg)
+
+	return ctx, h, contractID
+}
+
+func prepareNFT(mintTo sdk.AccAddress) (sdk.Context, sdk.Handler, string) {
+	ctx, h, contractID := prepareCreateCollection()
+
+	msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
+	_ = h(ctx, msg)
+
+	msg2 := types.NewMsgMintNFT(addr1, contractID, mintTo, "sword1", defaultMeta, "10000001")
+	_ = h(ctx, msg2)
+
+	types.NewMsgMintNFT(addr1, contractID, mintTo, "sword2", defaultMeta, "10000001")
+	_ = h(ctx, msg2)
+
+	return ctx, h, contractID
+}
+
 func TestHandleMsgIssueFT(t *testing.T) {
-	t.Log("implement me - ", t.Name())
+	ctx, h, contractID := prepareCreateCollection()
+
+	msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("contract_id", contractID)),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("name", defaultName)),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("token_id", defaultTokenIDFT)),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("owner", addr1.String())),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("to", addr1.String())),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("amount", "1000")),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("mintable", "true")),
+		sdk.NewEvent("issue_ft", sdk.NewAttribute("decimals", "6")),
+	}
+	verifyEventFunc(t, e, res.Events)
 }
 
 func TestHandleMsgIssueNFT(t *testing.T) {
-	t.Log("implement me - ", t.Name())
+	ctx, h, contractID := prepareCreateCollection()
+
+	msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
+	res := h(ctx, msg)
+	require.True(t, res.Code.IsOK())
+
+	e := sdk.Events{
+		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
+		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
+		sdk.NewEvent("issue_nft", sdk.NewAttribute("contract_id", contractID)),
+		sdk.NewEvent("issue_nft", sdk.NewAttribute("token_type", defaultTokenType)),
+	}
+	verifyEventFunc(t, e, res.Events)
 }
 
 func TestHandlerIssueFT(t *testing.T) {
@@ -22,24 +86,24 @@ func TestHandlerIssueFT(t *testing.T) {
 
 	var contractID string
 	{
-		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, msg)
 		contractID = GetMadeContractID(res.Events)
 		require.True(t, res.Code.IsOK())
 	}
 
 	{
-		msg := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueFT(addr2, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr2, addr2, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -57,7 +121,7 @@ func TestHandlerIssueFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueFT(addr2, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr2, addr2, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -67,7 +131,7 @@ func TestHandlerIssueFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, addr2, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -80,7 +144,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 
 	var contractID string
 	{
-		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
@@ -89,23 +153,23 @@ func TestHandlerIssueNFT(t *testing.T) {
 	{
 		//Expect token type is 1001
 		{
-			msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+			msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		//Expect token type is 1002
 		{
-			msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+			msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType2)
+			msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType2)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
 		{
-			msg := types.NewMsgMintNFT(addr1, contractID, addr2, defaultName, defaultTokenType2)
+			msg := types.NewMsgMintNFT(addr1, contractID, addr2, defaultName, defaultMeta, defaultTokenType2)
 			res := h(ctx, msg)
 			require.True(t, res.Code.IsOK())
 		}
@@ -120,7 +184,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintNFT(addr2, contractID, addr2, defaultName, defaultTokenType2)
+				msg := types.NewMsgMintNFT(addr2, contractID, addr2, defaultName, defaultMeta, defaultTokenType2)
 				res := h(ctx, msg)
 				require.True(t, res.Code.IsOK())
 			}
@@ -130,7 +194,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.True(t, res.Code.IsOK())
 			}
 			{
-				msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType2)
+				msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType2)
 				res := h(ctx, msg)
 				require.False(t, res.Code.IsOK())
 				require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -152,12 +216,12 @@ func TestHandlerIssueNFT(t *testing.T) {
 
 	//Expect token type is 1003
 	{
-		msg := types.NewMsgIssueNFT(addr2, contractID, defaultName)
+		msg := types.NewMsgIssueNFT(addr2, contractID, defaultName, defaultMeta)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgMintNFT(addr2, contractID, addr2, defaultName, defaultTokenType3)
+		msg := types.NewMsgMintNFT(addr2, contractID, addr2, defaultName, defaultMeta, defaultTokenType3)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 	}
@@ -167,7 +231,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 		require.True(t, res.Code.IsOK())
 	}
 	{
-		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 		res := h(ctx, msg)
 		require.False(t, res.Code.IsOK())
 		require.Equal(t, types.DefaultCodespace, res.Codespace)
@@ -180,7 +244,7 @@ func TestEvents(t *testing.T) {
 
 	var contractID string
 	{
-		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -203,7 +267,7 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgIssueFT(addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -215,6 +279,7 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("name", defaultName)),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("token_id", defaultTokenIDFT)),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("owner", addr1.String())),
+			sdk.NewEvent("issue_ft", sdk.NewAttribute("to", addr1.String())),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("amount", sdk.NewInt(defaultAmount).String())),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("mintable", "true")),
 			sdk.NewEvent("issue_ft", sdk.NewAttribute("decimals", sdk.NewInt(defaultDecimals).String())),
@@ -254,7 +319,7 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
@@ -268,7 +333,7 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
+		msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		require.NoError(t, msg.ValidateBasic())
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())

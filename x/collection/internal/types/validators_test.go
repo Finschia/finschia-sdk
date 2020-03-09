@@ -8,23 +8,25 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var length990String = strings.Repeat("Eng글자日本語はスゲ", 90)  // 11 * 90 = 990
 var length1001String = strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
 
 func TestValidateName(t *testing.T) {
 	t.Log("Given valid name")
 	{
-		require.True(t, ValidateName(length990String))
+		var length20String = strings.Repeat("Eng글자日本語はス", 2) // 10 * 2 = 20
+		require.True(t, ValidateName(length20String))
 	}
 	t.Log("Given invalid name")
 	{
-		require.False(t, ValidateName(length1001String))
+		var length21String = strings.Repeat("Eng글자日本", 3) // 7 * 3 = 21
+		require.False(t, ValidateName(length21String))
 	}
 }
 
 func TestValidateBaseImgURI(t *testing.T) {
 	t.Log("Given valid base_img_uri")
 	{
+		var length990String = strings.Repeat("Eng글자日本語はスゲ", 90) // 11 * 90 = 990
 		require.True(t, ValidateBaseImgURI(length990String))
 	}
 	t.Log("Given invalid base_img_uri")
@@ -69,11 +71,13 @@ func TestValidateChangesForCollection(t *testing.T) {
 	}
 	t.Log("Test with invalid changes field")
 	{
+		// Given changes with invalid fields
 		changes := linktype.NewChanges(
 			linktype.NewChange("invalid_field", "value"),
 		)
-		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesField(DefaultCodespace,
-			"invalid_field").Error())
+
+		// Then error is occurred
+		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesField(DefaultCodespace, "invalid_field").Error())
 	}
 	t.Log("Test with changes more than max")
 	{
@@ -81,8 +85,19 @@ func TestValidateChangesForCollection(t *testing.T) {
 		changeList := make([]linktype.Change, MaxChangeFieldsCount+1)
 		changes := linktype.Changes(changeList)
 
-		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesFieldCount(DefaultCodespace,
-			len(changeList)).Error())
+		// Then error is occurred
+		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesFieldCount(DefaultCodespace, len(changeList)).Error())
+	}
+	t.Log("Test with duplicate fields")
+	{
+		// Given changes with duplicate fields
+		changes := linktype.NewChanges(
+			linktype.NewChange("name", "value"),
+			linktype.NewChange("name", "value2"),
+		)
+
+		// Then error is occurred
+		require.EqualError(t, validator.Validate(changes), ErrDuplicateChangesField(DefaultCodespace, "name").Error())
 	}
 }
 

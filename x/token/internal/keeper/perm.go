@@ -37,6 +37,13 @@ func (k Keeper) GrantPermission(ctx sdk.Context, from, to sdk.AccAddress, perm t
 	}
 	k.AddPermission(ctx, to, perm)
 
+	// Set Account if not exists yet
+	account := k.accountKeeper.GetAccount(ctx, to)
+	if account == nil {
+		account = k.accountKeeper.NewAccountWithAddress(ctx, to)
+		k.accountKeeper.SetAccount(ctx, account)
+	}
+
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeGrantPermToken,

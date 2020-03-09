@@ -130,9 +130,9 @@ func GetTotalCmd(cdc *codec.Codec) *cobra.Command {
 
 func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "perm [addr]",
+		Use:   "perm [addr] [contract_id]",
 		Short: "Get Permission of the Account",
-		Args:  cobra.ExactArgs(1),
+		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
@@ -141,13 +141,20 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			contractID := args[1]
 			pms, height, err := retriever.GetAccountPermission(cliCtx, addr)
 			if err != nil {
 				return err
 			}
+			var pmsPerContract types.Permissions
+			for _, pm := range pms {
+				if pm.GetResource() == contractID {
+					pmsPerContract = append(pmsPerContract, pm)
+				}
+			}
 
 			cliCtx = cliCtx.WithHeight(height)
-			return cliCtx.PrintOutput(pms)
+			return cliCtx.PrintOutput(pmsPerContract)
 		},
 	}
 
