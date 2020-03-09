@@ -133,7 +133,7 @@ test-integration: build
 	@go test -mod=readonly `go list ./cli_test/...` $(CLI_TEST_BUILD_FLAGS) -v
 
 test-integration-multi-node: build-docker
-	@go test -mod=readonly `go list ./cli_test/...` -tags=cli_multi_node_test $(BUILD_FLAGS) -v
+	@go test -mod=readonly `go list ./cli_test/...` $(CLI_MULTI_BUILD_FALGS) -v
 
 
 ########################################
