@@ -23,7 +23,8 @@ var (
 	flagTotalSupply = "total-supply"
 	flagDecimals    = "decimals"
 	flagMintable    = "mintable"
-	flagTokenURI    = "token-uri"
+	flagMeta        = "meta"
+	flagImageURI    = "image-uri"
 )
 
 const (
@@ -66,7 +67,8 @@ linkcli tx token issue [from_key_or_address] [to] [name]
 --decimals=[decimals]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
---token-uri=[metadata for the token]
+--meta=[metadata for the token]
+--image-uri=[image uri for the token]
 `,
 		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -83,20 +85,22 @@ linkcli tx token issue [from_key_or_address] [to] [name]
 			supply := viper.GetInt64(flagTotalSupply)
 			decimals := viper.GetInt64(flagDecimals)
 			mintable := viper.GetBool(flagMintable)
-			tokenURI := viper.GetString(flagTokenURI)
+			meta := viper.GetString(flagMeta)
+			imageURI := viper.GetString(flagImageURI)
 
 			if decimals < 0 || decimals > 18 {
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
 			}
 
-			msg := types.NewMsgIssue(from, to, name, symbol, tokenURI, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
+			msg := types.NewMsgIssue(from, to, name, symbol, meta, imageURI, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
 	cmd.Flags().Int64(flagTotalSupply, DefaultTotalSupply, "total supply")
 	cmd.Flags().Int64(flagDecimals, DefaultDecimals, "set decimals")
 	cmd.Flags().Bool(flagMintable, false, "set mintable")
-	cmd.Flags().String(flagTokenURI, "", "set token-uri")
+	cmd.Flags().String(flagMeta, "", "set meta")
+	cmd.Flags().String(flagImageURI, "", "set img-uri")
 
 	return client.PostCommands(cmd)[0]
 }

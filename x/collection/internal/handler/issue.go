@@ -21,7 +21,7 @@ func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueF
 		return err.Result()
 	}
 
-	token := types.NewFT(msg.ContractID, tokenID, msg.Name, msg.Decimals, msg.Mintable)
+	token := types.NewFT(msg.ContractID, tokenID, msg.Name, msg.Meta, msg.Decimals, msg.Mintable)
 	err = keeper.IssueFT(ctx, msg.Owner, msg.To, token, msg.Amount)
 	if err != nil {
 		return err.Result()
@@ -54,7 +54,7 @@ func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssue
 		return err.Result()
 	}
 
-	tokenType := types.NewBaseTokenType(msg.ContractID, tokenTypeID, msg.Name)
+	tokenType := types.NewBaseTokenType(msg.ContractID, tokenTypeID, msg.Name, msg.Meta)
 	err = keeper.IssueNFT(ctx, tokenType, msg.Owner)
 	if err != nil {
 		return err.Result()

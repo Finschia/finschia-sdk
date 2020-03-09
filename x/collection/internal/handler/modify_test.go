@@ -16,6 +16,7 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 	const (
 		modifiedName   = "modifiedName"
 		modifiedImgURI = "modifiedImgURI"
+		modifiedMeta   = "modifiedMeta"
 	)
 
 	var contractID string
@@ -24,6 +25,7 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 	msg := types.NewMsgModify(addr1, defaultContractID, "", "", linktype.NewChanges(
 		linktype.NewChange("name", modifiedName),
 		linktype.NewChange("base_img_uri", modifiedImgURI),
+		linktype.NewChange("meta", modifiedMeta),
 	))
 
 	t.Log("Test with nonexistent token")
@@ -41,14 +43,15 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 	t.Log("Test modify token")
 	{
 		// Given created collection
-		res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI))
+		res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
 		require.True(t, res.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
 		// When handle MsgModify
 		msg = types.NewMsgModify(addr1, contractID, "", "", linktype.NewChanges(
 			linktype.NewChange("name", modifiedName),
-			linktype.NewChange("base_img_uri", modifiedImgURI)))
+			linktype.NewChange("base_img_uri", modifiedImgURI),
+			linktype.NewChange("meta", modifiedMeta)))
 		res = h(ctx, msg)
 
 		// Then response is success
@@ -60,6 +63,7 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
 			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute("name", modifiedName)),
 			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute("base_img_uri", modifiedImgURI)),
+			sdk.NewEvent(types.EventTypeModifyCollection, sdk.NewAttribute("meta", modifiedMeta)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}
@@ -71,16 +75,18 @@ func TestHandleMsgModifyForToken(t *testing.T) {
 	ctx, h := cacheKeeper()
 	const (
 		modifiedTokenName = "modifiedTokenName"
+		modifiedMeta      = "modifiedMeta"
 	)
 
 	// created collection
-	res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI))
+	res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
 	require.True(t, res.IsOK())
 	contractID := GetMadeContractID(res.Events)
 
 	// Given MsgModify
 	msg := types.NewMsgModify(addr1, contractID, defaultTokenType, defaultTokenIndex, linktype.NewChanges(
 		linktype.NewChange("name", modifiedTokenName),
+		linktype.NewChange("meta", modifiedMeta),
 	))
 
 	t.Log("Test with nonexistent token")
@@ -98,9 +104,9 @@ func TestHandleMsgModifyForToken(t *testing.T) {
 	t.Log("Test modify token")
 	{
 		// Given token
-		res = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName))
+		res = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta))
 		require.True(t, res.IsOK())
-		res = h(ctx, types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType))
+		res = h(ctx, types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType))
 		require.True(t, res.IsOK())
 
 		// When handle MsgModify
@@ -113,6 +119,7 @@ func TestHandleMsgModifyForToken(t *testing.T) {
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyTokenID, defaultTokenID1)),
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("name", modifiedTokenName)),
+			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute("meta", modifiedMeta)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}
@@ -124,16 +131,18 @@ func TestHandleMsgModifyForTokenType(t *testing.T) {
 	ctx, h := cacheKeeper()
 	const (
 		modifiedTokenName = "modifiedTokenName"
+		modifiedMeta      = "modifiedMeta"
 	)
 
 	// created collection
-	res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI))
+	res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
 	require.True(t, res.IsOK())
 	contractID := GetMadeContractID(res.Events)
 
 	// Given MsgModify
 	msg := types.NewMsgModify(addr1, contractID, defaultTokenType, "", linktype.NewChanges(
 		linktype.NewChange("name", modifiedTokenName),
+		linktype.NewChange("meta", modifiedMeta),
 	))
 
 	t.Log("Test with nonexistent token type")
@@ -151,7 +160,7 @@ func TestHandleMsgModifyForTokenType(t *testing.T) {
 	t.Log("Test modify token type")
 	{
 		// Given token type
-		res = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName))
+		res = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta))
 		require.True(t, res.IsOK())
 
 		// When handle MsgModify
@@ -164,6 +173,7 @@ func TestHandleMsgModifyForTokenType(t *testing.T) {
 			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
 			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute(types.AttributeKeyTokenType, defaultTokenType)),
 			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute("name", modifiedTokenName)),
+			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute("meta", modifiedMeta)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory)),
 			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String())),
 		}

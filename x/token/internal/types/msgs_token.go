@@ -13,18 +13,20 @@ type MsgIssue struct {
 	To       sdk.AccAddress `json:"to"`
 	Name     string         `json:"name"`
 	Symbol   string         `json:"symbol"`
-	ImageURI string         `json:"image_uri"`
+	ImageURI string         `json:"img_uri"`
+	Meta     string         `json:"meta"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
 	Decimals sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssue(owner, to sdk.AccAddress, name, symbol, imageURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssue {
+func NewMsgIssue(owner, to sdk.AccAddress, name, symbol, meta string, imageURI string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssue {
 	return MsgIssue{
 		Owner:    owner,
 		To:       to,
 		Name:     name,
 		Symbol:   symbol,
+		Meta:     meta,
 		ImageURI: imageURI,
 		Amount:   amount,
 		Mintable: mintable,

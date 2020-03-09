@@ -25,21 +25,21 @@ func TestHandleApproveDisapprove(t *testing.T) {
 
 	var contractID string
 	{
-		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, createMsg)
 		require.True(t, res.Code.IsOK())
 		contractID = GetMadeContractID(res.Events)
 
-		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName)
+		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 		res = h(ctx, msg)
 		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultTokenType)
+		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
 		res = h(ctx, msg2)
 		require.True(t, res.Code.IsOK())
-		msg3 := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
+		msg3 := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		res = h(ctx, msg3)
 		require.True(t, res.Code.IsOK())
 		msg4 := types.NewMsgMintFT(addr1, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))

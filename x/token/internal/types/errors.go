@@ -92,6 +92,12 @@ func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
 		MaxTokenNameLength, utf8.RuneCountInString(name))
 }
 
+func ErrInvalidMetaLength(codespace sdk.CodespaceType, meta string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
+		"invalid meta [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", meta,
+		MaxTokenMetaLength, utf8.RuneCountInString(meta))
+}
+
 func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
 	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is invalid field of changes", field)
 }

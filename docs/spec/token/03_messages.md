@@ -14,8 +14,9 @@ type MsgIssue struct {
 	Owner    sdk.AccAddress `json:"owner"`
 	To       sdk.AccAddress `json:"to"`
 	Name     string         `json:"name"`
+	Meta     string         `json:"meta"`
 	Symbol   string         `json:"symbol"`
-	ImageURI string         `json:"image_uri"`
+	ImageURI string         `json:"img_uri"`
 	Amount   sdk.Int        `json:"amount"`
 	Mintable bool           `json:"mintable"`
 	Decimals sdk.Int        `json:"decimals"`

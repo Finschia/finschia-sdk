@@ -18,6 +18,7 @@ const (
 	contractID       = "9be17165"
 	collectionName   = "mycol"
 	imageURL         = "url"
+	meta             = "meta"
 	tokenFTType      = "00000001"
 	tokenFTIndex     = "00000000"
 	tokenFTID        = tokenFTType + tokenFTIndex
@@ -55,12 +56,12 @@ func prepare(t *testing.T) {
 	addr3 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	// prepare collection
-	require.NoError(t, ckeeper.CreateCollection(ctx, types.NewCollection(contractID, collectionName, imageURL), addr1))
-	require.NoError(t, ckeeper.IssueFT(ctx, addr1, addr1, types.NewFT(contractID, tokenFTID, tokenFTName, sdk.NewInt(1), true), sdk.NewInt(tokenFTSupply)))
-	require.NoError(t, ckeeper.IssueNFT(ctx, types.NewBaseTokenType(contractID, tokenNFTType, tokenNFTTypeName), addr1))
-	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID1, tokenNFTName1, addr1)))
-	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID2, tokenNFTName2, addr1)))
-	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID3, tokenNFTName3, addr1)))
+	require.NoError(t, ckeeper.CreateCollection(ctx, types.NewCollection(contractID, collectionName, meta, imageURL), addr1))
+	require.NoError(t, ckeeper.IssueFT(ctx, addr1, addr1, types.NewFT(contractID, tokenFTID, tokenFTName, meta, sdk.NewInt(1), true), sdk.NewInt(tokenFTSupply)))
+	require.NoError(t, ckeeper.IssueNFT(ctx, types.NewBaseTokenType(contractID, tokenNFTType, tokenNFTTypeName, meta), addr1))
+	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID1, tokenNFTName1, meta, addr1)))
+	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID2, tokenNFTName2, meta, addr1)))
+	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID3, tokenNFTName3, meta, addr1)))
 
 	require.NoError(t, ckeeper.Attach(ctx, contractID, addr1, tokenNFTID1, tokenNFTID2))
 	require.NoError(t, ckeeper.Attach(ctx, contractID, addr1, tokenNFTID1, tokenNFTID3))

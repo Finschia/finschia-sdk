@@ -16,7 +16,7 @@ const (
 func TestHandleMsgCreateCollection(t *testing.T) {
 	ctx, h := cacheKeeper()
 	{
-		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultImgURI)
+		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 

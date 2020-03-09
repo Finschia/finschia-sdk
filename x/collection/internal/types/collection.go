@@ -11,36 +11,43 @@ type Findable interface {
 type Collection interface {
 	GetContractID() string
 	GetName() string
-	SetName(name string) Collection
+	SetName(name string)
 	GetBaseImgURI() string
-	SetBaseImgURI(baseImgURI string) Collection
+	SetBaseImgURI(baseImgURI string)
+	GetMeta() string
+	SetMeta(meta string)
 	String() string
 }
 type BaseCollection struct {
 	ContractID string `json:"contract_id"`
 	Name       string `json:"name"`
+	Meta       string `json:"meta"`
 	BaseImgURI string `json:"base_img_uri"`
 }
 
-func NewCollection(contractID, name, baseImgURI string) Collection {
+func NewCollection(contractID, name, meta, baseImgURI string) Collection {
 	return &BaseCollection{
 		ContractID: contractID,
 		Name:       name,
+		Meta:       meta,
 		BaseImgURI: baseImgURI,
 	}
 }
 
 func (c BaseCollection) GetContractID() string { return c.ContractID }
 func (c BaseCollection) GetName() string       { return c.Name }
-func (c *BaseCollection) SetName(name string) Collection {
+func (c *BaseCollection) SetName(name string) {
 	c.Name = name
-	return c
+}
+
+func (c BaseCollection) GetMeta() string { return c.Meta }
+func (c *BaseCollection) SetMeta(meta string) {
+	c.Meta = meta
 }
 
 func (c BaseCollection) GetBaseImgURI() string { return c.BaseImgURI }
-func (c *BaseCollection) SetBaseImgURI(baseImgURI string) Collection {
+func (c *BaseCollection) SetBaseImgURI(baseImgURI string) {
 	c.BaseImgURI = baseImgURI
-	return c
 }
 
 func (c BaseCollection) String() string {

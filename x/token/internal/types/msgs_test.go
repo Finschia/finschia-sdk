@@ -17,7 +17,7 @@ func TestMsgBasics(t *testing.T) {
 	length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
 
 	{
-		msg := NewMsgIssue(addr, addr, "name", "BTC", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, addr, "name", "BTC", "{}", "imageuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.Equal(t, "issue_token", msg.Type())
 		require.Equal(t, "token", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -40,35 +40,35 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Mintable, msg2.Mintable)
 	}
 	{
-		msg := NewMsgIssue(addr, addr, "name", "BTC", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, addr, "name", "BTC", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidImageURILength(DefaultCodespace, length1001String).Error())
 	}
 	{
-		msg := NewMsgIssue(addr, addr, "name", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, addr, "name", "", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "").Error())
 	}
 	{
-		msg := NewMsgIssue(addr, addr, "name", "123456789012345678901", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, addr, "name", "123456789012345678901", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "123456789012345678901").Error())
 	}
 	{
-		msg := NewMsgIssue(addr, addr, "name", "BCD_A", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, addr, "name", "BCD_A", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "BCD_A").Error())
 	}
 	{
-		msg := NewMsgIssue(addr, addr, "name", "12", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, addr, "name", "12", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "12").Error())
 	}
 	{
-		msg := NewMsgIssue(addr, addr, length1001String, "BTC", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, addr, length1001String, "BTC", "", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidNameLength(DefaultCodespace, length1001String).Error())
 	}
 	{
-		msg := NewMsgIssue(addr, addr, "", "BTC", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
+		msg := NewMsgIssue(addr, addr, "", "BTC", "", "tokenuri", sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenName(DefaultCodespace, "").Error())
 	}
 	{
-		msg := NewMsgIssue(addr, addr, "name", "BTC", "tokenuri", sdk.NewInt(1), sdk.NewInt(19), true)
+		msg := NewMsgIssue(addr, addr, "name", "BTC", "", "tokenuri", sdk.NewInt(1), sdk.NewInt(19), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenDecimals(DefaultCodespace, sdk.NewInt(19)).Error())
 	}
 	{

@@ -7,8 +7,11 @@ import (
 )
 
 func TestSetCollection(t *testing.T) {
-	collection := NewCollection(defaultContractID, defaultName, defaultBaseImgURI)
-
-	require.Equal(t, "new_name", collection.SetName("new_name").GetName())
-	require.Equal(t, "new_uri", collection.SetBaseImgURI("new_uri").GetBaseImgURI())
+	collection := NewCollection(defaultContractID, defaultName, defaultMeta, defaultBaseImgURI)
+	collection.SetName("new_name")
+	collection.SetBaseImgURI("new_uri")
+	collection.SetMeta("new_meta")
+	require.Equal(t, "new_name", collection.GetName())
+	require.Equal(t, "new_uri", collection.GetBaseImgURI())
+	require.Equal(t, "new_meta", collection.GetMeta())
 }

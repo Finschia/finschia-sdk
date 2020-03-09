@@ -26,6 +26,7 @@ const (
 	CodeTokenInvalidNameLength       sdk.CodeType = 206
 	CodeTokenInvalidTokenType        sdk.CodeType = 207
 	CodeTokenInvalidTokenIndex       sdk.CodeType = 208
+	CodeTokenInvalidImageURILength   sdk.CodeType = 209
 
 	//Collection
 	CodeCollectionExist             sdk.CodeType = 300
@@ -115,6 +116,12 @@ func ErrInvalidBaseImgURILength(codespace sdk.CodespaceType, baseImgURI string) 
 	return sdk.NewError(codespace, CodeTokenInvalidBaseImgURILength,
 		"invalid base_img_uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", baseImgURI,
 		MaxBaseImgURILength, utf8.RuneCountInString(baseImgURI))
+}
+
+func ErrInvalidMetaLength(codespace sdk.CodespaceType, meta string) sdk.Error {
+	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
+		"invalid meta [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", meta,
+		MaxTokenMetaLength, utf8.RuneCountInString(meta))
 }
 
 func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {

@@ -28,9 +28,11 @@ func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID st
 	for _, change := range changes {
 		switch change.Field {
 		case types.AttributeKeyName:
-			token = token.SetName(change.Value)
-		case types.AttributeKeyTokenURI:
-			token = token.SetImageURI(change.Value)
+			token.SetName(change.Value)
+		case types.AttributeKeyMeta:
+			token.SetMeta(change.Value)
+		case types.AttributeKeyImageURI:
+			token.SetImageURI(change.Value)
 		}
 
 		ctx.EventManager().EmitEvents(sdk.Events{

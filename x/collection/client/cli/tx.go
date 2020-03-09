@@ -100,19 +100,20 @@ func ModifyCmd(cdc *codec.Codec) *cobra.Command {
 
 func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [from_key_or_address] [name] [base_img_uri]",
+		Use:   "create [from_key_or_address] [name] [meta] [base_img_uri]",
 		Short: "Create and sign an create collection tx",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 
 			owner := cliCtx.FromAddress
 			name := args[1]
-			baseImgURI := args[2]
+			meta := args[2]
+			baseImgURI := args[3]
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgCreateCollection(owner, name, baseImgURI)
+			msg := types.NewMsgCreateCollection(owner, name, meta, baseImgURI)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -125,9 +126,9 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "issue-nft [from_key_or_address] [contract_id] [name]",
+		Use:   "issue-nft [from_key_or_address] [contract_id] [name] [meta]",
 		Short: "Create and sign an issue-nft tx",
-		Args:  cobra.ExactArgs(3),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
@@ -135,8 +136,9 @@ func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			to := cliCtx.FromAddress
 			contractID := args[1]
 			name := args[2]
+			meta := args[3]
 
-			msg := types.NewMsgIssueNFT(to, contractID, name)
+			msg := types.NewMsgIssueNFT(to, contractID, name, meta)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -145,7 +147,7 @@ func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func IssueFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "issue-ft [from_key_or_address] [contract_id] [to] [name]",
+		Use:   "issue-ft [from_key_or_address] [contract_id] [to] [name] [meta]",
 		Short: "Create and sign an issue-ft tx",
 		Long: `
 [Fungible Token]
@@ -154,7 +156,7 @@ linkcli tx token issue [from_key_or_address] [contract_id] [name]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
 `,
-		Args: cobra.ExactArgs(4),
+		Args: cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
@@ -166,6 +168,7 @@ linkcli tx token issue [from_key_or_address] [contract_id] [name]
 				return err
 			}
 			name := args[3]
+			meta := args[4]
 			supply := viper.GetInt64(flagTotalSupply)
 			decimals := viper.GetInt64(flagDecimals)
 			mintable := viper.GetBool(flagMintable)
@@ -174,7 +177,7 @@ linkcli tx token issue [from_key_or_address] [contract_id] [name]
 				return errors.New("invalid decimals. 0 <= decimals <= 18")
 			}
 
-			msg := types.NewMsgIssueFT(owner, to, contractID, name, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
+			msg := types.NewMsgIssueFT(owner, to, contractID, name, meta, sdk.NewInt(supply), sdk.NewInt(decimals), mintable)
 
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
@@ -188,13 +191,13 @@ linkcli tx token issue [from_key_or_address] [contract_id] [name]
 
 func MintNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-nft [from_key_or_address] [contract_id] [to] [token_type] [name]",
+		Use:   "mint-nft [from_key_or_address] [contract_id] [to] [token_type] [name] [meta]",
 		Short: "Create and sign an mint-nft tx",
 		Long: `
 [NonFungible Token]
 linkcli tx token mint-nft [from_key_or_address] [contract_id] [token_type] [name]
 `,
-		Args: cobra.ExactArgs(5),
+		Args: cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
@@ -207,8 +210,9 @@ linkcli tx token mint-nft [from_key_or_address] [contract_id] [token_type] [name
 			}
 			tokenType := args[3]
 			name := args[4]
+			meta := args[5]
 
-			msg := types.NewMsgMintNFT(from, contractID, to, name, tokenType)
+			msg := types.NewMsgMintNFT(from, contractID, to, name, meta, tokenType)
 
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},

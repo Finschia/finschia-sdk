@@ -2141,6 +2141,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             mintable:
               type: boolean
               example: true
@@ -2159,6 +2162,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             contract_id:
               type: string
               example: "9be17165"
@@ -2180,6 +2186,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             mintable:
               type: boolean
               example: true
@@ -2206,6 +2215,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             token_id:
               type: string
               example: "1000000100000001"
@@ -2226,6 +2238,9 @@ components:
             name:
               type: string
               example: "test-cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             token_id:
               type: string
               example: "1000000100000002"
@@ -2246,6 +2261,9 @@ components:
             name:
               type: string
               example: "test-cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             token_id:
               type: string
               example: "1000000100000003"
@@ -2266,6 +2284,9 @@ components:
             name:
               type: string
               example: "test-cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             token_id:
               type: string
               example: "1000000100000004"
@@ -2284,6 +2305,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             base_img_uri:
               type: string
               example: "example.com/img_uri"
@@ -2493,6 +2517,9 @@ components:
             decimals:
               type: string
               example: "8"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
     MsgModifyToken:
       type: object
       description: msg to modify token fields
@@ -2584,6 +2611,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
     MsgModifyCollection:
       type: object
       description: msg of token creation
@@ -2630,6 +2660,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             amount:
               type: string
               example: "1000000"
@@ -2657,6 +2690,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
     MsgMintCNFT:
       type: object
       description: msg of non-fungible collection token creation
@@ -2677,6 +2713,9 @@ components:
             name:
               type: string
               example: "cony"
+            meta:
+              type: string
+              example: "{ \"foo\": \"bar\"}"
             token_type:
               type: string
               example: "10000001"
@@ -3001,7 +3040,8 @@ components:
           "symbol": "BTC",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "image_uri": "example.com/token_uri",
+          "meta": "{}",
+          "img_uri": "example.com/token_uri",
           "amount": "1000000",
           "mintable": true,
           "decimals": "8"
@@ -3041,6 +3081,7 @@ components:
         "type": "collection/MsgCreate",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "base_img_uri": "example.com/base_img_uri",
         }
@@ -3049,6 +3090,7 @@ components:
         "type": "collection/MsgIssueFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -3062,6 +3104,7 @@ components:
         "value": {
           "contract_id": "678c146a",
           "name": "cony",
+          "meta": "{}",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
         }
       },
@@ -3069,6 +3112,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -3079,6 +3123,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -3089,6 +3134,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -3099,6 +3145,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -3109,6 +3156,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -3119,6 +3167,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -3129,6 +3178,7 @@ components:
         "type": "collection/MsgMintNFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
@@ -3164,6 +3214,7 @@ components:
         "type": "collection/MsgIssueFT",
         "value": {
           "name": "cony",
+          "meta": "{}",
           "contract_id": "678c146a",
           "owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",

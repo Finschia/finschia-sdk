@@ -61,9 +61,9 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		msg := AMsgModify().ContractID(invalidContractID).Build()
 		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, invalidContractID).Error())
 	}
-	t.Log("tokenURI too long")
+	t.Log("image uri too long")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"token_uri": length1001String})).Build()
+		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"img_uri": length1001String})).Build()
 
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidImageURILength(DefaultCodespace, length1001String).Error())
 	}
@@ -100,8 +100,8 @@ func AMsgModify() *MsgModifyBuilder {
 			sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()),
 			DefaultContractID,
 			linktype.NewChangesWithMap(map[string]string{
-				"name":      "new_name",
-				"token_uri": "new_torken_uri",
+				"name":    "new_name",
+				"img_uri": "new_img_uri",
 			}),
 		),
 	}

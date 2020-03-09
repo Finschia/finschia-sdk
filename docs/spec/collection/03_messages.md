@@ -12,6 +12,7 @@
 type MsgCreateCollection struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 	BaseImgURI string         `json:"base_img_uri"`
 }
 ```
@@ -23,6 +24,7 @@ type MsgIssueFT struct {
 	ContractID string         `json:"contract_id"`
 	To         sdk.AccAddress `json:"to"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 	Amount     sdk.Int        `json:"amount"`
 	Mintable   bool           `json:"mintable"`
 	Decimals   sdk.Int        `json:"decimals"`
@@ -36,6 +38,7 @@ type MsgIssueNFT struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	ContractID string         `json:"contract_id"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 }
 ```
 
@@ -72,6 +75,7 @@ type MsgMintNFT struct {
 	ContractID string         `json:"contract_id"`
 	To         sdk.AccAddress `json:"to"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 	TokenType  string         `json:"token_type"`
 }
 ```

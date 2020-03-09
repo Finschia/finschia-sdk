@@ -174,6 +174,6 @@ func (k Keeper) moveNFToken(ctx sdk.Context, contractID string, from sdk.AccAddr
 	if err := k.SendCoins(ctx, contractID, from, to, amount); err != nil {
 		return err
 	}
-
-	return k.UpdateToken(ctx, token.SetOwner(to))
+	token.SetOwner(to)
+	return k.UpdateToken(ctx, token)
 }

@@ -10,7 +10,7 @@ import (
 func TestKeeper_GetTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Token Type")
-	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)
+	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta)
 	{
 		store := ctx.KVStore(keeper.storeKey)
 		store.Set(types.TokenTypeKey(defaultContractID, defaultTokenType), keeper.cdc.MustMarshalBinaryBare(expected))
@@ -26,9 +26,9 @@ func TestKeeper_GetTokenType(t *testing.T) {
 func TestKeeper_SetTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
 	t.Log("Set Token Type")
-	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)
+	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta)
 	{
 		require.NoError(t, keeper.SetTokenType(ctx, expected))
 	}
@@ -44,7 +44,7 @@ func TestKeeper_SetTokenType(t *testing.T) {
 func TestKeeper_HasTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Token Type")
-	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)
+	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta)
 	{
 		store := ctx.KVStore(keeper.storeKey)
 		store.Set(types.TokenTypeKey(defaultContractID, defaultTokenType), keeper.cdc.MustMarshalBinaryBare(expected))
@@ -58,15 +58,15 @@ func TestKeeper_HasTokenType(t *testing.T) {
 func TestKeeper_UpdateTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
 	t.Log("Set Token Type")
-	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)
+	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta)
 	{
 		require.NoError(t, keeper.SetTokenType(ctx, expected))
 	}
 	t.Log("Update Token Type")
 	{
-		expected = expected.SetName("modifiedname")
+		expected.SetName("modifiedname")
 		require.NoError(t, keeper.UpdateTokenType(ctx, expected))
 	}
 
@@ -81,7 +81,7 @@ func TestKeeper_UpdateTokenType(t *testing.T) {
 func TestKeeper_GetNextTokenType(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
 	t.Log("Get Next Token Type")
 	{
 		tokenType, err := keeper.GetNextTokenType(ctx, defaultContractID)
@@ -90,9 +90,9 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 	}
 	t.Log("Set Token Type")
 	{
-		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)))
-		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType2, defaultName)))
-		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType3, defaultName)))
+		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta)))
+		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType2, defaultName, defaultMeta)))
+		require.NoError(t, keeper.SetTokenType(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType3, defaultName, defaultMeta)))
 	}
 	t.Log("Get TokenTypes")
 	{

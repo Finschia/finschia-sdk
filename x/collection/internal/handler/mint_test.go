@@ -32,7 +32,7 @@ func TestHandleMsgMintNFT(t *testing.T) {
 	ctx, h, contractID := prepareNFT(addr1)
 
 	{
-		msg := types.NewMsgMintNFT(addr1, contractID, addr1, "shield", "10000001")
+		msg := types.NewMsgMintNFT(addr1, contractID, addr1, "shield", "", "10000001")
 		res := h(ctx, msg)
 		require.True(t, res.Code.IsOK())
 

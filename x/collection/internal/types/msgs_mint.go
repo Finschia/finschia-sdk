@@ -13,15 +13,17 @@ type MsgMintNFT struct {
 	ContractID string         `json:"contract_id"`
 	To         sdk.AccAddress `json:"to"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 	TokenType  string         `json:"token_type"`
 }
 
-func NewMsgMintNFT(from sdk.AccAddress, contractID string, to sdk.AccAddress, name, tokenType string) MsgMintNFT {
+func NewMsgMintNFT(from sdk.AccAddress, contractID string, to sdk.AccAddress, name, meta, tokenType string) MsgMintNFT {
 	return MsgMintNFT{
 		From:       from,
 		ContractID: contractID,
 		To:         to,
 		Name:       name,
+		Meta:       meta,
 		TokenType:  tokenType,
 	}
 }

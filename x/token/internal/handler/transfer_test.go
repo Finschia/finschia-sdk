@@ -16,7 +16,7 @@ func TestHandleMsgTransfer(t *testing.T) {
 	t.Log("Prepare Token Issued")
 	{
 		k.NewContractID(ctx)
-		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1)
 		require.NoError(t, err)
 	}

@@ -9,6 +9,7 @@ const (
 	defaultName        = "name"
 	defaultContractID  = "abcdef01"
 	defaultBaseImgURI  = "base-img-uri"
+	defaultMeta        = "{}"
 	defaultDecimals    = 6
 	defaultAmount      = 1000
 	defaultTokenType   = "10000001"

@@ -14,10 +14,12 @@ func TestModifyCollection(t *testing.T) {
 	const (
 		modifiedName = "modifiedName"
 		modifiedURI  = "modifiedURI"
+		modifiedMeta = "modifiedMeta"
 	)
 	changes := linktype.NewChanges(
 		linktype.NewChange("name", modifiedName),
 		linktype.NewChange("base_img_uri", modifiedURI),
+		linktype.NewChange("meta", modifiedMeta),
 	)
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
@@ -39,6 +41,7 @@ func TestModifyCollection(t *testing.T) {
 		actual := keeper.mustDecodeCollection(bz)
 		require.Equal(t, modifiedName, actual.GetName())
 		require.Equal(t, modifiedURI, actual.GetBaseImgURI())
+		require.Equal(t, modifiedMeta, actual.GetMeta())
 	}
 	t.Log("Test with nonexistent contract")
 	{
@@ -60,8 +63,11 @@ func TestModifyCollection(t *testing.T) {
 func TestModifyTokenType(t *testing.T) {
 	const modifiedName = "modifiedName"
 	const modifiedURI = "modifiedURI"
+	const modifiedMeta = "modifiedMeta"
+
 	validChanges := linktype.NewChanges(
 		linktype.NewChange("name", modifiedName),
+		linktype.NewChange("meta", modifiedMeta),
 	)
 	invalidChanges := linktype.NewChanges(
 		linktype.NewChange("base_img_uri", modifiedURI),
@@ -110,8 +116,11 @@ func TestModifyTokenType(t *testing.T) {
 func TestModifyToken(t *testing.T) {
 	const modifiedName = "modifiedName"
 	const modifiedURI = "modifiedURI"
+	const modifiedMeta = "modifiedMeta"
+
 	validChanges := linktype.NewChanges(
 		linktype.NewChange("name", modifiedName),
+		linktype.NewChange("meta", modifiedMeta),
 	)
 	invalidChanges := linktype.NewChanges(
 		linktype.NewChange("base_img_uri", modifiedURI),

@@ -9,7 +9,7 @@ import (
 
 func TestUnmarshalFT(t *testing.T) {
 	// Given a FT
-	token := NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)
+	token := NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true)
 	var token2 BaseFT
 
 	// When marshal and unmarshal the FT
@@ -28,12 +28,12 @@ func TestUnmarshalFT(t *testing.T) {
 	r.Equal(int64(defaultDecimals), token.GetDecimals().Int64(), token2.GetDecimals().Int64())
 	r.Equal(true, token.GetMintable(), token2.GetMintable())
 
-	r.Equal(`{"contract_id":"abcdef01","token_id":"0000000100000000","decimals":"6","mintable":true,"name":"name"}`, token.String())
+	r.Equal(`{"contract_id":"abcdef01","token_id":"0000000100000000","decimals":"6","mintable":true,"name":"name","meta":"{}"}`, token.String())
 }
 
 func TestUnmarshalNFT(t *testing.T) {
 	// Given a NFT
-	token := NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)
+	token := NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)
 	var token2 BaseNFT
 
 	// When marshal and unmarshal the FT
@@ -54,10 +54,24 @@ func TestUnmarshalNFT(t *testing.T) {
 
 func TestSetName(t *testing.T) {
 	// Given a FT, NFT
-	tokenFT := NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)
-	tokenNFT := NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)
+	tokenFT := NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true)
+	tokenNFT := NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)
+
+	tokenFT.SetName("new_name")
+	tokenNFT.SetName("new_name")
+	tokenFT.SetMeta("new_meta")
+	tokenNFT.SetMeta("new_meta")
 
 	// When change name, Then they are changed
-	require.Equal(t, "new_name", tokenFT.SetName("new_name").GetName())
-	require.Equal(t, "new_name", tokenNFT.SetName("new_name").GetName())
+	require.Equal(t, "new_name", tokenFT.GetName())
+	require.Equal(t, "new_name", tokenNFT.GetName())
+	require.Equal(t, "new_meta", tokenFT.GetMeta())
+	require.Equal(t, "new_meta", tokenNFT.GetMeta())
+
+	// Set empty name
+	tokenFT.SetName("")
+	tokenNFT.SetName("")
+
+	require.Equal(t, "", tokenFT.GetName())
+	require.Equal(t, "", tokenNFT.GetName())
 }

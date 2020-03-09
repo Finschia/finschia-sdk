@@ -31,6 +31,7 @@ var (
 	EventTypeOperationRootChanged = "operation_root_changed"
 
 	AttributeKeyName        = "name"
+	AttributeKeyMeta        = "meta"
 	AttributeKeyContractID  = "contract_id"
 	AttributeKeyTokenID     = "token_id"
 	AttributeKeyOwner       = "owner"

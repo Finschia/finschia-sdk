@@ -13,7 +13,7 @@ func TestKeeper_GetToken(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare Token")
 	var expected types.Token
-	expected = types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)
+	expected = types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true)
 	{
 		store := ctx.KVStore(keeper.storeKey)
 		store.Set(types.TokenKey(defaultContractID, defaultTokenIDFT), keeper.cdc.MustMarshalBinaryBare(expected))
@@ -25,7 +25,7 @@ func TestKeeper_GetToken(t *testing.T) {
 		verifyTokenFunc(t, expected, actual)
 	}
 	t.Log("Prepare Token")
-	expected = types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)
+	expected = types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)
 	{
 		store := ctx.KVStore(keeper.storeKey)
 		store.Set(types.TokenKey(defaultContractID, defaultTokenID1), keeper.cdc.MustMarshalBinaryBare(expected))
@@ -41,7 +41,7 @@ func TestKeeper_SetToken(t *testing.T) {
 	ctx := cacheKeeper()
 	var expected types.Token
 	t.Log("Set Token")
-	expected = types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)
+	expected = types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true)
 	{
 		require.NoError(t, keeper.SetToken(ctx, expected))
 	}
@@ -53,7 +53,7 @@ func TestKeeper_SetToken(t *testing.T) {
 		verifyTokenFunc(t, expected, actual)
 	}
 	t.Log("Set Token")
-	expected = types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)
+	expected = types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)
 	{
 		require.NoError(t, keeper.SetToken(ctx, expected))
 	}
@@ -70,12 +70,12 @@ func TestKeeper_UpdateToken(t *testing.T) {
 	ctx := cacheKeeper()
 	var expected, token types.Token
 	t.Log("Set Token")
-	token = types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)
+	token = types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true)
 	{
 		require.NoError(t, keeper.SetToken(ctx, token))
 	}
 	t.Log("Update Token")
-	expected = types.NewFT(defaultContractID, defaultTokenIDFT, "modifiedname", sdk.NewInt(defaultDecimals), true)
+	expected = types.NewFT(defaultContractID, defaultTokenIDFT, "modifiedname", defaultMeta, sdk.NewInt(defaultDecimals), true)
 	{
 		require.NoError(t, keeper.UpdateToken(ctx, expected))
 	}
@@ -87,12 +87,12 @@ func TestKeeper_UpdateToken(t *testing.T) {
 		verifyTokenFunc(t, expected, actual)
 	}
 	t.Log("Set Token")
-	token = types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)
+	token = types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)
 	{
 		require.NoError(t, keeper.SetToken(ctx, token))
 	}
 	t.Log("Update Token")
-	expected = types.NewFT(defaultContractID, defaultTokenID1, "modifiedname", sdk.NewInt(defaultDecimals), true)
+	expected = types.NewFT(defaultContractID, defaultTokenID1, "modifiedname", defaultMeta, sdk.NewInt(defaultDecimals), true)
 	{
 		require.NoError(t, keeper.UpdateToken(ctx, expected))
 	}
@@ -109,13 +109,13 @@ func TestKeeper_GeTokens(t *testing.T) {
 	ctx := cacheKeeper()
 	var allTokens types.Tokens
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
 	t.Log("Prepare FT Tokens")
 	expected := types.Tokens{
-		types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true),
-		types.NewFT(defaultContractID, defaultTokenIDFT2, defaultName, sdk.NewInt(defaultDecimals), true),
-		types.NewFT(defaultContractID, defaultTokenIDFT3, defaultName, sdk.NewInt(defaultDecimals), true),
-		types.NewFT(defaultContractID, defaultTokenIDFT4, defaultName, sdk.NewInt(defaultDecimals), true),
+		types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true),
+		types.NewFT(defaultContractID, defaultTokenIDFT2, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true),
+		types.NewFT(defaultContractID, defaultTokenIDFT3, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true),
+		types.NewFT(defaultContractID, defaultTokenIDFT4, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true),
 	}
 	allTokens = append(allTokens, expected...)
 	{
@@ -134,11 +134,11 @@ func TestKeeper_GeTokens(t *testing.T) {
 	}
 	t.Log("Prepare NFT Tokens")
 	expected = types.Tokens{
-		types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1),
-		types.NewNFT(defaultContractID, defaultTokenID2, defaultName, addr1),
-		types.NewNFT(defaultContractID, defaultTokenID3, defaultName, addr1),
-		types.NewNFT(defaultContractID, defaultTokenID4, defaultName, addr1),
-		types.NewNFT(defaultContractID, defaultTokenID5, defaultName, addr1),
+		types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1),
+		types.NewNFT(defaultContractID, defaultTokenID2, defaultName, defaultMeta, addr1),
+		types.NewNFT(defaultContractID, defaultTokenID3, defaultName, defaultMeta, addr1),
+		types.NewNFT(defaultContractID, defaultTokenID4, defaultName, defaultMeta, addr1),
+		types.NewNFT(defaultContractID, defaultTokenID5, defaultName, defaultMeta, addr1),
 	}
 	allTokens = append(allTokens, expected...)
 	{
@@ -175,7 +175,7 @@ func TestKeeper_GeTokens(t *testing.T) {
 func TestKeeper_GetNextTokenIDFT(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
 	t.Log("Get Next Token ID FT")
 	{
 		tokenID, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
@@ -184,7 +184,7 @@ func TestKeeper_GetNextTokenIDFT(t *testing.T) {
 	}
 	t.Log("Issue a token and get next token id")
 	{
-		require.NoError(t, keeper.SetToken(ctx, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, sdk.NewInt(defaultDecimals), true)))
+		require.NoError(t, keeper.SetToken(ctx, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true)))
 		tokenID, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenIDFT2, tokenID)
@@ -199,9 +199,9 @@ func TestKeeper_GetNextTokenIDFT(t *testing.T) {
 func TestKeeper_GetNextTokenIDNFT(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Prepare collection")
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultImgURI), addr1))
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
 	t.Log("Prepare Token Type")
-	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName)
+	expected := types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta)
 	{
 		require.NoError(t, keeper.SetTokenType(ctx, expected))
 	}
@@ -213,7 +213,7 @@ func TestKeeper_GetNextTokenIDNFT(t *testing.T) {
 	}
 	t.Log("Issue a token and get next token id")
 	{
-		require.NoError(t, keeper.SetToken(ctx, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, addr1)))
+		require.NoError(t, keeper.SetToken(ctx, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)))
 		tokenID, err := keeper.GetNextTokenIDNFT(ctx, defaultContractID, defaultTokenType)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenID2, tokenID)

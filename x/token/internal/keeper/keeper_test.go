@@ -15,6 +15,7 @@ const (
 	defaultName       = "name"
 	defaultSymbol     = "BTC"
 	defaultContractID = "9be17165"
+	defaultMeta       = "{}"
 	defaultImageURI   = "image-uri"
 	defaultDecimals   = 6
 	defaultAmount     = 1000

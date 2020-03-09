@@ -11,18 +11,22 @@ const (
 	MaxBaseImgURILength  = 1000
 	MaxTokenNameLength   = 1000
 	MaxChangeFieldsCount = 100
+	MaxTokenMetaLength   = 1000
 )
 
 var (
 	CollectionModifiableFields = ModifiableFields{
 		AttributeKeyName:       true,
 		AttributeKeyBaseImgURI: true,
+		AttributeKeyMeta:       true,
 	}
 	TokenTypeModifiableFields = ModifiableFields{
 		AttributeKeyName: true,
+		AttributeKeyMeta: true,
 	}
 	TokenModifiableFields = ModifiableFields{
 		AttributeKeyName: true,
+		AttributeKeyMeta: true,
 	}
 )
 
@@ -34,6 +38,9 @@ func ValidateName(name string) bool {
 
 func ValidateBaseImgURI(baseImgURI string) bool {
 	return utf8.RuneCountInString(baseImgURI) < MaxBaseImgURILength
+}
+func ValidateMeta(meta string) bool {
+	return utf8.RuneCountInString(meta) < MaxTokenMetaLength
 }
 
 type ChangesValidator struct {
@@ -52,6 +59,12 @@ func NewChangesValidator() *ChangesValidator {
 	hs[AttributeKeyBaseImgURI] = func(value string) sdk.Error {
 		if !ValidateBaseImgURI(value) {
 			return ErrInvalidBaseImgURILength(DefaultCodespace, value)
+		}
+		return nil
+	}
+	hs[AttributeKeyMeta] = func(value string) sdk.Error {
+		if !ValidateMeta(value) {
+			return ErrInvalidMetaLength(DefaultCodespace, value)
 		}
 		return nil
 	}

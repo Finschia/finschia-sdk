@@ -12,7 +12,7 @@ func TestKeeper_MintTokens(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Issue Token")
 	{
-		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1))
 	}
 	t.Log("TotalSupply supply")
@@ -70,7 +70,7 @@ func TestKeeper_MintTokensWithoutPermissions(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Issue Token")
 	{
-		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1))
 	}
 

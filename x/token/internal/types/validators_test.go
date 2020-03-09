@@ -38,8 +38,8 @@ func TestValidateChanges(t *testing.T) {
 	t.Log("Test with valid changes")
 	{
 		changes := linktype.NewChangesWithMap(map[string]string{
-			"name":      "new_name",
-			"token_uri": "new_torken_uri",
+			"name":    "new_name",
+			"img_uri": "new_img_uri",
 		})
 
 		require.Nil(t, validator.Validate(changes))
@@ -49,12 +49,12 @@ func TestValidateChanges(t *testing.T) {
 		changes := linktype.Changes{}
 		require.EqualError(t, validator.Validate(changes), ErrEmptyChanges(DefaultCodespace).Error())
 	}
-	t.Log("Test with token_uri too long")
+	t.Log("Test with img_uri too long")
 	{
 		length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
 		changes := linktype.NewChangesWithMap(map[string]string{
-			"name":      "new_name",
-			"token_uri": length1001String,
+			"name":    "new_name",
+			"img_uri": length1001String,
 		})
 
 		require.EqualError(

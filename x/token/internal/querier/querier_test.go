@@ -21,6 +21,7 @@ const (
 	tokenImageURL = "url"
 	tokenAmount   = 1000
 	tokenBurned   = 10
+	tokenMeta     = "{}"
 )
 
 var (
@@ -42,7 +43,7 @@ func prepare(t *testing.T) {
 	addr3 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	// prepare token
-	require.NoError(t, tkeeper.IssueToken(ctx, types.NewToken(contractID, tokenName, tokenSymbol, tokenImageURL, sdk.NewInt(1), true), sdk.NewInt(tokenAmount), addr1, addr1))
+	require.NoError(t, tkeeper.IssueToken(ctx, types.NewToken(contractID, tokenName, tokenSymbol, tokenMeta, tokenImageURL, sdk.NewInt(1), true), sdk.NewInt(tokenAmount), addr1, addr1))
 	require.NoError(t, tkeeper.BurnToken(ctx, contractID, sdk.NewInt(tokenBurned), addr1))
 }
 

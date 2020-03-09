@@ -42,9 +42,11 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, contract
 	for _, change := range changes {
 		switch change.Field {
 		case types.AttributeKeyName:
-			collection = collection.SetName(change.Value)
+			collection.SetName(change.Value)
+		case types.AttributeKeyMeta:
+			collection.SetMeta(change.Value)
 		case types.AttributeKeyBaseImgURI:
-			collection = collection.SetBaseImgURI(change.Value)
+			collection.SetBaseImgURI(change.Value)
 		default:
 			return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
 		}
@@ -86,7 +88,9 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractI
 	for _, change := range changes {
 		switch change.Field {
 		case types.AttributeKeyName:
-			tokenType = tokenType.SetName(change.Value)
+			tokenType.SetName(change.Value)
+		case types.AttributeKeyMeta:
+			tokenType.SetMeta(change.Value)
 		default:
 			return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
 		}
@@ -128,7 +132,9 @@ func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID, t
 	for _, change := range changes {
 		switch change.Field {
 		case types.AttributeKeyName:
-			token = token.SetName(change.Value)
+			token.SetName(change.Value)
+		case types.AttributeKeyMeta:
+			token.SetMeta(change.Value)
 		default:
 			return types.ErrInvalidChangesField(types.DefaultCodespace, change.Field)
 		}

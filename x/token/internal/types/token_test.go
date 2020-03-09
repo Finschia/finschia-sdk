@@ -9,7 +9,7 @@ import (
 
 func TestUnmarshalToken(t *testing.T) {
 	// Given a token
-	token := NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+	token := NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 	var token2 Token
 
 	// When marshal and unmarshal the token
@@ -29,24 +29,28 @@ func TestUnmarshalToken(t *testing.T) {
 
 func TestSetToken(t *testing.T) {
 	// Given a token
-	token := NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+	token := NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 
 	// When change name and test uri, Then they are changed
-	require.Equal(t, "new_name", token.SetName("new_name").GetName())
-	require.Equal(t, "new_token_uri", token.SetImageURI("new_token_uri").GetImageURI())
+	token.SetName("new_name")
+	token.SetImageURI("new_token_uri")
+	token.SetMeta("new_meta")
+	require.Equal(t, "new_name", token.GetName())
+	require.Equal(t, "new_token_uri", token.GetImageURI())
+	require.Equal(t, "new_meta", token.GetMeta())
 }
 
 func TestBaseToken_String(t *testing.T) {
-	token := NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+	token := NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 
-	require.Equal(t, `{"contract_id":"linktkn","name":"name","symbol":"BTC","image_uri":"image-uri","decimals":"6","mintable":true}`, token.String())
+	require.Equal(t, `{"contract_id":"linktkn","name":"name","symbol":"BTC","meta":"{}","img_uri":"image-uri","decimals":"6","mintable":true}`, token.String())
 }
 
 func TestTokensString(t *testing.T) {
 	tokens := Tokens{
-		NewToken(defaultContractID+"1", defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true),
-		NewToken(defaultContractID+"2", defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true),
+		NewToken(defaultContractID+"1", defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true),
+		NewToken(defaultContractID+"2", defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true),
 	}
 
-	require.Equal(t, `[{"contract_id":"linktkn1","name":"name","symbol":"BTC","image_uri":"image-uri","decimals":"6","mintable":true},{"contract_id":"linktkn2","name":"name","symbol":"BTC","image_uri":"image-uri","decimals":"6","mintable":true}]`, tokens.String())
+	require.Equal(t, `[{"contract_id":"linktkn1","name":"name","symbol":"BTC","meta":"{}","img_uri":"image-uri","decimals":"6","mintable":true},{"contract_id":"linktkn2","name":"name","symbol":"BTC","meta":"{}","img_uri":"image-uri","decimals":"6","mintable":true}]`, tokens.String())
 }

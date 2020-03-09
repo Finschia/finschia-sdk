@@ -12,17 +12,19 @@ type MsgIssueFT struct {
 	ContractID string         `json:"contract_id"`
 	To         sdk.AccAddress `json:"to"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 	Amount     sdk.Int        `json:"amount"`
 	Mintable   bool           `json:"mintable"`
 	Decimals   sdk.Int        `json:"decimals"`
 }
 
-func NewMsgIssueFT(owner, to sdk.AccAddress, contractID string, name string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
+func NewMsgIssueFT(owner, to sdk.AccAddress, contractID string, name, meta string, amount sdk.Int, decimal sdk.Int, mintable bool) MsgIssueFT {
 	return MsgIssueFT{
 		Owner:      owner,
 		ContractID: contractID,
 		To:         to,
 		Name:       name,
+		Meta:       meta,
 		Amount:     amount,
 		Mintable:   mintable,
 		Decimals:   decimal,
@@ -68,13 +70,15 @@ type MsgIssueNFT struct {
 	Owner      sdk.AccAddress `json:"owner"`
 	ContractID string         `json:"contract_id"`
 	Name       string         `json:"name"`
+	Meta       string         `json:"meta"`
 }
 
-func NewMsgIssueNFT(owner sdk.AccAddress, contractID, name string) MsgIssueNFT {
+func NewMsgIssueNFT(owner sdk.AccAddress, contractID, name, meta string) MsgIssueNFT {
 	return MsgIssueNFT{
 		Owner:      owner,
 		ContractID: contractID,
 		Name:       name,
+		Meta:       meta,
 	}
 }
 

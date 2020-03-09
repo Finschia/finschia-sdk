@@ -43,6 +43,7 @@ const (
 	defaultContractID = "9be17165"
 	defaultSymbol     = "BTC"
 	defaultImageURI   = "image-uri"
+	defaultMeta       = "{}"
 	defaultDecimals   = 6
 	defaultAmount     = 1000
 	defaultCoin       = "link"

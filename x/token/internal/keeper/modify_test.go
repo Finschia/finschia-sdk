@@ -11,10 +11,12 @@ import (
 
 func TestModifyTokenName(t *testing.T) {
 	const modifiedTokenName = "modifiedTokenName"
-	const modifiedTokenURI = "modifiedTokenURI"
+	const modifiedMeta = "modifiedMeta"
+	const modifiedImageURI = "modifiedImageURI"
 	changes := linktype.NewChanges(
 		linktype.NewChange("name", modifiedTokenName),
-		linktype.NewChange("token_uri", modifiedTokenURI),
+		linktype.NewChange("meta", modifiedMeta),
+		linktype.NewChange("img_uri", modifiedImageURI),
 	)
 
 	ctx := cacheKeeper()
@@ -59,5 +61,5 @@ func TestModifyTokenName(t *testing.T) {
 }
 
 func aToken(contractID string) types.Token {
-	return types.NewToken(contractID, defaultName, defaultSymbol, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+	return types.NewToken(contractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 }
