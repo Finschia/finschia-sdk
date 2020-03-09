@@ -11,6 +11,35 @@ builds:
   binary: build/linkcli
   env:
     - CGO_ENABLED=0
+  ldflags:
+    - -X github.com/line/link/version.Name=link
+    - -X github.com/line/link/version.ServerName=linkd
+    - -X github.com/line/link/version.ClientName=linkcli
+    - -X github.com/line/link/version.Version={{ .Version }}
+    - -X github.com/line/link/version.Commit={{ .FullCommit }}
+    - -X "github.com/line/link/version.BuildTags=netgo,ledger"
+-
+  id: "linkd"
+  main: ./cmd/linkd
+  binary: build/linkd
+  env:
+    - CGO_ENABLED=0
+  flags:
+    - -mod=readonly
+    - -tags=netgo ledger
+  ldflags:
+    - -X github.com/line/link/version.Name=link
+    - -X github.com/line/link/version.ServerName=linkd
+    - -X github.com/line/link/version.ClientName=linkcli
+    - -X github.com/line/link/version.Version={{ .Version }}
+    - -X github.com/line/link/version.Commit={{ .FullCommit }}
+    - -X "github.com/line/link/version.BuildTags=netgo,ledger"
+-
+  id: "linkcli_testnet"
+  main: ./cmd/linkcli/main.go
+  binary: build/linkcli
+  env:
+    - CGO_ENABLED=0
   flags:
     - -tags=testnet
   ldflags:
@@ -21,7 +50,7 @@ builds:
     - -X github.com/line/link/version.Commit={{ .FullCommit }}
     - -X "github.com/line/link/version.BuildTags=netgo,ledger,testnet"
 -
-  id: "linkd"
+  id: "linkd_testnet"
   main: ./cmd/linkd
   binary: build/linkd
   env:
@@ -37,12 +66,27 @@ builds:
     - -X github.com/line/link/version.Commit={{ .FullCommit }}
     - -X "github.com/line/link/version.BuildTags=netgo,ledger,testnet"
 archives:
-- replacements:
+-
+  id: "mainnet"
+  builds: ['linkd', 'linkcli']
+  replacements:
     darwin: Darwin
     linux: Linux
     windows: Windows
     386: i386
     amd64: x86_64
+  files:
+    - LICENSE
+    - docs/getting-started/*
+- 
+  id: "testnet"
+  builds: ['linkd_testnet', 'linkcli_testnet']
+  replacements:
+    darwin: Darwin
+    linux: Linux
+    windows: Windows
+    386: i386_testnet
+    amd64: x86_64_testnet
   files:
     - LICENSE
     - docs/getting-started/*
