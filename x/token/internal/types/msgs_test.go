@@ -56,6 +56,14 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "BCD_A").Error())
 	}
 	{
+		msg := NewMsgIssue(addr, addr, "name", "1BCD", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "1BCD").Error())
+	}
+	{
+		msg := NewMsgIssue(addr, addr, "name", "ABCDEF", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
+		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "ABCDEF").Error())
+	}
+	{
 		msg := NewMsgIssue(addr, addr, "name", "12", "", length1001String, sdk.NewInt(1), sdk.NewInt(8), true)
 		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenSymbol(DefaultCodespace, "12").Error())
 	}

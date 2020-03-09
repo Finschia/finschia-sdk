@@ -9,7 +9,7 @@ import (
 
 const (
 	MaxBaseImgURILength  = 1000
-	MaxTokenNameLength   = 1000
+	MaxTokenNameLength   = 20
 	MaxChangeFieldsCount = 100
 	MaxTokenMetaLength   = 1000
 )
@@ -33,14 +33,14 @@ var (
 type ModifiableFields map[string]bool
 
 func ValidateName(name string) bool {
-	return utf8.RuneCountInString(name) < MaxTokenNameLength
+	return utf8.RuneCountInString(name) <= MaxTokenNameLength
 }
 
 func ValidateBaseImgURI(baseImgURI string) bool {
-	return utf8.RuneCountInString(baseImgURI) < MaxBaseImgURILength
+	return utf8.RuneCountInString(baseImgURI) <= MaxBaseImgURILength
 }
 func ValidateMeta(meta string) bool {
-	return utf8.RuneCountInString(meta) < MaxTokenMetaLength
+	return utf8.RuneCountInString(meta) <= MaxTokenMetaLength
 }
 
 type ChangesValidator struct {

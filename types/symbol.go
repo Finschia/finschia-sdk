@@ -9,7 +9,7 @@ const (
 	/* #nosec */
 	reSymbolStringReserved = `[a-z][a-z0-9]{2,4}`
 	/* #nosec */
-	reUserTokenSymbolString = `[a-zA-Z0-9]{3,20}`
+	reUserTokenSymbolString = `[A-Z][A-Z0-9]{1,4}`
 
 	/* #nosec */
 	reTokenIDString = `[a-f0-9]{16}`

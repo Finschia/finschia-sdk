@@ -8,23 +8,25 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-var length990String = strings.Repeat("Eng글자日本語はスゲ", 90)  // 11 * 90 = 990
 var length1001String = strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
 
 func TestValidateName(t *testing.T) {
 	t.Log("Given valid name")
 	{
-		require.True(t, ValidateName(length990String))
+		var length20String = strings.Repeat("Eng글자日本語はス", 2) // 10 * 2 = 20
+		require.True(t, ValidateName(length20String))
 	}
 	t.Log("Given invalid name")
 	{
-		require.False(t, ValidateName(length1001String))
+		var length21String = strings.Repeat("Eng글자日本", 3) // 7 * 3 = 21
+		require.False(t, ValidateName(length21String))
 	}
 }
 
 func TestValidateTokenURI(t *testing.T) {
-	t.Log("Given valid token_uri")
+	t.Log("Given valid base_img_uri")
 	{
+		var length990String = strings.Repeat("Eng글자日本語はスゲ", 90) // 11 * 90 = 990
 		require.True(t, ValidateImageURI(length990String))
 	}
 	t.Log("Given invalid token_uri")
