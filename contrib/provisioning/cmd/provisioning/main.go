@@ -14,16 +14,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+const (
+	flagTestnet = "testnet"
+)
+
 var cfgFile string
 
 func main() {
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
-	config.SetCoinType(types.CoinType)
-	config.SetFullFundraiserPath(types.FullFundraiserPath)
-	config.Seal()
 	// rootCmd represents the base command when called without any subcommands
 	var rootCmd = &cobra.Command{
 		Use:   "provisioning",
@@ -74,4 +71,17 @@ func initConfig() {
 	if err := viper.ReadInConfig(); err == nil {
 		fmt.Println("Using config file: ", viper.ConfigFileUsed())
 	}
+
+	if viper.GetBool(flagTestnet) {
+		types.SetTestnetMode()
+	}
+
+	// Read in the configuration file for the sdk
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr(), types.Bech32PrefixAccPub())
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr(), types.Bech32PrefixValPub())
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr(), types.Bech32PrefixConsPub())
+	config.SetCoinType(types.CoinType)
+	config.SetFullFundraiserPath(types.FullFundraiserPath)
+	config.Seal()
 }

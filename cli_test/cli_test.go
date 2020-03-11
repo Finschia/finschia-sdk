@@ -230,10 +230,10 @@ func TestLinkCLIKeysAddRecover(t *testing.T) {
 
 	exitSuccess, _, _ = f.KeysAddRecover("test-recover", "dentist task convince chimney quality leave banana trade firm crawl eternal easily")
 	require.True(t, exitSuccess)
-	if types.Bech32MainPrefix == "link" {
-		require.Equal(t, "link1h894xgljpjzu98we894ld2740ty88krpnarupg", f.KeyAddress("test-recover").String())
-	} else if types.Bech32MainPrefix == "tlink" {
+	if types.IsTestnetMode() {
 		require.Equal(t, "tlink1h894xgljpjzu98we894ld2740ty88krph2jvcd", f.KeyAddress("test-recover").String())
+	} else {
+		require.Equal(t, "link1h894xgljpjzu98we894ld2740ty88krpnarupg", f.KeyAddress("test-recover").String())
 	}
 	// Cleanup testing directories
 	f.Cleanup()
@@ -243,18 +243,7 @@ func TestLinkCLIKeysAddRecoverHDPath(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
 
-	if types.Bech32MainPrefix == "link" {
-		f.KeysAddRecoverHDPath("test-recoverHD1", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 0, 0)
-		require.Equal(t, "link1h894xgljpjzu98we894ld2740ty88krpnarupg", f.KeyAddress("test-recoverHD1").String())
-		f.KeysAddRecoverHDPath("test-recoverH2", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 1, 5)
-		require.Equal(t, "link1jjcgpg4gsmh56v5g8ze5c67thyp7yvv60p2uez", f.KeyAddress("test-recoverH2").String())
-
-		f.KeysAddRecoverHDPath("test-recoverH3", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 1, 17)
-		require.Equal(t, "link156zw8rc3pc30x5v30z7kghvaq2xpcx0d8ewg0f", f.KeyAddress("test-recoverH3").String())
-
-		f.KeysAddRecoverHDPath("test-recoverH4", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 2, 17)
-		require.Equal(t, "link1uz2mpws58feve9804vf7xkkt3aar9cg7kwh7hd", f.KeyAddress("test-recoverH4").String())
-	} else if types.Bech32MainPrefix == "tlink" {
+	if types.IsTestnetMode() {
 		f.KeysAddRecoverHDPath("test-recoverHD1", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 0, 0)
 		require.Equal(t, "tlink1h894xgljpjzu98we894ld2740ty88krph2jvcd", f.KeyAddress("test-recoverHD1").String())
 		f.KeysAddRecoverHDPath("test-recoverH2", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 1, 5)
@@ -265,6 +254,17 @@ func TestLinkCLIKeysAddRecoverHDPath(t *testing.T) {
 
 		f.KeysAddRecoverHDPath("test-recoverH4", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 2, 17)
 		require.Equal(t, "tlink1uz2mpws58feve9804vf7xkkt3aar9cg7jexwwg", f.KeyAddress("test-recoverH4").String())
+	} else {
+		f.KeysAddRecoverHDPath("test-recoverHD1", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 0, 0)
+		require.Equal(t, "link1h894xgljpjzu98we894ld2740ty88krpnarupg", f.KeyAddress("test-recoverHD1").String())
+		f.KeysAddRecoverHDPath("test-recoverH2", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 1, 5)
+		require.Equal(t, "link1jjcgpg4gsmh56v5g8ze5c67thyp7yvv60p2uez", f.KeyAddress("test-recoverH2").String())
+
+		f.KeysAddRecoverHDPath("test-recoverH3", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 1, 17)
+		require.Equal(t, "link156zw8rc3pc30x5v30z7kghvaq2xpcx0d8ewg0f", f.KeyAddress("test-recoverH3").String())
+
+		f.KeysAddRecoverHDPath("test-recoverH4", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 2, 17)
+		require.Equal(t, "link1uz2mpws58feve9804vf7xkkt3aar9cg7kwh7hd", f.KeyAddress("test-recoverH4").String())
 	}
 
 	// Cleanup testing directories

@@ -170,7 +170,7 @@ func TestQueryGenesisTxs(t *testing.T) {
 
 func TestQueryGenesisAccount(t *testing.T) {
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr(), types.Bech32PrefixAccPub())
 
 	cdc := setupCodec()
 	mockClient := &mocks.Client{}
@@ -182,10 +182,10 @@ func TestQueryGenesisAccount(t *testing.T) {
 
 	// exist genesis account
 	var addr string
-	if types.Bech32MainPrefix == "link" {
-		addr = "link19rqsvml8ldr0yrhaewgv9smcdvrew5pah9j5t5"
-	} else if types.Bech32MainPrefix == "tlink" {
+	if types.IsTestnetMode() {
 		addr = "tlink19rqsvml8ldr0yrhaewgv9smcdvrew5panjryj3"
+	} else {
+		addr = "link19rqsvml8ldr0yrhaewgv9smcdvrew5pah9j5t5"
 	}
 	genesisDoc := tmtypes.GenesisDoc{
 		AppState: json.RawMessage(`{"accounts":[{"address":"` + addr + `","coins":[]}]}`),
