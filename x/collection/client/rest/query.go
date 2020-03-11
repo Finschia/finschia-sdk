@@ -25,7 +25,9 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/collection/{contract_id}/nfts/{token_id}/children", QueryChildrenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/nfts/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/count", QueryCountRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/count", QueryCountRequestHandlerFn(cliCtx, types.QueryNFTCount)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/mint", QueryCountRequestHandlerFn(cliCtx, types.QueryNFTMint)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/burn", QueryCountRequestHandlerFn(cliCtx, types.QueryNFTBurn)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}", QueryTokenTypeRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/tokentypes", QueryTokenTypesRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/accounts/{address}/permissions", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
@@ -241,7 +243,7 @@ func QueryTokenTotalRequestHandlerFn(cliCtx client.CLIContext, target string) ht
 	}
 }
 
-func QueryCountRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryCountRequestHandlerFn(cliCtx client.CLIContext, target string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -255,7 +257,7 @@ func QueryCountRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		nftcount, height, err := retriever.GetCollectionNFTCount(cliCtx, contractID, tokenID)
+		nftcount, height, err := retriever.GetCollectionNFTCount(cliCtx, contractID, tokenID, target)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return

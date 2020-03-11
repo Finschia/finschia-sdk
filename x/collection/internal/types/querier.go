@@ -16,6 +16,8 @@ const (
 	QueryMint        = "mint"
 	QueryBurn        = "burn"
 	QueryNFTCount    = "nftcount"
+	QueryNFTMint     = "nftmint"
+	QueryNFTBurn     = "nftburn"
 	QueryParent      = "parent"
 	QueryRoot        = "root"
 	QueryChildren    = "children"

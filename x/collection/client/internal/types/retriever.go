@@ -93,14 +93,17 @@ func (r Retriever) GetCollections(ctx context.CLIContext) (types.Collections, in
 	return collections, height, nil
 }
 
-func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, contractID, tokenID string) (sdk.Int, int64, error) {
+func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, contractID, tokenID, target string) (sdk.Int, int64, error) {
 	var nftcount sdk.Int
 	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
 	if err != nil {
 		return nftcount, 0, err
 	}
+	if target != types.QueryNFTCount && target != types.QueryNFTMint && target != types.QueryNFTBurn {
+		return nftcount, 0, fmt.Errorf("invalid target : %s", target)
+	}
 
-	res, height, err := r.query(types.QueryNFTCount, bs)
+	res, height, err := r.query(target, bs)
 	if err != nil {
 		return nftcount, height, err
 	}

@@ -25,7 +25,11 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 		case types.QueryCollections:
 			return queryCollections(ctx, req, keeper)
 		case types.QueryNFTCount:
-			return queryNFTCount(ctx, req, keeper)
+			return queryNFTCount(ctx, req, keeper, types.QueryNFTCount)
+		case types.QueryNFTMint:
+			return queryNFTCount(ctx, req, keeper, types.QueryNFTMint)
+		case types.QueryNFTBurn:
+			return queryNFTCount(ctx, req, keeper, types.QueryNFTBurn)
 		case types.QuerySupply:
 			return queryTotal(ctx, req, keeper, types.QuerySupply)
 		case types.QueryMint:
@@ -179,12 +183,12 @@ func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keep
 	return bz, nil
 }
 
-func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, sdk.Error) {
+func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, sdk.Error) {
 	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	count, err := keeper.GetNFTCount(ctx, params.ContractID, params.TokenID)
+	count, err := keeper.GetNFTCountInt(ctx, params.ContractID, params.TokenID, target)
 	if err != nil {
 		return nil, err
 	}

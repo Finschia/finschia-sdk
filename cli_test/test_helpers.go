@@ -1205,7 +1205,7 @@ func (f *Fixtures) QueryTotalBurnTokenCollection(contractID, tokenID string, fla
 	return supply
 }
 func (f *Fixtures) QueryCountTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query collection count %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+	cmd := fmt.Sprintf("%s query collection count total %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()

@@ -162,6 +162,25 @@ func TestKeeper_GeTokens(t *testing.T) {
 		require.Equal(t, int64(5), count.Int64())
 	}
 
+	t.Log("Compare NFT Tokens Count Int")
+	{
+		count, err := keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTCount)
+		require.NoError(t, err)
+		require.Equal(t, int64(5), count.Int64())
+	}
+	t.Log("Compare NFT Tokens Count Int")
+	{
+		count, err := keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTMint)
+		require.NoError(t, err)
+		require.Equal(t, int64(5), count.Int64())
+	}
+	t.Log("Compare NFT Tokens Count Int")
+	{
+		count, err := keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTBurn)
+		require.NoError(t, err)
+		require.Equal(t, int64(0), count.Int64())
+	}
+
 	t.Log("Compare All Tokens")
 	{
 		actual, err := keeper.GetTokens(ctx, defaultContractID)
@@ -191,7 +210,7 @@ func TestKeeper_GetNextTokenIDFT(t *testing.T) {
 	}
 	t.Log("Set Full")
 	{
-		keeper.setNextTokenTypeFT(ctx, defaultContractID, "0zzzzzzz")
+		keeper.setNextTokenTypeFT(ctx, defaultContractID, "0fffffff")
 		_, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
 		require.Error(t, err)
 	}
@@ -220,42 +239,33 @@ func TestKeeper_GetNextTokenIDNFT(t *testing.T) {
 	}
 	t.Log("Set Full")
 	{
-		keeper.setNextTokenIndexNFT(ctx, defaultContractID, defaultTokenType, "zzzzzzzz")
+		keeper.setNextTokenIndexNFT(ctx, defaultContractID, defaultTokenType, "ffffffff")
 		_, err := keeper.GetNextTokenIDNFT(ctx, defaultContractID, defaultTokenType)
 		require.Error(t, err)
 	}
 }
 
 func TestNextTokenID(t *testing.T) {
-	require.Equal(t, "b", nextID("a", ""))
-	require.Equal(t, "0001", nextID("0000", ""))
-	require.Equal(t, "000a", nextID("0009", ""))
-	require.Equal(t, "0010", nextID("000f", ""))
-	require.Equal(t, "0000", nextID("ffff", ""))
-	require.Equal(t, "00000000", nextID("ffffffff", ""))
-	require.Equal(t, "abce0000", nextID("abcdffff", ""))
-	require.Equal(t, "abcdabc1", nextID("abcdabc0", ""))
-
-	require.Equal(t, "", nextID("", ""))
-	require.Equal(t, "", nextID("", "zzzzz"))
-	require.Equal(t, "f0", nextID("ff", "f"))
-	require.Equal(t, "abcd0001", nextID("abcd0000", "abcd"))
-	require.Equal(t, "abcd0010", nextID("abcd000f", "abcd"))
-	require.Equal(t, "abcdeef0", nextID("abcdeeef", "abcd"))
-	require.Equal(t, "abcdef00", nextID("abcdeeff", "abcd"))
-	require.Equal(t, "abcd999a", nextID("abcd9999", "abcd"))
-	require.Equal(t, "abcd99a0", nextID("abcd999f", "abcd"))
-	require.Equal(t, "f0000000", nextID("ffffffff", "f"))
-	require.Equal(t, "ff000000", nextID("ffffffff", "ff"))
-	require.Equal(t, "fffffff0", nextID("ffffffff", "fffffff"))
-	require.Equal(t, "ffffffff", nextID("ffffffff", "ffffffff"))
-	require.Equal(t, "abcd0000", nextID("abcdffff", "abcd"))
-	require.Equal(t, "abcdf000", nextID("abcdefff", "abcd"))
-	require.Equal(t, "abcd0000", nextID("abcfffff", "abcd"))
+	require.Panics(t, func() { nextID("") })
+	require.Equal(t, "b", nextID("a"))
+	require.Equal(t, "00", nextID("ff"))
+	require.Equal(t, "0001", nextID("0000"))
+	require.Equal(t, "000a", nextID("0009"))
+	require.Equal(t, "0010", nextID("000f"))
+	require.Equal(t, "0000", nextID("ffff"))
+	require.Equal(t, "00000000", nextID("ffffffff"))
+	require.Equal(t, "abce0000", nextID("abcdffff"))
+	require.Equal(t, "abcdabc1", nextID("abcdabc0"))
+	require.Equal(t, "abcd0001", nextID("abcd0000"))
+	require.Equal(t, "abcd0010", nextID("abcd000f"))
+	require.Equal(t, "abcdeef0", nextID("abcdeeef"))
+	require.Equal(t, "abcdef00", nextID("abcdeeff"))
+	require.Equal(t, "abcd999a", nextID("abcd9999"))
+	require.Equal(t, "abcd99a0", nextID("abcd999f"))
 
 	next := "0000"
 	for idx := 0; idx < 16*16*16*16; idx++ {
-		next = nextID(next, "")
+		next = nextID(next)
 	}
 	require.Equal(t, "0000", next)
 }

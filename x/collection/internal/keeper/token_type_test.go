@@ -110,7 +110,7 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 	}
 	t.Log("Set Full")
 	{
-		keeper.setNextTokenTypeNFT(ctx, defaultContractID, "zzzzzzzz")
+		keeper.setNextTokenTypeNFT(ctx, defaultContractID, "ffffffff")
 		_, err := keeper.getNextTokenTypeNFT(ctx, defaultContractID)
 		require.Error(t, err)
 	}
