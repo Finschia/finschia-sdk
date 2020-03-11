@@ -69,3 +69,4 @@ ${LINKD} collect-gentxs
 ${LINKD} validate-genesis
 
 # ${LINKD} start --log_level *:debug --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656
+
