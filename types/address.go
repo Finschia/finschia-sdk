@@ -12,10 +12,10 @@ const (
 func Bech32PrefixAcc(testnet bool) string {
 	if testnet {
 		return Bech32TestnetPrefix
-	} else {
-		return Bech32MainPrefix
 	}
+	return Bech32MainPrefix
 }
+
 func Bech32PrefixAccPub(testnet bool) string {
 	return Bech32PrefixAcc(testnet) + PrefixPublic
 }
