@@ -137,3 +137,83 @@ func TestKeeper_BurnSupply(t *testing.T) {
 		require.Equal(t, sdk.NewInt(defaultAmount), actual)
 	}
 }
+
+func TestKeeper_Handle_Overflows(t *testing.T) {
+	ctx := cacheKeeper()
+
+	t.Log("Prepare Supply and Token")
+	expected := types.DefaultSupply(defaultSymbol)
+	{
+		store := ctx.KVStore(keeper.storeKey)
+		b := keeper.cdc.MustMarshalBinaryLengthPrefixed(expected)
+		store.Set(types.SupplyKey(expected.GetContractID()), b)
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultImageURI, defaultMeta, sdk.NewInt(defaultDecimals), true)
+		store.Set(types.TokenKey(expected.GetContractID()), keeper.cdc.MustMarshalBinaryBare(token))
+	}
+
+	// int64 is the set of all signed 64-bit integers.
+	// Range: -9223372036854775808 through 9223372036854775807.
+
+	// Int wraps integer with 256 bit range bound
+	// Checks overflow, underflow and division by zero
+	// Exists in range from -(2^maxBitLen-1) to 2^maxBitLen-1
+
+	t.Log("Set supply less than the overflow limit")
+	maxInt64Supply := sdk.NewInt(9223372036854775807)
+
+	initialSupply := maxInt64Supply.Mul(maxInt64Supply).Mul(maxInt64Supply).Mul(maxInt64Supply)
+	newSupply := types.NewSupply(defaultSymbol, initialSupply)
+	keeper.setSupply(ctx, newSupply)
+
+	ts, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalSupply(), ts)
+
+	tm, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QueryMint)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalMint(), tm)
+
+	tb, err := keeper.GetTotalInt(ctx, defaultSymbol, types.QueryBurn)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalBurn(), tb)
+
+	// inflate over the overflow limit
+	t.Log("Inflate the supply over the overflow limit")
+	addToOverflow := initialSupply.Mul(sdk.NewInt(8))
+	err = keeper.MintSupply(ctx, defaultSymbol, addr1, addToOverflow)
+	require.Equal(t, types.ErrSupplyOverflow, err)
+
+	// should have not changed
+	t.Log("Totals have not changed")
+	ts, err = keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalSupply(), ts)
+
+	tm, err = keeper.GetTotalInt(ctx, defaultSymbol, types.QueryMint)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalMint(), tm)
+
+	tb, err = keeper.GetTotalInt(ctx, defaultSymbol, types.QueryBurn)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalBurn(), tb)
+
+	// deflate below the overflow limit - it will return insufficient fund instead of panicking
+	t.Log("Deflate the supply below the overflow limit - will return insufficient fund instead of panicking")
+	subToOverflow := initialSupply.Mul(sdk.NewInt(8))
+	err = keeper.BurnSupply(ctx, defaultSymbol, addr1, subToOverflow)
+	require.True(t, types.ErrInsufficientSupply.Is(err))
+
+	// should have not changed
+	t.Log("Totals have not changed")
+	ts, err = keeper.GetTotalInt(ctx, defaultSymbol, types.QuerySupply)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalSupply(), ts)
+
+	tm, err = keeper.GetTotalInt(ctx, defaultSymbol, types.QueryMint)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalMint(), tm)
+
+	tb, err = keeper.GetTotalInt(ctx, defaultSymbol, types.QueryBurn)
+	require.NoError(t, err)
+	require.Equal(t, newSupply.GetTotalBurn(), tb)
+}

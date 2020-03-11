@@ -51,8 +51,15 @@ func (k Keeper) setSupply(ctx sdk.Context, supply types.Supply) {
 	store.Set(types.SupplyKey(supply.GetContractID()), b)
 }
 
-func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress, amount sdk.Int) error {
-	_, err := k.addBalance(ctx, contractID, to, amount)
+func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress, amount sdk.Int) (err error) {
+	defer func() {
+		// to recover from overflows
+		if r := recover(); r != nil {
+			err = types.WrapIfOverflowPanic(r)
+		}
+	}()
+
+	_, err = k.addBalance(ctx, contractID, to, amount)
 	if err != nil {
 		return err
 	}
@@ -72,8 +79,16 @@ func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress
 	return nil
 }
 
-func (k Keeper) BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) error {
-	_, err := k.subtractBalance(ctx, contractID, from, amount)
+func (k Keeper) BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddress, amount sdk.Int) (err error) {
+	defer func() {
+		// to recover from overflows
+		// however, it will return insufficient fund error instead of panicking in the case
+		if r := recover(); r != nil {
+			err = types.WrapIfOverflowPanic(r)
+		}
+	}()
+
+	_, err = k.subtractBalance(ctx, contractID, from, amount)
 	if err != nil {
 		return err
 	}

@@ -47,4 +47,17 @@ var (
 	ErrInsufficientToken             = sdkerrors.Register(ModuleName, 40, "insufficient token")
 	ErrDuplicateChangesField         = sdkerrors.Register(ModuleName, 41, "duplicate field of changes")
 	ErrInvalidMetaLength             = sdkerrors.Register(ModuleName, 42, "invalid meta length")
+	ErrSupplyOverflow                = sdkerrors.Register(ModuleName, 43, "supply for collection reached maximum")
 )
+
+func WrapIfOverflowPanic(r interface{}) error {
+	if isOverflowPanic(r) {
+		return ErrSupplyOverflow
+	}
+	// unknown panic, bubble up :(
+	panic(r)
+}
+
+func isOverflowPanic(r interface{}) bool {
+	return r == "Int overflow" || r == "negative coin amount"
+}

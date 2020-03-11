@@ -52,8 +52,15 @@ func (k Keeper) GetTotalInt(ctx sdk.Context, contractID, tokenID, target string)
 
 // MintCoins creates new coins from thin air and adds it to the module account.
 // Panics if the name maps to a non-minter module account or if the amount is invalid.
-func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress, amt types.Coins) error {
-	_, err := k.AddCoins(ctx, contractID, to, amt)
+func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress, amt types.Coins) (err error) {
+	defer func() {
+		// to recover from overflows
+		if r := recover(); r != nil {
+			err = types.WrapIfOverflowPanic(r)
+		}
+	}()
+
+	_, err = k.AddCoins(ctx, contractID, to, amt)
 	if err != nil {
 		return err
 	}
@@ -67,8 +74,16 @@ func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress
 
 // BurnCoins burns coins deletes coins from the balance of the module account.
 // Panics if the name maps to a non-burner module account or if the amount is invalid.
-func (k Keeper) BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddress, amt types.Coins) error {
-	_, err := k.SubtractCoins(ctx, contractID, from, amt)
+func (k Keeper) BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddress, amt types.Coins) (err error) {
+	defer func() {
+		// to recover from overflows
+		// however, it will return insufficient fund error instead of panicking in the case
+		if r := recover(); r != nil {
+			err = types.WrapIfOverflowPanic(r)
+		}
+	}()
+
+	_, err = k.SubtractCoins(ctx, contractID, from, amt)
 	if err != nil {
 		return err
 	}
