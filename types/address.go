@@ -1,7 +1,7 @@
 package types
 
 const (
-	Bech32MainPrefix = "link"
+	Bech32MainPrefix    = "link"
 	Bech32TestnetPrefix = "tlink"
 
 	// LINK in [SLIP-044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
