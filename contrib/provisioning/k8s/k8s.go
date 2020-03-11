@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/genaccounts"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/line/link/app"
 	"github.com/rcrowley/go-metrics"
 	"github.com/spf13/cobra"
@@ -52,7 +52,6 @@ const defPrivateKeySeedFileName = "key_seed"
 const defProfilingPort = 25660
 const defPrometheusListenPort = 25661
 const defPrometheusTurnOn = true
-const defTxIndexIndexAllTags = false
 const genTxsDefaultDir = "gentxs"
 const listenAllIngressPortTemplate = "tcp://0.0.0.0:%d"
 const listenLoopbackIngressPortTemplate = "tcp://127.0.0.1:%d"
@@ -97,7 +96,6 @@ func Init() *cobra.Command {
 			tmConfig.Instrumentation.Prometheus = prometheusTurnOn
 			tmConfig.BaseConfig.ProfListenAddress = fmt.Sprintf("localhost:%d", defProfilingPort)
 			tmConfig.Consensus.TimeoutCommit = defConsensusTimeoutCommit * time.Second
-			tmConfig.TxIndex.IndexAllTags = defTxIndexIndexAllTags
 			DefIfEmpty(&tmConfig.DBPath, defDBDir, dbDir)
 			prometheusListenPort = DefFormatSetIfLTEZero(&tmConfig.Instrumentation.PrometheusListenAddr, listenLoopbackIngressPortTemplate, defPrometheusListenPort, prometheusListenPort)
 			nodeP2PPort = DefFormatSetIfLTEZero(&tmConfig.P2P.ListenAddress, listenAllIngressPortTemplate, defNodeP2PPort, nodeP2PPort)
@@ -155,7 +153,7 @@ func buildConfForK8s(logger metrics.Logger, cdc *codec.Codec, tmConfig *tmconfig
 		return err
 	}
 	if err := CollectGenFiles(cdc, tmConfig, m.ChainID, m.NodeNickNames, m.ValidatorIDs, m.PubKeys,
-		m.NumNodes, m.ConfHomePath, nodeDirPrefix, m.LinkdBinDirName, genaccounts.AppModuleBasic{},
+		m.NumNodes, m.ConfHomePath, nodeDirPrefix, m.LinkdBinDirName, auth.GenesisAccountIterator{},
 	); err != nil {
 		return err
 	}

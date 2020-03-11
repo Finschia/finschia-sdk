@@ -2,14 +2,16 @@ package keeper
 
 import (
 	"strconv"
+	"unicode/utf8"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, owner, to sdk.AccAddress) sdk.Error {
+func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, owner, to sdk.AccAddress) error {
 	if !types.ValidateImageURI(token.GetImageURI()) {
-		return types.ErrInvalidImageURILength(types.DefaultCodespace, token.GetImageURI())
+		return sdkerrors.Wrapf(types.ErrInvalidImageURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", token.GetImageURI(), types.MaxImageURILength, utf8.RuneCountInString(token.GetImageURI()))
 	}
 	err := k.SetToken(ctx, token)
 	if err != nil {

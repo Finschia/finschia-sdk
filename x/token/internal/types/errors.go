@@ -1,130 +1,28 @@
 package types
 
 import (
-	"fmt"
-	"unicode/utf8"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	DefaultCodespace sdk.CodespaceType = ModuleName
-
-	// Token
-	CodeTokenExist       sdk.CodeType = 100
-	CodeTokenNotExist    sdk.CodeType = 101
-	CodeTokenNotMintable sdk.CodeType = 102
-
-	// Token invalidation
-	CodeTokenInvalidTokenName      sdk.CodeType = 200
-	CodeTokenInvalidDecimals       sdk.CodeType = 201
-	CodeTokenInvalidAmount         sdk.CodeType = 202
-	CodeTokenInvalidImageURILength sdk.CodeType = 203
-	CodeTokenInvalidNameLength     sdk.CodeType = 204
-	CodeTokenInvalidSymbol         sdk.CodeType = 205
-
-	// Permission
-	CodePermission sdk.CodeType = 300
-
-	// Account
-	CodeAccountExist    sdk.CodeType = 400
-	CodeAccountNotExist sdk.CodeType = 401
-
-	// Bank
-	CodeInsufficientBalance sdk.CodeType = 500
-	CodeInvalidAmount       sdk.CodeType = 501
-
-	// Supply
-	CodeSupplyExist        sdk.CodeType = 600
-	CodeInsufficientSupply sdk.CodeType = 601
-
-	// Modify
-	CodeInvalidChangesFieldCount sdk.CodeType = 701
-	CodeEmptyChanges             sdk.CodeType = 702
-	CodeTokenInvalidChangesField sdk.CodeType = 703
-	CodeDuplicateChangesField    sdk.CodeType = 704
+var (
+	ErrTokenExist               = sdkerrors.Register(ModuleName, 1, "token already exists")
+	ErrTokenNotExist            = sdkerrors.Register(ModuleName, 2, "token does not exist")
+	ErrTokenNotMintable         = sdkerrors.Register(ModuleName, 3, "token is not mintable")
+	ErrInvalidTokenName         = sdkerrors.Register(ModuleName, 4, "token name should not be empty")
+	ErrInvalidTokenDecimals     = sdkerrors.Register(ModuleName, 5, "token decimals should be within the range in 0 ~ 18")
+	ErrInvalidAmount            = sdkerrors.Register(ModuleName, 6, "invalid token amount")
+	ErrInvalidImageURILength    = sdkerrors.Register(ModuleName, 7, "invalid token uri length")
+	ErrInvalidNameLength        = sdkerrors.Register(ModuleName, 8, "invalid name length")
+	ErrInvalidTokenSymbol       = sdkerrors.Register(ModuleName, 9, "invalid token symbol")
+	ErrTokenNoPermission        = sdkerrors.Register(ModuleName, 10, "account does not have the permission")
+	ErrAccountExist             = sdkerrors.Register(ModuleName, 11, "account already exists")
+	ErrAccountNotExist          = sdkerrors.Register(ModuleName, 12, "account does not exists")
+	ErrInsufficientBalance      = sdkerrors.Register(ModuleName, 13, "insufficient balance")
+	ErrSupplyExist              = sdkerrors.Register(ModuleName, 14, "supply for token already exists")
+	ErrInsufficientSupply       = sdkerrors.Register(ModuleName, 15, "insufficient supply")
+	ErrInvalidChangesFieldCount = sdkerrors.Register(ModuleName, 16, "invalid count of field changes")
+	ErrEmptyChanges             = sdkerrors.Register(ModuleName, 17, "changes is empty")
+	ErrInvalidChangesField      = sdkerrors.Register(ModuleName, 18, "invalid field of changes")
+	ErrDuplicateChangesField    = sdkerrors.Register(ModuleName, 19, "invalid field of changes")
+	ErrInvalidMetaLength        = sdkerrors.Register(ModuleName, 20, "invalid meta length")
 )
-
-func ErrTokenExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenExist, "token [%s] already exists", contractID)
-}
-
-func ErrTokenNotExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotExist, "token [%s] does not exist", contractID)
-}
-
-func ErrTokenNotMintable(codespace sdk.CodespaceType, contractID string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenNotMintable, "token [%s] is not mintable", contractID)
-}
-
-func ErrInvalidTokenName(codespace sdk.CodespaceType, name string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidTokenName, "token name [%s] should not be empty", name)
-}
-
-func ErrInvalidTokenDecimals(codespace sdk.CodespaceType, decimals sdk.Int) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidDecimals, "token decimals [%s] should be within the range in 0 ~ 18", decimals.String())
-}
-
-func ErrInvalidAmount(codespace sdk.CodespaceType, amount string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidAmount, "invalid token amount [%s]", amount)
-}
-
-func ErrInvalidChangesFieldCount(codespace sdk.CodespaceType, changesFieldCount int) sdk.Error {
-	return sdk.NewError(codespace, CodeInvalidChangesFieldCount,
-		"You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, changesFieldCount)
-}
-
-func ErrEmptyChanges(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeEmptyChanges, "changes is empty")
-}
-
-func ErrInvalidImageURILength(codespace sdk.CodespaceType, tokenURI string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidImageURILength, "invalid token uri [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", tokenURI, MaxImageURILength, utf8.RuneCountInString(tokenURI))
-}
-
-func ErrInvalidTokenSymbol(codespace sdk.CodespaceType, symbol string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidSymbol, "invalid token symbol [%s]", symbol)
-}
-
-func ErrInvalidNameLength(codespace sdk.CodespaceType, name string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
-		"invalid name [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", name,
-		MaxTokenNameLength, utf8.RuneCountInString(name))
-}
-
-func ErrInvalidMetaLength(codespace sdk.CodespaceType, meta string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidNameLength,
-		"invalid meta [%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", meta,
-		MaxTokenMetaLength, utf8.RuneCountInString(meta))
-}
-
-func ErrInvalidChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
-	return sdk.NewError(codespace, CodeTokenInvalidChangesField, "[%s] is invalid field of changes", field)
-}
-
-func ErrDuplicateChangesField(codespace sdk.CodespaceType, field string) sdk.Error {
-	return sdk.NewError(codespace, CodeDuplicateChangesField, "[%s] is a duplicate field of changes", field)
-}
-
-func ErrTokenNoPermission(codespace sdk.CodespaceType, account fmt.Stringer, permission fmt.Stringer) sdk.Error {
-	return sdk.NewError(codespace, CodePermission, "account [%s] does not have the permission [%s]", account.String(), permission.String())
-}
-func ErrAccountExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
-	return sdk.NewError(codespace, CodeAccountExist, "account [%s] already exists", acc.String())
-}
-
-func ErrAccountNotExist(codespace sdk.CodespaceType, acc sdk.AccAddress) sdk.Error {
-	return sdk.NewError(codespace, CodeAccountNotExist, "account [%s] does not exists", acc.String())
-}
-
-func ErrInsufficientBalance(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeInsufficientBalance, msg)
-}
-
-func ErrSupplyExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
-	return sdk.NewError(codespace, CodeSupplyExist, "supply for token [%s] already exists", contractID)
-}
-
-func ErrInsufficientSupply(codespace sdk.CodespaceType, msg string) sdk.Error {
-	return sdk.NewError(codespace, CodeInsufficientSupply, msg)
-}

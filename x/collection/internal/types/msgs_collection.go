@@ -1,7 +1,10 @@
 package types
 
 import (
+	"unicode/utf8"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = (*MsgCreateCollection)(nil)
@@ -22,15 +25,15 @@ func NewMsgCreateCollection(owner sdk.AccAddress, name, meta, baseImgURI string)
 	}
 }
 
-func (msg MsgCreateCollection) ValidateBasic() sdk.Error {
+func (msg MsgCreateCollection) ValidateBasic() error {
 	if len(msg.Name) == 0 {
-		return ErrInvalidTokenName(DefaultCodespace, msg.Name)
+		return ErrInvalidTokenName
 	}
 	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
 	if !ValidateBaseImgURI(msg.BaseImgURI) {
-		return ErrInvalidBaseImgURILength(DefaultCodespace, msg.BaseImgURI)
+		return sdkerrors.Wrapf(ErrInvalidBaseImgURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.BaseImgURI, MaxBaseImgURILength, utf8.RuneCountInString(msg.BaseImgURI))
 	}
 	return nil
 }

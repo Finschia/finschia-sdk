@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
@@ -34,25 +35,25 @@ func (msg MsgModify) GetSignBytes() []byte {
 }
 func (msg MsgModify) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 
-func (msg MsgModify) ValidateBasic() sdk.Error {
+func (msg MsgModify) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
 
 	if msg.TokenType != "" {
 		if err := linktype.ValidateTokenType(msg.TokenType); err != nil {
-			return ErrInvalidTokenType(DefaultCodespace, msg.TokenType)
+			return sdkerrors.Wrap(ErrInvalidTokenType, msg.TokenType)
 		}
 		if linktype.ValidateTokenTypeFT(msg.TokenType) == nil && msg.TokenIndex == "" {
-			return ErrTokenTypeFTWithoutIndex(DefaultCodespace, msg.TokenType)
+			return sdkerrors.Wrap(ErrTokenTypeFTWithoutIndex, msg.TokenType)
 		}
 	}
 	if msg.TokenIndex != "" && linktype.ValidateTokenIndex(msg.TokenIndex) != nil {
-		return ErrInvalidTokenIndex(DefaultCodespace, msg.TokenIndex)
+		return sdkerrors.Wrap(ErrInvalidTokenIndex, msg.TokenIndex)
 	}
 
 	validator := NewChangesValidator()

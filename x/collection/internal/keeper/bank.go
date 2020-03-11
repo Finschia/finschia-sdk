@@ -1,9 +1,8 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
@@ -11,10 +10,10 @@ import (
 type BankKeeper interface {
 	GetCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress) types.Coins
 	HasCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) bool
-	SendCoins(ctx sdk.Context, contractID string, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt types.Coins) sdk.Error
-	SubtractCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) (types.Coins, sdk.Error)
-	AddCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) (types.Coins, sdk.Error)
-	SetCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) sdk.Error
+	SendCoins(ctx sdk.Context, contractID string, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt types.Coins) error
+	SubtractCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) (types.Coins, error)
+	AddCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) (types.Coins, error)
+	SetCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) error
 }
 
 var _ BankKeeper = (*Keeper)(nil)
@@ -31,9 +30,9 @@ func (k Keeper) HasCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress
 	return k.GetCoins(ctx, contractID, addr).IsAllGTE(amt)
 }
 
-func (k Keeper) SendCoins(ctx sdk.Context, contractID string, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt types.Coins) sdk.Error {
+func (k Keeper) SendCoins(ctx sdk.Context, contractID string, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt types.Coins) error {
 	if !amt.IsValid() {
-		return types.ErrInvalidCoin(types.DefaultCodespace, "send amount must be positive")
+		return sdkerrors.Wrap(types.ErrInvalidCoin, "send amount must be positive")
 	}
 
 	_, err := k.SubtractCoins(ctx, contractID, fromAddr, amt)
@@ -48,22 +47,20 @@ func (k Keeper) SendCoins(ctx sdk.Context, contractID string, fromAddr sdk.AccAd
 	return nil
 }
 
-func (k Keeper) SubtractCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) (types.Coins, sdk.Error) {
+func (k Keeper) SubtractCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) (types.Coins, error) {
 	if !amt.IsValid() {
-		return nil, types.ErrInvalidCoin(types.DefaultCodespace, "amount must be positive")
+		return nil, sdkerrors.Wrap(types.ErrInvalidCoin, "amount must be positive")
 	}
 
 	acc, err := k.GetAccount(ctx, contractID, addr)
 	if err != nil {
-		return nil, types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("insufficient account funds[%s]; account has no coin", contractID))
+		return nil, sdkerrors.Wrapf(types.ErrInsufficientToken, "insufficient account funds[%s]; account has no coin", contractID)
 	}
 	oldCoins := acc.GetCoins()
 
 	newCoins, hasNeg := oldCoins.SafeSub(amt)
 	if hasNeg {
-		return amt, types.ErrInsufficientToken(types.DefaultCodespace,
-			fmt.Sprintf("insufficient account funds[%s]; %s < %s", contractID, oldCoins, amt),
-		)
+		return amt, sdkerrors.Wrapf(types.ErrInsufficientToken, "insufficient account funds[%s]; %s < %s", contractID, oldCoins, amt)
 	}
 
 	err = k.SetCoins(ctx, contractID, addr, newCoins)
@@ -71,9 +68,9 @@ func (k Keeper) SubtractCoins(ctx sdk.Context, contractID string, addr sdk.AccAd
 	return newCoins, err
 }
 
-func (k Keeper) AddCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) (types.Coins, sdk.Error) {
+func (k Keeper) AddCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) (types.Coins, error) {
 	if !amt.IsValid() {
-		return nil, types.ErrInvalidCoin(types.DefaultCodespace, "amount must be positive")
+		return nil, sdkerrors.Wrap(types.ErrInvalidCoin, "amount must be positive")
 	}
 
 	oldCoins := k.GetCoins(ctx, contractID, addr)
@@ -83,9 +80,9 @@ func (k Keeper) AddCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress
 	return newCoins, err
 }
 
-func (k Keeper) SetCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) sdk.Error {
+func (k Keeper) SetCoins(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt types.Coins) error {
 	if !amt.IsValid() {
-		return types.ErrInvalidCoin(types.DefaultCodespace, amt.String())
+		return sdkerrors.Wrapf(types.ErrInvalidCoin, "invalid amount: %s", amt.String())
 	}
 
 	acc, err := k.GetOrNewAccount(ctx, contractID, addr)

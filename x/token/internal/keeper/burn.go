@@ -1,13 +1,12 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) BurnToken(ctx sdk.Context, contractID string, amount sdk.Int, from sdk.AccAddress) sdk.Error {
+func (k Keeper) BurnToken(ctx sdk.Context, contractID string, amount sdk.Int, from sdk.AccAddress) error {
 	err := k.isBurnable(ctx, contractID, from, from, amount)
 	if err != nil {
 		return err
@@ -28,14 +27,14 @@ func (k Keeper) BurnToken(ctx sdk.Context, contractID string, amount sdk.Int, fr
 	return nil
 }
 
-func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount sdk.Int) sdk.Error {
+func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount sdk.Int) error {
 	if !k.HasBalance(ctx, contractID, tokenOwner, amount) {
-		return sdk.ErrInsufficientCoins(fmt.Sprintf("%v has not enough coins for %v", tokenOwner, amount))
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "%v has not enough coins for %v", tokenOwner, amount)
 	}
 
 	perm := types.NewBurnPermission(contractID)
 	if !k.HasPermission(ctx, permissionOwner, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, permissionOwner, perm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", permissionOwner.String(), perm.String())
 	}
 	return nil
 }

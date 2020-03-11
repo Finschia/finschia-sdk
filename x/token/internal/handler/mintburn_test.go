@@ -23,8 +23,8 @@ func TestHandleMsgMint(t *testing.T) {
 	{
 		msg := types.NewMsgMint(addr1, defaultContractID, addr1, sdk.NewInt(defaultAmount))
 		require.NoError(t, msg.ValidateBasic())
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -52,8 +52,8 @@ func TestHandleMsgBurn(t *testing.T) {
 	{
 		msg := types.NewMsgBurn(addr1, defaultContractID, sdk.NewInt(defaultAmount))
 		require.NoError(t, msg.ValidateBasic())
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),

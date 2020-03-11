@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func TestKeeper_GetBalance(t *testing.T) {
@@ -116,7 +117,7 @@ func TestKeeper_SendToken(t *testing.T) {
 		require.NoError(t, keeper.Send(ctx, defaultContractID, addr1, addr2, sdk.NewInt(defaultAmount)))
 	}
 	{
-		require.EqualError(t, keeper.Send(ctx, defaultContractID, addr3, addr2, sdk.NewInt(1)), types.ErrInsufficientBalance(types.DefaultCodespace, "insufficient account funds for token [9be17165]; 0 < 1").Error())
+		require.EqualError(t, keeper.Send(ctx, defaultContractID, addr3, addr2, sdk.NewInt(1)), sdkerrors.Wrapf(types.ErrInsufficientBalance, "insufficient account funds for token [9be17165]; 0 < 1").Error())
 	}
 	t.Log("Get Balance")
 	{

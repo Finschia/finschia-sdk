@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
@@ -11,8 +12,8 @@ var (
 
 type ProxyKeeper interface {
 	IsApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) bool
-	SetApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) sdk.Error
-	DeleteApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) sdk.Error
+	SetApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) error
+	DeleteApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) error
 }
 
 func (k Keeper) IsApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) bool {
@@ -21,14 +22,14 @@ func (k Keeper) IsApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddr
 	return store.Has(approvedKey)
 }
 
-func (k Keeper) SetApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) sdk.Error {
+func (k Keeper) SetApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) error {
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has(types.CollectionKey(contractID)) {
-		return types.ErrCollectionNotExist(types.DefaultCodespace, contractID)
+		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID)
 	}
 	approvedKey := types.CollectionApprovedKey(contractID, proxy, approver)
 	if store.Has(approvedKey) {
-		return types.ErrCollectionAlreadyApproved(types.DefaultCodespace, proxy.String(), approver.String(), contractID)
+		return sdkerrors.Wrapf(types.ErrCollectionAlreadyApproved, "Proxy: %s, Approver: %s, ContractID: %s", proxy.String(), approver.String(), contractID)
 	}
 	store.Set(approvedKey, ApprovedValue)
 
@@ -51,14 +52,14 @@ func (k Keeper) SetApproved(ctx sdk.Context, contractID string, proxy sdk.AccAdd
 	return nil
 }
 
-func (k Keeper) DeleteApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) sdk.Error {
+func (k Keeper) DeleteApproved(ctx sdk.Context, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) error {
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has(types.CollectionKey(contractID)) {
-		return types.ErrCollectionNotExist(types.DefaultCodespace, contractID)
+		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID)
 	}
 	approvedKey := types.CollectionApprovedKey(contractID, proxy, approver)
 	if !store.Has(approvedKey) {
-		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), approver.String(), contractID)
+		return sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", proxy.String(), approver.String(), contractID)
 	}
 	store.Delete(approvedKey)
 

@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 type MsgEmpty struct {
@@ -22,9 +23,9 @@ func (msg MsgEmpty) Route() string { return RouterKey }
 func (msg MsgEmpty) Type() string { return MsgTypeEmpty }
 
 // ValidateBasic Implements Msg.
-func (msg MsgEmpty) ValidateBasic() sdk.Error {
+func (msg MsgEmpty) ValidateBasic() error {
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("missing signer address")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missing signer address")
 	}
 	return nil
 }
@@ -59,12 +60,12 @@ func (msg MsgCreateAccount) Route() string { return RouterKey }
 func (msg MsgCreateAccount) Type() string { return MsgTypeCreateAccount }
 
 // ValidateBasic Implements Msg.
-func (msg MsgCreateAccount) ValidateBasic() sdk.Error {
+func (msg MsgCreateAccount) ValidateBasic() error {
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("missing signer address")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missing signer address")
 	}
 	if msg.Target.Empty() {
-		return sdk.ErrInvalidAddress("missing target address to be created")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missing target address to be created")
 	}
 	return nil
 }

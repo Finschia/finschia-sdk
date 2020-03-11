@@ -1,36 +1,40 @@
 package k8s
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
 
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	types2 "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	types3 "github.com/cosmos/cosmos-sdk/x/staking/types"
 	tmconfig "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
-	cmn "github.com/tendermint/tendermint/libs/common"
+	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/x/genaccounts"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 )
 
 func InitGenFiles(cdc *codec.Codec, mbm module.BasicManager, chainID string,
-	accs []genaccounts.GenesisAccount, genFiles []string, numValidators int) error {
+	accs []authexported.GenesisAccount, genFiles []string, numValidators int) error {
 	appGenState := mbm.DefaultGenesis()
 
 	// set the accounts in the genesis state
-	appGenState = genaccounts.SetGenesisStateInAppState(cdc, appGenState, accs)
+	authDataBz := appGenState[auth.ModuleName]
+	var authGenState auth.GenesisState
+	cdc.MustUnmarshalJSON(authDataBz, &authGenState)
+	authGenState.Accounts = accs
+	appGenState[auth.ModuleName] = cdc.MustMarshalJSON(authGenState)
 
 	appGenStateJSON, err := codec.MarshalJSONIndent(cdc, appGenState)
 	if err != nil {
@@ -102,12 +106,12 @@ func WriteFile(dir string, name string, contents []byte) error {
 	writePath := filepath.Join(dir)
 	file := filepath.Join(writePath, name)
 
-	err := cmn.EnsureDir(writePath, 0700)
+	err := tmos.EnsureDir(writePath, 0700)
 	if err != nil {
 		return err
 	}
 
-	err = cmn.WriteFile(file, contents, 0600)
+	err = tmos.WriteFile(file, contents, 0600)
 	if err != nil {
 		return err
 	}
@@ -121,7 +125,7 @@ func writeGenTx(n *Node, addr types2.AccAddress, cdc *codec.Codec) {
 		panic(err)
 	}
 	tx := auth.NewStdTx([]types2.Msg{types3.MsgCreateValidator{
-		Description:       staking.NewDescription(n.Name, "", "", ""),
+		Description:       staking.NewDescription(n.Name, "", "", "", ""),
 		Commission:        staking.NewCommissionRates(types2.ZeroDec(), types2.ZeroDec(), types2.ZeroDec()),
 		MinSelfDelegation: types2.OneInt(),
 		DelegatorAddress:  addr,
@@ -131,8 +135,9 @@ func writeGenTx(n *Node, addr types2.AccAddress, cdc *codec.Codec) {
 	}}, auth.StdFee{}, []auth.StdSignature{}, fmt.Sprintf("%s@%s:%d", n.MetaData.ValidatorIDs[n.Idx],
 		n.InputNodeIP(), n.MetaData.NodeP2PPort))
 
-	signedTx, err := auth.NewTxBuilderFromCLI().WithChainID(n.MetaData.ChainID).WithMemo(tx.Memo).WithKeybase(kb).
-		SignStdTx(n.Name, client.DefaultKeyPass, tx, false)
+	inBuf := bufio.NewReader(os.Stdin)
+	signedTx, err := auth.NewTxBuilderFromCLI(inBuf).WithChainID(n.MetaData.ChainID).WithMemo(tx.Memo).WithKeybase(kb).
+		SignStdTx(n.Name, keys.DefaultKeyPass, tx, false)
 	if err != nil {
 		_ = os.RemoveAll(n.MetaData.ConfHomePath)
 		panic(err)
@@ -149,16 +154,10 @@ func writeGenTx(n *Node, addr types2.AccAddress, cdc *codec.Codec) {
 	}
 }
 
-func buildGenesisAcc(nodeDirName string, addr types2.AccAddress) genaccounts.GenesisAccount {
+func buildGenesisAcc(nodeDirName string, addr types2.AccAddress) authexported.GenesisAccount {
 	accTokens := Tokens{types2.TokensFromConsensusPower(1000),
 		types2.TokensFromConsensusPower(500)}
 	coins := Coins{types2.NewCoin(fmt.Sprintf("%stoken", nodeDirName), accTokens.holding),
 		types2.NewCoin(types2.DefaultBondDenom, accTokens.staking)}
-	return genaccounts.GenesisAccount{
-		Address: addr,
-		Coins: types2.Coins{
-			coins.node,
-			coins.defBondDenomStake,
-		},
-	}
+	return auth.NewBaseAccount(addr, types2.Coins{coins.node, coins.defBondDenomStake}, nil, 0, 0)
 }

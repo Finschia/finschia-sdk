@@ -2,21 +2,21 @@
 source "./contract_test/testdata/common.sh"
 
 
-JACK_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show jack -a)"
+JACK_ADDR="$(./build/linkcli --keyring-backend=test --home /tmp/contract_test/.linkcli keys show jack -a)"
 
 create_only_address () {
   # create address
-  echo ${PASSWORD} | echo ${PASSWORD} | ./build/linkcli --home /tmp/contract_test/.linkcli keys add "$1"
-  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show "$1" -a)"
+  ./build/linkcli --keyring-backend=test --home /tmp/contract_test/.linkcli keys add "$1"
+  ACTUAL_ADDR="$(./build/linkcli --keyring-backend=test --home /tmp/contract_test/.linkcli keys show "$1" -a)"
 }
 
 set_test_address () {
   # create address
-  echo ${PASSWORD} | echo ${PASSWORD} | ./build/linkcli --home /tmp/contract_test/.linkcli keys add "$1"
-  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show "$1" -a)"
+  ./build/linkcli --keyring-backend=test --home /tmp/contract_test/.linkcli keys add "$1"
+  ACTUAL_ADDR="$(./build/linkcli --keyring-backend=test --home /tmp/contract_test/.linkcli keys show "$1" -a)"
 
   # register the account
-  SEND_TX_HASH=$(echo ${PASSWORD} | ./build/linkcli tx send --home ${HOME} ${JACK_ADDR} ${ACTUAL_ADDR} 10link --chain-id ${CHAIN_ID} --yes -b block | awk '/txhash.*/{print $2}')
+  SEND_TX_HASH=$(./build/linkcli --keyring-backend=test tx send --home ${HOME} ${JACK_ADDR} ${ACTUAL_ADDR} 10link --chain-id ${CHAIN_ID} --yes -b block | awk '/txhash.*/{print $2}')
   echo "Send token: ${SEND_TX_HASH}"
 }
 
@@ -48,11 +48,11 @@ set_test_address allocator ${REPLACE_ALLOCATOR_ADDR}
 sed -i.bak -e "s%${REPLACE_MSG_EXAMPLES}%$(yq read -j ${SWAGGER} components.examples.MsgExamples.value)%g" ${ALL_MSG_TX}
 
 # sign transaction that has all messages
-echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${ALL_MSG_TX} --from jack --chain-id ${CHAIN_ID} --output-document ${SIGNED_TX}
+./build/linkcli --keyring-backend=test tx sign --home ${HOME} ${ALL_MSG_TX} --from jack --chain-id ${CHAIN_ID} --output-document ${SIGNED_TX}
 
 # safetybox module not in use as of 2019/2/14
 #echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from operator --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
-echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from allocator --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
+./build/linkcli --keyring-backend=test tx sign --home ${HOME} ${SIGNED_TX} --append --from allocator --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
 #echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from issuer --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
 #echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append --from returner --chain-id ${CHAIN_ID}  --output-document ${SIGNED_TX}
 
@@ -63,7 +63,7 @@ echo ${PASSWORD} | ./build/linkcli tx sign --home ${HOME} ${SIGNED_TX} --append 
 echo "Request: $(cat ${SIGNED_TX})"
 
 # broadcast transaction that has all messages
-  ./build/linkcli tx broadcast --home ${HOME} ${SIGNED_TX} --chain-id ${CHAIN_ID} --yes -b block > ${TMP_TX_RESULT}
+  ./build/linkcli --keyring-backend=test tx broadcast --home ${HOME} ${SIGNED_TX} --chain-id ${CHAIN_ID} --yes -b block > ${TMP_TX_RESULT}
 if [ "$(cat ${TMP_TX_RESULT} | awk '/code:/{print $2}')" -ne "0" ]
 then
   echo "ERROR: $(cat ${TMP_TX_RESULT})"

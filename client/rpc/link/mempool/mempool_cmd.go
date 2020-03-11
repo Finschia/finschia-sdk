@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/tendermint/tendermint/libs/common"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	"github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
@@ -139,7 +139,7 @@ func getUnconfirmedTxsCmd(cliCtx context.CLIContext, limit int, hash bool) ([]by
 	for idx, tx := range res.Txs {
 		var txJSON json.RawMessage
 		if hash {
-			txHash := common.HexBytes(tx.Hash())
+			txHash := tmbytes.HexBytes(tx.Hash())
 			txJSON = cdc.MustMarshalJSON(txHash)
 		} else {
 			var stdTx auth.StdTx

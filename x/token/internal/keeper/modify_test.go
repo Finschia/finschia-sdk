@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
@@ -46,7 +47,7 @@ func TestModifyTokenName(t *testing.T) {
 
 		// When modify token name with invalid contractID, Then error is occurred
 		require.EqualError(t, keeper.ModifyToken(ctx, addr1, nonExistentcontractID, changes),
-			types.ErrTokenNotExist(types.DefaultCodespace, nonExistentcontractID).Error())
+			sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s", nonExistentcontractID).Error())
 	}
 	t.Log("Test without permission")
 	{
@@ -56,7 +57,7 @@ func TestModifyTokenName(t *testing.T) {
 
 		// When modify token name with invalid permission, Then error is occurred
 		require.EqualError(t, keeper.ModifyToken(ctx, addr1, tokenWithoutPerm.GetContractID(), changes),
-			types.ErrTokenNoPermission(types.DefaultCodespace, addr1, invalidPerm).Error())
+			sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr1.String(), invalidPerm.String()).Error())
 	}
 }
 

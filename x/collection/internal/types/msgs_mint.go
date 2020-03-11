@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
@@ -35,22 +36,23 @@ func (msg MsgMintNFT) GetContractID() string        { return msg.ContractID }
 func (msg MsgMintNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
-func (msg MsgMintNFT) ValidateBasic() sdk.Error {
+
+func (msg MsgMintNFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if len(msg.Name) == 0 {
-		return ErrInvalidTokenName(DefaultCodespace, msg.Name)
+		return ErrInvalidTokenName
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("from address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from address cannot be empty")
 	}
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("to address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to address cannot be empty")
 	}
 
 	if err := types.ValidateTokenTypeNFT(msg.TokenType); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, err.Error())
+		return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 	}
 	return nil
 }
@@ -79,20 +81,20 @@ func (msg MsgBurnNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurnNFT) ValidateBasic() sdk.Error {
+func (msg MsgBurnNFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
 
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 		if err := types.ValidateTokenTypeNFT(tokenID[:TokenTypeLength]); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}
 
@@ -125,26 +127,26 @@ func (msg MsgBurnNFTFrom) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurnNFTFrom) ValidateBasic() sdk.Error {
+func (msg MsgBurnNFTFrom) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 	if msg.Proxy.Equals(msg.From) {
-		return ErrApproverProxySame(DefaultCodespace, msg.Proxy.String())
+		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.Proxy.String())
 	}
 
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 		if err := types.ValidateTokenTypeNFT(tokenID[:TokenTypeLength]); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}
 	return nil
@@ -175,20 +177,20 @@ func (msg MsgMintFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgMintFT) ValidateBasic() sdk.Error {
+func (msg MsgMintFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("send amount is invalid: " + msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("from address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from address cannot be empty")
 	}
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("to address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to address cannot be empty")
 	}
 
 	return nil
@@ -217,17 +219,17 @@ func (msg MsgBurnFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurnFT) ValidateBasic() sdk.Error {
+func (msg MsgBurnFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("send amount is invalid: " + msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from address cannot be empty")
 	}
 	return nil
 }
@@ -258,21 +260,21 @@ func (msg MsgBurnFTFrom) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurnFTFrom) ValidateBasic() sdk.Error {
+func (msg MsgBurnFTFrom) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 	if msg.Proxy.Equals(msg.From) {
-		return ErrApproverProxySame(DefaultCodespace, msg.Proxy.String())
+		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.Proxy.String())
 	}
 	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("send amount is invalid: " + msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 	return nil
 }

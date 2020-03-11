@@ -6,11 +6,11 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func handleMsgIssue(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssue) sdk.Result {
+func handleMsgIssue(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssue) (*sdk.Result, error) {
 	token := types.NewToken(keeper.NewContractID(ctx), msg.Name, msg.Symbol, msg.Meta, msg.ImageURI, msg.Decimals, msg.Mintable)
 	err := keeper.IssueToken(ctx, token, msg.Amount, msg.Owner, msg.To)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -20,5 +20,5 @@ func handleMsgIssue(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssue) s
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String()),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

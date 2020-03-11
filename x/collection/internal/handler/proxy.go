@@ -6,10 +6,10 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgApprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgApprove) sdk.Result {
+func handleMsgApprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgApprove) (*sdk.Result, error) {
 	err := keeper.SetApproved(ctx, msg.ContractID, msg.Proxy, msg.Approver)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -20,13 +20,13 @@ func handleMsgApprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgApprov
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgDisapprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDisapprove) sdk.Result {
+func handleMsgDisapprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDisapprove) (*sdk.Result, error) {
 	err := keeper.DeleteApproved(ctx, msg.ContractID, msg.Proxy, msg.Approver)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -37,5 +37,5 @@ func handleMsgDisapprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDis
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

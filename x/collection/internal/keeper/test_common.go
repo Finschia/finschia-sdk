@@ -42,7 +42,7 @@ func TestKeeper() (sdk.Context, store.CommitMultiStore, Keeper) {
 	codec.RegisterCrypto(cdc)
 	cdc.Seal()
 
-	paramsKeeper := params.NewKeeper(cdc, keyParams, tkeyParams, params.DefaultCodespace)
+	paramsKeeper := params.NewKeeper(cdc, keyParams, tkeyParams)
 	authSubspace := paramsKeeper.Subspace(auth.DefaultParamspace)
 
 	// add keepers

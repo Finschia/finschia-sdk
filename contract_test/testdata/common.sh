@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-PASSWORD=1234567890
 FAUCET_PASSWORD=11111111
 
 # proxy module not in use as of 2019/2/10

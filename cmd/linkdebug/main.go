@@ -11,8 +11,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/ed25519"
 
 	link "github.com/line/link/app"
 
@@ -31,7 +29,6 @@ func init() {
 	config.Seal()
 
 	rootCmd.AddCommand(txCmd)
-	rootCmd.AddCommand(pubkeyCmd)
 	rootCmd.AddCommand(addrCmd)
 	rootCmd.AddCommand(hackCmd)
 	rootCmd.AddCommand(rawBytesCmd)
@@ -47,12 +44,6 @@ var txCmd = &cobra.Command{
 	Use:   "tx",
 	Short: "Decode a link tx from hex or base64",
 	RunE:  runTxCmd,
-}
-
-var pubkeyCmd = &cobra.Command{
-	Use:   "pubkey",
-	Short: "Decode a pubkey from hex, base64, or bech32",
-	RunE:  runPubKeyCmd,
 }
 
 var addrCmd = &cobra.Command{
@@ -91,81 +82,6 @@ func runRawBytesCmd(cmd *cobra.Command, args []string) error {
 		byteArray = append(byteArray, byte(b))
 	}
 	fmt.Printf("%X\n", byteArray)
-	return nil
-}
-
-func runPubKeyCmd(cmd *cobra.Command, args []string) error {
-	if len(args) != 1 {
-		return fmt.Errorf("expected single arg")
-	}
-
-	pubkeyString := args[0]
-	var pubKeyI crypto.PubKey
-
-	// try hex, then base64, then bech32
-	pubkeyBytes, err := hex.DecodeString(pubkeyString)
-	if err != nil {
-		var err2 error
-		pubkeyBytes, err2 = base64.StdEncoding.DecodeString(pubkeyString)
-		if err2 != nil {
-			var err3 error
-			pubKeyI, err3 = sdk.GetAccPubKeyBech32(pubkeyString)
-			if err3 != nil {
-				var err4 error
-				pubKeyI, err4 = sdk.GetValPubKeyBech32(pubkeyString)
-
-				if err4 != nil {
-					var err5 error
-					pubKeyI, err5 = sdk.GetConsPubKeyBech32(pubkeyString)
-					if err5 != nil {
-						return fmt.Errorf(`expected hex, base64, or bech32. Got errors:
-								hex: %v,
-								base64: %v
-								bech32 Acc: %v
-								bech32 Val: %v
-								bech32 Cons: %v`,
-							err, err2, err3, err4, err5)
-					}
-				}
-			}
-		}
-	}
-
-	var pubKey ed25519.PubKeyEd25519
-	if pubKeyI == nil {
-		copy(pubKey[:], pubkeyBytes)
-	} else {
-		if pubKey, ok := pubKeyI.(ed25519.PubKeyEd25519); ok {
-			pubkeyBytes = pubKey[:]
-		} else {
-			panic("Only ed25519 is supported")
-		}
-	}
-
-	cdc := link.MakeCodec()
-	pubKeyJSONBytes, err := cdc.MarshalJSON(pubKey)
-	if err != nil {
-		return err
-	}
-	accPub, err := sdk.Bech32ifyAccPub(pubKey)
-	if err != nil {
-		return err
-	}
-	valPub, err := sdk.Bech32ifyValPub(pubKey)
-	if err != nil {
-		return err
-	}
-
-	consenusPub, err := sdk.Bech32ifyConsPub(pubKey)
-	if err != nil {
-		return err
-	}
-	fmt.Println("Address:", pubKey.Address())
-	fmt.Printf("Hex: %X\n", pubkeyBytes)
-	fmt.Println("JSON (base64):", string(pubKeyJSONBytes))
-	fmt.Println("Bech32 Acc:", accPub)
-	fmt.Println("Bech32 Validator Operator:", valPub)
-	fmt.Println("Bech32 Validator Consensus:", consenusPub)
 	return nil
 }
 

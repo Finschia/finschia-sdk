@@ -86,7 +86,7 @@ func (msgPxApproveCoins MsgProxyApproveCoins) Route() string { return RouterKey 
 
 func (msgPxApproveCoins MsgProxyApproveCoins) Type() string { return MsgTypeProxyApproveCoins }
 
-func (msgPxApproveCoins MsgProxyApproveCoins) ValidateBasic() sdk.Error {
+func (msgPxApproveCoins MsgProxyApproveCoins) ValidateBasic() error {
 	return validateMsgProxyAllowance(msgPxApproveCoins.MsgProxyAllowance)
 }
 
@@ -130,7 +130,7 @@ func (msgPxDisapproveCoins MsgProxyDisapproveCoins) Route() string { return Rout
 
 func (msgPxDisapproveCoins MsgProxyDisapproveCoins) Type() string { return MsgTypeProxyDisapproveCoins }
 
-func (msgPxDisapproveCoins MsgProxyDisapproveCoins) ValidateBasic() sdk.Error {
+func (msgPxDisapproveCoins MsgProxyDisapproveCoins) ValidateBasic() error {
 	return validateMsgProxyAllowance(msgPxDisapproveCoins.MsgProxyAllowance)
 }
 
@@ -177,9 +177,9 @@ func (msgPxSendCoinsFrom MsgProxySendCoinsFrom) Route() string { return RouterKe
 
 func (msgPxSendCoinsFrom MsgProxySendCoinsFrom) Type() string { return MsgTypeProxySendCoinsFrom }
 
-func (msgPxSendCoinsFrom MsgProxySendCoinsFrom) ValidateBasic() sdk.Error {
+func (msgPxSendCoinsFrom MsgProxySendCoinsFrom) ValidateBasic() error {
 	if msgPxSendCoinsFrom.ToAddress.Empty() {
-		return ErrProxyToAddressRequired(DefaultCodespace)
+		return ErrProxyToAddressRequired
 	}
 
 	return validateMsgProxyAllowance(msgPxSendCoinsFrom.MsgProxyAllowance)
@@ -194,18 +194,18 @@ func (msgPxSendCoinsFrom MsgProxySendCoinsFrom) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msgPxSendCoinsFrom.Proxy}
 }
 
-func validateMsgProxyAllowance(msg MsgProxyAllowance) sdk.Error {
+func validateMsgProxyAllowance(msg MsgProxyAllowance) error {
 	if msg.Proxy.Empty() {
-		return ErrProxyAddressRequired(DefaultCodespace)
+		return ErrProxyAddressRequired
 	}
 	if msg.OnBehalfOf.Empty() {
-		return ErrProxyOnBehalfOfAddressRequired(DefaultCodespace)
+		return ErrProxyOnBehalfOfAddressRequired
 	}
 	if len(msg.Denom) == 0 {
-		return ErrProxyDenomRequired(DefaultCodespace)
+		return ErrProxyDenomRequired
 	}
 	if msg.Amount.LT(sdk.NewInt(1)) {
-		return ErrProxyAmountMustBePositiveInteger(DefaultCodespace)
+		return ErrProxyAmountMustBePositiveInteger
 	}
 	return nil
 }

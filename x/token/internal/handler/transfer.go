@@ -6,10 +6,10 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func handleMsgTransfer(ctx sdk.Context, k keeper.Keeper, msg types.MsgTransfer) sdk.Result {
+func handleMsgTransfer(ctx sdk.Context, k keeper.Keeper, msg types.MsgTransfer) (*sdk.Result, error) {
 	err := k.Transfer(ctx, msg.From, msg.To, msg.ContractID, msg.Amount)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -20,5 +20,5 @@ func handleMsgTransfer(ctx sdk.Context, k keeper.Keeper, msg types.MsgTransfer) 
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

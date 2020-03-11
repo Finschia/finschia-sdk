@@ -166,8 +166,7 @@ func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) (sdk.Sear
 		return sdk.SearchGenesisAccountResult{}, err
 	}
 
-	var genAccounts []types.BaseAccount
-	cliCtx.Codec.MustUnmarshalJSON(appState["accounts"], &genAccounts)
+	genAccounts := types.GetGenesisStateFromAppState(cliCtx.Codec, appState).Accounts
 	totalCount := len(genAccounts)
 
 	perPage, err = validatePerPage(perPage)

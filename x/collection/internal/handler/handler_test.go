@@ -74,8 +74,7 @@ func GetMadeContractID(events sdk.Events) string {
 
 func TestHandlerUnrecognized(t *testing.T) {
 	ctx, h := cacheKeeper()
-	res := h(ctx, sdk.NewTestMsg())
-	require.False(t, res.IsOK())
-	require.True(t, strings.Contains(res.Log, "Unrecognized  Msg type"))
-	require.False(t, res.Code.IsOK())
+	_, err := h(ctx, sdk.NewTestMsg())
+	require.Error(t, err)
+	require.True(t, strings.Contains(err.Error(), "unrecognized Msg type"))
 }

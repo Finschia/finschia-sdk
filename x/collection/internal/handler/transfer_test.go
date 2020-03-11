@@ -15,18 +15,18 @@ func TestHandleTransferFT(t *testing.T) {
 	var contractID string
 	{
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, createMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, createMsg)
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
-		res = h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg)
+		require.NoError(t, err)
 	}
 
 	msg := types.NewMsgTransferFT(addr1, contractID, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-	res := h(ctx, msg)
-	require.True(t, res.Code.IsOK())
+	res, err := h(ctx, msg)
+	require.NoError(t, err)
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -44,21 +44,21 @@ func TestHandleTransferFTFrom(t *testing.T) {
 	var contractID string
 	{
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, createMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, createMsg)
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		msg := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
-		res = h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg)
+		require.NoError(t, err)
 		msg2 := types.NewMsgApprove(addr1, contractID, addr2)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 	}
 
 	msg := types.NewMsgTransferFTFrom(addr2, contractID, addr1, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-	res := h(ctx, msg)
-	require.True(t, res.Code.IsOK())
+	res, err := h(ctx, msg)
+	require.NoError(t, err)
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
@@ -77,21 +77,21 @@ func TestHandleTransferNFT(t *testing.T) {
 	var contractID string
 	{
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, createMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, createMsg)
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
-		res = h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg)
+		require.NoError(t, err)
 		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 	}
 
 	msg := types.NewMsgTransferNFT(addr1, contractID, addr2, defaultTokenID1)
-	res := h(ctx, msg)
-	require.True(t, res.Code.IsOK())
+	res, err := h(ctx, msg)
+	require.NoError(t, err)
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -110,24 +110,24 @@ func TestHandleTransferNFTFrom(t *testing.T) {
 	var contractID string
 	{
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, createMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, createMsg)
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
-		res = h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg)
+		require.NoError(t, err)
 		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 		msg3 := types.NewMsgApprove(addr1, contractID, addr2)
-		res = h(ctx, msg3)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg3)
+		require.NoError(t, err)
 	}
 
 	msg := types.NewMsgTransferNFTFrom(addr2, contractID, addr1, addr2, defaultTokenID1)
-	res := h(ctx, msg)
-	require.True(t, res.Code.IsOK())
+	res, err := h(ctx, msg)
+	require.NoError(t, err)
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
@@ -147,33 +147,33 @@ func TestHandleTransferNFTChild(t *testing.T) {
 	var contractID string
 	{
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, createMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, createMsg)
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
-		res = h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg)
+		require.NoError(t, err)
 		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 		msg3 := types.NewMsgAttach(addr1, contractID, defaultTokenID1, defaultTokenID2)
-		res = h(ctx, msg3)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg3)
+		require.NoError(t, err)
 		msg3 = types.NewMsgAttach(addr1, contractID, defaultTokenID2, defaultTokenID3)
-		res = h(ctx, msg3)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg3)
+		require.NoError(t, err)
 	}
 
 	msg := types.NewMsgTransferNFT(addr1, contractID, addr2, defaultTokenID1)
-	res := h(ctx, msg)
-	require.True(t, res.Code.IsOK())
+	res, err := h(ctx, msg)
+	require.NoError(t, err)
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),

@@ -1547,6 +1547,19 @@ components:
         validator_index:
           type: string
           example: "0"
+    CommitSig:
+      type: object
+      properties:
+        block_id_flag:
+          type: integer
+          description: no vote (1), voted for the Commit.BlockID (2), voted for nil (3)
+          example: 2
+        signature:
+          $ref: '#/components/schemas/Signature'
+        timestamp:
+          $ref: '#/components/schemas/Timestamp'
+        validator_address:
+          $ref: '#/components/schemas/ValidatorAddress'
     Change:
       type: object
       properties:
@@ -1649,25 +1662,15 @@ components:
       properties:
         block:
           $ref: '#/components/schemas/Block'
-        block_meta:
-          type: object
-          properties:
-            block_id:
-              $ref: '#/components/schemas/BlockID'
-            header:
-              $ref: '#/components/schemas/BlockHeader'
+        block_id:
+          $ref: '#/components/schemas/BlockID'
     ResultBlockBlock:
       type: object
       properties:
         block:
           $ref: '#/components/schemas/BlockStringTx'
-        block_meta:
-          type: object
-          properties:
-            block_id:
-              $ref: '#/components/schemas/BlockID'
-            header:
-              $ref: '#/components/schemas/BlockHeader'
+        block_id:
+          $ref: '#/components/schemas/BlockID'
     BlockStringTx:
       type: object
       properties:
@@ -1695,10 +1698,10 @@ components:
           properties:
             block_id:
               $ref: '#/components/schemas/BlockID'
-            precommits:
+            signatures:
               type: array
               items:
-                $ref: '#/components/schemas/Vote'
+                $ref: '#/components/schemas/CommitSig'
               nullable: true
     Block:
       type: object
@@ -1727,10 +1730,16 @@ components:
           properties:
             block_id:
               $ref: '#/components/schemas/BlockID'
-            precommits:
+            height:
+              type: string
+              example: "1"
+            round:
+              type: string
+              example: "0"
+            signatures:
               type: array
               items:
-                $ref: '#/components/schemas/Vote'
+                $ref: '#/components/schemas/CommitSig'
               nullable: true
     ResultBlock:
       $ref: '#/components/schemas/ResultBlockBlock'
@@ -1774,18 +1783,12 @@ components:
           allOf:
             - $ref: '#/components/schemas/Hash'
             - description: MerkleRoot of the next validator set that will be the validator set that commits the next block
-        num_txs:
-          type: string
-          example: "35"
         proposer_address:
           allOf:
             - $ref: '#/components/schemas/ValidatorAddress'
             - description: original proposer of the block
         time:
           $ref: '#/components/schemas/Timestamp'
-        total_txs:
-          type: string
-          example: "35"
         validators_hash:
           allOf:
             - $ref: '#/components/schemas/Hash'
@@ -1861,7 +1864,7 @@ components:
         raw_log:
           type: string
           description: The raw string output of the logger
-          example: '[{"msg_index":0,"success":true,"log":""}]'
+          example: '[{"msg_index":0,"log":""}]'
         logs:
           type: array
           items:
@@ -1869,8 +1872,6 @@ components:
             properties:
               msg_index:
                 type: integer
-              success:
-                type: boolean
               log:
                 type: string
               events:
@@ -1885,10 +1886,6 @@ components:
           type: string
           description: Amount of gas consumed by transaction
           example: "26354"
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
         tx:
           $ref: '#/components/schemas/Tx'
         timestamp:
@@ -1911,7 +1908,7 @@ components:
         raw_log:
           type: string
           description: The raw string output of the logger
-          example: '[{"msg_index":0,"success":true,"log":""}]'
+          example: '[{"msg_index":0,"log":""}]'
         logs:
           type: array
           items:
@@ -1919,8 +1916,6 @@ components:
             properties:
               msg_index:
                 type: integer
-              success:
-                type: boolean
               log:
                 type: string
               events:
@@ -2092,7 +2087,9 @@ components:
               items:
                 $ref: '#/components/schemas/Coin'
             public_key:
-              $ref: '#/components/schemas/PublicKey'
+              type: string
+              description: bech32 encoded address
+              example: "linkpub1addwnpepqgazgvy3l8zkz5ht983hxrpscze6zzef9c8nwpc7gkexffv3pyadu773582"
             account_number:
               type: string
               description: A number specified when the account was first created
@@ -2104,24 +2101,30 @@ components:
     GenesisAccount:
       type: object
       properties:
-        address:
-          $ref: '#/components/schemas/Address'
-        coins:
-          type: array
-          items:
-            $ref: '#/components/schemas/Coin'
-        public_key:
+        type:
+          type: string
+          example: "cosmos-sdk/Account"
+        value:
           type: object
-          nullable: true
-          example: null
-        account_number:
-          type: string
-          description: A number specified when the account was first created
-          example: "0"
-        sequence:
-          type: string
-          description: An increasing number each time you sign a message with a given account
-          example: "0"
+          properties:
+            address:
+              $ref: '#/components/schemas/Address'
+            coins:
+              type: array
+              items:
+                $ref: '#/components/schemas/Coin'
+            public_key:
+              type: string
+              description: bech32 encoded address
+              example: ""
+            account_number:
+              type: string
+              description: A number specified when the account was first created
+              example: "0"
+            sequence:
+              type: string
+              description: An increasing number each time you sign a message with a given account
+              example: "0"
 
     #-------------------------------
     # Token Models
@@ -2326,7 +2329,7 @@ components:
         raw_log:
           type: string
           description: The raw string output of the logger
-          example: '[{"msg_index":0,"success":true,"log":""}]'
+          example: '[{"msg_index":0,"log":""}]'
         logs:
           type: array
           items:
@@ -2334,8 +2337,6 @@ components:
             properties:
               msg_index:
                 type: integer
-              success:
-                type: boolean
               log:
                 type: string
               events:
@@ -2350,10 +2351,6 @@ components:
           type: string
           description: Amount of gas consumed by transaction
           example: "26354"
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
     BroadcastTxSyncResult:
       type: object
       properties:
@@ -2365,7 +2362,7 @@ components:
         raw_log:
           type: string
           description: The raw string output of the logger
-          example: '[{"msg_index":0,"success":true,"log":""}]'
+          example: '[{"msg_index":0,"log":""}]'
         logs:
           type: array
           items:
@@ -2373,8 +2370,6 @@ components:
             properties:
               msg_index:
                 type: integer
-              success:
-                type: boolean
               log:
                 type: string
     BroadcastTxAsyncResult:

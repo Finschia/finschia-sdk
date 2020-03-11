@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"bufio"
+
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -51,8 +53,9 @@ func EmptyCmd(cdc *codec.Codec) *cobra.Command {
 
 func makeCreateAccountCmd(cdc *codec.Codec) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-		cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+		inBuf := bufio.NewReader(cmd.InOrStdin())
+		txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+		cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 		target, err := sdk.AccAddressFromBech32(args[1])
 		if err != nil {
@@ -67,8 +70,9 @@ func makeCreateAccountCmd(cdc *codec.Codec) func(cmd *cobra.Command, args []stri
 
 func makeEmptyCmd(cdc *codec.Codec) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-		cliCtx := context.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+		inBuf := bufio.NewReader(cmd.InOrStdin())
+		txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+		cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 		msg := types.NewMsgEmpty(cliCtx.GetFromAddress())
 		return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})

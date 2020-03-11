@@ -2,8 +2,10 @@ package types
 
 import (
 	"testing"
+	"unicode/utf8"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
@@ -49,38 +51,38 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 	t.Log("empty contractID found")
 	{
 		msg := AMsgModify().Contract("").Build()
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: ").Error())
 	}
 	t.Log("empty owner")
 	{
 		msg := AMsgModify().Owner(nil).Build()
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("owner address cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty").Error())
 	}
 	t.Log("invalid contractID found")
 	{
 		msg := AMsgModify().Contract("0123456789001234567890").Build()
 		require.EqualError(t,
 			msg.ValidateBasic(),
-			contract.ErrInvalidContractID(contract.ContractCodeSpace, msg.ContractID).Error())
+			sdkerrors.Wrapf(contract.ErrInvalidContractID, "ContractID: %s", msg.ContractID).Error())
 	}
 	t.Log("img uri too long")
 	{
 		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"base_img_uri": length1001String})).
 			Build()
 
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidBaseImgURILength(DefaultCodespace, length1001String).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidBaseImgURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxBaseImgURILength, utf8.RuneCountInString(length1001String)).Error())
 	}
 	t.Log("name too long")
 	{
 		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"name": length1001String})).Build()
 
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidNameLength(DefaultCodespace, length1001String).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxTokenNameLength, utf8.RuneCountInString(length1001String)).Error())
 	}
 	t.Log("invalid changes field")
 	{
 		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"invalid_field": "val"})).Build()
 
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesField(DefaultCodespace, "invalid_field").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: invalid_field").Error())
 	}
 	t.Log("no token uri field")
 	{
@@ -94,12 +96,12 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		msg := AMsgModify().Changes(changeList).Build()
 
 		// When validate basic, Then error is occurred
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesFieldCount(DefaultCodespace, len(changeList)).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidChangesFieldCount, "You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, len(changeList)).Error())
 	}
 	t.Log("Test with nft token type")
 	{
 		msg := AMsgModify().TokenType(defaultTokenType).Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesField(DefaultCodespace, "base_img_uri").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: base_img_uri").Error())
 
 		msg = AMsgModify().TokenType(defaultTokenType).
 			Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).
@@ -109,7 +111,7 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 	t.Log("Test with nft token type and index")
 	{
 		msg := AMsgModify().TokenType(defaultTokenType).TokenIndex(defaultTokenIndex).Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesField(DefaultCodespace, "base_img_uri").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: base_img_uri").Error())
 
 		msg = AMsgModify().TokenType(defaultTokenType).TokenIndex(defaultTokenIndex).
 			Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).
@@ -119,7 +121,7 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 	t.Log("Test with ft token type and index")
 	{
 		msg := AMsgModify().TokenType(defaultTokenTypeFT).TokenIndex(defaultTokenIndex).Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesField(DefaultCodespace, "base_img_uri").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: base_img_uri").Error())
 
 		msg = AMsgModify().TokenType(defaultTokenTypeFT).TokenIndex(defaultTokenIndex).
 			Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).
@@ -129,24 +131,24 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 	t.Log("Test with ft token type and not index")
 	{
 		msg := AMsgModify().TokenType(defaultTokenTypeFT).Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrTokenTypeFTWithoutIndex(DefaultCodespace, defaultTokenTypeFT).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrTokenTypeFTWithoutIndex, defaultTokenTypeFT).Error())
 	}
 	t.Log("Test with invalid token type")
 	{
 		invalidTokenType := "010101"
 		msg := AMsgModify().TokenType(invalidTokenType).Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenType(DefaultCodespace, invalidTokenType).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenType, invalidTokenType).Error())
 	}
 	t.Log("Test with invalid token index")
 	{
 		invalidTokenIndex := "010101"
 		msg := AMsgModify().TokenIndex(invalidTokenIndex).Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenIndex(DefaultCodespace, invalidTokenIndex).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenIndex, invalidTokenIndex).Error())
 	}
 	t.Log("Test with token index not token type")
 	{
 		msg := AMsgModify().TokenIndex(defaultTokenIndex).Build()
-		require.EqualError(t, msg.ValidateBasic(), ErrTokenIndexWithoutType(DefaultCodespace).Error())
+		require.EqualError(t, msg.ValidateBasic(), ErrTokenIndexWithoutType.Error())
 	}
 }
 

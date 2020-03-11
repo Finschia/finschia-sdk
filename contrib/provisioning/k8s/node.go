@@ -6,12 +6,13 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/server"
 	srvconfig "github.com/cosmos/cosmos-sdk/server/config"
-	"github.com/cosmos/cosmos-sdk/x/genaccounts"
+	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
+	"github.com/line/link/client"
 	tmconfig "github.com/tendermint/tendermint/config"
 	"github.com/tendermint/tendermint/crypto"
 )
@@ -40,7 +41,13 @@ func (n *Node) process(tmConfig *tmconfig.Config, cosConfig *srvconfig.Config, c
 		panic(err)
 	}
 	n.MetaData.GenFiles[n.Idx] = tmConfig.GenesisFile()
-	addr, secret, err := server.GenerateSaveCoinKey(n.cliBinDirNameFullPath(), n.Name, client.DefaultKeyPass,
+
+	kb, err := client.NewKeyBaseFromDir(n.cliBinDirNameFullPath())
+	if err != nil {
+		panic(err)
+	}
+
+	addr, secret, err := server.GenerateSaveCoinKey(kb, n.Name, keys.DefaultKeyPass,
 		true)
 	if err != nil {
 		_ = os.RemoveAll(n.MetaData.ConfHomePath)
@@ -101,7 +108,7 @@ func (n *Node) writeK8STemplate() *Deployment {
 type BuildMetaData struct {
 	InputNodeIP, ValidatorIDs, GenFiles, NodeNickNames                 []string
 	PubKeys                                                            []crypto.PubKey
-	Accs                                                               []genaccounts.GenesisAccount
+	Accs                                                               []authexported.GenesisAccount
 	NumNodes                                                           int
 	ConfHomePath, ChainID, ConfDirName, CliBinDirName, LinkdBinDirName string
 	k8STemplateFilePath, filebeatTemplateFilePath, linkDockerImageURL  string
@@ -115,7 +122,7 @@ func NewBuildMetaData(inputNodes []string, confHomePath, chainID, confDirName, c
 	numNodes := len(inputNodes)
 	return BuildMetaData{inputNodes, make([]string, numNodes), make([]string, numNodes),
 		make([]string, numNodes), make([]crypto.PubKey, numNodes),
-		make([]genaccounts.GenesisAccount, numNodes), numNodes, confHomePath,
+		make([]authexported.GenesisAccount, numNodes), numNodes, confHomePath,
 		chainID, confDirName, cliBinDirName, linkdBinDirName,
 		k8STemplateFilePath, filebeatTemplateFilePath,
 		linkDockerImageURL, nodeP2PPort, nodeRestAPIPort,

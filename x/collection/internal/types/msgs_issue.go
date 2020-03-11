@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/contract"
 )
 
@@ -39,26 +40,26 @@ func (msg MsgIssueFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgIssueFT) ValidateBasic() sdk.Error {
+func (msg MsgIssueFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if len(msg.Name) == 0 {
-		return ErrInvalidTokenName(DefaultCodespace, msg.Name)
+		return ErrInvalidTokenName
 	}
 	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("to address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to address cannot be empty")
 	}
 
 	if msg.Amount.Equal(sdk.NewInt(1)) && msg.Decimals.Equal(sdk.NewInt(0)) && !msg.Mintable {
-		return ErrInvalidIssueFT(DefaultCodespace)
+		return ErrInvalidIssueFT
 	}
 
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
-		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
+		return sdkerrors.Wrapf(ErrInvalidTokenDecimals, "Decimals: %s", msg.Decimals)
 	}
 
 	return nil
@@ -90,13 +91,13 @@ func (msg MsgIssueNFT) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgIssueNFT) ValidateBasic() sdk.Error {
+func (msg MsgIssueNFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
 	return nil
 }

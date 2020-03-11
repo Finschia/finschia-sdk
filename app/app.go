@@ -11,8 +11,8 @@ import (
 	"github.com/line/link/x/token"
 
 	abci "github.com/tendermint/tendermint/abci/types"
-	cmn "github.com/tendermint/tendermint/libs/common"
 	"github.com/tendermint/tendermint/libs/log"
+	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
 	bam "github.com/cosmos/cosmos-sdk/baseapp"
@@ -21,7 +21,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/genaccounts"
+	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/staking"
@@ -45,7 +45,6 @@ var (
 	// non-dependant module elements, such as codec registration
 	// and genesis verification.
 	ModuleBasics = module.NewBasicManager(
-		genaccounts.AppModuleBasic{},
 		genutil.AppModuleBasic{},
 		auth.AppModuleBasic{},
 		bank.AppModuleBasic{},
@@ -73,6 +72,7 @@ func MakeCodec() *codec.Codec {
 	var cdc = codec.New()
 
 	ModuleBasics.RegisterCodec(cdc)
+	vesting.RegisterCodec(cdc)
 	sdk.RegisterCodec(cdc)
 	codec.RegisterCrypto(cdc)
 	codec.RegisterEvidences(cdc)
@@ -102,6 +102,9 @@ type LinkApp struct {
 
 	// the module manager
 	mm *module.Manager
+
+	// simulation manager
+	sm *module.SimulationManager
 }
 
 // NewLinkApp returns a reference to an initialized LinkApp.
@@ -135,7 +138,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	}
 
 	// init params keeper and subspaces
-	app.paramsKeeper = params.NewKeeper(app.cdc, keys[params.StoreKey], tkeys[params.TStoreKey], params.DefaultCodespace)
+	app.paramsKeeper = params.NewKeeper(app.cdc, keys[params.StoreKey], tkeys[params.TStoreKey])
 	authSubspace := app.paramsKeeper.Subspace(auth.DefaultParamspace)
 	cbankSubspace := app.paramsKeeper.Subspace(cbank.DefaultParamspace)
 	stakingSubspace := app.paramsKeeper.Subspace(staking.DefaultParamspace)
@@ -144,13 +147,10 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, keys[auth.StoreKey], authSubspace, auth.ProtoBaseAccount)
-	app.cbankKeeper = cbank.NewBaseKeeper(app.accountKeeper, cbankSubspace, cbank.DefaultCodespace, app.ModuleAccountAddrs())
+	app.cbankKeeper = cbank.NewBaseKeeper(app.accountKeeper, cbankSubspace, app.ModuleAccountAddrs())
 	app.bankKeeper = bank.NewKeeper(app.cbankKeeper, keys[bank.StoreKey])
 	app.supplyKeeper = supply.NewKeeper(app.cdc, keys[supply.StoreKey], app.accountKeeper, app.cbankKeeper, maccPerms)
-	app.stakingKeeper = staking.NewKeeper(
-		app.cdc, keys[staking.StoreKey], tkeys[staking.TStoreKey],
-		app.supplyKeeper, stakingSubspace, staking.DefaultCodespace,
-	)
+	app.stakingKeeper = staking.NewKeeper(app.cdc, keys[staking.StoreKey], app.supplyKeeper, stakingSubspace)
 
 	contractKeeper := contract.NewContractKeeper(cdc, keys[contract.StoreKey])
 	app.tokenKeeper = token.NewKeeper(app.cdc, app.accountKeeper, app.iamKeeper.WithPrefix(token.ModuleName), contractKeeper, keys[token.StoreKey])
@@ -159,12 +159,11 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// NOTE: Any module instantiated in the module manager that is later modified
 	// must be passed by reference here.
 	app.mm = module.NewManager(
-		genaccounts.NewAppModule(app.accountKeeper),
 		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx),
 		auth.NewAppModule(app.accountKeeper),
 		bank.NewAppModule(app.bankKeeper),
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
-		staking.NewAppModule(app.stakingKeeper, nil, app.accountKeeper, app.supplyKeeper),
+		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		token.NewAppModule(app.tokenKeeper),
 		collection.NewAppModule(app.collectionKeeper),
 		account.NewAppModule(app.accountKeeper),
@@ -174,7 +173,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	app.mm.SetOrderInitGenesis(
-		genaccounts.ModuleName,
 		staking.ModuleName,
 		auth.ModuleName,
 		supply.ModuleName,
@@ -186,6 +184,19 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	)
 
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter())
+
+	// create the simulation manager and define the order of the modules for deterministic simulations
+	//
+	// NOTE: This is not required for apps that don't use the simulator for fuzz testing
+	// transactions.
+	app.sm = module.NewSimulationManager(
+		auth.NewAppModule(app.accountKeeper),
+		cbank.NewAppModule(app.cbankKeeper, app.accountKeeper),
+		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
+		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
+	)
+
+	app.sm.RegisterStoreDecoders()
 
 	// initialize stores
 	app.MountKVStores(keys)
@@ -200,7 +211,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	if loadLatest {
 		err := app.LoadLatestVersion(app.keys[bam.MainStoreKey])
 		if err != nil {
-			cmn.Exit(err.Error())
+			tmos.Exit(err.Error())
 		}
 	}
 
@@ -238,4 +249,14 @@ func (app *LinkApp) ModuleAccountAddrs() map[string]bool {
 	}
 
 	return modAccAddrs
+}
+
+// Codec returns the application's sealed codec.
+func (app *LinkApp) Codec() *codec.Codec {
+	return app.cdc
+}
+
+// SimulationManager implements the SimulationApp interface
+func (app *LinkApp) SimulationManager() *module.SimulationManager {
+	return app.sm
 }

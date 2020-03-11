@@ -2,33 +2,34 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 type TokenKeeper interface {
-	GetToken(ctx sdk.Context, contractID, tokenID string) (types.Token, sdk.Error)
+	GetToken(ctx sdk.Context, contractID, tokenID string) (types.Token, error)
 	HasToken(ctx sdk.Context, contractID, tokenID string) bool
-	SetToken(ctx sdk.Context, token types.Token) sdk.Error
-	DeleteToken(ctx sdk.Context, contractID, tokenID string) sdk.Error
-	UpdateToken(ctx sdk.Context, token types.Token) sdk.Error
-	GetTokens(ctx sdk.Context, contractID string) (tokens types.Tokens, err sdk.Error)
-	GetFT(ctx sdk.Context, contractID, tokenID string) (types.FT, sdk.Error)
-	GetFTs(ctx sdk.Context, contractID string) (tokens types.Tokens, err sdk.Error)
-	GetNFT(ctx sdk.Context, contractID, tokenID string) (types.NFT, sdk.Error)
-	GetNFTCount(ctx sdk.Context, contractID, tokenType string) (sdk.Int, sdk.Error)
-	GetNFTs(ctx sdk.Context, contractID, tokenType string) (tokens types.Tokens, err sdk.Error)
-	GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, sdk.Error)
-	GetNextTokenIDNFT(ctx sdk.Context, contractID, tokenType string) (string, sdk.Error)
+	SetToken(ctx sdk.Context, token types.Token) error
+	DeleteToken(ctx sdk.Context, contractID, tokenID string) error
+	UpdateToken(ctx sdk.Context, token types.Token) error
+	GetTokens(ctx sdk.Context, contractID string) (tokens types.Tokens, err error)
+	GetFT(ctx sdk.Context, contractID, tokenID string) (types.FT, error)
+	GetFTs(ctx sdk.Context, contractID string) (tokens types.Tokens, err error)
+	GetNFT(ctx sdk.Context, contractID, tokenID string) (types.NFT, error)
+	GetNFTCount(ctx sdk.Context, contractID, tokenType string) (sdk.Int, error)
+	GetNFTs(ctx sdk.Context, contractID, tokenType string) (tokens types.Tokens, err error)
+	GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, error)
+	GetNextTokenIDNFT(ctx sdk.Context, contractID, tokenType string) (string, error)
 }
 
 var _ TokenKeeper = (*Keeper)(nil)
 
-func (k Keeper) GetToken(ctx sdk.Context, contractID, tokenID string) (types.Token, sdk.Error) {
+func (k Keeper) GetToken(ctx sdk.Context, contractID, tokenID string) (types.Token, error) {
 	store := ctx.KVStore(k.storeKey)
 	tokenKey := types.TokenKey(contractID, tokenID)
 	bz := store.Get(tokenKey)
 	if bz == nil {
-		return nil, types.ErrTokenNotExist(types.DefaultCodespace, contractID, tokenID)
+		return nil, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", contractID, tokenID)
 	}
 	token := k.mustDecodeToken(bz)
 	return token, nil
@@ -39,11 +40,11 @@ func (k Keeper) HasToken(ctx sdk.Context, contractID, tokenID string) bool {
 	return store.Has(tokenKey)
 }
 
-func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
+func (k Keeper) SetToken(ctx sdk.Context, token types.Token) error {
 	store := ctx.KVStore(k.storeKey)
 	tokenKey := types.TokenKey(token.GetContractID(), token.GetTokenID())
 	if store.Has(tokenKey) {
-		return types.ErrTokenExist(types.DefaultCodespace, token.GetContractID(), token.GetTokenID())
+		return sdkerrors.Wrapf(types.ErrTokenExist, "ContractID: %s, TokenID: %s", token.GetContractID(), token.GetTokenID())
 	}
 	store.Set(tokenKey, k.mustEncodeToken(token))
 	tokenType := token.GetTokenType()
@@ -55,27 +56,27 @@ func (k Keeper) SetToken(ctx sdk.Context, token types.Token) sdk.Error {
 	return nil
 }
 
-func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) sdk.Error {
+func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) error {
 	store := ctx.KVStore(k.storeKey)
 	tokenKey := types.TokenKey(token.GetContractID(), token.GetTokenID())
 	if !store.Has(tokenKey) {
-		return types.ErrTokenNotExist(types.DefaultCodespace, token.GetContractID(), token.GetTokenID())
+		return sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TotkenID: %s", token.GetContractID(), token.GetTokenID())
 	}
 	store.Set(tokenKey, k.mustEncodeToken(token))
 	return nil
 }
 
-func (k Keeper) DeleteToken(ctx sdk.Context, contractID, tokenID string) sdk.Error {
+func (k Keeper) DeleteToken(ctx sdk.Context, contractID, tokenID string) error {
 	store := ctx.KVStore(k.storeKey)
 	tokenKey := types.TokenKey(contractID, tokenID)
 	if !store.Has(tokenKey) {
-		return types.ErrTokenNotExist(types.DefaultCodespace, contractID, tokenID)
+		return sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TotkenID: %s", contractID, tokenID)
 	}
 	store.Delete(tokenKey)
 	return nil
 }
 
-func (k Keeper) GetTokens(ctx sdk.Context, contractID string) (tokens types.Tokens, err sdk.Error) {
+func (k Keeper) GetTokens(ctx sdk.Context, contractID string) (tokens types.Tokens, err error) {
 	_, err = k.GetCollection(ctx, contractID)
 	if err != nil {
 		return nil, err
@@ -87,7 +88,7 @@ func (k Keeper) GetTokens(ctx sdk.Context, contractID string) (tokens types.Toke
 	return tokens, nil
 }
 
-func (k Keeper) GetFTs(ctx sdk.Context, contractID string) (tokens types.Tokens, err sdk.Error) {
+func (k Keeper) GetFTs(ctx sdk.Context, contractID string) (tokens types.Tokens, err error) {
 	_, err = k.GetCollection(ctx, contractID)
 	if err != nil {
 		return nil, err
@@ -99,30 +100,31 @@ func (k Keeper) GetFTs(ctx sdk.Context, contractID string) (tokens types.Tokens,
 	return tokens, nil
 }
 
-func (k Keeper) GetFT(ctx sdk.Context, contractID, tokenID string) (types.FT, sdk.Error) {
+func (k Keeper) GetFT(ctx sdk.Context, contractID, tokenID string) (types.FT, error) {
 	token, err := k.GetToken(ctx, contractID, tokenID)
 	if err != nil {
 		return nil, err
 	}
 	ft, ok := token.(types.FT)
 	if !ok {
-		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetTokenID())
+		return nil, sdkerrors.Wrapf(types.ErrTokenNotNFT, "TokenID: %s", token.GetTokenID())
 	}
 	return ft, nil
 }
-func (k Keeper) GetNFT(ctx sdk.Context, contractID, tokenID string) (types.NFT, sdk.Error) {
+
+func (k Keeper) GetNFT(ctx sdk.Context, contractID, tokenID string) (types.NFT, error) {
 	token, err := k.GetToken(ctx, contractID, tokenID)
 	if err != nil {
 		return nil, err
 	}
 	nft, ok := token.(types.NFT)
 	if !ok {
-		return nil, types.ErrTokenNotNFT(types.DefaultCodespace, token.GetTokenID())
+		return nil, sdkerrors.Wrapf(types.ErrTokenNotNFT, "TokenID: %s", token.GetTokenID())
 	}
 	return nft, nil
 }
 
-func (k Keeper) GetNFTs(ctx sdk.Context, contractID, tokenType string) (tokens types.Tokens, err sdk.Error) {
+func (k Keeper) GetNFTs(ctx sdk.Context, contractID, tokenType string) (tokens types.Tokens, err error) {
 	_, err = k.GetCollection(ctx, contractID)
 	if err != nil {
 		return nil, err
@@ -133,7 +135,8 @@ func (k Keeper) GetNFTs(ctx sdk.Context, contractID, tokenType string) (tokens t
 	})
 	return tokens, nil
 }
-func (k Keeper) GetNFTCount(ctx sdk.Context, contractID, tokenType string) (sdk.Int, sdk.Error) {
+
+func (k Keeper) GetNFTCount(ctx sdk.Context, contractID, tokenType string) (sdk.Int, error) {
 	_, err := k.GetCollection(ctx, contractID)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -161,7 +164,7 @@ func (k Keeper) setNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType, tok
 	store.Set(types.NextTokenIDNFTKey(contractID, tokenType), k.mustEncodeString(tokenIndex))
 }
 
-func (k Keeper) getNextTokenTypeFT(ctx sdk.Context, contractID string) (tokenType string, error sdk.Error) {
+func (k Keeper) getNextTokenTypeFT(ctx sdk.Context, contractID string) (tokenType string, err error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.NextTokenTypeFTKey(contractID))
 	if bz == nil {
@@ -169,12 +172,12 @@ func (k Keeper) getNextTokenTypeFT(ctx sdk.Context, contractID string) (tokenTyp
 	}
 	tokenType = k.mustDecodeString(bz)
 	if tokenType[0] != types.FungibleFlag[0] {
-		return "", types.ErrTokenTypeFull(types.DefaultCodespace, contractID)
+		return "", sdkerrors.Wrapf(types.ErrTokenTypeFull, "contract id: %s", contractID)
 	}
 	return tokenType, nil
 }
 
-func (k Keeper) getNextTokenTypeNFT(ctx sdk.Context, contractID string) (tokenType string, error sdk.Error) {
+func (k Keeper) getNextTokenTypeNFT(ctx sdk.Context, contractID string) (tokenType string, err error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.NextTokenTypeNFTKey(contractID))
 	if bz == nil {
@@ -182,12 +185,12 @@ func (k Keeper) getNextTokenTypeNFT(ctx sdk.Context, contractID string) (tokenTy
 	}
 	tokenType = k.mustDecodeString(bz)
 	if tokenType == types.ReservedEmpty {
-		return "", types.ErrTokenTypeFull(types.DefaultCodespace, contractID)
+		return "", sdkerrors.Wrapf(types.ErrTokenTypeFull, "contract id: %s", contractID)
 	}
 	return tokenType, nil
 }
 
-func (k Keeper) getNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType string) (tokenIndex string, error sdk.Error) {
+func (k Keeper) getNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType string) (tokenIndex string, err error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.NextTokenIDNFTKey(contractID, tokenType))
 	if bz == nil {
@@ -195,26 +198,26 @@ func (k Keeper) getNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType stri
 	}
 	tokenIndex = k.mustDecodeString(bz)
 	if tokenIndex == types.ReservedEmpty {
-		return "", types.ErrTokenIndexFull(types.DefaultCodespace, contractID, tokenType)
+		return "", sdkerrors.Wrapf(types.ErrTokenIndexFull, "ContractID: %s, TokenType: %s", contractID, tokenType)
 	}
 	return tokenIndex, nil
 }
 
-func (k Keeper) GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, sdk.Error) {
+func (k Keeper) GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, error) {
 	tokenType, err := k.getNextTokenTypeFT(ctx, contractID)
 	if err != nil {
-		return "", types.ErrTokenIDFull(types.DefaultCodespace, contractID)
+		return "", sdkerrors.Wrapf(types.ErrTokenIDFull, "ContractID: %s, TokenType: %s", contractID, tokenType)
 	}
 	return tokenType + types.ReservedEmpty, nil
 }
-func (k Keeper) GetNextTokenIDNFT(ctx sdk.Context, contractID, tokenType string) (string, sdk.Error) {
+func (k Keeper) GetNextTokenIDNFT(ctx sdk.Context, contractID, tokenType string) (string, error) {
 	tokenIndex, err := k.getNextTokenIndexNFT(ctx, contractID, tokenType)
 	if err != nil {
 		return "", err
 	}
 
 	if tokenIndex == types.ReservedEmpty {
-		return "", types.ErrTokenIndexFull(types.DefaultCodespace, contractID, tokenType)
+		return "", sdkerrors.Wrapf(types.ErrTokenIndexFull, "ContractID: %s, TokenType: %s", contractID, tokenType)
 	}
 	return tokenType + tokenIndex, nil
 }

@@ -82,10 +82,6 @@ func (u *Util) ValidateBlock(rb *ctypes.ResultBlock) (err error) {
 		if err != nil {
 			return err
 		}
-		err = u.ltmtl.ValidateBlockMeta(rb.BlockMeta, check)
-		if err != nil {
-			return err
-		}
 
 		err = u.ltmtl.ValidateBlock(rb.Block, check)
 		if err != nil {

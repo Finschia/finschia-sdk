@@ -49,7 +49,7 @@ func SetupTestInput() TestInput {
 	blacklistedAddrs := make(map[string]bool)
 	blacklistedAddrs[sdk.AccAddress([]byte("moduleAcc")).String()] = true
 
-	pk := params.NewKeeper(cdc, keyParams, tkeyParams, params.DefaultCodespace)
+	pk := params.NewKeeper(cdc, keyParams, tkeyParams)
 
 	ak := auth.NewAccountKeeper(
 		cdc, authCapKey, pk.Subspace(auth.DefaultParamspace), auth.ProtoBaseAccount,
@@ -58,7 +58,7 @@ func SetupTestInput() TestInput {
 
 	ak.SetParams(ctx, auth.DefaultParams())
 
-	bankKeeper := cbank.NewBaseKeeper(ak, pk.Subspace(cbank.DefaultParamspace), cbank.DefaultCodespace, blacklistedAddrs)
+	bankKeeper := cbank.NewBaseKeeper(ak, pk.Subspace(cbank.DefaultParamspace), blacklistedAddrs)
 	bankKeeper.SetSendEnabled(ctx, true)
 
 	keeper := NewKeeper(bankKeeper, keyBank)

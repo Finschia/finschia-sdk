@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func NewMsgSafetyBoxCreate(safetyBoxID string, safetyBoxOwner sdk.AccAddress, safetyBoxDenoms []string) MsgSafetyBoxCreate {
@@ -18,17 +19,17 @@ func (msgSbCreate MsgSafetyBoxCreate) Route() string { return RouterKey }
 
 func (msgSbCreate MsgSafetyBoxCreate) Type() string { return MsgTypeSafetyBoxCreate }
 
-func (msgSbCreate MsgSafetyBoxCreate) ValidateBasic() sdk.Error {
+func (msgSbCreate MsgSafetyBoxCreate) ValidateBasic() error {
 	if len(msgSbCreate.SafetyBoxID) == 0 {
-		return ErrSafetyBoxIDRequired(DefaultCodespace)
+		return ErrSafetyBoxIDRequired
 	}
 
 	if msgSbCreate.SafetyBoxOwner.Empty() {
-		return ErrSafetyBoxOwnerRequired(DefaultCodespace)
+		return ErrSafetyBoxOwnerRequired
 	}
 
 	if len(msgSbCreate.SafetyBoxDenoms) == 0 {
-		return ErrSafetyBoxDenomRequired(DefaultCodespace)
+		return ErrSafetyBoxDenomRequired
 	}
 
 	return nil
@@ -56,17 +57,17 @@ func (msgSbSendCoin MsgSafetyBoxAllocateCoins) Route() string { return RouterKey
 
 func (msgSbSendCoin MsgSafetyBoxAllocateCoins) Type() string { return MsgTypeSafetyBoxAllocateCoin }
 
-func (msgSbSendCoin MsgSafetyBoxAllocateCoins) ValidateBasic() sdk.Error {
+func (msgSbSendCoin MsgSafetyBoxAllocateCoins) ValidateBasic() error {
 	if len(msgSbSendCoin.SafetyBoxID) == 0 {
-		return ErrSafetyBoxIDRequired(DefaultCodespace)
+		return ErrSafetyBoxIDRequired
 	}
 
 	if msgSbSendCoin.AllocatorAddress.Empty() {
-		return sdk.ErrUnknownRequest("Allocator address is required")
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Allocator address is required")
 	}
 
 	if msgSbSendCoin.Coins.Empty() {
-		return ErrSafetyBoxCoinsRequired(DefaultCodespace)
+		return ErrSafetyBoxCoinsRequired
 	}
 
 	return nil
@@ -94,17 +95,17 @@ func (msgSbSendCoin MsgSafetyBoxRecallCoins) Route() string { return RouterKey }
 
 func (msgSbSendCoin MsgSafetyBoxRecallCoins) Type() string { return MsgTypeSafetyBoxRecallCoin }
 
-func (msgSbSendCoin MsgSafetyBoxRecallCoins) ValidateBasic() sdk.Error {
+func (msgSbSendCoin MsgSafetyBoxRecallCoins) ValidateBasic() error {
 	if len(msgSbSendCoin.SafetyBoxID) == 0 {
-		return ErrSafetyBoxIDRequired(DefaultCodespace)
+		return ErrSafetyBoxIDRequired
 	}
 
 	if msgSbSendCoin.AllocatorAddress.Empty() {
-		return sdk.ErrUnknownRequest("Allocator address is required")
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Allocator address is required")
 	}
 
 	if msgSbSendCoin.Coins.Empty() {
-		return ErrSafetyBoxCoinsRequired(DefaultCodespace)
+		return ErrSafetyBoxCoinsRequired
 	}
 
 	return nil
@@ -133,21 +134,21 @@ func (msgSbSendCoin MsgSafetyBoxIssueCoins) Route() string { return RouterKey }
 
 func (msgSbSendCoin MsgSafetyBoxIssueCoins) Type() string { return MsgTypeSafetyBoxIssueCoin }
 
-func (msgSbSendCoin MsgSafetyBoxIssueCoins) ValidateBasic() sdk.Error {
+func (msgSbSendCoin MsgSafetyBoxIssueCoins) ValidateBasic() error {
 	if len(msgSbSendCoin.SafetyBoxID) == 0 {
-		return ErrSafetyBoxIDRequired(DefaultCodespace)
+		return ErrSafetyBoxIDRequired
 	}
 
 	if msgSbSendCoin.FromAddress.Empty() {
-		return sdk.ErrUnknownRequest("From address is required")
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "From address is required")
 	}
 
 	if msgSbSendCoin.ToAddress.Empty() {
-		return sdk.ErrUnknownRequest("To address is required")
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "To address is required")
 	}
 
 	if msgSbSendCoin.Coins.Empty() {
-		return ErrSafetyBoxCoinsRequired(DefaultCodespace)
+		return ErrSafetyBoxCoinsRequired
 	}
 
 	return nil
@@ -175,17 +176,17 @@ func (msgSbSendCoin MsgSafetyBoxReturnCoins) Route() string { return RouterKey }
 
 func (msgSbSendCoin MsgSafetyBoxReturnCoins) Type() string { return MsgTypeSafetyBoxReturnCoin }
 
-func (msgSbSendCoin MsgSafetyBoxReturnCoins) ValidateBasic() sdk.Error {
+func (msgSbSendCoin MsgSafetyBoxReturnCoins) ValidateBasic() error {
 	if len(msgSbSendCoin.SafetyBoxID) == 0 {
-		return ErrSafetyBoxIDRequired(DefaultCodespace)
+		return ErrSafetyBoxIDRequired
 	}
 
 	if msgSbSendCoin.ReturnerAddress.Empty() {
-		return sdk.ErrUnknownRequest("Returner address is required")
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Returner address is required")
 	}
 
 	if msgSbSendCoin.Coins.Empty() {
-		return ErrSafetyBoxCoinsRequired(DefaultCodespace)
+		return ErrSafetyBoxCoinsRequired
 	}
 
 	return nil
@@ -209,7 +210,7 @@ func (MsgSafetyBoxRegisterIssuer) Route() string { return RouterKey }
 
 func (MsgSafetyBoxRegisterIssuer) Type() string { return MsgTypeSafetyBoxGrantIssuerPermission }
 
-func (msgSbPermission MsgSafetyBoxRegisterIssuer) ValidateBasic() sdk.Error {
+func (msgSbPermission MsgSafetyBoxRegisterIssuer) ValidateBasic() error {
 	return validateBasic(msgSbPermission.SafetyBoxID, msgSbPermission.Operator, msgSbPermission.Address)
 }
 
@@ -231,7 +232,7 @@ func (MsgSafetyBoxRegisterReturner) Route() string { return RouterKey }
 
 func (MsgSafetyBoxRegisterReturner) Type() string { return MsgTypeSafetyBoxGrantReturnerPermission }
 
-func (msgSbPermission MsgSafetyBoxRegisterReturner) ValidateBasic() sdk.Error {
+func (msgSbPermission MsgSafetyBoxRegisterReturner) ValidateBasic() error {
 	return validateBasic(msgSbPermission.SafetyBoxID, msgSbPermission.Operator, msgSbPermission.Address)
 }
 
@@ -253,7 +254,7 @@ func (MsgSafetyBoxRegisterAllocator) Route() string { return RouterKey }
 
 func (MsgSafetyBoxRegisterAllocator) Type() string { return MsgTypeSafetyBoxGrantAllocatorPermission }
 
-func (msgSbPermission MsgSafetyBoxRegisterAllocator) ValidateBasic() sdk.Error {
+func (msgSbPermission MsgSafetyBoxRegisterAllocator) ValidateBasic() error {
 	return validateBasic(msgSbPermission.SafetyBoxID, msgSbPermission.Operator, msgSbPermission.Address)
 }
 
@@ -275,7 +276,7 @@ func (MsgSafetyBoxRegisterOperator) Route() string { return RouterKey }
 
 func (MsgSafetyBoxRegisterOperator) Type() string { return MsgTypeSafetyBoxGrantOperatorPermission }
 
-func (msgSbPermission MsgSafetyBoxRegisterOperator) ValidateBasic() sdk.Error {
+func (msgSbPermission MsgSafetyBoxRegisterOperator) ValidateBasic() error {
 	return validateBasic(msgSbPermission.SafetyBoxID, msgSbPermission.SafetyBoxOwner, msgSbPermission.Address)
 }
 
@@ -287,17 +288,17 @@ func (msgSbPermission MsgSafetyBoxRegisterOperator) GetSigners() []sdk.AccAddres
 	return []sdk.AccAddress{msgSbPermission.SafetyBoxOwner}
 }
 
-func validateBasic(sbID string, operator, address sdk.AccAddress) sdk.Error {
+func validateBasic(sbID string, operator, address sdk.AccAddress) error {
 	if len(sbID) == 0 {
-		return ErrSafetyBoxIDRequired(DefaultCodespace)
+		return ErrSafetyBoxIDRequired
 	}
 
 	if operator.Empty() {
-		return sdk.ErrInvalidAddress("Operator/SafetyBoxOwner is required")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Operator/SafetyBoxOwner is required")
 	}
 
 	if address.Empty() {
-		return sdk.ErrInvalidAddress("Address is required")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Address is required")
 	}
 
 	return nil
@@ -313,7 +314,7 @@ func (MsgSafetyBoxDeregisterIssuer) Route() string { return RouterKey }
 
 func (MsgSafetyBoxDeregisterIssuer) Type() string { return MsgTypeSafetyBoxRevokeIssuerPermission }
 
-func (msgSbPermission MsgSafetyBoxDeregisterIssuer) ValidateBasic() sdk.Error {
+func (msgSbPermission MsgSafetyBoxDeregisterIssuer) ValidateBasic() error {
 	return validateBasic(msgSbPermission.SafetyBoxID, msgSbPermission.Operator, msgSbPermission.Address)
 }
 
@@ -335,7 +336,7 @@ func (MsgSafetyBoxDeregisterReturner) Route() string { return RouterKey }
 
 func (MsgSafetyBoxDeregisterReturner) Type() string { return MsgTypeSafetyBoxRevokeReturnerPermission }
 
-func (msgSbPermission MsgSafetyBoxDeregisterReturner) ValidateBasic() sdk.Error {
+func (msgSbPermission MsgSafetyBoxDeregisterReturner) ValidateBasic() error {
 	return validateBasic(msgSbPermission.SafetyBoxID, msgSbPermission.Operator, msgSbPermission.Address)
 }
 
@@ -357,7 +358,7 @@ func (MsgSafetyBoxDeregisterAllocator) Route() string { return RouterKey }
 
 func (MsgSafetyBoxDeregisterAllocator) Type() string { return MsgTypeSafetyBoxRevokeAllocatorPermission }
 
-func (msgSbPermission MsgSafetyBoxDeregisterAllocator) ValidateBasic() sdk.Error {
+func (msgSbPermission MsgSafetyBoxDeregisterAllocator) ValidateBasic() error {
 	return validateBasic(msgSbPermission.SafetyBoxID, msgSbPermission.Operator, msgSbPermission.Address)
 }
 
@@ -379,7 +380,7 @@ func (MsgSafetyBoxDeregisterOperator) Route() string { return RouterKey }
 
 func (MsgSafetyBoxDeregisterOperator) Type() string { return MsgTypeSafetyBoxRevokeOperatorPermission }
 
-func (msgSbPermission MsgSafetyBoxDeregisterOperator) ValidateBasic() sdk.Error {
+func (msgSbPermission MsgSafetyBoxDeregisterOperator) ValidateBasic() error {
 	return validateBasic(msgSbPermission.SafetyBoxID, msgSbPermission.SafetyBoxOwner, msgSbPermission.Address)
 }
 

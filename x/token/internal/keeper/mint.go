@@ -2,10 +2,11 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) MintToken(ctx sdk.Context, contractID string, amount sdk.Int, from, to sdk.AccAddress) sdk.Error {
+func (k Keeper) MintToken(ctx sdk.Context, contractID string, amount sdk.Int, from, to sdk.AccAddress) error {
 	token, err := k.GetToken(ctx, contractID)
 	if err != nil {
 		return err
@@ -29,13 +30,13 @@ func (k Keeper) MintToken(ctx sdk.Context, contractID string, amount sdk.Int, fr
 	return nil
 }
 
-func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) sdk.Error {
+func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) error {
 	if !token.GetMintable() {
-		return types.ErrTokenNotMintable(types.DefaultCodespace, token.GetContractID())
+		return sdkerrors.Wrapf(types.ErrTokenNotMintable, "ContractID: %s", token.GetContractID())
 	}
 	perm := types.NewMintPermission(token.GetContractID())
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
 	return nil
 }

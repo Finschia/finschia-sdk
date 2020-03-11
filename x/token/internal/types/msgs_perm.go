@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 )
 
@@ -28,17 +29,17 @@ func (msg MsgGrantPermission) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgGrantPermission) ValidateBasic() sdk.Error {
+func (msg MsgGrantPermission) ValidateBasic() error {
 	if msg.From.Empty() || msg.To.Empty() {
-		return sdk.ErrInvalidAddress("addresses cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses cannot be empty")
 	}
 
 	if msg.From.Equals(msg.To) {
-		return sdk.ErrInvalidAddress("from, to address can not be the same")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from, to address can not be the same")
 	}
 
 	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
-		return linktype.ErrInvalidPermission("resource and action should not be empty")
+		return sdkerrors.Wrap(linktype.ErrInvalidPermission, "resource and action should not be empty")
 	}
 	return nil
 }
@@ -64,13 +65,13 @@ func (msg MsgRevokePermission) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgRevokePermission) ValidateBasic() sdk.Error {
+func (msg MsgRevokePermission) ValidateBasic() error {
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses cannot be empty")
 	}
 
 	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
-		return linktype.ErrInvalidPermission("resource and action should not be empty")
+		return sdkerrors.Wrap(linktype.ErrInvalidPermission, "resource and action should not be empty")
 	}
 	return nil
 }

@@ -2,15 +2,16 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 type MintKeeper interface {
-	MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount types.Coins) sdk.Error
-	MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error
+	MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount types.Coins) error
+	MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) error
 }
 
-func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount types.Coins) sdk.Error {
+func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount types.Coins) error {
 	for _, coin := range amount {
 		token, err := k.GetToken(ctx, contractID, coin.Denom)
 		if err != nil {
@@ -36,14 +37,14 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddre
 	return nil
 }
 
-func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) sdk.Error {
+func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) error {
 	if !k.HasTokenType(ctx, token.GetContractID(), token.GetTokenType()) {
-		return types.ErrTokenTypeNotExist(types.DefaultCodespace, token.GetContractID(), token.GetTokenType())
+		return sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", token.GetContractID(), token.GetTokenType())
 	}
 
 	perm := types.NewMintPermission(token.GetContractID())
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
 
 	err := k.SetToken(ctx, token)
@@ -69,19 +70,19 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) s
 
 	return nil
 }
-func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) sdk.Error {
+
+func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) error {
 	ft, ok := token.(types.FT)
 	if !ok {
-		// It should never happen.
-		panic("fungible token data type is not FT")
+		return sdkerrors.Wrapf(types.ErrTokenNotMintable, "ContractID: %s, TokenID: %s", token.GetContractID(), token.GetTokenID())
 	}
 
 	if !ft.GetMintable() {
-		return types.ErrTokenNotMintable(types.DefaultCodespace, token.GetContractID(), token.GetTokenID())
+		return sdkerrors.Wrapf(types.ErrTokenNotMintable, "ContractID: %s, TokenID: %s", token.GetContractID(), token.GetTokenID())
 	}
 	perm := types.NewMintPermission(token.GetContractID())
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
 	return nil
 }

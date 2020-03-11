@@ -2,15 +2,16 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 type CollectionKeeper interface {
-	CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) sdk.Error
+	CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) error
 	ExistCollection(ctx sdk.Context, contractID string) bool
-	GetCollection(ctx sdk.Context, contractID string) (collection types.Collection, err sdk.Error)
-	SetCollection(ctx sdk.Context, collection types.Collection) sdk.Error
-	UpdateCollection(ctx sdk.Context, collection types.Collection) sdk.Error
+	GetCollection(ctx sdk.Context, contractID string) (collection types.Collection, err error)
+	SetCollection(ctx sdk.Context, collection types.Collection) error
+	UpdateCollection(ctx sdk.Context, collection types.Collection) error
 	GetAllCollections(ctx sdk.Context) types.Collections
 }
 
@@ -23,8 +24,7 @@ func (k Keeper) NewContractID(ctx sdk.Context) string {
 func (k Keeper) HasContractID(ctx sdk.Context, contractID string) bool {
 	return k.contractKeeper.HasContractID(ctx, contractID)
 }
-
-func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) sdk.Error {
+func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) error {
 	err := k.SetCollection(ctx, collection)
 	if err != nil {
 		return err
@@ -71,21 +71,21 @@ func (k Keeper) ExistCollection(ctx sdk.Context, contractID string) bool {
 	return store.Has(types.CollectionKey(contractID))
 }
 
-func (k Keeper) GetCollection(ctx sdk.Context, contractID string) (collection types.Collection, err sdk.Error) {
+func (k Keeper) GetCollection(ctx sdk.Context, contractID string) (collection types.Collection, err error) {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.CollectionKey(contractID))
 	if bz == nil {
-		return collection, types.ErrCollectionNotExist(types.DefaultCodespace, contractID)
+		return collection, sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID)
 	}
 
 	collection = k.mustDecodeCollection(bz)
 	return collection, nil
 }
 
-func (k Keeper) SetCollection(ctx sdk.Context, collection types.Collection) sdk.Error {
+func (k Keeper) SetCollection(ctx sdk.Context, collection types.Collection) error {
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(types.CollectionKey(collection.GetContractID())) {
-		return types.ErrCollectionExist(types.DefaultCodespace, collection.GetContractID())
+		return sdkerrors.Wrapf(types.ErrCollectionExist, "ContractID: %s", collection.GetContractID())
 	}
 
 	store.Set(types.CollectionKey(collection.GetContractID()), k.cdc.MustMarshalBinaryBare(collection))
@@ -94,10 +94,10 @@ func (k Keeper) SetCollection(ctx sdk.Context, collection types.Collection) sdk.
 	return nil
 }
 
-func (k Keeper) UpdateCollection(ctx sdk.Context, collection types.Collection) sdk.Error {
+func (k Keeper) UpdateCollection(ctx sdk.Context, collection types.Collection) error {
 	store := ctx.KVStore(k.storeKey)
 	if !store.Has(types.CollectionKey(collection.GetContractID())) {
-		return types.ErrCollectionNotExist(types.DefaultCodespace, collection.GetContractID())
+		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", collection.GetContractID())
 	}
 
 	store.Set(types.CollectionKey(collection.GetContractID()), k.cdc.MustMarshalBinaryBare(collection))

@@ -2,12 +2,13 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 )
 
 func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID string,
-	changes linktype.Changes) sdk.Error {
+	changes linktype.Changes) error {
 	token, err := k.GetToken(ctx, contractID)
 	if err != nil {
 		return err
@@ -15,7 +16,7 @@ func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID st
 
 	tokenModifyPerm := types.NewModifyPermission(token.GetContractID())
 	if !k.HasPermission(ctx, owner, tokenModifyPerm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, owner, tokenModifyPerm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), tokenModifyPerm.String())
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{

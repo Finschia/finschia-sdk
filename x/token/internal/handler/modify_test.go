@@ -30,21 +30,18 @@ func TestHandleMsgModify(t *testing.T) {
 	t.Log("Test with nonexistent token")
 	{
 		// When handle MsgModify
-		res := h(ctx, msg)
+		_, err := h(ctx, msg)
 
 		// Then response is error
-		require.False(t, res.Code.IsOK())
-		require.Equal(t, contract.ContractCodeSpace, res.Codespace)
-		require.Equal(t, contract.CodeContractNotExist, res.Code)
-		verifyEventFunc(t, nil, res.Events)
+		require.Error(t, err)
 	}
 
 	t.Log("Test modify token")
 	{
 		// Given issued token
-		res := h(ctx, types.NewMsgIssue(addr1, addr1, defaultName, defaultContractID, defaultMeta, defaultImageURI,
+		res, err := h(ctx, types.NewMsgIssue(addr1, addr1, defaultName, defaultContractID, defaultMeta, defaultImageURI,
 			sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true))
-		require.True(t, res.IsOK())
+		require.NoError(t, err)
 		contractID := GetMadeContractID(res.Events)
 
 		msg := types.NewMsgModify(addr1, contractID, linktype.NewChanges(
@@ -54,10 +51,10 @@ func TestHandleMsgModify(t *testing.T) {
 		))
 
 		// When handle MsgModify
-		res = h(ctx, msg)
+		res, err = h(ctx, msg)
 
 		// Then response is success
-		require.True(t, res.Code.IsOK())
+		require.NoError(t, err)
 		// And events are returned
 		expectedEvents := sdk.Events{
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, defaultContractID)),

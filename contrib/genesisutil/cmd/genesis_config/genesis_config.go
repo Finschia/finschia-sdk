@@ -17,7 +17,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	tmconfig "github.com/tendermint/tendermint/config"
-	"github.com/tendermint/tendermint/libs/common"
+	tmos "github.com/tendermint/tendermint/libs/os"
 	"github.com/tendermint/tendermint/types"
 
 	"github.com/line/link/app"
@@ -88,7 +88,7 @@ func main() {
 			tmConfig.RootDir = viper.GetString(flagHome)
 
 			genFile := tmConfig.GenesisFile()
-			if !common.FileExists(genFile) {
+			if !tmos.FileExists(genFile) {
 				return fmt.Errorf("genesis.json file doesn't exist: %v", genFile)
 			}
 

@@ -23,8 +23,8 @@ func TestHandleMsgGrant(t *testing.T) {
 	{
 		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
 		require.NoError(t, msg.ValidateBasic())
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
@@ -53,8 +53,8 @@ func TestHandleMsgRevoke(t *testing.T) {
 	{
 		msg := types.NewMsgRevokePermission(addr1, permission)
 		require.NoError(t, msg.ValidateBasic())
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),

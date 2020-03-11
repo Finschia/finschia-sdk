@@ -2,29 +2,30 @@ package handler
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/keeper"
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueFT) sdk.Result {
+func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueFT) (*sdk.Result, error) {
 	_, err := keeper.GetCollection(ctx, msg.ContractID)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 	perm := types.NewIssuePermission(msg.ContractID)
 	if !keeper.HasPermission(ctx, msg.Owner, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, msg.Owner, perm).Result()
+		return nil, sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", msg.Owner.String(), perm.String())
 	}
 
 	tokenID, err := keeper.GetNextTokenIDFT(ctx, msg.ContractID)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	token := types.NewFT(msg.ContractID, tokenID, msg.Name, msg.Meta, msg.Decimals, msg.Mintable)
 	err = keeper.IssueFT(ctx, msg.Owner, msg.To, token, msg.Amount)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -35,29 +36,29 @@ func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueF
 		),
 	})
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueNFT) sdk.Result {
+func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueNFT) (*sdk.Result, error) {
 	_, err := keeper.GetCollection(ctx, msg.ContractID)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	perm := types.NewIssuePermission(msg.ContractID)
 	if !keeper.HasPermission(ctx, msg.Owner, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, msg.Owner, perm).Result()
+		return nil, sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", msg.Owner.String(), perm.String())
 	}
 
 	tokenTypeID, err := keeper.GetNextTokenType(ctx, msg.ContractID)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	tokenType := types.NewBaseTokenType(msg.ContractID, tokenTypeID, msg.Name, msg.Meta)
 	err = keeper.IssueNFT(ctx, tokenType, msg.Owner)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -68,5 +69,5 @@ func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssue
 		),
 	})
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 )
 
+//nolint
 var (
 	genesisFile        string
 	paramsFile         string

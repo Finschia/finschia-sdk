@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bufio"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -37,8 +38,9 @@ func ProxyApproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Approve [proxy_key_or_address] to send [amount] [denom] coins on behalf of [on_behalf_of]",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithFrom(args[1]).WithCodec(cdc)
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[1]).WithCodec(cdc)
 
 			proxy, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -67,8 +69,9 @@ func ProxyDisapproveCoinsCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Disapprove [proxy_key_or_address] to send [amount] [denom] coins on behalf of [on_behalf_of]",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithFrom(args[1]).WithCodec(cdc)
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[1]).WithCodec(cdc)
 
 			proxy, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -96,8 +99,9 @@ func ProxySendCoinsFromCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Send [amount] [denom] coins to [to] on behalf of [on_behalf_of_key_or_address] by [proxy]",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			proxy := cliCtx.FromAddress
 			onBehalfOf, err := sdk.AccAddressFromBech32(args[1])

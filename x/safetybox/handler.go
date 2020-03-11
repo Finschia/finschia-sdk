@@ -2,11 +2,11 @@ package safetybox
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/x/safetybox/internal/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func NewHandler(keeper Keeper) sdk.Handler {
-	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
+	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 		switch msg := msg.(type) {
 		case MsgSafetyBoxCreate:
@@ -36,15 +36,15 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		case MsgSafetyBoxDeregisterReturner:
 			return handleMsgSafetyBoxDeregisterReturner(ctx, keeper, msg)
 		default:
-			return ErrSafetyBoxInvalidMsgType(types.DefaultCodespace, msg.Type()).Result()
+			return nil, sdkerrors.Wrapf(ErrSafetyBoxInvalidMsgType, "Type: %s", msg.Type())
 		}
 	}
 }
 
-func handleMsgSafetyBoxCreate(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxCreate) sdk.Result {
+func handleMsgSafetyBoxCreate(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxCreate) (*sdk.Result, error) {
 	sb, err := keeper.NewSafetyBox(ctx, msg)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -60,13 +60,13 @@ func handleMsgSafetyBoxCreate(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxCr
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxAllocateCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxAllocateCoins) sdk.Result {
+func handleMsgSafetyBoxAllocateCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxAllocateCoins) (*sdk.Result, error) {
 	err := keeper.Allocate(ctx, msg)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -83,13 +83,13 @@ func handleMsgSafetyBoxAllocateCoins(ctx sdk.Context, keeper Keeper, msg MsgSafe
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxRecallCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRecallCoins) sdk.Result {
+func handleMsgSafetyBoxRecallCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRecallCoins) (*sdk.Result, error) {
 	err := keeper.Recall(ctx, msg)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -106,13 +106,13 @@ func handleMsgSafetyBoxRecallCoins(ctx sdk.Context, keeper Keeper, msg MsgSafety
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxIssueCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxIssueCoins) sdk.Result {
+func handleMsgSafetyBoxIssueCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxIssueCoins) (*sdk.Result, error) {
 	err := keeper.Issue(ctx, msg)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -130,13 +130,13 @@ func handleMsgSafetyBoxIssueCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyB
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxReturnCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxReturnCoins) sdk.Result {
+func handleMsgSafetyBoxReturnCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxReturnCoins) (*sdk.Result, error) {
 	err := keeper.Return(ctx, msg)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -153,13 +153,13 @@ func handleMsgSafetyBoxReturnCoins(ctx sdk.Context, keeper Keeper, msg MsgSafety
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxRegisterAllocator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterAllocator) sdk.Result {
+func handleMsgSafetyBoxRegisterAllocator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterAllocator) (*sdk.Result, error) {
 	err := keeper.GrantPermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleAllocator)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -176,13 +176,13 @@ func handleMsgSafetyBoxRegisterAllocator(ctx sdk.Context, keeper Keeper, msg Msg
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxDeregisterAllocator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterAllocator) sdk.Result {
+func handleMsgSafetyBoxDeregisterAllocator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterAllocator) (*sdk.Result, error) {
 	err := keeper.RevokePermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleAllocator)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -199,13 +199,13 @@ func handleMsgSafetyBoxDeregisterAllocator(ctx sdk.Context, keeper Keeper, msg M
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxRegisterOperator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterOperator) sdk.Result {
+func handleMsgSafetyBoxRegisterOperator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterOperator) (*sdk.Result, error) {
 	err := keeper.GrantPermission(ctx, msg.SafetyBoxID, msg.SafetyBoxOwner, msg.Address, RoleOperator)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -222,13 +222,13 @@ func handleMsgSafetyBoxRegisterOperator(ctx sdk.Context, keeper Keeper, msg MsgS
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxDeregisterOperator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterOperator) sdk.Result {
+func handleMsgSafetyBoxDeregisterOperator(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterOperator) (*sdk.Result, error) {
 	err := keeper.RevokePermission(ctx, msg.SafetyBoxID, msg.SafetyBoxOwner, msg.Address, RoleOperator)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -245,13 +245,13 @@ func handleMsgSafetyBoxDeregisterOperator(ctx sdk.Context, keeper Keeper, msg Ms
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxRegisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterIssuer) sdk.Result {
+func handleMsgSafetyBoxRegisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterIssuer) (*sdk.Result, error) {
 	err := keeper.GrantPermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleIssuer)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -268,13 +268,13 @@ func handleMsgSafetyBoxRegisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSaf
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxDeregisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterIssuer) sdk.Result {
+func handleMsgSafetyBoxDeregisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterIssuer) (*sdk.Result, error) {
 	err := keeper.RevokePermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleIssuer)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -291,13 +291,13 @@ func handleMsgSafetyBoxDeregisterIssuer(ctx sdk.Context, keeper Keeper, msg MsgS
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxRegisterReturner(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterReturner) sdk.Result {
+func handleMsgSafetyBoxRegisterReturner(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRegisterReturner) (*sdk.Result, error) {
 	err := keeper.GrantPermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleReturner)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -314,13 +314,13 @@ func handleMsgSafetyBoxRegisterReturner(ctx sdk.Context, keeper Keeper, msg MsgS
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxDeregisterReturner(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterReturner) sdk.Result {
+func handleMsgSafetyBoxDeregisterReturner(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxDeregisterReturner) (*sdk.Result, error) {
 	err := keeper.RevokePermission(ctx, msg.SafetyBoxID, msg.Operator, msg.Address, RoleReturner)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -337,5 +337,5 @@ func handleMsgSafetyBoxDeregisterReturner(ctx sdk.Context, keeper Keeper, msg Ms
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

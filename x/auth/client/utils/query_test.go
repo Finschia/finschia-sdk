@@ -188,7 +188,7 @@ func TestQueryGenesisAccount(t *testing.T) {
 		addr = "tlink19rqsvml8ldr0yrhaewgv9smcdvrew5panjryj3"
 	}
 	genesisDoc := tmtypes.GenesisDoc{
-		AppState: json.RawMessage(`{"accounts":[{"address":"` + addr + `","coins":[]}]}`),
+		AppState: json.RawMessage(`{"auth":{"accounts":[{"type":"cosmos-sdk/Account","value":{"address":"` + addr + `","coins":[]}}]}}`),
 	}
 	genesisResult := ctypes.ResultGenesis{
 		Genesis: &genesisDoc,

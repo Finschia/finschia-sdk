@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/line/link/x/collection/internal/types"
-	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -31,20 +30,17 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 	t.Log("Test with nonexistent token")
 	{
 		// When handle MsgModify
-		res := h(ctx, msg)
+		_, err := h(ctx, msg)
 
 		// Then response is error
-		require.False(t, res.Code.IsOK())
-		require.Equal(t, contract.ContractCodeSpace, res.Codespace)
-		require.Equal(t, contract.CodeContractNotExist, res.Code)
-		verifyEventFunc(t, nil, res.Events)
+		require.Error(t, err)
 	}
 
 	t.Log("Test modify token")
 	{
 		// Given created collection
-		res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
-		require.True(t, res.IsOK())
+		res, err := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		// When handle MsgModify
@@ -52,10 +48,10 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 			linktype.NewChange("name", modifiedName),
 			linktype.NewChange("base_img_uri", modifiedImgURI),
 			linktype.NewChange("meta", modifiedMeta)))
-		res = h(ctx, msg)
+		res, err = h(ctx, msg)
 
 		// Then response is success
-		require.True(t, res.Code.IsOK())
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		// And events are returned
@@ -79,8 +75,8 @@ func TestHandleMsgModifyForToken(t *testing.T) {
 	)
 
 	// created collection
-	res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
-	require.True(t, res.IsOK())
+	res, err := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
+	require.NoError(t, err)
 	contractID := GetMadeContractID(res.Events)
 
 	// Given MsgModify
@@ -92,28 +88,25 @@ func TestHandleMsgModifyForToken(t *testing.T) {
 	t.Log("Test with nonexistent token")
 	{
 		// When handle MsgModify
-		res := h(ctx, msg)
+		_, err := h(ctx, msg)
 
 		// Then response is error
-		require.False(t, res.Code.IsOK())
-		require.Equal(t, types.DefaultCodespace, res.Codespace)
-		require.Equal(t, types.CodeTokenNotExist, res.Code)
-		verifyEventFunc(t, nil, res.Events)
+		require.Error(t, err)
 	}
 
 	t.Log("Test modify token")
 	{
 		// Given token
-		res = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta))
-		require.True(t, res.IsOK())
-		res = h(ctx, types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType))
-		require.True(t, res.IsOK())
+		_, err = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta))
+		require.NoError(t, err)
+		_, err = h(ctx, types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType))
+		require.NoError(t, err)
 
 		// When handle MsgModify
-		res = h(ctx, msg)
+		res, err = h(ctx, msg)
 
 		// Then response is success
-		require.True(t, res.Code.IsOK())
+		require.NoError(t, err)
 		// And events are returned
 		expectedEvents := sdk.Events{
 			sdk.NewEvent(types.EventTypeModifyToken, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),
@@ -135,8 +128,8 @@ func TestHandleMsgModifyForTokenType(t *testing.T) {
 	)
 
 	// created collection
-	res := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
-	require.True(t, res.IsOK())
+	res, err := h(ctx, types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI))
+	require.NoError(t, err)
 	contractID := GetMadeContractID(res.Events)
 
 	// Given MsgModify
@@ -148,26 +141,23 @@ func TestHandleMsgModifyForTokenType(t *testing.T) {
 	t.Log("Test with nonexistent token type")
 	{
 		// When handle MsgModify
-		res := h(ctx, msg)
+		_, err := h(ctx, msg)
 
 		// Then response is error
-		require.False(t, res.Code.IsOK())
-		require.Equal(t, types.DefaultCodespace, res.Codespace)
-		require.Equal(t, types.CodeCollectionTokenTypeNotExist, res.Code)
-		verifyEventFunc(t, nil, res.Events)
+		require.Error(t, err)
 	}
 
 	t.Log("Test modify token type")
 	{
 		// Given token type
-		res = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta))
-		require.True(t, res.IsOK())
+		_, err = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta))
+		require.NoError(t, err)
 
 		// When handle MsgModify
-		res = h(ctx, msg)
+		res, err = h(ctx, msg)
 
 		// Then response is success
-		require.True(t, res.Code.IsOK())
+		require.NoError(t, err)
 		// And events are returned
 		expectedEvents := sdk.Events{
 			sdk.NewEvent(types.EventTypeModifyTokenType, sdk.NewAttribute(types.AttributeKeyContractID, contractID)),

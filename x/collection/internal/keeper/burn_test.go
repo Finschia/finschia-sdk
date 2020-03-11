@@ -1,13 +1,13 @@
 package keeper
 
 import (
-	"fmt"
 	"testing"
 
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func TestKeeper_BurnFT(t *testing.T) {
@@ -15,14 +15,14 @@ func TestKeeper_BurnFT(t *testing.T) {
 	prepareCollectionTokens(ctx, t)
 
 	require.NoError(t, keeper.BurnFT(ctx, defaultContractID, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))))
-	require.EqualError(t, keeper.BurnFT(ctx, wrongContractID, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String())).Error())
-	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String())).Error())
-	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr3, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr3, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String())).Error())
-	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)).String())).Error())
+	require.EqualError(t, keeper.BurnFT(ctx, wrongContractID, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String()).Error())
+	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String()).Error())
+	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr3, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", addr3, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String()).Error())
+	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))), sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)).String()).Error())
 
 	require.NoError(t, keeper.MintFT(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))))
-	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultContractID)).Error())
-	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr1, types.NewCoins(types.NewCoin("0000000200000000", sdk.NewInt(1)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr1, types.NewCoin("0000000200000000", sdk.NewInt(1)).String())).Error())
+	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr2, types.NewBurnPermission(defaultContractID)).Error())
+	require.EqualError(t, keeper.BurnFT(ctx, defaultContractID, addr1, types.NewCoins(types.NewCoin("0000000200000000", sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", addr1, types.NewCoin("0000000200000000", sdk.NewInt(1)).String()).Error())
 }
 
 func TestKeeper_BurnFTFrom(t *testing.T) {
@@ -30,13 +30,13 @@ func TestKeeper_BurnFTFrom(t *testing.T) {
 	prepareCollectionTokens(ctx, t)
 	prepareProxy(ctx, t)
 
-	require.EqualError(t, keeper.BurnFTFrom(ctx, wrongContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), wrongContractID).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, wrongContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", addr1.String(), addr2.String(), wrongContractID).Error())
 	require.NoError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))))
-	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String())).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String()).Error())
 
 	require.NoError(t, keeper.MintFT(ctx, defaultContractID, addr1, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))))
-	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr2, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultContractID)).Error())
-	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin("0000000200000000", sdk.NewInt(1)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr2, types.NewCoin("0000000200000000", sdk.NewInt(1)).String())).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr2, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr2, types.NewBurnPermission(defaultContractID)).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin("0000000200000000", sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", addr2, types.NewCoin("0000000200000000", sdk.NewInt(1)).String()).Error())
 }
 
 func TestKeeper_BurnNFT(t *testing.T) {
@@ -44,10 +44,10 @@ func TestKeeper_BurnNFT(t *testing.T) {
 	prepareCollectionTokens(ctx, t)
 
 	require.NoError(t, keeper.BurnNFT(ctx, defaultContractID, addr1, defaultTokenID4))
-	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr1, defaultTokenID4), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID4).Error())
-	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr2, defaultTokenID4), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID4).Error())
-	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr3, defaultTokenID4), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID4).Error())
-	require.EqualError(t, keeper.BurnNFT(ctx, wrongContractID, addr1, defaultTokenID4), types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID4).Error())
+	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr1, defaultTokenID4), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID4).Error())
+	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr2, defaultTokenID4), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID4).Error())
+	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr3, defaultTokenID4), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID4).Error())
+	require.EqualError(t, keeper.BurnNFT(ctx, wrongContractID, addr1, defaultTokenID4), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", wrongContractID, defaultTokenID4).Error())
 
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID3))
@@ -60,9 +60,9 @@ func TestKeeper_BurnNFTFrom(t *testing.T) {
 	prepareProxy(ctx, t)
 
 	require.NoError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID4))
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID4), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID4).Error())
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr3, addr2, defaultTokenID4), types.ErrCollectionNotApproved(types.DefaultCodespace, addr3.String(), addr2.String(), defaultContractID).Error())
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, wrongContractID, addr1, addr2, defaultTokenID4), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), wrongContractID).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID4), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID4).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr3, addr2, defaultTokenID4), sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", addr3.String(), addr2.String(), defaultContractID).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, wrongContractID, addr1, addr2, defaultTokenID4), sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", addr1.String(), addr2.String(), wrongContractID).Error())
 
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID2))
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID2, defaultTokenID3))
@@ -76,12 +76,12 @@ func TestMintBurn(t *testing.T) {
 	const (
 		wrongTokenID = "12345678"
 	)
-	require.EqualError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID2, wrongTokenID, defaultName, defaultMeta, addr1)), types.ErrTokenTypeNotExist(types.DefaultCodespace, defaultContractID2, wrongTokenID[:types.TokenTypeLength]).Error())
-	require.EqualError(t, keeper.MintNFT(ctx, addr3, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultContractID)).Error())
+	require.EqualError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID2, wrongTokenID, defaultName, defaultMeta, addr1)), sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", defaultContractID2, wrongTokenID[:types.TokenTypeLength]).Error())
+	require.EqualError(t, keeper.MintNFT(ctx, addr3, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewMintPermission(defaultContractID).String()).Error())
 
 	require.NoError(t, keeper.BurnFT(ctx, defaultContractID, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))))
-	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr1, wrongTokenID), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, wrongTokenID).Error())
-	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr3, defaultTokenID1), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewBurnPermission(defaultContractID)).Error())
+	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr1, wrongTokenID), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, wrongTokenID).Error())
+	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr3, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewBurnPermission(defaultContractID).String()).Error())
 }
 
 func TestBurnNFTScenario(t *testing.T) {
@@ -184,8 +184,8 @@ func TestBurnNFTFromFailure1(t *testing.T) {
 	require.NoError(t, keeper.SetApproved(ctx, defaultContractID, addr1, addr2))
 
 	// test burnNFTFrom, burnFTFrom fail
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID1, addr2).Error())
-	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String())).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", defaultTokenID1, addr2.String()).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)).String()).Error())
 }
 
 func TestBurnNFTFromFailure2(t *testing.T) {
@@ -201,8 +201,8 @@ func TestBurnNFTFromFailure2(t *testing.T) {
 	require.NoError(t, keeper.TransferFT(ctx, defaultContractID, addr1, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(1))))
 
 	// test burnNFTFrom fail
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultContractID).Error())
-	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultContractID).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1), sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", addr1.String(), addr2.String(), defaultContractID).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr1, addr2, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", addr1.String(), addr2.String(), defaultContractID).Error())
 }
 
 func TestBurnNFTFromFailure3(t *testing.T) {
@@ -220,6 +220,6 @@ func TestBurnNFTFromFailure3(t *testing.T) {
 	require.NoError(t, keeper.SetApproved(ctx, defaultContractID, addr2, addr3))
 
 	// test burnNFTFrom fail
-	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr2, addr3, defaultTokenID1), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultContractID)).Error())
-	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr2, addr3, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultContractID)).Error())
+	require.EqualError(t, keeper.BurnNFTFrom(ctx, defaultContractID, addr2, addr3, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr2.String(), types.NewBurnPermission(defaultContractID).String()).Error())
+	require.EqualError(t, keeper.BurnFTFrom(ctx, defaultContractID, addr2, addr3, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(1)))), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr2.String(), types.NewBurnPermission(defaultContractID).String()).Error())
 }

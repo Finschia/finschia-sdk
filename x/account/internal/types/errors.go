@@ -1,15 +1,9 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	DefaultCodespace sdk.CodespaceType = ModuleName
-
-	CodeAccountAlreadyExist sdk.CodeType = 1
+var (
+	ErrAccountAlreadyExist = sdkerrors.Register(ModuleName, 1, "Target account already exists")
 )
-
-func ErrAccountAlreadyExist(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeAccountAlreadyExist, "Target account already exists")
-}

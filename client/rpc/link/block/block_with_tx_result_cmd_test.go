@@ -61,7 +61,6 @@ func TestProcess(t *testing.T) {
 		check := tmtypes.SignedHeader{}
 		mockClient.EXPECT().Block(gomock.Any()).Return(rb, nil).Times(2)
 		mockCliContext.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
-		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(nil).Times(1)
 		mockTendermint.EXPECT().ValidateBlock(rb.Block, check).Return(nil).Times(1)
 		mockCliContext.EXPECT().Indent().Return(true).Times(1)
 		data := []byte(`"hello"`)
@@ -97,10 +96,7 @@ func prepareCMD(t *testing.T) ([]string, *MockCLIContext, *MockClient, *MockTend
 		Block: &tmtypes.Block{
 			Header: tmtypes.Header{Height: fromBlockHeight},
 		},
-		BlockMeta: &tmtypes.BlockMeta{
-			BlockID: tmtypes.BlockID{},
-			Header:  tmtypes.Header{},
-		},
+		BlockID: tmtypes.BlockID{},
 	}
 	return args, mockCliContext, mockClient, mockTendermint, mockCodec, rb
 }

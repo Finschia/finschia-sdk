@@ -16,9 +16,9 @@ import (
 func TestInvalidMsg(t *testing.T) {
 	h := NewHandler(keeper.Keeper{})
 
-	res := h(sdk.NewContext(nil, abci.Header{}, false, nil), sdk.NewTestMsg())
-	require.False(t, res.IsOK())
-	require.True(t, strings.Contains(res.Log, "unrecognized bank message type"))
+	_, err := h(sdk.NewContext(nil, abci.Header{}, false, nil), sdk.NewTestMsg())
+	require.Error(t, err)
+	require.True(t, strings.Contains(err.Error(), "unrecognized bank message type"))
 }
 
 func TestHandlerSend(t *testing.T) {
@@ -46,15 +46,15 @@ func TestHandlerSend(t *testing.T) {
 	{
 		coins := sdk.NewCoins(sdk.NewInt64Coin(length3Denom, 10))
 		msg := types.NewMsgSend(addr1, addr2, coins)
-		res := h(ctx, msg)
-		require.True(t, res.IsOK())
+		_, err := h(ctx, msg)
+		require.NoError(t, err)
 	}
 
 	{
 		coins := sdk.NewCoins(sdk.NewInt64Coin(length6Denom, 10))
 		msg := types.NewMsgSend(addr1, addr2, coins)
-		res := h(ctx, msg)
-		require.False(t, res.IsOK())
+		_, err := h(ctx, msg)
+		require.Error(t, err)
 	}
 
 	{
@@ -68,8 +68,8 @@ func TestHandlerSend(t *testing.T) {
 			types.NewOutput(addr2, sdk.NewCoins(sdk.NewInt64Coin(length5Denom, 2))),
 		}
 		msg := types.NewMsgMultiSend(inputs, outputs)
-		res := h(ctx, msg)
-		require.True(t, res.IsOK())
+		_, err := h(ctx, msg)
+		require.NoError(t, err)
 	}
 
 	{
@@ -83,7 +83,7 @@ func TestHandlerSend(t *testing.T) {
 			types.NewOutput(addr2, sdk.NewCoins(sdk.NewInt64Coin(length5Denom2, 2))),
 		}
 		msg := types.NewMsgMultiSend(inputs, outputs)
-		require.Panics(t, func() { h(ctx, msg) })
+		require.Panics(t, func() { h(ctx, msg) }) //nolint
 	}
 }
 
@@ -111,8 +111,8 @@ func TestHandlerSendRestricted(t *testing.T) {
 		coins := sdk.NewCoins(sdk.NewInt64Coin(length3Denom, 10))
 		msg := types.NewMsgSend(addr1, addr2, coins)
 		require.NoError(t, msg.ValidateBasic())
-		res := h(ctx, msg)
-		require.True(t, res.IsOK())
+		_, err := h(ctx, msg)
+		require.NoError(t, err)
 	}
 
 	{
@@ -132,7 +132,7 @@ func TestHandlerSendRestricted(t *testing.T) {
 			types.NewOutput(addr2, sdk.NewCoins(sdk.NewInt64Coin(length8Denom, 2))),
 		}
 		msg := types.NewMsgMultiSend(inputs, outputs)
-		res := h(ctx, msg)
-		require.False(t, res.IsOK())
+		_, err := h(ctx, msg)
+		require.Error(t, err)
 	}
 }

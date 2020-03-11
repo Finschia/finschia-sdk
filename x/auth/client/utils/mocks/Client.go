@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	"github.com/tendermint/tendermint/libs/common"
+	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	"github.com/tendermint/tendermint/rpc/client"
 
 	"context"
@@ -46,11 +46,11 @@ func (_m *Client) ABCIInfo() (*core_types.ResultABCIInfo, error) {
 }
 
 // ABCIQuery provides a mock function with given fields: path, data
-func (_m *Client) ABCIQuery(path string, data common.HexBytes) (*core_types.ResultABCIQuery, error) {
+func (_m *Client) ABCIQuery(path string, data tmbytes.HexBytes) (*core_types.ResultABCIQuery, error) {
 	ret := _m.Called(path, data)
 
 	var r0 *core_types.ResultABCIQuery
-	if rf, ok := ret.Get(0).(func(string, common.HexBytes) *core_types.ResultABCIQuery); ok {
+	if rf, ok := ret.Get(0).(func(string, tmbytes.HexBytes) *core_types.ResultABCIQuery); ok {
 		r0 = rf(path, data)
 	} else {
 		if ret.Get(0) != nil {
@@ -59,7 +59,7 @@ func (_m *Client) ABCIQuery(path string, data common.HexBytes) (*core_types.Resu
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, common.HexBytes) error); ok {
+	if rf, ok := ret.Get(1).(func(string, tmbytes.HexBytes) error); ok {
 		r1 = rf(path, data)
 	} else {
 		r1 = ret.Error(1)
@@ -69,11 +69,11 @@ func (_m *Client) ABCIQuery(path string, data common.HexBytes) (*core_types.Resu
 }
 
 // ABCIQueryWithOptions provides a mock function with given fields: path, data, opts
-func (_m *Client) ABCIQueryWithOptions(path string, data common.HexBytes, opts client.ABCIQueryOptions) (*core_types.ResultABCIQuery, error) {
+func (_m *Client) ABCIQueryWithOptions(path string, data tmbytes.HexBytes, opts client.ABCIQueryOptions) (*core_types.ResultABCIQuery, error) {
 	ret := _m.Called(path, data, opts)
 
 	var r0 *core_types.ResultABCIQuery
-	if rf, ok := ret.Get(0).(func(string, common.HexBytes, client.ABCIQueryOptions) *core_types.ResultABCIQuery); ok {
+	if rf, ok := ret.Get(0).(func(string, tmbytes.HexBytes, client.ABCIQueryOptions) *core_types.ResultABCIQuery); ok {
 		r0 = rf(path, data, opts)
 	} else {
 		if ret.Get(0) != nil {
@@ -82,7 +82,7 @@ func (_m *Client) ABCIQueryWithOptions(path string, data common.HexBytes, opts c
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(string, common.HexBytes, client.ABCIQueryOptions) error); ok {
+	if rf, ok := ret.Get(1).(func(string, tmbytes.HexBytes, client.ABCIQueryOptions) error); ok {
 		r1 = rf(path, data, opts)
 	} else {
 		r1 = ret.Error(1)
@@ -642,12 +642,12 @@ func (_m *Client) UnsubscribeAll(ctx context.Context, subscriber string) error {
 }
 
 // Validators provides a mock function with given fields: height
-func (_m *Client) Validators(height *int64) (*core_types.ResultValidators, error) {
-	ret := _m.Called(height)
+func (_m *Client) Validators(height *int64, page, perPage int) (*core_types.ResultValidators, error) {
+	ret := _m.Called(height, page, perPage)
 
 	var r0 *core_types.ResultValidators
-	if rf, ok := ret.Get(0).(func(*int64) *core_types.ResultValidators); ok {
-		r0 = rf(height)
+	if rf, ok := ret.Get(0).(func(*int64, int, int) *core_types.ResultValidators); ok {
+		r0 = rf(height, page, perPage)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).(*core_types.ResultValidators)
@@ -655,8 +655,8 @@ func (_m *Client) Validators(height *int64) (*core_types.ResultValidators, error
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(*int64) error); ok {
-		r1 = rf(height)
+	if rf, ok := ret.Get(1).(func(*int64, int, int) error); ok {
+		r1 = rf(height, page, perPage)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -703,6 +703,29 @@ func (_m *Client) NumUnconfirmedTxs() (*core_types.ResultUnconfirmedTxs, error) 
 	var r1 error
 	if rf, ok := ret.Get(1).(func() error); ok {
 		r1 = rf()
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// Tendermint v0.33.0, Cosmos-sdk v0.38.0
+func (_m *Client) ConsensusParams(height *int64) (*core_types.ResultConsensusParams, error) {
+	ret := _m.Called(height)
+
+	var r0 *core_types.ResultConsensusParams
+	if rf, ok := ret.Get(0).(func(*int64) *core_types.ResultConsensusParams); ok {
+		r0 = rf(height)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*core_types.ResultConsensusParams)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(*int64) error); ok {
+		r1 = rf(height)
 	} else {
 		r1 = ret.Error(1)
 	}

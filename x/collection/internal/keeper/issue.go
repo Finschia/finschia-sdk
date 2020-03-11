@@ -4,19 +4,19 @@ import (
 	"strconv"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 type IssueKeeper interface {
-	IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error
-	IssueNFT(ctx sdk.Context, owner sdk.AccAddress, tokenType string) sdk.Error
+	IssueFT(ctx sdk.Context, owner sdk.AccAddress, token types.FT, amount sdk.Int) error
+	IssueNFT(ctx sdk.Context, owner sdk.AccAddress, tokenType string) error
 }
 
-func (k Keeper) IssueFT(ctx sdk.Context, owner sdk.AccAddress, to sdk.AccAddress, token types.FT, amount sdk.Int) sdk.Error {
+func (k Keeper) IssueFT(ctx sdk.Context, owner, to sdk.AccAddress, token types.FT, amount sdk.Int) error {
 	if !k.ExistCollection(ctx, token.GetContractID()) {
-		return types.ErrCollectionNotExist(types.DefaultCodespace, token.GetContractID())
+		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", token.GetContractID())
 	}
-
 	err := k.SetToken(ctx, token)
 	if err != nil {
 		return err
@@ -44,9 +44,9 @@ func (k Keeper) IssueFT(ctx sdk.Context, owner sdk.AccAddress, to sdk.AccAddress
 	return nil
 }
 
-func (k Keeper) IssueNFT(ctx sdk.Context, tokenType types.TokenType, owner sdk.AccAddress) sdk.Error {
+func (k Keeper) IssueNFT(ctx sdk.Context, tokenType types.TokenType, owner sdk.AccAddress) error {
 	if !k.ExistCollection(ctx, tokenType.GetContractID()) {
-		return types.ErrCollectionNotExist(types.DefaultCodespace, tokenType.GetContractID())
+		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", tokenType.GetContractID())
 	}
 
 	err := k.SetTokenType(ctx, tokenType)

@@ -1,7 +1,10 @@
 package types
 
 import (
+	"unicode/utf8"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
@@ -39,36 +42,36 @@ func (msg MsgIssue) Type() string                 { return "issue_token" }
 func (msg MsgIssue) GetSignBytes() []byte         { return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)) }
 func (msg MsgIssue) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 
-func (msg MsgIssue) ValidateBasic() sdk.Error {
+func (msg MsgIssue) ValidateBasic() error {
 	if len(msg.Name) == 0 {
-		return ErrInvalidTokenName(DefaultCodespace, msg.Name)
+		return ErrInvalidTokenName
 	}
 	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner cannot be empty")
 	}
 
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("to cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to cannot be empty")
 	}
 
 	if !ValidateName(msg.Name) {
-		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
+		return sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Name, MaxTokenNameLength, utf8.RuneCountInString(msg.Name))
 	}
 
 	if err := types.ValidateTokenSymbol(msg.Symbol); err != nil {
-		return ErrInvalidTokenSymbol(DefaultCodespace, msg.Symbol)
+		return sdkerrors.Wrapf(ErrInvalidTokenSymbol, "Symbol: %s", msg.Symbol)
 	}
 
 	if !ValidateImageURI(msg.ImageURI) {
-		return ErrInvalidImageURILength(DefaultCodespace, msg.ImageURI)
+		return sdkerrors.Wrapf(ErrInvalidImageURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.ImageURI, MaxImageURILength, utf8.RuneCountInString(msg.ImageURI))
 	}
 
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
-		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
+		return sdkerrors.Wrapf(ErrInvalidTokenDecimals, "Decimals: %s", msg.Decimals)
 	}
 
 	if msg.Amount.IsNegative() {
-		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
+		return sdkerrors.Wrap(ErrInvalidAmount, msg.Amount.String())
 	}
 
 	return nil
@@ -98,18 +101,18 @@ func (msg MsgMint) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgMint) ValidateBasic() sdk.Error {
+func (msg MsgMint) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.Amount.IsNegative() {
-		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
+		return sdkerrors.Wrap(ErrInvalidAmount, msg.Amount.String())
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("from cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from cannot be empty")
 	}
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("to cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to cannot be empty")
 	}
 	return nil
 }
@@ -139,15 +142,15 @@ func (msg MsgBurn) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgBurn) ValidateBasic() sdk.Error {
+func (msg MsgBurn) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("owner cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner cannot be empty")
 	}
 	if msg.Amount.IsNegative() {
-		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
+		return sdkerrors.Wrap(ErrInvalidAmount, msg.Amount.String())
 	}
 	return nil
 }

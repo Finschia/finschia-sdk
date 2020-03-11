@@ -26,8 +26,8 @@ func TestHandleMsgIssue(t *testing.T) {
 	{
 		msg := types.NewMsgIssue(addr1, addr1, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
 		require.NoError(t, msg.ValidateBasic())
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		contractID := GetMadeContractID(res.Events)
 
 		e := sdk.Events{
@@ -57,7 +57,7 @@ func TestHandleMsgIssue(t *testing.T) {
 	t.Log("Issue Token Again Expect Success")
 	{
 		msg := types.NewMsgIssue(addr1, addr1, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err := h(ctx, msg)
+		require.NoError(t, err)
 	}
 }

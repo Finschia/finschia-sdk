@@ -18,12 +18,8 @@ func TestHandler(t *testing.T) {
 
 	h := NewHandler(keeper)
 
-	res := h(ctx, sdk.NewTestMsg())
-	require.False(t, res.IsOK())
-	require.Equal(t, res.Codespace, types.DefaultCodespace)
-	require.Equal(t, res.Code, types.CodeProxyInvalidMsgType)
-
-	var err sdk.Error
+	_, err := h(ctx, sdk.NewTestMsg())
+	require.Error(t, err)
 
 	// proxy
 	proxy := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -61,13 +57,8 @@ func TestHandler(t *testing.T) {
 		msgPxSendCoinsFrom := types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, "link", sdk.OneInt())
 
 		// should fail as it's not approved
-		res = h(ctx, msgPxSendCoinsFrom)
-		require.False(t, res.IsOK())
-		require.Equal(t, res.Codespace, types.DefaultCodespace)
-		require.Equal(t, res.Code, types.CodeProxyNotExist)
-
-		// check emitted events (no event should be emitted)
-		testCommon.VerifyEventFunc(t, sdk.Events{}, res.Events)
+		_, err = h(ctx, msgPxSendCoinsFrom)
+		require.Error(t, err)
 	}
 
 	// refresh the event manager to verify upcoming events only
@@ -77,8 +68,8 @@ func TestHandler(t *testing.T) {
 	approvedAmount := sdk.NewInt(5)
 	{
 		msgPxApproveCoins := types.NewMsgProxyApproveCoins(proxy, onBehalfOf, "link", approvedAmount)
-		res = h(ctx, msgPxApproveCoins)
-		require.True(t, res.IsOK())
+		res, err := h(ctx, msgPxApproveCoins)
+		require.NoError(t, err)
 
 		// check emitted events
 		e := sdk.Events{
@@ -106,13 +97,8 @@ func TestHandler(t *testing.T) {
 		msgPxSendCoinsFrom := types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, "link", sdk.NewInt(6))
 
 		// should fail as it's more than approved
-		res = h(ctx, msgPxSendCoinsFrom)
-		require.False(t, res.IsOK())
-		require.Equal(t, res.Codespace, types.DefaultCodespace)
-		require.Equal(t, res.Code, types.CodeProxyNotEnoughApprovedCoins)
-
-		// check emitted events (no event should be emitted)
-		testCommon.VerifyEventFunc(t, sdk.Events{}, res.Events)
+		_, err = h(ctx, msgPxSendCoinsFrom)
+		require.Error(t, err)
 	}
 
 	// refresh the event manager to verify upcoming events only
@@ -124,8 +110,8 @@ func TestHandler(t *testing.T) {
 		msgPxSendCoinsFrom := types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, "link", sentAmount1)
 
 		// should succeed
-		res = h(ctx, msgPxSendCoinsFrom)
-		require.True(t, res.IsOK())
+		res, err := h(ctx, msgPxSendCoinsFrom)
+		require.NoError(t, err)
 
 		// check emitted events
 		e := sdk.Events{
@@ -174,13 +160,8 @@ func TestHandler(t *testing.T) {
 		msgPxDisapproveCoins := types.NewMsgProxyDisapproveCoins(proxy, onBehalfOf, "link", sdk.NewInt(4))
 
 		// should fail as only 3 approved coins are left
-		res = h(ctx, msgPxDisapproveCoins)
-		require.False(t, res.IsOK())
-		require.Equal(t, res.Codespace, types.DefaultCodespace)
-		require.Equal(t, res.Code, types.CodeProxyNotEnoughApprovedCoins)
-
-		// check emitted events (no event should be emitted)
-		testCommon.VerifyEventFunc(t, sdk.Events{}, res.Events)
+		_, err = h(ctx, msgPxDisapproveCoins)
+		require.Error(t, err)
 	}
 
 	// refresh the event manager to verify upcoming events only
@@ -191,8 +172,8 @@ func TestHandler(t *testing.T) {
 		msgPxDisapproveCoins := types.NewMsgProxyDisapproveCoins(proxy, onBehalfOf, "link", sdk.OneInt())
 
 		// should succeed
-		res = h(ctx, msgPxDisapproveCoins)
-		require.True(t, res.IsOK())
+		res, err := h(ctx, msgPxDisapproveCoins)
+		require.NoError(t, err)
 
 		// check emitted events
 		e := sdk.Events{
@@ -221,8 +202,8 @@ func TestHandler(t *testing.T) {
 		msgPxSendCoinsFrom := types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, "link", sentAmount2)
 
 		// should succeed
-		res = h(ctx, msgPxSendCoinsFrom)
-		require.True(t, res.IsOK())
+		res, err := h(ctx, msgPxSendCoinsFrom)
+		require.NoError(t, err)
 
 		// check emitted events
 		e := sdk.Events{
@@ -271,13 +252,8 @@ func TestHandler(t *testing.T) {
 		msgPxSendCoinsFrom := types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, "link", sdk.OneInt())
 
 		// should fail as there is no coin approved (all sent!)
-		res = h(ctx, msgPxSendCoinsFrom)
-		require.False(t, res.IsOK())
-		require.Equal(t, res.Codespace, types.DefaultCodespace)
-		require.Equal(t, res.Code, types.CodeProxyNotExist)
-
-		// check emitted events (no event should be emitted)
-		testCommon.VerifyEventFunc(t, sdk.Events{}, res.Events)
+		_, err = h(ctx, msgPxSendCoinsFrom)
+		require.Error(t, err)
 	}
 
 	// refresh the event manager to verify upcoming events only
@@ -288,12 +264,7 @@ func TestHandler(t *testing.T) {
 		msgPxDisapproveCoins := types.NewMsgProxyDisapproveCoins(proxy, onBehalfOf, "link", sdk.OneInt())
 
 		// should fail as there is no proxy anymore (all sent!)
-		res = h(ctx, msgPxDisapproveCoins)
-		require.False(t, res.IsOK())
-		require.Equal(t, res.Codespace, types.DefaultCodespace)
-		require.Equal(t, res.Code, types.CodeProxyNotExist)
-
-		// check emitted events (no event should be emitted)
-		testCommon.VerifyEventFunc(t, sdk.Events{}, res.Events)
+		_, err = h(ctx, msgPxDisapproveCoins)
+		require.Error(t, err)
 	}
 }

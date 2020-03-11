@@ -2,19 +2,20 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 var ChildExists = []byte{1}
 
 type ComposeKeeper interface {
-	Attach(ctx sdk.Context, contractID string, from sdk.AccAddress, toTokenID string, tokenID string) sdk.Error
-	AttachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, toTokenID string, tokenID string) sdk.Error
-	Detach(ctx sdk.Context, contractID string, from sdk.AccAddress, to sdk.AccAddress, tokenID string) sdk.Error
-	DetachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, tokenID string) sdk.Error
-	RootOf(ctx sdk.Context, contractID string, tokenID string) (types.NFT, sdk.Error)
-	ParentOf(ctx sdk.Context, contractID string, tokenID string) (types.NFT, sdk.Error)
-	ChildrenOf(ctx sdk.Context, contractID string, tokenID string) (types.Tokens, sdk.Error)
+	Attach(ctx sdk.Context, contractID string, from sdk.AccAddress, toTokenID string, tokenID string) error
+	AttachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, toTokenID string, tokenID string) error
+	Detach(ctx sdk.Context, contractID string, from sdk.AccAddress, to sdk.AccAddress, tokenID string) error
+	DetachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, tokenID string) error
+	RootOf(ctx sdk.Context, contractID string, tokenID string) (types.NFT, error)
+	ParentOf(ctx sdk.Context, contractID string, tokenID string) (types.NFT, error)
+	ChildrenOf(ctx sdk.Context, contractID string, tokenID string) (types.Tokens, error)
 }
 
 func (k Keeper) eventRootChanged(ctx sdk.Context, contractID string, tokenID string) {
@@ -31,7 +32,7 @@ func (k Keeper) eventRootChanged(ctx sdk.Context, contractID string, tokenID str
 	}
 }
 
-func (k Keeper) Attach(ctx sdk.Context, contractID string, from sdk.AccAddress, toTokenID string, tokenID string) sdk.Error {
+func (k Keeper) Attach(ctx sdk.Context, contractID string, from sdk.AccAddress, toTokenID string, tokenID string) error {
 	if err := k.attach(ctx, contractID, from, toTokenID, tokenID); err != nil {
 		return err
 	}
@@ -57,9 +58,9 @@ func (k Keeper) Attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) AttachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, toTokenID string, tokenID string) sdk.Error {
+func (k Keeper) AttachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, toTokenID string, tokenID string) error {
 	if !k.IsApproved(ctx, contractID, proxy, from) {
-		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), contractID)
+		return sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", proxy.String(), from.String(), contractID)
 	}
 
 	if err := k.attach(ctx, contractID, from, toTokenID, tokenID); err != nil {
@@ -89,11 +90,11 @@ func (k Keeper) AttachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddr
 	return nil
 }
 
-func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, parentID string, childID string) sdk.Error {
+func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, parentID string, childID string) error {
 	store := ctx.KVStore(k.storeKey)
 
 	if parentID == childID {
-		return types.ErrCannotAttachToItself(types.DefaultCodespace, childID)
+		return sdkerrors.Wrapf(types.ErrCannotAttachToItself, "TokenID: %s", childID)
 	}
 
 	childToken, err := k.GetNFT(ctx, contractID, childID)
@@ -102,7 +103,7 @@ func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	}
 
 	if !from.Equals(childToken.GetOwner()) {
-		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, childID, from)
+		return sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", childID, from.String())
 	}
 
 	toToken, err := k.GetNFT(ctx, contractID, parentID)
@@ -111,13 +112,13 @@ func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	}
 
 	if !from.Equals(toToken.GetOwner()) {
-		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, parentID, from)
+		return sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", parentID, from.String())
 	}
 
 	// verify token should be a root
 	childToParentKey := types.TokenChildToParentKey(contractID, childID)
 	if store.Has(childToParentKey) {
-		return types.ErrTokenAlreadyAChild(types.DefaultCodespace, childID)
+		return sdkerrors.Wrapf(types.ErrTokenAlreadyAChild, "TokenID: %s", childID)
 	}
 
 	// verify no circulation(toToken must not be a descendant of token)
@@ -130,7 +131,7 @@ func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 		return err
 	}
 	if rootOfToToken.GetTokenID() == childID {
-		return types.ErrCannotAttachToADescendant(types.DefaultCodespace, childID, parentID)
+		return sdkerrors.Wrapf(types.ErrCannotAttachToADescendant, "TokenID: %s, ToTokenID: %s", childID, parentID)
 	}
 
 	parentToChildKey := types.TokenParentToChildKey(contractID, parentID, childID)
@@ -150,7 +151,7 @@ func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) Detach(ctx sdk.Context, contractID string, from sdk.AccAddress, tokenID string) sdk.Error {
+func (k Keeper) Detach(ctx sdk.Context, contractID string, from sdk.AccAddress, tokenID string) error {
 	oldRoot, err := k.RootOf(ctx, contractID, tokenID)
 	if err != nil {
 		return err
@@ -179,14 +180,14 @@ func (k Keeper) Detach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 }
 
 //nolint:dupl
-func (k Keeper) DetachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, tokenID string) sdk.Error {
+func (k Keeper) DetachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, tokenID string) error {
 	oldRoot, err := k.RootOf(ctx, contractID, tokenID)
 	if err != nil {
 		return err
 	}
 
 	if !k.IsApproved(ctx, contractID, proxy, from) {
-		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), contractID)
+		return sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", proxy.String(), from.String(), contractID)
 	}
 
 	parentTokenID, err := k.detach(ctx, contractID, from, tokenID)
@@ -212,7 +213,7 @@ func (k Keeper) DetachFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddr
 	return nil
 }
 
-func (k Keeper) detach(ctx sdk.Context, contractID string, from sdk.AccAddress, childID string) (string, sdk.Error) {
+func (k Keeper) detach(ctx sdk.Context, contractID string, from sdk.AccAddress, childID string) (string, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	childToken, err := k.GetNFT(ctx, contractID, childID)
@@ -221,12 +222,12 @@ func (k Keeper) detach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	}
 
 	if !from.Equals(childToken.GetOwner()) {
-		return "", types.ErrTokenNotOwnedBy(types.DefaultCodespace, childID, from)
+		return "", sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", childID, from.String())
 	}
 
 	childToParentKey := types.TokenChildToParentKey(contractID, childID)
 	if !store.Has(childToParentKey) {
-		return "", types.ErrTokenNotAChild(types.DefaultCodespace, childID)
+		return "", sdkerrors.Wrapf(types.ErrTokenNotAChild, "TokenID: %s", childID)
 	}
 
 	bz := store.Get(childToParentKey)
@@ -248,7 +249,7 @@ func (k Keeper) detach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	return parentID, nil
 }
 
-func (k Keeper) RootOf(ctx sdk.Context, contractID string, tokenID string) (types.NFT, sdk.Error) {
+func (k Keeper) RootOf(ctx sdk.Context, contractID string, tokenID string) (types.NFT, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	token, err := k.GetNFT(ctx, contractID, tokenID)
@@ -270,7 +271,7 @@ func (k Keeper) RootOf(ctx sdk.Context, contractID string, tokenID string) (type
 	return token, nil
 }
 
-func (k Keeper) ParentOf(ctx sdk.Context, contractID string, tokenID string) (types.NFT, sdk.Error) {
+func (k Keeper) ParentOf(ctx sdk.Context, contractID string, tokenID string) (types.NFT, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	token, err := k.GetNFT(ctx, contractID, tokenID)
@@ -287,7 +288,7 @@ func (k Keeper) ParentOf(ctx sdk.Context, contractID string, tokenID string) (ty
 	return nil, nil
 }
 
-func (k Keeper) ChildrenOf(ctx sdk.Context, contractID string, tokenID string) (types.Tokens, sdk.Error) {
+func (k Keeper) ChildrenOf(ctx sdk.Context, contractID string, tokenID string) (types.Tokens, error) {
 	_, err := k.GetNFT(ctx, contractID, tokenID)
 	if err != nil {
 		return nil, err

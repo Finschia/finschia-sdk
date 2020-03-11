@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/contract"
 
 	"github.com/line/link/x/token/internal/types"
@@ -24,8 +25,8 @@ func TestHandleMsgTransfer(t *testing.T) {
 	t.Log("Transfer Token")
 	{
 		msg := types.NewMsgTransfer(addr1, addr2, defaultContractID, sdk.NewInt(10))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -39,8 +40,8 @@ func TestHandleMsgTransfer(t *testing.T) {
 	t.Log("Transfer Coin. Expect Fail")
 	{
 		msg := types.NewMsgTransfer(addr1, addr2, defaultCoin, sdk.NewInt(10))
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, defaultCoin).Error())
-		res := h(ctx, msg)
-		require.False(t, res.Code.IsOK())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(contract.ErrInvalidContractID, "ContractID: %s", defaultCoin).Error())
+		_, err := h(ctx, msg)
+		require.Error(t, err)
 	}
 }

@@ -9,12 +9,12 @@ import (
 )
 
 func TestHandleMsgMintFT(t *testing.T) {
-	ctx, h, contractID := prepareFT()
+	ctx, h, contractID := prepareFT(t)
 
 	{
 		burnMsg := types.NewMsgMintFT(addr1, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(100)))
-		res := h(ctx, burnMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, burnMsg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -29,12 +29,12 @@ func TestHandleMsgMintFT(t *testing.T) {
 }
 
 func TestHandleMsgMintNFT(t *testing.T) {
-	ctx, h, contractID := prepareNFT(addr1)
+	ctx, h, contractID := prepareNFT(t, addr1)
 
 	{
 		msg := types.NewMsgMintNFT(addr1, contractID, addr1, "shield", "", "10000001")
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),

@@ -6,10 +6,10 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgAttach(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgAttach) sdk.Result {
+func handleMsgAttach(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgAttach) (*sdk.Result, error) {
 	err := keeper.Attach(ctx, msg.ContractID, msg.From, msg.ToTokenID, msg.TokenID)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -20,13 +20,13 @@ func handleMsgAttach(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgAttach)
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgDetach(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDetach) sdk.Result {
+func handleMsgDetach(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDetach) (*sdk.Result, error) {
 	err := keeper.Detach(ctx, msg.ContractID, msg.From, msg.TokenID)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -37,13 +37,13 @@ func handleMsgDetach(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDetach)
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgAttachFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgAttachFrom) sdk.Result {
+func handleMsgAttachFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgAttachFrom) (*sdk.Result, error) {
 	err := keeper.AttachFrom(ctx, msg.ContractID, msg.Proxy, msg.From, msg.ToTokenID, msg.TokenID)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -54,13 +54,13 @@ func handleMsgAttachFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgAtt
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgDetachFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDetachFrom) sdk.Result {
+func handleMsgDetachFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDetachFrom) (*sdk.Result, error) {
 	err := keeper.DetachFrom(ctx, msg.ContractID, msg.Proxy, msg.From, msg.TokenID)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -71,5 +71,5 @@ func handleMsgDetachFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDet
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

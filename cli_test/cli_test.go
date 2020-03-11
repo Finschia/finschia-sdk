@@ -12,7 +12,6 @@ import (
 	"path/filepath"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/line/link/types"
 	"github.com/line/link/x/bank"
@@ -29,8 +28,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/tests"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/genaccounts"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/mint"
 	"github.com/line/link/client"
@@ -536,7 +535,7 @@ func TestLinkCLICreateValidator(t *testing.T) {
 	barAddr := f.KeyAddress(keyBar)
 	barVal := sdk.ValAddress(barAddr)
 
-	consPubKey := sdk.MustBech32ifyConsPub(ed25519.GenPrivKey().PubKey())
+	consPubKey := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, ed25519.GenPrivKey().PubKey())
 
 	sendTokens := sdk.TokensFromConsensusPower(10)
 	f.TxSend(keyFoo, barAddr, sdk.NewCoin(denom, sendTokens), "-y")
@@ -1363,12 +1362,14 @@ func TestLinkCLIConfig(t *testing.T) {
 	f.CLIConfig("chain-id", f.ChainID)
 	f.CLIConfig("trace", "false")
 	f.CLIConfig("indent", "true")
+	f.CLIConfig("keyring-backend", "test")
 
 	config, err := ioutil.ReadFile(path.Join(f.LinkcliHome, "config", "config.toml"))
 	require.NoError(t, err)
 	expectedConfig := fmt.Sprintf(`broadcast-mode = "block"
 chain-id = "%s"
 indent = true
+keyring-backend = "test"
 node = "%s"
 output = "text"
 trace = false
@@ -1459,12 +1460,13 @@ func TestLinkdAddGenesisAccount(t *testing.T) {
 	genesisState := f.GenesisState()
 
 	cdc := app.MakeCodec()
-	accounts := genaccounts.GetGenesisStateFromAppState(cdc, genesisState)
 
-	require.Equal(t, accounts[0].Address, f.KeyAddress(keyFoo))
-	require.Equal(t, accounts[1].Address, f.KeyAddress(keyBar))
-	require.True(t, accounts[0].Coins.IsEqual(startCoins))
-	require.True(t, accounts[1].Coins.IsEqual(bazCoins))
+	accounts := auth.GetGenesisStateFromAppState(cdc, genesisState).Accounts
+
+	require.Equal(t, accounts[0].GetAddress(), f.KeyAddress(keyFoo))
+	require.Equal(t, accounts[1].GetAddress(), f.KeyAddress(keyBar))
+	require.True(t, accounts[0].GetCoins().IsEqual(startCoins))
+	require.True(t, accounts[1].GetCoins().IsEqual(bazCoins))
 
 	// Cleanup testing directories
 	f.Cleanup()
@@ -1480,7 +1482,6 @@ func TestSlashingGetParams(t *testing.T) {
 	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	params := f.QuerySlashingParams()
-	require.Equal(t, time.Duration(120000000000), params.MaxEvidenceAge)
 	require.Equal(t, int64(100), params.SignedBlocksWindow)
 	require.Equal(t, sdk.NewDecWithPrec(5, 1), params.MinSignedPerWindow)
 
@@ -1540,7 +1541,7 @@ func TestLinkCLIProxy(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(proxy.ErrProxyNotExist, "Proxy: %s, Account: %s", tinaTheProxy, rinahTheOnBehalfOf).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 		require.Equal(t, "", stderr)
@@ -1579,7 +1580,7 @@ func TestLinkCLIProxy(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, approved, sixCoins).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(proxy.ErrProxyNotEnoughApprovedCoins, "Approved: %v, Requested: %v", approved, sixCoins).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 		require.Equal(t, "", stderr)
@@ -1614,7 +1615,7 @@ func TestLinkCLIProxy(t *testing.T) {
 		rinahBalance := f.QueryAccount(f.KeyAddress(UserRinah)).Coins
 		require.Equal(t, rinahBalance, defaultCoins.Sub(diff))
 		evelynBalance := f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins
-		require.Equal(t, evelynBalance, defaultCoins.Add(diff))
+		require.Equal(t, evelynBalance, defaultCoins.Add(diff...))
 	}
 
 	// `rinahTheOnBehalfOf` tries to disapprove 4 link from `tinaTheProxy`
@@ -1628,7 +1629,7 @@ func TestLinkCLIProxy(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(proxy.ErrProxyNotEnoughApprovedCoins(proxy.DefaultCodespace, approved.Sub(sentAmount1), fourCoins).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(proxy.ErrProxyNotEnoughApprovedCoins, "Approved: %v, Requested: %v", approved.Sub(sentAmount1), fourCoins).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 		require.Equal(t, "", stderr)
@@ -1675,7 +1676,7 @@ func TestLinkCLIProxy(t *testing.T) {
 		rinahBalance := f.QueryAccount(f.KeyAddress(UserRinah)).Coins
 		require.Equal(t, rinahBalance, defaultCoins.Sub(diff))
 		evelynBalance := f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins
-		require.Equal(t, evelynBalance, defaultCoins.Add(diff))
+		require.Equal(t, evelynBalance, defaultCoins.Add(diff...))
 	}
 
 	// 'tinaTheProxy' tries to send 1 link to `evelynTheReceiver` on behalf of `rinahTheOnBehalfOf`
@@ -1689,7 +1690,7 @@ func TestLinkCLIProxy(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(proxy.ErrProxyNotExist, "Proxy: %s, Account: %s", tinaTheProxy, rinahTheOnBehalfOf).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 		require.Equal(t, "", stderr)
@@ -1705,7 +1706,7 @@ func TestLinkCLIProxy(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(proxy.ErrProxyNotExist(proxy.DefaultCodespace, tinaTheProxy, rinahTheOnBehalfOf).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(proxy.ErrProxyNotExist, "Proxy: %s, Account: %s", tinaTheProxy, rinahTheOnBehalfOf).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 		require.Equal(t, "", stderr)
@@ -1772,7 +1773,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 
 		require.Contains(
 			t,
-			strings.Split(bank.ErrCanNotTransferToBlacklisted(sbox.DefaultCodespace, sb.Address.String()).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(bank.ErrCanNotTransferToBlacklisted, "Addr: %s", sb.Address.String()).Error(), "\""),
 			strings.Split(stdoutSendToBlacklist, "\\\\\\\"")[9],
 		)
 	}
@@ -1786,7 +1787,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxTooManyCoinDenoms(sbox.DefaultCodespace, tooManyDenoms).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxTooManyCoinDenoms, "Requested: %v", tooManyDenoms).Error(), "\""),
 			strings.Split(stdoutBoxCreate, "\\\\\\\"")[9],
 		)
 	}
@@ -1805,28 +1806,28 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultAllocation)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionAllocate(sbox.DefaultCodespace, rinahTheOwnerAddress).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionAllocate, "Account: %s", rinahTheOwnerAddress).Error(), "\""),
 			strings.Split(stdoutAllocation, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultRecall)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionRecall(sbox.DefaultCodespace, rinahTheOwnerAddress).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionRecall, "Account: %s", rinahTheOwnerAddress).Error(), "\""),
 			strings.Split(stdoutRecall, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultIssue)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace, rinahTheOwnerAddress).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", rinahTheOwnerAddress).Error(), "\""),
 			strings.Split(stdoutIssue, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultReturn)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionReturn(sbox.DefaultCodespace, rinahTheOwnerAddress).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionReturn, "Account: %s", rinahTheOwnerAddress).Error(), "\""),
 			strings.Split(stdoutReturn, "\\\\\\\"")[9],
 		)
 	}
@@ -1882,28 +1883,28 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultAllocate)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionAllocate(sbox.DefaultCodespace, f.KeyAddress(UserKevin).String()).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionAllocate, "Account: %s", f.KeyAddress(UserKevin).String()).Error(), "\""),
 			strings.Split(stdoutAllocate, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultRecall)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionRecall(sbox.DefaultCodespace, f.KeyAddress(UserKevin).String()).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionRecall, "Account: %s", f.KeyAddress(UserKevin).String()).Error(), "\""),
 			strings.Split(stdoutRecall, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultIssue)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace, f.KeyAddress(UserKevin).String()).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", f.KeyAddress(UserKevin).String()).Error(), "\""),
 			strings.Split(stdoutIssue, "\\\\\\\"")[9],
 		)
 
 		require.True(t, resultReturn)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionReturn(sbox.DefaultCodespace, f.KeyAddress(UserKevin).String()).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionReturn, "Account: %s", f.KeyAddress(UserKevin).String()).Error(), "\""),
 			strings.Split(stdoutReturn, "\\\\\\\"")[9],
 		)
 	}
@@ -2069,7 +2070,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxPermissionIssue(sbox.DefaultCodespace, f.KeyAddress(UserEvelyn).String()).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", f.KeyAddress(UserEvelyn).String()).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 	}
@@ -2177,7 +2178,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace, DenomLink, DenomStake).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", DenomLink, DenomStake).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 
@@ -2187,7 +2188,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace, DenomLink, DenomStake).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", DenomLink, DenomStake).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 
@@ -2197,7 +2198,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace, DenomLink, DenomStake).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", DenomLink, DenomStake).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 
@@ -2207,7 +2208,7 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sbox.ErrSafetyBoxIncorrectDenom(sbox.DefaultCodespace, DenomLink, DenomStake).Result().Log, "\""),
+			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", DenomLink, DenomStake).Error(), "\""),
 			strings.Split(stdout, "\\\\\\\"")[9],
 		)
 
@@ -2512,7 +2513,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		require.Contains(t, stdOut, "not enough coins")
 		//bar try to mint but has no permission
 		_, stdOut, _ = f.TxTokenMint(keyBar, contractID, barAddr.String(), mintAmountStr, "-y")
-		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", barAddr.String(), contractID+"-mint"))
+		require.Contains(t, stdOut, "account does not have the permission")
 
 		//Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QuerySupplyToken(contractID).Int64())
@@ -2540,7 +2541,7 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		_, stdOut, _ := f.TxTokenMint(keyFoo, contractID, fooAddr.String(), mintAmountStr, "-y")
-		require.Contains(t, stdOut, fmt.Sprintf("account [%s] does not have the permission [%s]", fooAddr, contractID+"-mint"))
+		require.Contains(t, stdOut, "account does not have the permission")
 
 		// Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount+mintAmount), f.QuerySupplyToken(contractID).Int64())

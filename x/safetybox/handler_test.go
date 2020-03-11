@@ -6,6 +6,7 @@ import (
 	"github.com/line/link/x/safetybox/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	testCommon "github.com/line/link/x/safetybox/internal/keeper"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -23,9 +24,9 @@ func TestHandler(t *testing.T) {
 
 	h := NewHandler(keeper)
 
-	res := h(ctx, sdk.NewTestMsg())
-	require.False(t, res.IsOK())
-	require.Error(t, ErrSafetyBoxInvalidMsgType(DefaultCodespace, sdk.NewTestMsg().Type()))
+	_, err := h(ctx, sdk.NewTestMsg())
+	require.Error(t, err)
+	require.Error(t, sdkerrors.Wrapf(ErrSafetyBoxInvalidMsgType, "Type: %s", sdk.NewTestMsg().Type()))
 
 	// create a box
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -35,8 +36,8 @@ func TestHandler(t *testing.T) {
 		SafetyBoxOwner:  owner,
 		SafetyBoxDenoms: []string{"link"},
 	}
-	res = h(ctx, msgSbCreate)
-	require.True(t, res.IsOK())
+	res, err := h(ctx, msgSbCreate)
+	require.NoError(t, err)
 
 	sb, err := keeper.GetSafetyBox(ctx, SafetyBoxTestID)
 	require.NoError(t, err)
@@ -68,8 +69,8 @@ func TestHandler(t *testing.T) {
 		SafetyBoxOwner: owner,
 		Address:        operator,
 	}
-	res = h(ctx, msgSbRegisterOperator)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbRegisterOperator)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -98,8 +99,8 @@ func TestHandler(t *testing.T) {
 		Operator:    operator,
 		Address:     allocator,
 	}
-	res = h(ctx, msgSbRegisterAllocator)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbRegisterAllocator)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -127,8 +128,8 @@ func TestHandler(t *testing.T) {
 		Operator:    operator,
 		Address:     issuer1,
 	}
-	res = h(ctx, msgSbRegisterIssuer)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbRegisterIssuer)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -156,8 +157,8 @@ func TestHandler(t *testing.T) {
 		Operator:    operator,
 		Address:     issuer2,
 	}
-	res = h(ctx, msgSbRegisterIssuer)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbRegisterIssuer)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -185,8 +186,8 @@ func TestHandler(t *testing.T) {
 		Operator:    operator,
 		Address:     returner,
 	}
-	res = h(ctx, msgSbRegisterReturner)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbRegisterReturner)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -223,8 +224,8 @@ func TestHandler(t *testing.T) {
 		AllocatorAddress: allocator,
 		Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 	}
-	res = h(ctx, msgSbAllocate)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbAllocate)
+	require.NoError(t, err)
 
 	// check emitted events including SendCoins of Bank module
 	e = sdk.Events{
@@ -257,8 +258,8 @@ func TestHandler(t *testing.T) {
 		ToAddress:   issuer2,
 		Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 	}
-	res = h(ctx, msgSbIssue)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbIssue)
+	require.NoError(t, err)
 
 	// check emitted events including SendCoins of Bank module
 	e = sdk.Events{
@@ -291,8 +292,8 @@ func TestHandler(t *testing.T) {
 		ReturnerAddress: returner,
 		Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 	}
-	res = h(ctx, msgSbReturn)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbReturn)
+	require.NoError(t, err)
 
 	// check emitted events including SendCoins of Bank module
 	e = sdk.Events{
@@ -324,8 +325,8 @@ func TestHandler(t *testing.T) {
 		AllocatorAddress: allocator,
 		Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
 	}
-	res = h(ctx, msgSbRecall)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbRecall)
+	require.NoError(t, err)
 
 	// check emitted events including SendCoins of Bank module
 	e = sdk.Events{
@@ -358,8 +359,8 @@ func TestHandler(t *testing.T) {
 		Operator:    operator,
 		Address:     allocator,
 	}
-	res = h(ctx, msgSbDeregisterAllocator)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbDeregisterAllocator)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -385,8 +386,8 @@ func TestHandler(t *testing.T) {
 		Operator:    operator,
 		Address:     issuer1,
 	}
-	res = h(ctx, msgSbDeregisterIssuer)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbDeregisterIssuer)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -412,8 +413,8 @@ func TestHandler(t *testing.T) {
 		Operator:    operator,
 		Address:     issuer2,
 	}
-	res = h(ctx, msgSbDeregisterIssuer)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbDeregisterIssuer)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -439,8 +440,8 @@ func TestHandler(t *testing.T) {
 		Operator:    operator,
 		Address:     returner,
 	}
-	res = h(ctx, msgSbDeregisterReturner)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbDeregisterReturner)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{
@@ -467,8 +468,8 @@ func TestHandler(t *testing.T) {
 		SafetyBoxOwner: owner,
 		Address:        operator,
 	}
-	res = h(ctx, msgSbDeregisterOperator)
-	require.True(t, res.IsOK())
+	res, err = h(ctx, msgSbDeregisterOperator)
+	require.NoError(t, err)
 
 	// check emitted events
 	e = sdk.Events{

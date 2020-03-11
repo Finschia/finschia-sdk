@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 )
@@ -63,6 +64,6 @@ func TestKeeper_BurnTokensWithoutPermissions(t *testing.T) {
 	{
 		err := keeper.BurnToken(ctx, defaultContractID, sdk.NewInt(defaultAmount), addr2)
 		require.Error(t, err)
-		require.EqualError(t, err, types.ErrTokenNoPermission(types.DefaultCodespace, addr2, types.NewBurnPermission(defaultContractID)).Error())
+		require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr2.String(), types.NewBurnPermission(defaultContractID).String()).Error())
 	}
 }

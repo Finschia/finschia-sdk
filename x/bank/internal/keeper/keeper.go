@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/bank/internal/types"
 )
 
@@ -18,10 +19,10 @@ func NewKeeper(bk types.BankKeeper, storeKey sdk.StoreKey) Keeper {
 }
 
 // SendCoins moves coins from one account to another
-func (keeper Keeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) sdk.Error {
+func (keeper Keeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	// reject if to address is blacklisted (safety box addresses)
 	if keeper.IsBlacklistedAccountAction(ctx, toAddr, types.ActionTransferTo) {
-		return types.ErrCanNotTransferToBlacklisted(types.DefaultCodespace, toAddr.String())
+		return sdkerrors.Wrapf(types.ErrCanNotTransferToBlacklisted, "Addr: %s", toAddr.String())
 	}
 
 	_, err := keeper.bk.SubtractCoins(ctx, fromAddr, amt)
@@ -47,7 +48,7 @@ func (keeper Keeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr 
 }
 
 // InputOutputCoins handles a list of inputs and outputs
-func (keeper Keeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, outputs []types.Output) sdk.Error {
+func (keeper Keeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, outputs []types.Output) error {
 	if err := types.ValidateInputsOutputs(inputs, outputs); err != nil {
 		return err
 	}
@@ -69,7 +70,7 @@ func (keeper Keeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, out
 	for _, out := range outputs {
 		// reject if to address is blacklisted (safety box addresses)
 		if keeper.IsBlacklistedAccountAction(ctx, out.Address, types.ActionTransferTo) {
-			return types.ErrCanNotTransferToBlacklisted(types.DefaultCodespace, out.Address.String())
+			return sdkerrors.Wrapf(types.ErrCanNotTransferToBlacklisted, "Addr: %s", out.Address.String())
 		}
 
 		_, err := keeper.bk.AddCoins(ctx, out.Address, out.Coins)

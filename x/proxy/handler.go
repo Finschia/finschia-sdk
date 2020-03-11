@@ -2,11 +2,12 @@ package proxy
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/proxy/types"
 )
 
 func NewHandler(keeper Keeper) sdk.Handler {
-	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
+	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 		switch msg := msg.(type) {
 		case types.MsgProxyApproveCoins:
@@ -16,15 +17,15 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		case types.MsgProxySendCoinsFrom:
 			return handleMsgProxySendCoinsFrom(ctx, keeper, msg)
 		default:
-			return types.ErrProxyInvalidMsgType(types.DefaultCodespace, msg.Type()).Result()
+			return nil, sdkerrors.Wrapf(types.ErrProxyInvalidMsgType, "Type: %s", msg.Type())
 		}
 	}
 }
 
-func handleMsgProxyApproveCoins(ctx sdk.Context, keeper Keeper, msg types.MsgProxyApproveCoins) sdk.Result {
+func handleMsgProxyApproveCoins(ctx sdk.Context, keeper Keeper, msg types.MsgProxyApproveCoins) (*sdk.Result, error) {
 	err := keeper.ApproveCoins(ctx, msg)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -41,13 +42,13 @@ func handleMsgProxyApproveCoins(ctx sdk.Context, keeper Keeper, msg types.MsgPro
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgProxyDisapproveCoins(ctx sdk.Context, keeper Keeper, msg types.MsgProxyDisapproveCoins) sdk.Result {
+func handleMsgProxyDisapproveCoins(ctx sdk.Context, keeper Keeper, msg types.MsgProxyDisapproveCoins) (*sdk.Result, error) {
 	err := keeper.DisapproveCoins(ctx, msg)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -64,13 +65,13 @@ func handleMsgProxyDisapproveCoins(ctx sdk.Context, keeper Keeper, msg types.Msg
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgProxySendCoinsFrom(ctx sdk.Context, keeper Keeper, msg types.MsgProxySendCoinsFrom) sdk.Result {
+func handleMsgProxySendCoinsFrom(ctx sdk.Context, keeper Keeper, msg types.MsgProxySendCoinsFrom) (*sdk.Result, error) {
 	err := keeper.SendCoinsFrom(ctx, msg)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -88,5 +89,5 @@ func handleMsgProxySendCoinsFrom(ctx sdk.Context, keeper Keeper, msg types.MsgPr
 			sdk.NewAttribute(sdk.AttributeKeyModule, AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

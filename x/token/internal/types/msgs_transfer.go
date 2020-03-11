@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/contract"
 )
 
@@ -22,21 +23,21 @@ func (msg MsgTransfer) Route() string { return RouterKey }
 
 func (msg MsgTransfer) Type() string { return "transfer_ft" }
 
-func (msg MsgTransfer) ValidateBasic() sdk.Error {
+func (msg MsgTransfer) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("from cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from cannot be empty")
 	}
 
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("to cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to cannot be empty")
 	}
 
 	if !msg.Amount.IsPositive() {
-		return sdk.ErrInsufficientCoins("send amount must be positive")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "send amount must be positive")
 	}
 	return nil
 }

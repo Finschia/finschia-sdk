@@ -6,10 +6,10 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgTransferFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferFT) sdk.Result {
+func handleMsgTransferFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferFT) (*sdk.Result, error) {
 	err := keeper.TransferFT(ctx, msg.ContractID, msg.From, msg.To, msg.Amount...)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -20,13 +20,13 @@ func handleMsgTransferFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTra
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgTransferNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferNFT) sdk.Result {
+func handleMsgTransferNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferNFT) (*sdk.Result, error) {
 	err := keeper.TransferNFT(ctx, msg.ContractID, msg.From, msg.To, msg.TokenIDs...)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -37,13 +37,13 @@ func handleMsgTransferNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTr
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgTransferFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferFTFrom) sdk.Result {
+func handleMsgTransferFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferFTFrom) (*sdk.Result, error) {
 	err := keeper.TransferFTFrom(ctx, msg.ContractID, msg.Proxy, msg.From, msg.To, msg.Amount...)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -54,13 +54,13 @@ func handleMsgTransferFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.Ms
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgTransferNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferNFTFrom) sdk.Result {
+func handleMsgTransferNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferNFTFrom) (*sdk.Result, error) {
 	err := keeper.TransferNFTFrom(ctx, msg.ContractID, msg.Proxy, msg.From, msg.To, msg.TokenIDs...)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvent(
@@ -71,5 +71,5 @@ func handleMsgTransferNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.M
 		),
 	)
 
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
