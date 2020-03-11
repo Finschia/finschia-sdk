@@ -9,45 +9,29 @@ const (
 	FullFundraiserPath = "44'/438'/0'/0/0"
 )
 
-var (
-	testnetMode = false
-)
-
-func SetTestnetMode() {
-	testnetMode = true
-}
-
-func IsTestnetMode() bool {
-	return testnetMode
-}
-
-func prefix() string {
-	if testnetMode {
+func Bech32PrefixAcc(testnet bool) string {
+	if testnet {
 		return Bech32TestnetPrefix
+	} else {
+		return Bech32MainPrefix
 	}
-	return Bech32MainPrefix
+}
+func Bech32PrefixAccPub(testnet bool) string {
+	return Bech32PrefixAcc(testnet) + PrefixPublic
 }
 
-func Bech32PrefixAccAddr() string {
-	return prefix()
+func Bech32PrefixValAddr(testnet bool) string {
+	return Bech32PrefixAcc(testnet) + PrefixValidator + PrefixOperator
 }
 
-func Bech32PrefixAccPub() string {
-	return prefix() + PrefixPublic
+func Bech32PrefixValPub(testnet bool) string {
+	return Bech32PrefixAcc(testnet) + PrefixValidator + PrefixOperator + PrefixPublic
 }
 
-func Bech32PrefixValAddr() string {
-	return prefix() + PrefixValidator + PrefixOperator
+func Bech32PrefixConsAddr(testnet bool) string {
+	return Bech32PrefixAcc(testnet) + PrefixValidator + PrefixConsensus
 }
 
-func Bech32PrefixValPub() string {
-	return prefix() + PrefixValidator + PrefixOperator + PrefixPublic
-}
-
-func Bech32PrefixConsAddr() string {
-	return prefix() + PrefixValidator + PrefixConsensus
-}
-
-func Bech32PrefixConsPub() string {
-	return prefix() + PrefixValidator + PrefixConsensus + PrefixPublic
+func Bech32PrefixConsPub(testnet bool) string {
+	return Bech32PrefixAcc(testnet) + PrefixValidator + PrefixConsensus + PrefixPublic
 }

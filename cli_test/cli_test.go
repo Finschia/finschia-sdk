@@ -14,7 +14,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/link/types"
 	"github.com/line/link/x/bank"
 	collectionmodule "github.com/line/link/x/collection"
 	"github.com/line/link/x/proxy"
@@ -230,7 +229,7 @@ func TestLinkCLIKeysAddRecover(t *testing.T) {
 
 	exitSuccess, _, _ = f.KeysAddRecover("test-recover", "dentist task convince chimney quality leave banana trade firm crawl eternal easily")
 	require.True(t, exitSuccess)
-	if types.IsTestnetMode() {
+	if sdk.GetConfig().GetBech32AccountAddrPrefix() == "tlink" {
 		require.Equal(t, "tlink1h894xgljpjzu98we894ld2740ty88krph2jvcd", f.KeyAddress("test-recover").String())
 	} else {
 		require.Equal(t, "link1h894xgljpjzu98we894ld2740ty88krpnarupg", f.KeyAddress("test-recover").String())
@@ -243,7 +242,7 @@ func TestLinkCLIKeysAddRecoverHDPath(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
 
-	if types.IsTestnetMode() {
+	if sdk.GetConfig().GetBech32AccountAddrPrefix() == "tlink" {
 		f.KeysAddRecoverHDPath("test-recoverHD1", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 0, 0)
 		require.Equal(t, "tlink1h894xgljpjzu98we894ld2740ty88krph2jvcd", f.KeyAddress("test-recoverHD1").String())
 		f.KeysAddRecoverHDPath("test-recoverH2", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 1, 5)

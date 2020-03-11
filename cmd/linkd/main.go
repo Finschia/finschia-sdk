@@ -85,18 +85,18 @@ func LinkPreRunEFn(context *server.Context) func(*cobra.Command, []string) error
 		f := server.PersistentPreRunEFn(context)
 		err := f(cmd, args)
 
+		testnet := viper.GetBool(flagTestnet)
 		var networkMode string
-		if viper.GetBool(flagTestnet) {
-			types.SetTestnetMode()
+		if testnet {
 			networkMode = "testnet"
 		} else {
 			networkMode = "mainnet"
 		}
 
 		config := sdk.GetConfig()
-		config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr(), types.Bech32PrefixAccPub())
-		config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr(), types.Bech32PrefixValPub())
-		config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr(), types.Bech32PrefixConsPub())
+		config.SetBech32PrefixForAccount(types.Bech32PrefixAcc(testnet), types.Bech32PrefixAccPub(testnet))
+		config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr(testnet), types.Bech32PrefixValPub(testnet))
+		config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr(testnet), types.Bech32PrefixConsPub(testnet))
 		config.SetCoinType(types.CoinType)
 		config.SetFullFundraiserPath(types.FullFundraiserPath)
 		config.Seal()
