@@ -99,7 +99,8 @@ func TestHandleMsgModifyForToken(t *testing.T) {
 		// Given token
 		_, err = h(ctx, types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta))
 		require.NoError(t, err)
-		_, err = h(ctx, types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType))
+		param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType)
+		_, err = h(ctx, types.NewMsgMintNFT(addr1, contractID, addr1, param))
 		require.NoError(t, err)
 
 		// When handle MsgModify

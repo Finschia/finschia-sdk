@@ -38,11 +38,13 @@ func prepareNFT(t *testing.T, mintTo sdk.AccAddress) (sdk.Context, sdk.Handler, 
 	_, err := h(ctx, msg)
 	require.NoError(t, err)
 
-	msg2 := types.NewMsgMintNFT(addr1, contractID, mintTo, "sword1", defaultMeta, "10000001")
+	param := types.NewMintNFTParam("sword1", defaultMeta, "10000001")
+	msg2 := types.NewMsgMintNFT(addr1, contractID, mintTo, param)
 	_, err = h(ctx, msg2)
 	require.NoError(t, err)
 
-	types.NewMsgMintNFT(addr1, contractID, mintTo, "sword2", defaultMeta, "10000001")
+	param = types.NewMintNFTParam("sword2", defaultMeta, "10000001")
+	types.NewMsgMintNFT(addr1, contractID, mintTo, param)
 	_, err = h(ctx, msg2)
 	require.NoError(t, err)
 
@@ -166,12 +168,14 @@ func TestHandlerIssueNFT(t *testing.T) {
 			require.NoError(t, err)
 		}
 		{
-			msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType2)
+			param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType2)
+			msg := types.NewMsgMintNFT(addr1, contractID, addr1, param)
 			_, err := h(ctx, msg)
 			require.NoError(t, err)
 		}
 		{
-			msg := types.NewMsgMintNFT(addr1, contractID, addr2, defaultName, defaultMeta, defaultTokenType2)
+			param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType2)
+			msg := types.NewMsgMintNFT(addr1, contractID, addr2, param)
 			_, err := h(ctx, msg)
 			require.NoError(t, err)
 		}
@@ -186,7 +190,8 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.NoError(t, err)
 			}
 			{
-				msg := types.NewMsgMintNFT(addr2, contractID, addr2, defaultName, defaultMeta, defaultTokenType2)
+				param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType2)
+				msg := types.NewMsgMintNFT(addr2, contractID, addr2, param)
 				_, err := h(ctx, msg)
 				require.NoError(t, err)
 			}
@@ -196,7 +201,8 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.NoError(t, err)
 			}
 			{
-				msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType2)
+				param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType2)
+				msg := types.NewMsgMintNFT(addr1, contractID, addr1, param)
 				_, err := h(ctx, msg)
 				require.Error(t, err)
 			}
@@ -221,7 +227,8 @@ func TestHandlerIssueNFT(t *testing.T) {
 		require.NoError(t, err)
 	}
 	{
-		msg := types.NewMsgMintNFT(addr2, contractID, addr2, defaultName, defaultMeta, defaultTokenType3)
+		param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType3)
+		msg := types.NewMsgMintNFT(addr2, contractID, addr2, param)
 		_, err := h(ctx, msg)
 		require.NoError(t, err)
 	}
@@ -331,7 +338,8 @@ func TestEvents(t *testing.T) {
 	}
 
 	{
-		msg := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
+		param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType)
+		msg := types.NewMsgMintNFT(addr1, contractID, addr1, param)
 		require.NoError(t, msg.ValidateBasic())
 		res, err := h(ctx, msg)
 		require.NoError(t, err)

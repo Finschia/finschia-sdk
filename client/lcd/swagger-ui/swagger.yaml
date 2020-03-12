@@ -2791,15 +2791,20 @@ components:
               example: "678c146a"
             to:
               $ref: '#/components/schemas/Address'
-            name:
-              type: string
-              example: "cony"
-            meta:
-              type: string
-              example: "{ \"foo\": \"bar\"}"
-            token_type:
-              type: string
-              example: "10000001"
+            params:
+              type: array
+              items:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    example: "cony"
+                  meta:
+                    type: string
+                    example: "{ \"foo\": \"bar\"}"
+                  token_type:
+                    type: string
+                    example: "10000001"
     MsgBurnCNFT:
       type: object
       description: msg of non-fungible collection token burn
@@ -3192,78 +3197,106 @@ components:
       {
         "type": "collection/MsgMintNFT",
         "value": {
-          "name": "cony",
-          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_type": "10000001"
+          "params": [
+          {
+            "name": "cony",
+            "meta": "{}",
+            "token_type": "10000001"
+          }
+          ]
         }
       },
       {
         "type": "collection/MsgMintNFT",
         "value": {
-          "name": "cony",
-          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_type": "10000001"
+          "params": [
+          {
+            "name": "cony",
+            "meta": "{}",
+            "token_type": "10000001"
+          }
+          ]
         }
       },
       {
         "type": "collection/MsgMintNFT",
         "value": {
-          "name": "cony",
-          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_type": "10000001"
+          "params": [
+          {
+            "name": "cony",
+            "meta": "{}",
+            "token_type": "10000001"
+          }
+          ]
         }
       },
       {
         "type": "collection/MsgMintNFT",
         "value": {
-          "name": "cony",
-          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_type": "10000001"
+          "params": [
+          {
+            "name": "cony",
+            "meta": "{}",
+            "token_type": "10000001"
+          }
+          ]
         }
       },
       {
         "type": "collection/MsgMintNFT",
         "value": {
-          "name": "cony",
-          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_type": "10000001"
+          "params": [
+          {
+            "name": "cony",
+            "meta": "{}",
+            "token_type": "10000001"
+          }
+          ]
         }
       },
       {
         "type": "collection/MsgMintNFT",
         "value": {
-          "name": "cony",
-          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_type": "10000001"
+          "params": [
+          {
+            "name": "cony",
+            "meta": "{}",
+            "token_type": "10000001"
+          }
+          ]
         }
       },
       {
         "type": "collection/MsgMintNFT",
         "value": {
-          "name": "cony",
-          "meta": "{}",
           "contract_id": "678c146a",
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
-          "token_type": "10000001"
+          "params": [
+          {
+            "name": "cony",
+            "meta": "{}",
+            "token_type": "10000001"
+          }
+          ]
         }
       },
       {

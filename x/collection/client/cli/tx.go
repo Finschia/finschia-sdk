@@ -3,6 +3,8 @@ package cli
 import (
 	"bufio"
 	"errors"
+	"sort"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/line/link/x/collection/internal/types"
@@ -197,13 +199,13 @@ linkcli tx token issue [from_key_or_address] [contract_id] [name]
 
 func MintNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-nft [from_key_or_address] [contract_id] [to] [token_type] [name] [meta]",
+		Use:   "mint-nft [from_key_or_address] [contract_id] [to] [token_type:name:meta][,[token_type:name:meta]]",
 		Short: "Create and sign an mint-nft tx",
 		Long: `
 [NonFungible Token]
 linkcli tx token mint-nft [from_key_or_address] [contract_id] [token_type] [name]
 `,
-		Args: cobra.ExactArgs(6),
+		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
@@ -215,11 +217,22 @@ linkcli tx token mint-nft [from_key_or_address] [contract_id] [token_type] [name
 			if err != nil {
 				return err
 			}
-			tokenType := args[3]
-			name := args[4]
-			meta := args[5]
 
-			msg := types.NewMsgMintNFT(from, contractID, to, name, meta, tokenType)
+			mintNFTParamStrs := strings.Split(args[3], ",")
+
+			sort.Strings(mintNFTParamStrs)
+
+			mintNFTParams := make([]types.MintNFTParam, len(mintNFTParamStrs))
+			for i, mintNFTParamStr := range mintNFTParamStrs {
+				strs := strings.Split(mintNFTParamStr, ":")
+				if len(strs) != 3 {
+					return errors.New("invalid format: <token_type:name:meta>")
+				}
+
+				mintNFTParams[i] = types.NewMintNFTParam(strs[1], strs[2], strs[0])
+			}
+
+			msg := types.NewMsgMintNFT(from, contractID, to, mintNFTParams...)
 
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
@@ -279,6 +292,7 @@ func BurnNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
+//nolint:dupl
 func TransferFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-ft [from_key_or_address] [contract_id] [to_address] [amount]",
@@ -314,7 +328,7 @@ func TransferFTTxCmd(cdc *codec.Codec) *cobra.Command {
 //nolint:dupl
 func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "transfer-nft [from_key_or_address] [contract_id] [to_address] [token_id]",
+		Use:   "transfer-nft [from_key_or_address] [contract_id] [to_address] [token_id][,[token_id]]",
 		Short: "Create and sign a tx transferring a collective non-fungible token",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -329,7 +343,11 @@ func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgTransferNFT(cliCtx.GetFromAddress(), contractID, to, args[3])
+			tokenIDs := strings.Split(args[3], ",")
+
+			sort.Strings(tokenIDs)
+
+			msg := types.NewMsgTransferNFT(cliCtx.GetFromAddress(), contractID, to, tokenIDs...)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -397,7 +415,11 @@ func TransferNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgTransferNFTFrom(cliCtx.GetFromAddress(), contractID, from, to, args[4])
+			tokenIDs := strings.Split(args[4], ",")
+
+			sort.Strings(tokenIDs)
+
+			msg := types.NewMsgTransferNFTFrom(cliCtx.GetFromAddress(), contractID, from, to, tokenIDs...)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -444,9 +466,9 @@ func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
 //nolint:dupl
 func MintFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "mint-ft [from_key_or_address] [contract_id] [to] [token-id] [amount]",
+		Use:   "mint-ft [from_key_or_address] [contract_id] [to] [amount]",
 		Short: "Create and sign a mint token tx",
-		Args:  cobra.ExactArgs(5),
+		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
@@ -458,13 +480,13 @@ func MintFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			tokenID := args[3]
-			amount, ok := sdk.NewIntFromString(args[4])
-			if !ok {
-				return errors.New("invalid amount")
+
+			amount, err := types.ParseCoins(args[3])
+			if err != nil {
+				return sdkerrors.Wrap(types.ErrInvalidAmount, args[3])
 			}
 
-			msg := types.NewMsgMintFT(cliCtx.GetFromAddress(), contractID, to, types.NewCoin(tokenID, amount))
+			msg := types.NewMsgMintFT(cliCtx.GetFromAddress(), contractID, to, amount...)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

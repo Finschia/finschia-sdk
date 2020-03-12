@@ -12,15 +12,17 @@ func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNF
 		return nil, err
 	}
 
-	tokenID, err := keeper.GetNextTokenIDNFT(ctx, msg.ContractID, msg.TokenType)
-	if err != nil {
-		return nil, err
-	}
+	for _, mintNFTParam := range msg.MintNFTParams {
+		tokenID, err := keeper.GetNextTokenIDNFT(ctx, msg.ContractID, mintNFTParam.TokenType)
+		if err != nil {
+			return nil, err
+		}
 
-	token := types.NewNFT(msg.ContractID, tokenID, msg.Name, msg.Meta, msg.To)
-	err = keeper.MintNFT(ctx, msg.From, token)
-	if err != nil {
-		return nil, err
+		token := types.NewNFT(msg.ContractID, tokenID, mintNFTParam.Name, mintNFTParam.Meta, msg.To)
+		err = keeper.MintNFT(ctx, msg.From, token)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{

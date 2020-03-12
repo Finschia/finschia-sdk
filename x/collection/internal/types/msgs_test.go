@@ -55,7 +55,8 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Name, msg2.Name)
 	}
 	{
-		msg := NewMsgMintNFT(addr1, defaultContractID, addr1, defaultName, defaultMeta, defaultTokenType)
+		param := NewMintNFTParam(defaultName, defaultMeta, defaultTokenType)
+		msg := NewMsgMintNFT(addr1, defaultContractID, addr1, param)
 		require.Equal(t, "mint_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -69,10 +70,18 @@ func TestMsgBasics(t *testing.T) {
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
 
-		require.Equal(t, msg.Name, msg2.Name)
+		require.Equal(t, msg.MintNFTParams[0].Name, msg2.MintNFTParams[0].Name)
 		require.Equal(t, msg.ContractID, msg2.ContractID)
 		require.Equal(t, msg.From, msg2.From)
-		require.Equal(t, msg.TokenType, msg2.TokenType)
+		require.Equal(t, msg.MintNFTParams[0].TokenType, msg2.MintNFTParams[0].TokenType)
+
+		falseParam := NewMintNFTParam("", defaultMeta, defaultTokenType)
+		msg3 := NewMsgMintNFT(addr1, defaultContractID, addr1, falseParam)
+		require.Error(t, msg3.ValidateBasic())
+
+		falseParam = NewMintNFTParam(defaultName, defaultMeta, "abc")
+		msg4 := NewMsgMintNFT(addr1, defaultContractID, addr1, falseParam)
+		require.Error(t, msg4.ValidateBasic())
 	}
 	{
 		msg := NewMsgBurnNFT(addr1, defaultContractID, defaultTokenID1)

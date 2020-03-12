@@ -32,7 +32,8 @@ func TestHandleMsgMintNFT(t *testing.T) {
 	ctx, h, contractID := prepareNFT(t, addr1)
 
 	{
-		msg := types.NewMsgMintNFT(addr1, contractID, addr1, "shield", "", "10000001")
+		param := types.NewMintNFTParam("shield", "", "10000001")
+		msg := types.NewMsgMintNFT(addr1, contractID, addr1, param)
 		res, err := h(ctx, msg)
 		require.NoError(t, err)
 

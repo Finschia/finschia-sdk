@@ -113,7 +113,8 @@ func TestModifyCollection(t *testing.T) {
 	// And NFT
 	f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, contractID, firstName, firstMeta, "-y"))
 	tests.WaitForNextNBlocksTM(1, f.Port)
-	f.LogResult(f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), firstName, firstMeta, tokenType, "-y"))
+	mintParam := strings.Join([]string{tokenType, firstName, firstMeta}, ":")
+	f.LogResult(f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y"))
 	tests.WaitForNextNBlocksTM(1, f.Port)
 	firstResult := f.QueryTokenCollection(contractID, tokenID).(collectionmodule.NFT)
 	require.Equal(t, tokenID, firstResult.GetTokenID())
@@ -2615,8 +2616,8 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(contractID1, tokenID01))
 	}
 	{
-		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, 20000, 6, false, "-y")
-		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, 30000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, 20000, 6, true, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, 30000, 6, true, "-y")
 
 		token := f.QueryTokenCollection(contractID1, tokenID01)
 		require.Equal(t, contractID1, token.GetContractID())
@@ -2669,7 +2670,8 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 	// Mint and Burn FTs in the collection
 	{
-		f.TxTokenMintFTCollection(keyBar, contractID1, barAddr.String(), tokenID04, int64(1000), "-y")
+		amount := fmt.Sprintf("%d:%s", 1000, tokenID04)
+		f.TxTokenMintFTCollection(keyBar, contractID1, barAddr.String(), amount, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		require.Equal(t, sdk.NewInt(41000), f.QueryTotalSupplyTokenCollection(contractID1, tokenID04))
@@ -2684,6 +2686,31 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, sdk.NewInt(2000), f.QueryTotalBurnTokenCollection(contractID1, tokenID04))
 	}
 
+	// Multi-transfer and multi-mint FTs
+	{
+		amount := fmt.Sprintf("%d:%s,%d:%s", 10000, tokenID02, 20000, tokenID03)
+		f.TxTokenTransferFTCollection(keyFoo, contractID1, barAddr.String(), amount, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.Equal(t, sdk.NewInt(10000), f.QueryBalanceCollection(contractID1, tokenID02, fooAddr))
+		require.Equal(t, sdk.NewInt(10000), f.QueryBalanceCollection(contractID1, tokenID02, barAddr))
+		require.Equal(t, sdk.NewInt(10000), f.QueryBalanceCollection(contractID1, tokenID03, fooAddr))
+		require.Equal(t, sdk.NewInt(20000), f.QueryBalanceCollection(contractID1, tokenID03, barAddr))
+
+		f.TxTokenMintFTCollection(keyFoo, contractID1, fooAddr.String(), amount, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.Equal(t, sdk.NewInt(20000), f.QueryBalanceCollection(contractID1, tokenID02, fooAddr))
+		require.Equal(t, sdk.NewInt(30000), f.QueryTotalSupplyTokenCollection(contractID1, tokenID02))
+		require.Equal(t, sdk.NewInt(30000), f.QueryTotalMintTokenCollection(contractID1, tokenID02))
+		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(contractID1, tokenID02))
+
+		require.Equal(t, sdk.NewInt(30000), f.QueryBalanceCollection(contractID1, tokenID03, fooAddr))
+		require.Equal(t, sdk.NewInt(50000), f.QueryTotalSupplyTokenCollection(contractID1, tokenID03))
+		require.Equal(t, sdk.NewInt(50000), f.QueryTotalMintTokenCollection(contractID1, tokenID03))
+		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(contractID1, tokenID03))
+	}
+
 	f.Cleanup()
 }
 
@@ -2695,6 +2722,7 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		tokenID01   = "1000000100000001"
 		tokenID02   = "1000000100000002"
 		tokenID03   = "1000000100000003"
+		tokenID04   = "1000000100000004"
 		description = "description"
 		meta        = "meta"
 		tokenuri    = "uri:itisbrown"
@@ -2724,9 +2752,10 @@ func TestLinkCLITokenNFT(t *testing.T) {
 	{
 		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, contractID, description, meta, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), description, meta, tokenType, "-y")
-		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), description, meta, tokenType, "-y")
-		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), description, meta, tokenType, "-y")
+		mintParam := strings.Join([]string{tokenType, description, meta}, ":")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		token := f.QueryTokenCollection(contractID, tokenID01)
 		require.Equal(t, contractID, token.GetContractID())
@@ -2737,6 +2766,46 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		token = f.QueryTokenCollection(contractID, tokenID03)
 		require.Equal(t, contractID, token.GetContractID())
 		require.Equal(t, tokenID03, token.GetTokenID())
+	}
+
+	// Multi-transfer NFTs
+	{
+		f.TxTokenTransferNFTCollection(keyFoo, contractID, barAddr.String(), tokenID01, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.Equal(t, sdk.ZeroInt(), f.QueryBalanceCollection(contractID, tokenID01, fooAddr))
+		require.Equal(t, sdk.NewInt(1), f.QueryBalanceCollection(contractID, tokenID01, barAddr))
+
+		tokenIDs := tokenID02 + "," + tokenID03
+		f.TxTokenTransferNFTCollection(keyFoo, contractID, barAddr.String(), tokenIDs, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		require.Equal(t, sdk.ZeroInt(), f.QueryBalanceCollection(contractID, tokenID02, fooAddr))
+		require.Equal(t, sdk.ZeroInt(), f.QueryBalanceCollection(contractID, tokenID03, fooAddr))
+		require.Equal(t, sdk.NewInt(1), f.QueryBalanceCollection(contractID, tokenID02, barAddr))
+		require.Equal(t, sdk.NewInt(1), f.QueryBalanceCollection(contractID, tokenID03, barAddr))
+	}
+
+	// Multi-mint NFTs
+	{
+		myTokenType := "10000002"
+		myTokenID01 := "1000000200000001"
+
+		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, contractID, description, meta, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		mint1 := strings.Join([]string{tokenType, description, meta}, ":")
+		mint2 := strings.Join([]string{myTokenType, description, meta}, ":")
+		mintParam := strings.Join([]string{mint1, mint2}, ",")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryTokenCollection(contractID, tokenID04)
+		require.Equal(t, contractID, token.GetContractID())
+		require.Equal(t, tokenID04, token.GetTokenID())
+		token = f.QueryTokenCollection(contractID, myTokenID01)
+		require.Equal(t, contractID, token.GetContractID())
+		require.Equal(t, myTokenID01, token.GetTokenID())
 	}
 
 	f.Cleanup()

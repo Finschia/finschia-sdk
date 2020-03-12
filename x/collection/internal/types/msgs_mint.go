@@ -9,23 +9,33 @@ import (
 
 var _ contract.Msg = (*MsgMintNFT)(nil)
 
-type MsgMintNFT struct {
-	From       sdk.AccAddress `json:"from"`
-	ContractID string         `json:"contract_id"`
-	To         sdk.AccAddress `json:"to"`
-	Name       string         `json:"name"`
-	Meta       string         `json:"meta"`
-	TokenType  string         `json:"token_type"`
+type MintNFTParam struct {
+	Name      string `json:"name"`
+	Meta      string `json:"meta"`
+	TokenType string `json:"token_type"`
 }
 
-func NewMsgMintNFT(from sdk.AccAddress, contractID string, to sdk.AccAddress, name, meta, tokenType string) MsgMintNFT {
+func NewMintNFTParam(name, meta, tokenType string) MintNFTParam {
+	return MintNFTParam{
+		Name:      name,
+		Meta:      meta,
+		TokenType: tokenType,
+	}
+}
+
+type MsgMintNFT struct {
+	From          sdk.AccAddress `json:"from"`
+	ContractID    string         `json:"contract_id"`
+	To            sdk.AccAddress `json:"to"`
+	MintNFTParams []MintNFTParam `json:"params"`
+}
+
+func NewMsgMintNFT(from sdk.AccAddress, contractID string, to sdk.AccAddress, mintNFTParams ...MintNFTParam) MsgMintNFT {
 	return MsgMintNFT{
-		From:       from,
-		ContractID: contractID,
-		To:         to,
-		Name:       name,
-		Meta:       meta,
-		TokenType:  tokenType,
+		From:          from,
+		ContractID:    contractID,
+		To:            to,
+		MintNFTParams: mintNFTParams,
 	}
 }
 
@@ -41,9 +51,6 @@ func (msg MsgMintNFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
-	if len(msg.Name) == 0 {
-		return ErrInvalidTokenName
-	}
 	if msg.From.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from address cannot be empty")
 	}
@@ -51,9 +58,15 @@ func (msg MsgMintNFT) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to address cannot be empty")
 	}
 
-	if err := types.ValidateTokenTypeNFT(msg.TokenType); err != nil {
-		return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
+	for _, mintNFTParam := range msg.MintNFTParams {
+		if len(mintNFTParam.Name) == 0 {
+			return ErrInvalidTokenName
+		}
+		if err := types.ValidateTokenTypeNFT(mintNFTParam.TokenType); err != nil {
+			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
+		}
 	}
+
 	return nil
 }
 
