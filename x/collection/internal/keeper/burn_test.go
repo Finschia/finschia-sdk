@@ -42,6 +42,15 @@ func TestKeeper_BurnFTFrom(t *testing.T) {
 func TestKeeper_BurnNFT(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
+	i, err := keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTCount)
+	require.NoError(t, err)
+	require.Equal(t, int64(5), i.Int64())
+	i, err = keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTMint)
+	require.NoError(t, err)
+	require.Equal(t, int64(5), i.Int64())
+	i, err = keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTBurn)
+	require.NoError(t, err)
+	require.Equal(t, int64(0), i.Int64())
 
 	require.NoError(t, keeper.BurnNFT(ctx, defaultContractID, addr1, defaultTokenID4))
 	require.EqualError(t, keeper.BurnNFT(ctx, defaultContractID, addr1, defaultTokenID4), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID4).Error())
@@ -52,6 +61,16 @@ func TestKeeper_BurnNFT(t *testing.T) {
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID3))
 	require.NoError(t, keeper.BurnNFT(ctx, defaultContractID, addr1, defaultTokenID1))
+
+	i, err = keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTCount)
+	require.NoError(t, err)
+	require.Equal(t, int64(1), i.Int64())
+	i, err = keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTMint)
+	require.NoError(t, err)
+	require.Equal(t, int64(5), i.Int64())
+	i, err = keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTBurn)
+	require.NoError(t, err)
+	require.Equal(t, int64(4), i.Int64())
 }
 
 func TestKeeper_BurnNFTFrom(t *testing.T) {

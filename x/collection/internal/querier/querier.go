@@ -24,7 +24,11 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 		case types.QueryCollections:
 			return queryCollections(ctx, req, keeper)
 		case types.QueryNFTCount:
-			return queryNFTCount(ctx, req, keeper)
+			return queryNFTCount(ctx, req, keeper, types.QueryNFTCount)
+		case types.QueryNFTMint:
+			return queryNFTCount(ctx, req, keeper, types.QueryNFTMint)
+		case types.QueryNFTBurn:
+			return queryNFTCount(ctx, req, keeper, types.QueryNFTBurn)
 		case types.QuerySupply:
 			return queryTotal(ctx, req, keeper, types.QuerySupply)
 		case types.QueryMint:
@@ -178,12 +182,12 @@ func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keep
 	return bz, nil
 }
 
-func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
+func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, error) {
 	var params types.QueryContractIDTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	count, err := keeper.GetNFTCount(ctx, params.ContractID, params.TokenID)
+	count, err := keeper.GetNFTCountInt(ctx, params.ContractID, params.TokenID, target)
 	if err != nil {
 		return nil, err
 	}

@@ -237,17 +237,29 @@ func GetTokenTotalCmd(cdc *codec.Codec) *cobra.Command {
 }
 func GetTokenCountCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "count [contract_id] [token_type]",
+		Use:   "count [total|mint|burn] [contract_id] [token_type]",
 		Short: "Query count of collection tokens with collection contractID and the type_type.",
-		Args:  cobra.ExactArgs(2),
+		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := client.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
-			contractID := args[0]
-			baseID := args[1]
+			target := args[0]
+			switch target {
+			case "total":
+				target = types.QueryNFTCount
+			case "mint":
+				target = types.QueryNFTMint
+			case "burn":
+				target = types.QueryNFTBurn
+			default:
+				return fmt.Errorf("argument is not total, mint, or burn %s", target)
+			}
 
-			supply, height, err := retriever.GetCollectionNFTCount(cliCtx, contractID, baseID)
+			contractID := args[1]
+			tokenType := args[2]
+
+			supply, height, err := retriever.GetCollectionNFTCount(cliCtx, contractID, tokenType, target)
 			if err != nil {
 				return err
 			}

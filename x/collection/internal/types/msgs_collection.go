@@ -26,9 +26,6 @@ func NewMsgCreateCollection(owner sdk.AccAddress, name, meta, baseImgURI string)
 }
 
 func (msg MsgCreateCollection) ValidateBasic() error {
-	if len(msg.Name) == 0 {
-		return ErrInvalidTokenName
-	}
 	if msg.Owner.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
