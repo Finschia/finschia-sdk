@@ -1,6 +1,9 @@
 package keeper
 
 import (
+	"math/big"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/x/collection/internal/types"
 )
@@ -16,6 +19,7 @@ type TokenKeeper interface {
 	GetFTs(ctx sdk.Context, contractID string) (tokens types.Tokens, err sdk.Error)
 	GetNFT(ctx sdk.Context, contractID, tokenID string) (types.NFT, sdk.Error)
 	GetNFTCount(ctx sdk.Context, contractID, tokenType string) (sdk.Int, sdk.Error)
+	GetNFTCountInt(ctx sdk.Context, contractID, tokenType, target string) (sdk.Int, sdk.Error)
 	GetNFTs(ctx sdk.Context, contractID, tokenType string) (tokens types.Tokens, err sdk.Error)
 	GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, sdk.Error)
 	GetNextTokenIDNFT(ctx sdk.Context, contractID, tokenType string) (string, sdk.Error)
@@ -145,19 +149,56 @@ func (k Keeper) GetNFTCount(ctx sdk.Context, contractID, tokenType string) (sdk.
 	return sdk.NewInt(int64(len(tokens))), nil
 }
 
+func (k Keeper) GetNFTCountInt(ctx sdk.Context, contractID, tokenType, target string) (sdk.Int, sdk.Error) {
+	_, err := k.GetCollection(ctx, contractID)
+	if err != nil {
+		return sdk.ZeroInt(), err
+	}
+	switch target {
+	case types.QueryNFTCount:
+		return k.getNFTCountTotal(ctx, contractID, tokenType), nil
+	case types.QueryNFTMint:
+		return k.getNFTCountMint(ctx, contractID, tokenType), nil
+	case types.QueryNFTBurn:
+		return k.getNFTCountBurn(ctx, contractID, tokenType), nil
+	default:
+		panic("invalid request target to query")
+	}
+}
+func (k Keeper) getNFTCountTotal(ctx sdk.Context, contractID, tokenType string) sdk.Int {
+	countTotal := 0
+	k.iterateToken(ctx, contractID, tokenType, false, func(types.Token) bool {
+		countTotal++
+		return false
+	})
+	return sdk.NewInt(int64(countTotal))
+}
+func (k Keeper) getNFTCountMint(ctx sdk.Context, contractID, tokenType string) sdk.Int {
+	var lastTokenIndex = "0"
+	k.iterateToken(ctx, contractID, tokenType, true, func(token types.Token) bool {
+		lastTokenIndex = token.GetTokenIndex()
+		return true
+	})
+	return sdk.NewIntFromBigInt(fromHex(lastTokenIndex))
+}
+
+func (k Keeper) getNFTCountBurn(ctx sdk.Context, contractID, tokenType string) sdk.Int {
+	return k.getNFTCountMint(ctx, contractID, tokenType).Sub(k.getNFTCountTotal(ctx, contractID, tokenType))
+}
+
 func (k Keeper) setNextTokenTypeFT(ctx sdk.Context, contractID, tokenType string) {
 	store := ctx.KVStore(k.storeKey)
-	tokenType = nextID(tokenType, "")
+	tokenType = nextID(tokenType)
 	store.Set(types.NextTokenTypeFTKey(contractID), k.mustEncodeString(tokenType))
 }
 func (k Keeper) setNextTokenTypeNFT(ctx sdk.Context, contractID, tokenType string) {
 	store := ctx.KVStore(k.storeKey)
-	tokenType = nextID(tokenType, "")
+	tokenType = nextID(tokenType)
 	store.Set(types.NextTokenTypeNFTKey(contractID), k.mustEncodeString(tokenType))
 }
 func (k Keeper) setNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType, tokenIndex string) {
 	store := ctx.KVStore(k.storeKey)
-	tokenIndex = nextID(tokenIndex, "")
+	tokenIndex = nextID(tokenIndex)
 	store.Set(types.NextTokenIDNFTKey(contractID, tokenType), k.mustEncodeString(tokenIndex))
 }
 
@@ -249,34 +290,22 @@ func (k Keeper) mustDecodeToken(bz []byte) (token types.Token) {
 	return token
 }
 
-func nextID(id string, prefix string) (nextTokenID string) {
-	if len(prefix) >= len(id) {
-		return prefix[:len(id)]
+func fromHex(s string) *big.Int {
+	r, ok := new(big.Int).SetString(s, 16)
+	if !ok {
+		panic("bad hex")
 	}
-	var toCharStr = "0123456789abcdef"
-	const toCharStrLength = 16 //int32(len(toCharStr))
+	return r
+}
 
-	tokenIDInt := make([]int32, len(id))
-	for idx, char := range id {
-		if char >= '0' && char <= '9' {
-			tokenIDInt[idx] = char - '0'
-		} else {
-			tokenIDInt[idx] = char - 'a' + 10
-		}
-	}
-	for idx := len(tokenIDInt) - 1; idx >= 0; idx-- {
-		char := tokenIDInt[idx] + 1
-		if char < (int32)(toCharStrLength) {
-			tokenIDInt[idx] = char
-			break
-		}
-		tokenIDInt[idx] = 0
-	}
+func toHex(r *big.Int) string {
+	return r.Text(16)
+}
 
-	for _, char := range tokenIDInt {
-		nextTokenID += string(toCharStr[char])
-	}
-	nextTokenID = prefix + nextTokenID[len(prefix):]
-
+func nextID(id string) (nextTokenID string) {
+	idInt := fromHex(id)
+	idInt = idInt.Add(idInt, big.NewInt(1))
+	nextTokenID = strings.Repeat("0", len(id)) + toHex(idInt)
+	nextTokenID = nextTokenID[len(nextTokenID)-len(id):]
 	return nextTokenID
 }
