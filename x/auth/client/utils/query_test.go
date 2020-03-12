@@ -169,8 +169,13 @@ func TestQueryGenesisTxs(t *testing.T) {
 }
 
 func TestQueryGenesisAccount(t *testing.T) {
+	testQueryGenesisAccount(t, false)
+	testQueryGenesisAccount(t, true)
+}
+
+func testQueryGenesisAccount(t *testing.T, testnet bool) {
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAcc(testnet), types.Bech32PrefixAccPub(testnet))
 
 	cdc := setupCodec()
 	mockClient := &mocks.Client{}
@@ -182,10 +187,10 @@ func TestQueryGenesisAccount(t *testing.T) {
 
 	// exist genesis account
 	var addr string
-	if types.Bech32MainPrefix == "link" {
-		addr = "link19rqsvml8ldr0yrhaewgv9smcdvrew5pah9j5t5"
-	} else if types.Bech32MainPrefix == "tlink" {
+	if config.GetBech32AccountAddrPrefix() == "tlink" {
 		addr = "tlink19rqsvml8ldr0yrhaewgv9smcdvrew5panjryj3"
+	} else {
+		addr = "link19rqsvml8ldr0yrhaewgv9smcdvrew5pah9j5t5"
 	}
 	genesisDoc := tmtypes.GenesisDoc{
 		AppState: json.RawMessage(`{"auth":{"accounts":[{"type":"cosmos-sdk/Account","value":{"address":"` + addr + `","coins":[]}}]}}`),

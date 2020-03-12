@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 
+	"github.com/line/link/types"
 	"github.com/line/link/x/account"
 
 	"github.com/spf13/cobra"
@@ -18,10 +19,13 @@ import (
 
 	"github.com/line/link/app"
 	"github.com/line/link/client"
-	"github.com/line/link/types"
 	"github.com/line/link/version"
 	authclient "github.com/line/link/x/auth/client"
 	"github.com/line/link/x/bank"
+)
+
+const (
+	flagTestnet = "testnet"
 )
 
 func main() {
@@ -30,15 +34,6 @@ func main() {
 
 	// Instantiate the codec for the command line application
 	cdc := app.MakeCodec()
-
-	// Read in the configuration file for the sdk
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
-	config.SetCoinType(types.CoinType)
-	config.SetFullFundraiserPath(types.FullFundraiserPath)
-	config.Seal()
 
 	// TODO: setup keybase, viper object, etc. to be passed into
 	// the below functions and eliminate global vars, like we do
@@ -51,6 +46,7 @@ func main() {
 
 	// Add --chain-id to persistent flags and mark it required
 	rootCmd.PersistentFlags().String(client.FlagChainID, "", "Chain ID of tendermint node")
+	rootCmd.PersistentFlags().Bool(flagTestnet, false, "Run with testnet mode. The address prefix becomes tlink if this flag is set.")
 	rootCmd.PersistentPreRunE = func(_ *cobra.Command, _ []string) error {
 		return initConfig(rootCmd)
 	}
@@ -167,6 +163,18 @@ func initConfig(cmd *cobra.Command) error {
 			return err
 		}
 	}
+
+	testnet := viper.GetBool(flagTestnet)
+
+	// Read in the configuration file for the sdk
+	config := sdk.GetConfig()
+	config.SetBech32PrefixForAccount(types.Bech32PrefixAcc(testnet), types.Bech32PrefixAccPub(testnet))
+	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr(testnet), types.Bech32PrefixValPub(testnet))
+	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr(testnet), types.Bech32PrefixConsPub(testnet))
+	config.SetCoinType(types.CoinType)
+	config.SetFullFundraiserPath(types.FullFundraiserPath)
+	config.Seal()
+
 	if err := viper.BindPFlag(client.FlagChainID, cmd.PersistentFlags().Lookup(client.FlagChainID)); err != nil {
 		return err
 	}

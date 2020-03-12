@@ -118,7 +118,7 @@ jobs:
           command: |
             export PATH=/tmp/workspace/bin:$PATH
             make go-mod-cache
-            make install BUILD_TAGS=testnet
+            make install
       - save_cache:
           key: dependency-cache-mod-{{ checksum "go.sum" }}
           paths:
@@ -145,7 +145,7 @@ jobs:
       - restore_cache:
           keys:
             - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run: make test-unit-cover BUILD_TAGS=testnet
+      - run: make test-unit-cover
       - run: bash <(curl -s https://codecov.io/bash) -f ./coverage.txt -F "unittest" -Z
   integration_test:
     <<: *linux_defaults
@@ -159,7 +159,7 @@ jobs:
           name: Test cli
           command: |
             export BUILDDIR=`pwd`/build
-            make test-integration BUILD_TAGS=testnet
+            make test-integration
   setup_docker_and_binary:
     <<: *machine_defaults
     steps:
@@ -184,7 +184,7 @@ jobs:
           name: build binaries
           command: |
             set -x
-            make build BUILD_TAGS=testnet
+            make build 
       - save_cache:
           key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
           paths:
@@ -293,7 +293,7 @@ jobs:
           name: build docker image
           command: |
             set -x
-            make build-docker BUILD_TAGS=testnet
+            make build-docker
       - run:
           name: run localnet and exit on failure
           command: |
@@ -327,7 +327,7 @@ jobs:
           name: Get Node.js and test REST implementation against swagger documentation
           command: |
             go get github.com/snikch/goodman/cmd/goodman
-            ./contrib/get_node.sh && make contract-test BUILD_TAGS=testnet
+            ./contrib/get_node.sh && make contract-test
 workflows:
   version: 2.1
   build_and_test:
