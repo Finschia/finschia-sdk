@@ -341,16 +341,15 @@ func (f *Fixtures) CollectGenTxs(flags ...string) {
 // LDStart runs linkd start with the appropriate flags and returns a process
 func (f *Fixtures) LDStart(flags ...string) *tests.Process {
 	cmd := fmt.Sprintf("%s start --home=%s --rpc.laddr=%v --p2p.laddr=%v", f.LinkdBinary, f.LinkdHome, f.RPCAddr, f.P2PAddr)
-	proc := tests.GoExecuteTWithStdout(f.T, addFlags(cmd, flags))
+	proc := tests.GoExecuteT(f.T, addFlags(cmd, flags))
 	defer func() {
 		if v := recover(); v != nil {
 			stdout, stderr, err := proc.ReadAll()
-			if err != nil {
-				fmt.Println(err)
-				f.T.Fail()
-			}
-			f.T.Log(stdout)
-			f.T.Log(stderr)
+			require.NoError(f.T, err)
+			//Log for start command
+			f.T.Log(cmd, string(stdout))
+			f.T.Log(cmd, string(stderr))
+			f.T.Fatal(v)
 		}
 	}()
 	WaitForTMStart(f.Port)
@@ -1759,9 +1758,9 @@ func WaitForStart(url string) {
 	// ping the status endpoint a few times a second
 	// for a few seconds until we get a good response.
 	// otherwise something probably went wrong
-	// 2 ^ 10 = 1024 --> approximately 200 secs
+	// 2 ^ 7 = 128 --> approximately 10 secs
 	wait := 1
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 7; i++ {
 		// 0.1, 0.2, 0.4, 0.8, 1.6, 3.2, 6.4, 12.8, 25.6, 51.2, 102.4
 		time.Sleep(time.Millisecond * 100 * time.Duration(wait))
 		wait *= 2
