@@ -400,9 +400,7 @@ workflows:
           filters:
             branches:
               only:
-                - master
-                - develop
-                - /hotfix-.*/
+                - hotfix-sim-link-multi-seed
       - sim-link-multi-seed-short:
           requires:
             - setup_dependencies
@@ -421,7 +419,6 @@ workflows:
             - integration_multi_node_test
             - sim-link-nondeterminism
             - sim-link-simulation-after-import
-            - sim-link-multi-seed
             - sim-link-multi-seed-short
           filters:
             branches:

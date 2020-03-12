@@ -154,7 +154,7 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 		}
 
 		memo := fmt.Sprintf("%s@%s:26656", nodeIDs[i], ip)
-		genFiles[i] = config.GenesisFile()
+		genFiles = append(genFiles, config.GenesisFile())
 
 		prompt := fmt.Sprintf(
 			"Password for account '%s' (default %s):", nodeDirName, client.DefaultKeyPass,
