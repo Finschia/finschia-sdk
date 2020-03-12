@@ -1,10 +1,19 @@
 #!/usr/bin/env sh
 set -ex
 
+mode="mainnet"
+
 if [[ $1 == "docker" ]]
 then
+    if [[ $2 == "testnet" ]]
+    then
+        mode="testnet"
+    fi
     LINKCLI="docker run -i --net=host -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link linkcli"
     LINKD="docker run -i -p 26656:26656 -p 26657:26657 -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link linkd"
+elif [[ $1 == "testnet" ]]
+then
+    mode="testnet"
 fi
 
 LINKCLI=${LINKCLI:-linkcli}
@@ -25,6 +34,18 @@ ${LINKCLI} config trust-node true
 # moniker is the name of your node
 ${LINKD} init solo --chain-id link
 
+# configure for testnet
+if [[ $mode == "testnet" ]]
+then
+    if [[ $1 == "docker" ]]
+    then
+        docker run -i --net=host -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link sh -c "echo 'testnet = true' >> /root/.linkcli/config/config.toml"
+        docker run -i -p 26656:26656 -p 26657:26657 -v ${HOME}/.linkd:/root/.linkd -v ${HOME}/.linkcli:/root/.linkcli line/link sh -c "echo 'testnet = true' >> /root/.linkd/config/app.toml"
+    else
+        echo "testnet = true" >> ~/.linkcli/config/config.toml
+        echo "testnet = true" >> ~/.linkd/config/app.toml
+    fi
+fi
 
 echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add jack
 echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add alice
@@ -48,3 +69,4 @@ ${LINKD} collect-gentxs
 ${LINKD} validate-genesis
 
 # ${LINKD} start --log_level *:debug --rpc.laddr=tcp://0.0.0.0:26657 --p2p.laddr=tcp://0.0.0.0:26656
+

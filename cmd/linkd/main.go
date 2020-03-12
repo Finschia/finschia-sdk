@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 
 	"github.com/line/link/version"
@@ -31,27 +32,23 @@ import (
 )
 
 // linkd custom flags
-const flagInvCheckPeriod = "inv-check-period"
+const (
+	flagInvCheckPeriod = "inv-check-period"
+	flagTestnet        = "testnet"
+)
 
 var invCheckPeriod uint
+var testnet bool
 
 func main() {
 	cdc := app.MakeCodec()
-
-	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(types.Bech32PrefixAccAddr, types.Bech32PrefixAccPub)
-	config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr, types.Bech32PrefixValPub)
-	config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr, types.Bech32PrefixConsPub)
-	config.SetCoinType(types.CoinType)
-	config.SetFullFundraiserPath(types.FullFundraiserPath)
-	config.Seal()
 
 	ctx := server.NewDefaultContext()
 	cobra.EnableCommandSorting = false
 	rootCmd := &cobra.Command{
 		Use:               "linkd",
 		Short:             "Link Daemon (server)",
-		PersistentPreRunE: server.PersistentPreRunEFn(ctx),
+		PersistentPreRunE: LinkPreRunEFn(ctx),
 	}
 
 	rootCmd.AddCommand(genutilcli.InitCmd(ctx, cdc, app.ModuleBasics, app.DefaultNodeHome))
@@ -64,7 +61,6 @@ func main() {
 	rootCmd.AddCommand(client.NewCompletionCmd(rootCmd, true))
 	rootCmd.AddCommand(testnetCmd(ctx, cdc, app.ModuleBasics, genaccounts.AppModuleBasic{}))
 	rootCmd.AddCommand(replayCmd())
-
 	rootCmd.AddCommand(version.Cmd)
 
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
@@ -73,9 +69,41 @@ func main() {
 	executor := cli.PrepareBaseCmd(rootCmd, "GA", app.DefaultNodeHome)
 	rootCmd.PersistentFlags().UintVar(&invCheckPeriod, flagInvCheckPeriod,
 		0, "Assert registered invariants every N blocks")
+	rootCmd.PersistentFlags().BoolVar(&testnet, flagTestnet, testnet, "Run with testnet mode. The address prefix becomes tlink if this flag is set.")
+
 	err := executor.Execute()
 	if err != nil {
 		panic(err)
+	}
+}
+
+func LinkPreRunEFn(context *server.Context) func(*cobra.Command, []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		if cmd.Name() == version.Cmd.Name() {
+			return nil
+		}
+		f := server.PersistentPreRunEFn(context)
+		err := f(cmd, args)
+
+		testnet := viper.GetBool(flagTestnet)
+		var networkMode string
+		if testnet {
+			networkMode = "testnet"
+		} else {
+			networkMode = "mainnet"
+		}
+
+		config := sdk.GetConfig()
+		config.SetBech32PrefixForAccount(types.Bech32PrefixAcc(testnet), types.Bech32PrefixAccPub(testnet))
+		config.SetBech32PrefixForValidator(types.Bech32PrefixValAddr(testnet), types.Bech32PrefixValPub(testnet))
+		config.SetBech32PrefixForConsensusNode(types.Bech32PrefixConsAddr(testnet), types.Bech32PrefixConsPub(testnet))
+		config.SetCoinType(types.CoinType)
+		config.SetFullFundraiserPath(types.FullFundraiserPath)
+		config.Seal()
+
+		context.Logger.Info(fmt.Sprintf("Network mode is %s", networkMode))
+
+		return err
 	}
 }
 
