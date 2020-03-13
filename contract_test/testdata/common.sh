@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -e
-FAUCET_PASSWORD=11111111
 
 # proxy module not in use as of 2019/2/10
 #REPLACE_PROXY_ADDR="link1pxjrsfqam3nuf75v2mh4atshaze2nlmjnqc99m"
