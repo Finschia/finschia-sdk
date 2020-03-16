@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/btcsuite/btcd v0.0.0-20190523000118-16327141da8c // indirect
-	github.com/cosmos/cosmos-sdk v0.38.0
+	github.com/cosmos/cosmos-sdk v0.38.1
 	github.com/golang/mock v1.3.1
 	github.com/gorilla/mux v1.7.4
 	github.com/onsi/ginkgo v1.11.0 // indirect
