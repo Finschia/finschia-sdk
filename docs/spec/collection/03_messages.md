@@ -70,13 +70,17 @@ type Coins []Coin
 
 ### MsgMintNFT
 ```golang
+type MintNFTParam struct {
+	Name      string `json:"name"`
+	Meta      string `json:"meta"`
+	TokenType string `json:"token_type"`
+}
+
 type MsgMintNFT struct {
-	From       sdk.AccAddress `json:"from"`
-	ContractID string         `json:"contract_id"`
-	To         sdk.AccAddress `json:"to"`
-	Name       string         `json:"name"`
-	Meta       string         `json:"meta"`
-	TokenType  string         `json:"token_type"`
+	From          sdk.AccAddress `json:"from"`
+	ContractID    string         `json:"contract_id"`
+	To            sdk.AccAddress `json:"to"`
+	MintNFTParams []MintNFTParam `json:"params"`
 }
 ```
 
