@@ -2,7 +2,6 @@ package proxy
 
 import (
 	tmliteProxy "github.com/tendermint/tendermint/lite/proxy"
-	"github.com/tendermint/tendermint/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 )
 
@@ -19,10 +18,10 @@ func NewTendermintLiteWrapper() *TendermintLiteWrapper {
 	return wrapper
 }
 
-func (cw *TendermintLiteWrapper) ValidateBlockMeta(meta *types.BlockMeta, sh types.SignedHeader) error {
+func (cw *TendermintLiteWrapper) ValidateBlockMeta(meta *tmtypes.BlockMeta, sh tmtypes.SignedHeader) error {
 	return tmliteProxy.ValidateBlockMeta(meta, sh)
 }
 
-func (cw *TendermintLiteWrapper) ValidateBlock(meta *types.Block, sh types.SignedHeader) error {
+func (cw *TendermintLiteWrapper) ValidateBlock(meta *tmtypes.Block, sh tmtypes.SignedHeader) error {
 	return tmliteProxy.ValidateBlock(meta, sh)
 }

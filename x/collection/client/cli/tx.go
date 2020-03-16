@@ -442,6 +442,9 @@ func MintFTTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 			tokenID := args[3]
+			if err := types.ValidateDenom(tokenID); err != nil {
+				return errors.New("invalid tokenID")
+			}
 			amount, ok := sdk.NewIntFromString(args[4])
 			if !ok {
 				return errors.New("invalid amount")
@@ -465,6 +468,9 @@ func BurnFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			cliCtx := client.NewCLIContextWithFrom(args[0]).WithCodec(cdc)
 			contractID := args[1]
 			tokenID := args[2]
+			if err := types.ValidateDenom(tokenID); err != nil {
+				return errors.New("invalid tokenID")
+			}
 			amount, ok := sdk.NewIntFromString(args[3])
 			if !ok {
 				return errors.New("invalid amount")
@@ -493,6 +499,9 @@ func BurnFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 			tokenID := args[3]
+			if err := types.ValidateDenom(tokenID); err != nil {
+				return errors.New("invalid tokenID")
+			}
 			amount, ok := sdk.NewIntFromString(args[4])
 			if !ok {
 				return errors.New("invalid amount")
