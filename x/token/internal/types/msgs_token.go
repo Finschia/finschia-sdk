@@ -67,7 +67,7 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
 	}
 
-	if msg.Amount.IsNegative() {
+	if !msg.Amount.IsPositive() {
 		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
 	}
 
@@ -142,6 +142,9 @@ func (msg MsgBurn) GetSignBytes() []byte {
 func (msg MsgBurn) ValidateBasic() sdk.Error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
+	}
+	if !msg.Amount.IsPositive() {
+		return ErrInvalidAmount(DefaultCodespace, msg.Amount.String())
 	}
 	if msg.From.Empty() {
 		return sdk.ErrInvalidAddress("owner cannot be empty")
