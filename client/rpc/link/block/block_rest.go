@@ -35,7 +35,7 @@ func processBlockFetchReq(r *http.Request, util *Util) (int, interface{}, bool) 
 	}
 
 	if height > chainHeight {
-		return http.StatusNotFound, fmt.Sprintf("requested block height is bigger then the chain length"), true
+		return http.StatusNotFound, "requested block height is bigger then the chain length", true
 	}
 
 	output, err := GetBlock(util, &height, parseExtended(r))
