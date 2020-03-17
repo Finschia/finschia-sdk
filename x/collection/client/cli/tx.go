@@ -151,7 +151,7 @@ func IssueFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Create and sign an issue-ft tx",
 		Long: `
 [Fungible Token]
-linkcli tx token issue [from_key_or_address] [contract_id] [name]
+linkcli tx collection issue-ft [from_key_or_address] [contract_id] [to] [name] [meta]
 --decimals=[decimals]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
@@ -195,7 +195,7 @@ func MintNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Create and sign an mint-nft tx",
 		Long: `
 [NonFungible Token]
-linkcli tx token mint-nft [from_key_or_address] [contract_id] [token_type] [name]
+linkcli tx collection mint-nft [from_key_or_address] [contract_id] [to] [token_type] [name] [meta]
 `,
 		Args: cobra.ExactArgs(6),
 		RunE: func(cmd *cobra.Command, args []string) error {
