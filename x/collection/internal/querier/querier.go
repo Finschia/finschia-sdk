@@ -55,12 +55,25 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdk.ErrInternal(fmt.Sprintf("failed to parse params: %s", err))
 	}
-	supply, err := keeper.GetBalance(ctx, params.ContractID, params.TokenID, params.Addr)
-	if err != nil {
-		return nil, err
+
+	if !keeper.HasContractID(ctx, params.ContractID) {
+		return nil, types.ErrCollectionNotExist(types.DefaultCodespace, params.ContractID)
 	}
 
-	bz, err2 := keeper.MarshalJSONIndent(supply)
+	if !keeper.HasToken(ctx, params.ContractID, params.TokenID) {
+		return nil, types.ErrTokenNotExist(types.DefaultCodespace, params.ContractID, params.TokenID)
+	}
+
+	balance, err := keeper.GetBalance(ctx, params.ContractID, params.TokenID, params.Addr)
+	if err != nil {
+		if err.Code() == types.CodeAccountNotExist {
+			balance = sdk.ZeroInt()
+		} else {
+			return nil, err
+		}
+	}
+
+	bz, err2 := keeper.MarshalJSONIndent(balance)
 	if err2 != nil {
 		return nil, sdk.ErrInternal(sdk.AppendMsgToErr("could not marshal result to JSON", err2.Error()))
 	}
