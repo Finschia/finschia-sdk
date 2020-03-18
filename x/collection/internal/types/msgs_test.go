@@ -322,10 +322,10 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: s").Error())
 
 		msg = NewMsgAttach(addr1, defaultContractID, "1", defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "1").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 
 		msg = NewMsgAttach(addr1, defaultContractID, defaultTokenID1, "2")
-		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "2").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "2").Error())
 
 		msg = NewMsgAttach(addr1, defaultContractID, defaultTokenID1, defaultTokenID1)
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrCannotAttachToItself, "TokenID: %s", defaultTokenID1).Error())
@@ -359,7 +359,7 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: s").Error())
 
 		msg = NewMsgDetach(addr1, defaultContractID, "1")
-		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "1").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 	}
 	//nolint:dupl
 	{
@@ -395,10 +395,10 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: s").Error())
 
 		msg = NewMsgAttachFrom(addr1, defaultContractID, addr2, "1", defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "1").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 
 		msg = NewMsgAttachFrom(addr1, defaultContractID, addr2, defaultTokenID1, "2")
-		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "2").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "2").Error())
 
 		msg = NewMsgAttachFrom(addr1, defaultContractID, addr2, defaultTokenID1, defaultTokenID1)
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrCannotAttachToItself, "TokenID: %s", defaultTokenID1).Error())
@@ -436,7 +436,7 @@ func TestMsgBasics(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: s").Error())
 
 		msg = NewMsgDetachFrom(addr1, defaultContractID, addr2, "1")
-		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "1").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 	}
 
 	{

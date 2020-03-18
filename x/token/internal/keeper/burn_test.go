@@ -33,6 +33,11 @@ func TestKeeper_BurnTokens(t *testing.T) {
 		err := keeper.BurnToken(ctx, defaultContractID, sdk.NewInt(defaultAmount), addr1)
 		require.NoError(t, err)
 	}
+	t.Log("Burn 0 Token by addr1")
+	{
+		err := keeper.BurnToken(ctx, defaultContractID, sdk.NewInt(0), addr1)
+		require.Error(t, err)
+	}
 	t.Log("TotalSupply supply")
 	{
 		supply, err := keeper.GetTotalInt(ctx, defaultContractID, types.QuerySupply)

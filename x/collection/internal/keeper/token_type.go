@@ -75,6 +75,9 @@ func (k Keeper) HasTokenType(ctx sdk.Context, contractID, tokenType string) bool
 }
 
 func (k Keeper) GetNextTokenType(ctx sdk.Context, contractID string) (tokenType string, err error) {
+	if !k.ExistCollection(ctx, contractID) {
+		return "", sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID)
+	}
 	tokenType, err = k.getNextTokenTypeNFT(ctx, contractID)
 	if err != nil {
 		return "", err

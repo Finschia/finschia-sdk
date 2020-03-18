@@ -54,12 +54,25 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	supply, err := keeper.GetBalance(ctx, params.ContractID, params.TokenID, params.Addr)
-	if err != nil {
-		return nil, err
+
+	if !keeper.HasContractID(ctx, params.ContractID) {
+		return nil, sdkerrors.Wrap(types.ErrCollectionNotExist, params.ContractID)
 	}
 
-	bz, err2 := keeper.MarshalJSONIndent(supply)
+	if !keeper.HasToken(ctx, params.ContractID, params.TokenID) {
+		return nil, sdkerrors.Wrapf(types.ErrTokenNotExist, "%s %s", params.ContractID, params.TokenID)
+	}
+
+	balance, err := keeper.GetBalance(ctx, params.ContractID, params.TokenID, params.Addr)
+	if err != nil {
+		if _, err2 := keeper.GetAccount(ctx, params.ContractID, params.Addr); err2 != nil {
+			balance = sdk.ZeroInt()
+		} else {
+			return nil, err
+		}
+	}
+
+	bz, err2 := keeper.MarshalJSONIndent(balance)
 	if err2 != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err2.Error())
 	}

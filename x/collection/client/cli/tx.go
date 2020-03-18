@@ -158,7 +158,7 @@ func IssueFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Create and sign an issue-ft tx",
 		Long: `
 [Fungible Token]
-linkcli tx token issue [from_key_or_address] [contract_id] [name]
+linkcli tx collection issue-ft [from_key_or_address] [contract_id] [to] [name] [meta]
 --decimals=[decimals]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
@@ -203,7 +203,7 @@ func MintNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Create and sign an mint-nft tx",
 		Long: `
 [NonFungible Token]
-linkcli tx token mint-nft [from_key_or_address] [contract_id] [token_type] [name]
+linkcli tx collection mint-nft [from_key_or_address] [contract_id] [to] [token_type] [name] [meta]
 `,
 		Args: cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -505,6 +505,9 @@ func BurnFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 			contractID := args[1]
 			tokenID := args[2]
+			if err := types.ValidateDenom(tokenID); err != nil {
+				return errors.New("invalid tokenID")
+			}
 			amount, ok := sdk.NewIntFromString(args[3])
 			if !ok {
 				return errors.New("invalid amount")
@@ -534,6 +537,9 @@ func BurnFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 			tokenID := args[3]
+			if err := types.ValidateDenom(tokenID); err != nil {
+				return errors.New("invalid tokenID")
+			}
 			amount, ok := sdk.NewIntFromString(args[4])
 			if !ok {
 				return errors.New("invalid amount")

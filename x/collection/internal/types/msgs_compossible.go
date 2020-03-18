@@ -56,11 +56,11 @@ func (msg MsgAttach) ValidateBasic() error {
 	}
 
 	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.ToTokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.ToTokenID)
 	}
 
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.TokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
 	if msg.ToTokenID == msg.TokenID {
@@ -118,7 +118,7 @@ func (msg MsgDetach) ValidateBasic() error {
 	}
 
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.TokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
 	return nil
@@ -177,10 +177,10 @@ func (msg MsgAttachFrom) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.ToTokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.ToTokenID)
 	}
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.TokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
 	if msg.ToTokenID == msg.TokenID {
@@ -241,7 +241,7 @@ func (msg MsgDetachFrom) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.TokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
 	return nil

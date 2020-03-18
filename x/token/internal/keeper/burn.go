@@ -29,7 +29,10 @@ func (k Keeper) BurnToken(ctx sdk.Context, contractID string, amount sdk.Int, fr
 
 func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount sdk.Int) error {
 	if !k.HasBalance(ctx, contractID, tokenOwner, amount) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "%v has not enough coins for %v", tokenOwner, amount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "%v has not enough coins for %v", tokenOwner.String(), amount)
+	}
+	if !amount.IsPositive() {
+		return sdkerrors.Wrap(types.ErrInvalidAmount, amount.String())
 	}
 
 	perm := types.NewBurnPermission(contractID)

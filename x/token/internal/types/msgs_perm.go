@@ -1,6 +1,9 @@
 package types
 
 import (
+	"fmt"
+	"strings"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
@@ -41,7 +44,8 @@ func (msg MsgGrantPermission) ValidateBasic() error {
 	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
 		return sdkerrors.Wrap(linktype.ErrInvalidPermission, "resource and action should not be empty")
 	}
-	return nil
+
+	return validateAction(msg.Permission.GetAction(), MintAction, BurnAction, ModifyAction)
 }
 
 var _ sdk.Msg = (*MsgRevokePermission)(nil)
@@ -73,5 +77,14 @@ func (msg MsgRevokePermission) ValidateBasic() error {
 	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
 		return sdkerrors.Wrap(linktype.ErrInvalidPermission, "resource and action should not be empty")
 	}
-	return nil
+
+	return validateAction(msg.Permission.GetAction(), MintAction, BurnAction, ModifyAction)
+}
+func validateAction(action string, actions ...string) error {
+	for _, a := range actions {
+		if action == a {
+			return nil
+		}
+	}
+	return sdkerrors.Wrap(linktype.ErrInvalidPermission, fmt.Sprintf("action should be one of [%s]", strings.Join(actions, ",")))
 }

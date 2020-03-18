@@ -20,10 +20,10 @@ type TokenKeeper interface {
 	GetFTs(ctx sdk.Context, contractID string) (tokens types.Tokens, err error)
 	GetNFT(ctx sdk.Context, contractID, tokenID string) (types.NFT, error)
 	GetNFTCount(ctx sdk.Context, contractID, tokenType string) (sdk.Int, error)
+	GetNFTCountInt(ctx sdk.Context, contractID, tokenType, target string) (sdk.Int, error)
 	GetNFTs(ctx sdk.Context, contractID, tokenType string) (tokens types.Tokens, err error)
 	GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, error)
 	GetNextTokenIDNFT(ctx sdk.Context, contractID, tokenType string) (string, error)
-	GetNFTCountInt(ctx sdk.Context, contractID, tokenType, target string) (sdk.Int, error)
 }
 
 var _ TokenKeeper = (*Keeper)(nil)
@@ -231,7 +231,10 @@ func (k Keeper) getNextTokenTypeNFT(ctx sdk.Context, contractID string) (tokenTy
 	return tokenType, nil
 }
 
-func (k Keeper) getNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType string) (tokenIndex string, err error) {
+func (k Keeper) getNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType string) (tokenIndex string, error error) {
+	if !k.HasTokenType(ctx, contractID, tokenType) {
+		return "", sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", contractID, tokenType)
+	}
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.NextTokenIDNFTKey(contractID, tokenType))
 	if bz == nil {
@@ -245,6 +248,9 @@ func (k Keeper) getNextTokenIndexNFT(ctx sdk.Context, contractID, tokenType stri
 }
 
 func (k Keeper) GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, error) {
+	if !k.ExistCollection(ctx, contractID) {
+		return "", sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID)
+	}
 	tokenType, err := k.getNextTokenTypeFT(ctx, contractID)
 	if err != nil {
 		return "", sdkerrors.Wrapf(types.ErrTokenIDFull, "ContractID: %s, TokenType: %s", contractID, tokenType)
@@ -252,6 +258,9 @@ func (k Keeper) GetNextTokenIDFT(ctx sdk.Context, contractID string) (string, er
 	return tokenType + types.ReservedEmpty, nil
 }
 func (k Keeper) GetNextTokenIDNFT(ctx sdk.Context, contractID, tokenType string) (string, error) {
+	if !k.ExistCollection(ctx, contractID) {
+		return "", sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID)
+	}
 	tokenIndex, err := k.getNextTokenIndexNFT(ctx, contractID, tokenType)
 	if err != nil {
 		return "", err

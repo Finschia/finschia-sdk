@@ -65,13 +65,13 @@ func (k Keeper) burnFT(ctx sdk.Context, contractID string, permissionOwner, toke
 }
 
 func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount types.Coins) error {
-	if !k.HasCoins(ctx, contractID, tokenOwner, amount) {
-		return sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", tokenOwner, amount)
-	}
-
 	perm := types.NewBurnPermission(contractID)
 	if !k.HasPermission(ctx, permissionOwner, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", permissionOwner.String(), perm.String())
+	}
+
+	if !k.HasCoins(ctx, contractID, tokenOwner, amount) {
+		return sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", tokenOwner.String(), amount)
 	}
 	return nil
 }

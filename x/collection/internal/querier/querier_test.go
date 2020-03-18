@@ -56,6 +56,10 @@ func prepare(t *testing.T) {
 	addr2 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	addr3 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
+	// prepare contract ID
+	newContractID := ckeeper.NewContractID(ctx)
+	require.Equal(t, contractID, newContractID)
+
 	// prepare collection
 	require.NoError(t, ckeeper.CreateCollection(ctx, types.NewCollection(contractID, collectionName, meta, imageURL), addr1))
 	require.NoError(t, ckeeper.IssueFT(ctx, addr1, addr1, types.NewFT(contractID, tokenFTID, tokenFTName, meta, sdk.NewInt(1), true), sdk.NewInt(tokenFTSupply)))
@@ -71,6 +75,14 @@ func prepare(t *testing.T) {
 }
 
 func query(t *testing.T, params interface{}, query string, result interface{}) {
+	res, err := queryInternal(params, query)
+	require.NoError(t, err)
+	if len(res) > 0 {
+		require.NoError(t, ckeeper.UnmarshalJSON(res, result))
+	}
+}
+
+func queryInternal(params interface{}, query string) ([]byte, error) {
 	req := abci.RequestQuery{
 		Path: "",
 		Data: []byte(string(codec.MustMarshalJSONIndent(types.ModuleCdc, params))),
@@ -80,16 +92,11 @@ func query(t *testing.T, params interface{}, query string, result interface{}) {
 	}
 	path := []string{query}
 	querier := NewQuerier(ckeeper)
-	res, err := querier(ctx, path, req)
-	require.NoError(t, err)
-	if len(res) > 0 {
-		require.NoError(t, ckeeper.UnmarshalJSON(res, result))
-	}
+	return querier(ctx, path, req)
 }
 
 func TestNewQuerier_queryBalance(t *testing.T) {
 	prepare(t)
-
 	params := types.QueryContractIDTokenIDAccAddressParams{
 		ContractID: contractID,
 		TokenID:    tokenFTID,
@@ -98,6 +105,45 @@ func TestNewQuerier_queryBalance(t *testing.T) {
 	var balance sdk.Int
 	query(t, params, types.QueryBalance, &balance)
 	require.True(t, balance.Equal(sdk.NewInt(1000)))
+}
+
+func TestNewQuerier_queryBalanceNonExistentAccount(t *testing.T) {
+	prepare(t)
+
+	params := types.QueryContractIDTokenIDAccAddressParams{
+		ContractID: contractID,
+		TokenID:    tokenFTID,
+		Addr:       addr3,
+	}
+	var balance sdk.Int
+	query(t, params, types.QueryBalance, &balance)
+	require.True(t, balance.Equal(sdk.NewInt(0)))
+}
+
+func TestNewQuerier_queryBalanceNonExistentContractID(t *testing.T) {
+	prepare(t)
+
+	contractID := "12345678"
+	params := types.QueryContractIDTokenIDAccAddressParams{
+		ContractID: contractID,
+		TokenID:    tokenFTID,
+		Addr:       addr1,
+	}
+	_, err := queryInternal(params, types.QueryBalance)
+	require.Error(t, err, sdkerrors.Wrap(types.ErrCollectionNotExist, contractID))
+}
+
+func TestNewQuerier_queryBalanceNonExistentTokenID(t *testing.T) {
+	prepare(t)
+
+	tokenID := "00000009" + tokenFTIndex
+	params := types.QueryContractIDTokenIDAccAddressParams{
+		ContractID: contractID,
+		TokenID:    tokenID,
+		Addr:       addr1,
+	}
+	_, err := queryInternal(params, types.QueryBalance)
+	require.Error(t, err, sdkerrors.Wrapf(types.ErrCollectionNotExist, "%s %s", contractID, tokenID))
 }
 
 func TestNewQuerier_queryAccountPermission(t *testing.T) {
