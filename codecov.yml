@@ -29,6 +29,7 @@ coverage:
         flags: null
         paths: null
     changes: false
+    patch: off
   precision: 2
   range: 50...90
   round: down

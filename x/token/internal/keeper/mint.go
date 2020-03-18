@@ -10,7 +10,7 @@ func (k Keeper) MintToken(ctx sdk.Context, contractID string, amount sdk.Int, fr
 	if err != nil {
 		return err
 	}
-	if err := k.isMintable(ctx, token, from); err != nil {
+	if err := k.isMintable(ctx, token, from, amount); err != nil {
 		return err
 	}
 	err = k.MintSupply(ctx, contractID, to, amount)
@@ -29,9 +29,12 @@ func (k Keeper) MintToken(ctx sdk.Context, contractID string, amount sdk.Int, fr
 	return nil
 }
 
-func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) sdk.Error {
+func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress, amount sdk.Int) sdk.Error {
 	if !token.GetMintable() {
 		return types.ErrTokenNotMintable(types.DefaultCodespace, token.GetContractID())
+	}
+	if !amount.IsPositive() {
+		return types.ErrInvalidAmount(types.DefaultCodespace, amount.String())
 	}
 	perm := types.NewMintPermission(token.GetContractID())
 	if !k.HasPermission(ctx, from, perm) {

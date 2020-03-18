@@ -1,8 +1,6 @@
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -59,7 +57,7 @@ func TokenParentToChildKey(contractID, parent, child string) []byte {
 	return append(append(append(TokenParentToChildKeyPrefix, []byte(contractID)...), []byte(parent)...), []byte(child)...)
 }
 
-func CollectionApprovedKey(contractID string, proxy types.AccAddress, approver types.AccAddress) []byte {
+func CollectionApprovedKey(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) []byte {
 	return append(append(append(CollectionApprovedKeyPrefix, []byte(contractID)...), proxy.Bytes()...), approver.Bytes()...)
 }
 

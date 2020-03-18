@@ -63,7 +63,7 @@ To query or send the token, you should remember the contract id
 
 
 [Fungible Token]
-linkcli tx token issue [from_key_or_address] [to] [name]
+linkcli tx token issue [from_key_or_address] [to] [name] [symbol]
 --decimals=[decimals]
 --mintable=[mintable]
 --total-supply=[initial amount of the token]
