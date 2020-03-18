@@ -55,11 +55,11 @@ func (msg MsgAttach) ValidateBasic() sdk.Error {
 	}
 
 	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
-		return sdk.ErrInvalidCoins(msg.ToTokenID)
+		return ErrInvalidTokenID(DefaultCodespace, msg.ToTokenID)
 	}
 
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return sdk.ErrInvalidCoins(msg.TokenID)
+		return ErrInvalidTokenID(DefaultCodespace, msg.TokenID)
 	}
 
 	if msg.ToTokenID == msg.TokenID {
@@ -117,7 +117,7 @@ func (msg MsgDetach) ValidateBasic() sdk.Error {
 	}
 
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return sdk.ErrInvalidCoins(msg.TokenID)
+		return ErrInvalidTokenID(DefaultCodespace, msg.TokenID)
 	}
 
 	return nil
@@ -176,10 +176,10 @@ func (msg MsgAttachFrom) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("From cannot be empty")
 	}
 	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
-		return sdk.ErrInvalidCoins(msg.ToTokenID)
+		return ErrInvalidTokenID(DefaultCodespace, msg.ToTokenID)
 	}
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return sdk.ErrInvalidCoins(msg.TokenID)
+		return ErrInvalidTokenID(DefaultCodespace, msg.TokenID)
 	}
 
 	if msg.ToTokenID == msg.TokenID {
@@ -240,7 +240,7 @@ func (msg MsgDetachFrom) ValidateBasic() sdk.Error {
 		return sdk.ErrInvalidAddress("From cannot be empty")
 	}
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return sdk.ErrInvalidCoins(msg.TokenID)
+		return ErrInvalidTokenID(DefaultCodespace, msg.TokenID)
 	}
 
 	return nil
