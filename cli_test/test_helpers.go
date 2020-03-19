@@ -75,6 +75,11 @@ const (
 )
 
 var (
+	ports = make(map[string]bool)
+	mutex = &sync.Mutex{}
+)
+
+var (
 	TotalCoins = sdk.NewCoins(
 		sdk.NewCoin(DenomLink, sdk.TokensFromConsensusPower(6000)),
 		sdk.NewCoin(DenomStake, sdk.TokensFromConsensusPower(600000000)),
@@ -143,11 +148,23 @@ func NewFixtures(t *testing.T) *Fixtures {
 	tmpDir, err = ioutil.TempDir(tmpDir, "link_integration_"+t.Name()+"_")
 	require.NoError(t, err)
 
+	mutex.Lock()
 	servAddr, port, err := server.FreeTCPAddr()
 	require.NoError(t, err)
+	for exists, ok := ports[port]; ok && exists; {
+		servAddr, port, err = server.FreeTCPAddr()
+		require.NoError(t, err)
+	}
+	ports[port] = true
 
 	p2pAddr, p2pPort, err := server.FreeTCPAddr()
 	require.NoError(t, err)
+	for exists, ok := ports[p2pPort]; ok && exists; {
+		p2pAddr, p2pPort, err = server.FreeTCPAddr()
+		require.NoError(t, err)
+	}
+	ports[p2pPort] = true
+	mutex.Unlock()
 
 	buildDir := os.Getenv("BUILDDIR")
 	if buildDir == "" {
