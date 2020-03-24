@@ -55,6 +55,10 @@ func (msg MsgIssue) ValidateBasic() sdk.Error {
 		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
 	}
 
+	if !ValidateMeta(msg.Meta) {
+		return ErrInvalidMetaLength(DefaultCodespace, msg.Meta)
+	}
+
 	if err := types.ValidateTokenSymbol(msg.Symbol); err != nil {
 		return ErrInvalidTokenSymbol(DefaultCodespace, msg.Symbol)
 	}

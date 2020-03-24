@@ -48,6 +48,12 @@ func (msg MsgMintNFT) ValidateBasic() sdk.Error {
 	if msg.To.Empty() {
 		return sdk.ErrInvalidAddress("to address cannot be empty")
 	}
+	if !ValidateName(msg.Name) {
+		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
+	}
+	if !ValidateMeta(msg.Meta) {
+		return ErrInvalidMetaLength(DefaultCodespace, msg.Meta)
+	}
 
 	if err := types.ValidateTokenTypeNFT(msg.TokenType); err != nil {
 		return ErrInvalidTokenID(DefaultCodespace, err.Error())
