@@ -29,6 +29,12 @@ func (msg MsgCreateCollection) ValidateBasic() sdk.Error {
 	if !ValidateBaseImgURI(msg.BaseImgURI) {
 		return ErrInvalidBaseImgURILength(DefaultCodespace, msg.BaseImgURI)
 	}
+	if !ValidateName(msg.Name) {
+		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
+	}
+	if !ValidateMeta(msg.Meta) {
+		return ErrInvalidMetaLength(DefaultCodespace, msg.Meta)
+	}
 	return nil
 }
 

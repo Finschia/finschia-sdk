@@ -60,6 +60,12 @@ func (msg MsgIssueFT) ValidateBasic() sdk.Error {
 	if msg.Decimals.GT(sdk.NewInt(18)) || msg.Decimals.IsNegative() {
 		return ErrInvalidTokenDecimals(DefaultCodespace, msg.Decimals)
 	}
+	if !ValidateName(msg.Name) {
+		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
+	}
+	if !ValidateMeta(msg.Meta) {
+		return ErrInvalidMetaLength(DefaultCodespace, msg.Meta)
+	}
 
 	return nil
 }
@@ -97,6 +103,12 @@ func (msg MsgIssueNFT) ValidateBasic() sdk.Error {
 
 	if msg.Owner.Empty() {
 		return sdk.ErrInvalidAddress("owner address cannot be empty")
+	}
+	if !ValidateName(msg.Name) {
+		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
+	}
+	if !ValidateMeta(msg.Meta) {
+		return ErrInvalidMetaLength(DefaultCodespace, msg.Meta)
 	}
 	return nil
 }
