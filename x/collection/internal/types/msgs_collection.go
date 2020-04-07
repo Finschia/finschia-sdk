@@ -29,6 +29,12 @@ func (msg MsgCreateCollection) ValidateBasic() error {
 	if msg.Owner.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
+	if !ValidateName(msg.Name) {
+		return sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Name, MaxTokenNameLength, utf8.RuneCountInString(msg.Name))
+	}
+	if !ValidateMeta(msg.Meta) {
+		return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Meta, MaxTokenMetaLength, utf8.RuneCountInString(msg.Meta))
+	}
 	if !ValidateBaseImgURI(msg.BaseImgURI) {
 		return sdkerrors.Wrapf(ErrInvalidBaseImgURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.BaseImgURI, MaxBaseImgURILength, utf8.RuneCountInString(msg.BaseImgURI))
 	}

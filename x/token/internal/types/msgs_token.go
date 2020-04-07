@@ -57,6 +57,9 @@ func (msg MsgIssue) ValidateBasic() error {
 	if !ValidateName(msg.Name) {
 		return sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Name, MaxTokenNameLength, utf8.RuneCountInString(msg.Name))
 	}
+	if !ValidateMeta(msg.Meta) {
+		return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Meta, MaxTokenMetaLength, utf8.RuneCountInString(msg.Meta))
+	}
 
 	if err := types.ValidateTokenSymbol(msg.Symbol); err != nil {
 		return sdkerrors.Wrapf(ErrInvalidTokenSymbol, "Symbol: %s", msg.Symbol)

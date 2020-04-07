@@ -1,6 +1,8 @@
 package types
 
 import (
+	"unicode/utf8"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/contract"
@@ -62,6 +64,12 @@ func (msg MsgIssueFT) ValidateBasic() error {
 		return sdkerrors.Wrapf(ErrInvalidTokenDecimals, "Decimals: %s", msg.Decimals)
 	}
 
+	if !ValidateName(msg.Name) {
+		return sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Name, MaxTokenNameLength, utf8.RuneCountInString(msg.Name))
+	}
+	if !ValidateMeta(msg.Meta) {
+		return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Meta, MaxTokenMetaLength, utf8.RuneCountInString(msg.Meta))
+	}
 	return nil
 }
 
@@ -98,6 +106,12 @@ func (msg MsgIssueNFT) ValidateBasic() error {
 
 	if msg.Owner.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
+	}
+	if !ValidateName(msg.Name) {
+		return sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Name, MaxTokenNameLength, utf8.RuneCountInString(msg.Name))
+	}
+	if !ValidateMeta(msg.Meta) {
+		return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Meta, MaxTokenMetaLength, utf8.RuneCountInString(msg.Meta))
 	}
 	return nil
 }

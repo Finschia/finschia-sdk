@@ -1,6 +1,8 @@
 package types
 
 import (
+	"unicode/utf8"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/types"
@@ -61,6 +63,12 @@ func (msg MsgMintNFT) ValidateBasic() error {
 	for _, mintNFTParam := range msg.MintNFTParams {
 		if len(mintNFTParam.Name) == 0 {
 			return ErrInvalidTokenName
+		}
+		if !ValidateName(mintNFTParam.Name) {
+			return sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", mintNFTParam.Name, MaxTokenNameLength, utf8.RuneCountInString(mintNFTParam.Name))
+		}
+		if !ValidateMeta(mintNFTParam.Meta) {
+			return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", mintNFTParam.Meta, MaxTokenMetaLength, utf8.RuneCountInString(mintNFTParam.Meta))
 		}
 		if err := types.ValidateTokenTypeNFT(mintNFTParam.TokenType); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
