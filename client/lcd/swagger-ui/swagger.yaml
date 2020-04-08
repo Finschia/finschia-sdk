@@ -1989,8 +1989,12 @@ components:
           example: 1
         code:
           type: integer
-          description: Response code
-          example: 0
+          description: 'Response code (optional: omitted if zero)'
+          example: 1
+        codespace:
+          type: string
+          description: 'codespace (optional: omitted if empty)'
+          example: "token"
         raw_log:
           type: string
           description: The raw string output of the logger
@@ -2016,10 +2020,6 @@ components:
           type: string
           description: Amount of gas consumed by transaction
           example: "26354"
-        events:
-          type: array
-          items:
-            $ref: '#/components/schemas/Event'
         tx:
           $ref: '#/components/schemas/Tx'
         timestamp:

@@ -23,6 +23,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 
 	"github.com/line/link/types"
+	atypes "github.com/line/link/x/auth/client/types"
 	"github.com/line/link/x/auth/client/utils/mocks"
 )
 
@@ -32,7 +33,16 @@ type mockNodeResponses struct {
 	resTxSearch *ctypes.ResultTxSearch
 }
 
-func setupMockNodeResponses(t *testing.T, hashString string, height int64, index uint32, cdc *codec.Codec) mockNodeResponses {
+//nolint:unparam
+func setupMockNodeResponses(
+	t *testing.T,
+	cdc *codec.Codec,
+	hashString string,
+	height int64,
+	index uint32,
+	code uint32,
+	codespace string,
+) mockNodeResponses {
 	hash, err := hex.DecodeString(hashString)
 	assert.NoError(t, err)
 
@@ -43,11 +53,15 @@ func setupMockNodeResponses(t *testing.T, hashString string, height int64, index
 	bz, err := cdc.MarshalBinaryLengthPrefixed(stdTx)
 	assert.NoError(t, err)
 	resTx := &ctypes.ResultTx{
-		Hash:     hash,
-		Height:   height,
-		Index:    index,
-		TxResult: abci.ResponseDeliverTx{Log: "[]"},
-		Tx:       bz,
+		Hash:   hash,
+		Height: height,
+		Index:  index,
+		TxResult: abci.ResponseDeliverTx{
+			Code:      code,
+			Codespace: codespace,
+			Log:       "[]",
+		},
+		Tx: bz,
 	}
 	resBlock := &ctypes.ResultBlock{
 		Block: &tmtypes.Block{
@@ -76,14 +90,17 @@ func setupCodec() *codec.Codec {
 	return cdc
 }
 
-//noinspection GoBoolExpressions
-func TestQueryTxsByEventsResponseContainsIndexAndCode(t *testing.T) {
+func TestQueryTxsByEventsResponseContainsIndexCodeCodespace(t *testing.T) {
+	//nolint:goconst
 	hashString := "15E23C9F72602046D86BC9F0ECAE53E43A8206C113A29D94454476B9887AAB7F"
 	height := int64(100)
 	index := uint32(10)
+	code := uint32(0)
+	//nolint:goconst
+	codespace := "codespace"
 
 	cdc := setupCodec()
-	nodeResponses := setupMockNodeResponses(t, hashString, height, index, cdc)
+	nodeResponses := setupMockNodeResponses(t, cdc, hashString, height, index, code, codespace)
 
 	mockClient := &mocks.Client{}
 	cliCtx := context.CLIContext{
@@ -98,20 +115,18 @@ func TestQueryTxsByEventsResponseContainsIndexAndCode(t *testing.T) {
 	res, err := QueryTxsByEvents(cliCtx, []string{"tx.height=0"}, 1, 30)
 	assert.NoError(t, err)
 	assert.Equal(t, 1, res.Count)
-	assert.Equal(t, height, res.Txs[0].Height)
-	assert.Equal(t, index, res.Txs[0].Index)
-	assert.Equal(t, hashString, res.Txs[0].TxHash)
-	assert.Equal(t, uint32(0), res.Txs[0].Code)
+	assertTxResponse(t, hashString, height, index, code, codespace, res.Txs[0])
 }
 
-//noinspection GoBoolExpressions
-func TestQueryTxResponseContainsIndexAndCode(t *testing.T) {
+func TestQueryTxResponseContainsIndexCodeCodespace(t *testing.T) {
 	hashString := "15E23C9F72602046D86BC9F0ECAE53E43A8206C113A29D94454476B9887AAB7F"
 	height := int64(100)
 	index := uint32(10)
+	code := uint32(0)
+	codespace := "codespace"
 
 	cdc := setupCodec()
-	nodeResponses := setupMockNodeResponses(t, hashString, height, index, cdc)
+	nodeResponses := setupMockNodeResponses(t, cdc, hashString, height, index, code, codespace)
 
 	mockClient := &mocks.Client{}
 	cliCtx := context.CLIContext{
@@ -127,10 +142,98 @@ func TestQueryTxResponseContainsIndexAndCode(t *testing.T) {
 
 	res, err := QueryTx(cliCtx, hashString)
 	assert.NoError(t, err)
+	assertTxResponse(t, hashString, height, index, code, codespace, res)
+}
+
+func assertTxResponse(
+	t *testing.T,
+	hashString string,
+	height int64,
+	index, code uint32,
+	codespace string,
+	res atypes.TxResponse,
+) {
 	assert.Equal(t, height, res.Height)
 	assert.Equal(t, index, res.Index)
 	assert.Equal(t, hashString, res.TxHash)
-	assert.Equal(t, uint32(0), res.Code)
+	assert.Equal(t, code, res.Code)
+	assert.Equal(t, codespace, res.Codespace)
+}
+
+//nolint:dupl
+func TestQueryTxMarshalledResponseContainsIndexCodeCodespace(t *testing.T) {
+	hashString := "15E23C9F72602046D86BC9F0ECAE53E43A8206C113A29D94454476B9887AAB7F"
+	height := int64(100)
+	index := uint32(10)
+	code := uint32(1)
+	codespace := "codespace"
+
+	cdc := setupCodec()
+	nodeResponses := setupMockNodeResponses(t, cdc, hashString, height, index, code, codespace)
+
+	mockClient := &mocks.Client{}
+	cliCtx := context.CLIContext{
+		Client:    mockClient,
+		TrustNode: true,
+		Codec:     cdc,
+	}
+
+	hash, err := hex.DecodeString(hashString)
+	assert.NoError(t, err)
+	mockClient.On("Tx", hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
+	mockClient.On("Block", &nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
+
+	res, err := QueryTx(cliCtx, hashString)
+	assert.NoError(t, err)
+
+	out, err := cdc.MarshalJSONIndent(res, "", "  ")
+	assert.NoError(t, err)
+
+	var m map[string]interface{}
+	err = json.Unmarshal(out, &m)
+	assert.NoError(t, err)
+
+	assert.Contains(t, m, "index")
+	assert.Contains(t, m, "code")
+	assert.Contains(t, m, "codespace")
+}
+
+//nolint:dupl
+func TestQueryTxMarshalledResponseEmptyIndexCodeCodespace(t *testing.T) {
+	hashString := "15E23C9F72602046D86BC9F0ECAE53E43A8206C113A29D94454476B9887AAB7F"
+	height := int64(100)
+	index := uint32(0)
+	code := uint32(0)
+	codespace := ""
+
+	cdc := setupCodec()
+	nodeResponses := setupMockNodeResponses(t, cdc, hashString, height, index, code, codespace)
+
+	mockClient := &mocks.Client{}
+	cliCtx := context.CLIContext{
+		Client:    mockClient,
+		TrustNode: true,
+		Codec:     cdc,
+	}
+
+	hash, err := hex.DecodeString(hashString)
+	assert.NoError(t, err)
+	mockClient.On("Tx", hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
+	mockClient.On("Block", &nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
+
+	res, err := QueryTx(cliCtx, hashString)
+	assert.NoError(t, err)
+
+	out, err := cdc.MarshalJSONIndent(res, "", "  ")
+	assert.NoError(t, err)
+
+	var m map[string]interface{}
+	err = json.Unmarshal(out, &m)
+	assert.NoError(t, err)
+
+	assert.Contains(t, m, "index")
+	assert.NotContains(t, m, "code")
+	assert.NotContains(t, m, "codespace")
 }
 
 func TestQueryGenesisTxs(t *testing.T) {

@@ -2,6 +2,8 @@ package unmarshaler
 
 import (
 	"encoding/json"
+	"fmt"
+	"strconv"
 
 	"gopkg.in/yaml.v3"
 )
@@ -27,6 +29,27 @@ func (obj *UnmarshalledArbitraryObject) SetProperty(keys []string, value interfa
 		body = body.(map[string]interface{})[key]
 	}
 	body.(map[string]interface{})[lastKey] = value
+}
+
+func (obj *UnmarshalledArbitraryObject) RemoveProperty(keys []string) {
+	keyToRemove := keys[len(keys)-1]
+
+	body := obj.Body
+	for _, key := range keys[:len(keys)-1] {
+		switch parent := body.(type) {
+		case map[string]interface{}:
+			body = parent[key]
+		case []interface{}:
+			idx, err := strconv.Atoi(key)
+			if err != nil {
+				panic(fmt.Sprintf("illegal property path(%s)", err))
+			}
+			body = parent[idx]
+		default:
+			panic("illegal property path")
+		}
+	}
+	delete(body.(map[string]interface{}), keyToRemove)
 }
 
 func UnmarshalJSON(str *string) UnmarshalledArbitraryObject {

@@ -15,26 +15,23 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/rest"
+	cutils "github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	gtypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	sdk "github.com/line/link/x/auth/client/types"
+	local "github.com/line/link/x/auth/client/types"
 )
 
 const MaxPerPage = 100
-
-// *****
-// Original code: `github.com/cosmos/cosmos-sdk/x/auth/client/utils/query.go`
-// Difference: referring import path of `sdk`
-// *****
 
 // QueryTxsByEvents performs a search for transactions for a given set of events
 // via the Tendermint RPC. An event takes the form of:
 // "{eventAttribute}.{attributeKey} = '{attributeValue}'". Each event is
 // concatenated with an 'AND' operand. It returns a slice of Info object
 // containing txs and metadata. An error is returned if the query fails.
-func QueryTxsByEvents(cliCtx context.CLIContext, events []string, page, limit int) (*sdk.SearchTxsResult, error) {
+func QueryTxsByEvents(cliCtx context.CLIContext, events []string, page, limit int) (*local.SearchTxsResult, error) {
 	if len(events) == 0 {
 		return nil, errors.New("must declare at least one event to search")
 	}
@@ -64,7 +61,7 @@ func QueryTxsByEvents(cliCtx context.CLIContext, events []string, page, limit in
 
 	if prove {
 		for _, tx := range resTxs.Txs {
-			err := ValidateTxResult(cliCtx, tx)
+			err := cutils.ValidateTxResult(cliCtx, tx)
 			if err != nil {
 				return nil, err
 			}
@@ -81,38 +78,38 @@ func QueryTxsByEvents(cliCtx context.CLIContext, events []string, page, limit in
 		return nil, err
 	}
 
-	result := sdk.NewSearchTxsResult(resTxs.TotalCount, len(txs), page, limit, txs)
+	result := local.NewSearchTxsResult(resTxs.TotalCount, len(txs), page, limit, txs)
 
 	return &result, nil
 }
 
 // QueryTx queries for a single transaction by a hash string in hex format. An
 // error is returned if the transaction does not exist or cannot be queried.
-func QueryTx(cliCtx context.CLIContext, hashHexStr string) (sdk.TxResponse, error) {
+func QueryTx(cliCtx context.CLIContext, hashHexStr string) (local.TxResponse, error) {
 	hash, err := hex.DecodeString(hashHexStr)
 	if err != nil {
-		return sdk.TxResponse{}, err
+		return local.TxResponse{}, err
 	}
 
 	node, err := cliCtx.GetNode()
 	if err != nil {
-		return sdk.TxResponse{}, err
+		return local.TxResponse{}, err
 	}
 
 	resTx, err := node.Tx(hash, !cliCtx.TrustNode)
 	if err != nil {
-		return sdk.TxResponse{}, err
+		return local.TxResponse{}, err
 	}
 
 	if !cliCtx.TrustNode {
-		if err = ValidateTxResult(cliCtx, resTx); err != nil {
-			return sdk.TxResponse{}, err
+		if err = cutils.ValidateTxResult(cliCtx, resTx); err != nil {
+			return local.TxResponse{}, err
 		}
 	}
 
 	resBlocks, err := getBlocksForTxResults(cliCtx, []*ctypes.ResultTx{resTx})
 	if err != nil {
-		return sdk.TxResponse{}, err
+		return local.TxResponse{}, err
 	}
 
 	out, err := formatTxResult(cliCtx.Codec, resTx, resBlocks[resTx.Height])
@@ -150,20 +147,20 @@ func QueryGenesisTx(cliCtx context.CLIContext) ([]sdk.Tx, error) {
 	return genTxs, nil
 }
 
-func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) (sdk.SearchGenesisAccountResult, error) {
+func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) (local.SearchGenesisAccountResult, error) {
 	node, err := cliCtx.GetNode()
 	if err != nil {
-		return sdk.SearchGenesisAccountResult{}, err
+		return local.SearchGenesisAccountResult{}, err
 	}
 
 	resultGenesis, err := node.Genesis()
 	if err != nil {
-		return sdk.SearchGenesisAccountResult{}, err
+		return local.SearchGenesisAccountResult{}, err
 	}
 
 	appState, err := gtypes.GenesisStateFromGenDoc(cliCtx.Codec, *resultGenesis.Genesis)
 	if err != nil {
-		return sdk.SearchGenesisAccountResult{}, err
+		return local.SearchGenesisAccountResult{}, err
 	}
 
 	genAccounts := types.GetGenesisStateFromAppState(cliCtx.Codec, appState).Accounts
@@ -171,17 +168,17 @@ func QueryGenesisAccount(cliCtx context.CLIContext, page, perPage int) (sdk.Sear
 
 	perPage, err = validatePerPage(perPage)
 	if err != nil {
-		return sdk.SearchGenesisAccountResult{}, err
+		return local.SearchGenesisAccountResult{}, err
 	}
 
 	page, err = validatePage(page, perPage, totalCount)
 	if err != nil {
-		return sdk.SearchGenesisAccountResult{}, err
+		return local.SearchGenesisAccountResult{}, err
 	}
 	start, end := getCountIndexRange(page, perPage, totalCount)
 	resultAccounts := genAccounts[start:end]
 
-	return sdk.NewSearchGenesisAccountResult(totalCount, len(resultAccounts), page, perPage, resultAccounts), nil
+	return local.NewSearchGenesisAccountResult(totalCount, len(resultAccounts), page, perPage, resultAccounts), nil
 }
 
 func validatePage(page, perPage, totalCount int) (int, error) {
@@ -225,9 +222,9 @@ func getCountIndexRange(page, perPage, totalCount int) (int, int) {
 }
 
 // formatTxResults parses the indexed txs into a slice of TxResponse objects.
-func formatTxResults(cdc *codec.Codec, resTxs []*ctypes.ResultTx, resBlocks map[int64]*ctypes.ResultBlock) ([]sdk.TxResponse, error) {
+func formatTxResults(cdc *codec.Codec, resTxs []*ctypes.ResultTx, resBlocks map[int64]*ctypes.ResultBlock) ([]local.TxResponse, error) {
 	var err error
-	out := make([]sdk.TxResponse, len(resTxs))
+	out := make([]local.TxResponse, len(resTxs))
 	for i := range resTxs {
 		out[i], err = formatTxResult(cdc, resTxs[i], resBlocks[resTxs[i].Height])
 		if err != nil {
@@ -236,21 +233,6 @@ func formatTxResults(cdc *codec.Codec, resTxs []*ctypes.ResultTx, resBlocks map[
 	}
 
 	return out, nil
-}
-
-// ValidateTxResult performs transaction verification.
-func ValidateTxResult(cliCtx context.CLIContext, resTx *ctypes.ResultTx) error {
-	if !cliCtx.TrustNode {
-		check, err := cliCtx.Verify(resTx.Height)
-		if err != nil {
-			return err
-		}
-		err = resTx.Proof.Validate(check.Header.DataHash)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
 }
 
 func getBlocksForTxResults(cliCtx context.CLIContext, resTxs []*ctypes.ResultTx) (map[int64]*ctypes.ResultBlock, error) {
@@ -275,13 +257,13 @@ func getBlocksForTxResults(cliCtx context.CLIContext, resTxs []*ctypes.ResultTx)
 	return resBlocks, nil
 }
 
-func formatTxResult(cdc *codec.Codec, resTx *ctypes.ResultTx, resBlock *ctypes.ResultBlock) (sdk.TxResponse, error) {
+func formatTxResult(cdc *codec.Codec, resTx *ctypes.ResultTx, resBlock *ctypes.ResultBlock) (local.TxResponse, error) {
 	tx, err := parseTx(cdc, resTx.Tx)
 	if err != nil {
-		return sdk.TxResponse{}, err
+		return local.TxResponse{}, err
 	}
 
-	return sdk.NewResponseResultTx(resTx, tx, resBlock.Block.Time.Format(time.RFC3339))
+	return local.NewResponseResultTx(resTx, tx, resBlock.Block.Time.Format(time.RFC3339)), nil
 }
 
 func parseTx(cdc *codec.Codec, txBytes []byte) (sdk.Tx, error) {
