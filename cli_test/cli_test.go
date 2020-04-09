@@ -5,6 +5,7 @@ package clitest
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -1564,4 +1565,68 @@ func TestLinkCLIEmpty(t *testing.T) {
 		require.NotEmpty(t, stdout)
 		require.Empty(t, stderr)
 	}
+}
+
+/*
+from cosmos-sdk v0.38.0, multiple txs from an account for a block is not allowed
+Modify the IncrementSequenceDecorator to avoid the restriction
+*/
+func TestLinkCLIIncrementSequenceDecorator(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+	barAddr := f.KeyAddress(keyBar)
+
+	sendTokens := sdk.TokensFromConsensusPower(1)
+
+	fooAcc := f.QueryAccount(fooAddr)
+
+	//Prepare signed Tx
+	var signedTxFiles []*os.File
+	for idx := 0; idx < 3; idx++ {
+		// Test generate sendTx, estimate gas
+		success, stdout, _ := f.TxSend(fooAddr.String(), barAddr, sdk.NewCoin(denom, sendTokens), "--generate-only")
+		require.True(t, success)
+
+		// Write the output to disk
+		unsignedTxFile := WriteToNewTempFile(t, stdout)
+		defer os.Remove(unsignedTxFile.Name())
+
+		// Test sign
+		success, stdout, _ = f.TxSign(keyFoo, unsignedTxFile.Name(), "--offline", "--account-number", strconv.Itoa(int(fooAcc.AccountNumber)), "--sequence", strconv.Itoa(int(fooAcc.Sequence)+idx))
+		require.True(t, success)
+
+		// Write the output to disk
+		signedTxFile := WriteToNewTempFile(t, stdout)
+		signedTxFiles = append(signedTxFiles, signedTxFile)
+		defer os.Remove(signedTxFile.Name())
+	}
+	//Wait for a new block
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	var txHashes []string
+	//Broadcast the signed Txs
+	for _, signedTxFile := range signedTxFiles {
+		// Test broadcast
+		success, stdout, _ := f.TxBroadcast(signedTxFile.Name(), "--broadcast-mode", "sync")
+		require.True(t, success)
+		sendResp := UnmarshalTxResponse(t, stdout)
+		txHashes = append(txHashes, sendResp.TxHash)
+	}
+
+	//Wait for a new block
+	tests.WaitForNextNBlocksTM(1, f.Port)
+
+	//All Txs are in one block
+	height := f.QueryTx(txHashes[0]).Height
+	for _, txHash := range txHashes {
+		require.Equal(t, height, f.QueryTx(txHash).Height)
+	}
+
+	f.Cleanup()
 }

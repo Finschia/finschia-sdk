@@ -29,6 +29,7 @@ import (
 
 	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/line/link/version"
+	"github.com/line/link/x/auth/ante"
 	"github.com/line/link/x/collection"
 )
 
@@ -209,7 +210,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
+	app.SetAnteHandler(ante.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 	app.SetEndBlocker(app.EndBlocker)
 
 	if loadLatest {
