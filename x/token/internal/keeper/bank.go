@@ -4,18 +4,19 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/token/internal/types"
 )
 
 //For the Token module
 type BankKeeper interface {
 	GetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress) sdk.Int
-	SetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) sdk.Error
+	SetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) error
 	HasBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) bool
 
-	SubtractBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, sdk.Error)
-	AddBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, sdk.Error)
-	Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amt sdk.Int) sdk.Error
+	SubtractBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, error)
+	AddBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, error)
+	Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amt sdk.Int) error
 }
 
 var _ BankKeeper = (*Keeper)(nil)
@@ -28,7 +29,7 @@ func (k Keeper) GetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddre
 	return acc.GetBalance()
 }
 
-func (k Keeper) SetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) sdk.Error {
+func (k Keeper) SetBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) error {
 	acc, err := k.GetAccount(ctx, contractID, addr)
 	if err != nil {
 		return err
@@ -45,9 +46,9 @@ func (k Keeper) HasBalance(ctx sdk.Context, contractID string, addr sdk.AccAddre
 	return k.GetBalance(ctx, contractID, addr).GTE(amt)
 }
 
-func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amt sdk.Int) sdk.Error {
+func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amt sdk.Int) error {
 	if amt.IsNegative() {
-		return types.ErrInvalidAmount(types.DefaultCodespace, "send amount must be positive")
+		return sdkerrors.Wrap(types.ErrInvalidAmount, "send amount must be positive")
 	}
 
 	_, err := k.SubtractBalance(ctx, contractID, from, amt)
@@ -62,18 +63,18 @@ func (k Keeper) Send(ctx sdk.Context, contractID string, from, to sdk.AccAddress
 	return nil
 }
 
-func (k Keeper) SubtractBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, sdk.Error) {
+func (k Keeper) SubtractBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, error) {
 	return k.subtractBalance(ctx, contractID, addr, amt)
 }
-func (k Keeper) subtractBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, sdk.Error) {
+func (k Keeper) subtractBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, error) {
 	acc, err := k.GetAccount(ctx, contractID, addr)
 	if err != nil {
-		return sdk.ZeroInt(), types.ErrInsufficientBalance(types.DefaultCodespace, fmt.Sprintf("insufficient account funds for token [%s]; 0 < %s", contractID, amt))
+		return sdk.ZeroInt(), sdkerrors.Wrapf(types.ErrInsufficientBalance, fmt.Sprintf("insufficient account funds for token [%s]; 0 < %s", contractID, amt))
 	}
 	oldBalance := acc.GetBalance()
 	newBalance := oldBalance.Sub(amt)
 	if newBalance.IsNegative() {
-		return amt, types.ErrInsufficientBalance(types.DefaultCodespace, fmt.Sprintf("insufficient account funds for token [%s]; %s < %s", contractID, oldBalance, amt))
+		return amt, sdkerrors.Wrapf(types.ErrInsufficientBalance, "insufficient account funds for token [%s]; %s < %s", contractID, oldBalance, amt)
 	}
 	acc = acc.SetBalance(newBalance)
 	err = k.UpdateAccount(ctx, acc)
@@ -83,11 +84,11 @@ func (k Keeper) subtractBalance(ctx sdk.Context, contractID string, addr sdk.Acc
 	return newBalance, nil
 }
 
-func (k Keeper) AddBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, sdk.Error) {
+func (k Keeper) AddBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, error) {
 	return k.addBalance(ctx, contractID, addr, amt)
 }
 
-func (k Keeper) addBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, sdk.Error) {
+func (k Keeper) addBalance(ctx sdk.Context, contractID string, addr sdk.AccAddress, amt sdk.Int) (sdk.Int, error) {
 	acc, err := k.GetOrNewAccount(ctx, contractID, addr)
 	if err != nil {
 		return amt, err
@@ -95,7 +96,7 @@ func (k Keeper) addBalance(ctx sdk.Context, contractID string, addr sdk.AccAddre
 	oldBalance := acc.GetBalance()
 	newBalance := oldBalance.Add(amt)
 	if newBalance.IsNegative() {
-		return amt, types.ErrInsufficientBalance(types.DefaultCodespace, fmt.Sprintf("insufficient account funds for token [%s]; %s < %s", contractID, oldBalance, amt))
+		return amt, sdkerrors.Wrapf(types.ErrInsufficientBalance, "insufficient account funds for token [%s]; %s < %s", contractID, oldBalance, amt)
 	}
 	acc = acc.SetBalance(newBalance)
 	err = k.UpdateAccount(ctx, acc)

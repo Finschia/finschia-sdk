@@ -6,9 +6,6 @@ import (
 )
 
 const (
-	ContractCodeSpace    = types.DefaultCodespace
-	CodeContractNotExist = types.CodeContractNotExist
-
 	ModuleName       = types.ModuleName
 	StoreKey         = types.StoreKey
 	SampleContractID = "abcde012"

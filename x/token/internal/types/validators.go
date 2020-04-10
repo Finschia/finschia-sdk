@@ -3,7 +3,7 @@ package types
 import (
 	"unicode/utf8"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 )
 
@@ -38,26 +38,26 @@ func ValidateImageURI(imageURI string) bool {
 
 type ChangesValidator struct {
 	modifiableFields ModifiableFields
-	handlers         map[string]func(value string) sdk.Error
+	handlers         map[string]func(value string) error
 }
 
 func NewChangesValidator() *ChangesValidator {
-	hs := make(map[string]func(value string) sdk.Error)
-	hs[AttributeKeyName] = func(value string) sdk.Error {
+	hs := make(map[string]func(value string) error)
+	hs[AttributeKeyName] = func(value string) error {
 		if !ValidateName(value) {
-			return ErrInvalidNameLength(DefaultCodespace, value)
+			return sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", value, MaxTokenNameLength, utf8.RuneCountInString(value))
 		}
 		return nil
 	}
-	hs[AttributeKeyImageURI] = func(value string) sdk.Error {
+	hs[AttributeKeyImageURI] = func(value string) error {
 		if !ValidateImageURI(value) {
-			return ErrInvalidImageURILength(DefaultCodespace, value)
+			return sdkerrors.Wrapf(ErrInvalidImageURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", value, MaxImageURILength, utf8.RuneCountInString(value))
 		}
 		return nil
 	}
-	hs[AttributeKeyMeta] = func(value string) sdk.Error {
+	hs[AttributeKeyMeta] = func(value string) error {
 		if !ValidateMeta(value) {
-			return ErrInvalidMetaLength(DefaultCodespace, value)
+			return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", value, MaxTokenMetaLength, utf8.RuneCountInString(value))
 		}
 		return nil
 	}
@@ -67,27 +67,27 @@ func NewChangesValidator() *ChangesValidator {
 	}
 }
 
-func (c *ChangesValidator) Validate(changes linktype.Changes) sdk.Error {
+func (c *ChangesValidator) Validate(changes linktype.Changes) error {
 	if len(changes) == 0 {
-		return ErrEmptyChanges(DefaultCodespace)
+		return ErrEmptyChanges
 	}
 
 	if len(changes) > MaxChangeFieldsCount {
-		return ErrInvalidChangesFieldCount(DefaultCodespace, len(changes))
+		return sdkerrors.Wrapf(ErrInvalidChangesFieldCount, "You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, len(changes))
 	}
 
 	checkedFields := map[string]bool{}
 	for _, change := range changes {
 		if !c.modifiableFields[change.Field] {
-			return ErrInvalidChangesField(DefaultCodespace, change.Field)
+			return sdkerrors.Wrapf(ErrInvalidChangesField, "Field: %s", change.Field)
 		}
 		if checkedFields[change.Field] {
-			return ErrDuplicateChangesField(DefaultCodespace, change.Field)
+			return sdkerrors.Wrapf(ErrDuplicateChangesField, "Field: %s", change.Field)
 		}
 
 		validateHandler, ok := c.handlers[change.Field]
 		if !ok {
-			return ErrInvalidChangesField(DefaultCodespace, change.Field)
+			return sdkerrors.Wrapf(ErrInvalidChangesField, "Field: %s", change.Field)
 		}
 
 		if err := validateHandler(change.Value); err != nil {

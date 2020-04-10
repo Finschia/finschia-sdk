@@ -11,6 +11,7 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 )
 
@@ -105,6 +106,6 @@ func TestBulkBalances(t *testing.T) {
 
 	req.Data = input.Cdc.MustMarshalJSON(types.NewQueryBulkBalanceParams(addrs))
 	res, err = querier(input.Ctx, []string{"bulk_balances"}, req)
-	require.EqualError(t, err, types.ErrRequestGetsLimit(types.DefaultCodespace, types.RequestGetsLimit).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrRequestGetsLimit, "Limit: %d", types.RequestGetsLimit).Error())
 	require.Nil(t, res)
 }

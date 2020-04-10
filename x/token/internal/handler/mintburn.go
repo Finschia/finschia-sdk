@@ -7,10 +7,10 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func handleMsgMint(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMint) sdk.Result {
+func handleMsgMint(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMint) (*sdk.Result, error) {
 	err := keeper.MintToken(ctx, msg.ContractID, msg.Amount, msg.From, msg.To)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -20,13 +20,13 @@ func handleMsgMint(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMint) sdk
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgBurn(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurn) sdk.Result {
+func handleMsgBurn(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurn) (*sdk.Result, error) {
 	err := keeper.BurnToken(ctx, msg.ContractID, msg.Amount, msg.From)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -36,5 +36,5 @@ func handleMsgBurn(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurn) sdk
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

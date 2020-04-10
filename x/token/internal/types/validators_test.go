@@ -3,7 +3,9 @@ package types
 import (
 	"strings"
 	"testing"
+	"unicode/utf8"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/stretchr/testify/require"
 )
@@ -49,7 +51,7 @@ func TestValidateChanges(t *testing.T) {
 	t.Log("Test with empty changes")
 	{
 		changes := linktype.Changes{}
-		require.EqualError(t, validator.Validate(changes), ErrEmptyChanges(DefaultCodespace).Error())
+		require.EqualError(t, validator.Validate(changes), ErrEmptyChanges.Error())
 	}
 	t.Log("Test with img_uri too long")
 	{
@@ -62,7 +64,7 @@ func TestValidateChanges(t *testing.T) {
 		require.EqualError(
 			t,
 			validator.Validate(changes),
-			ErrInvalidImageURILength(DefaultCodespace, length1001String).Error(),
+			sdkerrors.Wrapf(ErrInvalidImageURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxImageURILength, utf8.RuneCountInString(length1001String)).Error(),
 		)
 	}
 	t.Log("Test with invalid changes field")
@@ -71,9 +73,8 @@ func TestValidateChanges(t *testing.T) {
 		changes := linktype.NewChanges(
 			linktype.NewChange("invalid_field", "value"),
 		)
-
 		// Then error is occurred
-		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesField(DefaultCodespace, "invalid_field").Error())
+		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrap(ErrInvalidChangesField, "Field: invalid_field").Error())
 	}
 	t.Log("Test with changes more than max")
 	{
@@ -82,7 +83,7 @@ func TestValidateChanges(t *testing.T) {
 		changes := linktype.Changes(changeList)
 
 		// Then error is occurred
-		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesFieldCount(DefaultCodespace, len(changeList)).Error())
+		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrapf(ErrInvalidChangesFieldCount, "You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, len(changeList)).Error())
 	}
 	t.Log("Test with duplicate fields")
 	{
@@ -93,6 +94,6 @@ func TestValidateChanges(t *testing.T) {
 		)
 
 		// Then error is occurred
-		require.EqualError(t, validator.Validate(changes), ErrDuplicateChangesField(DefaultCodespace, "name").Error())
+		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrapf(ErrDuplicateChangesField, "Field: name").Error())
 	}
 }

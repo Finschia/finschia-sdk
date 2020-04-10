@@ -1,46 +1,17 @@
 package types
 
 import (
-	"fmt"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-// Bank errors reserve 100 ~ 199.
-const (
-	DefaultCodespace sdk.CodespaceType = ModuleName
+const Codespace = "link" + ModuleName // to avoid error-code conflicts with cosmos-sdk/x/bank
 
-	CodeSendDisabled                sdk.CodeType = 101
-	CodeInvalidInputsOutputs        sdk.CodeType = 102
-	CodeCanNotTransferToBlacklisted sdk.CodeType = 103
-	CodeInvalidRequestGetsLimit     sdk.CodeType = 104
+// x/bank module sentinel errors
+var (
+	ErrNoInputs                    = sdkerrors.Register(Codespace, 1, "no inputs to send transaction")
+	ErrNoOutputs                   = sdkerrors.Register(Codespace, 2, "no outputs to send transaction")
+	ErrInputOutputMismatch         = sdkerrors.Register(Codespace, 3, "sum inputs != sum outputs")
+	ErrSendDisabled                = sdkerrors.Register(Codespace, 4, "send transactions are disabled")
+	ErrCanNotTransferToBlacklisted = sdkerrors.Register(Codespace, 5, "Cannot transfer to safety box addresses")
+	ErrRequestGetsLimit            = sdkerrors.Register(Codespace, 6, "the gets should be limited")
 )
-
-// ErrNoInputs is an error
-func ErrNoInputs(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeInvalidInputsOutputs, "no inputs to send transaction")
-}
-
-// ErrNoOutputs is an error
-func ErrNoOutputs(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeInvalidInputsOutputs, "no outputs to send transaction")
-}
-
-// ErrInputOutputMismatch is an error
-func ErrInputOutputMismatch(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeInvalidInputsOutputs, "sum inputs != sum outputs")
-}
-
-// ErrSendDisabled is an error
-func ErrSendDisabled(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeSendDisabled, "send transactions are currently disabled")
-}
-
-func ErrCanNotTransferToBlacklisted(codespace sdk.CodespaceType, addr string) sdk.Error {
-	return sdk.NewError(codespace, CodeCanNotTransferToBlacklisted, "Cannot transfer to safety box addresses (addr: %s)", addr)
-}
-
-// ErrRequestGetsLimit
-func ErrRequestGetsLimit(codespace sdk.CodespaceType, limit int) sdk.Error {
-	return sdk.NewError(codespace, CodeInvalidRequestGetsLimit, fmt.Sprintf("the gets limit should be %d", limit))
-}

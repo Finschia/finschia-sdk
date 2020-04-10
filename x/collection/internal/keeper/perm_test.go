@@ -7,6 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func TestCollectionAndPermission(t *testing.T) {
@@ -86,7 +87,7 @@ func TestPermission(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultContractID)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultContractID)).Error())
+	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultContractID)), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewMintPermission(defaultContractID).String()).Error())
 	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(defaultContractID)))
-	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultContractID)), types.ErrTokenNoPermission(types.DefaultCodespace, addr3, types.NewMintPermission(defaultContractID)).Error())
+	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultContractID)), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewMintPermission(defaultContractID).String()).Error())
 }

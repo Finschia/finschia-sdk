@@ -44,7 +44,6 @@ func TestValidateBlock(t *testing.T) {
 
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
-		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Times(1)
 		mockTendermint.EXPECT().ValidateBlock(rb.Block, check).Times(1)
 		err := bu.ValidateBlock(rb)
 		require.Equal(t, nil, err)
@@ -64,25 +63,12 @@ func TestValidateBlockFail(t *testing.T) {
 		err := bu.ValidateBlock(rb)
 		require.Equal(t, verifyErr, err)
 	}
-	t.Log("TrustNode is false and ValidateBlockMeta return error")
-	{
-		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
-
-		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
-		validateMetaErr := fmt.Errorf("validateBlockMeta failed")
-		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
-		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(validateMetaErr).Times(1)
-		mockTendermint.EXPECT().ValidateBlock(gomock.Any(), gomock.Any()).Times(0)
-		err := bu.ValidateBlock(rb)
-		require.Equal(t, validateMetaErr, err)
-	}
 	t.Log("TrustNode is false and ValidateBlock return error")
 	{
 		check, mockTendermint, mockCliCtx, rb, bu, _, _, _ := prepare(t)
 
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
-		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(nil).Times(1)
 		validateBlockErr := fmt.Errorf("validateBlock failed")
 		mockTendermint.EXPECT().ValidateBlock(rb.Block, check).Return(validateBlockErr).Times(1)
 		err := bu.ValidateBlock(rb)
@@ -188,7 +174,6 @@ func TestFetchBlock(t *testing.T) {
 		mockClient.EXPECT().Block(&latestBlockHeight).Return(rb, nil).Times(1)
 		mockCliCtx.EXPECT().TrustNode().Return(false).Times(1)
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
-		mockTendermint.EXPECT().ValidateBlockMeta(rb.BlockMeta, check).Return(nil).Times(1)
 		mockTendermint.EXPECT().ValidateBlock(rb.Block, check).Return(nil).Times(1)
 		actual, err := bu.fetchBlock(latestBlockHeight)
 		require.Equal(t, rb, actual.ResultBlock)
@@ -250,10 +235,7 @@ func prepare(t *testing.T) (tmtypes.SignedHeader, *MockTendermint, *MockCLIConte
 		Block: &tmtypes.Block{
 			Header: tmtypes.Header{Height: blockHeight},
 		},
-		BlockMeta: &tmtypes.BlockMeta{
-			BlockID: tmtypes.BlockID{},
-			Header:  tmtypes.Header{},
-		},
+		BlockID: tmtypes.BlockID{},
 	}
 	resTx := &ctypes.ResultTx{
 		Hash:     []byte(`txhash`),

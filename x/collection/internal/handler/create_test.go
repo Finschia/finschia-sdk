@@ -17,8 +17,8 @@ func TestHandleMsgCreateCollection(t *testing.T) {
 	ctx, h := cacheKeeper()
 	{
 		msg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
@@ -54,21 +55,21 @@ func (MsgTransferFT) Type() string { return "transfer_ft" }
 
 func (msg MsgTransferFT) GetContractID() string { return msg.ContractID }
 
-func (msg MsgTransferFT) ValidateBasic() sdk.Error {
+func (msg MsgTransferFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("To cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty")
 	}
 
 	if !msg.Amount.IsValid() {
-		return ErrInvalidAmount(DefaultCodespace, "invalid amount")
+		return sdkerrors.Wrap(ErrInvalidAmount, "invalid amount")
 	}
 	return nil
 }
@@ -113,22 +114,25 @@ func (MsgTransferNFT) Type() string { return "transfer_nft" }
 
 func (msg MsgTransferNFT) GetContractID() string { return msg.ContractID }
 
-func (msg MsgTransferNFT) ValidateBasic() sdk.Error {
+func (msg MsgTransferNFT) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("To cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty")
 	}
 
+	if len(msg.TokenIDs) == 0 {
+		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
+	}
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}
 
@@ -177,24 +181,24 @@ func (MsgTransferFTFrom) Type() string { return "transfer_ft_from" }
 
 func (msg MsgTransferFTFrom) GetContractID() string { return msg.ContractID }
 
-func (msg MsgTransferFTFrom) ValidateBasic() sdk.Error {
+func (msg MsgTransferFTFrom) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("To cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty")
 	}
 	if msg.From.Equals(msg.Proxy) {
-		return ErrApproverProxySame(DefaultCodespace, msg.From.String())
+		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.From.String())
 	}
 	if !msg.Amount.IsValid() {
-		return ErrInvalidAmount(DefaultCodespace, "invalid amount")
+		return sdkerrors.Wrap(ErrInvalidAmount, "invalid amount")
 	}
 	return nil
 }
@@ -241,25 +245,29 @@ func (MsgTransferNFTFrom) Type() string { return "transfer_nft_from" }
 
 func (msg MsgTransferNFTFrom) GetContractID() string { return msg.ContractID }
 
-func (msg MsgTransferNFTFrom) ValidateBasic() sdk.Error {
+func (msg MsgTransferNFTFrom) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("To cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty")
 	}
 	if msg.From.Equals(msg.Proxy) {
-		return ErrApproverProxySame(DefaultCodespace, msg.From.String())
+		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.From.String())
+	}
+
+	if len(msg.TokenIDs) == 0 {
+		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
 	}
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {
-			return ErrInvalidTokenID(DefaultCodespace, err.Error())
+			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}
 	return nil

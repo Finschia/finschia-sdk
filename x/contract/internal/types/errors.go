@@ -1,20 +1,10 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	DefaultCodespace sdk.CodespaceType = ModuleName
-
-	CodeInvalidContractID sdk.CodeType = 100
-	CodeContractNotExist  sdk.CodeType = 101
+var (
+	ErrInvalidContractID = sdkerrors.Register(ModuleName, 1, "invalid contractID")
+	ErrContractNotExist  = sdkerrors.Register(ModuleName, 2, "contract does not exist")
 )
-
-func ErrInvalidContractID(codespace sdk.CodespaceType, contractID string) sdk.Error {
-	return sdk.NewError(codespace, CodeInvalidContractID, "invalid contractID: %s", contractID)
-}
-
-func ErrContractNotExist(codespace sdk.CodespaceType, contractID string) sdk.Error {
-	return sdk.NewError(codespace, CodeContractNotExist, "contract[%s] does not exist", contractID)
-}

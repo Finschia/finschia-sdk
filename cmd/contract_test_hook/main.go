@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"github.com/line/link/contract_test/unmarshaler"
 	"github.com/line/link/contract_test/verifier"
@@ -35,6 +36,16 @@ func main() {
 		makeExpectedEvidenceNull(t)
 	})
 
+	// dredd can not parsing items in anyOf in 12.1.0, so add messages to expected body for verification
+	h.Before("/txs/{hash} > Get a Tx by hash > 200 > application/json", func(t *transaction.Transaction) {
+		addMsgExamplesToExpected(t)
+		removeOptionalFieldsOfExpected(t, []string{"code", "codespace"})
+	})
+
+	h.Before("/txs > Search transactions > 200 > application/json", func(t *transaction.Transaction) {
+		removeOptionalFieldsOfExpected(t, []string{"txs.0.code", "txs.0.codespace"})
+	})
+
 	// dredd can not validate items inside array in 12.1.0, so validate them in hook
 	h.BeforeEachValidation(func(t *transaction.Transaction) {
 		compareEachBody(t)
@@ -46,12 +57,6 @@ func main() {
 		if actual.GetProperty("txs") == nil {
 			t.Skip = true
 		}
-	})
-
-	// dredd can not parsing items in anyOf in 12.1.0, so add messages to expected body for verification
-	h.BeforeValidation("/txs/{hash} > Get a Tx by hash > 200 > application/json", func(t *transaction.Transaction) {
-		addMsgExamplesToExpected(t)
-		compareEachBody(t)
 	})
 
 	server.Serve()
@@ -80,6 +85,18 @@ func addMsgExamplesToExpected(t *transaction.Transaction) {
 
 	expected := unmarshaler.UnmarshalJSON(&t.Expected.Body)
 	expected.SetProperty([]string{"tx", "value", "msg"}, value)
+	newBody, err := json.Marshal(expected.Body)
+	if err != nil {
+		panic(fmt.Sprintf("fail to marshal expected body with %s", err))
+	}
+	t.Expected.Body = string(newBody)
+}
+
+func removeOptionalFieldsOfExpected(t *transaction.Transaction, paths []string) {
+	expected := unmarshaler.UnmarshalJSON(&t.Expected.Body)
+	for _, path := range paths {
+		expected.RemoveProperty(strings.Split(path, "."))
+	}
 	newBody, err := json.Marshal(expected.Body)
 	if err != nil {
 		panic(fmt.Sprintf("fail to marshal expected body with %s", err))

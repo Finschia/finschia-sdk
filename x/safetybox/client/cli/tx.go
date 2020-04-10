@@ -1,11 +1,13 @@
 package cli
 
 import (
+	"bufio"
 	"strconv"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/line/link/client"
@@ -37,8 +39,9 @@ func SafetyBoxCreateTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Create a safety box with ID, owner and the coin denom. Only one owner and denom is allowed.",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithFrom(args[1]).WithCodec(cdc)
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[1]).WithCodec(cdc)
 			safetyBoxID := args[0]
 			safetyBoxOwner := cliCtx.FromAddress
 			safetyBoxDenoms := strings.Split(args[2], ",")
@@ -58,9 +61,10 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Register or deregister roles to the address on the safety box",
 		Args:  cobra.ExactArgs(5),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 			safetyBoxID, action, role := args[0], args[1], args[2]
-			cliCtx := client.NewCLIContextWithFrom(args[3]).WithCodec(cdc)
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[3]).WithCodec(cdc)
 			fromAddress, err := sdk.AccAddressFromBech32(args[3])
 			if err != nil {
 				return err
@@ -87,7 +91,7 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 						Address:        toAddress,
 					}
 				default:
-					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
+					return sdkerrors.Wrapf(types.ErrSafetyBoxInvalidAction, "Action: %s", action)
 				}
 			case types.RoleAllocator:
 				switch action {
@@ -104,7 +108,7 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 						Address:     toAddress,
 					}
 				default:
-					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
+					return sdkerrors.Wrapf(types.ErrSafetyBoxInvalidAction, "Action: %s", action)
 				}
 			case types.RoleIssuer:
 				switch action {
@@ -121,7 +125,7 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 						Address:     toAddress,
 					}
 				default:
-					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
+					return sdkerrors.Wrapf(types.ErrSafetyBoxInvalidAction, "Action: %s", action)
 				}
 			case types.RoleReturner:
 				switch action {
@@ -138,10 +142,10 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 						Address:     toAddress,
 					}
 				default:
-					return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
+					return sdkerrors.Wrapf(types.ErrSafetyBoxInvalidAction, "Action: %s", action)
 				}
 			default:
-				return types.ErrSafetyBoxInvalidRole(types.DefaultCodespace, role)
+				return sdkerrors.Wrapf(types.ErrSafetyBoxInvalidRole, "Role: %s", role)
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
@@ -158,7 +162,8 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Send coins among the safety box, issuers, returners and allocators. `issuer_address` is required only for issue.",
 		Args:  cobra.RangeArgs(5, 6),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			txBldr := auth.NewTxBuilderFromCLI().WithTxEncoder(utils.GetTxEncoder(cdc))
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 			safetyBoxID, action := args[0], args[1]
 
 			denom := args[2]
@@ -175,7 +180,7 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			cliCtx := client.NewCLIContextWithFrom(args[4]).WithCodec(cdc)
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[4]).WithCodec(cdc)
 
 			var msg sdk.Msg
 			switch action {
@@ -185,7 +190,7 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 				msg = types.NewMsgSafetyBoxRecallCoins(safetyBoxID, address, coins)
 			case types.ActionIssue:
 				if len(args) < 6 {
-					return types.ErrSafetyBoxIssuerAddressRequired(types.DefaultCodespace)
+					return types.ErrSafetyBoxIssuerAddressRequired
 				}
 				toAddress, err := sdk.AccAddressFromBech32(args[5])
 				if err != nil {
@@ -195,7 +200,7 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 			case types.ActionReturn:
 				msg = types.NewMsgSafetyBoxReturnCoins(safetyBoxID, address, coins)
 			default:
-				return types.ErrSafetyBoxInvalidAction(types.DefaultCodespace, action)
+				return sdkerrors.Wrapf(types.ErrSafetyBoxInvalidAction, "Action: %s", action)
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint

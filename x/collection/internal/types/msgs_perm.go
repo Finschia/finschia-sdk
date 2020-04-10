@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/types"
 )
 
@@ -31,17 +32,17 @@ func (msg MsgGrantPermission) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgGrantPermission) ValidateBasic() sdk.Error {
+func (msg MsgGrantPermission) ValidateBasic() error {
 	if msg.From.Empty() || msg.To.Empty() {
-		return sdk.ErrInvalidAddress("addresses cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses cannot be empty")
 	}
 
 	if msg.From.Equals(msg.To) {
-		return sdk.ErrInvalidAddress("from, to address can not be the same")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from, to address can not be the same")
 	}
 
 	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
-		return types.ErrInvalidPermission("resource and action should not be empty")
+		return sdkerrors.Wrap(types.ErrInvalidPermission, "resource and action should not be empty")
 	}
 	return validateAction(msg.Permission.GetAction(), IssueAction, MintAction, BurnAction, ModifyAction)
 }
@@ -67,22 +68,22 @@ func (msg MsgRevokePermission) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
 }
 
-func (msg MsgRevokePermission) ValidateBasic() sdk.Error {
+func (msg MsgRevokePermission) ValidateBasic() error {
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses cannot be empty")
 	}
 
 	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
-		return types.ErrInvalidPermission("resource and action should not be empty")
+		return sdkerrors.Wrap(types.ErrInvalidPermission, "resource and action should not be empty")
 	}
 	return validateAction(msg.Permission.GetAction(), IssueAction, MintAction, BurnAction, ModifyAction)
 }
 
-func validateAction(action string, actions ...string) sdk.Error {
+func validateAction(action string, actions ...string) error {
 	for _, a := range actions {
 		if action == a {
 			return nil
 		}
 	}
-	return types.ErrInvalidPermission(fmt.Sprintf("action should be one of [%s]", strings.Join(actions, ",")))
+	return sdkerrors.Wrap(types.ErrInvalidPermission, fmt.Sprintf("action should be one of [%s]", strings.Join(actions, ",")))
 }

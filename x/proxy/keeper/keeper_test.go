@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/proxy/types"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -13,7 +14,7 @@ func TestProxy(t *testing.T) {
 	input := SetupTestInput(t)
 	_, ctx, keeper, ak := input.Cdc, input.Ctx, input.Keeper, input.Ak
 
-	var err sdk.Error
+	var err error
 
 	// create proxy
 	proxy := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -51,7 +52,7 @@ func TestProxy(t *testing.T) {
 		err = keeper.SendCoinsFrom(ctx, types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, "link", sdk.NewInt(1)))
 
 		// should fail as it's not approved
-		require.EqualError(t, err, types.ErrProxyNotExist(types.DefaultCodespace, proxy.String(), onBehalfOf.String()).Error())
+		require.EqualError(t, err, sdkerrors.Wrapf(types.ErrProxyNotExist, "Proxy: %s, Account: %s", proxy.String(), onBehalfOf.String()).Error())
 	}
 
 	// `onBehalfOf` approves 5 link for `proxy`
@@ -66,7 +67,7 @@ func TestProxy(t *testing.T) {
 		err = keeper.SendCoinsFrom(ctx, types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, "link", sdk.NewInt(6)))
 
 		// should fail as it's more than approved
-		require.EqualError(t, err, types.ErrProxyNotEnoughApprovedCoins(types.DefaultCodespace, approvedAmount, sdk.NewInt(6)).Error())
+		require.EqualError(t, err, sdkerrors.Wrapf(types.ErrProxyNotEnoughApprovedCoins, "Approved: %v, Requested: %v", approvedAmount, sdk.NewInt(6)).Error())
 	}
 
 	// `proxy` sends 2 link to `receiver` on behalf of `onBehalfOf`
@@ -91,7 +92,7 @@ func TestProxy(t *testing.T) {
 		err = keeper.DisapproveCoins(ctx, types.NewMsgProxyDisapproveCoins(proxy, onBehalfOf, "link", sdk.NewInt(4)))
 
 		// should fail as only 3 approved coins are left
-		require.EqualError(t, err, types.ErrProxyNotEnoughApprovedCoins(types.DefaultCodespace, approvedAmount.Sub(sentAmount1), sdk.NewInt(4)).Error())
+		require.EqualError(t, err, sdkerrors.Wrapf(types.ErrProxyNotEnoughApprovedCoins, "Approved: %v, Requested: %v", approvedAmount.Sub(sentAmount1), sdk.NewInt(4)).Error())
 	}
 
 	// `onBehalfOf` disapprove 1 link from `proxy`
@@ -124,7 +125,7 @@ func TestProxy(t *testing.T) {
 		err = keeper.SendCoinsFrom(ctx, types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, "link", sdk.NewInt(1)))
 
 		// should fail as there is no coin approved (all sent!)
-		require.EqualError(t, err, types.ErrProxyNotExist(types.DefaultCodespace, proxy.String(), onBehalfOf.String()).Error())
+		require.EqualError(t, err, sdkerrors.Wrapf(types.ErrProxyNotExist, "Proxy: %s, Account: %s", proxy.String(), onBehalfOf.String()).Error())
 	}
 
 	// 'onBehalfOf' tries to disapprove 1 link from `proxy`
@@ -132,6 +133,6 @@ func TestProxy(t *testing.T) {
 		err = keeper.DisapproveCoins(ctx, types.NewMsgProxyDisapproveCoins(proxy, onBehalfOf, "link", sdk.NewInt(1)))
 
 		// should fail as there is no proxy anymore (all sent!)
-		require.EqualError(t, err, types.ErrProxyNotExist(types.DefaultCodespace, proxy.String(), onBehalfOf.String()).Error())
+		require.EqualError(t, err, sdkerrors.Wrapf(types.ErrProxyNotExist, "Proxy: %s, Account: %s", proxy.String(), onBehalfOf.String()).Error())
 	}
 }

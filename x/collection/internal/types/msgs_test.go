@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -54,7 +55,8 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Name, msg2.Name)
 	}
 	{
-		msg := NewMsgMintNFT(addr1, defaultContractID, addr1, defaultName, defaultMeta, defaultTokenType)
+		param := NewMintNFTParam(defaultName, defaultMeta, defaultTokenType)
+		msg := NewMsgMintNFT(addr1, defaultContractID, addr1, param)
 		require.Equal(t, "mint_nft", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -68,10 +70,21 @@ func TestMsgBasics(t *testing.T) {
 		err := cdc.UnmarshalJSON(b, &msg2)
 		require.NoError(t, err)
 
-		require.Equal(t, msg.Name, msg2.Name)
+		require.Equal(t, msg.MintNFTParams[0].Name, msg2.MintNFTParams[0].Name)
 		require.Equal(t, msg.ContractID, msg2.ContractID)
 		require.Equal(t, msg.From, msg2.From)
-		require.Equal(t, msg.TokenType, msg2.TokenType)
+		require.Equal(t, msg.MintNFTParams[0].TokenType, msg2.MintNFTParams[0].TokenType)
+
+		falseParam := NewMintNFTParam("", defaultMeta, defaultTokenType)
+		msg3 := NewMsgMintNFT(addr1, defaultContractID, addr1, falseParam)
+		require.Error(t, msg3.ValidateBasic())
+
+		falseParam = NewMintNFTParam(defaultName, defaultMeta, "abc")
+		msg4 := NewMsgMintNFT(addr1, defaultContractID, addr1, falseParam)
+		require.Error(t, msg4.ValidateBasic())
+
+		msg5 := NewMsgMintNFT(addr1, defaultContractID, addr1)
+		require.Error(t, msg5.ValidateBasic())
 	}
 	{
 		msg := NewMsgBurnNFT(addr1, defaultContractID, defaultTokenID1)
@@ -91,6 +104,9 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.ContractID, msg2.ContractID)
 		require.Equal(t, msg.From, msg2.From)
 		require.Equal(t, msg.TokenIDs, msg2.TokenIDs)
+
+		msg3 := NewMsgBurnNFT(addr1, defaultContractID)
+		require.Error(t, msg3.ValidateBasic())
 	}
 	{
 		addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -154,13 +170,13 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgTransferFT(nil, defaultContractID, addr2, NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 
 		msg = NewMsgTransferFT(addr1, defaultContractID, nil, NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty").Error())
 
 		msg = NewMsgTransferFT(addr1, "", addr2, NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: ").Error())
 
 		require.Panics(t, func() {
 			NewMsgTransferFT(addr1, defaultContractID, addr2, NewCoin("1", sdk.NewInt(defaultAmount)))
@@ -194,16 +210,19 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgTransferNFT(nil, defaultContractID, addr2, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 
 		msg = NewMsgTransferNFT(addr1, defaultContractID, nil, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty").Error())
 
 		msg = NewMsgTransferNFT(addr1, "", addr2, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: ").Error())
 
 		msg = NewMsgTransferNFT(addr1, defaultContractID, addr2, "1")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
+
+		msg = NewMsgTransferNFT(addr1, defaultContractID, addr2)
+		require.Error(t, msg.ValidateBasic())
 	}
 
 	{
@@ -230,13 +249,13 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgTransferFTFrom(nil, defaultContractID, addr2, addr2, NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty").Error())
 
 		msg = NewMsgTransferFTFrom(addr1, defaultContractID, nil, addr2, NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 
 		msg = NewMsgTransferFTFrom(addr1, defaultContractID, addr2, nil, NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty").Error())
 
 		require.Panics(t, func() {
 			NewMsgTransferFT(addr1, defaultContractID, addr2, NewCoin("1", sdk.NewInt(defaultAmount)))
@@ -271,16 +290,19 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgTransferNFTFrom(nil, defaultContractID, addr2, addr2, defaultTokenIDFT)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty").Error())
 
 		msg = NewMsgTransferNFTFrom(addr1, defaultContractID, nil, addr2, defaultTokenIDFT)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 
 		msg = NewMsgTransferNFTFrom(addr1, defaultContractID, addr2, nil, defaultTokenIDFT)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("To cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty").Error())
 
 		msg = NewMsgTransferNFTFrom(addr1, defaultContractID, addr2, addr2, "1")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
+
+		msg = NewMsgTransferNFTFrom(addr1, defaultContractID, addr2, addr2)
+		require.Error(t, msg.ValidateBasic())
 	}
 
 	{
@@ -306,19 +328,19 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgAttach(nil, defaultContractID, defaultTokenID1, defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 
 		msg = NewMsgAttach(addr1, "s", defaultTokenID1, defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "s").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: s").Error())
 
 		msg = NewMsgAttach(addr1, defaultContractID, "1", defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "1").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 
 		msg = NewMsgAttach(addr1, defaultContractID, defaultTokenID1, "2")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "2").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "2").Error())
 
 		msg = NewMsgAttach(addr1, defaultContractID, defaultTokenID1, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), ErrCannotAttachToItself(DefaultCodespace, defaultTokenID1).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrCannotAttachToItself, "TokenID: %s", defaultTokenID1).Error())
 	}
 
 	{
@@ -343,13 +365,13 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgDetach(nil, defaultContractID, "item0001")
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 
 		msg = NewMsgDetach(addr1, "s", "item0001")
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "s").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: s").Error())
 
 		msg = NewMsgDetach(addr1, defaultContractID, "1")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "1").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 	}
 	//nolint:dupl
 	{
@@ -376,22 +398,22 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgAttachFrom(nil, defaultContractID, addr2, defaultTokenID1, defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty").Error())
 
 		msg = NewMsgAttachFrom(addr1, defaultContractID, nil, defaultTokenID1, defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 
 		msg = NewMsgAttachFrom(addr1, "s", addr2, defaultTokenID1, defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "s").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: s").Error())
 
 		msg = NewMsgAttachFrom(addr1, defaultContractID, addr2, "1", defaultTokenID2)
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "1").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 
 		msg = NewMsgAttachFrom(addr1, defaultContractID, addr2, defaultTokenID1, "2")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "2").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "2").Error())
 
 		msg = NewMsgAttachFrom(addr1, defaultContractID, addr2, defaultTokenID1, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), ErrCannotAttachToItself(DefaultCodespace, defaultTokenID1).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrCannotAttachToItself, "TokenID: %s", defaultTokenID1).Error())
 	}
 	//nolint:dupl
 	{
@@ -417,16 +439,16 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgDetachFrom(nil, defaultContractID, addr2, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty").Error())
 
 		msg = NewMsgDetachFrom(addr1, defaultContractID, nil, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 
 		msg = NewMsgDetachFrom(addr1, "s", addr2, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "s").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: s").Error())
 
 		msg = NewMsgDetachFrom(addr1, defaultContractID, addr2, "1")
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidTokenID(DefaultCodespace, "1").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 	}
 
 	{
@@ -491,13 +513,13 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgBurnFTFrom(addr1, defaultContractID, addr1, OneCoin(defaultTokenIDFT))
-		require.EqualError(t, msg.ValidateBasic(), ErrApproverProxySame(DefaultCodespace, addr1.String()).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", addr1.String()).Error())
 
 		msg = NewMsgBurnFTFrom(nil, defaultContractID, addr1, OneCoin(defaultTokenIDFT))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty").Error())
 
 		msg = NewMsgBurnFTFrom(addr1, defaultContractID, nil, OneCoin(defaultTokenIDFT))
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
 	}
 
 	{
@@ -523,12 +545,15 @@ func TestMsgBasics(t *testing.T) {
 
 	{
 		msg := NewMsgBurnNFTFrom(addr1, defaultContractID, addr1, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), ErrApproverProxySame(DefaultCodespace, addr1.String()).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", addr1.String()).Error())
 
 		msg = NewMsgBurnNFTFrom(nil, defaultContractID, addr1, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("Proxy cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty").Error())
 
 		msg = NewMsgBurnNFTFrom(addr1, defaultContractID, nil, defaultTokenID1)
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("From cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
+
+		msg = NewMsgBurnNFTFrom(addr1, defaultContractID, addr1)
+		require.Error(t, msg.ValidateBasic())
 	}
 }

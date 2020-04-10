@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	cbank "github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/line/link/x/proxy/types"
@@ -23,7 +24,7 @@ func NewKeeper(cdc *codec.Codec, bankKeeper cbank.Keeper, accountKeeper auth.Acc
 }
 
 // approve coins for `by` to be transferred on behalf of `onBehalfOf`
-func (k Keeper) ApproveCoins(ctx sdk.Context, msg types.MsgProxyApproveCoins) sdk.Error {
+func (k Keeper) ApproveCoins(ctx sdk.Context, msg types.MsgProxyApproveCoins) error {
 	requestDenom := types.NewProxyDenom(msg.Proxy, msg.OnBehalfOf, msg.Denom)
 	requestAllowance := types.NewProxyAllowance(requestDenom, msg.Amount)
 
@@ -48,7 +49,7 @@ func (k Keeper) ApproveCoins(ctx sdk.Context, msg types.MsgProxyApproveCoins) sd
 }
 
 // disapprove coins for `by` to be transferred on behalf of `onBehalfOf`
-func (k Keeper) DisapproveCoins(ctx sdk.Context, msg types.MsgProxyDisapproveCoins) sdk.Error {
+func (k Keeper) DisapproveCoins(ctx sdk.Context, msg types.MsgProxyDisapproveCoins) error {
 	requestDenom := types.NewProxyDenom(msg.Proxy, msg.OnBehalfOf, msg.Denom)
 	requestAllowance := types.NewProxyAllowance(requestDenom, msg.Amount)
 
@@ -63,7 +64,7 @@ func (k Keeper) DisapproveCoins(ctx sdk.Context, msg types.MsgProxyDisapproveCoi
 		return err
 	}
 	if !gte {
-		return types.ErrProxyNotEnoughApprovedCoins(types.DefaultCodespace, px.Amount, requestAllowance.Amount)
+		return sdkerrors.Wrapf(types.ErrProxyNotEnoughApprovedCoins, "Approved: %v, Requested: %v", px.Amount, requestAllowance.Amount)
 	}
 
 	// subtract approved coins
@@ -82,7 +83,7 @@ func (k Keeper) DisapproveCoins(ctx sdk.Context, msg types.MsgProxyDisapproveCoi
 	return nil
 }
 
-func (k Keeper) SendCoinsFrom(ctx sdk.Context, msg types.MsgProxySendCoinsFrom) sdk.Error {
+func (k Keeper) SendCoinsFrom(ctx sdk.Context, msg types.MsgProxySendCoinsFrom) error {
 	// convert the request as a proxy
 	requestDenom := types.NewProxyDenom(msg.Proxy, msg.OnBehalfOf, msg.Denom)
 	requestAllowance := types.NewProxyAllowance(requestDenom, msg.Amount)
@@ -99,7 +100,7 @@ func (k Keeper) SendCoinsFrom(ctx sdk.Context, msg types.MsgProxySendCoinsFrom) 
 		return err
 	}
 	if !gte {
-		return types.ErrProxyNotEnoughApprovedCoins(types.DefaultCodespace, px.Amount, requestAllowance.Amount)
+		return sdkerrors.Wrapf(types.ErrProxyNotEnoughApprovedCoins, "Approved: %v, Requested: %v", px.Amount, requestAllowance.Amount)
 	}
 
 	// send coins from `OnBehalfOf` to `ToAddress`
@@ -133,13 +134,13 @@ func (k Keeper) setProxyAllowance(ctx sdk.Context, pa types.ProxyAllowance) {
 	store.Set(k.proxyAllowanceKeyOf(pa.ProxyDenom), k.cdc.MustMarshalBinaryBare(pa))
 }
 
-func (k Keeper) GetProxyAllowance(ctx sdk.Context, pd types.ProxyDenom) (types.ProxyAllowance, sdk.Error) {
+func (k Keeper) GetProxyAllowance(ctx sdk.Context, pd types.ProxyDenom) (types.ProxyAllowance, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	// retrieve the proxy
 	bz := store.Get(k.proxyAllowanceKeyOf(pd))
 	if bz == nil {
-		return types.ProxyAllowance{}, types.ErrProxyNotExist(types.DefaultCodespace, pd.Proxy.String(), pd.OnBehalfOf.String())
+		return types.ProxyAllowance{}, sdkerrors.Wrapf(types.ErrProxyNotExist, "Proxy: %s, Account: %s", pd.Proxy.String(), pd.OnBehalfOf.String())
 	}
 	r := &types.ProxyAllowance{}
 	k.cdc.MustUnmarshalBinaryBare(bz, r)

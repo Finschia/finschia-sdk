@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/line/link/x/account/internal/types"
@@ -51,7 +52,7 @@ func setupTestInput(t *testing.T) TestInput {
 	cdc := newTestCodec()
 
 	// init params keeper and subspaces
-	paramsKeeper := params.NewKeeper(cdc, keyParams, tkeyParams, params.DefaultCodespace)
+	paramsKeeper := params.NewKeeper(cdc, keyParams, tkeyParams)
 	authSubspace := paramsKeeper.Subspace(auth.DefaultParamspace)
 
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
@@ -72,22 +73,22 @@ func TestHandlerCreateAccount(t *testing.T) {
 	// invalid message
 	{
 		msg := safetybox.MsgSafetyBoxCreate{SafetyBoxID: "noid", SafetyBoxOwner: addr1}
-		res := h(ctx, msg)
-		require.False(t, res.Code.IsOK())
+		_, err := h(ctx, msg)
+		require.Error(t, err)
 	}
 
 	// creating the account addr2 succeeds at first
 	{
 		msg := types.NewMsgCreateAccount(addr1, addr2)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err := h(ctx, msg)
+		require.NoError(t, err)
 	}
 
 	// creating the account addr2 twice fails
 	{
 		msg := types.NewMsgCreateAccount(addr1, addr2)
-		res := h(ctx, msg)
-		require.False(t, res.Code.IsOK())
+		_, err := h(ctx, msg)
+		require.Error(t, err)
 	}
 }
 
@@ -100,13 +101,13 @@ func TestHandlerEmpty(t *testing.T) {
 	// message test
 	{
 		msg := types.MsgEmpty{From: addr1}
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err := h(ctx, msg)
+		require.NoError(t, err)
 	}
 
 	// invalid message
 	{
 		msg := types.MsgEmpty{From: nil}
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("missing signer address").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missing signer address").Error())
 	}
 }

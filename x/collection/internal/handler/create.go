@@ -6,11 +6,11 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgCreateCollection(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgCreateCollection) sdk.Result {
+func handleMsgCreateCollection(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgCreateCollection) (*sdk.Result, error) {
 	collection := types.NewCollection(keeper.NewContractID(ctx), msg.Name, msg.Meta, msg.BaseImgURI)
 	err := keeper.CreateCollection(ctx, collection, msg.Owner)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -20,5 +20,5 @@ func handleMsgCreateCollection(ctx sdk.Context, keeper keeper.Keeper, msg types.
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String()),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

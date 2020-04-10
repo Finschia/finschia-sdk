@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
@@ -30,7 +31,7 @@ func (msg MsgModify) GetSignBytes() []byte {
 }
 func (msg MsgModify) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Owner} }
 
-func (msg MsgModify) ValidateBasic() sdk.Error {
+func (msg MsgModify) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
@@ -41,7 +42,7 @@ func (msg MsgModify) ValidateBasic() sdk.Error {
 	}
 
 	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
 
 	return nil

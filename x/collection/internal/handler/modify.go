@@ -6,9 +6,9 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func handleMsgModify(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgModify) sdk.Result {
+func handleMsgModify(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgModify) (*sdk.Result, error) {
 	if err := keeper.Modify(ctx, msg.Owner, msg.ContractID, msg.TokenType, msg.TokenIndex, msg.Changes); err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -18,5 +18,5 @@ func handleMsgModify(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgModify)
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.Owner.String()),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

@@ -1,16 +1,15 @@
 package account
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/line/link/x/account/internal/types"
 )
 
 // NewHandler returns a handler for "account" type messages.
 func NewHandler(k auth.AccountKeeper) sdk.Handler {
-	return func(ctx sdk.Context, msg sdk.Msg) sdk.Result {
+	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
@@ -19,15 +18,14 @@ func NewHandler(k auth.AccountKeeper) sdk.Handler {
 		case types.MsgEmpty:
 			return handleMsgEmpty(ctx, msg)
 		default:
-			errMsg := fmt.Sprintf("unrecognized account message type: %T", msg)
-			return sdk.ErrUnknownRequest(errMsg).Result()
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized account message type: %T", msg)
 		}
 	}
 }
 
-func handleMsgCreateAccount(ctx sdk.Context, keeper auth.AccountKeeper, msg types.MsgCreateAccount) sdk.Result {
+func handleMsgCreateAccount(ctx sdk.Context, keeper auth.AccountKeeper, msg types.MsgCreateAccount) (*sdk.Result, error) {
 	if keeper.GetAccount(ctx, msg.Target) != nil {
-		return types.ErrAccountAlreadyExist(types.DefaultCodespace).Result()
+		return nil, types.ErrAccountAlreadyExist
 	}
 
 	acc := keeper.NewAccountWithAddress(ctx, msg.Target)
@@ -47,10 +45,10 @@ func handleMsgCreateAccount(ctx sdk.Context, keeper auth.AccountKeeper, msg type
 			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgEmpty(ctx sdk.Context, msg types.MsgEmpty) sdk.Result {
+func handleMsgEmpty(ctx sdk.Context, msg types.MsgEmpty) (*sdk.Result, error) {
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -59,5 +57,5 @@ func handleMsgEmpty(ctx sdk.Context, msg types.MsgEmpty) sdk.Result {
 			sdk.NewAttribute(sdk.AttributeKeyAction, types.EventEmpty),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

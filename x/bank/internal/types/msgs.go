@@ -1,9 +1,8 @@
 package types
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/types"
 )
 
@@ -31,18 +30,18 @@ func (msg MsgSend) Route() string { return RouterKey }
 func (msg MsgSend) Type() string { return "send" }
 
 // ValidateBasic Implements Msg.
-func (msg MsgSend) ValidateBasic() sdk.Error {
+func (msg MsgSend) ValidateBasic() error {
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("missing sender address")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missing sender address")
 	}
 	if msg.To.Empty() {
-		return sdk.ErrInvalidAddress("missing recipient address")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "missing recipient address")
 	}
 	if !msg.Amount.IsValid() {
-		return sdk.ErrInvalidCoins("send amount is invalid: " + msg.Amount.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 	if !msg.Amount.IsAllPositive() {
-		return sdk.ErrInsufficientCoins("send amount must be positive")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
 	if err := validateDenomination(msg.Amount); err != nil {
 		return err
@@ -80,14 +79,14 @@ func (msg MsgMultiSend) Route() string { return RouterKey }
 func (msg MsgMultiSend) Type() string { return "multisend" }
 
 // ValidateBasic Implements Msg.
-func (msg MsgMultiSend) ValidateBasic() sdk.Error {
+func (msg MsgMultiSend) ValidateBasic() error {
 	// this just makes sure all the inputs and outputs are properly formatted,
 	// not that they actually have the money inside
 	if len(msg.Inputs) == 0 {
-		return ErrNoInputs(DefaultCodespace).TraceSDK("")
+		return ErrNoInputs
 	}
 	if len(msg.Outputs) == 0 {
-		return ErrNoOutputs(DefaultCodespace).TraceSDK("")
+		return ErrNoOutputs
 	}
 
 	return ValidateInputsOutputs(msg.Inputs, msg.Outputs)
@@ -114,15 +113,15 @@ type Input struct {
 }
 
 // ValidateBasic - validate transaction input
-func (in Input) ValidateBasic() sdk.Error {
+func (in Input) ValidateBasic() error {
 	if len(in.Address) == 0 {
-		return sdk.ErrInvalidAddress(in.Address.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "input address missing")
 	}
 	if !in.Coins.IsValid() {
-		return sdk.ErrInvalidCoins(in.Coins.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, in.Coins.String())
 	}
 	if !in.Coins.IsAllPositive() {
-		return sdk.ErrInvalidCoins(in.Coins.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, in.Coins.String())
 	}
 	if err := validateDenomination(in.Coins); err != nil {
 		return err
@@ -145,15 +144,15 @@ type Output struct {
 }
 
 // ValidateBasic - validate transaction output
-func (out Output) ValidateBasic() sdk.Error {
+func (out Output) ValidateBasic() error {
 	if len(out.Address) == 0 {
-		return sdk.ErrInvalidAddress(out.Address.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "output address missing")
 	}
 	if !out.Coins.IsValid() {
-		return sdk.ErrInvalidCoins(out.Coins.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, out.Coins.String())
 	}
 	if !out.Coins.IsAllPositive() {
-		return sdk.ErrInvalidCoins(out.Coins.String())
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, out.Coins.String())
 	}
 	if err := validateDenomination(out.Coins); err != nil {
 		return err
@@ -171,34 +170,34 @@ func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
 
 // ValidateInputsOutputs validates that each respective input and output is
 // valid and that the sum of inputs is equal to the sum of outputs.
-func ValidateInputsOutputs(inputs []Input, outputs []Output) sdk.Error {
+func ValidateInputsOutputs(inputs []Input, outputs []Output) error {
 	var totalIn, totalOut sdk.Coins
 
 	for _, in := range inputs {
 		if err := in.ValidateBasic(); err != nil {
-			return err.TraceSDK("")
+			return err
 		}
-		totalIn = totalIn.Add(in.Coins)
+		totalIn = totalIn.Add(in.Coins...)
 	}
 
 	for _, out := range outputs {
 		if err := out.ValidateBasic(); err != nil {
-			return err.TraceSDK("")
+			return err
 		}
-		totalOut = totalOut.Add(out.Coins)
+		totalOut = totalOut.Add(out.Coins...)
 	}
 
 	// make sure inputs and outputs match
 	if !totalIn.IsEqual(totalOut) {
-		return ErrInputOutputMismatch(DefaultCodespace)
+		return ErrInputOutputMismatch
 	}
 
 	return nil
 }
-func validateDenomination(coins sdk.Coins) sdk.Error {
+func validateDenomination(coins sdk.Coins) error {
 	for _, coin := range coins {
 		if err := types.ValidateSymbolReserved(coin.Denom); err != nil {
-			return types.ErrInvalidDenom(fmt.Sprintf("invalid denom [%s] send message supports 3~5 length denom only", coin.Denom))
+			return sdkerrors.Wrapf(types.ErrInvalidDenom, "invalid denom [%s] send message supports 3~5 length denom only", coin.Denom)
 		}
 	}
 	return nil

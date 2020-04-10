@@ -8,9 +8,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func approve(approver, proxy sdk.AccAddress, contractID string, ctx sdk.Context, h sdk.Handler) {
+func approve(t *testing.T, approver, proxy sdk.AccAddress, contractID string, ctx sdk.Context, h sdk.Handler) {
 	approveMsg := types.NewMsgApprove(approver, contractID, proxy)
-	_ = h(ctx, approveMsg)
+	_, err := h(ctx, approveMsg)
+	require.NoError(t, err)
 }
 
 func TestHandleMsgApprove(t *testing.T) {
@@ -26,40 +27,41 @@ func TestHandleApproveDisapprove(t *testing.T) {
 	var contractID string
 	{
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, createMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, createMsg)
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
-		res = h(ctx, msg)
-		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg)
+		require.NoError(t, err)
+		param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, param)
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
+		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, param)
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 		msg3 := types.NewMsgIssueFT(addr1, addr1, contractID, defaultName, defaultMeta, sdk.NewInt(defaultAmount), sdk.NewInt(defaultDecimals), true)
-		res = h(ctx, msg3)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg3)
+		require.NoError(t, err)
 		msg4 := types.NewMsgMintFT(addr1, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-		res = h(ctx, msg4)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg4)
+		require.NoError(t, err)
 	}
 
 	msg := types.NewMsgTransferNFTFrom(addr2, contractID, addr1, addr2, defaultTokenID1)
-	res := h(ctx, msg)
-	require.False(t, res.Code.IsOK())
+	_, err := h(ctx, msg)
+	require.Error(t, err)
 
 	{
 		msg3 := types.NewMsgApprove(addr1, contractID, addr2)
-		res = h(ctx, msg3)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg3)
+		require.NoError(t, err)
 	}
 
 	msg = types.NewMsgTransferNFTFrom(addr2, contractID, addr1, addr2, defaultTokenID1)
-	res = h(ctx, msg)
-	require.True(t, res.Code.IsOK())
+	res, err := h(ctx, msg)
+	require.NoError(t, err)
 
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -74,11 +76,11 @@ func TestHandleApproveDisapprove(t *testing.T) {
 	verifyEventFunc(t, e, res.Events)
 
 	msg2 := types.NewMsgBurnNFTFrom(addr2, contractID, addr1, defaultTokenID2)
-	res = h(ctx, msg2)
-	require.False(t, res.Code.IsOK()) // addr2 does not have the burn permission
+	_, err = h(ctx, msg2)
+	require.Error(t, err) // addr2 does not have the burn permission
 	msg3 := types.NewMsgBurnFTFrom(addr2, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-	res = h(ctx, msg3)
-	require.False(t, res.Code.IsOK()) // addr2 does not have the burn permission
+	_, err = h(ctx, msg3)
+	require.Error(t, err) // addr2 does not have the burn permission
 
 	{
 		permission := types.Permission{
@@ -86,13 +88,13 @@ func TestHandleApproveDisapprove(t *testing.T) {
 			Resource: contractID,
 		}
 		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err := h(ctx, msg)
+		require.NoError(t, err)
 	}
 
 	msg2 = types.NewMsgBurnNFTFrom(addr2, contractID, addr1, defaultTokenID2)
-	res = h(ctx, msg2)
-	require.True(t, res.Code.IsOK()) // addr2 does not have the burn permission
+	res, err = h(ctx, msg2)
+	require.NoError(t, err) // addr2 does not have the burn permission
 
 	e = sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -106,8 +108,8 @@ func TestHandleApproveDisapprove(t *testing.T) {
 	verifyEventFunc(t, e, res.Events)
 
 	msg3 = types.NewMsgBurnFTFrom(addr2, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-	res = h(ctx, msg3)
-	require.True(t, res.Code.IsOK())
+	_, err = h(ctx, msg3)
+	require.NoError(t, err)
 
 	{
 		permission := types.Permission{
@@ -115,13 +117,13 @@ func TestHandleApproveDisapprove(t *testing.T) {
 			Resource: contractID,
 		}
 		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		_, err := h(ctx, msg)
+		require.NoError(t, err)
 	}
 
 	msg3 = types.NewMsgBurnFTFrom(addr2, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-	res = h(ctx, msg3)
-	require.True(t, res.Code.IsOK())
+	res, err = h(ctx, msg3)
+	require.NoError(t, err)
 	e = sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
@@ -134,19 +136,19 @@ func TestHandleApproveDisapprove(t *testing.T) {
 
 	{
 		msg3 := types.NewMsgDisapprove(addr1, contractID, addr2)
-		res = h(ctx, msg3)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg3)
+		require.NoError(t, err)
 	}
 
 	msg = types.NewMsgTransferNFTFrom(addr2, contractID, addr1, addr2, defaultTokenID1)
-	res = h(ctx, msg)
-	require.False(t, res.Code.IsOK())
+	_, err = h(ctx, msg)
+	require.Error(t, err)
 
 	msg2 = types.NewMsgBurnNFTFrom(addr2, contractID, addr1, defaultTokenID1)
-	res = h(ctx, msg2)
-	require.False(t, res.Code.IsOK())
+	_, err = h(ctx, msg2)
+	require.Error(t, err)
 
 	msg3 = types.NewMsgBurnFTFrom(addr2, contractID, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount)))
-	res = h(ctx, msg3)
-	require.False(t, res.Code.IsOK())
+	_, err = h(ctx, msg3)
+	require.Error(t, err)
 }

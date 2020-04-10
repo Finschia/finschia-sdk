@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/iam/exported"
 	"github.com/line/link/x/token/internal/keeper"
 	"github.com/line/link/x/token/internal/types"
@@ -165,5 +166,5 @@ func TestNewQuerier_invalid(t *testing.T) {
 		Data: []byte(string(codec.MustMarshalJSONIndent(types.ModuleCdc, params))),
 	}
 	_, err := querier(ctx, path, req)
-	require.EqualError(t, err, sdk.ErrUnknownRequest("unknown token query endpoint").Error())
+	require.EqualError(t, err, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown token query endpoint").Error())
 }

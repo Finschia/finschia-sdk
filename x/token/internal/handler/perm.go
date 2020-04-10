@@ -7,10 +7,10 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func handleMsgGrant(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgGrantPermission) sdk.Result {
+func handleMsgGrant(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgGrantPermission) (*sdk.Result, error) {
 	err := keeper.GrantPermission(ctx, msg.From, msg.To, msg.Permission)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -20,13 +20,13 @@ func handleMsgGrant(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgGrantPer
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgRevoke(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgRevokePermission) sdk.Result {
+func handleMsgRevoke(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgRevokePermission) (*sdk.Result, error) {
 	err := keeper.RevokePermission(ctx, msg.From, msg.Permission)
 	if err != nil {
-		return err.Result()
+		return nil, err
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -36,5 +36,5 @@ func handleMsgRevoke(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgRevokeP
 			sdk.NewAttribute(sdk.AttributeKeySender, msg.From.String()),
 		),
 	})
-	return sdk.Result{Events: ctx.EventManager().Events()}
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }

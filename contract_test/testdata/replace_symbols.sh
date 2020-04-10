@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 source "./contract_test/testdata/common.sh"
 
-JACK_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show jack -a)"
+JACK_ADDR="$(./build/linkcli --keyring-backend=test --home /tmp/contract_test/.linkcli keys show jack -a)"
 REPLACE_OPTION=$1
 
 replace_address () {
-  ACTUAL_ADDR="$(./build/linkcli --home /tmp/contract_test/.linkcli keys show "$1" -a)"
+  ACTUAL_ADDR="$(./build/linkcli --keyring-backend=test --home /tmp/contract_test/.linkcli keys show "$1" -a)"
   sed -i.bak -e "s/$2/${ACTUAL_ADDR}/g" ${SWAGGER}
   echo "Replaced dummy with actual ADDR of $1 : ${ACTUAL_ADDR}"
 }

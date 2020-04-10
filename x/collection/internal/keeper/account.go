@@ -2,21 +2,22 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 type AccountKeeper interface {
-	NewAccountWithAddress(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
-	GetOrNewAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
-	GetAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error)
-	SetAccount(ctx sdk.Context, acc types.Account) sdk.Error
-	UpdateAccount(ctx sdk.Context, acc types.Account) sdk.Error
-	GetBalance(ctx sdk.Context, contractID, tokenID string, addr sdk.AccAddress) (sdk.Int, sdk.Error)
+	NewAccountWithAddress(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err error)
+	GetOrNewAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err error)
+	GetAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err error)
+	SetAccount(ctx sdk.Context, acc types.Account) error
+	UpdateAccount(ctx sdk.Context, acc types.Account) error
+	GetBalance(ctx sdk.Context, contractID, tokenID string, addr sdk.AccAddress) (sdk.Int, error)
 }
 
 var _ AccountKeeper = (*Keeper)(nil)
 
-func (k Keeper) GetBalance(ctx sdk.Context, contractID, tokenID string, addr sdk.AccAddress) (sdk.Int, sdk.Error) {
+func (k Keeper) GetBalance(ctx sdk.Context, contractID, tokenID string, addr sdk.AccAddress) (sdk.Int, error) {
 	acc, err := k.GetAccount(ctx, contractID, addr)
 	if err != nil {
 		return sdk.ZeroInt(), err
@@ -24,7 +25,7 @@ func (k Keeper) GetBalance(ctx sdk.Context, contractID, tokenID string, addr sdk
 	return acc.GetCoins().AmountOf(tokenID), nil
 }
 
-func (k Keeper) NewAccountWithAddress(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
+func (k Keeper) NewAccountWithAddress(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err error) {
 	acc = types.NewBaseAccountWithAddress(contractID, addr)
 	if err = k.SetAccount(ctx, acc); err != nil {
 		return nil, err
@@ -32,11 +33,11 @@ func (k Keeper) NewAccountWithAddress(ctx sdk.Context, contractID string, addr s
 	return acc, nil
 }
 
-func (k Keeper) SetAccount(ctx sdk.Context, acc types.Account) sdk.Error {
+func (k Keeper) SetAccount(ctx sdk.Context, acc types.Account) error {
 	store := ctx.KVStore(k.storeKey)
 	accKey := types.AccountKey(acc.GetContractID(), acc.GetAddress())
 	if store.Has(accKey) {
-		return types.ErrAccountExist(types.DefaultCodespace, acc.GetAddress())
+		return sdkerrors.Wrap(types.ErrAccountExist, acc.GetAddress().String())
 	}
 	store.Set(accKey, k.cdc.MustMarshalBinaryBare(acc))
 
@@ -50,17 +51,17 @@ func (k Keeper) SetAccount(ctx sdk.Context, acc types.Account) sdk.Error {
 	return nil
 }
 
-func (k Keeper) UpdateAccount(ctx sdk.Context, acc types.Account) sdk.Error {
+func (k Keeper) UpdateAccount(ctx sdk.Context, acc types.Account) error {
 	store := ctx.KVStore(k.storeKey)
 	accKey := types.AccountKey(acc.GetContractID(), acc.GetAddress())
 	if !store.Has(accKey) {
-		return types.ErrAccountNotExist(types.DefaultCodespace, acc.GetAddress())
+		return sdkerrors.Wrap(types.ErrAccountNotExist, acc.GetAddress().String())
 	}
 	store.Set(accKey, k.cdc.MustMarshalBinaryBare(acc))
 	return nil
 }
 
-func (k Keeper) GetOrNewAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
+func (k Keeper) GetOrNewAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err error) {
 	acc, err = k.GetAccount(ctx, contractID, addr)
 	if err != nil {
 		acc, err = k.NewAccountWithAddress(ctx, contractID, addr)
@@ -71,11 +72,11 @@ func (k Keeper) GetOrNewAccount(ctx sdk.Context, contractID string, addr sdk.Acc
 	return acc, nil
 }
 
-func (k Keeper) GetAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err sdk.Error) {
+func (k Keeper) GetAccount(ctx sdk.Context, contractID string, addr sdk.AccAddress) (acc types.Account, err error) {
 	store := ctx.KVStore(k.storeKey)
 	accKey := types.AccountKey(contractID, addr)
 	if !store.Has(accKey) {
-		return nil, types.ErrAccountNotExist(types.DefaultCodespace, addr)
+		return nil, sdkerrors.Wrap(types.ErrAccountNotExist, addr.String())
 	}
 	bz := store.Get(accKey)
 	return k.mustDecodeAccount(bz), nil

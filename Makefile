@@ -42,7 +42,7 @@ ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 CLI_TEST_BUILD_FLAGS := -tags "cli_test $(build_tags)"
-CLI_MULTI_BUILD_FALGS := -tags "cli_multi_node_test $(build_tags)"
+CLI_MULTI_BUILD_FLAGS := -tags "cli_multi_node_test $(build_tags)"
 
 ########################################
 ### Lint
@@ -120,20 +120,20 @@ test-integration-all: test-integration test-integration-multi-node
 test-unit-all: test-unit test-unit-race test-unit-cover
 
 test-unit:
-	@go test -mod=readonly  ./...
+	@go test -mod=readonly -p 4  ./...
 
 test-unit-race:
-	@go test -mod=readonly -race  ./...
+	@go test -mod=readonly -p 4 -race  ./...
 
 # `coverage.txt` is used in CircleCi config for the coverage report so if someone updates one, please updates the other too
 test-unit-cover:
-	@go test -mod=readonly -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic ./...
+	@go test -mod=readonly -p 4 -timeout 30m -race -coverprofile=coverage.txt -covermode=atomic ./...
 
 test-integration: build
-	@go test -mod=readonly `go list ./cli_test/...` $(CLI_TEST_BUILD_FLAGS) -v
+	@go test -mod=readonly -p 4 `go list ./cli_test/...` $(CLI_TEST_BUILD_FLAGS) -v
 
 test-integration-multi-node: build-docker
-	@go test -mod=readonly `go list ./cli_test/...` $(CLI_MULTI_BUILD_FALGS) -v
+	@go test -mod=readonly -p 4 `go list ./cli_test/...` $(CLI_MULTI_BUILD_FLAGS) -v
 
 
 ########################################

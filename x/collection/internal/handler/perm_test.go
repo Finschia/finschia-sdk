@@ -10,11 +10,11 @@ import (
 )
 
 func TestHandleMsgGrant(t *testing.T) {
-	ctx, h, contractID := prepareCreateCollection()
+	ctx, h, contractID := prepareCreateCollection(t)
 	{
 		msg := types.NewMsgGrantPermission(addr1, addr2, types.NewIssuePermission(contractID))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -28,8 +28,8 @@ func TestHandleMsgGrant(t *testing.T) {
 	}
 	{
 		msg := types.NewMsgGrantPermission(addr1, addr2, types.NewMintPermission(contractID))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -43,8 +43,8 @@ func TestHandleMsgGrant(t *testing.T) {
 	}
 	{
 		msg := types.NewMsgGrantPermission(addr1, addr2, types.NewBurnPermission(contractID))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -58,8 +58,8 @@ func TestHandleMsgGrant(t *testing.T) {
 	}
 	{
 		msg := types.NewMsgGrantPermission(addr1, addr2, types.NewModifyPermission(contractID))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -74,20 +74,27 @@ func TestHandleMsgGrant(t *testing.T) {
 }
 
 func TestHandleMsgRevoke(t *testing.T) {
-	ctx, h, contractID := prepareCreateCollection()
+	ctx, h, contractID := prepareCreateCollection(t)
 	msg := types.NewMsgGrantPermission(addr1, addr2, types.NewIssuePermission(contractID))
-	_ = h(ctx, msg)
+	_, err := h(ctx, msg)
+	require.NoError(t, err)
+
 	msg = types.NewMsgGrantPermission(addr1, addr2, types.NewMintPermission(contractID))
-	_ = h(ctx, msg)
+	_, err = h(ctx, msg)
+	require.NoError(t, err)
+
 	msg = types.NewMsgGrantPermission(addr1, addr2, types.NewBurnPermission(contractID))
-	_ = h(ctx, msg)
+	_, err = h(ctx, msg)
+	require.NoError(t, err)
+
 	msg = types.NewMsgGrantPermission(addr1, addr2, types.NewModifyPermission(contractID))
-	_ = h(ctx, msg)
+	_, err = h(ctx, msg)
+	require.NoError(t, err)
 
 	{
 		msg := types.NewMsgRevokePermission(addr2, types.NewIssuePermission(contractID))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -100,8 +107,8 @@ func TestHandleMsgRevoke(t *testing.T) {
 	}
 	{
 		msg := types.NewMsgRevokePermission(addr2, types.NewMintPermission(contractID))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -114,8 +121,8 @@ func TestHandleMsgRevoke(t *testing.T) {
 	}
 	{
 		msg := types.NewMsgRevokePermission(addr2, types.NewBurnPermission(contractID))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
@@ -128,8 +135,8 @@ func TestHandleMsgRevoke(t *testing.T) {
 	}
 	{
 		msg := types.NewMsgRevokePermission(addr2, types.NewModifyPermission(contractID))
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),

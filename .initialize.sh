@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 set -ex
 
 mode="mainnet"
@@ -19,8 +19,6 @@ fi
 LINKCLI=${LINKCLI:-linkcli}
 LINKD=${LINKD:-linkd}
 
-PASSWORD="1234567890"
-
 # initialize
 rm -rf ~/.linkd ~/.linkcli
 
@@ -29,13 +27,14 @@ ${LINKCLI} config chain-id link
 ${LINKCLI} config output json
 ${LINKCLI} config indent true
 ${LINKCLI} config trust-node true
+${LINKCLI} config keyring-backend test
 
 # Initialize configuration files and genesis file
 # moniker is the name of your node
 ${LINKD} init solo --chain-id link
 
 # configure for testnet
-if [[ $mode == "testnet" ]]
+if [[ ${mode} == "testnet" ]]
 then
     if [[ $1 == "docker" ]]
     then
@@ -47,13 +46,19 @@ then
     fi
 fi
 
-echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add jack
-echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add alice
-echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add bob
-echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add rinah
-echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add sam
-echo ${PASSWORD} | echo ${PASSWORD} | ${LINKCLI} keys add evelyn
+${LINKCLI} keys add jack
+${LINKCLI} keys add alice
+${LINKCLI} keys add bob
+${LINKCLI} keys add rinah
+${LINKCLI} keys add sam
+${LINKCLI} keys add evelyn
 
+if [[ ${mode} == "testnet" ]]
+then
+   ${LINKD} add-genesis-account tlink15la35q37j2dcg427kfy4el2l0r227xwhc2v3lg 9223372036854775807link,1stake
+else
+   ${LINKD} add-genesis-account link15la35q37j2dcg427kfy4el2l0r227xwhuaapxd 9223372036854775807link,1stake
+fi
 # Add both accounts, with coins to the genesis file
 ${LINKD} add-genesis-account $(${LINKCLI} keys show jack -a) 1000link,100000000stake
 ${LINKD} add-genesis-account $(${LINKCLI} keys show alice -a) 1000link,100000000stake
@@ -62,7 +67,7 @@ ${LINKD} add-genesis-account $(${LINKCLI} keys show rinah -a) 1000link,100000000
 ${LINKD} add-genesis-account $(${LINKCLI} keys show sam -a) 1000link,100000000stake
 ${LINKD} add-genesis-account $(${LINKCLI} keys show evelyn -a) 1000link,100000000stake
 
-echo ${PASSWORD} | ${LINKD} gentx --name jack
+${LINKD} --keyring-backend=test gentx --name jack
 
 ${LINKD} collect-gentxs
 

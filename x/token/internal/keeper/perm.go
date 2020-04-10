@@ -2,6 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/iam/exported"
 	"github.com/line/link/x/token/internal/types"
 )
@@ -10,9 +11,9 @@ func (k Keeper) AddPermission(ctx sdk.Context, addr sdk.AccAddress, perm types.P
 	k.iamKeeper.GrantPermission(ctx, addr, perm)
 }
 
-func (k Keeper) RevokePermission(ctx sdk.Context, addr sdk.AccAddress, perm types.PermissionI) sdk.Error {
+func (k Keeper) RevokePermission(ctx sdk.Context, addr sdk.AccAddress, perm types.PermissionI) error {
 	if !k.HasPermission(ctx, addr, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, addr, perm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr.String(), perm.String())
 	}
 	k.iamKeeper.RevokePermission(ctx, addr, perm)
 
@@ -31,9 +32,9 @@ func (k Keeper) HasPermission(ctx sdk.Context, addr sdk.AccAddress, perm types.P
 	return k.iamKeeper.HasPermission(ctx, addr, perm)
 }
 
-func (k Keeper) GrantPermission(ctx sdk.Context, from, to sdk.AccAddress, perm types.PermissionI) sdk.Error {
+func (k Keeper) GrantPermission(ctx sdk.Context, from, to sdk.AccAddress, perm types.PermissionI) error {
 	if !k.HasPermission(ctx, from, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, from, perm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
 	k.AddPermission(ctx, to, perm)
 

@@ -1,22 +1,21 @@
 package keeper
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 type BurnKeeper interface {
-	BurnFT(ctx sdk.Context, contractID string, from sdk.AccAddress, amount types.Coins) sdk.Error
-	BurnNFT(ctx sdk.Context, contractID string, from sdk.AccAddress, tokenIDs ...string) sdk.Error
-	BurnFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, amount types.Coins) sdk.Error
-	BurnNFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, tokenIDs ...string) sdk.Error
+	BurnFT(ctx sdk.Context, contractID string, from sdk.AccAddress, amount types.Coins) error
+	BurnNFT(ctx sdk.Context, contractID string, from sdk.AccAddress, tokenIDs ...string) error
+	BurnFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, amount types.Coins) error
+	BurnNFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, tokenIDs ...string) error
 }
 
 var _ BurnKeeper = (*Keeper)(nil)
 
-func (k Keeper) BurnFT(ctx sdk.Context, contractID string, from sdk.AccAddress, amount types.Coins) sdk.Error {
+func (k Keeper) BurnFT(ctx sdk.Context, contractID string, from sdk.AccAddress, amount types.Coins) error {
 	if err := k.burnFT(ctx, contractID, from, from, amount); err != nil {
 		return err
 	}
@@ -33,9 +32,9 @@ func (k Keeper) BurnFT(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) BurnFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, amount types.Coins) sdk.Error {
+func (k Keeper) BurnFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, amount types.Coins) error {
 	if !k.IsApproved(ctx, contractID, proxy, from) {
-		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), contractID)
+		return sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", proxy.String(), from.String(), contractID)
 	}
 
 	if err := k.burnFT(ctx, contractID, proxy, from, amount); err != nil {
@@ -54,7 +53,7 @@ func (k Keeper) BurnFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddr
 	return nil
 }
 
-func (k Keeper) burnFT(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount types.Coins) sdk.Error {
+func (k Keeper) burnFT(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount types.Coins) error {
 	if err := k.isBurnable(ctx, contractID, permissionOwner, tokenOwner, amount); err != nil {
 		return err
 	}
@@ -65,20 +64,19 @@ func (k Keeper) burnFT(ctx sdk.Context, contractID string, permissionOwner, toke
 	return nil
 }
 
-func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount types.Coins) sdk.Error {
+func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount types.Coins) error {
 	perm := types.NewBurnPermission(contractID)
 	if !k.HasPermission(ctx, permissionOwner, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, permissionOwner, perm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", permissionOwner.String(), perm.String())
 	}
 
 	if !k.HasCoins(ctx, contractID, tokenOwner, amount) {
-		return types.ErrInsufficientToken(types.DefaultCodespace, fmt.Sprintf("%v has not enough coins for %v", tokenOwner.String(), amount))
+		return sdkerrors.Wrapf(types.ErrInsufficientToken, "%v has not enough coins for %v", tokenOwner.String(), amount)
 	}
-
 	return nil
 }
 
-func (k Keeper) BurnNFT(ctx sdk.Context, contractID string, from sdk.AccAddress, tokenIDs ...string) sdk.Error {
+func (k Keeper) BurnNFT(ctx sdk.Context, contractID string, from sdk.AccAddress, tokenIDs ...string) error {
 	for _, tokenID := range tokenIDs {
 		if err := k.burnNFT(ctx, contractID, from, from, tokenID); err != nil {
 			return err
@@ -105,9 +103,9 @@ func (k Keeper) BurnNFT(ctx sdk.Context, contractID string, from sdk.AccAddress,
 	return nil
 }
 
-func (k Keeper) BurnNFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, tokenIDs ...string) sdk.Error {
+func (k Keeper) BurnNFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAddress, from sdk.AccAddress, tokenIDs ...string) error {
 	if !k.IsApproved(ctx, contractID, proxy, from) {
-		return types.ErrCollectionNotApproved(types.DefaultCodespace, proxy.String(), from.String(), contractID)
+		return sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", proxy.String(), from.String(), contractID)
 	}
 
 	for _, tokenID := range tokenIDs {
@@ -135,7 +133,7 @@ func (k Keeper) BurnNFTFrom(ctx sdk.Context, contractID string, proxy sdk.AccAdd
 	return nil
 }
 
-func (k Keeper) burnNFT(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, tokenID string) sdk.Error {
+func (k Keeper) burnNFT(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, tokenID string) error {
 	token, err := k.GetNFT(ctx, contractID, tokenID)
 	if err != nil {
 		return err
@@ -143,11 +141,11 @@ func (k Keeper) burnNFT(ctx sdk.Context, contractID string, permissionOwner, tok
 
 	perm := types.NewBurnPermission(contractID)
 	if !k.HasPermission(ctx, permissionOwner, perm) {
-		return types.ErrTokenNoPermission(types.DefaultCodespace, permissionOwner, perm)
+		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", permissionOwner.String(), perm.String())
 	}
 
 	if !token.GetOwner().Equals(tokenOwner) {
-		return types.ErrTokenNotOwnedBy(types.DefaultCodespace, tokenID, tokenOwner)
+		return sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", tokenID, tokenOwner.String())
 	}
 
 	err = k.burnNFTRecursive(ctx, contractID, token, tokenOwner)
@@ -158,7 +156,7 @@ func (k Keeper) burnNFT(ctx sdk.Context, contractID string, permissionOwner, tok
 	return nil
 }
 
-func (k Keeper) burnNFTRecursive(ctx sdk.Context, contractID string, token types.NFT, from sdk.AccAddress) sdk.Error {
+func (k Keeper) burnNFTRecursive(ctx sdk.Context, contractID string, token types.NFT, from sdk.AccAddress) error {
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeOperationBurnNFT,

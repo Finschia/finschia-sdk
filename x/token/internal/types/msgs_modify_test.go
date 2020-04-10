@@ -2,8 +2,10 @@ package types
 
 import (
 	"testing"
+	"unicode/utf8"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
@@ -48,36 +50,36 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 	t.Log("empty contractID found")
 	{
 		msg := AMsgModify().ContractID("").Build()
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, "").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(contract.ErrInvalidContractID, "ContractID: ").Error())
 	}
 	t.Log("empty owner")
 	{
 		msg := AMsgModify().Owner(nil).Build()
-		require.EqualError(t, msg.ValidateBasic(), sdk.ErrInvalidAddress("owner address cannot be empty").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty").Error())
 	}
 	t.Log("invalid contractID found")
 	{
 		invalidContractID := "invalid2198721987"
 		msg := AMsgModify().ContractID(invalidContractID).Build()
-		require.EqualError(t, msg.ValidateBasic(), contract.ErrInvalidContractID(contract.ContractCodeSpace, invalidContractID).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(contract.ErrInvalidContractID, "ContractID: %s", invalidContractID).Error())
 	}
 	t.Log("image uri too long")
 	{
 		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"img_uri": length1001String})).Build()
 
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidImageURILength(DefaultCodespace, length1001String).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidImageURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxImageURILength, utf8.RuneCountInString(length1001String)).Error())
 	}
 	t.Log("name too long")
 	{
 		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"name": length1001String})).Build()
 
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidNameLength(DefaultCodespace, length1001String).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxTokenNameLength, utf8.RuneCountInString(length1001String)).Error())
 	}
 	t.Log("invalid changes field")
 	{
 		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"invalid_field": "val"})).Build()
 
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesField(DefaultCodespace, "invalid_field").Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: invalid_field").Error())
 	}
 	t.Log("no token uri field")
 	{
@@ -90,7 +92,7 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		changeList := make([]linktype.Change, MaxChangeFieldsCount+1)
 		msg := AMsgModify().Changes(changeList).Build()
 
-		require.EqualError(t, msg.ValidateBasic(), ErrInvalidChangesFieldCount(DefaultCodespace, len(changeList)).Error())
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidChangesFieldCount, "You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, len(changeList)).Error())
 	}
 }
 

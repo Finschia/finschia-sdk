@@ -1,133 +1,32 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	DefaultCodespace sdk.CodespaceType = ModuleName
-
-	// Validations
-	CodeSafetyBoxIDExist               sdk.CodeType = 100
-	CodeSafetyBoxIDNotExist            sdk.CodeType = 101
-	CodeSafetyBoxAccountExist          sdk.CodeType = 102
-	CodeSafetyBoxInvalidAction         sdk.CodeType = 103
-	CodeSafetyBoxInvalidMsgType        sdk.CodeType = 104
-	CodeSafetyBoxInvalidRole           sdk.CodeType = 105
-	CodeSafetyBoxIssuerAddressRequired sdk.CodeType = 106
-	CodeSafetyBoxCoinsRequired         sdk.CodeType = 107
-	CodeSafetyBoxDenomRequired         sdk.CodeType = 108
-	CodeSafetyBoxIncorrectDenom        sdk.CodeType = 109
-
-	// Permissions
-	CodeSafetyBoxPermissionWhitelist   sdk.CodeType = 201
-	CodeSafetyBoxPermissionAllocate    sdk.CodeType = 202
-	CodeSafetyBoxPermissionRecall      sdk.CodeType = 203
-	CodeSafetyBoxPermissionIssue       sdk.CodeType = 204
-	CodeSafetyBoxPermissionReturn      sdk.CodeType = 205
-	CodeSafetyBoxSelfPermission        sdk.CodeType = 206
-	CodeSafetyBoxHasPermissionAlready  sdk.CodeType = 207
-	CodeSafetyBoxHasOtherPermission    sdk.CodeType = 208
-	CodeSafetyBoxDoesNotHavePermission sdk.CodeType = 209
-
-	// Restrictions
-	CodeSafetyBoxReturnMoreThanIssued    sdk.CodeType = 300
-	CodeSafetyBoxRecallMoreThanAllocated sdk.CodeType = 301
-	CodeSafetyBoxOnlyOneDenomAllowed     sdk.CodeType = 302
+var (
+	ErrSafetyBoxIDRequired              = sdkerrors.Register(ModuleName, 1, "Safety box ID is required")
+	ErrSafetyBoxOwnerRequired           = sdkerrors.Register(ModuleName, 2, "Safety box owner is required")
+	ErrSafetyBoxIDExist                 = sdkerrors.Register(ModuleName, 3, "Safety box with the ID exists")
+	ErrSafetyBoxNotExist                = sdkerrors.Register(ModuleName, 4, "Safety box ID does not exist")
+	ErrSafetyBoxPermissionWhitelist     = sdkerrors.Register(ModuleName, 5, "The account does not have a permission to grant/revoke")
+	ErrSafetyBoxPermissionAllocate      = sdkerrors.Register(ModuleName, 6, "The account does not have a permission to allocate")
+	ErrSafetyBoxPermissionRecall        = sdkerrors.Register(ModuleName, 7, "The account does not have a permission to recall")
+	ErrSafetyBoxPermissionIssue         = sdkerrors.Register(ModuleName, 8, "The account does not have a permission to issue or get issued")
+	ErrSafetyBoxPermissionReturn        = sdkerrors.Register(ModuleName, 9, "The account does not have a permission to return")
+	ErrSafetyBoxInvalidAction           = sdkerrors.Register(ModuleName, 10, "Invalid action")
+	ErrSafetyBoxInvalidMsgType          = sdkerrors.Register(ModuleName, 11, "Invalid msg type")
+	ErrSafetyBoxSelfPermission          = sdkerrors.Register(ModuleName, 12, "Can not grant/revoke a permission to itself")
+	ErrSafetyBoxHasPermissionAlready    = sdkerrors.Register(ModuleName, 13, "The account already has the permission")
+	ErrSafetyBoxHasOtherPermission      = sdkerrors.Register(ModuleName, 14, "The account has other permission(s)")
+	ErrSafetyBoxDoesNotHavePermission   = sdkerrors.Register(ModuleName, 15, "The account does not have the permission")
+	ErrSafetyBoxAccountExist            = sdkerrors.Register(ModuleName, 16, "The safety box id exists - please try different safety box id")
+	ErrSafetyBoxReturnMoreThanIssued    = sdkerrors.Register(ModuleName, 17, "Can not return more than issued")
+	ErrSafetyBoxIssuerAddressRequired   = sdkerrors.Register(ModuleName, 18, "Issuer address is required to issue")
+	ErrSafetyBoxRecallMoreThanAllocated = sdkerrors.Register(ModuleName, 19, "Can not recall more than allocated")
+	ErrSafetyBoxCoinsRequired           = sdkerrors.Register(ModuleName, 20, "Coins required to send coins")
+	ErrSafetyBoxInvalidRole             = sdkerrors.Register(ModuleName, 21, "Invalid role")
+	ErrSafetyBoxDenomRequired           = sdkerrors.Register(ModuleName, 22, "Must specify a denom to create a safety box")
+	ErrSafetyBoxTooManyCoinDenoms       = sdkerrors.Register(ModuleName, 23, "Only one coin denom is allowed")
+	ErrSafetyBoxIncorrectDenom          = sdkerrors.Register(ModuleName, 24, "The safety box doesn't accept the denom")
 )
-
-func ErrSafetyBoxIDRequired(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIDExist, "Safety box ID is required")
-}
-
-func ErrSafetyBoxOwnerRequired(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIDExist, "Safety box owner is required")
-}
-
-func ErrSafetyBoxIDExist(codespace sdk.CodespaceType, safetyBoxID string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIDExist, "Safety box with the ID (%s) exists", safetyBoxID)
-}
-
-func ErrSafetyBoxNotExist(codespace sdk.CodespaceType, safetyBoxID string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIDNotExist, "Safety box (ID: %s) does not exist", safetyBoxID)
-}
-
-func ErrSafetyBoxPermissionWhitelist(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxPermissionWhitelist, "The account (%s) does not have a permission to grant/revoke", account)
-}
-
-func ErrSafetyBoxPermissionAllocate(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxPermissionAllocate, "The account (%s) does not have a permission to allocate", account)
-}
-
-func ErrSafetyBoxPermissionRecall(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxPermissionRecall, "The account (%s) does not have a permission to recall", account)
-}
-
-func ErrSafetyBoxPermissionIssue(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxPermissionIssue, "The account (%s) does not have a permission to issue or get issued", account)
-}
-
-func ErrSafetyBoxPermissionReturn(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxPermissionReturn, "The account (%s) does not have a permission to return", account)
-}
-
-func ErrSafetyBoxInvalidAction(codespace sdk.CodespaceType, action string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxInvalidAction, "Invalid action: %s", action)
-}
-
-func ErrSafetyBoxInvalidMsgType(codespace sdk.CodespaceType, msgType string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxInvalidMsgType, "Invalid msg type: %s", msgType)
-}
-
-func ErrSafetyBoxSelfPermission(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxSelfPermission, "Can not grant/revoke a permission to itself (%s)", account)
-}
-
-func ErrSafetyBoxHasPermissionAlready(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxHasPermissionAlready, "The account (%s) already has the permission", account)
-}
-
-func ErrSafetyBoxHasOtherPermission(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxHasOtherPermission, "The account (%s) has other permission(s)", account)
-}
-
-func ErrSafetyBoxDoesNotHavePermission(codespace sdk.CodespaceType, account string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxDoesNotHavePermission, "The account (%s) does not have the permission", account)
-}
-
-func ErrSafetyBoxAccountExist(codespace sdk.CodespaceType, safetyBoxID string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxAccountExist, "The safety box id (%s) exists - please try different safety box id", safetyBoxID)
-}
-
-func ErrSafetyBoxReturnMoreThanIssued(codespace sdk.CodespaceType, has, toReturn sdk.Coins) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxReturnMoreThanIssued, "Can not return more than issued. Has: %v, Requested: %v", has, toReturn)
-}
-
-func ErrSafetyBoxIssuerAddressRequired(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIssuerAddressRequired, "Issuer address is required to issue")
-}
-
-func ErrSafetyBoxRecallMoreThanAllocated(codespace sdk.CodespaceType, has, toRecall sdk.Coins) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxRecallMoreThanAllocated, "Can not recall more than allocated. Has: %v, Requested: %v", has, toRecall)
-}
-
-func ErrSafetyBoxCoinsRequired(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxCoinsRequired, "Coins required to send coins")
-}
-
-func ErrSafetyBoxInvalidRole(codespace sdk.CodespaceType, role string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxInvalidRole, "Invalid role: %s", role)
-}
-
-func ErrSafetyBoxDenomRequired(codespace sdk.CodespaceType) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxDenomRequired, "Must specify a denom to create a safety box")
-}
-
-func ErrSafetyBoxTooManyCoinDenoms(codespace sdk.CodespaceType, denoms []string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxOnlyOneDenomAllowed, "Only one coin denom is allowed. Requested: %v", denoms)
-}
-
-func ErrSafetyBoxIncorrectDenom(codespace sdk.CodespaceType, expectedDenom, givenDenom string) sdk.Error {
-	return sdk.NewError(codespace, CodeSafetyBoxIncorrectDenom, "The safety box doesn't accept the denom. Expected: %s, Requested: %s", expectedDenom, givenDenom)
-}

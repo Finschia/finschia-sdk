@@ -5,30 +5,32 @@ import (
 
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/stretchr/testify/require"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 func TestKeeper_Attach(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID1), types.ErrCannotAttachToItself(types.DefaultCodespace, defaultTokenID1).Error())
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID6), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
-	require.EqualError(t, keeper.Attach(ctx, wrongContractID, addr1, defaultTokenID1, defaultTokenID2), types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID2).Error())
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID2), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID2, addr2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID1), sdkerrors.Wrapf(types.ErrCannotAttachToItself, "TokenID: %s", defaultTokenID1).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID6), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, keeper.Attach(ctx, wrongContractID, addr1, defaultTokenID1, defaultTokenID2), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", wrongContractID, defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID2), sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %v", defaultTokenID2, addr2.String()).Error())
 
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID6, defaultTokenID1), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID1, addr2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID6, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID5), sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", defaultTokenID1, addr2.String()).Error())
 
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID2), types.ErrTokenAlreadyAChild(types.DefaultCodespace, defaultTokenID2).Error())
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultTokenID1, defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID2), sdkerrors.Wrapf(types.ErrTokenAlreadyAChild, "TokenID: %s", defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID1), sdkerrors.Wrapf(types.ErrCannotAttachToADescendant, "TokenID: %s, ToTokenID: %s", defaultTokenID1, defaultTokenID2).Error())
 }
 
 func TestKeeper_AttachFrom(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.AttachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1, defaultTokenID2), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultContractID).Error())
+	require.EqualError(t, keeper.AttachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1, defaultTokenID2), sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", addr1.String(), addr2.String(), defaultContractID).Error())
 	prepareProxy(ctx, t)
 	require.NoError(t, keeper.AttachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID1, defaultTokenID2))
 }
@@ -37,11 +39,11 @@ func TestKeeper_Detach(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID6), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
-	require.EqualError(t, keeper.Detach(ctx, wrongContractID, addr1, defaultTokenID1), types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID1).Error())
-	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr2, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID1, addr2).Error())
-	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID1), types.ErrTokenNotAChild(types.DefaultCodespace, defaultTokenID1).Error())
-	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenIDFT), types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID6), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, keeper.Detach(ctx, wrongContractID, addr1, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", wrongContractID, defaultTokenID1).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr2, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", defaultTokenID1, addr2.String()).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNotAChild, "TokenID: %s", defaultTokenID1).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenIDFT), sdkerrors.Wrapf(types.ErrTokenNotNFT, "TokenID: %s", defaultTokenIDFT).Error())
 
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
 	require.NoError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID2))
@@ -51,7 +53,7 @@ func TestKeeper_DetachFrom(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.DetachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID2), types.ErrCollectionNotApproved(types.DefaultCodespace, addr1.String(), addr2.String(), defaultContractID).Error())
+	require.EqualError(t, keeper.DetachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID2), sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", addr1.String(), addr2.String(), defaultContractID).Error())
 	prepareProxy(ctx, t)
 	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr2, defaultTokenID1, defaultTokenID2))
 	require.NoError(t, keeper.DetachFrom(ctx, defaultContractID, addr1, addr2, defaultTokenID2))
@@ -62,13 +64,13 @@ func TestKeeper_RootOf(t *testing.T) {
 	prepareCollectionTokens(ctx, t)
 
 	_, err := keeper.RootOf(ctx, defaultContractID, defaultTokenID6)
-	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID6).Error())
 
 	_, err = keeper.RootOf(ctx, wrongContractID, defaultTokenID1)
-	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID1).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", wrongContractID, defaultTokenID1).Error())
 
 	_, err = keeper.RootOf(ctx, defaultContractID, defaultTokenIDFT)
-	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotNFT, "TokenID: %s", defaultTokenIDFT).Error())
 
 	nft, err := keeper.RootOf(ctx, defaultContractID, defaultTokenID1)
 	require.NoError(t, err)
@@ -89,13 +91,13 @@ func TestKeeper_ParentOf(t *testing.T) {
 	prepareCollectionTokens(ctx, t)
 
 	_, err := keeper.ParentOf(ctx, defaultContractID, defaultTokenID6)
-	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID6).Error())
 
 	_, err = keeper.ParentOf(ctx, wrongContractID, defaultTokenID1)
-	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID1).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", wrongContractID, defaultTokenID1).Error())
 
 	_, err = keeper.ParentOf(ctx, defaultContractID, defaultTokenIDFT)
-	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotNFT, "TokenID: %s", defaultTokenIDFT).Error())
 
 	nft, err := keeper.ParentOf(ctx, defaultContractID, defaultTokenID1)
 	require.NoError(t, err)
@@ -115,13 +117,13 @@ func TestKeeper_ChildrenOf(t *testing.T) {
 	prepareCollectionTokens(ctx, t)
 
 	_, err := keeper.ChildrenOf(ctx, defaultContractID, defaultTokenID6)
-	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID6).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID6).Error())
 
 	_, err = keeper.ChildrenOf(ctx, wrongContractID, defaultTokenID1)
-	require.EqualError(t, err, types.ErrTokenNotExist(types.DefaultCodespace, wrongContractID, defaultTokenID1).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", wrongContractID, defaultTokenID1).Error())
 
 	_, err = keeper.ChildrenOf(ctx, defaultContractID, defaultTokenIDFT)
-	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotNFT, "TokenID: %s", defaultTokenIDFT).Error())
 
 	tokens, err := keeper.ChildrenOf(ctx, defaultContractID, defaultTokenID1)
 	require.NoError(t, err)
@@ -226,43 +228,43 @@ func TestAttachDetachScenario(t *testing.T) {
 
 	// query failure cases
 	_, err := keeper.ParentOf(ctx, defaultContractID, defaultTokenIDFT)
-	require.EqualError(t, err, types.ErrTokenNotNFT(types.DefaultCodespace, defaultTokenIDFT).Error())
+	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrTokenNotNFT, "TokenID: %s", defaultTokenIDFT).Error())
 
 	//
 	// attach error cases
 	//
 
 	// attach non-root token : failure
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2), types.ErrTokenAlreadyAChild(types.DefaultCodespace, defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2), sdkerrors.Wrapf(types.ErrTokenAlreadyAChild, "TokenID: %s", defaultTokenID2).Error())
 
 	// attach non-exist token : failure
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID8), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID8).Error())
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID8, defaultTokenID1), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID8).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID8), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID8).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID8, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID8).Error())
 
 	// attach non-mine token : failure
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID5, defaultTokenID1), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID5), sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", defaultTokenID5, addr1.String()).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID5, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", defaultTokenID5, addr1.String()).Error())
 
 	// attach to itself : failure
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID1), types.ErrCannotAttachToItself(types.DefaultCodespace, defaultTokenID1).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID1), sdkerrors.Wrapf(types.ErrCannotAttachToItself, "TokenID: %s", defaultTokenID1).Error())
 
 	// attach to a descendant : failure
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultTokenID1, defaultTokenID2).Error())
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultTokenID1, defaultTokenID3).Error())
-	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID4, defaultTokenID1), types.ErrCannotAttachToADescendant(types.DefaultCodespace, defaultTokenID1, defaultTokenID4).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID1), sdkerrors.Wrapf(types.ErrCannotAttachToADescendant, "TokenID: %s, ToTokenID: %s", defaultTokenID1, defaultTokenID2).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID1), sdkerrors.Wrapf(types.ErrCannotAttachToADescendant, "TokenID: %s, ToTokenID: %s", defaultTokenID1, defaultTokenID3).Error())
+	require.EqualError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID4, defaultTokenID1), sdkerrors.Wrapf(types.ErrCannotAttachToADescendant, "TokenID: %s, ToTokenID: %s", defaultTokenID1, defaultTokenID4).Error())
 
 	//
 	// detach error cases
 	//
 
 	// detach not a child : failure
-	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID1), types.ErrTokenNotAChild(types.DefaultCodespace, defaultTokenID1).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNotAChild, "TokenID: %s", defaultTokenID1).Error())
 
 	// detach non-mine token : failure
-	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID5), types.ErrTokenNotOwnedBy(types.DefaultCodespace, defaultTokenID5, addr1).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID5), sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", defaultTokenID5, addr1.String()).Error())
 
 	// detach non-exist token : failure
-	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID8), types.ErrTokenNotExist(types.DefaultCodespace, defaultContractID, defaultTokenID8).Error())
+	require.EqualError(t, keeper.Detach(ctx, defaultContractID, addr1, defaultTokenID8), sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s, TokenID: %s", defaultContractID, defaultTokenID8).Error())
 
 	//
 	// detach success cases

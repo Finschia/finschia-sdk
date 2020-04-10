@@ -53,7 +53,7 @@ func TestKeeper(t *testing.T) {
 	require.True(t, input.K.GetCoins(ctx, addr2).IsEqual(sdk.NewCoins(sdk.NewInt64Coin("fooc", 3))))
 
 	acc = input.Ak.GetAccount(ctx, acc.GetAddress())
-	coins := acc.GetCoins().Add(sdk.NewCoins(sdk.NewInt64Coin("barc", 15)))
+	coins := acc.GetCoins().Add(sdk.NewCoins(sdk.NewInt64Coin("barc", 15))...)
 	err = acc.SetCoins(coins)
 	require.NoError(t, err)
 	input.Ak.SetAccount(ctx, acc)

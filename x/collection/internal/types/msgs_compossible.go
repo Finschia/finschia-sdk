@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
@@ -45,25 +46,25 @@ func (MsgAttach) Type() string { return "attach" }
 
 func (msg MsgAttach) GetContractID() string { return msg.ContractID }
 
-func (msg MsgAttach) ValidateBasic() sdk.Error {
+func (msg MsgAttach) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 
 	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, msg.ToTokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.ToTokenID)
 	}
 
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, msg.TokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
 	if msg.ToTokenID == msg.TokenID {
-		return ErrCannotAttachToItself(DefaultCodespace, msg.TokenID)
+		return sdkerrors.Wrapf(ErrCannotAttachToItself, "TokenID: %s", msg.TokenID)
 	}
 
 	return nil
@@ -107,17 +108,17 @@ func (MsgDetach) Type() string { return "detach" }
 
 func (msg MsgDetach) GetContractID() string { return msg.ContractID }
 
-func (msg MsgDetach) ValidateBasic() sdk.Error {
+func (msg MsgDetach) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, msg.TokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
 	return nil
@@ -165,25 +166,25 @@ func (MsgAttachFrom) Type() string { return "attach_from" }
 
 func (msg MsgAttachFrom) GetContractID() string { return msg.ContractID }
 
-func (msg MsgAttachFrom) ValidateBasic() sdk.Error {
+func (msg MsgAttachFrom) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, msg.ToTokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.ToTokenID)
 	}
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, msg.TokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
 	if msg.ToTokenID == msg.TokenID {
-		return ErrCannotAttachToItself(DefaultCodespace, msg.TokenID)
+		return sdkerrors.Wrapf(ErrCannotAttachToItself, "TokenID: %s", msg.TokenID)
 	}
 
 	return nil
@@ -229,18 +230,18 @@ func (MsgDetachFrom) Type() string { return "detach_from" }
 
 func (msg MsgDetachFrom) GetContractID() string { return msg.ContractID }
 
-func (msg MsgDetachFrom) ValidateBasic() sdk.Error {
+func (msg MsgDetachFrom) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
 	}
 	if msg.From.Empty() {
-		return sdk.ErrInvalidAddress("From cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
-		return ErrInvalidTokenID(DefaultCodespace, msg.TokenID)
+		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
 	return nil

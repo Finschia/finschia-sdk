@@ -5,6 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ json.Marshaler = (*ProxyAllowance)(nil)
@@ -59,53 +60,53 @@ func (pa *ProxyAllowance) UnmarshalJSON(data []byte) error {
 	return json.Unmarshal(data, msgAlias(pa))
 }
 
-func (pa ProxyAllowance) AddAllowance(pa2 ProxyAllowance) (ProxyAllowance, sdk.Error) {
+func (pa ProxyAllowance) AddAllowance(pa2 ProxyAllowance) (ProxyAllowance, error) {
 	if !pa.HasSameProxyDenom(pa2) {
-		return ProxyAllowance{}, ErrProxyDenomDoesNotMatch(DefaultCodespace, pa, pa2)
+		return ProxyAllowance{}, sdkerrors.Wrapf(ErrProxyDenomDoesNotMatch, "%v compared to %v", pa.ProxyDenom, pa2.ProxyDenom)
 	}
 
 	return NewProxyAllowance(pa.ProxyDenom, pa.Amount.Add(pa2.Amount)), nil
 }
 
-func (pa ProxyAllowance) SubAllowance(pa2 ProxyAllowance) (ProxyAllowance, sdk.Error) {
+func (pa ProxyAllowance) SubAllowance(pa2 ProxyAllowance) (ProxyAllowance, error) {
 	hasEnoughCoinAmount, err := pa.GTE(pa2)
 	if err != nil {
 		return ProxyAllowance{}, err
 	}
 	if !hasEnoughCoinAmount {
-		return ProxyAllowance{}, ErrProxyNotEnoughApprovedCoins(DefaultCodespace, pa.Amount, pa2.Amount)
+		return ProxyAllowance{}, sdkerrors.Wrapf(ErrProxyNotEnoughApprovedCoins, "Approved: %v, Requested: %v", pa.Amount, pa2.Amount)
 	}
 
 	return NewProxyAllowance(pa.ProxyDenom, pa.Amount.Sub(pa2.Amount)), nil
 }
 
-func (pa ProxyAllowance) GT(pa2 ProxyAllowance) (bool, sdk.Error) {
+func (pa ProxyAllowance) GT(pa2 ProxyAllowance) (bool, error) {
 	if !pa.HasSameProxyDenom(pa2) {
-		return false, ErrProxyDenomDoesNotMatch(DefaultCodespace, pa, pa2)
+		return false, sdkerrors.Wrapf(ErrProxyDenomDoesNotMatch, "%v compared to %v", pa.ProxyDenom, pa2.ProxyDenom)
 	}
 
 	return pa.Amount.GT(pa2.Amount), nil
 }
 
-func (pa ProxyAllowance) GTE(pa2 ProxyAllowance) (bool, sdk.Error) {
+func (pa ProxyAllowance) GTE(pa2 ProxyAllowance) (bool, error) {
 	if !pa.HasSameProxyDenom(pa2) {
-		return false, ErrProxyDenomDoesNotMatch(DefaultCodespace, pa, pa2)
+		return false, sdkerrors.Wrapf(ErrProxyDenomDoesNotMatch, "%v compared to %v", pa.ProxyDenom, pa2.ProxyDenom)
 	}
 
 	return pa.Amount.GTE(pa2.Amount), nil
 }
 
-func (pa ProxyAllowance) LT(pa2 ProxyAllowance) (bool, sdk.Error) {
+func (pa ProxyAllowance) LT(pa2 ProxyAllowance) (bool, error) {
 	if !pa.HasSameProxyDenom(pa2) {
-		return false, ErrProxyDenomDoesNotMatch(DefaultCodespace, pa, pa2)
+		return false, sdkerrors.Wrapf(ErrProxyDenomDoesNotMatch, "%v compared to %v", pa.ProxyDenom, pa2.ProxyDenom)
 	}
 
 	return pa.Amount.LT(pa2.Amount), nil
 }
 
-func (pa ProxyAllowance) LTE(pa2 ProxyAllowance) (bool, sdk.Error) {
+func (pa ProxyAllowance) LTE(pa2 ProxyAllowance) (bool, error) {
 	if !pa.HasSameProxyDenom(pa2) {
-		return false, ErrProxyDenomDoesNotMatch(DefaultCodespace, pa, pa2)
+		return false, sdkerrors.Wrapf(ErrProxyDenomDoesNotMatch, "%v compared to %v", pa.ProxyDenom, pa2.ProxyDenom)
 	}
 
 	return pa.Amount.LTE(pa2.Amount), nil

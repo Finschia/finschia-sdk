@@ -10,12 +10,12 @@ import (
 )
 
 func TestHandleAttach(t *testing.T) {
-	ctx, h, contractID := prepareNFT(addr1)
+	ctx, h, contractID := prepareNFT(t, addr1)
 
 	{
 		msg := types.NewMsgAttach(addr1, contractID, defaultTokenID1, defaultTokenID2)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -32,12 +32,12 @@ func TestHandleAttach(t *testing.T) {
 }
 
 func TestHandleAttachFrom(t *testing.T) {
-	ctx, h, contractID := prepareNFT(addr2)
-	approve(addr2, addr1, contractID, ctx, h)
+	ctx, h, contractID := prepareNFT(t, addr2)
+	approve(t, addr2, addr1, contractID, ctx, h)
 	{
 		msg := types.NewMsgAttachFrom(addr1, contractID, addr2, defaultTokenID1, defaultTokenID2)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -54,21 +54,22 @@ func TestHandleAttachFrom(t *testing.T) {
 	}
 }
 
-func prepareForDetaching(mintTo sdk.AccAddress) (sdk.Context, sdk.Handler, string) {
-	ctx, h, contractID := prepareNFT(mintTo)
+func prepareForDetaching(t *testing.T, mintTo sdk.AccAddress) (sdk.Context, sdk.Handler, string) {
+	ctx, h, contractID := prepareNFT(t, mintTo)
 
 	msg := types.NewMsgAttach(mintTo, contractID, defaultTokenID1, defaultTokenID2)
-	_ = h(ctx, msg)
+	_, err := h(ctx, msg)
+	require.NoError(t, err)
 	return ctx, h, contractID
 }
 
 func TestHandleDetach(t *testing.T) {
-	ctx, h, contractID := prepareForDetaching(addr1)
+	ctx, h, contractID := prepareForDetaching(t, addr1)
 
 	{
 		msg := types.NewMsgDetach(addr1, contractID, defaultTokenID2)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -85,12 +86,12 @@ func TestHandleDetach(t *testing.T) {
 }
 
 func TestHandleDetachFrom(t *testing.T) {
-	ctx, h, contractID := prepareForDetaching(addr2)
-	approve(addr2, addr1, contractID, ctx, h)
+	ctx, h, contractID := prepareForDetaching(t, addr2)
+	approve(t, addr2, addr1, contractID, ctx, h)
 	{
 		msg := types.NewMsgDetachFrom(addr1, contractID, addr2, defaultTokenID2)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -109,8 +110,9 @@ func TestHandleDetachFrom(t *testing.T) {
 
 func attach(t *testing.T, ctx sdk.Context, h sdk.Handler, contractID string) {
 	msg := types.NewMsgAttach(addr1, contractID, defaultTokenID1, defaultTokenID2)
-	res := h(ctx, msg)
-	require.True(t, res.Code.IsOK())
+	res, err := h(ctx, msg)
+	require.NoError(t, err)
+
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -131,27 +133,28 @@ func TestHandleAttachDetach(t *testing.T) {
 	var contractID string
 	{
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, createMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, createMsg)
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
-		res = h(ctx, msg)
-		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg)
+		require.NoError(t, err)
+		param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, param)
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
+		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, param)
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 	}
 
 	attach(t, ctx, h, contractID)
 
 	{
 		msg2 := types.NewMsgDetach(addr1, contractID, defaultTokenID2)
-		res2 := h(ctx, msg2)
-		require.True(t, res2.Code.IsOK())
+		res2, err2 := h(ctx, msg2)
+		require.NoError(t, err2)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -172,8 +175,8 @@ func TestHandleAttachDetach(t *testing.T) {
 	//Burn token
 	{
 		msg := types.NewMsgBurnNFT(addr1, contractID, defaultTokenID1)
-		res := h(ctx, msg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, msg)
+		require.NoError(t, err)
 		e := sdk.Events{
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
@@ -193,27 +196,28 @@ func TestHandleAttachFromDetachFromScenario(t *testing.T) {
 	var contractID string
 	{
 		createMsg := types.NewMsgCreateCollection(addr1, defaultName, defaultMeta, defaultImgURI)
-		res := h(ctx, createMsg)
-		require.True(t, res.Code.IsOK())
+		res, err := h(ctx, createMsg)
+		require.NoError(t, err)
 		contractID = GetMadeContractID(res.Events)
 
 		msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
-		res = h(ctx, msg)
-		require.True(t, res.Code.IsOK())
-		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
-		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, defaultName, defaultMeta, defaultTokenType)
-		res = h(ctx, msg2)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg)
+		require.NoError(t, err)
+		param := types.NewMintNFTParam(defaultName, defaultMeta, defaultTokenType)
+		msg2 := types.NewMsgMintNFT(addr1, contractID, addr1, param)
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
+		msg2 = types.NewMsgMintNFT(addr1, contractID, addr1, param)
+		_, err = h(ctx, msg2)
+		require.NoError(t, err)
 		msg3 := types.NewMsgApprove(addr1, contractID, addr2)
-		res = h(ctx, msg3)
-		require.True(t, res.Code.IsOK())
+		_, err = h(ctx, msg3)
+		require.NoError(t, err)
 	}
 
 	msg := types.NewMsgAttachFrom(addr2, contractID, addr1, defaultTokenID1, defaultTokenID2)
-	res := h(ctx, msg)
-	require.True(t, res.Code.IsOK())
+	res, err := h(ctx, msg)
+	require.NoError(t, err)
 	e := sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),
@@ -229,8 +233,8 @@ func TestHandleAttachFromDetachFromScenario(t *testing.T) {
 	verifyEventFunc(t, e, res.Events)
 
 	msg2 := types.NewMsgDetachFrom(addr2, contractID, addr1, defaultTokenID2)
-	res2 := h(ctx, msg2)
-	require.True(t, res2.Code.IsOK())
+	res2, err2 := h(ctx, msg2)
+	require.NoError(t, err2)
 	e = sdk.Events{
 		sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 		sdk.NewEvent("message", sdk.NewAttribute("sender", addr2.String())),

@@ -3,7 +3,9 @@ package types
 import (
 	"strings"
 	"testing"
+	"unicode/utf8"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
 	"github.com/stretchr/testify/require"
 )
@@ -53,7 +55,7 @@ func TestValidateChangesForCollection(t *testing.T) {
 	t.Log("Test with empty changes")
 	{
 		changes := linktype.Changes{}
-		require.EqualError(t, validator.Validate(changes), ErrEmptyChanges(DefaultCodespace).Error())
+		require.EqualError(t, validator.Validate(changes), ErrEmptyChanges.Error())
 	}
 	t.Log("Test with base_img_uri too long")
 	{
@@ -66,7 +68,7 @@ func TestValidateChangesForCollection(t *testing.T) {
 		require.EqualError(
 			t,
 			validator.Validate(changes),
-			ErrInvalidBaseImgURILength(DefaultCodespace, length1001String).Error(),
+			sdkerrors.Wrapf(ErrInvalidBaseImgURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxBaseImgURILength, utf8.RuneCountInString(length1001String)).Error(),
 		)
 	}
 	t.Log("Test with invalid changes field")
@@ -77,7 +79,7 @@ func TestValidateChangesForCollection(t *testing.T) {
 		)
 
 		// Then error is occurred
-		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesField(DefaultCodespace, "invalid_field").Error())
+		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrapf(ErrInvalidChangesField, "Field: invalid_field").Error())
 	}
 	t.Log("Test with changes more than max")
 	{
@@ -86,7 +88,7 @@ func TestValidateChangesForCollection(t *testing.T) {
 		changes := linktype.Changes(changeList)
 
 		// Then error is occurred
-		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesFieldCount(DefaultCodespace, len(changeList)).Error())
+		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrapf(ErrInvalidChangesFieldCount, "You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, len(changeList)).Error())
 	}
 	t.Log("Test with duplicate fields")
 	{
@@ -97,7 +99,7 @@ func TestValidateChangesForCollection(t *testing.T) {
 		)
 
 		// Then error is occurred
-		require.EqualError(t, validator.Validate(changes), ErrDuplicateChangesField(DefaultCodespace, "name").Error())
+		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrapf(ErrDuplicateChangesField, "Field: name").Error())
 	}
 }
 
@@ -122,7 +124,7 @@ func TestValidateChangesForTokenType(t *testing.T) {
 			"base_img_uri": "new_base_uri",
 		})
 
-		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesField(DefaultCodespace, "base_img_uri").Error())
+		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrap(ErrInvalidChangesField, "Field: base_img_uri").Error())
 	}
 }
 
@@ -147,11 +149,11 @@ func TestValidateChangesForToken(t *testing.T) {
 			"base_img_uri": "new_base_uri",
 		})
 
-		require.EqualError(t, validator.Validate(changes), ErrInvalidChangesField(DefaultCodespace, "base_img_uri").Error())
+		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrap(ErrInvalidChangesField, "Field: base_img_uri").Error())
 	}
 }
 
 func TestValidateChangesForTokenWithoutType(t *testing.T) {
 	validator := NewChangesValidator()
-	require.EqualError(t, validator.SetMode("", defaultTokenIndex), ErrTokenIndexWithoutType(DefaultCodespace).Error())
+	require.EqualError(t, validator.SetMode("", defaultTokenIndex), ErrTokenIndexWithoutType.Error())
 }

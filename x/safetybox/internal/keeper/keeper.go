@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	iam "github.com/line/link/x/iam/exported"
 	"github.com/line/link/x/safetybox/internal/types"
@@ -38,7 +39,7 @@ func (k *Keeper) SetHooks(sh types.SafetyBoxHooks) *Keeper {
 	return k
 }
 
-func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (types.SafetyBox, sdk.Error) {
+func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (types.SafetyBox, error) {
 	// create new safety box account
 	newSafetyBoxAccount, err := k.newSafetyBoxAccount(ctx, msg.SafetyBoxID)
 	if err != nil {
@@ -46,7 +47,7 @@ func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (typ
 	}
 
 	if len(msg.SafetyBoxDenoms) > 1 {
-		return types.SafetyBox{}, types.ErrSafetyBoxTooManyCoinDenoms(types.DefaultCodespace, msg.SafetyBoxDenoms)
+		return types.SafetyBox{}, sdkerrors.Wrapf(types.ErrSafetyBoxTooManyCoinDenoms, "Requested: %v", msg.SafetyBoxDenoms)
 	}
 
 	// create new safety box
@@ -55,7 +56,7 @@ func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (typ
 	// reject if the safety box id exists
 	store := ctx.KVStore(k.storeKey)
 	if store.Has(types.SafetyBoxKey(sb.ID)) {
-		return types.SafetyBox{}, types.ErrSafetyBoxIDExist(types.DefaultCodespace, sb.ID)
+		return types.SafetyBox{}, sdkerrors.Wrapf(types.ErrSafetyBoxIDExist, "ID: %s", sb.ID)
 	}
 	store.Set(types.SafetyBoxKey(sb.ID), k.cdc.MustMarshalBinaryBare(sb))
 
@@ -70,14 +71,14 @@ func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (typ
 	return sb, nil
 }
 
-func (k Keeper) newSafetyBoxAccount(ctx sdk.Context, safetyBoxID string) (sdk.AccAddress, sdk.Error) {
+func (k Keeper) newSafetyBoxAccount(ctx sdk.Context, safetyBoxID string) (sdk.AccAddress, error) {
 	// hash safety box id
 	newAddress := sdk.AccAddress(crypto.AddressHash(types.SafetyBoxKey(safetyBoxID)))
 
 	// check if exist
 	acc := k.accountKeeper.GetAccount(ctx, newAddress)
 	if acc != nil {
-		return nil, types.ErrSafetyBoxAccountExist(types.DefaultCodespace, safetyBoxID)
+		return nil, sdkerrors.Wrapf(types.ErrSafetyBoxAccountExist, "ID: %s", safetyBoxID)
 	}
 
 	// create new account and return its address
@@ -87,7 +88,7 @@ func (k Keeper) newSafetyBoxAccount(ctx sdk.Context, safetyBoxID string) (sdk.Ac
 	return newAccount.GetAddress(), nil
 }
 
-func (k Keeper) GetSafetyBox(ctx sdk.Context, safetyBoxID string) (types.SafetyBox, sdk.Error) {
+func (k Keeper) GetSafetyBox(ctx sdk.Context, safetyBoxID string) (types.SafetyBox, error) {
 	sb, err := k.get(ctx, safetyBoxID)
 	if err != nil {
 		return types.SafetyBox{}, err
@@ -95,18 +96,18 @@ func (k Keeper) GetSafetyBox(ctx sdk.Context, safetyBoxID string) (types.SafetyB
 	return sb, nil
 }
 
-func (k Keeper) validDenom(coins sdk.Coins, denoms []string) sdk.Error {
+func (k Keeper) validDenom(coins sdk.Coins, denoms []string) error {
 	// safety box accepts only one type of coins
 	if len(coins) != 1 || len(denoms) != 1 {
-		return types.ErrSafetyBoxTooManyCoinDenoms(types.DefaultCodespace, denoms)
+		return sdkerrors.Wrapf(types.ErrSafetyBoxTooManyCoinDenoms, "Requested: %v", denoms)
 	}
 	if coins[0].Denom != denoms[0] {
-		return types.ErrSafetyBoxIncorrectDenom(types.DefaultCodespace, denoms[0], coins[0].Denom)
+		return sdkerrors.Wrapf(types.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", denoms[0], coins[0].Denom)
 	}
 	return nil
 }
 
-func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) sdk.Error {
+func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
 		return err
@@ -124,7 +125,7 @@ func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) s
 	// only allocator could allocate
 	allocatePermission := types.NewAllocatePermission(msg.SafetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, fromAddress, allocatePermission) {
-		return types.ErrSafetyBoxPermissionAllocate(types.DefaultCodespace, fromAddress.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionAllocate, "Account: %s", fromAddress.String())
 	}
 
 	// allocation
@@ -134,14 +135,14 @@ func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) s
 	}
 
 	// increase the total allocation and cumulative allocation
-	sb.TotalAllocation = sb.TotalAllocation.Add(msg.Coins)
-	sb.CumulativeAllocation = sb.CumulativeAllocation.Add(msg.Coins)
+	sb.TotalAllocation = sb.TotalAllocation.Add(msg.Coins...)
+	sb.CumulativeAllocation = sb.CumulativeAllocation.Add(msg.Coins...)
 
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
 //nolint:dupl
-func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallCoins) sdk.Error {
+func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallCoins) error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
 		return err
@@ -159,12 +160,12 @@ func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallCoins) sdk.E
 	// only allocator could recall
 	recallPermission := types.NewRecallPermission(msg.SafetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, toAddress, recallPermission) {
-		return types.ErrSafetyBoxPermissionRecall(types.DefaultCodespace, toAddress.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionRecall, "Account: %s", toAddress.String())
 	}
 
 	// check not to recall more than allocated
 	if msg.Coins.IsAnyGT(sb.TotalAllocation) {
-		return types.ErrSafetyBoxRecallMoreThanAllocated(types.DefaultCodespace, sb.TotalAllocation, msg.Coins)
+		return sdkerrors.Wrapf(types.ErrSafetyBoxRecallMoreThanAllocated, "Has: %v, Requested: %v", sb.TotalAllocation, msg.Coins)
 	}
 
 	// recall
@@ -179,7 +180,7 @@ func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallCoins) sdk.E
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
-func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) sdk.Error {
+func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
 		return err
@@ -196,10 +197,10 @@ func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) sdk.Err
 
 	issuePermission := types.NewIssuePermission(msg.SafetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, issuerAddress, issuePermission) {
-		return types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace, issuerAddress.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionIssue, "Account: %s", issuerAddress.String())
 	}
 	if !k.iamKeeper.HasPermission(ctx, toAddress, issuePermission) {
-		return types.ErrSafetyBoxPermissionIssue(types.DefaultCodespace, toAddress.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionIssue, "Account: %s", toAddress.String())
 	}
 
 	// issue from the safety box to an issuer
@@ -210,13 +211,13 @@ func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) sdk.Err
 	}
 
 	// increase the total issuance
-	sb.TotalIssuance = sb.TotalIssuance.Add(msg.Coins)
+	sb.TotalIssuance = sb.TotalIssuance.Add(msg.Coins...)
 
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
 //nolint:dupl
-func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) sdk.Error {
+func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
 		return err
@@ -234,12 +235,12 @@ func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) sdk.E
 	// only returner could return
 	returnPermission := types.NewReturnPermission(msg.SafetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, fromAddress, returnPermission) {
-		return types.ErrSafetyBoxPermissionReturn(types.DefaultCodespace, fromAddress.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionReturn, "Account: %s", fromAddress.String())
 	}
 
 	// check not to return more than issued
 	if msg.Coins.IsAnyGT(sb.TotalIssuance) {
-		return types.ErrSafetyBoxReturnMoreThanIssued(types.DefaultCodespace, sb.TotalIssuance, msg.Coins)
+		return sdkerrors.Wrapf(types.ErrSafetyBoxReturnMoreThanIssued, "Has: %v, Requested: %v", sb.TotalIssuance, msg.Coins)
 	}
 
 	// return
@@ -254,7 +255,7 @@ func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) sdk.E
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
-func (k Keeper) sendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coins sdk.Coins) sdk.Error {
+func (k Keeper) sendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coins sdk.Coins) error {
 	_, err := k.bankKeeper.SubtractCoins(ctx, fromAddr, coins)
 	if err != nil {
 		return err
@@ -277,10 +278,10 @@ func (k Keeper) sendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coin
 	return nil
 }
 
-func (k Keeper) GrantPermission(ctx sdk.Context, safetyBoxID string, by sdk.AccAddress, acc sdk.AccAddress, role string) sdk.Error {
+func (k Keeper) GrantPermission(ctx sdk.Context, safetyBoxID string, by sdk.AccAddress, acc sdk.AccAddress, role string) error {
 	// reject self-grant
 	if by.Equals(acc) {
-		return types.ErrSafetyBoxSelfPermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxSelfPermission, "Account: %s", acc.String())
 	}
 
 	// grant
@@ -298,19 +299,19 @@ func (k Keeper) GrantPermission(ctx sdk.Context, safetyBoxID string, by sdk.AccA
 	}
 }
 
-func (k Keeper) grantOperator(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) sdk.Error {
+func (k Keeper) grantOperator(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) error {
 	// check whitelist permission
 	whitelistOperatorsPermission := types.NewWhitelistOperatorsPermission(safetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, by, whitelistOperatorsPermission) {
-		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, by.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionWhitelist, "Account: %s", by.String())
 	}
 
 	// check if the target is eligible
 	if k.IsOperator(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxHasPermissionAlready, "Account: %s", acc.String())
 	}
 	if k.IsAllocator(ctx, safetyBoxID, acc) || k.IsIssuer(ctx, safetyBoxID, acc) || k.IsReturner(ctx, safetyBoxID, acc) || k.IsOwner(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxHasOtherPermission, "Account: %s", acc.String())
 	}
 
 	// grant
@@ -318,19 +319,19 @@ func (k Keeper) grantOperator(ctx sdk.Context, safetyBoxID string, by, acc sdk.A
 	return nil
 }
 
-func (k Keeper) grantAllocator(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) sdk.Error {
+func (k Keeper) grantAllocator(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) error {
 	// check whitelist permission
 	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, by.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionWhitelist, "Account: %s", by.String())
 	}
 
 	// check if the target is eligible
 	if k.IsAllocator(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxHasPermissionAlready, "Account: %s", acc.String())
 	}
 	if k.IsOperator(ctx, safetyBoxID, acc) || k.IsIssuer(ctx, safetyBoxID, acc) || k.IsReturner(ctx, safetyBoxID, acc) || k.IsOwner(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxHasOtherPermission, "Account: %s", acc.String())
 	}
 
 	// grant - allocator may allocate and recall
@@ -339,19 +340,19 @@ func (k Keeper) grantAllocator(ctx sdk.Context, safetyBoxID string, by, acc sdk.
 	return nil
 }
 
-func (k Keeper) grantIssuer(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) sdk.Error {
+func (k Keeper) grantIssuer(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) error {
 	// check whitelist permission
 	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, by.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionWhitelist, "Account: %s", by.String())
 	}
 
 	// check if the target is eligible
 	if k.IsIssuer(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxHasPermissionAlready, "Account: %s", acc.String())
 	}
 	if k.IsOperator(ctx, safetyBoxID, acc) || k.IsReturner(ctx, safetyBoxID, acc) || k.IsAllocator(ctx, safetyBoxID, acc) || k.IsOwner(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxHasOtherPermission, "Account: %s", acc.String())
 	}
 
 	// grant
@@ -359,19 +360,19 @@ func (k Keeper) grantIssuer(ctx sdk.Context, safetyBoxID string, by, acc sdk.Acc
 	return nil
 }
 
-func (k Keeper) grantReturner(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) sdk.Error {
+func (k Keeper) grantReturner(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) error {
 	// check whitelist permission
 	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, by.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionWhitelist, "Account: %s", by.String())
 	}
 
 	// check if the target is eligible
 	if k.IsReturner(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxHasPermissionAlready(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxHasPermissionAlready, "Account: %s", acc.String())
 	}
 	if k.IsOperator(ctx, safetyBoxID, acc) || k.IsIssuer(ctx, safetyBoxID, acc) || k.IsAllocator(ctx, safetyBoxID, acc) || k.IsOwner(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxHasOtherPermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxHasOtherPermission, "Account: %s", acc.String())
 	}
 
 	// grant
@@ -379,10 +380,10 @@ func (k Keeper) grantReturner(ctx sdk.Context, safetyBoxID string, by, acc sdk.A
 	return nil
 }
 
-func (k Keeper) RevokePermission(ctx sdk.Context, safetyBoxID string, by sdk.AccAddress, acc sdk.AccAddress, role string) sdk.Error {
+func (k Keeper) RevokePermission(ctx sdk.Context, safetyBoxID string, by sdk.AccAddress, acc sdk.AccAddress, role string) error {
 	// reject self-revoke
 	if by.Equals(acc) {
-		return types.ErrSafetyBoxSelfPermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxSelfPermission, "Account: %s", acc.String())
 	}
 
 	// revoke
@@ -400,83 +401,83 @@ func (k Keeper) RevokePermission(ctx sdk.Context, safetyBoxID string, by sdk.Acc
 	}
 }
 
-func (k Keeper) revokeOperator(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) sdk.Error {
+func (k Keeper) revokeOperator(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) error {
 	// check whitelist permission
 	whitelistOperatorsPermission := types.NewWhitelistOperatorsPermission(safetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, by, whitelistOperatorsPermission) {
-		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, by.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionWhitelist, "Account: %s", by.String())
 	}
 
 	if !k.IsOperator(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxDoesNotHavePermission, "Account: %s", acc.String())
 	}
 	k.iamKeeper.RevokePermission(ctx, acc, types.NewWhitelistOtherRolesPermission(safetyBoxID))
 	return nil
 }
 
-func (k Keeper) revokeAllocator(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) sdk.Error {
+func (k Keeper) revokeAllocator(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) error {
 	// check whitelist permission
 	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, by.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionWhitelist, "Account: %s", by.String())
 	}
 
 	if !k.IsAllocator(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxDoesNotHavePermission, "Account: %s", acc.String())
 	}
 	k.iamKeeper.RevokePermission(ctx, acc, types.NewAllocatePermission(safetyBoxID))
 	k.iamKeeper.RevokePermission(ctx, acc, types.NewRecallPermission(safetyBoxID))
 	return nil
 }
 
-func (k Keeper) revokeIssuer(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) sdk.Error {
+func (k Keeper) revokeIssuer(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) error {
 	// check whitelist permission
 	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, by.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionWhitelist, "Account: %s", by.String())
 	}
 
 	if !k.IsIssuer(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxDoesNotHavePermission, "Account: %s", acc.String())
 	}
 	k.iamKeeper.RevokePermission(ctx, acc, types.NewIssuePermission(safetyBoxID))
 	return nil
 }
 
-func (k Keeper) revokeReturner(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) sdk.Error {
+func (k Keeper) revokeReturner(ctx sdk.Context, safetyBoxID string, by, acc sdk.AccAddress) error {
 	// check whitelist permission
 	whitelistOtherRolesPermission := types.NewWhitelistOtherRolesPermission(safetyBoxID)
 	if !k.iamKeeper.HasPermission(ctx, by, whitelistOtherRolesPermission) {
-		return types.ErrSafetyBoxPermissionWhitelist(types.DefaultCodespace, by.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxPermissionWhitelist, "Account: %s", by.String())
 	}
 
 	if !k.IsReturner(ctx, safetyBoxID, acc) {
-		return types.ErrSafetyBoxDoesNotHavePermission(types.DefaultCodespace, acc.String())
+		return sdkerrors.Wrapf(types.ErrSafetyBoxDoesNotHavePermission, "Account: %s", acc.String())
 	}
 	k.iamKeeper.RevokePermission(ctx, acc, types.NewReturnPermission(safetyBoxID))
 	return nil
 }
 
-func (k Keeper) get(ctx sdk.Context, safetyBoxID string) (types.SafetyBox, sdk.Error) {
+func (k Keeper) get(ctx sdk.Context, safetyBoxID string) (types.SafetyBox, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	// retrieve the safety box
 	bz := store.Get(types.SafetyBoxKey(safetyBoxID))
 	if bz == nil {
-		return types.SafetyBox{}, types.ErrSafetyBoxNotExist(types.DefaultCodespace, safetyBoxID)
+		return types.SafetyBox{}, sdkerrors.Wrapf(types.ErrSafetyBoxNotExist, "ID: %s", safetyBoxID)
 	}
 	r := &types.SafetyBox{}
 	k.cdc.MustUnmarshalBinaryBare(bz, r)
 	return *r, nil
 }
 
-func (k Keeper) set(ctx sdk.Context, safetyBoxID string, sb types.SafetyBox) sdk.Error {
+func (k Keeper) set(ctx sdk.Context, safetyBoxID string, sb types.SafetyBox) error {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(types.SafetyBoxKey(safetyBoxID), k.cdc.MustMarshalBinaryBare(sb))
 	return nil
 }
 
-func (k Keeper) GetPermissions(ctx sdk.Context, safetyBoxID, role string, acc sdk.AccAddress) (types.MsgSafetyBoxRoleResponse, sdk.Error) {
+func (k Keeper) GetPermissions(ctx sdk.Context, safetyBoxID, role string, acc sdk.AccAddress) (types.MsgSafetyBoxRoleResponse, error) {
 	var hasRole bool
 	switch role {
 	case types.RoleOwner:
@@ -490,7 +491,7 @@ func (k Keeper) GetPermissions(ctx sdk.Context, safetyBoxID, role string, acc sd
 	case types.RoleReturner:
 		hasRole = k.IsReturner(ctx, safetyBoxID, acc)
 	default:
-		return types.MsgSafetyBoxRoleResponse{HasRole: false}, types.ErrSafetyBoxInvalidRole(types.DefaultCodespace, role)
+		return types.MsgSafetyBoxRoleResponse{HasRole: false}, sdkerrors.Wrapf(types.ErrSafetyBoxInvalidRole, "Role: %s", role)
 	}
 	return types.MsgSafetyBoxRoleResponse{HasRole: hasRole}, nil
 }

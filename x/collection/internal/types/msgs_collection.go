@@ -1,7 +1,10 @@
 package types
 
 import (
+	"unicode/utf8"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 var _ sdk.Msg = (*MsgCreateCollection)(nil)
@@ -22,18 +25,18 @@ func NewMsgCreateCollection(owner sdk.AccAddress, name, meta, baseImgURI string)
 	}
 }
 
-func (msg MsgCreateCollection) ValidateBasic() sdk.Error {
+func (msg MsgCreateCollection) ValidateBasic() error {
 	if msg.Owner.Empty() {
-		return sdk.ErrInvalidAddress("owner address cannot be empty")
-	}
-	if !ValidateBaseImgURI(msg.BaseImgURI) {
-		return ErrInvalidBaseImgURILength(DefaultCodespace, msg.BaseImgURI)
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
 	if !ValidateName(msg.Name) {
-		return ErrInvalidNameLength(DefaultCodespace, msg.Name)
+		return sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Name, MaxTokenNameLength, utf8.RuneCountInString(msg.Name))
 	}
 	if !ValidateMeta(msg.Meta) {
-		return ErrInvalidMetaLength(DefaultCodespace, msg.Meta)
+		return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Meta, MaxTokenMetaLength, utf8.RuneCountInString(msg.Meta))
+	}
+	if !ValidateBaseImgURI(msg.BaseImgURI) {
+		return sdkerrors.Wrapf(ErrInvalidBaseImgURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.BaseImgURI, MaxBaseImgURILength, utf8.RuneCountInString(msg.BaseImgURI))
 	}
 	return nil
 }

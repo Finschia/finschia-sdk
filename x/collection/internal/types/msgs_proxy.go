@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/contract"
 )
 
@@ -21,18 +22,18 @@ func NewMsgApprove(approver sdk.AccAddress, contractID string, proxy sdk.AccAddr
 	}
 }
 
-func (msg MsgApprove) ValidateBasic() sdk.Error {
+func (msg MsgApprove) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return nil
 	}
 	if msg.Approver.Empty() {
-		return sdk.ErrInvalidAddress("Approver cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Approver cannot be empty")
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
 	}
 	if msg.Approver.Equals(msg.Proxy) {
-		return ErrApproverProxySame(DefaultCodespace, msg.Approver.String())
+		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.Approver.String())
 	}
 	return nil
 }
@@ -63,18 +64,18 @@ func NewMsgDisapprove(approver sdk.AccAddress, contractID string, proxy sdk.AccA
 	}
 }
 
-func (msg MsgDisapprove) ValidateBasic() sdk.Error {
+func (msg MsgDisapprove) ValidateBasic() error {
 	if err := contract.ValidateContractIDBasic(msg); err != nil {
 		return err
 	}
 	if msg.Approver.Empty() {
-		return sdk.ErrInvalidAddress("Approver cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Approver cannot be empty")
 	}
 	if msg.Proxy.Empty() {
-		return sdk.ErrInvalidAddress("Proxy cannot be empty")
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
 	}
 	if msg.Approver.Equals(msg.Proxy) {
-		return ErrApproverProxySame(DefaultCodespace, msg.Approver.String())
+		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.Approver.String())
 	}
 	return nil
 }

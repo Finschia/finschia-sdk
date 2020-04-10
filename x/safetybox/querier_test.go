@@ -23,8 +23,8 @@ func TestSafetyBoxQuerierSafetyBox(t *testing.T) {
 		SafetyBoxOwner:  owner,
 		SafetyBoxDenoms: []string{"link"},
 	}
-	r := h(input.Ctx, msgSbCreate)
-	require.True(t, r.IsOK())
+	_, err := h(input.Ctx, msgSbCreate)
+	require.NoError(t, err)
 
 	// query the box
 	params := types.QuerySafetyBoxParams{SafetyBoxID: SafetyBoxTestID}
@@ -62,8 +62,8 @@ func TestSafetyBoxQuerierRole(t *testing.T) {
 		SafetyBoxOwner:  owner,
 		SafetyBoxDenoms: []string{"link"},
 	}
-	r := h(input.Ctx, msgSbCreate)
-	require.True(t, r.IsOK())
+	_, err := h(input.Ctx, msgSbCreate)
+	require.NoError(t, err)
 
 	// check the owner of the box
 	params := types.QueryAccountRoleParams{

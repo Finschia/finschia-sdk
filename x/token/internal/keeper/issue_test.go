@@ -3,8 +3,10 @@ package keeper
 import (
 	"strings"
 	"testing"
+	"unicode/utf8"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 )
@@ -75,6 +77,6 @@ func TestKeeper_IssueTokenTooLongTokenURI(t *testing.T) {
 	t.Log("issue a token with too long token uri")
 	{
 		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, length1001String, sdk.NewInt(defaultDecimals), true)
-		require.EqualError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1), types.ErrInvalidImageURILength(types.DefaultCodespace, length1001String).Error())
+		require.EqualError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1), sdkerrors.Wrapf(types.ErrInvalidImageURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, types.MaxImageURILength, utf8.RuneCountInString(length1001String)).Error())
 	}
 }

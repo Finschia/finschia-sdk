@@ -6,6 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/keeper"
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/line/link/x/iam/exported"
@@ -81,7 +82,7 @@ func query(t *testing.T, params interface{}, query string, result interface{}) {
 	}
 }
 
-func queryInternal(params interface{}, query string) ([]byte, sdk.Error) {
+func queryInternal(params interface{}, query string) ([]byte, error) {
 	req := abci.RequestQuery{
 		Path: "",
 		Data: []byte(string(codec.MustMarshalJSONIndent(types.ModuleCdc, params))),
@@ -129,7 +130,7 @@ func TestNewQuerier_queryBalanceNonExistentContractID(t *testing.T) {
 		Addr:       addr1,
 	}
 	_, err := queryInternal(params, types.QueryBalance)
-	require.Error(t, err, types.ErrCollectionNotExist(types.DefaultCodespace, contractID))
+	require.Error(t, err, sdkerrors.Wrap(types.ErrCollectionNotExist, contractID))
 }
 
 func TestNewQuerier_queryBalanceNonExistentTokenID(t *testing.T) {
@@ -142,7 +143,7 @@ func TestNewQuerier_queryBalanceNonExistentTokenID(t *testing.T) {
 		Addr:       addr1,
 	}
 	_, err := queryInternal(params, types.QueryBalance)
-	require.Error(t, err, types.ErrTokenNotExist(types.DefaultCodespace, contractID, tokenID))
+	require.Error(t, err, sdkerrors.Wrapf(types.ErrCollectionNotExist, "%s %s", contractID, tokenID))
 }
 
 func TestNewQuerier_queryAccountPermission(t *testing.T) {
@@ -483,5 +484,5 @@ func TestNewQuerier_invalid(t *testing.T) {
 		Data: []byte(string(codec.MustMarshalJSONIndent(types.ModuleCdc, params))),
 	}
 	_, err := querier(ctx, path, req)
-	require.EqualError(t, err, sdk.ErrUnknownRequest("unknown collection query endpoint").Error())
+	require.EqualError(t, err, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown collection query endpoint").Error())
 }

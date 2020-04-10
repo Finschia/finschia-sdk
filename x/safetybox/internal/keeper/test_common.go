@@ -62,7 +62,7 @@ func SetupTestInput(t *testing.T) TestInput {
 	cdc := newTestCodec()
 
 	// init params keeper and subspaces
-	paramsKeeper := params.NewKeeper(cdc, keyParams, tkeyParams, params.DefaultCodespace)
+	paramsKeeper := params.NewKeeper(cdc, keyParams, tkeyParams)
 	authSubspace := paramsKeeper.Subspace(auth.DefaultParamspace)
 	cbankSubspace := paramsKeeper.Subspace(cbank.DefaultParamspace)
 
@@ -76,7 +76,7 @@ func SetupTestInput(t *testing.T) TestInput {
 
 	// add keepers
 	accountKeeper := auth.NewAccountKeeper(cdc, keyAuth, authSubspace, auth.ProtoBaseAccount)
-	cbankKeeper := cbank.NewBaseKeeper(accountKeeper, cbankSubspace, cbank.DefaultCodespace, blacklistedAddrs)
+	cbankKeeper := cbank.NewBaseKeeper(accountKeeper, cbankSubspace, blacklistedAddrs)
 	iamKeeper := iam.NewKeeper(cdc, keyIam)
 	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, cbankKeeper, maccPerms)
 

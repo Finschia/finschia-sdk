@@ -90,10 +90,7 @@ func prepareForBlockRest(t *testing.T) (*mock.MockClient, *mock.MockCodec, *mock
 		Block: &tmtypes.Block{
 			Header: tmtypes.Header{Height: fromBlockHeightInt64},
 		},
-		BlockMeta: &tmtypes.BlockMeta{
-			BlockID: tmtypes.BlockID{},
-			Header:  tmtypes.Header{},
-		},
+		BlockID: tmtypes.BlockID{},
 	}
 	return mockClient, mockCodec, mockTendermint, mockCliContext, rs, fromBlockHeightInt64, rb
 }

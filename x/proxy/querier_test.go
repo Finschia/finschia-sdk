@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	testCommon "github.com/line/link/x/proxy/keeper"
 	"github.com/line/link/x/proxy/types"
 	"github.com/stretchr/testify/require"
@@ -37,8 +38,8 @@ func TestProxyQuerierAllowance(t *testing.T) {
 
 	// approve 1 link
 	msgProxyApproveCoins := types.NewMsgProxyApproveCoins(proxy, onBehalfOf, denom, amount)
-	r := h(ctx, msgProxyApproveCoins)
-	require.True(t, r.IsOK())
+	_, err := h(ctx, msgProxyApproveCoins)
+	require.NoError(t, err)
 
 	// query allowance
 	params := types.QueryProxyAllowance{ProxyDenom: types.NewProxyDenom(proxy, onBehalfOf, denom)}
@@ -79,8 +80,8 @@ func TestProxyQuerierAllowance(t *testing.T) {
 
 	// the proxy sends 1 link to the receiver on behalf of ...
 	msgProxySendCoinsFrom := types.NewMsgProxySendCoinsFrom(proxy, onBehalfOf, receiver, denom, amount)
-	r = h(ctx, msgProxySendCoinsFrom)
-	require.True(t, r.IsOK())
+	_, err = h(ctx, msgProxySendCoinsFrom)
+	require.NoError(t, err)
 
 	// query allowance
 	params = types.QueryProxyAllowance{ProxyDenom: types.NewProxyDenom(proxy, onBehalfOf, denom)}
@@ -93,5 +94,5 @@ func TestProxyQuerierAllowance(t *testing.T) {
 	_, err = querier(ctx, path, req)
 
 	// no proxy expected as all the allowance is used
-	require.EqualError(t, types.ErrProxyNotExist(DefaultCodespace, proxy.String(), onBehalfOf.String()), err.Error())
+	require.EqualError(t, sdkerrors.Wrapf(types.ErrProxyNotExist, "Proxy: %s, Account: %s", proxy.String(), onBehalfOf.String()), err.Error())
 }
