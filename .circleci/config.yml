@@ -22,6 +22,7 @@ jobs:
   check-skippable-pr:
     docker:
       - image: alpine:3.7
+    resource_class: small
     steps:
       - run: apk add --no-cache bash curl jq
       - run:
@@ -98,6 +99,7 @@ jobs:
 
   fmt:
     <<: *linux_defaults
+    resource_class: small
     steps:
       - checkout
       - run:
@@ -106,6 +108,7 @@ jobs:
 
   setup_dependencies:
     <<: *linux_defaults
+    resource_class: xlarge
     steps:
       - run: mkdir -p /tmp/workspace/bin
       - run: mkdir -p /tmp/workspace/profiles
@@ -129,6 +132,7 @@ jobs:
             make get-tools
   lint:
     <<: *linux_defaults
+    resource_class: xlarge
     parallelism: 1
     steps:
       - checkout
@@ -139,6 +143,7 @@ jobs:
       - run: make lint
   unit_test:
     <<: *linux_defaults
+    resource_class: medium
     parallelism: 1
     steps:
       - checkout
@@ -149,6 +154,7 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash) -f ./coverage.txt -F "unittest" -Z
   integration_test:
     <<: *linux_defaults
+    resource_class: xlarge
     parallelism: 1
     steps:
       - checkout
@@ -162,6 +168,7 @@ jobs:
             make test-integration
   setup_docker_and_binary:
     <<: *machine_defaults
+    resource_class: xlarge
     steps:
       - checkout
       - restore_cache:
@@ -193,6 +200,7 @@ jobs:
 
   sim-link-nondeterminism:
     <<: *linux_defaults
+    resource_class: xlarge
     steps:
       - checkout
       - restore_cache:
@@ -206,6 +214,7 @@ jobs:
 
   sim-link-simulation-after-import:
     <<: *linux_defaults
+    resource_class: xlarge
     steps:
       - checkout
       - restore_cache:
@@ -219,6 +228,7 @@ jobs:
 
   sim-link-multi-seed:
     <<: *linux_defaults
+    resource_class: xlarge
     steps:
       - checkout
       - restore_cache:
@@ -232,6 +242,7 @@ jobs:
 
   sim-link-multi-seed-short:
     <<: *linux_defaults
+    resource_class: xlarge
     steps:
       - checkout
       - restore_cache:
@@ -245,6 +256,7 @@ jobs:
 
   integration_multi_node_test:
     <<: *machine_defaults
+    resource_class: xlarge
     steps:
       - checkout
       - restore_cache:
@@ -276,6 +288,7 @@ jobs:
             make test-integration-multi-node
   localnet:
     <<: *machine_defaults
+    resource_class: medium
     steps:
       - checkout
       - restore_cache:
@@ -304,6 +317,7 @@ jobs:
   semantic_release:
     docker:
       - image: circleci/node:10
+    resource_class: medium
     steps:
       - checkout
       - run: yarn global add --no-progress --non-interactive "semantic-release" "@semantic-release/exec"
@@ -312,6 +326,7 @@ jobs:
   deploy:
     docker:
       - image: circleci/golang:1.13.4
+    resource_class: medium
     steps:
       - checkout
       - run: make build-swagger-docs
@@ -319,6 +334,7 @@ jobs:
 
   contract_test:
     <<: *linux_defaults
+    resource_class: medium
     steps:
       - run: rm -rf /tmp/contract_test
       - run: mkdir -p /tmp/contract_test
