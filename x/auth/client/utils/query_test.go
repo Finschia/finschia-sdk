@@ -9,6 +9,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/golang/mock/gomock"
+	"github.com/line/link/x/auth/client/utils/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -24,7 +26,6 @@ import (
 
 	"github.com/line/link/types"
 	atypes "github.com/line/link/x/auth/client/types"
-	"github.com/line/link/x/auth/client/utils/mocks"
 )
 
 type mockNodeResponses struct {
@@ -102,15 +103,15 @@ func TestQueryTxsByEventsResponseContainsIndexCodeCodespace(t *testing.T) {
 	cdc := setupCodec()
 	nodeResponses := setupMockNodeResponses(t, cdc, hashString, height, index, code, codespace)
 
-	mockClient := &mocks.Client{}
+	mockClient := mock.NewMockClient(gomock.NewController(t))
 	cliCtx := context.CLIContext{
 		Client:    mockClient,
 		TrustNode: true,
 		Codec:     cdc,
 	}
+	mockClient.EXPECT().TxSearch("tx.height=0", !cliCtx.TrustNode, 1, 30, "").Return(nodeResponses.resTxSearch, nil)
 
-	mockClient.On("TxSearch", "tx.height=0", !cliCtx.TrustNode, 1, 30).Return(nodeResponses.resTxSearch, nil)
-	mockClient.On("Block", &nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
+	mockClient.EXPECT().Block(&nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
 
 	res, err := QueryTxsByEvents(cliCtx, []string{"tx.height=0"}, 1, 30)
 	assert.NoError(t, err)
@@ -128,7 +129,7 @@ func TestQueryTxResponseContainsIndexCodeCodespace(t *testing.T) {
 	cdc := setupCodec()
 	nodeResponses := setupMockNodeResponses(t, cdc, hashString, height, index, code, codespace)
 
-	mockClient := &mocks.Client{}
+	mockClient := mock.NewMockClient(gomock.NewController(t))
 	cliCtx := context.CLIContext{
 		Client:    mockClient,
 		TrustNode: true,
@@ -137,8 +138,8 @@ func TestQueryTxResponseContainsIndexCodeCodespace(t *testing.T) {
 
 	hash, err := hex.DecodeString(hashString)
 	assert.NoError(t, err)
-	mockClient.On("Tx", hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
-	mockClient.On("Block", &nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
+	mockClient.EXPECT().Tx(hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
+	mockClient.EXPECT().Block(&nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
 
 	res, err := QueryTx(cliCtx, hashString)
 	assert.NoError(t, err)
@@ -171,7 +172,7 @@ func TestQueryTxMarshalledResponseContainsIndexCodeCodespace(t *testing.T) {
 	cdc := setupCodec()
 	nodeResponses := setupMockNodeResponses(t, cdc, hashString, height, index, code, codespace)
 
-	mockClient := &mocks.Client{}
+	mockClient := mock.NewMockClient(gomock.NewController(t))
 	cliCtx := context.CLIContext{
 		Client:    mockClient,
 		TrustNode: true,
@@ -180,8 +181,8 @@ func TestQueryTxMarshalledResponseContainsIndexCodeCodespace(t *testing.T) {
 
 	hash, err := hex.DecodeString(hashString)
 	assert.NoError(t, err)
-	mockClient.On("Tx", hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
-	mockClient.On("Block", &nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
+	mockClient.EXPECT().Tx(hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
+	mockClient.EXPECT().Block(&nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
 
 	res, err := QueryTx(cliCtx, hashString)
 	assert.NoError(t, err)
@@ -209,7 +210,7 @@ func TestQueryTxMarshalledResponseEmptyIndexCodeCodespace(t *testing.T) {
 	cdc := setupCodec()
 	nodeResponses := setupMockNodeResponses(t, cdc, hashString, height, index, code, codespace)
 
-	mockClient := &mocks.Client{}
+	mockClient := mock.NewMockClient(gomock.NewController(t))
 	cliCtx := context.CLIContext{
 		Client:    mockClient,
 		TrustNode: true,
@@ -218,8 +219,8 @@ func TestQueryTxMarshalledResponseEmptyIndexCodeCodespace(t *testing.T) {
 
 	hash, err := hex.DecodeString(hashString)
 	assert.NoError(t, err)
-	mockClient.On("Tx", hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
-	mockClient.On("Block", &nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
+	mockClient.EXPECT().Tx(hash, !cliCtx.TrustNode).Return(nodeResponses.resTx, nil)
+	mockClient.EXPECT().Block(&nodeResponses.resTx.Height).Return(nodeResponses.resBlock, nil)
 
 	res, err := QueryTx(cliCtx, hashString)
 	assert.NoError(t, err)
@@ -238,7 +239,7 @@ func TestQueryTxMarshalledResponseEmptyIndexCodeCodespace(t *testing.T) {
 
 func TestQueryGenesisTxs(t *testing.T) {
 	cdc := setupCodec()
-	mockClient := &mocks.Client{}
+	mockClient := mock.NewMockClient(gomock.NewController(t))
 	cliCtx := context.CLIContext{
 		Client:    mockClient,
 		TrustNode: true,
@@ -252,7 +253,7 @@ func TestQueryGenesisTxs(t *testing.T) {
 	genesisResult := ctypes.ResultGenesis{
 		Genesis: &genesisDoc,
 	}
-	mockClient.On("Genesis").Return(&genesisResult, nil)
+	mockClient.EXPECT().Genesis().Return(&genesisResult, nil)
 
 	genesisTxs, err := QueryGenesisTx(cliCtx)
 	assert.NoError(t, err)
@@ -265,7 +266,7 @@ func TestQueryGenesisTxs(t *testing.T) {
 	genesisResult = ctypes.ResultGenesis{
 		Genesis: &genesisDoc,
 	}
-	mockClient.On("Genesis").Return(&genesisResult, nil)
+	mockClient.EXPECT().Genesis().Return(&genesisResult, nil)
 	genesisTxs, err = QueryGenesisTx(cliCtx)
 	assert.Empty(t, genesisTxs)
 	assert.Error(t, err)
@@ -281,7 +282,7 @@ func testQueryGenesisAccount(t *testing.T, testnet bool) {
 	config.SetBech32PrefixForAccount(types.Bech32PrefixAcc(testnet), types.Bech32PrefixAccPub(testnet))
 
 	cdc := setupCodec()
-	mockClient := &mocks.Client{}
+	mockClient := mock.NewMockClient(gomock.NewController(t))
 	cliCtx := context.CLIContext{
 		Client:    mockClient,
 		TrustNode: true,
@@ -301,7 +302,7 @@ func testQueryGenesisAccount(t *testing.T, testnet bool) {
 	genesisResult := ctypes.ResultGenesis{
 		Genesis: &genesisDoc,
 	}
-	mockClient.On("Genesis").Return(&genesisResult, nil)
+	mockClient.EXPECT().Genesis().Return(&genesisResult, nil).AnyTimes()
 	res, err := QueryGenesisAccount(cliCtx, 1, 2)
 	assert.NoError(t, err)
 	assert.Equal(t, 1, len(res.Accounts))
