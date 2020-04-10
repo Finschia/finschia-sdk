@@ -48,6 +48,7 @@ var (
 	ErrDuplicateChangesField         = sdkerrors.Register(ModuleName, 41, "duplicate field of changes")
 	ErrInvalidMetaLength             = sdkerrors.Register(ModuleName, 42, "invalid meta length")
 	ErrSupplyOverflow                = sdkerrors.Register(ModuleName, 43, "supply for collection reached maximum")
+	ErrEmptyField                    = sdkerrors.Register(ModuleName, 44, "required field cannot be empty")
 )
 
 func WrapIfOverflowPanic(r interface{}) error {

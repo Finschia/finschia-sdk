@@ -127,6 +127,9 @@ func (msg MsgTransferNFT) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty")
 	}
 
+	if len(msg.TokenIDs) == 0 {
+		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
+	}
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
@@ -257,6 +260,10 @@ func (msg MsgTransferNFTFrom) ValidateBasic() error {
 	}
 	if msg.From.Equals(msg.Proxy) {
 		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.From.String())
+	}
+
+	if len(msg.TokenIDs) == 0 {
+		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
 	}
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {

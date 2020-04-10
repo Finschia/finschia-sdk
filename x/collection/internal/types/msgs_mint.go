@@ -60,6 +60,9 @@ func (msg MsgMintNFT) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "to address cannot be empty")
 	}
 
+	if len(msg.MintNFTParams) == 0 {
+		return sdkerrors.Wrap(ErrEmptyField, "params cannot be empty")
+	}
 	for _, mintNFTParam := range msg.MintNFTParams {
 		if len(mintNFTParam.Name) == 0 {
 			return ErrInvalidTokenName
@@ -110,6 +113,9 @@ func (msg MsgBurnNFT) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "owner address cannot be empty")
 	}
 
+	if len(msg.TokenIDs) == 0 {
+		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
+	}
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
@@ -162,6 +168,9 @@ func (msg MsgBurnNFTFrom) ValidateBasic() error {
 		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.Proxy.String())
 	}
 
+	if len(msg.TokenIDs) == 0 {
+		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
+	}
 	for _, tokenID := range msg.TokenIDs {
 		if err := types.ValidateTokenID(tokenID); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())

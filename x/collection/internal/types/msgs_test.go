@@ -82,6 +82,9 @@ func TestMsgBasics(t *testing.T) {
 		falseParam = NewMintNFTParam(defaultName, defaultMeta, "abc")
 		msg4 := NewMsgMintNFT(addr1, defaultContractID, addr1, falseParam)
 		require.Error(t, msg4.ValidateBasic())
+
+		msg5 := NewMsgMintNFT(addr1, defaultContractID, addr1)
+		require.Error(t, msg5.ValidateBasic())
 	}
 	{
 		msg := NewMsgBurnNFT(addr1, defaultContractID, defaultTokenID1)
@@ -101,6 +104,9 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.ContractID, msg2.ContractID)
 		require.Equal(t, msg.From, msg2.From)
 		require.Equal(t, msg.TokenIDs, msg2.TokenIDs)
+
+		msg3 := NewMsgBurnNFT(addr1, defaultContractID)
+		require.Error(t, msg3.ValidateBasic())
 	}
 	{
 		addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
@@ -214,6 +220,9 @@ func TestMsgBasics(t *testing.T) {
 
 		msg = NewMsgTransferNFT(addr1, defaultContractID, addr2, "1")
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
+
+		msg = NewMsgTransferNFT(addr1, defaultContractID, addr2)
+		require.Error(t, msg.ValidateBasic())
 	}
 
 	{
@@ -291,6 +300,9 @@ func TestMsgBasics(t *testing.T) {
 
 		msg = NewMsgTransferNFTFrom(addr1, defaultContractID, addr2, addr2, "1")
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "symbol [1] mismatched to [^[a-f0-9]{16}$]").Error())
+
+		msg = NewMsgTransferNFTFrom(addr1, defaultContractID, addr2, addr2)
+		require.Error(t, msg.ValidateBasic())
 	}
 
 	{
@@ -540,5 +552,8 @@ func TestMsgBasics(t *testing.T) {
 
 		msg = NewMsgBurnNFTFrom(addr1, defaultContractID, nil, defaultTokenID1)
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
+
+		msg = NewMsgBurnNFTFrom(addr1, defaultContractID, addr1)
+		require.Error(t, msg.ValidateBasic())
 	}
 }
