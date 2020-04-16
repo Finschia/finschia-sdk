@@ -1,0 +1,18 @@
+{
+  "height": "3",
+  "result": {
+    "type": "cosmos-sdk/Account",
+    "value": {
+      "address": "link1muu5cza33kttadr5wylsqhfgxnwlcdrxls0wwn",
+      "coins": [
+        {
+          "denom": "link",
+          "amount": "50"
+        }
+      ],
+      "public_key": "linkpub1addwnpepqd5e5f64ea8dhphrfs0933tz66w2jsmraq6tkua4x9wc2n6ngy7y6gtz5ew",
+      "account_number": 1,
+      "sequence": 11
+    }
+  }
+}

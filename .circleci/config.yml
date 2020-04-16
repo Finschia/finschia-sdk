@@ -166,6 +166,20 @@ jobs:
           command: |
             export BUILDDIR=`pwd`/build
             make test-integration
+  integration_test_load_tester:
+    <<: *linux_defaults
+    resource_class: xlarge
+    parallelism: 1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: Test cli
+          command: |
+            export BUILDDIR=`pwd`/build
+            make test-integration-load-tester
   setup_docker_and_binary:
     <<: *machine_defaults
     resource_class: xlarge
@@ -362,6 +376,9 @@ workflows:
           requires:
             - setup_dependencies
       - integration_test:
+          requires:
+            - setup_dependencies
+      - integration_test_load_tester:
           requires:
             - setup_dependencies
       - contract_test

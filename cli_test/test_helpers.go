@@ -145,7 +145,7 @@ func NewFixtures(t *testing.T) *Fixtures {
 	tmpDir := path.Join(os.ExpandEnv("$HOME"), ".linktest")
 	err := os.MkdirAll(tmpDir, os.ModePerm)
 	require.NoError(t, err)
-	tmpDir, err = ioutil.TempDir(tmpDir, "link_integration_"+t.Name()+"_")
+	tmpDir, err = ioutil.TempDir(tmpDir, "link_integration_"+strings.Split(t.Name(), "/")[0]+"_")
 	require.NoError(t, err)
 
 	mutex.Lock()
@@ -387,6 +387,26 @@ func (f *Fixtures) LDTendermint(query string) string {
 func (f *Fixtures) ValidateGenesis() {
 	cmd := fmt.Sprintf("%s validate-genesis --home=%s", f.LinkdBinary, f.LinkdHome)
 	executeWriteCheckErr(f.T, cmd)
+}
+
+//___________________________________________________________________________________
+// linkcli rest-server
+func (f *Fixtures) RestServerStart(port int, flags ...string) (*tests.Process, error) {
+	cmd := fmt.Sprintf("%s rest-server --home=%s --laddr=%s", f.LinkcliBinary, f.LinkcliHome, fmt.Sprintf("tcp://0.0.0.0:%d", port))
+	proc := tests.GoExecuteTWithStdout(f.T, addFlags(cmd, flags))
+	defer func() {
+		if v := recover(); v != nil {
+			stdout, stderr, err := proc.ReadAll()
+			if err != nil {
+				fmt.Println(err)
+				f.T.Fail()
+			}
+			f.T.Log(stdout)
+			f.T.Log(stderr)
+		}
+	}()
+	tests.WaitForNextNBlocksTM(1, f.Port)
+	return proc, nil
 }
 
 //___________________________________________________________________________________
@@ -794,6 +814,29 @@ func (f *Fixtures) QueryTxsInvalid(expectedErr error, page, limit int, tags ...s
 	cmd := fmt.Sprintf("%s query txs --page=%d --limit=%d --tags='%s' %v", f.LinkcliBinary, page, limit, queryTags(tags), f.Flags())
 	_, err := tests.ExecuteT(f.T, cmd, "")
 	require.EqualError(f.T, expectedErr, err)
+}
+
+//___________________________________________________________________________________
+// linkcli query block
+
+func (f *Fixtures) QueryLatestBlock(flags ...string) *tmctypes.ResultBlock {
+	cmd := fmt.Sprintf("%s query block %v", f.LinkcliBinary, f.Flags())
+	out, _ := tests.ExecuteT(f.T, cmd, "")
+	var result tmctypes.ResultBlock
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &result)
+	require.NoError(f.T, err, "out %v\n, err %v", out, err)
+	return &result
+}
+
+func (f *Fixtures) QueryBlockWithHeight(height int, flags ...string) *tmctypes.ResultBlock {
+	cmd := fmt.Sprintf("%s query block %d %v", f.LinkcliBinary, height, f.Flags())
+	out, _ := tests.ExecuteT(f.T, cmd, "")
+	var result tmctypes.ResultBlock
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &result)
+	require.NoError(f.T, err, "out %v\n, err %v", out, err)
+	return &result
 }
 
 //___________________________________________________________________________________

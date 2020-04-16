@@ -22,6 +22,7 @@ type (
 
 var (
 	SendTxCmd                      = cli.SendTxCmd
+	NewMsgSend                     = types.NewMsgSend
 	NewKeeper                      = keeper.NewKeeper
 	ActionTransferTo               = types.ActionTransferTo
 	ErrCanNotTransferToBlacklisted = types.ErrCanNotTransferToBlacklisted
