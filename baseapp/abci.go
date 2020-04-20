@@ -109,6 +109,10 @@ func (app *BaseApp) BeginBlock(req abci.RequestBeginBlock) (res abci.ResponseBeg
 		panic(err)
 	}
 
+	if err := app.upgrade(req); err != nil {
+		panic(err)
+	}
+
 	// Initialize the DeliverTx state. If this is the first block, it should
 	// already be initialized in InitChain. Otherwise app.deliverState will be
 	// nil, since it is reset on Commit.
