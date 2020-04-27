@@ -11,6 +11,7 @@ import (
 
 	"github.com/line/link/x/bank"
 	collectionmodule "github.com/line/link/x/collection"
+	"github.com/line/link/x/contract"
 	"github.com/line/link/x/proxy"
 	sbox "github.com/line/link/x/safetybox"
 
@@ -390,8 +391,6 @@ func TestLinkCLIProxy(t *testing.T) {
 }
 
 func TestLinkCLISafetyBox(t *testing.T) {
-	t.Skip("SKIP: SafetyBox module is not in use")
-
 	t.Parallel()
 	f := InitFixtures(t)
 
@@ -402,12 +401,48 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	var result bool
 
 	id := "some_safety_box"
-	denom := DenomLink
 	rinahTheOwnerAddress := f.KeyAddress(UserRinah).String()
+
+	// token info
+	contractID := "9be17165"
+	description := "description"
+	symbol := "BTC"
+	meta := "{}"
+	amount := int64(10000)
+	decimals := int64(6)
+
+	// creating a safety box w/ unissued token should fail
+	{
+		result, stdoutSafetyBoxCreate, _ := f.TxSafetyBoxCreate(id, rinahTheOwnerAddress, contractID, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		require.Contains(
+			t,
+			stdoutSafetyBoxCreate,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxTokenNotExist, "Could not be found with the given contractID: %s", contractID).Error(),
+		)
+	}
+
+	// issue Token
+	{
+		fooAddr := f.KeyAddress(keyFoo)
+
+		f.TxTokenIssue(keyFoo, fooAddr, description, meta, symbol, amount, decimals, false, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		token := f.QueryToken(contractID)
+		require.Equal(t, description, token.GetName())
+		require.Equal(t, contractID, token.GetContractID())
+		require.Equal(t, int64(decimals), token.GetDecimals().Int64())
+		require.Equal(t, false, token.GetMintable())
+
+		require.Equal(t, sdk.NewInt(amount), f.QueryBalanceToken(contractID, fooAddr))
+	}
 
 	// create a safety box w/ user rinah as the owner
 	{
-		result, _, _ = f.TxSafetyBoxCreate(id, rinahTheOwnerAddress, denom, "-y")
+		result, _, _ = f.TxSafetyBoxCreate(id, rinahTheOwnerAddress, contractID, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 	}
@@ -440,40 +475,69 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.Equal(t, sb.Owner.String(), rinahTheOwnerAddress)
 	}
 
-	// sending coins to the safety box directly should fail
+	// sending token to the safety box directly should fail
 	{
 		sb := f.QuerySafetyBox(id)
-		result, stdoutSendToBlacklist, _ := f.TxSend(keyFoo, sb.Address, sdk.NewCoin(denom, sdk.OneInt()), "-y")
+
+		// send to blacklist
+		result, stdoutSendToBlacklist, _ := f.TxTokenTransfer(keyFoo, sb.Address, contractID, int64(1), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(bank.ErrCanNotTransferToBlacklisted, "Addr: %s", sb.Address.String()).Error(), "\""),
-			strings.Split(stdoutSendToBlacklist, "\\\\\\\"")[9],
+			stdoutSendToBlacklist,
+			sdkerrors.Wrapf(bank.ErrCanNotTransferToBlacklisted, "Addr: %s", sb.Address.String()).Error(),
+		)
+
+		// invalid contract id
+		invalidContractID := "9be17166"
+		result, stdoutInvalidContractID, _ := f.TxTokenTransfer(keyFoo, sb.Address, invalidContractID, int64(1), "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+
+		require.Contains(
+			t,
+			stdoutInvalidContractID,
+			sdkerrors.Wrapf(contract.ErrContractNotExist, "contract id: %s", invalidContractID).Error(),
 		)
 	}
 
-	// create a safety box w/ multiple denoms should fail
+	// token transfer for user
 	{
-		tooManyDenoms := []string{DenomLink, DenomStake}
-		result, stdoutBoxCreate, _ := f.TxSafetyBoxCreate("new_id", rinahTheOwnerAddress, DenomLink+","+DenomStake, "-y")
+		tokenAmount := int64(100)
+
+		kevinAddr := f.KeyAddress(UserKevin)
+		result, _, _ := f.TxTokenTransfer(keyFoo, kevinAddr, contractID, tokenAmount, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
+		require.Equal(t, sdk.NewInt(tokenAmount), f.QueryBalanceToken(contractID, kevinAddr))
 
-		require.Contains(
-			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxTooManyCoinDenoms, "Requested: %v", tooManyDenoms).Error(), "\""),
-			strings.Split(stdoutBoxCreate, "\\\\\\\"")[9],
-		)
+		brianAddr := f.KeyAddress(UserBrian)
+		result, _, _ = f.TxTokenTransfer(keyFoo, brianAddr, contractID, tokenAmount, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+		require.Equal(t, sdk.NewInt(tokenAmount), f.QueryBalanceToken(contractID, brianAddr))
+
+		samAddr := f.KeyAddress(UserSam)
+		result, _, _ = f.TxTokenTransfer(keyFoo, samAddr, contractID, tokenAmount, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+		require.Equal(t, sdk.NewInt(tokenAmount), f.QueryBalanceToken(contractID, samAddr))
+
+		evelynAddr := f.KeyAddress(UserEvelyn)
+		result, _, _ = f.TxTokenTransfer(keyFoo, evelynAddr, contractID, tokenAmount, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		require.True(t, result)
+		require.Equal(t, sdk.NewInt(tokenAmount), f.QueryBalanceToken(contractID, evelynAddr))
 	}
 
 	// any coin transfer to the safety box from the owner should fail
 	{
-		resultAllocation, stdoutAllocation, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomLink, int64(1), rinahTheOwnerAddress, "", "-y")
-		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, DenomLink, int64(1), rinahTheOwnerAddress, "", "-y")
-		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), rinahTheOwnerAddress, rinahTheOwnerAddress, "-y")
-		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, DenomLink, int64(1), rinahTheOwnerAddress, "", "-y")
+		resultAllocation, stdoutAllocation, _ := f.TxSafetyBoxSendToken(id, sbox.ActionAllocate, contractID, int64(1), rinahTheOwnerAddress, "", "-y")
+		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendToken(id, sbox.ActionRecall, contractID, int64(1), rinahTheOwnerAddress, "", "-y")
+		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendToken(id, sbox.ActionIssue, contractID, int64(1), rinahTheOwnerAddress, rinahTheOwnerAddress, "-y")
+		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendToken(id, sbox.ActionReturn, contractID, int64(1), rinahTheOwnerAddress, "", "-y")
 
 		// test all four txs in a single block to reduce the testing time
 		// check the error message to get expected errors
@@ -482,29 +546,29 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultAllocation)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionAllocate, "Account: %s", rinahTheOwnerAddress).Error(), "\""),
-			strings.Split(stdoutAllocation, "\\\\\\\"")[9],
+			stdoutAllocation,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionAllocate, "Account: %s", rinahTheOwnerAddress).Error(),
 		)
 
 		require.True(t, resultRecall)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionRecall, "Account: %s", rinahTheOwnerAddress).Error(), "\""),
-			strings.Split(stdoutRecall, "\\\\\\\"")[9],
+			stdoutRecall,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionRecall, "Account: %s", rinahTheOwnerAddress).Error(),
 		)
 
 		require.True(t, resultIssue)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", rinahTheOwnerAddress).Error(), "\""),
-			strings.Split(stdoutIssue, "\\\\\\\"")[9],
+			stdoutIssue,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", rinahTheOwnerAddress).Error(),
 		)
 
 		require.True(t, resultReturn)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionReturn, "Account: %s", rinahTheOwnerAddress).Error(), "\""),
-			strings.Split(stdoutReturn, "\\\\\\\"")[9],
+			stdoutReturn,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionReturn, "Account: %s", rinahTheOwnerAddress).Error(),
 		)
 	}
 
@@ -547,10 +611,10 @@ func TestLinkCLISafetyBox(t *testing.T) {
 
 	// any coin transfer to the safety box from the operator should fail
 	{
-		resultAllocate, stdoutAllocate, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
-		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
-		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), f.KeyAddress(UserKevin).String(), "-y")
-		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		resultAllocate, stdoutAllocate, _ := f.TxSafetyBoxSendToken(id, sbox.ActionAllocate, contractID, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		resultRecall, stdoutRecall, _ := f.TxSafetyBoxSendToken(id, sbox.ActionRecall, contractID, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		resultIssue, stdoutIssue, _ := f.TxSafetyBoxSendToken(id, sbox.ActionIssue, contractID, int64(1), f.KeyAddress(UserKevin).String(), f.KeyAddress(UserKevin).String(), "-y")
+		resultReturn, stdoutReturn, _ := f.TxSafetyBoxSendToken(id, sbox.ActionReturn, contractID, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 
 		// test all four txs in a single block to reduce the testing time
 		// check the error message to get expected errors
@@ -559,29 +623,29 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, resultAllocate)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionAllocate, "Account: %s", f.KeyAddress(UserKevin).String()).Error(), "\""),
-			strings.Split(stdoutAllocate, "\\\\\\\"")[9],
+			stdoutAllocate,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionAllocate, "Account: %s", f.KeyAddress(UserKevin).String()).Error(),
 		)
 
 		require.True(t, resultRecall)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionRecall, "Account: %s", f.KeyAddress(UserKevin).String()).Error(), "\""),
-			strings.Split(stdoutRecall, "\\\\\\\"")[9],
+			stdoutRecall,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionRecall, "Account: %s", f.KeyAddress(UserKevin).String()).Error(),
 		)
 
 		require.True(t, resultIssue)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", f.KeyAddress(UserKevin).String()).Error(), "\""),
-			strings.Split(stdoutIssue, "\\\\\\\"")[9],
+			stdoutIssue,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", f.KeyAddress(UserKevin).String()).Error(),
 		)
 
 		require.True(t, resultReturn)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionReturn, "Account: %s", f.KeyAddress(UserKevin).String()).Error(), "\""),
-			strings.Split(stdoutReturn, "\\\\\\\"")[9],
+			stdoutReturn,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionReturn, "Account: %s", f.KeyAddress(UserKevin).String()).Error(),
 		)
 	}
 
@@ -622,24 +686,19 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// an allocator is able to allocate coins to the safety box
 	{
 		// kevin allocates 1link to the safety box
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		result, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionAllocate, contractID, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins(nil), sb.TotalIssuance)
+		require.Equal(t, sdk.OneInt(), sb.TotalAllocation)
+		require.Equal(t, sdk.OneInt(), sb.CumulativeAllocation)
+		require.Equal(t, sdk.ZeroInt(), sb.TotalIssuance)
 
 		// check the kevin's balance
-		kevinAccount := f.QueryAccount(f.KeyAddress(UserKevin))
-		require.Equal(t, kevinAccount.Coins,
-			sdk.Coins{
-				sdk.Coin{DenomLink, sdk.NewInt(999999999)},
-				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
-			},
-		)
+		kevinBalance := f.QueryBalanceToken(contractID, f.KeyAddress(UserKevin))
+		require.Equal(t, kevinBalance, sdk.NewInt(99))
 	}
 
 	// an operator registers an issuer
@@ -679,32 +738,25 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// an issuer is able to issue coins from the safety box to itself
 	{
 		// brian issues 1link from the safety box to himself
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserBrian).String(), "-y")
+		result, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionIssue, contractID, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserBrian).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.OneInt()}}, sb.TotalIssuance)
+		require.Equal(t, sdk.OneInt(), sb.TotalAllocation)
+		require.Equal(t, sdk.OneInt(), sb.CumulativeAllocation)
+		require.Equal(t, sdk.OneInt(), sb.TotalIssuance)
 
 		// check the brian's balance
-		brianAccount := f.QueryAccount(f.KeyAddress(UserBrian))
-		require.Equal(
-			t,
-			sdk.Coins{
-				sdk.Coin{DenomLink, sdk.NewInt(1000000001)},
-				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
-			},
-			brianAccount.Coins,
-		)
+		brianBalance := f.QueryBalanceToken(contractID, f.KeyAddress(UserBrian))
+		require.Equal(t, brianBalance, sdk.NewInt(101))
 	}
 
 	// an issuer is able to issue coins from the safety box to another issuer
 	{
 		// kevin allocates 1 link to the safety box
-		_, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		_, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionAllocate, contractID, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 
 		// tina, the operator registers sam as an issuer
 		result, _, _ = f.TxSafetyBoxRole(id, sbox.RegisterRole, sbox.RoleIssuer, f.KeyAddress(UserTina).String(), f.KeyAddress(UserSam).String(), "-y")
@@ -716,38 +768,31 @@ func TestLinkCLISafetyBox(t *testing.T) {
 		require.True(t, sbr.HasRole)
 
 		// brian issues 1link from the safety box to Sam
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserSam).String(), "-y")
+		result, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionIssue, contractID, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserSam).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.TotalIssuance)
+		require.Equal(t, sdk.NewInt(2), sb.TotalAllocation)
+		require.Equal(t, sdk.NewInt(2), sb.CumulativeAllocation)
+		require.Equal(t, sdk.NewInt(2), sb.TotalIssuance)
 
 		// check the sam's balance
-		samAccount := f.QueryAccount(f.KeyAddress(UserSam))
-		require.Equal(
-			t,
-			sdk.Coins{
-				sdk.Coin{DenomLink, sdk.NewInt(1000000001)},
-				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
-			},
-			samAccount.Coins,
-		)
+		samBalance := f.QueryBalanceToken(contractID, f.KeyAddress(UserSam))
+		require.Equal(t, samBalance, sdk.NewInt(101))
 	}
 
 	// an issuer try issuing coins from the safety box to non-issuer should fail
 	{
 		// sam issues 1link from the safety box to non-issuer, evelyn
-		result, stdout, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomLink, int64(1), f.KeyAddress(UserSam).String(), f.KeyAddress(UserEvelyn).String(), "-y")
+		result, stdout, _ := f.TxSafetyBoxSendToken(id, sbox.ActionIssue, contractID, int64(1), f.KeyAddress(UserSam).String(), f.KeyAddress(UserEvelyn).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", f.KeyAddress(UserEvelyn).String()).Error(), "\""),
-			strings.Split(stdout, "\\\\\\\"")[9],
+			stdout,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxPermissionIssue, "Account: %s", f.KeyAddress(UserEvelyn).String()).Error(),
 		)
 	}
 
@@ -788,116 +833,105 @@ func TestLinkCLISafetyBox(t *testing.T) {
 	// a returner is able to return coins to the safety box
 	{
 		// evelyn returns 1link to the safety box
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, DenomLink, int64(1), f.KeyAddress(UserEvelyn).String(), "", "-y")
+		result, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionReturn, contractID, int64(1), f.KeyAddress(UserEvelyn).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(1)}}, sb.TotalIssuance)
+		require.Equal(t, sdk.NewInt(2), sb.TotalAllocation)
+		require.Equal(t, sdk.NewInt(2), sb.CumulativeAllocation)
+		require.Equal(t, sdk.NewInt(1), sb.TotalIssuance)
 
 		// check the evelyn's balance
-		evelynAccount := f.QueryAccount(f.KeyAddress(UserEvelyn))
-		require.Equal(
-			t,
-			sdk.Coins{
-				sdk.Coin{DenomLink, sdk.NewInt(999999999)},
-				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
-			},
-			evelynAccount.Coins,
-		)
+		evelynBalance := f.QueryBalanceToken(contractID, f.KeyAddress(UserEvelyn))
+		require.Equal(t, evelynBalance, sdk.NewInt(99))
 	}
 
 	// an allocator is able to recall coins from the safety box
 	{
 		// kevin recalls 1link from the safety box
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, DenomLink, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		result, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionRecall, contractID, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 
 		// check the safety box balance
 		sb := f.QuerySafetyBox(id)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(1)}}, sb.TotalAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(2)}}, sb.CumulativeAllocation)
-		require.Equal(t, sdk.Coins{sdk.Coin{DenomLink, sdk.NewInt(1)}}, sb.TotalIssuance)
+		require.Equal(t, sdk.NewInt(1), sb.TotalAllocation)
+		require.Equal(t, sdk.NewInt(2), sb.CumulativeAllocation)
+		require.Equal(t, sdk.NewInt(1), sb.TotalIssuance)
 
 		// check the kevin's balance
-		kevinAccount := f.QueryAccount(f.KeyAddress(UserKevin))
-		require.Equal(t,
-			kevinAccount.Coins,
-			sdk.Coins{
-				sdk.Coin{DenomLink, sdk.NewInt(999999999)},
-				sdk.Coin{DenomStake, sdk.NewInt(100000000000000)},
-			},
-		)
+		kevinBalance := f.QueryBalanceToken(contractID, f.KeyAddress(UserKevin))
+		require.Equal(t, kevinBalance, sdk.NewInt(99))
 	}
 
-	// can't allocate, recall, issue nor return coins other than specified denom in the safety box
+	// can't allocate, recall, issue nor return coins other than specified token in the safety box
 	{
 		// current balances
 		sb := f.QuerySafetyBox(id)
-		initialBalances := []sdk.Coins{
+		initialBalances := []sdk.Int{
 			sb.TotalAllocation,
 			sb.CumulativeAllocation,
 			sb.TotalIssuance,
-			f.QueryAccount(f.KeyAddress(UserKevin)).Coins,  // kevin, an allocator
-			f.QueryAccount(f.KeyAddress(UserBrian)).Coins,  // brian, an issuer
-			f.QueryAccount(f.KeyAddress(UserSam)).Coins,    // sam, an issuer
-			f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins, // evelyn, a returner
+			f.QueryBalanceToken(contractID, f.KeyAddress(UserKevin)),  // kevin, an allocator
+			f.QueryBalanceToken(contractID, f.KeyAddress(UserBrian)),  // brian, an issuer
+			f.QueryBalanceToken(contractID, f.KeyAddress(UserSam)),    // sam, an issuer
+			f.QueryBalanceToken(contractID, f.KeyAddress(UserEvelyn)), // evelyn, a returner
 		}
 
+		unknownContractID := "5ca12345"
+
 		// kevin allocates 1stake2 to the safety box, should fail
-		result, stdout, _ := f.TxSafetyBoxSendCoins(id, sbox.ActionAllocate, DenomStake, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		result, stdout, _ := f.TxSafetyBoxSendToken(id, sbox.ActionAllocate, unknownContractID, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", DenomLink, DenomStake).Error(), "\""),
-			strings.Split(stdout, "\\\\\\\"")[9],
+			stdout,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectContractID, "Expected: %s, Requested: %s", contractID, unknownContractID).Error(),
 		)
 
 		// brian issues 1stake2 from the safety box to Sam, should fail
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionIssue, DenomStake, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserSam).String(), "-y")
+		result, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionIssue, unknownContractID, int64(1), f.KeyAddress(UserBrian).String(), f.KeyAddress(UserSam).String(), "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", DenomLink, DenomStake).Error(), "\""),
-			strings.Split(stdout, "\\\\\\\"")[9],
+			stdout,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectContractID, "Expected: %s, Requested: %s", contractID, unknownContractID).Error(),
 		)
 
 		// evelyn returns 1stake2 to the safety box, should fail
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionReturn, DenomStake, int64(1), f.KeyAddress(UserEvelyn).String(), "", "-y")
+		result, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionReturn, unknownContractID, int64(1), f.KeyAddress(UserEvelyn).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", DenomLink, DenomStake).Error(), "\""),
-			strings.Split(stdout, "\\\\\\\"")[9],
+			stdout,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectContractID, "Expected: %s, Requested: %s", contractID, unknownContractID).Error(),
 		)
 
 		// kevin recalls 1stake2 from the safety box, should fail
-		result, _, _ = f.TxSafetyBoxSendCoins(id, sbox.ActionRecall, DenomStake, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
+		result, _, _ = f.TxSafetyBoxSendToken(id, sbox.ActionRecall, unknownContractID, int64(1), f.KeyAddress(UserKevin).String(), "", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		require.True(t, result)
 		require.Contains(
 			t,
-			strings.Split(sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", DenomLink, DenomStake).Error(), "\""),
-			strings.Split(stdout, "\\\\\\\"")[9],
+			stdout,
+			sdkerrors.Wrapf(sbox.ErrSafetyBoxIncorrectContractID, "Expected: %s, Requested: %s", contractID, unknownContractID).Error(),
 		)
 
 		// no balance should have changed
 		sb = f.QuerySafetyBox(id)
-		finalBalances := []sdk.Coins{
+		finalBalances := []sdk.Int{
 			sb.TotalAllocation,
 			sb.CumulativeAllocation,
 			sb.TotalIssuance,
-			f.QueryAccount(f.KeyAddress(UserKevin)).Coins,  // kevin, an allocator
-			f.QueryAccount(f.KeyAddress(UserBrian)).Coins,  // brian, an issuer
-			f.QueryAccount(f.KeyAddress(UserSam)).Coins,    // sam, an issuer
-			f.QueryAccount(f.KeyAddress(UserEvelyn)).Coins, // evelyn, a returner
+			f.QueryBalanceToken(contractID, f.KeyAddress(UserKevin)),  // kevin, an allocator
+			f.QueryBalanceToken(contractID, f.KeyAddress(UserBrian)),  // brian, an issuer
+			f.QueryBalanceToken(contractID, f.KeyAddress(UserSam)),    // sam, an issuer
+			f.QueryBalanceToken(contractID, f.KeyAddress(UserEvelyn)), // evelyn, a returner
 		}
 		require.Equal(t, initialBalances, finalBalances)
 	}

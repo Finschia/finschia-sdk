@@ -5,14 +5,14 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-func NewMsgSafetyBoxCreate(safetyBoxID string, safetyBoxOwner sdk.AccAddress, safetyBoxDenoms []string) MsgSafetyBoxCreate {
-	return MsgSafetyBoxCreate{safetyBoxID, safetyBoxOwner, safetyBoxDenoms}
+func NewMsgSafetyBoxCreate(safetyBoxID string, safetyBoxOwner sdk.AccAddress, contractID string) MsgSafetyBoxCreate {
+	return MsgSafetyBoxCreate{safetyBoxID, safetyBoxOwner, contractID}
 }
 
 type MsgSafetyBoxCreate struct {
-	SafetyBoxID     string         `json:"safety_box_id"`
-	SafetyBoxOwner  sdk.AccAddress `json:"safety_box_owner"`
-	SafetyBoxDenoms []string       `json:"safety_box_denoms"`
+	SafetyBoxID    string         `json:"safety_box_id"`
+	SafetyBoxOwner sdk.AccAddress `json:"safety_box_owner"`
+	ContractID     string         `json:"contract_id"`
 }
 
 func (msgSbCreate MsgSafetyBoxCreate) Route() string { return RouterKey }
@@ -28,8 +28,8 @@ func (msgSbCreate MsgSafetyBoxCreate) ValidateBasic() error {
 		return ErrSafetyBoxOwnerRequired
 	}
 
-	if len(msgSbCreate.SafetyBoxDenoms) == 0 {
-		return ErrSafetyBoxDenomRequired
+	if len(msgSbCreate.ContractID) == 0 {
+		return ErrSafetyBoxContractIDRequired
 	}
 
 	return nil
@@ -43,161 +43,181 @@ func (msgSbCreate MsgSafetyBoxCreate) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msgSbCreate.SafetyBoxOwner}
 }
 
-func NewMsgSafetyBoxAllocateCoins(safetyBoxID string, allocatorAddress sdk.AccAddress, coins sdk.Coins) MsgSafetyBoxAllocateCoins {
-	return MsgSafetyBoxAllocateCoins{safetyBoxID, allocatorAddress, coins}
+func NewMsgSafetyBoxAllocateToken(safetyBoxID string, allocatorAddress sdk.AccAddress, contractID string, amount sdk.Int) MsgSafetyBoxAllocateToken {
+	return MsgSafetyBoxAllocateToken{safetyBoxID, allocatorAddress, contractID, amount}
 }
 
-type MsgSafetyBoxAllocateCoins struct {
+type MsgSafetyBoxAllocateToken struct {
 	SafetyBoxID      string         `json:"safety_box_id"`
 	AllocatorAddress sdk.AccAddress `json:"allocator_address"`
-	Coins            sdk.Coins      `json:"coins"`
+	ContractID       string         `json:"contract_id"`
+	Amount           sdk.Int        `json:"amount"`
 }
 
-func (msgSbSendCoin MsgSafetyBoxAllocateCoins) Route() string { return RouterKey }
+func (msgSbSendToken MsgSafetyBoxAllocateToken) Route() string { return RouterKey }
 
-func (msgSbSendCoin MsgSafetyBoxAllocateCoins) Type() string { return MsgTypeSafetyBoxAllocateCoin }
+func (msgSbSendToken MsgSafetyBoxAllocateToken) Type() string { return MsgTypeSafetyBoxAllocateToken }
 
-func (msgSbSendCoin MsgSafetyBoxAllocateCoins) ValidateBasic() error {
-	if len(msgSbSendCoin.SafetyBoxID) == 0 {
+func (msgSbSendToken MsgSafetyBoxAllocateToken) ValidateBasic() error {
+	if len(msgSbSendToken.SafetyBoxID) == 0 {
 		return ErrSafetyBoxIDRequired
 	}
 
-	if msgSbSendCoin.AllocatorAddress.Empty() {
+	if msgSbSendToken.AllocatorAddress.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Allocator address is required")
 	}
 
-	if msgSbSendCoin.Coins.Empty() {
-		return ErrSafetyBoxCoinsRequired
+	if len(msgSbSendToken.ContractID) == 0 {
+		return ErrSafetyBoxContractIDRequired
+	}
+
+	if !msgSbSendToken.Amount.IsPositive() {
+		return sdkerrors.Wrap(ErrSafetyBoxInvalidAmount, msgSbSendToken.Amount.String())
 	}
 
 	return nil
 }
 
-func (msgSbSendCoin MsgSafetyBoxAllocateCoins) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msgSbSendCoin))
+func (msgSbSendToken MsgSafetyBoxAllocateToken) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msgSbSendToken))
 }
 
-func (msgSbSendCoin MsgSafetyBoxAllocateCoins) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msgSbSendCoin.AllocatorAddress}
+func (msgSbSendToken MsgSafetyBoxAllocateToken) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msgSbSendToken.AllocatorAddress}
 }
 
-func NewMsgSafetyBoxRecallCoins(safetyBoxID string, allocatorAddress sdk.AccAddress, coins sdk.Coins) MsgSafetyBoxRecallCoins {
-	return MsgSafetyBoxRecallCoins{safetyBoxID, allocatorAddress, coins}
+func NewMsgSafetyBoxRecallToken(safetyBoxID string, allocatorAddress sdk.AccAddress, contractID string, amount sdk.Int) MsgSafetyBoxRecallToken {
+	return MsgSafetyBoxRecallToken{safetyBoxID, allocatorAddress, contractID, amount}
 }
 
-type MsgSafetyBoxRecallCoins struct {
+type MsgSafetyBoxRecallToken struct {
 	SafetyBoxID      string         `json:"safety_box_id"`
 	AllocatorAddress sdk.AccAddress `json:"allocator_address"`
-	Coins            sdk.Coins      `json:"coins"`
+	ContractID       string         `json:"contract_id"`
+	Amount           sdk.Int        `json:"amount"`
 }
 
-func (msgSbSendCoin MsgSafetyBoxRecallCoins) Route() string { return RouterKey }
+func (msgSbSendToken MsgSafetyBoxRecallToken) Route() string { return RouterKey }
 
-func (msgSbSendCoin MsgSafetyBoxRecallCoins) Type() string { return MsgTypeSafetyBoxRecallCoin }
+func (msgSbSendToken MsgSafetyBoxRecallToken) Type() string { return MsgTypeSafetyBoxRecallToken }
 
-func (msgSbSendCoin MsgSafetyBoxRecallCoins) ValidateBasic() error {
-	if len(msgSbSendCoin.SafetyBoxID) == 0 {
+func (msgSbSendToken MsgSafetyBoxRecallToken) ValidateBasic() error {
+	if len(msgSbSendToken.SafetyBoxID) == 0 {
 		return ErrSafetyBoxIDRequired
 	}
 
-	if msgSbSendCoin.AllocatorAddress.Empty() {
+	if msgSbSendToken.AllocatorAddress.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Allocator address is required")
 	}
 
-	if msgSbSendCoin.Coins.Empty() {
-		return ErrSafetyBoxCoinsRequired
+	if len(msgSbSendToken.ContractID) == 0 {
+		return ErrSafetyBoxContractIDRequired
+	}
+
+	if !msgSbSendToken.Amount.IsPositive() {
+		return sdkerrors.Wrap(ErrSafetyBoxInvalidAmount, msgSbSendToken.Amount.String())
 	}
 
 	return nil
 }
 
-func (msgSbSendCoin MsgSafetyBoxRecallCoins) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msgSbSendCoin))
+func (msgSbSendToken MsgSafetyBoxRecallToken) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msgSbSendToken))
 }
 
-func (msgSbSendCoin MsgSafetyBoxRecallCoins) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msgSbSendCoin.AllocatorAddress}
+func (msgSbSendToken MsgSafetyBoxRecallToken) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msgSbSendToken.AllocatorAddress}
 }
 
-func NewMsgSafetyBoxIssueCoins(safetyBoxID string, fromAddress, toAddress sdk.AccAddress, coins sdk.Coins) MsgSafetyBoxIssueCoins {
-	return MsgSafetyBoxIssueCoins{safetyBoxID, fromAddress, toAddress, coins}
+func NewMsgSafetyBoxIssueToken(safetyBoxID string, fromAddress, toAddress sdk.AccAddress, contractID string, amount sdk.Int) MsgSafetyBoxIssueToken {
+	return MsgSafetyBoxIssueToken{safetyBoxID, fromAddress, toAddress, contractID, amount}
 }
 
-type MsgSafetyBoxIssueCoins struct {
+type MsgSafetyBoxIssueToken struct {
 	SafetyBoxID string         `json:"safety_box_id"`
 	FromAddress sdk.AccAddress `json:"from_address"`
 	ToAddress   sdk.AccAddress `json:"to_address"`
-	Coins       sdk.Coins      `json:"coins"`
+	ContractID  string         `json:"contract_id"`
+	Amount      sdk.Int        `json:"amount"`
 }
 
-func (msgSbSendCoin MsgSafetyBoxIssueCoins) Route() string { return RouterKey }
+func (msgSbSendToken MsgSafetyBoxIssueToken) Route() string { return RouterKey }
 
-func (msgSbSendCoin MsgSafetyBoxIssueCoins) Type() string { return MsgTypeSafetyBoxIssueCoin }
+func (msgSbSendToken MsgSafetyBoxIssueToken) Type() string { return MsgTypeSafetyBoxIssueToken }
 
-func (msgSbSendCoin MsgSafetyBoxIssueCoins) ValidateBasic() error {
-	if len(msgSbSendCoin.SafetyBoxID) == 0 {
+func (msgSbSendToken MsgSafetyBoxIssueToken) ValidateBasic() error {
+	if len(msgSbSendToken.SafetyBoxID) == 0 {
 		return ErrSafetyBoxIDRequired
 	}
 
-	if msgSbSendCoin.FromAddress.Empty() {
+	if msgSbSendToken.FromAddress.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "From address is required")
 	}
 
-	if msgSbSendCoin.ToAddress.Empty() {
+	if msgSbSendToken.ToAddress.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "To address is required")
 	}
 
-	if msgSbSendCoin.Coins.Empty() {
-		return ErrSafetyBoxCoinsRequired
+	if len(msgSbSendToken.ContractID) == 0 {
+		return ErrSafetyBoxContractIDRequired
+	}
+
+	if !msgSbSendToken.Amount.IsPositive() {
+		return sdkerrors.Wrap(ErrSafetyBoxInvalidAmount, msgSbSendToken.Amount.String())
 	}
 
 	return nil
 }
 
-func (msgSbSendCoin MsgSafetyBoxIssueCoins) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msgSbSendCoin))
+func (msgSbSendToken MsgSafetyBoxIssueToken) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msgSbSendToken))
 }
 
-func (msgSbSendCoin MsgSafetyBoxIssueCoins) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msgSbSendCoin.FromAddress}
+func (msgSbSendToken MsgSafetyBoxIssueToken) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msgSbSendToken.FromAddress}
 }
 
-func NewMsgSafetyBoxReturnCoins(safetyBoxID string, returnerAddress sdk.AccAddress, coins sdk.Coins) MsgSafetyBoxReturnCoins {
-	return MsgSafetyBoxReturnCoins{safetyBoxID, returnerAddress, coins}
+func NewMsgSafetyBoxReturnToken(safetyBoxID string, returnerAddress sdk.AccAddress, contractID string, amount sdk.Int) MsgSafetyBoxReturnToken {
+	return MsgSafetyBoxReturnToken{safetyBoxID, returnerAddress, contractID, amount}
 }
 
-type MsgSafetyBoxReturnCoins struct {
+type MsgSafetyBoxReturnToken struct {
 	SafetyBoxID     string         `json:"safety_box_id"`
 	ReturnerAddress sdk.AccAddress `json:"returner_address"`
-	Coins           sdk.Coins      `json:"coins"`
+	ContractID      string         `json:"contract_id"`
+	Amount          sdk.Int        `json:"amount"`
 }
 
-func (msgSbSendCoin MsgSafetyBoxReturnCoins) Route() string { return RouterKey }
+func (msgSbSendToken MsgSafetyBoxReturnToken) Route() string { return RouterKey }
 
-func (msgSbSendCoin MsgSafetyBoxReturnCoins) Type() string { return MsgTypeSafetyBoxReturnCoin }
+func (msgSbSendToken MsgSafetyBoxReturnToken) Type() string { return MsgTypeSafetyBoxReturnToken }
 
-func (msgSbSendCoin MsgSafetyBoxReturnCoins) ValidateBasic() error {
-	if len(msgSbSendCoin.SafetyBoxID) == 0 {
+func (msgSbSendToken MsgSafetyBoxReturnToken) ValidateBasic() error {
+	if len(msgSbSendToken.SafetyBoxID) == 0 {
 		return ErrSafetyBoxIDRequired
 	}
 
-	if msgSbSendCoin.ReturnerAddress.Empty() {
+	if msgSbSendToken.ReturnerAddress.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "Returner address is required")
 	}
 
-	if msgSbSendCoin.Coins.Empty() {
-		return ErrSafetyBoxCoinsRequired
+	if len(msgSbSendToken.ContractID) == 0 {
+		return ErrSafetyBoxContractIDRequired
+	}
+
+	if !msgSbSendToken.Amount.IsPositive() {
+		return sdkerrors.Wrap(ErrSafetyBoxInvalidAmount, msgSbSendToken.Amount.String())
 	}
 
 	return nil
 }
 
-func (msgSbSendCoin MsgSafetyBoxReturnCoins) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msgSbSendCoin))
+func (msgSbSendToken MsgSafetyBoxReturnToken) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msgSbSendToken))
 }
 
-func (msgSbSendCoin MsgSafetyBoxReturnCoins) GetSigners() []sdk.AccAddress {
-	return []sdk.AccAddress{msgSbSendCoin.ReturnerAddress}
+func (msgSbSendToken MsgSafetyBoxReturnToken) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msgSbSendToken.ReturnerAddress}
 }
 
 type MsgSafetyBoxRegisterIssuer struct {

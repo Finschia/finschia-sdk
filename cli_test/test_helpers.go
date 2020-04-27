@@ -711,8 +711,8 @@ func (f *Fixtures) QueryProxyAllowance(proxy, onBehalfOf, denom string, flags ..
 //___________________________________________________________________________________
 // linkcli tx safety box
 
-func (f *Fixtures) TxSafetyBoxCreate(id, address, denom string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox create %s %s %s %v", f.LinkcliBinary, id, address, denom, f.Flags())
+func (f *Fixtures) TxSafetyBoxCreate(id, address, contractID string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx safetybox create %s %s %s %v", f.LinkcliBinary, id, address, contractID, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
@@ -721,8 +721,8 @@ func (f *Fixtures) TxSafetyBoxRole(id, action, role, from, to string, flags ...s
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxSafetyBoxSendCoins(id, action, denom string, amount int64, address, issuerAddress string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox sendcoins %s %s %s %d %s %s %v", f.LinkcliBinary, id, action, denom, amount, address, issuerAddress, f.Flags())
+func (f *Fixtures) TxSafetyBoxSendToken(id, action, contractID string, amount int64, address, issuerAddress string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx safetybox sendtoken %s %s %s %d %s %s %v", f.LinkcliBinary, id, action, contractID, amount, address, issuerAddress, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 

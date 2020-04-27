@@ -1,15 +1,16 @@
 package types
 
+//nolint:gosec
 var (
 	EventSafetyBoxCreate     = "safety_box_create"
-	EventSafetyBoxSendCoin   = "safety_box_send_coin"
+	EventSafetyBoxSendToken  = "safety_box_send_token"
 	EventSafetyBoxPermission = "safety_box_permission"
 
 	MsgTypeSafetyBoxCreate                    = "safety_box_create"
-	MsgTypeSafetyBoxAllocateCoin              = "safety_box_allocate_coin"
-	MsgTypeSafetyBoxRecallCoin                = "safety_box_recall_coin"
-	MsgTypeSafetyBoxIssueCoin                 = "safety_box_issue_coin"
-	MsgTypeSafetyBoxReturnCoin                = "safety_box_return_coin"
+	MsgTypeSafetyBoxAllocateToken             = "safety_box_allocate_token"
+	MsgTypeSafetyBoxRecallToken               = "safety_box_recall_token"
+	MsgTypeSafetyBoxIssueToken                = "safety_box_issue_token"
+	MsgTypeSafetyBoxReturnToken               = "safety_box_return_token"
 	MsgTypeSafetyBoxGrantOperatorPermission   = "safety_box_grant_operator_permission"
 	MsgTypeSafetyBoxGrantIssuerPermission     = "safety_box_grant_issuer_permission"
 	MsgTypeSafetyBoxGrantReturnerPermission   = "safety_box_grant_returner_permission"
@@ -36,11 +37,13 @@ var (
 	AttributeKeySafetyBoxGrantReturnerPermission   = "safety_box_grant_returner_permission"
 	AttributeKeySafetyBoxRevokeReturnerPermission  = "safety_box_revoke_returner_permission"
 
-	EventTypeTransfer     = "transfer"
-	AttributeKeyRecipient = "recipient"
-	AttributeKeySender    = "sender"
+	EventTypeTransfer      = "transfer"
+	AttributeKeyRecipient  = "recipient"
+	AttributeKeySender     = "sender"
+	AttributeKeyContractID = "contract_id"
+	AttributeKeyAmount     = "amount"
 
-	AttributeKeySafetyBoxCoins    = "safety_box_coins"
+	AttributeKeySafetyBoxToken    = "safety_box_token"
 	AttributeKeySafetyBoxOperator = "safety_box_operator"
 	AttributeKeySafetyBoxTarget   = "safety_box_target"
 

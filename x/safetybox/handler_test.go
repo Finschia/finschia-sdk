@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/line/link/x/safetybox/internal/types"
+	"github.com/line/link/x/token"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -13,7 +14,14 @@ import (
 )
 
 const (
-	SafetyBoxTestID = "test_safety_box_id"
+	SafetyBoxTestID   = "test_safety_box_id"
+	TestContractID    = "9be17165"
+	TestTokenName     = "name"
+	TestTokenSymbol   = "BTC"
+	TestTokenMeta     = "{}"
+	TestTokenImageURI = "image-uri"
+	TestTokenDecimals = 6
+	TestTokenAmount   = 1000
 )
 
 //nolint:dupl
@@ -28,13 +36,24 @@ func TestHandler(t *testing.T) {
 	require.Error(t, err)
 	require.Error(t, sdkerrors.Wrapf(ErrSafetyBoxInvalidMsgType, "Type: %s", sdk.NewTestMsg().Type()))
 
+	// issue token
+	testToken := token.NewToken(TestContractID, TestTokenName, TestTokenSymbol, TestTokenMeta, TestTokenImageURI, sdk.NewInt(TestTokenDecimals), true)
+
+	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	err = input.Tk.IssueToken(ctx, testToken, sdk.NewInt(TestTokenAmount), addr, addr)
+	require.NoError(t, err)
+
+	tok, err := input.Tk.GetToken(ctx, TestContractID)
+	require.NoError(t, err)
+	require.Equal(t, testToken.GetContractID(), tok.GetContractID())
+
 	// create a box
 	owner := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
 	msgSbCreate := MsgSafetyBoxCreate{
-		SafetyBoxID:     SafetyBoxTestID,
-		SafetyBoxOwner:  owner,
-		SafetyBoxDenoms: []string{"link"},
+		SafetyBoxID:    SafetyBoxTestID,
+		SafetyBoxOwner: owner,
+		ContractID:     TestContractID,
 	}
 	res, err := h(ctx, msgSbCreate)
 	require.NoError(t, err)
@@ -50,6 +69,7 @@ func TestHandler(t *testing.T) {
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbCreate.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, msgSbCreate.SafetyBoxOwner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAddress, safetyBoxAddress.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msgSbCreate.ContractID),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -206,23 +226,24 @@ func TestHandler(t *testing.T) {
 	}
 	testCommon.VerifyEventFunc(t, e, res.Events)
 
-	// put some coins to all
-	_, err = input.Bk.AddCoins(ctx, allocator, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	// put amounts of token to all
+	_, err = input.Tk.AddBalance(ctx, TestContractID, allocator, sdk.NewInt(10))
 	require.NoError(t, err)
-	_, err = input.Bk.AddCoins(ctx, issuer1, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	_, err = input.Tk.AddBalance(ctx, TestContractID, issuer1, sdk.NewInt(10))
 	require.NoError(t, err)
-	_, err = input.Bk.AddCoins(ctx, issuer2, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	_, err = input.Tk.AddBalance(ctx, TestContractID, issuer2, sdk.NewInt(10))
 	require.NoError(t, err)
-	_, err = input.Bk.AddCoins(ctx, returner, sdk.NewCoins(sdk.NewCoin("link", sdk.NewInt(10))))
+	_, err = input.Tk.AddBalance(ctx, TestContractID, returner, sdk.NewInt(10))
 	require.NoError(t, err)
 
 	// allocate, issue, return and recall
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
-	msgSbAllocate := MsgSafetyBoxAllocateCoins{
+	msgSbAllocate := MsgSafetyBoxAllocateToken{
 		SafetyBoxID:      SafetyBoxTestID,
 		AllocatorAddress: allocator,
-		Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
+		ContractID:       TestContractID,
+		Amount:           sdk.NewInt(1),
 	}
 	res, err = h(ctx, msgSbAllocate)
 	require.NoError(t, err)
@@ -233,14 +254,16 @@ func TestHandler(t *testing.T) {
 			types.EventTypeTransfer,
 			sdk.NewAttribute(types.AttributeKeySender, msgSbAllocate.AllocatorAddress.String()),
 			sdk.NewAttribute(types.AttributeKeyRecipient, safetyBoxAddress.String()),
-			sdk.NewAttribute(sdk.AttributeKeyAmount, msgSbAllocate.Coins.String()),
+			sdk.NewAttribute(types.AttributeKeyContractID, msgSbAllocate.ContractID),
+			sdk.NewAttribute(types.AttributeKeyAmount, msgSbAllocate.Amount.String()),
 		),
 		sdk.NewEvent(
-			EventSafetyBoxSendCoin,
+			EventSafetyBoxSendToken,
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbAllocate.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxAllocatorAddress, msgSbAllocate.AllocatorAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionAllocate),
-			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msgSbAllocate.Coins.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msgSbAllocate.ContractID),
+			sdk.NewAttribute(AttributeKeyAmount, msgSbAllocate.Amount.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -252,11 +275,12 @@ func TestHandler(t *testing.T) {
 
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
-	msgSbIssue := MsgSafetyBoxIssueCoins{
+	msgSbIssue := MsgSafetyBoxIssueToken{
 		SafetyBoxID: SafetyBoxTestID,
 		FromAddress: issuer1,
 		ToAddress:   issuer2,
-		Coins:       sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
+		ContractID:  TestContractID,
+		Amount:      sdk.NewInt(1),
 	}
 	res, err = h(ctx, msgSbIssue)
 	require.NoError(t, err)
@@ -267,15 +291,17 @@ func TestHandler(t *testing.T) {
 			types.EventTypeTransfer,
 			sdk.NewAttribute(types.AttributeKeySender, safetyBoxAddress.String()),
 			sdk.NewAttribute(types.AttributeKeyRecipient, msgSbIssue.ToAddress.String()),
-			sdk.NewAttribute(sdk.AttributeKeyAmount, msgSbIssue.Coins.String()),
+			sdk.NewAttribute(types.AttributeKeyContractID, msgSbIssue.ContractID),
+			sdk.NewAttribute(types.AttributeKeyAmount, msgSbIssue.Amount.String()),
 		),
 		sdk.NewEvent(
-			EventSafetyBoxSendCoin,
+			EventSafetyBoxSendToken,
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbIssue.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxIssueFromAddress, msgSbIssue.FromAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxIssueToAddress, msgSbIssue.ToAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionIssue),
-			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msgSbIssue.Coins.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msgSbIssue.ContractID),
+			sdk.NewAttribute(AttributeKeyAmount, msgSbIssue.Amount.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -287,10 +313,11 @@ func TestHandler(t *testing.T) {
 
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
-	msgSbReturn := MsgSafetyBoxReturnCoins{
+	msgSbReturn := MsgSafetyBoxReturnToken{
 		SafetyBoxID:     SafetyBoxTestID,
 		ReturnerAddress: returner,
-		Coins:           sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
+		ContractID:      TestContractID,
+		Amount:          sdk.NewInt(1),
 	}
 	res, err = h(ctx, msgSbReturn)
 	require.NoError(t, err)
@@ -301,14 +328,16 @@ func TestHandler(t *testing.T) {
 			types.EventTypeTransfer,
 			sdk.NewAttribute(types.AttributeKeySender, msgSbReturn.ReturnerAddress.String()),
 			sdk.NewAttribute(types.AttributeKeyRecipient, safetyBoxAddress.String()),
-			sdk.NewAttribute(sdk.AttributeKeyAmount, msgSbReturn.Coins.String()),
+			sdk.NewAttribute(types.AttributeKeyContractID, msgSbReturn.ContractID),
+			sdk.NewAttribute(types.AttributeKeyAmount, msgSbReturn.Amount.String()),
 		),
 		sdk.NewEvent(
-			EventSafetyBoxSendCoin,
+			EventSafetyBoxSendToken,
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbReturn.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxReturnerAddress, msgSbReturn.ReturnerAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionReturn),
-			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msgSbReturn.Coins.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msgSbReturn.ContractID),
+			sdk.NewAttribute(AttributeKeyAmount, msgSbReturn.Amount.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -320,10 +349,11 @@ func TestHandler(t *testing.T) {
 
 	// refresh the event manager to verify upcoming events only
 	ctx = ctx.WithEventManager(sdk.NewEventManager())
-	msgSbRecall := MsgSafetyBoxRecallCoins{
+	msgSbRecall := MsgSafetyBoxRecallToken{
 		SafetyBoxID:      SafetyBoxTestID,
 		AllocatorAddress: allocator,
-		Coins:            sdk.Coins{sdk.Coin{Denom: "link", Amount: sdk.NewInt(1)}},
+		ContractID:       TestContractID,
+		Amount:           sdk.NewInt(1),
 	}
 	res, err = h(ctx, msgSbRecall)
 	require.NoError(t, err)
@@ -334,14 +364,16 @@ func TestHandler(t *testing.T) {
 			types.EventTypeTransfer,
 			sdk.NewAttribute(types.AttributeKeySender, safetyBoxAddress.String()),
 			sdk.NewAttribute(types.AttributeKeyRecipient, msgSbRecall.AllocatorAddress.String()),
-			sdk.NewAttribute(sdk.AttributeKeyAmount, msgSbReturn.Coins.String()),
+			sdk.NewAttribute(types.AttributeKeyContractID, msgSbRecall.ContractID),
+			sdk.NewAttribute(types.AttributeKeyAmount, msgSbRecall.Amount.String()),
 		),
 		sdk.NewEvent(
-			EventSafetyBoxSendCoin,
+			EventSafetyBoxSendToken,
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msgSbRecall.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxAllocatorAddress, msgSbRecall.AllocatorAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionRecall),
-			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msgSbRecall.Coins.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msgSbRecall.ContractID),
+			sdk.NewAttribute(AttributeKeyAmount, msgSbRecall.Amount.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,

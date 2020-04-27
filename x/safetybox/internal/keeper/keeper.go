@@ -4,29 +4,26 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth"
 	iam "github.com/line/link/x/iam/exported"
 	"github.com/line/link/x/safetybox/internal/types"
 	"github.com/tendermint/tendermint/crypto"
 )
 
 type Keeper struct {
-	cdc           *codec.Codec
-	storeKey      sdk.StoreKey
-	iamKeeper     iam.IamKeeper
-	bankKeeper    types.BankKeeper
-	hooks         types.SafetyBoxHooks
-	accountKeeper auth.AccountKeeper
+	cdc         *codec.Codec
+	storeKey    sdk.StoreKey
+	iamKeeper   iam.IamKeeper
+	tokenKeeper types.TokenKeeper
+	hooks       types.SafetyBoxHooks
 }
 
-func NewKeeper(cdc *codec.Codec, iamKeeper iam.IamKeeper, bankKeeper types.BankKeeper, accountKeeper auth.AccountKeeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(cdc *codec.Codec, iamKeeper iam.IamKeeper, tokenKeeper types.TokenKeeper, storeKey sdk.StoreKey) Keeper {
 	return Keeper{
-		cdc:           cdc,
-		storeKey:      storeKey,
-		iamKeeper:     iamKeeper,
-		bankKeeper:    bankKeeper,
-		hooks:         nil,
-		accountKeeper: accountKeeper,
+		cdc:         cdc,
+		storeKey:    storeKey,
+		iamKeeper:   iamKeeper,
+		tokenKeeper: tokenKeeper,
+		hooks:       nil,
 	}
 }
 
@@ -41,17 +38,13 @@ func (k *Keeper) SetHooks(sh types.SafetyBoxHooks) *Keeper {
 
 func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (types.SafetyBox, error) {
 	// create new safety box account
-	newSafetyBoxAccount, err := k.newSafetyBoxAccount(ctx, msg.SafetyBoxID)
+	newSafetyBoxAccount, err := k.newSafetyBoxAccount(ctx, msg.SafetyBoxID, msg.ContractID)
 	if err != nil {
 		return types.SafetyBox{}, err
 	}
 
-	if len(msg.SafetyBoxDenoms) > 1 {
-		return types.SafetyBox{}, sdkerrors.Wrapf(types.ErrSafetyBoxTooManyCoinDenoms, "Requested: %v", msg.SafetyBoxDenoms)
-	}
-
 	// create new safety box
-	sb := types.NewSafetyBox(msg.SafetyBoxOwner, msg.SafetyBoxID, newSafetyBoxAccount, msg.SafetyBoxDenoms)
+	sb := types.NewSafetyBox(msg.SafetyBoxOwner, msg.SafetyBoxID, newSafetyBoxAccount, msg.ContractID)
 
 	// reject if the safety box id exists
 	store := ctx.KVStore(k.storeKey)
@@ -71,19 +64,27 @@ func (k Keeper) NewSafetyBox(ctx sdk.Context, msg types.MsgSafetyBoxCreate) (typ
 	return sb, nil
 }
 
-func (k Keeper) newSafetyBoxAccount(ctx sdk.Context, safetyBoxID string) (sdk.AccAddress, error) {
+func (k Keeper) newSafetyBoxAccount(ctx sdk.Context, safetyBoxID, contractID string) (sdk.AccAddress, error) {
+	// check if token exists
+	token, err := k.tokenKeeper.GetToken(ctx, contractID)
+	if err != nil && token == nil {
+		return nil, sdkerrors.Wrapf(types.ErrSafetyBoxTokenNotExist, "Could not be found with the given contractID: %s", contractID)
+	}
+
 	// hash safety box id
 	newAddress := sdk.AccAddress(crypto.AddressHash(types.SafetyBoxKey(safetyBoxID)))
 
 	// check if exist
-	acc := k.accountKeeper.GetAccount(ctx, newAddress)
-	if acc != nil {
+	acc, err := k.tokenKeeper.GetAccount(ctx, contractID, newAddress)
+	if err == nil && acc != nil {
 		return nil, sdkerrors.Wrapf(types.ErrSafetyBoxAccountExist, "ID: %s", safetyBoxID)
 	}
 
 	// create new account and return its address
-	newAccount := k.accountKeeper.NewAccountWithAddress(ctx, newAddress)
-	k.accountKeeper.SetAccount(ctx, newAccount)
+	newAccount, err := k.tokenKeeper.NewAccountWithAddress(ctx, contractID, newAddress)
+	if err != nil {
+		return nil, err
+	}
 
 	return newAccount.GetAddress(), nil
 }
@@ -96,25 +97,20 @@ func (k Keeper) GetSafetyBox(ctx sdk.Context, safetyBoxID string) (types.SafetyB
 	return sb, nil
 }
 
-func (k Keeper) validDenom(coins sdk.Coins, denoms []string) error {
-	// safety box accepts only one type of coins
-	if len(coins) != 1 || len(denoms) != 1 {
-		return sdkerrors.Wrapf(types.ErrSafetyBoxTooManyCoinDenoms, "Requested: %v", denoms)
-	}
-	if coins[0].Denom != denoms[0] {
-		return sdkerrors.Wrapf(types.ErrSafetyBoxIncorrectDenom, "Expected: %s, Requested: %s", denoms[0], coins[0].Denom)
+func (k Keeper) validContractID(msgContractID, safetyboxContractID string) error {
+	if msgContractID != safetyboxContractID {
+		return sdkerrors.Wrapf(types.ErrSafetyBoxIncorrectContractID, "Expected: %s, Requested: %s", safetyboxContractID, msgContractID)
 	}
 	return nil
 }
 
-func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) error {
+func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateToken) error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
 		return err
 	}
 
-	// safety box accepts only one type of coins
-	if err = k.validDenom(msg.Coins, sb.Denoms); err != nil {
+	if err = k.validContractID(msg.ContractID, sb.ContractID); err != nil {
 		return err
 	}
 
@@ -129,27 +125,26 @@ func (k Keeper) Allocate(ctx sdk.Context, msg types.MsgSafetyBoxAllocateCoins) e
 	}
 
 	// allocation
-	err = k.sendCoins(ctx, fromAddress, toAddress, msg.Coins)
+	err = k.sendBalance(ctx, fromAddress, toAddress, msg.ContractID, msg.Amount)
 	if err != nil {
 		return err
 	}
 
 	// increase the total allocation and cumulative allocation
-	sb.TotalAllocation = sb.TotalAllocation.Add(msg.Coins...)
-	sb.CumulativeAllocation = sb.CumulativeAllocation.Add(msg.Coins...)
+	sb.TotalAllocation = sb.TotalAllocation.Add(msg.Amount)
+	sb.CumulativeAllocation = sb.CumulativeAllocation.Add(msg.Amount)
 
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
 //nolint:dupl
-func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallCoins) error {
+func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallToken) error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
 		return err
 	}
 
-	// safety box accepts only one type of coins
-	if err = k.validDenom(msg.Coins, sb.Denoms); err != nil {
+	if err = k.validContractID(msg.ContractID, sb.ContractID); err != nil {
 		return err
 	}
 
@@ -164,30 +159,29 @@ func (k Keeper) Recall(ctx sdk.Context, msg types.MsgSafetyBoxRecallCoins) error
 	}
 
 	// check not to recall more than allocated
-	if msg.Coins.IsAnyGT(sb.TotalAllocation) {
-		return sdkerrors.Wrapf(types.ErrSafetyBoxRecallMoreThanAllocated, "Has: %v, Requested: %v", sb.TotalAllocation, msg.Coins)
+	if msg.Amount.GT(sb.TotalAllocation) {
+		return sdkerrors.Wrapf(types.ErrSafetyBoxRecallMoreThanAllocated, "Has: %v, Requested: %v", sb.TotalAllocation, msg.Amount)
 	}
 
 	// recall
-	err = k.sendCoins(ctx, fromAddress, toAddress, msg.Coins)
+	err = k.sendBalance(ctx, fromAddress, toAddress, msg.ContractID, msg.Amount)
 	if err != nil {
 		return err
 	}
 
 	// decrease the total allocation
-	sb.TotalAllocation = sb.TotalAllocation.Sub(msg.Coins)
+	sb.TotalAllocation = sb.TotalAllocation.Sub(msg.Amount)
 
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
-func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) error {
+func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueToken) error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
 		return err
 	}
 
-	// safety box accepts only one type of coins
-	if err = k.validDenom(msg.Coins, sb.Denoms); err != nil {
+	if err = k.validContractID(msg.ContractID, sb.ContractID); err != nil {
 		return err
 	}
 
@@ -205,26 +199,25 @@ func (k Keeper) Issue(ctx sdk.Context, msg types.MsgSafetyBoxIssueCoins) error {
 
 	// issue from the safety box to an issuer
 	fromAddress := sb.Address
-	err = k.sendCoins(ctx, fromAddress, toAddress, msg.Coins)
+	err = k.sendBalance(ctx, fromAddress, toAddress, msg.ContractID, msg.Amount)
 	if err != nil {
 		return err
 	}
 
 	// increase the total issuance
-	sb.TotalIssuance = sb.TotalIssuance.Add(msg.Coins...)
+	sb.TotalIssuance = sb.TotalIssuance.Add(msg.Amount)
 
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
 //nolint:dupl
-func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) error {
+func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnToken) error {
 	sb, err := k.get(ctx, msg.SafetyBoxID)
 	if err != nil {
 		return err
 	}
 
-	// safety box accepts only one type of coins
-	if err = k.validDenom(msg.Coins, sb.Denoms); err != nil {
+	if err = k.validContractID(msg.ContractID, sb.ContractID); err != nil {
 		return err
 	}
 
@@ -239,29 +232,29 @@ func (k Keeper) Return(ctx sdk.Context, msg types.MsgSafetyBoxReturnCoins) error
 	}
 
 	// check not to return more than issued
-	if msg.Coins.IsAnyGT(sb.TotalIssuance) {
-		return sdkerrors.Wrapf(types.ErrSafetyBoxReturnMoreThanIssued, "Has: %v, Requested: %v", sb.TotalIssuance, msg.Coins)
+	if msg.Amount.GT(sb.TotalIssuance) {
+		return sdkerrors.Wrapf(types.ErrSafetyBoxReturnMoreThanIssued, "Has: %v, Requested: %v", sb.TotalIssuance, msg.Amount)
 	}
 
 	// return
-	err = k.sendCoins(ctx, fromAddress, toAddress, msg.Coins)
+	err = k.sendBalance(ctx, fromAddress, toAddress, msg.ContractID, msg.Amount)
 	if err != nil {
 		return err
 	}
 
 	// decrease the total issuance
-	sb.TotalIssuance = sb.TotalIssuance.Sub(msg.Coins)
+	sb.TotalIssuance = sb.TotalIssuance.Sub(msg.Amount)
 
 	return k.set(ctx, msg.SafetyBoxID, sb)
 }
 
-func (k Keeper) sendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coins sdk.Coins) error {
-	_, err := k.bankKeeper.SubtractCoins(ctx, fromAddr, coins)
+func (k Keeper) sendBalance(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, contractID string, amount sdk.Int) error {
+	_, err := k.tokenKeeper.SubtractBalance(ctx, contractID, fromAddr, amount)
 	if err != nil {
 		return err
 	}
 
-	_, err = k.bankKeeper.AddCoins(ctx, toAddr, coins)
+	_, err = k.tokenKeeper.AddBalance(ctx, contractID, toAddr, amount)
 	if err != nil {
 		return err
 	}
@@ -271,7 +264,8 @@ func (k Keeper) sendCoins(ctx sdk.Context, fromAddr, toAddr sdk.AccAddress, coin
 			types.EventTypeTransfer,
 			sdk.NewAttribute(types.AttributeKeySender, fromAddr.String()),
 			sdk.NewAttribute(types.AttributeKeyRecipient, toAddr.String()),
-			sdk.NewAttribute(sdk.AttributeKeyAmount, coins.String()),
+			sdk.NewAttribute(types.AttributeKeyContractID, contractID),
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
 		),
 	})
 

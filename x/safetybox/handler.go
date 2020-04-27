@@ -11,14 +11,14 @@ func NewHandler(keeper Keeper) sdk.Handler {
 		switch msg := msg.(type) {
 		case MsgSafetyBoxCreate:
 			return handleMsgSafetyBoxCreate(ctx, keeper, msg)
-		case MsgSafetyBoxAllocateCoins:
-			return handleMsgSafetyBoxAllocateCoins(ctx, keeper, msg)
-		case MsgSafetyBoxRecallCoins:
-			return handleMsgSafetyBoxRecallCoins(ctx, keeper, msg)
-		case MsgSafetyBoxIssueCoins:
-			return handleMsgSafetyBoxIssueCoins(ctx, keeper, msg)
-		case MsgSafetyBoxReturnCoins:
-			return handleMsgSafetyBoxReturnCoins(ctx, keeper, msg)
+		case MsgSafetyBoxAllocateToken:
+			return handleMsgSafetyBoxAllocateToken(ctx, keeper, msg)
+		case MsgSafetyBoxRecallToken:
+			return handleMsgSafetyBoxRecallToken(ctx, keeper, msg)
+		case MsgSafetyBoxIssueToken:
+			return handleMsgSafetyBoxIssueToken(ctx, keeper, msg)
+		case MsgSafetyBoxReturnToken:
+			return handleMsgSafetyBoxReturnToken(ctx, keeper, msg)
 		case MsgSafetyBoxRegisterAllocator:
 			return handleMsgSafetyBoxRegisterAllocator(ctx, keeper, msg)
 		case MsgSafetyBoxDeregisterAllocator:
@@ -53,6 +53,7 @@ func handleMsgSafetyBoxCreate(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxCr
 			sdk.NewAttribute(AttributeKeySafetyBoxID, sb.ID),
 			sdk.NewAttribute(AttributeKeySafetyBoxOwner, sb.Owner.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAddress, sb.Address.String()),
+			sdk.NewAttribute(AttributeKeyContractID, sb.ContractID),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -63,7 +64,7 @@ func handleMsgSafetyBoxCreate(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxCr
 	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxAllocateCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxAllocateCoins) (*sdk.Result, error) {
+func handleMsgSafetyBoxAllocateToken(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxAllocateToken) (*sdk.Result, error) {
 	err := keeper.Allocate(ctx, msg)
 	if err != nil {
 		return nil, err
@@ -71,11 +72,12 @@ func handleMsgSafetyBoxAllocateCoins(ctx sdk.Context, keeper Keeper, msg MsgSafe
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			EventSafetyBoxSendCoin,
+			EventSafetyBoxSendToken,
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxAllocatorAddress, msg.AllocatorAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionAllocate),
-			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msg.Coins.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msg.ContractID),
+			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -86,7 +88,7 @@ func handleMsgSafetyBoxAllocateCoins(ctx sdk.Context, keeper Keeper, msg MsgSafe
 	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxRecallCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRecallCoins) (*sdk.Result, error) {
+func handleMsgSafetyBoxRecallToken(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxRecallToken) (*sdk.Result, error) {
 	err := keeper.Recall(ctx, msg)
 	if err != nil {
 		return nil, err
@@ -94,11 +96,12 @@ func handleMsgSafetyBoxRecallCoins(ctx sdk.Context, keeper Keeper, msg MsgSafety
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			EventSafetyBoxSendCoin,
+			EventSafetyBoxSendToken,
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxAllocatorAddress, msg.AllocatorAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionRecall),
-			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msg.Coins.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msg.ContractID),
+			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -109,7 +112,7 @@ func handleMsgSafetyBoxRecallCoins(ctx sdk.Context, keeper Keeper, msg MsgSafety
 	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxIssueCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxIssueCoins) (*sdk.Result, error) {
+func handleMsgSafetyBoxIssueToken(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxIssueToken) (*sdk.Result, error) {
 	err := keeper.Issue(ctx, msg)
 	if err != nil {
 		return nil, err
@@ -117,12 +120,13 @@ func handleMsgSafetyBoxIssueCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyB
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			EventSafetyBoxSendCoin,
+			EventSafetyBoxSendToken,
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxIssueFromAddress, msg.FromAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxIssueToAddress, msg.ToAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionIssue),
-			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msg.Coins.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msg.ContractID),
+			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,
@@ -133,7 +137,7 @@ func handleMsgSafetyBoxIssueCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyB
 	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
 
-func handleMsgSafetyBoxReturnCoins(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxReturnCoins) (*sdk.Result, error) {
+func handleMsgSafetyBoxReturnToken(ctx sdk.Context, keeper Keeper, msg MsgSafetyBoxReturnToken) (*sdk.Result, error) {
 	err := keeper.Return(ctx, msg)
 	if err != nil {
 		return nil, err
@@ -141,11 +145,12 @@ func handleMsgSafetyBoxReturnCoins(ctx sdk.Context, keeper Keeper, msg MsgSafety
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
-			EventSafetyBoxSendCoin,
+			EventSafetyBoxSendToken,
 			sdk.NewAttribute(AttributeKeySafetyBoxID, msg.SafetyBoxID),
 			sdk.NewAttribute(AttributeKeySafetyBoxReturnerAddress, msg.ReturnerAddress.String()),
 			sdk.NewAttribute(AttributeKeySafetyBoxAction, ActionReturn),
-			sdk.NewAttribute(AttributeKeySafetyBoxCoins, msg.Coins.String()),
+			sdk.NewAttribute(AttributeKeyContractID, msg.ContractID),
+			sdk.NewAttribute(AttributeKeyAmount, msg.Amount.String()),
 		),
 		sdk.NewEvent(
 			sdk.EventTypeMessage,

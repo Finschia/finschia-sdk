@@ -17,15 +17,16 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
 	cbank "github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/line/link/x/contract"
 	"github.com/line/link/x/iam"
+	"github.com/line/link/x/token"
 )
 
 type TestInput struct {
 	Cdc    *codec.Codec
 	Ctx    sdk.Context
 	Keeper Keeper
-	Ak     auth.AccountKeeper
-	Bk     cbank.BaseKeeper
+	Tk     token.Keeper
 	Iam    iam.Keeper
 }
 
@@ -36,6 +37,7 @@ func newTestCodec() *codec.Codec {
 	cbank.RegisterCodec(cdc)
 	supply.RegisterCodec(cdc)
 	iam.RegisterCodec(cdc)
+	token.RegisterCodec(cdc)
 	codec.RegisterCrypto(cdc)
 	return cdc
 }
@@ -46,6 +48,8 @@ func SetupTestInput(t *testing.T) TestInput {
 	tkeyParams := sdk.NewTransientStoreKey(params.TStoreKey)
 	keySupply := sdk.NewKVStoreKey(supply.StoreKey)
 	keyIam := sdk.NewKVStoreKey(iam.StoreKey)
+	keyContract := sdk.NewKVStoreKey(contract.StoreKey)
+	keyToken := sdk.NewKVStoreKey(token.StoreKey)
 	keySafetyBox := sdk.NewKVStoreKey(types.StoreKey)
 
 	db := dbm.NewMemDB()
@@ -55,6 +59,8 @@ func SetupTestInput(t *testing.T) TestInput {
 	ms.MountStoreWithDB(tkeyParams, sdk.StoreTypeTransient, db)
 	ms.MountStoreWithDB(keySupply, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyIam, sdk.StoreTypeIAVL, db)
+	ms.MountStoreWithDB(keyContract, sdk.StoreTypeIAVL, db)
+	ms.MountStoreWithDB(keyToken, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keySafetyBox, sdk.StoreTypeIAVL, db)
 	err := ms.LoadLatestVersion()
 	require.NoError(t, err)
@@ -79,13 +85,15 @@ func SetupTestInput(t *testing.T) TestInput {
 	cbankKeeper := cbank.NewBaseKeeper(accountKeeper, cbankSubspace, blacklistedAddrs)
 	iamKeeper := iam.NewKeeper(cdc, keyIam)
 	supplyKeeper := supply.NewKeeper(cdc, keySupply, accountKeeper, cbankKeeper, maccPerms)
+	contractKeeper := contract.NewContractKeeper(cdc, keyContract)
+	tokenKeeper := token.NewKeeper(cdc, accountKeeper, iamKeeper.WithPrefix(token.ModuleName), contractKeeper, keyToken)
 
-	keeper := NewKeeper(cdc, iamKeeper.WithPrefix(types.ModuleName), cbankKeeper, accountKeeper, keySafetyBox)
+	keeper := NewKeeper(cdc, iamKeeper.WithPrefix(types.ModuleName), tokenKeeper, keySafetyBox)
 
 	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
 	supplyKeeper.SetSupply(ctx, supply.NewSupply(sdk.NewCoins()))
 
-	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Ak: accountKeeper, Bk: cbankKeeper}
+	return TestInput{Cdc: cdc, Ctx: ctx, Keeper: keeper, Tk: tokenKeeper}
 }
 
 //nolint:unparam
@@ -93,26 +101,21 @@ func checkSafetyBoxBalance(t *testing.T, k Keeper, ctx sdk.Context, safetyBoxID 
 	sb, err := k.GetSafetyBox(ctx, safetyBoxID)
 	require.NoError(t, err)
 
-	// only accepts one type of coins
-	require.LessOrEqual(t, len(sb.TotalAllocation), 1)
-	require.LessOrEqual(t, len(sb.CumulativeAllocation), 1)
-	require.LessOrEqual(t, len(sb.TotalIssuance), 1)
-
-	var taExpected, caExpected, tiExpected sdk.Coins
+	var taExpected, caExpected, tiExpected sdk.Int
 	if ta == 0 {
-		taExpected = sdk.Coins(nil)
+		taExpected = sdk.ZeroInt()
 	} else {
-		taExpected = sdk.Coins{sdk.Coin{Denom: sb.Denoms[0], Amount: sdk.NewInt(ta)}}
+		taExpected = sdk.NewInt(ta)
 	}
 	if ca == 0 {
-		caExpected = sdk.Coins(nil)
+		caExpected = sdk.ZeroInt()
 	} else {
-		caExpected = sdk.Coins{sdk.Coin{Denom: sb.Denoms[0], Amount: sdk.NewInt(ca)}}
+		caExpected = sdk.NewInt(ca)
 	}
 	if ti == 0 {
-		tiExpected = sdk.Coins(nil)
+		tiExpected = sdk.ZeroInt()
 	} else {
-		tiExpected = sdk.Coins{sdk.Coin{Denom: sb.Denoms[0], Amount: sdk.NewInt(ti)}}
+		tiExpected = sdk.NewInt(ti)
 	}
 
 	require.Equal(t, taExpected, sb.TotalAllocation)

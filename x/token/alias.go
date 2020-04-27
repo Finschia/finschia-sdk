@@ -12,6 +12,7 @@ const (
 )
 
 type (
+	Account     = types.Account
 	Token       = types.Token
 	Tokens      = types.Tokens
 	Permissions = types.Permissions
@@ -21,5 +22,9 @@ type (
 var (
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec
+	NewToken      = types.NewToken
 	NewKeeper     = keeper.NewKeeper
+
+	ErrTokenNotExist       = types.ErrTokenNotExist
+	ErrInsufficientBalance = types.ErrInsufficientBalance
 )

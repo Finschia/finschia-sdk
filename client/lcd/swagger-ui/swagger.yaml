@@ -15,6 +15,8 @@ tags:
     description: Coin query APIs
   - name: Token
     description: Token query APIs
+  - name: Safety Box
+    description: Create/query safety box and grant/revoke permissions
   - name: Collection
     description: Collection query APIs
 servers:
@@ -825,6 +827,78 @@ paths:
                         - $ref: '#/components/schemas/TokenFT'
         "500":
           description: Internal Server Error
+  /safetybox/{id}:
+    get:
+      tags:
+        - Safety Box
+      summary: Get a safety box
+      parameters:
+        - name: id
+          in: path
+          description: safety box id
+          required: true
+          schema:
+            type: string
+          example: "my_safety_box"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: object
+                    properties:
+                      type:
+                        type: string
+                        example: "safetybox"
+                      value:
+                        $ref: '#/components/schemas/SafetyBox'
+  /safetybox/{id}/role/{role}/{address}:
+    get:
+      tags:
+        - Safety Box
+      summary: Get a list of permissions of the user for the safety box
+      parameters:
+        - name: id
+          in: path
+          description: safety box id
+          required: true
+          schema:
+            type: string
+          example: "my_safety_box"
+        - name: role
+          in: path
+          description: role of safetybox
+          required: true
+          schema:
+            type: string
+          example: "operator"
+        - name: address
+          in: path
+          description: account address
+          required: true
+          schema:
+            type: string
+          example: "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    $ref: '#/components/schemas/SafetyBoxPermissions'
   /collection/{contract_id}/accounts/{address}/balances/{token_id}:
     get:
       tags:
@@ -2066,6 +2140,19 @@ components:
               - $ref: '#/components/schemas/MsgBurnCNFT'
               - $ref: '#/components/schemas/MsgBurnCNFTFrom'
               - $ref: '#/components/schemas/MsgCreateValidator'
+              - $ref: '#/components/schemas/MsgSafetyBoxCreate'
+              - $ref: '#/components/schemas/MsgSafetyBoxAllocateToken'
+              - $ref: '#/components/schemas/MsgSafetyBoxRecallToken'
+              - $ref: '#/components/schemas/MsgSafetyBoxIssueToken'
+              - $ref: '#/components/schemas/MsgSafetyBoxReturnToken'
+              - $ref: '#/components/schemas/MsgSafetyBoxRegisterOperator'
+              - $ref: '#/components/schemas/MsgSafetyBoxDeregisterOperator'
+              - $ref: '#/components/schemas/MsgSafetyBoxRegisterAllocator'
+              - $ref: '#/components/schemas/MsgSafetyBoxDeregisterAllocator'
+              - $ref: '#/components/schemas/MsgSafetyBoxRegisterIssuer'
+              - $ref: '#/components/schemas/MsgSafetyBoxDeregisterIssuer'
+              - $ref: '#/components/schemas/MsgSafetyBoxRegisterReturner'
+              - $ref: '#/components/schemas/MsgSafetyBoxDeregisterReturner'
               - $ref: '#/components/schemas/MsgEmpty'
               - $ref: '#/components/schemas/MsgCreateAccount'
               - $ref: '#/components/schemas/MsgTransfer'
@@ -2402,6 +2489,48 @@ components:
               example: "example.com/img_uri"
 
     #-------------------------------
+    # Safety Box Models
+    #-------------------------------
+    SafetyBox:
+      type: object
+      properties:
+        id:
+          $ref: '#/components/schemas/SafetyBoxId'
+        owner:
+          allOf:
+            - $ref: '#/components/schemas/Address'
+            - description: owner of the safetybox
+        address:
+          allOf:
+            - $ref: '#/components/schemas/Address'
+            - description: address of the safetybox
+        total_allocation:
+          type: string
+          description: current total allocation amount
+          example: "0"
+        cumulative_allocation:
+          type: string
+          description: cumulative total allocation amount
+          example: "0"
+        total_issuance:
+          type: string
+          description: current total issuance amount
+          example: "0"
+        contract_id:
+          type: string
+          example: "678c146a"
+    SafetyBoxPermissions:
+      type: object
+      properties:
+        has_role:
+          type: boolean
+          example: true
+    SafetyBoxId:
+      type: string
+      description: id of the safetybox
+      example: "my_safety_box"
+
+    #-------------------------------
     # BroadcastTx Result Models
     #-------------------------------
     BroadcastTxBlockResult:
@@ -2545,6 +2674,220 @@ components:
               allOf:
                 - $ref: '#/components/schemas/Coin'
                 - description: self description value
+    MsgSafetyBoxCreate:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgCreate"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            safety_box_owner:
+              $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
+    MsgSafetyBoxAllocateToken:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgAllocate"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            allocator_address:
+              $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
+            amount:
+              type: string
+              example: "0"
+    MsgSafetyBoxRecallToken:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRecall"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            allocator_address:
+              $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
+            amount:
+              type: string
+              example: "0"
+    MsgSafetyBoxIssueToken:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgIssue"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            from_address:
+              $ref: '#/components/schemas/Address'
+            to_address:
+              $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
+            amount:
+              type: string
+              example: "0"
+    MsgSafetyBoxReturnToken:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgReturn"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            returner_address:
+              $ref: '#/components/schemas/Address'
+            contract_id:
+              type: string
+              example: "9be17165"
+            amount:
+              type: string
+              example: "0"
+    MsgSafetyBoxRegisterOperator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgGrantOperatorPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            safety_box_owner:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxDeregisterOperator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRevokeOperatorPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            safety_box_owner:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxRegisterAllocator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgGrantAllocatorPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxDeregisterAllocator:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRevokeAllocatorPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxRegisterIssuer:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgGrantIssuerPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxDeregisterIssuer:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRevokeIssuerPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxRegisterReturner:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgGrantReturnerPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
+    MsgSafetyBoxDeregisterReturner:
+      type: object
+      properties:
+        type:
+          type: string
+          example: "safetybox/MsgRevokeReturnerPermission"
+        value:
+          type: object
+          properties:
+            safety_box_id:
+              $ref: '#/components/schemas/SafetyBoxId'
+            operator:
+              $ref: '#/components/schemas/Address'
+            address:
+              $ref: '#/components/schemas/Address'
     MsgEmpty:
       type: object
       properties:
@@ -3358,6 +3701,142 @@ components:
                        "token_id": "0000000100000000",
                        "amount": "1"
                      }]
+        }
+      },
+      {
+        "type": "safetybox/MsgCreate",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "safety_box_owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "contract_id": "9be17165"
+        }
+      },
+      {
+        "type": "safetybox/MsgGrantOperatorPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "safety_box_owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgGrantAllocatorPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgGrantIssuerPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgGrantReturnerPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkreturnormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "token/MsgTransfer",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "contract_id": "9be17165",
+          "amount": "10"
+        }
+      },
+      {
+        "type": "token/MsgTransfer",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "contract_id": "9be17165",
+          "amount": "10"
+        }
+      },
+      {
+        "type": "token/MsgTransfer",
+        "value": {
+          "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to": "linkreturnormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "contract_id": "9be17165",
+          "amount": "10"
+        }
+      },
+      {
+        "type": "safetybox/MsgAllocate",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "allocator_address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "contract_id": "9be17165",
+          "amount": "2"
+        }
+      },
+      {
+        "type": "safetybox/MsgIssue",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "from_address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "to_address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "contract_id": "9be17165",
+          "amount": "2"
+        }
+      },
+      {
+        "type": "safetybox/MsgReturn",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "returner_address": "linkreturnormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "contract_id": "9be17165",
+          "amount": "1"
+        }
+      },
+      {
+        "type": "safetybox/MsgRecall",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "allocator_address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "contract_id": "9be17165",
+          "amount": "1"
+        }
+      },
+      {
+        "type": "safetybox/MsgRevokeReturnerPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkreturnormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgRevokeIssuerPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkissuetormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgRevokeAllocatorPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "operator": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkallocatorpp92x9hyzz9wrgf94r6j9h5f06pxxv"
+        }
+      },
+      {
+        "type": "safetybox/MsgRevokeOperatorPermission",
+        "value": {
+          "safety_box_id": "my_safety_box",
+          "safety_box_owner": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
+          "address": "linkoperatormpp92x9hyzz9wrgf94r6j9h5f06pxxv"
         }
       },
       {

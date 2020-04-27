@@ -3,7 +3,6 @@ package cli
 import (
 	"bufio"
 	"strconv"
-	"strings"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -28,15 +27,15 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	txCmd.AddCommand(
 		SafetyBoxCreateTxCmd(cdc),
 		SafetyBoxRoleTxCmd(cdc),
-		SafetyBoxSendCoinsTxCmd(cdc),
+		SafetyBoxSendTokenTxCmd(cdc),
 	)
 	return txCmd
 }
 
 func SafetyBoxCreateTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "create [id] [owner_address] [denom]",
-		Short: "Create a safety box with ID, owner and the coin denom. Only one owner and denom is allowed.",
+		Use:   "create [id] [owner_address] [contract_id]",
+		Short: "Create a safety box with ID, owner and contractID. Only one owner and contractID is allowed.",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
@@ -44,10 +43,10 @@ func SafetyBoxCreateTxCmd(cdc *codec.Codec) *cobra.Command {
 			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[1]).WithCodec(cdc)
 			safetyBoxID := args[0]
 			safetyBoxOwner := cliCtx.FromAddress
-			safetyBoxDenoms := strings.Split(args[2], ",")
+			contractID := args[2]
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.MsgSafetyBoxCreate{SafetyBoxID: safetyBoxID, SafetyBoxOwner: safetyBoxOwner, SafetyBoxDenoms: safetyBoxDenoms}
+			msg := types.MsgSafetyBoxCreate{SafetyBoxID: safetyBoxID, SafetyBoxOwner: safetyBoxOwner, ContractID: contractID}
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -156,22 +155,21 @@ func SafetyBoxRoleTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
+func SafetyBoxSendTokenTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "sendcoins [safety_box_id] [allocate|recall|issue|return] [denom] [amount] [address] [issuer_address] ",
-		Short: "Send coins among the safety box, issuers, returners and allocators. `issuer_address` is required only for issue.",
+		Use:   "sendtoken [safety_box_id] [allocate|recall|issue|return] [contractID] [amount] [address] [issuer_address] ",
+		Short: "Send token among the safety box, issuers, returners and allocators. `issuer_address` is required only for issue.",
 		Args:  cobra.RangeArgs(5, 6),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 			safetyBoxID, action := args[0], args[1]
 
-			denom := args[2]
+			contractID := args[2]
 			amount, err := strconv.ParseInt(args[3], 10, 0)
 			if err != nil {
 				return err
 			}
-			coins := sdk.Coins{sdk.NewCoin(denom, sdk.NewInt(amount))}
 
 			// allocate & return -> `to` is an optional
 			// recall -> `from` is an optional
@@ -185,9 +183,9 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 			var msg sdk.Msg
 			switch action {
 			case types.ActionAllocate:
-				msg = types.NewMsgSafetyBoxAllocateCoins(safetyBoxID, address, coins)
+				msg = types.NewMsgSafetyBoxAllocateToken(safetyBoxID, address, contractID, sdk.NewInt(amount))
 			case types.ActionRecall:
-				msg = types.NewMsgSafetyBoxRecallCoins(safetyBoxID, address, coins)
+				msg = types.NewMsgSafetyBoxRecallToken(safetyBoxID, address, contractID, sdk.NewInt(amount))
 			case types.ActionIssue:
 				if len(args) < 6 {
 					return types.ErrSafetyBoxIssuerAddressRequired
@@ -196,9 +194,9 @@ func SafetyBoxSendCoinsTxCmd(cdc *codec.Codec) *cobra.Command {
 				if err != nil {
 					return err
 				}
-				msg = types.NewMsgSafetyBoxIssueCoins(safetyBoxID, address, toAddress, coins)
+				msg = types.NewMsgSafetyBoxIssueToken(safetyBoxID, address, toAddress, contractID, sdk.NewInt(amount))
 			case types.ActionReturn:
-				msg = types.NewMsgSafetyBoxReturnCoins(safetyBoxID, address, coins)
+				msg = types.NewMsgSafetyBoxReturnToken(safetyBoxID, address, contractID, sdk.NewInt(amount))
 			default:
 				return sdkerrors.Wrapf(types.ErrSafetyBoxInvalidAction, "Action: %s", action)
 			}

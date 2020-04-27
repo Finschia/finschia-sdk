@@ -16,10 +16,10 @@ type (
 	SafetyBox = types.SafetyBox
 
 	MsgSafetyBoxCreate              = types.MsgSafetyBoxCreate
-	MsgSafetyBoxAllocateCoins       = types.MsgSafetyBoxAllocateCoins
-	MsgSafetyBoxRecallCoins         = types.MsgSafetyBoxRecallCoins
-	MsgSafetyBoxIssueCoins          = types.MsgSafetyBoxIssueCoins
-	MsgSafetyBoxReturnCoins         = types.MsgSafetyBoxReturnCoins
+	MsgSafetyBoxAllocateToken       = types.MsgSafetyBoxAllocateToken
+	MsgSafetyBoxRecallToken         = types.MsgSafetyBoxRecallToken
+	MsgSafetyBoxIssueToken          = types.MsgSafetyBoxIssueToken
+	MsgSafetyBoxReturnToken         = types.MsgSafetyBoxReturnToken
 	MsgSafetyBoxRegisterIssuer      = types.MsgSafetyBoxRegisterIssuer
 	MsgSafetyBoxDeregisterIssuer    = types.MsgSafetyBoxDeregisterIssuer
 	MsgSafetyBoxRegisterReturner    = types.MsgSafetyBoxRegisterReturner
@@ -52,16 +52,16 @@ var (
 	DeregisterRole = types.DeregisterRole
 
 	EventSafetyBoxCreate     = types.EventSafetyBoxCreate
-	EventSafetyBoxSendCoin   = types.EventSafetyBoxSendCoin
+	EventSafetyBoxSendToken  = types.EventSafetyBoxSendToken
 	EventSafetyBoxPermission = types.EventSafetyBoxPermission
 
-	ErrSafetyBoxInvalidMsgType     = types.ErrSafetyBoxInvalidMsgType
-	ErrSafetyBoxPermissionAllocate = types.ErrSafetyBoxPermissionAllocate
-	ErrSafetyBoxPermissionRecall   = types.ErrSafetyBoxPermissionRecall
-	ErrSafetyBoxPermissionIssue    = types.ErrSafetyBoxPermissionIssue
-	ErrSafetyBoxPermissionReturn   = types.ErrSafetyBoxPermissionReturn
-	ErrSafetyBoxIncorrectDenom     = types.ErrSafetyBoxIncorrectDenom
-	ErrSafetyBoxTooManyCoinDenoms  = types.ErrSafetyBoxTooManyCoinDenoms
+	ErrSafetyBoxInvalidMsgType      = types.ErrSafetyBoxInvalidMsgType
+	ErrSafetyBoxPermissionAllocate  = types.ErrSafetyBoxPermissionAllocate
+	ErrSafetyBoxPermissionRecall    = types.ErrSafetyBoxPermissionRecall
+	ErrSafetyBoxPermissionIssue     = types.ErrSafetyBoxPermissionIssue
+	ErrSafetyBoxPermissionReturn    = types.ErrSafetyBoxPermissionReturn
+	ErrSafetyBoxIncorrectContractID = types.ErrSafetyBoxIncorrectContractID
+	ErrSafetyBoxTokenNotExist       = types.ErrSafetyBoxTokenNotExist
 
 	AttributeKeySafetyBoxID                        = types.AttributeKeySafetyBoxID
 	AttributeKeySafetyBoxOwner                     = types.AttributeKeySafetyBoxOwner
@@ -79,8 +79,9 @@ var (
 	AttributeKeySafetyBoxRevokeIssuerPermission    = types.AttributeKeySafetyBoxRevokeIssuerPermission
 	AttributeKeySafetyBoxGrantReturnerPermission   = types.AttributeKeySafetyBoxGrantReturnerPermission
 	AttributeKeySafetyBoxRevokeReturnerPermission  = types.AttributeKeySafetyBoxRevokeReturnerPermission
-	AttributeKeySafetyBoxCoins                     = types.AttributeKeySafetyBoxCoins
 	AttributeValueCategory                         = types.AttributeValueCategory
+	AttributeKeyContractID                         = types.AttributeKeyContractID
+	AttributeKeyAmount                             = types.AttributeKeyAmount
 
 	AttributeKeySafetyBoxOperator = types.AttributeKeySafetyBoxOperator
 	AttributeKeySafetyBoxTarget   = types.AttributeKeySafetyBoxTarget
