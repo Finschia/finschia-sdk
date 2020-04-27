@@ -4,11 +4,6 @@ executors:
   golang:
     docker:
       - image: circleci/golang:1.13
-  docs:
-    docker:
-      - image: tendermintdev/docker-website-deployment
-    environment:
-      AWS_REGION: us-east-1
 
 commands:
   make:
@@ -207,21 +202,21 @@ workflows:
       - test-cover:
           requires:
             - setup-dependencies
-      - upload-coverage:
-          requires:
-            - test-cover
-      - build-docs:
-          context: docs-deployment-master
-          filters:
-            branches:
-              only:
-                - docs-theme-latest
-      - build-docs:
-          context: docs-deployment-release
-          filters:
-            branches:
-              only:
-                - master
-            tags:
-              only:
-                - /v.*/
+#      - upload-coverage:
+#          requires:
+#            - test-cover
+#      - build-docs:
+#          context: docs-deployment-master
+#          filters:
+#            branches:
+#              only:
+#                - docs-theme-latest
+#      - build-docs:
+#          context: docs-deployment-release
+#          filters:
+#            branches:
+#              only:
+#                - master
+#            tags:
+#              only:
+#                - /v.*/
