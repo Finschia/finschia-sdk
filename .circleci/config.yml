@@ -120,6 +120,8 @@ jobs:
           name: binaries
           command: |
             export PATH=/tmp/workspace/bin:$PATH
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             make go-mod-cache
             make install
       - save_cache:
@@ -139,8 +141,13 @@ jobs:
       - restore_cache:
           keys:
             - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run: go get github.com/golangci/golangci-lint/cmd/golangci-lint
-      - run: make lint
+      - run:
+          name: lint
+          command: |
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            go get github.com/golangci/golangci-lint/cmd/golangci-lint
+            make lint
   unit_test:
     <<: *linux_defaults
     resource_class: medium
@@ -205,7 +212,9 @@ jobs:
           name: build binaries
           command: |
             set -x
-            make build 
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make build
       - save_cache:
           key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
           paths:
@@ -288,6 +297,8 @@ jobs:
           name: build binary
           command: |
             set -x
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             make build
       - run:
           name: build docker image
@@ -356,6 +367,8 @@ jobs:
       - run:
           name: Get Node.js and test REST implementation against swagger documentation
           command: |
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             go get github.com/snikch/goodman/cmd/goodman
             ./contrib/get_node.sh && make contract-test
 workflows:

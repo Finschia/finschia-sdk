@@ -24,7 +24,7 @@ import (
 	tokenModule "github.com/line/link/x/token"
 
 	"github.com/line/link/client"
-	tmclient "github.com/tendermint/tendermint/rpc/client"
+	tmhttp "github.com/tendermint/tendermint/rpc/client/http"
 
 	"github.com/stretchr/testify/require"
 
@@ -1381,7 +1381,7 @@ func (f *Fixtures) MempoolUnconfirmedTxHashes(flags ...string) *ResultUnconfirme
 //___________________________________________________________________________________
 // tendermint rpc
 func (f *Fixtures) NetInfo(flags ...string) *tmctypes.ResultNetInfo {
-	tmc, err := tmclient.NewHTTP(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
+	tmc, err := tmhttp.New(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
 	if err != nil {
 		panic(fmt.Sprintf("failed to create Tendermint HTTP client: %s", err))
 	}
@@ -1399,7 +1399,7 @@ func (f *Fixtures) NetInfo(flags ...string) *tmctypes.ResultNetInfo {
 }
 
 func (f *Fixtures) Status(flags ...string) *tmctypes.ResultStatus {
-	tmc, err := tmclient.NewHTTP(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
+	tmc, err := tmhttp.New(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
 	if err != nil {
 		panic(fmt.Sprintf("failed to create Tendermint HTTP client: %s", err))
 	}
