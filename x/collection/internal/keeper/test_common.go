@@ -29,6 +29,7 @@ func TestKeeper() (sdk.Context, store.CommitMultiStore, Keeper) {
 	ms.MountStoreWithDB(keyCollection, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyIam, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyContract, sdk.StoreTypeIAVL, db)
+	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(tkeyParams, sdk.StoreTypeTransient, db)
 
 	if err := ms.LoadLatestVersion(); err != nil {
@@ -48,8 +49,17 @@ func TestKeeper() (sdk.Context, store.CommitMultiStore, Keeper) {
 	// add keepers
 	iamKeeper := iam.NewKeeper(cdc, keyIam)
 	accountKeeper := auth.NewAccountKeeper(cdc, keyAuth, authSubspace, auth.ProtoBaseAccount)
-	keeper := NewKeeper(cdc, accountKeeper, iamKeeper.WithPrefix(types.ModuleName), contract.NewContractKeeper(cdc, keyContract), keyCollection)
-	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
+	paramsSpace := paramsKeeper.Subspace(types.DefaultParamspace)
+	keeper := NewKeeper(
+		cdc,
+		accountKeeper,
+		iamKeeper.WithPrefix(types.ModuleName),
+		contract.NewContractKeeper(cdc, keyContract),
+		paramsSpace,
+		keyCollection,
+	)
 
+	ctx := sdk.NewContext(ms, abci.Header{ChainID: "test-chain-id"}, false, log.NewNopLogger())
+	keeper.SetParams(ctx, types.DefaultParams())
 	return ctx, ms, keeper
 }

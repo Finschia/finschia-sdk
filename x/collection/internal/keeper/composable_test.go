@@ -3,6 +3,7 @@ package keeper
 import (
 	"testing"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/stretchr/testify/require"
 
@@ -307,4 +308,177 @@ func TestAttachDetachScenario(t *testing.T) {
 	require.NoError(t, err13)
 
 	require.Equal(t, (token3.(types.NFT)).GetOwner(), addr1)
+}
+
+func setupNFTs(t *testing.T, ctx sdk.Context) {
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, "name", "{}", defaultImgURI), addr1))
+	require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta), addr1))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID2, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID3, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID4, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID5, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID6, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID7, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID8, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID9, defaultName, defaultMeta, addr1)))
+}
+
+func TestGetDepthWidthTable(t *testing.T) {
+	ctx := cacheKeeper()
+
+	setupNFTs(t, ctx)
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID3))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID4))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID5))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID6))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID7))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID8))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID7, defaultTokenID9))
+
+	//                    +- token4
+	//                    +- token5
+	// token1 -+- token2 -+- token6
+	//         |
+	//         +- token3 -+- token7 --- token9
+	//                    +- token8
+
+	var table []int
+	table = keeper.GetDepthWidthTable(ctx, defaultContractID, defaultTokenID1)
+	require.Equal(t, []int{1, 2, 5, 1}, table)
+
+	table = keeper.GetDepthWidthTable(ctx, defaultContractID, defaultTokenID2)
+	require.Equal(t, []int{1, 3}, table)
+
+	table = keeper.GetDepthWidthTable(ctx, defaultContractID, defaultTokenID3)
+	require.Equal(t, []int{1, 2, 1}, table)
+}
+
+func TestGetCurrentDepthFromRoot(t *testing.T) {
+	ctx := cacheKeeper()
+
+	setupNFTs(t, ctx)
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID3))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID4))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID5))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID6))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID4, defaultTokenID7))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID5, defaultTokenID8))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID8, defaultTokenID9))
+
+	// token1 -+- token2 --- token4 --- token7
+	//         +- token3 -+- token5 --- token8 --- token9
+	//                    +- token6
+
+	// the depth of token1 should be 0
+	require.Equal(t, 0, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID1))
+
+	// the depth of token2, token3 should be 1
+	require.Equal(t, 1, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID2))
+	require.Equal(t, 1, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID3))
+
+	// the depth of token4, token5, token6 should be 2
+	require.Equal(t, 2, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID4))
+	require.Equal(t, 2, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID5))
+	require.Equal(t, 2, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID6))
+
+	// the depth of token7, token8 should be 3
+	require.Equal(t, 3, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID7))
+	require.Equal(t, 3, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID8))
+
+	// the depth of token9 should be 4
+	require.Equal(t, 4, keeper.GetDepthFromRoot(ctx, defaultContractID, defaultTokenID9))
+}
+
+//nolint:dupl
+func TestCheckDepth(t *testing.T) {
+	ctx := cacheKeeper()
+	keeper.SetParams(ctx, types.NewParams(4, 4)) // Sets the max composable width/depth to 4
+
+	setupNFTs(t, ctx)
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID3))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID3, defaultTokenID4))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID5, defaultTokenID6))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID5, defaultTokenID7))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID6, defaultTokenID8))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID8, defaultTokenID9))
+
+	// Given two composed tokens
+	// token1 --- token2 --- token3 --- token4
+	//
+	// token5 -+- token6 --- token8 --- token9
+	//         +- token7
+	//
+	// Sets the max composable width/depth to 4
+
+	// if token5 is attached to token2 then,
+	//
+	// token1 --- token2 -+- token3 --- token4
+	//                    +- token5 -+- token6 --- token8 --- token9
+	//                               +- token7
+	// deepest depth is 5 (path: token1-token2-token5-token6-token8-token9)
+	err := keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID5)
+	require.Error(t, err)
+
+	// if token5 is attached to token1 then,
+	//
+	// token1 -+- token2 --- token3 --- token4
+	//         +- token5 -+- token6 --- token8 --- token9
+	//                    +- token7
+	// deepest depth is 4 (path: token1-token5-token6-token8-token9)
+	err = keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID5)
+	require.NoError(t, err)
+}
+
+//nolint:dupl
+func TestCheckWidth(t *testing.T) {
+	ctx := cacheKeeper()
+	keeper.SetParams(ctx, types.NewParams(4, 4)) // Sets the max composable width/depth to 4
+
+	setupNFTs(t, ctx)
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID2))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID3))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID4))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID5))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID6, defaultTokenID7))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID6, defaultTokenID8))
+	require.NoError(t, keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID7, defaultTokenID9))
+
+	// Given two composed tokens
+	//                    +- token3
+	//                    +- token4
+	// token1 -+- token2 -+- token5
+	//
+	// token6 -+- token7 --- token9
+	//         +- token8
+	//
+	// Sets the max composable width/depth to 4
+
+	// if token6 is attached to token1 then,
+	//
+	//                    +- token3
+	//                    +- token4
+	// token1 -+- token2 -+- token5
+	//         |
+	//         +- token6 -+- token7 --- token9
+	//                    +- token8
+	//
+	// widest width is 5
+	err := keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID1, defaultTokenID6)
+	require.Error(t, err)
+
+	// if token6 is attached to token2 then,
+	//
+	//                    +- token3
+	//                    +- token4
+	// token1 -+- token2 -+- token5
+	//                    +- token6 -+- token7 --- token9
+	//                               +- token8
+	//
+	// widest width is 4
+	err = keeper.Attach(ctx, defaultContractID, addr1, defaultTokenID2, defaultTokenID6)
+	require.NoError(t, err)
 }

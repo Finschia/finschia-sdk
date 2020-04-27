@@ -6,9 +6,10 @@ import (
 )
 
 const (
-	ModuleName = types.ModuleName
-	StoreKey   = types.StoreKey
-	RouterKey  = types.RouterKey
+	ModuleName        = types.ModuleName
+	StoreKey          = types.StoreKey
+	RouterKey         = types.RouterKey
+	DefaultParamspace = types.DefaultParamspace
 )
 
 type (

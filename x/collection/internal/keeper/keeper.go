@@ -3,11 +3,14 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/tendermint/tendermint/libs/log"
+
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/params/subspace"
+
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/line/link/x/contract"
-	"github.com/tendermint/tendermint/libs/log"
 )
 
 type Keeper struct {
@@ -15,15 +18,24 @@ type Keeper struct {
 	iamKeeper      types.IamKeeper
 	contractKeeper contract.Keeper
 	storeKey       sdk.StoreKey
+	paramsSpace    subspace.Subspace
 	cdc            *codec.Codec
 }
 
-func NewKeeper(cdc *codec.Codec, accountKeeper types.AccountKeeper, iamKeeper types.IamKeeper, contractKeeper contract.Keeper, storeKey sdk.StoreKey) Keeper {
+func NewKeeper(
+	cdc *codec.Codec,
+	accountKeeper types.AccountKeeper,
+	iamKeeper types.IamKeeper,
+	contractKeeper contract.Keeper,
+	paramsSpace subspace.Subspace,
+	storeKey sdk.StoreKey,
+) Keeper {
 	return Keeper{
 		accountKeeper:  accountKeeper,
 		iamKeeper:      iamKeeper.WithPrefix(types.ModuleName),
 		contractKeeper: contractKeeper,
 		storeKey:       storeKey,
+		paramsSpace:    paramsSpace.WithKeyTable(types.ParamKeyTable()),
 		cdc:            cdc,
 	}
 }

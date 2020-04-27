@@ -134,6 +134,10 @@ func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 		return sdkerrors.Wrapf(types.ErrCannotAttachToADescendant, "TokenID: %s, ToTokenID: %s", childID, parentID)
 	}
 
+	if err := k.checkDepthAndWidth(ctx, contractID, rootOfToToken.GetTokenID(), parentID, childID); err != nil {
+		return err
+	}
+
 	parentToChildKey := types.TokenParentToChildKey(contractID, parentID, childID)
 	if store.Has(parentToChildKey) {
 		panic("token is already a child of some other")
@@ -149,6 +153,88 @@ func (k Keeper) attach(ctx sdk.Context, contractID string, from sdk.AccAddress, 
 	store.Set(parentToChildKey, k.mustEncodeString(childID))
 
 	return nil
+}
+
+func (k Keeper) checkDepthAndWidth(ctx sdk.Context, contractID string, rootID, parentID, childID string) error {
+	rootTable := k.GetDepthWidthTable(ctx, contractID, rootID)
+	childTable := k.GetDepthWidthTable(ctx, contractID, childID)
+
+	parentDepth := k.GetDepthFromRoot(ctx, contractID, parentID)
+
+	// root: token1 - token2 - token3 => depth of token3 is 2
+	// child: token4 - token5 => length 2
+	// attach result: token1 - token2 - token3 - token4 - token5 => depth 4
+	// [depth of token3] + [len([token4,token5])] should be result depth
+	resultDepth := uint64(parentDepth + len(childTable))
+	if resultDepth > k.GetParams(ctx).MaxComposableDepth {
+		return sdkerrors.Wrapf(types.ErrCompositionTooDeep, "Depth: %d", resultDepth)
+	}
+
+	//  root table: [1, 2, 3, 4, 5, 6, 7, 8]
+	// child table:             [1, 3, 5, 7, 9]
+	// if the child is attached after depth 3,
+	// then the merged width table should be [1, 2, 3, 4, 5+1, 6+3, 7+5, 8+7, 9]
+	maxComposableWidth := k.GetParams(ctx).MaxComposableWidth
+	for curDepth, idx := parentDepth+1, 0; curDepth < len(rootTable) && idx < len(childTable); {
+		totalWidth := uint64(rootTable[curDepth] + childTable[idx])
+		if totalWidth > maxComposableWidth {
+			return sdkerrors.Wrapf(types.ErrCompositionTooWide, "Width: %d (at depth %d)", totalWidth, curDepth)
+		}
+		curDepth++
+		idx++
+	}
+
+	return nil
+}
+
+// Gets the depth-width(count) table (array)
+//
+// lv0(1)     lv1(2)     lv2(3)     lv3(2)     lv4(1)
+// token1 -+- token2 --- token4 --- token7
+//         +- token3 -+- token5 --- token8 --- token9
+//                    +- token6
+//
+// then returns [1, 2, 3, 2, 1]
+// and len([1, 2, 3, 2, 1]) - 1 represents the depth of token1's children
+func (k Keeper) GetDepthWidthTable(ctx sdk.Context, contractID, tokenID string) []int {
+	table := make([]int, 1)
+	table[0] = 1
+	k.fillDepthWidthTable(ctx, contractID, tokenID, &table, 1)
+	return table
+}
+
+func (k Keeper) fillDepthWidthTable(ctx sdk.Context, contractID, tokenID string, table *[]int, index int) {
+	count := 0
+
+	k.iterateChildren(ctx, contractID, tokenID, func(tokenID string) bool {
+		k.fillDepthWidthTable(ctx, contractID, tokenID, table, index+1)
+		count++
+		return false
+	})
+
+	// if count = 0, the current is leaf, so doesn't need to insert a row
+	if count > 0 {
+		for len(*table) <= index {
+			*table = append(*table, 0)
+		}
+		// fills the children count of current depth
+		(*table)[index] += count
+	}
+}
+
+func (k Keeper) GetDepthFromRoot(ctx sdk.Context, contractID, tokenID string) int {
+	store := ctx.KVStore(k.storeKey)
+
+	depth := 0
+	for nextID := tokenID; ; depth++ {
+		childToParentKey := types.TokenChildToParentKey(contractID, nextID)
+		bz := store.Get(childToParentKey)
+		if bz == nil {
+			break
+		}
+		nextID = k.mustDecodeString(bz)
+	}
+	return depth
 }
 
 func (k Keeper) Detach(ctx sdk.Context, contractID string, from sdk.AccAddress, tokenID string) error {

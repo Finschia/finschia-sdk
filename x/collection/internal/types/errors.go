@@ -49,6 +49,8 @@ var (
 	ErrInvalidMetaLength             = sdkerrors.Register(ModuleName, 42, "invalid meta length")
 	ErrSupplyOverflow                = sdkerrors.Register(ModuleName, 43, "supply for collection reached maximum")
 	ErrEmptyField                    = sdkerrors.Register(ModuleName, 44, "required field cannot be empty")
+	ErrCompositionTooDeep            = sdkerrors.Register(ModuleName, 45, "cannot attach token (composition too deep)")
+	ErrCompositionTooWide            = sdkerrors.Register(ModuleName, 46, "cannot attach token (composition too wide)")
 )
 
 func WrapIfOverflowPanic(r interface{}) error {
