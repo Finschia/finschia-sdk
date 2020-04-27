@@ -4,11 +4,6 @@ executors:
   golang:
     docker:
       - image: circleci/golang:1.13
-  docs:
-    docker:
-      - image: tendermintdev/docker-website-deployment
-    environment:
-      AWS_REGION: us-east-1
 
 commands:
   make:
@@ -78,18 +73,55 @@ workflows:
   version: 2
   test-suite:
     jobs:
-      - build-docs:
-          context: docs-deployment-master
+      - update-swagger-docs:
+          requires:
+            - setup-dependencies
+      - setup-dependencies:
+          # This filter enables the job for tags
           filters:
-            branches:
-              only:
-                - docs-theme-latest
-      - build-docs:
-          context: docs-deployment-release
-          filters:
-            branches:
-              only:
-                - master
             tags:
               only:
-                - /v.*/
+                - /^v.*/
+      - test-sim-nondeterminism:
+          requires:
+            - setup-dependencies
+      - test-sim-import-export:
+          requires:
+            - setup-dependencies
+      - test-sim-after-import:
+          requires:
+            - setup-dependencies
+      - test-sim-multi-seed-short:
+          requires:
+            - setup-dependencies
+      - test-sim-multi-seed-long:
+          requires:
+            - setup-dependencies
+          # These filters ensure that the long sim only runs during release
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only:
+                - /^v.*/
+      - test-cover:
+          requires:
+            - setup-dependencies
+#      - upload-coverage:
+#          requires:
+#            - test-cover
+#      - build-docs:
+#          context: docs-deployment-master
+#          filters:
+#            branches:
+#              only:
+#                - docs-theme-latest
+#      - build-docs:
+#          context: docs-deployment-release
+#          filters:
+#            branches:
+#              only:
+#                - master
+#            tags:
+#              only:
+#                - /v.*/
