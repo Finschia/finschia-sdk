@@ -3,6 +3,7 @@
 package loadgenerator
 
 import (
+	"fmt"
 	"net/http"
 	"testing"
 
@@ -24,8 +25,8 @@ func TestLoadGenerator_GenerateQueryTargets(t *testing.T) {
 		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 		TPS:               tests.TestTPS,
 		Duration:          tests.TestDuration,
+		RampUpTime:        tests.TestRampUpTime,
 		MaxWorkers:        tests.TestMaxWorkers,
-		PacerType:         types.ConstantPacer,
 		TargetURL:         tests.TestTargetURL,
 		ChainID:           tests.TestChainID,
 		CoinName:          tests.TestCoinName,
@@ -43,6 +44,34 @@ func TestLoadGenerator_GenerateQueryTargets(t *testing.T) {
 	require.NotContains(t, loadGenerator.targets, vegeta.Target{})
 }
 
+func TestLoadGenerator_GenerateCustomQueryTarget(t *testing.T) {
+	// Given
+	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
+	config := types.Config{
+		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
+		TPS:               tests.TestTPS,
+		Duration:          tests.TestDuration,
+		RampUpTime:        tests.TestRampUpTime,
+		MaxWorkers:        tests.TestMaxWorkers,
+		TargetURL:         tests.TestTargetURL,
+		ChainID:           tests.TestChainID,
+		CoinName:          tests.TestCoinName,
+		Mnemonic:          tests.TestMnemonic,
+	}
+	loadGenerator := NewLoadGenerator()
+	err := loadGenerator.ApplyConfig(config)
+	require.NoError(t, err)
+	// Given custom url
+	loadGenerator.customURL = tests.TestCustomURL
+
+	// When
+	require.NoError(t, loadGenerator.RunWithGoroutines(loadGenerator.GenerateCustomQueryTarget))
+
+	// Then
+	require.Equal(t, tests.TestTargetURL+tests.TestCustomURL, loadGenerator.targets[0].URL)
+	require.NotContains(t, loadGenerator.targets, vegeta.Target{})
+}
+
 func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 	cdc := app.MakeCodec()
 	// Given Mock Server
@@ -54,8 +83,8 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 		TPS:               tests.TestTPS,
 		Duration:          tests.TestDuration,
+		RampUpTime:        tests.TestRampUpTime,
 		MaxWorkers:        tests.TestMaxWorkers,
-		PacerType:         types.ConstantPacer,
 		TargetURL:         server.URL,
 		ChainID:           tests.TestChainID,
 		CoinName:          tests.TestCoinName,
@@ -75,7 +104,7 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 		// Then
 		require.Equal(t, server.URL+"/txs", loadGenerator.targets[0].URL)
 		require.NotContains(t, loadGenerator.targets, vegeta.Target{})
-		require.Equal(t, tests.ExpectedNumTargetsConstant, mock.GetCallCounter(server.URL).QueryAccountCallCount)
+		require.Equal(t, tests.ExpectedNumTargets, mock.GetCallCounter(server.URL).QueryAccountCallCount)
 
 		var req rest.BroadcastReq
 		err = cdc.UnmarshalJSON(loadGenerator.targets[0].Body, &req)
@@ -102,60 +131,55 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 
 func TestLoadGenerator_Fire(t *testing.T) {
 	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
-	// Given Mock Server
-	server := mock.NewServer()
-	defer server.Close()
-	// Given config
-	config := types.Config{
-		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
-		TPS:               tests.TestTPS,
-		Duration:          tests.TestDuration,
-		MaxWorkers:        tests.TestMaxWorkers,
-		PacerType:         types.ConstantPacer,
-		TargetURL:         server.URL,
-		ChainID:           tests.TestChainID,
-		CoinName:          tests.TestCoinName,
-		Mnemonic:          tests.TestMnemonic,
+
+	var testCase = []struct {
+		duration   int
+		rampUpTime int
+	}{
+		{3, 0},
+		{3, 2},
+
+		{4, 0},
+		{4, 2},
+		{4, 4},
 	}
 
-	t.Log("Test with constant pacer")
-	{
-		// Given LoadGenerator
-		loadGenerator := NewLoadGenerator()
-		err := loadGenerator.ApplyConfig(config)
-		require.NoError(t, err)
-		// Given Targets
-		require.NoError(t, loadGenerator.RunWithGoroutines(loadGenerator.GenerateMsgSendTxTarget))
+	for i, tt := range testCase {
+		tt := tt
+		t.Run(fmt.Sprintf("Test #%d", i), func(t *testing.T) {
+			t.Parallel()
+			// Given Mock Server
+			server := mock.NewServer()
+			defer server.Close()
+			// Given config
+			config := types.Config{
+				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
+				TPS:               tests.TestTPS,
+				Duration:          tt.duration,
+				RampUpTime:        tt.rampUpTime,
+				MaxWorkers:        tests.TestMaxWorkers,
+				TargetURL:         server.URL,
+				ChainID:           tests.TestChainID,
+				CoinName:          tests.TestCoinName,
+				Mnemonic:          tests.TestMnemonic,
+			}
+			// Given LoadGenerator
+			loadGenerator := NewLoadGenerator()
+			err := loadGenerator.ApplyConfig(config)
+			require.NoError(t, err)
+			// Given Targets
+			require.NoError(t, loadGenerator.RunWithGoroutines(loadGenerator.GenerateMsgSendTxTarget))
 
-		// When
-		for res := range loadGenerator.Fire(tests.TestLoadGeneratorURL) {
-			// Then
-			require.Equal(t, "LINK v2 load test: "+tests.TestLoadGeneratorURL, res.Attack)
-			require.Equal(t, uint16(http.StatusOK), res.Code)
-			require.NotEmpty(t, res.Body)
-		}
-		require.Equal(t, tests.ExpectedNumTargetsConstant, mock.GetCallCounter(server.URL).BroadcastTxCallCount)
-	}
-	t.Log("Test with linear pacer")
-	{
-		// Given config
-		config.PacerType = types.LinearPacer
-		// Given LoadGenerator
-		loadGenerator := NewLoadGenerator()
-		err := loadGenerator.ApplyConfig(config)
-		require.NoError(t, err)
-		// Given Targets
-		require.NoError(t, loadGenerator.RunWithGoroutines(loadGenerator.GenerateMsgSendTxTarget))
-		// Clear Call Counter
-		mock.ClearCallCounter(server.URL)
+			// When
+			for res := range loadGenerator.Fire(tests.TestLoadGeneratorURL) {
+				// Then
+				require.Equal(t, "LINK v2 load test: "+tests.TestLoadGeneratorURL, res.Attack)
+				require.Equal(t, uint16(http.StatusOK), res.Code)
+				require.NotEmpty(t, res.Body)
+			}
 
-		// When
-		for res := range loadGenerator.Fire(tests.TestLoadGeneratorURL) {
-			// Then
-			require.Equal(t, "LINK v2 load test: "+tests.TestLoadGeneratorURL, res.Attack)
-			require.Equal(t, uint16(http.StatusOK), res.Code)
-			require.NotEmpty(t, res.Body)
-		}
-		require.Equal(t, tests.ExpectedNumTargetsLinear, mock.GetCallCounter(server.URL).BroadcastTxCallCount)
+			expectedAttackCount := (tt.duration-tt.rampUpTime/2)*tests.TestTPS + tt.duration
+			require.Equal(t, expectedAttackCount, mock.GetCallCounter(server.URL).BroadcastTxCallCount)
+		})
 	}
 }

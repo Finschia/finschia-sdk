@@ -31,6 +31,7 @@ type LoadGenerator struct {
 	targets       []vegeta.Target
 	config        types.Config
 	numTargets    int
+	customURL     string
 }
 
 func NewLoadGenerator() *LoadGenerator {
@@ -70,22 +71,20 @@ func (lg *LoadGenerator) RunWithGoroutines(generateTargetFunc func(*chan int, in
 
 func (lg *LoadGenerator) Fire(lgURL string) <-chan *vegeta.Result {
 	duration := time.Duration(lg.config.Duration) * time.Second
-
-	var pacer vegeta.Pacer
-	switch lg.config.PacerType {
-	case types.ConstantPacer:
-		pacer = vegeta.Rate{Freq: lg.config.TPS, Per: time.Second}
-	case types.LinearPacer:
-		slope := float64(lg.config.TPS) / float64(lg.config.Duration)
-		pacer = vegeta.LinearPacer{
-			StartAt: vegeta.Rate{Freq: 1, Per: time.Second},
-			Slope:   slope,
-		}
+	pacer := RampUpPacer{
+		Constant:   vegeta.Rate{Freq: lg.config.TPS, Per: time.Second},
+		RampUpTime: time.Duration(lg.config.RampUpTime) * time.Second,
 	}
 	targeter := vegeta.NewStaticTargeter(lg.targets...)
 	attacker := vegeta.NewAttacker()
 
 	return attacker.Attack(targeter, pacer, duration, "LINK v2 load test: "+lgURL)
+}
+
+func (lg *LoadGenerator) GenerateCustomQueryTarget(sem *chan int, i int) error {
+	defer CompleteGoroutine(sem)
+	lg.targets[i] = lg.targetBuilder.MakeQueryTarget(lg.customURL)
+	return nil
 }
 
 func (lg *LoadGenerator) GenerateAccountQueryTarget(sem *chan int, i int) error {

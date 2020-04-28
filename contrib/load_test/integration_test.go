@@ -21,6 +21,7 @@ import (
 	"github.com/line/link/contrib/load_test/types"
 	"github.com/line/link/contrib/load_test/wallet"
 	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -34,12 +35,15 @@ func init() {
 }
 
 const (
-	keyFoo         = "foo"
-	TestCoinName   = "stake"
-	TestCoinAmount = 50000000
-	localhost      = "http://localhost"
-	slavePort      = 8000
-	lcdPort        = 1317
+	keyFoo                = "foo"
+	TestCoinName          = "stake"
+	TestCoinAmount        = 50000000
+	localhost             = "http://localhost"
+	slavePort             = 8000
+	lcdPort               = 1317
+	TestDuration          = 10
+	TestNumPrepareRequest = 10
+	ExpectedAttackCount   = (TestDuration-tests.TestRampUpTime/2)*tests.TestTPS + TestDuration
 )
 
 var (
@@ -48,17 +52,13 @@ var (
 )
 
 func TestLinkLoadTester(t *testing.T) {
-	t.Parallel()
 	testCases := []struct {
 		name       string
 		targetType string
-		pacerType  string
-		numTargets int
 		isTx       bool
 	}{
-		{"QueryAccount", types.QueryAccount, types.ConstantPacer, tests.ExpectedNumTargetsConstant, false},
-		{"TxSend", types.TxSend, types.ConstantPacer, tests.ExpectedNumTargetsConstant, true},
-		{"LinearPacer", types.TxSend, types.LinearPacer, tests.ExpectedNumTargetsLinear, true},
+		{"QueryAccount", types.QueryAccount, false},
+		{"TxSend", types.TxSend, true},
 	}
 	for i, tt := range testCases {
 		tt := tt
@@ -85,20 +85,20 @@ func TestLinkLoadTester(t *testing.T) {
 			f.LogResult(f.TxSend(keyFoo, masterAddress, sdk.NewCoin(TestCoinName, sdk.NewInt(TestCoinAmount)), "-y"))
 			// Given config
 			mutex.Lock()
-			require.NoError(t, setConfig(tt.targetType, tt.pacerType, f.ChainID, lcdPort, slavePort))
+			assert.NoError(t, setConfig(tt.targetType, f.ChainID, lcdPort, slavePort))
 
 			// When
 			cmd = cli.PrepareCmd()
-			require.NoError(t, cmd.RunE(cmd, nil))
+			assert.NoError(t, cmd.RunE(cmd, nil))
 			cmd = cli.StartCmd()
-			require.NoError(t, cmd.RunE(cmd, nil))
+			assert.NoError(t, cmd.RunE(cmd, nil))
 			mutex.Unlock()
 			sdktests.WaitForNextHeightTM(f.Port)
 
 			// Then check the number of prepare txs
 			if tt.isTx {
 				txsPage := f.QueryTxs(1, 100, fmt.Sprintf("message.sender:%s", masterAddress.String()))
-				require.Equal(t, tests.TestNumPrepareRequest, txsPage.Count)
+				require.Equal(t, TestNumPrepareRequest, txsPage.Count)
 				var preparedHeight int64
 				for _, tx := range txsPage.Txs {
 					require.Len(t, tx.Logs, tests.TestMsgsPerTxPrepare)
@@ -119,7 +119,7 @@ func TestLinkLoadTester(t *testing.T) {
 					}
 					totalTxs += len(txs)
 				}
-				require.Equal(t, tt.numTargets, totalTxs)
+				require.Equal(t, ExpectedAttackCount, totalTxs)
 			}
 		})
 	}
@@ -137,17 +137,17 @@ func getMasterAddress() (sdk.AccAddress, error) {
 	return masterKeyWallet.Address(), nil
 }
 
-func setConfig(targetType, pacerType, chainID string, lcdPort, slavePort int) error {
+func setConfig(targetType, chainID string, lcdPort, slavePort int) error {
 	viper.Set(cli.FlagMasterMnemonic, tests.TestMasterMnemonic)
 	viper.Set(cli.FlagTargetURL, fmt.Sprintf("%s:%d", localhost, lcdPort))
 	viper.Set(cli.FlagChainID, chainID)
 	viper.Set(cli.FlagCoinName, TestCoinName)
 	viper.Set(cli.FlagMaxWorkers, tests.TestMaxWorkers)
 	viper.Set(cli.FlagMsgsPerTxPrepare, tests.TestMsgsPerTxPrepare)
-	viper.Set(cli.FlagPacerType, pacerType)
 	viper.Set(cli.FlagMsgsPerTxLoadTest, tests.TestMsgsPerTxLoadTest)
 	viper.Set(cli.FlagTPS, tests.TestTPS)
-	viper.Set(cli.FlagDuration, tests.TestDuration)
+	viper.Set(cli.FlagDuration, TestDuration)
+	viper.Set(cli.FlagRampUpTime, tests.TestRampUpTime)
 
 	slavesMap := make(map[string]types.Slave)
 	slaveURL := fmt.Sprintf("%s:%d", localhost, slavePort)

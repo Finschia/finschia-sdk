@@ -3,6 +3,7 @@
 package master
 
 import (
+	"net/http"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -23,7 +24,7 @@ func TestController_StartLoadTest(t *testing.T) {
 		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 		TPS:               tests.TestTPS,
 		Duration:          tests.TestDuration,
-		PacerType:         types.ConstantPacer,
+		RampUpTime:        tests.TestRampUpTime,
 		TargetURL:         server.URL,
 		ChainID:           tests.TestChainID,
 		CoinName:          tests.TestCoinName,
@@ -43,7 +44,8 @@ func TestController_StartLoadTest(t *testing.T) {
 
 		// Then
 		for _, res := range controller.Results {
-			require.Equal(t, "success", string(res))
+			require.Equal(t, uint16(http.StatusOK), res[0].Code)
+			require.Equal(t, "LINK v2 load test: localhost:8000", res[0].Attack)
 		}
 		require.Equal(t, len(slaves), mock.GetCallCounter(server.URL).TargetLoadCallCount)
 		require.Equal(t, len(slaves), mock.GetCallCounter(server.URL).TargetFireCallCount)

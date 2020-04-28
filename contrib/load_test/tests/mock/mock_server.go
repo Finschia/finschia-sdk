@@ -23,6 +23,7 @@ var mutex sync.Mutex
 
 type CallCounter struct {
 	QueryAccountCallCount int
+	QueryBlockCallCount   int
 	BroadcastTxCallCount  int
 	TargetLoadCallCount   int
 	TargetFireCallCount   int
@@ -47,6 +48,8 @@ func NewServer() *httptest.Server {
 	r.HandleFunc("/target/load", TargetLoadHandler(callCounter)).Methods("POST")
 	r.HandleFunc("/target/fire", TargetFireHandler(callCounter)).Methods("POST")
 	r.HandleFunc("/auth/accounts/{address}", QueryAccountHandler(callCounter)).Methods("GET")
+	r.HandleFunc("/blocks/{height}", QueryBlockHandler(callCounter)).Methods("GET")
+	r.HandleFunc("/blocks/latest", QueryBlockHandler(callCounter)).Methods("GET")
 	r.HandleFunc("/txs", BroadcastTxHandler(callCounter)).Methods("POST")
 	return httptest.NewServer(r)
 }
@@ -81,7 +84,8 @@ func TargetLoadHandler(cc *CallCounter) http.HandlerFunc {
 func TargetFireHandler(cc *CallCounter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cc.increment(&cc.TargetFireCallCount)
-		success(w)
+		w.WriteHeader(http.StatusOK)
+		logerr(w.Write(loadResponse(TargetFireResponse)))
 	}
 }
 
@@ -95,6 +99,14 @@ func QueryAccountHandler(cc *CallCounter) http.HandlerFunc {
 		cc.increment(&cc.QueryAccountCallCount)
 		w.WriteHeader(http.StatusOK)
 		logerr(w.Write(loadResponse(AccountResponse)))
+	}
+}
+
+func QueryBlockHandler(cc *CallCounter) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cc.increment(&cc.QueryBlockCallCount)
+		w.WriteHeader(http.StatusOK)
+		logerr(w.Write(loadResponse(BlockResponse)))
 	}
 }
 

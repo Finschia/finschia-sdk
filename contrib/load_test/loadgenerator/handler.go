@@ -3,7 +3,9 @@ package loadgenerator
 import (
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 	"github.com/line/link/contrib/load_test/types"
@@ -24,12 +26,9 @@ func LoadHandler(lg *LoadGenerator) http.HandlerFunc {
 			return
 		}
 
-		if req.Config.TPS <= 0 || req.Config.Duration <= 0 || req.Config.TargetURL == "" || req.Config.ChainID == "" {
+		if req.Config.TPS <= 0 || req.Config.Duration <= 0 || req.Config.TargetURL == "" ||
+			req.Config.ChainID == "" || req.Config.RampUpTime < 0 {
 			http.Error(w, types.InvalidLoadParameterError.Error("invalid parameter of load handler"), http.StatusBadRequest)
-			return
-		}
-		if req.Config.PacerType != types.ConstantPacer && req.Config.PacerType != types.LinearPacer {
-			http.Error(w, types.InvalidPacerTypeError{PacerType: req.Config.PacerType}.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -50,8 +49,15 @@ func LoadHandler(lg *LoadGenerator) http.HandlerFunc {
 				return
 			}
 		default:
-			http.Error(w, types.InvalidTargetTypeError.Error("invalid target type"), http.StatusBadRequest)
-			return
+			if !strings.HasPrefix(req.TargetType, types.Custom) {
+				http.Error(w, types.InvalidTargetTypeError.Error("invalid target type"), http.StatusBadRequest)
+				return
+			}
+			lg.customURL = strings.Split(req.TargetType, ":")[1]
+			if err := lg.RunWithGoroutines(lg.GenerateCustomQueryTarget); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -72,13 +78,20 @@ func parseRequest(r *http.Request, req interface{}) error {
 
 func FireHandler(lg *LoadGenerator) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		enc := vegeta.NewEncoder(w)
+		var results []vegeta.Result
 		for res := range lg.Fire(r.Host) {
-			if err := enc.Encode(res); err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
+			results = append(results, *res)
+		}
+		data, err := json.Marshal(results)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
 		}
 		w.WriteHeader(http.StatusOK)
+		_, err = w.Write(data)
+		if err != nil {
+			log.Fatal("Failed to write results")
+			return
+		}
 	}
 }

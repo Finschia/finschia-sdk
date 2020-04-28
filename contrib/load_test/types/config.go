@@ -5,8 +5,8 @@ type Config struct {
 	MsgsPerTxLoadTest int
 	TPS               int
 	Duration          int
+	RampUpTime        int
 	MaxWorkers        int
-	PacerType         string
 	TargetURL         string
 	ChainID           string
 	CoinName          string

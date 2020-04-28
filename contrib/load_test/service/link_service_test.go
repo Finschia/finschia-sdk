@@ -21,6 +21,7 @@ const (
 	TestNet      = false
 	TestChainID  = "chain-id"
 	TestCoinName = "link"
+	TestHeight   = 3
 )
 
 func TestLinkService_GetAccount(t *testing.T) {
@@ -40,6 +41,44 @@ func TestLinkService_GetAccount(t *testing.T) {
 	require.Equal(t, TestAddress, testAccount.Address.String())
 	require.Equal(t, uint64(0x1), testAccount.AccountNumber)
 	require.Equal(t, uint64(0xb), testAccount.Sequence)
+}
+
+func TestLinkService_GetBlock(t *testing.T) {
+	// Given Mock Server
+	server := mock.NewServer()
+	defer server.Close()
+	// And LinkService
+	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(TestNet), linktypes.Bech32PrefixAccPub(TestNet))
+	linkService := NewLinkService(&http.Client{}, app.MakeCodec(), server.URL)
+
+	// When
+	testBlock, err := linkService.GetBlock(TestHeight)
+	require.NoError(t, err)
+
+	// Then
+	require.Equal(t, 1, mock.GetCallCounter(server.URL).QueryBlockCallCount)
+	require.Equal(t, int64(3), testBlock.Block.Height)
+	require.Equal(t, "link", testBlock.Block.ChainID)
+	require.Equal(t, 1, testBlock.BlockID.PartsHeader.Total)
+}
+
+func TestLinkService_GetLatestBlock(t *testing.T) {
+	// Given Mock Server
+	server := mock.NewServer()
+	defer server.Close()
+	// And LinkService
+	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(TestNet), linktypes.Bech32PrefixAccPub(TestNet))
+	linkService := NewLinkService(&http.Client{}, app.MakeCodec(), server.URL)
+
+	// When
+	testBlock, err := linkService.GetLatestBlock()
+	require.NoError(t, err)
+
+	// Then
+	require.Equal(t, 1, mock.GetCallCounter(server.URL).QueryBlockCallCount)
+	require.Equal(t, int64(3), testBlock.Block.Height)
+	require.Equal(t, "link", testBlock.Block.ChainID)
+	require.Equal(t, 1, testBlock.BlockID.PartsHeader.Total)
 }
 
 func TestLinkService_BroadcastTx(t *testing.T) {

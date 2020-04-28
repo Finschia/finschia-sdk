@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  master:
+    container_name: master
+    image: "link-load-tester"
+    volumes:
+      - .:/link-load-tester/contrib/load_test/
+    networks:
+      loadtestnet:
+
+  slave:
+    container_name: slave
+    image: "link-load-tester"
+    ports:
+      - "8000:8000"
+    command: link-load-tester run-slave
+    volumes:
+      - .:/link-load-tester/contrib/load_test/
+    networks:
+      loadtestnet:
+
+networks:
+  loadtestnet:

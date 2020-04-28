@@ -17,6 +17,7 @@ import (
 	"github.com/line/link/contrib/load_test/types"
 	linktypes "github.com/line/link/types"
 	"github.com/stretchr/testify/require"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 func TestLoadHandler(t *testing.T) {
@@ -25,20 +26,28 @@ func TestLoadHandler(t *testing.T) {
 	defer server.Close()
 
 	var testCases = []struct {
-		testName    string
-		tartgetType string
+		testName                      string
+		tartgetType                   string
+		expectedQueryAccountCallCount int
 	}{
 		{
 			"Query Account",
 			types.QueryAccount,
+			0,
+		},
+		{
+			"Query Custom",
+			types.Custom + tests.TestCustomURL,
+			0,
 		},
 		{
 			"Tx Send",
 			types.TxSend,
+			tests.ExpectedNumTargets,
 		},
 	}
 
-	for i, tc := range testCases {
+	for _, tc := range testCases {
 		t.Logf("Test %s", tc.testName)
 		{
 			// Given LoadGenerator
@@ -52,8 +61,8 @@ func TestLoadHandler(t *testing.T) {
 				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 				TPS:               tests.TestTPS,
 				Duration:          tests.TestDuration,
+				RampUpTime:        tests.TestRampUpTime,
 				MaxWorkers:        tests.TestMaxWorkers,
-				PacerType:         types.ConstantPacer,
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
@@ -74,7 +83,7 @@ func TestLoadHandler(t *testing.T) {
 			require.Equal(t, tests.TestTPS, lg.config.TPS)
 			require.Equal(t, tests.TestDuration, lg.config.Duration)
 			require.Equal(t, server.URL, lg.targetBuilder.LCDURL)
-			require.Equal(t, tests.ExpectedNumTargetsConstant*i, mock.GetCallCounter(server.URL).QueryAccountCallCount)
+			require.Equal(t, tc.expectedQueryAccountCallCount, mock.GetCallCounter(server.URL).QueryAccountCallCount)
 		}
 	}
 }
@@ -97,8 +106,8 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 				TPS:               tests.TestTPS,
 				Duration:          tests.TestDuration,
+				RampUpTime:        tests.TestRampUpTime,
 				MaxWorkers:        tests.TestMaxWorkers,
-				PacerType:         types.ConstantPacer,
 				TargetURL:         server.URL,
 				ChainID:           "",
 				CoinName:          tests.TestCoinName,
@@ -113,8 +122,8 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 				TPS:               -1,
 				Duration:          tests.TestDuration,
+				RampUpTime:        tests.TestRampUpTime,
 				MaxWorkers:        tests.TestMaxWorkers,
-				PacerType:         types.ConstantPacer,
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
@@ -129,8 +138,24 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 				TPS:               tests.TestTPS,
 				Duration:          -1,
+				RampUpTime:        tests.TestRampUpTime,
 				MaxWorkers:        tests.TestMaxWorkers,
-				PacerType:         types.ConstantPacer,
+				TargetURL:         server.URL,
+				ChainID:           tests.TestChainID,
+				CoinName:          tests.TestCoinName,
+				Mnemonic:          tests.TestMnemonic,
+			},
+			"Invalid Load Parameter Error: invalid parameter of load handler\n",
+		},
+		{
+			"with invalid ramp up time",
+			types.QueryAccount,
+			types.Config{
+				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
+				TPS:               tests.TestTPS,
+				Duration:          tests.TestDuration,
+				RampUpTime:        -1,
+				MaxWorkers:        tests.TestMaxWorkers,
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
@@ -145,8 +170,8 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 				TPS:               tests.TestTPS,
 				Duration:          tests.TestDuration,
+				RampUpTime:        tests.TestRampUpTime,
 				MaxWorkers:        tests.TestMaxWorkers,
-				PacerType:         types.ConstantPacer,
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
@@ -155,30 +180,14 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 			"Invalid mnemonic\n",
 		},
 		{
-			"with invalid pacer",
-			types.QueryAccount,
-			types.Config{
-				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
-				TPS:               tests.TestTPS,
-				Duration:          tests.TestDuration,
-				MaxWorkers:        tests.TestMaxWorkers,
-				PacerType:         "invalid",
-				TargetURL:         server.URL,
-				ChainID:           tests.TestChainID,
-				CoinName:          tests.TestCoinName,
-				Mnemonic:          tests.TestMnemonic,
-			},
-			"Invalid pacer type: invalid\n",
-		},
-		{
 			"with invalid target type",
 			"invalid type",
 			types.Config{
 				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 				TPS:               tests.TestTPS,
 				Duration:          tests.TestDuration,
+				RampUpTime:        tests.TestRampUpTime,
 				MaxWorkers:        tests.TestMaxWorkers,
-				PacerType:         types.ConstantPacer,
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
@@ -233,60 +242,40 @@ func TestFireHandler(t *testing.T) {
 		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 		TPS:               tests.TestTPS,
 		Duration:          tests.TestDuration,
+		RampUpTime:        tests.TestRampUpTime,
 		MaxWorkers:        tests.TestMaxWorkers,
-		PacerType:         types.ConstantPacer,
 		TargetURL:         server.URL,
 		ChainID:           tests.TestChainID,
 		CoinName:          tests.TestCoinName,
 		Mnemonic:          tests.TestMnemonic,
 	}
+	// Load Targets
+	res := httptest.NewRecorder()
+	request := types.NewLoadRequest(types.TxSend, config)
+	body, err := json.Marshal(request)
+	require.NoError(t, err)
+	req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))
+	require.NoError(t, err)
+	r.ServeHTTP(res, req)
+	// Given Fire Request
+	res = httptest.NewRecorder()
+	req, err = http.NewRequest("POST", "/target/fire", nil)
+	require.NoError(t, err)
+	// Clear Call Counter
+	mock.ClearCallCounter(server.URL)
 
-	t.Log("Test with constant pacer")
-	{
-		// Load Targets
-		res := httptest.NewRecorder()
-		request := types.NewLoadRequest(types.TxSend, config)
-		body, err := json.Marshal(request)
-		require.NoError(t, err)
-		req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))
-		require.NoError(t, err)
-		r.ServeHTTP(res, req)
-		// Given Fire Request
-		res = httptest.NewRecorder()
-		req, err = http.NewRequest("POST", "/target/fire", nil)
-		require.NoError(t, err)
+	// When
+	r.ServeHTTP(res, req)
 
-		// When
-		r.ServeHTTP(res, req)
+	data, err := ioutil.ReadAll(res.Body)
+	require.NoError(t, err)
 
-		// Then
-		require.Equal(t, http.StatusOK, res.Code)
-		require.Equal(t, tests.ExpectedNumTargetsConstant, mock.GetCallCounter(server.URL).BroadcastTxCallCount)
-	}
-	t.Log("Test with linear pacer")
-	{
-		// Given
-		config.PacerType = types.LinearPacer
-		// Load Targets
-		res := httptest.NewRecorder()
-		request := types.NewLoadRequest(types.TxSend, config)
-		body, err := json.Marshal(request)
-		require.NoError(t, err)
-		req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))
-		require.NoError(t, err)
-		r.ServeHTTP(res, req)
-		// Given Fire Request
-		res = httptest.NewRecorder()
-		req, err = http.NewRequest("POST", "/target/fire", nil)
-		require.NoError(t, err)
-		// Clear Call Counter
-		mock.ClearCallCounter(server.URL)
+	var results []vegeta.Result
+	require.NoError(t, json.Unmarshal(data, &results))
 
-		// When
-		r.ServeHTTP(res, req)
-
-		// Then
-		require.Equal(t, http.StatusOK, res.Code)
-		require.Equal(t, tests.ExpectedNumTargetsLinear, mock.GetCallCounter(server.URL).BroadcastTxCallCount)
-	}
+	// Then
+	require.Equal(t, http.StatusOK, res.Code)
+	require.Equal(t, "LINK v2 load test: ", results[0].Attack)
+	require.Equal(t, uint16(http.StatusOK), results[0].Code)
+	require.Equal(t, tests.ExpectedAttackCount, mock.GetCallCounter(server.URL).BroadcastTxCallCount)
 }

@@ -24,5 +24,3 @@ WORKDIR /link-load-tester
 COPY --from=build-env /link-load-tester/build/link-load-tester /usr/bin/link-load-tester
 COPY --from=build-env /link-load-tester/contrib/load_test/config.yaml /link-load-tester/contrib/load_test/config.yaml
 EXPOSE 8000
-
-CMD ["link-load-tester", "run-slave"]

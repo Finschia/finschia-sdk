@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/line/link/contrib/load_test/types"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -17,13 +18,13 @@ const (
 type Controller struct {
 	slaves  []types.Slave
 	config  types.Config
-	Results [][]byte
+	Results []vegeta.Results
 }
 
 func NewController(slaves []types.Slave, config types.Config) *Controller {
 	return &Controller{
 		slaves:  slaves,
-		Results: make([][]byte, len(slaves)),
+		Results: make([]vegeta.Results, len(slaves)),
 		config:  config,
 	}
 }
@@ -103,7 +104,12 @@ func (c *Controller) orderToFire(slave types.Slave, i int) error {
 	if resp.StatusCode != http.StatusOK {
 		return types.RequestFailed{URL: url, Status: resp.Status, Body: data}
 	}
+	var res vegeta.Results
+	err = json.Unmarshal(data, &res)
+	if err != nil {
+		return err
+	}
 
-	c.Results[i] = data
+	c.Results[i] = res
 	return nil
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
@@ -11,6 +12,7 @@ import (
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/line/link/contrib/load_test/types"
 	authtypes "github.com/line/link/x/auth/client/types"
+	coretypes "github.com/tendermint/tendermint/rpc/core/types"
 )
 
 type LinkService struct {
@@ -57,6 +59,41 @@ func (ls *LinkService) GetAccount(from string) (*auth.BaseAccount, error) {
 	}
 
 	return &account, nil
+}
+
+func (ls *LinkService) GetLatestBlock() (*coretypes.ResultBlock, error) {
+	url := fmt.Sprintf("%s/blocks/latest", ls.LCDURI)
+	return ls.getBlock(url)
+}
+
+func (ls *LinkService) GetBlock(height int64) (*coretypes.ResultBlock, error) {
+	url := fmt.Sprintf("%s/blocks/%d", ls.LCDURI, height)
+	return ls.getBlock(url)
+}
+
+func (ls *LinkService) getBlock(url string) (*coretypes.ResultBlock, error) {
+	resp, err := ls.client.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, types.RequestFailed{URL: url, Status: resp.Status, Body: data}
+	}
+
+	var block coretypes.ResultBlock
+	err = ls.cdc.UnmarshalJSON(data, &block)
+	if err != nil {
+		return nil, err
+	}
+
+	return &block, nil
 }
 
 func (ls *LinkService) BroadcastTx(stdTx auth.StdTx, mode string) (*authtypes.TxResponse, error) {
