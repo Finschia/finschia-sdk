@@ -213,10 +213,10 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		auth.NewAppModule(app.accountKeeper),
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
+		collection.NewAppModule(app.collectionKeeper),
 		// TODO: Implement AppModuleSimulation interface in each module.
 		//bank.NewAppModule(app.bankKeeper),
 		//token.NewAppModule(app.tokenKeeper),
-		//collection.NewAppModule(app.collectionKeeper),
 		//account.NewAppModule(app.accountKeeper),
 	)
 
