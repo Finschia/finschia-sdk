@@ -108,7 +108,7 @@ func LinkPreRunEFn(context *server.Context) func(*cobra.Command, []string) error
 
 func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application {
 	return app.NewLinkApp(
-		logger, db, traceStore, true, invCheckPeriod,
+		logger, db, traceStore, true, map[int64]bool{}, invCheckPeriod,
 		baseapp.SetPruning(store.NewPruningOptionsFromString(viper.GetString("pruning"))),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
 		baseapp.SetHaltHeight(uint64(viper.GetInt(server.FlagHaltHeight))),
@@ -119,13 +119,13 @@ func exportAppStateAndTMValidators(
 	logger log.Logger, db dbm.DB, traceStore io.Writer, height int64, forZeroHeight bool, jailWhiteList []string,
 ) (json.RawMessage, []tmtypes.GenesisValidator, error) {
 	if height != -1 {
-		gApp := app.NewLinkApp(logger, db, traceStore, false, uint(1))
+		gApp := app.NewLinkApp(logger, db, traceStore, false, map[int64]bool{}, uint(1))
 		err := gApp.LoadHeight(height)
 		if err != nil {
 			return nil, nil, err
 		}
 		return gApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 	}
-	gApp := app.NewLinkApp(logger, db, traceStore, true, uint(1))
+	gApp := app.NewLinkApp(logger, db, traceStore, true, map[int64]bool{}, uint(1))
 	return gApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
 }

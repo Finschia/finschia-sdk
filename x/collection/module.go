@@ -4,6 +4,9 @@ import (
 	"encoding/json"
 	"math/rand"
 
+	"github.com/cosmos/cosmos-sdk/x/upgrade"
+	"github.com/line/link/x/collection/internal/legacy"
+
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
@@ -64,6 +67,10 @@ func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
 // get the root query command of this module
 func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetQueryCmd(cdc)
+}
+
+func (AppModuleBasic) GetUpgradeHandler(version string) upgrade.UpgradeHandler {
+	return legacy.UpgradeHandler(version)
 }
 
 //___________________________

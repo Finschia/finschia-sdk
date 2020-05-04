@@ -41,6 +41,6 @@ var (
 func NewLinkAppUNSAFE(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool,
 	invCheckPeriod uint, baseAppOptions ...func(*baseapp.BaseApp),
 ) (gapp *LinkApp, keyMain, keyStaking *sdk.KVStoreKey, stakingKeeper staking.Keeper) {
-	gapp = NewLinkApp(logger, db, traceStore, loadLatest, invCheckPeriod, baseAppOptions...)
+	gapp = NewLinkApp(logger, db, traceStore, loadLatest, map[int64]bool{}, invCheckPeriod, baseAppOptions...)
 	return gapp, gapp.keys[baseapp.MainStoreKey], gapp.keys[staking.StoreKey], gapp.stakingKeeper
 }
