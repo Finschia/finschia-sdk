@@ -6,13 +6,16 @@ FROM golang:alpine AS build-env
 
 # Set up dependencies
 ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python perl
+ARG GITHUB_TOKEN=""
 RUN apk add --no-cache $PACKAGES
-
 # Set working directory for the build
 WORKDIR /linkchain-build
 
 COPY ./go.mod /linkchain-build/go.mod
 COPY ./go.sum /linkchain-build/go.sum
+RUN go env -w GOPRIVATE=github.com/line/*
+# GITHUB_TOKEN should be provided to build link docker image
+RUN git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 RUN go mod download
 
 # Add source files

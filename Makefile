@@ -65,7 +65,7 @@ build-contract-test-hook:
 	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_test_hook ./cmd/contract_test_hook
 
 build-docker:
-	docker build -t line/link .
+	docker build --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) -t line/link .
 
 build-swagger-docs: statik
 	@perl -pi -e 's/LINK_BUILD_VERSION/$(BASE_VERSION)/' client/lcd/swagger-ui/swagger.yaml
