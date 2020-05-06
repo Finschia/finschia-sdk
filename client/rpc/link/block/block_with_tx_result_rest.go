@@ -41,6 +41,10 @@ func processReq(r *http.Request, util *Util) (int, interface{}, bool) {
 			err.Error()), true
 	}
 
+	if height > latestBlockHeight {
+		return http.StatusNotFound, fmt.Sprintf("the block height does not exist. Requested: %d, Latest: %d", height, latestBlockHeight), true
+	}
+
 	fetchSizeInt8 := int8(fetchsize)
 
 	output, err := util.fetchByBlockHeights(&latestBlockHeight, &height, &fetchSizeInt8)

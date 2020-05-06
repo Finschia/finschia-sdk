@@ -92,11 +92,6 @@ func (u *Util) ValidateBlock(rb *ctypes.ResultBlock) (err error) {
 }
 
 func (u *Util) fetchByBlockHeights(latestBlockHeight *int64, fromBlockHeight *int64, fetchSize *int8) (blockWithRxResultsWrapper *cdc.HasMoreResponseWrapper, err error) {
-	if *fromBlockHeight > *latestBlockHeight {
-		return nil,
-			fmt.Errorf("latestBlockHeight(%d) less than fromBlockHeight(%d)", *latestBlockHeight, *fromBlockHeight)
-	}
-
 	fbh := NewFetchInfo(latestBlockHeight, fromBlockHeight, fetchSize)
 	fetchResultWithTxRes := make([]*cdc.FetchResultWithTxRes, fbh.fetchItemCnt)
 	blockFetchErrors := make([]error, fbh.fetchItemCnt)

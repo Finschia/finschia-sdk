@@ -72,6 +72,35 @@ func TestWithTxResultRequestHandlerFn(t *testing.T) {
 		require.Equal(t, true, hasErr)
 		require.Equal(t, fmt.Sprintf("couldn't get latestBlockHeight. because of %s", errMsg), output.(string))
 	}
+
+	t.Logf("block height does not exist, return statusCode %d", http.StatusNotFound)
+	{
+		wrongBlockHeight := "100"
+		uri = "/blocks_with_tx_results/" + wrongBlockHeight + "/?"
+		pathVariable = map[string]string{
+			"from_height": wrongBlockHeight,
+		}
+
+		req, err := http.NewRequest("GET", uri+queryParam.Encode(), nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		req = mux.SetURLVars(req, pathVariable)
+		mockClient, mockCodec, mockTendermint, mockCliContext, rs, rb, fromBlockHeightInt64 := prepareForRest(t, fromBlockHeight)
+		mockCliContext.EXPECT().GetNode().Return(mockClient, nil).Times(1)
+
+		mockClient.EXPECT().Status().Return(rs, nil).Times(1)
+		mockClient.EXPECT().Block(nil).Return(rb, nil).Times(1)
+		mockClient.EXPECT().Block(&rb.Block.Height).Return(rb, nil).Times(1)
+		statusCode, output, hasErr := processReq(req, &Util{
+			lcdc:    mockCodec,
+			ltmtl:   mockTendermint,
+			lcliCtx: mockCliContext,
+		})
+		require.Equal(t, http.StatusNotFound, statusCode)
+		require.Equal(t, true, hasErr)
+		require.Equal(t, fmt.Sprintf("the block height does not exist. Requested: %s, Latest: %d", wrongBlockHeight, fromBlockHeightInt64), output.(string))
+	}
 }
 
 func prepareForRest(t *testing.T, fromBlockHeight string) (*mock.MockClient, *mock.MockCodec, *mock.MockTendermint,
