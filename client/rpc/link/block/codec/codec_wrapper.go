@@ -40,6 +40,11 @@ type HasMoreResponseWrapper struct {
 }
 
 type FetchResultWithTxRes struct {
-	ResultBlock *ctypes.ResultBlock `json:"result_block"`
-	TxResponses []*sdk.TxResponse   `json:"tx_responses"`
+	ResultBlock *ResultBlock      `json:"result_block"`
+	TxResponses []*sdk.TxResponse `json:"tx_responses"`
+}
+
+type ResultBlock struct {
+	BlockSize int `json:"block_size"`
+	*ctypes.ResultBlock
 }

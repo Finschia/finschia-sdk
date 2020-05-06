@@ -177,7 +177,12 @@ func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResultWithTxRes, er
 			return nil, txFetchErr
 		}
 	}
-	return &cdc.FetchResultWithTxRes{ResultBlock: resBlock, TxResponses: txResponses}, nil
+
+	blockSize := resBlock.Block.Size()
+
+	resultBlock := &cdc.ResultBlock{BlockSize: blockSize, ResultBlock: resBlock}
+
+	return &cdc.FetchResultWithTxRes{ResultBlock: resultBlock, TxResponses: txResponses}, nil
 }
 
 func (u *Util) formatTxResult(resTx *ctypes.ResultTx, timestamp string) (*sdk.TxResponse, error) {

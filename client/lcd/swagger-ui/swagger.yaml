@@ -1827,6 +1827,10 @@ components:
     ResultBlockBlock:
       type: object
       properties:
+        block_size:
+          type: string
+          description: "size of the block in bytes"
+          example: "702"
         block:
           $ref: '#/components/schemas/BlockStringTx'
         block_id:
