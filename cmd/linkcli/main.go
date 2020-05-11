@@ -89,7 +89,7 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 		client.QueryGenesisAccountCmd(cdc),
 		client.LineBreak,
 		client.ValidatorCommand(cdc),
-		client.BlockCommand(cdc),
+		client.BlockCommand(),
 		client.BlockWithResultCommand(cdc),
 		client.QueryGenesisTxCmd(cdc),
 		authclient.QueryTxsByEventsCmd(cdc),

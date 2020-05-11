@@ -65,14 +65,6 @@ paths:
       summary: Get the latest block
       tags:
         - Tendermint RPC
-      parameters:
-        - name: extended
-          in: query
-          description: Whether to translate transaction data in the response
-          required: false
-          schema:
-            type: boolean
-          example: true
       responses:
         "200":
           description: The latest block
@@ -95,13 +87,6 @@ paths:
           schema:
             type: integer
           example: 2
-        - name: extended
-          in: query
-          description: Whether to translate transaction data in the response
-          required: false
-          schema:
-            type: boolean
-          example: true
       responses:
         "200":
           description: The block at a specific height
@@ -1820,10 +1805,10 @@ components:
     BlockQuery:
       type: object
       properties:
-        block:
-          $ref: '#/components/schemas/Block'
         block_id:
           $ref: '#/components/schemas/BlockID'
+        block:
+          $ref: '#/components/schemas/Block'
     ResultBlockBlock:
       type: object
       properties:
@@ -1870,6 +1855,8 @@ components:
     Block:
       type: object
       properties:
+        header:
+          $ref: '#/components/schemas/BlockHeader'
         data:
           type: object
           description: a wrapper for a list of transactions
@@ -1877,7 +1864,7 @@ components:
             txs:
               type: array
               items:
-                $ref: '#/components/schemas/Tx'
+                type: string
         evidence:
           type: object
           description: a list of evidence of malfeasance. There is currently only a single type, the DuplicateVoteEvidence
@@ -1886,8 +1873,6 @@ components:
               type: array
               items:
                 $ref: '#/components/schemas/DuplicateVoteEvidence'
-        header:
-          $ref: '#/components/schemas/BlockHeader'
         last_commit:
           type: object
           description: the set of signatures of validators that committed the last block

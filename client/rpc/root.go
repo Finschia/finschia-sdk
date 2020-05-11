@@ -14,8 +14,8 @@ import (
 func RegisterRPCRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc("/node_info", rpc.NodeInfoRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/syncing", rpc.NodeSyncingRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/blocks/latest", block.LatestBlockRequestHandlerFn(block.NewBlockUtil(cliCtx))).Methods("GET")
-	r.HandleFunc("/blocks/{height}", block.RequestHandlerFn(block.NewBlockUtil(cliCtx))).Methods("GET")
+	r.HandleFunc("/blocks/latest", rpc.LatestBlockRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/blocks/{height}", rpc.BlockRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/blocks_with_tx_results/{from_height}", block.WithTxResultRequestHandlerFn(block.NewBlockUtil(cliCtx))).Methods("GET")
 	r.HandleFunc("/validatorsets/latest", rpc.LatestValidatorSetRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/validatorsets/{height}", rpc.ValidatorSetRequestHandlerFn(cliCtx)).Methods("GET")
