@@ -117,17 +117,30 @@ jobs:
           keys:
             - dependency-cache-mod-{{ checksum "go.sum" }}
       - run:
+          name: run setup cleveldb
+          command: |
+            set -x
+            export WITH_CLEVELDB=yes
+            if [ ! -d /tmp/cleveldb_binary ] ; then
+                mkdir -p /tmp/cleveldb_binary
+                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
+                pushd /tmp/cleveldb_binary
+                ./get_cleveldb.sh ${WITH_CLEVELDB}
+                popd
+            fi
+      - run:
           name: binaries
           command: |
             export PATH=/tmp/workspace/bin:$PATH
             go env -w GOPRIVATE=github.com/line/*
             git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             make go-mod-cache
-            make install
+            make install WITH_CLEVELDB=yes
       - save_cache:
           key: dependency-cache-mod-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+            - "/tmp/cleveldb_binary"
       - run:
           name: tools
           command: |
@@ -209,17 +222,30 @@ jobs:
                 popd
             fi
       - run:
+          name: run setup cleveldb
+          command: |
+            set -x
+            export WITH_CLEVELDB=yes
+            if [ ! -d /tmp/cleveldb_binary ] ; then
+                mkdir -p /tmp/cleveldb_binary
+                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
+                pushd /tmp/cleveldb_binary
+                ./get_cleveldb.sh ${WITH_CLEVELDB}
+                popd
+            fi
+      - run:
           name: build binaries
           command: |
             set -x
             go env -w GOPRIVATE=github.com/line/*
             git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-            make build
+            make build WITH_CLEVELDB=yes
       - save_cache:
           key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
           paths:
             - "/home/circleci/.go_workspace/pkg/mod"
             - "/tmp/gobinary"
+            - "/tmp/cleveldb_binary"
 
   sim-link-nondeterminism:
     <<: *linux_defaults
@@ -299,12 +325,12 @@ jobs:
             set -x
             go env -w GOPRIVATE=github.com/line/*
             git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-            make build
+            make build WITH_CLEVELDB=yes
       - run:
           name: build docker image
           command: |
             set -x
-            make build-docker
+            make build-docker WITH_CLEVELDB=yes
       - run:
           name: run integration test for multi node and exit on failure
           command: |
@@ -331,7 +357,7 @@ jobs:
           name: build docker image
           command: |
             set -x
-            make build-docker
+            make build-docker WITH_CLEVELDB=yes
       - run:
           name: run localnet and exit on failure
           command: |

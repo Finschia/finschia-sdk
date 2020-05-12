@@ -179,7 +179,8 @@ func TestLoadGenerator_Fire(t *testing.T) {
 			}
 
 			expectedAttackCount := (tt.duration-tt.rampUpTime/2)*tests.TestTPS + tt.duration
-			require.Equal(t, expectedAttackCount, mock.GetCallCounter(server.URL).BroadcastTxCallCount)
+			require.InDelta(t, expectedAttackCount, mock.GetCallCounter(server.URL).BroadcastTxCallCount,
+				tests.TestMaxAttackDifference)
 		})
 	}
 }

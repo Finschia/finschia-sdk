@@ -17,7 +17,8 @@ export GO111MODULE = on
 ### Process build tags
 
 ifeq ($(WITH_CLEVELDB),yes)
-  build_tags += gcc
+  CGO_ENABLED=1
+  build_tags += cleveldb
 endif
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
@@ -58,14 +59,14 @@ lint: golangci-lint
 all: install lint test-unit
 
 build: go.sum build-swagger-docs
-	go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
+	CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
+	CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
 
 build-contract-test-hook:
 	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_test_hook ./cmd/contract_test_hook
 
 build-docker:
-	docker build --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) -t line/link .
+	docker build --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) --build-arg WITH_CLEVELDB=$(WITH_CLEVELDB) -t line/link .
 
 build-swagger-docs: statik
 	@perl -pi -e 's/LINK_BUILD_VERSION/$(BASE_VERSION)/' client/lcd/swagger-ui/swagger.yaml
@@ -76,8 +77,8 @@ build-load-tester: build
 	go build -mod=readonly $(BUILD_FLAGS) -o build/link-load-tester ./contrib/load_test/cmd/link_load_tester
 
 install: go.sum build-swagger-docs
-	go install $(BUILD_FLAGS) ./cmd/linkd
-	go install $(BUILD_FLAGS) ./cmd/linkcli
+	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkd
+	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkcli
 
 install-debug: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/linkdebug

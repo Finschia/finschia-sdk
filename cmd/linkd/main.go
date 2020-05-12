@@ -101,6 +101,7 @@ func LinkPreRunEFn(context *server.Context) func(*cobra.Command, []string) error
 				networkMode = "mainnet"
 			}
 			context.Logger.Info(fmt.Sprintf("Network mode is %s", networkMode))
+			printDBBackend(context)
 		}
 		return err
 	}
@@ -128,4 +129,15 @@ func exportAppStateAndTMValidators(
 	}
 	gApp := app.NewLinkApp(logger, db, traceStore, true, map[int64]bool{}, uint(1))
 	return gApp.ExportAppStateAndValidators(forZeroHeight, jailWhiteList)
+}
+
+func printDBBackend(context *server.Context) {
+	var linkDBBackend dbm.BackendType
+	if sdk.DBBackend == "" {
+		linkDBBackend = dbm.GoLevelDBBackend
+	} else {
+		linkDBBackend = dbm.BackendType(sdk.DBBackend)
+	}
+	context.Logger.Info(fmt.Sprintf("LINK DB Backend is %s", linkDBBackend))
+	context.Logger.Info(fmt.Sprintf("Tendermint DB Backend is %s", context.Config.DBBackend))
 }

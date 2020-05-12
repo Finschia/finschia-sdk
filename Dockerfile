@@ -5,8 +5,9 @@
 FROM golang:alpine AS build-env
 
 # Set up dependencies
-ENV PACKAGES curl make git libc-dev bash gcc linux-headers eudev-dev python perl
+ENV PACKAGES curl make git libc-dev bash gcc g++ linux-headers eudev-dev python perl
 ARG GITHUB_TOKEN=""
+ARG WITH_CLEVELDB=""
 RUN apk add --no-cache $PACKAGES
 # Set working directory for the build
 WORKDIR /linkchain-build
@@ -20,9 +21,10 @@ RUN go mod download
 
 # Add source files
 COPY . .
-
+# install cleveldb
+RUN ./contrib/get_cleveldb.sh $WITH_CLEVELDB docker
 # Install minimum necessary dependencies, build Cosmos SDK, remove packages
-RUN  make install
+RUN make install WITH_CLEVELDB=$WITH_CLEVELDB
 
 # Final image
 FROM alpine:edge
@@ -34,6 +36,10 @@ WORKDIR /root
 # Copy over binaries from the build-env
 COPY --from=build-env /go/bin/linkd /usr/bin/linkd
 COPY --from=build-env /go/bin/linkcli /usr/bin/linkcli
+
+# Copy over leveldb from the build-env
+COPY --from=build-env /usr/lib/ /usr/lib/
+COPY --from=build-env /usr/include/ /usr/include/
 
 # Run linkd by default, omit entrypoint to ease using container with linkcli
 CMD ["linkd"]

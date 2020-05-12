@@ -277,5 +277,6 @@ func TestFireHandler(t *testing.T) {
 	require.Equal(t, http.StatusOK, res.Code)
 	require.Equal(t, "LINK v2 load test: ", results[0].Attack)
 	require.Equal(t, uint16(http.StatusOK), results[0].Code)
-	require.Equal(t, tests.ExpectedAttackCount, mock.GetCallCounter(server.URL).BroadcastTxCallCount)
+	require.InDelta(t, tests.ExpectedAttackCount, mock.GetCallCounter(server.URL).BroadcastTxCallCount,
+		tests.TestMaxAttackDifference)
 }

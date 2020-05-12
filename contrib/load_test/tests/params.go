@@ -18,8 +18,9 @@ const (
 	TestMnemonic2         = "tribe slot pioneer either light fossil broken scissors okay special update place want trash soldier rural portion lock couple venue cushion bind enact one"
 	InvalidMnemonic       = "invalid mnemonic"
 
-	ExpectedNumTargets  = TestTPS * TestDuration
-	ExpectedAttackCount = (TestDuration-TestRampUpTime/2)*TestTPS + TestDuration
+	ExpectedNumTargets      = TestTPS * TestDuration
+	ExpectedAttackCount     = (TestDuration-TestRampUpTime/2)*TestTPS + TestDuration
+	TestMaxAttackDifference = 10
 )
 
 var TestNumPrepareRequest = TestTPS*TestDuration/TestMsgsPerTxPrepare + isPositive(TestTPS*TestDuration%TestMsgsPerTxPrepare)

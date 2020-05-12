@@ -119,7 +119,7 @@ func TestLinkLoadTester(t *testing.T) {
 					}
 					totalTxs += len(txs)
 				}
-				require.Equal(t, ExpectedAttackCount, totalTxs)
+				require.InDelta(t, ExpectedAttackCount, totalTxs, tests.TestMaxAttackDifference)
 			}
 		})
 	}
