@@ -10,7 +10,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/line/link/x/account/internal/types"
-	"github.com/line/link/x/safetybox"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -69,13 +68,6 @@ func TestHandlerCreateAccount(t *testing.T) {
 	ctx, keeper := input.Ctx, input.Ak
 
 	h := NewHandler(keeper)
-
-	// invalid message
-	{
-		msg := safetybox.MsgSafetyBoxCreate{SafetyBoxID: "noid", SafetyBoxOwner: addr1}
-		_, err := h(ctx, msg)
-		require.Error(t, err)
-	}
 
 	// creating the account addr2 succeeds at first
 	{

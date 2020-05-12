@@ -10,7 +10,6 @@ import (
 	"github.com/line/link/x/bank"
 	"github.com/line/link/x/contract"
 	"github.com/line/link/x/iam"
-	"github.com/line/link/x/safetybox"
 	"github.com/line/link/x/token"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -63,7 +62,6 @@ var (
 		token.AppModuleBasic{},
 		collection.AppModuleBasic{},
 		iam.AppModuleBasic{},
-		safetybox.AppModuleBasic{},
 		account.AppModuleBasic{},
 	)
 
@@ -120,7 +118,6 @@ type LinkApp struct {
 	tokenKeeper      token.Keeper
 	collectionKeeper collection.Keeper
 	iamKeeper        iam.Keeper
-	safetyboxKeeper  safetybox.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -149,7 +146,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		token.StoreKey,
 		collection.StoreKey,
 		iam.StoreKey,
-		safetybox.StoreKey,
 		bank.StoreKey,
 		contract.StoreKey,
 	)
@@ -192,12 +188,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.subspaces[collection.ModuleName],
 		keys[collection.StoreKey],
 	)
-	safetyBoxKeeper := safetybox.NewKeeper(app.cdc, app.iamKeeper.WithPrefix(safetybox.ModuleName), app.tokenKeeper, keys[safetybox.StoreKey])
-	// register the safety box hooks
-	// NOTE: safetyBoxKeeper above is passed by reference, so that it will contain these hooks
-	app.safetyboxKeeper = *safetyBoxKeeper.SetHooks(
-		safetybox.NewMultiSafetyBoxHooks(app.tokenKeeper.Hooks(), app.bankKeeper.Hooks()),
-	)
 
 	// register the proposal types
 	govRouter := gov.NewRouter()
@@ -221,7 +211,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		upgrade.NewAppModule(app.upgradeKeeper),
 		token.NewAppModule(app.tokenKeeper),
 		collection.NewAppModule(app.collectionKeeper),
-		safetybox.NewAppModule(app.safetyboxKeeper),
 		account.NewAppModule(app.accountKeeper),
 	)
 	app.mm.SetOrderBeginBlockers(upgrade.ModuleName)

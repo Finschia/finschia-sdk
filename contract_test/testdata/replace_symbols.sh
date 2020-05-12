@@ -18,7 +18,6 @@ replace_token_symbol () {
 replace_address jack ${REPLACE_JACK_ADDR}
 replace_address somebody ${REPLACE_SOMEBODY_ADDR}
 
-replace_address operator ${REPLACE_OPERATOR_ADDR}
 replace_address allocator ${REPLACE_ALLOCATOR_ADDR}
 replace_address issuer ${REPLACE_ISSUER_ADDR}
 replace_address returner ${REPLACE_RETURNER_ADDR}

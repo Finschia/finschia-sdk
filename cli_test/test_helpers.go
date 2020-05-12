@@ -19,8 +19,6 @@ import (
 
 	"github.com/line/link/types"
 	collectionModule "github.com/line/link/x/collection"
-	proxyModule "github.com/line/link/x/proxy"
-	safetyBoxModule "github.com/line/link/x/safetybox"
 	tokenModule "github.com/line/link/x/token"
 
 	"github.com/line/link/client"
@@ -666,93 +664,9 @@ func (f *Fixtures) TxCollectionRevokePerm(from string, resource, action string, 
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-//___________________________________________________________________________________
-// linkcli tx proxy
-
-func (f *Fixtures) TxProxySendCoinsFrom(proxy, onBehalfOf, to, denom string, amount fmt.Stringer, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx proxy send-coins-from %s %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, to, denom, amount.String(), f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-func (f *Fixtures) TxProxyApproveCoins(proxy, onBehalfOf, denom string, amount fmt.Stringer, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx proxy approve %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, amount.String(), f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-func (f *Fixtures) TxProxyDisapproveCoins(proxy, onBehalfOf, denom string, amount fmt.Stringer, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx proxy disapprove %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, amount.String(), f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-//___________________________________________________________________________________
-// linkcli tx proxy
-
 func (f *Fixtures) TxEmpty(from string, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx empty %s %v", f.LinkcliBinary, from, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-//___________________________________________________________________________________
-// linkcli query proxy
-
-func (f *Fixtures) QueryProxyAllowance(proxy, onBehalfOf, denom string, flags ...string) proxyModule.Allowance {
-	cmd := fmt.Sprintf("%s query proxy allowance %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-
-	cdc := app.MakeCodec()
-	var allowance proxyModule.Allowance
-	err := cdc.UnmarshalJSON([]byte(res), &allowance)
-	require.NoError(f.T, err)
-
-	return allowance
-}
-
-//___________________________________________________________________________________
-// linkcli tx safety box
-
-func (f *Fixtures) TxSafetyBoxCreate(id, address, contractID string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox create %s %s %s %v", f.LinkcliBinary, id, address, contractID, f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-func (f *Fixtures) TxSafetyBoxRole(id, action, role, from, to string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox role %s %s %s %s %s %v", f.LinkcliBinary, id, action, role, from, to, f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-func (f *Fixtures) TxSafetyBoxSendToken(id, action, contractID string, amount int64, address, issuerAddress string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox sendtoken %s %s %s %d %s %s %v", f.LinkcliBinary, id, action, contractID, amount, address, issuerAddress, f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-//___________________________________________________________________________________
-// linkcli query safetybox
-
-func (f *Fixtures) QuerySafetyBox(id string, flags ...string) safetyBoxModule.SafetyBox {
-	cmd := fmt.Sprintf("%s query safetybox get %s %v", f.LinkcliBinary, id, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-
-	cdc := app.MakeCodec()
-	var sb safetyBoxModule.SafetyBox
-	err := cdc.UnmarshalJSON([]byte(res), &sb)
-	require.NoError(f.T, err)
-
-	return sb
-}
-
-func (f *Fixtures) QuerySafetyBoxRole(id, role, address string, flags ...string) safetyBoxModule.MsgSafetyBoxRoleResponse {
-	cmd := fmt.Sprintf("%s query safetybox role %s %s %s %v", f.LinkcliBinary, id, role, address, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-
-	cdc := app.MakeCodec()
-	var pms safetyBoxModule.MsgSafetyBoxRoleResponse
-	err := cdc.UnmarshalJSON([]byte(res), &pms)
-	require.NoError(f.T, err)
-
-	return pms
 }
 
 //___________________________________________________________________________________
