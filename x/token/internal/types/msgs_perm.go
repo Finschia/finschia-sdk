@@ -11,9 +11,10 @@ import (
 
 var _ sdk.Msg = (*MsgGrantPermission)(nil)
 
-func NewMsgGrantPermission(from, to sdk.AccAddress, perm Permission) MsgGrantPermission {
+func NewMsgGrantPermission(from sdk.AccAddress, contractID string, to sdk.AccAddress, perm Permission) MsgGrantPermission {
 	return MsgGrantPermission{
 		From:       from,
+		ContractID: contractID,
 		To:         to,
 		Permission: perm,
 	}
@@ -21,12 +22,14 @@ func NewMsgGrantPermission(from, to sdk.AccAddress, perm Permission) MsgGrantPer
 
 type MsgGrantPermission struct {
 	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
 	To         sdk.AccAddress `json:"to"`
 	Permission Permission     `json:"permission"`
 }
 
 func (MsgGrantPermission) Route() string                    { return RouterKey }
 func (MsgGrantPermission) Type() string                     { return "grant_perm" }
+func (msg MsgGrantPermission) GetContractID() string        { return msg.ContractID }
 func (msg MsgGrantPermission) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
 func (msg MsgGrantPermission) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
@@ -41,29 +44,28 @@ func (msg MsgGrantPermission) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "from, to address can not be the same")
 	}
 
-	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
-		return sdkerrors.Wrap(linktype.ErrInvalidPermission, "resource and action should not be empty")
-	}
-
-	return validateAction(msg.Permission.GetAction(), MintAction, BurnAction, ModifyAction)
+	return validateAction(msg.Permission.String(), MintAction, BurnAction, ModifyAction)
 }
 
 var _ sdk.Msg = (*MsgRevokePermission)(nil)
 
-func NewMsgRevokePermission(from sdk.AccAddress, perm Permission) MsgRevokePermission {
+func NewMsgRevokePermission(from sdk.AccAddress, contractID string, perm Permission) MsgRevokePermission {
 	return MsgRevokePermission{
 		From:       from,
+		ContractID: contractID,
 		Permission: perm,
 	}
 }
 
 type MsgRevokePermission struct {
 	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
 	Permission Permission     `json:"permission"`
 }
 
 func (MsgRevokePermission) Route() string                    { return RouterKey }
 func (MsgRevokePermission) Type() string                     { return "revoke_perm" }
+func (msg MsgRevokePermission) GetContractID() string        { return msg.ContractID }
 func (msg MsgRevokePermission) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.From} }
 func (msg MsgRevokePermission) GetSignBytes() []byte {
 	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
@@ -74,11 +76,7 @@ func (msg MsgRevokePermission) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses cannot be empty")
 	}
 
-	if len(msg.Permission.GetAction()) == 0 || len(msg.Permission.GetResource()) == 0 {
-		return sdkerrors.Wrap(linktype.ErrInvalidPermission, "resource and action should not be empty")
-	}
-
-	return validateAction(msg.Permission.GetAction(), MintAction, BurnAction, ModifyAction)
+	return validateAction(msg.Permission.String(), MintAction, BurnAction, ModifyAction)
 }
 func validateAction(action string, actions ...string) error {
 	for _, a := range actions {
@@ -86,5 +84,5 @@ func validateAction(action string, actions ...string) error {
 			return nil
 		}
 	}
-	return sdkerrors.Wrap(linktype.ErrInvalidPermission, fmt.Sprintf("action should be one of [%s]", strings.Join(actions, ",")))
+	return sdkerrors.Wrap(linktype.ErrInvalidPermission, fmt.Sprintf("permission should be one of [%s]", strings.Join(actions, ",")))
 }

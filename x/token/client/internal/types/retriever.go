@@ -20,9 +20,9 @@ func (r Retriever) query(path string, data []byte) ([]byte, int64, error) {
 	return r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", types.QuerierRoute, path), data)
 }
 
-func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddress) (types.Permissions, int64, error) {
+func (r Retriever) GetAccountPermission(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (types.Permissions, int64, error) {
 	var pms types.Permissions
-	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressParams(addr))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressContractIDParams(contractID, addr))
 	if err != nil {
 		return pms, 0, err
 	}

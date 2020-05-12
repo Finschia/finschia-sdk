@@ -52,12 +52,12 @@ func queryAccountPermission(ctx sdk.Context, req abci.RequestQuery, keeper keepe
 	if len(req.Data) == 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "data is nil")
 	}
-	var params types.QueryAccAddressParams
+	var params types.QueryAccAddressContractIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	pms := keeper.GetPermissions(ctx, params.Addr)
+	pms := keeper.GetPermissions(ctx, params.ContractID, params.Addr)
 
 	bz, err := keeper.MarshalJSONIndent(pms)
 	if err != nil {

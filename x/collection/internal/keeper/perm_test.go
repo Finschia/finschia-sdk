@@ -13,11 +13,11 @@ import (
 func TestCollectionAndPermission(t *testing.T) {
 	ctx := cacheKeeper()
 
-	issuePerm := types.NewIssuePermission(defaultContractID)
+	issuePerm := types.NewIssuePermission()
 	{
 		require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName,
 			defaultMeta, defaultImgURI), addr1))
-		require.True(t, keeper.HasPermission(ctx, addr1, issuePerm))
+		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, issuePerm))
 		require.Error(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName,
 			defaultMeta, defaultImgURI), addr1))
 		collection, err := keeper.GetCollection(ctx, defaultContractID)
@@ -59,16 +59,16 @@ func TestCollectionAndPermission(t *testing.T) {
 		}
 	}
 	{
-		require.NoError(t, keeper.GrantPermission(ctx, addr1, addr2, issuePerm))
-		require.True(t, keeper.HasPermission(ctx, addr1, issuePerm))
-		require.True(t, keeper.HasPermission(ctx, addr2, issuePerm))
+		require.NoError(t, keeper.GrantPermission(ctx, defaultContractID, addr1, addr2, issuePerm))
+		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, issuePerm))
+		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr2, issuePerm))
 	}
 
-	issuePerm2 := types.NewIssuePermission(defaultContractID2)
+	issuePerm2 := types.NewIssuePermission()
 	{
 		require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID2, defaultName,
 			defaultMeta, defaultImgURI), addr1))
-		require.True(t, keeper.HasPermission(ctx, addr1, issuePerm2))
+		require.True(t, keeper.HasPermission(ctx, defaultContractID2, addr1, issuePerm2))
 		require.Error(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID2, defaultName,
 			defaultMeta, defaultImgURI), addr1))
 		collection, err := keeper.GetCollection(ctx, defaultContractID2)
@@ -87,7 +87,7 @@ func TestPermission(t *testing.T) {
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
 
-	require.EqualError(t, keeper.RevokePermission(ctx, addr3, types.NewMintPermission(defaultContractID)), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewMintPermission(defaultContractID).String()).Error())
-	require.NoError(t, keeper.RevokePermission(ctx, addr1, types.NewMintPermission(defaultContractID)))
-	require.EqualError(t, keeper.GrantPermission(ctx, addr3, addr1, types.NewMintPermission(defaultContractID)), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewMintPermission(defaultContractID).String()).Error())
+	require.EqualError(t, keeper.RevokePermission(ctx, defaultContractID, addr3, types.NewMintPermission()), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewMintPermission().String()).Error())
+	require.NoError(t, keeper.RevokePermission(ctx, defaultContractID, addr1, types.NewMintPermission()))
+	require.EqualError(t, keeper.GrantPermission(ctx, defaultContractID, addr3, addr1, types.NewMintPermission()), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewMintPermission().String()).Error())
 }

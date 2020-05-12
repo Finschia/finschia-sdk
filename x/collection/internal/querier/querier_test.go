@@ -9,7 +9,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/keeper"
 	"github.com/line/link/x/collection/internal/types"
-	"github.com/line/link/x/iam/exported"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -70,7 +69,7 @@ func prepare(t *testing.T) {
 
 	require.NoError(t, ckeeper.Attach(ctx, contractID, addr1, tokenNFTID1, tokenNFTID2))
 	require.NoError(t, ckeeper.Attach(ctx, contractID, addr1, tokenNFTID1, tokenNFTID3))
-	require.NoError(t, ckeeper.GrantPermission(ctx, addr1, addr2, types.NewMintPermission(contractID)))
+	require.NoError(t, ckeeper.GrantPermission(ctx, contractID, addr1, addr2, types.NewMintPermission()))
 	require.NoError(t, ckeeper.SetApproved(ctx, contractID, addr1, addr2))
 }
 
@@ -149,20 +148,14 @@ func TestNewQuerier_queryBalanceNonExistentTokenID(t *testing.T) {
 func TestNewQuerier_queryAccountPermission(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryAccAddressParams{
-		Addr: addr1,
-	}
-	var permissions []exported.PermissionI
+	params := types.NewQueryContractIDAccAddressParams(contractID, addr1)
+	var permissions types.Permissions
 	query(t, params, types.QueryPerms, &permissions)
 	require.Equal(t, len(permissions), 4)
-	require.Equal(t, permissions[0].GetResource(), contractID)
-	require.Equal(t, permissions[0].GetAction(), "issue")
-	require.Equal(t, permissions[1].GetResource(), contractID)
-	require.Equal(t, permissions[1].GetAction(), "mint")
-	require.Equal(t, permissions[2].GetResource(), contractID)
-	require.Equal(t, permissions[2].GetAction(), "burn")
-	require.Equal(t, permissions[3].GetResource(), contractID)
-	require.Equal(t, permissions[3].GetAction(), "modify")
+	require.Equal(t, permissions[0].String(), "issue")
+	require.Equal(t, permissions[1].String(), "mint")
+	require.Equal(t, permissions[2].String(), "burn")
+	require.Equal(t, permissions[3].String(), "modify")
 }
 
 func TestNewQuerier_queryTokens_FT(t *testing.T) {

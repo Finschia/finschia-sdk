@@ -23,8 +23,8 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 		return err
 	}
 
-	modifyTokenURIPermission := types.NewModifyPermission(token.GetContractID())
-	k.AddPermission(ctx, owner, modifyTokenURIPermission)
+	modifyTokenURIPermission := types.NewModifyPermission()
+	k.AddPermission(ctx, token.GetContractID(), owner, modifyTokenURIPermission)
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueToken,
@@ -40,28 +40,28 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 		sdk.NewEvent(
 			types.EventTypeGrantPermToken,
 			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, modifyTokenURIPermission.GetResource()),
-			sdk.NewAttribute(types.AttributeKeyAction, modifyTokenURIPermission.GetAction()),
+			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
+			sdk.NewAttribute(types.AttributeKeyPerm, modifyTokenURIPermission.String()),
 		),
 	})
 
 	if token.GetMintable() {
-		mintPerm := types.NewMintPermission(token.GetContractID())
-		k.AddPermission(ctx, owner, mintPerm)
-		burnPerm := types.NewBurnPermission(token.GetContractID())
-		k.AddPermission(ctx, owner, burnPerm)
+		mintPerm := types.NewMintPermission()
+		k.AddPermission(ctx, token.GetContractID(), owner, mintPerm)
+		burnPerm := types.NewBurnPermission()
+		k.AddPermission(ctx, token.GetContractID(), owner, burnPerm)
 		ctx.EventManager().EmitEvents(sdk.Events{
 			sdk.NewEvent(
 				types.EventTypeGrantPermToken,
 				sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-				sdk.NewAttribute(types.AttributeKeyResource, mintPerm.GetResource()),
-				sdk.NewAttribute(types.AttributeKeyAction, mintPerm.GetAction()),
+				sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
+				sdk.NewAttribute(types.AttributeKeyPerm, mintPerm.String()),
 			),
 			sdk.NewEvent(
 				types.EventTypeGrantPermToken,
 				sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-				sdk.NewAttribute(types.AttributeKeyResource, burnPerm.GetResource()),
-				sdk.NewAttribute(types.AttributeKeyAction, burnPerm.GetAction()),
+				sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
+				sdk.NewAttribute(types.AttributeKeyPerm, burnPerm.String()),
 			),
 		})
 	}

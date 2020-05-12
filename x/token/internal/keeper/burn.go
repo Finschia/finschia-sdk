@@ -35,8 +35,8 @@ func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, 
 		return sdkerrors.Wrap(types.ErrInvalidAmount, amount.String())
 	}
 
-	perm := types.NewBurnPermission(contractID)
-	if !k.HasPermission(ctx, permissionOwner, perm) {
+	perm := types.NewBurnPermission()
+	if !k.HasPermission(ctx, contractID, permissionOwner, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", permissionOwner.String(), perm.String())
 	}
 	return nil

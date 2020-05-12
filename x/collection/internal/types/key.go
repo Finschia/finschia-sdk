@@ -23,6 +23,7 @@ var (
 	NextTokenTypeFTKeyPrefix    = []byte{0x08}
 	NextTokenTypeNFTKeyPrefix   = []byte{0x09}
 	NextTokenIDNFTKeyPrefix     = []byte{0x0a}
+	PermKeyPrefix               = []byte{0x0b}
 )
 
 func AccountKey(contractID string, acc sdk.AccAddress) []byte {
@@ -69,4 +70,8 @@ func NextTokenTypeNFTKey(contractID string) []byte {
 }
 func NextTokenIDNFTKey(contractID, tokenType string) []byte {
 	return append(append(NextTokenIDNFTKeyPrefix, []byte(contractID)...), []byte(tokenType)...)
+}
+
+func PermKey(contractID string, addr sdk.AccAddress) []byte {
+	return append(append(PermKeyPrefix, []byte(contractID)...), addr...)
 }

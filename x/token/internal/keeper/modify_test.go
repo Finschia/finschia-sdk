@@ -23,11 +23,11 @@ func TestModifyTokenName(t *testing.T) {
 	ctx := cacheKeeper()
 	token := aToken(defaultContractID)
 	tokenWithoutPerm := aToken(defaultContractID + "2")
-	modifyPermission := types.NewModifyPermission(token.GetContractID())
+	modifyPermission := types.NewModifyPermission()
 
 	// Given Token And Permission
 	require.NoError(t, keeper.SetToken(ctx, token))
-	keeper.AddPermission(ctx, addr1, modifyPermission)
+	keeper.AddPermission(ctx, token.GetContractID(), addr1, modifyPermission)
 
 	t.Log("Test to modify token")
 	{
@@ -53,7 +53,7 @@ func TestModifyTokenName(t *testing.T) {
 	{
 		// Given Token without Permission
 		require.NoError(t, keeper.SetToken(ctx, tokenWithoutPerm))
-		invalidPerm := types.NewModifyPermission(tokenWithoutPerm.GetContractID())
+		invalidPerm := types.NewModifyPermission()
 
 		// When modify token name with invalid permission, Then error is occurred
 		require.EqualError(t, keeper.ModifyToken(ctx, addr1, tokenWithoutPerm.GetContractID(), changes),

@@ -580,13 +580,13 @@ func (f *Fixtures) TxTokenBurn(from, contractID, amount string, flags ...string)
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxTokenGrantPerm(from string, to string, resource, action string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token grant %s %s %s %s %v", f.LinkcliBinary, from, to, resource, action, f.Flags())
+func (f *Fixtures) TxTokenGrantPerm(from string, to string, contractID, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token grant %s %s %s %s %v", f.LinkcliBinary, from, contractID, to, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxTokenRevokePerm(from string, resource, action string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token revoke %s %s %s %v", f.LinkcliBinary, from, resource, action, f.Flags())
+func (f *Fixtures) TxTokenRevokePerm(from string, contractID, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token revoke %s %s %s %v", f.LinkcliBinary, from, contractID, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
@@ -654,13 +654,13 @@ func (f *Fixtures) TxCollectionModify(owner, contractID, tokenType, tokenIndex, 
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxCollectionGrantPerm(from string, to sdk.AccAddress, resource, action string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection grant %s %s %s %s %v", f.LinkcliBinary, from, to, resource, action, f.Flags())
+func (f *Fixtures) TxCollectionGrantPerm(from string, to sdk.AccAddress, contractID, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection grant %s %s %s %s %v", f.LinkcliBinary, from, contractID, to, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxCollectionRevokePerm(from string, resource, action string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection revoke %s %s %s %v", f.LinkcliBinary, from, resource, action, f.Flags())
+func (f *Fixtures) TxCollectionRevokePerm(from string, contractID, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection revoke %s %s %s %v", f.LinkcliBinary, from, contractID, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 

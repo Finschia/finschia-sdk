@@ -12,8 +12,8 @@ func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueF
 	if err != nil {
 		return nil, err
 	}
-	perm := types.NewIssuePermission(msg.ContractID)
-	if !keeper.HasPermission(ctx, msg.Owner, perm) {
+	perm := types.NewIssuePermission()
+	if !keeper.HasPermission(ctx, msg.ContractID, msg.Owner, perm) {
 		return nil, sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", msg.Owner.String(), perm.String())
 	}
 
@@ -45,8 +45,8 @@ func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssue
 		return nil, err
 	}
 
-	perm := types.NewIssuePermission(msg.ContractID)
-	if !keeper.HasPermission(ctx, msg.Owner, perm) {
+	perm := types.NewIssuePermission()
+	if !keeper.HasPermission(ctx, msg.ContractID, msg.Owner, perm) {
 		return nil, sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", msg.Owner.String(), perm.String())
 	}
 

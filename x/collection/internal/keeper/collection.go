@@ -31,14 +31,14 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 	}
 	k.SetSupply(ctx, types.DefaultSupply(collection.GetContractID()))
 
-	perms := types.Permissions{
-		types.NewIssuePermission(collection.GetContractID()),
-		types.NewMintPermission(collection.GetContractID()),
-		types.NewBurnPermission(collection.GetContractID()),
-		types.NewModifyPermission(collection.GetContractID()),
-	}
+	perms := types.NewPermissions(
+		types.NewIssuePermission(),
+		types.NewMintPermission(),
+		types.NewBurnPermission(),
+		types.NewModifyPermission(),
+	)
 	for _, perm := range perms {
-		k.AddPermission(ctx, owner, perm)
+		k.AddPermission(ctx, collection.GetContractID(), owner, perm)
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -51,14 +51,14 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 		sdk.NewEvent(
 			types.EventTypeGrantPermToken,
 			sdk.NewAttribute(types.AttributeKeyTo, owner.String()),
-			sdk.NewAttribute(types.AttributeKeyResource, collection.GetContractID()),
+			sdk.NewAttribute(types.AttributeKeyContractID, collection.GetContractID()),
 		),
 	})
 	for _, perm := range perms {
 		ctx.EventManager().EmitEvents(sdk.Events{
 			sdk.NewEvent(
 				types.EventTypeGrantPermToken,
-				sdk.NewAttribute(types.AttributeKeyAction, perm.GetAction()),
+				sdk.NewAttribute(types.AttributeKeyPerm, perm.String()),
 			),
 		})
 	}

@@ -142,19 +142,12 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 			contractID := args[1]
-			pms, height, err := retriever.GetAccountPermission(cliCtx, addr)
+			pms, height, err := retriever.GetAccountPermission(cliCtx, contractID, addr)
 			if err != nil {
 				return err
 			}
-			var pmsPerContract types.Permissions
-			for _, pm := range pms {
-				if pm.GetResource() == contractID {
-					pmsPerContract = append(pmsPerContract, pm)
-				}
-			}
-
 			cliCtx = cliCtx.WithHeight(height)
-			return cliCtx.PrintOutput(pmsPerContract)
+			return cliCtx.PrintOutput(pms)
 		},
 	}
 

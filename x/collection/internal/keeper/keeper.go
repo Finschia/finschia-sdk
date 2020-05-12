@@ -15,7 +15,6 @@ import (
 
 type Keeper struct {
 	accountKeeper  types.AccountKeeper
-	iamKeeper      types.IamKeeper
 	contractKeeper contract.Keeper
 	storeKey       sdk.StoreKey
 	paramsSpace    subspace.Subspace
@@ -25,14 +24,12 @@ type Keeper struct {
 func NewKeeper(
 	cdc *codec.Codec,
 	accountKeeper types.AccountKeeper,
-	iamKeeper types.IamKeeper,
 	contractKeeper contract.Keeper,
 	paramsSpace subspace.Subspace,
 	storeKey sdk.StoreKey,
 ) Keeper {
 	return Keeper{
 		accountKeeper:  accountKeeper,
-		iamKeeper:      iamKeeper.WithPrefix(types.ModuleName),
 		contractKeeper: contractKeeper,
 		storeKey:       storeKey,
 		paramsSpace:    paramsSpace.WithKeyTable(types.ParamKeyTable()),

@@ -54,10 +54,10 @@ func (k Keeper) IssueNFT(ctx sdk.Context, tokenType types.TokenType, owner sdk.A
 		return err
 	}
 
-	mintPerm := types.NewMintPermission(tokenType.GetContractID())
-	k.AddPermission(ctx, owner, mintPerm)
-	burnPerm := types.NewBurnPermission(tokenType.GetContractID())
-	k.AddPermission(ctx, owner, burnPerm)
+	mintPerm := types.NewMintPermission()
+	k.AddPermission(ctx, tokenType.GetContractID(), owner, mintPerm)
+	burnPerm := types.NewBurnPermission()
+	k.AddPermission(ctx, tokenType.GetContractID(), owner, burnPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(

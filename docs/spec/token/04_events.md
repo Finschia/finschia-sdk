@@ -10,11 +10,11 @@ The token module emits the following events:
 | message          | sender         | {ownerAddress}           | 
 | message          | action         | issue_token              |
 | grant_perm       | to             | {ownerAddress}           |
-| grant_perm       | perm_resource  | {contractID}             |
-| grant_perm       | perm_action    | mint                     |
+| grant_perm       | contract_id    | {contractID}             |
+| grant_perm       | perm           | mint                     |
 | grant_perm       | to             | {ownerAddress}           |
-| grant_perm       | perm_resource  | {contractID}             |
-| grant_perm       | perm_action    | modify                   |
+| grant_perm       | contract_id    | {contractID}             |
+| grant_perm       | perm           | modify                   |
 | issue            | contract_id    | {contractID}             |
 | issue            | name           | {name}                   |
 | issue            | symbol         | {symbol}                 |
@@ -64,3 +64,24 @@ The token module emits the following events:
 | message               | action         | modify_token          |
 | modify_token          | contract_id    | {contract_id}         |
 | modify_token          | {modifiedField}| {modifiedValue}       |
+
+### MsgGrantPermission
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | collection               |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | grant_permission         |
+| grant_perm       | from           | {fromAddress}            |
+| grant_perm       | to             | {toAddress}              |
+| grant_perm       | contract_id    | {resource}               |
+| grant_perm       | perm           | issue/mint/burn/modify   |
+
+### MsgRevokePermission
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | collection               |
+| message          | sender         | {fromAddress}            | 
+| message          | action         | revoke_permission        |
+| revoke_perm      | from           | {fromAddress}            |
+| revoke_perm      | contract_id    | {resource}               |
+| revoke_perm      | perm           | issue/mint/burn/modify   |

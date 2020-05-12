@@ -14,6 +14,7 @@ var (
 	BlacklistKeyPrefix = []byte{0x01}
 	AccountKeyPrefix   = []byte{0x02}
 	SupplyKeyPrefix    = []byte{0x03}
+	PermKeyPrefix      = []byte{0x04}
 )
 
 func BlacklistKey(addr sdk.AccAddress, action string) []byte {
@@ -32,4 +33,7 @@ func AccountKey(contractID string, acc sdk.AccAddress) []byte {
 
 func SupplyKey(contractID string) []byte {
 	return append(SupplyKeyPrefix, []byte(contractID)...)
+}
+func PermKey(contractID string, addr sdk.AccAddress) []byte {
+	return append(append(PermKeyPrefix, []byte(contractID)...), addr...)
 }

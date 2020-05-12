@@ -9,7 +9,6 @@ import (
 	"github.com/line/link/x/account"
 	"github.com/line/link/x/bank"
 	"github.com/line/link/x/contract"
-	"github.com/line/link/x/iam"
 	"github.com/line/link/x/token"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -61,7 +60,6 @@ var (
 		upgrade.AppModuleBasic{},
 		token.AppModuleBasic{},
 		collection.AppModuleBasic{},
-		iam.AppModuleBasic{},
 		account.AppModuleBasic{},
 	)
 
@@ -117,7 +115,6 @@ type LinkApp struct {
 	upgradeKeeper    upgrade.Keeper
 	tokenKeeper      token.Keeper
 	collectionKeeper collection.Keeper
-	iamKeeper        iam.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -145,7 +142,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		upgrade.StoreKey,
 		token.StoreKey,
 		collection.StoreKey,
-		iam.StoreKey,
 		bank.StoreKey,
 		contract.StoreKey,
 	)
@@ -167,8 +163,6 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	app.subspaces[collection.ModuleName] = app.paramsKeeper.Subspace(collection.DefaultParamspace)
 	app.subspaces[gov.ModuleName] = app.paramsKeeper.Subspace(gov.DefaultParamspace).WithKeyTable(gov.ParamKeyTable())
 
-	app.iamKeeper = iam.NewKeeper(cdc, keys[iam.StoreKey])
-
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, keys[auth.StoreKey], app.subspaces[auth.ModuleName], auth.ProtoBaseAccount)
 	app.cbankKeeper = cbank.NewBaseKeeper(app.accountKeeper, app.subspaces[cbank.ModuleName], app.ModuleAccountAddrs())
@@ -179,11 +173,10 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	app.setUpgradeHandlers()
 
 	contractKeeper := contract.NewContractKeeper(cdc, keys[contract.StoreKey])
-	app.tokenKeeper = token.NewKeeper(app.cdc, app.accountKeeper, app.iamKeeper.WithPrefix(token.ModuleName), contractKeeper, keys[token.StoreKey])
+	app.tokenKeeper = token.NewKeeper(app.cdc, app.accountKeeper, contractKeeper, keys[token.StoreKey])
 	app.collectionKeeper = collection.NewKeeper(
 		app.cdc,
 		app.accountKeeper,
-		app.iamKeeper.WithPrefix(collection.ModuleName),
 		contractKeeper,
 		app.subspaces[collection.ModuleName],
 		keys[collection.StoreKey],

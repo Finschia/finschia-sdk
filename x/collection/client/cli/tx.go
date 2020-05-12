@@ -659,7 +659,7 @@ func DisapproveCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "grant [from_key_or_address] [to] [resource] [action]",
+		Use:   "grant [from_key_or_address] [contract_id] [to] [action]",
 		Short: "Create and sign a grant permission for token tx",
 		Args:  cobra.ExactArgs(4),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -667,17 +667,19 @@ func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
-			to, err := sdk.AccAddressFromBech32(args[1])
+			contractID := args[1]
+
+			to, err := sdk.AccAddressFromBech32(args[2])
 			if err != nil {
 				return err
 			}
-			perm := types.Permission{Resource: args[2], Action: args[3]}
+			perm := types.Permission(args[3])
 			if !perm.Validate() {
 				return errors.New("permission invalid")
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgGrantPermission(cliCtx.GetFromAddress(), to, perm)
+			msg := types.NewMsgGrantPermission(cliCtx.GetFromAddress(), contractID, to, perm)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
@@ -687,7 +689,7 @@ func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
 
 func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "revoke [from_key_or_address] [resource] [action]",
+		Use:   "revoke [from_key_or_address] [contract_id] [action]",
 		Short: "Create and sign a revoke permission for token tx",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -695,13 +697,15 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
 			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
-			perm := types.Permission{Resource: args[1], Action: args[2]}
+			contractID := args[1]
+
+			perm := types.Permission(args[2])
 			if !perm.Validate() {
 				return errors.New("permission invalid")
 			}
 
 			// build and sign the transaction, then broadcast to Tendermint
-			msg := types.NewMsgRevokePermission(cliCtx.GetFromAddress(), perm)
+			msg := types.NewMsgRevokePermission(cliCtx.GetFromAddress(), contractID, perm)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

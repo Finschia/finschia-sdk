@@ -302,18 +302,14 @@ func TestLinkCLITokenIssue(t *testing.T) {
 	{
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo), contractID1)
 		require.Equal(t, 1, len(pms))
-		require.Equal(t, contractID1, pms[0].GetResource())
-		require.Equal(t, "modify", pms[0].GetAction())
+		require.Equal(t, "modify", pms[0].String())
 	}
 	{
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo), contractID2)
 		require.Equal(t, 3, len(pms))
-		require.Equal(t, contractID2, pms[0].GetResource())
-		require.Equal(t, "modify", pms[0].GetAction())
-		require.Equal(t, contractID2, pms[1].GetResource())
-		require.Equal(t, "mint", pms[1].GetAction())
-		require.Equal(t, contractID2, pms[2].GetResource())
-		require.Equal(t, "burn", pms[2].GetAction())
+		require.Equal(t, "modify", pms[0].String())
+		require.Equal(t, "mint", pms[1].String())
+		require.Equal(t, "burn", pms[2].String())
 	}
 
 	// Query permissions for bar account

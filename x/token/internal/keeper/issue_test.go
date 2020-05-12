@@ -26,15 +26,15 @@ func TestKeeper_IssueToken(t *testing.T) {
 	}
 	t.Log("Permission")
 	{
-		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyPermission(defaultContractID)))
-		require.True(t, keeper.HasPermission(ctx, addr1, types.NewMintPermission(defaultContractID)))
-		require.True(t, keeper.HasPermission(ctx, addr1, types.NewBurnPermission(defaultContractID)))
+		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewModifyPermission()))
+		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewMintPermission()))
+		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewBurnPermission()))
 	}
 	t.Log("Permission only addr1 has the permissions")
 	{
-		require.False(t, keeper.HasPermission(ctx, addr2, types.NewModifyPermission(defaultContractID)))
-		require.False(t, keeper.HasPermission(ctx, addr2, types.NewMintPermission(defaultContractID)))
-		require.False(t, keeper.HasPermission(ctx, addr2, types.NewBurnPermission(defaultContractID)))
+		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr2, types.NewModifyPermission()))
+		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr2, types.NewMintPermission()))
+		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr2, types.NewBurnPermission()))
 	}
 	t.Log("TotalSupply supply")
 	{
@@ -63,9 +63,9 @@ func TestKeeper_IssueTokenNotMintable(t *testing.T) {
 	}
 	t.Log("Permission only addr1 has no mint/burn permissions")
 	{
-		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyPermission(defaultContractID)))
-		require.False(t, keeper.HasPermission(ctx, addr1, types.NewMintPermission(defaultContractID)))
-		require.False(t, keeper.HasPermission(ctx, addr1, types.NewBurnPermission(defaultContractID)))
+		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewModifyPermission()))
+		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewMintPermission()))
+		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewBurnPermission()))
 	}
 }
 

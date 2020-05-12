@@ -36,8 +36,6 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgDetachFrom{}, "collection/MsgDetachFrom", nil)
 	cdc.RegisterConcrete(MsgApprove{}, "collection/MsgApprove", nil)
 	cdc.RegisterConcrete(MsgDisapprove{}, "collection/MsgDisapprove", nil)
-	cdc.RegisterInterface((*PermissionI)(nil), nil)
-	cdc.RegisterConcrete(&Permission{}, "collection/Permission", nil)
 
 	cdc.RegisterInterface((*Token)(nil), nil)
 	cdc.RegisterInterface((*FT)(nil), nil)
@@ -55,4 +53,7 @@ func RegisterCodec(cdc *codec.Codec) {
 
 	cdc.RegisterInterface((*TokenType)(nil), nil)
 	cdc.RegisterConcrete(&BaseTokenType{}, "collection/TokenType", nil)
+
+	cdc.RegisterInterface((*AccountPermissionI)(nil), nil)
+	cdc.RegisterConcrete(&AccountPermission{}, "collection/AccountPermission", nil)
 }

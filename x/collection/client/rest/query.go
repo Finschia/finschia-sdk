@@ -287,21 +287,14 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		pms, height, err := retriever.GetAccountPermission(cliCtx, addr)
+		pms, height, err := retriever.GetAccountPermission(cliCtx, contractID, addr)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
 		}
-		var pmsPerContract types.Permissions
-		for _, pm := range pms {
-			if pm.GetResource() == contractID {
-				pmsPerContract = append(pmsPerContract, pm)
-			}
-		}
-
 		cliCtx = cliCtx.WithHeight(height)
 
-		rest.PostProcessResponse(w, cliCtx, pmsPerContract)
+		rest.PostProcessResponse(w, cliCtx, pms)
 	}
 }
 

@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link/x/iam/exported"
 	"github.com/line/link/x/token/internal/keeper"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
@@ -68,18 +67,13 @@ func query(t *testing.T, params interface{}, query string, result interface{}) {
 func TestNewQuerier_queryAccountPermission(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryAccAddressParams{
-		Addr: addr1,
-	}
-	var perms []exported.PermissionI
+	params := types.NewQueryAccAddressContractIDParams(contractID, addr1)
+	var perms types.Permissions
 	query(t, params, types.QueryPerms, &perms)
 	require.Equal(t, len(perms), 3)
-	require.Equal(t, perms[0].GetResource(), contractID)
-	require.Equal(t, perms[0].GetAction(), "modify")
-	require.Equal(t, perms[1].GetResource(), contractID)
-	require.Equal(t, perms[1].GetAction(), "mint")
-	require.Equal(t, perms[2].GetResource(), contractID)
-	require.Equal(t, perms[2].GetAction(), "burn")
+	require.Equal(t, perms[0].String(), "modify")
+	require.Equal(t, perms[1].String(), "mint")
+	require.Equal(t, perms[2].String(), "burn")
 }
 
 func TestNewQuerier_queryTokens_one(t *testing.T) {

@@ -42,8 +42,8 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) e
 		return sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", token.GetContractID(), token.GetTokenType())
 	}
 
-	perm := types.NewMintPermission(token.GetContractID())
-	if !k.HasPermission(ctx, from, perm) {
+	perm := types.NewMintPermission()
+	if !k.HasPermission(ctx, token.GetContractID(), from, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
 
@@ -80,8 +80,8 @@ func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddre
 	if !ft.GetMintable() {
 		return sdkerrors.Wrapf(types.ErrTokenNotMintable, "ContractID: %s, TokenID: %s", token.GetContractID(), token.GetTokenID())
 	}
-	perm := types.NewMintPermission(token.GetContractID())
-	if !k.HasPermission(ctx, from, perm) {
+	perm := types.NewMintPermission()
+	if !k.HasPermission(ctx, token.GetContractID(), from, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
 	return nil

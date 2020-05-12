@@ -60,6 +60,7 @@ type MsgBurn struct {
 ```golang
 type MsgGrantPermission struct {
 	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
 	To         sdk.AccAddress `json:"to"`
 	Permission Permission     `json:"permission"`
 }
@@ -73,6 +74,7 @@ type MsgGrantPermission struct {
 ```golang
 type MsgRevokePermission struct {
 	From       sdk.AccAddress `json:"from"`
+	ContractID string         `json:"contract_id"`
 	Permission Permission     `json:"permission"`
 }
 ```

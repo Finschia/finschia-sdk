@@ -28,8 +28,8 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, contract
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(contractID)
-	if !k.HasPermission(ctx, owner, modifyPerm) {
+	modifyPerm := types.NewModifyPermission()
+	if !k.HasPermission(ctx, contractID, owner, modifyPerm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), modifyPerm.String())
 	}
 
@@ -73,8 +73,8 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractI
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(contractID)
-	if !k.HasPermission(ctx, owner, modifyPerm) {
+	modifyPerm := types.NewModifyPermission()
+	if !k.HasPermission(ctx, contractID, owner, modifyPerm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), modifyPerm.String())
 	}
 
@@ -117,8 +117,8 @@ func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID, t
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(contractID)
-	if !k.HasPermission(ctx, owner, modifyPerm) {
+	modifyPerm := types.NewModifyPermission()
+	if !k.HasPermission(ctx, contractID, owner, modifyPerm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), modifyPerm.String())
 	}
 

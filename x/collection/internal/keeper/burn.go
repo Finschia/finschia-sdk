@@ -65,8 +65,8 @@ func (k Keeper) burnFT(ctx sdk.Context, contractID string, permissionOwner, toke
 }
 
 func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount types.Coins) error {
-	perm := types.NewBurnPermission(contractID)
-	if !k.HasPermission(ctx, permissionOwner, perm) {
+	perm := types.NewBurnPermission()
+	if !k.HasPermission(ctx, contractID, permissionOwner, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", permissionOwner.String(), perm.String())
 	}
 
@@ -139,8 +139,8 @@ func (k Keeper) burnNFT(ctx sdk.Context, contractID string, permissionOwner, tok
 		return err
 	}
 
-	perm := types.NewBurnPermission(contractID)
-	if !k.HasPermission(ctx, permissionOwner, perm) {
+	perm := types.NewBurnPermission()
+	if !k.HasPermission(ctx, contractID, permissionOwner, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", permissionOwner.String(), perm.String())
 	}
 

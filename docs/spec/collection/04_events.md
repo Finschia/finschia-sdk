@@ -10,11 +10,11 @@ The token module emits the following events:
 | message          | sender         | {ownerAddress}           | 
 | message          | action         | create_collection        |
 | grant_perm       | to             | {ownerAddress}           |
-| grant_perm       | perm_resource  | {symbol}                 |
-| grant_perm       | perm_action    | issue                    |
-| grant_perm       | perm_action    | mint                     |
-| grant_perm       | perm_action    | burn                     |
-| grant_perm       | perm_action    | modify                   |
+| grant_perm       | contract_id    | {symbol}                 |
+| grant_perm       | perm           | issue                    |
+| grant_perm       | perm           | mint                     |
+| grant_perm       | perm           | burn                     |
+| grant_perm       | perm           | modify                   |
 | create_collection| contract_id    | {contractID}             |
 | create_collection| name           | {name}                   |
 | create_collection| owner          | {ownerAddress}           |
@@ -118,8 +118,8 @@ The token module emits the following events:
 | message          | action         | grant_permission         |
 | grant_perm       | from           | {fromAddress}            |
 | grant_perm       | to             | {toAddress}              |
-| grant_perm       | perm_resource  | {resource}               |
-| grant_perm       | perm_action    | issue/mint/burn/modify   |
+| grant_perm       | contract_id    | {resource}               |
+| grant_perm       | perm           | issue/mint/burn/modify   |
 
 ### MsgRevokePermission
 | Type             | Attribute Key  | Attribute Value          |
@@ -128,8 +128,8 @@ The token module emits the following events:
 | message          | sender         | {fromAddress}            | 
 | message          | action         | revoke_permission        |
 | revoke_perm      | from           | {fromAddress}            |
-| revoke_perm      | perm_resource  | {resource}               |
-| revoke_perm      | perm_action    | issue/mint/burn/modify   |
+| revoke_perm      | contract_id    | {resource}               |
+| revoke_perm      | perm           | issue/mint/burn/modify   |
 
 ### MsgTransferFT
 | Type             | Attribute Key  | Attribute Value               |

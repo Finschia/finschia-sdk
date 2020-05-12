@@ -56,12 +56,13 @@ func NewQueryContractIDTokenIDAccAddressParams(contractID, tokenID string, addr 
 	return QueryContractIDTokenIDAccAddressParams{ContractID: contractID, TokenID: tokenID, Addr: addr}
 }
 
-type QueryAccAddressParams struct {
-	Addr sdk.AccAddress `json:"addr"`
+type QueryContractIDAccAddressParams struct {
+	ContractID string         `json:"contract_id"`
+	Addr       sdk.AccAddress `json:"addr"`
 }
 
-func NewQueryAccAddressParams(addr sdk.AccAddress) QueryAccAddressParams {
-	return QueryAccAddressParams{Addr: addr}
+func NewQueryContractIDAccAddressParams(contractID string, addr sdk.AccAddress) QueryContractIDAccAddressParams {
+	return QueryContractIDAccAddressParams{ContractID: contractID, Addr: addr}
 }
 
 type QueryIsApprovedParams struct {

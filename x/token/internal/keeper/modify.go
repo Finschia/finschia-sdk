@@ -14,8 +14,8 @@ func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID st
 		return err
 	}
 
-	tokenModifyPerm := types.NewModifyPermission(token.GetContractID())
-	if !k.HasPermission(ctx, owner, tokenModifyPerm) {
+	tokenModifyPerm := types.NewModifyPermission()
+	if !k.HasPermission(ctx, token.GetContractID(), owner, tokenModifyPerm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), tokenModifyPerm.String())
 	}
 

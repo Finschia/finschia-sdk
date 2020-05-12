@@ -13,15 +13,16 @@ func TestHandleMsgGrant(t *testing.T) {
 
 	t.Log("Prepare Token Issued")
 	{
+		k.NewContractID(ctx)
 		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1)
 		require.NoError(t, err)
 	}
 
-	permission := types.NewMintPermission(defaultContractID)
+	permission := types.NewMintPermission()
 	t.Log("Grant Permission")
 	{
-		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
+		msg := types.NewMsgGrantPermission(addr1, defaultContractID, addr2, permission)
 		require.NoError(t, msg.ValidateBasic())
 		res, err := h(ctx, msg)
 		require.NoError(t, err)
@@ -31,8 +32,8 @@ func TestHandleMsgGrant(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr2.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", permission.GetResource())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", permission.GetAction())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("contract_id", defaultContractID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", permission.String())),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -43,15 +44,16 @@ func TestHandleMsgRevoke(t *testing.T) {
 
 	t.Log("Prepare Token Issued")
 	{
+		k.NewContractID(ctx)
 		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
 		err := k.IssueToken(ctx, token, sdk.NewInt(defaultAmount), addr1, addr1)
 		require.NoError(t, err)
 	}
 
-	permission := types.NewMintPermission(defaultContractID)
+	permission := types.NewMintPermission()
 	t.Log("Revoke Permission")
 	{
-		msg := types.NewMsgRevokePermission(addr1, permission)
+		msg := types.NewMsgRevokePermission(addr1, defaultContractID, permission)
 		require.NoError(t, msg.ValidateBasic())
 		res, err := h(ctx, msg)
 		require.NoError(t, err)
@@ -59,8 +61,8 @@ func TestHandleMsgRevoke(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("revoke_perm", sdk.NewAttribute("from", addr1.String())),
-			sdk.NewEvent("revoke_perm", sdk.NewAttribute("perm_resource", permission.GetResource())),
-			sdk.NewEvent("revoke_perm", sdk.NewAttribute("perm_action", permission.GetAction())),
+			sdk.NewEvent("revoke_perm", sdk.NewAttribute("contract_id", defaultContractID)),
+			sdk.NewEvent("revoke_perm", sdk.NewAttribute("perm", permission.String())),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}

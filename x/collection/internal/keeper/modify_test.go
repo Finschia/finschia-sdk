@@ -28,8 +28,8 @@ func TestModifyCollection(t *testing.T) {
 	// Given collection and permission
 	collection, err := keeper.GetCollection(ctx, defaultContractID)
 	require.NoError(t, err)
-	modifyPermission := types.NewModifyPermission(collection.GetContractID())
-	keeper.AddPermission(ctx, addr1, modifyPermission)
+	modifyPermission := types.NewModifyPermission()
+	keeper.AddPermission(ctx, collection.GetContractID(), addr1, modifyPermission)
 
 	t.Log("Test to modify collection")
 	{
@@ -79,8 +79,8 @@ func TestModifyTokenType(t *testing.T) {
 	// Given collection and permission
 	collection, err := keeper.GetCollection(ctx, defaultContractID)
 	require.NoError(t, err)
-	modifyPermission := types.NewModifyPermission(collection.GetContractID())
-	keeper.AddPermission(ctx, addr1, modifyPermission)
+	modifyPermission := types.NewModifyPermission()
+	keeper.AddPermission(ctx, collection.GetContractID(), addr1, modifyPermission)
 
 	t.Log("Test to modify token type with valid fields")
 	{
@@ -132,8 +132,8 @@ func TestModifyToken(t *testing.T) {
 	// Given collection and permission
 	collection, err := keeper.GetCollection(ctx, defaultContractID)
 	require.NoError(t, err)
-	modifyPermission := types.NewModifyPermission(collection.GetContractID())
-	keeper.AddPermission(ctx, addr1, modifyPermission)
+	modifyPermission := types.NewModifyPermission()
+	keeper.AddPermission(ctx, collection.GetContractID(), addr1, modifyPermission)
 	// And token
 	token, err := keeper.GetToken(ctx, defaultContractID, defaultTokenID1)
 	require.NoError(t, err)
@@ -178,8 +178,8 @@ func TestModify(t *testing.T) {
 		linktype.NewChange("name", modifiedName),
 	)
 	// Given permission
-	modifyPermission := types.NewModifyPermission(defaultContractID)
-	keeper.AddPermission(ctx, addr1, modifyPermission)
+	modifyPermission := types.NewModifyPermission()
+	keeper.AddPermission(ctx, defaultContractID, addr1, modifyPermission)
 
 	t.Logf("Test to modify name of collection to %s", modifiedName)
 	{

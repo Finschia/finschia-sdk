@@ -37,8 +37,8 @@ func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddre
 	if !amount.IsPositive() {
 		return sdkerrors.Wrap(types.ErrInvalidAmount, amount.String())
 	}
-	perm := types.NewMintPermission(token.GetContractID())
-	if !k.HasPermission(ctx, from, perm) {
+	perm := types.NewMintPermission()
+	if !k.HasPermission(ctx, token.GetContractID(), from, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
 	return nil

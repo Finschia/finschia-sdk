@@ -7,7 +7,7 @@ import (
 )
 
 func handleMsgGrant(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgGrantPermission) (*sdk.Result, error) {
-	err := keeper.GrantPermission(ctx, msg.From, msg.To, msg.Permission)
+	err := keeper.GrantPermission(ctx, msg.ContractID, msg.From, msg.To, msg.Permission)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func handleMsgGrant(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgGrantPer
 }
 
 func handleMsgRevoke(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgRevokePermission) (*sdk.Result, error) {
-	err := keeper.RevokePermission(ctx, msg.From, msg.Permission)
+	err := keeper.RevokePermission(ctx, msg.ContractID, msg.From, msg.Permission)
 	if err != nil {
 		return nil, err
 	}
