@@ -115,7 +115,7 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
+            - dependency-cache-cleveldb-1.20
       - run:
           name: run setup cleveldb
           command: |
@@ -124,10 +124,17 @@ jobs:
             if [ ! -d /tmp/cleveldb_binary ] ; then
                 mkdir -p /tmp/cleveldb_binary
                 cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
-                pushd /tmp/cleveldb_binary
-                ./get_cleveldb.sh ${WITH_CLEVELDB}
-                popd
             fi
+            pushd /tmp/cleveldb_binary
+            ./get_cleveldb.sh ${WITH_CLEVELDB}
+            popd
+      - save_cache:
+          key: dependency-cache-cleveldb-1.20
+          paths:
+            - "/tmp/cleveldb_binary"
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
       - run:
           name: binaries
           command: |
@@ -140,7 +147,6 @@ jobs:
           key: dependency-cache-mod-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
-            - "/tmp/cleveldb_binary"
       - run:
           name: tools
           command: |
@@ -207,6 +213,25 @@ jobs:
       - checkout
       - restore_cache:
           keys:
+            - machine-dependency-cache-cleveldb-1.20
+      - run:
+          name: run setup cleveldb
+          command: |
+            set -x
+            export WITH_CLEVELDB=yes
+            if [ ! -d /tmp/cleveldb_binary ] ; then
+                mkdir -p /tmp/cleveldb_binary
+                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
+            fi
+            pushd /tmp/cleveldb_binary
+            ./get_cleveldb.sh ${WITH_CLEVELDB}
+            popd
+      - save_cache:
+          key: machine-dependency-cache-cleveldb-1.20
+          paths:
+            - "/tmp/cleveldb_binary"
+      - restore_cache:
+          keys:
             - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
       - run:
           name: run setup go
@@ -222,18 +247,6 @@ jobs:
                 popd
             fi
       - run:
-          name: run setup cleveldb
-          command: |
-            set -x
-            export WITH_CLEVELDB=yes
-            if [ ! -d /tmp/cleveldb_binary ] ; then
-                mkdir -p /tmp/cleveldb_binary
-                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
-                pushd /tmp/cleveldb_binary
-                ./get_cleveldb.sh ${WITH_CLEVELDB}
-                popd
-            fi
-      - run:
           name: build binaries
           command: |
             set -x
@@ -245,7 +258,6 @@ jobs:
           paths:
             - "/home/circleci/.go_workspace/pkg/mod"
             - "/tmp/gobinary"
-            - "/tmp/cleveldb_binary"
 
   sim-link-nondeterminism:
     <<: *linux_defaults
@@ -308,6 +320,17 @@ jobs:
     resource_class: xlarge
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - machine-dependency-cache-cleveldb-1.20
+      - run:
+          name: copy cleveldb binary
+          command: |
+            set -x
+            export WITH_CLEVELDB=yes
+            pushd /tmp/cleveldb_binary
+            ./get_cleveldb.sh ${WITH_CLEVELDB}
+            popd
       - restore_cache:
           keys:
             - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
