@@ -209,7 +209,6 @@ jobs:
       - run:
           name: test individual module simulations
           command: |
-            make get-tools
             make sim-link-nondeterminism
 
   sim-link-simulation-after-import:

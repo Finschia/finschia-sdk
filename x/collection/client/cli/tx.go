@@ -3,7 +3,6 @@ package cli
 import (
 	"bufio"
 	"errors"
-	"sort"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
@@ -220,8 +219,6 @@ linkcli tx collection mint-nft [from_key_or_address] [contract_id] [to] [token_t
 
 			mintNFTParamStrs := strings.Split(args[3], ",")
 
-			sort.Strings(mintNFTParamStrs)
-
 			mintNFTParams := make([]types.MintNFTParam, len(mintNFTParamStrs))
 			for i, mintNFTParamStr := range mintNFTParamStrs {
 				strs := strings.Split(mintNFTParamStr, ":")
@@ -345,8 +342,6 @@ func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 
 			tokenIDs := strings.Split(args[3], ",")
 
-			sort.Strings(tokenIDs)
-
 			msg := types.NewMsgTransferNFT(cliCtx.GetFromAddress(), contractID, to, tokenIDs...)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
@@ -416,8 +411,6 @@ func TransferNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			tokenIDs := strings.Split(args[4], ",")
-
-			sort.Strings(tokenIDs)
 
 			msg := types.NewMsgTransferNFTFrom(cliCtx.GetFromAddress(), contractID, from, to, tokenIDs...)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
