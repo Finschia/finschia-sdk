@@ -7,10 +7,10 @@ import (
 )
 
 type TokenTypeKeeper interface {
-	GetNextTokenType(ctx sdk.Context, contractID string) (tokenType string, err error)
-	GetTokenTypes(ctx sdk.Context, contractID string) (types.TokenTypes, error)
-	GetTokenType(ctx sdk.Context, contractID, tokenType string) (types.TokenType, error)
-	HasTokenType(ctx sdk.Context, contractID, tokenType string) bool
+	GetNextTokenType(ctx sdk.Context) (tokenType string, err error)
+	GetTokenTypes(ctx sdk.Context) (types.TokenTypes, error)
+	GetTokenType(ctx sdk.Context, tokenType string) (types.TokenType, error)
+	HasTokenType(ctx sdk.Context, tokenType string) bool
 	SetTokenType(ctx sdk.Context, token types.TokenType) error
 	UpdateTokenType(ctx sdk.Context, token types.TokenType) error
 }
@@ -18,83 +18,83 @@ type TokenTypeKeeper interface {
 var _ TokenTypeKeeper = (*Keeper)(nil)
 
 func (k Keeper) SetTokenType(ctx sdk.Context, tokenType types.TokenType) error {
-	_, err := k.GetCollection(ctx, tokenType.GetContractID())
+	_, err := k.GetCollection(ctx)
 	if err != nil {
 		return err
 	}
 	store := ctx.KVStore(k.storeKey)
-	if store.Has(types.TokenTypeKey(tokenType.GetContractID(), tokenType.GetTokenType())) {
-		return sdkerrors.Wrapf(types.ErrTokenTypeExist, "ContractID: %s, TokenType: %s", tokenType.GetContractID(), tokenType.GetTokenType())
+	if store.Has(types.TokenTypeKey(k.getContractID(ctx), tokenType.GetTokenType())) {
+		return sdkerrors.Wrapf(types.ErrTokenTypeExist, "ContractID: %s, TokenType: %s", k.getContractID(ctx), tokenType.GetTokenType())
 	}
-	store.Set(types.TokenTypeKey(tokenType.GetContractID(), tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
-	k.setNextTokenTypeNFT(ctx, tokenType.GetContractID(), tokenType.GetTokenType())
-	k.setNextTokenIndexNFT(ctx, tokenType.GetContractID(), tokenType.GetTokenType(), types.ReservedEmpty)
+	store.Set(types.TokenTypeKey(k.getContractID(ctx), tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
+	k.setNextTokenTypeNFT(ctx, tokenType.GetTokenType())
+	k.setNextTokenIndexNFT(ctx, tokenType.GetTokenType(), types.ReservedEmpty)
 	return nil
 }
 
 func (k Keeper) UpdateTokenType(ctx sdk.Context, tokenType types.TokenType) error {
-	_, err := k.GetCollection(ctx, tokenType.GetContractID())
+	_, err := k.GetCollection(ctx)
 	if err != nil {
 		return err
 	}
 	store := ctx.KVStore(k.storeKey)
-	if !store.Has(types.TokenTypeKey(tokenType.GetContractID(), tokenType.GetTokenType())) {
-		return sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", tokenType.GetContractID(), tokenType.GetTokenType())
+	if !store.Has(types.TokenTypeKey(k.getContractID(ctx), tokenType.GetTokenType())) {
+		return sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", k.getContractID(ctx), tokenType.GetTokenType())
 	}
-	store.Set(types.TokenTypeKey(tokenType.GetContractID(), tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
+	store.Set(types.TokenTypeKey(k.getContractID(ctx), tokenType.GetTokenType()), k.cdc.MustMarshalBinaryBare(tokenType))
 	return nil
 }
 
-func (k Keeper) GetTokenType(ctx sdk.Context, contractID string, tokenTypeID string) (types.TokenType, error) {
+func (k Keeper) GetTokenType(ctx sdk.Context, tokenTypeID string) (types.TokenType, error) {
 	store := ctx.KVStore(k.storeKey)
-	tokenTypeKey := types.TokenTypeKey(contractID, tokenTypeID)
+	tokenTypeKey := types.TokenTypeKey(k.getContractID(ctx), tokenTypeID)
 	bz := store.Get(tokenTypeKey)
 	if bz == nil {
-		return nil, sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", contractID, tokenTypeID)
+		return nil, sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", k.getContractID(ctx), tokenTypeID)
 	}
 	tokenType := k.mustDecodeTokenType(bz)
 	return tokenType, nil
 }
 
-func (k Keeper) GetTokenTypes(ctx sdk.Context, contractID string) (tokenTypes types.TokenTypes, err error) {
-	_, err = k.GetCollection(ctx, contractID)
+func (k Keeper) GetTokenTypes(ctx sdk.Context) (tokenTypes types.TokenTypes, err error) {
+	_, err = k.GetCollection(ctx)
 	if err != nil {
 		return nil, err
 	}
-	k.iterateTokenTypes(ctx, contractID, "", false, func(t types.TokenType) bool {
+	k.iterateTokenTypes(ctx, "", false, func(t types.TokenType) bool {
 		tokenTypes = append(tokenTypes, t)
 		return false
 	})
 	return tokenTypes, nil
 }
 
-func (k Keeper) HasTokenType(ctx sdk.Context, contractID, tokenType string) bool {
+func (k Keeper) HasTokenType(ctx sdk.Context, tokenType string) bool {
 	store := ctx.KVStore(k.storeKey)
-	tokenTypeKey := types.TokenTypeKey(contractID, tokenType)
+	tokenTypeKey := types.TokenTypeKey(k.getContractID(ctx), tokenType)
 	return store.Has(tokenTypeKey)
 }
 
-func (k Keeper) GetNextTokenType(ctx sdk.Context, contractID string) (tokenType string, err error) {
-	if !k.ExistCollection(ctx, contractID) {
-		return "", sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID)
+func (k Keeper) GetNextTokenType(ctx sdk.Context) (tokenType string, err error) {
+	if !k.ExistCollection(ctx) {
+		return "", sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", k.getContractID(ctx))
 	}
-	tokenType, err = k.getNextTokenTypeNFT(ctx, contractID)
+	tokenType, err = k.getNextTokenTypeNFT(ctx)
 	if err != nil {
 		return "", err
 	}
 	if tokenType[0] == types.FungibleFlag[0] {
-		return "", sdkerrors.Wrapf(types.ErrTokenTypeFull, "ContractID: %s", contractID)
+		return "", sdkerrors.Wrapf(types.ErrTokenTypeFull, "ContractID: %s", k.getContractID(ctx))
 	}
 	return tokenType, nil
 }
 
-func (k Keeper) iterateTokenTypes(ctx sdk.Context, contractID, prefix string, reverse bool, process func(types.TokenType) (stop bool)) {
+func (k Keeper) iterateTokenTypes(ctx sdk.Context, prefix string, reverse bool, process func(types.TokenType) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
 	var iter sdk.Iterator
 	if reverse {
-		iter = sdk.KVStoreReversePrefixIterator(store, types.TokenTypeKey(contractID, prefix))
+		iter = sdk.KVStoreReversePrefixIterator(store, types.TokenTypeKey(k.getContractID(ctx), prefix))
 	} else {
-		iter = sdk.KVStorePrefixIterator(store, types.TokenTypeKey(contractID, prefix))
+		iter = sdk.KVStorePrefixIterator(store, types.TokenTypeKey(k.getContractID(ctx), prefix))
 	}
 	defer iter.Close()
 	for {

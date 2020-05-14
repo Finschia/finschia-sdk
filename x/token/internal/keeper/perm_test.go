@@ -17,7 +17,7 @@ func preparePermissions(ctx sdk.Context, t *testing.T) types.Permissions {
 	t.Log("Prepare Permissions")
 	{
 		for _, perm := range expected {
-			keeper.AddPermission(ctx, defaultContractID, addr1, perm)
+			keeper.AddPermission(ctx, addr1, perm)
 		}
 	}
 	return expected
@@ -29,7 +29,7 @@ func TestKeeper_GetPermissions(t *testing.T) {
 
 	t.Log("Compare Permissions")
 	{
-		actual := keeper.GetPermissions(ctx, defaultContractID, addr1)
+		actual := keeper.GetPermissions(ctx, addr1)
 		for index := range actual {
 			require.Equal(t, expected[index].String(), actual[index].String())
 		}
@@ -38,10 +38,10 @@ func TestKeeper_GetPermissions(t *testing.T) {
 
 func TestKeeper_AddPermission(t *testing.T) {
 	ctx = cacheKeeper()
-	keeper.AddPermission(ctx, defaultContractID, addr1, types.NewMintPermission())
-	keeper.AddPermission(ctx, defaultContractID, addr1, types.NewBurnPermission())
-	keeper.AddPermission(ctx, defaultContractID, addr1, types.NewModifyPermission())
-	require.Equal(t, 3, len(keeper.GetPermissions(ctx, defaultContractID, addr1)))
+	keeper.AddPermission(ctx, addr1, types.NewMintPermission())
+	keeper.AddPermission(ctx, addr1, types.NewBurnPermission())
+	keeper.AddPermission(ctx, addr1, types.NewModifyPermission())
+	require.Equal(t, 3, len(keeper.GetPermissions(ctx, addr1)))
 }
 
 func TestKeeper_GrantPermission(t *testing.T) {
@@ -50,13 +50,13 @@ func TestKeeper_GrantPermission(t *testing.T) {
 	t.Log("Grant Permissions addr1 -> addr2")
 	{
 		for _, perm := range expected {
-			err := keeper.GrantPermission(ctx, defaultContractID, addr1, addr2, perm)
+			err := keeper.GrantPermission(ctx, addr1, addr2, perm)
 			require.NoError(t, err)
 		}
 	}
 	t.Log("Grant Permission. addr1 has not the permission")
 	{
-		err := keeper.GrantPermission(ctx, defaultContractID, addr1, addr2, types.NewModifyPermission())
+		err := keeper.GrantPermission(ctx, addr1, addr2, types.NewModifyPermission())
 		require.Error(t, err)
 	}
 }
@@ -67,13 +67,13 @@ func TestKeeper_RevokePermission(t *testing.T) {
 	t.Log("Revoke Permissions addr1")
 	{
 		for _, perm := range expected {
-			err := keeper.RevokePermission(ctx, defaultContractID, addr1, perm)
+			err := keeper.RevokePermission(ctx, addr1, perm)
 			require.NoError(t, err)
 		}
 	}
 	t.Log("Revoke Permission. addr1 has not the permission")
 	{
-		err := keeper.RevokePermission(ctx, defaultContractID, addr1, types.NewModifyPermission())
+		err := keeper.RevokePermission(ctx, addr1, types.NewModifyPermission())
 		require.Error(t, err)
 	}
 }
@@ -84,11 +84,11 @@ func TestKeeper_HasPermission(t *testing.T) {
 	t.Log("Has Permissions addr1")
 	{
 		for _, perm := range expected {
-			require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, perm))
+			require.True(t, keeper.HasPermission(ctx, addr1, perm))
 		}
 	}
 	t.Log("Revoke Permission. addr1 has not the permission")
 	{
-		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewModifyPermission()))
+		require.False(t, keeper.HasPermission(ctx, addr1, types.NewModifyPermission()))
 	}
 }

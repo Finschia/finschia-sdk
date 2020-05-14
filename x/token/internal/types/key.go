@@ -27,13 +27,14 @@ func TokenKey(contractID string) []byte {
 	return append(TokenKeyPrefix, []byte(contractID)...)
 }
 
-func AccountKey(contractID string, acc sdk.AccAddress) []byte {
-	return append(append(AccountKeyPrefix, []byte(contractID)...), acc...)
-}
-
 func SupplyKey(contractID string) []byte {
 	return append(SupplyKeyPrefix, []byte(contractID)...)
 }
+
+func AccountKey(contractID string, addr sdk.AccAddress) []byte {
+	return append(append(AccountKeyPrefix, []byte(contractID)...), addr...)
+}
+
 func PermKey(contractID string, addr sdk.AccAddress) []byte {
 	return append(append(PermKeyPrefix, []byte(contractID)...), addr...)
 }

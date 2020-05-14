@@ -6,7 +6,8 @@ import (
 
 const (
 	ModuleName = "contract"
-	StoreKey   = ModuleName
+
+	StoreKey = ModuleName
 )
 
 var (
@@ -26,3 +27,5 @@ type ContractMsg interface {
 	sdk.Msg
 	GetContractID() string
 }
+
+type CtxKey struct{}

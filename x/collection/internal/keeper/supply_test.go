@@ -25,19 +25,19 @@ func TestKeeper_GetTotalInt(t *testing.T) {
 	}
 	t.Log("Get Total Supply Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QuerySupply)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), actual.Int64())
 	}
 	t.Log("Get Total Mint Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryMint)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryMint)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), actual.Int64())
 	}
 	t.Log("Get Total Burn Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryBurn)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryBurn)
 		require.NoError(t, err)
 		require.Equal(t, int64(0), actual.Int64())
 	}
@@ -59,35 +59,35 @@ func TestKeeper_MintSupply(t *testing.T) {
 	}
 	t.Log("Get Balance")
 	{
-		balance, err := keeper.GetBalance(ctx, defaultContractID, defaultTokenIDFT, addr1)
+		balance, err := keeper.GetBalance(ctx, defaultTokenIDFT, addr1)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount).Int64(), balance.Int64())
 	}
 	t.Log("Mint Supply")
 	{
-		require.NoError(t, keeper.MintSupply(ctx, defaultContractID, addr1, types.OneCoins(defaultTokenIDFT)))
+		require.NoError(t, keeper.MintSupply(ctx, addr1, types.OneCoins(defaultTokenIDFT)))
 	}
 	t.Log("Get Balance")
 	{
-		balance, err := keeper.GetBalance(ctx, defaultContractID, defaultTokenIDFT, addr1)
+		balance, err := keeper.GetBalance(ctx, defaultTokenIDFT, addr1)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount+1).Int64(), balance.Int64())
 	}
 	t.Log("Get Total Supply Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QuerySupply)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount+1), actual)
 	}
 	t.Log("Get Total Mint Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryMint)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryMint)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount+1), actual)
 	}
 	t.Log("Get Total Burn Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryBurn)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryBurn)
 		require.NoError(t, err)
 		require.Equal(t, sdk.ZeroInt(), actual)
 	}
@@ -109,35 +109,35 @@ func TestKeeper_BurnSupply(t *testing.T) {
 	}
 	t.Log("Get Balance")
 	{
-		balance, err := keeper.GetBalance(ctx, defaultContractID, defaultTokenIDFT, addr1)
+		balance, err := keeper.GetBalance(ctx, defaultTokenIDFT, addr1)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount).Int64(), balance.Int64())
 	}
 	t.Log("Burn Supply")
 	{
-		require.NoError(t, keeper.BurnSupply(ctx, defaultContractID, addr1, types.OneCoins(defaultTokenIDFT)))
+		require.NoError(t, keeper.BurnSupply(ctx, addr1, types.OneCoins(defaultTokenIDFT)))
 	}
 	t.Log("Get Balance")
 	{
-		balance, err := keeper.GetBalance(ctx, defaultContractID, defaultTokenIDFT, addr1)
+		balance, err := keeper.GetBalance(ctx, defaultTokenIDFT, addr1)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount-1).Int64(), balance.Int64())
 	}
 	t.Log("Get Total Supply Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QuerySupply)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount-1), actual)
 	}
 	t.Log("Get Total Mint Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryMint)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryMint)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(defaultAmount), actual)
 	}
 	t.Log("Get Total Burn Int")
 	{
-		actual, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryBurn)
+		actual, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryBurn)
 		require.NoError(t, err)
 		require.Equal(t, sdk.NewInt(1), actual)
 	}
@@ -167,56 +167,56 @@ func TestKeeper_Handle_Overflows(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	ts, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QuerySupply)
+	ts, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QuerySupply)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalSupply().AmountOf(defaultTokenIDFT), ts)
 
-	tm, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryMint)
+	tm, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryMint)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalMint().AmountOf(defaultTokenIDFT), tm)
 
-	tb, err := keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryBurn)
+	tb, err := keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryBurn)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalBurn().AmountOf(defaultTokenIDFT), tb)
 
 	// inflate over the overflow limit
 	t.Log("Inflate the supply over the overflow limit")
 	addToOverflow := types.NewCoins(types.NewCoin(defaultTokenIDFT, initialSupply.Mul(sdk.NewInt(8))))
-	err = keeper.MintSupply(ctx, defaultContractID, addr1, addToOverflow)
+	err = keeper.MintSupply(ctx, addr1, addToOverflow)
 	require.Equal(t, types.ErrSupplyOverflow, err)
 
 	// should have not changed
 	t.Log("Totals have not changed")
-	ts, err = keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QuerySupply)
+	ts, err = keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QuerySupply)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalSupply().AmountOf(defaultTokenIDFT), ts)
 
-	tm, err = keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryMint)
+	tm, err = keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryMint)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalMint().AmountOf(defaultTokenIDFT), tm)
 
-	tb, err = keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryBurn)
+	tb, err = keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryBurn)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalBurn().AmountOf(defaultTokenIDFT), tb)
 
 	// deflate below the overflow limit
 	t.Log("Deflate the supply below the overflow limit")
 	subToOverflow := types.NewCoins(types.NewCoin(defaultTokenIDFT, initialSupply.Mul(sdk.NewInt(8))))
-	err = keeper.BurnSupply(ctx, defaultContractID, addr1, subToOverflow)
+	err = keeper.BurnSupply(ctx, addr1, subToOverflow)
 	require.Error(t, err)
 	require.Equal(t, types.ErrSupplyOverflow, err)
 
 	// should have not changed
 	t.Log("Totals have not changed")
-	ts, err = keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QuerySupply)
+	ts, err = keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QuerySupply)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalSupply().AmountOf(defaultTokenIDFT), ts)
 
-	tm, err = keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryMint)
+	tm, err = keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryMint)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalMint().AmountOf(defaultTokenIDFT), tm)
 
-	tb, err = keeper.GetTotalInt(ctx, defaultContractID, defaultTokenIDFT, types.QueryBurn)
+	tb, err = keeper.GetTotalInt(ctx, defaultTokenIDFT, types.QueryBurn)
 	require.NoError(t, err)
 	require.Equal(t, newSupply.GetTotalBurn().AmountOf(defaultTokenIDFT), tb)
 }

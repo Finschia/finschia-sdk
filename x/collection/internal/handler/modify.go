@@ -7,7 +7,7 @@ import (
 )
 
 func handleMsgModify(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgModify) (*sdk.Result, error) {
-	if err := keeper.Modify(ctx, msg.Owner, msg.ContractID, msg.TokenType, msg.TokenIndex, msg.Changes); err != nil {
+	if err := keeper.Modify(ctx, msg.Owner, msg.TokenType, msg.TokenIndex, msg.Changes); err != nil {
 		return nil, err
 	}
 

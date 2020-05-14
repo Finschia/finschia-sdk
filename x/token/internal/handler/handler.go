@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"context"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/contract"
@@ -12,10 +14,18 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 		if msg, ok := msg.(contract.Msg); ok {
+			ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, msg.GetContractID()))
 			err := handleMsgContract(ctx, keeper, msg)
 			if err != nil {
 				return nil, err
 			}
+		}
+		if _, ok := msg.(types.MsgIssue); ok {
+			contractID := keeper.NewContractID(ctx)
+			ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, contractID))
+		}
+		if ctx.Context().Value(contract.CtxKey{}) == nil {
+			panic("contract id does not set")
 		}
 		switch msg := msg.(type) {
 		case types.MsgIssue:
@@ -38,7 +48,7 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 	}
 }
 func handleMsgContract(ctx sdk.Context, keeper keeper.Keeper, msg contract.Msg) error {
-	if !keeper.HasContractID(ctx, msg.GetContractID()) {
+	if !keeper.HasContractID(ctx) {
 		return sdkerrors.Wrapf(contract.ErrContractNotExist, "contract id: %s", msg.GetContractID())
 	}
 	return nil

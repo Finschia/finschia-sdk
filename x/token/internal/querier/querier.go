@@ -1,6 +1,9 @@
 package querier
 
 import (
+	"context"
+
+	"github.com/line/link/x/contract"
 	"github.com/line/link/x/token/internal/keeper"
 	"github.com/line/link/x/token/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -12,6 +15,9 @@ import (
 // creates a querier for token REST endpoints
 func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
+		if len(path) >= 2 {
+			ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, path[1]))
+		}
 		switch path[0] {
 		case types.QueryPerms:
 			return queryAccountPermission(ctx, req, keeper)
@@ -35,11 +41,11 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 	if len(req.Data) == 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "data is nil")
 	}
-	var params types.QueryAccAddressContractIDParams
+	var params types.QueryContractIDAccAddressParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	supply := keeper.GetBalance(ctx, params.ContractID, params.Addr)
+	supply := keeper.GetBalance(ctx, params.Addr)
 	bz, err := keeper.MarshalJSONIndent(supply)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
@@ -52,12 +58,12 @@ func queryAccountPermission(ctx sdk.Context, req abci.RequestQuery, keeper keepe
 	if len(req.Data) == 0 {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "data is nil")
 	}
-	var params types.QueryAccAddressContractIDParams
+	var params types.QueryContractIDAccAddressParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	pms := keeper.GetPermissions(ctx, params.ContractID, params.Addr)
+	pms := keeper.GetPermissions(ctx, params.Addr)
 
 	bz, err := keeper.MarshalJSONIndent(pms)
 	if err != nil {
@@ -67,8 +73,8 @@ func queryAccountPermission(ctx sdk.Context, req abci.RequestQuery, keeper keepe
 	return bz, nil
 }
 
-func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
-	if len(req.Data) == 0 {
+func queryTokens(ctx sdk.Context, _ abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
+	if ctx.Context().Value(contract.CtxKey{}) == nil {
 		tokens := keeper.GetAllTokens(ctx)
 
 		bz, err := keeper.MarshalJSONIndent(tokens)
@@ -77,12 +83,7 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 		}
 		return bz, nil
 	}
-	var params types.QueryContractIDParams
-	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-
-	token, err := keeper.GetToken(ctx, params.ContractID)
+	token, err := keeper.GetToken(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -95,13 +96,8 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 	return bz, nil
 }
 
-func queryTotal(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, error) {
-	var params types.QueryContractIDParams
-	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-
-	total, err := keeper.GetTotalInt(ctx, params.ContractID, target)
+func queryTotal(ctx sdk.Context, _ abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, error) {
+	total, err := keeper.GetTotalInt(ctx, target)
 	if err != nil {
 		return nil, err
 	}

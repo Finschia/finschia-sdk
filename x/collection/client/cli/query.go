@@ -26,7 +26,6 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		GetTokenTypeCmd(cdc),
 		GetTokenTypesCmd(cdc),
 		GetCollectionCmd(cdc),
-		GetCollectionsCmd(cdc),
 		GetTokenTotalCmd(cdc),
 		GetTokenCountCmd(cdc),
 		GetPermsCmd(cdc),
@@ -91,27 +90,6 @@ func GetCollectionCmd(cdc *codec.Codec) *cobra.Command {
 	return client.GetCommands(cmd)[0]
 }
 
-func GetCollectionsCmd(cdc *codec.Codec) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "collections",
-		Short: "Query all collections",
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
-			retriever := clienttypes.NewRetriever(cliCtx)
-
-			collections, height, err := retriever.GetCollections(cliCtx)
-			if err != nil {
-				return err
-			}
-
-			cliCtx = cliCtx.WithHeight(height)
-			return cliCtx.PrintOutput(collections)
-		},
-	}
-
-	return client.GetCommands(cmd)[0]
-}
 func GetTokenTypeCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tokentype [contract_id] [token-type]",

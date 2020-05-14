@@ -11,7 +11,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/line/link/client"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
@@ -22,7 +21,6 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/token/{contract_id}/accounts/{address}/balance", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/accounts/{address}/permissions", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/token", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/token/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
 func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
@@ -47,29 +45,6 @@ func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, token)
-	}
-}
-
-func QueryTokensRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
-		if !ok {
-			return
-		}
-
-		retriever := clienttypes.NewRetriever(cliCtx)
-
-		tokens, height, err := retriever.GetTokens(cliCtx)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		cliCtx = cliCtx.WithHeight(height)
-
-		rest.PostProcessResponse(w, cliCtx, tokens)
 	}
 }
 

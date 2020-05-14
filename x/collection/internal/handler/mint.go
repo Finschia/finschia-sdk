@@ -7,13 +7,13 @@ import (
 )
 
 func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNFT) (*sdk.Result, error) {
-	_, err := keeper.GetCollection(ctx, msg.ContractID)
+	_, err := keeper.GetCollection(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	for _, mintNFTParam := range msg.MintNFTParams {
-		tokenID, err := keeper.GetNextTokenIDNFT(ctx, msg.ContractID, mintNFTParam.TokenType)
+		tokenID, err := keeper.GetNextTokenIDNFT(ctx, mintNFTParam.TokenType)
 		if err != nil {
 			return nil, err
 		}
@@ -36,7 +36,7 @@ func handleMsgMintNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintNF
 }
 
 func handleMsgMintFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMintFT) (*sdk.Result, error) {
-	err := keeper.MintFT(ctx, msg.ContractID, msg.From, msg.To, msg.Amount)
+	err := keeper.MintFT(ctx, msg.From, msg.To, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

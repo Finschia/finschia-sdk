@@ -1,12 +1,14 @@
 package keeper
 
 import (
+	"context"
 	"os"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
@@ -66,7 +68,9 @@ func TestMain(m *testing.M) {
 
 func cacheKeeper() sdk.Context {
 	msCache := ms.CacheMultiStore()
-	return ctx.WithMultiStore(msCache)
+	ctx = ctx.WithMultiStore(msCache)
+	ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, defaultContractID))
+	return ctx
 }
 
 func TestKeeper_MarshalJSONLogger(t *testing.T) {
@@ -99,7 +103,8 @@ func prepareCollectionTokens(ctx sdk.Context, t *testing.T) {
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, "name", "{}",
 		defaultImgURI), addr1))
 
-	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID2, "name", "{}",
+	ctx2 := ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, defaultContractID2))
+	require.NoError(t, keeper.CreateCollection(ctx2, types.NewCollection(defaultContractID2, "name", "{}",
 		defaultImgURI), addr1))
 
 	// issue 6 tokens
@@ -111,25 +116,25 @@ func prepareCollectionTokens(ctx sdk.Context, t *testing.T) {
 	// token6 = contract1id6 by addr2
 	// token7 = contract1 by addr1
 	require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta), addr1))
-	require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID2, defaultTokenType, defaultName, defaultMeta), addr1))
+	require.NoError(t, keeper.IssueNFT(ctx2, types.NewBaseTokenType(defaultContractID2, defaultTokenType, defaultName, defaultMeta), addr1))
 	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)))
 	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID2, defaultName, defaultMeta, addr1)))
 	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID3, defaultName, defaultMeta, addr1)))
 	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID, defaultTokenID4, defaultName, defaultMeta, addr1)))
-	require.NoError(t, keeper.MintNFT(ctx, addr1, types.NewNFT(defaultContractID2, defaultTokenID1, defaultName, defaultMeta, addr1)))
-	require.NoError(t, keeper.GrantPermission(ctx, defaultContractID, addr1, addr2, types.NewMintPermission()))
+	require.NoError(t, keeper.MintNFT(ctx2, addr1, types.NewNFT(defaultContractID2, defaultTokenID1, defaultName, defaultMeta, addr1)))
+	require.NoError(t, keeper.GrantPermission(ctx, addr1, addr2, types.NewMintPermission()))
 	require.NoError(t, keeper.MintNFT(ctx, addr2, types.NewNFT(defaultContractID, defaultTokenID5, defaultName, defaultMeta, addr2)))
 	require.NoError(t, keeper.IssueFT(ctx, addr1, addr1, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(1), true), sdk.NewInt(defaultAmount)))
 }
 
 func prepareProxy(ctx sdk.Context, t *testing.T) {
-	require.NoError(t, keeper.SetApproved(ctx, defaultContractID, addr1, addr2))
-	require.NoError(t, keeper.SetApproved(ctx, defaultContractID, addr2, addr1))
-	require.NoError(t, keeper.TransferFT(ctx, defaultContractID, addr1, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))))
-	require.NoError(t, keeper.TransferNFT(ctx, defaultContractID, addr1, addr2, defaultTokenID1))
-	require.NoError(t, keeper.TransferNFT(ctx, defaultContractID, addr1, addr2, defaultTokenID2))
-	require.NoError(t, keeper.TransferNFT(ctx, defaultContractID, addr1, addr2, defaultTokenID3))
-	require.NoError(t, keeper.TransferNFT(ctx, defaultContractID, addr1, addr2, defaultTokenID4))
+	require.NoError(t, keeper.SetApproved(ctx, addr1, addr2))
+	require.NoError(t, keeper.SetApproved(ctx, addr2, addr1))
+	require.NoError(t, keeper.TransferFT(ctx, addr1, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))))
+	require.NoError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultTokenID1))
+	require.NoError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultTokenID2))
+	require.NoError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultTokenID3))
+	require.NoError(t, keeper.TransferNFT(ctx, addr1, addr2, defaultTokenID4))
 }
 
 func verifyTokenFunc(t *testing.T, expected types.Token, actual types.Token) {

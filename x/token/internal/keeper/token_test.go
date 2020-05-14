@@ -18,7 +18,7 @@ func TestKeeper_GetToken(t *testing.T) {
 	}
 	t.Log("Get Token")
 	{
-		actual, err := keeper.GetToken(ctx, defaultContractID)
+		actual, err := keeper.GetToken(ctx)
 		require.NoError(t, err)
 		verifyTokenFunc(t, expected, actual)
 	}

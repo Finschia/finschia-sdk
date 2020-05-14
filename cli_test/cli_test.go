@@ -281,23 +281,6 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		require.Equal(t, sdk.NewInt(amount), f.QueryBalanceToken(contractID2, fooAddr))
 	}
 
-	// Query for all tokens
-	{
-		allTokens := f.QueryTokens()
-		require.Equal(t, 2, len(allTokens))
-
-		require.Equal(t, description, allTokens[0].GetName())
-		require.Equal(t, contractID2, allTokens[0].GetContractID())
-		require.Equal(t, int64(decimals), allTokens[0].GetDecimals().Int64())
-		require.Equal(t, true, allTokens[0].GetMintable())
-
-		require.Equal(t, description, allTokens[1].GetName())
-		require.Equal(t, contractID1, allTokens[1].GetContractID())
-		require.Equal(t, int64(decimals), allTokens[1].GetDecimals().Int64())
-		require.Equal(t, false, allTokens[1].GetMintable())
-
-	}
-
 	// Query permissions for foo account
 	{
 		pms := f.QueryAccountPermission(f.KeyAddress(keyFoo), contractID1)

@@ -7,7 +7,7 @@ import (
 )
 
 func handleMsgTransfer(ctx sdk.Context, k keeper.Keeper, msg types.MsgTransfer) (*sdk.Result, error) {
-	err := k.Transfer(ctx, msg.From, msg.To, msg.ContractID, msg.Amount)
+	err := k.Transfer(ctx, msg.From, msg.To, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

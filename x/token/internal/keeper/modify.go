@@ -7,15 +7,14 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID string,
-	changes linktype.Changes) error {
-	token, err := k.GetToken(ctx, contractID)
+func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, changes linktype.Changes) error {
+	token, err := k.GetToken(ctx)
 	if err != nil {
 		return err
 	}
 
 	tokenModifyPerm := types.NewModifyPermission()
-	if !k.HasPermission(ctx, token.GetContractID(), owner, tokenModifyPerm) {
+	if !k.HasPermission(ctx, owner, tokenModifyPerm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), tokenModifyPerm.String())
 	}
 

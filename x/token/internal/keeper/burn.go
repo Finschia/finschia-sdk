@@ -6,20 +6,20 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) BurnToken(ctx sdk.Context, contractID string, amount sdk.Int, from sdk.AccAddress) error {
-	err := k.isBurnable(ctx, contractID, from, from, amount)
+func (k Keeper) BurnToken(ctx sdk.Context, amount sdk.Int, from sdk.AccAddress) error {
+	err := k.isBurnable(ctx, from, from, amount)
 	if err != nil {
 		return err
 	}
 
-	err = k.BurnSupply(ctx, contractID, from, amount)
+	err = k.BurnSupply(ctx, from, amount)
 	if err != nil {
 		return err
 	}
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeBurnToken,
-			sdk.NewAttribute(types.AttributeKeyContractID, contractID),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 		),
@@ -27,8 +27,8 @@ func (k Keeper) BurnToken(ctx sdk.Context, contractID string, amount sdk.Int, fr
 	return nil
 }
 
-func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, tokenOwner sdk.AccAddress, amount sdk.Int) error {
-	if !k.HasBalance(ctx, contractID, tokenOwner, amount) {
+func (k Keeper) isBurnable(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddress, amount sdk.Int) error {
+	if !k.HasBalance(ctx, tokenOwner, amount) {
 		return sdkerrors.Wrapf(sdkerrors.ErrInsufficientFunds, "%v has not enough coins for %v", tokenOwner.String(), amount)
 	}
 	if !amount.IsPositive() {
@@ -36,7 +36,7 @@ func (k Keeper) isBurnable(ctx sdk.Context, contractID string, permissionOwner, 
 	}
 
 	perm := types.NewBurnPermission()
-	if !k.HasPermission(ctx, contractID, permissionOwner, perm) {
+	if !k.HasPermission(ctx, permissionOwner, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", permissionOwner.String(), perm.String())
 	}
 	return nil

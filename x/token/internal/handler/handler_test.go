@@ -1,12 +1,14 @@
 package handler
 
 import (
+	"context"
 	"os"
 	"strings"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/link/x/contract"
 	testCommon "github.com/line/link/x/token/internal/keeper"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -31,7 +33,9 @@ func TestMain(m *testing.M) {
 
 func cacheKeeper() (sdk.Context, sdk.Handler) {
 	msCache := ms.CacheMultiStore()
-	return ctx.WithMultiStore(msCache), NewHandler(k)
+	ctx = ctx.WithMultiStore(msCache)
+	ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, defaultContractID))
+	return ctx, NewHandler(k)
 }
 
 func verifyEventFunc(t *testing.T, expected sdk.Events, actual sdk.Events) {

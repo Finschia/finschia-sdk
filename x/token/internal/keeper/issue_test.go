@@ -20,31 +20,31 @@ func TestKeeper_IssueToken(t *testing.T) {
 	}
 	t.Log("Get Token")
 	{
-		actual, err := keeper.GetToken(ctx, defaultContractID)
+		actual, err := keeper.GetToken(ctx)
 		require.NoError(t, err)
 		verifyTokenFunc(t, expected, actual)
 	}
 	t.Log("Permission")
 	{
-		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewModifyPermission()))
-		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewMintPermission()))
-		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewBurnPermission()))
+		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyPermission()))
+		require.True(t, keeper.HasPermission(ctx, addr1, types.NewMintPermission()))
+		require.True(t, keeper.HasPermission(ctx, addr1, types.NewBurnPermission()))
 	}
 	t.Log("Permission only addr1 has the permissions")
 	{
-		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr2, types.NewModifyPermission()))
-		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr2, types.NewMintPermission()))
-		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr2, types.NewBurnPermission()))
+		require.False(t, keeper.HasPermission(ctx, addr2, types.NewModifyPermission()))
+		require.False(t, keeper.HasPermission(ctx, addr2, types.NewMintPermission()))
+		require.False(t, keeper.HasPermission(ctx, addr2, types.NewBurnPermission()))
 	}
 	t.Log("TotalSupply supply")
 	{
-		supply, err := keeper.GetTotalInt(ctx, defaultContractID, types.QuerySupply)
+		supply, err := keeper.GetTotalInt(ctx, types.QuerySupply)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 	t.Log("Balance of Account")
 	{
-		supply := keeper.GetBalance(ctx, defaultContractID, addr1)
+		supply := keeper.GetBalance(ctx, addr1)
 		require.Equal(t, int64(defaultAmount), supply.Int64())
 	}
 }
@@ -57,15 +57,15 @@ func TestKeeper_IssueTokenNotMintable(t *testing.T) {
 		require.NoError(t, keeper.IssueToken(ctx, expected, sdk.NewInt(defaultAmount), addr1, addr1))
 	}
 	{
-		actual, err := keeper.GetToken(ctx, defaultContractID)
+		actual, err := keeper.GetToken(ctx)
 		require.NoError(t, err)
 		verifyTokenFunc(t, expected, actual)
 	}
 	t.Log("Permission only addr1 has no mint/burn permissions")
 	{
-		require.True(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewModifyPermission()))
-		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewMintPermission()))
-		require.False(t, keeper.HasPermission(ctx, defaultContractID, addr1, types.NewBurnPermission()))
+		require.True(t, keeper.HasPermission(ctx, addr1, types.NewModifyPermission()))
+		require.False(t, keeper.HasPermission(ctx, addr1, types.NewMintPermission()))
+		require.False(t, keeper.HasPermission(ctx, addr1, types.NewBurnPermission()))
 	}
 }
 

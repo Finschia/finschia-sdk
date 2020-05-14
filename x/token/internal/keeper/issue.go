@@ -18,13 +18,13 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 		return err
 	}
 
-	err = k.MintSupply(ctx, token.GetContractID(), to, amount)
+	err = k.MintSupply(ctx, to, amount)
 	if err != nil {
 		return err
 	}
 
 	modifyTokenURIPermission := types.NewModifyPermission()
-	k.AddPermission(ctx, token.GetContractID(), owner, modifyTokenURIPermission)
+	k.AddPermission(ctx, owner, modifyTokenURIPermission)
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueToken,
@@ -47,9 +47,9 @@ func (k Keeper) IssueToken(ctx sdk.Context, token types.Token, amount sdk.Int, o
 
 	if token.GetMintable() {
 		mintPerm := types.NewMintPermission()
-		k.AddPermission(ctx, token.GetContractID(), owner, mintPerm)
+		k.AddPermission(ctx, owner, mintPerm)
 		burnPerm := types.NewBurnPermission()
-		k.AddPermission(ctx, token.GetContractID(), owner, burnPerm)
+		k.AddPermission(ctx, owner, burnPerm)
 		ctx.EventManager().EmitEvents(sdk.Events{
 			sdk.NewEvent(
 				types.EventTypeGrantPermToken,

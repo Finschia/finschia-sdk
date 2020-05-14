@@ -1007,17 +1007,6 @@ func (f *Fixtures) QueryTokenExpectEmpty(contractID string, flags ...string) {
 	require.NotEmpty(f.T, errStr)
 }
 
-func (f *Fixtures) QueryTokens(flags ...string) tokenModule.Tokens {
-	cmd := fmt.Sprintf("%s query token tokens %s", f.LinkcliBinary, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var tokens tokenModule.Tokens
-	err := cdc.UnmarshalJSON([]byte(res), &tokens)
-	require.NoError(f.T, err)
-	return tokens
-}
-
 func (f *Fixtures) QueryBalanceToken(contractID string, addr sdk.AccAddress, flags ...string) sdk.Int {
 	cmd := fmt.Sprintf("%s query token balance %s %s %s", f.LinkcliBinary, contractID, addr.String(), f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
@@ -1145,17 +1134,6 @@ func (f *Fixtures) QueryCollection(contractID string, flags ...string) collectio
 	return collection
 }
 
-func (f *Fixtures) QueryCollections(flags ...string) collectionModule.Collections {
-	cmd := fmt.Sprintf("%s query collection collections %s", f.LinkcliBinary, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var collections collectionModule.Collections
-	err := cdc.UnmarshalJSON([]byte(res), &collections)
-	require.NoError(f.T, err)
-
-	return collections
-}
 func (f *Fixtures) QueryTotalSupplyTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
 	cmd := fmt.Sprintf("%s query collection total supply %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")

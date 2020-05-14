@@ -8,16 +8,16 @@ import (
 )
 
 func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueFT) (*sdk.Result, error) {
-	_, err := keeper.GetCollection(ctx, msg.ContractID)
+	_, err := keeper.GetCollection(ctx)
 	if err != nil {
 		return nil, err
 	}
 	perm := types.NewIssuePermission()
-	if !keeper.HasPermission(ctx, msg.ContractID, msg.Owner, perm) {
+	if !keeper.HasPermission(ctx, msg.Owner, perm) {
 		return nil, sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", msg.Owner.String(), perm.String())
 	}
 
-	tokenID, err := keeper.GetNextTokenIDFT(ctx, msg.ContractID)
+	tokenID, err := keeper.GetNextTokenIDFT(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -40,17 +40,17 @@ func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueF
 }
 
 func handleMsgIssueNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueNFT) (*sdk.Result, error) {
-	_, err := keeper.GetCollection(ctx, msg.ContractID)
+	_, err := keeper.GetCollection(ctx)
 	if err != nil {
 		return nil, err
 	}
 
 	perm := types.NewIssuePermission()
-	if !keeper.HasPermission(ctx, msg.ContractID, msg.Owner, perm) {
+	if !keeper.HasPermission(ctx, msg.Owner, perm) {
 		return nil, sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", msg.Owner.String(), perm.String())
 	}
 
-	tokenTypeID, err := keeper.GetNextTokenType(ctx, msg.ContractID)
+	tokenTypeID, err := keeper.GetNextTokenType(ctx)
 	if err != nil {
 		return nil, err
 	}

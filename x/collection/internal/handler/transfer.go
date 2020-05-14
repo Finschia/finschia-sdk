@@ -7,7 +7,7 @@ import (
 )
 
 func handleMsgTransferFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferFT) (*sdk.Result, error) {
-	err := keeper.TransferFT(ctx, msg.ContractID, msg.From, msg.To, msg.Amount...)
+	err := keeper.TransferFT(ctx, msg.From, msg.To, msg.Amount...)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func handleMsgTransferFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTra
 }
 
 func handleMsgTransferNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferNFT) (*sdk.Result, error) {
-	err := keeper.TransferNFT(ctx, msg.ContractID, msg.From, msg.To, msg.TokenIDs...)
+	err := keeper.TransferNFT(ctx, msg.From, msg.To, msg.TokenIDs...)
 	if err != nil {
 		return nil, err
 	}
@@ -41,7 +41,7 @@ func handleMsgTransferNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTr
 }
 
 func handleMsgTransferFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferFTFrom) (*sdk.Result, error) {
-	err := keeper.TransferFTFrom(ctx, msg.ContractID, msg.Proxy, msg.From, msg.To, msg.Amount...)
+	err := keeper.TransferFTFrom(ctx, msg.Proxy, msg.From, msg.To, msg.Amount...)
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func handleMsgTransferFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.Ms
 }
 
 func handleMsgTransferNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferNFTFrom) (*sdk.Result, error) {
-	err := keeper.TransferNFTFrom(ctx, msg.ContractID, msg.Proxy, msg.From, msg.To, msg.TokenIDs...)
+	err := keeper.TransferNFTFrom(ctx, msg.Proxy, msg.From, msg.To, msg.TokenIDs...)
 	if err != nil {
 		return nil, err
 	}

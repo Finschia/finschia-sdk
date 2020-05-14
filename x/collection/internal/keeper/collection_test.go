@@ -1,10 +1,12 @@
 package keeper
 
 import (
+	"context"
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 )
 
@@ -27,24 +29,28 @@ func TestKeeper_CreateCollection(t *testing.T) {
 func TestKeeper_ExistCollection(t *testing.T) {
 	ctx := cacheKeeper()
 	contractID := keeper.NewContractID(ctx)
+	ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, contractID))
 
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(contractID, "MyCollection", "meta", "base url"), addr1))
-	require.True(t, keeper.ExistCollection(ctx, contractID))
-	require.False(t, keeper.ExistCollection(ctx, "abcd1234"))
+	require.True(t, keeper.ExistCollection(ctx))
+	ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, "abcd1234"))
+	require.False(t, keeper.ExistCollection(ctx))
 }
 
 func TestKeeper_GetCollection(t *testing.T) {
 	ctx := cacheKeeper()
 	contractID := keeper.NewContractID(ctx)
+	ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, contractID))
 
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(contractID, "MyCollection", "meta", "base url"), addr1))
-	collection, err := keeper.GetCollection(ctx, contractID)
+	collection, err := keeper.GetCollection(ctx)
 	require.NoError(t, err)
 	require.Equal(t, collection.GetContractID(), contractID)
 	require.Equal(t, collection.GetName(), "MyCollection")
 	require.Equal(t, collection.GetBaseImgURI(), "base url")
 
-	_, err = keeper.GetCollection(ctx, "abcd1234")
+	ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, "abcd1234"))
+	_, err = keeper.GetCollection(ctx)
 	require.EqualError(t, err, sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: abcd1234").Error())
 }
 
@@ -59,12 +65,13 @@ func TestKeeper_SetCollection(t *testing.T) {
 func TestKeeper_UpdateCollection(t *testing.T) {
 	ctx := cacheKeeper()
 	contractID := keeper.NewContractID(ctx)
+	ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, contractID))
 
 	require.EqualError(t, keeper.UpdateCollection(ctx, types.NewCollection(contractID, "MyCollection", "meta", "base url")), sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID).Error())
 	require.NoError(t, keeper.SetCollection(ctx, types.NewCollection(contractID, "MyCollection", "meta", "base url")))
 	require.NoError(t, keeper.UpdateCollection(ctx, types.NewCollection(contractID, "MyCollection2", "meta", "base url2")))
 
-	collection, err := keeper.GetCollection(ctx, contractID)
+	collection, err := keeper.GetCollection(ctx)
 	require.NoError(t, err)
 	require.Equal(t, collection.GetContractID(), contractID)
 	require.Equal(t, collection.GetName(), "MyCollection2")

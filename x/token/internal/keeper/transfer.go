@@ -7,13 +7,13 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) Transfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, contractID string, amount sdk.Int) error {
+func (k Keeper) Transfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Int) error {
 	// reject if to address is blacklisted (safety box addresses)
 	if k.IsBlacklisted(ctx, to, bank.ActionTransferTo) {
 		return sdkerrors.Wrapf(bank.ErrCanNotTransferToBlacklisted, "Addr: %s", to.String())
 	}
 
-	err := k.Send(ctx, contractID, from, to, amount)
+	err := k.Send(ctx, from, to, amount)
 	if err != nil {
 		return err
 	}
@@ -22,7 +22,7 @@ func (k Keeper) Transfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress
 			types.EventTypeTransfer,
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
-			sdk.NewAttribute(types.AttributeKeyContractID, contractID),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
 		),
 	})

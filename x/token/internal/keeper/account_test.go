@@ -40,7 +40,7 @@ func TestKeeper_GetAccount(t *testing.T) {
 	}
 	t.Log("Get Account")
 	{
-		actual, err := keeper.GetAccount(ctx, defaultContractID, addr1)
+		actual, err := keeper.GetAccount(ctx, addr1)
 		require.NoError(t, err)
 		verifyAccountFunc(t, expected, actual)
 	}
@@ -79,7 +79,7 @@ func TestKeeper_GetOrNewAccount(t *testing.T) {
 	}
 	t.Log("Get Account addr1")
 	{
-		actual, err := keeper.GetOrNewAccount(ctx, defaultContractID, addr1)
+		actual, err := keeper.GetOrNewAccount(ctx, addr1)
 		require.NoError(t, err)
 		verifyAccountFunc(t, expected, actual)
 	}
@@ -87,7 +87,7 @@ func TestKeeper_GetOrNewAccount(t *testing.T) {
 	expected = types.NewBaseAccountWithAddress(defaultContractID, addr2)
 	t.Log("Get Account addr2")
 	{
-		actual, err := keeper.GetOrNewAccount(ctx, defaultContractID, addr2)
+		actual, err := keeper.GetOrNewAccount(ctx, addr2)
 		require.NoError(t, err)
 		verifyAccountFunc(t, expected, actual)
 	}

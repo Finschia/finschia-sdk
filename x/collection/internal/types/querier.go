@@ -29,52 +29,39 @@ type NodeQuerier interface {
 	WithHeight(height int64) client.CLIContext
 }
 
-type QueryContractIDParams struct {
-	ContractID string `json:"contract_id"`
+type QueryTokenIDParams struct {
+	TokenID string `json:"token_id"`
 }
 
-func NewQueryContractIDParams(contractID string) QueryContractIDParams {
-	return QueryContractIDParams{ContractID: contractID}
+func NewQueryTokenIDParams(tokenID string) QueryTokenIDParams {
+	return QueryTokenIDParams{TokenID: tokenID}
 }
 
-type QueryContractIDTokenIDParams struct {
-	ContractID string `json:"contract_id"`
-	TokenID    string `json:"token_id"`
+type QueryTokenIDAccAddressParams struct {
+	TokenID string         `json:"token_id"`
+	Addr    sdk.AccAddress `json:"addr"`
 }
 
-func NewQueryContractIDTokenIDParams(contractID, tokenID string) QueryContractIDTokenIDParams {
-	return QueryContractIDTokenIDParams{ContractID: contractID, TokenID: tokenID}
+func NewQueryTokenIDAccAddressParams(tokenID string, addr sdk.AccAddress) QueryTokenIDAccAddressParams {
+	return QueryTokenIDAccAddressParams{TokenID: tokenID, Addr: addr}
 }
 
-type QueryContractIDTokenIDAccAddressParams struct {
-	ContractID string         `json:"contract_id"`
-	TokenID    string         `json:"token_id"`
-	Addr       sdk.AccAddress `json:"addr"`
+type QueryAccAddressParams struct {
+	Addr sdk.AccAddress `json:"addr"`
 }
 
-func NewQueryContractIDTokenIDAccAddressParams(contractID, tokenID string, addr sdk.AccAddress) QueryContractIDTokenIDAccAddressParams {
-	return QueryContractIDTokenIDAccAddressParams{ContractID: contractID, TokenID: tokenID, Addr: addr}
-}
-
-type QueryContractIDAccAddressParams struct {
-	ContractID string         `json:"contract_id"`
-	Addr       sdk.AccAddress `json:"addr"`
-}
-
-func NewQueryContractIDAccAddressParams(contractID string, addr sdk.AccAddress) QueryContractIDAccAddressParams {
-	return QueryContractIDAccAddressParams{ContractID: contractID, Addr: addr}
+func NewQueryAccAddressParams(addr sdk.AccAddress) QueryAccAddressParams {
+	return QueryAccAddressParams{Addr: addr}
 }
 
 type QueryIsApprovedParams struct {
-	ContractID string         `json:"contract_id"`
-	Proxy      sdk.AccAddress `json:"proxy"`
-	Approver   sdk.AccAddress `json:"approver"`
+	Proxy    sdk.AccAddress `json:"proxy"`
+	Approver sdk.AccAddress `json:"approver"`
 }
 
-func NewQueryIsApprovedParams(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) QueryIsApprovedParams {
+func NewQueryIsApprovedParams(proxy sdk.AccAddress, approver sdk.AccAddress) QueryIsApprovedParams {
 	return QueryIsApprovedParams{
-		ContractID: contractID,
-		Proxy:      proxy,
-		Approver:   approver,
+		Proxy:    proxy,
+		Approver: approver,
 	}
 }

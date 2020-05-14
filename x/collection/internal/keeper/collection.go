@@ -8,22 +8,14 @@ import (
 
 type CollectionKeeper interface {
 	CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) error
-	ExistCollection(ctx sdk.Context, contractID string) bool
-	GetCollection(ctx sdk.Context, contractID string) (collection types.Collection, err error)
+	ExistCollection(ctx sdk.Context) bool
+	GetCollection(ctx sdk.Context) (collection types.Collection, err error)
 	SetCollection(ctx sdk.Context, collection types.Collection) error
 	UpdateCollection(ctx sdk.Context, collection types.Collection) error
-	GetAllCollections(ctx sdk.Context) types.Collections
 }
 
 var _ CollectionKeeper = (*Keeper)(nil)
 
-func (k Keeper) NewContractID(ctx sdk.Context) string {
-	return k.contractKeeper.NewContractID(ctx)
-}
-
-func (k Keeper) HasContractID(ctx sdk.Context, contractID string) bool {
-	return k.contractKeeper.HasContractID(ctx, contractID)
-}
 func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, owner sdk.AccAddress) error {
 	err := k.SetCollection(ctx, collection)
 	if err != nil {
@@ -38,7 +30,7 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 		types.NewModifyPermission(),
 	)
 	for _, perm := range perms {
-		k.AddPermission(ctx, collection.GetContractID(), owner, perm)
+		k.AddPermission(ctx, owner, perm)
 	}
 
 	ctx.EventManager().EmitEvents(sdk.Events{
@@ -66,16 +58,16 @@ func (k Keeper) CreateCollection(ctx sdk.Context, collection types.Collection, o
 	return nil
 }
 
-func (k Keeper) ExistCollection(ctx sdk.Context, contractID string) bool {
+func (k Keeper) ExistCollection(ctx sdk.Context) bool {
 	store := ctx.KVStore(k.storeKey)
-	return store.Has(types.CollectionKey(contractID))
+	return store.Has(types.CollectionKey(k.getContractID(ctx)))
 }
 
-func (k Keeper) GetCollection(ctx sdk.Context, contractID string) (collection types.Collection, err error) {
+func (k Keeper) GetCollection(ctx sdk.Context) (collection types.Collection, err error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.CollectionKey(contractID))
+	bz := store.Get(types.CollectionKey(k.getContractID(ctx)))
 	if bz == nil {
-		return collection, sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", contractID)
+		return collection, sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", k.getContractID(ctx))
 	}
 
 	collection = k.mustDecodeCollection(bz)
@@ -89,8 +81,8 @@ func (k Keeper) SetCollection(ctx sdk.Context, collection types.Collection) erro
 	}
 
 	store.Set(types.CollectionKey(collection.GetContractID()), k.cdc.MustMarshalBinaryBare(collection))
-	k.setNextTokenTypeFT(ctx, collection.GetContractID(), types.ReservedEmpty)
-	k.setNextTokenTypeNFT(ctx, collection.GetContractID(), types.ReservedEmptyNFT)
+	k.setNextTokenTypeFT(ctx, types.ReservedEmpty)
+	k.setNextTokenTypeNFT(ctx, types.ReservedEmptyNFT)
 	return nil
 }
 
@@ -110,13 +102,13 @@ func (k Keeper) GetAllCollections(ctx sdk.Context) types.Collections {
 		collections = append(collections, collection)
 		return false
 	}
-	k.iterateCollections(ctx, "", appendCollection)
+	k.iterateCollections(ctx, appendCollection)
 	return collections
 }
 
-func (k Keeper) iterateCollections(ctx sdk.Context, contractID string, process func(types.Collection) (stop bool)) {
+func (k Keeper) iterateCollections(ctx sdk.Context, process func(types.Collection) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)
-	iter := sdk.KVStorePrefixIterator(store, types.CollectionKey(contractID))
+	iter := sdk.KVStorePrefixIterator(store, types.CollectionKey(""))
 	defer iter.Close()
 	for {
 		if !iter.Valid() {

@@ -781,37 +781,6 @@ paths:
                       - $ref: '#/components/schemas/TokenFT'
         "500":
           description: Internal Server Error
-  /token/tokens:
-    get:
-      tags:
-        - Token
-      summary: Get all tokens
-      parameters:
-        - name: height
-          in: query
-          description: block height (if block height is 0 or be omitted, queries latest block)
-          schema:
-            type: integer
-          required: false
-          example: 0
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  height:
-                    type: string
-                    example: "100"
-                  result:
-                    type: array
-                    items:
-                      oneOf:
-                        - $ref: '#/components/schemas/TokenFT'
-        "500":
-          description: Internal Server Error
   /collection/{contract_id}/accounts/{address}/balances/{token_id}:
     get:
       tags:
@@ -1354,36 +1323,6 @@ paths:
                     example: "100"
                   result:
                     $ref: '#/components/schemas/Collection'
-        "500":
-          description: Internal Server Error
-  /collection/collections:
-    get:
-      tags:
-        - Collection
-      summary: Get all Collections
-      parameters:
-        - name: height
-          in: query
-          description: block height (if block height is 0 or be omitted, queries latest block)
-          schema:
-            type: integer
-          required: false
-          example: 0
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  height:
-                    type: string
-                    example: "100"
-                  result:
-                    type: array
-                    items:
-                      $ref: '#/components/schemas/Collection'
         "500":
           description: Internal Server Error
   /collection/{contract_id}/nfts/{token_id}/parent:

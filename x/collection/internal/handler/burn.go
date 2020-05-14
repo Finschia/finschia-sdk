@@ -7,7 +7,7 @@ import (
 )
 
 func handleMsgBurnNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnNFT) (*sdk.Result, error) {
-	err := keeper.BurnNFT(ctx, msg.ContractID, msg.From, msg.TokenIDs...)
+	err := keeper.BurnNFT(ctx, msg.From, msg.TokenIDs...)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +23,7 @@ func handleMsgBurnNFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnNF
 }
 
 func handleMsgBurnNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnNFTFrom) (*sdk.Result, error) {
-	err := keeper.BurnNFTFrom(ctx, msg.ContractID, msg.Proxy, msg.From, msg.TokenIDs...)
+	err := keeper.BurnNFTFrom(ctx, msg.Proxy, msg.From, msg.TokenIDs...)
 	if err != nil {
 		return nil, err
 	}
@@ -39,7 +39,7 @@ func handleMsgBurnNFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBu
 }
 
 func handleMsgBurnFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnFT) (*sdk.Result, error) {
-	err := keeper.BurnFT(ctx, msg.ContractID, msg.From, msg.Amount)
+	err := keeper.BurnFT(ctx, msg.From, msg.Amount)
 	if err != nil {
 		return nil, err
 	}
@@ -55,7 +55,7 @@ func handleMsgBurnFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnFT)
 }
 
 func handleMsgBurnFTFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnFTFrom) (*sdk.Result, error) {
-	err := keeper.BurnFTFrom(ctx, msg.ContractID, msg.Proxy, msg.From, msg.Amount)
+	err := keeper.BurnFTFrom(ctx, msg.Proxy, msg.From, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

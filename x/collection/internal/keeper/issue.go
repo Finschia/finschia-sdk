@@ -14,15 +14,15 @@ type IssueKeeper interface {
 }
 
 func (k Keeper) IssueFT(ctx sdk.Context, owner, to sdk.AccAddress, token types.FT, amount sdk.Int) error {
-	if !k.ExistCollection(ctx, token.GetContractID()) {
-		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", token.GetContractID())
+	if !k.ExistCollection(ctx) {
+		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", k.getContractID(ctx))
 	}
 	err := k.SetToken(ctx, token)
 	if err != nil {
 		return err
 	}
 
-	err = k.MintSupply(ctx, token.GetContractID(), to, types.NewCoins(types.NewCoin(token.GetTokenID(), amount)))
+	err = k.MintSupply(ctx, to, types.NewCoins(types.NewCoin(token.GetTokenID(), amount)))
 	if err != nil {
 		return err
 	}
@@ -30,7 +30,7 @@ func (k Keeper) IssueFT(ctx sdk.Context, owner, to sdk.AccAddress, token types.F
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueFT,
-			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
 			sdk.NewAttribute(types.AttributeKeyOwner, owner.String()),
@@ -45,8 +45,8 @@ func (k Keeper) IssueFT(ctx sdk.Context, owner, to sdk.AccAddress, token types.F
 }
 
 func (k Keeper) IssueNFT(ctx sdk.Context, tokenType types.TokenType, owner sdk.AccAddress) error {
-	if !k.ExistCollection(ctx, tokenType.GetContractID()) {
-		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", tokenType.GetContractID())
+	if !k.ExistCollection(ctx) {
+		return sdkerrors.Wrapf(types.ErrCollectionNotExist, "ContractID: %s", k.getContractID(ctx))
 	}
 
 	err := k.SetTokenType(ctx, tokenType)
@@ -55,14 +55,14 @@ func (k Keeper) IssueNFT(ctx sdk.Context, tokenType types.TokenType, owner sdk.A
 	}
 
 	mintPerm := types.NewMintPermission()
-	k.AddPermission(ctx, tokenType.GetContractID(), owner, mintPerm)
+	k.AddPermission(ctx, owner, mintPerm)
 	burnPerm := types.NewBurnPermission()
-	k.AddPermission(ctx, tokenType.GetContractID(), owner, burnPerm)
+	k.AddPermission(ctx, owner, burnPerm)
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeIssueNFT,
-			sdk.NewAttribute(types.AttributeKeyContractID, tokenType.GetContractID()),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType.GetTokenType()),
 		),
 	})

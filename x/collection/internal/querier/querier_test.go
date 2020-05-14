@@ -1,6 +1,7 @@
 package querier
 
 import (
+	"context"
 	"testing"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -9,6 +10,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/keeper"
 	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -58,30 +60,31 @@ func prepare(t *testing.T) {
 	// prepare contract ID
 	newContractID := ckeeper.NewContractID(ctx)
 	require.Equal(t, contractID, newContractID)
+	ctx2 := ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, contractID))
 
 	// prepare collection
-	require.NoError(t, ckeeper.CreateCollection(ctx, types.NewCollection(contractID, collectionName, meta, imageURL), addr1))
-	require.NoError(t, ckeeper.IssueFT(ctx, addr1, addr1, types.NewFT(contractID, tokenFTID, tokenFTName, meta, sdk.NewInt(1), true), sdk.NewInt(tokenFTSupply)))
-	require.NoError(t, ckeeper.IssueNFT(ctx, types.NewBaseTokenType(contractID, tokenNFTType, tokenNFTTypeName, meta), addr1))
-	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID1, tokenNFTName1, meta, addr1)))
-	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID2, tokenNFTName2, meta, addr1)))
-	require.NoError(t, ckeeper.MintNFT(ctx, addr1, types.NewNFT(contractID, tokenNFTID3, tokenNFTName3, meta, addr1)))
+	require.NoError(t, ckeeper.CreateCollection(ctx2, types.NewCollection(contractID, collectionName, meta, imageURL), addr1))
+	require.NoError(t, ckeeper.IssueFT(ctx2, addr1, addr1, types.NewFT(contractID, tokenFTID, tokenFTName, meta, sdk.NewInt(1), true), sdk.NewInt(tokenFTSupply)))
+	require.NoError(t, ckeeper.IssueNFT(ctx2, types.NewBaseTokenType(contractID, tokenNFTType, tokenNFTTypeName, meta), addr1))
+	require.NoError(t, ckeeper.MintNFT(ctx2, addr1, types.NewNFT(contractID, tokenNFTID1, tokenNFTName1, meta, addr1)))
+	require.NoError(t, ckeeper.MintNFT(ctx2, addr1, types.NewNFT(contractID, tokenNFTID2, tokenNFTName2, meta, addr1)))
+	require.NoError(t, ckeeper.MintNFT(ctx2, addr1, types.NewNFT(contractID, tokenNFTID3, tokenNFTName3, meta, addr1)))
 
-	require.NoError(t, ckeeper.Attach(ctx, contractID, addr1, tokenNFTID1, tokenNFTID2))
-	require.NoError(t, ckeeper.Attach(ctx, contractID, addr1, tokenNFTID1, tokenNFTID3))
-	require.NoError(t, ckeeper.GrantPermission(ctx, contractID, addr1, addr2, types.NewMintPermission()))
-	require.NoError(t, ckeeper.SetApproved(ctx, contractID, addr1, addr2))
+	require.NoError(t, ckeeper.Attach(ctx2, addr1, tokenNFTID1, tokenNFTID2))
+	require.NoError(t, ckeeper.Attach(ctx2, addr1, tokenNFTID1, tokenNFTID3))
+	require.NoError(t, ckeeper.GrantPermission(ctx2, addr1, addr2, types.NewMintPermission()))
+	require.NoError(t, ckeeper.SetApproved(ctx2, addr1, addr2))
 }
 
 func query(t *testing.T, params interface{}, query string, result interface{}) {
-	res, err := queryInternal(params, query)
+	res, err := queryInternal(params, query, contractID)
 	require.NoError(t, err)
 	if len(res) > 0 {
 		require.NoError(t, ckeeper.UnmarshalJSON(res, result))
 	}
 }
 
-func queryInternal(params interface{}, query string) ([]byte, error) {
+func queryInternal(params interface{}, query, contractID string) ([]byte, error) {
 	req := abci.RequestQuery{
 		Path: "",
 		Data: []byte(string(codec.MustMarshalJSONIndent(types.ModuleCdc, params))),
@@ -90,16 +93,18 @@ func queryInternal(params interface{}, query string) ([]byte, error) {
 		req.Data = nil
 	}
 	path := []string{query}
+	if contractID != "" {
+		path = append(path, contractID)
+	}
 	querier := NewQuerier(ckeeper)
 	return querier(ctx, path, req)
 }
 
 func TestNewQuerier_queryBalance(t *testing.T) {
 	prepare(t)
-	params := types.QueryContractIDTokenIDAccAddressParams{
-		ContractID: contractID,
-		TokenID:    tokenFTID,
-		Addr:       addr1,
+	params := types.QueryTokenIDAccAddressParams{
+		TokenID: tokenFTID,
+		Addr:    addr1,
 	}
 	var balance sdk.Int
 	query(t, params, types.QueryBalance, &balance)
@@ -109,10 +114,9 @@ func TestNewQuerier_queryBalance(t *testing.T) {
 func TestNewQuerier_queryBalanceNonExistentAccount(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDAccAddressParams{
-		ContractID: contractID,
-		TokenID:    tokenFTID,
-		Addr:       addr3,
+	params := types.QueryTokenIDAccAddressParams{
+		TokenID: tokenFTID,
+		Addr:    addr3,
 	}
 	var balance sdk.Int
 	query(t, params, types.QueryBalance, &balance)
@@ -123,12 +127,11 @@ func TestNewQuerier_queryBalanceNonExistentContractID(t *testing.T) {
 	prepare(t)
 
 	contractID := "12345678"
-	params := types.QueryContractIDTokenIDAccAddressParams{
-		ContractID: contractID,
-		TokenID:    tokenFTID,
-		Addr:       addr1,
+	params := types.QueryTokenIDAccAddressParams{
+		TokenID: tokenFTID,
+		Addr:    addr1,
 	}
-	_, err := queryInternal(params, types.QueryBalance)
+	_, err := queryInternal(params, types.QueryBalance, contractID)
 	require.Error(t, err, sdkerrors.Wrap(types.ErrCollectionNotExist, contractID))
 }
 
@@ -136,19 +139,18 @@ func TestNewQuerier_queryBalanceNonExistentTokenID(t *testing.T) {
 	prepare(t)
 
 	tokenID := "00000009" + tokenFTIndex
-	params := types.QueryContractIDTokenIDAccAddressParams{
-		ContractID: contractID,
-		TokenID:    tokenID,
-		Addr:       addr1,
+	params := types.QueryTokenIDAccAddressParams{
+		TokenID: tokenID,
+		Addr:    addr1,
 	}
-	_, err := queryInternal(params, types.QueryBalance)
+	_, err := queryInternal(params, types.QueryBalance, contractID)
 	require.Error(t, err, sdkerrors.Wrapf(types.ErrCollectionNotExist, "%s %s", contractID, tokenID))
 }
 
 func TestNewQuerier_queryAccountPermission(t *testing.T) {
 	prepare(t)
 
-	params := types.NewQueryContractIDAccAddressParams(contractID, addr1)
+	params := types.NewQueryAccAddressParams(addr1)
 	var permissions types.Permissions
 	query(t, params, types.QueryPerms, &permissions)
 	require.Equal(t, len(permissions), 4)
@@ -161,9 +163,8 @@ func TestNewQuerier_queryAccountPermission(t *testing.T) {
 func TestNewQuerier_queryTokens_FT(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenFTID,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenFTID,
 	}
 	var token types.Token
 	query(t, params, types.QueryTokens, &token)
@@ -177,9 +178,8 @@ func TestNewQuerier_queryTokens_FT(t *testing.T) {
 func TestNewQuerier_queryTokens_NFT(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID1,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID1,
 	}
 	var token types.Token
 	query(t, params, types.QueryTokens, &token)
@@ -193,9 +193,8 @@ func TestNewQuerier_queryTokens_NFT(t *testing.T) {
 func TestNewQuerier_queryTokens_all(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    "",
+	params := types.QueryTokenIDParams{
+		TokenID: "",
 	}
 	var tokens types.Tokens
 	query(t, params, types.QueryTokens, &tokens)
@@ -225,9 +224,8 @@ func TestNewQuerier_queryTokens_all(t *testing.T) {
 func TestNewQuerier_queryTokenTypes_one(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTType,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTType,
 	}
 	var tokenType types.TokenType
 	query(t, params, types.QueryTokenTypes, &tokenType)
@@ -239,9 +237,8 @@ func TestNewQuerier_queryTokenTypes_one(t *testing.T) {
 func TestNewQuerier_queryTokenTypes_all(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    "",
+	params := types.QueryTokenIDParams{
+		TokenID: "",
 	}
 	var tokenTypes types.TokenTypes
 	query(t, params, types.QueryTokenTypes, &tokenTypes)
@@ -254,33 +251,18 @@ func TestNewQuerier_queryTokenTypes_all(t *testing.T) {
 func TestNewQuerier_queryCollections_one(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDParams{
-		ContractID: contractID,
-	}
 	var collection types.Collection
-	query(t, params, types.QueryCollections, &collection)
+	query(t, nil, types.QueryCollections, &collection)
 	require.Equal(t, collection.GetContractID(), contractID)
 	require.Equal(t, collection.GetName(), collectionName)
 	require.Equal(t, collection.GetBaseImgURI(), imageURL)
 }
 
-func TestNewQuerier_queryCollections_all(t *testing.T) {
-	prepare(t)
-
-	var collections types.Collections
-	query(t, nil, types.QueryCollections, &collections)
-	require.Equal(t, len(collections), 1)
-	require.Equal(t, collections[0].GetContractID(), contractID)
-	require.Equal(t, collections[0].GetName(), collectionName)
-	require.Equal(t, collections[0].GetBaseImgURI(), imageURL)
-}
-
 func TestNewQuerier_queryNFTCount(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTType,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTType,
 	}
 	var count sdk.Int
 	query(t, params, types.QueryNFTCount, &count)
@@ -290,9 +272,8 @@ func TestNewQuerier_queryNFTCount(t *testing.T) {
 func TestNewQuerier_queryTotalSupply_FT(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenFTID,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenFTID,
 	}
 	var supply sdk.Int
 	query(t, params, types.QuerySupply, &supply)
@@ -302,9 +283,8 @@ func TestNewQuerier_queryTotalSupply_FT(t *testing.T) {
 func TestNewQuerier_queryTotalMint_FT(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenFTID,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenFTID,
 	}
 	var supply sdk.Int
 	query(t, params, types.QueryMint, &supply)
@@ -314,9 +294,8 @@ func TestNewQuerier_queryTotalMint_FT(t *testing.T) {
 func TestNewQuerier_queryTotalBurn_FT(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenFTID,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenFTID,
 	}
 	var supply sdk.Int
 	query(t, params, types.QueryBurn, &supply)
@@ -326,9 +305,8 @@ func TestNewQuerier_queryTotalBurn_FT(t *testing.T) {
 func TestNewQuerier_queryTotalSupply_NFT(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID1,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID1,
 	}
 	var supply sdk.Int
 	query(t, params, types.QuerySupply, &supply)
@@ -338,9 +316,8 @@ func TestNewQuerier_queryTotalSupply_NFT(t *testing.T) {
 func TestNewQuerier_queryTotalMint_NFT(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID1,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID1,
 	}
 	var supply sdk.Int
 	query(t, params, types.QueryMint, &supply)
@@ -350,9 +327,8 @@ func TestNewQuerier_queryTotalMint_NFT(t *testing.T) {
 func TestNewQuerier_queryTotalBurn_NFT(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID1,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID1,
 	}
 	var supply sdk.Int
 	query(t, params, types.QueryBurn, &supply)
@@ -362,9 +338,8 @@ func TestNewQuerier_queryTotalBurn_NFT(t *testing.T) {
 func TestNewQuerier_queryParent(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID2,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID2,
 	}
 	var token types.Token
 	query(t, params, types.QueryParent, &token)
@@ -375,9 +350,8 @@ func TestNewQuerier_queryParent(t *testing.T) {
 func TestNewQuerier_queryParent_nil(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID1,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID1,
 	}
 	var token types.Token
 	query(t, params, types.QueryParent, &token)
@@ -387,9 +361,8 @@ func TestNewQuerier_queryParent_nil(t *testing.T) {
 func TestNewQuerier_queryRoot(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID3,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID3,
 	}
 	var token types.Token
 	query(t, params, types.QueryRoot, &token)
@@ -400,9 +373,8 @@ func TestNewQuerier_queryRoot(t *testing.T) {
 func TestNewQuerier_queryRoot_self(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID1,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID1,
 	}
 	var token types.Token
 	query(t, params, types.QueryRoot, &token)
@@ -413,9 +385,8 @@ func TestNewQuerier_queryRoot_self(t *testing.T) {
 func TestNewQuerier_queryChildren(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID1,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID1,
 	}
 	var tokens types.Tokens
 	query(t, params, types.QueryChildren, &tokens)
@@ -429,9 +400,8 @@ func TestNewQuerier_queryChildren(t *testing.T) {
 func TestNewQuerier_queryChildren_empty(t *testing.T) {
 	prepare(t)
 
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID2,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID2,
 	}
 	var tokens types.Tokens
 	query(t, params, types.QueryChildren, &tokens)
@@ -442,9 +412,8 @@ func TestNewQuerier_queryIsApproved_true(t *testing.T) {
 	prepare(t)
 
 	params := types.QueryIsApprovedParams{
-		ContractID: contractID,
-		Proxy:      addr1,
-		Approver:   addr2,
+		Proxy:    addr1,
+		Approver: addr2,
 	}
 	var approved bool
 	query(t, params, types.QueryIsApproved, &approved)
@@ -455,9 +424,8 @@ func TestNewQuerier_queryIsApproved_false(t *testing.T) {
 	prepare(t)
 
 	params := types.QueryIsApprovedParams{
-		ContractID: contractID,
-		Proxy:      addr2,
-		Approver:   addr1,
+		Proxy:    addr2,
+		Approver: addr1,
 	}
 	var approved bool
 	query(t, params, types.QueryIsApproved, &approved)
@@ -466,9 +434,8 @@ func TestNewQuerier_queryIsApproved_false(t *testing.T) {
 
 func TestNewQuerier_invalid(t *testing.T) {
 	prepare(t)
-	params := types.QueryContractIDTokenIDParams{
-		ContractID: contractID,
-		TokenID:    tokenNFTID1,
+	params := types.QueryTokenIDParams{
+		TokenID: tokenNFTID1,
 	}
 	querier := NewQuerier(ckeeper)
 	path := []string{"noquery"}

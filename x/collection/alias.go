@@ -21,8 +21,7 @@ type (
 
 	TokenType = types.TokenType
 
-	Collection  = types.BaseCollection
-	Collections = types.Collections
+	Collection = types.BaseCollection
 
 	MsgCreateCollection = types.MsgCreateCollection
 	MsgIssueFT          = types.MsgIssueFT
