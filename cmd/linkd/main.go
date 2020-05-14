@@ -61,6 +61,7 @@ func main() {
 	rootCmd.AddCommand(testnetCmd(ctx, cdc, app.ModuleBasics, auth.GenesisAccountIterator{}))
 	rootCmd.AddCommand(replayCmd())
 	rootCmd.AddCommand(version.Cmd)
+	rootCmd.AddCommand(errorCodesCmd())
 
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 
