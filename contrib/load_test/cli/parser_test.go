@@ -25,10 +25,5 @@ func TestGetSlaves(t *testing.T) {
 	slaves := getSlaves()
 
 	// Then
-	require.Equal(t, tests.TestMnemonic, slaves[0].Mnemonic)
-	require.Equal(t, tests.TestTargetURL, slaves[0].URL)
-	require.Equal(t, types.QueryAccount, slaves[0].TargetType)
-	require.Equal(t, tests.TestMnemonic2, slaves[1].Mnemonic)
-	require.Equal(t, tests.TestTargetURL, slaves[1].URL)
-	require.Equal(t, types.TxSend, slaves[1].TargetType)
+	require.ElementsMatch(t, []types.Slave{slavesMap["slave1"], slavesMap["slave2"]}, slaves)
 }

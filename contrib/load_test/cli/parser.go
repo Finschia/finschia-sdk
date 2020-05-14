@@ -9,6 +9,7 @@ func getSlaves() []types.Slave {
 	slavesMap := viper.GetStringMap(FlagSlaves)
 	slaves := make([]types.Slave, len(slavesMap))
 	i := 0
+	// The index of slaves and slave numbers do not match.
 	for _, slaveMap := range slavesMap {
 		s, ok := slaveMap.(map[string]interface{})
 		if !ok {
