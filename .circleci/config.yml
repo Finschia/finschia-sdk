@@ -430,6 +430,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - localnet:
           requires:
             - setup_docker_and_binary
@@ -439,6 +440,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - integration_multi_node_test:
           requires:
             - setup_docker_and_binary
@@ -448,6 +450,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - sim-link-nondeterminism:
           requires:
             - setup_dependencies
@@ -457,6 +460,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - sim-link-simulation-after-import:
           requires:
             - setup_dependencies
@@ -466,6 +470,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - sim-link-multi-seed:
           requires:
             - setup_dependencies
@@ -482,6 +487,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - semantic_release:
           requires:
             - unit_test
