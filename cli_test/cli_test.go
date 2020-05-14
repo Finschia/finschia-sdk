@@ -686,6 +686,16 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		token = f.QueryTokenCollection(contractID, myTokenID01)
 		require.Equal(t, contractID, token.GetContractID())
 		require.Equal(t, myTokenID01, token.GetTokenID())
+
+		// check minting order
+		_, stdout, _ := f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y")
+		require.NotEmpty(t, stdout)
+		require.Less(t, strings.Index(stdout, tokenType), strings.Index(stdout, myTokenType))
+
+		mintParam2 := strings.Join([]string{mint2, mint1}, ",")
+		_, stdout2, _ := f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam2, "-y")
+		require.NotEmpty(t, stdout2)
+		require.Greater(t, strings.Index(stdout2, tokenType), strings.Index(stdout2, myTokenType))
 	}
 
 	f.Cleanup()
