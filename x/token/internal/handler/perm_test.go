@@ -20,6 +20,11 @@ func TestHandleMsgGrant(t *testing.T) {
 	}
 
 	permission := types.NewMintPermission()
+	t.Log("Invalid contract id")
+	{
+		msg := types.NewMsgGrantPermission(addr1, "1234567890", addr2, permission)
+		require.Error(t, msg.ValidateBasic())
+	}
 	t.Log("Grant Permission")
 	{
 		msg := types.NewMsgGrantPermission(addr1, defaultContractID, addr2, permission)
@@ -51,6 +56,11 @@ func TestHandleMsgRevoke(t *testing.T) {
 	}
 
 	permission := types.NewMintPermission()
+	t.Log("Invalid contract id")
+	{
+		msg := types.NewMsgRevokePermission(addr1, "1234567890", permission)
+		require.Error(t, msg.ValidateBasic())
+	}
 	t.Log("Revoke Permission")
 	{
 		msg := types.NewMsgRevokePermission(addr1, defaultContractID, permission)

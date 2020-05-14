@@ -71,6 +71,11 @@ func TestHandleMsgGrant(t *testing.T) {
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
+	t.Log("Invalid contract id")
+	{
+		msg := types.NewMsgGrantPermission(addr1, "1234567890", addr2, types.NewModifyPermission())
+		require.Error(t, msg.ValidateBasic())
+	}
 }
 
 func TestHandleMsgRevoke(t *testing.T) {
@@ -146,5 +151,10 @@ func TestHandleMsgRevoke(t *testing.T) {
 			sdk.NewEvent("revoke_perm", sdk.NewAttribute("perm", "modify")),
 		}
 		verifyEventFunc(t, e, res.Events)
+	}
+	t.Log("Invalid contract id")
+	{
+		msg := types.NewMsgRevokePermission(addr1, "1234567890", types.NewModifyPermission())
+		require.Error(t, msg.ValidateBasic())
 	}
 }

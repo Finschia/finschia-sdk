@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
+	"github.com/line/link/x/contract"
 )
 
 var _ sdk.Msg = (*MsgGrantPermission)(nil)
@@ -36,6 +37,9 @@ func (msg MsgGrantPermission) GetSignBytes() []byte {
 }
 
 func (msg MsgGrantPermission) ValidateBasic() error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
 	if msg.From.Empty() || msg.To.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses cannot be empty")
 	}
@@ -72,6 +76,9 @@ func (msg MsgRevokePermission) GetSignBytes() []byte {
 }
 
 func (msg MsgRevokePermission) ValidateBasic() error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
 	if msg.From.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses cannot be empty")
 	}
