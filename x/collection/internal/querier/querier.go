@@ -1,8 +1,11 @@
 package querier
 
 import (
+	"context"
+
 	"github.com/line/link/x/collection/internal/keeper"
 	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link/x/contract"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -12,6 +15,9 @@ import (
 // creates a querier for token REST endpoints
 func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
+		if len(path) >= 2 {
+			ctx = ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, path[1]))
+		}
 		switch path[0] {
 		case types.QueryBalance:
 			return queryBalance(ctx, req, keeper)
@@ -50,22 +56,22 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 }
 
 func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
-	var params types.QueryContractIDTokenIDAccAddressParams
+	var params types.QueryTokenIDAccAddressParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	if !keeper.HasContractID(ctx, params.ContractID) {
-		return nil, sdkerrors.Wrap(types.ErrCollectionNotExist, params.ContractID)
+	if !keeper.HasContractID(ctx) {
+		return nil, sdkerrors.Wrap(types.ErrCollectionNotExist, ctx.Context().Value(contract.CtxKey{}).(string))
 	}
 
-	if !keeper.HasToken(ctx, params.ContractID, params.TokenID) {
-		return nil, sdkerrors.Wrapf(types.ErrTokenNotExist, "%s %s", params.ContractID, params.TokenID)
+	if !keeper.HasToken(ctx, params.TokenID) {
+		return nil, sdkerrors.Wrapf(types.ErrTokenNotExist, "%s %s", ctx.Context().Value(contract.CtxKey{}).(string), params.TokenID)
 	}
 
-	balance, err := keeper.GetBalance(ctx, params.ContractID, params.TokenID, params.Addr)
+	balance, err := keeper.GetBalance(ctx, params.TokenID, params.Addr)
 	if err != nil {
-		if _, err2 := keeper.GetAccount(ctx, params.ContractID, params.Addr); err2 != nil {
+		if _, err2 := keeper.GetAccount(ctx, params.Addr); err2 != nil {
 			balance = sdk.ZeroInt()
 		} else {
 			return nil, err
@@ -82,16 +88,14 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 
 //nolint:dupl
 func queryTokenTypes(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
-	var params types.QueryContractIDTokenIDParams
-	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-	if len(params.TokenID) == 0 {
-		var params types.QueryContractIDParams
+	var params types.QueryTokenIDParams
+	if len(req.Data) != 0 {
 		if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 		}
-		tokenTypes, err := keeper.GetTokenTypes(ctx, params.ContractID)
+	}
+	if len(params.TokenID) == 0 {
+		tokenTypes, err := keeper.GetTokenTypes(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -102,7 +106,7 @@ func queryTokenTypes(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 		return bz, nil
 	}
 
-	tokenType, err := keeper.GetTokenType(ctx, params.ContractID, params.TokenID)
+	tokenType, err := keeper.GetTokenType(ctx, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -117,16 +121,14 @@ func queryTokenTypes(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 
 //nolint:dupl
 func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
-	var params types.QueryContractIDTokenIDParams
-	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-	if len(params.TokenID) == 0 {
-		var params types.QueryContractIDParams
+	var params types.QueryTokenIDParams
+	if len(req.Data) != 0 {
 		if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 			return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 		}
-		tokens, err := keeper.GetTokens(ctx, params.ContractID)
+	}
+	if len(params.TokenID) == 0 {
+		tokens, err := keeper.GetTokens(ctx)
 		if err != nil {
 			return nil, err
 		}
@@ -137,7 +139,7 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 		return bz, nil
 	}
 
-	token, err := keeper.GetToken(ctx, params.ContractID, params.TokenID)
+	token, err := keeper.GetToken(ctx, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -169,21 +171,8 @@ func queryAccountPermission(ctx sdk.Context, req abci.RequestQuery, keeper keepe
 	return bz, nil
 }
 
-func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
-	if len(req.Data) == 0 {
-		collections := keeper.GetAllCollections(ctx)
-		bz, err := keeper.MarshalJSONIndent(collections)
-		if err != nil {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
-		}
-		return bz, nil
-	}
-	var params types.QueryContractIDParams
-	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
-	}
-
-	collection, err := keeper.GetCollection(ctx, params.ContractID)
+func queryCollections(ctx sdk.Context, _ abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
+	collection, err := keeper.GetCollection(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -196,11 +185,11 @@ func queryCollections(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keep
 }
 
 func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, error) {
-	var params types.QueryContractIDTokenIDParams
+	var params types.QueryTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	count, err := keeper.GetNFTCountInt(ctx, params.ContractID, params.TokenID, target)
+	count, err := keeper.GetNFTCountInt(ctx, params.TokenID, target)
 	if err != nil {
 		return nil, err
 	}
@@ -213,12 +202,12 @@ func queryNFTCount(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper,
 }
 
 func queryParent(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
-	var params types.QueryContractIDTokenIDParams
+	var params types.QueryTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	token, err := keeper.ParentOf(ctx, params.ContractID, params.TokenID)
+	token, err := keeper.ParentOf(ctx, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -235,12 +224,12 @@ func queryParent(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 }
 
 func queryRoot(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
-	var params types.QueryContractIDTokenIDParams
+	var params types.QueryTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	token, err := keeper.RootOf(ctx, params.ContractID, params.TokenID)
+	token, err := keeper.RootOf(ctx, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -254,12 +243,12 @@ func queryRoot(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]
 }
 
 func queryChildren(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
-	var params types.QueryContractIDTokenIDParams
+	var params types.QueryTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	tokens, err := keeper.ChildrenOf(ctx, params.ContractID, params.TokenID)
+	tokens, err := keeper.ChildrenOf(ctx, params.TokenID)
 	if err != nil {
 		return nil, err
 	}
@@ -281,7 +270,7 @@ func queryIsApproved(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	approved := keeper.IsApproved(ctx, params.ContractID, params.Proxy, params.Approver)
+	approved := keeper.IsApproved(ctx, params.Proxy, params.Approver)
 
 	bz, err := keeper.MarshalJSONIndent(approved)
 	if err != nil {
@@ -292,12 +281,12 @@ func queryIsApproved(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 }
 
 func queryTotal(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper, target string) ([]byte, error) {
-	var params types.QueryContractIDTokenIDParams
+	var params types.QueryTokenIDParams
 	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	supply, err := keeper.GetTotalInt(ctx, params.ContractID, params.TokenID, target)
+	supply, err := keeper.GetTotalInt(ctx, params.TokenID, target)
 	if err != nil {
 		return nil, err
 	}

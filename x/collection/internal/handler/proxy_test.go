@@ -83,11 +83,8 @@ func TestHandleApproveDisapprove(t *testing.T) {
 	require.Error(t, err) // addr2 does not have the burn permission
 
 	{
-		permission := types.Permission{
-			Action:   "burn",
-			Resource: contractID,
-		}
-		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
+		permission := types.NewBurnPermission()
+		msg := types.NewMsgGrantPermission(addr1, contractID, addr2, permission)
 		_, err := h(ctx, msg)
 		require.NoError(t, err)
 	}
@@ -112,11 +109,8 @@ func TestHandleApproveDisapprove(t *testing.T) {
 	require.NoError(t, err)
 
 	{
-		permission := types.Permission{
-			Action:   "burn",
-			Resource: contractID,
-		}
-		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
+		permission := types.NewBurnPermission()
+		msg := types.NewMsgGrantPermission(addr1, contractID, addr2, permission)
 		_, err := h(ctx, msg)
 		require.NoError(t, err)
 	}

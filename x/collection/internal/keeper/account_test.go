@@ -12,17 +12,17 @@ func TestKeeper_GetAccountSupply(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Balance of addr1. Expect 0")
 	{
-		_, err := keeper.GetBalance(ctx, defaultContractID, defaultTokenIDFT, addr1)
+		_, err := keeper.GetBalance(ctx, defaultTokenIDFT, addr1)
 		require.Error(t, err)
 	}
 	t.Log("Set tokens to addr1")
 	{
-		_, err := keeper.AddCoins(ctx, defaultContractID, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))))
+		_, err := keeper.AddCoins(ctx, addr1, types.NewCoins(types.NewCoin(defaultTokenIDFT, sdk.NewInt(defaultAmount))))
 		require.NoError(t, err)
 	}
 	t.Log("Balance of addr1.")
 	{
-		balance, err := keeper.GetBalance(ctx, defaultContractID, defaultTokenIDFT, addr1)
+		balance, err := keeper.GetBalance(ctx, defaultTokenIDFT, addr1)
 		require.NoError(t, err)
 		require.Equal(t, int64(defaultAmount), balance.Int64())
 	}
@@ -60,7 +60,7 @@ func TestKeeper_GetAccount(t *testing.T) {
 	}
 	t.Log("Get Account")
 	{
-		actual, err := keeper.GetAccount(ctx, defaultContractID, addr1)
+		actual, err := keeper.GetAccount(ctx, addr1)
 		require.NoError(t, err)
 		verifyAccountFunc(t, expected, actual)
 	}
@@ -99,7 +99,7 @@ func TestKeeper_GetOrNewAccount(t *testing.T) {
 	}
 	t.Log("Get Account addr1")
 	{
-		actual, err := keeper.GetOrNewAccount(ctx, defaultContractID, addr1)
+		actual, err := keeper.GetOrNewAccount(ctx, addr1)
 		require.NoError(t, err)
 		verifyAccountFunc(t, expected, actual)
 	}
@@ -107,7 +107,7 @@ func TestKeeper_GetOrNewAccount(t *testing.T) {
 	expected = types.NewBaseAccountWithAddress(defaultContractID, addr2)
 	t.Log("Get Account addr2")
 	{
-		actual, err := keeper.GetOrNewAccount(ctx, defaultContractID, addr2)
+		actual, err := keeper.GetOrNewAccount(ctx, addr2)
 		require.NoError(t, err)
 		verifyAccountFunc(t, expected, actual)
 	}

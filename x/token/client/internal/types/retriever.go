@@ -16,18 +16,18 @@ func NewRetriever(querier types.NodeQuerier) Retriever {
 	return Retriever{querier: querier}
 }
 
-func (r Retriever) query(path string, data []byte) ([]byte, int64, error) {
-	return r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", types.QuerierRoute, path), data)
+func (r Retriever) query(path, contractID string, data []byte) ([]byte, int64, error) {
+	return r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, path, contractID), data)
 }
 
-func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddress) (types.Permissions, int64, error) {
+func (r Retriever) GetAccountPermission(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (types.Permissions, int64, error) {
 	var pms types.Permissions
-	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressParams(addr))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDAccAddressParams(addr))
 	if err != nil {
 		return pms, 0, err
 	}
 
-	res, height, err := r.query(types.QueryPerms, bs)
+	res, height, err := r.query(types.QueryPerms, contractID, bs)
 	if err != nil {
 		return pms, height, err
 	}
@@ -41,12 +41,12 @@ func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddr
 
 func (r Retriever) GetAccountBalance(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (sdk.Int, int64, error) {
 	var supply sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressContractIDParams(contractID, addr))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDAccAddressParams(addr))
 	if err != nil {
 		return supply, 0, err
 	}
 
-	res, height, err := r.query(types.QueryBalance, bs)
+	res, height, err := r.query(types.QueryBalance, contractID, bs)
 	if err != nil {
 		return supply, height, err
 	}
@@ -59,12 +59,8 @@ func (r Retriever) GetAccountBalance(ctx context.CLIContext, contractID string, 
 }
 func (r Retriever) GetTotal(ctx context.CLIContext, contractID string, target string) (sdk.Int, int64, error) {
 	var total sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDParams(contractID))
-	if err != nil {
-		return total, 0, err
-	}
 
-	res, height, err := r.query(target, bs)
+	res, height, err := r.query(target, contractID, nil)
 	if err != nil {
 		return total, height, err
 	}
@@ -78,12 +74,8 @@ func (r Retriever) GetTotal(ctx context.CLIContext, contractID string, target st
 
 func (r Retriever) GetToken(ctx context.CLIContext, contractID string) (types.Token, int64, error) {
 	var token types.Token
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDParams(contractID))
-	if err != nil {
-		return token, 0, err
-	}
 
-	res, height, err := r.query(types.QueryTokens, bs)
+	res, height, err := r.query(types.QueryTokens, contractID, nil)
 	if err != nil {
 		return token, height, err
 	}
@@ -92,20 +84,4 @@ func (r Retriever) GetToken(ctx context.CLIContext, contractID string) (types.To
 		return token, height, err
 	}
 	return token, height, nil
-}
-
-func (r Retriever) GetTokens(ctx context.CLIContext) (types.Tokens, int64, error) {
-	var tokens types.Tokens
-
-	res, height, err := r.query(types.QueryTokens, nil)
-	if err != nil {
-		return tokens, 0, err
-	}
-
-	err = ctx.Codec.UnmarshalJSON(res, &tokens)
-	if err != nil {
-		return tokens, 0, err
-	}
-
-	return tokens, height, nil
 }

@@ -1,0 +1,8 @@
+{
+    "result": {
+        "denom": "vat",
+        "symbol": "VAT",
+        "name": "Validator Authority Token",
+        "decimals": 6
+    }
+}

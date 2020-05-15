@@ -27,11 +27,11 @@ func TestHandleMsgCreateCollection(t *testing.T) {
 			sdk.NewEvent("create_collection", sdk.NewAttribute("name", defaultName)),
 			sdk.NewEvent("create_collection", sdk.NewAttribute("owner", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", contractID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "issue")),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "modify")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "issue")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "mint")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "burn")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "modify")),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}

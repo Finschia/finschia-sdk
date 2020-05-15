@@ -17,7 +17,7 @@ func TestKeeper_GetTokenType(t *testing.T) {
 	}
 	t.Log("Get Token Type")
 	{
-		actual, err := keeper.GetTokenType(ctx, defaultContractID, defaultTokenType)
+		actual, err := keeper.GetTokenType(ctx, defaultTokenType)
 		require.NoError(t, err)
 		verifyTokenTypeFunc(t, expected, actual)
 	}
@@ -51,7 +51,7 @@ func TestKeeper_HasTokenType(t *testing.T) {
 	}
 	t.Log("Get Token Type")
 	{
-		require.True(t, keeper.HasTokenType(ctx, defaultContractID, defaultTokenType))
+		require.True(t, keeper.HasTokenType(ctx, defaultTokenType))
 	}
 }
 
@@ -72,7 +72,7 @@ func TestKeeper_UpdateTokenType(t *testing.T) {
 
 	t.Log("Get Token Type")
 	{
-		actual, err := keeper.GetTokenType(ctx, defaultContractID, defaultTokenType)
+		actual, err := keeper.GetTokenType(ctx, defaultTokenType)
 		require.NoError(t, err)
 		verifyTokenTypeFunc(t, expected, actual)
 	}
@@ -84,7 +84,7 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
 	t.Log("Get Next Token Type")
 	{
-		tokenType, err := keeper.GetNextTokenType(ctx, defaultContractID)
+		tokenType, err := keeper.GetNextTokenType(ctx)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenType, tokenType)
 	}
@@ -96,7 +96,7 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 	}
 	t.Log("Get TokenTypes")
 	{
-		tokenTypes, err := keeper.GetTokenTypes(ctx, defaultContractID)
+		tokenTypes, err := keeper.GetTokenTypes(ctx)
 		require.NoError(t, err)
 		require.Equal(t, tokenTypes[0].GetTokenType(), defaultTokenType)
 		require.Equal(t, tokenTypes[1].GetTokenType(), defaultTokenType2)
@@ -104,14 +104,14 @@ func TestKeeper_GetNextTokenType(t *testing.T) {
 	}
 	t.Log("Get Next Token Type")
 	{
-		tokenType, err := keeper.GetNextTokenType(ctx, defaultContractID)
+		tokenType, err := keeper.GetNextTokenType(ctx)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenType4, tokenType)
 	}
 	t.Log("Set Full")
 	{
-		keeper.setNextTokenTypeNFT(ctx, defaultContractID, "ffffffff")
-		_, err := keeper.getNextTokenTypeNFT(ctx, defaultContractID)
+		keeper.setNextTokenTypeNFT(ctx, "ffffffff")
+		_, err := keeper.getNextTokenTypeNFT(ctx)
 		require.Error(t, err)
 	}
 }

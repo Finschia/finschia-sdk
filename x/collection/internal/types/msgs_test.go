@@ -110,7 +110,7 @@ func TestMsgBasics(t *testing.T) {
 	}
 	{
 		addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-		msg := NewMsgGrantPermission(addr1, addr2, Permission{Action: "issue", Resource: "resource"})
+		msg := NewMsgGrantPermission(addr1, defaultContractID, addr2, NewIssuePermission())
 		require.Equal(t, "grant_perm", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
@@ -130,7 +130,7 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
-		msg := NewMsgRevokePermission(addr1, Permission{Action: "issue", Resource: "resource"})
+		msg := NewMsgRevokePermission(addr1, defaultContractID, NewIssuePermission())
 		require.Equal(t, "revoke_perm", msg.Type())
 		require.Equal(t, "collection", msg.Route())
 		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())

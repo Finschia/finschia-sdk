@@ -115,13 +115,34 @@ jobs:
       - checkout
       - restore_cache:
           keys:
+            - dependency-cache-cleveldb-1.20
+      - run:
+          name: run setup cleveldb
+          command: |
+            set -x
+            export WITH_CLEVELDB=yes
+            if [ ! -d /tmp/cleveldb_binary ] ; then
+                mkdir -p /tmp/cleveldb_binary
+                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
+            fi
+            pushd /tmp/cleveldb_binary
+            ./get_cleveldb.sh ${WITH_CLEVELDB}
+            popd
+      - save_cache:
+          key: dependency-cache-cleveldb-1.20
+          paths:
+            - "/tmp/cleveldb_binary"
+      - restore_cache:
+          keys:
             - dependency-cache-mod-{{ checksum "go.sum" }}
       - run:
           name: binaries
           command: |
             export PATH=/tmp/workspace/bin:$PATH
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             make go-mod-cache
-            make install
+            make install WITH_CLEVELDB=yes
       - save_cache:
           key: dependency-cache-mod-{{ checksum "go.sum" }}
           paths:
@@ -139,8 +160,13 @@ jobs:
       - restore_cache:
           keys:
             - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run: go get github.com/golangci/golangci-lint/cmd/golangci-lint
-      - run: make lint
+      - run:
+          name: lint
+          command: |
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            go get github.com/golangci/golangci-lint/cmd/golangci-lint
+            make lint
   unit_test:
     <<: *linux_defaults
     resource_class: medium
@@ -166,11 +192,44 @@ jobs:
           command: |
             export BUILDDIR=`pwd`/build
             make test-integration
+  integration_test_load_tester:
+    <<: *linux_defaults
+    resource_class: xlarge
+    parallelism: 1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - dependency-cache-mod-{{ checksum "go.sum" }}
+      - run:
+          name: Test cli
+          command: |
+            export BUILDDIR=`pwd`/build
+            make test-integration-load-tester
   setup_docker_and_binary:
     <<: *machine_defaults
     resource_class: xlarge
     steps:
       - checkout
+      - restore_cache:
+          keys:
+            - machine-dependency-cache-cleveldb-1.20
+      - run:
+          name: run setup cleveldb
+          command: |
+            set -x
+            export WITH_CLEVELDB=yes
+            if [ ! -d /tmp/cleveldb_binary ] ; then
+                mkdir -p /tmp/cleveldb_binary
+                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
+            fi
+            pushd /tmp/cleveldb_binary
+            ./get_cleveldb.sh ${WITH_CLEVELDB}
+            popd
+      - save_cache:
+          key: machine-dependency-cache-cleveldb-1.20
+          paths:
+            - "/tmp/cleveldb_binary"
       - restore_cache:
           keys:
             - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
@@ -191,7 +250,9 @@ jobs:
           name: build binaries
           command: |
             set -x
-            make build 
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make build WITH_CLEVELDB=yes
       - save_cache:
           key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
           paths:
@@ -260,6 +321,17 @@ jobs:
       - checkout
       - restore_cache:
           keys:
+            - machine-dependency-cache-cleveldb-1.20
+      - run:
+          name: copy cleveldb binary
+          command: |
+            set -x
+            export WITH_CLEVELDB=yes
+            pushd /tmp/cleveldb_binary
+            ./get_cleveldb.sh ${WITH_CLEVELDB}
+            popd
+      - restore_cache:
+          keys:
             - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
       - run:
           name: copy go compiler
@@ -273,12 +345,14 @@ jobs:
           name: build binary
           command: |
             set -x
-            make build
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make build WITH_CLEVELDB=yes
       - run:
           name: build docker image
           command: |
             set -x
-            make build-docker
+            make build-docker WITH_CLEVELDB=yes
       - run:
           name: run integration test for multi node and exit on failure
           command: |
@@ -305,7 +379,7 @@ jobs:
           name: build docker image
           command: |
             set -x
-            make build-docker
+            make build-docker WITH_CLEVELDB=yes
       - run:
           name: run localnet and exit on failure
           command: |
@@ -341,6 +415,8 @@ jobs:
       - run:
           name: Get Node.js and test REST implementation against swagger documentation
           command: |
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             go get github.com/snikch/goodman/cmd/goodman
             ./contrib/get_node.sh && make contract-test
 workflows:
@@ -363,6 +439,9 @@ workflows:
       - integration_test:
           requires:
             - setup_dependencies
+      - integration_test_load_tester:
+          requires:
+            - setup_dependencies
       - contract_test
       - setup_docker_and_binary:
           requires:
@@ -373,6 +452,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - localnet:
           requires:
             - setup_docker_and_binary
@@ -382,6 +462,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - integration_multi_node_test:
           requires:
             - setup_docker_and_binary
@@ -391,6 +472,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - sim-link-nondeterminism:
           requires:
             - setup_dependencies
@@ -400,6 +482,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - sim-link-simulation-after-import:
           requires:
             - setup_dependencies
@@ -409,6 +492,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - sim-link-multi-seed:
           requires:
             - setup_dependencies
@@ -425,6 +509,7 @@ workflows:
                 - master
                 - develop
                 - /hotfix-.*/
+                - /testall-.*/
       - semantic_release:
           requires:
             - unit_test

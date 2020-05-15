@@ -138,7 +138,9 @@ func TestMultiValidatorAddNodeAndPromoteValidator(t *testing.T) {
 	newValTokens := sdk.TokensFromConsensusPower(2)
 	{
 		privVal := privval.LoadFilePVEmptyState(f2.PrivValidatorKeyFile(), "")
-		consPubKey := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, privVal.GetPubKey())
+		pubkey, err := privVal.GetPubKey()
+		require.NoError(t, err)
+		consPubKey := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, pubkey)
 
 		f2.TxStakingCreateValidator(keyBar, consPubKey, sdk.NewCoin(denom, newValTokens), "-y")
 		tests.WaitForNextNBlocksTM(1, f2.Port)

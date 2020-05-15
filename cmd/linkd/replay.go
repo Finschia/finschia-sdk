@@ -91,7 +91,7 @@ func replayTxs(rootDir string) error {
 	// Application
 	fmt.Fprintln(os.Stderr, "Creating application")
 	myapp := app.NewLinkApp(
-		ctx.Logger, appDB, traceStoreWriter, true, uint(1),
+		ctx.Logger, appDB, traceStoreWriter, true, map[int64]bool{}, uint(1),
 		baseapp.SetPruning(store.PruneEverything), // nothing
 	)
 
@@ -174,7 +174,7 @@ func replayTxs(rootDir string) error {
 
 		t2 := time.Now()
 
-		state, err = blockExec.ApplyBlock(state, blockmeta.BlockID, block)
+		state, _, err = blockExec.ApplyBlock(state, blockmeta.BlockID, block)
 		if err != nil {
 			return err
 		}

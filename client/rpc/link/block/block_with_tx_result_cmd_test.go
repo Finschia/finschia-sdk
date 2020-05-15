@@ -81,6 +81,20 @@ func TestProcess(t *testing.T) {
 		require.Equal(t, expectedErr, err)
 		require.Equal(t, "", string(actual))
 	}
+	t.Log("block height does not exist", checkMark)
+	{
+		_, mockCliContext, mockClient, mockTendermint, mockCodec, rb := prepareCMD(t)
+
+		fromBlockHeight := int64(100)
+		args := []string{strconv.Itoa(int(fromBlockHeight)), "1"}
+
+		expectedErr := fmt.Errorf("the block height does not exist. Requested: %d, Latest: %d", fromBlockHeight, rb.Block.Header.Height)
+		mockCliContext.EXPECT().GetNode().Return(mockClient, nil).Times(2)
+		mockClient.EXPECT().Block(gomock.Any()).Return(rb, nil).Times(2)
+		actual, err := process(args, &Util{lcliCtx: mockCliContext, ltmtl: mockTendermint, lcdc: mockCodec})
+		require.Equal(t, expectedErr, err)
+		require.Equal(t, "", string(actual))
+	}
 }
 
 func prepareCMD(t *testing.T) ([]string, *MockCLIContext, *MockClient, *MockTendermint, *MockCodec, *ctypes.ResultBlock) {

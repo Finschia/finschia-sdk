@@ -16,18 +16,18 @@ func NewRetriever(querier types.NodeQuerier) Retriever {
 	return Retriever{querier: querier}
 }
 
-func (r Retriever) query(path string, data []byte) ([]byte, int64, error) {
-	return r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", types.QuerierRoute, path), data)
+func (r Retriever) query(path, contractID string, data []byte) ([]byte, int64, error) {
+	return r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, path, contractID), data)
 }
 
 func (r Retriever) GetAccountBalance(ctx context.CLIContext, contractID, tokenID string, addr sdk.AccAddress) (sdk.Int, int64, error) {
 	var balance sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDTokenIDAccAddressParams(contractID, tokenID, addr))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryTokenIDAccAddressParams(tokenID, addr))
 	if err != nil {
 		return balance, 0, err
 	}
 
-	res, height, err := r.query(types.QueryBalance, bs)
+	res, height, err := r.query(types.QueryBalance, contractID, bs)
 	if err != nil {
 		return balance, height, err
 	}
@@ -39,14 +39,14 @@ func (r Retriever) GetAccountBalance(ctx context.CLIContext, contractID, tokenID
 	return balance, height, nil
 }
 
-func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddress) (types.Permissions, int64, error) {
+func (r Retriever) GetAccountPermission(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (types.Permissions, int64, error) {
 	var pms types.Permissions
 	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressParams(addr))
 	if err != nil {
 		return pms, 0, err
 	}
 
-	res, height, err := r.query(types.QueryPerms, bs)
+	res, height, err := r.query(types.QueryPerms, contractID, bs)
 	if err != nil {
 		return pms, height, err
 	}
@@ -60,12 +60,7 @@ func (r Retriever) GetAccountPermission(ctx context.CLIContext, addr sdk.AccAddr
 
 func (r Retriever) GetCollection(ctx context.CLIContext, contractID string) (types.BaseCollection, int64, error) {
 	var collection types.BaseCollection
-	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDParams(contractID))
-	if err != nil {
-		return collection, 0, err
-	}
-
-	res, height, err := r.query(types.QueryCollections, bs)
+	res, height, err := r.query(types.QueryCollections, contractID, nil)
 	if err != nil {
 		return collection, height, err
 	}
@@ -77,25 +72,9 @@ func (r Retriever) GetCollection(ctx context.CLIContext, contractID string) (typ
 	return collection, height, nil
 }
 
-func (r Retriever) GetCollections(ctx context.CLIContext) (types.Collections, int64, error) {
-	var collections types.Collections
-
-	res, height, err := r.query(types.QueryCollections, nil)
-	if err != nil {
-		return collections, 0, err
-	}
-
-	err = ctx.Codec.UnmarshalJSON(res, &collections)
-	if err != nil {
-		return collections, 0, err
-	}
-
-	return collections, height, nil
-}
-
 func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, contractID, tokenID, target string) (sdk.Int, int64, error) {
 	var nftcount sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryTokenIDParams(tokenID))
 	if err != nil {
 		return nftcount, 0, err
 	}
@@ -103,7 +82,7 @@ func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, contractID, tok
 		return nftcount, 0, fmt.Errorf("invalid target : %s", target)
 	}
 
-	res, height, err := r.query(target, bs)
+	res, height, err := r.query(target, contractID, bs)
 	if err != nil {
 		return nftcount, height, err
 	}
@@ -117,12 +96,12 @@ func (r Retriever) GetCollectionNFTCount(ctx context.CLIContext, contractID, tok
 
 func (r Retriever) GetTotal(ctx context.CLIContext, contractID, tokenID, target string) (sdk.Int, int64, error) {
 	var supply sdk.Int
-	bs, err := ctx.Codec.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryTokenIDParams(tokenID))
 	if err != nil {
 		return supply, 0, err
 	}
 
-	res, height, err := r.query(target, bs)
+	res, height, err := r.query(target, contractID, bs)
 	if err != nil {
 		return supply, height, err
 	}
@@ -136,12 +115,12 @@ func (r Retriever) GetTotal(ctx context.CLIContext, contractID, tokenID, target 
 
 func (r Retriever) GetToken(ctx context.CLIContext, contractID, tokenID string) (types.Token, int64, error) {
 	var token types.Token
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenIDParams(tokenID))
 	if err != nil {
 		return token, 0, err
 	}
 
-	res, height, err := r.query(types.QueryTokens, bs)
+	res, height, err := r.query(types.QueryTokens, contractID, bs)
 	if err != nil {
 		return token, height, err
 	}
@@ -154,12 +133,7 @@ func (r Retriever) GetToken(ctx context.CLIContext, contractID, tokenID string) 
 
 func (r Retriever) GetTokens(ctx context.CLIContext, contractID string) (types.Tokens, int64, error) {
 	var tokens types.Tokens
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDParams(contractID))
-	if err != nil {
-		return tokens, 0, err
-	}
-
-	res, height, err := r.query(types.QueryTokens, bs)
+	res, height, err := r.query(types.QueryTokens, contractID, nil)
 	if err != nil {
 		return tokens, height, err
 	}
@@ -172,12 +146,12 @@ func (r Retriever) GetTokens(ctx context.CLIContext, contractID string) (types.T
 
 func (r Retriever) GetTokenType(ctx context.CLIContext, contractID, tokenTypeID string) (types.TokenType, int64, error) {
 	var tokenType types.TokenType
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenTypeID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenIDParams(tokenTypeID))
 	if err != nil {
 		return tokenType, 0, err
 	}
 
-	res, height, err := r.query(types.QueryTokenTypes, bs)
+	res, height, err := r.query(types.QueryTokenTypes, contractID, bs)
 	if err != nil {
 		return tokenType, height, err
 	}
@@ -190,12 +164,8 @@ func (r Retriever) GetTokenType(ctx context.CLIContext, contractID, tokenTypeID 
 
 func (r Retriever) GetTokenTypes(ctx context.CLIContext, contractID string) (types.TokenTypes, int64, error) {
 	var tokenTypes types.TokenTypes
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDParams(contractID))
-	if err != nil {
-		return tokenTypes, 0, err
-	}
 
-	res, height, err := r.query(types.QueryTokenTypes, bs)
+	res, height, err := r.query(types.QueryTokenTypes, contractID, nil)
 	if err != nil {
 		return tokenTypes, height, err
 	}
@@ -207,12 +177,12 @@ func (r Retriever) GetTokenTypes(ctx context.CLIContext, contractID string) (typ
 }
 
 func (r Retriever) IsApproved(ctx context.CLIContext, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) (approved bool, height int64, err error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryIsApprovedParams(contractID, proxy, approver))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryIsApprovedParams(proxy, approver))
 	if err != nil {
 		return false, 0, err
 	}
 
-	res, height, err := r.query(types.QueryIsApproved, bs)
+	res, height, err := r.query(types.QueryIsApproved, contractID, bs)
 	if err != nil {
 		return false, 0, err
 	}
@@ -233,12 +203,12 @@ func (r Retriever) EnsureExists(ctx context.CLIContext, contractID, tokenID stri
 }
 
 func (r Retriever) GetParent(ctx context.CLIContext, contractID, tokenID string) (types.Token, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenIDParams(tokenID))
 	if err != nil {
 		return nil, 0, err
 	}
 
-	res, height, err := r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryParent), bs)
+	res, height, err := r.query(types.QueryParent, contractID, bs)
 	if res == nil {
 		return nil, 0, err
 	}
@@ -252,12 +222,12 @@ func (r Retriever) GetParent(ctx context.CLIContext, contractID, tokenID string)
 }
 
 func (r Retriever) GetRoot(ctx context.CLIContext, contractID, tokenID string) (types.Token, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenIDParams(tokenID))
 	if err != nil {
 		return nil, 0, err
 	}
 
-	res, height, err := r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryRoot), bs)
+	res, height, err := r.query(types.QueryRoot, contractID, bs)
 	if res == nil {
 		return nil, 0, err
 	}
@@ -271,12 +241,12 @@ func (r Retriever) GetRoot(ctx context.CLIContext, contractID, tokenID string) (
 }
 
 func (r Retriever) GetChildren(ctx context.CLIContext, contractID, tokenID string) (types.Tokens, int64, error) {
-	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryContractIDTokenIDParams(contractID, tokenID))
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenIDParams(tokenID))
 	if err != nil {
 		return nil, 0, err
 	}
 
-	res, height, err := r.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", types.QuerierRoute, types.QueryChildren), bs)
+	res, height, err := r.query(types.QueryChildren, contractID, bs)
 	if res == nil {
 		return nil, 0, err
 	}

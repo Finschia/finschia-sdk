@@ -80,12 +80,12 @@ var (
 	NewInMemoryKeyBase                 = keys.NewInMemoryKeyBase
 	NewRestServer                      = lcd.NewRestServer
 	ServeCommand                       = linklcd.ServeCommand
-	BlockCommand                       = block.Command
+	BlockCommand                       = rpc.BlockCommand
 	BlockWithResultCommand             = block.WithTxResultCommand
 	QueryGenesisAccountCmd             = genesis.QueryGenesisAccountCmd
 	QueryGenesisTxCmd                  = genesis.QueryGenesisTxCmd
-	BlockRequestHandlerFn              = block.RequestHandlerFn
-	LatestBlockRequestHandlerFn        = block.LatestBlockRequestHandlerFn
+	BlockRequestHandlerFn              = rpc.BlockRequestHandlerFn
+	LatestBlockRequestHandlerFn        = rpc.LatestBlockRequestHandlerFn
 	MempoolCmd                         = mempool.Command
 	RegisterRPCRoutes                  = linkrpc.RegisterRPCRoutes
 	StatusCommand                      = rpc.StatusCommand

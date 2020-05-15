@@ -92,11 +92,6 @@ func (u *Util) ValidateBlock(rb *ctypes.ResultBlock) (err error) {
 }
 
 func (u *Util) fetchByBlockHeights(latestBlockHeight *int64, fromBlockHeight *int64, fetchSize *int8) (blockWithRxResultsWrapper *cdc.HasMoreResponseWrapper, err error) {
-	if *fromBlockHeight > *latestBlockHeight {
-		return nil,
-			fmt.Errorf("latestBlockHeight(%d) less than fromBlockHeight(%d)", *latestBlockHeight, *fromBlockHeight)
-	}
-
 	fbh := NewFetchInfo(latestBlockHeight, fromBlockHeight, fetchSize)
 	fetchResultWithTxRes := make([]*cdc.FetchResultWithTxRes, fbh.fetchItemCnt)
 	blockFetchErrors := make([]error, fbh.fetchItemCnt)
@@ -182,7 +177,12 @@ func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResultWithTxRes, er
 			return nil, txFetchErr
 		}
 	}
-	return &cdc.FetchResultWithTxRes{ResultBlock: resBlock, TxResponses: txResponses}, nil
+
+	blockSize := resBlock.Block.Size()
+
+	resultBlock := &cdc.ResultBlock{BlockSize: blockSize, ResultBlock: resBlock}
+
+	return &cdc.FetchResultWithTxRes{ResultBlock: resultBlock, TxResponses: txResponses}, nil
 }
 
 func (u *Util) formatTxResult(resTx *ctypes.ResultTx, timestamp string) (*sdk.TxResponse, error) {

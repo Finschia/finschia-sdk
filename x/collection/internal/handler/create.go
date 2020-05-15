@@ -4,10 +4,15 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/x/collection/internal/keeper"
 	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link/x/contract"
 )
 
 func handleMsgCreateCollection(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgCreateCollection) (*sdk.Result, error) {
-	collection := types.NewCollection(keeper.NewContractID(ctx), msg.Name, msg.Meta, msg.BaseImgURI)
+	contractI := ctx.Context().Value(contract.CtxKey{})
+	if contractI == nil {
+		panic("contract id does not set")
+	}
+	collection := types.NewCollection(contractI.(string), msg.Name, msg.Meta, msg.BaseImgURI)
 	err := keeper.CreateCollection(ctx, collection, msg.Owner)
 	if err != nil {
 		return nil, err

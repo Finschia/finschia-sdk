@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/line/link/client"
+	"github.com/line/link/x/account/client/utils"
 	"github.com/line/link/x/account/internal/types"
-	"github.com/line/link/x/auth/client/utils"
 	"github.com/spf13/cobra"
 )
 

@@ -6,20 +6,23 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) GetToken(ctx sdk.Context, contractID string) (types.Token, error) {
+func (k Keeper) GetToken(ctx sdk.Context) (types.Token, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.TokenKey(contractID))
+	bz := store.Get(types.TokenKey(k.getContractID(ctx)))
 	if bz == nil {
-		return nil, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s", contractID)
+		return nil, sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s", k.getContractID(ctx))
 	}
 	return k.mustDecodeToken(bz), nil
 }
 
 func (k Keeper) SetToken(ctx sdk.Context, token types.Token) error {
+	if k.getContractID(ctx) != token.GetContractID() {
+		panic("cannot set token with different contract id")
+	}
 	store := ctx.KVStore(k.storeKey)
-	tokenKey := types.TokenKey(token.GetContractID())
+	tokenKey := types.TokenKey(k.getContractID(ctx))
 	if store.Has(tokenKey) {
-		return sdkerrors.Wrapf(types.ErrTokenExist, "ContractID: %s", token.GetContractID())
+		return sdkerrors.Wrapf(types.ErrTokenExist, "ContractID: %s", k.getContractID(ctx))
 	}
 	store.Set(tokenKey, k.cdc.MustMarshalBinaryBare(token))
 
@@ -29,10 +32,13 @@ func (k Keeper) SetToken(ctx sdk.Context, token types.Token) error {
 }
 
 func (k Keeper) UpdateToken(ctx sdk.Context, token types.Token) error {
+	if k.getContractID(ctx) != token.GetContractID() {
+		panic("cannot update token with different contract id")
+	}
 	store := ctx.KVStore(k.storeKey)
-	tokenKey := types.TokenKey(token.GetContractID())
+	tokenKey := types.TokenKey(k.getContractID(ctx))
 	if !store.Has(tokenKey) {
-		return sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s", token.GetContractID())
+		return sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s", k.getContractID(ctx))
 	}
 	store.Set(tokenKey, k.cdc.MustMarshalBinaryBare(token))
 	return nil

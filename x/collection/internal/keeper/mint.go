@@ -7,13 +7,13 @@ import (
 )
 
 type MintKeeper interface {
-	MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount types.Coins) error
+	MintFT(ctx sdk.Context, from, to sdk.AccAddress, amount types.Coins) error
 	MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) error
 }
 
-func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddress, amount types.Coins) error {
+func (k Keeper) MintFT(ctx sdk.Context, from, to sdk.AccAddress, amount types.Coins) error {
 	for _, coin := range amount {
-		token, err := k.GetToken(ctx, contractID, coin.Denom)
+		token, err := k.GetToken(ctx, coin.Denom)
 		if err != nil {
 			return err
 		}
@@ -21,14 +21,14 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddre
 			return err
 		}
 	}
-	err := k.MintSupply(ctx, contractID, to, amount)
+	err := k.MintSupply(ctx, to, amount)
 	if err != nil {
 		return err
 	}
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeMintFT,
-			sdk.NewAttribute(types.AttributeKeyContractID, contractID),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
 			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
 			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
@@ -38,11 +38,11 @@ func (k Keeper) MintFT(ctx sdk.Context, contractID string, from, to sdk.AccAddre
 }
 
 func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) error {
-	if !k.HasTokenType(ctx, token.GetContractID(), token.GetTokenType()) {
-		return sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", token.GetContractID(), token.GetTokenType())
+	if !k.HasTokenType(ctx, token.GetTokenType()) {
+		return sdkerrors.Wrapf(types.ErrTokenTypeNotExist, "ContractID: %s, TokenType: %s", k.getContractID(ctx), token.GetTokenType())
 	}
 
-	perm := types.NewMintPermission(token.GetContractID())
+	perm := types.NewMintPermission()
 	if !k.HasPermission(ctx, from, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
@@ -52,7 +52,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) e
 		return err
 	}
 
-	err = k.MintSupply(ctx, token.GetContractID(), token.GetOwner(), types.OneCoins(token.GetTokenID()))
+	err = k.MintSupply(ctx, token.GetOwner(), types.OneCoins(token.GetTokenID()))
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) e
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeMintNFT,
-			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 			sdk.NewAttribute(types.AttributeKeyName, token.GetName()),
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
 			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
@@ -74,13 +74,13 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) e
 func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) error {
 	ft, ok := token.(types.FT)
 	if !ok {
-		return sdkerrors.Wrapf(types.ErrTokenNotMintable, "ContractID: %s, TokenID: %s", token.GetContractID(), token.GetTokenID())
+		return sdkerrors.Wrapf(types.ErrTokenNotMintable, "ContractID: %s, TokenID: %s", k.getContractID(ctx), token.GetTokenID())
 	}
 
 	if !ft.GetMintable() {
-		return sdkerrors.Wrapf(types.ErrTokenNotMintable, "ContractID: %s, TokenID: %s", token.GetContractID(), token.GetTokenID())
+		return sdkerrors.Wrapf(types.ErrTokenNotMintable, "ContractID: %s, TokenID: %s", k.getContractID(ctx), token.GetTokenID())
 	}
-	perm := types.NewMintPermission(token.GetContractID())
+	perm := types.NewMintPermission()
 	if !k.HasPermission(ctx, from, perm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}

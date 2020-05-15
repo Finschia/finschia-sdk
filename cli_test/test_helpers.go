@@ -15,16 +15,15 @@ import (
 	"testing"
 	"time"
 
+	atypes "github.com/line/link/x/account/client/types"
 	"github.com/spf13/viper"
 
 	"github.com/line/link/types"
 	collectionModule "github.com/line/link/x/collection"
-	proxyModule "github.com/line/link/x/proxy"
-	safetyBoxModule "github.com/line/link/x/safetybox"
 	tokenModule "github.com/line/link/x/token"
 
 	"github.com/line/link/client"
-	tmclient "github.com/tendermint/tendermint/rpc/client"
+	tmhttp "github.com/tendermint/tendermint/rpc/client/http"
 
 	"github.com/stretchr/testify/require"
 
@@ -45,7 +44,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	atypes "github.com/line/link/x/auth/client/types"
 )
 
 const (
@@ -145,7 +143,7 @@ func NewFixtures(t *testing.T) *Fixtures {
 	tmpDir := path.Join(os.ExpandEnv("$HOME"), ".linktest")
 	err := os.MkdirAll(tmpDir, os.ModePerm)
 	require.NoError(t, err)
-	tmpDir, err = ioutil.TempDir(tmpDir, "link_integration_"+t.Name()+"_")
+	tmpDir, err = ioutil.TempDir(tmpDir, "link_integration_"+strings.Split(t.Name(), "/")[0]+"_")
 	require.NoError(t, err)
 
 	mutex.Lock()
@@ -390,6 +388,26 @@ func (f *Fixtures) ValidateGenesis() {
 }
 
 //___________________________________________________________________________________
+// linkcli rest-server
+func (f *Fixtures) RestServerStart(port int, flags ...string) (*tests.Process, error) {
+	cmd := fmt.Sprintf("%s rest-server --home=%s --laddr=%s", f.LinkcliBinary, f.LinkcliHome, fmt.Sprintf("tcp://0.0.0.0:%d", port))
+	proc := tests.GoExecuteTWithStdout(f.T, addFlags(cmd, flags))
+	defer func() {
+		if v := recover(); v != nil {
+			stdout, stderr, err := proc.ReadAll()
+			if err != nil {
+				fmt.Println(err)
+				f.T.Fail()
+			}
+			f.T.Log(stdout)
+			f.T.Log(stderr)
+		}
+	}()
+	tests.WaitForNextNBlocksTM(1, f.Port)
+	return proc, nil
+}
+
+//___________________________________________________________________________________
 // linkcli keys
 
 // KeysDelete is linkcli keys delete
@@ -562,13 +580,13 @@ func (f *Fixtures) TxTokenBurn(from, contractID, amount string, flags ...string)
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxTokenGrantPerm(from string, to string, resource, action string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token grant %s %s %s %s %v", f.LinkcliBinary, from, to, resource, action, f.Flags())
+func (f *Fixtures) TxTokenGrantPerm(from string, to string, contractID, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token grant %s %s %s %s %v", f.LinkcliBinary, from, contractID, to, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxTokenRevokePerm(from string, resource, action string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx token revoke %s %s %s %v", f.LinkcliBinary, from, resource, action, f.Flags())
+func (f *Fixtures) TxTokenRevokePerm(from string, contractID, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token revoke %s %s %s %v", f.LinkcliBinary, from, contractID, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
@@ -636,103 +654,19 @@ func (f *Fixtures) TxCollectionModify(owner, contractID, tokenType, tokenIndex, 
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxCollectionGrantPerm(from string, to sdk.AccAddress, resource, action string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection grant %s %s %s %s %v", f.LinkcliBinary, from, to, resource, action, f.Flags())
+func (f *Fixtures) TxCollectionGrantPerm(from string, to sdk.AccAddress, contractID, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection grant %s %s %s %s %v", f.LinkcliBinary, from, contractID, to, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) TxCollectionRevokePerm(from string, resource, action string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx collection revoke %s %s %s %v", f.LinkcliBinary, from, resource, action, f.Flags())
+func (f *Fixtures) TxCollectionRevokePerm(from string, contractID, action string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection revoke %s %s %s %v", f.LinkcliBinary, from, contractID, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
-
-//___________________________________________________________________________________
-// linkcli tx proxy
-
-func (f *Fixtures) TxProxySendCoinsFrom(proxy, onBehalfOf, to, denom string, amount fmt.Stringer, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx proxy send-coins-from %s %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, to, denom, amount.String(), f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-func (f *Fixtures) TxProxyApproveCoins(proxy, onBehalfOf, denom string, amount fmt.Stringer, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx proxy approve %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, amount.String(), f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-func (f *Fixtures) TxProxyDisapproveCoins(proxy, onBehalfOf, denom string, amount fmt.Stringer, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx proxy disapprove %s %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, amount.String(), f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-//___________________________________________________________________________________
-// linkcli tx proxy
 
 func (f *Fixtures) TxEmpty(from string, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx empty %s %v", f.LinkcliBinary, from, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-//___________________________________________________________________________________
-// linkcli query proxy
-
-func (f *Fixtures) QueryProxyAllowance(proxy, onBehalfOf, denom string, flags ...string) proxyModule.Allowance {
-	cmd := fmt.Sprintf("%s query proxy allowance %s %s %s %v", f.LinkcliBinary, proxy, onBehalfOf, denom, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-
-	cdc := app.MakeCodec()
-	var allowance proxyModule.Allowance
-	err := cdc.UnmarshalJSON([]byte(res), &allowance)
-	require.NoError(f.T, err)
-
-	return allowance
-}
-
-//___________________________________________________________________________________
-// linkcli tx safety box
-
-func (f *Fixtures) TxSafetyBoxCreate(id, address, denom string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox create %s %s %s %v", f.LinkcliBinary, id, address, denom, f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-func (f *Fixtures) TxSafetyBoxRole(id, action, role, from, to string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox role %s %s %s %s %s %v", f.LinkcliBinary, id, action, role, from, to, f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-func (f *Fixtures) TxSafetyBoxSendCoins(id, action, denom string, amount int64, address, issuerAddress string, flags ...string) (bool, string, string) {
-	cmd := fmt.Sprintf("%s tx safetybox sendcoins %s %s %s %d %s %s %v", f.LinkcliBinary, id, action, denom, amount, address, issuerAddress, f.Flags())
-	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
-}
-
-//___________________________________________________________________________________
-// linkcli query safetybox
-
-func (f *Fixtures) QuerySafetyBox(id string, flags ...string) safetyBoxModule.SafetyBox {
-	cmd := fmt.Sprintf("%s query safetybox get %s %v", f.LinkcliBinary, id, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-
-	cdc := app.MakeCodec()
-	var sb safetyBoxModule.SafetyBox
-	err := cdc.UnmarshalJSON([]byte(res), &sb)
-	require.NoError(f.T, err)
-
-	return sb
-}
-
-func (f *Fixtures) QuerySafetyBoxRole(id, role, address string, flags ...string) safetyBoxModule.MsgSafetyBoxRoleResponse {
-	cmd := fmt.Sprintf("%s query safetybox role %s %s %s %v", f.LinkcliBinary, id, role, address, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-
-	cdc := app.MakeCodec()
-	var pms safetyBoxModule.MsgSafetyBoxRoleResponse
-	err := cdc.UnmarshalJSON([]byte(res), &pms)
-	require.NoError(f.T, err)
-
-	return pms
 }
 
 //___________________________________________________________________________________
@@ -794,6 +728,29 @@ func (f *Fixtures) QueryTxsInvalid(expectedErr error, page, limit int, tags ...s
 	cmd := fmt.Sprintf("%s query txs --page=%d --limit=%d --tags='%s' %v", f.LinkcliBinary, page, limit, queryTags(tags), f.Flags())
 	_, err := tests.ExecuteT(f.T, cmd, "")
 	require.EqualError(f.T, expectedErr, err)
+}
+
+//___________________________________________________________________________________
+// linkcli query block
+
+func (f *Fixtures) QueryLatestBlock(flags ...string) *tmctypes.ResultBlock {
+	cmd := fmt.Sprintf("%s query block %v", f.LinkcliBinary, f.Flags())
+	out, _ := tests.ExecuteT(f.T, cmd, "")
+	var result tmctypes.ResultBlock
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &result)
+	require.NoError(f.T, err, "out %v\n, err %v", out, err)
+	return &result
+}
+
+func (f *Fixtures) QueryBlockWithHeight(height int, flags ...string) *tmctypes.ResultBlock {
+	cmd := fmt.Sprintf("%s query block %d %v", f.LinkcliBinary, height, f.Flags())
+	out, _ := tests.ExecuteT(f.T, cmd, "")
+	var result tmctypes.ResultBlock
+	cdc := app.MakeCodec()
+	err := cdc.UnmarshalJSON([]byte(out), &result)
+	require.NoError(f.T, err, "out %v\n, err %v", out, err)
+	return &result
 }
 
 //___________________________________________________________________________________
@@ -1050,17 +1007,6 @@ func (f *Fixtures) QueryTokenExpectEmpty(contractID string, flags ...string) {
 	require.NotEmpty(f.T, errStr)
 }
 
-func (f *Fixtures) QueryTokens(flags ...string) tokenModule.Tokens {
-	cmd := fmt.Sprintf("%s query token tokens %s", f.LinkcliBinary, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var tokens tokenModule.Tokens
-	err := cdc.UnmarshalJSON([]byte(res), &tokens)
-	require.NoError(f.T, err)
-	return tokens
-}
-
 func (f *Fixtures) QueryBalanceToken(contractID string, addr sdk.AccAddress, flags ...string) sdk.Int {
 	cmd := fmt.Sprintf("%s query token balance %s %s %s", f.LinkcliBinary, contractID, addr.String(), f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
@@ -1188,17 +1134,6 @@ func (f *Fixtures) QueryCollection(contractID string, flags ...string) collectio
 	return collection
 }
 
-func (f *Fixtures) QueryCollections(flags ...string) collectionModule.Collections {
-	cmd := fmt.Sprintf("%s query collection collections %s", f.LinkcliBinary, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var collections collectionModule.Collections
-	err := cdc.UnmarshalJSON([]byte(res), &collections)
-	require.NoError(f.T, err)
-
-	return collections
-}
 func (f *Fixtures) QueryTotalSupplyTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
 	cmd := fmt.Sprintf("%s query collection total supply %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
@@ -1338,7 +1273,7 @@ func (f *Fixtures) MempoolUnconfirmedTxHashes(flags ...string) *ResultUnconfirme
 //___________________________________________________________________________________
 // tendermint rpc
 func (f *Fixtures) NetInfo(flags ...string) *tmctypes.ResultNetInfo {
-	tmc, err := tmclient.NewHTTP(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
+	tmc, err := tmhttp.New(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
 	if err != nil {
 		panic(fmt.Sprintf("failed to create Tendermint HTTP client: %s", err))
 	}
@@ -1356,7 +1291,7 @@ func (f *Fixtures) NetInfo(flags ...string) *tmctypes.ResultNetInfo {
 }
 
 func (f *Fixtures) Status(flags ...string) *tmctypes.ResultStatus {
-	tmc, err := tmclient.NewHTTP(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
+	tmc, err := tmhttp.New(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
 	if err != nil {
 		panic(fmt.Sprintf("failed to create Tendermint HTTP client: %s", err))
 	}

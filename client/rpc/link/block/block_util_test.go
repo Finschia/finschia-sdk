@@ -176,7 +176,9 @@ func TestFetchBlock(t *testing.T) {
 		mockCliCtx.EXPECT().Verify(rb.Block.Height).Return(check, nil).Times(1)
 		mockTendermint.EXPECT().ValidateBlock(rb.Block, check).Return(nil).Times(1)
 		actual, err := bu.fetchBlock(latestBlockHeight)
-		require.Equal(t, rb, actual.ResultBlock)
+		require.Equal(t, rb.Block, actual.ResultBlock.Block)
+		require.Equal(t, rb.BlockID, actual.ResultBlock.BlockID)
+		require.Equal(t, rb.Block.Size(), actual.ResultBlock.BlockSize)
 		require.Equal(t, nil, err)
 	}
 }

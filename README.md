@@ -15,10 +15,18 @@ This repository hosts `LINK`, alternative implementation of the LINK Network.
 ```
 make build-docker                # build docker image
 ```
+or
+```
+make build-docker WITH_CLEVELDB=yes  # build docker image with cleveldb
+```
 
 **Configure**
 ```
 ./.initialize.sh docker          # prepare keys, validators, initial state, etc.
+```
+or
+```
+./.initialize.sh docker testnet  # prepare keys, validators, initial state, etc. for testnet
 ```
 
 **Run**

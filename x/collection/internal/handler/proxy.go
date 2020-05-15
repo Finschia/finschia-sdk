@@ -7,7 +7,7 @@ import (
 )
 
 func handleMsgApprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgApprove) (*sdk.Result, error) {
-	err := keeper.SetApproved(ctx, msg.ContractID, msg.Proxy, msg.Approver)
+	err := keeper.SetApproved(ctx, msg.Proxy, msg.Approver)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func handleMsgApprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgApprov
 }
 
 func handleMsgDisapprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgDisapprove) (*sdk.Result, error) {
-	err := keeper.DeleteApproved(ctx, msg.ContractID, msg.Proxy, msg.Approver)
+	err := keeper.DeleteApproved(ctx, msg.Proxy, msg.Approver)
 	if err != nil {
 		return nil, err
 	}

@@ -17,7 +17,8 @@ export GO111MODULE = on
 ### Process build tags
 
 ifeq ($(WITH_CLEVELDB),yes)
-  build_tags += gcc
+  CGO_ENABLED=1
+  build_tags += cleveldb
 endif
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
@@ -43,6 +44,7 @@ ldflags := $(strip $(ldflags))
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 CLI_TEST_BUILD_FLAGS := -tags "cli_test $(build_tags)"
 CLI_MULTI_BUILD_FLAGS := -tags "cli_multi_node_test $(build_tags)"
+LOAD_TEST_BUILD_FLAGS := -tags "integration $(build_tags)"
 
 ########################################
 ### Lint
@@ -57,23 +59,26 @@ lint: golangci-lint
 all: install lint test-unit
 
 build: go.sum build-swagger-docs
-	go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
-	go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
+	CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) -o build/linkd ./cmd/linkd
+	CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) -o build/linkcli ./cmd/linkcli
 
 build-contract-test-hook:
 	go build -mod=readonly $(BUILD_FLAGS) -o build/contract_test_hook ./cmd/contract_test_hook
 
 build-docker:
-	docker build -t line/link .
+	docker build --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) --build-arg WITH_CLEVELDB=$(WITH_CLEVELDB) -t line/link .
 
 build-swagger-docs: statik
-	@perl -pi -e 's/LINK_BUILD_VERSION/$(BASE_VERSION)/' client/lcd/swagger-ui/swagger.yaml
-	@statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
-	@perl -pi -e 's/$(BASE_VERSION)/LINK_BUILD_VERSION/' client/lcd/swagger-ui/swagger.yaml
+	@perl -pi -e 's/LINK_BUILD_VERSION/$(BASE_VERSION)/' client/lcd/static_resources/swagger-ui/swagger.yaml
+	@statik -src=client/lcd/static_resources -dest=client/lcd -f -m -include=*
+	@perl -pi -e 's/$(BASE_VERSION)/LINK_BUILD_VERSION/' client/lcd/static_resources/swagger-ui/swagger.yaml
+
+build-load-tester: build
+	go build -mod=readonly $(BUILD_FLAGS) -o build/link-load-tester ./contrib/load_test/cmd/link_load_tester
 
 install: go.sum build-swagger-docs
-	go install $(BUILD_FLAGS) ./cmd/linkd
-	go install $(BUILD_FLAGS) ./cmd/linkcli
+	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkd
+	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkcli
 
 install-debug: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/linkdebug
@@ -115,7 +120,7 @@ test: test-all
 
 test-all: test-unit-all test-integration-all
 
-test-integration-all: test-integration test-integration-multi-node
+test-integration-all: test-integration test-integration-multi-node test-integration-load-tester
 
 test-unit-all: test-unit test-unit-race test-unit-cover
 
@@ -134,6 +139,9 @@ test-integration: build
 
 test-integration-multi-node: build-docker
 	@go test -mod=readonly -p 4 `go list ./cli_test/...` $(CLI_MULTI_BUILD_FLAGS) -v
+
+test-integration-load-tester: build-load-tester
+	@go test -mod=readonly -p 4 ./contrib/load_test/ $(LOAD_TEST_BUILD_FLAGS) -v
 
 
 ########################################

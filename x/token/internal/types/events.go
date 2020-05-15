@@ -20,7 +20,6 @@ var (
 	AttributeKeyMintable   = "mintable"
 	AttributeKeyFrom       = "from"
 	AttributeKeyTo         = "to"
-	AttributeKeyResource   = "perm_resource"
-	AttributeKeyAction     = "perm_action"
+	AttributeKeyPerm       = "perm"
 	AttributeValueCategory = ModuleName
 )

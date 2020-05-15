@@ -18,11 +18,9 @@ replace_token_symbol () {
 replace_address jack ${REPLACE_JACK_ADDR}
 replace_address somebody ${REPLACE_SOMEBODY_ADDR}
 
-# safetybox module not in use as of 2019/2/14
-#replace_address operator ${REPLACE_OPERATOR_ADDR}
 replace_address allocator ${REPLACE_ALLOCATOR_ADDR}
-#replace_address issuer ${REPLACE_ISSUER_ADDR}
-#replace_address returner ${REPLACE_RETURNER_ADDR}
+replace_address issuer ${REPLACE_ISSUER_ADDR}
+replace_address returner ${REPLACE_RETURNER_ADDR}
 
 # proxy module not in use as of 2019/2/10
 #replace_address proxy ${REPLACE_PROXY_ADDR}

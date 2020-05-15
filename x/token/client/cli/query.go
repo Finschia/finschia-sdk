@@ -19,7 +19,6 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	}
 	cmd.AddCommand(
 		GetTokenCmd(cdc),
-		GetTokensCmd(cdc),
 		GetBalanceCmd(cdc),
 		GetTotalCmd(cdc),
 		GetPermsCmd(cdc),
@@ -46,28 +45,6 @@ func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 			cliCtx = cliCtx.WithHeight(height)
 
 			return cliCtx.PrintOutput(token)
-		},
-	}
-
-	return client.GetCommands(cmd)[0]
-}
-
-func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "tokens",
-		Short: "Query all tokens",
-		Args:  cobra.ExactArgs(0),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
-			retriever := clienttypes.NewRetriever(cliCtx)
-
-			tokens, height, err := retriever.GetTokens(cliCtx)
-			if err != nil {
-				return err
-			}
-
-			cliCtx = cliCtx.WithHeight(height)
-			return cliCtx.PrintOutput(tokens)
 		},
 	}
 
@@ -142,19 +119,12 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 			contractID := args[1]
-			pms, height, err := retriever.GetAccountPermission(cliCtx, addr)
+			pms, height, err := retriever.GetAccountPermission(cliCtx, contractID, addr)
 			if err != nil {
 				return err
 			}
-			var pmsPerContract types.Permissions
-			for _, pm := range pms {
-				if pm.GetResource() == contractID {
-					pmsPerContract = append(pmsPerContract, pm)
-				}
-			}
-
 			cliCtx = cliCtx.WithHeight(height)
-			return cliCtx.PrintOutput(pmsPerContract)
+			return cliCtx.PrintOutput(pms)
 		},
 	}
 

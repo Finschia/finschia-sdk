@@ -116,13 +116,10 @@ func TestHandlerIssueFT(t *testing.T) {
 		require.Error(t, err)
 	}
 
-	permission := types.Permission{
-		Action:   "issue",
-		Resource: contractID,
-	}
+	permission := types.NewIssuePermission()
 
 	{
-		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
+		msg := types.NewMsgGrantPermission(addr1, contractID, addr2, permission)
 		_, err := h(ctx, msg)
 		require.NoError(t, err)
 	}
@@ -132,7 +129,7 @@ func TestHandlerIssueFT(t *testing.T) {
 		require.NoError(t, err)
 	}
 	{
-		msg := types.NewMsgRevokePermission(addr1, permission)
+		msg := types.NewMsgRevokePermission(addr1, contractID, permission)
 		_, err := h(ctx, msg)
 		require.NoError(t, err)
 	}
@@ -180,12 +177,9 @@ func TestHandlerIssueNFT(t *testing.T) {
 			require.NoError(t, err)
 		}
 		{
-			mintPermission := types.Permission{
-				Action:   "mint",
-				Resource: contractID,
-			}
+			mintPermission := types.NewMintPermission()
 			{
-				msg := types.NewMsgGrantPermission(addr1, addr2, mintPermission)
+				msg := types.NewMsgGrantPermission(addr1, contractID, addr2, mintPermission)
 				_, err := h(ctx, msg)
 				require.NoError(t, err)
 			}
@@ -196,7 +190,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 				require.NoError(t, err)
 			}
 			{
-				msg := types.NewMsgRevokePermission(addr1, mintPermission)
+				msg := types.NewMsgRevokePermission(addr1, contractID, mintPermission)
 				_, err := h(ctx, msg)
 				require.NoError(t, err)
 			}
@@ -209,13 +203,10 @@ func TestHandlerIssueNFT(t *testing.T) {
 		}
 	}
 
-	permission := types.Permission{
-		Action:   "issue",
-		Resource: contractID,
-	}
+	permission := types.NewIssuePermission()
 
 	{
-		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
+		msg := types.NewMsgGrantPermission(addr1, contractID, addr2, permission)
 		_, err := h(ctx, msg)
 		require.NoError(t, err)
 	}
@@ -233,7 +224,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 		require.NoError(t, err)
 	}
 	{
-		msg := types.NewMsgRevokePermission(addr1, permission)
+		msg := types.NewMsgRevokePermission(addr1, contractID, permission)
 		_, err := h(ctx, msg)
 		require.NoError(t, err)
 	}
@@ -262,11 +253,11 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("create_collection", sdk.NewAttribute("name", defaultName)),
 			sdk.NewEvent("create_collection", sdk.NewAttribute("owner", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", contractID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "issue")),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "modify")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "issue")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "mint")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "burn")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "modify")),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
@@ -356,13 +347,10 @@ func TestEvents(t *testing.T) {
 		verifyEventFunc(t, e, res.Events)
 	}
 
-	permission := types.Permission{
-		Action:   "issue",
-		Resource: contractID,
-	}
+	permission := types.NewIssuePermission()
 
 	{
-		msg := types.NewMsgGrantPermission(addr1, addr2, permission)
+		msg := types.NewMsgGrantPermission(addr1, contractID, addr2, permission)
 		require.NoError(t, msg.ValidateBasic())
 		res, err := h(ctx, msg)
 		require.NoError(t, err)
@@ -372,13 +360,13 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("from", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr2.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", permission.GetResource())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", permission.GetAction())),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", permission.String())),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}
 	{
-		msg := types.NewMsgRevokePermission(addr1, permission)
+		msg := types.NewMsgRevokePermission(addr1, contractID, permission)
 		require.NoError(t, msg.ValidateBasic())
 		res, err := h(ctx, msg)
 		require.NoError(t, err)
@@ -386,8 +374,8 @@ func TestEvents(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("module", "collection")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("revoke_perm", sdk.NewAttribute("from", addr1.String())),
-			sdk.NewEvent("revoke_perm", sdk.NewAttribute("perm_resource", permission.GetResource())),
-			sdk.NewEvent("revoke_perm", sdk.NewAttribute("perm_action", permission.GetAction())),
+			sdk.NewEvent("revoke_perm", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("revoke_perm", sdk.NewAttribute("perm", permission.String())),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}

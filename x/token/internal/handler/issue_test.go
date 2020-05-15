@@ -34,8 +34,8 @@ func TestHandleMsgIssue(t *testing.T) {
 			sdk.NewEvent("message", sdk.NewAttribute("module", "token")),
 			sdk.NewEvent("message", sdk.NewAttribute("sender", addr1.String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", contractID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", types.ModifyAction)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", types.ModifyAction)),
 			sdk.NewEvent("issue", sdk.NewAttribute("contract_id", contractID)),
 			sdk.NewEvent("issue", sdk.NewAttribute("name", defaultName)),
 			sdk.NewEvent("issue", sdk.NewAttribute("symbol", defaultSymbol)),
@@ -45,11 +45,11 @@ func TestHandleMsgIssue(t *testing.T) {
 			sdk.NewEvent("issue", sdk.NewAttribute("mintable", "true")),
 			sdk.NewEvent("issue", sdk.NewAttribute("decimals", sdk.NewInt(defaultDecimals).String())),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", contractID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "mint")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "mint")),
 			sdk.NewEvent("grant_perm", sdk.NewAttribute("to", addr1.String())),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_resource", contractID)),
-			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm_action", "burn")),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("contract_id", contractID)),
+			sdk.NewEvent("grant_perm", sdk.NewAttribute("perm", "burn")),
 		}
 		verifyEventFunc(t, e, res.Events)
 	}

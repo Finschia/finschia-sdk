@@ -14,6 +14,7 @@ const (
 type (
 	Msg    = types.ContractMsg
 	Keeper = keeper.ContractKeeper
+	CtxKey = types.CtxKey
 )
 
 var (

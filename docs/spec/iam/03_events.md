@@ -1,3 +1,0 @@
-# Events
-
-Not yet defined.

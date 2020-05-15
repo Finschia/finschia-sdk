@@ -3,11 +3,13 @@ package token
 import (
 	"encoding/json"
 
+	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	"github.com/line/link/client"
 	"github.com/line/link/x/token/client/cli"
 	"github.com/line/link/x/token/client/rest"
 	"github.com/line/link/x/token/internal/handler"
 	"github.com/line/link/x/token/internal/keeper"
+	"github.com/line/link/x/token/internal/legacy"
 	"github.com/line/link/x/token/internal/querier"
 
 	"github.com/gorilla/mux"
@@ -62,6 +64,10 @@ func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
 // get the root query command of this module
 func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetQueryCmd(cdc)
+}
+
+func (AppModuleBasic) GetUpgradeHandler(version string) upgrade.UpgradeHandler {
+	return legacy.UpgradeHandler(version)
 }
 
 //___________________________

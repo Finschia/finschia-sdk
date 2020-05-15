@@ -2,13 +2,10 @@ package collection
 
 import (
 	"encoding/json"
+	"math/rand"
 
-	"github.com/line/link/client"
-	"github.com/line/link/x/collection/client/cli"
-	"github.com/line/link/x/collection/client/rest"
-	"github.com/line/link/x/collection/internal/handler"
-	"github.com/line/link/x/collection/internal/keeper"
-	"github.com/line/link/x/collection/internal/querier"
+	"github.com/cosmos/cosmos-sdk/x/upgrade"
+	"github.com/line/link/x/collection/internal/legacy"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -18,6 +15,14 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/cosmos/cosmos-sdk/x/simulation"
+
+	"github.com/line/link/client"
+	"github.com/line/link/x/collection/client/cli"
+	"github.com/line/link/x/collection/client/rest"
+	"github.com/line/link/x/collection/internal/handler"
+	"github.com/line/link/x/collection/internal/keeper"
+	"github.com/line/link/x/collection/internal/querier"
 )
 
 var (
@@ -62,6 +67,10 @@ func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
 // get the root query command of this module
 func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 	return cli.GetQueryCmd(cdc)
+}
+
+func (AppModuleBasic) GetUpgradeHandler(version string) upgrade.UpgradeHandler {
+	return legacy.UpgradeHandler(version)
 }
 
 //___________________________
@@ -120,4 +129,27 @@ func (AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 // module end-block
 func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
+}
+
+//____________________________________________________________________________
+
+// AppModuleSimulation functions
+
+func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
+	simState.GenState[ModuleName] = simState.Cdc.MustMarshalJSON(DefaultGenesisState())
+}
+
+func (AppModule) ProposalContents(module.SimulationState) []simulation.WeightedProposalContent {
+	return nil
+}
+
+func (AppModule) RandomizedParams(*rand.Rand) []simulation.ParamChange {
+	return nil
+}
+
+func (AppModule) RegisterStoreDecoder(sdk.StoreDecoderRegistry) {
+}
+
+func (AppModule) WeightedOperations(module.SimulationState) []simulation.WeightedOperation {
+	return nil
 }

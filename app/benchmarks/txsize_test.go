@@ -8,7 +8,7 @@ import (
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
 	"github.com/line/link/app"
-	"github.com/line/link/x/bank"
+	"github.com/line/link/x/coin"
 )
 
 // This will fail half the time with the second output being 173
@@ -23,13 +23,13 @@ func ExampleTxSendSize() {
 	priv2 := secp256k1.GenPrivKeySecp256k1([]byte{1})
 	addr2 := sdk.AccAddress(priv2.PubKey().Address())
 	coins := sdk.Coins{sdk.NewCoin("denom", sdk.NewInt(10))}
-	msg1 := bank.MsgMultiSend{
-		Inputs: []bank.Input{{
+	msg1 := coin.MsgMultiSend{
+		Inputs: []coin.Input{{
 			Address: addr1,
 			Coins:   coins,
 		}},
 
-		Outputs: []bank.Output{{
+		Outputs: []coin.Output{{
 			Address: addr2,
 			Coins:   coins,
 		}},

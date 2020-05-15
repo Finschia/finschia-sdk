@@ -11,7 +11,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/line/link/client"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
@@ -34,7 +33,6 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/collection/{contract_id}/accounts/{address}/proxies/{approver}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/accounts/{address}/balances/{token_id}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/collection", QueryCollectionRequestHandlerFn(cliCtx)).Methods("GET")
-	r.HandleFunc("/collection/collections", QuerCollectionsRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
 func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
@@ -194,29 +192,6 @@ func QueryCollectionRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc 
 	}
 }
 
-func QuerCollectionsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-
-		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
-		if !ok {
-			return
-		}
-
-		collectionGetter := clienttypes.NewRetriever(cliCtx)
-
-		collections, height, err := collectionGetter.GetCollections(cliCtx)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		cliCtx = cliCtx.WithHeight(height)
-
-		rest.PostProcessResponse(w, cliCtx, collections)
-	}
-}
-
 func QueryTokenTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -287,21 +262,14 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 
 		retriever := clienttypes.NewRetriever(cliCtx)
 
-		pms, height, err := retriever.GetAccountPermission(cliCtx, addr)
+		pms, height, err := retriever.GetAccountPermission(cliCtx, contractID, addr)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
 		}
-		var pmsPerContract types.Permissions
-		for _, pm := range pms {
-			if pm.GetResource() == contractID {
-				pmsPerContract = append(pmsPerContract, pm)
-			}
-		}
-
 		cliCtx = cliCtx.WithHeight(height)
 
-		rest.PostProcessResponse(w, cliCtx, pmsPerContract)
+		rest.PostProcessResponse(w, cliCtx, pms)
 	}
 }
 

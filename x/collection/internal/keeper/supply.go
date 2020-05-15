@@ -7,18 +7,18 @@ import (
 )
 
 type SupplyKeeper interface {
-	GetTotalInt(ctx sdk.Context, contractID, tokenID, target string) (supply sdk.Int, err error)
-	GetSupply(ctx sdk.Context, contractID string) (supply types.Supply)
+	GetTotalInt(ctx sdk.Context, tokenID, target string) (supply sdk.Int, err error)
+	GetSupply(ctx sdk.Context) (supply types.Supply)
 	SetSupply(ctx sdk.Context, supply types.Supply)
-	MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress, amt types.Coins) error
-	BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddress, amt types.Coins) error
+	MintSupply(ctx sdk.Context, to sdk.AccAddress, amt types.Coins) error
+	BurnSupply(ctx sdk.Context, from sdk.AccAddress, amt types.Coins) error
 }
 
 var _ SupplyKeeper = (*Keeper)(nil)
 
-func (k Keeper) GetSupply(ctx sdk.Context, contractID string) (supply types.Supply) {
+func (k Keeper) GetSupply(ctx sdk.Context) (supply types.Supply) {
 	store := ctx.KVStore(k.storeKey)
-	b := store.Get(types.SupplyKey(contractID))
+	b := store.Get(types.SupplyKey(k.getContractID(ctx)))
 	if b == nil {
 		panic("stored supply should not have been nil")
 	}
@@ -32,12 +32,12 @@ func (k Keeper) SetSupply(ctx sdk.Context, supply types.Supply) {
 	store.Set(types.SupplyKey(supply.GetContractID()), b)
 }
 
-func (k Keeper) GetTotalInt(ctx sdk.Context, contractID, tokenID, target string) (supply sdk.Int, err error) {
-	if _, err = k.GetToken(ctx, contractID, tokenID); err != nil {
+func (k Keeper) GetTotalInt(ctx sdk.Context, tokenID, target string) (supply sdk.Int, err error) {
+	if _, err = k.GetToken(ctx, tokenID); err != nil {
 		return sdk.NewInt(0), err
 	}
 
-	s := k.GetSupply(ctx, contractID)
+	s := k.GetSupply(ctx)
 	switch target {
 	case types.QuerySupply:
 		return s.GetTotalSupply().AmountOf(tokenID), nil
@@ -52,7 +52,7 @@ func (k Keeper) GetTotalInt(ctx sdk.Context, contractID, tokenID, target string)
 
 // MintCoins creates new coins from thin air and adds it to the module account.
 // Panics if the name maps to a non-minter module account or if the amount is invalid.
-func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress, amt types.Coins) (err error) {
+func (k Keeper) MintSupply(ctx sdk.Context, to sdk.AccAddress, amt types.Coins) (err error) {
 	defer func() {
 		// to recover from overflows
 		if r := recover(); r != nil {
@@ -60,11 +60,11 @@ func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress
 		}
 	}()
 
-	_, err = k.AddCoins(ctx, contractID, to, amt)
+	_, err = k.AddCoins(ctx, to, amt)
 	if err != nil {
 		return err
 	}
-	supply := k.GetSupply(ctx, contractID)
+	supply := k.GetSupply(ctx)
 	supply = supply.Inflate(amt)
 	// supply should never be negative. Big.Int.Add will be panic if it becomes overflow
 
@@ -74,7 +74,7 @@ func (k Keeper) MintSupply(ctx sdk.Context, contractID string, to sdk.AccAddress
 
 // BurnCoins burns coins deletes coins from the balance of the module account.
 // Panics if the name maps to a non-burner module account or if the amount is invalid.
-func (k Keeper) BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddress, amt types.Coins) (err error) {
+func (k Keeper) BurnSupply(ctx sdk.Context, from sdk.AccAddress, amt types.Coins) (err error) {
 	defer func() {
 		// to recover from overflows
 		// however, it will return insufficient fund error instead of panicking in the case
@@ -83,14 +83,14 @@ func (k Keeper) BurnSupply(ctx sdk.Context, contractID string, from sdk.AccAddre
 		}
 	}()
 
-	_, err = k.SubtractCoins(ctx, contractID, from, amt)
+	_, err = k.SubtractCoins(ctx, from, amt)
 	if err != nil {
 		return err
 	}
-	supply := k.GetSupply(ctx, contractID)
+	supply := k.GetSupply(ctx)
 	supply = supply.Deflate(amt)
 	if supply.GetTotalSupply().IsAnyNegative() {
-		return sdkerrors.Wrapf(types.ErrInsufficientSupply, "insufficient supply for token [%s]", contractID)
+		return sdkerrors.Wrapf(types.ErrInsufficientSupply, "insufficient supply for token [%s]", k.getContractID(ctx))
 	}
 	k.SetSupply(ctx, supply)
 

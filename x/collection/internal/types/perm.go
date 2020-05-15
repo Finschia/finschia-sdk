@@ -2,9 +2,9 @@ package types
 
 import (
 	"fmt"
-)
 
-var _ PermissionI = (*Permission)(nil)
+	sdk "github.com/cosmos/cosmos-sdk/types"
+)
 
 const (
 	MintAction   = "mint"
@@ -13,74 +13,133 @@ const (
 	ModifyAction = "modify"
 )
 
-type PermissionI interface {
-	GetResource() string
-	GetAction() string
-	Equal(string, string) bool
-	String() string
+type Permission string
+
+func NewMintPermission() Permission {
+	return MintAction
 }
 
-type Permissions []PermissionI
-
-func (pms Permissions) String() string {
-	return fmt.Sprintf("%#v", pms)
+func NewBurnPermission() Permission {
+	return BurnAction
 }
 
-type Permission struct {
-	Action   string `json:"action"`
-	Resource string `json:"resource"`
+func NewIssuePermission() Permission {
+	return IssueAction
+}
+
+func NewModifyPermission() Permission {
+	return ModifyAction
+}
+
+func (p Permission) Equal(p2 Permission) bool {
+	return p == p2
+}
+func (p Permission) String() string {
+	return string(p)
 }
 
 func (p Permission) Validate() bool {
-	if len(p.GetResource()) == 0 || len(p.GetAction()) == 0 {
-		return false
+	if p == MintAction {
+		return true
 	}
-	return true
-}
-
-func (p Permission) GetResource() string {
-	return p.Resource
-}
-
-func (p Permission) GetAction() string {
-	return p.Action
-}
-
-func (p Permission) Equal(res, act string) bool {
-	if p.GetResource() == res && p.GetAction() == act {
+	if p == BurnAction {
+		return true
+	}
+	if p == IssueAction {
+		return true
+	}
+	if p == ModifyAction {
 		return true
 	}
 	return false
 }
 
-func (p Permission) String() string {
-	return fmt.Sprintf("%s-%s", p.GetResource(), p.GetAction())
+type Permissions []Permission
+
+func NewPermissions(perms ...Permission) Permissions {
+	pms := Permissions{}
+	for _, perm := range perms {
+		pms.AddPermission(perm)
+	}
+	return pms
 }
 
-func NewMintPermission(contractID string) Permission {
-	return Permission{
-		Action:   MintAction,
-		Resource: contractID,
+func (pms *Permissions) GetPermissions() []Permission {
+	return []Permission(*pms)
+}
+
+func (pms *Permissions) RemoveElement(idx int) {
+	*pms = append((*pms)[:idx], (*pms)[idx+1:]...)
+}
+
+func (pms *Permissions) AddPermission(p Permission) {
+	for _, pin := range *pms {
+		if pin.Equal(p) {
+			return
+		}
+	}
+	*pms = append(*pms, p)
+}
+
+func (pms *Permissions) RemovePermission(p Permission) {
+	for idx, pin := range *pms {
+		if pin.Equal(p) {
+			pms.RemoveElement(idx)
+			return
+		}
 	}
 }
 
-func NewBurnPermission(contractID string) Permission {
-	return Permission{
-		Action:   BurnAction,
-		Resource: contractID,
+func (pms Permissions) HasPermission(p Permission) bool {
+	for _, pin := range pms {
+		if pin.Equal(p) {
+			return true
+		}
+	}
+	return false
+}
+func (pms Permissions) String() string {
+	return fmt.Sprintf("%#v", pms)
+}
+
+type AccountPermissionI interface {
+	GetAddress() sdk.AccAddress
+	HasPermission(Permission) bool
+	AddPermission(Permission)
+	RemovePermission(Permission)
+	String() string
+	GetPermissions() Permissions
+}
+
+type AccountPermission struct {
+	Address     sdk.AccAddress
+	Permissions Permissions
+}
+
+func NewAccountPermission(addr sdk.AccAddress) AccountPermissionI {
+	return &AccountPermission{
+		Address: addr,
 	}
 }
 
-func NewIssuePermission(contractID string) Permission {
-	return Permission{
-		Action:   IssueAction,
-		Resource: contractID,
-	}
+func (ap *AccountPermission) String() string {
+	return fmt.Sprintf("%#v", ap)
 }
 
-func NewModifyPermission(contractID string) Permission {
-	return Permission{
-		Action:   ModifyAction,
-		Resource: contractID,
-	}
+func (ap *AccountPermission) GetPermissions() Permissions {
+	return ap.Permissions.GetPermissions()
+}
+
+func (ap *AccountPermission) GetAddress() sdk.AccAddress {
+	return ap.Address
+}
+
+func (ap *AccountPermission) HasPermission(p Permission) bool {
+	return ap.Permissions.HasPermission(p)
+}
+func (ap *AccountPermission) AddPermission(p Permission) {
+	ap.Permissions.AddPermission(p)
+}
+func (ap *AccountPermission) RemovePermission(p Permission) {
+	ap.Permissions.RemovePermission(p)
 }

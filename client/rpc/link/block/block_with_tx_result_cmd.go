@@ -73,7 +73,13 @@ func process(args []string, util *Util) ([]byte, error) {
 		return nil, err
 	}
 
-	blockWithTxResults, err := util.fetchByBlockHeights(&latestBlock.Block.Height, &fromBlockHeight, &fetchSize)
+	latestBlockHeight := latestBlock.Block.Height
+
+	if fromBlockHeight > latestBlockHeight {
+		return nil, fmt.Errorf("the block height does not exist. Requested: %d, Latest: %d", fromBlockHeight, latestBlockHeight)
+	}
+
+	blockWithTxResults, err := util.fetchByBlockHeights(&latestBlockHeight, &fromBlockHeight, &fetchSize)
 	if err != nil {
 		return nil, err
 	}

@@ -24,7 +24,7 @@ func BenchmarkFullAppSimulation(b *testing.B) {
 		}
 	}()
 
-	app := NewLinkApp(logger, db, nil, true, simapp.FlagPeriodValue, interBlockCacheOpt())
+	app := NewLinkApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, interBlockCacheOpt())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(
@@ -63,7 +63,7 @@ func BenchmarkInvariants(b *testing.B) {
 		}
 	}()
 
-	app := NewLinkApp(logger, db, nil, true, simapp.FlagPeriodValue, interBlockCacheOpt())
+	app := NewLinkApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, interBlockCacheOpt())
 
 	// run randomized simulation
 	_, simParams, simErr := simulation.SimulateFromSeed(

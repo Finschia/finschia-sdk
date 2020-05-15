@@ -1,11 +1,13 @@
 package keeper
 
 import (
+	"context"
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	linktype "github.com/line/link/types"
+	"github.com/line/link/x/contract"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 )
@@ -23,7 +25,7 @@ func TestModifyTokenName(t *testing.T) {
 	ctx := cacheKeeper()
 	token := aToken(defaultContractID)
 	tokenWithoutPerm := aToken(defaultContractID + "2")
-	modifyPermission := types.NewModifyPermission(token.GetContractID())
+	modifyPermission := types.NewModifyPermission()
 
 	// Given Token And Permission
 	require.NoError(t, keeper.SetToken(ctx, token))
@@ -32,7 +34,7 @@ func TestModifyTokenName(t *testing.T) {
 	t.Log("Test to modify token")
 	{
 		// When modify token name
-		require.NoError(t, keeper.ModifyToken(ctx, addr1, token.GetContractID(), changes))
+		require.NoError(t, keeper.ModifyToken(ctx, addr1, changes))
 
 		// Then token name is modified
 		store := ctx.KVStore(keeper.storeKey)
@@ -46,17 +48,19 @@ func TestModifyTokenName(t *testing.T) {
 		nonExistentcontractID := "abcd1234"
 
 		// When modify token name with invalid contractID, Then error is occurred
-		require.EqualError(t, keeper.ModifyToken(ctx, addr1, nonExistentcontractID, changes),
+		ctx2 := ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, nonExistentcontractID))
+		require.EqualError(t, keeper.ModifyToken(ctx2, addr1, changes),
 			sdkerrors.Wrapf(types.ErrTokenNotExist, "ContractID: %s", nonExistentcontractID).Error())
 	}
 	t.Log("Test without permission")
 	{
 		// Given Token without Permission
-		require.NoError(t, keeper.SetToken(ctx, tokenWithoutPerm))
-		invalidPerm := types.NewModifyPermission(tokenWithoutPerm.GetContractID())
+		ctx2 := ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, defaultContractID+"2"))
+		require.NoError(t, keeper.SetToken(ctx2, tokenWithoutPerm))
+		invalidPerm := types.NewModifyPermission()
 
 		// When modify token name with invalid permission, Then error is occurred
-		require.EqualError(t, keeper.ModifyToken(ctx, addr1, tokenWithoutPerm.GetContractID(), changes),
+		require.EqualError(t, keeper.ModifyToken(ctx2, addr1, changes),
 			sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr1.String(), invalidPerm.String()).Error())
 	}
 }

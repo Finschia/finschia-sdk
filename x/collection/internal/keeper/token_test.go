@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/line/link/x/collection/internal/types"
@@ -20,7 +21,7 @@ func TestKeeper_GetToken(t *testing.T) {
 	}
 	t.Log("Get Token")
 	{
-		actual, err := keeper.GetToken(ctx, defaultContractID, defaultTokenIDFT)
+		actual, err := keeper.GetToken(ctx, defaultTokenIDFT)
 		require.NoError(t, err)
 		verifyTokenFunc(t, expected, actual)
 	}
@@ -32,7 +33,7 @@ func TestKeeper_GetToken(t *testing.T) {
 	}
 	t.Log("Get Token")
 	{
-		actual, err := keeper.GetToken(ctx, defaultContractID, defaultTokenID1)
+		actual, err := keeper.GetToken(ctx, defaultTokenID1)
 		require.NoError(t, err)
 		verifyTokenFunc(t, expected, actual)
 	}
@@ -119,20 +120,20 @@ func TestKeeper_GeTokens(t *testing.T) {
 	}
 	allTokens = append(allTokens, expected...)
 	{
-		store := ctx.KVStore(keeper.storeKey)
-		for _, t := range expected {
-			store.Set(types.TokenKey(defaultContractID, t.GetTokenID()), keeper.cdc.MustMarshalBinaryBare(t))
+		for _, to := range expected {
+			require.NoError(t, keeper.IssueFT(ctx, addr1, addr1, to.(types.FT), sdk.NewInt(10)))
 		}
 	}
 	t.Log("Compare FT Tokens")
 	{
-		actual, err := keeper.GetFTs(ctx, defaultContractID)
+		actual, err := keeper.GetFTs(ctx)
 		require.NoError(t, err)
 		for index := range expected {
 			verifyTokenFunc(t, expected[index], actual[index])
 		}
 	}
 	t.Log("Prepare NFT Tokens")
+	require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta), addr1))
 	expected = types.Tokens{
 		types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1),
 		types.NewNFT(defaultContractID, defaultTokenID2, defaultName, defaultMeta, addr1),
@@ -142,14 +143,13 @@ func TestKeeper_GeTokens(t *testing.T) {
 	}
 	allTokens = append(allTokens, expected...)
 	{
-		store := ctx.KVStore(keeper.storeKey)
-		for _, t := range expected {
-			store.Set(types.TokenKey(defaultContractID, t.GetTokenID()), keeper.cdc.MustMarshalBinaryBare(t))
+		for _, to := range expected {
+			require.NoError(t, keeper.MintNFT(ctx, addr1, to.(types.NFT)))
 		}
 	}
 	t.Log("Compare NFT Tokens")
 	{
-		actual, err := keeper.GetNFTs(ctx, defaultContractID, defaultTokenType)
+		actual, err := keeper.GetNFTs(ctx, defaultTokenType)
 		require.NoError(t, err)
 		for index := range expected {
 			verifyTokenFunc(t, expected[index], actual[index])
@@ -157,33 +157,33 @@ func TestKeeper_GeTokens(t *testing.T) {
 	}
 	t.Log("Compare NFT Tokens Count")
 	{
-		count, err := keeper.GetNFTCount(ctx, defaultContractID, defaultTokenType)
+		count, err := keeper.GetNFTCount(ctx, defaultTokenType)
 		require.NoError(t, err)
 		require.Equal(t, int64(5), count.Int64())
 	}
 
 	t.Log("Compare NFT Tokens Count Int")
 	{
-		count, err := keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTCount)
+		count, err := keeper.GetNFTCountInt(ctx, defaultTokenType, types.QueryNFTCount)
 		require.NoError(t, err)
 		require.Equal(t, int64(5), count.Int64())
 	}
 	t.Log("Compare NFT Tokens Count Int")
 	{
-		count, err := keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTMint)
+		count, err := keeper.GetNFTCountInt(ctx, defaultTokenType, types.QueryNFTMint)
 		require.NoError(t, err)
 		require.Equal(t, int64(5), count.Int64())
 	}
 	t.Log("Compare NFT Tokens Count Int")
 	{
-		count, err := keeper.GetNFTCountInt(ctx, defaultContractID, defaultTokenType, types.QueryNFTBurn)
+		count, err := keeper.GetNFTCountInt(ctx, defaultTokenType, types.QueryNFTBurn)
 		require.NoError(t, err)
 		require.Equal(t, int64(0), count.Int64())
 	}
 
 	t.Log("Compare All Tokens")
 	{
-		actual, err := keeper.GetTokens(ctx, defaultContractID)
+		actual, err := keeper.GetTokens(ctx)
 		require.NoError(t, err)
 		for index := range allTokens {
 			verifyTokenFunc(t, allTokens[index], actual[index])
@@ -197,21 +197,21 @@ func TestKeeper_GetNextTokenIDFT(t *testing.T) {
 	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
 	t.Log("Get Next Token ID FT")
 	{
-		tokenID, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
+		tokenID, err := keeper.GetNextTokenIDFT(ctx)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenIDFT, tokenID)
 	}
 	t.Log("Issue a token and get next token id")
 	{
 		require.NoError(t, keeper.SetToken(ctx, types.NewFT(defaultContractID, defaultTokenIDFT, defaultName, defaultMeta, sdk.NewInt(defaultDecimals), true)))
-		tokenID, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
+		tokenID, err := keeper.GetNextTokenIDFT(ctx)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenIDFT2, tokenID)
 	}
 	t.Log("Set Full")
 	{
-		keeper.setNextTokenTypeFT(ctx, defaultContractID, "0fffffff")
-		_, err := keeper.GetNextTokenIDFT(ctx, defaultContractID)
+		keeper.setNextTokenTypeFT(ctx, "0fffffff")
+		_, err := keeper.GetNextTokenIDFT(ctx)
 		require.Error(t, err)
 	}
 }
@@ -226,23 +226,34 @@ func TestKeeper_GetNextTokenIDNFT(t *testing.T) {
 	}
 	t.Log("Get Next Token ID NFT")
 	{
-		tokenID, err := keeper.GetNextTokenIDNFT(ctx, defaultContractID, defaultTokenType)
+		tokenID, err := keeper.GetNextTokenIDNFT(ctx, defaultTokenType)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenID1, tokenID)
 	}
 	t.Log("Issue a token and get next token id")
 	{
 		require.NoError(t, keeper.SetToken(ctx, types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1)))
-		tokenID, err := keeper.GetNextTokenIDNFT(ctx, defaultContractID, defaultTokenType)
+		tokenID, err := keeper.GetNextTokenIDNFT(ctx, defaultTokenType)
 		require.NoError(t, err)
 		require.Equal(t, defaultTokenID2, tokenID)
 	}
 	t.Log("Set Full")
 	{
-		keeper.setNextTokenIndexNFT(ctx, defaultContractID, defaultTokenType, "ffffffff")
-		_, err := keeper.GetNextTokenIDNFT(ctx, defaultContractID, defaultTokenType)
+		keeper.setNextTokenIndexNFT(ctx, defaultTokenType, "ffffffff")
+		_, err := keeper.GetNextTokenIDNFT(ctx, defaultTokenType)
 		require.Error(t, err)
 	}
+}
+
+func TestKeeper_getNFTCountMint(t *testing.T) {
+	ctx := cacheKeeper()
+	t.Log("Prepare collection")
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
+	t.Log("Prepare Token Type")
+	require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta), addr1))
+
+	keeper.setNextTokenIndexNFT(ctx, defaultTokenType, strings.Repeat("f", len(types.ReservedEmpty)))
+	require.Equal(t, int64(4294967295), keeper.getNFTCountMint(ctx, defaultTokenType).Int64())
 }
 
 func TestNextTokenID(t *testing.T) {

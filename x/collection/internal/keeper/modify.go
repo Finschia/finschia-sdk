@@ -7,28 +7,27 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-func (k Keeper) Modify(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenType, tokenIndex string,
+func (k Keeper) Modify(ctx sdk.Context, owner sdk.AccAddress, tokenType, tokenIndex string,
 	changes linktype.Changes) error {
 	if tokenType != "" {
 		if tokenIndex != "" {
-			return k.modifyToken(ctx, owner, contractID, tokenType+tokenIndex, changes)
+			return k.modifyToken(ctx, owner, tokenType+tokenIndex, changes)
 		}
-		return k.modifyTokenType(ctx, owner, contractID, tokenType, changes)
+		return k.modifyTokenType(ctx, owner, tokenType, changes)
 	}
 	if tokenIndex == "" {
-		return k.modifyCollection(ctx, owner, contractID, changes)
+		return k.modifyCollection(ctx, owner, changes)
 	}
 	return types.ErrTokenIndexWithoutType
 }
 
 //nolint:dupl
-func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, contractID string,
-	changes linktype.Changes) error {
-	collection, err := k.GetCollection(ctx, contractID)
+func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, changes linktype.Changes) error {
+	collection, err := k.GetCollection(ctx)
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(contractID)
+	modifyPerm := types.NewModifyPermission()
 	if !k.HasPermission(ctx, owner, modifyPerm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), modifyPerm.String())
 	}
@@ -36,7 +35,7 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, contract
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyCollection,
-			sdk.NewAttribute(types.AttributeKeyContractID, collection.GetContractID()),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 		),
 	})
 
@@ -67,13 +66,13 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, contract
 }
 
 //nolint:dupl
-func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenTypeID string,
+func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, tokenTypeID string,
 	changes linktype.Changes) error {
-	tokenType, err := k.GetTokenType(ctx, contractID, tokenTypeID)
+	tokenType, err := k.GetTokenType(ctx, tokenTypeID)
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(contractID)
+	modifyPerm := types.NewModifyPermission()
 	if !k.HasPermission(ctx, owner, modifyPerm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), modifyPerm.String())
 	}
@@ -81,7 +80,7 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractI
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyTokenType,
-			sdk.NewAttribute(types.AttributeKeyContractID, contractID),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 			sdk.NewAttribute(types.AttributeKeyTokenType, tokenType.GetTokenType()),
 		),
 	})
@@ -111,13 +110,13 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, contractI
 }
 
 //nolint:dupl
-func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID, tokenID string,
+func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, tokenID string,
 	changes linktype.Changes) error {
-	token, err := k.GetToken(ctx, contractID, tokenID)
+	token, err := k.GetToken(ctx, tokenID)
 	if err != nil {
 		return err
 	}
-	modifyPerm := types.NewModifyPermission(contractID)
+	modifyPerm := types.NewModifyPermission()
 	if !k.HasPermission(ctx, owner, modifyPerm) {
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", owner.String(), modifyPerm.String())
 	}
@@ -125,7 +124,7 @@ func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, contractID, t
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
 			types.EventTypeModifyToken,
-			sdk.NewAttribute(types.AttributeKeyContractID, token.GetContractID()),
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
 			sdk.NewAttribute(types.AttributeKeyTokenID, token.GetTokenID()),
 		),
 	})
