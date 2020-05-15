@@ -54,7 +54,15 @@ func registerSwaggerUI(rs *lcd.RestServer) {
 		panic(err)
 	}
 	staticServer := http.FileServer(statikFS)
-	rs.Mux.PathPrefix("/swagger-ui/").Handler(http.StripPrefix("/swagger-ui/", cacheControlWrapper(staticServer)))
+	rs.Mux.PathPrefix("/coin/").Handler(jsonTypeWrapper(staticServer))
+	rs.Mux.PathPrefix("/swagger-ui/").Handler(cacheControlWrapper(staticServer))
+}
+
+func jsonTypeWrapper(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		h.ServeHTTP(w, r)
+	})
 }
 
 // no cache for the static server

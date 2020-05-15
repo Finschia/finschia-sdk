@@ -1,0 +1,8 @@
+{
+    "result": {
+        "denom": "tvat",
+        "symbol": "TVAT",
+        "name": "Test Validator Authority Token",
+        "decimals": 6
+    }
+}

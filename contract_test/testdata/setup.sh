@@ -27,7 +27,7 @@ sleep 3s
 ALL_MSG_TX='/tmp/contract_test/all_msg_tx.json'
 SIGNED_TX='/tmp/contract_test/signed_tx.json'
 TMP_TX_RESULT='/tmp/contract_test/tmp_result.txt'
-cp client/lcd/swagger-ui/swagger.yaml ${SWAGGER}
+cp client/lcd/static_resources/swagger-ui/swagger.yaml ${SWAGGER}
 cp ./contract_test/testdata/all_msg_tx.json ${ALL_MSG_TX}
 
 create_only_address somebody ${REPLACE_SOMEBODY_ADDR}

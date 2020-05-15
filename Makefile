@@ -69,9 +69,9 @@ build-docker:
 	docker build --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) --build-arg WITH_CLEVELDB=$(WITH_CLEVELDB) -t line/link .
 
 build-swagger-docs: statik
-	@perl -pi -e 's/LINK_BUILD_VERSION/$(BASE_VERSION)/' client/lcd/swagger-ui/swagger.yaml
-	@statik -src=client/lcd/swagger-ui -dest=client/lcd -f -m
-	@perl -pi -e 's/$(BASE_VERSION)/LINK_BUILD_VERSION/' client/lcd/swagger-ui/swagger.yaml
+	@perl -pi -e 's/LINK_BUILD_VERSION/$(BASE_VERSION)/' client/lcd/static_resources/swagger-ui/swagger.yaml
+	@statik -src=client/lcd/static_resources -dest=client/lcd -f -m -include=*
+	@perl -pi -e 's/$(BASE_VERSION)/LINK_BUILD_VERSION/' client/lcd/static_resources/swagger-ui/swagger.yaml
 
 build-load-tester: build
 	go build -mod=readonly $(BUILD_FLAGS) -o build/link-load-tester ./contrib/load_test/cmd/link_load_tester

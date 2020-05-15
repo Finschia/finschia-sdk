@@ -441,6 +441,29 @@ paths:
                     $ref: '#/components/schemas/Account'
         "500":
           description: Server internel error
+  /coin/{symbol}:
+    get:
+      summary: Get the coin metadata
+      tags:
+        - Coin
+      parameters:
+        - name: symbol
+          in: path
+          description: Symbol of coin
+          required: true
+          schema:
+            type: string
+          example: TC
+      responses:
+        "200":
+          description: Coin metadata
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result:
+                    $ref: '#/components/schemas/CoinMeta'
   /coin/balances/{address}:
     get:
       summary: Get the account balances
@@ -1524,6 +1547,21 @@ components:
         amount:
           type: string
           example: "50"
+    CoinMeta:
+      type: object
+      properties:
+        denom:
+          type: string
+          example: tcony
+        symbol:
+          type: string
+          example: TC
+        name:
+          type: string
+          example: "Test Coin"
+        decimals:
+          type: integer
+          example: 6
     LinkCoin:
       type: object
       properties:
