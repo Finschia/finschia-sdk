@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	atypes "github.com/line/link/x/account/client/types"
 	"github.com/spf13/viper"
 
 	"github.com/line/link/types"
@@ -43,7 +44,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/slashing"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	atypes "github.com/line/link/x/auth/client/types"
 )
 
 const (

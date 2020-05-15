@@ -10,7 +10,7 @@ import (
 	"github.com/line/link/contrib/load_test/transaction"
 	"github.com/line/link/contrib/load_test/types"
 	"github.com/line/link/contrib/load_test/wallet"
-	"github.com/line/link/x/bank"
+	"github.com/line/link/x/coin"
 )
 
 const (
@@ -84,7 +84,7 @@ func (ss *StateSetter) broadcastRegistrationTx(hdWallet *wallet.HDWallet, startA
 			return err
 		}
 		to := keyWallet.Address()
-		msgs[i] = bank.NewMsgSend(ss.masterKeyWallet.Address(), to, coins)
+		msgs[i] = coin.NewMsgSend(ss.masterKeyWallet.Address(), to, coins)
 	}
 
 	stdTx, err := ss.txBuilder.WithAccountNumber(account.AccountNumber).WithSequence(account.Sequence).

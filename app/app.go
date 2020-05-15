@@ -7,7 +7,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	"github.com/line/link/x/account"
-	"github.com/line/link/x/bank"
+	"github.com/line/link/x/account/ante"
+	"github.com/line/link/x/coin"
 	"github.com/line/link/x/contract"
 	"github.com/line/link/x/token"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -29,9 +30,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 
-	cbank "github.com/cosmos/cosmos-sdk/x/bank"
+	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/line/link/version"
-	"github.com/line/link/x/auth/ante"
 	"github.com/line/link/x/collection"
 )
 
@@ -50,7 +50,7 @@ var (
 	ModuleBasics = module.NewBasicManager(
 		genutil.AppModuleBasic{},
 		auth.AppModuleBasic{},
-		bank.AppModuleBasic{},
+		coin.AppModuleBasic{},
 		staking.AppModuleBasic{},
 		params.AppModuleBasic{},
 		supply.AppModuleBasic{},
@@ -106,8 +106,8 @@ type LinkApp struct {
 
 	// keepers
 	accountKeeper    auth.AccountKeeper
-	cbankKeeper      cbank.Keeper
 	bankKeeper       bank.Keeper
+	coinKeeper       coin.Keeper
 	supplyKeeper     supply.Keeper
 	stakingKeeper    staking.Keeper
 	paramsKeeper     params.Keeper
@@ -142,7 +142,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		upgrade.StoreKey,
 		token.StoreKey,
 		collection.StoreKey,
-		bank.StoreKey,
+		coin.StoreKey,
 		contract.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
@@ -158,16 +158,16 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// init params keeper and subspaces
 	app.paramsKeeper = params.NewKeeper(app.cdc, keys[params.StoreKey], tkeys[params.TStoreKey])
 	app.subspaces[auth.ModuleName] = app.paramsKeeper.Subspace(auth.DefaultParamspace)
-	app.subspaces[cbank.ModuleName] = app.paramsKeeper.Subspace(cbank.DefaultParamspace)
+	app.subspaces[bank.ModuleName] = app.paramsKeeper.Subspace(bank.DefaultParamspace)
 	app.subspaces[staking.ModuleName] = app.paramsKeeper.Subspace(staking.DefaultParamspace)
 	app.subspaces[collection.ModuleName] = app.paramsKeeper.Subspace(collection.DefaultParamspace)
 	app.subspaces[gov.ModuleName] = app.paramsKeeper.Subspace(gov.DefaultParamspace).WithKeyTable(gov.ParamKeyTable())
 
 	// add keepers
 	app.accountKeeper = auth.NewAccountKeeper(app.cdc, keys[auth.StoreKey], app.subspaces[auth.ModuleName], auth.ProtoBaseAccount)
-	app.cbankKeeper = cbank.NewBaseKeeper(app.accountKeeper, app.subspaces[cbank.ModuleName], app.ModuleAccountAddrs())
-	app.bankKeeper = bank.NewKeeper(app.cbankKeeper, keys[bank.StoreKey])
-	app.supplyKeeper = supply.NewKeeper(app.cdc, keys[supply.StoreKey], app.accountKeeper, app.cbankKeeper, maccPerms)
+	app.bankKeeper = bank.NewBaseKeeper(app.accountKeeper, app.subspaces[bank.ModuleName], app.ModuleAccountAddrs())
+	app.coinKeeper = coin.NewKeeper(app.bankKeeper, keys[coin.StoreKey])
+	app.supplyKeeper = supply.NewKeeper(app.cdc, keys[supply.StoreKey], app.accountKeeper, app.bankKeeper, maccPerms)
 	app.stakingKeeper = staking.NewKeeper(app.cdc, keys[staking.StoreKey], app.supplyKeeper, app.subspaces[staking.ModuleName])
 	app.upgradeKeeper = upgrade.NewKeeper(skipUpgradeHeights, keys[upgrade.StoreKey], app.cdc)
 	app.setUpgradeHandlers()
@@ -197,7 +197,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	app.mm = module.NewManager(
 		genutil.NewAppModule(app.accountKeeper, app.stakingKeeper, app.BaseApp.DeliverTx),
 		auth.NewAppModule(app.accountKeeper),
-		bank.NewAppModule(app.bankKeeper),
+		coin.NewAppModule(app.coinKeeper),
 		supply.NewAppModule(app.supplyKeeper, app.accountKeeper),
 		staking.NewAppModule(app.stakingKeeper, app.accountKeeper, app.supplyKeeper),
 		gov.NewAppModule(app.govKeeper, app.accountKeeper, app.supplyKeeper),
@@ -216,7 +216,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		auth.ModuleName,
 		gov.ModuleName,
 		supply.ModuleName,
-		bank.ModuleName,
+		coin.ModuleName,
 		genutil.ModuleName,
 		token.ModuleName,
 		collection.ModuleName,
@@ -236,7 +236,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		collection.NewAppModule(app.collectionKeeper),
 		gov.NewAppModule(app.govKeeper, app.accountKeeper, app.supplyKeeper),
 		// TODO: Implement AppModuleSimulation interface in each module.
-		//bank.NewAppModule(app.bankKeeper),
+		//bank.NewAppModule(app.coinKeeper),
 		//token.NewAppModule(app.tokenKeeper),
 		//account.NewAppModule(app.accountKeeper),
 	)

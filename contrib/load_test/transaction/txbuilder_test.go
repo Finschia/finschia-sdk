@@ -10,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/line/link/app"
-	"github.com/line/link/x/bank"
+	"github.com/line/link/x/coin"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
@@ -63,7 +63,7 @@ func TestTxBuilderWithoutKeybase_BuildAndSign(t *testing.T) {
 	from := fromPrivateKey.PubKey().Address().Bytes()
 	to := secp256k1.GenPrivKey().PubKey().Address().Bytes()
 	coins := sdk.NewCoins(sdk.NewCoin(TestCoinName, sdk.NewInt(10)))
-	msgs := []sdk.Msg{bank.NewMsgSend(from, to, coins)}
+	msgs := []sdk.Msg{coin.NewMsgSend(from, to, coins)}
 	// And TxBuilder
 	txBuilder := NewTxBuilder().WithChainID(TestChainID).WithGas(TestGas).WithGasPrices(TestGasPrices).
 		WithMemo(TestMemo)

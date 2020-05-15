@@ -3,14 +3,14 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link/x/bank"
+	"github.com/line/link/x/coin"
 	"github.com/line/link/x/token/internal/types"
 )
 
 func (k Keeper) Transfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Int) error {
 	// reject if to address is blacklisted (safety box addresses)
-	if k.IsBlacklisted(ctx, to, bank.ActionTransferTo) {
-		return sdkerrors.Wrapf(bank.ErrCanNotTransferToBlacklisted, "Addr: %s", to.String())
+	if k.IsBlacklisted(ctx, to, coin.ActionTransferTo) {
+		return sdkerrors.Wrapf(coin.ErrCanNotTransferToBlacklisted, "Addr: %s", to.String())
 	}
 
 	err := k.Send(ctx, from, to, amount)

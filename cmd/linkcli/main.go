@@ -7,6 +7,7 @@ import (
 
 	"github.com/line/link/types"
 	"github.com/line/link/x/account"
+	authclient "github.com/line/link/x/account/client"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -20,8 +21,7 @@ import (
 	"github.com/line/link/app"
 	"github.com/line/link/client"
 	"github.com/line/link/version"
-	authclient "github.com/line/link/x/auth/client"
-	"github.com/line/link/x/bank"
+	"github.com/line/link/x/coin"
 )
 
 const (
@@ -110,7 +110,7 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 	}
 
 	txCmd.AddCommand(
-		bank.SendTxCmd(cdc),
+		coin.SendTxCmd(cdc),
 		client.LineBreak,
 		account.CreateAccountTxCmd(cdc),
 		account.EmptyTxCmd(cdc),
@@ -130,7 +130,7 @@ func txCmd(cdc *amino.Codec) *cobra.Command {
 	var cmdsToRemove []*cobra.Command
 
 	for _, cmd := range txCmd.Commands() {
-		if cmd.Use == auth.ModuleName || cmd.Use == bank.ModuleName || cmd.Use == account.ModuleName {
+		if cmd.Use == auth.ModuleName || cmd.Use == coin.ModuleName || cmd.Use == account.ModuleName {
 			cmdsToRemove = append(cmdsToRemove, cmd)
 		}
 	}

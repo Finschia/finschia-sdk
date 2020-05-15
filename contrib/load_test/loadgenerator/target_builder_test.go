@@ -10,7 +10,7 @@ import (
 	"github.com/line/link/app"
 	"github.com/line/link/contrib/load_test/tests"
 	"github.com/line/link/contrib/load_test/transaction"
-	"github.com/line/link/x/bank"
+	"github.com/line/link/x/coin"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )
@@ -35,7 +35,7 @@ func TestTargetBuilder_MakeTxQuery(t *testing.T) {
 	from := fromPrivateKey.PubKey().Address().Bytes()
 	to := secp256k1.GenPrivKey().PubKey().Address().Bytes()
 	coins := sdk.NewCoins(sdk.NewCoin(tests.TestCoinName, sdk.NewInt(10)))
-	msgs := []sdk.Msg{bank.NewMsgSend(from, to, coins)}
+	msgs := []sdk.Msg{coin.NewMsgSend(from, to, coins)}
 	// And TxBuilder
 	txBuilder := transaction.NewTxBuilder().WithChainID(tests.TestChainID)
 	stdTx, err := txBuilder.BuildAndSign(fromPrivateKey, msgs)

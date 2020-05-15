@@ -24,9 +24,11 @@ func errorCodesCmd() *cobra.Command {
 
 			sort.Strings(keys)
 
+			fmt.Println("| codespace | error code | description | ")
+			fmt.Println("| --------- | ---------- | ----------- | ")
 			for _, k := range keys {
 				e := errorCodesMap[k]
-				fmt.Printf("%v %v %s\n", e.Codespace(), e.ABCICode(), e.Error())
+				fmt.Printf("| %v | %v | %s |\n", e.Codespace(), e.ABCICode(), e.Error())
 			}
 
 			return nil

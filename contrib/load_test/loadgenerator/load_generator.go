@@ -12,7 +12,7 @@ import (
 	"github.com/line/link/contrib/load_test/transaction"
 	"github.com/line/link/contrib/load_test/types"
 	"github.com/line/link/contrib/load_test/wallet"
-	"github.com/line/link/x/bank"
+	"github.com/line/link/x/coin"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 	"golang.org/x/sync/errgroup"
@@ -117,7 +117,7 @@ func (lg *LoadGenerator) GenerateMsgSendTxTarget(sem *chan int, i int) error {
 	coins := sdk.NewCoins(sdk.NewCoin(lg.config.CoinName, sdk.NewInt(1)))
 	msgs := make([]sdk.Msg, lg.config.MsgsPerTxLoadTest)
 	for i := 0; i < lg.config.MsgsPerTxLoadTest; i++ {
-		msgs[i] = bank.NewMsgSend(from, to, coins)
+		msgs[i] = coin.NewMsgSend(from, to, coins)
 	}
 
 	stdTx, err := lg.txBuilder.WithAccountNumber(account.AccountNumber).WithSequence(account.Sequence).

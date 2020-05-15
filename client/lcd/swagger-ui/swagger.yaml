@@ -15,8 +15,6 @@ tags:
     description: Coin query APIs
   - name: Token
     description: Token query APIs
-  - name: Safety Box
-    description: Create/query safety box and grant/revoke permissions
   - name: Collection
     description: Collection query APIs
 servers:
@@ -443,7 +441,7 @@ paths:
                     $ref: '#/components/schemas/Account'
         "500":
           description: Server internel error
-  /bank/balances/{address}:
+  /coin/balances/{address}:
     get:
       summary: Get the account balances
       tags:
@@ -481,7 +479,7 @@ paths:
         "500":
           description: Server internal error
           content: {}
-  /bank/balances/{address}/{denomination}:
+  /coin/balances/{address}/{denomination}:
     get:
       tags:
         - Coin
@@ -2406,7 +2404,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgSend"
+          example: "coin/MsgSend"
         value:
           type: object
           properties:
@@ -2480,7 +2478,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgEmpty"
+          example: "account/MsgEmpty"
         value:
           type: object
           properties:
@@ -2491,7 +2489,7 @@ components:
       properties:
         type:
           type: string
-          example: "link/MsgCreateAccount"
+          example: "account/MsgCreateAccount"
         value:
           type: object
           properties:
@@ -3037,7 +3035,7 @@ components:
     MsgExamples:
       value: [
       {
-        "type": "link/MsgSend",
+        "type": "coin/MsgSend",
         "value": {
           "from": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",
           "to": "link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv",

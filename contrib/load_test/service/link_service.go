@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/line/link/contrib/load_test/types"
-	authtypes "github.com/line/link/x/auth/client/types"
+	atypes "github.com/line/link/x/account/client/types"
 	coretypes "github.com/tendermint/tendermint/rpc/core/types"
 )
 
@@ -96,7 +96,7 @@ func (ls *LinkService) getBlock(url string) (*coretypes.ResultBlock, error) {
 	return &block, nil
 }
 
-func (ls *LinkService) BroadcastTx(stdTx auth.StdTx, mode string) (*authtypes.TxResponse, error) {
+func (ls *LinkService) BroadcastTx(stdTx auth.StdTx, mode string) (*atypes.TxResponse, error) {
 	url := ls.LCDURI + "/txs"
 
 	bz, err := ls.cdc.MarshalJSON(authrest.BroadcastReq{Mode: mode, Tx: stdTx})
@@ -119,7 +119,7 @@ func (ls *LinkService) BroadcastTx(stdTx auth.StdTx, mode string) (*authtypes.Tx
 		return nil, types.RequestFailed{URL: url, Status: resp.Status, Body: data}
 	}
 
-	var res authtypes.TxResponse
+	var res atypes.TxResponse
 	err = ls.cdc.UnmarshalJSON(data, &res)
 	if err != nil {
 		return nil, err
