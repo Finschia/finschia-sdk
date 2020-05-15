@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/line/link/x/collection/internal/types"
@@ -119,9 +120,8 @@ func TestKeeper_GeTokens(t *testing.T) {
 	}
 	allTokens = append(allTokens, expected...)
 	{
-		store := ctx.KVStore(keeper.storeKey)
-		for _, t := range expected {
-			store.Set(types.TokenKey(defaultContractID, t.GetTokenID()), keeper.cdc.MustMarshalBinaryBare(t))
+		for _, to := range expected {
+			require.NoError(t, keeper.IssueFT(ctx, addr1, addr1, to.(types.FT), sdk.NewInt(10)))
 		}
 	}
 	t.Log("Compare FT Tokens")
@@ -133,6 +133,7 @@ func TestKeeper_GeTokens(t *testing.T) {
 		}
 	}
 	t.Log("Prepare NFT Tokens")
+	require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta), addr1))
 	expected = types.Tokens{
 		types.NewNFT(defaultContractID, defaultTokenID1, defaultName, defaultMeta, addr1),
 		types.NewNFT(defaultContractID, defaultTokenID2, defaultName, defaultMeta, addr1),
@@ -142,9 +143,8 @@ func TestKeeper_GeTokens(t *testing.T) {
 	}
 	allTokens = append(allTokens, expected...)
 	{
-		store := ctx.KVStore(keeper.storeKey)
-		for _, t := range expected {
-			store.Set(types.TokenKey(defaultContractID, t.GetTokenID()), keeper.cdc.MustMarshalBinaryBare(t))
+		for _, to := range expected {
+			require.NoError(t, keeper.MintNFT(ctx, addr1, to.(types.NFT)))
 		}
 	}
 	t.Log("Compare NFT Tokens")
@@ -243,6 +243,17 @@ func TestKeeper_GetNextTokenIDNFT(t *testing.T) {
 		_, err := keeper.GetNextTokenIDNFT(ctx, defaultTokenType)
 		require.Error(t, err)
 	}
+}
+
+func TestKeeper_getNFTCountMint(t *testing.T) {
+	ctx := cacheKeeper()
+	t.Log("Prepare collection")
+	require.NoError(t, keeper.CreateCollection(ctx, types.NewCollection(defaultContractID, defaultName, defaultMeta, defaultImgURI), addr1))
+	t.Log("Prepare Token Type")
+	require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta), addr1))
+
+	keeper.setNextTokenIndexNFT(ctx, defaultTokenType, strings.Repeat("f", len(types.ReservedEmpty)))
+	require.Equal(t, int64(4294967295), keeper.getNFTCountMint(ctx, defaultTokenType).Int64())
 }
 
 func TestNextTokenID(t *testing.T) {
