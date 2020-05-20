@@ -4,7 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	tmtypes "github.com/tendermint/tendermint/types"
 )
 
 type Codec interface {
@@ -45,6 +45,7 @@ type FetchResultWithTxRes struct {
 }
 
 type ResultBlock struct {
-	BlockSize int `json:"block_size"`
-	*ctypes.ResultBlock
+	BlockSize int             `json:"block_size"`
+	BlockID   tmtypes.BlockID `json:"block_id"`
+	Block     *tmtypes.Block  `json:"block"`
 }
