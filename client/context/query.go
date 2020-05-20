@@ -16,6 +16,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/rootmulti"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // GetNode returns an RPC client. If the context's client is not defined, an
@@ -95,7 +96,7 @@ func (ctx CLIContext) query(path string, key tmbytes.HexBytes) (res []byte, heig
 
 	resp := result.Response
 	if !resp.IsOK() {
-		return res, resp.Height, errors.New(resp.Log)
+		return res, resp.Height, sdkerrors.ABCIError(resp.Codespace, resp.Code, resp.Log)
 	}
 
 	// data from trusted node or subspace query doesn't need verification

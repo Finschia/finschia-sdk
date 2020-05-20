@@ -12,6 +12,7 @@ import (
 	"strconv"
 	"strings"
 
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/tendermint/tendermint/types"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
@@ -141,19 +142,56 @@ func ReadRESTReq(w http.ResponseWriter, r *http.Request, cdc *codec.Codec, req i
 type ErrorResponse struct {
 	Code  int    `json:"code,omitempty"`
 	Error string `json:"error"`
+	Cause Cause  `json:"cause,omitempty"`
+}
+
+type Cause struct {
+	Code      uint32 `json:"code,omitempty"`
+	Codespace string `json:"codespace,omitempty"`
+	Desc      string `json:"desc,omitempty"`
 }
 
 // NewErrorResponse creates a new ErrorResponse instance.
-func NewErrorResponse(code int, err string) ErrorResponse {
-	return ErrorResponse{Code: code, Error: err}
+func NewErrorResponse(code int, err string, cause Cause) ErrorResponse {
+	return ErrorResponse{Code: code, Error: err, Cause: cause}
 }
 
 // WriteErrorResponse prepares and writes a HTTP error
 // given a status code and an error message.
-func WriteErrorResponse(w http.ResponseWriter, status int, err string) {
+func WriteErrorResponse(w http.ResponseWriter, status int, err interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
-	_, _ = w.Write(codec.Cdc.MustMarshalJSON(NewErrorResponse(0, err)))
+
+	var cause Cause
+	strErr, ok := err.(string)
+	if !ok {
+		if e, ok := err.(error); ok {
+			strErr = e.Error()
+			for {
+				if c, ok := e.(*sdkerrors.Error); ok {
+					cause = Cause{
+						Code: c.ABCICode(),
+						Codespace: c.Codespace(),
+						Desc: c.Error(),
+					}
+					break
+				}
+
+				if wrapped, ok := e.(interface {
+					Unwrap() error
+				}); ok {
+					e = wrapped.Unwrap()
+				} else {
+					break
+				}
+			}
+		} else {
+			strErr = "unknown error"
+		}
+
+	}
+
+	_, _ = w.Write(codec.Cdc.MustMarshalJSON(NewErrorResponse(0, strErr, cause)))
 }
 
 // WriteSimulationResponse prepares and writes an HTTP
