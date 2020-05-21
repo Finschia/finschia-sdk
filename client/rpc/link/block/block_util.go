@@ -180,7 +180,7 @@ func (u *Util) fetchBlock(fetchBlockHeight int64) (*cdc.FetchResultWithTxRes, er
 
 	blockSize := resBlock.Block.Size()
 
-	resultBlock := &cdc.ResultBlock{BlockSize: blockSize, ResultBlock: resBlock}
+	resultBlock := &cdc.ResultBlock{BlockSize: blockSize, BlockID: resBlock.BlockID, Block: resBlock.Block}
 
 	return &cdc.FetchResultWithTxRes{ResultBlock: resultBlock, TxResponses: txResponses}, nil
 }
