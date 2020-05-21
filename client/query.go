@@ -79,7 +79,7 @@ func (ctx Context) queryABCI(req abci.RequestQuery) (abci.ResponseQuery, error) 
 	}
 
 	if !result.Response.IsOK() {
-		return abci.ResponseQuery{}, errors.New(result.Response.Log)
+		return abci.ResponseQuery{}, NewQueryError(result.Response.Codespace, result.Response.Code, result.Response.Log)
 	}
 
 	// data from trusted node or subspace query doesn't need verification
