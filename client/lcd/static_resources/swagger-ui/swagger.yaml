@@ -441,19 +441,19 @@ paths:
                     $ref: '#/components/schemas/Account'
         "500":
           description: Server internel error
-  /coin/{symbol}:
+  /coin/{denomination}:
     get:
       summary: Get the coin metadata
       tags:
         - Coin
       parameters:
-        - name: symbol
+        - name: denomination
           in: path
-          description: Symbol of coin
+          description: Denomination of coin
           required: true
           schema:
             type: string
-          example: TC
+          example: tcony
       responses:
         "200":
           description: Coin metadata
