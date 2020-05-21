@@ -10,6 +10,7 @@ import (
 	"github.com/line/link/x/account/ante"
 	"github.com/line/link/x/coin"
 	"github.com/line/link/x/contract"
+	"github.com/line/link/x/genesis"
 	"github.com/line/link/x/token"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -61,6 +62,7 @@ var (
 		token.AppModuleBasic{},
 		collection.AppModuleBasic{},
 		account.AppModuleBasic{},
+		genesis.AppModuleBasic{},
 	)
 
 	UpgradableModules = []UpgradableModule{
@@ -115,6 +117,7 @@ type LinkApp struct {
 	upgradeKeeper    upgrade.Keeper
 	tokenKeeper      token.Keeper
 	collectionKeeper collection.Keeper
+	genesisKeeper    genesis.Keeper
 
 	// the module manager
 	mm *module.Manager
@@ -144,6 +147,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		collection.StoreKey,
 		coin.StoreKey,
 		contract.StoreKey,
+		genesis.StoreKey,
 	)
 	tkeys := sdk.NewTransientStoreKeys(staking.TStoreKey, params.TStoreKey)
 
@@ -181,6 +185,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.subspaces[collection.ModuleName],
 		keys[collection.StoreKey],
 	)
+	app.genesisKeeper = genesis.NewKeeper(app.cdc, keys[genesis.StoreKey])
 
 	// register the proposal types
 	govRouter := gov.NewRouter()
@@ -205,6 +210,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		token.NewAppModule(app.tokenKeeper),
 		collection.NewAppModule(app.collectionKeeper),
 		account.NewAppModule(app.accountKeeper),
+		genesis.NewAppModule(app.genesisKeeper),
 	)
 	app.mm.SetOrderBeginBlockers(upgrade.ModuleName)
 	app.mm.SetOrderEndBlockers(gov.ModuleName, staking.ModuleName)
@@ -212,6 +218,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// NOTE: The genutils module must occur after staking so that pools are
 	// properly initialized with tokens from genesis accounts.
 	app.mm.SetOrderInitGenesis(
+		genesis.ModuleName,
 		staking.ModuleName,
 		auth.ModuleName,
 		gov.ModuleName,
