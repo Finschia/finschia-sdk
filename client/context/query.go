@@ -95,7 +95,7 @@ func (ctx CLIContext) query(path string, key tmbytes.HexBytes) (res []byte, heig
 
 	resp := result.Response
 	if !resp.IsOK() {
-		return res, resp.Height, errors.New(resp.Log)
+		return res, resp.Height, NewQueryError(resp.Codespace, resp.Code, resp.Log)
 	}
 
 	// data from trusted node or subspace query doesn't need verification
