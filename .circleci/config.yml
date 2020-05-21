@@ -402,6 +402,8 @@ jobs:
     resource_class: medium
     steps:
       - checkout
+      - run: go env -w GOPRIVATE=github.com/line/*
+      - run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
       - run: make build-swagger-docs
       - run: curl -sL https://git.io/goreleaser | bash -s -- --skip-validate --rm-dist
 
