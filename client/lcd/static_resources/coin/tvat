@@ -2,7 +2,7 @@
     "result": {
         "denom": "tvat",
         "symbol": "TVAT",
-        "name": "Test Validator Authority Token",
+        "name": "Test VAT",
         "decimals": 6
     }
 }
