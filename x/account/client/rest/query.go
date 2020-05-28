@@ -104,3 +104,38 @@ func QueryTxRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		rest.PostProcessResponseBare(w, cliCtx, output)
 	}
 }
+
+func QueryBlockWithTxsRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+
+		fromHeight, err := strconv.ParseInt(vars["from_height"], 10, 64)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("couldn't parse block height. Assumed format is '/blocks_with_tx_results/{from_height}'. because of %s", err.Error()))
+			return
+		}
+		fetchsize, err := strconv.ParseInt(r.URL.Query().Get("fetchsize"), 10, 8)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("couldn't parse fetchsize. because of %s", err.Error()))
+			return
+		}
+
+		latestBlockHeight, err := utils.LatestBlockHeight(cliCtx)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("couldn't get latestBlockHeight. because of %s", err.Error()))
+			return
+		}
+
+		if fromHeight > latestBlockHeight {
+			rest.WriteErrorResponse(w, http.StatusNotFound, fmt.Sprintf("the block height does not exist. Requested: %d, Latest: %d", fromHeight, latestBlockHeight))
+			return
+		}
+
+		output, err := utils.BlockWithTxResponses(cliCtx, latestBlockHeight, fromHeight, fetchsize)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, fmt.Sprintf("couldn't process request. because of %s", err.Error()))
+			return
+		}
+		rest.PostProcessResponseBare(w, cliCtx, output)
+	}
+}

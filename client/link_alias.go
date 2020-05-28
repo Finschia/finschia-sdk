@@ -11,7 +11,6 @@ import (
 
 	linklcd "github.com/line/link/client/lcd"
 	linkrpc "github.com/line/link/client/rpc"
-	"github.com/line/link/client/rpc/link/block"
 	"github.com/line/link/client/rpc/link/genesis"
 	"github.com/line/link/client/rpc/link/mempool"
 )
@@ -81,7 +80,6 @@ var (
 	NewRestServer                      = lcd.NewRestServer
 	ServeCommand                       = linklcd.ServeCommand
 	BlockCommand                       = rpc.BlockCommand
-	BlockWithResultCommand             = block.WithTxResultCommand
 	QueryGenesisAccountCmd             = genesis.QueryGenesisAccountCmd
 	QueryGenesisTxCmd                  = genesis.QueryGenesisTxCmd
 	BlockRequestHandlerFn              = rpc.BlockRequestHandlerFn

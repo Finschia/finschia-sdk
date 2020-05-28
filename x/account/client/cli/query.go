@@ -2,11 +2,13 @@ package cli
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/line/link/x/account/client/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/tendermint/go-amino"
 
 	tmtypes "github.com/tendermint/tendermint/types"
 
@@ -164,4 +166,73 @@ func QueryTxCmd(cdc *codec.Codec) *cobra.Command {
 		panic(err)
 	}
 	return cmd
+}
+
+var (
+	DefaultBlockFetchSize int64 = 20
+)
+
+func QueryBlockWithTxResponsesCommand(cdc *amino.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "block-with-tx-result [from_block_height] [fetchsize]",
+		Short: "Get verified data for the block and tx and tx_result from given `from_block_height` to `fetchsize`.",
+		Long: "Up to 20 Items can be returned, and more are ignored. \n" +
+			"The Default fetchsize is 20 and if there are not enough blocks in the fetchsize requested from from_block_height, \n" +
+			"It will respond to the latest block height from from_block_height param. \n" +
+			"You can know latest block height by latest_block_height property of result. \n" +
+			"The direction of hasMore is from low to high blockHeight. \n" +
+			"Usage:\n" +
+			"  linkcli query block-with-tx-result 1 10\n" +
+			"  linkcli query block-with-tx-result 1 30 (it will return 20 Items)\n" +
+			"  linkcli query block-with-tx-result 1",
+
+		Args: cobra.RangeArgs(1, 2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			fromBlockHeight, fetchSize := parseCmdParams(args)
+
+			latestBlockHeight, err := utils.LatestBlockHeight(cliCtx)
+			if err != nil {
+				return err
+			}
+
+			blockWithTxReponses, err := utils.BlockWithTxResponses(cliCtx, latestBlockHeight, fromBlockHeight, fetchSize)
+			if err != nil {
+				return err
+			}
+			return cliCtx.PrintOutput(blockWithTxReponses)
+		},
+	}
+
+	cmd.Flags().StringP(flags.FlagNode, "n", "tcp://localhost:26657", "Node to connect to")
+	err := viper.BindPFlag(flags.FlagNode, cmd.Flags().Lookup(flags.FlagNode))
+	if err != nil {
+		panic(err)
+	}
+
+	cmd.Flags().Bool(flags.FlagTrustNode, false, "Trust connected full node (don't verify proofs for responses)")
+	err = viper.BindPFlag(flags.FlagTrustNode, cmd.Flags().Lookup(flags.FlagTrustNode))
+	if err != nil {
+		panic(err)
+	}
+
+	return cmd
+}
+
+func parseCmdParams(args []string) (int64, int64) {
+	fromBlockHeight, err := strconv.ParseInt(args[0], 10, 64)
+	if err != nil {
+		panic(err)
+	}
+	if len(args) == 1 {
+		return fromBlockHeight, DefaultBlockFetchSize
+	}
+	fetchSize, err := strconv.ParseInt(args[1], 10, 8)
+	if err != nil {
+		panic(err)
+	}
+	if fetchSize > DefaultBlockFetchSize {
+		fetchSize = DefaultBlockFetchSize
+	}
+	return fromBlockHeight, fetchSize
 }

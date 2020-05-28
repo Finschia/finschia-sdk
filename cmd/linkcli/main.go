@@ -90,10 +90,10 @@ func queryCmd(cdc *amino.Codec) *cobra.Command {
 		client.LineBreak,
 		client.ValidatorCommand(cdc),
 		client.BlockCommand(),
-		client.BlockWithResultCommand(cdc),
 		client.QueryGenesisTxCmd(cdc),
 		authclient.QueryTxsByEventsCmd(cdc),
 		authclient.QueryTxCmd(cdc),
+		authclient.QueryBlockWithTxResponsesCommand(cdc),
 		client.LineBreak,
 	)
 
