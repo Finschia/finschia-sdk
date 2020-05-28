@@ -1913,6 +1913,9 @@ components:
           example: "368"
         txhash:
           $ref: '#/components/schemas/Hash'
+        index:
+          type: integer
+          example: 0
         raw_log:
           type: string
           description: The raw string output of the logger

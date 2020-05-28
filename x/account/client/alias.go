@@ -7,12 +7,13 @@ import (
 )
 
 var (
-	GetAccountCmd       = cosmoscli.GetAccountCmd
-	QueryTxsByEventsCmd = cli.QueryTxsByEventsCmd
-	QueryTxCmd          = cli.QueryTxCmd
-	GetSignCommand      = cosmoscli.GetSignCommand
-	GetMultiSignCommand = cosmoscli.GetMultiSignCommand
-	GetBroadcastCommand = cosmoscli.GetBroadcastCommand
-	GetEncodeCommand    = cosmoscli.GetEncodeCommand
-	RegisterTxRoutes    = rest.RegisterTxRoutes
+	GetAccountCmd                    = cosmoscli.GetAccountCmd
+	QueryTxsByEventsCmd              = cli.QueryTxsByEventsCmd
+	QueryTxCmd                       = cli.QueryTxCmd
+	QueryBlockWithTxResponsesCommand = cli.QueryBlockWithTxResponsesCommand
+	GetSignCommand                   = cosmoscli.GetSignCommand
+	GetMultiSignCommand              = cosmoscli.GetMultiSignCommand
+	GetBroadcastCommand              = cosmoscli.GetBroadcastCommand
+	GetEncodeCommand                 = cosmoscli.GetEncodeCommand
+	RegisterTxRoutes                 = rest.RegisterTxRoutes
 )
