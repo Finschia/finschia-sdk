@@ -2096,7 +2096,7 @@ components:
           $ref: '#/components/schemas/ResultBlock'
         tx_responses:
           type: array
-          nullable: true
+          nullable: false
           example: null
           items:
             $ref: '#/components/schemas/TxResponse'
