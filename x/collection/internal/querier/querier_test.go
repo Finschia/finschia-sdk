@@ -306,32 +306,32 @@ func TestNewQuerier_queryTotalSupply_NFT(t *testing.T) {
 	prepare(t)
 
 	params := types.QueryTokenIDParams{
-		TokenID: tokenNFTID1,
+		TokenID: tokenNFTType,
 	}
 	var supply sdk.Int
-	query(t, params, types.QuerySupply, &supply)
-	require.Equal(t, supply.Int64(), int64(1))
+	query(t, params, types.QueryNFTCount, &supply)
+	require.Equal(t, int64(3), supply.Int64())
 }
 
 func TestNewQuerier_queryTotalMint_NFT(t *testing.T) {
 	prepare(t)
 
 	params := types.QueryTokenIDParams{
-		TokenID: tokenNFTID1,
+		TokenID: tokenNFTType,
 	}
 	var supply sdk.Int
-	query(t, params, types.QueryMint, &supply)
-	require.Equal(t, supply.Int64(), int64(1))
+	query(t, params, types.QueryNFTMint, &supply)
+	require.Equal(t, int64(3), supply.Int64())
 }
 
 func TestNewQuerier_queryTotalBurn_NFT(t *testing.T) {
 	prepare(t)
 
 	params := types.QueryTokenIDParams{
-		TokenID: tokenNFTID1,
+		TokenID: tokenNFTType,
 	}
 	var supply sdk.Int
-	query(t, params, types.QueryBurn, &supply)
+	query(t, params, types.QueryNFTBurn, &supply)
 	require.Equal(t, supply.Int64(), int64(0))
 }
 

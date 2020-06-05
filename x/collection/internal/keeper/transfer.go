@@ -171,8 +171,7 @@ func (k Keeper) moveNFToken(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddr
 		}
 	}
 
-	amount := types.NewCoins(types.NewInt64Coin(token.GetTokenID(), 1))
-	if err := k.SendCoins(ctx, from, to, amount); err != nil {
+	if err := k.ChangeNFTOwner(ctx, from, to, token.GetTokenID()); err != nil {
 		return err
 	}
 	token.SetOwner(to)

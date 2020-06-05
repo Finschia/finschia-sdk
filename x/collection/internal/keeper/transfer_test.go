@@ -18,7 +18,7 @@ func TestKeeper_TransferFT(t *testing.T) {
 
 	ctx2 := ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, wrongContractID))
 	require.EqualError(t, keeper.TransferFT(ctx2, addr1, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(10))), sdkerrors.Wrap(types.ErrInsufficientToken, "insufficient account funds[abcd1234]; account has no coin").Error())
-	require.EqualError(t, keeper.TransferFT(ctx, addr2, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(10))), sdkerrors.Wrap(types.ErrInsufficientToken, "insufficient account funds[abcdef01]; 1:1000000100000005 < 10:0000000100000000").Error())
+	require.EqualError(t, keeper.TransferFT(ctx, addr2, addr1, types.NewCoin(defaultTokenIDFT, sdk.NewInt(10))), sdkerrors.Wrap(types.ErrInsufficientToken, "insufficient account funds[abcdef01]; account has no coin").Error())
 	require.EqualError(t, keeper.TransferFT(ctx, addr2, addr1, types.Coin{Denom: defaultTokenIDFT, Amount: sdk.NewInt(-1)}), sdkerrors.Wrap(types.ErrInvalidCoin, "send amount must be positive").Error())
 
 	require.NoError(t, keeper.TransferFT(ctx, addr1, addr2, types.NewCoin(defaultTokenIDFT, sdk.NewInt(10))))
