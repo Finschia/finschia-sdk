@@ -111,8 +111,7 @@ func TestMintBurn(t *testing.T) {
 	require.EqualError(t, keeper.BurnNFT(ctx, addr3, defaultTokenID1), sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", addr3.String(), types.NewBurnPermission().String()).Error())
 }
 
-func TestBurnNFTScenario(t *testing.T) {
-	ctx := cacheKeeper()
+func composeNFTs(t *testing.T, ctx sdk.Context) {
 	prepareCollectionTokens(ctx, t)
 
 	// attach token1 <- token2 (basic case) : success
@@ -121,6 +120,13 @@ func TestBurnNFTScenario(t *testing.T) {
 	require.NoError(t, keeper.Attach(ctx, addr1, defaultTokenID2, defaultTokenID3))
 	// attach token1 <- token4 (attach to a root): success
 	require.NoError(t, keeper.Attach(ctx, addr1, defaultTokenID1, defaultTokenID4))
+}
+
+func TestBurnRootComposedNFT(t *testing.T) {
+	ctx := cacheKeeper()
+	composeNFTs(t, ctx)
+	// token1 -+- token2 --- token3
+	//         +- token4
 
 	require.NoError(t, keeper.BurnNFT(ctx, addr1, defaultTokenID1))
 
@@ -133,18 +139,37 @@ func TestBurnNFTScenario(t *testing.T) {
 	_, err = keeper.GetNFT(ctx, defaultTokenID4)
 	require.Error(t, err)
 
-	balance, err := keeper.GetBalance(ctx, defaultTokenID1, addr1)
+	require.False(t, keeper.HasToken(ctx, defaultTokenID1))
+	require.False(t, keeper.HasToken(ctx, defaultTokenID2))
+	require.False(t, keeper.HasToken(ctx, defaultTokenID3))
+	require.False(t, keeper.HasToken(ctx, defaultTokenID4))
+}
+
+func TestBurnNonRootComposedNFT(t *testing.T) {
+	// only the root tokens can be burned
+	ctx := cacheKeeper()
+
+	composeNFTs(t, ctx)
+	// token1 -+- token2 --- token3
+	//         +- token4
+
+	require.Error(t, keeper.BurnNFT(ctx, addr1, defaultTokenID2))
+	require.Error(t, keeper.BurnNFT(ctx, addr1, defaultTokenID3))
+	require.Error(t, keeper.BurnNFT(ctx, addr1, defaultTokenID4))
+
+	_, err := keeper.GetNFT(ctx, defaultTokenID1)
 	require.NoError(t, err)
-	require.Equal(t, int64(0), balance.Int64())
-	balance, err = keeper.GetBalance(ctx, defaultTokenID2, addr1)
+	_, err = keeper.GetNFT(ctx, defaultTokenID2)
 	require.NoError(t, err)
-	require.Equal(t, int64(0), balance.Int64())
-	balance, err = keeper.GetBalance(ctx, defaultTokenID3, addr1)
+	_, err = keeper.GetNFT(ctx, defaultTokenID3)
 	require.NoError(t, err)
-	require.Equal(t, int64(0), balance.Int64())
-	balance, err = keeper.GetBalance(ctx, defaultTokenID4, addr1)
+	_, err = keeper.GetNFT(ctx, defaultTokenID4)
 	require.NoError(t, err)
-	require.Equal(t, int64(0), balance.Int64())
+
+	require.True(t, keeper.HasToken(ctx, defaultTokenID1))
+	require.True(t, keeper.HasToken(ctx, defaultTokenID2))
+	require.True(t, keeper.HasToken(ctx, defaultTokenID3))
+	require.True(t, keeper.HasToken(ctx, defaultTokenID4))
 }
 
 func TestBurnNFTFromSuccess(t *testing.T) {

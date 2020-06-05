@@ -148,6 +148,13 @@ func (k Keeper) burnNFT(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddr
 		return sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", tokenID, tokenOwner.String())
 	}
 
+	if parent, err := k.ParentOf(ctx, token.GetTokenID()); parent != nil || err != nil {
+		if err != nil {
+			return err
+		}
+		return sdkerrors.Wrapf(types.ErrBurnNonRootNFT, "TokenID(%s) has a parent", tokenID)
+	}
+
 	err = k.burnNFTRecursive(ctx, token, tokenOwner)
 	if err != nil {
 		return err
