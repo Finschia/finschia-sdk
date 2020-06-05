@@ -148,6 +148,13 @@ func (k Keeper) burnNFT(ctx sdk.Context, permissionOwner, tokenOwner sdk.AccAddr
 		return sdkerrors.Wrapf(types.ErrTokenNotOwnedBy, "TokenID: %s, Owner: %s", tokenID, tokenOwner.String())
 	}
 
+	if parent, err := k.ParentOf(ctx, token.GetTokenID()); parent != nil || err != nil {
+		if err != nil {
+			return err
+		}
+		return sdkerrors.Wrapf(types.ErrBurnNonRootNFT, "TokenID(%s) has a parent", tokenID)
+	}
+
 	err = k.burnNFTRecursive(ctx, token, tokenOwner)
 	if err != nil {
 		return err
@@ -190,9 +197,11 @@ func (k Keeper) burnNFTRecursive(ctx sdk.Context, token types.NFT, from sdk.AccA
 	if err != nil {
 		return err
 	}
-	err = k.BurnSupply(ctx, token.GetOwner(), types.OneCoins(token.GetTokenID()))
-	if err != nil {
-		return err
+
+	if !k.HasNFTOwner(ctx, token.GetOwner(), token.GetTokenID()) {
+		return sdkerrors.Wrapf(types.ErrInsufficientSupply, "insufficient supply for token [%s]", k.getContractID(ctx))
 	}
+	k.DeleteNFTOwner(ctx, token.GetOwner(), token.GetTokenID())
+
 	return nil
 }

@@ -69,12 +69,22 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 		return nil, sdkerrors.Wrapf(types.ErrTokenNotExist, "%s %s", ctx.Context().Value(contract.CtxKey{}).(string), params.TokenID)
 	}
 
-	balance, err := keeper.GetBalance(ctx, params.TokenID, params.Addr)
-	if err != nil {
-		if _, err2 := keeper.GetAccount(ctx, params.Addr); err2 != nil {
-			balance = sdk.ZeroInt()
+	var balance sdk.Int
+	if params.TokenID[0] == types.FungibleFlag[0] {
+		var err error
+		balance, err = keeper.GetBalance(ctx, params.TokenID, params.Addr)
+		if err != nil {
+			if _, err2 := keeper.GetAccount(ctx, params.Addr); err2 != nil {
+				balance = sdk.ZeroInt()
+			} else {
+				return nil, err
+			}
+		}
+	} else {
+		if keeper.HasNFTOwner(ctx, params.Addr, params.TokenID) {
+			balance = sdk.NewInt(1)
 		} else {
-			return nil, err
+			balance = sdk.NewInt(0)
 		}
 	}
 

@@ -24,6 +24,7 @@ var (
 	NextTokenTypeNFTKeyPrefix   = []byte{0x09}
 	NextTokenIDNFTKeyPrefix     = []byte{0x0a}
 	PermKeyPrefix               = []byte{0x0b}
+	AccountOwnNFTKeyPrefix      = []byte{0x0c}
 )
 
 func AccountKey(contractID string, acc sdk.AccAddress) []byte {
@@ -74,4 +75,8 @@ func NextTokenIDNFTKey(contractID, tokenType string) []byte {
 
 func PermKey(contractID string, addr sdk.AccAddress) []byte {
 	return append(append(PermKeyPrefix, []byte(contractID)...), addr...)
+}
+
+func AccountOwnNFTKey(contractID string, owner sdk.AccAddress, tokenID string) []byte {
+	return append(append(append(AccountOwnNFTKeyPrefix, []byte(contractID)...), owner.Bytes()...), []byte(tokenID)...)
 }

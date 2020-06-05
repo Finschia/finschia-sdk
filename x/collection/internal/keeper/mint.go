@@ -52,10 +52,10 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) e
 		return err
 	}
 
-	err = k.MintSupply(ctx, token.GetOwner(), types.OneCoins(token.GetTokenID()))
-	if err != nil {
-		return err
+	if k.HasNFTOwner(ctx, token.GetOwner(), token.GetTokenID()) {
+		return sdkerrors.Wrapf(types.ErrTokenExist, "ContractID: %s, TokenID: %s", k.getContractID(ctx), token.GetTokenID())
 	}
+	k.AddNFTOwner(ctx, token.GetOwner(), token.GetTokenID())
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(

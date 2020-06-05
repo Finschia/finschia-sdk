@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/x/collection/internal/types"
@@ -47,5 +49,41 @@ func TestHandleMsgMintNFT(t *testing.T) {
 			sdk.NewEvent("mint_nft", sdk.NewAttribute("to", addr1.String())),
 		}
 		verifyEventFunc(t, e, res.Events)
+	}
+}
+
+func TestHandleMsgMintNFTPerformance(t *testing.T) {
+	ctx, h, contractID := prepareNFT(t, addr1)
+	var mean int64
+	var sum int64 = 0
+	{
+		param := types.NewMintNFTParam("shield", "", "10000001")
+		msg := types.NewMsgMintNFT(addr1, contractID, addr1, param)
+		for jdx := 0; jdx < 10; jdx++ {
+			startTime := time.Now()
+			for idx := 0; idx < 1000; idx++ {
+				_, err := h(ctx, msg)
+				require.NoError(t, err)
+			}
+			duration := time.Since(startTime)
+			sum += duration.Nanoseconds()
+		}
+		mean = sum / 10
+	}
+
+	ctx, h, contractID = prepareNFT(t, addr1)
+	{
+		param := types.NewMintNFTParam("shield", "", "10000001")
+		msg := types.NewMsgMintNFT(addr1, contractID, addr1, param)
+		for jdx := 0; jdx < 10; jdx++ {
+			startTime := time.Now()
+			for idx := 0; idx < 1000; idx++ {
+				_, err := h(ctx, msg)
+				require.NoError(t, err)
+			}
+			duration := time.Since(startTime)
+			t.Log(fmt.Sprintf("MintNFT %s", duration.String()))
+			require.Less(t, duration.Nanoseconds(), mean*2)
+		}
 	}
 }
