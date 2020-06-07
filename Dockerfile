@@ -5,7 +5,7 @@
 FROM golang:alpine AS build-env
 
 # Set up dependencies
-ENV PACKAGES curl make git libc-dev bash gcc g++ linux-headers eudev-dev python perl
+ENV PACKAGES curl make git libc-dev bash gcc g++ linux-headers eudev-dev python2 perl
 ARG GITHUB_TOKEN=""
 ARG WITH_CLEVELDB=""
 RUN apk add --no-cache $PACKAGES
