@@ -16,13 +16,13 @@ func LatestBlockHeight(cliCtx context.CLIContext) (int64, error) {
 		return -1, err
 	}
 
-	status, err := node.Status()
+	// Get the latest block
+	latestBlock, err := node.Block(nil)
 	if err != nil {
 		return -1, err
 	}
 
-	height := status.SyncInfo.LatestBlockHeight
-	return height, nil
+	return latestBlock.Block.Height, nil
 }
 
 func BlockWithTxResponses(cliCtx context.CLIContext, latestBlockHeight, fromBlockHeight, fetchSize int64) (blockWithRxResultsWrapper *types.HasMoreResponseWrapper, err error) {
