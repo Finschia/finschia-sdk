@@ -317,37 +317,23 @@ paths:
       tags:
         - Transactions
       summary: Search transactions
-      description: Search transactions by events.
+      description: Search transactions by events. At least one of message.xxx or height.xxx is required.
       parameters:
         - name: message.action
           in: query
           description: 'transaction events such as ''message.action=send'' which results
-          in the following endpoint: ''GET /txs?message.action=send'' message.action or message.sender must be parameter'
+          in the following endpoint: ''GET /txs?message.action=send'''
           required: false
           schema:
             type: string
           example: send
         - name: message.sender
           in: query
-          description: 'transaction tags with sender: ''GET /txs?message.action=send&message.sender=link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv'' message.action or message.sender must be parameter'
+          description: 'transaction tags with sender: ''GET /txs?message.action=send&message.sender=link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv'''
           required: false
           schema:
             type: string
           example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
-        - name: page
-          in: query
-          description: Page number
-          required: false
-          schema:
-            type: integer
-          example: 1
-        - name: limit
-          in: query
-          description: Maximum number of items per page
-          required: false
-          schema:
-            type: integer
-          example: 50
         - name: height.from
           in: query
           description: block height filter
@@ -362,6 +348,20 @@ paths:
           schema:
             type: integer
           example: 100
+        - name: page
+          in: query
+          description: Page number
+          required: false
+          schema:
+            type: integer
+          example: 1
+        - name: limit
+          in: query
+          description: Maximum number of items per page
+          required: false
+          schema:
+            type: integer
+          example: 50
       responses:
         "200":
           description: All txs matching the provided events

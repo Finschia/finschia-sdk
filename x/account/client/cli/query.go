@@ -34,7 +34,7 @@ const (
 // QueryTxsByEventsCmd returns a command to search through transactions by events.
 func QueryTxsByEventsCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "txs --tags '<key>:<value>[&<key>:<value>]'",
+		Use:   "txs",
 		Short: "Query for paginated transactions that match a set of tags",
 		Long: strings.TrimSpace(`
 Search for transactions that match the exact given tags where results are paginated.
@@ -42,16 +42,17 @@ Search for transactions that match the exact given tags where results are pagina
 Example:
 $ <appcli> query txs --tags 'message.action:send&message.sender:yoshi' --page 1 --limit 30
 $ <appcli> query txs --tags 'message.action:send&message.sender:yoshi' --height-from 77 --height-to 79
+
+You can also search by height range without tags:
+$ <appcli> query txs --height-from 77 --height-to 79
 `),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			tagsStr := viper.GetString(flagTags)
 			tagsStr = strings.Trim(tagsStr, "'")
 
 			var tags []string
-			if strings.Contains(tagsStr, "&") {
+			if len(tagsStr) > 0 {
 				tags = strings.Split(tagsStr, "&")
-			} else {
-				tags = append(tags, tagsStr)
 			}
 
 			var tmTags []string
@@ -122,11 +123,6 @@ $ <appcli> query txs --tags 'message.action:send&message.sender:yoshi' --height-
 	cmd.Flags().String(flagTags, "", "tag:value list of tags that must match")
 	cmd.Flags().Uint32(flagPage, rest.DefaultPage, "Query a specific page of paginated results")
 	cmd.Flags().Uint32(flagLimit, rest.DefaultLimit, "Query number of transactions results per page returned")
-	err = cmd.MarkFlagRequired(flagTags)
-	if err != nil {
-		panic(err)
-	}
-
 	cmd.Flags().Int64(flagHeightFrom, 0, "Filter from a specific block height")
 	cmd.Flags().Int64(flagHeightTo, 0, "Filter to a specific block height")
 

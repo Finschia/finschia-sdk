@@ -97,7 +97,7 @@ func TestLinkLoadTester(t *testing.T) {
 
 			// Then check the number of prepare txs
 			if tt.isTx {
-				txsPage := f.QueryTxs(1, 100, fmt.Sprintf("message.sender:%s", masterAddress.String()))
+				txsPage := f.QueryTxs(1, 100, fmt.Sprintf("--tags='message.sender:%s'", masterAddress.String()))
 				require.Equal(t, TestNumPrepareRequest, txsPage.Count)
 				var preparedHeight int64
 				for _, tx := range txsPage.Txs {
