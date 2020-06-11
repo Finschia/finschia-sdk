@@ -406,6 +406,36 @@ paths:
         "500":
           description: Internal Server Error
       x-codegen-request-body-name: txBroadcast
+  /txs/simulate:
+    post:
+      tags:
+        - Transactions
+      summary: Simulate a signed tx
+      description: Simulate a signed tx to calculate gas estimates
+      requestBody:
+        description: The tx must be a signed StdTx. The gas_adjustment is applied to gas estimates to avoid tx execution failures due to state changes that might occur between the tx simulation and the actual run. The default is 1.0.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tx:
+                  $ref: "#/components/schemas/StdTx"
+                gas_adjustment:
+                  type: string
+                  example: "1.2"
+        required: true
+      responses:
+        200:
+          description: The tx was successfully simulated and gas estimates were calculated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GasEstimateResponse"
+        400:
+          description: The tx or gas_adjustment was malformated
+        500:
+          description: Server internal error
   /auth/accounts/{address}:
     get:
       tags:
@@ -2072,6 +2102,12 @@ components:
         memo:
           type: string
           example: "26354"
+    GasEstimateResponse:
+      type: object
+      properties:
+        gas_estimate:
+          type: string
+          example: 48041
 
 
     #-------------------------------
