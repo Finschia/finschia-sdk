@@ -68,7 +68,8 @@ func setupMockNodeResponses(
 	resBlock := &ctypes.ResultBlock{
 		Block: &tmtypes.Block{
 			Header: tmtypes.Header{
-				Time: time.Time{},
+				Height: height,
+				Time:   time.Time{},
 			},
 		},
 	}
