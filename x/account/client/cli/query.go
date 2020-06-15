@@ -192,6 +192,10 @@ func QueryBlockWithTxResponsesCommand(cdc *amino.Codec) *cobra.Command {
 				return err
 			}
 
+			if fromBlockHeight >= latestBlockHeight {
+				return fmt.Errorf("the block height does not exist. Requested: %d, Latest: %d", fromBlockHeight, latestBlockHeight)
+			}
+
 			blockWithTxReponses, err := utils.BlockWithTxResponses(cliCtx, latestBlockHeight, fromBlockHeight, fetchSize)
 			if err != nil {
 				return err
