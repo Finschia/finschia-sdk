@@ -174,31 +174,14 @@ func (k Keeper) GetNFTCountInt(ctx sdk.Context, tokenType, target string) (sdk.I
 	}
 }
 func (k Keeper) getNFTCountTotal(ctx sdk.Context, tokenType string) sdk.Int {
-	countTotal := 0
-	k.iterateToken(ctx, tokenType, false, func(types.Token) bool {
-		countTotal++
-		return false
-	})
-	return sdk.NewInt(int64(countTotal))
+	return k.getNFTCountMint(ctx, tokenType).Sub(k.getNFTCountBurn(ctx, tokenType))
 }
 func (k Keeper) getNFTCountMint(ctx sdk.Context, tokenType string) sdk.Int {
-	nextTokenIndex, err := k.getNextTokenIndexNFT(ctx, tokenType)
-	if err != nil {
-		if types.ErrTokenIndexFull.Is(err) {
-			var maxCount int64 = 1<<uint64(8*len(types.ReservedEmpty)/2) - 1
-			return sdk.NewInt(maxCount)
-		}
-		panic("next token id for nft token type should be exist")
-	}
-	mintCount := sdk.NewIntFromBigInt(fromHex(nextTokenIndex))
-	if mintCount.GT(sdk.NewInt(0)) {
-		mintCount = mintCount.Sub(sdk.NewInt(1))
-	}
-	return mintCount
+	return k.getTokenTypeMintCount(ctx, tokenType)
 }
 
 func (k Keeper) getNFTCountBurn(ctx sdk.Context, tokenType string) sdk.Int {
-	return k.getNFTCountMint(ctx, tokenType).Sub(k.getNFTCountTotal(ctx, tokenType))
+	return k.getTokenTypeBurnCount(ctx, tokenType)
 }
 
 func (k Keeper) setNextTokenTypeFT(ctx sdk.Context, tokenType string) {

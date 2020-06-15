@@ -25,6 +25,8 @@ var (
 	NextTokenIDNFTKeyPrefix     = []byte{0x0a}
 	PermKeyPrefix               = []byte{0x0b}
 	AccountOwnNFTKeyPrefix      = []byte{0x0c}
+	TokenTypeMintCountPrefix    = []byte{0x0d}
+	TokenTypeBurnCountPrefix    = []byte{0x0e}
 )
 
 func AccountKey(contractID string, acc sdk.AccAddress) []byte {
@@ -79,4 +81,12 @@ func PermKey(contractID string, addr sdk.AccAddress) []byte {
 
 func AccountOwnNFTKey(contractID string, owner sdk.AccAddress, tokenID string) []byte {
 	return append(append(append(AccountOwnNFTKeyPrefix, []byte(contractID)...), owner.Bytes()...), []byte(tokenID)...)
+}
+
+func TokenTypeMintCount(contractID, tokenType string) []byte {
+	return append(append(TokenTypeMintCountPrefix, []byte(contractID)...), []byte(tokenType)...)
+}
+
+func TokenTypeBurnCount(contractID, tokenType string) []byte {
+	return append(append(TokenTypeBurnCountPrefix, []byte(contractID)...), []byte(tokenType)...)
 }

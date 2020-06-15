@@ -301,10 +301,6 @@ func ParseHTTPArgs(r *http.Request) (tags []string, page, limit int, err error) 
 		tags = append(tags, tag)
 	}
 
-	if len(tags) == 0 {
-		return tags, page, limit, errors.New("must declare at least one event to search")
-	}
-
 	heightFromStr := r.FormValue("height.from")
 	if heightFromStr != "" {
 		heightFrom, err := strconv.ParseInt(heightFromStr, 10, 64)
@@ -329,6 +325,10 @@ func ParseHTTPArgs(r *http.Request) (tags []string, page, limit int, err error) 
 		default:
 			tags = append(tags, fmt.Sprintf("%s<=%d", tmtypes.TxHeightKey, heightTo))
 		}
+	}
+
+	if len(tags) == 0 {
+		return tags, page, limit, errors.New("must declare at least one event to search")
 	}
 
 	pageStr := r.FormValue("page")

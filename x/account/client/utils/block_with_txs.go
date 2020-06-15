@@ -16,13 +16,13 @@ func LatestBlockHeight(cliCtx context.CLIContext) (int64, error) {
 		return -1, err
 	}
 
-	status, err := node.Status()
+	// Get the latest block
+	latestBlock, err := node.Block(nil)
 	if err != nil {
 		return -1, err
 	}
 
-	height := status.SyncInfo.LatestBlockHeight
-	return height, nil
+	return latestBlock.Block.Height, nil
 }
 
 func BlockWithTxResponses(cliCtx context.CLIContext, latestBlockHeight, fromBlockHeight, fetchSize int64) (blockWithRxResultsWrapper *types.HasMoreResponseWrapper, err error) {
@@ -83,18 +83,19 @@ func getBlock(cliCtx context.CLIContext, height int64) (*ctypes.ResultBlock, err
 func getTxs(cliCtx context.CLIContext, height int64) ([]types.TxResponse, error) {
 	const defaultLimit = 100
 	//nolint:prealloc
-	txResponses := []types.TxResponse{}
+	var txResponses []types.TxResponse
+
 	nextTxPage := 1
 	for {
 		searchResult, err := QueryTxsByEvents(cliCtx, []string{fmt.Sprintf("tx.height=%d", height)}, nextTxPage, defaultLimit)
 		if err != nil {
 			return nil, err
 		}
-		nextTxPage++
 
 		txResponses = append(txResponses, searchResult.Txs...)
 
-		if len(searchResult.Txs) != defaultLimit {
+		nextTxPage++
+		if nextTxPage > searchResult.PageTotal {
 			break
 		}
 	}

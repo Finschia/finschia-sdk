@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math"
 	"os"
 	"path"
 	"path/filepath"
@@ -521,7 +522,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	// Ensure transaction tags can be queried
-	searchResult := f.QueryTxs(1, 50, "message.action:submit_proposal", fmt.Sprintf("message.sender:%s", fooAddr))
+	searchResult := f.QueryTxs(1, 50, fmt.Sprintf("--tags='message.action:%s&message.sender:%s'", "submit_proposal", fooAddr))
 	require.Len(t, searchResult.Txs, 1)
 
 	// Ensure deposit was deducted
@@ -565,7 +566,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	require.Equal(t, proposalTokens.Add(depositTokens), deposit.Amount.AmountOf(denom))
 
 	// Ensure tags are set on the transaction
-	searchResult = f.QueryTxs(1, 50, "message.action:deposit", fmt.Sprintf("message.sender:%s", fooAddr))
+	searchResult = f.QueryTxs(1, 50, fmt.Sprintf("--tags='message.action:%s&message.sender:%s'", "deposit", fooAddr))
 	require.Len(t, searchResult.Txs, 1)
 
 	// Ensure account has expected amount of funds
@@ -602,7 +603,7 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	require.Equal(t, gov.OptionYes, votes[0].Option)
 
 	// Ensure tags are applied to voting transaction properly
-	searchResult = f.QueryTxs(1, 50, "message.action:vote", fmt.Sprintf("message.sender:%s", fooAddr))
+	searchResult = f.QueryTxs(1, 50, fmt.Sprintf("--tags='message.action:%s&message.sender:%s'", "vote", fooAddr))
 	require.Len(t, searchResult.Txs, 1)
 
 	// Ensure no proposals in deposit period
@@ -665,7 +666,7 @@ func TestLinkCLISubmitParamChangeProposal(t *testing.T) {
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	// ensure transaction tags can be queried
-	txsPage := f.QueryTxs(1, 50, "message.action:submit_proposal", fmt.Sprintf("message.sender:%s", fooAddr))
+	txsPage := f.QueryTxs(1, 50, fmt.Sprintf("--tags='message.action:%s&message.sender:%s'", "submit_proposal", fooAddr))
 	require.Len(t, txsPage.Txs, 1)
 
 	// ensure deposit was deducted
@@ -750,7 +751,7 @@ func TestLinkCLISubmitCommunityPoolSpendProposal(t *testing.T) {
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	// ensure transaction tags can be queried
-	txsPage := f.QueryTxs(1, 50, "message.action:submit_proposal", fmt.Sprintf("message.sender:%s", fooAddr))
+	txsPage := f.QueryTxs(1, 50, fmt.Sprintf("--tags='message.action:%s&message.sender:%s'", "submit_proposal", fooAddr))
 	require.Len(t, txsPage.Txs, 1)
 
 	// ensure deposit was deducted
@@ -795,30 +796,37 @@ func TestLinkCLIQueryTxPagination(t *testing.T) {
 	}
 
 	// perPage = 15, 2 pages
-	txsPage1 := f.QueryTxs(1, 2, fmt.Sprintf("message.sender:%s", fooAddr))
+	txsPage1 := f.QueryTxs(1, 2, fmt.Sprintf("--tags='message.sender:%s'", fooAddr))
 	require.Len(t, txsPage1.Txs, 2)
 	require.Equal(t, txsPage1.Count, 2)
-	txsPage2 := f.QueryTxs(2, 2, fmt.Sprintf("message.sender:%s", fooAddr))
+	txsPage2 := f.QueryTxs(2, 2, fmt.Sprintf("--tags='message.sender:%s'", fooAddr))
 	require.Len(t, txsPage2.Txs, 2)
 	require.NotEqual(t, txsPage1.Txs, txsPage2.Txs)
 
 	// perPage = 16, 2 pages
-	txsPage1 = f.QueryTxs(1, 3, fmt.Sprintf("message.sender:%s", fooAddr))
+	txsPage1 = f.QueryTxs(1, 3, fmt.Sprintf("--tags='message.sender:%s'", fooAddr))
 	require.Len(t, txsPage1.Txs, 3)
-	txsPage2 = f.QueryTxs(2, 3, fmt.Sprintf("message.sender:%s", fooAddr))
+	txsPage2 = f.QueryTxs(2, 3, fmt.Sprintf("--tags='message.sender:%s'", fooAddr))
 	require.Len(t, txsPage2.Txs, 1)
 	require.NotEqual(t, txsPage1.Txs, txsPage2.Txs)
 
 	// perPage = 50
-	txsPageFull := f.QueryTxs(1, 50, fmt.Sprintf("message.sender:%s", fooAddr))
+	txsPageFull := f.QueryTxs(1, 50, fmt.Sprintf("--tags='message.sender:%s'", fooAddr))
 	require.Len(t, txsPageFull.Txs, 4)
 	require.Equal(t, txsPageFull.Txs, append(txsPage1.Txs, txsPage2.Txs...))
 
 	// perPage = 0
-	f.QueryTxsInvalid(errors.New("ERROR: page must greater than 0"), 0, 50, fmt.Sprintf("message.sender:%s", fooAddr))
+	f.QueryTxsInvalid(errors.New("ERROR: page must greater than 0"), 0, 50, fmt.Sprintf("--tags='message.sender:%s'", fooAddr))
 
 	// limit = 0
-	f.QueryTxsInvalid(errors.New("ERROR: limit must greater than 0"), 1, 0, fmt.Sprintf("message.sender:%s", fooAddr))
+	f.QueryTxsInvalid(errors.New("ERROR: limit must greater than 0"), 1, 0, fmt.Sprintf("--tags='message.sender:%s'", fooAddr))
+
+	// height range without tags
+	txsHeightRange := f.QueryTxs(1, 30, fmt.Sprintf("--height-from %d --height-to %d", 1, math.MaxInt64))
+	require.Len(t, txsHeightRange.Txs, 4)
+
+	// no tags, no height range
+	f.QueryTxsInvalid(errors.New("ERROR: must declare at least one event to search"), 1, 30)
 
 	// Cleanup testing directories
 	f.Cleanup()

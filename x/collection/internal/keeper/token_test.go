@@ -253,7 +253,7 @@ func TestKeeper_getNFTCountMint(t *testing.T) {
 	require.NoError(t, keeper.IssueNFT(ctx, types.NewBaseTokenType(defaultContractID, defaultTokenType, defaultName, defaultMeta), addr1))
 
 	keeper.setNextTokenIndexNFT(ctx, defaultTokenType, strings.Repeat("f", len(types.ReservedEmpty)))
-	require.Equal(t, int64(4294967295), keeper.getNFTCountMint(ctx, defaultTokenType).Int64())
+	require.Equal(t, int64(0), keeper.getNFTCountMint(ctx, defaultTokenType).Int64())
 }
 
 func TestNextTokenID(t *testing.T) {

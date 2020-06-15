@@ -713,9 +713,9 @@ func (f *Fixtures) QueryTxInvalid(expectedErr error, hash string) {
 // linkcli query txs
 
 // QueryTxs is linkcli query txs
-func (f *Fixtures) QueryTxs(page, limit int, tags ...string) *sdk.SearchTxsResult {
-	cmd := fmt.Sprintf("%s query txs --page=%d --limit=%d --tags='%s' %v", f.LinkcliBinary, page, limit, queryTags(tags), f.Flags())
-	out, _ := tests.ExecuteT(f.T, cmd, "")
+func (f *Fixtures) QueryTxs(page, limit int, flags ...string) *sdk.SearchTxsResult {
+	cmd := fmt.Sprintf("%s query txs --page=%d --limit=%d %v", f.LinkcliBinary, page, limit, f.Flags())
+	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
 	var result sdk.SearchTxsResult
 	cdc := app.MakeCodec()
 	err := cdc.UnmarshalJSON([]byte(out), &result)
@@ -724,9 +724,9 @@ func (f *Fixtures) QueryTxs(page, limit int, tags ...string) *sdk.SearchTxsResul
 }
 
 // QueryTxsInvalid query txs with wrong parameters and compare expected error
-func (f *Fixtures) QueryTxsInvalid(expectedErr error, page, limit int, tags ...string) {
-	cmd := fmt.Sprintf("%s query txs --page=%d --limit=%d --tags='%s' %v", f.LinkcliBinary, page, limit, queryTags(tags), f.Flags())
-	_, err := tests.ExecuteT(f.T, cmd, "")
+func (f *Fixtures) QueryTxsInvalid(expectedErr error, page, limit int, flags ...string) {
+	cmd := fmt.Sprintf("%s query txs --page=%d --limit=%d %v", f.LinkcliBinary, page, limit, f.Flags())
+	_, err := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
 	require.EqualError(f.T, expectedErr, err)
 }
 
@@ -1358,13 +1358,6 @@ func addFlags(cmd string, flags []string) string {
 		cmd += " " + f
 	}
 	return strings.TrimSpace(cmd)
-}
-
-func queryTags(tags []string) (out string) {
-	for _, tag := range tags {
-		out += tag + "&"
-	}
-	return strings.TrimSuffix(out, "&")
 }
 
 // Write the given string to a new temporary file
