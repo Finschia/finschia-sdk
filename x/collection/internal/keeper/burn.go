@@ -193,7 +193,17 @@ func (k Keeper) burnNFTRecursive(ctx sdk.Context, token types.NFT, from sdk.AccA
 			return err
 		}
 	}
-	err = k.DeleteToken(ctx, token.GetTokenID())
+
+	err = k.burnNFTInternal(ctx, token)
+	if err != nil {
+		return nil
+	}
+
+	return nil
+}
+
+func (k Keeper) burnNFTInternal(ctx sdk.Context, token types.NFT) error {
+	err := k.DeleteToken(ctx, token.GetTokenID())
 	if err != nil {
 		return err
 	}
@@ -202,6 +212,24 @@ func (k Keeper) burnNFTRecursive(ctx sdk.Context, token types.NFT, from sdk.AccA
 		return sdkerrors.Wrapf(types.ErrInsufficientSupply, "insufficient supply for token [%s]", k.getContractID(ctx))
 	}
 	k.DeleteNFTOwner(ctx, token.GetOwner(), token.GetTokenID())
-
+	k.increaseTokenTypeBurnCount(ctx, token.GetTokenType())
 	return nil
+}
+
+func (k Keeper) increaseTokenTypeBurnCount(ctx sdk.Context, tokenType string) {
+	store := ctx.KVStore(k.storeKey)
+	count := k.getTokenTypeBurnCount(ctx, tokenType)
+	count = count.Add(sdk.NewInt(1))
+
+	store.Set(types.TokenTypeBurnCount(k.getContractID(ctx), tokenType), k.cdc.MustMarshalBinaryBare(count))
+}
+
+func (k Keeper) getTokenTypeBurnCount(ctx sdk.Context, tokenType string) (count sdk.Int) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.TokenTypeBurnCount(k.getContractID(ctx), tokenType))
+	if bz == nil {
+		return sdk.ZeroInt()
+	}
+	k.cdc.MustUnmarshalBinaryBare(bz, &count)
+	return count
 }

@@ -47,15 +47,10 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) e
 		return sdkerrors.Wrapf(types.ErrTokenNoPermission, "Account: %s, Permission: %s", from.String(), perm.String())
 	}
 
-	err := k.SetToken(ctx, token)
+	err := k.mintNFTInternal(ctx, token)
 	if err != nil {
 		return err
 	}
-
-	if k.HasNFTOwner(ctx, token.GetOwner(), token.GetTokenID()) {
-		return sdkerrors.Wrapf(types.ErrTokenExist, "ContractID: %s, TokenID: %s", k.getContractID(ctx), token.GetTokenID())
-	}
-	k.AddNFTOwner(ctx, token.GetOwner(), token.GetTokenID())
 
 	ctx.EventManager().EmitEvents(sdk.Events{
 		sdk.NewEvent(
@@ -69,6 +64,38 @@ func (k Keeper) MintNFT(ctx sdk.Context, from sdk.AccAddress, token types.NFT) e
 	})
 
 	return nil
+}
+
+func (k Keeper) mintNFTInternal(ctx sdk.Context, token types.NFT) error {
+	err := k.SetToken(ctx, token)
+	if err != nil {
+		return err
+	}
+
+	if k.HasNFTOwner(ctx, token.GetOwner(), token.GetTokenID()) {
+		return sdkerrors.Wrapf(types.ErrTokenExist, "ContractID: %s, TokenID: %s", k.getContractID(ctx), token.GetTokenID())
+	}
+	k.AddNFTOwner(ctx, token.GetOwner(), token.GetTokenID())
+	k.increaseTokenTypeMintCount(ctx, token.GetTokenType())
+	return nil
+}
+
+func (k Keeper) increaseTokenTypeMintCount(ctx sdk.Context, tokenType string) {
+	store := ctx.KVStore(k.storeKey)
+	count := k.getTokenTypeMintCount(ctx, tokenType)
+	count = count.Add(sdk.NewInt(1))
+
+	store.Set(types.TokenTypeMintCount(k.getContractID(ctx), tokenType), k.cdc.MustMarshalBinaryBare(count))
+}
+
+func (k Keeper) getTokenTypeMintCount(ctx sdk.Context, tokenType string) (count sdk.Int) {
+	store := ctx.KVStore(k.storeKey)
+	bz := store.Get(types.TokenTypeMintCount(k.getContractID(ctx), tokenType))
+	if bz == nil {
+		return sdk.ZeroInt()
+	}
+	k.cdc.MustUnmarshalBinaryBare(bz, &count)
+	return count
 }
 
 func (k Keeper) isMintable(ctx sdk.Context, token types.Token, from sdk.AccAddress) error {
