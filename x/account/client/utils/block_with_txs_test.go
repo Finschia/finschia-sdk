@@ -163,7 +163,44 @@ func testGetTxsWithCount(t *testing.T, txsCount int) {
 		}
 	}
 
-	ret, err := getTxs(cliCtx, 100)
+	ret, err := getTxs(cliCtx, height)
 	require.NoError(t, err)
 	require.Len(t, ret, txsCount)
+}
+
+func TestEmptyTxs(t *testing.T) {
+	const defaultLimit = 100
+
+	cdc := setupCodec()
+	height := int64(100)
+
+	resBlock := &ctypes.ResultBlock{
+		Block: &tmtypes.Block{
+			Header: tmtypes.Header{
+				Height: height,
+				Time:   time.Time{},
+			},
+		},
+	}
+
+	mockClient := mock.NewMockClient(gomock.NewController(t))
+	cliCtx := context.CLIContext{
+		Client:    mockClient,
+		TrustNode: true,
+		Codec:     cdc,
+	}
+
+	mockClient.EXPECT().Block(gomock.Any()).Return(resBlock, nil).AnyTimes()
+
+	resTxSearch := &ctypes.ResultTxSearch{
+		Txs:        nil,
+		TotalCount: 0,
+	}
+	mockClient.EXPECT().
+		TxSearch(fmt.Sprintf("tx.height=%d", height), !cliCtx.TrustNode, 1, defaultLimit, "").
+		Return(resTxSearch, nil)
+
+	ret, err := getTxs(cliCtx, height)
+	require.NoError(t, err)
+	require.NotNil(t, ret)
 }

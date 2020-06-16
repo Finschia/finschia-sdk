@@ -83,7 +83,7 @@ func getBlock(cliCtx context.CLIContext, height int64) (*ctypes.ResultBlock, err
 func getTxs(cliCtx context.CLIContext, height int64) ([]types.TxResponse, error) {
 	const defaultLimit = 100
 	//nolint:prealloc
-	var txResponses []types.TxResponse
+	txResponses := []types.TxResponse{}
 
 	nextTxPage := 1
 	for {
