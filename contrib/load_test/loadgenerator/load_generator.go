@@ -2,65 +2,62 @@ package loadgenerator
 
 import (
 	"log"
-	"net/http"
 	"runtime/debug"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/app"
-	"github.com/line/link/contrib/load_test/service"
-	"github.com/line/link/contrib/load_test/transaction"
 	"github.com/line/link/contrib/load_test/types"
 	"github.com/line/link/contrib/load_test/wallet"
-	"github.com/line/link/x/coin"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 	"golang.org/x/sync/errgroup"
 )
 
-const (
-	BroadcastMode = "sync"
-	GAS           = 10000000000000000
-)
-
 type LoadGenerator struct {
-	hdWallet      *wallet.HDWallet
-	linkService   *service.LinkService
-	targetBuilder *TargetBuilder
-	txBuilder     transaction.TxBuilderWithoutKeybase
-	targets       []vegeta.Target
-	config        types.Config
-	numTargets    int
-	customURL     string
+	hdWallet          *wallet.HDWallet
+	targets           []vegeta.Target
+	config            types.Config
+	numUsers          int
+	numTargetsPerUser int
 }
 
 func NewLoadGenerator() *LoadGenerator {
-	return &LoadGenerator{
-		txBuilder: transaction.NewTxBuilder().WithGas(GAS),
-	}
+	return &LoadGenerator{}
 }
 
-func (lg *LoadGenerator) ApplyConfig(config types.Config) (err error) {
+func (lg *LoadGenerator) ApplyConfig(config types.Config, numTargetsPerUser int) (err error) {
 	lg.config = config
 
-	lg.linkService = service.NewLinkService(&http.Client{}, app.MakeCodec(), config.TargetURL)
-	lg.targetBuilder = NewTargetBuilder(app.MakeCodec(), config.TargetURL)
-	lg.txBuilder = lg.txBuilder.WithChainID(config.ChainID)
-	lg.numTargets = config.TPS * config.Duration
-	lg.targets = make([]vegeta.Target, lg.numTargets)
+	types.SetBech32Prefix(sdk.GetConfig(), config.Testnet)
+	lg.numUsers = config.TPS * config.Duration
+	lg.numTargetsPerUser = numTargetsPerUser
+	lg.targets = make([]vegeta.Target, lg.numUsers*numTargetsPerUser)
 	lg.hdWallet, err = wallet.NewHDWallet(config.Mnemonic)
 	return
 }
 
-func (lg *LoadGenerator) RunWithGoroutines(generateTargetFunc func(*chan int, int) error) error {
+func (lg *LoadGenerator) RunWithGoroutines(generateTargetFunc func(*wallet.KeyWallet, int) (*[]*vegeta.Target,
+	int, error)) error {
+	log.Println("Start to generate target")
 	// Semaphore is used to limit the maximum number of executable goroutines.
 	sem := make(chan int, lg.config.MaxWorkers)
 	var eg errgroup.Group
-	for i := 0; i < lg.numTargets; i++ {
+	for i := 0; i < lg.numUsers; i++ {
 		i := i
 		sem <- 1
 		eg.Go(func() error {
-			return generateTargetFunc(&sem, i)
+			defer CompleteGoroutine(&sem)
+			keyWallet, err := lg.hdWallet.GetKeyWallet(0, uint32(i))
+			if err != nil {
+				return err
+			}
+			targets, numTargets, err := generateTargetFunc(keyWallet, i)
+			if err != nil {
+				return err
+			}
+			for j := 0; j < numTargets; j++ {
+				lg.targets[numTargets*i+j] = *(*targets)[j]
+			}
+			return nil
 		})
 	}
 	if err := eg.Wait(); err != nil {
@@ -70,67 +67,16 @@ func (lg *LoadGenerator) RunWithGoroutines(generateTargetFunc func(*chan int, in
 }
 
 func (lg *LoadGenerator) Fire(lgURL string) <-chan *vegeta.Result {
+	log.Println("Start to fire")
 	duration := time.Duration(lg.config.Duration) * time.Second
 	pacer := RampUpPacer{
-		Constant:   vegeta.Rate{Freq: lg.config.TPS, Per: time.Second},
+		Constant:   vegeta.Rate{Freq: lg.config.TPS * lg.numTargetsPerUser, Per: time.Second},
 		RampUpTime: time.Duration(lg.config.RampUpTime) * time.Second,
 	}
 	targeter := vegeta.NewStaticTargeter(lg.targets...)
 	attacker := vegeta.NewAttacker()
 
 	return attacker.Attack(targeter, pacer, duration, "LINK v2 load test: "+lgURL)
-}
-
-func (lg *LoadGenerator) GenerateCustomQueryTarget(sem *chan int, i int) error {
-	defer CompleteGoroutine(sem)
-	lg.targets[i] = lg.targetBuilder.MakeQueryTarget(lg.customURL)
-	return nil
-}
-
-func (lg *LoadGenerator) GenerateAccountQueryTarget(sem *chan int, i int) error {
-	defer CompleteGoroutine(sem)
-
-	keyWallet, err := lg.hdWallet.GetKeyWallet(0, uint32(i))
-	if err != nil {
-		return err
-	}
-
-	lg.targets[i] = lg.targetBuilder.MakeQueryTarget("/auth/accounts/" + keyWallet.Address().String())
-	return nil
-}
-
-func (lg *LoadGenerator) GenerateMsgSendTxTarget(sem *chan int, i int) error {
-	defer CompleteGoroutine(sem)
-
-	keyWallet, err := lg.hdWallet.GetKeyWallet(0, uint32(i))
-	if err != nil {
-		return err
-	}
-
-	account, err := lg.linkService.GetAccount(keyWallet.Address().String())
-	if err != nil {
-		return err
-	}
-
-	from := account.Address
-	to := secp256k1.GenPrivKey().PubKey().Address().Bytes()
-	coins := sdk.NewCoins(sdk.NewCoin(lg.config.CoinName, sdk.NewInt(1)))
-	msgs := make([]sdk.Msg, lg.config.MsgsPerTxLoadTest)
-	for i := 0; i < lg.config.MsgsPerTxLoadTest; i++ {
-		msgs[i] = coin.NewMsgSend(from, to, coins)
-	}
-
-	stdTx, err := lg.txBuilder.WithAccountNumber(account.AccountNumber).WithSequence(account.Sequence).
-		BuildAndSign(keyWallet.PrivateKey(), msgs)
-	if err != nil {
-		return err
-	}
-
-	lg.targets[i], err = lg.targetBuilder.MakeTxTarget(stdTx, BroadcastMode)
-	if err != nil {
-		return err
-	}
-	return nil
 }
 
 func CompleteGoroutine(sem *chan int) {

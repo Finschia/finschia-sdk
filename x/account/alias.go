@@ -13,6 +13,7 @@ const (
 var (
 	CreateAccountTxCmd = cli.CreateAccountCmd
 	EmptyTxCmd         = cli.EmptyCmd
+	NewMsgEmpty        = types.NewMsgEmpty
 	RegisterCodec      = types.RegisterCodec
 	ModuleCdc          = types.ModuleCdc
 )

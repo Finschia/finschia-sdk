@@ -1,15 +1,15 @@
 package types
 
 type Slave struct {
-	URL        string `json:"url"`
-	Mnemonic   string `json:"mnemonic"`
-	TargetType string `json:"target_type"`
+	URL      string `json:"url"`
+	Mnemonic string `json:"mnemonic"`
+	Scenario string `json:"scenario"`
 }
 
-func NewSlave(url, mnemonic, targetType string) Slave {
+func NewSlave(url, mnemonic, scenario string) Slave {
 	return Slave{
-		URL:        url,
-		Mnemonic:   mnemonic,
-		TargetType: targetType,
+		URL:      url,
+		Mnemonic: mnemonic,
+		Scenario: scenario,
 	}
 }

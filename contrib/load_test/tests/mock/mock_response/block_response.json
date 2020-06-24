@@ -33,7 +33,9 @@
       "proposer_address": "4CD9305FD5090FEC36B5D8D017449A864D907C1A"
     },
     "data": {
-      "txs": null
+      "txs": [
+        "swEoKBapCjsxZpV+ChSQuaqtfS/MFnB92c/wi4Jg5mVoDRIUkgaSmutbGEVjZ46+6gfhwUjg5kkaCQoEbGluaxIBMRIEEMCaDBpqCibrWumHIQPdWdUYaLbkFfsnGLCCtHyA/kWGVOZU/ORX3jWmDGENiBJAdR2EcHed4iohpxxziCqZMlDwTCMKg3KyJdt1U/UujZR+JgTSAYeu4mfW3rd/t0wQnal+9eZmWHS5JbSBIIlGcA=="
+      ]
     },
     "evidence": {
       "evidence": null

@@ -6,22 +6,20 @@ import (
 	"encoding/json"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/contrib/load_test/tests"
 	"github.com/line/link/contrib/load_test/tests/mock"
 	"github.com/line/link/contrib/load_test/types"
-	linktypes "github.com/line/link/types"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 )
 
 func TestStartCmd(t *testing.T) {
-	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
 	// Given Mock Server
 	server := mock.NewServer()
 	defer server.Close()
 	// Given Flags
 	viper.Set(FlagMsgsPerTxLoadTest, tests.TestMsgsPerTxLoadTest)
+	viper.Set(FlagMaxGasLoadTest, tests.TestMaxGasPrepare)
 	viper.Set(FlagTPS, tests.TestTPS)
 	viper.Set(FlagDuration, tests.TestDuration)
 	viper.Set(FlagRampUpTime, tests.TestRampUpTime)
@@ -29,6 +27,8 @@ func TestStartCmd(t *testing.T) {
 	viper.Set(FlagTargetURL, server.URL)
 	viper.Set(FlagChainID, tests.TestChainID)
 	viper.Set(FlagCoinName, tests.TestCoinName)
+	viper.Set(FlagTestnet, tests.TestNet)
+	viper.Set(FlagOutputDir, "")
 	// Given slave Flag
 	slavesMap := make(map[string]types.Slave)
 	slavesMap["slave1"] = types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount)

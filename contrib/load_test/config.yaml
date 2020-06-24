@@ -1,16 +1,21 @@
 # Test Config
 msgs_per_tx_prepare: 2000
+max_gas_prepare: 110000000
 msgs_per_tx_load_test: 3
+max_gas_load_test: 120000
 tps: 200
 duration: 30
 ramp_up_time: 10
+latency_threshold: -1
+tps_threshold: -1
 max_workers: 50
 output: "/link-load-tester/contrib/load_test"
 
 # Test Target Info
-target_url: "http://host.docker.internal:1317"
+target_url: "http://lcd:1317"
 chain_id: "link"
 coin_name: "stake"
+testnet: true
 
 # Master & Slaves Info
 master_mnemonic: "tray echo noodle shop seed regret slush camp canvas crunch inflict stool fit length misery prevent borrow pact speed choose phrase ranch daughter boring"
@@ -18,9 +23,9 @@ slaves:
   slave1:
     url: "http://slave:8000"
     mnemonic: "fever tell fancy ridge fly glow reflect decline voice coil reflect ski empty forum frost rebuild slide nut invite chase swarm flag dizzy diet"
-    target_type: "tx_send"
+    scenario: "tx_send"
 #  slave2:
 #    url: "http://hostaddr:8000"
 #    mnemonic: "tribe slot pioneer either light fossil broken scissors okay special update place want trash soldier rural portion lock couple venue cushion bind enact one"
-#    target_type: "tx_send"
+#    scenario: "tx_send"
 #  ...

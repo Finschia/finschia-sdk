@@ -22,11 +22,13 @@ var (
 var mutex sync.Mutex
 
 type CallCounter struct {
-	QueryAccountCallCount int
-	QueryBlockCallCount   int
-	BroadcastTxCallCount  int
-	TargetLoadCallCount   int
-	TargetFireCallCount   int
+	QueryAccountCallCount             int
+	QueryBlockCallCount               int
+	QueryBlocksWithTxResultsCallCount int
+	QueryTxCallCount                  int
+	BroadcastTxCallCount              int
+	TargetLoadCallCount               int
+	TargetFireCallCount               int
 }
 
 func (c *CallCounter) increment(count *int) {
@@ -49,8 +51,10 @@ func NewServer() *httptest.Server {
 	r.HandleFunc("/target/fire", TargetFireHandler(callCounter)).Methods("POST")
 	r.HandleFunc("/auth/accounts/{address}", QueryAccountHandler(callCounter)).Methods("GET")
 	r.HandleFunc("/blocks/{height}", QueryBlockHandler(callCounter)).Methods("GET")
+	r.HandleFunc("/blocks_with_tx_results/{from_height}", QueryBlocksWithTxResultsHandler(callCounter)).Methods("GET")
 	r.HandleFunc("/blocks/latest", QueryBlockHandler(callCounter)).Methods("GET")
 	r.HandleFunc("/txs", BroadcastTxHandler(callCounter)).Methods("POST")
+	r.HandleFunc("/txs/{hash}", QueryTxHandler(callCounter)).Methods("GET")
 	return httptest.NewServer(r)
 }
 
@@ -110,6 +114,22 @@ func QueryBlockHandler(cc *CallCounter) http.HandlerFunc {
 	}
 }
 
+func QueryBlocksWithTxResultsHandler(cc *CallCounter) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cc.increment(&cc.QueryBlocksWithTxResultsCallCount)
+		w.WriteHeader(http.StatusOK)
+		logerr(w.Write(loadResponse(BlocksWithTxResultsResponse)))
+	}
+}
+
+func QueryTxHandler(cc *CallCounter) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		cc.increment(&cc.QueryTxCallCount)
+		w.WriteHeader(http.StatusOK)
+		logerr(w.Write(loadResponse(TxResponse)))
+	}
+}
+
 func BroadcastTxHandler(cc *CallCounter) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cc.increment(&cc.BroadcastTxCallCount)
@@ -130,7 +150,18 @@ func BroadcastTxHandler(cc *CallCounter) http.HandlerFunc {
 		var response string
 		switch req.Mode {
 		case "block":
-			response = TxBlockResponse
+			switch req.Tx.Msgs[0].Type() {
+			case "issue_token":
+				response = TxIssueResponse
+			case "create_collection":
+				response = TxCreateCollectionResponse
+			case "issue_ft":
+				response = TxIssueFTResponse
+			case "issue_nft":
+				response = TxIssueNFTResponse
+			default:
+				response = TxBlockResponse
+			}
 		case "sync":
 			response = TxSyncResponse
 		case "async":

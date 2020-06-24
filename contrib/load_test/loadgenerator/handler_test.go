@@ -26,9 +26,9 @@ func TestLoadHandler(t *testing.T) {
 	defer server.Close()
 
 	var testCases = []struct {
-		testName                      string
-		tartgetType                   string
-		expectedQueryAccountCallCount int
+		testName                    string
+		scenario                    string
+		expectedGetAccountCallCount int
 	}{
 		{
 			"Query Account",
@@ -36,13 +36,28 @@ func TestLoadHandler(t *testing.T) {
 			0,
 		},
 		{
-			"Query Custom",
-			types.Custom + tests.TestCustomURL,
+			"Query Block",
+			types.QueryBlock,
 			0,
 		},
 		{
 			"Tx Send",
 			types.TxSend,
+			tests.ExpectedNumTargets,
+		},
+		{
+			"Tx Empty",
+			types.TxEmpty,
+			tests.ExpectedNumTargets,
+		},
+		{
+			"Tx Token",
+			types.TxToken,
+			tests.ExpectedNumTargets,
+		},
+		{
+			"Tx Collection",
+			types.TxCollection,
 			tests.ExpectedNumTargets,
 		},
 	}
@@ -51,7 +66,6 @@ func TestLoadHandler(t *testing.T) {
 		t.Logf("Test %s", tc.testName)
 		{
 			// Given LoadGenerator
-			sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
 			lg := NewLoadGenerator()
 			// Given Router
 			r := mux.NewRouter()
@@ -66,10 +80,11 @@ func TestLoadHandler(t *testing.T) {
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
+				Testnet:           tests.TestNet,
 				Mnemonic:          tests.TestMnemonic,
 			}
 			res := httptest.NewRecorder()
-			request := types.NewLoadRequest(tc.tartgetType, config)
+			request := types.NewLoadRequest(tc.scenario, config, nil)
 			body, err := json.Marshal(request)
 			require.NoError(t, err)
 			req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))
@@ -82,8 +97,8 @@ func TestLoadHandler(t *testing.T) {
 			require.Equal(t, http.StatusOK, res.Code)
 			require.Equal(t, tests.TestTPS, lg.config.TPS)
 			require.Equal(t, tests.TestDuration, lg.config.Duration)
-			require.Equal(t, server.URL, lg.targetBuilder.LCDURL)
-			require.Equal(t, tc.expectedQueryAccountCallCount, mock.GetCallCounter(server.URL).QueryAccountCallCount)
+			require.Equal(t, tc.expectedGetAccountCallCount, mock.GetCallCounter(server.URL).QueryAccountCallCount)
+			mock.ClearCallCounter(server.URL)
 		}
 	}
 }
@@ -94,10 +109,10 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 	defer server.Close()
 
 	var testCases = []struct {
-		testName   string
-		targetType string
-		config     types.Config
-		error      string
+		testName string
+		scenario string
+		config   types.Config
+		error    string
 	}{
 		{
 			"with empty chain id",
@@ -111,6 +126,7 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				TargetURL:         server.URL,
 				ChainID:           "",
 				CoinName:          tests.TestCoinName,
+				Testnet:           tests.TestNet,
 				Mnemonic:          tests.TestMnemonic,
 			},
 			"Invalid Load Parameter Error: invalid parameter of load handler\n",
@@ -127,6 +143,7 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
+				Testnet:           tests.TestNet,
 				Mnemonic:          tests.TestMnemonic,
 			},
 			"Invalid Load Parameter Error: invalid parameter of load handler\n",
@@ -143,6 +160,7 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
+				Testnet:           tests.TestNet,
 				Mnemonic:          tests.TestMnemonic,
 			},
 			"Invalid Load Parameter Error: invalid parameter of load handler\n",
@@ -159,6 +177,7 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
+				Testnet:           tests.TestNet,
 				Mnemonic:          tests.TestMnemonic,
 			},
 			"Invalid Load Parameter Error: invalid parameter of load handler\n",
@@ -175,12 +194,13 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
+				Testnet:           tests.TestNet,
 				Mnemonic:          "invalid mnemonic",
 			},
 			"Invalid mnemonic\n",
 		},
 		{
-			"with invalid target type",
+			"with invalid scenario",
 			"invalid type",
 			types.Config{
 				MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
@@ -191,9 +211,10 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
+				Testnet:           tests.TestNet,
 				Mnemonic:          tests.TestMnemonic,
 			},
-			"Invalid target Type Error: invalid target type\n",
+			"Invalid Scenario Error: invalid scenario\n",
 		},
 	}
 
@@ -208,7 +229,7 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 			RegisterHandlers(lg, r)
 			// Given Request
 			res := httptest.NewRecorder()
-			request := types.NewLoadRequest(tc.targetType, tc.config)
+			request := types.NewLoadRequest(tc.scenario, tc.config, nil)
 			body, err := json.Marshal(request)
 			require.NoError(t, err)
 			req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))
@@ -232,7 +253,6 @@ func TestFireHandler(t *testing.T) {
 	server := mock.NewServer()
 	defer server.Close()
 	// Given LoadGenerator
-	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
 	lg := NewLoadGenerator()
 	// Given Router
 	r := mux.NewRouter()
@@ -247,11 +267,12 @@ func TestFireHandler(t *testing.T) {
 		TargetURL:         server.URL,
 		ChainID:           tests.TestChainID,
 		CoinName:          tests.TestCoinName,
+		Testnet:           tests.TestNet,
 		Mnemonic:          tests.TestMnemonic,
 	}
 	// Load Targets
 	res := httptest.NewRecorder()
-	request := types.NewLoadRequest(types.TxSend, config)
+	request := types.NewLoadRequest(types.TxSend, config, nil)
 	body, err := json.Marshal(request)
 	require.NoError(t, err)
 	req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))

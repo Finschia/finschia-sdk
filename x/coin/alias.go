@@ -14,6 +14,7 @@ const (
 type (
 	Keeper = keeper.Keeper
 
+	MsgSend      = types.MsgSend
 	MsgMultiSend = types.MsgMultiSend
 
 	Input  = types.Input

@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"log"
 	"net/http"
 
+	"github.com/line/link/app"
+	"github.com/line/link/contrib/load_test/service"
 	"github.com/line/link/contrib/load_test/types"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 	"golang.org/x/sync/errgroup"
@@ -16,20 +19,25 @@ const (
 )
 
 type Controller struct {
-	slaves  []types.Slave
-	config  types.Config
-	Results []vegeta.Results
+	slaves      []types.Slave
+	config      types.Config
+	params      map[string]map[string]string
+	Results     []vegeta.Results
+	StartHeight int64
+	EndHeight   int64
 }
 
-func NewController(slaves []types.Slave, config types.Config) *Controller {
+func NewController(slaves []types.Slave, config types.Config, params map[string]map[string]string) *Controller {
 	return &Controller{
 		slaves:  slaves,
 		Results: make([]vegeta.Results, len(slaves)),
 		config:  config,
+		params:  params,
 	}
 }
 
 func (c *Controller) StartLoadTest() error {
+	log.Println("Request load generator to generate target")
 	var eg errgroup.Group
 	for _, slave := range c.slaves {
 		slave := slave
@@ -41,6 +49,8 @@ func (c *Controller) StartLoadTest() error {
 		return err
 	}
 
+	log.Println("Request load generator to fire")
+	c.StartHeight = getCurrentHeight(c.config.TargetURL)
 	for i, slave := range c.slaves {
 		i := i
 		slave := slave
@@ -51,6 +61,7 @@ func (c *Controller) StartLoadTest() error {
 	if err := eg.Wait(); err != nil {
 		return err
 	}
+	c.EndHeight = getCurrentHeight(c.config.TargetURL)
 	return nil
 }
 
@@ -58,7 +69,7 @@ func (c *Controller) orderToLoad(slave types.Slave) error {
 	config := c.config
 	config.Mnemonic = slave.Mnemonic
 	url := slave.URL + "/target/load"
-	request := types.NewLoadRequest(slave.TargetType, config)
+	request := types.NewLoadRequest(slave.Scenario, config, c.params[slave.URL])
 	body, err := json.Marshal(request)
 	if err != nil {
 		return err
@@ -112,4 +123,13 @@ func (c *Controller) orderToFire(slave types.Slave, i int) error {
 
 	c.Results[i] = res
 	return nil
+}
+
+func getCurrentHeight(targetURL string) int64 {
+	block, err := service.NewLinkService(&http.Client{}, app.MakeCodec(), targetURL).GetLatestBlock()
+	for err != nil {
+		log.Println("Retrying to get current height")
+		block, err = service.NewLinkService(&http.Client{}, app.MakeCodec(), targetURL).GetLatestBlock()
+	}
+	return block.Block.Height
 }

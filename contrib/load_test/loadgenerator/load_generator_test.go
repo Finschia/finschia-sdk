@@ -7,20 +7,18 @@ import (
 	"net/http"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/line/link/app"
+	"github.com/line/link/contrib/load_test/scenario"
 	"github.com/line/link/contrib/load_test/tests"
 	"github.com/line/link/contrib/load_test/tests/mock"
 	"github.com/line/link/contrib/load_test/types"
-	linktypes "github.com/line/link/types"
 	"github.com/stretchr/testify/require"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 func TestLoadGenerator_GenerateQueryTargets(t *testing.T) {
 	// Given
-	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
 	config := types.Config{
 		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
 		TPS:               tests.TestTPS,
@@ -30,45 +28,19 @@ func TestLoadGenerator_GenerateQueryTargets(t *testing.T) {
 		TargetURL:         tests.TestTargetURL,
 		ChainID:           tests.TestChainID,
 		CoinName:          tests.TestCoinName,
+		Testnet:           tests.TestNet,
 		Mnemonic:          tests.TestMnemonic,
 	}
+	scenarios := scenario.NewScenarios(config, nil)
 	loadGenerator := NewLoadGenerator()
-	err := loadGenerator.ApplyConfig(config)
+	err := loadGenerator.ApplyConfig(config, 1)
 	require.NoError(t, err)
 
 	// When
-	require.NoError(t, loadGenerator.RunWithGoroutines(loadGenerator.GenerateAccountQueryTarget))
+	require.NoError(t, loadGenerator.RunWithGoroutines(scenarios[types.QueryAccount].GenerateTarget))
 
 	// Then
 	require.Regexp(t, tests.TestTargetURL+"/auth/accounts/link1[a-z0-9]{38}$", loadGenerator.targets[0].URL)
-	require.NotContains(t, loadGenerator.targets, vegeta.Target{})
-}
-
-func TestLoadGenerator_GenerateCustomQueryTarget(t *testing.T) {
-	// Given
-	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
-	config := types.Config{
-		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
-		TPS:               tests.TestTPS,
-		Duration:          tests.TestDuration,
-		RampUpTime:        tests.TestRampUpTime,
-		MaxWorkers:        tests.TestMaxWorkers,
-		TargetURL:         tests.TestTargetURL,
-		ChainID:           tests.TestChainID,
-		CoinName:          tests.TestCoinName,
-		Mnemonic:          tests.TestMnemonic,
-	}
-	loadGenerator := NewLoadGenerator()
-	err := loadGenerator.ApplyConfig(config)
-	require.NoError(t, err)
-	// Given custom url
-	loadGenerator.customURL = tests.TestCustomURL
-
-	// When
-	require.NoError(t, loadGenerator.RunWithGoroutines(loadGenerator.GenerateCustomQueryTarget))
-
-	// Then
-	require.Equal(t, tests.TestTargetURL+tests.TestCustomURL, loadGenerator.targets[0].URL)
 	require.NotContains(t, loadGenerator.targets, vegeta.Target{})
 }
 
@@ -77,7 +49,6 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 	// Given Mock Server
 	server := mock.NewServer()
 	defer server.Close()
-	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
 	// Given Config
 	config := types.Config{
 		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
@@ -88,18 +59,20 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 		TargetURL:         server.URL,
 		ChainID:           tests.TestChainID,
 		CoinName:          tests.TestCoinName,
+		Testnet:           tests.TestNet,
 		Mnemonic:          tests.TestMnemonic,
 	}
-
 	t.Log("Test success")
 	{
+		// Given Scenario
+		scenarios := scenario.NewScenarios(config, nil)
 		// Given LoadGenerator
 		loadGenerator := NewLoadGenerator()
-		err := loadGenerator.ApplyConfig(config)
+		err := loadGenerator.ApplyConfig(config, 1)
 		require.NoError(t, err)
 
 		// When
-		require.NoError(t, loadGenerator.RunWithGoroutines(loadGenerator.GenerateMsgSendTxTarget))
+		require.NoError(t, loadGenerator.RunWithGoroutines(scenarios[types.TxSend].GenerateTarget))
 
 		// Then
 		require.Equal(t, server.URL+"/txs", loadGenerator.targets[0].URL)
@@ -115,13 +88,15 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 	{
 		// Given invalid config
 		config.ChainID = ""
+		// Given Scenario
+		scenarios := scenario.NewScenarios(config, nil)
 		// Given LoadGenerator
 		loadGenerator := NewLoadGenerator()
-		err := loadGenerator.ApplyConfig(config)
+		err := loadGenerator.ApplyConfig(config, 1)
 		require.NoError(t, err)
 
 		// When
-		err = loadGenerator.RunWithGoroutines(loadGenerator.GenerateMsgSendTxTarget)
+		err = loadGenerator.RunWithGoroutines(scenarios[types.TxSend].GenerateTarget)
 		require.EqualError(t, err, "chain ID required but not specified")
 
 		// Then
@@ -130,15 +105,12 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 }
 
 func TestLoadGenerator_Fire(t *testing.T) {
-	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet), linktypes.Bech32PrefixAccPub(tests.TestNet))
-
 	var testCase = []struct {
 		duration   int
 		rampUpTime int
 	}{
 		{3, 0},
 		{3, 2},
-
 		{4, 0},
 		{4, 2},
 		{4, 4},
@@ -147,7 +119,6 @@ func TestLoadGenerator_Fire(t *testing.T) {
 	for i, tt := range testCase {
 		tt := tt
 		t.Run(fmt.Sprintf("Test #%d", i), func(t *testing.T) {
-			t.Parallel()
 			// Given Mock Server
 			server := mock.NewServer()
 			defer server.Close()
@@ -161,14 +132,16 @@ func TestLoadGenerator_Fire(t *testing.T) {
 				TargetURL:         server.URL,
 				ChainID:           tests.TestChainID,
 				CoinName:          tests.TestCoinName,
+				Testnet:           tests.TestNet,
 				Mnemonic:          tests.TestMnemonic,
 			}
+			scenario := scenario.NewScenarios(config, nil)[types.TxSend]
 			// Given LoadGenerator
 			loadGenerator := NewLoadGenerator()
-			err := loadGenerator.ApplyConfig(config)
+			err := loadGenerator.ApplyConfig(config, 1)
 			require.NoError(t, err)
 			// Given Targets
-			require.NoError(t, loadGenerator.RunWithGoroutines(loadGenerator.GenerateMsgSendTxTarget))
+			require.NoError(t, loadGenerator.RunWithGoroutines(scenario.GenerateTarget))
 
 			// When
 			for res := range loadGenerator.Fire(tests.TestLoadGeneratorURL) {

@@ -5,9 +5,9 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"strings"
 
 	"github.com/gorilla/mux"
+	"github.com/line/link/contrib/load_test/scenario"
 	"github.com/line/link/contrib/load_test/types"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
@@ -32,32 +32,19 @@ func LoadHandler(lg *LoadGenerator) http.HandlerFunc {
 			return
 		}
 
-		if err := lg.ApplyConfig(req.Config); err != nil {
+		if err := lg.ApplyConfig(req.Config, scenario.GetNumTargets(req.Scenario)); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		switch req.TargetType {
-		case types.QueryAccount:
-			if err := lg.RunWithGoroutines(lg.GenerateAccountQueryTarget); err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-		case types.TxSend:
-			if err := lg.RunWithGoroutines(lg.GenerateMsgSendTxTarget); err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
-		default:
-			if !strings.HasPrefix(req.TargetType, types.Custom) {
-				http.Error(w, types.InvalidTargetTypeError.Error("invalid target type"), http.StatusBadRequest)
-				return
-			}
-			lg.customURL = strings.Split(req.TargetType, ":")[1]
-			if err := lg.RunWithGoroutines(lg.GenerateCustomQueryTarget); err != nil {
-				http.Error(w, err.Error(), http.StatusBadRequest)
-				return
-			}
+		testScenario, ok := scenario.NewScenarios(req.Config, req.Params)[req.Scenario]
+		if !ok {
+			http.Error(w, types.InvalidScenarioError.Error("invalid scenario"), http.StatusBadRequest)
+			return
+		}
+		if err := lg.RunWithGoroutines(testScenario.GenerateTarget); err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -90,7 +77,7 @@ func FireHandler(lg *LoadGenerator) http.HandlerFunc {
 		w.WriteHeader(http.StatusOK)
 		_, err = w.Write(data)
 		if err != nil {
-			log.Fatal("Failed to write results")
+			log.Println("Failed to write results:", err)
 			return
 		}
 	}

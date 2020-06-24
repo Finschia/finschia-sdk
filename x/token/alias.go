@@ -16,13 +16,21 @@ type (
 	Token       = types.Token
 	Permissions = types.Permissions
 	Keeper      = keeper.Keeper
+	Permission  = types.Permission
 )
 
 var (
-	ModuleCdc     = types.ModuleCdc
-	RegisterCodec = types.RegisterCodec
-	NewToken      = types.NewToken
-	NewKeeper     = keeper.NewKeeper
+	NewMsgIssue            = types.NewMsgIssue
+	NewMsgMint             = types.NewMsgMint
+	NewMsgBurn             = types.NewMsgBurn
+	NewMsgTransfer         = types.NewMsgTransfer
+	NewMsgModify           = types.NewMsgModify
+	NewMsgGrantPermission  = types.NewMsgGrantPermission
+	NewMsgRevokePermission = types.NewMsgRevokePermission
+	ModuleCdc              = types.ModuleCdc
+	RegisterCodec          = types.RegisterCodec
+	NewToken               = types.NewToken
+	NewKeeper              = keeper.NewKeeper
 
 	ErrTokenNotExist       = types.ErrTokenNotExist
 	ErrInsufficientBalance = types.ErrInsufficientBalance

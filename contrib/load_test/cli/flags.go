@@ -3,7 +3,9 @@ package cli
 const (
 	FlagTestnet           = "testnet"
 	FlagMsgsPerTxPrepare  = "msgs_per_tx_prepare"
+	FlagMaxGasPrepare     = "max_gas_prepare"
 	FlagMsgsPerTxLoadTest = "msgs_per_tx_load_test"
+	FlagMaxGasLoadTest    = "max_gas_load_test"
 	FlagTPS               = "tps"
 	FlagDuration          = "duration"
 	FlagRampUpTime        = "ramp_up_time"
@@ -15,4 +17,6 @@ const (
 	FlagMasterMnemonic    = "master_mnemonic"
 	FlagSlaves            = "slaves"
 	FlagPort              = "port"
+	FlagLatencyThreshold  = "latency_threshold"
+	FlagTPSThreshold      = "tps_threshold"
 )

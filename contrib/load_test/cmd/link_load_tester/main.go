@@ -8,6 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/link/contrib/load_test/cli"
+	"github.com/line/link/contrib/load_test/types"
 	linktypes "github.com/line/link/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -36,10 +37,10 @@ func main() {
 		cli.RunSlaveCmd(),
 		cli.PrepareCmd(),
 		cli.StartCmd(),
+		cli.ReportCmd(),
 	)
-	rootCmd.PersistentFlags().Bool(cli.FlagTestnet, true, "Set whether the target chain is a testnet or not.")
 	rootCmd.PersistentPreRunE = func(_ *cobra.Command, _ []string) error {
-		return initConfig(rootCmd)
+		return initConfig()
 	}
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
@@ -47,19 +48,10 @@ func main() {
 	}
 }
 
-func initConfig(cmd *cobra.Command) error {
-	testnet, err := cmd.PersistentFlags().GetBool(cli.FlagTestnet)
-	if err != nil {
-		return err
-	}
-
+func initConfig() error {
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(testnet), linktypes.Bech32PrefixAccPub(testnet))
-	config.SetBech32PrefixForValidator(linktypes.Bech32PrefixValAddr(testnet), linktypes.Bech32PrefixValPub(testnet))
-	config.SetBech32PrefixForConsensusNode(linktypes.Bech32PrefixConsAddr(testnet), linktypes.Bech32PrefixConsPub(testnet))
+	types.SetBech32Prefix(config, true)
 	config.SetCoinType(linktypes.CoinType)
 	config.SetFullFundraiserPath(linktypes.FullFundraiserPath)
-	config.Seal()
-
 	return nil
 }
