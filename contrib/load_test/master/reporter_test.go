@@ -383,26 +383,30 @@ func TestReporter_checkThresholds(t *testing.T) {
 		startHeight: 3,
 		endHeight:   10,
 	}
+	r.metrics.Throughput = 250
 	r.metrics.Latencies.Mean = 300
 	r.metrics.blockMetrics.tps = []float64{15.44}
 
 	var tests = []struct {
-		latencyThreshold time.Duration
-		tpsThreshold     int
-		errCheckFunc     func(require.TestingT, error, ...interface{})
+		latencyThreshold    time.Duration
+		tpsThreshold        int
+		throughputThreshold int
+		errCheckFunc        func(require.TestingT, error, ...interface{})
 	}{
-		{-1, -1, require.NoError},
-		{300, 15, require.NoError},
-		{299, 15, require.Error},
-		{300, 16, require.Error},
+		{-1, -1, -1, require.NoError},
+		{300, 15, 250, require.NoError},
+		{300, 15, 251, require.Error},
+		{299, 15, 250, require.Error},
+		{300, 16, 250, require.Error},
 	}
 
 	for i, tt := range tests {
 		t.Logf("Test %d", i)
 		// When
 		r.thresholds = types.Thresholds{
-			Latency: tt.latencyThreshold,
-			TPS:     tt.tpsThreshold,
+			Latency:    tt.latencyThreshold,
+			TPS:        tt.tpsThreshold,
+			Throughput: tt.throughputThreshold,
 		}
 
 		// Then

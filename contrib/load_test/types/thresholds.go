@@ -3,6 +3,7 @@ package types
 import "time"
 
 type Thresholds struct {
-	Latency time.Duration
-	TPS     int
+	Throughput int
+	Latency    time.Duration
+	TPS        int
 }

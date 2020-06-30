@@ -400,6 +400,10 @@ func (r *Reporter) getNumMsgs() float64 {
 
 		case types.TxCollection:
 			totalMsgs += r.roundUpNumMsgs(8)
+
+		case types.TxAndQueryAll:
+			totalMsgs += r.roundUpNumMsgs(29)
+
 		default:
 			totalMsgs += r.config.MsgsPerTxLoadTest
 		}
@@ -599,6 +603,14 @@ func round(d time.Duration) time.Duration {
 }
 
 func (r *Reporter) checkThresholds() error {
+	throughputThreshold := float64(r.thresholds.Throughput)
+	if throughputThreshold > 0 && r.metrics.Throughput < throughputThreshold {
+		return types.LowThroughputError{
+			Throughput: r.metrics.Throughput,
+			Threshold:  throughputThreshold,
+		}
+	}
+
 	if r.thresholds.Latency > 0 && r.metrics.Latencies.Mean > r.thresholds.Latency {
 		return types.HighLatencyError{
 			Latency:   r.metrics.Latencies.Mean,

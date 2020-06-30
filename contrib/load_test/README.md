@@ -80,6 +80,8 @@ make start-load-test
 - tps: 	TPS of load to be generated per slave
 - duration: load test time
 - ramp_up_time : time to ramp up load (included in duration)
+- throughput_threshold : It fails if the average throughput is greater than the threshold. (/sec)
+                         If -1, there is no threshold
 - latency_threshold : It fails if the average latency is greater than the threshold.(ms) 
                       If -1, there is no threshold
 - tps_threshold : It fails if the average tps is lower than the threshold. If -1, there is no threshold

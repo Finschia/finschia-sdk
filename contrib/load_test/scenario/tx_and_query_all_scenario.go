@@ -212,7 +212,7 @@ func (s *TxAndQueryAllScenario) addQueryTargets(targets []*vegeta.Target, from s
 			fmt.Sprintf("/collection/%s/tokentypes", collectionContractID),
 			fmt.Sprintf("/collection/%s/collection", collectionContractID),
 			fmt.Sprintf("/collection/%s/tokentypes/%s/count", collectionContractID, nftTokenType),
-			fmt.Sprintf("/collection/%s/nfts/%s/count", collectionContractID, nftTokenID),
+			fmt.Sprintf("/collection/%s/nfts/%s", collectionContractID, nftTokenID),
 		},
 		7,
 	)

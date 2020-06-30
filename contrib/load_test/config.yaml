@@ -6,6 +6,7 @@ max_gas_load_test: 120000
 tps: 200
 duration: 30
 ramp_up_time: 10
+throughput_threshold: -1
 latency_threshold: -1
 tps_threshold: -1
 max_workers: 50

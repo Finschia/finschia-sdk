@@ -108,3 +108,12 @@ type LowTPSError struct {
 func (e LowTPSError) Error() string {
 	return fmt.Sprintf("TPS is lower than %f : %f", e.Threshold, e.TPS)
 }
+
+type LowThroughputError struct {
+	Throughput float64
+	Threshold  float64
+}
+
+func (e LowThroughputError) Error() string {
+	return fmt.Sprintf("Throughput is lower than %f : %f", e.Threshold, e.Throughput)
+}

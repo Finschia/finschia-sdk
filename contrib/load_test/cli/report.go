@@ -38,8 +38,9 @@ func report(cmd *cobra.Command, args []string) error {
 		Testnet:           viper.GetBool(FlagTestnet),
 	}
 	thresholds := types.Thresholds{
-		Latency: time.Duration(viper.GetInt(FlagLatencyThreshold)) * time.Millisecond,
-		TPS:     viper.GetInt(FlagTPSThreshold),
+		Throughput: viper.GetInt(FlagThroughputThreshold),
+		Latency:    time.Duration(viper.GetInt(FlagLatencyThreshold)) * time.Millisecond,
+		TPS:        viper.GetInt(FlagTPSThreshold),
 	}
 	types.SetBech32Prefix(sdk.GetConfig(), config.Testnet)
 
