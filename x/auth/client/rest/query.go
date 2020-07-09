@@ -37,15 +37,8 @@ func QueryAccountRequestHandlerFn(storeName string, cliCtx context.CLIContext) h
 
 		account, height, err := accGetter.GetAccountWithHeight(addr)
 		if err != nil {
-			// TODO: Handle more appropriately based on the error type.
-			// Ref: https://github.com/cosmos/cosmos-sdk/issues/4923
-			if err := accGetter.EnsureExists(addr); err != nil {
-				cliCtx = cliCtx.WithHeight(height)
-				rest.PostProcessResponse(w, cliCtx, types.BaseAccount{})
-				return
-			}
-
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			httpStatus := rest.GetHTTPStatusWithError(err)
+			rest.WriteErrorResponse(w, httpStatus, err.Error())
 			return
 		}
 
