@@ -34,4 +34,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20191120175047-4206685974f2
 )
 
-replace github.com/cosmos/cosmos-sdk => github.com/line/cosmos-sdk v0.38.3-t0.33.4-0.0.0
+replace github.com/cosmos/cosmos-sdk => github.com/line/cosmos-sdk v0.38.3-0.0.1
