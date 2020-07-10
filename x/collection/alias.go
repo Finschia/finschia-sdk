@@ -54,11 +54,33 @@ type (
 	MsgDisapproveCollection = types.MsgDisapprove
 
 	Permissions = types.Permissions
+	Permission  = types.Permission
+
+	MintNFTParam = types.MintNFTParam
 
 	Keeper = keeper.Keeper
 )
 
 var (
+	NewMsgCreateCollection = types.NewMsgCreateCollection
+	NewMsgIssueFT          = types.NewMsgIssueFT
+	NewMsgIssueNFT         = types.NewMsgIssueNFT
+	NewMsgMintNFT          = types.NewMsgMintNFT
+	NewMsgBurnNFT          = types.NewMsgBurnNFT
+	NewMsgMintFT           = types.NewMsgMintFT
+	NewMsgBurnFT           = types.NewMsgBurnFT
+	NewMsgGrantPermission  = types.NewMsgGrantPermission
+	NewMsgModify           = types.NewMsgModify
+	NewMsgTransferFT       = types.NewMsgTransferFT
+	NewMsgTransferNFT      = types.NewMsgTransferNFT
+	NewMsgTransferNFTFrom  = types.NewMsgTransferNFTFrom
+	NewMsgAttach           = types.NewMsgAttach
+	NewMsgDetach           = types.NewMsgDetach
+	NewMsgApprove          = types.NewMsgApprove
+	NewMintNFTParam        = types.NewMintNFTParam
+	NewCoin                = types.NewCoin
+	NewPermissions         = types.NewPermissions
+
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec
 

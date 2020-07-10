@@ -31,24 +31,61 @@ func TestController_StartLoadTest(t *testing.T) {
 	}
 	t.Log("Test success")
 	{
-		// Given Slaves
-		slaves := []types.Slave{
-			types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount),
-			types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend),
+		testCases := []struct {
+			scenario     string
+			numPrepareTx int
+			params       map[string]map[string]string
+		}{
+			{types.QueryAccount,
+				tests.TestNumPrepareRequest,
+				nil,
+			},
+			{types.QueryBlock,
+				tests.TestNumPrepareRequest,
+				map[string]map[string]string{server.URL: {"height": "3"}},
+			},
+			{types.TxSend,
+				tests.TestNumPrepareRequest,
+				nil,
+			},
+			{types.TxEmpty,
+				tests.TestNumPrepareRequest,
+				nil,
+			},
+			{types.TxToken,
+				tests.GetNumPrepareTx(tests.ExpectedNumTargets*4, tests.TestMsgsPerTxPrepare) + 1,
+				map[string]map[string]string{server.URL: {"contractID": "9be17165"}},
+			},
+			{types.TxCollection,
+				tests.GetNumPrepareTx(tests.ExpectedNumTargets*6, tests.TestMsgsPerTxPrepare) + 3,
+				map[string]map[string]string{server.URL: {"contract_id": "678c146a", "ft_token_id": "0000000100000000",
+					"nft_token_type": "10000001"}},
+			},
 		}
-		// And Controller
-		controller := NewController(slaves, config)
+		for _, tt := range testCases {
+			t.Log(tt.scenario)
+			// Given Slaves
+			slaves := []types.Slave{
+				types.NewSlave(server.URL, tests.TestMnemonic, tt.scenario),
+			}
+			// Given Controller
 
-		// When
-		require.NoError(t, controller.StartLoadTest())
+			controller := NewController(slaves, config, tt.params)
 
-		// Then
-		for _, res := range controller.Results {
-			require.Equal(t, uint16(http.StatusOK), res[0].Code)
-			require.Equal(t, "LINK v2 load test: localhost:8000", res[0].Attack)
+			// When
+			require.NoError(t, controller.StartLoadTest())
+
+			// Then
+			for _, res := range controller.Results {
+				require.Equal(t, uint16(http.StatusOK), res[0].Code)
+				require.Equal(t, "LINK v2 load test: localhost:8000", res[0].Attack)
+			}
+			require.Equal(t, len(slaves), mock.GetCallCounter(server.URL).TargetLoadCallCount)
+			require.Equal(t, len(slaves), mock.GetCallCounter(server.URL).TargetFireCallCount)
+
+			// Clear Call Counter
+			mock.ClearCallCounter(server.URL)
 		}
-		require.Equal(t, len(slaves), mock.GetCallCounter(server.URL).TargetLoadCallCount)
-		require.Equal(t, len(slaves), mock.GetCallCounter(server.URL).TargetFireCallCount)
 	}
 	t.Log("Test with invalid slave url")
 	{
@@ -60,7 +97,7 @@ func TestController_StartLoadTest(t *testing.T) {
 		}
 
 		// And Controller
-		controller := NewController(slaves, config)
+		controller := NewController(slaves, config, nil)
 
 		// When
 		err := controller.StartLoadTest()

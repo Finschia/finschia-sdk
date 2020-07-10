@@ -1,6 +1,6 @@
 // +build !integration
 
-package loadgenerator
+package scenario
 
 import (
 	"testing"
@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/line/link/app"
+	"github.com/line/link/contrib/load_test/service"
 	"github.com/line/link/contrib/load_test/tests"
 	"github.com/line/link/contrib/load_test/transaction"
 	"github.com/line/link/x/coin"
@@ -37,12 +38,12 @@ func TestTargetBuilder_MakeTxQuery(t *testing.T) {
 	coins := sdk.NewCoins(sdk.NewCoin(tests.TestCoinName, sdk.NewInt(10)))
 	msgs := []sdk.Msg{coin.NewMsgSend(from, to, coins)}
 	// And TxBuilder
-	txBuilder := transaction.NewTxBuilder().WithChainID(tests.TestChainID)
+	txBuilder := transaction.NewTxBuilder(tests.TestMaxGasPrepare).WithChainID(tests.TestChainID)
 	stdTx, err := txBuilder.BuildAndSign(fromPrivateKey, msgs)
 	require.NoError(t, err)
 
 	// When
-	target, err := targetBuilder.MakeTxTarget(stdTx, BroadcastMode)
+	target, err := targetBuilder.MakeTxTarget(stdTx, service.BroadcastBlock)
 	require.NoError(t, err)
 	// And
 	var broadcastReq rest.BroadcastReq
@@ -52,6 +53,6 @@ func TestTargetBuilder_MakeTxQuery(t *testing.T) {
 	// Then
 	require.Equal(t, "POST", target.Method)
 	require.Equal(t, tests.TestTargetURL+TxURL, target.URL)
-	require.Equal(t, BroadcastMode, broadcastReq.Mode)
+	require.Equal(t, service.BroadcastBlock, broadcastReq.Mode)
 	require.Equal(t, stdTx, broadcastReq.Tx)
 }

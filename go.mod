@@ -12,6 +12,7 @@ require (
 	github.com/gorilla/mux v1.7.4
 	github.com/kr/text v0.2.0 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
+	github.com/olekukonko/tablewriter v0.0.4
 	github.com/onsi/ginkgo v1.12.0 // indirect
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/otiai10/copy v1.1.1
@@ -33,4 +34,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20191120175047-4206685974f2
 )
 
-replace github.com/cosmos/cosmos-sdk => github.com/line/cosmos-sdk v0.38.3-t0.33.4-0.0.0
+replace github.com/cosmos/cosmos-sdk => github.com/line/cosmos-sdk v0.38.3-0.0.2

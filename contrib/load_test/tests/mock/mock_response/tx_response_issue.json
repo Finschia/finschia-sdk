@@ -1,0 +1,86 @@
+{
+  "height": "673",
+  "txhash": "16EFE7CF722157A57E03E947C6171B24A7FC3731E1A24FAE0D9168F80845407F",
+  "raw_log": "[{\"msg_index\":0,\"log\":\"\",\"events\":[{\"type\":\"grant_perm\",\"attributes\":[{\"key\":\"to\",\"value\":\"tlink1mwvy3dexejj0zj642z7t3tqw5e23g9vj424k9e\"},{\"key\":\"contract_id\",\"value\":\"678c146a\"},{\"key\":\"perm\",\"value\":\"modify\"}]},{\"type\":\"issue\",\"attributes\":[{\"key\":\"contract_id\",\"value\":\"678c146a\"},{\"key\":\"name\",\"value\":\"token2\"},{\"key\":\"symbol\",\"value\":\"TKK\"},{\"key\":\"owner\",\"value\":\"tlink1mwvy3dexejj0zj642z7t3tqw5e23g9vj424k9e\"},{\"key\":\"to\",\"value\":\"tlink1mwvy3dexejj0zj642z7t3tqw5e23g9vj424k9e\"},{\"key\":\"amount\",\"value\":\"1\"},{\"key\":\"mintable\",\"value\":\"false\"},{\"key\":\"decimals\",\"value\":\"8\"}]},{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"issue_token\"},{\"key\":\"module\",\"value\":\"token\"},{\"key\":\"sender\",\"value\":\"tlink1mwvy3dexejj0zj642z7t3tqw5e23g9vj424k9e\"}]}]}]",
+  "logs": [
+    {
+      "msg_index": 0,
+      "log": "",
+      "events": [
+        {
+          "type": "grant_perm",
+          "attributes": [
+            {
+              "key": "to",
+              "value": "tlink1mwvy3dexejj0zj642z7t3tqw5e23g9vj424k9e"
+            },
+            {
+              "key": "contract_id",
+              "value": "9be17165"
+            },
+            {
+              "key": "perm",
+              "value": "modify"
+            }
+          ]
+        },
+        {
+          "type": "issue",
+          "attributes": [
+            {
+              "key": "contract_id",
+              "value": "678c146a"
+            },
+            {
+              "key": "name",
+              "value": "token2"
+            },
+            {
+              "key": "symbol",
+              "value": "TKK"
+            },
+            {
+              "key": "owner",
+              "value": "tlink1mwvy3dexejj0zj642z7t3tqw5e23g9vj424k9e"
+            },
+            {
+              "key": "to",
+              "value": "tlink1mwvy3dexejj0zj642z7t3tqw5e23g9vj424k9e"
+            },
+            {
+              "key": "amount",
+              "value": "1"
+            },
+            {
+              "key": "mintable",
+              "value": "false"
+            },
+            {
+              "key": "decimals",
+              "value": "8"
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "attributes": [
+            {
+              "key": "action",
+              "value": "issue_token"
+            },
+            {
+              "key": "module",
+              "value": "token"
+            },
+            {
+              "key": "sender",
+              "value": "tlink1mwvy3dexejj0zj642z7t3tqw5e23g9vj424k9e"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "gas_wanted": "200000",
+  "gas_used": "67123"
+}

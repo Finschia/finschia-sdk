@@ -55,6 +55,33 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Name, msg2.Name)
 	}
 	{
+		msg := NewMsgMintFT(addr1, defaultContractID, addr1, OneCoin(defaultTokenIDFT))
+		require.Equal(t, "mint_ft", msg.Type())
+		require.Equal(t, "collection", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr1, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgMintFT{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.ContractID, msg2.ContractID)
+		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.To, msg2.To)
+		require.Equal(t, msg.Amount, msg2.Amount)
+
+		msg3 := NewMsgMintFT(addr1, defaultContractID, addr1, Coin{"x000000100000000", sdk.NewInt(1)})
+		require.EqualError(t, msg3.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id").Error())
+		msg4 := NewMsgMintFT(addr1, defaultContractID, addr1, Coin{"vf12e00000000", sdk.NewInt(1)})
+		require.EqualError(t, msg4.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id").Error())
+		msg5 := NewMsgMintFT(addr1, defaultContractID, addr1, Coin{"!000000100000000", sdk.NewInt(1)})
+		require.EqualError(t, msg5.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id").Error())
+	}
+	{
 		param := NewMintNFTParam(defaultName, defaultMeta, defaultTokenType)
 		msg := NewMsgMintNFT(addr1, defaultContractID, addr1, param)
 		require.Equal(t, "mint_nft", msg.Type())
@@ -492,6 +519,30 @@ func TestMsgBasics(t *testing.T) {
 	}
 
 	{
+		msg := NewMsgBurnFT(addr1, defaultContractID, OneCoin(defaultTokenIDFT))
+		require.Equal(t, "burn_ft", msg.Type())
+		require.Equal(t, "collection", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr1, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgBurnFT{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.Amount, msg2.Amount)
+	}
+	{
+		msg := NewMsgBurnFT(addr1, defaultContractID, Coin{"vf12e00000000", sdk.NewInt(1)})
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id").Error())
+		msg = NewMsgBurnFT(addr1, defaultContractID, Coin{defaultTokenIDFT, sdk.NewInt(-1)})
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidAmount, "-1:0000000100000000").Error())
+	}
+	{
 		msg := NewMsgBurnFTFrom(addr1, defaultContractID, addr2, OneCoin(defaultTokenIDFT))
 		require.Equal(t, "burn_ft_from", msg.Type())
 		require.Equal(t, "collection", msg.Route())
@@ -520,6 +571,11 @@ func TestMsgBasics(t *testing.T) {
 
 		msg = NewMsgBurnFTFrom(addr1, defaultContractID, nil, OneCoin(defaultTokenIDFT))
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
+
+		msg = NewMsgBurnFTFrom(addr1, defaultContractID, addr2, Coin{"vf12e00000000", sdk.NewInt(1)})
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id").Error())
+		msg = NewMsgBurnFTFrom(addr1, defaultContractID, addr2, Coin{defaultTokenIDFT, sdk.NewInt(-1)})
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidAmount, "-1:0000000100000000").Error())
 	}
 
 	{

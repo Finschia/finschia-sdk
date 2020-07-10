@@ -13,11 +13,11 @@ This repository hosts `LINK`, alternative implementation of the LINK Network.
 # Quick Start
 **Build Docker Image**
 ```
-make build-docker                # build docker image
+make build-docker GITHUB_TOKEN={your_github_token}                # build docker image
 ```
 or
 ```
-make build-docker WITH_CLEVELDB=yes  # build docker image with cleveldb
+make build-docker WITH_CLEVELDB=yes GITHUB_TOKEN={your_github_token}  # build docker image with cleveldb
 ```
 
 **Configure**

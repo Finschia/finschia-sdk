@@ -68,6 +68,12 @@ func (msg MsgTransferFT) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty")
 	}
 
+	for _, tokenID := range msg.Amount {
+		if err := ValidateDenom(tokenID.Denom); err != nil {
+			return sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id")
+		}
+	}
+
 	if !msg.Amount.IsValid() {
 		return sdkerrors.Wrap(ErrInvalidAmount, "invalid amount")
 	}

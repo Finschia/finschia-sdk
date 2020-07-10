@@ -1,201 +1,181 @@
-# Setting Up Local Network
+# Getting started
+For your easy understanding of LINK Network v2, we'll show how to run a blockchain network on your local machine. The goal of this document is to make a network with a single node and then transfer coins on it.
 
-## Binaries
+---
 
-- linkd: LINK full node daemon
-- linkcli: CLI tools, LCD (light client daemon)
+You need these two binaries for running a LINK Network:
 
+- `linkd`: LINK full node daemon
+- `linkcli`: A tool to run CLI commands including LCD (Light Client Daemon)
 
-## Running a local network 
+Build the source code. Your machine should have Go 1.13+ installed in advance.
 
-### Initializing config files and genesis file with a node name called moniker
-
-```shell
-> linkd init [MONIKER] --chain-id [CHAIN ID]
-
-e.g.) 
-> linkd init localnetnode --chain-id linklocal
+```bash
+make install
 ```
 
-then, the files are stored in default home dir of chain data. (default `~/.linkd/config`)
+The tasks you're going to do here are:
 
-(It also can be changed by adding a flag `--home`)
+1. Setting up a local network
+2. Using the local network
 
+## Setting up a local network
+In this section, you will set up and run a blockchain network in 6 steps.
 
-### Adding genesis accounts
+### Create initial files for your network
+First, you need initial files that contains network configurations and startup information. `linkd init` command helps you to do it at one stroke.
 
-#### Creating new keys to add to genesis state
+Create files for your network with the following command.
 
-```shell
-> linkcli keys add [NAME OF ACCOUNT]
-
-e.g.) 
-> linkcli keys add jack
-> linkcli keys add alice
-```
-then, the keys are stored in default home dir (default `~/.linkcli/keys`) that `linkcli`  manages.
-
-(You can change home dir by adding a flag `--home`)
-
-#### Adding them as  genesis accounts  with initial coins
-
-```shell
-> linkd add-genesis-account [ADDRESS] [COMMA SEPARATED COIN FORM]
-
-e.g.)
-> linkd add-genesis-account $(linkcli keys show jack -a) 100link,100000000stake
-> linkd add-genesis-account $(linkcli keys show alice -a) 100link,100000000stake
+```bash
+linkd init localnetnode --chain-id linklocal
+           ------------            ---------
+             moniker                chain ID
 ```
 
-### Creating a genesis `create-validator` TX
+That marked as moniker is the name of the node while chain ID is an identifier of the network. The "--chain-id" flag is optional.
+You can find the `config` directory created under the chain data home.
 
-For the network to run successfully, One or more validators should exist.
-To be a validator, an account should be bonded by delegating coins.
+> **Tip**
+>
+> The chain data home is `$HOME/.linkd` by default. You can change it with "--home" flag.
 
-The below command generates bonding(`create-validator`) tx as a genesis TX.
-Which will be executed right after the network starts.
+Each file in the `config` directory contains information to run a local network. Refer to the following table for details.
 
-```shell
-> linkd gentx --name [KEY NAME]
+| File | Description |
+|---|---|
+| `app.toml` | App configuration |
+| `config.toml` | Node configuration. Displayed on the terminal when running `linkd init` |
+| `genesis.json` | Onchain data. Common data that every node should have in the beginning. |
+| `node_key.json` | Private key of the node |
+| `priv_validator_key.json` | Private key for validator |
 
-e.g.)
-> linkd gentx --name jack --amount 100000000stake
+### Create accounts
+You also need at least one account for the network. Account consists of a private/public key pair for signature and an address for asset storage. Use `linkcli keys` command to create accounts.
+
+Type the following commands to create accounts with name of Brown and Sally.
+
+```bash
+linkcli keys add brown
+linkcli keys add sally
+                 -----
+                 account name
 ```
 
+The keys generated here are stored in the `keyring-*` directory under the chain data home. The name of the directory varies with "--keyring-backend" flag.
 
-### Collecting genesis TXs
+> **Tip**
+>
+> The chain data home is `$HOME/.linkd` by default. You can change it with "--home" flag.
 
-The following step collects genesis TX to the genesis file.
+### Register genesis accounts
+Every blockchain network requires at least one account for initiallly minted coins. We call it genesis account. `linkd add-genesis-account` command registers an existing account as a genesis account.
+The first argument is an address or name of the existing account. The second is the coin you want to mint, it's a comma separated coin string which concatenates amount and denom.
 
-```shell
-> linkd collect-gentxs
+Make Brown's account as a genesis account, and mint 1,000 LINK and 100,000,000 stake.
+
+```bash
+linkd add-genesis-account $(linkcli keys show brown -a) 1000link,100000000stake
 ```
 
-And validates that the genesis file is the correct form.
+> **Tip** 
+>
+> - The account must be in your local keybase if you use an account name as the first argument. We strongly advise using `link cli keys show` instead of the name itself in case something wrong.
+> - Stake is a token made in [Cosmos SDK](https://cosmos.network) to support the advanced PoS. Accounts need to delegate these tokens to bond a validator. 
 
-```shell
-> linkd validate-genesis
+Now, you can find a genesis account with Brown's key added in `config/genesis.json`.
+
+### Become a validator
+For the network to run, one or more validators should exist. Validator is a node that has a permission to consent. To be a validator, an account should be bonded by delegating coins.
+
+We use `linkd gentx` (alias of `linkd create-validator`) for this end. The command generates a genesis transaction, which will be executed right after the network starts. "--name" flag enables you choose the account who bonds to, and the account will sign the transaction with its private key.
+
+Generate a genesis transaction to become a validator, bonding with Brown's private key.
+
+```bash
+linkd gentx --name brown
 ```
 
-### Launching the network
+Without any other flags, the default parameters are used for delegation amount and commission rate. Check the detailed options with "--help" flag if you want to adjust it.
 
-```shell
-> linkd start
+### Validate the genesis file
+Before running a network, you must check whether the genesis file (`config/genesis.json` under the chain data home) is valid or not. The genesis file, which stores onchain data, should have genesis transactions on it.
+Gather all genesis transactions generated above with the following command:
+
+```bash
+linkd collect-gentxs
 ```
 
+This will put all genesis transactions in the genesis file. Now, let's validate it.
 
-
-## Running a node on an existing network
-
-### Checking the network information and the genesis file
-
-Basically, the full node supports querying the information through the HTTP API.
-
-- `GET /genesis`
-
-```shell
-> curl http://[IP]:[PORT]/genesis
+```bash
+linkd validate-genesis
 ```
 
-From the result of HTTP API, `result.genesis` object is the same as the genesis file
+Correct it if there's any error occurred.
 
-### Init config files and genesis file with another moniker and the chain id (network id) 
+### Start the network
+Finally, everything is ready for running a blockchain network. Type the following command.
 
-```shell
-> linkd init [MONIKER] --chain-id [CHAIN ID]
-``` 
-
-### Overwrite the genesis file to `genesis.json` 
-
-Overwrite the genesis file to `[LINKD HOME]/config/genesis.json`
-
-```json
-{
-  "genesis_time": "2019-10-31T06:40:27.826184785Z",
-  "chain_id": "k8s-chain-p2p-26656-rpc-26657-abci-26658-c2356069e",
-  "consensus_params": {
-   
-  }
-}
+```bash
+linkd start
 ```
 
+You can see runtime messages of the network's start.
 
-### Add peers to `config.toml`
+## Using the local network 
+You would concern that your local network works well. This section helps you verify it by querying and transferring on the network.
 
-From the genesis file, you can find the peer information([ID]@[PEER_IP]:[PORT] form) at the memo of the gentxs.
+### Query account information
+Let's try a simple query that gets account information.
+Check the accounts of Brown and Sally with the following command.
 
-JSON path is `app_state.genutil.gentxs.item.value.memo`
-
-```json
-{
-  "genesis_time": "2019-10-31T06:40:27.826184785Z",
-  "chain_id": "k8s-chain-p2p-26656-rpc-26657-abci-26658-c2356069e",
-  
-  "app_state": {
-
-
-      "genutil": {
-        "gentxs": [
-          {
-
-            "memo": "0dc4cd6d7b719051b9cd6e64fc9a7a0f18ff55c0@[ip]:26656"
-          }
-        ]
-      }
-  }
-}
+```bash
+linkcli query account $(linkcli keys show brown -a)
+linkcli query account $(linkcli keys show sally -a)
 ```
 
-Copy one or more peers to `config.toml`
-```shell
-> vi [LINKD HOME]/config/config.toml
+You can see the detailed information of the account you configured in the previous section.
 
-persistent_peers = "id1@peer_ip1:26656,id2@peer_ip2:26656,..."
+> **Tip**
+>
+> `linkcli` decides which network to access referring to `config/config.toml` which is in the client home (`$HOME/.linkcli/`).
 
+### Transfer coins
+Now, it's able to transfer coins between the accounts shown above.
+Send 100 LINK from Brown to Sally with the following command.
+
+```bash
+linkcli tx send $(linkcli keys show brown -a) $(linkcli keys show sally -a) 1link
 ```
 
-### Start the node
-```shell
-> linkd start
+Transferring always generates a transaction. The command will show the transaction information, which contains the following attributes:
+
+| Attribute | Description |
+|---|---|
+| `chain_id` | Chain identifier for the transaction |
+| `account_number` | Account number increased whenever an account created |
+| `sequence` | Transaction sequence. Used to avoid duplicate transaction |
+| `fee` | Fee of the transaction |
+| `msg` | Message contained in the transaction. Transaction can have one or more messages in it. See [Message - LINE Blockchain Docs](https://docs-blockchain.line.biz/api-guide/Callback-Response#message) for more information. |
+| `memo` | Additional data |
+
+`linkcli` will ask you whether to confirm and broadcast the transaction. Type "yes", then you get a txhash.
+
+### Check the result of transactions
+You can check the result of transactions with the txhash you got in the above. Type the following command.
+
+```bash
+linkcli query tx [txhash]
 ```
 
+Then, you can see the status and information of the transaction. Refer to [Raw transaction - LINE Blockchain Docs](https://docs-blockchain.line.biz/api-guide/Callback-Response#raw-transaction) to learn more about transaction information.
 
+### Check the balance of accounts
+The final step of transferring is checking the balance of the recipient. Query Sally's account balance to be sure the coins are transferred well.
 
-## Using the CLI tools
-
-### Configure default flags for the CLI
-
-```shell
-# Configure your CLI to eliminate need for chain-id flag
-> linkcli config chain-id linklocal
-> linkcli config output json
-> linkcli config indent true
-> linkcli config trust-node true
+```bash
+linkcli query account $(linkcli keys show sally -a)
 ```
 
-### Sending coins
-
-```shell
-> linkcli tx send [FROM ADDRESS OR KEY NAME] [TO ADDRESS] [COIN FORM]
-
-e.g.)
-> linkcli tx send jack $(linkcli keys show alice -a) 100link
-```
-
-### Starting a LCD
-
-```shell
-> linkcli rest-server
-
-# starts with a listen address
-> linkcli rest-server --laddr tcp://0.0.0.0:1317
-
-# starts with a node address
-> linkcli rest-server --node tcp://[IP]:[PORT]
-```
-
-### More commands
-
-```shell
-> linkcli --help
-```
+You can see 100 LINK hold by Sally.

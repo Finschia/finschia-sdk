@@ -193,16 +193,61 @@ jobs:
             export BUILDDIR=`pwd`/build
             make test-integration
   integration_test_load_tester:
-    <<: *linux_defaults
+    <<: *machine_defaults
     resource_class: xlarge
     parallelism: 1
     steps:
       - checkout
       - restore_cache:
           keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
+            - machine-dependency-cache-cleveldb-1.20
       - run:
-          name: Test cli
+          name: run setup cleveldb
+          command: |
+            set -x
+            export WITH_CLEVELDB=yes
+            if [ ! -d /tmp/cleveldb_binary ] ; then
+                mkdir -p /tmp/cleveldb_binary
+                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
+            fi
+            pushd /tmp/cleveldb_binary
+            ./get_cleveldb.sh ${WITH_CLEVELDB}
+            popd
+      - save_cache:
+          key: machine-dependency-cache-cleveldb-1.20
+          paths:
+            - "/tmp/cleveldb_binary"
+      - restore_cache:
+          keys:
+            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
+      - run:
+          name: run setup go
+          command: |
+            set -x
+            if [ "$(go version)" != "go version go1.13.4 linux/amd64" ]; then
+                mkdir -p /tmp/gobinary
+                pushd /tmp/gobinary
+                wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
+                sudo tar -xvf go$GO_VERSION.linux-amd64.tar.gz
+                sudo rm -rf /usr/local/go
+                sudo cp -r go /usr/local
+                popd
+            fi
+      - run:
+          name: build binaries
+          command: |
+            set -x
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make build WITH_CLEVELDB=yes
+      - save_cache:
+          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
+          paths:
+            - "/home/circleci/.go_workspace/pkg/mod"
+            - "/tmp/gobinary"
+      - run:
+          name: Integration test of load tester
+          no_output_timeout: 30m
           command: |
             export BUILDDIR=`pwd`/build
             make test-integration-load-tester
@@ -444,6 +489,13 @@ workflows:
       - integration_test_load_tester:
           requires:
             - setup_dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
+                - /hotfix-.*/
+                - /testall-.*/
       - contract_test
       - setup_docker_and_binary:
           requires:

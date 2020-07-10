@@ -18,10 +18,10 @@ type TxBuilderWithoutKeybase struct {
 	txBuilder authtypes.TxBuilder
 }
 
-func NewTxBuilder() *TxBuilderWithoutKeybase {
-	return &TxBuilderWithoutKeybase{
+func NewTxBuilder(gas uint64) TxBuilderWithoutKeybase {
+	return TxBuilderWithoutKeybase{
 		txBuilder: authtypes.TxBuilder{},
-	}
+	}.WithGas(gas)
 }
 
 func (bldr TxBuilderWithoutKeybase) WithTxEncoder(txEncoder sdk.TxEncoder) TxBuilderWithoutKeybase {

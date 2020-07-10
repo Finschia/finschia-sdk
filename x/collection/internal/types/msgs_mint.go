@@ -212,8 +212,14 @@ func (msg MsgMintFT) ValidateBasic() error {
 		return err
 	}
 
+	for _, tokenID := range msg.Amount {
+		if err := ValidateDenom(tokenID.Denom); err != nil {
+			return sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id")
+		}
+	}
+
 	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(ErrInvalidAmount, msg.Amount.String())
 	}
 
 	if msg.From.Empty() {
@@ -254,8 +260,14 @@ func (msg MsgBurnFT) ValidateBasic() error {
 		return err
 	}
 
+	for _, tokenID := range msg.Amount {
+		if err := ValidateDenom(tokenID.Denom); err != nil {
+			return sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id")
+		}
+	}
+
 	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(ErrInvalidAmount, msg.Amount.String())
 	}
 
 	if msg.From.Empty() {
@@ -303,8 +315,14 @@ func (msg MsgBurnFTFrom) ValidateBasic() error {
 	if msg.Proxy.Equals(msg.From) {
 		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.Proxy.String())
 	}
+	for _, tokenID := range msg.Amount {
+		if err := ValidateDenom(tokenID.Denom); err != nil {
+			return sdkerrors.Wrap(ErrInvalidTokenID, "invalid token id")
+		}
+	}
+
 	if !msg.Amount.IsValid() {
-		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
+		return sdkerrors.Wrap(ErrInvalidAmount, msg.Amount.String())
 	}
 	return nil
 }

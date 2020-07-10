@@ -15,7 +15,7 @@ func getSlaves() []types.Slave {
 		if !ok {
 			return nil
 		}
-		slaves[i] = types.NewSlave(s["url"].(string), s["mnemonic"].(string), s["target_type"].(string))
+		slaves[i] = types.NewSlave(s["url"].(string), s["mnemonic"].(string), s["scenario"].(string))
 		i++
 	}
 	return slaves

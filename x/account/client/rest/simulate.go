@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -17,6 +18,12 @@ import (
 type SimulateReq struct {
 	Tx            types.StdTx `json:"tx" yaml:"tx"`
 	GasAdjustment string      `json:"gas_adjustment"`
+}
+
+type ABCIErrorResponse struct {
+	Codespace string `json:"codespace"`
+	Code      uint32 `json:"code"`
+	Error     string `json:"error"`
 }
 
 // SimulateTxRequest implements a tx simulating handler that is responsible
@@ -56,10 +63,29 @@ func SimulateTxRequest(cliCtx context.CLIContext) http.HandlerFunc {
 
 		_, adjusted, err := utils.CalculateGas(cliCtx.QueryWithData, cliCtx.Codec, txBytes, gasAdj)
 		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			if ctxtErr, ok := err.(*context.Error); ok {
+				WriteABCIErrorResponse(w, http.StatusInternalServerError, cliCtx.Codec, ctxtErr)
+			} else {
+				rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			}
 			return
 		}
 
 		rest.WriteSimulationResponse(w, cliCtx.Codec, adjusted)
 	}
+}
+
+// nolint: errcheck
+func WriteABCIErrorResponse(w http.ResponseWriter, status int, cdc *codec.Codec, err *context.Error) {
+	errBody := cdc.MustMarshalJSON(
+		ABCIErrorResponse{
+			Codespace: err.Codespace,
+			Code:      err.Code,
+			Error:     err.Message,
+		},
+	)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	_, _ = w.Write(errBody)
 }

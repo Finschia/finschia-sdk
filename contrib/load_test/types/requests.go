@@ -1,13 +1,15 @@
 package types
 
 type LoadRequest struct {
-	TargetType string `json:"target_type"`
-	Config     Config `json:"config"`
+	Scenario string            `json:"scenario"`
+	Config   Config            `json:"config"`
+	Params   map[string]string `json:"params"`
 }
 
-func NewLoadRequest(targetType string, config Config) *LoadRequest {
+func NewLoadRequest(scenario string, config Config, params map[string]string) *LoadRequest {
 	return &LoadRequest{
-		TargetType: targetType,
-		Config:     config,
+		Scenario: scenario,
+		Config:   config,
+		Params:   params,
 	}
 }

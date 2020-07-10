@@ -3,12 +3,17 @@ FROM golang:alpine AS build-env
 
 WORKDIR /link-load-tester
 
+ENV PACKAGES git
+ARG GITHUB_TOKEN=""
+RUN apk add --no-cache $PACKAGES
+
 # Add source files
 COPY . .
 
 RUN ls
 
 # Install dependencies
+RUN git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 RUN go mod download
 
 # Build modules

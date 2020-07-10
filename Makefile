@@ -9,6 +9,7 @@ BASE_VERSION := $(if $(BASE_VERSION),$(BASE_VERSION),v0.0.0)
 VERSION := $(BASE_VERSION)-$(shell basename $(shell git symbolic-ref -q HEAD --short))+$(shell date '+%Y%m%d%H%M%S')
 VERSION := $(strip $(VERSION))
 COMMIT := $(shell git log -1 --format='%H')
+CWD := $(shell pwd)
 LEDGER_ENABLED ?= true
 
 export GO111MODULE = on
@@ -76,6 +77,9 @@ build-swagger-docs: statik
 build-load-tester: build
 	go build -mod=readonly $(BUILD_FLAGS) -o build/link-load-tester ./contrib/load_test/cmd/link_load_tester
 
+build-load-tester-docker:
+	docker build --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) -t link-load-tester -f ./contrib/load_test/Dockerfile .
+
 install: go.sum build-swagger-docs
 	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkd
 	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkcli
@@ -141,7 +145,7 @@ test-integration-multi-node: build-docker
 	@go test -mod=readonly -p 4 `go list ./cli_test/...` $(CLI_MULTI_BUILD_FLAGS) -v
 
 test-integration-load-tester: build-load-tester
-	@go test -mod=readonly -p 4 ./contrib/load_test/ $(LOAD_TEST_BUILD_FLAGS) -v
+	@go test -mod=readonly -p 4 -timeout 30m ./contrib/load_test/ $(LOAD_TEST_BUILD_FLAGS) -v
 
 
 ########################################
@@ -157,6 +161,9 @@ testnet-stop:
 
 testnet-test:
 	$(MAKE) -C  $(CURDIR)/networks/local testnet-test
+
+########################################
+### Contract Test
 
 run-swagger-server:
 	linkcli rest-server --trust-node=true
@@ -194,6 +201,26 @@ dredd-test:
 
 stop-dredd-test:
 	./contract_test/testdata/stop_dredd_test.sh
+
+########################################
+### Load Test
+
+prepare-coins: build
+	./contrib/load_test/scripts/send_coins.sh $(MASTER_ADDR)
+
+run-slave: prepare-coins
+	docker run --rm -d -p 8000:8000 --name slave --network link_localnet -v $(CWD)/contrib/load_test/:/link-load-tester/contrib/load_test/ link-load-tester link-load-tester run-slave
+
+load-test: run-slave
+	./contrib/load_test/scripts/run_load_test.sh
+
+# Repeat prepare only
+prepare-load-test:
+	docker run --rm --name master --network link_localnet -v $(CWD)/contrib/load_test/:/link-load-tester/contrib/load_test/ link-load-tester link-load-tester prepare
+
+# Repeat start only
+start-load-test:
+	docker run --rm --name master --network link_localnet -v $(CWD)/contrib/load_test/:/link-load-tester/contrib/load_test/ link-load-tester link-load-tester start
 
 ########################################
 ### Simulation

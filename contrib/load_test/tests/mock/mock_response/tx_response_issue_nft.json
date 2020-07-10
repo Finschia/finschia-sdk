@@ -1,0 +1,77 @@
+{
+  "height": "76",
+  "txhash": "A9AA7E1F57CA6DBAE41943037D0F96D47C527747F42CD68F7B209EF62B2B0365",
+  "index": 0,
+  "raw_log": "[{\"msg_index\":0,\"log\":\"\",\"events\":[{\"type\":\"issue_nft\",\"attributes\":[{\"key\":\"contract_id\",\"value\":\"678c146a\"},{\"key\":\"token_type\",\"value\":\"10000001\"}]},{\"type\":\"message\",\"attributes\":[{\"key\":\"action\",\"value\":\"issue_nft\"},{\"key\":\"module\",\"value\":\"collection\"},{\"key\":\"sender\",\"value\":\"link180vc7ge0jkhe782p6dhqyhny8kuw0rel4n96ea\"}]}]}]",
+  "logs": [
+    {
+      "msg_index": 0,
+      "log": "",
+      "events": [
+        {
+          "type": "issue_nft",
+          "attributes": [
+            {
+              "key": "contract_id",
+              "value": "678c146a"
+            },
+            {
+              "key": "token_type",
+              "value": "10000001"
+            }
+          ]
+        },
+        {
+          "type": "message",
+          "attributes": [
+            {
+              "key": "action",
+              "value": "issue_nft"
+            },
+            {
+              "key": "module",
+              "value": "collection"
+            },
+            {
+              "key": "sender",
+              "value": "link180vc7ge0jkhe782p6dhqyhny8kuw0rel4n96ea"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "gas_wanted": "200000",
+  "gas_used": "59080",
+  "tx": {
+    "type": "cosmos-sdk/StdTx",
+    "value": {
+      "msg": [
+        {
+          "type": "collection/MsgIssueNFT",
+          "value": {
+            "owner": "link180vc7ge0jkhe782p6dhqyhny8kuw0rel4n96ea",
+            "contract_id": "678c146a",
+            "name": "nft",
+            "meta": " "
+          }
+        }
+      ],
+      "fee": {
+        "amount": [],
+        "gas": "200000"
+      },
+      "signatures": [
+        {
+          "pub_key": {
+            "type": "tendermint/PubKeySecp256k1",
+            "value": "ApYRUDMiMKk5HnJcOqmPXoN7yV0+dHLnPcSglpvt1KRx"
+          },
+          "signature": "2MxBa0RJSuGnjPzua+TQHoDSeaCEZMHDvyFlqrzZ2HR3o3qq318cNMhMDZow3j3RgUQPI7QPkW7K1CMBE24B1w=="
+        }
+      ],
+      "memo": ""
+    }
+  },
+  "timestamp": "2020-05-22T01:15:49Z"
+}
