@@ -6,7 +6,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/line/link/app"
-	"github.com/line/link/contrib/load_test/service"
 	"github.com/line/link/contrib/load_test/tests"
 	"github.com/line/link/contrib/load_test/tests/mock"
 	"github.com/line/link/contrib/load_test/types"
@@ -18,14 +17,14 @@ func TestTxAndQueryAllScenario_GenerateStateSettingMsgs(t *testing.T) {
 	server := mock.NewServer()
 	defer server.Close()
 	// Given Test Environments
-	scenario, hdWallet, masterWallet := GivenTestEnvironments(t, server.URL, types.TxAndQueryAll, nil)
+	scenario, hdWallet, masterWallet := GivenTestEnvironments(t, server.URL, types.TxAndQueryAll, nil, nil)
 	txAndQueryAllScenario, ok := scenario.(*TxAndQueryAllScenario)
 	require.True(t, ok)
 
-	msgs, params, err := txAndQueryAllScenario.GenerateStateSettingMsgs(masterWallet, hdWallet)
+	msgs, params, err := txAndQueryAllScenario.GenerateStateSettingMsgs(masterWallet, hdWallet, []string{})
 	require.NoError(t, err)
 
-	require.Len(t, msgs, tests.TestTPS*tests.TestDuration*21)
+	require.Len(t, msgs, tests.TestTPS*tests.TestDuration*(8+13*tests.TestMsgsPerTxLoadTest))
 	require.Equal(t, "send", msgs[tests.TestTPS*tests.TestDuration-1].Type())
 	require.Equal(t, "grant_perm", msgs[tests.TestTPS*tests.TestDuration].Type())
 	require.Equal(t, "grant_perm", msgs[8*tests.TestTPS*tests.TestDuration-1].Type())
@@ -53,7 +52,8 @@ func TestTxAndQueryAllScenario_GenerateTarget(t *testing.T) {
 			"ft_token_id":            "0000000100000000",
 			"tx_hash":                "16EFE7CF722157A57E03E947C6171B24A7FC3731E1A24FAE0D9168F80845407F",
 			"collection_contract_id": "678c146a",
-		})
+			"num_nft_per_user":       fmt.Sprintf("%d", 13*tests.TestMsgsPerTxLoadTest),
+		}, nil)
 	txAndQueryAllScenario, ok := scenario.(*TxAndQueryAllScenario)
 	require.True(t, ok)
 
@@ -67,13 +67,11 @@ func TestTxAndQueryAllScenario_GenerateTarget(t *testing.T) {
 	for i := 1; i < numTargets; i++ {
 		require.Equal(t, "GET", (*targets)[i].Method)
 	}
-	require.Equal(t, fmt.Sprintf("%s%s", server.URL, TxURL), (*targets)[0].URL)
 	// Then tx target is valid
 	var req rest.BroadcastReq
 	require.NoError(t, app.MakeCodec().UnmarshalJSON((*targets)[0].Body, &req))
-	require.Equal(t, service.BroadcastSync, req.Mode)
 
-	require.Len(t, req.Tx.Msgs, len(msgTypes))
+	require.Len(t, req.Tx.Msgs, len(msgTypes)*tests.TestMsgsPerTxLoadTest)
 	for i, msg := range req.Tx.Msgs {
 		require.Equal(t, msgTypes[i%len(msgTypes)], msg.Type())
 		require.NoError(t, msg.ValidateBasic())

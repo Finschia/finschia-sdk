@@ -2,6 +2,7 @@ package scenario
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/line/link/contrib/load_test/service"
 	"github.com/line/link/contrib/load_test/transaction"
 	"github.com/line/link/contrib/load_test/types"
@@ -9,6 +10,7 @@ import (
 	"github.com/line/link/x/coin"
 	"github.com/line/link/x/collection"
 	"github.com/line/link/x/token"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 func GenerateRegisterAccountMsgs(masterAddress sdk.AccAddress, hdWallet *wallet.HDWallet,
@@ -198,4 +200,49 @@ func IssueNFT(linkService *service.LinkService, txBuilder transaction.TxBuilderW
 		}
 	}
 	return "", types.NoContractIDError{Tx: res}
+}
+
+func BuildTxTarget(info Info, keyWallet *wallet.KeyWallet, walletIndex int, multiMsgs []string,
+	scenarioParams []string) (target *vegeta.Target,
+	err error) {
+	stdTx, err := BuildStdTx(info, keyWallet, walletIndex, multiMsgs, scenarioParams)
+	if err != nil {
+		return nil, err
+	}
+	return info.targetBuilder.MakeTxTarget(stdTx, service.BroadcastSync)
+}
+
+func BuildStdTx(info Info, keyWallet *wallet.KeyWallet, walletIndex int, multiMsgs []string,
+	scenarioParams []string) (stdTx auth.StdTx,
+	err error) {
+	var account *auth.BaseAccount
+	var msgBuilder *MsgBuilder
+	var msgBuildHandler func() (sdk.Msg, error)
+
+	account, err = info.linkService.GetAccount(keyWallet.Address().String())
+	if err != nil {
+		return
+	}
+
+	msgBuilder, err = NewMsgBuilder(account.Address, info, walletIndex, scenarioParams)
+	if err != nil {
+		return
+	}
+
+	msgs := make([]sdk.Msg, len(multiMsgs)*info.config.MsgsPerTxLoadTest)
+	for i := 0; i < info.config.MsgsPerTxLoadTest; i++ {
+		for j := 0; j < len(multiMsgs); j++ {
+			msgBuildHandler, err = msgBuilder.GetHandler(multiMsgs[j])
+			if err != nil {
+				return
+			}
+			msgs[len(multiMsgs)*i+j], err = msgBuildHandler()
+			if err != nil {
+				return
+			}
+		}
+	}
+
+	return info.txBuilder.WithAccountNumber(account.AccountNumber).WithSequence(account.Sequence).
+		BuildAndSign(keyWallet.PrivateKey(), msgs)
 }

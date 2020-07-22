@@ -41,7 +41,7 @@ func NewStateSetter(masterMnemonic string, config types.Config) (*StateSetter, e
 		linkService:     service.NewLinkService(&http.Client{}, app.MakeCodec(), config.TargetURL),
 		txBuilder:       transaction.NewTxBuilder(uint64(config.MaxGasPrepare)).WithChainID(config.ChainID),
 		masterKeyWallet: masterWallet,
-		scenarios:       scenario.NewScenarios(config, nil),
+		scenarios:       scenario.NewScenarios(config, nil, nil),
 		config:          config,
 	}, nil
 }
@@ -55,7 +55,7 @@ func (ss *StateSetter) PrepareTestState(slaves []types.Slave, outputDir string) 
 			return types.InvalidMnemonic{Mnemonic: slave.Mnemonic}
 		}
 		log.Println("Start to generate state setting msgs")
-		msgs, params, err := ss.scenarios[slave.Scenario].GenerateStateSettingMsgs(ss.masterKeyWallet, hdWallet)
+		msgs, params, err := ss.scenarios[slave.Scenario].GenerateStateSettingMsgs(ss.masterKeyWallet, hdWallet, slave.Params)
 		if err != nil {
 			return err
 		}

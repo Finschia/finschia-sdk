@@ -15,27 +15,41 @@ import (
 type Scenarios map[string]Scenario
 
 type Scenario interface {
-	GenerateStateSettingMsgs(*wallet.KeyWallet, *wallet.HDWallet) ([]sdk.Msg, map[string]string, error)
+	GenerateStateSettingMsgs(*wallet.KeyWallet, *wallet.HDWallet, []string) ([]sdk.Msg, map[string]string, error)
 	GenerateTarget(*wallet.KeyWallet, int) (*[]*vegeta.Target, int, error)
 }
 
-func NewScenarios(config types.Config, params map[string]string) Scenarios {
+type Info struct {
+	linkService    *service.LinkService
+	targetBuilder  *TargetBuilder
+	txBuilder      transaction.TxBuilderWithoutKeybase
+	config         types.Config
+	scenarioParams []string
+	stateParams    map[string]string
+}
+
+func NewScenarios(config types.Config, params map[string]string, scenarioParams []string) Scenarios {
 	scenarios := make(Scenarios)
-	targetBuilder := NewTargetBuilder(app.MakeCodec(), config.TargetURL)
-	txBuilder := transaction.NewTxBuilder(uint64(config.MaxGasLoadTest)).WithChainID(config.ChainID)
-	linkService := service.NewLinkService(&http.Client{}, app.MakeCodec(), config.TargetURL)
-	scenarios[types.QueryAccount] = &QueryAccountScenario{linkService, targetBuilder, config}
-	scenarios[types.QueryBlock] = &QueryBlockScenario{linkService, targetBuilder, config, params}
-	scenarios[types.QueryCoin] = &QueryCoinScenario{linkService, targetBuilder, config}
-	scenarios[types.TxSend] = &TxSendScenario{linkService, targetBuilder, txBuilder, config}
-	scenarios[types.TxEmpty] = &TxEmptyScenario{linkService, targetBuilder, txBuilder, config}
-	scenarios[types.TxMintNFT] = &TxMintNFTScenario{linkService, targetBuilder, txBuilder, config, params}
-	scenarios[types.TxMultiMintNFT] = &TxMultiMintNFTScenario{linkService, targetBuilder, txBuilder, config, params}
-	scenarios[types.TxTransferFT] = &TxTransferFTScenario{linkService, targetBuilder, txBuilder, config, params}
-	scenarios[types.TxTransferNFT] = &TxTransferNFTScenario{linkService, targetBuilder, txBuilder, config, params}
-	scenarios[types.TxToken] = &TxTokenScenario{linkService, targetBuilder, txBuilder, config, params}
-	scenarios[types.TxCollection] = &TxCollectionScenario{linkService, targetBuilder, txBuilder, config, params}
-	scenarios[types.TxAndQueryAll] = &TxAndQueryAllScenario{linkService, targetBuilder, txBuilder, config, params}
+	info := Info{
+		linkService:    service.NewLinkService(&http.Client{}, app.MakeCodec(), config.TargetURL),
+		targetBuilder:  NewTargetBuilder(app.MakeCodec(), config.TargetURL),
+		txBuilder:      transaction.NewTxBuilder(uint64(config.MaxGasLoadTest)).WithChainID(config.ChainID),
+		config:         config,
+		scenarioParams: scenarioParams,
+		stateParams:    params,
+	}
+	scenarios[types.QueryAccount] = &QueryAccountScenario{info}
+	scenarios[types.QueryBlock] = &QueryBlockScenario{info}
+	scenarios[types.QueryCoin] = &QueryCoinScenario{info}
+	scenarios[types.QuerySimulate] = &QuerySimulateScenario{info}
+	scenarios[types.TxSend] = &TxSendScenario{info}
+	scenarios[types.TxEmpty] = &TxEmptyScenario{info}
+	scenarios[types.TxMintNFT] = &TxMintNFTScenario{info}
+	scenarios[types.TxTransferFT] = &TxTransferFTScenario{info}
+	scenarios[types.TxTransferNFT] = &TxTransferNFTScenario{info}
+	scenarios[types.TxToken] = &TxTokenScenario{info}
+	scenarios[types.TxCollection] = &TxCollectionScenario{info}
+	scenarios[types.TxAndQueryAll] = &TxAndQueryAllScenario{info}
 
 	return scenarios
 }

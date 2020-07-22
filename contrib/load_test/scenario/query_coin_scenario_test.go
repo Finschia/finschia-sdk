@@ -14,7 +14,7 @@ func TestQueryCoinScenario_GenerateTarget(t *testing.T) {
 	server := mock.NewServer()
 	defer server.Close()
 	// Given Test Environments
-	scenario, _, keyWallet := GivenTestEnvironments(t, server.URL, types.QueryCoin, nil)
+	scenario, _, keyWallet := GivenTestEnvironments(t, server.URL, types.QueryCoin, nil, nil)
 	coinScenario, ok := scenario.(*QueryCoinScenario)
 	require.True(t, ok)
 

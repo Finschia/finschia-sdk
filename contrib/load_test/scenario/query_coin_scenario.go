@@ -2,20 +2,16 @@ package scenario
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/contrib/load_test/service"
-	"github.com/line/link/contrib/load_test/types"
 	"github.com/line/link/contrib/load_test/wallet"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 type QueryCoinScenario struct {
-	linkService   *service.LinkService
-	targetBuilder *TargetBuilder
-	config        types.Config
+	Info
 }
 
 func (s *QueryCoinScenario) GenerateStateSettingMsgs(masterKeyWallet *wallet.KeyWallet,
-	hdWallet *wallet.HDWallet) ([]sdk.Msg, map[string]string, error) {
+	hdWallet *wallet.HDWallet, scenarioParams []string) ([]sdk.Msg, map[string]string, error) {
 	return nil, nil, nil
 }
 

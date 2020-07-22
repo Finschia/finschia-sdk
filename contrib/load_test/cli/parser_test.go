@@ -15,8 +15,9 @@ import (
 func TestGetSlaves(t *testing.T) {
 	// Given
 	slavesMap := make(map[string]types.Slave)
-	slavesMap["slave1"] = types.NewSlave(tests.TestTargetURL, tests.TestMnemonic, types.QueryAccount)
-	slavesMap["slave2"] = types.NewSlave(tests.TestTargetURL, tests.TestMnemonic2, types.TxSend)
+	slavesMap["slave1"] = types.NewSlave(tests.TestTargetURL, tests.TestMnemonic, types.QueryAccount,
+		[]string{"param1", "param2"})
+	slavesMap["slave2"] = types.NewSlave(tests.TestTargetURL, tests.TestMnemonic2, types.TxSend, []string{})
 	bytes, err := json.Marshal(slavesMap)
 	require.NoError(t, err)
 	viper.Set(FlagSlaves, string(bytes))

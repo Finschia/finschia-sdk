@@ -84,7 +84,7 @@ func TestLoadHandler(t *testing.T) {
 				Mnemonic:          tests.TestMnemonic,
 			}
 			res := httptest.NewRecorder()
-			request := types.NewLoadRequest(tc.scenario, config, nil)
+			request := types.NewLoadRequest(tc.scenario, nil, config, nil)
 			body, err := json.Marshal(request)
 			require.NoError(t, err)
 			req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))
@@ -229,7 +229,7 @@ func TestLoadHandlerWithInvalidParameters(t *testing.T) {
 			RegisterHandlers(lg, r)
 			// Given Request
 			res := httptest.NewRecorder()
-			request := types.NewLoadRequest(tc.scenario, tc.config, nil)
+			request := types.NewLoadRequest(tc.scenario, nil, tc.config, nil)
 			body, err := json.Marshal(request)
 			require.NoError(t, err)
 			req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))
@@ -272,7 +272,7 @@ func TestFireHandler(t *testing.T) {
 	}
 	// Load Targets
 	res := httptest.NewRecorder()
-	request := types.NewLoadRequest(types.TxSend, config, nil)
+	request := types.NewLoadRequest(types.TxSend, nil, config, nil)
 	body, err := json.Marshal(request)
 	require.NoError(t, err)
 	req, err := http.NewRequest("POST", "/target/load", bytes.NewBuffer(body))

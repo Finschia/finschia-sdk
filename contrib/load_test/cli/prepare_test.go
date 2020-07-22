@@ -46,13 +46,13 @@ func TestPrepareCmd(t *testing.T) {
 		{types.TxSend, tests.TestNumPrepareRequest, require.NoFileExists, ""},
 		{types.TxEmpty, tests.TestNumPrepareRequest, require.NoFileExists, ""},
 		{types.TxToken, tests.TestNumPrepareRequest*4 + 1, require.FileExists,
-			fmt.Sprintf(`{"%s":{"contract_id":"9be17165"}}`, server.URL)},
+			fmt.Sprintf(`{"%s":{"token_contract_id":"9be17165"}}`, server.URL)},
 	}
 	for _, tt := range testCases {
 		t.Log(tt.scenario)
 		// Given slave Flag
 		slavesMap := make(map[string]types.Slave)
-		slavesMap["slave1"] = types.NewSlave(server.URL, tests.TestMnemonic, tt.scenario)
+		slavesMap["slave1"] = types.NewSlave(server.URL, tests.TestMnemonic, tt.scenario, []string{})
 		bytes, err := json.Marshal(slavesMap)
 		require.NoError(t, err)
 		viper.Set(FlagSlaves, string(bytes))

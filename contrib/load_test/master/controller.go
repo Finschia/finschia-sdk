@@ -69,7 +69,7 @@ func (c *Controller) orderToLoad(slave types.Slave) error {
 	config := c.config
 	config.Mnemonic = slave.Mnemonic
 	url := slave.URL + "/target/load"
-	request := types.NewLoadRequest(slave.Scenario, config, c.params[slave.URL])
+	request := types.NewLoadRequest(slave.Scenario, slave.Params, config, c.params[slave.URL])
 	body, err := json.Marshal(request)
 	if err != nil {
 		return err

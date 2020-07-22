@@ -15,11 +15,11 @@ func TestQueryBlockScenario_GenerateStateSettingMsgs(t *testing.T) {
 	server := mock.NewServer()
 	defer server.Close()
 	// Given Test Environments
-	scenario, hdWallet, masterWallet := GivenTestEnvironments(t, server.URL, types.QueryBlock, nil)
+	scenario, hdWallet, masterWallet := GivenTestEnvironments(t, server.URL, types.QueryBlock, nil, nil)
 	blockScenario, ok := scenario.(*QueryBlockScenario)
 	require.True(t, ok)
 
-	msgs, params, err := blockScenario.GenerateStateSettingMsgs(masterWallet, hdWallet)
+	msgs, params, err := blockScenario.GenerateStateSettingMsgs(masterWallet, hdWallet, []string{})
 	require.NoError(t, err)
 
 	require.Len(t, msgs, tests.TestTPS*tests.TestDuration)
@@ -31,7 +31,8 @@ func TestQueryBlockScenario_GenerateTarget(t *testing.T) {
 	server := mock.NewServer()
 	defer server.Close()
 	// Given Test Environments
-	scenario, _, keyWallet := GivenTestEnvironments(t, server.URL, types.QueryBlock, map[string]string{"height": "3"})
+	scenario, _, keyWallet := GivenTestEnvironments(t, server.URL, types.QueryBlock,
+		map[string]string{"height": "3"}, nil)
 	blockScenario, ok := scenario.(*QueryBlockScenario)
 	require.True(t, ok)
 

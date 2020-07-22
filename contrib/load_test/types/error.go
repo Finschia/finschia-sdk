@@ -25,6 +25,12 @@ func (e InvalidScenarioError) Error() string {
 	return fmt.Sprintf("Invalid Scenario Error: %s", string(e))
 }
 
+type InvalidScenarioParameterError string
+
+func (e InvalidScenarioParameterError) Error() string {
+	return fmt.Sprintf("Invalid Scenario Parameter Error: %s", string(e))
+}
+
 type InvalidMasterMnemonic struct {
 	Mnemonic string
 }
@@ -116,4 +122,28 @@ type LowThroughputError struct {
 
 func (e LowThroughputError) Error() string {
 	return fmt.Sprintf("Throughput is lower than %f : %f", e.Threshold, e.Throughput)
+}
+
+type OutOfNFTError struct {
+	NumNFTPerUser int
+	NFTOffset     int
+}
+
+func (e OutOfNFTError) Error() string {
+	return fmt.Sprintf("User no longer has nft (num nft per user : %d, currnet nft offset: %d)", e.NumNFTPerUser, e.NFTOffset)
+}
+
+type NoMsgBuildHandler struct {
+	MsgType string
+}
+
+func (e NoMsgBuildHandler) Error() string {
+	return fmt.Sprintf("There is no msg build handler for %s)", e.MsgType)
+}
+
+type NFTTokenIDOverFlowError struct {
+}
+
+func (e NFTTokenIDOverFlowError) Error() string {
+	return "NFT token id overflowed"
 }

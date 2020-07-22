@@ -1,9 +1,10 @@
 package types
 
 const (
-	QueryAccount = "query_account"
-	QueryBlock   = "query_block"
-	QueryCoin    = "query_coin"
+	QueryAccount  = "query_account"
+	QueryBlock    = "query_block"
+	QueryCoin     = "query_coin"
+	QuerySimulate = "query_simulate"
 
 	TxEmpty        = "tx_empty"
 	TxSend         = "tx_send"

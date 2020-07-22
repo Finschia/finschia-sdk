@@ -15,8 +15,33 @@ func getSlaves() []types.Slave {
 		if !ok {
 			return nil
 		}
-		slaves[i] = types.NewSlave(s["url"].(string), s["mnemonic"].(string), s["scenario"].(string))
+
+		url, ok := s["url"].(string)
+		if !ok {
+			panic("url in config.yaml is not string")
+		}
+		mnemonic, ok := s["mnemonic"].(string)
+		if !ok {
+			panic("mnemonic in config.yaml is not string")
+		}
+		scenario, ok := s["scenario"].(string)
+		if !ok {
+			panic("scenario in config.yaml is not string")
+		}
+		slaves[i] = types.NewSlave(url, mnemonic, scenario, convertToStrings(s["params"].([]interface{})))
 		i++
 	}
 	return slaves
+}
+
+func convertToStrings(array []interface{}) []string {
+	var ok bool
+	strings := make([]string, len(array))
+	for i, v := range array {
+		strings[i], ok = v.(string)
+		if !ok {
+			panic("There are params, not string types.")
+		}
+	}
+	return strings
 }

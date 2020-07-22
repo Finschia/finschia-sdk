@@ -11,8 +11,8 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func GivenTestEnvironments(t *testing.T, url string, scenarioType string, scenarioParams map[string]string) (Scenario,
-	*wallet.HDWallet, *wallet.KeyWallet) {
+func GivenTestEnvironments(t *testing.T, url string, scenarioType string, stateParams map[string]string,
+	scenarioParams []string) (Scenario, *wallet.HDWallet, *wallet.KeyWallet) {
 	sdk.GetConfig().SetBech32PrefixForAccount(linktypes.Bech32PrefixAcc(tests.TestNet),
 		linktypes.Bech32PrefixAccPub(tests.TestNet))
 	// Given Master Key Wallet
@@ -31,7 +31,7 @@ func GivenTestEnvironments(t *testing.T, url string, scenarioType string, scenar
 		CoinName:          tests.TestCoinName,
 	}
 	// Given Scenario
-	scenarios := NewScenarios(config, scenarioParams)
+	scenarios := NewScenarios(config, stateParams, scenarioParams)
 
 	return scenarios[scenarioType], hdWallet, keyWallet
 }

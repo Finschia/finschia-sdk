@@ -37,8 +37,8 @@ func TestReportCmd(t *testing.T) {
 	viper.Set(FlagTPSThreshold, -1)
 	// Given slave Flag
 	slavesMap := make(map[string]types.Slave)
-	slavesMap["slave1"] = types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount)
-	slavesMap["slave2"] = types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend)
+	slavesMap["slave1"] = types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount, []string{})
+	slavesMap["slave2"] = types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend, []string{})
 	bytes, err := json.Marshal(slavesMap)
 	require.NoError(t, err)
 	viper.Set(FlagSlaves, string(bytes))

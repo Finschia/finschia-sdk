@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/line/link/app"
 	"github.com/line/link/contrib/load_test/service"
@@ -14,6 +15,7 @@ import (
 	"github.com/line/link/x/coin"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
+	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
 func TestTargetBuilder_MakeQueryTarget(t *testing.T) {
@@ -42,17 +44,26 @@ func TestTargetBuilder_MakeTxQuery(t *testing.T) {
 	stdTx, err := txBuilder.BuildAndSign(fromPrivateKey, msgs)
 	require.NoError(t, err)
 
-	// When
-	target, err := targetBuilder.MakeTxTarget(stdTx, service.BroadcastBlock)
-	require.NoError(t, err)
-	// And
-	var broadcastReq rest.BroadcastReq
-	err = cdc.UnmarshalJSON(target.Body, &broadcastReq)
-	require.NoError(t, err)
+	cases := []struct {
+		makeTargetFunc func(auth.StdTx, string) (target *vegeta.Target, err error)
+		url            string
+	}{
+		{targetBuilder.MakeTxTarget, TxURL},
+		{targetBuilder.MakeQuerySimulateTarget, QuerySimulateURL},
+	}
+	for _, tt := range cases {
+		// When
+		target, err := tt.makeTargetFunc(stdTx, service.BroadcastBlock)
+		require.NoError(t, err)
+		// And
+		var broadcastReq rest.BroadcastReq
+		err = cdc.UnmarshalJSON(target.Body, &broadcastReq)
+		require.NoError(t, err)
 
-	// Then
-	require.Equal(t, "POST", target.Method)
-	require.Equal(t, tests.TestTargetURL+TxURL, target.URL)
-	require.Equal(t, service.BroadcastBlock, broadcastReq.Mode)
-	require.Equal(t, stdTx, broadcastReq.Tx)
+		// Then
+		require.Equal(t, "POST", target.Method)
+		require.Equal(t, tests.TestTargetURL+tt.url, target.URL)
+		require.Equal(t, service.BroadcastBlock, broadcastReq.Mode)
+		require.Equal(t, stdTx, broadcastReq.Tx)
+	}
 }

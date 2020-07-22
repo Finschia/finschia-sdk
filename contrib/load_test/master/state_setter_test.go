@@ -24,12 +24,13 @@ func TestStateSetter_PrepareTestState(t *testing.T) {
 	defer server.Close()
 	// Given Config
 	config := types.Config{
-		MsgsPerTxPrepare: tests.TestMsgsPerTxPrepare,
-		TPS:              tests.TestTPS,
-		Duration:         tests.TestDuration,
-		TargetURL:        server.URL,
-		ChainID:          tests.TestChainID,
-		CoinName:         tests.TestCoinName,
+		MsgsPerTxPrepare:  tests.TestMsgsPerTxPrepare,
+		MsgsPerTxLoadTest: tests.TestMsgsPerTxLoadTest,
+		TPS:               tests.TestTPS,
+		Duration:          tests.TestDuration,
+		TargetURL:         server.URL,
+		ChainID:           tests.TestChainID,
+		CoinName:          tests.TestCoinName,
 	}
 
 	t.Log("Test success")
@@ -63,12 +64,12 @@ func TestStateSetter_PrepareTestState(t *testing.T) {
 			{types.TxToken,
 				tests.GetNumPrepareTx(tests.ExpectedNumTargets*4, tests.TestMsgsPerTxPrepare) + 1,
 				require.FileExists,
-				fmt.Sprintf(`{"%s":{"contract_id":"9be17165"}}`, server.URL),
+				fmt.Sprintf(`{"%s":{"token_contract_id":"9be17165"}}`, server.URL),
 			},
 			{types.TxCollection,
-				tests.GetNumPrepareTx(tests.ExpectedNumTargets*6, tests.TestMsgsPerTxPrepare) + 3,
+				tests.GetNumPrepareTx(tests.ExpectedNumTargets*(4+2*tests.TestMsgsPerTxLoadTest), tests.TestMsgsPerTxPrepare) + 3,
 				require.FileExists,
-				fmt.Sprintf(`{"%s":{"contract_id":"678c146a","ft_token_id":"0000000100000000","nft_token_type":"10000001"}}`, server.URL),
+				fmt.Sprintf(`{"%s":{"collection_contract_id":"678c146a","ft_token_id":"0000000100000000","nft_token_type":"10000001","num_nft_per_user":"6"}}`, server.URL),
 			},
 		}
 		for _, tt := range testCases {
@@ -78,7 +79,7 @@ func TestStateSetter_PrepareTestState(t *testing.T) {
 			require.NoError(t, err)
 			// Given Slaves
 			slaves := []types.Slave{
-				types.NewSlave(server.URL, tests.TestMnemonic, tt.scenario),
+				types.NewSlave(server.URL, tests.TestMnemonic, tt.scenario, []string{}),
 			}
 
 			require.NoError(t, ss.PrepareTestState(slaves, "."))
@@ -107,8 +108,8 @@ func TestStateSetter_PrepareTestState(t *testing.T) {
 		require.NoError(t, err)
 		// Given Slaves
 		slaves := []types.Slave{
-			types.NewSlave(server.URL, tests.InvalidMnemonic, types.QueryAccount),
-			types.NewSlave(server.URL, tests.InvalidMnemonic, types.TxSend),
+			types.NewSlave(server.URL, tests.InvalidMnemonic, types.QueryAccount, []string{}),
+			types.NewSlave(server.URL, tests.InvalidMnemonic, types.TxSend, []string{}),
 		}
 
 		require.EqualError(t, ss.PrepareTestState(slaves, "."), "Invalid mnemonic: invalid mnemonic")
@@ -122,8 +123,8 @@ func TestStateSetter_PrepareTestState(t *testing.T) {
 		require.NoError(t, err)
 		// Given Slaves
 		slaves := []types.Slave{
-			types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount),
-			types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend),
+			types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount, []string{}),
+			types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend, []string{}),
 		}
 
 		require.EqualError(t, ss.PrepareTestState(slaves, "."), "chain ID required but not specified")

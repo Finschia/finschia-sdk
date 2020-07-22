@@ -18,7 +18,7 @@ func TestNewScenarios(t *testing.T) {
 		ChainID:          tests.TestChainID,
 		CoinName:         tests.TestCoinName,
 	}
-	scenarios := NewScenarios(config, nil)
+	scenarios := NewScenarios(config, nil, nil)
 
 	require.IsType(t, &QueryAccountScenario{}, scenarios[types.QueryAccount])
 	require.IsType(t, &QueryBlockScenario{}, scenarios[types.QueryBlock])
@@ -26,7 +26,6 @@ func TestNewScenarios(t *testing.T) {
 	require.IsType(t, &TxSendScenario{}, scenarios[types.TxSend])
 	require.IsType(t, &TxEmptyScenario{}, scenarios[types.TxEmpty])
 	require.IsType(t, &TxMintNFTScenario{}, scenarios[types.TxMintNFT])
-	require.IsType(t, &TxMultiMintNFTScenario{}, scenarios[types.TxMultiMintNFT])
 	require.IsType(t, &TxTransferFTScenario{}, scenarios[types.TxTransferFT])
 	require.IsType(t, &TxTransferNFTScenario{}, scenarios[types.TxTransferNFT])
 	require.IsType(t, &TxTokenScenario{}, scenarios[types.TxToken])

@@ -31,7 +31,7 @@ func TestLoadGenerator_GenerateQueryTargets(t *testing.T) {
 		Testnet:           tests.TestNet,
 		Mnemonic:          tests.TestMnemonic,
 	}
-	scenarios := scenario.NewScenarios(config, nil)
+	scenarios := scenario.NewScenarios(config, nil, nil)
 	loadGenerator := NewLoadGenerator()
 	err := loadGenerator.ApplyConfig(config, 1)
 	require.NoError(t, err)
@@ -65,7 +65,7 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 	t.Log("Test success")
 	{
 		// Given Scenario
-		scenarios := scenario.NewScenarios(config, nil)
+		scenarios := scenario.NewScenarios(config, nil, nil)
 		// Given LoadGenerator
 		loadGenerator := NewLoadGenerator()
 		err := loadGenerator.ApplyConfig(config, 1)
@@ -89,7 +89,7 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 		// Given invalid config
 		config.ChainID = ""
 		// Given Scenario
-		scenarios := scenario.NewScenarios(config, nil)
+		scenarios := scenario.NewScenarios(config, nil, nil)
 		// Given LoadGenerator
 		loadGenerator := NewLoadGenerator()
 		err := loadGenerator.ApplyConfig(config, 1)
@@ -135,7 +135,7 @@ func TestLoadGenerator_Fire(t *testing.T) {
 				Testnet:           tests.TestNet,
 				Mnemonic:          tests.TestMnemonic,
 			}
-			scenario := scenario.NewScenarios(config, nil)[types.TxSend]
+			scenario := scenario.NewScenarios(config, nil, nil)[types.TxSend]
 			// Given LoadGenerator
 			loadGenerator := NewLoadGenerator()
 			err := loadGenerator.ApplyConfig(config, 1)

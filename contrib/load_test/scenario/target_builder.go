@@ -7,7 +7,10 @@ import (
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
-const TxURL = "/txs"
+const (
+	TxURL            = "/txs"
+	QuerySimulateURL = TxURL + "/simulate"
+)
 
 type TargetBuilder struct {
 	cdc    *codec.Codec
@@ -29,6 +32,14 @@ func (tb *TargetBuilder) MakeQueryTarget(url string) *vegeta.Target {
 }
 
 func (tb *TargetBuilder) MakeTxTarget(stdTx auth.StdTx, mode string) (target *vegeta.Target, err error) {
+	return tb.makeTxTarget(stdTx, mode, TxURL)
+}
+
+func (tb *TargetBuilder) MakeQuerySimulateTarget(stdTx auth.StdTx, mode string) (target *vegeta.Target, err error) {
+	return tb.makeTxTarget(stdTx, mode, QuerySimulateURL)
+}
+
+func (tb *TargetBuilder) makeTxTarget(stdTx auth.StdTx, mode string, url string) (target *vegeta.Target, err error) {
 	bz, err := tb.cdc.MarshalJSON(rest.BroadcastReq{Mode: mode, Tx: stdTx})
 	if err != nil {
 		return
@@ -36,7 +47,7 @@ func (tb *TargetBuilder) MakeTxTarget(stdTx auth.StdTx, mode string) (target *ve
 
 	return &vegeta.Target{
 		Method: "POST",
-		URL:    tb.LCDURL + TxURL,
+		URL:    tb.LCDURL + url,
 		Body:   bz,
 	}, nil
 }

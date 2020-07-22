@@ -37,7 +37,7 @@ func LoadHandler(lg *LoadGenerator) http.HandlerFunc {
 			return
 		}
 
-		testScenario, ok := scenario.NewScenarios(req.Config, req.Params)[req.Scenario]
+		testScenario, ok := scenario.NewScenarios(req.Config, req.StateParams, req.ScenarioParams)[req.Scenario]
 		if !ok {
 			http.Error(w, types.InvalidScenarioError.Error("invalid scenario"), http.StatusBadRequest)
 			return

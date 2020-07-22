@@ -25,8 +25,10 @@ slaves:
     url: "http://slave:8000"
     mnemonic: "fever tell fancy ridge fly glow reflect decline voice coil reflect ski empty forum frost rebuild slide nut invite chase swarm flag dizzy diet"
     scenario: "tx_send"
+    params: []
 #  slave2:
 #    url: "http://hostaddr:8000"
 #    mnemonic: "tribe slot pioneer either light fossil broken scissors okay special update place want trash soldier rural portion lock couple venue cushion bind enact one"
 #    scenario: "tx_send"
+#    params: []
 #  ...

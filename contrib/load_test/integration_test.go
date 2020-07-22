@@ -59,6 +59,7 @@ func TestLinkLoadTester(t *testing.T) {
 	testCases := []struct {
 		name                 string
 		scenario             string
+		scenarioParams       []string
 		isTx                 bool
 		tps                  int
 		numPrepareTx         int
@@ -68,6 +69,7 @@ func TestLinkLoadTester(t *testing.T) {
 		{
 			"QueryAccount",
 			types.QueryAccount,
+			[]string{},
 			false,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration, tests.TestMsgsPerTxPrepare),
@@ -77,6 +79,7 @@ func TestLinkLoadTester(t *testing.T) {
 		{
 			"QueryBlock",
 			types.QueryBlock,
+			[]string{},
 			false,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration, tests.TestMsgsPerTxPrepare),
@@ -86,6 +89,7 @@ func TestLinkLoadTester(t *testing.T) {
 		{
 			"QueryCoin",
 			types.QueryCoin,
+			[]string{},
 			false,
 			TestTPS,
 			0,
@@ -93,8 +97,49 @@ func TestLinkLoadTester(t *testing.T) {
 			tests.TestMsgsPerTxLoadTest,
 		},
 		{
+			"QuerySimulate_MsgSend",
+			types.QuerySimulate,
+			[]string{"MsgSend"},
+			false,
+			TestTPS,
+			tests.GetNumPrepareTx(TestTPS*TestDuration, tests.TestMsgsPerTxPrepare),
+			0,
+			tests.TestMsgsPerTxLoadTest,
+		},
+		{
+			"QuerySimulate_MsgMintNFT",
+			types.QuerySimulate,
+			[]string{"MsgMintNFT", "1"},
+			false,
+			TestTPS,
+			tests.GetNumPrepareTx(TestTPS*TestDuration*2, tests.TestMsgsPerTxPrepare) + 2,
+			2,
+			tests.TestMsgsPerTxLoadTest,
+		},
+		{
+			"QuerySimulate_MsgTransferFT",
+			types.QuerySimulate,
+			[]string{"MsgTransferFT"},
+			false,
+			TestTPS,
+			tests.GetNumPrepareTx(TestTPS*TestDuration*2, tests.TestMsgsPerTxPrepare) + 2,
+			2,
+			tests.TestMsgsPerTxLoadTest,
+		},
+		{
+			"QuerySimulate_MsgTransferNFT",
+			types.QuerySimulate,
+			[]string{"MsgTransferNFT"},
+			false,
+			TestTPS,
+			tests.GetNumPrepareTx(TestTPS*TestDuration*(1+tests.TestMsgsPerTxLoadTest), tests.TestMsgsPerTxPrepare) + 2,
+			2,
+			tests.TestMsgsPerTxLoadTest,
+		},
+		{
 			"TxSend",
 			types.TxSend,
+			[]string{},
 			true,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration, tests.TestMsgsPerTxPrepare),
@@ -104,6 +149,7 @@ func TestLinkLoadTester(t *testing.T) {
 		{
 			"TxEmpty",
 			types.TxEmpty,
+			[]string{},
 			true,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration, tests.TestMsgsPerTxPrepare),
@@ -113,6 +159,7 @@ func TestLinkLoadTester(t *testing.T) {
 		{
 			"TxMintNFT",
 			types.TxMintNFT,
+			[]string{"1"},
 			true,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration*2, tests.TestMsgsPerTxPrepare) + 2,
@@ -121,7 +168,8 @@ func TestLinkLoadTester(t *testing.T) {
 		},
 		{
 			"TxMultiMintNFT",
-			types.TxMultiMintNFT,
+			types.TxMintNFT,
+			[]string{"5"},
 			true,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration*2, tests.TestMsgsPerTxPrepare) + 2,
@@ -131,6 +179,7 @@ func TestLinkLoadTester(t *testing.T) {
 		{
 			"TxTransferFT",
 			types.TxTransferFT,
+			[]string{},
 			true,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration*2, tests.TestMsgsPerTxPrepare) + 2,
@@ -140,6 +189,7 @@ func TestLinkLoadTester(t *testing.T) {
 		{
 			"TxTransferNFT",
 			types.TxTransferNFT,
+			[]string{},
 			true,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration*(1+tests.TestMsgsPerTxLoadTest), tests.TestMsgsPerTxPrepare) + 2,
@@ -149,29 +199,32 @@ func TestLinkLoadTester(t *testing.T) {
 		{
 			"TxToken",
 			types.TxToken,
+			[]string{},
 			true,
 			TestTPS,
 			tests.GetNumPrepareTx(TestTPS*TestDuration*4, tests.TestMsgsPerTxPrepare) + 1,
 			1,
-			6,
+			5 * tests.TestMsgsPerTxLoadTest,
 		},
 		{
 			"TxCollection",
 			types.TxCollection,
+			[]string{},
 			true,
 			TestTPS,
-			tests.GetNumPrepareTx(TestTPS*TestDuration*6, tests.TestMsgsPerTxPrepare) + 3,
+			tests.GetNumPrepareTx(TestTPS*TestDuration*(4+2*tests.TestMsgsPerTxLoadTest), tests.TestMsgsPerTxPrepare) + 3,
 			3,
-			8,
+			8 * tests.TestMsgsPerTxLoadTest,
 		},
 		{
 			"TxAndQueryAll",
 			types.TxAndQueryAll,
+			[]string{},
 			false,
-			3,
-			tests.GetNumPrepareTx(3*TestDuration*20, tests.TestMsgsPerTxPrepare) + 4,
+			1,
+			tests.GetNumPrepareTx(1*TestDuration*(8+13*tests.TestMsgsPerTxLoadTest), tests.TestMsgsPerTxPrepare) + 4,
 			4,
-			29,
+			29 * tests.TestMsgsPerTxLoadTest,
 		},
 	}
 	for i, tt := range testCases {
@@ -204,7 +257,7 @@ func TestLinkLoadTester(t *testing.T) {
 			// Given config
 			mutex.Lock()
 			log.Println(tt.name)
-			requireNoErrorWithMutex(t, setConfig(tt.scenario, f.ChainID, lcdPort, slavePort, tt.tps))
+			requireNoErrorWithMutex(t, setConfig(tt.scenario, f.ChainID, lcdPort, slavePort, tt.tps, tt.scenarioParams))
 			// Given buffer that can capture stdout
 			origin, w, outC := captureStdout()
 
@@ -222,13 +275,13 @@ func TestLinkLoadTester(t *testing.T) {
 			fmt.Println(out)
 			// Then there is no missing tx
 			r, _ := regexp.Compile("(?:Num Missing Txs: )([0-9]+)")
-			require.Equal(t, "0", r.FindStringSubmatch(out)[1])
+			requireEqualWithMutex(t, "0", r.FindStringSubmatch(out)[1])
 
 			// Then there is no failed tx in blocks
 			r, _ = regexp.Compile("(?:Num Failed Tx Logs: )([0-9]+)")
 			numFailedTxLogs := r.FindAllStringSubmatch(out, -1)
 			if len(numFailedTxLogs) == 2 {
-				require.Equal(t, "0", numFailedTxLogs[1][1])
+				requireEqualWithMutex(t, "0", numFailedTxLogs[1][1])
 			}
 			mutex.Unlock()
 
@@ -278,7 +331,7 @@ func getMasterAddress() (sdk.AccAddress, error) {
 	return masterKeyWallet.Address(), nil
 }
 
-func setConfig(scenario, chainID string, lcdPort, slavePort, tps int) error {
+func setConfig(scenario, chainID string, lcdPort, slavePort, tps int, scenarioParams []string) error {
 	viper.Set(cli.FlagMasterMnemonic, tests.TestMasterMnemonic)
 	viper.Set(cli.FlagTargetURL, fmt.Sprintf("%s:%d", localhost, lcdPort))
 	viper.Set(cli.FlagChainID, chainID)
@@ -297,7 +350,7 @@ func setConfig(scenario, chainID string, lcdPort, slavePort, tps int) error {
 
 	slavesMap := make(map[string]types.Slave)
 	slaveURL := fmt.Sprintf("%s:%d", localhost, slavePort)
-	slavesMap["slave1"] = types.NewSlave(slaveURL, tests.TestMnemonic, scenario)
+	slavesMap["slave1"] = types.NewSlave(slaveURL, tests.TestMnemonic, scenario, scenarioParams)
 	bytes, err := json.Marshal(slavesMap)
 	if err != nil {
 		return err
@@ -308,6 +361,14 @@ func setConfig(scenario, chainID string, lcdPort, slavePort, tps int) error {
 
 func requireNoErrorWithMutex(t *testing.T, err error) {
 	if assert.NoError(t, err) {
+		return
+	}
+	defer mutex.Unlock()
+	t.FailNow()
+}
+
+func requireEqualWithMutex(t *testing.T, expected, actual interface{}) {
+	if assert.Equal(t, expected, actual) {
 		return
 	}
 	defer mutex.Unlock()

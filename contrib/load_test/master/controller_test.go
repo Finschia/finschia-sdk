@@ -66,7 +66,7 @@ func TestController_StartLoadTest(t *testing.T) {
 			t.Log(tt.scenario)
 			// Given Slaves
 			slaves := []types.Slave{
-				types.NewSlave(server.URL, tests.TestMnemonic, tt.scenario),
+				types.NewSlave(server.URL, tests.TestMnemonic, tt.scenario, []string{}),
 			}
 			// Given Controller
 
@@ -92,8 +92,8 @@ func TestController_StartLoadTest(t *testing.T) {
 		// Given Slaves
 		invalidURL := "http://invalid_url.com"
 		slaves := []types.Slave{
-			types.NewSlave(invalidURL, tests.TestMnemonic, types.QueryAccount),
-			types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend),
+			types.NewSlave(invalidURL, tests.TestMnemonic, types.QueryAccount, []string{}),
+			types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend, []string{}),
 		}
 
 		// And Controller

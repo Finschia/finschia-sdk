@@ -14,7 +14,7 @@ func TestQueryAccountScenario_GenerateTarget(t *testing.T) {
 	server := mock.NewServer()
 	defer server.Close()
 	// Given Test Environments
-	scenario, _, keyWallet := GivenTestEnvironments(t, server.URL, types.QueryAccount, nil)
+	scenario, _, keyWallet := GivenTestEnvironments(t, server.URL, types.QueryAccount, nil, nil)
 	accountScenario, ok := scenario.(*QueryAccountScenario)
 	require.True(t, ok)
 

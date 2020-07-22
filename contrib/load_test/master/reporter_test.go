@@ -36,8 +36,8 @@ func TestReporter_Report(t *testing.T) {
 	}
 	// Given Slaves
 	slaves := []types.Slave{
-		types.NewSlave(server.URL, tests.TestMnemonic, types.TxSend),
-		types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend),
+		types.NewSlave(server.URL, tests.TestMnemonic, types.TxSend, []string{}),
+		types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend, []string{}),
 	}
 	// Given Results
 	controller := NewController(slaves, config, nil)
@@ -83,8 +83,8 @@ func TestReporter_getBlockMetrics(t *testing.T) {
 	}
 	// Given Slaves
 	slaves := []types.Slave{
-		types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount),
-		types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend),
+		types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount, []string{}),
+		types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend, []string{}),
 	}
 	// Given Reporter
 	r := &Reporter{
@@ -126,8 +126,8 @@ func TestReporter_checkMissingTx(t *testing.T) {
 	}
 	// Given Slaves
 	slaves := []types.Slave{
-		types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount),
-		types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend),
+		types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount, []string{}),
+		types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend, []string{}),
 	}
 	// Given Reporter
 	m := NewMetrics()
@@ -171,8 +171,8 @@ func TestReporter_printReport(t *testing.T) {
 	}
 	// Given Slaves
 	slaves := []types.Slave{
-		types.NewSlave(tests.TestTargetURL, tests.TestMnemonic, types.TxSend),
-		types.NewSlave(tests.TestTargetURL, tests.TestMnemonic2, types.TxSend),
+		types.NewSlave(tests.TestTargetURL, tests.TestMnemonic, types.TxSend, []string{}),
+		types.NewSlave(tests.TestTargetURL, tests.TestMnemonic2, types.TxSend, []string{}),
 	}
 	// Given Reporter
 	m := &Metrics{
@@ -301,7 +301,7 @@ Missing Txs:
 [TPS]    
 Average  52.50/sec
 Std.Dev  38.18
-MPS      210.00/sec
+MPS      157.50/sec
 
 [Block Interval]  
 Average           3.00
@@ -340,7 +340,7 @@ Error Log2 (2 logs)
 +---------+-----------------+-----------------+--------------+--------------+------------------+
 |   MSG   | NUM MSGS PER TX | TX SIZE (BYTES) | MAX USED GAS | MIN USED GAS | AVERAGE USED GAS |
 +---------+-----------------+-----------------+--------------+--------------+------------------+
-| tx_send |               4 |             181 |        70000 |        50000 |      2500.000000 |
+| tx_send |               3 |             181 |        70000 |        50000 |      2500.000000 |
 +---------+-----------------+-----------------+--------------+--------------+------------------+
 `,
 		},
@@ -371,8 +371,8 @@ func TestReporter_checkThresholds(t *testing.T) {
 	}
 	// Given Slaves
 	slaves := []types.Slave{
-		types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount),
-		types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend),
+		types.NewSlave(server.URL, tests.TestMnemonic, types.QueryAccount, []string{}),
+		types.NewSlave(server.URL, tests.TestMnemonic2, types.TxSend, []string{}),
 	}
 	// Given Reporter
 	r := &Reporter{
