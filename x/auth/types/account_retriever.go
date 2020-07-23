@@ -7,6 +7,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/exported"
 )
 
+const (
+	pathFormatCustom     = "custom/%s/%s"
+	pathFormatCheckState = "check_state/%s/%s"
+)
+
 // NodeQuerier is an interface that is satisfied by types that provide the QueryWithData method
 type NodeQuerier interface {
 	// QueryWithData performs a query to a Tendermint node with the provided path
@@ -18,12 +23,18 @@ type NodeQuerier interface {
 // AccountRetriever defines the properties of a type that can be used to
 // retrieve accounts.
 type AccountRetriever struct {
-	querier NodeQuerier
+	querier    NodeQuerier
+	checkState bool
 }
 
 // NewAccountRetriever initialises a new AccountRetriever instance.
 func NewAccountRetriever(querier NodeQuerier) AccountRetriever {
 	return AccountRetriever{querier: querier}
+}
+
+func (ar AccountRetriever) WithCheckState(checkState bool) AccountRetriever {
+	ar.checkState = checkState
+	return ar
 }
 
 // GetAccount queries for an account given an address and a block height. An
@@ -42,7 +53,11 @@ func (ar AccountRetriever) GetAccountWithHeight(addr sdk.AccAddress) (exported.A
 		return nil, 0, err
 	}
 
-	res, height, err := ar.querier.QueryWithData(fmt.Sprintf("custom/%s/%s", QuerierRoute, QueryAccount), bs)
+	var pathFormat string
+	if pathFormat = pathFormatCustom; ar.checkState {
+		pathFormat = pathFormatCheckState
+	}
+	res, height, err := ar.querier.QueryWithData(fmt.Sprintf(pathFormat, QuerierRoute, QueryAccount), bs)
 	if err != nil {
 		return nil, height, err
 	}
