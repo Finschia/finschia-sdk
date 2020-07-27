@@ -22,19 +22,19 @@ func TestAccountRetriever(t *testing.T) {
 	bs, err := ModuleCdc.MarshalJSON(NewQueryAccountParams(addr))
 	require.NoError(t, err)
 
-	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq("custom/acc/account"),
+	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq(customQueryPath),
 		gomock.Eq(bs)).Return(nil, int64(0), errFoo).Times(1)
 	_, err = accRetr.GetAccount(addr)
 	require.Error(t, err)
 
-	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq("custom/acc/account"),
+	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq(customQueryPath),
 		gomock.Eq(bs)).Return(nil, int64(0), errFoo).Times(1)
 	n, s, err := accRetr.GetAccountNumberSequence(addr)
 	require.Error(t, err)
 	require.Equal(t, uint64(0), n)
 	require.Equal(t, uint64(0), s)
 
-	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq("custom/acc/account"),
+	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq(customQueryPath),
 		gomock.Eq(bs)).Return(nil, int64(0), errFoo).Times(1)
 	require.Error(t, accRetr.EnsureExists(addr))
 }
@@ -49,19 +49,19 @@ func TestAccountRetrieverWithCheckState(t *testing.T) {
 	bs, err := ModuleCdc.MarshalJSON(NewQueryAccountParams(addr))
 	require.NoError(t, err)
 
-	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq("check_state/acc/account"),
+	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq(checkStateQueryPath),
 		gomock.Eq(bs)).Return(nil, int64(0), errFoo).Times(1)
 	_, err = accRetr.GetAccount(addr)
 	require.Error(t, err)
 
-	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq("check_state/acc/account"),
+	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq(checkStateQueryPath),
 		gomock.Eq(bs)).Return(nil, int64(0), errFoo).Times(1)
 	n, s, err := accRetr.GetAccountNumberSequence(addr)
 	require.Error(t, err)
 	require.Equal(t, uint64(0), n)
 	require.Equal(t, uint64(0), s)
 
-	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq("check_state/acc/account"),
+	mockNodeQuerier.EXPECT().QueryWithData(gomock.Eq(checkStateQueryPath),
 		gomock.Eq(bs)).Return(nil, int64(0), errFoo).Times(1)
 	require.Error(t, accRetr.EnsureExists(addr))
 }

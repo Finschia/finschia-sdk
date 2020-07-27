@@ -1,15 +1,13 @@
 package types
 
 import (
-	"fmt"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/exported"
 )
 
 const (
-	pathFormatCustom     = "custom/%s/%s"
-	pathFormatCheckState = "check_state/%s/%s"
+	customQueryPath     = "custom/" + QuerierRoute + "/" + QueryAccount
+	checkStateQueryPath = "check_state/" + QuerierRoute + "/" + QueryAccount
 )
 
 // NodeQuerier is an interface that is satisfied by types that provide the QueryWithData method
@@ -53,11 +51,11 @@ func (ar AccountRetriever) GetAccountWithHeight(addr sdk.AccAddress) (exported.A
 		return nil, 0, err
 	}
 
-	var pathFormat string
-	if pathFormat = pathFormatCustom; ar.checkState {
-		pathFormat = pathFormatCheckState
+	var queryPath string
+	if queryPath = customQueryPath; ar.checkState {
+		queryPath = checkStateQueryPath
 	}
-	res, height, err := ar.querier.QueryWithData(fmt.Sprintf(pathFormat, QuerierRoute, QueryAccount), bs)
+	res, height, err := ar.querier.QueryWithData(queryPath, bs)
 	if err != nil {
 		return nil, height, err
 	}
