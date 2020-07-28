@@ -1475,6 +1475,73 @@ func TestQuery(t *testing.T) {
 	require.Equal(t, value, res.Value)
 }
 
+// Test that we can only query from the latest committed state.
+func TestCheckStateQuery(t *testing.T) {
+	keyForAnte, valueForAnte := []byte("ante key"), []byte("ante value")
+	keyForMsg, valueForMsg := []byte("msg key"), []byte("msg value")
+	anteOpt := func(bapp *BaseApp) {
+		bapp.SetAnteHandler(func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
+			store := ctx.KVStore(capKey1)
+			store.Set(keyForAnte, valueForAnte)
+			return
+		})
+	}
+
+	routerOpt := func(bapp *BaseApp) {
+		bapp.Router().AddRoute(routeMsgCounter, func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
+			store := ctx.KVStore(capKey1)
+			store.Set(keyForMsg, valueForMsg)
+			return &sdk.Result{}, nil
+		})
+	}
+
+	queryRouterOpt := func(bapp *BaseApp) {
+		querier := func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
+			store := ctx.KVStore(capKey1)
+			anteValue := store.Get(keyForAnte)
+			msgValue := store.Get(keyForMsg)
+			return append(anteValue, msgValue...), nil
+		}
+		bapp.QueryRouter().AddRoute("queryFoo", querier)
+	}
+
+	app := setupBaseApp(t, anteOpt, routerOpt, queryRouterOpt)
+
+	app.InitChain(abci.RequestInitChain{})
+
+	// Request for query check state
+	query := abci.RequestQuery{
+		Path: "/check_state/queryFoo",
+	}
+	tx := newTxCounter(0, 0)
+
+	// query is empty before we do anything
+	res := app.Query(query)
+	require.Equal(t, 0, len(res.Value))
+
+	// ante has been done, so changes of ante should be returned
+	// however msg has not been executed on CheckTx.
+	_, resTx, err := app.Check(tx)
+	require.NoError(t, err)
+	require.NotNil(t, resTx)
+	res = app.Query(query)
+	require.Equal(t, valueForAnte, res.Value)
+
+	header := abci.Header{Height: app.LastBlockHeight() + 1}
+	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+
+	_, resTx, err = app.Deliver(tx)
+	require.NoError(t, err)
+	require.NotNil(t, resTx)
+	res = app.Query(query)
+	require.Equal(t, valueForAnte, res.Value)
+
+	// query returns correct value after Commit
+	app.Commit()
+	res = app.Query(query)
+	require.Equal(t, append(valueForAnte, valueForMsg...), res.Value)
+}
+
 // Test p2p filter queries
 func TestP2PQuery(t *testing.T) {
 	addrPeerFilterOpt := func(bapp *BaseApp) {

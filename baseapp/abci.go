@@ -7,6 +7,7 @@ import (
 	"strings"
 	"syscall"
 
+	"github.com/cosmos/cosmos-sdk/store/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -310,6 +311,9 @@ func (app *BaseApp) Query(req abci.RequestQuery) abci.ResponseQuery {
 
 	case "custom":
 		return handleQueryCustom(app, path, req)
+
+	case "check_state":
+		return handleQueryCheckState(app, path, req)
 	}
 
 	return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown query path"))
@@ -418,18 +422,9 @@ func handleQueryP2P(app *BaseApp, path []string) abci.ResponseQuery {
 }
 
 func handleQueryCustom(app *BaseApp, path []string, req abci.RequestQuery) abci.ResponseQuery {
-	// path[0] should be "custom" because "/custom" prefix is required for keeper
-	// queries.
-	//
-	// The QueryRouter routes using path[1]. For example, in the path
-	// "custom/gov/proposal", QueryRouter routes using "gov".
-	if len(path) < 2 || path[1] == "" {
-		return sdkerrors.QueryResult(sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "no route for custom query specified"))
-	}
-
-	querier := app.queryRouter.Route(path[1])
-	if querier == nil {
-		return sdkerrors.QueryResult(sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "no custom querier found for route %s", path[1]))
+	querier, err := getCustomQuerier(app, path)
+	if err != nil {
+		return sdkerrors.QueryResult(err)
 	}
 
 	// when a client did not provide a query height, manually inject the latest
@@ -437,13 +432,8 @@ func handleQueryCustom(app *BaseApp, path []string, req abci.RequestQuery) abci.
 		req.Height = app.LastBlockHeight()
 	}
 
-	if req.Height <= 1 && req.Prove {
-		return sdkerrors.QueryResult(
-			sdkerrors.Wrap(
-				sdkerrors.ErrInvalidRequest,
-				"cannot query with proof when height <= 1; please provide a valid height",
-			),
-		)
+	if err := checkProvable(req); err != nil {
+		return sdkerrors.QueryResult(err)
 	}
 
 	cacheMS, err := app.cms.CacheMultiStoreWithVersion(req.Height)
@@ -455,6 +445,75 @@ func handleQueryCustom(app *BaseApp, path []string, req abci.RequestQuery) abci.
 			),
 		)
 	}
+
+	return processCustomQuerier(app, cacheMS, querier, path, req)
+}
+
+func handleQueryCheckState(app *BaseApp, path []string, req abci.RequestQuery) abci.ResponseQuery {
+	querier, err := getCustomQuerier(app, path)
+	if err != nil {
+		return sdkerrors.QueryResult(err)
+	}
+
+	checkStateHeight := app.checkState.ctx.BlockHeight()
+
+	// when a client did not provide a query height, manually inject the latest
+	if req.Height == 0 {
+		req.Height = checkStateHeight
+	}
+
+	if req.Height != checkStateHeight {
+		return sdkerrors.QueryResult(
+			sdkerrors.Wrapf(
+				sdkerrors.ErrInvalidRequest,
+				"invalid request height %d; the height should be equal to the check state height %d",
+				req.Height,
+				checkStateHeight,
+			),
+		)
+	}
+
+	if err := checkProvable(req); err != nil {
+		return sdkerrors.QueryResult(err)
+	}
+
+	// a snapshot of CheckState multi-store
+	cacheMS := app.checkState.ms.CacheMultiStore()
+
+	return processCustomQuerier(app, cacheMS, querier, path, req)
+}
+
+func getCustomQuerier(app *BaseApp, path []string) (sdk.Querier, error) {
+	// path[0] should be "custom" or "check_state" because the prefix is required for keeper
+	// queries.
+	//
+	// The QueryRouter routes using path[1]. For example, in the path
+	// "custom/gov/proposal", QueryRouter routes using "gov".
+	if len(path) < 2 || path[1] == "" {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "no route for custom query specified")
+	}
+
+	querier := app.queryRouter.Route(path[1])
+	if querier == nil {
+		return nil, sdkerrors.Wrapf(
+			sdkerrors.ErrUnknownRequest, "no custom querier found for route %s", path[1])
+	}
+	return querier, nil
+}
+
+func checkProvable(req abci.RequestQuery) error {
+	if req.Height <= 1 && req.Prove {
+		return sdkerrors.Wrap(
+			sdkerrors.ErrInvalidRequest,
+			"cannot query with proof when height <= 1; please provide a valid height",
+		)
+	}
+	return nil
+}
+
+func processCustomQuerier(
+	app *BaseApp, cacheMS types.CacheMultiStore, querier sdk.Querier, path []string, req abci.RequestQuery,
+) abci.ResponseQuery {
 
 	// cache wrap the commit-multistore for safety
 	ctx := sdk.NewContext(
