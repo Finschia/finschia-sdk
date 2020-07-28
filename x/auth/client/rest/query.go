@@ -28,12 +28,22 @@ func QueryAccountRequestHandlerFn(storeName string, cliCtx context.CLIContext) h
 			return
 		}
 
+		checkState := false
+		if p := r.FormValue("check_state"); len(p) > 0 {
+			checkState, err = strconv.ParseBool(p)
+			if err != nil {
+				err := fmt.Errorf("'%s' is not a valid bool", p)
+				rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
+				return
+			}
+		}
+
 		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
 		if !ok {
 			return
 		}
 
-		accGetter := types.NewAccountRetriever(cliCtx)
+		accGetter := types.NewAccountRetriever(cliCtx).WithCheckState(checkState)
 
 		account, height, err := accGetter.GetAccountWithHeight(addr)
 		if err != nil {

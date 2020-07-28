@@ -22,6 +22,7 @@ import (
 
 const (
 	flagEvents = "events"
+	flagCheckState = "check_state"
 
 	eventFormat = "{eventType}.{eventAttribute}={value}"
 )
@@ -49,8 +50,10 @@ func GetAccountCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query account balance",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			checkState := viper.GetBool(flagCheckState)
+
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
-			accGetter := types.NewAccountRetriever(cliCtx)
+			accGetter := types.NewAccountRetriever(cliCtx).WithCheckState(checkState)
 
 			key, err := sdk.AccAddressFromBech32(args[0])
 			if err != nil {
@@ -65,6 +68,8 @@ func GetAccountCmd(cdc *codec.Codec) *cobra.Command {
 			return cliCtx.PrintOutput(acc)
 		},
 	}
+
+	cmd.Flags().Bool(flagCheckState, false, "query with the check state")
 
 	return flags.GetCommands(cmd)[0]
 }
