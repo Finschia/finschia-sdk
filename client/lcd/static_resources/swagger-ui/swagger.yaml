@@ -456,6 +456,13 @@ paths:
             type: integer
           required: false
           example: 0
+        - name: check_state
+          in: query
+          description: If true, the query will be done on the check states.
+          schema:
+            type: boolean
+          required: false
+          example: false
       responses:
         "200":
           description: Account information on the blockchain
@@ -2108,7 +2115,12 @@ components:
         gas_estimate:
           type: string
           example: 48041
-
+        codespace:
+          type: string
+        code:
+          type: integer
+        error:
+          type: string
 
     #-------------------------------
     # Block With Transaction Models
