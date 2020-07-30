@@ -25,6 +25,8 @@ FROM alpine:edge
 
 WORKDIR /link-load-tester
 
+RUN apk add --no-cache curl
+
 # Copy over binaries from the build-env
 COPY --from=build-env /link-load-tester/build/link-load-tester /usr/bin/link-load-tester
 COPY --from=build-env /link-load-tester/contrib/load_test/config.yaml /link-load-tester/contrib/load_test/config.yaml
