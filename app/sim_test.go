@@ -1,9 +1,11 @@
 package app
 
 import (
+	"crypto/rand"
 	"encoding/json"
 	"fmt"
-	"math/rand"
+	"math"
+	"math/big"
 	"os"
 	"testing"
 
@@ -251,7 +253,9 @@ func TestAppStateDeterminism(t *testing.T) {
 	appHashList := make([]json.RawMessage, numTimesToRunPerSeed)
 
 	for i := 0; i < numSeeds; i++ {
-		config.Seed = rand.Int63()
+		n, err := rand.Int(rand.Reader, big.NewInt(math.MaxInt64))
+		require.NoError(t, err)
+		config.Seed = n.Int64()
 
 		for j := 0; j < numTimesToRunPerSeed; j++ {
 			var logger log.Logger
