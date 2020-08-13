@@ -1,6 +1,6 @@
 package rest
 
-//TODO : Intergrate http status mapping for every REST API
+//TODO : Integrate http status mapping for every REST API
 import (
 	"net/http"
 
@@ -14,10 +14,15 @@ type HTTPStatusMappingTable map[string]map[uint32]int
 var (
 	table = HTTPStatusMappingTable{
 		errors.RootCodespace: {
-			9: http.StatusNotFound,
+			errors.ErrUnknownAddress.ABCICode(): http.StatusNotFound,
 		},
 	}
 )
+
+func RegisterHTTPStatusMapping(rawErr error, httpStatus int) {
+	err := parsingError(rawErr)
+	table[err.Codespace()][err.ABCICode()] = httpStatus
+}
 
 func parsingError(rawErr error) *errors.Error {
 	if rawErr == nil {
