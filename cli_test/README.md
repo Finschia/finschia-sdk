@@ -3,7 +3,7 @@
 The link cli integration tests live in this folder. You can run the full suite by running:
 
 ```bash
-go test -mod=readonly -v -p 4 `go list ./tests/cli_test/...` -tags=cli_test
+go test -mod=readonly -v -p 4 `go list ./cli_test/...` -tags=cli_test
 ```
 
 > NOTE: While the full suite runs in parallel, some of the tests can take up to a minute to complete
