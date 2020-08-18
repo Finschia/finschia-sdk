@@ -9,11 +9,11 @@ import (
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
 
-type TxAndQueryAllScenario struct {
+type QueryAllScenario struct {
 	Info
 }
 
-func (s *TxAndQueryAllScenario) GenerateStateSettingMsgs(masterKeyWallet *wallet.KeyWallet,
+func (s *QueryAllScenario) GenerateStateSettingMsgs(masterKeyWallet *wallet.KeyWallet,
 	hdWallet *wallet.HDWallet, scenarioParams []string) ([]sdk.Msg, map[string]string, error) {
 	masterAddress := masterKeyWallet.Address()
 	tokenContractID, txHash, err := IssueToken(s.linkService, s.txBuilder, masterKeyWallet)
@@ -63,37 +63,25 @@ func (s *TxAndQueryAllScenario) GenerateStateSettingMsgs(masterKeyWallet *wallet
 		"num_nft_per_user": fmt.Sprintf("%d", numNFTPerUser)}, nil
 }
 
-func (s *TxAndQueryAllScenario) GenerateTarget(keyWallet *wallet.KeyWallet, walletIndex int) (*[]*vegeta.Target, int, error) {
+func (s *QueryAllScenario) GenerateTarget(keyWallet *wallet.KeyWallet, walletIndex int) (*[]*vegeta.Target, int, error) {
 	account, err := s.linkService.GetAccount(keyWallet.Address().String())
 	if err != nil {
 		return nil, 0, err
 	}
 
+	from := account.Address
+	tokenContractID := s.stateParams["token_contract_id"]
+	collectionContractID := s.stateParams["collection_contract_id"]
+	ftTokenID := s.stateParams["ft_token_id"]
+	nftTokenType := s.stateParams["nft_token_type"]
+	txHash := s.stateParams["tx_hash"]
 	numNFTPerUser, err := strconv.Atoi(s.stateParams["num_nft_per_user"])
 	if err != nil {
 		return nil, 0, err
 	}
 	nftTokenID := fmt.Sprintf("%s%08x", s.stateParams["nft_token_type"], numNFTPerUser*walletIndex+1)
 
-	target, err := BuildTxTarget(s.Info, keyWallet, walletIndex, []string{"MsgSend", "MsgSend", "MsgIssue",
-		"MsgMint", "MsgMint", "MsgTransfer", "MsgTransfer", "MsgModifyTokenName", "MsgModifyTokenURI", "MsgBurn",
-		"MsgBurn", "MsgCreateCollection", "MsgApprove", "MsgIssueFT", "MsgMintFT", "MsgTransferFT", "MsgTransferFT",
-		"MsgBurnFT", "MsgModifyCollection", "MsgIssueNFT", "MsgMintOneNFT", "MsgMintFiveNFT", "MsgAttach", "MsgDetach",
-		"MsgTransferNFT", "MsgTransferNFT", "MsgMultiTransferNFT", "MsgMultiTransferNFT", "MsgBurnNFT"},
-		s.scenarioParams)
-	targets := []*vegeta.Target{target}
-	targets = s.addQueryTargets(targets, account.Address, nftTokenID)
-
-	return &targets, len(targets), err
-}
-
-func (s *TxAndQueryAllScenario) addQueryTargets(targets []*vegeta.Target, from sdk.AccAddress, nftTokenID string) []*vegeta.Target {
-	tokenContractID := s.stateParams["token_contract_id"]
-	collectionContractID := s.stateParams["collection_contract_id"]
-	ftTokenID := s.stateParams["ft_token_id"]
-	nftTokenType := s.stateParams["nft_token_type"]
-	txHash := s.stateParams["tx_hash"]
-
+	var targets []*vegeta.Target
 	targets = s.addQueriesWithWeights(
 		targets,
 		[]string{
@@ -146,10 +134,11 @@ func (s *TxAndQueryAllScenario) addQueryTargets(targets []*vegeta.Target, from s
 		},
 		7,
 	)
-	return targets
+
+	return &targets, len(targets), err
 }
 
-func (s *TxAndQueryAllScenario) addQueriesWithWeights(targets []*vegeta.Target, urls []string,
+func (s *QueryAllScenario) addQueriesWithWeights(targets []*vegeta.Target, urls []string,
 	weight int) []*vegeta.Target {
 	for i := 0; i < weight; i++ {
 		for _, url := range urls {

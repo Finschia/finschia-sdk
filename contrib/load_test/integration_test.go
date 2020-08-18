@@ -137,6 +137,16 @@ func TestLinkLoadTester(t *testing.T) {
 			tests.TestMsgsPerTxLoadTest,
 		},
 		{
+			"QueryAll",
+			types.QueryAll,
+			[]string{},
+			false,
+			1,
+			tests.GetNumPrepareTx(1*TestDuration*(8+13*tests.TestMsgsPerTxLoadTest), tests.TestMsgsPerTxPrepare) + 4,
+			4,
+			tests.TestMsgsPerTxLoadTest,
+		},
+		{
 			"TxSend",
 			types.TxSend,
 			[]string{},
@@ -217,10 +227,10 @@ func TestLinkLoadTester(t *testing.T) {
 			8 * tests.TestMsgsPerTxLoadTest,
 		},
 		{
-			"TxAndQueryAll",
-			types.TxAndQueryAll,
+			"TxAll",
+			types.TxAll,
 			[]string{},
-			false,
+			true,
 			1,
 			tests.GetNumPrepareTx(1*TestDuration*(8+13*tests.TestMsgsPerTxLoadTest), tests.TestMsgsPerTxPrepare) + 4,
 			4,
@@ -333,7 +343,8 @@ func getMasterAddress() (sdk.AccAddress, error) {
 
 func setConfig(scenario, chainID string, lcdPort, slavePort, tps int, scenarioParams []string) error {
 	viper.Set(cli.FlagMasterMnemonic, tests.TestMasterMnemonic)
-	viper.Set(cli.FlagTargetURL, fmt.Sprintf("%s:%d", localhost, lcdPort))
+	viper.Set(cli.FlagPrepareTargetURL, fmt.Sprintf("%s:%d", localhost, lcdPort))
+	viper.Set(cli.FlagLoadTargetURL, fmt.Sprintf("%s:%d", localhost, lcdPort))
 	viper.Set(cli.FlagChainID, chainID)
 	viper.Set(cli.FlagCoinName, TestCoinName)
 	viper.Set(cli.FlagMaxWorkers, tests.TestMaxWorkers)

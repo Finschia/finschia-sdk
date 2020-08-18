@@ -28,7 +28,7 @@ func prepare(cmd *cobra.Command, args []string) error {
 		MaxGasLoadTest:    viper.GetInt(FlagMaxGasLoadTest),
 		TPS:               viper.GetInt(FlagTPS),
 		Duration:          viper.GetInt(FlagDuration),
-		TargetURL:         viper.GetString(FlagTargetURL),
+		TargetURL:         viper.GetString(FlagPrepareTargetURL),
 		ChainID:           viper.GetString(FlagChainID),
 		CoinName:          viper.GetString(FlagCoinName),
 		Testnet:           viper.GetBool(FlagTestnet),

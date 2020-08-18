@@ -78,6 +78,7 @@ make start-load-test
   - ex) In tx_token scenario, if the value of `msgs_per_tx_load_test` increases by 1, the total number of msgs increases by 5.
 - max_gas_load_test : the max used gas for load test tx
 - tps: 	TPS of load to be generated per slave
+  - In the case of the query_all scenario, there are 97 queries. Every time tps increases by 1, all queries are sent 1 more time. (If the tps of config.yaml is 4, the actual total qps is 388.)
 - duration: load test time
 - ramp_up_time : time to ramp up load (included in duration)
 - throughput_threshold : It fails if the average throughput is greater than the threshold. (/sec)
@@ -126,4 +127,5 @@ make start-load-test
  - tx_collection : send txs with messages of collection module
    - MsgMintFT, MsgTransferFT, MsgModify, MsgBurnFT, MsgAttach, MsgDetach, MsgTransferNFT, MsgBurnNFT
 ### Integration Scenario
-- tx_and_query_all : send most kinds of queries and txs with most kinds of msgs
+- tx_all : send txs with most kinds of msgs
+- query_all : send most kinds of queries

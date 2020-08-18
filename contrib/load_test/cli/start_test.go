@@ -24,7 +24,7 @@ func TestStartCmd(t *testing.T) {
 	viper.Set(FlagDuration, tests.TestDuration)
 	viper.Set(FlagRampUpTime, tests.TestRampUpTime)
 	viper.Set(FlagMaxWorkers, tests.TestMaxWorkers)
-	viper.Set(FlagTargetURL, server.URL)
+	viper.Set(FlagLoadTargetURL, server.URL)
 	viper.Set(FlagChainID, tests.TestChainID)
 	viper.Set(FlagCoinName, tests.TestCoinName)
 	viper.Set(FlagTestnet, tests.TestNet)

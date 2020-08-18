@@ -23,6 +23,7 @@ const (
 	FTTokenID             = "0000000100000000"
 	NFTTokenType          = "10000001"
 	TxHash                = "D20985E8B70B54B7C79D37B8E214EE815EB8D9818CF793A20304678FFA2A4A92"
+	Address               = "link1muu5cza33kttadr5wylsqhfgxnwlcdrxls0wwn"
 
 	ExpectedNumTargets      = TestTPS * TestDuration
 	ExpectedAttackCount     = (TestDuration-TestRampUpTime/2)*TestTPS + TestDuration

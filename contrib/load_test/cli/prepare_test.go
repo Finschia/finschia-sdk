@@ -28,7 +28,7 @@ func TestPrepareCmd(t *testing.T) {
 	viper.Set(FlagMaxGasPrepare, tests.TestMaxGasPrepare)
 	viper.Set(FlagTPS, tests.TestTPS)
 	viper.Set(FlagDuration, tests.TestDuration)
-	viper.Set(FlagTargetURL, server.URL)
+	viper.Set(FlagPrepareTargetURL, server.URL)
 	viper.Set(FlagChainID, tests.TestChainID)
 	viper.Set(FlagCoinName, tests.TestCoinName)
 	viper.Set(FlagTestnet, tests.TestNet)

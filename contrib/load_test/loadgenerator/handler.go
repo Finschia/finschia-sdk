@@ -32,7 +32,7 @@ func LoadHandler(lg *LoadGenerator) http.HandlerFunc {
 			return
 		}
 
-		if err := lg.ApplyConfig(req.Config, scenario.GetNumTargets(req.Scenario)); err != nil {
+		if err := lg.ApplyConfig(req.Config); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}

@@ -147,3 +147,13 @@ type NFTTokenIDOverFlowError struct {
 func (e NFTTokenIDOverFlowError) Error() string {
 	return "NFT token id overflowed"
 }
+
+type ExceedMaxNumTargetsError struct {
+	NumTargets        int
+	MaxTargetsPerUser int
+}
+
+func (e ExceedMaxNumTargetsError) Error() string {
+	return fmt.Sprintf("numTargets exceed maxTargetsPerUser. (numTargets : %d, maxTargetsPerUser : %d)",
+		e.NumTargets, e.MaxTargetsPerUser)
+}

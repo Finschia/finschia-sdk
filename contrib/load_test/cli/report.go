@@ -32,7 +32,7 @@ func report(cmd *cobra.Command, args []string) error {
 		Duration:          viper.GetInt(FlagDuration),
 		RampUpTime:        viper.GetInt(FlagRampUpTime),
 		MaxWorkers:        viper.GetInt(FlagMaxWorkers),
-		TargetURL:         viper.GetString(FlagTargetURL),
+		TargetURL:         viper.GetString(FlagLoadTargetURL),
 		ChainID:           viper.GetString(FlagChainID),
 		CoinName:          viper.GetString(FlagCoinName),
 		Testnet:           viper.GetBool(FlagTestnet),

@@ -13,6 +13,7 @@ import (
 	"github.com/line/link/contrib/load_test/tests"
 	"github.com/line/link/contrib/load_test/tests/mock"
 	"github.com/line/link/contrib/load_test/types"
+	"github.com/line/link/contrib/load_test/wallet"
 	"github.com/stretchr/testify/require"
 	vegeta "github.com/tsenart/vegeta/v12/lib"
 )
@@ -33,7 +34,7 @@ func TestLoadGenerator_GenerateQueryTargets(t *testing.T) {
 	}
 	scenarios := scenario.NewScenarios(config, nil, nil)
 	loadGenerator := NewLoadGenerator()
-	err := loadGenerator.ApplyConfig(config, 1)
+	err := loadGenerator.ApplyConfig(config)
 	require.NoError(t, err)
 
 	// When
@@ -68,13 +69,15 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 		scenarios := scenario.NewScenarios(config, nil, nil)
 		// Given LoadGenerator
 		loadGenerator := NewLoadGenerator()
-		err := loadGenerator.ApplyConfig(config, 1)
+		err := loadGenerator.ApplyConfig(config)
 		require.NoError(t, err)
 
 		// When
 		require.NoError(t, loadGenerator.RunWithGoroutines(scenarios[types.TxSend].GenerateTarget))
 
 		// Then
+		require.Len(t, loadGenerator.targets, config.TPS*config.Duration)
+		require.Equal(t, 1, loadGenerator.numTargetsPerUser)
 		require.Equal(t, server.URL+"/txs", loadGenerator.targets[0].URL)
 		require.NotContains(t, loadGenerator.targets, vegeta.Target{})
 		require.Equal(t, tests.ExpectedNumTargets, mock.GetCallCounter(server.URL).QueryAccountCallCount)
@@ -84,6 +87,24 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 		require.NoError(t, err)
 		require.Len(t, req.Tx.Msgs, tests.TestMsgsPerTxLoadTest)
 	}
+	t.Log("Test with GenerateTarget that returns a numTargets greater than maxTargetsPerUser")
+	{
+		// Given invalid GenerateTarget
+		invalidGenerateTarget := func(*wallet.KeyWallet, int) (*[]*vegeta.Target, int, error) {
+			return nil, maxTargetsPerUser + 1, nil
+		}
+		// Given LoadGenerator
+		loadGenerator := NewLoadGenerator()
+		err := loadGenerator.ApplyConfig(config)
+		require.NoError(t, err)
+
+		// When
+		err = loadGenerator.RunWithGoroutines(invalidGenerateTarget)
+
+		// Then
+		require.EqualError(t, err, types.ExceedMaxNumTargetsError{NumTargets: maxTargetsPerUser + 1,
+			MaxTargetsPerUser: maxTargetsPerUser}.Error())
+	}
 	t.Log("Test with empty chain id")
 	{
 		// Given invalid config
@@ -92,7 +113,7 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 		scenarios := scenario.NewScenarios(config, nil, nil)
 		// Given LoadGenerator
 		loadGenerator := NewLoadGenerator()
-		err := loadGenerator.ApplyConfig(config, 1)
+		err := loadGenerator.ApplyConfig(config)
 		require.NoError(t, err)
 
 		// When
@@ -100,7 +121,7 @@ func TestLoadGenerator_GenerateTxTargets(t *testing.T) {
 		require.EqualError(t, err, "chain ID required but not specified")
 
 		// Then
-		require.Equal(t, vegeta.Target{}, loadGenerator.targets[0])
+		require.Len(t, loadGenerator.targets, 0)
 	}
 }
 
@@ -138,7 +159,7 @@ func TestLoadGenerator_Fire(t *testing.T) {
 			scenario := scenario.NewScenarios(config, nil, nil)[types.TxSend]
 			// Given LoadGenerator
 			loadGenerator := NewLoadGenerator()
-			err := loadGenerator.ApplyConfig(config, 1)
+			err := loadGenerator.ApplyConfig(config)
 			require.NoError(t, err)
 			// Given Targets
 			require.NoError(t, loadGenerator.RunWithGoroutines(scenario.GenerateTarget))

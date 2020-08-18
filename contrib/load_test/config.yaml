@@ -1,10 +1,10 @@
 # Test Config
 msgs_per_tx_prepare: 2000
 max_gas_prepare: 110000000
-msgs_per_tx_load_test: 3
-max_gas_load_test: 120000
-tps: 200
-duration: 30
+msgs_per_tx_load_test: 1
+max_gas_load_test: 2200000
+tps: 4
+duration: 20
 ramp_up_time: 10
 throughput_threshold: -1
 latency_threshold: -1
@@ -13,7 +13,8 @@ max_workers: 50
 output: "/link-load-tester/contrib/load_test"
 
 # Test Target Info
-target_url: "http://lcd:1317"
+prepare_target_url: "http://lcd:1317"
+load_target_url: "http://lcd:1317"
 chain_id: "link"
 coin_name: "stake"
 testnet: true
@@ -24,7 +25,7 @@ slaves:
   slave1:
     url: "http://slave:8000"
     mnemonic: "fever tell fancy ridge fly glow reflect decline voice coil reflect ski empty forum frost rebuild slide nut invite chase swarm flag dizzy diet"
-    scenario: "tx_send"
+    scenario: "tx_all"
     params: []
 #  slave2:
 #    url: "http://hostaddr:8000"

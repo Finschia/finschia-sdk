@@ -12,16 +12,16 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestTxAndQueryAllScenario_GenerateStateSettingMsgs(t *testing.T) {
+func TestTxAllScenario_GenerateStateSettingMsgs(t *testing.T) {
 	// Given Mock Server
 	server := mock.NewServer()
 	defer server.Close()
 	// Given Test Environments
-	scenario, hdWallet, masterWallet := GivenTestEnvironments(t, server.URL, types.TxAndQueryAll, nil, nil)
-	txAndQueryAllScenario, ok := scenario.(*TxAndQueryAllScenario)
+	scenario, hdWallet, masterWallet := GivenTestEnvironments(t, server.URL, types.TxAll, nil, nil)
+	txAllScenario, ok := scenario.(*TxAllScenario)
 	require.True(t, ok)
 
-	msgs, params, err := txAndQueryAllScenario.GenerateStateSettingMsgs(masterWallet, hdWallet, []string{})
+	msgs, params, err := txAllScenario.GenerateStateSettingMsgs(masterWallet, hdWallet, []string{})
 	require.NoError(t, err)
 
 	require.Len(t, msgs, tests.TestTPS*tests.TestDuration*(8+13*tests.TestMsgsPerTxLoadTest))
@@ -33,10 +33,9 @@ func TestTxAndQueryAllScenario_GenerateStateSettingMsgs(t *testing.T) {
 	require.Equal(t, "678c146a", params["collection_contract_id"])
 	require.Equal(t, "0000000100000000", params["ft_token_id"])
 	require.Equal(t, "10000001", params["nft_token_type"])
-	require.Equal(t, "16EFE7CF722157A57E03E947C6171B24A7FC3731E1A24FAE0D9168F80845407F", params["tx_hash"])
 }
 
-func TestTxAndQueryAllScenario_GenerateTarget(t *testing.T) {
+func TestTxAllScenario_GenerateTarget(t *testing.T) {
 	// Given Mock Server
 	server := mock.NewServer()
 	defer server.Close()
@@ -45,7 +44,7 @@ func TestTxAndQueryAllScenario_GenerateTarget(t *testing.T) {
 		"modify_token", "burn", "burn", "create_collection", "approve_collection", "issue_ft", "mint_ft", "transfer_ft",
 		"transfer_ft", "burn_ft", "modify_token", "issue_nft", "mint_nft", "mint_nft", "attach", "detach",
 		"transfer_nft", "transfer_nft", "transfer_nft", "transfer_nft", "burn_nft"}
-	scenario, _, keyWallet := GivenTestEnvironments(t, server.URL, types.TxAndQueryAll,
+	scenario, _, keyWallet := GivenTestEnvironments(t, server.URL, types.TxAll,
 		map[string]string{
 			"token_contract_id":      "9be17165",
 			"nft_token_type":         "10000001",
@@ -54,19 +53,16 @@ func TestTxAndQueryAllScenario_GenerateTarget(t *testing.T) {
 			"collection_contract_id": "678c146a",
 			"num_nft_per_user":       fmt.Sprintf("%d", 13*tests.TestMsgsPerTxLoadTest),
 		}, nil)
-	txAndQueryAllScenario, ok := scenario.(*TxAndQueryAllScenario)
+	txAllScenario, ok := scenario.(*TxAllScenario)
 	require.True(t, ok)
 
 	// When
-	targets, numTargets, err := txAndQueryAllScenario.GenerateTarget(keyWallet, 0)
+	targets, numTargets, err := txAllScenario.GenerateTarget(keyWallet, 0)
 	require.NoError(t, err)
 
 	// Then
-	require.Equal(t, 98, numTargets)
+	require.Equal(t, 1, numTargets)
 	require.Equal(t, "POST", (*targets)[0].Method)
-	for i := 1; i < numTargets; i++ {
-		require.Equal(t, "GET", (*targets)[i].Method)
-	}
 	// Then tx target is valid
 	var req rest.BroadcastReq
 	require.NoError(t, app.MakeCodec().UnmarshalJSON((*targets)[0].Body, &req))

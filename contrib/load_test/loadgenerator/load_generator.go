@@ -12,6 +12,10 @@ import (
 	"golang.org/x/sync/errgroup"
 )
 
+const (
+	maxTargetsPerUser = 100
+)
+
 type LoadGenerator struct {
 	hdWallet          *wallet.HDWallet
 	targets           []vegeta.Target
@@ -24,23 +28,24 @@ func NewLoadGenerator() *LoadGenerator {
 	return &LoadGenerator{}
 }
 
-func (lg *LoadGenerator) ApplyConfig(config types.Config, numTargetsPerUser int) (err error) {
+func (lg *LoadGenerator) ApplyConfig(config types.Config) (err error) {
 	lg.config = config
 
 	types.SetBech32Prefix(sdk.GetConfig(), config.Testnet)
 	lg.numUsers = config.TPS * config.Duration
-	lg.numTargetsPerUser = numTargetsPerUser
-	lg.targets = make([]vegeta.Target, lg.numUsers*numTargetsPerUser)
+	lg.targets = make([]vegeta.Target, 0, lg.numUsers*maxTargetsPerUser)
 	lg.hdWallet, err = wallet.NewHDWallet(config.Mnemonic)
 	return
 }
 
 func (lg *LoadGenerator) RunWithGoroutines(generateTargetFunc func(*wallet.KeyWallet, int) (*[]*vegeta.Target,
-	int, error)) error {
+	int, error)) (err error) {
 	log.Println("Start to generate target")
+	tmpTargets := make([]*vegeta.Target, lg.numUsers*maxTargetsPerUser)
 	// Semaphore is used to limit the maximum number of executable goroutines.
 	sem := make(chan int, lg.config.MaxWorkers)
 	var eg errgroup.Group
+	numTargetsChan := make(chan int, lg.numUsers)
 	for i := 0; i < lg.numUsers; i++ {
 		i := i
 		sem <- 1
@@ -54,15 +59,22 @@ func (lg *LoadGenerator) RunWithGoroutines(generateTargetFunc func(*wallet.KeyWa
 			if err != nil {
 				return err
 			}
-			for j := 0; j < numTargets; j++ {
-				lg.targets[numTargets*i+j] = *(*targets)[j]
+			if numTargets > maxTargetsPerUser {
+				return types.ExceedMaxNumTargetsError{NumTargets: numTargets, MaxTargetsPerUser: maxTargetsPerUser}
 			}
+			for j := 0; j < numTargets; j++ {
+				tmpTargets[numTargets*i+j] = (*targets)[j]
+			}
+			numTargetsChan <- numTargets
 			return nil
 		})
 	}
 	if err := eg.Wait(); err != nil {
 		return err
 	}
+	close(numTargetsChan)
+	lg.targets = removeEmpty(tmpTargets)
+	lg.numTargetsPerUser = getNumTargets(numTargetsChan)
 	return nil
 }
 
@@ -85,4 +97,27 @@ func CompleteGoroutine(sem *chan int) {
 		log.Println("Failed to generate target:", err)
 		log.Println(string(debug.Stack()))
 	}
+}
+
+func removeEmpty(targets []*vegeta.Target) []vegeta.Target {
+	var r []vegeta.Target
+	for _, target := range targets {
+		if target != nil {
+			r = append(r, *target)
+		}
+	}
+	return r
+}
+
+func getNumTargets(numTargetsChan chan int) int {
+	var numTargets int
+	for nt := range numTargetsChan {
+		switch {
+		case numTargets == 0:
+			numTargets = nt
+		case numTargets != nt:
+			panic("The numTargets in the same scenario should be the same.")
+		}
+	}
+	return numTargets
 }

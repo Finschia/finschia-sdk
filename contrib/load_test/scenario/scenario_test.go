@@ -23,6 +23,7 @@ func TestNewScenarios(t *testing.T) {
 	require.IsType(t, &QueryAccountScenario{}, scenarios[types.QueryAccount])
 	require.IsType(t, &QueryBlockScenario{}, scenarios[types.QueryBlock])
 	require.IsType(t, &QueryCoinScenario{}, scenarios[types.QueryCoin])
+	require.IsType(t, &QueryAllScenario{}, scenarios[types.QueryAll])
 	require.IsType(t, &TxSendScenario{}, scenarios[types.TxSend])
 	require.IsType(t, &TxEmptyScenario{}, scenarios[types.TxEmpty])
 	require.IsType(t, &TxMintNFTScenario{}, scenarios[types.TxMintNFT])
@@ -30,5 +31,5 @@ func TestNewScenarios(t *testing.T) {
 	require.IsType(t, &TxTransferNFTScenario{}, scenarios[types.TxTransferNFT])
 	require.IsType(t, &TxTokenScenario{}, scenarios[types.TxToken])
 	require.IsType(t, &TxCollectionScenario{}, scenarios[types.TxCollection])
-	require.IsType(t, &TxAndQueryAllScenario{}, scenarios[types.TxAndQueryAll])
+	require.IsType(t, &TxAllScenario{}, scenarios[types.TxAll])
 }

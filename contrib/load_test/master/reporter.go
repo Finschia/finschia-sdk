@@ -401,7 +401,7 @@ func (r *Reporter) getNumMsgs() float64 {
 		case types.TxCollection:
 			totalMsgs += r.roundUpNumMsgs(8)
 
-		case types.TxAndQueryAll:
+		case types.TxAll:
 			totalMsgs += r.roundUpNumMsgs(29)
 
 		default:

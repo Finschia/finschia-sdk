@@ -42,6 +42,7 @@ func NewScenarios(config types.Config, params map[string]string, scenarioParams 
 	scenarios[types.QueryBlock] = &QueryBlockScenario{info}
 	scenarios[types.QueryCoin] = &QueryCoinScenario{info}
 	scenarios[types.QuerySimulate] = &QuerySimulateScenario{info}
+	scenarios[types.QueryAll] = &QueryAllScenario{info}
 	scenarios[types.TxSend] = &TxSendScenario{info}
 	scenarios[types.TxEmpty] = &TxEmptyScenario{info}
 	scenarios[types.TxMintNFT] = &TxMintNFTScenario{info}
@@ -49,7 +50,7 @@ func NewScenarios(config types.Config, params map[string]string, scenarioParams 
 	scenarios[types.TxTransferNFT] = &TxTransferNFTScenario{info}
 	scenarios[types.TxToken] = &TxTokenScenario{info}
 	scenarios[types.TxCollection] = &TxCollectionScenario{info}
-	scenarios[types.TxAndQueryAll] = &TxAndQueryAllScenario{info}
+	scenarios[types.TxAll] = &TxAllScenario{info}
 
 	return scenarios
 }
@@ -59,11 +60,4 @@ func GetPrepareBroadcastMode(scenario string) string {
 		return service.BroadcastSync
 	}
 	return service.BroadcastBlock
-}
-
-func GetNumTargets(scenario string) int {
-	if scenario == types.TxAndQueryAll {
-		return 98
-	}
-	return 1
 }
