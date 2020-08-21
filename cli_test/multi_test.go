@@ -163,8 +163,6 @@ func TestMultiValidatorAddNodeAndPromoteValidator(t *testing.T) {
 }
 
 func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
-	t.Skip("need to rewrite this testcase")
-	//TODO: rewrite testcase due to timing issue
 	t.Parallel()
 
 	const (
@@ -227,12 +225,25 @@ func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
 
 	// CheckTx failed
 	{
-		success, stdout, stderr := f1.TxSend(keyBaz, fooAddr, sdk.NewCoin(denom, startTokens.MulRaw(2)), "-y")
+		success, stdout, stderr := f1.TxSend(keyBaz, fooAddr, sdk.NewCoin(denom, startTokens), "-y", "-b sync", "--gas 0")
 		require.True(t, success)
-		require.Contains(t, stdout, "insufficient account funds")
+		require.NotEmpty(t, stdout)
 		require.Empty(t, stderr)
+
+		// Response.Code should be `error` (ErrOutOfGas)
+		sendResp := UnmarshalTxResponse(t, stdout)
+		require.Equal(t, sdkerrors.ErrOutOfGas.ABCICode(), sendResp.Code)
+
 		tests.WaitForNextNBlocksTM(1, f1.Port)
 
+		// Response.TxHash should be `invalid`
+		err := fmt.Sprintf(
+			"ERROR: Tx: RPC error -32603 - Internal error: tx (%s) not found",
+			sendResp.TxHash,
+		)
+		f1.QueryTxInvalid(errors.New(err), sendResp.TxHash)
+
+		// Balance should be not changed
 		bazAcc := f2.QueryAccount(bazAddr)
 		require.Equal(t, startTokens, bazAcc.GetCoins().AmountOf(denom))
 	}
@@ -248,7 +259,7 @@ func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
 
 		// CheckTx passed
 		sendResp1 := UnmarshalTxResponse(t, stdout1)
-		require.Equal(t, sendResp1.Code, abci.CodeTypeOK)
+		require.Equal(t, abci.CodeTypeOK, sendResp1.Code)
 
 		nodeOption := fmt.Sprintf("--node=%s", f1.RPCAddr)
 		success, stdout2, stderr := f2.TxSend(keyBar, fooAddr, sdk.NewCoin(denom, sendTokens), "-y", nodeOption)
@@ -258,7 +269,7 @@ func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
 
 		// Commit new block
 		sendResp2 := UnmarshalTxResponse(t, stdout2)
-		require.Equal(t, sendResp2.Code, abci.CodeTypeOK)
+		require.Equal(t, abci.CodeTypeOK, sendResp2.Code)
 
 		tests.WaitForNextNBlocksTM(1, f1.Port)
 
@@ -277,31 +288,35 @@ func TestMultiValidatorAddNodeAndFailedTransactions(t *testing.T) {
 	{
 		sendTokens := sdk.TokensFromConsensusPower(6)
 
-		success, stdout1, stderr := f1.TxSend(keyBaz, fooAddr, sdk.NewCoin(denom, sendTokens), "-y", "-b sync")
+		bazSeq := f1.QueryAccount(bazAddr).Sequence
+
+		seqN := fmt.Sprintf("--sequence %d", bazSeq)
+		success, stdout1, stderr := f1.TxSend(keyBaz, fooAddr, sdk.NewCoin(denom, sendTokens), "-y", "-b sync", seqN)
 		require.True(t, success)
 		require.NotEmpty(t, stdout1)
 		require.Empty(t, stderr)
 
-		success, stdout2, stderr := f1.TxSend(keyBaz, barAddr, sdk.NewCoin(denom, sendTokens), "-y", "-b sync")
+		seqNPlus1 := fmt.Sprintf("--sequence %d", bazSeq+1)
+		success, stdout2, stderr := f1.TxSend(keyBaz, barAddr, sdk.NewCoin(denom, sendTokens), "-y", "-b sync", seqNPlus1)
 		require.True(t, success)
 		require.NotEmpty(t, stdout2)
 		require.Empty(t, stderr)
 
 		// CheckTx results
 		sendResp1 := UnmarshalTxResponse(t, stdout1)
-		require.Equal(t, sendResp1.Code, abci.CodeTypeOK)
+		require.Equal(t, abci.CodeTypeOK, sendResp1.Code)
 
 		sendResp2 := UnmarshalTxResponse(t, stdout2)
-		require.Equal(t, sendResp2.Code, abci.CodeTypeOK) //FIXME:
+		require.Equal(t, abci.CodeTypeOK, sendResp2.Code)
 
 		tests.WaitForNextNBlocksTM(1, f1.Port)
 
 		// DeliverTx results
 		txResult1 := f1.QueryTx(sendResp1.TxHash)
-		require.Equal(t, txResult1.Code, abci.CodeTypeOK)
+		require.Equal(t, abci.CodeTypeOK, txResult1.Code)
 
 		txResult2 := f1.QueryTx(sendResp2.TxHash)
-		require.Equal(t, txResult2.Code, sdkerrors.ErrUnauthorized.ABCICode())
+		require.Equal(t, sdkerrors.ErrInsufficientFunds.ABCICode(), txResult2.Code)
 
 		bazAcc := f2.QueryAccount(bazAddr)
 		require.Equal(t, startTokens.Sub(sendTokens), bazAcc.GetCoins().AmountOf(denom))
