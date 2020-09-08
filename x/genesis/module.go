@@ -55,7 +55,7 @@ func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command { return nil }
 // get the root query command of this module
 func (AppModuleBasic) GetQueryCmd(cdc *codec.Codec) *cobra.Command { return nil }
 
-//___________________________
+// ___________________________
 // app module
 type AppModule struct {
 	AppModuleBasic

@@ -44,7 +44,7 @@ func runSlave(cmd *cobra.Command, args []string) error {
 
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Fatalf("listen: %s\n", err)
+			log.Panicf("listen: %s\n", err)
 		}
 	}()
 	log.Print("Server Started")
@@ -57,7 +57,7 @@ func runSlave(cmd *cobra.Command, args []string) error {
 	}()
 
 	if err := srv.Shutdown(ctx); err != nil {
-		log.Fatalf("Server Shutdown Failed:%+v", err)
+		log.Panicf("Server Shutdown Failed:%+v", err)
 	}
 	log.Print("Server Exited Properly")
 	return nil

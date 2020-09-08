@@ -96,7 +96,7 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 	return bz, nil
 }
 
-//nolint:dupl
+// nolint:dupl
 func queryTokenTypes(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
 	var params types.QueryTokenIDParams
 	if len(req.Data) != 0 {
@@ -129,7 +129,7 @@ func queryTokenTypes(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keepe
 	return bz, nil
 }
 
-//nolint:dupl
+// nolint:dupl
 func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
 	var params types.QueryTokenIDParams
 	if len(req.Data) != 0 {

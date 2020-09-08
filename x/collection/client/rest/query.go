@@ -273,7 +273,7 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-//nolint:dupl
+// nolint:dupl
 func QueryParentRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -314,7 +314,7 @@ func QueryParentRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-//nolint:dupl
+// nolint:dupl
 func QueryRootRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
@@ -355,7 +355,7 @@ func QueryRootRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-//nolint:dupl
+// nolint:dupl
 func QueryChildrenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")

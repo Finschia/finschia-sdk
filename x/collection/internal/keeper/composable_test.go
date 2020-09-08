@@ -399,7 +399,7 @@ func TestGetCurrentDepthFromRoot(t *testing.T) {
 	require.Equal(t, 4, keeper.GetDepthFromRoot(ctx, defaultTokenID9))
 }
 
-//nolint:dupl
+// nolint:dupl
 func TestCheckDepth(t *testing.T) {
 	ctx := cacheKeeper()
 	keeper.SetParams(ctx, types.NewParams(4, 4)) // Sets the max composable width/depth to 4
@@ -440,7 +440,7 @@ func TestCheckDepth(t *testing.T) {
 	require.NoError(t, err)
 }
 
-//nolint:dupl
+// nolint:dupl
 func TestCheckWidth(t *testing.T) {
 	ctx := cacheKeeper()
 	keeper.SetParams(ctx, types.NewParams(4, 4)) // Sets the max composable width/depth to 4

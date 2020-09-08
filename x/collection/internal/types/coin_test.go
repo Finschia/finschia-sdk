@@ -367,7 +367,7 @@ func TestCoinsGT(t *testing.T) {
 	assert.False(t, Coins{{testDenom1, one}, {testDenom2, one}}.IsAllGT(Coins{{testDenom2, two}}))
 }
 
-//nolint:dupl
+// nolint:dupl
 func TestCoinsLT(t *testing.T) {
 	one := sdk.NewInt(1)
 	two := sdk.NewInt(2)
@@ -383,7 +383,7 @@ func TestCoinsLT(t *testing.T) {
 	assert.True(t, Coins{}.IsAllLT(Coins{{testDenom1, one}}))
 }
 
-//nolint:dupl
+// nolint:dupl
 func TestCoinsLTE(t *testing.T) {
 	one := sdk.NewInt(1)
 	two := sdk.NewInt(2)
@@ -490,7 +490,7 @@ func TestAmountOf(t *testing.T) {
 	assert.Panics(t, func() { cases[0].coins.AmountOf("Invalid") })
 }
 
-//nolint:dupl
+// nolint:dupl
 func TestCoinsIsAnyGTE(t *testing.T) {
 	one := sdk.NewInt(1)
 	two := sdk.NewInt(2)
@@ -511,7 +511,7 @@ func TestCoinsIsAnyGTE(t *testing.T) {
 	assert.True(t, Coins{{"00000aaa00000000", one}, {"00000bbb00000000", one}}.IsAnyGTE(Coins{{testDenom2, one}, {"00000ccc00000000", one}, {"00000bbb00000000", one}, {"00000ddd00000000", one}}))
 }
 
-//nolint:dupl
+// nolint:dupl
 func TestCoinsIsAllGT(t *testing.T) {
 	one := sdk.NewInt(1)
 	two := sdk.NewInt(2)

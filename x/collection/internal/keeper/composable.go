@@ -265,7 +265,7 @@ func (k Keeper) Detach(ctx sdk.Context, from sdk.AccAddress, tokenID string) err
 	return nil
 }
 
-//nolint:dupl
+// nolint:dupl
 func (k Keeper) DetachFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, tokenID string) error {
 	oldRoot, err := k.RootOf(ctx, tokenID)
 	if err != nil {

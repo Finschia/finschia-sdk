@@ -52,7 +52,7 @@ func (AppModuleBasic) GetTxCmd(cdc *codec.Codec) *cobra.Command {
 // get the root query command of this module
 func (AppModuleBasic) GetQueryCmd(_ *codec.Codec) *cobra.Command { return nil }
 
-//___________________________
+// ___________________________
 // app module
 type AppModule struct {
 	AppModuleBasic
@@ -89,13 +89,13 @@ func (am AppModule) NewQuerierHandler() sdk.Querier {
 
 // module init-genesis
 func (am AppModule) InitGenesis(ctx sdk.Context, data json.RawMessage) []abci.ValidatorUpdate {
-	//TODO: fill the init
+	// TODO: fill the init
 	return []abci.ValidatorUpdate{}
 }
 
 // module export genesis
 func (am AppModule) ExportGenesis(ctx sdk.Context) json.RawMessage {
-	//TODO: fill the export
+	// TODO: fill the export
 	return types.ModuleCdc.MustMarshalJSON(nil)
 }
 

@@ -83,7 +83,7 @@ func TestHandlerSend(t *testing.T) {
 			types.NewOutput(addr2, sdk.NewCoins(sdk.NewInt64Coin(length5Denom2, 2))),
 		}
 		msg := types.NewMsgMultiSend(inputs, outputs)
-		require.Panics(t, func() { h(ctx, msg) }) //nolint
+		require.Panics(t, func() { h(ctx, msg) }) // nolint
 	}
 }
 

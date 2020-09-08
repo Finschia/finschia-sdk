@@ -6,7 +6,7 @@ import (
 
 type GenesisState struct {
 	Tokens []Token `json:"tokens"`
-	//TODO: approvals
+	// TODO: approvals
 }
 
 func NewGenesisState(tokens []Token) GenesisState {
@@ -16,7 +16,7 @@ func NewGenesisState(tokens []Token) GenesisState {
 func DefaultGenesisState() GenesisState { return NewGenesisState(nil) }
 
 func InitGenesis(ctx sdk.Context, keeper Keeper, data GenesisState) {
-	//TODO: fill it with permission
+	// TODO: fill it with permission
 }
 
 func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
@@ -25,4 +25,4 @@ func ExportGenesis(ctx sdk.Context, keeper Keeper) GenesisState {
 
 func ValidateGenesis(data GenesisState) error { return nil }
 
-//TODO: validate
+// TODO: validate

@@ -31,7 +31,7 @@ func TestTxTransferNFTScenario_GenerateStateSettingMsgs(t *testing.T) {
 	require.Equal(t, "10000001", params["nft_token_type"])
 }
 
-//nolint: dupl
+// nolint: dupl
 func TestTxTransferNFTScenario_GenerateTarget(t *testing.T) {
 	// Given Mock Server
 	server := mock.NewServer()

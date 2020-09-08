@@ -111,7 +111,7 @@ func InitTestnet(cmd *cobra.Command, config *tmconfig.Config, cdc *codec.Codec,
 	linkConfig := srvconfig.DefaultConfig()
 	linkConfig.MinGasPrices = minGasPrices
 
-	//nolint:prealloc
+	// nolint:prealloc
 	var (
 		genAccounts []authexported.GenesisAccount
 		genFiles    []string

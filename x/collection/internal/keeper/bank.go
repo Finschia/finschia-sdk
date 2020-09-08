@@ -6,7 +6,7 @@ import (
 	"github.com/line/link/x/collection/internal/types"
 )
 
-//For the Token module
+// For the Token module
 type BankKeeper interface {
 	GetCoins(ctx sdk.Context, addr sdk.AccAddress) types.Coins
 	HasCoins(ctx sdk.Context, addr sdk.AccAddress, amt types.Coins) bool

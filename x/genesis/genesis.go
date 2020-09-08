@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-//nolint:golint
+// nolint:golint
 type GenesisState struct {
 	GenesisMessage string `json:"genesis_message"`
 }

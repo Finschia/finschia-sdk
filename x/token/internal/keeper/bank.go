@@ -8,7 +8,7 @@ import (
 	"github.com/line/link/x/token/internal/types"
 )
 
-//For the Token module
+// For the Token module
 type BankKeeper interface {
 	GetBalance(ctx sdk.Context, addr sdk.AccAddress) sdk.Int
 	SetBalance(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Int) error

@@ -35,7 +35,7 @@ type mockNodeResponses struct {
 	resTxSearch *ctypes.ResultTxSearch
 }
 
-//nolint:unparam
+// nolint:unparam
 func setupMockNodeResponses(
 	t *testing.T,
 	cdc *codec.Codec,
@@ -94,12 +94,12 @@ func setupCodec() *codec.Codec {
 }
 
 func TestQueryTxsByEventsResponseContainsIndexCodeCodespace(t *testing.T) {
-	//nolint:goconst
+	// nolint:goconst
 	hashString := "15E23C9F72602046D86BC9F0ECAE53E43A8206C113A29D94454476B9887AAB7F"
 	height := int64(100)
 	index := uint32(10)
 	code := uint32(0)
-	//nolint:goconst
+	// nolint:goconst
 	codespace := "codespace"
 
 	cdc := setupCodec()
@@ -163,7 +163,7 @@ func assertTxResponse(
 	assert.Equal(t, codespace, res.Codespace)
 }
 
-//nolint:dupl
+// nolint:dupl
 func TestQueryTxMarshalledResponseContainsIndexCodeCodespace(t *testing.T) {
 	hashString := "15E23C9F72602046D86BC9F0ECAE53E43A8206C113A29D94454476B9887AAB7F"
 	height := int64(100)
@@ -201,7 +201,7 @@ func TestQueryTxMarshalledResponseContainsIndexCodeCodespace(t *testing.T) {
 	assert.Contains(t, m, "codespace")
 }
 
-//nolint:dupl
+// nolint:dupl
 func TestQueryTxMarshalledResponseEmptyIndexCodeCodespace(t *testing.T) {
 	hashString := "15E23C9F72602046D86BC9F0ECAE53E43A8206C113A29D94454476B9887AAB7F"
 	height := int64(100)

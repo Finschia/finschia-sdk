@@ -388,14 +388,14 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 
 	// Mint/Burn Fail
 	{
-		//Foo try to burn but insufficient
+		// Foo try to burn but insufficient
 		_, stdOut, _ := f.TxTokenBurn(keyFoo, contractID, initAmountStr+initAmountStr, "-y")
 		require.Contains(t, stdOut, "not enough coins")
-		//bar try to mint but has no permission
+		// bar try to mint but has no permission
 		_, stdOut, _ = f.TxTokenMint(keyBar, contractID, barAddr.String(), mintAmountStr, "-y")
 		require.Contains(t, stdOut, "account does not have the permission")
 
-		//Amount not changed
+		// Amount not changed
 		require.Equal(t, int64(initAmount+mintAmount-burnAmount), f.QuerySupplyToken(contractID).Int64())
 		require.Equal(t, int64(initAmount+mintAmount), f.QueryMintToken(contractID).Int64())
 		require.Equal(t, int64(burnAmount), f.QueryBurnToken(contractID).Int64())
@@ -466,7 +466,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 	fooAddr := f.KeyAddress(keyFoo)
 	barAddr := f.KeyAddress(keyBar)
-	//barSuffix := types.AccAddrSuffix(barAddr)
+	// barSuffix := types.AccAddrSuffix(barAddr)
 
 	// Create Account bar
 	{
@@ -800,7 +800,7 @@ func TestLinkCLIIncrementSequenceDecorator(t *testing.T) {
 
 	fooAcc := f.QueryAccount(fooAddr)
 
-	//Prepare signed Tx
+	// Prepare signed Tx
 	var signedTxFiles []*os.File
 	for idx := 0; idx < 3; idx++ {
 		// Test generate sendTx, estimate gas
@@ -820,11 +820,11 @@ func TestLinkCLIIncrementSequenceDecorator(t *testing.T) {
 		signedTxFiles = append(signedTxFiles, signedTxFile)
 		defer os.Remove(signedTxFile.Name())
 	}
-	//Wait for a new block
+	// Wait for a new block
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
 	var txHashes []string
-	//Broadcast the signed Txs
+	// Broadcast the signed Txs
 	for _, signedTxFile := range signedTxFiles {
 		// Test broadcast
 		success, stdout, _ := f.TxBroadcast(signedTxFile.Name(), "--broadcast-mode", "sync")
@@ -833,10 +833,10 @@ func TestLinkCLIIncrementSequenceDecorator(t *testing.T) {
 		txHashes = append(txHashes, sendResp.TxHash)
 	}
 
-	//Wait for a new block
+	// Wait for a new block
 	tests.WaitForNextNBlocksTM(1, f.Port)
 
-	//All Txs are in one block
+	// All Txs are in one block
 	height := f.QueryTx(txHashes[0]).Height
 	for _, txHash := range txHashes {
 		require.Equal(t, height, f.QueryTx(txHash).Height)

@@ -6,7 +6,7 @@ import (
 )
 
 func UpgradeHandler(version string) upgrade.UpgradeHandler {
-	//XXX: return handler for the migration version
+	// XXX: return handler for the migration version
 	return func(ctx sdk.Context, plan upgrade.Plan) {
 
 	}

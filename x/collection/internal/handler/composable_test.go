@@ -169,10 +169,10 @@ func TestHandleAttachDetach(t *testing.T) {
 		verifyEventFunc(t, e, res2.Events)
 	}
 
-	//Attach again
+	// Attach again
 	attach(t, ctx, h, contractID)
 
-	//Burn token
+	// Burn token
 	{
 		msg := types.NewMsgBurnNFT(addr1, contractID, defaultTokenID1)
 		res, err := h(ctx, msg)

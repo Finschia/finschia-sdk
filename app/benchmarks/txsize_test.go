@@ -13,7 +13,7 @@ import (
 
 // This will fail half the time with the second output being 173
 // This is due to secp256k1 signatures not being constant size.
-//nolint:govet
+// nolint:govet
 func ExampleTxSendSize() {
 	cdc := app.MakeCodec()
 	var gas uint64 = 1
@@ -41,7 +41,7 @@ func ExampleTxSendSize() {
 	if err != nil {
 		panic(err)
 	}
-	//nolint:govet
+	// nolint:govet
 	sigs := []auth.StdSignature{{nil, sig}}
 	tx := auth.NewStdTx([]sdk.Msg{msg1}, fee, sigs, "")
 	fmt.Println(len(cdc.MustMarshalBinaryBare([]sdk.Msg{msg1})))

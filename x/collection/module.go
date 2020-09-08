@@ -73,7 +73,7 @@ func (AppModuleBasic) GetUpgradeHandler(version string) upgrade.UpgradeHandler {
 	return legacy.UpgradeHandler(version)
 }
 
-//___________________________
+// ___________________________
 // app module
 type AppModule struct {
 	AppModuleBasic
@@ -92,7 +92,7 @@ func NewAppModule(keeper keeper.Keeper) AppModule {
 func (AppModule) Name() string { return ModuleName }
 
 // register invariants
-//TODO: should this module need invariants?
+// TODO: should this module need invariants?
 func (am AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
 // module message route name
@@ -131,7 +131,7 @@ func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.Validato
 	return []abci.ValidatorUpdate{}
 }
 
-//____________________________________________________________________________
+// ____________________________________________________________________________
 
 // AppModuleSimulation functions
 

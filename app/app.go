@@ -243,9 +243,9 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		collection.NewAppModule(app.collectionKeeper),
 		gov.NewAppModule(app.govKeeper, app.accountKeeper, app.supplyKeeper),
 		// TODO: Implement AppModuleSimulation interface in each module.
-		//bank.NewAppModule(app.coinKeeper),
-		//token.NewAppModule(app.tokenKeeper),
-		//account.NewAppModule(app.accountKeeper),
+		// bank.NewAppModule(app.coinKeeper),
+		// token.NewAppModule(app.tokenKeeper),
+		// account.NewAppModule(app.accountKeeper),
 	)
 
 	app.sm.RegisterStoreDecoders()

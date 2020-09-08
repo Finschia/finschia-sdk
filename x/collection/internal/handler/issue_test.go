@@ -152,13 +152,13 @@ func TestHandlerIssueNFT(t *testing.T) {
 	}
 
 	{
-		//Expect token type is 1001
+		// Expect token type is 1001
 		{
 			msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 			_, err := h(ctx, msg)
 			require.NoError(t, err)
 		}
-		//Expect token type is 1002
+		// Expect token type is 1002
 		{
 			msg := types.NewMsgIssueNFT(addr1, contractID, defaultName, defaultMeta)
 			_, err := h(ctx, msg)
@@ -211,7 +211,7 @@ func TestHandlerIssueNFT(t *testing.T) {
 		require.NoError(t, err)
 	}
 
-	//Expect token type is 1003
+	// Expect token type is 1003
 	{
 		msg := types.NewMsgIssueNFT(addr2, contractID, defaultName, defaultMeta)
 		_, err := h(ctx, msg)

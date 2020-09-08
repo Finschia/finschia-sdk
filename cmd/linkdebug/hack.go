@@ -45,9 +45,9 @@ func runHackCmd(cmd *cobra.Command, args []string) error {
 	fmt.Println("ID", id)
 	fmt.Println("LastBlockHeight", lastBlockHeight)
 
-	//----------------------------------------------------
+	// ----------------------------------------------------
 	// XXX: start hacking!
-	//----------------------------------------------------
+	// ----------------------------------------------------
 	// eg. link-6001 testnet bug
 	// We paniced when iterating through the "bypower" keys.
 	// The following powerKey was there, but the corresponding "trouble" validator did not exist.

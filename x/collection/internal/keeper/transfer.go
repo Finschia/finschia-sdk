@@ -115,7 +115,7 @@ func (k Keeper) TransferFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.A
 	return nil
 }
 
-//nolint:dupl
+// nolint:dupl
 func (k Keeper) TransferNFTFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, tokenIDs ...string) error {
 	if !k.IsApproved(ctx, proxy, from) {
 		return sdkerrors.Wrapf(types.ErrCollectionNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", proxy.String(), from.String(), k.getContractID(ctx))

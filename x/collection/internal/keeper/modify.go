@@ -21,7 +21,7 @@ func (k Keeper) Modify(ctx sdk.Context, owner sdk.AccAddress, tokenType, tokenIn
 	return types.ErrTokenIndexWithoutType
 }
 
-//nolint:dupl
+// nolint:dupl
 func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, changes linktype.Changes) error {
 	collection, err := k.GetCollection(ctx)
 	if err != nil {
@@ -65,7 +65,7 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, changes 
 	return nil
 }
 
-//nolint:dupl
+// nolint:dupl
 func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, tokenTypeID string,
 	changes linktype.Changes) error {
 	tokenType, err := k.GetTokenType(ctx, tokenTypeID)
@@ -109,7 +109,7 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, tokenType
 	return nil
 }
 
-//nolint:dupl
+// nolint:dupl
 func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, tokenID string,
 	changes linktype.Changes) error {
 	token, err := k.GetToken(ctx, tokenID)

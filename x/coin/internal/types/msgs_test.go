@@ -50,7 +50,7 @@ func TestMsgs(t *testing.T) {
 		require.Equal(t, addr1.String(), msg.GetSigners()[0].String())
 		require.Equal(t, addr2.String(), msg.GetSigners()[1].String())
 	}
-	//InputOutputMismatch
+	// InputOutputMismatch
 	{
 		inputs := []Input{
 			NewInput(addr1, sdk.NewCoins(sdk.NewInt64Coin(length3Denom, 4), sdk.NewInt64Coin(length5Denom, 2))),
@@ -64,7 +64,7 @@ func TestMsgs(t *testing.T) {
 		msg := NewMsgMultiSend(inputs, outputs)
 		require.Error(t, msg.ValidateBasic())
 	}
-	//Validate Denom
+	// Validate Denom
 	{
 		inputs := []Input{
 			NewInput(addr1, sdk.NewCoins(sdk.NewInt64Coin(length6Denom, 4), sdk.NewInt64Coin(length8Denom, 2))),

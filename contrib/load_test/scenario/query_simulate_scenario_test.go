@@ -57,10 +57,10 @@ func TestQuerySimulateScenario_GenerateTarget(t *testing.T) {
 		scenarioParams []string
 		msgtype        string
 	}{
-		//{[]string{"MsgSend"}, "send"},
+		// {[]string{"MsgSend"}, "send"},
 		{[]string{"MsgMintNFT", "1"}, "mint_nft"},
-		//{[]string{"MsgTransferFT"}, "transfer_ft"},
-		//{[]string{"MsgTransferNFT"}, "transfer_nft"},
+		// {[]string{"MsgTransferFT"}, "transfer_ft"},
+		// {[]string{"MsgTransferNFT"}, "transfer_nft"},
 	}
 
 	for _, tt := range cases {

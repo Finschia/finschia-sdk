@@ -289,7 +289,7 @@ func BurnNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-//nolint:dupl
+// nolint:dupl
 func TransferFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-ft [from_key_or_address] [contract_id] [to_address] [amount]",
@@ -322,7 +322,7 @@ func TransferFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return cmd
 }
 
-//nolint:dupl
+// nolint:dupl
 func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-nft [from_key_or_address] [contract_id] [to_address] [token_id][,[token_id]]",
@@ -387,7 +387,7 @@ func TransferFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	return cmd
 }
 
-//nolint:dupl
+// nolint:dupl
 func TransferNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "transfer-nft-from [proxy_key_or_address] [contract_id] [from_address] [to_address] [token_id]",
@@ -456,7 +456,7 @@ func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-//nolint:dupl
+// nolint:dupl
 func MintFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "mint-ft [from_key_or_address] [contract_id] [to] [amount]",
@@ -514,7 +514,7 @@ func BurnFTTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-//nolint:dupl
+// nolint:dupl
 func BurnFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "burn-ft-from [proxy_key_or_address] [contract_id] [from_address] [token-id] [amount]",
@@ -572,7 +572,7 @@ func AttachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-//nolint:dupl
+// nolint:dupl
 func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "detach-from [proxy_key_or_address] [contract_id] [from_address] [token_id]",
@@ -598,7 +598,7 @@ func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-//nolint:dupl
+// nolint:dupl
 func ApproveCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "approve [approver_key_or_address] [contract_id] [proxy_address]",
@@ -624,7 +624,7 @@ func ApproveCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 	return client.PostCommands(cmd)[0]
 }
 
-//nolint:dupl
+// nolint:dupl
 func DisapproveCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "disapprove [approver_key_or_address] [contract_id] [proxy_address]",

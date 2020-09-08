@@ -85,7 +85,7 @@ var (
 		sdk.NewCoin(feeDenom, sdk.TokensFromConsensusPower(2000000)),
 		sdk.NewCoin(fooDenom, sdk.TokensFromConsensusPower(2000)),
 		sdk.NewCoin(denom, sdk.TokensFromConsensusPower(300)), // We don't use inflation
-		//sdk.NewCoin(denom, sdk.TokensFromConsensusPower(300).Add(sdk.NewInt(12))), // add coins from inflation
+		// sdk.NewCoin(denom, sdk.TokensFromConsensusPower(300).Add(sdk.NewInt(12))), // add coins from inflation
 	)
 
 	startCoins = sdk.NewCoins(
@@ -117,7 +117,7 @@ func init() {
 	config.Seal()
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // Fixtures
 
 // Fixtures is used to setup the testing environment
@@ -270,7 +270,7 @@ func InitFixtures(t *testing.T) (f *Fixtures) {
 
 	// start an account with tokens
 	f.AddGenesisAccount(f.KeyAddress(keyFoo), startCoins)
-	//f.AddGenesisAccount(f.KeyAddress(keyBar), startCoins)
+	// f.AddGenesisAccount(f.KeyAddress(keyBar), startCoins)
 	f.AddGenesisAccount(
 		f.KeyAddress(keyVesting), startCoins,
 		fmt.Sprintf("--vesting-amount=%s", vestingCoins),
@@ -305,7 +305,7 @@ func (f *Fixtures) Flags() string {
 	return fmt.Sprintf("--home=%s --node=%s", f.LinkcliHome, f.RPCAddr)
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkd
 
 // UnsafeResetAll is linkd unsafe-reset-all
@@ -361,7 +361,7 @@ func (f *Fixtures) LDStart(flags ...string) *tests.Process {
 		if v := recover(); v != nil {
 			stdout, stderr, err := proc.ReadAll()
 			require.NoError(f.T, err)
-			//Log for start command
+			// Log for start command
 			f.T.Log(cmd, string(stdout))
 			f.T.Log(cmd, string(stderr))
 			f.T.Fatal(v)
@@ -387,7 +387,7 @@ func (f *Fixtures) ValidateGenesis() {
 	executeWriteCheckErr(f.T, cmd)
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli rest-server
 func (f *Fixtures) RestServerStart(port int, flags ...string) (*tests.Process, error) {
 	cmd := fmt.Sprintf("%s rest-server --home=%s --laddr=%s", f.LinkcliBinary, f.LinkcliHome, fmt.Sprintf("tcp://0.0.0.0:%d", port))
@@ -407,7 +407,7 @@ func (f *Fixtures) RestServerStart(port int, flags ...string) (*tests.Process, e
 	return proc, nil
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli keys
 
 // KeysDelete is linkcli keys delete
@@ -452,7 +452,7 @@ func (f *Fixtures) KeyAddress(name string) sdk.AccAddress {
 	return accAddr
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli config
 
 // CLIConfig is linkcli config
@@ -461,7 +461,7 @@ func (f *Fixtures) CLIConfig(key, value string, flags ...string) {
 	executeWriteCheckErr(f.T, addFlags(cmd, flags))
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli tx send/sign/broadcast
 
 // TxSend is linkcli tx send
@@ -497,7 +497,7 @@ func (f *Fixtures) TxMultisign(fileName, name string, signaturesFiles []string,
 	return executeWriteRetStdStreams(f.T, cmd)
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli tx staking
 
 // TxStakingCreateValidator is linkcli tx staking create-validator
@@ -515,7 +515,7 @@ func (f *Fixtures) TxStakingUnbond(from, shares string, validator sdk.ValAddress
 	return executeWrite(f.T, addFlags(cmd, flags))
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli tx gov
 
 // TxGovSubmitProposal is linkcli tx gov submit-proposal
@@ -563,7 +563,7 @@ func (f *Fixtures) TxGovSubmitCommunityPoolSpendProposal(
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli tx token
 
 func (f *Fixtures) TxTokenIssue(from string, to sdk.AccAddress, name, meta string, symbol string, amount int64, decimals int64, mintable bool, flags ...string) (bool, string, string) {
@@ -600,7 +600,7 @@ func (f *Fixtures) TxTokenTransfer(from string, to sdk.AccAddress, symbol string
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli tx collection
 
 func (f *Fixtures) TxTokenCreateCollection(from string, name, meta, baseImgURI string, flags ...string) (bool, string,
@@ -669,7 +669,7 @@ func (f *Fixtures) TxEmpty(from string, flags ...string) (bool, string, string) 
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli query account
 
 // QueryAccount is linkcli query account
@@ -688,7 +688,7 @@ func (f *Fixtures) QueryAccount(address sdk.AccAddress, flags ...string) auth.Ba
 	return acc
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli query tx
 
 // QueryTx is linkcli query tx
@@ -709,7 +709,7 @@ func (f *Fixtures) QueryTxInvalid(expectedErr error, hash string) {
 	require.EqualError(f.T, expectedErr, err)
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli query txs
 
 // QueryTxs is linkcli query txs
@@ -730,7 +730,7 @@ func (f *Fixtures) QueryTxsInvalid(expectedErr error, page, limit int, flags ...
 	require.EqualError(f.T, expectedErr, err)
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli query block
 
 func (f *Fixtures) QueryLatestBlock(flags ...string) *tmctypes.ResultBlock {
@@ -753,7 +753,7 @@ func (f *Fixtures) QueryBlockWithHeight(height int, flags ...string) *tmctypes.R
 	return &result
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli query staking
 
 // QueryStakingValidator is linkcli query staking validator
@@ -811,7 +811,7 @@ func (f *Fixtures) QueryStakingParameters(flags ...string) staking.Params {
 	return params
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli query gov
 
 // QueryGovParamDeposit is linkcli query gov param deposit
@@ -917,7 +917,7 @@ func (f *Fixtures) QueryGovDeposits(propsalID int, flags ...string) []gov.Deposi
 	return deposits
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // query slashing
 
 // QuerySigningInfo returns the signing info for a validator
@@ -944,7 +944,7 @@ func (f *Fixtures) QuerySlashingParams() slashing.Params {
 	return params
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // query distribution
 
 // QueryRewards returns the rewards of a delegator
@@ -959,7 +959,7 @@ func (f *Fixtures) QueryRewards(delAddr sdk.AccAddress, flags ...string) distrib
 	return rewards
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // query supply
 
 // QueryTotalSupply returns the total supply of coins
@@ -985,7 +985,7 @@ func (f *Fixtures) QueryTotalSupplyOf(denom string, flags ...string) sdk.Int {
 	return supplyOf
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // query token
 
 func (f *Fixtures) QueryToken(contractID string, flags ...string) tokenModule.Token {
@@ -1066,7 +1066,7 @@ func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, contractID string
 	return pms
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // query collection
 func (f *Fixtures) QueryBalanceCollection(contractID, tokenID string, addr sdk.AccAddress, flags ...string) sdk.Int {
 	cmd := fmt.Sprintf("%s query collection balance %s %s %s %s", f.LinkcliBinary, contractID, tokenID, addr.String(), f.Flags())
@@ -1190,7 +1190,7 @@ func (f *Fixtures) QueryAccountPermissionCollection(addr sdk.AccAddress, flags .
 	return pms
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // query genesis
 func (f *Fixtures) QueryGenesisTxs(flags ...string) []sdk.Tx {
 	cmd := fmt.Sprintf("%s query genesis-txs %s", f.LinkcliBinary, f.Flags())
@@ -1238,7 +1238,7 @@ func execQueryGenesisAccountInvalid(f *Fixtures, cmd string, expectedErr error) 
 	require.EqualError(f.T, expectedErr, err)
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // linkcli mempool
 
 // MempoolNumUnconfirmedTxs is linkcli mempool num-unconfirmed-txs
@@ -1270,7 +1270,7 @@ func (f *Fixtures) MempoolUnconfirmedTxHashes(flags ...string) *ResultUnconfirme
 	return &result
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // tendermint rpc
 func (f *Fixtures) NetInfo(flags ...string) *tmctypes.ResultNetInfo {
 	tmc, err := tmhttp.New(fmt.Sprintf("tcp://0.0.0.0:%s", f.Port), "/websocket")
@@ -1308,7 +1308,7 @@ func (f *Fixtures) Status(flags ...string) *tmctypes.ResultStatus {
 	return netInfo
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // executors
 
 func executeWriteCheckErr(t *testing.T, cmdStr string, writes ...string) {
@@ -1350,7 +1350,7 @@ func executeWriteRetStdStreams(t *testing.T, cmdStr string, writes ...string) (b
 	return proc.ExitState.Success(), string(stdout), string(stderr)
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // utils
 
 func addFlags(cmd string, flags []string) string {
@@ -1388,7 +1388,7 @@ func UnmarshalTxResponse(t *testing.T, s string) (txResp sdk.TxResponse) {
 	return
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // Fixture Group
 
 type FixtureGroup struct {
@@ -1722,7 +1722,7 @@ func WaitForStart(url string) {
 
 		var res *http.Response
 		/* #nosec */
-		res, err = http.Get(url) //Error is arising in testing files
+		res, err = http.Get(url) // Error is arising in testing files
 		if err != nil || res == nil {
 			continue
 		}

@@ -9,7 +9,7 @@ import (
 type GenesisState struct {
 	Params types.Params `json:"params"`
 	Tokens []Token      `json:"tokens"`
-	//TODO: approvals
+	// TODO: approvals
 }
 
 func NewGenesisState(params types.Params, tokens []Token) GenesisState {
@@ -24,7 +24,7 @@ func DefaultGenesisState() GenesisState {
 }
 
 func InitGenesis(ctx sdk.Context, keeper Keeper, data GenesisState) {
-	//TODO: fill it with permission
+	// TODO: fill it with permission
 	keeper.SetParams(ctx, data.Params)
 }
 

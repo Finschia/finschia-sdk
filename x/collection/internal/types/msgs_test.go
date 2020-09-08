@@ -292,7 +292,7 @@ func TestMsgBasics(t *testing.T) {
 			NewMsgTransferFT(addr1, defaultContractID, addr2, NewCoin("1", sdk.NewInt(-1*defaultAmount)))
 		}, "")
 	}
-	//nolint:dupl
+	// nolint:dupl
 	{
 		msg := NewMsgTransferNFTFrom(addr1, defaultContractID, addr2, addr2, defaultTokenID1)
 		require.Equal(t, "transfer_nft_from", msg.Type())
@@ -400,7 +400,7 @@ func TestMsgBasics(t *testing.T) {
 		msg = NewMsgDetach(addr1, defaultContractID, "1")
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidTokenID, "1").Error())
 	}
-	//nolint:dupl
+	// nolint:dupl
 	{
 		msg := NewMsgAttachFrom(addr1, defaultContractID, addr2, defaultTokenID1, defaultTokenID2)
 		require.Equal(t, "attach_from", msg.Type())
@@ -442,7 +442,7 @@ func TestMsgBasics(t *testing.T) {
 		msg = NewMsgAttachFrom(addr1, defaultContractID, addr2, defaultTokenID1, defaultTokenID1)
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrCannotAttachToItself, "TokenID: %s", defaultTokenID1).Error())
 	}
-	//nolint:dupl
+	// nolint:dupl
 	{
 		msg := NewMsgDetachFrom(addr1, defaultContractID, addr2, defaultTokenID1)
 		require.Equal(t, "detach_from", msg.Type())

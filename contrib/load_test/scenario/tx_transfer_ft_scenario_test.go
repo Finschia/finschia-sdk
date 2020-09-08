@@ -30,7 +30,7 @@ func TestTxTransferFTScenario_GenerateStateSettingMsgs(t *testing.T) {
 	require.Equal(t, "0000000100000000", params["ft_token_id"])
 }
 
-//nolint: dupl
+// nolint: dupl
 func TestTxTransferFTScenario_GenerateTarget(t *testing.T) {
 	// Given Mock Server
 	server := mock.NewServer()

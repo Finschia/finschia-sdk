@@ -20,7 +20,7 @@ func QueryBalancesRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
 		bech32addr := vars["address"]
-		denom := vars["denom"] //"" if the key is not exists
+		denom := vars["denom"] // "" if the key is not exists
 
 		arrBech32addrs := strings.Split(bech32addr, ",")
 		if len(arrBech32addrs) > 1 {
