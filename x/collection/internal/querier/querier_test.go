@@ -270,6 +270,42 @@ func TestNewQuerier_queryTokenTypes_all(t *testing.T) {
 	require.Equal(t, tokenTypes[0].GetName(), tokenNFTTypeName)
 }
 
+func TestNewQuerier_queryTokensWithTokenType(t *testing.T) {
+	prepare(t)
+
+	params := types.QueryTokenTypeParams{
+		TokenType: tokenNFTType,
+	}
+	var tokens types.Tokens
+	query(t, params, types.QueryTokensWithTokenType, &tokens)
+	require.Equal(t, len(tokens), 3)
+	require.Equal(t, tokens[0].GetContractID(), contractID)
+	require.Equal(t, tokens[0].GetName(), tokenNFTName1)
+	require.Equal(t, tokens[0].GetTokenType(), tokenNFTType)
+	require.Equal(t, tokens[1].GetContractID(), contractID)
+	require.Equal(t, tokens[1].GetName(), tokenNFTName2)
+	require.Equal(t, tokens[1].GetTokenType(), tokenNFTType)
+	require.Equal(t, tokens[2].GetContractID(), contractID)
+	require.Equal(t, tokens[2].GetName(), tokenNFTName3)
+	require.Equal(t, tokens[2].GetTokenType(), tokenNFTType)
+	params2 := types.QueryTokenTypeParams{
+		TokenType: tokenFTType,
+	}
+	var tokens2 types.Tokens
+	query(t, params2, types.QueryTokensWithTokenType, &tokens2)
+	require.Equal(t, len(tokens2), 1)
+	require.Equal(t, tokens2[0].GetContractID(), contractID)
+	require.Equal(t, tokens2[0].GetName(), tokenFTName)
+	require.Equal(t, tokens2[0].GetTokenType(), tokenFTType)
+	paramsNoExist := types.QueryTokenTypeParams{
+		TokenType: "99999999",
+	}
+	var tokensNoExist types.Tokens
+	query(t, paramsNoExist, types.QueryTokensWithTokenType, &tokensNoExist)
+	require.Equal(t, len(tokensNoExist), 0)
+	require.Empty(t, tokensNoExist)
+}
+
 func TestNewQuerier_queryCollections_one(t *testing.T) {
 	prepare(t)
 

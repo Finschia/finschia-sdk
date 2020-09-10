@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	context "github.com/line/link/client"
+	linktype "github.com/line/link/types"
 	"github.com/line/link/x/collection/internal/types"
 )
 
@@ -134,6 +135,27 @@ func (r Retriever) GetToken(ctx context.CLIContext, contractID, tokenID string) 
 func (r Retriever) GetTokens(ctx context.CLIContext, contractID string) (types.Tokens, int64, error) {
 	var tokens types.Tokens
 	res, height, err := r.query(types.QueryTokens, contractID, nil)
+	if err != nil {
+		return tokens, height, err
+	}
+
+	if err := ctx.Codec.UnmarshalJSON(res, &tokens); err != nil {
+		return tokens, height, err
+	}
+	return tokens, height, nil
+}
+
+func (r Retriever) GetTokensWithTokenType(ctx context.CLIContext, contractID string, tokenType string) (types.Tokens, int64, error) {
+	var tokens types.Tokens
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryTokenTypeParams(tokenType))
+
+	if err != nil {
+		return tokens, 0, err
+	}
+	if err = linktype.ValidateTokenType(tokenType); err != nil {
+		return tokens, 0, err
+	}
+	res, height, err := r.query(types.QueryTokensWithTokenType, contractID, bs)
 	if err != nil {
 		return tokens, height, err
 	}

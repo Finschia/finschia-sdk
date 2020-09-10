@@ -1099,8 +1099,19 @@ func (f *Fixtures) QueryTokenCollectionExpectEmpty(contractID, tokenID string, f
 	require.NotEmpty(f.T, errStr)
 }
 
-func (f *Fixtures) QueryTokensCollection(contractID string, flags ...string) collectionModule.Tokens {
-	cmd := fmt.Sprintf("%s query collection tokens %s", f.LinkcliBinary, f.Flags())
+func (f *Fixtures) QueryTokensCollection(contractID string) collectionModule.Tokens {
+	cmd := fmt.Sprintf("%s query collection tokens %s %s", f.LinkcliBinary, contractID, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var tokens collectionModule.Tokens
+	err := cdc.UnmarshalJSON([]byte(res), &tokens)
+	require.NoError(f.T, err)
+	return tokens
+}
+
+func (f *Fixtures) QueryTokensByTokenTypeCollection(contractID string, tokenType string) collectionModule.Tokens {
+	cmd := fmt.Sprintf("%s query collection tokens %s --token-type %s %s", f.LinkcliBinary, contractID, tokenType, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()

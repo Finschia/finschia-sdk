@@ -9,6 +9,7 @@ import (
 	clienttypes "github.com/line/link/x/collection/client/internal/types"
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
@@ -19,6 +20,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
+
 	cmd.AddCommand(
 		GetBalanceCmd(cdc),
 		GetTokenCmd(cdc),
@@ -174,8 +176,17 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
+			var tokens types.Tokens
+			var height int64
+			var err error
 
-			tokens, height, err := retriever.GetTokens(cliCtx, contractID)
+			tokenType := viper.GetString(flagTokenType)
+			if len(tokenType) > 0 {
+				tokens, height, err = retriever.GetTokensWithTokenType(cliCtx, contractID, tokenType)
+			} else {
+				tokens, height, err = retriever.GetTokens(cliCtx, contractID)
+			}
+
 			if err != nil {
 				return err
 			}
@@ -184,6 +195,7 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 			return cliCtx.PrintOutput(tokens)
 		},
 	}
+	cmd.Flags().String(flagTokenType, DefaultTokenType, "get tokens belong to the token-type")
 
 	return client.GetCommands(cmd)[0]
 }
@@ -213,6 +225,7 @@ func GetTokenTotalCmd(cdc *codec.Codec) *cobra.Command {
 
 	return client.GetCommands(cmd)[0]
 }
+
 func GetTokenCountCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "count [total|mint|burn] [contract_id] [token_type]",

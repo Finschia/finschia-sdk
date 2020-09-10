@@ -1033,7 +1033,7 @@ paths:
           example: "678c146a"
         - name: token_type
           in: path
-          description: token id
+          description: token type
           required: true
           schema:
             type: string
@@ -1076,7 +1076,7 @@ paths:
           example: "678c146a"
         - name: token_type
           in: path
-          description: token id
+          description: token type
           required: true
           schema:
             type: string
@@ -1119,7 +1119,7 @@ paths:
           example: "678c146a"
         - name: token_type
           in: path
-          description: token id
+          description: token type
           required: true
           schema:
             type: string
@@ -1244,6 +1244,51 @@ paths:
           schema:
             type: string
           example: "678c146a"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      oneOf:
+                        - $ref: '#/components/schemas/TokenType'
+        "500":
+          description: Internal Server Error
+  /collection/{contract_id}/tokentypes/{token_type}/tokens:
+    get:
+      tags:
+        - Collection
+      summary: Get tokens of the collection for the token_type
+      parameters:
+        - name: contract_id
+          in: path
+          description: contract_id for the collection
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
+        - name: token_type
+          in: path
+          description: token type
+          required: true
+          schema:
+            type: string
+          example: "10000001"
         - name: height
           in: query
           description: block height (if block height is 0 or be omitted, queries latest block)

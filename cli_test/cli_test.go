@@ -519,6 +519,41 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, sdk.NewInt(30000), f.QueryTotalSupplyTokenCollection(contractID1, tokenID03))
 		require.Equal(t, sdk.NewInt(30000), f.QueryTotalMintTokenCollection(contractID1, tokenID03))
 		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(contractID1, tokenID03))
+
+		tokensByOption := f.QueryTokensByTokenTypeCollection(contractID1, tokenID01[:8])
+		require.Equal(t, 1, len(tokensByOption))
+		require.Equal(t, contractID1, tokensByOption[0].GetContractID())
+		require.Equal(t, tokenID01, tokensByOption[0].GetTokenID())
+		require.Equal(t, tokenID01[:8], tokensByOption[0].GetTokenType())
+		require.Equal(t, meta, tokensByOption[0].GetMeta())
+		require.Equal(t, description, tokensByOption[0].GetName())
+
+		tokensByNoOption := f.QueryTokensCollection(contractID1)
+		require.Equal(t, 3, len(tokensByNoOption))
+		require.Equal(t, contractID1, tokensByNoOption[0].GetContractID())
+		require.Equal(t, tokenID01, tokensByNoOption[0].GetTokenID())
+		require.Equal(t, tokenID01[:8], tokensByNoOption[0].GetTokenType())
+		require.Equal(t, meta, tokensByNoOption[0].GetMeta())
+		require.Equal(t, description, tokensByNoOption[0].GetName())
+
+		require.Equal(t, contractID1, tokensByNoOption[1].GetContractID())
+		require.Equal(t, tokenID02, tokensByNoOption[1].GetTokenID())
+		require.Equal(t, tokenID02[:8], tokensByNoOption[1].GetTokenType())
+		require.Equal(t, meta, tokensByNoOption[1].GetMeta())
+		require.Equal(t, description, tokensByNoOption[1].GetName())
+
+		require.Equal(t, contractID1, tokensByNoOption[2].GetContractID())
+		require.Equal(t, tokenID03, tokensByNoOption[2].GetTokenID())
+		require.Equal(t, tokenID03[:8], tokensByNoOption[2].GetTokenType())
+		require.Equal(t, meta, tokensByNoOption[2].GetMeta())
+		require.Equal(t, description, tokensByNoOption[2].GetName())
+
+		toknenIDNoExist := "00000009"
+		tokensEmpty := f.QueryTokensByTokenTypeCollection(contractID1, toknenIDNoExist)
+		require.Empty(t, tokensEmpty)
+		toknenIDNoExist2 := "0000000a"
+		tokensEmpty2 := f.QueryTokensByTokenTypeCollection(contractID1, toknenIDNoExist2)
+		require.Empty(t, tokensEmpty2)
 	}
 
 	// Bar cannot issue with the collection
@@ -599,6 +634,8 @@ func TestLinkCLITokenNFT(t *testing.T) {
 	const (
 		contractID  = "9be17165"
 		tokenType   = "10000001"
+		tokenType2  = "10000002"
+		tokenType3  = "10000003"
 		tokenID01   = "1000000100000001"
 		tokenID02   = "1000000100000002"
 		tokenID03   = "1000000100000003"
@@ -631,11 +668,21 @@ func TestLinkCLITokenNFT(t *testing.T) {
 	// Issue Collective NFT for the collection
 	{
 		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, contractID, description, meta, "-y"))
+		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, contractID, description, meta, "-y"))
+		f.LogResult(f.TxTokenIssueNFTCollection(keyFoo, contractID, description, meta, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		mintParam := strings.Join([]string{tokenType, description, meta}, ":")
 		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y")
 		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y")
 		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam, "-y")
+		mintParam2 := strings.Join([]string{tokenType2, description, meta}, ":")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam2, "-y")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam2, "-y")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam2, "-y")
+		mintParam3 := strings.Join([]string{tokenType3, description, meta}, ":")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam3, "-y")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam3, "-y")
+		f.TxTokenMintNFTCollection(keyFoo, contractID, fooAddr.String(), mintParam3, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		token := f.QueryTokenCollection(contractID, tokenID01)
 		require.Equal(t, contractID, token.GetContractID())
@@ -646,6 +693,36 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		token = f.QueryTokenCollection(contractID, tokenID03)
 		require.Equal(t, contractID, token.GetContractID())
 		require.Equal(t, tokenID03, token.GetTokenID())
+
+		tokensByOption := f.QueryTokensByTokenTypeCollection(contractID, tokenType)
+		require.Equal(t, 3, len(tokensByOption))
+		require.Equal(t, contractID, tokensByOption[0].GetContractID())
+		require.Equal(t, tokenID01, tokensByOption[0].GetTokenID())
+		require.Equal(t, tokenID01[:8], tokensByOption[0].GetTokenType())
+		require.Equal(t, meta, tokensByOption[0].GetMeta())
+		require.Equal(t, description, tokensByOption[0].GetName())
+		require.Equal(t, contractID, tokensByOption[1].GetContractID())
+		require.Equal(t, tokenID02, tokensByOption[1].GetTokenID())
+		require.Equal(t, tokenID02[:8], tokensByOption[1].GetTokenType())
+		require.Equal(t, meta, tokensByOption[1].GetMeta())
+		require.Equal(t, description, tokensByOption[1].GetName())
+
+		tokensByNoOption := f.QueryTokensCollection(contractID)
+		require.Equal(t, 9, len(tokensByNoOption))
+		require.Equal(t, contractID, tokensByNoOption[0].GetContractID())
+		require.Equal(t, tokenID01, tokensByNoOption[0].GetTokenID())
+		require.Equal(t, tokenID01[:8], tokensByNoOption[0].GetTokenType())
+		require.Equal(t, meta, tokensByNoOption[0].GetMeta())
+		require.Equal(t, description, tokensByNoOption[0].GetName())
+		require.Equal(t, contractID, tokensByNoOption[1].GetContractID())
+		require.Equal(t, tokenID02, tokensByNoOption[1].GetTokenID())
+		require.Equal(t, tokenID02[:8], tokensByNoOption[1].GetTokenType())
+		require.Equal(t, meta, tokensByNoOption[1].GetMeta())
+		require.Equal(t, description, tokensByNoOption[1].GetName())
+
+		tokenTypeNoExist := "10000009"
+		tokensEmpty := f.QueryTokensByTokenTypeCollection(contractID, tokenTypeNoExist)
+		require.Empty(t, tokensEmpty)
 	}
 
 	// Multi-transfer NFTs

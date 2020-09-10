@@ -3,13 +3,12 @@ package querier
 import (
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link/x/collection/internal/keeper"
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/line/link/x/contract"
 	abci "github.com/tendermint/tendermint/abci/types"
-
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
 // creates a querier for token REST endpoints
@@ -25,6 +24,8 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 			return queryAccountPermission(ctx, req, keeper)
 		case types.QueryTokens:
 			return queryTokens(ctx, req, keeper)
+		case types.QueryTokensWithTokenType:
+			return queryTokensWithTokenType(ctx, req, keeper)
 		case types.QueryTokenTypes:
 			return queryTokenTypes(ctx, req, keeper)
 		case types.QueryCollections:
@@ -159,6 +160,22 @@ func queryTokens(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) (
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err2.Error())
 	}
 
+	return bz, nil
+}
+
+func queryTokensWithTokenType(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
+	var params types.QueryTokenTypeParams
+	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+	tokens, err := keeper.GetNFTs(ctx, params.TokenType)
+	if err != nil {
+		return nil, err
+	}
+	bz, err2 := keeper.MarshalJSONIndent(tokens)
+	if err2 != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err2.Error())
+	}
 	return bz, nil
 }
 

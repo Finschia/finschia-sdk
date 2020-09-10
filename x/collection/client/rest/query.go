@@ -24,6 +24,7 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/collection/{contract_id}/nfts/{token_id}/children", QueryChildrenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/nfts/{token_id}", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/tokens", QueryTokensRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/tokens", QueryTokensWithTokenTypeRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/count", QueryCountRequestHandlerFn(cliCtx, types.QueryNFTCount)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/mint", QueryCountRequestHandlerFn(cliCtx, types.QueryNFTMint)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/tokentypes/{token_type}/burn", QueryCountRequestHandlerFn(cliCtx, types.QueryNFTBurn)).Methods("GET")
@@ -215,6 +216,31 @@ func QueryTokenTotalRequestHandlerFn(cliCtx client.CLIContext, target string) ht
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, supply)
+	}
+}
+
+func QueryTokensWithTokenTypeRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		contractID := vars["contract_id"]
+		tokenType := vars["token_type"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+		tokens, height, err := retriever.GetTokensWithTokenType(cliCtx, contractID, tokenType)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, tokens)
 	}
 }
 

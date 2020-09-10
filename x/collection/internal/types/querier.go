@@ -6,22 +6,23 @@ import (
 )
 
 const (
-	QuerierRoute     = ModuleName
-	QueryBalance     = "balance"
-	QueryTokens      = "tokens"
-	QueryTokenTypes  = "tokentypes"
-	QueryPerms       = "perms"
-	QueryCollections = "collections"
-	QuerySupply      = "supply"
-	QueryMint        = "mint"
-	QueryBurn        = "burn"
-	QueryNFTCount    = "nftcount"
-	QueryNFTMint     = "nftmint"
-	QueryNFTBurn     = "nftburn"
-	QueryParent      = "parent"
-	QueryRoot        = "root"
-	QueryChildren    = "children"
-	QueryIsApproved  = "approved"
+	QuerierRoute             = ModuleName
+	QueryBalance             = "balance"
+	QueryTokens              = "tokens"
+	QueryTokensWithTokenType = "tokensWithTokenType"
+	QueryTokenTypes          = "tokentypes"
+	QueryPerms               = "perms"
+	QueryCollections         = "collections"
+	QuerySupply              = "supply"
+	QueryMint                = "mint"
+	QueryBurn                = "burn"
+	QueryNFTCount            = "nftcount"
+	QueryNFTMint             = "nftmint"
+	QueryNFTBurn             = "nftburn"
+	QueryParent              = "parent"
+	QueryRoot                = "root"
+	QueryChildren            = "children"
+	QueryIsApproved          = "approved"
 )
 
 type NodeQuerier interface {
@@ -35,6 +36,14 @@ type QueryTokenIDParams struct {
 
 func NewQueryTokenIDParams(tokenID string) QueryTokenIDParams {
 	return QueryTokenIDParams{TokenID: tokenID}
+}
+
+type QueryTokenTypeParams struct {
+	TokenType string `json:"token_type"`
+}
+
+func NewQueryTokenTypeParams(tokenType string) QueryTokenTypeParams {
+	return QueryTokenTypeParams{TokenType: tokenType}
 }
 
 type QueryTokenIDAccAddressParams struct {
