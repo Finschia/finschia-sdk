@@ -71,6 +71,7 @@ var (
 	NewMsgBurnFT           = types.NewMsgBurnFT
 	NewMsgGrantPermission  = types.NewMsgGrantPermission
 	NewMsgModify           = types.NewMsgModify
+	NewChangesWithMap      = types.NewChangesWithMap
 	NewMsgTransferFT       = types.NewMsgTransferFT
 	NewMsgTransferNFT      = types.NewMsgTransferNFT
 	NewMsgTransferNFTFrom  = types.NewMsgTransferNFTFrom

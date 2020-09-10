@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
 
@@ -61,7 +60,7 @@ func (msg MsgIssue) ValidateBasic() error {
 		return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", msg.Meta, MaxTokenMetaLength, utf8.RuneCountInString(msg.Meta))
 	}
 
-	if err := types.ValidateTokenSymbol(msg.Symbol); err != nil {
+	if err := ValidateTokenSymbol(msg.Symbol); err != nil {
 		return sdkerrors.Wrapf(ErrInvalidTokenSymbol, "Symbol: %s", msg.Symbol)
 	}
 

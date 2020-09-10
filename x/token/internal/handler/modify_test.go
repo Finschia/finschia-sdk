@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	linktype "github.com/line/link/types"
 )
 
 func TestHandleMsgModify(t *testing.T) {
@@ -21,10 +20,10 @@ func TestHandleMsgModify(t *testing.T) {
 		modifiedMeta      = "modifiedMeta"
 	)
 	// Given MsgModify
-	msg := types.NewMsgModify(addr1, contractID, linktype.NewChanges(
-		linktype.NewChange("name", modifiedTokenName),
-		linktype.NewChange("img_uri", modifiedImgURI),
-		linktype.NewChange("meta", modifiedMeta),
+	msg := types.NewMsgModify(addr1, contractID, types.NewChanges(
+		types.NewChange("name", modifiedTokenName),
+		types.NewChange("img_uri", modifiedImgURI),
+		types.NewChange("meta", modifiedMeta),
 	))
 
 	t.Log("Test with nonexistent token")
@@ -44,10 +43,10 @@ func TestHandleMsgModify(t *testing.T) {
 		require.NoError(t, err)
 		contractID := GetMadeContractID(res.Events)
 
-		msg := types.NewMsgModify(addr1, contractID, linktype.NewChanges(
-			linktype.NewChange("name", modifiedTokenName),
-			linktype.NewChange("img_uri", modifiedImgURI),
-			linktype.NewChange("meta", modifiedMeta),
+		msg := types.NewMsgModify(addr1, contractID, types.NewChanges(
+			types.NewChange("name", modifiedTokenName),
+			types.NewChange("img_uri", modifiedImgURI),
+			types.NewChange("meta", modifiedMeta),
 		))
 
 		// When handle MsgModify

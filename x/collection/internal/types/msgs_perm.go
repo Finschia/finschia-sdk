@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
+	"github.com/line/link/errors"
 	"github.com/line/link/x/contract"
 )
 
@@ -91,5 +91,5 @@ func validateAction(action string, actions ...string) error {
 			return nil
 		}
 	}
-	return sdkerrors.Wrap(linktype.ErrInvalidPermission, fmt.Sprintf("permission should be one of [%s]", strings.Join(actions, ",")))
+	return sdkerrors.Wrap(errors.ErrInvalidPermission, fmt.Sprintf("permission should be one of [%s]", strings.Join(actions, ",")))
 }

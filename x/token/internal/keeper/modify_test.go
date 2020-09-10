@@ -6,7 +6,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 	"github.com/line/link/x/token/internal/types"
 	"github.com/stretchr/testify/require"
@@ -16,10 +15,10 @@ func TestModifyTokenName(t *testing.T) {
 	const modifiedTokenName = "modifiedTokenName"
 	const modifiedMeta = "modifiedMeta"
 	const modifiedImageURI = "modifiedImageURI"
-	changes := linktype.NewChanges(
-		linktype.NewChange("name", modifiedTokenName),
-		linktype.NewChange("meta", modifiedMeta),
-		linktype.NewChange("img_uri", modifiedImageURI),
+	changes := types.NewChanges(
+		types.NewChange("name", modifiedTokenName),
+		types.NewChange("meta", modifiedMeta),
+		types.NewChange("img_uri", modifiedImageURI),
 	)
 
 	ctx := cacheKeeper()

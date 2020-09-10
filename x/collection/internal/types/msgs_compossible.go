@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
 
@@ -55,11 +54,11 @@ func (msg MsgAttach) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 
-	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
+	if err := ValidateTokenID(msg.ToTokenID); err != nil {
 		return sdkerrors.Wrap(ErrInvalidTokenID, msg.ToTokenID)
 	}
 
-	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
+	if err := ValidateTokenID(msg.TokenID); err != nil {
 		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
@@ -117,7 +116,7 @@ func (msg MsgDetach) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
 
-	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
+	if err := ValidateTokenID(msg.TokenID); err != nil {
 		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
@@ -176,10 +175,10 @@ func (msg MsgAttachFrom) ValidateBasic() error {
 	if msg.From.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
-	if err := linktype.ValidateTokenID(msg.ToTokenID); err != nil {
+	if err := ValidateTokenID(msg.ToTokenID); err != nil {
 		return sdkerrors.Wrap(ErrInvalidTokenID, msg.ToTokenID)
 	}
-	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
+	if err := ValidateTokenID(msg.TokenID); err != nil {
 		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 
@@ -240,7 +239,7 @@ func (msg MsgDetachFrom) ValidateBasic() error {
 	if msg.From.Empty() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
 	}
-	if err := linktype.ValidateTokenID(msg.TokenID); err != nil {
+	if err := ValidateTokenID(msg.TokenID); err != nil {
 		return sdkerrors.Wrap(ErrInvalidTokenID, msg.TokenID)
 	}
 

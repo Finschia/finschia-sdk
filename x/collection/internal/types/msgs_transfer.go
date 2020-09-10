@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
 
@@ -137,7 +136,7 @@ func (msg MsgTransferNFT) ValidateBasic() error {
 		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
 	}
 	for _, tokenID := range msg.TokenIDs {
-		if err := types.ValidateTokenID(tokenID); err != nil {
+		if err := ValidateTokenID(tokenID); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}
@@ -272,7 +271,7 @@ func (msg MsgTransferNFTFrom) ValidateBasic() error {
 		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
 	}
 	for _, tokenID := range msg.TokenIDs {
-		if err := types.ValidateTokenID(tokenID); err != nil {
+		if err := ValidateTokenID(tokenID); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}

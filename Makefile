@@ -32,9 +32,12 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 ########################################
 ### Process linker flags
 
-ldflags = -X github.com/line/link/version.Version=$(VERSION) \
-		  -X github.com/line/link/version.Commit=$(COMMIT) \
-		  -X "github.com/line/link/version.BuildTags=$(build_tags_comma_sep)"
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=link \
+		  -X github.com/cosmos/cosmos-sdk/version.ServerName=linkd \
+		  -X github.com/cosmos/cosmos-sdk/version.ClientName=linkcli \
+		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
+		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq ($(WITH_CLEVELDB),yes)
   ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
@@ -73,12 +76,6 @@ build-swagger-docs: statik
 	@perl -pi -e 's/LINK_BUILD_VERSION/$(BASE_VERSION)/' client/lcd/static_resources/swagger-ui/swagger.yaml
 	@statik -src=client/lcd/static_resources -dest=client/lcd -f -m -include=*
 	@perl -pi -e 's/$(BASE_VERSION)/LINK_BUILD_VERSION/' client/lcd/static_resources/swagger-ui/swagger.yaml
-
-build-load-tester: build
-	go build -mod=readonly $(BUILD_FLAGS) -o build/link-load-tester ./contrib/load_test/cmd/link_load_tester
-
-build-load-tester-docker:
-	docker build --build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) -t link-load-tester -f ./contrib/load_test/Dockerfile .
 
 install: go.sum build-swagger-docs
 	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkd
@@ -124,7 +121,7 @@ test: test-all
 
 test-all: test-unit-all test-integration-all
 
-test-integration-all: test-integration test-integration-multi-node test-integration-load-tester
+test-integration-all: test-integration test-integration-multi-node
 
 test-unit-all: test-unit test-unit-race test-unit-cover
 
@@ -143,10 +140,6 @@ test-integration: build
 
 test-integration-multi-node: build-docker
 	@go test -mod=readonly -p 4 `go list ./cli_test/...` $(CLI_MULTI_BUILD_FLAGS) -v
-
-test-integration-load-tester: build-load-tester
-	@go test -mod=readonly -p 4 -timeout 30m ./contrib/load_test/ $(LOAD_TEST_BUILD_FLAGS) -v
-
 
 ########################################
 ### Local TestNet using docker-compose
@@ -201,26 +194,6 @@ dredd-test:
 
 stop-dredd-test:
 	./contract_test/testdata/stop_dredd_test.sh
-
-########################################
-### Load Test
-
-prepare-coins: build
-	./contrib/load_test/scripts/send_coins.sh $(MASTER_ADDR)
-
-run-slave: prepare-coins
-	docker run --rm -d -p 8000:8000 --name slave --network link_localnet -v $(CWD)/contrib/load_test/:/link-load-tester/contrib/load_test/ link-load-tester link-load-tester run-slave
-
-load-test: run-slave
-	./contrib/load_test/scripts/run_load_test.sh
-
-# Repeat prepare only
-prepare-load-test:
-	docker run --rm --name master --network link_localnet -v $(CWD)/contrib/load_test/:/link-load-tester/contrib/load_test/ link-load-tester link-load-tester prepare
-
-# Repeat start only
-start-load-test:
-	docker run --rm --name master --network link_localnet -v $(CWD)/contrib/load_test/:/link-load-tester/contrib/load_test/ link-load-tester link-load-tester start
 
 ########################################
 ### Simulation

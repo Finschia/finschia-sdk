@@ -18,9 +18,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 
+	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/line/link/app"
 	"github.com/line/link/client"
-	"github.com/line/link/version"
 	"github.com/line/link/x/coin"
 )
 

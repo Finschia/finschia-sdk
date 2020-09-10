@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
 
@@ -73,7 +72,7 @@ func (msg MsgMintNFT) ValidateBasic() error {
 		if !ValidateMeta(mintNFTParam.Meta) {
 			return sdkerrors.Wrapf(ErrInvalidMetaLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", mintNFTParam.Meta, MaxTokenMetaLength, utf8.RuneCountInString(mintNFTParam.Meta))
 		}
-		if err := types.ValidateTokenTypeNFT(mintNFTParam.TokenType); err != nil {
+		if err := ValidateTokenTypeNFT(mintNFTParam.TokenType); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}
@@ -117,10 +116,10 @@ func (msg MsgBurnNFT) ValidateBasic() error {
 		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
 	}
 	for _, tokenID := range msg.TokenIDs {
-		if err := types.ValidateTokenID(tokenID); err != nil {
+		if err := ValidateTokenID(tokenID); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
-		if err := types.ValidateTokenTypeNFT(tokenID[:TokenTypeLength]); err != nil {
+		if err := ValidateTokenTypeNFT(tokenID[:TokenTypeLength]); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}
@@ -172,10 +171,10 @@ func (msg MsgBurnNFTFrom) ValidateBasic() error {
 		return sdkerrors.Wrap(ErrEmptyField, "token_ids cannot be empty")
 	}
 	for _, tokenID := range msg.TokenIDs {
-		if err := types.ValidateTokenID(tokenID); err != nil {
+		if err := ValidateTokenID(tokenID); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
-		if err := types.ValidateTokenTypeNFT(tokenID[:TokenTypeLength]); err != nil {
+		if err := ValidateTokenTypeNFT(tokenID[:TokenTypeLength]); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenID, err.Error())
 		}
 	}

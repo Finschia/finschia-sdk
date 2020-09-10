@@ -3,21 +3,20 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
 
 var _ contract.Msg = (*MsgModify)(nil)
 
 type MsgModify struct {
-	Owner      sdk.AccAddress   `json:"owner"`
-	ContractID string           `json:"contract_id"`
-	TokenType  string           `json:"token_type"`
-	TokenIndex string           `json:"token_index"`
-	Changes    linktype.Changes `json:"changes"`
+	Owner      sdk.AccAddress `json:"owner"`
+	ContractID string         `json:"contract_id"`
+	TokenType  string         `json:"token_type"`
+	TokenIndex string         `json:"token_index"`
+	Changes    Changes        `json:"changes"`
 }
 
-func NewMsgModify(owner sdk.AccAddress, contractID, tokenType, tokenIndex string, changes linktype.Changes) MsgModify {
+func NewMsgModify(owner sdk.AccAddress, contractID, tokenType, tokenIndex string, changes Changes) MsgModify {
 	return MsgModify{
 		Owner:      owner,
 		ContractID: contractID,
@@ -45,14 +44,14 @@ func (msg MsgModify) ValidateBasic() error {
 	}
 
 	if msg.TokenType != "" {
-		if err := linktype.ValidateTokenType(msg.TokenType); err != nil {
+		if err := ValidateTokenType(msg.TokenType); err != nil {
 			return sdkerrors.Wrap(ErrInvalidTokenType, msg.TokenType)
 		}
-		if linktype.ValidateTokenTypeFT(msg.TokenType) == nil && msg.TokenIndex == "" {
+		if ValidateTokenTypeFT(msg.TokenType) == nil && msg.TokenIndex == "" {
 			return sdkerrors.Wrap(ErrTokenTypeFTWithoutIndex, msg.TokenType)
 		}
 	}
-	if msg.TokenIndex != "" && linktype.ValidateTokenIndex(msg.TokenIndex) != nil {
+	if msg.TokenIndex != "" && ValidateTokenIndex(msg.TokenIndex) != nil {
 		return sdkerrors.Wrap(ErrInvalidTokenIndex, msg.TokenIndex)
 	}
 

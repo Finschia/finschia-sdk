@@ -25,6 +25,7 @@ var (
 	NewMsgBurn             = types.NewMsgBurn
 	NewMsgTransfer         = types.NewMsgTransfer
 	NewMsgModify           = types.NewMsgModify
+	NewChangesWithMap      = types.NewChangesWithMap
 	NewMsgGrantPermission  = types.NewMsgGrantPermission
 	NewMsgRevokePermission = types.NewMsgRevokePermission
 	ModuleCdc              = types.ModuleCdc

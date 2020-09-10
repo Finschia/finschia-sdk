@@ -16,8 +16,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/line/link/client"
-
-	linktype "github.com/line/link/types"
 )
 
 var (
@@ -88,7 +86,7 @@ func ModifyCmd(cdc *codec.Codec) *cobra.Command {
 			tokenIndex := viper.GetString(flagTokenIndex)
 
 			msg := types.NewMsgModify(cliCtx.FromAddress, contractID, tokenType, tokenIndex,
-				linktype.NewChanges(linktype.NewChange(field, newValue)))
+				types.NewChanges(types.NewChange(field, newValue)))
 			err := msg.ValidateBasic()
 			if err != nil {
 				return err

@@ -4,7 +4,6 @@ import (
 	"unicode/utf8"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 )
 
 const (
@@ -73,7 +72,7 @@ func NewChangesValidator() *ChangesValidator {
 	}
 }
 
-func (c *ChangesValidator) Validate(changes linktype.Changes) error {
+func (c *ChangesValidator) Validate(changes Changes) error {
 	if len(changes) == 0 {
 		return ErrEmptyChanges
 	}

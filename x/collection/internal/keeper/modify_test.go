@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/collection/internal/types"
 	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
@@ -19,10 +18,10 @@ func TestModifyCollection(t *testing.T) {
 		modifiedURI  = "modifiedURI"
 		modifiedMeta = "modifiedMeta"
 	)
-	changes := linktype.NewChanges(
-		linktype.NewChange("name", modifiedName),
-		linktype.NewChange("base_img_uri", modifiedURI),
-		linktype.NewChange("meta", modifiedMeta),
+	changes := types.NewChanges(
+		types.NewChange("name", modifiedName),
+		types.NewChange("base_img_uri", modifiedURI),
+		types.NewChange("meta", modifiedMeta),
 	)
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
@@ -69,12 +68,12 @@ func TestModifyTokenType(t *testing.T) {
 	const modifiedURI = "modifiedURI"
 	const modifiedMeta = "modifiedMeta"
 
-	validChanges := linktype.NewChanges(
-		linktype.NewChange("name", modifiedName),
-		linktype.NewChange("meta", modifiedMeta),
+	validChanges := types.NewChanges(
+		types.NewChange("name", modifiedName),
+		types.NewChange("meta", modifiedMeta),
 	)
-	invalidChanges := linktype.NewChanges(
-		linktype.NewChange("base_img_uri", modifiedURI),
+	invalidChanges := types.NewChanges(
+		types.NewChange("base_img_uri", modifiedURI),
 	)
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
@@ -120,12 +119,12 @@ func TestModifyToken(t *testing.T) {
 	const modifiedURI = "modifiedURI"
 	const modifiedMeta = "modifiedMeta"
 
-	validChanges := linktype.NewChanges(
-		linktype.NewChange("name", modifiedName),
-		linktype.NewChange("meta", modifiedMeta),
+	validChanges := types.NewChanges(
+		types.NewChange("name", modifiedName),
+		types.NewChange("meta", modifiedMeta),
 	)
-	invalidChanges := linktype.NewChanges(
-		linktype.NewChange("base_img_uri", modifiedURI),
+	invalidChanges := types.NewChanges(
+		types.NewChange("base_img_uri", modifiedURI),
 	)
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
@@ -173,8 +172,8 @@ func TestModify(t *testing.T) {
 	const modifiedName = "modifiedName"
 	ctx := cacheKeeper()
 	prepareCollectionTokens(ctx, t)
-	changes := linktype.NewChanges(
-		linktype.NewChange("name", modifiedName),
+	changes := types.NewChanges(
+		types.NewChange("name", modifiedName),
 	)
 	// Given permission
 	modifyPermission := types.NewModifyPermission()

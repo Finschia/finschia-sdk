@@ -6,7 +6,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -65,31 +64,31 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 	}
 	t.Log("image uri too long")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"img_uri": length1001String})).Build()
+		msg := AMsgModify().Changes(NewChangesWithMap(map[string]string{"img_uri": length1001String})).Build()
 
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidImageURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxImageURILength, utf8.RuneCountInString(length1001String)).Error())
 	}
 	t.Log("name too long")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"name": length1001String})).Build()
+		msg := AMsgModify().Changes(NewChangesWithMap(map[string]string{"name": length1001String})).Build()
 
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxTokenNameLength, utf8.RuneCountInString(length1001String)).Error())
 	}
 	t.Log("invalid changes field")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"invalid_field": "val"})).Build()
+		msg := AMsgModify().Changes(NewChangesWithMap(map[string]string{"invalid_field": "val"})).Build()
 
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: invalid_field").Error())
 	}
 	t.Log("no token uri field")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).Build()
+		msg := AMsgModify().Changes(NewChangesWithMap(map[string]string{"name": "new_name"})).Build()
 		require.NoError(t, msg.ValidateBasic())
 	}
 	t.Log("Test with changes more than max")
 	{
 		// Given changes more than max
-		changeList := make([]linktype.Change, MaxChangeFieldsCount+1)
+		changeList := make([]Change, MaxChangeFieldsCount+1)
 		msg := AMsgModify().Changes(changeList).Build()
 
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidChangesFieldCount, "You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, len(changeList)).Error())
@@ -101,7 +100,7 @@ func AMsgModify() *MsgModifyBuilder {
 		msgModify: NewMsgModify(
 			sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address()),
 			DefaultContractID,
-			linktype.NewChangesWithMap(map[string]string{
+			NewChangesWithMap(map[string]string{
 				"name":    "new_name",
 				"img_uri": "new_img_uri",
 			}),
@@ -127,7 +126,7 @@ func (b *MsgModifyBuilder) ContractID(contractID string) *MsgModifyBuilder {
 	return b
 }
 
-func (b *MsgModifyBuilder) Changes(changes linktype.Changes) *MsgModifyBuilder {
+func (b *MsgModifyBuilder) Changes(changes Changes) *MsgModifyBuilder {
 	b.msgModify.Changes = changes
 	return b
 }

@@ -31,8 +31,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 	upgradeclient "github.com/cosmos/cosmos-sdk/x/upgrade/client"
 
+	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/line/link/version"
 	"github.com/line/link/x/collection"
 )
 

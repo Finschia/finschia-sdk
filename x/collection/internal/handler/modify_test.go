@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	linktype "github.com/line/link/types"
 )
 
 func TestHandleMsgModifyForCollection(t *testing.T) {
@@ -21,10 +20,10 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 	var contractID string
 
 	// Given MsgModify
-	msg := types.NewMsgModify(addr1, defaultContractID, "", "", linktype.NewChanges(
-		linktype.NewChange("name", modifiedName),
-		linktype.NewChange("base_img_uri", modifiedImgURI),
-		linktype.NewChange("meta", modifiedMeta),
+	msg := types.NewMsgModify(addr1, defaultContractID, "", "", types.NewChanges(
+		types.NewChange("name", modifiedName),
+		types.NewChange("base_img_uri", modifiedImgURI),
+		types.NewChange("meta", modifiedMeta),
 	))
 
 	t.Log("Test with nonexistent token")
@@ -44,10 +43,10 @@ func TestHandleMsgModifyForCollection(t *testing.T) {
 		contractID = GetMadeContractID(res.Events)
 
 		// When handle MsgModify
-		msg = types.NewMsgModify(addr1, contractID, "", "", linktype.NewChanges(
-			linktype.NewChange("name", modifiedName),
-			linktype.NewChange("base_img_uri", modifiedImgURI),
-			linktype.NewChange("meta", modifiedMeta)))
+		msg = types.NewMsgModify(addr1, contractID, "", "", types.NewChanges(
+			types.NewChange("name", modifiedName),
+			types.NewChange("base_img_uri", modifiedImgURI),
+			types.NewChange("meta", modifiedMeta)))
 		res, err = h(ctx, msg)
 
 		// Then response is success
@@ -80,9 +79,9 @@ func TestHandleMsgModifyForToken(t *testing.T) {
 	contractID := GetMadeContractID(res.Events)
 
 	// Given MsgModify
-	msg := types.NewMsgModify(addr1, contractID, defaultTokenType, defaultTokenIndex, linktype.NewChanges(
-		linktype.NewChange("name", modifiedTokenName),
-		linktype.NewChange("meta", modifiedMeta),
+	msg := types.NewMsgModify(addr1, contractID, defaultTokenType, defaultTokenIndex, types.NewChanges(
+		types.NewChange("name", modifiedTokenName),
+		types.NewChange("meta", modifiedMeta),
 	))
 
 	t.Log("Test with nonexistent token")
@@ -134,9 +133,9 @@ func TestHandleMsgModifyForTokenType(t *testing.T) {
 	contractID := GetMadeContractID(res.Events)
 
 	// Given MsgModify
-	msg := types.NewMsgModify(addr1, contractID, defaultTokenType, "", linktype.NewChanges(
-		linktype.NewChange("name", modifiedTokenName),
-		linktype.NewChange("meta", modifiedMeta),
+	msg := types.NewMsgModify(addr1, contractID, defaultTokenType, "", types.NewChanges(
+		types.NewChange("name", modifiedTokenName),
+		types.NewChange("meta", modifiedMeta),
 	))
 
 	t.Log("Test with nonexistent token type")

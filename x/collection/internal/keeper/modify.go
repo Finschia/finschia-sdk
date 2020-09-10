@@ -3,12 +3,11 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/collection/internal/types"
 )
 
 func (k Keeper) Modify(ctx sdk.Context, owner sdk.AccAddress, tokenType, tokenIndex string,
-	changes linktype.Changes) error {
+	changes types.Changes) error {
 	if tokenType != "" {
 		if tokenIndex != "" {
 			return k.modifyToken(ctx, owner, tokenType+tokenIndex, changes)
@@ -22,7 +21,7 @@ func (k Keeper) Modify(ctx sdk.Context, owner sdk.AccAddress, tokenType, tokenIn
 }
 
 // nolint:dupl
-func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, changes linktype.Changes) error {
+func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, changes types.Changes) error {
 	collection, err := k.GetCollection(ctx)
 	if err != nil {
 		return err
@@ -67,7 +66,7 @@ func (k Keeper) modifyCollection(ctx sdk.Context, owner sdk.AccAddress, changes 
 
 // nolint:dupl
 func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, tokenTypeID string,
-	changes linktype.Changes) error {
+	changes types.Changes) error {
 	tokenType, err := k.GetTokenType(ctx, tokenTypeID)
 	if err != nil {
 		return err
@@ -111,7 +110,7 @@ func (k Keeper) modifyTokenType(ctx sdk.Context, owner sdk.AccAddress, tokenType
 
 // nolint:dupl
 func (k Keeper) modifyToken(ctx sdk.Context, owner sdk.AccAddress, tokenID string,
-	changes linktype.Changes) error {
+	changes types.Changes) error {
 	token, err := k.GetToken(ctx, tokenID)
 	if err != nil {
 		return err

@@ -6,7 +6,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
@@ -67,32 +66,32 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 	}
 	t.Log("img uri too long")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"base_img_uri": length1001String})).
+		msg := AMsgModify().Changes(NewChangesWithMap(map[string]string{"base_img_uri": length1001String})).
 			Build()
 
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidBaseImgURILength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxBaseImgURILength, utf8.RuneCountInString(length1001String)).Error())
 	}
 	t.Log("name too long")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"name": length1001String})).Build()
+		msg := AMsgModify().Changes(NewChangesWithMap(map[string]string{"name": length1001String})).Build()
 
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrInvalidNameLength, "[%s] should be shorter than [%d] UTF-8 characters, current length: [%d]", length1001String, MaxTokenNameLength, utf8.RuneCountInString(length1001String)).Error())
 	}
 	t.Log("invalid changes field")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"invalid_field": "val"})).Build()
+		msg := AMsgModify().Changes(NewChangesWithMap(map[string]string{"invalid_field": "val"})).Build()
 
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: invalid_field").Error())
 	}
 	t.Log("no token uri field")
 	{
-		msg := AMsgModify().Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).Build()
+		msg := AMsgModify().Changes(NewChangesWithMap(map[string]string{"name": "new_name"})).Build()
 		require.NoError(t, msg.ValidateBasic())
 	}
 	t.Log("Test with changes more than max")
 	{
 		// Given msg with changes more than max
-		changeList := make([]linktype.Change, MaxChangeFieldsCount+1)
+		changeList := make([]Change, MaxChangeFieldsCount+1)
 		msg := AMsgModify().Changes(changeList).Build()
 
 		// When validate basic, Then error is occurred
@@ -104,7 +103,7 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: base_img_uri").Error())
 
 		msg = AMsgModify().TokenType(defaultTokenType).
-			Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).
+			Changes(NewChangesWithMap(map[string]string{"name": "new_name"})).
 			Build()
 		require.NoError(t, msg.ValidateBasic())
 	}
@@ -114,7 +113,7 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: base_img_uri").Error())
 
 		msg = AMsgModify().TokenType(defaultTokenType).TokenIndex(defaultTokenIndex).
-			Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).
+			Changes(NewChangesWithMap(map[string]string{"name": "new_name"})).
 			Build()
 		require.NoError(t, msg.ValidateBasic())
 	}
@@ -124,7 +123,7 @@ func TestMsgModify_ValidateBasic(t *testing.T) {
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidChangesField, "Field: base_img_uri").Error())
 
 		msg = AMsgModify().TokenType(defaultTokenTypeFT).TokenIndex(defaultTokenIndex).
-			Changes(linktype.NewChangesWithMap(map[string]string{"name": "new_name"})).
+			Changes(NewChangesWithMap(map[string]string{"name": "new_name"})).
 			Build()
 		require.NoError(t, msg.ValidateBasic())
 	}
@@ -159,7 +158,7 @@ func AMsgModify() *MsgModifyBuilder {
 			defaultContractID,
 			"",
 			"",
-			linktype.NewChangesWithMap(map[string]string{
+			NewChangesWithMap(map[string]string{
 				"name":         "new_name",
 				"base_img_uri": "new_base_img_uri",
 			}),
@@ -195,7 +194,7 @@ func (b *MsgModifyBuilder) TokenIndex(tokenIndex string) *MsgModifyBuilder {
 	return b
 }
 
-func (b *MsgModifyBuilder) Changes(changes linktype.Changes) *MsgModifyBuilder {
+func (b *MsgModifyBuilder) Changes(changes Changes) *MsgModifyBuilder {
 	b.msgModify.Changes = changes
 	return b
 }

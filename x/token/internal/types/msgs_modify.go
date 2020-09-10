@@ -3,19 +3,18 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/contract"
 )
 
 var _ contract.Msg = (*MsgModify)(nil)
 
 type MsgModify struct {
-	Owner      sdk.AccAddress   `json:"owner"`
-	ContractID string           `json:"contract_id"`
-	Changes    linktype.Changes `json:"changes"`
+	Owner      sdk.AccAddress `json:"owner"`
+	ContractID string         `json:"contract_id"`
+	Changes    Changes        `json:"changes"`
 }
 
-func NewMsgModify(owner sdk.AccAddress, contractID string, changes linktype.Changes) MsgModify {
+func NewMsgModify(owner sdk.AccAddress, contractID string, changes Changes) MsgModify {
 	return MsgModify{
 		Owner:      owner,
 		ContractID: contractID,

@@ -3,11 +3,10 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/line/link/x/token/internal/types"
 )
 
-func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, changes linktype.Changes) error {
+func (k Keeper) ModifyToken(ctx sdk.Context, owner sdk.AccAddress, changes types.Changes) error {
 	token, err := k.GetToken(ctx)
 	if err != nil {
 		return err

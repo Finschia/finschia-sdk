@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/line/link/version"
+	"github.com/cosmos/cosmos-sdk/version"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"

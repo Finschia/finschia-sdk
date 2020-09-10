@@ -6,7 +6,6 @@ import (
 	"unicode/utf8"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	linktype "github.com/line/link/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -45,7 +44,7 @@ func TestValidateChangesForCollection(t *testing.T) {
 
 	t.Log("Test with valid changes")
 	{
-		changes := linktype.NewChangesWithMap(map[string]string{
+		changes := NewChangesWithMap(map[string]string{
 			"name":         "new_name",
 			"base_img_uri": "new_base_uri",
 		})
@@ -54,13 +53,13 @@ func TestValidateChangesForCollection(t *testing.T) {
 	}
 	t.Log("Test with empty changes")
 	{
-		changes := linktype.Changes{}
+		changes := Changes{}
 		require.EqualError(t, validator.Validate(changes), ErrEmptyChanges.Error())
 	}
 	t.Log("Test with base_img_uri too long")
 	{
 		length1001String := strings.Repeat("Eng글자日本語はスゲ", 91) // 11 * 91 = 1001
-		changes := linktype.NewChangesWithMap(map[string]string{
+		changes := NewChangesWithMap(map[string]string{
 			"name":         "new_name",
 			"base_img_uri": length1001String,
 		})
@@ -74,8 +73,8 @@ func TestValidateChangesForCollection(t *testing.T) {
 	t.Log("Test with invalid changes field")
 	{
 		// Given changes with invalid fields
-		changes := linktype.NewChanges(
-			linktype.NewChange("invalid_field", "value"),
+		changes := NewChanges(
+			NewChange("invalid_field", "value"),
 		)
 
 		// Then error is occurred
@@ -84,8 +83,8 @@ func TestValidateChangesForCollection(t *testing.T) {
 	t.Log("Test with changes more than max")
 	{
 		// Given changes more than max
-		changeList := make([]linktype.Change, MaxChangeFieldsCount+1)
-		changes := linktype.Changes(changeList)
+		changeList := make([]Change, MaxChangeFieldsCount+1)
+		changes := Changes(changeList)
 
 		// Then error is occurred
 		require.EqualError(t, validator.Validate(changes), sdkerrors.Wrapf(ErrInvalidChangesFieldCount, "You can not change fields more than [%d] at once, current count: [%d]", MaxChangeFieldsCount, len(changeList)).Error())
@@ -93,9 +92,9 @@ func TestValidateChangesForCollection(t *testing.T) {
 	t.Log("Test with duplicate fields")
 	{
 		// Given changes with duplicate fields
-		changes := linktype.NewChanges(
-			linktype.NewChange("name", "value"),
-			linktype.NewChange("name", "value2"),
+		changes := NewChanges(
+			NewChange("name", "value"),
+			NewChange("name", "value2"),
 		)
 
 		// Then error is occurred
@@ -111,7 +110,7 @@ func TestValidateChangesForTokenType(t *testing.T) {
 
 	t.Log("Test with valid changes")
 	{
-		changes := linktype.NewChangesWithMap(map[string]string{
+		changes := NewChangesWithMap(map[string]string{
 			"name": "new_name",
 		})
 
@@ -119,7 +118,7 @@ func TestValidateChangesForTokenType(t *testing.T) {
 	}
 	t.Log("Test with base_img_uri")
 	{
-		changes := linktype.NewChangesWithMap(map[string]string{
+		changes := NewChangesWithMap(map[string]string{
 			"name":         "new_name",
 			"base_img_uri": "new_base_uri",
 		})
@@ -136,7 +135,7 @@ func TestValidateChangesForToken(t *testing.T) {
 
 	t.Log("Test with valid changes")
 	{
-		changes := linktype.NewChangesWithMap(map[string]string{
+		changes := NewChangesWithMap(map[string]string{
 			"name": "new_name",
 		})
 
@@ -144,7 +143,7 @@ func TestValidateChangesForToken(t *testing.T) {
 	}
 	t.Log("Test with base_img_uri")
 	{
-		changes := linktype.NewChangesWithMap(map[string]string{
+		changes := NewChangesWithMap(map[string]string{
 			"name":         "new_name",
 			"base_img_uri": "new_base_uri",
 		})
