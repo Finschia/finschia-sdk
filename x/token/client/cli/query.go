@@ -3,9 +3,9 @@ package cli
 import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/client"
-	clienttypes "github.com/line/link/x/token/client/internal/types"
-	"github.com/line/link/x/token/internal/types"
+	"github.com/line/link-modules/client"
+	clienttypes "github.com/line/link-modules/x/token/client/internal/types"
+	"github.com/line/link-modules/x/token/internal/types"
 	"github.com/spf13/cobra"
 )
 

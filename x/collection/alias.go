@@ -1,8 +1,8 @@
 package collection
 
 import (
-	"github.com/line/link/x/collection/internal/keeper"
-	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link-modules/x/collection/internal/keeper"
+	"github.com/line/link-modules/x/collection/internal/types"
 )
 
 const (

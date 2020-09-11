@@ -2,8 +2,8 @@ package client
 
 import (
 	cosmoscli "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
-	"github.com/line/link/x/account/client/cli"
-	"github.com/line/link/x/account/client/rest"
+	"github.com/line/link-modules/x/account/client/cli"
+	"github.com/line/link-modules/x/account/client/rest"
 )
 
 var (

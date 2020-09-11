@@ -5,7 +5,7 @@ import (
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	"github.com/line/link/x/collection/internal/legacy"
+	"github.com/line/link-modules/x/collection/internal/legacy"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
@@ -17,12 +17,12 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/line/link/client"
-	"github.com/line/link/x/collection/client/cli"
-	"github.com/line/link/x/collection/client/rest"
-	"github.com/line/link/x/collection/internal/handler"
-	"github.com/line/link/x/collection/internal/keeper"
-	"github.com/line/link/x/collection/internal/querier"
+	"github.com/line/link-modules/client"
+	"github.com/line/link-modules/x/collection/client/cli"
+	"github.com/line/link-modules/x/collection/client/rest"
+	"github.com/line/link-modules/x/collection/internal/handler"
+	"github.com/line/link-modules/x/collection/internal/keeper"
+	"github.com/line/link-modules/x/collection/internal/querier"
 )
 
 var (

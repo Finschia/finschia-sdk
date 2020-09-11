@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/line/link/x/coin/internal/types"
+	"github.com/line/link-modules/x/coin/internal/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 

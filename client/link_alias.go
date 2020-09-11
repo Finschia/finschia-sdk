@@ -9,10 +9,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
 
-	linklcd "github.com/line/link/client/lcd"
-	linkrpc "github.com/line/link/client/rpc"
-	"github.com/line/link/client/rpc/link/genesis"
-	"github.com/line/link/client/rpc/link/mempool"
+	linklcd "github.com/line/link-modules/client/lcd"
+	linkrpc "github.com/line/link-modules/client/rpc"
+	"github.com/line/link-modules/client/rpc/link/genesis"
+	"github.com/line/link-modules/client/rpc/link/mempool"
 )
 
 const (

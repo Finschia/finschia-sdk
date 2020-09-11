@@ -1,9 +1,9 @@
 package coin
 
 import (
-	"github.com/line/link/x/coin/client/cli"
-	"github.com/line/link/x/coin/internal/keeper"
-	"github.com/line/link/x/coin/internal/types"
+	"github.com/line/link-modules/x/coin/client/cli"
+	"github.com/line/link-modules/x/coin/internal/keeper"
+	"github.com/line/link-modules/x/coin/internal/types"
 )
 
 const (

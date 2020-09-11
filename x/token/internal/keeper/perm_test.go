@@ -3,7 +3,7 @@ package keeper
 import (
 	"testing"
 
-	"github.com/line/link/x/token/internal/types"
+	"github.com/line/link-modules/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"

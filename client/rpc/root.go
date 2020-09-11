@@ -2,8 +2,8 @@ package rpc
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/line/link/client/rpc/link/genesis"
-	"github.com/line/link/client/rpc/link/mempool"
+	"github.com/line/link-modules/client/rpc/link/genesis"
+	"github.com/line/link-modules/client/rpc/link/mempool"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/rpc"

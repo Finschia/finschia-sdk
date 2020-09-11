@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	genutilrest "github.com/cosmos/cosmos-sdk/x/genutil/client/rest"
-	"github.com/line/link/x/account/client/utils"
+	"github.com/line/link-modules/x/account/client/utils"
 )
 
 // QueryGenesisTxRequestHandlerFn implements a REST handler to get the genesis

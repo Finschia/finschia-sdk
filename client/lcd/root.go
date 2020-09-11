@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 
 	// unnamed import of statik for swagger UI support
-	_ "github.com/line/link/client/lcd/statik"
+	_ "github.com/line/link-modules/client/lcd/statik"
 )
 
 // to refresh cache per deployment

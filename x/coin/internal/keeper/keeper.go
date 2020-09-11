@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link/x/coin/internal/types"
+	"github.com/line/link-modules/x/coin/internal/types"
 )
 
 type Keeper struct {

@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
 
-	"github.com/line/link/x/collection/internal/types"
-	"github.com/line/link/x/contract"
+	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/link-modules/x/contract"
 )
 
 type Keeper struct {

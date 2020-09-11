@@ -7,17 +7,6 @@ defaults: &linux_defaults
       environment:
         GO111MODULE: 'on'
 
-machine_defaults: &machine_defaults
-  working_directory: /home/circleci/.go_workspace/src/github.com/line/link
-  machine:
-    image: circleci/classic:latest
-    docker_layer_caching: true
-  environment:
-    GOPATH: /home/circleci/.go_workspace/
-    GOOS: linux
-    GOARCH: amd64
-    GO_VERSION: "1.13.4"
-
 jobs:
   check-skippable-pr:
     docker:
@@ -106,60 +95,12 @@ jobs:
           name: check formatting
           command: if [[ -n "$(gofmt -l .)" ]]; then gofmt -l .; exit 1; fi
 
-  setup_dependencies:
-    <<: *linux_defaults
-    resource_class: xlarge
-    steps:
-      - run: mkdir -p /tmp/workspace/bin
-      - run: mkdir -p /tmp/workspace/profiles
-      - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-cleveldb-1.20
-      - run:
-          name: run setup cleveldb
-          command: |
-            set -x
-            export WITH_CLEVELDB=yes
-            if [ ! -d /tmp/cleveldb_binary ] ; then
-                mkdir -p /tmp/cleveldb_binary
-                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
-            fi
-            pushd /tmp/cleveldb_binary
-            ./get_cleveldb.sh ${WITH_CLEVELDB}
-            popd
-      - save_cache:
-          key: dependency-cache-cleveldb-1.20
-          paths:
-            - "/tmp/cleveldb_binary"
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run:
-          name: binaries
-          command: |
-            export PATH=/tmp/workspace/bin:$PATH
-            go env -w GOPRIVATE=github.com/line/*
-            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-            make go-mod-cache
-            make install WITH_CLEVELDB=yes
-      - save_cache:
-          key: dependency-cache-mod-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
-      - run:
-          name: tools
-          command: |
-            make get-tools
   lint:
     <<: *linux_defaults
     resource_class: xlarge
     parallelism: 1
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
       - run:
           name: lint
           command: |
@@ -173,206 +114,12 @@ jobs:
     parallelism: 1
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run: make test-unit-cover
-      - run: bash <(curl -s https://codecov.io/bash) -f ./coverage.txt -F "unittest" -Z
-  integration_test:
-    <<: *linux_defaults
-    resource_class: xlarge
-    parallelism: 1
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
       - run:
-          name: Test cli
+          name: unit-test
           command: |
-            export BUILDDIR=`pwd`/build
-            make test-integration
-  setup_docker_and_binary:
-    <<: *machine_defaults
-    resource_class: xlarge
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - machine-dependency-cache-cleveldb-1.20
-      - run:
-          name: run setup cleveldb
-          command: |
-            set -x
-            export WITH_CLEVELDB=yes
-            if [ ! -d /tmp/cleveldb_binary ] ; then
-                mkdir -p /tmp/cleveldb_binary
-                cp ./contrib/get_cleveldb.sh /tmp/cleveldb_binary
-            fi
-            pushd /tmp/cleveldb_binary
-            ./get_cleveldb.sh ${WITH_CLEVELDB}
-            popd
-      - save_cache:
-          key: machine-dependency-cache-cleveldb-1.20
-          paths:
-            - "/tmp/cleveldb_binary"
-      - restore_cache:
-          keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
-      - run:
-          name: run setup go
-          command: |
-            set -x
-            if [ "$(go version)" != "go version go1.13.4 linux/amd64" ]; then
-                mkdir -p /tmp/gobinary
-                pushd /tmp/gobinary
-                wget https://dl.google.com/go/go$GO_VERSION.linux-amd64.tar.gz
-                sudo tar -xvf go$GO_VERSION.linux-amd64.tar.gz
-                sudo rm -rf /usr/local/go
-                sudo cp -r go /usr/local
-                popd
-            fi
-      - run:
-          name: build binaries
-          command: |
-            set -x
             go env -w GOPRIVATE=github.com/line/*
             git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-            make build WITH_CLEVELDB=yes
-      - save_cache:
-          key: machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
-          paths:
-            - "/home/circleci/.go_workspace/pkg/mod"
-            - "/tmp/gobinary"
-
-  sim-link-nondeterminism:
-    <<: *linux_defaults
-    resource_class: xlarge
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run:
-          name: test individual module simulations
-          command: |
-            make sim-link-nondeterminism
-
-  sim-link-simulation-after-import:
-    <<: *linux_defaults
-    resource_class: xlarge
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run:
-          name: test simulation after import
-          command: |
-            make get-tools
-            make sim-link-simulation-after-import
-
-  sim-link-multi-seed:
-    <<: *linux_defaults
-    resource_class: xlarge
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run:
-          name: test multi-seed simulation
-          command: |
-            make get-tools
-            make sim-link-multi-seed
-
-  sim-link-multi-seed-short:
-    <<: *linux_defaults
-    resource_class: xlarge
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - dependency-cache-mod-{{ checksum "go.sum" }}
-      - run:
-          name: test multi-seed simulation (short)
-          command: |
-            make get-tools
-            make sim-link-multi-seed-short
-
-  integration_multi_node_test:
-    <<: *machine_defaults
-    resource_class: xlarge
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - machine-dependency-cache-cleveldb-1.20
-      - run:
-          name: copy cleveldb binary
-          command: |
-            set -x
-            export WITH_CLEVELDB=yes
-            pushd /tmp/cleveldb_binary
-            ./get_cleveldb.sh ${WITH_CLEVELDB}
-            popd
-      - restore_cache:
-          keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
-      - run:
-          name: copy go compiler
-          command: |
-            set -x
-            pushd /tmp/gobinary
-            sudo rm -rf /usr/local/go
-            sudo mv go /usr/local
-            popd
-      - run:
-          name: build binary
-          command: |
-            set -x
-            go env -w GOPRIVATE=github.com/line/*
-            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-            make build WITH_CLEVELDB=yes
-      - run:
-          name: build docker image
-          command: |
-            set -x
-            make build-docker WITH_CLEVELDB=yes
-      - run:
-          name: run integration test for multi node and exit on failure
-          command: |
-            set -x
-            docker network prune -f
-            make test-integration-multi-node
-  localnet:
-    <<: *machine_defaults
-    resource_class: medium
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - machine-dependency-cache-mod-{{ checksum "go.sum" }}-1.13.4
-      - run:
-          name: copy go compiler
-          command: |
-            set -x
-            pushd /tmp/gobinary
-            sudo rm -rf /usr/local/go
-            sudo mv go /usr/local
-            popd
-      - run:
-          name: build docker image
-          command: |
-            set -x
-            make build-docker WITH_CLEVELDB=yes
-      - run:
-          name: run localnet and exit on failure
-          command: |
-            set -x
-            docker network prune -f
-            make testnet-start
-            ./networks/local/localnet-blocks-test.sh 40 5 10 localhost
+            make test-unit
   semantic_release:
     docker:
       - image: circleci/node:10
@@ -382,31 +129,6 @@ jobs:
       - run: yarn global add --no-progress --non-interactive "semantic-release" "@semantic-release/exec"
       - run: $(yarn global bin)/semantic-release
 
-  deploy:
-    docker:
-      - image: circleci/golang:1.13.4
-    resource_class: medium
-    steps:
-      - checkout
-      - run: go env -w GOPRIVATE=github.com/line/*
-      - run: git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-      - run: make build-swagger-docs
-      - run: curl -sL https://git.io/goreleaser | bash -s -- --skip-validate --rm-dist
-
-  contract_test:
-    <<: *linux_defaults
-    resource_class: medium
-    steps:
-      - run: rm -rf /tmp/contract_test
-      - run: mkdir -p /tmp/contract_test
-      - checkout
-      - run:
-          name: Get Node.js and test REST implementation against swagger documentation
-          command: |
-            go env -w GOPRIVATE=github.com/line/*
-            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-            go get github.com/snikch/goodman/cmd/goodman
-            ./contrib/get_node.sh && make contract-test
 workflows:
   version: 2.1
   build_and_test:
@@ -417,100 +139,15 @@ workflows:
             - check-skippable-pr
       - lint:
           requires:
-            - fmt
-      - setup_dependencies:
-          requires:
-            - lint
+            - check-skippable-pr
       - unit_test:
           requires:
-            - setup_dependencies
-      - integration_test:
-          requires:
-            - setup_dependencies
-      - contract_test
-      - setup_docker_and_binary:
-          requires:
-            - lint
-          filters:
-            branches:
-              only:
-                - master
-                - develop
-                - /hotfix-.*/
-                - /testall-.*/
-      - localnet:
-          requires:
-            - setup_docker_and_binary
-          filters:
-            branches:
-              only:
-                - master
-                - develop
-                - /hotfix-.*/
-                - /testall-.*/
-      - integration_multi_node_test:
-          requires:
-            - setup_docker_and_binary
-          filters:
-            branches:
-              only:
-                - master
-                - develop
-                - /hotfix-.*/
-                - /testall-.*/
-      - sim-link-nondeterminism:
-          requires:
-            - setup_dependencies
-          filters:
-            branches:
-              only:
-                - master
-                - develop
-                - /hotfix-.*/
-                - /testall-.*/
-      - sim-link-simulation-after-import:
-          requires:
-            - setup_dependencies
-          filters:
-            branches:
-              only:
-                - master
-                - develop
-                - /hotfix-.*/
-                - /testall-.*/
-      - sim-link-multi-seed:
-          requires:
-            - setup_dependencies
-          filters:
-            branches:
-              only:
-                - hotfix-sim-link-multi-seed
-      - sim-link-multi-seed-short:
-          requires:
-            - setup_dependencies
-          filters:
-            branches:
-              only:
-                - master
-                - develop
-                - /hotfix-.*/
-                - /testall-.*/
+            - check-skippable-pr
       - semantic_release:
           requires:
+            - fmt
+            - lint
             - unit_test
-            - contract_test
-            - integration_test
-            - localnet
-            - integration_multi_node_test
-            - sim-link-nondeterminism
-            - sim-link-simulation-after-import
-            - sim-link-multi-seed-short
-          filters:
-            branches:
-              only: master
-      - deploy:
-          requires:
-            - semantic_release
           filters:
             branches:
               only: master

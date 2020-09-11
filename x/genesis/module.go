@@ -3,8 +3,8 @@ package genesis
 import (
 	"encoding/json"
 
-	"github.com/line/link/client"
-	"github.com/line/link/x/genesis/internal/keeper"
+	"github.com/line/link-modules/client"
+	"github.com/line/link-modules/x/genesis/internal/keeper"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"

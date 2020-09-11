@@ -3,7 +3,7 @@ package cli
 import (
 	"bufio"
 
-	"github.com/line/link/x/coin/internal/types"
+	"github.com/line/link-modules/x/coin/internal/types"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"

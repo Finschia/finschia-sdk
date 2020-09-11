@@ -1,5 +1,5 @@
 ---
-repositoryUrl: git@github.com:line/link.git
+repositoryUrl: git@github.com:line/link-modules.git
 verifyConditions: ['@semantic-release/github']
 prepare: []
 publish: ['@semantic-release/github']

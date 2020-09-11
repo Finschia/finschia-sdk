@@ -1,8 +1,8 @@
 package token
 
 import (
-	"github.com/line/link/x/token/internal/keeper"
-	"github.com/line/link/x/token/internal/types"
+	"github.com/line/link-modules/x/token/internal/keeper"
+	"github.com/line/link-modules/x/token/internal/types"
 )
 
 const (

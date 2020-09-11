@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/line/link/x/coin/internal/keeper"
-	"github.com/line/link/x/coin/internal/types"
+	"github.com/line/link-modules/x/coin/internal/keeper"
+	"github.com/line/link-modules/x/coin/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"

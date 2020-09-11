@@ -1,8 +1,8 @@
 package contract
 
 import (
-	"github.com/line/link/x/contract/internal/keeper"
-	"github.com/line/link/x/contract/internal/types"
+	"github.com/line/link-modules/x/contract/internal/keeper"
+	"github.com/line/link-modules/x/contract/internal/types"
 )
 
 const (

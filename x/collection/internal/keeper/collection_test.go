@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link/x/collection/internal/types"
-	"github.com/line/link/x/contract"
+	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/link-modules/x/contract"
 	"github.com/stretchr/testify/require"
 )
 

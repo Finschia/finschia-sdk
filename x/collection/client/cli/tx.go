@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link-modules/x/collection/internal/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -15,7 +15,7 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/line/link/client"
+	"github.com/line/link-modules/client"
 )
 
 var (

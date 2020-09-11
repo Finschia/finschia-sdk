@@ -5,8 +5,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/x/contract"
-	"github.com/line/link/x/token/internal/types"
+	"github.com/line/link-modules/x/contract"
+	"github.com/line/link-modules/x/token/internal/types"
 	"github.com/tendermint/tendermint/libs/log"
 )
 

@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/line/link/client"
+	"github.com/line/link-modules/client"
 )
 
 // SimulateReq defines a tx simulating request.

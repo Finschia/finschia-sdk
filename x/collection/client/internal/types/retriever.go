@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	context "github.com/line/link/client"
-	"github.com/line/link/x/collection/internal/types"
+	context "github.com/line/link-modules/client"
+	"github.com/line/link-modules/x/collection/internal/types"
 )
 
 type Retriever struct {

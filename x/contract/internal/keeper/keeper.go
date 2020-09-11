@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link/x/contract/internal/types"
+	"github.com/line/link-modules/x/contract/internal/types"
 )
 
 /***

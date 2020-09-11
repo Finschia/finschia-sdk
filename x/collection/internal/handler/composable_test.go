@@ -3,7 +3,7 @@ package handler
 import (
 	"testing"
 
-	"github.com/line/link/x/collection/internal/types"
+	"github.com/line/link-modules/x/collection/internal/types"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"

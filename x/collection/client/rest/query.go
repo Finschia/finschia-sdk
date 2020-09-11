@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	clienttypes "github.com/line/link/x/collection/client/internal/types"
-	"github.com/line/link/x/collection/internal/types"
+	clienttypes "github.com/line/link-modules/x/collection/client/internal/types"
+	"github.com/line/link-modules/x/collection/internal/types"
 
 	"github.com/gorilla/mux"
-	"github.com/line/link/client"
+	"github.com/line/link-modules/client"
 
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )

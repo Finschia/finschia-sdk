@@ -3,7 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link/x/contract"
+	"github.com/line/link-modules/x/contract"
 )
 
 var _ contract.Msg = (*MsgApprove)(nil)

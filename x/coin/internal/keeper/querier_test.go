@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/link/x/coin/internal/types"
+	"github.com/line/link-modules/x/coin/internal/types"
 
 	"github.com/stretchr/testify/require"
 
