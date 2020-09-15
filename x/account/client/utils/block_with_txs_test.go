@@ -5,12 +5,14 @@ import (
 	"errors"
 	"fmt"
 	"math"
+	"math/rand"
 	"testing"
 	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/golang/mock/gomock"
+	"github.com/line/link/x/account/client/types"
 	"github.com/line/link/x/account/client/utils/mock"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -44,6 +46,60 @@ func TestLatestBlockHeight(t *testing.T) {
 	ret, err := LatestBlockHeight(cliCtx)
 	require.NoError(t, err)
 	require.Equal(t, height, ret)
+}
+
+func TestBlockWithTxResponses(t *testing.T) {
+	rand.Seed(time.Now().UnixNano())
+	cdc := setupCodec()
+
+	height := int64(100)
+
+	resBlock := &ctypes.ResultBlock{
+		Block: &tmtypes.Block{
+			Header: tmtypes.Header{
+				Height: height,
+				Time:   time.Time{},
+			},
+		},
+	}
+
+	mockClient := mock.NewMockClient(gomock.NewController(t))
+	cliCtx := context.CLIContext{
+		Client:    mockClient,
+		TrustNode: true,
+		Codec:     cdc,
+	}
+	mockClient.EXPECT().Block(&height).Return(resBlock, nil)
+
+	resTxSearch := &ctypes.ResultTxSearch{
+		Txs:        nil,
+		TotalCount: 0,
+	}
+
+	const defaultLimit = 100
+	mockClient.EXPECT().
+		TxSearch(fmt.Sprintf("tx.height=%d", height), !cliCtx.TrustNode, 1, defaultLimit, "").
+		Return(resTxSearch, nil)
+
+	actual, err := BlockWithTxResponses(cliCtx, height+1, height, int64(1))
+
+	results := make([]*types.ResultBlockWithTxResponses, 1)
+
+	txResponses := make([]types.TxResponse, 0)
+	results[0] = &types.ResultBlockWithTxResponses{
+		ResultBlock: &types.ResultBlock{
+			BlockSize: resBlock.Block.Size(),
+			BlockID:   resBlock.BlockID,
+			Block:     resBlock.Block,
+		},
+		TxResponses: txResponses,
+	}
+	expected := &types.HasMoreResponseWrapper{
+		Items:   results,
+		HasMore: true,
+	}
+	require.NoError(t, err)
+	require.Equal(t, expected, actual)
 }
 
 func TestLatestBlockHeightWithError(t *testing.T) {
