@@ -109,8 +109,13 @@ func LinkPreRunEFn(context *server.Context) func(*cobra.Command, []string) error
 }
 
 func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application {
+	skipUpgradeHeights := make(map[int64]bool)
+	for _, h := range viper.GetIntSlice(server.FlagUnsafeSkipUpgrades) {
+		skipUpgradeHeights[int64(h)] = true
+	}
+
 	return app.NewLinkApp(
-		logger, db, traceStore, true, map[int64]bool{}, invCheckPeriod,
+		logger, db, traceStore, true, skipUpgradeHeights, invCheckPeriod,
 		baseapp.SetPruning(store.NewPruningOptionsFromString(viper.GetString("pruning"))),
 		baseapp.SetMinGasPrices(viper.GetString(server.FlagMinGasPrices)),
 		baseapp.SetHaltHeight(uint64(viper.GetInt(server.FlagHaltHeight))),
