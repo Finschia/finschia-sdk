@@ -135,42 +135,71 @@ jobs:
       - make:
           target: update-swagger-docs
           description: "Check if statik.go is up-to-date"
+  lint:
+    executor: golang
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v2-{{ checksum "go.sum" }}
+      - run:
+          name: lint
+          command: |
+            go get github.com/golangci/golangci-lint/cmd/golangci-lint
+            make lint
 
 workflows:
   version: 2
   test-suite:
     jobs:
+      - lint
       - update-swagger-docs:
           requires:
             - setup-dependencies
       - setup-dependencies:
-          # This filter enables the job for tags
-          filters:
-            tags:
-              only:
-                - /^v.*/
+          require:
+            - lint
       - test-sim-nondeterminism:
           requires:
             - setup-dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - test-sim-import-export:
           requires:
             - setup-dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - test-sim-after-import:
           requires:
             - setup-dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - test-sim-multi-seed-short:
           requires:
             - setup-dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - test-sim-multi-seed-long:
           requires:
             - setup-dependencies
           # These filters ensure that the long sim only runs during release
           filters:
             branches:
-              ignore: /.*/
-            tags:
               only:
-                - /^v.*/
+                - master
+                - develop
       - test-cover:
           requires:
             - setup-dependencies
