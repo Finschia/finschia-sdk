@@ -157,7 +157,7 @@ workflows:
           requires:
             - setup-dependencies
       - setup-dependencies:
-          require:
+          requires:
             - lint
       - test-sim-nondeterminism:
           requires:
