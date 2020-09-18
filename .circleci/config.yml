@@ -69,108 +69,137 @@ jobs:
           paths:
             - ".git"
 
-#  test-sim-nondeterminism:
-#    executor: golang
-#    steps:
-#      - make:
-#          target: test-sim-nondeterminism
-#          description: "Test individual module simulations"
-#
-#  test-sim-import-export:
-#    executor: golang
-#    steps:
-#      - make:
-#          target: test-sim-import-export
-#          description: "Test application import/export simulation"
-#
-#  test-sim-after-import:
-#    executor: golang
-#    steps:
-#      - make:
-#          target: test-sim-after-import
-#          description: "Test simulation after import"
-#
-#  test-sim-multi-seed-long:
-#    executor: golang
-#    steps:
-#      - make:
-#          target: test-sim-multi-seed-long
-#          description: "Test multi-seed simulation (long)"
-#
-#  test-sim-multi-seed-short:
-#    executor: golang
-#    steps:
-#      - make:
-#          target: test-sim-multi-seed-short
-#          description: "Test multi-seed simulation (short)"
-#
-#  test-cover:
-#    executor: golang
-#    parallelism: 4
-#    steps:
-#      - checkout
-#      - restore_cache:
-#          keys:
-#            - go-mod-v2-{{ checksum "go.sum" }}
-#      - run:
-#          name: Run tests
-#          command: |
-#            export VERSION="$(git describe --tags --long | sed 's/v\(.*\)/\1/')"
-#            export GO111MODULE=on
-#            mkdir -p /tmp/logs /tmp/workspace/profiles
-#            for pkg in $(go list ./... | grep -v '/simulation' | circleci tests split); do
-#              id=$(echo "$pkg" | sed 's|[/.]|_|g')
-#              go test -mod=readonly -timeout 8m -race -coverprofile=/tmp/workspace/profiles/$id.out -covermode=atomic -tags='ledger test_ledger_mock' "$pkg" | tee "/tmp/logs/$id-$RANDOM.log"
-#            done
-#      - persist_to_workspace:
-#          root: /tmp/workspace
-#          paths:
-#            - "profiles/*"
-#      - store_artifacts:
-#          path: /tmp/logs
-#
-#  update-swagger-docs:
-#    executor: golang
-#    steps:
-#      - make:
-#          target: update-swagger-docs
-#          description: "Check if statik.go is up-to-date"
+  test-sim-nondeterminism:
+    executor: golang
+    steps:
+      - make:
+          target: test-sim-nondeterminism
+          description: "Test individual module simulations"
+
+  test-sim-import-export:
+    executor: golang
+    steps:
+      - make:
+          target: test-sim-import-export
+          description: "Test application import/export simulation"
+
+  test-sim-after-import:
+    executor: golang
+    steps:
+      - make:
+          target: test-sim-after-import
+          description: "Test simulation after import"
+
+  test-sim-multi-seed-long:
+    executor: golang
+    steps:
+      - make:
+          target: test-sim-multi-seed-long
+          description: "Test multi-seed simulation (long)"
+
+  test-sim-multi-seed-short:
+    executor: golang
+    steps:
+      - make:
+          target: test-sim-multi-seed-short
+          description: "Test multi-seed simulation (short)"
+
+  test-cover:
+    executor: golang
+    parallelism: 4
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v2-{{ checksum "go.sum" }}
+      - run:
+          name: Run tests
+          command: |
+            export VERSION="$(git describe --tags --long | sed 's/v\(.*\)/\1/')"
+            export GO111MODULE=on
+            mkdir -p /tmp/logs /tmp/workspace/profiles
+            for pkg in $(go list ./... | grep -v '/simulation' | circleci tests split); do
+              id=$(echo "$pkg" | sed 's|[/.]|_|g')
+              go test -mod=readonly -timeout 8m -race -coverprofile=/tmp/workspace/profiles/$id.out -covermode=atomic -tags='ledger test_ledger_mock' "$pkg" | tee "/tmp/logs/$id-$RANDOM.log"
+            done
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - "profiles/*"
+      - store_artifacts:
+          path: /tmp/logs
+
+  update-swagger-docs:
+    executor: golang
+    steps:
+      - make:
+          target: update-swagger-docs
+          description: "Check if statik.go is up-to-date"
+  lint:
+    executor: golang
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v2-{{ checksum "go.sum" }}
+      - run:
+          name: lint
+          command: |
+            go get github.com/golangci/golangci-lint/cmd/golangci-lint
+            make lint
 
 workflows:
   version: 2
   test-suite:
     jobs:
+      - lint
       - update-swagger-docs:
           requires:
             - setup-dependencies
       - setup-dependencies:
-          # This filter enables the job for tags
-          filters:
-            tags:
-              only:
-                - /^v.*/
+          require:
+            - lint
       - test-sim-nondeterminism:
           requires:
             - setup-dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - test-sim-import-export:
           requires:
             - setup-dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - test-sim-after-import:
           requires:
             - setup-dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - test-sim-multi-seed-short:
           requires:
             - setup-dependencies
+          filters:
+            branches:
+              only:
+                - master
+                - develop
       - test-sim-multi-seed-long:
           requires:
             - setup-dependencies
           # These filters ensure that the long sim only runs during release
           filters:
             branches:
-              ignore: /.*/
-            tags:
               only:
-                - /^v.*/
+                - master
+                - develop
       - test-cover:
           requires:
             - setup-dependencies
