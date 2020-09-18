@@ -16,7 +16,7 @@ import (
 // Get a free address for a test tendermint server
 // protocol is either tcp, http, etc
 func FreeTCPAddr() (addr, port string, err error) {
-	l, err := net.Listen("tcp", "localhost:0")
+	l, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		return "", "", err
 	}
