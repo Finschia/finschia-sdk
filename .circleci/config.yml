@@ -129,34 +129,6 @@ jobs:
       - store_artifacts:
           path: /tmp/logs
 
-  upload-coverage:
-    executor: golang
-    steps:
-      - attach_workspace:
-          at: /tmp/workspace
-      - checkout
-      - run:
-          name: gather
-          command: |
-            echo "--> Concatenating profiles:"
-            ls /tmp/workspace/profiles/
-            echo "mode: atomic" > coverage.txt
-            for prof in $(ls /tmp/workspace/profiles/); do
-              tail -n +2 /tmp/workspace/profiles/"$prof" >> coverage.txt
-            done
-      - run:
-          name: filter out DONTCOVER
-          command: |
-            excludelist="$(find ./ -type f -name '*.go' | xargs grep -l 'DONTCOVER')"
-            for filename in ${excludelist}; do
-              filename=$(echo $filename | sed 's/^./github.com\/cosmos\/cosmos-sdk/g')
-              echo "Excluding ${filename} from coverage report..."
-              sed -i.bak "/$(echo $filename | sed 's/\//\\\//g')/d" coverage.txt
-            done
-      - run:
-          name: upload
-          command: bash <(curl -s https://codecov.io/bash) -f coverage.txt
-
   update-swagger-docs:
     executor: golang
     steps:
@@ -202,21 +174,3 @@ workflows:
       - test-cover:
           requires:
             - setup-dependencies
-#      - upload-coverage:
-#          requires:
-#            - test-cover
-#      - build-docs:
-#          context: docs-deployment-master
-#          filters:
-#            branches:
-#              only:
-#                - docs-theme-latest
-#      - build-docs:
-#          context: docs-deployment-release
-#          filters:
-#            branches:
-#              only:
-#                - master
-#            tags:
-#              only:
-#                - /v.*/
