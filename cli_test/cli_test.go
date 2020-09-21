@@ -19,10 +19,10 @@ import (
 func TestModifyToken(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	proc := f.LDStart()
 	defer func() { require.NoError(t, proc.Stop(false)) }()
-	defer f.Cleanup()
 
 	const (
 		contractID = "9be17165"
@@ -55,16 +55,15 @@ func TestModifyToken(t *testing.T) {
 		// Then the name is modified
 		require.Equal(t, modifiedName, f.QueryToken(contractID).GetName())
 	}
-	f.Cleanup()
 }
 
 func TestModifyCollection(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	proc := f.LDStart()
 	defer func() { require.NoError(t, proc.Stop(false)) }()
-	defer f.Cleanup()
 
 	const (
 		contractID   = "9be17165"
@@ -175,12 +174,12 @@ func TestModifyCollection(t *testing.T) {
 		// Then the meta is modified
 		require.Equal(t, modifiedMeta, f.QueryTokenCollection(contractID, tokenIDFT).(collectionmodule.FT).GetMeta())
 	}
-	f.Cleanup()
 }
 
 func TestLinkCLIMempool(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -226,8 +225,6 @@ func TestLinkCLIMempool(t *testing.T) {
 	require.Equal(t, sendTokens, barAcc.GetCoins().AmountOf(denom))
 	fooAcc = f.QueryAccount(fooAddr)
 	require.Equal(t, startTokens.Sub(sendTokens), fooAcc.GetCoins().AmountOf(denom))
-
-	f.Cleanup()
 }
 
 func TestLinkCLITokenIssue(t *testing.T) {
@@ -245,6 +242,7 @@ func TestLinkCLITokenIssue(t *testing.T) {
 
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -320,12 +318,12 @@ func TestLinkCLITokenIssue(t *testing.T) {
 		tinaAccount := f.QueryAccount(marshallAddr)
 		require.Equal(t, marshallAddr.String(), tinaAccount.Address.String())
 	}
-
-	f.Cleanup()
 }
+
 func TestLinkCLITokenMintBurn(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -440,8 +438,6 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 		require.Equal(t, int64(burnAmount), f.QueryBurnToken(contractID).Int64())
 		require.Equal(t, int64(mintAmount), f.QueryBalanceToken(contractID, barAddr).Int64())
 	}
-
-	f.Cleanup()
 }
 
 func TestLinkCLITokenCollection(t *testing.T) {
@@ -459,6 +455,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -625,8 +622,6 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, sdk.NewInt(50000), f.QueryTotalMintTokenCollection(contractID1, tokenID03))
 		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(contractID1, tokenID03))
 	}
-
-	f.Cleanup()
 }
 
 func TestLinkCLITokenNFT(t *testing.T) {
@@ -647,6 +642,7 @@ func TestLinkCLITokenNFT(t *testing.T) {
 
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -774,13 +770,12 @@ func TestLinkCLITokenNFT(t *testing.T) {
 		require.NotEmpty(t, stdout2)
 		require.Greater(t, strings.Index(stdout2, tokenType), strings.Index(stdout2, myTokenType))
 	}
-
-	f.Cleanup()
 }
 
 func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	contractID := "9be17165"
 
@@ -834,18 +829,16 @@ func TestLinkCLISendGenerateSignAndBroadcastWithToken(t *testing.T) {
 	token := f.QueryToken(contractID)
 	require.Equal(t, "test", token.GetName())
 	require.Equal(t, int64(6), token.GetDecimals().Int64())
-
-	f.Cleanup()
 }
 
 func TestLinkCLIEmpty(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
 	defer func() { require.NoError(t, proc.Stop(false)) }()
-	defer f.Cleanup()
 
 	brianAddr := f.KeyAddress(UserBrian).String()
 
@@ -865,6 +858,7 @@ Modify the IncrementSequenceDecorator to avoid the restriction
 func TestLinkCLIIncrementSequenceDecorator(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -918,6 +912,4 @@ func TestLinkCLIIncrementSequenceDecorator(t *testing.T) {
 	for _, txHash := range txHashes {
 		require.Equal(t, height, f.QueryTx(txHash).Height)
 	}
-
-	f.Cleanup()
 }

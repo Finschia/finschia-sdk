@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"strings"
 	"sync"
+	"sync/atomic"
 	"testing"
 	"time"
 
@@ -35,7 +36,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys"
-	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/tests"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -72,10 +72,7 @@ const (
 	networkNamePrefix = "line-linkdnode-testnet-"
 )
 
-var (
-	ports = make(map[string]bool)
-	mutex = &sync.Mutex{}
-)
+var curPort int32 = 26655
 
 var (
 	TotalCoins = sdk.NewCoins(
@@ -146,23 +143,8 @@ func NewFixtures(t *testing.T) *Fixtures {
 	tmpDir, err = ioutil.TempDir(tmpDir, "link_integration_"+strings.Split(t.Name(), "/")[0]+"_")
 	require.NoError(t, err)
 
-	mutex.Lock()
-	servAddr, port, err := server.FreeTCPAddr()
-	require.NoError(t, err)
-	for exists, ok := ports[port]; ok && exists; {
-		servAddr, port, err = server.FreeTCPAddr()
-		require.NoError(t, err)
-	}
-	ports[port] = true
-
-	p2pAddr, p2pPort, err := server.FreeTCPAddr()
-	require.NoError(t, err)
-	for exists, ok := ports[p2pPort]; ok && exists; {
-		p2pAddr, p2pPort, err = server.FreeTCPAddr()
-		require.NoError(t, err)
-	}
-	ports[p2pPort] = true
-	mutex.Unlock()
+	servAddr, servPort := newTCPAddr(t)
+	p2pAddr, p2pPort := newTCPAddr(t)
 
 	buildDir := os.Getenv("BUILDDIR")
 	if buildDir == "" {
@@ -180,12 +162,22 @@ func NewFixtures(t *testing.T) *Fixtures {
 		LinkcliHome:   filepath.Join(tmpDir, ".linkcli"),
 		RPCAddr:       servAddr,
 		P2PAddr:       p2pAddr,
-		Port:          port,
+		Port:          servPort,
 		P2PPort:       p2pPort,
 		Moniker:       "", // initialized by LDInit
 		BridgeIP:      "",
 	}
 }
+
+func newTCPAddr(t *testing.T) (addr, port string) {
+	portI := atomic.AddInt32(&curPort, 1)
+	require.Less(t, portI, int32(32768), "A new port should be less than ip_local_port_range.min")
+
+	port = fmt.Sprintf("%d", portI)
+	addr = fmt.Sprintf("tcp://0.0.0.0:%s", port)
+	return
+}
+
 func (f *Fixtures) LogResult(isSuccess bool, stdOut, stdErr string) {
 	if !isSuccess {
 		f.T.Error(stdErr)

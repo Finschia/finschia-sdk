@@ -32,6 +32,7 @@ import (
 func TestLinkCLIKeysAddMultisig(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// key names order does not matter
 	f.KeysAdd("msig1", "--multisig-threshold=2",
@@ -47,14 +48,12 @@ func TestLinkCLIKeysAddMultisig(t *testing.T) {
 		fmt.Sprintf("--multisig=%s,%s", keyBaz, keyBar),
 		"--nosort")
 	require.NotEqual(t, f.KeysShow("msig3").Address, f.KeysShow("msig4").Address)
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIKeysAddRecover(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	exitSuccess, _, _ := f.KeysAddRecover("empty-mnemonic", "")
 	require.False(t, exitSuccess)
@@ -66,13 +65,12 @@ func TestLinkCLIKeysAddRecover(t *testing.T) {
 	} else {
 		require.Equal(t, "link1h894xgljpjzu98we894ld2740ty88krpnarupg", f.KeyAddress("test-recover").String())
 	}
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIKeysAddRecoverHDPath(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	if sdk.GetConfig().GetBech32AccountAddrPrefix() == "tlink" {
 		f.KeysAddRecoverHDPath("test-recoverHD1", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 0, 0)
@@ -97,14 +95,12 @@ func TestLinkCLIKeysAddRecoverHDPath(t *testing.T) {
 		f.KeysAddRecoverHDPath("test-recoverH4", "dentist task convince chimney quality leave banana trade firm crawl eternal easily", 2, 17)
 		require.Equal(t, "link1uz2mpws58feve9804vf7xkkt3aar9cg7kwh7hd", f.KeyAddress("test-recoverH4").String())
 	}
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIMinimumFees(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server with minimum fees
 	minGasPrice, _ := sdk.NewDecFromStr("0.000006")
@@ -135,14 +131,12 @@ func TestLinkCLIMinimumFees(t *testing.T) {
 	success, _, _ = f.TxSend(keyFoo, barAddr, sdk.NewInt64Coin(fooDenom, 10), txFees, "-y")
 	require.Contains(t, stdOut, "insufficient fees")
 	require.True(f.T, success)
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIGasPrices(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server with minimum fees
 	minGasPrice, _ := sdk.NewDecFromStr("0.000006")
@@ -170,13 +164,12 @@ func TestLinkCLIGasPrices(t *testing.T) {
 
 	// wait for a block confirmation
 	tests.WaitForNextNBlocksTM(1, f.Port)
-
-	f.Cleanup()
 }
 
 func TestLinkCLIFeesDeduction(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server with minimum fees
 	minGasPrice, _ := sdk.NewDecFromStr("0.000006")
@@ -223,13 +216,12 @@ func TestLinkCLIFeesDeduction(t *testing.T) {
 		keyFoo, barAddr, sdk.NewInt64Coin(fooDenom, 500),
 		fmt.Sprintf("--fees=%s", sdk.NewInt64Coin(feeDenom, 2)), "-y")
 	require.True(t, success)
-
-	f.Cleanup()
 }
 
 func TestLinkCLISend(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -292,13 +284,12 @@ func TestLinkCLISend(t *testing.T) {
 	require.Equal(t, sendTokens.MulRaw(3), barAcc.GetCoins().AmountOf(denom))
 	fooAcc = f.QueryAccount(fooAddr)
 	require.Equal(t, startTokens.Sub(sendTokens.MulRaw(3)), fooAcc.GetCoins().AmountOf(denom))
-
-	f.Cleanup()
 }
 
 func TestLinkCLIGasAuto(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -352,13 +343,12 @@ func TestLinkCLIGasAuto(t *testing.T) {
 	// Check state has changed accordingly
 	fooAcc = f.QueryAccount(fooAddr)
 	require.Equal(t, startTokens.Sub(sendTokens), fooAcc.GetCoins().AmountOf(denom))
-
-	f.Cleanup()
 }
 
 func TestLinkCLICreateValidator(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -425,14 +415,14 @@ func TestLinkCLICreateValidator(t *testing.T) {
 	require.Len(t, validatorUbds, 1)
 	require.Len(t, validatorUbds[0].Entries, 1)
 	require.Equal(t, remainingTokens.String(), validatorUbds[0].Entries[0].Balance.String())
-
-	f.Cleanup()
 }
 
 func TestLinkCLIQueryRewards(t *testing.T) {
 	t.Skip("Due to removing mint module")
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
+
 	cdc := app.MakeCodec()
 
 	genesisState := f.GenesisState()
@@ -459,13 +449,12 @@ func TestLinkCLIQueryRewards(t *testing.T) {
 	fooAddr := f.KeyAddress(keyFoo)
 	rewards := f.QueryRewards(fooAddr)
 	require.Equal(t, 1, len(rewards.Rewards))
-
-	f.Cleanup()
 }
 
 func TestLinkCLIQuerySupply(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -476,14 +465,13 @@ func TestLinkCLIQuerySupply(t *testing.T) {
 
 	require.Equal(t, TotalCoins, totalSupply)
 	require.True(sdk.IntEq(t, TotalCoins.AmountOf(fooDenom), totalSupplyOf))
-
-	f.Cleanup()
 }
 
 func TestLinkCLISubmitProposal(t *testing.T) {
 	t.Skip("Due to removing gov module")
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -621,14 +609,13 @@ func TestLinkCLISubmitProposal(t *testing.T) {
 	// Test limit on proposals query
 	proposalsQuery = f.QueryGovProposals("--limit=1")
 	require.Equal(t, uint64(2), proposalsQuery[0].ProposalID)
-
-	f.Cleanup()
 }
 
 func TestLinkCLISubmitParamChangeProposal(t *testing.T) {
 	t.Skip("Due to removing gov module")
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	proc := f.LDStart()
 	defer func() { require.NoError(t, proc.Stop(false)) }()
@@ -685,15 +672,13 @@ func TestLinkCLISubmitParamChangeProposal(t *testing.T) {
 	// ensure the correct deposit amount on the proposal
 	deposit := f.QueryGovDeposit(1, fooAddr)
 	require.Equal(t, proposalTokens, deposit.Amount.AmountOf(denom))
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLISubmitCommunityPoolSpendProposal(t *testing.T) {
 	t.Skip("Due to removing mint module")
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// create some inflation
 	cdc := app.MakeCodec()
@@ -770,14 +755,12 @@ func TestLinkCLISubmitCommunityPoolSpendProposal(t *testing.T) {
 	// ensure the correct deposit amount on the proposal
 	deposit := f.QueryGovDeposit(1, fooAddr)
 	require.Equal(t, proposalTokens, deposit.Amount.AmountOf(denom))
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIQueryTxPagination(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -827,14 +810,12 @@ func TestLinkCLIQueryTxPagination(t *testing.T) {
 
 	// no tags, no height range
 	f.QueryTxsInvalid(errors.New("ERROR: must declare at least one event to search"), 1, 30)
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIValidateSignatures(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -878,13 +859,12 @@ func TestLinkCLIValidateSignatures(t *testing.T) {
 	// validate signature validation failure due to different transaction sig bytes
 	success, _, _ = f.TxSign(keyFoo, modSignedTxFile.Name(), "--validate-signatures")
 	require.False(t, success)
-
-	f.Cleanup()
 }
 
 func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -962,13 +942,12 @@ func TestLinkCLISendGenerateSignAndBroadcast(t *testing.T) {
 	fooAcc = f.QueryAccount(fooAddr)
 	require.Equal(t, sendTokens, barAcc.GetCoins().AmountOf(denom))
 	require.Equal(t, startTokens.Sub(sendTokens), fooAcc.GetCoins().AmountOf(denom))
-
-	f.Cleanup()
 }
 
 func TestLinkCLIMultisignInsufficientCosigners(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server with minimum fees
 	proc := f.LDStart()
@@ -1014,14 +993,12 @@ func TestLinkCLIMultisignInsufficientCosigners(t *testing.T) {
 	success, stdOut, _ := f.TxBroadcast(signedTxFile.Name())
 	require.Contains(t, stdOut, "signature verification failed")
 	require.True(t, success)
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIEncode(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -1060,6 +1037,7 @@ func TestLinkCLIEncode(t *testing.T) {
 func TestLinkCLIMultisignSortSignatures(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server with minimum fees
 	proc := f.LDStart()
@@ -1117,14 +1095,12 @@ func TestLinkCLIMultisignSortSignatures(t *testing.T) {
 	// Broadcast the transaction
 	success, _, _ = f.TxBroadcast(signedTxFile.Name())
 	require.True(t, success)
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIMultisign(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server with minimum fees
 	proc := f.LDStart()
@@ -1183,14 +1159,13 @@ func TestLinkCLIMultisign(t *testing.T) {
 	// Broadcast the transaction
 	success, _, _ = f.TxBroadcast(signedTxFile.Name())
 	require.True(t, success)
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestLinkCLIConfig(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
+
 	node := fmt.Sprintf("%s:%s", f.RPCAddr, f.Port)
 
 	// Set available configuration options
@@ -1215,8 +1190,6 @@ trace = false
 trust-node = true
 `, f.ChainID, node)
 	require.Equal(t, expectedConfig, string(config))
-
-	f.Cleanup()
 }
 
 func TestLinkdCollectGentxs(t *testing.T) {
@@ -1228,6 +1201,8 @@ func TestLinkdCollectGentxs(t *testing.T) {
 	gentxDir, err := ioutil.TempDir("", "")
 	gentxDoc := filepath.Join(gentxDir, "gentx.json")
 	require.NoError(t, err)
+
+	defer f.Cleanup(gentxDir)
 
 	// Reset testing path
 	f.UnsafeResetAll()
@@ -1263,13 +1238,12 @@ func TestLinkdCollectGentxs(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, genDoc.ConsensusParams.Block.MaxBytes, customMaxBytes)
 	require.Equal(t, genDoc.ConsensusParams.Block.MaxGas, customMaxGas)
-
-	f.Cleanup(gentxDir)
 }
 
 func TestLinkdAddGenesisAccount(t *testing.T) {
 	t.Parallel()
 	f := NewFixtures(t)
+	defer f.Cleanup()
 
 	// Reset testing path
 	f.UnsafeResetAll()
@@ -1306,15 +1280,13 @@ func TestLinkdAddGenesisAccount(t *testing.T) {
 	require.Equal(t, accounts[1].GetAddress(), f.KeyAddress(keyBar))
 	require.True(t, accounts[0].GetCoins().IsEqual(startCoins))
 	require.True(t, accounts[1].GetCoins().IsEqual(bazCoins))
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestSlashingGetParams(t *testing.T) {
 	t.Skip("Due to removing slashing module")
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
@@ -1327,21 +1299,16 @@ func TestSlashingGetParams(t *testing.T) {
 	sinfo := f.QuerySigningInfo(f.LDTendermint("show-validator"))
 	require.Equal(t, int64(0), sinfo.StartHeight)
 	require.False(t, sinfo.Tombstoned)
-
-	// Cleanup testing directories
-	f.Cleanup()
 }
 
 func TestValidateGenesis(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
+	defer f.Cleanup()
 
 	// start linkd server
 	proc := f.LDStart()
 	defer func() { require.NoError(t, proc.Stop(false)) }()
 
 	f.ValidateGenesis()
-
-	// Cleanup testing directories
-	f.Cleanup()
 }

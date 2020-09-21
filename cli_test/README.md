@@ -18,16 +18,15 @@ Tests generally follow this structure:
 
 ```go
 func TestMyNewCommand(t *testing.T) {
-  t.Parallel()
-	f := InitFixtures(t)
+    t.Parallel()
+    f := InitFixtures(t)
+    defer f.Cleanup()
+    
+    // start linkd server 
+    proc := f.GDStart()
+    defer func() { require.NoError(t, proc.Stop(false)) }()
 
-	// start linkd server
-	proc := f.GDStart()
-	defer proc.Stop(false)
-
-  // Your test code goes here...
-
-	f.Cleanup()
+    // Your test code goes here...
 }
 ```
 
