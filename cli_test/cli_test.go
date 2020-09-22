@@ -200,14 +200,6 @@ func TestLinkCLIMempool(t *testing.T) {
 	require.NotEmpty(t, stdout)
 	require.Empty(t, stderr)
 
-	// check mempool size
-	{
-		result := f.MempoolNumUnconfirmedTxs()
-		require.Equal(t, 1, result.Count)
-		require.Equal(t, 1, result.Total)
-		require.Empty(t, result.Txs)
-	}
-
 	// check mempool txs
 	{
 		result := f.MempoolUnconfirmedTxHashes()
@@ -219,7 +211,15 @@ func TestLinkCLIMempool(t *testing.T) {
 	}
 
 	// Ensure account balances match expected
-	tests.WaitForNextNBlocksTM(1, f.Port)
+	tests.WaitForNextNBlocksTM(2, f.Port)
+
+	// check mempool empty
+	{
+		result := f.MempoolNumUnconfirmedTxs()
+		require.Equal(t, 0, result.Count)
+		require.Equal(t, 0, result.Total)
+		require.Empty(t, result.Txs)
+	}
 
 	barAcc := f.QueryAccount(barAddr)
 	require.Equal(t, sendTokens, barAcc.GetCoins().AmountOf(denom))
@@ -905,7 +905,7 @@ func TestLinkCLIIncrementSequenceDecorator(t *testing.T) {
 	}
 
 	// Wait for a new block
-	tests.WaitForNextNBlocksTM(1, f.Port)
+	tests.WaitForNextNBlocksTM(2, f.Port)
 
 	// All Txs are in one block
 	height := f.QueryTx(txHashes[0]).Height
