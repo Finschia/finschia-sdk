@@ -30,17 +30,6 @@ commands:
             make << parameters.target >>
 
 jobs:
-  build-docs:
-    executor: docs
-    steps:
-      - checkout
-      - run:
-          name: "Build docs"
-          command: make build-docs
-      - run:
-          name: "Upload docs to S3"
-          command: make sync-docs
-
   setup-dependencies:
     executor: golang
     steps:
@@ -145,7 +134,7 @@ jobs:
       - run:
           name: lint
           command: |
-            go get github.com/golangci/golangci-lint/cmd/golangci-lint
+            go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27
             make lint
 
 workflows:
