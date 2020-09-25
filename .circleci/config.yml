@@ -148,38 +148,41 @@ workflows:
       - setup-dependencies:
           requires:
             - lint
+      - test-cover:
+          requires:
+            - setup-dependencies
       - test-sim-nondeterminism:
           requires:
             - setup-dependencies
           filters:
             branches:
               only:
-                - master
                 - develop
+                - /release.*/
       - test-sim-import-export:
           requires:
             - setup-dependencies
           filters:
             branches:
               only:
-                - master
                 - develop
+                - /release.*/
       - test-sim-after-import:
           requires:
             - setup-dependencies
           filters:
             branches:
               only:
-                - master
                 - develop
+                - /release.*/
       - test-sim-multi-seed-short:
           requires:
             - setup-dependencies
           filters:
             branches:
               only:
-                - master
                 - develop
+                - /release.*/
       - test-sim-multi-seed-long:
           requires:
             - setup-dependencies
@@ -187,8 +190,5 @@ workflows:
           filters:
             branches:
               only:
-                - master
                 - develop
-      - test-cover:
-          requires:
-            - setup-dependencies
+                - /release.*/
