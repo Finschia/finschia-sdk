@@ -141,13 +141,13 @@ workflows:
   version: 2
   test-suite:
     jobs:
-      - lint
+      - setup-dependencies
+      - lint:
+          requires:
+            - setup-dependencies
       - update-swagger-docs:
           requires:
             - setup-dependencies
-      - setup-dependencies:
-          requires:
-            - lint
       - test-cover:
           requires:
             - setup-dependencies
