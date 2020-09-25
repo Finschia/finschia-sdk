@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	flagEvents = "events"
+	flagEvents     = "events"
 	flagCheckState = "check_state"
 
 	eventFormat = "{eventType}.{eventAttribute}={value}"
