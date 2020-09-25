@@ -512,7 +512,7 @@ func checkProvable(req abci.RequestQuery) error {
 }
 
 func processCustomQuerier(
-	app *BaseApp, cacheMS types.CacheMultiStore, querier sdk.Querier, path []string, req abci.RequestQuery,
+	app *BaseApp, cacheMS types.CacheMultiStore, querier sdk.Querier, path []string, req abci.RequestQuery, // nolint:interfacer
 ) abci.ResponseQuery {
 
 	// cache wrap the commit-multistore for safety
