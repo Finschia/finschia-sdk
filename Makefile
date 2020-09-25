@@ -175,7 +175,7 @@ test-cover:
 .PHONY: test-cover
 
 lint: golangci-lint
-	$(BINDIR)/golangci-lint run
+	$(BINDIR)/golangci-lint run --timeout 120s
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" | xargs gofmt -d -s
 	go mod verify
 .PHONY: lint
