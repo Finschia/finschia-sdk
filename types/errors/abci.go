@@ -162,7 +162,7 @@ func Redact(err error) error {
 	if ErrPanic.Is(err) {
 		return errors.New(internalABCILog)
 	}
-	if abciCode(err) == internalABCICode && abciCodespace(err) == internalABCICodespace{
+	if abciCode(err) == internalABCICode && abciCodespace(err) == internalABCICodespace {
 		return errors.New(internalABCILog)
 	}
 	return err
