@@ -183,12 +183,13 @@ workflows:
               only:
                 - develop
                 - /release.*/
-      - test-sim-multi-seed-long:
-          requires:
-            - setup-dependencies
-          # These filters ensure that the long sim only runs during release
-          filters:
-            branches:
-              only:
-                - develop
-                - /release.*/
+# disable long. because it is toooooooo long
+#      - test-sim-multi-seed-long:
+#          requires:
+#            - setup-dependencies
+#          # These filters ensure that the long sim only runs during release
+#          filters:
+#            branches:
+#              only:
+#                - develop
+#                - /release.*/
