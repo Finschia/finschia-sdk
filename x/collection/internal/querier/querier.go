@@ -48,6 +48,8 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 			return queryRoot(ctx, req, keeper)
 		case types.QueryChildren:
 			return queryChildren(ctx, req, keeper)
+		case types.QueryApprovers:
+			return queryApprovers(ctx, req, keeper)
 		case types.QueryIsApproved:
 			return queryIsApproved(ctx, req, keeper)
 		default:
@@ -284,6 +286,25 @@ func queryChildren(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper)
 	}
 
 	bz, err2 := keeper.MarshalJSONIndent(tokens)
+	if err2 != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err2.Error())
+	}
+
+	return bz, nil
+}
+
+func queryApprovers(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
+	var params types.QueryProxyParams
+	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+
+	approvers, err := keeper.GetApprovers(ctx, params.Proxy)
+	if err != nil {
+		return nil, err
+	}
+
+	bz, err2 := keeper.MarshalJSONIndent(approvers)
 	if err2 != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err2.Error())
 	}

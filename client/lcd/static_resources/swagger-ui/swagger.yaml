@@ -1535,6 +1535,41 @@ paths:
                       $ref: '#/components/schemas/TokenCNFT3'
         "500":
           description: Internal Server Error
+  /collection/{contract_id}/accounts/{address}/approvers:
+    get:
+      tags:
+        - Collection
+      summary: Get approvers of the proxy for a collection
+      parameters:
+        - name: contract_id
+          in: path
+          description: Token contract_id
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
+        - name: address
+          in: path
+          description: proxy address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+      responses:
+        "200":
+          description: approvers account address
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "9"
+                  result:
+                    $ref: "#/components/schemas/AddressList"
+        "500":
+          description: Server internal error
   /collection/{contract_id}/accounts/{address}/proxies/{approver}:
     get:
       tags:
@@ -1593,6 +1628,12 @@ components:
       type: string
       description: bech32 encoded address
       example: "link1ffxp9g0qcp6quqjhq6cmdz69ztnu3khx524uhp"
+    AddressList:
+      type: array
+      items:
+        type: string
+        example:
+          - link1w9xa5ddppvncaue5pj8n7qlkqfwjlqqls4jgs0
     ValidatorAddress:
       type: string
       description: bech32 encoded address

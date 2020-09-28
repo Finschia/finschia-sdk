@@ -656,6 +656,11 @@ func (f *Fixtures) TxCollectionRevokePerm(from string, contractID, action string
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
+func (f *Fixtures) TxCollectionApprove(approver string, contractID string, proxyAd sdk.AccAddress, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx collection approve %s %s %s %v", f.LinkcliBinary, approver, contractID, proxyAd, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
+}
+
 func (f *Fixtures) TxEmpty(from string, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx empty %s %v", f.LinkcliBinary, from, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
@@ -1191,6 +1196,28 @@ func (f *Fixtures) QueryAccountPermissionCollection(addr sdk.AccAddress, flags .
 	err := cdc.UnmarshalJSON([]byte(res), &pms)
 	require.NoError(f.T, err)
 	return pms
+}
+
+func (f *Fixtures) QueryApproversTokenCollection(contractID string, proxy sdk.AccAddress) []sdk.AccAddress {
+	cmd := fmt.Sprintf("%s query collection approvers %s %s %s", f.LinkcliBinary, contractID, proxy, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var approvers []sdk.AccAddress
+	err := cdc.UnmarshalJSON([]byte(res), &approvers)
+	require.NoError(f.T, err)
+	return approvers
+}
+
+func (f *Fixtures) QueryApprovedTokenCollection(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) bool {
+	cmd := fmt.Sprintf("%s query collection approved %s %s %s %s", f.LinkcliBinary, contractID, proxy, approver, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var isApproved bool
+	err := cdc.UnmarshalJSON([]byte(res), &isApproved)
+	require.NoError(f.T, err)
+	return isApproved
 }
 
 // ___________________________________________________________________________________

@@ -74,6 +74,7 @@ func prepare(t *testing.T) {
 	require.NoError(t, ckeeper.Attach(ctx2, addr1, tokenNFTID1, tokenNFTID3))
 	require.NoError(t, ckeeper.GrantPermission(ctx2, addr1, addr2, types.NewMintPermission()))
 	require.NoError(t, ckeeper.SetApproved(ctx2, addr1, addr2))
+	require.NoError(t, ckeeper.SetApproved(ctx2, addr1, addr3))
 }
 
 func query(t *testing.T, params interface{}, query string, result interface{}) {
@@ -466,9 +467,27 @@ func TestNewQuerier_queryChildren_empty(t *testing.T) {
 	require.Equal(t, len(tokens), 0)
 }
 
+func TestNewQuerier_queryApprovers(t *testing.T) {
+	prepare(t)
+	params := types.QueryProxyParams{
+		Proxy: addr1,
+	}
+	var acAd1 []sdk.AccAddress
+	query(t, params, types.QueryApprovers, &acAd1)
+	require.Equal(t, 2, len(acAd1))
+	require.Equal(t, addr3, acAd1[0])
+	require.Equal(t, addr2, acAd1[1])
+
+	var acAdEmpty []sdk.AccAddress
+	paramsEmpty := types.QueryProxyParams{
+		Proxy: addr2,
+	}
+	query(t, paramsEmpty, types.QueryApprovers, &acAdEmpty)
+	require.Empty(t, acAdEmpty)
+}
+
 func TestNewQuerier_queryIsApproved_true(t *testing.T) {
 	prepare(t)
-
 	params := types.QueryIsApprovedParams{
 		Proxy:    addr1,
 		Approver: addr2,

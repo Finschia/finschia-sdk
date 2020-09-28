@@ -34,7 +34,8 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		GetParentCmd(cdc),
 		GetRootCmd(cdc),
 		GetChildrenCmd(cdc),
-		GetIsApproved(cdc),
+		GetApproversCmd(cdc),
+		GetIsApprovedCmd(cdc),
 	)
 
 	return cmd
@@ -373,17 +374,35 @@ func GetChildrenCmd(cdc *codec.Codec) *cobra.Command {
 	return client.GetCommands(cmd)[0]
 }
 
-type Approved struct {
-	Approved bool
+func GetApproversCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "approvers [contract_id] [proxy]",
+		Short: "Query approvers by the proxy",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			retriever := clienttypes.NewRetriever(cliCtx)
+
+			contractID := args[0]
+
+			proxy, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			approvers, height, err := retriever.GetApprovers(cliCtx, contractID, proxy)
+			if err != nil {
+				return err
+			}
+
+			return cliCtx.WithHeight(height).PrintOutput(approvers)
+		},
+	}
+
+	return client.GetCommands(cmd)[0]
 }
 
-func (a Approved) String() string {
-	return string(codec.MustMarshalJSONIndent(types.ModuleCdc, a))
-}
-
-var _ fmt.Stringer = (*Approved)(nil)
-
-func GetIsApproved(cdc *codec.Codec) *cobra.Command {
+func GetIsApprovedCmd(cdc *codec.Codec) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "approved [contract_id] [proxy] [approver]",
 		Short: "Query whether a proxy is approved by approver on a collection",
@@ -409,7 +428,7 @@ func GetIsApproved(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			return cliCtx.WithHeight(height).PrintOutput(Approved{Approved: approved})
+			return cliCtx.WithHeight(height).PrintOutput(approved)
 		},
 	}
 

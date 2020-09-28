@@ -624,6 +624,60 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	}
 }
 
+func TestLinkCliTokenApprove(t *testing.T) {
+	const (
+		contractID  = "9be17165"
+		description = "description"
+		meta        = "meta"
+		tokenuri    = "uri:itisbrown"
+	)
+
+	t.Parallel()
+	f := InitFixtures(t)
+	defer f.Cleanup()
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+	tinaAddr := f.KeyAddress(UserTina)
+	kelvinAddr := f.KeyAddress(UserKevin)
+
+	// Create Collection
+	{
+		f.LogResult(f.TxTokenCreateCollection(keyFoo, description, meta, tokenuri, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		f.LogResult(f.TxTokenCreateCollection(UserTina, description, meta, tokenuri, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+	// tx Collection Approve
+	{
+		f.LogResult(f.TxCollectionApprove(keyFoo, contractID, kelvinAddr, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		f.LogResult(f.TxCollectionApprove(UserTina, contractID, kelvinAddr, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// query Collection Approved
+	{
+		isKelApprovedByFoo := f.QueryApprovedTokenCollection(contractID, kelvinAddr, fooAddr)
+		require.True(t, isKelApprovedByFoo)
+		isKelApprovedByTina := f.QueryApprovedTokenCollection(contractID, kelvinAddr, tinaAddr)
+		require.True(t, isKelApprovedByTina)
+		isTinaApprovedByFoo := f.QueryApprovedTokenCollection(contractID, tinaAddr, fooAddr)
+		require.False(t, isTinaApprovedByFoo)
+	}
+
+	// query CollectionApprovers
+	{
+		approverAddresses := f.QueryApproversTokenCollection(contractID, kelvinAddr)
+		require.Equal(t, tinaAddr.String(), approverAddresses[0].String())
+		require.Equal(t, fooAddr.String(), approverAddresses[1].String())
+		addsEmpty := f.QueryApproversTokenCollection(contractID, fooAddr)
+		require.Empty(t, addsEmpty)
+	}
+}
+
 func TestLinkCLITokenNFT(t *testing.T) {
 
 	const (
