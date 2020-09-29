@@ -1,6 +1,7 @@
 package querier
 
 import (
+	"bytes"
 	"context"
 	"testing"
 
@@ -475,8 +476,13 @@ func TestNewQuerier_queryApprovers(t *testing.T) {
 	var acAd1 []sdk.AccAddress
 	query(t, params, types.QueryApprovers, &acAd1)
 	require.Equal(t, 2, len(acAd1))
-	require.Equal(t, addr3, acAd1[0])
-	require.Equal(t, addr2, acAd1[1])
+	if bytes.Compare(addr2, addr3) <= 0 {
+		require.Equal(t, addr2, acAd1[0])
+		require.Equal(t, addr3, acAd1[1])
+	} else {
+		require.Equal(t, addr2, acAd1[1])
+		require.Equal(t, addr3, acAd1[0])
+	}
 
 	var acAdEmpty []sdk.AccAddress
 	paramsEmpty := types.QueryProxyParams{

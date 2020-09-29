@@ -3,6 +3,7 @@
 package clitest
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 	"strconv"
@@ -671,8 +672,13 @@ func TestLinkCliTokenApprove(t *testing.T) {
 	// query CollectionApprovers
 	{
 		approverAddresses := f.QueryApproversTokenCollection(contractID, kelvinAddr)
-		require.Equal(t, tinaAddr.String(), approverAddresses[0].String())
-		require.Equal(t, fooAddr.String(), approverAddresses[1].String())
+		if bytes.Compare(tinaAddr, fooAddr) < 0 {
+			require.Equal(t, tinaAddr.String(), approverAddresses[0].String())
+			require.Equal(t, fooAddr.String(), approverAddresses[1].String())
+		} else {
+			require.Equal(t, tinaAddr.String(), approverAddresses[1].String())
+			require.Equal(t, fooAddr.String(), approverAddresses[0].String())
+		}
 		addsEmpty := f.QueryApproversTokenCollection(contractID, fooAddr)
 		require.Empty(t, addsEmpty)
 	}
