@@ -183,4 +183,37 @@ func TestMsgBasics(t *testing.T) {
 		msg = NewMsgTransfer(addr, addr, contract.SampleContractID, sdk.NewInt(-1))
 		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, "send amount must be positive").Error())
 	}
+
+	{
+		msg := NewMsgTransferFrom(addr1, contract.SampleContractID, addr2, addr2, sdk.NewInt(defaultAmount))
+		require.Equal(t, "transfer_from", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr1, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgTransferFrom{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.Proxy, msg2.Proxy)
+		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.To, msg2.To)
+		require.Equal(t, msg.ContractID, msg2.ContractID)
+		require.Equal(t, msg.Amount, msg2.Amount)
+	}
+
+	{
+		msg := NewMsgTransferFrom(nil, contract.SampleContractID, addr2, addr2, sdk.NewInt(defaultAmount))
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty").Error())
+
+		msg = NewMsgTransferFrom(addr1, contract.SampleContractID, nil, addr2, sdk.NewInt(defaultAmount))
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
+
+		msg = NewMsgTransferFrom(addr1, contract.SampleContractID, addr2, nil, sdk.NewInt(defaultAmount))
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty").Error())
+	}
 }

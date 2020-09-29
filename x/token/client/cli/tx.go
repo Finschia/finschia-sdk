@@ -49,6 +49,8 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		GrantPermTxCmd(cdc),
 		RevokePermTxCmd(cdc),
 		ModifyTokenCmd(cdc),
+		TransferFromTxCmd(cdc),
+		ApproveTokenTxCmd(cdc),
 	)
 	return txCmd
 }
@@ -263,6 +265,68 @@ func ModifyTokenCmd(cdc *codec.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+
+func TransferFromTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer-from [proxy_key_or_address] [contract_id] [from_address] [to_address] [amount]",
+		Short: "Create and sign a tx transferring tokens by approved proxy",
+		Args:  cobra.ExactArgs(5),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+
+			contractID := args[1]
+
+			from, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+
+			to, err := sdk.AccAddressFromBech32(args[3])
+			if err != nil {
+				return err
+			}
+
+			amount, ok := sdk.NewIntFromString(args[4])
+			if !ok {
+				return sdkerrors.Wrap(types.ErrInvalidAmount, args[4])
+			}
+
+			msg := types.NewMsgTransferFrom(cliCtx.GetFromAddress(), contractID, from, to, amount)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	cmd = client.PostCommands(cmd)[0]
+
+	return cmd
+}
+
+func ApproveTokenTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "approve [approver_key_or_address] [contract_id] [proxy_address]",
+		Short: "Create and sign a tx approve all token operations of a token to a proxy",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+
+			contractID := args[1]
+
+			proxy, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgApprove(cliCtx.GetFromAddress(), contractID, proxy)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

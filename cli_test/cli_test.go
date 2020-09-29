@@ -967,3 +967,51 @@ func TestLinkCLIIncrementSequenceDecorator(t *testing.T) {
 		require.Equal(t, height, f.QueryTx(txHash).Height)
 	}
 }
+
+func TestLinkCliTokenProxy(t *testing.T) {
+	const (
+		contractID = "9be17165"
+		firstName  = "itisbrown"
+		name       = "description"
+		meta       = "{}"
+		symbol     = "BTC"
+		amount     = 10000
+		decimals   = 6
+		sendAmount = 10
+	)
+
+	t.Parallel()
+	f := InitFixtures(t)
+	defer f.Cleanup()
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+	barAddr := f.KeyAddress(keyBar)
+	kevinAddr := f.KeyAddress(UserKevin)
+
+	f.TxTokenIssue(keyFoo, fooAddr, name, meta, symbol, amount, decimals, true, "-y")
+	tests.WaitForNextNBlocksTM(1, f.Port)
+	firstResult := f.QueryToken(contractID)
+	require.Equal(t, name, firstResult.GetName())
+
+	// tx token Approve
+	{
+		f.LogResult(f.TxTokenApprove(keyFoo, contractID, kevinAddr, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// tx token transfer-from
+	{
+		f.LogResult(f.TxTokenTransferFrom(UserKevin, contractID, fooAddr, barAddr, sendAmount, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// tx token
+	{
+		amountOfBar := f.QueryBalanceToken(contractID, barAddr, "-y").Int64()
+		require.Equal(t, int(amountOfBar), sendAmount)
+	}
+}

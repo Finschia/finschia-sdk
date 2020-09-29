@@ -12,8 +12,10 @@ const (
 	defaultMeta       = "{}"
 	defaultImageURI   = "image-uri"
 	defaultDecimals   = 6
+	defaultAmount     = 1000
 )
 
 var (
 	addr1 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr2 = sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 )

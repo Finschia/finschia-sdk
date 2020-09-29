@@ -592,6 +592,16 @@ func (f *Fixtures) TxTokenTransfer(from string, to sdk.AccAddress, symbol string
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
+func (f *Fixtures) TxTokenTransferFrom(proxy string, contractID string, from sdk.AccAddress, to sdk.AccAddress, amount int64, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token transfer-from %s %s %s %s %d %v", f.LinkcliBinary, proxy, contractID, from, to, amount, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
+}
+
+func (f *Fixtures) TxTokenApprove(approver string, contractID string, proxyAddress sdk.AccAddress, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token approve %s %s %s %v", f.LinkcliBinary, approver, contractID, proxyAddress, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
+}
+
 // ___________________________________________________________________________________
 // linkcli tx collection
 

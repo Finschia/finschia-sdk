@@ -8,6 +8,8 @@ var (
 	EventTypeGrantPermToken  = "grant_perm"
 	EventTypeRevokePermToken = "revoke_perm"
 	EventTypeTransfer        = "transfer"
+	EventTypeTransferFrom    = "transfer_from"
+	EventTypeApproveToken    = "approve_token"
 
 	AttributeKeyName       = "name"
 	AttributeKeySymbol     = "symbol"
@@ -21,5 +23,7 @@ var (
 	AttributeKeyFrom       = "from"
 	AttributeKeyTo         = "to"
 	AttributeKeyPerm       = "perm"
+	AttributeKeyApprover   = "approver"
+	AttributeKeyProxy      = "proxy"
 	AttributeValueCategory = ModuleName
 )

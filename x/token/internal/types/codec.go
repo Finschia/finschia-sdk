@@ -29,4 +29,6 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(&BaseAccount{}, "token/Account", nil)
 	cdc.RegisterInterface((*AccountPermissionI)(nil), nil)
 	cdc.RegisterConcrete(&AccountPermission{}, "token/AccountPermission", nil)
+	cdc.RegisterConcrete(MsgApprove{}, "token/MsgApprove", nil)
+	cdc.RegisterConcrete(MsgTransferFrom{}, "token/MsgTransferFrom", nil)
 }
