@@ -54,6 +54,17 @@ type MsgBurn struct {
 }
 ```
 
+### MsgBurnFrom
+
+```golang
+type MsgBurnFrom struct {
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	Amount     sdk.Int        `json:"amount"`
+}
+```
+
 
 ## MsgGrantPermission
 
@@ -111,6 +122,21 @@ type MsgModify struct {
 
 **Modify message is to modify fields of token**
 - `Owner` is the signer
+
+## MsgApprove
+
+```golang
+type MsgApprove struct {
+	Approver   sdk.AccAddress `json:"approver"`
+	ContractID string         `json:"contract_id"`
+	Proxy      sdk.AccAddress `json:"proxy"`
+}
+```
+
+**Approve message is to approve a proxy to transfer and burn token**
+- `Approver` is the signer
+
+
 
 # Syntax
 | Message/Attributes | Tag | Type |

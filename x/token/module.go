@@ -3,8 +3,8 @@ package token
 import (
 	"encoding/json"
 
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	"github.com/line/link-modules/client"
 	"github.com/line/link-modules/x/token/client/cli"
 	"github.com/line/link-modules/x/token/client/rest"
 	"github.com/line/link-modules/x/token/internal/handler"
@@ -52,7 +52,7 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 }
 
 // register rest routes
-func (AppModuleBasic) RegisterRESTRoutes(ctx client.CLIContext, rtr *mux.Router) {
+func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
 	rest.RegisterRoutes(ctx, rtr)
 }
 

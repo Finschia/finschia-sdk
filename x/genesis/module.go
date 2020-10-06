@@ -3,7 +3,7 @@ package genesis
 import (
 	"encoding/json"
 
-	"github.com/line/link-modules/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/line/link-modules/x/genesis/internal/keeper"
 
 	"github.com/gorilla/mux"
@@ -46,7 +46,7 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 }
 
 // register rest routes
-func (AppModuleBasic) RegisterRESTRoutes(ctx client.CLIContext, rtr *mux.Router) {
+func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
 }
 
 // get the root tx command of this module

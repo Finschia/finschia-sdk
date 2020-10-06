@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	context "github.com/line/link-modules/client"
 	"github.com/line/link-modules/x/collection/internal/types"
 )
 
@@ -37,6 +37,24 @@ func (r Retriever) GetAccountBalance(ctx context.CLIContext, contractID, tokenID
 	}
 
 	return balance, height, nil
+}
+
+func (r Retriever) GetAccountBalances(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (types.Coins, int64, error) {
+	var coins types.Coins
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressParams(addr))
+	if err != nil {
+		return coins, 0, err
+	}
+
+	res, height, err := r.query(types.QueryBalances, contractID, bs)
+
+	if err != nil {
+		return coins, height, err
+	}
+	if err := ctx.Codec.UnmarshalJSON(res, &coins); err != nil {
+		return coins, height, err
+	}
+	return coins, height, nil
 }
 
 func (r Retriever) GetAccountPermission(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (types.Permissions, int64, error) {
@@ -195,6 +213,23 @@ func (r Retriever) GetTokenTypes(ctx context.CLIContext, contractID string) (typ
 		return tokenTypes, height, err
 	}
 	return tokenTypes, height, nil
+}
+
+func (r Retriever) GetApprovers(ctx context.CLIContext, contractID string, proxy sdk.AccAddress) (accAdds []sdk.AccAddress, height int64, err error) {
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryApproverParams(proxy))
+	if err != nil {
+		return accAdds, 0, err
+	}
+	res, height, err := r.query(types.QueryApprovers, contractID, bs)
+	if err != nil {
+		return accAdds, height, err
+	}
+
+	if err := ctx.Codec.UnmarshalJSON(res, &accAdds); err != nil {
+		return accAdds, height, err
+	}
+
+	return accAdds, height, nil
 }
 
 func (r Retriever) IsApproved(ctx context.CLIContext, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) (approved bool, height int64, err error) {

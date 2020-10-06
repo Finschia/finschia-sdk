@@ -1,8 +1,0 @@
-{
-    "result": {
-        "denom": "tcony",
-        "symbol": "TC",
-        "name": "Test Coin",
-        "decimals": 6
-    }
-}

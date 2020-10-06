@@ -1,6 +1,8 @@
 package types
 
 import (
+	"encoding/json"
+
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link-modules/x/contract"
@@ -52,4 +54,69 @@ func (msg MsgTransfer) GetSigners() []sdk.AccAddress {
 
 func (msg MsgTransfer) GetContractID() string {
 	return msg.ContractID
+}
+
+var _ contract.Msg = (*MsgTransferFrom)(nil)
+
+type MsgTransferFrom struct {
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	To         sdk.AccAddress `json:"to"`
+	Amount     sdk.Int        `json:"amount"`
+}
+
+func NewMsgTransferFrom(proxy sdk.AccAddress, contractID string, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Int) MsgTransferFrom {
+	return MsgTransferFrom{
+		Proxy:      proxy,
+		ContractID: contractID,
+		From:       from,
+		To:         to,
+		Amount:     amount,
+	}
+}
+func (msg MsgTransferFrom) MarshalJSON() ([]byte, error) {
+	type msgAlias MsgTransferFrom
+	return json.Marshal(msgAlias(msg))
+}
+
+func (msg *MsgTransferFrom) UnmarshalJSON(data []byte) error {
+	type msgAlias *MsgTransferFrom
+	return json.Unmarshal(data, msgAlias(msg))
+}
+
+func (MsgTransferFrom) Route() string { return RouterKey }
+
+func (MsgTransferFrom) Type() string { return "transfer_from" }
+
+func (msg MsgTransferFrom) GetContractID() string { return msg.ContractID }
+
+func (msg MsgTransferFrom) ValidateBasic() error {
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
+	if msg.Proxy.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
+	}
+	if msg.From.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
+	}
+	if msg.To.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "To cannot be empty")
+	}
+	if msg.From.Equals(msg.Proxy) {
+		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.From.String())
+	}
+	if !msg.Amount.IsPositive() {
+		return sdkerrors.Wrap(ErrInvalidAmount, "invalid amount")
+	}
+	return nil
+}
+
+func (msg MsgTransferFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
+func (msg MsgTransferFrom) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Proxy}
 }

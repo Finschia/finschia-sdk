@@ -4,26 +4,27 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	clienttypes "github.com/line/link-modules/x/token/client/internal/types"
 	"github.com/line/link-modules/x/token/internal/types"
 
 	"github.com/gorilla/mux"
-	"github.com/line/link-modules/client"
 
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
-func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
+func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc("/token/{contract_id}/supply", QueryTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/mint", QueryTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/burn", QueryTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/accounts/{address}/balance", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/accounts/{address}/permissions", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/token", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/{contract_id}/accounts/{address}/proxies/{approver}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
-func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryTokenRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -48,7 +49,7 @@ func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryBalanceRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -78,7 +79,7 @@ func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-func QueryTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.HandlerFunc {
+func QueryTotalRequestHandlerFn(cliCtx context.CLIContext, target string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -104,7 +105,7 @@ func QueryTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.Ha
 	}
 }
 
-func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryPermRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -131,5 +132,43 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, pms)
+	}
+}
+
+func QueryIsApprovedRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+
+		proxy, err := sdk.AccAddressFromBech32(vars["address"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("proxy[%s] cannot parsed: %s", proxy.String(), err))
+			return
+		}
+
+		approver, err := sdk.AccAddressFromBech32(vars["approver"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("approver[%s] cannot parsed: %s", approver.String(), err))
+			return
+		}
+
+		contractID := vars["contract_id"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		approved, height, err := retriever.IsApproved(cliCtx, contractID, proxy, approver)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, approved)
 	}
 }

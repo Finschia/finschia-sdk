@@ -15,9 +15,9 @@ const (
 type (
 	Token  = types.Token
 	Tokens = types.Tokens
-
-	FT  = types.FT
-	NFT = types.NFT
+	Coins  = types.Coins
+	FT     = types.FT
+	NFT    = types.NFT
 
 	TokenType = types.TokenType
 

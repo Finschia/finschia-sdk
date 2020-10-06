@@ -1,12 +1,13 @@
 package types
 
 import (
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/client"
 )
 
 const (
 	QuerierRoute             = ModuleName
+	QueryBalances            = "balances"
 	QueryBalance             = "balance"
 	QueryTokens              = "tokens"
 	QueryTokensWithTokenType = "tokensWithTokenType"
@@ -23,11 +24,12 @@ const (
 	QueryRoot                = "root"
 	QueryChildren            = "children"
 	QueryIsApproved          = "approved"
+	QueryApprovers           = "approver"
 )
 
 type NodeQuerier interface {
 	QueryWithData(path string, data []byte) ([]byte, int64, error)
-	WithHeight(height int64) client.CLIContext
+	WithHeight(height int64) context.CLIContext
 }
 
 type QueryTokenIDParams struct {
@@ -73,4 +75,12 @@ func NewQueryIsApprovedParams(proxy sdk.AccAddress, approver sdk.AccAddress) Que
 		Proxy:    proxy,
 		Approver: approver,
 	}
+}
+
+type QueryProxyParams struct {
+	Proxy sdk.AccAddress `json:"proxy"`
+}
+
+func NewQueryApproverParams(proxy sdk.AccAddress) QueryProxyParams {
+	return QueryProxyParams{Proxy: proxy}
 }

@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/client"
 	clienttypes "github.com/line/link-modules/x/token/client/internal/types"
 	"github.com/line/link-modules/x/token/internal/types"
 	"github.com/spf13/cobra"
@@ -22,6 +24,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		GetBalanceCmd(cdc),
 		GetTotalCmd(cdc),
 		GetPermsCmd(cdc),
+		GetIsApprovedCmd(cdc),
 	)
 
 	return cmd
@@ -33,7 +36,7 @@ func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query token with its contract_id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -48,7 +51,7 @@ func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
@@ -57,7 +60,7 @@ func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query balance of the account",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -76,7 +79,7 @@ func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetTotalCmd(cdc *codec.Codec) *cobra.Command {
@@ -85,7 +88,7 @@ func GetTotalCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query total supply/mint/burn of token",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			target := args[0]
@@ -102,7 +105,7 @@ func GetTotalCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
@@ -111,7 +114,7 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Get Permission of the Account",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			addr, err := sdk.AccAddressFromBech32(args[0])
@@ -128,5 +131,38 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
+}
+
+func GetIsApprovedCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "approved [contract_id] [proxy] [approver]",
+		Short: "Query whether a proxy is approved by approver on a token",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			retriever := clienttypes.NewRetriever(cliCtx)
+
+			contractID := args[0]
+
+			proxy, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			approver, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+
+			approved, height, err := retriever.IsApproved(cliCtx, contractID, proxy, approver)
+			if err != nil {
+				return err
+			}
+
+			return cliCtx.WithHeight(height).PrintOutput(approved)
+		},
+	}
+
+	return flags.GetCommands(cmd)[0]
 }

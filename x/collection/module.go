@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math/rand"
 
+	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
 	"github.com/line/link-modules/x/collection/internal/legacy"
 
@@ -17,7 +18,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 
-	"github.com/line/link-modules/client"
 	"github.com/line/link-modules/x/collection/client/cli"
 	"github.com/line/link-modules/x/collection/client/rest"
 	"github.com/line/link-modules/x/collection/internal/handler"
@@ -55,7 +55,7 @@ func (AppModuleBasic) ValidateGenesis(bz json.RawMessage) error {
 }
 
 // register rest routes
-func (AppModuleBasic) RegisterRESTRoutes(ctx client.CLIContext, rtr *mux.Router) {
+func (AppModuleBasic) RegisterRESTRoutes(ctx context.CLIContext, rtr *mux.Router) {
 	rest.RegisterRoutes(ctx, rtr)
 }
 

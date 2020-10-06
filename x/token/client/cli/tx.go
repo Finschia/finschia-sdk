@@ -5,7 +5,9 @@ import (
 	"errors"
 	"strconv"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/line/link-modules/x/token/internal/types"
 	"github.com/spf13/viper"
 
@@ -16,7 +18,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/line/link-modules/client"
 )
 
 var (
@@ -49,6 +50,9 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		GrantPermTxCmd(cdc),
 		RevokePermTxCmd(cdc),
 		ModifyTokenCmd(cdc),
+		TransferFromTxCmd(cdc),
+		ApproveTokenTxCmd(cdc),
+		BurnFromTxCmd(cdc),
 	)
 	return txCmd
 }
@@ -74,7 +78,7 @@ linkcli tx token issue [from_key_or_address] [to] [name] [symbol]
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			from := cliCtx.FromAddress
 			to, err := sdk.AccAddressFromBech32(args[1])
@@ -103,7 +107,7 @@ linkcli tx token issue [from_key_or_address] [to] [name] [symbol]
 	cmd.Flags().String(flagMeta, "", "set meta")
 	cmd.Flags().String(flagImageURI, "", "set img-uri")
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -131,7 +135,7 @@ func TransferTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	cmd = client.PostCommands(cmd)[0]
+	cmd = flags.PostCommands(cmd)[0]
 
 	return cmd
 }
@@ -144,7 +148,7 @@ func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -164,7 +168,7 @@ func MintTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -175,7 +179,7 @@ func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 			amount, ok := sdk.NewIntFromString(args[2])
@@ -189,7 +193,7 @@ func BurnTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -200,7 +204,7 @@ func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -216,7 +220,7 @@ func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -227,7 +231,7 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 			perm := types.Permission(args[2])
@@ -238,7 +242,7 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func ModifyTokenCmd(cdc *codec.Codec) *cobra.Command {
@@ -249,7 +253,7 @@ func ModifyTokenCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 			contractID := args[1]
 			field := args[2]
 			newValue := args[3]
@@ -267,5 +271,94 @@ func ModifyTokenCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
+}
+
+func TransferFromTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "transfer-from [proxy_key_or_address] [contract_id] [from_address] [to_address] [amount]",
+		Short: "Create and sign a tx transferring tokens by approved proxy",
+		Args:  cobra.ExactArgs(5),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+
+			contractID := args[1]
+
+			from, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+
+			to, err := sdk.AccAddressFromBech32(args[3])
+			if err != nil {
+				return err
+			}
+
+			amount, ok := sdk.NewIntFromString(args[4])
+			if !ok {
+				return sdkerrors.Wrap(types.ErrInvalidAmount, args[4])
+			}
+
+			msg := types.NewMsgTransferFrom(cliCtx.GetFromAddress(), contractID, from, to, amount)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	cmd = flags.PostCommands(cmd)[0]
+
+	return cmd
+}
+
+func ApproveTokenTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "approve [approver_key_or_address] [contract_id] [proxy_address]",
+		Short: "Create and sign a tx approve all token operations of a token to a proxy",
+		Args:  cobra.ExactArgs(3),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+
+			contractID := args[1]
+
+			proxy, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+
+			msg := types.NewMsgApprove(cliCtx.GetFromAddress(), contractID, proxy)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return flags.PostCommands(cmd)[0]
+}
+func BurnFromTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "burn-from [proxy_key_or_address] [contract_id] [from_address] [amount]",
+		Short: "Create and sign a burn token tx by approved proxy",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			contractID := args[1]
+			from, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+			amount, ok := sdk.NewIntFromString(args[3])
+			if !ok {
+				return errors.New("invalid amount")
+			}
+
+			// build and sign the transaction, then broadcast to Tendermint
+			msg := types.NewMsgBurnFrom(cliCtx.GetFromAddress(), contractID, from, amount)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return flags.PostCommands(cmd)[0]
 }

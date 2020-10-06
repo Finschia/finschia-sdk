@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	context "github.com/line/link-modules/client"
 	"github.com/line/link-modules/x/token/internal/types"
 )
 
@@ -84,4 +84,23 @@ func (r Retriever) GetToken(ctx context.CLIContext, contractID string) (types.To
 		return token, height, err
 	}
 	return token, height, nil
+}
+
+func (r Retriever) IsApproved(ctx context.CLIContext, contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) (approved bool, height int64, err error) {
+	bs, err := types.ModuleCdc.MarshalJSON(types.NewQueryIsApprovedParams(proxy, approver))
+	if err != nil {
+		return false, 0, err
+	}
+
+	res, height, err := r.query(types.QueryIsApproved, contractID, bs)
+	if err != nil {
+		return false, 0, err
+	}
+
+	err = ctx.Codec.UnmarshalJSON(res, &approved)
+	if err != nil {
+		return false, 0, err
+	}
+
+	return approved, height, nil
 }
