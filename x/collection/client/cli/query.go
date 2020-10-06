@@ -3,9 +3,11 @@ package cli
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/client"
 	clienttypes "github.com/line/link-modules/x/collection/client/internal/types"
 	"github.com/line/link-modules/x/collection/internal/types"
 	"github.com/spf13/cobra"
@@ -48,7 +50,7 @@ func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query balance of the account",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -68,7 +70,7 @@ func GetBalanceCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetBalancesCmd(cdc *codec.Codec) *cobra.Command {
@@ -77,7 +79,7 @@ func GetBalancesCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query balances of the account for each token_id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -94,7 +96,7 @@ func GetBalancesCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetCollectionCmd(cdc *codec.Codec) *cobra.Command {
@@ -103,7 +105,7 @@ func GetCollectionCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query collection",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -117,7 +119,7 @@ func GetCollectionCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetTokenTypeCmd(cdc *codec.Codec) *cobra.Command {
@@ -126,7 +128,7 @@ func GetTokenTypeCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query collection token-type with collection contract_id and token-type",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -142,7 +144,7 @@ func GetTokenTypeCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetTokenTypesCmd(cdc *codec.Codec) *cobra.Command {
@@ -151,7 +153,7 @@ func GetTokenTypesCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query all collection token-types with collection contract_id",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -166,7 +168,7 @@ func GetTokenTypesCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
@@ -175,7 +177,7 @@ func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query collection token with collection contractID and token's token_id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -191,7 +193,7 @@ func GetTokenCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
@@ -200,7 +202,7 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query all collection tokens with collection contractID",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -225,7 +227,7 @@ func GetTokensCmd(cdc *codec.Codec) *cobra.Command {
 	}
 	cmd.Flags().String(flagTokenType, DefaultTokenType, "get tokens belong to the token-type")
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetTokenTotalCmd(cdc *codec.Codec) *cobra.Command {
@@ -234,7 +236,7 @@ func GetTokenTotalCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query supply/mint/burn of collection token with contract-id and tokens's token_id.",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			target := args[0]
@@ -251,7 +253,7 @@ func GetTokenTotalCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetTokenCountCmd(cdc *codec.Codec) *cobra.Command {
@@ -260,7 +262,7 @@ func GetTokenCountCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query count of collection tokens with collection contractID and the type_type.",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			target := args[0]
@@ -288,7 +290,7 @@ func GetTokenCountCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
@@ -297,7 +299,7 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Get Permission of the Account",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			addr, err := sdk.AccAddressFromBech32(args[0])
@@ -314,7 +316,7 @@ func GetPermsCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetParentCmd(cdc *codec.Codec) *cobra.Command {
@@ -323,7 +325,7 @@ func GetParentCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query parent token with contractID and token-id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			tokenGetter := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -342,7 +344,7 @@ func GetParentCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetRootCmd(cdc *codec.Codec) *cobra.Command {
@@ -351,7 +353,7 @@ func GetRootCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query root token with contractID and token-id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			tokenGetter := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -370,7 +372,7 @@ func GetRootCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetChildrenCmd(cdc *codec.Codec) *cobra.Command {
@@ -379,7 +381,7 @@ func GetChildrenCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query children tokens with contractID and token-id",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			tokenGetter := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -398,7 +400,7 @@ func GetChildrenCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetApproversCmd(cdc *codec.Codec) *cobra.Command {
@@ -407,7 +409,7 @@ func GetApproversCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query approvers by the proxy",
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -426,7 +428,7 @@ func GetApproversCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }
 
 func GetIsApprovedCmd(cdc *codec.Codec) *cobra.Command {
@@ -435,7 +437,7 @@ func GetIsApprovedCmd(cdc *codec.Codec) *cobra.Command {
 		Short: "Query whether a proxy is approved by approver on a collection",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliCtx := client.NewCLIContext().WithCodec(cdc)
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
 			retriever := clienttypes.NewRetriever(cliCtx)
 
 			contractID := args[0]
@@ -459,5 +461,5 @@ func GetIsApprovedCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.GetCommands(cmd)[0]
+	return flags.GetCommands(cmd)[0]
 }

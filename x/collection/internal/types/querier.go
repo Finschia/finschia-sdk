@@ -1,8 +1,8 @@
 package types
 
 import (
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/client"
 )
 
 const (
@@ -29,7 +29,7 @@ const (
 
 type NodeQuerier interface {
 	QueryWithData(path string, data []byte) ([]byte, int64, error)
-	WithHeight(height int64) client.CLIContext
+	WithHeight(height int64) context.CLIContext
 }
 
 type QueryTokenIDParams struct {
