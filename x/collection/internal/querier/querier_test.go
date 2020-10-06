@@ -1,6 +1,7 @@
 package querier
 
 import (
+	"bytes"
 	"context"
 	"testing"
 
@@ -74,6 +75,7 @@ func prepare(t *testing.T) {
 	require.NoError(t, ckeeper.Attach(ctx2, addr1, tokenNFTID1, tokenNFTID3))
 	require.NoError(t, ckeeper.GrantPermission(ctx2, addr1, addr2, types.NewMintPermission()))
 	require.NoError(t, ckeeper.SetApproved(ctx2, addr1, addr2))
+	require.NoError(t, ckeeper.SetApproved(ctx2, addr1, addr3))
 }
 
 func query(t *testing.T, params interface{}, query string, result interface{}) {
@@ -109,6 +111,29 @@ func TestNewQuerier_queryBalance(t *testing.T) {
 	var balance sdk.Int
 	query(t, params, types.QueryBalance, &balance)
 	require.True(t, balance.Equal(sdk.NewInt(1000)))
+}
+
+func TestNewQuerier_queryBalances(t *testing.T) {
+	prepare(t)
+	params := types.QueryAccAddressParams{
+		Addr: addr1,
+	}
+	var coins types.Coins
+	query(t, params, types.QueryBalances, &coins)
+	require.Equal(t, tokenFTID, coins[0].Denom)
+	require.Equal(t, sdk.NewInt(tokenFTSupply), coins[0].Amount)
+	require.Equal(t, tokenNFTID1, coins[1].Denom)
+	require.Equal(t, sdk.NewInt(1), coins[1].Amount)
+	require.Equal(t, tokenNFTID2, coins[2].Denom)
+	require.Equal(t, sdk.NewInt(1), coins[2].Amount)
+	require.Equal(t, tokenNFTID3, coins[3].Denom)
+	require.Equal(t, sdk.NewInt(1), coins[3].Amount)
+	paramsNoExist1 := types.QueryAccAddressParams{
+		Addr: addr3,
+	}
+	var coinsEmpty types.Coins
+	query(t, paramsNoExist1, types.QueryBalances, &coinsEmpty)
+	require.Empty(t, coinsEmpty)
 }
 
 func TestNewQuerier_queryBalanceOwnedNFT(t *testing.T) {
@@ -466,9 +491,32 @@ func TestNewQuerier_queryChildren_empty(t *testing.T) {
 	require.Equal(t, len(tokens), 0)
 }
 
+func TestNewQuerier_queryApprovers(t *testing.T) {
+	prepare(t)
+	params := types.QueryProxyParams{
+		Proxy: addr1,
+	}
+	var acAd1 []sdk.AccAddress
+	query(t, params, types.QueryApprovers, &acAd1)
+	require.Equal(t, 2, len(acAd1))
+	if bytes.Compare(addr2, addr3) <= 0 {
+		require.Equal(t, addr2, acAd1[0])
+		require.Equal(t, addr3, acAd1[1])
+	} else {
+		require.Equal(t, addr2, acAd1[1])
+		require.Equal(t, addr3, acAd1[0])
+	}
+
+	var acAdEmpty []sdk.AccAddress
+	paramsEmpty := types.QueryProxyParams{
+		Proxy: addr2,
+	}
+	query(t, paramsEmpty, types.QueryApprovers, &acAdEmpty)
+	require.Empty(t, acAdEmpty)
+}
+
 func TestNewQuerier_queryIsApproved_true(t *testing.T) {
 	prepare(t)
-
 	params := types.QueryIsApprovedParams{
 		Proxy:    addr1,
 		Approver: addr2,

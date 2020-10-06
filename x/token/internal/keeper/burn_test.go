@@ -51,6 +51,33 @@ func TestKeeper_BurnTokens(t *testing.T) {
 	}
 }
 
+func TestKeeper_BurnTokenFrom(t *testing.T) {
+	ctx := cacheKeeper()
+	t.Log("Issue Token")
+	{
+		token := types.NewToken(defaultContractID, defaultName, defaultSymbol, defaultMeta, defaultImageURI, sdk.NewInt(defaultDecimals), true)
+		require.NoError(t, keeper.IssueToken(ctx, token, sdk.NewInt(defaultAmount+defaultAmount), addr1, addr1))
+	}
+	t.Log("set permission for proxy")
+	{
+		keeper.AddPermission(ctx, addr2, types.NewBurnPermission())
+	}
+	t.Log("approve")
+	{
+		require.NoError(t, keeper.SetApproved(ctx, addr2, addr1))
+	}
+	t.Log("Burn Tokens by proxy")
+	{
+		err := keeper.BurnTokenFrom(ctx, addr2, addr1, sdk.NewInt(defaultAmount))
+		require.NoError(t, err)
+	}
+	t.Log("check Balance of Account 1")
+	{
+		supply := keeper.GetBalance(ctx, addr1)
+		require.Equal(t, int64(defaultAmount), supply.Int64())
+	}
+}
+
 func TestKeeper_BurnTokensWithoutPermissions(t *testing.T) {
 	ctx := cacheKeeper()
 	t.Log("Issue Token")

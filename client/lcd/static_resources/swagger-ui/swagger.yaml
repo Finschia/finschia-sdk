@@ -839,6 +839,94 @@ paths:
                       - $ref: '#/components/schemas/TokenFT'
         "500":
           description: Internal Server Error
+  /token/{contract_id}/accounts/{address}/proxies/{approver}:
+    get:
+      tags:
+        - Token
+      summary: Get approval status of a proxy for a token
+      parameters:
+        - name: contract_id
+          in: path
+          description: contract_id
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
+        - name: address
+          in: path
+          description: approved proxy address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: approver
+          in: path
+          description: approver address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: boolean
+                    example: true
+        "500":
+          description: Internal Server Error
+  /collection/{contract_id}/accounts/{address}/balances:
+    get:
+      tags:
+        - Collection
+      summary: Get the account balances of a single coin denomination
+      parameters:
+        - name: address
+          in: path
+          description: Account address
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: contract_id
+          in: path
+          description: contract_id for the collection
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: Balance for each token ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/CollectionBalances'
+        "500":
+          description: Server internal error
   /collection/{contract_id}/accounts/{address}/balances/{token_id}:
     get:
       tags:
@@ -1535,6 +1623,41 @@ paths:
                       $ref: '#/components/schemas/TokenCNFT3'
         "500":
           description: Internal Server Error
+  /collection/{contract_id}/accounts/{address}/approvers:
+    get:
+      tags:
+        - Collection
+      summary: Get approvers of the proxy for a collection
+      parameters:
+        - name: contract_id
+          in: path
+          description: Token contract_id
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
+        - name: address
+          in: path
+          description: proxy address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+      responses:
+        "200":
+          description: approvers account address
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "9"
+                  result:
+                    $ref: "#/components/schemas/AddressList"
+        "500":
+          description: Server internal error
   /collection/{contract_id}/accounts/{address}/proxies/{approver}:
     get:
       tags:
@@ -1593,6 +1716,12 @@ components:
       type: string
       description: bech32 encoded address
       example: "link1ffxp9g0qcp6quqjhq6cmdz69ztnu3khx524uhp"
+    AddressList:
+      type: array
+      items:
+        type: string
+        example:
+          - link1w9xa5ddppvncaue5pj8n7qlkqfwjlqqls4jgs0
     ValidatorAddress:
       type: string
       description: bech32 encoded address
@@ -2462,7 +2591,14 @@ components:
             base_img_uri:
               type: string
               example: "example.com/img_uri"
-
+    CollectionBalances:
+      properties:
+        token_id:
+          type: string
+          example: "1000000100000001"
+        amount:
+          type: string
+          example: "100"
     #-------------------------------
     # BroadcastTx Result Models
     #-------------------------------

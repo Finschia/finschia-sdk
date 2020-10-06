@@ -29,3 +29,26 @@ func (k Keeper) Transfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress
 
 	return nil
 }
+
+func (k Keeper) TransferFrom(ctx sdk.Context, proxy sdk.AccAddress, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Int) error {
+	if !k.IsApproved(ctx, proxy, from) {
+		return sdkerrors.Wrapf(types.ErrTokenNotApproved, "Proxy: %s, Approver: %s, ContractID: %s", proxy.String(), from.String(), k.getContractID(ctx))
+	}
+
+	if err := k.Send(ctx, from, to, amount); err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			types.EventTypeTransferFrom,
+			sdk.NewAttribute(types.AttributeKeyContractID, k.getContractID(ctx)),
+			sdk.NewAttribute(types.AttributeKeyProxy, proxy.String()),
+			sdk.NewAttribute(types.AttributeKeyFrom, from.String()),
+			sdk.NewAttribute(types.AttributeKeyTo, to.String()),
+			sdk.NewAttribute(types.AttributeKeyAmount, amount.String()),
+		),
+	})
+
+	return nil
+}

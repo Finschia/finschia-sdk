@@ -10,11 +10,12 @@ const (
 )
 
 var (
-	TokenKeyPrefix     = []byte{0x00}
-	BlacklistKeyPrefix = []byte{0x01}
-	AccountKeyPrefix   = []byte{0x02}
-	SupplyKeyPrefix    = []byte{0x03}
-	PermKeyPrefix      = []byte{0x04}
+	TokenKeyPrefix         = []byte{0x00}
+	BlacklistKeyPrefix     = []byte{0x01}
+	AccountKeyPrefix       = []byte{0x02}
+	SupplyKeyPrefix        = []byte{0x03}
+	PermKeyPrefix          = []byte{0x04}
+	TokenApprovedKeyPrefix = []byte{0x05}
 )
 
 func BlacklistKey(addr sdk.AccAddress, action string) []byte {
@@ -37,4 +38,8 @@ func AccountKey(contractID string, addr sdk.AccAddress) []byte {
 
 func PermKey(contractID string, addr sdk.AccAddress) []byte {
 	return append(append(PermKeyPrefix, []byte(contractID)...), addr...)
+}
+
+func TokenApprovedKey(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) []byte {
+	return append(append(append(TokenApprovedKeyPrefix, []byte(contractID)...), proxy.Bytes()...), approver.Bytes()...)
 }
