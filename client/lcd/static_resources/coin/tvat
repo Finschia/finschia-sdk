@@ -1,8 +1,0 @@
-{
-    "result": {
-        "denom": "tvat",
-        "symbol": "TVAT",
-        "name": "Test VAT",
-        "decimals": 6
-    }
-}
