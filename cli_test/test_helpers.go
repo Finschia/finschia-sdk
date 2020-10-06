@@ -1078,6 +1078,17 @@ func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, contractID string
 	return pms
 }
 
+func (f *Fixtures) QueryApprovedToken(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress, flags ...string) bool {
+	cmd := fmt.Sprintf("%s query token approved %s %s %s %s", f.LinkcliBinary, contractID, proxy, approver, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var isApproved bool
+	err := cdc.UnmarshalJSON([]byte(res), &isApproved)
+	require.NoError(f.T, err)
+	return isApproved
+}
+
 // ___________________________________________________________________________________
 // query collection
 func (f *Fixtures) QueryBalanceCollection(contractID, tokenID string, addr sdk.AccAddress, flags ...string) sdk.Int {

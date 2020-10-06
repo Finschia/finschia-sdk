@@ -1004,10 +1004,22 @@ func TestLinkCliTokenProxy(t *testing.T) {
 	firstResult := f.QueryToken(contractID)
 	require.Equal(t, name, firstResult.GetName())
 
+	// query token approved and get false
+	{
+		isApprovedByFoo := f.QueryApprovedToken(contractID, kevinAddr, fooAddr)
+		require.False(t, isApprovedByFoo)
+	}
+
 	// tx token Approve
 	{
 		f.LogResult(f.TxTokenApprove(keyFoo, contractID, kevinAddr, "-y"))
 		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// query token approved and get true
+	{
+		isApprovedByFoo := f.QueryApprovedToken(contractID, kevinAddr, fooAddr)
+		require.True(t, isApprovedByFoo)
 	}
 
 	// tx token transfer-from

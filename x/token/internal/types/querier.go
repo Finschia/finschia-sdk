@@ -6,13 +6,14 @@ import (
 )
 
 const (
-	QuerierRoute = "token"
-	QueryTokens  = "tokens"
-	QueryPerms   = "perms"
-	QueryBalance = "balance"
-	QuerySupply  = "supply"
-	QueryMint    = "mint"
-	QueryBurn    = "burn"
+	QuerierRoute    = "token"
+	QueryTokens     = "tokens"
+	QueryPerms      = "perms"
+	QueryBalance    = "balance"
+	QuerySupply     = "supply"
+	QueryMint       = "mint"
+	QueryBurn       = "burn"
+	QueryIsApproved = "approved"
 )
 
 type NodeQuerier interface {
@@ -26,4 +27,16 @@ type QueryContractIDAccAddressParams struct {
 
 func NewQueryContractIDAccAddressParams(addr sdk.AccAddress) QueryContractIDAccAddressParams {
 	return QueryContractIDAccAddressParams{Addr: addr}
+}
+
+type QueryIsApprovedParams struct {
+	Proxy    sdk.AccAddress `json:"proxy"`
+	Approver sdk.AccAddress `json:"approver"`
+}
+
+func NewQueryIsApprovedParams(proxy sdk.AccAddress, approver sdk.AccAddress) QueryIsApprovedParams {
+	return QueryIsApprovedParams{
+		Proxy:    proxy,
+		Approver: approver,
+	}
 }

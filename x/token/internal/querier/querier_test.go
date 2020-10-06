@@ -48,6 +48,9 @@ func prepare(t *testing.T) {
 	ctx2 := ctx.WithContext(context.WithValue(ctx.Context(), contract.CtxKey{}, contractID))
 	require.NoError(t, tkeeper.IssueToken(ctx2, types.NewToken(contractID, tokenName, tokenSymbol, tokenMeta, tokenImageURL, sdk.NewInt(1), true), sdk.NewInt(tokenAmount), addr1, addr1))
 	require.NoError(t, tkeeper.BurnToken(ctx2, sdk.NewInt(tokenBurned), addr1))
+
+	require.NoError(t, tkeeper.GrantPermission(ctx2, addr1, addr2, types.NewBurnPermission()))
+	require.NoError(t, tkeeper.SetApproved(ctx2, addr1, addr2))
 }
 
 func query(t *testing.T, params interface{}, query string, result interface{}) {
@@ -141,4 +144,28 @@ func TestNewQuerier_invalid(t *testing.T) {
 	}
 	_, err := querier(ctx, path, req)
 	require.EqualError(t, err, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown token query endpoint").Error())
+}
+
+func TestNewQuerier_queryIsApproved_true(t *testing.T) {
+	prepare(t)
+
+	params := types.QueryIsApprovedParams{
+		Proxy:    addr1,
+		Approver: addr2,
+	}
+	var approved bool
+	query(t, params, types.QueryIsApproved, &approved)
+	require.True(t, approved)
+}
+
+func TestNewQuerier_queryIsApproved_false(t *testing.T) {
+	prepare(t)
+
+	params := types.QueryIsApprovedParams{
+		Proxy:    addr2,
+		Approver: addr1,
+	}
+	var approved bool
+	query(t, params, types.QueryIsApproved, &approved)
+	require.False(t, approved)
 }

@@ -839,6 +839,49 @@ paths:
                       - $ref: '#/components/schemas/TokenFT'
         "500":
           description: Internal Server Error
+  /token/{contract_id}/accounts/{address}/proxies/{approver}:
+    get:
+      tags:
+        - Token
+      summary: Get approval status of a proxy for a token
+      parameters:
+        - name: contract_id
+          in: path
+          description: contract_id
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
+        - name: address
+          in: path
+          description: approved proxy address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: approver
+          in: path
+          description: approver address in bech32 format
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: boolean
+                    example: true
+        "500":
+          description: Internal Server Error
   /collection/{contract_id}/accounts/{address}/balances/{token_id}:
     get:
       tags:
