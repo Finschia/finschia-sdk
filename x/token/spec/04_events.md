@@ -45,6 +45,29 @@ The token module emits the following events:
 | burn             | amount         | {amount}                 |
 | burn             | from           | {ownerAddress}           |
 
+### MsgBurnFrom
+| Type             | Attribute Key  | Attribute Value          |
+|------------------|----------------|--------------------------|
+| message          | module         | token                    |
+| message          | sender         | {proxyAddress}           | 
+| message          | action         | burn                     |
+| burn_from        | contract_id    | {contractID}             |
+| burn_from        | proxy          | {proxyAddress}           |
+| burn_from        | from           | {fromAddress}            |
+| burn_from        | amount         | {amount}                 |
+
+### MsgBurnFrom
+| Type             | Attribute Key  | Attribute Value              |
+|------------------|----------------|------------------------------|
+| message          | module         | token                        |
+| message          | sender         | {proxyAddress}               | 
+| message          | action         | burn_ft                      |
+| burn_ft_from     | contract_id    | {contractID}                 |
+| burn_ft_from     | proxy          | {proxyAddress}               |
+| burn_ft_from     | from           | {fromAddress}                |
+| burn_ft_from     | amount         | {amount}{contractID}{tokenID}|
+
+
 ### MsgTransfer
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
@@ -68,7 +91,7 @@ The token module emits the following events:
 ### MsgGrantPermission
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
-| message          | module         | collection               |
+| message          | module         | token                    |
 | message          | sender         | {fromAddress}            | 
 | message          | action         | grant_permission         |
 | grant_perm       | from           | {fromAddress}            |
@@ -79,9 +102,20 @@ The token module emits the following events:
 ### MsgRevokePermission
 | Type             | Attribute Key  | Attribute Value          |
 |------------------|----------------|--------------------------|
-| message          | module         | collection               |
+| message          | module         | token                    |
 | message          | sender         | {fromAddress}            | 
 | message          | action         | revoke_permission        |
 | revoke_perm      | from           | {fromAddress}            |
 | revoke_perm      | contract_id    | {resource}               |
 | revoke_perm      | perm           | issue/mint/burn/modify   |
+
+### MsgApprove
+| Type          | Attribute Key  | Attribute Value   |
+|---------------|----------------|-------------------|
+| message       | module         | token             |
+| message       | sender         | {approverAddress} | 
+| message       | action         | approve_token     |
+| approve_token | contract_id    | {contractID}      |
+| approve_token | approver       | {approverAddress} |
+| approve_token | proxy          | {proxyAddress}    |
+
