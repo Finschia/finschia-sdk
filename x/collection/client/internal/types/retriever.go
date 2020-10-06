@@ -39,6 +39,24 @@ func (r Retriever) GetAccountBalance(ctx context.CLIContext, contractID, tokenID
 	return balance, height, nil
 }
 
+func (r Retriever) GetAccountBalances(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (types.Coins, int64, error) {
+	var coins types.Coins
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressParams(addr))
+	if err != nil {
+		return coins, 0, err
+	}
+
+	res, height, err := r.query(types.QueryBalances, contractID, bs)
+
+	if err != nil {
+		return coins, height, err
+	}
+	if err := ctx.Codec.UnmarshalJSON(res, &coins); err != nil {
+		return coins, height, err
+	}
+	return coins, height, nil
+}
+
 func (r Retriever) GetAccountPermission(ctx context.CLIContext, contractID string, addr sdk.AccAddress) (types.Permissions, int64, error) {
 	var pms types.Permissions
 	bs, err := ctx.Codec.MarshalJSON(types.NewQueryAccAddressParams(addr))

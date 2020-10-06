@@ -1091,6 +1091,18 @@ func (f *Fixtures) QueryApprovedToken(contractID string, proxy sdk.AccAddress, a
 
 // ___________________________________________________________________________________
 // query collection
+func (f *Fixtures) QueryBalancesCollection(contractID string, addr sdk.AccAddress) collectionModule.Coins {
+	cmd := fmt.Sprintf("%s query collection balances %s %s %s", f.LinkcliBinary, contractID, addr.String(), f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var coins collectionModule.Coins
+	err := cdc.UnmarshalJSON([]byte(res), &coins)
+	require.NoError(f.T, err)
+
+	return coins
+}
+
 func (f *Fixtures) QueryBalanceCollection(contractID, tokenID string, addr sdk.AccAddress, flags ...string) sdk.Int {
 	cmd := fmt.Sprintf("%s query collection balance %s %s %s %s", f.LinkcliBinary, contractID, tokenID, addr.String(), f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")

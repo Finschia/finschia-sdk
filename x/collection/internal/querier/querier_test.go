@@ -113,6 +113,29 @@ func TestNewQuerier_queryBalance(t *testing.T) {
 	require.True(t, balance.Equal(sdk.NewInt(1000)))
 }
 
+func TestNewQuerier_queryBalances(t *testing.T) {
+	prepare(t)
+	params := types.QueryAccAddressParams{
+		Addr: addr1,
+	}
+	var coins types.Coins
+	query(t, params, types.QueryBalances, &coins)
+	require.Equal(t, tokenFTID, coins[0].Denom)
+	require.Equal(t, sdk.NewInt(tokenFTSupply), coins[0].Amount)
+	require.Equal(t, tokenNFTID1, coins[1].Denom)
+	require.Equal(t, sdk.NewInt(1), coins[1].Amount)
+	require.Equal(t, tokenNFTID2, coins[2].Denom)
+	require.Equal(t, sdk.NewInt(1), coins[2].Amount)
+	require.Equal(t, tokenNFTID3, coins[3].Denom)
+	require.Equal(t, sdk.NewInt(1), coins[3].Amount)
+	paramsNoExist1 := types.QueryAccAddressParams{
+		Addr: addr3,
+	}
+	var coinsEmpty types.Coins
+	query(t, paramsNoExist1, types.QueryBalances, &coinsEmpty)
+	require.Empty(t, coinsEmpty)
+}
+
 func TestNewQuerier_queryBalanceOwnedNFT(t *testing.T) {
 	prepare(t)
 	params := types.QueryTokenIDAccAddressParams{

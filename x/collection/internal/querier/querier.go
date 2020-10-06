@@ -20,6 +20,8 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 		switch path[0] {
 		case types.QueryBalance:
 			return queryBalance(ctx, req, keeper)
+		case types.QueryBalances:
+			return queryBalances(ctx, req, keeper)
 		case types.QueryPerms:
 			return queryAccountPermission(ctx, req, keeper)
 		case types.QueryTokens:
@@ -92,6 +94,38 @@ func queryBalance(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) 
 	}
 
 	bz, err2 := keeper.MarshalJSONIndent(balance)
+	if err2 != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err2.Error())
+	}
+
+	return bz, nil
+}
+
+func queryBalances(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
+	var params types.QueryTokenIDAccAddressParams
+	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+	coins := make([]types.Coin, 0)
+	if !keeper.HasContractID(ctx) {
+		return nil, sdkerrors.Wrap(types.ErrCollectionNotExist, ctx.Context().Value(contract.CtxKey{}).(string))
+	}
+	// FT
+	acc, err := keeper.GetAccount(ctx, params.Addr)
+	if err == nil {
+		coins = acc.GetCoins()
+	}
+
+	// NFT
+	tokenIds := keeper.GetNFTsOwner(ctx, params.Addr)
+	for _, tokenID := range tokenIds {
+		var coin types.Coin
+		coin.Amount = sdk.NewInt(1)
+		coin.Denom = tokenID
+		coins = append(coins, coin)
+	}
+
+	bz, err2 := keeper.MarshalJSONIndent(coins)
 	if err2 != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err2.Error())
 	}

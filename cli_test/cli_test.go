@@ -441,6 +441,79 @@ func TestLinkCLITokenMintBurn(t *testing.T) {
 	}
 }
 
+func TestLinkCLICollection(t *testing.T) {
+	const (
+		contractID   = "9be17165"
+		tokenID01    = "0000000100000000"
+		tokenID02    = "0000000200000000"
+		tokenID03    = "0000000300000000"
+		tokenID04    = "0000000400000000"
+		tokenType    = "10000001"
+		tokenType2   = "10000002"
+		tokenNFTID01 = "1000000100000001"
+		tokenNFTID02 = "1000000200000001"
+		description  = "description"
+		meta         = "meta"
+		tokenuri     = "uri:itisbrown"
+		amount1      = 10000
+		amount2      = 20000
+		decimal      = 6
+	)
+
+	t.Parallel()
+	f := InitFixtures(t)
+	defer f.Cleanup()
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	tinaAddr := f.KeyAddress(UserTina)
+	kevinAddr := f.KeyAddress(UserKevin)
+
+	// Create Collection
+	{
+		f.TxTokenCreateCollection(UserTina, description, meta, tokenuri, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+	// issue-ft
+	{
+		f.TxTokenIssueFTCollection(UserTina, contractID, kevinAddr, description, meta, amount1, decimal, true, "-y")
+		f.TxTokenIssueFTCollection(UserTina, contractID, kevinAddr, description, meta, amount2, decimal, true, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+	// issue-nft and mint-nft
+	{
+		//issue-nft
+		f.TxTokenIssueNFTCollection(UserTina, contractID, description, meta, "-y")
+		f.TxTokenIssueNFTCollection(UserTina, contractID, description, meta, "-y")
+		f.TxTokenIssueNFTCollection(UserTina, contractID, description, meta, "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+		//mint-nft
+		mintParam := strings.Join([]string{tokenType, description, meta}, ":")
+		f.TxTokenMintNFTCollection(UserTina, contractID, kevinAddr.String(), mintParam, "-y")
+		mintParam2 := strings.Join([]string{tokenType2, description, meta}, ":")
+		f.TxTokenMintNFTCollection(UserTina, contractID, kevinAddr.String(), mintParam2, "-y")
+	}
+	// Query Balances
+	{
+		coins := f.QueryBalancesCollection(contractID, kevinAddr)
+		require.Equal(t, 4, len(coins))
+		//FT
+		require.Equal(t, tokenID01, coins[0].Denom)
+		require.Equal(t, int64(amount1), coins[0].Amount.Int64())
+		require.Equal(t, tokenID02, coins[1].Denom)
+		require.Equal(t, int64(amount2), coins[1].Amount.Int64())
+
+		//NFT
+		require.Equal(t, tokenNFTID01, coins[2].Denom)
+		require.Equal(t, int64(1), coins[2].Amount.Int64())
+		require.Equal(t, tokenNFTID02, coins[3].Denom)
+		require.Equal(t, int64(1), coins[3].Amount.Int64())
+		coinsEmpty := f.QueryBalancesCollection(contractID, tinaAddr)
+		require.Empty(t, coinsEmpty)
+	}
+}
 func TestLinkCLITokenCollection(t *testing.T) {
 
 	const (
@@ -452,6 +525,10 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		description = "description"
 		meta        = "meta"
 		tokenuri    = "uri:itisbrown"
+		amount1     = 10000
+		amount2     = 20000
+		amount3     = 30000
+		decimal     = 6
 	)
 
 	t.Parallel()
@@ -478,7 +555,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 	}
 	// Issue collective token brown with token id
 	{
-		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, 10000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, amount1, decimal, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenExpectEmpty(contractID1)
@@ -486,7 +563,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, description, token.GetName())
 		require.Equal(t, contractID1, token.GetContractID())
 		require.Equal(t, tokenID01, token.GetTokenID())
-		require.Equal(t, int64(6), token.(collectionmodule.FT).GetDecimals().Int64())
+		require.Equal(t, int64(decimal), token.(collectionmodule.FT).GetDecimals().Int64())
 		require.Equal(t, false, token.(collectionmodule.FT).GetMintable())
 		require.Equal(t, sdk.NewInt(10000), f.QueryBalanceCollection(contractID1, tokenID01, fooAddr))
 		require.Equal(t, sdk.NewInt(10000), f.QueryTotalSupplyTokenCollection(contractID1, tokenID01))
@@ -494,8 +571,8 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		require.Equal(t, sdk.ZeroInt(), f.QueryTotalBurnTokenCollection(contractID1, tokenID01))
 	}
 	{
-		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, 20000, 6, true, "-y")
-		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, 30000, 6, true, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, amount2, decimal, true, "-y")
+		f.TxTokenIssueFTCollection(keyFoo, contractID1, fooAddr, description, meta, amount3, decimal, true, "-y")
 
 		token := f.QueryTokenCollection(contractID1, tokenID01)
 		require.Equal(t, contractID1, token.GetContractID())
@@ -556,7 +633,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 
 	// Bar cannot issue with the collection
 	{
-		f.TxTokenIssueFTCollection(keyBar, contractID1, barAddr, description, meta, 10000, 6, false, "-y")
+		f.TxTokenIssueFTCollection(keyBar, contractID1, barAddr, description, meta, 10000, decimal, false, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		f.QueryTokenCollectionExpectEmpty(contractID1, tokenID04)
@@ -570,7 +647,7 @@ func TestLinkCLITokenCollection(t *testing.T) {
 		tests.WaitForNextNBlocksTM(1, f.Port)
 		f.TxCollectionGrantPerm(keyFoo, barAddr, contractID1, "burn", "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
-		f.TxTokenIssueFTCollection(keyBar, contractID1, barAddr, description, meta, 40000, 6, true, "-y")
+		f.TxTokenIssueFTCollection(keyBar, contractID1, barAddr, description, meta, 40000, decimal, true, "-y")
 		tests.WaitForNextNBlocksTM(1, f.Port)
 
 		token := f.QueryTokenCollection(contractID1, tokenID04)

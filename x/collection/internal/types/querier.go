@@ -7,6 +7,7 @@ import (
 
 const (
 	QuerierRoute             = ModuleName
+	QueryBalances            = "balances"
 	QueryBalance             = "balance"
 	QueryTokens              = "tokens"
 	QueryTokensWithTokenType = "tokensWithTokenType"

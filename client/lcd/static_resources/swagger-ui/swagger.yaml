@@ -882,6 +882,51 @@ paths:
                     example: true
         "500":
           description: Internal Server Error
+  /collection/{contract_id}/accounts/{address}/balances:
+    get:
+      tags:
+        - Collection
+      summary: Get the account balances of a single coin denomination
+      parameters:
+        - name: address
+          in: path
+          description: Account address
+          required: true
+          schema:
+            type: string
+          example: link16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv
+        - name: contract_id
+          in: path
+          description: contract_id for the collection
+          required: true
+          schema:
+            type: string
+          example: "678c146a"
+        - name: height
+          in: query
+          description: block height (if block height is 0 or be omitted, queries latest block)
+          schema:
+            type: integer
+          required: false
+          example: 0
+      responses:
+        "200":
+          description: Balance for each token ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  height:
+                    type: string
+                    example: "100"
+                  result:
+                    type: array
+                    items:
+                      allOf:
+                        - $ref: '#/components/schemas/CollectionBalances'
+        "500":
+          description: Server internal error
   /collection/{contract_id}/accounts/{address}/balances/{token_id}:
     get:
       tags:
@@ -2546,7 +2591,14 @@ components:
             base_img_uri:
               type: string
               example: "example.com/img_uri"
-
+    CollectionBalances:
+      properties:
+        token_id:
+          type: string
+          example: "1000000100000001"
+        amount:
+          type: string
+          example: "100"
     #-------------------------------
     # BroadcastTx Result Models
     #-------------------------------

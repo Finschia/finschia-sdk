@@ -32,9 +32,40 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/collection/{contract_id}/tokentypes", QueryTokenTypesRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/accounts/{address}/permissions", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/accounts/{address}/proxies/{approver}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/collection/{contract_id}/accounts/{address}/balances", QueryBalancesRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/accounts/{address}/approvers", QueryApproversRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/accounts/{address}/balances/{token_id}", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/collection/{contract_id}/collection", QueryCollectionRequestHandlerFn(cliCtx)).Methods("GET")
+}
+
+func QueryBalancesRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+		contractID := vars["contract_id"]
+		addr, err := sdk.AccAddressFromBech32(vars["address"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("addr[%s] cannot parsed: %s", vars["address"], err))
+			return
+		}
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		coins, height, err := retriever.GetAccountBalances(cliCtx, contractID, addr)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, coins)
+	}
 }
 
 func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
