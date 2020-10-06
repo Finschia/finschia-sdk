@@ -34,6 +34,8 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgMint(ctx, keeper, msg)
 		case types.MsgBurn:
 			return handleMsgBurn(ctx, keeper, msg)
+		case types.MsgBurnFrom:
+			return handleMsgBurnFrom(ctx, keeper, msg)
 		case types.MsgTransfer:
 			return handleMsgTransfer(ctx, keeper, msg)
 		case types.MsgGrantPermission:
@@ -42,6 +44,10 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgRevoke(ctx, keeper, msg)
 		case types.MsgModify:
 			return handleMsgModify(ctx, keeper, msg)
+		case types.MsgTransferFrom:
+			return handleMsgTransferFrom(ctx, keeper, msg)
+		case types.MsgApprove:
+			return handleMsgApprove(ctx, keeper, msg)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized Msg type: %T", msg)
 		}

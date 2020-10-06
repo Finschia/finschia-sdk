@@ -23,7 +23,10 @@ var (
 	NewMsgIssue            = types.NewMsgIssue
 	NewMsgMint             = types.NewMsgMint
 	NewMsgBurn             = types.NewMsgBurn
+	NewMsgBurnFrom         = types.NewMsgBurnFrom
 	NewMsgTransfer         = types.NewMsgTransfer
+	NewMsgApprove          = types.NewMsgApprove
+	NewMsgTransferFrom     = types.NewMsgTransferFrom
 	NewMsgModify           = types.NewMsgModify
 	NewChangesWithMap      = types.NewChangesWithMap
 	NewMsgGrantPermission  = types.NewMsgGrantPermission

@@ -21,6 +21,7 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/token/{contract_id}/accounts/{address}/balance", QueryBalanceRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/accounts/{address}/permissions", QueryPermRequestHandlerFn(cliCtx)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/token", QueryTokenRequestHandlerFn(cliCtx)).Methods("GET")
+	r.HandleFunc("/token/{contract_id}/accounts/{address}/proxies/{approver}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
 func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
@@ -131,5 +132,43 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 		cliCtx = cliCtx.WithHeight(height)
 
 		rest.PostProcessResponse(w, cliCtx, pms)
+	}
+}
+
+func QueryIsApprovedRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		vars := mux.Vars(r)
+
+		proxy, err := sdk.AccAddressFromBech32(vars["address"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("proxy[%s] cannot parsed: %s", proxy.String(), err))
+			return
+		}
+
+		approver, err := sdk.AccAddressFromBech32(vars["approver"])
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, fmt.Sprintf("approver[%s] cannot parsed: %s", approver.String(), err))
+			return
+		}
+
+		contractID := vars["contract_id"]
+
+		cliCtx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, cliCtx, r)
+		if !ok {
+			return
+		}
+
+		retriever := clienttypes.NewRetriever(cliCtx)
+
+		approved, height, err := retriever.IsApproved(cliCtx, contractID, proxy, approver)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		cliCtx = cliCtx.WithHeight(height)
+
+		rest.PostProcessResponse(w, cliCtx, approved)
 	}
 }

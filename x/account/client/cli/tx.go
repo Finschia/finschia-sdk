@@ -3,11 +3,12 @@ package cli
 import (
 	"bufio"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/line/link-modules/client"
 	"github.com/line/link-modules/x/account/client/utils"
 	"github.com/line/link-modules/x/account/internal/types"
 	"github.com/spf13/cobra"
@@ -37,7 +38,7 @@ func CreateAccountCmd(cdc *codec.Codec) *cobra.Command {
 		RunE:  makeCreateAccountCmd(cdc),
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func EmptyCmd(cdc *codec.Codec) *cobra.Command {
@@ -48,7 +49,7 @@ func EmptyCmd(cdc *codec.Codec) *cobra.Command {
 		RunE:  makeEmptyCmd(cdc),
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func makeCreateAccountCmd(cdc *codec.Codec) func(cmd *cobra.Command, args []string) error {

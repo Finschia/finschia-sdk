@@ -52,3 +52,5 @@ func (acc BaseAccount) SetCoins(coins Coins) Account {
 	acc.Coins = coins
 	return acc
 }
+
+type Accounts []Account

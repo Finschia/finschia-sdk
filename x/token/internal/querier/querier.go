@@ -31,6 +31,8 @@ func NewQuerier(keeper keeper.Keeper) sdk.Querier {
 			return queryTotal(ctx, req, keeper, types.QueryBurn)
 		case types.QuerySupply:
 			return queryTotal(ctx, req, keeper, types.QuerySupply)
+		case types.QueryIsApproved:
+			return queryIsApproved(ctx, req, keeper)
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown token query endpoint")
 		}
@@ -105,6 +107,22 @@ func queryTotal(ctx sdk.Context, _ abci.RequestQuery, keeper keeper.Keeper, targ
 	bz, err2 := keeper.MarshalJSONIndent(total)
 	if err2 != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err2.Error())
+	}
+
+	return bz, nil
+}
+
+func queryIsApproved(ctx sdk.Context, req abci.RequestQuery, keeper keeper.Keeper) ([]byte, error) {
+	var params types.QueryIsApprovedParams
+	if err := keeper.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+
+	approved := keeper.IsApproved(ctx, params.Proxy, params.Approver)
+
+	bz, err := keeper.MarshalJSONIndent(approved)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 
 	return bz, nil

@@ -26,6 +26,9 @@ var (
 	ErrDuplicateChangesField    = sdkerrors.Register(ModuleName, 19, "invalid field of changes")
 	ErrInvalidMetaLength        = sdkerrors.Register(ModuleName, 20, "invalid meta length")
 	ErrSupplyOverflow           = sdkerrors.Register(ModuleName, 21, "supply for token reached maximum")
+	ErrApproverProxySame        = sdkerrors.Register(ModuleName, 22, "approver is same with proxy")
+	ErrTokenNotApproved         = sdkerrors.Register(ModuleName, 23, "proxy is not approved on the token")
+	ErrTokenAlreadyApproved     = sdkerrors.Register(ModuleName, 24, "proxy is already approved on the token")
 )
 
 func WrapIfOverflowPanic(r interface{}) error {
