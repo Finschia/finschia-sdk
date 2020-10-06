@@ -4,6 +4,7 @@ var (
 	EventTypeIssueToken      = "issue"
 	EventTypeMintToken       = "mint"
 	EventTypeBurnToken       = "burn"
+	EventTypeBurnTokenFrom   = "burn_from"
 	EventTypeModifyToken     = "modify_token"
 	EventTypeGrantPermToken  = "grant_perm"
 	EventTypeRevokePermToken = "revoke_perm"

@@ -984,6 +984,7 @@ func TestLinkCliTokenProxy(t *testing.T) {
 		amount     = 10000
 		decimals   = 6
 		sendAmount = 10
+		burnAmount = 5
 	)
 
 	t.Parallel()
@@ -1015,9 +1016,27 @@ func TestLinkCliTokenProxy(t *testing.T) {
 		tests.WaitForNextNBlocksTM(1, f.Port)
 	}
 
-	// tx token
+	// check amount if transfer succeeds
 	{
 		amountOfBar := f.QueryBalanceToken(contractID, barAddr, "-y").Int64()
 		require.Equal(t, int(amountOfBar), sendAmount)
+	}
+
+	// Grant permission for burn
+	{
+		f.TxTokenGrantPerm(keyFoo, kevinAddr.String(), contractID, "burn", "-y")
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// tx token burn-from
+	{
+		f.LogResult(f.TxTokenBurnFrom(UserKevin, contractID, fooAddr, burnAmount, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// check amount if transfer succeeds
+	{
+		amountOfBar := f.QueryBalanceToken(contractID, fooAddr, "-y").Int64()
+		require.Equal(t, int(amountOfBar), 9985) // 10000 - 10(transfer) - 5(burn) = 9985
 	}
 }

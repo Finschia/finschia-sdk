@@ -163,3 +163,51 @@ func (msg MsgBurn) ValidateBasic() error {
 func (msg MsgBurn) GetContractID() string {
 	return msg.ContractID
 }
+
+var _ contract.Msg = (*MsgBurnFrom)(nil)
+
+type MsgBurnFrom struct {
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	From       sdk.AccAddress `json:"from"`
+	Amount     sdk.Int        `json:"amount"`
+}
+
+func NewMsgBurnFrom(proxy sdk.AccAddress, contractID string, from sdk.AccAddress, amount sdk.Int) MsgBurnFrom {
+	return MsgBurnFrom{
+		Proxy:      proxy,
+		ContractID: contractID,
+		From:       from,
+		Amount:     amount,
+	}
+}
+func (MsgBurnFrom) Route() string                    { return RouterKey }
+func (MsgBurnFrom) Type() string                     { return "burn_from" }
+func (msg MsgBurnFrom) GetSigners() []sdk.AccAddress { return []sdk.AccAddress{msg.Proxy} }
+func (msg MsgBurnFrom) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
+func (msg MsgBurnFrom) ValidateBasic() error {
+	if msg.Proxy.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty")
+	}
+	if err := contract.ValidateContractIDBasic(msg); err != nil {
+		return err
+	}
+	if !msg.Amount.IsPositive() {
+		return sdkerrors.Wrap(ErrInvalidAmount, msg.Amount.String())
+	}
+	if msg.From.Empty() {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty")
+	}
+	if msg.Proxy.Equals(msg.From) {
+		return sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", msg.Proxy.String())
+	}
+
+	return nil
+}
+
+func (msg MsgBurnFrom) GetContractID() string {
+	return msg.ContractID
+}

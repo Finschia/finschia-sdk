@@ -110,6 +110,39 @@ func TestMsgBasics(t *testing.T) {
 		require.Equal(t, msg.Amount, msg2.Amount)
 	}
 	{
+		msg := NewMsgBurnFrom(addr1, contract.SampleContractID, addr2, sdk.NewInt(1))
+		require.Equal(t, "burn_from", msg.Type())
+		require.Equal(t, "token", msg.Route())
+		require.Equal(t, sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg)), msg.GetSignBytes())
+		require.Equal(t, addr1, msg.GetSigners()[0])
+		require.NoError(t, msg.ValidateBasic())
+
+		b := msg.GetSignBytes()
+
+		msg2 := MsgBurnFrom{}
+
+		err := cdc.UnmarshalJSON(b, &msg2)
+		require.NoError(t, err)
+
+		require.Equal(t, msg.Proxy, msg2.Proxy)
+		require.Equal(t, msg.From, msg2.From)
+		require.Equal(t, msg.Amount, msg2.Amount)
+	}
+
+	{
+		msg := NewMsgBurnFrom(addr1, contract.SampleContractID, addr1, sdk.NewInt(1))
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrapf(ErrApproverProxySame, "Approver: %s", addr1.String()).Error())
+
+		msg = NewMsgBurnFrom(nil, contract.SampleContractID, addr1, sdk.NewInt(1))
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "Proxy cannot be empty").Error())
+
+		msg = NewMsgBurnFrom(addr1, contract.SampleContractID, nil, sdk.NewInt(1))
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "From cannot be empty").Error())
+
+		msg = NewMsgBurnFrom(addr1, contract.SampleContractID, addr2, sdk.NewInt(-1))
+		require.EqualError(t, msg.ValidateBasic(), sdkerrors.Wrap(ErrInvalidAmount, "-1").Error())
+	}
+	{
 		addr2 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
 		msg := NewMsgGrantPermission(addr, contract.SampleContractID, addr2, NewMintPermission())
 		require.Equal(t, "grant_perm", msg.Type())

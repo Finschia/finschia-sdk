@@ -31,4 +31,5 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(&AccountPermission{}, "token/AccountPermission", nil)
 	cdc.RegisterConcrete(MsgApprove{}, "token/MsgApprove", nil)
 	cdc.RegisterConcrete(MsgTransferFrom{}, "token/MsgTransferFrom", nil)
+	cdc.RegisterConcrete(MsgBurnFrom{}, "token/MsgBurnFrom", nil)
 }

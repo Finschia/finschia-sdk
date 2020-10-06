@@ -38,3 +38,19 @@ func handleMsgBurn(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurn) (*s
 	})
 	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
 }
+
+func handleMsgBurnFrom(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgBurnFrom) (*sdk.Result, error) {
+	err := keeper.BurnTokenFrom(ctx, msg.Proxy, msg.From, msg.Amount)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.AttributeValueCategory),
+			sdk.NewAttribute(sdk.AttributeKeySender, msg.Proxy.String()),
+		),
+	})
+	return &sdk.Result{Events: ctx.EventManager().Events()}, nil
+}

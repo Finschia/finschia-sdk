@@ -572,6 +572,11 @@ func (f *Fixtures) TxTokenBurn(from, contractID, amount string, flags ...string)
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
+func (f *Fixtures) TxTokenBurnFrom(proxy, contractID string, from sdk.AccAddress, amount int64, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx token burn-from %s %s %s %d %v", f.LinkcliBinary, proxy, contractID, from, amount, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
+}
+
 func (f *Fixtures) TxTokenGrantPerm(from string, to string, contractID, action string, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx token grant %s %s %s %s %v", f.LinkcliBinary, from, contractID, to, action, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))

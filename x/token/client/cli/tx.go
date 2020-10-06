@@ -51,6 +51,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 		ModifyTokenCmd(cdc),
 		TransferFromTxCmd(cdc),
 		ApproveTokenTxCmd(cdc),
+		BurnFromTxCmd(cdc),
 	)
 	return txCmd
 }
@@ -327,6 +328,33 @@ func ApproveTokenTxCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			msg := types.NewMsgApprove(cliCtx.GetFromAddress(), contractID, proxy)
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	return client.PostCommands(cmd)[0]
+}
+func BurnFromTxCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "burn-from [proxy_key_or_address] [contract_id] [from_address] [amount]",
+		Short: "Create and sign a burn token tx by approved proxy",
+		Args:  cobra.ExactArgs(4),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			contractID := args[1]
+			from, err := sdk.AccAddressFromBech32(args[2])
+			if err != nil {
+				return err
+			}
+			amount, ok := sdk.NewIntFromString(args[3])
+			if !ok {
+				return errors.New("invalid amount")
+			}
+
+			// build and sign the transaction, then broadcast to Tendermint
+			msg := types.NewMsgBurnFrom(cliCtx.GetFromAddress(), contractID, from, amount)
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}

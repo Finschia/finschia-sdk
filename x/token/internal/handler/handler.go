@@ -34,6 +34,8 @@ func NewHandler(keeper keeper.Keeper) sdk.Handler {
 			return handleMsgMint(ctx, keeper, msg)
 		case types.MsgBurn:
 			return handleMsgBurn(ctx, keeper, msg)
+		case types.MsgBurnFrom:
+			return handleMsgBurnFrom(ctx, keeper, msg)
 		case types.MsgTransfer:
 			return handleMsgTransfer(ctx, keeper, msg)
 		case types.MsgGrantPermission:
