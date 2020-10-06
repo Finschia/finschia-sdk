@@ -6,7 +6,6 @@ require (
 	github.com/cosmos/cosmos-sdk v0.38.4
 	github.com/golang/mock v1.4.3
 	github.com/gorilla/mux v1.7.4
-	github.com/rakyll/statik v0.1.7
 	github.com/spf13/afero v1.2.2 // indirect
 	github.com/spf13/cobra v1.0.0
 	github.com/spf13/viper v1.6.3

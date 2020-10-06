@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	clienttypes "github.com/line/link-modules/x/token/client/internal/types"
 	"github.com/line/link-modules/x/token/internal/types"
 
 	"github.com/gorilla/mux"
-	"github.com/line/link-modules/client"
 
 	"github.com/cosmos/cosmos-sdk/types/rest"
 )
 
-func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
+func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {
 	r.HandleFunc("/token/{contract_id}/supply", QueryTotalRequestHandlerFn(cliCtx, types.QuerySupply)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/mint", QueryTotalRequestHandlerFn(cliCtx, types.QueryMint)).Methods("GET")
 	r.HandleFunc("/token/{contract_id}/burn", QueryTotalRequestHandlerFn(cliCtx, types.QueryBurn)).Methods("GET")
@@ -24,7 +24,7 @@ func RegisterRoutes(cliCtx client.CLIContext, r *mux.Router) {
 	r.HandleFunc("/token/{contract_id}/accounts/{address}/proxies/{approver}", QueryIsApprovedRequestHandlerFn(cliCtx)).Methods("GET")
 }
 
-func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryTokenRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -49,7 +49,7 @@ func QueryTokenRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryBalanceRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -79,7 +79,7 @@ func QueryBalanceRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-func QueryTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.HandlerFunc {
+func QueryTotalRequestHandlerFn(cliCtx context.CLIContext, target string) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -105,7 +105,7 @@ func QueryTotalRequestHandlerFn(cliCtx client.CLIContext, target string) http.Ha
 	}
 }
 
-func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryPermRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)
@@ -135,7 +135,7 @@ func QueryPermRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
 	}
 }
 
-func QueryIsApprovedRequestHandlerFn(cliCtx client.CLIContext) http.HandlerFunc {
+func QueryIsApprovedRequestHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		vars := mux.Vars(r)

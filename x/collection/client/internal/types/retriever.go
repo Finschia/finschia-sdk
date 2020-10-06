@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client/context"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	context "github.com/line/link-modules/client"
 	"github.com/line/link-modules/x/collection/internal/types"
 )
 

@@ -6,12 +6,11 @@ import (
 	"net/http"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
-
-	"github.com/line/link-modules/client"
 )
 
 // SimulateReq defines a tx simulating request.
@@ -50,7 +49,7 @@ func SimulateTxRequest(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		gasAdj, ok := rest.ParseFloat64OrReturnBadRequest(w, req.GasAdjustment, client.DefaultGasAdjustment)
+		gasAdj, ok := rest.ParseFloat64OrReturnBadRequest(w, req.GasAdjustment, flags.DefaultGasAdjustment)
 		if !ok {
 			// ParseFloat64OrReturnBadRequest has already written error response.
 			return

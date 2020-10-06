@@ -5,7 +5,9 @@ import (
 	"errors"
 	"strings"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/line/link-modules/x/collection/internal/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -15,7 +17,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/line/link-modules/client"
 )
 
 var (
@@ -77,7 +78,7 @@ func ModifyCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 			field := args[2]
@@ -97,7 +98,7 @@ func ModifyCmd(cdc *codec.Codec) *cobra.Command {
 	cmd.Flags().String(flagTokenType, DefaultTokenType, "token type")
 	cmd.Flags().String(flagTokenIndex, DefaultTokenIndex, "token index")
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -108,7 +109,7 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			owner := cliCtx.FromAddress
 			name := args[1]
@@ -124,7 +125,7 @@ func CreateCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -135,7 +136,7 @@ func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			to := cliCtx.FromAddress
 			contractID := args[1]
@@ -146,7 +147,7 @@ func IssueNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func IssueFTTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -164,7 +165,7 @@ linkcli tx collection issue-ft [from_key_or_address] [contract_id] [to] [name] [
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			owner := cliCtx.FromAddress
 			contractID := args[1]
@@ -191,7 +192,7 @@ linkcli tx collection issue-ft [from_key_or_address] [contract_id] [to] [name] [
 	cmd.Flags().Int64(flagDecimals, DefaultDecimals, "set decimals")
 	cmd.Flags().Bool(flagMintable, false, "set mintable")
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func MintNFTTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -206,7 +207,7 @@ linkcli tx collection mint-nft [from_key_or_address] [contract_id] [to] [token_t
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 			from := cliCtx.FromAddress
@@ -234,7 +235,7 @@ linkcli tx collection mint-nft [from_key_or_address] [contract_id] [to] [token_t
 	}
 	cmd.Flags().String(flagTokenType, "", "token-type for the nft")
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func BurnNFTTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -245,7 +246,7 @@ func BurnNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 			tokenID := args[2]
@@ -256,7 +257,7 @@ func BurnNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func BurnNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -267,7 +268,7 @@ func BurnNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -284,7 +285,7 @@ func BurnNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 // nolint:dupl
@@ -315,7 +316,7 @@ func TransferFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	cmd = client.PostCommands(cmd)[0]
+	cmd = flags.PostCommands(cmd)[0]
 
 	return cmd
 }
@@ -329,7 +330,7 @@ func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -345,7 +346,7 @@ func TransferNFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func TransferFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -356,7 +357,7 @@ func TransferFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -380,7 +381,7 @@ func TransferFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	cmd = client.PostCommands(cmd)[0]
+	cmd = flags.PostCommands(cmd)[0]
 
 	return cmd
 }
@@ -394,7 +395,7 @@ func TransferNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -415,7 +416,7 @@ func TransferNFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func AttachTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -426,14 +427,14 @@ func AttachTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			msg := types.NewMsgAttach(cliCtx.GetFromAddress(), args[1], args[2], args[3])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -444,14 +445,14 @@ func DetachTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			msg := types.NewMsgDetach(cliCtx.GetFromAddress(), args[1], args[2])
 			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 // nolint:dupl
@@ -463,7 +464,7 @@ func MintFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -482,7 +483,7 @@ func MintFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func BurnFTTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -493,7 +494,7 @@ func BurnFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 			contractID := args[1]
 			tokenID := args[2]
 			if err := types.ValidateDenom(tokenID); err != nil {
@@ -509,7 +510,7 @@ func BurnFTTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 // nolint:dupl
@@ -521,7 +522,7 @@ func BurnFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 			contractID := args[1]
 			from, err := sdk.AccAddressFromBech32(args[2])
 			if err != nil {
@@ -542,7 +543,7 @@ func BurnFTFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func AttachFromTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -553,7 +554,7 @@ func AttachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -567,7 +568,7 @@ func AttachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 // nolint:dupl
@@ -579,7 +580,7 @@ func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -593,7 +594,7 @@ func DetachFromTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 // nolint:dupl
@@ -605,7 +606,7 @@ func ApproveCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -619,7 +620,7 @@ func ApproveCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 // nolint:dupl
@@ -631,7 +632,7 @@ func DisapproveCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -645,7 +646,7 @@ func DisapproveCollectionTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -656,7 +657,7 @@ func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -675,7 +676,7 @@ func GrantPermTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
 
 func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
@@ -686,7 +687,7 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			inBuf := bufio.NewReader(cmd.InOrStdin())
 			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
-			cliCtx := client.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
+			cliCtx := context.NewCLIContextWithInputAndFrom(inBuf, args[0]).WithCodec(cdc)
 
 			contractID := args[1]
 
@@ -701,5 +702,5 @@ func RevokePermTxCmd(cdc *codec.Codec) *cobra.Command {
 		},
 	}
 
-	return client.PostCommands(cmd)[0]
+	return flags.PostCommands(cmd)[0]
 }
