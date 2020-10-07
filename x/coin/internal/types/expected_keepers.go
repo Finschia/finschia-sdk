@@ -22,4 +22,5 @@ type BankKeeper interface {
 	HasCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) bool
 	SubtractCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, error)
 	AddCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) (sdk.Coins, error)
+	BlacklistedAddr(creator sdk.AccAddress) bool
 }

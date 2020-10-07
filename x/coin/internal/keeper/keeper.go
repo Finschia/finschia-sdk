@@ -98,3 +98,7 @@ func (keeper Keeper) GetCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins {
 func (keeper Keeper) HasCoins(ctx sdk.Context, addr sdk.AccAddress, amt sdk.Coins) bool {
 	return keeper.GetCoins(ctx, addr).IsAllGTE(amt)
 }
+
+func (keeper Keeper) BlacklistedAddr(creator sdk.AccAddress) bool {
+	return keeper.bk.BlacklistedAddr(creator)
+}
