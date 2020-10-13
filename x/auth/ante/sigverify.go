@@ -3,6 +3,7 @@ package ante
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
@@ -160,11 +161,15 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 // CONTRACT: Tx must implement SigVerifiableTx interface
 type SigVerificationDecorator struct {
 	ak keeper.AccountKeeper
+	// NOTE `signBytesCache` should be protected from concurrency.
+	// At this moment, `abci client` is serialized by mutex.
+	signBytesCache map[string][]byte
 }
 
 func NewSigVerificationDecorator(ak keeper.AccountKeeper) SigVerificationDecorator {
 	return SigVerificationDecorator{
-		ak: ak,
+		ak:             ak,
+		signBytesCache: make(map[string][]byte),
 	}
 }
 
@@ -173,6 +178,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	if ctx.IsReCheckTx() {
 		return next(ctx, tx, simulate)
 	}
+
 	sigTx, ok := tx.(SigVerifiableTx)
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
@@ -181,39 +187,74 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	// stdSigs contains the sequence number, account number, and signatures.
 	// When simulating, this would just be a 0-length slice.
 	sigs := sigTx.GetSignatures()
-
-	// stdSigs contains the sequence number, account number, and signatures.
-	// When simulating, this would just be a 0-length slice.
 	signerAddrs := sigTx.GetSigners()
-	signerAccs := make([]exported.Account, len(signerAddrs))
 
 	// check that signer length and signature length are the same
 	if len(sigs) != len(signerAddrs) {
 		return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "invalid number of signer;  expected: %d, got %d", len(signerAddrs), len(sigs))
 	}
 
+	// no need to verify signatures on simulate but only need to check `len(sigs) == len(signerAddrs)`
+	// so return at here if simulate
+	if simulate {
+		return next(ctx, tx, simulate)
+	}
+
+	genesis := ctx.BlockHeight() == 0
+
 	for i, sig := range sigs {
-		signerAccs[i], err = GetSignerAcc(ctx, svd.ak, signerAddrs[i])
+		signerAcc, err := GetSignerAcc(ctx, svd.ak, signerAddrs[i])
 		if err != nil {
 			return ctx, err
 		}
 
+		// NOTE assume that `accountNumber` and `pubKey` are immutable
+		sigKey := fmt.Sprintf("%d:%d", signerAcc.GetAccountNumber(), signerAcc.GetSequence())
+
 		// retrieve signBytes of tx
-		signBytes := sigTx.GetSignBytes(ctx, signerAccs[i])
+		signBytes := sigTx.GetSignBytes(ctx, signerAcc)
 
-		// retrieve pubkey
-		pubKey := signerAccs[i].GetPubKey()
-		if !simulate && pubKey == nil {
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pubkey on account is not set")
-		}
+		if ctx.IsCheckTx() || genesis {
+			if err := svd.verifySignature(signerAcc, signBytes, sig); err != nil {
+				return ctx, err
+			}
 
-		// verify signature
-		if !simulate && !pubKey.VerifyBytes(signBytes, sig) {
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "signature verification failed; verify correct account sequence and chain-id")
+			if !genesis {
+				svd.signBytesCache[sigKey] = signBytes
+			}
+		} else {
+			cached, ok := svd.signBytesCache[sigKey]
+			if ok {
+				if bytes.Compare(cached, signBytes) != 0 {
+					// TODO revise error message
+					return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "signature verification failed; verify correct account sequence and chain-id")
+				}
+
+				delete(svd.signBytesCache, sigKey)
+			} else {
+				if err := svd.verifySignature(signerAcc, signBytes, sig); err != nil {
+					return ctx, err
+				}
+			}
 		}
 	}
 
 	return next(ctx, tx, simulate)
+}
+
+func (svd SigVerificationDecorator) verifySignature(signerAcc exported.Account, signBytes []byte, sig []byte) error {
+	// retrieve pubkey
+	pubKey := signerAcc.GetPubKey()
+	if pubKey == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pubkey on account is not set")
+	}
+
+	// verify signature
+	if !pubKey.VerifyBytes(signBytes, sig) {
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "signature verification failed; verify correct account sequence and chain-id")
+	}
+
+	return nil
 }
 
 // IncrementSequenceDecorator handles incrementing sequences of all signers.
