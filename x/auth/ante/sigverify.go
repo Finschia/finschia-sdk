@@ -170,7 +170,7 @@ func NewSigVerificationDecorator(ak keeper.AccountKeeper) SigVerificationDecorat
 
 func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	// no need to verify signatures on recheck tx
-	if ctx.IsReCheckTx() {
+	if false {
 		return next(ctx, tx, simulate)
 	}
 	sigTx, ok := tx.(SigVerifiableTx)
@@ -237,7 +237,7 @@ func NewIncrementSequenceDecorator(ak keeper.AccountKeeper) IncrementSequenceDec
 
 func (isd IncrementSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
 	// no need to increment sequence on RecheckTx
-	if ctx.IsReCheckTx() && !simulate {
+	if !simulate {
 		return next(ctx, tx, simulate)
 	}
 
