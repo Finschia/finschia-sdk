@@ -162,7 +162,7 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 type SigVerificationDecorator struct {
 	ak keeper.AccountKeeper
 	// NOTE `signBytesCache` should be protected from concurrency.
-	// At this moment, `abci client` is serialized by mutex.
+	// At this moment, `abci client` is serialized by mutex so we don't need to protect it by ourselves.
 	signBytesCache map[string][]byte
 }
 
