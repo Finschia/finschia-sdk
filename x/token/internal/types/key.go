@@ -43,3 +43,7 @@ func PermKey(contractID string, addr sdk.AccAddress) []byte {
 func TokenApprovedKey(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) []byte {
 	return append(append(append(TokenApprovedKeyPrefix, []byte(contractID)...), proxy.Bytes()...), approver.Bytes()...)
 }
+
+func TokenApproversKey(contractID string, proxy sdk.AccAddress) []byte {
+	return append(append(TokenApprovedKeyPrefix, []byte(contractID)...), proxy.Bytes()...)
+}

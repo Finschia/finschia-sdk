@@ -52,3 +52,38 @@ func (k Keeper) SetApproved(ctx sdk.Context, proxy sdk.AccAddress, approver sdk.
 
 	return nil
 }
+
+func (k Keeper) GetApprovers(ctx sdk.Context, proxy sdk.AccAddress) (accAds []sdk.AccAddress, err error) {
+	_, err = k.GetToken(ctx)
+	if err != nil {
+		return nil, err
+	}
+	k.iterateApprovers(ctx, proxy, false, func(address sdk.AccAddress) bool {
+		accAds = append(accAds, address)
+		return false
+	})
+	return accAds, nil
+}
+
+func (k Keeper) iterateApprovers(ctx sdk.Context, prefix sdk.AccAddress, reverse bool, process func(accAd sdk.AccAddress) bool) {
+	store := ctx.KVStore(k.storeKey)
+	prefixKey := types.TokenApproversKey(k.getContractID(ctx), prefix)
+	var iter sdk.Iterator
+	if reverse {
+		iter = sdk.KVStoreReversePrefixIterator(store, prefixKey)
+	} else {
+		iter = sdk.KVStorePrefixIterator(store, prefixKey)
+	}
+	defer iter.Close()
+	for {
+		if !iter.Valid() {
+			return
+		}
+		bz := iter.Key()
+		approver := bz[len(prefixKey):]
+		if process(approver) {
+			return
+		}
+		iter.Next()
+	}
+}

@@ -104,3 +104,21 @@ func (r Retriever) IsApproved(ctx context.CLIContext, contractID string, proxy s
 
 	return approved, height, nil
 }
+
+func (r Retriever) GetApprovers(ctx context.CLIContext, contractID string, proxy sdk.AccAddress) (accAdds []sdk.AccAddress, height int64, err error) {
+	bs, err := ctx.Codec.MarshalJSON(types.NewQueryApproverParams(proxy))
+	if err != nil {
+		return accAdds, 0, err
+	}
+
+	res, height, err := r.query(types.QueryApprovers, contractID, bs)
+	if err != nil {
+		return accAdds, height, err
+	}
+
+	if err := ctx.Codec.UnmarshalJSON(res, &accAdds); err != nil {
+		return accAdds, height, err
+	}
+
+	return accAdds, height, nil
+}

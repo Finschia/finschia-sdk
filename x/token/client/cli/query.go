@@ -25,6 +25,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 		GetTotalCmd(cdc),
 		GetPermsCmd(cdc),
 		GetIsApprovedCmd(cdc),
+		GetApproversCmd(cdc),
 	)
 
 	return cmd
@@ -161,6 +162,34 @@ func GetIsApprovedCmd(cdc *codec.Codec) *cobra.Command {
 			}
 
 			return cliCtx.WithHeight(height).PrintOutput(approved)
+		},
+	}
+
+	return flags.GetCommands(cmd)[0]
+}
+
+func GetApproversCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "approvers [contract_id] [proxy]",
+		Short: "Query approvers by the proxy",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			cliCtx := context.NewCLIContext().WithCodec(cdc)
+			retriever := clienttypes.NewRetriever(cliCtx)
+
+			contractID := args[0]
+
+			proxy, err := sdk.AccAddressFromBech32(args[1])
+			if err != nil {
+				return err
+			}
+
+			approvers, height, err := retriever.GetApprovers(cliCtx, contractID, proxy)
+			if err != nil {
+				return err
+			}
+
+			return cliCtx.WithHeight(height).PrintOutput(approvers)
 		},
 	}
 

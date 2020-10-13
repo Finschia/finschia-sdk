@@ -14,6 +14,7 @@ const (
 	QueryMint       = "mint"
 	QueryBurn       = "burn"
 	QueryIsApproved = "approved"
+	QueryApprovers  = "approvers"
 )
 
 type NodeQuerier interface {
@@ -39,4 +40,21 @@ func NewQueryIsApprovedParams(proxy sdk.AccAddress, approver sdk.AccAddress) Que
 		Proxy:    proxy,
 		Approver: approver,
 	}
+}
+
+type QueryProxyParams struct {
+	Proxy sdk.AccAddress `json:"proxy"`
+}
+
+func NewQueryApproverParams(proxy sdk.AccAddress) QueryProxyParams {
+	return QueryProxyParams{Proxy: proxy}
+}
+
+func IsAddressContains(addresses []sdk.AccAddress, address sdk.AccAddress) bool {
+	for _, it := range addresses {
+		if address.Equals(it) {
+			return true
+		}
+	}
+	return false
 }

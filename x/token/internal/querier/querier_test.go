@@ -51,6 +51,9 @@ func prepare(t *testing.T) {
 
 	require.NoError(t, tkeeper.GrantPermission(ctx2, addr1, addr2, types.NewBurnPermission()))
 	require.NoError(t, tkeeper.SetApproved(ctx2, addr1, addr2))
+
+	// prepare one more approver for test proxy
+	require.NoError(t, tkeeper.SetApproved(ctx2, addr1, addr3))
 }
 
 func query(t *testing.T, params interface{}, query string, result interface{}) {
@@ -168,4 +171,23 @@ func TestNewQuerier_queryIsApproved_false(t *testing.T) {
 	var approved bool
 	query(t, params, types.QueryIsApproved, &approved)
 	require.False(t, approved)
+}
+
+func TestNewQuerier_queryApprovers(t *testing.T) {
+	prepare(t)
+	params := types.QueryProxyParams{
+		Proxy: addr1,
+	}
+	var approvers []sdk.AccAddress
+	query(t, params, types.QueryApprovers, &approvers)
+	require.Equal(t, 2, len(approvers))
+	require.True(t, types.IsAddressContains(approvers, addr3))
+	require.True(t, types.IsAddressContains(approvers, addr2))
+
+	var acAdEmpty []sdk.AccAddress
+	paramsEmpty := types.QueryProxyParams{
+		Proxy: addr2,
+	}
+	query(t, paramsEmpty, types.QueryApprovers, &acAdEmpty)
+	require.Empty(t, acAdEmpty)
 }
