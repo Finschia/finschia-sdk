@@ -15,20 +15,22 @@ import (
 )
 
 type MessageHandler struct {
-	router   sdk.Router
-	encoders MessageEncoders
+	router       sdk.Router
+	encodeRouter types.Router
+	encoders     MessageEncoders
 }
 
-func NewMessageHandler(router sdk.Router, customEncoders *MessageEncoders) MessageHandler {
+func NewMessageHandler(router sdk.Router, encodeRouter types.Router, customEncoders *MessageEncoders) MessageHandler {
 	encoders := DefaultEncoders().Merge(customEncoders)
 	return MessageHandler{
-		router:   router,
-		encoders: encoders,
+		router:       router,
+		encodeRouter: encodeRouter,
+		encoders:     encoders,
 	}
 }
 
 type BankEncoder func(sender sdk.AccAddress, msg *wasmTypes.BankMsg) ([]sdk.Msg, error)
-type CustomEncoder func(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error)
+type CustomEncoder func(sender sdk.AccAddress, msg json.RawMessage, router types.Router) ([]sdk.Msg, error)
 type StakingEncoder func(sender sdk.AccAddress, msg *wasmTypes.StakingMsg) ([]sdk.Msg, error)
 type WasmEncoder func(sender sdk.AccAddress, msg *wasmTypes.WasmMsg) ([]sdk.Msg, error)
 
@@ -42,7 +44,7 @@ type MessageEncoders struct {
 func DefaultEncoders() MessageEncoders {
 	return MessageEncoders{
 		Bank:    EncodeBankMsg,
-		Custom:  NoCustomMsg,
+		Custom:  CustomMsg,
 		Staking: EncodeStakingMsg,
 		Wasm:    EncodeWasmMsg,
 	}
@@ -67,12 +69,12 @@ func (e MessageEncoders) Merge(o *MessageEncoders) MessageEncoders {
 	return e
 }
 
-func (e MessageEncoders) Encode(contractAddr sdk.AccAddress, msg wasmTypes.CosmosMsg) ([]sdk.Msg, error) {
+func (e MessageEncoders) Encode(contractAddr sdk.AccAddress, msg wasmTypes.CosmosMsg, router types.Router) ([]sdk.Msg, error) {
 	switch {
 	case msg.Bank != nil:
 		return e.Bank(contractAddr, msg.Bank)
 	case msg.Custom != nil:
-		return e.Custom(contractAddr, msg.Custom)
+		return e.Custom(contractAddr, msg.Custom, router)
 	case msg.Staking != nil:
 		return e.Staking(contractAddr, msg.Staking)
 	case msg.Wasm != nil:
@@ -108,8 +110,17 @@ func EncodeBankMsg(sender sdk.AccAddress, msg *wasmTypes.BankMsg) ([]sdk.Msg, er
 	return []sdk.Msg{sdkMsg}, nil
 }
 
-func NoCustomMsg(sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
-	return nil, sdkerrors.Wrap(types.ErrInvalidMsg, "Custom variant not supported")
+func CustomMsg(sender sdk.AccAddress, jsonMsg json.RawMessage, router types.Router) ([]sdk.Msg, error) {
+	var linkMsgWrapper types.LinkMsgWrapper
+	err := json.Unmarshal(jsonMsg, &linkMsgWrapper)
+	if err != nil {
+		return nil, err
+	}
+	handler := router.GetRoute(linkMsgWrapper.Module)
+	if handler == nil {
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized handler: %T", linkMsgWrapper.Module)
+	}
+	return handler(linkMsgWrapper.MsgData)
 }
 
 func EncodeStakingMsg(sender sdk.AccAddress, msg *wasmTypes.StakingMsg) ([]sdk.Msg, error) {
@@ -230,8 +241,8 @@ func EncodeWasmMsg(sender sdk.AccAddress, msg *wasmTypes.WasmMsg) ([]sdk.Msg, er
 	return nil, sdkerrors.Wrap(types.ErrInvalidMsg, "Unknown variant of Wasm")
 }
 
-func (h MessageHandler) Dispatch(ctx sdk.Context, contractAddr sdk.AccAddress, msg wasmTypes.CosmosMsg) error {
-	sdkMsgs, err := h.encoders.Encode(contractAddr, msg)
+func (h MessageHandler) Dispatch(ctx sdk.Context, contractAddr sdk.AccAddress, msg wasmTypes.CosmosMsg, router types.Router) error {
+	sdkMsgs, err := h.encoders.Encode(contractAddr, msg, router)
 	if err != nil {
 		return err
 	}

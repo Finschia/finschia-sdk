@@ -497,7 +497,7 @@ func setupKeeper(t *testing.T) (Keeper, sdk.Context, []sdk.StoreKey, func()) {
 	cdc := MakeTestCodec()
 	pk := params.NewKeeper(cdc, keyParams, tkeyParams)
 	wasmConfig := types.DefaultWasmConfig()
-	srcKeeper := NewKeeper(cdc, keyWasm, pk.Subspace(types.DefaultParamspace), auth.AccountKeeper{}, nil, staking.Keeper{}, nil, tempDir, wasmConfig, "", nil, nil)
+	srcKeeper := NewKeeper(cdc, keyWasm, pk.Subspace(types.DefaultParamspace), auth.AccountKeeper{}, nil, staking.Keeper{}, nil, nil, nil, tempDir, wasmConfig, "", nil, nil)
 	srcKeeper.setParams(ctx, types.DefaultParams())
 
 	return srcKeeper, ctx, []sdk.StoreKey{keyWasm, keyParams}, cleanup

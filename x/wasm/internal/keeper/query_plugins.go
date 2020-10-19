@@ -8,6 +8,8 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/bank"
 	"github.com/cosmos/cosmos-sdk/x/staking"
+
+	"github.com/line/link-modules/x/wasm/internal/types"
 )
 
 type QueryHandler struct {
@@ -47,19 +49,17 @@ func (q QueryHandler) GasConsumed() uint64 {
 	return q.Ctx.GasMeter().GasConsumed()
 }
 
-type CustomQuerier func(ctx sdk.Context, request json.RawMessage) ([]byte, error)
-
 type QueryPlugins struct {
 	Bank    func(ctx sdk.Context, request *wasmTypes.BankQuery) ([]byte, error)
-	Custom  CustomQuerier
+	Custom  func(ctx sdk.Context, request json.RawMessage) ([]byte, error)
 	Staking func(ctx sdk.Context, request *wasmTypes.StakingQuery) ([]byte, error)
 	Wasm    func(ctx sdk.Context, request *wasmTypes.WasmQuery) ([]byte, error)
 }
 
-func DefaultQueryPlugins(bank bank.ViewKeeper, staking staking.Keeper, wasm *Keeper) QueryPlugins {
+func DefaultQueryPlugins(bank bank.ViewKeeper, staking staking.Keeper, queryRouter types.QueryRouter, wasm *Keeper) QueryPlugins {
 	return QueryPlugins{
 		Bank:    BankQuerier(bank),
-		Custom:  NoCustomQuerier,
+		Custom:  CustomQuerier(queryRouter),
 		Staking: StakingQuerier(staking),
 		Wasm:    WasmQuerier(wasm),
 	}
@@ -117,8 +117,19 @@ func BankQuerier(bank bank.ViewKeeper) func(ctx sdk.Context, request *wasmTypes.
 	}
 }
 
-func NoCustomQuerier(sdk.Context, json.RawMessage) ([]byte, error) {
-	return nil, wasmTypes.UnsupportedRequest{Kind: "custom"}
+func CustomQuerier(queryRouter types.QueryRouter) func(ctx sdk.Context, querierJson json.RawMessage) ([]byte, error) {
+	return func(ctx sdk.Context, querierJson json.RawMessage) ([]byte, error) {
+		var linkQueryWrapper types.LinkQueryWrapper
+		err := json.Unmarshal(querierJson, &linkQueryWrapper)
+		if err != nil {
+			return nil, err
+		}
+		querier := queryRouter.GetRoute(linkQueryWrapper.Module)
+		if querier == nil {
+			return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Unknown encode module")
+		}
+		return querier(ctx, linkQueryWrapper.QueryData)
+	}
 }
 
 func StakingQuerier(keeper staking.Keeper) func(ctx sdk.Context, request *wasmTypes.StakingQuery) ([]byte, error) {

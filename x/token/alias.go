@@ -2,21 +2,32 @@ package token
 
 import (
 	"github.com/line/link-modules/x/token/internal/keeper"
+	"github.com/line/link-modules/x/token/internal/querier"
 	"github.com/line/link-modules/x/token/internal/types"
 )
 
 const (
-	ModuleName = types.ModuleName
-	StoreKey   = types.StoreKey
-	RouterKey  = types.RouterKey
+	ModuleName      = types.ModuleName
+	StoreKey        = types.StoreKey
+	RouterKey       = types.RouterKey
+	EncodeRouterKey = types.EncodeRouterKey
 )
 
 type (
+	MsgIssue    = types.MsgIssue
+	MsgTransfer = types.MsgTransfer
+	MsgMint     = types.MsgMint
+	MsgBurn     = types.MsgBurn
+	MsgModify   = types.MsgModify
+
 	Account     = types.Account
 	Token       = types.Token
 	Permissions = types.Permissions
 	Keeper      = keeper.Keeper
 	Permission  = types.Permission
+
+	EncodeHandler = types.EncodeHandler
+	EncodeQuerier = types.EncodeQuerier
 )
 
 var (
@@ -35,6 +46,13 @@ var (
 	RegisterCodec          = types.RegisterCodec
 	NewToken               = types.NewToken
 	NewKeeper              = keeper.NewKeeper
+	NewQuerier             = querier.NewQuerier
+
+	NewMsgEncodeHandler = keeper.NewMsgEncodeHandler
+	NewQueryEncoder     = querier.NewQueryEncoder
+
+	NewChanges = types.NewChanges
+	NewChange  = types.NewChange
 
 	ErrTokenNotExist       = types.ErrTokenNotExist
 	ErrInsufficientBalance = types.ErrInsufficientBalance
