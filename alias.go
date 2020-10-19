@@ -61,20 +61,22 @@ var (
 	NewMessageHandler         = keeper.NewMessageHandler
 	DefaultEncoders           = keeper.DefaultEncoders
 	EncodeBankMsg             = keeper.EncodeBankMsg
-	NoCustomMsg               = keeper.NoCustomMsg
+	CustomMsg                 = keeper.CustomMsg
 	EncodeStakingMsg          = keeper.EncodeStakingMsg
 	EncodeWasmMsg             = keeper.EncodeWasmMsg
 	NewKeeper                 = keeper.NewKeeper
 	NewQuerier                = keeper.NewQuerier
 	DefaultQueryPlugins       = keeper.DefaultQueryPlugins
 	BankQuerier               = keeper.BankQuerier
-	NoCustomQuerier           = keeper.NoCustomQuerier
 	StakingQuerier            = keeper.StakingQuerier
 	WasmQuerier               = keeper.WasmQuerier
 	MakeTestCodec             = keeper.MakeTestCodec
 	CreateTestInput           = keeper.CreateTestInput
 	TestHandler               = keeper.TestHandler
+	CustomQuerier             = keeper.CustomQuerier
 	NewWasmProposalHandler    = keeper.NewWasmProposalHandler
+	NewRouter                 = types.NewRouter
+	NewQuerierRouter          = types.NewQuerierRouter
 
 	// variable aliases
 	ModuleCdc            = types.ModuleCdc
@@ -124,6 +126,5 @@ type (
 	GetCodeResponse         = keeper.GetCodeResponse
 	ListCodeResponse        = keeper.ListCodeResponse
 	QueryHandler            = keeper.QueryHandler
-	CustomQuerier           = keeper.CustomQuerier
 	QueryPlugins            = keeper.QueryPlugins
 )

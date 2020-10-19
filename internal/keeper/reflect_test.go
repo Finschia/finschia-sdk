@@ -333,7 +333,7 @@ func maskEncoders(cdc *codec.Codec) *MessageEncoders {
 // fromMaskRawMsg decodes msg.Data to an sdk.Msg using amino json encoding.
 // this needs to be registered on the Encoders
 func fromMaskRawMsg(cdc *codec.Codec) CustomEncoder {
-	return func(_sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
+	return func(_sender sdk.AccAddress, msg json.RawMessage, router types.Router) ([]sdk.Msg, error) {
 		var custom maskCustomMsg
 		err := json.Unmarshal(msg, &custom)
 		if err != nil {
