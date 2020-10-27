@@ -1,29 +1,31 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/token"
 )
 
 var _ Router = (*router)(nil)
 
+type EncodeHandler func(jsonMsg json.RawMessage) ([]sdk.Msg, error)
+
 type Router interface {
-	AddRoute(r string, h token.EncodeHandler) (rtr Router)
+	AddRoute(r string, h EncodeHandler) (rtr Router)
 	HasRoute(r string) bool
-	GetRoute(path string) (h token.EncodeHandler)
+	GetRoute(path string) (h EncodeHandler)
 	Seal()
 }
 
 type router struct {
-	routes map[string]token.EncodeHandler
+	routes map[string]EncodeHandler
 	sealed bool
 }
 
 func NewRouter() Router {
 	return &router{
-		routes: make(map[string]token.EncodeHandler),
+		routes: make(map[string]EncodeHandler),
 	}
 }
 
@@ -34,7 +36,7 @@ func (rtr *router) Seal() {
 	rtr.sealed = true
 }
 
-func (rtr *router) AddRoute(path string, h token.EncodeHandler) Router {
+func (rtr *router) AddRoute(path string, h EncodeHandler) Router {
 	if rtr.sealed {
 		panic("router sealed; cannot add route handler")
 	}
@@ -56,7 +58,7 @@ func (rtr *router) HasRoute(path string) bool {
 }
 
 // GetRoute returns a Handler for a given path.
-func (rtr *router) GetRoute(path string) token.EncodeHandler {
+func (rtr *router) GetRoute(path string) EncodeHandler {
 	if !rtr.HasRoute(path) {
 		panic(fmt.Sprintf("route \"%s\" does not exist", path))
 	}

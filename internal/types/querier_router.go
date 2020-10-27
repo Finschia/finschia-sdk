@@ -1,30 +1,32 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/token"
 )
 
 var _ QueryRouter = (*querierRouter)(nil)
 
+type EncodeQuerier func(ctx sdk.Context, jsonQuerier json.RawMessage) ([]byte, error)
+
 // QueryRouter provides queryables for each query path.
 type QueryRouter interface {
-	AddRoute(r string, q token.EncodeQuerier) QueryRouter
+	AddRoute(r string, q EncodeQuerier) QueryRouter
 	HasRoute(r string) bool
-	GetRoute(path string) token.EncodeQuerier
+	GetRoute(path string) EncodeQuerier
 	Seal()
 }
 
 type querierRouter struct {
-	routes map[string]token.EncodeQuerier
+	routes map[string]EncodeQuerier
 	sealed bool
 }
 
 func NewQuerierRouter() QueryRouter {
 	return &querierRouter{
-		routes: make(map[string]token.EncodeQuerier),
+		routes: make(map[string]EncodeQuerier),
 	}
 }
 
@@ -35,7 +37,7 @@ func (rtr *querierRouter) Seal() {
 	rtr.sealed = true
 }
 
-func (rtr *querierRouter) AddRoute(path string, q token.EncodeQuerier) QueryRouter {
+func (rtr *querierRouter) AddRoute(path string, q EncodeQuerier) QueryRouter {
 	if rtr.sealed {
 		panic("router sealed; cannot add route handler")
 	}
@@ -54,7 +56,7 @@ func (rtr *querierRouter) HasRoute(path string) bool {
 	return rtr.routes[path] != nil
 }
 
-func (rtr *querierRouter) GetRoute(path string) token.EncodeQuerier {
+func (rtr *querierRouter) GetRoute(path string) EncodeQuerier {
 	if !rtr.HasRoute(path) {
 		panic(fmt.Sprintf("querier route \"%s\" does not exist", path))
 	}
