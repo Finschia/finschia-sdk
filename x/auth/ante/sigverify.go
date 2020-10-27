@@ -225,15 +225,15 @@ func (svd SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, si
 	// NOTE assume that `accountNumber` and `pubKey` are immutable
 	sigKey := fmt.Sprintf("%d:%d", signerAcc.GetAccountNumber(), signerAcc.GetSequence())
 
-	if ctx.IsCheckTx() && !ctx.IsReCheckTx() {
-		// CheckTx
+	switch {
+	case ctx.IsCheckTx() && !ctx.IsReCheckTx(): // CheckTx
 		if !pubKey.VerifyBytes(signBytes, sig) {
 			return false
 		}
 
 		svd.signBytesCache[sigKey] = signBytes
-	} else if ctx.IsReCheckTx() {
-		// ReCheckTx
+
+	case ctx.IsReCheckTx(): // ReCheckTx
 		verified, ok := svd.checkCache(sigKey, signBytes)
 
 		if !verified {
@@ -242,8 +242,8 @@ func (svd SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, si
 			}
 			return false
 		}
-	} else {
-		// DeliverTx
+
+	default: // DeliverTx
 		verified, ok := svd.checkCache(sigKey, signBytes)
 		if ok {
 			delete(svd.signBytesCache, sigKey)
@@ -261,7 +261,7 @@ func (svd SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, si
 
 func (svd SigVerificationDecorator) checkCache(sigKey string, signBytes []byte) (verified, ok bool) {
 	cached, ok := svd.signBytesCache[sigKey]
-	verified = ok && bytes.Compare(cached, signBytes) == 0
+	verified = ok && bytes.Equal(cached, signBytes)
 	return verified, ok
 }
 
