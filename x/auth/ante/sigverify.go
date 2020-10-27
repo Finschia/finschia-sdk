@@ -249,10 +249,8 @@ func (svd SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, si
 			delete(svd.signBytesCache, sigKey)
 		}
 
-		if !verified {
-			if !pubKey.VerifyBytes(signBytes, sig) {
-				return false
-			}
+		if !verified && !pubKey.VerifyBytes(signBytes, sig) {
+			return false
 		}
 	}
 
