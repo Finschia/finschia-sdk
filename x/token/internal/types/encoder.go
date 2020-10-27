@@ -31,34 +31,6 @@ type WasmCustomMsg struct {
 	Data  json.RawMessage `json:"data"`
 }
 
-type IssueMsgWrapper struct {
-	MsgIssue MsgIssue `json:"issue"`
-}
-
-type TransferMsgWrapper struct {
-	MsgTransfer MsgTransfer `json:"transfer"`
-}
-
-type MintMsgWrapper struct {
-	MsgMint MsgMint `json:"mint"`
-}
-
-type BurnMsgWrapper struct {
-	MsgBurn MsgBurn `json:"burn"`
-}
-
-type GrantPermMsgWrapper struct {
-	MsgGrantPermission MsgGrantPermission `json:"grant_perm"`
-}
-
-type RevokePermMsgWrapper struct {
-	MsgRevokePermission MsgRevokePermission `json:"revoke_perm"`
-}
-
-type ModifyMsgWrapper struct {
-	MsgModify MsgModify `json:"modify"`
-}
-
 type WasmCustomQuerier struct {
 	Route string          `json:"route"`
 	Data  json.RawMessage `json:"data"`

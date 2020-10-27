@@ -127,4 +127,7 @@ type (
 	ListCodeResponse        = keeper.ListCodeResponse
 	QueryHandler            = keeper.QueryHandler
 	QueryPlugins            = keeper.QueryPlugins
+
+	EncodeHandler = types.EncodeHandler
+	EncodeQuerier = types.EncodeQuerier
 )

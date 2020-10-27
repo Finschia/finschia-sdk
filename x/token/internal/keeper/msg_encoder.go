@@ -6,9 +6,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/link-modules/x/wasm"
 )
 
-func NewMsgEncodeHandler(tokenKeeper Keeper) types.EncodeHandler {
+func NewMsgEncodeHandler(tokenKeeper Keeper) wasm.EncodeHandler {
 	return func(jsonMsg json.RawMessage) ([]sdk.Msg, error) {
 		var wasmCustomMsg types.WasmCustomMsg
 		err := json.Unmarshal(jsonMsg, &wasmCustomMsg)
@@ -37,64 +38,64 @@ func NewMsgEncodeHandler(tokenKeeper Keeper) types.EncodeHandler {
 }
 
 func handleMsgIssue(msgData json.RawMessage) ([]sdk.Msg, error) {
-	var wrapper types.IssueMsgWrapper
-	err := json.Unmarshal(msgData, &wrapper)
+	var msg types.MsgIssue
+	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	return []sdk.Msg{wrapper.MsgIssue}, nil
+	return []sdk.Msg{msg}, nil
 }
 
 func handleMsgTransfer(msgData json.RawMessage) ([]sdk.Msg, error) {
-	var wrapper types.TransferMsgWrapper
-	err := json.Unmarshal(msgData, &wrapper)
+	var msg types.MsgTransfer
+	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	return []sdk.Msg{wrapper.MsgTransfer}, nil
+	return []sdk.Msg{msg}, nil
 }
 
 func handleMsgMint(msgData json.RawMessage) ([]sdk.Msg, error) {
-	var wrapper types.MintMsgWrapper
-	err := json.Unmarshal(msgData, &wrapper)
+	var msg types.MsgMint
+	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	return []sdk.Msg{wrapper.MsgMint}, nil
+	return []sdk.Msg{msg}, nil
 }
 
 func handleMsgBurn(msgData json.RawMessage) ([]sdk.Msg, error) {
-	var wrapper types.BurnMsgWrapper
-	err := json.Unmarshal(msgData, &wrapper)
+	var msg types.MsgBurn
+	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	return []sdk.Msg{wrapper.MsgBurn}, nil
+	return []sdk.Msg{msg}, nil
 }
 
 func handleMsgGrantPerm(msgData json.RawMessage) ([]sdk.Msg, error) {
-	var wrapper types.GrantPermMsgWrapper
-	err := json.Unmarshal(msgData, &wrapper)
+	var msg types.MsgGrantPermission
+	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	return []sdk.Msg{wrapper.MsgGrantPermission}, nil
+	return []sdk.Msg{msg}, nil
 }
 
 func handleMsgRevokePerm(msgData json.RawMessage) ([]sdk.Msg, error) {
-	var wrapper types.RevokePermMsgWrapper
-	err := json.Unmarshal(msgData, &wrapper)
+	var msg types.MsgRevokePermission
+	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	return []sdk.Msg{wrapper.MsgRevokePermission}, nil
+	return []sdk.Msg{msg}, nil
 }
 
 func handleMsgModify(msgData json.RawMessage) ([]sdk.Msg, error) {
-	var wrapper types.ModifyMsgWrapper
-	err := json.Unmarshal(msgData, &wrapper)
+	var msg types.MsgModify
+	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	return []sdk.Msg{wrapper.MsgModify}, nil
+	return []sdk.Msg{msg}, nil
 }

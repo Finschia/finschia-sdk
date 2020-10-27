@@ -27,9 +27,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
 	"github.com/line/link-modules/x/coin"
-	"github.com/line/link-modules/x/collection"
-	"github.com/line/link-modules/x/contract"
-	"github.com/line/link-modules/x/token"
 	wasmtypes "github.com/line/link-modules/x/wasm/internal/types"
 )
 
@@ -65,15 +62,13 @@ var TestingStakeParams = staking.Params{
 }
 
 type TestKeepers struct {
-	AccountKeeper    auth.AccountKeeper
-	StakingKeeper    staking.Keeper
-	WasmKeeper       Keeper
-	DistKeeper       distribution.Keeper
-	SupplyKeeper     supply.Keeper
-	GovKeeper        gov.Keeper
-	BankKeeper       wasmtypes.BankKeeper
-	TokenKeeper      token.Keeper
-	CollectionKeeper collection.Keeper
+	AccountKeeper auth.AccountKeeper
+	StakingKeeper staking.Keeper
+	WasmKeeper    Keeper
+	DistKeeper    distribution.Keeper
+	SupplyKeeper  supply.Keeper
+	GovKeeper     gov.Keeper
+	BankKeeper    wasmtypes.BankKeeper
 }
 
 // encoders can be nil to accept the defaults, or set it to override some of the message handlers (like default)
@@ -87,9 +82,6 @@ func CreateTestInput(t *testing.T, isCheckTx bool, tempDir string, supportedFeat
 	tkeyParams := sdk.NewTransientStoreKey(params.TStoreKey)
 	keyGov := sdk.NewKVStoreKey(govtypes.StoreKey)
 	keyCoin := sdk.NewKVStoreKey(coin.StoreKey)
-	keyToken := sdk.NewKVStoreKey(token.StoreKey)
-	keyContract := sdk.NewKVStoreKey(contract.StoreKey)
-	keyCollection := sdk.NewKVStoreKey(collection.StoreKey)
 
 	db := dbm.NewMemDB()
 	ms := store.NewCommitMultiStore(db)
@@ -147,11 +139,6 @@ func CreateTestInput(t *testing.T, isCheckTx bool, tempDir string, supportedFeat
 	stakingKeeper := staking.NewKeeper(cdc, keyStaking, supplyKeeper, paramsKeeper.Subspace(staking.DefaultParamspace))
 	stakingKeeper.SetParams(ctx, TestingStakeParams)
 
-	contractKeeper := contract.NewContractKeeper(cdc, keyContract)
-	tokenKeeper := token.NewKeeper(cdc, accountKeeper, contractKeeper, keyToken)
-	paramsSpace := paramsKeeper.Subspace(collection.DefaultParamspace)
-	collectionKeeper := collection.NewKeeper(cdc, accountKeeper, contractKeeper, paramsSpace, keyCollection)
-
 	distKeeper := distribution.NewKeeper(cdc, keyDistro, paramsKeeper.Subspace(distribution.DefaultParamspace), stakingKeeper, supplyKeeper, auth.FeeCollectorName, nil)
 	distKeeper.SetParams(ctx, distribution.DefaultParams())
 	stakingKeeper.SetHooks(distKeeper.Hooks())
@@ -180,7 +167,6 @@ func CreateTestInput(t *testing.T, isCheckTx bool, tempDir string, supportedFeat
 	stakeAddr := supply.NewModuleAddress(staking.BondedPoolName)
 	moduleAcct := accountKeeper.GetAccount(ctx, stakeAddr)
 	require.NotNil(t, moduleAcct)
-	tokenEncodeHandler := token.NewMsgEncodeHandler(tokenKeeper)
 
 	router := baseapp.NewRouter()
 	ch := coin.NewHandler(coinKeeper)
@@ -189,17 +175,11 @@ func CreateTestInput(t *testing.T, isCheckTx bool, tempDir string, supportedFeat
 	router.AddRoute(staking.RouterKey, sh)
 	dh := distribution.NewHandler(distKeeper)
 	router.AddRoute(distribution.RouterKey, dh)
-	encodeRouter := wasmtypes.NewRouter()
-	encodeRouter.AddRoute(token.EncodeRouterKey, tokenEncodeHandler)
-	querierRouter := wasmtypes.NewQuerierRouter()
-	tokenQuerier := token.NewQuerier(tokenKeeper)
-	tokenEncodeQuerier := token.NewQueryEncoder(tokenQuerier)
-	querierRouter.AddRoute(token.RouterKey, tokenEncodeQuerier)
 
 	// Load default wasm config
 	wasmConfig := wasmtypes.DefaultWasmConfig()
 	keeper := NewKeeper(cdc, keyWasm, paramsKeeper.Subspace(wasmtypes.DefaultParamspace),
-		accountKeeper, coinKeeper, stakingKeeper, router, encodeRouter, querierRouter, tempDir, wasmConfig,
+		accountKeeper, coinKeeper, stakingKeeper, router, nil, nil, tempDir, wasmConfig,
 		supportedFeatures, encoders, queriers,
 	)
 	keeper.setParams(ctx, wasmtypes.DefaultParams())
@@ -221,15 +201,13 @@ func CreateTestInput(t *testing.T, isCheckTx bool, tempDir string, supportedFeat
 	govKeeper.SetTallyParams(ctx, govtypes.DefaultTallyParams())
 
 	keepers := TestKeepers{
-		AccountKeeper:    accountKeeper,
-		SupplyKeeper:     supplyKeeper,
-		StakingKeeper:    stakingKeeper,
-		DistKeeper:       distKeeper,
-		WasmKeeper:       keeper,
-		GovKeeper:        govKeeper,
-		BankKeeper:       coinKeeper,
-		TokenKeeper:      tokenKeeper,
-		CollectionKeeper: collectionKeeper,
+		AccountKeeper: accountKeeper,
+		SupplyKeeper:  supplyKeeper,
+		StakingKeeper: stakingKeeper,
+		DistKeeper:    distKeeper,
+		WasmKeeper:    keeper,
+		GovKeeper:     govKeeper,
+		BankKeeper:    coinKeeper,
 	}
 	return ctx, keepers
 }

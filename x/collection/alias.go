@@ -2,6 +2,7 @@ package collection
 
 import (
 	"github.com/line/link-modules/x/collection/internal/keeper"
+	"github.com/line/link-modules/x/collection/internal/querier"
 	"github.com/line/link-modules/x/collection/internal/types"
 )
 
@@ -10,6 +11,7 @@ const (
 	StoreKey          = types.StoreKey
 	RouterKey         = types.RouterKey
 	DefaultParamspace = types.DefaultParamspace
+	EncodeRouterKey   = types.EncodeRouterKey
 )
 
 type (
@@ -67,17 +69,24 @@ var (
 	NewMsgIssueNFT         = types.NewMsgIssueNFT
 	NewMsgMintNFT          = types.NewMsgMintNFT
 	NewMsgBurnNFT          = types.NewMsgBurnNFT
+	NewMsgBurnNFTFrom      = types.NewMsgBurnNFTFrom
+	NewMsgBurnFTFrom       = types.NewMsgBurnFTFrom
 	NewMsgMintFT           = types.NewMsgMintFT
 	NewMsgBurnFT           = types.NewMsgBurnFT
 	NewMsgGrantPermission  = types.NewMsgGrantPermission
+	NewMsgRevokePermission = types.NewMsgRevokePermission
 	NewMsgModify           = types.NewMsgModify
 	NewChangesWithMap      = types.NewChangesWithMap
 	NewMsgTransferFT       = types.NewMsgTransferFT
 	NewMsgTransferNFT      = types.NewMsgTransferNFT
+	NewMsgTransferFTFrom   = types.NewMsgTransferFTFrom
 	NewMsgTransferNFTFrom  = types.NewMsgTransferNFTFrom
 	NewMsgAttach           = types.NewMsgAttach
 	NewMsgDetach           = types.NewMsgDetach
+	NewMsgAttachFrom       = types.NewMsgAttachFrom
+	NewMsgDetachFrom       = types.NewMsgDetachFrom
 	NewMsgApprove          = types.NewMsgApprove
+	NewMsgDisapprove       = types.NewMsgDisapprove
 	NewMintNFTParam        = types.NewMintNFTParam
 	NewCoin                = types.NewCoin
 	NewPermissions         = types.NewPermissions
@@ -85,5 +94,9 @@ var (
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec
 
-	NewKeeper = keeper.NewKeeper
+	NewKeeper  = keeper.NewKeeper
+	NewQuerier = querier.NewQuerier
+
+	NewMsgEncodeHandler = keeper.NewMsgEncodeHandler
+	NewQueryEncoder     = querier.NewQueryEncoder
 )
