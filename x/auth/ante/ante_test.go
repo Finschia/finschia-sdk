@@ -737,10 +737,7 @@ func TestAnteHandlerReCheck(t *testing.T) {
 	app, ctx := createTestApp(true)
 	// set blockheight and recheck=true
 	ctx = ctx.WithBlockHeight(1)
-
-	checkCtx, _ := ctx.CacheContext()
-	recheckCtx, _ := ctx.CacheContext()
-	recheckCtx = recheckCtx.WithIsReCheckTx(true)
+	ctx = ctx.WithIsReCheckTx(true)
 
 	// keys and addresses
 	priv1, _, addr1 := types.KeyTestPubAddr()
@@ -763,16 +760,18 @@ func TestAnteHandlerReCheck(t *testing.T) {
 	privs, accnums, seqs := []crypto.PrivKey{priv1}, []uint64{0}, []uint64{0}
 	tx := types.NewTestTxWithMemo(ctx, msgs, privs, accnums, seqs, fee, "thisisatestmemo")
 
-	_, err := antehandler(checkCtx, tx, false)
-	require.Nil(t, err, "AnteHandler errored on check unexpectedly: %v", err)
+	// make signature array empty which would normally cause ValidateBasicDecorator and SigVerificationDecorator fail
+	// since these decorators don't run on recheck, the tx should pass the antehandler
+	stdTx := tx.(types.StdTx)
+	stdTx.Signatures = []types.StdSignature{}
 
-	_, err = antehandler(recheckCtx, tx, false)
+	_, err := antehandler(ctx, stdTx, false)
 	require.Nil(t, err, "AnteHandler errored on recheck unexpectedly: %v", err)
 
-	tx = types.NewTestTxWithMemo(recheckCtx, msgs, privs, accnums, seqs, fee, "thisisatestmemo")
+	tx = types.NewTestTxWithMemo(ctx, msgs, privs, accnums, seqs, fee, "thisisatestmemo")
 	txBytes, err := json.Marshal(tx)
 	require.Nil(t, err, "Error marshalling tx: %v", err)
-	recheckCtx = recheckCtx.WithTxBytes(txBytes)
+	ctx = ctx.WithTxBytes(txBytes)
 
 	// require that state machine param-dependent checking is still run on recheck since parameters can change between check and recheck
 	testCases := []struct {
@@ -785,33 +784,31 @@ func TestAnteHandlerReCheck(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		// set testcase parameters
-		app.AccountKeeper.SetParams(recheckCtx, tc.params)
+		app.AccountKeeper.SetParams(ctx, tc.params)
 
-		_, err := antehandler(recheckCtx, tx, false)
+		_, err := antehandler(ctx, tx, false)
 
 		require.NotNil(t, err, "tx does not fail on recheck with updated params in test case: %s", tc.name)
 
 		// reset parameters to default values
-		app.AccountKeeper.SetParams(recheckCtx, types.DefaultParams())
+		app.AccountKeeper.SetParams(ctx, types.DefaultParams())
 	}
 
 	// require that local mempool fee check is still run on recheck since validator may change minFee between check and recheck
 	// create new minimum gas price so antehandler fails on recheck
-	recheckCtx = recheckCtx.WithMinGasPrices([]sdk.DecCoin{{
+	ctx = ctx.WithMinGasPrices([]sdk.DecCoin{{
 		Denom:  "dnecoin", // fee does not have this denom
 		Amount: sdk.NewDec(5),
 	}})
-
-	_, err = antehandler(recheckCtx, tx, false)
+	_, err = antehandler(ctx, tx, false)
 	require.NotNil(t, err, "antehandler on recheck did not fail when mingasPrice was changed")
-
 	// reset min gasprice
-	recheckCtx = recheckCtx.WithMinGasPrices(sdk.DecCoins{})
+	ctx = ctx.WithMinGasPrices(sdk.DecCoins{})
 
 	// remove funds for account so antehandler fails on recheck
 	acc1.SetCoins(sdk.Coins{})
-	app.AccountKeeper.SetAccount(recheckCtx, acc1)
+	app.AccountKeeper.SetAccount(ctx, acc1)
 
-	_, err = antehandler(recheckCtx, tx, false)
+	_, err = antehandler(ctx, tx, false)
 	require.NotNil(t, err, "antehandler on recheck did not fail once feePayer no longer has sufficient funds")
 }
