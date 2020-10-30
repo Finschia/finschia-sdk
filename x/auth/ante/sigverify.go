@@ -3,6 +3,7 @@ package ante
 import (
 	"bytes"
 	"encoding/hex"
+	"fmt"
 
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
@@ -160,11 +161,15 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 // CONTRACT: Tx must implement SigVerifiableTx interface
 type SigVerificationDecorator struct {
 	ak keeper.AccountKeeper
+	// NOTE `signBytesCache` should be protected from concurrency.
+	// At this moment, `abci client` is serialized by mutex so we don't need to protect it by ourselves.
+	signBytesCache map[string][]byte
 }
 
 func NewSigVerificationDecorator(ak keeper.AccountKeeper) SigVerificationDecorator {
 	return SigVerificationDecorator{
-		ak: ak,
+		ak:             ak,
+		signBytesCache: make(map[string][]byte),
 	}
 }
 
@@ -181,11 +186,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	// stdSigs contains the sequence number, account number, and signatures.
 	// When simulating, this would just be a 0-length slice.
 	sigs := sigTx.GetSignatures()
-
-	// stdSigs contains the sequence number, account number, and signatures.
-	// When simulating, this would just be a 0-length slice.
 	signerAddrs := sigTx.GetSigners()
-	signerAccs := make([]exported.Account, len(signerAddrs))
 
 	// check that signer length and signature length are the same
 	if len(sigs) != len(signerAddrs) {
@@ -193,27 +194,77 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	}
 
 	for i, sig := range sigs {
-		signerAccs[i], err = GetSignerAcc(ctx, svd.ak, signerAddrs[i])
+		signerAcc, err := GetSignerAcc(ctx, svd.ak, signerAddrs[i])
 		if err != nil {
 			return ctx, err
 		}
 
-		// retrieve signBytes of tx
-		signBytes := sigTx.GetSignBytes(ctx, signerAccs[i])
+		if simulate {
+			continue
+		}
 
 		// retrieve pubkey
-		pubKey := signerAccs[i].GetPubKey()
-		if !simulate && pubKey == nil {
+		pubKey := signerAcc.GetPubKey()
+		if pubKey == nil {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pubkey on account is not set")
 		}
 
-		// verify signature
-		if !simulate && !pubKey.VerifyBytes(signBytes, sig) {
+		// retrieve signBytes of tx
+		signBytes := sigTx.GetSignBytes(ctx, signerAcc)
+
+		if !svd.verifySignatureWithCache(ctx, signerAcc, pubKey, signBytes, sig) {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "signature verification failed; verify correct account sequence and chain-id")
 		}
 	}
 
 	return next(ctx, tx, simulate)
+}
+
+func (svd SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, signerAcc exported.Account, pubKey crypto.PubKey, signBytes []byte, sig []byte) bool {
+	// #NOTE `genesis` transactions should not use `cache`
+	if ctx.BlockHeight() == 0 {
+		return pubKey.VerifyBytes(signBytes, sig)
+	}
+
+	// NOTE assume that `accountNumber` and `pubKey` are immutable
+	sigKey := fmt.Sprintf("%d:%d", signerAcc.GetAccountNumber(), signerAcc.GetSequence())
+
+	switch {
+	case ctx.IsCheckTx() && !ctx.IsReCheckTx(): // CheckTx
+		if !pubKey.VerifyBytes(signBytes, sig) {
+			return false
+		}
+
+		svd.signBytesCache[sigKey] = signBytes
+
+	case ctx.IsReCheckTx(): // ReCheckTx
+		verified, ok := svd.checkCache(sigKey, signBytes)
+
+		if !verified {
+			if ok {
+				delete(svd.signBytesCache, sigKey)
+			}
+			return false
+		}
+
+	default: // DeliverTx
+		verified, ok := svd.checkCache(sigKey, signBytes)
+		if ok {
+			delete(svd.signBytesCache, sigKey)
+		}
+
+		if !verified && !pubKey.VerifyBytes(signBytes, sig) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (svd SigVerificationDecorator) checkCache(sigKey string, signBytes []byte) (verified, ok bool) {
+	cached, ok := svd.signBytesCache[sigKey]
+	verified = ok && bytes.Equal(cached, signBytes)
+	return verified, ok
 }
 
 // IncrementSequenceDecorator handles incrementing sequences of all signers.
