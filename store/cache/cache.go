@@ -27,7 +27,7 @@ type (
 	// CommitKVStore and below is completely irrelevant to this layer.
 	CommitKVStoreCache struct {
 		types.CommitKVStore
-		cache *lru.ARCCache
+		cache *lru.Cache
 	}
 
 	// CommitKVStoreCacheManager maintains a mapping from a StoreKey to a
@@ -41,7 +41,7 @@ type (
 )
 
 func NewCommitKVStoreCache(store types.CommitKVStore, size uint) *CommitKVStoreCache {
-	cache, err := lru.NewARC(int(size))
+	cache, err := lru.New(int(size))
 	if err != nil {
 		panic(fmt.Errorf("failed to create KVStore cache: %s", err))
 	}
