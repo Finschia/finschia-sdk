@@ -2,6 +2,7 @@ package ante
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 
@@ -163,13 +164,13 @@ type SigVerificationDecorator struct {
 	ak keeper.AccountKeeper
 	// NOTE `signBytesCache` should be protected from concurrency.
 	// At this moment, `abci client` is serialized by mutex so we don't need to protect it by ourselves.
-	signBytesCache map[string][]byte
+	txHashCache map[string][]byte
 }
 
 func NewSigVerificationDecorator(ak keeper.AccountKeeper) SigVerificationDecorator {
 	return SigVerificationDecorator{
-		ak:             ak,
-		signBytesCache: make(map[string][]byte),
+		ak:          ak,
+		txHashCache: make(map[string][]byte),
 	}
 }
 
@@ -209,10 +210,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pubkey on account is not set")
 		}
 
-		// retrieve signBytes of tx
-		signBytes := sigTx.GetSignBytes(ctx, signerAcc)
-
-		if !svd.verifySignatureWithCache(ctx, signerAcc, pubKey, signBytes, sig) {
+		if !svd.verifySignatureWithCache(ctx, sigTx, signerAcc, pubKey, sig) {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "signature verification failed; verify correct account sequence and chain-id")
 		}
 	}
@@ -220,40 +218,41 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	return next(ctx, tx, simulate)
 }
 
-func (svd SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, signerAcc exported.Account, pubKey crypto.PubKey, signBytes []byte, sig []byte) bool {
+func (svd *SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, sigTx SigVerifiableTx, signerAcc exported.Account, pubKey crypto.PubKey, sig []byte) bool {
 	// #NOTE `genesis` transactions should not use `cache`
 	if ctx.BlockHeight() == 0 {
-		return pubKey.VerifyBytes(signBytes, sig)
+		return pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig)
 	}
 
 	// NOTE assume that `accountNumber` and `pubKey` are immutable
 	sigKey := fmt.Sprintf("%d:%d", signerAcc.GetAccountNumber(), signerAcc.GetSequence())
+	txHash := sha256.Sum256(ctx.TxBytes())
 
 	switch {
 	case ctx.IsCheckTx() && !ctx.IsReCheckTx(): // CheckTx
-		if !pubKey.VerifyBytes(signBytes, sig) {
+		if !pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig) {
 			return false
 		}
 
-		svd.signBytesCache[sigKey] = signBytes
+		svd.txHashCache[sigKey] = txHash[:]
 
 	case ctx.IsReCheckTx(): // ReCheckTx
-		verified, ok := svd.checkCache(sigKey, signBytes)
+		verified, ok := svd.checkCache(sigKey, txHash[:])
 
 		if !verified {
 			if ok {
-				delete(svd.signBytesCache, sigKey)
+				delete(svd.txHashCache, sigKey)
 			}
 			return false
 		}
 
 	default: // DeliverTx
-		verified, ok := svd.checkCache(sigKey, signBytes)
+		verified, ok := svd.checkCache(sigKey, txHash[:])
 		if ok {
-			delete(svd.signBytesCache, sigKey)
+			delete(svd.txHashCache, sigKey)
 		}
 
-		if !verified && !pubKey.VerifyBytes(signBytes, sig) {
+		if !verified && !pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig) {
 			return false
 		}
 	}
@@ -261,9 +260,9 @@ func (svd SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, si
 	return true
 }
 
-func (svd SigVerificationDecorator) checkCache(sigKey string, signBytes []byte) (verified, ok bool) {
-	cached, ok := svd.signBytesCache[sigKey]
-	verified = ok && bytes.Equal(cached, signBytes)
+func (svd SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (verified, ok bool) {
+	cached, ok := svd.txHashCache[sigKey]
+	verified = ok && bytes.Equal(cached, txHash)
 	return verified, ok
 }
 
