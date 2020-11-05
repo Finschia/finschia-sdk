@@ -186,7 +186,7 @@ func WaitForStart(url string) {
 // Wait for the RPC server to respond to /status
 func WaitForRPC(laddr string) {
 	fmt.Println("LADDR", laddr)
-	client, err := rpcclient.NewJSONRPCClient(laddr)
+	client, err := rpcclient.New(laddr)
 	if err != nil {
 		panic(fmt.Sprintf("failed to create Tendermint RPC client: %s", err))
 	}
