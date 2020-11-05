@@ -38,3 +38,5 @@ require (
 go 1.13
 
 replace github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
+
+replace github.com/tendermint/tendermint => github.com/line/tendermint v0.33.5-0.3

@@ -13,7 +13,7 @@ import (
 
 	tmhttp "github.com/tendermint/tendermint/rpc/client/http"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
-	rpcclient "github.com/tendermint/tendermint/rpc/lib/client"
+	rpcclient "github.com/tendermint/tendermint/rpc/jsonrpc/client"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 )
