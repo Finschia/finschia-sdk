@@ -3,6 +3,7 @@
 package clitest
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"path"
@@ -85,7 +86,7 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 		require.Empty(t, listContract)
 	}
 
-	// instanciate a contract with the code escrow
+	// instantiate a contract with the code escrow
 	{
 		msgJson := fmt.Sprintf("{\"arbiter\":\"%s\",\"recipient\":\"%s\"}", fooAddr, barAddr)
 		flagLabel := "--label=escrow-test"
@@ -139,4 +140,152 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 
 	// remove tmp dir
 	os.RemoveAll(tmpDir)
+}
+
+func TestLinkCLIWasmIssueToken(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+	defer f.Cleanup()
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+
+	flagFromFoo := fmt.Sprintf("--from=%s", fooAddr)
+	flagGas := "--gas=auto --gas-adjustment=1.2"
+	workDir, _ := os.Getwd()
+	wasmTokenTester := path.Join(workDir, "contracts", "token-tester", "contract.wasm")
+	codeId := uint64(1)
+	var contractAddress sdk.AccAddress
+	tokenContractId := "9be17165"
+	tokenName := "TestToken1"
+	tokenSymbol := "TT1"
+	tokenMeta := "meta"
+	tokenImageURI := "http://example.com/image"
+	tokenDecimals := sdk.NewInt(8)
+
+	// store the contract token-tester
+	{
+		f.LogResult(f.TxStoreWasm(wasmTokenTester, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// instantiate
+	{
+		msgJson := "{}"
+		flagLabel := "--label=token-tester"
+		f.LogResult(f.TxInstantiateWasm(codeId, msgJson, flagLabel, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate there is only one contract using codeId=1 and get contractAddress
+	{
+		listContract := f.QueryListContractByCodeWasm(codeId)
+		require.Len(t, listContract, 1)
+		contractAddress = listContract[0].Address
+	}
+
+	// issue token
+	{
+		msg := map[string]map[string]interface{}{
+			"issue": {
+				"owner":    contractAddress,
+				"to":       contractAddress,
+				"name":     tokenName,
+				"symbol":   tokenSymbol,
+				"meta":     tokenMeta,
+				"img_uri":  tokenImageURI,
+				"amount":   "1",
+				"mintable": true,
+				"decimals": tokenDecimals,
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate that token is issued
+	{
+		token := f.QueryToken(tokenContractId)
+		require.Equal(t, tokenContractId, token.GetContractID())
+		require.Equal(t, tokenName, token.GetName())
+		require.Equal(t, tokenSymbol, token.GetSymbol())
+		require.Equal(t, tokenMeta, token.GetMeta())
+		require.Equal(t, tokenImageURI, token.GetImageURI())
+		require.Equal(t, tokenDecimals, token.GetDecimals())
+		require.True(t, token.GetMintable())
+	}
+}
+
+func TestLinkCLIWasmCreateCollection(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+	defer f.Cleanup()
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+
+	flagFromFoo := fmt.Sprintf("--from=%s", fooAddr)
+	flagGas := "--gas=auto --gas-adjustment=1.2"
+	workDir, _ := os.Getwd()
+	wasmCollectionTester := path.Join(workDir, "contracts", "collection-tester", "contract.wasm")
+	codeId := uint64(1)
+	var contractAddress sdk.AccAddress
+	collectionContractId := "9be17165"
+	collectionName := "TestCollection1"
+	collectionMeta := "meta"
+	collectionBaseImageURI := "http://example.com/image"
+
+	// store the contract collection-tester
+	{
+		f.LogResult(f.TxStoreWasm(wasmCollectionTester, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// instantiate
+	{
+		msgString := "{}"
+		flagLabel := "--label=collection-tester"
+		f.LogResult(f.TxInstantiateWasm(codeId, msgString, flagLabel, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate there is only one contract using codeId=1 and get contractAddress
+	{
+		listContract := f.QueryListContractByCodeWasm(codeId)
+		require.Len(t, listContract, 1)
+		contractAddress = listContract[0].Address
+	}
+
+	// create collection
+	{
+		msg := map[string]map[string]interface{}{
+			"create": {
+				"owner":        contractAddress,
+				"name":         collectionName,
+				"meta":         collectionMeta,
+				"base_img_uri": collectionBaseImageURI,
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate that collection is issued
+	{
+		collection := f.QueryCollection(collectionContractId)
+		require.Equal(t, collectionContractId, collection.GetContractID())
+		require.Equal(t, collectionName, collection.GetName())
+		require.Equal(t, collectionMeta, collection.GetMeta())
+		require.Equal(t, collectionBaseImageURI, collection.GetBaseImgURI())
+	}
 }
