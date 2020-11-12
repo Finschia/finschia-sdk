@@ -1298,8 +1298,9 @@ func (f *Fixtures) QueryListCodeWasm() []wasmkeeper.ListCodeResponse {
 	cmd := fmt.Sprintf("%s query wasm list-code %s", f.LinkcliBinary, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
 	var listCode []wasmkeeper.ListCodeResponse
-	err := json.Unmarshal([]byte(res), &listCode)
+	err := cdc.UnmarshalJSON([]byte(res), &listCode)
 	require.NoError(f.T, err)
 	return listCode
 }
@@ -1308,8 +1309,9 @@ func (f *Fixtures) QueryListContractByCodeWasm(codeId uint64) []wasmkeeper.Contr
 	cmd := fmt.Sprintf("%s query wasm list-contract-by-code %d %s", f.LinkcliBinary, codeId, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
 	var listContract []wasmkeeper.ContractInfoWithAddress
-	err := json.Unmarshal([]byte(res), &listContract)
+	err := cdc.UnmarshalJSON([]byte(res), &listContract)
 	require.NoError(f.T, err)
 	return listContract
 }
@@ -1324,8 +1326,9 @@ func (f *Fixtures) QueryContractWasm(contractAddress sdk.AccAddress) wasmkeeper.
 	cmd := fmt.Sprintf("%s query wasm contract %s %s", f.LinkcliBinary, contractAddress, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
 	var contractInfo wasmkeeper.ContractInfoWithAddress
-	err := json.Unmarshal([]byte(res), &contractInfo)
+	err := cdc.UnmarshalJSON([]byte(res), &contractInfo)
 	require.NoError(f.T, err)
 	return contractInfo
 }
@@ -1335,8 +1338,9 @@ func (f *Fixtures) QueryContractHistoryWasm(contractAddress sdk.AccAddress) wasm
 	cmd := fmt.Sprintf("%s query wasm contract-history %s %s", f.LinkcliBinary, contractAddress, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
 	var contractHistory wasmtypes.ContractCodeHistoryEntry
-	err := json.Unmarshal([]byte(res), &contractHistory)
+	err := cdc.UnmarshalJSON([]byte(res), &contractHistory)
 	require.NoError(f.T, err)
 	return contractHistory
 }
@@ -1346,8 +1350,9 @@ func (f *Fixtures) QueryContractStateAllWasm(contractAddress sdk.AccAddress) []w
 	cmd := fmt.Sprintf("%s query wasm contract-state all %s %s", f.LinkcliBinary, contractAddress, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
 	var state []wasmtypes.Model
-	err := json.Unmarshal([]byte(res), &state)
+	err := cdc.UnmarshalJSON([]byte(res), &state)
 	require.NoError(f.T, err)
 	return state
 }
@@ -1357,8 +1362,9 @@ func (f *Fixtures) QueryContractStateRawWasm(contractAddress sdk.AccAddress, key
 	cmd := fmt.Sprintf("%s query wasm contract-state raw %s %s %s", f.LinkcliBinary, contractAddress, key, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
 	var state []wasmtypes.Model
-	err := json.Unmarshal([]byte(res), &state)
+	err := cdc.UnmarshalJSON([]byte(res), &state)
 	require.NoError(f.T, err)
 	return state
 }

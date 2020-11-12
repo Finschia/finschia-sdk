@@ -3,7 +3,6 @@ package keeper
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -40,7 +39,7 @@ func TestQueryContractState(t *testing.T) {
 		Verifier:    anyAddr,
 		Beneficiary: bob,
 	}
-	initMsgBz, err := json.Marshal(initMsg)
+	initMsgBz, err := types.ModuleCdc.MarshalJSON(initMsg)
 	require.NoError(t, err)
 
 	addr, err := keeper.Instantiate(ctx, contractID, creator, nil, initMsgBz, "demo contract to query", deposit)
@@ -139,8 +138,12 @@ func TestQueryContractState(t *testing.T) {
 			// otherwise, check returned models
 			var r []types.Model
 			if spec.expErr == nil {
-				require.NoError(t, json.Unmarshal(binResult, &r))
-				require.NotNil(t, r)
+				require.NoError(t, types.ModuleCdc.UnmarshalJSON(binResult, &r))
+				if spec.expModelLen == 0 {
+					require.Nil(t, r)
+				} else {
+					require.NotNil(t, r)
+				}
 			}
 			require.Len(t, r, spec.expModelLen)
 			// and in result set
@@ -174,7 +177,7 @@ func TestListContractByCodeOrdering(t *testing.T) {
 		Verifier:    anyAddr,
 		Beneficiary: bob,
 	}
-	initMsgBz, err := json.Marshal(initMsg)
+	initMsgBz, err := types.ModuleCdc.MarshalJSON(initMsg)
 	require.NoError(t, err)
 
 	// manage some realistic block settings
@@ -206,7 +209,7 @@ func TestListContractByCodeOrdering(t *testing.T) {
 	require.NoError(t, err)
 
 	var contracts []ContractInfoWithAddress
-	err = json.Unmarshal(res, &contracts)
+	err = types.ModuleCdc.UnmarshalJSON(res, &contracts)
 	require.NoError(t, err)
 
 	require.Equal(t, 10, len(contracts))
@@ -312,7 +315,7 @@ func TestQueryContractHistory(t *testing.T) {
 				return
 			}
 			var got []types.ContractCodeHistoryEntry
-			err = json.Unmarshal(resData, &got)
+			err = types.ModuleCdc.UnmarshalJSON(resData, &got)
 			require.NoError(t, err)
 
 			assert.Equal(t, spec.expContent, got)
@@ -359,12 +362,12 @@ func TestQueryCodeList(t *testing.T) {
 			// then
 			require.NoError(t, err)
 
-			var got []map[string]interface{}
-			err = json.Unmarshal(resData, &got)
+			var got []ListCodeResponse
+			err = types.ModuleCdc.UnmarshalJSON(resData, &got)
 			require.NoError(t, err)
 			require.Len(t, got, len(spec.codeIDs))
 			for i, exp := range spec.codeIDs {
-				assert.EqualValues(t, exp, got[i]["id"])
+				assert.EqualValues(t, exp, got[i].ID)
 			}
 		})
 	}

@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	"encoding/json"
 	"sort"
 	"strconv"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/link-modules/x/wasm/internal/types"
@@ -74,7 +74,7 @@ func queryContractInfo(ctx sdk.Context, bech string, keeper Keeper) ([]byte, err
 		Address:      addr,
 		ContractInfo: info,
 	}
-	bz, err := json.MarshalIndent(infoWithAddress, "", "  ")
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, infoWithAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -114,7 +114,7 @@ func queryContractListByCode(ctx sdk.Context, codeIDstr string, keeper Keeper) (
 		redact(contracts[i].ContractInfo)
 	}
 
-	bz, err := json.MarshalIndent(contracts, "", "  ")
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, contracts)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -151,7 +151,7 @@ func queryContractState(ctx sdk.Context, bech, queryMethod string, req abci.Requ
 	default:
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, queryMethod)
 	}
-	bz, err := json.Marshal(resultData)
+	bz, err := types.ModuleCdc.MarshalJSON(resultData)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -188,7 +188,7 @@ func queryCode(ctx sdk.Context, codeIDstr string, keeper Keeper) ([]byte, error)
 		return nil, sdkerrors.Wrap(err, "loading wasm code")
 	}
 
-	bz, err := json.MarshalIndent(GetCodeResponse{info, code}, "", "  ")
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, GetCodeResponse{info, code})
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -216,7 +216,7 @@ func queryCodeList(ctx sdk.Context, keeper Keeper) ([]byte, error) {
 		return false
 	})
 
-	bz, err := json.MarshalIndent(info, "", "  ")
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, info)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -238,7 +238,7 @@ func queryContractHistory(ctx sdk.Context, bech string, keeper Keeper) ([]byte, 
 		entries[i].Updated = nil
 	}
 
-	bz, err := json.MarshalIndent(entries, "", "  ")
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, entries)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

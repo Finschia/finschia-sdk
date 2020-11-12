@@ -12,9 +12,11 @@ import (
 	"github.com/stretchr/testify/require"
 
 	wasmTypes "github.com/CosmWasm/go-cosmwasm/types"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/line/link-modules/x/wasm/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
@@ -166,7 +168,7 @@ func TestHandleInstantiate(t *testing.T) {
 		Verifier:    fred,
 		Beneficiary: bob,
 	}
-	initMsgBz, err := json.Marshal(initMsg)
+	initMsgBz, err := types.ModuleCdc.MarshalJSON(initMsg)
 	require.NoError(t, err)
 
 	// create with no balance is also legal
@@ -224,7 +226,7 @@ func TestHandleExecute(t *testing.T) {
 		Verifier:    fred,
 		Beneficiary: bob,
 	}
-	initMsgBz, err := json.Marshal(initMsg)
+	initMsgBz, err := types.ModuleCdc.MarshalJSON(initMsg)
 	require.NoError(t, err)
 
 	initCmd := MsgInstantiateContract{
@@ -389,7 +391,7 @@ func prettyEvents(evts sdk.Events) string {
 			Attr: prettyAttrs(e.Attributes),
 		}
 	}
-	bz, err := json.MarshalIndent(res, "", "  ")
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, res)
 	if err != nil {
 		panic(err)
 	}
@@ -423,7 +425,7 @@ func assertCodeList(t *testing.T, q sdk.Querier, ctx sdk.Context, expectedNum in
 	}
 
 	var res []CodeInfo
-	err := json.Unmarshal(bz, &res)
+	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
 	assert.Equal(t, expectedNum, len(res))
@@ -440,7 +442,7 @@ func assertCodeBytes(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64
 	}
 
 	var res GetCodeResponse
-	err := json.Unmarshal(bz, &res)
+	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
 	assert.Equal(t, expectedBytes, res.Data)
@@ -457,7 +459,7 @@ func assertContractList(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uin
 	}
 
 	var res []ContractInfoWithAddress
-	err := json.Unmarshal(bz, &res)
+	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
 	var hasAddrs = make([]string, len(res))
@@ -474,12 +476,12 @@ func assertContractState(t *testing.T, q sdk.Querier, ctx sdk.Context, addr sdk.
 	require.NoError(t, sdkerr)
 
 	var res []Model
-	err := json.Unmarshal(bz, &res)
+	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 	require.Equal(t, 1, len(res), "#v", res)
 	require.Equal(t, []byte("config"), []byte(res[0].Key))
 
-	expectedBz, err := json.Marshal(expected)
+	expectedBz, err := types.ModuleCdc.MarshalJSON(expected)
 	require.NoError(t, err)
 	assert.Equal(t, expectedBz, res[0].Value)
 }
@@ -489,12 +491,12 @@ func assertContractInfo(t *testing.T, q sdk.Querier, ctx sdk.Context, addr sdk.A
 	bz, sdkerr := q(ctx, path, abci.RequestQuery{})
 	require.NoError(t, sdkerr)
 
-	var res ContractInfo
-	err := json.Unmarshal(bz, &res)
+	var res ContractInfoWithAddress
+	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
-	assert.Equal(t, codeID, res.CodeID)
-	assert.Equal(t, creator, res.Creator)
+	assert.Equal(t, codeID, res.ContractInfo.CodeID)
+	assert.Equal(t, creator, res.ContractInfo.Creator)
 }
 
 func createFakeFundedAccount(ctx sdk.Context, am auth.AccountKeeper, coins sdk.Coins) sdk.AccAddress {
