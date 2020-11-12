@@ -12,6 +12,7 @@ whitespace :=
 whitespace += $(whitespace)
 comma := ,
 build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
+src := $(wildcard app/*.go) $(wildcard cmd/*.go) $(wildcard types/*.go)
 
 ########################################
 ### Process linker flags
@@ -35,7 +36,7 @@ CLI_TEST_BUILD_FLAGS := -tags "cli_test $(build_tags)"
 ########################################
 ### Lint
 
-lint:
+lint: $(src)
 	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
 	go mod verify
 
@@ -44,16 +45,13 @@ lint:
 
 all: build install lint
 
-build: go.sum
+build: go.sum $(src)
 	CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) -o build/linkwasmd ./cmd/linkwasmd
 	CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) -o build/linkwasmcli ./cmd/linkwasmcli
 
-install: go.sum
+install: go.sum $(src)
 	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkwasmd
 	CGO_ENABLED=$(CGO_ENABLED) go install $(BUILD_FLAGS) ./cmd/linkwasmcli
-
-install-debug: go.sum
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/linkdebug
 
 clean:
 	rm -rf  build/
@@ -79,7 +77,7 @@ test-all: test-unit-all test-integration
 
 test-unit-all: test-unit
 
-test-unit:
+test-unit: $(src)
 	@go test -mod=readonly -p 4  ./...
 
 test-integration: build

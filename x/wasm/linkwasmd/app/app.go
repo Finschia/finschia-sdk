@@ -188,6 +188,23 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 
 	// just re-use the full router - do we want to limit this more?
 	var wasmRouter = bApp.Router()
+
+	// encodeRouter
+	tokenEncodeHandler := token.NewMsgEncodeHandler(app.tokenKeeper)
+	collectionEncoder := collection.NewMsgEncodeHandler(app.collectionKeeper)
+	var encodeRouter = wasm.NewRouter()
+	encodeRouter.AddRoute(token.EncodeRouterKey, tokenEncodeHandler)
+	encodeRouter.AddRoute(collection.EncodeRouterKey, collectionEncoder)
+
+	// queryRouter
+	tokenQuerier := token.NewQuerier(app.tokenKeeper)
+	tokenQueryEncoder := token.NewQueryEncoder(tokenQuerier)
+	collectionQuerier := collection.NewQuerier(app.collectionKeeper)
+	collectionQueryEncoder := collection.NewQueryEncoder(collectionQuerier)
+	var queryRouter = wasm.NewQuerierRouter()
+	queryRouter.AddRoute(token.EncodeRouterKey, tokenQueryEncoder)
+	queryRouter.AddRoute(collection.EncodeRouterKey, collectionQueryEncoder)
+
 	// better way to get this dir???
 	homeDir := viper.GetString(cli.HomeFlag)
 	wasmDir := filepath.Join(homeDir, "wasm")
@@ -198,7 +215,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		panic("error while reading wasm config: " + err.Error())
 	}
 	wasmConfig := wasmWrap.Wasm
-	supportedFeatures := "staking"
+	supportedFeatures := "staking,link"
+
 	app.wasmKeeper = wasm.NewKeeper(
 		app.cdc,
 		keys[wasm.StoreKey],
@@ -207,6 +225,8 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.coinKeeper,
 		app.stakingKeeper,
 		wasmRouter,
+		encodeRouter,
+		queryRouter,
 		wasmDir,
 		wasmConfig,
 		supportedFeatures,
