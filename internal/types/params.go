@@ -13,10 +13,13 @@ import (
 const (
 	// DefaultParamspace for params keeper
 	DefaultParamspace = ModuleName
+	// DefaultMaxWasmCodeSize limit max bytes read to prevent gzip bombs
+	DefaultMaxWasmCodeSize = 600 * 1024
 )
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
+var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
 
 type AccessType string
 
@@ -84,6 +87,7 @@ var (
 type Params struct {
 	UploadAccess                 AccessConfig `json:"code_upload_access" yaml:"code_upload_access"`
 	DefaultInstantiatePermission AccessType   `json:"instantiate_default_permission" yaml:"instantiate_default_permission"`
+	MaxWasmCodeSize              uint64       `json:"max_wasm_code_size" yaml:"max_wasm_code_size"`
 }
 
 // ParamKeyTable returns the parameter key table.
@@ -96,6 +100,7 @@ func DefaultParams() Params {
 	return Params{
 		UploadAccess:                 AllowEverybody,
 		DefaultInstantiatePermission: Everybody,
+		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 	}
 }
 
@@ -112,6 +117,7 @@ func (p *Params) ParamSetPairs() params.ParamSetPairs {
 	return params.ParamSetPairs{
 		params.NewParamSetPair(ParamStoreKeyUploadAccess, &p.UploadAccess, validateAccessConfig),
 		params.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.DefaultInstantiatePermission, validateAccessType),
+		params.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
 	}
 }
 
@@ -122,6 +128,9 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateAccessConfig(p.UploadAccess); err != nil {
 		return errors.Wrap(err, "upload access")
+	}
+	if err := validateMaxWasmCodeSize(p.MaxWasmCodeSize); err != nil {
+		return errors.Wrap(err, "max wasm code size")
 	}
 	return nil
 }
@@ -144,6 +153,17 @@ func validateAccessType(i interface{}) error {
 	}
 	if _, ok := AllAccessTypes[v]; !ok {
 		return sdkerrors.Wrapf(ErrInvalid, "unknown type: %q", v)
+	}
+	return nil
+}
+
+func validateMaxWasmCodeSize(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
 	}
 	return nil
 }

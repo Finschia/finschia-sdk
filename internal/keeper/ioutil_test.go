@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/line/link-modules/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -20,6 +21,8 @@ func TestUncompress(t *testing.T) {
 
 	wasmGzipped, err := ioutil.ReadFile("./testdata/contract.wasm.gzip")
 	require.NoError(t, err)
+
+	const maxSize = 400_000
 
 	specs := map[string]struct {
 		src       []byte
@@ -42,9 +45,13 @@ func TestUncompress(t *testing.T) {
 			src:       []byte{0x1, 0x2},
 			expResult: []byte{0x1, 0x2},
 		},
-		"handle big input slice": {
-			src:       []byte(strings.Repeat("a", maxSize+1)),
-			expResult: []byte(strings.Repeat("a", maxSize+1)),
+		"handle input slice exceeding limit": {
+			src:      []byte(strings.Repeat("a", maxSize+1)),
+			expError: types.ErrLimit,
+		},
+		"handle input slice at limit": {
+			src:       []byte(strings.Repeat("a", maxSize)),
+			expResult: []byte(strings.Repeat("a", maxSize)),
 		},
 		"handle gzip identifier only": {
 			src:      gzipIdent,
@@ -58,19 +65,23 @@ func TestUncompress(t *testing.T) {
 			src:      wasmGzipped[:len(wasmGzipped)-5],
 			expError: io.ErrUnexpectedEOF,
 		},
+		"handle limit gzip output": {
+			src:       asGzip(bytes.Repeat([]byte{0x1}, maxSize)),
+			expResult: bytes.Repeat([]byte{0x1}, maxSize),
+		},
 		"handle big gzip output": {
-			src:      asGzip(strings.Repeat("a", maxSize+1)),
-			expError: io.ErrUnexpectedEOF,
+			src:      asGzip(bytes.Repeat([]byte{0x1}, maxSize+1)),
+			expError: types.ErrLimit,
 		},
 		"handle other big gzip output": {
-			src:      asGzip(strings.Repeat("a", 2*maxSize)),
-			expError: io.ErrUnexpectedEOF,
+			src:      asGzip(bytes.Repeat([]byte{0x1}, 2*maxSize)),
+			expError: types.ErrLimit,
 		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			r, err := uncompress(spec.src)
-			require.True(t, errors.Is(spec.expError, err), "exp %+v got %+v", spec.expError, err)
+			r, err := uncompress(spec.src, maxSize)
+			require.True(t, errors.Is(spec.expError, err), "exp %v got %+v", spec.expError, err)
 			if spec.expError != nil {
 				return
 			}
@@ -79,9 +90,13 @@ func TestUncompress(t *testing.T) {
 	}
 }
 
-func asGzip(src string) []byte {
+func asGzip(src []byte) []byte {
 	var buf bytes.Buffer
-	if _, err := io.Copy(gzip.NewWriter(&buf), strings.NewReader(src)); err != nil {
+	zipper := gzip.NewWriter(&buf)
+	if _, err := io.Copy(zipper, bytes.NewReader(src)); err != nil {
+		panic(err)
+	}
+	if err := zipper.Close(); err != nil {
 		panic(err)
 	}
 	return buf.Bytes()
