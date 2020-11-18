@@ -95,6 +95,7 @@ func TestCreateStoresInstantiatePermission(t *testing.T) {
 			keeper.setParams(ctx, types.Params{
 				UploadAccess:                 types.AllowEverybody,
 				DefaultInstantiatePermission: spec.srcPermission,
+				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 			})
 			fundAccounts(ctx, accKeeper, myAddr, deposit)
 
