@@ -7,7 +7,6 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/x/gov"
 	"github.com/line/link-modules/x/account"
-	"github.com/line/link-modules/x/account/ante"
 	"github.com/line/link-modules/x/coin"
 	"github.com/line/link-modules/x/contract"
 	"github.com/line/link-modules/x/token"
@@ -302,7 +301,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-	app.SetAnteHandler(ante.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
+	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
 	app.SetEndBlocker(app.EndBlocker)
 
 	if loadLatest {
