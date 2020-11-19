@@ -28,6 +28,10 @@ func NewQueryEncoder(tokenQuerier sdk.Querier) wasm.EncodeQuerier {
 			return handleQueryTotal(ctx, tokenQuerier, customQuerier.Data)
 		case types.QueryPerms:
 			return handleQueryPerms(ctx, tokenQuerier, []string{customQuerier.Route}, customQuerier.Data)
+		case types.QueryIsApproved:
+			return handleQueryIsApproved(ctx, tokenQuerier, []string{customQuerier.Route}, customQuerier.Data)
+		case types.QueryApprovers:
+			return handleQueryApprovers(ctx, tokenQuerier, []string{customQuerier.Route}, customQuerier.Data)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized Msg route: %T", customQuerier.Route)
 		}
@@ -95,6 +99,43 @@ func handleQueryPerms(ctx sdk.Context, tokenQuerier sdk.Querier, path []string, 
 	})
 
 	contractID := wrapper.QueryPermParam.ContractID
+	if contractID != "" {
+		path = append(path, contractID)
+	}
+	return tokenQuerier(ctx, path, req)
+}
+
+func handleQueryIsApproved(ctx sdk.Context, tokenQuerier sdk.Querier, path []string, msgData json.RawMessage) ([]byte, error) {
+	var wrapper types.QueryIsApprovedWrapper
+	err := json.Unmarshal(msgData, &wrapper)
+	if err != nil {
+		return nil, err
+	}
+
+	req := makeRequestQuery(types.QueryIsApprovedParams{
+		Proxy:    wrapper.QueryIsApprovedParam.Proxy,
+		Approver: wrapper.QueryIsApprovedParam.Approver,
+	})
+
+	contractID := wrapper.QueryIsApprovedParam.ContractID
+	if contractID != "" {
+		path = append(path, contractID)
+	}
+	return tokenQuerier(ctx, path, req)
+}
+
+func handleQueryApprovers(ctx sdk.Context, tokenQuerier sdk.Querier, path []string, msgData json.RawMessage) ([]byte, error) {
+	var wrapper types.QueryApproversWrapper
+	err := json.Unmarshal(msgData, &wrapper)
+	if err != nil {
+		return nil, err
+	}
+
+	req := makeRequestQuery(types.QueryProxyParams{
+		Proxy: wrapper.QueryApproversParam.Proxy,
+	})
+
+	contractID := wrapper.QueryApproversParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}

@@ -20,16 +20,23 @@ func Test_Encode(t *testing.T) {
 	issueMsg := json.RawMessage(issue)
 	transfer := fmt.Sprintf(`{"route":"transfer", "data":{"from":"%s", "contract_id":"%s", "to":"%s", "amount":"100"}}`, addr1.String(), testContractID, addr2.String())
 	transferMsg := json.RawMessage(transfer)
+	transferFrom := fmt.Sprintf(`{"route":"transfer_from", "data":{"proxy":"%s", "from":"%s", "contract_id":"%s", "to":"%s", "amount":"100"}}`, addr3.String(), addr1.String(), testContractID, addr2.String())
+	transferFromMsg := json.RawMessage(transferFrom)
 	mint := fmt.Sprintf(`{"route":"mint", "data":{"from":"%s", "contract_id":"%s", "to":"%s", "amount":"100"}}`, addr1.String(), testContractID, addr2.String())
 	mintMsg := json.RawMessage(mint)
 	burn := fmt.Sprintf(`{"route":"burn", "data":{"from":"%s", "contract_id":"%s", "amount":"5"}}`, addr1.String(), testContractID)
 	burnMsg := json.RawMessage(burn)
+	burnFrom := fmt.Sprintf(`{"route":"burn_from", "data":{"proxy":"%s", "from":"%s", "contract_id":"%s", "amount":"5"}}`, addr2.String(), addr1.String(), testContractID)
+	burnFromMsg := json.RawMessage(burnFrom)
+
 	grantPermission := fmt.Sprintf(`{"route":"grant_perm", "data":{"from":"%s", "contract_id":"%s", "to":"%s", "permission":"mint"}}`, addr1.String(), testContractID, addr2.String())
 	grantPermissionMsg := json.RawMessage(grantPermission)
 	revokePermission := fmt.Sprintf(`{"route":"revoke_perm", "data":{"from":"%s", "contract_id":"%s", "permission":"mint"}}`, addr1.String(), testContractID)
 	revokePermissionMsg := json.RawMessage(revokePermission)
 	modify := fmt.Sprintf(`{"route":"modify","data":{"owner":"%s","contract_id":"%s","changes":[{"field":"meta","value":"update_meta"}]}}`, addr1.String(), testContractID)
 	modifyMsg := json.RawMessage(modify)
+	approver := fmt.Sprintf(`{"route":"approve", "data":{"approver":"%s", "contract_id":"%s", "proxy":"%s"}}`, addr1.String(), testContractID, addr2.String())
+	approverMsg := json.RawMessage(approver)
 
 	changes := types.NewChanges(types.NewChange("meta", "update_meta"))
 
@@ -67,6 +74,18 @@ func Test_Encode(t *testing.T) {
 				},
 			},
 		},
+		"transfer from token": {
+			input: transferFromMsg,
+			output: []sdk.Msg{
+				types.MsgTransferFrom{
+					Proxy:      addr3,
+					From:       addr1,
+					ContractID: testContractID,
+					To:         addr2,
+					Amount:     sdk.NewInt(100),
+				},
+			},
+		},
 		"mint token": {
 			input: mintMsg,
 			output: []sdk.Msg{
@@ -82,6 +101,12 @@ func Test_Encode(t *testing.T) {
 			input: burnMsg,
 			output: []sdk.Msg{
 				types.NewMsgBurn(addr1, testContractID, sdk.NewInt(5)),
+			},
+		},
+		"burn from token": {
+			input: burnFromMsg,
+			output: []sdk.Msg{
+				types.NewMsgBurnFrom(addr2, testContractID, addr1, sdk.NewInt(5)),
 			},
 		},
 		"grant permission": {
@@ -100,6 +125,12 @@ func Test_Encode(t *testing.T) {
 			input: modifyMsg,
 			output: []sdk.Msg{
 				types.NewMsgModify(addr1, testContractID, changes),
+			},
+		},
+		"approve": {
+			input: approverMsg,
+			output: []sdk.Msg{
+				types.NewMsgApprove(addr1, testContractID, addr2),
 			},
 		},
 		"unknown custom msg": {

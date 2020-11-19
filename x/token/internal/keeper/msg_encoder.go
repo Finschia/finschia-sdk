@@ -21,16 +21,22 @@ func NewMsgEncodeHandler(tokenKeeper Keeper) wasm.EncodeHandler {
 			return handleMsgIssue(wasmCustomMsg.Data)
 		case types.RTransfer:
 			return handleMsgTransfer(wasmCustomMsg.Data)
+		case types.RTransferFrom:
+			return handleMsgTransferFrom(wasmCustomMsg.Data)
 		case types.RMint:
 			return handleMsgMint(wasmCustomMsg.Data)
 		case types.RBurn:
 			return handleMsgBurn(wasmCustomMsg.Data)
+		case types.RBurnFrom:
+			return handleMsgBurnFrom(wasmCustomMsg.Data)
 		case types.RGrantPerm:
 			return handleMsgGrantPerm(wasmCustomMsg.Data)
 		case types.RRevokePerm:
 			return handleMsgRevokePerm(wasmCustomMsg.Data)
 		case types.RModify:
 			return handleMsgModify(wasmCustomMsg.Data)
+		case types.RApprove:
+			return handleMsgApprove(wasmCustomMsg.Data)
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized Msg route: %T", wasmCustomMsg.Route)
 		}
@@ -55,6 +61,15 @@ func handleMsgTransfer(msgData json.RawMessage) ([]sdk.Msg, error) {
 	return []sdk.Msg{msg}, nil
 }
 
+func handleMsgTransferFrom(msgData json.RawMessage) ([]sdk.Msg, error) {
+	var msg types.MsgTransferFrom
+	err := json.Unmarshal(msgData, &msg)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+	return []sdk.Msg{msg}, nil
+}
+
 func handleMsgMint(msgData json.RawMessage) ([]sdk.Msg, error) {
 	var msg types.MsgMint
 	err := json.Unmarshal(msgData, &msg)
@@ -66,6 +81,15 @@ func handleMsgMint(msgData json.RawMessage) ([]sdk.Msg, error) {
 
 func handleMsgBurn(msgData json.RawMessage) ([]sdk.Msg, error) {
 	var msg types.MsgBurn
+	err := json.Unmarshal(msgData, &msg)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+	return []sdk.Msg{msg}, nil
+}
+
+func handleMsgBurnFrom(msgData json.RawMessage) ([]sdk.Msg, error) {
+	var msg types.MsgBurnFrom
 	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
@@ -93,6 +117,15 @@ func handleMsgRevokePerm(msgData json.RawMessage) ([]sdk.Msg, error) {
 
 func handleMsgModify(msgData json.RawMessage) ([]sdk.Msg, error) {
 	var msg types.MsgModify
+	err := json.Unmarshal(msgData, &msg)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+	return []sdk.Msg{msg}, nil
+}
+
+func handleMsgApprove(msgData json.RawMessage) ([]sdk.Msg, error) {
+	var msg types.MsgApprove
 	err := json.Unmarshal(msgData, &msg)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())

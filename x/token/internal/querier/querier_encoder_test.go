@@ -102,6 +102,37 @@ func TestNewQuerier_encodeQueryTotalBurn(t *testing.T) {
 	require.Equal(t, supply.Int64(), int64(tokenBurned))
 }
 
+func TestNewQuerier_encodeQueryIsApproved_true(t *testing.T) {
+	prepare(t)
+	setupQueryEncoder()
+	jsonQuerier := fmt.Sprintf(`{"route":"approved","data":{"query_is_approved_param":{"proxy":"%s", "contract_id":"%s","approver":"%s"}}}`, addr1, contractID, addr2)
+
+	var approved bool
+	err := encodeQuery(t, json.RawMessage(jsonQuerier), &approved)
+	require.NoError(t, err)
+	require.True(t, approved)
+}
+
+func TestNewQuerier_encodeQueryApprovers(t *testing.T) {
+	prepare(t)
+	setupQueryEncoder()
+	jsonQuerier := fmt.Sprintf(`{"route":"approvers","data":{"query_approvers_param":{"proxy":"%s", "contract_id":"%s"}}}`, addr1, contractID)
+
+	var approvers []sdk.AccAddress
+	err := encodeQuery(t, json.RawMessage(jsonQuerier), &approvers)
+	require.NoError(t, err)
+	require.Equal(t, 2, len(approvers))
+	require.True(t, types.IsAddressContains(approvers, addr3))
+	require.True(t, types.IsAddressContains(approvers, addr2))
+
+	var acAdEmpty []sdk.AccAddress
+	jsonQuerier = fmt.Sprintf(`{"route":"approvers","data":{"query_approvers_param":{"proxy":"%s", "contract_id":"%s"}}}`, addr2, contractID)
+
+	err = encodeQuery(t, json.RawMessage(jsonQuerier), &acAdEmpty)
+	require.NoError(t, err)
+	require.Empty(t, acAdEmpty)
+}
+
 func TestNewQuerier_invalidEncode(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()

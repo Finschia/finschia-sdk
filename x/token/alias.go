@@ -48,6 +48,10 @@ var (
 	NewKeeper              = keeper.NewKeeper
 	NewQuerier             = querier.NewQuerier
 
+	NewMintPermission   = types.NewMintPermission
+	NewBurnPermission   = types.NewBurnPermission
+	NewModifyPermission = types.NewModifyPermission
+
 	NewMsgEncodeHandler = keeper.NewMsgEncodeHandler
 	NewQueryEncoder     = querier.NewQueryEncoder
 

@@ -16,13 +16,16 @@ const (
 type MsgRoute string
 
 const (
-	RIssue      = MsgRoute("issue")
-	RTransfer   = MsgRoute("transfer")
-	RMint       = MsgRoute("mint")
-	RBurn       = MsgRoute("burn")
-	RGrantPerm  = MsgRoute("grant_perm")
-	RRevokePerm = MsgRoute("revoke_perm")
-	RModify     = MsgRoute("modify")
+	RIssue        = MsgRoute("issue")
+	RTransfer     = MsgRoute("transfer")
+	RTransferFrom = MsgRoute("transfer_from")
+	RMint         = MsgRoute("mint")
+	RBurn         = MsgRoute("burn")
+	RBurnFrom     = MsgRoute("burn_from")
+	RGrantPerm    = MsgRoute("grant_perm")
+	RRevokePerm   = MsgRoute("revoke_perm")
+	RModify       = MsgRoute("modify")
+	RApprove      = MsgRoute("approve")
 )
 
 // WasmCustomMsg - wasm custom msg parser
@@ -69,4 +72,23 @@ type QueryPermWrapper struct {
 type QueryPermParam struct {
 	ContractID string         `json:"contract_id"`
 	Address    sdk.AccAddress `json:"address"`
+}
+
+type QueryIsApprovedWrapper struct {
+	QueryIsApprovedParam QueryIsApprovedParam `json:"query_is_approved_param"`
+}
+
+type QueryIsApprovedParam struct {
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
+	Approver   sdk.AccAddress `json:"approver"`
+}
+
+type QueryApproversWrapper struct {
+	QueryApproversParam QueryApproversParam `json:"query_approvers_param"`
+}
+
+type QueryApproversParam struct {
+	Proxy      sdk.AccAddress `json:"proxy"`
+	ContractID string         `json:"contract_id"`
 }

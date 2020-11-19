@@ -1,7 +1,7 @@
 version: 2.1
 
 defaults: &linux_defaults
-  working_directory: /go/src/github.com/line/link
+  working_directory: /go/src/github.com/line/link-modules
   docker:
     - image: circleci/golang:1.13.4
       environment:
@@ -120,6 +120,30 @@ jobs:
             go env -w GOPRIVATE=github.com/line/*
             git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             make test-unit
+  integration_test:
+    <<: *linux_defaults
+    resource_class: xlarge
+    parallelism: 1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - linkwasmd-mod-deps-{{ checksum "x/wasm/linkwasmd/go.sum" }}
+      - run:
+          name: download dependencies
+          working_directory: x/wasm/linkwasmd
+          command: |
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            go mod download
+      - save_cache:
+          key: linkwasmd-mod-deps-{{ checksum "x/wasm/linkwasmd/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: wasm-integration-test
+          working_directory: x/wasm/linkwasmd
+          command: make test-integration
   semantic_release:
     docker:
       - image: circleci/node:10
@@ -143,11 +167,15 @@ workflows:
       - unit_test:
           requires:
             - check-skippable-pr
+      - integration_test:
+          requires:
+            - check-skippable-pr
       - semantic_release:
           requires:
             - fmt
             - lint
             - unit_test
+            - integration_test
           filters:
             branches:
               only: master
