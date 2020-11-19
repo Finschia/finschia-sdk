@@ -3,6 +3,8 @@ package types
 import (
 	"errors"
 	"fmt"
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/tendermint/go-amino"
 	"strings"
 
 	yaml "gopkg.in/yaml.v2"
@@ -112,6 +114,97 @@ func (ma ModuleAccount) Validate() error {
 	}
 
 	return ma.BaseAccount.Validate()
+}
+
+func (ma *ModuleAccount) Unmarshal(bz []byte) (n int, err error) {
+	var _n int
+	_n, err = ma.decodeBaseAccount(bz)
+	if err != nil {
+		return
+	}
+	codec.Slide(&bz, &n, _n)
+	if len(bz) == 0 {
+		return
+	}
+
+	_n, err = ma.decodeName(bz)
+	if err != nil {
+		return
+	}
+	codec.Slide(&bz, &n, _n)
+	if len(bz) == 0 {
+		return
+	}
+
+	_n, err = ma.decodePermissions(bz)
+	if err != nil {
+		return
+	}
+	codec.Slide(&bz, &n, _n)
+
+	return
+}
+
+func (ma *ModuleAccount) decodeBaseAccount(bz []byte) (n int, err error) {
+	var _n int
+	_n, err = codec.CheckFieldNumberAndTyp3(bz, 1, amino.Typ3_ByteLength)
+	codec.Slide(&bz, &n, _n)
+
+	var u uint64
+	u, _n, err = amino.DecodeUvarint(bz)
+	codec.Slide(&bz, &n, _n)
+
+	buf := bz[0:u]
+
+	bac := &authtypes.BaseAccount{}
+	_n, err = bac.Unmarshal(buf)
+	if err != nil {
+		panic("Fail to unmarshal BaseAccount")
+	}
+	codec.Slide(&bz, &n, _n)
+
+	ma.BaseAccount = bac
+
+	return
+}
+
+func (ma *ModuleAccount) decodeName(bz []byte) (n int, err error) {
+	var _n int
+	_n, err = codec.CheckFieldNumberAndTyp3(bz, 2, amino.Typ3_ByteLength)
+	codec.Slide(&bz, &n, _n)
+
+	ma.Name, _n, err = amino.DecodeString(bz)
+	codec.Slide(&bz, &n, _n)
+
+	return
+}
+
+func (ma *ModuleAccount) decodePermissions(bz []byte) (n int, err error) {
+	var _n int
+	var permission string
+
+	for {
+		if len(bz) == 0 {
+			break
+		}
+		_n, err = codec.CheckFieldNumberAndTyp3(bz, 3, amino.Typ3_ByteLength)
+		if _n == 0 || err != nil {
+			break
+		}
+		codec.Slide(&bz, &n, _n)
+
+		// REFACTOR
+		if ma.Permissions == nil {
+			ma.Permissions = make([]string, 0)
+		}
+
+		permission, _n, err = amino.DecodeString(bz)
+		ma.Permissions = append(ma.Permissions, permission)
+
+		codec.Slide(&bz, &n, _n)
+	}
+
+	return
 }
 
 type moduleAccountPretty struct {

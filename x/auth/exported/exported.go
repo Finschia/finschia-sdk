@@ -36,6 +36,8 @@ type Account interface {
 
 	// Ensure that account implements stringer
 	String() string
+
+	Unmarshal([]byte) (int, error)
 }
 
 // GenesisAccounts defines a slice of GenesisAccount objects
