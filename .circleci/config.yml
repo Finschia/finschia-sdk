@@ -3,7 +3,7 @@ version: 2.1
 defaults: &linux_defaults
   working_directory: /go/src/github.com/line/link
   docker:
-    - image: circleci/golang:1.13.4
+    - image: circleci/golang:1.14.6
       environment:
         GO111MODULE: 'on'
 
@@ -106,7 +106,7 @@ jobs:
           command: |
             go env -w GOPRIVATE=github.com/line/*
             git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
-            go get github.com/golangci/golangci-lint/cmd/golangci-lint
+            go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27
             make lint
   unit_test:
     <<: *linux_defaults
