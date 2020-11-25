@@ -37,6 +37,7 @@ type Account interface {
 	// Ensure that account implements stringer
 	String() string
 
+	Marshal() ([]byte, error)
 	Unmarshal([]byte) (int, error)
 }
 

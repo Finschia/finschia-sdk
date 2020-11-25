@@ -11,7 +11,8 @@ import (
 
 func TestAccountMapperGetSet(t *testing.T) {
 	app, ctx := createTestApp(true)
-	addr := sdk.AccAddress([]byte("some-address"))
+
+	_, pub, addr := types.KeyTestPubAddr()
 
 	// no account before its created
 	acc := app.AccountKeeper.GetAccount(ctx, addr)
@@ -21,7 +22,8 @@ func TestAccountMapperGetSet(t *testing.T) {
 	acc = app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 	require.NotNil(t, acc)
 	require.Equal(t, addr, acc.GetAddress())
-	require.EqualValues(t, nil, acc.GetPubKey())
+	require.NoError(t, acc.SetPubKey(pub))
+	require.EqualValues(t, pub, acc.GetPubKey())
 	require.EqualValues(t, 0, acc.GetSequence())
 
 	// NewAccount doesn't call Set, so it's still nil

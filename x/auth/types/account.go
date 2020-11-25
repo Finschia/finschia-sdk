@@ -4,9 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
+	"io"
 	"time"
 
 	"github.com/tendermint/tendermint/crypto"
@@ -16,7 +18,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/exported"
 )
 
-//-----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 // BaseAccount
 
 var _ exported.Account = (*BaseAccount)(nil)
@@ -131,6 +133,134 @@ func (acc BaseAccount) Validate() error {
 	}
 
 	return nil
+}
+
+func (acc *BaseAccount) Marshal() (bz []byte, err error) {
+	buf := bytes.NewBuffer(nil)
+
+	if _, err = buf.Write([]byte{246, 228, 248, 56}); err != nil {
+		return
+	}
+
+	if err = acc.encodeAddress(buf); err != nil {
+		return
+	}
+	if err = acc.encodeCoins(buf); err != nil {
+		return
+	}
+	if err = acc.encodePubKey(buf); err != nil {
+		return
+	}
+	if acc.AccountNumber != 0 {
+		if err = codec.EncodeFieldNumberAndTyp3(buf, 4, amino.Typ3_Varint); err != nil {
+			return
+		}
+		if err = amino.EncodeUvarint(buf, acc.AccountNumber); err != nil {
+			return
+		}
+	}
+	if acc.Sequence != 0 {
+		if err = codec.EncodeFieldNumberAndTyp3(buf, 5, amino.Typ3_Varint); err != nil {
+			return
+		}
+		if err = amino.EncodeUvarint(buf, acc.Sequence); err != nil {
+			return
+		}
+	}
+
+	return buf.Bytes(), nil
+}
+
+func (acc *BaseAccount) encodeAddress(w io.Writer) (err error) {
+	if len(acc.Address) == 0 {
+		return
+	}
+	if err = codec.EncodeFieldNumberAndTyp3(w, 1, amino.Typ3_ByteLength); err != nil {
+		return
+	}
+	if err = amino.EncodeByteSlice(w, acc.Address); err != nil {
+		return
+	}
+	return
+}
+
+func (acc *BaseAccount) encodeCoins(w io.Writer) error {
+	if len(acc.Coins) == 0 {
+		return nil
+	}
+
+	for _, coin := range acc.Coins {
+		if err := codec.EncodeFieldNumberAndTyp3(w, 2, amino.Typ3_ByteLength); err != nil {
+			return err
+		}
+
+		bz, err := acc.encodeCoin(coin)
+		if err != nil {
+			return err
+		}
+		if err := amino.EncodeByteSlice(w, bz); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (acc *BaseAccount) encodeCoin(coin sdk.Coin) (bz []byte, err error) {
+	buf := bytes.NewBuffer(nil)
+
+	if coin.Denom != "" {
+		if err = codec.EncodeFieldNumberAndTyp3(buf, 1, amino.Typ3_ByteLength); err != nil {
+			return
+		}
+		if err = amino.EncodeString(buf, coin.Denom); err != nil {
+			return
+		}
+	}
+	// TODO how to check whether `Amount` is default?
+	if err = codec.EncodeFieldNumberAndTyp3(buf, 2, amino.Typ3_ByteLength); err != nil {
+		return
+	}
+	if err = amino.EncodeString(buf, coin.Amount.String()); err != nil {
+		return
+	}
+
+	return buf.Bytes(), nil
+}
+
+func (acc *BaseAccount) encodePubKey(w io.Writer) error {
+	if acc.PubKey == nil {
+		return nil
+	}
+
+	if err := codec.EncodeFieldNumberAndTyp3(w, 3, amino.Typ3_ByteLength); err != nil {
+		return err
+	}
+
+	bz, err := acc.encodePubKeyInterface(acc.PubKey)
+	if err != nil {
+		return err
+	}
+
+	if err := amino.EncodeByteSlice(w, bz); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (acc *BaseAccount) encodePubKeyInterface(pubKey crypto.PubKey) (bz []byte, err error) {
+	pubKeySecp256k1, ok := pubKey.(secp256k1.PubKeySecp256k1)
+	if !ok {
+		return nil, fmt.Errorf("not supported PubKey type")
+	}
+	buf := bytes.NewBuffer(nil)
+
+	buf.Write([]byte{235, 90, 233, 135})
+	if err = amino.EncodeByteSlice(buf, pubKeySecp256k1[:]); err != nil {
+		return
+	}
+
+	return buf.Bytes(), nil
 }
 
 func (acc *BaseAccount) Unmarshal(bz []byte) (n int, err error) {

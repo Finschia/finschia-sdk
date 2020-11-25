@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -114,6 +115,47 @@ func (ma ModuleAccount) Validate() error {
 	}
 
 	return ma.BaseAccount.Validate()
+}
+
+func (ma *ModuleAccount) Marshal() (bz []byte, err error) {
+	buf := bytes.NewBuffer(nil)
+
+	if _, err = buf.Write([]byte{11, 253, 125, 154}); err != nil {
+		return
+	}
+
+	if ma.BaseAccount != nil {
+		bz, err = ma.BaseAccount.Marshal()
+		if err != nil {
+			return
+		}
+		if err = codec.EncodeFieldNumberAndTyp3(buf, 1, amino.Typ3_ByteLength); err != nil {
+			return
+		}
+		// NOTE skip prefix
+		if err = amino.EncodeByteSlice(buf, bz[4:]); err != nil {
+			return
+		}
+	}
+	if ma.Name != "" {
+		if err = codec.EncodeFieldNumberAndTyp3(buf, 2, amino.Typ3_ByteLength); err != nil {
+			return
+		}
+		if err = amino.EncodeString(buf, ma.Name); err != nil {
+			return
+		}
+	}
+	for _, permission := range ma.Permissions {
+		// TODO how to hanlde if permission is an empty string?
+		if err = codec.EncodeFieldNumberAndTyp3(buf, 3, amino.Typ3_ByteLength); err != nil {
+			return
+		}
+		if err = amino.EncodeString(buf, permission); err != nil {
+			return
+		}
+	}
+
+	return buf.Bytes(), nil
 }
 
 func (ma *ModuleAccount) Unmarshal(bz []byte) (n int, err error) {
