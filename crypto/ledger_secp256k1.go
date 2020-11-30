@@ -91,6 +91,10 @@ func (pkl PrivKeyLedgerSecp256k1) PubKey() tmcrypto.PubKey {
 	return pkl.CachedPubKey
 }
 
+func (pkl PrivKeyLedgerSecp256k1) VRFProve(seed []byte) (tmcrypto.Proof, error) {
+	return nil, nil
+}
+
 // Sign returns a secp256k1 signature for the corresponding message
 func (pkl PrivKeyLedgerSecp256k1) Sign(message []byte) ([]byte, error) {
 	device, err := getLedgerDevice()
