@@ -53,13 +53,17 @@ func ExamplePrintRegisteredTypes() {
 	// Output: | Type | Name | Prefix | Length | Notes |
 	//| ---- | ---- | ------ | ----- | ------ |
 	//| PrivKeyLedgerSecp256k1 | tendermint/PrivKeyLedgerSecp256k1 | 0x10CAB393 | variable |  |
+	//| PubKeyBLS12 | tendermint/PubKeyBLS12 | 0xD68FFBC1 | 0x30 |  |
 	//| PubKeyEd25519 | tendermint/PubKeyEd25519 | 0x1624DE64 | 0x20 |  |
 	//| PubKeySr25519 | tendermint/PubKeySr25519 | 0x0DFB1005 | 0x20 |  |
 	//| PubKeySecp256k1 | tendermint/PubKeySecp256k1 | 0xEB5AE987 | 0x21 |  |
 	//| PubKeyMultisigThreshold | tendermint/PubKeyMultisigThreshold | 0x22C1F7E2 | variable |  |
+	//| PubKeyComposite | tendermint/PubKeyComposite | 0x01886E34 | variable |  |
+	//| PrivKeyBLS12 | tendermint/PrivKeyBLS12 | 0xEAECF03F | 0x20 |  |
 	//| PrivKeyEd25519 | tendermint/PrivKeyEd25519 | 0xA3288910 | 0x40 |  |
 	//| PrivKeySr25519 | tendermint/PrivKeySr25519 | 0x2F82D78B | 0x20 |  |
 	//| PrivKeySecp256k1 | tendermint/PrivKeySecp256k1 | 0xE1B0F79B | 0x20 |  |
+	//| PrivKeyComposite | tendermint/PrivKeyComposite | 0x9F3EE8F0 | variable |  |
 }
 
 func TestKeyEncodings(t *testing.T) {
