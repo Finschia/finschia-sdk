@@ -95,10 +95,12 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	votes := []abci.VoteInfo{
 		{
 			Validator:       abciValA,
+			VotingPower:     abciValA.Power,
 			SignedLastBlock: true,
 		},
 		{
 			Validator:       abciValB,
+			VotingPower:     abciValB.Power,
 			SignedLastBlock: true,
 		},
 	}
@@ -185,14 +187,17 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	votes := []abci.VoteInfo{
 		{
 			Validator:       abciValA,
+			VotingPower:     abciValA.Power,
 			SignedLastBlock: true,
 		},
 		{
 			Validator:       abciValB,
+			VotingPower:     abciValB.Power,
 			SignedLastBlock: true,
 		},
 		{
 			Validator:       abciValС,
+			VotingPower:     abciValС.Power,
 			SignedLastBlock: true,
 		},
 	}
