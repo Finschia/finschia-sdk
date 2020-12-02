@@ -94,7 +94,7 @@ func (e Equivocation) GetTotalPower() int64 { return 0 }
 func ConvertDuplicateVoteEvidence(dupVote abci.Evidence) exported.Evidence {
 	return Equivocation{
 		Height:           dupVote.Height,
-		Power:            dupVote.Validator.Power,
+		Power:            dupVote.VotingPower,
 		ConsensusAddress: sdk.ConsAddress(dupVote.Validator.Address),
 		Time:             dupVote.Time,
 	}

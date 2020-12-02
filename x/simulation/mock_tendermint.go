@@ -153,6 +153,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 				Address: pubkey.Address(),
 				Power:   mVal.val.Power,
 			},
+			VotingPower:     mVal.val.Power,
 			SignedLastBlock: signed,
 		}
 	}
@@ -185,7 +186,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 
 		var totalVotingPower int64
 		for _, val := range vals {
-			totalVotingPower += val.Validator.Power
+			totalVotingPower += val.VotingPower
 		}
 
 		evidence = append(evidence,
