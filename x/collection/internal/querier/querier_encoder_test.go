@@ -34,7 +34,7 @@ func encodeQuery(t *testing.T, jsonQuerier json.RawMessage, result interface{}) 
 func TestNewQuerier_encodeQueryBalance(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_collection_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, tokenFTID, addr1)
+	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, tokenFTID, addr1)
 
 	var balance sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &balance)
@@ -45,7 +45,7 @@ func TestNewQuerier_encodeQueryBalance(t *testing.T) {
 func TestNewQuerier_encodeQueryBalances(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"balances","data":{"query_collection_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, "", addr1)
+	jsonQuerier := fmt.Sprintf(`{"route":"balances","data":{"query_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, "", addr1)
 
 	var coins types.Coins
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &coins)
@@ -69,7 +69,7 @@ func TestNewQuerier_encodeQueryBalances(t *testing.T) {
 func TestNewQuerier_encodeQueryBalanceNonExistentAccount(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_collection_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, tokenFTID, addr3)
+	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, tokenFTID, addr3)
 
 	var balance sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &balance)
@@ -81,7 +81,7 @@ func TestNewQuerier_encodeQueryBalanceNonExistentContractID(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
 	contractID := "12345678"
-	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_collection_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, tokenFTID, addr1)
+	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, tokenFTID, addr1)
 
 	var balance sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &balance)
@@ -93,7 +93,7 @@ func TestNewQuerier_encodeQueryBalanceNonExistentTokenID(t *testing.T) {
 
 	tokenID := "00000009" + tokenFTIndex
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_collection_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, tokenID, addr1)
+	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_balance_param":{"contract_id":"%s", "token_id":"%s", "addr":"%s"}}}`, contractID, tokenID, addr1)
 
 	var balance sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &balance)
@@ -119,7 +119,7 @@ func TestNewQuerier_encodeQueryAccountPermission(t *testing.T) {
 func TestNewQuerier_encodeQueryTokens_FT(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"tokens","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenFTID)
+	jsonQuerier := fmt.Sprintf(`{"route":"tokens","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenFTID)
 
 	var token types.Token
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &token)
@@ -134,7 +134,7 @@ func TestNewQuerier_encodeQueryTokens_FT(t *testing.T) {
 func TestNewQuerier_encodeQueryTokens_NFT(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"tokens","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID1)
+	jsonQuerier := fmt.Sprintf(`{"route":"tokens","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID1)
 
 	var token types.Token
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &token)
@@ -149,7 +149,7 @@ func TestNewQuerier_encodeQueryTokens_NFT(t *testing.T) {
 func TestNewQuerier_encodeQueryTokens_all(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"tokens","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":""}}}`, contractID)
+	jsonQuerier := fmt.Sprintf(`{"route":"tokens","data":{"query_tokens_param":{"contract_id":"%s", "token_id":""}}}`, contractID)
 
 	var tokens types.Tokens
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &tokens)
@@ -257,7 +257,7 @@ func TestNewQuerier_encodeQueryCollections_one(t *testing.T) {
 func TestNewQuerier_encodeQueryNFTCount(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"nftcount","data":{"query_nft_count_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenNFTType, "nftcount")
+	jsonQuerier := fmt.Sprintf(`{"route":"nftcount","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTType)
 
 	var count sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &count)
@@ -268,7 +268,7 @@ func TestNewQuerier_encodeQueryNFTCount(t *testing.T) {
 func TestNewQuerier_encodeQueryTotalMint_NFT(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"nftmint","data":{"query_nft_count_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenNFTType, "nftmint")
+	jsonQuerier := fmt.Sprintf(`{"route":"nftmint","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTType)
 
 	var supply sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &supply)
@@ -279,7 +279,7 @@ func TestNewQuerier_encodeQueryTotalMint_NFT(t *testing.T) {
 func TestNewQuerier_encodeQueryTotalBurn_NFT(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"nftburn","data":{"query_nft_count_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenNFTType, "nftburn")
+	jsonQuerier := fmt.Sprintf(`{"route":"nftburn","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTType)
 
 	var supply sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &supply)
@@ -290,7 +290,7 @@ func TestNewQuerier_encodeQueryTotalBurn_NFT(t *testing.T) {
 func TestNewQuerier_encodeQueryTotalSupply_FT(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_with_collection_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenFTID, "supply")
+	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenFTID, "supply")
 
 	var supply sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &supply)
@@ -301,7 +301,7 @@ func TestNewQuerier_encodeQueryTotalSupply_FT(t *testing.T) {
 func TestNewQuerier_encodeQueryTotalMint_FT(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_with_collection_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenFTID, "mint")
+	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenFTID, "mint")
 
 	var supply sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &supply)
@@ -312,7 +312,7 @@ func TestNewQuerier_encodeQueryTotalMint_FT(t *testing.T) {
 func TestNewQuerier_encodeQueryTotalBurn_FT(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_with_collection_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenFTID, "burn")
+	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_param":{"contract_id":"%s", "token_id":"%s", "target":"%s"}}}`, contractID, tokenFTID, "burn")
 
 	var supply sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &supply)
@@ -323,7 +323,7 @@ func TestNewQuerier_encodeQueryTotalBurn_FT(t *testing.T) {
 func TestNewQuerier_encodeQueryParent(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"parent","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID2)
+	jsonQuerier := fmt.Sprintf(`{"route":"parent","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID2)
 
 	var token types.Token
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &token)
@@ -335,7 +335,7 @@ func TestNewQuerier_encodeQueryParent(t *testing.T) {
 func TestNewQuerier_encodeQueryParent_nil(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"parent","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID1)
+	jsonQuerier := fmt.Sprintf(`{"route":"parent","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID1)
 
 	var token types.Token
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &token)
@@ -346,7 +346,7 @@ func TestNewQuerier_encodeQueryParent_nil(t *testing.T) {
 func TestNewQuerier_encodeQueryRoot(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"root","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID3)
+	jsonQuerier := fmt.Sprintf(`{"route":"root","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID3)
 
 	var token types.Token
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &token)
@@ -358,7 +358,7 @@ func TestNewQuerier_encodeQueryRoot(t *testing.T) {
 func TestNewQuerier_encodeQueryRoot_self(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"root","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID1)
+	jsonQuerier := fmt.Sprintf(`{"route":"root","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID1)
 
 	var token types.Token
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &token)
@@ -370,7 +370,7 @@ func TestNewQuerier_encodeQueryRoot_self(t *testing.T) {
 func TestNewQuerier_encodeQueryChildren(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"children","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID1)
+	jsonQuerier := fmt.Sprintf(`{"route":"children","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID1)
 
 	var tokens types.Tokens
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &tokens)
@@ -385,7 +385,7 @@ func TestNewQuerier_encodeQueryChildren(t *testing.T) {
 func TestNewQuerier_encodeQueryChildren_empty(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"children","data":{"query_tokens_with_collection_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID2)
+	jsonQuerier := fmt.Sprintf(`{"route":"children","data":{"query_tokens_param":{"contract_id":"%s", "token_id":"%s"}}}`, contractID, tokenNFTID2)
 
 	var tokens types.Tokens
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &tokens)
@@ -397,7 +397,7 @@ func TestNewQuerier_encodeQueryApprovers(t *testing.T) {
 	prepare(t)
 
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"approver","data":{"query_proxy_param":{"contract_id":"%s", "proxy":"%s"}}}`, contractID, addr1)
+	jsonQuerier := fmt.Sprintf(`{"route":"approver","data":{"query_approvers_param":{"contract_id":"%s", "proxy":"%s"}}}`, contractID, addr1)
 
 	var acAd1 []sdk.AccAddress
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &acAd1)

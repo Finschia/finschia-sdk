@@ -52,7 +52,7 @@ type QueryCollectionWrapper struct {
 }
 
 type QueryBalanceWrapper struct {
-	QueryBalanceParam QueryBalanceParam `json:"query_collection_balance_param"`
+	QueryBalanceParam QueryBalanceParam `json:"query_balance_param"`
 }
 
 type QueryTokenTypesWrapper struct {
@@ -60,7 +60,7 @@ type QueryTokenTypesWrapper struct {
 }
 
 type QueryTokensWrapper struct {
-	QueryTokensParam QueryTokensParam `json:"query_tokens_with_collection_param"`
+	QueryTokensParam QueryTokensParam `json:"query_tokens_param"`
 }
 
 type QueryTokenTypeWrapper struct {
@@ -68,11 +68,11 @@ type QueryTokenTypeWrapper struct {
 }
 
 type QueryNFTCountWrapper struct {
-	QueryNFTCountParam QueryNFTCountParam `json:"query_nft_count_param"`
+	QueryTokensParam QueryTokensParam `json:"query_tokens_param"`
 }
 
 type QueryTotalWrapper struct {
-	QueryTotalParam QueryTotalParam `json:"query_total_with_collection_param"`
+	QueryTotalParam QueryTotalParam `json:"query_total_param"`
 }
 
 type QueryPermsWrapper struct {
@@ -84,7 +84,7 @@ type QueryApprovedWrapper struct {
 }
 
 type QueryApproversWrapper struct {
-	QueryProxyParam QueryProxyParam `json:"query_proxy_param"`
+	QueryApproversParam QueryApproversParam `json:"query_approvers_param"`
 }
 
 type QueryCollectionParam struct {
@@ -112,12 +112,6 @@ type QueryTokenTypeParam struct {
 	TokenType  string `json:"token_type"`
 }
 
-type QueryNFTCountParam struct {
-	ContractID string `json:"contract_id"`
-	TokenID    string `json:"token_id"`
-	Target     string `json:"target"`
-}
-
 type QueryTotalParam struct {
 	ContractID string `json:"contract_id"`
 	TokenID    string `json:"token_id"`
@@ -129,7 +123,7 @@ type QueryPermParam struct {
 	Address    sdk.AccAddress `json:"address"`
 }
 
-type QueryProxyParam struct {
+type QueryApproversParam struct {
 	ContractID string         `json:"contract_id"`
 	Proxy      sdk.AccAddress `json:"proxy"`
 }

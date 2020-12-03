@@ -1226,15 +1226,48 @@ func (f *Fixtures) QueryCountTokenCollection(contractID, tokenID string, flags .
 	return supply
 }
 
-func (f *Fixtures) QueryAccountPermissionCollection(addr sdk.AccAddress, flags ...string) tokenModule.Permissions {
-	cmd := fmt.Sprintf("%s query collection perm %s %s", f.LinkcliBinary, addr, f.Flags())
+func (f *Fixtures) QueryAccountPermissionCollection(addr sdk.AccAddress, contractID string, flags ...string) collectionModule.Permissions {
+	cmd := fmt.Sprintf("%s query collection perm %s %s %s", f.LinkcliBinary, addr, contractID, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
-	var pms tokenModule.Permissions
+	var pms collectionModule.Permissions
 	err := cdc.UnmarshalJSON([]byte(res), &pms)
 	require.NoError(f.T, err)
 	return pms
+}
+
+func (f *Fixtures) QueryRootTokenCollection(contractID string, tokenID string, flags ...string) collectionModule.Token {
+	cmd := fmt.Sprintf("%s query collection root %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var root collectionModule.Token
+	err := cdc.UnmarshalJSON([]byte(res), &root)
+	require.NoError(f.T, err)
+	return root
+}
+
+func (f *Fixtures) QueryParentTokenCollection(contractID string, tokenID string, flags ...string) collectionModule.Token {
+	cmd := fmt.Sprintf("%s query collection parent %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var parent collectionModule.Token
+	err := cdc.UnmarshalJSON([]byte(res), &parent)
+	require.NoError(f.T, err)
+	return parent
+}
+
+func (f *Fixtures) QueryChildrenTokenCollection(contractID string, tokenID string, flags ...string) []collectionModule.Token {
+	cmd := fmt.Sprintf("%s query collection children %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+	res, errStr := tests.ExecuteT(f.T, cmd, "")
+	require.Empty(f.T, errStr)
+	cdc := app.MakeCodec()
+	var children []collectionModule.Token
+	err := cdc.UnmarshalJSON([]byte(res), &children)
+	require.NoError(f.T, err)
+	return children
 }
 
 func (f *Fixtures) QueryApproversTokenCollection(contractID string, proxy sdk.AccAddress) []sdk.AccAddress {

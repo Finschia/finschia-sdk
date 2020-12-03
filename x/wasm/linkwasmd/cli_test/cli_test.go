@@ -11,6 +11,7 @@ import (
 	"strings"
 	"testing"
 
+	collectionModule "github.com/line/link-modules/x/collection"
 	tokenModule "github.com/line/link-modules/x/token"
 	"github.com/line/link-modules/x/wasm/linkwasmd/app"
 	"github.com/stretchr/testify/require"
@@ -701,7 +702,7 @@ func TestLinkCLIWasmTokenTesterProxy(t *testing.T) {
 	}
 }
 
-func TestLinkCLIWasmCreateCollection(t *testing.T) {
+func TestLinkCLIWasmCollectionTester(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
 	defer f.Cleanup()
@@ -722,6 +723,40 @@ func TestLinkCLIWasmCreateCollection(t *testing.T) {
 	collectionName := "TestCollection1"
 	collectionMeta := "meta"
 	collectionBaseImageURI := "http://example.com/image"
+
+	cdc := app.MakeCodec()
+
+	nftName1 := "TestNFT1"
+	nftMeta1 := "nftMeta1"
+	nftName2 := "TestNFT2"
+	nftMeta2 := "nftMeta2"
+	nftName3 := "TestNFT3"
+	nftMeta3 := "nftMeta3"
+
+	tokenTypeID1 := "10000001"
+	tokenTypeID2 := "10000002"
+	tokenTypeID3 := "10000003"
+
+	index1 := "00000001"
+	index2 := "00000002"
+	nft0ID := tokenTypeID1 + index1
+	nft1ID := tokenTypeID1 + index2
+	nft2ID := tokenTypeID2 + index1
+	nft3ID := tokenTypeID3 + index1
+	mintNftName := "nft-0"
+	mintNftMeta := ""
+
+	ftName := "TestFT1"
+	ftMeta := "ftMeta"
+	tokenID := "0000000100000000"
+
+	initFtAmount := 1
+	mintFtAmount := 99
+	burnFtAmount := 3
+	transferFtAmount := 10
+	mintFt := strconv.Itoa(mintFtAmount) + ":" + tokenID
+	burnFt := strconv.Itoa(burnFtAmount) + ":" + tokenID
+	transferFt := strconv.Itoa(transferFtAmount) + ":" + tokenID
 
 	// store the contract collection-tester
 	{
@@ -767,5 +802,989 @@ func TestLinkCLIWasmCreateCollection(t *testing.T) {
 		require.Equal(t, collectionName, collection.GetName())
 		require.Equal(t, collectionMeta, collection.GetMeta())
 		require.Equal(t, collectionBaseImageURI, collection.GetBaseImgURI())
+	}
+
+	// issue nft
+	{
+		msg := map[string]map[string]interface{}{
+			"issue_nft": {
+				"owner":       contractAddress,
+				"contract_id": collectionContractId,
+				"name":        nftName1,
+				"meta":        nftMeta1,
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate issued nft
+	{
+		tokenType := f.QueryTokenTypeCollection(collectionContractId, tokenTypeID1)
+		require.Equal(t, nftName1, tokenType.GetName())
+		require.Equal(t, nftMeta1, tokenType.GetMeta())
+		require.Equal(t, collectionContractId, tokenType.GetContractID())
+		require.Equal(t, tokenTypeID1, tokenType.GetTokenType())
+	}
+
+	// issue ft
+	{
+		msg := map[string]map[string]interface{}{
+			"issue_ft": {
+				"owner":       contractAddress,
+				"contract_id": collectionContractId,
+				"to":          contractAddress,
+				"name":        ftName,
+				"meta":        ftMeta,
+				"amount":      strconv.Itoa(initFtAmount),
+				"mintable":    true,
+				"decimals":    sdk.NewInt(8),
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate issued ft
+	{
+		token := f.QueryTokenCollection(collectionContractId, tokenID).(collectionModule.FT)
+		require.Equal(t, collectionContractId, token.GetContractID())
+		require.Equal(t, ftName, token.GetName())
+		require.Equal(t, ftMeta, token.GetMeta())
+		require.Equal(t, tokenID, token.GetTokenID())
+		require.Equal(t, sdk.NewInt(8), token.GetDecimals())
+		require.True(t, token.GetMintable())
+
+		balanceOfContract := f.QueryBalanceCollection(collectionContractId, tokenID, contractAddress)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount)), balanceOfContract)
+
+		totalMint := f.QueryTotalMintTokenCollection(collectionContractId, tokenID)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount)), totalMint)
+
+		totalSupply := f.QueryTotalSupplyTokenCollection(collectionContractId, tokenID)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount)), totalSupply)
+
+		totalBurn := f.QueryTotalBurnTokenCollection(collectionContractId, tokenID)
+		require.Equal(t, sdk.NewInt(0), totalBurn)
+	}
+
+	// mint nft
+	{
+		msg := map[string]map[string]interface{}{
+			"mint_nft": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"to":          contractAddress,
+				"token_types": []string{tokenTypeID1},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate minted nft
+	{
+		nft := f.QueryTokenCollection(collectionContractId, nft0ID).(collectionModule.NFT)
+		require.Equal(t, collectionContractId, nft.GetContractID())
+		require.Equal(t, nft0ID, nft.GetTokenID())
+		require.Equal(t, contractAddress, nft.GetOwner())
+		require.Equal(t, mintNftName, nft.GetName())
+		require.Equal(t, mintNftMeta, nft.GetMeta())
+	}
+
+	// mint ft
+	{
+		msg := map[string]map[string]interface{}{
+			"mint_ft": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"to":          contractAddress,
+				"tokens":      []string{mintFt},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate minted ft
+	{
+		balanceOfContract := f.QueryBalanceCollection(collectionContractId, tokenID, contractAddress)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount+mintFtAmount)), balanceOfContract)
+	}
+
+	// modify token info
+	{
+		msg := map[string]map[string]interface{}{
+			"modify": {
+				"owner":       contractAddress,
+				"contract_id": collectionContractId,
+				"token_type":  tokenTypeID1,
+				"token_index": index1,
+				"key":         "meta",
+				"value":       "modified_meta",
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate modified nft
+	{
+		nft := f.QueryTokenCollection(collectionContractId, nft0ID).(collectionModule.NFT)
+		require.Equal(t, collectionContractId, nft.GetContractID())
+		require.Equal(t, nft0ID, nft.GetTokenID())
+		require.Equal(t, contractAddress, nft.GetOwner())
+		require.Equal(t, mintNftName, nft.GetName())
+		require.Equal(t, "modified_meta", nft.GetMeta())
+	}
+
+	// burn nft
+	{
+		msg := map[string]map[string]interface{}{
+			"burn_nft": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"token_id":    nft0ID,
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate burn nft
+	{
+		f.QueryTokenCollectionExpectEmpty(collectionContractId, nft0ID)
+	}
+
+	// burn ft
+	{
+		msg := map[string]map[string]interface{}{
+			"burn_ft": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"amounts":     []string{burnFt},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate burn ft
+	{
+		balanceOfContract := f.QueryBalanceCollection(collectionContractId, tokenID, contractAddress)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount+mintFtAmount-burnFtAmount)), balanceOfContract)
+
+		totalMint := f.QueryTotalMintTokenCollection(collectionContractId, tokenID)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount+mintFtAmount)), totalMint)
+
+		totalSupply := f.QueryTotalSupplyTokenCollection(collectionContractId, tokenID)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount+mintFtAmount-burnFtAmount)), totalSupply)
+
+		totalBurn := f.QueryTotalBurnTokenCollection(collectionContractId, tokenID)
+		require.Equal(t, sdk.NewInt(int64(burnFtAmount)), totalBurn)
+	}
+
+	// transfer nft
+	{
+		// prepare nft
+		msg := map[string]map[string]interface{}{
+			"mint_nft": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"to":          contractAddress,
+				"token_types": []string{tokenTypeID1},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// transfer nft to fooAddr
+		msg = map[string]map[string]interface{}{
+			"transfer_nft": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"to":          fooAddr,
+				"token_ids":   []string{nft1ID},
+			},
+		}
+		msgJson, _ = json.Marshal(msg)
+		msgString = string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate transfered nft
+	{
+		nft := f.QueryTokenCollection(collectionContractId, nft1ID).(collectionModule.NFT)
+		require.Equal(t, collectionContractId, nft.GetContractID())
+		require.Equal(t, nft1ID, nft.GetTokenID())
+		require.Equal(t, fooAddr, nft.GetOwner())
+		require.Equal(t, mintNftName, nft.GetName())
+		require.Equal(t, mintNftMeta, nft.GetMeta())
+	}
+
+	//  transfer ft
+	{
+		msg := map[string]map[string]interface{}{
+			"transfer_ft": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"to":          fooAddr,
+				"tokens":      []string{transferFt},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate transfered ft
+	{
+		balanceOfContract := f.QueryBalanceCollection(collectionContractId, tokenID, contractAddress)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount+mintFtAmount-burnFtAmount-transferFtAmount)), balanceOfContract)
+		balanceOfFoo := f.QueryBalanceCollection(collectionContractId, tokenID, fooAddr)
+		require.Equal(t, sdk.NewInt(int64(transferFtAmount)), balanceOfFoo)
+	}
+
+	// validate that contractAddress has all the permissions
+	{
+		perms := f.QueryAccountPermissionCollection(contractAddress, collectionContractId)
+		require.Equal(t, 4, len(perms))
+		require.True(t, perms.HasPermission(collectionModule.NewMintPermission()))
+		require.True(t, perms.HasPermission(collectionModule.NewBurnPermission()))
+		require.True(t, perms.HasPermission(collectionModule.NewIssuePermission()))
+		require.True(t, perms.HasPermission(collectionModule.NewModifyPermission()))
+	}
+
+	// validate that fooAddr cannot mint token
+	{
+		perms := f.QueryAccountPermissionCollection(fooAddr, collectionContractId)
+		require.Len(t, perms, 0)
+		mintParam := strings.Join([]string{tokenTypeID1, "description", "meta"}, ":")
+		_, res, _ := f.TxTokenMintNFTCollection(fooAddr.String(), collectionContractId, fooAddr.String(), mintParam, "-y")
+		require.True(t, strings.Contains(res, "Permission: mint: failed"))
+	}
+
+	// grant permission
+	{
+		msg := map[string]map[string]interface{}{
+			"grant_perm": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"to":          fooAddr,
+				"permission":  "mint",
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate perm
+	{
+		perms := f.QueryAccountPermissionCollection(fooAddr, collectionContractId)
+		require.Equal(t, 1, len(perms))
+		require.True(t, perms.HasPermission(collectionModule.NewMintPermission()))
+
+		f.TxTokenMintFTCollection(fooAddr.String(), collectionContractId, fooAddr.String(), mintFt, "-y")
+		balanceOfFoo := f.QueryBalanceCollection(collectionContractId, tokenID, fooAddr)
+		require.Equal(t, sdk.NewInt(int64(transferFtAmount+mintFtAmount)), balanceOfFoo)
+	}
+
+	// revoke perm
+	{
+		msg := map[string]map[string]interface{}{
+			"revoke_perm": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"permission":  "mint",
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate permission from contractAddress
+	{
+		perms := f.QueryAccountPermissionCollection(contractAddress, collectionContractId)
+		require.Len(t, perms, 3)
+		require.True(t, perms.HasPermission(collectionModule.NewBurnPermission()))
+		require.True(t, perms.HasPermission(collectionModule.NewIssuePermission()))
+		require.True(t, perms.HasPermission(collectionModule.NewModifyPermission()))
+	}
+
+	// attach token
+	{
+		// prepare token
+		msg := map[string]map[string]interface{}{
+			"issue_nft": {
+				"owner":       contractAddress,
+				"contract_id": collectionContractId,
+				"name":        nftName2,
+				"meta":        nftMeta2,
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		msg = map[string]map[string]interface{}{
+			"issue_nft": {
+				"owner":       contractAddress,
+				"contract_id": collectionContractId,
+				"name":        nftName3,
+				"meta":        nftMeta3,
+			},
+		}
+		msgJson, _ = json.Marshal(msg)
+		msgString = string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		msg = map[string]map[string]interface{}{
+			"mint_nft": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"to":          contractAddress,
+				"token_types": []string{tokenTypeID2, tokenTypeID3},
+			},
+		}
+		msgJson, _ = json.Marshal(msg)
+		msgString = string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// attach
+		msg = map[string]map[string]interface{}{
+			"attach": {
+				"from":        contractAddress,
+				"contract_id": collectionContractId,
+				"to_token_id": nft3ID,
+				"token_id":    nft2ID,
+			},
+		}
+		msgJson, _ = json.Marshal(msg)
+		msgString = string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate attached token
+	{
+		parent := f.QueryParentTokenCollection(collectionContractId, nft2ID)
+		require.Equal(t, nft3ID, parent.GetTokenID())
+
+		children := f.QueryChildrenTokenCollection(collectionContractId, nft3ID)
+		require.Equal(t, 1, len(children))
+		require.Equal(t, nft2ID, children[0].GetTokenID())
+
+		// validate for query encoder
+		query := map[string]map[string]interface{}{
+			"get_root_or_parent_or_children": {
+				"contract_id": collectionContractId,
+				"token_id":    nft2ID,
+				"target":      "parent",
+			},
+		}
+		queryJson, _ := json.Marshal(query)
+		queryString := string(queryJson)
+		res := f.QueryContractStateSmartWasm(contractAddress, queryString)
+
+		var parentToken collectionModule.Token
+		err := cdc.UnmarshalJSON([]byte(res), &parentToken)
+		require.NoError(f.T, err)
+		require.Equal(t, nft3ID, parentToken.(collectionModule.NFT).GetTokenID())
+
+		query = map[string]map[string]interface{}{
+			"get_root_or_parent_or_children": {
+				"contract_id": collectionContractId,
+				"token_id":    nft2ID,
+				"target":      "root",
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+
+		var rootToken collectionModule.Token
+		err = cdc.UnmarshalJSON([]byte(res), &rootToken)
+		require.NoError(f.T, err)
+		require.Equal(t, nft3ID, rootToken.(collectionModule.NFT).GetTokenID())
+
+		query = map[string]map[string]interface{}{
+			"get_root_or_parent_or_children": {
+				"contract_id": collectionContractId,
+				"token_id":    nft3ID,
+				"target":      "children",
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+
+		var childrenTokens []collectionModule.Token
+		err = cdc.UnmarshalJSON([]byte(res), &childrenTokens)
+		require.NoError(f.T, err)
+		require.Equal(t, 1, len(childrenTokens))
+		require.Equal(t, nft2ID, childrenTokens[0].(collectionModule.NFT).GetTokenID())
+	}
+
+	// detach token
+	{
+		msg := map[string]map[string]interface{}{
+			"detach": {
+				"contract_id": collectionContractId,
+				"from":        contractAddress,
+				"token_id":    nft2ID,
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate attached token
+	{
+		parentToken := f.QueryParentTokenCollection(collectionContractId, nft2ID)
+		require.Nil(t, parentToken)
+
+		childrenTokens := f.QueryChildrenTokenCollection(collectionContractId, nft3ID)
+		require.Equal(t, 0, len(childrenTokens))
+
+		rootToken := f.QueryRootTokenCollection(collectionContractId, nft2ID)
+		require.Equal(t, nft2ID, rootToken.(collectionModule.NFT).GetTokenID())
+	}
+
+	// test for query
+	{
+		cdc := app.MakeCodec()
+
+		// query collection
+		query := map[string]map[string]interface{}{
+			"get_collection": {
+				"contract_id": collectionContractId,
+			},
+		}
+		queryJson, _ := json.Marshal(query)
+		queryString := string(queryJson)
+		res := f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var collection collectionModule.Collection
+		err := cdc.UnmarshalJSON([]byte(res), &collection)
+		require.NoError(f.T, err)
+		require.Equal(t, collectionContractId, collection.GetContractID())
+
+		// query balance
+		query = map[string]map[string]interface{}{
+			"get_balance": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenID,
+				"addr":        contractAddress,
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var balanceOfContract sdk.Int
+		err = cdc.UnmarshalJSON([]byte(res), &balanceOfContract)
+		require.NoError(f.T, err)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount+mintFtAmount-burnFtAmount-transferFtAmount)), balanceOfContract)
+
+		// query token type
+		query = map[string]map[string]interface{}{
+			"get_token_type": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenTypeID1,
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+
+		var tokenType collectionModule.TokenType
+		err = cdc.UnmarshalJSON([]byte(res), &tokenType)
+		require.NoError(f.T, err)
+		require.Equal(t, nftName1, tokenType.GetName())
+		require.Equal(t, nftMeta1, tokenType.GetMeta())
+		require.Equal(t, collectionContractId, tokenType.GetContractID())
+		require.Equal(t, tokenTypeID1, tokenType.GetTokenType())
+
+		// query token types
+		query = map[string]map[string]interface{}{
+			"get_token_types": {
+				"contract_id": collectionContractId,
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+
+		var tokenTypes []collectionModule.TokenType
+		err = cdc.UnmarshalJSON([]byte(res), &tokenTypes)
+		require.NoError(f.T, err)
+		require.Equal(t, 3, len(tokenTypes))
+
+		// query token
+		query = map[string]map[string]interface{}{
+			"get_token": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenID,
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var token collectionModule.FT
+		err = cdc.UnmarshalJSON([]byte(res), &token)
+		require.NoError(f.T, err)
+
+		require.Equal(t, collectionContractId, token.GetContractID())
+		require.Equal(t, ftName, token.GetName())
+		require.Equal(t, ftMeta, token.GetMeta())
+		require.Equal(t, tokenID, token.GetTokenID())
+		require.Equal(t, sdk.NewInt(8), token.GetDecimals())
+		require.True(t, token.GetMintable())
+
+		// query tokens
+		query = map[string]map[string]interface{}{
+			"get_tokens": {
+				"contract_id": collectionContractId,
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var tokens []collectionModule.Token
+		err = cdc.UnmarshalJSON([]byte(res), &tokens)
+		require.NoError(f.T, err)
+		require.Equal(t, 4, len(tokens))
+
+		// query nft total
+		query = map[string]map[string]interface{}{
+			"get_nft_count": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenTypeID3,
+				"target":      "count",
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var nftCount sdk.Int
+		err = cdc.UnmarshalJSON([]byte(res), &nftCount)
+		require.NoError(f.T, err)
+		require.Equal(t, sdk.NewInt(1), nftCount)
+
+		query = map[string]map[string]interface{}{
+			"get_nft_count": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenTypeID1,
+				"target":      "mint",
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var nftMint sdk.Int
+		err = cdc.UnmarshalJSON([]byte(res), &nftMint)
+		require.NoError(f.T, err)
+		require.Equal(t, sdk.NewInt(2), nftMint)
+
+		query = map[string]map[string]interface{}{
+			"get_nft_count": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenTypeID1,
+				"target":      "burn",
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var nftBurn sdk.Int
+		err = cdc.UnmarshalJSON([]byte(res), &nftBurn)
+		require.NoError(f.T, err)
+		require.Equal(t, sdk.NewInt(1), nftBurn)
+
+		// query total
+		query = map[string]map[string]interface{}{
+			"get_total": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenID,
+				"target":      "supply",
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var totalSupply sdk.Int
+		err = cdc.UnmarshalJSON([]byte(res), &totalSupply)
+		require.NoError(f.T, err)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount+2*mintFtAmount-burnFtAmount)), totalSupply)
+
+		query = map[string]map[string]interface{}{
+			"get_total": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenID,
+				"target":      "mint",
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var totalMint sdk.Int
+		err = cdc.UnmarshalJSON([]byte(res), &totalMint)
+		require.NoError(f.T, err)
+		require.Equal(t, sdk.NewInt(int64(initFtAmount+2*mintFtAmount)), totalMint)
+
+		query = map[string]map[string]interface{}{
+			"get_total": {
+				"contract_id": collectionContractId,
+				"token_id":    tokenID,
+				"target":      "burn",
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var totalBurn sdk.Int
+		err = cdc.UnmarshalJSON([]byte(res), &totalBurn)
+		require.NoError(f.T, err)
+		require.Equal(t, sdk.NewInt(int64(burnFtAmount)), totalBurn)
+
+	}
+}
+
+func TestLinkCLIWasmCollectionTesterProxy(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+	defer f.Cleanup()
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+
+	flagFromFoo := fmt.Sprintf("--from=%s", fooAddr)
+	flagGas := "--gas=auto --gas-adjustment=1.2"
+	workDir, _ := os.Getwd()
+	wasmCollectionTester := path.Join(workDir, "contracts", "collection-tester", "contract.wasm")
+	codeId := uint64(1)
+	var contractAddress sdk.AccAddress
+	collectionContractId := "9be17165"
+	collectionName := "TestCollection1"
+	collectionMeta := "meta"
+	collectionBaseImageURI := "http://example.com/image"
+
+	nftName1 := "TestNFT1"
+	nftMeta1 := "nftMeta1"
+	nftName2 := "TestNFT2"
+	nftMeta2 := "nftMeta2"
+	nftName3 := "TestNFT3"
+	nftMeta3 := "nftMeta3"
+
+	tokenTypeID1 := "10000001"
+	tokenTypeID2 := "10000002"
+	tokenTypeID3 := "10000003"
+
+	index1 := "00000001"
+	index2 := "00000002"
+	nft0ID := tokenTypeID1 + index1
+	nft1ID := tokenTypeID1 + index2
+	nft2ID := tokenTypeID2 + index1
+	nft3ID := tokenTypeID3 + index1
+
+	ftName := "TestFT1"
+	ftMeta := "ftMeta"
+	tokenID := "0000000100000000"
+
+	burnFtAmount := 3
+	transferFtAmount := 10
+	burnFt := strconv.Itoa(burnFtAmount) + ":" + tokenID
+	transferFt := strconv.Itoa(transferFtAmount) + ":" + tokenID
+
+	// store the contract collection-tester
+	{
+		f.LogResult(f.TxStoreWasm(wasmCollectionTester, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// instantiate
+	{
+		msgJson := "{}"
+		flagLabel := "--label=collection-tester"
+		f.LogResult(f.TxInstantiateWasm(codeId, msgJson, flagLabel, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate there is only one contract using codeId=1 and get contractAddress
+	{
+		listContract := f.QueryListContractByCodeWasm(codeId)
+		require.Len(t, listContract, 1)
+		contractAddress = listContract[0].Address
+	}
+
+	// set test token and approve for contractAddress
+	{
+		// create collection
+		f.LogResult(f.TxTokenCreateCollection(fooAddr.String(), collectionName, collectionMeta, collectionBaseImageURI, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// issue ft
+		f.LogResult(f.TxTokenIssueFTCollection(fooAddr.String(), collectionContractId, fooAddr, ftName, ftMeta, 10000, 6, true, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// issue nft
+		f.LogResult(f.TxTokenIssueNFTCollection(fooAddr.String(), collectionContractId, nftName1, nftMeta1, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// mint nft
+		mintParam := strings.Join([]string{tokenTypeID1, "description", "meta"}, ":")
+		f.LogResult(f.TxTokenMintNFTCollection(fooAddr.String(), collectionContractId, fooAddr.String(), mintParam, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// approve and grant burn perm
+	{
+		nft := f.QueryTokenCollection(collectionContractId, nft0ID).(collectionModule.NFT)
+		require.Equal(t, collectionContractId, nft.GetContractID())
+		require.Equal(t, nft0ID, nft.GetTokenID())
+		require.Equal(t, fooAddr, nft.GetOwner())
+
+		f.LogResult(f.TxCollectionApprove(fooAddr.String(), collectionContractId, contractAddress, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		f.LogResult(f.TxCollectionGrantPerm(fooAddr.String(), contractAddress, collectionContractId, "burn", "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		res := f.QueryApprovedTokenCollection(collectionContractId, contractAddress, fooAddr)
+		require.True(t, res)
+	}
+
+	// query isApproved
+	{
+		cdc := app.MakeCodec()
+
+		query := map[string]map[string]interface{}{
+			"get_approved": {
+				"proxy":       contractAddress,
+				"contract_id": collectionContractId,
+				"approver":    fooAddr,
+			},
+		}
+		queryJson, _ := json.Marshal(query)
+		queryString := string(queryJson)
+		res := f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var isApproved bool
+		err := cdc.UnmarshalJSON([]byte(res), &isApproved)
+		require.NoError(f.T, err)
+		require.True(t, isApproved)
+
+		// query approvers
+		query = map[string]map[string]interface{}{
+			"get_approvers": {
+				"proxy":       contractAddress,
+				"contract_id": collectionContractId,
+			},
+		}
+		queryJson, _ = json.Marshal(query)
+		queryString = string(queryJson)
+		res = f.QueryContractStateSmartWasm(contractAddress, queryString)
+		var approvers []sdk.AccAddress
+		err = cdc.UnmarshalJSON([]byte(res), &approvers)
+		require.NoError(f.T, err)
+		require.Equal(t, fooAddr, approvers[0])
+	}
+
+	// burn ft from proxy
+	{
+		msg := map[string]map[string]interface{}{
+			"burn_ft_from": {
+				"proxy":       contractAddress,
+				"from":        fooAddr,
+				"contract_id": collectionContractId,
+				"amounts":     []string{burnFt},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate balance for fooAddr
+	{
+		balanceOfFoo := f.QueryBalanceCollection(collectionContractId, tokenID, fooAddr)
+		require.Equal(t, sdk.NewInt(9997), balanceOfFoo)
+	}
+
+	// burn nft from proxy
+	{
+		msg := map[string]map[string]interface{}{
+			"burn_nft_from": {
+				"proxy":       contractAddress,
+				"from":        fooAddr,
+				"contract_id": collectionContractId,
+				"token_ids":   []string{nft0ID},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate burn nft
+	{
+		f.QueryTokenCollectionExpectEmpty(collectionContractId, nft0ID)
+	}
+
+	// transfer ft from
+	{
+		msg := map[string]map[string]interface{}{
+			"transfer_ft_from": {
+				"proxy":       contractAddress,
+				"contract_id": collectionContractId,
+				"from":        fooAddr,
+				"to":          contractAddress,
+				"tokens":      []string{transferFt},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate balance for contractAddress
+	{
+		balanceOfContract := f.QueryBalanceCollection(collectionContractId, tokenID, contractAddress)
+		require.Equal(t, sdk.NewInt(int64(transferFtAmount)), balanceOfContract)
+	}
+
+	// transfer nft from
+	{
+		// prepare nft
+		mintParam := strings.Join([]string{tokenTypeID1, "description", "meta"}, ":")
+		f.LogResult(f.TxTokenMintNFTCollection(fooAddr.String(), collectionContractId, fooAddr.String(), mintParam, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		msg := map[string]map[string]interface{}{
+			"transfer_nft_from": {
+				"proxy":       contractAddress,
+				"contract_id": collectionContractId,
+				"from":        fooAddr,
+				"to":          contractAddress,
+				"token_ids":   []string{nft1ID},
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate transfered nft
+	{
+		nft := f.QueryTokenCollection(collectionContractId, nft1ID).(collectionModule.NFT)
+		require.Equal(t, collectionContractId, nft.GetContractID())
+		require.Equal(t, nft1ID, nft.GetTokenID())
+		require.Equal(t, contractAddress, nft.GetOwner())
+	}
+
+	// token attach, detach from
+	{
+		// issue nft
+		f.LogResult(f.TxTokenIssueNFTCollection(fooAddr.String(), collectionContractId, nftName2, nftMeta2, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		f.LogResult(f.TxTokenIssueNFTCollection(fooAddr.String(), collectionContractId, nftName3, nftMeta3, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// mint nft
+		mintParam := strings.Join([]string{tokenTypeID2, "description", "meta"}, ":")
+		f.LogResult(f.TxTokenMintNFTCollection(fooAddr.String(), collectionContractId, fooAddr.String(), mintParam, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		mintParam = strings.Join([]string{tokenTypeID3, "description", "meta"}, ":")
+		f.LogResult(f.TxTokenMintNFTCollection(fooAddr.String(), collectionContractId, fooAddr.String(), mintParam, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+
+		// attach from
+		msg := map[string]map[string]interface{}{
+			"attach_from": {
+				"proxy":       contractAddress,
+				"contract_id": collectionContractId,
+				"from":        fooAddr,
+				"to_token_id": nft3ID,
+				"token_id":    nft2ID,
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate attach from
+	{
+		parent := f.QueryParentTokenCollection(collectionContractId, nft2ID)
+		require.Equal(t, nft3ID, parent.GetTokenID())
+
+		children := f.QueryChildrenTokenCollection(collectionContractId, nft3ID)
+		require.Equal(t, 1, len(children))
+		require.Equal(t, nft2ID, children[0].GetTokenID())
+
+		root := f.QueryRootTokenCollection(collectionContractId, nft2ID)
+		require.Equal(t, nft3ID, root.GetTokenID())
+	}
+
+	// detach from
+	{
+		msg := map[string]map[string]interface{}{
+			"detach_from": {
+				"proxy":       contractAddress,
+				"contract_id": collectionContractId,
+				"from":        fooAddr,
+				"token_id":    nft2ID,
+			},
+		}
+		msgJson, _ := json.Marshal(msg)
+		msgString := string(msgJson)
+		f.LogResult(f.TxExecuteWasm(contractAddress, msgString, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate detach from
+	{
+		parentToken := f.QueryParentTokenCollection(collectionContractId, nft2ID)
+		require.Nil(t, parentToken)
+
+		childrenTokens := f.QueryChildrenTokenCollection(collectionContractId, nft3ID)
+		require.Equal(t, 0, len(childrenTokens))
+
+		rootToken := f.QueryRootTokenCollection(collectionContractId, nft2ID)
+		require.Equal(t, nft2ID, rootToken.(collectionModule.NFT).GetTokenID())
 	}
 }

@@ -33,11 +33,11 @@ func NewQueryEncoder(collectionQuerier sdk.Querier) wasm.EncodeQuerier {
 		case types.QueryTokensWithTokenType:
 			return handleQueryTokensWithTokenType(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
 		case types.QueryNFTCount:
-			return handleQueryNFTCount(ctx, collectionQuerier, customQuerier.Data)
+			return handleQueryNFTCount(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
 		case types.QueryNFTMint:
-			return handleQueryNFTCount(ctx, collectionQuerier, customQuerier.Data)
+			return handleQueryNFTCount(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
 		case types.QueryNFTBurn:
-			return handleQueryNFTCount(ctx, collectionQuerier, customQuerier.Data)
+			return handleQueryNFTCount(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
 		case types.QuerySupply:
 			return handleQueryTotal(ctx, collectionQuerier, customQuerier.Data)
 		case types.QueryParent:
@@ -137,17 +137,16 @@ func handleQueryTokensWithTokenType(ctx sdk.Context, collectionQuerier sdk.Queri
 	return collectionQuerier(ctx, path, req)
 }
 
-func handleQueryNFTCount(ctx sdk.Context, collectionQuerier sdk.Querier, msgData json.RawMessage) ([]byte, error) {
+func handleQueryNFTCount(ctx sdk.Context, collectionQuerier sdk.Querier, path []string, msgData json.RawMessage) ([]byte, error) {
 	var wrapper types.QueryNFTCountWrapper
 	err := json.Unmarshal(msgData, &wrapper)
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryTokenIDParams(wrapper.QueryNFTCountParam.TokenID)
+	param := types.NewQueryTokenIDParams(wrapper.QueryTokensParam.TokenID)
 	req := makeRequestQuery(param)
 
-	path := []string{wrapper.QueryNFTCountParam.Target}
-	contractID := wrapper.QueryNFTCountParam.ContractID
+	contractID := wrapper.QueryTokensParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -226,10 +225,10 @@ func handleQueryApprovers(ctx sdk.Context, collectionQuerier sdk.Querier, path [
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryApproverParams(wrapper.QueryProxyParam.Proxy)
+	param := types.NewQueryApproverParams(wrapper.QueryApproversParam.Proxy)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryProxyParam.ContractID
+	contractID := wrapper.QueryApproversParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}

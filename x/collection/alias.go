@@ -91,6 +91,11 @@ var (
 	NewCoin                = types.NewCoin
 	NewPermissions         = types.NewPermissions
 
+	NewMintPermission   = types.NewMintPermission
+	NewBurnPermission   = types.NewBurnPermission
+	NewIssuePermission  = types.NewIssuePermission
+	NewModifyPermission = types.NewModifyPermission
+
 	ModuleCdc     = types.ModuleCdc
 	RegisterCodec = types.RegisterCodec
 
