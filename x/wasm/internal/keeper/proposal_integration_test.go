@@ -314,12 +314,15 @@ func TestUpdateParamsProposal(t *testing.T) {
 		cdc                                   = keepers.WasmKeeper.cdc
 		myAddress              sdk.AccAddress = make([]byte, sdk.AddrLen)
 		oneAddressAccessConfig                = types.OnlyAddress.With(myAddress)
+		newMaxWasmCodeSize                    = uint64(42)
+		defaultParams                         = types.DefaultParams()
 	)
 
 	specs := map[string]struct {
 		src                params.ParamChange
 		expUploadConfig    types.AccessConfig
 		expInstantiateType types.AccessType
+		expMaxWasmCodeSize uint64
 	}{
 		"update upload permission param": {
 			src: params.ParamChange{
@@ -328,7 +331,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 				Value:    string(cdc.MustMarshalJSON(&types.AllowNobody)),
 			},
 			expUploadConfig:    types.AllowNobody,
-			expInstantiateType: types.Everybody,
+			expInstantiateType: defaultParams.DefaultInstantiatePermission,
+			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
 		},
 		"update upload permission param with address": {
 			src: params.ParamChange{
@@ -337,7 +341,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 				Value:    string(cdc.MustMarshalJSON(&oneAddressAccessConfig)),
 			},
 			expUploadConfig:    oneAddressAccessConfig,
-			expInstantiateType: types.Everybody,
+			expInstantiateType: defaultParams.DefaultInstantiatePermission,
+			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
 		},
 		"update instantiate param": {
 			src: params.ParamChange{
@@ -345,8 +350,19 @@ func TestUpdateParamsProposal(t *testing.T) {
 				Key:      string(types.ParamStoreKeyInstantiateAccess),
 				Value:    string(cdc.MustMarshalJSON(types.Nobody)),
 			},
-			expUploadConfig:    types.AllowEverybody,
+			expUploadConfig:    defaultParams.UploadAccess,
 			expInstantiateType: types.Nobody,
+			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+		},
+		"update max wasm code size": {
+			src: params.ParamChange{
+				Subspace: types.DefaultParamspace,
+				Key:      string(types.ParamStoreKeyMaxWasmCodeSize),
+				Value:    string(cdc.MustMarshalJSON(newMaxWasmCodeSize)),
+			},
+			expUploadConfig:    defaultParams.UploadAccess,
+			expInstantiateType: defaultParams.DefaultInstantiatePermission,
+			expMaxWasmCodeSize: newMaxWasmCodeSize,
 		},
 	}
 	for msg, spec := range specs {
@@ -372,6 +388,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 			assert.True(t, spec.expUploadConfig.Equals(wasmKeeper.getUploadAccessConfig(ctx)),
 				"got %#v not %#v", wasmKeeper.getUploadAccessConfig(ctx), spec.expUploadConfig)
 			assert.Equal(t, spec.expInstantiateType, wasmKeeper.getInstantiateAccessConfig(ctx))
+			assert.Equal(t, spec.expMaxWasmCodeSize, wasmKeeper.GetMaxWasmCodeSize(ctx))
 		})
 	}
 }
