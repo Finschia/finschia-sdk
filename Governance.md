@@ -19,6 +19,13 @@ For details see the proposal type [implementation](https://github.com/CosmWasm/w
 A wasm message but no proposal type: 
 * `ExecuteContract` - execute a command on a wasm contract
 
+And you can use `Parameter Change Proposal` to change wasm parameters.
+These parameters are as following.
+
+* `UploadAccess` - who can upload wasm codes
+* `DefaultInstantiatePermission` - who can instantiate contracts from a code in default
+* `MaxWasmCodeSize` - max size of wasm code to be uploaded
+
 ### Unit tests
 [Proposal type validations](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/types/proposal_test.go)
 
