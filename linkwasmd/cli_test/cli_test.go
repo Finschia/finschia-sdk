@@ -3,8 +3,10 @@
 package clitest
 
 import (
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"path"
 	"strconv"
@@ -37,7 +39,9 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 	flagGas := "--gas=auto --gas-adjustment=1.2"
 	workDir, _ := os.Getwd()
 	tmpDir := path.Join(workDir, "tmp-dir-for-test-escrow")
-	wasmEscrow := path.Join(workDir, "contracts", "escrow-v6", "contract.wasm")
+	dirContract := path.Join(workDir, "contracts", "escrow-v6")
+	hashFile := path.Join(dirContract, "hash.txt")
+	wasmEscrow := path.Join(dirContract, "contract.wasm")
 	codeId := uint64(1)
 	amountSend := uint64(10)
 	denomSend := fooDenom
@@ -67,7 +71,13 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 	{
 		listCode := f.QueryListCodeWasm()
 		require.Len(t, listCode, 1)
-		// TODO after #23: validate the hash is same with the wasm file
+
+		//validate the hash is the same
+		expectedRow, _ := ioutil.ReadFile(hashFile)
+		expected, err := hex.DecodeString(string(expectedRow[:64]))
+		require.NoError(t, err)
+		actual := listCode[0].DataHash.Bytes()
+		require.Equal(t, expected, actual)
 	}
 
 	// validate getCode get the exact same wasm
