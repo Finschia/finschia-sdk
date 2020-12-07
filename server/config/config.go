@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"runtime"
 	"strings"
 
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
@@ -39,6 +40,10 @@ type BaseConfig struct {
 
 	// InterBlockCache enables inter-block caching.
 	InterBlockCache bool `mapstructure:"inter-block-cache"`
+
+	// MemProfileRate contains the value of runtime.MemProfileRate. (default 512 * 1024)
+	// When set to 0 memory profiling is disabled.
+	MemProfileRate int `mapstructure:"mem-profile-rate"`
 }
 
 // Config defines the server's top level configuration
@@ -83,6 +88,7 @@ func DefaultConfig() *Config {
 			PruningKeepRecent: "0",
 			PruningKeepEvery:  "0",
 			PruningInterval:   "0",
+			MemProfileRate:    runtime.MemProfileRate,
 		},
 	}
 }

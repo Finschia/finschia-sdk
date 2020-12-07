@@ -44,6 +44,10 @@ halt-time = {{ .BaseConfig.HaltTime }}
 
 # InterBlockCache enables inter-block caching.
 inter-block-cache = {{ .BaseConfig.InterBlockCache }}
+
+# MemProfileRate contains the value of runtime.MemProfileRate. (default 512 * 1024)
+# When set to 0 memory profiling is disabled.
+mem-profile-rate = {{ .BaseConfig.MemProfileRate }}
 `
 
 var configTemplate *template.Template

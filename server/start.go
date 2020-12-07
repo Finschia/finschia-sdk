@@ -5,6 +5,7 @@ package server
 import (
 	"fmt"
 	"os"
+	"runtime"
 	"runtime/pprof"
 
 	"github.com/spf13/cobra"
@@ -30,6 +31,7 @@ const (
 	FlagHaltHeight         = "halt-height"
 	FlagHaltTime           = "halt-time"
 	FlagInterBlockCache    = "inter-block-cache"
+	FlagMemProfileRate     = "mem-profile-rate"
 	FlagUnsafeSkipUpgrades = "unsafe-skip-upgrades"
 	FlagTrace              = "trace"
 
@@ -68,6 +70,7 @@ For profiling and benchmarking purposes, CPU profiling can be enabled via the '-
 which accepts a path for the resulting pprof file.
 `,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
+			setMemProfileRate(ctx)
 			_, err := GetPruningOptionsFromFlags()
 			return err
 		},
@@ -97,6 +100,7 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint64(FlagHaltHeight, 0, "Block height at which to gracefully halt the chain and shutdown the node")
 	cmd.Flags().Uint64(FlagHaltTime, 0, "Minimum block time (in Unix seconds) at which to gracefully halt the chain and shutdown the node")
 	cmd.Flags().Bool(FlagInterBlockCache, true, "Enable inter-block caching")
+	cmd.Flags().Int(FlagMemProfileRate, runtime.MemProfileRate, "The value of runtime.MemProfileRate")
 	cmd.Flags().String(flagCPUProfile, "", "Enable CPU profiling and write to the provided file")
 
 	cmd.Flags().String(FlagPruning, storetypes.PruningOptionDefault, "Pruning strategy (default|nothing|everything|custom)")
@@ -112,6 +116,11 @@ which accepts a path for the resulting pprof file.
 	// add support for all Tendermint-specific command line options
 	tcmd.AddNodeFlags(cmd)
 	return cmd
+}
+
+func setMemProfileRate(ctx *Context) {
+	runtime.MemProfileRate = viper.GetInt(FlagMemProfileRate)
+	ctx.Logger.Info(fmt.Sprintf("MemProfileRate is %d", runtime.MemProfileRate))
 }
 
 func startStandAlone(ctx *Context, appCreator AppCreator) error {
