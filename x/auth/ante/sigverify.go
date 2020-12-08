@@ -2,7 +2,10 @@ package ante
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
+	"sync"
 
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
@@ -159,20 +162,18 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 // CONTRACT: Pubkeys are set in context for all signers before this decorator runs
 // CONTRACT: Tx must implement SigVerifiableTx interface
 type SigVerificationDecorator struct {
-	ak keeper.AccountKeeper
+	ak          keeper.AccountKeeper
+	txHashCache sync.Map
 }
 
-func NewSigVerificationDecorator(ak keeper.AccountKeeper) SigVerificationDecorator {
-	return SigVerificationDecorator{
-		ak: ak,
+func NewSigVerificationDecorator(ak keeper.AccountKeeper) *SigVerificationDecorator {
+	return &SigVerificationDecorator{
+		ak:          ak,
+		txHashCache: sync.Map{},
 	}
 }
 
-func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
-	// no need to verify signatures on recheck tx
-	if ctx.IsReCheckTx() {
-		return next(ctx, tx, simulate)
-	}
+func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
 	sigTx, ok := tx.(SigVerifiableTx)
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
@@ -181,11 +182,7 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	// stdSigs contains the sequence number, account number, and signatures.
 	// When simulating, this would just be a 0-length slice.
 	sigs := sigTx.GetSignatures()
-
-	// stdSigs contains the sequence number, account number, and signatures.
-	// When simulating, this would just be a 0-length slice.
 	signerAddrs := sigTx.GetSigners()
-	signerAccs := make([]exported.Account, len(signerAddrs))
 
 	// check that signer length and signature length are the same
 	if len(sigs) != len(signerAddrs) {
@@ -193,27 +190,75 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 	}
 
 	for i, sig := range sigs {
-		signerAccs[i], err = GetSignerAcc(ctx, svd.ak, signerAddrs[i])
+		signerAcc, err := GetSignerAcc(ctx, svd.ak, signerAddrs[i])
 		if err != nil {
 			return ctx, err
 		}
 
-		// retrieve signBytes of tx
-		signBytes := sigTx.GetSignBytes(ctx, signerAccs[i])
+		if simulate {
+			continue
+		}
 
 		// retrieve pubkey
-		pubKey := signerAccs[i].GetPubKey()
-		if !simulate && pubKey == nil {
+		pubKey := signerAcc.GetPubKey()
+		if pubKey == nil {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pubkey on account is not set")
 		}
 
-		// verify signature
-		if !simulate && !pubKey.VerifyBytes(signBytes, sig) {
+		txHash := sha256.Sum256(ctx.TxBytes())
+
+		if !svd.verifySignatureWithCache(ctx, sigTx, txHash[:], signerAcc, pubKey, sig) {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "signature verification failed; verify correct account sequence and chain-id")
 		}
 	}
 
 	return next(ctx, tx, simulate)
+}
+
+func (svd *SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, sigTx SigVerifiableTx, txHash []byte, signerAcc exported.Account, pubKey crypto.PubKey, sig []byte) bool {
+	// #NOTE `genesis` transactions should not use `cache`
+	if ctx.BlockHeight() == 0 {
+		return pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig)
+	}
+
+	// NOTE assume that `accountNumber` and `pubKey` are immutable
+	sigKey := fmt.Sprintf("%d:%d", signerAcc.GetAccountNumber(), signerAcc.GetSequence())
+
+	switch {
+	case ctx.IsCheckTx() && !ctx.IsReCheckTx(): // CheckTx
+		if !pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig) {
+			return false
+		}
+		svd.txHashCache.Store(sigKey, txHash)
+
+	case ctx.IsReCheckTx(): // ReCheckTx
+		verified, ok := svd.checkCache(sigKey, txHash)
+
+		if !verified {
+			if ok {
+				svd.txHashCache.Delete(sigKey)
+			}
+			return false
+		}
+
+	default: // DeliverTx
+		verified, ok := svd.checkCache(sigKey, txHash)
+		if ok {
+			svd.txHashCache.Delete(sigKey)
+		}
+
+		if !verified && !pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig) {
+			return false
+		}
+	}
+
+	return true
+}
+
+func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (verified, ok bool) {
+	cached, ok := svd.txHashCache.Load(sigKey)
+	verified = ok && bytes.Equal(cached.([]byte), txHash)
+	return verified, ok
 }
 
 // IncrementSequenceDecorator handles incrementing sequences of all signers.
