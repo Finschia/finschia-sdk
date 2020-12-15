@@ -47,7 +47,7 @@ func NewRestServer(cdc *codec.Codec) *RestServer {
 }
 
 // Start starts the rest server
-func (rs *RestServer) Start(listenAddr string, maxOpen int, readTimeout, writeTimeout uint, cors bool) (err error) {
+func (rs *RestServer) Start(listenAddr string, maxOpen int, readTimeout, writeTimeout, idleTimeout uint, cors bool) (err error) {
 	server.TrapSignal(func() {
 		err := rs.listener.Close()
 		rs.log.Error("error closing listener", "err", err)
@@ -57,6 +57,7 @@ func (rs *RestServer) Start(listenAddr string, maxOpen int, readTimeout, writeTi
 	cfg.MaxOpenConnections = maxOpen
 	cfg.ReadTimeout = time.Duration(readTimeout) * time.Second
 	cfg.WriteTimeout = time.Duration(writeTimeout) * time.Second
+	cfg.IdleTimeout = time.Duration(idleTimeout) * time.Second
 
 	rs.listener, err = tmrpcserver.Listen(listenAddr, cfg)
 	if err != nil {
@@ -97,6 +98,7 @@ func ServeCommand(cdc *codec.Codec, registerRoutesFn func(*RestServer)) *cobra.C
 				viper.GetInt(flags.FlagMaxOpenConnections),
 				uint(viper.GetInt(flags.FlagRPCReadTimeout)),
 				uint(viper.GetInt(flags.FlagRPCWriteTimeout)),
+				uint(viper.GetInt(flags.FlagRPCIdleTimeout)),
 				viper.GetBool(flags.FlagUnsafeCORS),
 			)
 

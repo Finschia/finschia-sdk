@@ -46,7 +46,10 @@ jobs:
             make go-mod-cache
       - run:
           name: Build
-          command: make build
+          command: |
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make build
       - run:
           name: Git garbage collection
           command: git gc
@@ -109,6 +112,8 @@ jobs:
           command: |
             export VERSION="$(git describe --tags --long | sed 's/v\(.*\)/\1/')"
             export GO111MODULE=on
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             mkdir -p /tmp/logs /tmp/workspace/profiles
             for pkg in $(go list ./... | grep -v '/simulation' | circleci tests split); do
               id=$(echo "$pkg" | sed 's|[/.]|_|g')
@@ -137,6 +142,8 @@ jobs:
       - run:
           name: lint
           command: |
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27
             make lint
 
