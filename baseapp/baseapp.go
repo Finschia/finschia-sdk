@@ -62,6 +62,7 @@ type BaseApp struct { // nolint: maligned
 	router      sdk.Router           // handle any kind of message
 	queryRouter sdk.QueryRouter      // router for redirecting query calls
 	txDecoder   sdk.TxDecoder        // unmarshal []byte into sdk.Tx
+	metrics     *Metrics             // metrics of baseapp
 
 	// set upon LoadVersion or LoadLatestVersion.
 	baseKey *sdk.KVStoreKey // Main KVStore in cms
@@ -131,6 +132,7 @@ func NewBaseApp(
 		txDecoder:      txDecoder,
 		fauxMerkleMode: false,
 		trace:          false,
+		metrics:        NopMetrics(),
 	}
 	for _, option := range options {
 		option(app)
@@ -360,6 +362,10 @@ func (app *BaseApp) setInterBlockCache(cache sdk.MultiStorePersistentCache) {
 
 func (app *BaseApp) setTrace(trace bool) {
 	app.trace = trace
+}
+
+func (app *BaseApp) setMetrics(metrics *Metrics) {
+	app.metrics = metrics
 }
 
 // Router returns the router of the BaseApp.
