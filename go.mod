@@ -9,6 +9,7 @@ require (
 	github.com/btcsuite/btcd v0.20.1-beta
 	github.com/cosmos/go-bip39 v0.0.0-20180819234021-555e2067c45d
 	github.com/cosmos/ledger-cosmos-go v0.11.1
+	github.com/go-kit/kit v0.10.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/mock v1.3.1-0.20190508161146-9fa652df1129
 	github.com/golang/snappy v0.0.2 // indirect
@@ -22,6 +23,7 @@ require (
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/pelletier/go-toml v1.6.0
 	github.com/pkg/errors v0.9.1
+	github.com/prometheus/client_golang v1.5.1
 	github.com/rakyll/statik v0.1.6
 	github.com/spf13/afero v1.2.1 // indirect
 	github.com/spf13/cobra v1.0.0
