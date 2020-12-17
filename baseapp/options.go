@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/cosmos/cosmos-sdk/store/cache"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	"github.com/tendermint/iavl"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/store"
+	"github.com/cosmos/cosmos-sdk/store/cache"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
