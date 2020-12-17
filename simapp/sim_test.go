@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/store/cache"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
@@ -47,7 +48,7 @@ func fauxMerkleModeOpt(bapp *baseapp.BaseApp) {
 // interBlockCacheOpt returns a BaseApp option function that sets the persistent
 // inter-block write-through cache.
 func interBlockCacheOpt() func(*baseapp.BaseApp) {
-	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager())
+	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager(cache.NopMetricsProvider()))
 }
 
 func TestFullAppSimulation(t *testing.T) {
