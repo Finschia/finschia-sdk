@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/tendermint/iavl"
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmkv "github.com/tendermint/tendermint/libs/kv"
 	tmstrings "github.com/tendermint/tendermint/libs/strings"
@@ -167,6 +168,8 @@ type CommitMultiStore interface {
 	// Set an inter-block (persistent) cache that maintains a mapping from
 	// StoreKeys to CommitKVStores.
 	SetInterBlockCache(MultiStorePersistentCache)
+
+	SetMetrics(metrics *Metrics, iavlMetricsProvider iavl.MetricsProvider)
 }
 
 //---------subsp-------------------------------
