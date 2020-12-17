@@ -121,6 +121,8 @@ func InitCmd(ctx *server.Context, cdc *codec.Codec, mbm module.BasicManager,
 	cmd.Flags().String(cli.HomeFlag, defaultNodeHome, "node's home directory")
 	cmd.Flags().BoolP(flagOverwrite, "o", false, "overwrite the genesis.json file")
 	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
+	cmd.Flags().String(flags.FlagPrivKeyType, flags.DefaultPrivKeyType, "specify validator's private key type (ed25519|composite). \n"+
+		"set this to priv_key.type in priv_validator_key.json; default `ed25519`")
 
 	return cmd
 }
