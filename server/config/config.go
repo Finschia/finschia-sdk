@@ -39,6 +39,10 @@ type BaseConfig struct {
 
 	// InterBlockCache enables inter-block caching.
 	InterBlockCache bool `mapstructure:"inter-block-cache"`
+
+	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
+	// It works when tendermint's prometheus option (config.toml) is set to true.
+	Prometheus bool `mapstructure:"prometheus"`
 }
 
 // Config defines the server's top level configuration
