@@ -9,6 +9,7 @@ require (
 	github.com/btcsuite/btcd v0.20.1-beta
 	github.com/cosmos/go-bip39 v0.0.0-20180819234021-555e2067c45d
 	github.com/cosmos/ledger-cosmos-go v0.11.1
+	github.com/go-kit/kit v0.10.0
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/mock v1.3.1-0.20190508161146-9fa652df1129
 	github.com/golang/snappy v0.0.2 // indirect
@@ -22,6 +23,7 @@ require (
 	github.com/onsi/gomega v1.9.0 // indirect
 	github.com/pelletier/go-toml v1.6.0
 	github.com/pkg/errors v0.9.1
+	github.com/prometheus/client_golang v1.5.1
 	github.com/rakyll/statik v0.1.6
 	github.com/spf13/afero v1.2.1 // indirect
 	github.com/spf13/cobra v1.0.0
@@ -44,5 +46,6 @@ require (
 
 replace (
 	github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
+	github.com/tendermint/iavl => github.com/line/iavl v0.14.4-0.20201217063301-6b67687bfae9
 	github.com/tendermint/tendermint => github.com/line/tendermint v0.33.10-0.20201215041755-c81005d8468b
 )

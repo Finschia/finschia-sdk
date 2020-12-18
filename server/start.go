@@ -32,6 +32,7 @@ const (
 	FlagInterBlockCache    = "inter-block-cache"
 	FlagUnsafeSkipUpgrades = "unsafe-skip-upgrades"
 	FlagTrace              = "trace"
+	FlagPrometheus         = "prometheus"
 
 	FlagPruning           = "pruning"
 	FlagPruningKeepRecent = "pruning-keep-recent"
