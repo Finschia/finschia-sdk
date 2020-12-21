@@ -193,6 +193,11 @@ jobs:
           name: Post TPS to GitHub PR
           working_directory: x/wasm/linkwasmd
           command: |
+            if [[ $(echo "$CIRCLE_BRANCH" | grep -c "pull") -eq 0 ]]; then
+              # skip on non PR branch
+              exit 0
+            fi
+
             tps=$(tail -1 reports/report.txt)
 
             pr_response=$(curl -H "Authorization: token $GITHUB_TOKEN" --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER")
