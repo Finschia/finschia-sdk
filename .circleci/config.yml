@@ -144,6 +144,69 @@ jobs:
           name: wasm-integration-test
           working_directory: x/wasm/linkwasmd
           command: make test-integration
+  perf_check:
+    machine:
+      image: ubuntu-2004:202010-01
+    environment:
+      GO111MODULE: 'on'
+    resource_class: medium
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          name: setup tools
+          working_directory: x/wasm/linkwasmd/perf/tools
+          command: |
+            sudo apt update
+            sudo apt install linux-tools-$(uname -r)
+            tar -zxvf FlameGraph.tar.gz
+      - restore_cache:
+          keys:
+            - go_workspace-pkg-mod-deps-{{ checksum "x/wasm/linkwasmd/go.sum" }}
+      - run:
+          name: build binaries
+          working_directory: x/wasm/linkwasmd
+          command: |
+            go env GOMODCACHE
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make install
+      - save_cache:
+          key: go_workspace-pkg-mod-deps-{{ checksum "x/wasm/linkwasmd/go.sum" }}
+          paths:
+            - "/home/circleci/.go_workspace/pkg/mod"
+      - run:
+          name: init chain
+          working_directory: x/wasm/linkwasmd
+          command: perf/scripts/init-chain.sh
+      - run:
+          name: prepare
+          working_directory: x/wasm/linkwasmd
+          command: perf/scripts/prepare.sh perf/contract/cw_erc20_v3.wasm 150
+      - run:
+          name: capture cpu profile
+          working_directory: x/wasm/linkwasmd
+          command: perf/scripts/capture.sh 150
+      - store_artifacts:
+          path: x/wasm/linkwasmd/reports
+      - run:
+          name: Post TPS to GitHub PR
+          working_directory: x/wasm/linkwasmd
+          command: |
+            tps=$(tail -1 reports/report.txt)
+
+            pr_response=$(curl -H "Authorization: token $GITHUB_TOKEN" --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER")
+
+            if [ $(echo $pr_response | jq length) -eq 0 ]; then
+              echo "No PR found to update"
+            else
+              pr_comment_url=$(echo $pr_response | jq -r "._links.comments.href")
+            fi
+
+            curl -H "Authorization: token $GITHUB_TOKEN" --location --request POST "$pr_comment_url" \
+            -u $GH_USER:$GH_API \
+            --header 'Content-Type: application/json' \
+            --data-raw "{\"body\":\"$tps\"}"
   semantic_release:
     docker:
       - image: circleci/node:10
@@ -168,6 +231,9 @@ workflows:
           requires:
             - check-skippable-pr
       - integration_test:
+          requires:
+            - check-skippable-pr
+      - perf_check:
           requires:
             - check-skippable-pr
       - semantic_release:
