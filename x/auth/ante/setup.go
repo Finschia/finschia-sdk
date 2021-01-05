@@ -86,7 +86,9 @@ func validateGasWanted(ctx sdk.Context) error {
 		return nil
 	}
 
-	gasWanted := ctx.GasMeter().Limit()
+	// TODO: Should revise type
+	// reference: https://github.com/line/cosmos-sdk/blob/fd6d941cc429fc2a58154dbace3bbaec4beef445/baseapp/abci.go#L189
+	gasWanted := int64(ctx.GasMeter().Limit())
 	if gasWanted < 0 {
 		return fmt.Errorf("gas wanted %d is negative", gasWanted)
 	}
@@ -97,9 +99,7 @@ func validateGasWanted(ctx sdk.Context) error {
 	}
 
 	maxGas := consParams.Block.MaxGas
-	// TODO: Should revise type
-	// reference: https://github.com/line/cosmos-sdk/blob/fd6d941cc429fc2a58154dbace3bbaec4beef445/baseapp/abci.go#L189
-	if int64(gasWanted) > maxGas {
+	if gasWanted > maxGas {
 		return fmt.Errorf("gas wanted %d is greater than max gas %d", gasWanted, maxGas)
 	}
 
