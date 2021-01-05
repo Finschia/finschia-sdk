@@ -237,18 +237,18 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, s
 		svd.txHashCache.Store(sigKey, txHash)
 
 	case ctx.IsReCheckTx(): // ReCheckTx
-		verified, ok := svd.checkCache(sigKey, txHash)
+		verified, exist := svd.checkCache(sigKey, txHash)
 
 		if !verified {
-			if ok {
+			if exist {
 				svd.txHashCache.Delete(sigKey)
 			}
 			return false
 		}
 
 	default: // DeliverTx
-		verified, ok := svd.checkCache(sigKey, txHash)
-		if ok {
+		verified, exist := svd.checkCache(sigKey, txHash)
+		if exist {
 			svd.txHashCache.Delete(sigKey)
 		}
 
@@ -260,10 +260,10 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, s
 	return true
 }
 
-func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (verified, ok bool) {
-	cached, ok := svd.txHashCache.Load(sigKey)
-	verified = ok && bytes.Equal(cached.([]byte), txHash)
-	return verified, ok
+func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (verified, exist bool) {
+	cached, exist := svd.txHashCache.Load(sigKey)
+	verified = exist && bytes.Equal(cached.([]byte), txHash)
+	return verified, exist
 }
 
 // IncrementSequenceDecorator handles incrementing sequences of all signers.
