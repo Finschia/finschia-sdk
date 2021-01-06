@@ -62,6 +62,7 @@ type BaseApp struct { // nolint: maligned
 	router      sdk.Router           // handle any kind of message
 	queryRouter sdk.QueryRouter      // router for redirecting query calls
 	txDecoder   sdk.TxDecoder        // unmarshal []byte into sdk.Tx
+	metrics     *Metrics             // metrics of baseapp
 
 	// set upon LoadVersion or LoadLatestVersion.
 	baseKey *sdk.KVStoreKey // Main KVStore in cms
@@ -131,6 +132,7 @@ func NewBaseApp(
 		txDecoder:      txDecoder,
 		fauxMerkleMode: false,
 		trace:          false,
+		metrics:        NopMetrics(),
 	}
 	for _, option := range options {
 		option(app)
@@ -362,6 +364,10 @@ func (app *BaseApp) setTrace(trace bool) {
 	app.trace = trace
 }
 
+func (app *BaseApp) setMetrics(metrics *Metrics) {
+	app.metrics = metrics
+}
+
 // Router returns the router of the BaseApp.
 func (app *BaseApp) Router() sdk.Router {
 	if app.sealed {
@@ -388,8 +394,9 @@ func (app *BaseApp) IsSealed() bool { return app.sealed }
 func (app *BaseApp) setCheckState(header abci.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.checkState = &state{
-		ms:  ms,
-		ctx: sdk.NewContext(ms, header, true, app.logger).WithMinGasPrices(app.minGasPrices),
+		ms: ms,
+		ctx: sdk.NewContext(ms, header, true, app.logger).
+			WithMinGasPrices(app.minGasPrices).WithConsensusParams(app.consensusParams),
 	}
 }
 

@@ -32,6 +32,7 @@ const (
 	FlagInterBlockCache    = "inter-block-cache"
 	FlagUnsafeSkipUpgrades = "unsafe-skip-upgrades"
 	FlagTrace              = "trace"
+	FlagPrometheus         = "prometheus"
 
 	FlagPruning           = "pruning"
 	FlagPruningKeepRecent = "pruning-keep-recent"
@@ -130,7 +131,7 @@ func startStandAlone(ctx *Context, appCreator AppCreator) error {
 
 	app := appCreator(ctx.Logger, db, traceWriter)
 
-	svr, err := server.NewServer(addr, "socket", app)
+	svr, err := server.NewServer(addr, "grpc", app)
 	if err != nil {
 		return fmt.Errorf("error creating listener: %v", err)
 	}

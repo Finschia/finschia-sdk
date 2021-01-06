@@ -3,6 +3,7 @@ package mock
 import (
 	"io"
 
+	"github.com/tendermint/iavl"
 	dbm "github.com/tendermint/tm-db"
 
 	store "github.com/cosmos/cosmos-sdk/store/types"
@@ -96,6 +97,10 @@ func (ms multiStore) GetStoreType() sdk.StoreType {
 }
 
 func (ms multiStore) SetInterBlockCache(_ sdk.MultiStorePersistentCache) {
+	panic("not implemented")
+}
+
+func (ms multiStore) SetMetrics(metrics *store.Metrics, iavlMetricsProvider iavl.MetricsProvider) {
 	panic("not implemented")
 }
 

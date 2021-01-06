@@ -4,9 +4,12 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/tendermint/iavl"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/store"
+	"github.com/cosmos/cosmos-sdk/store/cache"
+	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -47,6 +50,25 @@ func SetInterBlockCache(cache sdk.MultiStorePersistentCache) func(*BaseApp) {
 // SetTrace will turn on or off trace flag
 func SetTrace(trace bool) func(*BaseApp) {
 	return func(app *BaseApp) { app.setTrace(trace) }
+}
+
+// SetMetrics sets prometheus metrics
+func SetMetrics(bappMetrics *Metrics, storeMetrics *storetypes.Metrics, iavlMetricsProvider iavl.MetricsProvider) func(*BaseApp) {
+	return func(app *BaseApp) {
+		app.setMetrics(bappMetrics)
+		app.cms.SetMetrics(storeMetrics, iavlMetricsProvider)
+	}
+}
+
+func MetricsProvider(prometheus bool) (*Metrics, *storetypes.Metrics, cache.MetricsProvider, iavl.MetricsProvider) {
+	namespace := "app"
+	if prometheus {
+		return PrometheusMetrics(namespace),
+			storetypes.PrometheusMetrics(namespace),
+			cache.PrometheusMetricsProvider(namespace),
+			iavl.PrometheusMetricsProvider(namespace)
+	}
+	return NopMetrics(), storetypes.NopMetrics(), cache.NopMetricsProvider(), iavl.NopMetricsProvider()
 }
 
 func (app *BaseApp) SetName(name string) {

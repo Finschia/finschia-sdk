@@ -213,7 +213,9 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		txHash := sha256.Sum256(ctx.TxBytes())
 
 		if !svd.verifySignatureWithCache(ctx, sigTx, txHash[:], signerAcc, pubKey, sig) {
-			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "signature verification failed; verify correct account sequence and chain-id")
+			return ctx, sdkerrors.Wrapf(
+				sdkerrors.ErrUnauthorized,
+				"signature verification failed; verify correct account sequence (%d) and chain-id (%s)", signerAcc.GetSequence(), ctx.ChainID())
 		}
 	}
 
