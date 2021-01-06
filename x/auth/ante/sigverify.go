@@ -194,6 +194,16 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "invalid number of signer;  expected: %d, got %d", len(signerAddrs), len(sigs))
 	}
 
+	newSigKeys := make([]string, 0, len(sigs))
+	defer func() {
+		// remove txHashCash if got an error
+		if err != nil {
+			for _, sigKey := range newSigKeys {
+				svd.txHashCache.Delete(sigKey)
+			}
+		}
+	}()
+
 	for i, sig := range sigs {
 		signerAcc, err := GetSignerAcc(ctx, svd.ak, signerAddrs[i])
 		if err != nil {
@@ -211,8 +221,15 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		}
 
 		txHash := sha256.Sum256(ctx.TxBytes())
+		sigKey := fmt.Sprintf("%d:%d", signerAcc.GetAccountNumber(), signerAcc.GetSequence())
 
-		if !svd.verifySignatureWithCache(ctx, sigTx, txHash[:], signerAcc, pubKey, sig) {
+		verified, stored := svd.verifySignatureWithCache(ctx, sigTx, sigKey, txHash[:], signerAcc, pubKey, sig)
+
+		if stored {
+			newSigKeys = append(newSigKeys, sigKey)
+		}
+
+		if !verified {
 			return ctx, sdkerrors.Wrapf(
 				sdkerrors.ErrUnauthorized,
 				"signature verification failed; verify correct account sequence (%d) and chain-id (%s)", signerAcc.GetSequence(), ctx.ChainID())
@@ -222,21 +239,27 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 	return next(ctx, tx, simulate)
 }
 
-func (svd *SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, sigTx SigVerifiableTx, txHash []byte, signerAcc exported.Account, pubKey crypto.PubKey, sig []byte) bool {
+func (svd *SigVerificationDecorator) verifySignatureWithCache(
+	ctx sdk.Context,
+	sigTx SigVerifiableTx,
+	sigKey string,
+	txHash []byte,
+	signerAcc exported.Account,
+	pubKey crypto.PubKey,
+	sig []byte,
+) (verified bool, stored bool) {
 	// #NOTE `genesis` transactions should not use `cache`
 	if ctx.BlockHeight() == 0 {
-		return pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig)
+		return pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig), false
 	}
-
-	// NOTE assume that `accountNumber` and `pubKey` are immutable
-	sigKey := fmt.Sprintf("%d:%d", signerAcc.GetAccountNumber(), signerAcc.GetSequence())
 
 	switch {
 	case ctx.IsCheckTx() && !ctx.IsReCheckTx(): // CheckTx
 		if !pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig) {
-			return false
+			return false, false
 		}
 		svd.txHashCache.Store(sigKey, txHash)
+		stored = true
 
 	case ctx.IsReCheckTx(): // ReCheckTx
 		verified, exist := svd.checkCache(sigKey, txHash)
@@ -245,7 +268,7 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, s
 			if exist {
 				svd.txHashCache.Delete(sigKey)
 			}
-			return false
+			return false, false
 		}
 
 	default: // DeliverTx
@@ -255,11 +278,11 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(ctx sdk.Context, s
 		}
 
 		if !verified && !pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig) {
-			return false
+			return false, false
 		}
 	}
 
-	return true
+	return true, stored
 }
 
 func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (verified, exist bool) {
