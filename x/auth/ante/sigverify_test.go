@@ -142,7 +142,7 @@ func TestSigVerification(t *testing.T) {
 		{"wrong accnums", []crypto.PrivKey{priv1, priv2, priv3}, []uint64{7, 8, 9}, []uint64{0, 0, 0}, false, true},
 		{"wrong sequences", []crypto.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{3, 4, 5}, false, true},
 		{"valid tx", []crypto.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{0, 0, 0}, false, false},
-		{"no err on recheck", []crypto.PrivKey{}, []uint64{}, []uint64{}, true, false},
+		{"no err on recheck", []crypto.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{0, 0, 0}, true, false},
 	}
 	for i, tc := range testCases {
 		ctx = ctx.WithIsReCheckTx(tc.recheck)
