@@ -251,7 +251,7 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(
 	// #NOTE `genesis` transactions should not use `cache`
 	if ctx.BlockHeight() == 0 {
 		verified = pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig)
-		return
+		return verified, stored
 	}
 
 	var exist = false
@@ -280,7 +280,7 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(
 		}
 	}
 
-	return
+	return verified, stored
 }
 
 func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (verified, exist bool) {
