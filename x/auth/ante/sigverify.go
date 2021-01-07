@@ -254,7 +254,7 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(
 		return verified, stored
 	}
 
-	var exist = false
+	exist := false
 
 	switch {
 	case ctx.IsCheckTx() && !ctx.IsReCheckTx(): // CheckTx
