@@ -14,7 +14,7 @@ We have added 5 new wasm specific proposal types that cover the contract's live 
 * `UpdateAdminProposal` - set a new admin for a contract
 * `ClearAdminProposal` - clear admin for a contract to prevent further migrations
 
-For details see the proposal type [implementation](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/types/proposal.go)
+For details see the proposal type [implementation](https://github.com/line/link-modules/blob/develop/x/wasm/internal/types/proposal.go)
 
 A wasm message but no proposal type: 
 * `ExecuteContract` - execute a command on a wasm contract
@@ -27,19 +27,19 @@ These parameters are as following.
 * `MaxWasmCodeSize` - max size of wasm code to be uploaded
 
 ### Unit tests
-[Proposal type validations](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/types/proposal_test.go)
+[Proposal type validations](https://github.com/line/link-modules/blob/develop/x/wasm/internal/types/proposal_test.go)
 
 ## Proposal Handler
-The [wasmd proposal_handler](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/keeper/proposal_handler.go) implements the `gov.Handler` function
+The [wasmd proposal_handler](https://github.com/line/link-modules/blob/develop/x/wasm/internal/keeper/proposal_handler.go) implements the `gov.Handler` function
 and executes the wasmd proposal types after a successful tally.
  
-The proposal handler uses a [`GovAuthorizationPolicy`](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/keeper/authz_policy.go#L29) to bypass the existing contract's authorization policy.
+The proposal handler uses a [`GovAuthorizationPolicy`](https://github.com/line/link-modules/blob/develop/x/wasm/internal/keeper/authz_policy.go#L29) to bypass the existing contract's authorization policy.
 
 ### Tests
-* [Integration: Submit and execute proposal](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/keeper/proposal_integration_test.go)
+* [Integration: Submit and execute proposal](https://github.com/line/link-modules/blob/develop/x/wasm/internal/keeper/proposal_integration_test.go)
 
 ## Gov Integration
-The wasmd proposal handler can be added to the gov router in the [abci app](https://github.com/CosmWasm/wasmd/blob/master/app/app.go#L306)
+The wasmd proposal handler can be added to the gov router in the [abci app](https://github.com/line/link-modules/blob/develop/x/wasm/linkwasmd/app/app.go#L240)
 to receive proposal execution calls. 
 ```go
 govRouter.AddRoute(wasm.RouterKey, wasm.NewWasmProposalHandler(app.wasmKeeper, enabledProposals))
@@ -51,7 +51,7 @@ Settings via sdk `params` module:
 - `code_upload_access` - who can upload a wasm binary: `Nobody`, `Everybody`, `OnlyAddress`
 - `instantiate_default_permission` - platform default, who can instantiate a wasm binary when the code owner has not set it 
 
-See [params.go](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/types/params.go)
+See [params.go](https://github.com/line/link-modules/blob/develop/x/wasm/internal/types/params.go)
 
 ### Init Params Via Genesis 
 
@@ -76,9 +76,9 @@ As gov proposals bypass the existing authorzation policy they are diabled and re
 ```
 
 ### Tests
-* [params validation unit tests](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/types/params_test.go)
-* [genesis validation tests](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/types/genesis_test.go)
-* [policy integration tests](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/internal/keeper/keeper_test.go)
+* [params validation unit tests](https://github.com/line/link-modules/blob/develop/x/wasm/internal/types/params_test.go)
+* [genesis validation tests](https://github.com/line/link-modules/blob/develop/x/wasm/internal/types/genesis_test.go)
+* [policy integration tests](https://github.com/line/link-modules/blob/develop/x/wasm/internal/keeper/keeper_test.go)
 
 ## CLI
 
@@ -94,18 +94,17 @@ Available Commands:
 ...
 ```
 ## Rest
-New [`ProposalHandlers`](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/client/proposal_handler.go)
+New [`ProposalHandlers`](https://github.com/line/link-modules/blob/develop/x/wasm/client/proposal_handler.go)
 
 * Integration
 ```shell script
-gov.NewAppModuleBasic(append(wasmclient.ProposalHandlers, paramsclient.ProposalHandler, distr.ProposalHandler, upgradeclient.ProposalHandler)...),
+gov.NewAppModuleBasic(append(wasmclient.ProposalHandlers, paramsclient.ProposalHandler,)...),
 ```
-In [abci app](https://github.com/CosmWasm/wasmd/blob/master/app/app.go#L109)
+In [abci app](https://github.com/line/link-modules/blob/6d1cec3f0160670bf8d878e7c5b1986f31703522/x/wasm/linkwasmd/app/app.go#L59)
 
 ### Tests
-* [Rest Unit tests](https://github.com/CosmWasm/wasmd/blob/master/x/wasm/client/proposal_handler_test.go)
-* [Rest smoke LCD test](https://github.com/CosmWasm/wasmd/blob/master/lcd_test/wasm_test.go)
-
+* [Rest Unit tests](https://github.com/line/link-modules/blob/develop/x/wasm/client/proposal_handler_test.go)
+* [CLI tests](https://github.com/line/link-modules/blob/develop/x/wasm/linkwasmd/cli_test/cli_test.go)
 
 
 ## Pull requests
