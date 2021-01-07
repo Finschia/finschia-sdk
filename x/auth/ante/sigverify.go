@@ -247,42 +247,40 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(
 	signerAcc exported.Account,
 	pubKey crypto.PubKey,
 	sig []byte,
-) (verified bool, stored bool) {
+) (verified, stored bool) {
 	// #NOTE `genesis` transactions should not use `cache`
 	if ctx.BlockHeight() == 0 {
-		return pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig), false
+		verified = pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig)
+		return
 	}
+
+	var exist = false
 
 	switch {
 	case ctx.IsCheckTx() && !ctx.IsReCheckTx(): // CheckTx
-		if !pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig) {
-			return false, false
+		verified = pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig)
+		if verified {
+			svd.txHashCache.Store(sigKey, txHash)
+			stored = true
 		}
-		svd.txHashCache.Store(sigKey, txHash)
-		stored = true
 
 	case ctx.IsReCheckTx(): // ReCheckTx
-		verified, exist := svd.checkCache(sigKey, txHash)
-
-		if !verified {
-			if exist {
-				svd.txHashCache.Delete(sigKey)
-			}
-			return false, false
-		}
-
-	default: // DeliverTx
-		verified, exist := svd.checkCache(sigKey, txHash)
-		if exist {
+		verified, exist = svd.checkCache(sigKey, txHash)
+		if !verified && exist {
 			svd.txHashCache.Delete(sigKey)
 		}
 
-		if !verified && !pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig) {
-			return false, false
+	default: // DeliverTx
+		verified, exist = svd.checkCache(sigKey, txHash)
+		if exist {
+			svd.txHashCache.Delete(sigKey)
+		}
+		if !verified {
+			verified = pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig)
 		}
 	}
 
-	return true, stored
+	return
 }
 
 func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (verified, exist bool) {
