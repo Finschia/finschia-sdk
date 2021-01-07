@@ -48,87 +48,86 @@ type WasmCustomQuerier struct {
 }
 
 type QueryCollectionWrapper struct {
-	QueryCollectionParam QueryCollectionParam `json:"query_collection_param"`
+	CollectionParam CollectionParam `json:"collection_param"`
 }
 
 type QueryBalanceWrapper struct {
-	QueryBalanceParam QueryBalanceParam `json:"query_balance_param"`
+	BalanceParam BalanceParam `json:"balance_param"`
 }
 
 type QueryTokenTypesWrapper struct {
-	QueryTokenTypesParam QueryTokenTypesParam `json:"query_tokentypes_param"`
+	TokenTypesParam TokenTypesParam `json:"tokentypes_param"`
 }
 
 type QueryTokensWrapper struct {
-	QueryTokensParam QueryTokensParam `json:"query_tokens_param"`
+	TokensParam TokensParam `json:"tokens_param"`
 }
 
 type QueryTokenTypeWrapper struct {
-	QueryTokenTypeParam QueryTokenTypeParam `json:"query_token_type_param"`
+	TokenTypeParam TokenTypeParam `json:"token_type_param"`
 }
 
 type QueryNFTCountWrapper struct {
-	QueryTokensParam QueryTokensParam `json:"query_tokens_param"`
+	TokensParam TokensParam `json:"tokens_param"`
 }
 
 type QueryTotalWrapper struct {
-	QueryTotalParam QueryTotalParam `json:"query_total_param"`
+	TotalParam TotalParam `json:"total_param"`
 }
 
 type QueryPermsWrapper struct {
-	QueryPermParam QueryPermParam `json:"query_perm_param"`
+	PermParam PermParam `json:"perm_param"`
 }
 
 type QueryApprovedWrapper struct {
-	QueryApprovedParam QueryApprovedParam `json:"query_approved_param"`
+	IsApprovedParam IsApprovedParam `json:"is_approved_param"`
 }
 
 type QueryApproversWrapper struct {
-	QueryApproversParam QueryApproversParam `json:"query_approvers_param"`
+	ApproversParam ApproversParam `json:"approvers_param"`
 }
 
-type QueryCollectionParam struct {
+type CollectionParam struct {
 	ContractID string `json:"contract_id"`
 }
 
-type QueryBalanceParam struct {
+type BalanceParam struct {
 	ContractID string         `json:"contract_id"`
 	TokenID    string         `json:"token_id"`
 	Addr       sdk.AccAddress `json:"addr"`
 }
 
-type QueryTokenTypesParam struct {
+type TokenTypesParam struct {
 	ContractID string `json:"contract_id"`
 	TokenID    string `json:"token_id"`
 }
 
-type QueryTokensParam struct {
+type TokensParam struct {
 	ContractID string `json:"contract_id"`
 	TokenID    string `json:"token_id"`
 }
 
-type QueryTokenTypeParam struct {
+type TokenTypeParam struct {
 	ContractID string `json:"contract_id"`
 	TokenType  string `json:"token_type"`
 }
 
-type QueryTotalParam struct {
+type TotalParam struct {
 	ContractID string `json:"contract_id"`
 	TokenID    string `json:"token_id"`
-	Target     string `json:"target"`
 }
 
-type QueryPermParam struct {
+type PermParam struct {
 	ContractID string         `json:"contract_id"`
 	Address    sdk.AccAddress `json:"address"`
 }
 
-type QueryApproversParam struct {
+type ApproversParam struct {
 	ContractID string         `json:"contract_id"`
 	Proxy      sdk.AccAddress `json:"proxy"`
 }
 
-type QueryApprovedParam struct {
+type IsApprovedParam struct {
 	ContractID string         `json:"contract_id"`
 	Proxy      sdk.AccAddress `json:"proxy"`
 	Approver   sdk.AccAddress `json:"approver"`

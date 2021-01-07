@@ -40,55 +40,54 @@ type WasmCustomQuerier struct {
 }
 
 type QueryTokenWrapper struct {
-	QueryTokenParam QueryTokenParam `json:"query_token_param"`
+	TokenParam TokenParam `json:"token_param"`
 }
 
-type QueryTokenParam struct {
+type TokenParam struct {
 	ContractID string `json:"contract_id"`
 }
 
 type QueryBalanceWrapper struct {
-	QueryBalanceParam QueryBalanceParam `json:"query_balance_param"`
+	BalanceParam BalanceParam `json:"balance_param"`
 }
 
-type QueryBalanceParam struct {
+type BalanceParam struct {
 	ContractID string         `json:"contract_id"`
 	Address    sdk.AccAddress `json:"address"`
 }
 
 type QueryTotalWrapper struct {
-	QueryTotalParam QueryTotalParam `json:"query_total_param"`
+	TotalParam TotalParam `json:"total_param"`
 }
 
-type QueryTotalParam struct {
+type TotalParam struct {
 	ContractID string `json:"contract_id"`
-	Target     string `json:"target"`
 }
 
 type QueryPermWrapper struct {
-	QueryPermParam QueryPermParam `json:"query_perm_param"`
+	PermParam PermParam `json:"perm_param"`
 }
 
-type QueryPermParam struct {
+type PermParam struct {
 	ContractID string         `json:"contract_id"`
 	Address    sdk.AccAddress `json:"address"`
 }
 
 type QueryIsApprovedWrapper struct {
-	QueryIsApprovedParam QueryIsApprovedParam `json:"query_is_approved_param"`
+	IsApprovedParam IsApprovedParam `json:"is_approved_param"`
 }
 
-type QueryIsApprovedParam struct {
+type IsApprovedParam struct {
 	Proxy      sdk.AccAddress `json:"proxy"`
 	ContractID string         `json:"contract_id"`
 	Approver   sdk.AccAddress `json:"approver"`
 }
 
 type QueryApproversWrapper struct {
-	QueryApproversParam QueryApproversParam `json:"query_approvers_param"`
+	ApproversParam ApproversParam `json:"approvers_param"`
 }
 
-type QueryApproversParam struct {
+type ApproversParam struct {
 	Proxy      sdk.AccAddress `json:"proxy"`
 	ContractID string         `json:"contract_id"`
 }

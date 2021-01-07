@@ -33,7 +33,7 @@ func encodeQuery(t *testing.T, jsonQuerier json.RawMessage, result interface{}) 
 func TestNewQuerier_encodeQueryTokens(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"tokens","data":{"query_token_param":{"contract_id":"%s"}}}`, contractID)
+	jsonQuerier := fmt.Sprintf(`{"route":"tokens","data":{"token_param":{"contract_id":"%s"}}}`, contractID)
 
 	var token types.Token
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &token)
@@ -47,7 +47,7 @@ func TestNewQuerier_encodeQueryTokens(t *testing.T) {
 func TestNewQuerier_encodeQueryAccountPermission(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"perms","data":{"query_perm_param":{"contract_id":"%s","address":"%s"}}}`, contractID, addr1)
+	jsonQuerier := fmt.Sprintf(`{"route":"perms","data":{"perm_param":{"contract_id":"%s","address":"%s"}}}`, contractID, addr1)
 
 	var perms types.Permissions
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &perms)
@@ -61,7 +61,7 @@ func TestNewQuerier_encodeQueryAccountPermission(t *testing.T) {
 func TestNewQuerier_encodeQueryBalance(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"query_balance_param":{"contract_id":"%s","address":"%s"}}}`, contractID, addr1)
+	jsonQuerier := fmt.Sprintf(`{"route":"balance","data":{"balance_param":{"contract_id":"%s","address":"%s"}}}`, contractID, addr1)
 
 	var balance sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &balance)
@@ -72,7 +72,7 @@ func TestNewQuerier_encodeQueryBalance(t *testing.T) {
 func TestNewQuerier_encodeQueryTotalSupply(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_param":{"contract_id":"%s","target":"%s"}}}`, contractID, types.QuerySupply)
+	jsonQuerier := fmt.Sprintf(`{"route":"%s","data":{"total_param":{"contract_id":"%s"}}}`, types.QuerySupply, contractID)
 
 	var supply sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &supply)
@@ -83,7 +83,7 @@ func TestNewQuerier_encodeQueryTotalSupply(t *testing.T) {
 func TestNewQuerier_encodeQueryTotalMint(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_param":{"contract_id":"%s","target":"%s"}}}`, contractID, types.QueryMint)
+	jsonQuerier := fmt.Sprintf(`{"route":"%s","data":{"total_param":{"contract_id":"%s"}}}`, types.QueryMint, contractID)
 
 	var supply sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &supply)
@@ -94,7 +94,7 @@ func TestNewQuerier_encodeQueryTotalMint(t *testing.T) {
 func TestNewQuerier_encodeQueryTotalBurn(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"supply","data":{"query_total_param":{"contract_id":"%s","target":"%s"}}}`, contractID, types.QueryBurn)
+	jsonQuerier := fmt.Sprintf(`{"route":"%s","data":{"total_param":{"contract_id":"%s"}}}`, types.QueryBurn, contractID)
 
 	var supply sdk.Int
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &supply)
@@ -105,7 +105,7 @@ func TestNewQuerier_encodeQueryTotalBurn(t *testing.T) {
 func TestNewQuerier_encodeQueryIsApproved_true(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"approved","data":{"query_is_approved_param":{"proxy":"%s", "contract_id":"%s","approver":"%s"}}}`, addr1, contractID, addr2)
+	jsonQuerier := fmt.Sprintf(`{"route":"approved","data":{"is_approved_param":{"proxy":"%s", "contract_id":"%s","approver":"%s"}}}`, addr1, contractID, addr2)
 
 	var approved bool
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &approved)
@@ -116,7 +116,7 @@ func TestNewQuerier_encodeQueryIsApproved_true(t *testing.T) {
 func TestNewQuerier_encodeQueryApprovers(t *testing.T) {
 	prepare(t)
 	setupQueryEncoder()
-	jsonQuerier := fmt.Sprintf(`{"route":"approvers","data":{"query_approvers_param":{"proxy":"%s", "contract_id":"%s"}}}`, addr1, contractID)
+	jsonQuerier := fmt.Sprintf(`{"route":"approvers","data":{"approvers_param":{"proxy":"%s", "contract_id":"%s"}}}`, addr1, contractID)
 
 	var approvers []sdk.AccAddress
 	err := encodeQuery(t, json.RawMessage(jsonQuerier), &approvers)
@@ -126,7 +126,7 @@ func TestNewQuerier_encodeQueryApprovers(t *testing.T) {
 	require.True(t, types.IsAddressContains(approvers, addr2))
 
 	var acAdEmpty []sdk.AccAddress
-	jsonQuerier = fmt.Sprintf(`{"route":"approvers","data":{"query_approvers_param":{"proxy":"%s", "contract_id":"%s"}}}`, addr2, contractID)
+	jsonQuerier = fmt.Sprintf(`{"route":"approvers","data":{"approvers_param":{"proxy":"%s", "contract_id":"%s"}}}`, addr2, contractID)
 
 	err = encodeQuery(t, json.RawMessage(jsonQuerier), &acAdEmpty)
 	require.NoError(t, err)

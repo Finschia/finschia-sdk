@@ -39,7 +39,11 @@ func NewQueryEncoder(collectionQuerier sdk.Querier) wasm.EncodeQuerier {
 		case types.QueryNFTBurn:
 			return handleQueryNFTCount(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
 		case types.QuerySupply:
-			return handleQueryTotal(ctx, collectionQuerier, customQuerier.Data)
+			return handleQueryTotal(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
+		case types.QueryMint:
+			return handleQueryTotal(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
+		case types.QueryBurn:
+			return handleQueryTotal(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
 		case types.QueryParent:
 			return handleQueryRootOrParentOrChildren(ctx, collectionQuerier, []string{customQuerier.Route}, customQuerier.Data)
 		case types.QueryRoot:
@@ -66,7 +70,7 @@ func handleQueryCollections(ctx sdk.Context, collectionQuerier sdk.Querier, path
 	}
 	req := makeRequestQuery(nil)
 
-	contractID := wrapper.QueryCollectionParam.ContractID
+	contractID := wrapper.CollectionParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -79,10 +83,10 @@ func handleQueryBalances(ctx sdk.Context, collectionQuerier sdk.Querier, path []
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryTokenIDAccAddressParams(wrapper.QueryBalanceParam.TokenID, wrapper.QueryBalanceParam.Addr)
+	param := types.NewQueryTokenIDAccAddressParams(wrapper.BalanceParam.TokenID, wrapper.BalanceParam.Addr)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryBalanceParam.ContractID
+	contractID := wrapper.BalanceParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -95,10 +99,10 @@ func handleQueryTokenTypes(ctx sdk.Context, collectionQuerier sdk.Querier, path 
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryTokenIDParams(wrapper.QueryTokenTypesParam.TokenID)
+	param := types.NewQueryTokenIDParams(wrapper.TokenTypesParam.TokenID)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryTokenTypesParam.ContractID
+	contractID := wrapper.TokenTypesParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -111,10 +115,10 @@ func handleQueryTokens(ctx sdk.Context, collectionQuerier sdk.Querier, path []st
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryTokenIDParams(wrapper.QueryTokensParam.TokenID)
+	param := types.NewQueryTokenIDParams(wrapper.TokensParam.TokenID)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryTokensParam.ContractID
+	contractID := wrapper.TokensParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -127,10 +131,10 @@ func handleQueryTokensWithTokenType(ctx sdk.Context, collectionQuerier sdk.Queri
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryTokenTypeParams(wrapper.QueryTokenTypeParam.TokenType)
+	param := types.NewQueryTokenTypeParams(wrapper.TokenTypeParam.TokenType)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryTokenTypeParam.ContractID
+	contractID := wrapper.TokenTypeParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -143,27 +147,26 @@ func handleQueryNFTCount(ctx sdk.Context, collectionQuerier sdk.Querier, path []
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryTokenIDParams(wrapper.QueryTokensParam.TokenID)
+	param := types.NewQueryTokenIDParams(wrapper.TokensParam.TokenID)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryTokensParam.ContractID
+	contractID := wrapper.TokensParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
 	return collectionQuerier(ctx, path, req)
 }
 
-func handleQueryTotal(ctx sdk.Context, collectionQuerier sdk.Querier, msgData json.RawMessage) ([]byte, error) {
+func handleQueryTotal(ctx sdk.Context, collectionQuerier sdk.Querier, path []string, msgData json.RawMessage) ([]byte, error) {
 	var wrapper types.QueryTotalWrapper
 	err := json.Unmarshal(msgData, &wrapper)
 	if err != nil {
 		return nil, err
 	}
-	params := types.NewQueryTokenIDParams(wrapper.QueryTotalParam.TokenID)
+	params := types.NewQueryTokenIDParams(wrapper.TotalParam.TokenID)
 	req := makeRequestQuery(params)
 
-	path := []string{wrapper.QueryTotalParam.Target}
-	contractID := wrapper.QueryTotalParam.ContractID
+	contractID := wrapper.TotalParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -177,10 +180,10 @@ func handleQueryRootOrParentOrChildren(ctx sdk.Context, collectionQuerier sdk.Qu
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryTokenIDParams(wrapper.QueryTokensParam.TokenID)
+	param := types.NewQueryTokenIDParams(wrapper.TokensParam.TokenID)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryTokensParam.ContractID
+	contractID := wrapper.TokensParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -193,10 +196,10 @@ func handleQueryPerms(ctx sdk.Context, collectionQuerier sdk.Querier, path []str
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryAccAddressParams(wrapper.QueryPermParam.Address)
+	param := types.NewQueryAccAddressParams(wrapper.PermParam.Address)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryPermParam.ContractID
+	contractID := wrapper.PermParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -209,10 +212,10 @@ func handleQueryApproved(ctx sdk.Context, collectionQuerier sdk.Querier, path []
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryIsApprovedParams(wrapper.QueryApprovedParam.Proxy, wrapper.QueryApprovedParam.Approver)
+	param := types.NewQueryIsApprovedParams(wrapper.IsApprovedParam.Proxy, wrapper.IsApprovedParam.Approver)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryApprovedParam.ContractID
+	contractID := wrapper.IsApprovedParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
@@ -225,10 +228,10 @@ func handleQueryApprovers(ctx sdk.Context, collectionQuerier sdk.Querier, path [
 	if err != nil {
 		return nil, err
 	}
-	param := types.NewQueryApproverParams(wrapper.QueryApproversParam.Proxy)
+	param := types.NewQueryApproverParams(wrapper.ApproversParam.Proxy)
 	req := makeRequestQuery(param)
 
-	contractID := wrapper.QueryApproversParam.ContractID
+	contractID := wrapper.ApproversParam.ContractID
 	if contractID != "" {
 		path = append(path, contractID)
 	}
