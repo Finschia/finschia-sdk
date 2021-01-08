@@ -11,6 +11,7 @@ import (
 )
 
 const (
+	firstCodeID                     = 1
 	DefaultParamspace               = types.DefaultParamspace
 	ModuleName                      = types.ModuleName
 	StoreKey                        = types.StoreKey
@@ -114,7 +115,7 @@ type (
 	CodeInfo                = types.CodeInfo
 	ContractInfo            = types.ContractInfo
 	CreatedAt               = types.AbsoluteTxPosition
-	WasmConfig              = types.WasmConfig
+	Config                  = types.WasmConfig
 	MessageHandler          = keeper.MessageHandler
 	BankEncoder             = keeper.BankEncoder
 	CustomEncoder           = keeper.CustomEncoder

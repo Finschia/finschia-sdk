@@ -179,7 +179,7 @@ func CreateTestInput(t *testing.T, isCheckTx bool, tempDir string, supportedFeat
 	// Load default wasm config
 	wasmConfig := wasmtypes.DefaultWasmConfig()
 	keeper := NewKeeper(cdc, keyWasm, paramsKeeper.Subspace(wasmtypes.DefaultParamspace),
-		accountKeeper, coinKeeper, stakingKeeper, router, nil, nil, tempDir, wasmConfig,
+		accountKeeper, coinKeeper, stakingKeeper, distKeeper, router, nil, nil, tempDir, wasmConfig,
 		supportedFeatures, encoders, queriers,
 	)
 	keeper.setParams(ctx, wasmtypes.DefaultParams())

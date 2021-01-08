@@ -39,7 +39,7 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 	flagGas := "--gas=auto --gas-adjustment=1.2"
 	workDir, _ := os.Getwd()
 	tmpDir := path.Join(workDir, "tmp-dir-for-test-escrow")
-	dirContract := path.Join(workDir, "contracts", "escrow-v6")
+	dirContract := path.Join(workDir, "contracts", "escrow")
 	hashFile := path.Join(dirContract, "hash.txt")
 	wasmEscrow := path.Join(dirContract, "contract.wasm")
 	codeId := uint64(1)

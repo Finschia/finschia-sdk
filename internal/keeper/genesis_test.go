@@ -24,16 +24,19 @@ import (
 	"github.com/cosmos/cosmos-sdk/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
 	"github.com/line/link-modules/x/wasm/internal/types"
 )
 
+const firstCodeID = 1
+
 func TestGenesisExportImport(t *testing.T) {
 	srcKeeper, srcCtx, srcStoreKeys, srcCleanup := setupKeeper(t)
 	defer srcCleanup()
-	wasmCode, err := ioutil.ReadFile("./testdata/contract.wasm")
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	// store some test data
@@ -115,7 +118,7 @@ func TestGenesisExportImport(t *testing.T) {
 }
 
 func TestFailFastImport(t *testing.T) {
-	wasmCode, err := ioutil.ReadFile("./testdata/contract.wasm")
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	myCodeInfo := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
@@ -126,7 +129,7 @@ func TestFailFastImport(t *testing.T) {
 		"happy path: code info correct": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}},
@@ -141,7 +144,7 @@ func TestFailFastImport(t *testing.T) {
 		"happy path: code ids can contain gaps": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}, {
@@ -164,7 +167,7 @@ func TestFailFastImport(t *testing.T) {
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}, {
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}},
@@ -179,7 +182,7 @@ func TestFailFastImport(t *testing.T) {
 		},
 		"prevent code hash mismatch": {src: types.GenesisState{
 			Codes: []types.Code{{
-				CodeID:     1,
+				CodeID:     firstCodeID,
 				CodeInfo:   types.CodeInfoFixture(func(i *types.CodeInfo) { i.CodeHash = make([]byte, sha256.Size) }),
 				CodesBytes: wasmCode,
 			}},
@@ -188,12 +191,12 @@ func TestFailFastImport(t *testing.T) {
 		"prevent duplicate codeIDs": {src: types.GenesisState{
 			Codes: []types.Code{
 				{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				},
 				{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				},
@@ -203,7 +206,7 @@ func TestFailFastImport(t *testing.T) {
 		"happy path: code id in info and contract do match": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}},
@@ -224,7 +227,7 @@ func TestFailFastImport(t *testing.T) {
 		"happy path: code info with two contracts": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}},
@@ -259,7 +262,7 @@ func TestFailFastImport(t *testing.T) {
 		"prevent duplicate contract address": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}},
@@ -278,7 +281,7 @@ func TestFailFastImport(t *testing.T) {
 		"prevent duplicate contract model keys": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}},
@@ -326,7 +329,7 @@ func TestFailFastImport(t *testing.T) {
 		"prevent contract id seq init value == count contracts": {
 			src: types.GenesisState{
 				Codes: []types.Code{{
-					CodeID:     1,
+					CodeID:     firstCodeID,
 					CodeInfo:   myCodeInfo,
 					CodesBytes: wasmCode,
 				}},
@@ -406,7 +409,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	keeper, ctx, _, dstCleanup := setupKeeper(t)
 	defer dstCleanup()
 
-	wasmCode, err := ioutil.ReadFile("./testdata/contract.wasm")
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	wasmCodeHash := sha256.Sum256(wasmCode)
@@ -455,7 +458,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	adminAddr, _ := sdk.AccAddressFromBech32("cosmos1h5t8zxmjr30e9dqghtlpl40f2zz5cgey6esxtn")
 
 	expContractInfo := types.ContractInfo{
-		CodeID:  1,
+		CodeID:  firstCodeID,
 		Creator: contractCreatorAddr,
 		Admin:   adminAddr,
 		Label:   "ȀĴnZV芢毤",
@@ -465,7 +468,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 
 	expHistory := []types.ContractCodeHistoryEntry{{
 		Operation: types.GenesisContractCodeHistoryType,
-		CodeID:    1,
+		CodeID:    firstCodeID,
 		Updated:   types.NewAbsoluteTxPosition(ctx),
 	},
 	}
@@ -498,7 +501,7 @@ func setupKeeper(t *testing.T) (Keeper, sdk.Context, []sdk.StoreKey, func()) {
 	cdc := MakeTestCodec()
 	pk := params.NewKeeper(cdc, keyParams, tkeyParams)
 	wasmConfig := types.DefaultWasmConfig()
-	srcKeeper := NewKeeper(cdc, keyWasm, pk.Subspace(types.DefaultParamspace), auth.AccountKeeper{}, nil, staking.Keeper{}, nil, nil, nil, tempDir, wasmConfig, "", nil, nil)
+	srcKeeper := NewKeeper(cdc, keyWasm, pk.Subspace(types.DefaultParamspace), auth.AccountKeeper{}, nil, staking.Keeper{}, distribution.Keeper{}, nil, nil, nil, tempDir, wasmConfig, "", nil, nil)
 	srcKeeper.setParams(ctx, types.DefaultParams())
 
 	return srcKeeper, ctx, []sdk.StoreKey{keyWasm, keyParams}, cleanup
