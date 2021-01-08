@@ -194,6 +194,18 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	}
 }
 
+// BeginRecheckTx implements the ABCI interface and set the check state based on the given header
+func (app *BaseApp) BeginRecheckTx(req abci.RequestBeginRecheckTx) abci.ResponseBeginRecheckTx {
+	// NOTE: This is safe because Tendermint holds a lock on the mempool for Rechecking.
+	app.setCheckState(req.Header)
+	return abci.ResponseBeginRecheckTx{Code: abci.CodeTypeOK}
+}
+
+// EndRecheckTx implements the ABCI interface.
+func (app *BaseApp) EndRecheckTx(req abci.RequestEndRecheckTx) abci.ResponseEndRecheckTx {
+	return abci.ResponseEndRecheckTx{Code: abci.CodeTypeOK}
+}
+
 // DeliverTx implements the ABCI interface and executes a tx in DeliverTx mode.
 // State only gets persisted if all messages are valid and get executed successfully.
 // Otherwise, the ResponseDeliverTx will contain releveant error information.
@@ -221,11 +233,10 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) abci.ResponseDeliverTx 
 
 // Commit implements the ABCI interface. It will commit all state that exists in
 // the deliver state's multi-store and includes the resulting commit ID in the
-// returned abci.ResponseCommit. Commit will set the check state based on the
-// latest header and reset the deliver state. Also, if a non-zero halt height is
-// defined in config, Commit will execute a deferred function call to check
-// against that height and gracefully halt if it matches the latest committed
-// height.
+// returned abci.ResponseCommit. Commit will reset the deliver state.
+// Also, if a non-zero halt height is defined in config, Commit will execute
+// a deferred function call to check against that height and gracefully halt if
+// it matches the latest committed height.
 func (app *BaseApp) Commit() (res abci.ResponseCommit) {
 	header := app.deliverState.ctx.BlockHeader()
 
@@ -235,12 +246,6 @@ func (app *BaseApp) Commit() (res abci.ResponseCommit) {
 	app.deliverState.ms.Write()
 	commitID := app.cms.Commit()
 	app.logger.Debug("Commit synced", "commit", fmt.Sprintf("%X", commitID))
-
-	// Reset the Check state to the latest committed.
-	//
-	// NOTE: This is safe because Tendermint holds a lock on the mempool for
-	// Commit. Use the header from this latest block.
-	app.setCheckState(header)
 
 	// empty/reset the deliver state
 	app.deliverState = nil
