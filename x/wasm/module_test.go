@@ -66,7 +66,7 @@ func mustLoad(path string) []byte {
 
 var (
 	key1, pub1, addr1 = keyPubAddr()
-	testContract      = mustLoad("./internal/keeper/testdata/contract.wasm")
+	testContract      = mustLoad("./internal/keeper/testdata/hackatom.wasm")
 	maskContract      = mustLoad("./internal/keeper/testdata/reflect.wasm")
 	oldContract       = mustLoad("./testdata/escrow_0.7.wasm")
 )
@@ -174,7 +174,7 @@ func TestHandleInstantiate(t *testing.T) {
 	// create with no balance is also legal
 	initCmd := MsgInstantiateContract{
 		Sender:    creator,
-		CodeID:    1,
+		CodeID:    firstCodeID,
 		InitMsg:   initMsgBz,
 		InitFunds: nil,
 	}
@@ -231,7 +231,7 @@ func TestHandleExecute(t *testing.T) {
 
 	initCmd := MsgInstantiateContract{
 		Sender:    creator,
-		CodeID:    1,
+		CodeID:    firstCodeID,
 		InitMsg:   initMsgBz,
 		InitFunds: deposit,
 	}
@@ -342,7 +342,7 @@ func TestHandleExecuteEscrow(t *testing.T) {
 
 	initCmd := MsgInstantiateContract{
 		Sender:    creator,
-		CodeID:    1,
+		CodeID:    firstCodeID,
 		InitMsg:   initMsgBz,
 		InitFunds: deposit,
 	}

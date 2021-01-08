@@ -180,16 +180,10 @@ func queryContractStateRawHandlerFn(cliCtx context.CLIContext) http.HandlerFunc 
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
 		}
-		// parse res
-		var resultData []types.Model
-		err = json.Unmarshal(res, &resultData)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
 		cliCtx = cliCtx.WithHeight(height)
-		rest.PostProcessResponse(w, cliCtx, resultData)
+		// ensure this is base64 encoded
+		encoded := base64.StdEncoding.EncodeToString(res)
+		rest.PostProcessResponse(w, cliCtx, encoded)
 	}
 }
 

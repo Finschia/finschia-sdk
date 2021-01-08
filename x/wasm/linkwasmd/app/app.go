@@ -26,6 +26,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/vesting"
+	distr "github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/cosmos-sdk/x/params"
 	paramsclient "github.com/cosmos/cosmos-sdk/x/params/client"
@@ -124,7 +125,7 @@ type LinkApp struct {
 }
 
 type WasmWrapper struct {
-	Wasm wasm.WasmConfig `mapstructure:"wasm"`
+	Wasm wasm.Config `mapstructure:"wasm"`
 }
 
 // NewLinkApp returns a reference to an initialized LinkApp.
@@ -200,9 +201,9 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	tokenQueryEncoder := token.NewQueryEncoder(tokenQuerier)
 	collectionQuerier := collection.NewQuerier(app.collectionKeeper)
 	collectionQueryEncoder := collection.NewQueryEncoder(collectionQuerier)
-	var queryRouter = wasm.NewQuerierRouter()
-	queryRouter.AddRoute(token.EncodeRouterKey, tokenQueryEncoder)
-	queryRouter.AddRoute(collection.EncodeRouterKey, collectionQueryEncoder)
+	var querierRouter = wasm.NewQuerierRouter()
+	querierRouter.AddRoute(token.EncodeRouterKey, tokenQueryEncoder)
+	querierRouter.AddRoute(collection.EncodeRouterKey, collectionQueryEncoder)
 
 	// better way to get this dir???
 	homeDir := viper.GetString(cli.HomeFlag)
@@ -223,9 +224,10 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 		app.accountKeeper,
 		app.coinKeeper,
 		app.stakingKeeper,
+		distr.Keeper{},
 		wasmRouter,
 		encodeRouter,
-		queryRouter,
+		querierRouter,
 		wasmDir,
 		wasmConfig,
 		supportedFeatures,

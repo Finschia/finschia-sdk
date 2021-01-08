@@ -1,4 +1,4 @@
-// nolint: staticcheck
+// nolint: staticcheck, unused, deadcode
 package keeper
 
 import (
@@ -40,8 +40,13 @@ type reflectPayload struct {
 
 // MaskQueryMsg is used to encode query messages
 type MaskQueryMsg struct {
-	Owner         *struct{} `json:"owner,omitempty"`
-	ReflectCustom *Text     `json:"reflect_custom,omitempty"`
+	Owner       *struct{}   `json:"owner,omitempty"`
+	Capitalized *Text       `json:"capitalized,omitempty"`
+	Chain       *ChainQuery `json:"chain,omitempty"`
+}
+
+type ChainQuery struct {
+	Request *wasmTypes.QueryRequest `json:"request,omitempty"`
 }
 
 type Text struct {
@@ -50,6 +55,21 @@ type Text struct {
 
 type OwnerResponse struct {
 	Owner string `json:"owner,omitempty"`
+}
+
+type ChainResponse struct {
+	Data []byte `json:"data,omitempty"`
+}
+
+func buildMaskQuery(t *testing.T, query *MaskQueryMsg) []byte {
+	bz, err := json.Marshal(query)
+	require.NoError(t, err)
+	return bz
+}
+
+func mustParse(t *testing.T, data []byte, res interface{}) {
+	err := json.Unmarshal(data, res)
+	require.NoError(t, err)
 }
 
 const MaskFeatures = "staking,mask"
@@ -73,7 +93,7 @@ func TestMaskReflectContractSend(t *testing.T) {
 	require.Equal(t, uint64(1), maskID)
 
 	// upload hackatom escrow code
-	escrowCode, err := ioutil.ReadFile("./testdata/contract.wasm")
+	escrowCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 	escrowID, err := keeper.Create(ctx, creator, escrowCode, "", "", nil)
 	require.NoError(t, err)
@@ -271,7 +291,7 @@ func TestMaskReflectCustomQuery(t *testing.T) {
 
 	// and now making use of the custom querier callbacks
 	customQuery := MaskQueryMsg{
-		ReflectCustom: &Text{
+		Capitalized: &Text{
 			Text: "all Caps noW",
 		},
 	}
@@ -279,10 +299,136 @@ func TestMaskReflectCustomQuery(t *testing.T) {
 	require.NoError(t, err)
 	custom, err := keeper.QuerySmart(ctx, contractAddr, customQueryBz)
 	require.NoError(t, err)
-	var resp customQueryResponse
+	var resp capitalizedResponse
 	err = json.Unmarshal(custom, &resp)
 	require.NoError(t, err)
-	assert.Equal(t, resp.Msg, "ALL CAPS NOW")
+	assert.Equal(t, resp.Text, "ALL CAPS NOW")
+}
+
+type maskState struct {
+	Owner []byte `json:"owner"`
+}
+
+func TestMaskReflectWasmQueries(t *testing.T) {
+	tempDir, err := ioutil.TempDir("", "wasm")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+	ctx, keepers := CreateTestInput(t, false, tempDir, MaskFeatures, maskEncoders(MakeTestCodec()), nil)
+	accKeeper, keeper := keepers.AccountKeeper, keepers.WasmKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	creator := createFakeFundedAccount(ctx, accKeeper, deposit)
+
+	// upload mask code
+	maskCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	require.NoError(t, err)
+	maskID, err := keeper.Create(ctx, creator, maskCode, "", "", nil)
+	require.NoError(t, err)
+	require.Equal(t, uint64(1), maskID)
+
+	// creator instantiates a contract and gives it tokens
+	maskStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
+	maskAddr, err := keeper.Instantiate(ctx, maskID, creator, nil, []byte("{}"), "mask contract 2", maskStart)
+	require.NoError(t, err)
+	require.NotEmpty(t, maskAddr)
+
+	// for control, let's make some queries directly on the mask
+	ownerQuery := buildMaskQuery(t, &MaskQueryMsg{Owner: &struct{}{}})
+	res, err := keeper.QuerySmart(ctx, maskAddr, ownerQuery)
+	require.NoError(t, err)
+	var ownerRes OwnerResponse
+	mustParse(t, res, &ownerRes)
+	require.Equal(t, ownerRes.Owner, creator.String())
+
+	// and a raw query: cosmwasm_storage::Singleton uses 2 byte big-endian length-prefixed to store data
+	configKey := append([]byte{0, 6}, []byte("config")...)
+	raw := keeper.QueryRaw(ctx, maskAddr, configKey)
+	var stateRes maskState
+	mustParse(t, raw, &stateRes)
+	require.Equal(t, stateRes.Owner, []byte(creator))
+
+	// now, let's reflect a smart query into the x/wasm handlers and see if we get the same result
+	reflectOwnerQuery := MaskQueryMsg{Chain: &ChainQuery{Request: &wasmTypes.QueryRequest{Wasm: &wasmTypes.WasmQuery{
+		Smart: &wasmTypes.SmartQuery{
+			ContractAddr: maskAddr.String(),
+			Msg:          ownerQuery,
+		},
+	}}}}
+	reflectOwnerBin := buildMaskQuery(t, &reflectOwnerQuery)
+	res, err = keeper.QuerySmart(ctx, maskAddr, reflectOwnerBin)
+	require.NoError(t, err)
+	// first we pull out the data from chain response, before parsing the original response
+	var reflectRes ChainResponse
+	mustParse(t, res, &reflectRes)
+	var reflectOwnerRes OwnerResponse
+	mustParse(t, reflectRes.Data, &reflectOwnerRes)
+	require.Equal(t, reflectOwnerRes.Owner, creator.String())
+
+	// and with queryRaw
+	reflectStateQuery := MaskQueryMsg{Chain: &ChainQuery{Request: &wasmTypes.QueryRequest{Wasm: &wasmTypes.WasmQuery{
+		Raw: &wasmTypes.RawQuery{
+			ContractAddr: maskAddr.String(),
+			Key:          configKey,
+		},
+	}}}}
+	reflectStateBin := buildMaskQuery(t, &reflectStateQuery)
+	res, err = keeper.QuerySmart(ctx, maskAddr, reflectStateBin)
+	require.NoError(t, err)
+	// first we pull out the data from chain response, before parsing the original response
+	var reflectRawRes ChainResponse
+	mustParse(t, res, &reflectRawRes)
+	// now, with the raw data, we can parse it into state
+	var reflectStateRes maskState
+	mustParse(t, reflectRawRes.Data, &reflectStateRes)
+	require.Equal(t, reflectStateRes.Owner, []byte(creator))
+}
+
+func TestWasmRawQueryWithNil(t *testing.T) {
+	tempDir, err := ioutil.TempDir("", "wasm")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+	ctx, keepers := CreateTestInput(t, false, tempDir, MaskFeatures, maskEncoders(MakeTestCodec()), nil)
+	accKeeper, keeper := keepers.AccountKeeper, keepers.WasmKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	creator := createFakeFundedAccount(ctx, accKeeper, deposit)
+
+	// upload mask code
+	maskCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
+	require.NoError(t, err)
+	maskID, err := keeper.Create(ctx, creator, maskCode, "", "", nil)
+	require.NoError(t, err)
+	require.Equal(t, uint64(1), maskID)
+
+	// creator instantiates a contract and gives it tokens
+	maskStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
+	maskAddr, err := keeper.Instantiate(ctx, maskID, creator, nil, []byte("{}"), "mask contract 2", maskStart)
+	require.NoError(t, err)
+	require.NotEmpty(t, maskAddr)
+
+	// control: query directly
+	missingKey := []byte{0, 1, 2, 3, 4}
+	raw := keeper.QueryRaw(ctx, maskAddr, missingKey)
+	require.Nil(t, raw)
+
+	// and with queryRaw
+	reflectQuery := MaskQueryMsg{Chain: &ChainQuery{Request: &wasmTypes.QueryRequest{Wasm: &wasmTypes.WasmQuery{
+		Raw: &wasmTypes.RawQuery{
+			ContractAddr: maskAddr.String(),
+			Key:          missingKey,
+		},
+	}}}}
+	reflectStateBin := buildMaskQuery(t, &reflectQuery)
+	res, err := keeper.QuerySmart(ctx, maskAddr, reflectStateBin)
+	require.NoError(t, err)
+
+	// first we pull out the data from chain response, before parsing the original response
+	var reflectRawRes ChainResponse
+	mustParse(t, res, &reflectRawRes)
+	// and make sure there is no data
+	require.Empty(t, reflectRawRes.Data)
+	// we get an empty byte slice not nil (if anyone care in go-land)
+	require.Equal(t, []byte{}, reflectRawRes.Data)
 }
 
 func checkAccount(t *testing.T, ctx sdk.Context, accKeeper auth.AccountKeeper, addr sdk.AccAddress, expected sdk.Coins) {
@@ -355,12 +501,26 @@ func fromMaskRawMsg(cdc *codec.Codec) CustomEncoder {
 }
 
 type maskCustomQuery struct {
-	Ping    *struct{} `json:"ping,omitempty"`
-	Capital *Text     `json:"capital,omitempty"`
+	Ping        *struct{} `json:"ping,omitempty"`
+	Capitalized *Text     `json:"capitalized,omitempty"`
 }
 
+// this is from the go code back to the contract (capitalized or ping)
 type customQueryResponse struct {
 	Msg string `json:"msg"`
+}
+
+// these are the return values from contract -> go depending on type of query
+type ownerResponse struct {
+	Owner string `json:"owner"`
+}
+
+type capitalizedResponse struct {
+	Text string `json:"text"`
+}
+
+type chainResponse struct {
+	Data []byte `json:"data"`
 }
 
 // maskPlugins needs to be registered in test setup to handle custom query callbacks
@@ -376,8 +536,8 @@ func performCustomQuery(_ sdk.Context, request json.RawMessage) ([]byte, error) 
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	if custom.Capital != nil {
-		msg := strings.ToUpper(custom.Capital.Text)
+	if custom.Capitalized != nil {
+		msg := strings.ToUpper(custom.Capitalized.Text)
 		return json.Marshal(customQueryResponse{Msg: msg})
 	}
 	if custom.Ping != nil {

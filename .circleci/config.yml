@@ -182,7 +182,7 @@ jobs:
       - run:
           name: prepare
           working_directory: x/wasm/linkwasmd
-          command: perf/scripts/prepare.sh perf/contract/cw_erc20_v3.wasm 150
+          command: perf/scripts/prepare.sh perf/contract/cw_erc20_v4.wasm 150
       - run:
           name: capture cpu profile
           working_directory: x/wasm/linkwasmd

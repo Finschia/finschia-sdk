@@ -28,7 +28,7 @@ func TestQueryContractState(t *testing.T) {
 	creator := createFakeFundedAccount(ctx, accKeeper, deposit.Add(deposit...))
 	anyAddr := createFakeFundedAccount(ctx, accKeeper, topUp)
 
-	wasmCode, err := ioutil.ReadFile("./testdata/contract.wasm")
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	contractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
@@ -56,10 +56,10 @@ func TestQueryContractState(t *testing.T) {
 	specs := map[string]struct {
 		srcPath []string
 		srcReq  abci.RequestQuery
-		// smart queries return raw bytes from contract not []types.Model
+		// smart and raw queries (not all queries) return raw bytes from contract not []types.Model
 		// if this is set, then we just compare - (should be json encoded string)
-		expSmartRes string
-		// if success and expSmartRes is not set, we parse into []types.Model and compare
+		expRes []byte
+		// if success and expSmartRes is not set, we parse into []types.Model and compare (all state)
 		expModelLen      int
 		expModelContains []types.Model
 		expErr           *sdkErrors.Error
@@ -73,21 +73,19 @@ func TestQueryContractState(t *testing.T) {
 			},
 		},
 		"query raw key": {
-			srcPath:          []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			srcReq:           abci.RequestQuery{Data: []byte("foo")},
-			expModelLen:      1,
-			expModelContains: []types.Model{{Key: []byte("foo"), Value: []byte(`"bar"`)}},
+			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
+			srcReq:  abci.RequestQuery{Data: []byte("foo")},
+			expRes:  []byte(`"bar"`),
 		},
 		"query raw binary key": {
-			srcPath:          []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			srcReq:           abci.RequestQuery{Data: []byte{0x0, 0x1}},
-			expModelLen:      1,
-			expModelContains: []types.Model{{Key: []byte{0x0, 0x1}, Value: []byte(`{"count":8}`)}},
+			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
+			srcReq:  abci.RequestQuery{Data: []byte{0x0, 0x1}},
+			expRes:  []byte(`{"count":8}`),
 		},
 		"query smart": {
-			srcPath:     []string{QueryGetContractState, addr.String(), QueryMethodContractStateSmart},
-			srcReq:      abci.RequestQuery{Data: []byte(`{"verifier":{}}`)},
-			expSmartRes: fmt.Sprintf(`{"verifier":"%s"}`, anyAddr.String()),
+			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateSmart},
+			srcReq:  abci.RequestQuery{Data: []byte(`{"verifier":{}}`)},
+			expRes:  []byte(fmt.Sprintf(`{"verifier":"%s"}`, anyAddr.String())),
 		},
 		"query smart invalid request": {
 			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateSmart},
@@ -99,18 +97,24 @@ func TestQueryContractState(t *testing.T) {
 			srcReq:  abci.RequestQuery{Data: []byte(`not a json string`)},
 			expErr:  types.ErrQueryFailed,
 		},
-		"query unknown raw key": {
-			srcPath:     []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			srcReq:      abci.RequestQuery{Data: []byte("unknown")},
-			expModelLen: 0,
+		"query non-existent raw key": {
+			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
+			srcReq:  abci.RequestQuery{Data: []byte("i do not exist")},
+			expRes:  nil,
 		},
 		"query empty raw key": {
-			srcPath:     []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			expModelLen: 0,
+			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
+			srcReq:  abci.RequestQuery{Data: []byte("")},
+			expRes:  nil,
+		},
+		"query nil raw key": {
+			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
+			srcReq:  abci.RequestQuery{Data: nil},
+			expRes:  nil,
 		},
 		"query raw with unknown address": {
-			srcPath:     []string{QueryGetContractState, anyAddr.String(), QueryMethodContractStateRaw},
-			expModelLen: 0,
+			srcPath: []string{QueryGetContractState, anyAddr.String(), QueryMethodContractStateRaw},
+			expRes:  nil,
 		},
 		"query all with unknown address": {
 			srcPath:     []string{QueryGetContractState, anyAddr.String(), QueryMethodContractStateAll},
@@ -130,8 +134,8 @@ func TestQueryContractState(t *testing.T) {
 			require.True(t, spec.expErr.Is(err), err)
 
 			// if smart query, check custom response
-			if spec.expSmartRes != "" {
-				require.Equal(t, spec.expSmartRes, string(binResult))
+			if spec.srcPath[2] != QueryMethodContractStateAll {
+				require.Equal(t, spec.expRes, binResult)
 				return
 			}
 
@@ -166,7 +170,7 @@ func TestListContractByCodeOrdering(t *testing.T) {
 	creator := createFakeFundedAccount(ctx, accKeeper, deposit)
 	anyAddr := createFakeFundedAccount(ctx, accKeeper, topUp)
 
-	wasmCode, err := ioutil.ReadFile("./testdata/contract.wasm")
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	codeID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
@@ -241,20 +245,20 @@ func TestQueryContractHistory(t *testing.T) {
 		"response with internal fields cleared": {
 			srcHistory: []types.ContractCodeHistoryEntry{{
 				Operation: types.GenesisContractCodeHistoryType,
-				CodeID:    1,
+				CodeID:    firstCodeID,
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"init message"`),
 			}},
 			expContent: []types.ContractCodeHistoryEntry{{
 				Operation: types.GenesisContractCodeHistoryType,
-				CodeID:    1,
+				CodeID:    firstCodeID,
 				Msg:       []byte(`"init message"`),
 			}},
 		},
 		"response with multiple entries": {
 			srcHistory: []types.ContractCodeHistoryEntry{{
 				Operation: types.InitContractCodeHistoryType,
-				CodeID:    1,
+				CodeID:    firstCodeID,
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"init message"`),
 			}, {
@@ -270,7 +274,7 @@ func TestQueryContractHistory(t *testing.T) {
 			}},
 			expContent: []types.ContractCodeHistoryEntry{{
 				Operation: types.InitContractCodeHistoryType,
-				CodeID:    1,
+				CodeID:    firstCodeID,
 				Msg:       []byte(`"init message"`),
 			}, {
 				Operation: types.MigrateContractCodeHistoryType,
@@ -286,7 +290,7 @@ func TestQueryContractHistory(t *testing.T) {
 			srcQueryAddr: otherAddr,
 			srcHistory: []types.ContractCodeHistoryEntry{{
 				Operation: types.GenesisContractCodeHistoryType,
-				CodeID:    1,
+				CodeID:    firstCodeID,
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"init message"`),
 			}},
@@ -324,7 +328,7 @@ func TestQueryContractHistory(t *testing.T) {
 }
 
 func TestQueryCodeList(t *testing.T) {
-	wasmCode, err := ioutil.ReadFile("./testdata/contract.wasm")
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
 	specs := map[string]struct {

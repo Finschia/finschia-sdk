@@ -3,7 +3,7 @@ module github.com/line/link-modules
 go 1.13
 
 require (
-	github.com/CosmWasm/go-cosmwasm v0.10.0
+	github.com/CosmWasm/go-cosmwasm v0.11.0
 	github.com/cosmos/cosmos-sdk v0.39.2
 	github.com/golang/mock v1.4.3
 	github.com/google/gofuzz v1.0.0
