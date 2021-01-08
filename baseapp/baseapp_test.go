@@ -787,6 +787,10 @@ func TestCheckTx(t *testing.T) {
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
 
+	// Recheck before reviewing `checkStateStore`
+	app.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: header})
+	app.EndRecheckTx(abci.RequestEndRecheckTx{})
+
 	checkStateStore = app.checkState.ctx.KVStore(capKey1)
 	storedBytes := checkStateStore.Get(counterKey)
 	require.Nil(t, storedBytes)
@@ -1536,8 +1540,9 @@ func TestCheckStateQuery(t *testing.T) {
 	res = app.Query(query)
 	require.Equal(t, valueForAnte, res.Value)
 
-	// query returns correct value after Commit
+	// query returns correct value after Commit and BeginRecheck
 	app.Commit()
+	app.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: header})
 	res = app.Query(query)
 	require.Equal(t, append(valueForAnte, valueForMsg...), res.Value)
 }
