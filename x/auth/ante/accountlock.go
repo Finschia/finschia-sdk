@@ -46,7 +46,8 @@ func (ald *AccountLockDecorator) lock(addrKeys []uint32) {
 func (ald *AccountLockDecorator) unlock(addrKeys []uint32) {
 	// NOTE reverse order
 	for i, length := 0, len(addrKeys); i < length; i++ {
-		ald.addrMtx[addrKeys[length-1-i]].Unlock()
+		key := addrKeys[length-1-i]
+		ald.addrMtx[key].Unlock()
 	}
 }
 
