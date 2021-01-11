@@ -37,9 +37,6 @@ var (
 )
 
 type (
-	// Enum mode for app.runTx
-	runTxMode uint8
-
 	// StoreLoader defines a customizable function to control how we load the CommitMultiStore
 	// from disk. This is useful for state migration, when loading a datastore written with
 	// an older version of the software. In particular, if a module changed the substore key name
