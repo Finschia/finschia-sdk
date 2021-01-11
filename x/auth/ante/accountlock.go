@@ -19,6 +19,10 @@ func NewAccountLockDecorator() *AccountLockDecorator {
 }
 
 func (ald *AccountLockDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	if !ctx.IsCheckTx() || ctx.IsReCheckTx() {
+		return next(ctx, tx, simulate)
+	}
+
 	stdTx, ok := tx.(types.StdTx)
 	if !ok {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "Tx must be a StdTx")
