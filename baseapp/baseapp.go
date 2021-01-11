@@ -9,6 +9,7 @@ import (
 	"reflect"
 	"runtime/debug"
 	"strings"
+	"sync"
 
 	"github.com/gogo/protobuf/proto"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -76,6 +77,8 @@ type BaseApp struct { // nolint: maligned
 	// deliverState is set on InitChain and BeginBlock and set to nil on Commit
 	checkState   *state // for CheckTx
 	deliverState *state // for DeliverTx
+
+	checkStateMtx sync.RWMutex
 
 	// an inter-block write-through cache provided to the context during deliverState
 	interBlockCache sdk.MultiStorePersistentCache
@@ -388,6 +391,8 @@ func (app *BaseApp) IsSealed() bool { return app.sealed }
 // on Commit.
 func (app *BaseApp) setCheckState(header abci.Header) {
 	ms := app.cms.CacheMultiStore()
+	app.checkStateMtx.Lock()
+	defer app.checkStateMtx.Unlock()
 	app.checkState = &state{
 		ms: ms,
 		ctx: sdk.NewContext(ms, header, true, app.logger).
@@ -473,6 +478,8 @@ func validateBasicTxMsgs(msgs []sdk.Msg) error {
 }
 
 func (app *BaseApp) getCheckContextForTx(txBytes []byte, recheck bool) sdk.Context {
+	app.checkStateMtx.RLock()
+	defer app.checkStateMtx.RUnlock()
 	return app.getContextForTx(app.checkState, txBytes).WithIsReCheckTx(recheck)
 }
 
@@ -482,7 +489,8 @@ func (app *BaseApp) getRunContextForTx(txBytes []byte, simulate bool) sdk.Contex
 		return app.getContextForTx(app.deliverState, txBytes)
 	}
 
-	// TODO we need a lock for checkState in the case of simulate
+	app.checkStateMtx.RLock()
+	defer app.checkStateMtx.RUnlock()
 	ctx := app.getContextForTx(app.checkState, txBytes)
 	ctx, _ = ctx.CacheContext()
 	return ctx
