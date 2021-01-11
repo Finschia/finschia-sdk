@@ -12,11 +12,11 @@ import (
 func NewAnteHandler(ak keeper.AccountKeeper, supplyKeeper types.SupplyKeeper, sigGasConsumer SignatureVerificationGasConsumer) sdk.AnteHandler {
 	return sdk.ChainAnteDecorators(
 		NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
-		NewAccountLockDecorator(),
 		NewMempoolFeeDecorator(),
 		NewValidateBasicDecorator(),
 		NewValidateMemoDecorator(ak),
 		NewConsumeGasForTxSizeDecorator(ak),
+		NewAccountLockDecorator(),
 		NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		NewValidateSigCountDecorator(ak),
 		NewDeductFeeDecorator(ak, supplyKeeper),
