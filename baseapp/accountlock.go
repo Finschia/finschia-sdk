@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
+// NOTE should 1 <= sampleBytes <= 4. If modify it, you should revise `getAddressKey()` as well
 const sampleBytes = 2
 
 type AccountLock struct {
@@ -54,10 +55,7 @@ func getSigners(tx sdk.Tx) []sdk.AccAddress {
 func getUniqSortedAddressKey(addrs []sdk.AccAddress) []uint32 {
 	accKeys := make([]uint32, 0, len(addrs))
 	for _, addr := range addrs {
-		sample := addr[:sampleBytes]
-		// NOTE need to revise here as well if you modify `sampleBytes`
-		accKey := uint32(binary.BigEndian.Uint16(sample))
-		accKeys = append(accKeys, accKey)
+		accKeys = append(accKeys, getAddressKey(addr))
 	}
 
 	accKeys = uniq(accKeys)
@@ -66,6 +64,10 @@ func getUniqSortedAddressKey(addrs []sdk.AccAddress) []uint32 {
 	})
 
 	return accKeys
+}
+
+func getAddressKey(addr sdk.AccAddress) uint32 {
+	return uint32(binary.BigEndian.Uint16(addr))
 }
 
 func uniq(u []uint32) []uint32 {
