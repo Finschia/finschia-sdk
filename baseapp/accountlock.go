@@ -54,10 +54,9 @@ func getSigners(tx sdk.Tx) []sdk.AccAddress {
 func getUniqSortedAddressKey(addrs []sdk.AccAddress) []uint32 {
 	accKeys := make([]uint32, 0, len(addrs))
 	for _, addr := range addrs {
-		tail3 := addr[:sampleBytes]
-		tail := append([]byte{0}, tail3...)
-
-		accKey := binary.BigEndian.Uint32(tail)
+		sample := addr[:sampleBytes]
+		// NOTE need to revise here as well if you modify `sampleBytes`
+		accKey := uint32(binary.BigEndian.Uint16(sample))
 		accKeys = append(accKeys, accKey)
 	}
 
