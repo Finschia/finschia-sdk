@@ -59,9 +59,7 @@ func getUniqSortedAddressKey(addrs []sdk.AccAddress) []uint32 {
 	}
 
 	accKeys = uniq(accKeys)
-	sort.Slice(accKeys, func(i, j int) bool {
-		return i < j
-	})
+	sort.Sort(uint32Slice(accKeys))
 
 	return accKeys
 }
@@ -81,3 +79,10 @@ func uniq(u []uint32) []uint32 {
 	}
 	return ret
 }
+
+// Uint32Slice attaches the methods of Interface to []uint32, sorting in increasing order.
+type uint32Slice []uint32
+
+func (p uint32Slice) Len() int           { return len(p) }
+func (p uint32Slice) Less(i, j int) bool { return p[i] < p[j] }
+func (p uint32Slice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
