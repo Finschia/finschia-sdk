@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-const sampleBytes = 3
+const sampleBytes = 2
 
 type AccountLock struct {
 	accMtx [1 << (sampleBytes * 8)]sync.Mutex
