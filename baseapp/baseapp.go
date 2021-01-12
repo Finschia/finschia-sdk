@@ -76,6 +76,7 @@ type BaseApp struct { // nolint: maligned
 	deliverState *state // for DeliverTx
 
 	checkStateMtx sync.RWMutex
+	accountLock   AccountLock
 
 	// an inter-block write-through cache provided to the context during deliverState
 	interBlockCache sdk.MultiStorePersistentCache
@@ -541,8 +542,8 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 		return nil, nil
 	}
 
-	var anteCtx sdk.Context
-	var msCache sdk.CacheMultiStore
+	accKeys := app.accountLock.Lock(ctx, tx)
+	defer app.accountLock.Unlock(accKeys)
 
 	// Cache wrap context before AnteHandler call in case it aborts.
 	// This is required for both CheckTx and DeliverTx.
@@ -551,7 +552,7 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 	// NOTE: Alternatively, we could require that AnteHandler ensures that
 	// writes do not happen if aborted/failed.  This may have some
 	// performance benefits, but it'll be more difficult to get right.
-	anteCtx, msCache = app.cacheTxContext(ctx, txBytes)
+	anteCtx, msCache := app.cacheTxContext(ctx, txBytes)
 	anteCtx = anteCtx.WithEventManager(sdk.NewEventManager())
 	newCtx, err := app.anteHandler(anteCtx, tx, simulate)
 

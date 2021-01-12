@@ -16,7 +16,6 @@ func NewAnteHandler(ak keeper.AccountKeeper, supplyKeeper types.SupplyKeeper, si
 		NewValidateBasicDecorator(),
 		NewValidateMemoDecorator(ak),
 		NewConsumeGasForTxSizeDecorator(ak),
-		NewAccountLockDecorator(),
 		NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		NewValidateSigCountDecorator(ak),
 		NewDeductFeeDecorator(ak, supplyKeeper),
