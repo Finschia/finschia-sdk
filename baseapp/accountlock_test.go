@@ -2,6 +2,7 @@ package baseapp
 
 import (
 	"reflect"
+	"sort"
 	"sync"
 	"testing"
 
@@ -55,6 +56,8 @@ func TestGetUniqSortedAddressKey(t *testing.T) {
 	require.Equal(t, 5, len(addrs))
 
 	accKeys := getUniqSortedAddressKey(addrs)
+
+	// length should be reduced because `duplicated` is removed
 	require.Less(t, len(accKeys), len(addrs))
 
 	// check uniqueness
@@ -65,6 +68,9 @@ func TestGetUniqSortedAddressKey(t *testing.T) {
 			}
 		}
 	}
+
+	// should be sorted
+	require.True(t, sort.IsSorted(uint32Slice(accKeys)))
 }
 
 type AccountLockTestTx struct {
