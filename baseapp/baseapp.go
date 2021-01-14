@@ -532,6 +532,9 @@ func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.
 		return gInfo, err
 	}
 
+	accKeys := app.accountLock.Lock(ctx, tx)
+	defer app.accountLock.Unlock(accKeys)
+
 	_, err = app.anteTx(ctx, txBytes, tx, false)
 
 	return gInfo, err
@@ -541,9 +544,6 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 	if app.anteHandler == nil {
 		return nil, nil
 	}
-
-	accKeys := app.accountLock.Lock(ctx, tx)
-	defer app.accountLock.Unlock(accKeys)
 
 	// Cache wrap context before AnteHandler call in case it aborts.
 	// This is required for both CheckTx and DeliverTx.
