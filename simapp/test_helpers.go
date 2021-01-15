@@ -141,7 +141,7 @@ func SignCheckDeliver(
 		require.Nil(t, res)
 	}
 
-	// Simulate a sending a transaction and committing a block
+	// Simulate a sending a transaction and committing a block and recheck
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 	gInfo, res, err := app.Deliver(tx)
 
@@ -155,6 +155,9 @@ func SignCheckDeliver(
 
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
+
+	app.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: header})
+	app.EndRecheckTx(abci.RequestEndRecheckTx{})
 
 	return gInfo, res, err
 }

@@ -55,19 +55,17 @@ func CheckBalance(t *testing.T, app *App, addr sdk.AccAddress, exp sdk.Coins) {
 func CheckGenTx(
 	t *testing.T, app *baseapp.BaseApp, msgs []sdk.Msg, accNums []uint64,
 	seq []uint64, expPass bool, priv ...crypto.PrivKey,
-) (sdk.GasInfo, *sdk.Result, error) {
+) (sdk.GasInfo, error) {
 	tx := GenTx(msgs, accNums, seq, priv...)
-	gInfo, res, err := app.Check(tx)
+	gInfo, err := app.Check(tx)
 
 	if expPass {
 		require.NoError(t, err)
-		require.NotNil(t, res)
 	} else {
 		require.Error(t, err)
-		require.Nil(t, res)
 	}
 
-	return gInfo, res, err
+	return gInfo, err
 }
 
 // SignCheckDeliver checks a generated signed transaction and simulates a
@@ -95,7 +93,7 @@ func SignCheckDeliver(
 		require.Nil(t, res)
 	}
 
-	// Simulate a sending a transaction and committing a block
+	// Simulate a sending a transaction and committing a block and recheck
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	gInfo, res, err := app.Deliver(tx)
@@ -110,6 +108,9 @@ func SignCheckDeliver(
 
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
+
+	app.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: header})
+	app.EndRecheckTx(abci.RequestEndRecheckTx{})
 
 	return gInfo, res, err
 }
