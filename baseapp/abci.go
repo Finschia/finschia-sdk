@@ -213,20 +213,16 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
 
-	var mode runTxMode
+	tx, err := app.txDecoder(req.Tx)
+	if err != nil {
+		return sdkerrors.ResponseCheckTx(err, 0, 0, app.trace)
+	}
 
-	switch {
-	case req.Type == abci.CheckTxType_New:
-		mode = runTxModeCheck
-
-	case req.Type == abci.CheckTxType_Recheck:
-		mode = runTxModeReCheck
-
-	default:
+	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
 		panic(fmt.Sprintf("unknown RequestCheckTx type: %s", req.Type))
 	}
 
-	gInfo, result, err := app.runTx(mode, req.Tx)
+	gInfo, err := app.checkTx(req.Tx, tx, req.Type == abci.CheckTxType_Recheck)
 	if err != nil {
 		return sdkerrors.ResponseCheckTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace)
 	}
@@ -234,10 +230,19 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	return abci.ResponseCheckTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
-		Log:       result.Log,
-		Data:      result.Data,
-		Events:    sdk.MarkEventsToIndex(result.Events, app.indexEvents),
 	}
+}
+
+// BeginRecheckTx implements the ABCI interface and set the check state based on the given header
+func (app *BaseApp) BeginRecheckTx(req abci.RequestBeginRecheckTx) abci.ResponseBeginRecheckTx {
+	// NOTE: This is safe because Tendermint holds a lock on the mempool for Rechecking.
+	app.setCheckState(req.Header)
+	return abci.ResponseBeginRecheckTx{Code: abci.CodeTypeOK}
+}
+
+// EndRecheckTx implements the ABCI interface.
+func (app *BaseApp) EndRecheckTx(req abci.RequestEndRecheckTx) abci.ResponseEndRecheckTx {
+	return abci.ResponseEndRecheckTx{Code: abci.CodeTypeOK}
 }
 
 // DeliverTx implements the ABCI interface and executes a tx in DeliverTx mode.
@@ -258,7 +263,12 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) abci.ResponseDeliverTx 
 		telemetry.SetGauge(float32(gInfo.GasWanted), "tx", "gas", "wanted")
 	}()
 
-	gInfo, result, err := app.runTx(runTxModeDeliver, req.Tx)
+	tx, err := app.txDecoder(req.Tx)
+	if err != nil {
+		return sdkerrors.ResponseDeliverTx(err, 0, 0, app.trace)
+	}
+
+	gInfo, result, err := app.runTx(req.Tx, tx, false)
 	if err != nil {
 		resultStr = "failed"
 		return sdkerrors.ResponseDeliverTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace)
@@ -275,11 +285,10 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) abci.ResponseDeliverTx 
 
 // Commit implements the ABCI interface. It will commit all state that exists in
 // the deliver state's multi-store and includes the resulting commit ID in the
-// returned abci.ResponseCommit. Commit will set the check state based on the
-// latest header and reset the deliver state. Also, if a non-zero halt height is
-// defined in config, Commit will execute a deferred function call to check
-// against that height and gracefully halt if it matches the latest committed
-// height.
+// returned abci.ResponseCommit. Commit will reset the deliver state.
+// Also, if a non-zero halt height is defined in config, Commit will execute
+// a deferred function call to check against that height and gracefully halt if
+// it matches the latest committed height.
 func (app *BaseApp) Commit() (res abci.ResponseCommit) {
 	defer telemetry.MeasureSince(time.Now(), "abci", "commit")
 
@@ -292,12 +301,6 @@ func (app *BaseApp) Commit() (res abci.ResponseCommit) {
 	app.deliverState.ms.Write()
 	commitID := app.cms.Commit()
 	app.logger.Info("commit synced", "commit", fmt.Sprintf("%X", commitID))
-
-	// Reset the Check state to the latest committed.
-	//
-	// NOTE: This is safe because Tendermint holds a lock on the mempool for
-	// Commit. Use the header from this latest block.
-	app.setCheckState(header)
 
 	// empty/reset the deliver state
 	app.deliverState = nil
