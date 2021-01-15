@@ -15,11 +15,7 @@ type AccountLock struct {
 	accMtx [1 << (sampleBytes * 8)]sync.Mutex
 }
 
-func (al *AccountLock) Lock(ctx sdk.Context, tx sdk.Tx) []uint32 {
-	if !ctx.IsCheckTx() || ctx.IsReCheckTx() {
-		return nil
-	}
-
+func (al *AccountLock) Lock(tx sdk.Tx) []uint32 {
 	signers := getSigners(tx)
 	accKeys := getUniqSortedAddressKey(signers)
 

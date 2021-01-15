@@ -78,6 +78,8 @@ type BaseApp struct { // nolint: maligned
 	checkStateMtx sync.RWMutex
 	accountLock   AccountLock
 
+	chCheckTx chan *RequestCheckTxAsync
+
 	// an inter-block write-through cache provided to the context during deliverState
 	interBlockCache sdk.MultiStorePersistentCache
 
@@ -127,8 +129,10 @@ func NewBaseApp(
 		queryRouter:    NewQueryRouter(),
 		txDecoder:      txDecoder,
 		fauxMerkleMode: false,
-		trace:          false,
-		metrics:        NopMetrics(),
+		// TODO config channel buffer size. It might be good to set it tendermint mempool.size
+		chCheckTx: make(chan *RequestCheckTxAsync, 10000),
+		trace:     false,
+		metrics:   NopMetrics(),
 	}
 	for _, option := range options {
 		option(app)
@@ -137,6 +141,8 @@ func NewBaseApp(
 	if app.interBlockCache != nil {
 		app.cms.SetInterBlockCache(app.interBlockCache)
 	}
+
+	app.startReactors()
 
 	return app
 }
@@ -517,23 +523,37 @@ func (app *BaseApp) cacheTxContext(ctx sdk.Context, txBytes []byte) (sdk.Context
 	return ctx.WithMultiStore(msCache), msCache
 }
 
-func (app *BaseApp) checkTxWithLock(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.GasInfo, err error) {
+// stateless checkTx
+func (app *BaseApp) preCheckTx(txBytes []byte) (tx sdk.Tx, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			err = app.recoverToError(r)
+		}
+	}()
+
+	tx, err = app.txDecoder(txBytes)
+	if err != nil {
+		return tx, err
+	}
+
+	msgs := tx.GetMsgs()
+	err = validateBasicTxMsgs(msgs)
+
+	return tx, err
+}
+
+func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.GasInfo, err error) {
 	ctx := app.getCheckContextForTx(txBytes, recheck)
 	gasCtx := &ctx
 
 	defer func() {
 		if r := recover(); r != nil {
-			err = app.recoverToError(r, ctx.GasMeter())
+			err = app.recoverToErrorWithGas(r, ctx.GasMeter())
 		}
 		gInfo = sdk.GasInfo{GasWanted: gasCtx.GasMeter().Limit(), GasUsed: gasCtx.GasMeter().GasConsumed()}
 	}()
 
-	msgs := tx.GetMsgs()
-	if err = validateBasicTxMsgs(msgs); err != nil {
-		return gInfo, err
-	}
-
-	accKeys := app.accountLock.Lock(ctx, tx)
+	accKeys := app.accountLock.Lock(tx)
 	defer app.accountLock.Unlock(accKeys)
 
 	var anteCtx sdk.Context
@@ -593,7 +613,7 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 
 	defer func() {
 		if r := recover(); r != nil {
-			err = app.recoverToError(r, ctx.GasMeter())
+			err = app.recoverToErrorWithGas(r, ctx.GasMeter())
 			result = nil
 		}
 
@@ -699,7 +719,7 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 	}, nil
 }
 
-func (app *BaseApp) recoverToError(r interface{}, gasMeter sdk.GasMeter) error {
+func (app *BaseApp) recoverToErrorWithGas(r interface{}, gasMeter sdk.GasMeter) error {
 	switch rType := r.(type) {
 	// TODO: Use ErrOutOfGas instead of ErrorOutOfGas which would allow us
 	// to keep the stracktrace.
@@ -712,11 +732,15 @@ func (app *BaseApp) recoverToError(r interface{}, gasMeter sdk.GasMeter) error {
 		)
 
 	default:
-		app.logger.Error("recoverToError", "r", r, "stack", string(debug.Stack()))
-		return sdkerrors.Wrap(
-			sdkerrors.ErrPanic, fmt.Sprintf(
-				"recovered: %v\nstack:\n%v", r, string(debug.Stack()),
-			),
-		)
+		return app.recoverToError(r)
 	}
+}
+
+func (app *BaseApp) recoverToError(r interface{}) error {
+	app.logger.Error("recoverToError", "r", r, "stack", string(debug.Stack()))
+	return sdkerrors.Wrap(
+		sdkerrors.ErrPanic, fmt.Sprintf(
+			"recovered: %v\nstack:\n%v", r, string(debug.Stack()),
+		),
+	)
 }

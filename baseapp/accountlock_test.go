@@ -8,7 +8,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
@@ -17,12 +16,11 @@ import (
 
 func TestAccountLock(t *testing.T) {
 	app := setupBaseApp(t)
-	ctx := app.NewContext(true, abci.Header{})
 
 	privs := newTestPrivKeys(3)
 	tx := newTestTx(privs)
 
-	accKeys := app.accountLock.Lock(ctx, tx)
+	accKeys := app.accountLock.Lock(tx)
 
 	for _, accKey := range accKeys {
 		require.True(t, isMutexLock(&app.accountLock.accMtx[accKey]))
