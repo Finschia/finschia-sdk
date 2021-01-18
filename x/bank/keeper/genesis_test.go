@@ -50,6 +50,7 @@ func (suite *IntegrationTestSuite) TestInitGenesis() {
 	bk := suite.app.BankKeeper
 	bk.InitGenesis(suite.ctx, g)
 
-	m2 := bk.GetDenomMetaData(suite.ctx, m.Base)
+	m2, found := bk.GetDenomMetaData(suite.ctx, m.Base)
+	suite.Require().True(found)
 	suite.Require().Equal(m, m2)
 }

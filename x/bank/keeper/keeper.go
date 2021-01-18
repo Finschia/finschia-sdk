@@ -27,7 +27,7 @@ type Keeper interface {
 	GetSupply(ctx sdk.Context) exported.SupplyI
 	SetSupply(ctx sdk.Context, supply exported.SupplyI)
 
-	GetDenomMetaData(ctx sdk.Context, denom string) types.Metadata
+	GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool)
 	SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metadata)
 	IterateAllDenomMetaData(ctx sdk.Context, cb func(types.Metadata) bool)
 
@@ -180,13 +180,13 @@ func (k BaseKeeper) SetSupply(ctx sdk.Context, supply exported.SupplyI) {
 }
 
 // GetDenomMetaData retrieves the denomination metadata
-func (k BaseKeeper) GetDenomMetaData(ctx sdk.Context, denom string) types.Metadata {
+func (k BaseKeeper) GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool) {
 	store := ctx.KVStore(k.storeKey)
 	store = prefix.NewStore(store, types.DenomMetadataKey(denom))
 
 	bz := store.Get([]byte(denom))
 	if bz == nil {
-		return types.Metadata{}
+		return types.Metadata{}, false
 	}
 
 	var metadata types.Metadata
@@ -194,7 +194,7 @@ func (k BaseKeeper) GetDenomMetaData(ctx sdk.Context, denom string) types.Metada
 		panic(err)
 	}
 
-	return metadata
+	return metadata, true
 }
 
 // GetAllDenomMetaData retrieves all denominations metadata
