@@ -171,8 +171,10 @@ func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) abci.ResponseCheckTx {
 		return sdkerrors.ResponseCheckTx(err, 0, 0, app.trace)
 	}
 
-	accKeys := app.accountLock.Lock(tx)
-	defer app.accountLock.Unlock(accKeys)
+	waits, signals := app.checkAccountWGs.Register(tx)
+
+	app.checkAccountWGs.Waits(waits)
+	defer app.checkAccountWGs.Done(signals)
 
 	gInfo, err := app.checkTx(req.Tx, tx, req.Type == abci.CheckTxType_Recheck)
 	if err != nil {

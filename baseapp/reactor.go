@@ -23,17 +23,16 @@ type RequestCheckTxAsync struct {
 }
 
 func (app *BaseApp) checkTxReactor() {
-	for {
-		req := <-app.chCheckTx
-
+	for req := range app.chCheckTx {
 		req.prepare.Wait()
 		if req.err != nil {
 			req.callback(sdkerrors.ResponseCheckTx(req.err, 0, 0, app.trace))
 			continue
 		}
 
-		accKeys := app.accountLock.Lock(req.tx)
-		go app.checkTxWithUnlock(req, accKeys)
+		waits, signals := app.checkAccountWGs.Register(req.tx)
+
+		go app.checkTxWithUnlock(req, waits, signals)
 	}
 }
 
@@ -42,10 +41,12 @@ func (app *BaseApp) prepareCheckTx(req *RequestCheckTxAsync) {
 	req.tx, req.err = app.preCheckTx(req.txBytes)
 }
 
-func (app *BaseApp) checkTxWithUnlock(req *RequestCheckTxAsync, accKeys []uint32) {
+func (app *BaseApp) checkTxWithUnlock(req *RequestCheckTxAsync, waits []*sync.WaitGroup, signals []*AccountWG) {
+	app.checkAccountWGs.Waits(waits)
+
 	gInfo, err := app.checkTx(req.txBytes, req.tx, req.recheck)
 
-	app.accountLock.Unlock(accKeys)
+	app.checkAccountWGs.Done(signals)
 
 	if err != nil {
 		req.callback(sdkerrors.ResponseCheckTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace))
@@ -56,10 +57,4 @@ func (app *BaseApp) checkTxWithUnlock(req *RequestCheckTxAsync, accKeys []uint32
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
 	})
-}
-
-func waitGroup1() (wg *sync.WaitGroup) {
-	wg = &sync.WaitGroup{}
-	wg.Add(1)
-	return
 }

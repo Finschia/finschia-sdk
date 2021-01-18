@@ -76,9 +76,9 @@ type BaseApp struct { // nolint: maligned
 	deliverState *state // for DeliverTx
 
 	checkStateMtx sync.RWMutex
-	accountLock   AccountLock
 
-	chCheckTx chan *RequestCheckTxAsync
+	checkAccountWGs *AccountWGs
+	chCheckTx       chan *RequestCheckTxAsync
 
 	// an inter-block write-through cache provided to the context during deliverState
 	interBlockCache sdk.MultiStorePersistentCache
@@ -120,19 +120,19 @@ func NewBaseApp(
 ) *BaseApp {
 
 	app := &BaseApp{
-		logger:         logger,
-		name:           name,
-		db:             db,
-		cms:            store.NewCommitMultiStore(db),
-		storeLoader:    DefaultStoreLoader,
-		router:         NewRouter(),
-		queryRouter:    NewQueryRouter(),
-		txDecoder:      txDecoder,
-		fauxMerkleMode: false,
-		// TODO config channel buffer size. It might be good to set it tendermint mempool.size
-		chCheckTx: make(chan *RequestCheckTxAsync, 10000),
-		trace:     false,
-		metrics:   NopMetrics(),
+		logger:          logger,
+		name:            name,
+		db:              db,
+		cms:             store.NewCommitMultiStore(db),
+		storeLoader:     DefaultStoreLoader,
+		router:          NewRouter(),
+		queryRouter:     NewQueryRouter(),
+		txDecoder:       txDecoder,
+		fauxMerkleMode:  false,
+		checkAccountWGs: NewAccountWGs(),
+		chCheckTx:       make(chan *RequestCheckTxAsync, 10000), // TODO config channel buffer size. It might be good to set it tendermint mempool.size
+		trace:           false,
+		metrics:         NopMetrics(),
 	}
 	for _, option := range options {
 		option(app)
