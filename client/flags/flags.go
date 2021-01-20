@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
+	cfg "github.com/tendermint/tendermint/config"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/cosmos/cosmos-sdk/crypto/keys"
@@ -62,13 +63,15 @@ const (
 	FlagKeyringBackend     = "keyring-backend"
 	FlagPage               = "page"
 	FlagLimit              = "limit"
+	FlagPrivKeyType        = "priv_key_type"
 )
 
 // LineBreak can be included in a command list to provide a blank line
 // to help with readability
 var (
-	LineBreak  = &cobra.Command{Run: func(*cobra.Command, []string) {}}
-	GasFlagVar = GasSetting{Gas: DefaultGasLimit}
+	LineBreak          = &cobra.Command{Run: func(*cobra.Command, []string) {}}
+	GasFlagVar         = GasSetting{Gas: DefaultGasLimit}
+	DefaultPrivKeyType = cfg.DefaultBaseConfig().PrivKeyType
 )
 
 // GetCommands adds common flags to query commands
