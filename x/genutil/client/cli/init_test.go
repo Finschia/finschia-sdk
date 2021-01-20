@@ -135,6 +135,21 @@ func TestInitNodeValidatorFiles(t *testing.T) {
 	require.NotEqual(t, 0, len(valPubKey.Bytes()))
 }
 
+func TestInitNodeValidatorFilesWithComposite(t *testing.T) {
+	home, cleanup := tests.NewTestCaseDir(t)
+	defer cleanup()
+	viper.Set(cli.HomeFlag, home)
+	viper.Set(flags.FlagPrivKeyType, "composite")
+	viper.Set(flags.FlagName, "moniker")
+	cfg, err := tcmd.ParseConfig()
+	cfg.PrivKeyType = viper.GetString(flags.FlagPrivKeyType)
+	require.Nil(t, err)
+	nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(cfg)
+	require.Nil(t, err)
+	require.NotEqual(t, "", nodeID)
+	require.NotEqual(t, 0, len(valPubKey.Bytes()))
+}
+
 // custom tx codec
 func makeCodec() *codec.Codec {
 	var cdc = codec.New()
