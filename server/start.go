@@ -9,6 +9,9 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/spf13/cobra"
+	"google.golang.org/grpc"
+
 	"github.com/line/ostracon/abci/server"
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostos "github.com/line/ostracon/libs/os"
@@ -17,18 +20,21 @@ import (
 	pvm "github.com/line/ostracon/privval"
 	"github.com/line/ostracon/proxy"
 	"github.com/line/ostracon/rpc/client/local"
-	"github.com/spf13/cobra"
-	"google.golang.org/grpc"
+	crgserver "github.com/tendermint/cosmos-rosetta-gateway/server"
 
 	"github.com/line/lbm-sdk/store/cache"
 	"github.com/line/lbm-sdk/store/iavl"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/server/api"
 	"github.com/line/lbm-sdk/server/config"
 	servergrpc "github.com/line/lbm-sdk/server/grpc"
+	"github.com/line/lbm-sdk/server/rosetta"
 	"github.com/line/lbm-sdk/server/types"
+	"github.com/line/lbm-sdk/store/cache"
+	"github.com/line/lbm-sdk/store/iavl"
 	storetypes "github.com/line/lbm-sdk/store/types"
 )
 
@@ -295,7 +301,6 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	}
 
 	var apiSrv *api.Server
-
 	if config.API.Enable {
 		genDoc, err := genDocProvider()
 		if err != nil {
@@ -338,6 +343,42 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 				ctx.Logger.Error("failed to start grpc-web http server: ", err)
 				return err
 			}
+		}
+	}
+
+	var rosettaSrv crgserver.Server
+	if config.Rosetta.Enable {
+		offlineMode := config.Rosetta.Offline
+		if !config.GRPC.Enable { // If GRPC is not enabled rosetta cannot work in online mode, so it works in offline mode.
+			offlineMode = true
+		}
+
+		conf := &rosetta.Config{
+			Blockchain:    config.Rosetta.Blockchain,
+			Network:       config.Rosetta.Network,
+			TendermintRPC: ctx.Config.RPC.ListenAddress,
+			GRPCEndpoint:  config.GRPC.Address,
+			Addr:          config.Rosetta.Address,
+			Retries:       config.Rosetta.Retries,
+			Offline:       offlineMode,
+		}
+		conf.WithCodec(clientCtx.InterfaceRegistry, clientCtx.JSONMarshaler.(*codec.ProtoCodec))
+
+		rosettaSrv, err = rosetta.ServerFromConfig(conf)
+		if err != nil {
+			return err
+		}
+		errCh := make(chan error)
+		go func() {
+			if err := rosettaSrv.Start(); err != nil {
+				errCh <- err
+			}
+		}()
+
+		select {
+		case err := <-errCh:
+			return err
+		case <-time.After(5 * time.Second): // assume server started successfully
 		}
 	}
 

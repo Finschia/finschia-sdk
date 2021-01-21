@@ -135,6 +135,39 @@ func (t *Tx) GetSigners() []sdk.AccAddress {
 	return signers
 }
 
+func (t *Tx) GetGas() uint64 {
+	return t.AuthInfo.Fee.GasLimit
+}
+func (t *Tx) GetFee() sdk.Coins {
+	return t.AuthInfo.Fee.Amount
+}
+func (t *Tx) FeePayer() sdk.AccAddress {
+	feePayer := t.AuthInfo.Fee.Payer
+	if feePayer != "" {
+		err := sdk.ValidateAccAddress(feePayer)
+		if err != nil {
+			panic(err)
+		}
+		payerAddr := sdk.AccAddress(feePayer)
+		return payerAddr
+	}
+	// use first signer as default if no payer specified
+	return t.GetSigners()[0]
+}
+
+func (t *Tx) FeeGranter() sdk.AccAddress {
+	feePayer := t.AuthInfo.Fee.Granter
+	if feePayer != "" {
+		err := sdk.ValidateAccAddress(feePayer)
+		if err != nil {
+			panic(err)
+		}
+		granterAddr := sdk.AccAddress(feePayer)
+		return granterAddr
+	}
+	return sdk.AccAddress("")
+}
+
 // UnpackInterfaces implements the UnpackInterfaceMessages.UnpackInterfaces method
 func (t *Tx) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	if t.Body != nil {

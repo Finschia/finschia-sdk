@@ -3,8 +3,8 @@ package grpc
 import (
 	"net/http"
 
-	"github.com/cosmos/cosmos-sdk/server/config"
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
+	"github.com/line/lbm-sdk/server/config"
 	"google.golang.org/grpc"
 )
 
