@@ -523,7 +523,7 @@ func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.
 
 	defer func() {
 		if r := recover(); r != nil {
-			err = recoverToError(r, ctx.GasMeter())
+			err = app.recoverToError(r, ctx.GasMeter())
 		}
 		gInfo = sdk.GasInfo{GasWanted: gasCtx.GasMeter().Limit(), GasUsed: gasCtx.GasMeter().GasConsumed()}
 	}()
@@ -593,7 +593,7 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 
 	defer func() {
 		if r := recover(); r != nil {
-			err = recoverToError(r, ctx.GasMeter())
+			err = app.recoverToError(r, ctx.GasMeter())
 			result = nil
 		}
 
@@ -699,7 +699,7 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 	}, nil
 }
 
-func recoverToError(r interface{}, gasMeter sdk.GasMeter) error {
+func (app *BaseApp) recoverToError(r interface{}, gasMeter sdk.GasMeter) error {
 	switch rType := r.(type) {
 	// TODO: Use ErrOutOfGas instead of ErrorOutOfGas which would allow us
 	// to keep the stracktrace.
@@ -712,6 +712,7 @@ func recoverToError(r interface{}, gasMeter sdk.GasMeter) error {
 		)
 
 	default:
+		app.logger.Error("recoverToError", "r", r, "stack", string(debug.Stack()))
 		return sdkerrors.Wrap(
 			sdkerrors.ErrPanic, fmt.Sprintf(
 				"recovered: %v\nstack:\n%v", r, string(debug.Stack()),
