@@ -546,13 +546,14 @@ func (app *BaseApp) cacheTxContext(ctx sdk.Context, txBytes []byte) (sdk.Context
 
 func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.GasInfo, err error) {
 	ctx := app.getCheckContextForTx(txBytes, recheck)
+	gasCtx := &ctx
 
 	defer func() {
 		if r := recover(); r != nil {
 			recoveryMW := newDefaultRecoveryMiddleware()
 			err = processRecovery(r, recoveryMW)
 		}
-		gInfo = sdk.GasInfo{GasWanted: ctx.GasMeter().Limit(), GasUsed: ctx.GasMeter().GasConsumed()}
+		gInfo = sdk.GasInfo{GasWanted: gasCtx.GasMeter().Limit(), GasUsed: gasCtx.GasMeter().GasConsumed()}
 	}()
 
 	msgs := tx.GetMsgs()
@@ -563,14 +564,18 @@ func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.
 	accKeys := app.accountLock.Lock(ctx, tx)
 	defer app.accountLock.Unlock(accKeys)
 
-	_, err = app.anteTx(ctx, txBytes, tx, false)
+	var anteCtx sdk.Context
+	anteCtx, err = app.anteTx(ctx, txBytes, tx, false)
+	if !anteCtx.IsZero() {
+		gasCtx = &anteCtx
+	}
 
 	return gInfo, err
 }
 
-func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate bool) (*sdk.Context, error) {
+func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate bool) (sdk.Context, error) {
 	if app.anteHandler == nil {
-		return nil, nil
+		return ctx, nil
 	}
 
 	// Branch context before AnteHandler call in case it aborts.
@@ -585,11 +590,11 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 	newCtx, err := app.anteHandler(anteCtx, tx, simulate)
 
 	if err != nil {
-		return &newCtx, err
+		return newCtx, err
 	}
 
 	msCache.Write()
-	return &newCtx, err
+	return newCtx, err
 }
 
 // runTx processes a transaction within a given execution mode, encoded transaction
@@ -600,11 +605,6 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 // returned if the tx does not run out of gas and if all the messages are valid
 // and execute successfully. An error is returned otherwise.
 func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
-	// NOTE: GasWanted should be returned by the AnteHandler. GasUsed is
-	// determined by the GasMeter. We need access to the context to get the gas
-	// meter so we initialize upfront.
-	var gasWanted uint64
-
 	ctx := app.getRunContextForTx(txBytes, simulate)
 	ms := ctx.MultiStore()
 
@@ -621,11 +621,11 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 
 	defer func() {
 		if r := recover(); r != nil {
-			recoveryMW := newOutOfGasRecoveryMiddleware(gasWanted, ctx, app.runTxRecoveryMiddleware)
+			recoveryMW := newOutOfGasRecoveryMiddleware(ctx.GasMeter().Limit(), ctx, app.runTxRecoveryMiddleware)
 			err, result = processRecovery(r, recoveryMW), nil
 		}
 
-		gInfo = sdk.GasInfo{GasWanted: gasWanted, GasUsed: ctx.GasMeter().GasConsumed()}
+		gInfo = sdk.GasInfo{GasWanted: ctx.GasMeter().Limit(), GasUsed: ctx.GasMeter().GasConsumed()}
 	}()
 
 	// If BlockGasMeter() panics it will be caught by the above recover and will
@@ -650,10 +650,9 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 		return sdk.GasInfo{}, nil, err
 	}
 
-	var events sdk.Events
-	var newCtx *sdk.Context
+	var newCtx sdk.Context
 	newCtx, err = app.anteTx(ctx, txBytes, tx, simulate)
-	if newCtx != nil && !newCtx.IsZero() {
+	if !newCtx.IsZero() {
 		// At this point, newCtx.MultiStore() is a store branch, or something else
 		// replaced by the AnteHandler. We want the original multistore.
 		//
@@ -663,10 +662,7 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 		ctx = newCtx.WithMultiStore(ms)
 	}
 
-	events = ctx.EventManager().Events()
-
-	// GasMeter expected to be set in AnteHandler
-	gasWanted = ctx.GasMeter().Limit()
+	events := ctx.EventManager().Events()
 
 	if err != nil {
 		return gInfo, nil, err
