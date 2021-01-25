@@ -10,7 +10,7 @@ import (
 )
 
 func (app *BaseApp) startReactors() {
-	go app.checkTxReactor()
+	go app.startCheckTxAsyncReactor()
 }
 
 type RequestCheckTxAsync struct {
@@ -22,7 +22,7 @@ type RequestCheckTxAsync struct {
 	err      error
 }
 
-func (app *BaseApp) checkTxReactor() {
+func (app *BaseApp) startCheckTxAsyncReactor() {
 	for req := range app.chCheckTx {
 		req.prepare.Wait()
 		if req.err != nil {
@@ -32,7 +32,7 @@ func (app *BaseApp) checkTxReactor() {
 
 		waits, signals := app.checkAccountWGs.Register(req.tx)
 
-		go app.checkTxWithUnlock(req, waits, signals)
+		go app.checkTxAsync(req, waits, signals)
 	}
 }
 
@@ -41,12 +41,11 @@ func (app *BaseApp) prepareCheckTx(req *RequestCheckTxAsync) {
 	req.tx, req.err = app.preCheckTx(req.txBytes)
 }
 
-func (app *BaseApp) checkTxWithUnlock(req *RequestCheckTxAsync, waits []*sync.WaitGroup, signals []*AccountWG) {
+func (app *BaseApp) checkTxAsync(req *RequestCheckTxAsync, waits []*sync.WaitGroup, signals []*AccountWG) {
 	app.checkAccountWGs.Waits(waits)
+	defer app.checkAccountWGs.Done(signals)
 
 	gInfo, err := app.checkTx(req.txBytes, req.tx, req.recheck)
-
-	app.checkAccountWGs.Done(signals)
 
 	if err != nil {
 		req.callback(sdkerrors.ResponseCheckTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace))

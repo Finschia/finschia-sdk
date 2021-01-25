@@ -553,9 +553,6 @@ func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.
 		gInfo = sdk.GasInfo{GasWanted: gasCtx.GasMeter().Limit(), GasUsed: gasCtx.GasMeter().GasConsumed()}
 	}()
 
-	accKeys := app.accountLock.Lock(tx)
-	defer app.accountLock.Unlock(accKeys)
-
 	var anteCtx sdk.Context
 	anteCtx, err = app.anteTx(ctx, txBytes, tx, false)
 	if !anteCtx.IsZero() {
