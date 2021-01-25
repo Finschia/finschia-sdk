@@ -37,7 +37,7 @@ func TestRegister(t *testing.T) {
 func TestDontPanicWithNil(t *testing.T) {
 	app := setupBaseApp(t)
 
-	require.NotPanics(t, func() { app.checkAccountWGs.Waits(nil) })
+	require.NotPanics(t, func() { app.checkAccountWGs.Wait(nil) })
 	require.NotPanics(t, func() { app.checkAccountWGs.Done(nil) })
 }
 

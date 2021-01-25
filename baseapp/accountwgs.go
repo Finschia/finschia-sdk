@@ -34,7 +34,7 @@ func (aw *AccountWGs) Register(tx sdk.Tx) (waits []*sync.WaitGroup, signals []*A
 	return waits, signals
 }
 
-func (aw *AccountWGs) Waits(waits []*sync.WaitGroup) {
+func (aw *AccountWGs) Wait(waits []*sync.WaitGroup) {
 	for _, wait := range waits {
 		wait.Wait()
 	}

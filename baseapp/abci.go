@@ -173,7 +173,7 @@ func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) abci.ResponseCheckTx {
 
 	waits, signals := app.checkAccountWGs.Register(tx)
 
-	app.checkAccountWGs.Waits(waits)
+	app.checkAccountWGs.Wait(waits)
 	defer app.checkAccountWGs.Done(signals)
 
 	gInfo, err := app.checkTx(req.Tx, tx, req.Type == abci.CheckTxType_Recheck)

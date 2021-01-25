@@ -42,7 +42,7 @@ func (app *BaseApp) prepareCheckTx(req *RequestCheckTxAsync) {
 }
 
 func (app *BaseApp) checkTxAsync(req *RequestCheckTxAsync, waits []*sync.WaitGroup, signals []*AccountWG) {
-	app.checkAccountWGs.Waits(waits)
+	app.checkAccountWGs.Wait(waits)
 	defer app.checkAccountWGs.Done(signals)
 
 	gInfo, err := app.checkTx(req.txBytes, req.tx, req.recheck)
