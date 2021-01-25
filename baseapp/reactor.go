@@ -10,7 +10,7 @@ import (
 )
 
 func (app *BaseApp) startReactors() {
-	go app.startCheckTxAsyncReactor()
+	go app.checkTxAsyncReactor()
 }
 
 type RequestCheckTxAsync struct {
@@ -22,7 +22,7 @@ type RequestCheckTxAsync struct {
 	err      error
 }
 
-func (app *BaseApp) startCheckTxAsyncReactor() {
+func (app *BaseApp) checkTxAsyncReactor() {
 	for req := range app.chCheckTx {
 		req.prepare.Wait()
 		if req.err != nil {
