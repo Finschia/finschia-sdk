@@ -4,10 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	gogogrpc "github.com/gogo/protobuf/grpc"
 	"github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
-	grpc "google.golang.org/grpc"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -15,6 +13,7 @@ import (
 	"github.com/line/lbm-sdk/testutil"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
 	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
@@ -32,38 +31,6 @@ func QueryBalancesExec(clientCtx client.Context, address fmt.Stringer, extraArgs
 
 	return clitestutil.ExecTestCLICmd(clientCtx, bankcli.GetBalancesCmd(), args)
 }
-
-// serviceMsgClientConn is an instance of grpc.ClientConn that is used to test building
-// transactions with MsgClient's. It is intended to be replaced by the work in
-// https://github.com/cosmos/cosmos-sdk/issues/7541 when that is ready.
-type serviceMsgClientConn struct {
-	msgs []sdk.Msg
-}
-
-func (t *serviceMsgClientConn) Invoke(_ context.Context, method string, args, _ interface{}, _ ...grpc.CallOption) error {
-	req, ok := args.(sdk.MsgRequest)
-	if !ok {
-		return fmt.Errorf("%T should implement %T", args, (*sdk.MsgRequest)(nil))
-	}
-
-	err := req.ValidateBasic()
-	if err != nil {
-		return err
-	}
-
-	t.msgs = append(t.msgs, sdk.ServiceMsg{
-		MethodName: method,
-		Request:    req,
-	})
-
-	return nil
-}
-
-func (t *serviceMsgClientConn) NewStream(context.Context, *grpc.StreamDesc, string, ...grpc.CallOption) (grpc.ClientStream, error) {
-	return nil, fmt.Errorf("not supported")
-}
-
-var _ gogogrpc.ClientConn = &serviceMsgClientConn{}
 
 // newSendTxMsgServiceCmd is just for the purpose of testing ServiceMsg's in an end-to-end case. It is effectively
 // NewSendTxCmd but using MsgClient.
@@ -90,14 +57,14 @@ ignored as it is implied from [from_key_or_address].`,
 			}
 
 			msg := types.NewMsgSend(clientCtx.GetFromAddress(), sdk.AccAddress(args[1]), coins)
-			svcMsgClientConn := &serviceMsgClientConn{}
+			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
 			bankMsgClient := types.NewMsgClient(svcMsgClientConn)
 			_, err = bankMsgClient.Send(context.Background(), msg)
 			if err != nil {
 				return err
 			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.msgs...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
 		},
 	}
 
@@ -107,7 +74,7 @@ ignored as it is implied from [from_key_or_address].`,
 }
 
 // ServiceMsgSendExec is a temporary method to test Msg services in CLI using
-// x/bank's Msg/Send service. After https://github.com/cosmos/cosmos-sdk/issues/7541
+// x/bank's Msg/Send service. After https://github.com/line/lbm-sdk/issues/7541
 // is merged, this method should be removed, and we should prefer MsgSendExec
 // instead.
 func ServiceMsgSendExec(clientCtx client.Context, from, to, amount fmt.Stringer, extraArgs ...string) (testutil.BufferWriter, error) {

@@ -81,7 +81,7 @@ staking(1){
       },
       {
         "operation_identifier":{"index":1},
-        "type":"cosmos.staking.v1beta1.MsgDelegate",
+        "type":"lbm.staking.v1.MsgDelegate",
         "account":{{sender.account_identifier}},
         "amount":{
           "value":{{sender_amount}},
@@ -90,7 +90,7 @@ staking(1){
       },
       {
         "operation_identifier":{"index":2},
-        "type":"cosmos.staking.v1beta1.MsgDelegate",
+        "type":"lbm.staking.v1.MsgDelegate",
         "account": {
             "address": "staking_account",
             "sub_account": {
@@ -121,7 +121,7 @@ staking(1){
           },
           {
             "operation_identifier":{"index":1},
-            "type":"cosmos.staking.v1beta1.MsgUndelegate",
+            "type":"lbm.staking.v1.MsgUndelegate",
             "account":{{sender.account_identifier}},
             "amount":{
               "value":{{recipient_amount}},
@@ -130,7 +130,7 @@ staking(1){
           },
           {
             "operation_identifier":{"index":2},
-            "type":"cosmos.staking.v1beta1.MsgUndelegate",
+            "type":"lbm.staking.v1.MsgUndelegate",
             "account": {
                 "address": "staking_account",
                 "sub_account": {

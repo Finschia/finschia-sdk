@@ -135,7 +135,7 @@ var (
 	ErrNotSupported = Register(RootCodespace, 37, "feature not supported")
 
 	// ErrNotFound defines an error when requested entity doesn't exist in the state.
-	ErrNotFound = Register(RootCodespace, 39, "not found")
+	ErrNotFound = Register(RootCodespace, 38, "not found")
 
 	// ErrPanic is only set when we recover from a panic, so we know to
 	// redact potentially sensitive system info

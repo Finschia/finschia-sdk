@@ -36,7 +36,7 @@ func (c *Client) Version() string {
 
 func (c *Client) SupportedOperations() []string {
 	var supportedOperations []string
-	for _, ii := range c.ir.ListImplementations("cosmos.base.v1beta1.Msg") {
+	for _, ii := range c.ir.ListImplementations("lbm.base.v1.Msg") {
 		resolve, err := c.ir.Resolve(ii)
 		if err != nil {
 			continue

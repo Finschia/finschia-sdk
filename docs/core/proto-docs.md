@@ -257,6 +257,45 @@
   
     - [Msg](#lbm.auth.v1.Msg)
   
+- [lbm/authz/v1/authz.proto](#lbm/authz/v1/authz.proto)
+    - [AuthorizationGrant](#lbm.authz.v1.AuthorizationGrant)
+    - [GenericAuthorization](#lbm.authz.v1.GenericAuthorization)
+    - [SendAuthorization](#lbm.authz.v1.SendAuthorization)
+  
+- [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
+    - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
+    - [Attribute](#lbm.base.abci.v1.Attribute)
+    - [GasInfo](#lbm.base.abci.v1.GasInfo)
+    - [MsgData](#lbm.base.abci.v1.MsgData)
+    - [Result](#lbm.base.abci.v1.Result)
+    - [SearchTxsResult](#lbm.base.abci.v1.SearchTxsResult)
+    - [SimulationResponse](#lbm.base.abci.v1.SimulationResponse)
+    - [StringEvent](#lbm.base.abci.v1.StringEvent)
+    - [TxMsgData](#lbm.base.abci.v1.TxMsgData)
+    - [TxResponse](#lbm.base.abci.v1.TxResponse)
+  
+- [lbm/authz/v1/tx.proto](#lbm/authz/v1/tx.proto)
+    - [MsgExecAuthorizedRequest](#lbm.authz.v1.MsgExecAuthorizedRequest)
+    - [MsgExecAuthorizedResponse](#lbm.authz.v1.MsgExecAuthorizedResponse)
+    - [MsgGrantAuthorizationRequest](#lbm.authz.v1.MsgGrantAuthorizationRequest)
+    - [MsgGrantAuthorizationResponse](#lbm.authz.v1.MsgGrantAuthorizationResponse)
+    - [MsgRevokeAuthorizationRequest](#lbm.authz.v1.MsgRevokeAuthorizationRequest)
+    - [MsgRevokeAuthorizationResponse](#lbm.authz.v1.MsgRevokeAuthorizationResponse)
+  
+    - [Msg](#lbm.authz.v1.Msg)
+  
+- [lbm/authz/v1/genesis.proto](#lbm/authz/v1/genesis.proto)
+    - [GenesisState](#lbm.authz.v1.GenesisState)
+    - [GrantAuthorization](#lbm.authz.v1.GrantAuthorization)
+  
+- [lbm/authz/v1/query.proto](#lbm/authz/v1/query.proto)
+    - [QueryAuthorizationRequest](#lbm.authz.v1.QueryAuthorizationRequest)
+    - [QueryAuthorizationResponse](#lbm.authz.v1.QueryAuthorizationResponse)
+    - [QueryAuthorizationsRequest](#lbm.authz.v1.QueryAuthorizationsRequest)
+    - [QueryAuthorizationsResponse](#lbm.authz.v1.QueryAuthorizationsResponse)
+  
+    - [Query](#lbm.authz.v1.Query)
+  
 - [lbm/bank/v1/bank.proto](#lbm/bank/v1/bank.proto)
     - [DenomUnit](#lbm.bank.v1.DenomUnit)
     - [Input](#lbm.bank.v1.Input)
@@ -298,18 +337,6 @@
   
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
     - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
-  
-- [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
-    - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
-    - [Attribute](#lbm.base.abci.v1.Attribute)
-    - [GasInfo](#lbm.base.abci.v1.GasInfo)
-    - [MsgData](#lbm.base.abci.v1.MsgData)
-    - [Result](#lbm.base.abci.v1.Result)
-    - [SearchTxsResult](#lbm.base.abci.v1.SearchTxsResult)
-    - [SimulationResponse](#lbm.base.abci.v1.SimulationResponse)
-    - [StringEvent](#lbm.base.abci.v1.StringEvent)
-    - [TxMsgData](#lbm.base.abci.v1.TxMsgData)
-    - [TxResponse](#lbm.base.abci.v1.TxResponse)
   
 - [lbm/base/kv/v1/kv.proto](#lbm/base/kv/v1/kv.proto)
     - [Pair](#lbm.base.kv.v1.Pair)
@@ -4416,6 +4443,530 @@ Msg defines the auth Msg service.
 
 
 
+<a name="lbm/authz/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/authz.proto
+
+
+
+<a name="lbm.authz.v1.AuthorizationGrant"></a>
+
+### AuthorizationGrant
+AuthorizationGrant gives permissions to execute
+the provide method with expiration time.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.GenericAuthorization"></a>
+
+### GenericAuthorization
+GenericAuthorization gives the grantee unrestricted permissions to execute
+the provided method on behalf of the granter's account.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `method_name` | [string](#string) |  | method name to grant unrestricted permissions to execute Note: MethodName() is already a method on `GenericAuthorization` type, we need some custom naming here so using `MessageName` |
+
+
+
+
+
+
+<a name="lbm.authz.v1.SendAuthorization"></a>
+
+### SendAuthorization
+SendAuthorization allows the grantee to spend up to spend_limit coins from
+the granter's account.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/base/abci/v1/abci.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/base/abci/v1/abci.proto
+
+
+
+<a name="lbm.base.abci.v1.ABCIMessageLog"></a>
+
+### ABCIMessageLog
+ABCIMessageLog defines a structure containing an indexed tx ABCI message log.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_index` | [uint32](#uint32) |  |  |
+| `log` | [string](#string) |  |  |
+| `events` | [StringEvent](#lbm.base.abci.v1.StringEvent) | repeated | Events contains a slice of Event objects that were emitted during some execution. |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.Attribute"></a>
+
+### Attribute
+Attribute defines an attribute wrapper where the key and value are
+strings instead of raw bytes.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [string](#string) |  |  |
+| `value` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.GasInfo"></a>
+
+### GasInfo
+GasInfo defines tx execution gas context.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `gas_wanted` | [uint64](#uint64) |  | GasWanted is the maximum units of work we allow this tx to perform. |
+| `gas_used` | [uint64](#uint64) |  | GasUsed is the amount of gas actually consumed. |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.MsgData"></a>
+
+### MsgData
+MsgData defines the data returned in a Result object during message
+execution.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `msg_type` | [string](#string) |  |  |
+| `data` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.Result"></a>
+
+### Result
+Result is the union of ResponseFormat and ResponseCheckTx.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [bytes](#bytes) |  | Data is any data returned from message or handler execution. It MUST be length prefixed in order to separate data from multiple message executions. |
+| `log` | [string](#string) |  | Log contains the log information from message or handler execution. |
+| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.SearchTxsResult"></a>
+
+### SearchTxsResult
+SearchTxsResult defines a structure for querying txs pageable
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `total_count` | [uint64](#uint64) |  | Count of all txs |
+| `count` | [uint64](#uint64) |  | Count of txs in current page |
+| `page_number` | [uint64](#uint64) |  | Index of current page, start from 1 |
+| `page_total` | [uint64](#uint64) |  | Count of total pages |
+| `limit` | [uint64](#uint64) |  | Max count txs per page |
+| `txs` | [TxResponse](#lbm.base.abci.v1.TxResponse) | repeated | List of txs in current page |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.SimulationResponse"></a>
+
+### SimulationResponse
+SimulationResponse defines the response generated when a transaction is
+successfully simulated.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `gas_info` | [GasInfo](#lbm.base.abci.v1.GasInfo) |  |  |
+| `result` | [Result](#lbm.base.abci.v1.Result) |  |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.StringEvent"></a>
+
+### StringEvent
+StringEvent defines en Event object wrapper where all the attributes
+contain key/value pairs that are strings instead of raw bytes.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `type` | [string](#string) |  |  |
+| `attributes` | [Attribute](#lbm.base.abci.v1.Attribute) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.TxMsgData"></a>
+
+### TxMsgData
+TxMsgData defines a list of MsgData. A transaction will have a MsgData object
+for each message.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `data` | [MsgData](#lbm.base.abci.v1.MsgData) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.base.abci.v1.TxResponse"></a>
+
+### TxResponse
+TxResponse defines a structure containing relevant tx data and metadata. The
+tags are stringified and the log is JSON decoded.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [int64](#int64) |  | The block height |
+| `txhash` | [string](#string) |  | The transaction hash. |
+| `codespace` | [string](#string) |  | Namespace for the Code |
+| `code` | [uint32](#uint32) |  | Response code. |
+| `data` | [string](#string) |  | Result bytes, if any. |
+| `raw_log` | [string](#string) |  | The output of the application's logger (raw string). May be non-deterministic. |
+| `logs` | [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog) | repeated | The output of the application's logger (typed). May be non-deterministic. |
+| `info` | [string](#string) |  | Additional information. May be non-deterministic. |
+| `gas_wanted` | [int64](#int64) |  | Amount of gas requested for transaction. |
+| `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
+| `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
+| `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
+| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
+
+Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/tx.proto
+
+
+
+<a name="lbm.authz.v1.MsgExecAuthorizedRequest"></a>
+
+### MsgExecAuthorizedRequest
+MsgExecAuthorizedRequest attempts to execute the provided messages using
+authorizations granted to the grantee. Each message should have only
+one signer corresponding to the granter of the authorization.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `msgs` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgExecAuthorizedResponse"></a>
+
+### MsgExecAuthorizedResponse
+MsgExecAuthorizedResponse defines the Msg/MsgExecAuthorizedResponse response type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `result` | [lbm.base.abci.v1.Result](#lbm.base.abci.v1.Result) |  |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgGrantAuthorizationRequest"></a>
+
+### MsgGrantAuthorizationRequest
+MsgGrantAuthorizationRequest grants the provided authorization to the grantee on the granter's
+account with the provided expiration time.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgGrantAuthorizationResponse"></a>
+
+### MsgGrantAuthorizationResponse
+MsgGrantAuthorizationResponse defines the Msg/MsgGrantAuthorization response type.
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgRevokeAuthorizationRequest"></a>
+
+### MsgRevokeAuthorizationRequest
+MsgRevokeAuthorizationRequest revokes any authorization with the provided sdk.Msg type on the
+granter's account with that has been granted to the grantee.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `method_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.MsgRevokeAuthorizationResponse"></a>
+
+### MsgRevokeAuthorizationResponse
+MsgRevokeAuthorizationResponse defines the Msg/MsgRevokeAuthorizationResponse response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.authz.v1.Msg"></a>
+
+### Msg
+Msg defines the authz Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GrantAuthorization` | [MsgGrantAuthorizationRequest](#lbm.authz.v1.MsgGrantAuthorizationRequest) | [MsgGrantAuthorizationResponse](#lbm.authz.v1.MsgGrantAuthorizationResponse) | GrantAuthorization grants the provided authorization to the grantee on the granter's account with the provided expiration time. | |
+| `ExecAuthorized` | [MsgExecAuthorizedRequest](#lbm.authz.v1.MsgExecAuthorizedRequest) | [MsgExecAuthorizedResponse](#lbm.authz.v1.MsgExecAuthorizedResponse) | ExecAuthorized attempts to execute the provided messages using authorizations granted to the grantee. Each message should have only one signer corresponding to the granter of the authorization. | |
+| `RevokeAuthorization` | [MsgRevokeAuthorizationRequest](#lbm.authz.v1.MsgRevokeAuthorizationRequest) | [MsgRevokeAuthorizationResponse](#lbm.authz.v1.MsgRevokeAuthorizationResponse) | RevokeAuthorization revokes any authorization corresponding to the provided method name on the granter's account that has been granted to the grantee. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/genesis.proto
+
+
+
+<a name="lbm.authz.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the authz module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorization` | [GrantAuthorization](#lbm.authz.v1.GrantAuthorization) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.GrantAuthorization"></a>
+
+### GrantAuthorization
+GrantAuthorization defines the GenesisState/GrantAuthorization type.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `authorization` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/authz/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/authz/v1/query.proto
+
+
+
+<a name="lbm.authz.v1.QueryAuthorizationRequest"></a>
+
+### QueryAuthorizationRequest
+QueryAuthorizationRequest is the request type for the Query/Authorization RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `method_name` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.authz.v1.QueryAuthorizationResponse"></a>
+
+### QueryAuthorizationResponse
+QueryAuthorizationResponse is the response type for the Query/Authorization RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorization` | [AuthorizationGrant](#lbm.authz.v1.AuthorizationGrant) |  | authorization is a authorization granted for grantee by granter. |
+
+
+
+
+
+
+<a name="lbm.authz.v1.QueryAuthorizationsRequest"></a>
+
+### QueryAuthorizationsRequest
+QueryAuthorizationsRequest is the request type for the Query/Authorizations RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.authz.v1.QueryAuthorizationsResponse"></a>
+
+### QueryAuthorizationsResponse
+QueryAuthorizationsResponse is the response type for the Query/Authorizations RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authorizations` | [AuthorizationGrant](#lbm.authz.v1.AuthorizationGrant) | repeated | authorizations is a list of grants granted for grantee by granter. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.authz.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Authorization` | [QueryAuthorizationRequest](#lbm.authz.v1.QueryAuthorizationRequest) | [QueryAuthorizationResponse](#lbm.authz.v1.QueryAuthorizationResponse) | Returns any `Authorization` (or `nil`), with the expiration time, granted to the grantee by the granter for the provided msg type. | GET|/lbm/authz/v1/granters/{granter}/grantees/{grantee}/grant|
+| `Authorizations` | [QueryAuthorizationsRequest](#lbm.authz.v1.QueryAuthorizationsRequest) | [QueryAuthorizationsResponse](#lbm.authz.v1.QueryAuthorizationsResponse) | Returns list of `Authorization`, granted to the grantee by the granter. | GET|/lbm/authz/v1/granters/{granter}/grantees/{grantee}/grants|
+
+ <!-- end services -->
+
+
+
 <a name="lbm/bank/v1/bank.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -4938,206 +5489,6 @@ InactiveAddr models the blocked address for the bankplus module
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/base/abci/v1/abci.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/base/abci/v1/abci.proto
-
-
-
-<a name="lbm.base.abci.v1.ABCIMessageLog"></a>
-
-### ABCIMessageLog
-ABCIMessageLog defines a structure containing an indexed tx ABCI message log.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `msg_index` | [uint32](#uint32) |  |  |
-| `log` | [string](#string) |  |  |
-| `events` | [StringEvent](#lbm.base.abci.v1.StringEvent) | repeated | Events contains a slice of Event objects that were emitted during some execution. |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.Attribute"></a>
-
-### Attribute
-Attribute defines an attribute wrapper where the key and value are
-strings instead of raw bytes.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [string](#string) |  |  |
-| `value` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.GasInfo"></a>
-
-### GasInfo
-GasInfo defines tx execution gas context.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `gas_wanted` | [uint64](#uint64) |  | GasWanted is the maximum units of work we allow this tx to perform. |
-| `gas_used` | [uint64](#uint64) |  | GasUsed is the amount of gas actually consumed. |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.MsgData"></a>
-
-### MsgData
-MsgData defines the data returned in a Result object during message
-execution.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `msg_type` | [string](#string) |  |  |
-| `data` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.Result"></a>
-
-### Result
-Result is the union of ResponseFormat and ResponseCheckTx.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [bytes](#bytes) |  | Data is any data returned from message or handler execution. It MUST be length prefixed in order to separate data from multiple message executions. |
-| `log` | [string](#string) |  | Log contains the log information from message or handler execution. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events contains a slice of Event objects that were emitted during message or handler execution. |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.SearchTxsResult"></a>
-
-### SearchTxsResult
-SearchTxsResult defines a structure for querying txs pageable
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `total_count` | [uint64](#uint64) |  | Count of all txs |
-| `count` | [uint64](#uint64) |  | Count of txs in current page |
-| `page_number` | [uint64](#uint64) |  | Index of current page, start from 1 |
-| `page_total` | [uint64](#uint64) |  | Count of total pages |
-| `limit` | [uint64](#uint64) |  | Max count txs per page |
-| `txs` | [TxResponse](#lbm.base.abci.v1.TxResponse) | repeated | List of txs in current page |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.SimulationResponse"></a>
-
-### SimulationResponse
-SimulationResponse defines the response generated when a transaction is
-successfully simulated.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `gas_info` | [GasInfo](#lbm.base.abci.v1.GasInfo) |  |  |
-| `result` | [Result](#lbm.base.abci.v1.Result) |  |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.StringEvent"></a>
-
-### StringEvent
-StringEvent defines en Event object wrapper where all the attributes
-contain key/value pairs that are strings instead of raw bytes.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `type` | [string](#string) |  |  |
-| `attributes` | [Attribute](#lbm.base.abci.v1.Attribute) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.TxMsgData"></a>
-
-### TxMsgData
-TxMsgData defines a list of MsgData. A transaction will have a MsgData object
-for each message.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `data` | [MsgData](#lbm.base.abci.v1.MsgData) | repeated |  |
-
-
-
-
-
-
-<a name="lbm.base.abci.v1.TxResponse"></a>
-
-### TxResponse
-TxResponse defines a structure containing relevant tx data and metadata. The
-tags are stringified and the log is JSON decoded.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `height` | [int64](#int64) |  | The block height |
-| `txhash` | [string](#string) |  | The transaction hash. |
-| `codespace` | [string](#string) |  | Namespace for the Code |
-| `code` | [uint32](#uint32) |  | Response code. |
-| `data` | [string](#string) |  | Result bytes, if any. |
-| `raw_log` | [string](#string) |  | The output of the application's logger (raw string). May be non-deterministic. |
-| `logs` | [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog) | repeated | The output of the application's logger (typed). May be non-deterministic. |
-| `info` | [string](#string) |  | Additional information. May be non-deterministic. |
-| `gas_wanted` | [int64](#int64) |  | Amount of gas requested for transaction. |
-| `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
-| `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
-| `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
-| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
-
-Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
 
 
 
