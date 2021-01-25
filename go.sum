@@ -263,8 +263,10 @@ github.com/libp2p/go-buffer-pool v0.0.2 h1:QNK2iAFa8gjAe1SPz6mHSMuCcjs+X1wlHzeOS
 github.com/libp2p/go-buffer-pool v0.0.2/go.mod h1:MvaB6xw5vOrDl8rYZGLFdKAuk/hRoRZd1Vi32+RXyFM=
 github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-bc2310a04743/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
-github.com/line/iavl v0.14.4-0.20201217063301-6b67687bfae9 h1:n6YHVdTld8D0dAogBUcXTaqhk1ZMTAR9Phy4xdMVWDY=
-github.com/line/iavl v0.14.4-0.20201217063301-6b67687bfae9/go.mod h1:eG6hI8RbMxL1nR+nJBykXD//gKjUpKCAT2tvi9V93sA=
+github.com/line/iavl v0.14.4-0.20210122121727-7c33089230bd h1:IdJCRyraxeVrsrOTopF47yzZtRrWyCeAZh9iUiIHwqw=
+github.com/line/iavl v0.14.4-0.20210122121727-7c33089230bd/go.mod h1:eG6hI8RbMxL1nR+nJBykXD//gKjUpKCAT2tvi9V93sA=
+github.com/line/tendermint v0.33.10-0.20210125064725-d1c50067c78a h1:X8RHWLo+gqS7Dx9wenEl7oO1Zcy5W+RWhVyrhI7iL9M=
+github.com/line/tendermint v0.33.10-0.20210125064725-d1c50067c78a/go.mod h1:0yUs9eIuuDq07nQql9BmI30FtYGcEC60Tu5JzB5IezM=
 github.com/lyft/protoc-gen-validate v0.0.13/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.1 h1:ZC2Vc7/ZFkGmsVC9KvOjumD+G5lXy2RtTKyzRKO2BQ4=
