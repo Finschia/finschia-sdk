@@ -771,7 +771,7 @@ func TestCheckTx(t *testing.T) {
 		tx := newTxCounter(i, 0)
 		txBytes, err := codec.MarshalBinaryLengthPrefixed(tx)
 		require.NoError(t, err)
-		r := app.CheckTx(abci.RequestCheckTx{Tx: txBytes})
+		r := app.CheckTxSync(abci.RequestCheckTx{Tx: txBytes})
 		assert.True(t, r.IsOK(), fmt.Sprintf("%v", r))
 	}
 
