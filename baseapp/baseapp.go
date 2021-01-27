@@ -8,7 +8,6 @@ import (
 	"os"
 	"reflect"
 	"runtime/debug"
-	"strings"
 	"sync"
 
 	"github.com/gogo/protobuf/proto"
@@ -604,7 +603,7 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 // Note, gas execution info is always returned. A reference to a Result is
 // returned if the tx does not run out of gas and if all the messages are valid
 // and execute successfully. An error is returned otherwise.
-func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
+func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.MsgsResult, err error) {
 	ctx := app.getRunContextForTx(txBytes, simulate)
 	ms := ctx.MultiStore()
 
@@ -684,10 +683,10 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 // and DeliverTx. An error is returned if any single message fails or if a
 // Handler does not exist for a given message route. Otherwise, a reference to a
 // Result is returned. The caller must not commit state if an error is returned.
-func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error) {
-	msgLogs := make(sdk.ABCIMessageLogs, 0, len(msgs))
+func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.MsgsResult, error) {
 	data := make([]byte, 0, len(msgs))
-	events := sdk.EmptyEvents()
+	msgLogs := make([]string, 0, len(msgs))
+	eventss := make([]sdk.Events, 0, len(msgs))
 
 	// NOTE: GasWanted is determined by the AnteHandler and GasUsed by the GasMeter.
 	for i, msg := range msgs {
@@ -702,24 +701,23 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 			return nil, sdkerrors.Wrapf(err, "failed to execute message; message index: %d", i)
 		}
 
-		msgEvents := sdk.Events{
-			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, msg.Type())),
-		}
+		msgEvents := make(sdk.Events, 0, len(msgResult.Events)+1)
+		msgEvents = append(msgEvents, sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, msg.Type())))
 		msgEvents = msgEvents.AppendEvents(msgResult.Events)
 
 		// append message events, data and logs
 		//
 		// Note: Each message result's data must be length-prefixed in order to
 		// separate each result.
-		events = events.AppendEvents(msgEvents)
 		data = append(data, msgResult.Data...)
-		msgLogs = append(msgLogs, sdk.NewABCIMessageLog(uint16(i), msgResult.Log, msgEvents))
+		msgLogs = append(msgLogs, msgResult.Log)
+		eventss = append(eventss, msgEvents)
 	}
 
-	return &sdk.Result{
-		Data:   data,
-		Log:    strings.TrimSpace(msgLogs.String()),
-		Events: events,
+	return &sdk.MsgsResult{
+		Data:    data,
+		Logs:    msgLogs,
+		Eventss: eventss,
 	}, nil
 }
 

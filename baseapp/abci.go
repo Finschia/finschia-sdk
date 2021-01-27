@@ -221,11 +221,12 @@ func (app *BaseApp) DeliverTxSync(req abci.RequestDeliverTx) abci.ResponseDelive
 		return sdkerrors.ResponseDeliverTx(err, 0, 0, app.trace)
 	}
 
-	gInfo, result, err := app.runTx(req.Tx, tx, false)
+	gInfo, msgsResult, err := app.runTx(req.Tx, tx, false)
 	if err != nil {
 		return sdkerrors.ResponseDeliverTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace)
 	}
 
+	result := msgsResult.ToResult()
 	return abci.ResponseDeliverTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?

@@ -100,18 +100,21 @@ func (app *BaseApp) deliverTxReactor() {
 			continue
 		}
 
-		gInfo, result, err := app.runTx(req.txBytes, req.tx, false)
+		gInfo, msgsResult, err := app.runTx(req.txBytes, req.tx, false)
 		if err != nil {
-			req.callback(sdkerrors.ResponseDeliverTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace))
+			go req.callback(sdkerrors.ResponseDeliverTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace))
 			continue
 		}
 
-		req.callback(abci.ResponseDeliverTx{
-			GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
-			GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
-			Log:       result.Log,
-			Data:      result.Data,
-			Events:    result.Events.ToABCIEvents(),
-		})
+		go func(callback abci.DeliverTxCallback) {
+			result := msgsResult.ToResult()
+			callback(abci.ResponseDeliverTx{
+				GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
+				GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
+				Log:       result.Log,
+				Data:      result.Data,
+				Events:    result.Events.ToABCIEvents(),
+			})
+		}(req.callback)
 	}
 }

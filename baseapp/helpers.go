@@ -14,22 +14,26 @@ func (app *BaseApp) Check(tx sdk.Tx) (sdk.GasInfo, error) {
 	return app.checkTx(nil, tx, false)
 }
 
-func (app *BaseApp) Simulate(txBytes []byte, tx sdk.Tx) (sdk.GasInfo, *sdk.Result, error) {
-	err := validateBasicTxMsgs(tx.GetMsgs())
-	if err != nil {
-		return sdk.GasInfo{}, nil, err
-	}
-
-	return app.runTx(txBytes, tx, true)
+func (app *BaseApp) Simulate(txBytes []byte, tx sdk.Tx) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
+	return app.validateAndRunTx(txBytes, tx, true)
 }
 
-func (app *BaseApp) Deliver(tx sdk.Tx) (sdk.GasInfo, *sdk.Result, error) {
-	err := validateBasicTxMsgs(tx.GetMsgs())
+func (app *BaseApp) Deliver(tx sdk.Tx) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
+	return app.validateAndRunTx(nil, tx, false)
+}
+
+func (app *BaseApp) validateAndRunTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
+	err = validateBasicTxMsgs(tx.GetMsgs())
 	if err != nil {
-		return sdk.GasInfo{}, nil, err
+		return gInfo, result, err
 	}
 
-	return app.runTx(nil, tx, false)
+	var msgsResult *sdk.MsgsResult
+	gInfo, msgsResult, err = app.runTx(txBytes, tx, simulate)
+	if msgsResult != nil {
+		result = msgsResult.ToResult()
+	}
+	return gInfo, result, err
 }
 
 // Context with current {check, deliver}State of the app used by tests.

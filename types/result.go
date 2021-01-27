@@ -35,6 +35,36 @@ type Result struct {
 	Events Events
 }
 
+type MsgsResult struct {
+	Data    []byte
+	Logs    []string
+	Eventss []Events
+}
+
+func (r *MsgsResult) ToResult() *Result {
+	// TODO assert len(r.Logs) == len(r.Events)
+
+	logs := make(ABCIMessageLogs, 0, len(r.Logs))
+	for i, log := range r.Logs {
+		logs = append(logs, NewABCIMessageLog(uint16(i), log, r.Eventss[i]))
+	}
+
+	lenEvents := 0
+	for _, events := range r.Eventss {
+		lenEvents += len(events)
+	}
+	resultEvents := make(Events, 0, lenEvents)
+	for _, events := range r.Eventss {
+		resultEvents = resultEvents.AppendEvents(events)
+	}
+
+	return &Result{
+		Data:   r.Data,
+		Log:    strings.TrimSpace(logs.String()),
+		Events: resultEvents,
+	}
+}
+
 // SimulationResponse defines the response generated when a transaction is successfully
 // simulated by the Baseapp.
 type SimulationResponse struct {
