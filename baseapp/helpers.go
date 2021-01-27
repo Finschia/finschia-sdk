@@ -15,10 +15,20 @@ func (app *BaseApp) Check(tx sdk.Tx) (sdk.GasInfo, error) {
 }
 
 func (app *BaseApp) Simulate(txBytes []byte, tx sdk.Tx) (sdk.GasInfo, *sdk.Result, error) {
+	err := validateBasicTxMsgs(tx.GetMsgs())
+	if err != nil {
+		return sdk.GasInfo{}, nil, err
+	}
+
 	return app.runTx(txBytes, tx, true)
 }
 
 func (app *BaseApp) Deliver(tx sdk.Tx) (sdk.GasInfo, *sdk.Result, error) {
+	err := validateBasicTxMsgs(tx.GetMsgs())
+	if err != nil {
+		return sdk.GasInfo{}, nil, err
+	}
+
 	return app.runTx(nil, tx, false)
 }
 

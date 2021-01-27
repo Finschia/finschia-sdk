@@ -546,12 +546,16 @@ func (app *BaseApp) preCheckTx(txBytes []byte) (tx sdk.Tx, err error) {
 
 func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (sdk.GasInfo, error) {
 	ctx := app.getCheckContextForTx(txBytes, recheck)
+	gasMeter := ctx.GasMeter()
 
 	anteCtx, err := app.anteTx(ctx, txBytes, tx, false)
+	if anteCtx.GasMeter() != nil {
+		gasMeter = anteCtx.GasMeter()
+	}
 
 	gInfo := sdk.GasInfo{
-		GasWanted: anteCtx.GasMeter().Limit(),
-		GasUsed:   anteCtx.GasMeter().GasConsumed(),
+		GasWanted: gasMeter.Limit(),
+		GasUsed:   gasMeter.GasConsumed(),
 	}
 
 	return gInfo, err
@@ -581,7 +585,9 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 	anteCtx, msCache := app.cacheTxContext(ctx, txBytes)
 	anteCtx = anteCtx.WithEventManager(sdk.NewEventManager())
 	newCtx, err = app.anteHandler(anteCtx, tx, simulate)
-	gasMeter = newCtx.GasMeter()
+	if newCtx.GasMeter() != nil {
+		gasMeter = newCtx.GasMeter()
+	}
 
 	if err != nil {
 		return newCtx, err
