@@ -79,6 +79,7 @@ type BaseApp struct { // nolint: maligned
 
 	checkAccountWGs *AccountWGs
 	chCheckTx       chan *RequestCheckTxAsync
+	chDeliverTx     chan *RequestDeliverTxAsync
 
 	// an inter-block write-through cache provided to the context during deliverState
 	interBlockCache sdk.MultiStorePersistentCache
@@ -130,7 +131,8 @@ func NewBaseApp(
 		txDecoder:       txDecoder,
 		fauxMerkleMode:  false,
 		checkAccountWGs: NewAccountWGs(),
-		chCheckTx:       make(chan *RequestCheckTxAsync, 10000), // TODO config channel buffer size. It might be good to set it tendermint mempool.size
+		chCheckTx:       make(chan *RequestCheckTxAsync, 10000),   // TODO config channel buffer size. It might be good to set it tendermint mempool.size
+		chDeliverTx:     make(chan *RequestDeliverTxAsync, 10000), // TODO config channel buffer size. It might be good to set it tendermint mempool.size
 		trace:           false,
 		metrics:         NopMetrics(),
 	}
@@ -542,30 +544,32 @@ func (app *BaseApp) preCheckTx(txBytes []byte) (tx sdk.Tx, err error) {
 	return tx, err
 }
 
-func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.GasInfo, err error) {
+func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (sdk.GasInfo, error) {
 	ctx := app.getCheckContextForTx(txBytes, recheck)
-	gasCtx := &ctx
 
-	defer func() {
-		if r := recover(); r != nil {
-			err = app.recoverToErrorWithGas(r, ctx.GasMeter())
-		}
-		gInfo = sdk.GasInfo{GasWanted: gasCtx.GasMeter().Limit(), GasUsed: gasCtx.GasMeter().GasConsumed()}
-	}()
+	anteCtx, err := app.anteTx(ctx, txBytes, tx, false)
 
-	var anteCtx sdk.Context
-	anteCtx, err = app.anteTx(ctx, txBytes, tx, false)
-	if !anteCtx.IsZero() {
-		gasCtx = &anteCtx
+	gInfo := sdk.GasInfo{
+		GasWanted: anteCtx.GasMeter().Limit(),
+		GasUsed:   anteCtx.GasMeter().GasConsumed(),
 	}
 
 	return gInfo, err
 }
 
-func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate bool) (sdk.Context, error) {
+func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
 	if app.anteHandler == nil {
 		return ctx, nil
 	}
+
+	gasMeter := ctx.GasMeter()
+
+	// FIXME if `app.anteHandler()` panic, `gasMeter` is `0`. This issue comes from original cosmos-sdk.
+	defer func() {
+		if r := recover(); r != nil {
+			err = app.recoverToErrorWithGas(r, gasMeter)
+		}
+	}()
 
 	// Cache wrap context before AnteHandler call in case it aborts.
 	// This is required for both CheckTx and DeliverTx.
@@ -576,7 +580,8 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 	// performance benefits, but it'll be more difficult to get right.
 	anteCtx, msCache := app.cacheTxContext(ctx, txBytes)
 	anteCtx = anteCtx.WithEventManager(sdk.NewEventManager())
-	newCtx, err := app.anteHandler(anteCtx, tx, simulate)
+	newCtx, err = app.anteHandler(anteCtx, tx, simulate)
+	gasMeter = newCtx.GasMeter()
 
 	if err != nil {
 		return newCtx, err
@@ -634,11 +639,6 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 		}
 	}()
 
-	msgs := tx.GetMsgs()
-	if err = validateBasicTxMsgs(msgs); err != nil {
-		return sdk.GasInfo{}, nil, err
-	}
-
 	var newCtx sdk.Context
 	newCtx, err = app.anteTx(ctx, txBytes, tx, simulate)
 	if !newCtx.IsZero() {
@@ -660,6 +660,7 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 	// MultiStore in case message processing fails. At this point, the MultiStore
 	// is doubly cached-wrapped.
 	runMsgCtx, msCache := app.cacheTxContext(ctx, txBytes)
+	msgs := tx.GetMsgs()
 
 	// Attempt to execute all messages and only update state if all messages pass
 	// and we're in DeliverTx. Note, runMsgs will never return a reference to a
