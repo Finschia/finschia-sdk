@@ -488,6 +488,7 @@ func (s *decimalTestSuite) TestOperationOrders() {
 }
 
 func BenchmarkMarshalTo(b *testing.B) {
+	b.ReportAllocs()
 	bis := []struct {
 		in   sdk.Dec
 		want []byte
