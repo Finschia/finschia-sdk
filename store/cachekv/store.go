@@ -24,7 +24,8 @@ type cValue struct {
 
 // Store wraps an in-memory cache around an underlying types.KVStore.
 type Store struct {
-	mtx           sync.RWMutex
+	rwMtx         sync.RWMutex
+	mtx           sync.Mutex
 	cache         map[string]*cValue
 	unsortedCache map[string]struct{}
 	sortedCache   *list.List // always ascending sorted
@@ -51,7 +52,10 @@ func (store *Store) GetStoreType() types.StoreType {
 func (store *Store) Get(key []byte) (value []byte) {
 	types.AssertValidKey(key)
 
-	cacheValue, ok := store.getWithRLock(key)
+	store.rwMtx.RLock()
+	defer store.rwMtx.RUnlock()
+
+	cacheValue, ok := store.cache[string(key)]
 	if ok {
 		return cacheValue.value
 	}
@@ -60,6 +64,7 @@ func (store *Store) Get(key []byte) (value []byte) {
 
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
+
 	cacheValue, ok = store.cache[string(key)]
 	if !ok {
 		store.setCacheValue(key, value, false, false)
@@ -70,21 +75,15 @@ func (store *Store) Get(key []byte) (value []byte) {
 	return value
 }
 
-func (store *Store) getWithRLock(key []byte) (value *cValue, ok bool) {
-	store.mtx.RLock()
-	defer store.mtx.RUnlock()
-
-	value, ok = store.cache[string(key)]
-	return value, ok
-}
-
 // Implements types.KVStore.
 func (store *Store) Set(key []byte, value []byte) {
 	types.AssertValidKey(key)
 	types.AssertValidValue(value)
 
+	store.rwMtx.Lock()
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
+	defer store.rwMtx.Unlock()
 
 	store.setCacheValue(key, value, false, true)
 }
@@ -99,16 +98,20 @@ func (store *Store) Has(key []byte) bool {
 func (store *Store) Delete(key []byte) {
 	types.AssertValidKey(key)
 
+	store.rwMtx.Lock()
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
+	defer store.rwMtx.Unlock()
 
 	store.setCacheValue(key, nil, true, true)
 }
 
 // Implements Cachetypes.KVStore.
 func (store *Store) Write() {
+	store.rwMtx.Lock()
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
+	defer store.rwMtx.Unlock()
 
 	// We need a copy of all of the keys.
 	// Not the best, but probably not a bottleneck depending.
