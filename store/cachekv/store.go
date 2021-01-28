@@ -53,9 +53,9 @@ func (store *Store) Get(key []byte) (value []byte) {
 	types.AssertValidKey(key)
 
 	store.rwMtx.RLock()
+	defer store.rwMtx.RUnlock()
 	cacheValue, ok := store.cache[string(key)]
 	if ok {
-		store.rwMtx.RUnlock()
 		return cacheValue.value
 	}
 
@@ -63,7 +63,6 @@ func (store *Store) Get(key []byte) (value []byte) {
 
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
-	defer store.rwMtx.RUnlock()
 
 	cacheValue, ok = store.cache[string(key)]
 	if !ok {
@@ -81,9 +80,9 @@ func (store *Store) Set(key []byte, value []byte) {
 	types.AssertValidValue(value)
 
 	store.rwMtx.Lock()
+	defer store.rwMtx.Unlock()
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
-	defer store.rwMtx.Unlock()
 
 	store.setCacheValue(key, value, false, true)
 }
@@ -99,9 +98,9 @@ func (store *Store) Delete(key []byte) {
 	types.AssertValidKey(key)
 
 	store.rwMtx.Lock()
+	defer store.rwMtx.Unlock()
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
-	defer store.rwMtx.Unlock()
 
 	store.setCacheValue(key, nil, true, true)
 }
@@ -109,9 +108,9 @@ func (store *Store) Delete(key []byte) {
 // Implements Cachetypes.KVStore.
 func (store *Store) Write() {
 	store.rwMtx.Lock()
+	defer store.rwMtx.Unlock()
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
-	defer store.rwMtx.Unlock()
 
 	// We need a copy of all of the keys.
 	// Not the best, but probably not a bottleneck depending.
