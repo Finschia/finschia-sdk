@@ -53,10 +53,9 @@ func (store *Store) Get(key []byte) (value []byte) {
 	types.AssertValidKey(key)
 
 	store.rwMtx.RLock()
-	defer store.rwMtx.RUnlock()
-
 	cacheValue, ok := store.cache[string(key)]
 	if ok {
+		store.rwMtx.RUnlock()
 		return cacheValue.value
 	}
 
@@ -64,6 +63,7 @@ func (store *Store) Get(key []byte) (value []byte) {
 
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
+	defer store.rwMtx.RUnlock()
 
 	cacheValue, ok = store.cache[string(key)]
 	if !ok {
