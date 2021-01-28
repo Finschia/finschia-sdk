@@ -192,12 +192,7 @@ func (app *BaseApp) CheckTxAsync(req abci.RequestCheckTx, callback abci.CheckTxC
 		panic(fmt.Sprintf("unknown RequestCheckTx type: %s", req.Type))
 	}
 
-	reqCheckTx := &RequestCheckTxAsync{
-		txBytes:  req.Tx,
-		recheck:  req.Type == abci.CheckTxType_Recheck,
-		callback: callback,
-		prepare:  waitGroup1(),
-	}
+	reqCheckTx := newRequestCheckTxAsync(req, callback)
 	app.chCheckTx <- reqCheckTx
 
 	go app.prepareCheckTx(reqCheckTx)
@@ -220,17 +215,18 @@ func (app *BaseApp) EndRecheckTx(req abci.RequestEndRecheckTx) abci.ResponseEndR
 // Otherwise, the ResponseDeliverTx will contain releveant error information.
 // Regardless of tx execution outcome, the ResponseDeliverTx will contain relevant
 // gas execution context.
-func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) abci.ResponseDeliverTx {
-	tx, err := app.txDecoder(req.Tx)
+func (app *BaseApp) DeliverTxSync(req abci.RequestDeliverTx) abci.ResponseDeliverTx {
+	tx, err := app.preCheckTx(req.Tx)
 	if err != nil {
 		return sdkerrors.ResponseDeliverTx(err, 0, 0, app.trace)
 	}
 
-	gInfo, result, err := app.runTx(req.Tx, tx, false)
+	gInfo, msgsResult, err := app.runTx(req.Tx, tx, false)
 	if err != nil {
 		return sdkerrors.ResponseDeliverTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace)
 	}
 
+	result := msgsResult.ToResult()
 	return abci.ResponseDeliverTx{
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
@@ -238,6 +234,13 @@ func (app *BaseApp) DeliverTx(req abci.RequestDeliverTx) abci.ResponseDeliverTx 
 		Data:      result.Data,
 		Events:    result.Events.ToABCIEvents(),
 	}
+}
+
+func (app *BaseApp) DeliverTxAsync(req abci.RequestDeliverTx, callback abci.DeliverTxCallback) {
+	deliverTx := newRequestDeliverTxAsync(req, callback)
+	app.chDeliverTx <- deliverTx
+
+	go app.prepareDeliverTx(deliverTx)
 }
 
 // Commit implements the ABCI interface. It will commit all state that exists in

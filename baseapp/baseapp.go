@@ -8,7 +8,6 @@ import (
 	"os"
 	"reflect"
 	"runtime/debug"
-	"strings"
 	"sync"
 
 	"github.com/gogo/protobuf/proto"
@@ -79,6 +78,7 @@ type BaseApp struct { // nolint: maligned
 
 	checkAccountWGs *AccountWGs
 	chCheckTx       chan *RequestCheckTxAsync
+	chDeliverTx     chan *RequestDeliverTxAsync
 
 	// an inter-block write-through cache provided to the context during deliverState
 	interBlockCache sdk.MultiStorePersistentCache
@@ -130,7 +130,8 @@ func NewBaseApp(
 		txDecoder:       txDecoder,
 		fauxMerkleMode:  false,
 		checkAccountWGs: NewAccountWGs(),
-		chCheckTx:       make(chan *RequestCheckTxAsync, 10000), // TODO config channel buffer size. It might be good to set it tendermint mempool.size
+		chCheckTx:       make(chan *RequestCheckTxAsync, 10000),   // TODO config channel buffer size. It might be good to set it tendermint mempool.size
+		chDeliverTx:     make(chan *RequestDeliverTxAsync, 10000), // TODO config channel buffer size. It might be good to set it tendermint mempool.size
 		trace:           false,
 		metrics:         NopMetrics(),
 	}
@@ -542,30 +543,36 @@ func (app *BaseApp) preCheckTx(txBytes []byte) (tx sdk.Tx, err error) {
 	return tx, err
 }
 
-func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.GasInfo, err error) {
+func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (sdk.GasInfo, error) {
 	ctx := app.getCheckContextForTx(txBytes, recheck)
-	gasCtx := &ctx
+	gasMeter := ctx.GasMeter()
 
-	defer func() {
-		if r := recover(); r != nil {
-			err = app.recoverToErrorWithGas(r, ctx.GasMeter())
-		}
-		gInfo = sdk.GasInfo{GasWanted: gasCtx.GasMeter().Limit(), GasUsed: gasCtx.GasMeter().GasConsumed()}
-	}()
+	anteCtx, err := app.anteTx(ctx, txBytes, tx, false)
+	if anteCtx.GasMeter() != nil {
+		gasMeter = anteCtx.GasMeter()
+	}
 
-	var anteCtx sdk.Context
-	anteCtx, err = app.anteTx(ctx, txBytes, tx, false)
-	if !anteCtx.IsZero() {
-		gasCtx = &anteCtx
+	gInfo := sdk.GasInfo{
+		GasWanted: gasMeter.Limit(),
+		GasUsed:   gasMeter.GasConsumed(),
 	}
 
 	return gInfo, err
 }
 
-func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate bool) (sdk.Context, error) {
+func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
 	if app.anteHandler == nil {
 		return ctx, nil
 	}
+
+	gasMeter := ctx.GasMeter()
+
+	// FIXME if `app.anteHandler()` panic, `gasMeter` is `0`. This issue comes from original cosmos-sdk.
+	defer func() {
+		if r := recover(); r != nil {
+			err = app.recoverToErrorWithGas(r, gasMeter)
+		}
+	}()
 
 	// Cache wrap context before AnteHandler call in case it aborts.
 	// This is required for both CheckTx and DeliverTx.
@@ -576,7 +583,10 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 	// performance benefits, but it'll be more difficult to get right.
 	anteCtx, msCache := app.cacheTxContext(ctx, txBytes)
 	anteCtx = anteCtx.WithEventManager(sdk.NewEventManager())
-	newCtx, err := app.anteHandler(anteCtx, tx, simulate)
+	newCtx, err = app.anteHandler(anteCtx, tx, simulate)
+	if newCtx.GasMeter() != nil {
+		gasMeter = newCtx.GasMeter()
+	}
 
 	if err != nil {
 		return newCtx, err
@@ -593,7 +603,7 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 // Note, gas execution info is always returned. A reference to a Result is
 // returned if the tx does not run out of gas and if all the messages are valid
 // and execute successfully. An error is returned otherwise.
-func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
+func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.MsgsResult, err error) {
 	ctx := app.getRunContextForTx(txBytes, simulate)
 	ms := ctx.MultiStore()
 
@@ -634,11 +644,6 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 		}
 	}()
 
-	msgs := tx.GetMsgs()
-	if err = validateBasicTxMsgs(msgs); err != nil {
-		return sdk.GasInfo{}, nil, err
-	}
-
 	var newCtx sdk.Context
 	newCtx, err = app.anteTx(ctx, txBytes, tx, simulate)
 	if !newCtx.IsZero() {
@@ -660,6 +665,7 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 	// MultiStore in case message processing fails. At this point, the MultiStore
 	// is doubly cached-wrapped.
 	runMsgCtx, msCache := app.cacheTxContext(ctx, txBytes)
+	msgs := tx.GetMsgs()
 
 	// Attempt to execute all messages and only update state if all messages pass
 	// and we're in DeliverTx. Note, runMsgs will never return a reference to a
@@ -677,10 +683,10 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 // and DeliverTx. An error is returned if any single message fails or if a
 // Handler does not exist for a given message route. Otherwise, a reference to a
 // Result is returned. The caller must not commit state if an error is returned.
-func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error) {
-	msgLogs := make(sdk.ABCIMessageLogs, 0, len(msgs))
+func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.MsgsResult, error) {
 	data := make([]byte, 0, len(msgs))
-	events := sdk.EmptyEvents()
+	msgLogs := make([]string, 0, len(msgs))
+	eventss := make([]sdk.Events, 0, len(msgs))
 
 	// NOTE: GasWanted is determined by the AnteHandler and GasUsed by the GasMeter.
 	for i, msg := range msgs {
@@ -695,24 +701,23 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 			return nil, sdkerrors.Wrapf(err, "failed to execute message; message index: %d", i)
 		}
 
-		msgEvents := sdk.Events{
-			sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, msg.Type())),
-		}
+		msgEvents := make(sdk.Events, 0, len(msgResult.Events)+1)
+		msgEvents = append(msgEvents, sdk.NewEvent(sdk.EventTypeMessage, sdk.NewAttribute(sdk.AttributeKeyAction, msg.Type())))
 		msgEvents = msgEvents.AppendEvents(msgResult.Events)
 
 		// append message events, data and logs
 		//
 		// Note: Each message result's data must be length-prefixed in order to
 		// separate each result.
-		events = events.AppendEvents(msgEvents)
 		data = append(data, msgResult.Data...)
-		msgLogs = append(msgLogs, sdk.NewABCIMessageLog(uint16(i), msgResult.Log, msgEvents))
+		msgLogs = append(msgLogs, msgResult.Log)
+		eventss = append(eventss, msgEvents)
 	}
 
-	return &sdk.Result{
-		Data:   data,
-		Log:    strings.TrimSpace(msgLogs.String()),
-		Events: events,
+	return &sdk.MsgsResult{
+		Data:    data,
+		Logs:    msgLogs,
+		Eventss: eventss,
 	}, nil
 }
 
