@@ -76,7 +76,7 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 		expectedRow, _ := ioutil.ReadFile(hashFile)
 		expected, err := hex.DecodeString(string(expectedRow[:64]))
 		require.NoError(t, err)
-		actual := listCode[0].DataHash.Bytes()
+		actual := listCode[0].GetDataHash().Bytes()
 		require.Equal(t, expected, actual)
 	}
 
@@ -120,7 +120,7 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 	{
 		listContract := f.QueryListContractByCodeWasm(codeId)
 		require.Len(t, listContract, 1)
-		contractAddress = listContract[0].Address
+		contractAddress = listContract[0].GetAddress()
 	}
 
 	// check arbiter with query
@@ -209,7 +209,7 @@ func TestLinkCLIWasmTokenTester(t *testing.T) {
 	{
 		listContract := f.QueryListContractByCodeWasm(codeId)
 		require.Len(t, listContract, 1)
-		contractAddress = listContract[0].Address
+		contractAddress = listContract[0].GetAddress()
 	}
 
 	// issue token
@@ -628,7 +628,7 @@ func TestLinkCLIWasmTokenTesterProxy(t *testing.T) {
 	{
 		listContract := f.QueryListContractByCodeWasm(codeId)
 		require.Len(t, listContract, 1)
-		contractAddress = listContract[0].Address
+		contractAddress = listContract[0].GetAddress()
 	}
 
 	// set test token and approve for contractAddress
@@ -786,7 +786,7 @@ func TestLinkCLIWasmCollectionTester(t *testing.T) {
 	{
 		listContract := f.QueryListContractByCodeWasm(codeId)
 		require.Len(t, listContract, 1)
-		contractAddress = listContract[0].Address
+		contractAddress = listContract[0].GetAddress()
 	}
 
 	// create collection
@@ -1552,7 +1552,7 @@ func TestLinkCLIWasmCollectionTesterProxy(t *testing.T) {
 	{
 		listContract := f.QueryListContractByCodeWasm(codeId)
 		require.Len(t, listContract, 1)
-		contractAddress = listContract[0].Address
+		contractAddress = listContract[0].GetAddress()
 	}
 
 	// set test token and approve for contractAddress

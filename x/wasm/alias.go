@@ -123,9 +123,9 @@ type (
 	WasmEncoder             = keeper.WasmEncoder
 	MessageEncoders         = keeper.MessageEncoders
 	Keeper                  = keeper.Keeper
-	ContractInfoWithAddress = keeper.ContractInfoWithAddress
-	GetCodeResponse         = keeper.GetCodeResponse
-	ListCodeResponse        = keeper.ListCodeResponse
+	CodeInfoResponse        = types.CodeInfoResponse
+	ContractInfoResponse    = types.ContractInfoResponse
+	ContractHistoryResponse = types.ContractHistoryResponse
 	QueryHandler            = keeper.QueryHandler
 	QueryPlugins            = keeper.QueryPlugins
 

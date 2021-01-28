@@ -18,6 +18,17 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MigrateContractProposal{}, "wasm/MigrateContractProposal", nil)
 	cdc.RegisterConcrete(UpdateAdminProposal{}, "wasm/UpdateAdminProposal", nil)
 	cdc.RegisterConcrete(ClearAdminProposal{}, "wasm/ClearAdminProposal", nil)
+
+	// query responses
+
+	// For the type-tags in case of a slice item or a nested property.
+	cdc.RegisterInterface((*CodeInfoResponse)(nil), nil)
+	cdc.RegisterInterface((*ContractInfoResponse)(nil), nil)
+	cdc.RegisterInterface((*ContractHistoryResponse)(nil), nil)
+
+	cdc.RegisterConcrete(codeInfo{}, "wasm/CodeInfo", nil)
+	cdc.RegisterConcrete(contractInfo{}, "wasm/ContractInfo", nil)
+	cdc.RegisterConcrete(contractHistory{}, "wasm/ContractHistory", nil)
 }
 
 // ModuleCdc generic sealed codec to be used throughout module
