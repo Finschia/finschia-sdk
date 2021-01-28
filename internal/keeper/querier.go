@@ -7,10 +7,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/wasm/internal/types"
-
 	abci "github.com/tendermint/tendermint/abci/types"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
+
+	"github.com/line/link-modules/x/wasm/internal/types"
 )
 
 const (
@@ -27,13 +26,6 @@ const (
 	QueryMethodContractStateAll   = "all"
 	QueryMethodContractStateRaw   = "raw"
 )
-
-// ContractInfoWithAddress adds the address (key) to the ContractInfo representation
-type ContractInfoWithAddress struct {
-	// embedded here, so all json items remain top level
-	*types.ContractInfo
-	Address sdk.AccAddress `json:"address"`
-}
 
 // NewQuerier creates a new querier
 func NewQuerier(keeper Keeper) sdk.Querier {
@@ -70,10 +62,7 @@ func queryContractInfo(ctx sdk.Context, bech string, keeper Keeper) ([]byte, err
 		return []byte("null"), nil
 	}
 	redact(info)
-	infoWithAddress := ContractInfoWithAddress{
-		Address:      addr,
-		ContractInfo: info,
-	}
+	infoWithAddress := types.NewContractInfoResponse(*info, addr)
 	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, infoWithAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
@@ -92,14 +81,11 @@ func queryContractListByCode(ctx sdk.Context, codeIDstr string, keeper Keeper) (
 		return nil, err
 	}
 
-	var contracts []ContractInfoWithAddress
+	var contracts []types.ContractInfoResponse
 	keeper.IterateContractInfo(ctx, func(addr sdk.AccAddress, info types.ContractInfo) bool {
 		if info.CodeID == codeID {
 			// and add the address
-			infoWithAddress := ContractInfoWithAddress{
-				Address:      addr,
-				ContractInfo: &info,
-			}
+			infoWithAddress := types.NewContractInfoResponse(info, addr)
 			contracts = append(contracts, infoWithAddress)
 		}
 		return false
@@ -107,12 +93,8 @@ func queryContractListByCode(ctx sdk.Context, codeIDstr string, keeper Keeper) (
 
 	// now we sort them by AbsoluteTxPosition
 	sort.Slice(contracts, func(i, j int) bool {
-		return contracts[i].ContractInfo.Created.LessThan(contracts[j].ContractInfo.Created)
+		return contracts[i].LessThan(contracts[j])
 	})
-	// and remove that info for the final json (yes, the json:"-" tag doesn't work)
-	for i := range contracts {
-		redact(contracts[i].ContractInfo)
-	}
 
 	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, contracts)
 	if err != nil {
@@ -158,12 +140,6 @@ func queryContractState(ctx sdk.Context, bech, queryMethod string, req abci.Requ
 	return bz, nil
 }
 
-type GetCodeResponse struct {
-	ListCodeResponse
-	// Data is the entire wasm bytecode
-	Data []byte `json:"data" yaml:"data"`
-}
-
 func queryCode(ctx sdk.Context, codeIDstr string, keeper Keeper) ([]byte, error) {
 	codeID, err := strconv.ParseUint(codeIDstr, 10, 64)
 	if err != nil {
@@ -175,44 +151,23 @@ func queryCode(ctx sdk.Context, codeIDstr string, keeper Keeper) ([]byte, error)
 		// nil, nil leads to 404 in rest handler
 		return nil, nil
 	}
-	info := ListCodeResponse{
-		ID:       codeID,
-		Creator:  res.Creator,
-		DataHash: res.CodeHash,
-		Source:   res.Source,
-		Builder:  res.Builder,
-	}
 
 	code, err := keeper.GetByteCode(ctx, codeID)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "loading wasm code")
 	}
 
-	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, GetCodeResponse{info, code})
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, types.NewCodeInfoResponse(codeID, *res, code))
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 	return bz, nil
 }
 
-type ListCodeResponse struct {
-	ID       uint64           `json:"id"`
-	Creator  sdk.AccAddress   `json:"creator"`
-	DataHash tmbytes.HexBytes `json:"data_hash"`
-	Source   string           `json:"source"`
-	Builder  string           `json:"builder"`
-}
-
 func queryCodeList(ctx sdk.Context, keeper Keeper) ([]byte, error) {
-	var info []ListCodeResponse
+	var info []types.CodeInfoResponse
 	keeper.IterateCodeInfos(ctx, func(i uint64, res types.CodeInfo) bool {
-		info = append(info, ListCodeResponse{
-			ID:       i,
-			Creator:  res.Creator,
-			DataHash: res.CodeHash,
-			Source:   res.Source,
-			Builder:  res.Builder,
-		})
+		info = append(info, types.NewCodeInfoResponse(i, res, nil))
 		return false
 	})
 
@@ -233,12 +188,13 @@ func queryContractHistory(ctx sdk.Context, bech string, keeper Keeper) ([]byte, 
 		// nil, nil leads to 404 in rest handler
 		return nil, nil
 	}
-	// redact response
-	for i := range entries {
-		entries[i].Updated = nil
+
+	histories := make([]types.ContractHistoryResponse, len(entries))
+	for i, entry := range entries {
+		histories[i] = types.NewContractHistoryResponse(entry)
 	}
 
-	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, entries)
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, histories)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}

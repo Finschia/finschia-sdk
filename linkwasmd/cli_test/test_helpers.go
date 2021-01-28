@@ -31,7 +31,6 @@ import (
 	tmctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	wasmkeeper "github.com/line/link-modules/x/wasm/internal/keeper"
 	wasmtypes "github.com/line/link-modules/x/wasm/internal/types"
 	"github.com/line/link-modules/x/wasm/linkwasmd/app"
 
@@ -1327,23 +1326,23 @@ func (f *Fixtures) TxClearContractAdminWasm(contractAddress sdk.AccAddress, flag
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) QueryListCodeWasm() []wasmkeeper.ListCodeResponse {
+func (f *Fixtures) QueryListCodeWasm() []wasmtypes.CodeInfoResponse {
 	cmd := fmt.Sprintf("%s query wasm list-code %s", f.LinkcliBinary, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
-	var listCode []wasmkeeper.ListCodeResponse
+	var listCode []wasmtypes.CodeInfoResponse
 	err := cdc.UnmarshalJSON([]byte(res), &listCode)
 	require.NoError(f.T, err)
 	return listCode
 }
 
-func (f *Fixtures) QueryListContractByCodeWasm(codeId uint64) []wasmkeeper.ContractInfoWithAddress {
+func (f *Fixtures) QueryListContractByCodeWasm(codeId uint64) []wasmtypes.ContractInfoResponse {
 	cmd := fmt.Sprintf("%s query wasm list-contract-by-code %d %s", f.LinkcliBinary, codeId, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
-	var listContract []wasmkeeper.ContractInfoWithAddress
+	var listContract []wasmtypes.ContractInfoResponse
 	err := cdc.UnmarshalJSON([]byte(res), &listContract)
 	require.NoError(f.T, err)
 	return listContract
@@ -1355,12 +1354,12 @@ func (f *Fixtures) QueryCodeWasm(codeId uint64, outputPath string) {
 	require.Empty(f.T, errStr)
 }
 
-func (f *Fixtures) QueryContractWasm(contractAddress sdk.AccAddress) wasmkeeper.ContractInfoWithAddress {
+func (f *Fixtures) QueryContractWasm(contractAddress sdk.AccAddress) wasmtypes.ContractInfoResponse {
 	cmd := fmt.Sprintf("%s query wasm contract %s %s", f.LinkcliBinary, contractAddress, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
-	var contractInfo wasmkeeper.ContractInfoWithAddress
+	var contractInfo wasmtypes.ContractInfoResponse
 	err := cdc.UnmarshalJSON([]byte(res), &contractInfo)
 	require.NoError(f.T, err)
 	return contractInfo

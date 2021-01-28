@@ -441,12 +441,12 @@ func assertCodeBytes(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64
 		return
 	}
 
-	var res GetCodeResponse
+	var res CodeInfoResponse
 	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
-	assert.Equal(t, expectedBytes, res.Data)
-	assert.Equal(t, codeID, res.ID)
+	assert.Equal(t, expectedBytes, res.GetData())
+	assert.Equal(t, codeID, res.GetID())
 }
 
 func assertContractList(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64, addrs []string) {
@@ -458,13 +458,13 @@ func assertContractList(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uin
 		return
 	}
 
-	var res []ContractInfoWithAddress
+	var res []ContractInfoResponse
 	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
 	var hasAddrs = make([]string, len(res))
 	for i, r := range res {
-		hasAddrs[i] = r.Address.String()
+		hasAddrs[i] = r.GetAddress().String()
 	}
 
 	assert.Equal(t, hasAddrs, addrs)
@@ -491,12 +491,12 @@ func assertContractInfo(t *testing.T, q sdk.Querier, ctx sdk.Context, addr sdk.A
 	bz, sdkerr := q(ctx, path, abci.RequestQuery{})
 	require.NoError(t, sdkerr)
 
-	var res ContractInfoWithAddress
+	var res ContractInfoResponse
 	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
-	assert.Equal(t, codeID, res.ContractInfo.CodeID)
-	assert.Equal(t, creator, res.ContractInfo.Creator)
+	assert.Equal(t, codeID, res.GetCodeID())
+	assert.Equal(t, creator, res.GetCreator())
 }
 
 func createFakeFundedAccount(ctx sdk.Context, am auth.AccountKeeper, coins sdk.Coins) sdk.AccAddress {

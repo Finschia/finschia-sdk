@@ -212,18 +212,18 @@ func TestListContractByCodeOrdering(t *testing.T) {
 	res, err := q(ctx, query, data)
 	require.NoError(t, err)
 
-	var contracts []ContractInfoWithAddress
+	var contracts []types.ContractInfoResponse
 	err = types.ModuleCdc.UnmarshalJSON(res, &contracts)
 	require.NoError(t, err)
 
 	require.Equal(t, 10, len(contracts))
 
 	for i, contract := range contracts {
-		assert.Equal(t, fmt.Sprintf("contract %d", i), contract.Label)
-		assert.NotEmpty(t, contract.Address)
-		// ensure these are not shown
-		assert.Nil(t, contract.Created)
+		assert.Equal(t, fmt.Sprintf("contract %d", i), contract.GetLabel())
+		assert.NotEmpty(t, contract.GetAddress())
 	}
+	assert.NotContains(t, string(res), "create")
+	assert.NotContains(t, string(res), "Create")
 }
 
 func TestQueryContractHistory(t *testing.T) {
@@ -318,12 +318,21 @@ func TestQueryContractHistory(t *testing.T) {
 				require.Nil(t, resData)
 				return
 			}
-			var got []types.ContractCodeHistoryEntry
+			var got []types.ContractHistoryResponse
 			err = types.ModuleCdc.UnmarshalJSON(resData, &got)
 			require.NoError(t, err)
 
-			assert.Equal(t, spec.expContent, got)
+			assertContractHistory(t, spec.expContent, got)
 		})
+	}
+}
+
+func assertContractHistory(t *testing.T, expected []types.ContractCodeHistoryEntry, actual []types.ContractHistoryResponse) {
+	assert.Equal(t, len(expected), len(actual))
+
+	for i, entry := range expected {
+		expectedResponse := types.NewContractHistoryResponse(entry)
+		assert.Equal(t, expectedResponse, actual[i])
 	}
 }
 
@@ -366,12 +375,12 @@ func TestQueryCodeList(t *testing.T) {
 			// then
 			require.NoError(t, err)
 
-			var got []ListCodeResponse
+			var got []types.CodeInfoResponse
 			err = types.ModuleCdc.UnmarshalJSON(resData, &got)
 			require.NoError(t, err)
 			require.Len(t, got, len(spec.codeIDs))
 			for i, exp := range spec.codeIDs {
-				assert.EqualValues(t, exp, got[i].ID)
+				assert.EqualValues(t, exp, got[i].GetID())
 			}
 		})
 	}

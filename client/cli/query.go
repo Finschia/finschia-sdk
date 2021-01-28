@@ -112,18 +112,18 @@ func GetCmdQueryCode(cdc *codec.Codec) *cobra.Command {
 			if len(res) == 0 {
 				return fmt.Errorf("contract not found")
 			}
-			var code keeper.GetCodeResponse
-			err = json.Unmarshal(res, &code)
+			var code types.CodeInfoResponse
+			err = cliCtx.Codec.UnmarshalJSON(res, &code)
 			if err != nil {
 				return err
 			}
 
-			if len(code.Data) == 0 {
+			if len(code.GetData()) == 0 {
 				return fmt.Errorf("contract not found")
 			}
 
 			fmt.Printf("Downloading wasm code to %s\n", args[1])
-			return ioutil.WriteFile(args[1], code.Data, 0600)
+			return ioutil.WriteFile(args[1], code.GetData(), 0600)
 		},
 	}
 }
