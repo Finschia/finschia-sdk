@@ -15,7 +15,7 @@ var (
 
 	// DefaultCommitKVStoreCacheSize defines the persistent ARC cache size for a
 	// CommitKVStoreCache.
-	DefaultCommitKVStoreCacheSize uint = 300000
+	DefaultCommitKVStoreCacheSize uint = 600000
 )
 
 type (
