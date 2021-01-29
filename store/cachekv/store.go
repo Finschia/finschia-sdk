@@ -24,8 +24,8 @@ type cValue struct {
 
 // Store wraps an in-memory cache around an underlying types.KVStore.
 type Store struct {
-	rwMtx         sync.RWMutex
-	mtx           sync.Mutex
+	rdMtx         sync.RWMutex // read & delete mutex (get & clear cache)
+	wMtx          sync.Mutex   // write mutex (set cache, unsortedCache, sortedCache)
 	cache         map[string]*cValue
 	unsortedCache map[string]struct{}
 	sortedCache   *list.List // always ascending sorted
@@ -52,8 +52,8 @@ func (store *Store) GetStoreType() types.StoreType {
 func (store *Store) Get(key []byte) (value []byte) {
 	types.AssertValidKey(key)
 
-	store.rwMtx.RLock()
-	defer store.rwMtx.RUnlock()
+	store.rdMtx.RLock()
+	defer store.rdMtx.RUnlock()
 	cacheValue, ok := store.cache[string(key)]
 	if ok {
 		return cacheValue.value
@@ -61,8 +61,8 @@ func (store *Store) Get(key []byte) (value []byte) {
 
 	value = store.parent.Get(key)
 
-	store.mtx.Lock()
-	defer store.mtx.Unlock()
+	store.wMtx.Lock()
+	defer store.wMtx.Unlock()
 
 	cacheValue, ok = store.cache[string(key)]
 	if !ok {
@@ -79,10 +79,8 @@ func (store *Store) Set(key []byte, value []byte) {
 	types.AssertValidKey(key)
 	types.AssertValidValue(value)
 
-	store.rwMtx.Lock()
-	defer store.rwMtx.Unlock()
-	store.mtx.Lock()
-	defer store.mtx.Unlock()
+	store.wMtx.Lock()
+	defer store.wMtx.Unlock()
 
 	store.setCacheValue(key, value, false, true)
 }
@@ -97,20 +95,18 @@ func (store *Store) Has(key []byte) bool {
 func (store *Store) Delete(key []byte) {
 	types.AssertValidKey(key)
 
-	store.rwMtx.Lock()
-	defer store.rwMtx.Unlock()
-	store.mtx.Lock()
-	defer store.mtx.Unlock()
+	store.wMtx.Lock()
+	defer store.wMtx.Unlock()
 
 	store.setCacheValue(key, nil, true, true)
 }
 
 // Implements Cachetypes.KVStore.
 func (store *Store) Write() {
-	store.rwMtx.Lock()
-	defer store.rwMtx.Unlock()
-	store.mtx.Lock()
-	defer store.mtx.Unlock()
+	store.rdMtx.Lock()
+	defer store.rdMtx.Unlock()
+	store.wMtx.Lock()
+	defer store.wMtx.Unlock()
 
 	// We need a copy of all of the keys.
 	// Not the best, but probably not a bottleneck depending.
@@ -170,8 +166,10 @@ func (store *Store) ReverseIterator(start, end []byte) types.Iterator {
 }
 
 func (store *Store) iterator(start, end []byte, ascending bool) types.Iterator {
-	store.mtx.Lock()
-	defer store.mtx.Unlock()
+	store.rdMtx.RLock()
+	defer store.rdMtx.RUnlock()
+	store.wMtx.Lock()
+	defer store.wMtx.Unlock()
 
 	var parent, cache types.Iterator
 
