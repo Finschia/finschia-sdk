@@ -18,7 +18,7 @@ and defines overall functioning of the staking module.
 
 - Params: `Paramsspace("staking") -> legacy_amino(params)`
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/staking.proto#L269-L284
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.1/proto/cosmos/staking/v1beta1/staking.proto#L230-L241
 
 ## Validator
 
@@ -30,14 +30,14 @@ Validators can have one of three statuses
   active set during [`EndBlock`](./05_end_block.md#validator-set-changes) and their status is updated to `Bonded`.
   They are signing blocks and receiving rewards. They can receive further delegations.
   They can be slashed for misbehavior. Delegators to this validator who unbond their delegation
+<<<<<<< HEAD
   must wait the duration of the UnbondingTime, a chain-specific param, during which time
   they are still slashable for offences of the source validator if those offences were committed
   during the period of time that the tokens were bonded.
-- `Unbonding`: When a validator leaves the active set, either by choice or due to slashing, jailing or
+>>>>>>> 896eee213 (docs: Update x/staking spec (#8395))
   tombstoning, an unbonding of all their delegations begins. All delegations must then wait the UnbondingTime
   before their tokens are moved to their accounts from the `BondedPool`.
 
-Validators objects should be primarily stored and accessed by the
 `OperatorAddr`, an SDK validator address for the operator of the validator. Two
 additional indices are maintained per validator object in order to fulfill
 required lookups for slashing and validator-set updates. A third special index
@@ -45,47 +45,33 @@ required lookups for slashing and validator-set updates. A third special index
 throughout each block, unlike the first two indices which mirror the validator
 records within a block.
 
-- Validators: `0x21 | OperatorAddrLen (1 byte) | OperatorAddr -> ProtocolBuffer(validator)`
-- ValidatorsByConsAddr: `0x22 | ConsAddrLen (1 byte) | ConsAddr -> OperatorAddr`
-- ValidatorsByPower: `0x23 | BigEndian(ConsensusPower) | OperatorAddrLen (1 byte) | OperatorAddr -> OperatorAddr`
-- LastValidatorsPower: `0x11 | OperatorAddrLen (1 byte) | OperatorAddr -> ProtocolBuffer(ConsensusPower)`
-
-`Validators` is the primary index - it ensures that each operator can have only one
-associated validator, where the public key of that validator can change in the
-future. Delegators can refer to the immutable operator of the validator, without
-concern for the changing public key.
-
-`ValidatorByConsAddr` is an additional index that enables lookups for slashing.
-When Tendermint reports evidence, it provides the validator address, so this
-map is needed to find the operator. Note that the `ConsAddr` corresponds to the
-address which can be derived from the validator's `ConsPubKey`.
-
-`ValidatorsByPower` is an additional index that provides a sorted list of
-potential validators to quickly determine the current active set. Here
-ConsensusPower is validator.Tokens/10^6 by default. Note that all validators
-where `Jailed` is true are not stored within this index.
+- Validators: `0x21 | OperatorAddr -> ProtocolBuffer(validator)`
+- ValidatorsByConsAddr: `0x22 | ConsAddr -> OperatorAddr`
+- ValidatorsByPower: `0x23 | BigEndian(ConsensusPower) | OperatorAddr -> OperatorAddr`
+- LastValidatorsPower: `0x11 OperatorAddr -> ProtocolBuffer(ConsensusPower)`
 
 `LastValidatorsPower` is a special index that provides a historical list of the
 last-block's bonded validators. This index remains constant during a block but
 is updated during the validator set update process which takes place in [`EndBlock`](./05_end_block.md).
-
 Each validator's state is stored in a `Validator` struct:
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/staking.proto#L83-L120
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L65-L99
+
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L24-L63
 
 ## Delegation
 
 Delegations are identified by combining `DelegatorAddr` (the address of the delegator)
 with the `ValidatorAddr` Delegators are indexed in the store as follows:
 
-- Delegation: `0x31 | DelegatorAddrLen (1 byte) | DelegatorAddr | ValidatorAddrLen (1 byte) | ValidatorAddr -> ProtocolBuffer(delegation)`
+- Delegation: `0x31 | DelegatorAddr | ValidatorAddr -> ProtocolBuffer(delegation)`
 
 Stake holders may delegate coins to validators; under this circumstance their
 funds are held in a `Delegation` data structure. It is owned by one
 delegator, and is associated with the shares for one validator. The sender of
 the transaction is the owner of the bond.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/staking.proto#L183-L194
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L159-L170
 
 ### Delegator Shares
 
@@ -114,8 +100,8 @@ detected.
 
 `UnbondingDelegation` are indexed in the store as:
 
-- UnbondingDelegation: `0x32 | DelegatorAddrLen (1 byte) | DelegatorAddr | ValidatorAddrLen (1 byte) | ValidatorAddr -> ProtocolBuffer(unbondingDelegation)`
-- UnbondingDelegationsFromValidator: `0x33 | ValidatorAddrLen (1 byte) | ValidatorAddr | DelegatorAddrLen (1 byte) | DelegatorAddr -> nil`
+- UnbondingDelegation: `0x32 | DelegatorAddr | ValidatorAddr -> ProtocolBuffer(unbondingDelegation)`
+- UnbondingDelegationsFromValidator: `0x33 | ValidatorAddr | DelegatorAddr -> nil`
 
 The first map here is used in queries, to lookup all unbonding delegations for
 a given delegator, while the second map is used in slashing, to lookup all
@@ -124,7 +110,7 @@ slashed.
 
 A UnbondingDelegation object is created every time an unbonding is initiated.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/staking.proto#L198-L209
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L172-L198
 
 ## Redelegation
 
@@ -136,9 +122,9 @@ committed by the source validator.
 
 `Redelegation` are indexed in the store as:
 
-- Redelegations: `0x34 | DelegatorAddrLen (1 byte) | DelegatorAddr | ValidatorAddrLen (1 byte) | ValidatorSrcAddr | ValidatorDstAddr -> ProtocolBuffer(redelegation)`
-- RedelegationsBySrc: `0x35 | ValidatorSrcAddrLen (1 byte) | ValidatorSrcAddr | ValidatorDstAddrLen (1 byte) | ValidatorDstAddr | DelegatorAddrLen (1 byte) | DelegatorAddr -> nil`
-- RedelegationsByDst: `0x36 | ValidatorDstAddrLen (1 byte) | ValidatorDstAddr | ValidatorSrcAddrLen (1 byte) | ValidatorSrcAddr | DelegatorAddrLen (1 byte) | DelegatorAddr -> nil`
+- Redelegations: `0x34 | DelegatorAddr | ValidatorSrcAddr | ValidatorDstAddr -> ProtocolBuffer(redelegation)`
+- RedelegationsBySrc: `0x35 | ValidatorSrcAddr | ValidatorDstAddr | DelegatorAddr -> nil`
+- RedelegationsByDst: `0x36 | ValidatorDstAddr | ValidatorSrcAddr | DelegatorAddr -> nil`
 
 The first map here is used for queries, to lookup all redelegations for a given
 delegator. The second map is used for slashing based on the `ValidatorSrcAddr`,
@@ -150,9 +136,9 @@ A redelegation object is created every time a redelegation occurs. To prevent
 - the (re)delegator already has another immature redelegation in progress
   with a destination to a validator (let's call it `Validator X`)
 - and, the (re)delegator is attempting to create a _new_ redelegation
-  where the source validator for this new redelegation is `Validator X`.
+  where the source validator for this new redelegation is `Validator-X`.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/staking.proto#L253-L266
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L200-L228
 
 ## Queues
 
@@ -174,7 +160,7 @@ delegations queue is kept.
 
 - UnbondingDelegation: `0x41 | format(time) -> []DVPair`
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/staking.proto#L212-L229
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L123-L133
 
 ### RedelegationQueue
 
@@ -183,7 +169,7 @@ kept.
 
 - RedelegationQueue: `0x42 | format(time) -> []DVVTriplet`
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/staking.proto#L232-L249
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L140-L152
 
 ### ValidatorQueue
 
@@ -202,7 +188,7 @@ that multiple validators exist in the queue at the same location.
 HistoricalInfo objects are stored and pruned at each block such that the staking keeper persists
 the `n` most recent historical info defined by staking module parameter: `HistoricalEntries`.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/staking.proto#L19-L22
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L15-L22
 
 At each BeginBlock, the staking keeper will persist the current Header and the Validators that committed
 the current block in a `HistoricalInfo` object. The Validators are sorted on their address to ensure that

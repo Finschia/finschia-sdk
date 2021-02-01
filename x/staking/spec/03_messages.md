@@ -10,9 +10,9 @@ In this section we describe the processing of the staking messages and the corre
 
 A validator is created using the `Msg/CreateValidator` service message.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L16-L17
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L16-L17
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L36-L51
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L35-L51
 
 This service message is expected to fail if:
 
@@ -35,9 +35,9 @@ in the first end-block.
 The `Description`, `CommissionRate` of a validator can be updated using the
 `Msg/EditCandidacy` service message.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L19-L20
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L19-L20
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L56-L76
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L56-L76
 
 This service message is expected to fail if:
 
@@ -54,9 +54,9 @@ Within this service message the delegator provides coins, and in return receives
 some amount of their validator's (newly created) delegator-shares that are
 assigned to `Delegation.Shares`.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L22-L24
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L22-L24
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L81-L90
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L81-L90
 
 This service message is expected to fail if:
 
@@ -67,28 +67,18 @@ If an existing `Delegation` object for provided addresses does not already
 exist than it is created as part of this service message otherwise the existing
 `Delegation` is updated to include the newly received shares.
 
-The delegator receives newly minted shares at the current exchange rate.
-The exchange rate is the number of existing shares in the validator divided by
-the number of currently delegated tokens.
-
-The validator is updated in the `ValidatorByPower` index, and the delegation is
-tracked in validator object in the `Validators` index.
-
-It is possible to delegate to a jailed validator, the only difference being it
-will not be added to the power index until it is unjailed.
-
 ## Msg/Undelegate
 
 The `Msg/Undelegate` service message allows delegators to undelegate their tokens from
 validator.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L30-L32
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L30-L32
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L112-L121
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L112-L121
 
 This service message returns a response containing the completion time of the undelegation:
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L123-L126
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L123-L126
 
 This service message is expected to fail if:
 
@@ -115,13 +105,13 @@ The redelegation command allows delegators to instantly switch validators. Once
 the unbonding period has passed, the redelegation is automatically completed in
 the EndBlocker.
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L26-L28
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L26-L28
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L95-L105
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L95-L105
 
 This service message returns a response containing the completion time of the redelegation:
 
-+++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1/tx.proto#L107-L110
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/tx.proto#L107-L110
 
 This service message is expected to fail if:
 
