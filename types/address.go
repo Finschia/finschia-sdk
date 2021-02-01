@@ -12,7 +12,9 @@ import (
 
 	"github.com/line/lbm-sdk/codec/legacy"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/types/address"
 	"github.com/line/lbm-sdk/types/bech32"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 const (
@@ -29,8 +31,6 @@ const (
 	//	config.Seal()
 
 	BytesAddrLen = 20
-	AddrLen      = len(Bech32MainPrefix) + 1 + 38
-
 	// Bech32MainPrefix defines the main SDK Bech32 prefix of an account's address
 	Bech32MainPrefix = "link"
 
@@ -174,12 +174,15 @@ func VerifyAddressFormat(bz []byte) error {
 	if verifier != nil {
 		return verifier(bz)
 	}
-	if len(bz) != BytesAddrLen {
-		if len(bz) == 0 {
-			return errors.New("empty address string is not allowed")
-		}
-		return fmt.Errorf("incorrect address length (expected: %d, actual: %d)", BytesAddrLen, len(bz))
+
+	if len(bz) == 0 {
+		return sdkerrors.Wrap(sdkerrors.ErrUnknownAddress, "addresses cannot be empty")
 	}
+
+	if len(bz) > address.MaxAddrLen {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "address max length is %d, got %d", address.MaxAddrLen, len(bz))
+	}
+
 	return nil
 }
 

@@ -3,19 +3,12 @@ package address_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/suite"
+	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/types/address"
 )
 
-func TestStoreKeySuite(t *testing.T) {
-	suite.Run(t, new(StoreKeySuite))
-}
-
-type StoreKeySuite struct{ suite.Suite }
-
-func (suite *StoreKeySuite) TestLengthPrefix() {
-	require := suite.Require()
+func TestLengthPrefixedAddressStoreKey(t *testing.T) {
 	addr10byte := []byte{0, 1, 2, 3, 4, 5, 6, 7, 8, 9}
 	addr20byte := []byte{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19}
 	addr256byte := make([]byte, 256)
@@ -33,13 +26,13 @@ func (suite *StoreKeySuite) TestLengthPrefix() {
 
 	for _, tt := range tests {
 		tt := tt
-		suite.Run(tt.name, func() {
+		t.Run(tt.name, func(t *testing.T) {
 			storeKey, err := address.LengthPrefix(tt.addr)
 			if tt.expErr {
-				require.Error(err)
+				require.Error(t, err)
 			} else {
-				require.NoError(err)
-				require.Equal(tt.expStoreKey, storeKey)
+				require.NoError(t, err)
+				require.Equal(t, tt.expStoreKey, storeKey)
 			}
 		})
 	}

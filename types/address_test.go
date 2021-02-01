@@ -335,15 +335,18 @@ func (s *addressTestSuite) TestVerifyAddressFormat() {
 	addr5 := make([]byte, 5)
 	addr20 := make([]byte, 20)
 	addr32 := make([]byte, 32)
+	addr256 := make([]byte, 256)
 
 	err := types.VerifyAddressFormat(addr0)
-	s.Require().EqualError(err, "incorrect address length 0")
+	s.Require().EqualError(err, "addresses cannot be empty: unknown address")
 	err = types.VerifyAddressFormat(addr5)
-	s.Require().EqualError(err, "incorrect address length 5")
+	s.Require().NoError(err)
 	err = types.VerifyAddressFormat(addr20)
-	s.Require().Nil(err)
+	s.Require().NoError(err)
 	err = types.VerifyAddressFormat(addr32)
-	s.Require().EqualError(err, "incorrect address length 32")
+	s.Require().NoError(err)
+	err = types.VerifyAddressFormat(addr256)
+	s.Require().EqualError(err, "address max length is 255, got 256: unknown address")
 }
 
 func (s *addressTestSuite) TestCustomAddressVerifier() {
@@ -356,25 +359,22 @@ func (s *addressTestSuite) TestCustomAddressVerifier() {
 	err := types.VerifyAddressFormat(addr)
 	s.Require().NotNil(err)
 	err = types.ValidateAccAddress(accBech)
-	if err == nil {
-		fmt.Printf("\n")
-	}
 	s.Require().NotNil(err)
 	err = types.ValidateValAddress(valBech)
 	s.Require().NotNil(err)
 	err = types.ValidateConsAddress(consBech)
 	s.Require().NotNil(err)
 
-	// Set a custom address verifier that accepts 10 or 20 byte addresses
+	// Set a custom address verifier only accepts 20 byte addresses
 	types.GetConfig().SetAddressVerifier(func(bz []byte) error {
 		n := len(bz)
-		if n == 10 || n == types.BytesAddrLen {
+		if n == 20 {
 			return nil
 		}
 		return fmt.Errorf("incorrect address length %d", n)
 	})
 
-	// Verifiy that the custom logic accepts this 10 byte address
+	// Verifiy that the custom logic rejects this 10 byte address
 	err = types.VerifyAddressFormat(addr)
 	s.Require().Nil(err)
 	err = types.ValidateAccAddress(accBech)
@@ -383,6 +383,9 @@ func (s *addressTestSuite) TestCustomAddressVerifier() {
 	s.Require().Nil(err)
 	err = types.ValidateConsAddress(consBech)
 	s.Require().Nil(err)
+
+	// Reinitialize the global config to default address verifier (nil)
+	types.GetConfig().SetAddressVerifier(nil)
 }
 
 func (s *addressTestSuite) TestBech32ifyAddressBytes() {

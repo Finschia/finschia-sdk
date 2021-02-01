@@ -17,6 +17,7 @@ import (
 	"github.com/line/lbm-sdk/store"
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/address"
 	"github.com/line/lbm-sdk/types/query"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
@@ -193,7 +194,7 @@ func ExamplePaginate() {
 	balResult := sdk.NewCoins()
 	authStore := ctx.KVStore(app.GetKey(authtypes.StoreKey))
 	balancesStore := prefix.NewStore(authStore, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, bankkeeper.AddressToPrefixKey(addr1))
+	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
 	pageRes, err := query.Paginate(accountStore, request.Pagination, func(key []byte, value []byte) error {
 		var tempRes sdk.Coin
 		err := app.AppCodec().UnmarshalBinaryBare(value, &tempRes)

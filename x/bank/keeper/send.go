@@ -231,9 +231,7 @@ func (k BaseSendKeeper) ClearBalances(ctx sdk.Context, addr sdk.AccAddress) {
 		return false
 	})
 
-	store := ctx.KVStore(k.storeKey)
-	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
+	accountStore := k.getAccountStore(ctx, addr)
 
 	for _, key := range keys {
 		accountStore.Delete(key)
@@ -284,9 +282,7 @@ func (k BaseSendKeeper) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, balance.String())
 	}
 
-	store := ctx.KVStore(k.storeKey)
-	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
+	accountStore := k.getAccountStore(ctx, addr)
 
 	bz, err := balance.Marshal()
 	if err != nil {

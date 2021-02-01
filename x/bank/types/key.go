@@ -1,9 +1,6 @@
 package types
 
 import (
-	"fmt"
-	"strings"
-
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/address"
 )
@@ -24,6 +21,8 @@ const (
 
 // KVStore keys
 var (
+	// BalancesPrefix is the for the account balances store. We use a byte
+	// (instead of say `[]]byte("balances")` to save some disk space).
 	BalancesPrefix      = []byte{0x02}
 	SupplyKey           = []byte{0x00}
 	DenomMetadataPrefix = []byte{0x1}
@@ -42,16 +41,10 @@ func DenomMetadataKey(denom string) []byte {
 // store. The key must not contain the perfix BalancesPrefix as the prefix store
 // iterator discards the actual prefix.
 func AddressFromBalancesStore(key []byte) sdk.AccAddress {
-	addr := string(key)
-	if !strings.Contains(addr, sdk.Bech32MainPrefix) {
-		panic(fmt.Sprintf("unexpected account address key; key does not start with (%s): %s",
-			sdk.Bech32MainPrefix, addr))
-	}
-	index := strings.Index(addr, AddressDenomDelimiter)
-	if index <= 0 {
-		panic(fmt.Sprintf("AddressBalance store key does not contain the delimiter(,): %s", addr))
-	}
-	return sdk.AccAddress(addr[:index])
+	addrLen := key[0]
+	addr := key[1 : addrLen+1]
+
+	return sdk.AccAddress(addr)
 }
 
 // CreateAccountBalancesPrefix creates the prefix for an account's balances.

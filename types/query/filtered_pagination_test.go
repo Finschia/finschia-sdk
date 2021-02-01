@@ -6,9 +6,9 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/address"
 	"github.com/line/lbm-sdk/types/query"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	"github.com/line/lbm-sdk/x/bank/keeper"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -112,7 +112,7 @@ func ExampleFilteredPaginate() {
 	pageReq := &query.PageRequest{Key: nil, Limit: 1, CountTotal: true}
 	store := ctx.KVStore(app.GetKey(authtypes.StoreKey))
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, keeper.AddressToPrefixKey(addr1))
+	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
 
 	var balResult sdk.Coins
 	pageRes, err := query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {
@@ -144,7 +144,7 @@ func ExampleFilteredPaginate() {
 
 func execFilterPaginate(store sdk.KVStore, pageReq *query.PageRequest, appCodec codec.Marshaler) (balances sdk.Coins, res *query.PageResponse, err error) {
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, keeper.AddressToPrefixKey(addr1))
+	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1))
 
 	var balResult sdk.Coins
 	res, err = query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {
