@@ -129,7 +129,7 @@ func NewBaseApp(
 		txDecoder:       txDecoder,
 		fauxMerkleMode:  false,
 		checkAccountWGs: NewAccountWGs(),
-		chCheckTx:       make(chan *RequestCheckTxAsync, 10000),   // TODO config channel buffer size. It might be good to set it tendermint mempool.size
+		chCheckTx:       make(chan *RequestCheckTxAsync, 10000), // TODO config channel buffer size. It might be good to set it tendermint mempool.size
 		trace:           false,
 		metrics:         NopMetrics(),
 	}
