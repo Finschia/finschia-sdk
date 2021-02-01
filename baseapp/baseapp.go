@@ -78,7 +78,6 @@ type BaseApp struct { // nolint: maligned
 
 	checkAccountWGs *AccountWGs
 	chCheckTx       chan *RequestCheckTxAsync
-	chDeliverTx     chan *RequestDeliverTxAsync
 
 	// an inter-block write-through cache provided to the context during deliverState
 	interBlockCache sdk.MultiStorePersistentCache
@@ -131,7 +130,6 @@ func NewBaseApp(
 		fauxMerkleMode:  false,
 		checkAccountWGs: NewAccountWGs(),
 		chCheckTx:       make(chan *RequestCheckTxAsync, 10000),   // TODO config channel buffer size. It might be good to set it tendermint mempool.size
-		chDeliverTx:     make(chan *RequestDeliverTxAsync, 10000), // TODO config channel buffer size. It might be good to set it tendermint mempool.size
 		trace:           false,
 		metrics:         NopMetrics(),
 	}
@@ -143,7 +141,7 @@ func NewBaseApp(
 		app.cms.SetInterBlockCache(app.interBlockCache)
 	}
 
-	app.startReactors()
+	app.startReactor()
 
 	return app
 }

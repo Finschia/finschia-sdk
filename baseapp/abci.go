@@ -237,10 +237,28 @@ func (app *BaseApp) DeliverTxSync(req abci.RequestDeliverTx) abci.ResponseDelive
 }
 
 func (app *BaseApp) DeliverTxAsync(req abci.RequestDeliverTx, callback abci.DeliverTxCallback) {
-	deliverTx := newRequestDeliverTxAsync(req, callback)
-	app.chDeliverTx <- deliverTx
+	tx, err := app.preCheckTx(req.Tx)
+	if err != nil {
+		go callback(sdkerrors.ResponseDeliverTx(err, 0, 0, app.trace))
+		return
+	}
 
-	go app.prepareDeliverTx(deliverTx)
+	gInfo, msgsResult, err := app.runTx(req.Tx, tx, false)
+	if err != nil {
+		go callback(sdkerrors.ResponseDeliverTx(err, gInfo.GasWanted, gInfo.GasUsed, app.trace))
+		return
+	}
+
+	go func() {
+		result := msgsResult.ToResult()
+		callback(abci.ResponseDeliverTx{
+			GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
+			GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
+			Log:       result.Log,
+			Data:      result.Data,
+			Events:    result.Events.ToABCIEvents(),
+		})
+	}()
 }
 
 // Commit implements the ABCI interface. It will commit all state that exists in
