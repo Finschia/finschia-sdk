@@ -86,18 +86,23 @@ func TestBaseAccountMarshal(t *testing.T) {
 	// need a codec for marshaling
 	cdc := codec.New()
 	codec.RegisterCrypto(cdc)
+	RegisterCodec(cdc)
 
-	b, err := cdc.MarshalBinaryLengthPrefixed(acc)
+	exp, err := cdc.MarshalBinaryBare(acc)
 	require.Nil(t, err)
 
+	b, err := acc.Marshal()
+	require.Nil(t, err)
+	require.Equal(t, exp, b)
+
 	acc2 := BaseAccount{}
-	err = cdc.UnmarshalBinaryLengthPrefixed(b, &acc2)
+	err = cdc.UnmarshalBinaryBare(b, &acc2)
 	require.Nil(t, err)
 	require.Equal(t, acc, acc2)
 
 	// error on bad bytes
 	acc2 = BaseAccount{}
-	err = cdc.UnmarshalBinaryLengthPrefixed(b[:len(b)/2], &acc2)
+	err = cdc.UnmarshalBinaryBare(b[:len(b)/2], &acc2)
 	require.NotNil(t, err)
 }
 
