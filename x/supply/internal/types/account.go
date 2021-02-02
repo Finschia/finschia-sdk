@@ -4,13 +4,11 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/tendermint/go-amino"
 	"strings"
 
-	yaml "gopkg.in/yaml.v2"
-
+	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto"
+	yaml "gopkg.in/yaml.v2"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
