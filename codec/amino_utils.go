@@ -74,3 +74,29 @@ func Slide(bz *[]byte, n *int, _n int) bool {
 	}
 	return true
 }
+
+func EncodeFieldUvarint(w io.Writer, fnum uint32, u uint64) error {
+	if u == 0 {
+		return nil
+	}
+	if err := EncodeFieldNumberAndTyp3(w, fnum, amino.Typ3_Varint); err != nil {
+		return err
+	}
+	if err := amino.EncodeUvarint(w, u); err != nil {
+		return err
+	}
+	return nil
+}
+
+func EncodeFieldByteSlice(w io.Writer, fnum uint32, bz []byte) error {
+	if len(bz) == 0 {
+		return nil
+	}
+	if err := EncodeFieldNumberAndTyp3(w, fnum, amino.Typ3_ByteLength); err != nil {
+		return err
+	}
+	if err := amino.EncodeByteSlice(w, bz); err != nil {
+		return err
+	}
+	return nil
+}
