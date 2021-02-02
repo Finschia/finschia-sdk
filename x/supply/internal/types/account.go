@@ -155,6 +155,7 @@ func (ma *ModuleAccount) MarshalAminoBare(registered bool) (bz []byte, err error
 func (ma *ModuleAccount) UnmarshalAminoBare(bz []byte) (n int, err error) {
 	var _n int
 	_n, err = ma.unmarshalBaseAccount(bz)
+	codec.Slide(&bz, &n, _n)
 	if len(bz) == 0 || err != nil {
 		return n, err
 	}
@@ -179,33 +180,26 @@ func (ma *ModuleAccount) UnmarshalAminoBare(bz []byte) (n int, err error) {
 func (ma *ModuleAccount) unmarshalBaseAccount(bz []byte) (n int, err error) {
 	var _n int
 	_n, err = codec.CheckFieldNumberAndTyp3(bz, 1, amino.Typ3_ByteLength)
-	codec.Slide(&bz, &n, _n)
-	if len(bz) == 0 || err != nil {
+	if _n == 0 || err != nil {
 		return n, err
 	}
+	codec.Slide(&bz, &n, _n)
 
 	var u uint64
 	u, _n, err = amino.DecodeUvarint(bz)
 	codec.Slide(&bz, &n, _n)
-	if len(bz) == 0 || err != nil {
-		return n, err
-	}
-
-	buf := bz[0:u]
 
 	bac := &authtypes.BaseAccount{}
+	buf := bz[0:u]
 	_n, err = bac.UnmarshalAminoBare(buf)
 	if err != nil {
 		panic("Fail to unmarshal BaseAccount")
 	}
-	codec.Slide(&bz, &n, _n)
-	if len(bz) == 0 {
-		return n, err
-	}
-
 	ma.BaseAccount = bac
 
-	return
+	codec.Slide(&bz, &n, _n)
+
+	return n, err
 }
 
 func (ma *ModuleAccount) unmarshalPermissions(bz []byte) (n int, err error) {
@@ -218,18 +212,15 @@ func (ma *ModuleAccount) unmarshalPermissions(bz []byte) (n int, err error) {
 		}
 
 		_n, err = codec.CheckFieldNumberAndTyp3(bz, 3, amino.Typ3_ByteLength)
-		codec.Slide(&bz, &n, _n)
-		if len(bz) == 0 || err != nil {
+		if _n == 0 || err != nil {
 			return n, err
 		}
+		codec.Slide(&bz, &n, _n)
 
 		permission, _n, err = amino.DecodeString(bz)
 		ma.Permissions = append(ma.Permissions, permission)
 
 		codec.Slide(&bz, &n, _n)
-		if len(bz) == 0 || err != nil {
-			return n, err
-		}
 	}
 
 	return n, err

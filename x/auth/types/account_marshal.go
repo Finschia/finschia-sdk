@@ -35,8 +35,10 @@ func (acc *BaseAccount) MarshalAminoBare(registered bool) ([]byte, error) {
 		return nil, err
 	}
 
-	if err := codec.EncodeFieldByteSlice(buf, 3, acc.PubKey.Bytes()); err != nil {
-		return nil, err
+	if acc.PubKey != nil {
+		if err := codec.EncodeFieldByteSlice(buf, 3, acc.PubKey.Bytes()); err != nil {
+			return nil, err
+		}
 	}
 
 	if err := codec.EncodeFieldUvarint(buf, 4, acc.AccountNumber); err != nil {
@@ -66,13 +68,16 @@ func (acc *BaseAccount) UnmarshalAminoBare(bz []byte) (n int, err error) {
 
 	var pubKeyBz []byte
 	pubKeyBz, _n, err = codec.DecodeFieldByteSlice(bz, 3)
-	codec.Slide(&bz, &n, _n)
-	if len(bz) == 0 || err != nil {
-		return n, err
+
+	if pubKeyBz != nil {
+		_, err = acc.unmarshalPubKeyAminoPrefix(pubKeyBz)
+		if err != nil {
+			return n, err
+		}
 	}
 
-	_, err = acc.unmarshalPubKeyAminoPrefix(pubKeyBz)
-	if err != nil {
+	codec.Slide(&bz, &n, _n)
+	if len(bz) == 0 || err != nil {
 		return n, err
 	}
 

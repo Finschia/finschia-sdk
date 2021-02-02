@@ -106,10 +106,10 @@ func (ak AccountKeeper) decodeAccount(bz []byte) (acc exported.Account) {
 	}
 
 	switch prefix {
-	case [4]byte{11, 253, 125, 154}:
-		acc = &supply.ModuleAccount{}
-	case [4]byte{246, 228, 248, 56}:
+	case types.AccountPrefix:
 		acc = &types.BaseAccount{}
+	case supply.AccountPrefix:
+		acc = &supply.ModuleAccount{}
 	default:
 		panic(fmt.Sprintf("Unknown prefix: %v", prefix))
 	}

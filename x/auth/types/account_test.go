@@ -86,12 +86,11 @@ func TestBaseAccountMarshal(t *testing.T) {
 	// need a codec for marshaling
 	cdc := codec.New()
 	codec.RegisterCrypto(cdc)
-	RegisterCodec(cdc)
 
 	exp, err := cdc.MarshalBinaryBare(acc)
 	require.Nil(t, err)
 
-	b, err := acc.MarshalAminoBare()
+	b, err := acc.MarshalAminoBare(false)
 	require.Nil(t, err)
 	require.Equal(t, exp, b)
 

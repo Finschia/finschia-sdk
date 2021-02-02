@@ -36,6 +36,7 @@ var (
 	DefaultGenesisState   = types.DefaultGenesisState
 	NewSupply             = types.NewSupply
 	DefaultSupply         = types.DefaultSupply
+	AccountPrefix         = types.AccountPrefix
 
 	// variable aliases
 	ModuleCdc = types.ModuleCdc

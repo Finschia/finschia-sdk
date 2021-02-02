@@ -10,12 +10,61 @@ import (
 
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/stretchr/testify/require"
 )
+
+func TestModuleAccountMarshal(t *testing.T) {
+	name := "test"
+	moduleAcc := NewEmptyModuleAccount(name, Minter, Burner, Staking)
+
+	// need a codec for marshaling
+	cdc := codec.New()
+	codec.RegisterCrypto(cdc)
+
+	exp, err := cdc.MarshalBinaryBare(moduleAcc)
+	require.Nil(t, err)
+
+	b, err := moduleAcc.MarshalAminoBare(false)
+	require.Nil(t, err)
+	require.Equal(t, exp, b)
+
+	moduleAcc2 := ModuleAccount{}
+	err = cdc.UnmarshalBinaryBare(b, &moduleAcc2)
+	require.Nil(t, err)
+	require.Equal(t, *moduleAcc, moduleAcc2)
+
+	// error on bad bytes
+	moduleAcc2 = ModuleAccount{}
+	err = cdc.UnmarshalBinaryBare(b[:len(b)/2], &moduleAcc2)
+	require.NotNil(t, err)
+}
+
+func TestBaseAccountUnmarshal(t *testing.T) {
+	name := "test"
+	moduleAcc := NewEmptyModuleAccount(name, Minter, Burner, Staking)
+
+	// need a codec for marshaling
+	cdc := codec.New()
+	codec.RegisterCrypto(cdc)
+
+	b, err := cdc.MarshalBinaryBare(moduleAcc)
+	require.Nil(t, err)
+
+	moduleAcc2 := ModuleAccount{}
+	err = cdc.UnmarshalBinaryBare(b, &moduleAcc2)
+	require.Nil(t, err)
+	require.Equal(t, *moduleAcc, moduleAcc2)
+
+	moduleAcc3 := ModuleAccount{}
+	_, err = moduleAcc3.UnmarshalAminoBare(b)
+	require.Nil(t, err)
+	require.Equal(t, *moduleAcc, moduleAcc3)
+}
 
 func TestModuleAccountMarshalYAML(t *testing.T) {
 	name := "test"
