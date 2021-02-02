@@ -100,3 +100,29 @@ func EncodeFieldByteSlice(w io.Writer, fnum uint32, bz []byte) error {
 	}
 	return nil
 }
+
+func DecodeFieldUvarint(bz []byte, fnum uint32) (u uint64, n int, err error) {
+	_n, err := CheckFieldNumberAndTyp3(bz, fnum, amino.Typ3_Varint)
+	if _n == 0 || err != nil {
+		return u, _n, err
+	}
+	Slide(&bz, &n, _n)
+
+	u, _n, err = amino.DecodeUvarint(bz)
+	Slide(&bz, &n, _n)
+
+	return u, n, err
+}
+
+func DecodeFieldByteSlice(bz []byte, fnum uint32) (bz2 []byte, n int, err error) {
+	_n, err := CheckFieldNumberAndTyp3(bz, fnum, amino.Typ3_ByteLength)
+	if _n == 0 || err != nil {
+		return nil, _n, err
+	}
+	Slide(&bz, &n, _n)
+
+	bz2, _n, err = amino.DecodeByteSlice(bz)
+	Slide(&bz, &n, _n)
+
+	return bz2, n, err
+}

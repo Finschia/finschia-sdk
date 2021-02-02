@@ -114,7 +114,7 @@ func (ak AccountKeeper) decodeAccount(bz []byte) (acc exported.Account) {
 		panic(fmt.Sprintf("Unknown prefix: %v", prefix))
 	}
 
-	_, err = acc.Unmarshal(bz[_n:])
+	_, err = acc.UnmarshalAminoBare(bz[_n:])
 	if err != nil {
 		panic(err)
 	}

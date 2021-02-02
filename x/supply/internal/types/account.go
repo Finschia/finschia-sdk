@@ -29,6 +29,8 @@ func init() {
 	authtypes.RegisterAccountTypeCodec(&ModuleAccount{}, "cosmos-sdk/ModuleAccount")
 }
 
+var _, AccountPrefix = amino.NameToDisfix("cosmos-sdk/ModuleAccount")
+
 // ModuleAccount defines an account for modules that holds coins on a pool
 type ModuleAccount struct {
 	*authtypes.BaseAccount
@@ -115,111 +117,98 @@ func (ma ModuleAccount) Validate() error {
 	return ma.BaseAccount.Validate()
 }
 
-func (ma *ModuleAccount) Marshal() (bz []byte, err error) {
+func (ma *ModuleAccount) MarshalAminoBare(registered bool) (bz []byte, err error) {
+	if ma == nil {
+		return nil, nil
+	}
+
 	buf := bytes.NewBuffer(nil)
 
-	if _, err = buf.Write([]byte{11, 253, 125, 154}); err != nil {
-		return
+	if registered {
+		if _, err := buf.Write(AccountPrefix[:]); err != nil {
+			return nil, err
+		}
 	}
 
-	if ma.BaseAccount != nil {
-		bz, err = ma.BaseAccount.Marshal()
-		if err != nil {
-			return
-		}
-		if err = codec.EncodeFieldNumberAndTyp3(buf, 1, amino.Typ3_ByteLength); err != nil {
-			return
-		}
-		// NOTE skip prefix
-		if err = amino.EncodeByteSlice(buf, bz[4:]); err != nil {
-			return
-		}
+	bz, err = ma.BaseAccount.MarshalAminoBare(false)
+	if err != nil {
+		return nil, err
 	}
-	if ma.Name != "" {
-		if err = codec.EncodeFieldNumberAndTyp3(buf, 2, amino.Typ3_ByteLength); err != nil {
-			return
-		}
-		if err = amino.EncodeString(buf, ma.Name); err != nil {
-			return
-		}
+	if err = codec.EncodeFieldByteSlice(buf, 1, bz); err != nil {
+		return nil, err
 	}
+
+	if err = codec.EncodeFieldByteSlice(buf, 2, []byte(ma.Name)); err != nil {
+		return nil, err
+	}
+
 	for _, permission := range ma.Permissions {
 		// TODO how to hanlde if permission is an empty string?
-		if err = codec.EncodeFieldNumberAndTyp3(buf, 3, amino.Typ3_ByteLength); err != nil {
-			return
-		}
-		if err = amino.EncodeString(buf, permission); err != nil {
-			return
+		if err = codec.EncodeFieldByteSlice(buf, 3, []byte(permission)); err != nil {
+			return nil, err
 		}
 	}
 
 	return buf.Bytes(), nil
 }
 
-func (ma *ModuleAccount) Unmarshal(bz []byte) (n int, err error) {
+func (ma *ModuleAccount) UnmarshalAminoBare(bz []byte) (n int, err error) {
 	var _n int
-	_n, err = ma.decodeBaseAccount(bz)
-	if err != nil {
-		return
-	}
-	codec.Slide(&bz, &n, _n)
-	if len(bz) == 0 {
-		return
+	_n, err = ma.unmarshalBaseAccount(bz)
+	if len(bz) == 0 || err != nil {
+		return n, err
 	}
 
-	_n, err = ma.decodeName(bz)
-	if err != nil {
-		return
-	}
+	var bz2 []byte
+	bz2, _n, err = codec.DecodeFieldByteSlice(bz, 2)
 	codec.Slide(&bz, &n, _n)
-	if len(bz) == 0 {
-		return
+	if len(bz) == 0 || err != nil {
+		return n, err
 	}
+	ma.Name = string(bz2)
 
-	_n, err = ma.decodePermissions(bz)
+	_n, err = ma.unmarshalPermissions(bz)
 	if err != nil {
 		return
 	}
 	codec.Slide(&bz, &n, _n)
 
-	return
+	return n, err
 }
 
-func (ma *ModuleAccount) decodeBaseAccount(bz []byte) (n int, err error) {
+func (ma *ModuleAccount) unmarshalBaseAccount(bz []byte) (n int, err error) {
 	var _n int
 	_n, err = codec.CheckFieldNumberAndTyp3(bz, 1, amino.Typ3_ByteLength)
 	codec.Slide(&bz, &n, _n)
+	if len(bz) == 0 || err != nil {
+		return n, err
+	}
 
 	var u uint64
 	u, _n, err = amino.DecodeUvarint(bz)
 	codec.Slide(&bz, &n, _n)
+	if len(bz) == 0 || err != nil {
+		return n, err
+	}
 
 	buf := bz[0:u]
 
 	bac := &authtypes.BaseAccount{}
-	_n, err = bac.Unmarshal(buf)
+	_n, err = bac.UnmarshalAminoBare(buf)
 	if err != nil {
 		panic("Fail to unmarshal BaseAccount")
 	}
 	codec.Slide(&bz, &n, _n)
+	if len(bz) == 0 {
+		return n, err
+	}
 
 	ma.BaseAccount = bac
 
 	return
 }
 
-func (ma *ModuleAccount) decodeName(bz []byte) (n int, err error) {
-	var _n int
-	_n, err = codec.CheckFieldNumberAndTyp3(bz, 2, amino.Typ3_ByteLength)
-	codec.Slide(&bz, &n, _n)
-
-	ma.Name, _n, err = amino.DecodeString(bz)
-	codec.Slide(&bz, &n, _n)
-
-	return
-}
-
-func (ma *ModuleAccount) decodePermissions(bz []byte) (n int, err error) {
+func (ma *ModuleAccount) unmarshalPermissions(bz []byte) (n int, err error) {
 	var _n int
 	var permission string
 
@@ -227,24 +216,23 @@ func (ma *ModuleAccount) decodePermissions(bz []byte) (n int, err error) {
 		if len(bz) == 0 {
 			break
 		}
-		_n, err = codec.CheckFieldNumberAndTyp3(bz, 3, amino.Typ3_ByteLength)
-		if _n == 0 || err != nil {
-			break
-		}
-		codec.Slide(&bz, &n, _n)
 
-		// REFACTOR
-		if ma.Permissions == nil {
-			ma.Permissions = make([]string, 0)
+		_n, err = codec.CheckFieldNumberAndTyp3(bz, 3, amino.Typ3_ByteLength)
+		codec.Slide(&bz, &n, _n)
+		if len(bz) == 0 || err != nil {
+			return n, err
 		}
 
 		permission, _n, err = amino.DecodeString(bz)
 		ma.Permissions = append(ma.Permissions, permission)
 
 		codec.Slide(&bz, &n, _n)
+		if len(bz) == 0 || err != nil {
+			return n, err
+		}
 	}
 
-	return
+	return n, err
 }
 
 type moduleAccountPretty struct {

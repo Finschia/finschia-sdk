@@ -91,7 +91,7 @@ func TestBaseAccountMarshal(t *testing.T) {
 	exp, err := cdc.MarshalBinaryBare(acc)
 	require.Nil(t, err)
 
-	b, err := acc.Marshal()
+	b, err := acc.MarshalAminoBare()
 	require.Nil(t, err)
 	require.Equal(t, exp, b)
 
@@ -134,7 +134,7 @@ func TestBaseAccountUnmarshal(t *testing.T) {
 	require.Equal(t, acc, acc2)
 
 	acc3 := BaseAccount{}
-	_, err = acc3.Unmarshal(b)
+	_, err = acc3.UnmarshalAminoBare(b)
 	require.Nil(t, err)
 	require.Equal(t, acc, acc3)
 }

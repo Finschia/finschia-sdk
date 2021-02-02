@@ -150,8 +150,8 @@ func (coin Coin) IsNegative() bool {
 	return coin.Amount.Sign() == -1
 }
 
-// Custom amino marshaller
-func (coin Coin) Marshal() (bz []byte, err error) {
+// Custom amino marshaller without reflection
+func (coin Coin) MarshalAminoBare() (bz []byte, err error) {
 	buf := bytes.NewBuffer(nil)
 
 	if coin.Denom != "" {
@@ -173,7 +173,7 @@ func (coin Coin) Marshal() (bz []byte, err error) {
 	return buf.Bytes(), nil
 }
 
-func (coin *Coin) Unmarshal(bz []byte) (n int, err error) {
+func (coin *Coin) UnmarshalAminoBare(bz []byte) (n int, err error) {
 	var _n int
 	_n, err = codec.CheckFieldNumberAndTyp3(bz, 1, amino.Typ3_ByteLength)
 	codec.Slide(&bz, &n, _n)
@@ -624,13 +624,13 @@ func removeZeroCoins(coins Coins) Coins {
 }
 
 // Custom amino marshaller
-func (coins *Coins) Marshal(w io.Writer, fnum uint32) error {
+func (coins *Coins) MarshalFieldAmino(w io.Writer, fnum uint32) error {
 	if len(*coins) == 0 {
 		return nil
 	}
 
 	for _, coin := range *coins {
-		bz, err := coin.Marshal()
+		bz, err := coin.MarshalAminoBare()
 		if err != nil {
 			return err
 		}
@@ -643,28 +643,35 @@ func (coins *Coins) Marshal(w io.Writer, fnum uint32) error {
 	return nil
 }
 
-func (coins *Coins) Unmarshal(bz []byte, fnum uint32) (n int, err error) {
+func (coins *Coins) UnmarshalFieldAmino(bz []byte, fnum uint32) (n int, err error) {
 	var _n int
 
 	for {
 		if len(bz) == 0 {
 			break
 		}
+
 		_n, err = codec.CheckFieldNumberAndTyp3(bz, fnum, amino.Typ3_ByteLength)
-		if _n == 0 || err != nil {
-			break
-		}
 		codec.Slide(&bz, &n, _n)
+		if len(bz) == 0 || err != nil {
+			return n, err
+		}
 
 		var u uint64
 		u, _n, err = amino.DecodeUvarint(bz)
 		codec.Slide(&bz, &n, _n)
+		if len(bz) == 0 || err != nil {
+			return n, err
+		}
 
 		var coin Coin
-		_n, err = coin.Unmarshal(bz[0:u])
+		_n, err = coin.UnmarshalAminoBare(bz[0:u])
 		*coins = append(*coins, coin)
 
 		codec.Slide(&bz, &n, _n)
+		if len(bz) == 0 || err != nil {
+			return n, err
+		}
 	}
 
 	return n, err

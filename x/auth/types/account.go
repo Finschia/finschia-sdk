@@ -6,7 +6,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto"
 	yaml "gopkg.in/yaml.v2"
 
@@ -19,8 +18,6 @@ import (
 
 var _ exported.Account = (*BaseAccount)(nil)
 var _ exported.GenesisAccount = (*BaseAccount)(nil)
-
-var _, accountPrefix = amino.NameToDisfix("cosmos-sdk/Account")
 
 // BaseAccount - a base account structure.
 // This can be extended by embedding within in your AppAccount.

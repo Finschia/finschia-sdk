@@ -37,9 +37,9 @@ type Account interface {
 	// Ensure that account implements stringer
 	String() string
 
-	// Custom amino marshaller
-	Marshal() ([]byte, error)
-	Unmarshal([]byte) (int, error)
+	// Custom amino marshaller without reflection
+	MarshalAminoBare(registered bool) ([]byte, error)
+	UnmarshalAminoBare([]byte) (int, error)
 }
 
 // GenesisAccounts defines a slice of GenesisAccount objects
