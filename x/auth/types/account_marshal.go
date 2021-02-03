@@ -98,6 +98,9 @@ func (acc *BaseAccount) UnmarshalAminoBare(bz []byte) (n int, err error) {
 }
 
 func (acc *BaseAccount) unmarshalPubKeyAminoPrefix(bz []byte) (n int, err error) {
+	// keep original bz for `PubKeyMultisigThreshold`
+	bz2 := bz
+
 	// disamb, hasDisamb, prefix, hasPrefix, _n, err := amino.DecodeDisambPrefixBytes(bz)
 	_, _, prefix, hasPrefix, _n, err := amino.DecodeDisambPrefixBytes(bz)
 	if codec.Slide(&bz, &n, _n) && err != nil {
@@ -107,29 +110,36 @@ func (acc *BaseAccount) unmarshalPubKeyAminoPrefix(bz []byte) (n int, err error)
 		return n, fmt.Errorf("should have prefix")
 	}
 
-	var byteslice []byte
-	byteslice, _n, err = amino.DecodeByteSlice(bz)
-	if codec.Slide(&bz, &n, _n) && err != nil {
-		return n, err
-	}
-
 	switch prefix {
 	case secp256k1.PubKeyPrefix:
 		{
+			var byteslice []byte
+			byteslice, _n, err = amino.DecodeByteSlice(bz)
+			if codec.Slide(&bz, &n, _n) && err != nil {
+				return n, err
+			}
+
 			var pubKey secp256k1.PubKeySecp256k1
 			copy(pubKey[:], byteslice)
 			acc.PubKey = pubKey
 		}
 	case ed25519.PubKeyPrefix:
 		{
+			var byteslice []byte
+			byteslice, _n, err = amino.DecodeByteSlice(bz)
+			if codec.Slide(&bz, &n, _n) && err != nil {
+				return n, err
+			}
+
 			var pubKey ed25519.PubKeyEd25519
 			copy(pubKey[:], byteslice)
 			acc.PubKey = pubKey
 		}
 	case multisig.PubKeyPrefix:
 		{
-			// TODO custom mashaller
-			ModuleCdc.MustUnmarshalBinaryBare(byteslice, acc.PubKey)
+			var pubkey multisig.PubKeyMultisigThreshold
+			ModuleCdc.MustUnmarshalBinaryBare(bz2, &pubkey)
+			acc.PubKey = pubkey
 		}
 	}
 
