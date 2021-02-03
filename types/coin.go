@@ -182,6 +182,9 @@ func (coin *Coin) UnmarshalAminoBare(bz []byte) (n int, err error) {
 	codec.Slide(&bz, &n, _n)
 
 	coin.Denom, _n, err = amino.DecodeString(bz)
+	if err != nil {
+		return n, err
+	}
 	codec.Slide(&bz, &n, _n)
 
 	_n, err = codec.CheckFieldNumberAndTyp3(bz, 2, amino.Typ3_ByteLength)
@@ -192,6 +195,9 @@ func (coin *Coin) UnmarshalAminoBare(bz []byte) (n int, err error) {
 
 	var amount string
 	amount, _n, err = amino.DecodeString(bz)
+	if err != nil {
+		return n, err
+	}
 	codec.Slide(&bz, &n, _n)
 
 	coin.Amount, _ = NewIntFromString(amount)

@@ -18,9 +18,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+const testName = "test"
+
 func TestModuleAccountMarshal(t *testing.T) {
-	name := "test"
-	moduleAcc := NewEmptyModuleAccount(name, Minter, Burner, Staking)
+	moduleAcc := NewEmptyModuleAccount(testName, Minter, Burner, Staking)
 
 	// need a codec for marshaling
 	cdc := codec.New()
@@ -45,8 +46,7 @@ func TestModuleAccountMarshal(t *testing.T) {
 }
 
 func TestBaseAccountUnmarshal(t *testing.T) {
-	name := "test"
-	moduleAcc := NewEmptyModuleAccount(name, Minter, Burner, Staking)
+	moduleAcc := NewEmptyModuleAccount(testName, Minter, Burner, Staking)
 
 	// need a codec for marshaling
 	cdc := codec.New()
@@ -67,8 +67,7 @@ func TestBaseAccountUnmarshal(t *testing.T) {
 }
 
 func TestModuleAccountMarshalYAML(t *testing.T) {
-	name := "test"
-	moduleAcc := NewEmptyModuleAccount(name, Minter, Burner, Staking)
+	moduleAcc := NewEmptyModuleAccount(testName, Minter, Burner, Staking)
 	bs, err := yaml.Marshal(moduleAcc)
 	require.NoError(t, err)
 
@@ -77,8 +76,7 @@ func TestModuleAccountMarshalYAML(t *testing.T) {
 }
 
 func TestHasPermissions(t *testing.T) {
-	name := "test"
-	macc := NewEmptyModuleAccount(name, Staking, Minter, Burner)
+	macc := NewEmptyModuleAccount(testName, Staking, Minter, Burner)
 	cases := []struct {
 		permission string
 		expectHas  bool

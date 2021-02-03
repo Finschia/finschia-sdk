@@ -12,7 +12,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-var _, AccountPrefix = amino.NameToDisfix("cosmos-sdk/Account")
+var _, accountPrefix = amino.NameToDisfix("cosmos-sdk/Account")
+var AccountPrefix = accountPrefix
 
 func (acc *BaseAccount) MarshalAminoBare(registered bool) ([]byte, error) {
 	if acc == nil {
@@ -22,7 +23,7 @@ func (acc *BaseAccount) MarshalAminoBare(registered bool) ([]byte, error) {
 	buf := bytes.NewBuffer(nil)
 
 	if registered {
-		if _, err := buf.Write(AccountPrefix[:]); err != nil {
+		if _, err := buf.Write(accountPrefix[:]); err != nil {
 			return nil, err
 		}
 	}

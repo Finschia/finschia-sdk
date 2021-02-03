@@ -29,7 +29,8 @@ func init() {
 	authtypes.RegisterAccountTypeCodec(&ModuleAccount{}, "cosmos-sdk/ModuleAccount")
 }
 
-var _, AccountPrefix = amino.NameToDisfix("cosmos-sdk/ModuleAccount")
+var _, accountPrefix = amino.NameToDisfix("cosmos-sdk/ModuleAccount")
+var ModuleAccountPrefix = accountPrefix
 
 // ModuleAccount defines an account for modules that holds coins on a pool
 type ModuleAccount struct {
@@ -125,7 +126,7 @@ func (ma *ModuleAccount) MarshalAminoBare(registered bool) (bz []byte, err error
 	buf := bytes.NewBuffer(nil)
 
 	if registered {
-		if _, err := buf.Write(AccountPrefix[:]); err != nil {
+		if _, err := buf.Write(accountPrefix[:]); err != nil {
 			return nil, err
 		}
 	}
@@ -187,6 +188,9 @@ func (ma *ModuleAccount) unmarshalBaseAccount(bz []byte) (n int, err error) {
 
 	var u uint64
 	u, _n, err = amino.DecodeUvarint(bz)
+	if err != nil {
+		return n, err
+	}
 	codec.Slide(&bz, &n, _n)
 
 	bac := &authtypes.BaseAccount{}

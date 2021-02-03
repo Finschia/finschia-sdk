@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"fmt"
+
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/libs/log"
@@ -108,7 +109,7 @@ func (ak AccountKeeper) decodeAccount(bz []byte) (acc exported.Account) {
 	switch prefix {
 	case types.AccountPrefix:
 		acc = &types.BaseAccount{}
-	case supply.AccountPrefix:
+	case supply.ModuleAccountPrefix:
 		acc = &supply.ModuleAccount{}
 	default:
 		panic(fmt.Sprintf("Unknown prefix: %v", prefix))

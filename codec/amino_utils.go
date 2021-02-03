@@ -2,17 +2,17 @@ package codec
 
 import (
 	"encoding/binary"
-	"errors"
 	"fmt"
-	"github.com/tendermint/go-amino"
 	"io"
+
+	"github.com/tendermint/go-amino"
 )
 
 func EncodeFieldNumberAndTyp3(w io.Writer, num uint32, typ amino.Typ3) (err error) {
 	if (typ & 0xF8) != 0 {
 		panic(fmt.Sprintf("invalid Typ3 byte %v", typ))
 	}
-	if num < 0 || num > (1<<29-1) {
+	if num > (1<<29 - 1) {
 		panic(fmt.Sprintf("invalid field number %v", num))
 	}
 
@@ -28,7 +28,7 @@ func EncodeFieldNumberAndTyp3(w io.Writer, num uint32, typ amino.Typ3) (err erro
 
 func decodeFieldNumberAndTyp3(bz []byte) (num uint32, typ amino.Typ3, n int, err error) {
 	// Read uvarint value.
-	var value64 = uint64(0)
+	var value64 uint64
 	value64, n, err = amino.DecodeUvarint(bz)
 	if err != nil {
 		return
@@ -38,8 +38,7 @@ func decodeFieldNumberAndTyp3(bz []byte) (num uint32, typ amino.Typ3, n int, err
 	typ = amino.Typ3(value64 & 0x07)
 
 	// Decode num.
-	var num64 uint64
-	num64 = value64 >> 3
+	num64 := value64 >> 3
 	if num64 > (1<<29 - 1) {
 		err = fmt.Errorf("invalid field num %v", num64)
 		return
@@ -57,7 +56,7 @@ func CheckFieldNumberAndTyp3(bz []byte, expectedFnum uint32, expectedTyp amino.T
 		return 0, nil
 	}
 	if typ != expectedTyp {
-		return 0, errors.New(fmt.Sprintf("expected field type %v, got %v", expectedTyp, typ))
+		return 0, fmt.Errorf("expected field type %v, got %v", expectedTyp, typ)
 	}
 	return n, nil
 }
