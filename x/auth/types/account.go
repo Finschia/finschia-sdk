@@ -13,7 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/exported"
 )
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // BaseAccount
 
 var _ exported.Account = (*BaseAccount)(nil)
