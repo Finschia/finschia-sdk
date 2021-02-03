@@ -14,7 +14,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 )
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Coin
 
 // Coin hold some amount of one currency.
@@ -199,7 +199,7 @@ func (coin *Coin) UnmarshalAminoBare(bz []byte) (n int, err error) {
 	return n, nil
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Coins
 
 // Coins is a set of Coin, one per currency
@@ -683,10 +683,10 @@ func (coins *Coins) UnmarshalFieldAmino(bz []byte, fnum uint32) (n int, err erro
 	return n, err
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Sort interface
 
-// nolint
+//nolint
 func (coins Coins) Len() int           { return len(coins) }
 func (coins Coins) Less(i, j int) bool { return coins[i].Denom < coins[j].Denom }
 func (coins Coins) Swap(i, j int)      { coins[i], coins[j] = coins[j], coins[i] }
@@ -699,7 +699,7 @@ func (coins Coins) Sort() Coins {
 	return coins
 }
 
-// -----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Parsing
 
 var (
