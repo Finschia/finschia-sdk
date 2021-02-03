@@ -87,18 +87,55 @@ func TestBaseAccountMarshal(t *testing.T) {
 	cdc := codec.New()
 	codec.RegisterCrypto(cdc)
 
-	b, err := cdc.MarshalBinaryLengthPrefixed(acc)
+	exp, err := cdc.MarshalBinaryBare(acc)
 	require.Nil(t, err)
 
+	b, err := acc.MarshalAminoBare(false)
+	require.Nil(t, err)
+	require.Equal(t, exp, b)
+
 	acc2 := BaseAccount{}
-	err = cdc.UnmarshalBinaryLengthPrefixed(b, &acc2)
+	err = cdc.UnmarshalBinaryBare(b, &acc2)
 	require.Nil(t, err)
 	require.Equal(t, acc, acc2)
 
 	// error on bad bytes
 	acc2 = BaseAccount{}
-	err = cdc.UnmarshalBinaryLengthPrefixed(b[:len(b)/2], &acc2)
+	err = cdc.UnmarshalBinaryBare(b[:len(b)/2], &acc2)
 	require.NotNil(t, err)
+}
+
+func TestBaseAccountUnmarshal(t *testing.T) {
+	_, pub, addr := KeyTestPubAddr()
+	acc := NewBaseAccountWithAddress(addr)
+
+	someCoins := sdk.Coins{sdk.NewInt64Coin("atom", 123), sdk.NewInt64Coin("eth", 246), sdk.NewInt64Coin("btc", 1000)}
+	seq := uint64(7)
+
+	// set everything on the account
+	err := acc.SetPubKey(pub)
+	require.Nil(t, err)
+	err = acc.SetSequence(seq)
+	require.Nil(t, err)
+	err = acc.SetCoins(someCoins)
+	require.Nil(t, err)
+
+	// need a codec for marshaling
+	cdc := codec.New()
+	codec.RegisterCrypto(cdc)
+
+	b, err := cdc.MarshalBinaryBare(acc)
+	require.Nil(t, err)
+
+	acc2 := BaseAccount{}
+	err = cdc.UnmarshalBinaryBare(b, &acc2)
+	require.Nil(t, err)
+	require.Equal(t, acc, acc2)
+
+	acc3 := BaseAccount{}
+	_, err = acc3.UnmarshalAminoBare(b)
+	require.Nil(t, err)
+	require.Equal(t, acc, acc3)
 }
 
 func TestGenesisAccountValidate(t *testing.T) {

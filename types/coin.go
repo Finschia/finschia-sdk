@@ -1,11 +1,17 @@
 package types
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"regexp"
 	"sort"
 	"strings"
+
+	"github.com/tendermint/go-amino"
+
+	"github.com/cosmos/cosmos-sdk/codec"
 )
 
 //-----------------------------------------------------------------------------
@@ -142,6 +148,61 @@ func (coin Coin) IsPositive() bool {
 // TODO: Remove once unsigned integers are used.
 func (coin Coin) IsNegative() bool {
 	return coin.Amount.Sign() == -1
+}
+
+// Custom amino marshaller without reflection
+func (coin Coin) MarshalAminoBare() (bz []byte, err error) {
+	buf := bytes.NewBuffer(nil)
+
+	if coin.Denom != "" {
+		if err := codec.EncodeFieldNumberAndTyp3(buf, 1, amino.Typ3_ByteLength); err != nil {
+			return nil, err
+		}
+		if err := amino.EncodeString(buf, coin.Denom); err != nil {
+			return nil, err
+		}
+	}
+	// TODO how to check whether `Amount` is default?
+	if err := codec.EncodeFieldNumberAndTyp3(buf, 2, amino.Typ3_ByteLength); err != nil {
+		return nil, err
+	}
+	if err := amino.EncodeString(buf, coin.Amount.String()); err != nil {
+		return nil, err
+	}
+
+	return buf.Bytes(), nil
+}
+
+func (coin *Coin) UnmarshalAminoBare(bz []byte) (n int, err error) {
+	var _n int
+	_n, err = codec.CheckFieldNumberAndTyp3(bz, 1, amino.Typ3_ByteLength)
+	if _n == 0 || err != nil {
+		return n, err
+	}
+	codec.Slide(&bz, &n, _n)
+
+	coin.Denom, _n, err = amino.DecodeString(bz)
+	if err != nil {
+		return n, err
+	}
+	codec.Slide(&bz, &n, _n)
+
+	_n, err = codec.CheckFieldNumberAndTyp3(bz, 2, amino.Typ3_ByteLength)
+	if _n == 0 || err != nil {
+		return n, err
+	}
+	codec.Slide(&bz, &n, _n)
+
+	var amount string
+	amount, _n, err = amino.DecodeString(bz)
+	if err != nil {
+		return n, err
+	}
+	codec.Slide(&bz, &n, _n)
+
+	coin.Amount, _ = NewIntFromString(amount)
+
+	return n, nil
 }
 
 //-----------------------------------------------------------------------------
@@ -572,6 +633,60 @@ func removeZeroCoins(coins Coins) Coins {
 	}
 
 	return coins[:i]
+}
+
+// Custom amino marshaller
+func (coins *Coins) MarshalFieldAmino(w io.Writer, fnum uint32) error {
+	if len(*coins) == 0 {
+		return nil
+	}
+
+	for _, coin := range *coins {
+		bz, err := coin.MarshalAminoBare()
+		if err != nil {
+			return err
+		}
+
+		if err := codec.EncodeFieldByteSlice(w, fnum, bz); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func (coins *Coins) UnmarshalFieldAmino(bz []byte, fnum uint32) (n int, err error) {
+	var _n int
+
+	for {
+		if len(bz) == 0 {
+			break
+		}
+
+		_n, err = codec.CheckFieldNumberAndTyp3(bz, fnum, amino.Typ3_ByteLength)
+		if _n == 0 || err != nil {
+			return n, err
+		}
+		codec.Slide(&bz, &n, _n)
+
+		var u uint64
+		u, _n, err = amino.DecodeUvarint(bz)
+		codec.Slide(&bz, &n, _n)
+		if len(bz) == 0 || err != nil {
+			return n, err
+		}
+
+		var coin Coin
+		_n, err = coin.UnmarshalAminoBare(bz[0:u])
+		*coins = append(*coins, coin)
+
+		codec.Slide(&bz, &n, _n)
+		if len(bz) == 0 || err != nil {
+			return n, err
+		}
+	}
+
+	return n, err
 }
 
 //-----------------------------------------------------------------------------

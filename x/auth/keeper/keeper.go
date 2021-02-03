@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/exported"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/params/subspace"
+	"github.com/cosmos/cosmos-sdk/x/supply"
 )
 
 // AccountKeeper encodes/decodes accounts using the go-amino (binary)
@@ -93,9 +95,30 @@ func (ak AccountKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 // Misc.
 
 func (ak AccountKeeper) decodeAccount(bz []byte) (acc exported.Account) {
-	err := ak.cdc.UnmarshalBinaryBare(bz, &acc)
+	_, hasDisamb, prefix, hasPrefix, _n, err := amino.DecodeDisambPrefixBytes(bz)
 	if err != nil {
 		panic(err)
 	}
-	return
+	if hasDisamb {
+		panic("Should not have disamb")
+	}
+	if !hasPrefix {
+		panic("Should have prefix")
+	}
+
+	switch prefix {
+	case types.AccountPrefix:
+		acc = &types.BaseAccount{}
+	case supply.ModuleAccountPrefix:
+		acc = &supply.ModuleAccount{}
+	default:
+		panic(fmt.Sprintf("Unknown prefix: %v", prefix))
+	}
+
+	_, err = acc.UnmarshalAminoBare(bz[_n:])
+	if err != nil {
+		panic(err)
+	}
+
+	return acc
 }

@@ -1,13 +1,14 @@
 package types
 
 import (
+	"bytes"
 	"errors"
 	"fmt"
 	"strings"
 
-	yaml "gopkg.in/yaml.v2"
-
+	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto"
+	yaml "gopkg.in/yaml.v2"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -27,6 +28,9 @@ func init() {
 	// the genesis state will serialize correctly.
 	authtypes.RegisterAccountTypeCodec(&ModuleAccount{}, "cosmos-sdk/ModuleAccount")
 }
+
+var _, accountPrefix = amino.NameToDisfix("cosmos-sdk/ModuleAccount")
+var ModuleAccountPrefix = accountPrefix
 
 // ModuleAccount defines an account for modules that holds coins on a pool
 type ModuleAccount struct {
@@ -112,6 +116,118 @@ func (ma ModuleAccount) Validate() error {
 	}
 
 	return ma.BaseAccount.Validate()
+}
+
+func (ma *ModuleAccount) MarshalAminoBare(registered bool) (bz []byte, err error) {
+	if ma == nil {
+		return nil, nil
+	}
+
+	buf := bytes.NewBuffer(nil)
+
+	if registered {
+		if _, err := buf.Write(accountPrefix[:]); err != nil {
+			return nil, err
+		}
+	}
+
+	bz, err = ma.BaseAccount.MarshalAminoBare(false)
+	if err != nil {
+		return nil, err
+	}
+	if err = codec.EncodeFieldByteSlice(buf, 1, bz); err != nil {
+		return nil, err
+	}
+
+	if err = codec.EncodeFieldByteSlice(buf, 2, []byte(ma.Name)); err != nil {
+		return nil, err
+	}
+
+	for _, permission := range ma.Permissions {
+		// TODO how to hanlde if permission is an empty string?
+		if err = codec.EncodeFieldByteSlice(buf, 3, []byte(permission)); err != nil {
+			return nil, err
+		}
+	}
+
+	return buf.Bytes(), nil
+}
+
+func (ma *ModuleAccount) UnmarshalAminoBare(bz []byte) (n int, err error) {
+	var _n int
+	_n, err = ma.unmarshalBaseAccount(bz)
+	codec.Slide(&bz, &n, _n)
+	if len(bz) == 0 || err != nil {
+		return n, err
+	}
+
+	var bz2 []byte
+	bz2, _n, err = codec.DecodeFieldByteSlice(bz, 2)
+	codec.Slide(&bz, &n, _n)
+	if len(bz) == 0 || err != nil {
+		return n, err
+	}
+	ma.Name = string(bz2)
+
+	_n, err = ma.unmarshalPermissions(bz)
+	if err != nil {
+		return
+	}
+	codec.Slide(&bz, &n, _n)
+
+	return n, err
+}
+
+func (ma *ModuleAccount) unmarshalBaseAccount(bz []byte) (n int, err error) {
+	var _n int
+	_n, err = codec.CheckFieldNumberAndTyp3(bz, 1, amino.Typ3_ByteLength)
+	if _n == 0 || err != nil {
+		return n, err
+	}
+	codec.Slide(&bz, &n, _n)
+
+	var u uint64
+	u, _n, err = amino.DecodeUvarint(bz)
+	if err != nil {
+		return n, err
+	}
+	codec.Slide(&bz, &n, _n)
+
+	bac := &authtypes.BaseAccount{}
+	buf := bz[0:u]
+	_n, err = bac.UnmarshalAminoBare(buf)
+	if err != nil {
+		panic("Fail to unmarshal BaseAccount")
+	}
+	ma.BaseAccount = bac
+
+	codec.Slide(&bz, &n, _n)
+
+	return n, err
+}
+
+func (ma *ModuleAccount) unmarshalPermissions(bz []byte) (n int, err error) {
+	var _n int
+	var permission string
+
+	for {
+		if len(bz) == 0 {
+			break
+		}
+
+		_n, err = codec.CheckFieldNumberAndTyp3(bz, 3, amino.Typ3_ByteLength)
+		if _n == 0 || err != nil {
+			return n, err
+		}
+		codec.Slide(&bz, &n, _n)
+
+		permission, _n, err = amino.DecodeString(bz)
+		ma.Permissions = append(ma.Permissions, permission)
+
+		codec.Slide(&bz, &n, _n)
+	}
+
+	return n, err
 }
 
 type moduleAccountPretty struct {
