@@ -265,8 +265,8 @@ github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-b
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
 github.com/line/iavl v0.14.3-0.1.0-rc1 h1:REgLo0rHlEv88XyEEpF4lqkmyg+CawzzvxIeB+kQW9M=
 github.com/line/iavl v0.14.3-0.1.0-rc1/go.mod h1:vHLYxU/zuxBmxxr1v+5Vnd/JzcIsyK17n9P9RDubPVU=
-github.com/line/tendermint v0.33.9-0.1.0-rc1 h1:JD9GG5/pqWOeEr0NJaebFNj57puDby2KyONyMQN2Vb0=
-github.com/line/tendermint v0.33.9-0.1.0-rc1/go.mod h1:0yUs9eIuuDq07nQql9BmI30FtYGcEC60Tu5JzB5IezM=
+github.com/line/tendermint v0.33.9-0.1.0-rc2 h1:G2plZ9h1xitXP+nYtGlR8SRrHbBuim8KeYxP3JDBoGY=
+github.com/line/tendermint v0.33.9-0.1.0-rc2/go.mod h1:0yUs9eIuuDq07nQql9BmI30FtYGcEC60Tu5JzB5IezM=
 github.com/lyft/protoc-gen-validate v0.0.13/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.1 h1:ZC2Vc7/ZFkGmsVC9KvOjumD+G5lXy2RtTKyzRKO2BQ4=
