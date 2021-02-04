@@ -6,9 +6,15 @@ order: 4
 
 The feegrant module emits the following events:
 
+<<<<<<< HEAD
 # Msg Server
 
 ### MsgGrantAllowance
+=======
+# Handlers
+
+### MsgGrantFeeAllowance
+>>>>>>> 0af248b95 (Add specs for feegrant (#8496))
 
 | Type     | Attribute Key | Attribute Value    |
 | -------- | ------------- | ------------------ |
@@ -16,7 +22,11 @@ The feegrant module emits the following events:
 | message  | granter       | {granterAddress}   |
 | message  | grantee       | {granteeAddress}   |
 
+<<<<<<< HEAD
 ### MsgRevokeAllowance
+=======
+### MsgRevokeFeeAllowance
+>>>>>>> 0af248b95 (Add specs for feegrant (#8496))
 
 | Type     | Attribute Key | Attribute Value    |
 | -------- | ------------- | ------------------ |
@@ -30,4 +40,8 @@ The feegrant module emits the following events:
 | -------- | ------------- | ------------------ |
 | message  | action        | use_feegrant       |
 | message  | granter       | {granterAddress}   |
+<<<<<<< HEAD
 | message  | grantee       | {granteeAddress}   |
+=======
+| message  | grantee       | {granteeAddress}   |
+>>>>>>> 0af248b95 (Add specs for feegrant (#8496))
