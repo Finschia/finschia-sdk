@@ -7,10 +7,9 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	tmcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
+	ostcli "github.com/line/ostracon/libs/cli"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -21,6 +20,7 @@ import (
 	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/feegrant/client/cli"
+	"github.com/line/lbm-sdk/x/feegrant/types"
 	govtestutil "github.com/line/lbm-sdk/x/gov/client/testutil"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
@@ -130,7 +130,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 			[]string{
 				"wrong_granter",
 				grantee.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			"decoding bech32 failed",
 			true, nil, nil,
@@ -140,7 +140,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 			[]string{
 				granter.String(),
 				"wrong_grantee",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			"decoding bech32 failed",
 			true, nil, nil,
@@ -150,7 +150,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 			[]string{
 				"link19lrl5da53xtd2yssw2799y53uyaskadqkzv0ky",
 				grantee.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			"fee-grant not found",
 			true, nil, nil,
@@ -160,7 +160,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrant() {
 			[]string{
 				granter.String(),
 				grantee.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			"",
 			false,
@@ -213,7 +213,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrants() {
 			"wrong grantee",
 			[]string{
 				"wrong_grantee",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true, nil, 0,
 		},
@@ -221,7 +221,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrants() {
 			"non existed grantee",
 			[]string{
 				"link19lrl5da53xtd2yssw2799y53uyaskadqkzv0ky",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false, &types.QueryAllowancesResponse{}, 0,
 		},
@@ -229,7 +229,7 @@ func (s *IntegrationTestSuite) TestCmdGetFeeGrants() {
 			"valid req",
 			[]string{
 				grantee.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false, &types.QueryAllowancesResponse{}, 1,
 		},
@@ -797,7 +797,7 @@ func (s *IntegrationTestSuite) TestFilteredFeeAllowance() {
 	args := []string{
 		granter.String(),
 		grantee.String(),
-		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 	}
 
 	// get filtered fee allowance and check info

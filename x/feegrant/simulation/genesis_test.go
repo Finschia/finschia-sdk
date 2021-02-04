@@ -13,6 +13,7 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/feegrant/simulation"
+	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
 func TestRandomizedGenState(t *testing.T) {

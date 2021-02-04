@@ -13,6 +13,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/kv"
 	"github.com/line/lbm-sdk/x/feegrant/simulation"
+	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
 var (

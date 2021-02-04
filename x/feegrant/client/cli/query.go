@@ -12,6 +12,7 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/version"
+	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

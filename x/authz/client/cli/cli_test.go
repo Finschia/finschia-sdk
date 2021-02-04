@@ -10,26 +10,23 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/keyring"
-	tmcli "github.com/line/ostracon/libs/cli"
-
-	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/testutil"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/authz/client/cli"
-	govcli "github.com/line/lbm-sdk/x/gov/client/cli"
-	govtestutil "github.com/line/lbm-sdk/x/gov/client/testutil"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
-
 	"github.com/line/lbm-sdk/x/authz/types"
 	bankcli "github.com/line/lbm-sdk/x/bank/client/testutil"
 	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
+	govcli "github.com/line/lbm-sdk/x/gov/client/cli"
+	govtestutil "github.com/line/lbm-sdk/x/gov/client/testutil"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 type IntegrationTestSuite struct {

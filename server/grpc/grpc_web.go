@@ -4,8 +4,9 @@ import (
 	"net/http"
 
 	"github.com/improbable-eng/grpc-web/go/grpcweb"
-	"github.com/line/lbm-sdk/server/config"
 	"google.golang.org/grpc"
+
+	"github.com/line/lbm-sdk/server/config"
 )
 
 // StartGRPCWeb starts a gRPC-Web server on the given address.

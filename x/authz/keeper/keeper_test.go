@@ -5,16 +5,16 @@ import (
 	"time"
 
 	proto "github.com/gogo/protobuf/proto"
-	"github.com/line/lbm-sdk/baseapp"
+	"github.com/stretchr/testify/suite"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	tmtime "github.com/line/ostracon/types/time"
+	octime "github.com/line/ostracon/types/time"
 
+	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/authz/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
-	"github.com/stretchr/testify/suite"
 )
 
 type TestSuite struct {
@@ -29,7 +29,7 @@ type TestSuite struct {
 func (s *TestSuite) SetupTest() {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
-	now := tmtime.Now()
+	now := octime.Now()
 	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 	queryHelper := baseapp.NewQueryServerTestHelper(ctx, app.InterfaceRegistry())
 	types.RegisterQueryServer(queryHelper, app.AuthzKeeper)
