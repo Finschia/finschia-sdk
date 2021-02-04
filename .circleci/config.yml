@@ -40,7 +40,10 @@ jobs:
             - go-mod-v2-{{ checksum "go.sum" }}
       - run:
           name: Cache go modules
-          command: make go-mod-cache
+          command: |
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make go-mod-cache
       - run:
           name: Build
           command: make build
