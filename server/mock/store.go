@@ -104,6 +104,10 @@ func (ms multiStore) SetMetrics(metrics *store.Metrics, iavlMetricsProvider iavl
 	panic("not implemented")
 }
 
+func (ms multiStore) SetLazyLoading(lazyLoading bool) {
+	// do nothing
+}
+
 var _ sdk.KVStore = kvStore{}
 
 type kvStore struct {

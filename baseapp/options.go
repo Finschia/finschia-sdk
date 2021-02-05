@@ -21,6 +21,11 @@ func SetPruning(opts sdk.PruningOptions) func(*BaseApp) {
 	return func(bap *BaseApp) { bap.cms.SetPruning(opts) }
 }
 
+// SetLazyLoading sets a lazyLoading option to load a version lazily
+func SetLazyLoading(lazyLoading bool) func(*BaseApp) {
+	return func(bap *BaseApp) { bap.cms.SetLazyLoading(lazyLoading) }
+}
+
 // SetMinGasPrices returns an option that sets the minimum gas prices on the app.
 func SetMinGasPrices(gasPricesStr string) func(*BaseApp) {
 	gasPrices, err := sdk.ParseDecCoins(gasPricesStr)
