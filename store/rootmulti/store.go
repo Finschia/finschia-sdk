@@ -44,6 +44,9 @@ type Store struct {
 	traceContext types.TraceContext
 
 	interBlockCache types.MultiStorePersistentCache
+
+	metrics             *types.Metrics
+	iavlMetricsProvider iavltree.MetricsProvider
 }
 
 var (
@@ -57,12 +60,14 @@ var (
 // LoadVersion must be called.
 func NewStore(db dbm.DB) *Store {
 	return &Store{
-		db:           db,
-		pruningOpts:  types.PruneNothing,
-		storesParams: make(map[types.StoreKey]storeParams),
-		stores:       make(map[types.StoreKey]types.CommitKVStore),
-		keysByName:   make(map[string]types.StoreKey),
-		pruneHeights: make([]int64, 0),
+		db:                  db,
+		pruningOpts:         types.PruneNothing,
+		storesParams:        make(map[types.StoreKey]storeParams),
+		stores:              make(map[types.StoreKey]types.CommitKVStore),
+		keysByName:          make(map[string]types.StoreKey),
+		pruneHeights:        make([]int64, 0),
+		metrics:             types.NopMetrics(),
+		iavlMetricsProvider: iavltree.NopMetricsProvider(),
 	}
 }
 
@@ -76,6 +81,11 @@ func (rs *Store) SetPruning(pruningOpts types.PruningOptions) {
 // SetLazyLoading sets if the iavl store should be loaded lazily or not
 func (rs *Store) SetLazyLoading(lazyLoading bool) {
 	rs.lazyLoading = lazyLoading
+}
+
+func (rs *Store) SetMetrics(metrics *types.Metrics, iavlMetricsProvider iavltree.MetricsProvider) {
+	rs.metrics = metrics
+	rs.iavlMetricsProvider = iavlMetricsProvider
 }
 
 // Implements Store.
@@ -174,7 +184,7 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 		}
 
 		// Load it
-		store, err := rs.loadCommitStoreFromParams(key, commitID, storeParams)
+		store, err := rs.loadCommitStoreFromParams(key, commitID, storeParams, rs.iavlMetricsProvider(key.Name()))
 		if err != nil {
 			return fmt.Errorf("failed to load Store: %v", err)
 		}
@@ -193,7 +203,8 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 			oldParams.key = oldKey
 
 			// load from the old name
-			oldStore, err := rs.loadCommitStoreFromParams(oldKey, rs.getCommitID(infos, oldName), oldParams)
+			oldStore, err := rs.loadCommitStoreFromParams(oldKey, rs.getCommitID(infos, oldName), oldParams,
+				rs.iavlMetricsProvider(key.Name()))
 			if err != nil {
 				return fmt.Errorf("failed to load old Store '%s': %v", oldName, err)
 			}
@@ -531,7 +542,8 @@ func parsePath(path string) (storeName string, subpath string, err error) {
 	return storeName, subpath, nil
 }
 
-func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID, params storeParams) (types.CommitKVStore, error) {
+func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID, params storeParams,
+	metric *iavltree.Metrics) (types.CommitKVStore, error) {
 	var db dbm.DB
 
 	if params.db != nil {
@@ -550,9 +562,9 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 		var err error
 
 		if params.initialVersion == 0 {
-			store, err = iavl.LoadStore(db, id, rs.lazyLoading)
+			store, err = iavl.LoadStore(db, id, rs.lazyLoading, metric)
 		} else {
-			store, err = iavl.LoadStoreWithInitialVersion(db, id, rs.lazyLoading, params.initialVersion)
+			store, err = iavl.LoadStoreWithInitialVersion(db, id, rs.lazyLoading, params.initialVersion, metric)
 		}
 
 		if err != nil {

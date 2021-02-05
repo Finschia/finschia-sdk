@@ -27,7 +27,8 @@ type (
 	// CommitKVStore and below is completely irrelevant to this layer.
 	CommitKVStoreCache struct {
 		types.CommitKVStore
-		cache *lru.ARCCache
+		cache   *lru.ARCCache
+		metrics *Metrics
 	}
 
 	// CommitKVStoreCacheManager maintains a mapping from a StoreKey to a
@@ -35,12 +36,13 @@ type (
 	// in an inter-block (persistent) manner and typically provided by a
 	// CommitMultiStore.
 	CommitKVStoreCacheManager struct {
-		cacheSize uint
-		caches    map[string]types.CommitKVStore
+		cacheSize       uint
+		caches          map[string]types.CommitKVStore
+		metricsProvider func(storeName string) *Metrics
 	}
 )
 
-func NewCommitKVStoreCache(store types.CommitKVStore, size uint) *CommitKVStoreCache {
+func NewCommitKVStoreCache(store types.CommitKVStore, size uint, metrics *Metrics) *CommitKVStoreCache {
 	cache, err := lru.NewARC(int(size))
 	if err != nil {
 		panic(fmt.Errorf("failed to create KVStore cache: %s", err))
@@ -49,13 +51,15 @@ func NewCommitKVStoreCache(store types.CommitKVStore, size uint) *CommitKVStoreC
 	return &CommitKVStoreCache{
 		CommitKVStore: store,
 		cache:         cache,
+		metrics:       metrics,
 	}
 }
 
-func NewCommitKVStoreCacheManager(size uint) *CommitKVStoreCacheManager {
+func NewCommitKVStoreCacheManager(size uint, metricsProvider MetricsProvider) *CommitKVStoreCacheManager {
 	return &CommitKVStoreCacheManager{
-		cacheSize: size,
-		caches:    make(map[string]types.CommitKVStore),
+		cacheSize:       size,
+		caches:          make(map[string]types.CommitKVStore),
+		metricsProvider: metricsProvider,
 	}
 }
 
@@ -64,7 +68,7 @@ func NewCommitKVStoreCacheManager(size uint) *CommitKVStoreCacheManager {
 // The returned Cache is meant to be used in a persistent manner.
 func (cmgr *CommitKVStoreCacheManager) GetStoreCache(key types.StoreKey, store types.CommitKVStore) types.CommitKVStore {
 	if cmgr.caches[key.Name()] == nil {
-		cmgr.caches[key.Name()] = NewCommitKVStoreCache(store, cmgr.cacheSize)
+		cmgr.caches[key.Name()] = NewCommitKVStoreCache(store, cmgr.cacheSize, cmgr.metricsProvider(key.Name()))
 	}
 
 	return cmgr.caches[key.Name()]
@@ -99,10 +103,12 @@ func (ckv *CommitKVStoreCache) Get(key []byte) []byte {
 	valueI, ok := ckv.cache.Get(keyStr)
 	if ok {
 		// cache hit
+		ckv.metrics.InterBlockCacheHits.Add(1)
 		return valueI.([]byte)
 	}
 
 	// cache miss; write to cache
+	ckv.metrics.InterBlockCacheMisses.Add(1)
 	value := ckv.CommitKVStore.Get(key)
 	ckv.cache.Add(keyStr, value)
 
