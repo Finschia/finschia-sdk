@@ -196,7 +196,7 @@ func TestSetLoader(t *testing.T) {
 
 	lazyLoadingOptions := map[string]bool{
 		"immediately": false,
-		"lazily": true,
+		"lazily":      true,
 	}
 
 	cases := map[string]struct {
@@ -242,6 +242,7 @@ func TestSetLoader(t *testing.T) {
 		data := []byte(`{"renamed":[{"old_key": "bnk", "new_key": "banker"}]}`)
 		err := ioutil.WriteFile(configName, data, os.ModePerm)
 		require.NoError(t, err)
+		lazyLoading := lazyLoading // pin!
 
 		for name, tc := range cases {
 			tc := tc
