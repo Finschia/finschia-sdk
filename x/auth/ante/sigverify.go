@@ -164,12 +164,17 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 type SigVerificationDecorator struct {
 	ak          keeper.AccountKeeper
 	txHashCache sync.Map
+	metrics     *Metrics
 }
 
-func NewSigVerificationDecorator(ak keeper.AccountKeeper) *SigVerificationDecorator {
+func NewSigVerificationDecorator(ak keeper.AccountKeeper, metrics *Metrics) *SigVerificationDecorator {
+	if metrics == nil {
+		metrics = NopMetrics()
+	}
 	return &SigVerificationDecorator{
 		ak:          ak,
 		txHashCache: sync.Map{},
+		metrics:     metrics,
 	}
 }
 
@@ -270,7 +275,10 @@ func (svd *SigVerificationDecorator) verifySignatureWithCache(
 		if exist {
 			svd.txHashCache.Delete(sigKey)
 		}
-		if !verified {
+		if verified {
+			svd.metrics.SigCacheHits.Add(1)
+		} else {
+			svd.metrics.SigCacheMisses.Add(1)
 			verified = pubKey.VerifyBytes(sigTx.GetSignBytes(ctx, signerAcc), sig)
 		}
 	}
