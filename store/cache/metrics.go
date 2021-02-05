@@ -15,7 +15,6 @@ const (
 
 // Metrics contains metrics exposed by this package.
 type Metrics struct {
-	// Time between BeginBlock and EndBlock.
 	InterBlockCacheHits   metrics.Counter
 	InterBlockCacheMisses metrics.Counter
 }
