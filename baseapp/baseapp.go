@@ -388,8 +388,9 @@ func (app *BaseApp) IsSealed() bool { return app.sealed }
 func (app *BaseApp) setCheckState(header abci.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.checkState = &state{
-		ms:  ms,
-		ctx: sdk.NewContext(ms, header, true, app.logger).WithMinGasPrices(app.minGasPrices),
+		ms: ms,
+		ctx: sdk.NewContext(ms, header, true, app.logger).
+			WithMinGasPrices(app.minGasPrices).WithConsensusParams(app.consensusParams),
 	}
 }
 
