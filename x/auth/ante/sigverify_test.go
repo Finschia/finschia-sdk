@@ -124,7 +124,7 @@ func TestSigVerification(t *testing.T) {
 	fee := types.NewTestStdFee()
 
 	spkd := ante.NewSetPubKeyDecorator(app.AccountKeeper)
-	svd := ante.NewSigVerificationDecorator(app.AccountKeeper)
+	svd := ante.NewSigVerificationDecorator(app.AccountKeeper, nil)
 	antehandler := sdk.ChainAnteDecorators(spkd, svd)
 
 	type testCase struct {
@@ -201,7 +201,7 @@ func runSigDecorators(t *testing.T, params types.Params, multisig bool, privs ..
 
 	spkd := ante.NewSetPubKeyDecorator(app.AccountKeeper)
 	svgc := ante.NewSigGasConsumeDecorator(app.AccountKeeper, ante.DefaultSigVerificationGasConsumer)
-	svd := ante.NewSigVerificationDecorator(app.AccountKeeper)
+	svd := ante.NewSigVerificationDecorator(app.AccountKeeper, nil)
 	antehandler := sdk.ChainAnteDecorators(spkd, svgc, svd)
 
 	// Determine gas consumption of antehandler with default params
