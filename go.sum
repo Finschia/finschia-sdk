@@ -265,6 +265,8 @@ github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-b
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
 github.com/line/iavl v0.14.3-0.1.0-rc2 h1:3bZ7NYHTgK4NK/wEmXTQqpJY4yDwriwq8PDYGB9cexM=
 github.com/line/iavl v0.14.3-0.1.0-rc2/go.mod h1:eG6hI8RbMxL1nR+nJBykXD//gKjUpKCAT2tvi9V93sA=
+github.com/line/iavl v0.14.4-0.20210205104021-924a85cfa292 h1:C+ZVBfPd6Jt4ZbCXQ/M7vlWf7rO96E6mFz+2YrNJ29c=
+github.com/line/iavl v0.14.4-0.20210205104021-924a85cfa292/go.mod h1:eG6hI8RbMxL1nR+nJBykXD//gKjUpKCAT2tvi9V93sA=
 github.com/line/tendermint v0.33.9-0.1.0-rc2 h1:G2plZ9h1xitXP+nYtGlR8SRrHbBuim8KeYxP3JDBoGY=
 github.com/line/tendermint v0.33.9-0.1.0-rc2/go.mod h1:0yUs9eIuuDq07nQql9BmI30FtYGcEC60Tu5JzB5IezM=
 github.com/lyft/protoc-gen-validate v0.0.13/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=
