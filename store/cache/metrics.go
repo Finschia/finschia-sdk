@@ -15,6 +15,7 @@ const (
 
 // Metrics contains metrics exposed by this package.
 type Metrics struct {
+	InterBlockCacheSize   metrics.Gauge
 	InterBlockCacheHits   metrics.Counter
 	InterBlockCacheMisses metrics.Counter
 }
@@ -28,6 +29,12 @@ func PrometheusMetrics(namespace string, storeName string, labelsAndValues ...st
 		labels = append(labels, labelsAndValues[i])
 	}
 	return &Metrics{
+		InterBlockCacheSize: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      storeName + "_inter_block_cache_size",
+			Help:      "The maximum number of entries in the inter-block cache",
+		}, labels).With(labelsAndValues...),
 		InterBlockCacheHits: prometheus.NewCounterFrom(stdprometheus.CounterOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
@@ -46,6 +53,7 @@ func PrometheusMetrics(namespace string, storeName string, labelsAndValues ...st
 // NopMetrics returns no-op Metrics.
 func NopMetrics() *Metrics {
 	return &Metrics{
+		InterBlockCacheSize:   discard.NewGauge(),
 		InterBlockCacheHits:   discard.NewCounter(),
 		InterBlockCacheMisses: discard.NewCounter(),
 	}
