@@ -43,6 +43,7 @@ func NewCommitKVStoreCache(store types.CommitKVStore, size int, metrics *Metrics
 	if err != nil {
 		panic(fmt.Errorf("failed to create KVStore cache: %s", err))
 	}
+	metrics.InterBlockCacheSize.Set(float64(size))
 
 	return &CommitKVStoreCache{
 		CommitKVStore: store,
