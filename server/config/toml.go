@@ -44,6 +44,8 @@ halt-time = {{ .BaseConfig.HaltTime }}
 
 # InterBlockCache enables inter-block caching.
 inter-block-cache = {{ .BaseConfig.InterBlockCache }}
+# InterBlockCacheSize is the maximum number of entries in the inter-block cache.
+inter-block-cache-size = {{ .BaseConfig.InterBlockCache }}
 
 # When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 # It works when tendermint's prometheus option (config.toml) is set to true.

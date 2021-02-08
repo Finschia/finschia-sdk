@@ -39,6 +39,8 @@ type BaseConfig struct {
 
 	// InterBlockCache enables inter-block caching.
 	InterBlockCache bool `mapstructure:"inter-block-cache"`
+	// InterBlockCacheSize is the maximum number of entries in the inter-block cache.
+	InterBlockCacheSize int `mapstructure:"inter-block-cache-size"`
 
 	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 	// It works when tendermint's prometheus option (config.toml) is set to true.
@@ -81,12 +83,13 @@ func (c *Config) GetMinGasPrices() sdk.DecCoins {
 func DefaultConfig() *Config {
 	return &Config{
 		BaseConfig: BaseConfig{
-			MinGasPrices:      defaultMinGasPrices,
-			InterBlockCache:   true,
-			Pruning:           storetypes.PruningOptionDefault,
-			PruningKeepRecent: "0",
-			PruningKeepEvery:  "0",
-			PruningInterval:   "0",
+			MinGasPrices:        defaultMinGasPrices,
+			InterBlockCache:     true,
+			InterBlockCacheSize: 1000,
+			Pruning:             storetypes.PruningOptionDefault,
+			PruningKeepRecent:   "0",
+			PruningKeepEvery:    "0",
+			PruningInterval:     "0",
 		},
 	}
 }
