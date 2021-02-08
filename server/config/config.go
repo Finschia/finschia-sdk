@@ -37,13 +37,13 @@ type BaseConfig struct {
 	// Note: Commitment of state will be attempted on the corresponding block.
 	HaltTime uint64 `mapstructure:"halt-time"`
 
-	// InterBlockCache enables inter-block caching.
-	InterBlockCache bool `mapstructure:"inter-block-cache"`
-	// InterBlockCacheSize is the maximum number of entries in the inter-block cache.
-	InterBlockCacheSize int `mapstructure:"inter-block-cache-size"`
-
 	// IAVLCacheSize is the maximum number of entries in the all iavl node caches.
 	IAVLCacheSize int `mapstructure:"iavl-cache-size"`
+
+	// InterBlockCacheSize is the maximum number of entries in the inter-block cache.
+	InterBlockCacheSize int `mapstructure:"inter-block-cache-size"`
+	// InterBlockCache enables inter-block caching.
+	InterBlockCache bool `mapstructure:"inter-block-cache"`
 
 	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 	// It works when tendermint's prometheus option (config.toml) is set to true.
