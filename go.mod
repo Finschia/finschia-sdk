@@ -46,6 +46,6 @@ require (
 
 replace (
 	github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
-	github.com/tendermint/iavl => github.com/line/iavl v0.14.4-0.20210122121727-7c33089230bd
+	github.com/tendermint/iavl => github.com/line/iavl v0.14.4-0.20210205102842-fcf744edef6f
 	github.com/tendermint/tendermint => github.com/line/tendermint v0.33.10-0.20210203025809-15a5a8497e0e
 )

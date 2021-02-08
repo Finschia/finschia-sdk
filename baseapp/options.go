@@ -8,7 +8,6 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/cosmos/cosmos-sdk/store"
-	"github.com/cosmos/cosmos-sdk/store/cache"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -58,17 +57,6 @@ func SetMetrics(bappMetrics *Metrics, storeMetrics *storetypes.Metrics, iavlMetr
 		app.setMetrics(bappMetrics)
 		app.cms.SetMetrics(storeMetrics, iavlMetricsProvider)
 	}
-}
-
-func MetricsProvider(prometheus bool) (*Metrics, *storetypes.Metrics, cache.MetricsProvider, iavl.MetricsProvider) {
-	namespace := "app"
-	if prometheus {
-		return PrometheusMetrics(namespace),
-			storetypes.PrometheusMetrics(namespace),
-			cache.PrometheusMetricsProvider(namespace),
-			iavl.PrometheusMetricsProvider(namespace)
-	}
-	return NopMetrics(), storetypes.NopMetrics(), cache.NopMetricsProvider(), iavl.NopMetricsProvider()
 }
 
 func (app *BaseApp) SetName(name string) {
