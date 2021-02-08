@@ -266,7 +266,8 @@ func TestAppStateDeterminism(t *testing.T) {
 
 			db := dbm.NewMemDB()
 
-			app := NewSimApp(logger, db, nil, true, map[int64]bool{}, FlagPeriodValue, interBlockCacheOpt(1000))
+			app := NewSimApp(logger, db, nil, true, map[int64]bool{}, FlagPeriodValue, interBlockCacheOpt(1000),
+				baseapp.SetIAVLCacheSize(10000))
 
 			fmt.Printf(
 				"running non-determinism simulation; seed %d: %d/%d, attempt: %d/%d\n",
