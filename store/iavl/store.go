@@ -16,10 +16,6 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const (
-	defaultIAVLCacheSize = 10000
-)
-
 var (
 	_ types.KVStore       = (*Store)(nil)
 	_ types.CommitStore   = (*Store)(nil)
@@ -35,16 +31,17 @@ type Store struct {
 // LoadStore returns an IAVL Store as a CommitKVStore. Internally, it will load the
 // store's version (id) from the provided DB. An error is returned if the version
 // fails to load.
-func LoadStore(db dbm.DB, id types.CommitID, lazyLoading bool, metric *iavl.Metrics) (types.CommitKVStore, error) {
-	return LoadStoreWithInitialVersion(db, id, lazyLoading, 0, metric)
+func LoadStore(db dbm.DB, id types.CommitID, cacheSize int, lazyLoading bool, metric *iavl.Metrics) (types.CommitKVStore, error) {
+	return LoadStoreWithInitialVersion(db, id, cacheSize, lazyLoading, 0, metric)
 }
 
 // LoadStore returns an IAVL Store as a CommitKVStore setting its initialVersion
 // to the one given. Internally, it will load the store's version (id) from the
 // provided DB. An error is returned if the version fails to load.
-func LoadStoreWithInitialVersion(db dbm.DB, id types.CommitID, lazyLoading bool, initialVersion uint64,
+func LoadStoreWithInitialVersion(db dbm.DB, id types.CommitID, cacheSize int, lazyLoading bool, initialVersion uint64,
 	metric *iavl.Metrics) (types.CommitKVStore, error) {
-	tree, err := iavl.NewMutableTreeWithOpts(db, defaultIAVLCacheSize, &iavl.Options{InitialVersion: initialVersion, Metrics: metric})
+	tree, err := iavl.NewMutableTreeWithOpts(db, cacheSize, &iavl.Options{InitialVersion: initialVersion,
+		Metrics: metric})
 	if err != nil {
 		return nil, err
 	}

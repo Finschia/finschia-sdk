@@ -44,6 +44,7 @@ type Store struct {
 	traceContext types.TraceContext
 
 	interBlockCache types.MultiStorePersistentCache
+	iavlCacheSize   int
 
 	metrics             *types.Metrics
 	iavlMetricsProvider iavltree.MetricsProvider
@@ -81,6 +82,10 @@ func (rs *Store) SetPruning(pruningOpts types.PruningOptions) {
 // SetLazyLoading sets if the iavl store should be loaded lazily or not
 func (rs *Store) SetLazyLoading(lazyLoading bool) {
 	rs.lazyLoading = lazyLoading
+}
+
+func (rs *Store) SetIAVLCacheSize(cacheSize int) {
+	rs.iavlCacheSize = cacheSize
 }
 
 func (rs *Store) SetMetrics(metrics *types.Metrics, iavlMetricsProvider iavltree.MetricsProvider) {
@@ -562,9 +567,10 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 		var err error
 
 		if params.initialVersion == 0 {
-			store, err = iavl.LoadStore(db, id, rs.lazyLoading, metric)
+			store, err = iavl.LoadStore(db, id, rs.iavlCacheSize, rs.lazyLoading, metric)
 		} else {
-			store, err = iavl.LoadStoreWithInitialVersion(db, id, rs.lazyLoading, params.initialVersion, metric)
+			store, err = iavl.LoadStoreWithInitialVersion(db, id, rs.iavlCacheSize, rs.lazyLoading,
+				params.initialVersion, metric)
 		}
 
 		if err != nil {

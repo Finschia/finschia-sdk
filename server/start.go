@@ -31,6 +31,7 @@ const (
 	FlagHaltTime            = "halt-time"
 	FlagInterBlockCache     = "inter-block-cache"
 	FlagInterBlockCacheSize = "inter-block-cache-size"
+	FlagIAVLCacheSize       = "iavl-cache-size"
 	FlagUnsafeSkipUpgrades  = "unsafe-skip-upgrades"
 	FlagTrace               = "trace"
 	FlagPrometheus          = "prometheus"
