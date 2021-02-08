@@ -100,6 +100,8 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint64(FlagHaltHeight, 0, "Block height at which to gracefully halt the chain and shutdown the node")
 	cmd.Flags().Uint64(FlagHaltTime, 0, "Minimum block time (in Unix seconds) at which to gracefully halt the chain and shutdown the node")
 	cmd.Flags().Bool(FlagInterBlockCache, true, "Enable inter-block caching")
+	cmd.Flags().Int(FlagInterBlockCacheSize, 1000, "The maximum number of entries in the inter-block cache")
+	cmd.Flags().Int(FlagIAVLCacheSize, 10000, "The maximum number of entries in the all iavl node caches")
 	cmd.Flags().String(flagCPUProfile, "", "Enable CPU profiling and write to the provided file")
 
 	cmd.Flags().String(FlagPruning, storetypes.PruningOptionDefault, "Pruning strategy (default|nothing|everything|custom)")
@@ -107,6 +109,7 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint64(FlagPruningKeepEvery, 0, "Offset heights to keep on disk after 'keep-every' (ignored if pruning is not 'custom')")
 	cmd.Flags().Uint64(FlagPruningInterval, 0, "Height interval at which pruned heights are removed from disk (ignored if pruning is not 'custom')")
 	viper.BindPFlag(FlagTrace, cmd.Flags().Lookup(FlagTrace))
+	cmd.Flags().Bool(FlagPrometheus, false, "Enable prometheus metrics")
 	viper.BindPFlag(FlagPruning, cmd.Flags().Lookup(FlagPruning))
 	viper.BindPFlag(FlagPruningKeepRecent, cmd.Flags().Lookup(FlagPruningKeepRecent))
 	viper.BindPFlag(FlagPruningKeepEvery, cmd.Flags().Lookup(FlagPruningKeepEvery))
