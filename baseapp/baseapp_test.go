@@ -187,15 +187,17 @@ func TestSetLoader(t *testing.T) {
 	// write a renamer to a file
 	f, err := ioutil.TempFile("", "upgrade-*.json")
 	require.NoError(t, err)
-	data := []byte(`{"renamed":[{"old_key": "bnk", "new_key": "banker"}]}`)
-	_, err = f.Write(data)
-	require.NoError(t, err)
 	configName := f.Name()
 	require.NoError(t, f.Close())
 
 	// make sure it exists before running everything
 	_, err = os.Stat(configName)
 	require.NoError(t, err)
+
+	lazyLoadingOptions := map[string]bool{
+		"immediately": false,
+		"lazily":      true,
+	}
 
 	cases := map[string]struct {
 		setLoader    func(*BaseApp)
@@ -236,34 +238,41 @@ func TestSetLoader(t *testing.T) {
 	k := []byte("key")
 	v := []byte("value")
 
-	for name, tc := range cases {
-		tc := tc
-		t.Run(name, func(t *testing.T) {
-			// prepare a db with some data
-			db := dbm.NewMemDB()
-			initStore(t, db, tc.origStoreKey, k, v)
+	for lazyType, lazyLoading := range lazyLoadingOptions {
+		data := []byte(`{"renamed":[{"old_key": "bnk", "new_key": "banker"}]}`)
+		err := ioutil.WriteFile(configName, data, os.ModePerm)
+		require.NoError(t, err)
+		lazyLoading := lazyLoading // pin!
 
-			// load the app with the existing db
-			opts := []func(*BaseApp){SetPruning(store.PruneNothing)}
-			if tc.setLoader != nil {
-				opts = append(opts, tc.setLoader)
-			}
-			app := NewBaseApp(t.Name(), defaultLogger(), db, nil, opts...)
-			capKey := sdk.NewKVStoreKey(MainStoreKey)
-			app.MountStores(capKey)
-			app.MountStores(sdk.NewKVStoreKey(tc.loadStoreKey))
-			err := app.LoadLatestVersion(capKey)
-			require.Nil(t, err)
+		for name, tc := range cases {
+			tc := tc
+			t.Run(lazyType+"/"+name, func(t *testing.T) {
+				// prepare a db with some data
+				db := dbm.NewMemDB()
+				initStore(t, db, tc.origStoreKey, k, v)
 
-			// "execute" one block
-			app.BeginBlock(abci.RequestBeginBlock{Header: abci.Header{Height: 2}})
-			res := app.Commit()
-			require.NotNil(t, res.Data)
+				// load the app with the existing db
+				opts := []func(*BaseApp){SetPruning(store.PruneNothing), SetLazyLoading(lazyLoading)}
+				if tc.setLoader != nil {
+					opts = append(opts, tc.setLoader)
+				}
+				app := NewBaseApp(t.Name(), defaultLogger(), db, nil, opts...)
+				capKey := sdk.NewKVStoreKey(MainStoreKey)
+				app.MountStores(capKey)
+				app.MountStores(sdk.NewKVStoreKey(tc.loadStoreKey))
+				err := app.LoadLatestVersion(capKey)
+				require.Nil(t, err)
 
-			// check db is properly updated
-			checkStore(t, db, 2, tc.loadStoreKey, k, v)
-			checkStore(t, db, 2, tc.loadStoreKey, []byte("foo"), nil)
-		})
+				// "execute" one block
+				app.BeginBlock(abci.RequestBeginBlock{Header: abci.Header{Height: 2}})
+				res := app.Commit()
+				require.NotNil(t, res.Data)
+
+				// check db is properly updated
+				checkStore(t, db, 2, tc.loadStoreKey, k, v)
+				checkStore(t, db, 2, tc.loadStoreKey, []byte("foo"), nil)
+			})
+		}
 	}
 
 	// ensure config file was deleted
@@ -379,6 +388,51 @@ func TestLoadVersionPruning(t *testing.T) {
 	err = app.LoadLatestVersion(capKey)
 	require.Nil(t, err)
 	testLoadVersionHelper(t, app, int64(7), lastCommitID)
+}
+
+func TestLazyLoadVersion(t *testing.T) {
+	logger := log.NewNopLogger()
+	pruningOpt := SetPruning(store.PruneNothing)
+	lazyLoadingOpt := SetLazyLoading(true)
+	db := dbm.NewMemDB()
+	name := t.Name()
+	app := NewBaseApp(name, logger, db, nil, pruningOpt, lazyLoadingOpt)
+
+	// make a cap key and mount the store
+	capKey := sdk.NewKVStoreKey(MainStoreKey)
+	app.MountStores(capKey)
+	err := app.LoadLatestVersion(capKey) // needed to make stores non-nil
+	require.Nil(t, err)
+
+	emptyCommitID := sdk.CommitID{}
+
+	// fresh store has zero/empty last commit
+	lastHeight := app.LastBlockHeight()
+	lastID := app.LastCommitID()
+	require.Equal(t, int64(0), lastHeight)
+	require.Equal(t, emptyCommitID, lastID)
+
+	k := []byte("key")
+	vs := [][]byte{
+		[]byte("value1"), []byte("value2"), []byte("value3"), []byte("value4"), []byte("value5"), []byte("value6"),
+		[]byte("value7"),
+	}
+	for i := int64(1); i <= 7; i++ {
+		app.BeginBlock(abci.RequestBeginBlock{Header: abci.Header{Height: i}})
+		app.cms.GetKVStore(capKey).Set(k, vs[i-1])
+		app.Commit()
+	}
+
+	// reload with LoadLatestVersion, check it loads last version
+	app = NewBaseApp(name, logger, db, nil, pruningOpt, lazyLoadingOpt)
+	app.MountStores(capKey)
+
+	app.LoadLatestVersion(capKey)
+	for i := int64(7); i >= 1; i-- {
+		app.cms.LoadVersion(i)
+		v := app.cms.GetKVStore(capKey).Get(k)
+		require.True(t, bytes.Equal(v, vs[i-1]))
+	}
 }
 
 func testLoadVersionHelper(t *testing.T, app *BaseApp, expectedHeight int64, expectedID sdk.CommitID) {

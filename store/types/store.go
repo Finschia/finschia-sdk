@@ -170,6 +170,9 @@ type CommitMultiStore interface {
 	SetInterBlockCache(MultiStorePersistentCache)
 
 	SetMetrics(metrics *Metrics, iavlMetricsProvider iavl.MetricsProvider)
+
+	// Set a option to load a version lazily
+	SetLazyLoading(lazyLoading bool)
 }
 
 //---------subsp-------------------------------
