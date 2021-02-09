@@ -100,6 +100,10 @@ func (ms multiStore) SetInterBlockCache(_ sdk.MultiStorePersistentCache) {
 	panic("not implemented")
 }
 
+func (ms multiStore) SetIAVLCacheSize(cacheSize int) {
+	panic("not implemented")
+}
+
 func (ms multiStore) SetMetrics(metrics *store.Metrics, iavlMetricsProvider iavl.MetricsProvider) {
 	panic("not implemented")
 }

@@ -37,6 +37,11 @@ type BaseConfig struct {
 	// Note: Commitment of state will be attempted on the corresponding block.
 	HaltTime uint64 `mapstructure:"halt-time"`
 
+	// IAVLCacheSize is the maximum number of entries in the all iavl node caches.
+	IAVLCacheSize int `mapstructure:"iavl-cache-size"`
+
+	// InterBlockCacheSize is the maximum number of entries in the inter-block cache.
+	InterBlockCacheSize int `mapstructure:"inter-block-cache-size"`
 	// InterBlockCache enables inter-block caching.
 	InterBlockCache bool `mapstructure:"inter-block-cache"`
 
@@ -81,12 +86,14 @@ func (c *Config) GetMinGasPrices() sdk.DecCoins {
 func DefaultConfig() *Config {
 	return &Config{
 		BaseConfig: BaseConfig{
-			MinGasPrices:      defaultMinGasPrices,
-			InterBlockCache:   true,
-			Pruning:           storetypes.PruningOptionDefault,
-			PruningKeepRecent: "0",
-			PruningKeepEvery:  "0",
-			PruningInterval:   "0",
+			MinGasPrices:        defaultMinGasPrices,
+			InterBlockCache:     true,
+			InterBlockCacheSize: 1000,
+			IAVLCacheSize:       10000,
+			Pruning:             storetypes.PruningOptionDefault,
+			PruningKeepRecent:   "0",
+			PruningKeepEvery:    "0",
+			PruningInterval:     "0",
 		},
 	}
 }

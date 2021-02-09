@@ -12,10 +12,6 @@ import (
 var (
 	_ types.CommitKVStore             = (*CommitKVStoreCache)(nil)
 	_ types.MultiStorePersistentCache = (*CommitKVStoreCacheManager)(nil)
-
-	// DefaultCommitKVStoreCacheSize defines the persistent ARC cache size for a
-	// CommitKVStoreCache.
-	DefaultCommitKVStoreCacheSize uint = 1000
 )
 
 type (
@@ -36,17 +32,18 @@ type (
 	// in an inter-block (persistent) manner and typically provided by a
 	// CommitMultiStore.
 	CommitKVStoreCacheManager struct {
-		cacheSize       uint
+		cacheSize       int
 		caches          map[string]types.CommitKVStore
 		metricsProvider func(storeName string) *Metrics
 	}
 )
 
-func NewCommitKVStoreCache(store types.CommitKVStore, size uint, metrics *Metrics) *CommitKVStoreCache {
-	cache, err := lru.NewARC(int(size))
+func NewCommitKVStoreCache(store types.CommitKVStore, size int, metrics *Metrics) *CommitKVStoreCache {
+	cache, err := lru.NewARC(size)
 	if err != nil {
 		panic(fmt.Errorf("failed to create KVStore cache: %s", err))
 	}
+	metrics.InterBlockCacheSize.Set(float64(size))
 
 	return &CommitKVStoreCache{
 		CommitKVStore: store,
@@ -55,7 +52,7 @@ func NewCommitKVStoreCache(store types.CommitKVStore, size uint, metrics *Metric
 	}
 }
 
-func NewCommitKVStoreCacheManager(size uint, metricsProvider MetricsProvider) *CommitKVStoreCacheManager {
+func NewCommitKVStoreCacheManager(size int, metricsProvider MetricsProvider) *CommitKVStoreCacheManager {
 	return &CommitKVStoreCacheManager{
 		cacheSize:       size,
 		caches:          make(map[string]types.CommitKVStore),
