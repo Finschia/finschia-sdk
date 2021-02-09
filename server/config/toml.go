@@ -45,10 +45,10 @@ halt-time = {{ .BaseConfig.HaltTime }}
 # InterBlockCache enables inter-block caching.
 inter-block-cache = {{ .BaseConfig.InterBlockCache }}
 # InterBlockCacheSize is the maximum number of entries in the inter-block cache.
-inter-block-cache-size = {{ .BaseConfig.InterBlockCache }}
+inter-block-cache-size = {{ .BaseConfig.InterBlockCacheSize }}
 
 # IAVLCacheSize is the maximum number of entries in the all iavl node caches
-iavl-cache-size = {{ .BaseConfig.InterBlockCache }}
+iavl-cache-size = {{ .BaseConfig.IAVLCacheSize }}
 
 # When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 # It works when tendermint's prometheus option (config.toml) is set to true.
