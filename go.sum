@@ -267,6 +267,8 @@ github.com/line/iavl v0.14.4-0.20210122121727-7c33089230bd h1:IdJCRyraxeVrsrOTop
 github.com/line/iavl v0.14.4-0.20210122121727-7c33089230bd/go.mod h1:eG6hI8RbMxL1nR+nJBykXD//gKjUpKCAT2tvi9V93sA=
 github.com/line/iavl v0.14.4-0.20210205102842-fcf744edef6f h1:ApQ95AwuZ10fEiU3NAQ9vl5BhkSYZ2Wg/jhx3QoYm6Q=
 github.com/line/iavl v0.14.4-0.20210205102842-fcf744edef6f/go.mod h1:eG6hI8RbMxL1nR+nJBykXD//gKjUpKCAT2tvi9V93sA=
+github.com/line/iavl v0.14.4-0.20210208092849-33859eed7596 h1:0Vuyq6xNUHsPJUv8Bg1xrYz27ErkX8kBUaeaRvqESTs=
+github.com/line/iavl v0.14.4-0.20210208092849-33859eed7596/go.mod h1:eG6hI8RbMxL1nR+nJBykXD//gKjUpKCAT2tvi9V93sA=
 github.com/line/tendermint v0.33.10-0.20210203025809-15a5a8497e0e h1:ofxmHlEKghz7oFdDdBXRUSsEXdviPoM1WcsJrUed6PE=
 github.com/line/tendermint v0.33.10-0.20210203025809-15a5a8497e0e/go.mod h1:0yUs9eIuuDq07nQql9BmI30FtYGcEC60Tu5JzB5IezM=
 github.com/lyft/protoc-gen-validate v0.0.13/go.mod h1:XbGvPuh87YZc5TdIa2/I4pLk0QoUACkjt2znoq26NVQ=

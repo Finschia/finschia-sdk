@@ -51,6 +51,11 @@ func SetTrace(trace bool) func(*BaseApp) {
 	return func(app *BaseApp) { app.setTrace(trace) }
 }
 
+// SetIAVLCacheSize sets the maximum number of entries in the all iavl node caches
+func SetIAVLCacheSize(cacheSize int) func(*BaseApp) {
+	return func(app *BaseApp) { app.cms.SetIAVLCacheSize(cacheSize) }
+}
+
 // SetMetrics sets prometheus metrics
 func SetMetrics(bappMetrics *Metrics, storeMetrics *storetypes.Metrics, iavlMetricsProvider iavl.MetricsProvider) func(*BaseApp) {
 	return func(app *BaseApp) {
