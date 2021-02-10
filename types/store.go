@@ -65,10 +65,11 @@ type (
 type StoreType = types.StoreType
 
 const (
-	StoreTypeMulti  = types.StoreTypeMulti
-	StoreTypeDB     = types.StoreTypeDB
-	StoreTypeIAVL   = types.StoreTypeIAVL
-	StoreTypeMemory = types.StoreTypeMemory
+	StoreTypeMulti     = types.StoreTypeMulti
+	StoreTypeDB        = types.StoreTypeDB
+	StoreTypeIAVL      = types.StoreTypeIAVL
+	StoreTypeTransient = types.StoreTypeTransient
+	StoreTypeMemory    = types.StoreTypeMemory
 )
 
 type (
@@ -90,6 +91,25 @@ func NewKVStoreKeys(names ...string) map[string]*KVStoreKey {
 	keys := make(map[string]*KVStoreKey)
 	for _, name := range names {
 		keys[name] = NewKVStoreKey(name)
+	}
+
+	return keys
+}
+
+// Constructs new TransientStoreKey
+// Must return a pointer according to the ocap principle
+func NewTransientStoreKey(name string) *types.TransientStoreKey {
+	return types.NewTransientStoreKey(name)
+}
+
+// NewTransientStoreKeys constructs a new map of TransientStoreKey's
+// Must return pointers according to the ocap principle
+// The function will panic if there is a potential conflict in names (see `assertNoPrefix`
+// function for more details).
+func NewTransientStoreKeys(names ...string) map[string]*types.TransientStoreKey {
+	keys := make(map[string]*types.TransientStoreKey)
+	for _, n := range names {
+		keys[n] = NewTransientStoreKey(n)
 	}
 
 	return keys

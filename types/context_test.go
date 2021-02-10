@@ -31,7 +31,7 @@ func (s *contextTestSuite) TestCacheContext() {
 	k2 := []byte("key")
 	v2 := []byte("value")
 
-	ctx := testutil.DefaultContext(key)
+	ctx := testutil.DefaultContext(key, types.NewTransientStoreKey("transient_"+s.T().Name()))
 	store := ctx.KVStore(key)
 	store.Set(k1, v1)
 	s.Require().Equal(v1, store.Get(k1))
@@ -53,7 +53,7 @@ func (s *contextTestSuite) TestCacheContext() {
 
 func (s *contextTestSuite) TestLogContext() {
 	key := types.NewKVStoreKey(s.T().Name())
-	ctx := testutil.DefaultContext(key)
+	ctx := testutil.DefaultContext(key, types.NewTransientStoreKey("transient_"+s.T().Name()))
 	ctrl := gomock.NewController(s.T())
 	s.T().Cleanup(ctrl.Finish)
 

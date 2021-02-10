@@ -119,21 +119,21 @@ func TestRunMigrations(t *testing.T) {
 			"bank", 0,
 			true, "module migration versions should start at 1: invalid version", false, "", 0,
 		},
-		// {
-		// 	"throws error on RunMigrations if no migration registered for bank",
-		// 	"", 1,
-		// 	false, "", true, "no migrations found for module bank: not found", 0,
-		// },
-		// {
-		// 	"can register and run migration handler for x/bank",
-		// 	"bank", 1,
-		// 	false, "", false, "", 1,
-		// },
-		// {
-		// 	"cannot register migration handler for same module & forVersion",
-		// 	"bank", 1,
-		// 	true, "another migration for module bank and version 1 already exists: internal logic error", false, "", 0,
-		// },
+		{
+			"throws error on RunMigrations if no migration registered for bank",
+			"", 1,
+			false, "", true, "no migrations found for module bank: not found", 0,
+		},
+		{
+			"can register and run migration handler for x/bank",
+			"bank", 1,
+			false, "", false, "", 1,
+		},
+		{
+			"cannot register migration handler for same module & forVersion",
+			"bank", 1,
+			true, "another migration for module bank and version 1 already exists: internal logic error", false, "", 0,
+		},
 	}
 
 	for _, tc := range testCases {
