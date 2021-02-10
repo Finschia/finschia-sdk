@@ -15,6 +15,7 @@ import (
 	pvm "github.com/tendermint/tendermint/privval"
 	tversion "github.com/tendermint/tendermint/version"
 
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -145,7 +146,7 @@ func printlnJSON(v interface{}) error {
 
 // UnsafeResetAllCmd - extension of the tendermint command, resets initialization
 func UnsafeResetAllCmd(ctx *Context) *cobra.Command {
-	return &cobra.Command{
+	cmd := cobra.Command{
 		Use:   "unsafe-reset-all",
 		Short: "Resets the blockchain database, removes address book files, and resets priv_validator.json to the genesis state",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -155,4 +156,9 @@ func UnsafeResetAllCmd(ctx *Context) *cobra.Command {
 			return nil
 		},
 	}
+	cmd.Flags().String(flags.FlagPrivKeyType, flags.DefaultPrivKeyType, "specify validator's private key type (ed25519|composite). \n"+
+		"set this to priv_key.type in priv_validator_key.json; default `ed25519`")
+
+	return &cmd
+
 }
