@@ -19,9 +19,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/address"
 	"github.com/line/lbm-sdk/types/query"
-	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
-	authtypes "github.com/line/lbm-sdk/x/auth/types"
-	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -192,7 +189,7 @@ func ExamplePaginate() {
 	pageReq := &query.PageRequest{Key: nil, Limit: 1, CountTotal: true}
 	request := types.NewQueryAllBalancesRequest(addr1, pageReq)
 	balResult := sdk.NewCoins()
-	authStore := ctx.KVStore(app.GetKey(authtypes.StoreKey))
+	authStore := ctx.KVStore(app.GetKey(types.StoreKey))
 	balancesStore := prefix.NewStore(authStore, types.BalancesPrefix)
 	accountStore := prefix.NewStore(balancesStore, address.MustLengthPrefix(addr1.Bytes()))
 	pageRes, err := query.Paginate(accountStore, request.Pagination, func(key []byte, value []byte) error {
@@ -221,21 +218,6 @@ func setupTest() (*simapp.SimApp, sdk.Context, codec.Marshaler) {
 	ms := store.NewCommitMultiStore(db)
 
 	ms.LoadLatestVersion()
-
-	maccPerms := simapp.GetMaccPerms()
-	maccPerms[holder] = nil
-	maccPerms[authtypes.Burner] = []string{authtypes.Burner}
-	maccPerms[authtypes.Minter] = []string{authtypes.Minter}
-	maccPerms[multiPerm] = []string{authtypes.Burner, authtypes.Minter, authtypes.Staking}
-	maccPerms[randomPerm] = []string{"random"}
-	app.AccountKeeper = authkeeper.NewAccountKeeper(
-		appCodec, app.GetKey(authtypes.StoreKey), app.GetSubspace(authtypes.ModuleName),
-		authtypes.ProtoBaseAccount, maccPerms,
-	)
-	app.BankKeeper = bankkeeper.NewBaseKeeper(
-		appCodec, app.GetKey(authtypes.StoreKey), app.AccountKeeper,
-		app.GetSubspace(types.ModuleName), make(map[string]bool),
-	)
 
 	return app, ctx, appCodec
 }
