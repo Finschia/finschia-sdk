@@ -25,14 +25,14 @@ type Keeper struct {
 	authKeeper         types.AccountKeeper
 	bankKeeper         types.BankKeeper
 	hooks              types.StakingHooks
-	paramstore         *paramtypes.Subspace
+	paramstore         paramtypes.Subspace
 	validatorCacheList *list.List
 }
 
 // NewKeeper creates a new staking Keeper instance
 func NewKeeper(
 	cdc codec.BinaryMarshaler, key sdk.StoreKey, ak types.AccountKeeper, bk types.BankKeeper,
-	ps *paramtypes.Subspace,
+	ps paramtypes.Subspace,
 ) Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
