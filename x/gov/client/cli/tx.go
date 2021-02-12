@@ -206,7 +206,6 @@ func NewCmdVote() *cobra.Command {
 			fmt.Sprintf(`Submit a vote for an active proposal. You can
 find the proposal-id by running "%s query gov proposals".
 
-
 Example:
 $ %s tx gov vote 1 yes --from mykey
 `,

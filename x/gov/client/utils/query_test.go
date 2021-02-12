@@ -128,7 +128,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 			},
 			votes: []types.Vote{
 				types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes)),
-				types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes))},
+				types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes)),
 		},
 		{
 			description: "2MsgPerTx2Chunk",
@@ -140,7 +140,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 			},
 			votes: []types.Vote{
 				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes)),
-				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes))},
+				types.NewVote(0, acc2, types.NewNonSplitVoteOption(types.OptionYes)),
 		},
 		{
 			description: "IncompleteSearchTx",
@@ -149,7 +149,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 			msgs: [][]sdk.Msg{
 				acc1Msgs[:1],
 			},
-			votes: []types.Vote{types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes))},
+			votes: []types.Vote{types.NewVote(0, acc1, types.NewNonSplitVoteOption(types.OptionYes)),
 		},
 		{
 			description: "InvalidPage",

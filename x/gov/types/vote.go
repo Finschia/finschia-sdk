@@ -45,7 +45,7 @@ func (v Votes) String() string {
 	}
 	out := fmt.Sprintf("Votes for Proposal %d:", v[0].ProposalId)
 	for _, vot := range v {
-		out += fmt.Sprintf("\n  %s: %s", vot.Voter, vot.Option)
+		out += fmt.Sprintf("\n  %s: %s", vot.Voter, vot.Options)
 	}
 	return out
 }
@@ -56,6 +56,7 @@ func (v Vote) Empty() bool {
 }
 
 // NewNonSplitVoteOption creates a single option vote with weight 1
+//nolint:interfacer
 func NewNonSplitVoteOption(option VoteOption) WeightedVoteOptions {
 	return WeightedVoteOptions{{option, sdk.NewDec(1)}}
 }

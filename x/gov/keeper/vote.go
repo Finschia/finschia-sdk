@@ -20,7 +20,7 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 
 	for _, option := range options {
 		if !types.ValidWeightedVoteOption(option) {
-			return sdkerrors.Wrap(types.ErrInvalidVote, options.String())
+			return sdkerrors.Wrap(types.ErrInvalidVote, option.String())
 		}
 	}
 

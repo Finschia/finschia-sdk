@@ -91,7 +91,7 @@ func WeightedOperations(
 	return append(wProposalOps, wGovOps...)
 }
 
-// SimulateSubmitProposal simulates creating a msg Submit Proposal
+// SimulateMsgSubmitProposal simulates creating a msg Submit Proposal
 // voting on the proposal, and subsequently slashing the proposal. It is implemented using
 // future operations.
 func SimulateMsgSubmitProposal(
@@ -372,7 +372,7 @@ func operationSimulateMsgVoteWeighted(ak types.AccountKeeper, bk types.BankKeepe
 			[]sdk.Msg{msg},
 			fees,
 			helpers.DefaultGenTxGas,
-			ctx.ChainID(),
+			chainID,
 			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
