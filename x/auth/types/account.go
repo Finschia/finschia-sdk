@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/tendermint/tendermint/crypto"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/exported"
@@ -134,6 +134,7 @@ type baseAccountPretty struct {
 	Address       sdk.AccAddress `json:"address" yaml:"address"`
 	Coins         sdk.Coins      `json:"coins" yaml:"coins"`
 	PubKey        string         `json:"public_key" yaml:"public_key"`
+	OriginPubKey  []byte         `json:"origin_public_key" yaml:"multi_public_key"`
 	AccountNumber uint64         `json:"account_number" yaml:"account_number"`
 	Sequence      uint64         `json:"sequence" yaml:"sequence"`
 }
@@ -185,6 +186,7 @@ func (acc BaseAccount) MarshalJSON() ([]byte, error) {
 		}
 
 		alias.PubKey = pks
+		alias.OriginPubKey = ModuleCdc.MustMarshalBinaryBare(acc.PubKey)
 	}
 
 	return json.Marshal(alias)
@@ -196,20 +198,14 @@ func (acc *BaseAccount) UnmarshalJSON(bz []byte) error {
 	if err := json.Unmarshal(bz, &alias); err != nil {
 		return err
 	}
-
-	if alias.PubKey != "" {
-		pk, err := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeAccPub, alias.PubKey)
-		if err != nil {
-			return err
-		}
-
-		acc.PubKey = pk
-	}
-
 	acc.Address = alias.Address
 	acc.Coins = alias.Coins
 	acc.AccountNumber = alias.AccountNumber
 	acc.Sequence = alias.Sequence
+
+	if len(alias.OriginPubKey) > 0 {
+		ModuleCdc.MustUnmarshalBinaryBare(alias.OriginPubKey, &acc.PubKey)
+	}
 
 	return nil
 }
