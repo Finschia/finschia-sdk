@@ -143,6 +143,9 @@ func (s queryServer) GetLatestValidatorSet(ctx context.Context, req *GetLatestVa
 	outputValidatorsRes := &GetLatestValidatorSetResponse{
 		BlockHeight: validatorsRes.BlockHeight,
 		Validators:  make([]*Validator, len(validatorsRes.Validators)),
+		Pagination: &qtypes.PageResponse{
+			Total: validatorsRes.Total,
+		},
 	}
 
 	for i, validator := range validatorsRes.Validators {
@@ -195,6 +198,7 @@ func (s queryServer) GetValidatorSetByHeight(ctx context.Context, req *GetValida
 	outputValidatorsRes := &GetValidatorSetByHeightResponse{
 		BlockHeight: validatorsRes.BlockHeight,
 		Validators:  make([]*Validator, len(validatorsRes.Validators)),
+		Pagination:  &qtypes.PageResponse{Total: validatorsRes.Total},
 	}
 
 	for i, validator := range validatorsRes.Validators {
