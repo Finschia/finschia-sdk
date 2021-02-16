@@ -42,14 +42,14 @@ type BaseSendKeeper struct {
 	cdc        codec.BinaryMarshaler
 	ak         types.AccountKeeper
 	storeKey   sdk.StoreKey
-	paramSpace *paramtypes.Subspace
+	paramSpace paramtypes.Subspace
 
 	// list of addresses that are restricted from receiving transactions
 	blockedAddrs map[string]bool
 }
 
 func NewBaseSendKeeper(
-	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace *paramtypes.Subspace, blockedAddrs map[string]bool,
+	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace paramtypes.Subspace, blockedAddrs map[string]bool,
 ) BaseSendKeeper {
 
 	return BaseSendKeeper{

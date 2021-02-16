@@ -12,6 +12,9 @@ import (
 const (
 	// StoreKey is the string store key for the param store
 	StoreKey = "params"
+
+	// TStoreKey is the string store key for the param transient store
+	TStoreKey = "transient_params"
 )
 
 // Individual parameter store for each keeper

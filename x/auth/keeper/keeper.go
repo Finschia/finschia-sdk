@@ -51,7 +51,7 @@ type AccountKeeperI interface {
 type AccountKeeper struct {
 	key           sdk.StoreKey
 	cdc           codec.BinaryMarshaler
-	paramSubspace *paramtypes.Subspace
+	paramSubspace paramtypes.Subspace
 	permAddrs     map[string]types.PermissionsForAddress
 
 	// The prototypical AccountI constructor.
@@ -63,7 +63,7 @@ var _ AccountKeeperI = &AccountKeeper{}
 // NewAccountKeeper returns a new AccountKeeperI that uses go-amino to
 // (binary) encode and decode concrete sdk.Accounts.
 func NewAccountKeeper(
-	cdc codec.BinaryMarshaler, key sdk.StoreKey, paramstore *paramtypes.Subspace, proto func() types.AccountI,
+	cdc codec.BinaryMarshaler, key sdk.StoreKey, paramstore paramtypes.Subspace, proto func() types.AccountI,
 	maccPerms map[string][]string,
 ) AccountKeeper {
 

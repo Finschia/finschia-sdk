@@ -54,11 +54,11 @@ type BaseKeeper struct {
 	ak         types.AccountKeeper
 	cdc        codec.BinaryMarshaler
 	storeKey   sdk.StoreKey
-	paramSpace *paramtypes.Subspace
+	paramSpace paramtypes.Subspace
 }
 
 func NewBaseKeeper(
-	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace *paramtypes.Subspace,
+	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace paramtypes.Subspace,
 	blockedAddrs map[string]bool,
 ) BaseKeeper {
 

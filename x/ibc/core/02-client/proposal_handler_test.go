@@ -24,21 +24,29 @@ func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {
 	}{
 		{
 			"valid update client proposal", func() {
-				clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
-				clientState := suite.chainA.GetClientState(clientA)
+				subject, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
+				subjectClientState := suite.chainA.GetClientState(subject)
+				substitute, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
+				initialHeight := clienttypes.NewHeight(subjectClientState.GetLatestHeight().GetRevisionNumber(), subjectClientState.GetLatestHeight().GetRevisionHeight()+1)
 
-				tmClientState, ok := clientState.(*ibctmtypes.ClientState)
+				// update substitute twice
+				suite.coordinator.UpdateClient(suite.chainA, suite.chainB, substitute, exported.Ostracon)
+				suite.coordinator.UpdateClient(suite.chainA, suite.chainB, substitute, exported.Ostracon)
+				substituteClientState := suite.chainA.GetClientState(substitute)
+
+				tmClientState, ok := subjectClientState.(*ibctmtypes.ClientState)
 				suite.Require().True(ok)
 				tmClientState.AllowUpdateAfterMisbehaviour = true
 				tmClientState.FrozenHeight = tmClientState.LatestHeight
-				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), clientA, tmClientState)
+				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), subject, tmClientState)
 
-				// use next header for chainB to update the client on chainA
-				header, err := suite.chainA.ConstructUpdateOCClientHeader(suite.chainB, clientA)
-				suite.Require().NoError(err)
+				// replicate changes to substitute (they must match)
+				tmClientState, ok = substituteClientState.(*ibctmtypes.ClientState)
+				suite.Require().True(ok)
+				tmClientState.AllowUpdateAfterMisbehaviour = true
+				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), substitute, tmClientState)
 
-				content, err = clienttypes.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, clientA, header)
-				suite.Require().NoError(err)
+				content = clienttypes.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, subject, substitute, initialHeight)
 			}, true,
 		},
 		{

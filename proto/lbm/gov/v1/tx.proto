@@ -58,6 +58,9 @@ message MsgVote {
   VoteOption option      = 3;
 }
 
+// MsgVoteResponse defines the Msg/Vote response type.
+message MsgVoteResponse {}
+
 // MsgVote defines a message to cast a vote.
 message MsgVoteWeighted {
   option (gogoproto.equal)            = false;
@@ -68,21 +71,6 @@ message MsgVoteWeighted {
   uint64 proposal_id = 1 [(gogoproto.jsontag) = "proposal_id", (gogoproto.moretags) = "yaml:\"proposal_id\""];
   string voter       = 2;
   repeated WeightedVoteOption options = 3 [(gogoproto.nullable) = false];
-}
-
-// MsgVoteResponse defines the Msg/Vote response type.
-message MsgVoteResponse {}
-
-// MsgVoteWeighted defines a message to cast a vote.
-message MsgVoteWeighted {
-  option (gogoproto.equal)            = false;
-  option (gogoproto.goproto_stringer) = false;
-  option (gogoproto.stringer)         = false;
-  option (gogoproto.goproto_getters)  = false;
-
-  uint64                      proposal_id = 1 [(gogoproto.moretags) = "yaml:\"proposal_id\""];
-  string                      voter       = 2;
-  repeated WeightedVoteOption options     = 3 [(gogoproto.nullable) = false];
 }
 
 // MsgVoteWeightedResponse defines the Msg/VoteWeighted response type.

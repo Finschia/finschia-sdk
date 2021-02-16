@@ -52,10 +52,10 @@ func (k Keeper) Subspace(s string) *types.Subspace {
 }
 
 // Get existing substore from keeper
-func (k Keeper) GetSubspace(s string) (*types.Subspace, bool) {
+func (k Keeper) GetSubspace(s string) (types.Subspace, bool) {
 	space, ok := k.spaces[s]
 	if !ok {
-		return &types.Subspace{}, false
+		return types.Subspace{}, false
 	}
-	return space, ok
+	return *space, ok
 }

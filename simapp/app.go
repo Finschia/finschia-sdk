@@ -77,6 +77,7 @@ import (
 	ibctransfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
 	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
+	ibcclienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	porttypes "github.com/line/lbm-sdk/x/ibc/core/05-port/types"
 	ibchost "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	ibckeeper "github.com/line/lbm-sdk/x/ibc/core/keeper"
@@ -266,6 +267,9 @@ func NewSimApp(
 		token.StoreKey,
 		authztypes.StoreKey,
 	)
+	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
+	// NOTE: The testingkey is just mounted for testing purposes. Actual applications should
+	// not include this key.
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, "testing")
 
 	app := &SimApp{
@@ -278,7 +282,7 @@ func NewSimApp(
 		memKeys:           memKeys,
 	}
 
-	app.ParamsKeeper = initParamsKeeper(appCodec, legacyAmino, keys[paramstypes.StoreKey])
+	app.ParamsKeeper = initParamsKeeper(appCodec, legacyAmino, keys[paramstypes.StoreKey], tkeys[paramstypes.TStoreKey])
 
 	// set the BaseApp's parameter store
 	bApp.SetParamStore(app.ParamsKeeper.Subspace(baseapp.Paramspace).WithKeyTable(paramskeeper.ConsensusParamsKeyTable()))
@@ -342,6 +346,7 @@ func NewSimApp(
 		AddRoute(distrtypes.RouterKey, distr.NewCommunityPoolSpendProposalHandler(app.DistrKeeper)).
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibchost.RouterKey, ibcclient.NewClientUpdateProposalHandler(app.IBCKeeper.ClientKeeper)).
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientUpdateProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(consortiumtypes.RouterKey, consortium.NewProposalHandler(app.ConsortiumKeeper))
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
@@ -604,7 +609,7 @@ func (app *SimApp) GetMemKey(storeKey string) *sdk.MemoryStoreKey {
 // GetSubspace returns a param subspace for a given module name.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *SimApp) GetSubspace(moduleName string) *paramstypes.Subspace {
+func (app *SimApp) GetSubspace(moduleName string) paramstypes.Subspace {
 	subspace, _ := app.ParamsKeeper.GetSubspace(moduleName)
 	return subspace
 }
@@ -689,8 +694,8 @@ func GetMaccPerms() map[string][]string {
 }
 
 // initParamsKeeper init params keeper and its subspaces
-func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key sdk.StoreKey) paramskeeper.Keeper {
-	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key)
+func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key, tkey sdk.StoreKey) paramskeeper.Keeper {
+	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
 
 	paramsKeeper.Subspace(authtypes.ModuleName)
 	paramsKeeper.Subspace(banktypes.ModuleName)
