@@ -262,23 +262,6 @@ func BankOfChain(chain *ibctesting.TestChain) Bank {
 	return bank
 }
 
-// Set balances of the chain bank for balances present in the bank
-func (suite *KeeperTestSuite) SetChainBankBalances(chain *ibctesting.TestChain, bank *Bank) error {
-	for coin, amount := range bank.balances {
-		err := sdk.ValidateAccAddress(coin.Address)
-		if err != nil {
-			return err
-		}
-		trace := types.ParseDenomTrace(coin.Denom)
-		err = chain.App.BankKeeper.SetBalance(chain.GetContext(), sdk.AccAddress(coin.Address),
-			sdk.NewCoin(trace.IBCDenom(), amount))
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
 // Check that the state of the bank is the bankBefore + expectedBankChange
 func (suite *KeeperTestSuite) CheckBankBalances(chain *ibctesting.TestChain, bankBefore *Bank, expectedBankChange *Bank) error {
 	bankAfter := BankOfChain(chain)

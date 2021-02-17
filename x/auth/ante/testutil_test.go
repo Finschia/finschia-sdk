@@ -19,6 +19,7 @@ import (
 	xauthsigning "github.com/line/lbm-sdk/x/auth/signing"
 	"github.com/line/lbm-sdk/x/auth/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.
@@ -76,9 +77,14 @@ func (suite *AnteTestSuite) CreateTestAccounts(numAccs int) []TestAccount {
 		err := acc.SetAccountNumber(uint64(i))
 		suite.Require().NoError(err)
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-		suite.app.BankKeeper.SetBalances(suite.ctx, addr, sdk.Coins{
+		someCoins := sdk.Coins{
 			sdk.NewInt64Coin("atom", 10000000),
-		})
+		}
+		err = suite.app.BankKeeper.MintCoins(suite.ctx, minttypes.ModuleName, someCoins)
+		suite.Require().NoError(err)
+
+		err = suite.app.BankKeeper.SendCoinsFromModuleToAccount(suite.ctx, minttypes.ModuleName, addr, someCoins)
+		suite.Require().NoError(err)
 
 		accounts = append(accounts, TestAccount{acc, priv})
 	}

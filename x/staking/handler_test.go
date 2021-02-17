@@ -5,13 +5,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/golang/protobuf/proto"
 	abci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
-	"github.com/golang/protobuf/proto"
 
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
@@ -20,7 +19,6 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
-	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/staking"
 	"github.com/line/lbm-sdk/x/staking/keeper"
 	"github.com/line/lbm-sdk/x/staking/teststaking"
@@ -36,12 +34,10 @@ func bootstrapHandlerGenesisTest(t *testing.T, power int64, numAddrs int, accAmo
 	totalSupply := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), amt.MulRaw(int64(len(addrDels)))))
 
 	notBondedPool := app.StakingKeeper.GetNotBondedPool(ctx)
-	err := app.BankKeeper.SetBalances(ctx, notBondedPool.GetAddress(), totalSupply)
-	require.NoError(t, err)
 
+	// set non bonded pool balance
 	app.AccountKeeper.SetModuleAccount(ctx, notBondedPool)
-	app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(totalSupply))
-
+	require.NoError(t, simapp.FundAccount(app, ctx, notBondedPool.GetAddress(), totalSupply))
 	return app, ctx, addrDels, addrVals
 }
 

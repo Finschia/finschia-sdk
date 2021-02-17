@@ -30,8 +30,7 @@ func BenchmarkOneBankSendTxPerBlock(b *testing.B) {
 	ctx := benchmarkApp.BaseApp.NewContext(false, ocproto.Header{})
 
 	// some value conceivably higher than the benchmarks would ever go
-	err := benchmarkApp.BankKeeper.SetBalances(ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 100000000000)))
-	require.NoError(b, err)
+	require.NoError(b, simapp.FundAccount(benchmarkApp, ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 100000000000))))
 
 	benchmarkApp.Commit()
 	txGen := simappparams.MakeTestEncodingConfig().TxConfig
@@ -73,8 +72,7 @@ func BenchmarkOneBankMultiSendTxPerBlock(b *testing.B) {
 	ctx := benchmarkApp.BaseApp.NewContext(false, ocproto.Header{})
 
 	// some value conceivably higher than the benchmarks would ever go
-	err := benchmarkApp.BankKeeper.SetBalances(ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 100000000000)))
-	require.NoError(b, err)
+	require.NoError(b, simapp.FundAccount(benchmarkApp, ctx, addr1, sdk.NewCoins(sdk.NewInt64Coin("foocoin", 100000000000))))
 
 	benchmarkApp.Commit()
 	txGen := simappparams.MakeTestEncodingConfig().TxConfig

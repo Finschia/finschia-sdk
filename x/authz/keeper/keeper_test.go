@@ -5,10 +5,9 @@ import (
 	"time"
 
 	proto "github.com/gogo/protobuf/proto"
-	"github.com/stretchr/testify/suite"
-
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octime "github.com/line/ostracon/types/time"
+	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp"
@@ -49,9 +48,6 @@ func (s *TestSuite) TestKeeper() {
 	granterAddr := addrs[0]
 	granteeAddr := addrs[1]
 	recipientAddr := addrs[2]
-	err := app.BankKeeper.SetBalances(ctx, granterAddr, sdk.NewCoins(sdk.NewInt64Coin("steak", 10000)))
-	s.Require().Nil(err)
-	s.Require().True(app.BankKeeper.GetBalance(ctx, granterAddr, "steak").IsEqual(sdk.NewCoin("steak", sdk.NewInt(10000))))
 
 	s.T().Log("verify that no authorization returns nil")
 	authorization, expiration := app.AuthzKeeper.GetOrRevokeAuthorization(ctx, granteeAddr, granterAddr, types.SendAuthorization{}.MethodName())
@@ -63,7 +59,7 @@ func (s *TestSuite) TestKeeper() {
 	newCoins := sdk.NewCoins(sdk.NewInt64Coin("steak", 100))
 	s.T().Log("verify if expired authorization is rejected")
 	x := &types.SendAuthorization{SpendLimit: newCoins}
-	err = app.AuthzKeeper.Grant(ctx, granterAddr, granteeAddr, x, now.Add(-1*time.Hour))
+	err := app.AuthzKeeper.Grant(ctx, granterAddr, granteeAddr, x, now.Add(-1*time.Hour))
 	s.Require().NoError(err)
 	authorization, _ = app.AuthzKeeper.GetOrRevokeAuthorization(ctx, granteeAddr, granterAddr, types.SendAuthorization{}.MethodName())
 	s.Require().Nil(authorization)
@@ -104,10 +100,6 @@ func (s *TestSuite) TestKeeperIter() {
 	granterAddr := addrs[0]
 	granteeAddr := addrs[1]
 
-	err := app.BankKeeper.SetBalances(ctx, granterAddr, sdk.NewCoins(sdk.NewInt64Coin("steak", 10000)))
-	s.Require().Nil(err)
-	s.Require().True(app.BankKeeper.GetBalance(ctx, granterAddr, "steak").IsEqual(sdk.NewCoin("steak", sdk.NewInt(10000))))
-
 	s.T().Log("verify that no authorization returns nil")
 	authorization, expiration := app.AuthzKeeper.GetOrRevokeAuthorization(ctx, granteeAddr, granterAddr, "Abcd")
 	s.Require().Nil(authorization)
@@ -118,7 +110,7 @@ func (s *TestSuite) TestKeeperIter() {
 	newCoins := sdk.NewCoins(sdk.NewInt64Coin("steak", 100))
 	s.T().Log("verify if expired authorization is rejected")
 	x := &types.SendAuthorization{SpendLimit: newCoins}
-	err = app.AuthzKeeper.Grant(ctx, granteeAddr, granterAddr, x, now.Add(-1*time.Hour))
+	err := app.AuthzKeeper.Grant(ctx, granteeAddr, granterAddr, x, now.Add(-1*time.Hour))
 	s.Require().NoError(err)
 	authorization, _ = app.AuthzKeeper.GetOrRevokeAuthorization(ctx, granteeAddr, granterAddr, "abcd")
 	s.Require().Nil(authorization)
@@ -137,10 +129,7 @@ func (s *TestSuite) TestKeeperFees() {
 	granterAddr := addrs[0]
 	granteeAddr := addrs[1]
 	recipientAddr := addrs[2]
-	err := app.BankKeeper.SetBalances(s.ctx, granterAddr, sdk.NewCoins(sdk.NewInt64Coin("steak", 10000)))
-	s.Require().Nil(err)
-	s.Require().True(app.BankKeeper.GetBalance(s.ctx, granterAddr, "steak").IsEqual(sdk.NewCoin("steak", sdk.NewInt(10000))))
-
+	s.Require().NoError(simapp.FundAccount(app, s.ctx, granterAddr, sdk.NewCoins(sdk.NewInt64Coin("steak", 10000))))
 	now := s.ctx.BlockHeader().Time
 	s.Require().NotNil(now)
 
@@ -181,8 +170,8 @@ func (s *TestSuite) TestKeeperFees() {
 	s.Require().NoError(err)
 
 	result, err = app.AuthzKeeper.DispatchActions(s.ctx, granteeAddr, executeMsgs)
+	s.Require().NoError(err)
 	s.Require().NotNil(result)
-	s.Require().Nil(err)
 
 	authorization, _ = app.AuthzKeeper.GetOrRevokeAuthorization(s.ctx, granteeAddr, granterAddr, types.SendAuthorization{}.MethodName())
 	s.Require().NotNil(authorization)

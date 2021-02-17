@@ -5,10 +5,12 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/bank/keeper"
 	"github.com/line/lbm-sdk/x/bank/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 func (suite *IntegrationTestSuite) TestQuerier_QueryBalance() {
@@ -39,7 +41,7 @@ func (suite *IntegrationTestSuite) TestQuerier_QueryBalance() {
 	acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 
 	app.AccountKeeper.SetAccount(ctx, acc)
-	suite.Require().NoError(app.BankKeeper.SetBalances(ctx, acc.GetAddress(), origCoins))
+	suite.Require().NoError(simapp.FundAccount(app, ctx, acc.GetAddress(), origCoins))
 
 	res, err = querier(ctx, []string{types.QueryBalance}, req)
 	suite.Require().NoError(err)
@@ -76,8 +78,7 @@ func (suite *IntegrationTestSuite) TestQuerier_QueryAllBalances() {
 	acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 
 	app.AccountKeeper.SetAccount(ctx, acc)
-	suite.Require().NoError(app.BankKeeper.SetBalances(ctx, acc.GetAddress(), origCoins))
-
+	suite.Require().NoError(simapp.FundAccount(app, ctx, acc.GetAddress(), origCoins))
 	res, err = querier(ctx, []string{types.QueryAllBalances}, req)
 	suite.Require().NoError(err)
 	suite.Require().NotNil(res)
@@ -89,7 +90,9 @@ func (suite *IntegrationTestSuite) TestQuerier_QueryTotalSupply() {
 	app, ctx := suite.app, suite.ctx
 	legacyAmino := app.LegacyAmino()
 	expectedTotalSupply := types.NewSupply(sdk.NewCoins(sdk.NewInt64Coin("test", 400000000)))
-	app.BankKeeper.SetSupply(ctx, expectedTotalSupply)
+	suite.
+		Require().
+		NoError(app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, expectedTotalSupply.Total))
 
 	req := abci.RequestQuery{
 		Path: fmt.Sprintf("custom/%s/%s", types.ModuleName, types.QueryTotalSupply),
@@ -118,7 +121,9 @@ func (suite *IntegrationTestSuite) TestQuerier_QueryTotalSupplyOf() {
 	test1Supply := sdk.NewInt64Coin("test1", 4000000)
 	test2Supply := sdk.NewInt64Coin("test2", 700000000)
 	expectedTotalSupply := types.NewSupply(sdk.NewCoins(test1Supply, test2Supply))
-	app.BankKeeper.SetSupply(ctx, expectedTotalSupply)
+	suite.
+		Require().
+		NoError(app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, expectedTotalSupply.Total))
 
 	req := abci.RequestQuery{
 		Path: fmt.Sprintf("custom/%s/%s", types.ModuleName, types.QuerySupplyOf),

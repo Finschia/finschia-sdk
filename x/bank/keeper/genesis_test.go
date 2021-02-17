@@ -3,43 +3,53 @@ package keeper_test
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/bank/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 func (suite *IntegrationTestSuite) TestExportGenesis() {
 	app, ctx := suite.app, suite.ctx
 
 	expectedMetadata := suite.getTestMetadata()
-	expectedBalances := suite.getTestBalances()
+	expectedBalances, totalSupply := suite.getTestBalancesAndSupply()
 	for i := range []int{1, 2} {
 		app.BankKeeper.SetDenomMetaData(ctx, expectedMetadata[i])
 		err1 := sdk.ValidateAccAddress(expectedBalances[i].Address)
 		if err1 != nil {
 			panic(err1)
 		}
-		err := app.BankKeeper.SetBalances(ctx, sdk.AccAddress(expectedBalances[i].Address), expectedBalances[i].Coins)
-		suite.Require().NoError(err)
+		// set balances via mint and send
+		suite.
+			Require().
+			NoError(app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, expectedBalances[i].Coins))
+		suite.
+			Require().
+			NoError(app.BankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, sdk.AccAddress(expectedBalances[i].Address), expectedBalances[i].Coins))
 	}
-
-	totalSupply := types.NewSupply(sdk.NewCoins(sdk.NewInt64Coin("test", 400000000)))
-	app.BankKeeper.SetSupply(ctx, totalSupply)
+	// add mint module balance as nil
+	expectedBalances = append(expectedBalances, types.Balance{Address: "cosmos1m3h30wlvsf8llruxtpukdvsy0km2kum8g38c8q", Coins: nil})
 	app.BankKeeper.SetParams(ctx, types.DefaultParams())
 
 	exportGenesis := app.BankKeeper.ExportGenesis(ctx)
 
 	suite.Require().Len(exportGenesis.Params.SendEnabled, 0)
 	suite.Require().Equal(types.DefaultParams().DefaultSendEnabled, exportGenesis.Params.DefaultSendEnabled)
-	suite.Require().Equal(totalSupply.GetTotal(), exportGenesis.Supply)
+	suite.Require().Equal(totalSupply.Total, exportGenesis.Supply)
 	suite.Require().Equal(expectedBalances, exportGenesis.Balances)
 	suite.Require().Equal(expectedMetadata, exportGenesis.DenomMetadata)
 }
 
-func (suite *IntegrationTestSuite) getTestBalances() []types.Balance {
-	addr2 := sdk.AccAddress("link15klks9yty6rwvnqk47q4cg92r38qj4gsvxdfj8")
-	addr1 := sdk.AccAddress("link14uxsrqf2cakphyw9ywwy9a9fv7yjspku4lkrny")
+func (suite *IntegrationTestSuite) getTestBalancesAndSupply() ([]types.Balance, *types.Supply) {
+	addr2 := sdk.AccAddress("line1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0556gh0")
+	addr1 := sdk.AccAddress("line1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh")
+	addr1Balance := sdk.Coins{sdk.NewInt64Coin("testcoin3", 10)}
+	addr2Balance := sdk.Coins{sdk.NewInt64Coin("testcoin1", 32), sdk.NewInt64Coin("testcoin2", 34)}
+
+	totalSupply := types.NewSupply(addr1Balance)
+	totalSupply.Inflate(addr2Balance)
 	return []types.Balance{
-		{Address: addr1.String(), Coins: sdk.Coins{sdk.NewInt64Coin("testcoin3", 10)}},
-		{Address: addr2.String(), Coins: sdk.Coins{sdk.NewInt64Coin("testcoin1", 32), sdk.NewInt64Coin("testcoin2", 34)}},
-	}
+		{Address: addr2.String(), Coins: addr2Balance},
+		{Address: addr1.String(), Coins: addr1Balance},
+	}, totalSupply
 
 }
 

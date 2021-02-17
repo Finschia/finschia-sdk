@@ -4,6 +4,7 @@ import (
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/testutil/testdata"
 
+	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/auth/ante"
 )
@@ -61,7 +62,7 @@ func (suite *AnteTestSuite) TestEnsureMempoolFees() {
 }
 
 func (suite *AnteTestSuite) TestDeductFees() {
-	suite.SetupTest(true) // setup
+	suite.SetupTest(false) // setup
 	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 
 	// keys and addresses
@@ -82,7 +83,9 @@ func (suite *AnteTestSuite) TestDeductFees() {
 	// Set account with insufficient funds
 	acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr1)
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-	suite.app.BankKeeper.SetBalances(suite.ctx, addr1, sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(10))))
+	coins := sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(10)))
+	err = simapp.FundAccount(suite.app, suite.ctx, addr1, coins)
+	suite.Require().NoError(err)
 
 	dfd := ante.NewDeductFeeDecorator(suite.app.AccountKeeper, suite.app.BankKeeper)
 	antehandler := sdk.ChainAnteDecorators(dfd)
@@ -93,7 +96,8 @@ func (suite *AnteTestSuite) TestDeductFees() {
 
 	// Set account with sufficient funds
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
-	suite.app.BankKeeper.SetBalances(suite.ctx, addr1, sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(200))))
+	err = simapp.FundAccount(suite.app, suite.ctx, addr1, sdk.NewCoins(sdk.NewCoin("atom", sdk.NewInt(200))))
+	suite.Require().NoError(err)
 
 	_, err = antehandler(suite.ctx, tx, false)
 

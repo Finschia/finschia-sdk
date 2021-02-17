@@ -7,15 +7,16 @@ import (
 	gocontext "context"
 	"fmt"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/bank/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 func (suite *IntegrationTestSuite) TestQueryBalance() {
 	app, ctx, queryClient := suite.app, suite.ctx, suite.queryClient
-	_, _, addr := testdata.KeyTestPubAddr()
 
 	_, err := queryClient.Balance(gocontext.Background(), &types.QueryBalanceRequest{})
 	suite.Require().Error(err)
@@ -33,7 +34,7 @@ func (suite *IntegrationTestSuite) TestQueryBalance() {
 	acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 
 	app.AccountKeeper.SetAccount(ctx, acc)
-	suite.Require().NoError(app.BankKeeper.SetBalances(ctx, acc.GetAddress(), origCoins))
+	suite.Require().NoError(simapp.FundAccount(app, ctx, acc.GetAddress(), origCoins))
 
 	res, err = queryClient.Balance(gocontext.Background(), req)
 	suite.Require().NoError(err)
@@ -65,7 +66,7 @@ func (suite *IntegrationTestSuite) TestQueryAllBalances() {
 	acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 
 	app.AccountKeeper.SetAccount(ctx, acc)
-	suite.Require().NoError(app.BankKeeper.SetBalances(ctx, acc.GetAddress(), origCoins))
+	suite.Require().NoError(simapp.FundAccount(app, ctx, acc.GetAddress(), origCoins))
 
 	res, err = queryClient.AllBalances(gocontext.Background(), req)
 	suite.Require().NoError(err)
@@ -93,7 +94,9 @@ func (suite *IntegrationTestSuite) TestQueryAllBalances() {
 func (suite *IntegrationTestSuite) TestQueryTotalSupply() {
 	app, ctx, queryClient := suite.app, suite.ctx, suite.queryClient
 	expectedTotalSupply := types.NewSupply(sdk.NewCoins(sdk.NewInt64Coin("test", 400000000)))
-	app.BankKeeper.SetSupply(ctx, expectedTotalSupply)
+	suite.
+		Require().
+		NoError(app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, expectedTotalSupply.Total))
 
 	res, err := queryClient.TotalSupply(gocontext.Background(), &types.QueryTotalSupplyRequest{})
 	suite.Require().NoError(err)
@@ -108,7 +111,9 @@ func (suite *IntegrationTestSuite) TestQueryTotalSupplyOf() {
 	test1Supply := sdk.NewInt64Coin("test1", 4000000)
 	test2Supply := sdk.NewInt64Coin("test2", 700000000)
 	expectedTotalSupply := types.NewSupply(sdk.NewCoins(test1Supply, test2Supply))
-	app.BankKeeper.SetSupply(ctx, expectedTotalSupply)
+	suite.
+		Require().
+		NoError(app.BankKeeper.MintCoins(ctx, minttypes.ModuleName, expectedTotalSupply.Total))
 
 	_, err := queryClient.SupplyOf(gocontext.Background(), &types.QuerySupplyOfRequest{})
 	suite.Require().Error(err)

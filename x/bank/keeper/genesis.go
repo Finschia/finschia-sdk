@@ -15,7 +15,7 @@ func (k BaseKeeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) {
 
 	genState.Balances = types.SanitizeGenesisBalances(genState.Balances)
 	for _, balance := range genState.Balances {
-		if err := k.initBalances(ctx, sdk.AccAddress(balance.Address), balance.Coins); err != nil {
+		if err := k.setBalances(ctx, sdk.AccAddress(balance.Address), balance.Coins); err != nil {
 			panic(fmt.Errorf("error on setting balances %w", err))
 		}
 
@@ -26,7 +26,7 @@ func (k BaseKeeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) {
 		genState.Supply = totalSupply
 	}
 
-	k.SetSupply(ctx, types.NewSupply(genState.Supply))
+	k.setSupply(ctx, types.NewSupply(genState.Supply))
 
 	for _, meta := range genState.DenomMetadata {
 		k.SetDenomMetaData(ctx, meta)

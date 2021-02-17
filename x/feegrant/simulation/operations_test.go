@@ -15,7 +15,6 @@ import (
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/bank/testutil"
 	"github.com/line/lbm-sdk/x/feegrant/simulation"
 )
 
@@ -44,7 +43,7 @@ func (suite *SimTestSuite) getTestingAccounts(r *rand.Rand, n int) []simtypes.Ac
 
 	// add coins to the accounts
 	for _, account := range accounts {
-		err := testutil.FundAccount(suite.app.BankKeeper, suite.ctx, account.Address, initCoins)
+		err := simapp.FundAccount(suite.app, suite.ctx, account.Address, initCoins)
 		suite.Require().NoError(err)
 	}
 
