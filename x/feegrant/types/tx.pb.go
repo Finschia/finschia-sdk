@@ -30,9 +30,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgGrantAllowance adds permission for Grantee to spend up to Allowance
+// MsgGrantFeeAllowance adds permission for Grantee to spend up to Allowance
 // of fees from the account of Granter.
-type MsgGrantAllowance struct {
+type MsgGrantFeeAllowance struct {
 	// granter is the address of the user granting an allowance of their funds.
 	Granter string `protobuf:"bytes,1,opt,name=granter,proto3" json:"granter,omitempty" yaml:"granter_address"`
 	// grantee is the address of the user being granted an allowance of another user's funds.
@@ -41,18 +41,18 @@ type MsgGrantAllowance struct {
 	Allowance *types.Any `protobuf:"bytes,3,opt,name=allowance,proto3" json:"allowance,omitempty"`
 }
 
-func (m *MsgGrantAllowance) Reset()         { *m = MsgGrantAllowance{} }
-func (m *MsgGrantAllowance) String() string { return proto.CompactTextString(m) }
-func (*MsgGrantAllowance) ProtoMessage()    {}
-func (*MsgGrantAllowance) Descriptor() ([]byte, []int) {
+func (m *MsgGrantFeeAllowance) Reset()         { *m = MsgGrantFeeAllowance{} }
+func (m *MsgGrantFeeAllowance) String() string { return proto.CompactTextString(m) }
+func (*MsgGrantFeeAllowance) ProtoMessage()    {}
+func (*MsgGrantFeeAllowance) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b4bf88d0a96288f9, []int{0}
 }
-func (m *MsgGrantAllowance) XXX_Unmarshal(b []byte) error {
+func (m *MsgGrantFeeAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgGrantAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgGrantFeeAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgGrantAllowance.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgGrantFeeAllowance.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -62,55 +62,55 @@ func (m *MsgGrantAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, e
 		return b[:n], nil
 	}
 }
-func (m *MsgGrantAllowance) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgGrantAllowance.Merge(m, src)
+func (m *MsgGrantFeeAllowance) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgGrantFeeAllowance.Merge(m, src)
 }
-func (m *MsgGrantAllowance) XXX_Size() int {
+func (m *MsgGrantFeeAllowance) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgGrantAllowance) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgGrantAllowance.DiscardUnknown(m)
+func (m *MsgGrantFeeAllowance) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgGrantFeeAllowance.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgGrantAllowance proto.InternalMessageInfo
+var xxx_messageInfo_MsgGrantFeeAllowance proto.InternalMessageInfo
 
-func (m *MsgGrantAllowance) GetGranter() string {
+func (m *MsgGrantFeeAllowance) GetGranter() string {
 	if m != nil {
 		return m.Granter
 	}
 	return ""
 }
 
-func (m *MsgGrantAllowance) GetGrantee() string {
+func (m *MsgGrantFeeAllowance) GetGrantee() string {
 	if m != nil {
 		return m.Grantee
 	}
 	return ""
 }
 
-func (m *MsgGrantAllowance) GetAllowance() *types.Any {
+func (m *MsgGrantFeeAllowance) GetAllowance() *types.Any {
 	if m != nil {
 		return m.Allowance
 	}
 	return nil
 }
 
-// MsgGrantAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
-type MsgGrantAllowanceResponse struct {
+// MsgGrantFeeAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
+type MsgGrantFeeAllowanceResponse struct {
 }
 
-func (m *MsgGrantAllowanceResponse) Reset()         { *m = MsgGrantAllowanceResponse{} }
-func (m *MsgGrantAllowanceResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgGrantAllowanceResponse) ProtoMessage()    {}
-func (*MsgGrantAllowanceResponse) Descriptor() ([]byte, []int) {
+func (m *MsgGrantFeeAllowanceResponse) Reset()         { *m = MsgGrantFeeAllowanceResponse{} }
+func (m *MsgGrantFeeAllowanceResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgGrantFeeAllowanceResponse) ProtoMessage()    {}
+func (*MsgGrantFeeAllowanceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b4bf88d0a96288f9, []int{1}
 }
-func (m *MsgGrantAllowanceResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgGrantFeeAllowanceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgGrantAllowanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgGrantFeeAllowanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgGrantAllowanceResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgGrantFeeAllowanceResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -120,38 +120,38 @@ func (m *MsgGrantAllowanceResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *MsgGrantAllowanceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgGrantAllowanceResponse.Merge(m, src)
+func (m *MsgGrantFeeAllowanceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgGrantFeeAllowanceResponse.Merge(m, src)
 }
-func (m *MsgGrantAllowanceResponse) XXX_Size() int {
+func (m *MsgGrantFeeAllowanceResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgGrantAllowanceResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgGrantAllowanceResponse.DiscardUnknown(m)
+func (m *MsgGrantFeeAllowanceResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgGrantFeeAllowanceResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgGrantAllowanceResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgGrantFeeAllowanceResponse proto.InternalMessageInfo
 
-// MsgRevokeAllowance removes any existing Allowance from Granter to Grantee.
-type MsgRevokeAllowance struct {
+// MsgRevokeFeeAllowance removes any existing Allowance from Granter to Grantee.
+type MsgRevokeFeeAllowance struct {
 	// granter is the address of the user granting an allowance of their funds.
 	Granter string `protobuf:"bytes,1,opt,name=granter,proto3" json:"granter,omitempty" yaml:"granter_address"`
 	// grantee is the address of the user being granted an allowance of another user's funds.
 	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty" yaml:"grantee_address"`
 }
 
-func (m *MsgRevokeAllowance) Reset()         { *m = MsgRevokeAllowance{} }
-func (m *MsgRevokeAllowance) String() string { return proto.CompactTextString(m) }
-func (*MsgRevokeAllowance) ProtoMessage()    {}
-func (*MsgRevokeAllowance) Descriptor() ([]byte, []int) {
+func (m *MsgRevokeFeeAllowance) Reset()         { *m = MsgRevokeFeeAllowance{} }
+func (m *MsgRevokeFeeAllowance) String() string { return proto.CompactTextString(m) }
+func (*MsgRevokeFeeAllowance) ProtoMessage()    {}
+func (*MsgRevokeFeeAllowance) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b4bf88d0a96288f9, []int{2}
 }
-func (m *MsgRevokeAllowance) XXX_Unmarshal(b []byte) error {
+func (m *MsgRevokeFeeAllowance) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRevokeAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRevokeFeeAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRevokeAllowance.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRevokeFeeAllowance.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -161,48 +161,48 @@ func (m *MsgRevokeAllowance) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *MsgRevokeAllowance) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRevokeAllowance.Merge(m, src)
+func (m *MsgRevokeFeeAllowance) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRevokeFeeAllowance.Merge(m, src)
 }
-func (m *MsgRevokeAllowance) XXX_Size() int {
+func (m *MsgRevokeFeeAllowance) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRevokeAllowance) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRevokeAllowance.DiscardUnknown(m)
+func (m *MsgRevokeFeeAllowance) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRevokeFeeAllowance.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRevokeAllowance proto.InternalMessageInfo
+var xxx_messageInfo_MsgRevokeFeeAllowance proto.InternalMessageInfo
 
-func (m *MsgRevokeAllowance) GetGranter() string {
+func (m *MsgRevokeFeeAllowance) GetGranter() string {
 	if m != nil {
 		return m.Granter
 	}
 	return ""
 }
 
-func (m *MsgRevokeAllowance) GetGrantee() string {
+func (m *MsgRevokeFeeAllowance) GetGrantee() string {
 	if m != nil {
 		return m.Grantee
 	}
 	return ""
 }
 
-// MsgRevokeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
-type MsgRevokeAllowanceResponse struct {
+// MsgRevokeFeeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
+type MsgRevokeFeeAllowanceResponse struct {
 }
 
-func (m *MsgRevokeAllowanceResponse) Reset()         { *m = MsgRevokeAllowanceResponse{} }
-func (m *MsgRevokeAllowanceResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRevokeAllowanceResponse) ProtoMessage()    {}
-func (*MsgRevokeAllowanceResponse) Descriptor() ([]byte, []int) {
+func (m *MsgRevokeFeeAllowanceResponse) Reset()         { *m = MsgRevokeFeeAllowanceResponse{} }
+func (m *MsgRevokeFeeAllowanceResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgRevokeFeeAllowanceResponse) ProtoMessage()    {}
+func (*MsgRevokeFeeAllowanceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_b4bf88d0a96288f9, []int{3}
 }
-func (m *MsgRevokeAllowanceResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgRevokeFeeAllowanceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRevokeAllowanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgRevokeFeeAllowanceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRevokeAllowanceResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgRevokeFeeAllowanceResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -212,53 +212,53 @@ func (m *MsgRevokeAllowanceResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *MsgRevokeAllowanceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRevokeAllowanceResponse.Merge(m, src)
+func (m *MsgRevokeFeeAllowanceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgRevokeFeeAllowanceResponse.Merge(m, src)
 }
-func (m *MsgRevokeAllowanceResponse) XXX_Size() int {
+func (m *MsgRevokeFeeAllowanceResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRevokeAllowanceResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRevokeAllowanceResponse.DiscardUnknown(m)
+func (m *MsgRevokeFeeAllowanceResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgRevokeFeeAllowanceResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRevokeAllowanceResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgRevokeFeeAllowanceResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgGrantAllowance)(nil), "lbm.feegrant.v1.MsgGrantAllowance")
-	proto.RegisterType((*MsgGrantAllowanceResponse)(nil), "lbm.feegrant.v1.MsgGrantAllowanceResponse")
-	proto.RegisterType((*MsgRevokeAllowance)(nil), "lbm.feegrant.v1.MsgRevokeAllowance")
-	proto.RegisterType((*MsgRevokeAllowanceResponse)(nil), "lbm.feegrant.v1.MsgRevokeAllowanceResponse")
+	proto.RegisterType((*MsgGrantFeeAllowance)(nil), "lbm.feegrant.v1.MsgGrantFeeAllowance")
+	proto.RegisterType((*MsgGrantFeeAllowanceResponse)(nil), "lbm.feegrant.v1.MsgGrantFeeAllowanceResponse")
+	proto.RegisterType((*MsgRevokeFeeAllowance)(nil), "lbm.feegrant.v1.MsgRevokeFeeAllowance")
+	proto.RegisterType((*MsgRevokeFeeAllowanceResponse)(nil), "lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse")
 }
 
 func init() { proto.RegisterFile("lbm/feegrant/v1/tx.proto", fileDescriptor_b4bf88d0a96288f9) }
 
 var fileDescriptor_b4bf88d0a96288f9 = []byte{
-	// 373 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xc8, 0x49, 0xca, 0xd5,
-	0x4f, 0x4b, 0x4d, 0x4d, 0x2f, 0x4a, 0xcc, 0x2b, 0xd1, 0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b,
-	0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0xcf, 0x49, 0xca, 0xd5, 0x83, 0xc9, 0xe8, 0x95, 0x19, 0x4a,
-	0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0xe5, 0xf4, 0x41, 0x2c, 0x88, 0x32, 0x29, 0xc9, 0xf4, 0xfc,
-	0xfc, 0xf4, 0x9c, 0x54, 0x7d, 0x30, 0x2f, 0xa9, 0x34, 0x4d, 0x3f, 0x31, 0xaf, 0x12, 0x26, 0x95,
-	0x9c, 0x5f, 0x9c, 0x9b, 0x5f, 0x1c, 0x0f, 0xd1, 0x03, 0xe1, 0x40, 0xa4, 0x94, 0x8e, 0x31, 0x72,
-	0x09, 0xfa, 0x16, 0xa7, 0xbb, 0x83, 0xcc, 0x76, 0xcc, 0xc9, 0xc9, 0x2f, 0x4f, 0xcc, 0x4b, 0x4e,
-	0x15, 0x32, 0xe1, 0x62, 0x07, 0xdb, 0x96, 0x5a, 0x24, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0xe9, 0x24,
-	0xf5, 0xe9, 0x9e, 0xbc, 0x58, 0x65, 0x62, 0x6e, 0x8e, 0x95, 0x12, 0x54, 0x22, 0x3e, 0x31, 0x25,
-	0xa5, 0x28, 0xb5, 0xb8, 0x58, 0x29, 0x08, 0xa6, 0x14, 0xa1, 0x2b, 0x55, 0x82, 0x09, 0xbb, 0xae,
-	0x54, 0x0c, 0x5d, 0xa9, 0x42, 0xae, 0x5c, 0x9c, 0x89, 0x30, 0x8b, 0x25, 0x98, 0x15, 0x18, 0x35,
-	0xb8, 0x8d, 0x44, 0xf4, 0x20, 0x7e, 0xd1, 0x83, 0xf9, 0x45, 0xcf, 0x31, 0xaf, 0xd2, 0x49, 0xf0,
-	0xd4, 0x16, 0x5d, 0x5e, 0xb7, 0xd4, 0x54, 0xb8, 0x33, 0x3d, 0x83, 0x10, 0x3a, 0x95, 0xa4, 0xb9,
-	0x24, 0x31, 0xfc, 0x11, 0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0xaa, 0xd4, 0xc0, 0xc8, 0x25,
-	0xe4, 0x5b, 0x9c, 0x1e, 0x94, 0x5a, 0x96, 0x9f, 0x9d, 0x3a, 0x20, 0xde, 0x54, 0x92, 0xe1, 0x92,
-	0xc2, 0x74, 0x01, 0xcc, 0x81, 0x46, 0x67, 0x18, 0xb9, 0x98, 0x7d, 0x8b, 0xd3, 0x85, 0x12, 0xb8,
-	0xf8, 0xd0, 0xa2, 0x42, 0x49, 0x0f, 0x2d, 0xfa, 0xf5, 0x30, 0xbc, 0x29, 0xa5, 0x45, 0x58, 0x0d,
-	0xcc, 0x26, 0xa1, 0x64, 0x2e, 0x7e, 0xf4, 0x60, 0x50, 0xc6, 0xa6, 0x1d, 0x4d, 0x91, 0x94, 0x36,
-	0x11, 0x8a, 0x60, 0x96, 0x38, 0x39, 0x9d, 0x78, 0x24, 0xc7, 0x78, 0xe1, 0x91, 0x1c, 0xe3, 0x83,
-	0x47, 0x72, 0x8c, 0x13, 0x1e, 0xcb, 0x31, 0x5c, 0x78, 0x2c, 0xc7, 0x70, 0xe3, 0xb1, 0x1c, 0x43,
-	0x94, 0x46, 0x7a, 0x66, 0x49, 0x46, 0x69, 0x92, 0x5e, 0x72, 0x7e, 0xae, 0x7e, 0x4e, 0x66, 0x5e,
-	0xaa, 0x7e, 0x4e, 0x52, 0xae, 0x6e, 0x71, 0x4a, 0xb6, 0x7e, 0x05, 0x22, 0xf1, 0x97, 0x54, 0x16,
-	0xa4, 0x16, 0x27, 0xb1, 0x81, 0x23, 0xdf, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0x65, 0x04, 0x27,
-	0xf4, 0x19, 0x03, 0x00, 0x00,
+	// 374 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x53, 0xc1, 0x4e, 0xea, 0x40,
+	0x14, 0x65, 0x1e, 0xc9, 0x7b, 0x61, 0x5e, 0x94, 0xd8, 0xa0, 0xa9, 0x8d, 0x16, 0xd2, 0x44, 0xc3,
+	0x86, 0x99, 0x80, 0xae, 0xdc, 0xd1, 0x44, 0x8d, 0x0b, 0x36, 0x5d, 0xba, 0x21, 0x2d, 0x5c, 0x46,
+	0xc2, 0xb4, 0x43, 0x3a, 0x05, 0xe9, 0xda, 0x1f, 0xf0, 0x63, 0xfc, 0x08, 0x75, 0xc5, 0x92, 0x95,
+	0x31, 0xf0, 0x07, 0x7e, 0x81, 0xa1, 0x75, 0x52, 0x23, 0x5d, 0xb0, 0x73, 0x37, 0x37, 0xe7, 0x9c,
+	0x7b, 0xce, 0x49, 0xee, 0x60, 0x9d, 0x7b, 0x3e, 0x1d, 0x00, 0xb0, 0xd0, 0x0d, 0x22, 0x3a, 0x6d,
+	0xd2, 0x68, 0x46, 0xc6, 0xa1, 0x88, 0x84, 0x56, 0xe6, 0x9e, 0x4f, 0x14, 0x42, 0xa6, 0x4d, 0xa3,
+	0xc2, 0x04, 0x13, 0x09, 0x46, 0xd7, 0xaf, 0x94, 0x66, 0x1c, 0x32, 0x21, 0x18, 0x07, 0x9a, 0x4c,
+	0xde, 0x64, 0x40, 0xdd, 0x20, 0x56, 0x50, 0x4f, 0x48, 0x5f, 0xc8, 0x6e, 0xaa, 0x49, 0x87, 0x14,
+	0xb2, 0x5e, 0x10, 0xae, 0x74, 0x24, 0xbb, 0x5e, 0xef, 0xbe, 0x02, 0x68, 0x73, 0x2e, 0xee, 0xdd,
+	0xa0, 0x07, 0xda, 0x39, 0xfe, 0x97, 0x18, 0x42, 0xa8, 0xa3, 0x1a, 0xaa, 0x97, 0x6c, 0xe3, 0xe3,
+	0xad, 0x7a, 0x10, 0xbb, 0x3e, 0xbf, 0xb0, 0xbe, 0x80, 0xae, 0xdb, 0xef, 0x87, 0x20, 0xa5, 0xe5,
+	0x28, 0x6a, 0xa6, 0x02, 0xfd, 0x4f, 0xbe, 0x0a, 0x36, 0x54, 0xa0, 0x5d, 0xe2, 0x92, 0xab, 0x8c,
+	0xf5, 0x62, 0x0d, 0xd5, 0xff, 0xb7, 0x2a, 0x24, 0xad, 0x43, 0x54, 0x1d, 0xd2, 0x0e, 0x62, 0x7b,
+	0xef, 0xf5, 0xa9, 0xb1, 0xf3, 0x3d, 0xe6, 0x8d, 0x93, 0x29, 0x2d, 0x13, 0x1f, 0xe5, 0x55, 0x71,
+	0x40, 0x8e, 0x45, 0x20, 0xc1, 0x7a, 0x40, 0x78, 0xbf, 0x23, 0x99, 0x03, 0x53, 0x31, 0x82, 0xdf,
+	0x2a, 0x6b, 0x55, 0xf1, 0x71, 0x6e, 0x08, 0x15, 0xb3, 0xb5, 0x40, 0xb8, 0xd8, 0x91, 0x4c, 0x1b,
+	0xe0, 0xdd, 0xa4, 0x4b, 0x16, 0xf3, 0x84, 0xfc, 0x38, 0x05, 0x92, 0xd7, 0xd7, 0x68, 0x6c, 0x45,
+	0x53, 0x7e, 0xda, 0x10, 0x97, 0xd3, 0x34, 0x99, 0xd1, 0x69, 0xde, 0x86, 0xcd, 0xc8, 0x06, 0xd9,
+	0x8e, 0xa7, 0xac, 0x6c, 0xfb, 0x79, 0x69, 0xa2, 0xf9, 0xd2, 0x44, 0xef, 0x4b, 0x13, 0x3d, 0xae,
+	0xcc, 0xc2, 0x7c, 0x65, 0x16, 0x16, 0x2b, 0xb3, 0x70, 0x5b, 0x67, 0xc3, 0xe8, 0x6e, 0xe2, 0x91,
+	0x9e, 0xf0, 0x29, 0x1f, 0x06, 0x40, 0xb9, 0xe7, 0x37, 0x64, 0x7f, 0x44, 0x67, 0xd9, 0xa7, 0x88,
+	0xe2, 0x31, 0x48, 0xef, 0x6f, 0x72, 0x11, 0x67, 0x9f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xfd, 0x2e,
+	0xcf, 0x66, 0x31, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -275,10 +275,10 @@ const _ = grpc.SupportPackageIsVersion4
 type MsgClient interface {
 	// GrantAllowance grants fee allowance to the grantee on the granter's
 	// account with the provided expiration time.
-	GrantAllowance(ctx context.Context, in *MsgGrantAllowance, opts ...grpc.CallOption) (*MsgGrantAllowanceResponse, error)
+	GrantAllowance(ctx context.Context, in *MsgGrantFeeAllowance, opts ...grpc.CallOption) (*MsgGrantFeeAllowanceResponse, error)
 	// RevokeAllowance revokes any fee allowance of granter's account that
 	// has been granted to the grantee.
-	RevokeAllowance(ctx context.Context, in *MsgRevokeAllowance, opts ...grpc.CallOption) (*MsgRevokeAllowanceResponse, error)
+	RevokeAllowance(ctx context.Context, in *MsgRevokeFeeAllowance, opts ...grpc.CallOption) (*MsgRevokeFeeAllowanceResponse, error)
 }
 
 type msgClient struct {
@@ -289,8 +289,8 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) GrantAllowance(ctx context.Context, in *MsgGrantAllowance, opts ...grpc.CallOption) (*MsgGrantAllowanceResponse, error) {
-	out := new(MsgGrantAllowanceResponse)
+func (c *msgClient) GrantAllowance(ctx context.Context, in *MsgGrantFeeAllowance, opts ...grpc.CallOption) (*MsgGrantFeeAllowanceResponse, error) {
+	out := new(MsgGrantFeeAllowanceResponse)
 	err := c.cc.Invoke(ctx, "/lbm.feegrant.v1.Msg/GrantAllowance", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -298,8 +298,8 @@ func (c *msgClient) GrantAllowance(ctx context.Context, in *MsgGrantAllowance, o
 	return out, nil
 }
 
-func (c *msgClient) RevokeAllowance(ctx context.Context, in *MsgRevokeAllowance, opts ...grpc.CallOption) (*MsgRevokeAllowanceResponse, error) {
-	out := new(MsgRevokeAllowanceResponse)
+func (c *msgClient) RevokeAllowance(ctx context.Context, in *MsgRevokeFeeAllowance, opts ...grpc.CallOption) (*MsgRevokeFeeAllowanceResponse, error) {
+	out := new(MsgRevokeFeeAllowanceResponse)
 	err := c.cc.Invoke(ctx, "/lbm.feegrant.v1.Msg/RevokeAllowance", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -311,20 +311,20 @@ func (c *msgClient) RevokeAllowance(ctx context.Context, in *MsgRevokeAllowance,
 type MsgServer interface {
 	// GrantAllowance grants fee allowance to the grantee on the granter's
 	// account with the provided expiration time.
-	GrantAllowance(context.Context, *MsgGrantAllowance) (*MsgGrantAllowanceResponse, error)
+	GrantAllowance(context.Context, *MsgGrantFeeAllowance) (*MsgGrantFeeAllowanceResponse, error)
 	// RevokeAllowance revokes any fee allowance of granter's account that
 	// has been granted to the grantee.
-	RevokeAllowance(context.Context, *MsgRevokeAllowance) (*MsgRevokeAllowanceResponse, error)
+	RevokeAllowance(context.Context, *MsgRevokeFeeAllowance) (*MsgRevokeFeeAllowanceResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) GrantAllowance(ctx context.Context, req *MsgGrantAllowance) (*MsgGrantAllowanceResponse, error) {
+func (*UnimplementedMsgServer) GrantAllowance(ctx context.Context, req *MsgGrantFeeAllowance) (*MsgGrantFeeAllowanceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GrantAllowance not implemented")
 }
-func (*UnimplementedMsgServer) RevokeAllowance(ctx context.Context, req *MsgRevokeAllowance) (*MsgRevokeAllowanceResponse, error) {
+func (*UnimplementedMsgServer) RevokeAllowance(ctx context.Context, req *MsgRevokeFeeAllowance) (*MsgRevokeFeeAllowanceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RevokeAllowance not implemented")
 }
 
@@ -333,7 +333,7 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 }
 
 func _Msg_GrantAllowance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgGrantAllowance)
+	in := new(MsgGrantFeeAllowance)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -345,13 +345,13 @@ func _Msg_GrantAllowance_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/lbm.feegrant.v1.Msg/GrantAllowance",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).GrantAllowance(ctx, req.(*MsgGrantAllowance))
+		return srv.(MsgServer).GrantAllowance(ctx, req.(*MsgGrantFeeAllowance))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_RevokeAllowance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRevokeAllowance)
+	in := new(MsgRevokeFeeAllowance)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -363,7 +363,7 @@ func _Msg_RevokeAllowance_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: "/lbm.feegrant.v1.Msg/RevokeAllowance",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RevokeAllowance(ctx, req.(*MsgRevokeAllowance))
+		return srv.(MsgServer).RevokeAllowance(ctx, req.(*MsgRevokeFeeAllowance))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -385,7 +385,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "lbm/feegrant/v1/tx.proto",
 }
 
-func (m *MsgGrantAllowance) Marshal() (dAtA []byte, err error) {
+func (m *MsgGrantFeeAllowance) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -395,12 +395,12 @@ func (m *MsgGrantAllowance) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgGrantAllowance) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgGrantFeeAllowance) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgGrantAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgGrantFeeAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -434,7 +434,7 @@ func (m *MsgGrantAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgGrantAllowanceResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgGrantFeeAllowanceResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -444,12 +444,12 @@ func (m *MsgGrantAllowanceResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgGrantAllowanceResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgGrantFeeAllowanceResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgGrantAllowanceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgGrantFeeAllowanceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -457,7 +457,7 @@ func (m *MsgGrantAllowanceResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRevokeAllowance) Marshal() (dAtA []byte, err error) {
+func (m *MsgRevokeFeeAllowance) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -467,12 +467,12 @@ func (m *MsgRevokeAllowance) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRevokeAllowance) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRevokeFeeAllowance) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRevokeAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRevokeFeeAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -494,7 +494,7 @@ func (m *MsgRevokeAllowance) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRevokeAllowanceResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgRevokeFeeAllowanceResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -504,12 +504,12 @@ func (m *MsgRevokeAllowanceResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRevokeAllowanceResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgRevokeFeeAllowanceResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRevokeAllowanceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgRevokeFeeAllowanceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -528,7 +528,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgGrantAllowance) Size() (n int) {
+func (m *MsgGrantFeeAllowance) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -549,7 +549,7 @@ func (m *MsgGrantAllowance) Size() (n int) {
 	return n
 }
 
-func (m *MsgGrantAllowanceResponse) Size() (n int) {
+func (m *MsgGrantFeeAllowanceResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -558,7 +558,7 @@ func (m *MsgGrantAllowanceResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgRevokeAllowance) Size() (n int) {
+func (m *MsgRevokeFeeAllowance) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -575,7 +575,7 @@ func (m *MsgRevokeAllowance) Size() (n int) {
 	return n
 }
 
-func (m *MsgRevokeAllowanceResponse) Size() (n int) {
+func (m *MsgRevokeFeeAllowanceResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -590,7 +590,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgGrantAllowance) Unmarshal(dAtA []byte) error {
+func (m *MsgGrantFeeAllowance) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -613,10 +613,10 @@ func (m *MsgGrantAllowance) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgGrantAllowance: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgGrantFeeAllowance: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgGrantAllowance: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgGrantFeeAllowance: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -740,7 +740,7 @@ func (m *MsgGrantAllowance) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgGrantAllowanceResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgGrantFeeAllowanceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -763,10 +763,10 @@ func (m *MsgGrantAllowanceResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgGrantAllowanceResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgGrantFeeAllowanceResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgGrantAllowanceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgGrantFeeAllowanceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -790,7 +790,7 @@ func (m *MsgGrantAllowanceResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRevokeAllowance) Unmarshal(dAtA []byte) error {
+func (m *MsgRevokeFeeAllowance) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -813,10 +813,10 @@ func (m *MsgRevokeAllowance) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRevokeAllowance: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRevokeFeeAllowance: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRevokeAllowance: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRevokeFeeAllowance: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -904,7 +904,7 @@ func (m *MsgRevokeAllowance) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgRevokeAllowanceResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgRevokeFeeAllowanceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -927,10 +927,10 @@ func (m *MsgRevokeAllowanceResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRevokeAllowanceResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgRevokeFeeAllowanceResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRevokeAllowanceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgRevokeFeeAllowanceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

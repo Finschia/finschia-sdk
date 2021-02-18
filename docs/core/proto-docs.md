@@ -528,10 +528,10 @@
     - [Query](#lbm.feegrant.v1.Query)
   
 - [lbm/feegrant/v1/tx.proto](#lbm/feegrant/v1/tx.proto)
-    - [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance)
-    - [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse)
-    - [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance)
-    - [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse)
+    - [MsgGrantFeeAllowance](#lbm.feegrant.v1.MsgGrantFeeAllowance)
+    - [MsgGrantFeeAllowanceResponse](#lbm.feegrant.v1.MsgGrantFeeAllowanceResponse)
+    - [MsgRevokeFeeAllowance](#lbm.feegrant.v1.MsgRevokeFeeAllowance)
+    - [MsgRevokeFeeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse)
   
     - [Msg](#lbm.feegrant.v1.Msg)
   
@@ -7949,10 +7949,10 @@ Query defines the gRPC querier service.
 
 
 
-<a name="lbm.feegrant.v1.MsgGrantAllowance"></a>
+<a name="lbm.feegrant.v1.MsgGrantFeeAllowance"></a>
 
-### MsgGrantAllowance
-MsgGrantAllowance adds permission for Grantee to spend up to Allowance
+### MsgGrantFeeAllowance
+MsgGrantFeeAllowance adds permission for Grantee to spend up to Allowance
 of fees from the account of Granter.
 
 
@@ -7967,20 +7967,20 @@ of fees from the account of Granter.
 
 
 
-<a name="lbm.feegrant.v1.MsgGrantAllowanceResponse"></a>
+<a name="lbm.feegrant.v1.MsgGrantFeeAllowanceResponse"></a>
 
-### MsgGrantAllowanceResponse
-MsgGrantAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
-
-
+### MsgGrantFeeAllowanceResponse
+MsgGrantFeeAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
 
 
 
 
-<a name="lbm.feegrant.v1.MsgRevokeAllowance"></a>
 
-### MsgRevokeAllowance
-MsgRevokeAllowance removes any existing Allowance from Granter to Grantee.
+
+<a name="lbm.feegrant.v1.MsgRevokeFeeAllowance"></a>
+
+### MsgRevokeFeeAllowance
+MsgRevokeFeeAllowance removes any existing Allowance from Granter to Grantee.
 
 
 | Field | Type | Label | Description |
@@ -7993,10 +7993,10 @@ MsgRevokeAllowance removes any existing Allowance from Granter to Grantee.
 
 
 
-<a name="lbm.feegrant.v1.MsgRevokeAllowanceResponse"></a>
+<a name="lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse"></a>
 
-### MsgRevokeAllowanceResponse
-MsgRevokeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
+### MsgRevokeFeeAllowanceResponse
+MsgRevokeFeeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
 
 
 
@@ -8016,8 +8016,8 @@ Msg defines the feegrant msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `GrantAllowance` | [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance) | [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse) | GrantAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
-| `RevokeAllowance` | [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance) | [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse) | RevokeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
+| `GrantAllowance` | [MsgGrantFeeAllowance](#lbm.feegrant.v1.MsgGrantFeeAllowance) | [MsgGrantFeeAllowanceResponse](#lbm.feegrant.v1.MsgGrantFeeAllowanceResponse) | GrantAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
+| `RevokeAllowance` | [MsgRevokeFeeAllowance](#lbm.feegrant.v1.MsgRevokeFeeAllowance) | [MsgRevokeFeeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse) | RevokeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
 
  <!-- end services -->
 

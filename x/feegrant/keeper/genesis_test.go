@@ -49,7 +49,7 @@ func (suite *GenesisTestSuite) TestImportExportGenesis() {
 	genesis, err := suite.keeper.ExportGenesis(suite.ctx)
 	suite.Require().NoError(err)
 	// revoke fee allowance
-	_, err = msgSrvr.RevokeAllowance(sdk.WrapSDKContext(suite.ctx), &types.MsgRevokeAllowance{
+	_, err = msgSrvr.RevokeAllowance(sdk.WrapSDKContext(suite.ctx), &types.MsgRevokeFeeAllowance{
 		Granter: granterAddr.String(),
 		Grantee: granteeAddr.String(),
 	})

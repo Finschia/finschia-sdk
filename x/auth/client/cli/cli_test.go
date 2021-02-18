@@ -255,23 +255,19 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByHash() {
 	sendTokens := sdk.NewInt64Coin(s.cfg.BondDenom, 10)
 
 	// Send coins, try both with legacy Msg and with Msg service.
-	// Legacy Msg.
-	legacyMsgOut, err := bankcli.MsgSendExec(
-		val.ClientCtx,
+	// Legacy proto Msg.
+	legacyTxRes, err := bankcli.LegacyGRPCProtoMsgSend(
+		val.ClientCtx, val.Moniker,
 		val.Address,
 		account2.GetAddress(),
+		sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))),
 		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 	)
 	s.Require().NoError(err)
-	var legacyMsgTxRes sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(legacyMsgOut.Bytes(), &legacyMsgTxRes))
+	s.Require().NoError(s.network.WaitForNextBlock())
 
 	// Service Msg.
-	out, err := bankcli.ServiceMsgSendExec(
+	out, err := bankcli.MsgSendExec(
 		val.ClientCtx,
 		val.Address,
 		account2.GetAddress(),
@@ -284,7 +280,6 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByHash() {
 	s.Require().NoError(err)
 	var txRes sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &txRes))
-
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	testCases := []struct {
@@ -310,7 +305,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByHash() {
 		},
 		{
 			"happy case (legacy Msg)",
-			[]string{legacyMsgTxRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
+			[]string{legacyTxRes.TxResponse.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			false,
 			"",
 		},

@@ -9,6 +9,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/version"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	paramscutils "github.com/line/lbm-sdk/x/params/client/utils"
@@ -80,11 +81,14 @@ Where proposal.json contains:
 			if err != nil {
 				return err
 			}
-			if err := msg.ValidateBasic(); err != nil {
+			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
+			msgClient := govtypes.NewMsgClient(svcMsgClientConn)
+			_, err = msgClient.SubmitProposal(cmd.Context(), msg)
+			if err != nil {
 				return err
 			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
 		},
 	}
 }

@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package grpc_test
@@ -22,6 +23,7 @@ import (
 	txtypes "github.com/line/lbm-sdk/types/tx"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
+	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -37,6 +39,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
 	s.cfg = network.DefaultConfig()
+	s.cfg.NumValidators = 1
 	s.network = network.New(s.T(), s.cfg)
 	s.Require().NotNil(s.network)
 
@@ -130,42 +133,9 @@ func (s *IntegrationTestSuite) TestGRPCServer_GetTxsEvent() {
 func (s *IntegrationTestSuite) TestGRPCServer_BroadcastTx() {
 	val0 := s.network.Validators[0]
 
-	// prepare txBuilder with msg
-	txBuilder := val0.ClientCtx.TxConfig.NewTxBuilder()
-	feeAmount := sdk.Coins{sdk.NewInt64Coin(s.cfg.BondDenom, 10)}
-	gasLimit := testdata.NewTestGasLimit()
-	s.Require().NoError(
-		txBuilder.SetMsgs(&banktypes.MsgSend{
-			FromAddress: val0.Address.String(),
-			ToAddress:   val0.Address.String(),
-			Amount:      sdk.Coins{sdk.NewInt64Coin(s.cfg.BondDenom, 10)},
-		}),
-	)
-	txBuilder.SetFeeAmount(feeAmount)
-	txBuilder.SetGasLimit(gasLimit)
-
-	// setup txFactory
-	txFactory := clienttx.Factory{}.
-		WithChainID(val0.ClientCtx.ChainID).
-		WithKeybase(val0.ClientCtx.Keyring).
-		WithTxConfig(val0.ClientCtx.TxConfig).
-		WithSignMode(signing.SignMode_SIGN_MODE_DIRECT)
-
-	// Sign Tx.
-	err := authclient.SignTx(txFactory, val0.ClientCtx, val0.Moniker, txBuilder, false, true)
-	s.Require().NoError(err)
-
-	txBytes, err := val0.ClientCtx.TxConfig.TxEncoder()(txBuilder.GetTx())
-	s.Require().NoError(err)
-
-	// Broadcast the tx via gRPC.
-	queryClient := tx.NewServiceClient(s.conn)
-	grpcRes, err := queryClient.BroadcastTx(
-		context.Background(),
-		&tx.BroadcastTxRequest{
-			Mode:    tx.BroadcastMode_BROADCAST_MODE_SYNC,
-			TxBytes: txBytes,
-		},
+	grpcRes, err := banktestutil.LegacyGRPCProtoMsgSend(val0.ClientCtx,
+		val0.Moniker, val0.Address, val0.Address,
+		sdk.Coins{sdk.NewInt64Coin(s.cfg.BondDenom, 10)}, sdk.Coins{sdk.NewInt64Coin(s.cfg.BondDenom, 10)},
 	)
 	s.Require().NoError(err)
 	s.Require().Equal(uint32(0), grpcRes.TxResponse.Code)
@@ -173,7 +143,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_BroadcastTx() {
 
 // Test and enforce that we upfront reject any connections to baseapp containing
 // invalid initial x-lbm-block-height that aren't positive  and in the range [0, max(int64)]
-// See issue https://github.com/cosmos/cosmos-sdk/issues/7662.
+// See issue https://github.com/line/lbm-sdk/issues/7662.
 func (s *IntegrationTestSuite) TestGRPCServerInvalidHeaderHeights() {
 	t := s.T()
 	val0 := s.network.Validators[0]

@@ -44,7 +44,7 @@ func GetTxCmd() *cobra.Command {
 	return feegrantTxCmd
 }
 
-// NewCmdFeeGrant returns a CLI command handler for creating a MsgGrantAllowance transaction.
+// NewCmdFeeGrant returns a CLI command handler for creating a MsgGrantFeeAllowance transaction.
 func NewCmdFeeGrant() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "grant [granter_key_or_address] [grantee]",
@@ -55,9 +55,9 @@ func NewCmdFeeGrant() *cobra.Command {
 				ignored as it is implied from [granter].
 
 Examples:
-%s tx %s grant cosmos1skjw... cosmos1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z or
-%s tx %s grant cosmos1skjw... cosmos1skjw... --spend-limit 100stake --period 3600 --period-limit 10stake --expiration 36000 or
-%s tx %s grant cosmos1skjw... cosmos1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z 
+%s tx %s grant link1skjw... cosmos1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z or
+%s tx %s grant link1skjw... cosmos1skjw... --spend-limit 100stake --period 3600 --period-limit 10stake --expiration 36000 or
+%s tx %s grant link1skjw... cosmos1skjw... --spend-limit 100stake --expiration 2022-01-30T15:04:05Z 
 	--allowed-messages "/lbm.gov.v1.MsgSubmitProposal,/lbm.gov.v1.MsgVote"
 				`, version.AppName, types.ModuleName, version.AppName, types.ModuleName, version.AppName, types.ModuleName,
 			),
@@ -151,19 +151,14 @@ Examples:
 				grant = &periodic
 			}
 
-			allowedMsgs, err := cmd.Flags().GetStringSlice(FlagAllowedMsgs)
+			msg, err := types.NewMsgGrantFeeAllowance(grant, granter, grantee)
 			if err != nil {
 				return err
 			}
 
-			if len(allowedMsgs) > 0 {
-				grant, err = types.NewAllowedMsgAllowance(grant, allowedMsgs)
-				if err != nil {
-					return err
-				}
-			}
-
-			msg, err := types.NewMsgGrantAllowance(grant, granter, grantee)
+			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
+			msgClient := types.NewMsgClient(svcMsgClientConn)
+			_, err = msgClient.GrantFeeAllowance(cmd.Context(), msg)
 			if err != nil {
 				return err
 			}
@@ -182,7 +177,7 @@ Examples:
 	return cmd
 }
 
-// NewCmdRevokeFeegrant returns a CLI command handler for creating a MsgRevokeAllowance transaction.
+// NewCmdRevokeFeegrant returns a CLI command handler for creating a MsgRevokeFeeAllowance transaction.
 func NewCmdRevokeFeegrant() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "revoke [granter] [grantee]",
@@ -192,7 +187,7 @@ func NewCmdRevokeFeegrant() *cobra.Command {
 			ignored as it is implied from [granter].
 
 Example:
- $ %s tx %s revoke cosmos1skj.. cosmos1skj..
+ $ %s tx %s revoke link1skj.. cosmos1skj..
 			`, version.AppName, types.ModuleName),
 		),
 		Args: cobra.ExactArgs(2),
@@ -209,7 +204,13 @@ Example:
 			}
 			grantee := sdk.AccAddress(args[1])
 
-			msg := types.NewMsgRevokeAllowance(clientCtx.GetFromAddress(), grantee)
+			msg := types.NewMsgRevokeFeeAllowance(clientCtx.GetFromAddress(), grantee)
+			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
+			msgClient := types.NewMsgClient(svcMsgClientConn)
+			_, err = msgClient.RevokeFeeAllowance(cmd.Context(), &msg)
+			if err != nil {
+				return err
+			}
 
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},

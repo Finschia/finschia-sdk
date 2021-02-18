@@ -24,7 +24,7 @@ func NewMsgServerImpl(k Keeper) types.MsgServer {
 var _ types.MsgServer = msgServer{}
 
 // GrantAllowance grants an allowance from the granter's funds to be used by the grantee.
-func (k msgServer) GrantAllowance(goCtx context.Context, msg *types.MsgGrantAllowance) (*types.MsgGrantAllowanceResponse, error) {
+func (k msgServer) GrantAllowance(goCtx context.Context, msg *types.MsgGrantFeeAllowance) (*types.MsgGrantFeeAllowanceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	err := sdk.ValidateAccAddress(msg.Grantee)
@@ -54,11 +54,11 @@ func (k msgServer) GrantAllowance(goCtx context.Context, msg *types.MsgGrantAllo
 		return nil, err
 	}
 
-	return &types.MsgGrantAllowanceResponse{}, nil
+	return &types.MsgGrantFeeAllowanceResponse{}, nil
 }
 
 // RevokeAllowance revokes a fee allowance between a granter and grantee.
-func (k msgServer) RevokeAllowance(goCtx context.Context, msg *types.MsgRevokeAllowance) (*types.MsgRevokeAllowanceResponse, error) {
+func (k msgServer) RevokeAllowance(goCtx context.Context, msg *types.MsgRevokeFeeAllowance) (*types.MsgRevokeFeeAllowanceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	err := sdk.ValidateAccAddress(msg.Grantee)
@@ -78,5 +78,5 @@ func (k msgServer) RevokeAllowance(goCtx context.Context, msg *types.MsgRevokeAl
 		return nil, err
 	}
 
-	return &types.MsgRevokeAllowanceResponse{}, nil
+	return &types.MsgRevokeFeeAllowanceResponse{}, nil
 }

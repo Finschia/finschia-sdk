@@ -13,7 +13,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-func TestMsgGrantAllowance(t *testing.T) {
+func TestMsgGrantFeeAllowance(t *testing.T) {
 	cdc := codec.NewProtoCodec(codectypes.NewInterfaceRegistry())
 	addr := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
 	addr2 := sdk.AccAddress("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
@@ -57,7 +57,7 @@ func TestMsgGrantAllowance(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		msg, err := types.NewMsgGrantAllowance(tc.grant, tc.granter, tc.grantee)
+		msg, err := types.NewMsgGrantFeeAllowance(tc.grant, tc.granter, tc.grantee)
 		require.NoError(t, err)
 		err = msg.ValidateBasic()
 
@@ -79,7 +79,7 @@ func TestMsgGrantAllowance(t *testing.T) {
 	}
 }
 
-func TestMsgRevokeAllowance(t *testing.T) {
+func TestMsgRevokeFeeAllowance(t *testing.T) {
 	addr := sdk.AccAddress("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
 	addr2 := sdk.AccAddress("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
 	atom := sdk.NewCoins(sdk.NewInt64Coin("atom", 555))
@@ -122,7 +122,7 @@ func TestMsgRevokeAllowance(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		msg := types.NewMsgRevokeAllowance(tc.granter, tc.grantee)
+		msg := types.NewMsgRevokeFeeAllowance(tc.granter, tc.grantee)
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err)

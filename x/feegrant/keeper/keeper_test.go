@@ -74,13 +74,13 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 	suite.Require().NoError(err)
 
 	// remove some, overwrite other
-	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[1].String()})
+	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeFeeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[1].String()})
 	suite.Require().NoError(err)
-	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[2].String()})
+	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeFeeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[2].String()})
 	suite.Require().NoError(err)
 
 	// revoke non-exist fee allowance
-	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[2].String()})
+	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeFeeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[2].String()})
 	suite.Require().Error(err)
 
 	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[2], basic)
@@ -143,7 +143,7 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 	_, err = suite.keeper.GetAllowance(suite.sdkCtx, suite.addrs[3], accAddr)
 	suite.Require().NoError(err)
 
-	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[3].String(), Grantee: accAddr.String()})
+	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeFeeAllowance{Granter: suite.addrs[3].String(), Grantee: accAddr.String()})
 	suite.Require().NoError(err)
 
 }
