@@ -219,7 +219,7 @@ func interceptConfigs(rootViper *viper.Viper) (*ostcfg.Config, error) {
 		rootViper.AddConfigPath(configPath)
 
 		if err := rootViper.ReadInConfig(); err != nil {
-			return nil, fmt.Errorf("failed to read in %s: %w", tmCfgFile, err)
+			return nil, fmt.Errorf("failed to read in config.toml: %w", err)
 		}
 	}
 
