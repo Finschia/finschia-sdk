@@ -23,8 +23,8 @@ func NewMsgServerImpl(k Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-// GrantAllowance grants an allowance from the granter's funds to be used by the grantee.
-func (k msgServer) GrantAllowance(goCtx context.Context, msg *types.MsgGrantFeeAllowance) (*types.MsgGrantFeeAllowanceResponse, error) {
+// GrantFeeAllowance grants an allowance from the granter's funds to be used by the grantee.
+func (k msgServer) GrantFeeAllowance(goCtx context.Context, msg *types.MsgGrantFeeAllowance) (*types.MsgGrantFeeAllowanceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	err := sdk.ValidateAccAddress(msg.Grantee)
@@ -49,7 +49,7 @@ func (k msgServer) GrantAllowance(goCtx context.Context, msg *types.MsgGrantFeeA
 		return nil, err
 	}
 
-	err = k.Keeper.GrantAllowance(ctx, granter, grantee, allowance)
+	err = k.Keeper.GrantFeeAllowance(ctx, granter, grantee, allowance)
 	if err != nil {
 		return nil, err
 	}
@@ -57,8 +57,8 @@ func (k msgServer) GrantAllowance(goCtx context.Context, msg *types.MsgGrantFeeA
 	return &types.MsgGrantFeeAllowanceResponse{}, nil
 }
 
-// RevokeAllowance revokes a fee allowance between a granter and grantee.
-func (k msgServer) RevokeAllowance(goCtx context.Context, msg *types.MsgRevokeFeeAllowance) (*types.MsgRevokeFeeAllowanceResponse, error) {
+// RevokeFeeAllowance revokes a fee allowance between a granter and grantee.
+func (k msgServer) RevokeFeeAllowance(goCtx context.Context, msg *types.MsgRevokeFeeAllowance) (*types.MsgRevokeFeeAllowanceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	err := sdk.ValidateAccAddress(msg.Grantee)
@@ -73,7 +73,7 @@ func (k msgServer) RevokeAllowance(goCtx context.Context, msg *types.MsgRevokeFe
 	}
 	granter := sdk.AccAddress(msg.Granter)
 
-	err = k.Keeper.revokeAllowance(ctx, granter, grantee)
+	err = k.Keeper.RevokeFeeAllowance(ctx, granter, grantee)
 	if err != nil {
 		return nil, err
 	}

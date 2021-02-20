@@ -4,10 +4,11 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/authz/exported"
 )
 
 var (
-	_ Authorization = &GenericAuthorization{}
+	_ exported.Authorization = &GenericAuthorization{}
 )
 
 // NewGenericAuthorization creates a new GenericAuthorization object.
@@ -23,6 +24,6 @@ func (cap GenericAuthorization) MethodName() string {
 }
 
 // Accept implements Authorization.Accept.
-func (cap GenericAuthorization) Accept(msg sdk.ServiceMsg, block ocproto.Header) (allow bool, updated Authorization, delete bool) {
-	return true, &cap, false
+func (cap GenericAuthorization) Accept(msg sdk.ServiceMsg, block ocproto.Header) (updated exported.Authorization, delete bool, err error) {
+	return &cap, false, nil
 }

@@ -35,7 +35,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // Allocate subspace used for keepers
-func (k Keeper) Subspace(s string) *types.Subspace {
+func (k Keeper) Subspace(s string) types.Subspace {
 	_, ok := k.spaces[s]
 	if ok {
 		panic("subspace already occupied")
@@ -48,7 +48,7 @@ func (k Keeper) Subspace(s string) *types.Subspace {
 	space := types.NewSubspace(k.cdc, k.legacyAmino, k.key, s)
 	k.spaces[s] = space
 
-	return space
+	return *space
 }
 
 // Get existing substore from keeper

@@ -2,6 +2,7 @@ package authz
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/authz/exported"
 	"github.com/line/lbm-sdk/x/authz/keeper"
 	"github.com/line/lbm-sdk/x/authz/types"
 )
@@ -20,7 +21,7 @@ func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, data *types.GenesisState
 			panic(err)
 		}
 		granter := sdk.AccAddress(entry.Granter)
-		authorization, ok := entry.Authorization.GetCachedValue().(types.Authorization)
+		authorization, ok := entry.Authorization.GetCachedValue().(exported.Authorization)
 		if !ok {
 			panic("expected authorization")
 		}

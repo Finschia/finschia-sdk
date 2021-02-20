@@ -296,6 +296,9 @@
   
     - [Query](#lbm.authz.v1.Query)
   
+- [lbm/bank/v1/authz.proto](#lbm/bank/v1/authz.proto)
+    - [SendAuthorization](#lbm.bank.v1.SendAuthorization)
+  
 - [lbm/bank/v1/bank.proto](#lbm/bank/v1/bank.proto)
     - [DenomUnit](#lbm.bank.v1.DenomUnit)
     - [Input](#lbm.bank.v1.Input)
@@ -639,6 +642,12 @@
     - [MsgUnjailResponse](#lbm.slashing.v1.MsgUnjailResponse)
   
     - [Msg](#lbm.slashing.v1.Msg)
+  
+- [lbm/staking/v1/authz.proto](#lbm/staking/v1/authz.proto)
+    - [StakeAuthorization](#lbm.staking.v1.StakeAuthorization)
+    - [StakeAuthorization.Validators](#lbm.staking.v1.StakeAuthorization.Validators)
+  
+    - [AuthorizationType](#lbm.staking.v1.AuthorizationType)
   
 - [lbm/staking/v1/staking.proto](#lbm/staking/v1/staking.proto)
     - [Commission](#lbm.staking.v1.Commission)
@@ -4967,6 +4976,38 @@ Query defines the gRPC querier service.
 
 
 
+<a name="lbm/bank/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/bank/v1/authz.proto
+
+
+
+<a name="lbm.bank.v1.SendAuthorization"></a>
+
+### SendAuthorization
+SendAuthorization allows the grantee to spend up to spend_limit coins from
+the granter's account.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/bank/v1/bank.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -7970,7 +8011,7 @@ of fees from the account of Granter.
 <a name="lbm.feegrant.v1.MsgGrantFeeAllowanceResponse"></a>
 
 ### MsgGrantFeeAllowanceResponse
-MsgGrantFeeAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
+MsgGrantFeeAllowanceResponse defines the Msg/GrantFeeAllowanceResponse response type.
 
 
 
@@ -7996,7 +8037,7 @@ MsgRevokeFeeAllowance removes any existing Allowance from Granter to Grantee.
 <a name="lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse"></a>
 
 ### MsgRevokeFeeAllowanceResponse
-MsgRevokeFeeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
+MsgRevokeFeeAllowanceResponse defines the Msg/RevokeFeeAllowanceResponse response type.
 
 
 
@@ -8016,8 +8057,8 @@ Msg defines the feegrant msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `GrantAllowance` | [MsgGrantFeeAllowance](#lbm.feegrant.v1.MsgGrantFeeAllowance) | [MsgGrantFeeAllowanceResponse](#lbm.feegrant.v1.MsgGrantFeeAllowanceResponse) | GrantAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
-| `RevokeAllowance` | [MsgRevokeFeeAllowance](#lbm.feegrant.v1.MsgRevokeFeeAllowance) | [MsgRevokeFeeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse) | RevokeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
+| `GrantFeeAllowance` | [MsgGrantFeeAllowance](#lbm.feegrant.v1.MsgGrantFeeAllowance) | [MsgGrantFeeAllowanceResponse](#lbm.feegrant.v1.MsgGrantFeeAllowanceResponse) | GrantFeeAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
+| `RevokeFeeAllowance` | [MsgRevokeFeeAllowance](#lbm.feegrant.v1.MsgRevokeFeeAllowance) | [MsgRevokeFeeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeFeeAllowanceResponse) | RevokeFeeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
 
  <!-- end services -->
 
@@ -9325,6 +9366,69 @@ Msg defines the slashing Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Unjail` | [MsgUnjail](#lbm.slashing.v1.MsgUnjail) | [MsgUnjailResponse](#lbm.slashing.v1.MsgUnjailResponse) | Unjail defines a method for unjailing a jailed validator, thus returning them into the bonded validator set, so they can begin receiving provisions and rewards again. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/staking/v1/authz.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/staking/v1/authz.proto
+
+
+
+<a name="lbm.staking.v1.StakeAuthorization"></a>
+
+### StakeAuthorization
+StakeAuthorization defines authorization for delegate/undelegate/redelegate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `max_tokens` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  | max_tokens specifies the maximum amount of tokens can be delegate to a validator. If it is empty, there is no spend limit and any amount of coins can be delegated. |
+| `allow_list` | [StakeAuthorization.Validators](#lbm.staking.v1.StakeAuthorization.Validators) |  | allow_list specifies list of validator addresses to whom grantee can delegate tokens on behalf of granter's account. |
+| `deny_list` | [StakeAuthorization.Validators](#lbm.staking.v1.StakeAuthorization.Validators) |  | deny_list specifies list of validator addresses to whom grantee can not delegate tokens. |
+| `authorization_type` | [AuthorizationType](#lbm.staking.v1.AuthorizationType) |  | authorization_type defines one of AuthorizationType. |
+
+
+
+
+
+
+<a name="lbm.staking.v1.StakeAuthorization.Validators"></a>
+
+### StakeAuthorization.Validators
+Validators defines list of validator addresses.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+
+<a name="lbm.staking.v1.AuthorizationType"></a>
+
+### AuthorizationType
+AuthorizationType defines the type of staking module authorization type
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| AUTHORIZATION_TYPE_UNSPECIFIED | 0 | AUTHORIZATION_TYPE_UNSPECIFIED specifies an unknown authorization type |
+| AUTHORIZATION_TYPE_DELEGATE | 1 | AUTHORIZATION_TYPE_DELEGATE defines an authorization type for Msg/Delegate |
+| AUTHORIZATION_TYPE_UNDELEGATE | 2 | AUTHORIZATION_TYPE_UNDELEGATE defines an authorization type for Msg/Undelegate |
+| AUTHORIZATION_TYPE_REDELEGATE | 3 | AUTHORIZATION_TYPE_REDELEGATE defines an authorization type for Msg/BeginRedelegate |
+
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
 
  <!-- end services -->
 

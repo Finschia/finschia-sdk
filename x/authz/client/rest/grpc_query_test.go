@@ -3,6 +3,7 @@ package rest_test
 import (
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
 
@@ -16,6 +17,7 @@ import (
 	authztestutil "github.com/line/lbm-sdk/x/authz/client/testutil"
 	types "github.com/line/lbm-sdk/x/authz/types"
 	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
 type IntegrationTestSuite struct {
@@ -25,7 +27,8 @@ type IntegrationTestSuite struct {
 	grantee sdk.AccAddress
 }
 
-var typeMsgSend = types.SendAuthorization{}.MethodName()
+var typeMsgSend = banktypes.SendAuthorization{}.MethodName()
+var typeMsgVote = "/cosmos.gov.v1beta1.Msg/Vote"
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
@@ -54,7 +57,16 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	// grant authorization
-	_, err = authztestutil.MsgGrantAuthorizationExec(val.ClientCtx, val.Address.String(), newAddr.String(), "send", fmt.Sprintf("--%s=100steak", cli.FlagSpendLimit))
+	_, err = authztestutil.ExecGrantAuthorization(val, []string{
+		newAddr.String(),
+		"send",
+		fmt.Sprintf("--%s=100steak", cli.FlagSpendLimit),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))).String()),
+		fmt.Sprintf("--%s=%d", cli.FlagExpiration, time.Now().Add(time.Minute*time.Duration(120)).Unix()),
+	})
 	s.Require().NoError(err)
 
 	s.grantee = newAddr
@@ -125,7 +137,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizationGRPC() {
 				s.Require().NoError(err)
 				authorization.Authorization.UnpackInterfaces(val.ClientCtx.InterfaceRegistry)
 				auth := authorization.Authorization.GetAuthorizationGrant()
-				s.Require().Equal(auth.MethodName(), types.SendAuthorization{}.MethodName())
+				s.Require().Equal(auth.MethodName(), banktypes.SendAuthorization{}.MethodName())
 			}
 		})
 	}
@@ -183,7 +195,16 @@ func (s *IntegrationTestSuite) TestQueryAuthorizationsGRPC() {
 			false,
 			"",
 			func() {
-				_, err := authztestutil.MsgGrantAuthorizationExec(val.ClientCtx, val.Address.String(), s.grantee.String(), "generic", fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()), fmt.Sprintf("--%s=%s", cli.FlagMsgType, typeMsgSend))
+				_, err := authztestutil.ExecGrantAuthorization(val, []string{
+					s.grantee.String(),
+					"generic",
+					fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+					fmt.Sprintf("--%s=%s", cli.FlagMsgType, typeMsgVote),
+					fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+					fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+					fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))).String()),
+					fmt.Sprintf("--%s=%d", cli.FlagExpiration, time.Now().Add(time.Minute*time.Duration(120)).Unix()),
+				})
 				s.Require().NoError(err)
 			},
 			func(authorizations *types.QueryAuthorizationsResponse) {

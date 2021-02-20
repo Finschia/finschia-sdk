@@ -5,7 +5,7 @@ import (
 	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
-func (suite *KeeperTestSuite) TestGrantAllowance() {
+func (suite *KeeperTestSuite) TestGrantFeeAllowance() {
 	oneYear := suite.sdkCtx.BlockTime().AddDate(1, 0, 0)
 
 	testCases := []struct {
@@ -117,7 +117,7 @@ func (suite *KeeperTestSuite) TestGrantAllowance() {
 	}
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
-			_, err := suite.msgSrvr.GrantAllowance(suite.ctx, tc.req())
+			_, err := suite.msgSrvr.GrantFeeAllowance(suite.ctx, tc.req())
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.errMsg)
@@ -126,7 +126,7 @@ func (suite *KeeperTestSuite) TestGrantAllowance() {
 	}
 }
 
-func (suite *KeeperTestSuite) TestRevokeAllowance() {
+func (suite *KeeperTestSuite) TestRevokeFeeAllowance() {
 	oneYear := suite.sdkCtx.BlockTime().AddDate(1, 0, 0)
 
 	testCases := []struct {
@@ -174,7 +174,7 @@ func (suite *KeeperTestSuite) TestRevokeAllowance() {
 			},
 			func() {
 				// removing fee allowance from previous tests if exists
-				suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeFeeAllowance{
+				suite.msgSrvr.RevokeFeeAllowance(suite.ctx, &types.MsgRevokeFeeAllowance{
 					Granter: suite.addrs[0].String(),
 					Grantee: suite.addrs[1].String(),
 				})
@@ -190,7 +190,7 @@ func (suite *KeeperTestSuite) TestRevokeAllowance() {
 					Grantee:   suite.addrs[1].String(),
 					Allowance: any,
 				}
-				_, err = suite.msgSrvr.GrantAllowance(suite.ctx, req)
+				_, err = suite.msgSrvr.GrantFeeAllowance(suite.ctx, req)
 				suite.Require().NoError(err)
 			},
 			false,
@@ -211,7 +211,7 @@ func (suite *KeeperTestSuite) TestRevokeAllowance() {
 	for _, tc := range testCases {
 		suite.Run(tc.name, func() {
 			tc.preRun()
-			_, err := suite.msgSrvr.RevokeAllowance(suite.ctx, tc.request)
+			_, err := suite.msgSrvr.RevokeFeeAllowance(suite.ctx, tc.request)
 			if tc.expectErr {
 				suite.Require().Error(err)
 				suite.Require().Contains(err.Error(), tc.errMsg)

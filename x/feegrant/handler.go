@@ -16,11 +16,11 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 
 		switch msg := msg.(type) {
 		case *types.MsgGrantFeeAllowance:
-			res, err := msgServer.GrantAllowance(sdk.WrapSDKContext(ctx), msg)
+			res, err := msgServer.GrantFeeAllowance(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		case *types.MsgRevokeFeeAllowance:
-			res, err := msgServer.RevokeAllowance(sdk.WrapSDKContext(ctx), msg)
+			res, err := msgServer.RevokeFeeAllowance(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		default:

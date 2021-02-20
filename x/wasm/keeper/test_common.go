@@ -11,7 +11,7 @@ import (
 	"github.com/line/ostracon/crypto/ed25519"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/libs/rand"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
@@ -191,7 +191,7 @@ func createTestInput(
 	ms.MountStoreWithDB(keyCapabilityTransient, sdk.StoreTypeMemory, db)
 	require.NoError(t, ms.LoadLatestVersion())
 
-	ctx := sdk.NewContext(ms, tmproto.Header{
+	ctx := sdk.NewContext(ms, ocproto.Header{
 		Height: 1234567,
 		Time:   time.Date(2020, time.April, 22, 12, 0, 0, 0, time.UTC),
 	}, isCheckTx, log.NewNopLogger())

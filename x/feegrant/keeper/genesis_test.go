@@ -3,10 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-
-	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
@@ -14,6 +12,7 @@ import (
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/feegrant/keeper"
+	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
 type GenesisTestSuite struct {
@@ -25,7 +24,7 @@ type GenesisTestSuite struct {
 func (suite *GenesisTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{Height: 1})
 	suite.keeper = app.FeeGrantKeeper
 }
 
@@ -43,13 +42,13 @@ func (suite *GenesisTestSuite) TestImportExportGenesis() {
 	msgSrvr := keeper.NewMsgServerImpl(suite.keeper)
 
 	allowance := &types.BasicAllowance{SpendLimit: coins, Expiration: &oneYear}
-	err := suite.keeper.GrantAllowance(suite.ctx, granterAddr, granteeAddr, allowance)
+	err := suite.keeper.GrantFeeAllowance(suite.ctx, granterAddr, granteeAddr, allowance)
 	suite.Require().NoError(err)
 
 	genesis, err := suite.keeper.ExportGenesis(suite.ctx)
 	suite.Require().NoError(err)
 	// revoke fee allowance
-	_, err = msgSrvr.RevokeAllowance(sdk.WrapSDKContext(suite.ctx), &types.MsgRevokeFeeAllowance{
+	_, err = msgSrvr.RevokeFeeAllowance(sdk.WrapSDKContext(suite.ctx), &types.MsgRevokeFeeAllowance{
 		Granter: granterAddr.String(),
 		Grantee: granteeAddr.String(),
 	})

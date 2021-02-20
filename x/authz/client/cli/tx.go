@@ -16,12 +16,20 @@ import (
 	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/version"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
+	"github.com/line/lbm-sdk/x/authz/exported"
 	"github.com/line/lbm-sdk/x/authz/types"
+	bank "github.com/line/lbm-sdk/x/bank/types"
+	staking "github.com/line/lbm-sdk/x/staking/types"
 )
 
 const FlagSpendLimit = "spend-limit"
 const FlagMsgType = "msg-type"
 const FlagExpiration = "expiration"
+const FlagAllowedValidators = "allowed-validators"
+const FlagDenyValidators = "deny-validators"
+const delegate = "delegate"
+const redelegate = "redelegate"
+const unbond = "unbond"
 
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
@@ -45,29 +53,35 @@ func GetTxCmd() *cobra.Command {
 
 func NewCmdGrantAuthorization() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "grant <grantee> <authorization_type=\"send\"|\"generic\"> --from <granter>",
+		Use:   "grant <grantee> <authorization_type=\"send\"|\"generic\"|\"delegate\"|\"unbond\"|\"redelegate\"> --from <granter>",
 		Short: "Grant authorization to an address",
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`Grant authorization to an address to execute a transaction on your behalf:
 
 Examples:
- $ %s tx %s grant cosmos1skjw.. send %s --spend-limit=1000stake --from=cosmos1skl..
- $ %s tx %s grant cosmos1skjw.. generic --msg-type=/cosmos.gov.v1.Msg/Vote --from=cosmos1sk..
-	`, version.AppName, types.ModuleName, types.SendAuthorization{}.MethodName(), version.AppName, types.ModuleName),
+ $ %s tx %s grant link1skjw.. send %s --spend-limit=1000stake --from=link1skl..
+ $ %s tx %s grant link1skjw.. generic --msg-type=/lbm.gov.v1.Msg/Vote --from=link1sk..
+	`, version.AppName, types.ModuleName, bank.SendAuthorization{}.MethodName(), version.AppName, types.ModuleName),
 		),
-		Args: cobra.RangeArgs(2, 3),
+		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
 			}
+
 			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
 			grantee := sdk.AccAddress(args[0])
 
-			var authorization types.Authorization
+			exp, err := cmd.Flags().GetInt64(FlagExpiration)
+			if err != nil {
+				return err
+			}
+
+			var authorization exported.Authorization
 			switch args[1] {
 			case "send":
 				limit, err := cmd.Flags().GetString(FlagSpendLimit)
@@ -84,9 +98,7 @@ Examples:
 					return fmt.Errorf("spend-limit should be greater than zero")
 				}
 
-				authorization = &types.SendAuthorization{
-					SpendLimit: spendLimit,
-				}
+				authorization = bank.NewSendAuthorization(spendLimit)
 			case "generic":
 				msgType, err := cmd.Flags().GetString(FlagMsgType)
 				if err != nil {
@@ -94,13 +106,59 @@ Examples:
 				}
 
 				authorization = types.NewGenericAuthorization(msgType)
+			case delegate, unbond, redelegate:
+				limit, err := cmd.Flags().GetString(FlagSpendLimit)
+				if err != nil {
+					return err
+				}
+
+				allowValidators, err := cmd.Flags().GetStringSlice(FlagAllowedValidators)
+				if err != nil {
+					return err
+				}
+
+				denyValidators, err := cmd.Flags().GetStringSlice(FlagDenyValidators)
+				if err != nil {
+					return err
+				}
+
+				var delegateLimit *sdk.Coin
+				if limit != "" {
+					spendLimit, err := sdk.ParseCoinsNormalized(limit)
+					if err != nil {
+						return err
+					}
+
+					if !spendLimit.IsAllPositive() {
+						return fmt.Errorf("spend-limit should be greater than zero")
+					}
+					delegateLimit = &spendLimit[0]
+				}
+
+				allowed, err := toValidatorAddresses(allowValidators)
+				if err != nil {
+					return err
+				}
+
+				denied, err := toValidatorAddresses(denyValidators)
+				if err != nil {
+					return err
+				}
+
+				switch args[1] {
+				case delegate:
+					authorization, err = staking.NewStakeAuthorization(allowed, denied, staking.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE, delegateLimit)
+				case unbond:
+					authorization, err = staking.NewStakeAuthorization(allowed, denied, staking.AuthorizationType_AUTHORIZATION_TYPE_UNDELEGATE, delegateLimit)
+				default:
+					authorization, err = staking.NewStakeAuthorization(allowed, denied, staking.AuthorizationType_AUTHORIZATION_TYPE_REDELEGATE, delegateLimit)
+				}
+				if err != nil {
+					return err
+				}
+
 			default:
 				return fmt.Errorf("invalid authorization type, %s", args[1])
-			}
-
-			exp, err := cmd.Flags().GetInt64(FlagExpiration)
-			if err != nil {
-				return err
 			}
 
 			msg, err := types.NewMsgGrantAuthorization(clientCtx.GetFromAddress(), grantee, authorization, time.Unix(exp, 0))
@@ -121,6 +179,8 @@ Examples:
 	flags.AddTxFlagsToCmd(cmd)
 	cmd.Flags().String(FlagMsgType, "", "The Msg method name for which we are creating a GenericAuthorization")
 	cmd.Flags().String(FlagSpendLimit, "", "SpendLimit for Send Authorization, an array of Coins allowed spend")
+	cmd.Flags().StringSlice(FlagAllowedValidators, []string{}, "Allowed validators addresses separated by ,")
+	cmd.Flags().StringSlice(FlagDenyValidators, []string{}, "Deny validators addresses separated by ,")
 	cmd.Flags().Int64(FlagExpiration, time.Now().AddDate(1, 0, 0).Unix(), "The Unix timestamp. Default is one year.")
 	return cmd
 }
@@ -132,8 +192,8 @@ func NewCmdRevokeAuthorization() *cobra.Command {
 		Long: strings.TrimSpace(
 			fmt.Sprintf(`revoke authorization from a granter to a grantee:
 Example:
- $ %s tx %s revoke cosmos1skj.. %s --from=cosmos1skj..
-			`, version.AppName, types.ModuleName, types.SendAuthorization{}.MethodName()),
+ $ %s tx %s revoke link1skj.. %s --from=link1skj..
+			`, version.AppName, types.ModuleName, bank.SendAuthorization{}.MethodName()),
 		),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -221,4 +281,17 @@ Example:
 	flags.AddTxFlagsToCmd(cmd)
 
 	return cmd
+}
+
+func toValidatorAddresses(validators []string) ([]sdk.ValAddress, error) {
+	vals := make([]sdk.ValAddress, len(validators))
+	for i, validator := range validators {
+		err := sdk.ValidateValAddress(validator)
+		if err != nil {
+			return nil, err
+		}
+		addr := sdk.ValAddress([]byte(validator))
+		vals[i] = addr
+	}
+	return vals, nil
 }

@@ -35,8 +35,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-// GrantAllowance creates a new grant
-func (k Keeper) GrantAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress, feeAllowance types.FeeAllowanceI) error {
+// GrantFeeAllowance creates a new grant
+func (k Keeper) GrantFeeAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress, feeAllowance types.FeeAllowanceI) error {
 
 	// create the account if it is not in account state
 	granteeAcc := k.authKeeper.GetAccount(ctx, grantee)
@@ -70,8 +70,8 @@ func (k Keeper) GrantAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress,
 	return nil
 }
 
-// revokeAllowance removes an existing grant
-func (k Keeper) revokeAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress) error {
+// RevokeFeeAllowance removes an existing grant
+func (k Keeper) RevokeFeeAllowance(ctx sdk.Context, granter, grantee sdk.AccAddress) error {
 	_, err := k.getGrant(ctx, granter, grantee)
 	if err != nil {
 		return err
@@ -158,7 +158,7 @@ func (k Keeper) UseGrantedFees(ctx sdk.Context, granter, grantee sdk.AccAddress,
 
 	if remove {
 		// Ignoring the `revokeFeeAllowance` error, because the user has enough grants to perform this transaction.
-		k.revokeAllowance(ctx, granter, grantee)
+		k.RevokeFeeAllowance(ctx, granter, grantee)
 		if err != nil {
 			return err
 		}
@@ -175,7 +175,7 @@ func (k Keeper) UseGrantedFees(ctx sdk.Context, granter, grantee sdk.AccAddress,
 	emitUseGrantEvent(ctx, granter.String(), grantee.String())
 
 	// if fee allowance is accepted, store the updated state of the allowance
-	return k.GrantAllowance(ctx, granter, grantee, grant)
+	return k.GrantFeeAllowance(ctx, granter, grantee, grant)
 }
 
 func emitUseGrantEvent(ctx sdk.Context, granter, grantee string) {
@@ -207,7 +207,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *types.GenesisState) error {
 			return err
 		}
 
-		err = k.GrantAllowance(ctx, granter, grantee, grant)
+		err = k.GrantFeeAllowance(ctx, granter, grantee, grant)
 		if err != nil {
 			return err
 		}

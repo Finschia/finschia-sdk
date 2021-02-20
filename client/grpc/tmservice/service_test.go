@@ -181,9 +181,9 @@ func (s IntegrationTestSuite) TestLatestValidatorSet_GRPCGateway() {
 		expErr    bool
 		expErrMsg string
 	}{
-		{"no pagination", fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/validatorsets/latest", vals[0].APIAddress), false, ""},
-		{"pagination invalid fields", fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.offset=-1&pagination.limit=-2", vals[0].APIAddress), true, "strconv.ParseUint"},
-		{"with pagination", fmt.Sprintf("%s/cosmos/base/tendermint/v1beta1/validatorsets/latest?pagination.offset=0&pagination.limit=2", vals[0].APIAddress), false, ""},
+		{"no pagination", fmt.Sprintf("%s/lbm/base/ostracon/v1/validatorsets/latest", vals[0].APIAddress), false, ""},
+		{"pagination invalid fields", fmt.Sprintf("%s/lbm/base/ostracon/v1/validatorsets/latest?pagination.offset=-1&pagination.limit=-2", vals[0].APIAddress), true, "strconv.ParseUint"},
+		{"with pagination", fmt.Sprintf("%s/lbm/base/ostracon/v1/validatorsets/latest?pagination.offset=0&pagination.limit=2", vals[0].APIAddress), false, ""},
 	}
 	for _, tc := range testCases {
 		tc := tc

@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -111,7 +111,7 @@ func TestInitGenesis(t *testing.T) {
 
 func TestInitGenesis_PoolsBalanceMismatch(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.NewContext(false, tmproto.Header{})
+	ctx := app.NewContext(false, ocproto.Header{})
 
 	consPub, err := codectypes.NewAnyWithValue(PKs[0])
 	require.NoError(t, err)

@@ -10,13 +10,13 @@ option go_package = "github.com/line/lbm-sdk/x/feegrant/types";
 // Msg defines the feegrant msg service.
 service Msg {
 
-  // GrantAllowance grants fee allowance to the grantee on the granter's
+  // GrantFeeAllowance grants fee allowance to the grantee on the granter's
   // account with the provided expiration time.
-  rpc GrantAllowance(MsgGrantFeeAllowance) returns (MsgGrantFeeAllowanceResponse);
+  rpc GrantFeeAllowance(MsgGrantFeeAllowance) returns (MsgGrantFeeAllowanceResponse);
 
-  // RevokeAllowance revokes any fee allowance of granter's account that
+  // RevokeFeeAllowance revokes any fee allowance of granter's account that
   // has been granted to the grantee.
-  rpc RevokeAllowance(MsgRevokeFeeAllowance) returns (MsgRevokeFeeAllowanceResponse);
+  rpc RevokeFeeAllowance(MsgRevokeFeeAllowance) returns (MsgRevokeFeeAllowanceResponse);
 }
 
 // MsgGrantFeeAllowance adds permission for Grantee to spend up to Allowance
@@ -32,7 +32,7 @@ message MsgGrantFeeAllowance {
   google.protobuf.Any allowance = 3 [(cosmos_proto.accepts_interface) = "FeeAllowanceI"];
 }
 
-// MsgGrantFeeAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
+// MsgGrantFeeAllowanceResponse defines the Msg/GrantFeeAllowanceResponse response type.
 message MsgGrantFeeAllowanceResponse {}
 
 // MsgRevokeFeeAllowance removes any existing Allowance from Granter to Grantee.
@@ -44,5 +44,5 @@ message MsgRevokeFeeAllowance {
   string grantee = 2 [(gogoproto.moretags) = "yaml:\"grantee_address\""];
 }
 
-// MsgRevokeFeeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
+// MsgRevokeFeeAllowanceResponse defines the Msg/RevokeFeeAllowanceResponse response type.
 message MsgRevokeFeeAllowanceResponse {}

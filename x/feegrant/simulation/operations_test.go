@@ -6,7 +6,7 @@ import (
 	"time"
 
 	abci "github.com/line/ostracon/abci/types"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/x/feegrant/types"
@@ -29,7 +29,7 @@ func (suite *SimTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
 	suite.app = app
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{
+	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{
 		Time: time.Now(),
 	})
 
@@ -74,12 +74,12 @@ func (suite *SimTestSuite) TestWeightedOperations() {
 		opMsgName  string
 	}{
 		{
-			simappparams.DefaultWeightGrantAllowance,
+			simappparams.DefaultWeightGrantFeeAllowance,
 			types.MsgGrantFeeAllowance{}.Route(),
 			simulation.TypeMsgGrantFeeAllowance,
 		},
 		{
-			simappparams.DefaultWeightRevokeAllowance,
+			simappparams.DefaultWeightRevokeFeeAllowance,
 			types.MsgRevokeFeeAllowance{}.Route(),
 			simulation.TypeMsgRevokeFeeAllowance,
 		},
@@ -105,7 +105,7 @@ func (suite *SimTestSuite) TestSimulateMsgGrantFeeAllowance() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgGrantFeeAllowance(app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper)
@@ -130,7 +130,7 @@ func (suite *SimTestSuite) TestSimulateMsgRevokeFeeAllowance() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	feeAmt := sdk.TokensFromConsensusPower(200000)
 	feeCoins := sdk.NewCoins(sdk.NewCoin("foo", feeAmt))
@@ -138,7 +138,7 @@ func (suite *SimTestSuite) TestSimulateMsgRevokeFeeAllowance() {
 	granter, grantee := accounts[0], accounts[1]
 
 	oneYear := ctx.BlockTime().AddDate(1, 0, 0)
-	err := app.FeeGrantKeeper.GrantAllowance(
+	err := app.FeeGrantKeeper.GrantFeeAllowance(
 		ctx,
 		granter.Address,
 		grantee.Address,
