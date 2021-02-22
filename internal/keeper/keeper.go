@@ -5,8 +5,8 @@ import (
 	"encoding/binary"
 	"path/filepath"
 
-	wasm "github.com/CosmWasm/go-cosmwasm"
-	wasmTypes "github.com/CosmWasm/go-cosmwasm/types"
+	wasm "github.com/CosmWasm/wasmvm"
+	wasmTypes "github.com/CosmWasm/wasmvm/types"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -49,7 +49,7 @@ type Keeper struct {
 	accountKeeper auth.AccountKeeper
 	bankKeeper    types.BankKeeper
 
-	wasmer       wasm.Wasmer
+	wasmer       wasm.VM
 	queryPlugins QueryPlugins
 	messenger    MessageHandler
 	// queryGasLimit is the max wasm gas that can be spent on executing a query with a contract
@@ -63,7 +63,7 @@ type Keeper struct {
 func NewKeeper(cdc *codec.Codec, storeKey sdk.StoreKey, paramSpace params.Subspace, accountKeeper auth.AccountKeeper, bankKeeper types.BankKeeper,
 	stakingKeeper staking.Keeper, distKeeper distribution.Keeper,
 	router sdk.Router, encodeRouter types.Router, queryRouter types.QueryRouter, homeDir string, wasmConfig types.WasmConfig, supportedFeatures string, customEncoders *MessageEncoders, customPlugins *QueryPlugins) Keeper {
-	wasmer, err := wasm.NewWasmer(filepath.Join(homeDir, "wasm"), supportedFeatures)
+	wasmer, err := wasm.NewVM(filepath.Join(homeDir, "wasm"), supportedFeatures, wasmConfig.ContractDebugMode, wasmConfig.MemoryCacheSize)
 	if err != nil {
 		panic(err)
 	}

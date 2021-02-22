@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/CosmWasm/go-cosmwasm"
+	wasmvm "github.com/CosmWasm/wasmvm"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
@@ -24,7 +24,7 @@ func canonicalAddress(human string) ([]byte, uint64, error) {
 	return bz, CostCanonical, err
 }
 
-var cosmwasmAPI = cosmwasm.GoAPI{
+var cosmwasmAPI = wasmvm.GoAPI{
 	HumanAddress:     humanAddress,
 	CanonicalAddress: canonicalAddress,
 }
