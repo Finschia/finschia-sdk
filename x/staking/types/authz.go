@@ -1,10 +1,11 @@
 package types
 
 import (
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	authz "github.com/line/lbm-sdk/x/authz/exported"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 )
 
 var (

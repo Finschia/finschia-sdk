@@ -4,10 +4,10 @@ import (
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/stretchr/testify/require"
 
 	sdk "github.com/line/lbm-sdk/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	"github.com/stretchr/testify/require"
 )
 
 var (

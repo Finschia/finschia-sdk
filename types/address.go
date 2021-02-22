@@ -26,13 +26,16 @@ const (
 	//	config.SetBech32PrefixForAccount(yourBech32PrefixAccAddr, yourBech32PrefixAccPub)
 	//	config.SetBech32PrefixForValidator(yourBech32PrefixValAddr, yourBech32PrefixValPub)
 	//	config.SetBech32PrefixForConsensusNode(yourBech32PrefixConsAddr, yourBech32PrefixConsPub)
+	//	config.SetPurpose(yourPurpose)
 	//	config.SetCoinType(yourCoinType)
-	//	config.SetFullFundraiserPath(yourFullFundraiserPath)
 	//	config.Seal()
 
 	BytesAddrLen = 20
 	// Bech32MainPrefix defines the main SDK Bech32 prefix of an account's address
 	Bech32MainPrefix = "link"
+
+	// Purpose is the LINK purpose as defined in SLIP44 (https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
+	Purpose = 44
 
 	// CoinType is the LINK coin type as defined in SLIP44 (https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
 	CoinType = 438
