@@ -6,11 +6,11 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/evidence"
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	"github.com/cosmos/cosmos-sdk/x/evidence/internal/types"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/evidence"
+	"github.com/line/lbm-sdk/x/evidence/exported"
+	"github.com/line/lbm-sdk/x/evidence/internal/types"
 
 	"github.com/stretchr/testify/suite"
 )

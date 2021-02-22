@@ -13,8 +13,8 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/baseapp"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // AppStateFn returns the app state json bytes and the genesis accounts

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/require"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/line/lbm-sdk/codec"
 )
 
 func TestParseABCILog(t *testing.T) {

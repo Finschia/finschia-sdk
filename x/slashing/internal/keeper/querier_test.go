@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/x/slashing/internal/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/x/slashing/internal/types"
 )
 
 func TestNewQuerier(t *testing.T) {

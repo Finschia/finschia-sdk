@@ -6,10 +6,10 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/crypto/keys"
-	"github.com/cosmos/cosmos-sdk/tests"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/crypto/keys"
+	"github.com/line/lbm-sdk/tests"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func Test_updateKeyCommand(t *testing.T) {

@@ -7,8 +7,8 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const (

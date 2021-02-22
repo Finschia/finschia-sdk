@@ -18,10 +18,10 @@ import (
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 	cryptoAmino "github.com/tendermint/tendermint/crypto/encoding/amino"
 
-	"github.com/cosmos/cosmos-sdk/client/input"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/keyerror"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/mintkey"
-	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/client/input"
+	"github.com/line/lbm-sdk/crypto/keys/keyerror"
+	"github.com/line/lbm-sdk/crypto/keys/mintkey"
+	"github.com/line/lbm-sdk/types"
 )
 
 const (

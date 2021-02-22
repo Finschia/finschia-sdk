@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	storetypes "github.com/line/lbm-sdk/store/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const (

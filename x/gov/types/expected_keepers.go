@@ -1,10 +1,10 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
-	stakingexported "github.com/cosmos/cosmos-sdk/x/staking/exported"
-	supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	authexported "github.com/line/lbm-sdk/x/auth/exported"
+	stakingexported "github.com/line/lbm-sdk/x/staking/exported"
+	supplyexported "github.com/line/lbm-sdk/x/supply/exported"
 )
 
 // ParamSubspace defines the expected Subspace interface for parameters (noalias)
@@ -18,7 +18,7 @@ type SupplyKeeper interface {
 	GetModuleAddress(name string) sdk.AccAddress
 	GetModuleAccount(ctx sdk.Context, name string) supplyexported.ModuleAccountI
 
-	// TODO remove with genesis 2-phases refactor https://github.com/cosmos/cosmos-sdk/issues/2862
+	// TODO remove with genesis 2-phases refactor https://github.com/line/lbm-sdk/issues/2862
 	SetModuleAccount(sdk.Context, supplyexported.ModuleAccountI)
 
 	SendCoinsFromModuleToAccount(ctx sdk.Context, senderModule string, recipientAddr sdk.AccAddress, amt sdk.Coins) error

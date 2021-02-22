@@ -1,8 +1,8 @@
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/x/auth/exported"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/x/auth/exported"
 )
 
 // ModuleCdc auth module wide codec

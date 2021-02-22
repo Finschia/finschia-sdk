@@ -1,9 +1,9 @@
 package distribution
 
 import (
-	"github.com/cosmos/cosmos-sdk/x/distribution/client"
-	"github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	"github.com/cosmos/cosmos-sdk/x/distribution/types"
+	"github.com/line/lbm-sdk/x/distribution/client"
+	"github.com/line/lbm-sdk/x/distribution/keeper"
+	"github.com/line/lbm-sdk/x/distribution/types"
 )
 
 // nolint

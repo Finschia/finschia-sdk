@@ -1,7 +1,7 @@
 package crisis
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // check all registered invariants

@@ -8,8 +8,8 @@ import (
 
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/hd"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/crypto/keys/hd"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func Test_writeReadLedgerInfo(t *testing.T) {

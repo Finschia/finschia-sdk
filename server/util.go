@@ -20,10 +20,10 @@ import (
 	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/server/config"
-	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/server/config"
+	"github.com/line/lbm-sdk/version"
 )
 
 // server context

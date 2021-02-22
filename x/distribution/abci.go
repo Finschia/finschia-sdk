@@ -3,8 +3,8 @@ package distribution
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/distribution/keeper"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/distribution/keeper"
 )
 
 // BeginBlocker sets the proposer for determining distribution during endblock

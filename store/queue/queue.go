@@ -3,10 +3,10 @@ package store
 // TODO: make it independent from list
 /*
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/cosmos/cosmos-sdk/store/list"
+	"github.com/line/lbm-sdk/store/list"
 )
 
 // Key for the top element position in the queue

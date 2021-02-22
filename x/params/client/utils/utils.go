@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"io/ioutil"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/cosmos/cosmos-sdk/x/params"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/rest"
+	"github.com/line/lbm-sdk/x/params"
 )
 
 type (

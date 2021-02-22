@@ -1,15 +1,15 @@
 package v038
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	v036auth "github.com/cosmos/cosmos-sdk/x/auth/legacy/v0_36"
-	v038auth "github.com/cosmos/cosmos-sdk/x/auth/legacy/v0_38"
-	v036distr "github.com/cosmos/cosmos-sdk/x/distribution/legacy/v0_36"
-	v038distr "github.com/cosmos/cosmos-sdk/x/distribution/legacy/v0_38"
-	v036genaccounts "github.com/cosmos/cosmos-sdk/x/genaccounts/legacy/v0_36"
-	"github.com/cosmos/cosmos-sdk/x/genutil/types"
-	v036staking "github.com/cosmos/cosmos-sdk/x/staking/legacy/v0_36"
-	v038staking "github.com/cosmos/cosmos-sdk/x/staking/legacy/v0_38"
+	"github.com/line/lbm-sdk/codec"
+	v036auth "github.com/line/lbm-sdk/x/auth/legacy/v0_36"
+	v038auth "github.com/line/lbm-sdk/x/auth/legacy/v0_38"
+	v036distr "github.com/line/lbm-sdk/x/distribution/legacy/v0_36"
+	v038distr "github.com/line/lbm-sdk/x/distribution/legacy/v0_38"
+	v036genaccounts "github.com/line/lbm-sdk/x/genaccounts/legacy/v0_36"
+	"github.com/line/lbm-sdk/x/genutil/types"
+	v036staking "github.com/line/lbm-sdk/x/staking/legacy/v0_36"
+	v038staking "github.com/line/lbm-sdk/x/staking/legacy/v0_38"
 )
 
 // Migrate migrates exported state from v0.36/v0.37 to a v0.38 genesis state.

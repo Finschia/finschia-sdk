@@ -12,14 +12,14 @@ import (
 
 	"github.com/tendermint/tendermint/crypto/multisig"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/keys"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/crypto/keys"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/version"
+	"github.com/line/lbm-sdk/x/auth/client/utils"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 // GetSignCommand returns the sign command

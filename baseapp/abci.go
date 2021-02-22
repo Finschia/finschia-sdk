@@ -7,12 +7,12 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/cosmos/cosmos-sdk/store/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // InitChain implements the ABCI interface. It runs the initialization logic

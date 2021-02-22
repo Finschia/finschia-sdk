@@ -5,14 +5,14 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/simapp/helpers"
-	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/bank/internal/keeper"
-	"github.com/cosmos/cosmos-sdk/x/bank/internal/types"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp/helpers"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/bank/internal/keeper"
+	"github.com/line/lbm-sdk/x/bank/internal/types"
+	"github.com/line/lbm-sdk/x/simulation"
 )
 
 // Simulation operation weights constants

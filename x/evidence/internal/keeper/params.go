@@ -3,8 +3,8 @@ package keeper
 import (
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/evidence/internal/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/evidence/internal/types"
 )
 
 // MaxEvidenceAge returns the maximum age for submitted evidence.

@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/cosmos/cosmos-sdk/x/bank/internal/types"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	"github.com/line/lbm-sdk/x/bank/internal/types"
+	"github.com/line/lbm-sdk/x/simulation"
 )
 
 const keySendEnabled = "sendenabled"

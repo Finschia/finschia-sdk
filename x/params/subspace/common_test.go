@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/params/subspace"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/params/subspace"
 )
 
 var (

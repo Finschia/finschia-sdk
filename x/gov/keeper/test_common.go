@@ -18,15 +18,15 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/cosmos/cosmos-sdk/x/supply"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth"
+	"github.com/line/lbm-sdk/x/bank"
+	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/params"
+	"github.com/line/lbm-sdk/x/staking"
+	"github.com/line/lbm-sdk/x/supply"
 )
 
 // dummy addresses used for testing

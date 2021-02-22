@@ -2,7 +2,7 @@
 
 # change this to a specific release or branch
 BRANCH=master
-REPO=github.com/cosmos/cosmos-sdk
+REPO=github.com/line/lbm-sdk
 
 GO_VERSION=1.12.5
 

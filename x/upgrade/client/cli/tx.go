@@ -5,17 +5,17 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
+	"github.com/line/lbm-sdk/x/gov/client/cli"
 
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-	upgrade "github.com/cosmos/cosmos-sdk/x/upgrade/internal/types"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth"
+	"github.com/line/lbm-sdk/x/auth/client/utils"
+	"github.com/line/lbm-sdk/x/gov"
+	upgrade "github.com/line/lbm-sdk/x/upgrade/internal/types"
 )
 
 const (
