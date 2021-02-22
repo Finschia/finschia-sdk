@@ -868,19 +868,19 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_TokenBalance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "token", "v1", "balance", "address", "class_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_TokenBalance_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "token", "v1", "balance", "address", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Supply_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"lbm", "token", "v1", "supply", "class_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Supply_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"lbm", "token", "v1", "supply", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Token_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"lbm", "token", "v1", "tokens", "class_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Token_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"lbm", "token", "v1", "tokens", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Tokens_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lbm", "token", "v1", "tokens"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Tokens_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"lbm", "token", "v1", "tokens"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Grants_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "token", "v1", "grants", "grantee", "class_id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Grants_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "token", "v1", "grants", "grantee", "class_id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Approve_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"lbm", "token", "v1", "approve", "class_id", "proxy", "approver"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Approve_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"lbm", "token", "v1", "approve", "class_id", "proxy", "approver"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Approves_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "token", "v1", "approves", "class_id", "proxy"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Approves_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4, 1, 0, 4, 1, 5, 5}, []string{"lbm", "token", "v1", "approves", "class_id", "proxy"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

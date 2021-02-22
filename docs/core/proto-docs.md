@@ -246,6 +246,8 @@
 - [lbm/auth/v1/query.proto](#lbm/auth/v1/query.proto)
     - [QueryAccountRequest](#lbm.auth.v1.QueryAccountRequest)
     - [QueryAccountResponse](#lbm.auth.v1.QueryAccountResponse)
+    - [QueryAccountsRequest](#lbm.auth.v1.QueryAccountsRequest)
+    - [QueryAccountsResponse](#lbm.auth.v1.QueryAccountsResponse)
     - [QueryParamsRequest](#lbm.auth.v1.QueryParamsRequest)
     - [QueryParamsResponse](#lbm.auth.v1.QueryParamsResponse)
   
@@ -4356,6 +4358,37 @@ QueryAccountResponse is the response type for the Query/Account RPC method.
 
 
 
+<a name="lbm.auth.v1.QueryAccountsRequest"></a>
+
+### QueryAccountsRequest
+QueryAccountsRequest is the request type for the Query/Accounts RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.auth.v1.QueryAccountsResponse"></a>
+
+### QueryAccountsResponse
+QueryAccountsResponse is the response type for the Query/Accounts RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `accounts` | [google.protobuf.Any](#google.protobuf.Any) | repeated | accounts are the existing accounts |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
 <a name="lbm.auth.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
@@ -4394,6 +4427,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Accounts` | [QueryAccountsRequest](#lbm.auth.v1.QueryAccountsRequest) | [QueryAccountsResponse](#lbm.auth.v1.QueryAccountsResponse) | Accounts returns all the existing accounts | GET|/lbm/auth/v1/accounts|
 | `Account` | [QueryAccountRequest](#lbm.auth.v1.QueryAccountRequest) | [QueryAccountResponse](#lbm.auth.v1.QueryAccountResponse) | Account returns account details based on address. | GET|/lbm/auth/v1/accounts/{address}|
 | `Params` | [QueryParamsRequest](#lbm.auth.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.auth.v1.QueryParamsResponse) | Params queries all parameters. | GET|/lbm/auth/v1/params|
 
