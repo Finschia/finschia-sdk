@@ -12,7 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	wasmTypes "github.com/CosmWasm/go-cosmwasm/types"
+	wasmTypes "github.com/CosmWasm/wasmvm/types"
 
 	"github.com/line/link-modules/x/coin"
 	"github.com/line/link-modules/x/wasm/internal/types"

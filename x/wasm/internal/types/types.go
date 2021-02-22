@@ -6,12 +6,13 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	tmBytes "github.com/tendermint/tendermint/libs/bytes"
 
-	wasmTypes "github.com/CosmWasm/go-cosmwasm/types"
+	wasmTypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-const defaultLRUCacheSize = uint64(0)
+const defaultMemoryCacheSize uint32 = 100 // in MiB
 const defaultQueryGasLimit = uint64(3000000)
+const defaultContractDebugMode = false
 
 // Model is a struct that holds a KV pair
 type Model struct {
@@ -255,13 +256,15 @@ func ParseEvents(logs []wasmTypes.EventAttribute, contractAddr sdk.AccAddress) s
 // WasmConfig is the extra config required for wasm
 type WasmConfig struct {
 	SmartQueryGasLimit uint64 `mapstructure:"query_gas_limit"`
-	CacheSize          uint64 `mapstructure:"lru_size"`
+	MemoryCacheSize    uint32 `mapstructure:"memory_cache_size"` // in MiB
+	ContractDebugMode  bool   `mapstructure:"debug_mode"`
 }
 
 // DefaultWasmConfig returns the default settings for WasmConfig
 func DefaultWasmConfig() WasmConfig {
 	return WasmConfig{
 		SmartQueryGasLimit: defaultQueryGasLimit,
-		CacheSize:          defaultLRUCacheSize,
+		MemoryCacheSize:    defaultMemoryCacheSize,
+		ContractDebugMode:  defaultContractDebugMode,
 	}
 }

@@ -3,7 +3,7 @@ module github.com/line/link-modules
 go 1.13
 
 require (
-	github.com/CosmWasm/go-cosmwasm v0.11.0
+	github.com/CosmWasm/wasmvm v0.12.0
 	github.com/cosmos/cosmos-sdk v0.39.2
 	github.com/golang/mock v1.4.3
 	github.com/google/gofuzz v1.0.0
@@ -19,5 +19,7 @@ require (
 	github.com/tendermint/tm-db v0.5.2
 	gopkg.in/yaml.v2 v2.3.0
 )
+
+replace github.com/CosmWasm/wasmvm => github.com/line/wasmvm v0.12.0-0.1.0
 
 replace github.com/cosmos/cosmos-sdk => github.com/line/cosmos-sdk v0.39.2-0.2.0
