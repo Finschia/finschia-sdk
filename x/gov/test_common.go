@@ -15,16 +15,16 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
-	"github.com/cosmos/cosmos-sdk/x/bank"
-	keep "github.com/cosmos/cosmos-sdk/x/gov/keeper"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/x/mock"
-	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/cosmos/cosmos-sdk/x/supply"
-	supplyexported "github.com/cosmos/cosmos-sdk/x/supply/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	authexported "github.com/line/lbm-sdk/x/auth/exported"
+	"github.com/line/lbm-sdk/x/bank"
+	keep "github.com/line/lbm-sdk/x/gov/keeper"
+	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/mock"
+	"github.com/line/lbm-sdk/x/staking"
+	"github.com/line/lbm-sdk/x/supply"
+	supplyexported "github.com/line/lbm-sdk/x/supply/exported"
 )
 
 var (

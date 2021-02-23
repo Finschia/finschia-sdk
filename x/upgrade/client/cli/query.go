@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	upgrade "github.com/cosmos/cosmos-sdk/x/upgrade/internal/types"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	upgrade "github.com/line/lbm-sdk/x/upgrade/internal/types"
 )
 
 // GetPlanCmd returns the query upgrade plan command

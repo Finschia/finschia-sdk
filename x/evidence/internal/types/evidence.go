@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/evidence/exported"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto/tmhash"

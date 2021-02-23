@@ -11,8 +11,8 @@ import (
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 	tmsecp256k1 "github.com/tendermint/tendermint/crypto/secp256k1"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/hd"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/crypto/keys/hd"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var (

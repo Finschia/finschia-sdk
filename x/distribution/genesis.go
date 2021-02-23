@@ -3,8 +3,8 @@ package distribution
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/distribution/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/distribution/types"
 )
 
 // InitGenesis sets distribution information for genesis

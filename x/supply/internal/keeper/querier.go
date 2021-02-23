@@ -3,10 +3,10 @@ package keeper
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/supply/internal/types"
+	"github.com/line/lbm-sdk/client"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/supply/internal/types"
 )
 
 // NewQuerier creates a querier for supply REST endpoints

@@ -7,9 +7,9 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	v034staking "github.com/cosmos/cosmos-sdk/x/staking/legacy/v0_34"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	v034staking "github.com/line/lbm-sdk/x/staking/legacy/v0_34"
 )
 
 const (

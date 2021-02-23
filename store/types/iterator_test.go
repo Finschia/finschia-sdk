@@ -7,8 +7,8 @@ import (
 	tiavl "github.com/tendermint/iavl"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/cosmos-sdk/store/iavl"
-	"github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/line/lbm-sdk/store/iavl"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 func newMemTestKVStore(t *testing.T) types.KVStore {

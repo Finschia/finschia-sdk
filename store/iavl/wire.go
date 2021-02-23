@@ -1,7 +1,7 @@
 package iavl
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/line/lbm-sdk/codec"
 )
 
 var cdc = codec.New()

@@ -3,8 +3,8 @@ package gov
 import (
 	"fmt"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 // InitGenesis - store genesis parameters

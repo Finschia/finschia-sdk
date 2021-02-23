@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	iavlstore "github.com/cosmos/cosmos-sdk/store/iavl"
-	"github.com/cosmos/cosmos-sdk/store/types"
+	iavlstore "github.com/line/lbm-sdk/store/iavl"
+	"github.com/line/lbm-sdk/store/types"
 
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/iavl"

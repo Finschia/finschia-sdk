@@ -5,14 +5,14 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/line/lbm-sdk/baseapp"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	"github.com/line/lbm-sdk/x/simulation"
 )
 
 // Profile with:
-// /usr/local/go/bin/go test -benchmem -run=^$ github.com/cosmos/cosmos-sdk/simapp -bench ^BenchmarkFullAppSimulation$ -Commit=true -cpuprofile cpu.out
+// /usr/local/go/bin/go test -benchmem -run=^$ github.com/line/lbm-sdk/simapp -bench ^BenchmarkFullAppSimulation$ -Commit=true -cpuprofile cpu.out
 func BenchmarkFullAppSimulation(b *testing.B) {
 	config, db, dir, logger, _, err := SetupSimulation("goleveldb-app-sim", "Simulation")
 	if err != nil {

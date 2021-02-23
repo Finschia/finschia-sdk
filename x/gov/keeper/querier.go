@@ -3,11 +3,11 @@ package keeper
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 // NewQuerier creates a new gov Querier instance

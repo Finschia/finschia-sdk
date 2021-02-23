@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	v034gov "github.com/cosmos/cosmos-sdk/x/gov/legacy/v0_34"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	v034gov "github.com/line/lbm-sdk/x/gov/legacy/v0_34"
 )
 
 const (

@@ -14,9 +14,9 @@ import (
 
 	"github.com/tendermint/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const (

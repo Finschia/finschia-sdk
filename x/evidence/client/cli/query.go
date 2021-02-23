@@ -8,13 +8,13 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	"github.com/cosmos/cosmos-sdk/x/evidence/internal/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/version"
+	"github.com/line/lbm-sdk/x/evidence/exported"
+	"github.com/line/lbm-sdk/x/evidence/internal/types"
 )
 
 // GetQueryCmd returns the CLI command with all evidence module query commands

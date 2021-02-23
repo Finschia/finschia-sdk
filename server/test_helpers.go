@@ -7,7 +7,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/flags"
 
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"

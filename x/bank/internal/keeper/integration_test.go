@@ -3,9 +3,9 @@ package keeper_test
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth"
 )
 
 func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {

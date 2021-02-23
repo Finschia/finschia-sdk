@@ -66,7 +66,7 @@ distclean:
 ### Documentation
 
 godocs:
-	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/cosmos/cosmos-sdk/types"
+	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/line/lbm-sdk/types"
 	godoc -http=:6060
 
 build-docs:
@@ -93,10 +93,10 @@ test: test-unit
 test-all: test-unit test-ledger-mock test-race test-cover
 
 test-ledger-mock:
-	@go test -mod=readonly `go list github.com/cosmos/cosmos-sdk/crypto` -tags='cgo ledger test_ledger_mock'
+	@go test -mod=readonly `go list github.com/line/lbm-sdk/crypto` -tags='cgo ledger test_ledger_mock'
 
 test-ledger: test-ledger-mock
-	@go test -mod=readonly -v `go list github.com/cosmos/cosmos-sdk/crypto` -tags='cgo ledger'
+	@go test -mod=readonly -v `go list github.com/line/lbm-sdk/crypto` -tags='cgo ledger'
 
 test-unit:
 	@VERSION=$(VERSION) go test -mod=readonly $(PACKAGES_NOSIMULATION) -tags='ledger test_ledger_mock'
@@ -183,7 +183,7 @@ lint: golangci-lint
 format: tools
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs gofmt -w -s
 	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs misspell -w
-	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs goimports -w -local github.com/cosmos/cosmos-sdk
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "./client/lcd/statik/statik.go" | xargs goimports -w -local github.com/line/lbm-sdk
 .PHONY: format
 
 benchmark:
@@ -196,12 +196,12 @@ benchmark:
 DEVDOC_SAVE = docker commit `docker ps -a -n 1 -q` devdoc:local
 
 devdoc-init:
-	docker run -it -v "$(CURDIR):/go/src/github.com/cosmos/cosmos-sdk" -w "/go/src/github.com/cosmos/cosmos-sdk" tendermint/devdoc echo
+	docker run -it -v "$(CURDIR):/go/src/github.com/line/lbm-sdk" -w "/go/src/github.com/line/lbm-sdk" tendermint/devdoc echo
 	# TODO make this safer
 	$(call DEVDOC_SAVE)
 
 devdoc:
-	docker run -it -v "$(CURDIR):/go/src/github.com/cosmos/cosmos-sdk" -w "/go/src/github.com/cosmos/cosmos-sdk" devdoc:local bash
+	docker run -it -v "$(CURDIR):/go/src/github.com/line/lbm-sdk" -w "/go/src/github.com/line/lbm-sdk" devdoc:local bash
 
 devdoc-save:
 	# TODO make this safer

@@ -17,7 +17,7 @@ import (
 	pvm "github.com/tendermint/tendermint/privval"
 	"github.com/tendermint/tendermint/proxy"
 
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
+	storetypes "github.com/line/lbm-sdk/store/types"
 )
 
 // Tendermint full-node start flags

@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/x/gov"
+	"github.com/line/lbm-sdk/x/gov"
 )
 
 const (

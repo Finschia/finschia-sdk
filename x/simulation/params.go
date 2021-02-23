@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 const (

@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	"github.com/cosmos/cosmos-sdk/x/evidence/internal/types"
+	"github.com/line/lbm-sdk/x/evidence/exported"
+	"github.com/line/lbm-sdk/x/evidence/internal/types"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 )

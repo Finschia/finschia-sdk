@@ -10,16 +10,16 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/x/distribution/client/cli"
-	"github.com/cosmos/cosmos-sdk/x/distribution/client/rest"
-	"github.com/cosmos/cosmos-sdk/x/distribution/simulation"
-	"github.com/cosmos/cosmos-sdk/x/distribution/types"
-	sim "github.com/cosmos/cosmos-sdk/x/simulation"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
+	"github.com/line/lbm-sdk/x/distribution/client/cli"
+	"github.com/line/lbm-sdk/x/distribution/client/rest"
+	"github.com/line/lbm-sdk/x/distribution/simulation"
+	"github.com/line/lbm-sdk/x/distribution/types"
+	sim "github.com/line/lbm-sdk/x/simulation"
+	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 )
 
 var (

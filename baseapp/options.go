@@ -7,9 +7,9 @@ import (
 	"github.com/tendermint/iavl"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/cosmos-sdk/store"
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/store"
+	storetypes "github.com/line/lbm-sdk/store/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // File for storing in-package BaseApp optional functions,

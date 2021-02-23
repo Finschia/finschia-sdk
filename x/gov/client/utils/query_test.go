@@ -8,12 +8,12 @@ import (
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 type TxSearchMock struct {

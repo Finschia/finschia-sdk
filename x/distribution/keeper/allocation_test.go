@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/staking"
 )
 
 func TestAllocateTokensToValidatorWithCommission(t *testing.T) {

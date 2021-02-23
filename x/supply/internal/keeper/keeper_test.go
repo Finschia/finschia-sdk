@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/supply/internal/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/supply/internal/types"
 )
 
 func TestSupply(t *testing.T) {

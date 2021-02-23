@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/types"
 
 	bip39 "github.com/cosmos/go-bip39"
 )
@@ -96,7 +96,7 @@ func TestParamsFromPath(t *testing.T) {
 // the extended keys specification. If the index belongs to that of a hardened key,
 // its 0x80000000 bit will be set, so we can still accept values in [0, max(int32)] and then
 // increase its value as deriveKeyPath already augments.
-// See issue https://github.com/cosmos/cosmos-sdk/issues/7627.
+// See issue https://github.com/line/lbm-sdk/issues/7627.
 func TestDeriveHDPathRange(t *testing.T) {
 	seed := mnemonicToSeed("I am become Death, the destroyer of worlds!")
 

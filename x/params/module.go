@@ -7,13 +7,13 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/x/params/simulation"
-	"github.com/cosmos/cosmos-sdk/x/params/types"
-	sim "github.com/cosmos/cosmos-sdk/x/simulation"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
+	"github.com/line/lbm-sdk/x/params/simulation"
+	"github.com/line/lbm-sdk/x/params/types"
+	sim "github.com/line/lbm-sdk/x/simulation"
 )
 
 var (

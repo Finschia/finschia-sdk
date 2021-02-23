@@ -4,12 +4,12 @@ import (
 	"os"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
+	"github.com/line/lbm-sdk/baseapp"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/line/lbm-sdk/codec"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 )

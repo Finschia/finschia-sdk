@@ -5,18 +5,18 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/supply"
+	"github.com/line/lbm-sdk/x/distribution"
+	"github.com/line/lbm-sdk/x/supply"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
-	"github.com/cosmos/cosmos-sdk/x/bank/internal/types"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth"
+	authexported "github.com/line/lbm-sdk/x/auth/exported"
+	"github.com/line/lbm-sdk/x/bank/internal/types"
 )
 
 type (

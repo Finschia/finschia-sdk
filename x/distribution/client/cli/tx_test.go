@@ -6,11 +6,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth"
+	"github.com/line/lbm-sdk/x/auth/client/utils"
 )
 
 func createFakeTxBuilder() auth.TxBuilder {

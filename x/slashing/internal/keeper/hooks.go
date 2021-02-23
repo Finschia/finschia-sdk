@@ -6,8 +6,8 @@ import (
 
 	"github.com/tendermint/tendermint/crypto"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/slashing/internal/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/slashing/internal/types"
 )
 
 func (k Keeper) AfterValidatorBonded(ctx sdk.Context, address sdk.ConsAddress, _ sdk.ValAddress) {

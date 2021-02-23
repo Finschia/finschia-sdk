@@ -1,7 +1,7 @@
 package keys
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/line/lbm-sdk/codec"
 )
 
 // KeysCdc defines codec to be used with key operations

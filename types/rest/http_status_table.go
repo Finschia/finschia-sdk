@@ -4,8 +4,8 @@ package rest
 import (
 	"net/http"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/types/errors"
 )
 
 //HTTPStatusMappingTable is map to mapping an error type and a http status

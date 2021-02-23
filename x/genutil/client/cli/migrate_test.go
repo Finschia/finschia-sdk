@@ -10,10 +10,10 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -22,9 +22,9 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/server"
-	"github.com/cosmos/cosmos-sdk/tests"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/server"
+	"github.com/line/lbm-sdk/tests"
 )
 
 // custom tx codec

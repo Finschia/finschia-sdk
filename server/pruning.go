@@ -6,8 +6,8 @@ import (
 
 	"github.com/spf13/viper"
 
-	"github.com/cosmos/cosmos-sdk/store"
-	"github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/line/lbm-sdk/store"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 // GetPruningOptionsFromFlags parses command flags and returns the correct

@@ -7,12 +7,12 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/line/lbm-sdk/codec"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
+	"github.com/line/lbm-sdk/x/simulation"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 // Simulation parameter constants

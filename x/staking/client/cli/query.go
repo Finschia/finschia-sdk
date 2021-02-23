@@ -7,13 +7,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/version"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

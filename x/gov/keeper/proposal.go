@@ -3,10 +3,10 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/client"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 // SubmitProposal create new proposal given a content

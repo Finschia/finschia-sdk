@@ -3,8 +3,8 @@ package staking
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/staking/keeper"
 )
 
 // BeginBlocker will persist the current header and validator set as a historical entry

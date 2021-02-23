@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/distribution/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/distribution/types"
 )
 
 // get the delegator withdraw address, defaulting to the delegator address

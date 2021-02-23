@@ -6,8 +6,8 @@ import (
 
 	tmkv "github.com/tendermint/tendermint/libs/kv"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/x/mint/internal/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/x/mint/internal/types"
 )
 
 // DecodeStore unmarshals the KVPair's Value to the corresponding mint type

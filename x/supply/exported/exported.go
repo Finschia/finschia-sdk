@@ -1,9 +1,9 @@
 package exported
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/cosmos/cosmos-sdk/x/auth/exported"
+	"github.com/line/lbm-sdk/x/auth/exported"
 )
 
 // ModuleAccountI defines an account interface for modules that hold tokens in an escrow

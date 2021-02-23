@@ -6,13 +6,13 @@ import (
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	"github.com/cosmos/cosmos-sdk/x/evidence/internal/types"
-	"github.com/cosmos/cosmos-sdk/x/params"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/prefix"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/evidence/exported"
+	"github.com/line/lbm-sdk/x/evidence/internal/types"
+	"github.com/line/lbm-sdk/x/params"
 )
 
 // Keeper defines the evidence module's keeper. The keeper is responsible for

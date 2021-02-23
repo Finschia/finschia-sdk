@@ -1,8 +1,8 @@
 package auth
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/exported"
 )
 
 // InitGenesis - Init store state from genesis data
