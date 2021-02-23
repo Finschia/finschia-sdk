@@ -1,7 +1,6 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/errors"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
@@ -196,7 +195,7 @@ func ValidateInputsOutputs(inputs []Input, outputs []Output) error {
 func validateDenomination(coins sdk.Coins) error {
 	for _, coin := range coins {
 		if err := ValidateSymbolReserved(coin.Denom); err != nil {
-			return sdkerrors.Wrapf(errors.ErrInvalidDenom, "invalid denom [%s] send message supports 3~5 length denom only", coin.Denom)
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidDenom, "invalid denom [%s] send message supports 3~5 length denom only", coin.Denom)
 		}
 	}
 	return nil

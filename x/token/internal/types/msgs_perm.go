@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lbm-sdk/errors"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/contract"
@@ -91,5 +90,5 @@ func validateAction(action string, actions ...string) error {
 			return nil
 		}
 	}
-	return sdkerrors.Wrap(errors.ErrInvalidPermission, fmt.Sprintf("permission should be one of [%s]", strings.Join(actions, ",")))
+	return sdkerrors.Wrap(sdkerrors.ErrInvalidPermission, fmt.Sprintf("permission should be one of [%s]", strings.Join(actions, ",")))
 }
