@@ -1,10 +1,10 @@
 package account
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/line/link-modules/x/account/internal/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/account/internal/types"
+	"github.com/line/lbm-sdk/x/auth"
 )
 
 // NewHandler returns a handler for "account" type messages.

@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 )
 
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {

@@ -1,9 +1,9 @@
 package collection
 
 import (
-	"github.com/line/link-modules/x/collection/internal/keeper"
-	"github.com/line/link-modules/x/collection/internal/querier"
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/x/collection/internal/keeper"
+	"github.com/line/lbm-sdk/x/collection/internal/querier"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 )
 
 const (
@@ -101,7 +101,4 @@ var (
 
 	NewKeeper  = keeper.NewKeeper
 	NewQuerier = querier.NewQuerier
-
-	NewMsgEncodeHandler = keeper.NewMsgEncodeHandler
-	NewQueryEncoder     = querier.NewQueryEncoder
 )

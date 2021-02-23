@@ -3,23 +3,23 @@ package token
 import (
 	"encoding/json"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	"github.com/line/link-modules/x/token/client/cli"
-	"github.com/line/link-modules/x/token/client/rest"
-	"github.com/line/link-modules/x/token/internal/handler"
-	"github.com/line/link-modules/x/token/internal/keeper"
-	"github.com/line/link-modules/x/token/internal/legacy"
-	"github.com/line/link-modules/x/token/internal/querier"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/x/token/client/cli"
+	"github.com/line/lbm-sdk/x/token/client/rest"
+	"github.com/line/lbm-sdk/x/token/internal/handler"
+	"github.com/line/lbm-sdk/x/token/internal/keeper"
+	"github.com/line/lbm-sdk/x/token/internal/legacy"
+	"github.com/line/lbm-sdk/x/token/internal/querier"
+	"github.com/line/lbm-sdk/x/upgrade"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
 )
 
 var (

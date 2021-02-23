@@ -1,9 +1,9 @@
 package rest
 
 import (
-	"github.com/cosmos/cosmos-sdk/client/context"
-	cosmosrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
 	"github.com/gorilla/mux"
+	"github.com/line/lbm-sdk/client/context"
+	cosmosrest "github.com/line/lbm-sdk/x/auth/client/rest"
 )
 
 // RegisterTxRoutes registers all transaction routes on the provided router.

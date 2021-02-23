@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/collection/internal/types"
-	"github.com/line/link-modules/x/contract"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
+	"github.com/line/lbm-sdk/x/contract"
 	"github.com/stretchr/testify/require"
 )
 

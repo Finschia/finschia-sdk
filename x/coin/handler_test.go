@@ -4,10 +4,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/line/link-modules/x/coin/internal/keeper"
-	"github.com/line/link-modules/x/coin/internal/types"
+	"github.com/line/lbm-sdk/x/coin/internal/keeper"
+	"github.com/line/lbm-sdk/x/coin/internal/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/stretchr/testify/require"

@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/coin/internal/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/coin/internal/types"
 )
 
 func (keeper Keeper) BlacklistAccountAction(ctx sdk.Context, addr sdk.AccAddress, action string) {

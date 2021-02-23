@@ -3,11 +3,11 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 func (k Keeper) AddNFTOwner(ctx sdk.Context, addr sdk.AccAddress, tokenID string) {

@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cosmos/cosmos-sdk/x/params/subspace"
+	"github.com/line/lbm-sdk/x/params"
+	"github.com/line/lbm-sdk/x/params/subspace"
 )
 
 const (

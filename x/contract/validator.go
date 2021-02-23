@@ -1,9 +1,9 @@
 package contract
 
 import (
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/contract/internal/keeper"
-	"github.com/line/link-modules/x/contract/internal/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/contract/internal/keeper"
+	"github.com/line/lbm-sdk/x/contract/internal/types"
 )
 
 func ValidateContractIDBasic(contract Msg) error {

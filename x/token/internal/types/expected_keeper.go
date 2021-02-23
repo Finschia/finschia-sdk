@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	auth "github.com/cosmos/cosmos-sdk/x/auth/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	auth "github.com/line/lbm-sdk/x/auth/exported"
 )
 
 type AccountKeeper interface {

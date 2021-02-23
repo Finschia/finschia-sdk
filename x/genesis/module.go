@@ -3,17 +3,17 @@ package genesis
 import (
 	"encoding/json"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/line/link-modules/x/genesis/internal/keeper"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/x/genesis/internal/keeper"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
 )
 
 var (

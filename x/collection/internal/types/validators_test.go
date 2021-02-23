@@ -5,7 +5,7 @@ import (
 	"testing"
 	"unicode/utf8"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/stretchr/testify/require"
 )
 

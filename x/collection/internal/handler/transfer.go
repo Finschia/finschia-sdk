@@ -1,9 +1,9 @@
 package handler
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/collection/internal/keeper"
-	"github.com/line/link-modules/x/collection/internal/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/collection/internal/keeper"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 )
 
 func handleMsgTransferFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgTransferFT) (*sdk.Result, error) {

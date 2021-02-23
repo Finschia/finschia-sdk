@@ -2,9 +2,9 @@
 package handler
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/token/internal/keeper"
-	"github.com/line/link-modules/x/token/internal/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/token/internal/keeper"
+	"github.com/line/lbm-sdk/x/token/internal/types"
 )
 
 func handleMsgMint(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgMint) (*sdk.Result, error) {

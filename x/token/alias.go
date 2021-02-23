@@ -1,9 +1,9 @@
 package token
 
 import (
-	"github.com/line/link-modules/x/token/internal/keeper"
-	"github.com/line/link-modules/x/token/internal/querier"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/x/token/internal/keeper"
+	"github.com/line/lbm-sdk/x/token/internal/querier"
+	"github.com/line/lbm-sdk/x/token/internal/types"
 )
 
 const (
@@ -51,9 +51,6 @@ var (
 	NewMintPermission   = types.NewMintPermission
 	NewBurnPermission   = types.NewBurnPermission
 	NewModifyPermission = types.NewModifyPermission
-
-	NewMsgEncodeHandler = keeper.NewMsgEncodeHandler
-	NewQueryEncoder     = querier.NewQueryEncoder
 
 	NewChanges = types.NewChanges
 	NewChange  = types.NewChange

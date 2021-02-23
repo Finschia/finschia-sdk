@@ -3,9 +3,9 @@ package types
 import (
 	"unicode/utf8"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/contract"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/contract"
 )
 
 var _ sdk.Msg = (*MsgIssue)(nil)

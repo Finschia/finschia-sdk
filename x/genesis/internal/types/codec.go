@@ -1,6 +1,6 @@
 package types
 
-import "github.com/cosmos/cosmos-sdk/codec"
+import "github.com/line/lbm-sdk/codec"
 
 var ModuleCdc *codec.Codec
 

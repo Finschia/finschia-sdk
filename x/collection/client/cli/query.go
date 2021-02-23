@@ -3,13 +3,13 @@ package cli
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	clienttypes "github.com/line/link-modules/x/collection/client/internal/types"
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	clienttypes "github.com/line/lbm-sdk/x/collection/client/internal/types"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

@@ -1,10 +1,10 @@
 package handler
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/collection/internal/keeper"
-	"github.com/line/link-modules/x/collection/internal/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/collection/internal/keeper"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 )
 
 func handleMsgIssueFT(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgIssueFT) (*sdk.Result, error) {

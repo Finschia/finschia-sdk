@@ -3,11 +3,11 @@ package handler
 import (
 	"testing"
 
-	"github.com/line/link-modules/x/contract"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/x/contract"
+	"github.com/line/lbm-sdk/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestHandleMsgModify(t *testing.T) {

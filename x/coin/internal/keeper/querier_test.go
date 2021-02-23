@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/link-modules/x/coin/internal/types"
+	"github.com/line/lbm-sdk/x/coin/internal/types"
 
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 )
 
 func TestBalances(t *testing.T) {

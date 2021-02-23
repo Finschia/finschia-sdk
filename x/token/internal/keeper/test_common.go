@@ -1,17 +1,17 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/line/link-modules/x/contract"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/x/auth"
+	"github.com/line/lbm-sdk/x/contract"
+	"github.com/line/lbm-sdk/x/params"
+	"github.com/line/lbm-sdk/x/token/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestKeeper() (sdk.Context, store.CommitMultiStore, Keeper) {

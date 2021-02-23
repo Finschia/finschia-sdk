@@ -1,13 +1,13 @@
 package cli
 
 import (
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	clienttypes "github.com/line/link-modules/x/token/client/internal/types"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	clienttypes "github.com/line/lbm-sdk/x/token/client/internal/types"
+	"github.com/line/lbm-sdk/x/token/internal/types"
 	"github.com/spf13/cobra"
 )
 

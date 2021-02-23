@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	clienttypes "github.com/line/link-modules/x/collection/client/internal/types"
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/client/context"
+	sdk "github.com/line/lbm-sdk/types"
+	clienttypes "github.com/line/lbm-sdk/x/collection/client/internal/types"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/line/lbm-sdk/types/rest"
 )
 
 func RegisterRoutes(cliCtx context.CLIContext, r *mux.Router) {

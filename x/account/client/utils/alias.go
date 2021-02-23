@@ -1,7 +1,7 @@
 package utils
 
 import (
-	cosmosutils "github.com/cosmos/cosmos-sdk/x/auth/client/utils"
+	cosmosutils "github.com/line/lbm-sdk/x/auth/client/utils"
 )
 
 var (

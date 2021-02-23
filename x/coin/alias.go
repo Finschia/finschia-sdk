@@ -1,9 +1,9 @@
 package coin
 
 import (
-	"github.com/line/link-modules/x/coin/client/cli"
-	"github.com/line/link-modules/x/coin/internal/keeper"
-	"github.com/line/link-modules/x/coin/internal/types"
+	"github.com/line/lbm-sdk/x/coin/client/cli"
+	"github.com/line/lbm-sdk/x/coin/internal/keeper"
+	"github.com/line/lbm-sdk/x/coin/internal/types"
 )
 
 const (

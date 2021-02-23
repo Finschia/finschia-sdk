@@ -3,9 +3,9 @@ package types
 import (
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/client/context"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 )
 
 type Retriever struct {

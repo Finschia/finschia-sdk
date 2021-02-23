@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/store"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/contract"
-	testCommon "github.com/line/link-modules/x/token/internal/keeper"
+	"github.com/line/lbm-sdk/store"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/contract"
+	testCommon "github.com/line/lbm-sdk/x/token/internal/keeper"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/tendermint/crypto/secp256k1"
 )

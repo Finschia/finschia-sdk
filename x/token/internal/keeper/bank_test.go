@@ -3,11 +3,11 @@ package keeper
 import (
 	"testing"
 
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/x/token/internal/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 func TestKeeper_GetBalance(t *testing.T) {

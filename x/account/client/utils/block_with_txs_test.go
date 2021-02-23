@@ -9,17 +9,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/golang/mock/gomock"
-	"github.com/line/link-modules/x/account/client/types"
-	"github.com/line/link-modules/x/account/client/utils/mock"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/x/account/client/types"
+	"github.com/line/lbm-sdk/x/account/client/utils/mock"
+	"github.com/line/lbm-sdk/x/auth"
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
+	"github.com/line/lbm-sdk/client/context"
 )
 
 func TestLatestBlockHeight(t *testing.T) {

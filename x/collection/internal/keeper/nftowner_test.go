@@ -3,7 +3,7 @@ package keeper
 import (
 	"testing"
 
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/x/collection/internal/types"
 	"github.com/stretchr/testify/require"
 )
 

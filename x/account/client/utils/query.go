@@ -13,15 +13,15 @@ import (
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	cutils "github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	gtypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/rest"
+	cutils "github.com/line/lbm-sdk/x/auth/client/utils"
+	"github.com/line/lbm-sdk/x/auth/types"
+	gtypes "github.com/line/lbm-sdk/x/genutil/types"
 
-	local "github.com/line/link-modules/x/account/client/types"
+	local "github.com/line/lbm-sdk/x/account/client/types"
 )
 
 const MaxPerPage = 100
