@@ -86,8 +86,6 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 	types.RegisterInterfaces(registry)
 }
 
-// ____________________________________________________________________________
-
 // AppModule implements an application module for the bank module.
 type AppModule struct {
 	AppModuleBasic
@@ -167,8 +165,6 @@ func (AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
 }
-
-// ____________________________________________________________________________
 
 // AppModuleSimulation functions
 

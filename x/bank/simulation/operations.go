@@ -218,6 +218,7 @@ func SimulateMsgMultiSend(ak types.AccountKeeper, bk keeper.Keeper) simtypes.Ope
 }
 
 // sendMsgMultiSend sends a transaction with a MsgMultiSend from a provided random
+// account.
 func sendMsgMultiSend(
 	r *rand.Rand, app *baseapp.BaseApp, bk keeper.Keeper, ak types.AccountKeeper,
 	msg *types.MsgMultiSend, ctx sdk.Context, chainID string, privkeys []cryptotypes.PrivKey,
