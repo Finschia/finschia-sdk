@@ -3,6 +3,7 @@
 PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 VERSION := $(shell echo $(shell git describe --always) | sed 's/^v//')
+OCVERSION := $(shell go list -m github.com/line/ostracon | sed 's:.* ::')
 COMMIT := $(shell git log -1 --format='%H')
 LEDGER_ENABLED ?= true
 BINDIR ?= $(GOPATH)/bin
@@ -88,6 +89,7 @@ ldflags = -X github.com/line/lbm-sdk/version.Name=sim \
 		  -X github.com/line/lbm-sdk/version.Commit=$(COMMIT) \
 		  -X github.com/line/lbm-sdk/types.DBBackend=$(DB_BACKEND) \
 		  -X "github.com/line/lbm-sdk/version.BuildTags=$(build_tags_comma_sep)"
+			-X github.com/line/ostracon/version.TMCoreSemVer=$(OCVERSION)
 
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
