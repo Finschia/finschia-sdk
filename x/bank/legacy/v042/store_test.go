@@ -10,6 +10,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	v040bank "github.com/line/lbm-sdk/x/bank/legacy/v040"
 	v042bank "github.com/line/lbm-sdk/x/bank/legacy/v042"
+	"github.com/line/lbm-sdk/x/bank/types"
 )
 
 func TestStoreMigration(t *testing.T) {
@@ -27,7 +28,7 @@ func TestStoreMigration(t *testing.T) {
 	err := v042bank.MigrateStore(ctx, bankKey)
 	require.NoError(t, err)
 
-	newKey := append(v042bank.CreateAccountBalancesPrefix(addr.Bytes()), denom...)
+	newKey := append(types.CreateAccountBalancesPrefix(addr.Bytes()), denom...)
 	// -7 because we replaced "balances" with 0x02,
 	// +1 because we added length-prefix to address.
 	require.Equal(t, len(oldKey)-7+1, len(newKey))
