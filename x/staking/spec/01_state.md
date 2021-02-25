@@ -30,11 +30,10 @@ Validators can have one of three statuses
   active set during [`EndBlock`](./05_end_block.md#validator-set-changes) and their status is updated to `Bonded`.
   They are signing blocks and receiving rewards. They can receive further delegations.
   They can be slashed for misbehavior. Delegators to this validator who unbond their delegation
-<<<<<<< HEAD
   must wait the duration of the UnbondingTime, a chain-specific param, during which time
   they are still slashable for offences of the source validator if those offences were committed
   during the period of time that the tokens were bonded.
->>>>>>> 896eee213 (docs: Update x/staking spec (#8395))
+* `Unbonding`: When a validator leaves the active set, either by choice or due to slashing, jailing or
   tombstoning, an unbonding of all their delegations begins. All delegations must then wait the UnbondingTime
   before their tokens are moved to their accounts from the `BondedPool`.
 
