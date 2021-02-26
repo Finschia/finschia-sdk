@@ -6,8 +6,14 @@ import (
 	"fmt"
 	"io"
 
+<<<<<<< HEAD
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/tmhash"
+=======
+	"github.com/hdevalence/ed25519consensus"
+	"github.com/tendermint/tendermint/crypto"
+	"github.com/tendermint/tendermint/crypto/tmhash"
+>>>>>>> fd482a27b (update ed25519 (#8690))
 
 	"github.com/line/lbm-sdk/codec"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
@@ -175,7 +181,8 @@ func (pubKey *PubKey) VerifySignature(msg []byte, sig []byte) bool {
 		return false
 	}
 
-	return ed25519.Verify(pubKey.Key, msg, sig)
+	// uses https://github.com/hdevalence/ed25519consensus.Verify to comply with zip215 verification rules
+	return ed25519consensus.Verify(pubKey.Key, msg, sig)
 }
 
 func (pubKey *PubKey) String() string {
