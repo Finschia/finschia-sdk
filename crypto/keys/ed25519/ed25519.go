@@ -6,14 +6,9 @@ import (
 	"fmt"
 	"io"
 
-<<<<<<< HEAD
+	"github.com/hdevalence/ed25519consensus"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/tmhash"
-=======
-	"github.com/hdevalence/ed25519consensus"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/tmhash"
->>>>>>> fd482a27b (update ed25519 (#8690))
 
 	"github.com/line/lbm-sdk/codec"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"

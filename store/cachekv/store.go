@@ -187,11 +187,11 @@ func (store *Store) iterator(start, end []byte, ascending bool) types.Iterator {
 	return newCacheMergeIterator(parent, cache, ascending)
 }
 
-// strToBytes is meant to make a zero allocation conversion
+// strToByte is meant to make a zero allocation conversion
 // from string -> []byte to speed up operations, it is not meant
 // to be used generally, but for a specific pattern to check for available
 // keys within a domain.
-func strToBytes(s string) []byte {
+func strToByte(s string) []byte {
 	var b []byte
 	hdr := (*reflect.SliceHeader)(unsafe.Pointer(&b))
 	hdr.Cap = len(s)
@@ -220,7 +220,7 @@ func (store *Store) dirtyItems(start, end []byte) {
 	// than just not having the cache.
 	store.unsortedCache.Range(func(k, _ interface{}) bool {
 		key := k.(string)
-		if IsKeyInDomain(strToBytes(key), start, end) {
+		if IsKeyInDomain(strToByte(key), start, end) {
 			cacheValue, ok := store.cache.Load(key)
 			if ok {
 				unsorted = append(unsorted, &kv.Pair{Key: []byte(key), Value: cacheValue.(*cValue).value})
