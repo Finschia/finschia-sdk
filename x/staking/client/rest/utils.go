@@ -13,11 +13,11 @@ import (
 	authclient "github.com/line/lbm-sdk/x/auth/client"
 	"github.com/line/lbm-sdk/x/staking/types"
 =======
-	"github.com/cosmos/cosmos-sdk/client"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/client"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/rest"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
+	"github.com/line/lbm-sdk/x/staking/types"
 >>>>>>> a93edeef4 (Move QueryTx functions to x/auth/tx (#8734))
 )
 

@@ -177,7 +177,7 @@ func (s *IntegrationTestSuite) TestQueryAccountWithColon() {
 	// https://github.com/cosmos/cosmos-sdk/issues/8650
 	addrWithColon := "cosmos:1m4f6lwd9eh8e5nxt0h00d46d3fr03apfh8qf4g"
 
-	res, err := rest.GetRequest(fmt.Sprintf("%s/cosmos/auth/v1beta1/accounts/%s", val.APIAddress, addrWithColon))
+	res, err := rest.GetRequest(fmt.Sprintf("%s/lbm/auth/v1/accounts/%s", val.APIAddress, addrWithColon))
 	s.Require().NoError(err)
 	s.Require().Contains(string(res), "decoding bech32 failed")
 }

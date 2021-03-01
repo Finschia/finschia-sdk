@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package rest_test
@@ -8,7 +9,7 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/flags"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"

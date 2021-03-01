@@ -32,6 +32,12 @@
     - [DecProto](#lbm.base.v1.DecProto)
     - [IntProto](#lbm.base.v1.IntProto)
   
+- [lbm/upgrade/v1/upgrade.proto](#lbm/upgrade/v1/upgrade.proto)
+    - [CancelSoftwareUpgradeProposal](#lbm.upgrade.v1.CancelSoftwareUpgradeProposal)
+    - [ModuleVersion](#lbm.upgrade.v1.ModuleVersion)
+    - [Plan](#lbm.upgrade.v1.Plan)
+    - [SoftwareUpgradeProposal](#lbm.upgrade.v1.SoftwareUpgradeProposal)
+  
 - [ibc/core/client/v1/client.proto](#ibc/core/client/v1/client.proto)
     - [ClientConsensusStates](#ibc.core.client.v1.ClientConsensusStates)
     - [ClientUpdateProposal](#ibc.core.client.v1.ClientUpdateProposal)
@@ -39,6 +45,7 @@
     - [Height](#ibc.core.client.v1.Height)
     - [IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState)
     - [Params](#ibc.core.client.v1.Params)
+    - [UpgradeProposal](#ibc.core.client.v1.UpgradeProposal)
   
 - [ibc/applications/transfer/v1/tx.proto](#ibc/applications/transfer/v1/tx.proto)
     - [MsgTransfer](#ibc.applications.transfer.v1.MsgTransfer)
@@ -131,6 +138,8 @@
     - [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse)
     - [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest)
     - [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse)
+    - [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest)
+    - [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse)
   
     - [Query](#ibc.core.client.v1.Query)
   
@@ -826,12 +835,6 @@
   
     - [Service](#lbm.tx.v1.Service)
   
-- [lbm/upgrade/v1/upgrade.proto](#lbm/upgrade/v1/upgrade.proto)
-    - [CancelSoftwareUpgradeProposal](#lbm.upgrade.v1.CancelSoftwareUpgradeProposal)
-    - [ModuleVersion](#lbm.upgrade.v1.ModuleVersion)
-    - [Plan](#lbm.upgrade.v1.Plan)
-    - [SoftwareUpgradeProposal](#lbm.upgrade.v1.SoftwareUpgradeProposal)
-  
 - [lbm/upgrade/v1/query.proto](#lbm/upgrade/v1/query.proto)
     - [QueryAppliedPlanRequest](#lbm.upgrade.v1.QueryAppliedPlanRequest)
     - [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse)
@@ -1306,6 +1309,91 @@ IntProto defines a Protobuf wrapper around an Int object.
 
 
 
+<a name="lbm/upgrade/v1/upgrade.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/upgrade/v1/upgrade.proto
+
+
+
+<a name="lbm.upgrade.v1.CancelSoftwareUpgradeProposal"></a>
+
+### CancelSoftwareUpgradeProposal
+CancelSoftwareUpgradeProposal is a gov Content type for cancelling a software
+upgrade.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.upgrade.v1.ModuleVersion"></a>
+
+### ModuleVersion
+ModuleVersion specifies a module and its consensus version.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name of the app module |
+| `version` | [uint64](#uint64) |  | consensus version of the app module |
+
+
+
+
+
+
+<a name="lbm.upgrade.v1.Plan"></a>
+
+### Plan
+Plan specifies information about a planned upgrade and when it should occur.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | Sets the name for the upgrade. This name will be used by the upgraded version of the software to apply any special "on-upgrade" commands during the first BeginBlock method after the upgrade is applied. It is also used to detect whether a software version can handle a given upgrade. If no upgrade handler with this name has been set in the software, it will be assumed that the software is out-of-date when the upgrade Time or Height is reached and the software will exit. |
+| `time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The time after which the upgrade must be performed. Leave set to its zero value to use a pre-defined Height instead. |
+| `height` | [int64](#int64) |  | The height at which the upgrade must be performed. Only used if Time is not set. |
+| `info` | [string](#string) |  | Any application specific upgrade info to be included on-chain such as a git commit that validators could automatically upgrade to |
+
+
+
+
+
+
+<a name="lbm.upgrade.v1.SoftwareUpgradeProposal"></a>
+
+### SoftwareUpgradeProposal
+SoftwareUpgradeProposal is a gov Content type for initiating a software
+upgrade.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `plan` | [Plan](#lbm.upgrade.v1.Plan) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="ibc/core/client/v1/client.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -1416,6 +1504,25 @@ Params defines the set of IBC light client parameters.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `allowed_clients` | [string](#string) | repeated | allowed_clients defines the list of allowed client state types. |
+
+
+
+
+
+
+<a name="ibc.core.client.v1.UpgradeProposal"></a>
+
+### UpgradeProposal
+UpgradeProposal is a gov Content type for initiating an IBC breaking
+upgrade.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `plan` | [lbm.upgrade.v1.Plan](#lbm.upgrade.v1.Plan) |  |  |
+| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | An UpgradedClientState must be provided to perform an IBC breaking upgrade. This will make the chain commit to the correct upgraded (self) client state before the upgrade occurs, so that connecting chains can verify that the new upgraded client is valid by verifying a proof on the previous version of the chain. This will allow IBC connections to persist smoothly across planned chain upgrades |
 
 
 
@@ -2787,6 +2894,39 @@ Query/ConsensusStates RPC method
 
 
 
+
+<a name="ibc.core.client.v1.QueryUpgradedClientStateRequest"></a>
+
+### QueryUpgradedClientStateRequest
+QueryUpgradedClientStateRequest is the request type for the Query/UpgradedClientState RPC
+method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `client_id` | [string](#string) |  | client state unique identifier |
+| `plan_height` | [int64](#int64) |  | plan height of the current chain must be sent in request as this is the height under which upgraded client state is stored |
+
+
+
+
+
+
+<a name="ibc.core.client.v1.QueryUpgradedClientStateResponse"></a>
+
+### QueryUpgradedClientStateResponse
+QueryUpgradedClientStateResponse is the response type for the Query/UpgradedClientState RPC
+method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | client state associated with the request identifier |
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -2806,6 +2946,7 @@ Query provides defines the gRPC querier service
 | `ConsensusState` | [QueryConsensusStateRequest](#ibc.core.client.v1.QueryConsensusStateRequest) | [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse) | ConsensusState queries a consensus state associated with a client state at a given height. | GET|/ibc/core/client/v1/consensus_states/{client_id}/revision/{revision_number}/height/{revision_height}|
 | `ConsensusStates` | [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest) | [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse) | ConsensusStates queries all the consensus state associated with a given client. | GET|/ibc/core/client/v1/consensus_states/{client_id}|
 | `ClientParams` | [QueryClientParamsRequest](#ibc.core.client.v1.QueryClientParamsRequest) | [QueryClientParamsResponse](#ibc.core.client.v1.QueryClientParamsResponse) | ClientParams queries all parameters of the ibc client. | GET|/ibc/client/v1/params|
+| `UpgradedClientState` | [QueryUpgradedClientStateRequest](#ibc.core.client.v1.QueryUpgradedClientStateRequest) | [QueryUpgradedClientStateResponse](#ibc.core.client.v1.QueryUpgradedClientStateResponse) | UpgradedClientState queries an Upgraded IBC light client. | GET|/ibc/core/client/v1/upgraded_client_states/{client_id}|
 
  <!-- end services -->
 
@@ -5096,6 +5237,8 @@ a basic token.
 | `denom_units` | [DenomUnit](#lbm.bank.v1.DenomUnit) | repeated | denom_units represents the list of DenomUnit's for a given coin |
 | `base` | [string](#string) |  | base represents the base denom (should be the DenomUnit with exponent = 0). |
 | `display` | [string](#string) |  | display indicates the suggested denom that should be displayed in clients. |
+| `name` | [string](#string) |  | name defines the name of the token (eg: Cosmos Atom) |
+| `symbol` | [string](#string) |  | symbol is the token symbol usually shown on exchanges (eg: ATOM). This can be the same as the display. |
 
 
 
@@ -11997,92 +12140,6 @@ Service defines a gRPC service for interacting with transactions.
 
 
 
-<a name="lbm/upgrade/v1/upgrade.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/upgrade/v1/upgrade.proto
-
-
-
-<a name="lbm.upgrade.v1.CancelSoftwareUpgradeProposal"></a>
-
-### CancelSoftwareUpgradeProposal
-CancelSoftwareUpgradeProposal is a gov Content type for cancelling a software
-upgrade.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.upgrade.v1.ModuleVersion"></a>
-
-### ModuleVersion
-ModuleVersion specifies a module and its consensus version.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  | name of the app module |
-| `version` | [uint64](#uint64) |  | consensus version of the app module |
-
-
-
-
-
-
-<a name="lbm.upgrade.v1.Plan"></a>
-
-### Plan
-Plan specifies information about a planned upgrade and when it should occur.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `name` | [string](#string) |  | Sets the name for the upgrade. This name will be used by the upgraded version of the software to apply any special "on-upgrade" commands during the first BeginBlock method after the upgrade is applied. It is also used to detect whether a software version can handle a given upgrade. If no upgrade handler with this name has been set in the software, it will be assumed that the software is out-of-date when the upgrade Time or Height is reached and the software will exit. |
-| `time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | The time after which the upgrade must be performed. Leave set to its zero value to use a pre-defined Height instead. |
-| `height` | [int64](#int64) |  | The height at which the upgrade must be performed. Only used if Time is not set. |
-| `info` | [string](#string) |  | Any application specific upgrade info to be included on-chain such as a git commit that validators could automatically upgrade to |
-| `upgraded_client_state` | [google.protobuf.Any](#google.protobuf.Any) |  | IBC-enabled chains can opt-in to including the upgraded client state in its upgrade plan This will make the chain commit to the correct upgraded (self) client state before the upgrade occurs, so that connecting chains can verify that the new upgraded client is valid by verifying a proof on the previous version of the chain. This will allow IBC connections to persist smoothly across planned chain upgrades |
-
-
-
-
-
-
-<a name="lbm.upgrade.v1.SoftwareUpgradeProposal"></a>
-
-### SoftwareUpgradeProposal
-SoftwareUpgradeProposal is a gov Content type for initiating a software
-upgrade.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `title` | [string](#string) |  |  |
-| `description` | [string](#string) |  |  |
-| `plan` | [Plan](#lbm.upgrade.v1.Plan) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="lbm/upgrade/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -12206,7 +12263,7 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `upgraded_consensus_state` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `upgraded_consensus_state` | [bytes](#bytes) |  |  |
 
 
 

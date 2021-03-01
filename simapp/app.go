@@ -77,6 +77,7 @@ import (
 	ibctransfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
 	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
+	ibcclientclient "github.com/line/lbm-sdk/x/ibc/core/02-client/client"
 	ibcclienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	porttypes "github.com/line/lbm-sdk/x/ibc/core/05-port/types"
 	ibchost "github.com/line/lbm-sdk/x/ibc/core/24-host"
@@ -136,6 +137,8 @@ var (
 			distrclient.ProposalHandler,
 			upgradeclient.ProposalHandler,
 			upgradeclient.CancelProposalHandler,
+			ibcclientclient.UpdateClientProposalHandler,
+			ibcclientclient.UpgradeProposalHandler,
 		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -334,7 +337,7 @@ func NewSimApp(
 
 	// Create IBC Keeper
 	app.IBCKeeper = ibckeeper.NewKeeper(
-		appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, scopedIBCKeeper,
+		appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, app.UpgradeKeeper, scopedIBCKeeper,
 	)
 
 	app.AuthzKeeper = authzkeeper.NewKeeper(keys[authztypes.StoreKey], appCodec, app.BaseApp.MsgServiceRouter())
@@ -347,6 +350,7 @@ func NewSimApp(
 		AddRoute(upgradetypes.RouterKey, upgrade.NewSoftwareUpgradeProposalHandler(app.UpgradeKeeper)).
 		AddRoute(ibchost.RouterKey, ibcclient.NewClientUpdateProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientUpdateProposalHandler(app.IBCKeeper.ClientKeeper)).
+		AddRoute(ibcclienttypes.RouterKey, ibcclient.NewClientProposalHandler(app.IBCKeeper.ClientKeeper)).
 		AddRoute(consortiumtypes.RouterKey, consortium.NewProposalHandler(app.ConsortiumKeeper))
 	app.GovKeeper = govkeeper.NewKeeper(
 		appCodec, keys[govtypes.StoreKey], app.GetSubspace(govtypes.ModuleName), app.AccountKeeper, app.BankKeeper,
