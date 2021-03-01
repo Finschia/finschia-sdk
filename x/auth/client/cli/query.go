@@ -14,7 +14,7 @@ import (
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/version"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	"github.com/line/lbm-sdk/x/auth/types"
 )
 
@@ -195,7 +195,7 @@ $ %s query txs --%s 'message.sender=link1...&message.action=withdraw_delegator_r
 			page, _ := cmd.Flags().GetInt(flags.FlagPage)
 			limit, _ := cmd.Flags().GetInt(flags.FlagLimit)
 
-			txs, err := authclient.QueryTxsByEvents(clientCtx, tmEvents, page, limit, "")
+			txs, err := authtx.QueryTxsByEvents(clientCtx, tmEvents, page, limit, "")
 			if err != nil {
 				return err
 			}
@@ -245,7 +245,7 @@ $ %s query tx --%s=%s <sig1_base64>,<sig2_base64...>
 					}
 
 					// If hash is given, then query the tx by hash.
-					output, err := authclient.QueryTx(clientCtx, args[0])
+					output, err := authtx.QueryTx(clientCtx, args[0])
 					if err != nil {
 						return err
 					}
@@ -267,7 +267,7 @@ $ %s query tx --%s=%s <sig1_base64>,<sig2_base64...>
 						tmEvents[i] = fmt.Sprintf("%s.%s='%s'", sdk.EventTypeTx, sdk.AttributeKeySignature, sig)
 					}
 
-					txs, err := authclient.QueryTxsByEvents(clientCtx, tmEvents, rest.DefaultPage, query.DefaultLimit, "")
+					txs, err := authtx.QueryTxsByEvents(clientCtx, tmEvents, rest.DefaultPage, query.DefaultLimit, "")
 					if err != nil {
 						return err
 					}
@@ -290,7 +290,7 @@ $ %s query tx --%s=%s <sig1_base64>,<sig2_base64...>
 					tmEvents := []string{
 						fmt.Sprintf("%s.%s='%s'", sdk.EventTypeTx, sdk.AttributeKeyAccountSequence, args[0]),
 					}
-					txs, err := authclient.QueryTxsByEvents(clientCtx, tmEvents, rest.DefaultPage, query.DefaultLimit, "")
+					txs, err := authtx.QueryTxsByEvents(clientCtx, tmEvents, rest.DefaultPage, query.DefaultLimit, "")
 					if err != nil {
 						return err
 					}

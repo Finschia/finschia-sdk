@@ -8,14 +8,11 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"strings"
-	"time"
 
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
 	"github.com/line/lbm-sdk/client"
-	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
@@ -97,59 +94,4 @@ func queryTx(goCtx context.Context, clientCtx client.Context, hashHexStr string)
 	}
 
 	return out, nil
-}
-
-// formatTxResults parses the indexed txs into a slice of TxResponse objects.
-func formatTxResults(txConfig client.TxConfig, resTxs []*ctypes.ResultTx, resBlocks map[int64]*ctypes.ResultBlock) ([]*sdk.TxResponse, error) {
-	var err error
-	out := make([]*sdk.TxResponse, len(resTxs))
-	for i := range resTxs {
-		out[i], err = mkTxResult(txConfig, resTxs[i], resBlocks[resTxs[i].Height])
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	return out, nil
-}
-
-func getBlocksForTxResults(goCtx context.Context, clientCtx client.Context, resTxs []*ctypes.ResultTx) (map[int64]*ctypes.ResultBlock, error) {
-	node, err := clientCtx.GetNode()
-	if err != nil {
-		return nil, err
-	}
-
-	resBlocks := make(map[int64]*ctypes.ResultBlock)
-
-	for _, resTx := range resTxs {
-		if _, ok := resBlocks[resTx.Height]; !ok {
-			resBlock, err := node.Block(goCtx, &resTx.Height)
-			if err != nil {
-				return nil, err
-			}
-
-			resBlocks[resTx.Height] = resBlock
-		}
-	}
-
-	return resBlocks, nil
-}
-
-func mkTxResult(txConfig client.TxConfig, resTx *ctypes.ResultTx, resBlock *ctypes.ResultBlock) (*sdk.TxResponse, error) {
-	txb, err := txConfig.TxDecoder()(resTx.Tx)
-	if err != nil {
-		return nil, err
-	}
-	p, ok := txb.(intoAny)
-	if !ok {
-		return nil, fmt.Errorf("expecting a type implementing intoAny, got: %T", txb)
-	}
-	any := p.AsAny()
-	return sdk.NewResponseResultTx(resTx, any, resBlock.Block.Time.Format(time.RFC3339)), nil
-}
-
-// Deprecated: this interface is used only internally for scenario we are
-// deprecating (StdTxConfig support)
-type intoAny interface {
-	AsAny() *codectypes.Any
 }

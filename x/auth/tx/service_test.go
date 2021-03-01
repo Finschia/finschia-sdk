@@ -221,8 +221,8 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPC() {
 				s.Require().Equal("foobar", grpcRes.Txs[0].Body.Memo)
 
 				// Make sure fields are populated.
-				// ref: https://github.com/line/lbm-sdk/issues/8680
-				// ref: https://github.com/line/lbm-sdk/issues/8681
+				// ref: https://github.com/cosmos/cosmos-sdk/issues/8680
+				// ref: https://github.com/cosmos/cosmos-sdk/issues/8681
 				s.Require().NotEmpty(grpcRes.TxResponses[0].Timestamp)
 				s.Require().NotEmpty(grpcRes.TxResponses[0].RawLog)
 			}
@@ -370,8 +370,8 @@ func (s IntegrationTestSuite) TestGetTx_GRPCGateway() {
 				s.Require().NotZero(result.TxResponse.Height)
 
 				// Make sure fields are populated.
-				// ref: https://github.com/line/lbm-sdk/issues/8680
-				// ref: https://github.com/line/lbm-sdk/issues/8681
+				// ref: https://github.com/cosmos/cosmos-sdk/issues/8680
+				// ref: https://github.com/cosmos/cosmos-sdk/issues/8681
 				s.Require().NotEmpty(result.TxResponse.Timestamp)
 				s.Require().NotEmpty(result.TxResponse.RawLog)
 			}

@@ -6,7 +6,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -57,7 +57,7 @@ func QueryDepositsByTxQuery(clientCtx client.Context, params types.QueryProposal
 
 	// NOTE: SearchTxs is used to facilitate the txs query which does not currently
 	// support configurable pagination.
-	searchResult, err := authclient.QueryTxsByEvents(clientCtx, events, defaultPage, defaultLimit, "")
+	searchResult, err := authtx.QueryTxsByEvents(clientCtx, events, defaultPage, defaultLimit, "")
 	if err != nil {
 		return nil, err
 	}
@@ -87,28 +87,6 @@ func QueryDepositsByTxQuery(clientCtx client.Context, params types.QueryProposal
 	}
 
 	return bz, nil
-}
-
-// combineEvents queries txs by events with all events from each event group,
-// and combines all those events together.
-//
-// Tx are indexed in tendermint via their Msgs `Type()`, which can be:
-// - via legacy Msgs (amino or proto), their `Type()` is a custom string,
-// - via ADR-031 proto msgs, their `Type()` is the protobuf FQ method name.
-// In searching for events, we search for both `Type()`s, and we use the
-// `combineEvents` function here to merge events.
-func combineEvents(clientCtx client.Context, page int, eventGroups ...[]string) (*sdk.SearchTxsResult, error) {
-	// Only the Txs field will be populated in the final SearchTxsResult.
-	allTxs := []*sdk.TxResponse{}
-	for _, events := range eventGroups {
-		res, err := authclient.QueryTxsByEvents(clientCtx, events, page, defaultLimit, "")
-		if err != nil {
-			return nil, err
-		}
-		allTxs = append(allTxs, res.Txs...)
-	}
-
-	return &sdk.SearchTxsResult{Txs: allTxs}, nil
 }
 
 // QueryVotesByTxQuery will query for votes via a direct txs tags query. It
@@ -309,7 +287,7 @@ func QueryDepositByTxQuery(clientCtx client.Context, params types.QueryDepositPa
 
 	// NOTE: SearchTxs is used to facilitate the txs query which does not currently
 	// support configurable pagination.
-	searchResult, err := authclient.QueryTxsByEvents(clientCtx, events, defaultPage, defaultLimit, "")
+	searchResult, err := authtx.QueryTxsByEvents(clientCtx, events, defaultPage, defaultLimit, "")
 	if err != nil {
 		return nil, err
 	}
@@ -407,7 +385,7 @@ func queryInitialDepositByTxQuery(clientCtx client.Context, proposalID uint64) (
 		fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeyAction, types.TypeMsgSubmitProposal),
 		fmt.Sprintf("%s.%s='%s'", types.EventTypeSubmitProposal, types.AttributeKeyProposalID, []byte(fmt.Sprintf("%d", proposalID))),
 	}
-	searchResult, err := authclient.QueryTxsByEvents(clientCtx, events, defaultPage, defaultLimit, "")
+	searchResult, err := authtx.QueryTxsByEvents(clientCtx, events, defaultPage, defaultLimit, "")
 
 	if err != nil {
 		return types.Deposit{}, err
@@ -427,4 +405,26 @@ func queryInitialDepositByTxQuery(clientCtx client.Context, proposalID uint64) (
 	}
 
 	return types.Deposit{}, sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "failed to find the initial deposit for proposalID %d", proposalID)
+}
+
+// combineEvents queries txs by events with all events from each event group,
+// and combines all those events together.
+//
+// Tx are indexed in tendermint via their Msgs `Type()`, which can be:
+// - via legacy Msgs (amino or proto), their `Type()` is a custom string,
+// - via ADR-031 service msgs, their `Type()` is the protobuf FQ method name.
+// In searching for events, we search for both `Type()`s, and we use the
+// `combineEvents` function here to merge events.
+func combineEvents(clientCtx client.Context, page int, eventGroups ...[]string) (*sdk.SearchTxsResult, error) {
+	// Only the Txs field will be populated in the final SearchTxsResult.
+	allTxs := []*sdk.TxResponse{}
+	for _, events := range eventGroups {
+		res, err := authtx.QueryTxsByEvents(clientCtx, events, page, defaultLimit, "")
+		if err != nil {
+			return nil, err
+		}
+		allTxs = append(allTxs, res.Txs...)
+	}
+
+	return &sdk.SearchTxsResult{Txs: allTxs}, nil
 }

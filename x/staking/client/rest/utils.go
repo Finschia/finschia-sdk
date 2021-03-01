@@ -6,11 +6,19 @@ import (
 
 	"github.com/gorilla/mux"
 
+<<<<<<< HEAD
 	"github.com/line/lbm-sdk/client"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
 	"github.com/line/lbm-sdk/x/staking/types"
+=======
+	"github.com/cosmos/cosmos-sdk/client"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/rest"
+	authtx "github.com/cosmos/cosmos-sdk/x/auth/tx"
+	"github.com/cosmos/cosmos-sdk/x/staking/types"
+>>>>>>> a93edeef4 (Move QueryTx functions to x/auth/tx (#8734))
 )
 
 // contains checks if the a given query contains one of the tx types
@@ -33,7 +41,7 @@ func queryTxs(clientCtx client.Context, action string, delegatorAddr string) (*s
 		fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeySender, delegatorAddr),
 	}
 
-	return authclient.QueryTxsByEvents(clientCtx, events, page, limit, "")
+	return authtx.QueryTxsByEvents(clientCtx, events, page, limit, "")
 }
 
 func queryBonds(clientCtx client.Context, endpoint string) http.HandlerFunc {

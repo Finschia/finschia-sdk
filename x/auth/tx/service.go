@@ -59,7 +59,7 @@ func (s txServer) GetTxsEvent(ctx context.Context, req *txtypes.GetTxsEventReque
 	}
 
 	for _, event := range req.Events {
-		if strings.Count(event, "=") != 1 {
+		if !strings.Contains(event, "=") || strings.Count(event, "=") > 1 {
 			return nil, status.Error(codes.InvalidArgument, fmt.Sprintf("invalid event; event %s should be of the format: %s", event, eventFormat))
 		}
 	}
@@ -123,8 +123,8 @@ func (s txServer) GetTx(ctx context.Context, req *txtypes.GetTxRequest) (*txtype
 	}
 
 	// TODO We should also check the proof flag in gRPC header.
-	// https://github.com/line/lbm-sdk/issues/7036.
-	result, err := queryTx(ctx, s.clientCtx, req.Hash)
+	// https://github.com/cosmos/cosmos-sdk/issues/7036.
+	result, err := QueryTx(s.clientCtx, req.Hash)
 	if err != nil {
 		return nil, err
 	}

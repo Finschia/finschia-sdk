@@ -31,7 +31,6 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	grpctypes "github.com/line/lbm-sdk/types/grpc"
-	authclient "github.com/line/lbm-sdk/x/auth/client"
 	authtx "github.com/line/lbm-sdk/x/auth/tx"
 	auth "github.com/line/lbm-sdk/x/auth/types"
 	bank "github.com/line/lbm-sdk/x/bank/types"
@@ -254,7 +253,7 @@ func (c *Client) TxOperationsAndSignersAccountIdentifiers(signed bool, txBytes [
 
 // GetTx returns a transaction given its hash
 func (c *Client) GetTx(_ context.Context, hash string) (*types.Transaction, error) {
-	txResp, err := authclient.QueryTx(c.clientCtx, hash)
+	txResp, err := authtx.QueryTx(c.clientCtx, hash)
 	if err != nil {
 		return nil, crgerrs.WrapError(crgerrs.ErrUnknown, err.Error())
 	}
