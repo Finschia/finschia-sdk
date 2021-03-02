@@ -19,6 +19,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 
+	"github.com/line/lbm-sdk/x/wasm/client/utils"
 	"github.com/line/lbm-sdk/x/wasm/internal/keeper"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
@@ -269,7 +270,7 @@ func GetCmdGetContractStateSmart(cdc *codec.Codec) *cobra.Command {
 
 // GetCmdGetContractHistory prints the code history for a given contract
 func GetCmdGetContractHistory(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "contract-history [bech32_address]",
 		Short: "Prints out the code history for a contract given its address",
 		Long:  "Prints out the code history for a contract given its address",
@@ -282,8 +283,21 @@ func GetCmdGetContractHistory(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
+			pageReq, err := utils.ReadPageRequest(withPageKeyDecoded(cmd.Flags()))
+			if err != nil {
+				return err
+			}
+			data := &types.QueryContractHistoryRequest{
+				Address:    addr,
+				Pagination: pageReq,
+			}
+			bs, err := cliCtx.Codec.MarshalJSON(data)
+			if err != nil {
+				return err
+			}
+
 			route := fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, keeper.QueryContractHistory, addr.String())
-			res, _, err := cliCtx.Query(route)
+			res, _, err := cliCtx.QueryWithData(route, bs)
 			if err != nil {
 				return err
 			}
@@ -291,6 +305,9 @@ func GetCmdGetContractHistory(cdc *codec.Codec) *cobra.Command {
 			return nil
 		},
 	}
+
+	utils.AddPaginationFlagsToCmd(cmd, "contract history")
+	return cmd
 }
 
 type argumentDecoder struct {
@@ -334,4 +351,21 @@ func (a *argumentDecoder) DecodeString(s string) ([]byte, error) {
 
 func asciiDecodeString(s string) ([]byte, error) {
 	return []byte(s), nil
+}
+
+// sdk ReadPageRequest expects binary but we encoded to base64 in our marshaller
+func withPageKeyDecoded(flagSet *flag.FlagSet) *flag.FlagSet {
+	encoded, err := flagSet.GetString(utils.FlagPageKey)
+	if err != nil {
+		panic(err.Error())
+	}
+	raw, err := base64.StdEncoding.DecodeString(encoded)
+	if err != nil {
+		panic(err.Error())
+	}
+	err = flagSet.Set(utils.FlagPageKey, string(raw))
+	if err != nil {
+		panic(err.Error())
+	}
+	return flagSet
 }

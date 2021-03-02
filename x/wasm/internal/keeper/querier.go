@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -30,7 +31,7 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 		case QueryListCode:
 			return queryCodeList(ctx, keeper)
 		case QueryContractHistory:
-			return queryContractHistory(ctx, path[1], keeper)
+			return queryContractHistory2(ctx, path[1], req, keeper)
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown data query endpoint")
 		}
@@ -163,25 +164,48 @@ func queryCodeList(ctx sdk.Context, keeper Keeper) ([]byte, error) {
 	return bz, nil
 }
 
-func queryContractHistory(ctx sdk.Context, bech string, keeper Keeper) ([]byte, error) {
-	contractAddr, err := sdk.AccAddressFromBech32(bech)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
+func queryContractHistory2(ctx sdk.Context, _ string, req abci.RequestQuery, keeper Keeper) ([]byte, error) {
+	var params types.QueryContractHistoryRequest
+
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	entries := keeper.GetContractHistory(ctx, contractAddr)
-	if entries == nil {
+	res, err := keeper.ContractHistory(ctx, &params)
+	if err != nil {
+		return nil, err
+	}
+	if res.Entries == nil {
 		// nil, nil leads to 404 in rest handler
 		return nil, nil
 	}
 
-	histories := make([]types.ContractHistoryResponse, len(entries))
-	for i, entry := range entries {
-		histories[i] = types.NewContractHistoryResponse(entry)
-	}
-
-	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, histories)
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, res)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 	return bz, nil
+}
+
+func (k Keeper) ContractHistory(ctx sdk.Context, req *types.QueryContractHistoryRequest) (*types.QueryContractHistoryResponse, error) {
+	r := make([]types.ContractCodeHistoryEntry, 0)
+
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetContractCodeHistoryElementPrefix(req.Address))
+	pageRes, err := FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		if accumulate {
+			var e types.ContractCodeHistoryEntry
+			if err := k.cdc.UnmarshalBinaryBare(value, &e); err != nil {
+				return false, err
+			}
+			e.Updated = nil // redact
+			r = append(r, e)
+		}
+		return true, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &types.QueryContractHistoryResponse{
+		Entries:    r,
+		Pagination: pageRes,
+	}, nil
 }

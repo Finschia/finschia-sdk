@@ -149,3 +149,25 @@ func (r contractHistory) GetCodeID() uint64 {
 func (r contractHistory) GetMsg() json.RawMessage {
 	return r.Msg
 }
+
+type PageRequest struct {
+	Key        []byte
+	Offset     uint64
+	Limit      uint64
+	CountTotal bool
+}
+
+type PageResponse struct {
+	NextKey []byte
+	Total   uint64
+}
+
+type QueryContractHistoryRequest struct {
+	Address    sdk.AccAddress
+	Pagination *PageRequest
+}
+
+type QueryContractHistoryResponse struct {
+	Entries    []ContractCodeHistoryEntry
+	Pagination *PageResponse
+}
