@@ -103,13 +103,21 @@ func TestGenesisExportImport(t *testing.T) {
 		dstIT := dstCtx.KVStore(dstStoreKeys[j]).Iterator(nil, nil)
 
 		for i := 0; srcIT.Valid(); i++ {
-			require.True(t, dstIT.Valid(), "[%s] destination DB has less elements than source. Missing: %s", srcStoreKeys[j].Name(), srcIT.Key())
-			require.Equal(t, srcIT.Key(), dstIT.Key(), i)
-
-			isContractHistory := srcStoreKeys[j].Name() == types.StoreKey && bytes.HasPrefix(srcIT.Key(), types.ContractHistoryStorePrefix)
-			if !isContractHistory { // only skip history entries because we know they are different
-				require.Equal(t, srcIT.Value(), dstIT.Value(), "[%s] element (%d): %X", srcStoreKeys[j].Name(), i, srcIT.Key())
+			isContractHistory := srcStoreKeys[j].Name() == types.StoreKey && bytes.HasPrefix(srcIT.Key(), types.ContractCodeHistoryElementPrefix)
+			if isContractHistory {
+				// only skip history entries because we know they are different
+				// from genesis they are merged into 1 single entry
+				srcIT.Next()
+				if dstIT.Valid() {
+					if bytes.HasPrefix(dstIT.Key(), types.ContractCodeHistoryElementPrefix) {
+						dstIT.Next()
+					}
+				}
+				continue
 			}
+			require.True(t, dstIT.Valid(), "[%s] destination DB has less elements than source. Missing: %x", srcStoreKeys[j].Name(), srcIT.Key())
+			require.Equal(t, srcIT.Key(), dstIT.Key(), i)
+			require.Equal(t, srcIT.Value(), dstIT.Value(), "[%s] element (%d): %X", srcStoreKeys[j].Name(), i, srcIT.Key())
 			srcIT.Next()
 			dstIT.Next()
 		}
