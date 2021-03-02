@@ -4,12 +4,16 @@ import (
 	"bytes"
 	"compress/gzip"
 	"encoding/binary"
+	"errors"
 	"fmt"
+	"net/http"
+	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
@@ -117,4 +121,53 @@ func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool)
 		Limit:      limit,
 		CountTotal: countTotal,
 	}, nil
+}
+
+func ParseHTTPArgs(r *http.Request) (pageKey string, offset, limit, page uint64, countTotal bool, err error) {
+	pageKey = r.FormValue("page-key")
+
+	offsetStr := r.FormValue("offset")
+	if offsetStr != "" {
+		offset, err = strconv.ParseUint(offsetStr, 10, 64)
+		if err != nil {
+			return pageKey, offset, limit, page, countTotal, err
+		}
+		if offset <= 0 {
+			return pageKey, offset, limit, page, countTotal, errors.New("offset must greater than 0")
+		}
+	}
+
+	pageStr := r.FormValue("page")
+	if pageStr == "" {
+		page = rest.DefaultPage
+	} else {
+		page, err = strconv.ParseUint(pageStr, 10, 64)
+		if err != nil {
+			return pageKey, offset, limit, page, countTotal, err
+		} else if page <= 0 {
+			return pageKey, offset, limit, page, countTotal, errors.New("page must greater than 0")
+		}
+	}
+
+	limitStr := r.FormValue("limit")
+	if limitStr == "" {
+		limit = rest.DefaultLimit
+	} else {
+		limit, err = strconv.ParseUint(limitStr, 10, 64)
+		if err != nil {
+			return pageKey, offset, limit, page, countTotal, err
+		} else if limit <= 0 {
+			return pageKey, offset, limit, page, countTotal, errors.New("limit must greater than 0")
+		}
+	}
+
+	countTotalStr := r.FormValue("count-total")
+	if countTotalStr != "" {
+		countTotal, err = strconv.ParseBool(countTotalStr)
+		if err != nil {
+			return pageKey, offset, limit, page, countTotal, err
+		}
+	}
+
+	return pageKey, offset, limit, page, countTotal, nil
 }
