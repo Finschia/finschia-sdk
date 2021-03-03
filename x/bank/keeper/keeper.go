@@ -7,7 +7,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	vestexported "github.com/line/lbm-sdk/x/auth/vesting/exported"
-	"github.com/line/lbm-sdk/x/bank/exported"
 	"github.com/line/lbm-sdk/x/bank/types"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
@@ -22,7 +21,9 @@ type Keeper interface {
 	InitGenesis(sdk.Context, *types.GenesisState)
 	ExportGenesis(sdk.Context) *types.GenesisState
 
-	GetSupply(ctx sdk.Context) exported.SupplyI
+	GetSupply(ctx sdk.Context, denom string) sdk.Coin
+	GetTotalSupply(ctx sdk.Context) sdk.Coins
+	IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool)
 	SetSupply(ctx sdk.Context, supply exported.SupplyI) // TODO(dudong2): remove after x/wasm version up
 
 	GetDenomMetaData(ctx sdk.Context, denom string) (types.Metadata, bool)
@@ -39,8 +40,6 @@ type Keeper interface {
 
 	DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) error
 	UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) error
-	MarshalSupply(supplyI exported.SupplyI) ([]byte, error)
-	UnmarshalSupply(bz []byte) (exported.SupplyI, error)
 
 	types.QueryServer
 }
@@ -53,6 +52,16 @@ type BaseKeeper struct {
 	cdc        codec.BinaryMarshaler
 	storeKey   sdk.StoreKey
 	paramSpace paramtypes.Subspace
+}
+
+func (k BaseKeeper) GetTotalSupply(ctx sdk.Context) sdk.Coins {
+	balances := sdk.NewCoins()
+	k.IterateTotalSupply(ctx, func(balance sdk.Coin) bool {
+		balances = balances.Add(balance)
+		return false
+	})
+
+	return balances.Sort()
 }
 
 func NewBaseKeeper(
@@ -155,30 +164,52 @@ func (k BaseKeeper) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAdd
 }
 
 // GetSupply retrieves the Supply from store
-func (k BaseKeeper) GetSupply(ctx sdk.Context) exported.SupplyI {
+func (k BaseKeeper) GetSupply(ctx sdk.Context, denom string) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.SupplyKey)
+	supplyStore := prefix.NewStore(store, types.SupplyKey)
+
+	bz := supplyStore.Get([]byte(denom))
 	if bz == nil {
-		panic("stored supply should not have been nil")
+		return sdk.Coin{
+			Denom:  denom,
+			Amount: sdk.NewInt(0),
+		}
 	}
 
-	supply, err := k.UnmarshalSupply(bz)
+	var coin sdk.Coin
+	err := k.cdc.UnmarshalBinaryBare(bz, &coin)
 	if err != nil {
 		panic(err)
 	}
 
-	return supply
+	return coin
 }
 
-// setSupply sets the Supply to store
-func (k BaseKeeper) setSupply(ctx sdk.Context, supply exported.SupplyI) {
+// SetSupply sets the Supply to store
+func (k BaseKeeper) setSupply(ctx sdk.Context, supply sdk.Coins) {
 	store := ctx.KVStore(k.storeKey)
-	bz, err := k.MarshalSupply(supply)
-	if err != nil {
-		panic(err)
-	}
+	supplyStore := prefix.NewStore(store, types.SupplyKey)
 
-	store.Set(types.SupplyKey, bz)
+	var newSupply []sdk.Coin
+	storeSupply := k.GetTotalSupply(ctx)
+
+	// update supply for coins which have non zero amount
+	for _, coin := range storeSupply {
+		if supply.AmountOf(coin.Denom).IsZero() {
+			zeroCoin := &sdk.Coin{
+				Denom:  coin.Denom,
+				Amount: sdk.NewInt(0),
+			}
+			bz := k.cdc.MustMarshalBinaryBare(zeroCoin)
+			supplyStore.Set([]byte(coin.Denom), bz)
+		}
+	}
+	newSupply = append(newSupply, supply...)
+
+	for i := range newSupply {
+		bz := k.cdc.MustMarshalBinaryBare(&supply[i])
+		supplyStore.Set([]byte(supply[i].Denom), bz)
+	}
 }
 
 // SetSupply sets the Supply to store
@@ -358,8 +389,8 @@ func (k BaseKeeper) MintCoins(ctx sdk.Context, moduleName string, amt sdk.Coins)
 	}
 
 	// update total supply
-	supply := k.GetSupply(ctx)
-	supply.Inflate(amt)
+	supply := k.GetTotalSupply(ctx)
+	supply = supply.Add(amt...)
 
 	k.setSupply(ctx, supply)
 
@@ -392,8 +423,9 @@ func (k BaseKeeper) BurnCoins(ctx sdk.Context, moduleName string, amt sdk.Coins)
 	}
 
 	// update total supply
-	supply := k.GetSupply(ctx)
-	supply.Deflate(amt)
+	supply := k.GetTotalSupply(ctx)
+	supply = supply.Sub(amt)
+
 	k.setSupply(ctx, supply)
 
 	logger := k.Logger(ctx)
@@ -437,13 +469,19 @@ func (k BaseKeeper) trackUndelegation(ctx sdk.Context, addr sdk.AccAddress, amt 
 	return nil
 }
 
-// MarshalSupply protobuf serializes a Supply interface
-func (k BaseKeeper) MarshalSupply(supplyI exported.SupplyI) ([]byte, error) {
-	return supplyI.MarshalX()
-}
+func (k BaseViewKeeper) IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool) {
+	store := ctx.KVStore(k.storeKey)
+	supplyStore := prefix.NewStore(store, types.SupplyKey)
 
-// UnmarshalSupply returns a Supply interface from raw encoded supply
-// bytes of a Proto-based Supply type
-func (k BaseKeeper) UnmarshalSupply(bz []byte) (exported.SupplyI, error) {
-	return types.UnmarshalSupplyX(bz)
+	iterator := supplyStore.Iterator(nil, nil)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var balance sdk.Coin
+		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &balance)
+
+		if cb(balance) {
+			break
+		}
+	}
 }
