@@ -13,8 +13,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/line/link-modules/x/wasm/client/cli"
-	"github.com/line/link-modules/x/wasm/client/rest"
+	"github.com/line/lbm-sdk/x/wasm/client/cli"
+	"github.com/line/lbm-sdk/x/wasm/client/rest"
 )
 
 var (

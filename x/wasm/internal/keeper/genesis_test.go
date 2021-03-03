@@ -28,7 +28,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/params"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
 const firstCodeID = 1

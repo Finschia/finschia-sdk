@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
 // NewWasmProposalHandler creates a new governance Handler for wasm proposals

@@ -16,13 +16,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/x/wasm/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 	"github.com/tendermint/tendermint/libs/kv"
 
-	"github.com/line/link-modules/x/wasm/internal/keeper"
+	"github.com/line/lbm-sdk/x/wasm/internal/keeper"
 )
 
 type testData struct {

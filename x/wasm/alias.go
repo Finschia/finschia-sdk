@@ -6,8 +6,8 @@
 package wasm
 
 import (
-	"github.com/line/link-modules/x/wasm/internal/keeper"
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/x/wasm/internal/keeper"
+	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
 const (

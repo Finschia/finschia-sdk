@@ -14,8 +14,8 @@ import (
 
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
 
-	"github.com/line/link-modules/x/coin"
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/x/coin"
+	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
 func TestEncoding(t *testing.T) {

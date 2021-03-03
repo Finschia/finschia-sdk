@@ -18,9 +18,9 @@ import (
 
 	"github.com/spf13/viper"
 
-	collectionModule "github.com/line/link-modules/x/collection"
-	tokenModule "github.com/line/link-modules/x/token"
-	"github.com/line/link-modules/x/wasm/linkwasmd/types"
+	collectionModule "github.com/line/lbm-sdk/x/collection"
+	tokenModule "github.com/line/lbm-sdk/x/token"
+	"github.com/line/lbm-sdk/x/wasm/linkwasmd/types"
 
 	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
 	tmhttp "github.com/tendermint/tendermint/rpc/client/http"
@@ -31,8 +31,8 @@ import (
 	tmctypes "github.com/tendermint/tendermint/rpc/core/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	wasmtypes "github.com/line/link-modules/x/wasm/internal/types"
-	"github.com/line/link-modules/x/wasm/linkwasmd/app"
+	wasmtypes "github.com/line/lbm-sdk/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/crypto/keys"

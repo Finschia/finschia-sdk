@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/gorilla/mux"
 
-	wasmUtils "github.com/line/link-modules/x/wasm/client/utils"
-	"github.com/line/link-modules/x/wasm/internal/types"
+	wasmUtils "github.com/line/lbm-sdk/x/wasm/client/utils"
+	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
 func registerTxRoutes(cliCtx context.CLIContext, r *mux.Router) {

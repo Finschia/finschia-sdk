@@ -18,7 +18,7 @@ import (
 	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting"
 	"github.com/cosmos/cosmos-sdk/x/gov"
 
-	wasmtypes "github.com/line/link-modules/x/wasm/internal/types"
+	wasmtypes "github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
 func TestGovRestHandlers(t *testing.T) {
