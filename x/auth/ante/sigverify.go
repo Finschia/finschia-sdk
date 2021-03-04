@@ -11,6 +11,7 @@ import (
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
 	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/crypto/keys/secp256r1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/crypto/types/multisig"
 	sdk "github.com/line/lbm-sdk/types"
@@ -478,6 +479,10 @@ func DefaultSigVerificationGasConsumer(
 
 	case *secp256k1.PubKey:
 		meter.ConsumeGas(params.SigVerifyCostSecp256k1, "ante verify: secp256k1")
+		return nil
+
+	case *secp256r1.PubKey:
+		meter.ConsumeGas(params.SigVerifyCostSecp256r1(), "ante verify: secp256r1")
 		return nil
 
 	case multisig.PubKey:
