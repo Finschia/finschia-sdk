@@ -12,11 +12,11 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting"
-	"github.com/cosmos/cosmos-sdk/x/gov"
+	"github.com/line/lbm-sdk/client/context"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	authvesting "github.com/line/lbm-sdk/x/auth/vesting"
+	"github.com/line/lbm-sdk/x/gov"
 
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/internal/types"
 )

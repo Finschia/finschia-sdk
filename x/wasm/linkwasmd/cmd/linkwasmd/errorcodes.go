@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/errors"
 	"github.com/spf13/cobra"
 )
 

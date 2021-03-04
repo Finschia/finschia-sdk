@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
-	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
+	// authexported "github.com/line/lbm-sdk/x/auth/exported"
 	// "github.com/CosmWasm/wasmd/x/wasm/internal/types"
 )
 

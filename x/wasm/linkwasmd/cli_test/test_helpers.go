@@ -22,7 +22,7 @@ import (
 	tokenModule "github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/wasm/linkwasmd/types"
 
-	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
+	clientkeys "github.com/line/lbm-sdk/client/keys"
 	tmhttp "github.com/tendermint/tendermint/rpc/client/http"
 
 	"github.com/stretchr/testify/require"
@@ -34,16 +34,16 @@ import (
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/internal/types"
 	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/keys"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/cosmos/cosmos-sdk/tests"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-	"github.com/cosmos/cosmos-sdk/x/slashing"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/crypto/keys"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/tests"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth"
+	"github.com/line/lbm-sdk/x/distribution"
+	"github.com/line/lbm-sdk/x/gov"
+	"github.com/line/lbm-sdk/x/slashing"
+	"github.com/line/lbm-sdk/x/staking"
 )
 
 const (

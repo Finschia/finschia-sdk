@@ -7,15 +7,15 @@ import (
 
 	wasm "github.com/CosmWasm/wasmvm"
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/cosmos/cosmos-sdk/x/params/subspace"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/prefix"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/auth"
+	"github.com/line/lbm-sdk/x/distribution"
+	"github.com/line/lbm-sdk/x/params"
+	"github.com/line/lbm-sdk/x/params/subspace"
+	"github.com/line/lbm-sdk/x/staking"
 	"github.com/pkg/errors"
 	"github.com/tendermint/tendermint/crypto"
 
@@ -23,7 +23,7 @@ import (
 )
 
 // GasMultiplier is how many cosmwasm gas points = 1 sdk gas point
-// SDK reference costs can be found here: https://github.com/cosmos/cosmos-sdk/blob/02c6c9fafd58da88550ab4d7d494724a477c8a68/store/types/gas.go#L153-L164
+// SDK reference costs can be found here: https://github.com/line/lbm-sdk/blob/02c6c9fafd58da88550ab4d7d494724a477c8a68/store/types/gas.go#L153-L164
 // A write at ~3000 gas and ~200us = 10 gas per us (microsecond) cpu/io
 // Rough timing have 88k gas at 90us, which is equal to 1k sdk gas... (one read)
 //

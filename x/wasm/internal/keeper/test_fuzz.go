@@ -3,7 +3,7 @@ package keeper
 import (
 	"encoding/json"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 	fuzz "github.com/google/gofuzz"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 	tmBytes "github.com/tendermint/tendermint/libs/bytes"

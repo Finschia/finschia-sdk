@@ -8,8 +8,8 @@ import (
 	"os"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkErrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

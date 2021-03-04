@@ -3,7 +3,7 @@ package types
 import (
 	"encoding/json"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 )
 

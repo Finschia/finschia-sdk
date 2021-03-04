@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	wasmvm "github.com/CosmWasm/wasmvm"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var (

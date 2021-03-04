@@ -3,7 +3,7 @@ module github.com/line/lbm-sdk/x/wasm/linkwasmd
 go 1.13
 
 require (
-	github.com/cosmos/cosmos-sdk v0.39.2
+	github.com/line/lbm-sdk v0.39.2
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/line/lbm-sdk v0.2.0
 	github.com/onsi/ginkgo v1.13.0 // indirect
@@ -19,6 +19,6 @@ require (
 
 replace github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
 
-replace github.com/cosmos/cosmos-sdk => github.com/line/cosmos-sdk v0.39.2-0.2.0
+replace github.com/line/lbm-sdk => github.com/line/cosmos-sdk v0.39.2-0.2.0
 
 replace github.com/line/lbm-sdk => ../../..

@@ -17,15 +17,15 @@ src := $(wildcard app/*.go) $(wildcard cmd/*.go) $(wildcard types/*.go)
 ########################################
 ### Process linker flags
 
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=link \
-		  -X github.com/cosmos/cosmos-sdk/version.ServerName=linkd \
-		  -X github.com/cosmos/cosmos-sdk/version.ClientName=linkcli \
-		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
-		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
-		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)"
+ldflags = -X github.com/line/lbm-sdk/version.Name=link \
+		  -X github.com/line/lbm-sdk/version.ServerName=linkd \
+		  -X github.com/line/lbm-sdk/version.ClientName=linkcli \
+		  -X github.com/line/lbm-sdk/version.Version=$(VERSION) \
+		  -X github.com/line/lbm-sdk/version.Commit=$(COMMIT) \
+		  -X "github.com/line/lbm-sdk/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq ($(WITH_CLEVELDB),yes)
-  ldflags += -X github.com/cosmos/cosmos-sdk/types.DBBackend=cleveldb
+  ldflags += -X github.com/line/lbm-sdk/types.DBBackend=cleveldb
 endif
 ldflags += $(LDFLAGS)
 ldflags := $(strip $(ldflags))

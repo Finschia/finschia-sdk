@@ -18,8 +18,8 @@ import (
 	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/tests"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/tests"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestLinkCLIWasmEscrow(t *testing.T) {

@@ -8,15 +8,15 @@ import (
 	"testing"
 
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/x/auth"
+	"github.com/line/lbm-sdk/x/distribution"
+	"github.com/line/lbm-sdk/x/staking"
+	"github.com/line/lbm-sdk/x/staking/types"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 type StakingInitMsg struct {

@@ -5,11 +5,11 @@ import (
 	"os"
 	"path"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/keys"
-	"github.com/cosmos/cosmos-sdk/client/lcd"
-	"github.com/cosmos/cosmos-sdk/client/rpc"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/keys"
+	"github.com/line/lbm-sdk/client/lcd"
+	"github.com/line/lbm-sdk/client/rpc"
 	"github.com/line/lbm-sdk/x/account"
 	authclient "github.com/line/lbm-sdk/x/account/client"
 
@@ -19,10 +19,10 @@ import (
 	"github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/libs/cli"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth"
 
-	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/coin"
 	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app"
 	"github.com/line/lbm-sdk/x/wasm/linkwasmd/types"

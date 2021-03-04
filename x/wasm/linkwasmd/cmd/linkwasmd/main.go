@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/version"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/version"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -19,13 +19,13 @@ import (
 
 	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app"
 
-	"github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/server"
-	"github.com/cosmos/cosmos-sdk/store"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/server"
+	"github.com/line/lbm-sdk/store"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth"
+	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
+	"github.com/line/lbm-sdk/x/staking"
 
 	"github.com/line/lbm-sdk/x/wasm/linkwasmd/types"
 )

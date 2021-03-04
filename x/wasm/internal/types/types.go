@@ -3,11 +3,11 @@ package types
 import (
 	"encoding/json"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	tmBytes "github.com/tendermint/tendermint/libs/bytes"
 
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const defaultMemoryCacheSize uint32 = 100 // in MiB

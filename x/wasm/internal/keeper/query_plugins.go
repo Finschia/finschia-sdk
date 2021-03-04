@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/bank"
+	"github.com/line/lbm-sdk/x/distribution"
+	"github.com/line/lbm-sdk/x/staking"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
@@ -205,7 +205,7 @@ func sdkToDelegations(ctx sdk.Context, keeper staking.Keeper, delegations []stak
 
 	for i, d := range delegations {
 		// shares to amount logic comes from here:
-		// https://github.com/cosmos/cosmos-sdk/blob/v0.38.3/x/staking/keeper/querier.go#L404
+		// https://github.com/line/lbm-sdk/blob/v0.38.3/x/staking/keeper/querier.go#L404
 		val, found := keeper.GetValidator(ctx, d.ValidatorAddress)
 		if !found {
 			return nil, sdkerrors.Wrap(staking.ErrNoValidatorFound, "can't load validator for delegation")
@@ -260,7 +260,7 @@ func sdkToFullDelegation(ctx sdk.Context, keeper staking.Keeper, distKeeper dist
 }
 
 // FIXME: simplify this enormously when
-// https://github.com/cosmos/cosmos-sdk/issues/7466 is merged
+// https://github.com/line/lbm-sdk/issues/7466 is merged
 func getAccumulatedRewards(ctx sdk.Context, distKeeper distribution.Keeper, delegation staking.Delegation) ([]wasmTypes.Coin, error) {
 	// Try to get *delegator* reward info!
 	params := distribution.QueryDelegationRewardsParams{
