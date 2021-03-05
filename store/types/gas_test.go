@@ -96,3 +96,17 @@ func TestAddUint64Overflow(t *testing.T) {
 		)
 	}
 }
+
+func TestTransientGasConfig(t *testing.T) {
+	t.Parallel()
+	config := TransientGasConfig()
+	require.Equal(t, config, GasConfig{
+		HasCost:          100,
+		DeleteCost:       100,
+		ReadCostFlat:     100,
+		ReadCostPerByte:  0,
+		WriteCostFlat:    200,
+		WriteCostPerByte: 3,
+		IterNextCostFlat: 3,
+	})
+}
