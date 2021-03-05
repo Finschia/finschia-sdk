@@ -35,6 +35,29 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
+## [v1.0.0]
+
+### Features
+* (client) [\#6](https://github.com/line/lbm-sdk/pull/6) Add codespace to broadcast response
+* (client) [\#15](https://github.com/line/lbm-sdk/pull/15) Add custom query with check state
+* (baseapp) [\#61](https://github.com/line/lbm-sdk/pull/61) Add `idle-timeout` to rest server
+* (metric) [\#67](https://github.com/line/lbm-sdk/pull/67) Add a prometheus option and metrics
+* (metric) [\#69](https://github.com/line/lbm-sdk/pull/69) Add metrics about signature cache
+* (baseapp) [\#71](https://github.com/line/lbm-sdk/pull/71) Make cache size to be configurable
+
+### Improvements
+* (deps) Use [Linemint v1.0.0](https://github.com/line/linemint/releases/tag/v1.0.0) instead of Tendermint v0.33.9
+* (abci) [\#63](https://github.com/line/lbm-sdk/pull/63) Signature verification cache
+* (abci) [\#65](https://github.com/line/lbm-sdk/pull/65) Implement `validateGasWanted()`
+* (baseapp) [\#68](https://github.com/line/lbm-sdk/pull/68) Enable lazy loading
+* (deps) [\#77](https://github.com/line/lbm-sdk/pull/77) Revise module path
+
+### Bug Fixes
+* (client) [\#9](https://github.com/line/lbm-sdk/pull/9) Query error
+* (client) [\#10](https://github.com/line/lbm-sdk/pull/10) Check internal codespace
+* (client) [\#14](https://github.com/line/lbm-sdk/pull/14) Send response with 404 status when quering non-exist account
+* (abci) [\#66](https://github.com/line/lbm-sdk/pull/66) Fix not to skip sigverify then recheck
+
 ## [v0.39.2]
 
 ### Features
