@@ -416,7 +416,11 @@ func assertAttribute(t *testing.T, key string, value string, attr kv.Pair) {
 }
 
 func assertCodeList(t *testing.T, q sdk.Querier, ctx sdk.Context, expectedNum int) {
-	bz, sdkerr := q(ctx, []string{QueryListCode}, abci.RequestQuery{})
+	req := types.QueryCodesRequest{}
+	bs, err := types.ModuleCdc.MarshalJSON(req)
+	require.NoError(t, err)
+	data := abci.RequestQuery{Data: bs}
+	bz, sdkerr := q(ctx, []string{QueryListCode}, data)
 	require.NoError(t, sdkerr)
 
 	if len(bz) == 0 {
@@ -424,11 +428,11 @@ func assertCodeList(t *testing.T, q sdk.Querier, ctx sdk.Context, expectedNum in
 		return
 	}
 
-	var res []CodeInfo
-	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
+	var res types.QueryCodesResponse
+	err = types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
-	assert.Equal(t, expectedNum, len(res))
+	assert.Equal(t, expectedNum, len(res.CodeInfos))
 }
 
 func assertCodeBytes(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64, expectedBytes []byte) {
@@ -450,7 +454,12 @@ func assertCodeBytes(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64
 }
 
 func assertContractList(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64, addrs []string) {
-	bz, sdkerr := q(ctx, []string{QueryListContractByCode, fmt.Sprintf("%d", codeID)}, abci.RequestQuery{})
+	req := types.QueryContractsByCodeRequest{CodeID: codeID}
+	bs, err := types.ModuleCdc.MarshalJSON(req)
+	require.NoError(t, err)
+	data := abci.RequestQuery{Data: bs}
+
+	bz, sdkerr := q(ctx, []string{QueryListContractByCode, fmt.Sprintf("%d", codeID)}, data)
 	require.NoError(t, sdkerr)
 
 	if len(bz) == 0 {
@@ -458,12 +467,12 @@ func assertContractList(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uin
 		return
 	}
 
-	var res []ContractInfoResponse
-	err := types.ModuleCdc.UnmarshalJSON(bz, &res)
+	var res types.QueryContractsByCodeResponse
+	err = types.ModuleCdc.UnmarshalJSON(bz, &res)
 	require.NoError(t, err)
 
-	var hasAddrs = make([]string, len(res))
-	for i, r := range res {
+	var hasAddrs = make([]string, len(res.ContractInfos))
+	for i, r := range res.ContractInfos {
 		hasAddrs[i] = r.GetAddress().String()
 	}
 

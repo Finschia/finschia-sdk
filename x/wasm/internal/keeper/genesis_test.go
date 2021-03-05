@@ -84,6 +84,7 @@ func TestGenesisExportImport(t *testing.T) {
 
 	// reset contract history in source DB for comparison with dest DB
 	srcKeeper.IterateContractInfo(srcCtx, func(address sdk.AccAddress, info types.ContractInfo) bool {
+		srcKeeper.deleteContractSecondIndex(srcCtx, address, &info)
 		info.ResetFromGenesis(srcCtx)
 		srcKeeper.setContractInfo(srcCtx, address, &info)
 		return false

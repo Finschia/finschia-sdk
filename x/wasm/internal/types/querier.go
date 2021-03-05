@@ -162,9 +162,28 @@ type PageResponse struct {
 	Total   uint64
 }
 
+type QueryContractsByCodeRequest struct {
+	CodeID     uint64
+	Pagination *PageRequest
+}
+
+type QueryCodesRequest struct {
+	Pagination *PageRequest
+}
+
 type QueryContractHistoryRequest struct {
 	Address    sdk.AccAddress
 	Pagination *PageRequest
+}
+
+type QueryCodesResponse struct {
+	CodeInfos  []CodeInfoResponse
+	Pagination *PageResponse
+}
+
+type QueryContractsByCodeResponse struct {
+	ContractInfos []ContractInfoResponse
+	Pagination    *PageResponse
 }
 
 type QueryContractHistoryResponse struct {

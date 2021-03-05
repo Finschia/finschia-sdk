@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"sort"
+	"encoding/binary"
 	"strconv"
 
 	"github.com/line/lbm-sdk/codec"
@@ -35,7 +35,7 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 		case QueryGetContract:
 			return queryContractInfo(ctx, path[1], keeper)
 		case QueryListContractByCode:
-			return queryContractListByCode(ctx, path[1], keeper)
+			return queryContractListByCode(ctx, req, keeper)
 		case QueryGetContractState:
 			if len(path) < 3 {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown data query endpoint")
@@ -44,7 +44,7 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 		case QueryGetCode:
 			return queryCode(ctx, path[1], keeper)
 		case QueryListCode:
-			return queryCodeList(ctx, keeper)
+			return queryCodeList(ctx, req, keeper)
 		case QueryContractHistory:
 			return queryContractHistory(ctx, path[1], req, keeper)
 		default:
@@ -76,28 +76,18 @@ func redact(info *types.ContractInfo) {
 	info.Created = nil
 }
 
-func queryContractListByCode(ctx sdk.Context, codeIDstr string, keeper Keeper) ([]byte, error) {
-	codeID, err := strconv.ParseUint(codeIDstr, 10, 64)
+func queryContractListByCode(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, error) {
+	var params types.QueryContractsByCodeRequest
+
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
+	res, err := keeper.contractsByCode(ctx, &params)
 	if err != nil {
 		return nil, err
 	}
 
-	var contracts []types.ContractInfoResponse
-	keeper.IterateContractInfo(ctx, func(addr sdk.AccAddress, info types.ContractInfo) bool {
-		if info.CodeID == codeID {
-			// and add the address
-			infoWithAddress := types.NewContractInfoResponse(info, addr)
-			contracts = append(contracts, infoWithAddress)
-		}
-		return false
-	})
-
-	// now we sort them by AbsoluteTxPosition
-	sort.Slice(contracts, func(i, j int) bool {
-		return contracts[i].LessThan(contracts[j])
-	})
-
-	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, contracts)
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, res)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -165,14 +155,18 @@ func queryCode(ctx sdk.Context, codeIDstr string, keeper Keeper) ([]byte, error)
 	return bz, nil
 }
 
-func queryCodeList(ctx sdk.Context, keeper Keeper) ([]byte, error) {
-	var info []types.CodeInfoResponse
-	keeper.IterateCodeInfos(ctx, func(i uint64, res types.CodeInfo) bool {
-		info = append(info, types.NewCodeInfoResponse(i, res, nil))
-		return false
-	})
+func queryCodeList(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, error) {
+	var params types.QueryCodesRequest
+	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
+	}
 
-	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, info)
+	res, err := keeper.codes(ctx, &params)
+	if err != nil {
+		return nil, err
+	}
+
+	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, res)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -199,6 +193,49 @@ func queryContractHistory(ctx sdk.Context, _ string, req abci.RequestQuery, keep
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
 	return bz, nil
+}
+
+func (k Keeper) codes(ctx sdk.Context, req *types.QueryCodesRequest) (*types.QueryCodesResponse, error) {
+	r := make([]types.CodeInfoResponse, 0)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.CodeKeyPrefix)
+	pageRes, err := FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		if accumulate {
+			var c types.CodeInfo
+			if err := k.cdc.UnmarshalBinaryBare(value, &c); err != nil {
+				return false, err
+			}
+			r = append(r, types.NewCodeInfoResponse(binary.BigEndian.Uint64(key), c, nil))
+		}
+		return true, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &types.QueryCodesResponse{CodeInfos: r, Pagination: pageRes}, nil
+}
+
+func (k Keeper) contractsByCode(ctx sdk.Context, req *types.QueryContractsByCodeRequest) (*types.QueryContractsByCodeResponse, error) {
+	r := make([]types.ContractInfoResponse, 0)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetContractByCodeIDSecondaryIndexPrefix(req.CodeID))
+	pageRes, err := FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+		var contractAddr sdk.AccAddress = key[types.AbsoluteTxPositionLen:]
+		c := k.GetContractInfo(ctx, contractAddr)
+		if c == nil {
+			return false, types.ErrNotFound
+		}
+		c.Created = nil // redact
+		if accumulate {
+			r = append(r, types.NewContractInfoResponse(*c, contractAddr))
+		}
+		return true, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &types.QueryContractsByCodeResponse{
+		ContractInfos: r,
+		Pagination:    pageRes,
+	}, nil
 }
 
 func (k Keeper) contractHistory(ctx sdk.Context, req *types.QueryContractHistoryRequest) (*types.QueryContractHistoryResponse, error) {

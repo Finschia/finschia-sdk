@@ -158,7 +158,7 @@ func (c *ContractInfo) ResetFromGenesis(ctx sdk.Context) ContractCodeHistoryEntr
 // AbsoluteTxPosition can be used to sort contracts
 type AbsoluteTxPosition struct {
 	// BlockHeight is the block the contract was created at
-	BlockHeight int64
+	BlockHeight uint64
 	// TxIndex is a monotonic counter within the block (actual transaction index, or gas consumed)
 	TxIndex uint64
 }
@@ -174,6 +174,20 @@ func (a *AbsoluteTxPosition) LessThan(b *AbsoluteTxPosition) bool {
 	return a.BlockHeight < b.BlockHeight || (a.BlockHeight == b.BlockHeight && a.TxIndex < b.TxIndex)
 }
 
+// AbsoluteTxPositionLen number of elements in byte representation
+const AbsoluteTxPositionLen = 16
+
+// Bytes encodes the object into a 16 byte representation with big endian block height and tx index.
+func (a *AbsoluteTxPosition) Bytes() []byte {
+	if a == nil {
+		panic("object must not be nil")
+	}
+	r := make([]byte, AbsoluteTxPositionLen)
+	copy(r[0:], sdk.Uint64ToBigEndian(a.BlockHeight))
+	copy(r[8:], sdk.Uint64ToBigEndian(a.TxIndex))
+	return r
+}
+
 // NewAbsoluteTxPosition gets a timestamp from the context
 func NewAbsoluteTxPosition(ctx sdk.Context) *AbsoluteTxPosition {
 	// we must safely handle nil gas meters
@@ -183,7 +197,7 @@ func NewAbsoluteTxPosition(ctx sdk.Context) *AbsoluteTxPosition {
 		index = meter.GasConsumed()
 	}
 	return &AbsoluteTxPosition{
-		BlockHeight: ctx.BlockHeight(),
+		BlockHeight: uint64(ctx.BlockHeight()),
 		TxIndex:     index,
 	}
 }

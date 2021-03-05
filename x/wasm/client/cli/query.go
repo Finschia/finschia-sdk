@@ -45,7 +45,7 @@ func GetQueryCmd(cdc *codec.Codec) *cobra.Command {
 
 // GetCmdListCode lists all wasm code uploaded
 func GetCmdListCode(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "list-code",
 		Short: "List all wasm bytecode on the chain",
 		Long:  "List all wasm bytecode on the chain",
@@ -53,8 +53,20 @@ func GetCmdListCode(cdc *codec.Codec) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliCtx := context.NewCLIContext().WithCodec(cdc)
 
+			pageReq, err := utils.ReadPageRequest(withPageKeyDecoded(cmd.Flags()))
+			if err != nil {
+				return err
+			}
+			data := &types.QueryCodesRequest{
+				Pagination: pageReq,
+			}
+			bs, err := cliCtx.Codec.MarshalJSON(data)
+			if err != nil {
+				return err
+			}
+
 			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryListCode)
-			res, _, err := cliCtx.Query(route)
+			res, _, err := cliCtx.QueryWithData(route, bs)
 			if err != nil {
 				return err
 			}
@@ -62,11 +74,14 @@ func GetCmdListCode(cdc *codec.Codec) *cobra.Command {
 			return nil
 		},
 	}
+
+	utils.AddPaginationFlagsToCmd(cmd, "list codes")
+	return cmd
 }
 
 // GetCmdListContractByCode lists all wasm code uploaded for given code id
 func GetCmdListContractByCode(cdc *codec.Codec) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "list-contract-by-code [code_id]",
 		Short: "List wasm all bytecode on the chain for given code id",
 		Long:  "List wasm all bytecode on the chain for given code id",
@@ -79,8 +94,20 @@ func GetCmdListContractByCode(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			route := fmt.Sprintf("custom/%s/%s/%d", types.QuerierRoute, keeper.QueryListContractByCode, codeID)
-			res, _, err := cliCtx.Query(route)
+			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryListContractByCode)
+			pageReq, err := utils.ReadPageRequest(withPageKeyDecoded(cmd.Flags()))
+			if err != nil {
+				return err
+			}
+			data := &types.QueryContractsByCodeRequest{
+				CodeID:     codeID,
+				Pagination: pageReq,
+			}
+			bs, err := cliCtx.Codec.MarshalJSON(data)
+			if err != nil {
+				return err
+			}
+			res, _, err := cliCtx.QueryWithData(route, bs)
 			if err != nil {
 				return err
 			}
@@ -88,6 +115,8 @@ func GetCmdListContractByCode(cdc *codec.Codec) *cobra.Command {
 			return nil
 		},
 	}
+	utils.AddPaginationFlagsToCmd(cmd, "list contracts by code")
+	return cmd
 }
 
 // GetCmdQueryCode returns the bytecode for a given contract
