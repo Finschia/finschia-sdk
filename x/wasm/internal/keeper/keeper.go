@@ -20,6 +20,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tendermint/tendermint/crypto"
 
+	storeTypes "github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/x/wasm/client/utils"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )

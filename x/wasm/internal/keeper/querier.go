@@ -13,6 +13,21 @@ import (
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
+const (
+	QueryListContractByCode = "list-contracts-by-code"
+	QueryGetContract        = "contract-info"
+	QueryGetContractState   = "contract-state"
+	QueryGetCode            = "code"
+	QueryListCode           = "list-code"
+	QueryContractHistory    = "contract-history"
+)
+
+const (
+	QueryMethodContractStateSmart = "smart"
+	QueryMethodContractStateAll   = "all"
+	QueryMethodContractStateRaw   = "raw"
+)
+
 // NewQuerier creates a new querier
 func NewQuerier(keeper Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
@@ -31,7 +46,7 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 		case QueryListCode:
 			return queryCodeList(ctx, keeper)
 		case QueryContractHistory:
-			return queryContractHistory2(ctx, path[1], req, keeper)
+			return queryContractHistory(ctx, path[1], req, keeper)
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown data query endpoint")
 		}
@@ -164,13 +179,13 @@ func queryCodeList(ctx sdk.Context, keeper Keeper) ([]byte, error) {
 	return bz, nil
 }
 
-func queryContractHistory2(ctx sdk.Context, _ string, req abci.RequestQuery, keeper Keeper) ([]byte, error) {
+func queryContractHistory(ctx sdk.Context, _ string, req abci.RequestQuery, keeper Keeper) ([]byte, error) {
 	var params types.QueryContractHistoryRequest
 
 	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
-	res, err := keeper.ContractHistory(ctx, &params)
+	res, err := keeper.contractHistory(ctx, &params)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +201,7 @@ func queryContractHistory2(ctx sdk.Context, _ string, req abci.RequestQuery, kee
 	return bz, nil
 }
 
-func (k Keeper) ContractHistory(ctx sdk.Context, req *types.QueryContractHistoryRequest) (*types.QueryContractHistoryResponse, error) {
+func (k Keeper) contractHistory(ctx sdk.Context, req *types.QueryContractHistoryRequest) (*types.QueryContractHistoryResponse, error) {
 	r := make([]types.ContractCodeHistoryEntry, 0)
 
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetContractCodeHistoryElementPrefix(req.Address))
