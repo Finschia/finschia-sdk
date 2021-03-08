@@ -52,6 +52,9 @@ var (
 	NewBurnPermission   = types.NewBurnPermission
 	NewModifyPermission = types.NewModifyPermission
 
+	NewMsgEncodeHandler = keeper.NewMsgEncodeHandler
+	NewQueryEncoder     = querier.NewQueryEncoder
+
 	NewChanges = types.NewChanges
 	NewChange  = types.NewChange
 
