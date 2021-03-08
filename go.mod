@@ -4,6 +4,7 @@ module github.com/line/lbm-sdk
 
 require (
 	github.com/99designs/keyring v1.1.6
+	github.com/CosmWasm/wasmvm v0.12.0
 	github.com/bartekn/go-bip39 v0.0.0-20171116152956-a05967ea095d
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.20.1-beta
@@ -13,6 +14,7 @@ require (
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/mock v1.3.1-0.20190508161146-9fa652df1129
 	github.com/golang/snappy v0.0.2 // indirect
+	github.com/google/gofuzz v1.0.0
 	github.com/gorilla/handlers v1.4.2
 	github.com/gorilla/mux v1.7.4
 	github.com/hashicorp/golang-lru v0.5.4
@@ -45,6 +47,7 @@ require (
 )
 
 replace (
+	github.com/CosmWasm/wasmvm => github.com/line/wasmvm v0.12.0-0.1.0
 	github.com/keybase/go-keychain => github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4
 	github.com/tendermint/iavl v0.14.3 => github.com/line/iavl v0.14.3-0.1.0
 	github.com/tendermint/tendermint v0.33.9 => github.com/line/linemint v1.0.0
