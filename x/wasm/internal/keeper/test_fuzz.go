@@ -3,8 +3,8 @@ package keeper
 import (
 	"encoding/json"
 
-	sdk "github.com/line/lbm-sdk/types"
 	fuzz "github.com/google/gofuzz"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 	tmBytes "github.com/tendermint/tendermint/libs/bytes"
 )

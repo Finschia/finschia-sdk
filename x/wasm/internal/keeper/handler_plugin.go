@@ -7,9 +7,9 @@ import (
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/coin"
 	"github.com/line/lbm-sdk/x/distribution"
 	"github.com/line/lbm-sdk/x/staking"
-	"github.com/line/lbm-sdk/x/coin"
 
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
