@@ -1,4 +1,4 @@
-package v042_test
+package v043_test
 
 import (
 	"bytes"
@@ -10,7 +10,7 @@ import (
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	v040slashing "github.com/line/lbm-sdk/x/slashing/legacy/v040"
-	v042slashing "github.com/line/lbm-sdk/x/slashing/legacy/v042"
+	v043slashing "github.com/line/lbm-sdk/x/slashing/legacy/v043"
 	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
@@ -52,7 +52,7 @@ func TestStoreMigration(t *testing.T) {
 	}
 
 	// Run migrations.
-	err := v042slashing.MigrateStore(ctx, slashingKey)
+	err := v043slashing.MigrateStore(ctx, slashingKey)
 	require.NoError(t, err)
 
 	// Make sure the new keys are set and old keys are deleted.

@@ -1,4 +1,4 @@
-package v042_test
+package v043_test
 
 import (
 	"bytes"
@@ -12,7 +12,7 @@ import (
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	v040gov "github.com/line/lbm-sdk/x/gov/legacy/v040"
-	v042gov "github.com/line/lbm-sdk/x/gov/legacy/v042"
+	v043gov "github.com/line/lbm-sdk/x/gov/legacy/v043"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -75,7 +75,7 @@ func TestStoreMigration(t *testing.T) {
 	}
 
 	// Run migrations.
-	err := v042gov.MigrateStore(ctx, govKey, cdc)
+	err := v043gov.MigrateStore(ctx, govKey, cdc)
 	require.NoError(t, err)
 
 	// Make sure the new keys are set and old keys are deleted.

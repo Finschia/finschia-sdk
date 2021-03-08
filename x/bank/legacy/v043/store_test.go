@@ -1,4 +1,4 @@
-package v042_test
+package v043_test
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
 	v040bank "github.com/line/lbm-sdk/x/bank/legacy/v040"
-	v042bank "github.com/line/lbm-sdk/x/bank/legacy/v042"
+	v043bank "github.com/line/lbm-sdk/x/bank/legacy/v043"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -29,7 +29,7 @@ func TestSupplyMigration(t *testing.T) {
 	store.Set(v040bank.SupplyKey, encCfg.Marshaler.MustMarshalBinaryBare(&oldSupply))
 
 	// Run migration.
-	err := v042bank.MigrateStore(ctx, bankKey, encCfg.Marshaler)
+	err := v043bank.MigrateStore(ctx, bankKey, encCfg.Marshaler)
 	require.NoError(t, err)
 
 	// New supply is indexed by denom.
@@ -55,7 +55,7 @@ func TestBalanceKeysMigration(t *testing.T) {
 	oldKey := append(append(v040bank.BalancesPrefix, addr...), denom...)
 	store.Set(oldKey, value)
 
-	err := v042bank.MigrateStore(ctx, bankKey, encCfg.Marshaler)
+	err := v043bank.MigrateStore(ctx, bankKey, encCfg.Marshaler)
 	require.NoError(t, err)
 
 	newKey := append(types.CreateAccountBalancesPrefix(addr.Bytes()), denom...)
