@@ -5,10 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/line/lbm-sdk/x/gov"
 	"github.com/line/lbm-sdk/x/account"
 	"github.com/line/lbm-sdk/x/coin"
 	"github.com/line/lbm-sdk/x/contract"
+	"github.com/line/lbm-sdk/x/gov"
 	"github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/wasm"
 	wasmclient "github.com/line/lbm-sdk/x/wasm/client"
@@ -303,7 +303,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer))
+	app.SetAnteHandler(auth.NewAnteHandler(app.accountKeeper, app.supplyKeeper, auth.DefaultSigVerificationGasConsumer, nil))
 	app.SetEndBlocker(app.EndBlocker)
 
 	if loadLatest {

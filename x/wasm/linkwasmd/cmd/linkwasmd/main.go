@@ -22,6 +22,7 @@ import (
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/server"
 	"github.com/line/lbm-sdk/store"
+	storecache "github.com/line/lbm-sdk/store/cache"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/auth"
 	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
@@ -117,11 +118,11 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer) abci.Application
 	if err != nil {
 		panic(err)
 	}
-
 	var cache sdk.MultiStorePersistentCache
 
 	if viper.GetBool(server.FlagInterBlockCache) {
-		cache = store.NewCommitKVStoreCacheManager()
+		cache = store.NewCommitKVStoreCacheManager(viper.GetInt(server.FlagInterBlockCacheSize),
+			storecache.NopMetricsProvider())
 	}
 
 	return app.NewLinkApp(

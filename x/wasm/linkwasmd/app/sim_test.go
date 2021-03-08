@@ -18,6 +18,7 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/simapp/helpers"
 	"github.com/line/lbm-sdk/store"
+	"github.com/line/lbm-sdk/store/cache"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/auth"
 	distr "github.com/line/lbm-sdk/x/distribution"
@@ -48,8 +49,8 @@ func fauxMerkleModeOpt(bapp *baseapp.BaseApp) {
 
 // interBlockCacheOpt returns a BaseApp option function that sets the persistent
 // inter-block write-through cache.
-func interBlockCacheOpt() func(*baseapp.BaseApp) {
-	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager())
+func interBlockCacheOpt(cacheSize int) func(*baseapp.BaseApp) {
+	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager(cacheSize, cache.NopMetricsProvider()))
 }
 
 func TestFullAppSimulation(t *testing.T) {
@@ -267,7 +268,7 @@ func TestAppStateDeterminism(t *testing.T) {
 
 			db := dbm.NewMemDB()
 
-			app := NewLinkApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, interBlockCacheOpt())
+			app := NewLinkApp(logger, db, nil, true, map[int64]bool{}, simapp.FlagPeriodValue, interBlockCacheOpt(1000))
 
 			fmt.Printf(
 				"running non-determinism simulation; seed %d: %d/%d, attempt: %d/%d\n",
