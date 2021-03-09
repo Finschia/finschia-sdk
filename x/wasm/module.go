@@ -5,21 +5,30 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/client/context"
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/server"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 
 	"github.com/line/lbm-sdk/x/wasm/client/cli"
 	"github.com/line/lbm-sdk/x/wasm/client/rest"
+	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
 var (
 	_ module.AppModule      = AppModule{}
 	_ module.AppModuleBasic = AppModuleBasic{}
+)
+
+// Module init related flags
+const (
+	flagWasmMemoryCacheSize = "wasm.memory_cache_size"
+	flagWasmQueryGasLimit   = "wasm.query_gas_limit"
 )
 
 // AppModuleBasic defines the basic application module used by the wasm module.
@@ -137,4 +146,19 @@ func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
 // updates.
 func (AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
 	return []abci.ValidatorUpdate{}
+}
+
+func AddModuleInitFlags(startCmd *cobra.Command) {
+	defaults := DefaultWasmConfig()
+	startCmd.Flags().Uint32(flagWasmMemoryCacheSize, defaults.MemoryCacheSize, "Sets the size in MiB (NOT bytes) of an in-memory cache for Wasm modules. Set to 0 to disable.")
+	startCmd.Flags().Uint64(flagWasmQueryGasLimit, defaults.SmartQueryGasLimit, "Set the max gas that can be spent on executing a query with a Wasm contract")
+}
+
+func ReadWasmConfig() types.WasmConfig {
+	cfg := types.DefaultWasmConfig()
+	cfg.MemoryCacheSize = viper.GetUint32(flagWasmMemoryCacheSize)
+	cfg.SmartQueryGasLimit = viper.GetUint64(flagWasmQueryGasLimit)
+	cfg.ContractDebugMode = viper.GetBool(server.FlagTrace)
+
+	return cfg
 }
