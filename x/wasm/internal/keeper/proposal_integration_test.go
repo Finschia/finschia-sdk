@@ -461,10 +461,10 @@ func TestUpdateParamsProposal(t *testing.T) {
 			assert.True(t, spec.expUploadConfig.Equals(wasmKeeper.getUploadAccessConfig(ctx)),
 				"got %#v not %#v", wasmKeeper.getUploadAccessConfig(ctx), spec.expUploadConfig)
 			assert.Equal(t, spec.expInstantiateType, wasmKeeper.getInstantiateAccessConfig(ctx))
-			assert.Equal(t, spec.expMaxWasmCodeSize, wasmKeeper.GetMaxWasmCodeSize(ctx))
-			assert.Equal(t, spec.expMaxGas, wasmKeeper.GetMaxGas(ctx))
-			assert.Equal(t, spec.expInstanceCost, wasmKeeper.GetInstanceCost(ctx))
-			assert.Equal(t, spec.expCompileCost, wasmKeeper.GetCompileCost(ctx))
+			assert.Equal(t, spec.expMaxWasmCodeSize, wasmKeeper.getMaxWasmCodeSize(ctx))
+			assert.Equal(t, spec.expMaxGas, wasmKeeper.getMaxGas(ctx))
+			assert.Equal(t, spec.expInstanceCost, wasmKeeper.getInstanceCost(ctx))
+			assert.Equal(t, spec.expCompileCost, wasmKeeper.getCompileCost(ctx))
 		})
 	}
 }
