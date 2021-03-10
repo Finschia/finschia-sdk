@@ -30,9 +30,6 @@ import (
 // Please not that all gas prices returned to the wasmer engine should have this multiplied
 const GasMultiplier uint64 = 100
 
-// CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
-const CompileCost uint64 = 2
-
 // Keeper will have a reference to Wasmer with it's own data directory.
 type Keeper struct {
 	storeKey      sdk.StoreKey
@@ -110,6 +107,13 @@ func (k Keeper) GetMaxGas(ctx sdk.Context) uint64 {
 	return a
 }
 
+func (k Keeper) GetCompileCost(ctx sdk.Context) uint64 {
+	// return MaxGas
+	var a uint64
+	k.paramSpace.Get(ctx, types.ParamStoreKeyCompileCost, &a)
+	return a
+}
+
 // GetParams returns the total set of wasm parameters.
 func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	var params types.Params
@@ -134,7 +138,7 @@ func (k Keeper) create(ctx sdk.Context, creator sdk.AccAddress, wasmCode []byte,
 	if err != nil {
 		return 0, sdkerrors.Wrap(types.ErrCreateFailed, err.Error())
 	}
-	ctx.GasMeter().ConsumeGas(CompileCost*uint64(len(wasmCode)), "Compiling WASM Bytecode")
+	ctx.GasMeter().ConsumeGas(k.GetCompileCost(ctx)*uint64(len(wasmCode)), "Compiling WASM Bytecode")
 
 	codeHash, err := k.wasmer.Create(wasmCode)
 	if err != nil {

@@ -24,6 +24,9 @@ const (
 	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
 	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
 	DefaultInstanceCost = 40_000
+
+	// CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
+	DefaultCompileCost = 2
 )
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
@@ -31,6 +34,7 @@ var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
 var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
 var ParamStoreKeyMaxGas = []byte("maxGas")
 var ParamStoreKeyInstanceCost = []byte("instanceCost")
+var ParamStoreKeyCompileCost = []byte("compileCost")
 
 type AccessType string
 
@@ -101,6 +105,7 @@ type Params struct {
 	MaxWasmCodeSize              uint64       `json:"max_wasm_code_size" yaml:"max_wasm_code_size"`
 	MaxGas                       uint64       `json:"max_gas" yaml:"max_gas"`
 	InstanceCost                 uint64       `json:"instance_cost" yaml:"instance_cost"`
+	CompileCost                  uint64       `json:"compile_cost" yaml:"compile_cost"`
 }
 
 // ParamKeyTable returns the parameter key table.
@@ -116,6 +121,7 @@ func DefaultParams() Params {
 		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 		MaxGas:                       DefaultMaxGas,
 		InstanceCost:                 DefaultInstanceCost,
+		CompileCost:                  DefaultCompileCost,
 	}
 }
 
@@ -135,6 +141,7 @@ func (p *Params) ParamSetPairs() params.ParamSetPairs {
 		params.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
 		params.NewParamSetPair(ParamStoreKeyMaxGas, &p.MaxGas, validateMaxGas),
 		params.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
+		params.NewParamSetPair(ParamStoreKeyCompileCost, &p.CompileCost, validateCompileCost),
 	}
 }
 
@@ -154,6 +161,9 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateInstanceCost(p.InstanceCost); err != nil {
 		return errors.Wrap(err, "instance cost")
+	}
+	if err := validateCompileCost(p.CompileCost); err != nil {
+		return errors.Wrap(err, "compile cost")
 	}
 
 	return nil
@@ -192,6 +202,17 @@ func validateMaxWasmCodeSize(i interface{}) error {
 	return nil
 }
 
+func validateGasMultiplier(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
 func validateMaxGas(i interface{}) error {
 	a, ok := i.(uint64)
 	if !ok {
@@ -204,6 +225,17 @@ func validateMaxGas(i interface{}) error {
 }
 
 func validateInstanceCost(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateCompileCost(i interface{}) error {
 	a, ok := i.(uint64)
 	if !ok {
 		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
