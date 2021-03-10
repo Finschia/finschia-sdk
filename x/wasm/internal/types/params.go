@@ -21,12 +21,16 @@ const (
 	// (this will be increased in future releases)
 	DefaultMaxGas = 10_000_000_000
 
+	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
+	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
+	DefaultInstanceCost = 40_000
 )
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
 var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
 var ParamStoreKeyMaxGas = []byte("maxGas")
+var ParamStoreKeyInstanceCost = []byte("instanceCost")
 
 type AccessType string
 
@@ -96,6 +100,7 @@ type Params struct {
 	DefaultInstantiatePermission AccessType   `json:"instantiate_default_permission" yaml:"instantiate_default_permission"`
 	MaxWasmCodeSize              uint64       `json:"max_wasm_code_size" yaml:"max_wasm_code_size"`
 	MaxGas                       uint64       `json:"max_gas" yaml:"max_gas"`
+	InstanceCost                 uint64       `json:"instance_cost" yaml:"instance_cost"`
 }
 
 // ParamKeyTable returns the parameter key table.
@@ -110,6 +115,7 @@ func DefaultParams() Params {
 		DefaultInstantiatePermission: Everybody,
 		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 		MaxGas:                       DefaultMaxGas,
+		InstanceCost:                 DefaultInstanceCost,
 	}
 }
 
@@ -128,6 +134,7 @@ func (p *Params) ParamSetPairs() params.ParamSetPairs {
 		params.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.DefaultInstantiatePermission, validateAccessType),
 		params.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
 		params.NewParamSetPair(ParamStoreKeyMaxGas, &p.MaxGas, validateMaxGas),
+		params.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
 	}
 }
 
@@ -144,6 +151,9 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateMaxGas(p.MaxGas); err != nil {
 		return errors.Wrap(err, "gas multiplier")
+	}
+	if err := validateInstanceCost(p.InstanceCost); err != nil {
+		return errors.Wrap(err, "instance cost")
 	}
 
 	return nil
@@ -183,6 +193,17 @@ func validateMaxWasmCodeSize(i interface{}) error {
 }
 
 func validateMaxGas(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateInstanceCost(i interface{}) error {
 	a, ok := i.(uint64)
 	if !ok {
 		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)

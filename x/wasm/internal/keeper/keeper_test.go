@@ -98,6 +98,7 @@ func TestCreateStoresInstantiatePermission(t *testing.T) {
 				DefaultInstantiatePermission: spec.srcPermission,
 				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 				MaxGas:                       types.DefaultMaxGas,
+				InstanceCost:                 types.DefaultInstanceCost,
 			})
 			fundAccounts(ctx, accKeeper, myAddr, deposit)
 

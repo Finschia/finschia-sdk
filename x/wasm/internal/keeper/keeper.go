@@ -30,10 +30,6 @@ import (
 // Please not that all gas prices returned to the wasmer engine should have this multiplied
 const GasMultiplier uint64 = 100
 
-// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
-// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
-const InstanceCost uint64 = 40_000
-
 // CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
 const CompileCost uint64 = 2
 
@@ -98,6 +94,12 @@ func (k Keeper) getInstantiateAccessConfig(ctx sdk.Context) types.AccessType {
 func (k Keeper) GetMaxWasmCodeSize(ctx sdk.Context) uint64 {
 	var a uint64
 	k.paramSpace.Get(ctx, types.ParamStoreKeyMaxWasmCodeSize, &a)
+	return a
+}
+
+func (k Keeper) GetInstanceCost(ctx sdk.Context) uint64 {
+	var a uint64
+	k.paramSpace.Get(ctx, types.ParamStoreKeyInstanceCost, &a)
 	return a
 }
 
@@ -181,7 +183,7 @@ func (k Keeper) Instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 }
 
 func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.AccAddress, initMsg []byte, label string, deposit sdk.Coins, authZ AuthorizationPolicy) (sdk.AccAddress, error) {
-	ctx.GasMeter().ConsumeGas(InstanceCost, "Loading CosmWasm module: init")
+	ctx.GasMeter().ConsumeGas(k.GetInstanceCost(ctx), "Loading CosmWasm module: init")
 
 	// create contract address
 	contractAddress := k.generateContractAddress(ctx, codeID)
@@ -261,7 +263,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 
 // Execute executes the contract instance
 func (k Keeper) Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) (*sdk.Result, error) {
-	ctx.GasMeter().ConsumeGas(InstanceCost, "Loading CosmWasm module: execute")
+	ctx.GasMeter().ConsumeGas(k.GetInstanceCost(ctx), "Loading CosmWasm module: execute")
 
 	codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
@@ -316,7 +318,7 @@ func (k Keeper) Migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 }
 
 func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte, authZ AuthorizationPolicy) (*sdk.Result, error) {
-	ctx.GasMeter().ConsumeGas(InstanceCost, "Loading CosmWasm module: migrate")
+	ctx.GasMeter().ConsumeGas(k.GetInstanceCost(ctx), "Loading CosmWasm module: migrate")
 
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
@@ -408,7 +410,7 @@ func (k Keeper) GetContractHistory(ctx sdk.Context, contractAddr sdk.AccAddress)
 
 // QuerySmart queries the smart contract itself.
 func (k Keeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []byte) ([]byte, error) {
-	ctx.GasMeter().ConsumeGas(InstanceCost, "Loading CosmWasm module: query")
+	ctx.GasMeter().ConsumeGas(k.GetInstanceCost(ctx), "Loading CosmWasm module: query")
 
 	codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddr)
 	if err != nil {
