@@ -151,7 +151,7 @@ func TestInitNodeValidatorFilesWithComposite(t *testing.T) {
 	nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(cfg)
 	require.Nil(t, err)
 	require.NotEqual(t, "", nodeID)
-	require.Equal(t, 90, len(valPubKey.Bytes()))
+	require.Equal(t, 98, len(valPubKey.Bytes()))
 	require.EqualValues(t, reflect.TypeOf(composite.PubKeyComposite{}), reflect.TypeOf(valPubKey))
 }
 
