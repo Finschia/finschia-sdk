@@ -101,4 +101,7 @@ var (
 
 	NewKeeper  = keeper.NewKeeper
 	NewQuerier = querier.NewQuerier
+
+	NewMsgEncodeHandler = keeper.NewMsgEncodeHandler
+	NewQueryEncoder     = querier.NewQueryEncoder
 )

@@ -132,6 +132,14 @@ jobs:
       - make:
           target: update-swagger-docs
           description: "Check if statik.go is up-to-date"
+  fmt:
+    executor: golang
+    resource_class: small
+    steps:
+      - checkout
+      - run:
+          name: check formatting
+          command: if [[ -n "$(gofmt -l .)" ]]; then gofmt -l .; exit 1; fi          
   lint:
     executor: golang
     steps:
@@ -142,16 +150,138 @@ jobs:
       - run:
           name: lint
           command: |
+            export GO111MODULE=on
             go env -w GOPRIVATE=github.com/line/*
             git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
             go get github.com/golangci/golangci-lint/cmd/golangci-lint@v1.27
             make lint
+  unit_test:
+    executor: golang    
+    resource_class: medium
+    parallelism: 1
+    environment:
+      GOFLAGS: -p=8
+    steps:
+      - checkout
+      - run:
+          name: unit-test
+          command: |
+            export GO111MODULE=on
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make test-unit
+  integration_test:
+    executor: golang    
+    resource_class: xlarge
+    parallelism: 1
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - linkwasmd-mod-deps-{{ checksum "x/wasm/linkwasmd/go.sum" }}
+      - run:
+          name: download dependencies
+          working_directory: x/wasm/linkwasmd
+          command: |
+            export GO111MODULE=on
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            go mod download
+      - save_cache:
+          key: linkwasmd-mod-deps-{{ checksum "x/wasm/linkwasmd/go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+      - run:
+          name: wasm-integration-test
+          working_directory: x/wasm/linkwasmd
+          command: make test-integration
+  perf_check:
+    machine:
+      image: ubuntu-2004:202010-01
+    environment:
+      GO111MODULE: 'on'
+    resource_class: medium
+    parallelism: 1
+    steps:
+      - checkout
+      - run:
+          name: setup tools
+          working_directory: x/wasm/linkwasmd/perf/tools
+          command: |
+            sudo apt update
+            sudo apt install linux-tools-$(uname -r)
+            tar -zxvf FlameGraph.tar.gz
+      - restore_cache:
+          keys:
+            - go_workspace-pkg-mod-deps-{{ checksum "x/wasm/linkwasmd/go.sum" }}
+      - run:
+          name: build binaries
+          working_directory: x/wasm/linkwasmd
+          command: |
+            export GO111MODULE=on
+            go env GOMODCACHE
+            go env -w GOPRIVATE=github.com/line/*
+            git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
+            make install
+      - save_cache:
+          key: go_workspace-pkg-mod-deps-{{ checksum "x/wasm/linkwasmd/go.sum" }}
+          paths:
+            - "/home/circleci/.go_workspace/pkg/mod"
+      - run:
+          name: init chain
+          working_directory: x/wasm/linkwasmd
+          command: perf/scripts/init-chain.sh
+      - run:
+          name: prepare
+          working_directory: x/wasm/linkwasmd
+          command: perf/scripts/prepare.sh perf/contract/cw_erc20_v4.wasm 150
+      - run:
+          name: capture cpu profile
+          working_directory: x/wasm/linkwasmd
+          command: perf/scripts/capture.sh 150
+      - store_artifacts:
+          path: x/wasm/linkwasmd/reports
+      - run:
+          name: Post TPS to GitHub PR
+          working_directory: x/wasm/linkwasmd
+          command: |
+            if [[ $(echo "$CIRCLE_BRANCH" | grep -c "pull") -eq 0 ]]; then
+              # skip on non PR branch
+              exit 0
+            fi
+
+            tps=$(tail -1 reports/report.txt)
+
+            pr_response=$(curl -H "Authorization: token $GITHUB_TOKEN" --location --request GET "https://api.github.com/repos/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME/pulls/$CIRCLE_PR_NUMBER")
+
+            if [ $(echo $pr_response | jq length) -eq 0 ]; then
+              echo "No PR found to update"
+            else
+              pr_comment_url=$(echo $pr_response | jq -r "._links.comments.href")
+            fi
+
+            curl -H "Authorization: token $GITHUB_TOKEN" --location --request POST "$pr_comment_url" \
+            -u $GH_USER:$GH_API \
+            --header 'Content-Type: application/json' \
+            --data-raw "{\"body\":\"$tps\"}"
+  semantic_release:
+    executor: golang    
+    docker:
+      - image: circleci/node:10
+    resource_class: medium
+    steps:
+      - checkout
+      - run: yarn global add --no-progress --non-interactive "semantic-release" "@semantic-release/exec"
+      - run: $(yarn global bin)/semantic-release
 
 workflows:
   version: 2
   test-suite:
     jobs:
       - setup-dependencies
+      - fmt:
+          requires:
+            - setup-dependencies    
       - lint:
           requires:
             - setup-dependencies
@@ -193,6 +323,29 @@ workflows:
               only:
                 - develop
                 - /release.*/
+      - unit_test:
+          requires:
+            - setup-dependencies
+      - integration_test:
+          requires:
+            - setup-dependencies
+      - perf_check:
+          requires:
+            - setup-dependencies
+      - semantic_release:
+          requires:
+            - fmt
+            - lint
+            - unit_test
+            - integration_test
+            - test-cover
+            - test-sim-nondeterminism
+            - test-sim-import-export
+            - test-sim-after-import
+            - test-sim-multi-seed-short
+          filters:
+            branches:
+              only: master                
 # disable long. because it is toooooooo long
 #      - test-sim-multi-seed-long:
 #          requires:
