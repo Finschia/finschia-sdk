@@ -28,6 +28,7 @@ func TestStoreCodeProposal(t *testing.T) {
 		UploadAccess:                 types.AllowNobody,
 		DefaultInstantiatePermission: types.Nobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		MaxGas:                       types.DefaultMaxGas,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -74,6 +75,7 @@ func TestInstantiateProposal(t *testing.T) {
 		UploadAccess:                 types.AllowNobody,
 		DefaultInstantiatePermission: types.Nobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		MaxGas:                       types.DefaultMaxGas,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -134,6 +136,7 @@ func TestMigrateProposal(t *testing.T) {
 		UploadAccess:                 types.AllowNobody,
 		DefaultInstantiatePermission: types.Nobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		MaxGas:                       types.DefaultMaxGas,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -279,6 +282,7 @@ func TestAdminProposals(t *testing.T) {
 				UploadAccess:                 types.AllowNobody,
 				DefaultInstantiatePermission: types.Nobody,
 				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+				MaxGas:                       types.DefaultMaxGas,
 			})
 
 			codeInfoFixture := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
@@ -315,6 +319,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 		myAddress              sdk.AccAddress = make([]byte, sdk.AddrLen)
 		oneAddressAccessConfig                = types.OnlyAddress.With(myAddress)
 		newMaxWasmCodeSize                    = uint64(42)
+		newMaxGas                             = uint64(15_000_000_000)
 		defaultParams                         = types.DefaultParams()
 	)
 
@@ -323,6 +328,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 		expUploadConfig    types.AccessConfig
 		expInstantiateType types.AccessType
 		expMaxWasmCodeSize uint64
+		expMaxGas          uint64
 	}{
 		"update upload permission param": {
 			src: params.ParamChange{
@@ -333,6 +339,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expUploadConfig:    types.AllowNobody,
 			expInstantiateType: defaultParams.DefaultInstantiatePermission,
 			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+			expMaxGas:          defaultParams.MaxGas,
 		},
 		"update upload permission param with address": {
 			src: params.ParamChange{
@@ -343,6 +350,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expUploadConfig:    oneAddressAccessConfig,
 			expInstantiateType: defaultParams.DefaultInstantiatePermission,
 			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+			expMaxGas:          defaultParams.MaxGas,
 		},
 		"update instantiate param": {
 			src: params.ParamChange{
@@ -353,6 +361,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expUploadConfig:    defaultParams.UploadAccess,
 			expInstantiateType: types.Nobody,
 			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+			expMaxGas:          defaultParams.MaxGas,
 		},
 		"update max wasm code size": {
 			src: params.ParamChange{
@@ -363,6 +372,17 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expUploadConfig:    defaultParams.UploadAccess,
 			expInstantiateType: defaultParams.DefaultInstantiatePermission,
 			expMaxWasmCodeSize: newMaxWasmCodeSize,
+			expMaxGas:          defaultParams.MaxGas,
+		"update max gas": {
+			src: params.ParamChange{
+				Subspace: types.DefaultParamspace,
+				Key:      string(types.ParamStoreKeyMaxGas),
+				Value:    string(cdc.MustMarshalJSON(newMaxGas)),
+			},
+			expUploadConfig:    defaultParams.UploadAccess,
+			expInstantiateType: defaultParams.DefaultInstantiatePermission,
+			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+			expMaxGas:          newMaxGas,
 		},
 	}
 	for msg, spec := range specs {
@@ -389,6 +409,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 				"got %#v not %#v", wasmKeeper.getUploadAccessConfig(ctx), spec.expUploadConfig)
 			assert.Equal(t, spec.expInstantiateType, wasmKeeper.getInstantiateAccessConfig(ctx))
 			assert.Equal(t, spec.expMaxWasmCodeSize, wasmKeeper.GetMaxWasmCodeSize(ctx))
+			assert.Equal(t, spec.expMaxGas, wasmKeeper.GetMaxGas(ctx))
 		})
 	}
 }

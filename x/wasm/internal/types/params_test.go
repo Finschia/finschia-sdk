@@ -28,6 +28,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 AllowNobody,
 				DefaultInstantiatePermission: Nobody,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 		},
 		"all good with everybody": {
@@ -35,6 +36,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 AllowEverybody,
 				DefaultInstantiatePermission: Everybody,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 		},
 		"all good with only address": {
@@ -42,6 +44,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 OnlyAddress.With(anyAddress),
 				DefaultInstantiatePermission: OnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 		},
 		"reject empty type in instantiate permission": {
@@ -49,6 +52,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 AllowNobody,
 				DefaultInstantiatePermission: "",
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 			expErr: true,
 		},
@@ -57,6 +61,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 AllowNobody,
 				DefaultInstantiatePermission: "Undefined",
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 			expErr: true,
 		},
@@ -65,6 +70,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 AccessConfig{Type: OnlyAddress, Address: invalidAddress},
 				DefaultInstantiatePermission: OnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 			expErr: true,
 		},
@@ -73,6 +79,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 AccessConfig{Type: Everybody, Address: anyAddress},
 				DefaultInstantiatePermission: OnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 			expErr: true,
 		},
@@ -81,6 +88,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 AccessConfig{Type: Nobody, Address: anyAddress},
 				DefaultInstantiatePermission: OnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 			expErr: true,
 		},
@@ -88,6 +96,7 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				DefaultInstantiatePermission: OnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 			expErr: true,
 		}, "reject undefined permission in UploadAccess": {
@@ -95,6 +104,7 @@ func TestValidateParams(t *testing.T) {
 				UploadAccess:                 AccessConfig{Type: Undefined},
 				DefaultInstantiatePermission: OnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				MaxGas:                       DefaultMaxGas,
 			},
 			expErr: true,
 		},
@@ -102,6 +112,15 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				UploadAccess:                 AllowNobody,
 				DefaultInstantiatePermission: Nobody,
+				MaxGas:                       DefaultMaxGas,
+			},
+			expErr: true,
+		},
+		"reject empty max gas": {
+			src: Params{
+				UploadAccess:                 AllowNobody,
+				DefaultInstantiatePermission: Nobody,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 			},
 			expErr: true,
 		},
@@ -167,7 +186,8 @@ func TestParamsUnmarshalJson(t *testing.T) {
 		"defaults": {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",
-				"max_wasm_code_size": 614400}`,
+				"max_wasm_code_size": 614400,
+				"max_gas": 10000000000}`,
 			exp: DefaultParams(),
 		},
 	}
