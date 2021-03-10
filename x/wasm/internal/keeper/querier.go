@@ -12,21 +12,6 @@ import (
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
-const (
-	QueryListContractByCode = "list-contracts-by-code"
-	QueryGetContract        = "contract-info"
-	QueryGetContractState   = "contract-state"
-	QueryGetCode            = "code"
-	QueryListCode           = "list-code"
-	QueryContractHistory    = "contract-history"
-)
-
-const (
-	QueryMethodContractStateSmart = "smart"
-	QueryMethodContractStateAll   = "all"
-	QueryMethodContractStateRaw   = "raw"
-)
-
 // NewQuerier creates a new querier
 func NewQuerier(keeper Keeper) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
