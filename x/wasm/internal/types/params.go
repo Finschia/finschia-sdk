@@ -202,17 +202,6 @@ func validateMaxWasmCodeSize(i interface{}) error {
 	return nil
 }
 
-func validateGasMultiplier(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
-}
-
 func validateMaxGas(i interface{}) error {
 	a, ok := i.(uint64)
 	if !ok {
