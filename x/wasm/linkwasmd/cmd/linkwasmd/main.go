@@ -64,7 +64,7 @@ func main() {
 	rootCmd.AddCommand(version.Cmd)
 	rootCmd.AddCommand(errorCodesCmd())
 
-	startCmd := server.StartCmd(nil, nil)
+	startCmd := server.StartCmd(ctx, newApp)
 	wasm.AddModuleInitFlags(startCmd)
 	rootCmd.AddCommand(startCmd)
 
