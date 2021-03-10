@@ -16,6 +16,14 @@ const (
 	// DefaultMaxWasmCodeSize limit max bytes read to prevent gzip bombs
 	DefaultMaxWasmCodeSize = 600 * 1024
 
+	// GasMultiplier is how many cosmwasm gas points = 1 sdk gas point
+	// SDK reference costs can be found here: https://github.com/cosmos/cosmos-sdk/blob/02c6c9fafd58da88550ab4d7d494724a477c8a68/store/types/gas.go#L153-L164
+	// A write at ~3000 gas and ~200us = 10 gas per us (microsecond) cpu/io
+	// Rough timing have 88k gas at 90us, which is equal to 1k sdk gas... (one read)
+	//
+	// Please not that all gas prices returned to the wasmer engine should have this multiplied
+	DefaultGasMultiplier uint64 = 100
+
 	// MaxGas for a contract is 10 billion wasmer gas (enforced in rust to prevent overflow)
 	// The limit for v0.9.3 is defined here: https://github.com/CosmWasm/cosmwasm/blob/v0.9.3/packages/vm/src/backends/singlepass.rs#L15-L23
 	// (this will be increased in future releases)
@@ -32,6 +40,7 @@ const (
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
 var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
+var ParamStoreKeyGasMultiplier = []byte("gasMultiplier")
 var ParamStoreKeyMaxGas = []byte("maxGas")
 var ParamStoreKeyInstanceCost = []byte("instanceCost")
 var ParamStoreKeyCompileCost = []byte("compileCost")
@@ -103,6 +112,7 @@ type Params struct {
 	UploadAccess                 AccessConfig `json:"code_upload_access" yaml:"code_upload_access"`
 	DefaultInstantiatePermission AccessType   `json:"instantiate_default_permission" yaml:"instantiate_default_permission"`
 	MaxWasmCodeSize              uint64       `json:"max_wasm_code_size" yaml:"max_wasm_code_size"`
+	GasMultiplier                uint64       `json:"gas_multiplier" yaml:"gas_multiplier"`
 	MaxGas                       uint64       `json:"max_gas" yaml:"max_gas"`
 	InstanceCost                 uint64       `json:"instance_cost" yaml:"instance_cost"`
 	CompileCost                  uint64       `json:"compile_cost" yaml:"compile_cost"`
@@ -119,6 +129,7 @@ func DefaultParams() Params {
 		UploadAccess:                 AllowEverybody,
 		DefaultInstantiatePermission: Everybody,
 		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+		GasMultiplier:                DefaultGasMultiplier,
 		MaxGas:                       DefaultMaxGas,
 		InstanceCost:                 DefaultInstanceCost,
 		CompileCost:                  DefaultCompileCost,
@@ -139,6 +150,7 @@ func (p *Params) ParamSetPairs() params.ParamSetPairs {
 		params.NewParamSetPair(ParamStoreKeyUploadAccess, &p.UploadAccess, validateAccessConfig),
 		params.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.DefaultInstantiatePermission, validateAccessType),
 		params.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
+		params.NewParamSetPair(ParamStoreKeyGasMultiplier, &p.GasMultiplier, validateGasMultiplier),
 		params.NewParamSetPair(ParamStoreKeyMaxGas, &p.MaxGas, validateMaxGas),
 		params.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
 		params.NewParamSetPair(ParamStoreKeyCompileCost, &p.CompileCost, validateCompileCost),
@@ -155,6 +167,9 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateMaxWasmCodeSize(p.MaxWasmCodeSize); err != nil {
 		return errors.Wrap(err, "max wasm code size")
+	}
+	if err := validateGasMultiplier(p.GasMultiplier); err != nil {
+		return errors.Wrap(err, "gas multiplier")
 	}
 	if err := validateMaxGas(p.MaxGas); err != nil {
 		return errors.Wrap(err, "max gas")
@@ -187,6 +202,17 @@ func validateAccessType(i interface{}) error {
 	}
 	if _, ok := AllAccessTypes[v]; !ok {
 		return sdkerrors.Wrapf(ErrInvalid, "unknown type: %q", v)
+	}
+	return nil
+}
+
+func validateGasMultiplier(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
 	}
 	return nil
 }

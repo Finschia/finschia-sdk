@@ -3,28 +3,33 @@ package keeper
 import (
 	"fmt"
 
-	wasmvm "github.com/CosmWasm/wasmvm"
+	cosmwasm "github.com/CosmWasm/wasmvm"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-var (
-	CostHumanize  = 5 * GasMultiplier
-	CostCanonical = 4 * GasMultiplier
-)
+type cosmwasmAPIImpl struct {
+	gasMultiplier uint64
+}
 
-func humanAddress(canon []byte) (string, uint64, error) {
+func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
+	gas := 5 * a.gasMultiplier
 	if len(canon) != sdk.AddrLen {
-		return "", CostHumanize, fmt.Errorf("expected %d byte address", sdk.AddrLen)
+		return "", gas, fmt.Errorf("Expected %d byte address", sdk.AddrLen)
 	}
-	return sdk.AccAddress(canon).String(), CostHumanize, nil
+	return sdk.AccAddress(canon).String(), gas, nil
 }
 
-func canonicalAddress(human string) ([]byte, uint64, error) {
+func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) {
 	bz, err := sdk.AccAddressFromBech32(human)
-	return bz, CostCanonical, err
+	return bz, 4 * a.gasMultiplier, err
 }
 
-var cosmwasmAPI = wasmvm.GoAPI{
-	HumanAddress:     humanAddress,
-	CanonicalAddress: canonicalAddress,
+func (k Keeper) cosmwasmAPI(ctx sdk.Context) cosmwasm.GoAPI {
+	x := cosmwasmAPIImpl{
+		gasMultiplier: k.GetGasMultiplier(ctx),
+	}
+	return cosmwasm.GoAPI{
+		HumanAddress:     x.humanAddress,
+		CanonicalAddress: x.canonicalAddress,
+	}
 }

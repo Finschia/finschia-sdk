@@ -94,6 +94,12 @@ func (k Keeper) GetMaxWasmCodeSize(ctx sdk.Context) uint64 {
 	return a
 }
 
+func (k Keeper) GetGasMultiplier(ctx sdk.Context) uint64 {
+	var a uint64
+	k.paramSpace.Get(ctx, types.ParamStoreKeyGasMultiplier, &a)
+	return a
+}
+
 func (k Keeper) GetInstanceCost(ctx sdk.Context) uint64 {
 	var a uint64
 	k.paramSpace.Get(ctx, types.ParamStoreKeyInstanceCost, &a)
@@ -101,14 +107,13 @@ func (k Keeper) GetInstanceCost(ctx sdk.Context) uint64 {
 }
 
 func (k Keeper) GetMaxGas(ctx sdk.Context) uint64 {
-	// return MaxGas
 	var a uint64
 	k.paramSpace.Get(ctx, types.ParamStoreKeyMaxGas, &a)
 	return a
 }
 
 func (k Keeper) GetCompileCost(ctx sdk.Context) uint64 {
-	// return MaxGas
+	// return CompileCost
 	var a uint64
 	k.paramSpace.Get(ctx, types.ParamStoreKeyCompileCost, &a)
 	return a
@@ -236,14 +241,15 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 
 	// prepare querier
 	querier := QueryHandler{
-		Ctx:     ctx,
-		Plugins: k.queryPlugins,
+		Ctx:           ctx,
+		GasMultiplier: k.GetGasMultiplier(ctx),
+		Plugins:       k.queryPlugins,
 	}
 
 	// instantiate wasm contract
-	gas := gasForContract(ctx, k.GetMaxGas(ctx))
-	res, gasUsed, err := k.wasmer.Instantiate(codeInfo.CodeHash, env, info, initMsg, prefixStore, cosmwasmAPI, querier, gasMeter(ctx), gas)
-	consumeGas(ctx, gasUsed)
+	gas := gasForContract(ctx, k.GetGasMultiplier(ctx), k.GetMaxGas(ctx))
+	res, gasUsed, err := k.wasmer.Instantiate(codeInfo.CodeHash, env, info, initMsg, prefixStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
+	k.consumeGas(ctx, gasUsed)
 	if err != nil {
 		return contractAddress, sdkerrors.Wrap(types.ErrInstantiateFailed, err.Error())
 	}
@@ -291,13 +297,14 @@ func (k Keeper) Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 
 	// prepare querier
 	querier := QueryHandler{
-		Ctx:     ctx,
-		Plugins: k.queryPlugins,
+		Ctx:           ctx,
+		GasMultiplier: k.GetGasMultiplier(ctx),
+		Plugins:       k.queryPlugins,
 	}
 
-	gas := gasForContract(ctx, k.GetMaxGas(ctx))
-	res, gasUsed, execErr := k.wasmer.Execute(codeInfo.CodeHash, env, info, msg, prefixStore, cosmwasmAPI, querier, gasMeter(ctx), gas)
-	consumeGas(ctx, gasUsed)
+	gas := gasForContract(ctx, k.GetGasMultiplier(ctx), k.GetMaxGas(ctx))
+	res, gasUsed, execErr := k.wasmer.Execute(codeInfo.CodeHash, env, info, msg, prefixStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
+	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
 	}
@@ -343,15 +350,16 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 
 	// prepare querier
 	querier := QueryHandler{
-		Ctx:     ctx,
-		Plugins: k.queryPlugins,
+		Ctx:           ctx,
+		GasMultiplier: k.GetGasMultiplier(ctx),
+		Plugins:       k.queryPlugins,
 	}
 
 	prefixStoreKey := types.GetContractStorePrefixKey(contractAddress)
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
-	gas := gasForContract(ctx, k.GetMaxGas(ctx))
-	res, gasUsed, err := k.wasmer.Migrate(newCodeInfo.CodeHash, env, info, msg, &prefixStore, cosmwasmAPI, &querier, gasMeter(ctx), gas)
-	consumeGas(ctx, gasUsed)
+	gas := gasForContract(ctx, k.GetGasMultiplier(ctx), k.GetMaxGas(ctx))
+	res, gasUsed, err := k.wasmer.Migrate(newCodeInfo.CodeHash, env, info, msg, &prefixStore, k.cosmwasmAPI(ctx), &querier, k.gasMeter(ctx), gas)
+	k.consumeGas(ctx, gasUsed)
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrMigrationFailed, err.Error())
 	}
@@ -422,13 +430,14 @@ func (k Keeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []b
 	}
 	// prepare querier
 	querier := QueryHandler{
-		Ctx:     ctx,
-		Plugins: k.queryPlugins,
+		Ctx:           ctx,
+		GasMultiplier: k.GetGasMultiplier(ctx),
+		Plugins:       k.queryPlugins,
 	}
 
 	env := types.NewEnv(ctx, contractAddr)
-	queryResult, gasUsed, qErr := k.wasmer.Query(codeInfo.CodeHash, env, req, prefixStore, cosmwasmAPI, querier, gasMeter(ctx), gasForContract(ctx, k.GetMaxGas(ctx)))
-	consumeGas(ctx, gasUsed)
+	queryResult, gasUsed, qErr := k.wasmer.Query(codeInfo.CodeHash, env, req, prefixStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gasForContract(ctx, k.GetGasMultiplier(ctx), k.GetMaxGas(ctx)))
+	k.consumeGas(ctx, gasUsed)
 	if qErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrQueryFailed, qErr.Error())
 	}
@@ -570,20 +579,20 @@ func (k Keeper) dispatchMessages(ctx sdk.Context, contractAddr sdk.AccAddress, m
 	return nil
 }
 
-func gasForContract(ctx sdk.Context, maxGas uint64) uint64 {
+func gasForContract(ctx sdk.Context, gasMultiplier, maxGas uint64) uint64 {
 	meter := ctx.GasMeter()
 	if meter.IsOutOfGas() {
 		return 0
 	}
-	remaining := (meter.Limit() - meter.GasConsumedToLimit()) * GasMultiplier
+	remaining := (meter.Limit() - meter.GasConsumedToLimit()) * gasMultiplier
 	if remaining > maxGas {
 		return maxGas
 	}
 	return remaining
 }
 
-func consumeGas(ctx sdk.Context, gas uint64) {
-	consumed := gas / GasMultiplier
+func (k Keeper) consumeGas(ctx sdk.Context, gas uint64) {
+	consumed := gas / k.GetGasMultiplier(ctx)
 	ctx.GasMeter().ConsumeGas(consumed, "wasm contract")
 	// throw OutOfGas error if we ran out (got exactly to zero due to better limit enforcing)
 	if ctx.GasMeter().IsOutOfGas() {
@@ -671,16 +680,18 @@ func addrFromUint64(id uint64) sdk.AccAddress {
 // MultipliedGasMeter wraps the GasMeter from context and multiplies all reads by out defined multiplier
 type MultipiedGasMeter struct {
 	originalMeter sdk.GasMeter
+	gasMultiplier uint64
 }
 
 var _ wasm.GasMeter = MultipiedGasMeter{}
 
 func (m MultipiedGasMeter) GasConsumed() sdk.Gas {
-	return m.originalMeter.GasConsumed() * GasMultiplier
+	return m.originalMeter.GasConsumed() * m.gasMultiplier
 }
 
-func gasMeter(ctx sdk.Context) MultipiedGasMeter {
+func (k Keeper) gasMeter(ctx sdk.Context) MultipiedGasMeter {
 	return MultipiedGasMeter{
 		originalMeter: ctx.GasMeter(),
+		gasMultiplier: k.GetGasMultiplier(ctx),
 	}
 }
