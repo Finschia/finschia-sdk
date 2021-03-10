@@ -157,7 +157,7 @@ func (p Params) ValidateBasic() error {
 		return errors.Wrap(err, "max wasm code size")
 	}
 	if err := validateMaxGas(p.MaxGas); err != nil {
-		return errors.Wrap(err, "gas multiplier")
+		return errors.Wrap(err, "max gas")
 	}
 	if err := validateInstanceCost(p.InstanceCost); err != nil {
 		return errors.Wrap(err, "instance cost")
