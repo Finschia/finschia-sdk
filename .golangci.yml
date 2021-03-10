@@ -17,7 +17,8 @@ linters:
     - gosimple
     - govet
     - ineffassign
-    - interfacer
+    # TODO: disabled the lint rule below to work around when fetching'x/wasm' of link-modules.
+    # - interfacer
     - maligned
     - misspell
     - nakedret
