@@ -32,6 +32,8 @@ func TestStoreCodeProposal(t *testing.T) {
 		MaxGas:                       types.DefaultMaxGas,
 		InstanceCost:                 types.DefaultInstanceCost,
 		CompileCost:                  types.DefaultCompileCost,
+		HumanizeCost:                 types.DefaultHumanizeCost,
+		CanonicalizeCost:             types.DefaultCanonicalCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -82,6 +84,8 @@ func TestInstantiateProposal(t *testing.T) {
 		MaxGas:                       types.DefaultMaxGas,
 		InstanceCost:                 types.DefaultInstanceCost,
 		CompileCost:                  types.DefaultCompileCost,
+		HumanizeCost:                 types.DefaultHumanizeCost,
+		CanonicalizeCost:             types.DefaultCanonicalCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -146,6 +150,8 @@ func TestMigrateProposal(t *testing.T) {
 		MaxGas:                       types.DefaultMaxGas,
 		InstanceCost:                 types.DefaultInstanceCost,
 		CompileCost:                  types.DefaultCompileCost,
+		HumanizeCost:                 types.DefaultHumanizeCost,
+		CanonicalizeCost:             types.DefaultCanonicalCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -295,6 +301,8 @@ func TestAdminProposals(t *testing.T) {
 				MaxGas:                       types.DefaultMaxGas,
 				InstanceCost:                 types.DefaultInstanceCost,
 				CompileCost:                  types.DefaultCompileCost,
+				HumanizeCost:                 types.DefaultHumanizeCost,
+				CanonicalizeCost:             types.DefaultCanonicalCost,
 			})
 
 			codeInfoFixture := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
@@ -334,7 +342,10 @@ func TestUpdateParamsProposal(t *testing.T) {
 		newMaxGas                             = uint64(15_000_000_000)
 		newInstanceCost                       = uint64(41_000)
 		newCompileCost                        = uint64(3)
-		defaultParams                         = types.DefaultParams()
+		newHumanizeCost                       = uint64(600)
+		newCanonicalCost                      = uint64(500)
+
+		defaultParams = types.DefaultParams()
 	)
 
 	specs := map[string]struct {
@@ -345,6 +356,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 		expMaxGas          uint64
 		expInstanceCost    uint64
 		expCompileCost     uint64
+		expHumanizeCost    uint64
+		expCanonicalCost   uint64
 	}{
 		"update upload permission param": {
 			src: params.ParamChange{
@@ -358,6 +371,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expMaxGas:          defaultParams.MaxGas,
 			expInstanceCost:    defaultParams.InstanceCost,
 			expCompileCost:     defaultParams.CompileCost,
+			expHumanizeCost:    defaultParams.HumanizeCost,
+			expCanonicalCost:   defaultParams.CanonicalizeCost,
 		},
 		"update upload permission param with address": {
 			src: params.ParamChange{
@@ -371,6 +386,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expMaxGas:          defaultParams.MaxGas,
 			expInstanceCost:    defaultParams.InstanceCost,
 			expCompileCost:     defaultParams.CompileCost,
+			expHumanizeCost:    defaultParams.HumanizeCost,
+			expCanonicalCost:   defaultParams.CanonicalizeCost,
 		},
 		"update instantiate param": {
 			src: params.ParamChange{
@@ -384,6 +401,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expMaxGas:          defaultParams.MaxGas,
 			expInstanceCost:    defaultParams.InstanceCost,
 			expCompileCost:     defaultParams.CompileCost,
+			expHumanizeCost:    defaultParams.HumanizeCost,
+			expCanonicalCost:   defaultParams.CanonicalizeCost,
 		},
 		"update max wasm code size": {
 			src: params.ParamChange{
@@ -397,6 +416,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expMaxGas:          defaultParams.MaxGas,
 			expInstanceCost:    defaultParams.InstanceCost,
 			expCompileCost:     defaultParams.CompileCost,
+			expHumanizeCost:    defaultParams.HumanizeCost,
+			expCanonicalCost:   defaultParams.CanonicalizeCost,
 		},
 		"update max gas": {
 			src: params.ParamChange{
@@ -410,6 +431,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expMaxGas:          newMaxGas,
 			expInstanceCost:    defaultParams.InstanceCost,
 			expCompileCost:     defaultParams.CompileCost,
+			expHumanizeCost:    defaultParams.HumanizeCost,
+			expCanonicalCost:   defaultParams.CanonicalizeCost,
 		},
 		"update instance cost": {
 			src: params.ParamChange{
@@ -423,6 +446,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expMaxGas:          defaultParams.MaxGas,
 			expInstanceCost:    newInstanceCost,
 			expCompileCost:     defaultParams.CompileCost,
+			expHumanizeCost:    defaultParams.HumanizeCost,
+			expCanonicalCost:   defaultParams.CanonicalizeCost,
 		},
 		"update compile cost": {
 			src: params.ParamChange{
@@ -436,6 +461,38 @@ func TestUpdateParamsProposal(t *testing.T) {
 			expMaxGas:          defaultParams.MaxGas,
 			expInstanceCost:    defaultParams.InstanceCost,
 			expCompileCost:     newCompileCost,
+			expHumanizeCost:    defaultParams.HumanizeCost,
+			expCanonicalCost:   defaultParams.CanonicalizeCost,
+		},
+		"update humanize cost": {
+			src: params.ParamChange{
+				Subspace: types.DefaultParamspace,
+				Key:      string(types.ParamStoreKeyHumanizeCost),
+				Value:    string(cdc.MustMarshalJSON(newHumanizeCost)),
+			},
+			expUploadConfig:    defaultParams.UploadAccess,
+			expInstantiateType: defaultParams.DefaultInstantiatePermission,
+			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+			expMaxGas:          defaultParams.MaxGas,
+			expInstanceCost:    defaultParams.InstanceCost,
+			expCompileCost:     defaultParams.CompileCost,
+			expHumanizeCost:    newHumanizeCost,
+			expCanonicalCost:   defaultParams.CanonicalizeCost,
+		},
+		"update canonical cost": {
+			src: params.ParamChange{
+				Subspace: types.DefaultParamspace,
+				Key:      string(types.ParamStoreKeyCanonicalCost),
+				Value:    string(cdc.MustMarshalJSON(newCanonicalCost)),
+			},
+			expUploadConfig:    defaultParams.UploadAccess,
+			expInstantiateType: defaultParams.DefaultInstantiatePermission,
+			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+			expMaxGas:          defaultParams.MaxGas,
+			expInstanceCost:    defaultParams.InstanceCost,
+			expCompileCost:     defaultParams.CompileCost,
+			expHumanizeCost:    defaultParams.HumanizeCost,
+			expCanonicalCost:   newCanonicalCost,
 		},
 	}
 	for msg, spec := range specs {
@@ -465,6 +522,8 @@ func TestUpdateParamsProposal(t *testing.T) {
 			assert.Equal(t, spec.expMaxGas, wasmKeeper.getMaxGas(ctx))
 			assert.Equal(t, spec.expInstanceCost, wasmKeeper.getInstanceCost(ctx))
 			assert.Equal(t, spec.expCompileCost, wasmKeeper.getCompileCost(ctx))
+			assert.Equal(t, spec.expHumanizeCost, wasmKeeper.getHumanizeCost(ctx))
+			assert.Equal(t, spec.expCanonicalCost, wasmKeeper.getCanonicalCost(ctx))
 		})
 	}
 }

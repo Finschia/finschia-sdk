@@ -113,6 +113,16 @@ func (k Keeper) getCompileCost(ctx sdk.Context) (a uint64) {
 	return
 }
 
+func (k Keeper) getHumanizeCost(ctx sdk.Context) (a uint64) {
+	k.paramSpace.Get(ctx, types.ParamStoreKeyHumanizeCost, &a)
+	return
+}
+
+func (k Keeper) getCanonicalCost(ctx sdk.Context) (a uint64) {
+	k.paramSpace.Get(ctx, types.ParamStoreKeyCanonicalCost, &a)
+	return
+}
+
 // GetParams returns the total set of wasm parameters.
 func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	var params types.Params

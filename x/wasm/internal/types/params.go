@@ -35,6 +35,10 @@ const (
 
 	// CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
 	DefaultCompileCost = 2
+
+	DefaultHumanizeCost = 5 * DefaultGasMultiplier
+
+	DefaultCanonicalCost = 4 * DefaultGasMultiplier
 )
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
@@ -44,6 +48,8 @@ var ParamStoreKeyGasMultiplier = []byte("gasMultiplier")
 var ParamStoreKeyMaxGas = []byte("maxGas")
 var ParamStoreKeyInstanceCost = []byte("instanceCost")
 var ParamStoreKeyCompileCost = []byte("compileCost")
+var ParamStoreKeyHumanizeCost = []byte("humanizeCost")
+var ParamStoreKeyCanonicalCost = []byte("canonicalizeCost")
 
 type AccessType string
 
@@ -116,6 +122,8 @@ type Params struct {
 	MaxGas                       uint64       `json:"max_gas" yaml:"max_gas"`
 	InstanceCost                 uint64       `json:"instance_cost" yaml:"instance_cost"`
 	CompileCost                  uint64       `json:"compile_cost" yaml:"compile_cost"`
+	HumanizeCost                 uint64       `json:"humanize_cost" yaml:"humanize_cost"`
+	CanonicalizeCost             uint64       `json:"canonicalize_cost" yaml:"canonicalize_cost"`
 }
 
 // ParamKeyTable returns the parameter key table.
@@ -133,6 +141,8 @@ func DefaultParams() Params {
 		MaxGas:                       DefaultMaxGas,
 		InstanceCost:                 DefaultInstanceCost,
 		CompileCost:                  DefaultCompileCost,
+		HumanizeCost:                 DefaultHumanizeCost,
+		CanonicalizeCost:             DefaultCanonicalCost,
 	}
 }
 
@@ -154,6 +164,8 @@ func (p *Params) ParamSetPairs() params.ParamSetPairs {
 		params.NewParamSetPair(ParamStoreKeyMaxGas, &p.MaxGas, validateMaxGas),
 		params.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
 		params.NewParamSetPair(ParamStoreKeyCompileCost, &p.CompileCost, validateCompileCost),
+		params.NewParamSetPair(ParamStoreKeyHumanizeCost, &p.HumanizeCost, validateHumanizeCost),
+		params.NewParamSetPair(ParamStoreKeyCanonicalCost, &p.CanonicalizeCost, validateCanonicalCost),
 	}
 }
 
@@ -179,6 +191,12 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateCompileCost(p.CompileCost); err != nil {
 		return errors.Wrap(err, "compile cost")
+	}
+	if err := validateHumanizeCost(p.HumanizeCost); err != nil {
+		return errors.Wrap(err, "humanize cost")
+	}
+	if err := validateCanonicalCost(p.HumanizeCost); err != nil {
+		return errors.Wrap(err, "canonical cost")
 	}
 
 	return nil
@@ -251,6 +269,28 @@ func validateInstanceCost(i interface{}) error {
 }
 
 func validateCompileCost(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateHumanizeCost(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateCanonicalCost(i interface{}) error {
 	a, ok := i.(uint64)
 	if !ok {
 		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
