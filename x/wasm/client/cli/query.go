@@ -57,16 +57,8 @@ func GetCmdListCode(cdc *codec.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			data := &types.QueryCodesRequest{
-				Pagination: pageReq,
-			}
-			bs, err := cliCtx.Codec.MarshalJSON(data)
-			if err != nil {
-				return err
-			}
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryListCode)
-			res, _, err := cliCtx.QueryWithData(route, bs)
+			res, _, err := utils.QueryCodeList(cliCtx, keeper.QueryListCode, pageReq)
 			if err != nil {
 				return err
 			}
@@ -94,20 +86,12 @@ func GetCmdListContractByCode(cdc *codec.Codec) *cobra.Command {
 				return err
 			}
 
-			route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryListContractByCode)
 			pageReq, err := utils.ReadPageRequest(withPageKeyDecoded(cmd.Flags()))
 			if err != nil {
 				return err
 			}
-			data := &types.QueryContractsByCodeRequest{
-				CodeID:     codeID,
-				Pagination: pageReq,
-			}
-			bs, err := cliCtx.Codec.MarshalJSON(data)
-			if err != nil {
-				return err
-			}
-			res, _, err := cliCtx.QueryWithData(route, bs)
+
+			res, _, err := utils.QueryContractsByCode(cliCtx, keeper.QueryListContractByCode, codeID, pageReq)
 			if err != nil {
 				return err
 			}
@@ -316,17 +300,8 @@ func GetCmdGetContractHistory(cdc *codec.Codec) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			data := &types.QueryContractHistoryRequest{
-				Address:    addr,
-				Pagination: pageReq,
-			}
-			bs, err := cliCtx.Codec.MarshalJSON(data)
-			if err != nil {
-				return err
-			}
 
-			route := fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, keeper.QueryContractHistory, addr.String())
-			res, _, err := cliCtx.QueryWithData(route, bs)
+			res, _, err := utils.QueryContractHistory(cliCtx, keeper.QueryContractHistory, addr, pageReq)
 			if err != nil {
 				return err
 			}

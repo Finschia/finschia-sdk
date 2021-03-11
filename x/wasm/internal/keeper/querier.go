@@ -46,7 +46,7 @@ func NewQuerier(keeper Keeper) sdk.Querier {
 		case QueryListCode:
 			return queryCodeList(ctx, req, keeper)
 		case QueryContractHistory:
-			return queryContractHistory(ctx, path[1], req, keeper)
+			return queryContractHistory(ctx, req, keeper)
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown data query endpoint")
 		}
@@ -173,7 +173,7 @@ func queryCodeList(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byt
 	return bz, nil
 }
 
-func queryContractHistory(ctx sdk.Context, _ string, req abci.RequestQuery, keeper Keeper) ([]byte, error) {
+func queryContractHistory(ctx sdk.Context, req abci.RequestQuery, keeper Keeper) ([]byte, error) {
 	var params types.QueryContractHistoryRequest
 
 	if err := keeper.cdc.UnmarshalJSON(req.Data, &params); err != nil {

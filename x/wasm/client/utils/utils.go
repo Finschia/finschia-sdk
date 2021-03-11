@@ -12,6 +12,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	sdk "github.com/line/lbm-sdk/types"
+
+	"github.com/line/lbm-sdk/client/context"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
@@ -123,7 +126,57 @@ func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool)
 	}, nil
 }
 
+func QueryCodeList(cliCtx context.CLIContext, path string, pageReq *types.PageRequest) ([]byte, int64, error) {
+	data := &types.QueryCodesRequest{
+		Pagination: pageReq,
+	}
+	bs, err := cliCtx.Codec.MarshalJSON(data)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return Query(cliCtx, bs, path)
+}
+
+func QueryContractsByCode(cliCtx context.CLIContext, path string, codeID uint64, pageReq *types.PageRequest) ([]byte, int64, error) {
+	data := &types.QueryContractsByCodeRequest{
+		CodeID:     codeID,
+		Pagination: pageReq,
+	}
+	bs, err := cliCtx.Codec.MarshalJSON(data)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return Query(cliCtx, bs, path)
+}
+
+func QueryContractHistory(cliCtx context.CLIContext, path string, addr sdk.AccAddress, pageReq *types.PageRequest) ([]byte, int64, error) {
+	data := &types.QueryContractHistoryRequest{
+		Address:    addr,
+		Pagination: pageReq,
+	}
+	bs, err := cliCtx.Codec.MarshalJSON(data)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return Query(cliCtx, bs, path)
+}
+
+func Query(cliCtx context.CLIContext, data []byte, queryPath string) ([]byte, int64, error) {
+	route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, queryPath)
+	return cliCtx.QueryWithData(route, data)
+}
+
 func ParseHTTPArgs(r *http.Request) (pageKey string, offset, limit, page uint64, countTotal bool, err error) {
+	_, p, l, err := rest.ParseHTTPArgs(r)
+	if err != nil {
+		return pageKey, offset, limit, page, countTotal, err
+	}
+	page = uint64(p)
+	limit = uint64(l)
+
 	pageKey = r.FormValue("page-key")
 
 	offsetStr := r.FormValue("offset")
@@ -131,33 +184,8 @@ func ParseHTTPArgs(r *http.Request) (pageKey string, offset, limit, page uint64,
 		offset, err = strconv.ParseUint(offsetStr, 10, 64)
 		if err != nil {
 			return pageKey, offset, limit, page, countTotal, err
-		}
-		if offset <= 0 {
+		} else if offset <= 0 {
 			return pageKey, offset, limit, page, countTotal, errors.New("offset must greater than 0")
-		}
-	}
-
-	pageStr := r.FormValue("page")
-	if pageStr == "" {
-		page = rest.DefaultPage
-	} else {
-		page, err = strconv.ParseUint(pageStr, 10, 64)
-		if err != nil {
-			return pageKey, offset, limit, page, countTotal, err
-		} else if page <= 0 {
-			return pageKey, offset, limit, page, countTotal, errors.New("page must greater than 0")
-		}
-	}
-
-	limitStr := r.FormValue("limit")
-	if limitStr == "" {
-		limit = rest.DefaultLimit
-	} else {
-		limit, err = strconv.ParseUint(limitStr, 10, 64)
-		if err != nil {
-			return pageKey, offset, limit, page, countTotal, err
-		} else if limit <= 0 {
-			return pageKey, offset, limit, page, countTotal, errors.New("limit must greater than 0")
 		}
 	}
 

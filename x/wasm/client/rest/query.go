@@ -37,7 +37,6 @@ func listCodesHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryListCode)
 		pageKey, offset, limit, page, countTotal, err := utils.ParseHTTPArgs(r)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -50,16 +49,7 @@ func listCodesHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		data := &types.QueryCodesRequest{
-			Pagination: pageReq,
-		}
-		bs, err := cliCtx.Codec.MarshalJSON(data)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		res, height, err := cliCtx.QueryWithData(route, bs)
+		res, height, err := utils.QueryCodeList(cliCtx, keeper.QueryListCode, pageReq)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -110,7 +100,6 @@ func listContractsByCodeHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryListContractByCode)
 		pageKey, offset, limit, page, countTotal, err := utils.ParseHTTPArgs(r)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -123,17 +112,7 @@ func listContractsByCodeHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		data := &types.QueryContractsByCodeRequest{
-			CodeID:     codeID,
-			Pagination: pageReq,
-		}
-		bs, err := cliCtx.Codec.MarshalJSON(data)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		res, height, err := cliCtx.QueryWithData(route, bs)
+		res, height, err := utils.QueryContractsByCode(cliCtx, keeper.QueryListContractByCode, codeID, pageReq)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -281,7 +260,6 @@ func queryContractHistoryFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, keeper.QueryContractHistory, addr.String())
 		pageKey, offset, limit, page, countTotal, err := utils.ParseHTTPArgs(r)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
@@ -294,17 +272,7 @@ func queryContractHistoryFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		data := &types.QueryContractHistoryRequest{
-			Address:    addr,
-			Pagination: pageReq,
-		}
-		bs, err := cliCtx.Codec.MarshalJSON(data)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
-			return
-		}
-
-		res, height, err := cliCtx.QueryWithData(route, bs)
+		res, height, err := utils.QueryContractHistory(cliCtx, keeper.QueryContractHistory, addr, pageReq)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
