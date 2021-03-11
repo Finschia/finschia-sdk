@@ -48,7 +48,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/syndtr/goleveldb v1.0.1-0.20200815110645-5c35d600f0ca
 	github.com/tendermint/btcd v0.1.1
-	github.com/tendermint/cosmos-rosetta-gateway v0.3.0-rc2
+	github.com/tendermint/cosmos-rosetta-gateway v0.3.0-rc2.0.20210304154332-87d6ca4410df
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
 	golang.org/x/crypto v0.0.0-20220112180741-5e0467b6c7ce
