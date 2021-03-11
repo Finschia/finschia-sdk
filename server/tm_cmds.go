@@ -15,6 +15,7 @@ import (
 	pvm "github.com/tendermint/tendermint/privval"
 	tversion "github.com/tendermint/tendermint/version"
 
+	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
@@ -43,7 +44,11 @@ func ShowValidatorCmd(ctx *Context) *cobra.Command {
 		Short: "Show this node's tendermint validator info",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg := ctx.Config
-			privValidator := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
+			privValidator, err := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(),
+				cfg.PrivKeyType)
+			if err != nil {
+				return err
+			}
 
 			valPubKey, err := privValidator.GetPubKey()
 			if err != nil {
@@ -75,7 +80,12 @@ func ShowAddressCmd(ctx *Context) *cobra.Command {
 		Short: "Shows this node's tendermint validator consensus address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg := ctx.Config
-			privValidator := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
+			privValidator, err := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(),
+				cfg.PrivKeyType)
+			if err != nil {
+				return err
+			}
+
 			valConsAddr := (sdk.ConsAddress)(privValidator.GetAddress())
 
 			if viper.GetString(cli.OutputFlag) == "json" {
@@ -136,13 +146,19 @@ func printlnJSON(v interface{}) error {
 
 // UnsafeResetAllCmd - extension of the tendermint command, resets initialization
 func UnsafeResetAllCmd(ctx *Context) *cobra.Command {
-	return &cobra.Command{
+	cmd := cobra.Command{
 		Use:   "unsafe-reset-all",
 		Short: "Resets the blockchain database, removes address book files, and resets priv_validator.json to the genesis state",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cfg := ctx.Config
-			tcmd.ResetAll(cfg.DBDir(), cfg.P2P.AddrBookFile(), cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), ctx.Logger)
+			tcmd.ResetAll(cfg.DBDir(), cfg.P2P.AddrBookFile(), cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(),
+				cfg.PrivKeyType, ctx.Logger)
 			return nil
 		},
 	}
+	cmd.Flags().String(flags.FlagPrivKeyType, flags.DefaultPrivKeyType, "specify validator's private key type (ed25519|composite). \n"+
+		"set this to priv_key.type in priv_validator_key.json; default `ed25519`")
+
+	return &cmd
+
 }

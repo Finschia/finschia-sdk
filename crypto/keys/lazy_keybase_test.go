@@ -3,17 +3,16 @@ package keys
 import (
 	"testing"
 
+	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/crypto/keys/hd"
+	"github.com/cosmos/cosmos-sdk/tests"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	amino "github.com/tendermint/go-amino"
 	"github.com/tendermint/tendermint/crypto"
 	"github.com/tendermint/tendermint/crypto/ed25519"
 	tmamino "github.com/tendermint/tendermint/crypto/encoding/amino"
-
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/hd"
-	"github.com/cosmos/cosmos-sdk/tests"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 func TestNew(t *testing.T) {
@@ -387,6 +386,10 @@ func (privkey testPriv) PubKey() crypto.PubKey { return testPub{} }
 func (privkey testPriv) Bytes() []byte {
 	return testCdc.MustMarshalBinaryBare(privkey)
 }
+func (privkey testPriv) VRFProve(seed []byte) (crypto.Proof, error) {
+	return nil, nil
+}
+
 func (privkey testPriv) Sign(msg []byte) ([]byte, error)  { return []byte{}, nil }
 func (privkey testPriv) Equals(other crypto.PrivKey) bool { return true }
 
@@ -398,6 +401,10 @@ func (key testPub) Bytes() []byte {
 }
 func (key testPub) VerifyBytes(msg []byte, sig []byte) bool { return true }
 func (key testPub) Equals(other crypto.PubKey) bool         { return true }
+
+func (key testPub) VRFVerify(proof crypto.Proof, seed []byte) (crypto.Output, error) {
+	return nil, nil
+}
 
 func TestKeygenOverride(t *testing.T) {
 	dir, cleanup := tests.NewTestCaseDir(t)

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
@@ -11,6 +12,8 @@ import (
 	"github.com/stretchr/testify/require"
 	abciServer "github.com/tendermint/tendermint/abci/server"
 	tcmd "github.com/tendermint/tendermint/cmd/tendermint/commands"
+	"github.com/tendermint/tendermint/crypto/composite"
+	"github.com/tendermint/tendermint/crypto/ed25519"
 	"github.com/tendermint/tendermint/libs/cli"
 	"github.com/tendermint/tendermint/libs/log"
 
@@ -132,7 +135,24 @@ func TestInitNodeValidatorFiles(t *testing.T) {
 	nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(cfg)
 	require.Nil(t, err)
 	require.NotEqual(t, "", nodeID)
-	require.NotEqual(t, 0, len(valPubKey.Bytes()))
+	require.Equal(t, 37, len(valPubKey.Bytes()))
+	require.EqualValues(t, reflect.TypeOf(ed25519.PubKeyEd25519{}), reflect.TypeOf(valPubKey))
+}
+
+func TestInitNodeValidatorFilesWithComposite(t *testing.T) {
+	home, cleanup := tests.NewTestCaseDir(t)
+	defer cleanup()
+	viper.Set(cli.HomeFlag, home)
+	viper.Set(flags.FlagPrivKeyType, "composite")
+	viper.Set(flags.FlagName, "moniker")
+	cfg, err := tcmd.ParseConfig()
+	cfg.PrivKeyType = viper.GetString(flags.FlagPrivKeyType)
+	require.Nil(t, err)
+	nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(cfg)
+	require.Nil(t, err)
+	require.NotEqual(t, "", nodeID)
+	require.Equal(t, 98, len(valPubKey.Bytes()))
+	require.EqualValues(t, reflect.TypeOf(composite.PubKeyComposite{}), reflect.TypeOf(valPubKey))
 }
 
 // custom tx codec
