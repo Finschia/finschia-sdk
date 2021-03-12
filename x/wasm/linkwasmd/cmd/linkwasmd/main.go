@@ -17,6 +17,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/line/lbm-sdk/x/wasm"
 	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app"
 
 	"github.com/line/lbm-sdk/baseapp"
@@ -62,6 +63,10 @@ func main() {
 	rootCmd.AddCommand(testnetCmd(ctx, cdc, app.ModuleBasics, auth.GenesisAccountIterator{}))
 	rootCmd.AddCommand(version.Cmd)
 	rootCmd.AddCommand(errorCodesCmd())
+
+	startCmd := server.StartCmd(ctx, newApp)
+	wasm.AddModuleInitFlags(startCmd)
+	rootCmd.AddCommand(startCmd)
 
 	server.AddCommands(ctx, cdc, rootCmd, newApp, exportAppStateAndTMValidators)
 

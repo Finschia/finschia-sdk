@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	"github.com/line/lbm-sdk/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -82,9 +83,9 @@ func initRecurseContract(t *testing.T) (contract sdk.AccAddress, creator sdk.Acc
 
 func TestGasCostOnQuery(t *testing.T) {
 	const (
-		GasNoWork uint64 = InstanceCost + 2_953
+		GasNoWork uint64 = types.DefaultInstanceCost + 11_103
 		// Note: about 100 SDK gas (10k wasmer gas) for each round of sha256
-		GasWork50 uint64 = InstanceCost + 8_661 // this is a little shy of 50k gas - to keep an eye on the limit
+		GasWork50 uint64 = types.DefaultInstanceCost + 16_811 // this is a little shy of 50k gas - to keep an eye on the limit
 
 		GasReturnUnhashed uint64 = 393
 		GasReturnHashed   uint64 = 342
@@ -170,7 +171,7 @@ func TestGasCostOnQuery(t *testing.T) {
 
 func TestGasOnExternalQuery(t *testing.T) {
 	const (
-		GasWork50 uint64 = InstanceCost + 8_464
+		GasWork50 uint64 = types.DefaultInstanceCost + 8_464
 	)
 
 	cases := map[string]struct {
@@ -250,7 +251,7 @@ func TestLimitRecursiveQueryGas(t *testing.T) {
 
 	const (
 		// Note: about 100 SDK gas (10k wasmer gas) for each round of sha256
-		GasWork2k uint64 = InstanceCost + 233_575 // we have 6x gas used in cpu than in the instance
+		GasWork2k uint64 = types.DefaultInstanceCost + 241_725 // we have 6x gas used in cpu than in the instance
 		// This is overhead for calling into a sub-contract
 		GasReturnHashed uint64 = 349
 	)
@@ -278,7 +279,7 @@ func TestLimitRecursiveQueryGas(t *testing.T) {
 				Work:  2000,
 			},
 			expectQueriesFromContract: 5,
-			// FIXME: why -3... confused a bit by calculations, seems like rounding issues
+			// FIXME: why -2... confused a bit by calculations, seems like rounding issues
 			expectedGas: GasWork2k + 5*(GasWork2k+GasReturnHashed) - 2,
 		},
 		// this is where we expect an error...

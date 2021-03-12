@@ -3,28 +3,35 @@ package keeper
 import (
 	"fmt"
 
-	wasmvm "github.com/CosmWasm/wasmvm"
+	cosmwasm "github.com/CosmWasm/wasmvm"
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-var (
-	CostHumanize  = 5 * GasMultiplier
-	CostCanonical = 4 * GasMultiplier
-)
+type cosmwasmAPIImpl struct {
+	humanizeCost     uint64
+	canonicalizeCost uint64
+}
 
-func humanAddress(canon []byte) (string, uint64, error) {
+func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
 	if len(canon) != sdk.AddrLen {
-		return "", CostHumanize, fmt.Errorf("expected %d byte address", sdk.AddrLen)
+		return "", a.humanizeCost, fmt.Errorf("expected %d byte address", sdk.AddrLen)
 	}
-	return sdk.AccAddress(canon).String(), CostHumanize, nil
+
+	return sdk.AccAddress(canon).String(), a.humanizeCost, nil
 }
 
-func canonicalAddress(human string) ([]byte, uint64, error) {
+func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) {
 	bz, err := sdk.AccAddressFromBech32(human)
-	return bz, CostCanonical, err
+	return bz, a.canonicalizeCost, err
 }
 
-var cosmwasmAPI = wasmvm.GoAPI{
-	HumanAddress:     humanAddress,
-	CanonicalAddress: canonicalAddress,
+func (k Keeper) cosmwasmAPI(ctx sdk.Context) cosmwasm.GoAPI {
+	x := cosmwasmAPIImpl{
+		humanizeCost:     k.getHumanizeCost(ctx),
+		canonicalizeCost: k.getCanonicalCost(ctx),
+	}
+	return cosmwasm.GoAPI{
+		HumanAddress:     x.humanAddress,
+		CanonicalAddress: x.canonicalAddress,
+	}
 }
