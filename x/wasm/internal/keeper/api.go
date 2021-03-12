@@ -5,7 +5,6 @@ import (
 
 	cosmwasm "github.com/CosmWasm/wasmvm"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
 
 type cosmwasmAPIImpl struct {
@@ -18,7 +17,7 @@ func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
 		return "", a.humanizeCost, fmt.Errorf("expected %d byte address", sdk.AddrLen)
 	}
 
-	return sdk.AccAddress(canon).String(), types.DefaultHumanizeCost, nil
+	return sdk.AccAddress(canon).String(), a.humanizeCost, nil
 }
 
 func (a cosmwasmAPIImpl) canonicalAddress(human string) ([]byte, uint64, error) {
