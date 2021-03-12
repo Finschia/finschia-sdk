@@ -8,7 +8,11 @@ import "gogoproto/gogo.proto";
 import "lbm/base/query/v1/pagination.proto";
 
 option (gogoproto.goproto_registration) = true;
+<<<<<<< HEAD:proto/lbm/tx/v1/service.proto
 option go_package                       = "github.com/line/lbm-sdk/types/tx";
+=======
+option go_package = "github.com/cosmos/cosmos-sdk/types/tx";
+>>>>>>> adf5f625c (add orderBy parameter to TxsByEvents (#8815)):proto/cosmos/tx/v1beta1/service.proto
 
 // Service defines a gRPC service for interacting with transactions.
 service Service {
