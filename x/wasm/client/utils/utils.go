@@ -184,7 +184,8 @@ func ParseHTTPArgs(r *http.Request) (pageKey string, offset, limit, page uint64,
 		offset, err = strconv.ParseUint(offsetStr, 10, 64)
 		if err != nil {
 			return pageKey, offset, limit, page, countTotal, err
-		} else if offset <= 0 {
+		}
+		if offset < 0 {
 			return pageKey, offset, limit, page, countTotal, errors.New("offset must greater than 0")
 		}
 	}
