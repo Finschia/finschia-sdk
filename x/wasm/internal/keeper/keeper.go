@@ -3,7 +3,6 @@ package keeper
 import (
 	"bytes"
 	"encoding/binary"
-	"fmt"
 	"path/filepath"
 
 	wasm "github.com/CosmWasm/wasmvm"
@@ -20,7 +19,6 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tendermint/tendermint/crypto"
 
-	storeTypes "github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/x/wasm/client/utils"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
@@ -699,104 +697,4 @@ func gasMeter(ctx sdk.Context) MultipiedGasMeter {
 	return MultipiedGasMeter{
 		originalMeter: ctx.GasMeter(),
 	}
-}
-
-// NOTE: This function is implemented in cosmos-sdk v0.40.0.
-// If you want to update cosmos-sdk to 0.40.0 or later, you can use the sdk function.
-func FilteredPaginate(
-	prefixStore storeTypes.KVStore,
-	pageRequest *types.PageRequest,
-	onResult func(key []byte, value []byte, accumulate bool) (bool, error),
-) (*types.PageResponse, error) {
-	// if the PageRequest is nil, use default PageRequest
-	if pageRequest == nil {
-		pageRequest = &types.PageRequest{}
-	}
-
-	offset := pageRequest.Offset
-	key := pageRequest.Key
-	limit := pageRequest.Limit
-	countTotal := pageRequest.CountTotal
-
-	if offset > 0 && key != nil {
-		return nil, fmt.Errorf("invalid request, either offset or key is expected, got both")
-	}
-
-	if limit == 0 {
-		limit = DefaultLimit
-
-		// count total results when the limit is zero/not supplied
-		countTotal = true
-	}
-
-	if len(key) != 0 {
-		iterator := prefixStore.Iterator(key, nil)
-		defer iterator.Close()
-
-		var numHits uint64
-		var nextKey []byte
-
-		for ; iterator.Valid(); iterator.Next() {
-			if numHits == limit {
-				nextKey = iterator.Key()
-				break
-			}
-
-			if iterator.Error() != nil {
-				return nil, iterator.Error()
-			}
-
-			hit, err := onResult(iterator.Key(), iterator.Value(), true)
-			if err != nil {
-				return nil, err
-			}
-
-			if hit {
-				numHits++
-			}
-		}
-
-		return &types.PageResponse{
-			NextKey: nextKey,
-		}, nil
-	}
-
-	iterator := prefixStore.Iterator(nil, nil)
-	defer iterator.Close()
-
-	end := offset + limit
-
-	var numHits uint64
-	var nextKey []byte
-
-	for ; iterator.Valid(); iterator.Next() {
-		if iterator.Error() != nil {
-			return nil, iterator.Error()
-		}
-
-		accumulate := numHits >= offset && numHits < end
-		hit, err := onResult(iterator.Key(), iterator.Value(), accumulate)
-		if err != nil {
-			return nil, err
-		}
-
-		if hit {
-			numHits++
-		}
-
-		if numHits == end+1 {
-			nextKey = iterator.Key()
-
-			if !countTotal {
-				break
-			}
-		}
-	}
-
-	res := &types.PageResponse{NextKey: nextKey}
-	if countTotal {
-		res.Total = numHits
-	}
-
-	return res, nil
 }

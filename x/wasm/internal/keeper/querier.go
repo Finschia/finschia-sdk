@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"encoding/binary"
+	"fmt"
 	"strconv"
 
 	"github.com/line/lbm-sdk/codec"
@@ -9,6 +10,8 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	abci "github.com/tendermint/tendermint/abci/types"
+
+	storeTypes "github.com/line/lbm-sdk/store/types"
 
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
@@ -198,7 +201,7 @@ func queryContractHistory(ctx sdk.Context, req abci.RequestQuery, keeper Keeper)
 func (k Keeper) codes(ctx sdk.Context, req *types.QueryCodesRequest) (*types.QueryCodesResponse, error) {
 	r := make([]types.CodeInfoResponse, 0)
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.CodeKeyPrefix)
-	pageRes, err := FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+	pageRes, err := filteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
 			var c types.CodeInfo
 			if err := k.cdc.UnmarshalBinaryBare(value, &c); err != nil {
@@ -217,7 +220,7 @@ func (k Keeper) codes(ctx sdk.Context, req *types.QueryCodesRequest) (*types.Que
 func (k Keeper) contractsByCode(ctx sdk.Context, req *types.QueryContractsByCodeRequest) (*types.QueryContractsByCodeResponse, error) {
 	r := make([]types.ContractInfoResponse, 0)
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetContractByCodeIDSecondaryIndexPrefix(req.CodeID))
-	pageRes, err := FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+	pageRes, err := filteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var contractAddr sdk.AccAddress = key[types.AbsoluteTxPositionLen:]
 		c := k.GetContractInfo(ctx, contractAddr)
 		if c == nil {
@@ -242,7 +245,7 @@ func (k Keeper) contractHistory(ctx sdk.Context, req *types.QueryContractHistory
 	r := make([]types.ContractCodeHistoryEntry, 0)
 
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetContractCodeHistoryElementPrefix(req.Address))
-	pageRes, err := FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
+	pageRes, err := filteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
 			var e types.ContractCodeHistoryEntry
 			if err := k.cdc.UnmarshalBinaryBare(value, &e); err != nil {
@@ -260,4 +263,104 @@ func (k Keeper) contractHistory(ctx sdk.Context, req *types.QueryContractHistory
 		Entries:    r,
 		Pagination: pageRes,
 	}, nil
+}
+
+// NOTE: This function is implemented in cosmos-sdk v0.40.0.
+// If you want to update cosmos-sdk to 0.40.0 or later, you can use the sdk function.
+func filteredPaginate(
+	prefixStore storeTypes.KVStore,
+	pageRequest *types.PageRequest,
+	onResult func(key []byte, value []byte, accumulate bool) (bool, error),
+) (*types.PageResponse, error) {
+	// if the PageRequest is nil, use default PageRequest
+	if pageRequest == nil {
+		pageRequest = &types.PageRequest{}
+	}
+
+	offset := pageRequest.Offset
+	key := pageRequest.Key
+	limit := pageRequest.Limit
+	countTotal := pageRequest.CountTotal
+
+	if offset > 0 && key != nil {
+		return nil, fmt.Errorf("invalid request, either offset or key is expected, got both")
+	}
+
+	if limit == 0 {
+		limit = DefaultLimit
+
+		// count total results when the limit is zero/not supplied
+		countTotal = true
+	}
+
+	if len(key) != 0 {
+		iterator := prefixStore.Iterator(key, nil)
+		defer iterator.Close()
+
+		var numHits uint64
+		var nextKey []byte
+
+		for ; iterator.Valid(); iterator.Next() {
+			if numHits == limit {
+				nextKey = iterator.Key()
+				break
+			}
+
+			if iterator.Error() != nil {
+				return nil, iterator.Error()
+			}
+
+			hit, err := onResult(iterator.Key(), iterator.Value(), true)
+			if err != nil {
+				return nil, err
+			}
+
+			if hit {
+				numHits++
+			}
+		}
+
+		return &types.PageResponse{
+			NextKey: nextKey,
+		}, nil
+	}
+
+	iterator := prefixStore.Iterator(nil, nil)
+	defer iterator.Close()
+
+	end := offset + limit
+
+	var numHits uint64
+	var nextKey []byte
+
+	for ; iterator.Valid(); iterator.Next() {
+		if iterator.Error() != nil {
+			return nil, iterator.Error()
+		}
+
+		accumulate := numHits >= offset && numHits < end
+		hit, err := onResult(iterator.Key(), iterator.Value(), accumulate)
+		if err != nil {
+			return nil, err
+		}
+
+		if hit {
+			numHits++
+		}
+
+		if numHits == end+1 {
+			nextKey = iterator.Key()
+
+			if !countTotal {
+				break
+			}
+		}
+	}
+
+	res := &types.PageResponse{NextKey: nextKey}
+	if countTotal {
+		res.Total = numHits
+	}
+
+	return res, nil
 }
