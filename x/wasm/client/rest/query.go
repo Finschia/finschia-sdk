@@ -14,6 +14,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
 
+	"github.com/line/lbm-sdk/x/wasm/client/utils"
 	"github.com/line/lbm-sdk/x/wasm/internal/keeper"
 	"github.com/line/lbm-sdk/x/wasm/internal/types"
 )
@@ -36,8 +37,19 @@ func listCodesHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryListCode)
-		res, height, err := cliCtx.Query(route)
+		pageKey, offset, limit, page, countTotal, err := utils.ParseHTTPArgs(r)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		pageReq, err := utils.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := utils.QueryCodeList(cliCtx, keeper.QueryListCode, pageReq)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -88,8 +100,19 @@ func listContractsByCodeHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s/%d", types.QuerierRoute, keeper.QueryListContractByCode, codeID)
-		res, height, err := cliCtx.Query(route)
+		pageKey, offset, limit, page, countTotal, err := utils.ParseHTTPArgs(r)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		pageReq, err := utils.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := utils.QueryContractsByCode(cliCtx, keeper.QueryListContractByCode, codeID, pageReq)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -237,8 +260,19 @@ func queryContractHistoryFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		route := fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, keeper.QueryContractHistory, addr.String())
-		res, height, err := cliCtx.Query(route)
+		pageKey, offset, limit, page, countTotal, err := utils.ParseHTTPArgs(r)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		pageReq, err := utils.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := utils.QueryContractHistory(cliCtx, keeper.QueryContractHistory, addr, pageReq)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return

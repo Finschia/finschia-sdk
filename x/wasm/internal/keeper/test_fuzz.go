@@ -17,7 +17,7 @@ func FuzzAddr(m *sdk.AccAddress, c fuzz.Continue) {
 }
 
 func FuzzAbsoluteTxPosition(m *types.AbsoluteTxPosition, c fuzz.Continue) {
-	m.BlockHeight = int64(c.RandUint64()) // can't be negative
+	m.BlockHeight = c.RandUint64() // can't be negative
 	m.TxIndex = c.RandUint64()
 }
 

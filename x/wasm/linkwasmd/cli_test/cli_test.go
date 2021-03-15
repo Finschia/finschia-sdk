@@ -57,7 +57,7 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 
 	// validate that there are no code in the chain
 	{
-		listCode := f.QueryListCodeWasm()
+		listCode := f.QueryListCodeWasm().CodeInfos
 		require.Empty(t, listCode)
 	}
 
@@ -69,7 +69,7 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 
 	// validate the code is stored
 	{
-		listCode := f.QueryListCodeWasm()
+		listCode := f.QueryListCodeWasm().CodeInfos
 		require.Len(t, listCode, 1)
 
 		//validate the hash is the same
@@ -97,7 +97,7 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 
 	// validate that there are no contract using the code (id=1)
 	{
-		listContract := f.QueryListContractByCodeWasm(codeId)
+		listContract := f.QueryListContractByCodeWasm(codeId).ContractInfos
 		require.Empty(t, listContract)
 	}
 
@@ -118,7 +118,7 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 
 	// validate there is only one contract using codeId=1 and get contractAddress
 	{
-		listContract := f.QueryListContractByCodeWasm(codeId)
+		listContract := f.QueryListContractByCodeWasm(codeId).ContractInfos
 		require.Len(t, listContract, 1)
 		contractAddress = listContract[0].GetAddress()
 	}
@@ -207,7 +207,7 @@ func TestLinkCLIWasmTokenTester(t *testing.T) {
 
 	// validate there is only one contract using codeId=1 and get contractAddress
 	{
-		listContract := f.QueryListContractByCodeWasm(codeId)
+		listContract := f.QueryListContractByCodeWasm(codeId).ContractInfos
 		require.Len(t, listContract, 1)
 		contractAddress = listContract[0].GetAddress()
 	}
@@ -626,7 +626,7 @@ func TestLinkCLIWasmTokenTesterProxy(t *testing.T) {
 
 	// validate there is only one contract using codeId=1 and get contractAddress
 	{
-		listContract := f.QueryListContractByCodeWasm(codeId)
+		listContract := f.QueryListContractByCodeWasm(codeId).ContractInfos
 		require.Len(t, listContract, 1)
 		contractAddress = listContract[0].GetAddress()
 	}
@@ -784,7 +784,7 @@ func TestLinkCLIWasmCollectionTester(t *testing.T) {
 
 	// validate there is only one contract using codeId=1 and get contractAddress
 	{
-		listContract := f.QueryListContractByCodeWasm(codeId)
+		listContract := f.QueryListContractByCodeWasm(codeId).ContractInfos
 		require.Len(t, listContract, 1)
 		contractAddress = listContract[0].GetAddress()
 	}
@@ -1550,7 +1550,7 @@ func TestLinkCLIWasmCollectionTesterProxy(t *testing.T) {
 
 	// validate there is only one contract using codeId=1 and get contractAddress
 	{
-		listContract := f.QueryListContractByCodeWasm(codeId)
+		listContract := f.QueryListContractByCodeWasm(codeId).ContractInfos
 		require.Len(t, listContract, 1)
 		contractAddress = listContract[0].GetAddress()
 	}

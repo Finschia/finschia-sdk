@@ -2,7 +2,7 @@
 package keeper
 
 import (
-	"bytes"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -208,22 +208,24 @@ func TestListContractByCodeOrdering(t *testing.T) {
 	// query and check the results are properly sorted
 	q := NewQuerier(keeper)
 	query := []string{QueryListContractByCode, fmt.Sprintf("%d", codeID)}
-	data := abci.RequestQuery{}
-	res, err := q(ctx, query, data)
+
+	req := types.QueryContractsByCodeRequest{CodeID: codeID}
+	bs, err := types.ModuleCdc.MarshalJSON(req)
+	require.NoError(t, err)
+	data := abci.RequestQuery{Data: bs}
+	resData, err := q(ctx, query, data)
 	require.NoError(t, err)
 
-	var contracts []types.ContractInfoResponse
-	err = types.ModuleCdc.UnmarshalJSON(res, &contracts)
+	var res types.QueryContractsByCodeResponse
+	err = types.ModuleCdc.UnmarshalJSON(resData, &res)
 	require.NoError(t, err)
 
-	require.Equal(t, 10, len(contracts))
+	require.Equal(t, 10, len(res.ContractInfos))
 
-	for i, contract := range contracts {
+	for i, contract := range res.ContractInfos {
 		assert.Equal(t, fmt.Sprintf("contract %d", i), contract.GetLabel())
 		assert.NotEmpty(t, contract.GetAddress())
 	}
-	assert.NotContains(t, string(res), "create")
-	assert.NotContains(t, string(res), "Create")
 }
 
 func TestQueryContractHistory(t *testing.T) {
@@ -234,13 +236,14 @@ func TestQueryContractHistory(t *testing.T) {
 	keeper := keepers.WasmKeeper
 
 	var (
-		otherAddr sdk.AccAddress = bytes.Repeat([]byte{0x2}, sdk.AddrLen)
+		_, _, myContractAddr = keyPubAddr()
+		_, _, otherAddr      = keyPubAddr()
 	)
 
 	specs := map[string]struct {
-		srcQueryAddr sdk.AccAddress
-		srcHistory   []types.ContractCodeHistoryEntry
-		expContent   []types.ContractCodeHistoryEntry
+		srcHistory []types.ContractCodeHistoryEntry
+		req        types.QueryContractHistoryRequest
+		expContent []types.ContractCodeHistoryEntry
 	}{
 		"response with internal fields cleared": {
 			srcHistory: []types.ContractCodeHistoryEntry{{
@@ -249,6 +252,7 @@ func TestQueryContractHistory(t *testing.T) {
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"init message"`),
 			}},
+			req: types.QueryContractHistoryRequest{Address: myContractAddr},
 			expContent: []types.ContractCodeHistoryEntry{{
 				Operation: types.GenesisContractCodeHistoryType,
 				CodeID:    firstCodeID,
@@ -272,6 +276,7 @@ func TestQueryContractHistory(t *testing.T) {
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"migrate message 2"`),
 			}},
+			req: types.QueryContractHistoryRequest{Address: myContractAddr},
 			expContent: []types.ContractCodeHistoryEntry{{
 				Operation: types.InitContractCodeHistoryType,
 				CodeID:    firstCodeID,
@@ -286,8 +291,56 @@ func TestQueryContractHistory(t *testing.T) {
 				Msg:       []byte(`"migrate message 2"`),
 			}},
 		},
+		"with pagination offset": {
+			srcHistory: []types.ContractCodeHistoryEntry{{
+				Operation: types.InitContractCodeHistoryType,
+				CodeID:    firstCodeID,
+				Updated:   types.NewAbsoluteTxPosition(ctx),
+				Msg:       []byte(`"init message"`),
+			}, {
+				Operation: types.MigrateContractCodeHistoryType,
+				CodeID:    2,
+				Updated:   types.NewAbsoluteTxPosition(ctx),
+				Msg:       []byte(`"migrate message 1"`),
+			}},
+			req: types.QueryContractHistoryRequest{
+				Address: myContractAddr,
+				Pagination: &types.PageRequest{
+					Offset: 1,
+				},
+			},
+			expContent: []types.ContractCodeHistoryEntry{{
+				Operation: types.MigrateContractCodeHistoryType,
+				CodeID:    2,
+				Msg:       []byte(`"migrate message 1"`),
+			}},
+		},
+		"with pagination limit": {
+			srcHistory: []types.ContractCodeHistoryEntry{{
+				Operation: types.InitContractCodeHistoryType,
+				CodeID:    firstCodeID,
+				Updated:   types.NewAbsoluteTxPosition(ctx),
+				Msg:       []byte(`"init message"`),
+			}, {
+				Operation: types.MigrateContractCodeHistoryType,
+				CodeID:    2,
+				Updated:   types.NewAbsoluteTxPosition(ctx),
+				Msg:       []byte(`"migrate message 1"`),
+			}},
+			req: types.QueryContractHistoryRequest{
+				Address: myContractAddr,
+				Pagination: &types.PageRequest{
+					Limit: 1,
+				},
+			},
+			expContent: []types.ContractCodeHistoryEntry{{
+				Operation: types.InitContractCodeHistoryType,
+				CodeID:    firstCodeID,
+				Msg:       []byte(`"init message"`),
+			}},
+		},
 		"unknown contract address": {
-			srcQueryAddr: otherAddr,
+			req: types.QueryContractHistoryRequest{Address: otherAddr},
 			srcHistory: []types.ContractCodeHistoryEntry{{
 				Operation: types.GenesisContractCodeHistoryType,
 				CodeID:    firstCodeID,
@@ -299,40 +352,29 @@ func TestQueryContractHistory(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			_, _, myContractAddr := keyPubAddr()
-			keeper.appendToContractHistory(ctx, myContractAddr, spec.srcHistory...)
+			xCtx, _ := ctx.CacheContext()
+			keeper.appendToContractHistory(xCtx, myContractAddr, spec.srcHistory...)
 			q := NewQuerier(keeper)
-			queryContractAddr := spec.srcQueryAddr
-			if queryContractAddr == nil {
-				queryContractAddr = myContractAddr
-			}
 
 			// when
-			query := []string{QueryContractHistory, queryContractAddr.String()}
-			data := abci.RequestQuery{}
-			resData, err := q(ctx, query, data)
+			query := []string{QueryContractHistory, myContractAddr.String()}
+			bs, err := types.ModuleCdc.MarshalJSON(spec.req)
+			require.NoError(t, err)
+			data := abci.RequestQuery{Data: bs}
+			resData, err := q(xCtx, query, data)
 
 			// then
 			require.NoError(t, err)
 			if spec.expContent == nil {
-				require.Nil(t, resData)
+				require.Error(t, types.ErrEmpty)
 				return
 			}
-			var got []types.ContractHistoryResponse
+			var got types.QueryContractHistoryResponse
 			err = types.ModuleCdc.UnmarshalJSON(resData, &got)
 			require.NoError(t, err)
 
-			assertContractHistory(t, spec.expContent, got)
+			assert.Equal(t, spec.expContent, got.Entries)
 		})
-	}
-}
-
-func assertContractHistory(t *testing.T, expected []types.ContractCodeHistoryEntry, actual []types.ContractHistoryResponse) {
-	assert.Equal(t, len(expected), len(actual))
-
-	for i, entry := range expected {
-		expectedResponse := types.NewContractHistoryResponse(entry)
-		assert.Equal(t, expectedResponse, actual[i])
 	}
 }
 
@@ -340,48 +382,91 @@ func TestQueryCodeList(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
+	tempDir, err := ioutil.TempDir("", "wasm")
+	require.NoError(t, err)
+	defer os.RemoveAll(tempDir)
+
+	ctx, keepers := CreateTestInput(t, false, tempDir, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
 	specs := map[string]struct {
-		codeIDs []uint64
+		storedCodeIDs []uint64
+		req           types.QueryCodesRequest
+		expCodeIDs    []uint64
 	}{
 		"none": {},
 		"no gaps": {
-			codeIDs: []uint64{1, 2, 3},
+			storedCodeIDs: []uint64{1, 2, 3},
+			expCodeIDs:    []uint64{1, 2, 3},
 		},
 		"with gaps": {
-			codeIDs: []uint64{2, 4, 6},
+			storedCodeIDs: []uint64{2, 4, 6},
+			expCodeIDs:    []uint64{2, 4, 6},
+		},
+		"with pagination offset": {
+			storedCodeIDs: []uint64{1, 2, 3},
+			req: types.QueryCodesRequest{
+				Pagination: &types.PageRequest{
+					Offset: 1,
+				},
+			},
+			expCodeIDs: []uint64{2, 3},
+		},
+		"with pagination limit": {
+			storedCodeIDs: []uint64{1, 2, 3},
+			req: types.QueryCodesRequest{
+				Pagination: &types.PageRequest{
+					Limit: 2,
+				},
+			},
+			expCodeIDs: []uint64{1, 2},
+		},
+		"with pagination next key": {
+			storedCodeIDs: []uint64{1, 2, 3},
+			req: types.QueryCodesRequest{
+				Pagination: &types.PageRequest{
+					Key: fromBase64("AAAAAAAAAAI="),
+				},
+			},
+			expCodeIDs: []uint64{2, 3},
 		},
 	}
-
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			tempDir, err := ioutil.TempDir("", "wasm")
-			require.NoError(t, err)
-			defer os.RemoveAll(tempDir)
-			ctx, keepers := CreateTestInput(t, false, tempDir, SupportedFeatures, nil, nil)
-			keeper := keepers.WasmKeeper
+			xCtx, _ := ctx.CacheContext()
 
-			for _, codeID := range spec.codeIDs {
-				require.NoError(t, keeper.importCode(ctx, codeID,
+			for _, codeID := range spec.storedCodeIDs {
+				require.NoError(t, keeper.importCode(xCtx, codeID,
 					types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode)),
 					wasmCode),
 				)
 			}
-			q := NewQuerier(keeper)
 			// when
+			q := NewQuerier(keeper)
 			query := []string{QueryListCode}
-			data := abci.RequestQuery{}
-			resData, err := q(ctx, query, data)
+			bs, err := types.ModuleCdc.MarshalJSON(spec.req)
+			require.NoError(t, err)
+			data := abci.RequestQuery{Data: bs}
+			resData, err := q(xCtx, query, data)
+			require.NoError(t, err)
 
 			// then
-			require.NoError(t, err)
-
-			var got []types.CodeInfoResponse
+			var got types.QueryCodesResponse
 			err = types.ModuleCdc.UnmarshalJSON(resData, &got)
+
 			require.NoError(t, err)
-			require.Len(t, got, len(spec.codeIDs))
-			for i, exp := range spec.codeIDs {
-				assert.EqualValues(t, exp, got[i].GetID())
+			require.Len(t, got.CodeInfos, len(spec.expCodeIDs))
+			for i, exp := range spec.expCodeIDs {
+				assert.EqualValues(t, exp, got.CodeInfos[i].GetID())
 			}
 		})
 	}
+}
+
+func fromBase64(s string) []byte {
+	r, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		panic(err)
+	}
+	return r
 }

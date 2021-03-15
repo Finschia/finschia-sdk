@@ -1326,23 +1326,23 @@ func (f *Fixtures) TxClearContractAdminWasm(contractAddress sdk.AccAddress, flag
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 
-func (f *Fixtures) QueryListCodeWasm() []wasmtypes.CodeInfoResponse {
+func (f *Fixtures) QueryListCodeWasm() wasmtypes.QueryCodesResponse {
 	cmd := fmt.Sprintf("%s query wasm list-code %s", f.LinkcliBinary, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
-	var listCode []wasmtypes.CodeInfoResponse
+	var listCode wasmtypes.QueryCodesResponse
 	err := cdc.UnmarshalJSON([]byte(res), &listCode)
 	require.NoError(f.T, err)
 	return listCode
 }
 
-func (f *Fixtures) QueryListContractByCodeWasm(codeId uint64) []wasmtypes.ContractInfoResponse {
+func (f *Fixtures) QueryListContractByCodeWasm(codeId uint64) wasmtypes.QueryContractsByCodeResponse {
 	cmd := fmt.Sprintf("%s query wasm list-contract-by-code %d %s", f.LinkcliBinary, codeId, f.Flags())
 	res, errStr := tests.ExecuteT(f.T, cmd, "")
 	require.Empty(f.T, errStr)
 	cdc := app.MakeCodec()
-	var listContract []wasmtypes.ContractInfoResponse
+	var listContract wasmtypes.QueryContractsByCodeResponse
 	err := cdc.UnmarshalJSON([]byte(res), &listContract)
 	require.NoError(f.T, err)
 	return listContract
