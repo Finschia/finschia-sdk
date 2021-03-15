@@ -373,7 +373,7 @@ func TestAminoUnmarshalJSON(t *testing.T) {
 	// v0.39, hence the `threshold` field as a string.
 	// We are testing that when unmarshaling this JSON into a LegacyAminoPubKey
 	// with amino, there's no error.
-	// ref: https://github.com/cosmos/cosmos-sdk/issues/8776
+	// ref: https://github.com/line/lbm-sdk/issues/8776
 	pkJSON := `{
 	"type": "ostracon/PubKeyMultisigThreshold",
 	"value": {
