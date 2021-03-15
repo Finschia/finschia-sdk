@@ -33,7 +33,7 @@ func (k Keeper) Slash(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeigh
 	slashAmountDec := amount.ToDec().Mul(slashFactor)
 	slashAmount := slashAmountDec.TruncateInt()
 
-	// ref https://github.com/cosmos/cosmos-sdk/issues/1348
+	// ref https://github.com/line/lbm-sdk/v2/issues/1348
 
 	validator, found := k.GetValidatorByConsAddr(ctx, consAddr)
 	if !found {

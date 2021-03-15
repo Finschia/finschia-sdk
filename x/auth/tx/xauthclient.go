@@ -1,7 +1,7 @@
 // Package tx 's xauthclient.go file is copy-pasted from
-// https://github.com/cosmos/cosmos-sdk/blob/v0.41.3/x/auth/client/query.go
+// https://github.com/line/lbm-sdk/v2/blob/v0.41.3/x/auth/client/query.go
 // It is duplicated as to not introduce any breaking change in 0.41.4, see PR:
-// https://github.com/cosmos/cosmos-sdk/pull/8732#discussion_r584746947
+// https://github.com/line/lbm-sdk/v2/pull/8732#discussion_r584746947
 package tx
 
 import (
@@ -47,7 +47,7 @@ func queryTxsByEvents(goCtx context.Context, clientCtx client.Context, events []
 	}
 
 	// TODO: this may not always need to be proven
-	// https://github.com/cosmos/cosmos-sdk/issues/6807
+	// https://github.com/line/lbm-sdk/v2/issues/6807
 	resTxs, err := node.TxSearch(goCtx, query, true, &page, &limit, orderBy)
 	if err != nil {
 		return nil, err
@@ -82,7 +82,7 @@ func queryTx(goCtx context.Context, clientCtx client.Context, hashHexStr string)
 	}
 
 	//TODO: this may not always need to be proven
-	// https://github.com/cosmos/cosmos-sdk/issues/6807
+	// https://github.com/line/lbm-sdk/v2/issues/6807
 	resTx, err := node.Tx(goCtx, hash, true)
 	if err != nil {
 		return nil, err

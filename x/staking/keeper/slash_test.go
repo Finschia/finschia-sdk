@@ -333,7 +333,7 @@ func TestSlashWithUnbondingDelegation(t *testing.T) {
 	// slash validator again
 	// all originally bonded stake has been slashed, so this will have no effect
 	// on the unbonding delegation, but it will slash stake bonded since the infraction
-	// this may not be the desirable behaviour, ref https://github.com/cosmos/cosmos-sdk/issues/1440
+	// this may not be the desirable behaviour, ref https://github.com/line/lbm-sdk/v2/issues/1440
 	ctx = ctx.WithBlockHeight(13)
 	app.StakingKeeper.Slash(ctx, consAddr, 9, 10, fraction)
 
@@ -359,7 +359,7 @@ func TestSlashWithUnbondingDelegation(t *testing.T) {
 	// slash validator again
 	// all originally bonded stake has been slashed, so this will have no effect
 	// on the unbonding delegation, but it will slash stake bonded since the infraction
-	// this may not be the desirable behaviour, ref https://github.com/cosmos/cosmos-sdk/issues/1440
+	// this may not be the desirable behaviour, ref https://github.com/line/lbm-sdk/v2/issues/1440
 	ctx = ctx.WithBlockHeight(13)
 	app.StakingKeeper.Slash(ctx, consAddr, 9, 10, fraction)
 

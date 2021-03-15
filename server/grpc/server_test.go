@@ -116,7 +116,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_Reflection() {
 
 func (s *IntegrationTestSuite) TestGRPCServer_GetTxsEvent() {
 	// Query the tx via gRPC without pagination. This used to panic, see
-	// https://github.com/cosmos/cosmos-sdk/issues/8038.
+	// https://github.com/line/lbm-sdk/v2/issues/8038.
 	txServiceClient := txtypes.NewServiceClient(s.conn)
 	_, err := txServiceClient.GetTxsEvent(
 		context.Background(),
@@ -173,7 +173,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_BroadcastTx() {
 
 // Test and enforce that we upfront reject any connections to baseapp containing
 // invalid initial x-cosmos-block-height that aren't positive  and in the range [0, max(int64)]
-// See issue https://github.com/cosmos/cosmos-sdk/issues/7662.
+// See issue https://github.com/line/lbm-sdk/v2/issues/7662.
 func (s *IntegrationTestSuite) TestGRPCServerInvalidHeaderHeights() {
 	t := s.T()
 	val0 := s.network.Validators[0]

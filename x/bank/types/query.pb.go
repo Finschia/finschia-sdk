@@ -164,7 +164,7 @@ var xxx_messageInfo_QueryAllBalancesRequest proto.InternalMessageInfo
 // method.
 type QueryAllBalancesResponse struct {
 	// balances is the balances of all the coins.
-	Balances github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=balances,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"balances"`
+	Balances github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=balances,proto3,castrepeated=github.com/line/lbm-sdk/v2/types.Coins" json:"balances"`
 	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -258,7 +258,7 @@ var xxx_messageInfo_QueryTotalSupplyRequest proto.InternalMessageInfo
 // method
 type QueryTotalSupplyResponse struct {
 	// supply is the supply of the coins
-	Supply github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=supply,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"supply"`
+	Supply github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=supply,proto3,castrepeated=github.com/line/lbm-sdk/v2/types.Coins" json:"supply"`
 }
 
 func (m *QueryTotalSupplyResponse) Reset()         { *m = QueryTotalSupplyResponse{} }

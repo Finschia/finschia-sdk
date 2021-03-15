@@ -184,10 +184,10 @@ func (suite *AnteTestSuite) TestSigVerification() {
 
 // This test is exactly like the one above, but we set the codec explicitly to
 // Amino.
-// Once https://github.com/cosmos/cosmos-sdk/issues/6190 is in, we can remove
+// Once https://github.com/line/lbm-sdk/v2/issues/6190 is in, we can remove
 // this, since it'll be handled by the test matrix.
 // In the meantime, we want to make double-sure amino compatibility works.
-// ref: https://github.com/cosmos/cosmos-sdk/issues/7229
+// ref: https://github.com/line/lbm-sdk/v2/issues/7229
 func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 	suite.app, suite.ctx = createTestApp(true)
 	suite.ctx = suite.ctx.WithBlockHeight(1)

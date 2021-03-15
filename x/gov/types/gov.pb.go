@@ -165,7 +165,7 @@ var xxx_messageInfo_TextProposal proto.InternalMessageInfo
 type Deposit struct {
 	ProposalId uint64                                   `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"proposal_id,omitempty" yaml:"proposal_id"`
 	Depositor  string                                   `protobuf:"bytes,2,opt,name=depositor,proto3" json:"depositor,omitempty"`
-	Amount     github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,3,rep,name=amount,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"amount"`
+	Amount     github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,3,rep,name=amount,proto3,castrepeated=github.com/line/lbm-sdk/v2/types.Coins" json:"amount"`
 }
 
 func (m *Deposit) Reset()      { *m = Deposit{} }
@@ -208,7 +208,7 @@ type Proposal struct {
 	FinalTallyResult TallyResult                              `protobuf:"bytes,4,opt,name=final_tally_result,json=finalTallyResult,proto3" json:"final_tally_result" yaml:"final_tally_result"`
 	SubmitTime       time.Time                                `protobuf:"bytes,5,opt,name=submit_time,json=submitTime,proto3,stdtime" json:"submit_time" yaml:"submit_time"`
 	DepositEndTime   time.Time                                `protobuf:"bytes,6,opt,name=deposit_end_time,json=depositEndTime,proto3,stdtime" json:"deposit_end_time" yaml:"deposit_end_time"`
-	TotalDeposit     github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,7,rep,name=total_deposit,json=totalDeposit,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"total_deposit" yaml:"total_deposit"`
+	TotalDeposit     github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,7,rep,name=total_deposit,json=totalDeposit,proto3,castrepeated=github.com/line/lbm-sdk/v2/types.Coins" json:"total_deposit" yaml:"total_deposit"`
 	VotingStartTime  time.Time                                `protobuf:"bytes,8,opt,name=voting_start_time,json=votingStartTime,proto3,stdtime" json:"voting_start_time" yaml:"voting_start_time"`
 	VotingEndTime    time.Time                                `protobuf:"bytes,9,opt,name=voting_end_time,json=votingEndTime,proto3,stdtime" json:"voting_end_time" yaml:"voting_end_time"`
 }
@@ -247,10 +247,10 @@ var xxx_messageInfo_Proposal proto.InternalMessageInfo
 
 // TallyResult defines a standard tally for a governance proposal.
 type TallyResult struct {
-	Yes        github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=yes,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"yes"`
-	Abstain    github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=abstain,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"abstain"`
-	No         github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=no,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"no"`
-	NoWithVeto github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=no_with_veto,json=noWithVeto,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Int" json:"no_with_veto" yaml:"no_with_veto"`
+	Yes        github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,1,opt,name=yes,proto3,customtype=github.com/line/lbm-sdk/v2/types.Int" json:"yes"`
+	Abstain    github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,2,opt,name=abstain,proto3,customtype=github.com/line/lbm-sdk/v2/types.Int" json:"abstain"`
+	No         github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,3,opt,name=no,proto3,customtype=github.com/line/lbm-sdk/v2/types.Int" json:"no"`
+	NoWithVeto github_com_cosmos_cosmos_sdk_types.Int `protobuf:"bytes,4,opt,name=no_with_veto,json=noWithVeto,proto3,customtype=github.com/line/lbm-sdk/v2/types.Int" json:"no_with_veto" yaml:"no_with_veto"`
 }
 
 func (m *TallyResult) Reset()      { *m = TallyResult{} }
@@ -328,7 +328,7 @@ var xxx_messageInfo_Vote proto.InternalMessageInfo
 // DepositParams defines the params for deposits on governance proposals.
 type DepositParams struct {
 	//  Minimum deposit for a proposal to enter voting period.
-	MinDeposit github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3,castrepeated=github.com/cosmos/cosmos-sdk/types.Coins" json:"min_deposit,omitempty" yaml:"min_deposit"`
+	MinDeposit github_com_cosmos_cosmos_sdk_types.Coins `protobuf:"bytes,1,rep,name=min_deposit,json=minDeposit,proto3,castrepeated=github.com/line/lbm-sdk/v2/types.Coins" json:"min_deposit,omitempty" yaml:"min_deposit"`
 	//  Maximum period for Atom holders to deposit on a proposal. Initial value: 2
 	//  months.
 	MaxDepositPeriod time.Duration `protobuf:"bytes,2,opt,name=max_deposit_period,json=maxDepositPeriod,proto3,stdduration" json:"max_deposit_period,omitempty" yaml:"max_deposit_period"`
@@ -408,12 +408,12 @@ var xxx_messageInfo_VotingParams proto.InternalMessageInfo
 type TallyParams struct {
 	//  Minimum percentage of total stake needed to vote for a result to be
 	//  considered valid.
-	Quorum github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=quorum,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"quorum,omitempty"`
+	Quorum github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,1,opt,name=quorum,proto3,customtype=github.com/line/lbm-sdk/v2/types.Dec" json:"quorum,omitempty"`
 	//  Minimum proportion of Yes votes for proposal to pass. Default value: 0.5.
-	Threshold github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=threshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"threshold,omitempty"`
+	Threshold github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,2,opt,name=threshold,proto3,customtype=github.com/line/lbm-sdk/v2/types.Dec" json:"threshold,omitempty"`
 	//  Minimum value of Veto votes to Total votes ratio for proposal to be
 	//  vetoed. Default value: 1/3.
-	VetoThreshold github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=veto_threshold,json=vetoThreshold,proto3,customtype=github.com/cosmos/cosmos-sdk/types.Dec" json:"veto_threshold,omitempty" yaml:"veto_threshold"`
+	VetoThreshold github_com_cosmos_cosmos_sdk_types.Dec `protobuf:"bytes,3,opt,name=veto_threshold,json=vetoThreshold,proto3,customtype=github.com/line/lbm-sdk/v2/types.Dec" json:"veto_threshold,omitempty" yaml:"veto_threshold"`
 }
 
 func (m *TallyParams) Reset()      { *m = TallyParams{} }

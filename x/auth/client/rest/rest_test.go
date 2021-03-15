@@ -100,7 +100,7 @@ func mkStdTx() legacytx.StdTx {
 
 // Create an IBC tx that's encoded as amino-JSON. Since we can't amino-marshal
 // a tx with "cosmos-sdk/MsgTransfer" using the SDK, we just hardcode the tx
-// here. But external clients might, see https://github.com/cosmos/cosmos-sdk/issues/8022.
+// here. But external clients might, see https://github.com/line/lbm-sdk/v2/issues/8022.
 func mkIBCStdTx() []byte {
 	ibcTx := `{
 		"account_number": "68",
@@ -554,7 +554,7 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 
 // TestLegacyMultiSig creates a legacy multisig transaction, and makes sure
 // we can query it via the legacy REST endpoint.
-// ref: https://github.com/cosmos/cosmos-sdk/issues/8679
+// ref: https://github.com/line/lbm-sdk/v2/issues/8679
 func (s *IntegrationTestSuite) TestLegacyMultisig() {
 	val1 := *s.network.Validators[0]
 
