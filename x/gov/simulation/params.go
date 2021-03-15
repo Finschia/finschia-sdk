@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lbm-sdk/v2/x/simulation"
 )
 
 const (

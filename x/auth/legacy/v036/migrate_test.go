@@ -3,8 +3,8 @@ package v036
 import (
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/types"
-	v034auth "github.com/cosmos/cosmos-sdk/x/auth/legacy/v034"
+	"github.com/line/lbm-sdk/v2/types"
+	v034auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v034"
 
 	"github.com/stretchr/testify/require"
 )

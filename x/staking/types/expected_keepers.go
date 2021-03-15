@@ -1,9 +1,9 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	bankexported "github.com/cosmos/cosmos-sdk/x/bank/exported"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	bankexported "github.com/line/lbm-sdk/v2/x/bank/exported"
 )
 
 // DistributionKeeper expected distribution keeper (noalias)

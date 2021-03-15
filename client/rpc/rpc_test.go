@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/suite"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
-	"github.com/cosmos/cosmos-sdk/client/rpc"
-	"github.com/cosmos/cosmos-sdk/codec/legacy"
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/line/lbm-sdk/v2/client/rpc"
+	"github.com/line/lbm-sdk/v2/codec/legacy"
+	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	"github.com/line/lbm-sdk/v2/types/rest"
 )
 
 type IntegrationTestSuite struct {

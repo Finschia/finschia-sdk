@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/x/genutil/types"
 )
 
 var basic034Gov = []byte(`

@@ -4,8 +4,8 @@ import (
 	tmcrypto "github.com/tendermint/tendermint/crypto"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
+	"github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 // GetTmConsPubKey gets the validator's public key as a tmcrypto.PubKey.

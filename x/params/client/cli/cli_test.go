@@ -10,9 +10,9 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	"github.com/cosmos/cosmos-sdk/x/params/client/cli"
+	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	"github.com/line/lbm-sdk/v2/x/params/client/cli"
 )
 
 type IntegrationTestSuite struct {

@@ -8,29 +8,29 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
-	authcli "github.com/cosmos/cosmos-sdk/x/auth/client/cli"
-	authrest "github.com/cosmos/cosmos-sdk/x/auth/client/rest"
-	authtest "github.com/cosmos/cosmos-sdk/x/auth/client/testutil"
-	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
-	bankcli "github.com/cosmos/cosmos-sdk/x/bank/client/testutil"
-	"github.com/cosmos/cosmos-sdk/x/bank/types"
-	ibccli "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/client/cli"
-	ibcsolomachinecli "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/06-solomachine/client/cli"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	"github.com/line/lbm-sdk/v2/client/tx"
+	"github.com/line/lbm-sdk/v2/crypto/hd"
+	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lbm-sdk/v2/testutil"
+	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/rest"
+	txtypes "github.com/line/lbm-sdk/v2/types/tx"
+	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
+	authcli "github.com/line/lbm-sdk/v2/x/auth/client/cli"
+	authrest "github.com/line/lbm-sdk/v2/x/auth/client/rest"
+	authtest "github.com/line/lbm-sdk/v2/x/auth/client/testutil"
+	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
+	bankcli "github.com/line/lbm-sdk/v2/x/bank/client/testutil"
+	"github.com/line/lbm-sdk/v2/x/bank/types"
+	ibccli "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/client/cli"
+	ibcsolomachinecli "github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -100,7 +100,7 @@ func mkStdTx() legacytx.StdTx {
 
 // Create an IBC tx that's encoded as amino-JSON. Since we can't amino-marshal
 // a tx with "cosmos-sdk/MsgTransfer" using the SDK, we just hardcode the tx
-// here. But external clients might, see https://github.com/cosmos/cosmos-sdk/issues/8022.
+// here. But external clients might, see https://github.com/line/lbm-sdk/v2/issues/8022.
 func mkIBCStdTx() []byte {
 	ibcTx := `{
 		"account_number": "68",
@@ -554,7 +554,7 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 
 // TestLegacyMultiSig creates a legacy multisig transaction, and makes sure
 // we can query it via the legacy REST endpoint.
-// ref: https://github.com/cosmos/cosmos-sdk/issues/8679
+// ref: https://github.com/line/lbm-sdk/v2/issues/8679
 func (s *IntegrationTestSuite) TestLegacyMultisig() {
 	val1 := *s.network.Validators[0]
 

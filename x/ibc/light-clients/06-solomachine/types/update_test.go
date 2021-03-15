@@ -1,12 +1,12 @@
 package types_test
 
 import (
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
-	"github.com/cosmos/cosmos-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/cosmos/cosmos-sdk/x/ibc/testing"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/types"
+	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
 )
 
 func (suite *SoloMachineTestSuite) TestCheckHeaderAndUpdateState() {

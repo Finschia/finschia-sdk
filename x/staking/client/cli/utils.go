@@ -3,8 +3,8 @@ package cli
 import (
 	"errors"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 func buildCommissionRates(rateStr, maxRateStr, maxChangeRateStr string) (commission types.CommissionRates, err error) {

@@ -11,14 +11,14 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/input"
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	"github.com/line/lbm-sdk/v2/client/input"
+	"github.com/line/lbm-sdk/v2/crypto/hd"
+	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	"github.com/line/lbm-sdk/v2/crypto/keys/multisig"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 const (

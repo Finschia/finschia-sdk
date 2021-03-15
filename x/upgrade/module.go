@@ -9,15 +9,15 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/x/upgrade/client/cli"
-	"github.com/cosmos/cosmos-sdk/x/upgrade/client/rest"
-	"github.com/cosmos/cosmos-sdk/x/upgrade/keeper"
-	"github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/codec"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/module"
+	"github.com/line/lbm-sdk/v2/x/upgrade/client/cli"
+	"github.com/line/lbm-sdk/v2/x/upgrade/client/rest"
+	"github.com/line/lbm-sdk/v2/x/upgrade/keeper"
+	"github.com/line/lbm-sdk/v2/x/upgrade/types"
 )
 
 func init() {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 // NewGenesisState creates a new GenesisState object

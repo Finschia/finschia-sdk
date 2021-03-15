@@ -7,9 +7,9 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/cosmos/cosmos-sdk/testutil"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	"github.com/cosmos/cosmos-sdk/x/params/types/proposal"
+	"github.com/line/lbm-sdk/v2/testutil"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
 )
 
 type IntegrationTestSuite struct {

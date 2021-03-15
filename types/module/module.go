@@ -36,10 +36,10 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/codec"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 //__________________________________________________________________________________________
@@ -124,7 +124,7 @@ func (bm BasicManager) RegisterGRPCGatewayRoutes(clientCtx client.Context, rtr *
 // AddTxCommands adds all tx commands to the rootTxCmd.
 //
 // TODO: Remove clientCtx argument.
-// REF: https://github.com/cosmos/cosmos-sdk/issues/6571
+// REF: https://github.com/line/lbm-sdk/v2/issues/6571
 func (bm BasicManager) AddTxCommands(rootTxCmd *cobra.Command) {
 	for _, b := range bm {
 		if cmd := b.GetTxCmd(); cmd != nil {
@@ -136,7 +136,7 @@ func (bm BasicManager) AddTxCommands(rootTxCmd *cobra.Command) {
 // AddQueryCommands adds all query commands to the rootQueryCmd.
 //
 // TODO: Remove clientCtx argument.
-// REF: https://github.com/cosmos/cosmos-sdk/issues/6571
+// REF: https://github.com/line/lbm-sdk/v2/issues/6571
 func (bm BasicManager) AddQueryCommands(rootQueryCmd *cobra.Command) {
 	for _, b := range bm {
 		if cmd := b.GetQueryCmd(); cmd != nil {

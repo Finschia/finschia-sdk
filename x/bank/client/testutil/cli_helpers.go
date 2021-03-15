@@ -9,14 +9,14 @@ import (
 	"github.com/tendermint/tendermint/libs/cli"
 	grpc "google.golang.org/grpc"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	bankcli "github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-	"github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	"github.com/line/lbm-sdk/v2/client/tx"
+	"github.com/line/lbm-sdk/v2/testutil"
+	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	bankcli "github.com/line/lbm-sdk/v2/x/bank/client/cli"
+	"github.com/line/lbm-sdk/v2/x/bank/types"
 )
 
 func MsgSendExec(clientCtx client.Context, from, to, amount fmt.Stringer, extraArgs ...string) (testutil.BufferWriter, error) {

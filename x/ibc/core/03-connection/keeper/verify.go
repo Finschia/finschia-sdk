@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
 )
 
 // VerifyClientState verifies a proof of a client state of the running machine

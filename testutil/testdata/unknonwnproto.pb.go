@@ -6,10 +6,10 @@ package testdata
 import (
 	encoding_binary "encoding/binary"
 	fmt "fmt"
-	types "github.com/cosmos/cosmos-sdk/codec/types"
-	tx "github.com/cosmos/cosmos-sdk/types/tx"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/line/lbm-sdk/v2/codec/types"
+	tx "github.com/line/lbm-sdk/v2/types/tx"
 	io "io"
 	math "math"
 	math_bits "math/bits"

@@ -5,7 +5,7 @@ package secp256k1
 import (
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1/internal/secp256k1"
+	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1/internal/secp256k1"
 )
 
 // Sign creates an ECDSA signature on curve Secp256k1, using SHA256 on the msg.

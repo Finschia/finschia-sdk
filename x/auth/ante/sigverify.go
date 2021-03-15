@@ -5,17 +5,17 @@ import (
 	"encoding/hex"
 	"fmt"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
-	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
+	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
+	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lbm-sdk/v2/crypto/types/multisig"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
+	authsigning "github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lbm-sdk/v2/x/auth/types"
 )
 
 var (

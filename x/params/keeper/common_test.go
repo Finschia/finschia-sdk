@@ -5,12 +5,12 @@ import (
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
+	"github.com/line/lbm-sdk/v2/simapp"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramskeeper "github.com/cosmos/cosmos-sdk/x/params/keeper"
+	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lbm-sdk/v2/store"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	paramskeeper "github.com/line/lbm-sdk/v2/x/params/keeper"
 )
 
 func testComponents() (*codec.LegacyAmino, sdk.Context, sdk.StoreKey, sdk.StoreKey, paramskeeper.Keeper) {

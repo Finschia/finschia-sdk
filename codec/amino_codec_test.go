@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/rest"
-	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lbm-sdk/v2/simapp"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	"github.com/line/lbm-sdk/v2/x/auth/client/rest"
+	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
 )
 
 func createTestCodec() *codec.LegacyAmino {

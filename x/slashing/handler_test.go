@@ -9,16 +9,16 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/slashing"
-	"github.com/cosmos/cosmos-sdk/x/slashing/keeper"
-	"github.com/cosmos/cosmos-sdk/x/slashing/testslashing"
-	"github.com/cosmos/cosmos-sdk/x/slashing/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/cosmos/cosmos-sdk/x/staking/teststaking"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/v2/simapp"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/slashing"
+	"github.com/line/lbm-sdk/v2/x/slashing/keeper"
+	"github.com/line/lbm-sdk/v2/x/slashing/testslashing"
+	"github.com/line/lbm-sdk/v2/x/slashing/types"
+	"github.com/line/lbm-sdk/v2/x/staking"
+	"github.com/line/lbm-sdk/v2/x/staking/teststaking"
+	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 func TestCannotUnjailUnlessJailed(t *testing.T) {

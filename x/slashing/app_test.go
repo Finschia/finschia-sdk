@@ -8,14 +8,14 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/slashing/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
+	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/v2/simapp"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lbm-sdk/v2/x/slashing/types"
+	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 var (

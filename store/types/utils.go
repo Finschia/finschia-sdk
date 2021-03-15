@@ -3,7 +3,7 @@ package types
 import (
 	"bytes"
 
-	"github.com/cosmos/cosmos-sdk/types/kv"
+	"github.com/line/lbm-sdk/v2/types/kv"
 )
 
 // Iterator over all the keys with a certain prefix in ascending order

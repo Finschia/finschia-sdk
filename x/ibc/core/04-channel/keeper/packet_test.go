@@ -3,14 +3,14 @@ package keeper_test
 import (
 	"fmt"
 
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/cosmos/cosmos-sdk/x/ibc/testing"
-	ibcmock "github.com/cosmos/cosmos-sdk/x/ibc/testing/mock"
+	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
+	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	ibcmock "github.com/line/lbm-sdk/v2/x/ibc/testing/mock"
 )
 
 var (

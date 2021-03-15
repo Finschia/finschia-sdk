@@ -8,17 +8,17 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	xauthsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/tx"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lbm-sdk/v2/simapp"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	"github.com/line/lbm-sdk/v2/x/auth/ante"
+	xauthsigning "github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lbm-sdk/v2/x/auth/types"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.

@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
+	cdctypes "github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
+	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
+	"github.com/line/lbm-sdk/v2/x/auth/signing"
 )
 
 var (

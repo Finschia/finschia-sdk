@@ -14,12 +14,12 @@ import (
 	"github.com/tendermint/tendermint/types"
 	tmtime "github.com/tendermint/tendermint/types/time"
 
-	"github.com/cosmos/cosmos-sdk/server/api"
-	servergrpc "github.com/cosmos/cosmos-sdk/server/grpc"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/v2/server/api"
+	servergrpc "github.com/line/lbm-sdk/v2/server/grpc"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lbm-sdk/v2/x/genutil"
+	genutiltypes "github.com/line/lbm-sdk/v2/x/genutil/types"
 )
 
 func startInProcess(cfg Config, val *Validator) error {

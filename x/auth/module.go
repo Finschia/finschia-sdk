@@ -12,17 +12,17 @@ import (
 	"github.com/spf13/cobra"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/cli"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/rest"
-	"github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	"github.com/cosmos/cosmos-sdk/x/auth/simulation"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/codec"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/module"
+	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lbm-sdk/v2/x/auth/client/cli"
+	"github.com/line/lbm-sdk/v2/x/auth/client/rest"
+	"github.com/line/lbm-sdk/v2/x/auth/keeper"
+	"github.com/line/lbm-sdk/v2/x/auth/simulation"
+	"github.com/line/lbm-sdk/v2/x/auth/types"
 )
 
 var (

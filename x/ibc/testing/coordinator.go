@@ -9,10 +9,10 @@ import (
 	"github.com/stretchr/testify/require"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
 )
 
 var (

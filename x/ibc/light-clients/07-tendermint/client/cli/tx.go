@@ -12,14 +12,14 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/light"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/version"
-	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	"github.com/line/lbm-sdk/v2/client/tx"
+	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lbm-sdk/v2/version"
+	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
 )
 
 const (

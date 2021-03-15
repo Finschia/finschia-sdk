@@ -1,9 +1,9 @@
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lbm-sdk/v2/codec/types"
+	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec

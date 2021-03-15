@@ -6,10 +6,10 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
+	"github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 // Implements ValidatorSet interface

@@ -5,8 +5,8 @@ package types
 
 import (
 	fmt "fmt"
-	types "github.com/cosmos/cosmos-sdk/codec/types"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/line/lbm-sdk/v2/codec/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

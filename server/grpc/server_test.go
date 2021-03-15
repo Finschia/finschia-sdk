@@ -13,16 +13,16 @@ import (
 	"google.golang.org/grpc/metadata"
 	rpb "google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
 
-	clienttx "github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
-	"github.com/cosmos/cosmos-sdk/types/tx"
-	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	clienttx "github.com/line/lbm-sdk/v2/client/tx"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
+	"github.com/line/lbm-sdk/v2/types/tx"
+	txtypes "github.com/line/lbm-sdk/v2/types/tx"
+	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
+	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
 )
 
 type IntegrationTestSuite struct {
@@ -116,7 +116,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_Reflection() {
 
 func (s *IntegrationTestSuite) TestGRPCServer_GetTxsEvent() {
 	// Query the tx via gRPC without pagination. This used to panic, see
-	// https://github.com/cosmos/cosmos-sdk/issues/8038.
+	// https://github.com/line/lbm-sdk/v2/issues/8038.
 	txServiceClient := txtypes.NewServiceClient(s.conn)
 	_, err := txServiceClient.GetTxsEvent(
 		context.Background(),
@@ -173,7 +173,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_BroadcastTx() {
 
 // Test and enforce that we upfront reject any connections to baseapp containing
 // invalid initial x-cosmos-block-height that aren't positive  and in the range [0, max(int64)]
-// See issue https://github.com/cosmos/cosmos-sdk/issues/7662.
+// See issue https://github.com/line/lbm-sdk/v2/issues/7662.
 func (s *IntegrationTestSuite) TestGRPCServerInvalidHeaderHeights() {
 	t := s.T()
 	val0 := s.network.Validators[0]

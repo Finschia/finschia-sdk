@@ -7,9 +7,9 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lbm-sdk/v2/types/module"
 )
 
 var _ types.UnpackInterfacesMessage = GenesisState{}

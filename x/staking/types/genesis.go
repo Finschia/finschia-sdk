@@ -3,8 +3,8 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 )
 
 // NewGenesisState creates a new GenesisState instanc e

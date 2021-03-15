@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/viper"
 
-	storetypes "github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	storetypes "github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/telemetry"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 const (

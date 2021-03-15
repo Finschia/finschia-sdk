@@ -3,9 +3,9 @@ package testdata
 import (
 	amino "github.com/tendermint/go-amino"
 
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	"github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/msgservice"
 )
 
 func NewTestInterfaceRegistry() types.InterfaceRegistry {

@@ -4,7 +4,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/line/lbm-sdk/v2/crypto/types"
 )
 
 // The code in this file is adapted from agl/ed25519.

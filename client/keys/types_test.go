@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/client/keys"
+	"github.com/line/lbm-sdk/v2/client/keys"
 )
 
 func TestConstructors(t *testing.T) {

@@ -10,10 +10,10 @@ import (
 	"github.com/tendermint/tendermint/crypto"
 	tmed25519 "github.com/tendermint/tendermint/crypto/ed25519"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	ed25519 "github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	ed25519 "github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
+	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
 )
 
 func TestSignAndValidateEd25519(t *testing.T) {

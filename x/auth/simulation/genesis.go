@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"math/rand"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	vestingtypes "github.com/cosmos/cosmos-sdk/x/auth/vesting/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/module"
+	"github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lbm-sdk/v2/x/auth/types"
+	vestingtypes "github.com/line/lbm-sdk/v2/x/auth/vesting/types"
 )
 
 // Simulation parameter constants

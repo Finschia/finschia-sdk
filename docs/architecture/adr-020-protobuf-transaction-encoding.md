@@ -352,8 +352,8 @@ generate or broadcast a transaction. For example:
 
 ```go
 import "github.com/spf13/cobra"
-import "github.com/cosmos/cosmos-sdk/client"
-import "github.com/cosmos/cosmos-sdk/client/tx"
+import "github.com/line/lbm-sdk/v2/client"
+import "github.com/line/lbm-sdk/v2/client/tx"
 
 func NewCmdDoSomething(clientCtx client.Context) *cobra.Command {
 	return &cobra.Command{

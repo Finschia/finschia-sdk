@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"sort"
 
-	"github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/line/lbm-sdk/v2/types/simulation"
 )
 
 // entry kinds for use within OperationEntry

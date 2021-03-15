@@ -5,7 +5,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 // NewCommissionRates returns an initialized validator commission rates.

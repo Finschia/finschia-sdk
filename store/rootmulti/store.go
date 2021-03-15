@@ -17,16 +17,16 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/cosmos/cosmos-sdk/snapshots"
-	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-	"github.com/cosmos/cosmos-sdk/store/cachemulti"
-	"github.com/cosmos/cosmos-sdk/store/dbadapter"
-	"github.com/cosmos/cosmos-sdk/store/iavl"
-	"github.com/cosmos/cosmos-sdk/store/mem"
-	"github.com/cosmos/cosmos-sdk/store/tracekv"
-	"github.com/cosmos/cosmos-sdk/store/transient"
-	"github.com/cosmos/cosmos-sdk/store/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/v2/snapshots"
+	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"
+	"github.com/line/lbm-sdk/v2/store/cachemulti"
+	"github.com/line/lbm-sdk/v2/store/dbadapter"
+	"github.com/line/lbm-sdk/v2/store/iavl"
+	"github.com/line/lbm-sdk/v2/store/mem"
+	"github.com/line/lbm-sdk/v2/store/tracekv"
+	"github.com/line/lbm-sdk/v2/store/transient"
+	"github.com/line/lbm-sdk/v2/store/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 )
 
 const (

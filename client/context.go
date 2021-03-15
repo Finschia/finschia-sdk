@@ -11,10 +11,10 @@ import (
 	"github.com/pkg/errors"
 	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 // Context implements a typical context created in SDK modules for transaction

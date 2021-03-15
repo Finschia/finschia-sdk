@@ -6,17 +6,17 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	kmultisig "github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/crypto/types/multisig"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/ante"
-	"github.com/cosmos/cosmos-sdk/x/auth/legacy/legacytx"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lbm-sdk/v2/crypto/types/multisig"
+	"github.com/line/lbm-sdk/v2/simapp"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/auth/ante"
+	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
+	"github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lbm-sdk/v2/x/auth/types"
 )
 
 func TestVerifySignature(t *testing.T) {

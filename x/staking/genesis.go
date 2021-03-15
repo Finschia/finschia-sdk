@@ -7,10 +7,10 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	"github.com/cosmos/cosmos-sdk/x/staking/types"
+	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/staking/keeper"
+	"github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 // InitGenesis sets the pool and parameters for the provided keeper.  For each

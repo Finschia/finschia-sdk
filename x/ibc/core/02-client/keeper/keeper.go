@@ -8,17 +8,17 @@ import (
 	"github.com/tendermint/tendermint/libs/log"
 	"github.com/tendermint/tendermint/light"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	upgradetypes "github.com/cosmos/cosmos-sdk/x/upgrade/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lbm-sdk/v2/store/prefix"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
+	upgradetypes "github.com/line/lbm-sdk/v2/x/upgrade/types"
 )
 
 // Keeper represents a type that grants read and write permissions to any client

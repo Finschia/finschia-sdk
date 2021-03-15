@@ -8,9 +8,9 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/store/dbadapter"
-	"github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/tests/mocks"
+	"github.com/line/lbm-sdk/v2/store/dbadapter"
+	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/tests/mocks"
 )
 
 var errFoo = errors.New("dummy")

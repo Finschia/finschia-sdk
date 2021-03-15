@@ -7,12 +7,12 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/multisig"
-	"github.com/cosmos/cosmos-sdk/crypto/ledger"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	"github.com/line/lbm-sdk/v2/crypto/keys/multisig"
+	"github.com/line/lbm-sdk/v2/crypto/ledger"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 const (

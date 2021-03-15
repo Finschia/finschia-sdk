@@ -6,12 +6,12 @@ import (
 
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/testutil"
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/cli"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	"github.com/line/lbm-sdk/v2/testutil"
+	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
+	"github.com/line/lbm-sdk/v2/x/auth/client/cli"
 )
 
 func TxSignExec(clientCtx client.Context, from fmt.Stringer, filename string, extraArgs ...string) (testutil.BufferWriter, error) {

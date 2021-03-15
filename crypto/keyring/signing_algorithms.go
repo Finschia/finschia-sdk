@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/v2/crypto/hd"
 )
 
 // SignatureAlgo defines the interface for a keyring supported algorithm.

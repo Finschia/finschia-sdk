@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	"github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
+	"github.com/line/lbm-sdk/v2/types"
 )
 
 func BenchmarkBech32ifyPubKey(b *testing.B) {

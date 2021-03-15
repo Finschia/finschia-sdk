@@ -9,16 +9,16 @@ import (
 	"github.com/stretchr/testify/suite"
 	tmcli "github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	clitestutil "github.com/cosmos/cosmos-sdk/testutil/cli"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/cosmos-sdk/x/bank/client/cli"
-	banktestutil "github.com/cosmos/cosmos-sdk/x/bank/client/testutil"
-	"github.com/cosmos/cosmos-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lbm-sdk/v2/types/query"
+	"github.com/line/lbm-sdk/v2/x/bank/client/cli"
+	banktestutil "github.com/line/lbm-sdk/v2/x/bank/client/testutil"
+	"github.com/line/lbm-sdk/v2/x/bank/types"
 )
 
 type IntegrationTestSuite struct {

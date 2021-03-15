@@ -9,11 +9,11 @@ import (
 	abci "github.com/tendermint/tendermint/abci/types"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/line/lbm-sdk/v2/simapp"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/gov"
+	"github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lbm-sdk/v2/x/staking"
 )
 
 func TestTickExpiredDepositPeriod(t *testing.T) {

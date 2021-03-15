@@ -5,11 +5,11 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/codec"
+	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 )
 
 // QueryTendermintProof performs an ABCI query with the given key and returns
@@ -20,7 +20,7 @@ import (
 // the correct merkle proof. Proof queries at height less than or equal to 2 are
 // not supported. Queries with a client context height of 0 will perform a query
 // at the lastest state available.
-// Issue: https://github.com/cosmos/cosmos-sdk/issues/6567
+// Issue: https://github.com/line/lbm-sdk/v2/issues/6567
 func QueryTendermintProof(clientCtx client.Context, key []byte) ([]byte, []byte, clienttypes.Height, error) {
 	height := clientCtx.Height
 

@@ -5,14 +5,14 @@ import (
 
 	"github.com/armon/go-metrics"
 
-	"github.com/cosmos/cosmos-sdk/telemetry"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/cosmos/cosmos-sdk/x/ibc/core/03-connection/types"
-	channel "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel"
-	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
-	porttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/05-port/types"
+	"github.com/line/lbm-sdk/v2/telemetry"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
+	channel "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel"
+	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	porttypes "github.com/line/lbm-sdk/v2/x/ibc/core/05-port/types"
 )
 
 var _ clienttypes.MsgServer = Keeper{}

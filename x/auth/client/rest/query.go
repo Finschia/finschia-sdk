@@ -8,14 +8,14 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	clientrest "github.com/cosmos/cosmos-sdk/client/rest"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	genutilrest "github.com/cosmos/cosmos-sdk/x/genutil/client/rest"
+	"github.com/line/lbm-sdk/v2/client"
+	clientrest "github.com/line/lbm-sdk/v2/client/rest"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/rest"
+	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
+	"github.com/line/lbm-sdk/v2/x/auth/types"
+	genutilrest "github.com/line/lbm-sdk/v2/x/genutil/client/rest"
 )
 
 // QueryAccountRequestHandlerFn is the query accountREST Handler.

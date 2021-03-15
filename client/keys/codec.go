@@ -1,8 +1,8 @@
 package keys
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	"github.com/line/lbm-sdk/v2/codec"
+	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
 )
 
 // KeysCdc defines codec to be used with key operations

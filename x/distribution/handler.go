@@ -1,11 +1,11 @@
 package distribution
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/cosmos/cosmos-sdk/x/distribution/keeper"
-	"github.com/cosmos/cosmos-sdk/x/distribution/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lbm-sdk/v2/x/distribution/keeper"
+	"github.com/line/lbm-sdk/v2/x/distribution/types"
+	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 )
 
 func NewHandler(k keeper.Keeper) sdk.Handler {

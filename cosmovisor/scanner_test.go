@@ -5,7 +5,7 @@ import (
 	"io"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/cosmovisor"
+	"github.com/line/lbm-sdk/v2/cosmovisor"
 
 	"github.com/stretchr/testify/require"
 )

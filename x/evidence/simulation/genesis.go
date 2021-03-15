@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/cosmos/cosmos-sdk/types/module"
-	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/evidence/exported"
-	"github.com/cosmos/cosmos-sdk/x/evidence/types"
+	"github.com/line/lbm-sdk/v2/types/module"
+	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lbm-sdk/v2/x/evidence/exported"
+	"github.com/line/lbm-sdk/v2/x/evidence/types"
 )
 
 // Simulation parameter constants

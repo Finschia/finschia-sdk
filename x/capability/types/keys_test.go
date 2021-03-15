@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/x/capability/types"
+	"github.com/line/lbm-sdk/v2/x/capability/types"
 )
 
 func TestRevCapabilityKey(t *testing.T) {

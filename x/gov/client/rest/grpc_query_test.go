@@ -9,14 +9,14 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/cosmos/cosmos-sdk/testutil"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
-	govtestutil "github.com/cosmos/cosmos-sdk/x/gov/client/testutil"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/v2/testutil"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
+	"github.com/line/lbm-sdk/v2/types/rest"
+	"github.com/line/lbm-sdk/v2/x/gov/client/cli"
+	govtestutil "github.com/line/lbm-sdk/v2/x/gov/client/testutil"
+	"github.com/line/lbm-sdk/v2/x/gov/types"
 )
 
 type IntegrationTestSuite struct {

@@ -6,13 +6,13 @@ import (
 	"github.com/stretchr/testify/require"
 	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"github.com/cosmos/cosmos-sdk/x/bank/types"
-	distrtypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lbm-sdk/v2/simapp"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lbm-sdk/v2/x/bank/types"
+	distrtypes "github.com/line/lbm-sdk/v2/x/distribution/types"
 )
 
 type (

@@ -8,8 +8,8 @@ import (
 	tmstrings "github.com/tendermint/tendermint/libs/strings"
 	dbm "github.com/tendermint/tm-db"
 
-	snapshottypes "github.com/cosmos/cosmos-sdk/snapshots/types"
-	"github.com/cosmos/cosmos-sdk/types/kv"
+	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"
+	"github.com/line/lbm-sdk/v2/types/kv"
 )
 
 type Store interface {

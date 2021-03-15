@@ -4,12 +4,12 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/simulation"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	authsign "github.com/cosmos/cosmos-sdk/x/auth/signing"
+	"github.com/line/lbm-sdk/v2/client"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	authsign "github.com/line/lbm-sdk/v2/x/auth/signing"
 )
 
 // SimAppChainID hardcoded chainID for simulation

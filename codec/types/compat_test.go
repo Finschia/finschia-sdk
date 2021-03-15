@@ -6,8 +6,8 @@ import (
 	"github.com/stretchr/testify/suite"
 	amino "github.com/tendermint/go-amino"
 
-	"github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
+	"github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
 )
 
 type TypeWithInterface struct {

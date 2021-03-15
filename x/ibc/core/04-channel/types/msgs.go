@@ -3,11 +3,11 @@ package types
 import (
 	"encoding/base64"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 )
 
 var _ sdk.Msg = &MsgChannelOpenInit{}

@@ -1,9 +1,9 @@
 package client
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	signingtypes "github.com/cosmos/cosmos-sdk/types/tx/signing"
-	"github.com/cosmos/cosmos-sdk/x/auth/signing"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
+	"github.com/line/lbm-sdk/v2/x/auth/signing"
 )
 
 type (

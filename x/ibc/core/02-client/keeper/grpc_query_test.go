@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"time"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 
-	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/23-commitment/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/cosmos/cosmos-sdk/x/ibc/testing"
+	"github.com/line/lbm-sdk/v2/types/query"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
 )
 
 func (suite *KeeperTestSuite) TestQueryClientState() {

@@ -1,9 +1,9 @@
 package types
 
 import (
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
 )
 
 // Interface implementation checks.
