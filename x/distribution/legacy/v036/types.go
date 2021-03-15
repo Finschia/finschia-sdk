@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	v034distr "github.com/cosmos/cosmos-sdk/x/distribution/legacy/v034"
-	"github.com/cosmos/cosmos-sdk/x/distribution/types"
-	v036gov "github.com/cosmos/cosmos-sdk/x/gov/legacy/v036"
+	"github.com/line/lbm-sdk/v2/codec"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	v034distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v034"
+	"github.com/line/lbm-sdk/v2/x/distribution/types"
+	v036gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v036"
 )
 
 // ----------------------------------------------------------------------------

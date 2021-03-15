@@ -3,7 +3,7 @@ package exported
 import (
 	"github.com/gogo/protobuf/proto"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 // GenesisBalance defines a genesis balance interface that allows for account

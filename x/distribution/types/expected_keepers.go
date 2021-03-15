@@ -1,9 +1,9 @@
 package types
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/auth/types"
+	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)

@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/store/types"
+	"github.com/line/lbm-sdk/v2/store/types"
 )
 
 func TestGetPruningOptionsFromFlags(t *testing.T) {

@@ -3,9 +3,9 @@ package genutil
 import (
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/v2/client"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/genutil/types"
 )
 
 // InitGenesis - initialize accounts and deliver genesis transactions

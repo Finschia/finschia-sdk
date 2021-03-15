@@ -5,9 +5,9 @@ package multisig
 
 import (
 	fmt "fmt"
-	types "github.com/cosmos/cosmos-sdk/codec/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/line/lbm-sdk/v2/codec/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

@@ -3,7 +3,7 @@ package mock
 import (
 	"encoding/json"
 
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/line/lbm-sdk/v2/types/module"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
@@ -12,14 +12,14 @@ import (
 
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/codec"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/codec"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	capabilitykeeper "github.com/line/lbm-sdk/v2/x/capability/keeper"
+	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
+	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 )
 
 const (

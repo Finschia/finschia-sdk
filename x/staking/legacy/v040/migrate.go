@@ -3,10 +3,10 @@ package v040
 import (
 	"fmt"
 
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	v034staking "github.com/cosmos/cosmos-sdk/x/staking/legacy/v034"
-	v038staking "github.com/cosmos/cosmos-sdk/x/staking/legacy/v038"
-	v040staking "github.com/cosmos/cosmos-sdk/x/staking/types"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	v034staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v034"
+	v038staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v038"
+	v040staking "github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 func migrateBondStatus(oldStatus v034staking.BondStatus) v040staking.BondStatus {

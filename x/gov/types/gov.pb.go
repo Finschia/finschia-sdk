@@ -5,14 +5,14 @@ package types
 
 import (
 	fmt "fmt"
-	types1 "github.com/cosmos/cosmos-sdk/codec/types"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	github_com_gogo_protobuf_types "github.com/gogo/protobuf/types"
 	_ "github.com/golang/protobuf/ptypes/duration"
 	_ "github.com/golang/protobuf/ptypes/timestamp"
+	types1 "github.com/line/lbm-sdk/v2/codec/types"
+	github_com_cosmos_cosmos_sdk_types "github.com/line/lbm-sdk/v2/types"
+	types "github.com/line/lbm-sdk/v2/types"
 	_ "github.com/regen-network/cosmos-proto"
 	io "io"
 	math "math"

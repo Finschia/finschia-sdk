@@ -5,11 +5,11 @@ package v038
 import (
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/codec/legacy"
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	v034staking "github.com/cosmos/cosmos-sdk/x/staking/legacy/v034"
-	v036staking "github.com/cosmos/cosmos-sdk/x/staking/legacy/v036"
+	"github.com/line/lbm-sdk/v2/codec/legacy"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	v034staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v034"
+	v036staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v036"
 )
 
 const (

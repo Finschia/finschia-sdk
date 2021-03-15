@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 var addr = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())

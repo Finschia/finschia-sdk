@@ -6,12 +6,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/kv"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/simulation"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/v2/simapp"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/kv"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/simulation"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 )
 
 func TestDecodeStore(t *testing.T) {

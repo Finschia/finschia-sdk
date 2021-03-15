@@ -3,9 +3,9 @@ package v036
 import (
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/cosmos/cosmos-sdk/types"
-	v034distr "github.com/cosmos/cosmos-sdk/x/distribution/legacy/v034"
+	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/v2/types"
+	v034distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v034"
 
 	"github.com/stretchr/testify/require"
 )

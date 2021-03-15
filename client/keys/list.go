@@ -4,7 +4,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/tendermint/tendermint/libs/cli"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/line/lbm-sdk/v2/client"
 )
 
 const flagListNames = "list-names"

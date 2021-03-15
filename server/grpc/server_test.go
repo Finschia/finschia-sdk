@@ -13,16 +13,16 @@ import (
 	"google.golang.org/grpc/metadata"
 	rpb "google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
 
-	clienttx "github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	"github.com/cosmos/cosmos-sdk/testutil/testdata"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
-	"github.com/cosmos/cosmos-sdk/types/tx"
-	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
-	authclient "github.com/cosmos/cosmos-sdk/x/auth/client"
-	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	clienttx "github.com/line/lbm-sdk/v2/client/tx"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
+	"github.com/line/lbm-sdk/v2/types/tx"
+	txtypes "github.com/line/lbm-sdk/v2/types/tx"
+	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
+	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
 )
 
 type IntegrationTestSuite struct {

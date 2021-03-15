@@ -1,8 +1,8 @@
 package signing
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/tx/signing"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/tx/signing"
 )
 
 // SignModeHandler defines a interface to be implemented by types which will handle

@@ -3,9 +3,9 @@ package rest
 import (
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/rest"
+	"github.com/line/lbm-sdk/v2/client/rest"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/line/lbm-sdk/v2/client"
 )
 
 func RegisterHandlers(clientCtx client.Context, rtr *mux.Router) {

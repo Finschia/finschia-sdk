@@ -1,10 +1,10 @@
 package types
 
 import (
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/cosmos/cosmos-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 )
 
 var _ codectypes.UnpackInterfacesMessage = GenesisState{}

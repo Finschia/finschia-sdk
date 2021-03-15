@@ -12,7 +12,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/line/lbm-sdk/v2/client/flags"
 )
 
 var CancelledInPreRun = errors.New("Canelled in prerun")

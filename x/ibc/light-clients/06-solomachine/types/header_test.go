@@ -1,9 +1,9 @@
 package types_test
 
 import (
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
-	"github.com/cosmos/cosmos-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctesting "github.com/cosmos/cosmos-sdk/x/ibc/testing"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/types"
+	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
 )
 
 func (suite *SoloMachineTestSuite) TestHeaderValidateBasic() {

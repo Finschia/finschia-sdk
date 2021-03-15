@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/cosmos/cosmos-sdk/store/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/types/errors"
 )
 
 const (

@@ -8,12 +8,12 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/cosmos/cosmos-sdk/testutil"
-	"github.com/cosmos/cosmos-sdk/testutil/network"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	grpctypes "github.com/cosmos/cosmos-sdk/types/grpc"
-	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/cosmos/cosmos-sdk/x/slashing/types"
+	"github.com/line/lbm-sdk/v2/testutil"
+	"github.com/line/lbm-sdk/v2/testutil/network"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
+	"github.com/line/lbm-sdk/v2/types/query"
+	"github.com/line/lbm-sdk/v2/x/slashing/types"
 )
 
 type IntegrationTestSuite struct {

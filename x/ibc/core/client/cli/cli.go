@@ -3,13 +3,13 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	ibcclient "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client"
-	connection "github.com/cosmos/cosmos-sdk/x/ibc/core/03-connection"
-	channel "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
-	solomachine "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/06-solomachine"
-	tendermint "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint"
+	"github.com/line/lbm-sdk/v2/client"
+	ibcclient "github.com/line/lbm-sdk/v2/x/ibc/core/02-client"
+	connection "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection"
+	channel "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	solomachine "github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine"
+	tendermint "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint"
 )
 
 // GetTxCmd returns the transaction commands for this module

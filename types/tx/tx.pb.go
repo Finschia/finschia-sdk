@@ -5,13 +5,13 @@ package tx
 
 import (
 	fmt "fmt"
-	types "github.com/cosmos/cosmos-sdk/codec/types"
-	types1 "github.com/cosmos/cosmos-sdk/crypto/types"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	types2 "github.com/cosmos/cosmos-sdk/types"
-	signing "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/line/lbm-sdk/v2/codec/types"
+	types1 "github.com/line/lbm-sdk/v2/crypto/types"
+	github_com_cosmos_cosmos_sdk_types "github.com/line/lbm-sdk/v2/types"
+	types2 "github.com/line/lbm-sdk/v2/types"
+	signing "github.com/line/lbm-sdk/v2/types/tx/signing"
 	io "io"
 	math "math"
 	math_bits "math/bits"

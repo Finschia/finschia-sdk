@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
-	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
 )
 
 var (

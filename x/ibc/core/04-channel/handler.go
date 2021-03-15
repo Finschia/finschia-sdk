@@ -1,11 +1,11 @@
 package channel
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/keeper"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/keeper"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 )
 
 // HandleMsgChannelOpenInit defines the sdk.Handler for MsgChannelOpenInit

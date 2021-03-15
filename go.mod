@@ -1,6 +1,6 @@
 go 1.15
 
-module github.com/cosmos/cosmos-sdk
+module github.com/line/lbm-sdk/v2
 
 require (
 	github.com/99designs/keyring v1.1.6

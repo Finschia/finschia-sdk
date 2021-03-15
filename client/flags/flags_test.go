@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/line/lbm-sdk/v2/client/flags"
 )
 
 func TestParseGasSetting(t *testing.T) {

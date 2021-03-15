@@ -11,13 +11,13 @@ import (
 
 	tmtypes "github.com/tendermint/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/server"
-	"github.com/cosmos/cosmos-sdk/types"
-	bankexported "github.com/cosmos/cosmos-sdk/x/bank/exported"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	gtypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	cdctypes "github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lbm-sdk/v2/server"
+	"github.com/line/lbm-sdk/v2/types"
+	bankexported "github.com/line/lbm-sdk/v2/x/bank/exported"
+	"github.com/line/lbm-sdk/v2/x/genutil"
+	gtypes "github.com/line/lbm-sdk/v2/x/genutil/types"
 )
 
 type doNothingUnmarshalJSON struct {

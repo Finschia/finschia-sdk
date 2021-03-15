@@ -5,11 +5,11 @@ package types
 
 import (
 	fmt "fmt"
-	types "github.com/cosmos/cosmos-sdk/codec/types"
-	types1 "github.com/cosmos/cosmos-sdk/x/ibc/core/03-connection/types"
-	types2 "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/line/lbm-sdk/v2/codec/types"
+	types1 "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
+	types2 "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

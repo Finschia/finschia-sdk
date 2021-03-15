@@ -3,7 +3,7 @@ package types
 import (
 	"github.com/gogo/protobuf/proto"
 
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
 )
 
 type (

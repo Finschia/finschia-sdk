@@ -225,7 +225,7 @@ every module that implements it in order to populate the `InterfaceRegistry`.
 The SDK will provide support methods `MarshalInterface` and `UnmarshalInterface` to hide a complexity of wrapping interface types into `Any` and allow easy serialization.
 
 ```go
-import "github.com/cosmos/cosmos-sdk/codec"
+import "github.com/line/lbm-sdk/v2/codec"
 
 // note: eviexported.Evidence is an interface type
 func MarshalEvidence(cdc codec.BinaryMarshaler, e eviexported.Evidence) ([]byte, error) {
@@ -251,7 +251,7 @@ an interface:
 message MsgSubmitEvidence {
   bytes submitter = 1
     [
-      (gogoproto.casttype) = "github.com/cosmos/cosmos-sdk/types.AccAddress"
+      (gogoproto.casttype) = "github.com/line/lbm-sdk/v2/types.AccAddress"
     ];
   google.protobuf.Any evidence = 2;
 }

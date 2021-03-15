@@ -10,11 +10,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/cosmos/cosmos-sdk/client"
-	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	pagination "github.com/cosmos/cosmos-sdk/types/query"
-	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/line/lbm-sdk/v2/client"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	pagination "github.com/line/lbm-sdk/v2/types/query"
+	txtypes "github.com/line/lbm-sdk/v2/types/tx"
 )
 
 // baseAppSimulateFn is the signature of the Baseapp#Simulate function.

@@ -1,13 +1,13 @@
 package types_test
 
 import (
-	clienttypes "github.com/cosmos/cosmos-sdk/x/ibc/core/02-client/types"
-	channeltypes "github.com/cosmos/cosmos-sdk/x/ibc/core/04-channel/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/exported"
-	solomachinetypes "github.com/cosmos/cosmos-sdk/x/ibc/light-clients/06-solomachine/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/cosmos/cosmos-sdk/x/ibc/testing"
+	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	solomachinetypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
 )
 
 func (suite *TendermintTestSuite) TestGetConsensusState() {

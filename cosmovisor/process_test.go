@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/cosmos/cosmos-sdk/cosmovisor"
+	"github.com/line/lbm-sdk/v2/cosmovisor"
 )
 
 type processTestSuite struct {

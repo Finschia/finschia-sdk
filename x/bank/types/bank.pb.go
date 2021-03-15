@@ -5,10 +5,10 @@ package types
 
 import (
 	fmt "fmt"
-	github_com_cosmos_cosmos_sdk_types "github.com/cosmos/cosmos-sdk/types"
-	types "github.com/cosmos/cosmos-sdk/types"
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
+	github_com_cosmos_cosmos_sdk_types "github.com/line/lbm-sdk/v2/types"
+	types "github.com/line/lbm-sdk/v2/types"
 	_ "github.com/regen-network/cosmos-proto"
 	io "io"
 	math "math"

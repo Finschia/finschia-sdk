@@ -3,9 +3,9 @@ package rest
 import (
 	"github.com/gorilla/mux"
 
-	"github.com/cosmos/cosmos-sdk/client/rest"
+	"github.com/line/lbm-sdk/v2/client/rest"
 
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/line/lbm-sdk/v2/client"
 )
 
 // RegisterRoutes registers REST routes for the upgrade module under the path specified by routeName.

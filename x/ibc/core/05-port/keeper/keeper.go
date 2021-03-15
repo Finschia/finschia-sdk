@@ -5,11 +5,11 @@ import (
 
 	"github.com/tendermint/tendermint/libs/log"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	capabilitykeeper "github.com/cosmos/cosmos-sdk/x/capability/keeper"
-	capabilitytypes "github.com/cosmos/cosmos-sdk/x/capability/types"
-	"github.com/cosmos/cosmos-sdk/x/ibc/core/05-port/types"
-	host "github.com/cosmos/cosmos-sdk/x/ibc/core/24-host"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	capabilitykeeper "github.com/line/lbm-sdk/v2/x/capability/keeper"
+	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/05-port/types"
+	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 )
 
 // Keeper defines the IBC connection keeper
