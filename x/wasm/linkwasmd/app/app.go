@@ -124,10 +124,6 @@ type LinkApp struct {
 	sm *module.SimulationManager
 }
 
-type WasmWrapper struct {
-	Wasm wasm.Config `mapstructure:"wasm"`
-}
-
 // NewLinkApp returns a reference to an initialized LinkApp.
 func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
 	invCheckPeriod uint, baseAppOptions ...func(*bam.BaseApp)) *LinkApp {
@@ -209,12 +205,7 @@ func NewLinkApp(logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest b
 	homeDir := viper.GetString(cli.HomeFlag)
 	wasmDir := filepath.Join(homeDir, "wasm")
 
-	wasmWrap := WasmWrapper{Wasm: wasm.DefaultWasmConfig()}
-	err := viper.Unmarshal(&wasmWrap)
-	if err != nil {
-		panic("error while reading wasm config: " + err.Error())
-	}
-	wasmConfig := wasmWrap.Wasm
+	wasmConfig := wasm.ReadWasmConfig()
 	supportedFeatures := "staking,link"
 
 	app.wasmKeeper = wasm.NewKeeper(
