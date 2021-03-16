@@ -11,7 +11,7 @@ import (
 	"sort"
 	"strings"
 
-	tmcrypto "github.com/tendermint/tendermint/crypto"
+	ostcrypto "github.com/line/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
@@ -419,7 +419,7 @@ func (dva *DelayedVestingAccount) UnmarshalJSON(bz []byte) error {
 }
 
 func NewModuleAddress(name string) sdk.AccAddress {
-	return sdk.AccAddress(tmcrypto.AddressHash([]byte(name)))
+	return sdk.AccAddress(ostcrypto.AddressHash([]byte(name)))
 }
 
 func NewModuleAccount(baseAccount *BaseAccount, name string, permissions ...string) *ModuleAccount {
@@ -439,7 +439,7 @@ func (ma ModuleAccount) Validate() error {
 		return errors.New("module account name cannot be blank")
 	}
 
-	if !ma.Address.Equals(sdk.AccAddress(tmcrypto.AddressHash([]byte(ma.Name)))) {
+	if !ma.Address.Equals(sdk.AccAddress(ostcrypto.AddressHash([]byte(ma.Name)))) {
 		return fmt.Errorf("address %s cannot be derived from the module name '%s'", ma.Address, ma.Name)
 	}
 

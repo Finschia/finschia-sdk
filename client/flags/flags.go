@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/line/lbm-sdk/v2/crypto/keyring"
 )
@@ -39,7 +39,7 @@ const (
 
 // List of CLI flags
 const (
-	FlagHome             = tmcli.HomeFlag
+	FlagHome             = ostcli.HomeFlag
 	FlagKeyringDir       = "keyring-dir"
 	FlagUseLedger        = "ledger"
 	FlagChainID          = "chain-id"
@@ -84,7 +84,7 @@ var LineBreak = &cobra.Command{Run: func(*cobra.Command, []string) {}}
 func AddQueryFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().String(FlagNode, "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
 	cmd.Flags().Int64(FlagHeight, 0, "Use a specific height to query state at (this can error if the node is pruning state)")
-	cmd.Flags().StringP(tmcli.OutputFlag, "o", "text", "Output format (text|json)")
+	cmd.Flags().StringP(ostcli.OutputFlag, "o", "text", "Output format (text|json)")
 
 	cmd.MarkFlagRequired(FlagChainID)
 

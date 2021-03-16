@@ -8,8 +8,8 @@ import (
 	"gopkg.in/yaml.v2"
 
 	"github.com/gogo/protobuf/proto"
+	rpcclient "github.com/line/ostracon/rpc/client"
 	"github.com/pkg/errors"
-	rpcclient "github.com/tendermint/tendermint/rpc/client"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"

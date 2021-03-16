@@ -8,15 +8,15 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/line/ostracon/abci/server"
+	ostcmd "github.com/line/ostracon/cmd/tendermint/commands"
+	ostos "github.com/line/ostracon/libs/os"
+	"github.com/line/ostracon/node"
+	"github.com/line/ostracon/p2p"
+	pvm "github.com/line/ostracon/privval"
+	"github.com/line/ostracon/proxy"
+	"github.com/line/ostracon/rpc/client/local"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/abci/server"
-	tcmd "github.com/tendermint/tendermint/cmd/tendermint/commands"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	"github.com/tendermint/tendermint/node"
-	"github.com/tendermint/tendermint/p2p"
-	pvm "github.com/tendermint/tendermint/privval"
-	"github.com/tendermint/tendermint/proxy"
-	"github.com/tendermint/tendermint/rpc/client/local"
 	"google.golang.org/grpc"
 
 	"github.com/line/lbm-sdk/v2/client"
@@ -154,7 +154,7 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint32(FlagStateSyncSnapshotKeepRecent, 2, "State sync snapshot to keep")
 
 	// add support for all Tendermint-specific command line options
-	tcmd.AddNodeFlags(cmd)
+	ostcmd.AddNodeFlags(cmd)
 	return cmd
 }
 
@@ -185,12 +185,12 @@ func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
 
 	err = svr.Start()
 	if err != nil {
-		tmos.Exit(err.Error())
+		ostos.Exit(err.Error())
 	}
 
 	defer func() {
 		if err = svr.Stop(); err != nil {
-			tmos.Exit(err.Error())
+			ostos.Exit(err.Error())
 		}
 	}()
 

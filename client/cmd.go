@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/line/ostracon/libs/cli"
+	rpchttp "github.com/line/ostracon/rpc/client/http"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-	"github.com/tendermint/tendermint/libs/cli"
-	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 
 	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/crypto/keyring"

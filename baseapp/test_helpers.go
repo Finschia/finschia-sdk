@@ -1,7 +1,7 @@
 package baseapp
 
 import (
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
@@ -32,7 +32,7 @@ func (app *BaseApp) Deliver(txEncoder sdk.TxEncoder, tx sdk.Tx) (sdk.GasInfo, *s
 }
 
 // Context with current {check, deliver}State of the app used by tests.
-func (app *BaseApp) NewContext(isCheckTx bool, header tmproto.Header) sdk.Context {
+func (app *BaseApp) NewContext(isCheckTx bool, header ostproto.Header) sdk.Context {
 	if isCheckTx {
 		return sdk.NewContext(app.checkState.ms, header, true, app.logger).
 			WithMinGasPrices(app.minGasPrices)
@@ -41,6 +41,6 @@ func (app *BaseApp) NewContext(isCheckTx bool, header tmproto.Header) sdk.Contex
 	return sdk.NewContext(app.deliverState.ms, header, false, app.logger)
 }
 
-func (app *BaseApp) NewUncachedContext(isCheckTx bool, header tmproto.Header) sdk.Context {
+func (app *BaseApp) NewUncachedContext(isCheckTx bool, header ostproto.Header) sdk.Context {
 	return sdk.NewContext(app.cms, header, isCheckTx, app.logger)
 }

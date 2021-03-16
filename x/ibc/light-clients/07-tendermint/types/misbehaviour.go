@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"time"
 
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtypes "github.com/tendermint/tendermint/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	osttypes "github.com/line/ostracon/types"
 
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
@@ -98,11 +98,11 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 		return sdkerrors.Wrapf(clienttypes.ErrInvalidMisbehaviour, "headers in misbehaviour are on different heights (%d ≠ %d)", misbehaviour.Header1.GetHeight(), misbehaviour.Header2.GetHeight())
 	}
 
-	blockID1, err := tmtypes.BlockIDFromProto(&misbehaviour.Header1.SignedHeader.Commit.BlockID)
+	blockID1, err := osttypes.BlockIDFromProto(&misbehaviour.Header1.SignedHeader.Commit.BlockID)
 	if err != nil {
 		return sdkerrors.Wrap(err, "invalid block ID from header 1 in misbehaviour")
 	}
-	blockID2, err := tmtypes.BlockIDFromProto(&misbehaviour.Header2.SignedHeader.Commit.BlockID)
+	blockID2, err := osttypes.BlockIDFromProto(&misbehaviour.Header2.SignedHeader.Commit.BlockID)
 	if err != nil {
 		return sdkerrors.Wrap(err, "invalid block ID from header 2 in misbehaviour")
 	}
@@ -123,12 +123,12 @@ func (misbehaviour Misbehaviour) ValidateBasic() error {
 }
 
 // validCommit checks if the given commit is a valid commit from the passed-in validatorset
-func validCommit(chainID string, blockID tmtypes.BlockID, commit *tmproto.Commit, valSet *tmproto.ValidatorSet) (err error) {
-	tmCommit, err := tmtypes.CommitFromProto(commit)
+func validCommit(chainID string, blockID osttypes.BlockID, commit *ostproto.Commit, valSet *ostproto.ValidatorSet) (err error) {
+	tmCommit, err := osttypes.CommitFromProto(commit)
 	if err != nil {
 		return sdkerrors.Wrap(err, "commit is not tendermint commit type")
 	}
-	tmValset, err := tmtypes.ValidatorSetFromProto(valSet)
+	tmValset, err := osttypes.ValidatorSetFromProto(valSet)
 	if err != nil {
 		return sdkerrors.Wrap(err, "validator set is not tendermint validator set type")
 	}

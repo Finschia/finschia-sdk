@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/cosmos/iavl"
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/store/types"

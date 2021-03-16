@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"text/template"
 
+	ostos "github.com/line/ostracon/libs/os"
 	"github.com/spf13/viper"
-	tmos "github.com/tendermint/tendermint/libs/os"
 )
 
 const defaultConfigTemplate = `# This is a TOML config file.
@@ -193,5 +193,5 @@ func WriteConfigFile(configFilePath string, config *Config) {
 		panic(err)
 	}
 
-	tmos.MustWriteFile(configFilePath, buffer.Bytes(), 0644)
+	ostos.MustWriteFile(configFilePath, buffer.Bytes(), 0644)
 }

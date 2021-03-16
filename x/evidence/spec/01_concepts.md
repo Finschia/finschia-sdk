@@ -21,7 +21,7 @@ type Evidence interface {
 	Route() string
 	Type() string
 	String() string
-	Hash() tmbytes.HexBytes
+	Hash() ostbytes.HexBytes
 	ValidateBasic() error
 
 	// Height at which the infraction occurred

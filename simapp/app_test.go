@@ -5,11 +5,11 @@ import (
 	"os"
 	"testing"
 
+	"github.com/line/ostracon/libs/log"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {

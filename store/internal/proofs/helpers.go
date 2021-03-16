@@ -3,8 +3,8 @@ package proofs
 import (
 	"sort"
 
-	"github.com/tendermint/tendermint/libs/rand"
-	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	"github.com/line/ostracon/libs/rand"
+	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	sdkmaps "github.com/line/lbm-sdk/v2/store/internal/maps"
 )
@@ -13,7 +13,7 @@ import (
 type SimpleResult struct {
 	Key      []byte
 	Value    []byte
-	Proof    *tmcrypto.Proof
+	Proof    *ostcrypto.Proof
 	RootHash []byte
 }
 

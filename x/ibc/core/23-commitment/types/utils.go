@@ -2,7 +2,7 @@ package types
 
 import (
 	ics23 "github.com/confio/ics23/go"
-	crypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	crypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 )

@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -17,7 +17,7 @@ import (
 
 func TestGetSetProposal(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 
 	tp := TestProposal
 	proposal, err := app.GovKeeper.SubmitProposal(ctx, tp)
@@ -32,7 +32,7 @@ func TestGetSetProposal(t *testing.T) {
 
 func TestActivateVotingPeriod(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 
 	tp := TestProposal
 	proposal, err := app.GovKeeper.SubmitProposal(ctx, tp)
@@ -61,7 +61,7 @@ func (invalidProposalRoute) ProposalRoute() string { return "nonexistingroute" }
 
 func TestSubmitProposal(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 
 	testCases := []struct {
 		content     types.Content
@@ -86,7 +86,7 @@ func TestSubmitProposal(t *testing.T) {
 func TestGetProposalsFiltered(t *testing.T) {
 	proposalID := uint64(1)
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 
 	status := []types.ProposalStatus{types.StatusDepositPeriod, types.StatusVotingPeriod}
 

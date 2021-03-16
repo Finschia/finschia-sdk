@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	osttypes "github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -96,7 +96,7 @@ func (cs ClientState) unexpireClient(
 // NOTE: header.ValidateBasic is called in the 02-client proposal handler. Additional checks
 // on the validator set and the validator set hash are done in header.ValidateBasic.
 func (cs ClientState) checkProposedHeader(consensusState *ConsensusState, header *Header, currentTimestamp time.Time) error {
-	tmSignedHeader, err := tmtypes.SignedHeaderFromProto(header.SignedHeader)
+	tmSignedHeader, err := osttypes.SignedHeaderFromProto(header.SignedHeader)
 	if err != nil {
 		return sdkerrors.Wrap(err, "signed header in not tendermint signed header type")
 	}

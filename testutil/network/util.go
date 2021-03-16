@@ -5,14 +5,14 @@ import (
 	"path/filepath"
 	"time"
 
-	tmos "github.com/tendermint/tendermint/libs/os"
-	"github.com/tendermint/tendermint/node"
-	"github.com/tendermint/tendermint/p2p"
-	pvm "github.com/tendermint/tendermint/privval"
-	"github.com/tendermint/tendermint/proxy"
-	"github.com/tendermint/tendermint/rpc/client/local"
-	"github.com/tendermint/tendermint/types"
-	tmtime "github.com/tendermint/tendermint/types/time"
+	ostos "github.com/line/ostracon/libs/os"
+	"github.com/line/ostracon/node"
+	"github.com/line/ostracon/p2p"
+	pvm "github.com/line/ostracon/privval"
+	"github.com/line/ostracon/proxy"
+	"github.com/line/ostracon/rpc/client/local"
+	"github.com/line/ostracon/types"
+	osttime "github.com/line/ostracon/types/time"
 
 	"github.com/line/lbm-sdk/v2/server/api"
 	servergrpc "github.com/line/lbm-sdk/v2/server/grpc"
@@ -105,7 +105,7 @@ func startInProcess(cfg Config, val *Validator) error {
 }
 
 func collectGenFiles(cfg Config, vals []*Validator, outputDir string) error {
-	genTime := tmtime.Now()
+	genTime := osttime.Now()
 
 	for i := 0; i < cfg.NumValidators; i++ {
 		tmCfg := vals[i].Ctx.Config
@@ -185,12 +185,12 @@ func writeFile(name string, dir string, contents []byte) error {
 	writePath := filepath.Join(dir)
 	file := filepath.Join(writePath, name)
 
-	err := tmos.EnsureDir(writePath, 0755)
+	err := ostos.EnsureDir(writePath, 0755)
 	if err != nil {
 		return err
 	}
 
-	err = tmos.WriteFile(file, contents, 0644)
+	err = ostos.WriteFile(file, contents, 0644)
 	if err != nil {
 		return err
 	}

@@ -3,7 +3,7 @@ package types_test
 import (
 	"time"
 
-	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
@@ -50,7 +50,7 @@ func (suite *TendermintTestSuite) TestHeaderValidateBasic() {
 			header.ValidatorSet = nil
 		}, false},
 		{"ValidatorSetFromProto failed", func() {
-			header.ValidatorSet.Validators[0].PubKey = tmprotocrypto.PublicKey{}
+			header.ValidatorSet.Validators[0].PubKey = ostprotocrypto.PublicKey{}
 		}, false},
 		{"header validator hash does not equal hash of validator set", func() {
 			// use chainB's randomly generated validator set

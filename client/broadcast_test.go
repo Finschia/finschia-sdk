@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/line/ostracon/crypto/tmhash"
+	"github.com/line/ostracon/mempool"
+	"github.com/line/ostracon/rpc/client/mock"
+	ctypes "github.com/line/ostracon/rpc/core/types"
+	osttypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/crypto/tmhash"
-	"github.com/tendermint/tendermint/mempool"
-	"github.com/tendermint/tendermint/rpc/client/mock"
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
-	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/client/flags"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
@@ -21,15 +21,15 @@ type MockClient struct {
 	err error
 }
 
-func (c MockClient) BroadcastTxCommit(ctx context.Context, tx tmtypes.Tx) (*ctypes.ResultBroadcastTxCommit, error) {
+func (c MockClient) BroadcastTxCommit(ctx context.Context, tx osttypes.Tx) (*ctypes.ResultBroadcastTxCommit, error) {
 	return nil, c.err
 }
 
-func (c MockClient) BroadcastTxAsync(ctx context.Context, tx tmtypes.Tx) (*ctypes.ResultBroadcastTx, error) {
+func (c MockClient) BroadcastTxAsync(ctx context.Context, tx osttypes.Tx) (*ctypes.ResultBroadcastTx, error) {
 	return nil, c.err
 }
 
-func (c MockClient) BroadcastTxSync(ctx context.Context, tx tmtypes.Tx) (*ctypes.ResultBroadcastTx, error) {
+func (c MockClient) BroadcastTxSync(ctx context.Context, tx osttypes.Tx) (*ctypes.ResultBroadcastTx, error) {
 	return nil, c.err
 }
 

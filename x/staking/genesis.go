@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"log"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmtypes "github.com/tendermint/tendermint/types"
+	abci "github.com/line/ostracon/abci/types"
+	osttypes "github.com/line/ostracon/types"
 
 	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -196,7 +196,7 @@ func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) *types.GenesisState {
 }
 
 // WriteValidators returns a slice of bonded genesis validators.
-func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []tmtypes.GenesisValidator, err error) {
+func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []osttypes.GenesisValidator, err error) {
 	keeper.IterateLastValidators(ctx, func(_ int64, validator types.ValidatorI) (stop bool) {
 		pk, err := validator.ConsPubKey()
 		if err != nil {
@@ -207,7 +207,7 @@ func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []tmtypes.Gene
 			return true
 		}
 
-		vals = append(vals, tmtypes.GenesisValidator{
+		vals = append(vals, osttypes.GenesisValidator{
 			Address: sdk.ConsAddress(tmPk.Address()).Bytes(),
 			PubKey:  tmPk,
 			Power:   validator.GetConsensusPower(),

@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -20,15 +20,15 @@ import (
 
 func TestImportExportQueues(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 	addrs := simapp.AddTestAddrs(app, ctx, 2, valTokens)
 
 	SortAddresses(addrs)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header := ostproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
-	ctx = app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx = app.BaseApp.NewContext(false, ostproto.Header{})
 
 	// Create two proposals, put the second into the voting period
 	proposal := TestProposal
@@ -79,12 +79,12 @@ func TestImportExportQueues(t *testing.T) {
 	)
 
 	app2.Commit()
-	app2.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app2.LastBlockHeight() + 1}})
+	app2.BeginBlock(abci.RequestBeginBlock{Header: ostproto.Header{Height: app2.LastBlockHeight() + 1}})
 
-	header = tmproto.Header{Height: app2.LastBlockHeight() + 1}
+	header = ostproto.Header{Height: app2.LastBlockHeight() + 1}
 	app2.BeginBlock(abci.RequestBeginBlock{Header: header})
 
-	ctx2 := app2.BaseApp.NewContext(false, tmproto.Header{})
+	ctx2 := app2.BaseApp.NewContext(false, ostproto.Header{})
 
 	// Jump the time forward past the DepositPeriod and VotingPeriod
 	ctx2 = ctx2.WithBlockTime(ctx2.BlockHeader().Time.Add(app2.GovKeeper.GetDepositParams(ctx2).MaxDepositPeriod).Add(app2.GovKeeper.GetVotingParams(ctx2).VotingPeriod))
@@ -113,12 +113,12 @@ func TestImportExportQueues(t *testing.T) {
 
 func TestEqualProposals(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 	addrs := simapp.AddTestAddrs(app, ctx, 2, valTokens)
 
 	SortAddresses(addrs)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header := ostproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	// Submit two proposals

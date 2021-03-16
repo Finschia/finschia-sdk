@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -104,7 +104,7 @@ func (suite *HandlerTestSuite) TestMsgSubmitEvidence() {
 	}
 
 	for i, tc := range testCases {
-		ctx := suite.app.BaseApp.NewContext(false, tmproto.Header{Height: suite.app.LastBlockHeight() + 1})
+		ctx := suite.app.BaseApp.NewContext(false, ostproto.Header{Height: suite.app.LastBlockHeight() + 1})
 
 		res, err := suite.handler(ctx, tc.msg)
 		if tc.expectErr {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"

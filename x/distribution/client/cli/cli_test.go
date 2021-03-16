@@ -10,8 +10,8 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
@@ -78,12 +78,12 @@ func (s *IntegrationTestSuite) TestGetCmdQueryParams() {
 	}{
 		{
 			"json output",
-			[]string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			`{"community_tax":"0.020000000000000000","base_proposer_reward":"0.010000000000000000","bonus_proposer_reward":"0.040000000000000000","withdraw_addr_enabled":true}`,
 		},
 		{
 			"text output",
-			[]string{fmt.Sprintf("--%s=text", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=text", ostcli.OutputFlag)},
 			`base_proposer_reward: "0.010000000000000000"
 bonus_proposer_reward: "0.040000000000000000"
 community_tax: "0.020000000000000000"
@@ -131,7 +131,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorOutstandingRewards() {
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
 				sdk.ValAddress(val.Address).String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 			`{"rewards":[{"denom":"stake","amount":"232.260000000000000000"}]}`,
@@ -139,7 +139,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorOutstandingRewards() {
 		{
 			"text output",
 			[]string{
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
 				sdk.ValAddress(val.Address).String(),
 			},
@@ -194,7 +194,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorCommission() {
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
 				sdk.ValAddress(val.Address).String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 			`{"commission":[{"denom":"stake","amount":"116.130000000000000000"}]}`,
@@ -202,7 +202,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorCommission() {
 		{
 			"text output",
 			[]string{
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
 				sdk.ValAddress(val.Address).String(),
 			},
@@ -275,7 +275,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 			[]string{
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
 				sdk.ValAddress(val.Address).String(), "1", "3",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 			"{\"slashes\":[],\"pagination\":{\"next_key\":null,\"total\":\"0\"}}",
@@ -283,7 +283,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorSlashes() {
 		{
 			"text output",
 			[]string{
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=3", flags.FlagHeight),
 				sdk.ValAddress(val.Address).String(), "1", "3",
 			},
@@ -347,7 +347,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegatorRewards() {
 			[]string{
 				fmt.Sprintf("--%s=10", flags.FlagHeight),
 				addr.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 			fmt.Sprintf(`{"rewards":[{"validator_address":"%s","reward":[{"denom":"stake","amount":"387.100000000000000000"}]}],"total":[{"denom":"stake","amount":"387.100000000000000000"}]}`, valAddr.String()),
@@ -357,7 +357,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegatorRewards() {
 			[]string{
 				fmt.Sprintf("--%s=10", flags.FlagHeight),
 				addr.String(), valAddr.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 			`{"rewards":[{"denom":"stake","amount":"387.100000000000000000"}]}`,
@@ -365,7 +365,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegatorRewards() {
 		{
 			"text output",
 			[]string{
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=10", flags.FlagHeight),
 				addr.String(),
 			},
@@ -382,7 +382,7 @@ total:
 		{
 			"text output (specific validator)",
 			[]string{
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=10", flags.FlagHeight),
 				addr.String(), valAddr.String(),
 			},
@@ -424,12 +424,12 @@ func (s *IntegrationTestSuite) TestGetCmdQueryCommunityPool() {
 	}{
 		{
 			"json output",
-			[]string{fmt.Sprintf("--%s=3", flags.FlagHeight), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=3", flags.FlagHeight), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			`{"pool":[{"denom":"stake","amount":"4.740000000000000000"}]}`,
 		},
 		{
 			"text output",
-			[]string{fmt.Sprintf("--%s=text", tmcli.OutputFlag), fmt.Sprintf("--%s=3", flags.FlagHeight)},
+			[]string{fmt.Sprintf("--%s=text", ostcli.OutputFlag), fmt.Sprintf("--%s=3", flags.FlagHeight)},
 			`pool:
 - amount: "4.740000000000000000"
   denom: stake`,

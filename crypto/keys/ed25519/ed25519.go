@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/tmhash"
+	"github.com/line/ostracon/crypto"
+	"github.com/line/ostracon/crypto/tmhash"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"

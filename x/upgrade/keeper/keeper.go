@@ -8,8 +8,8 @@ import (
 	"path"
 	"path/filepath"
 
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
+	"github.com/line/ostracon/libs/log"
+	ostos "github.com/line/ostracon/libs/os"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"
@@ -257,7 +257,7 @@ func (k Keeper) DumpUpgradeInfoToDisk(height int64, name string) error {
 // GetUpgradeInfoPath returns the upgrade info file path
 func (k Keeper) GetUpgradeInfoPath() (string, error) {
 	upgradeInfoFileDir := path.Join(k.getHomeDir(), "data")
-	err := tmos.EnsureDir(upgradeInfoFileDir, os.ModePerm)
+	err := ostos.EnsureDir(upgradeInfoFileDir, os.ModePerm)
 	if err != nil {
 		return "", err
 	}

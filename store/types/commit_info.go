@@ -4,7 +4,7 @@ import (
 	fmt "fmt"
 
 	ics23 "github.com/confio/ics23/go"
-	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	sdkmaps "github.com/line/lbm-sdk/v2/store/internal/maps"
 	sdkproofs "github.com/line/lbm-sdk/v2/store/internal/proofs"
@@ -41,7 +41,7 @@ func (ci CommitInfo) Hash() []byte {
 	return rootHash
 }
 
-func (ci CommitInfo) ProofOp(storeName string) tmcrypto.ProofOp {
+func (ci CommitInfo) ProofOp(storeName string) ostcrypto.ProofOp {
 	cmap := ci.toMap()
 	_, proofs, _ := sdkmaps.ProofsFromMap(cmap)
 

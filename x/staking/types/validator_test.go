@@ -5,9 +5,9 @@ import (
 	"sort"
 	"testing"
 
+	osttypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/codec/legacy"
 	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
@@ -292,7 +292,7 @@ func TestValidatorsSortTendermint(t *testing.T) {
 	// create expected tendermint validators by converting to tendermint then sorting
 	expectedVals, err := teststaking.ToTmValidators(valz)
 	require.NoError(t, err)
-	sort.Sort(tmtypes.ValidatorsByVotingPower(expectedVals))
+	sort.Sort(osttypes.ValidatorsByVotingPower(expectedVals))
 
 	// sort in SDK and then convert to tendermint
 	sort.Sort(types.ValidatorsByVotingPower(valz))
@@ -304,7 +304,7 @@ func TestValidatorsSortTendermint(t *testing.T) {
 
 func TestValidatorToTm(t *testing.T) {
 	vals := make(types.Validators, 10)
-	expected := make([]*tmtypes.Validator, 10)
+	expected := make([]*osttypes.Validator, 10)
 
 	for i := range vals {
 		pk := ed25519.GenPrivKey().PubKey()
@@ -314,7 +314,7 @@ func TestValidatorToTm(t *testing.T) {
 		vals[i] = val
 		tmPk, err := cryptocodec.ToTmPubKeyInterface(pk)
 		require.NoError(t, err)
-		expected[i] = tmtypes.NewValidator(tmPk, val.ConsensusPower())
+		expected[i] = osttypes.NewValidator(tmPk, val.ConsensusPower())
 	}
 	vs, err := teststaking.ToTmValidators(vals)
 	require.NoError(t, err)

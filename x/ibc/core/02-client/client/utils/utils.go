@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	osttypes "github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/client"
 
@@ -147,7 +147,7 @@ func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, 
 	}
 
 	protoCommit := commit.SignedHeader.ToProto()
-	protoValset, err := tmtypes.NewValidatorSet(validators.Validators).ToProto()
+	protoValset, err := osttypes.NewValidatorSet(validators.Validators).ToProto()
 	if err != nil {
 		return ibctmtypes.Header{}, 0, err
 	}
@@ -192,7 +192,7 @@ func QueryNodeConsensusState(clientCtx client.Context) (*ibctmtypes.ConsensusSta
 	state := &ibctmtypes.ConsensusState{
 		Timestamp:          commit.Time,
 		Root:               commitmenttypes.NewMerkleRoot(commit.AppHash),
-		NextValidatorsHash: tmtypes.NewValidatorSet(nextVals.Validators).Hash(),
+		NextValidatorsHash: osttypes.NewValidatorSet(nextVals.Validators).Hash(),
 	}
 
 	return state, height, nil

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -33,7 +33,7 @@ func TestNewQuerier(t *testing.T) {
 		app.StakingKeeper.SetValidatorByPowerIndex(ctx, validators[i])
 	}
 
-	header := tmproto.Header{
+	header := ostproto.Header{
 		ChainID: "HelloChain",
 		Height:  5,
 	}
@@ -720,7 +720,7 @@ func TestQueryHistoricalInfo(t *testing.T) {
 	app.StakingKeeper.SetValidator(ctx, val1)
 	app.StakingKeeper.SetValidator(ctx, val2)
 
-	header := tmproto.Header{
+	header := ostproto.Header{
 		ChainID: "HelloChain",
 		Height:  5,
 	}

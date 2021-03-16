@@ -8,7 +8,7 @@ import (
 	_ "github.com/gogo/protobuf/gogoproto"
 	proto "github.com/gogo/protobuf/proto"
 	types "github.com/line/lbm-sdk/v2/codec/types"
-	types1 "github.com/tendermint/tendermint/abci/types"
+	types1 "github.com/line/ostracon/abci/types"
 	io "io"
 	math "math"
 	math_bits "math/bits"

@@ -3,7 +3,7 @@ package tmservice
 import (
 	"context"
 
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	ctypes "github.com/line/ostracon/rpc/core/types"
 
 	"github.com/line/lbm-sdk/v2/client"
 )

@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/line/ostracon/libs/log"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 	capabilitykeeper "github.com/line/lbm-sdk/v2/x/capability/keeper"

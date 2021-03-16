@@ -11,7 +11,7 @@ import (
 	keep "github.com/line/lbm-sdk/v2/x/mint/keeper"
 	"github.com/line/lbm-sdk/v2/x/mint/types"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 func TestNewQuerier(t *testing.T) {

@@ -9,10 +9,10 @@ import (
 
 	btcSecp256k1 "github.com/btcsuite/btcd/btcec"
 	"github.com/btcsuite/btcutil/base58"
+	"github.com/line/ostracon/crypto"
+	ostsecp256k1 "github.com/line/ostracon/crypto/secp256k1"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/crypto"
-	tmsecp256k1 "github.com/tendermint/tendermint/crypto/secp256k1"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
@@ -272,39 +272,39 @@ func TestMarshalAmino(t *testing.T) {
 func TestMarshalAmino_BackwardsCompatibility(t *testing.T) {
 	aminoCdc := codec.NewLegacyAmino()
 	// Create Tendermint keys.
-	tmPrivKey := tmsecp256k1.GenPrivKey()
-	tmPubKey := tmPrivKey.PubKey()
+	ostPrivKey := ostsecp256k1.GenPrivKey()
+	ostPubKey := ostPrivKey.PubKey()
 	// Create our own keys, with the same private key as Tendermint's.
-	privKey := &secp256k1.PrivKey{Key: []byte(tmPrivKey)}
+	privKey := &secp256k1.PrivKey{Key: []byte(ostPrivKey)}
 	pubKey := privKey.PubKey().(*secp256k1.PubKey)
 
 	testCases := []struct {
 		desc      string
-		tmKey     interface{}
+		ostKey    interface{}
 		ourKey    interface{}
 		marshalFn func(o interface{}) ([]byte, error)
 	}{
 		{
 			"secp256k1 private key, binary",
-			tmPrivKey,
+			ostPrivKey,
 			privKey,
 			aminoCdc.MarshalBinaryBare,
 		},
 		{
 			"secp256k1 private key, JSON",
-			tmPrivKey,
+			ostPrivKey,
 			privKey,
 			aminoCdc.MarshalJSON,
 		},
 		{
 			"secp256k1 public key, binary",
-			tmPubKey,
+			ostPubKey,
 			pubKey,
 			aminoCdc.MarshalBinaryBare,
 		},
 		{
 			"secp256k1 public key, JSON",
-			tmPubKey,
+			ostPubKey,
 			pubKey,
 			aminoCdc.MarshalJSON,
 		},
@@ -313,7 +313,7 @@ func TestMarshalAmino_BackwardsCompatibility(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
 			// Make sure Amino encoding override is not breaking backwards compatibility.
-			bz1, err := tc.marshalFn(tc.tmKey)
+			bz1, err := tc.marshalFn(tc.ostKey)
 			require.NoError(t, err)
 			bz2, err := tc.marshalFn(tc.ourKey)
 			require.NoError(t, err)

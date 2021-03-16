@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/line/ostracon/crypto"
 	"github.com/stretchr/testify/suite"
-	"github.com/tendermint/tendermint/crypto"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	sdk "github.com/line/lbm-sdk/v2/types"

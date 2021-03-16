@@ -8,8 +8,8 @@ import (
 	"io"
 	"strings"
 
+	"github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/libs/cli"
 	yaml "gopkg.in/yaml.v2"
 
 	sdk "github.com/line/lbm-sdk/v2/types"

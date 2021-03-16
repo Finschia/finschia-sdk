@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
+	"github.com/line/ostracon/rpc/client/mock"
+	ctypes "github.com/line/ostracon/rpc/core/types"
+	osttypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/rpc/client/mock"
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
-	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/codec"
@@ -20,7 +20,7 @@ import (
 
 type TxSearchMock struct {
 	mock.Client
-	txs []tmtypes.Tx
+	txs []osttypes.Tx
 }
 
 func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool, page, perPage *int, orderBy string) (*ctypes.ResultTxSearch, error) {
@@ -47,7 +47,7 @@ func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool,
 
 func (mock TxSearchMock) Block(ctx context.Context, height *int64) (*ctypes.ResultBlock, error) {
 	// any non nil Block needs to be returned. used to get time value
-	return &ctypes.ResultBlock{Block: &tmtypes.Block{}}, nil
+	return &ctypes.ResultBlock{Block: &osttypes.Block{}}, nil
 }
 
 func newTestCodec() *codec.LegacyAmino {
@@ -143,7 +143,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 
 		t.Run(tc.description, func(t *testing.T) {
 			var (
-				marshalled = make([]tmtypes.Tx, len(tc.msgs))
+				marshalled = make([]osttypes.Tx, len(tc.msgs))
 				cdc        = newTestCodec()
 			)
 

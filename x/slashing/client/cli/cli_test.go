@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/line/lbm-sdk/v2/client/flags"
 	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
@@ -64,7 +64,7 @@ func (s *IntegrationTestSuite) TestGetCmdQuerySigningInfo() {
 			"valid address (json output)",
 			[]string{
 				valConsPubKey,
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			false,
@@ -74,7 +74,7 @@ func (s *IntegrationTestSuite) TestGetCmdQuerySigningInfo() {
 			"valid address (text output)",
 			[]string{
 				valConsPubKey,
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			false,
@@ -115,12 +115,12 @@ func (s *IntegrationTestSuite) TestGetCmdQueryParams() {
 	}{
 		{
 			"json output",
-			[]string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			`{"signed_blocks_window":"100","min_signed_per_window":"0.500000000000000000","downtime_jail_duration":"600s","slash_fraction_double_sign":"0.050000000000000000","slash_fraction_downtime":"0.010000000000000000"}`,
 		},
 		{
 			"text output",
-			[]string{fmt.Sprintf("--%s=text", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=text", ostcli.OutputFlag)},
 			`downtime_jail_duration: 600s
 min_signed_per_window: "0.500000000000000000"
 signed_blocks_window: "100"

@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
+	ostbytes "github.com/line/ostracon/libs/bytes"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	osttypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -46,9 +46,9 @@ type TendermintTestSuite struct {
 	// TODO: deprecate usage in favor of testing package
 	ctx        sdk.Context
 	cdc        codec.Marshaler
-	privVal    tmtypes.PrivValidator
-	valSet     *tmtypes.ValidatorSet
-	valsHash   tmbytes.HexBytes
+	privVal    osttypes.PrivValidator
+	valSet     *osttypes.ValidatorSet
+	valsHash   ostbytes.HexBytes
 	header     *ibctmtypes.Header
 	now        time.Time
 	headerTime time.Time
@@ -83,11 +83,11 @@ func (suite *TendermintTestSuite) SetupTest() {
 
 	heightMinus1 := clienttypes.NewHeight(0, height.RevisionHeight-1)
 
-	val := tmtypes.NewValidator(pubKey, 10)
-	suite.valSet = tmtypes.NewValidatorSet([]*tmtypes.Validator{val})
+	val := osttypes.NewValidator(pubKey, 10)
+	suite.valSet = osttypes.NewValidatorSet([]*osttypes.Validator{val})
 	suite.valsHash = suite.valSet.Hash()
-	suite.header = suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, []tmtypes.PrivValidator{suite.privVal})
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1, Time: suite.now})
+	suite.header = suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, []osttypes.PrivValidator{suite.privVal})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ostproto.Header{Height: 1, Time: suite.now})
 }
 
 func TestTendermintTestSuite(t *testing.T) {

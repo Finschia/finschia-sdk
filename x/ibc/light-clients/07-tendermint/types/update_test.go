@@ -3,7 +3,7 @@ package types_test
 import (
 	"time"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	osttypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
@@ -34,20 +34,20 @@ func (suite *TendermintTestSuite) TestCheckHeaderAndUpdateState() {
 	heightMinus3 := clienttypes.NewHeight(height.RevisionNumber, height.RevisionHeight-3)
 	heightPlus5 := clienttypes.NewHeight(height.RevisionNumber, height.RevisionHeight+5)
 
-	altVal := tmtypes.NewValidator(altPubKey, revisionHeight)
+	altVal := osttypes.NewValidator(altPubKey, revisionHeight)
 
 	// Create bothValSet with both suite validator and altVal. Would be valid update
-	bothValSet := tmtypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
+	bothValSet := osttypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
 	// Create alternative validator set with only altVal, invalid update (too much change in valSet)
-	altValSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{altVal})
+	altValSet := osttypes.NewValidatorSet([]*osttypes.Validator{altVal})
 
-	signers := []tmtypes.PrivValidator{suite.privVal}
+	signers := []osttypes.PrivValidator{suite.privVal}
 
 	// Create signer array and ensure it is in same order as bothValSet
 	_, suiteVal := suite.valSet.GetByIndex(0)
 	bothSigners := ibctesting.CreateSortedSignerArray(altPrivVal, suite.privVal, altVal, suiteVal)
 
-	altSigners := []tmtypes.PrivValidator{altPrivVal}
+	altSigners := []osttypes.PrivValidator{altPrivVal}
 
 	testCases := []struct {
 		name    string

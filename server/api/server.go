@@ -11,8 +11,8 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/tendermint/tendermint/libs/log"
-	tmrpcserver "github.com/tendermint/tendermint/rpc/jsonrpc/server"
+	"github.com/line/ostracon/libs/log"
+	ostrpcserver "github.com/line/ostracon/rpc/jsonrpc/server"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/server/config"
@@ -93,13 +93,13 @@ func (s *Server) Start(cfg config.Config) error {
 		s.registerMetrics()
 	}
 
-	tmCfg := tmrpcserver.DefaultConfig()
-	tmCfg.MaxOpenConnections = int(cfg.API.MaxOpenConnections)
-	tmCfg.ReadTimeout = time.Duration(cfg.API.RPCReadTimeout) * time.Second
-	tmCfg.WriteTimeout = time.Duration(cfg.API.RPCWriteTimeout) * time.Second
-	tmCfg.MaxBodyBytes = int64(cfg.API.RPCMaxBodyBytes)
+	ostCfg := ostrpcserver.DefaultConfig()
+	ostCfg.MaxOpenConnections = int(cfg.API.MaxOpenConnections)
+	ostCfg.ReadTimeout = time.Duration(cfg.API.RPCReadTimeout) * time.Second
+	ostCfg.WriteTimeout = time.Duration(cfg.API.RPCWriteTimeout) * time.Second
+	ostCfg.MaxBodyBytes = int64(cfg.API.RPCMaxBodyBytes)
 
-	listener, err := tmrpcserver.Listen(cfg.API.Address, tmCfg)
+	listener, err := ostrpcserver.Listen(cfg.API.Address, ostCfg)
 	if err != nil {
 		return err
 	}
@@ -111,11 +111,11 @@ func (s *Server) Start(cfg config.Config) error {
 
 	if cfg.API.EnableUnsafeCORS {
 		allowAllCORS := handlers.CORS(handlers.AllowedHeaders([]string{"Content-Type"}))
-		return tmrpcserver.Serve(s.listener, allowAllCORS(h), s.logger, tmCfg)
+		return ostrpcserver.Serve(s.listener, allowAllCORS(h), s.logger, ostCfg)
 	}
 
 	s.logger.Info("starting API server...")
-	return tmrpcserver.Serve(s.listener, s.Router, s.logger, tmCfg)
+	return ostrpcserver.Serve(s.listener, s.Router, s.logger, ostCfg)
 }
 
 // Close closes the API server.

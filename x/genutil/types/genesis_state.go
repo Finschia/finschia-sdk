@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	tmos "github.com/tendermint/tendermint/libs/os"
-	tmtypes "github.com/tendermint/tendermint/types"
+	ostos "github.com/line/ostracon/libs/os"
+	osttypes "github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -68,7 +68,7 @@ func SetGenesisStateInAppState(
 // for the application.
 //
 // NOTE: The pubkey input is this machines pubkey.
-func GenesisStateFromGenDoc(genDoc tmtypes.GenesisDoc) (genesisState map[string]json.RawMessage, err error) {
+func GenesisStateFromGenDoc(genDoc osttypes.GenesisDoc) (genesisState map[string]json.RawMessage, err error) {
 
 	if err = json.Unmarshal(genDoc.AppState, &genesisState); err != nil {
 		return genesisState, err
@@ -80,13 +80,13 @@ func GenesisStateFromGenDoc(genDoc tmtypes.GenesisDoc) (genesisState map[string]
 // for the application.
 //
 // NOTE: The pubkey input is this machines pubkey.
-func GenesisStateFromGenFile(genFile string) (genesisState map[string]json.RawMessage, genDoc *tmtypes.GenesisDoc, err error) {
-	if !tmos.FileExists(genFile) {
+func GenesisStateFromGenFile(genFile string) (genesisState map[string]json.RawMessage, genDoc *osttypes.GenesisDoc, err error) {
+	if !ostos.FileExists(genFile) {
 		return genesisState, genDoc,
 			fmt.Errorf("%s does not exist, run `init` first", genFile)
 	}
 
-	genDoc, err = tmtypes.GenesisDocFromFile(genFile)
+	genDoc, err = osttypes.GenesisDocFromFile(genFile)
 	if err != nil {
 		return genesisState, genDoc, err
 	}

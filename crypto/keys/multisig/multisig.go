@@ -3,7 +3,7 @@ package multisig
 import (
 	fmt "fmt"
 
-	tmcrypto "github.com/tendermint/tendermint/crypto"
+	ostcrypto "github.com/line/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/v2/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
@@ -32,7 +32,7 @@ func NewLegacyAminoPubKey(k int, pubKeys []cryptotypes.PubKey) *LegacyAminoPubKe
 
 // Address implements cryptotypes.PubKey Address method
 func (m *LegacyAminoPubKey) Address() cryptotypes.Address {
-	return tmcrypto.AddressHash(m.Bytes())
+	return ostcrypto.AddressHash(m.Bytes())
 }
 
 // Bytes returns the proto encoded version of the LegacyAminoPubKey

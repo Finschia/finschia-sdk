@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
@@ -213,7 +213,7 @@ func ExamplePaginate() {
 
 func setupTest() (*simapp.SimApp, sdk.Context, codec.Marshaler) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	db := dbm.NewMemDB()

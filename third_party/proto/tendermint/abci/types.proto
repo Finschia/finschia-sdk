@@ -1,14 +1,14 @@
 syntax = "proto3";
 package tendermint.abci;
 
-option go_package = "github.com/tendermint/tendermint/abci/types";
+option go_package = "github.com/line/ostracon/abci/types";
 
 // For more information on gogo.proto, see:
 // https://github.com/gogo/protobuf/blob/master/extensions.md
-import "tendermint/crypto/proof.proto";
-import "tendermint/types/types.proto";
-import "tendermint/crypto/keys.proto";
-import "tendermint/types/params.proto";
+import "ostracon/crypto/proof.proto";
+import "ostracon/types/types.proto";
+import "ostracon/crypto/keys.proto";
+import "ostracon/types/params.proto";
 import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 

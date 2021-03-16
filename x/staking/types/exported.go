@@ -1,7 +1,7 @@
 package types
 
 import (
-	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -24,7 +24,7 @@ type ValidatorI interface {
 	IsUnbonding() bool                                      // check if has status unbonding
 	GetOperator() sdk.ValAddress                            // operator address to receive/return validators coins
 	ConsPubKey() (cryptotypes.PubKey, error)                // validation consensus pubkey (cryptotypes.PubKey)
-	TmConsPublicKey() (tmprotocrypto.PublicKey, error)      // validation consensus pubkey (Tendermint)
+	TmConsPublicKey() (ostprotocrypto.PublicKey, error)     // validation consensus pubkey (Tendermint)
 	GetConsAddr() (sdk.ConsAddress, error)                  // validation consensus address
 	GetTokens() sdk.Int                                     // validation tokens
 	GetBondedTokens() sdk.Int                               // validator bonded tokens

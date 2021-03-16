@@ -14,13 +14,13 @@ import (
 	"syscall"
 	"time"
 
+	ostcfg "github.com/line/ostracon/config"
+	ostlog "github.com/line/ostracon/libs/log"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	tmcfg "github.com/tendermint/tendermint/config"
-	tmlog "github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/client/flags"
@@ -39,8 +39,8 @@ const ServerContextKey = sdk.ContextKey("server.context")
 // server context
 type Context struct {
 	Viper  *viper.Viper
-	Config *tmcfg.Config
-	Logger tmlog.Logger
+	Config *ostcfg.Config
+	Logger ostlog.Logger
 }
 
 // ErrorCode contains the exit code for server exit.
@@ -55,12 +55,12 @@ func (e ErrorCode) Error() string {
 func NewDefaultContext() *Context {
 	return NewContext(
 		viper.New(),
-		tmcfg.DefaultConfig(),
+		ostcfg.DefaultConfig(),
 		ZeroLogWrapper{log.Logger},
 	)
 }
 
-func NewContext(v *viper.Viper, config *tmcfg.Config, logger tmlog.Logger) *Context {
+func NewContext(v *viper.Viper, config *ostcfg.Config, logger ostlog.Logger) *Context {
 	return &Context{v, config, logger}
 }
 
@@ -135,7 +135,7 @@ func InterceptConfigsPreRunHandler(cmd *cobra.Command) error {
 	}
 
 	var logWriter io.Writer
-	if strings.ToLower(serverCtx.Viper.GetString(flags.FlagLogFormat)) == tmcfg.LogFormatPlain {
+	if strings.ToLower(serverCtx.Viper.GetString(flags.FlagLogFormat)) == ostcfg.LogFormatPlain {
 		logWriter = zerolog.ConsoleWriter{Out: os.Stderr}
 	} else {
 		logWriter = os.Stderr
@@ -181,16 +181,16 @@ func SetCmdServerContext(cmd *cobra.Command, serverCtx *Context) error {
 // configuration file. The Tendermint configuration file is parsed given a root
 // Viper object, whereas the application is parsed with the private package-aware
 // viperCfg object.
-func interceptConfigs(rootViper *viper.Viper) (*tmcfg.Config, error) {
+func interceptConfigs(rootViper *viper.Viper) (*ostcfg.Config, error) {
 	rootDir := rootViper.GetString(flags.FlagHome)
 	configPath := filepath.Join(rootDir, "config")
 	tmCfgFile := filepath.Join(configPath, "config.toml")
 
-	conf := tmcfg.DefaultConfig()
+	conf := ostcfg.DefaultConfig()
 
 	switch _, err := os.Stat(tmCfgFile); {
 	case os.IsNotExist(err):
-		tmcfg.EnsureRoot(rootDir)
+		ostcfg.EnsureRoot(rootDir)
 
 		if err = conf.ValidateBasic(); err != nil {
 			return nil, fmt.Errorf("error in config file: %v", err)
@@ -200,7 +200,7 @@ func interceptConfigs(rootViper *viper.Viper) (*tmcfg.Config, error) {
 		conf.P2P.RecvRate = 5120000
 		conf.P2P.SendRate = 5120000
 		conf.Consensus.TimeoutCommit = 5 * time.Second
-		tmcfg.WriteConfigFile(tmCfgFile, conf)
+		ostcfg.WriteConfigFile(tmCfgFile, conf)
 
 	case err != nil:
 		return nil, err

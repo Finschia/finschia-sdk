@@ -4,8 +4,8 @@ import (
 	"math/rand"
 	"testing"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	simappparams "github.com/line/lbm-sdk/v2/simapp/params"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -18,7 +18,7 @@ func TestProposalContents(t *testing.T) {
 	s := rand.NewSource(1)
 	r := rand.New(s)
 
-	ctx := sdk.NewContext(nil, tmproto.Header{}, true, nil)
+	ctx := sdk.NewContext(nil, ostproto.Header{}, true, nil)
 	accounts := simtypes.RandomAccounts(r, 3)
 
 	// execute ProposalContents function

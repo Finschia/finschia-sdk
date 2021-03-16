@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"io"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmstrings "github.com/tendermint/tendermint/libs/strings"
+	abci "github.com/line/ostracon/abci/types"
+	oststrings "github.com/line/ostracon/libs/strings"
 	dbm "github.com/tendermint/tm-db"
 
 	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"
@@ -70,7 +70,7 @@ func (s *StoreUpgrades) IsAdded(key string) bool {
 	if s == nil {
 		return false
 	}
-	return tmstrings.StringInSlice(key, s.Added)
+	return oststrings.StringInSlice(key, s.Added)
 }
 
 // IsDeleted returns true if the given key should be deleted

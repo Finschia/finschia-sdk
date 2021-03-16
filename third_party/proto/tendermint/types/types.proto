@@ -1,13 +1,13 @@
 syntax = "proto3";
 package tendermint.types;
 
-option go_package = "github.com/tendermint/tendermint/proto/tendermint/types";
+option go_package = "github.com/line/ostracon/proto/ostracon/types";
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
-import "tendermint/crypto/proof.proto";
-import "tendermint/version/types.proto";
-import "tendermint/types/validator.proto";
+import "ostracon/crypto/proof.proto";
+import "ostracon/version/types.proto";
+import "ostracon/types/validator.proto";
 
 // BlockIdFlag indicates which BlcokID the signature is for
 enum BlockIDFlag {

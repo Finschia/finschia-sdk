@@ -5,8 +5,8 @@ import (
 	"io"
 	"strings"
 
+	ostos "github.com/line/ostracon/libs/os"
 	"github.com/pkg/errors"
-	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/crypto"
@@ -26,7 +26,7 @@ type LegacyKeybase interface {
 
 // NewLegacy creates a new instance of a legacy keybase.
 func NewLegacy(name, dir string, opts ...KeybaseOption) (LegacyKeybase, error) {
-	if err := tmos.EnsureDir(dir, 0700); err != nil {
+	if err := ostos.EnsureDir(dir, 0700); err != nil {
 		return nil, fmt.Errorf("failed to create Keybase directory: %s", err)
 	}
 

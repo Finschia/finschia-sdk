@@ -7,13 +7,13 @@ import (
 	"testing"
 	"time"
 
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/crypto/tmhash"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ostprotoversion "github.com/line/ostracon/proto/ostracon/version"
+	osttypes "github.com/line/ostracon/types"
+	tmversion "github.com/line/ostracon/version"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto/tmhash"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmprotoversion "github.com/tendermint/tendermint/proto/tendermint/version"
-	tmtypes "github.com/tendermint/tendermint/types"
-	tmversion "github.com/tendermint/tendermint/version"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/codec"
@@ -87,13 +87,13 @@ type TestChain struct {
 	App           *simapp.SimApp
 	ChainID       string
 	LastHeader    *ibctmtypes.Header // header for last block height committed
-	CurrentHeader tmproto.Header     // header for current block height
+	CurrentHeader ostproto.Header    // header for current block height
 	QueryServer   types.QueryServer
 	TxConfig      client.TxConfig
 	Codec         codec.BinaryMarshaler
 
-	Vals    *tmtypes.ValidatorSet
-	Signers []tmtypes.PrivValidator
+	Vals    *osttypes.ValidatorSet
+	Signers []osttypes.PrivValidator
 
 	senderPrivKey cryptotypes.PrivKey
 	SenderAccount authtypes.AccountI
@@ -118,9 +118,9 @@ func NewTestChain(t *testing.T, chainID string) *TestChain {
 	require.NoError(t, err)
 
 	// create validator set with single validator
-	validator := tmtypes.NewValidator(pubKey, 1)
-	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{validator})
-	signers := []tmtypes.PrivValidator{privVal}
+	validator := osttypes.NewValidator(pubKey, 1)
+	valSet := osttypes.NewValidatorSet([]*osttypes.Validator{validator})
+	signers := []osttypes.PrivValidator{privVal}
 
 	// generate genesis account
 	senderPrivKey := secp256k1.GenPrivKey()
@@ -133,7 +133,7 @@ func NewTestChain(t *testing.T, chainID string) *TestChain {
 	app := simapp.SetupWithGenesisValSet(t, valSet, []authtypes.GenesisAccount{acc}, balance)
 
 	// create current header and call begin block
-	header := tmproto.Header{
+	header := ostproto.Header{
 		ChainID: chainID,
 		Height:  1,
 		Time:    globalStartTime,
@@ -255,7 +255,7 @@ func (chain *TestChain) NextBlock() {
 	chain.LastHeader = chain.CurrentTMClientHeader()
 
 	// increment the current header
-	chain.CurrentHeader = tmproto.Header{
+	chain.CurrentHeader = ostproto.Header{
 		ChainID: chain.ChainID,
 		Height:  chain.App.LastBlockHeight() + 1,
 		AppHash: chain.App.LastCommitID().Hash,
@@ -321,7 +321,7 @@ func (chain *TestChain) GetConsensusState(clientID string, height exported.Heigh
 
 // GetValsAtHeight will return the validator set of the chain at a given height. It will return
 // a success boolean depending on if the validator set exists or not at that height.
-func (chain *TestChain) GetValsAtHeight(height int64) (*tmtypes.ValidatorSet, bool) {
+func (chain *TestChain) GetValsAtHeight(height int64) (*osttypes.ValidatorSet, bool) {
 	histInfo, ok := chain.App.StakingKeeper.GetHistoricalInfo(chain.GetContext(), height)
 	if !ok {
 		return nil, false
@@ -333,7 +333,7 @@ func (chain *TestChain) GetValsAtHeight(height int64) (*tmtypes.ValidatorSet, bo
 	if err != nil {
 		panic(err)
 	}
-	return tmtypes.NewValidatorSet(tmValidators), true
+	return osttypes.NewValidatorSet(tmValidators), true
 }
 
 // GetConnection retrieves an IBC Connection for the provided TestConnection. The
@@ -498,7 +498,7 @@ func (chain *TestChain) ConstructUpdateTMClientHeader(counterparty *TestChain, c
 	// Relayer must query for LatestHeight on client to get TrustedHeight
 	trustedHeight := chain.GetClientState(clientID).GetLatestHeight().(clienttypes.Height)
 	var (
-		tmTrustedVals *tmtypes.ValidatorSet
+		tmTrustedVals *osttypes.ValidatorSet
 		ok            bool
 	)
 	// Once we get TrustedHeight from client, we must query the validators from the counterparty chain
@@ -544,17 +544,17 @@ func (chain *TestChain) CurrentTMClientHeader() *ibctmtypes.Header {
 
 // CreateTMClientHeader creates a TM header to update the TM client. Args are passed in to allow
 // caller flexibility to use params that differ from the chain.
-func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, trustedHeight clienttypes.Height, timestamp time.Time, tmValSet, tmTrustedVals *tmtypes.ValidatorSet, signers []tmtypes.PrivValidator) *ibctmtypes.Header {
+func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, trustedHeight clienttypes.Height, timestamp time.Time, tmValSet, tmTrustedVals *osttypes.ValidatorSet, signers []osttypes.PrivValidator) *ibctmtypes.Header {
 	var (
-		valSet      *tmproto.ValidatorSet
-		trustedVals *tmproto.ValidatorSet
+		valSet      *ostproto.ValidatorSet
+		trustedVals *ostproto.ValidatorSet
 	)
 	require.NotNil(chain.t, tmValSet)
 
 	vsetHash := tmValSet.Hash()
 
-	tmHeader := tmtypes.Header{
-		Version:            tmprotoversion.Consensus{Block: tmversion.BlockProtocol, App: 2},
+	tmHeader := osttypes.Header{
+		Version:            ostprotoversion.Consensus{Block: tmversion.BlockProtocol, App: 2},
 		ChainID:            chainID,
 		Height:             blockHeight,
 		Time:               timestamp,
@@ -571,12 +571,12 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 	}
 	hhash := tmHeader.Hash()
 	blockID := MakeBlockID(hhash, 3, tmhash.Sum([]byte("part_set")))
-	voteSet := tmtypes.NewVoteSet(chainID, blockHeight, 1, tmproto.PrecommitType, tmValSet)
+	voteSet := osttypes.NewVoteSet(chainID, blockHeight, 1, ostproto.PrecommitType, tmValSet)
 
-	commit, err := tmtypes.MakeCommit(blockID, blockHeight, 1, voteSet, signers, timestamp)
+	commit, err := osttypes.MakeCommit(blockID, blockHeight, 1, voteSet, signers, timestamp)
 	require.NoError(chain.t, err)
 
-	signedHeader := &tmproto.SignedHeader{
+	signedHeader := &ostproto.SignedHeader{
 		Header: tmHeader.ToProto(),
 		Commit: commit.ToProto(),
 	}
@@ -605,11 +605,11 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 	}
 }
 
-// MakeBlockID copied unimported test functions from tmtypes to use them here
-func MakeBlockID(hash []byte, partSetSize uint32, partSetHash []byte) tmtypes.BlockID {
-	return tmtypes.BlockID{
+// MakeBlockID copied unimported test functions from osttypes to use them here
+func MakeBlockID(hash []byte, partSetSize uint32, partSetHash []byte) osttypes.BlockID {
+	return osttypes.BlockID{
 		Hash: hash,
-		PartSetHeader: tmtypes.PartSetHeader{
+		PartSetHeader: osttypes.PartSetHeader{
 			Total: partSetSize,
 			Hash:  partSetHash,
 		},
@@ -620,19 +620,19 @@ func MakeBlockID(hash []byte, partSetSize uint32, partSetHash []byte) tmtypes.Bl
 // (including voting power). It returns a signer array of PrivValidators that matches the
 // sorting of ValidatorSet.
 // The sorting is first by .VotingPower (descending), with secondary index of .Address (ascending).
-func CreateSortedSignerArray(altPrivVal, suitePrivVal tmtypes.PrivValidator,
-	altVal, suiteVal *tmtypes.Validator) []tmtypes.PrivValidator {
+func CreateSortedSignerArray(altPrivVal, suitePrivVal osttypes.PrivValidator,
+	altVal, suiteVal *osttypes.Validator) []osttypes.PrivValidator {
 
 	switch {
 	case altVal.VotingPower > suiteVal.VotingPower:
-		return []tmtypes.PrivValidator{altPrivVal, suitePrivVal}
+		return []osttypes.PrivValidator{altPrivVal, suitePrivVal}
 	case altVal.VotingPower < suiteVal.VotingPower:
-		return []tmtypes.PrivValidator{suitePrivVal, altPrivVal}
+		return []osttypes.PrivValidator{suitePrivVal, altPrivVal}
 	default:
 		if bytes.Compare(altVal.Address, suiteVal.Address) == -1 {
-			return []tmtypes.PrivValidator{altPrivVal, suitePrivVal}
+			return []osttypes.PrivValidator{altPrivVal, suitePrivVal}
 		}
-		return []tmtypes.PrivValidator{suitePrivVal, altPrivVal}
+		return []osttypes.PrivValidator{suitePrivVal, altPrivVal}
 	}
 }
 

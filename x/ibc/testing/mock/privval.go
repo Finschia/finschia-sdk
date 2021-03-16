@@ -1,16 +1,16 @@
 package mock
 
 import (
-	"github.com/tendermint/tendermint/crypto"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtypes "github.com/tendermint/tendermint/types"
+	"github.com/line/ostracon/crypto"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	osttypes "github.com/line/ostracon/types"
 
 	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
 )
 
-var _ tmtypes.PrivValidator = PV{}
+var _ osttypes.PrivValidator = PV{}
 
 // MockPV implements PrivValidator without any safety or persistence.
 // Only use it for testing.
@@ -28,8 +28,8 @@ func (pv PV) GetPubKey() (crypto.PubKey, error) {
 }
 
 // SignVote implements PrivValidator interface
-func (pv PV) SignVote(chainID string, vote *tmproto.Vote) error {
-	signBytes := tmtypes.VoteSignBytes(chainID, vote)
+func (pv PV) SignVote(chainID string, vote *ostproto.Vote) error {
+	signBytes := osttypes.VoteSignBytes(chainID, vote)
 	sig, err := pv.PrivKey.Sign(signBytes)
 	if err != nil {
 		return err
@@ -39,8 +39,8 @@ func (pv PV) SignVote(chainID string, vote *tmproto.Vote) error {
 }
 
 // SignProposal implements PrivValidator interface
-func (pv PV) SignProposal(chainID string, proposal *tmproto.Proposal) error {
-	signBytes := tmtypes.ProposalSignBytes(chainID, proposal)
+func (pv PV) SignProposal(chainID string, proposal *ostproto.Proposal) error {
+	signBytes := osttypes.ProposalSignBytes(chainID, proposal)
 	sig, err := pv.PrivKey.Sign(signBytes)
 	if err != nil {
 		return err

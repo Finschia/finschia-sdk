@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	abci "github.com/line/ostracon/abci/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 )
@@ -50,7 +50,7 @@ func ValidateBlockParams(i interface{}) error {
 // ValidateEvidenceParams defines a stateless validation on EvidenceParams. This
 // function is called whenever the parameters are updated or stored.
 func ValidateEvidenceParams(i interface{}) error {
-	v, ok := i.(tmproto.EvidenceParams)
+	v, ok := i.(ostproto.EvidenceParams)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -73,7 +73,7 @@ func ValidateEvidenceParams(i interface{}) error {
 // ValidateValidatorParams defines a stateless validation on ValidatorParams. This
 // function is called whenever the parameters are updated or stored.
 func ValidateValidatorParams(i interface{}) error {
-	v, ok := i.(tmproto.ValidatorParams)
+	v, ok := i.(ostproto.ValidatorParams)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

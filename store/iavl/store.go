@@ -9,8 +9,8 @@ import (
 
 	ics23 "github.com/confio/ics23/go"
 	"github.com/cosmos/iavl"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmcrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	abci "github.com/line/ostracon/abci/types"
+	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/store/cachekv"
@@ -342,7 +342,7 @@ func (st *Store) Query(req abci.RequestQuery) (res abci.ResponseQuery) {
 // Takes a MutableTree, a key, and a flag for creating existence or absence proof and returns the
 // appropriate merkle.Proof. Since this must be called after querying for the value, this function should never error
 // Thus, it will panic on error rather than returning it
-func getProofFromTree(tree *iavl.MutableTree, key []byte, exists bool) *tmcrypto.ProofOps {
+func getProofFromTree(tree *iavl.MutableTree, key []byte, exists bool) *ostcrypto.ProofOps {
 	var (
 		commitmentProof *ics23.CommitmentProof
 		err             error
@@ -365,7 +365,7 @@ func getProofFromTree(tree *iavl.MutableTree, key []byte, exists bool) *tmcrypto
 	}
 
 	op := types.NewIavlCommitmentOp(key, commitmentProof)
-	return &tmcrypto.ProofOps{Ops: []tmcrypto.ProofOp{op.ProofOp()}}
+	return &ostcrypto.ProofOps{Ops: []ostcrypto.ProofOp{op.ProofOp()}}
 }
 
 //----------------------------------------

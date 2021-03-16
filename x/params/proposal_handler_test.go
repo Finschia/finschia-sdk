@@ -5,9 +5,9 @@ import (
 
 	"github.com/line/lbm-sdk/v2/simapp"
 
+	"github.com/line/ostracon/libs/log"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/codec"
@@ -78,7 +78,7 @@ func newTestInput(t *testing.T) testInput {
 
 	encCfg := simapp.MakeTestEncodingConfig()
 	keeper := keeper.NewKeeper(encCfg.Marshaler, encCfg.Amino, keyParams, tKeyParams)
-	ctx := sdk.NewContext(cms, tmproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(cms, ostproto.Header{}, false, log.NewNopLogger())
 
 	return testInput{ctx, cdc, keeper}
 }

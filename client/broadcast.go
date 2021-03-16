@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tendermint/tendermint/crypto/tmhash"
-	"github.com/tendermint/tendermint/mempool"
+	"github.com/line/ostracon/crypto/tmhash"
+	"github.com/line/ostracon/mempool"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 

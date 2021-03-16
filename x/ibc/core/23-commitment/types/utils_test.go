@@ -3,9 +3,9 @@ package types_test
 import (
 	"fmt"
 
+	abci "github.com/line/ostracon/abci/types"
+	crypto "github.com/line/ostracon/proto/ostracon/crypto"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	crypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
 
 	"github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
 )

@@ -8,7 +8,7 @@ import (
 	"github.com/line/lbm-sdk/v2/x/evidence/exported"
 	"github.com/line/lbm-sdk/v2/x/evidence/types"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 const (

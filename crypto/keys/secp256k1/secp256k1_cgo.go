@@ -3,7 +3,7 @@
 package secp256k1
 
 import (
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/line/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1/internal/secp256k1"
 )

@@ -1,8 +1,8 @@
 package keys
 
 import (
+	"github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/line/lbm-sdk/v2/client/flags"
 )

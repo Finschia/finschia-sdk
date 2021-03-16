@@ -11,8 +11,8 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	abci "github.com/line/ostracon/abci/types"
+	ctypes "github.com/line/ostracon/rpc/core/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"

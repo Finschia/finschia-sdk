@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	abci "github.com/line/ostracon/abci/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/x/params/types"
@@ -19,10 +19,10 @@ func ConsensusParamsKeyTable() types.KeyTable {
 			baseapp.ParamStoreKeyBlockParams, abci.BlockParams{}, baseapp.ValidateBlockParams,
 		),
 		types.NewParamSetPair(
-			baseapp.ParamStoreKeyEvidenceParams, tmproto.EvidenceParams{}, baseapp.ValidateEvidenceParams,
+			baseapp.ParamStoreKeyEvidenceParams, ostproto.EvidenceParams{}, baseapp.ValidateEvidenceParams,
 		),
 		types.NewParamSetPair(
-			baseapp.ParamStoreKeyValidatorParams, tmproto.ValidatorParams{}, baseapp.ValidateValidatorParams,
+			baseapp.ParamStoreKeyValidatorParams, ostproto.ValidatorParams{}, baseapp.ValidateValidatorParams,
 		),
 	)
 }

@@ -1,7 +1,7 @@
 package multisig
 
 import (
-	"github.com/tendermint/tendermint/crypto/sr25519"
+	"github.com/line/ostracon/crypto/sr25519"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"

@@ -11,9 +11,9 @@ import (
 	"math/rand"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
 	dbm "github.com/tendermint/tm-db"
 
 	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"

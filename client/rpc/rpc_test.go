@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	ctypes "github.com/line/ostracon/rpc/core/types"
 	"github.com/stretchr/testify/suite"
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
 
 	"github.com/line/lbm-sdk/v2/client/rpc"
 	"github.com/line/lbm-sdk/v2/codec/legacy"

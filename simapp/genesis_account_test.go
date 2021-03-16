@@ -9,8 +9,8 @@ import (
 	sdk "github.com/line/lbm-sdk/v2/types"
 	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
 
+	"github.com/line/ostracon/crypto"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/crypto"
 )
 
 func TestSimGenesisAccountValidate(t *testing.T) {

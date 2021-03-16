@@ -14,13 +14,13 @@ import (
 	"testing"
 	"time"
 
+	ostcfg "github.com/line/ostracon/config"
+	ostflags "github.com/line/ostracon/libs/cli/flags"
+	"github.com/line/ostracon/libs/log"
+	ostrand "github.com/line/ostracon/libs/rand"
+	"github.com/line/ostracon/node"
+	ostclient "github.com/line/ostracon/rpc/client"
 	"github.com/stretchr/testify/require"
-	tmcfg "github.com/tendermint/tendermint/config"
-	tmflags "github.com/tendermint/tendermint/libs/cli/flags"
-	"github.com/tendermint/tendermint/libs/log"
-	tmrand "github.com/tendermint/tendermint/libs/rand"
-	"github.com/tendermint/tendermint/node"
-	tmclient "github.com/tendermint/tendermint/rpc/client"
 	dbm "github.com/tendermint/tm-db"
 	"google.golang.org/grpc"
 
@@ -106,7 +106,7 @@ func DefaultConfig() Config {
 		AppConstructor:    NewAppConstructor(encCfg),
 		GenesisState:      simapp.ModuleBasics.DefaultGenesis(encCfg.Marshaler),
 		TimeoutCommit:     2 * time.Second,
-		ChainID:           "chain-" + tmrand.NewRand().Str(6),
+		ChainID:           "chain-" + ostrand.NewRand().Str(6),
 		NumValidators:     4,
 		BondDenom:         sdk.DefaultBondDenom,
 		MinGasPrices:      fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom),
@@ -155,7 +155,7 @@ type (
 		P2PAddress string
 		Address    sdk.AccAddress
 		ValAddress sdk.ValAddress
-		RPCClient  tmclient.Client
+		RPCClient  ostclient.Client
 
 		tmNode *node.Node
 		api    *api.Server
@@ -234,7 +234,7 @@ func New(t *testing.T, cfg Config) *Network {
 		logger := log.NewNopLogger()
 		if cfg.EnableLogging {
 			logger = log.NewTMLogger(log.NewSyncWriter(os.Stdout))
-			logger, _ = tmflags.ParseLogLevel("info", logger, tmcfg.DefaultLogLevel)
+			logger, _ = ostflags.ParseLogLevel("info", logger, ostcfg.DefaultLogLevel)
 		}
 
 		ctx.Logger = logger
