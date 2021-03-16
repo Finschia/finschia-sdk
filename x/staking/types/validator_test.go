@@ -271,7 +271,7 @@ func TestValidatorsSortDeterminism(t *testing.T) {
 	}
 }
 
-// Check SortTendermint sorts the same as tendermint
+// Check SortTendermint sorts the same as ostracon
 func TestValidatorsSortTendermint(t *testing.T) {
 	vals := make([]types.Validator, 100)
 
@@ -289,12 +289,12 @@ func TestValidatorsSortTendermint(t *testing.T) {
 
 	valz := types.Validators(vals)
 
-	// create expected tendermint validators by converting to tendermint then sorting
+	// create expected ostracon validators by converting to ostracon then sorting
 	expectedVals, err := teststaking.ToTmValidators(valz)
 	require.NoError(t, err)
 	sort.Sort(osttypes.ValidatorsByVotingPower(expectedVals))
 
-	// sort in SDK and then convert to tendermint
+	// sort in SDK and then convert to ostracon
 	sort.Sort(types.ValidatorsByVotingPower(valz))
 	actualVals, err := teststaking.ToTmValidators(valz)
 	require.NoError(t, err)

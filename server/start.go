@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/line/ostracon/abci/server"
-	ostcmd "github.com/line/ostracon/cmd/tendermint/commands"
+	ostcmd "github.com/line/ostracon/cmd/tenderming/commands"
 	ostos "github.com/line/ostracon/libs/os"
 	"github.com/line/ostracon/node"
 	"github.com/line/ostracon/p2p"
@@ -28,9 +28,9 @@ import (
 	storetypes "github.com/line/lbm-sdk/v2/store/types"
 )
 
-// Tendermint full-node start flags
+// Ostracon full-node start flags
 const (
-	flagWithTendermint     = "with-tendermint"
+	flagWithOstracon       = "with-ostracon"
 	flagAddress            = "address"
 	flagTransport          = "transport"
 	flagTraceStore         = "trace-store"
@@ -129,7 +129,7 @@ which accepts a path for the resulting pprof file.
 	}
 
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
-	cmd.Flags().Bool(flagWithTendermint, true, "Run abci app embedded in-process with tendermint")
+	cmd.Flags().Bool(flagWithOstracon, true, "Run abci app embedded in-process with ostracon")
 	cmd.Flags().String(flagAddress, "tcp://0.0.0.0:26658", "Listen address")
 	cmd.Flags().String(flagTransport, "socket", "Transport protocol: socket, grpc")
 	cmd.Flags().String(flagTraceStore, "", "Enable KVStore tracing to an output file")
@@ -265,7 +265,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
-	// case, because it spawns a new local tendermint RPC client.
+	// case, because it spawns a new local ostracon RPC client.
 	if config.API.Enable || config.GRPC.Enable {
 		clientCtx = clientCtx.WithClient(local.New(tmNode))
 

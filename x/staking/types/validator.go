@@ -111,7 +111,7 @@ func (v Validators) Swap(i, j int) {
 // ValidatorsByVotingPower implements sort.Interface for []Validator based on
 // the VotingPower and Address fields.
 // The validators are sorted first by their voting power (descending). Secondary index - Address (ascending).
-// Copied from tendermint/types/validator_set.go
+// Copied from ostracon/types/validator_set.go
 type ValidatorsByVotingPower []Validator
 
 func (valz ValidatorsByVotingPower) Len() int { return len(valz) }

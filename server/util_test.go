@@ -58,9 +58,9 @@ func TestInterceptConfigsPreRunHandlerCreatesConfigFilesWhenMissing(t *testing.T
 		t.Fatal("config.toml created as empty file")
 	}
 
-	// Test that tendermint config is initialized
+	// Test that ostracon config is initialized
 	if serverCtx.Config == nil {
-		t.Fatal("tendermint config not created")
+		t.Fatal("ostracon config not created")
 	}
 
 	// Test that app.toml is created
@@ -171,7 +171,7 @@ func TestInterceptConfigsPreRunHandlerReadsFlags(t *testing.T) {
 		t.Fatalf("Could not set home flag [%T] %v", err, err)
 	}
 
-	// This flag is added by tendermint
+	// This flag is added by ostracon
 	if err := cmd.Flags().Set("rpc.laddr", testAddr); err != nil {
 		t.Fatalf("Could not set address flag [%T] %v", err, err)
 	}
@@ -204,7 +204,7 @@ func TestInterceptConfigsPreRunHandlerReadsEnvVars(t *testing.T) {
 	}
 	basename := path.Base(executableName)
 	basename = strings.ReplaceAll(basename, ".", "_")
-	// This is added by tendermint
+	// This is added by ostracon
 	envVarName := fmt.Sprintf("%s_RPC_LADDR", strings.ToUpper(basename))
 	os.Setenv(envVarName, testAddr)
 	t.Cleanup(func() {
@@ -258,7 +258,7 @@ func newPrecedenceCommon(t *testing.T) precedenceCommon {
 	// Store the name of the env. var.
 	retval.envVarName = fmt.Sprintf("%s_RPC_LADDR", strings.ToUpper(basename))
 
-	// Store the flag name. This flag is added by tendermint
+	// Store the flag name. This flag is added by ostracon
 	retval.flagName = "rpc.laddr"
 
 	// Create a tempdir and create './config' under that

@@ -128,7 +128,7 @@ func InterceptConfigsPreRunHandler(cmd *cobra.Command) error {
 		return err
 	}
 
-	// return value is a tendermint configuration object
+	// return value is a ostracon configuration object
 	serverCtx.Config = config
 	if err = bindFlags(basename, cmd, serverCtx.Viper); err != nil {
 		return err
@@ -247,12 +247,12 @@ func interceptConfigs(rootViper *viper.Viper) (*ostcfg.Config, error) {
 
 // add server commands
 func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator types.AppCreator, appExport types.AppExporter, addStartFlags types.ModuleInitFlags) {
-	tendermintCmd := &cobra.Command{
-		Use:   "tendermint",
-		Short: "Tendermint subcommands",
+	ostraconCmd := &cobra.Command{
+		Use:   "ostracon",
+		Short: "Ostracon subcommands",
 	}
 
-	tendermintCmd.AddCommand(
+	ostraconCmd.AddCommand(
 		ShowNodeIDCmd(),
 		ShowValidatorCmd(),
 		ShowAddressCmd(),
@@ -265,7 +265,7 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 		startCmd,
 		UnsafeResetAllCmd(),
 		flags.LineBreak,
-		tendermintCmd,
+		ostraconCmd,
 		ExportCmd(appExport, defaultNodeHome),
 		flags.LineBreak,
 		version.NewVersionCommand(),

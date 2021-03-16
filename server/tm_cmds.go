@@ -43,7 +43,7 @@ func ShowNodeIDCmd() *cobra.Command {
 func ShowValidatorCmd() *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "show-validator",
-		Short: "Show this node's tendermint validator info",
+		Short: "Show this node's ostracon validator info",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
@@ -81,7 +81,7 @@ func ShowValidatorCmd() *cobra.Command {
 func ShowAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "show-address",
-		Short: "Shows this node's tendermint validator consensus address",
+		Short: "Shows this node's ostracon validator consensus address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
@@ -103,11 +103,11 @@ func ShowAddressCmd() *cobra.Command {
 	return cmd
 }
 
-// VersionCmd prints tendermint and ABCI version numbers.
+// VersionCmd prints ostracon and ABCI version numbers.
 func VersionCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
-		Short: "Print tendermint libraries' version",
+		Short: "Print ostracon libraries' version",
 		Long: `Print protocols' and libraries' version numbers
 against which this app has been compiled.
 `,
@@ -146,7 +146,7 @@ func printlnJSON(v interface{}) error {
 	return nil
 }
 
-// UnsafeResetAllCmd - extension of the tendermint command, resets initialization
+// UnsafeResetAllCmd - extension of the ostracon command, resets initialization
 func UnsafeResetAllCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "unsafe-reset-all",

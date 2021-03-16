@@ -62,7 +62,7 @@ func (logs ABCIMessageLogs) String() (str string) {
 	return str
 }
 
-// NewResponseResultTx returns a TxResponse given a ResultTx from tendermint
+// NewResponseResultTx returns a TxResponse given a ResultTx from ostracon
 func NewResponseResultTx(res *ctypes.ResultTx, anyTx *codectypes.Any, timestamp string) *TxResponse {
 	if res == nil {
 		return nil
@@ -87,7 +87,7 @@ func NewResponseResultTx(res *ctypes.ResultTx, anyTx *codectypes.Any, timestamp 
 }
 
 // NewResponseFormatBroadcastTxCommit returns a TxResponse given a
-// ResultBroadcastTxCommit from tendermint.
+// ResultBroadcastTxCommit from ostracon.
 func NewResponseFormatBroadcastTxCommit(res *ctypes.ResultBroadcastTxCommit) *TxResponse {
 	if res == nil {
 		return nil
@@ -152,7 +152,7 @@ func newTxResponseDeliverTx(res *ctypes.ResultBroadcastTxCommit) *TxResponse {
 	}
 }
 
-// NewResponseFormatBroadcastTx returns a TxResponse given a ResultBroadcastTx from tendermint
+// NewResponseFormatBroadcastTx returns a TxResponse given a ResultBroadcastTx from ostracon
 func NewResponseFormatBroadcastTx(res *ctypes.ResultBroadcastTx) *TxResponse {
 	if res == nil {
 		return nil

@@ -44,7 +44,7 @@ type (
 		// simulation, fetching txs by hash...).
 		RegisterTxService(clientCtx client.Context)
 
-		// RegisterTendermintService registers the gRPC Query service for tendermint queries.
+		// RegisterTendermintService registers the gRPC Query service for ostracon queries.
 		RegisterTendermintService(clientCtx client.Context)
 	}
 
