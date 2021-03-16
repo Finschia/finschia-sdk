@@ -8,7 +8,7 @@ import (
 	"time"
 
 	ics23 "github.com/confio/ics23/go"
-	"github.com/cosmos/iavl"
+	"github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
 	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	dbm "github.com/line/tm-db/v2"

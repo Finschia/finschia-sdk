@@ -3,7 +3,7 @@ package iavl
 import (
 	"fmt"
 
-	"github.com/cosmos/iavl"
+	"github.com/line/iavl/v2"
 )
 
 var (

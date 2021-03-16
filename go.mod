@@ -11,7 +11,6 @@ require (
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/confio/ics23/go v0.6.3
 	github.com/cosmos/go-bip39 v1.0.0
-	github.com/cosmos/iavl v0.15.3
 	github.com/cosmos/ledger-cosmos-go v0.11.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
@@ -26,6 +25,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hashicorp/golang-lru v0.5.4
+	github.com/line/iavl/v2 v2.0.0-init.1
 	github.com/line/ostracon v0.34.9-0.20210316071456-5fea666cc7ce
 	github.com/line/tm-db/v2 v2.0.0-init.1
 	github.com/magiconair/properties v1.8.4

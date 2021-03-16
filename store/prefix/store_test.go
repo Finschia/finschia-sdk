@@ -7,7 +7,7 @@ import (
 	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
 
-	tiavl "github.com/cosmos/iavl"
+	liavl "github.com/line/iavl/v2"
 
 	"github.com/line/lbm-sdk/v2/store/dbadapter"
 	"github.com/line/lbm-sdk/v2/store/gaskv"
@@ -88,7 +88,7 @@ func testPrefixStore(t *testing.T, baseStore types.KVStore, prefix []byte) {
 
 func TestIAVLStorePrefix(t *testing.T) {
 	db := dbm.NewMemDB()
-	tree, err := tiavl.NewMutableTree(db, cacheSize)
+	tree, err := liavl.NewMutableTree(db, cacheSize)
 	require.NoError(t, err)
 	iavlStore := iavl.UnsafeNewStore(tree)
 

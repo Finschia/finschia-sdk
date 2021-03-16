@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cosmos/iavl"
+	"github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
 	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
