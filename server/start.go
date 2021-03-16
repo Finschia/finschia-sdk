@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/line/ostracon/abci/server"
-	ostcmd "github.com/line/ostracon/cmd/tenderming/commands"
+	ostcmd "github.com/line/ostracon/cmd/tendermint/commands"
 	ostos "github.com/line/ostracon/libs/os"
 	"github.com/line/ostracon/node"
 	"github.com/line/ostracon/p2p"
