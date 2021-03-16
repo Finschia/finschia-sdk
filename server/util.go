@@ -16,12 +16,12 @@ import (
 
 	ostcfg "github.com/line/ostracon/config"
 	ostlog "github.com/line/ostracon/libs/log"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/server/config"

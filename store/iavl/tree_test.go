@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/cosmos/iavl"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 )
 
 func TestImmutableTreePanics(t *testing.T) {

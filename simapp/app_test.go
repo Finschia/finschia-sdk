@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/line/ostracon/libs/log"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	abci "github.com/line/ostracon/abci/types"
 )

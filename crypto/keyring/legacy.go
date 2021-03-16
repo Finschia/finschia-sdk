@@ -6,8 +6,8 @@ import (
 	"strings"
 
 	ostos "github.com/line/ostracon/libs/os"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/pkg/errors"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/crypto"
 	"github.com/line/lbm-sdk/v2/crypto/types"

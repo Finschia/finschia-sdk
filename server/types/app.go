@@ -8,8 +8,8 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	osttypes "github.com/line/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/spf13/cobra"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/server/api"

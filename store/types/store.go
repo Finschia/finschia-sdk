@@ -6,7 +6,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	oststrings "github.com/line/ostracon/libs/strings"
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/line/tm-db/v2"
 
 	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"
 	"github.com/line/lbm-sdk/v2/types/kv"

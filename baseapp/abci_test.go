@@ -6,8 +6,8 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	ostprototypes "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 )

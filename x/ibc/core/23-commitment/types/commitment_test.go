@@ -9,7 +9,7 @@ import (
 	"github.com/line/lbm-sdk/v2/store/rootmulti"
 	storetypes "github.com/line/lbm-sdk/v2/store/types"
 
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/line/tm-db/v2"
 )
 
 type MerkleTestSuite struct {

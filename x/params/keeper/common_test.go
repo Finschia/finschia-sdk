@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 

@@ -14,8 +14,8 @@ import (
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
 	abci "github.com/line/ostracon/abci/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/pkg/errors"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/snapshots"
 	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"

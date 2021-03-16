@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	ostrand "github.com/line/ostracon/libs/rand"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/dbadapter"

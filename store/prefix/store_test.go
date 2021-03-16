@@ -4,8 +4,8 @@ import (
 	"crypto/rand"
 	"testing"
 
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	tiavl "github.com/cosmos/iavl"
 

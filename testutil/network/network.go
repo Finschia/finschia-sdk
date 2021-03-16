@@ -20,8 +20,8 @@ import (
 	ostrand "github.com/line/ostracon/libs/rand"
 	"github.com/line/ostracon/node"
 	ostclient "github.com/line/ostracon/rpc/client"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 	"google.golang.org/grpc"
 
 	"github.com/line/lbm-sdk/v2/baseapp"

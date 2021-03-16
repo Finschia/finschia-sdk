@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/store/iavl"
 	"github.com/line/lbm-sdk/v2/store/types"

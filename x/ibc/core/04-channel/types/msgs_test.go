@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	abci "github.com/line/ostracon/abci/types"
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	"github.com/line/lbm-sdk/v2/store/iavl"

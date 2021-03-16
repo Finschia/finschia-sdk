@@ -329,6 +329,7 @@ github.com/libp2p/go-buffer-pool v0.0.2 h1:QNK2iAFa8gjAe1SPz6mHSMuCcjs+X1wlHzeOS
 github.com/libp2p/go-buffer-pool v0.0.2/go.mod h1:MvaB6xw5vOrDl8rYZGLFdKAuk/hRoRZd1Vi32+RXyFM=
 github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-bc2310a04743/go.mod h1:qklhhLq1aX+mtWk9cPHPzaBjWImj5ULL6C7HFJtXQMM=
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
+github.com/line/iavl/v2 v2.0.0-init.1 h1:Qn+57tRRRlCsyMsgZs9YcoLlPPBi6QMVMhEwjHubCVk=
 github.com/line/iavl/v2 v2.0.0-init.1/go.mod h1:isewgbbDSuyhB67oiOoX9ide3AOug2Y35gFqZaHI3L4=
 github.com/line/ostracon v0.34.9-0.20210315041958-2a1f43c788f5/go.mod h1:1THU+kF+6fxLaNYQKcdNyLCO6t9LnqSMaExDMiLozbM=
 github.com/line/ostracon v0.34.9-0.20210316071456-5fea666cc7ce h1:NLEQisrrFLOHCTfY6oFARnPWO2avqPmmas8lTfgMLCc=
