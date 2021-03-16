@@ -18,7 +18,7 @@ lint:
     - PACKAGE_VERSION_SUFFIX
     - RPC_REQUEST_STANDARD_NAME
   ignore:
-    - tendermint
+    - ostracon
     - gogoproto
     - cosmos_proto
     - google
@@ -27,7 +27,7 @@ breaking:
   use:
     - FILE
   ignore:
-    - tendermint
+    - ostracon
     - gogoproto
     - cosmos_proto
     - google

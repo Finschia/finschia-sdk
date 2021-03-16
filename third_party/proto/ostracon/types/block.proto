@@ -1,15 +1,15 @@
 syntax = "proto3";
-package tendermint.types;
+package ostracon.types;
 
 option go_package = "github.com/line/ostracon/proto/ostracon/types";
 
 import "gogoproto/gogo.proto";
-import "tendermint/types/types.proto";
-import "tendermint/types/evidence.proto";
+import "ostracon/types/types.proto";
+import "ostracon/types/evidence.proto";
 
 message Block {
-  Header                        header      = 1 [(gogoproto.nullable) = false];
-  Data                          data        = 2 [(gogoproto.nullable) = false];
-  tendermint.types.EvidenceList evidence    = 3 [(gogoproto.nullable) = false];
-  Commit                        last_commit = 4;
+  Header                      header      = 1 [(gogoproto.nullable) = false];
+  Data                        data        = 2 [(gogoproto.nullable) = false];
+  ostracon.types.EvidenceList evidence    = 3 [(gogoproto.nullable) = false];
+  Commit                      last_commit = 4;
 }

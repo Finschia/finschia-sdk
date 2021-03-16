@@ -1,5 +1,5 @@
 syntax = "proto3";
-package tendermint.version;
+package ostracon.version;
 
 option go_package = "github.com/line/ostracon/proto/ostracon/version";
 

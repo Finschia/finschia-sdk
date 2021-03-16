@@ -1,5 +1,5 @@
 syntax = "proto3";
-package tendermint.libs.bits;
+package ostracon.libs.bits;
 
 option go_package = "github.com/line/ostracon/proto/ostracon/libs/bits";
 
