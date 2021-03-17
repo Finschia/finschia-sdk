@@ -64,13 +64,13 @@ const (
 )
 
 // StartCmd runs the service passed in, either stand-alone or in-process with
-// Tendermint.
+// Ostracon.
 func StartCmd(appCreator types.AppCreator, defaultNodeHome string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
 		Short: "Run the full node",
-		Long: `Run the full node application with Tendermint in or out of process. By
-default, the application will run with Tendermint in process.
+		Long: `Run the full node application with Ostracon in or out of process. By
+default, the application will run with Ostracon in process.
 
 Pruning options can be provided via the '--pruning' flag or alternatively with '--pruning-keep-recent',
 'pruning-keep-every', and 'pruning-interval' together.
@@ -108,13 +108,13 @@ which accepts a path for the resulting pprof file.
 				return err
 			}
 
-			withTM, _ := cmd.Flags().GetBool(flagWithTendermint)
-			if !withTM {
-				serverCtx.Logger.Info("starting ABCI without Tendermint")
+			withOST, _ := cmd.Flags().GetBool(flagWithOstracon)
+			if !withOST {
+				serverCtx.Logger.Info("starting ABCI without Ostracon")
 				return startStandAlone(serverCtx, appCreator)
 			}
 
-			serverCtx.Logger.Info("starting ABCI with Tendermint")
+			serverCtx.Logger.Info("starting ABCI with Ostracon")
 
 			// amino is needed here for backwards compatibility of REST routes
 			err = startInProcess(serverCtx, clientCtx, appCreator)
@@ -145,7 +145,7 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint64(FlagPruningKeepEvery, 0, "Offset heights to keep on disk after 'keep-every' (ignored if pruning is not 'custom')")
 	cmd.Flags().Uint64(FlagPruningInterval, 0, "Height interval at which pruned heights are removed from disk (ignored if pruning is not 'custom')")
 	cmd.Flags().Uint(FlagInvCheckPeriod, 0, "Assert registered invariants every N blocks")
-	cmd.Flags().Uint64(FlagMinRetainBlocks, 0, "Minimum block height offset during ABCI commit to prune Tendermint blocks")
+	cmd.Flags().Uint64(FlagMinRetainBlocks, 0, "Minimum block height offset during ABCI commit to prune Ostracon blocks")
 
 	cmd.Flags().Bool(flagGRPCEnable, true, "Define if the gRPC server should be enabled")
 	cmd.Flags().String(flagGRPCAddress, config.DefaultGRPCAddress, "the gRPC server address to listen on")
@@ -153,7 +153,7 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint64(FlagStateSyncSnapshotInterval, 0, "State sync snapshot interval")
 	cmd.Flags().Uint32(FlagStateSyncSnapshotKeepRecent, 2, "State sync snapshot to keep")
 
-	// add support for all Tendermint-specific command line options
+	// add support for all Ostracon-specific command line options
 	ostcmd.AddNodeFlags(cmd)
 	return cmd
 }
