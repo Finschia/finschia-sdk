@@ -4,9 +4,9 @@ import (
 	"errors"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
@@ -27,14 +27,14 @@ var (
 )
 
 func checkValidator(t *testing.T, app *simapp.SimApp, _ sdk.AccAddress, expFound bool) stakingtypes.Validator {
-	ctxCheck := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctxCheck := app.BaseApp.NewContext(true, ostproto.Header{})
 	validator, found := app.StakingKeeper.GetValidator(ctxCheck, sdk.ValAddress(addr1))
 	require.Equal(t, expFound, found)
 	return validator
 }
 
 func checkValidatorSigningInfo(t *testing.T, app *simapp.SimApp, addr sdk.ConsAddress, expFound bool) types.ValidatorSigningInfo {
-	ctxCheck := app.BaseApp.NewContext(true, tmproto.Header{})
+	ctxCheck := app.BaseApp.NewContext(true, ostproto.Header{})
 	signingInfo, found := app.SlashingKeeper.GetValidatorSigningInfo(ctxCheck, addr)
 	require.Equal(t, expFound, found)
 	return signingInfo
@@ -68,13 +68,13 @@ func TestSlashingMsgs(t *testing.T) {
 	)
 	require.NoError(t, err)
 
-	header := tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header := ostproto.Header{Height: app.LastBlockHeight() + 1}
 	txGen := simapp.MakeTestEncodingConfig().TxConfig
 	_, _, err = simapp.SignCheckDeliver(t, txGen, app.BaseApp, header, []sdk.Msg{createValidatorMsg}, "", []uint64{0}, []uint64{0}, true, true, priv1)
 	require.NoError(t, err)
 	simapp.CheckBalance(t, app, addr1, sdk.Coins{genCoin.Sub(bondCoin)})
 
-	header = tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header = ostproto.Header{Height: app.LastBlockHeight() + 1}
 	app.BeginBlock(abci.RequestBeginBlock{Header: header})
 
 	validator := checkValidator(t, app, addr1, true)
@@ -86,7 +86,7 @@ func TestSlashingMsgs(t *testing.T) {
 	checkValidatorSigningInfo(t, app, sdk.ConsAddress(valAddr), true)
 
 	// unjail should fail with unknown validator
-	header = tmproto.Header{Height: app.LastBlockHeight() + 1}
+	header = ostproto.Header{Height: app.LastBlockHeight() + 1}
 	_, res, err := simapp.SignCheckDeliver(t, txGen, app.BaseApp, header, []sdk.Msg{unjailMsg}, "", []uint64{0}, []uint64{1}, false, false, priv1)
 	require.Error(t, err)
 	require.Nil(t, res)

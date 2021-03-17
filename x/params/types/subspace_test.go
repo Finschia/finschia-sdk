@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/line/ostracon/libs/log"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/suite"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -39,7 +39,7 @@ func (suite *SubspaceTestSuite) SetupTest() {
 
 	suite.cdc = encCfg.Marshaler
 	suite.amino = encCfg.Amino
-	suite.ctx = sdk.NewContext(ms, tmproto.Header{}, false, log.NewNopLogger())
+	suite.ctx = sdk.NewContext(ms, ostproto.Header{}, false, log.NewNopLogger())
 	suite.ss = ss.WithKeyTable(paramKeyTable())
 }
 

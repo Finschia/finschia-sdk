@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"

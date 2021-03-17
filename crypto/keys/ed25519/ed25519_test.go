@@ -5,10 +5,10 @@ import (
 	"encoding/base64"
 	"testing"
 
+	"github.com/line/ostracon/crypto"
+	osted25519 "github.com/line/ostracon/crypto/ed25519"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/crypto"
-	tmed25519 "github.com/tendermint/tendermint/crypto/ed25519"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	ed25519 "github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
@@ -179,7 +179,7 @@ func TestMarshalAmino(t *testing.T) {
 func TestMarshalAmino_BackwardsCompatibility(t *testing.T) {
 	aminoCdc := codec.NewLegacyAmino()
 	// Create Tendermint keys.
-	tmPrivKey := tmed25519.GenPrivKey()
+	tmPrivKey := osted25519.GenPrivKey()
 	tmPubKey := tmPrivKey.PubKey()
 	// Create our own keys, with the same private key as Tendermint's.
 	privKey := &ed25519.PrivKey{Key: []byte(tmPrivKey)}

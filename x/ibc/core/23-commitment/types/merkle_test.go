@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
 )

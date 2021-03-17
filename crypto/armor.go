@@ -4,10 +4,10 @@ import (
 	"encoding/hex"
 	"fmt"
 
+	"github.com/line/ostracon/crypto"
+	"github.com/line/ostracon/crypto/armor"
+	"github.com/line/ostracon/crypto/xsalsa20symmetric"
 	"github.com/tendermint/crypto/bcrypt"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/armor"
-	"github.com/tendermint/tendermint/crypto/xsalsa20symmetric"
 
 	"github.com/line/lbm-sdk/v2/codec/legacy"
 	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"

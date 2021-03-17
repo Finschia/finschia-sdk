@@ -8,8 +8,8 @@ import (
 	"sort"
 
 	bip39 "github.com/cosmos/go-bip39"
+	"github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
@@ -247,7 +247,7 @@ func RunAddCmd(cmd *cobra.Command, args []string, kb keyring.Keyring, inBuf *buf
 	}
 
 	if len(mnemonic) == 0 {
-		// read entropy seed straight from tmcrypto.Rand and convert to mnemonic
+		// read entropy seed straight from ostcrypto.Rand and convert to mnemonic
 		entropySeed, err := bip39.NewEntropy(mnemonicEntropySize)
 		if err != nil {
 			return err

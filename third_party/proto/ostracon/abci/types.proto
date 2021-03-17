@@ -1,18 +1,18 @@
 syntax = "proto3";
-package tendermint.abci;
+package ostracon.abci;
 
-option go_package = "github.com/tendermint/tendermint/abci/types";
+option go_package = "github.com/line/ostracon/abci/types";
 
 // For more information on gogo.proto, see:
 // https://github.com/gogo/protobuf/blob/master/extensions.md
-import "tendermint/crypto/proof.proto";
-import "tendermint/types/types.proto";
-import "tendermint/crypto/keys.proto";
-import "tendermint/types/params.proto";
+import "ostracon/crypto/proof.proto";
+import "ostracon/types/types.proto";
+import "ostracon/crypto/keys.proto";
+import "ostracon/types/params.proto";
 import "google/protobuf/timestamp.proto";
 import "gogoproto/gogo.proto";
 
-// This file is copied from http://github.com/tendermint/abci
+// This file is copied from http://github.com/ostracon/abci
 // NOTE: When using custom types, mind the warnings.
 // https://github.com/gogo/protobuf/blob/master/custom_types.md#warnings-and-issues
 
@@ -75,10 +75,10 @@ message RequestQuery {
 }
 
 message RequestBeginBlock {
-  bytes                   hash                 = 1;
-  tendermint.types.Header header               = 2 [(gogoproto.nullable) = false];
-  LastCommitInfo          last_commit_info     = 3 [(gogoproto.nullable) = false];
-  repeated Evidence       byzantine_validators = 4 [(gogoproto.nullable) = false];
+  bytes                 hash                 = 1;
+  ostracon.types.Header header               = 2 [(gogoproto.nullable) = false];
+  LastCommitInfo        last_commit_info     = 3 [(gogoproto.nullable) = false];
+  repeated Evidence     byzantine_validators = 4 [(gogoproto.nullable) = false];
 }
 
 enum CheckTxType {
@@ -187,14 +187,14 @@ message ResponseInitChain {
 message ResponseQuery {
   uint32 code = 1;
   // bytes data = 2; // use "value" instead.
-  string                     log       = 3;  // nondeterministic
-  string                     info      = 4;  // nondeterministic
-  int64                      index     = 5;
-  bytes                      key       = 6;
-  bytes                      value     = 7;
-  tendermint.crypto.ProofOps proof_ops = 8;
-  int64                      height    = 9;
-  string                     codespace = 10;
+  string                   log       = 3;  // nondeterministic
+  string                   info      = 4;  // nondeterministic
+  int64                    index     = 5;
+  bytes                    key       = 6;
+  bytes                    value     = 7;
+  ostracon.crypto.ProofOps proof_ops = 8;
+  int64                    height    = 9;
+  string                   codespace = 10;
 }
 
 message ResponseBeginBlock {
@@ -282,10 +282,10 @@ message ResponseApplySnapshotChunk {
 // ConsensusParams contains all consensus-relevant parameters
 // that can be adjusted by the abci app
 message ConsensusParams {
-  BlockParams                      block     = 1;
-  tendermint.types.EvidenceParams  evidence  = 2;
-  tendermint.types.ValidatorParams validator = 3;
-  tendermint.types.VersionParams   version   = 4;
+  BlockParams                    block     = 1;
+  ostracon.types.EvidenceParams  evidence  = 2;
+  ostracon.types.ValidatorParams validator = 3;
+  ostracon.types.VersionParams   version   = 4;
 }
 
 // BlockParams contains limits on the block size.
@@ -341,8 +341,8 @@ message Validator {
 
 // ValidatorUpdate
 message ValidatorUpdate {
-  tendermint.crypto.PublicKey pub_key = 1 [(gogoproto.nullable) = false];
-  int64                       power   = 2;
+  ostracon.crypto.PublicKey pub_key = 1 [(gogoproto.nullable) = false];
+  int64                     power   = 2;
 }
 
 // VoteInfo

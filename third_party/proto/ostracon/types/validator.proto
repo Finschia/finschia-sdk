@@ -1,10 +1,10 @@
 syntax = "proto3";
-package tendermint.types;
+package ostracon.types;
 
-option go_package = "github.com/tendermint/tendermint/proto/tendermint/types";
+option go_package = "github.com/line/ostracon/proto/ostracon/types";
 
 import "gogoproto/gogo.proto";
-import "tendermint/crypto/keys.proto";
+import "ostracon/crypto/keys.proto";
 
 message ValidatorSet {
   repeated Validator validators         = 1;
@@ -14,12 +14,12 @@ message ValidatorSet {
 
 message Validator {
   bytes                       address           = 1;
-  tendermint.crypto.PublicKey pub_key           = 2 [(gogoproto.nullable) = false];
+  ostracon.crypto.PublicKey   pub_key           = 2 [(gogoproto.nullable) = false];
   int64                       voting_power      = 3;
   int64                       proposer_priority = 4;
 }
 
 message SimpleValidator {
-  tendermint.crypto.PublicKey pub_key      = 1;
+  ostracon.crypto.PublicKey   pub_key      = 1;
   int64                       voting_power = 2;
 }

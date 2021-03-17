@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
-	"github.com/tendermint/tendermint/libs/log"
+	ostbytes "github.com/line/ostracon/libs/bytes"
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"
@@ -106,7 +106,7 @@ func (k Keeper) SetPort(ctx sdk.Context, portID string) {
 }
 
 // GetDenomTrace retreives the full identifiers trace and base denomination from the store.
-func (k Keeper) GetDenomTrace(ctx sdk.Context, denomTraceHash tmbytes.HexBytes) (types.DenomTrace, bool) {
+func (k Keeper) GetDenomTrace(ctx sdk.Context, denomTraceHash ostbytes.HexBytes) (types.DenomTrace, bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DenomTraceKey)
 	bz := store.Get(denomTraceHash)
 	if bz == nil {
@@ -118,7 +118,7 @@ func (k Keeper) GetDenomTrace(ctx sdk.Context, denomTraceHash tmbytes.HexBytes) 
 }
 
 // HasDenomTrace checks if a the key with the given denomination trace hash exists on the store.
-func (k Keeper) HasDenomTrace(ctx sdk.Context, denomTraceHash tmbytes.HexBytes) bool {
+func (k Keeper) HasDenomTrace(ctx sdk.Context, denomTraceHash ostbytes.HexBytes) bool {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DenomTraceKey)
 	return store.Has(denomTraceHash)
 }

@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
+	osttime "github.com/line/ostracon/types/time"
 	"github.com/stretchr/testify/require"
-	tmtime "github.com/tendermint/tendermint/types/time"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/v2/testutil/testdata"
@@ -20,7 +20,7 @@ var (
 )
 
 func TestGetVestedCoinsContVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -46,7 +46,7 @@ func TestGetVestedCoinsContVestingAcc(t *testing.T) {
 }
 
 func TestGetVestingCoinsContVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -68,7 +68,7 @@ func TestGetVestingCoinsContVestingAcc(t *testing.T) {
 }
 
 func TestSpendableCoinsContVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -96,7 +96,7 @@ func TestSpendableCoinsContVestingAcc(t *testing.T) {
 }
 
 func TestTrackDelegationContVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -135,7 +135,7 @@ func TestTrackDelegationContVestingAcc(t *testing.T) {
 }
 
 func TestTrackUndelegationContVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -183,7 +183,7 @@ func TestTrackUndelegationContVestingAcc(t *testing.T) {
 }
 
 func TestGetVestedCoinsDelVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -201,7 +201,7 @@ func TestGetVestedCoinsDelVestingAcc(t *testing.T) {
 }
 
 func TestGetVestingCoinsDelVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -219,7 +219,7 @@ func TestGetVestingCoinsDelVestingAcc(t *testing.T) {
 }
 
 func TestSpendableCoinsDelVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -256,7 +256,7 @@ func TestSpendableCoinsDelVestingAcc(t *testing.T) {
 }
 
 func TestTrackDelegationDelVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -293,7 +293,7 @@ func TestTrackDelegationDelVestingAcc(t *testing.T) {
 }
 
 func TestTrackUndelegationDelVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 
 	_, _, addr := testdata.KeyTestPubAddr()
@@ -341,7 +341,7 @@ func TestTrackUndelegationDelVestingAcc(t *testing.T) {
 }
 
 func TestGetVestedCoinsPeriodicVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 	periods := types.Periods{
 		types.Period{Length: int64(12 * 60 * 60), Amount: sdk.Coins{sdk.NewInt64Coin(feeDenom, 500), sdk.NewInt64Coin(stakeDenom, 50)}},
@@ -386,7 +386,7 @@ func TestGetVestedCoinsPeriodicVestingAcc(t *testing.T) {
 }
 
 func TestGetVestingCoinsPeriodicVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 	periods := types.Periods{
 		types.Period{Length: int64(12 * 60 * 60), Amount: sdk.Coins{sdk.NewInt64Coin(feeDenom, 500), sdk.NewInt64Coin(stakeDenom, 50)}},
@@ -426,7 +426,7 @@ func TestGetVestingCoinsPeriodicVestingAcc(t *testing.T) {
 }
 
 func TestSpendableCoinsPeriodicVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 	periods := types.Periods{
 		types.Period{Length: int64(12 * 60 * 60), Amount: sdk.Coins{sdk.NewInt64Coin(feeDenom, 500), sdk.NewInt64Coin(stakeDenom, 50)}},
@@ -461,7 +461,7 @@ func TestSpendableCoinsPeriodicVestingAcc(t *testing.T) {
 }
 
 func TestTrackDelegationPeriodicVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 	periods := types.Periods{
 		types.Period{Length: int64(12 * 60 * 60), Amount: sdk.Coins{sdk.NewInt64Coin(feeDenom, 500), sdk.NewInt64Coin(stakeDenom, 50)}},
@@ -519,7 +519,7 @@ func TestTrackDelegationPeriodicVestingAcc(t *testing.T) {
 }
 
 func TestTrackUndelegationPeriodicVestingAcc(t *testing.T) {
-	now := tmtime.Now()
+	now := osttime.Now()
 	endTime := now.Add(24 * time.Hour)
 	periods := types.Periods{
 		types.Period{Length: int64(12 * 60 * 60), Amount: sdk.Coins{sdk.NewInt64Coin(feeDenom, 500), sdk.NewInt64Coin(stakeDenom, 50)}},

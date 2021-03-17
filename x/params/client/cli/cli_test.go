@@ -7,8 +7,8 @@ import (
 	"strings"
 	"testing"
 
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
 	"github.com/line/lbm-sdk/v2/testutil/network"
@@ -52,7 +52,7 @@ func (s *IntegrationTestSuite) TestNewQuerySubspaceParamsCmd() {
 			"json output",
 			[]string{
 				"staking", "MaxValidators",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			`{"subspace":"staking","key":"MaxValidators","value":"100"}`,
 		},
@@ -60,7 +60,7 @@ func (s *IntegrationTestSuite) TestNewQuerySubspaceParamsCmd() {
 			"text output",
 			[]string{
 				"staking", "MaxValidators",
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 			},
 			`key: MaxValidators
 subspace: staking

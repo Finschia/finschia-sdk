@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	cryptoenc "github.com/tendermint/tendermint/crypto/encoding"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	abci "github.com/line/ostracon/abci/types"
+	cryptoenc "github.com/line/ostracon/crypto/encoding"
+	ostbytes "github.com/line/ostracon/libs/bytes"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 )
 
 type mockValidator struct {
@@ -62,7 +62,7 @@ func (vals mockValidators) getKeys() []string {
 //_________________________________________________________________________________
 
 // randomProposer picks a random proposer from the current validator set
-func (vals mockValidators) randomProposer(r *rand.Rand) tmbytes.HexBytes {
+func (vals mockValidators) randomProposer(r *rand.Rand) ostbytes.HexBytes {
 	keys := vals.getKeys()
 	if len(keys) == 0 {
 		return nil
@@ -121,7 +121,7 @@ func updateValidators(
 func RandomRequestBeginBlock(r *rand.Rand, params Params,
 	validators mockValidators, pastTimes []time.Time,
 	pastVoteInfos [][]abci.VoteInfo,
-	event func(route, op, evResult string), header tmproto.Header) abci.RequestBeginBlock {
+	event func(route, op, evResult string), header ostproto.Header) abci.RequestBeginBlock {
 	if len(validators) == 0 {
 		return abci.RequestBeginBlock{
 			Header: header,

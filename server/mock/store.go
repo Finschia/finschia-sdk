@@ -3,7 +3,7 @@ package mock
 import (
 	"io"
 
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/line/tm-db/v2"
 
 	store "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"

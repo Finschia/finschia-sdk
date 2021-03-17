@@ -9,8 +9,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
-	abci "github.com/tendermint/tendermint/abci/types"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/codec"

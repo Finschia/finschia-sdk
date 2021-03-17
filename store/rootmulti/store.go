@@ -10,12 +10,12 @@ import (
 	"sort"
 	"strings"
 
-	iavltree "github.com/cosmos/iavl"
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
+	iavltree "github.com/line/iavl/v2"
+	abci "github.com/line/ostracon/abci/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/pkg/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/snapshots"
 	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"

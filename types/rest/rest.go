@@ -13,7 +13,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/tendermint/tendermint/types"
+	"github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/codec"

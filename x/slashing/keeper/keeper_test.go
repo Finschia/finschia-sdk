@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -17,7 +17,7 @@ import (
 
 func TestUnJailNotBonded(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 
 	p := app.StakingKeeper.GetParams(ctx)
 	p.MaxValidators = 5
@@ -81,7 +81,7 @@ func TestUnJailNotBonded(t *testing.T) {
 // and that they are not immediately jailed
 func TestHandleNewValidator(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 
 	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrDels)
@@ -125,7 +125,7 @@ func TestHandleNewValidator(t *testing.T) {
 func TestHandleAlreadyJailed(t *testing.T) {
 	// initial setup
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 
 	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 1, sdk.TokensFromConsensusPower(200))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrDels)
@@ -179,7 +179,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	// initial setup
 	// TestParams set the SignedBlocksWindow to 1000 and MaxMissedBlocksPerWindow to 500
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 	app.SlashingKeeper.SetParams(ctx, testslashing.TestParams())
 
 	params := app.StakingKeeper.GetParams(ctx)

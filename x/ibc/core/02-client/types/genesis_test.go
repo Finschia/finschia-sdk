@@ -3,7 +3,7 @@ package types_test
 import (
 	"time"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	osttypes "github.com/line/ostracon/types"
 
 	client "github.com/line/lbm-sdk/v2/x/ibc/core/02-client"
 	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
@@ -51,11 +51,11 @@ func (suite *TypesTestSuite) TestValidateGenesis() {
 
 	now := time.Now().UTC()
 
-	val := tmtypes.NewValidator(pubKey, 10)
-	valSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{val})
+	val := osttypes.NewValidator(pubKey, 10)
+	valSet := osttypes.NewValidatorSet([]*osttypes.Validator{val})
 
 	heightMinus1 := types.NewHeight(0, height-1)
-	header := suite.chainA.CreateTMClientHeader(chainID, int64(clientHeight.RevisionHeight), heightMinus1, now, valSet, valSet, []tmtypes.PrivValidator{privVal})
+	header := suite.chainA.CreateTMClientHeader(chainID, int64(clientHeight.RevisionHeight), heightMinus1, now, valSet, valSet, []osttypes.PrivValidator{privVal})
 
 	testCases := []struct {
 		name     string

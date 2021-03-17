@@ -11,7 +11,7 @@ import (
 	v034gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v034"
 	v034staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v034"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/line/ostracon/crypto"
 )
 
 const (

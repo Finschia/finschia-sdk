@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/client/grpc/reflection"
@@ -21,7 +21,7 @@ type IntegrationTestSuite struct {
 func (s *IntegrationTestSuite) SetupSuite() {
 	app := simapp.Setup(false)
 
-	sdkCtx := app.BaseApp.NewContext(false, tmproto.Header{})
+	sdkCtx := app.BaseApp.NewContext(false, ostproto.Header{})
 	queryHelper := baseapp.NewQueryServerTestHelper(sdkCtx, app.InterfaceRegistry())
 	queryClient := reflection.NewReflectionServiceClient(queryHelper)
 	s.queryClient = queryClient

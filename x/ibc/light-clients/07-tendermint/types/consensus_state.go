@@ -3,8 +3,8 @@ package types
 import (
 	"time"
 
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
-	tmtypes "github.com/tendermint/tendermint/types"
+	ostbytes "github.com/line/ostracon/libs/bytes"
+	osttypes "github.com/line/ostracon/types"
 
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
@@ -14,7 +14,7 @@ import (
 
 // NewConsensusState creates a new ConsensusState instance.
 func NewConsensusState(
-	timestamp time.Time, root commitmenttypes.MerkleRoot, nextValsHash tmbytes.HexBytes,
+	timestamp time.Time, root commitmenttypes.MerkleRoot, nextValsHash ostbytes.HexBytes,
 ) *ConsensusState {
 	return &ConsensusState{
 		Timestamp:          timestamp,
@@ -45,7 +45,7 @@ func (cs ConsensusState) ValidateBasic() error {
 	if cs.Root.Empty() {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidConsensus, "root cannot be empty")
 	}
-	if err := tmtypes.ValidateHash(cs.NextValidatorsHash); err != nil {
+	if err := osttypes.ValidateHash(cs.NextValidatorsHash); err != nil {
 		return sdkerrors.Wrap(err, "next validators hash is invalid")
 	}
 	if cs.Timestamp.Unix() <= 0 {

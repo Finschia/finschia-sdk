@@ -10,7 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	osttypes "github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
@@ -25,8 +25,8 @@ import (
 //ValidatorCommand returns the validator set for a given height
 func ValidatorCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "tendermint-validator-set [height]",
-		Short: "Get the full tendermint validator set at given height",
+		Use:   "ostracon-validator-set [height]",
+		Short: "Get the full ostracon validator set at given height",
 		Args:  cobra.MaximumNArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -102,7 +102,7 @@ func (rvo ResultValidatorsOutput) String() string {
 	return b.String()
 }
 
-func validatorOutput(validator *tmtypes.Validator) (ValidatorOutput, error) {
+func validatorOutput(validator *osttypes.Validator) (ValidatorOutput, error) {
 	pk, err := cryptocodec.FromTmPubKeyInterface(validator.PubKey)
 	if err != nil {
 		return ValidatorOutput{}, err

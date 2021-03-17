@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"strings"
 
-	tmcrypto "github.com/tendermint/tendermint/crypto"
+	ostcrypto "github.com/line/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/codec/legacy"
@@ -382,7 +382,7 @@ func (ma ModuleAccount) Validate() error {
 		return errors.New("module account name cannot be blank")
 	}
 
-	if x := sdk.AccAddress(tmcrypto.AddressHash([]byte(ma.Name))); !ma.Address.Equals(x) {
+	if x := sdk.AccAddress(ostcrypto.AddressHash([]byte(ma.Name))); !ma.Address.Equals(x) {
 		return fmt.Errorf("address %s cannot be derived from the module name '%s'; expected: %s", ma.Address, ma.Name, x)
 	}
 

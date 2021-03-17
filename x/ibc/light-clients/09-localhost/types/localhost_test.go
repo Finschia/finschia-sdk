@@ -3,8 +3,8 @@ package types_test
 import (
 	"testing"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -34,7 +34,7 @@ func (suite *LocalhostTestSuite) SetupTest() {
 	app := simapp.Setup(isCheckTx)
 
 	suite.cdc = app.AppCodec()
-	suite.ctx = app.BaseApp.NewContext(isCheckTx, tmproto.Header{Height: 1, ChainID: "ibc-chain"})
+	suite.ctx = app.BaseApp.NewContext(isCheckTx, ostproto.Header{Height: 1, ChainID: "ibc-chain"})
 	suite.store = app.IBCKeeper.ClientKeeper.ClientStore(suite.ctx, exported.Localhost)
 }
 

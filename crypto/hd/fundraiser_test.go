@@ -11,7 +11,7 @@ import (
 
 	bip39 "github.com/cosmos/go-bip39"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/line/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/v2/crypto/hd"
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"

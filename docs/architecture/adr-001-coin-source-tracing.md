@@ -137,7 +137,7 @@ The `IBCDenom` function constructs the `Coin` denomination used when creating th
 // Hash returns the hex bytes of the SHA256 hash of the DenomTrace fields using the following formula:
 //
 // hash = sha256(tracePath + "/" + baseDenom)
-func (dt DenomTrace) Hash() tmbytes.HexBytes {
+func (dt DenomTrace) Hash() ostbytes.HexBytes {
   return tmhash.Sum(dt.Path + "/" + dt.BaseDenom)
 }
 

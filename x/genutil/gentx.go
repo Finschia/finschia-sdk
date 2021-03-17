@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/codec"

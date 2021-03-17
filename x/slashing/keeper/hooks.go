@@ -3,7 +3,7 @@ package keeper
 import (
 	"time"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/line/ostracon/crypto"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/x/slashing/types"

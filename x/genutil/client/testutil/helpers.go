@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
+	ostcfg "github.com/line/ostracon/config"
+	"github.com/line/ostracon/libs/cli"
+	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"
-	tmcfg "github.com/tendermint/tendermint/config"
-	"github.com/tendermint/tendermint/libs/cli"
-	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/codec"
@@ -40,10 +40,10 @@ func ExecInitCmd(testMbm module.BasicManager, home string, cdc codec.JSONMarshal
 	return cmd.ExecuteContext(ctx)
 }
 
-func CreateDefaultTendermintConfig(rootDir string) (*tmcfg.Config, error) {
-	conf := tmcfg.DefaultConfig()
+func CreateDefaultTendermintConfig(rootDir string) (*ostcfg.Config, error) {
+	conf := ostcfg.DefaultConfig()
 	conf.SetRoot(rootDir)
-	tmcfg.EnsureRoot(rootDir)
+	ostcfg.EnsureRoot(rootDir)
 
 	if err := conf.ValidateBasic(); err != nil {
 		return nil, fmt.Errorf("error in config file: %v", err)

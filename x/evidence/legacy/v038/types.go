@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tendermint/tendermint/crypto/tmhash"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
+	"github.com/line/ostracon/crypto/tmhash"
+	ostbytes "github.com/line/ostracon/libs/bytes"
 	"gopkg.in/yaml.v2"
 
 	"github.com/line/lbm-sdk/v2/codec"
@@ -43,7 +43,7 @@ type Evidence interface {
 	Route() string
 	Type() string
 	String() string
-	Hash() tmbytes.HexBytes
+	Hash() ostbytes.HexBytes
 	ValidateBasic() error
 
 	// Height at which the infraction occurred
@@ -85,7 +85,7 @@ func (e Equivocation) String() string {
 }
 
 // Hash returns the hash of an Equivocation object.
-func (e Equivocation) Hash() tmbytes.HexBytes {
+func (e Equivocation) Hash() ostbytes.HexBytes {
 	return tmhash.Sum(ModuleCdc.LegacyAmino.MustMarshalBinaryBare(e))
 }
 

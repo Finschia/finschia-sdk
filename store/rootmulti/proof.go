@@ -1,7 +1,7 @@
 package rootmulti
 
 import (
-	"github.com/tendermint/tendermint/crypto/merkle"
+	"github.com/line/ostracon/crypto/merkle"
 
 	storetypes "github.com/line/lbm-sdk/v2/store/types"
 )

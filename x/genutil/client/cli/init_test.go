@@ -9,11 +9,11 @@ import (
 	"testing"
 	"time"
 
+	abci_server "github.com/line/ostracon/abci/server"
+	"github.com/line/ostracon/libs/cli"
+	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
-	abci_server "github.com/tendermint/tendermint/abci/server"
-	"github.com/tendermint/tendermint/libs/cli"
-	"github.com/tendermint/tendermint/libs/log"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/codec"

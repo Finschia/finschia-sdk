@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/line/ostracon/libs/log"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	"github.com/line/lbm-sdk/v2/testutil/testdata"
@@ -28,7 +28,7 @@ var (
 func createTestApp() (*simapp.SimApp, sdk.Context, []sdk.AccAddress) {
 	db := dbm.NewMemDB()
 	app := simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, 1, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{})
-	ctx := app.NewContext(true, tmproto.Header{})
+	ctx := app.NewContext(true, ostproto.Header{})
 
 	constantFee := sdk.NewInt64Coin(sdk.DefaultBondDenom, 10)
 	app.CrisisKeeper.SetConstantFee(ctx, constantFee)

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
@@ -92,7 +92,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	app.EvidenceKeeper = *evidenceKeeper
 
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ostproto.Header{Height: 1})
 	suite.querier = keeper.NewQuerier(*evidenceKeeper, app.LegacyAmino())
 	suite.app = app
 

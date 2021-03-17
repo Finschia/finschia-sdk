@@ -7,11 +7,11 @@ import (
 	"strings"
 
 	"github.com/gogo/protobuf/proto"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto/tmhash"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/crypto/tmhash"
+	"github.com/line/ostracon/libs/log"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/codec/types"
 	"github.com/line/lbm-sdk/v2/snapshots"
@@ -285,7 +285,7 @@ func (app *BaseApp) init() error {
 	}
 
 	// needed for the export command which inits from store but never calls initchain
-	app.setCheckState(tmproto.Header{})
+	app.setCheckState(ostproto.Header{})
 	app.Seal()
 
 	// make sure the snapshot interval is a multiple of the pruning KeepEvery interval
@@ -361,7 +361,7 @@ func (app *BaseApp) IsSealed() bool { return app.sealed }
 // (i.e. a CacheMultiStore) and a new Context with the same multi-store branch,
 // provided header, and minimum gas prices set. It is set on InitChain and reset
 // on Commit.
-func (app *BaseApp) setCheckState(header tmproto.Header) {
+func (app *BaseApp) setCheckState(header ostproto.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.checkState = &state{
 		ms:  ms,
@@ -373,7 +373,7 @@ func (app *BaseApp) setCheckState(header tmproto.Header) {
 // (i.e. a CacheMultiStore) and a new Context with the same multi-store branch,
 // and provided header. It is set on InitChain and BeginBlock and set to nil on
 // Commit.
-func (app *BaseApp) setDeliverState(header tmproto.Header) {
+func (app *BaseApp) setDeliverState(header ostproto.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.deliverState = &state{
 		ms:  ms,
@@ -398,14 +398,14 @@ func (app *BaseApp) GetConsensusParams(ctx sdk.Context) *abci.ConsensusParams {
 	}
 
 	if app.paramStore.Has(ctx, ParamStoreKeyEvidenceParams) {
-		var ep tmproto.EvidenceParams
+		var ep ostproto.EvidenceParams
 
 		app.paramStore.Get(ctx, ParamStoreKeyEvidenceParams, &ep)
 		cp.Evidence = &ep
 	}
 
 	if app.paramStore.Has(ctx, ParamStoreKeyValidatorParams) {
-		var vp tmproto.ValidatorParams
+		var vp ostproto.ValidatorParams
 
 		app.paramStore.Get(ctx, ParamStoreKeyValidatorParams, &vp)
 		cp.Validator = &vp

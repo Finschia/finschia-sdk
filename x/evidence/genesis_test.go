@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/line/ostracon/types/time"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	"github.com/tendermint/tendermint/types/time"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -28,7 +28,7 @@ func (suite *GenesisTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
 
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ostproto.Header{Height: 1})
 	suite.keeper = app.EvidenceKeeper
 }
 

@@ -8,7 +8,7 @@ import (
 	"github.com/line/lbm-sdk/v2/x/evidence/exported"
 	"github.com/line/lbm-sdk/v2/x/evidence/types"
 
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
+	ostbytes "github.com/line/ostracon/libs/bytes"
 )
 
 func (suite *KeeperTestSuite) TestQueryEvidence() {
@@ -34,7 +34,7 @@ func (suite *KeeperTestSuite) TestQueryEvidence() {
 		{
 			"invalid request with empty evidence hash",
 			func() {
-				req = &types.QueryEvidenceRequest{EvidenceHash: tmbytes.HexBytes{}}
+				req = &types.QueryEvidenceRequest{EvidenceHash: ostbytes.HexBytes{}}
 			},
 			false,
 			func(res *types.QueryEvidenceResponse) {},

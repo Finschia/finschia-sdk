@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"

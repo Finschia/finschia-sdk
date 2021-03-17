@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/cosmos/iavl"
+	"github.com/line/iavl/v2"
+	abci "github.com/line/ostracon/abci/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/lbm-sdk/v2/types/kv"

@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
+	ostbytes "github.com/line/ostracon/libs/bytes"
 	"github.com/stretchr/testify/require"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
@@ -178,8 +178,8 @@ func (*TestEvidence) String() string {
 func (*TestEvidence) ProtoMessage() {}
 func (*TestEvidence) Reset()        {}
 
-func (*TestEvidence) Hash() tmbytes.HexBytes {
-	return tmbytes.HexBytes([]byte("test-hash"))
+func (*TestEvidence) Hash() ostbytes.HexBytes {
+	return ostbytes.HexBytes([]byte("test-hash"))
 }
 
 func (*TestEvidence) ValidateBasic() error {

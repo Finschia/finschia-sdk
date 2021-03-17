@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	osttypes "github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
@@ -48,14 +48,14 @@ func (suite *KeeperTestSuite) TestUpdateClientTendermint() {
 		height := suite.header.GetHeight().(clienttypes.Height)
 
 		return suite.chainA.CreateTMClientHeader(testChainID, int64(heightPlus3.RevisionHeight), height, suite.header.Header.Time.Add(time.Hour),
-			suite.valSet, suite.valSet, []tmtypes.PrivValidator{suite.privVal})
+			suite.valSet, suite.valSet, []osttypes.PrivValidator{suite.privVal})
 	}
 	createPastUpdateFn := func(s *KeeperTestSuite) *ibctmtypes.Header {
 		heightMinus2 := clienttypes.NewHeight(suite.header.GetHeight().GetRevisionNumber(), suite.header.GetHeight().GetRevisionHeight()-2)
 		heightMinus4 := clienttypes.NewHeight(suite.header.GetHeight().GetRevisionNumber(), suite.header.GetHeight().GetRevisionHeight()-4)
 
 		return suite.chainA.CreateTMClientHeader(testChainID, int64(heightMinus2.RevisionHeight), heightMinus4, suite.header.Header.Time,
-			suite.valSet, suite.valSet, []tmtypes.PrivValidator{suite.privVal})
+			suite.valSet, suite.valSet, []osttypes.PrivValidator{suite.privVal})
 	}
 	var (
 		updateHeader *ibctmtypes.Header
@@ -398,23 +398,23 @@ func (suite *KeeperTestSuite) TestCheckMisbehaviourAndUpdateState() {
 	altPrivVal := ibctestingmock.NewPV()
 	altPubKey, err := altPrivVal.GetPubKey()
 	suite.Require().NoError(err)
-	altVal := tmtypes.NewValidator(altPubKey, 4)
+	altVal := osttypes.NewValidator(altPubKey, 4)
 
 	// Set valSet here with suite.valSet so it doesn't get reset on each testcase
 	valSet := suite.valSet
 	valsHash := valSet.Hash()
 
 	// Create bothValSet with both suite validator and altVal
-	bothValSet := tmtypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
+	bothValSet := osttypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
 	bothValsHash := bothValSet.Hash()
 	// Create alternative validator set with only altVal
-	altValSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{altVal})
+	altValSet := osttypes.NewValidatorSet([]*osttypes.Validator{altVal})
 
 	// Create signer array and ensure it is in same order as bothValSet
 	_, suiteVal := suite.valSet.GetByIndex(0)
 	bothSigners := ibctesting.CreateSortedSignerArray(altPrivVal, suite.privVal, altVal, suiteVal)
 
-	altSigners := []tmtypes.PrivValidator{altPrivVal}
+	altSigners := []osttypes.PrivValidator{altPrivVal}
 
 	// Create valid Misbehaviour by making a duplicate header that signs over different block time
 	altTime := suite.ctx.BlockTime().Add(time.Minute)

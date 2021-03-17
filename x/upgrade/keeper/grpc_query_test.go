@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -24,7 +24,7 @@ type UpgradeTestSuite struct {
 
 func (suite *UpgradeTestSuite) SetupTest() {
 	suite.app = simapp.Setup(false)
-	suite.ctx = suite.app.BaseApp.NewContext(false, tmproto.Header{})
+	suite.ctx = suite.app.BaseApp.NewContext(false, ostproto.Header{})
 
 	queryHelper := baseapp.NewQueryServerTestHelper(suite.ctx, suite.app.InterfaceRegistry())
 	types.RegisterQueryServer(queryHelper, suite.app.UpgradeKeeper)

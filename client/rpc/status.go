@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/tendermint/tendermint/libs/bytes"
-	"github.com/tendermint/tendermint/p2p"
-	ctypes "github.com/tendermint/tendermint/rpc/core/types"
+	"github.com/line/ostracon/libs/bytes"
+	"github.com/line/ostracon/p2p"
+	ctypes "github.com/line/ostracon/rpc/core/types"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"

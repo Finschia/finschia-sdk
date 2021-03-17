@@ -5,7 +5,7 @@ import (
 	"time"
 
 	metrics "github.com/armon/go-metrics"
-	tmstrings "github.com/tendermint/tendermint/libs/strings"
+	oststrings "github.com/line/ostracon/libs/strings"
 
 	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
 	"github.com/line/lbm-sdk/v2/telemetry"
@@ -59,7 +59,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 
 	cp := ctx.ConsensusParams()
 	if cp != nil && cp.Validator != nil {
-		if !tmstrings.StringInSlice(pk.Type(), cp.Validator.PubKeyTypes) {
+		if !oststrings.StringInSlice(pk.Type(), cp.Validator.PubKeyTypes) {
 			return nil, sdkerrors.Wrapf(
 				types.ErrValidatorPubKeyTypeNotSupported,
 				"got: %s, expected: %s", pk.Type(), cp.Validator.PubKeyTypes,

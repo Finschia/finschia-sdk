@@ -1,9 +1,9 @@
 package keeper_test
 
 import (
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
+	"github.com/line/ostracon/libs/log"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 
@@ -47,6 +47,6 @@ func defaultContext(key sdk.StoreKey, tkey sdk.StoreKey) sdk.Context {
 	if err != nil {
 		panic(err)
 	}
-	ctx := sdk.NewContext(cms, tmproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(cms, ostproto.Header{}, false, log.NewNopLogger())
 	return ctx
 }

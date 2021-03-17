@@ -261,8 +261,8 @@ func TxEmitter(ctx context.Context, cliCtx client.Context, ehs ...EventHandler) 
 	return group.Wait()
 }
 
-// PublishChainTxEvents events using tmclient. Waits on context shutdown signals to exit.
-func PublishChainTxEvents(ctx context.Context, client tmclient.EventsClient, bus pubsub.Bus, mb module.BasicManager) (err error) {
+// PublishChainTxEvents events using ostclient. Waits on context shutdown signals to exit.
+func PublishChainTxEvents(ctx context.Context, client ostclient.EventsClient, bus pubsub.Bus, mb module.BasicManager) (err error) {
     // Subscribe to transaction events
     txch, err := client.Subscribe(ctx, "txevents", "tm.event='Tx'", 100)
     if err != nil {

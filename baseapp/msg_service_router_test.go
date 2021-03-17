@@ -4,11 +4,11 @@ import (
 	"os"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/libs/log"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/client/tx"
@@ -78,7 +78,7 @@ func TestMsgService(t *testing.T) {
 		app.MsgServiceRouter(),
 		testdata.MsgServerImpl{},
 	)
-	_ = app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: 1}})
+	_ = app.BeginBlock(abci.RequestBeginBlock{Header: ostproto.Header{Height: 1}})
 
 	msg := testdata.NewServiceMsgCreateDog(&testdata.MsgCreateDog{Dog: &testdata.Dog{Name: "Spot"}})
 	txBuilder := encCfg.TxConfig.NewTxBuilder()

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -317,7 +317,7 @@ func (suite *IBCTestSuite) TestInitGenesis() {
 		app := simapp.Setup(false)
 
 		suite.NotPanics(func() {
-			ibc.InitGenesis(app.BaseApp.NewContext(false, tmproto.Header{Height: 1}), *app.IBCKeeper, true, tc.genState)
+			ibc.InitGenesis(app.BaseApp.NewContext(false, ostproto.Header{Height: 1}), *app.IBCKeeper, true, tc.genState)
 		})
 	}
 }

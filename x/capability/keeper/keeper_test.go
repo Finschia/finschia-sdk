@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -32,7 +32,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	keeper := keeper.NewKeeper(cdc, app.GetKey(types.StoreKey), app.GetMemKey(types.MemStoreKey))
 
 	suite.app = app
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{Height: 1})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ostproto.Header{Height: 1})
 	suite.keeper = keeper
 }
 

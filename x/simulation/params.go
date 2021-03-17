@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	"github.com/tendermint/tendermint/types"
+	abci "github.com/line/ostracon/abci/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/types/simulation"
@@ -167,10 +167,10 @@ func randomConsensusParams(r *rand.Rand, appState json.RawMessage, cdc codec.JSO
 			MaxBytes: int64(simulation.RandIntBetween(r, 20000000, 30000000)),
 			MaxGas:   -1,
 		},
-		Validator: &tmproto.ValidatorParams{
+		Validator: &ostproto.ValidatorParams{
 			PubKeyTypes: []string{types.ABCIPubKeyTypeEd25519},
 		},
-		Evidence: &tmproto.EvidenceParams{
+		Evidence: &ostproto.EvidenceParams{
 			MaxAgeNumBlocks: int64(stakingGenesisState.Params.UnbondingTime / AverageBlockTime),
 			MaxAgeDuration:  stakingGenesisState.Params.UnbondingTime,
 		},

@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
+	ostprototypes "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmprototypes "github.com/tendermint/tendermint/proto/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 )
@@ -106,7 +106,7 @@ func TestGetBlockRentionHeight(t *testing.T) {
 		tc.bapp.SetParamStore(&paramStore{db: dbm.NewMemDB()})
 		tc.bapp.InitChain(abci.RequestInitChain{
 			ConsensusParams: &abci.ConsensusParams{
-				Evidence: &tmprototypes.EvidenceParams{
+				Evidence: &ostprototypes.EvidenceParams{
 					MaxAgeNumBlocks: tc.maxAgeBlocks,
 				},
 			},

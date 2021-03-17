@@ -13,9 +13,9 @@ import (
 
 	"github.com/99designs/keyring"
 	bip39 "github.com/cosmos/go-bip39"
+	ostcrypto "github.com/line/ostracon/crypto"
 	"github.com/pkg/errors"
 	"github.com/tendermint/crypto/bcrypt"
-	tmcrypto "github.com/tendermint/tendermint/crypto"
 
 	"github.com/line/lbm-sdk/v2/client/input"
 	"github.com/line/lbm-sdk/v2/codec/legacy"
@@ -708,7 +708,7 @@ func newRealPrompt(dir string, buf io.Reader) func(string) (string, error) {
 				continue
 			}
 
-			saltBytes := tmcrypto.CRandBytes(16)
+			saltBytes := ostcrypto.CRandBytes(16)
 			passwordHash, err := bcrypt.GenerateFromPassword(saltBytes, []byte(pass), 2)
 			if err != nil {
 				fmt.Fprintln(os.Stderr, err)

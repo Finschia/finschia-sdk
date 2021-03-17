@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
+	abci "github.com/line/ostracon/abci/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	simappparams "github.com/line/lbm-sdk/v2/simapp/params"
@@ -86,7 +86,7 @@ func TestSimulateMsgUnjail(t *testing.T) {
 	app.DistrKeeper.SetDelegatorStartingInfo(ctx, validator0.GetOperator(), val0AccAddress.Bytes(), distrtypes.NewDelegatorStartingInfo(2, sdk.OneDec(), 200))
 
 	// begin a new block
-	app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash, Time: blockTime}})
+	app.BeginBlock(abci.RequestBeginBlock{Header: ostproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash, Time: blockTime}})
 
 	// execute operation
 	op := simulation.SimulateMsgUnjail(app.AccountKeeper, app.BankKeeper, app.SlashingKeeper, app.StakingKeeper)
@@ -106,7 +106,7 @@ func TestSimulateMsgUnjail(t *testing.T) {
 func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {
 	app := simapp.Setup(isCheckTx)
 
-	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(isCheckTx, ostproto.Header{})
 	app.MintKeeper.SetParams(ctx, minttypes.DefaultParams())
 	app.MintKeeper.SetMinter(ctx, minttypes.DefaultInitialMinter())
 

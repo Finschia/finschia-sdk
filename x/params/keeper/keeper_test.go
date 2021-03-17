@@ -4,9 +4,9 @@ import (
 	"reflect"
 	"testing"
 
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -40,7 +40,7 @@ func TestKeeperTestSuite(t *testing.T) {
 // returns context and app
 func createTestApp(isCheckTx bool) (*simapp.SimApp, sdk.Context) {
 	app := simapp.Setup(isCheckTx)
-	ctx := app.BaseApp.NewContext(isCheckTx, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(isCheckTx, ostproto.Header{})
 
 	return app, ctx
 }

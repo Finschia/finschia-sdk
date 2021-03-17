@@ -4,9 +4,9 @@ import (
 	"math/rand"
 	"testing"
 
+	abci "github.com/line/ostracon/abci/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	simappparams "github.com/line/lbm-sdk/v2/simapp/params"
@@ -27,7 +27,7 @@ func (suite *SimTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
 	suite.app = app
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ostproto.Header{})
 }
 
 // TestWeightedOperations tests the weights of the operations.
@@ -71,7 +71,7 @@ func (suite *SimTestSuite) TestSimulateMsgSend() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ostproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgSend(suite.app.AccountKeeper, suite.app.BankKeeper)
@@ -99,7 +99,7 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSend() {
 	accounts := suite.getTestingAccounts(r, 3)
 
 	// begin a new block
-	suite.app.BeginBlock(abci.RequestBeginBlock{Header: tmproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
+	suite.app.BeginBlock(abci.RequestBeginBlock{Header: ostproto.Header{Height: suite.app.LastBlockHeight() + 1, AppHash: suite.app.LastCommitID().Hash}})
 
 	// execute operation
 	op := simulation.SimulateMsgMultiSend(suite.app.AccountKeeper, suite.app.BankKeeper)

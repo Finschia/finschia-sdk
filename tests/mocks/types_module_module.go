@@ -14,8 +14,8 @@ import (
 	types "github.com/line/lbm-sdk/v2/codec/types"
 	types0 "github.com/line/lbm-sdk/v2/types"
 	module "github.com/line/lbm-sdk/v2/types/module"
+	types1 "github.com/line/ostracon/abci/types"
 	cobra "github.com/spf13/cobra"
-	types1 "github.com/tendermint/tendermint/abci/types"
 	reflect "reflect"
 )
 

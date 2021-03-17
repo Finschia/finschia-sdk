@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -25,7 +25,7 @@ func init() {
 // to avoid messing with the hooks.
 func createTestInput() (*codec.LegacyAmino, *simapp.SimApp, sdk.Context) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
 
 	app.StakingKeeper = keeper.NewKeeper(
 		app.AppCodec(),

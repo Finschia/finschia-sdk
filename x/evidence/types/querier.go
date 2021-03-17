@@ -1,7 +1,7 @@
 package types
 
 import (
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
+	ostbytes "github.com/line/ostracon/libs/bytes"
 
 	query "github.com/line/lbm-sdk/v2/types/query"
 )
@@ -13,7 +13,7 @@ const (
 )
 
 // NewQueryEvidenceRequest creates a new instance of QueryEvidenceRequest.
-func NewQueryEvidenceRequest(hash tmbytes.HexBytes) *QueryEvidenceRequest {
+func NewQueryEvidenceRequest(hash ostbytes.HexBytes) *QueryEvidenceRequest {
 	return &QueryEvidenceRequest{EvidenceHash: hash}
 }
 

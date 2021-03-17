@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/line/tm-db/v2"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 )

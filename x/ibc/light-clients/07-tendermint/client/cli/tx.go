@@ -8,9 +8,9 @@ import (
 	"time"
 
 	ics23 "github.com/confio/ics23/go"
+	"github.com/line/ostracon/light"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/light"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"

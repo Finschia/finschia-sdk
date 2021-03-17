@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	gogotypes "github.com/gogo/protobuf/types"
-	"github.com/tendermint/tendermint/libs/log"
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"

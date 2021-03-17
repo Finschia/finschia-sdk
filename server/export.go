@@ -7,10 +7,10 @@ import (
 	"io/ioutil"
 	"os"
 
+	ostjson "github.com/line/ostracon/libs/json"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	osttypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
-	tmjson "github.com/tendermint/tendermint/libs/json"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	tmtypes "github.com/tendermint/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/server/types"
@@ -73,7 +73,7 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 				return fmt.Errorf("error exporting state: %v", err)
 			}
 
-			doc, err := tmtypes.GenesisDocFromFile(serverCtx.Config.GenesisFile())
+			doc, err := osttypes.GenesisDocFromFile(serverCtx.Config.GenesisFile())
 			if err != nil {
 				return err
 			}
@@ -81,18 +81,18 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 			doc.AppState = exported.AppState
 			doc.Validators = exported.Validators
 			doc.InitialHeight = exported.Height
-			doc.ConsensusParams = &tmproto.ConsensusParams{
-				Block: tmproto.BlockParams{
+			doc.ConsensusParams = &ostproto.ConsensusParams{
+				Block: ostproto.BlockParams{
 					MaxBytes:   exported.ConsensusParams.Block.MaxBytes,
 					MaxGas:     exported.ConsensusParams.Block.MaxGas,
 					TimeIotaMs: doc.ConsensusParams.Block.TimeIotaMs,
 				},
-				Evidence: tmproto.EvidenceParams{
+				Evidence: ostproto.EvidenceParams{
 					MaxAgeNumBlocks: exported.ConsensusParams.Evidence.MaxAgeNumBlocks,
 					MaxAgeDuration:  exported.ConsensusParams.Evidence.MaxAgeDuration,
 					MaxBytes:        exported.ConsensusParams.Evidence.MaxBytes,
 				},
-				Validator: tmproto.ValidatorParams{
+				Validator: ostproto.ValidatorParams{
 					PubKeyTypes: exported.ConsensusParams.Validator.PubKeyTypes,
 				},
 			}
@@ -100,7 +100,7 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 			// NOTE: Tendermint uses a custom JSON decoder for GenesisDoc
 			// (except for stuff inside AppState). Inside AppState, we're free
 			// to encode as protobuf or amino.
-			encoded, err := tmjson.Marshal(doc)
+			encoded, err := ostjson.Marshal(doc)
 			if err != nil {
 				return err
 			}

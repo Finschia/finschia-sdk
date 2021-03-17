@@ -9,9 +9,9 @@ import (
 	"strings"
 	"testing"
 
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
@@ -270,25 +270,25 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmd() {
 	}{
 		{
 			"with invalid hash",
-			[]string{"somethinginvalid", fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{"somethinginvalid", fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			true,
 			"",
 		},
 		{
 			"with valid and not existing hash",
-			[]string{"C7E7D3A86A17AB3A321172239F3B61357937AF0F25D9FA4D2F4DCCAD9B0D7747", fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{"C7E7D3A86A17AB3A321172239F3B61357937AF0F25D9FA4D2F4DCCAD9B0D7747", fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			true,
 			"",
 		},
 		{
 			"happy case (legacy Msg)",
-			[]string{legacyMsgTxRes.TxHash, fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{legacyMsgTxRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			false,
 			"",
 		},
 		{
 			"happy case (service Msg)",
-			[]string{txRes.TxHash, fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{txRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			false,
 			"/cosmos.bank.v1beta1.Msg/Send",
 		},
@@ -985,12 +985,12 @@ func (s *IntegrationTestSuite) TestQueryParamsCmd() {
 	}{
 		{
 			"happy case",
-			[]string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			false,
 		},
 		{
 			"with specific height",
-			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=1", flags.FlagHeight), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			false,
 		},
 	}

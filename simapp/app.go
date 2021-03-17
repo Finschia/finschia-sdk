@@ -7,14 +7,14 @@ import (
 	"path/filepath"
 
 	"github.com/gorilla/mux"
+	abci "github.com/line/ostracon/abci/types"
+	ostjson "github.com/line/ostracon/libs/json"
+	"github.com/line/ostracon/libs/log"
+	ostos "github.com/line/ostracon/libs/os"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	dbm "github.com/line/tm-db/v2"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmjson "github.com/tendermint/tendermint/libs/json"
-	"github.com/tendermint/tendermint/libs/log"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
-	dbm "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/client"
@@ -412,7 +412,7 @@ func NewSimApp(
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
-			tmos.Exit(err.Error())
+			ostos.Exit(err.Error())
 		}
 
 		// Initialize and seal the capability keeper so all persistent capabilities
@@ -422,7 +422,7 @@ func NewSimApp(
 		// that in-memory capabilities get regenerated on app restart.
 		// Note that since this reads from the store, we can only perform it when
 		// `loadLatest` is set to true.
-		ctx := app.BaseApp.NewUncachedContext(true, tmproto.Header{})
+		ctx := app.BaseApp.NewUncachedContext(true, ostproto.Header{})
 		app.CapabilityKeeper.InitializeAndSeal(ctx)
 	}
 
@@ -460,7 +460,7 @@ func (app *SimApp) EndBlocker(ctx sdk.Context, req abci.RequestEndBlock) abci.Re
 // InitChainer application update at chain initialization
 func (app *SimApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
 	var genesisState GenesisState
-	if err := tmjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
+	if err := ostjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)

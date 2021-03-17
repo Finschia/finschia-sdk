@@ -9,10 +9,10 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
+	ostcli "github.com/line/ostracon/libs/cli"
+	"github.com/line/ostracon/proto/ostracon/crypto"
+	"github.com/line/ostracon/rpc/client/http"
 	"github.com/stretchr/testify/suite"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
-	"github.com/tendermint/tendermint/proto/tendermint/crypto"
-	"github.com/tendermint/tendermint/rpc/client/http"
 
 	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/crypto/hd"
@@ -214,17 +214,17 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidator() {
 	}{
 		{
 			"with invalid address ",
-			[]string{"somethinginvalidaddress", fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{"somethinginvalidaddress", fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			true,
 		},
 		{
 			"with valid and not existing address",
-			[]string{"cosmosvaloper15jkng8hytwt22lllv6mw4k89qkqehtahd84ptu", fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{"cosmosvaloper15jkng8hytwt22lllv6mw4k89qkqehtahd84ptu", fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			true,
 		},
 		{
 			"happy case",
-			[]string{fmt.Sprintf("%s", val.ValAddress), fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("%s", val.ValAddress), fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			false,
 		},
 	}
@@ -257,14 +257,14 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidators() {
 		{
 			"one validator case",
 			[]string{
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagLimit),
 			},
 			1,
 		},
 		{
 			"multi validator case",
-			[]string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			len(s.network.Validators),
 		},
 	}
@@ -302,7 +302,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegation() {
 			[]string{
 				"wrongDelAddr",
 				val2.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true, nil, nil,
 		},
@@ -311,7 +311,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegation() {
 			[]string{
 				val.Address.String(),
 				"wrongValAddr",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true, nil, nil,
 		},
@@ -320,7 +320,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegation() {
 			[]string{
 				val.Address.String(),
 				val2.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 			&types.DelegationResponse{},
@@ -377,7 +377,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegations() {
 			"valid request (height specific)",
 			[]string{
 				val.Address.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			false,
@@ -433,7 +433,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDelegationsTo() {
 			"valid request(height specific)",
 			[]string{
 				val.Address.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			false,
@@ -477,7 +477,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryUnbondingDelegations() {
 			"wrong delegator address",
 			[]string{
 				"wrongDelAddr",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -485,7 +485,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryUnbondingDelegations() {
 			"valid request",
 			[]string{
 				val.Address.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 		},
@@ -526,7 +526,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryUnbondingDelegation() {
 			[]string{
 				"wrongDelAddr",
 				val.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -535,7 +535,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryUnbondingDelegation() {
 			[]string{
 				val.Address.String(),
 				"wrongValAddr",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -544,7 +544,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryUnbondingDelegation() {
 			[]string{
 				val.Address.String(),
 				val.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 		},
@@ -585,7 +585,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorUnbondingDelegations() {
 			"wrong validator address",
 			[]string{
 				"wrongValAddr",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -593,7 +593,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryValidatorUnbondingDelegations() {
 			"valid request",
 			[]string{
 				val.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 		},
@@ -634,7 +634,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegations() {
 			"wrong delegator address",
 			[]string{
 				"wrongdeladdr",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -642,7 +642,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegations() {
 			"valid request",
 			[]string{
 				val.Address.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 		},
@@ -688,7 +688,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegation() {
 				"wrongdeladdr",
 				val.ValAddress.String(),
 				val2.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -698,7 +698,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegation() {
 				val.Address.String(),
 				"wrongSrcValAddress",
 				val2.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -708,7 +708,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegation() {
 				val.Address.String(),
 				val.ValAddress.String(),
 				"wrongDestValAddress",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -718,7 +718,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegation() {
 				val.Address.String(),
 				val.ValAddress.String(),
 				val2.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 		},
@@ -762,7 +762,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegationsFrom() {
 			"wrong validator address",
 			[]string{
 				"wrongValAddr",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -770,7 +770,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryRedelegationsFrom() {
 			"valid request",
 			[]string{
 				val.ValAddress.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 		},
@@ -813,7 +813,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryHistoricalInfo() {
 			"wrong height",
 			[]string{
 				"-1",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},
@@ -821,7 +821,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryHistoricalInfo() {
 			"valid request",
 			[]string{
 				"1",
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 		},
@@ -856,7 +856,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryParams() {
 	}{
 		{
 			"with text output",
-			[]string{fmt.Sprintf("--%s=text", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=text", ostcli.OutputFlag)},
 			`bond_denom: stake
 historical_entries: 10000
 max_entries: 7
@@ -865,7 +865,7 @@ unbonding_time: 1814400s`,
 		},
 		{
 			"with json output",
-			[]string{fmt.Sprintf("--%s=json", tmcli.OutputFlag)},
+			[]string{fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			`{"unbonding_time":"1814400s","max_validators":100,"max_entries":7,"historical_entries":10000,"bond_denom":"stake"}`,
 		},
 	}
@@ -891,7 +891,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryPool() {
 		{
 			"with text",
 			[]string{
-				fmt.Sprintf("--%s=text", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			fmt.Sprintf(`bonded_tokens: "%s"
@@ -900,7 +900,7 @@ not_bonded_tokens: "0"`, cli.DefaultTokens.Mul(sdk.NewInt(2)).String()),
 		{
 			"with json",
 			[]string{
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			fmt.Sprintf(`{"not_bonded_tokens":"0","bonded_tokens":"%s"}`, cli.DefaultTokens.Mul(sdk.NewInt(2)).String()),

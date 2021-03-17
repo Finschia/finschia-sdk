@@ -142,13 +142,13 @@ cosmovisor:
 
 mocks: $(MOCKS_DIR)
 	mockgen -source=client/account_retriever.go -package mocks -destination tests/mocks/account_retriever.go
-	mockgen -package mocks -destination tests/mocks/tendermint_tm_db_DB.go github.com/tendermint/tm-db DB
+	mockgen -package mocks -destination tests/mocks/tendermint_tm_db_DB.go github.com/line/tm-db/v2 DB
 	mockgen -source=types/module/module.go -package mocks -destination tests/mocks/types_module_module.go
 	mockgen -source=types/invariant.go -package mocks -destination tests/mocks/types_invariant.go
 	mockgen -source=types/router.go -package mocks -destination tests/mocks/types_router.go
 	mockgen -source=types/handler.go -package mocks -destination tests/mocks/types_handler.go
 	mockgen -package mocks -destination tests/mocks/grpc_server.go github.com/gogo/protobuf/grpc Server
-	mockgen -package mocks -destination tests/mocks/tendermint_tendermint_libs_log_DB.go github.com/tendermint/tendermint/libs/log Logger
+	mockgen -package mocks -destination tests/mocks/tendermint_tendermint_libs_log_DB.go github.com/line/ostracon/libs/log Logger
 .PHONY: mocks
 
 $(MOCKS_DIR):
@@ -371,7 +371,7 @@ proto-all: proto-format proto-lint proto-gen
 
 proto-gen:
 	@echo "Generating Protobuf files"
-	$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protocgen.sh
+	$(DOCKER) run --rm -e GITHUB_TOKEN=$(GITHUB_TOKEN) -v $(CURDIR):/workspace --workdir /workspace tendermintdev/sdk-proto-gen sh ./scripts/protocgen.sh
 
 proto-format:
 	@echo "Formatting Protobuf files"

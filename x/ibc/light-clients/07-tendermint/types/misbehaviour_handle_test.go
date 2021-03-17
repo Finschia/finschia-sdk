@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tendermint/tendermint/crypto/tmhash"
-	tmtypes "github.com/tendermint/tendermint/types"
+	"github.com/line/ostracon/crypto/tmhash"
+	osttypes "github.com/line/ostracon/types"
 
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
@@ -20,20 +20,20 @@ func (suite *TendermintTestSuite) TestCheckMisbehaviourAndUpdateState() {
 	altPubKey, err := altPrivVal.GetPubKey()
 	suite.Require().NoError(err)
 
-	altVal := tmtypes.NewValidator(altPubKey, 4)
+	altVal := osttypes.NewValidator(altPubKey, 4)
 
 	// Create bothValSet with both suite validator and altVal
-	bothValSet := tmtypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
+	bothValSet := osttypes.NewValidatorSet(append(suite.valSet.Validators, altVal))
 	bothValsHash := bothValSet.Hash()
 	// Create alternative validator set with only altVal
-	altValSet := tmtypes.NewValidatorSet([]*tmtypes.Validator{altVal})
+	altValSet := osttypes.NewValidatorSet([]*osttypes.Validator{altVal})
 
 	_, suiteVal := suite.valSet.GetByIndex(0)
 
 	// Create signer array and ensure it is in same order as bothValSet
 	bothSigners := ibctesting.CreateSortedSignerArray(altPrivVal, suite.privVal, altVal, suiteVal)
 
-	altSigners := []tmtypes.PrivValidator{altPrivVal}
+	altSigners := []osttypes.PrivValidator{altPrivVal}
 
 	heightMinus1 := clienttypes.NewHeight(height.RevisionNumber, height.RevisionHeight-1)
 	heightMinus3 := clienttypes.NewHeight(height.RevisionNumber, height.RevisionHeight-3)

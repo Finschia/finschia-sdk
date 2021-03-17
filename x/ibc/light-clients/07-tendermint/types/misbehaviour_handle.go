@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	osttypes "github.com/line/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -77,12 +77,12 @@ func checkMisbehaviourHeader(
 	clientState *ClientState, consState *ConsensusState, header *Header, currentTimestamp time.Time,
 ) error {
 
-	tmTrustedValset, err := tmtypes.ValidatorSetFromProto(header.TrustedValidators)
+	tmTrustedValset, err := osttypes.ValidatorSetFromProto(header.TrustedValidators)
 	if err != nil {
 		return sdkerrors.Wrap(err, "trusted validator set is not tendermint validator set type")
 	}
 
-	tmCommit, err := tmtypes.CommitFromProto(header.Commit)
+	tmCommit, err := osttypes.CommitFromProto(header.Commit)
 	if err != nil {
 		return sdkerrors.Wrap(err, "commit is not tendermint commit type")
 	}

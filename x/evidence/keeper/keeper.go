@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
-	"github.com/tendermint/tendermint/libs/log"
+	ostbytes "github.com/line/ostracon/libs/bytes"
+	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"
@@ -107,7 +107,7 @@ func (k Keeper) SetEvidence(ctx sdk.Context, evidence exported.Evidence) {
 
 // GetEvidence retrieves Evidence by hash if it exists. If no Evidence exists for
 // the given hash, (nil, false) is returned.
-func (k Keeper) GetEvidence(ctx sdk.Context, hash tmbytes.HexBytes) (exported.Evidence, bool) {
+func (k Keeper) GetEvidence(ctx sdk.Context, hash ostbytes.HexBytes) (exported.Evidence, bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixEvidence)
 
 	bz := store.Get(hash)

@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	abci "github.com/line/ostracon/abci/types"
+	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	"gopkg.in/yaml.v2"
 
 	"github.com/line/lbm-sdk/v2/codec"
@@ -111,7 +111,7 @@ func (v Validators) Swap(i, j int) {
 // ValidatorsByVotingPower implements sort.Interface for []Validator based on
 // the VotingPower and Address fields.
 // The validators are sorted first by their voting power (descending). Secondary index - Address (ascending).
-// Copied from tendermint/types/validator_set.go
+// Copied from ostracon/types/validator_set.go
 type ValidatorsByVotingPower []Validator
 
 func (valz ValidatorsByVotingPower) Len() int { return len(valz) }
@@ -480,16 +480,16 @@ func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
 
 }
 
-// TmConsPublicKey casts Validator.ConsensusPubkey to tmprotocrypto.PubKey.
-func (v Validator) TmConsPublicKey() (tmprotocrypto.PublicKey, error) {
+// TmConsPublicKey casts Validator.ConsensusPubkey to ostprotocrypto.PubKey.
+func (v Validator) TmConsPublicKey() (ostprotocrypto.PublicKey, error) {
 	pk, err := v.ConsPubKey()
 	if err != nil {
-		return tmprotocrypto.PublicKey{}, err
+		return ostprotocrypto.PublicKey{}, err
 	}
 
 	tmPk, err := cryptocodec.ToTmProtoPublicKey(pk)
 	if err != nil {
-		return tmprotocrypto.PublicKey{}, err
+		return ostprotocrypto.PublicKey{}, err
 	}
 
 	return tmPk, nil

@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
+	db "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	db "github.com/tendermint/tm-db"
 
 	"github.com/line/lbm-sdk/v2/snapshots"
 	"github.com/line/lbm-sdk/v2/snapshots/types"

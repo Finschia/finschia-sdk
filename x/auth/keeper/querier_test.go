@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 
 	"github.com/line/lbm-sdk/v2/testutil/testdata"
 	keep "github.com/line/lbm-sdk/v2/x/auth/keeper"

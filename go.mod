@@ -11,7 +11,6 @@ require (
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/confio/ics23/go v0.6.3
 	github.com/cosmos/go-bip39 v1.0.0
-	github.com/cosmos/iavl v0.15.3
 	github.com/cosmos/ledger-cosmos-go v0.11.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
@@ -26,6 +25,9 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hashicorp/golang-lru v0.5.4
+	github.com/line/iavl/v2 v2.0.0-init.1
+	github.com/line/ostracon v0.34.9-0.20210316071456-5fea666cc7ce
+	github.com/line/tm-db/v2 v2.0.0-init.1
 	github.com/magiconair/properties v1.8.4
 	github.com/mattn/go-isatty v0.0.12
 	github.com/otiai10/copy v1.4.2
@@ -46,8 +48,6 @@ require (
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
-	github.com/tendermint/tendermint v0.34.8
-	github.com/tendermint/tm-db v0.6.4
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	google.golang.org/genproto v0.0.0-20210114201628-6edceaf6022f
 	google.golang.org/grpc v1.35.0
@@ -55,6 +55,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0
 )
 
-replace google.golang.org/grpc => google.golang.org/grpc v1.33.2
-
-replace github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+replace (
+	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+	google.golang.org/grpc => google.golang.org/grpc v1.33.2
+)

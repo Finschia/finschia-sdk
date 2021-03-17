@@ -3,7 +3,7 @@ package v036
 import (
 	"testing"
 
-	"github.com/tendermint/tendermint/crypto"
+	"github.com/line/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/v2/types"

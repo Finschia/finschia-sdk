@@ -8,15 +8,15 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/line/ostracon/abci/server"
+	ostcmd "github.com/line/ostracon/cmd/tendermint/commands"
+	ostos "github.com/line/ostracon/libs/os"
+	"github.com/line/ostracon/node"
+	"github.com/line/ostracon/p2p"
+	pvm "github.com/line/ostracon/privval"
+	"github.com/line/ostracon/proxy"
+	"github.com/line/ostracon/rpc/client/local"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/abci/server"
-	tcmd "github.com/tendermint/tendermint/cmd/tendermint/commands"
-	tmos "github.com/tendermint/tendermint/libs/os"
-	"github.com/tendermint/tendermint/node"
-	"github.com/tendermint/tendermint/p2p"
-	pvm "github.com/tendermint/tendermint/privval"
-	"github.com/tendermint/tendermint/proxy"
-	"github.com/tendermint/tendermint/rpc/client/local"
 	"google.golang.org/grpc"
 
 	"github.com/line/lbm-sdk/v2/client"
@@ -28,9 +28,9 @@ import (
 	storetypes "github.com/line/lbm-sdk/v2/store/types"
 )
 
-// Tendermint full-node start flags
+// Ostracon full-node start flags
 const (
-	flagWithTendermint     = "with-tendermint"
+	flagWithOstracon       = "with-ostracon"
 	flagAddress            = "address"
 	flagTransport          = "transport"
 	flagTraceStore         = "trace-store"
@@ -64,13 +64,13 @@ const (
 )
 
 // StartCmd runs the service passed in, either stand-alone or in-process with
-// Tendermint.
+// Ostracon.
 func StartCmd(appCreator types.AppCreator, defaultNodeHome string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "start",
 		Short: "Run the full node",
-		Long: `Run the full node application with Tendermint in or out of process. By
-default, the application will run with Tendermint in process.
+		Long: `Run the full node application with Ostracon in or out of process. By
+default, the application will run with Ostracon in process.
 
 Pruning options can be provided via the '--pruning' flag or alternatively with '--pruning-keep-recent',
 'pruning-keep-every', and 'pruning-interval' together.
@@ -108,13 +108,13 @@ which accepts a path for the resulting pprof file.
 				return err
 			}
 
-			withTM, _ := cmd.Flags().GetBool(flagWithTendermint)
-			if !withTM {
-				serverCtx.Logger.Info("starting ABCI without Tendermint")
+			withOST, _ := cmd.Flags().GetBool(flagWithOstracon)
+			if !withOST {
+				serverCtx.Logger.Info("starting ABCI without Ostracon")
 				return startStandAlone(serverCtx, appCreator)
 			}
 
-			serverCtx.Logger.Info("starting ABCI with Tendermint")
+			serverCtx.Logger.Info("starting ABCI with Ostracon")
 
 			// amino is needed here for backwards compatibility of REST routes
 			err = startInProcess(serverCtx, clientCtx, appCreator)
@@ -129,7 +129,7 @@ which accepts a path for the resulting pprof file.
 	}
 
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
-	cmd.Flags().Bool(flagWithTendermint, true, "Run abci app embedded in-process with tendermint")
+	cmd.Flags().Bool(flagWithOstracon, true, "Run abci app embedded in-process with ostracon")
 	cmd.Flags().String(flagAddress, "tcp://0.0.0.0:26658", "Listen address")
 	cmd.Flags().String(flagTransport, "socket", "Transport protocol: socket, grpc")
 	cmd.Flags().String(flagTraceStore, "", "Enable KVStore tracing to an output file")
@@ -145,7 +145,7 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint64(FlagPruningKeepEvery, 0, "Offset heights to keep on disk after 'keep-every' (ignored if pruning is not 'custom')")
 	cmd.Flags().Uint64(FlagPruningInterval, 0, "Height interval at which pruned heights are removed from disk (ignored if pruning is not 'custom')")
 	cmd.Flags().Uint(FlagInvCheckPeriod, 0, "Assert registered invariants every N blocks")
-	cmd.Flags().Uint64(FlagMinRetainBlocks, 0, "Minimum block height offset during ABCI commit to prune Tendermint blocks")
+	cmd.Flags().Uint64(FlagMinRetainBlocks, 0, "Minimum block height offset during ABCI commit to prune Ostracon blocks")
 
 	cmd.Flags().Bool(flagGRPCEnable, true, "Define if the gRPC server should be enabled")
 	cmd.Flags().String(flagGRPCAddress, config.DefaultGRPCAddress, "the gRPC server address to listen on")
@@ -153,8 +153,8 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint64(FlagStateSyncSnapshotInterval, 0, "State sync snapshot interval")
 	cmd.Flags().Uint32(FlagStateSyncSnapshotKeepRecent, 2, "State sync snapshot to keep")
 
-	// add support for all Tendermint-specific command line options
-	tcmd.AddNodeFlags(cmd)
+	// add support for all Ostracon-specific command line options
+	ostcmd.AddNodeFlags(cmd)
 	return cmd
 }
 
@@ -185,12 +185,12 @@ func startStandAlone(ctx *Context, appCreator types.AppCreator) error {
 
 	err = svr.Start()
 	if err != nil {
-		tmos.Exit(err.Error())
+		ostos.Exit(err.Error())
 	}
 
 	defer func() {
 		if err = svr.Stop(); err != nil {
-			tmos.Exit(err.Error())
+			ostos.Exit(err.Error())
 		}
 	}()
 
@@ -265,7 +265,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 
 	// Add the tx service to the gRPC router. We only need to register this
 	// service if API or gRPC is enabled, and avoid doing so in the general
-	// case, because it spawns a new local tendermint RPC client.
+	// case, because it spawns a new local ostracon RPC client.
 	if config.API.Enable || config.GRPC.Enable {
 		clientCtx = clientCtx.WithClient(local.New(tmNode))
 

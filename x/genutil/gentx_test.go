@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
+	osttypes "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -45,7 +45,7 @@ type GenTxTestSuite struct {
 func (suite *GenTxTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
-	suite.ctx = app.BaseApp.NewContext(checkTx, tmproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(checkTx, osttypes.Header{})
 	suite.app = app
 	suite.encodingConfig = simapp.MakeTestEncodingConfig()
 

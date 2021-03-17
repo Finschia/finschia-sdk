@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/line/lbm-sdk/v2/crypto/keyring"
 )
@@ -39,7 +39,7 @@ const (
 
 // List of CLI flags
 const (
-	FlagHome             = tmcli.HomeFlag
+	FlagHome             = ostcli.HomeFlag
 	FlagKeyringDir       = "keyring-dir"
 	FlagUseLedger        = "ledger"
 	FlagChainID          = "chain-id"
@@ -84,7 +84,7 @@ var LineBreak = &cobra.Command{Run: func(*cobra.Command, []string) {}}
 func AddQueryFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().String(FlagNode, "tcp://localhost:26657", "<host>:<port> to Tendermint RPC interface for this chain")
 	cmd.Flags().Int64(FlagHeight, 0, "Use a specific height to query state at (this can error if the node is pruning state)")
-	cmd.Flags().StringP(tmcli.OutputFlag, "o", "text", "Output format (text|json)")
+	cmd.Flags().StringP(ostcli.OutputFlag, "o", "text", "Output format (text|json)")
 
 	cmd.MarkFlagRequired(FlagChainID)
 
@@ -101,7 +101,7 @@ func AddTxFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().String(FlagMemo, "", "Memo to send along with transaction")
 	cmd.Flags().String(FlagFees, "", "Fees to pay along with transaction; eg: 10uatom")
 	cmd.Flags().String(FlagGasPrices, "", "Gas prices in decimal format to determine the transaction fee (e.g. 0.1uatom)")
-	cmd.Flags().String(FlagNode, "tcp://localhost:26657", "<host>:<port> to tendermint rpc interface for this chain")
+	cmd.Flags().String(FlagNode, "tcp://localhost:26657", "<host>:<port> to ostracon rpc interface for this chain")
 	cmd.Flags().Bool(FlagUseLedger, false, "Use a connected Ledger device")
 	cmd.Flags().Float64(FlagGasAdjustment, DefaultGasAdjustment, "adjustment factor to be multiplied against the estimate returned by the tx simulation; if the gas limit is set manually this flag is ignored ")
 	cmd.Flags().StringP(FlagBroadcastMode, "b", BroadcastSync, "Transaction broadcasting mode (sync|async|block)")

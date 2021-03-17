@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
+	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
-	tmcli "github.com/tendermint/tendermint/libs/cli"
 
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
@@ -106,7 +106,7 @@ func (s *IntegrationTestSuite) TestGetBalancesCmd() {
 			"total account balance",
 			[]string{
 				val.Address.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			false,
@@ -123,7 +123,7 @@ func (s *IntegrationTestSuite) TestGetBalancesCmd() {
 			"total account balance of a specific denom",
 			[]string{
 				val.Address.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 				fmt.Sprintf("--%s=%s", cli.FlagDenom, s.cfg.BondDenom),
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
@@ -136,7 +136,7 @@ func (s *IntegrationTestSuite) TestGetBalancesCmd() {
 			[]string{
 				val.Address.String(),
 				fmt.Sprintf("--%s=foobar", cli.FlagDenom),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 			&sdk.Coin{},
@@ -176,7 +176,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTotalSupply() {
 			name: "total supply",
 			args: []string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			respType: &types.QueryTotalSupplyResponse{},
 			expected: &types.QueryTotalSupplyResponse{
@@ -190,7 +190,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTotalSupply() {
 			args: []string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=%s", cli.FlagDenom, s.cfg.BondDenom),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			respType: &sdk.Coin{},
 			expected: &sdk.Coin{s.cfg.BondDenom, s.cfg.StakingTokens.Add(sdk.NewInt(10))},
@@ -200,7 +200,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryTotalSupply() {
 			args: []string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=foobar", cli.FlagDenom),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			respType: &sdk.Coin{},
 			expected: &sdk.Coin{"foobar", sdk.ZeroInt()},
@@ -240,7 +240,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDenomsMetadata() {
 			name: "all denoms client metadata",
 			args: []string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			respType: &types.QueryDenomsMetadataResponse{},
 			expected: &types.QueryDenomsMetadataResponse{
@@ -288,7 +288,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDenomsMetadata() {
 			args: []string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=%s", cli.FlagDenom, "uatom"),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			respType: &types.QueryDenomMetadataResponse{},
 			expected: &types.QueryDenomMetadataResponse{
@@ -316,7 +316,7 @@ func (s *IntegrationTestSuite) TestGetCmdQueryDenomsMetadata() {
 			args: []string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=foobar", cli.FlagDenom),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			expectErr: true,
 			respType:  &types.QueryDenomMetadataResponse{},

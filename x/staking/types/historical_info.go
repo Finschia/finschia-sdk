@@ -4,7 +4,7 @@ import (
 	"sort"
 
 	"github.com/gogo/protobuf/proto"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
@@ -13,7 +13,7 @@ import (
 
 // NewHistoricalInfo will create a historical information struct from header and valset
 // it will first sort valset before inclusion into historical info
-func NewHistoricalInfo(header tmproto.Header, valSet Validators) HistoricalInfo {
+func NewHistoricalInfo(header ostproto.Header, valSet Validators) HistoricalInfo {
 	// Must sort in the same way that tendermint does
 	sort.Sort(ValidatorsByVotingPower(valSet))
 

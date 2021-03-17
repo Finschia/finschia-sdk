@@ -1,9 +1,9 @@
 package codec
 
 import (
-	tmcrypto "github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/encoding"
-	tmprotocrypto "github.com/tendermint/tendermint/proto/tendermint/crypto"
+	ostcrypto "github.com/line/ostracon/crypto"
+	"github.com/line/ostracon/crypto/encoding"
+	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
@@ -11,14 +11,14 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 )
 
-// FromTmProtoPublicKey converts a TM's tmprotocrypto.PublicKey into our own PubKey.
-func FromTmProtoPublicKey(protoPk tmprotocrypto.PublicKey) (cryptotypes.PubKey, error) {
+// FromTmProtoPublicKey converts a TM's ostprotocrypto.PublicKey into our own PubKey.
+func FromTmProtoPublicKey(protoPk ostprotocrypto.PublicKey) (cryptotypes.PubKey, error) {
 	switch protoPk := protoPk.Sum.(type) {
-	case *tmprotocrypto.PublicKey_Ed25519:
+	case *ostprotocrypto.PublicKey_Ed25519:
 		return &ed25519.PubKey{
 			Key: protoPk.Ed25519,
 		}, nil
-	case *tmprotocrypto.PublicKey_Secp256K1:
+	case *ostprotocrypto.PublicKey_Secp256K1:
 		return &secp256k1.PubKey{
 			Key: protoPk.Secp256K1,
 		}, nil
@@ -27,28 +27,28 @@ func FromTmProtoPublicKey(protoPk tmprotocrypto.PublicKey) (cryptotypes.PubKey, 
 	}
 }
 
-// ToTmProtoPublicKey converts our own PubKey to TM's tmprotocrypto.PublicKey.
-func ToTmProtoPublicKey(pk cryptotypes.PubKey) (tmprotocrypto.PublicKey, error) {
+// ToTmProtoPublicKey converts our own PubKey to TM's ostprotocrypto.PublicKey.
+func ToTmProtoPublicKey(pk cryptotypes.PubKey) (ostprotocrypto.PublicKey, error) {
 	switch pk := pk.(type) {
 	case *ed25519.PubKey:
-		return tmprotocrypto.PublicKey{
-			Sum: &tmprotocrypto.PublicKey_Ed25519{
+		return ostprotocrypto.PublicKey{
+			Sum: &ostprotocrypto.PublicKey_Ed25519{
 				Ed25519: pk.Key,
 			},
 		}, nil
 	case *secp256k1.PubKey:
-		return tmprotocrypto.PublicKey{
-			Sum: &tmprotocrypto.PublicKey_Secp256K1{
+		return ostprotocrypto.PublicKey{
+			Sum: &ostprotocrypto.PublicKey_Secp256K1{
 				Secp256K1: pk.Key,
 			},
 		}, nil
 	default:
-		return tmprotocrypto.PublicKey{}, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "cannot convert %v to Tendermint public key", pk)
+		return ostprotocrypto.PublicKey{}, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "cannot convert %v to Tendermint public key", pk)
 	}
 }
 
-// FromTmPubKeyInterface converts TM's tmcrypto.PubKey to our own PubKey.
-func FromTmPubKeyInterface(tmPk tmcrypto.PubKey) (cryptotypes.PubKey, error) {
+// FromTmPubKeyInterface converts TM's ostcrypto.PubKey to our own PubKey.
+func FromTmPubKeyInterface(tmPk ostcrypto.PubKey) (cryptotypes.PubKey, error) {
 	tmProtoPk, err := encoding.PubKeyToProto(tmPk)
 	if err != nil {
 		return nil, err
@@ -57,8 +57,8 @@ func FromTmPubKeyInterface(tmPk tmcrypto.PubKey) (cryptotypes.PubKey, error) {
 	return FromTmProtoPublicKey(tmProtoPk)
 }
 
-// ToTmPubKeyInterface converts our own PubKey to TM's tmcrypto.PubKey.
-func ToTmPubKeyInterface(pk cryptotypes.PubKey) (tmcrypto.PubKey, error) {
+// ToTmPubKeyInterface converts our own PubKey to TM's ostcrypto.PubKey.
+func ToTmPubKeyInterface(pk cryptotypes.PubKey) (ostcrypto.PubKey, error) {
 	tmProtoPk, err := ToTmProtoPublicKey(pk)
 	if err != nil {
 		return nil, err

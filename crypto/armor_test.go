@@ -7,11 +7,11 @@ import (
 	"io"
 	"testing"
 
+	ostcrypto "github.com/line/ostracon/crypto"
+	"github.com/line/ostracon/crypto/armor"
+	"github.com/line/ostracon/crypto/xsalsa20symmetric"
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/crypto/bcrypt"
-	tmcrypto "github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/armor"
-	"github.com/tendermint/tendermint/crypto/xsalsa20symmetric"
 
 	"github.com/line/lbm-sdk/v2/codec/legacy"
 	"github.com/line/lbm-sdk/v2/crypto"
@@ -47,10 +47,10 @@ func TestArmorUnarmorPrivKey(t *testing.T) {
 
 	// armor key manually
 	encryptPrivKeyFn := func(privKey cryptotypes.PrivKey, passphrase string) (saltBytes []byte, encBytes []byte) {
-		saltBytes = tmcrypto.CRandBytes(16)
+		saltBytes = ostcrypto.CRandBytes(16)
 		key, err := bcrypt.GenerateFromPassword(saltBytes, []byte(passphrase), crypto.BcryptSecurityParameter)
 		require.NoError(t, err)
-		key = tmcrypto.Sha256(key) // get 32 bytes
+		key = ostcrypto.Sha256(key) // get 32 bytes
 		privKeyBytes := legacy.Cdc.Amino.MustMarshalBinaryBare(privKey)
 		return saltBytes, xsalsa20symmetric.EncryptSymmetric(privKeyBytes, key)
 	}
@@ -162,7 +162,7 @@ func BenchmarkBcryptGenerateFromPassword(b *testing.B) {
 	for securityParam := 9; securityParam < 16; securityParam++ {
 		param := securityParam
 		b.Run(fmt.Sprintf("benchmark-security-param-%d", param), func(b *testing.B) {
-			saltBytes := tmcrypto.CRandBytes(16)
+			saltBytes := ostcrypto.CRandBytes(16)
 			b.ResetTimer()
 			for i := 0; i < b.N; i++ {
 				_, err := bcrypt.GenerateFromPassword(saltBytes, passphrase, param)

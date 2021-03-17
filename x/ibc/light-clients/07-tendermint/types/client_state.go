@@ -5,7 +5,7 @@ import (
 	"time"
 
 	ics23 "github.com/confio/ics23/go"
-	"github.com/tendermint/tendermint/light"
+	"github.com/line/ostracon/light"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"

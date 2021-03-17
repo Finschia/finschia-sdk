@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	gogogrpc "github.com/gogo/protobuf/grpc"
+	"github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/libs/cli"
 	grpc "google.golang.org/grpc"
 
 	"github.com/line/lbm-sdk/v2/client"

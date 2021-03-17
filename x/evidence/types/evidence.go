@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"time"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto/tmhash"
-	tmbytes "github.com/tendermint/tendermint/libs/bytes"
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/crypto/tmhash"
+	ostbytes "github.com/line/ostracon/libs/bytes"
 	"gopkg.in/yaml.v2"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -33,7 +33,7 @@ func (e *Equivocation) String() string {
 }
 
 // Hash returns the hash of an Equivocation object.
-func (e *Equivocation) Hash() tmbytes.HexBytes {
+func (e *Equivocation) Hash() ostbytes.HexBytes {
 	bz, err := e.Marshal()
 	if err != nil {
 		panic(err)

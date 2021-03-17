@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"strings"
 
+	ostcmd "github.com/line/ostracon/cmd/tendermint/commands"
+	"github.com/line/ostracon/libs/cli"
+	"github.com/line/ostracon/p2p"
+	pvm "github.com/line/ostracon/privval"
+	ostversion "github.com/line/ostracon/version"
 	"github.com/spf13/cobra"
-	tcmd "github.com/tendermint/tendermint/cmd/tendermint/commands"
-	"github.com/tendermint/tendermint/libs/cli"
-	"github.com/tendermint/tendermint/p2p"
-	pvm "github.com/tendermint/tendermint/privval"
-	tversion "github.com/tendermint/tendermint/version"
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/line/lbm-sdk/v2/codec"
@@ -43,7 +43,7 @@ func ShowNodeIDCmd() *cobra.Command {
 func ShowValidatorCmd() *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "show-validator",
-		Short: "Show this node's tendermint validator info",
+		Short: "Show this node's ostracon validator info",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
@@ -81,7 +81,7 @@ func ShowValidatorCmd() *cobra.Command {
 func ShowAddressCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "show-address",
-		Short: "Shows this node's tendermint validator consensus address",
+		Short: "Shows this node's ostracon validator consensus address",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
@@ -103,11 +103,11 @@ func ShowAddressCmd() *cobra.Command {
 	return cmd
 }
 
-// VersionCmd prints tendermint and ABCI version numbers.
+// VersionCmd prints ostracon and ABCI version numbers.
 func VersionCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
-		Short: "Print tendermint libraries' version",
+		Short: "Print ostracon libraries' version",
 		Long: `Print protocols' and libraries' version numbers
 against which this app has been compiled.
 `,
@@ -118,10 +118,10 @@ against which this app has been compiled.
 				BlockProtocol uint64
 				P2PProtocol   uint64
 			}{
-				Tendermint:    tversion.TMCoreSemVer,
-				ABCI:          tversion.ABCIVersion,
-				BlockProtocol: tversion.BlockProtocol,
-				P2PProtocol:   tversion.P2PProtocol,
+				Tendermint:    ostversion.TMCoreSemVer,
+				ABCI:          ostversion.ABCIVersion,
+				BlockProtocol: ostversion.BlockProtocol,
+				P2PProtocol:   ostversion.P2PProtocol,
 			})
 			if err != nil {
 				return err
@@ -146,7 +146,7 @@ func printlnJSON(v interface{}) error {
 	return nil
 }
 
-// UnsafeResetAllCmd - extension of the tendermint command, resets initialization
+// UnsafeResetAllCmd - extension of the ostracon command, resets initialization
 func UnsafeResetAllCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "unsafe-reset-all",
@@ -155,7 +155,7 @@ func UnsafeResetAllCmd() *cobra.Command {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
 
-			tcmd.ResetAll(cfg.DBDir(), cfg.P2P.AddrBookFile(), cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), serverCtx.Logger)
+			ostcmd.ResetAll(cfg.DBDir(), cfg.P2P.AddrBookFile(), cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), serverCtx.Logger)
 			return nil
 		},
 	}

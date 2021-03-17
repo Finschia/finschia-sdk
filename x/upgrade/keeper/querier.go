@@ -7,7 +7,7 @@ import (
 
 	"github.com/line/lbm-sdk/v2/x/upgrade/types"
 
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"

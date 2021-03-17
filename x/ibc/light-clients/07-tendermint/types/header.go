@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"time"
 
-	tmtypes "github.com/tendermint/tendermint/types"
+	osttypes "github.com/line/ostracon/types"
 
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
@@ -54,7 +54,7 @@ func (h Header) ValidateBasic() error {
 	if h.Header == nil {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "tendermint header cannot be nil")
 	}
-	tmSignedHeader, err := tmtypes.SignedHeaderFromProto(h.SignedHeader)
+	tmSignedHeader, err := osttypes.SignedHeaderFromProto(h.SignedHeader)
 	if err != nil {
 		return sdkerrors.Wrap(err, "header is not a tendermint header")
 	}
@@ -72,7 +72,7 @@ func (h Header) ValidateBasic() error {
 	if h.ValidatorSet == nil {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidHeader, "validator set is nil")
 	}
-	tmValset, err := tmtypes.ValidatorSetFromProto(h.ValidatorSet)
+	tmValset, err := osttypes.ValidatorSetFromProto(h.ValidatorSet)
 	if err != nil {
 		return sdkerrors.Wrap(err, "validator set is not tendermint validator set")
 	}
