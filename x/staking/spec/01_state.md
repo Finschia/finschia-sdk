@@ -33,7 +33,7 @@ Validators can have one of three statuses
   must wait the duration of the UnbondingTime, a chain-specific param, during which time
   they are still slashable for offences of the source validator if those offences were committed
   during the period of time that the tokens were bonded.
-* `Unbonding`: When a validator leaves the active set, either by choice or due to slashing, jailing or
+- `Unbonding`: When a validator leaves the active set, either by choice or due to slashing, jailing or
   tombstoning, an unbonding of all their delegations begins. All delegations must then wait the UnbondingTime
   before their tokens are moved to their accounts from the `BondedPool`.
 
@@ -48,6 +48,21 @@ records within a block.
 - ValidatorsByConsAddr: `0x22 | ConsAddrLen (1 byte) | ConsAddr -> OperatorAddr`
 - ValidatorsByPower: `0x23 | BigEndian(ConsensusPower) | OperatorAddrLen (1 byte) | OperatorAddr -> OperatorAddr`
 - LastValidatorsPower: `0x11 | OperatorAddrLen (1 byte) | OperatorAddr -> ProtocolBuffer(ConsensusPower)`
+
+`Validators` is the primary index - it ensures that each operator can have only one
+associated validator, where the public key of that validator can change in the
+future. Delegators can refer to the immutable operator of the validator, without
+concern for the changing public key.
+
+`ValidatorByConsAddr` is an additional index that enables lookups for slashing.
+When Tendermint reports evidence, it provides the validator address, so this
+map is needed to find the operator. Note that the `ConsAddr` corresponds to the
+address which can be derived from the validator's `ConsPubKey`.
+
+`ValidatorsByPower` is an additional index that provides a sorted list of
+potential validators to quickly determine the current active set. Here
+ConsensusPower is validator.Tokens/10^6 by default. Note that all validators
+where `Jailed` is true are not stored within this index.
 
 `LastValidatorsPower` is a special index that provides a historical list of the
 last-block's bonded validators. This index remains constant during a block but
@@ -135,7 +150,7 @@ A redelegation object is created every time a redelegation occurs. To prevent
 - the (re)delegator already has another immature redelegation in progress
   with a destination to a validator (let's call it `Validator X`)
 - and, the (re)delegator is attempting to create a _new_ redelegation
-  where the source validator for this new redelegation is `Validator-X`.
+  where the source validator for this new redelegation is `Validator X`.
 
 +++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/staking/v1beta1/staking.proto#L200-L228
 

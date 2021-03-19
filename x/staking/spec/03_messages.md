@@ -74,6 +74,12 @@ The delegator receives newly minted shares at the current exchange rate.
 The exchange rate is the number of existing shares in the validator divided by
 the number of currently delegated tokens.
 
+The validator is updated in the `ValidatorByPower` index, and the delegation is
+tracked in validator object in the `Validators` index.
+
+It is possible to delegate to a jailed validator, the only difference being it
+will not be added to the power index until it is unjailed.
+
 ## Msg/Undelegate
 
 The `Msg/Undelegate` service message allows delegators to undelegate their tokens from
