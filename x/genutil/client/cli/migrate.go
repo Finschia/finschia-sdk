@@ -20,7 +20,7 @@ const flagGenesisTime = "genesis-time"
 
 // VersionMap allow applications to extend and modify the migration process.
 //
-// Ref: https://github.com/cosmos/cosmos-sdk/issues/5041
+// Ref: https://github.com/line/lbm-sdk/issues/5041
 var VersionMap = types.VersionMap{}
 
 // GetMigrationCallback returns a MigrationCallback for a given version.
