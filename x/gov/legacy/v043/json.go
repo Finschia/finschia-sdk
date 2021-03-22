@@ -1,8 +1,8 @@
 package v043
 
 import (
-	v040gov "github.com/cosmos/cosmos-sdk/x/gov/legacy/v040"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
+	v040gov "github.com/line/lbm-sdk/x/gov/legacy/v040"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 // migrateWeightedVotes migrates the ADR-037 weighted votes.

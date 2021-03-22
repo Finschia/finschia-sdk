@@ -1,10 +1,10 @@
 package v043
 
 import (
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/x/genutil/types"
-	v040gov "github.com/cosmos/cosmos-sdk/x/gov/legacy/v040"
-	v043gov "github.com/cosmos/cosmos-sdk/x/gov/legacy/v043"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/x/genutil/types"
+	v040gov "github.com/line/lbm-sdk/x/gov/legacy/v040"
+	v043gov "github.com/line/lbm-sdk/x/gov/legacy/v043"
 )
 
 // Migrate migrates exported state from v0.40 to a v0.43 genesis state.
