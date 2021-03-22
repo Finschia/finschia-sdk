@@ -23,7 +23,11 @@ WORKDIR /go/src/github.com/line/lbm-sdk
 COPY . .
 
 # install simapp, remove packages
-RUN make build-linux
+# TODO ebony: fix module download error in docker
+RUN export GO111MODULE=on && \
+    export GOPROXY=direct && \
+    git config --global url."https://53e246813dc517348d0f87dfc21a12f70e4e81de:x-oauth-basic@github.com".insteadOf "https://github.com" && \
+    make build-linux
 
 
 # Final image
