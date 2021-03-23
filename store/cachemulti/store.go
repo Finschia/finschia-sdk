@@ -147,7 +147,7 @@ func (cms Store) GetStore(key types.StoreKey) types.Store {
 // GetKVStore returns an underlying KVStore by key.
 func (cms Store) GetKVStore(key types.StoreKey) types.KVStore {
 	store := cms.stores[key]
-	if key == nil {
+	if store == nil {
 		panic(fmt.Sprintf("kv store with key %v has not been registered in stores", key))
 	}
 	return store.(types.KVStore)
