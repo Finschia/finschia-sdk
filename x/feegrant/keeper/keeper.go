@@ -6,11 +6,12 @@ import (
 	"github.com/line/ostracon/libs/log"
 
 	storetypes "github.com/line/lbm-sdk/store/types"
-	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/auth/ante"
+	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
 // Keeper manages state of all fee grants, as well as calculating approval.
@@ -20,6 +21,8 @@ type Keeper struct {
 	storeKey   storetypes.StoreKey
 	authKeeper types.AccountKeeper
 }
+
+var _ ante.FeegrantKeeper = &Keeper{}
 
 // NewKeeper creates a fee grant Keeper
 func NewKeeper(cdc codec.Marshaler, storeKey storetypes.StoreKey, ak types.AccountKeeper) Keeper {
