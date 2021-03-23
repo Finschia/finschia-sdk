@@ -23,6 +23,7 @@ WORKDIR /go/src/github.com/line/lbm-sdk
 COPY . .
 
 # install simapp, remove packages
+# TODO ebony: fix module download error in docker
 RUN make build-linux
 
 

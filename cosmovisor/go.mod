@@ -1,4 +1,4 @@
-module github.com/line/lbm-sdk/cosmovisor
+module github.com/line/lbm-sdk/v2/cosmovisor
 
 go 1.14
 

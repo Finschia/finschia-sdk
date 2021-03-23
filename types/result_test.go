@@ -215,3 +215,25 @@ func TestWrapServiceResult(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, spot, spot2)
 }
+
+func TestNewResponseFormatBroadcastTx(t *testing.T) {
+	hash, err := hex.DecodeString("00000000000000000000000000000000")
+	require.NoError(t, err)
+	result := ctypes.ResultBroadcastTx{
+		Code:      1,
+		Data:      []byte("some data"),
+		Log:       `[{"log":"","msg_index":1,"success":true}]`,
+		Codespace: "codespace",
+		Hash:      hash,
+	}
+
+	txResponse := sdk.NewResponseFormatBroadcastTx(&result)
+
+	require.NoError(t, err)
+	require.Equal(t, result.Code, txResponse.Code)
+	require.Equal(t, result.Data.String(), txResponse.Data)
+	require.NotEmpty(t, txResponse.Logs)
+	require.Equal(t, result.Log, txResponse.RawLog)
+	require.Equal(t, result.Codespace, txResponse.Codespace)
+	require.Equal(t, result.Hash.String(), txResponse.TxHash)
+}
