@@ -94,7 +94,7 @@ choice given that `0` is an invalid value for a string character and is commonly
 All public key types will have a unique protobuf message type such as:
 
 ```proto
-package cosmos.crypto.sr25519;
+package lbm.crypto.sr25519;
 
 message PubKey {
   bytes key = 1;
@@ -119,7 +119,7 @@ address by sorting child public keys first.
 
 First we define a proto message for multisig public keys:
 ```proto
-package cosmos.crypto.multisig;
+package lbm.crypto.multisig;
 
 message PubKey {
   uint32 threshold = 1;

@@ -63,7 +63,7 @@ func TestMigrate(t *testing.T) {
   },
   "accounts": [
     {
-      "type": "cosmos-sdk/Account",
+      "type": "lbm-sdk/Account",
       "value": {
         "address": "cosmos1j7skdhh9raxdmfhmcy2gxz8hgn0jnhfmujjsfe",
         "coins": [
@@ -81,7 +81,7 @@ func TestMigrate(t *testing.T) {
       }
     },
     {
-      "type": "cosmos-sdk/Account",
+      "type": "lbm-sdk/Account",
       "value": {
         "address": "cosmos1v57fx2l2rt6ehujuu99u2fw05779m5e2ux4z2h",
         "coins": [

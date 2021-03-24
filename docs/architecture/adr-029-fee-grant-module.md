@@ -126,10 +126,10 @@ message MsgGrantFeeAllowance {
 
 In order to use allowances in transactions, we add a new field `granter` to the transaction `Fee` type:
 ```proto
-package cosmos.tx.v1beta1;
+package lbm.tx.v1beta1;
 
 message Fee {
-  repeated cosmos.base.v1beta1.Coin amount = 1;
+  repeated lbm.base.v1beta1.Coin amount = 1;
   uint64 gas_limit = 2;
   string payer = 3;
   string granter = 4;

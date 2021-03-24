@@ -99,7 +99,7 @@ func mkStdTx() legacytx.StdTx {
 }
 
 // Create an IBC tx that's encoded as amino-JSON. Since we can't amino-marshal
-// a tx with "cosmos-sdk/MsgTransfer" using the SDK, we just hardcode the tx
+// a tx with "lbm-sdk/MsgTransfer" using the SDK, we just hardcode the tx
 // here. But external clients might, see https://github.com/line/lbm-sdk/v2/issues/8022.
 func mkIBCStdTx() []byte {
 	ibcTx := `{
@@ -117,7 +117,7 @@ func mkIBCStdTx() []byte {
 		"memo": "",
 		"msg": [
 		  {
-			"type": "cosmos-sdk/MsgTransfer",
+			"type": "lbm-sdk/MsgTransfer",
 			"value": {
 			  "receiver": "cosmos1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
 			  "sender": "cosmos1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
@@ -496,7 +496,7 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 	// Write consensus json to temp file, used for an IBC message.
 	consensusJSON := testutil.WriteToNewTempFile(
 		s.T(),
-		`{"public_key":{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"A/3SXL2ONYaOkxpdR5P8tHTlSlPv1AwQwSFxKRee5JQW"},"diversifier":"diversifier","timestamp":"10"}`,
+		`{"public_key":{"@type":"/lbm.crypto.secp256k1.PubKey","key":"A/3SXL2ONYaOkxpdR5P8tHTlSlPv1AwQwSFxKRee5JQW"},"diversifier":"diversifier","timestamp":"10"}`,
 	)
 
 	testCases := []struct {

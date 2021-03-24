@@ -22,7 +22,7 @@ In early conversations [it was proposed](https://docs.google.com/document/d/1eEg
 that `Msg` return types be captured using a protobuf extension field, ex:
 
 ```protobuf
-package cosmos.gov;
+package lbm.gov;
 
 message MsgSubmitProposal
 	option (cosmos_proto.msg_return) = “uint64”;
@@ -57,7 +57,7 @@ Below we define how this will look for the `SubmitProposal` message from `x/gov`
 We start with a `Msg` `service` definition:
 
 ```proto
-package cosmos.gov;
+package lbm.gov;
 
 service Msg {
   rpc SubmitProposal(MsgSubmitProposal) returns (MsgSubmitProposalResponse);

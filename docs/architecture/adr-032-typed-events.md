@@ -119,7 +119,7 @@ For example, let's take `MsgSubmitProposal` of `gov` module and implement this e
 // proto/cosmos/gov/v1beta1/gov.proto
 // Add typed event definition
 
-package cosmos.gov.v1beta1;
+package lbm.gov.v1beta1;
 
 message EventSubmitProposal {
     string from_address   = 1;

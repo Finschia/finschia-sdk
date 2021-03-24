@@ -67,7 +67,7 @@ import authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
 
 // Register the module account type with the auth module codec so it can decode module accounts stored in a genesis file
 func init() {
-    authtypes.RegisterAccountTypeCodec(ModuleAccount{}, "cosmos-sdk/ModuleAccount")
+    authtypes.RegisterAccountTypeCodec(ModuleAccount{}, "lbm-sdk/ModuleAccount")
 }
 
 type ModuleAccount struct {

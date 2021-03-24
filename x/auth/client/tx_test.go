@@ -153,6 +153,6 @@ func makeCodec() *codec.LegacyAmino {
 	sdk.RegisterLegacyAminoCodec(cdc)
 	cryptocodec.RegisterCrypto(cdc)
 	authtypes.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "cosmos-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "lbm-sdk/Test", nil)
 	return cdc
 }

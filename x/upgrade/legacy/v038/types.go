@@ -162,6 +162,6 @@ func (sup CancelSoftwareUpgradeProposal) String() string {
 }
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(SoftwareUpgradeProposal{}, "cosmos-sdk/SoftwareUpgradeProposal", nil)
-	cdc.RegisterConcrete(CancelSoftwareUpgradeProposal{}, "cosmos-sdk/CancelSoftwareUpgradeProposal", nil)
+	cdc.RegisterConcrete(SoftwareUpgradeProposal{}, "lbm-sdk/SoftwareUpgradeProposal", nil)
+	cdc.RegisterConcrete(CancelSoftwareUpgradeProposal{}, "lbm-sdk/CancelSoftwareUpgradeProposal", nil)
 }

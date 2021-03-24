@@ -103,7 +103,7 @@ func TestMigrate(t *testing.T) {
 	"proposals": [
 		{
 			"content": {
-				"@type": "/cosmos.gov.v1beta1.TextProposal",
+				"@type": "/lbm.gov.v1beta1.TextProposal",
 				"description": "bar_text",
 				"title": "foo_text"
 			},
@@ -123,7 +123,7 @@ func TestMigrate(t *testing.T) {
 		},
 		{
 			"content": {
-				"@type": "/cosmos.distribution.v1beta1.CommunityPoolSpendProposal",
+				"@type": "/lbm.distribution.v1beta1.CommunityPoolSpendProposal",
 				"amount": [
 					{
 						"amount": "2",
@@ -150,7 +150,7 @@ func TestMigrate(t *testing.T) {
 		},
 		{
 			"content": {
-				"@type": "/cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal",
+				"@type": "/lbm.upgrade.v1beta1.CancelSoftwareUpgradeProposal",
 				"description": "bar_cancel_upgrade",
 				"title": "foo_cancel_upgrade"
 			},
@@ -170,7 +170,7 @@ func TestMigrate(t *testing.T) {
 		},
 		{
 			"content": {
-				"@type": "/cosmos.upgrade.v1beta1.SoftwareUpgradeProposal",
+				"@type": "/lbm.upgrade.v1beta1.SoftwareUpgradeProposal",
 				"description": "bar_software_upgrade",
 				"plan": {
 					"height": "123",
@@ -197,7 +197,7 @@ func TestMigrate(t *testing.T) {
 		},
 		{
 			"content": {
-				"@type": "/cosmos.params.v1beta1.ParameterChangeProposal",
+				"@type": "/lbm.params.v1beta1.ParameterChangeProposal",
 				"changes": [
 					{
 						"key": "foo_param_change_key",
