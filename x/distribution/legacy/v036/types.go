@@ -130,5 +130,5 @@ func (csp CommunityPoolSpendProposal) String() string {
 }
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(CommunityPoolSpendProposal{}, "cosmos-sdk/CommunityPoolSpendProposal", nil)
+	cdc.RegisterConcrete(CommunityPoolSpendProposal{}, "lbm-sdk/CommunityPoolSpendProposal", nil)
 }

@@ -13,9 +13,9 @@ import (
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*exported.SupplyI)(nil), nil)
-	cdc.RegisterConcrete(&Supply{}, "cosmos-sdk/Supply", nil)
-	cdc.RegisterConcrete(&MsgSend{}, "cosmos-sdk/MsgSend", nil)
-	cdc.RegisterConcrete(&MsgMultiSend{}, "cosmos-sdk/MsgMultiSend", nil)
+	cdc.RegisterConcrete(&Supply{}, "lbm-sdk/Supply", nil)
+	cdc.RegisterConcrete(&MsgSend{}, "lbm-sdk/MsgSend", nil)
+	cdc.RegisterConcrete(&MsgMultiSend{}, "lbm-sdk/MsgMultiSend", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -25,7 +25,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 
 	registry.RegisterInterface(
-		"cosmos.bank.v1beta1.SupplyI",
+		"lbm.bank.v1beta1.SupplyI",
 		(*exported.SupplyI)(nil),
 		&Supply{},
 	)

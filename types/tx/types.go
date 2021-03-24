@@ -188,12 +188,12 @@ func (m *SignerInfo) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 
 // RegisterInterfaces registers the sdk.Tx interface.
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	registry.RegisterInterface("cosmos.tx.v1beta1.Tx", (*sdk.Tx)(nil))
+	registry.RegisterInterface("lbm.tx.v1beta1.Tx", (*sdk.Tx)(nil))
 	registry.RegisterImplementations((*sdk.Tx)(nil), &Tx{})
 }
 
 // isServiceMsg checks if a type URL corresponds to a service method name,
-// i.e. /cosmos.bank.Msg/Send vs /cosmos.bank.MsgSend
+// i.e. /lbm.bank.Msg/Send vs /lbm.bank.MsgSend
 func isServiceMsg(typeURL string) bool {
 	return strings.Count(typeURL, "/") >= 2
 }

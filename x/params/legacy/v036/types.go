@@ -168,5 +168,5 @@ func ErrEmptyValue(codespace string) error {
 }
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(ParameterChangeProposal{}, "cosmos-sdk/ParameterChangeProposal", nil)
+	cdc.RegisterConcrete(ParameterChangeProposal{}, "lbm-sdk/ParameterChangeProposal", nil)
 }

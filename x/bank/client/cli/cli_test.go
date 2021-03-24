@@ -492,7 +492,7 @@ func (s *IntegrationTestSuite) TestBankMsgService() {
 			false,
 			&sdk.TxResponse{},
 			0,
-			"/cosmos.bank.v1beta1.Msg/Send", // indicates we are using ServiceMsg and not a regular Msg
+			"/lbm.bank.v1beta1.Msg/Send", // indicates we are using ServiceMsg and not a regular Msg
 		},
 	}
 

@@ -22,9 +22,9 @@ var _ codectypes.UnpackInterfacesMessage = SoftwareUpgradeProposal{}
 
 func init() {
 	gov.RegisterProposalType(ProposalTypeSoftwareUpgrade)
-	gov.RegisterProposalTypeCodec(&SoftwareUpgradeProposal{}, "cosmos-sdk/SoftwareUpgradeProposal")
+	gov.RegisterProposalTypeCodec(&SoftwareUpgradeProposal{}, "lbm-sdk/SoftwareUpgradeProposal")
 	gov.RegisterProposalType(ProposalTypeCancelSoftwareUpgrade)
-	gov.RegisterProposalTypeCodec(&CancelSoftwareUpgradeProposal{}, "cosmos-sdk/CancelSoftwareUpgradeProposal")
+	gov.RegisterProposalTypeCodec(&CancelSoftwareUpgradeProposal{}, "lbm-sdk/CancelSoftwareUpgradeProposal")
 }
 
 func (sup *SoftwareUpgradeProposal) GetTitle() string       { return sup.Title }

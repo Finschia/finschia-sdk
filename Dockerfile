@@ -24,6 +24,8 @@ COPY . .
 
 # install simapp, remove packages
 # TODO ebony: fix module download error in docker
+RUN go env -w GOPRIVATE=github.com/line/*
+RUN git config --global url."https://$GITHUB_TOKEN:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 RUN make build-linux
 
 

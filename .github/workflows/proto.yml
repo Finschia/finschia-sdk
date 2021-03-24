@@ -13,9 +13,10 @@ jobs:
       - uses: actions/checkout@master
       - name: lint
         run: make proto-lint
-  breakage:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: check-breakage
-        run: make proto-check-breaking
+# TODO ebony: release comment after merging initial proto files to v2 branch
+#  breakage:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@master
+#      - name: check-breakage
+#        run: make proto-check-breaking

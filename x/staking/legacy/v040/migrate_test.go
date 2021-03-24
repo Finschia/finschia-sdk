@@ -70,7 +70,7 @@ func TestMigrate(t *testing.T) {
         "update_time": "0001-01-01T00:00:00Z"
       },
       "consensus_pubkey": {
-        "@type": "/cosmos.crypto.ed25519.PubKey",
+        "@type": "/lbm.crypto.ed25519.PubKey",
         "key": "KTeVrjP7NJIufvgMJsQRxZjfFyD+Exda6O7x+oxIvmA="
       },
       "delegator_shares": "0",
