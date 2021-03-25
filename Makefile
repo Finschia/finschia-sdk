@@ -1,5 +1,6 @@
 #!/usr/bin/make -f
 
+<<<<<<< HEAD
 PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 VERSION := $(shell echo $(shell git describe --always) | sed 's/^v//')
@@ -324,8 +325,12 @@ benchmark:
 ###                                Linting                                  ###
 ###############################################################################
 
-lint:
+lint: golangci-lint
 	golangci-lint run --out-format=tab
+	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
+
+golangci-lint:
+	@go get github.com/golangci/golangci-lint/cmd/golangci-lint
 
 lint-fix:
 	golangci-lint run --fix --out-format=tab --issues-exit-code=0
