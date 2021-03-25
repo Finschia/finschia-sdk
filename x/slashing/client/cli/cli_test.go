@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package cli_test
@@ -49,9 +50,9 @@ func (s *IntegrationTestSuite) TearDownSuite() {
 
 func (s *IntegrationTestSuite) TestGetCmdQuerySigningInfo() {
 	val := s.network.Validators[0]
-
-	valConsPubKey, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, val.PubKey)
+	pubKeyBz, err := s.cfg.Codec.MarshalInterfaceJSON(val.PubKey)
 	s.Require().NoError(err)
+	pubKeyStr := string(pubKeyBz)
 
 	testCases := []struct {
 		name           string
@@ -144,7 +145,6 @@ slash_fraction_downtime: "0.010000000000000000"`,
 
 func (s *IntegrationTestSuite) TestNewUnjailTxCmd() {
 	val := s.network.Validators[0]
-
 	testCases := []struct {
 		name         string
 		args         []string

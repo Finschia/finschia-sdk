@@ -1,4 +1,4 @@
-package types_test
+package legacybech32
 
 import (
 	"math/rand"
@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/types"
 )
 
 func BenchmarkBech32ifyPubKey(b *testing.B) {
@@ -24,7 +23,7 @@ func BenchmarkBech32ifyPubKey(b *testing.B) {
 		rng.Read(pk.Key)
 		b.StartTimer()
 
-		_, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeConsPub, pk)
+		_, err := MarshalPubKey(ConsPK, pk)
 		require.NoError(b, err)
 	}
 }
@@ -41,11 +40,11 @@ func BenchmarkGetPubKeyFromBech32(b *testing.B) {
 		b.StopTimer()
 		rng.Read(pk.Key)
 
-		pkStr, err := types.Bech32ifyPubKey(types.Bech32PubKeyTypeConsPub, pk)
+		pkStr, err := MarshalPubKey(ConsPK, pk)
 		require.NoError(b, err)
 
 		b.StartTimer()
-		pk2, err := types.GetPubKeyFromBech32(types.Bech32PubKeyTypeConsPub, pkStr)
+		pk2, err := UnmarshalPubKey(ConsPK, pkStr)
 		require.NoError(b, err)
 		require.Equal(b, pk, pk2)
 	}

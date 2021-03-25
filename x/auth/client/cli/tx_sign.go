@@ -9,6 +9,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
+	"github.com/line/lbm-sdk/client/types/tx/signing"
 	sdk "github.com/line/lbm-sdk/types"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
 	"github.com/line/lbm-sdk/x/auth/client/rest"
@@ -110,6 +111,9 @@ func makeSignBatchCmd() func(cmd *cobra.Command, args []string) error {
 					return err
 				}
 			} else {
+				if txFactory.SignMode() == signing.SignMode_SIGN_MODE_UNSPECIFIED {
+					txFactory = txFactory.WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON) //nolint:staticcheck
+				}
 				err = authclient.SignTxWithSignerAddress(
 					txFactory, clientCtx, multisigAddr, clientCtx.GetFromName(), txBuilder, clientCtx.Offline, true)
 			}
@@ -209,6 +213,9 @@ func makeSignCmd() func(cmd *cobra.Command, args []string) error {
 		clientCtx, txF, newTx, err := readTxAndInitContexts(clientCtx, cmd, args[0])
 		if err != nil {
 			return err
+		}
+		if txF.SignMode() == signing.SignMode_SIGN_MODE_UNSPECIFIED {
+			txF = txF.WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON) //nolint:staticcheck
 		}
 		txCfg := clientCtx.TxConfig
 		txBuilder, err := txCfg.WrapTxBuilder(newTx)

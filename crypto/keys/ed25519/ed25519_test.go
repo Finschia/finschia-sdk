@@ -11,6 +11,8 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	ed25519 "github.com/line/lbm-sdk/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
@@ -233,4 +235,22 @@ func TestMarshalAmino_BackwardsCompatibility(t *testing.T) {
 			require.Equal(t, bz1, bz2)
 		})
 	}
+}
+
+func TestMarshalJSON(t *testing.T) {
+	require := require.New(t)
+	privKey := ed25519.GenPrivKey()
+	pk := privKey.PubKey()
+
+	registry := types.NewInterfaceRegistry()
+	cryptocodec.RegisterInterfaces(registry)
+	cdc := codec.NewProtoCodec(registry)
+
+	bz, err := cdc.MarshalInterfaceJSON(pk)
+	require.NoError(err)
+
+	var pk2 cryptotypes.PubKey
+	err = cdc.UnmarshalInterfaceJSON(bz, &pk2)
+	require.NoError(err)
+	require.True(pk2.Equals(pk))
 }

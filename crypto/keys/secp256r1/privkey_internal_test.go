@@ -4,12 +4,12 @@ import (
 	"testing"
 
 	"github.com/line/ostracon/crypto"
+	"github.com/stretchr/testify/suite"
 
 	proto "github.com/gogo/protobuf/proto"
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
-	"github.com/stretchr/testify/suite"
 )
 
 var _ cryptotypes.PrivKey = &PrivKey{}
