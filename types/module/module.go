@@ -390,47 +390,16 @@ func (m Manager) RunMigrations(ctx sdk.Context, cfg Configurator, fromVM Version
 	}
 
 	updatedVM := make(VersionMap)
-	// for deterministic iteration order
-	// (as some migrations depend on other modules
-	// and the order of executing migrations matters)
-	// TODO: make the order user-configurable?
-	sortedModNames := make([]string, 0, len(m.Modules))
-	for key := range m.Modules {
-		sortedModNames = append(sortedModNames, key)
-	}
-	sort.Strings(sortedModNames)
-
-	for _, moduleName := range sortedModNames {
-		module := m.Modules[moduleName]
-		fromVersion, exists := fromVM[moduleName]
+	for moduleName, module := range m.Modules {
+		fromVersion := fromVM[moduleName]
 		toVersion := module.ConsensusVersion()
 
-		// Only run migrations when the module exists in the fromVM.
-		// Run InitGenesis otherwise.
-		//
-		// the module won't exist in the fromVM in two cases:
-		// 1. A new module is added. In this case we run InitGenesis with an
-		// empty genesis state.
-		// 2. An existing chain is upgrading to v043 for the first time. In this case,
-		// all modules have yet to be added to x/upgrade's VersionMap store.
-		if exists {
+		// only run migrations when the from version is > 0
+		// from version will be 0 when a new module is added and migrations shouldn't be run in this case
+		if fromVersion > 0 {
 			err := c.runModuleMigrations(ctx, moduleName, fromVersion, toVersion)
 			if err != nil {
 				return nil, err
-			}
-		} else {
-			cfgtor, ok := cfg.(configurator)
-			if !ok {
-				// Currently, the only implementator of Configurator (the interface)
-				// is configurator (the struct).
-				return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expected %T, got %T", configurator{}, cfg)
-			}
-
-			moduleValUpdates := module.InitGenesis(ctx, cfgtor.cdc, module.DefaultGenesis(cfgtor.cdc))
-			// The module manager assumes only one module will update the
-			// validator set, and that it will not be by a new module.
-			if len(moduleValUpdates) > 0 {
-				return nil, sdkerrors.Wrapf(sdkerrors.ErrLogic, "validator InitGenesis updates already set by a previous module")
 			}
 		}
 
