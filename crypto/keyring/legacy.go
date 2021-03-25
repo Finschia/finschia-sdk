@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	ostos "github.com/line/ostracon/libs/os"
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 	"github.com/pkg/errors"
 
 	"github.com/line/lbm-sdk/v2/crypto"
@@ -45,12 +45,12 @@ var _ LegacyKeybase = dbKeybase{}
 //
 // NOTE: dbKeybase will be deprecated in favor of keyringKeybase.
 type dbKeybase struct {
-	db dbm.DB
+	db tmdb.DB
 }
 
 // newDBKeybase creates a new dbKeybase instance using the provided DB for
 // reading and writing keys.
-func newDBKeybase(db dbm.DB) dbKeybase {
+func newDBKeybase(db tmdb.DB) dbKeybase {
 	return dbKeybase{
 		db: db,
 	}

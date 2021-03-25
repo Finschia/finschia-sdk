@@ -4,10 +4,10 @@ import (
 	"crypto/rand"
 	"testing"
 
-	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
 
 	liavl "github.com/line/iavl/v2"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/store/dbadapter"
 	"github.com/line/lbm-sdk/v2/store/gaskv"
@@ -87,7 +87,7 @@ func testPrefixStore(t *testing.T, baseStore types.KVStore, prefix []byte) {
 }
 
 func TestIAVLStorePrefix(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	tree, err := liavl.NewMutableTree(db, cacheSize)
 	require.NoError(t, err)
 	iavlStore := iavl.UnsafeNewStore(tree)
@@ -97,13 +97,13 @@ func TestIAVLStorePrefix(t *testing.T) {
 
 func TestPrefixKVStoreNoNilSet(t *testing.T) {
 	meter := types.NewGasMeter(100000000)
-	mem := dbadapter.Store{DB: dbm.NewMemDB()}
+	mem := dbadapter.Store{DB: memdb.NewDB()}
 	gasStore := gaskv.NewStore(mem, meter, types.KVGasConfig())
 	require.Panics(t, func() { gasStore.Set([]byte("key"), nil) }, "setting a nil value should panic")
 }
 
 func TestPrefixStoreIterate(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	baseStore := dbadapter.Store{DB: db}
 	prefix := []byte("test")
 	prefixStore := NewStore(baseStore, prefix)
@@ -149,7 +149,7 @@ func TestCloneAppend(t *testing.T) {
 }
 
 func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	baseStore := dbadapter.Store{DB: db}
 
 	// overflow in cpIncr
@@ -179,7 +179,7 @@ func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
 }
 
 func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	baseStore := dbadapter.Store{DB: db}
 
 	// overflow in cpIncr
@@ -207,7 +207,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 
 	iter.Close()
 
-	db = dbm.NewMemDB()
+	db = memdb.NewDB()
 	baseStore = dbadapter.Store{DB: db}
 
 	// underflow in cpDecr
@@ -238,7 +238,7 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 // Tests below are ported from https://github.com/tendermint/tendermint/blob/master/libs/db/prefix_db_test.go
 
 func mockStoreWithStuff() types.KVStore {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	store := dbadapter.Store{DB: db}
 	// Under "key" prefix
 	store.Set(bz("key"), bz("value"))

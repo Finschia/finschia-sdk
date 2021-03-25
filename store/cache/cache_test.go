@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/iavl/v2"
-	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/iavl/v2"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/store/cache"
 	iavlstore "github.com/line/lbm-sdk/v2/store/iavl"
@@ -14,7 +15,7 @@ import (
 )
 
 func TestGetOrSetStoreCache(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	mngr := cache.NewCommitKVStoreCacheManager(cache.DefaultCommitKVStoreCacheSize)
 
 	sKey := types.NewKVStoreKey("test")
@@ -28,7 +29,7 @@ func TestGetOrSetStoreCache(t *testing.T) {
 }
 
 func TestUnwrap(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	mngr := cache.NewCommitKVStoreCacheManager(cache.DefaultCommitKVStoreCacheSize)
 
 	sKey := types.NewKVStoreKey("test")
@@ -42,7 +43,7 @@ func TestUnwrap(t *testing.T) {
 }
 
 func TestStoreCache(t *testing.T) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	mngr := cache.NewCommitKVStoreCacheManager(cache.DefaultCommitKVStoreCacheSize)
 
 	sKey := types.NewKVStoreKey("test")

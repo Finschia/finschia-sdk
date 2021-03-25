@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/line/ostracon/libs/log"
-	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
@@ -52,7 +52,7 @@ func TestGRPCGatewayRouter(t *testing.T) {
 
 func TestRegisterQueryServiceTwice(t *testing.T) {
 	// Setup baseapp.
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	encCfg := simapp.MakeTestEncodingConfig()
 	app := baseapp.NewBaseApp("test", log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, encCfg.TxConfig.TxDecoder())
 	app.SetInterfaceRegistry(encCfg.InterfaceRegistry)

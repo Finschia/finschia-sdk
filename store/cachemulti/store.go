@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/dbadapter"
@@ -58,7 +58,7 @@ func NewFromKVStore(
 // NewStore creates a new Store object from a mapping of store keys to
 // CacheWrapper objects. Each CacheWrapper store is a branched store.
 func NewStore(
-	db dbm.DB, stores map[types.StoreKey]types.CacheWrapper, keys map[string]types.StoreKey,
+	db tmdb.DB, stores map[types.StoreKey]types.CacheWrapper, keys map[string]types.StoreKey,
 	traceWriter io.Writer, traceContext types.TraceContext,
 ) Store {
 

@@ -7,8 +7,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	abci "github.com/line/ostracon/abci/types"
-	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	"github.com/line/lbm-sdk/v2/store/iavl"
@@ -20,6 +19,7 @@ import (
 	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
 	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
 	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 var (
@@ -45,7 +45,7 @@ func (suite *MsgTestSuite) SetupTest() {
 	suite.chainB = suite.coordinator.GetChain(ibctesting.GetChainID(1))
 
 	app := simapp.Setup(false)
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	store := rootmulti.NewStore(db)
 	storeKey := storetypes.NewKVStoreKey("iavlStoreKey")
 

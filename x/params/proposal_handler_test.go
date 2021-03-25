@@ -7,7 +7,7 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/codec"
@@ -64,7 +64,7 @@ func newTestInput(t *testing.T) testInput {
 	cdc := codec.NewLegacyAmino()
 	proposal.RegisterLegacyAminoCodec(cdc)
 
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	cms := store.NewCommitMultiStore(db)
 
 	keyParams := sdk.NewKVStoreKey("params")

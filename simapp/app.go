@@ -12,7 +12,7 @@ import (
 	"github.com/line/ostracon/libs/log"
 	ostos "github.com/line/ostracon/libs/os"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
 
@@ -193,7 +193,7 @@ func init() {
 
 // NewSimApp returns a reference to an initialized SimApp.
 func NewSimApp(
-	logger log.Logger, db dbm.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
+	logger log.Logger, db tmdb.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
 	homePath string, invCheckPeriod uint, encodingConfig simappparams.EncodingConfig,
 	appOpts servertypes.AppOptions, baseAppOptions ...func(*baseapp.BaseApp),
 ) *SimApp {
