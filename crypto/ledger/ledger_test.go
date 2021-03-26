@@ -11,7 +11,6 @@ import (
 	"github.com/line/lbm-sdk/crypto/types"
 	"github.com/line/lbm-sdk/testutil"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/bech32/legacybech32"
 )
 
 func TestErrorHandling(t *testing.T) {
@@ -43,16 +42,16 @@ func checkDefaultPubKey(t *testing.T, priv types.LedgerPrivKey) {
 
 func TestPublicKeyUnsafeHDPath(t *testing.T) {
 	expectedAnswers := []string{
-		"linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
-		"linkpub1cqmsrdepqf258jtwpyujhxmlg94500j9yzqya5ryl835yp3dm6p9up25ufqcsx6q5xz",
-		"linkpub1cqmsrdepq2edmckd0zthve9r70err6ctxzqc4vt5648lu4fzqkld8dnaekzjct0cr4e",
-		"linkpub1cqmsrdepqg9xfexl88nvmyyzpg5htz5qz30wgdftf0puz5u3sj6jkk9fxy7vzu52r6p",
-		"linkpub1cqmsrdepqv09egt2l0u72a4h0stkcrx4hyz0z6mnxe5w5d7lzmmzfdj2mykj7q7c73e",
-		"linkpub1cqmsrdepqfn9d7tew6vlr37sy9crsdud2gufsftm7wz3r2uhze2lfam4a263qycs2m3",
-		"linkpub1cqmsrdepqfaq649vgk3levrsya2wkz8aecjxxd40rdfjhr6aqlld5ql54fds2sz53ae",
-		"linkpub1cqmsrdepqv43zgg5dauwynq4wyqz3c6xtl9wcmc8z8ftgqvj87xs000lld6s69a44hh",
-		"linkpub1cqmsrdepq0kchl479dz7f28hgfn7ve3txkktu9trq2dpmrzjy9awlyuf8w6x78kzujv",
-		"linkpub1cqmsrdepqttsm9aacj9pq3w22xjms6lgyzxhhdjrrajt4hzzfl0melff9w9dq3nqpcv",
+		"PubKeySecp256k1{034FEF9CD7C4C63588D3B03FEB5281B9D232CBA34D6F3D71AEE59211FFBFE1FE87}",
+		"PubKeySecp256k1{0260D0487A3DFCE9228EEE2D0D83A40F6131F551526C8E52066FE7FE1E4A509666}",
+		"PubKeySecp256k1{03A2670393D02B162D0ED06A08041E80D86BE36C0564335254DF7462447EB69AB3}",
+		"PubKeySecp256k1{033222FC61795077791665544A90740E8EAD638A391A3B8F9261F4A226B396C042}",
+		"PubKeySecp256k1{03F577473348D7B01E7AF2F245E36B98D181BC935EC8B552CDE5932B646DC7BE04}",
+		"PubKeySecp256k1{0222B1A5486BE0A2D5F3C5866BE46E05D1BDE8CDA5EA1C4C77A9BC48D2FA2753BC}",
+		"PubKeySecp256k1{0377A1C826D3A03CA4EE94FC4DEA6BCCB2BAC5F2AC0419A128C29F8E88F1FF295A}",
+		"PubKeySecp256k1{031B75C84453935AB76F8C8D0B6566C3FCC101CC5C59D7000BFC9101961E9308D9}",
+		"PubKeySecp256k1{038905A42433B1D677CC8AFD36861430B9A8529171B0616F733659F131C3F80221}",
+		"PubKeySecp256k1{038BE7F348902D8C20BC88D32294F4F3B819284548122229DECD1ADF1A7EB0848B}",
 	}
 
 	const numIters = 10
@@ -73,10 +72,8 @@ func TestPublicKeyUnsafeHDPath(t *testing.T) {
 		require.NoError(t, tmp.ValidateKey())
 		(&tmp).AssertIsPrivKeyInner()
 
-		pubKeyAddr, err := legacybech32.MarshalPubKey(legacybech32.AccPK, priv.PubKey())
-		require.NoError(t, err)
-		require.Equal(t,
-			expectedAnswers[i], pubKeyAddr,
+		// in this test we are chekcking if the generated keys are correct.
+		require.Equal(t, expectedAnswers[i], priv.PubKey().String(),
 			"Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 
 		// Store and restore
@@ -111,16 +108,16 @@ func TestPublicKeySafe(t *testing.T) {
 
 func TestPublicKeyHDPath(t *testing.T) {
 	expectedPubKeys := []string{
-		"linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
-		"linkpub1cqmsrdepqf258jtwpyujhxmlg94500j9yzqya5ryl835yp3dm6p9up25ufqcsx6q5xz",
-		"linkpub1cqmsrdepq2edmckd0zthve9r70err6ctxzqc4vt5648lu4fzqkld8dnaekzjct0cr4e",
-		"linkpub1cqmsrdepqg9xfexl88nvmyyzpg5htz5qz30wgdftf0puz5u3sj6jkk9fxy7vzu52r6p",
-		"linkpub1cqmsrdepqv09egt2l0u72a4h0stkcrx4hyz0z6mnxe5w5d7lzmmzfdj2mykj7q7c73e",
-		"linkpub1cqmsrdepqfn9d7tew6vlr37sy9crsdud2gufsftm7wz3r2uhze2lfam4a263qycs2m3",
-		"linkpub1cqmsrdepqfaq649vgk3levrsya2wkz8aecjxxd40rdfjhr6aqlld5ql54fds2sz53ae",
-		"linkpub1cqmsrdepqv43zgg5dauwynq4wyqz3c6xtl9wcmc8z8ftgqvj87xs000lld6s69a44hh",
-		"linkpub1cqmsrdepq0kchl479dz7f28hgfn7ve3txkktu9trq2dpmrzjy9awlyuf8w6x78kzujv",
-		"linkpub1cqmsrdepqttsm9aacj9pq3w22xjms6lgyzxhhdjrrajt4hzzfl0melff9w9dq3nqpcv",
+		"PubKeySecp256k1{034FEF9CD7C4C63588D3B03FEB5281B9D232CBA34D6F3D71AEE59211FFBFE1FE87}",
+		"PubKeySecp256k1{0260D0487A3DFCE9228EEE2D0D83A40F6131F551526C8E52066FE7FE1E4A509666}",
+		"PubKeySecp256k1{03A2670393D02B162D0ED06A08041E80D86BE36C0564335254DF7462447EB69AB3}",
+		"PubKeySecp256k1{033222FC61795077791665544A90740E8EAD638A391A3B8F9261F4A226B396C042}",
+		"PubKeySecp256k1{03F577473348D7B01E7AF2F245E36B98D181BC935EC8B552CDE5932B646DC7BE04}",
+		"PubKeySecp256k1{0222B1A5486BE0A2D5F3C5866BE46E05D1BDE8CDA5EA1C4C77A9BC48D2FA2753BC}",
+		"PubKeySecp256k1{0377A1C826D3A03CA4EE94FC4DEA6BCCB2BAC5F2AC0419A128C29F8E88F1FF295A}",
+		"PubKeySecp256k1{031B75C84453935AB76F8C8D0B6566C3FCC101CC5C59D7000BFC9101961E9308D9}",
+		"PubKeySecp256k1{038905A42433B1D677CC8AFD36861430B9A8529171B0616F733659F131C3F80221}",
+		"PubKeySecp256k1{038BE7F348902D8C20BC88D32294F4F3B819284548122229DECD1ADF1A7EB0848B}",
 	}
 
 	expectedAddrs := []string{
@@ -161,10 +158,9 @@ func TestPublicKeyHDPath(t *testing.T) {
 		require.NoError(t, tmp.ValidateKey())
 		(&tmp).AssertIsPrivKeyInner()
 
-		pubKeyAddr, err := legacybech32.MarshalPubKey(legacybech32.AccPK, priv.PubKey())
-		require.NoError(t, err)
+		// in this test we are chekcking if the generated keys are correct and stored in a right path.
 		require.Equal(t,
-			expectedPubKeys[i], pubKeyAddr,
+			expectedPubKeys[i], priv.PubKey().String(),
 			"Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 
 		// Store and restore
