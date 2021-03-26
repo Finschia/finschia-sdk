@@ -3,15 +3,16 @@ package types_test
 import (
 	"testing"
 
-	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/store/iavl"
 	"github.com/line/lbm-sdk/v2/store/types"
 )
 
 func newMemTestKVStore(t *testing.T) types.KVStore {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	store, err := iavl.LoadStore(db, types.CommitID{}, false)
 	require.NoError(t, err)
 	return store

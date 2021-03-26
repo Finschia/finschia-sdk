@@ -16,7 +16,7 @@ import (
 
 	ostcfg "github.com/line/ostracon/config"
 	ostlog "github.com/line/ostracon/libs/log"
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -360,7 +360,7 @@ func addrToIP(addr net.Addr) net.IP {
 	return ip
 }
 
-func openDB(rootDir string) (dbm.DB, error) {
+func openDB(rootDir string) (tmdb.DB, error) {
 	dataDir := filepath.Join(rootDir, "data")
 	return sdk.NewLevelDB("application", dataDir)
 }

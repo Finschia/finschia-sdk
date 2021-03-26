@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 
@@ -39,7 +39,7 @@ func createTestCodec() *codec.LegacyAmino {
 }
 
 func defaultContext(key sdk.StoreKey, tkey sdk.StoreKey) sdk.Context {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	cms := store.NewCommitMultiStore(db)
 	cms.MountStoreWithDB(key, sdk.StoreTypeIAVL, db)
 	cms.MountStoreWithDB(tkey, sdk.StoreTypeTransient, db)

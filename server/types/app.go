@@ -8,7 +8,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	osttypes "github.com/line/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/v2/client"
@@ -50,7 +50,7 @@ type (
 
 	// AppCreator is a function that allows us to lazily initialize an
 	// application using various configurations.
-	AppCreator func(log.Logger, dbm.DB, io.Writer, AppOptions) Application
+	AppCreator func(log.Logger, tmdb.DB, io.Writer, AppOptions) Application
 
 	// ModuleInitFlags takes a start command and adds modules specific init flags.
 	ModuleInitFlags func(startCmd *cobra.Command)
@@ -70,5 +70,5 @@ type (
 
 	// AppExporter is a function that dumps all app state to
 	// JSON-serializable structure and returns the current validator set.
-	AppExporter func(log.Logger, dbm.DB, io.Writer, int64, bool, []string, AppOptions) (ExportedApp, error)
+	AppExporter func(log.Logger, tmdb.DB, io.Writer, int64, bool, []string, AppOptions) (ExportedApp, error)
 )

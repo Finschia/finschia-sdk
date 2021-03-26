@@ -1,7 +1,7 @@
 package transient
 
 import (
-	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/store/dbadapter"
 	"github.com/line/lbm-sdk/v2/store/types"
@@ -17,13 +17,13 @@ type Store struct {
 
 // Constructs new MemDB adapter
 func NewStore() *Store {
-	return &Store{Store: dbadapter.Store{DB: dbm.NewMemDB()}}
+	return &Store{Store: dbadapter.Store{DB: memdb.NewDB()}}
 }
 
 // Implements CommitStore
 // Commit cleans up Store.
 func (ts *Store) Commit() (id types.CommitID) {
-	ts.Store = dbadapter.Store{DB: dbm.NewMemDB()}
+	ts.Store = dbadapter.Store{DB: memdb.NewDB()}
 	return
 }
 

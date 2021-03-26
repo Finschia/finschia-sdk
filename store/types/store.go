@@ -6,7 +6,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	oststrings "github.com/line/ostracon/libs/strings"
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 
 	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"
 	"github.com/line/lbm-sdk/v2/types/kv"
@@ -146,7 +146,7 @@ type CommitMultiStore interface {
 
 	// Mount a store of type using the given db.
 	// If db == nil, the new store will use the CommitMultiStore db.
-	MountStoreWithDB(key StoreKey, typ StoreType, db dbm.DB)
+	MountStoreWithDB(key StoreKey, typ StoreType, db tmdb.DB)
 
 	// Panics on a nil key.
 	GetCommitStore(key StoreKey) CommitStore
@@ -219,7 +219,7 @@ type KVStore interface {
 }
 
 // Iterator is an alias db's Iterator for convenience.
-type Iterator = dbm.Iterator
+type Iterator = tmdb.Iterator
 
 // CacheKVStore branches a KVStore and provides read cache functionality.
 // After calling .Write() on the CacheKVStore, all previously created

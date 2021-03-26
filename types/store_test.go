@@ -3,8 +3,9 @@ package types_test
 import (
 	"testing"
 
-	dbm "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/store/rootmulti"
 	"github.com/line/lbm-sdk/v2/store/types"
@@ -112,7 +113,7 @@ func (s *storeTestSuite) TestDiffKVStores() {
 }
 
 func (s *storeTestSuite) initTestStores() (types.KVStore, types.KVStore) {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	ms := rootmulti.NewStore(db)
 
 	key1 := types.NewKVStoreKey("store1")

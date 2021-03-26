@@ -12,7 +12,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -39,7 +39,7 @@ type TestSuite struct {
 var s TestSuite
 
 func setupTest(height int64, skip map[int64]bool) TestSuite {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	app := simapp.NewSimApp(log.NewNopLogger(), db, nil, true, skip, simapp.DefaultNodeHome, 0, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{})
 	genesisState := simapp.NewDefaultGenesisState(app.AppCodec())
 	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
