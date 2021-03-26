@@ -13,7 +13,7 @@
 # gopath.
 
 # change this to a specific release or branch
-set BRANCH=master
+set BRANCH=v1/main
 set REPO=github.com/line/lbm-sdk
 
 set GO_VERSION=1.12.5

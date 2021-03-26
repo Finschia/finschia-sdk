@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # change this to a specific release or branch
-BRANCH=master
+BRANCH=v1/main
 REPO=github.com/line/lbm-sdk
 
 GO_VERSION=1.12.5
