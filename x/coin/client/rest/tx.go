@@ -3,7 +3,7 @@ package rest
 import (
 	"net/http"
 
-	"github.com/line/link-modules/x/coin/internal/types"
+	"github.com/line/lbm-sdk/v2/x/coin/internal/types"
 
 	"github.com/gorilla/mux"
 

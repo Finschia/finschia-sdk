@@ -16,7 +16,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/gov/client/cli"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 func ProposalStoreCodeCmd(cdc *codec.Codec) *cobra.Command {

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

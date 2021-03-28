@@ -9,7 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
 	"github.com/gorilla/mux"
 
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 func registerNewTxRoutes(cliCtx context.CLIContext, r *mux.Router) {

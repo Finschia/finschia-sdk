@@ -9,9 +9,9 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/distribution"
 	"github.com/cosmos/cosmos-sdk/x/staking"
-	"github.com/line/link-modules/x/coin"
+	"github.com/line/lbm-sdk/v2/x/coin"
 
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 type MessageHandler struct {

@@ -1,8 +1,8 @@
 package account
 
 import (
-	"github.com/line/link-modules/x/account/client/cli"
-	"github.com/line/link-modules/x/account/internal/types"
+	"github.com/line/lbm-sdk/v2/x/account/client/cli"
+	"github.com/line/lbm-sdk/v2/x/account/internal/types"
 )
 
 const (

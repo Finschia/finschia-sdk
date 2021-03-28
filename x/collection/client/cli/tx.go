@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/v2/x/collection/internal/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 

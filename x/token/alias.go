@@ -1,9 +1,9 @@
 package token
 
 import (
-	"github.com/line/link-modules/x/token/internal/keeper"
-	"github.com/line/link-modules/x/token/internal/querier"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/v2/x/token/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/token/internal/querier"
+	"github.com/line/lbm-sdk/v2/x/token/internal/types"
 )
 
 const (

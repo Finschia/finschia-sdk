@@ -3,10 +3,10 @@ package coin
 import (
 	"encoding/json"
 
-	"github.com/line/link-modules/x/coin/client/cli"
-	"github.com/line/link-modules/x/coin/client/rest"
-	"github.com/line/link-modules/x/coin/internal/keeper"
-	"github.com/line/link-modules/x/coin/internal/types"
+	"github.com/line/lbm-sdk/v2/x/coin/client/cli"
+	"github.com/line/lbm-sdk/v2/x/coin/client/rest"
+	"github.com/line/lbm-sdk/v2/x/coin/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/coin/internal/types"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"

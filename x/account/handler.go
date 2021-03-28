@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/line/link-modules/x/account/internal/types"
+	"github.com/line/lbm-sdk/v2/x/account/internal/types"
 )
 
 // NewHandler returns a handler for "account" type messages.

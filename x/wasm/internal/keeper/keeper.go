@@ -19,7 +19,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tendermint/tendermint/crypto"
 
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 // GasMultiplier is how many cosmwasm gas points = 1 sdk gas point

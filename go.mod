@@ -11,7 +11,7 @@ require (
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/confio/ics23/go v0.6.3
-	github.com/cosmos/cosmos-sdk v0.42.3
+	github.com/cosmos/cosmos-sdk v0.39.2
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/ledger-cosmos-go v0.11.1
 	github.com/dgraph-io/ristretto v0.0.3 // indirect
@@ -21,7 +21,6 @@ require (
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/mock v1.4.4
 	github.com/golang/protobuf v1.4.3
-	github.com/golang/snappy v0.0.2 // indirect
 	github.com/google/gofuzz v1.0.0
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
@@ -29,7 +28,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hashicorp/golang-lru v0.5.4
 	github.com/line/iavl/v2 v2.0.0-init.1
-	github.com/line/link-modules v0.3.2
 	github.com/line/ostracon v0.34.9-0.20210316071456-5fea666cc7ce
 	github.com/line/tm-db/v2 v2.0.0-init.1
 	github.com/magiconair/properties v1.8.4
@@ -45,14 +43,13 @@ require (
 	github.com/spf13/afero v1.3.4 // indirect
 	github.com/spf13/cast v1.3.1
 	github.com/spf13/cobra v1.1.1
-	github.com/spf13/jwalterweatherman v1.1.0 // indirect; indirects
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.7.0
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
-	github.com/tendermint/tendermint v0.34.8
+	github.com/tendermint/tendermint v0.34.7
 	github.com/tendermint/tm-db v0.6.4
 	golang.org/x/crypto v0.0.0-20201221181555-eec23a3978ad
 	google.golang.org/genproto v0.0.0-20210114201628-6edceaf6022f
@@ -63,6 +60,9 @@ require (
 
 replace (
 	github.com/CosmWasm/wasmvm => github.com/line/wasmvm v0.12.0-0.1.0
+	github.com/cosmos/cosmos-sdk => github.com/line/lbm-sdk v0.39.2-0.2.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+	github.com/tendermint/tendermint => github.com/tendermint/tendermint v0.33.9
+	github.com/tendermint/tm-db => github.com/tendermint/tm-db v0.5.2
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

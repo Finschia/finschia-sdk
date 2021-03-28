@@ -3,8 +3,8 @@ package coin
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/coin/internal/keeper"
-	"github.com/line/link-modules/x/coin/internal/types"
+	"github.com/line/lbm-sdk/v2/x/coin/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/coin/internal/types"
 )
 
 func NewHandler(k keeper.Keeper) sdk.Handler {

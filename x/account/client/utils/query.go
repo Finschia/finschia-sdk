@@ -21,7 +21,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	gtypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 
-	local "github.com/line/link-modules/x/account/client/types"
+	local "github.com/line/lbm-sdk/v2/x/account/client/types"
 )
 
 const MaxPerPage = 100

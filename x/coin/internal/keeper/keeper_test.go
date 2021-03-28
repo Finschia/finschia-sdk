@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/coin/internal/types"
+	"github.com/line/lbm-sdk/v2/x/coin/internal/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -3,7 +3,7 @@ package keeper
 // DONTCOVER
 
 import (
-	"github.com/line/link-modules/x/coin/internal/types"
+	"github.com/line/lbm-sdk/v2/x/coin/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"

@@ -10,8 +10,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/keys"
 	"github.com/cosmos/cosmos-sdk/client/lcd"
 	"github.com/cosmos/cosmos-sdk/client/rpc"
-	"github.com/line/link-modules/x/account"
-	authclient "github.com/line/link-modules/x/account/client"
+	"github.com/line/lbm-sdk/v2/x/account"
+	authclient "github.com/line/lbm-sdk/v2/x/account/client"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -23,9 +23,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 
 	"github.com/cosmos/cosmos-sdk/version"
-	"github.com/line/link-modules/x/coin"
-	"github.com/line/link-modules/x/wasm/linkwasmd/app"
-	"github.com/line/link-modules/x/wasm/linkwasmd/types"
+	"github.com/line/lbm-sdk/v2/x/coin"
+	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/app"
+	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/types"
 )
 
 const (

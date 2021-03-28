@@ -5,12 +5,12 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/context"
 	"github.com/cosmos/cosmos-sdk/x/upgrade"
-	"github.com/line/link-modules/x/token/client/cli"
-	"github.com/line/link-modules/x/token/client/rest"
-	"github.com/line/link-modules/x/token/internal/handler"
-	"github.com/line/link-modules/x/token/internal/keeper"
-	"github.com/line/link-modules/x/token/internal/legacy"
-	"github.com/line/link-modules/x/token/internal/querier"
+	"github.com/line/lbm-sdk/v2/x/token/client/cli"
+	"github.com/line/lbm-sdk/v2/x/token/client/rest"
+	"github.com/line/lbm-sdk/v2/x/token/internal/handler"
+	"github.com/line/lbm-sdk/v2/x/token/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/token/internal/legacy"
+	"github.com/line/lbm-sdk/v2/x/token/internal/querier"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"

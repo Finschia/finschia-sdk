@@ -3,7 +3,7 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/v2/x/collection/internal/types"
 )
 
 var (

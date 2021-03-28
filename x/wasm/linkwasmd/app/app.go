@@ -6,12 +6,12 @@ import (
 	"path/filepath"
 
 	"github.com/cosmos/cosmos-sdk/x/gov"
-	"github.com/line/link-modules/x/account"
-	"github.com/line/link-modules/x/coin"
-	"github.com/line/link-modules/x/contract"
-	"github.com/line/link-modules/x/token"
-	"github.com/line/link-modules/x/wasm"
-	wasmclient "github.com/line/link-modules/x/wasm/client"
+	"github.com/line/lbm-sdk/v2/x/account"
+	"github.com/line/lbm-sdk/v2/x/coin"
+	"github.com/line/lbm-sdk/v2/x/contract"
+	"github.com/line/lbm-sdk/v2/x/token"
+	"github.com/line/lbm-sdk/v2/x/wasm"
+	wasmclient "github.com/line/lbm-sdk/v2/x/wasm/client"
 	"github.com/spf13/viper"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/cli"
@@ -35,7 +35,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/bank"
-	"github.com/line/link-modules/x/collection"
+	"github.com/line/lbm-sdk/v2/x/collection"
 )
 
 const appName = "LinkWasmApp"

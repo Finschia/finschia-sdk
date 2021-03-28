@@ -3,8 +3,8 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/params"
-	"github.com/line/link-modules/x/collection/internal/types"
-	"github.com/line/link-modules/x/contract"
+	"github.com/line/lbm-sdk/v2/x/collection/internal/types"
+	"github.com/line/lbm-sdk/v2/x/contract"
 	abci "github.com/tendermint/tendermint/abci/types"
 	"github.com/tendermint/tendermint/libs/log"
 	dbm "github.com/tendermint/tm-db"

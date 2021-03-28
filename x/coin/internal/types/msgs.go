@@ -3,7 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/errors"
+	"github.com/line/lbm-sdk/v2/errors"
 )
 
 const RouterKey = ModuleName

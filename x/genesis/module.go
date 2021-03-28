@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/line/link-modules/x/genesis/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/genesis/internal/keeper"
 
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"

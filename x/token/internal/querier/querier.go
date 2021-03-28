@@ -3,9 +3,9 @@ package querier
 import (
 	"context"
 
-	"github.com/line/link-modules/x/contract"
-	"github.com/line/link-modules/x/token/internal/keeper"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/v2/x/contract"
+	"github.com/line/lbm-sdk/v2/x/token/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/token/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"

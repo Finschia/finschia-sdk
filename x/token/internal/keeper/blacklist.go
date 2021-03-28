@@ -2,7 +2,7 @@ package keeper
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/v2/x/token/internal/types"
 )
 
 func (k Keeper) SetBlackList(ctx sdk.Context, addr sdk.AccAddress, action string) {

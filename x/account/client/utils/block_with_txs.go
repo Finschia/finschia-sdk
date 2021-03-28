@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/line/link-modules/x/account/client/types"
+	"github.com/line/lbm-sdk/v2/x/account/client/types"
 
 	tmliteProxy "github.com/tendermint/tendermint/lite/proxy"
 	ctypes "github.com/tendermint/tendermint/rpc/core/types"

@@ -17,7 +17,7 @@ import (
 	tmtypes "github.com/tendermint/tendermint/types"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/line/link-modules/x/wasm/linkwasmd/app"
+	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/app"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/server"
@@ -27,7 +27,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	"github.com/cosmos/cosmos-sdk/x/staking"
 
-	"github.com/line/link-modules/x/wasm/linkwasmd/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/types"
 )
 
 // linkd custom flags

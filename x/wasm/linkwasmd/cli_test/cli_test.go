@@ -13,9 +13,9 @@ import (
 	"strings"
 	"testing"
 
-	collectionModule "github.com/line/link-modules/x/collection"
-	tokenModule "github.com/line/link-modules/x/token"
-	"github.com/line/link-modules/x/wasm/linkwasmd/app"
+	collectionModule "github.com/line/lbm-sdk/v2/x/collection"
+	tokenModule "github.com/line/lbm-sdk/v2/x/token"
+	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/app"
 	"github.com/stretchr/testify/require"
 
 	"github.com/cosmos/cosmos-sdk/tests"

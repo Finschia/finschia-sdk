@@ -3,8 +3,8 @@ package keeper
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/coin"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/v2/x/coin"
+	"github.com/line/lbm-sdk/v2/x/token/internal/types"
 )
 
 func (k Keeper) Transfer(ctx sdk.Context, from sdk.AccAddress, to sdk.AccAddress, amount sdk.Int) error {

@@ -2,8 +2,8 @@ package handler
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/line/link-modules/x/token/internal/keeper"
-	"github.com/line/link-modules/x/token/internal/types"
+	"github.com/line/lbm-sdk/v2/x/token/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/token/internal/types"
 )
 
 func handleMsgApprove(ctx sdk.Context, keeper keeper.Keeper, msg types.MsgApprove) (*sdk.Result, error) {

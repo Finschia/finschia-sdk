@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	clienttypes "github.com/line/link-modules/x/token/client/internal/types"
-	"github.com/line/link-modules/x/token/internal/types"
+	clienttypes "github.com/line/lbm-sdk/v2/x/token/client/internal/types"
+	"github.com/line/lbm-sdk/v2/x/token/internal/types"
 	"github.com/spf13/cobra"
 )
 

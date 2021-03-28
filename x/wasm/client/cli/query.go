@@ -19,8 +19,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/line/link-modules/x/wasm/internal/keeper"
-	"github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 func GetQueryCmd(cdc *codec.Codec) *cobra.Command {

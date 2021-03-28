@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
-	"github.com/line/link-modules/x/account/client/utils/mock"
+	"github.com/line/lbm-sdk/v2/x/account/client/utils/mock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -24,7 +24,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/rest"
 	"github.com/cosmos/cosmos-sdk/x/auth"
 
-	atypes "github.com/line/link-modules/x/account/client/types"
+	atypes "github.com/line/lbm-sdk/v2/x/account/client/types"
 )
 
 type mockNodeResponses struct {

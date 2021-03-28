@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/v2/x/collection/internal/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 

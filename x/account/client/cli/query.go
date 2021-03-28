@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/line/link-modules/x/account/client/utils"
+	"github.com/line/lbm-sdk/v2/x/account/client/utils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/tendermint/go-amino"

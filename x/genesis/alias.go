@@ -1,8 +1,8 @@
 package genesis
 
 import (
-	"github.com/line/link-modules/x/genesis/internal/keeper"
-	"github.com/line/link-modules/x/genesis/internal/types"
+	"github.com/line/lbm-sdk/v2/x/genesis/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/genesis/internal/types"
 )
 
 const (

@@ -20,7 +20,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/line/link-modules/x/account/client/utils/mock"
+	"github.com/line/lbm-sdk/v2/x/account/client/utils/mock"
 )
 
 type mockHTTPWriter struct {

@@ -6,10 +6,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/link-modules/x/collection/internal/types"
+	"github.com/line/lbm-sdk/v2/x/collection/internal/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 
-	"github.com/line/link-modules/x/wasm"
+	"github.com/line/lbm-sdk/v2/x/wasm"
 )
 
 func NewQueryEncoder(collectionQuerier sdk.Querier) wasm.EncodeQuerier {

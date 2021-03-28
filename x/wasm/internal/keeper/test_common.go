@@ -26,8 +26,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	"github.com/cosmos/cosmos-sdk/x/supply"
 
-	"github.com/line/link-modules/x/coin"
-	wasmtypes "github.com/line/link-modules/x/wasm/internal/types"
+	"github.com/line/lbm-sdk/v2/x/coin"
+	wasmtypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 const flagLRUCacheSize = "lru_size"
