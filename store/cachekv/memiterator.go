@@ -4,7 +4,7 @@ import (
 	"container/list"
 	"errors"
 
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/types/kv"
 )
@@ -25,7 +25,7 @@ func newMemIterator(start, end []byte, items *list.List, ascending bool) *memIte
 
 	for e := items.Front(); e != nil; e = e.Next() {
 		item := e.Value.(*kv.Pair)
-		if !dbm.IsKeyInDomain(item.Key, start, end) {
+		if !tmdb.IsKeyInDomain(item.Key, start, end) {
 			if entered {
 				break
 			}

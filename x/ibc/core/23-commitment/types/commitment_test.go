@@ -5,11 +5,11 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/tm-db/v2/memdb"
+
 	"github.com/line/lbm-sdk/v2/store/iavl"
 	"github.com/line/lbm-sdk/v2/store/rootmulti"
 	storetypes "github.com/line/lbm-sdk/v2/store/types"
-
-	dbm "github.com/line/tm-db/v2"
 )
 
 type MerkleTestSuite struct {
@@ -21,7 +21,7 @@ type MerkleTestSuite struct {
 }
 
 func (suite *MerkleTestSuite) SetupTest() {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	suite.store = rootmulti.NewStore(db)
 
 	suite.storeKey = storetypes.NewKVStoreKey("iavlStoreKey")

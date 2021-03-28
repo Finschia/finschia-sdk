@@ -9,7 +9,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
@@ -27,7 +27,7 @@ func TestContextTestSuite(t *testing.T) {
 }
 
 func (s *contextTestSuite) defaultContext(key types.StoreKey) types.Context {
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	cms := store.NewCommitMultiStore(db)
 	cms.MountStoreWithDB(key, types.StoreTypeIAVL, db)
 	s.Require().NoError(cms.LoadLatestVersion())

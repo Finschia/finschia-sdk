@@ -3,7 +3,7 @@ package mock
 import (
 	"io"
 
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 
 	store "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -67,7 +67,7 @@ func (ms multiStore) GetCommitStore(key sdk.StoreKey) sdk.CommitStore {
 	panic("not implemented")
 }
 
-func (ms multiStore) MountStoreWithDB(key sdk.StoreKey, typ sdk.StoreType, db dbm.DB) {
+func (ms multiStore) MountStoreWithDB(key sdk.StoreKey, typ sdk.StoreType, db tmdb.DB) {
 	ms.kv[key] = kvStore{store: make(map[string][]byte)}
 }
 

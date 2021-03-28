@@ -6,8 +6,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	abci "github.com/line/ostracon/abci/types"
-	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	"github.com/line/lbm-sdk/v2/store/iavl"
@@ -18,6 +17,7 @@ import (
 	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 const (
@@ -76,7 +76,7 @@ type TypesTestSuite struct {
 
 func (suite *TypesTestSuite) SetupTest() {
 	app := simapp.Setup(false)
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	store := rootmulti.NewStore(db)
 	storeKey := storetypes.NewKVStoreKey("iavlStoreKey")
 

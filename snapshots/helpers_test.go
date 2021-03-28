@@ -10,8 +10,9 @@ import (
 	"testing"
 	"time"
 
-	db "github.com/line/tm-db/v2"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/snapshots"
 	"github.com/line/lbm-sdk/v2/snapshots/types"
@@ -105,7 +106,7 @@ func setupBusyManager(t *testing.T) *snapshots.Manager {
 	require.NoError(t, err)
 	t.Cleanup(func() { _ = os.RemoveAll(tempdir) })
 
-	store, err := snapshots.NewStore(db.NewMemDB(), tempdir)
+	store, err := snapshots.NewStore(memdb.NewDB(), tempdir)
 	require.NoError(t, err)
 	hung := newHungSnapshotter()
 	mgr := snapshots.NewManager(store, hung)

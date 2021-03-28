@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"io"
 
-	dbm "github.com/line/tm-db/v2"
+	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/codec/types"
 	"github.com/line/lbm-sdk/v2/snapshots"
@@ -104,7 +104,7 @@ func (app *BaseApp) SetAppVersion(v string) {
 	app.appVersion = v
 }
 
-func (app *BaseApp) SetDB(db dbm.DB) {
+func (app *BaseApp) SetDB(db tmdb.DB) {
 	if app.sealed {
 		panic("SetDB() on sealed BaseApp")
 	}
