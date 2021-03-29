@@ -29,6 +29,7 @@ var (
 	ErrApproverProxySame        = sdkerrors.Register(ModuleName, 22, "approver is same with proxy")
 	ErrTokenNotApproved         = sdkerrors.Register(ModuleName, 23, "proxy is not approved on the token")
 	ErrTokenAlreadyApproved     = sdkerrors.Register(ModuleName, 24, "proxy is already approved on the token")
+	ErrInvalidPermissionAction  = sdkerrors.Register(ModuleName, 25, "invalid permission action")
 )
 
 func WrapIfOverflowPanic(r interface{}) error {

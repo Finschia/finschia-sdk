@@ -3,7 +3,6 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/line/lbm-sdk/v2/errors"
 )
 
 const RouterKey = ModuleName
@@ -196,7 +195,7 @@ func ValidateInputsOutputs(inputs []Input, outputs []Output) error {
 func validateDenomination(coins sdk.Coins) error {
 	for _, coin := range coins {
 		if err := ValidateSymbolReserved(coin.Denom); err != nil {
-			return sdkerrors.Wrapf(errors.ErrInvalidDenom, "invalid denom [%s] send message supports 3~5 length denom only", coin.Denom)
+			return sdkerrors.Wrapf(ErrInvalidDenom, "invalid denom [%s] send message supports 3~5 length denom only", coin.Denom)
 		}
 	}
 	return nil

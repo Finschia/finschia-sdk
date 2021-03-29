@@ -52,6 +52,7 @@ var (
 	ErrCompositionTooDeep            = sdkerrors.Register(ModuleName, 45, "cannot attach token (composition too deep)")
 	ErrCompositionTooWide            = sdkerrors.Register(ModuleName, 46, "cannot attach token (composition too wide)")
 	ErrBurnNonRootNFT                = sdkerrors.Register(ModuleName, 47, "cannot burn non-root NFTs")
+	ErrInvalidPermissionAction       = sdkerrors.Register(ModuleName, 48, "invalid permission action")
 )
 
 func WrapIfOverflowPanic(r interface{}) error {

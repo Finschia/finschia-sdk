@@ -13,4 +13,5 @@ var (
 	ErrSendDisabled                = sdkerrors.Register(Codespace, 4, "send transactions are disabled")
 	ErrCanNotTransferToBlacklisted = sdkerrors.Register(Codespace, 5, "Cannot transfer to safety box addresses")
 	ErrRequestGetsLimit            = sdkerrors.Register(Codespace, 6, "the gets should be limited")
+	ErrInvalidDenom                = sdkerrors.Register(Codespace, 7, "invalid denom")
 )
