@@ -6,19 +6,14 @@ run:
 linters:
   disable-all: false
   enable:
-  disable:
     - gofmt
-    - errcheck
     - goconst
-    - gocritic
     - goimports
     - golint
     - gosec
     - gosimple
     - govet
     - ineffassign
-    - interfacer
-    - maligned
     - misspell
     - nakedret
     - prealloc
@@ -31,6 +26,11 @@ linters:
     - unused
     - unparam
     - misspell
+  disable:
+    - gocritic
+    - maligned
+    - errcheck
+    - interfacer
     - wsl
     - nolintlint
 

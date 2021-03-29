@@ -581,11 +581,9 @@ func (chain *TestChain) CreateTMClientHeader(chainID string, blockHeight int64, 
 		Commit: commit.ToProto(),
 	}
 
-	if tmValSet != nil {
-		valSet, err = tmValSet.ToProto()
-		if err != nil {
-			panic(err)
-		}
+	valSet, err = tmValSet.ToProto()
+	if err != nil {
+		panic(err)
 	}
 
 	if tmTrustedVals != nil {
