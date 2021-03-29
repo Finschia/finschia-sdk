@@ -9,11 +9,10 @@ import (
 	"net/http"
 	"testing"
 
-	"github.com/line/lbm-sdk/client/flags"
-
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
-
+	
+	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/testutil"
@@ -422,10 +421,17 @@ func (s *IntegrationTestSuite) TestQueryDelegationsResponseCode() {
 	// Create new account in the keyring.
 	info, _, err := val.ClientCtx.Keyring.NewMnemonic("test", keyring.English, sdk.FullFundraiserPath, keyring.DefaultBIP39Passphrase, hd.Secp256k1)
 	s.Require().NoError(err)
+<<<<<<< HEAD
 	newAddr := sdk.BytesToAccAddress(info.GetPubKey().Address())
 
 	s.T().Log("expect 404 error for address without delegations")
 	res, statusCode, err := getRequest(fmt.Sprintf("%s/lbm/staking/v1/delegations/%s", val.APIAddress, newAddr.String()))
+=======
+	newAddr := sdk.AccAddress(info.GetPubKey().Address())
+
+	s.T().Log("expect 404 error for address without delegations")
+	res, statusCode, err := getRequest(fmt.Sprintf("%s/cosmos/staking/v1beta1/delegations/%s", val.APIAddress, newAddr.String()))
+>>>>>>> 636e6598b (fix: grpc-gateway error codes (#9015))
 	s.Require().NoError(err)
 	s.Require().Contains(string(res), "\"code\": 5")
 	s.Require().Equal(404, statusCode)
