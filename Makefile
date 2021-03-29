@@ -324,8 +324,12 @@ benchmark:
 ###                                Linting                                  ###
 ###############################################################################
 
-lint:
+lint: golangci-lint
 	golangci-lint run --out-format=tab
+	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
+
+golangci-lint:
+	@go get github.com/golangci/golangci-lint/cmd/golangci-lint
 
 lint-fix:
 	golangci-lint run --fix --out-format=tab --issues-exit-code=0
