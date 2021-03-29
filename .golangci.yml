@@ -4,11 +4,13 @@ run:
 #   timeout: 5m
 
 linters:
-  disable-all: true
-    # - errcheck
+  disable-all: false
+  enable:
+  disable:
+    - gofmt
+    - errcheck
     - goconst
     - gocritic
-    - gofmt
     - goimports
     - golint
     - gosec
@@ -29,7 +31,7 @@ linters:
     - unused
     - unparam
     - misspell
-    # - wsl
+    - wsl
     - nolintlint
 
 issues:
