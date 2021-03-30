@@ -41,6 +41,18 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
+ifneq (cleveldb,$(findstring cleveldb,$(BUILD_TAGS)))
+ifneq (goleveldb,$(findstring goleveldb,$(BUILD_TAGS)))
+ifneq (rocksdb,$(findstring rocksdb,$(BUILD_TAGS)))
+ifneq (boltdb,$(findstring boltdb,$(BUILD_TAGS)))
+ifneq (badgerdb,$(findstring badgerdb,$(BUILD_TAGS)))
+  BUILD_TAGS += goleveldb
+endif
+endif
+endif
+endif
+endif
+
 ifeq (cleveldb,$(findstring cleveldb,$(COSMOS_BUILD_OPTIONS)))
   build_tags += gcc
 endif
