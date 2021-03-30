@@ -11,6 +11,7 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/lbm-sdk/store/cachekv"
 	"github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/types/kv"
 )
@@ -636,4 +637,19 @@ func TestSetInitialVersion(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestCacheWraps(t *testing.T) {
+	db := dbm.NewMemDB()
+	tree, _ := newAlohaTree(t, db)
+	store := UnsafeNewStore(tree)
+
+	cacheWrapper := store.CacheWrap()
+	require.IsType(t, &cachekv.Store{}, cacheWrapper)
+
+	cacheWrappedWithTrace := store.CacheWrapWithTrace(nil, nil)
+	require.IsType(t, &cachekv.Store{}, cacheWrappedWithTrace)
+
+	cacheWrappedWithListeners := store.CacheWrapWithListeners(nil, nil)
+	require.IsType(t, &cachekv.Store{}, cacheWrappedWithListeners)
 }

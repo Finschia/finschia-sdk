@@ -10,6 +10,7 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/internal/conv"
+	"github.com/line/lbm-sdk/store/listenkv"
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/telemetry"
@@ -153,6 +154,11 @@ func (store *Store) CacheWrap() types.CacheWrap {
 // CacheWrapWithTrace implements the CacheWrapper interface.
 func (store *Store) CacheWrapWithTrace(w io.Writer, tc types.TraceContext) types.CacheWrap {
 	return NewStore(tracekv.NewStore(store, w, tc))
+}
+
+// CacheWrapWithListeners implements the CacheWrapper interface.
+func (store *Store) CacheWrapWithListeners(storeKey types.StoreKey, listeners []types.WriteListener) types.CacheWrap {
+	return NewStore(listenkv.NewStore(store, storeKey, listeners))
 }
 
 //----------------------------------------
