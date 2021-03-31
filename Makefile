@@ -53,7 +53,7 @@ endif
 endif
 endif
 
-ifeq (cleveldb,$(findstring cleveldb,$(COSMOS_BUILD_OPTIONS)))
+ifeq (cleveldb,$(findstring cleveldb,$(LBM_BUILD_OPTIONS)))
   build_tags += gcc
 endif
 build_tags += $(BUILD_TAGS)
@@ -73,25 +73,25 @@ ldflags = -X github.com/line/lbm-sdk/v2/version.Name=sim \
 		  -X "github.com/line/lbm-sdk/v2/version.BuildTags=$(build_tags_comma_sep)"
 
 # DB backend selection
-ifeq (cleveldb,$(findstring cleveldb,$(COSMOS_BUILD_OPTIONS)))
+ifeq (cleveldb,$(findstring cleveldb,$(LBM_BUILD_OPTIONS)))
   ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=cleveldb
 endif
-ifeq (badgerdb,$(findstring badgerdb,$(COSMOS_BUILD_OPTIONS)))
+ifeq (badgerdb,$(findstring badgerdb,$(LBM_BUILD_OPTIONS)))
   ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=badgerdb
 endif
 # handle rocksdb
-ifeq (rocksdb,$(findstring rocksdb,$(COSMOS_BUILD_OPTIONS)))
+ifeq (rocksdb,$(findstring rocksdb,$(LBM_BUILD_OPTIONS)))
   CGO_ENABLED=1
   BUILD_TAGS += rocksdb
   ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=rocksdb
 endif
 # handle boltdb
-ifeq (boltdb,$(findstring boltdb,$(COSMOS_BUILD_OPTIONS)))
+ifeq (boltdb,$(findstring boltdb,$(LBM_BUILD_OPTIONS)))
   BUILD_TAGS += boltdb
   ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=boltdb
 endif
 
-ifeq (,$(findstring nostrip,$(COSMOS_BUILD_OPTIONS)))
+ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
 endif
 ldflags += $(LDFLAGS)
@@ -99,7 +99,7 @@ ldflags := $(strip $(ldflags))
 
 BUILD_FLAGS := -tags "$(build_tags)" -ldflags '$(ldflags)'
 # check for nostrip option
-ifeq (,$(findstring nostrip,$(COSMOS_BUILD_OPTIONS)))
+ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   BUILD_FLAGS += -trimpath
 endif
 
