@@ -3,6 +3,7 @@ package client
 import (
 	rpchttp "github.com/line/ostracon/rpc/client/http"
 	"github.com/spf13/pflag"
+	rpchttp "github.com/tendermint/tendermint/rpc/client/http"
 
 	"github.com/line/lbm-sdk/client/flags"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"

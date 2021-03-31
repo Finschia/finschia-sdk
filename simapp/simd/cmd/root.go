@@ -6,12 +6,13 @@ import (
 	"os"
 	"path/filepath"
 
-	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/libs/log"
-	tmdb "github.com/line/tm-db/v2"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+
+	ostcli "github.com/line/ostracon/libs/cli"
+	"github.com/line/ostracon/libs/log"
+	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"

@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"path/filepath"
 
-	ostcli "github.com/line/ostracon/libs/cli"
-
 	"github.com/spf13/cobra"
+
+	ostcli "github.com/line/ostracon/libs/cli"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
