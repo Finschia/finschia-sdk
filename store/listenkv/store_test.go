@@ -6,16 +6,16 @@ import (
 	"io"
 	"testing"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	codecTypes "github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/store/dbadapter"
-	"github.com/cosmos/cosmos-sdk/store/listenkv"
-	"github.com/cosmos/cosmos-sdk/store/prefix"
-	"github.com/cosmos/cosmos-sdk/store/types"
-
 	"github.com/stretchr/testify/require"
 
-	dbm "github.com/tendermint/tm-db"
+	tmdb "github.com/line/tm-db/v2"
+
+	"github.com/line/lbm-sdk/codec"
+	codecTypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/store/dbadapter"
+	"github.com/line/lbm-sdk/store/listenkv"
+	"github.com/line/lbm-sdk/store/prefix"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 func bz(s string) []byte { return []byte(s) }
@@ -45,7 +45,7 @@ func newListenKVStore(w io.Writer) *listenkv.Store {
 
 func newEmptyListenKVStore(w io.Writer) *listenkv.Store {
 	listener := types.NewStoreKVPairWriteListener(w, testMarshaller)
-	memDB := dbadapter.Store{DB: dbm.NewMemDB()}
+	memDB := dbadapter.Store{DB: tmdb.NewDB()}
 
 	return listenkv.NewStore(memDB, testStoreKey, []types.WriteListener{listener})
 }
