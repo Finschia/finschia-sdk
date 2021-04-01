@@ -41,16 +41,11 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
-ifneq (cleveldb,$(findstring cleveldb,$(BUILD_TAGS)))
-ifneq (goleveldb,$(findstring goleveldb,$(BUILD_TAGS)))
-ifneq (rocksdb,$(findstring rocksdb,$(BUILD_TAGS)))
-ifneq (boltdb,$(findstring boltdb,$(BUILD_TAGS)))
-ifneq (badgerdb,$(findstring badgerdb,$(BUILD_TAGS)))
-  BUILD_TAGS += goleveldb
-endif
-endif
-endif
-endif
+$(info LBM_BUILD_OPTIONS=$(LBM_BUILD_OPTIONS))
+ifeq (,$(filter $(LBM_BUILD_OPTIONS), cleveldb rocksdb boltdb badgerdb))
+   BUILD_TAGS += goleveldb
+else
+   BUILD_TAGS += $(LBM_BUILD_OPTIONS)
 endif
 
 ifeq (cleveldb,$(findstring cleveldb,$(LBM_BUILD_OPTIONS)))
