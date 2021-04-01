@@ -24,11 +24,6 @@ const (
 	// Please not that all gas prices returned to the wasmer engine should have this multiplied
 	DefaultGasMultiplier uint64 = 100
 
-	// MaxGas for a contract is 10 billion wasmer gas (enforced in rust to prevent overflow)
-	// The limit for v0.9.3 is defined here: https://github.com/CosmWasm/cosmwasm/blob/v0.9.3/packages/vm/src/backends/singlepass.rs#L15-L23
-	// (this will be increased in future releases)
-	DefaultMaxGas = 10_000_000_000
-
 	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
 	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
 	DefaultInstanceCost = 40_000
@@ -119,7 +114,6 @@ type Params struct {
 	DefaultInstantiatePermission AccessType   `json:"instantiate_default_permission" yaml:"instantiate_default_permission"`
 	MaxWasmCodeSize              uint64       `json:"max_wasm_code_size" yaml:"max_wasm_code_size"`
 	GasMultiplier                uint64       `json:"gas_multiplier" yaml:"gas_multiplier"`
-	MaxGas                       uint64       `json:"max_gas" yaml:"max_gas"`
 	InstanceCost                 uint64       `json:"instance_cost" yaml:"instance_cost"`
 	CompileCost                  uint64       `json:"compile_cost" yaml:"compile_cost"`
 	HumanizeCost                 uint64       `json:"humanize_cost" yaml:"humanize_cost"`
@@ -138,7 +132,6 @@ func DefaultParams() Params {
 		DefaultInstantiatePermission: Everybody,
 		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 		GasMultiplier:                DefaultGasMultiplier,
-		MaxGas:                       DefaultMaxGas,
 		InstanceCost:                 DefaultInstanceCost,
 		CompileCost:                  DefaultCompileCost,
 		HumanizeCost:                 DefaultHumanizeCost,
@@ -161,7 +154,6 @@ func (p *Params) ParamSetPairs() params.ParamSetPairs {
 		params.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.DefaultInstantiatePermission, validateAccessType),
 		params.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
 		params.NewParamSetPair(ParamStoreKeyGasMultiplier, &p.GasMultiplier, validateGasMultiplier),
-		params.NewParamSetPair(ParamStoreKeyMaxGas, &p.MaxGas, validateMaxGas),
 		params.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
 		params.NewParamSetPair(ParamStoreKeyCompileCost, &p.CompileCost, validateCompileCost),
 		params.NewParamSetPair(ParamStoreKeyHumanizeCost, &p.HumanizeCost, validateHumanizeCost),
@@ -182,9 +174,6 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateGasMultiplier(p.GasMultiplier); err != nil {
 		return errors.Wrap(err, "gas multiplier")
-	}
-	if err := validateMaxGas(p.MaxGas); err != nil {
-		return errors.Wrap(err, "max gas")
 	}
 	if err := validateInstanceCost(p.InstanceCost); err != nil {
 		return errors.Wrap(err, "instance cost")
@@ -236,17 +225,6 @@ func validateGasMultiplier(i interface{}) error {
 }
 
 func validateMaxWasmCodeSize(i interface{}) error {
-	a, ok := i.(uint64)
-	if !ok {
-		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
-	}
-	if a == 0 {
-		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
-	}
-	return nil
-}
-
-func validateMaxGas(i interface{}) error {
 	a, ok := i.(uint64)
 	if !ok {
 		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)

@@ -29,6 +29,7 @@ const (
 	ProposalTypeMigrateContract     = types.ProposalTypeMigrateContract
 	ProposalTypeUpdateAdmin         = types.ProposalTypeUpdateAdmin
 	ProposalTypeClearAdmin          = types.ProposalTypeClearAdmin
+	MaxGas                          = keeper.MaxGas
 	QueryListContractByCode         = keeper.QueryListContractByCode
 	QueryGetContract                = keeper.QueryGetContract
 	QueryGetContractState           = keeper.QueryGetContractState
