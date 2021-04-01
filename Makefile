@@ -41,16 +41,29 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
-$(info LBM_BUILD_OPTIONS=$(LBM_BUILD_OPTIONS))
+# DB backend selection
 ifeq (,$(filter $(LBM_BUILD_OPTIONS), cleveldb rocksdb boltdb badgerdb))
    BUILD_TAGS += goleveldb
 else
-   BUILD_TAGS += $(LBM_BUILD_OPTIONS)
+  ifeq (cleveldb,$(findstring cleveldb,$(LBM_BUILD_OPTIONS)))
+    BUILD_TAGS += gcc cleveldb
+    ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=cleveldb
+  endif
+  ifeq (badgerdb,$(findstring badgerdb,$(LBM_BUILD_OPTIONS)))
+    BUILD_TAGS += badgerdb
+    ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=badgerdb
+  endif
+  ifeq (rocksdb,$(findstring rocksdb,$(LBM_BUILD_OPTIONS)))
+    CGO_ENABLED=1
+    BUILD_TAGS += rocksdb
+    ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=rocksdb
+  endif
+  ifeq (boltdb,$(findstring boltdb,$(LBM_BUILD_OPTIONS)))
+    BUILD_TAGS += boltdb
+    ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=boltdb
+  endif
 endif
 
-ifeq (cleveldb,$(findstring cleveldb,$(LBM_BUILD_OPTIONS)))
-  build_tags += gcc
-endif
 build_tags += $(BUILD_TAGS)
 build_tags := $(strip $(build_tags))
 
@@ -66,25 +79,6 @@ ldflags = -X github.com/line/lbm-sdk/v2/version.Name=sim \
 		  -X github.com/line/lbm-sdk/v2/version.Version=$(VERSION) \
 		  -X github.com/line/lbm-sdk/v2/version.Commit=$(COMMIT) \
 		  -X "github.com/line/lbm-sdk/v2/version.BuildTags=$(build_tags_comma_sep)"
-
-# DB backend selection
-ifeq (cleveldb,$(findstring cleveldb,$(LBM_BUILD_OPTIONS)))
-  ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=cleveldb
-endif
-ifeq (badgerdb,$(findstring badgerdb,$(LBM_BUILD_OPTIONS)))
-  ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=badgerdb
-endif
-# handle rocksdb
-ifeq (rocksdb,$(findstring rocksdb,$(LBM_BUILD_OPTIONS)))
-  CGO_ENABLED=1
-  BUILD_TAGS += rocksdb
-  ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=rocksdb
-endif
-# handle boltdb
-ifeq (boltdb,$(findstring boltdb,$(LBM_BUILD_OPTIONS)))
-  BUILD_TAGS += boltdb
-  ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=boltdb
-endif
 
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
