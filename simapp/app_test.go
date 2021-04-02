@@ -6,18 +6,17 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/libs/log"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/tests/mocks"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
-
 	"github.com/line/lbm-sdk/x/auth"
 	"github.com/line/lbm-sdk/x/auth/vesting"
 	"github.com/line/lbm-sdk/x/authz"
@@ -166,8 +165,8 @@ func TestRunMigrations(t *testing.T) {
 			// Run migrations only for bank. That's why we put the initial
 			// version for bank as 1, and for all other modules, we put as
 			// their latest ConsensusVersion.
-			_, err = app.RunMigrations(
-				app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}),
+			_, err = app.mm.RunMigrations(
+				app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}), app.configurator,
 				module.VersionMap{
 					"bank":         1,
 					"auth":         auth.AppModule{}.ConsensusVersion(),
@@ -195,6 +194,7 @@ func TestRunMigrations(t *testing.T) {
 				require.EqualError(t, err, tc.expRunErrMsg)
 			} else {
 				require.NoError(t, err)
+				// Make sure bank's migration is called.
 				require.Equal(t, tc.expCalled, called)
 			}
 		})
@@ -222,11 +222,12 @@ func TestInitGenesisOnMigration(t *testing.T) {
 
 	// Run migrations only for "mock" module. We exclude it from
 	// the VersionMap to simulate upgrading with a new module.
-	_, err := app.RunMigrations(
-		app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}),
+	_, err := app.mm.RunMigrations(
+		app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}), app.configurator,
 		module.VersionMap{
 			"bank":         1,
 			"auth":         auth.AppModule{}.ConsensusVersion(),
+			"authz":        authz.AppModule{}.ConsensusVersion(),
 			"staking":      staking.AppModule{}.ConsensusVersion(),
 			"mint":         mint.AppModule{}.ConsensusVersion(),
 			"distribution": distribution.AppModule{}.ConsensusVersion(),

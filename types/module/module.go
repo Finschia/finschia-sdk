@@ -394,12 +394,33 @@ func (m Manager) RunMigrations(ctx sdk.Context, cfg Configurator, fromVM Version
 		fromVersion := fromVM[moduleName]
 		toVersion := module.ConsensusVersion()
 
-		// only run migrations when the from version is > 0
-		// from version will be 0 when a new module is added and migrations shouldn't be run in this case
+		// Only run migrations when the fromVersion is > 0, or run InitGenesis
+		// if fromVersion == 0.
+		//
+		// fromVersion will be 0 in two cases:
+		// 1. If a new module is added. In this case we run InitGenesis with an
+		// empty genesis state.
+		// 2. If the app developer is running in-place store migrations for the
+		// first time. In this case, it is the app developer's responsibility
+		// to set their module's fromVersions to a version that suits them.
 		if fromVersion > 0 {
 			err := c.runModuleMigrations(ctx, moduleName, fromVersion, toVersion)
 			if err != nil {
 				return nil, err
+			}
+		} else {
+			cfgtor, ok := cfg.(configurator)
+			if !ok {
+				// Currently, the only implementator of Configurator (the interface)
+				// is configurator (the struct).
+				return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expected %T, got %T", configurator{}, cfg)
+			}
+
+			moduleValUpdates := module.InitGenesis(ctx, cfgtor.cdc, module.DefaultGenesis(cfgtor.cdc))
+			// The module manager assumes only one module will update the
+			// validator set, and that it will not be by a new module.
+			if len(moduleValUpdates) > 0 {
+				return nil, sdkerrors.Wrapf(sdkerrors.ErrLogic, "validator InitGenesis updates already set by a previous module")
 			}
 		}
 
