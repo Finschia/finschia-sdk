@@ -35,10 +35,8 @@ func TestNewAnyWithCustomTypeURLWithErrorNoAllocation(t *testing.T) {
 	any, err := types.NewAnyWithCustomTypeURL(eom, fauxURL)
 	runtime.ReadMemStats(&ms2)
 	// Ensure that no fresh allocation was made.
-	if ms2.HeapAlloc > ms1.HeapAlloc {
-		// In some cases, `ms1.HeapAlloc` is larger than `ms2.HeapAlloc`.
-		// It is probably because the gc worked.
-		t.Errorf("Unexpected allocation of %d bytes", ms2.HeapAlloc - ms1.HeapAlloc)
+	if diff := ms2.HeapAlloc - ms1.HeapAlloc; diff > 0 {
+		t.Errorf("Unexpected allocation of %d bytes", diff)
 	}
 	if err == nil {
 		t.Fatal("err wasn't returned")
