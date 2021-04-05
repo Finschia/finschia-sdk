@@ -97,6 +97,7 @@ func (s *Server) Start(cfg config.Config) error {
 	ostCfg.MaxOpenConnections = int(cfg.API.MaxOpenConnections)
 	ostCfg.ReadTimeout = time.Duration(cfg.API.RPCReadTimeout) * time.Second
 	ostCfg.WriteTimeout = time.Duration(cfg.API.RPCWriteTimeout) * time.Second
+	ostCfg.IdleTimeout = time.Duration(cfg.API.RPCIdleTimeout) * time.Second
 	ostCfg.MaxBodyBytes = int64(cfg.API.RPCMaxBodyBytes)
 
 	listener, err := ostrpcserver.Listen(cfg.API.Address, ostCfg)
