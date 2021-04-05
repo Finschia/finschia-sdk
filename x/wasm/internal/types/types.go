@@ -282,3 +282,9 @@ func DefaultWasmConfig() WasmConfig {
 		ContractDebugMode:  defaultContractDebugMode,
 	}
 }
+
+// CodeAndContractID
+type CodeAndContractID struct {
+	CodeID          uint64         `json:"code_id"`
+	ContractAddress sdk.AccAddress `json:"contract_address"`
+}

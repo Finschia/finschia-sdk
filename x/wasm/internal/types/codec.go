@@ -20,6 +20,9 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(UpdateAdminProposal{}, "wasm/UpdateAdminProposal", nil)
 	cdc.RegisterConcrete(ClearAdminProposal{}, "wasm/ClearAdminProposal", nil)
 
+	// tx response
+	cdc.RegisterConcrete(CodeAndContractID{}, "wasm/CodeAndContractID", nil)
+
 	// query responses
 
 	// For the type-tags in case of a slice item or a nested property.
