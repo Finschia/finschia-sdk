@@ -113,6 +113,79 @@ func (msg MsgInstantiateContract) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{msg.Sender}
 }
 
+type MsgStoreCodeAndInstantiateContract struct {
+	// each field is same as MsgStoreCode and MsgInstantiate
+	Sender                sdk.AccAddress  `json:"sender" yaml:"sender"`
+	WASMByteCode          []byte          `json:"wasm_byte_code" yaml:"wasm_byte_code"`
+	Source                string          `json:"source" yaml:"source"`
+	Builder               string          `json:"builder" yaml:"builder"`
+	InstantiatePermission *AccessConfig   `json:"instantiate_permission,omitempty" yaml:"instantiate_permission"`
+	Admin                 sdk.AccAddress  `json:"admin,omitempty" yaml:"admin"`
+	Label                 string          `json:"label" yaml:"label"`
+	InitMsg               json.RawMessage `json:"init_msg" yaml:"init_msg"`
+	InitFunds             sdk.Coins       `json:"init_funds" yaml:"init_funds"`
+}
+
+func (msg MsgStoreCodeAndInstantiateContract) Route() string {
+	return RouterKey
+}
+
+func (msg MsgStoreCodeAndInstantiateContract) Type() string {
+	return "store-code-and-instantiate"
+}
+
+func (msg MsgStoreCodeAndInstantiateContract) ValidateBasic() error {
+	if err := sdk.VerifyAddressFormat(msg.Sender); err != nil {
+		return err
+	}
+
+	if err := validateWasmCode(msg.WASMByteCode); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "code bytes %s", err.Error())
+	}
+
+	if err := validateSourceURL(msg.Source); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "source %s", err.Error())
+	}
+
+	if err := validateBuilder(msg.Builder); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "builder %s", err.Error())
+	}
+
+	if msg.InstantiatePermission != nil {
+		if err := msg.InstantiatePermission.ValidateBasic(); err != nil {
+			return sdkerrors.Wrap(err, "instantiate permission")
+		}
+	}
+
+	if err := validateLabel(msg.Label); err != nil {
+		return err
+	}
+
+	if !msg.InitFunds.IsValid() {
+		return sdkerrors.ErrInvalidCoins
+	}
+
+	if len(msg.Admin) != 0 {
+		if err := sdk.VerifyAddressFormat(msg.Admin); err != nil {
+			return err
+		}
+	}
+
+	if !json.Valid(msg.InitMsg) {
+		return sdkerrors.Wrap(ErrInvalid, "init msg json")
+	}
+
+	return nil
+}
+
+func (msg MsgStoreCodeAndInstantiateContract) GetSignBytes() []byte {
+	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(msg))
+}
+
+func (msg MsgStoreCodeAndInstantiateContract) GetSigners() []sdk.AccAddress {
+	return []sdk.AccAddress{msg.Sender}
+}
+
 type MsgExecuteContract struct {
 	Sender    sdk.AccAddress  `json:"sender" yaml:"sender"`
 	Contract  sdk.AccAddress  `json:"contract" yaml:"contract"`
