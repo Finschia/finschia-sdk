@@ -2,6 +2,7 @@ package query
 
 import (
 	"fmt"
+	"math"
 
 	tmdb "github.com/line/tm-db/v2"
 	"google.golang.org/grpc/codes"
@@ -13,6 +14,10 @@ import (
 // DefaultLimit is the default `limit` for queries
 // if the `limit` is not supplied, paginate will use `DefaultLimit`
 const DefaultLimit = 100
+
+// MaxLimit is the maximum limit the paginate function can handle
+// which equals the maximum value that can be stored in uint64
+const MaxLimit = math.MaxUint64
 
 // ParsePagination validate PageRequest and returns page number & limit.
 func ParsePagination(pageReq *PageRequest) (page, limit int, err error) {

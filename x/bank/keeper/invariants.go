@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/line/lbm-sdk//types/query"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
@@ -50,7 +51,12 @@ func NonnegativeBalanceInvariant(k ViewKeeper) sdk.Invariant {
 func TotalSupply(k Keeper) sdk.Invariant {
 	return func(ctx sdk.Context) (string, bool) {
 		expectedTotal := sdk.Coins{}
-		supply := k.GetTotalSupply(ctx)
+		supply, _, err := k.GetPaginatedTotalSupply(ctx, &query.PageRequest{Limit: query.MaxLimit})
+
+		if err != nil {
+			return sdk.FormatInvariant(types.ModuleName, "query supply",
+				fmt.Sprintf("error querying total supply %v", err)), false
+		}
 
 		k.IterateAllBalances(ctx, func(_ sdk.AccAddress, balance sdk.Coin) bool {
 			expectedTotal = expectedTotal.Add(balance)

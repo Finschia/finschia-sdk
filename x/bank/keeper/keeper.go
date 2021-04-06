@@ -7,6 +7,7 @@ import (
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/query"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	vestexported "github.com/line/lbm-sdk/x/auth/vesting/exported"
 	"github.com/line/lbm-sdk/x/bank/types"
@@ -24,7 +25,7 @@ type Keeper interface {
 	ExportGenesis(sdk.Context) *types.GenesisState
 
 	GetSupply(ctx sdk.Context, denom string) sdk.Coin
-	GetTotalSupply(ctx sdk.Context) sdk.Coins
+	GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error)
 	IterateTotalSupply(ctx sdk.Context, cb func(sdk.Coin) bool)
 	SetSupply(ctx sdk.Context, supply sdk.Coins) // TODO(dudong2): remove after x/wasm version up
 
@@ -56,14 +57,27 @@ type BaseKeeper struct {
 	paramSpace paramtypes.Subspace
 }
 
-func (k BaseKeeper) GetTotalSupply(ctx sdk.Context) sdk.Coins {
-	balances := sdk.NewCoins()
-	k.IterateTotalSupply(ctx, func(balance sdk.Coin) bool {
-		balances = balances.Add(balance)
-		return false
+func (k BaseKeeper) GetPaginatedTotalSupply(ctx sdk.Context, pagination *query.PageRequest) (sdk.Coins, *query.PageResponse, error) {
+	store := ctx.KVStore(k.storeKey)
+	supplyStore := prefix.NewStore(store, types.SupplyKey)
+
+	supply := sdk.NewCoins()
+
+	pageRes, err := query.Paginate(supplyStore, pagination, func(key, value []byte) error {
+		var amount sdk.Int
+		err := amount.Unmarshal(value)
+		if err != nil {
+			return fmt.Errorf("unable to convert amount string to Int %v", err)
+		}
+		supply = append(supply, sdk.NewCoin(string(key), amount))
+		return nil
 	})
 
-	return balances.Sort()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return supply, pageRes, nil
 }
 
 // NewBaseKeeper returns a new BaseKeeper object with a given codec, dedicated
