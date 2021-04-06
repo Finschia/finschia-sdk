@@ -7,8 +7,8 @@ package mocks
 import (
 	gomock "github.com/golang/mock/gomock"
 	client "github.com/line/lbm-sdk/v2/client"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	types "github.com/line/lbm-sdk/v2/types"
+	types "github.com/line/lbm-sdk/v2/crypto/types"
+	types0 "github.com/line/lbm-sdk/v2/types"
 	reflect "reflect"
 )
 
@@ -36,10 +36,10 @@ func (m *MockAccount) EXPECT() *MockAccountMockRecorder {
 }
 
 // GetAddress mocks base method
-func (m *MockAccount) GetAddress() types.AccAddress {
+func (m *MockAccount) GetAddress() types0.AccAddress {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAddress")
-	ret0, _ := ret[0].(types.AccAddress)
+	ret0, _ := ret[0].(types0.AccAddress)
 	return ret0
 }
 
@@ -50,10 +50,10 @@ func (mr *MockAccountMockRecorder) GetAddress() *gomock.Call {
 }
 
 // GetPubKey mocks base method
-func (m *MockAccount) GetPubKey() cryptotypes.PubKey {
+func (m *MockAccount) GetPubKey() types.PubKey {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetPubKey")
-	ret0, _ := ret[0].(cryptotypes.PubKey)
+	ret0, _ := ret[0].(types.PubKey)
 	return ret0
 }
 
@@ -115,7 +115,7 @@ func (m *MockAccountRetriever) EXPECT() *MockAccountRetrieverMockRecorder {
 }
 
 // GetAccount mocks base method
-func (m *MockAccountRetriever) GetAccount(clientCtx client.Context, addr types.AccAddress) (client.Account, error) {
+func (m *MockAccountRetriever) GetAccount(clientCtx client.Context, addr types0.AccAddress) (client.Account, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccount", clientCtx, addr)
 	ret0, _ := ret[0].(client.Account)
@@ -130,7 +130,7 @@ func (mr *MockAccountRetrieverMockRecorder) GetAccount(clientCtx, addr interface
 }
 
 // GetAccountWithHeight mocks base method
-func (m *MockAccountRetriever) GetAccountWithHeight(clientCtx client.Context, addr types.AccAddress) (client.Account, int64, error) {
+func (m *MockAccountRetriever) GetAccountWithHeight(clientCtx client.Context, addr types0.AccAddress) (client.Account, int64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountWithHeight", clientCtx, addr)
 	ret0, _ := ret[0].(client.Account)
@@ -146,7 +146,7 @@ func (mr *MockAccountRetrieverMockRecorder) GetAccountWithHeight(clientCtx, addr
 }
 
 // EnsureExists mocks base method
-func (m *MockAccountRetriever) EnsureExists(clientCtx client.Context, addr types.AccAddress) error {
+func (m *MockAccountRetriever) EnsureExists(clientCtx client.Context, addr types0.AccAddress) error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "EnsureExists", clientCtx, addr)
 	ret0, _ := ret[0].(error)
@@ -160,7 +160,7 @@ func (mr *MockAccountRetrieverMockRecorder) EnsureExists(clientCtx, addr interfa
 }
 
 // GetAccountNumberSequence mocks base method
-func (m *MockAccountRetriever) GetAccountNumberSequence(clientCtx client.Context, addr types.AccAddress) (uint64, uint64, error) {
+func (m *MockAccountRetriever) GetAccountNumberSequence(clientCtx client.Context, addr types0.AccAddress) (uint64, uint64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetAccountNumberSequence", clientCtx, addr)
 	ret0, _ := ret[0].(uint64)
