@@ -4,6 +4,7 @@
 
 ## Table of Contents
 
+<<<<<<< HEAD
 - [ibc/applications/transfer/v1/transfer.proto](#ibc/applications/transfer/v1/transfer.proto)
     - [DenomTrace](#ibc.applications.transfer.v1.DenomTrace)
     - [FungibleTokenPacketData](#ibc.applications.transfer.v1.FungibleTokenPacketData)
@@ -939,6 +940,584 @@
     - [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse)
   
     - [Query](#lbm.wasm.v1.Query)
+=======
+- [cosmos/auth/v1beta1/auth.proto](#cosmos/auth/v1beta1/auth.proto)
+    - [BaseAccount](#cosmos.auth.v1beta1.BaseAccount)
+    - [ModuleAccount](#cosmos.auth.v1beta1.ModuleAccount)
+    - [Params](#cosmos.auth.v1beta1.Params)
+  
+- [cosmos/auth/v1beta1/genesis.proto](#cosmos/auth/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.auth.v1beta1.GenesisState)
+  
+- [cosmos/base/query/v1beta1/pagination.proto](#cosmos/base/query/v1beta1/pagination.proto)
+    - [PageRequest](#cosmos.base.query.v1beta1.PageRequest)
+    - [PageResponse](#cosmos.base.query.v1beta1.PageResponse)
+  
+- [cosmos/auth/v1beta1/query.proto](#cosmos/auth/v1beta1/query.proto)
+    - [QueryAccountRequest](#cosmos.auth.v1beta1.QueryAccountRequest)
+    - [QueryAccountResponse](#cosmos.auth.v1beta1.QueryAccountResponse)
+    - [QueryAccountsRequest](#cosmos.auth.v1beta1.QueryAccountsRequest)
+    - [QueryAccountsResponse](#cosmos.auth.v1beta1.QueryAccountsResponse)
+    - [QueryParamsRequest](#cosmos.auth.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#cosmos.auth.v1beta1.QueryParamsResponse)
+  
+    - [Query](#cosmos.auth.v1beta1.Query)
+  
+- [cosmos/authz/v1beta1/authz.proto](#cosmos/authz/v1beta1/authz.proto)
+    - [AuthorizationGrant](#cosmos.authz.v1beta1.AuthorizationGrant)
+    - [GenericAuthorization](#cosmos.authz.v1beta1.GenericAuthorization)
+  
+- [cosmos/authz/v1beta1/genesis.proto](#cosmos/authz/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.authz.v1beta1.GenesisState)
+    - [GrantAuthorization](#cosmos.authz.v1beta1.GrantAuthorization)
+  
+- [cosmos/authz/v1beta1/query.proto](#cosmos/authz/v1beta1/query.proto)
+    - [QueryAuthorizationRequest](#cosmos.authz.v1beta1.QueryAuthorizationRequest)
+    - [QueryAuthorizationResponse](#cosmos.authz.v1beta1.QueryAuthorizationResponse)
+    - [QueryAuthorizationsRequest](#cosmos.authz.v1beta1.QueryAuthorizationsRequest)
+    - [QueryAuthorizationsResponse](#cosmos.authz.v1beta1.QueryAuthorizationsResponse)
+  
+    - [Query](#cosmos.authz.v1beta1.Query)
+  
+- [cosmos/base/abci/v1beta1/abci.proto](#cosmos/base/abci/v1beta1/abci.proto)
+    - [ABCIMessageLog](#cosmos.base.abci.v1beta1.ABCIMessageLog)
+    - [Attribute](#cosmos.base.abci.v1beta1.Attribute)
+    - [GasInfo](#cosmos.base.abci.v1beta1.GasInfo)
+    - [MsgData](#cosmos.base.abci.v1beta1.MsgData)
+    - [Result](#cosmos.base.abci.v1beta1.Result)
+    - [SearchTxsResult](#cosmos.base.abci.v1beta1.SearchTxsResult)
+    - [SimulationResponse](#cosmos.base.abci.v1beta1.SimulationResponse)
+    - [StringEvent](#cosmos.base.abci.v1beta1.StringEvent)
+    - [TxMsgData](#cosmos.base.abci.v1beta1.TxMsgData)
+    - [TxResponse](#cosmos.base.abci.v1beta1.TxResponse)
+  
+- [cosmos/authz/v1beta1/tx.proto](#cosmos/authz/v1beta1/tx.proto)
+    - [MsgExecAuthorizedRequest](#cosmos.authz.v1beta1.MsgExecAuthorizedRequest)
+    - [MsgExecAuthorizedResponse](#cosmos.authz.v1beta1.MsgExecAuthorizedResponse)
+    - [MsgGrantAuthorizationRequest](#cosmos.authz.v1beta1.MsgGrantAuthorizationRequest)
+    - [MsgGrantAuthorizationResponse](#cosmos.authz.v1beta1.MsgGrantAuthorizationResponse)
+    - [MsgRevokeAuthorizationRequest](#cosmos.authz.v1beta1.MsgRevokeAuthorizationRequest)
+    - [MsgRevokeAuthorizationResponse](#cosmos.authz.v1beta1.MsgRevokeAuthorizationResponse)
+  
+    - [Msg](#cosmos.authz.v1beta1.Msg)
+  
+- [cosmos/base/v1beta1/coin.proto](#cosmos/base/v1beta1/coin.proto)
+    - [Coin](#cosmos.base.v1beta1.Coin)
+    - [DecCoin](#cosmos.base.v1beta1.DecCoin)
+    - [DecProto](#cosmos.base.v1beta1.DecProto)
+    - [IntProto](#cosmos.base.v1beta1.IntProto)
+  
+- [cosmos/bank/v1beta1/authz.proto](#cosmos/bank/v1beta1/authz.proto)
+    - [SendAuthorization](#cosmos.bank.v1beta1.SendAuthorization)
+  
+- [cosmos/bank/v1beta1/bank.proto](#cosmos/bank/v1beta1/bank.proto)
+    - [DenomUnit](#cosmos.bank.v1beta1.DenomUnit)
+    - [Input](#cosmos.bank.v1beta1.Input)
+    - [Metadata](#cosmos.bank.v1beta1.Metadata)
+    - [Output](#cosmos.bank.v1beta1.Output)
+    - [Params](#cosmos.bank.v1beta1.Params)
+    - [SendEnabled](#cosmos.bank.v1beta1.SendEnabled)
+    - [Supply](#cosmos.bank.v1beta1.Supply)
+  
+- [cosmos/bank/v1beta1/genesis.proto](#cosmos/bank/v1beta1/genesis.proto)
+    - [Balance](#cosmos.bank.v1beta1.Balance)
+    - [GenesisState](#cosmos.bank.v1beta1.GenesisState)
+  
+- [cosmos/bank/v1beta1/query.proto](#cosmos/bank/v1beta1/query.proto)
+    - [QueryAllBalancesRequest](#cosmos.bank.v1beta1.QueryAllBalancesRequest)
+    - [QueryAllBalancesResponse](#cosmos.bank.v1beta1.QueryAllBalancesResponse)
+    - [QueryBalanceRequest](#cosmos.bank.v1beta1.QueryBalanceRequest)
+    - [QueryBalanceResponse](#cosmos.bank.v1beta1.QueryBalanceResponse)
+    - [QueryDenomMetadataRequest](#cosmos.bank.v1beta1.QueryDenomMetadataRequest)
+    - [QueryDenomMetadataResponse](#cosmos.bank.v1beta1.QueryDenomMetadataResponse)
+    - [QueryDenomsMetadataRequest](#cosmos.bank.v1beta1.QueryDenomsMetadataRequest)
+    - [QueryDenomsMetadataResponse](#cosmos.bank.v1beta1.QueryDenomsMetadataResponse)
+    - [QueryParamsRequest](#cosmos.bank.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#cosmos.bank.v1beta1.QueryParamsResponse)
+    - [QuerySupplyOfRequest](#cosmos.bank.v1beta1.QuerySupplyOfRequest)
+    - [QuerySupplyOfResponse](#cosmos.bank.v1beta1.QuerySupplyOfResponse)
+    - [QueryTotalSupplyRequest](#cosmos.bank.v1beta1.QueryTotalSupplyRequest)
+    - [QueryTotalSupplyResponse](#cosmos.bank.v1beta1.QueryTotalSupplyResponse)
+  
+    - [Query](#cosmos.bank.v1beta1.Query)
+  
+- [cosmos/bank/v1beta1/tx.proto](#cosmos/bank/v1beta1/tx.proto)
+    - [MsgMultiSend](#cosmos.bank.v1beta1.MsgMultiSend)
+    - [MsgMultiSendResponse](#cosmos.bank.v1beta1.MsgMultiSendResponse)
+    - [MsgSend](#cosmos.bank.v1beta1.MsgSend)
+    - [MsgSendResponse](#cosmos.bank.v1beta1.MsgSendResponse)
+  
+    - [Msg](#cosmos.bank.v1beta1.Msg)
+  
+- [cosmos/base/kv/v1beta1/kv.proto](#cosmos/base/kv/v1beta1/kv.proto)
+    - [Pair](#cosmos.base.kv.v1beta1.Pair)
+    - [Pairs](#cosmos.base.kv.v1beta1.Pairs)
+  
+- [cosmos/base/reflection/v1beta1/reflection.proto](#cosmos/base/reflection/v1beta1/reflection.proto)
+    - [ListAllInterfacesRequest](#cosmos.base.reflection.v1beta1.ListAllInterfacesRequest)
+    - [ListAllInterfacesResponse](#cosmos.base.reflection.v1beta1.ListAllInterfacesResponse)
+    - [ListImplementationsRequest](#cosmos.base.reflection.v1beta1.ListImplementationsRequest)
+    - [ListImplementationsResponse](#cosmos.base.reflection.v1beta1.ListImplementationsResponse)
+  
+    - [ReflectionService](#cosmos.base.reflection.v1beta1.ReflectionService)
+  
+- [cosmos/base/reflection/v2alpha1/reflection.proto](#cosmos/base/reflection/v2alpha1/reflection.proto)
+    - [AppDescriptor](#cosmos.base.reflection.v2alpha1.AppDescriptor)
+    - [AuthnDescriptor](#cosmos.base.reflection.v2alpha1.AuthnDescriptor)
+    - [ChainDescriptor](#cosmos.base.reflection.v2alpha1.ChainDescriptor)
+    - [CodecDescriptor](#cosmos.base.reflection.v2alpha1.CodecDescriptor)
+    - [ConfigurationDescriptor](#cosmos.base.reflection.v2alpha1.ConfigurationDescriptor)
+    - [GetAuthnDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetAuthnDescriptorRequest)
+    - [GetAuthnDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetAuthnDescriptorResponse)
+    - [GetChainDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetChainDescriptorRequest)
+    - [GetChainDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetChainDescriptorResponse)
+    - [GetCodecDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetCodecDescriptorRequest)
+    - [GetCodecDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetCodecDescriptorResponse)
+    - [GetConfigurationDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorRequest)
+    - [GetConfigurationDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorResponse)
+    - [GetQueryServicesDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorRequest)
+    - [GetQueryServicesDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorResponse)
+    - [GetTxDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetTxDescriptorRequest)
+    - [GetTxDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetTxDescriptorResponse)
+    - [InterfaceAcceptingMessageDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceAcceptingMessageDescriptor)
+    - [InterfaceDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceDescriptor)
+    - [InterfaceImplementerDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceImplementerDescriptor)
+    - [MsgDescriptor](#cosmos.base.reflection.v2alpha1.MsgDescriptor)
+    - [QueryMethodDescriptor](#cosmos.base.reflection.v2alpha1.QueryMethodDescriptor)
+    - [QueryServiceDescriptor](#cosmos.base.reflection.v2alpha1.QueryServiceDescriptor)
+    - [QueryServicesDescriptor](#cosmos.base.reflection.v2alpha1.QueryServicesDescriptor)
+    - [ServiceMsgDescriptor](#cosmos.base.reflection.v2alpha1.ServiceMsgDescriptor)
+    - [SigningModeDescriptor](#cosmos.base.reflection.v2alpha1.SigningModeDescriptor)
+    - [TxDescriptor](#cosmos.base.reflection.v2alpha1.TxDescriptor)
+  
+    - [ReflectionService](#cosmos.base.reflection.v2alpha1.ReflectionService)
+  
+- [cosmos/base/snapshots/v1beta1/snapshot.proto](#cosmos/base/snapshots/v1beta1/snapshot.proto)
+    - [Metadata](#cosmos.base.snapshots.v1beta1.Metadata)
+    - [Snapshot](#cosmos.base.snapshots.v1beta1.Snapshot)
+  
+- [cosmos/base/store/v1beta1/commit_info.proto](#cosmos/base/store/v1beta1/commit_info.proto)
+    - [CommitID](#cosmos.base.store.v1beta1.CommitID)
+    - [CommitInfo](#cosmos.base.store.v1beta1.CommitInfo)
+    - [StoreInfo](#cosmos.base.store.v1beta1.StoreInfo)
+  
+- [cosmos/base/store/v1beta1/listening.proto](#cosmos/base/store/v1beta1/listening.proto)
+    - [StoreKVPair](#cosmos.base.store.v1beta1.StoreKVPair)
+  
+- [cosmos/base/store/v1beta1/snapshot.proto](#cosmos/base/store/v1beta1/snapshot.proto)
+    - [SnapshotIAVLItem](#cosmos.base.store.v1beta1.SnapshotIAVLItem)
+    - [SnapshotItem](#cosmos.base.store.v1beta1.SnapshotItem)
+    - [SnapshotStoreItem](#cosmos.base.store.v1beta1.SnapshotStoreItem)
+  
+- [cosmos/base/tendermint/v1beta1/query.proto](#cosmos/base/tendermint/v1beta1/query.proto)
+    - [GetBlockByHeightRequest](#cosmos.base.tendermint.v1beta1.GetBlockByHeightRequest)
+    - [GetBlockByHeightResponse](#cosmos.base.tendermint.v1beta1.GetBlockByHeightResponse)
+    - [GetLatestBlockRequest](#cosmos.base.tendermint.v1beta1.GetLatestBlockRequest)
+    - [GetLatestBlockResponse](#cosmos.base.tendermint.v1beta1.GetLatestBlockResponse)
+    - [GetLatestValidatorSetRequest](#cosmos.base.tendermint.v1beta1.GetLatestValidatorSetRequest)
+    - [GetLatestValidatorSetResponse](#cosmos.base.tendermint.v1beta1.GetLatestValidatorSetResponse)
+    - [GetNodeInfoRequest](#cosmos.base.tendermint.v1beta1.GetNodeInfoRequest)
+    - [GetNodeInfoResponse](#cosmos.base.tendermint.v1beta1.GetNodeInfoResponse)
+    - [GetSyncingRequest](#cosmos.base.tendermint.v1beta1.GetSyncingRequest)
+    - [GetSyncingResponse](#cosmos.base.tendermint.v1beta1.GetSyncingResponse)
+    - [GetValidatorSetByHeightRequest](#cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightRequest)
+    - [GetValidatorSetByHeightResponse](#cosmos.base.tendermint.v1beta1.GetValidatorSetByHeightResponse)
+    - [Module](#cosmos.base.tendermint.v1beta1.Module)
+    - [Validator](#cosmos.base.tendermint.v1beta1.Validator)
+    - [VersionInfo](#cosmos.base.tendermint.v1beta1.VersionInfo)
+  
+    - [Service](#cosmos.base.tendermint.v1beta1.Service)
+  
+- [cosmos/capability/v1beta1/capability.proto](#cosmos/capability/v1beta1/capability.proto)
+    - [Capability](#cosmos.capability.v1beta1.Capability)
+    - [CapabilityOwners](#cosmos.capability.v1beta1.CapabilityOwners)
+    - [Owner](#cosmos.capability.v1beta1.Owner)
+  
+- [cosmos/capability/v1beta1/genesis.proto](#cosmos/capability/v1beta1/genesis.proto)
+    - [GenesisOwners](#cosmos.capability.v1beta1.GenesisOwners)
+    - [GenesisState](#cosmos.capability.v1beta1.GenesisState)
+  
+- [cosmos/crisis/v1beta1/genesis.proto](#cosmos/crisis/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.crisis.v1beta1.GenesisState)
+  
+- [cosmos/crisis/v1beta1/tx.proto](#cosmos/crisis/v1beta1/tx.proto)
+    - [MsgVerifyInvariant](#cosmos.crisis.v1beta1.MsgVerifyInvariant)
+    - [MsgVerifyInvariantResponse](#cosmos.crisis.v1beta1.MsgVerifyInvariantResponse)
+  
+    - [Msg](#cosmos.crisis.v1beta1.Msg)
+  
+- [cosmos/crypto/ed25519/keys.proto](#cosmos/crypto/ed25519/keys.proto)
+    - [PrivKey](#cosmos.crypto.ed25519.PrivKey)
+    - [PubKey](#cosmos.crypto.ed25519.PubKey)
+  
+- [cosmos/crypto/multisig/keys.proto](#cosmos/crypto/multisig/keys.proto)
+    - [LegacyAminoPubKey](#cosmos.crypto.multisig.LegacyAminoPubKey)
+  
+- [cosmos/crypto/multisig/v1beta1/multisig.proto](#cosmos/crypto/multisig/v1beta1/multisig.proto)
+    - [CompactBitArray](#cosmos.crypto.multisig.v1beta1.CompactBitArray)
+    - [MultiSignature](#cosmos.crypto.multisig.v1beta1.MultiSignature)
+  
+- [cosmos/crypto/secp256k1/keys.proto](#cosmos/crypto/secp256k1/keys.proto)
+    - [PrivKey](#cosmos.crypto.secp256k1.PrivKey)
+    - [PubKey](#cosmos.crypto.secp256k1.PubKey)
+  
+- [cosmos/crypto/secp256r1/keys.proto](#cosmos/crypto/secp256r1/keys.proto)
+    - [PrivKey](#cosmos.crypto.secp256r1.PrivKey)
+    - [PubKey](#cosmos.crypto.secp256r1.PubKey)
+  
+- [cosmos/distribution/v1beta1/distribution.proto](#cosmos/distribution/v1beta1/distribution.proto)
+    - [CommunityPoolSpendProposal](#cosmos.distribution.v1beta1.CommunityPoolSpendProposal)
+    - [CommunityPoolSpendProposalWithDeposit](#cosmos.distribution.v1beta1.CommunityPoolSpendProposalWithDeposit)
+    - [DelegationDelegatorReward](#cosmos.distribution.v1beta1.DelegationDelegatorReward)
+    - [DelegatorStartingInfo](#cosmos.distribution.v1beta1.DelegatorStartingInfo)
+    - [FeePool](#cosmos.distribution.v1beta1.FeePool)
+    - [Params](#cosmos.distribution.v1beta1.Params)
+    - [ValidatorAccumulatedCommission](#cosmos.distribution.v1beta1.ValidatorAccumulatedCommission)
+    - [ValidatorCurrentRewards](#cosmos.distribution.v1beta1.ValidatorCurrentRewards)
+    - [ValidatorHistoricalRewards](#cosmos.distribution.v1beta1.ValidatorHistoricalRewards)
+    - [ValidatorOutstandingRewards](#cosmos.distribution.v1beta1.ValidatorOutstandingRewards)
+    - [ValidatorSlashEvent](#cosmos.distribution.v1beta1.ValidatorSlashEvent)
+    - [ValidatorSlashEvents](#cosmos.distribution.v1beta1.ValidatorSlashEvents)
+  
+- [cosmos/distribution/v1beta1/genesis.proto](#cosmos/distribution/v1beta1/genesis.proto)
+    - [DelegatorStartingInfoRecord](#cosmos.distribution.v1beta1.DelegatorStartingInfoRecord)
+    - [DelegatorWithdrawInfo](#cosmos.distribution.v1beta1.DelegatorWithdrawInfo)
+    - [GenesisState](#cosmos.distribution.v1beta1.GenesisState)
+    - [ValidatorAccumulatedCommissionRecord](#cosmos.distribution.v1beta1.ValidatorAccumulatedCommissionRecord)
+    - [ValidatorCurrentRewardsRecord](#cosmos.distribution.v1beta1.ValidatorCurrentRewardsRecord)
+    - [ValidatorHistoricalRewardsRecord](#cosmos.distribution.v1beta1.ValidatorHistoricalRewardsRecord)
+    - [ValidatorOutstandingRewardsRecord](#cosmos.distribution.v1beta1.ValidatorOutstandingRewardsRecord)
+    - [ValidatorSlashEventRecord](#cosmos.distribution.v1beta1.ValidatorSlashEventRecord)
+  
+- [cosmos/distribution/v1beta1/query.proto](#cosmos/distribution/v1beta1/query.proto)
+    - [QueryCommunityPoolRequest](#cosmos.distribution.v1beta1.QueryCommunityPoolRequest)
+    - [QueryCommunityPoolResponse](#cosmos.distribution.v1beta1.QueryCommunityPoolResponse)
+    - [QueryDelegationRewardsRequest](#cosmos.distribution.v1beta1.QueryDelegationRewardsRequest)
+    - [QueryDelegationRewardsResponse](#cosmos.distribution.v1beta1.QueryDelegationRewardsResponse)
+    - [QueryDelegationTotalRewardsRequest](#cosmos.distribution.v1beta1.QueryDelegationTotalRewardsRequest)
+    - [QueryDelegationTotalRewardsResponse](#cosmos.distribution.v1beta1.QueryDelegationTotalRewardsResponse)
+    - [QueryDelegatorValidatorsRequest](#cosmos.distribution.v1beta1.QueryDelegatorValidatorsRequest)
+    - [QueryDelegatorValidatorsResponse](#cosmos.distribution.v1beta1.QueryDelegatorValidatorsResponse)
+    - [QueryDelegatorWithdrawAddressRequest](#cosmos.distribution.v1beta1.QueryDelegatorWithdrawAddressRequest)
+    - [QueryDelegatorWithdrawAddressResponse](#cosmos.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse)
+    - [QueryParamsRequest](#cosmos.distribution.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#cosmos.distribution.v1beta1.QueryParamsResponse)
+    - [QueryValidatorCommissionRequest](#cosmos.distribution.v1beta1.QueryValidatorCommissionRequest)
+    - [QueryValidatorCommissionResponse](#cosmos.distribution.v1beta1.QueryValidatorCommissionResponse)
+    - [QueryValidatorOutstandingRewardsRequest](#cosmos.distribution.v1beta1.QueryValidatorOutstandingRewardsRequest)
+    - [QueryValidatorOutstandingRewardsResponse](#cosmos.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse)
+    - [QueryValidatorSlashesRequest](#cosmos.distribution.v1beta1.QueryValidatorSlashesRequest)
+    - [QueryValidatorSlashesResponse](#cosmos.distribution.v1beta1.QueryValidatorSlashesResponse)
+  
+    - [Query](#cosmos.distribution.v1beta1.Query)
+  
+- [cosmos/distribution/v1beta1/tx.proto](#cosmos/distribution/v1beta1/tx.proto)
+    - [MsgFundCommunityPool](#cosmos.distribution.v1beta1.MsgFundCommunityPool)
+    - [MsgFundCommunityPoolResponse](#cosmos.distribution.v1beta1.MsgFundCommunityPoolResponse)
+    - [MsgSetWithdrawAddress](#cosmos.distribution.v1beta1.MsgSetWithdrawAddress)
+    - [MsgSetWithdrawAddressResponse](#cosmos.distribution.v1beta1.MsgSetWithdrawAddressResponse)
+    - [MsgWithdrawDelegatorReward](#cosmos.distribution.v1beta1.MsgWithdrawDelegatorReward)
+    - [MsgWithdrawDelegatorRewardResponse](#cosmos.distribution.v1beta1.MsgWithdrawDelegatorRewardResponse)
+    - [MsgWithdrawValidatorCommission](#cosmos.distribution.v1beta1.MsgWithdrawValidatorCommission)
+    - [MsgWithdrawValidatorCommissionResponse](#cosmos.distribution.v1beta1.MsgWithdrawValidatorCommissionResponse)
+  
+    - [Msg](#cosmos.distribution.v1beta1.Msg)
+  
+- [cosmos/evidence/v1beta1/evidence.proto](#cosmos/evidence/v1beta1/evidence.proto)
+    - [Equivocation](#cosmos.evidence.v1beta1.Equivocation)
+  
+- [cosmos/evidence/v1beta1/genesis.proto](#cosmos/evidence/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.evidence.v1beta1.GenesisState)
+  
+- [cosmos/evidence/v1beta1/query.proto](#cosmos/evidence/v1beta1/query.proto)
+    - [QueryAllEvidenceRequest](#cosmos.evidence.v1beta1.QueryAllEvidenceRequest)
+    - [QueryAllEvidenceResponse](#cosmos.evidence.v1beta1.QueryAllEvidenceResponse)
+    - [QueryEvidenceRequest](#cosmos.evidence.v1beta1.QueryEvidenceRequest)
+    - [QueryEvidenceResponse](#cosmos.evidence.v1beta1.QueryEvidenceResponse)
+  
+    - [Query](#cosmos.evidence.v1beta1.Query)
+  
+- [cosmos/evidence/v1beta1/tx.proto](#cosmos/evidence/v1beta1/tx.proto)
+    - [MsgSubmitEvidence](#cosmos.evidence.v1beta1.MsgSubmitEvidence)
+    - [MsgSubmitEvidenceResponse](#cosmos.evidence.v1beta1.MsgSubmitEvidenceResponse)
+  
+    - [Msg](#cosmos.evidence.v1beta1.Msg)
+  
+- [cosmos/feegrant/v1beta1/feegrant.proto](#cosmos/feegrant/v1beta1/feegrant.proto)
+    - [BasicFeeAllowance](#cosmos.feegrant.v1beta1.BasicFeeAllowance)
+    - [Duration](#cosmos.feegrant.v1beta1.Duration)
+    - [ExpiresAt](#cosmos.feegrant.v1beta1.ExpiresAt)
+    - [FeeAllowanceGrant](#cosmos.feegrant.v1beta1.FeeAllowanceGrant)
+    - [PeriodicFeeAllowance](#cosmos.feegrant.v1beta1.PeriodicFeeAllowance)
+  
+- [cosmos/feegrant/v1beta1/genesis.proto](#cosmos/feegrant/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.feegrant.v1beta1.GenesisState)
+  
+- [cosmos/feegrant/v1beta1/query.proto](#cosmos/feegrant/v1beta1/query.proto)
+    - [QueryFeeAllowanceRequest](#cosmos.feegrant.v1beta1.QueryFeeAllowanceRequest)
+    - [QueryFeeAllowanceResponse](#cosmos.feegrant.v1beta1.QueryFeeAllowanceResponse)
+    - [QueryFeeAllowancesRequest](#cosmos.feegrant.v1beta1.QueryFeeAllowancesRequest)
+    - [QueryFeeAllowancesResponse](#cosmos.feegrant.v1beta1.QueryFeeAllowancesResponse)
+  
+    - [Query](#cosmos.feegrant.v1beta1.Query)
+  
+- [cosmos/feegrant/v1beta1/tx.proto](#cosmos/feegrant/v1beta1/tx.proto)
+    - [MsgGrantFeeAllowance](#cosmos.feegrant.v1beta1.MsgGrantFeeAllowance)
+    - [MsgGrantFeeAllowanceResponse](#cosmos.feegrant.v1beta1.MsgGrantFeeAllowanceResponse)
+    - [MsgRevokeFeeAllowance](#cosmos.feegrant.v1beta1.MsgRevokeFeeAllowance)
+    - [MsgRevokeFeeAllowanceResponse](#cosmos.feegrant.v1beta1.MsgRevokeFeeAllowanceResponse)
+  
+    - [Msg](#cosmos.feegrant.v1beta1.Msg)
+  
+- [cosmos/genutil/v1beta1/genesis.proto](#cosmos/genutil/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.genutil.v1beta1.GenesisState)
+  
+- [cosmos/gov/v1beta1/gov.proto](#cosmos/gov/v1beta1/gov.proto)
+    - [Deposit](#cosmos.gov.v1beta1.Deposit)
+    - [DepositParams](#cosmos.gov.v1beta1.DepositParams)
+    - [Proposal](#cosmos.gov.v1beta1.Proposal)
+    - [TallyParams](#cosmos.gov.v1beta1.TallyParams)
+    - [TallyResult](#cosmos.gov.v1beta1.TallyResult)
+    - [TextProposal](#cosmos.gov.v1beta1.TextProposal)
+    - [Vote](#cosmos.gov.v1beta1.Vote)
+    - [VotingParams](#cosmos.gov.v1beta1.VotingParams)
+    - [WeightedVoteOption](#cosmos.gov.v1beta1.WeightedVoteOption)
+  
+    - [ProposalStatus](#cosmos.gov.v1beta1.ProposalStatus)
+    - [VoteOption](#cosmos.gov.v1beta1.VoteOption)
+  
+- [cosmos/gov/v1beta1/genesis.proto](#cosmos/gov/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.gov.v1beta1.GenesisState)
+  
+- [cosmos/gov/v1beta1/query.proto](#cosmos/gov/v1beta1/query.proto)
+    - [QueryDepositRequest](#cosmos.gov.v1beta1.QueryDepositRequest)
+    - [QueryDepositResponse](#cosmos.gov.v1beta1.QueryDepositResponse)
+    - [QueryDepositsRequest](#cosmos.gov.v1beta1.QueryDepositsRequest)
+    - [QueryDepositsResponse](#cosmos.gov.v1beta1.QueryDepositsResponse)
+    - [QueryParamsRequest](#cosmos.gov.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#cosmos.gov.v1beta1.QueryParamsResponse)
+    - [QueryProposalRequest](#cosmos.gov.v1beta1.QueryProposalRequest)
+    - [QueryProposalResponse](#cosmos.gov.v1beta1.QueryProposalResponse)
+    - [QueryProposalsRequest](#cosmos.gov.v1beta1.QueryProposalsRequest)
+    - [QueryProposalsResponse](#cosmos.gov.v1beta1.QueryProposalsResponse)
+    - [QueryTallyResultRequest](#cosmos.gov.v1beta1.QueryTallyResultRequest)
+    - [QueryTallyResultResponse](#cosmos.gov.v1beta1.QueryTallyResultResponse)
+    - [QueryVoteRequest](#cosmos.gov.v1beta1.QueryVoteRequest)
+    - [QueryVoteResponse](#cosmos.gov.v1beta1.QueryVoteResponse)
+    - [QueryVotesRequest](#cosmos.gov.v1beta1.QueryVotesRequest)
+    - [QueryVotesResponse](#cosmos.gov.v1beta1.QueryVotesResponse)
+  
+    - [Query](#cosmos.gov.v1beta1.Query)
+  
+- [cosmos/gov/v1beta1/tx.proto](#cosmos/gov/v1beta1/tx.proto)
+    - [MsgDeposit](#cosmos.gov.v1beta1.MsgDeposit)
+    - [MsgDepositResponse](#cosmos.gov.v1beta1.MsgDepositResponse)
+    - [MsgSubmitProposal](#cosmos.gov.v1beta1.MsgSubmitProposal)
+    - [MsgSubmitProposalResponse](#cosmos.gov.v1beta1.MsgSubmitProposalResponse)
+    - [MsgVote](#cosmos.gov.v1beta1.MsgVote)
+    - [MsgVoteResponse](#cosmos.gov.v1beta1.MsgVoteResponse)
+    - [MsgVoteWeighted](#cosmos.gov.v1beta1.MsgVoteWeighted)
+    - [MsgVoteWeightedResponse](#cosmos.gov.v1beta1.MsgVoteWeightedResponse)
+  
+    - [Msg](#cosmos.gov.v1beta1.Msg)
+  
+- [cosmos/mint/v1beta1/mint.proto](#cosmos/mint/v1beta1/mint.proto)
+    - [Minter](#cosmos.mint.v1beta1.Minter)
+    - [Params](#cosmos.mint.v1beta1.Params)
+  
+- [cosmos/mint/v1beta1/genesis.proto](#cosmos/mint/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.mint.v1beta1.GenesisState)
+  
+- [cosmos/mint/v1beta1/query.proto](#cosmos/mint/v1beta1/query.proto)
+    - [QueryAnnualProvisionsRequest](#cosmos.mint.v1beta1.QueryAnnualProvisionsRequest)
+    - [QueryAnnualProvisionsResponse](#cosmos.mint.v1beta1.QueryAnnualProvisionsResponse)
+    - [QueryInflationRequest](#cosmos.mint.v1beta1.QueryInflationRequest)
+    - [QueryInflationResponse](#cosmos.mint.v1beta1.QueryInflationResponse)
+    - [QueryParamsRequest](#cosmos.mint.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#cosmos.mint.v1beta1.QueryParamsResponse)
+  
+    - [Query](#cosmos.mint.v1beta1.Query)
+  
+- [cosmos/params/v1beta1/params.proto](#cosmos/params/v1beta1/params.proto)
+    - [ParamChange](#cosmos.params.v1beta1.ParamChange)
+    - [ParameterChangeProposal](#cosmos.params.v1beta1.ParameterChangeProposal)
+  
+- [cosmos/params/v1beta1/query.proto](#cosmos/params/v1beta1/query.proto)
+    - [QueryParamsRequest](#cosmos.params.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#cosmos.params.v1beta1.QueryParamsResponse)
+  
+    - [Query](#cosmos.params.v1beta1.Query)
+  
+- [cosmos/slashing/v1beta1/slashing.proto](#cosmos/slashing/v1beta1/slashing.proto)
+    - [Params](#cosmos.slashing.v1beta1.Params)
+    - [ValidatorSigningInfo](#cosmos.slashing.v1beta1.ValidatorSigningInfo)
+  
+- [cosmos/slashing/v1beta1/genesis.proto](#cosmos/slashing/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.slashing.v1beta1.GenesisState)
+    - [MissedBlock](#cosmos.slashing.v1beta1.MissedBlock)
+    - [SigningInfo](#cosmos.slashing.v1beta1.SigningInfo)
+    - [ValidatorMissedBlocks](#cosmos.slashing.v1beta1.ValidatorMissedBlocks)
+  
+- [cosmos/slashing/v1beta1/query.proto](#cosmos/slashing/v1beta1/query.proto)
+    - [QueryParamsRequest](#cosmos.slashing.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#cosmos.slashing.v1beta1.QueryParamsResponse)
+    - [QuerySigningInfoRequest](#cosmos.slashing.v1beta1.QuerySigningInfoRequest)
+    - [QuerySigningInfoResponse](#cosmos.slashing.v1beta1.QuerySigningInfoResponse)
+    - [QuerySigningInfosRequest](#cosmos.slashing.v1beta1.QuerySigningInfosRequest)
+    - [QuerySigningInfosResponse](#cosmos.slashing.v1beta1.QuerySigningInfosResponse)
+  
+    - [Query](#cosmos.slashing.v1beta1.Query)
+  
+- [cosmos/slashing/v1beta1/tx.proto](#cosmos/slashing/v1beta1/tx.proto)
+    - [MsgUnjail](#cosmos.slashing.v1beta1.MsgUnjail)
+    - [MsgUnjailResponse](#cosmos.slashing.v1beta1.MsgUnjailResponse)
+  
+    - [Msg](#cosmos.slashing.v1beta1.Msg)
+  
+- [cosmos/staking/v1beta1/authz.proto](#cosmos/staking/v1beta1/authz.proto)
+    - [StakeAuthorization](#cosmos.staking.v1beta1.StakeAuthorization)
+    - [StakeAuthorization.Validators](#cosmos.staking.v1beta1.StakeAuthorization.Validators)
+  
+    - [AuthorizationType](#cosmos.staking.v1beta1.AuthorizationType)
+  
+- [cosmos/staking/v1beta1/staking.proto](#cosmos/staking/v1beta1/staking.proto)
+    - [Commission](#cosmos.staking.v1beta1.Commission)
+    - [CommissionRates](#cosmos.staking.v1beta1.CommissionRates)
+    - [DVPair](#cosmos.staking.v1beta1.DVPair)
+    - [DVPairs](#cosmos.staking.v1beta1.DVPairs)
+    - [DVVTriplet](#cosmos.staking.v1beta1.DVVTriplet)
+    - [DVVTriplets](#cosmos.staking.v1beta1.DVVTriplets)
+    - [Delegation](#cosmos.staking.v1beta1.Delegation)
+    - [DelegationResponse](#cosmos.staking.v1beta1.DelegationResponse)
+    - [Description](#cosmos.staking.v1beta1.Description)
+    - [HistoricalInfo](#cosmos.staking.v1beta1.HistoricalInfo)
+    - [Params](#cosmos.staking.v1beta1.Params)
+    - [Pool](#cosmos.staking.v1beta1.Pool)
+    - [Redelegation](#cosmos.staking.v1beta1.Redelegation)
+    - [RedelegationEntry](#cosmos.staking.v1beta1.RedelegationEntry)
+    - [RedelegationEntryResponse](#cosmos.staking.v1beta1.RedelegationEntryResponse)
+    - [RedelegationResponse](#cosmos.staking.v1beta1.RedelegationResponse)
+    - [UnbondingDelegation](#cosmos.staking.v1beta1.UnbondingDelegation)
+    - [UnbondingDelegationEntry](#cosmos.staking.v1beta1.UnbondingDelegationEntry)
+    - [ValAddresses](#cosmos.staking.v1beta1.ValAddresses)
+    - [Validator](#cosmos.staking.v1beta1.Validator)
+  
+    - [BondStatus](#cosmos.staking.v1beta1.BondStatus)
+  
+- [cosmos/staking/v1beta1/genesis.proto](#cosmos/staking/v1beta1/genesis.proto)
+    - [GenesisState](#cosmos.staking.v1beta1.GenesisState)
+    - [LastValidatorPower](#cosmos.staking.v1beta1.LastValidatorPower)
+  
+- [cosmos/staking/v1beta1/query.proto](#cosmos/staking/v1beta1/query.proto)
+    - [QueryDelegationRequest](#cosmos.staking.v1beta1.QueryDelegationRequest)
+    - [QueryDelegationResponse](#cosmos.staking.v1beta1.QueryDelegationResponse)
+    - [QueryDelegatorDelegationsRequest](#cosmos.staking.v1beta1.QueryDelegatorDelegationsRequest)
+    - [QueryDelegatorDelegationsResponse](#cosmos.staking.v1beta1.QueryDelegatorDelegationsResponse)
+    - [QueryDelegatorUnbondingDelegationsRequest](#cosmos.staking.v1beta1.QueryDelegatorUnbondingDelegationsRequest)
+    - [QueryDelegatorUnbondingDelegationsResponse](#cosmos.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse)
+    - [QueryDelegatorValidatorRequest](#cosmos.staking.v1beta1.QueryDelegatorValidatorRequest)
+    - [QueryDelegatorValidatorResponse](#cosmos.staking.v1beta1.QueryDelegatorValidatorResponse)
+    - [QueryDelegatorValidatorsRequest](#cosmos.staking.v1beta1.QueryDelegatorValidatorsRequest)
+    - [QueryDelegatorValidatorsResponse](#cosmos.staking.v1beta1.QueryDelegatorValidatorsResponse)
+    - [QueryHistoricalInfoRequest](#cosmos.staking.v1beta1.QueryHistoricalInfoRequest)
+    - [QueryHistoricalInfoResponse](#cosmos.staking.v1beta1.QueryHistoricalInfoResponse)
+    - [QueryParamsRequest](#cosmos.staking.v1beta1.QueryParamsRequest)
+    - [QueryParamsResponse](#cosmos.staking.v1beta1.QueryParamsResponse)
+    - [QueryPoolRequest](#cosmos.staking.v1beta1.QueryPoolRequest)
+    - [QueryPoolResponse](#cosmos.staking.v1beta1.QueryPoolResponse)
+    - [QueryRedelegationsRequest](#cosmos.staking.v1beta1.QueryRedelegationsRequest)
+    - [QueryRedelegationsResponse](#cosmos.staking.v1beta1.QueryRedelegationsResponse)
+    - [QueryUnbondingDelegationRequest](#cosmos.staking.v1beta1.QueryUnbondingDelegationRequest)
+    - [QueryUnbondingDelegationResponse](#cosmos.staking.v1beta1.QueryUnbondingDelegationResponse)
+    - [QueryValidatorDelegationsRequest](#cosmos.staking.v1beta1.QueryValidatorDelegationsRequest)
+    - [QueryValidatorDelegationsResponse](#cosmos.staking.v1beta1.QueryValidatorDelegationsResponse)
+    - [QueryValidatorRequest](#cosmos.staking.v1beta1.QueryValidatorRequest)
+    - [QueryValidatorResponse](#cosmos.staking.v1beta1.QueryValidatorResponse)
+    - [QueryValidatorUnbondingDelegationsRequest](#cosmos.staking.v1beta1.QueryValidatorUnbondingDelegationsRequest)
+    - [QueryValidatorUnbondingDelegationsResponse](#cosmos.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse)
+    - [QueryValidatorsRequest](#cosmos.staking.v1beta1.QueryValidatorsRequest)
+    - [QueryValidatorsResponse](#cosmos.staking.v1beta1.QueryValidatorsResponse)
+  
+    - [Query](#cosmos.staking.v1beta1.Query)
+  
+- [cosmos/staking/v1beta1/tx.proto](#cosmos/staking/v1beta1/tx.proto)
+    - [MsgBeginRedelegate](#cosmos.staking.v1beta1.MsgBeginRedelegate)
+    - [MsgBeginRedelegateResponse](#cosmos.staking.v1beta1.MsgBeginRedelegateResponse)
+    - [MsgCreateValidator](#cosmos.staking.v1beta1.MsgCreateValidator)
+    - [MsgCreateValidatorResponse](#cosmos.staking.v1beta1.MsgCreateValidatorResponse)
+    - [MsgDelegate](#cosmos.staking.v1beta1.MsgDelegate)
+    - [MsgDelegateResponse](#cosmos.staking.v1beta1.MsgDelegateResponse)
+    - [MsgEditValidator](#cosmos.staking.v1beta1.MsgEditValidator)
+    - [MsgEditValidatorResponse](#cosmos.staking.v1beta1.MsgEditValidatorResponse)
+    - [MsgUndelegate](#cosmos.staking.v1beta1.MsgUndelegate)
+    - [MsgUndelegateResponse](#cosmos.staking.v1beta1.MsgUndelegateResponse)
+  
+    - [Msg](#cosmos.staking.v1beta1.Msg)
+  
+- [cosmos/tx/signing/v1beta1/signing.proto](#cosmos/tx/signing/v1beta1/signing.proto)
+    - [SignatureDescriptor](#cosmos.tx.signing.v1beta1.SignatureDescriptor)
+    - [SignatureDescriptor.Data](#cosmos.tx.signing.v1beta1.SignatureDescriptor.Data)
+    - [SignatureDescriptor.Data.Multi](#cosmos.tx.signing.v1beta1.SignatureDescriptor.Data.Multi)
+    - [SignatureDescriptor.Data.Single](#cosmos.tx.signing.v1beta1.SignatureDescriptor.Data.Single)
+    - [SignatureDescriptors](#cosmos.tx.signing.v1beta1.SignatureDescriptors)
+  
+    - [SignMode](#cosmos.tx.signing.v1beta1.SignMode)
+  
+- [cosmos/tx/v1beta1/tx.proto](#cosmos/tx/v1beta1/tx.proto)
+    - [AuthInfo](#cosmos.tx.v1beta1.AuthInfo)
+    - [Fee](#cosmos.tx.v1beta1.Fee)
+    - [ModeInfo](#cosmos.tx.v1beta1.ModeInfo)
+    - [ModeInfo.Multi](#cosmos.tx.v1beta1.ModeInfo.Multi)
+    - [ModeInfo.Single](#cosmos.tx.v1beta1.ModeInfo.Single)
+    - [SignDoc](#cosmos.tx.v1beta1.SignDoc)
+    - [SignerInfo](#cosmos.tx.v1beta1.SignerInfo)
+    - [Tx](#cosmos.tx.v1beta1.Tx)
+    - [TxBody](#cosmos.tx.v1beta1.TxBody)
+    - [TxRaw](#cosmos.tx.v1beta1.TxRaw)
+  
+- [cosmos/tx/v1beta1/service.proto](#cosmos/tx/v1beta1/service.proto)
+    - [BroadcastTxRequest](#cosmos.tx.v1beta1.BroadcastTxRequest)
+    - [BroadcastTxResponse](#cosmos.tx.v1beta1.BroadcastTxResponse)
+    - [GetTxRequest](#cosmos.tx.v1beta1.GetTxRequest)
+    - [GetTxResponse](#cosmos.tx.v1beta1.GetTxResponse)
+    - [GetTxsEventRequest](#cosmos.tx.v1beta1.GetTxsEventRequest)
+    - [GetTxsEventResponse](#cosmos.tx.v1beta1.GetTxsEventResponse)
+    - [SimulateRequest](#cosmos.tx.v1beta1.SimulateRequest)
+    - [SimulateResponse](#cosmos.tx.v1beta1.SimulateResponse)
+  
+    - [BroadcastMode](#cosmos.tx.v1beta1.BroadcastMode)
+    - [OrderBy](#cosmos.tx.v1beta1.OrderBy)
+  
+    - [Service](#cosmos.tx.v1beta1.Service)
+  
+- [cosmos/upgrade/v1beta1/upgrade.proto](#cosmos/upgrade/v1beta1/upgrade.proto)
+    - [CancelSoftwareUpgradeProposal](#cosmos.upgrade.v1beta1.CancelSoftwareUpgradeProposal)
+    - [Plan](#cosmos.upgrade.v1beta1.Plan)
+    - [SoftwareUpgradeProposal](#cosmos.upgrade.v1beta1.SoftwareUpgradeProposal)
+  
+- [cosmos/upgrade/v1beta1/query.proto](#cosmos/upgrade/v1beta1/query.proto)
+    - [QueryAppliedPlanRequest](#cosmos.upgrade.v1beta1.QueryAppliedPlanRequest)
+    - [QueryAppliedPlanResponse](#cosmos.upgrade.v1beta1.QueryAppliedPlanResponse)
+    - [QueryCurrentPlanRequest](#cosmos.upgrade.v1beta1.QueryCurrentPlanRequest)
+    - [QueryCurrentPlanResponse](#cosmos.upgrade.v1beta1.QueryCurrentPlanResponse)
+    - [QueryUpgradedConsensusStateRequest](#cosmos.upgrade.v1beta1.QueryUpgradedConsensusStateRequest)
+    - [QueryUpgradedConsensusStateResponse](#cosmos.upgrade.v1beta1.QueryUpgradedConsensusStateResponse)
+  
+    - [Query](#cosmos.upgrade.v1beta1.Query)
+  
+- [cosmos/vesting/v1beta1/tx.proto](#cosmos/vesting/v1beta1/tx.proto)
+    - [MsgCreateVestingAccount](#cosmos.vesting.v1beta1.MsgCreateVestingAccount)
+    - [MsgCreateVestingAccountResponse](#cosmos.vesting.v1beta1.MsgCreateVestingAccountResponse)
+  
+    - [Msg](#cosmos.vesting.v1beta1.Msg)
+  
+- [cosmos/vesting/v1beta1/vesting.proto](#cosmos/vesting/v1beta1/vesting.proto)
+    - [BaseVestingAccount](#cosmos.vesting.v1beta1.BaseVestingAccount)
+    - [ContinuousVestingAccount](#cosmos.vesting.v1beta1.ContinuousVestingAccount)
+    - [DelayedVestingAccount](#cosmos.vesting.v1beta1.DelayedVestingAccount)
+    - [Period](#cosmos.vesting.v1beta1.Period)
+    - [PeriodicVestingAccount](#cosmos.vesting.v1beta1.PeriodicVestingAccount)
+>>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
   
 - [Scalar Value Types](#scalar-value-types)
 
@@ -1973,6 +2552,27 @@ QueryChannelsResponse is the response type for the Query/Channels RPC method.
 
 
 
+<<<<<<< HEAD
+=======
+
+<a name="cosmos.bank.v1beta1.Supply"></a>
+
+### Supply
+Supply represents a struct that passively keeps track of the total supply
+amounts in the network.
+This message is deprecated now that supply is indexed by denom.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `total` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+>>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
 
 <a name="ibc.core.channel.v1.QueryConnectionChannelsRequest"></a>
 
@@ -2018,8 +2618,15 @@ Query/QueryNextSequenceReceiveRequest RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
+<<<<<<< HEAD
 | `port_id` | [string](#string) |  | port unique identifier |
 | `channel_id` | [string](#string) |  | channel unique identifier |
+=======
+| `params` | [Params](#cosmos.bank.v1beta1.Params) |  | params defines all the paramaters of the module. |
+| `balances` | [Balance](#cosmos.bank.v1beta1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
+| `supply` | [cosmos.base.v1beta1.Coin](#cosmos.base.v1beta1.Coin) | repeated | supply represents the total supply. If it is left empty, then supply will be calculated based on the provided balances. Otherwise, it will be used to validate that the sum of the balances equals this amount. |
+| `denom_metadata` | [Metadata](#cosmos.bank.v1beta1.Metadata) | repeated | denom_metadata defines the metadata of the differents coins. |
+>>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
 
 
 
@@ -2567,6 +3174,442 @@ MsgRecvPacket receives incoming IBC packet
 ### MsgRecvPacketResponse
 MsgRecvPacketResponse defines the Msg/RecvPacket response type.
 
+<<<<<<< HEAD
+=======
+<a name="cosmos/base/reflection/v2alpha1/reflection.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## cosmos/base/reflection/v2alpha1/reflection.proto
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.AppDescriptor"></a>
+
+### AppDescriptor
+AppDescriptor describes a cosmos-sdk based application
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authn` | [AuthnDescriptor](#cosmos.base.reflection.v2alpha1.AuthnDescriptor) |  | AuthnDescriptor provides information on how to authenticate transactions on the application NOTE: experimental and subject to change in future releases. |
+| `chain` | [ChainDescriptor](#cosmos.base.reflection.v2alpha1.ChainDescriptor) |  | chain provides the chain descriptor |
+| `codec` | [CodecDescriptor](#cosmos.base.reflection.v2alpha1.CodecDescriptor) |  | codec provides metadata information regarding codec related types |
+| `configuration` | [ConfigurationDescriptor](#cosmos.base.reflection.v2alpha1.ConfigurationDescriptor) |  | configuration provides metadata information regarding the sdk.Config type |
+| `query_services` | [QueryServicesDescriptor](#cosmos.base.reflection.v2alpha1.QueryServicesDescriptor) |  | query_services provides metadata information regarding the available queriable endpoints |
+| `tx` | [TxDescriptor](#cosmos.base.reflection.v2alpha1.TxDescriptor) |  | tx provides metadata information regarding how to send transactions to the given application |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.AuthnDescriptor"></a>
+
+### AuthnDescriptor
+AuthnDescriptor provides information on how to sign transactions without relying
+on the online RPCs GetTxMetadata and CombineUnsignedTxAndSignatures
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sign_modes` | [SigningModeDescriptor](#cosmos.base.reflection.v2alpha1.SigningModeDescriptor) | repeated | sign_modes defines the supported signature algorithm |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.ChainDescriptor"></a>
+
+### ChainDescriptor
+ChainDescriptor describes chain information of the application
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id is the chain id |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.CodecDescriptor"></a>
+
+### CodecDescriptor
+CodecDescriptor describes the registered interfaces and provides metadata information on the types
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `interfaces` | [InterfaceDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceDescriptor) | repeated | interfaces is a list of the registerted interfaces descriptors |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.ConfigurationDescriptor"></a>
+
+### ConfigurationDescriptor
+ConfigurationDescriptor contains metadata information on the sdk.Config
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `bech32_account_address_prefix` | [string](#string) |  | bech32_account_address_prefix is the account address prefix |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetAuthnDescriptorRequest"></a>
+
+### GetAuthnDescriptorRequest
+GetAuthnDescriptorRequest is the request used for the GetAuthnDescriptor RPC
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetAuthnDescriptorResponse"></a>
+
+### GetAuthnDescriptorResponse
+GetAuthnDescriptorResponse is the response returned by the GetAuthnDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `authn` | [AuthnDescriptor](#cosmos.base.reflection.v2alpha1.AuthnDescriptor) |  | authn describes how to authenticate to the application when sending transactions |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetChainDescriptorRequest"></a>
+
+### GetChainDescriptorRequest
+GetChainDescriptorRequest is the request used for the GetChainDescriptor RPC
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetChainDescriptorResponse"></a>
+
+### GetChainDescriptorResponse
+GetChainDescriptorResponse is the response returned by the GetChainDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `chain` | [ChainDescriptor](#cosmos.base.reflection.v2alpha1.ChainDescriptor) |  | chain describes application chain information |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetCodecDescriptorRequest"></a>
+
+### GetCodecDescriptorRequest
+GetCodecDescriptorRequest is the request used for the GetCodecDescriptor RPC
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetCodecDescriptorResponse"></a>
+
+### GetCodecDescriptorResponse
+GetCodecDescriptorResponse is the response returned by the GetCodecDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `codec` | [CodecDescriptor](#cosmos.base.reflection.v2alpha1.CodecDescriptor) |  | codec describes the application codec such as registered interfaces and implementations |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorRequest"></a>
+
+### GetConfigurationDescriptorRequest
+GetConfigurationDescriptorRequest is the request used for the GetConfigurationDescriptor RPC
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorResponse"></a>
+
+### GetConfigurationDescriptorResponse
+GetConfigurationDescriptorResponse is the response returned by the GetConfigurationDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `config` | [ConfigurationDescriptor](#cosmos.base.reflection.v2alpha1.ConfigurationDescriptor) |  | config describes the application's sdk.Config |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorRequest"></a>
+
+### GetQueryServicesDescriptorRequest
+GetQueryServicesDescriptorRequest is the request used for the GetQueryServicesDescriptor RPC
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorResponse"></a>
+
+### GetQueryServicesDescriptorResponse
+GetQueryServicesDescriptorResponse is the response returned by the GetQueryServicesDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `queries` | [QueryServicesDescriptor](#cosmos.base.reflection.v2alpha1.QueryServicesDescriptor) |  | queries provides information on the available queryable services |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetTxDescriptorRequest"></a>
+
+### GetTxDescriptorRequest
+GetTxDescriptorRequest is the request used for the GetTxDescriptor RPC
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.GetTxDescriptorResponse"></a>
+
+### GetTxDescriptorResponse
+GetTxDescriptorResponse is the response returned by the GetTxDescriptor RPC
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tx` | [TxDescriptor](#cosmos.base.reflection.v2alpha1.TxDescriptor) |  | tx provides information on msgs that can be forwarded to the application alongside the accepted transaction protobuf type |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.InterfaceAcceptingMessageDescriptor"></a>
+
+### InterfaceAcceptingMessageDescriptor
+InterfaceAcceptingMessageDescriptor describes a protobuf message which contains
+an interface represented as a google.protobuf.Any
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the type containing the interface |
+| `field_descriptor_names` | [string](#string) | repeated | field_descriptor_names is a list of the protobuf name (not fullname) of the field which contains the interface as google.protobuf.Any (the interface is the same, but it can be in multiple fields of the same proto message) |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.InterfaceDescriptor"></a>
+
+### InterfaceDescriptor
+InterfaceDescriptor describes the implementation of an interface
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the name of the interface |
+| `interface_accepting_messages` | [InterfaceAcceptingMessageDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceAcceptingMessageDescriptor) | repeated | interface_accepting_messages contains information regarding the proto messages which contain the interface as google.protobuf.Any field |
+| `interface_implementers` | [InterfaceImplementerDescriptor](#cosmos.base.reflection.v2alpha1.InterfaceImplementerDescriptor) | repeated | interface_implementers is a list of the descriptors of the interface implementers |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.InterfaceImplementerDescriptor"></a>
+
+### InterfaceImplementerDescriptor
+InterfaceImplementerDescriptor describes an interface implementer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf queryable name of the interface implementer |
+| `type_url` | [string](#string) |  | type_url defines the type URL used when marshalling the type as any this is required so we can provide type safe google.protobuf.Any marshalling and unmarshalling, making sure that we don't accept just 'any' type in our interface fields |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.MsgDescriptor"></a>
+
+### MsgDescriptor
+MsgDescriptor describes a cosmos-sdk message that can be delivered with a transaction
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `service_msg` | [ServiceMsgDescriptor](#cosmos.base.reflection.v2alpha1.ServiceMsgDescriptor) |  | service_msg is used when the message is an sdk.ServiceMsg type |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.QueryMethodDescriptor"></a>
+
+### QueryMethodDescriptor
+QueryMethodDescriptor describes a queryable method of a query service
+no other info is provided beside method name and tendermint queryable path
+because it would be redundant with the grpc reflection service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name is the protobuf name (not fullname) of the method |
+| `full_query_path` | [string](#string) |  | full_query_path is the path that can be used to query this method via tendermint abci.Query |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.QueryServiceDescriptor"></a>
+
+### QueryServiceDescriptor
+QueryServiceDescriptor describes a cosmos-sdk queryable service
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the service descriptor |
+| `is_module` | [bool](#bool) |  | is_module describes if this service is actually exposed by an application's module |
+| `methods` | [QueryMethodDescriptor](#cosmos.base.reflection.v2alpha1.QueryMethodDescriptor) | repeated | methods provides a list of query service methods |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.QueryServicesDescriptor"></a>
+
+### QueryServicesDescriptor
+QueryServicesDescriptor contains the list of cosmos-sdk queriable services
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `query_services` | [QueryServiceDescriptor](#cosmos.base.reflection.v2alpha1.QueryServiceDescriptor) | repeated | query_services is a list of cosmos-sdk QueryServiceDescriptor |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.ServiceMsgDescriptor"></a>
+
+### ServiceMsgDescriptor
+ServiceMsgDescriptor describes an sdk.ServiceMsg type
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `request_fullname` | [string](#string) |  | request_fullname is the protobuf fullname of the given sdk.ServiceMsg request this is the protobuf message type which should be used as google.protobuf.Any.value when delivering the msg to the DeliverTx endpoint |
+| `request_route` | [string](#string) |  | request_route is the sdk.ServiceMsg route, it is equal to type_url |
+| `request_type_url` | [string](#string) |  | request_type_url is the identifier that should be used as google.protobuf.Any.type_url when delivering the msg to the DeliverTx endpoint |
+| `response_fullname` | [string](#string) |  | response_fullname is the protobuf fullname of the given sdk.ServiceMsg response |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.SigningModeDescriptor"></a>
+
+### SigningModeDescriptor
+SigningModeDescriptor provides information on a signing flow of the application
+NOTE(fdymylja): here we could go as far as providing an entire flow on how
+to sign a message given a SigningModeDescriptor, but it's better to think about
+this another time
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name defines the unique name of the signing mode |
+| `number` | [int32](#int32) |  | number is the unique int32 identifier for the sign_mode enum |
+| `authn_info_provider_method_fullname` | [string](#string) |  | authn_info_provider_method_fullname defines the fullname of the method to call to get the metadata required to authenticate using the provided sign_modes |
+
+
+
+
+
+
+<a name="cosmos.base.reflection.v2alpha1.TxDescriptor"></a>
+
+### TxDescriptor
+TxDescriptor describes the accepted transaction type
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `fullname` | [string](#string) |  | fullname is the protobuf fullname of the raw transaction type (for instance the tx.Tx type) it is not meant to support polymorphism of transaction types, it is supposed to be used by reflection clients to understand if they can handle a specific transaction type in an application. |
+| `msgs` | [MsgDescriptor](#cosmos.base.reflection.v2alpha1.MsgDescriptor) | repeated | msgs lists the accepted application messages (sdk.ServiceMsg, sdk.Msg) NOTE: not to be confused with proto.Message types |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="cosmos.base.reflection.v2alpha1.ReflectionService"></a>
+
+### ReflectionService
+ReflectionService defines a service for application reflection.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GetAuthnDescriptor` | [GetAuthnDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetAuthnDescriptorRequest) | [GetAuthnDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetAuthnDescriptorResponse) | GetAuthnDescriptor returns information on how to authenticate transactions in the application NOTE: this RPC is still experimental and might be subject to breaking changes or removal in future releases of the cosmos-sdk. | GET|/cosmos/base/reflection/v1beta1/app_descriptor/authn|
+| `GetChainDescriptor` | [GetChainDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetChainDescriptorRequest) | [GetChainDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetChainDescriptorResponse) | GetChainDescriptor returns the description of the chain | GET|/cosmos/base/reflection/v1beta1/app_descriptor/chain|
+| `GetCodecDescriptor` | [GetCodecDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetCodecDescriptorRequest) | [GetCodecDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetCodecDescriptorResponse) | GetCodecDescriptor returns the descriptor of the codec of the application | GET|/cosmos/base/reflection/v1beta1/app_descriptor/codec|
+| `GetConfigurationDescriptor` | [GetConfigurationDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorRequest) | [GetConfigurationDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetConfigurationDescriptorResponse) | GetConfigurationDescriptor returns the descriptor for the sdk.Config of the application | GET|/cosmos/base/reflection/v1beta1/app_descriptor/configuration|
+| `GetQueryServicesDescriptor` | [GetQueryServicesDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorRequest) | [GetQueryServicesDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetQueryServicesDescriptorResponse) | GetQueryServicesDescriptor returns the available gRPC queryable services of the application | GET|/cosmos/base/reflection/v1beta1/app_descriptor/query_services|
+| `GetTxDescriptor` | [GetTxDescriptorRequest](#cosmos.base.reflection.v2alpha1.GetTxDescriptorRequest) | [GetTxDescriptorResponse](#cosmos.base.reflection.v2alpha1.GetTxDescriptorResponse) | GetTxDescriptor returns information on the used transaction object and available msgs that can be used | GET|/cosmos/base/reflection/v1beta1/app_descriptor/tx_descriptor|
+
+ <!-- end services -->
+
+
+
+<a name="cosmos/base/snapshots/v1beta1/snapshot.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+>>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
 
 
 

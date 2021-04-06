@@ -5,9 +5,15 @@ package signing
 
 import (
 	fmt "fmt"
+<<<<<<< HEAD
 	proto "github.com/gogo/protobuf/proto"
 	types "github.com/line/lbm-sdk/codec/types"
 	types1 "github.com/line/lbm-sdk/crypto/types"
+=======
+	types "github.com/cosmos/cosmos-sdk/codec/types"
+	types1 "github.com/cosmos/cosmos-sdk/crypto/types"
+	proto "github.com/gogo/protobuf/proto"
+>>>>>>> 29ff33300 (cosmos-reflection: extend to support writing by reflection clients (#8965))
 	io "io"
 	math "math"
 	math_bits "math/bits"

@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"gopkg.in/yaml.v2"
+
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/legacy"
 	codectypes "github.com/line/lbm-sdk/codec/types"
@@ -12,7 +14,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/types/tx/signing"
-	"gopkg.in/yaml.v2"
 )
 
 // StdSignDoc is replay-prevention structure.

@@ -17,6 +17,8 @@ import (
 	"google.golang.org/grpc/metadata"
 	rpb "google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
 
+	reflectionv1 "github.com/line/lbm-sdk/client/grpc/reflection"
+	reflectionv2 "github.com/line/lbm-sdk/server/grpc/reflection/v2"
 	"github.com/line/lbm-sdk/testutil/network"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
@@ -118,6 +120,29 @@ func (s *IntegrationTestSuite) TestGRPCServer_Reflection() {
 		s.Require().NoError(err)
 		sd := file.FindSymbol(svc)
 		s.Require().NotNil(sd)
+	}
+}
+
+func (s *IntegrationTestSuite) TestGRPCServer_InterfaceReflection() {
+	// this tests the application reflection capabilities and compatibility between v1 and v2
+	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
+	defer cancel()
+
+	clientV2 := reflectionv2.NewReflectionServiceClient(s.conn)
+	clientV1 := reflectionv1.NewReflectionServiceClient(s.conn)
+	codecDesc, err := clientV2.GetCodecDescriptor(ctx, nil)
+	s.Require().NoError(err)
+
+	interfaces, err := clientV1.ListAllInterfaces(ctx, nil)
+	s.Require().NoError(err)
+	s.Require().Equal(len(codecDesc.Codec.Interfaces), len(interfaces.InterfaceNames))
+	s.Require().Equal(len(s.cfg.InterfaceRegistry.ListAllInterfaces()), len(codecDesc.Codec.Interfaces))
+
+	for _, iface := range interfaces.InterfaceNames {
+		impls, err := clientV1.ListImplementations(ctx, &reflectionv1.ListImplementationsRequest{InterfaceName: iface})
+		s.Require().NoError(err)
+
+		s.Require().ElementsMatch(impls.ImplementationMessageNames, s.cfg.InterfaceRegistry.ListImplementations(iface))
 	}
 }
 
