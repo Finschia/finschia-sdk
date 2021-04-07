@@ -1,8 +1,10 @@
 package types_test
 
 import (
+	"errors"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/x/bank/keeper"
@@ -25,6 +27,27 @@ func TestAddressFromBalancesStore(t *testing.T) {
 	require.NoError(t, err)
 
 	key := cloneAppend(address.MustLengthPrefix(addr.Bytes()), []byte("stake"))
-	res := types.AddressFromBalancesStore(key)
+	res, err := types.AddressFromBalancesStore(key)
+	require.NoError(t, err)
 	require.Equal(t, res, addr)
+}
+
+func TestInvalidAddressFromBalancesStore(t *testing.T) {
+	tests := []struct {
+		name string
+		key  []byte
+	}{
+		{"empty", []byte("")},
+		{"invalid", []byte("3AA")},
+	}
+
+	for _, tc := range tests {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			_, err := types.AddressFromBalancesStore(tc.key)
+			assert.Error(t, err)
+			assert.True(t, errors.Is(types.ErrInvalidKey, err))
+		})
+	}
 }
