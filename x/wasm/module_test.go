@@ -73,8 +73,8 @@ var (
 
 func TestHandleCreate(t *testing.T) {
 	cases := map[string]struct {
-		msg      sdk.Msg
-		isValid  bool
+		msg     sdk.Msg
+		isValid bool
 	}{
 		"empty": {
 			msg:     MsgStoreCode{},
@@ -137,7 +137,7 @@ type initMsg struct {
 	Beneficiary sdk.AccAddress `json:"beneficiary"`
 }
 
-type emptyMsg struct {}
+type emptyMsg struct{}
 
 type state struct {
 	Verifier    wasmTypes.CanonicalAddress `json:"verifier"`
@@ -229,8 +229,8 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 		expectedBytes []byte
 	}{
 		"empty": {
-			msg: MsgStoreCodeAndInstantiateContract{},
-			isValid: false,
+			msg:           MsgStoreCodeAndInstantiateContract{},
+			isValid:       false,
 			expectedCodes: 0,
 			expectedBytes: nil,
 		},
@@ -242,7 +242,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				Label:        "foo",
 				InitFunds:    nil,
 			},
-			isValid: true,
+			isValid:       true,
 			expectedCodes: 1,
 			expectedBytes: testContract,
 		},
@@ -254,7 +254,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				Label:        "foo",
 				InitFunds:    nil,
 			},
-			isValid: false,
+			isValid:       false,
 			expectedCodes: 0,
 			expectedBytes: nil,
 		},
@@ -266,7 +266,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				Label:        "foo",
 				InitFunds:    nil,
 			},
-			isValid: false,
+			isValid:       false,
 			expectedCodes: 0,
 			expectedBytes: nil,
 		},
@@ -278,7 +278,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				Label:        "foo",
 				InitFunds:    nil,
 			},
-			isValid: false,
+			isValid:       false,
 			expectedCodes: 1,
 			expectedBytes: testContract,
 		},

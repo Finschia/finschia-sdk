@@ -186,6 +186,14 @@ func (f *Fixtures) LogResult(isSuccess bool, stdOut, stdErr string) {
 	}
 }
 
+func (f *Fixtures) LogResultExpectedError(isSuccess bool, stdOut, stdErr string) {
+	if !isSuccess {
+		f.T.Log(stdErr)
+	} else {
+		f.T.Error(stdOut)
+	}
+}
+
 func (f Fixtures) Clone() *Fixtures {
 	newF := NewFixtures(f.T)
 	newF.ChainID = f.ChainID
@@ -1300,6 +1308,11 @@ func (f *Fixtures) TxStoreWasm(wasmFilePath string, flags ...string) (bool, stri
 
 func (f *Fixtures) TxInstantiateWasm(codeId uint64, msgJson string, flags ...string) (bool, string, string) {
 	cmd := fmt.Sprintf("%s tx wasm instantiate %d %s %v", f.LinkcliBinary, codeId, msgJson, f.Flags())
+	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
+}
+
+func (f *Fixtures) TxStoreAndInstantiateWasm(wasmFilePath string, flags ...string) (bool, string, string) {
+	cmd := fmt.Sprintf("%s tx wasm store-instantiate %s %v", f.LinkcliBinary, wasmFilePath, f.Flags())
 	return executeWriteRetStdStreams(f.T, addFlags(cmd, flags))
 }
 

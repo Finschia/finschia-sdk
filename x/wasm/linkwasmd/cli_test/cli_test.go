@@ -157,6 +157,179 @@ func TestLinkCLIWasmEscrow(t *testing.T) {
 	os.RemoveAll(tmpDir)
 }
 
+func TestLinkCLIWasmEscrowWithStoreAndInstantiate(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+	defer f.Cleanup()
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+	barAddr := f.KeyAddress(keyBar)
+
+	flagFromFoo := fmt.Sprintf("--from=%s", fooAddr)
+	flagFromBar := fmt.Sprintf("--from=%s", barAddr)
+	flagGas := "--gas=auto --gas-adjustment=1.2"
+	workDir, _ := os.Getwd()
+	tmpDir := path.Join(workDir, "tmp-dir-for-test-escrow-store-instantiate")
+	dirContract := path.Join(workDir, "contracts", "escrow")
+	hashFile := path.Join(dirContract, "hash.txt")
+	wasmEscrow := path.Join(dirContract, "contract.wasm")
+	codeId := uint64(1)
+	amountSend := uint64(10)
+	denomSend := fooDenom
+	approvalMsgJson := fmt.Sprintf("{\"approve\":{\"quantity\":[{\"amount\":\"%d\",\"denom\":\"%s\"}]}}", amountSend, denomSend)
+	var contractAddress sdk.AccAddress
+
+	// make tmpDir
+	os.Mkdir(tmpDir, os.ModePerm)
+
+	// get init amount
+	initAmountOfFoo := f.QueryAccount(fooAddr).Coins.AmountOf(denomSend).Uint64()
+	initAmountOfBar := uint64(0)
+
+	// validate that there are no code in the chain
+	{
+		listCode := f.QueryListCodeWasm().CodeInfos
+		require.Empty(t, listCode)
+	}
+
+	// store the contract escrow and instantiate a contract with it
+	{
+		msgJson := fmt.Sprintf("{\"arbiter\":\"%s\",\"recipient\":\"%s\"}", fooAddr, barAddr)
+		flagLabel := "--label=escrow-test"
+		flagAmount := fmt.Sprintf("--amount=%d%s", amountSend, denomSend)
+		f.LogResult(f.TxStoreAndInstantiateWasm(wasmEscrow, msgJson, flagLabel, flagAmount, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate the code is stored
+	{
+		listCode := f.QueryListCodeWasm().CodeInfos
+		require.Len(t, listCode, 1)
+
+		//validate the hash is the same
+		expectedRow, _ := ioutil.ReadFile(hashFile)
+		expected, err := hex.DecodeString(string(expectedRow[:64]))
+		require.NoError(t, err)
+		actual := listCode[0].GetDataHash().Bytes()
+		require.Equal(t, expected, actual)
+	}
+
+	// validate getCode get the exact same wasm
+	{
+		outputPath := path.Join(tmpDir, "escrow-tmp.wasm")
+		f.QueryCodeWasm(codeId, outputPath)
+		fLocal, _ := os.Open(wasmEscrow)
+		fChain, _ := os.Open(outputPath)
+
+		// 2000000 is enough length
+		dataLocal := make([]byte, 2000000)
+		dataChain := make([]byte, 2000000)
+		fLocal.Read(dataLocal)
+		fChain.Read(dataChain)
+		require.Equal(t, dataLocal, dataChain)
+	}
+
+	// validate foo's amount decreased
+	{
+		amount := f.QueryAccount(fooAddr).Coins.AmountOf(denomSend).Uint64()
+		require.Equal(t, initAmountOfFoo-amountSend, amount)
+	}
+
+	// validate there is only one contract using codeId=1 and get contractAddress
+	{
+		listContract := f.QueryListContractByCodeWasm(codeId).ContractInfos
+		require.Len(t, listContract, 1)
+		contractAddress = listContract[0].GetAddress()
+	}
+
+	// check arbiter with query
+	{
+		res := f.QueryContractStateSmartWasm(contractAddress, "{\"arbiter\":{}}")
+		require.Equal(t, fmt.Sprintf("{\"arbiter\":\"%s\"}", fooAddr), res)
+	}
+
+	// validate executing approve is failed by invalid account
+	{
+		succeeded, _, _ := f.TxExecuteWasm(contractAddress, approvalMsgJson, flagFromBar, flagGas, "-y")
+		require.False(t, succeeded)
+	}
+
+	// execute approve
+	{
+		f.LogResult(f.TxExecuteWasm(contractAddress, approvalMsgJson, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate the coin Foot is transfered
+	{
+		amount := f.QueryAccount(barAddr).Coins.AmountOf(denomSend).Uint64()
+		require.Equal(t, initAmountOfBar+amountSend, amount)
+	}
+
+	// validate approve over amount does not succeed
+	{
+		succeeded, _, _ := f.TxExecuteWasm(contractAddress, approvalMsgJson, flagFromFoo, flagGas, "-y")
+		require.False(t, succeeded)
+	}
+
+	// remove tmp dir
+	os.RemoveAll(tmpDir)
+}
+
+func TestLinkCLIWasmEscrowWithStoreAndInstantiateWithInvalidInitMsg(t *testing.T) {
+	t.Parallel()
+	f := InitFixtures(t)
+	defer f.Cleanup()
+
+	// start linkd server
+	proc := f.LDStart()
+	defer func() { require.NoError(t, proc.Stop(false)) }()
+
+	fooAddr := f.KeyAddress(keyFoo)
+
+	flagFromFoo := fmt.Sprintf("--from=%s", fooAddr)
+	flagGas := "--gas=auto --gas-adjustment=1.2"
+	workDir, _ := os.Getwd()
+	dirContract := path.Join(workDir, "contracts", "escrow")
+	wasmEscrow := path.Join(dirContract, "contract.wasm")
+	amountSend := uint64(10)
+	denomSend := fooDenom
+
+	// get init amount
+	initAmountOfFoo := f.QueryAccount(fooAddr).Coins.AmountOf(denomSend).Uint64()
+
+	// validate that there are no code in the chain
+	{
+		listCode := f.QueryListCodeWasm().CodeInfos
+		require.Empty(t, listCode)
+	}
+
+	// store the contract escrow and try to instantiate a contract with invalid init message
+	{
+		invalidMsgJson := "{}"
+		flagLabel := "--label=escrow-test"
+		flagAmount := fmt.Sprintf("--amount=%d%s", amountSend, denomSend)
+		f.LogResultExpectedError(f.TxStoreAndInstantiateWasm(wasmEscrow, invalidMsgJson, flagLabel, flagAmount, flagFromFoo, flagGas, "-y"))
+		tests.WaitForNextNBlocksTM(1, f.Port)
+	}
+
+	// validate the code is not stored
+	{
+		listCode := f.QueryListCodeWasm().CodeInfos
+		require.Empty(t, listCode)
+	}
+
+	// validate foo's amount does not decreased
+	{
+		amount := f.QueryAccount(fooAddr).Coins.AmountOf(denomSend).Uint64()
+		require.Equal(t, initAmountOfFoo, amount)
+	}
+}
+
 func TestLinkCLIWasmTokenTester(t *testing.T) {
 	t.Parallel()
 	f := InitFixtures(t)
@@ -588,7 +761,6 @@ func TestLinkCLIWasmTokenTester(t *testing.T) {
 }
 
 func TestLinkCLIWasmTokenTesterProxy(t *testing.T) {
-
 	t.Parallel()
 	f := InitFixtures(t)
 	defer f.Cleanup()
