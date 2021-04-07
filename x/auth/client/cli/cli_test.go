@@ -164,7 +164,7 @@ func (s *IntegrationTestSuite) TestCLISign_AminoJSON() {
 	sigOnlyFlag := "--signature-only"
 	signModeAminoFlag := "--sign-mode=amino-json"
 
-	// SIC! validators have same key names and same adddresses as those registered in the keyring,
+	// SIC! validators have same key names and same addresses as those registered in the keyring,
 	//      BUT the keys are different!
 	valInfo, err := val1.ClientCtx.Keyring.Key(val1.Moniker)
 	require.NoError(err)
@@ -267,15 +267,9 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByHash() {
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	// Service Msg.
-	out, err := bankcli.MsgSendExec(
-		val.ClientCtx,
-		val.Address,
-		account2.GetAddress(),
+	out, err := s.createBankMsg(
+		val, account2.GetAddress(),
 		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 	)
 	s.Require().NoError(err)
 	var txRes sdk.TxResponse
@@ -460,16 +454,8 @@ func (s *IntegrationTestSuite) TestCLISendGenerateSignAndBroadcast() {
 
 	sendTokens := sdk.NewCoin(s.cfg.BondDenom, sdk.TokensFromConsensusPower(10))
 
-	normalGeneratedTx, err := bankcli.MsgSendExec(
-		val1.ClientCtx,
-		val1.Address,
-		account.GetAddress(),
-		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--%s=true", flags.FlagGenerateOnly),
-	)
+	normalGeneratedTx, err := s.createBankMsg(val1, account.GetAddress(),
+		sdk.NewCoins(sendTokens), fmt.Sprintf("--%s=true", flags.FlagGenerateOnly))
 	s.Require().NoError(err)
 
 	txCfg := val1.ClientCtx.TxConfig
@@ -485,15 +471,8 @@ func (s *IntegrationTestSuite) TestCLISendGenerateSignAndBroadcast() {
 	s.Require().Equal(0, len(sigs))
 
 	// Test generate sendTx with --gas=$amount
-	limitedGasGeneratedTx, err := bankcli.MsgSendExec(
-		val1.ClientCtx,
-		val1.Address,
-		account.GetAddress(),
-		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", 100),
+	limitedGasGeneratedTx, err := s.createBankMsg(val1, account.GetAddress(),
+		sdk.NewCoins(sendTokens), fmt.Sprintf("--gas=%d", 100),
 		fmt.Sprintf("--%s=true", flags.FlagGenerateOnly),
 	)
 	s.Require().NoError(err)
@@ -517,17 +496,9 @@ func (s *IntegrationTestSuite) TestCLISendGenerateSignAndBroadcast() {
 	startTokens := balRes.Balances.AmountOf(s.cfg.BondDenom)
 
 	// Test generate sendTx, estimate gas
-	finalGeneratedTx, err := bankcli.MsgSendExec(
-		val1.ClientCtx,
-		val1.Address,
-		account.GetAddress(),
-		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
-		fmt.Sprintf("--%s=true", flags.FlagGenerateOnly),
-	)
+	finalGeneratedTx, err := s.createBankMsg(val1, account.GetAddress(),
+		sdk.NewCoins(sendTokens), fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
+		fmt.Sprintf("--%s=true", flags.FlagGenerateOnly))
 	s.Require().NoError(err)
 
 	finalStdTx, err := txCfg.TxJSONDecoder()(finalGeneratedTx.Bytes())
@@ -617,9 +588,9 @@ func (s *IntegrationTestSuite) TestCLISendGenerateSignAndBroadcast() {
 }
 
 func (s *IntegrationTestSuite) TestCLIMultisignInsufficientCosigners() {
-	val1 := *s.network.Validators[0]
+	val1 := s.network.Validators[0]
 
-	// Generate 2 accounts and a multisig.
+	// Fetch account and a multisig info
 	account1, err := val1.ClientCtx.Keyring.Key("newAccount1")
 	s.Require().NoError(err)
 
@@ -627,17 +598,12 @@ func (s *IntegrationTestSuite) TestCLIMultisignInsufficientCosigners() {
 	s.Require().NoError(err)
 
 	// Send coins from validator to multisig.
-	_, err = bankcli.MsgSendExec(
-		val1.ClientCtx,
-		val1.Address,
+	_, err = s.createBankMsg(
+		val1,
 		multisigInfo.GetAddress(),
 		sdk.NewCoins(
 			sdk.NewInt64Coin(s.cfg.BondDenom, 10),
 		),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 	)
 	s.Require().NoError(err)
 
@@ -683,15 +649,11 @@ func (s *IntegrationTestSuite) TestCLIEncode() {
 
 	sendTokens := sdk.NewCoin(s.cfg.BondDenom, sdk.TokensFromConsensusPower(10))
 
-	normalGeneratedTx, err := bankcli.MsgSendExec(
-		val1.ClientCtx,
-		val1.Address,
-		val1.Address,
+	normalGeneratedTx, err := s.createBankMsg(
+		val1, val1.Address,
 		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--%s=true", flags.FlagGenerateOnly), "--memo", "deadbeef",
+		fmt.Sprintf("--%s=true", flags.FlagGenerateOnly),
+		fmt.Sprintf("--%s=deadbeef", flags.FlagMemo),
 	)
 	s.Require().NoError(err)
 	savedTxFile := testutil.WriteToNewTempFile(s.T(), normalGeneratedTx.String())
@@ -714,7 +676,7 @@ func (s *IntegrationTestSuite) TestCLIEncode() {
 }
 
 func (s *IntegrationTestSuite) TestCLIMultisignSortSignatures() {
-	val1 := *s.network.Validators[0]
+	val1 := s.network.Validators[0]
 
 	// Generate 2 accounts and a multisig.
 	account1, err := val1.ClientCtx.Keyring.Key("newAccount1")
@@ -736,15 +698,10 @@ func (s *IntegrationTestSuite) TestCLIMultisignSortSignatures() {
 
 	// Send coins from validator to multisig.
 	sendTokens := sdk.NewInt64Coin(s.cfg.BondDenom, 10)
-	_, err = bankcli.MsgSendExec(
-		val1.ClientCtx,
-		val1.Address,
+	_, err = s.createBankMsg(
+		val1,
 		multisigInfo.GetAddress(),
 		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 	)
 	s.Require().NoError(err)
 
@@ -806,7 +763,7 @@ func (s *IntegrationTestSuite) TestCLIMultisignSortSignatures() {
 }
 
 func (s *IntegrationTestSuite) TestCLIMultisign() {
-	val1 := *s.network.Validators[0]
+	val1 := s.network.Validators[0]
 
 	// Generate 2 accounts and a multisig.
 	account1, err := val1.ClientCtx.Keyring.Key("newAccount1")
@@ -820,15 +777,9 @@ func (s *IntegrationTestSuite) TestCLIMultisign() {
 
 	// Send coins from validator to multisig.
 	sendTokens := sdk.NewInt64Coin(s.cfg.BondDenom, 10)
-	_, err = bankcli.MsgSendExec(
-		val1.ClientCtx,
-		val1.Address,
-		multisigInfo.GetAddress(),
+	_, err = s.createBankMsg(
+		val1, multisigInfo.GetAddress(),
 		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 	)
 
 	s.Require().NoError(s.network.WaitForNextBlock())
@@ -905,15 +856,10 @@ func (s *IntegrationTestSuite) TestSignBatchMultisig() {
 
 	// Send coins from validator to multisig.
 	sendTokens := sdk.NewInt64Coin(s.cfg.BondDenom, 10)
-	_, err = bankcli.MsgSendExec(
-		val.ClientCtx,
-		val.Address,
+	_, err = s.createBankMsg(
+		val,
 		multisigInfo.GetAddress(),
 		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(s.network.WaitForNextBlock())
@@ -966,15 +912,10 @@ func (s *IntegrationTestSuite) TestMultisignBatch() {
 
 	// Send coins from validator to multisig.
 	sendTokens := sdk.NewInt64Coin(s.cfg.BondDenom, 1000)
-	_, err = bankcli.MsgSendExec(
-		val.ClientCtx,
-		val.Address,
+	_, err = s.createBankMsg(
+		val,
 		multisigInfo.GetAddress(),
 		sdk.NewCoins(sendTokens),
-		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		fmt.Sprintf("--gas=%d", flags.DefaultGasLimit),
 	)
 	s.Require().NoError(err)
 	s.Require().NoError(s.network.WaitForNextBlock())
@@ -1025,7 +966,6 @@ func (s *IntegrationTestSuite) TestMultisignBatch() {
 		signedTxFile := testutil.WriteToNewTempFile(s.T(), signedTx)
 		val.ClientCtx.BroadcastMode = flags.BroadcastBlock
 		res, err = authtest.TxBroadcastExec(val.ClientCtx, signedTxFile.Name())
-		s.T().Log(res)
 		s.Require().NoError(err)
 		s.Require().NoError(s.network.WaitForNextBlock())
 	}
@@ -1239,7 +1179,7 @@ func (s *IntegrationTestSuite) TestSignWithMultiSigners_AminoJSON() {
 	// Creating a tx with 2 msgs from 2 signers: val0 and val1.
 	// The validators need to sign with SIGN_MODE_LEGACY_AMINO_JSON,
 	// because DIRECT doesn't support multi signers via the CLI.
-	// Since we we amino, we don't need to pre-populate signer_infos.
+	// Since we use amino, we don't need to pre-populate signer_infos.
 	txBuilder := val0.ClientCtx.TxConfig.NewTxBuilder()
 	txBuilder.SetMsgs(
 		banktypes.NewMsgSend(val0.Address, addr1, sdk.NewCoins(val0Coin)),
