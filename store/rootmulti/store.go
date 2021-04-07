@@ -15,6 +15,7 @@ import (
 	iavltree "github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
 	tmdb "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/prefixdb"
 	"github.com/pkg/errors"
 
 	"github.com/line/lbm-sdk/v2/snapshots"
@@ -814,10 +815,10 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 	var db tmdb.DB
 
 	if params.db != nil {
-		db = tmdb.NewPrefixDB(params.db, []byte("s/_/"))
+		db = prefixdb.NewDB(params.db, []byte("s/_/"))
 	} else {
 		prefix := "s/k:" + params.key.Name() + "/"
-		db = tmdb.NewPrefixDB(rs.db, []byte(prefix))
+		db = prefixdb.NewDB(rs.db, []byte(prefix))
 	}
 
 	switch params.typ {

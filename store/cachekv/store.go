@@ -10,8 +10,6 @@ import (
 	"time"
 	"unsafe"
 
-	tmdb "github.com/line/tm-db/v2"
-
 	"github.com/line/lbm-sdk/v2/store/tracekv"
 	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/lbm-sdk/v2/telemetry"
@@ -207,7 +205,7 @@ func (store *Store) dirtyItems(start, end []byte) {
 
 	n := len(store.unsortedCache)
 	for key := range store.unsortedCache {
-		if tmdb.IsKeyInDomain(strToByte(key), start, end) {
+		if IsKeyInDomain(strToByte(key), start, end) {
 			cacheValue := store.cache[key]
 			unsorted = append(unsorted, &kv.Pair{Key: []byte(key), Value: cacheValue.value})
 		}

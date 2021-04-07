@@ -1,10 +1,9 @@
 package cachekv
 
 import (
+	"bytes"
 	"container/list"
 	"errors"
-
-	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/types/kv"
 )
@@ -18,6 +17,16 @@ type memIterator struct {
 	ascending  bool
 }
 
+func IsKeyInDomain(key, start, end []byte) bool {
+	if bytes.Compare(key, start) < 0 {
+		return false
+	}
+	if end != nil && bytes.Compare(end, key) <= 0 {
+		return false
+	}
+	return true
+}
+
 func newMemIterator(start, end []byte, items *list.List, ascending bool) *memIterator {
 	itemsInDomain := make([]*kv.Pair, 0, items.Len())
 
@@ -25,7 +34,7 @@ func newMemIterator(start, end []byte, items *list.List, ascending bool) *memIte
 
 	for e := items.Front(); e != nil; e = e.Next() {
 		item := e.Value.(*kv.Pair)
-		if !tmdb.IsKeyInDomain(item.Key, start, end) {
+		if !IsKeyInDomain(item.Key, start, end) {
 			if entered {
 				break
 			}

@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	ostcmd "github.com/line/ostracon/cmd/tendermint/commands"
+	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	"github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/p2p"
 	pvm "github.com/line/ostracon/privval"
