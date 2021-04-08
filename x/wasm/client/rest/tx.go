@@ -181,11 +181,10 @@ func storeCodeAndInstantiateContractHandlerFn(cliCtx context.CLIContext) http.Ha
 		msg := types.MsgStoreCodeAndInstantiateContract{
 			Sender:       fromAddr,
 			WASMByteCode: wasm,
-			InitFunds: req.Deposit,
-			InitMsg:   req.InitMsg,
-			Admin:     req.Admin,
-			Label:     req.Label,
-
+			InitFunds:    req.Deposit,
+			InitMsg:      req.InitMsg,
+			Admin:        req.Admin,
+			Label:        req.Label,
 		}
 
 		err = msg.ValidateBasic()
