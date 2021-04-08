@@ -1,11 +1,9 @@
-// nolint: scopelint
 package types
 
 import (
 	"strings"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,19 +18,19 @@ func TestContractInfoValidateBasic(t *testing.T) {
 			expError:   true,
 		},
 		"creator empty": {
-			srcMutator: func(c *ContractInfo) { c.Creator = nil },
+			srcMutator: func(c *ContractInfo) { c.Creator = "" },
 			expError:   true,
 		},
 		"creator not an address": {
-			srcMutator: func(c *ContractInfo) { c.Creator = make([]byte, sdk.AddrLen-1) },
+			srcMutator: func(c *ContractInfo) { c.Creator = "invalid address" },
 			expError:   true,
 		},
 		"admin empty": {
-			srcMutator: func(c *ContractInfo) { c.Admin = nil },
+			srcMutator: func(c *ContractInfo) { c.Admin = "" },
 			expError:   false,
 		},
 		"admin not an address": {
-			srcMutator: func(c *ContractInfo) { c.Admin = make([]byte, sdk.AddrLen-1) },
+			srcMutator: func(c *ContractInfo) { c.Admin = "invalid address" },
 			expError:   true,
 		},
 		"label empty": {
@@ -72,11 +70,11 @@ func TestCodeInfoValidateBasic(t *testing.T) {
 			expError:   true,
 		},
 		"creator empty": {
-			srcMutator: func(c *CodeInfo) { c.Creator = nil },
+			srcMutator: func(c *CodeInfo) { c.Creator = "" },
 			expError:   true,
 		},
 		"creator not an address": {
-			srcMutator: func(c *CodeInfo) { c.Creator = make([]byte, sdk.AddrLen-1) },
+			srcMutator: func(c *CodeInfo) { c.Creator = "invalid address" },
 			expError:   true,
 		},
 		"source empty": {

@@ -6,24 +6,11 @@ import (
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-type Sequence struct {
-	IDKey []byte `json:"id_key"`
-	Value uint64 `json:"value"`
-}
-
 func (s Sequence) ValidateBasic() error {
 	if len(s.IDKey) == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "id key")
 	}
 	return nil
-}
-
-// GenesisState is the struct representation of the export genesis
-type GenesisState struct {
-	Params    Params     `json:"params"`
-	Codes     []Code     `json:"codes,omitempty"`
-	Contracts []Contract `json:"contracts,omitempty"`
-	Sequences []Sequence `json:"sequences,omitempty"`
 }
 
 func (s GenesisState) ValidateBasic() error {
@@ -45,14 +32,12 @@ func (s GenesisState) ValidateBasic() error {
 			return sdkerrors.Wrapf(err, "sequence: %d", i)
 		}
 	}
+	for i := range s.GenMsgs {
+		if err := s.GenMsgs[i].ValidateBasic(); err != nil {
+			return sdkerrors.Wrapf(err, "gen message: %d", i)
+		}
+	}
 	return nil
-}
-
-// Code struct encompasses CodeInfo and CodeBytes
-type Code struct {
-	CodeID     uint64   `json:"code_id"`
-	CodeInfo   CodeInfo `json:"code_info"`
-	CodesBytes []byte   `json:"code_bytes"`
 }
 
 func (c Code) ValidateBasic() error {
@@ -62,21 +47,14 @@ func (c Code) ValidateBasic() error {
 	if err := c.CodeInfo.ValidateBasic(); err != nil {
 		return sdkerrors.Wrap(err, "code info")
 	}
-	if err := validateWasmCode(c.CodesBytes); err != nil {
+	if err := validateWasmCode(c.CodeBytes); err != nil {
 		return sdkerrors.Wrap(err, "code bytes")
 	}
 	return nil
 }
 
-// Contract struct encompasses ContractAddress, ContractInfo, and ContractState
-type Contract struct {
-	ContractAddress sdk.AccAddress `json:"contract_address"`
-	ContractInfo    ContractInfo   `json:"contract_info"`
-	ContractState   []Model        `json:"contract_state"`
-}
-
 func (c Contract) ValidateBasic() error {
-	if err := sdk.VerifyAddressFormat(c.ContractAddress); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.ContractAddress); err != nil {
 		return sdkerrors.Wrap(err, "contract address")
 	}
 	if err := c.ContractInfo.ValidateBasic(); err != nil {
@@ -92,6 +70,28 @@ func (c Contract) ValidateBasic() error {
 		}
 	}
 	return nil
+}
+
+// AsMsg returns the underlying cosmos-sdk message instance. Null when can not be mapped to a known type.
+func (m GenesisState_GenMsgs) AsMsg() sdk.Msg {
+	if msg := m.GetStoreCode(); msg != nil {
+		return msg
+	}
+	if msg := m.GetInstantiateContract(); msg != nil {
+		return msg
+	}
+	if msg := m.GetExecuteContract(); msg != nil {
+		return msg
+	}
+	return nil
+}
+
+func (m GenesisState_GenMsgs) ValidateBasic() error {
+	msg := m.AsMsg()
+	if msg == nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "unknown message")
+	}
+	return msg.ValidateBasic()
 }
 
 // ValidateGenesis performs basic validation of supply genesis data returning an

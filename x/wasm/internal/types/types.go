@@ -1,26 +1,18 @@
 package types
 
 import (
-	"encoding/json"
+	"fmt"
 
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	tmBytes "github.com/tendermint/tendermint/libs/bytes"
-
-	wasmTypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
 
-const defaultMemoryCacheSize uint32 = 100 // in MiB
-const defaultQueryGasLimit = uint64(3000000)
-const defaultContractDebugMode = false
-
-// Model is a struct that holds a KV pair
-type Model struct {
-	// hex-encode key to read it better (this is often ascii)
-	Key tmBytes.HexBytes `json:"key"`
-	// base64-encode raw value
-	Value []byte `json:"val"`
-}
+const (
+	defaultMemoryCacheSize   uint32 = 100 // in MiB
+	defaultQueryGasLimit     uint64 = 3000000
+	defaultContractDebugMode        = false
+)
 
 func (m Model) ValidateBasic() error {
 	if len(m.Key) == 0 {
@@ -29,20 +21,11 @@ func (m Model) ValidateBasic() error {
 	return nil
 }
 
-// CodeInfo is data for the uploaded contract WASM code
-type CodeInfo struct {
-	CodeHash          []byte         `json:"code_hash"`
-	Creator           sdk.AccAddress `json:"creator"`
-	Source            string         `json:"source"`
-	Builder           string         `json:"builder"`
-	InstantiateConfig AccessConfig   `json:"instantiate_config"`
-}
-
 func (c CodeInfo) ValidateBasic() error {
 	if len(c.CodeHash) == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code hash")
 	}
-	if err := sdk.VerifyAddressFormat(c.Creator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.Creator); err != nil {
 		return sdkerrors.Wrap(err, "creator")
 	}
 	if err := validateSourceURL(c.Source); err != nil {
@@ -61,48 +44,25 @@ func (c CodeInfo) ValidateBasic() error {
 func NewCodeInfo(codeHash []byte, creator sdk.AccAddress, source string, builder string, instantiatePermission AccessConfig) CodeInfo {
 	return CodeInfo{
 		CodeHash:          codeHash,
-		Creator:           creator,
+		Creator:           creator.String(),
 		Source:            source,
 		Builder:           builder,
 		InstantiateConfig: instantiatePermission,
 	}
 }
 
-type ContractCodeHistoryOperationType string
-
-const (
-	InitContractCodeHistoryType    ContractCodeHistoryOperationType = "Init"
-	MigrateContractCodeHistoryType ContractCodeHistoryOperationType = "Migrate"
-	GenesisContractCodeHistoryType ContractCodeHistoryOperationType = "Genesis"
-)
-
-var AllCodeHistoryTypes = []ContractCodeHistoryOperationType{InitContractCodeHistoryType, MigrateContractCodeHistoryType}
-
-// ContractCodeHistoryEntry stores code updates to a contract.
-type ContractCodeHistoryEntry struct {
-	Operation ContractCodeHistoryOperationType `json:"operation"`
-	CodeID    uint64                           `json:"code_id"`
-	Updated   *AbsoluteTxPosition              `json:"updated,omitempty"`
-	Msg       json.RawMessage                  `json:"msg,omitempty"`
-}
-
-// ContractInfo stores a WASM contract instance
-type ContractInfo struct {
-	CodeID  uint64         `json:"code_id"`
-	Creator sdk.AccAddress `json:"creator"`
-	Admin   sdk.AccAddress `json:"admin,omitempty"`
-	Label   string         `json:"label"`
-	// never show this in query results, just use for sorting
-	// (Note: when using json tag "-" amino refused to serialize it...)
-	Created *AbsoluteTxPosition `json:"created,omitempty"`
-}
+var AllCodeHistoryTypes = []ContractCodeHistoryOperationType{ContractCodeHistoryOperationTypeGenesis, ContractCodeHistoryOperationTypeInit, ContractCodeHistoryOperationTypeMigrate}
 
 // NewContractInfo creates a new instance of a given WASM contract info
 func NewContractInfo(codeID uint64, creator, admin sdk.AccAddress, label string, createdAt *AbsoluteTxPosition) ContractInfo {
+	var adminAddr string
+	if !admin.Empty() {
+		adminAddr = admin.String()
+	}
 	return ContractInfo{
 		CodeID:  codeID,
-		Creator: creator,
-		Admin:   admin,
+		Creator: creator.String(),
+		Admin:   adminAddr,
 		Label:   label,
 		Created: createdAt,
 	}
@@ -111,11 +71,11 @@ func (c *ContractInfo) ValidateBasic() error {
 	if c.CodeID == 0 {
 		return sdkerrors.Wrap(ErrEmpty, "code id")
 	}
-	if err := sdk.VerifyAddressFormat(c.Creator); err != nil {
+	if _, err := sdk.AccAddressFromBech32(c.Creator); err != nil {
 		return sdkerrors.Wrap(err, "creator")
 	}
-	if c.Admin != nil {
-		if err := sdk.VerifyAddressFormat(c.Admin); err != nil {
+	if len(c.Admin) != 0 {
+		if _, err := sdk.AccAddressFromBech32(c.Admin); err != nil {
 			return sdkerrors.Wrap(err, "admin")
 		}
 	}
@@ -127,7 +87,7 @@ func (c *ContractInfo) ValidateBasic() error {
 
 func (c ContractInfo) InitialHistory(initMsg []byte) ContractCodeHistoryEntry {
 	return ContractCodeHistoryEntry{
-		Operation: InitContractCodeHistoryType,
+		Operation: ContractCodeHistoryOperationTypeInit,
 		CodeID:    c.CodeID,
 		Updated:   c.Created,
 		Msg:       initMsg,
@@ -136,7 +96,7 @@ func (c ContractInfo) InitialHistory(initMsg []byte) ContractCodeHistoryEntry {
 
 func (c *ContractInfo) AddMigration(ctx sdk.Context, codeID uint64, msg []byte) ContractCodeHistoryEntry {
 	h := ContractCodeHistoryEntry{
-		Operation: MigrateContractCodeHistoryType,
+		Operation: ContractCodeHistoryOperationTypeMigrate,
 		CodeID:    codeID,
 		Updated:   NewAbsoluteTxPosition(ctx),
 		Msg:       msg,
@@ -149,18 +109,40 @@ func (c *ContractInfo) AddMigration(ctx sdk.Context, codeID uint64, msg []byte) 
 func (c *ContractInfo) ResetFromGenesis(ctx sdk.Context) ContractCodeHistoryEntry {
 	c.Created = NewAbsoluteTxPosition(ctx)
 	return ContractCodeHistoryEntry{
-		Operation: GenesisContractCodeHistoryType,
+		Operation: ContractCodeHistoryOperationTypeGenesis,
 		CodeID:    c.CodeID,
 		Updated:   c.Created,
 	}
 }
 
-// AbsoluteTxPosition can be used to sort contracts
-type AbsoluteTxPosition struct {
-	// BlockHeight is the block the contract was created at
-	BlockHeight int64
-	// TxIndex is a monotonic counter within the block (actual transaction index, or gas consumed)
-	TxIndex uint64
+// AdminAddr convert into sdk.AccAddress or nil when not set
+func (c *ContractInfo) AdminAddr() sdk.AccAddress {
+	if c.Admin == "" {
+		return nil
+	}
+	admin, err := sdk.AccAddressFromBech32(c.Admin)
+	if err != nil { // should never happen
+		panic(err.Error())
+	}
+	return admin
+}
+
+// NewAbsoluteTxPosition gets a block position from the context
+func NewAbsoluteTxPosition(ctx sdk.Context) *AbsoluteTxPosition {
+	// we must safely handle nil gas meters
+	var index uint64
+	meter := ctx.BlockGasMeter()
+	if meter != nil {
+		index = meter.GasConsumed()
+	}
+	height := ctx.BlockHeight()
+	if height < 0 {
+		panic(fmt.Sprintf("unsupported height: %d", height))
+	}
+	return &AbsoluteTxPosition{
+		BlockHeight: uint64(height),
+		TxIndex:     index,
+	}
 }
 
 // LessThan can be used to sort
@@ -174,22 +156,22 @@ func (a *AbsoluteTxPosition) LessThan(b *AbsoluteTxPosition) bool {
 	return a.BlockHeight < b.BlockHeight || (a.BlockHeight == b.BlockHeight && a.TxIndex < b.TxIndex)
 }
 
-// NewAbsoluteTxPosition gets a timestamp from the context
-func NewAbsoluteTxPosition(ctx sdk.Context) *AbsoluteTxPosition {
-	// we must safely handle nil gas meters
-	var index uint64
-	meter := ctx.BlockGasMeter()
-	if meter != nil {
-		index = meter.GasConsumed()
+// AbsoluteTxPositionLen number of elements in byte representation
+const AbsoluteTxPositionLen = 16
+
+// Bytes encodes the object into a 16 byte representation with big endian block height and tx index.
+func (a *AbsoluteTxPosition) Bytes() []byte {
+	if a == nil {
+		panic("object must not be nil")
 	}
-	return &AbsoluteTxPosition{
-		BlockHeight: ctx.BlockHeight(),
-		TxIndex:     index,
-	}
+	r := make([]byte, AbsoluteTxPositionLen)
+	copy(r[0:], sdk.Uint64ToBigEndian(a.BlockHeight))
+	copy(r[8:], sdk.Uint64ToBigEndian(a.TxIndex))
+	return r
 }
 
 // NewEnv initializes the environment for a contract instance
-func NewEnv(ctx sdk.Context, contractAddr sdk.AccAddress) wasmTypes.Env {
+func NewEnv(ctx sdk.Context, contractAddr sdk.AccAddress) wasmvmtypes.Env {
 	// safety checks before casting below
 	if ctx.BlockHeight() < 0 {
 		panic("Block height must never be negative")
@@ -199,14 +181,14 @@ func NewEnv(ctx sdk.Context, contractAddr sdk.AccAddress) wasmTypes.Env {
 		panic("Block (unix) time must never be negative ")
 	}
 	nano := ctx.BlockTime().Nanosecond()
-	env := wasmTypes.Env{
-		Block: wasmTypes.BlockInfo{
+	env := wasmvmtypes.Env{
+		Block: wasmvmtypes.BlockInfo{
 			Height:    uint64(ctx.BlockHeight()),
 			Time:      uint64(sec),
 			TimeNanos: uint64(nano),
 			ChainID:   ctx.ChainID(),
 		},
-		Contract: wasmTypes.ContractInfo{
+		Contract: wasmvmtypes.ContractInfo{
 			Address: contractAddr.String(),
 		},
 	}
@@ -214,17 +196,17 @@ func NewEnv(ctx sdk.Context, contractAddr sdk.AccAddress) wasmTypes.Env {
 }
 
 // NewInfo initializes the MessageInfo for a contract instance
-func NewInfo(creator sdk.AccAddress, deposit sdk.Coins) wasmTypes.MessageInfo {
-	return wasmTypes.MessageInfo{
-		Sender:    creator.String(),
-		SentFunds: NewWasmCoins(deposit),
+func NewInfo(creator sdk.AccAddress, deposit sdk.Coins) wasmvmtypes.MessageInfo {
+	return wasmvmtypes.MessageInfo{
+		Sender: creator.String(),
+		Funds:  NewWasmCoins(deposit),
 	}
 }
 
 // NewWasmCoins translates between Cosmos SDK coins and Wasm coins
-func NewWasmCoins(cosmosCoins sdk.Coins) (wasmCoins []wasmTypes.Coin) {
+func NewWasmCoins(cosmosCoins sdk.Coins) (wasmCoins []wasmvmtypes.Coin) {
 	for _, coin := range cosmosCoins {
-		wasmCoin := wasmTypes.Coin{
+		wasmCoin := wasmvmtypes.Coin{
 			Denom:  coin.Denom,
 			Amount: coin.Amount.String(),
 		}
@@ -236,28 +218,31 @@ func NewWasmCoins(cosmosCoins sdk.Coins) (wasmCoins []wasmTypes.Coin) {
 const CustomEventType = "wasm"
 const AttributeKeyContractAddr = "contract_address"
 
-// ParseEvents converts wasm LogAttributes into an sdk.Events (with 0 or 1 elements)
-func ParseEvents(logs []wasmTypes.EventAttribute, contractAddr sdk.AccAddress) sdk.Events {
-	if len(logs) == 0 {
-		return nil
-	}
+// ParseEvents converts wasm LogAttributes into an sdk.Events
+func ParseEvents(wasmOutputAttrs []wasmvmtypes.EventAttribute, contractAddr sdk.AccAddress) sdk.Events {
 	// we always tag with the contract address issuing this event
 	attrs := []sdk.Attribute{sdk.NewAttribute(AttributeKeyContractAddr, contractAddr.String())}
-	for _, l := range logs {
+
+	// append attributes from wasm to the sdk.Event
+	for _, l := range wasmOutputAttrs {
 		// and reserve the contract_address key for our use (not contract)
 		if l.Key != AttributeKeyContractAddr {
 			attr := sdk.NewAttribute(l.Key, l.Value)
 			attrs = append(attrs, attr)
 		}
 	}
+
+	// each wasm invokation always returns one sdk.Event
 	return sdk.Events{sdk.NewEvent(CustomEventType, attrs...)}
 }
 
 // WasmConfig is the extra config required for wasm
 type WasmConfig struct {
-	SmartQueryGasLimit uint64 `mapstructure:"query_gas_limit"`
-	MemoryCacheSize    uint32 `mapstructure:"memory_cache_size"` // in MiB
-	ContractDebugMode  bool   `mapstructure:"debug_mode"`
+	SmartQueryGasLimit uint64
+	// MemoryCacheSize in MiB not bytes
+	MemoryCacheSize uint32
+	// ContractDebugMode log what contract print
+	ContractDebugMode bool
 }
 
 // DefaultWasmConfig returns the default settings for WasmConfig

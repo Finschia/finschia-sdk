@@ -3,35 +3,34 @@ package rest
 import (
 	"net/http"
 
-	"github.com/cosmos/cosmos-sdk/client/context"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/rest"
-	"github.com/cosmos/cosmos-sdk/x/auth/client/utils"
-	"github.com/gorilla/mux"
-
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/line/lbm-sdk/v2/client/tx"
+	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/gorilla/mux"
 )
 
-func registerNewTxRoutes(cliCtx context.CLIContext, r *mux.Router) {
+func registerNewTxRoutes(cliCtx client.Context, r *mux.Router) {
 	r.HandleFunc("/wasm/contract/{contractAddr}/admin", setContractAdminHandlerFn(cliCtx)).Methods("PUT")
 	r.HandleFunc("/wasm/contract/{contractAddr}/code", migrateContractHandlerFn(cliCtx)).Methods("PUT")
 }
 
 type migrateContractReq struct {
-	BaseReq    rest.BaseReq   `json:"base_req" yaml:"base_req"`
-	Admin      sdk.AccAddress `json:"admin,omitempty" yaml:"admin"`
-	CodeID     uint64         `json:"code_id" yaml:"code_id"`
-	MigrateMsg []byte         `json:"migrate_msg,omitempty" yaml:"migrate_msg"`
-}
-type updateContractAdministrateReq struct {
-	BaseReq rest.BaseReq   `json:"base_req" yaml:"base_req"`
-	Admin   sdk.AccAddress `json:"admin,omitempty" yaml:"admin"`
+	BaseReq    rest.BaseReq `json:"base_req" yaml:"base_req"`
+	Admin      string       `json:"admin,omitempty" yaml:"admin"`
+	CodeID     uint64       `json:"code_id" yaml:"code_id"`
+	MigrateMsg []byte       `json:"migrate_msg,omitempty" yaml:"migrate_msg"`
 }
 
-func setContractAdminHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+type updateContractAdministrateReq struct {
+	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
+	Admin   string       `json:"admin,omitempty" yaml:"admin"`
+}
+
+func setContractAdminHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req updateContractAdministrateReq
-		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
 			return
 		}
 		vars := mux.Vars(r)
@@ -42,30 +41,24 @@ func setContractAdminHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		contractAddress, err := sdk.AccAddressFromBech32(contractAddr)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
-		}
-
-		msg := types.MsgUpdateAdmin{
-			Sender:   cliCtx.GetFromAddress(),
+		msg := &types.MsgUpdateAdmin{
+			Sender:   req.BaseReq.From,
 			NewAdmin: req.Admin,
-			Contract: contractAddress,
+			Contract: contractAddr,
 		}
-		if err = msg.ValidateBasic(); err != nil {
+		if err := msg.ValidateBasic(); err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		utils.WriteGenerateStdTxResponse(w, cliCtx, req.BaseReq, []sdk.Msg{msg})
+		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, msg)
 	}
 }
 
-func migrateContractHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
+func migrateContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req migrateContractReq
-		if !rest.ReadRESTReq(w, r, cliCtx.Codec, &req) {
+		if !rest.ReadRESTReq(w, r, cliCtx.LegacyAmino, &req) {
 			return
 		}
 		vars := mux.Vars(r)
@@ -76,23 +69,17 @@ func migrateContractHandlerFn(cliCtx context.CLIContext) http.HandlerFunc {
 			return
 		}
 
-		contractAddress, err := sdk.AccAddressFromBech32(contractAddr)
-		if err != nil {
-			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
-			return
-		}
-
-		msg := types.MsgMigrateContract{
-			Sender:     cliCtx.GetFromAddress(),
-			Contract:   contractAddress,
+		msg := &types.MsgMigrateContract{
+			Sender:     req.BaseReq.From,
+			Contract:   contractAddr,
 			CodeID:     req.CodeID,
 			MigrateMsg: req.MigrateMsg,
 		}
-		if err = msg.ValidateBasic(); err != nil {
+		if err := msg.ValidateBasic(); err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
 
-		utils.WriteGenerateStdTxResponse(w, cliCtx, req.BaseReq, []sdk.Msg{msg})
+		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, msg)
 	}
 }

@@ -1,4 +1,3 @@
-// nolint: scopelint
 package keeper
 
 import (

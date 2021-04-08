@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
 type AuthorizationPolicy interface {
