@@ -1,20 +1,22 @@
 package keeper_test
 
 import (
-	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/line/lbm-sdk/types/query"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/suite"
 
 	abci "github.com/line/ostracon/abci/types"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	osttime "github.com/line/ostracon/types/time"
-	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/auth/vesting/exported"
 	vesting "github.com/line/lbm-sdk/x/auth/vesting/types"
 	"github.com/line/lbm-sdk/x/bank/keeper"
 	"github.com/line/lbm-sdk/x/bank/types"
@@ -903,6 +905,12 @@ func (suite *IntegrationTestSuite) TestDelegateCoins() {
 	// require the ability for a vesting account to delegate
 	suite.Require().NoError(app.BankKeeper.DelegateCoins(ctx, addr1, addrModule, delCoins))
 	suite.Require().Equal(delCoins, app.BankKeeper.GetAllBalances(ctx, addr1))
+
+	// require that delegated vesting amount is equal to what was delegated with DelegateCoins
+	acc = app.AccountKeeper.GetAccount(ctx, addr1)
+	vestingAcc, ok := acc.(exported.VestingAccount)
+	suite.Require().True(ok)
+	suite.Require().Equal(delCoins, vestingAcc.GetDelegatedVesting())
 }
 
 func (suite *IntegrationTestSuite) TestDelegateCoins_Invalid() {
@@ -977,6 +985,12 @@ func (suite *IntegrationTestSuite) TestUndelegateCoins() {
 
 	suite.Require().Equal(origCoins, app.BankKeeper.GetAllBalances(ctx, addr1))
 	suite.Require().True(app.BankKeeper.GetAllBalances(ctx, addrModule).Empty())
+
+	// require that delegated vesting amount is completely empty, since they were completely undelegated
+	acc = app.AccountKeeper.GetAccount(ctx, addr1)
+	vestingAcc, ok := acc.(exported.VestingAccount)
+	suite.Require().True(ok)
+	suite.Require().Empty(vestingAcc.GetDelegatedVesting())
 }
 
 func (suite *IntegrationTestSuite) TestUndelegateCoins_Invalid() {
