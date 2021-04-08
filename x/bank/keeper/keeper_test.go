@@ -1,7 +1,6 @@
 package keeper_test
 
 import (
-	"github.com/line/lbm-sdk/types/query"
 	"testing"
 	"time"
 
@@ -14,6 +13,7 @@ import (
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/query"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/auth/vesting/exported"

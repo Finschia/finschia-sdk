@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"math"
 
-	tmdb "github.com/line/tm-db/v2"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/store/types"
 )
