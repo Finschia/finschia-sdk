@@ -220,6 +220,7 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 	require.NoError(t, err)
 
 	invalidInitMsgBz, err := types.ModuleCdc.MarshalJSON(emptyMsg{})
+	require.NoError(t, err)
 
 	// test cases
 	cases := map[string]struct {
