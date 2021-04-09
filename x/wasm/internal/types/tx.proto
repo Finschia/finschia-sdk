@@ -1,12 +1,11 @@
 syntax = "proto3";
 package cosmwasm.wasm.v1beta1;
 
-
-import "cosmos/base/v1beta1/coin.proto";
+import "lbm/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
-import "x/wasm/internal/types/types.proto";
+import "types.proto";
 
-option go_package = "github.com/line/lbm-sdk/v2/x/wasmd/internal/types";
+option go_package                      = "github.com/line/lbm-sdk/v2/x/wasm/internal/types";
 option (gogoproto.goproto_getters_all) = false;
 
 // Msg defines the wasm Msg service.
@@ -39,9 +38,9 @@ message MsgStoreCode {
   AccessConfig instantiate_permission = 5;
 }
 // MsgStoreCodeResponse returns store result data.
-message MsgStoreCodeResponse{
+message MsgStoreCodeResponse {
   // CodeID is the reference to the stored WASM code
-  uint64 code_id = 1  [(gogoproto.customname) = "CodeID"];
+  uint64 code_id = 1 [(gogoproto.customname) = "CodeID"];
 }
 
 // MsgInstantiateContract create a new smart contract instance for the given code id.
@@ -57,7 +56,8 @@ message MsgInstantiateContract {
   // InitMsg json encoded message to be passed to the contract on instantiation
   bytes init_msg = 5 [(gogoproto.casttype) = "encoding/json.RawMessage"];
   // Funds coins that are transferred to the contract on instantiation
-  repeated cosmos.base.v1beta1.Coin funds = 6 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+  repeated lbm.base.v1beta1.Coin funds = 6
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/v2/types.Coins"];
 }
 // MsgInstantiateContractResponse return instantiation result data
 message MsgInstantiateContractResponse {
@@ -76,7 +76,8 @@ message MsgExecuteContract {
   // Msg json encoded message to be passed to the contract
   bytes msg = 3 [(gogoproto.casttype) = "encoding/json.RawMessage"];
   // Funds coins that are transferred to the contract on execution
-  repeated cosmos.base.v1beta1.Coin funds = 5 [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/cosmos/cosmos-sdk/types.Coins"];
+  repeated lbm.base.v1beta1.Coin funds = 5
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/v2/types.Coins"];
 }
 
 // MsgExecuteContractResponse returns execution result data.
@@ -115,7 +116,7 @@ message MsgUpdateAdmin {
 }
 
 // MsgUpdateAdminResponse returns empty data
-message MsgUpdateAdminResponse{}
+message MsgUpdateAdminResponse {}
 
 // MsgClearAdmin removes any admin stored for a smart contract
 message MsgClearAdmin {
@@ -126,4 +127,4 @@ message MsgClearAdmin {
 }
 
 // MsgClearAdminResponse returns empty data
-message MsgClearAdminResponse{}
+message MsgClearAdminResponse {}
