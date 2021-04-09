@@ -61,14 +61,13 @@ func (a *AllowedMsgAllowance) Accept(ctx sdk.Context, fee sdk.Coins, msgs []sdk.
 		return false, err
 	}
 
-	remove, reserr := allowance.Accept(ctx, fee, msgs)
-	if !remove {
-		a.Allowance, err = types.NewAnyWithValue(allowance.(proto.Message))
-		if err != nil {
-			return false, sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", allowance)
+	remove, err := allowance.Accept(ctx, fee, msgs)
+	if err == nil && !remove {
+		if err = a.SetAllowance(allowance); err != nil {
+			return false, err
 		}
 	}
-	return remove, reserr
+	return remove, err
 }
 
 func (a *AllowedMsgAllowance) allowedMsgsToMap(ctx sdk.Context) map[string]bool {
