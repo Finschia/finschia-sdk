@@ -3,9 +3,11 @@ package types_test
 import (
 	"testing"
 
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
+	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
@@ -20,13 +22,21 @@ var (
 )
 
 func TestAuthzAuthorizations(t *testing.T) {
+	app := simapp.Setup(false)
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
+
+	// verify ValidateBasic returns error for the AUTHORIZATION_TYPE_UNSPECIFIED authorization type
+	delAuth, err := stakingtypes.NewStakeAuthorization([]sdk.ValAddress{val1, val2}, []sdk.ValAddress{}, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_UNSPECIFIED, &coin100)
+	require.NoError(t, err)
+	require.Error(t, delAuth.ValidateBasic())
 
 	// verify MethodName
-	delAuth, _ := stakingtypes.NewStakeAuthorization([]sdk.ValAddress{val1, val2}, []sdk.ValAddress{}, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE, &coin100)
+	delAuth, err = stakingtypes.NewStakeAuthorization([]sdk.ValAddress{val1, val2}, []sdk.ValAddress{}, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE, &coin100)
+	require.NoError(t, err)
 	require.Equal(t, delAuth.MethodName(), stakingtypes.TypeDelegate)
 
 	// error both allow & deny list
-	_, err := stakingtypes.NewStakeAuthorization([]sdk.ValAddress{val1, val2}, []sdk.ValAddress{val1}, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE, &coin100)
+	_, err = stakingtypes.NewStakeAuthorization([]sdk.ValAddress{val1, val2}, []sdk.ValAddress{val1}, stakingtypes.AuthorizationType_AUTHORIZATION_TYPE_DELEGATE, &coin100)
 	require.Error(t, err)
 
 	// verify MethodName
@@ -242,7 +252,7 @@ func TestAuthzAuthorizations(t *testing.T) {
 		t.Run(tc.msg, func(t *testing.T) {
 			delAuth, err := stakingtypes.NewStakeAuthorization(tc.allowed, tc.denied, tc.msgType, tc.limit)
 			require.NoError(t, err)
-			updated, del, err := delAuth.Accept(tc.srvMsg, ocproto.Header{})
+			updated, del, err := delAuth.Accept(ctx, tc.srvMsg)
 			if tc.expectErr {
 				require.Error(t, err)
 				require.Equal(t, tc.isDelete, del)
