@@ -5,7 +5,7 @@ import (
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 	ibctransfertypes "github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
@@ -15,10 +15,10 @@ import (
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"
+	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

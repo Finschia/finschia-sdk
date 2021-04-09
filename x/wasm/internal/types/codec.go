@@ -1,12 +1,12 @@
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/types/msgservice"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers the account types and interface

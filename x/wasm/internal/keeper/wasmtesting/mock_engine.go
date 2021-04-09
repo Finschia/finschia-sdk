@@ -6,8 +6,8 @@ import (
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	wasmvm "github.com/CosmWasm/wasmvm"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/tendermint/tendermint/libs/rand"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/ostracon/libs/rand"
 )
 
 var _ types.WasmerEngine = &MockWasmer{}

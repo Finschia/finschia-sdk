@@ -10,24 +10,24 @@ import (
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/crypto/hd"
 	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/server"
+	"github.com/line/lbm-sdk/v2/server"
 	"github.com/line/lbm-sdk/v2/testutil"
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
+	"github.com/line/lbm-sdk/v2/x/genutil"
 	genutiltest "github.com/line/lbm-sdk/v2/x/genutil/client/testutil"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	genutiltypes "github.com/line/lbm-sdk/v2/x/genutil/types"
+	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/tendermint/tendermint/libs/log"
-	tmtypes "github.com/tendermint/tendermint/types"
+	"github.com/line/ostracon/libs/log"
+	osttypes "github.com/line/ostracon/types"
 )
 
 var wasmIdent = []byte("\x00\x61\x73\x6D")
@@ -633,7 +633,7 @@ func setupGenesis(t *testing.T, wasmGenesis types.GenesisState) string {
 
 	appStateBz, err := json.Marshal(appState)
 	require.NoError(t, err)
-	genDoc := tmtypes.GenesisDoc{
+	genDoc := osttypes.GenesisDoc{
 		ChainID:  "testing",
 		AppState: appStateBz,
 	}

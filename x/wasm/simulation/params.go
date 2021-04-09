@@ -5,9 +5,9 @@ import (
 	"math/rand"
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/line/lbm-sdk/v2/codec"
 	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	"github.com/cosmos/cosmos-sdk/x/simulation"
+	"github.com/line/lbm-sdk/v2/x/simulation"
 )
 
 func ParamChanges(r *rand.Rand, cdc codec.Marshaler) []simtypes.ParamChange {

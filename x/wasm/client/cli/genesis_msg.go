@@ -10,18 +10,18 @@ import (
 	"fmt"
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/server"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/line/lbm-sdk/v2/server"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/cosmos/cosmos-sdk/x/genutil"
-	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/v2/x/genutil"
+	genutiltypes "github.com/line/lbm-sdk/v2/x/genutil/types"
 	"github.com/spf13/cobra"
-	"github.com/tendermint/tendermint/crypto"
-	tmtypes "github.com/tendermint/tendermint/types"
+	"github.com/line/ostracon/crypto"
+	osttypes "github.com/line/ostracon/types"
 )
 
 // GenesisStoreCodeCmd cli command to add a `MsgStoreCode` to the wasm section of the genesis
@@ -355,7 +355,7 @@ func hasContract(state *types.GenesisState, contractAddr string) bool {
 // genesisData contains raw and unmarshalled data from the genesis file
 type genesisData struct {
 	genesisFile     string
-	genDoc          *tmtypes.GenesisDoc
+	genDoc          *osttypes.GenesisDoc
 	appState        map[string]json.RawMessage
 	wasmModuleState *types.GenesisState
 }

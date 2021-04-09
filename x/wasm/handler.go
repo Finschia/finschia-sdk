@@ -5,10 +5,10 @@ import (
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/gogo/protobuf/proto"
-	abci "github.com/tendermint/tendermint/abci/types"
+	abci "github.com/line/ostracon/abci/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 )
 
 // NewHandler returns a handler for "bank" type messages.

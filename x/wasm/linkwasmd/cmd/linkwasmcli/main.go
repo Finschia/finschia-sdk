@@ -17,7 +17,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/tendermint/go-amino"
-	"github.com/tendermint/tendermint/libs/cli"
+	"github.com/line/ostracon/libs/cli"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth"

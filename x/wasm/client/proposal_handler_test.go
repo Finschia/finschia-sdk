@@ -10,9 +10,9 @@ import (
 	"testing"
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
-	"github.com/cosmos/cosmos-sdk/client"
-	"github.com/cosmos/cosmos-sdk/client/flags"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
 )

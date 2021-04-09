@@ -2,7 +2,7 @@ package simulation
 
 import (
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/line/lbm-sdk/v2/types/module"
 )
 
 // RandomizeGenState generates a random GenesisState for wasm

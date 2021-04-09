@@ -1,8 +1,8 @@
 package types
 
 import (
-	"github.com/cosmos/cosmos-sdk/store"
-	"github.com/cosmos/cosmos-sdk/store/iavl"
+	"github.com/line/lbm-sdk/v2/store"
+	"github.com/line/lbm-sdk/v2/store/iavl"
 	iavl2 "github.com/line/iavl/v2"
 	"github.com/stretchr/testify/require"
 	dbm "github.com/tendermint/tm-db"

@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 )
 
 // governing contains a subset of the wasm keeper used by gov processes

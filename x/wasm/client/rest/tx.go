@@ -6,10 +6,10 @@ import (
 
 	wasmUtils "github.com/line/lbm-sdk/v2/x/wasm/client/utils"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/tx"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/rest"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/rest"
 	"github.com/gorilla/mux"
 )
 

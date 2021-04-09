@@ -1,7 +1,7 @@
 package wasmtesting
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	ibcexported "github.com/line/lbm-sdk/v2/x/ibc/core/exported"

@@ -23,13 +23,13 @@ import (
 	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/types"
 
 	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
-	tmhttp "github.com/tendermint/tendermint/rpc/client/http"
+	tmhttp "github.com/line/ostracon/rpc/client/http"
 
 	"github.com/stretchr/testify/require"
 
-	cfg "github.com/tendermint/tendermint/config"
-	tmctypes "github.com/tendermint/tendermint/rpc/core/types"
-	tmtypes "github.com/tendermint/tendermint/types"
+	cfg "github.com/line/ostracon/config"
+	tmctypes "github.com/line/ostracon/rpc/core/types"
+	osttypes "github.com/line/ostracon/types"
 
 	wasmtypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/app"
@@ -207,7 +207,7 @@ func (f Fixtures) PrivValidatorKeyFile() string {
 // GenesisFile returns the application's genesis state
 func (f Fixtures) GenesisState() simapp.GenesisState {
 	cdc := codec.New()
-	genDoc, err := tmtypes.GenesisDocFromFile(f.GenesisFile())
+	genDoc, err := osttypes.GenesisDocFromFile(f.GenesisFile())
 	require.NoError(f.T, err)
 
 	var appState simapp.GenesisState

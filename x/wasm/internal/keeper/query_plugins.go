@@ -7,11 +7,11 @@ import (
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	abci "github.com/tendermint/tendermint/abci/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"
+	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 type QueryHandler struct {

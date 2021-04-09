@@ -149,7 +149,7 @@ message CodeInfoResponse {
 
   uint64 code_id   = 1 [(gogoproto.customname) = "CodeID", (gogoproto.jsontag) = "id"]; // id for legacy support
   string creator   = 2;
-  bytes  data_hash = 3 [(gogoproto.casttype) = "github.com/tendermint/tendermint/libs/bytes.HexBytes"];
+  bytes  data_hash = 3 [(gogoproto.casttype) = "github.com/line/ostracon/libs/bytes.HexBytes"];
   string source    = 4;
   string builder   = 5;
 }

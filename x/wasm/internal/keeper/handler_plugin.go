@@ -6,15 +6,15 @@ import (
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	distributiontypes "github.com/cosmos/cosmos-sdk/x/distribution/types"
+	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"
 	ibctransfertypes "github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
 	ibcclienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 type DefaultMessageHandler struct {

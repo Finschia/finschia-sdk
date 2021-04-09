@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdkErrors "github.com/line/lbm-sdk/v2/types/errors"
 )
 
 // Codes for wasm contract errors

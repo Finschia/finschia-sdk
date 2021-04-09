@@ -4,9 +4,9 @@ import (
 	"net/http"
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/cosmos/cosmos-sdk/types/rest"
+	"github.com/line/lbm-sdk/v2/types/rest"
 	"github.com/gorilla/mux"
 )
 

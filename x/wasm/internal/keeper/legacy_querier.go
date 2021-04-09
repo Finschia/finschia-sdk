@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	abci "github.com/tendermint/tendermint/abci/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 const (
