@@ -118,7 +118,7 @@ func NewKeeper(
 		ChannelKeeper:    channelKeeper,
 		portKeeper:       portKeeper,
 		capabilityKeeper: capabilityKeeper,
-		messenger:        NewDefaultMessageHandler(router, encodeRouter, channelKeeper, capabilityKeeper, cdc, encodeRouter, customEncoders),
+		messenger:        NewDefaultMessageHandler(router, encodeRouter, channelKeeper, capabilityKeeper, cdc, customEncoders),
 		queryGasLimit:    wasmConfig.SmartQueryGasLimit,
 		authZPolicy:      DefaultAuthorizationPolicy{},
 		paramSpace:       paramSpace,
