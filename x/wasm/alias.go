@@ -63,14 +63,12 @@ var (
 	NewMessageHandler         = keeper.NewDefaultMessageHandler
 	DefaultEncoders           = keeper.DefaultEncoders
 	EncodeBankMsg             = keeper.EncodeBankMsg
-	NoCustomMsg               = keeper.NoCustomMsg
 	EncodeStakingMsg          = keeper.EncodeStakingMsg
 	EncodeWasmMsg             = keeper.EncodeWasmMsg
 	NewKeeper                 = keeper.NewKeeper
 	NewLegacyQuerier          = keeper.NewLegacyQuerier
 	DefaultQueryPlugins       = keeper.DefaultQueryPlugins
 	BankQuerier               = keeper.BankQuerier
-	NoCustomQuerier           = keeper.NoCustomQuerier
 	StakingQuerier            = keeper.StakingQuerier
 	WasmQuerier               = keeper.WasmQuerier
 	CreateTestInput           = keeper.CreateTestInput

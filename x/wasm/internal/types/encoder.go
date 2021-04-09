@@ -17,6 +17,6 @@ type LinkMsgWrapper struct {
 }
 
 type LinkQueryWrapper struct {
-	Module    string          `json:"module"`
-	QueryData json.RawMessage `json:"query_data"`
+	Path    string `json:"path"`
+	Data    []byte `json:"data"`
 }

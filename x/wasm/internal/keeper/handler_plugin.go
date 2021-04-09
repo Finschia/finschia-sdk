@@ -33,7 +33,7 @@ func NewDefaultMessageHandler(router sdk.Router, encodeRouter types.Router, chan
 }
 
 type BankEncoder func(sender sdk.AccAddress, msg *wasmvmtypes.BankMsg) ([]sdk.Msg, error)
-type CustomEncoder func(sender sdk.AccAddress, msg json.RawMessage, router types.Router) ([]sdk.Msg, error)
+type CustomEncoder func(sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error)
 type StakingEncoder func(sender sdk.AccAddress, msg *wasmvmtypes.StakingMsg) ([]sdk.Msg, error)
 type StargateEncoder func(sender sdk.AccAddress, msg *wasmvmtypes.StargateMsg) ([]sdk.Msg, error)
 type WasmEncoder func(sender sdk.AccAddress, msg *wasmvmtypes.WasmMsg) ([]sdk.Msg, error)
@@ -84,12 +84,12 @@ func (e MessageEncoders) Merge(o *MessageEncoders) MessageEncoders {
 	return e
 }
 
-func (e MessageEncoders) Encode(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmvmtypes.CosmosMsg, router types.Router) ([]sdk.Msg, error) {
+func (e MessageEncoders) Encode(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmvmtypes.CosmosMsg, customRouter types.Router) ([]sdk.Msg, error) {
 	switch {
 	case msg.Bank != nil:
 		return e.Bank(contractAddr, msg.Bank)
 	case msg.Custom != nil:
-		return e.Custom(contractAddr, msg.Custom, router)
+		return e.Custom(contractAddr, msg.Custom, customRouter)
 	case msg.IBC != nil:
 		return e.IBC(ctx, contractAddr, contractIBCPortID, msg.IBC)
 	case msg.Staking != nil:

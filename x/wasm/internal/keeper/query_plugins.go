@@ -92,7 +92,7 @@ type QueryPlugins struct {
 func DefaultQueryPlugins(bank types.BankViewKeeper, staking types.StakingKeeper, distKeeper types.DistributionKeeper, channelKeeper types.ChannelKeeper, queryRouter GRPCQueryRouter, wasm *Keeper) QueryPlugins {
 	return QueryPlugins{
 		Bank:     BankQuerier(bank),
-		Custom:   CustomQuerier(queryRouter),
+		Custom:   CustomQuerierImpl(queryRouter),
 		IBC:      IBCQuerier(wasm, channelKeeper),
 		Staking:  StakingQuerier(staking, distKeeper),
 		Stargate: StargateQuerier(queryRouter),
@@ -157,18 +157,27 @@ func BankQuerier(bankKeeper types.BankViewKeeper) func(ctx sdk.Context, request 
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown BankQuery variant"}
 	}
 }
-func CustomQuerier(queryRouter GRPCQueryRouter) func(ctx sdk.Context, querierJson json.RawMessage) ([]byte, error) {
+func CustomQuerierImpl(queryRouter GRPCQueryRouter) func(ctx sdk.Context, querierJson json.RawMessage) ([]byte, error) {
 	return func(ctx sdk.Context, querierJson json.RawMessage) ([]byte, error) {
 		var linkQueryWrapper types.LinkQueryWrapper
 		err := json.Unmarshal(querierJson, &linkQueryWrapper)
 		if err != nil {
 			return nil, err
 		}
-		querier := queryRouter.Route(linkQueryWrapper.Module)
-		if querier == nil {
+		route := queryRouter.Route(linkQueryWrapper.Path)
+		if route == nil {
 			return nil, wasmvmtypes.UnsupportedRequest{Kind: "Unknown encode module"}
 		}
-		return querier(ctx, linkQueryWrapper.QueryData)
+		req := abci.RequestQuery{
+			Data: linkQueryWrapper.Data,
+			Path: linkQueryWrapper.Path,
+		}
+		res, err := route(ctx, req)
+		if err != nil {
+			return nil, err
+		}
+
+		return res.Value, nil
 	}
 }
 

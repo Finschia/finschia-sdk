@@ -436,7 +436,7 @@ func TestEncoding(t *testing.T) {
 		tc := tc
 		t.Run(name, func(t *testing.T) {
 			var ctx sdk.Context
-			res, err := encoder.Encode(ctx, tc.sender, tc.srcIBCPort, tc.srcMsg)
+			res, err := encoder.Encode(ctx, tc.sender, tc.srcIBCPort, tc.srcMsg, nil)
 			if tc.isError {
 				require.Error(t, err)
 			} else {
