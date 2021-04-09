@@ -17,7 +17,7 @@ linters:
     - misspell
     - nakedret
     - prealloc
-    - scopelint
+    - exportloopref
     - staticcheck
     - structcheck
     - stylecheck
