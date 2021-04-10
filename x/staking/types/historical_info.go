@@ -8,14 +8,17 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // NewHistoricalInfo will create a historical information struct from header and valset
 // it will first sort valset before inclusion into historical info
-func NewHistoricalInfo(header ocproto.Header, valSet Validators) HistoricalInfo {
-	// Must sort in the same way that ostracon does
-	sort.Sort(ValidatorsByVotingPower(valSet))
+func NewHistoricalInfo(header ocproto.Header, valSet Validators, powerReduction sdk.Int) HistoricalInfo {
+	// Must sort in the same way that tendermint does
+	sort.SliceStable(valSet, func(i, j int) bool {
+		return ValidatorsByVotingPower(valSet).Less(i, j, powerReduction)
+	})
 
 	return HistoricalInfo{
 		Header: header,

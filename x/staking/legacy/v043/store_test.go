@@ -7,9 +7,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/testutil"
 	"github.com/line/lbm-sdk/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/types"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	v040staking "github.com/line/lbm-sdk/x/staking/legacy/v040"
 	v043staking "github.com/line/lbm-sdk/x/staking/legacy/v043"
 	"github.com/line/lbm-sdk/x/staking/teststaking"
@@ -17,9 +19,13 @@ import (
 )
 
 func TestStoreMigration(t *testing.T) {
+	encCfg := simapp.MakeTestEncodingConfig()
 	stakingKey := sdk.NewKVStoreKey("staking")
-	ctx := testutil.DefaultContext(stakingKey, sdk.NewTransientStoreKey("transient_test"))
+	tStakingKey := sdk.NewTransientStoreKey("transient_test")
+	ctx := testutil.DefaultContext(stakingKey, tStakingKey)
 	store := ctx.KVStore(stakingKey)
+
+	paramSubspace := paramtypes.NewSubspace(encCfg.Marshaler, encCfg.Amino, stakingKey, tStakingKey, types.ModuleName)
 
 	_, pk1, addr1 := testdata.KeyTestPubAddr()
 	valAddr1 := sdk.AccAddress(addr1).ToValAddress()
@@ -61,7 +67,7 @@ func TestStoreMigration(t *testing.T) {
 		{
 			"ValidatorsByPowerIndexKey",
 			v040staking.GetValidatorsByPowerIndexKey(val),
-			types.GetValidatorsByPowerIndexKey(val),
+			types.GetValidatorsByPowerIndexKey(val, sdk.DefaultPowerReduction),
 		},
 		{
 			"DelegationKey",
@@ -121,7 +127,7 @@ func TestStoreMigration(t *testing.T) {
 	}
 
 	// Run migrations.
-	err := v043staking.MigrateStore(ctx, stakingKey)
+	err := v043staking.MigrateStore(ctx, stakingKey, paramSubspace)
 	require.NoError(t, err)
 
 	// Make sure the new keys are set and old keys are deleted.
@@ -134,4 +140,8 @@ func TestStoreMigration(t *testing.T) {
 			require.Equal(t, value, store.Get(tc.newKey))
 		})
 	}
+
+	powerReduction := sdk.NewInt(0)
+	paramSubspace.Get(ctx, types.KeyPowerReduction, &powerReduction)
+	require.True(t, powerReduction.Equal(sdk.DefaultPowerReduction))
 }

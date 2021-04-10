@@ -135,7 +135,7 @@ func InitGenesis(
 				panic(fmt.Sprintf("validator %s not found", lv.Address))
 			}
 
-			update := validator.ABCIValidatorUpdate()
+			update := validator.ABCIValidatorUpdate(keeper.PowerReduction(ctx))
 			update.Power = lv.Power // keep the next-val-set offset, use the last power for the first block
 			res = append(res, update)
 		}
@@ -202,7 +202,7 @@ func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []octypes.Gene
 		vals = append(vals, octypes.GenesisValidator{
 			Address: tmPk.Address(),
 			PubKey:  tmPk,
-			Power:   validator.GetConsensusPower(),
+			Power:   validator.GetConsensusPower(keeper.PowerReduction(ctx)),
 			Name:    validator.GetMoniker(),
 		})
 

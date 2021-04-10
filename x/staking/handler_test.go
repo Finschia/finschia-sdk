@@ -30,7 +30,7 @@ func bootstrapHandlerGenesisTest(t *testing.T, power int64, numAddrs int, accAmo
 
 	addrDels, addrVals := generateAddresses(app, ctx, numAddrs, accAmount)
 
-	amt := sdk.TokensFromConsensusPower(power)
+	amt := app.StakingKeeper.TokensFromConsensusPower(ctx, power)
 	totalSupply := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), amt.MulRaw(int64(len(addrDels)))))
 
 	notBondedPool := app.StakingKeeper.GetNotBondedPool(ctx)
@@ -41,9 +41,54 @@ func bootstrapHandlerGenesisTest(t *testing.T, power int64, numAddrs int, accAmo
 	return app, ctx, addrDels, addrVals
 }
 
+func TestPowerReductionChangeValidatorSetUpdates(t *testing.T) {
+	initPower := int64(1000000)
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 10, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
+	validatorAddr, validatorAddr3 := valAddrs[0], valAddrs[1]
+	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
+
+	// create validator
+	tstaking.CreateValidatorWithValPower(validatorAddr, PKs[0], initPower, true)
+
+	// must end-block
+	updates, err := app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
+	require.Equal(t, 1, len(updates))
+
+	// create a second validator keep it bonded
+	tstaking.CreateValidatorWithValPower(validatorAddr3, PKs[2], initPower, true)
+
+	// must end-block
+	updates, err = app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
+	require.Equal(t, 1, len(updates))
+
+	// modify power reduction to 10 times bigger one
+	params := app.StakingKeeper.GetParams(ctx)
+	params.PowerReduction = sdk.DefaultPowerReduction.Mul(sdk.NewInt(10))
+	app.StakingKeeper.SetParams(ctx, params)
+
+	// validator updates for tendermint power
+	updates, err = app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
+	require.Equal(t, 2, len(updates))
+	require.Equal(t, updates[0].Power, initPower/10)
+	require.Equal(t, updates[1].Power, initPower/10)
+
+	// power reduction back to default
+	params = app.StakingKeeper.GetParams(ctx)
+	params.PowerReduction = sdk.DefaultPowerReduction
+	app.StakingKeeper.SetParams(ctx, params)
+
+	// validator updates for tendermint power
+	updates, err = app.StakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
+	require.NoError(t, err)
+	require.Equal(t, 2, len(updates))
+}
+
 func TestValidatorByPowerIndex(t *testing.T) {
 	initPower := int64(1000000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 10, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 10, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	validatorAddr, validatorAddr3 := valAddrs[0], valAddrs[1]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
@@ -64,7 +109,7 @@ func TestValidatorByPowerIndex(t *testing.T) {
 	// verify that the by power index exists
 	validator, found := app.StakingKeeper.GetValidator(ctx, validatorAddr)
 	require.True(t, found)
-	power := types.GetValidatorsByPowerIndexKey(validator)
+	power := types.GetValidatorsByPowerIndexKey(validator, app.StakingKeeper.PowerReduction(ctx))
 	require.True(t, keeper.ValidatorByPowerIndexExists(ctx, app.StakingKeeper, power))
 
 	// create a second validator keep it bonded
@@ -93,11 +138,11 @@ func TestValidatorByPowerIndex(t *testing.T) {
 	// but the new power record should have been created
 	validator, found = app.StakingKeeper.GetValidator(ctx, validatorAddr)
 	require.True(t, found)
-	power2 := types.GetValidatorsByPowerIndexKey(validator)
+	power2 := types.GetValidatorsByPowerIndexKey(validator, app.StakingKeeper.PowerReduction(ctx))
 	require.True(t, keeper.ValidatorByPowerIndexExists(ctx, app.StakingKeeper, power2))
 
 	// now the new record power index should be the same as the original record
-	power3 := types.GetValidatorsByPowerIndexKey(validator)
+	power3 := types.GetValidatorsByPowerIndexKey(validator, app.StakingKeeper.PowerReduction(ctx))
 	require.Equal(t, power2, power3)
 
 	// unbond self-delegation
@@ -120,7 +165,7 @@ func TestValidatorByPowerIndex(t *testing.T) {
 
 func TestDuplicatesMsgCreateValidator(t *testing.T) {
 	initPower := int64(1000000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 10, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 10, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 
 	addr1, addr2 := valAddrs[0], valAddrs[1]
 	pk1, pk2 := PKs[0], PKs[1]
@@ -168,7 +213,7 @@ func TestDuplicatesMsgCreateValidator(t *testing.T) {
 
 func TestInvalidPubKeyTypeMsgCreateValidator(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	ctx = ctx.WithConsensusParams(&abci.ConsensusParams{
 		Validator: &ocproto.ValidatorParams{PubKeyTypes: []string{octypes.ABCIPubKeyTypeEd25519}},
 	})
@@ -214,7 +259,7 @@ func TestBothPubKeyTypesMsgCreateValidator(t *testing.T) {
 
 func TestLegacyValidatorDelegations(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 	valAddr := valAddrs[0]
@@ -293,8 +338,8 @@ func TestLegacyValidatorDelegations(t *testing.T) {
 
 func TestIncrementsMsgDelegate(t *testing.T) {
 	initPower := int64(1000)
-	initBond := sdk.TokensFromConsensusPower(initPower)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	initBond := sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction)
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 
 	params := app.StakingKeeper.GetParams(ctx)
 	validatorAddr, delegatorAddr := valAddrs[0], delAddrs[1]
@@ -352,8 +397,8 @@ func TestIncrementsMsgDelegate(t *testing.T) {
 
 func TestEditValidatorDecreaseMinSelfDelegation(t *testing.T) {
 	initPower := int64(100)
-	initBond := sdk.TokensFromConsensusPower(100)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower))
+	initBond := sdk.TokensFromConsensusPower(100, sdk.DefaultPowerReduction)
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 
 	validatorAddr := valAddrs[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
@@ -383,9 +428,9 @@ func TestEditValidatorDecreaseMinSelfDelegation(t *testing.T) {
 
 func TestEditValidatorIncreaseMinSelfDelegationBeyondCurrentBond(t *testing.T) {
 	initPower := int64(100)
-	initBond := sdk.TokensFromConsensusPower(100)
+	initBond := sdk.TokensFromConsensusPower(100, sdk.DefaultPowerReduction)
 
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	validatorAddr := valAddrs[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
@@ -415,7 +460,7 @@ func TestEditValidatorIncreaseMinSelfDelegationBeyondCurrentBond(t *testing.T) {
 func TestIncrementsMsgUnbond(t *testing.T) {
 	initPower := int64(1000)
 
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 	params := app.StakingKeeper.GetParams(ctx)
 	denom := params.BondDenom
@@ -487,8 +532,8 @@ func TestIncrementsMsgUnbond(t *testing.T) {
 	errorCases := []sdk.Int{
 		//1<<64 - 1, // more than int64 power
 		//1<<63 + 1, // more than int64 power
-		sdk.TokensFromConsensusPower(1<<63 - 1),
-		sdk.TokensFromConsensusPower(1 << 31),
+		app.StakingKeeper.TokensFromConsensusPower(ctx, 1<<63-1),
+		app.StakingKeeper.TokensFromConsensusPower(ctx, 1<<31),
 		initBond,
 	}
 
@@ -503,8 +548,8 @@ func TestIncrementsMsgUnbond(t *testing.T) {
 
 func TestMultipleMsgCreateValidator(t *testing.T) {
 	initPower := int64(1000)
-	initTokens := sdk.TokensFromConsensusPower(initPower)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower))
+	initTokens := sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction)
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 
 	params := app.StakingKeeper.GetParams(ctx)
 	blockTime := time.Now().UTC()
@@ -523,7 +568,7 @@ func TestMultipleMsgCreateValidator(t *testing.T) {
 	}
 
 	// bond them all
-	amt := sdk.TokensFromConsensusPower(10)
+	amt := app.StakingKeeper.TokensFromConsensusPower(ctx, 10)
 	for i, validatorAddr := range validatorAddrs {
 		tstaking.CreateValidator(validatorAddr, PKs[i], amt, true)
 		// verify that the account is bonded
@@ -573,7 +618,7 @@ func TestMultipleMsgCreateValidator(t *testing.T) {
 
 func TestMultipleMsgDelegate(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 50, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 50, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	validatorAddr, delegatorAddrs := valAddrs[0], delAddrs[1:]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 	var amount int64 = 10
@@ -607,7 +652,7 @@ func TestMultipleMsgDelegate(t *testing.T) {
 
 func TestJailValidator(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	validatorAddr, delegatorAddr := valAddrs[0], delAddrs[1]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 	var amt int64 = 10
@@ -646,7 +691,7 @@ func TestJailValidator(t *testing.T) {
 
 func TestValidatorQueue(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	validatorAddr, delegatorAddr := valAddrs[0], delAddrs[1]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
@@ -693,7 +738,7 @@ func TestValidatorQueue(t *testing.T) {
 
 func TestUnbondingPeriod(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	validatorAddr := valAddrs[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
@@ -732,7 +777,7 @@ func TestUnbondingPeriod(t *testing.T) {
 
 func TestUnbondingFromUnbondingValidator(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	validatorAddr, delegatorAddr := valAddrs[0], delAddrs[1]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
@@ -765,7 +810,7 @@ func TestUnbondingFromUnbondingValidator(t *testing.T) {
 
 func TestRedelegationPeriod(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	validatorAddr, validatorAddr2 := valAddrs[0], valAddrs[1]
 	denom := app.StakingKeeper.GetParams(ctx).BondDenom
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
@@ -816,7 +861,7 @@ func TestRedelegationPeriod(t *testing.T) {
 
 func TestTransitiveRedelegation(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 
 	val1, val2, val3 := valAddrs[0], valAddrs[1], valAddrs[2]
 	blockTime := time.Now().UTC()
@@ -850,7 +895,7 @@ func TestTransitiveRedelegation(t *testing.T) {
 
 func TestMultipleRedelegationAtSameTime(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	valAddr := valAddrs[0]
 	valAddr2 := valAddrs[1]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
@@ -894,7 +939,7 @@ func TestMultipleRedelegationAtSameTime(t *testing.T) {
 
 func TestMultipleRedelegationAtUniqueTimes(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 2, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	valAddr := valAddrs[0]
 	valAddr2 := valAddrs[1]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
@@ -941,7 +986,7 @@ func TestMultipleRedelegationAtUniqueTimes(t *testing.T) {
 
 func TestMultipleUnbondingDelegationAtSameTime(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	valAddr := valAddrs[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
@@ -981,7 +1026,7 @@ func TestMultipleUnbondingDelegationAtSameTime(t *testing.T) {
 
 func TestMultipleUnbondingDelegationAtUniqueTimes(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	valAddr := valAddrs[0]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
@@ -1029,7 +1074,7 @@ func TestMultipleUnbondingDelegationAtUniqueTimes(t *testing.T) {
 
 func TestUnbondingWhenExcessValidators(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	val1 := valAddrs[0]
 	val2 := valAddrs[1]
 	val3 := valAddrs[2]
@@ -1069,7 +1114,7 @@ func TestUnbondingWhenExcessValidators(t *testing.T) {
 
 func TestBondUnbondRedelegateSlashTwice(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	valA, valB, del := valAddrs[0], valAddrs[1], delAddrs[2]
 	consAddr0 := sdk.BytesToConsAddress(PKs[0].Address())
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
@@ -1090,11 +1135,11 @@ func TestBondUnbondRedelegateSlashTwice(t *testing.T) {
 	tstaking.Ctx = ctx
 
 	// begin unbonding 4 stake
-	unbondAmt := sdk.TokensFromConsensusPower(4)
+	unbondAmt := app.StakingKeeper.TokensFromConsensusPower(ctx, 4)
 	tstaking.Undelegate(del, valA, unbondAmt, true)
 
 	// begin redelegate 6 stake
-	redAmt := sdk.NewCoin(sdk.DefaultBondDenom, sdk.TokensFromConsensusPower(6))
+	redAmt := sdk.NewCoin(sdk.DefaultBondDenom, app.StakingKeeper.TokensFromConsensusPower(ctx, 6))
 	msgBeginRedelegate := types.NewMsgBeginRedelegate(del, valA, valB, redAmt)
 	tstaking.Handle(msgBeginRedelegate, true)
 
@@ -1174,11 +1219,11 @@ func TestInvalidMsg(t *testing.T) {
 
 func TestInvalidCoinDenom(t *testing.T) {
 	initPower := int64(1000)
-	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower))
+	app, ctx, delAddrs, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 3, sdk.TokensFromConsensusPower(initPower, sdk.DefaultPowerReduction))
 	valA, valB, delAddr := valAddrs[0], valAddrs[1], delAddrs[2]
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
 
-	valTokens := sdk.TokensFromConsensusPower(100)
+	valTokens := app.StakingKeeper.TokensFromConsensusPower(ctx, 100)
 	invalidCoin := sdk.NewCoin("churros", valTokens)
 	validCoin := sdk.NewCoin(sdk.DefaultBondDenom, valTokens)
 	oneCoin := sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())

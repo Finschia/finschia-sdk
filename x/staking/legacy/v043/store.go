@@ -6,6 +6,7 @@ import (
 	"github.com/line/lbm-sdk/types/address"
 	v040auth "github.com/line/lbm-sdk/x/auth/legacy/v040"
 	v043distribution "github.com/line/lbm-sdk/x/distribution/legacy/v043"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	v040staking "github.com/line/lbm-sdk/x/staking/legacy/v040"
 	"github.com/line/lbm-sdk/x/staking/types"
 )
@@ -104,11 +105,16 @@ func migrateValidatorsByPowerIndexKey(store sdk.KVStore) {
 	}
 }
 
-// MigrateStore performs in-place store migrations from v0.40 to v0.42. The
+func migrateParamsStore(ctx sdk.Context, paramstore paramtypes.Subspace) {
+	paramstore.WithKeyTable(types.ParamKeyTable())
+	paramstore.Set(ctx, types.KeyPowerReduction, sdk.DefaultPowerReduction)
+}
+
+// MigrateStore performs in-place store migrations from v0.40 to v0.43. The
 // migration includes:
 //
-// - Change addresses to be length-prefixed.
-func MigrateStore(ctx sdk.Context, storeKey sdk.StoreKey) error {
+// - Setting the Power Reduction param in the paramstore
+func MigrateStore(ctx sdk.Context, storeKey sdk.StoreKey, paramstore paramtypes.Subspace) error {
 	store := ctx.KVStore(storeKey)
 
 	v043distribution.MigratePrefixAddress(store, v040staking.LastValidatorPowerKey)
@@ -123,6 +129,8 @@ func MigrateStore(ctx sdk.Context, storeKey sdk.StoreKey) error {
 	migratePrefixAddressValAddressValAddress(store, v040staking.RedelegationKey)
 	migratePrefixValAddressAddressValAddress(store, v040staking.RedelegationByValSrcIndexKey)
 	migratePrefixValAddressAddressValAddress(store, v040staking.RedelegationByValDstIndexKey)
+
+	migrateParamsStore(ctx, paramstore)
 
 	return nil
 }
