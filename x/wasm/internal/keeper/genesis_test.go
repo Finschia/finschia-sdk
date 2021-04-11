@@ -29,7 +29,7 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/proto/ostracon/crypto"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/tendermint/tm-db"
+	"github.com/line/tm-db/v2/memdb"
 )
 
 const firstCodeID = 1
@@ -627,7 +627,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 		keyWasm    = sdk.NewKVStoreKey(wasmTypes.StoreKey)
 	)
 
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(keyWasm, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)

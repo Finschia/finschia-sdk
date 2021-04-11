@@ -4,7 +4,9 @@ import (
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/require"
 	"github.com/syndtr/goleveldb/leveldb/opt"
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
+	"github.com/line/tm-db/v2/goleveldb"
 	"testing"
 )
 
@@ -15,22 +17,22 @@ func BenchmarkExecution(b *testing.B) {
 		db     func() dbm.DB
 	}{
 		"unpinned, memory db": {
-			db: func() dbm.DB { return dbm.NewMemDB() },
+			db: func() dbm.DB { return memdb.NewDB() },
 		},
 		"pinned, memory db": {
-			db:     func() dbm.DB { return dbm.NewMemDB() },
+			db:     func() dbm.DB { return memdb.NewDB() },
 			pinned: true,
 		},
 		"unpinned, level db": {
 			db: func() dbm.DB {
-				levelDB, err := dbm.NewGoLevelDBWithOpts("testing", b.TempDir(), &opt.Options{BlockCacher: opt.NoCacher})
+				levelDB, err := goleveldb.NewDBWithOpts("testing", b.TempDir(), &opt.Options{BlockCacher: opt.NoCacher})
 				require.NoError(b, err)
 				return levelDB
 			},
 		},
 		"pinned, level db": {
 			db: func() dbm.DB {
-				levelDB, err := dbm.NewGoLevelDBWithOpts("testing", b.TempDir(), &opt.Options{BlockCacher: opt.NoCacher})
+				levelDB, err := goleveldb.NewDBWithOpts("testing", b.TempDir(), &opt.Options{BlockCacher: opt.NoCacher})
 				require.NoError(b, err)
 				return levelDB
 			},

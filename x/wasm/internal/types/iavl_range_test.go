@@ -5,7 +5,7 @@ import (
 	"github.com/line/lbm-sdk/v2/store/iavl"
 	iavl2 "github.com/line/iavl/v2"
 	"github.com/stretchr/testify/require"
-	dbm "github.com/tendermint/tm-db"
+	"github.com/line/tm-db/v2/memdb"
 	"testing"
 )
 
@@ -13,7 +13,7 @@ import (
 // https://github.com/CosmWasm/cosmwasm-plus/blob/f97a7de44b6a930fd1d5179ee6f95b786a532f32/packages/storage-plus/src/prefix.rs#L183
 // and designed to ensure the IAVL store handles bounds the same way as the mock storage we use in Rust contract tests
 func TestIavlRangeBounds(t *testing.T) {
-	memdb := dbm.NewMemDB()
+	memdb := memdb.NewDB()
 	tree, err := iavl2.NewMutableTree(memdb, 50)
 	require.NoError(t, err)
 	kvstore := iavl.UnsafeNewStore(tree)

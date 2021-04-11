@@ -60,7 +60,8 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/libs/rand"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	dbm "github.com/tendermint/tm-db"
+	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/memdb"
 	"io/ioutil"
 	"time"
 )
@@ -144,7 +145,7 @@ func CreateDefaultTestInput(t TestingT) (sdk.Context, TestKeepers) {
 func CreateTestInput(t TestingT, isCheckTx bool, supportedFeatures string, encoders *MessageEncoders, queriers *QueryPlugins) (sdk.Context, TestKeepers) {
 	// Load default wasm config
 	wasmConfig := types.DefaultWasmConfig()
-	db := dbm.NewMemDB()
+	db := memdb.NewDB()
 	return createTestInput(t, isCheckTx, supportedFeatures, encoders, queriers, wasmConfig, db)
 }
 
