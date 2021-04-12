@@ -6,7 +6,7 @@ package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	tmdb "github.com/line/tm-db/v2"
+	db "github.com/line/tm-db/v2"
 	reflect "reflect"
 )
 
@@ -106,10 +106,10 @@ func (mr *MockDBMockRecorder) Has(arg0 interface{}) *gomock.Call {
 }
 
 // Iterator mocks base method
-func (m *MockDB) Iterator(arg0, arg1 []byte) (tmdb.Iterator, error) {
+func (m *MockDB) Iterator(arg0, arg1 []byte) (db.Iterator, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Iterator", arg0, arg1)
-	ret0, _ := ret[0].(tmdb.Iterator)
+	ret0, _ := ret[0].(db.Iterator)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -121,10 +121,10 @@ func (mr *MockDBMockRecorder) Iterator(arg0, arg1 interface{}) *gomock.Call {
 }
 
 // NewBatch mocks base method
-func (m *MockDB) NewBatch() tmdb.Batch {
+func (m *MockDB) NewBatch() db.Batch {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "NewBatch")
-	ret0, _ := ret[0].(tmdb.Batch)
+	ret0, _ := ret[0].(db.Batch)
 	return ret0
 }
 
@@ -132,6 +132,21 @@ func (m *MockDB) NewBatch() tmdb.Batch {
 func (mr *MockDBMockRecorder) NewBatch() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewBatch", reflect.TypeOf((*MockDB)(nil).NewBatch))
+}
+
+// PrefixIterator mocks base method
+func (m *MockDB) PrefixIterator(arg0 []byte) (db.Iterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "PrefixIterator", arg0)
+	ret0, _ := ret[0].(db.Iterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// PrefixIterator indicates an expected call of PrefixIterator
+func (mr *MockDBMockRecorder) PrefixIterator(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "PrefixIterator", reflect.TypeOf((*MockDB)(nil).PrefixIterator), arg0)
 }
 
 // Print mocks base method
@@ -149,10 +164,10 @@ func (mr *MockDBMockRecorder) Print() *gomock.Call {
 }
 
 // ReverseIterator mocks base method
-func (m *MockDB) ReverseIterator(arg0, arg1 []byte) (tmdb.Iterator, error) {
+func (m *MockDB) ReverseIterator(arg0, arg1 []byte) (db.Iterator, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ReverseIterator", arg0, arg1)
-	ret0, _ := ret[0].(tmdb.Iterator)
+	ret0, _ := ret[0].(db.Iterator)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -161,6 +176,21 @@ func (m *MockDB) ReverseIterator(arg0, arg1 []byte) (tmdb.Iterator, error) {
 func (mr *MockDBMockRecorder) ReverseIterator(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReverseIterator", reflect.TypeOf((*MockDB)(nil).ReverseIterator), arg0, arg1)
+}
+
+// ReversePrefixIterator mocks base method
+func (m *MockDB) ReversePrefixIterator(arg0 []byte) (db.Iterator, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ReversePrefixIterator", arg0)
+	ret0, _ := ret[0].(db.Iterator)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ReversePrefixIterator indicates an expected call of ReversePrefixIterator
+func (mr *MockDBMockRecorder) ReversePrefixIterator(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ReversePrefixIterator", reflect.TypeOf((*MockDB)(nil).ReversePrefixIterator), arg0)
 }
 
 // Set mocks base method

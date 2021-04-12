@@ -26,9 +26,9 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hashicorp/golang-lru v0.5.4
-	github.com/line/iavl/v2 v2.0.0-init.1.0.20210325055816-6304f1fd2f09
-	github.com/line/ostracon v0.34.9-0.20210325081149-c7c246b1be58
-	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210325025547-0ea105c02281
+	github.com/line/iavl/v2 v2.0.0-init.1.0.20210406065347-cfd73e5acce0
+	github.com/line/ostracon v0.34.9-0.20210406083837-4183d649b30c
+	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210406062110-9424ca70955a
 	github.com/magiconair/properties v1.8.4
 	github.com/mattn/go-isatty v0.0.12
 	github.com/otiai10/copy v1.4.2

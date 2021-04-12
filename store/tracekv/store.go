@@ -114,11 +114,6 @@ func newTraceIterator(w io.Writer, parent types.Iterator, tc types.TraceContext)
 	return &traceIterator{writer: w, parent: parent, context: tc}
 }
 
-// Domain implements the Iterator interface.
-func (ti *traceIterator) Domain() (start []byte, end []byte) {
-	return ti.parent.Domain()
-}
-
 // Valid implements the Iterator interface.
 func (ti *traceIterator) Valid() bool {
 	return ti.parent.Valid()

@@ -164,10 +164,6 @@ func TestTestTraceKVStoreIterator(t *testing.T) {
 	store := newTraceKVStore(&buf)
 	iterator := store.Iterator(nil, nil)
 
-	s, e := iterator.Domain()
-	require.Equal(t, []byte(nil), s)
-	require.Equal(t, []byte(nil), e)
-
 	testCases := []struct {
 		expectedKey      []byte
 		expectedValue    []byte
@@ -219,10 +215,6 @@ func TestTestTraceKVStoreReverseIterator(t *testing.T) {
 
 	store := newTraceKVStore(&buf)
 	iterator := store.ReverseIterator(nil, nil)
-
-	s, e := iterator.Domain()
-	require.Equal(t, []byte(nil), s)
-	require.Equal(t, []byte(nil), e)
 
 	testCases := []struct {
 		expectedKey      []byte
