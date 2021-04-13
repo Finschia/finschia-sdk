@@ -18,11 +18,11 @@ import (
 
 	"github.com/spf13/viper"
 
-	collectionModule "github.com/line/lbm-sdk/v2/x/collection"
-	tokenModule "github.com/line/lbm-sdk/v2/x/token"
+	// collectionModule "github.com/line/lbm-sdk/v2/x/collection"
+	// tokenModule "github.com/line/lbm-sdk/v2/x/token"
 	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/types"
 
-	clientkeys "github.com/cosmos/cosmos-sdk/client/keys"
+	clientkeys "github.com/line/lbm-sdk/v2/client/keys"
 	tmhttp "github.com/line/ostracon/rpc/client/http"
 
 	"github.com/stretchr/testify/require"
@@ -34,16 +34,16 @@ import (
 	wasmtypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/app"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/keyring"
-	"github.com/cosmos/cosmos-sdk/simapp"
-	"github.com/cosmos/cosmos-sdk/tests"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/auth"
-	"github.com/cosmos/cosmos-sdk/x/distribution"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-	"github.com/cosmos/cosmos-sdk/x/slashing"
-	"github.com/cosmos/cosmos-sdk/x/staking"
+	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	"github.com/line/lbm-sdk/v2/simapp"
+	"github.com/line/lbm-sdk/v2/tests"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/auth"
+	"github.com/line/lbm-sdk/v2/x/distribution"
+	"github.com/line/lbm-sdk/v2/x/gov"
+	"github.com/line/lbm-sdk/v2/x/slashing"
+	"github.com/line/lbm-sdk/v2/x/staking"
 )
 
 const (
@@ -997,299 +997,299 @@ func (f *Fixtures) QueryTotalSupplyOf(denom string, flags ...string) sdk.Int {
 	return supplyOf
 }
 
-// ___________________________________________________________________________________
-// query token
+// // ___________________________________________________________________________________
+// // query token
 
-func (f *Fixtures) QueryToken(contractID string, flags ...string) tokenModule.Token {
-	cmd := fmt.Sprintf("%s query token token %s %s", f.LinkcliBinary, contractID, f.Flags())
-	cmd = addFlags(cmd, flags)
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var token tokenModule.Token
-	err := cdc.UnmarshalJSON([]byte(res), &token)
-	require.NoError(f.T, err)
-	return token
-}
+// func (f *Fixtures) QueryToken(contractID string, flags ...string) tokenModule.Token {
+// 	cmd := fmt.Sprintf("%s query token token %s %s", f.LinkcliBinary, contractID, f.Flags())
+// 	cmd = addFlags(cmd, flags)
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var token tokenModule.Token
+// 	err := cdc.UnmarshalJSON([]byte(res), &token)
+// 	require.NoError(f.T, err)
+// 	return token
+// }
 
-func (f *Fixtures) QueryTokenExpectEmpty(contractID string, flags ...string) {
-	cmd := fmt.Sprintf("%s query token token %s %s", f.LinkcliBinary, contractID, f.Flags())
-	cmd = addFlags(cmd, flags)
-	_, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.NotEmpty(f.T, errStr)
-}
+// func (f *Fixtures) QueryTokenExpectEmpty(contractID string, flags ...string) {
+// 	cmd := fmt.Sprintf("%s query token token %s %s", f.LinkcliBinary, contractID, f.Flags())
+// 	cmd = addFlags(cmd, flags)
+// 	_, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.NotEmpty(f.T, errStr)
+// }
 
-func (f *Fixtures) QueryBalanceToken(contractID string, addr sdk.AccAddress, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query token balance %s %s %s", f.LinkcliBinary, contractID, addr.String(), f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// func (f *Fixtures) QueryBalanceToken(contractID string, addr sdk.AccAddress, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query token balance %s %s %s", f.LinkcliBinary, contractID, addr.String(), f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
+// 	return supply
+// }
 
-func (f *Fixtures) QuerySupplyToken(contractID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query token total supply %s %s", f.LinkcliBinary, contractID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// func (f *Fixtures) QuerySupplyToken(contractID string, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query token total supply %s %s", f.LinkcliBinary, contractID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
+// 	return supply
+// }
 
-func (f *Fixtures) QueryMintToken(contractID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query token total mint %s %s", f.LinkcliBinary, contractID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// func (f *Fixtures) QueryMintToken(contractID string, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query token total mint %s %s", f.LinkcliBinary, contractID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
+// 	return supply
+// }
 
-func (f *Fixtures) QueryBurnToken(contractID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query token total burn %s %s", f.LinkcliBinary, contractID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// func (f *Fixtures) QueryBurnToken(contractID string, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query token total burn %s %s", f.LinkcliBinary, contractID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
+// 	return supply
+// }
 
-func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, contractID string, flags ...string) tokenModule.Permissions {
-	cmd := fmt.Sprintf("%s query token perm %s %s %s", f.LinkcliBinary, addr, contractID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var pms tokenModule.Permissions
-	err := cdc.UnmarshalJSON([]byte(res), &pms)
-	require.NoError(f.T, err)
-	return pms
-}
+// func (f *Fixtures) QueryAccountPermission(addr sdk.AccAddress, contractID string, flags ...string) tokenModule.Permissions {
+// 	cmd := fmt.Sprintf("%s query token perm %s %s %s", f.LinkcliBinary, addr, contractID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var pms tokenModule.Permissions
+// 	err := cdc.UnmarshalJSON([]byte(res), &pms)
+// 	require.NoError(f.T, err)
+// 	return pms
+// }
 
-func (f *Fixtures) QueryApprovedToken(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress, flags ...string) bool {
-	cmd := fmt.Sprintf("%s query token approved %s %s %s %s", f.LinkcliBinary, contractID, proxy, approver, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var isApproved bool
-	err := cdc.UnmarshalJSON([]byte(res), &isApproved)
-	require.NoError(f.T, err)
-	return isApproved
-}
+// func (f *Fixtures) QueryApprovedToken(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress, flags ...string) bool {
+// 	cmd := fmt.Sprintf("%s query token approved %s %s %s %s", f.LinkcliBinary, contractID, proxy, approver, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var isApproved bool
+// 	err := cdc.UnmarshalJSON([]byte(res), &isApproved)
+// 	require.NoError(f.T, err)
+// 	return isApproved
+// }
 
-// ___________________________________________________________________________________
-// query collection
-func (f *Fixtures) QueryBalancesCollection(contractID string, addr sdk.AccAddress) collectionModule.Coins {
-	cmd := fmt.Sprintf("%s query collection balances %s %s %s", f.LinkcliBinary, contractID, addr.String(), f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var coins collectionModule.Coins
-	err := cdc.UnmarshalJSON([]byte(res), &coins)
-	require.NoError(f.T, err)
+// // ___________________________________________________________________________________
+// // query collection
+// func (f *Fixtures) QueryBalancesCollection(contractID string, addr sdk.AccAddress) collectionModule.Coins {
+// 	cmd := fmt.Sprintf("%s query collection balances %s %s %s", f.LinkcliBinary, contractID, addr.String(), f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var coins collectionModule.Coins
+// 	err := cdc.UnmarshalJSON([]byte(res), &coins)
+// 	require.NoError(f.T, err)
 
-	return coins
-}
+// 	return coins
+// }
 
-func (f *Fixtures) QueryBalanceCollection(contractID, tokenID string, addr sdk.AccAddress, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query collection balance %s %s %s %s", f.LinkcliBinary, contractID, tokenID, addr.String(), f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// func (f *Fixtures) QueryBalanceCollection(contractID, tokenID string, addr sdk.AccAddress, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query collection balance %s %s %s %s", f.LinkcliBinary, contractID, tokenID, addr.String(), f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
+// 	return supply
+// }
 
-func (f *Fixtures) QueryTokenCollection(contractID, tokenID string, flags ...string) collectionModule.Token {
-	cmd := fmt.Sprintf("%s query collection token %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	cmd = addFlags(cmd, flags)
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var token collectionModule.Token
-	err := cdc.UnmarshalJSON([]byte(res), &token)
-	require.NoError(f.T, err)
-	return token
-}
+// func (f *Fixtures) QueryTokenCollection(contractID, tokenID string, flags ...string) collectionModule.Token {
+// 	cmd := fmt.Sprintf("%s query collection token %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	cmd = addFlags(cmd, flags)
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var token collectionModule.Token
+// 	err := cdc.UnmarshalJSON([]byte(res), &token)
+// 	require.NoError(f.T, err)
+// 	return token
+// }
 
-func (f *Fixtures) QueryTokenCollectionExpectEmpty(contractID, tokenID string, flags ...string) {
-	cmd := fmt.Sprintf("%s query collection token %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	cmd = addFlags(cmd, flags)
-	_, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.NotEmpty(f.T, errStr)
-}
+// func (f *Fixtures) QueryTokenCollectionExpectEmpty(contractID, tokenID string, flags ...string) {
+// 	cmd := fmt.Sprintf("%s query collection token %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	cmd = addFlags(cmd, flags)
+// 	_, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.NotEmpty(f.T, errStr)
+// }
 
-func (f *Fixtures) QueryTokensCollection(contractID string) collectionModule.Tokens {
-	cmd := fmt.Sprintf("%s query collection tokens %s %s", f.LinkcliBinary, contractID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var tokens collectionModule.Tokens
-	err := cdc.UnmarshalJSON([]byte(res), &tokens)
-	require.NoError(f.T, err)
-	return tokens
-}
+// func (f *Fixtures) QueryTokensCollection(contractID string) collectionModule.Tokens {
+// 	cmd := fmt.Sprintf("%s query collection tokens %s %s", f.LinkcliBinary, contractID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var tokens collectionModule.Tokens
+// 	err := cdc.UnmarshalJSON([]byte(res), &tokens)
+// 	require.NoError(f.T, err)
+// 	return tokens
+// }
 
-func (f *Fixtures) QueryTokensByTokenTypeCollection(contractID string, tokenType string) collectionModule.Tokens {
-	cmd := fmt.Sprintf("%s query collection tokens %s --token-type %s %s", f.LinkcliBinary, contractID, tokenType, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var tokens collectionModule.Tokens
-	err := cdc.UnmarshalJSON([]byte(res), &tokens)
-	require.NoError(f.T, err)
-	return tokens
-}
+// func (f *Fixtures) QueryTokensByTokenTypeCollection(contractID string, tokenType string) collectionModule.Tokens {
+// 	cmd := fmt.Sprintf("%s query collection tokens %s --token-type %s %s", f.LinkcliBinary, contractID, tokenType, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var tokens collectionModule.Tokens
+// 	err := cdc.UnmarshalJSON([]byte(res), &tokens)
+// 	require.NoError(f.T, err)
+// 	return tokens
+// }
 
-func (f *Fixtures) QueryTokenTypeCollection(contractID, tokenTypeID string, flags ...string) collectionModule.TokenType {
-	cmd := fmt.Sprintf("%s query collection tokentype %s %s %s", f.LinkcliBinary, contractID, tokenTypeID, f.Flags())
-	cmd = addFlags(cmd, flags)
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var tokenType collectionModule.TokenType
-	err := cdc.UnmarshalJSON([]byte(res), &tokenType)
-	require.NoError(f.T, err)
-	return tokenType
-}
+// func (f *Fixtures) QueryTokenTypeCollection(contractID, tokenTypeID string, flags ...string) collectionModule.TokenType {
+// 	cmd := fmt.Sprintf("%s query collection tokentype %s %s %s", f.LinkcliBinary, contractID, tokenTypeID, f.Flags())
+// 	cmd = addFlags(cmd, flags)
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var tokenType collectionModule.TokenType
+// 	err := cdc.UnmarshalJSON([]byte(res), &tokenType)
+// 	require.NoError(f.T, err)
+// 	return tokenType
+// }
 
-func (f *Fixtures) QueryCollection(contractID string, flags ...string) collectionModule.Collection {
-	cmd := fmt.Sprintf("%s query collection collection %s %s", f.LinkcliBinary, contractID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var collection collectionModule.Collection
-	err := cdc.UnmarshalJSON([]byte(res), &collection)
-	require.NoError(f.T, err)
+// func (f *Fixtures) QueryCollection(contractID string, flags ...string) collectionModule.Collection {
+// 	cmd := fmt.Sprintf("%s query collection collection %s %s", f.LinkcliBinary, contractID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var collection collectionModule.Collection
+// 	err := cdc.UnmarshalJSON([]byte(res), &collection)
+// 	require.NoError(f.T, err)
 
-	return collection
-}
+// 	return collection
+// }
 
-func (f *Fixtures) QueryTotalSupplyTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query collection total supply %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// func (f *Fixtures) QueryTotalSupplyTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query collection total supply %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
-func (f *Fixtures) QueryTotalMintTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query collection total mint %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// 	return supply
+// }
+// func (f *Fixtures) QueryTotalMintTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query collection total mint %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
-func (f *Fixtures) QueryTotalBurnTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query collection total burn %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// 	return supply
+// }
+// func (f *Fixtures) QueryTotalBurnTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query collection total burn %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
-func (f *Fixtures) QueryCountTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
-	cmd := fmt.Sprintf("%s query collection count total %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var supply sdk.Int
-	err := cdc.UnmarshalJSON([]byte(res), &supply)
-	require.NoError(f.T, err)
+// 	return supply
+// }
+// func (f *Fixtures) QueryCountTokenCollection(contractID, tokenID string, flags ...string) sdk.Int {
+// 	cmd := fmt.Sprintf("%s query collection count total %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var supply sdk.Int
+// 	err := cdc.UnmarshalJSON([]byte(res), &supply)
+// 	require.NoError(f.T, err)
 
-	return supply
-}
+// 	return supply
+// }
 
-func (f *Fixtures) QueryAccountPermissionCollection(addr sdk.AccAddress, contractID string, flags ...string) collectionModule.Permissions {
-	cmd := fmt.Sprintf("%s query collection perm %s %s %s", f.LinkcliBinary, addr, contractID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var pms collectionModule.Permissions
-	err := cdc.UnmarshalJSON([]byte(res), &pms)
-	require.NoError(f.T, err)
-	return pms
-}
+// func (f *Fixtures) QueryAccountPermissionCollection(addr sdk.AccAddress, contractID string, flags ...string) collectionModule.Permissions {
+// 	cmd := fmt.Sprintf("%s query collection perm %s %s %s", f.LinkcliBinary, addr, contractID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var pms collectionModule.Permissions
+// 	err := cdc.UnmarshalJSON([]byte(res), &pms)
+// 	require.NoError(f.T, err)
+// 	return pms
+// }
 
-func (f *Fixtures) QueryRootTokenCollection(contractID string, tokenID string, flags ...string) collectionModule.Token {
-	cmd := fmt.Sprintf("%s query collection root %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var root collectionModule.Token
-	err := cdc.UnmarshalJSON([]byte(res), &root)
-	require.NoError(f.T, err)
-	return root
-}
+// func (f *Fixtures) QueryRootTokenCollection(contractID string, tokenID string, flags ...string) collectionModule.Token {
+// 	cmd := fmt.Sprintf("%s query collection root %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var root collectionModule.Token
+// 	err := cdc.UnmarshalJSON([]byte(res), &root)
+// 	require.NoError(f.T, err)
+// 	return root
+// }
 
-func (f *Fixtures) QueryParentTokenCollection(contractID string, tokenID string, flags ...string) collectionModule.Token {
-	cmd := fmt.Sprintf("%s query collection parent %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var parent collectionModule.Token
-	err := cdc.UnmarshalJSON([]byte(res), &parent)
-	require.NoError(f.T, err)
-	return parent
-}
+// func (f *Fixtures) QueryParentTokenCollection(contractID string, tokenID string, flags ...string) collectionModule.Token {
+// 	cmd := fmt.Sprintf("%s query collection parent %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var parent collectionModule.Token
+// 	err := cdc.UnmarshalJSON([]byte(res), &parent)
+// 	require.NoError(f.T, err)
+// 	return parent
+// }
 
-func (f *Fixtures) QueryChildrenTokenCollection(contractID string, tokenID string, flags ...string) []collectionModule.Token {
-	cmd := fmt.Sprintf("%s query collection children %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var children []collectionModule.Token
-	err := cdc.UnmarshalJSON([]byte(res), &children)
-	require.NoError(f.T, err)
-	return children
-}
+// func (f *Fixtures) QueryChildrenTokenCollection(contractID string, tokenID string, flags ...string) []collectionModule.Token {
+// 	cmd := fmt.Sprintf("%s query collection children %s %s %s", f.LinkcliBinary, contractID, tokenID, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var children []collectionModule.Token
+// 	err := cdc.UnmarshalJSON([]byte(res), &children)
+// 	require.NoError(f.T, err)
+// 	return children
+// }
 
-func (f *Fixtures) QueryApproversTokenCollection(contractID string, proxy sdk.AccAddress) []sdk.AccAddress {
-	cmd := fmt.Sprintf("%s query collection approvers %s %s %s", f.LinkcliBinary, contractID, proxy, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var approvers []sdk.AccAddress
-	err := cdc.UnmarshalJSON([]byte(res), &approvers)
-	require.NoError(f.T, err)
-	return approvers
-}
+// func (f *Fixtures) QueryApproversTokenCollection(contractID string, proxy sdk.AccAddress) []sdk.AccAddress {
+// 	cmd := fmt.Sprintf("%s query collection approvers %s %s %s", f.LinkcliBinary, contractID, proxy, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var approvers []sdk.AccAddress
+// 	err := cdc.UnmarshalJSON([]byte(res), &approvers)
+// 	require.NoError(f.T, err)
+// 	return approvers
+// }
 
-func (f *Fixtures) QueryApprovedTokenCollection(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) bool {
-	cmd := fmt.Sprintf("%s query collection approved %s %s %s %s", f.LinkcliBinary, contractID, proxy, approver, f.Flags())
-	res, errStr := tests.ExecuteT(f.T, cmd, "")
-	require.Empty(f.T, errStr)
-	cdc := app.MakeCodec()
-	var isApproved bool
-	err := cdc.UnmarshalJSON([]byte(res), &isApproved)
-	require.NoError(f.T, err)
-	return isApproved
-}
+// func (f *Fixtures) QueryApprovedTokenCollection(contractID string, proxy sdk.AccAddress, approver sdk.AccAddress) bool {
+// 	cmd := fmt.Sprintf("%s query collection approved %s %s %s %s", f.LinkcliBinary, contractID, proxy, approver, f.Flags())
+// 	res, errStr := tests.ExecuteT(f.T, cmd, "")
+// 	require.Empty(f.T, errStr)
+// 	cdc := app.MakeCodec()
+// 	var isApproved bool
+// 	err := cdc.UnmarshalJSON([]byte(res), &isApproved)
+// 	require.NoError(f.T, err)
+// 	return isApproved
+// }
 
 // ___________________________________________________________________________________
 // wasm
