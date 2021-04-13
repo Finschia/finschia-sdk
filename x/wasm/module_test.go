@@ -178,7 +178,7 @@ func TestHandleStoreCodeAndInstantiate(t *testing.T) {
 
 	// unmarshal data
 	var codeAndContractID types.CodeAndContractID
-	marshalErr := types.ModuleCdc.UnmarshalJSON(res.Data, &codeAndContractID)
+	marshalErr := types.ModuleCdc.UnmarshalBinaryLengthPrefixed(res.Data, &codeAndContractID)
 	require.NoError(t, marshalErr)
 
 	// create part

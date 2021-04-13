@@ -3,7 +3,6 @@ package wasm
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
@@ -97,11 +96,6 @@ func handleInstantiate(ctx sdk.Context, k Keeper, msg *MsgInstantiateContract) (
 }
 
 func handleStoreCodeAndInstantiate(ctx sdk.Context, k Keeper, msg *MsgStoreCodeAndInstantiateContract) (*sdk.Result, error) {
-	err := msg.ValidateBasic()
-	if err != nil {
-		return nil, err
-	}
-
 	codeID, err := k.Create(ctx, msg.Sender, msg.WASMByteCode, msg.Source, msg.Builder, msg.InstantiatePermission)
 	if err != nil {
 		return nil, err
@@ -126,7 +120,7 @@ func handleStoreCodeAndInstantiate(ctx sdk.Context, k Keeper, msg *MsgStoreCodeA
 		ContractAddress: contractAddr,
 	}
 
-	bz, err := codec.MarshalJSONIndent(types.ModuleCdc, data)
+	bz, err := types.ModuleCdc.MarshalBinaryLengthPrefixed(data)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
