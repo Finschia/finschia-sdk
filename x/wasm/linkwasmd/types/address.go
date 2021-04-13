@@ -1,5 +1,9 @@
 package types
 
+import (
+	sdk "github.com/line/lbm-sdk/v2/types"
+)
+
 const (
 	Bech32MainPrefix    = "link"
 	Bech32TestnetPrefix = "tlink"
@@ -9,29 +13,30 @@ const (
 	FullFundraiserPath = "44'/438'/0'/0/0"
 )
 
-func Bech32PrefixAcc(testnet bool) string {
+func Bech32PrefixAcc(testnet bool) (prefix string) {
+	prefix = Bech32MainPrefix
 	if testnet {
-		return Bech32TestnetPrefix
+		prefix = Bech32TestnetPrefix
 	}
-	return Bech32MainPrefix
+	return
 }
 
 func Bech32PrefixAccPub(testnet bool) string {
-	return Bech32PrefixAcc(testnet) + PrefixPublic
+	return Bech32PrefixAcc(testnet) + sdk.PrefixPublic
 }
 
 func Bech32PrefixValAddr(testnet bool) string {
-	return Bech32PrefixAcc(testnet) + PrefixValidator + PrefixOperator
+	return Bech32PrefixAcc(testnet) + sdk.PrefixValidator + sdk.PrefixOperator
 }
 
 func Bech32PrefixValPub(testnet bool) string {
-	return Bech32PrefixAcc(testnet) + PrefixValidator + PrefixOperator + PrefixPublic
+	return Bech32PrefixAcc(testnet) + sdk.PrefixValidator + sdk.PrefixOperator + sdk.PrefixPublic
 }
 
 func Bech32PrefixConsAddr(testnet bool) string {
-	return Bech32PrefixAcc(testnet) + PrefixValidator + PrefixConsensus
+	return Bech32PrefixAcc(testnet) + sdk.PrefixValidator + sdk.PrefixConsensus
 }
 
 func Bech32PrefixConsPub(testnet bool) string {
-	return Bech32PrefixAcc(testnet) + PrefixValidator + PrefixConsensus + PrefixPublic
+	return Bech32PrefixAcc(testnet) + sdk.PrefixValidator + sdk.PrefixConsensus + sdk.PrefixPublic
 }

@@ -10,29 +10,29 @@ import (
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/require"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	osttypes "github.com/line/ostracon/types"
-	dbm "github.com/tendermint/tm-db"
+	"github.com/line/tm-db/v2/memdb"
+	"github.com/stretchr/testify/require"
 
-	bam "github.com/cosmos/cosmos-sdk/baseapp"
-	"github.com/cosmos/cosmos-sdk/client"
+	bam "github.com/line/lbm-sdk/v2/baseapp"
+	"github.com/line/lbm-sdk/v2/client"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/keys/ed25519"
+	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/cosmos/cosmos-sdk/simapp/helpers"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/errors"
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/v2/simapp/helpers"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/errors"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
+	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 // DefaultConsensusParams defines the default Tendermint consensus params used in
-// WasmApp testing.
+// LinkApp testing.
 var DefaultConsensusParams = &abci.ConsensusParams{
 	Block: &abci.BlockParams{
 		MaxBytes: 200000,
@@ -50,17 +50,17 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 	},
 }
 
-func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*WasmApp, GenesisState) {
-	db := dbm.NewMemDB()
-	app := NewWasmApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, wasm.EnableAllProposals, EmptyBaseAppOptions{}, opts)
+func setup(withGenesis bool, invCheckPeriod uint, opts ...wasm.Option) (*LinkApp, GenesisState) {
+	db := memdb.NewDB()
+	app := NewLinkApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, DefaultNodeHome, invCheckPeriod, MakeEncodingConfig(), wasm.EnableAllProposals, EmptyBaseAppOptions{}, opts)
 	if withGenesis {
 		return app, NewDefaultGenesisState()
 	}
 	return app, GenesisState{}
 }
 
-// Setup initializes a new WasmApp. A Nop logger is set in WasmApp.
-func Setup(isCheckTx bool) *WasmApp {
+// Setup initializes a new LinkApp. A Nop logger is set in LinkApp.
+func Setup(isCheckTx bool) *LinkApp {
 	app, genesisState := setup(!isCheckTx, 5)
 	if !isCheckTx {
 		// init chain must be called to stop deliverState from being nil
@@ -82,11 +82,11 @@ func Setup(isCheckTx bool) *WasmApp {
 	return app
 }
 
-// SetupWithGenesisValSet initializes a new WasmApp with a validator set and genesis accounts
+// SetupWithGenesisValSet initializes a new LinkApp with a validator set and genesis accounts
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
-// of one consensus engine unit (10^6) in the default token of the WasmApp from first genesis
-// account. A Nop logger is set in WasmApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *osttypes.ValidatorSet, genAccs []authtypes.GenesisAccount, opts []wasm.Option, balances ...banktypes.Balance) *WasmApp {
+// of one consensus engine unit (10^6) in the default token of the LinkApp from first genesis
+// account. A Nop logger is set in LinkApp.
+func SetupWithGenesisValSet(t *testing.T, valSet *osttypes.ValidatorSet, genAccs []authtypes.GenesisAccount, opts []wasm.Option, balances ...banktypes.Balance) *LinkApp {
 	app, genesisState := setup(true, 5, opts...)
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
@@ -158,9 +158,9 @@ func SetupWithGenesisValSet(t *testing.T, valSet *osttypes.ValidatorSet, genAccs
 	return app
 }
 
-// SetupWithGenesisAccounts initializes a new WasmApp with the provided genesis
+// SetupWithGenesisAccounts initializes a new LinkApp with the provided genesis
 // accounts and possible balances.
-func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *WasmApp {
+func SetupWithGenesisAccounts(genAccs []authtypes.GenesisAccount, balances ...banktypes.Balance) *LinkApp {
 	app, genesisState := setup(true, 0)
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)
 	genesisState[authtypes.ModuleName] = app.appCodec.MustMarshalJSON(authGenesis)
@@ -227,9 +227,9 @@ func createIncrementalAccounts(accNum int) []sdk.AccAddress {
 	return addresses
 }
 
-// AddTestAddrsFromPubKeys adds the addresses into the WasmApp providing only the public keys.
-func AddTestAddrsFromPubKeys(app *WasmApp, ctx sdk.Context, pubKeys []cryptotypes.PubKey, accAmt sdk.Int) {
-	initCoins := sdk.NewCoins(sdk.NewCoin(app.stakingKeeper.BondDenom(ctx), accAmt))
+// AddTestAddrsFromPubKeys adds the addresses into the LinkApp providing only the public keys.
+func AddTestAddrsFromPubKeys(app *LinkApp, ctx sdk.Context, pubKeys []cryptotypes.PubKey, accAmt sdk.Int) {
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt))
 
 	setTotalSupply(app, ctx, accAmt, len(pubKeys))
 
@@ -240,28 +240,28 @@ func AddTestAddrsFromPubKeys(app *WasmApp, ctx sdk.Context, pubKeys []cryptotype
 }
 
 // setTotalSupply provides the total supply based on accAmt * totalAccounts.
-func setTotalSupply(app *WasmApp, ctx sdk.Context, accAmt sdk.Int, totalAccounts int) {
-	totalSupply := sdk.NewCoins(sdk.NewCoin(app.stakingKeeper.BondDenom(ctx), accAmt.MulRaw(int64(totalAccounts))))
-	prevSupply := app.bankKeeper.GetSupply(ctx)
-	app.bankKeeper.SetSupply(ctx, banktypes.NewSupply(prevSupply.GetTotal().Add(totalSupply...)))
+func setTotalSupply(app *LinkApp, ctx sdk.Context, accAmt sdk.Int, totalAccounts int) {
+	totalSupply := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt.MulRaw(int64(totalAccounts))))
+	prevSupply := app.BankKeeper.GetSupply(ctx)
+	app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(prevSupply.GetTotal().Add(totalSupply...)))
 }
 
 // AddTestAddrs constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
-func AddTestAddrs(app *WasmApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
+func AddTestAddrs(app *LinkApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
 	return addTestAddrs(app, ctx, accNum, accAmt, createRandomAccounts)
 }
 
 // AddTestAddrs constructs and returns accNum amount of accounts with an
 // initial balance of accAmt in random order
-func AddTestAddrsIncremental(app *WasmApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
+func AddTestAddrsIncremental(app *LinkApp, ctx sdk.Context, accNum int, accAmt sdk.Int) []sdk.AccAddress {
 	return addTestAddrs(app, ctx, accNum, accAmt, createIncrementalAccounts)
 }
 
-func addTestAddrs(app *WasmApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
+func addTestAddrs(app *LinkApp, ctx sdk.Context, accNum int, accAmt sdk.Int, strategy GenerateAccountStrategy) []sdk.AccAddress {
 	testAddrs := strategy(accNum)
 
-	initCoins := sdk.NewCoins(sdk.NewCoin(app.stakingKeeper.BondDenom(ctx), accAmt))
+	initCoins := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt))
 	setTotalSupply(app, ctx, accAmt, accNum)
 
 	// fill all the addresses with some coins, set the loose pool tokens simultaneously
@@ -272,11 +272,11 @@ func addTestAddrs(app *WasmApp, ctx sdk.Context, accNum int, accAmt sdk.Int, str
 	return testAddrs
 }
 
-// saveAccount saves the provided account into the WasmApp with balance based on initCoins.
-func saveAccount(app *WasmApp, ctx sdk.Context, addr sdk.AccAddress, initCoins sdk.Coins) {
-	acc := app.accountKeeper.NewAccountWithAddress(ctx, addr)
-	app.accountKeeper.SetAccount(ctx, acc)
-	err := app.bankKeeper.AddCoins(ctx, addr, initCoins)
+// saveAccount saves the provided account into the LinkApp with balance based on initCoins.
+func saveAccount(app *LinkApp, ctx sdk.Context, addr sdk.AccAddress, initCoins sdk.Coins) {
+	acc := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
+	app.AccountKeeper.SetAccount(ctx, acc)
+	err := app.BankKeeper.AddCoins(ctx, addr, initCoins)
 	if err != nil {
 		panic(err)
 	}
@@ -315,9 +315,9 @@ func TestAddr(addr string, bech string) (sdk.AccAddress, error) {
 }
 
 // CheckBalance checks the balance of an account.
-func CheckBalance(t *testing.T, app *WasmApp, addr sdk.AccAddress, balances sdk.Coins) {
+func CheckBalance(t *testing.T, app *LinkApp, addr sdk.AccAddress, balances sdk.Coins) {
 	ctxCheck := app.BaseApp.NewContext(true, tmproto.Header{})
-	require.True(t, balances.IsEqual(app.bankKeeper.GetAllBalances(ctxCheck, addr)))
+	require.True(t, balances.IsEqual(app.BankKeeper.GetAllBalances(ctxCheck, addr)))
 }
 
 const DefaultGas = 1200000

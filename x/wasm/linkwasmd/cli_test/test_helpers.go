@@ -35,7 +35,7 @@ import (
 	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/app"
 
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/cosmos/cosmos-sdk/crypto/keys"
+	"github.com/cosmos/cosmos-sdk/crypto/keyring"
 	"github.com/cosmos/cosmos-sdk/simapp"
 	"github.com/cosmos/cosmos-sdk/tests"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -427,10 +427,10 @@ func (f *Fixtures) KeysAddRecoverHDPath(name, mnemonic string, account uint32, i
 }
 
 // KeysShow is linkcli keys show
-func (f *Fixtures) KeysShow(name string, flags ...string) keys.KeyOutput {
+func (f *Fixtures) KeysShow(name string, flags ...string) keyring.KeyOutput {
 	cmd := fmt.Sprintf("%s keys show --keyring-backend=test --home=%s %s", f.LinkcliBinary, f.LinkcliHome, name)
 	out, _ := tests.ExecuteT(f.T, addFlags(cmd, flags), "")
-	var ko keys.KeyOutput
+	var ko keyring.KeyOutput
 	err := clientkeys.UnmarshalJSON([]byte(out), &ko)
 	require.NoError(f.T, err)
 	return ko

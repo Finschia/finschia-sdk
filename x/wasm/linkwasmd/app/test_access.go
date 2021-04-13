@@ -3,26 +3,26 @@ package app
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm"
-	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/line/lbm-sdk/v2/codec"
 	bankkeeper "github.com/line/lbm-sdk/v2/x/bank/keeper"
 	capabilitykeeper "github.com/line/lbm-sdk/v2/x/capability/keeper"
 	ibctransferkeeper "github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/keeper"
 	ibckeeper "github.com/line/lbm-sdk/v2/x/ibc/core/keeper"
-	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
+	"github.com/line/lbm-sdk/v2/x/wasm"
 )
 
 type TestSupport struct {
 	t   *testing.T
-	app *WasmApp
+	app *LinkApp
 }
 
-func NewTestSupport(t *testing.T, app *WasmApp) *TestSupport {
+func NewTestSupport(t *testing.T, app *LinkApp) *TestSupport {
 	return &TestSupport{t: t, app: app}
 }
 
 func (s TestSupport) IBCKeeper() ibckeeper.Keeper {
-	return *s.app.ibcKeeper
+	return *s.app.IBCKeeper
 }
 
 func (s TestSupport) WasmKeeper() wasm.Keeper {
@@ -33,25 +33,25 @@ func (s TestSupport) AppCodec() codec.Marshaler {
 	return s.app.appCodec
 }
 func (s TestSupport) ScopedWasmIBCKeeper() capabilitykeeper.ScopedKeeper {
-	return s.app.scopedWasmKeeper
+	return s.app.ScopedWasmKeeper
 }
 
 func (s TestSupport) ScopeIBCKeeper() capabilitykeeper.ScopedKeeper {
-	return s.app.scopedIBCKeeper
+	return s.app.ScopedIBCKeeper
 }
 
 func (s TestSupport) ScopedTransferKeeper() capabilitykeeper.ScopedKeeper {
-	return s.app.scopedTransferKeeper
+	return s.app.ScopedTransferKeeper
 }
 
 func (s TestSupport) StakingKeeper() stakingkeeper.Keeper {
-	return s.app.stakingKeeper
+	return s.app.StakingKeeper
 }
 
 func (s TestSupport) BankKeeper() bankkeeper.Keeper {
-	return s.app.bankKeeper
+	return s.app.BankKeeper
 }
 
 func (s TestSupport) TransferKeeper() ibctransferkeeper.Keeper {
-	return s.app.transferKeeper
+	return s.app.TransferKeeper
 }
