@@ -20,6 +20,7 @@ import (
 	"github.com/line/lbm-sdk/x/auth"
 	"github.com/line/lbm-sdk/x/auth/vesting"
 	"github.com/line/lbm-sdk/x/authz"
+	"github.com/line/lbm-sdk/x/bank"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/capability"
 	"github.com/line/lbm-sdk/x/consortium"
@@ -222,10 +223,9 @@ func TestInitGenesisOnMigration(t *testing.T) {
 
 	// Run migrations only for "mock" module. We exclude it from
 	// the VersionMap to simulate upgrading with a new module.
-	_, err := app.mm.RunMigrations(
-		app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}), app.configurator,
+	_, err := app.mm.RunMigrations(ctx, app.configurator,
 		module.VersionMap{
-			"bank":         1,
+			"bank":         bank.AppModule{}.ConsensusVersion(),
 			"auth":         auth.AppModule{}.ConsensusVersion(),
 			"authz":        authz.AppModule{}.ConsensusVersion(),
 			"staking":      staking.AppModule{}.ConsensusVersion(),
