@@ -107,7 +107,13 @@ func handleStoreCodeAndInstantiate(ctx sdk.Context, k Keeper, msg *MsgStoreCodeA
 	}
 
 	events := filterMessageEvents(ctx.EventManager())
-	ourEvent := sdk.NewEvent(
+	storeEvent := sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, ModuleName),
+		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender.String()),
+		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
+	)
+	instantiateEvent := sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender.String()),
@@ -127,7 +133,7 @@ func handleStoreCodeAndInstantiate(ctx sdk.Context, k Keeper, msg *MsgStoreCodeA
 
 	return &sdk.Result{
 		Data:   bz,
-		Events: append(events, ourEvent),
+		Events: append(events, storeEvent, instantiateEvent),
 	}, nil
 }
 

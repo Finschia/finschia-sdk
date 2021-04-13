@@ -189,12 +189,16 @@ func TestHandleStoreCodeAndInstantiate(t *testing.T) {
 	// instantiate part
 	contractAddr := codeAndContractID.ContractAddress
 	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", contractAddr.String())
-	// this should be standard x/wasm init event, nothing from contract
-	require.Equal(t, 2, len(res.Events), prettyEvents(res.Events))
+	// this should be standard x/wasm store/init event, nothing from contract
+	require.Equal(t, 3, len(res.Events), prettyEvents(res.Events))
 	assert.Equal(t, "wasm", res.Events[0].Type)
 	assertAttribute(t, "contract_address", contractAddr.String(), res.Events[0].Attributes[0])
 	assert.Equal(t, "message", res.Events[1].Type)
 	assertAttribute(t, "module", "wasm", res.Events[1].Attributes[0])
+	assertAttribute(t, "code_id", "1", res.Events[1].Attributes[2])
+	assertAttribute(t, "module", "wasm", res.Events[2].Attributes[0])
+	assertAttribute(t, "code_id", "1", res.Events[2].Attributes[2])
+	assertAttribute(t, "contract_address", "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", res.Events[2].Attributes[3])
 
 	assertCodeList(t, q, data.ctx, 1)
 	assertCodeBytes(t, q, data.ctx, 1, testContract)
