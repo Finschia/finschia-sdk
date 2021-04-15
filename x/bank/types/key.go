@@ -47,12 +47,11 @@ func AddressFromBalancesStore(key []byte) (sdk.AccAddress, error) {
 		return "", ErrInvalidKey
 	}
 	addrLen := key[0]
-	if len(key[1:]) < int(addrLen) {
+	bound := int(addrLen)
+	if len(key)-1 < bound {
 		return "", ErrInvalidKey
 	}
-	addr := key[1 : addrLen+1]
-
-	return sdk.AccAddress(addr), nil
+	return sdk.AccAddress(key[1 : bound+1]), nil
 }
 
 // CreateAccountBalancesPrefix creates the prefix for an account's balances.
