@@ -375,6 +375,33 @@ func New(t *testing.T, cfg Config) *Network {
 	return network
 }
 
+// New creates a new Network for integration tests without init.
+func NewWithoutInit(t *testing.T, cfg Config, baseDir string, validators []*Validator) *Network {
+	// only one caller/test can create and use a network at a time
+	t.Log("acquiring test network lock")
+	lock.Lock()
+
+	network := &Network{
+		T:          t,
+		BaseDir:    baseDir,
+		Validators: validators,
+		Config:     cfg,
+	}
+
+	t.Log("starting test network...")
+	for _, v := range network.Validators {
+		require.NoError(t, startInProcess(cfg, v))
+	}
+
+	t.Log("started test network")
+
+	// Ensure we cleanup incase any test was abruptly halted (e.g. SIGINT) as any
+	// defer in a test would not be called.
+	server.TrapSignal(network.Cleanup)
+
+	return network
+}
+
 // LatestHeight returns the latest height of the network or an error if the
 // query fails or no validators exist.
 func (n *Network) LatestHeight() (int64, error) {
