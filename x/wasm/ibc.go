@@ -1,7 +1,8 @@
 package wasm
 
 import (
-	wasmTypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"math"
+
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
@@ -9,7 +10,7 @@ import (
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	porttypes "github.com/line/lbm-sdk/v2/x/ibc/core/05-port/types"
 	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"math"
+	wasmTypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 var _ porttypes.IBCModule = IBCHandler{}

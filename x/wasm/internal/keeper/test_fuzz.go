@@ -3,9 +3,9 @@ package keeper
 import (
 	"encoding/json"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
 	fuzz "github.com/google/gofuzz"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	tmBytes "github.com/line/ostracon/libs/bytes"
 )
 

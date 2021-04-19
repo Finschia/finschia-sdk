@@ -3,11 +3,11 @@ package rest
 import (
 	"net/http"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/gorilla/mux"
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/tx"
 	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/gorilla/mux"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 func registerNewTxRoutes(cliCtx client.Context, r *mux.Router) {

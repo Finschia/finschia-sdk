@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/crypto/keyring"
@@ -19,9 +18,10 @@ import (
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
 	"github.com/line/lbm-sdk/v2/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/v2/x/genutil/types"
-	"github.com/spf13/cobra"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/ostracon/crypto"
 	osttypes "github.com/line/ostracon/types"
+	"github.com/spf13/cobra"
 )
 
 // GenesisStoreCodeCmd cli command to add a `MsgStoreCode` to the wasm section of the genesis
@@ -198,7 +198,7 @@ func GenesisListCodesCmd(defaultNodeHome string) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return printJsonOutput(cmd, all)
+			return printJSONOutput(cmd, all)
 
 		},
 	}
@@ -221,7 +221,7 @@ func GenesisListContractsCmd(defaultNodeHome string) *cobra.Command {
 			}
 			state := g.wasmModuleState
 			all := getAllContracts(state)
-			return printJsonOutput(cmd, all)
+			return printJSONOutput(cmd, all)
 		},
 	}
 	cmd.Flags().String(flags.FlagHome, defaultNodeHome, "The application home directory")
@@ -230,7 +230,7 @@ func GenesisListContractsCmd(defaultNodeHome string) *cobra.Command {
 }
 
 // clientCtx marshaller works only with proto or bytes so we marshal the output ourself
-func printJsonOutput(cmd *cobra.Command, obj interface{}) error {
+func printJSONOutput(cmd *cobra.Command, obj interface{}) error {
 	clientCtx := client.GetClientContextFromCmd(cmd)
 	bz, err := json.MarshalIndent(obj, "", " ")
 	if err != nil {
@@ -245,7 +245,7 @@ type codeMeta struct {
 }
 
 func getAllCodes(state *types.GenesisState) ([]codeMeta, error) {
-	var all []codeMeta
+	all := make([]codeMeta, 0, len(state.Codes))
 	for _, c := range state.Codes {
 		all = append(all, codeMeta{
 			CodeID: c.CodeID,
@@ -290,7 +290,7 @@ type contractMeta struct {
 }
 
 func getAllContracts(state *types.GenesisState) []contractMeta {
-	var all []contractMeta
+	all := make([]contractMeta, 0, len(state.Contracts))
 	for _, c := range state.Contracts {
 		all = append(all, contractMeta{
 			ContractAddress: c.ContractAddress,

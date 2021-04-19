@@ -1,9 +1,9 @@
 package client
 
 import (
+	govclient "github.com/line/lbm-sdk/v2/x/gov/client"
 	"github.com/line/lbm-sdk/v2/x/wasm/client/cli"
 	"github.com/line/lbm-sdk/v2/x/wasm/client/rest"
-	govclient "github.com/line/lbm-sdk/v2/x/gov/client"
 )
 
 // ProposalHandlers define the wasm cli proposal types and rest handler.

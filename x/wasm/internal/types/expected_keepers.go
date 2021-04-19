@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+
 	sdk "github.com/line/lbm-sdk/v2/types"
 	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
 	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"

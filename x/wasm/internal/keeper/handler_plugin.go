@@ -3,7 +3,7 @@ package keeper
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -15,6 +15,7 @@ import (
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 type DefaultMessageHandler struct {

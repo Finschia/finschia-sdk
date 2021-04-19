@@ -7,10 +7,9 @@ import (
 	tmdb "github.com/tendermint/tm-db"
 )
 
-
 // LegacyStore is an implementation to pass the store
 // to the wasmvm for tendermint/tm-db dependency.
-// line/tm-db/v2 has a modification to the Iterator interface, occured a type mismatch.
+// line/tm-db/v2 has a modification to the Iterator interface, occurred a type mismatch.
 // Do not use it for any purpose other than passing it to wasmvm in x/wasm.
 type LegacyStore struct {
 	Store
@@ -20,7 +19,7 @@ func NewLegacyStore(parent types.KVStore, prefix []byte) LegacyStore {
 	return LegacyStore{
 		Store{
 			parent: parent,
-			prefix: prefix,	
+			prefix: prefix,
 		},
 	}
 }
@@ -74,7 +73,6 @@ type legacyPrefixIterator struct {
 	prefixIterator
 }
 
-
 func newLegacyPrefixIterator(prefix, start, end []byte, parent types.Iterator) *legacyPrefixIterator {
 	return &legacyPrefixIterator{
 		prefixIterator{
@@ -82,11 +80,10 @@ func newLegacyPrefixIterator(prefix, start, end []byte, parent types.Iterator) *
 			start:  start,
 			end:    end,
 			iter:   parent,
-			valid:  parent.Valid() && bytes.HasPrefix(parent.Key(), prefix),	
+			valid:  parent.Valid() && bytes.HasPrefix(parent.Key(), prefix),
 		},
 	}
 }
-
 
 // Implements Iterator
 func (pi *legacyPrefixIterator) Close() {

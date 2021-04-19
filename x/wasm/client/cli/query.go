@@ -10,12 +10,12 @@ import (
 	"io/ioutil"
 	"strconv"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/gogo/protobuf/proto"
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/gogo/protobuf/proto"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 )
@@ -66,7 +66,7 @@ func GetCmdListCode() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.WithJSONMarshaler(&VanillaStdJsonMarshaller{}).PrintProto(res)
+			return clientCtx.WithJSONMarshaler(&VanillaStdJSONMarshaller{}).PrintProto(res)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)
@@ -107,7 +107,7 @@ func GetCmdListContractByCode() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.WithJSONMarshaler(&VanillaStdJsonMarshaller{}).PrintProto(res)
+			return clientCtx.WithJSONMarshaler(&VanillaStdJSONMarshaller{}).PrintProto(res)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)
@@ -148,7 +148,7 @@ func GetCmdQueryCode() *cobra.Command {
 			}
 
 			fmt.Printf("Downloading wasm code to %s\n", args[1])
-			return ioutil.WriteFile(args[1], res.Data, 0644)
+			return ioutil.WriteFile(args[1], res.Data, 0600)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)
@@ -183,7 +183,7 @@ func GetCmdGetContractInfo() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.WithJSONMarshaler(&VanillaStdJsonMarshaller{}).PrintProto(res)
+			return clientCtx.WithJSONMarshaler(&VanillaStdJSONMarshaller{}).PrintProto(res)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)
@@ -240,7 +240,7 @@ func GetCmdGetContractStateAll() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.WithJSONMarshaler(&VanillaStdJsonMarshaller{}).PrintProto(res)
+			return clientCtx.WithJSONMarshaler(&VanillaStdJSONMarshaller{}).PrintProto(res)
 		},
 	}
 	flags.AddQueryFlagsToCmd(cmd)
@@ -281,7 +281,7 @@ func GetCmdGetContractStateRaw() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.WithJSONMarshaler(&VanillaStdJsonMarshaller{}).PrintProto(res)
+			return clientCtx.WithJSONMarshaler(&VanillaStdJSONMarshaller{}).PrintProto(res)
 		},
 	}
 	decoder.RegisterFlags(cmd.PersistentFlags(), "key argument")
@@ -329,7 +329,7 @@ func GetCmdGetContractStateSmart() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			return clientCtx.WithJSONMarshaler(&VanillaStdJsonMarshaller{}).PrintProto(res)
+			return clientCtx.WithJSONMarshaler(&VanillaStdJSONMarshaller{}).PrintProto(res)
 		},
 	}
 	decoder.RegisterFlags(cmd.PersistentFlags(), "query argument")
@@ -371,7 +371,7 @@ func GetCmdGetContractHistory() *cobra.Command {
 				return err
 			}
 
-			return clientCtx.WithJSONMarshaler(&VanillaStdJsonMarshaller{}).PrintProto(res)
+			return clientCtx.WithJSONMarshaler(&VanillaStdJSONMarshaller{}).PrintProto(res)
 		},
 	}
 
@@ -423,10 +423,10 @@ func asciiDecodeString(s string) ([]byte, error) {
 	return []byte(s), nil
 }
 
-type VanillaStdJsonMarshaller struct {
+type VanillaStdJSONMarshaller struct {
 }
 
-func (x VanillaStdJsonMarshaller) MarshalInterfaceJSON(i proto.Message) ([]byte, error) {
+func (x VanillaStdJSONMarshaller) MarshalInterfaceJSON(i proto.Message) ([]byte, error) {
 	any, err := codectypes.NewAnyWithValue(i)
 	if err != nil {
 		return nil, err
@@ -434,11 +434,11 @@ func (x VanillaStdJsonMarshaller) MarshalInterfaceJSON(i proto.Message) ([]byte,
 	return x.MarshalJSON(any)
 }
 
-func (x VanillaStdJsonMarshaller) MarshalJSON(o proto.Message) ([]byte, error) {
+func (x VanillaStdJSONMarshaller) MarshalJSON(o proto.Message) ([]byte, error) {
 	return json.MarshalIndent(o, "", " ")
 }
 
-func (x VanillaStdJsonMarshaller) MustMarshalJSON(o proto.Message) []byte {
+func (x VanillaStdJSONMarshaller) MustMarshalJSON(o proto.Message) []byte {
 	b, err := x.MarshalJSON(o)
 	if err != nil {
 		panic(err)
@@ -446,15 +446,15 @@ func (x VanillaStdJsonMarshaller) MustMarshalJSON(o proto.Message) []byte {
 	return b
 }
 
-func (x VanillaStdJsonMarshaller) UnmarshalInterfaceJSON(bz []byte, ptr interface{}) error {
+func (x VanillaStdJSONMarshaller) UnmarshalInterfaceJSON(bz []byte, ptr interface{}) error {
 	panic("not supported")
 }
 
-func (x VanillaStdJsonMarshaller) UnmarshalJSON(bz []byte, ptr proto.Message) error {
+func (x VanillaStdJSONMarshaller) UnmarshalJSON(bz []byte, ptr proto.Message) error {
 	panic("not supported")
 }
 
-func (x VanillaStdJsonMarshaller) MustUnmarshalJSON(bz []byte, ptr proto.Message) {
+func (x VanillaStdJSONMarshaller) MustUnmarshalJSON(bz []byte, ptr proto.Message) {
 	panic("not supported")
 }
 

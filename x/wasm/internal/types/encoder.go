@@ -17,6 +17,6 @@ type LinkMsgWrapper struct {
 }
 
 type LinkQueryWrapper struct {
-	Path    string `json:"path"`
-	Data    []byte `json:"data"`
+	Path string `json:"path"`
+	Data []byte `json:"data"`
 }

@@ -4,7 +4,9 @@ import (
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"io/ioutil"
+	"time"
+
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/codec"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
@@ -54,7 +56,7 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 	"github.com/line/lbm-sdk/v2/x/upgrade"
 	upgradeclient "github.com/line/lbm-sdk/v2/x/upgrade/client"
-	"github.com/stretchr/testify/require"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/ed25519"
 	"github.com/line/ostracon/libs/log"
@@ -62,8 +64,7 @@ import (
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/memdb"
-	"io/ioutil"
-	"time"
+	"github.com/stretchr/testify/require"
 )
 
 type TestingT interface {
@@ -588,6 +589,7 @@ func (m BurnerExampleInitMsg) GetBytes(t TestingT) []byte {
 	return initMsgBz
 }
 
+//nolint:deadcode,unused
 func createFakeFundedAccount(t TestingT, ctx sdk.Context, am authkeeper.AccountKeeper, bank bankkeeper.Keeper, coins sdk.Coins) sdk.AccAddress {
 	_, _, addr := keyPubAddr()
 	fundAccounts(t, ctx, am, bank, addr, coins)
@@ -604,6 +606,7 @@ var keyCounter uint64 = 0
 
 // we need to make this deterministic (same every test run), as encoded address size and thus gas cost,
 // depends on the actual bytes (due to ugly CanonicalAddress encoding)
+//nolint:unparam
 func keyPubAddr() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress) {
 	keyCounter++
 	seed := make([]byte, 8)

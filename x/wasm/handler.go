@@ -2,9 +2,10 @@ package wasm
 
 import (
 	"fmt"
+
+	"github.com/gogo/protobuf/proto"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	"github.com/gogo/protobuf/proto"
 	abci "github.com/line/ostracon/abci/types"
 
 	sdk "github.com/line/lbm-sdk/v2/types"

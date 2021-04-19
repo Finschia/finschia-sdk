@@ -4,10 +4,8 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	abci "github.com/line/ostracon/abci/types"
 	"path/filepath"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	wasmvm "github.com/CosmWasm/wasmvm"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	"github.com/line/lbm-sdk/v2/codec"
@@ -16,6 +14,8 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	authkeeper "github.com/line/lbm-sdk/v2/x/auth/keeper"
 	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/libs/log"
 )
@@ -552,10 +552,10 @@ func (k Keeper) appendToContractHistory(ctx sdk.Context, contractAddr sdk.AccAdd
 		pos = sdk.BigEndianToUint64(iter.Value())
 	}
 	// then store with incrementing position
-	for _, e := range newEntries {
+	for i := range newEntries {
 		pos++
 		key := types.GetContractCodeHistoryElementKey(contractAddr, pos)
-		store.Set(key, k.cdc.MustMarshalBinaryBare(&e))
+		store.Set(key, k.cdc.MustMarshalBinaryBare(&newEntries[i]))
 	}
 }
 
@@ -858,7 +858,7 @@ func (k Keeper) dispatchSubmessages(ctx sdk.Context, contractAddr sdk.AccAddress
 			}
 			result = wasmvmtypes.SubcallResult{
 				Ok: &wasmvmtypes.SubcallResponse{
-					Events: sdkEventsToWasmVmEvents(events),
+					Events: sdkEventsToWasmVMEvents(events),
 					Data:   responseData,
 				},
 			}
@@ -884,18 +884,18 @@ func (k Keeper) dispatchSubmessages(ctx sdk.Context, contractAddr sdk.AccAddress
 	return nil
 }
 
-func sdkEventsToWasmVmEvents(events []sdk.Event) []wasmvmtypes.Event {
+func sdkEventsToWasmVMEvents(events []sdk.Event) []wasmvmtypes.Event {
 	res := make([]wasmvmtypes.Event, len(events))
 	for i, ev := range events {
 		res[i] = wasmvmtypes.Event{
 			Type:       ev.Type,
-			Attributes: sdkAttributesToWasmVmAttributes(ev.Attributes),
+			Attributes: sdkAttributesToWasmVMAttributes(ev.Attributes),
 		}
 	}
 	return res
 }
 
-func sdkAttributesToWasmVmAttributes(attrs []abci.EventAttribute) []wasmvmtypes.EventAttribute {
+func sdkAttributesToWasmVMAttributes(attrs []abci.EventAttribute) []wasmvmtypes.EventAttribute {
 	res := make([]wasmvmtypes.EventAttribute, len(attrs))
 	for i, attr := range attrs {
 		res[i] = wasmvmtypes.EventAttribute{

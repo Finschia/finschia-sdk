@@ -6,13 +6,13 @@ import (
 	"io/ioutil"
 	"strconv"
 
-	wasmUtils "github.com/line/lbm-sdk/v2/x/wasm/client/utils"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/client/tx"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	wasmUtils "github.com/line/lbm-sdk/v2/x/wasm/client/utils"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 )
@@ -57,6 +57,9 @@ func StoreCodeCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 			msg, err := parseStoreCodeArgs(args[0], clientCtx.GetFromAddress(), cmd.Flags())
 			if err != nil {
 				return err
@@ -150,7 +153,9 @@ func InstantiateContractCmd() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			clientCtx, err := client.GetClientTxContext(cmd)
-
+			if err != nil {
+				return err
+			}
 			msg, err := parseInstantiateArgs(args[0], args[1], clientCtx.GetFromAddress(), cmd.Flags())
 			if err != nil {
 				return err
@@ -216,6 +221,9 @@ func ExecuteContractCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			msg, err := parseExecuteArgs(args[0], args[1], clientCtx.GetFromAddress(), cmd.Flags())
 			if err != nil {

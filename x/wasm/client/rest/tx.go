@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
-	wasmUtils "github.com/line/lbm-sdk/v2/x/wasm/client/utils"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/gorilla/mux"
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/tx"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/gorilla/mux"
+	wasmUtils "github.com/line/lbm-sdk/v2/x/wasm/client/utils"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 func registerTxRoutes(cliCtx client.Context, r *mux.Router) {
@@ -87,7 +87,7 @@ func instantiateContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 			return
 		}
 		vars := mux.Vars(r)
-		codeId := vars["codeId"]
+		codeIDVar := vars["codeId"]
 
 		req.BaseReq = req.BaseReq.Sanitize()
 		if !req.BaseReq.ValidateBasic(w) {
@@ -95,7 +95,7 @@ func instantiateContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		// get the id of the code to instantiate
-		codeID, err := strconv.ParseUint(codeId, 10, 64)
+		codeID, err := strconv.ParseUint(codeIDVar, 10, 64)
 		if err != nil {
 			return
 		}

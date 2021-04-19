@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	abci "github.com/line/ostracon/abci/types"
 )
 
@@ -41,12 +41,14 @@ func NewLegacyQuerier(keeper *Keeper) sdk.Querier {
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 			}
+			//nolint:staticcheck
 			rsp, err = queryContractInfo(ctx, addr, *keeper)
 		case QueryListContractByCode:
 			codeID, err := strconv.ParseUint(path[1], 10, 64)
 			if err != nil {
 				return nil, sdkerrors.Wrapf(types.ErrInvalid, "code id: %s", err.Error())
 			}
+			//nolint:staticcheck
 			rsp, err = queryContractListByCode(ctx, codeID, *keeper)
 		case QueryGetContractState:
 			if len(path) < 3 {
@@ -58,14 +60,17 @@ func NewLegacyQuerier(keeper *Keeper) sdk.Querier {
 			if err != nil {
 				return nil, sdkerrors.Wrapf(types.ErrInvalid, "code id: %s", err.Error())
 			}
+			//nolint:staticcheck
 			rsp, err = queryCode(ctx, codeID, keeper)
 		case QueryListCode:
+			//nolint:staticcheck
 			rsp, err = queryCodeList(ctx, *keeper)
 		case QueryContractHistory:
 			contractAddr, err := sdk.AccAddressFromBech32(path[1])
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 			}
+			//nolint:staticcheck
 			rsp, err = queryContractHistory(ctx, contractAddr, *keeper)
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown data query endpoint")
@@ -121,6 +126,7 @@ func queryContractState(ctx sdk.Context, bech, queryMethod string, data []byte, 
 	return bz, nil
 }
 
+//nolint:unparam
 func queryCodeList(ctx sdk.Context, keeper Keeper) ([]types.CodeInfoResponse, error) {
 	var info []types.CodeInfoResponse
 	keeper.IterateCodeInfos(ctx, func(i uint64, res types.CodeInfo) bool {
@@ -136,6 +142,7 @@ func queryCodeList(ctx sdk.Context, keeper Keeper) ([]types.CodeInfoResponse, er
 	return info, nil
 }
 
+//nolint:unparam
 func queryContractHistory(ctx sdk.Context, contractAddr sdk.AccAddress, keeper Keeper) ([]types.ContractCodeHistoryEntry, error) {
 	history := keeper.GetContractHistory(ctx, contractAddr)
 	// redact response
@@ -145,6 +152,7 @@ func queryContractHistory(ctx sdk.Context, contractAddr sdk.AccAddress, keeper K
 	return history, nil
 }
 
+//nolint:unparam
 func queryContractListByCode(ctx sdk.Context, codeID uint64, keeper Keeper) ([]types.ContractInfoWithAddress, error) {
 	var contracts []types.ContractInfoWithAddress
 	keeper.IterateContractInfo(ctx, func(addr sdk.AccAddress, info types.ContractInfo) bool {

@@ -3,11 +3,11 @@ package cli
 import (
 	"strconv"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/client/tx"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/spf13/cobra"
 )
 
@@ -18,7 +18,7 @@ func MigrateContractCmd() *cobra.Command {
 		Short: "Migrate a wasm contract to a new code version",
 		Args:  cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientTxContext(cmd)
+			clientCtx, _ := client.GetClientTxContext(cmd)
 
 			msg, err := parseMigrateContractArgs(args, clientCtx)
 			if err != nil {
@@ -60,6 +60,9 @@ func UpdateContractAdminCmd() *cobra.Command {
 		Args:  cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			msg, err := parseUpdateContractAdminArgs(args, clientCtx)
 			if err != nil {
@@ -75,6 +78,7 @@ func UpdateContractAdminCmd() *cobra.Command {
 	return cmd
 }
 
+//nolint:unparam
 func parseUpdateContractAdminArgs(args []string, cliCtx client.Context) (types.MsgUpdateAdmin, error) {
 	msg := types.MsgUpdateAdmin{
 		Sender:   cliCtx.GetFromAddress().String(),
