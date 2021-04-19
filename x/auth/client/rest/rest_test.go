@@ -454,7 +454,7 @@ func (s *IntegrationTestSuite) testQueryIBCTx(txRes sdk.TxResponse, cmd *cobra.C
 	}
 
 	// try fetching the txn using gRPC req, it will fetch info since it has proto codec.
-	grpcJSON, err := rest.GetRequest(fmt.Sprintf("%s/cosmos/tx/v1beta1/txs/%s", val.APIAddress, txRes.TxHash))
+	grpcJSON, err := rest.GetRequest(fmt.Sprintf("%s/lbm/tx/v1beta1/txs/%s", val.APIAddress, txRes.TxHash))
 	s.Require().NoError(err)
 
 	var getTxRes txtypes.GetTxResponse

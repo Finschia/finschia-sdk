@@ -14,7 +14,7 @@ service Service {
   // Simulate simulates executing a transaction for estimating gas usage.
   rpc Simulate(SimulateRequest) returns (SimulateResponse) {
     option (google.api.http) = {
-      post: "/cosmos/tx/v1beta1/simulate"
+      post: "/lbm/tx/v1beta1/simulate"
       body: "*"
     };
   }
@@ -25,7 +25,7 @@ service Service {
   // BroadcastTx broadcast transaction.
   rpc BroadcastTx(BroadcastTxRequest) returns (BroadcastTxResponse) {
     option (google.api.http) = {
-      post: "/cosmos/tx/v1beta1/txs"
+      post: "/lbm/tx/v1beta1/txs"
       body: "*"
     };
   }

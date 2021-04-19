@@ -9606,9 +9606,9 @@ Service defines a gRPC service for interacting with transactions.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Simulate` | [SimulateRequest](#lbm.tx.v1beta1.SimulateRequest) | [SimulateResponse](#lbm.tx.v1beta1.SimulateResponse) | Simulate simulates executing a transaction for estimating gas usage. | POST|/cosmos/tx/v1beta1/simulate|
+| `Simulate` | [SimulateRequest](#lbm.tx.v1beta1.SimulateRequest) | [SimulateResponse](#lbm.tx.v1beta1.SimulateResponse) | Simulate simulates executing a transaction for estimating gas usage. | POST|/lbm/tx/v1beta1/simulate|
 | `GetTx` | [GetTxRequest](#lbm.tx.v1beta1.GetTxRequest) | [GetTxResponse](#lbm.tx.v1beta1.GetTxResponse) | GetTx fetches a tx by hash. | GET|/lbm/tx/v1beta1/txs/{hash}|
-| `BroadcastTx` | [BroadcastTxRequest](#lbm.tx.v1beta1.BroadcastTxRequest) | [BroadcastTxResponse](#lbm.tx.v1beta1.BroadcastTxResponse) | BroadcastTx broadcast transaction. | POST|/cosmos/tx/v1beta1/txs|
+| `BroadcastTx` | [BroadcastTxRequest](#lbm.tx.v1beta1.BroadcastTxRequest) | [BroadcastTxResponse](#lbm.tx.v1beta1.BroadcastTxResponse) | BroadcastTx broadcast transaction. | POST|/lbm/tx/v1beta1/txs|
 | `GetTxsEvent` | [GetTxsEventRequest](#lbm.tx.v1beta1.GetTxsEventRequest) | [GetTxsEventResponse](#lbm.tx.v1beta1.GetTxsEventResponse) | GetTxsEvent fetches txs by event. | GET|/lbm/tx/v1beta1/txs|
 
  <!-- end services -->

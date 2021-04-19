@@ -349,7 +349,7 @@ Broadcasting a transaction using the REST endpoint (served by `gRPC-gateway`) ca
 curl -X POST \
     -H "Content-Type: application/json"
     -d'{"tx_bytes":"{{txBytes}}","mode":"BROADCAST_MODE_SYNC"}'
-    localhost:1317/cosmos/tx/v1beta1/txs
+    localhost:1317/lbm/tx/v1beta1/txs
 ```
 
 ## Using CosmJS (JavaScript & TypeScript)
