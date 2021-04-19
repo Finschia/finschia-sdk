@@ -12,7 +12,7 @@ service Query {
   // Params queries a specific parameter of a module, given its subspace and
   // key.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/cosmos/params/v1beta1/params";
+    option (google.api.http).get = "/lbm/params/v1beta1/params";
   }
 }
 

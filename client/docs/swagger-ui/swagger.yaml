@@ -18030,7 +18030,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /cosmos/tx/v1beta1/simulate:
+  /lbm/tx/v1beta1/simulate:
     post:
       summary: Simulate simulates executing a transaction for estimating gas usage.
       operationId: Simulate
@@ -18308,7 +18308,7 @@ paths:
             $ref: '#/definitions/lbm.tx.v1beta1.SimulateRequest'
       tags:
         - Service
-  /cosmos/tx/v1beta1/txs:
+  /lbm/tx/v1beta1/txs:
     get:
       summary: GetTxsEvent fetches txs by event.
       operationId: GetTxsEvent
@@ -18966,7 +18966,7 @@ paths:
               RPC method.
       tags:
         - Service
-  '/cosmos/tx/v1beta1/txs/{hash}':
+  '/lbm/tx/v1beta1/txs/{hash}':
     get:
       summary: GetTx fetches a tx by hash.
       operationId: GetTx

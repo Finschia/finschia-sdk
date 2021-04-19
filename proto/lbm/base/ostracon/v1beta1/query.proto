@@ -15,28 +15,28 @@ option go_package = "github.com/line/lbm-sdk/v2/client/grpc/tmservice";
 service Service {
   // GetNodeInfo queries the current node info.
   rpc GetNodeInfo(GetNodeInfoRequest) returns (GetNodeInfoResponse) {
-    option (google.api.http).get = "/cosmos/base/ostracon/v1beta1/node_info";
+    option (google.api.http).get = "/lbm/base/ostracon/v1beta1/node_info";
   }
   // GetSyncing queries node syncing.
   rpc GetSyncing(GetSyncingRequest) returns (GetSyncingResponse) {
-    option (google.api.http).get = "/cosmos/base/ostracon/v1beta1/syncing";
+    option (google.api.http).get = "/lbm/base/ostracon/v1beta1/syncing";
   }
   // GetLatestBlock returns the latest block.
   rpc GetLatestBlock(GetLatestBlockRequest) returns (GetLatestBlockResponse) {
-    option (google.api.http).get = "/cosmos/base/ostracon/v1beta1/blocks/latest";
+    option (google.api.http).get = "/lbm/base/ostracon/v1beta1/blocks/latest";
   }
   // GetBlockByHeight queries block for given height.
   rpc GetBlockByHeight(GetBlockByHeightRequest) returns (GetBlockByHeightResponse) {
-    option (google.api.http).get = "/cosmos/base/ostracon/v1beta1/blocks/{height}";
+    option (google.api.http).get = "/lbm/base/ostracon/v1beta1/blocks/{height}";
   }
 
   // GetLatestValidatorSet queries latest validator-set.
   rpc GetLatestValidatorSet(GetLatestValidatorSetRequest) returns (GetLatestValidatorSetResponse) {
-    option (google.api.http).get = "/cosmos/base/ostracon/v1beta1/validatorsets/latest";
+    option (google.api.http).get = "/lbm/base/ostracon/v1beta1/validatorsets/latest";
   }
   // GetValidatorSetByHeight queries validator-set at a given height.
   rpc GetValidatorSetByHeight(GetValidatorSetByHeightRequest) returns (GetValidatorSetByHeightResponse) {
-    option (google.api.http).get = "/cosmos/base/ostracon/v1beta1/validatorsets/{height}";
+    option (google.api.http).get = "/lbm/base/ostracon/v1beta1/validatorsets/{height}";
   }
 }
 

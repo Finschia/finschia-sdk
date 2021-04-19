@@ -116,12 +116,12 @@ Modules that want to expose REST queries should add `google.api.http` annotation
 service Query{
     // Account returns account details based on address.
     rpc Account (QueryAccountRequest) returns (QueryAccountResponse) {
-      option (google.api.http).get = "/cosmos/auth/v1beta1/accounts/{address}";
+      option (google.api.http).get = "/lbm/auth/v1beta1/accounts/{address}";
     }
 
     // Params queries all parameters.
     rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-      option (google.api.http).get = "/cosmos/auth/v1beta1/params";
+      option (google.api.http).get = "/lbm/auth/v1beta1/params";
     }
 }
 ```

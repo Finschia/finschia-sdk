@@ -28,7 +28,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 	}{
 		{
 			"test GRPC total supply",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply", baseURL),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/supply", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -42,7 +42,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 		},
 		{
 			"GRPC total supply of a specific denom",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/%s", baseURL, s.cfg.BondDenom),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/supply/%s", baseURL, s.cfg.BondDenom),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -53,7 +53,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 		},
 		{
 			"Query for `height` > 1",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/%s", baseURL, s.cfg.BondDenom),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/supply/%s", baseURL, s.cfg.BondDenom),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -64,7 +64,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 		},
 		{
 			"Query params shouldn't be considered as height",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/%s?height=2", baseURL, s.cfg.BondDenom),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/supply/%s?height=2", baseURL, s.cfg.BondDenom),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -75,7 +75,7 @@ func (s *IntegrationTestSuite) TestTotalSupplyGRPCHandler() {
 		},
 		{
 			"GRPC total supply of a bogus denom",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/supply/foobar", baseURL),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/supply/foobar", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -112,7 +112,7 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 	}{
 		{
 			"test GRPC client metadata",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/denoms_metadata", baseURL),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/denoms_metadata", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -143,7 +143,7 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 		},
 		{
 			"GRPC client metadata of a specific denom",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/denoms_metadata/uatom", baseURL),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/denoms_metadata/uatom", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -171,7 +171,7 @@ func (s *IntegrationTestSuite) TestDenomMetadataGRPCHandler() {
 		},
 		{
 			"GRPC client metadata of a bogus denom",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/denoms_metadata/foobar", baseURL),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/denoms_metadata/foobar", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -213,7 +213,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 	}{
 		{
 			"gRPC total account balance",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/balances/%s", baseURL, val.Address.String()),
 			&types.QueryAllBalancesResponse{},
 			&types.QueryAllBalancesResponse{
 				Balances: sdk.NewCoins(
@@ -227,7 +227,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 		},
 		{
 			"gPRC account balance of a denom",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s/%s", baseURL, val.Address.String(), s.cfg.BondDenom),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/balances/%s/%s", baseURL, val.Address.String(), s.cfg.BondDenom),
 			&types.QueryBalanceResponse{},
 			&types.QueryBalanceResponse{
 				Balance: &sdk.Coin{
@@ -238,7 +238,7 @@ func (s *IntegrationTestSuite) TestBalancesGRPCHandler() {
 		},
 		{
 			"gPRC account balance of a bogus denom",
-			fmt.Sprintf("%s/cosmos/bank/v1beta1/balances/%s/foobar", baseURL, val.Address.String()),
+			fmt.Sprintf("%s/lbm/bank/v1beta1/balances/%s/foobar", baseURL, val.Address.String()),
 			&types.QueryBalanceResponse{},
 			&types.QueryBalanceResponse{
 				Balance: &sdk.Coin{

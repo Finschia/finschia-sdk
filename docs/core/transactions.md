@@ -145,7 +145,7 @@ Examples of broadcasting and simulating a transaction are shown [here](../run-no
 
 #### REST
 
-Each gRPC method has its corresponding REST endpoint, generated using [gRPC-gateway](https://github.com/grpc-ecosystem/grpc-gateway). Therefore, instead of using gRPC, you can also use HTTP to broadcast the same transaction, on the `POST /cosmos/tx/v1beta1/txs` endpoint.
+Each gRPC method has its corresponding REST endpoint, generated using [gRPC-gateway](https://github.com/grpc-ecosystem/grpc-gateway). Therefore, instead of using gRPC, you can also use HTTP to broadcast the same transaction, on the `POST /lbm/tx/v1beta1/txs` endpoint.
 
 An example can be seen [here](../run-node/txs.md#using-rest)
 
