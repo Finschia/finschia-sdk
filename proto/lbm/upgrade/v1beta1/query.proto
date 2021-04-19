@@ -11,12 +11,12 @@ option go_package = "github.com/line/lbm-sdk/v2/x/upgrade/types";
 service Query {
   // CurrentPlan queries the current upgrade plan.
   rpc CurrentPlan(QueryCurrentPlanRequest) returns (QueryCurrentPlanResponse) {
-    option (google.api.http).get = "/cosmos/upgrade/v1beta1/current_plan";
+    option (google.api.http).get = "/lbm/upgrade/v1beta1/current_plan";
   }
 
   // AppliedPlan queries a previously applied upgrade plan by its name.
   rpc AppliedPlan(QueryAppliedPlanRequest) returns (QueryAppliedPlanResponse) {
-    option (google.api.http).get = "/cosmos/upgrade/v1beta1/applied_plan/{name}";
+    option (google.api.http).get = "/lbm/upgrade/v1beta1/applied_plan/{name}";
   }
 
   // UpgradedConsensusState queries the consensus state that will serve
@@ -24,7 +24,7 @@ service Query {
   // stored at the last height of this chain.
   // UpgradedConsensusState RPC not supported with legacy querier
   rpc UpgradedConsensusState(QueryUpgradedConsensusStateRequest) returns (QueryUpgradedConsensusStateResponse) {
-    option (google.api.http).get = "/cosmos/upgrade/v1beta1/upgraded_consensus_state/{last_height}";
+    option (google.api.http).get = "/lbm/upgrade/v1beta1/upgraded_consensus_state/{last_height}";
   }
 }
 
