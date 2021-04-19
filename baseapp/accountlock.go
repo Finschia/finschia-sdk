@@ -5,7 +5,7 @@ import (
 	"sort"
 	"sync"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 // NOTE should 1 <= sampleBytes <= 4. If modify it, you should revise `getAddressKey()` as well

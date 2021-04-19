@@ -22,16 +22,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 )
 
-const (
-	runTxModeCheck    runTxMode = iota // Check a transaction
-	runTxModeReCheck                   // Recheck a (pending) transaction after a commit
-	runTxModeSimulate                  // Simulate a transaction
-	runTxModeDeliver                   // Deliver a transaction
-
-	// MainStoreKey is the string representation of the main store
-	MainStoreKey = "main"
-)
-
 var (
 	_ abci.Application = (*BaseApp)(nil)
 )
@@ -528,7 +518,11 @@ func (app *BaseApp) getRunContextForTx(txBytes []byte, simulate bool) sdk.Contex
 }
 
 func (app *BaseApp) getContextForTx(s *state, txBytes []byte) sdk.Context {
-	return s.ctx.WithTxBytes(txBytes).WithVoteInfos(app.voteInfos).WithConsensusParams(app.GetConsensusParams(ctx))
+	ctx := s.ctx.
+		WithTxBytes(txBytes).
+		WithVoteInfos(app.voteInfos)
+
+	return ctx.WithConsensusParams(app.GetConsensusParams(ctx))
 }
 
 // cacheTxContext returns a new context based off of the provided context with
@@ -555,7 +549,8 @@ func (app *BaseApp) checkTx(txBytes []byte, tx sdk.Tx, recheck bool) (gInfo sdk.
 
 	defer func() {
 		if r := recover(); r != nil {
-			err = recoverToError(r, ctx.GasMeter())
+			recoveryMW := newDefaultRecoveryMiddleware()
+			err = processRecovery(r, recoveryMW)
 		}
 		gInfo = sdk.GasInfo{GasWanted: ctx.GasMeter().Limit(), GasUsed: ctx.GasMeter().GasConsumed()}
 	}()
@@ -605,6 +600,11 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 // returned if the tx does not run out of gas and if all the messages are valid
 // and execute successfully. An error is returned otherwise.
 func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
+	// NOTE: GasWanted should be returned by the AnteHandler. GasUsed is
+	// determined by the GasMeter. We need access to the context to get the gas
+	// meter so we initialize upfront.
+	var gasWanted uint64
+
 	ctx := app.getRunContextForTx(txBytes, simulate)
 	ms := ctx.MultiStore()
 
@@ -621,14 +621,11 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 
 	defer func() {
 		if r := recover(); r != nil {
-			err = recoverToError(r, ctx.GasMeter())
-			result = nil
-			// TODO ebony
-			// recoveryMW := newOutOfGasRecoveryMiddleware(gasWanted, ctx, app.runTxRecoveryMiddleware)
-			// err, result = processRecovery(r, recoveryMW), nil
+			recoveryMW := newOutOfGasRecoveryMiddleware(gasWanted, ctx, app.runTxRecoveryMiddleware)
+			err, result = processRecovery(r, recoveryMW), nil
 		}
 
-		gInfo = sdk.GasInfo{GasWanted: ctx.GasMeter().Limit(), GasUsed: ctx.GasMeter().GasConsumed()}
+		gInfo = sdk.GasInfo{GasWanted: gasWanted, GasUsed: ctx.GasMeter().GasConsumed()}
 	}()
 
 	// If BlockGasMeter() panics it will be caught by the above recover and will
@@ -667,6 +664,9 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 	}
 
 	events = ctx.EventManager().Events()
+
+	// GasMeter expected to be set in AnteHandler
+	gasWanted = ctx.GasMeter().Limit()
 
 	if err != nil {
 		return gInfo, nil, err
@@ -762,26 +762,4 @@ func (app *BaseApp) runMsgs(ctx sdk.Context, msgs []sdk.Msg) (*sdk.Result, error
 		Log:    strings.TrimSpace(msgLogs.String()),
 		Events: events.ToABCIEvents(),
 	}, nil
-}
-
-// TODO ebony
-func recoverToError(r interface{}, gasMeter sdk.GasMeter) error {
-	switch rType := r.(type) {
-	// TODO: Use ErrOutOfGas instead of ErrorOutOfGas which would allow us
-	// to keep the stracktrace.
-	case sdk.ErrorOutOfGas:
-		return sdkerrors.Wrap(
-			sdkerrors.ErrOutOfGas, fmt.Sprintf(
-				"out of gas in location: %v; gasWanted: %d, gasUsed: %d",
-				rType.Descriptor, gasMeter.Limit(), gasMeter.GasConsumed(),
-			),
-		)
-
-	default:
-		return sdkerrors.Wrap(
-			sdkerrors.ErrPanic, fmt.Sprintf(
-				"recovered: %v\nstack:\n%v", r, string(debug.Stack()),
-			),
-		)
-	}
 }
