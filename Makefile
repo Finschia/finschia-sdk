@@ -43,24 +43,26 @@ endif
 
 # DB backend selection
 ifeq (,$(filter $(LBM_BUILD_OPTIONS), cleveldb rocksdb boltdb badgerdb))
-   BUILD_TAGS += goleveldb
+  BUILD_TAGS += goleveldb
+  DB_BACKEND = goleveldb
 else
   ifeq (cleveldb,$(findstring cleveldb,$(LBM_BUILD_OPTIONS)))
+    CGO_ENABLED=1
     BUILD_TAGS += gcc cleveldb
-    ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=cleveldb
+    DB_BACKEND = cleveldb
   endif
   ifeq (badgerdb,$(findstring badgerdb,$(LBM_BUILD_OPTIONS)))
     BUILD_TAGS += badgerdb
-    ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=badgerdb
+    DB_BACKEND = badgerdb
   endif
   ifeq (rocksdb,$(findstring rocksdb,$(LBM_BUILD_OPTIONS)))
     CGO_ENABLED=1
-    BUILD_TAGS += rocksdb
-    ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=rocksdb
+    BUILD_TAGS += gcc rocksdb
+    DB_BACKEND = rocksdb
   endif
   ifeq (boltdb,$(findstring boltdb,$(LBM_BUILD_OPTIONS)))
     BUILD_TAGS += boltdb
-    ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=boltdb
+    DB_BACKEND = boltdb
   endif
 endif
 
@@ -74,10 +76,11 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/line/lbm-sdk/v2/version.Name=sim \
-		  -X github.com/line/lbm-sdk/v2/version.AppName=simd \
+ldflags = -X github.com/line/lbm-sdk/v2/version.Name=link \
+		  -X github.com/line/lbm-sdk/v2/version.AppName=lbm \
 		  -X github.com/line/lbm-sdk/v2/version.Version=$(VERSION) \
 		  -X github.com/line/lbm-sdk/v2/version.Commit=$(COMMIT) \
+		  -X github.com/line/lbm-sdk/v2/types.DBBackend=$(DB_BACKEND) \
 		  -X "github.com/line/lbm-sdk/v2/version.BuildTags=$(build_tags_comma_sep)"
 
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
