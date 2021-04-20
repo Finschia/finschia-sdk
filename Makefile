@@ -76,8 +76,8 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/line/lbm-sdk/v2/version.Name=link \
-		  -X github.com/line/lbm-sdk/v2/version.AppName=lbm \
+ldflags = -X github.com/line/lbm-sdk/v2/version.Name=sim \
+		  -X github.com/line/lbm-sdk/v2/version.AppName=simd \
 		  -X github.com/line/lbm-sdk/v2/version.Version=$(VERSION) \
 		  -X github.com/line/lbm-sdk/v2/version.Commit=$(COMMIT) \
 		  -X github.com/line/lbm-sdk/v2/types.DBBackend=$(DB_BACKEND) \
