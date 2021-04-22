@@ -55,18 +55,7 @@ func (s LegacyStore) ReverseIterator(start, end []byte) tmdb.Iterator {
 }
 
 func (s LegacyStore) SdkIterator(start, end []byte) types.Iterator {
-	newstart := cloneAppend(s.prefix, start)
-
-	var newend []byte
-	if end == nil {
-		newend = cpIncr(s.prefix)
-	} else {
-		newend = cloneAppend(s.prefix, end)
-	}
-
-	iter := s.parent.Iterator(newstart, newend)
-
-	return newPrefixIterator(s.prefix, start, end, iter)
+	return s.Store.Iterator(start, end)
 }
 
 type legacyPrefixIterator struct {
