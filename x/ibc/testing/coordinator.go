@@ -374,7 +374,7 @@ func GetChainID(index int) string {
 // CONTRACT: the passed in list of indexes must not contain duplicates
 func (coord *Coordinator) CommitBlock(chains ...*TestChain) {
 	for _, chain := range chains {
-		chain.App.Commit()
+		chain.CommitBlock()
 		chain.NextBlock()
 	}
 	coord.IncrementTime()
@@ -382,9 +382,10 @@ func (coord *Coordinator) CommitBlock(chains ...*TestChain) {
 
 // CommitNBlocks commits n blocks to state and updates the block height by 1 for each commit.
 func (coord *Coordinator) CommitNBlocks(chain *TestChain, n uint64) {
+	chain.App.BeginBlock(abci.RequestBeginBlock{Header: chain.CurrentHeader})
+
 	for i := uint64(0); i < n; i++ {
-		chain.App.BeginBlock(abci.RequestBeginBlock{Header: chain.CurrentHeader})
-		chain.App.Commit()
+		chain.CommitBlock()
 		chain.NextBlock()
 		coord.IncrementTime()
 	}
