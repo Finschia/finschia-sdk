@@ -235,7 +235,7 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 
 // BeginRecheckTx implements the ABCI interface and set the check state based on the given header
 func (app *BaseApp) BeginRecheckTx(req abci.RequestBeginRecheckTx) abci.ResponseBeginRecheckTx {
-	// NOTE: This is safe because Tendermint holds a lock on the mempool for Rechecking.
+	// NOTE: This is safe because Ostracon holds a lock on the mempool for Rechecking.
 	app.setCheckState(req.Header)
 	return abci.ResponseBeginRecheckTx{Code: abci.CodeTypeOK}
 }

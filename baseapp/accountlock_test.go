@@ -8,16 +8,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	abci "github.com/tendermint/tendermint/abci/types"
-	"github.com/tendermint/tendermint/crypto"
-	"github.com/tendermint/tendermint/crypto/secp256k1"
+	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 func TestAccountLock(t *testing.T) {
 	app := setupBaseApp(t)
-	ctx := app.NewContext(true, abci.Header{})
+	ctx := app.NewContext(true, ostproto.Header{})
 
 	privs := newTestPrivKeys(3)
 	tx := newTestTx(privs)
@@ -87,15 +87,15 @@ func (tx AccountLockTestTx) ValidateBasic() error {
 	return nil
 }
 
-func newTestPrivKeys(num int) []crypto.PrivKey {
-	privs := make([]crypto.PrivKey, 0, num)
+func newTestPrivKeys(num int) []*secp256k1.PrivKey {
+	privs := make([]*secp256k1.PrivKey, 0, num)
 	for i := 0; i < num; i++ {
 		privs = append(privs, secp256k1.GenPrivKey())
 	}
 	return privs
 }
 
-func getAddrs(privs []crypto.PrivKey) []sdk.AccAddress {
+func getAddrs(privs []*secp256k1.PrivKey) []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, 0, len(privs))
 	for _, priv := range privs {
 		addrs = append(addrs, sdk.AccAddress(priv.PubKey().Address()))
@@ -103,11 +103,11 @@ func getAddrs(privs []crypto.PrivKey) []sdk.AccAddress {
 	return addrs
 }
 
-func newTestTx(privs []crypto.PrivKey) sdk.Tx {
+func newTestTx(privs []*secp256k1.PrivKey) sdk.Tx {
 	addrs := getAddrs(privs)
 	msgs := make([]sdk.Msg, len(addrs))
 	for i, addr := range addrs {
-		msgs[i] = sdk.NewTestMsg(addr)
+		msgs[i] = testdata.NewTestMsg(addr)
 	}
 	return AccountLockTestTx{Msgs: msgs}
 }
