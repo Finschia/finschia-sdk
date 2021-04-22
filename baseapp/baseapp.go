@@ -359,9 +359,13 @@ func (app *BaseApp) setCheckState(header ostproto.Header) {
 	ms := app.cms.CacheMultiStore()
 	app.checkStateMtx.Lock()
 	defer app.checkStateMtx.Unlock()
+
+	ctx := sdk.NewContext(ms, header, true, app.logger).
+		WithMinGasPrices(app.minGasPrices)
+
 	app.checkState = &state{
 		ms:  ms,
-		ctx: sdk.NewContext(ms, header, true, app.logger).WithMinGasPrices(app.minGasPrices),
+		ctx: ctx.WithConsensusParams(app.GetConsensusParams(ctx)),
 	}
 }
 
