@@ -9,6 +9,7 @@ import (
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -49,7 +50,7 @@ func TestOnOpenChannel(t *testing.T) {
 			myChannel := wasmvmtypes.IBCChannel{Version: "my test channel"}
 			m.IBCChannelOpenFn = func(codeID wasmvm.Checksum, env wasmvmtypes.Env, channel wasmvmtypes.IBCChannel, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64) (uint64, error) {
 				assert.Equal(t, myChannel, channel)
-				return spec.contractGas * GasMultiplier, spec.contractErr
+				return spec.contractGas * types.DefaultGasMultiplier, spec.contractErr
 			}
 
 			ctx, cancel := parentCtx.CacheContext()
@@ -141,7 +142,7 @@ func TestOnConnectChannel(t *testing.T) {
 			myChannel := wasmvmtypes.IBCChannel{Version: "my test channel"}
 			m.IBCChannelConnectFn = func(codeID wasmvm.Checksum, env wasmvmtypes.Env, channel wasmvmtypes.IBCChannel, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64) (*wasmvmtypes.IBCBasicResponse, uint64, error) {
 				assert.Equal(t, channel, myChannel)
-				return spec.contractResp, spec.contractGas * GasMultiplier, spec.contractErr
+				return spec.contractResp, spec.contractGas * types.DefaultGasMultiplier, spec.contractErr
 			}
 
 			ctx, cancel := parentCtx.CacheContext()
@@ -251,7 +252,7 @@ func TestOnCloseChannel(t *testing.T) {
 			myChannel := wasmvmtypes.IBCChannel{Version: "my test channel"}
 			m.IBCChannelCloseFn = func(codeID wasmvm.Checksum, env wasmvmtypes.Env, channel wasmvmtypes.IBCChannel, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64) (*wasmvmtypes.IBCBasicResponse, uint64, error) {
 				assert.Equal(t, channel, myChannel)
-				return spec.contractResp, spec.contractGas * GasMultiplier, spec.contractErr
+				return spec.contractResp, spec.contractGas * types.DefaultGasMultiplier, spec.contractErr
 			}
 
 			ctx, cancel := parentCtx.CacheContext()
@@ -373,7 +374,7 @@ func TestOnRecvPacket(t *testing.T) {
 
 			m.IBCPacketReceiveFn = func(codeID wasmvm.Checksum, env wasmvmtypes.Env, packet wasmvmtypes.IBCPacket, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64) (*wasmvmtypes.IBCReceiveResponse, uint64, error) {
 				assert.Equal(t, myPacket, packet)
-				return spec.contractResp, spec.contractGas * GasMultiplier, spec.contractErr
+				return spec.contractResp, spec.contractGas * types.DefaultGasMultiplier, spec.contractErr
 			}
 
 			ctx, cancel := parentCtx.CacheContext()
@@ -487,7 +488,7 @@ func TestOnAckPacket(t *testing.T) {
 			myAck := wasmvmtypes.IBCAcknowledgement{Acknowledgement: []byte("myAck")}
 			m.IBCPacketAckFn = func(codeID wasmvm.Checksum, env wasmvmtypes.Env, ack wasmvmtypes.IBCAcknowledgement, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64) (*wasmvmtypes.IBCBasicResponse, uint64, error) {
 				assert.Equal(t, myAck, ack)
-				return spec.contractResp, spec.contractGas * GasMultiplier, spec.contractErr
+				return spec.contractResp, spec.contractGas * types.DefaultGasMultiplier, spec.contractErr
 			}
 
 			ctx, cancel := parentCtx.CacheContext()
@@ -597,7 +598,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 			myPacket := wasmvmtypes.IBCPacket{Data: []byte("my test packet")}
 			m.IBCPacketTimeoutFn = func(codeID wasmvm.Checksum, env wasmvmtypes.Env, packet wasmvmtypes.IBCPacket, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64) (*wasmvmtypes.IBCBasicResponse, uint64, error) {
 				assert.Equal(t, myPacket, packet)
-				return spec.contractResp, spec.contractGas * GasMultiplier, spec.contractErr
+				return spec.contractResp, spec.contractGas * types.DefaultGasMultiplier, spec.contractErr
 			}
 
 			ctx, cancel := parentCtx.CacheContext()

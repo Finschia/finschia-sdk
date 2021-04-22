@@ -26,6 +26,9 @@ func TestStoreCodeProposal(t *testing.T) {
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
@@ -67,6 +70,9 @@ func TestInstantiateProposal(t *testing.T) {
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -123,6 +129,9 @@ func TestMigrateProposal(t *testing.T) {
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -255,6 +264,9 @@ func TestAdminProposals(t *testing.T) {
 				CodeUploadAccess:             types.AllowNobody,
 				InstantiateDefaultPermission: types.AccessTypeNobody,
 				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+				GasMultiplier:                types.DefaultGasMultiplier,
+				InstanceCost:                 types.DefaultInstanceCost,
+				CompileCost:                  types.DefaultCompileCost,
 			})
 
 			codeInfoFixture := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
