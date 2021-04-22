@@ -46,6 +46,7 @@ func GetTxCmd(cdc *codec.Codec) *cobra.Command {
 	txCmd.AddCommand(flags.PostCommands(
 		StoreCodeCmd(cdc),
 		InstantiateContractCmd(cdc),
+		StoreCodeAndInstantiateContractCmd(cdc),
 		ExecuteContractCmd(cdc),
 		MigrateContractCmd(cdc),
 		UpdateContractAdminCmd(cdc),
@@ -190,6 +191,106 @@ func parseInstantiateArgs(args []string, cliCtx context.CLIContext) (types.MsgIn
 		InitFunds: amount,
 		InitMsg:   []byte(initMsg),
 		Admin:     adminAddr,
+	}
+	return msg, nil
+}
+
+// StoreCodeAndInstantiatecontractcmd will upload code and instantiate a contract using it
+func StoreCodeAndInstantiateContractCmd(cdc *codec.Codec) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "store-instantiate [wasm file] [json_encoded_init_args] --source [source] --builder [builder] --label [text] --admin [address,optional] --amount [coins,optional]",
+		Short: "Upload a wasm binary and instantiate a wasm contract from the code",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			inBuf := bufio.NewReader(cmd.InOrStdin())
+			txBldr := auth.NewTxBuilderFromCLI(inBuf).WithTxEncoder(utils.GetTxEncoder(cdc))
+			cliCtx := context.NewCLIContextWithInput(inBuf).WithCodec(cdc)
+
+			msg, err := parseStoreCodeAndInstantiateContractArgs(args, cliCtx)
+			if err != nil {
+				return err
+			}
+			if err = msg.ValidateBasic(); err != nil {
+				return err
+			}
+
+			return utils.GenerateOrBroadcastMsgs(cliCtx, txBldr, []sdk.Msg{msg})
+		},
+	}
+
+	cmd.Flags().String(flagSource, "", "A valid URI reference to the contract's source code, optional")
+	cmd.Flags().String(flagBuilder, "", "A valid docker tag for the build system, optional")
+	cmd.Flags().String(flagInstantiateByEverybody, "", "Everybody can instantiate a contract from the code, optional")
+	cmd.Flags().String(flagInstantiateByAddress, "", "Only this address can instantiate a contract instance from the code, optional")
+	cmd.Flags().String(flagAmount, "", "Coins to send to the contract during instantiation")
+	cmd.Flags().String(flagLabel, "", "A human-readable name for this contract in lists")
+	cmd.Flags().String(flagAdmin, "", "Address of an admin")
+
+	return cmd
+}
+
+func parseStoreCodeAndInstantiateContractArgs(args []string, cliCtx context.CLIContext) (types.MsgStoreCodeAndInstantiateContract, error) {
+	wasm, err := ioutil.ReadFile(args[0])
+	if err != nil {
+		return types.MsgStoreCodeAndInstantiateContract{}, err
+	}
+
+	// gzip the wasm file
+	if wasmUtils.IsWasm(wasm) {
+		wasm, err = wasmUtils.GzipIt(wasm)
+
+		if err != nil {
+			return types.MsgStoreCodeAndInstantiateContract{}, err
+		}
+	} else if !wasmUtils.IsGzip(wasm) {
+		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("invalid input file. Use wasm binary or gzip")
+	}
+
+	initMsg := args[1]
+
+	var perm *types.AccessConfig
+	if onlyAddrStr := viper.GetString(flagInstantiateByAddress); onlyAddrStr != "" {
+		allowedAddr, err := sdk.AccAddressFromBech32(onlyAddrStr)
+		if err != nil {
+			return types.MsgStoreCodeAndInstantiateContract{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
+		}
+		x := types.OnlyAddress.With(allowedAddr)
+		perm = &x
+	} else if everybody := viper.GetBool(flagInstantiateByEverybody); everybody {
+		perm = &types.AllowEverybody
+	}
+
+	amounstStr := viper.GetString(flagAmount)
+	amount, err := sdk.ParseCoins(amounstStr)
+	if err != nil {
+		return types.MsgStoreCodeAndInstantiateContract{}, err
+	}
+
+	label := viper.GetString(flagLabel)
+	if label == "" {
+		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("label is required on all contracts")
+	}
+
+	adminStr := viper.GetString(flagAdmin)
+	var adminAddr sdk.AccAddress
+	if len(adminStr) != 0 {
+		adminAddr, err = sdk.AccAddressFromBech32(adminStr)
+		if err != nil {
+			return types.MsgStoreCodeAndInstantiateContract{}, sdkerrors.Wrap(err, "admin")
+		}
+	}
+
+	// build and sign the transaction, then broadcast to Tendermint
+	msg := types.MsgStoreCodeAndInstantiateContract{
+		Sender:                cliCtx.GetFromAddress(),
+		WASMByteCode:          wasm,
+		Source:                viper.GetString(flagSource),
+		Builder:               viper.GetString(flagBuilder),
+		InstantiatePermission: perm,
+		Label:                 label,
+		InitFunds:             amount,
+		InitMsg:               []byte(initMsg),
+		Admin:                 adminAddr,
 	}
 	return msg, nil
 }

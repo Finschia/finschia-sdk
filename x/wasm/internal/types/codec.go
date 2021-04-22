@@ -8,6 +8,7 @@ import (
 func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MsgStoreCode{}, "wasm/MsgStoreCode", nil)
 	cdc.RegisterConcrete(MsgInstantiateContract{}, "wasm/MsgInstantiateContract", nil)
+	cdc.RegisterConcrete(MsgStoreCodeAndInstantiateContract{}, "wasm/MsgStoreCodeAndInstantiatecontract", nil)
 	cdc.RegisterConcrete(MsgExecuteContract{}, "wasm/MsgExecuteContract", nil)
 	cdc.RegisterConcrete(MsgMigrateContract{}, "wasm/MsgMigrateContract", nil)
 	cdc.RegisterConcrete(MsgUpdateAdmin{}, "wasm/MsgUpdateAdmin", nil)
@@ -18,6 +19,9 @@ func RegisterCodec(cdc *codec.Codec) {
 	cdc.RegisterConcrete(MigrateContractProposal{}, "wasm/MigrateContractProposal", nil)
 	cdc.RegisterConcrete(UpdateAdminProposal{}, "wasm/UpdateAdminProposal", nil)
 	cdc.RegisterConcrete(ClearAdminProposal{}, "wasm/ClearAdminProposal", nil)
+
+	// tx response
+	cdc.RegisterConcrete(CodeAndContractID{}, "wasm/CodeAndContractID", nil)
 
 	// query responses
 

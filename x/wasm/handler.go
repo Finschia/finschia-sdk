@@ -19,6 +19,8 @@ func NewHandler(k Keeper) sdk.Handler {
 			return handleStoreCode(ctx, k, &msg)
 		case MsgInstantiateContract:
 			return handleInstantiate(ctx, k, &msg)
+		case MsgStoreCodeAndInstantiateContract:
+			return handleStoreCodeAndInstantiate(ctx, k, &msg)
 		case MsgExecuteContract:
 			return handleExecute(ctx, k, &msg)
 		case MsgMigrateContract:
@@ -90,6 +92,48 @@ func handleInstantiate(ctx sdk.Context, k Keeper, msg *MsgInstantiateContract) (
 	return &sdk.Result{
 		Data:   contractAddr,
 		Events: append(events, ourEvent),
+	}, nil
+}
+
+func handleStoreCodeAndInstantiate(ctx sdk.Context, k Keeper, msg *MsgStoreCodeAndInstantiateContract) (*sdk.Result, error) {
+	codeID, err := k.Create(ctx, msg.Sender, msg.WASMByteCode, msg.Source, msg.Builder, msg.InstantiatePermission)
+	if err != nil {
+		return nil, err
+	}
+
+	contractAddr, err := k.Instantiate(ctx, codeID, msg.Sender, msg.Admin, msg.InitMsg, msg.Label, msg.InitFunds)
+	if err != nil {
+		return nil, err
+	}
+
+	events := filterMessageEvents(ctx.EventManager())
+	storeEvent := sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, ModuleName),
+		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender.String()),
+		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
+	)
+	instantiateEvent := sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, ModuleName),
+		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender.String()),
+		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
+		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
+	)
+
+	data := types.CodeAndContractID{
+		CodeID:          codeID,
+		ContractAddress: contractAddr,
+	}
+
+	bz, err := types.ModuleCdc.MarshalBinaryLengthPrefixed(data)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
+	}
+
+	return &sdk.Result{
+		Data:   bz,
+		Events: append(events, storeEvent, instantiateEvent),
 	}, nil
 }
 
