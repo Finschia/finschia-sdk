@@ -1,18 +1,16 @@
-// +build norace
-
-package cli_test
+package testutil
 
 import (
 	"fmt"
 	"strings"
-	"testing"
+
+	"github.com/stretchr/testify/suite"
 
 	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
-	testnet "github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/mint/client/cli"
 	minttypes "github.com/line/lbm-sdk/x/mint/types"
@@ -21,32 +19,33 @@ import (
 type IntegrationTestSuite struct {
 	suite.Suite
 
-	cfg     testnet.Config
-	network *testnet.Network
+	cfg     network.Config
+	network *network.Network
+}
+
+func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
+	return &IntegrationTestSuite{cfg: cfg}
 }
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
-	cfg := testnet.DefaultConfig()
-	genesisState := cfg.GenesisState
-	cfg.NumValidators = 1
+	genesisState := s.cfg.GenesisState
 
 	var mintData minttypes.GenesisState
-	s.Require().NoError(cfg.Codec.UnmarshalJSON(genesisState[minttypes.ModuleName], &mintData))
+	s.Require().NoError(s.cfg.Codec.UnmarshalJSON(genesisState[minttypes.ModuleName], &mintData))
 
 	inflation := sdk.MustNewDecFromStr("1.0")
 	mintData.Minter.Inflation = inflation
 	mintData.Params.InflationMin = inflation
 	mintData.Params.InflationMax = inflation
 
-	mintDataBz, err := cfg.Codec.MarshalJSON(&mintData)
+	mintDataBz, err := s.cfg.Codec.MarshalJSON(&mintData)
 	s.Require().NoError(err)
 	genesisState[minttypes.ModuleName] = mintDataBz
-	cfg.GenesisState = genesisState
+	s.cfg.GenesisState = genesisState
 
-	s.cfg = cfg
-	s.network = testnet.New(s.T(), cfg)
+	s.network = network.New(s.T(), s.cfg)
 
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
@@ -162,8 +161,4 @@ func (s *IntegrationTestSuite) TestGetCmdQueryAnnualProvisions() {
 			s.Require().Equal(tc.expectedOutput, strings.TrimSpace(out.String()))
 		})
 	}
-}
-
-func TestIntegrationTestSuite(t *testing.T) {
-	suite.Run(t, new(IntegrationTestSuite))
 }

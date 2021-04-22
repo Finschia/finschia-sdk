@@ -1,7 +1,4 @@
-//go:build norace
-// +build norace
-
-package cli_test
+package testutil
 
 import (
 	"fmt"
@@ -14,8 +11,6 @@ import (
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/authz/client/cli"
-
-	authztestutil "github.com/line/lbm-sdk/x/authz/client/testutil"
 	"github.com/line/lbm-sdk/x/authz/types"
 )
 
@@ -25,7 +20,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizations() {
 	grantee := s.grantee
 	twoHours := time.Now().Add(time.Minute * time.Duration(120)).Unix()
 
-	_, err := authztestutil.ExecGrantAuthorization(
+	_, err := ExecGrantAuthorization(
 		val,
 		[]string{
 			grantee.String(),
@@ -103,7 +98,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 	grantee := s.grantee
 	twoHours := time.Now().Add(time.Minute * time.Duration(120)).Unix()
 
-	_, err := authztestutil.ExecGrantAuthorization(
+	_, err := ExecGrantAuthorization(
 		val,
 		[]string{
 			grantee.String(),

@@ -1,9 +1,8 @@
-package cli_test
+package testutil
 
 import (
 	"fmt"
 	"strings"
-	"testing"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
@@ -16,7 +15,6 @@ import (
 	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
-	govtestutil "github.com/line/lbm-sdk/x/gov/client/testutil"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -27,11 +25,12 @@ type IntegrationTestSuite struct {
 	network *network.Network
 }
 
+func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
+	return &IntegrationTestSuite{cfg: cfg}
+}
+
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
-
-	s.cfg = network.DefaultConfig()
-	s.cfg.NumValidators = 1
 
 	s.network = network.New(s.T(), s.cfg)
 
@@ -41,7 +40,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	val := s.network.Validators[0]
 
 	// create a proposal with deposit
-	_, err = govtestutil.MsgSubmitProposal(val.ClientCtx, val.Address.String(),
+	_, err = MsgSubmitProposal(val.ClientCtx, val.Address.String(),
 		"Text Proposal 1", "Where is the title!?", types.ProposalTypeText,
 		fmt.Sprintf("--%s=%s", cli.FlagDeposit, sdk.NewCoin(s.cfg.BondDenom, types.DefaultMinDepositTokens).String()))
 	s.Require().NoError(err)
@@ -49,18 +48,18 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	// vote for proposal
-	_, err = govtestutil.MsgVote(val.ClientCtx, val.Address.String(), "1", "yes")
+	_, err = MsgVote(val.ClientCtx, val.Address.String(), "1", "yes")
 	s.Require().NoError(err)
 
 	// create a proposal without deposit
-	_, err = govtestutil.MsgSubmitProposal(val.ClientCtx, val.Address.String(),
+	_, err = MsgSubmitProposal(val.ClientCtx, val.Address.String(),
 		"Text Proposal 2", "Where is the title!?", types.ProposalTypeText)
 	s.Require().NoError(err)
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 
 	// create a proposal3 with deposit
-	_, err = govtestutil.MsgSubmitProposal(val.ClientCtx, val.Address.String(),
+	_, err = MsgSubmitProposal(val.ClientCtx, val.Address.String(),
 		"Text Proposal 3", "Where is the title!?", types.ProposalTypeText,
 		fmt.Sprintf("--%s=%s", cli.FlagDeposit, sdk.NewCoin(s.cfg.BondDenom, types.DefaultMinDepositTokens).String()))
 	s.Require().NoError(err)
@@ -68,7 +67,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 
 	// vote for proposal3 as val
-	_, err = govtestutil.MsgVote(val.ClientCtx, val.Address.String(), "3", "yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05")
+	_, err = MsgVote(val.ClientCtx, val.Address.String(), "3", "yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05")
 	s.Require().NoError(err)
 }
 
@@ -275,37 +274,37 @@ func (s *IntegrationTestSuite) TestCmdTally() {
 
 func (s *IntegrationTestSuite) TestNewCmdSubmitProposal() {
 	val := s.network.Validators[0]
-	// 	invalidProp := `{
-	//   "title": "",
-	// 	"description": "Where is the title!?",
-	// 	"type": "Text",
-	//   "deposit": "-324foocoin"
-	// }`
-	// 	invalidPropFile := testutil.WriteToNewTempFile(s.T(), invalidProp)
-	// 	validProp := fmt.Sprintf(`{
-	//   "title": "Text Proposal",
-	// 	"description": "Hello, World!",
-	// 	"type": "Text",
-	//   "deposit": "%s"
-	// }`, sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(5431)))
-	// 	validPropFile := testutil.WriteToNewTempFile(s.T(), validProp)
+	invalidProp := `{
+	  "title": "",
+		"description": "Where is the title!?",
+		"type": "Text",
+	  "deposit": "-324foocoin"
+	}`
+	invalidPropFile := testutil.WriteToNewTempFile(s.T(), invalidProp)
+	validProp := fmt.Sprintf(`{
+	  "title": "Text Proposal",
+		"description": "Hello, World!",
+		"type": "Text",
+	  "deposit": "%s"
+	}`, sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(5431)))
+	validPropFile := testutil.WriteToNewTempFile(s.T(), validProp)
 	testCases := []struct {
 		name         string
 		args         []string
 		expectErr    bool
-		respType     proto.Message
 		expectedCode uint32
+		respType     proto.Message
 	}{
-		// {
-		// 	"invalid proposal (file)",
-		// 	[]string{
-		// 		fmt.Sprintf("--%s=%s", cli.FlagProposal, invalidPropFile.Name()),
-		// 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		// 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		// 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		// 	},
-		// 	true, nil, 0,
-		// },
+		{
+			"invalid proposal (file)",
+			[]string{
+				fmt.Sprintf("--%s=%s", cli.FlagProposal, invalidPropFile.Name()),
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+			},
+			true, 0, nil,
+		},
 		{
 			"invalid proposal",
 			[]string{
@@ -316,33 +315,33 @@ func (s *IntegrationTestSuite) TestNewCmdSubmitProposal() {
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
-		// {
-		// 	"valid transaction (file)",
-		// 	[]string{
-		// 		fmt.Sprintf("--%s=%s", cli.FlagProposal, validPropFile.Name()),
-		// 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		// 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		// 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		// 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		// 	},
-		// 	false, &sdk.TxResponse{}, 0,
-		// },
-		// {
-		// 	"valid transaction",
-		// 	[]string{
-		// 		fmt.Sprintf("--%s='Text Proposal'", cli.FlagTitle),
-		// 		fmt.Sprintf("--%s='Where is the title!?'", cli.FlagDescription),
-		// 		fmt.Sprintf("--%s=%s", cli.FlagProposalType, types.ProposalTypeText),
-		// 		fmt.Sprintf("--%s=%s", cli.FlagDeposit, sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(5431)).String()),
-		// 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
-		// 		fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-		// 		fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-		// 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-		// 	},
-		// 	false, &sdk.TxResponse{}, 0,
-		// },
+		{
+			"valid transaction (file)",
+			[]string{
+				fmt.Sprintf("--%s=%s", cli.FlagProposal, validPropFile.Name()),
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+			},
+			false, 0, &sdk.TxResponse{},
+		},
+		{
+			"valid transaction",
+			[]string{
+				fmt.Sprintf("--%s='Text Proposal'", cli.FlagTitle),
+				fmt.Sprintf("--%s='Where is the title!?'", cli.FlagDescription),
+				fmt.Sprintf("--%s=%s", cli.FlagProposalType, types.ProposalTypeText),
+				fmt.Sprintf("--%s=%s", cli.FlagDeposit, sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(5431)).String()),
+				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+			},
+			false, 0, &sdk.TxResponse{},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -573,7 +572,7 @@ func (s *IntegrationTestSuite) TestNewCmdDeposit() {
 		{
 			"without proposal id",
 			[]string{
-				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(), //10stake
+				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(), // 10stake
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -596,7 +595,7 @@ func (s *IntegrationTestSuite) TestNewCmdDeposit() {
 			"deposit on non existing proposal",
 			[]string{
 				"10",
-				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(), //10stake
+				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(), // 10stake
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -608,7 +607,7 @@ func (s *IntegrationTestSuite) TestNewCmdDeposit() {
 			"deposit on non existing proposal",
 			[]string{
 				"1",
-				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(), //10stake
+				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10)).String(), // 10stake
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -787,7 +786,7 @@ func (s *IntegrationTestSuite) TestNewCmdVote() {
 			"vote for invalid proposal",
 			[]string{
 				"10",
-				fmt.Sprintf("%s", "yes"),
+				"yes",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -799,7 +798,7 @@ func (s *IntegrationTestSuite) TestNewCmdVote() {
 			"valid vote",
 			[]string{
 				"1",
-				fmt.Sprintf("%s", "yes"),
+				"yes",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -847,7 +846,7 @@ func (s *IntegrationTestSuite) TestNewCmdWeightedVote() {
 			"vote for invalid proposal",
 			[]string{
 				"10",
-				fmt.Sprintf("%s", "yes"),
+				"yes",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -859,7 +858,7 @@ func (s *IntegrationTestSuite) TestNewCmdWeightedVote() {
 			"valid vote",
 			[]string{
 				"1",
-				fmt.Sprintf("%s", "yes"),
+				"yes",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -871,7 +870,7 @@ func (s *IntegrationTestSuite) TestNewCmdWeightedVote() {
 			"invalid valid split vote string",
 			[]string{
 				"1",
-				fmt.Sprintf("%s", "yes/0.6,no/0.3,abstain/0.05,no_with_veto/0.05"),
+				"yes/0.6,no/0.3,abstain/0.05,no_with_veto/0.05",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -883,7 +882,7 @@ func (s *IntegrationTestSuite) TestNewCmdWeightedVote() {
 			"valid split vote",
 			[]string{
 				"1",
-				fmt.Sprintf("%s", "yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05"),
+				"yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
@@ -911,8 +910,4 @@ func (s *IntegrationTestSuite) TestNewCmdWeightedVote() {
 			}
 		})
 	}
-}
-
-func TestIntegrationTestSuite(t *testing.T) {
-	suite.Run(t, new(IntegrationTestSuite))
 }

@@ -1,7 +1,4 @@
-//go:build norace
-// +build norace
-
-package cli_test
+package testutil
 
 import (
 	"context"
@@ -10,10 +7,11 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
+	"github.com/stretchr/testify/suite"
+
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/proto/ostracon/crypto"
 	"github.com/line/ostracon/rpc/client/http"
-	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/hd"
@@ -25,7 +23,6 @@ import (
 	"github.com/line/lbm-sdk/types/query"
 	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
 	"github.com/line/lbm-sdk/x/staking/client/cli"
-	stakingtestutil "github.com/line/lbm-sdk/x/staking/client/testutil"
 	"github.com/line/lbm-sdk/x/staking/types"
 )
 
@@ -36,6 +33,10 @@ type IntegrationTestSuite struct {
 	network *network.Network
 }
 
+func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
+	return &IntegrationTestSuite{cfg: cfg}
+}
+
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
@@ -43,8 +44,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		s.T().Skip("skipping test in unit-tests mode.")
 	}
 
-	s.cfg = network.DefaultConfig()
-	s.cfg.NumValidators = 2
 	s.network = network.New(s.T(), s.cfg)
 
 	_, err := s.network.WaitForHeight(1)
@@ -57,7 +56,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	val2 := s.network.Validators[1]
 
 	// redelegate
-	_, err = stakingtestutil.MsgRedelegateExec(
+	_, err = MsgRedelegateExec(
 		val.ClientCtx,
 		val.Address,
 		val.ValAddress,
@@ -69,7 +68,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 	// unbonding
-	_, err = stakingtestutil.MsgUnbondExec(val.ClientCtx, val.Address, val.ValAddress, unbond)
+	_, err = MsgUnbondExec(val.ClientCtx, val.Address, val.ValAddress, unbond)
 	s.Require().NoError(err)
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
@@ -107,8 +106,8 @@ func (s *IntegrationTestSuite) TestNewCreateValidatorCmd() {
 		name         string
 		args         []string
 		expectErr    bool
-		respType     proto.Message
 		expectedCode uint32
+		respType     proto.Message
 	}{
 		{
 			"invalid transaction (missing amount)",
@@ -126,7 +125,7 @@ func (s *IntegrationTestSuite) TestNewCreateValidatorCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"invalid transaction (missing pubkey)",
@@ -145,7 +144,7 @@ func (s *IntegrationTestSuite) TestNewCreateValidatorCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"invalid transaction (missing moniker)",
@@ -165,7 +164,7 @@ func (s *IntegrationTestSuite) TestNewCreateValidatorCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"valid transaction",
@@ -186,7 +185,7 @@ func (s *IntegrationTestSuite) TestNewCreateValidatorCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 	}
 
@@ -845,11 +844,11 @@ func (s *IntegrationTestSuite) TestGetCmdQueryHistoricalInfo() {
 			if tc.error {
 				s.Require().Error(err)
 			} else {
-				var historical_info types.HistoricalInfo
+				var historicalInfo types.HistoricalInfo
 
-				err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &historical_info)
+				err = val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &historicalInfo)
 				s.Require().NoError(err)
-				s.Require().NotNil(historical_info)
+				s.Require().NotNil(historicalInfo)
 			}
 		})
 	}
@@ -939,8 +938,8 @@ func (s *IntegrationTestSuite) TestNewCmdEditValidator() {
 		name         string
 		args         []string
 		expectErr    bool
-		respType     proto.Message
 		expectedCode uint32
+		respType     proto.Message
 	}{
 		{
 			"with no edit flag (since all are optional)",
@@ -950,7 +949,7 @@ func (s *IntegrationTestSuite) TestNewCmdEditValidator() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"with no edit flag (since all are optional)",
@@ -960,7 +959,7 @@ func (s *IntegrationTestSuite) TestNewCmdEditValidator() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 		{
 			"edit validator details",
@@ -971,7 +970,7 @@ func (s *IntegrationTestSuite) TestNewCmdEditValidator() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 		{
 			"edit validator identity",
@@ -982,7 +981,7 @@ func (s *IntegrationTestSuite) TestNewCmdEditValidator() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 		{
 			"edit validator security-contact",
@@ -993,7 +992,7 @@ func (s *IntegrationTestSuite) TestNewCmdEditValidator() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 		{
 			"edit validator website",
@@ -1004,7 +1003,7 @@ func (s *IntegrationTestSuite) TestNewCmdEditValidator() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 		{
 			"with all edit flags",
@@ -1018,7 +1017,7 @@ func (s *IntegrationTestSuite) TestNewCmdEditValidator() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 	}
 
@@ -1065,8 +1064,8 @@ func (s *IntegrationTestSuite) TestNewCmdDelegate() {
 		name         string
 		args         []string
 		expectErr    bool
-		respType     proto.Message
 		expectedCode uint32
+		respType     proto.Message
 	}{
 		{
 			"without delegate amount",
@@ -1077,7 +1076,7 @@ func (s *IntegrationTestSuite) TestNewCmdDelegate() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"without validator address",
@@ -1088,7 +1087,7 @@ func (s *IntegrationTestSuite) TestNewCmdDelegate() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"valid transaction of delegate",
@@ -1100,7 +1099,7 @@ func (s *IntegrationTestSuite) TestNewCmdDelegate() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 	}
 
@@ -1133,8 +1132,8 @@ func (s *IntegrationTestSuite) TestNewCmdRedelegate() {
 		name         string
 		args         []string
 		expectErr    bool
-		respType     proto.Message
 		expectedCode uint32
+		respType     proto.Message
 	}{
 		{
 			"without amount",
@@ -1146,7 +1145,7 @@ func (s *IntegrationTestSuite) TestNewCmdRedelegate() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"with wrong source validator address",
@@ -1159,7 +1158,7 @@ func (s *IntegrationTestSuite) TestNewCmdRedelegate() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 4,
+			false, 4, &sdk.TxResponse{},
 		},
 		{
 			"with wrong destination validator address",
@@ -1172,7 +1171,7 @@ func (s *IntegrationTestSuite) TestNewCmdRedelegate() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 39,
+			false, 39, &sdk.TxResponse{},
 		},
 		{
 			"valid transaction of delegate",
@@ -1186,7 +1185,7 @@ func (s *IntegrationTestSuite) TestNewCmdRedelegate() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 	}
 
@@ -1218,8 +1217,8 @@ func (s *IntegrationTestSuite) TestNewCmdUnbond() {
 		name         string
 		args         []string
 		expectErr    bool
-		respType     proto.Message
 		expectedCode uint32
+		respType     proto.Message
 	}{
 		{
 			"Without unbond amount",
@@ -1230,7 +1229,7 @@ func (s *IntegrationTestSuite) TestNewCmdUnbond() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"Without validator address",
@@ -1241,7 +1240,7 @@ func (s *IntegrationTestSuite) TestNewCmdUnbond() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			true, nil, 0,
+			true, 0, nil,
 		},
 		{
 			"valid transaction of unbond",
@@ -1253,7 +1252,7 @@ func (s *IntegrationTestSuite) TestNewCmdUnbond() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 	}
 
@@ -1317,6 +1316,7 @@ func (s *IntegrationTestSuite) TestBlockResults() {
 
 	// Create a HTTP rpc client.
 	rpcClient, err := http.New(val.RPCAddress, "/websocket")
+	require.NoError(err)
 
 	// Loop until we find a block result with the correct validator updates.
 	// By experience, it happens around 2 blocks after `delHeight`.
@@ -1345,8 +1345,4 @@ func (s *IntegrationTestSuite) TestBlockResults() {
 
 		s.network.WaitForNextBlock()
 	}
-}
-
-func TestIntegrationTestSuite(t *testing.T) {
-	suite.Run(t, new(IntegrationTestSuite))
 }

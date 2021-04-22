@@ -1,12 +1,8 @@
-//go:build norace
-// +build norace
-
-package cli_test
+package testutil
 
 import (
 	"fmt"
 	"strings"
-	"testing"
 
 	"github.com/gogo/protobuf/proto"
 	ostcli "github.com/line/ostracon/libs/cli"
@@ -26,16 +22,16 @@ type IntegrationTestSuite struct {
 	network *network.Network
 }
 
+func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
+	return &IntegrationTestSuite{cfg: cfg}
+}
+
 // SetupSuite executes bootstrapping logic before all the tests, i.e. once before
 // the entire suite, start executing.
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
 
-	cfg := network.DefaultConfig()
-	cfg.NumValidators = 1
-
-	s.cfg = cfg
-	s.network = network.New(s.T(), cfg)
+	s.network = network.New(s.T(), s.cfg)
 
 	_, err := s.network.WaitForHeight(1)
 	s.Require().NoError(err)
@@ -149,8 +145,8 @@ func (s *IntegrationTestSuite) TestNewUnjailTxCmd() {
 		name         string
 		args         []string
 		expectErr    bool
-		respType     proto.Message
 		expectedCode uint32
+		respType     proto.Message
 	}{
 		{
 			"valid transaction",
@@ -160,7 +156,7 @@ func (s *IntegrationTestSuite) TestNewUnjailTxCmd() {
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastSync), // sync mode as there are no funds yet
 				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 			},
-			false, &sdk.TxResponse{}, 0,
+			false, 0, &sdk.TxResponse{},
 		},
 	}
 
@@ -183,8 +179,4 @@ func (s *IntegrationTestSuite) TestNewUnjailTxCmd() {
 			}
 		})
 	}
-}
-
-func TestIntegrationTestSuite(t *testing.T) {
-	suite.Run(t, new(IntegrationTestSuite))
 }

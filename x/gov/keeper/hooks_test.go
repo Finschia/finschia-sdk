@@ -5,13 +5,14 @@ import (
 	"time"
 
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/tendermint/tendermint/proto/tendermint/types"
 
-	"github.com/cosmos/cosmos-sdk/simapp"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-	"github.com/cosmos/cosmos-sdk/x/gov/keeper"
-	"github.com/cosmos/cosmos-sdk/x/gov/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/gov"
+	"github.com/line/lbm-sdk/x/gov/keeper"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 var _ types.GovHooks = &MockGovHooksReceiver{}
@@ -45,7 +46,7 @@ func (h *MockGovHooksReceiver) AfterProposalVotingPeriodEnded(ctx sdk.Context, p
 
 func TestHooks(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, tmproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	minDeposit := app.GovKeeper.GetDepositParams(ctx).MinDeposit
 	addrs := simapp.AddTestAddrs(app, ctx, 1, minDeposit[0].Amount)
