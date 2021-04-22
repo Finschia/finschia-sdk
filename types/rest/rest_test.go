@@ -28,20 +28,20 @@ func TestBaseReq_Sanitize(t *testing.T) {
 	t.Parallel()
 	sanitized := rest.BaseReq{ChainID: "   test",
 		Memo:          "memo     ",
-		From:          " cosmos1cq0sxam6x4l0sv9yz3a2vlqhdhvt2k6jtgcse0 ",
+		From:          " link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj ",
 		Gas:           " ",
 		GasAdjustment: "  0.3",
 	}.Sanitize()
 	require.Equal(t, rest.BaseReq{ChainID: "test",
 		Memo:          "memo",
-		From:          "cosmos1cq0sxam6x4l0sv9yz3a2vlqhdhvt2k6jtgcse0",
+		From:          "link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj",
 		Gas:           "",
 		GasAdjustment: "0.3",
 	}, sanitized)
 }
 
 func TestBaseReq_ValidateBasic(t *testing.T) {
-	fromAddr := "cosmos1cq0sxam6x4l0sv9yz3a2vlqhdhvt2k6jtgcse0"
+	fromAddr := "link1zp4lzwuwzvhq7xhe8xj688vv00dxv2zyue4xuj"
 	tenstakes, err := types.ParseCoinsNormalized("10stake")
 	require.NoError(t, err)
 	onestake, err := types.ParseDecCoins("1.0stake")

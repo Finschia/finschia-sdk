@@ -45,7 +45,7 @@ func TestMigrate(t *testing.T) {
   "validators": [
     {
       "operator_address": "",
-      "consensus_pubkey": "cosmosvalconspub1zcjduepq9ymett3nlv6fytn7lqxzd3q3ckvd79eqlcf3wkhgamcl4rzghesq83ecpx",
+      "consensus_pubkey": "linkvalconspub1zcjduepq9ymett3nlv6fytn7lqxzd3q3ckvd79eqlcf3wkhgamcl4rzghesqz4j37a",
       "jailed": false,
       "status": 0,
       "tokens": "0",
@@ -70,7 +70,7 @@ func TestMigrate(t *testing.T) {
     },
     {
       "operator_address": "",
-      "consensus_pubkey": "cosmosvalconspub1addwnpepqwfxk5k5pugwz3quqyzvzupefm3589tw6x9dkzjdkuzn7hgpz33ag84e406",
+      "consensus_pubkey": "linkvalconspub1addwnpepqwfxk5k5pugwz3quqyzvzupefm3589tw6x9dkzjdkuzn7hgpz33ag3zxexj",
       "jailed": false,
       "status": 0,
       "tokens": "0",

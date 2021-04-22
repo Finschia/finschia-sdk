@@ -34,8 +34,8 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 }
 
 func (suite *IntegrationTestSuite) getTestBalances() []types.Balance {
-	addr2, _ := sdk.AccAddressFromBech32("cosmos1f9xjhxm0plzrh9cskf4qee4pc2xwp0n0556gh0")
-	addr1, _ := sdk.AccAddressFromBech32("cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh")
+	addr2, _ := sdk.AccAddressFromBech32("link15klks9yty6rwvnqk47q4cg92r38qj4gsvxdfj8")
+	addr1, _ := sdk.AccAddressFromBech32("link14uxsrqf2cakphyw9ywwy9a9fv7yjspku4lkrny")
 	return []types.Balance{
 		{Address: addr2.String(), Coins: sdk.Coins{sdk.NewInt64Coin("testcoin1", 32), sdk.NewInt64Coin("testcoin2", 34)}},
 		{Address: addr1.String(), Coins: sdk.Coins{sdk.NewInt64Coin("testcoin3", 10)}},
