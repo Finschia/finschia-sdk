@@ -77,7 +77,7 @@ func TestMsgTestSuite(t *testing.T) {
 
 func (suite *MsgTestSuite) TestNewMsgConnectionOpenInit() {
 	prefix := commitmenttypes.NewMerklePrefix([]byte("storePrefixKey"))
-	signer, _ := sdk.AccAddressFromBech32("cosmos1ckgw5d7jfj7wwxjzs9fdrdev9vc8dzcw3n2lht")
+	signer, _ := sdk.AccAddressFromBech32("link1kerpa33qxdwvrgms5qr7xegfxnewzm6s46ce7t")
 	// empty versions are considered valid, the default compatible versions
 	// will be used in protocol.
 	var version *types.Version
@@ -108,7 +108,7 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenInit() {
 
 func (suite *MsgTestSuite) TestNewMsgConnectionOpenTry() {
 	prefix := commitmenttypes.NewMerklePrefix([]byte("storePrefixKey"))
-	signer, _ := sdk.AccAddressFromBech32("cosmos1ckgw5d7jfj7wwxjzs9fdrdev9vc8dzcw3n2lht")
+	signer, _ := sdk.AccAddressFromBech32("link10czqumeld9k6dm32ud0xpqs0kn4m6xtrxy024r")
 
 	clientState := ibctmtypes.NewClientState(
 		chainID, ibctmtypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false,
@@ -162,7 +162,7 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenTry() {
 }
 
 func (suite *MsgTestSuite) TestNewMsgConnectionOpenAck() {
-	signer, _ := sdk.AccAddressFromBech32("cosmos1ckgw5d7jfj7wwxjzs9fdrdev9vc8dzcw3n2lht")
+	signer, _ := sdk.AccAddressFromBech32("link1amsfdt72u7ysc8542p0mmafq9ys8c7qxh74wf5")
 	clientState := ibctmtypes.NewClientState(
 		chainID, ibctmtypes.DefaultTrustLevel, ibctesting.TrustingPeriod, ibctesting.UnbondingPeriod, ibctesting.MaxClockDrift, clientHeight, commitmenttypes.GetSDKSpecs(), ibctesting.UpgradePath, false, false,
 	)
@@ -210,7 +210,7 @@ func (suite *MsgTestSuite) TestNewMsgConnectionOpenAck() {
 }
 
 func (suite *MsgTestSuite) TestNewMsgConnectionOpenConfirm() {
-	signer, _ := sdk.AccAddressFromBech32("cosmos1ckgw5d7jfj7wwxjzs9fdrdev9vc8dzcw3n2lht")
+	signer, _ := sdk.AccAddressFromBech32("link1ptg03mk43x5qcp9xnankk7cwt4vzrkpxqpcff3")
 
 	testMsgs := []*types.MsgConnectionOpenConfirm{
 		types.NewMsgConnectionOpenConfirm("test/conn1", suite.proof, clientHeight, signer),

@@ -22,7 +22,7 @@ func TestGenesisStateValidate(t *testing.T) {
 				Params: types.DefaultParams(),
 				Balances: []types.Balance{
 					{
-						Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+						Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
 						Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 					},
 				},
@@ -59,11 +59,11 @@ func TestGenesisStateValidate(t *testing.T) {
 			types.GenesisState{
 				Balances: []types.Balance{
 					{
-						Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+						Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
 						Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 					},
 					{
-						Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+						Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
 						Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 					},
 				},
@@ -75,7 +75,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			types.GenesisState{
 				Balances: []types.Balance{
 					{
-						Address: "cosmos1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+						Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
 					},
 				},
 			},

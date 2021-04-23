@@ -65,7 +65,7 @@ func TestMigrate(t *testing.T) {
     {
       "type": "lbm-sdk/Account",
       "value": {
-        "address": "cosmos1j7skdhh9raxdmfhmcy2gxz8hgn0jnhfmujjsfe",
+        "address": "link1j7skdhh9raxdmfhmcy2gxz8hgn0jnhfmfujjj3",
         "coins": [
           {
             "denom": "stake",
@@ -83,7 +83,7 @@ func TestMigrate(t *testing.T) {
     {
       "type": "lbm-sdk/Account",
       "value": {
-        "address": "cosmos1v57fx2l2rt6ehujuu99u2fw05779m5e2ux4z2h",
+        "address": "link1v57fx2l2rt6ehujuu99u2fw05779m5e2fg4q3l",
         "coins": [
           {
             "denom": "stake",
