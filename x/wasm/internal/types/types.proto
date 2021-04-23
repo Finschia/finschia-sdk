@@ -21,6 +21,19 @@ enum AccessType {
   ACCESS_TYPE_EVERYBODY = 3 [(gogoproto.enumvalue_customname) = "AccessTypeEverybody"];
 }
 
+// ContractStatus types
+enum ContractStatus {
+  option (gogoproto.goproto_enum_prefix)   = false;
+  option (gogoproto.goproto_enum_stringer) = false;
+
+  // ContractStatus unspecified
+  CONTRACT_STATUS_UNSPECIFIED = 0 [(gogoproto.enumvalue_customname) = "ContractStatusUnspecified"];
+  // ContractStatus active
+  CONTRACT_STATUS_ACTIVE = 1 [(gogoproto.enumvalue_customname) = "ContractStatusActive"];
+  // ContractStatus inactive
+  CONTRACT_STATUS_INACTIVE = 2 [(gogoproto.enumvalue_customname) = "ContractStatusInactive"];
+}
+
 // AccessTypeParam
 message AccessTypeParam {
   option (gogoproto.goproto_stringer) = true;
@@ -75,6 +88,8 @@ message ContractInfo {
   // This data should kept internal and not be exposed via query results. Just use for sorting
   AbsoluteTxPosition created     = 5;
   string             ibc_port_id = 6 [(gogoproto.customname) = "IBCPortID"];
+  // Status is a status of a contract
+  ContractStatus status = 7;
 }
 
 // ContractCodeHistoryOperationType actions that caused a code change

@@ -41,6 +41,14 @@ func TestContractInfoValidateBasic(t *testing.T) {
 			srcMutator: func(c *ContractInfo) { c.Label = strings.Repeat("a", MaxLabelSize+1) },
 			expError:   true,
 		},
+		"empty status": {
+			srcMutator: func(c *ContractInfo) { c.Status = 0 },
+			expError:   true,
+		},
+		"invalid status": {
+			srcMutator: func(c *ContractInfo) { c.Status = 3 },
+			expError:   true,
+		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {

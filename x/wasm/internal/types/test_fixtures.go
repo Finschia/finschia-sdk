@@ -111,6 +111,7 @@ func ContractInfoFixture(mutators ...func(*ContractInfo)) ContractInfo {
 		Creator: anyAddress,
 		Label:   "any",
 		Created: &AbsoluteTxPosition{BlockHeight: 1, TxIndex: 1},
+		Status:  ContractStatusActive,
 	}
 
 	for _, m := range mutators {
