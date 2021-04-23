@@ -4,22 +4,22 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	wasmvm "github.com/CosmWasm/wasmvm"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	"io/ioutil"
 	"testing"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	stypes "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
 )
 
 const SupportedFeatures = "staking,stargate"
@@ -284,7 +284,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x11c4e), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x11c8a), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -293,6 +293,7 @@ func TestInstantiate(t *testing.T) {
 	assert.Equal(t, creator.String(), info.Creator)
 	assert.Equal(t, codeID, info.CodeID)
 	assert.Equal(t, "demo contract 1", info.Label)
+	assert.Equal(t, types.ContractStatusActive, info.Status)
 
 	exp := []types.ContractCodeHistoryEntry{{
 		Operation: types.ContractCodeHistoryOperationTypeInit,
@@ -517,7 +518,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x128ee), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x128f4), gasAfter-gasBefore)
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
