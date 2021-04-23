@@ -1,12 +1,9 @@
 package cache
 
 import (
-	"fmt"
-
+	"github.com/VictoriaMetrics/fastcache"
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/types"
-
-	lru "github.com/hashicorp/golang-lru"
 )
 
 var (
@@ -27,7 +24,7 @@ type (
 	// CommitKVStore and below is completely irrelevant to this layer.
 	CommitKVStoreCache struct {
 		types.CommitKVStore
-		cache *lru.ARCCache
+		cache *fastcache.Cache
 	}
 
 	// CommitKVStoreCacheManager maintains a mapping from a StoreKey to a
@@ -41,10 +38,7 @@ type (
 )
 
 func NewCommitKVStoreCache(store types.CommitKVStore, size uint) *CommitKVStoreCache {
-	cache, err := lru.NewARC(int(size))
-	if err != nil {
-		panic(fmt.Errorf("failed to create KVStore cache: %s", err))
-	}
+	cache := fastcache.New(1024*1024*500) // 500 MB
 
 	return &CommitKVStoreCache{
 		CommitKVStore: store,
@@ -100,16 +94,15 @@ func (ckv *CommitKVStoreCache) CacheWrap() types.CacheWrap {
 func (ckv *CommitKVStoreCache) Get(key []byte) []byte {
 	types.AssertValidKey(key)
 
-	keyStr := string(key)
-	valueI, ok := ckv.cache.Get(keyStr)
-	if ok {
+	valueI := ckv.cache.Get(nil, key)
+	if valueI != nil {
 		// cache hit
-		return valueI.([]byte)
+		return valueI
 	}
 
 	// cache miss; write to cache
 	value := ckv.CommitKVStore.Get(key)
-	ckv.cache.Add(keyStr, value)
+	ckv.cache.Set(key, value)
 
 	return value
 }
@@ -120,13 +113,13 @@ func (ckv *CommitKVStoreCache) Set(key, value []byte) {
 	types.AssertValidKey(key)
 	types.AssertValidValue(value)
 
-	ckv.cache.Add(string(key), value)
+	ckv.cache.Set(key, value)
 	ckv.CommitKVStore.Set(key, value)
 }
 
 // Delete removes a key/value pair from both the write-through cache and the
 // underlying CommitKVStore.
 func (ckv *CommitKVStoreCache) Delete(key []byte) {
-	ckv.cache.Remove(string(key))
+	ckv.cache.Del(key)
 	ckv.CommitKVStore.Delete(key)
 }
