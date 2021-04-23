@@ -113,3 +113,35 @@ func ClearContractAdminCmd() *cobra.Command {
 	flags.AddTxFlagsToCmd(cmd)
 	return cmd
 }
+
+// UpdateContractStatusCmd clears an admin for a contract
+func UpdateContractStatusCmd() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "update-contract-status [contract_addr_bech32] [status(Active|Inactive)]",
+		Short: "Clears admin for a contract to prevent further migrations",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
+
+			status := types.ContractStatusUnspecified
+			if err := (&status).UnmarshalText([]byte(args[1])); err != nil {
+				return err
+			}
+
+			msg := types.MsgUpdateContractStatus{
+				Sender:   clientCtx.GetFromAddress().String(),
+				Contract: args[0],
+				Status:   status,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+		},
+	}
+	flags.AddTxFlagsToCmd(cmd)
+	return cmd
+}

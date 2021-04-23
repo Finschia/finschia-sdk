@@ -1280,3 +1280,109 @@ func TestClearContractAdmin(t *testing.T) {
 		})
 	}
 }
+
+func TestUpdateContractStatus(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
+	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit.Add(deposit...))
+	fred := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
+
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	require.NoError(t, err)
+
+	_, _, anyAddr := keyPubAddr()
+	initMsg := HackatomExampleInitMsg{
+		Verifier:    fred,
+		Beneficiary: anyAddr,
+	}
+	initMsgBz, err := json.Marshal(initMsg)
+	require.NoError(t, err)
+
+	type spec struct {
+		instAdmin            sdk.AccAddress
+		newStatus            types.ContractStatus
+		overrideContractAddr sdk.AccAddress
+		caller               sdk.AccAddress
+		expErr               *sdkerrors.Error
+	}
+
+	// Default Nobody can update the status
+	s := spec{
+		instAdmin: fred,
+		newStatus: types.ContractStatusInactive,
+		caller:    fred,
+		expErr:    sdkerrors.ErrUnauthorized,
+	}
+	runUpdateStatusSpec(t, "ContractStatusAccess nobody", keeper, ctx, originalContractID, creator, s, initMsgBz)
+
+	// Everybody can update the status
+	params := keeper.GetParams(ctx)
+	params.ContractStatusAccess = types.AllowEverybody
+	keeper.setParams(ctx, params)
+	specs := map[string]spec{
+		"admin can update the status": {
+			instAdmin: fred,
+			newStatus: types.ContractStatusInactive,
+			caller:    fred,
+		},
+		"any can update the status": {
+			instAdmin: fred,
+			newStatus: types.ContractStatusInactive,
+			caller:    anyAddr,
+		},
+	}
+	for msg, spec := range specs {
+		runUpdateStatusSpec(t, msg, keeper, ctx, originalContractID, creator, spec, initMsgBz)
+	}
+
+	// Only authorized account can update the status
+	params = keeper.GetParams(ctx)
+	params.ContractStatusAccess = types.AccessTypeOnlyAddress.With(fred)
+	keeper.setParams(ctx, params)
+	specs = map[string]spec{
+		"authorized account update the status": {
+			instAdmin: fred,
+			newStatus: types.ContractStatusInactive,
+			caller:    fred,
+		},
+		"any cannot update the status": {
+			instAdmin: fred,
+			newStatus: types.ContractStatusInactive,
+			caller:    anyAddr,
+			expErr:    sdkerrors.ErrUnauthorized,
+		},
+	}
+	for msg, spec := range specs {
+		runUpdateStatusSpec(t, msg, keeper, ctx, originalContractID, creator, spec, initMsgBz)
+	}
+}
+
+func runUpdateStatusSpec(t *testing.T, msg string, keeper *Keeper, ctx sdk.Context, originalContractID uint64, creator sdk.AccAddress, spec struct {
+	instAdmin            sdk.AccAddress
+	newStatus            types.ContractStatus
+	overrideContractAddr sdk.AccAddress
+	caller               sdk.AccAddress
+	expErr               *sdkerrors.Error
+}, initMsgBz []byte) {
+
+	t.Run(msg, func(t *testing.T) {
+		addr, _, err := keeper.Instantiate(ctx, originalContractID, creator, spec.instAdmin, initMsgBz, "demo contract", nil)
+		require.NoError(t, err)
+		if spec.overrideContractAddr != nil {
+			addr = spec.overrideContractAddr
+		}
+		err = keeper.UpdateContractStatus(ctx, addr, spec.caller, types.ContractStatusInactive)
+		require.True(t, spec.expErr.Is(err), "expected %v but got %+v", spec.expErr, err)
+		if spec.expErr != nil {
+			return
+		}
+		cInfo := keeper.GetContractInfo(ctx, addr)
+		assert.Equal(t, spec.newStatus, cInfo.Status)
+	})
+}

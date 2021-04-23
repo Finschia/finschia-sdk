@@ -45,6 +45,7 @@ func GetTxCmd() *cobra.Command {
 		MigrateContractCmd(),
 		UpdateContractAdminCmd(),
 		ClearContractAdminCmd(),
+		UpdateContractStatusCmd(),
 	)
 	return txCmd
 }

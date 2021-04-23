@@ -62,7 +62,7 @@ func (AccessType) EnumDescriptor() ([]byte, []int) {
 type ContractStatus int32
 
 const (
-	// ContractStatus inactive
+	// ContractStatus unspecified
 	ContractStatusUnspecified ContractStatus = 0
 	// ContractStatus active
 	ContractStatusActive ContractStatus = 1
