@@ -73,7 +73,7 @@ func TestMigrate(t *testing.T) {
           }
         ],
         "public_key": {
-          "type": "tendermint/PubKeyEd25519",
+          "type": "ostracon/PubKeyEd25519",
           "value": "eB0AcLMLKFRNFfh4XAAMstexfAIUQQCDnfjLZ2KJg+A="
         },
         "account_number": "1",
@@ -91,7 +91,7 @@ func TestMigrate(t *testing.T) {
           }
         ],
         "public_key": {
-          "type": "tendermint/PubKeySecp256k1",
+          "type": "ostracon/PubKeySecp256k1",
           "value": "AruDygh5HprMOpHOEato85dLgAsybMJVyxBGUa3KuWCr"
         },
         "account_number": "2",

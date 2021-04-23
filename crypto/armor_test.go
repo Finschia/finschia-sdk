@@ -62,7 +62,7 @@ func TestArmorUnarmorPrivKey(t *testing.T) {
 		"salt": fmt.Sprintf("%X", saltBytes),
 		"type": "secp256k",
 	}
-	armored = armor.EncodeArmor("TENDERMINT PRIVATE KEY", headerWrongKdf, encBytes)
+	armored = armor.EncodeArmor("OSTRACON PRIVATE KEY", headerWrongKdf, encBytes)
 	_, _, err = crypto.UnarmorDecryptPrivKey(armored, "passphrase")
 	require.Error(t, err)
 	require.Equal(t, "unrecognized KDF type: wrong", err.Error())
@@ -95,14 +95,14 @@ func TestArmorUnarmorPubKey(t *testing.T) {
 	require.NoError(t, err)
 	_, _, err = crypto.UnarmorPubKeyBytes(armored)
 	require.Error(t, err)
-	require.Equal(t, `couldn't unarmor bytes: unrecognized armor type "TENDERMINT PRIVATE KEY", expected: "TENDERMINT PUBLIC KEY"`, err.Error())
+	require.Equal(t, `couldn't unarmor bytes: unrecognized armor type "OSTRACON PRIVATE KEY", expected: "OSTRACON PUBLIC KEY"`, err.Error())
 
 	// armor pubkey manually
 	header := map[string]string{
 		"version": "0.0.0",
 		"type":    "unknown",
 	}
-	armored = armor.EncodeArmor("TENDERMINT PUBLIC KEY", header, pubBytes)
+	armored = armor.EncodeArmor("OSTRACON PUBLIC KEY", header, pubBytes)
 	_, algo, err = crypto.UnarmorPubKeyBytes(armored)
 	require.NoError(t, err)
 	// return secp256k1 if version is 0.0.0
@@ -112,7 +112,7 @@ func TestArmorUnarmorPubKey(t *testing.T) {
 	header = map[string]string{
 		"type": "unknown",
 	}
-	armored = armor.EncodeArmor("TENDERMINT PUBLIC KEY", header, pubBytes)
+	armored = armor.EncodeArmor("OSTRACON PUBLIC KEY", header, pubBytes)
 	bz, algo, err := crypto.UnarmorPubKeyBytes(armored)
 	require.Nil(t, bz)
 	require.Empty(t, algo)
@@ -124,7 +124,7 @@ func TestArmorUnarmorPubKey(t *testing.T) {
 		"type":    "unknown",
 		"version": "unknown",
 	}
-	armored = armor.EncodeArmor("TENDERMINT PUBLIC KEY", header, pubBytes)
+	armored = armor.EncodeArmor("OSTRACON PUBLIC KEY", header, pubBytes)
 	bz, algo, err = crypto.UnarmorPubKeyBytes(armored)
 	require.Nil(t, bz)
 	require.Empty(t, algo)
@@ -151,7 +151,7 @@ func TestUnarmorInfoBytesErrors(t *testing.T) {
 		"version": "0.0.1",
 	}
 	unarmoredBytes, err = crypto.UnarmorInfoBytes(armor.EncodeArmor(
-		"TENDERMINT KEY INFO", header, []byte("plain-text")))
+		"OSTRACON KEY INFO", header, []byte("plain-text")))
 	require.Error(t, err)
 	require.Equal(t, "unrecognized version: 0.0.1", err.Error())
 	require.Nil(t, unarmoredBytes)

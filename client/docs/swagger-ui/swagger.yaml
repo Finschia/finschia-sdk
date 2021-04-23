@@ -740,7 +740,7 @@ paths:
                         properties:
                           type:
                             type: string
-                            example: tendermint/PubKeySecp256k1
+                            example: ostracon/PubKeySecp256k1
                           value:
                             type: string
                             example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -888,7 +888,7 @@ paths:
                               properties:
                                 type:
                                   type: string
-                                  example: tendermint/PubKeySecp256k1
+                                  example: ostracon/PubKeySecp256k1
                                 value:
                                   type: string
                                   example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -979,7 +979,7 @@ paths:
                         properties:
                           type:
                             type: string
-                            example: tendermint/PubKeySecp256k1
+                            example: ostracon/PubKeySecp256k1
                           value:
                             type: string
                             example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -1131,7 +1131,7 @@ paths:
                         properties:
                           type:
                             type: string
-                            example: tendermint/PubKeySecp256k1
+                            example: ostracon/PubKeySecp256k1
                           value:
                             type: string
                             example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -1219,7 +1219,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -1381,7 +1381,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -1603,7 +1603,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -1812,7 +1812,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -2030,7 +2030,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -2632,7 +2632,7 @@ paths:
                         properties:
                           type:
                             type: string
-                            example: tendermint/PubKeySecp256k1
+                            example: ostracon/PubKeySecp256k1
                           value:
                             type: string
                             example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -2682,7 +2682,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -2851,7 +2851,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -3083,7 +3083,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -3356,7 +3356,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -3572,7 +3572,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -3916,7 +3916,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -4069,7 +4069,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -4215,7 +4215,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -4445,7 +4445,7 @@ paths:
                     properties:
                       type:
                         type: string
-                        example: tendermint/PubKeySecp256k1
+                        example: ostracon/PubKeySecp256k1
                       value:
                         type: string
                         example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -28804,7 +28804,7 @@ definitions:
                 properties:
                   type:
                     type: string
-                    example: tendermint/PubKeySecp256k1
+                    example: ostracon/PubKeySecp256k1
                   value:
                     type: string
                     example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -28900,7 +28900,7 @@ definitions:
                       properties:
                         type:
                           type: string
-                          example: tendermint/PubKeySecp256k1
+                          example: ostracon/PubKeySecp256k1
                         value:
                           type: string
                           example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH
@@ -28967,7 +28967,7 @@ definitions:
             properties:
               type:
                 type: string
-                example: tendermint/PubKeySecp256k1
+                example: ostracon/PubKeySecp256k1
               value:
                 type: string
                 example: Avz04VhtKJh8ACCVzlI8aTosGy0ikFXKIVHQ3jKMrosH

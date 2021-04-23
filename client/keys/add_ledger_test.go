@@ -74,7 +74,7 @@ func Test_runAddCmdLedgerWithCustomCoinType(t *testing.T) {
 	require.Equal(t, "keyname1", key1.GetName())
 	require.Equal(t, keyring.TypeLedger, key1.GetType())
 	require.Equal(t,
-		"terrapub1addwnpepqvpg7r26nl2pvqqern00m6s9uaax3hauu2rzg8qpjzq9hy6xve7sw0d84m6",
+		"terrapub1cqmsrdepqvpg7r26nl2pvqqern00m6s9uaax3hauu2rzg8qpjzq9hy6xve7swm8dz8g",
 		sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, key1.GetPubKey()))
 
 	config.SetCoinType(438)
@@ -122,6 +122,6 @@ func Test_runAddCmdLedger(t *testing.T) {
 	require.Equal(t, "keyname1", key1.GetName())
 	require.Equal(t, keyring.TypeLedger, key1.GetType())
 	require.Equal(t,
-		"linkpub1addwnpepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzszgelc",
+		"linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
 		sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, key1.GetPubKey()))
 }
