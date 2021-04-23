@@ -327,6 +327,9 @@ func (k Keeper) Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	if err != nil {
 		return nil, err
 	}
+	if contractInfo.Status != types.ContractStatusActive {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
+	}
 
 	if !k.IsPinnedCode(ctx, contractInfo.CodeID) {
 		ctx.GasMeter().ConsumeGas(InstanceCost, "Loading CosmWasm module: execute")
@@ -379,6 +382,9 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
+	}
+	if contractInfo.Status != types.ContractStatusActive {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not migrate")
@@ -557,6 +563,9 @@ func (k Keeper) setContractAdmin(ctx sdk.Context, contractAddress, caller, newAd
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
+	}
+	if contractInfo.Status != types.ContractStatusActive {
+		return sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not modify contract")
