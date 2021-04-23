@@ -13,8 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	wasmTypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	fuzz "github.com/google/gofuzz"
 	"github.com/line/lbm-sdk/v2/store"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	authkeeper "github.com/line/lbm-sdk/v2/x/auth/keeper"
@@ -22,14 +21,15 @@ import (
 	paramskeeper "github.com/line/lbm-sdk/v2/x/params/keeper"
 	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
 	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
-	fuzz "github.com/google/gofuzz"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	wasmTypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/proto/ostracon/crypto"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const firstCodeID = 1
@@ -444,7 +444,10 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 			"permission": "Everybody"
 		},
 		"instantiate_default_permission": "Everybody",
-		"max_wasm_code_size": 500000
+		"max_wasm_code_size": 500000,
+		"contract_status_access": {
+			"permission": "Nobody"
+		}
 	},
   "codes": [
     {

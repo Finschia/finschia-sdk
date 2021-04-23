@@ -22,6 +22,7 @@ const (
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
 var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
+var ParamStoreKeyContractStatusAccess = []byte("contractStatusAccess")
 
 var AllAccessTypes = []AccessType{
 	AccessTypeNobody,
@@ -83,9 +84,10 @@ func (a AccessConfig) Equals(o AccessConfig) bool {
 }
 
 var (
-	DefaultUploadAccess = AllowEverybody
-	AllowEverybody      = AccessConfig{Permission: AccessTypeEverybody}
-	AllowNobody         = AccessConfig{Permission: AccessTypeNobody}
+	DefaultUploadAccess         = AllowEverybody
+	DefaultContractStatusAccess = AllowNobody
+	AllowEverybody              = AccessConfig{Permission: AccessTypeEverybody}
+	AllowNobody                 = AccessConfig{Permission: AccessTypeNobody}
 )
 
 // ParamKeyTable returns the parameter key table.
@@ -99,6 +101,7 @@ func DefaultParams() Params {
 		CodeUploadAccess:             AllowEverybody,
 		InstantiateDefaultPermission: AccessTypeEverybody,
 		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+		ContractStatusAccess:         DefaultContractStatusAccess,
 	}
 }
 
@@ -113,6 +116,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 		paramtypes.NewParamSetPair(ParamStoreKeyUploadAccess, &p.CodeUploadAccess, validateAccessConfig),
 		paramtypes.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.InstantiateDefaultPermission, validateAccessType),
 		paramtypes.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
+		paramtypes.NewParamSetPair(ParamStoreKeyContractStatusAccess, &p.ContractStatusAccess, validateAccessConfig),
 	}
 }
 
@@ -126,6 +130,9 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateMaxWasmCodeSize(p.MaxWasmCodeSize); err != nil {
 		return errors.Wrap(err, "max wasm code size")
+	}
+	if err := validateAccessConfig(p.ContractStatusAccess); err != nil {
+		return errors.Wrap(err, "contract status access")
 	}
 	return nil
 }

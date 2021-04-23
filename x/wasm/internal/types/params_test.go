@@ -29,6 +29,7 @@ func TestValidateParams(t *testing.T) {
 				CodeUploadAccess:             AllowNobody,
 				InstantiateDefaultPermission: AccessTypeNobody,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         AllowNobody,
 			},
 		},
 		"all good with everybody": {
@@ -36,6 +37,7 @@ func TestValidateParams(t *testing.T) {
 				CodeUploadAccess:             AllowEverybody,
 				InstantiateDefaultPermission: AccessTypeEverybody,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         AllowEverybody,
 			},
 		},
 		"all good with only address": {
@@ -43,12 +45,14 @@ func TestValidateParams(t *testing.T) {
 				CodeUploadAccess:             AccessTypeOnlyAddress.With(anyAddress),
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         AccessTypeOnlyAddress.With(anyAddress),
 			},
 		},
 		"reject empty type in instantiate permission": {
 			src: Params{
-				CodeUploadAccess: AllowNobody,
-				MaxWasmCodeSize:  DefaultMaxWasmCodeSize,
+				CodeUploadAccess:     AllowNobody,
+				MaxWasmCodeSize:      DefaultMaxWasmCodeSize,
+				ContractStatusAccess: DefaultContractStatusAccess,
 			},
 			expErr: true,
 		},
@@ -57,14 +61,16 @@ func TestValidateParams(t *testing.T) {
 				CodeUploadAccess:             AllowNobody,
 				InstantiateDefaultPermission: 1111,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         DefaultContractStatusAccess,
 			},
 			expErr: true,
 		},
-		"reject invalid address in only address": {
+		"reject CodeUploadAccess invalid address in only address": {
 			src: Params{
 				CodeUploadAccess:             AccessConfig{Permission: AccessTypeOnlyAddress, Address: invalidAddress},
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         DefaultContractStatusAccess,
 			},
 			expErr: true,
 		},
@@ -73,6 +79,7 @@ func TestValidateParams(t *testing.T) {
 				CodeUploadAccess:             AccessConfig{Permission: AccessTypeEverybody, Address: anyAddress.String()},
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         DefaultContractStatusAccess,
 			},
 			expErr: true,
 		},
@@ -81,6 +88,7 @@ func TestValidateParams(t *testing.T) {
 				CodeUploadAccess:             AccessConfig{Permission: AccessTypeNobody, Address: anyAddress.String()},
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         DefaultContractStatusAccess,
 			},
 			expErr: true,
 		},
@@ -88,6 +96,7 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         DefaultContractStatusAccess,
 			},
 			expErr: true,
 		},
@@ -96,6 +105,7 @@ func TestValidateParams(t *testing.T) {
 				CodeUploadAccess:             AccessConfig{Permission: AccessTypeUnspecified},
 				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         DefaultContractStatusAccess,
 			},
 			expErr: true,
 		},
@@ -103,6 +113,51 @@ func TestValidateParams(t *testing.T) {
 			src: Params{
 				CodeUploadAccess:             AllowNobody,
 				InstantiateDefaultPermission: AccessTypeNobody,
+				ContractStatusAccess:         DefaultContractStatusAccess,
+			},
+			expErr: true,
+		},
+		"reject ContractStatusAccess invalid address in only address": {
+			src: Params{
+				CodeUploadAccess:             DefaultUploadAccess,
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         AccessConfig{Permission: AccessTypeOnlyAddress, Address: invalidAddress},
+			},
+			expErr: true,
+		},
+		"reject ContractStatusAccess Everybody with obsolete address": {
+			src: Params{
+				CodeUploadAccess:             DefaultUploadAccess,
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         AccessConfig{Permission: AccessTypeEverybody, Address: anyAddress.String()},
+			},
+			expErr: true,
+		},
+		"reject ContractStatusAccess Nobody with obsolete address": {
+			src: Params{
+				CodeUploadAccess:             DefaultUploadAccess,
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         AccessConfig{Permission: AccessTypeNobody, Address: anyAddress.String()},
+			},
+			expErr: true,
+		},
+		"reject empty ContractStatusAccess": {
+			src: Params{
+				CodeUploadAccess:             DefaultUploadAccess,
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+			},
+			expErr: true,
+		},
+		"reject undefined permission in ContractStatusAccess": {
+			src: Params{
+				CodeUploadAccess:             DefaultUploadAccess,
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				ContractStatusAccess:         AccessConfig{Permission: AccessTypeUnspecified},
 			},
 			expErr: true,
 		},
@@ -168,7 +223,8 @@ func TestParamsUnmarshalJson(t *testing.T) {
 		"defaults": {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",
-				"max_wasm_code_size": 614400}`,
+				"max_wasm_code_size": 614400,
+				"contract_status_access": {"permission": "Nobody"}}`,
 			exp: DefaultParams(),
 		},
 	}
