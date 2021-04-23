@@ -185,3 +185,30 @@ func (m msgServer) ClearAdmin(goCtx context.Context, msg *types.MsgClearAdmin) (
 
 	return &types.MsgClearAdminResponse{}, nil
 }
+
+// UpdateContractStatus handles MsgUpdateContractStatus
+// CONTRACT: msg.validateBasic() must be called before calling this
+func (m msgServer) UpdateContractStatus(goCtx context.Context, msg *types.MsgUpdateContractStatus) (*types.MsgUpdateContractStatusResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "sender")
+	}
+	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "contract")
+	}
+
+	if err = m.keeper.UpdateContractStatus(ctx, contractAddr, senderAddr, msg.Status); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
+		sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
+	))
+
+	return &types.MsgUpdateContractStatusResponse{}, nil
+}

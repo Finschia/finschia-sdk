@@ -22,6 +22,8 @@ service Msg {
   rpc UpdateAdmin(MsgUpdateAdmin) returns (MsgUpdateAdminResponse);
   // ClearAdmin removes any admin stored for a smart contract
   rpc ClearAdmin(MsgClearAdmin) returns (MsgClearAdminResponse);
+  // UpdateContractStatus sets a new status for a smart contract
+  rpc UpdateContractStatus(MsgUpdateContractStatus) returns (MsgUpdateContractStatusResponse);
 }
 
 // MsgStoreCode submit Wasm code to the system
@@ -128,3 +130,16 @@ message MsgClearAdmin {
 
 // MsgClearAdminResponse returns empty data
 message MsgClearAdminResponse {}
+
+// MsgUpdateContractStatus sets a new status for a smart contract
+message MsgUpdateContractStatus {
+  // Sender is the that actor that signed the messages
+  string sender = 1;
+  // Status to be set
+  ContractStatus status = 2;
+  // Contract is the address of the smart contract
+  string contract = 3;
+}
+
+// MsgUpdateContractStatusResponse returns empty data
+message MsgUpdateContractStatusResponse {}
