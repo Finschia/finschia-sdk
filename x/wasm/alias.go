@@ -108,6 +108,8 @@ type (
 	MsgStoreCodeResponse           = types.MsgStoreCodeResponse
 	MsgInstantiateContract         = types.MsgInstantiateContract
 	MsgInstantiateContractResponse = types.MsgInstantiateContractResponse
+	MsgStoreCodeAndInstantiateContract = types.MsgStoreCodeAndInstantiateContract
+	MsgStoreCodeAndInstantiateContractResponse = types.MsgStoreCodeAndInstantiateContractResponse
 	MsgExecuteContract             = types.MsgExecuteContract
 	MsgExecuteContractResponse     = types.MsgExecuteContractResponse
 	MsgMigrateContract             = types.MsgMigrateContract
