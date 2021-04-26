@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
+	"math"
 	"sort"
 
 	bip39 "github.com/cosmos/go-bip39"
@@ -32,8 +33,9 @@ const (
 	flagNoSort      = "nosort"
 	flagHDPath      = "hd-path"
 
-	// DefaultKeyPass contains the default key password for genesis transactions
-	DefaultKeyPass = "12345678"
+	// CoinTypeNotAssigned means a coin type not assigned
+	// lbm-sdk cannot support the coin type MaxUint32
+	CoinTypeNotAssigned = math.MaxUint32
 )
 
 // AddKeyCommand defines a keys command to add a generated or recovered private key to keybase.
@@ -72,11 +74,10 @@ the flag --nosort is set.
 	cmd.Flags().Bool(flagNoBackup, false, "Don't print out seed phrase (if others are watching the terminal)")
 	cmd.Flags().Bool(flags.FlagDryRun, false, "Perform action, but don't add key to local keystore")
 	cmd.Flags().String(flagHDPath, "", "Manual HD Path derivation (overrides BIP44 config)")
-	cmd.Flags().Uint32(flagCoinType, sdk.GetConfig().GetCoinType(), "coin type number for HD derivation")
+	cmd.Flags().Uint32(flagCoinType, CoinTypeNotAssigned, "coin type number for HD derivation")
 	cmd.Flags().Uint32(flagAccount, 0, "Account number for HD derivation")
 	cmd.Flags().Uint32(flagIndex, 0, "Address index number for HD derivation")
 	cmd.Flags().String(flags.FlagKeyAlgorithm, string(hd.Secp256k1Type), "Key signing algorithm to generate keys for")
-
 	cmd.SetOut(cmd.OutOrStdout())
 	cmd.SetErr(cmd.ErrOrStderr())
 
@@ -199,6 +200,9 @@ func RunAddCmd(cmd *cobra.Command, args []string, kb keyring.Keyring, inBuf *buf
 	}
 
 	coinType, _ := cmd.Flags().GetUint32(flagCoinType)
+	if coinType == CoinTypeNotAssigned {
+		coinType = sdk.GetConfig().GetCoinType()
+	}
 	account, _ := cmd.Flags().GetUint32(flagAccount)
 	index, _ := cmd.Flags().GetUint32(flagIndex)
 	hdPath, _ := cmd.Flags().GetString(flagHDPath)

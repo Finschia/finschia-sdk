@@ -98,7 +98,7 @@ func TestSimulateMsgUnjail(t *testing.T) {
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, types.TypeMsgUnjail, msg.Type())
-	require.Equal(t, "cosmosvaloper1tnh2q55v8wyygtt9srz5safamzdengsn9dsd7z", msg.ValidatorAddr)
+	require.Equal(t, "linkvaloper1tnh2q55v8wyygtt9srz5safamzdengsn8rx882", msg.ValidatorAddr)
 	require.Len(t, futureOperations, 0)
 }
 

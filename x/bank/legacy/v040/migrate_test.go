@@ -24,10 +24,10 @@ func TestMigrate(t *testing.T) {
 		WithJSONMarshaler(encodingConfig.Marshaler)
 
 	coins := sdk.NewCoins(sdk.NewInt64Coin("stake", 50))
-	addr1, _ := sdk.AccAddressFromBech32("cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u")
+	addr1, _ := sdk.AccAddressFromBech32("link17dgvcdx0v4mlxfrmfhua7685py3akv3lpnlpce")
 	acc1 := v038auth.NewBaseAccount(addr1, coins, nil, 1, 0)
 
-	addr2, _ := sdk.AccAddressFromBech32("cosmos15v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74")
+	addr2, _ := sdk.AccAddressFromBech32("link15lclrh8eqj233lmvxj4kcut2mua03t7u09ff00")
 	vaac := v038auth.NewContinuousVestingAccountRaw(
 		v038auth.NewBaseVestingAccount(
 			v038auth.NewBaseAccount(addr2, coins, nil, 1, 0), coins, nil, nil, 3160620846,
@@ -48,7 +48,7 @@ func TestMigrate(t *testing.T) {
 	}
 
 	migrated := v040bank.Migrate(bankGenState, authGenState, supplyGenState)
-	expected := `{"params":{"send_enabled":[],"default_send_enabled":true},"balances":[{"address":"cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u","coins":[{"denom":"stake","amount":"50"}]},{"address":"cosmos15v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74","coins":[{"denom":"stake","amount":"50"}]}],"supply":[{"denom":"stake","amount":"1000"}],"denom_metadata":[]}`
+	expected := `{"params":{"send_enabled":[],"default_send_enabled":true},"balances":[{"address":"link17dgvcdx0v4mlxfrmfhua7685py3akv3lpnlpce","coins":[{"denom":"stake","amount":"50"}]},{"address":"link15lclrh8eqj233lmvxj4kcut2mua03t7u09ff00","coins":[{"denom":"stake","amount":"50"}]}],"supply":[{"denom":"stake","amount":"1000"}],"denom_metadata":[]}`
 
 	bz, err := clientCtx.JSONMarshaler.MarshalJSON(migrated)
 	require.NoError(t, err)

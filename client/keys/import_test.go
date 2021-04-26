@@ -2,7 +2,6 @@ package keys
 
 import (
 	"context"
-	"fmt"
 	"io/ioutil"
 	"path/filepath"
 	"testing"
@@ -10,7 +9,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/crypto/keyring"
 	"github.com/line/lbm-sdk/v2/testutil"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -46,9 +44,6 @@ HbP+c6JmeJy9JXe2rbbF1QtCX1gLqGcDQPBXiCtFvP7/8wTZtVOPj8vREzhZ9ElO
 	require.NoError(t, ioutil.WriteFile(keyfile, []byte(armoredKey), 0644))
 
 	mockIn.Reset("123456789\n")
-	cmd.SetArgs([]string{
-		"keyname1", keyfile,
-		fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
-	})
+	cmd.SetArgs([]string{"keyname1", keyfile})
 	require.NoError(t, cmd.ExecuteContext(ctx))
 }

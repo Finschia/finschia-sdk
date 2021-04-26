@@ -267,7 +267,14 @@ func (chain *TestChain) NextBlock() {
 	}
 
 	chain.App.BeginBlock(abci.RequestBeginBlock{Header: chain.CurrentHeader})
+}
 
+func (chain *TestChain) CommitBlock() {
+	chain.App.EndBlock(abci.RequestEndBlock{Height: chain.CurrentHeader.Height})
+	chain.App.Commit()
+
+	chain.App.BeginRecheckTx(abci.RequestBeginRecheckTx{Header: chain.CurrentHeader})
+	chain.App.EndRecheckTx(abci.RequestEndRecheckTx{Height: chain.CurrentHeader.Height})
 }
 
 // sendMsgs delivers a transaction through the application without returning the result.
@@ -735,7 +742,7 @@ func (chain *TestChain) CreatePortCapability(portID string) {
 		}
 	}
 
-	chain.App.Commit()
+	chain.CommitBlock()
 
 	chain.NextBlock()
 }
@@ -762,7 +769,7 @@ func (chain *TestChain) CreateChannelCapability(portID, channelID string) {
 		require.NoError(chain.t, err)
 	}
 
-	chain.App.Commit()
+	chain.CommitBlock()
 
 	chain.NextBlock()
 }
@@ -882,7 +889,7 @@ func (chain *TestChain) SendPacket(
 	}
 
 	// commit changes
-	chain.App.Commit()
+	chain.CommitBlock()
 	chain.NextBlock()
 
 	return nil
@@ -901,7 +908,7 @@ func (chain *TestChain) WriteAcknowledgement(
 	}
 
 	// commit changes
-	chain.App.Commit()
+	chain.CommitBlock()
 	chain.NextBlock()
 
 	return nil

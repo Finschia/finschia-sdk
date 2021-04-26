@@ -21,10 +21,10 @@ func mnemonicToSeed(mnemonic string) []byte {
 
 func TestStringifyFundraiserPathParams(t *testing.T) {
 	path := hd.NewFundraiserParams(4, types.CoinType, 22)
-	require.Equal(t, "m/44'/118'/4'/0/22", path.String())
+	require.Equal(t, "m/44'/438'/4'/0/22", path.String())
 
 	path = hd.NewFundraiserParams(4, types.CoinType, 57)
-	require.Equal(t, "m/44'/118'/4'/0/57", path.String())
+	require.Equal(t, "m/44'/438'/4'/0/57", path.String())
 
 	path = hd.NewFundraiserParams(4, 12345, 57)
 	require.Equal(t, "m/44'/12345'/4'/0/57", path.String())
@@ -200,7 +200,7 @@ func ExampleSomeBIP32TestVecs() {
 	seed := mnemonicToSeed("barrel original fuel morning among eternal " +
 		"filter ball stove pluck matrix mechanic")
 	master, ch := hd.ComputeMastersFromSeed(seed)
-	fmt.Println("keys from fundraiser test-vector (cosmos, bitcoin, ether)")
+	fmt.Println("keys from fundraiser test-vector (link, bitcoin, ether)")
 	fmt.Println()
 	// cosmos
 	priv, err := hd.DerivePrivateKeyForPath(master, ch, types.FullFundraiserPath)
@@ -264,9 +264,9 @@ func ExampleSomeBIP32TestVecs() {
 	priv, _ = hd.DerivePrivateKeyForPath(master, ch, "0/7")
 	fmt.Println(hex.EncodeToString(priv[:]))
 
-	// Output: keys from fundraiser test-vector (cosmos, bitcoin, ether)
+	// Output: keys from fundraiser test-vector (link, bitcoin, ether)
 	//
-	// bfcb217c058d8bbafd5e186eae936106ca3e943889b0b4a093ae13822fd3170c
+	// ae98c89aca32cb824f5b7ff94d7bf203e1f26d81787467d45422e4c7497342c9
 	// e77c3de76965ad89997451de97b95bb65ede23a6bf185a55d80363d92ee37c3d
 	// 7fc4d8a8146dea344ba04c593517d3f377fa6cded36cd55aee0a0bb968e651bc
 	// INVALID

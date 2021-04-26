@@ -16,7 +16,7 @@ import (
 func TestInMemoryCreateLedger(t *testing.T) {
 	kb := NewInMemory()
 
-	ledger, err := kb.SaveLedgerKey("some_account", hd.Secp256k1, "cosmos", 118, 3, 1)
+	ledger, err := kb.SaveLedgerKey("some_account", hd.Secp256k1, "link", 438, 3, 1)
 
 	if err != nil {
 		require.Error(t, err)
@@ -30,7 +30,7 @@ func TestInMemoryCreateLedger(t *testing.T) {
 	pubKey := ledger.GetPubKey()
 	pk, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubKey)
 	require.NoError(t, err)
-	require.Equal(t, "cosmospub1addwnpepqdszcr95mrqqs8lw099aa9h8h906zmet22pmwe9vquzcgvnm93eqygufdlv", pk)
+	require.Equal(t, "linkpub1addwnpepqw830vud78huqu2dr5a6ptqn3rpjazec4krl6a5m4s955ywuur47zxh6gpv", pk)
 
 	// Check that restoring the key gets the same results
 	restoredKey, err := kb.Key("some_account")
@@ -41,11 +41,11 @@ func TestInMemoryCreateLedger(t *testing.T) {
 	pubKey = restoredKey.GetPubKey()
 	pk, err = sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubKey)
 	require.NoError(t, err)
-	require.Equal(t, "cosmospub1addwnpepqdszcr95mrqqs8lw099aa9h8h906zmet22pmwe9vquzcgvnm93eqygufdlv", pk)
+	require.Equal(t, "linkpub1addwnpepqw830vud78huqu2dr5a6ptqn3rpjazec4krl6a5m4s955ywuur47zxh6gpv", pk)
 
 	path, err := restoredKey.GetPath()
 	require.NoError(t, err)
-	require.Equal(t, "m/44'/118'/3'/0/1", path.String())
+	require.Equal(t, "m/44'/438'/3'/0/1", path.String())
 }
 
 // TestSignVerify does some detailed checks on how we sign and validate
@@ -56,7 +56,7 @@ func TestSignVerifyKeyRingWithLedger(t *testing.T) {
 	kb, err := New("keybasename", "test", dir, nil)
 	require.NoError(t, err)
 
-	i1, err := kb.SaveLedgerKey("key", hd.Secp256k1, "cosmos", 118, 0, 0)
+	i1, err := kb.SaveLedgerKey("key", hd.Secp256k1, "link", 438, 0, 0)
 	if err != nil {
 		require.Equal(t, "ledger nano S: support for ledger devices is not available in this executable", err.Error())
 		t.Skip("ledger nano S: support for ledger devices is not available in this executable")
@@ -94,10 +94,10 @@ func TestAltKeyring_SaveLedgerKey(t *testing.T) {
 	require.NoError(t, err)
 
 	// Test unsupported Algo
-	_, err = keyring.SaveLedgerKey("key", notSupportedAlgo{}, "cosmos", 118, 0, 0)
+	_, err = keyring.SaveLedgerKey("key", notSupportedAlgo{}, "link", 438, 0, 0)
 	require.EqualError(t, err, ErrUnsupportedSigningAlgo.Error())
 
-	ledger, err := keyring.SaveLedgerKey("some_account", hd.Secp256k1, "cosmos", 118, 3, 1)
+	ledger, err := keyring.SaveLedgerKey("some_account", hd.Secp256k1, "link", 438, 3, 1)
 	if err != nil {
 		require.Equal(t, "ledger nano S: support for ledger devices is not available in this executable", err.Error())
 		t.Skip("ledger nano S: support for ledger devices is not available in this executable")
@@ -108,7 +108,7 @@ func TestAltKeyring_SaveLedgerKey(t *testing.T) {
 	pubKey := ledger.GetPubKey()
 	pk, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubKey)
 	require.NoError(t, err)
-	require.Equal(t, "cosmospub1addwnpepqdszcr95mrqqs8lw099aa9h8h906zmet22pmwe9vquzcgvnm93eqygufdlv", pk)
+	require.Equal(t, "linkpub1addwnpepqw830vud78huqu2dr5a6ptqn3rpjazec4krl6a5m4s955ywuur47zxh6gpv", pk)
 
 	// Check that restoring the key gets the same results
 	restoredKey, err := keyring.Key("some_account")
@@ -119,9 +119,9 @@ func TestAltKeyring_SaveLedgerKey(t *testing.T) {
 	pubKey = restoredKey.GetPubKey()
 	pk, err = sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, pubKey)
 	require.NoError(t, err)
-	require.Equal(t, "cosmospub1addwnpepqdszcr95mrqqs8lw099aa9h8h906zmet22pmwe9vquzcgvnm93eqygufdlv", pk)
+	require.Equal(t, "linkpub1addwnpepqw830vud78huqu2dr5a6ptqn3rpjazec4krl6a5m4s955ywuur47zxh6gpv", pk)
 
 	path, err := restoredKey.GetPath()
 	require.NoError(t, err)
-	require.Equal(t, "m/44'/118'/3'/0/1", path.String())
+	require.Equal(t, "m/44'/438'/3'/0/1", path.String())
 }

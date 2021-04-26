@@ -24,7 +24,7 @@ func TestMigrate(t *testing.T) {
 		WithLegacyAmino(encodingConfig.Amino).
 		WithJSONMarshaler(encodingConfig.Marshaler)
 
-	recipient, err := sdk.AccAddressFromBech32("cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh")
+	recipient, err := sdk.AccAddressFromBech32("link18qzmhd4sdefg79wg2cndsfa7rjp04cydr746k0")
 	require.NoError(t, err)
 	govGenState := v036gov.GenesisState{
 		Proposals: []v036gov.Proposal{
@@ -131,7 +131,7 @@ func TestMigrate(t *testing.T) {
 					}
 				],
 				"description": "bar_community",
-				"recipient": "cosmos1fl48vsnmsdzcv85q5d2q4z5ajdha8yu34mf0eh",
+				"recipient": "link18qzmhd4sdefg79wg2cndsfa7rjp04cydr746k0",
 				"title": "foo_community"
 			},
 			"deposit_end_time": "0001-01-01T00:00:00Z",

@@ -4011,8 +4011,8 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Account` | [QueryAccountRequest](#lbm.auth.v1beta1.QueryAccountRequest) | [QueryAccountResponse](#lbm.auth.v1beta1.QueryAccountResponse) | Account returns account details based on address. | GET|/cosmos/auth/v1beta1/accounts/{address}|
-| `Params` | [QueryParamsRequest](#lbm.auth.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.auth.v1beta1.QueryParamsResponse) | Params queries all parameters. | GET|/cosmos/auth/v1beta1/params|
+| `Account` | [QueryAccountRequest](#lbm.auth.v1beta1.QueryAccountRequest) | [QueryAccountResponse](#lbm.auth.v1beta1.QueryAccountResponse) | Account returns account details based on address. | GET|/lbm/auth/v1beta1/accounts/{address}|
+| `Params` | [QueryParamsRequest](#lbm.auth.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.auth.v1beta1.QueryParamsResponse) | Params queries all parameters. | GET|/lbm/auth/v1beta1/params|
 
  <!-- end services -->
 
@@ -4432,13 +4432,13 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Balance` | [QueryBalanceRequest](#lbm.bank.v1beta1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.bank.v1beta1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/cosmos/bank/v1beta1/balances/{address}/{denom}|
-| `AllBalances` | [QueryAllBalancesRequest](#lbm.bank.v1beta1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.bank.v1beta1.QueryAllBalancesResponse) | AllBalances queries the balance of all coins for a single account. | GET|/cosmos/bank/v1beta1/balances/{address}|
-| `TotalSupply` | [QueryTotalSupplyRequest](#lbm.bank.v1beta1.QueryTotalSupplyRequest) | [QueryTotalSupplyResponse](#lbm.bank.v1beta1.QueryTotalSupplyResponse) | TotalSupply queries the total supply of all coins. | GET|/cosmos/bank/v1beta1/supply|
-| `SupplyOf` | [QuerySupplyOfRequest](#lbm.bank.v1beta1.QuerySupplyOfRequest) | [QuerySupplyOfResponse](#lbm.bank.v1beta1.QuerySupplyOfResponse) | SupplyOf queries the supply of a single coin. | GET|/cosmos/bank/v1beta1/supply/{denom}|
-| `Params` | [QueryParamsRequest](#lbm.bank.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.bank.v1beta1.QueryParamsResponse) | Params queries the parameters of x/bank module. | GET|/cosmos/bank/v1beta1/params|
-| `DenomMetadata` | [QueryDenomMetadataRequest](#lbm.bank.v1beta1.QueryDenomMetadataRequest) | [QueryDenomMetadataResponse](#lbm.bank.v1beta1.QueryDenomMetadataResponse) | DenomsMetadata queries the client metadata of a given coin denomination. | GET|/cosmos/bank/v1beta1/denoms_metadata/{denom}|
-| `DenomsMetadata` | [QueryDenomsMetadataRequest](#lbm.bank.v1beta1.QueryDenomsMetadataRequest) | [QueryDenomsMetadataResponse](#lbm.bank.v1beta1.QueryDenomsMetadataResponse) | DenomsMetadata queries the client metadata for all registered coin denominations. | GET|/cosmos/bank/v1beta1/denoms_metadata|
+| `Balance` | [QueryBalanceRequest](#lbm.bank.v1beta1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.bank.v1beta1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/lbm/bank/v1beta1/balances/{address}/{denom}|
+| `AllBalances` | [QueryAllBalancesRequest](#lbm.bank.v1beta1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.bank.v1beta1.QueryAllBalancesResponse) | AllBalances queries the balance of all coins for a single account. | GET|/lbm/bank/v1beta1/balances/{address}|
+| `TotalSupply` | [QueryTotalSupplyRequest](#lbm.bank.v1beta1.QueryTotalSupplyRequest) | [QueryTotalSupplyResponse](#lbm.bank.v1beta1.QueryTotalSupplyResponse) | TotalSupply queries the total supply of all coins. | GET|/lbm/bank/v1beta1/supply|
+| `SupplyOf` | [QuerySupplyOfRequest](#lbm.bank.v1beta1.QuerySupplyOfRequest) | [QuerySupplyOfResponse](#lbm.bank.v1beta1.QuerySupplyOfResponse) | SupplyOf queries the supply of a single coin. | GET|/lbm/bank/v1beta1/supply/{denom}|
+| `Params` | [QueryParamsRequest](#lbm.bank.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.bank.v1beta1.QueryParamsResponse) | Params queries the parameters of x/bank module. | GET|/lbm/bank/v1beta1/params|
+| `DenomMetadata` | [QueryDenomMetadataRequest](#lbm.bank.v1beta1.QueryDenomMetadataRequest) | [QueryDenomMetadataResponse](#lbm.bank.v1beta1.QueryDenomMetadataResponse) | DenomsMetadata queries the client metadata of a given coin denomination. | GET|/lbm/bank/v1beta1/denoms_metadata/{denom}|
+| `DenomsMetadata` | [QueryDenomsMetadataRequest](#lbm.bank.v1beta1.QueryDenomsMetadataRequest) | [QueryDenomsMetadataResponse](#lbm.bank.v1beta1.QueryDenomsMetadataResponse) | DenomsMetadata queries the client metadata for all registered coin denominations. | GET|/lbm/bank/v1beta1/denoms_metadata|
 
  <!-- end services -->
 
@@ -5017,12 +5017,12 @@ Service defines the gRPC querier service for ostracon queries.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `GetNodeInfo` | [GetNodeInfoRequest](#lbm.base.ostracon.v1beta1.GetNodeInfoRequest) | [GetNodeInfoResponse](#lbm.base.ostracon.v1beta1.GetNodeInfoResponse) | GetNodeInfo queries the current node info. | GET|/cosmos/base/ostracon/v1beta1/node_info|
-| `GetSyncing` | [GetSyncingRequest](#lbm.base.ostracon.v1beta1.GetSyncingRequest) | [GetSyncingResponse](#lbm.base.ostracon.v1beta1.GetSyncingResponse) | GetSyncing queries node syncing. | GET|/cosmos/base/ostracon/v1beta1/syncing|
-| `GetLatestBlock` | [GetLatestBlockRequest](#lbm.base.ostracon.v1beta1.GetLatestBlockRequest) | [GetLatestBlockResponse](#lbm.base.ostracon.v1beta1.GetLatestBlockResponse) | GetLatestBlock returns the latest block. | GET|/cosmos/base/ostracon/v1beta1/blocks/latest|
-| `GetBlockByHeight` | [GetBlockByHeightRequest](#lbm.base.ostracon.v1beta1.GetBlockByHeightRequest) | [GetBlockByHeightResponse](#lbm.base.ostracon.v1beta1.GetBlockByHeightResponse) | GetBlockByHeight queries block for given height. | GET|/cosmos/base/ostracon/v1beta1/blocks/{height}|
-| `GetLatestValidatorSet` | [GetLatestValidatorSetRequest](#lbm.base.ostracon.v1beta1.GetLatestValidatorSetRequest) | [GetLatestValidatorSetResponse](#lbm.base.ostracon.v1beta1.GetLatestValidatorSetResponse) | GetLatestValidatorSet queries latest validator-set. | GET|/cosmos/base/ostracon/v1beta1/validatorsets/latest|
-| `GetValidatorSetByHeight` | [GetValidatorSetByHeightRequest](#lbm.base.ostracon.v1beta1.GetValidatorSetByHeightRequest) | [GetValidatorSetByHeightResponse](#lbm.base.ostracon.v1beta1.GetValidatorSetByHeightResponse) | GetValidatorSetByHeight queries validator-set at a given height. | GET|/cosmos/base/ostracon/v1beta1/validatorsets/{height}|
+| `GetNodeInfo` | [GetNodeInfoRequest](#lbm.base.ostracon.v1beta1.GetNodeInfoRequest) | [GetNodeInfoResponse](#lbm.base.ostracon.v1beta1.GetNodeInfoResponse) | GetNodeInfo queries the current node info. | GET|/lbm/base/ostracon/v1beta1/node_info|
+| `GetSyncing` | [GetSyncingRequest](#lbm.base.ostracon.v1beta1.GetSyncingRequest) | [GetSyncingResponse](#lbm.base.ostracon.v1beta1.GetSyncingResponse) | GetSyncing queries node syncing. | GET|/lbm/base/ostracon/v1beta1/syncing|
+| `GetLatestBlock` | [GetLatestBlockRequest](#lbm.base.ostracon.v1beta1.GetLatestBlockRequest) | [GetLatestBlockResponse](#lbm.base.ostracon.v1beta1.GetLatestBlockResponse) | GetLatestBlock returns the latest block. | GET|/lbm/base/ostracon/v1beta1/blocks/latest|
+| `GetBlockByHeight` | [GetBlockByHeightRequest](#lbm.base.ostracon.v1beta1.GetBlockByHeightRequest) | [GetBlockByHeightResponse](#lbm.base.ostracon.v1beta1.GetBlockByHeightResponse) | GetBlockByHeight queries block for given height. | GET|/lbm/base/ostracon/v1beta1/blocks/{height}|
+| `GetLatestValidatorSet` | [GetLatestValidatorSetRequest](#lbm.base.ostracon.v1beta1.GetLatestValidatorSetRequest) | [GetLatestValidatorSetResponse](#lbm.base.ostracon.v1beta1.GetLatestValidatorSetResponse) | GetLatestValidatorSet queries latest validator-set. | GET|/lbm/base/ostracon/v1beta1/validatorsets/latest|
+| `GetValidatorSetByHeight` | [GetValidatorSetByHeightRequest](#lbm.base.ostracon.v1beta1.GetValidatorSetByHeightRequest) | [GetValidatorSetByHeightResponse](#lbm.base.ostracon.v1beta1.GetValidatorSetByHeightResponse) | GetValidatorSetByHeight queries validator-set at a given height. | GET|/lbm/base/ostracon/v1beta1/validatorsets/{height}|
 
  <!-- end services -->
 
@@ -6378,15 +6378,15 @@ Query defines the gRPC querier service for distribution module.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.distribution.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.distribution.v1beta1.QueryParamsResponse) | Params queries params of the distribution module. | GET|/cosmos/distribution/v1beta1/params|
-| `ValidatorOutstandingRewards` | [QueryValidatorOutstandingRewardsRequest](#lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsRequest) | [QueryValidatorOutstandingRewardsResponse](#lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse) | ValidatorOutstandingRewards queries rewards of a validator address. | GET|/cosmos/distribution/v1beta1/validators/{validator_address}/outstanding_rewards|
-| `ValidatorCommission` | [QueryValidatorCommissionRequest](#lbm.distribution.v1beta1.QueryValidatorCommissionRequest) | [QueryValidatorCommissionResponse](#lbm.distribution.v1beta1.QueryValidatorCommissionResponse) | ValidatorCommission queries accumulated commission for a validator. | GET|/cosmos/distribution/v1beta1/validators/{validator_address}/commission|
-| `ValidatorSlashes` | [QueryValidatorSlashesRequest](#lbm.distribution.v1beta1.QueryValidatorSlashesRequest) | [QueryValidatorSlashesResponse](#lbm.distribution.v1beta1.QueryValidatorSlashesResponse) | ValidatorSlashes queries slash events of a validator. | GET|/cosmos/distribution/v1beta1/validators/{validator_address}/slashes|
-| `DelegationRewards` | [QueryDelegationRewardsRequest](#lbm.distribution.v1beta1.QueryDelegationRewardsRequest) | [QueryDelegationRewardsResponse](#lbm.distribution.v1beta1.QueryDelegationRewardsResponse) | DelegationRewards queries the total rewards accrued by a delegation. | GET|/cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards/{validator_address}|
-| `DelegationTotalRewards` | [QueryDelegationTotalRewardsRequest](#lbm.distribution.v1beta1.QueryDelegationTotalRewardsRequest) | [QueryDelegationTotalRewardsResponse](#lbm.distribution.v1beta1.QueryDelegationTotalRewardsResponse) | DelegationTotalRewards queries the total rewards accrued by a each validator. | GET|/cosmos/distribution/v1beta1/delegators/{delegator_address}/rewards|
-| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.distribution.v1beta1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.distribution.v1beta1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries the validators of a delegator. | GET|/cosmos/distribution/v1beta1/delegators/{delegator_address}/validators|
-| `DelegatorWithdrawAddress` | [QueryDelegatorWithdrawAddressRequest](#lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressRequest) | [QueryDelegatorWithdrawAddressResponse](#lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse) | DelegatorWithdrawAddress queries withdraw address of a delegator. | GET|/cosmos/distribution/v1beta1/delegators/{delegator_address}/withdraw_address|
-| `CommunityPool` | [QueryCommunityPoolRequest](#lbm.distribution.v1beta1.QueryCommunityPoolRequest) | [QueryCommunityPoolResponse](#lbm.distribution.v1beta1.QueryCommunityPoolResponse) | CommunityPool queries the community pool coins. | GET|/cosmos/distribution/v1beta1/community_pool|
+| `Params` | [QueryParamsRequest](#lbm.distribution.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.distribution.v1beta1.QueryParamsResponse) | Params queries params of the distribution module. | GET|/lbm/distribution/v1beta1/params|
+| `ValidatorOutstandingRewards` | [QueryValidatorOutstandingRewardsRequest](#lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsRequest) | [QueryValidatorOutstandingRewardsResponse](#lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse) | ValidatorOutstandingRewards queries rewards of a validator address. | GET|/lbm/distribution/v1beta1/validators/{validator_address}/outstanding_rewards|
+| `ValidatorCommission` | [QueryValidatorCommissionRequest](#lbm.distribution.v1beta1.QueryValidatorCommissionRequest) | [QueryValidatorCommissionResponse](#lbm.distribution.v1beta1.QueryValidatorCommissionResponse) | ValidatorCommission queries accumulated commission for a validator. | GET|/lbm/distribution/v1beta1/validators/{validator_address}/commission|
+| `ValidatorSlashes` | [QueryValidatorSlashesRequest](#lbm.distribution.v1beta1.QueryValidatorSlashesRequest) | [QueryValidatorSlashesResponse](#lbm.distribution.v1beta1.QueryValidatorSlashesResponse) | ValidatorSlashes queries slash events of a validator. | GET|/lbm/distribution/v1beta1/validators/{validator_address}/slashes|
+| `DelegationRewards` | [QueryDelegationRewardsRequest](#lbm.distribution.v1beta1.QueryDelegationRewardsRequest) | [QueryDelegationRewardsResponse](#lbm.distribution.v1beta1.QueryDelegationRewardsResponse) | DelegationRewards queries the total rewards accrued by a delegation. | GET|/lbm/distribution/v1beta1/delegators/{delegator_address}/rewards/{validator_address}|
+| `DelegationTotalRewards` | [QueryDelegationTotalRewardsRequest](#lbm.distribution.v1beta1.QueryDelegationTotalRewardsRequest) | [QueryDelegationTotalRewardsResponse](#lbm.distribution.v1beta1.QueryDelegationTotalRewardsResponse) | DelegationTotalRewards queries the total rewards accrued by a each validator. | GET|/lbm/distribution/v1beta1/delegators/{delegator_address}/rewards|
+| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.distribution.v1beta1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.distribution.v1beta1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries the validators of a delegator. | GET|/lbm/distribution/v1beta1/delegators/{delegator_address}/validators|
+| `DelegatorWithdrawAddress` | [QueryDelegatorWithdrawAddressRequest](#lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressRequest) | [QueryDelegatorWithdrawAddressResponse](#lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse) | DelegatorWithdrawAddress queries withdraw address of a delegator. | GET|/lbm/distribution/v1beta1/delegators/{delegator_address}/withdraw_address|
+| `CommunityPool` | [QueryCommunityPoolRequest](#lbm.distribution.v1beta1.QueryCommunityPoolRequest) | [QueryCommunityPoolResponse](#lbm.distribution.v1beta1.QueryCommunityPoolResponse) | CommunityPool queries the community pool coins. | GET|/lbm/distribution/v1beta1/community_pool|
 
  <!-- end services -->
 
@@ -6677,8 +6677,8 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Evidence` | [QueryEvidenceRequest](#lbm.evidence.v1beta1.QueryEvidenceRequest) | [QueryEvidenceResponse](#lbm.evidence.v1beta1.QueryEvidenceResponse) | Evidence queries evidence based on evidence hash. | GET|/cosmos/evidence/v1beta1/evidence/{evidence_hash}|
-| `AllEvidence` | [QueryAllEvidenceRequest](#lbm.evidence.v1beta1.QueryAllEvidenceRequest) | [QueryAllEvidenceResponse](#lbm.evidence.v1beta1.QueryAllEvidenceResponse) | AllEvidence queries all evidence. | GET|/cosmos/evidence/v1beta1/evidence|
+| `Evidence` | [QueryEvidenceRequest](#lbm.evidence.v1beta1.QueryEvidenceRequest) | [QueryEvidenceResponse](#lbm.evidence.v1beta1.QueryEvidenceResponse) | Evidence queries evidence based on evidence hash. | GET|/lbm/evidence/v1beta1/evidence/{evidence_hash}|
+| `AllEvidence` | [QueryAllEvidenceRequest](#lbm.evidence.v1beta1.QueryAllEvidenceRequest) | [QueryAllEvidenceResponse](#lbm.evidence.v1beta1.QueryAllEvidenceResponse) | AllEvidence queries all evidence. | GET|/lbm/evidence/v1beta1/evidence|
 
  <!-- end services -->
 
@@ -7272,14 +7272,14 @@ Query defines the gRPC querier service for gov module
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Proposal` | [QueryProposalRequest](#lbm.gov.v1beta1.QueryProposalRequest) | [QueryProposalResponse](#lbm.gov.v1beta1.QueryProposalResponse) | Proposal queries proposal details based on ProposalID. | GET|/cosmos/gov/v1beta1/proposals/{proposal_id}|
-| `Proposals` | [QueryProposalsRequest](#lbm.gov.v1beta1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.gov.v1beta1.QueryProposalsResponse) | Proposals queries all proposals based on given status. | GET|/cosmos/gov/v1beta1/proposals|
-| `Vote` | [QueryVoteRequest](#lbm.gov.v1beta1.QueryVoteRequest) | [QueryVoteResponse](#lbm.gov.v1beta1.QueryVoteResponse) | Vote queries voted information based on proposalID, voterAddr. | GET|/cosmos/gov/v1beta1/proposals/{proposal_id}/votes/{voter}|
-| `Votes` | [QueryVotesRequest](#lbm.gov.v1beta1.QueryVotesRequest) | [QueryVotesResponse](#lbm.gov.v1beta1.QueryVotesResponse) | Votes queries votes of a given proposal. | GET|/cosmos/gov/v1beta1/proposals/{proposal_id}/votes|
-| `Params` | [QueryParamsRequest](#lbm.gov.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.gov.v1beta1.QueryParamsResponse) | Params queries all parameters of the gov module. | GET|/cosmos/gov/v1beta1/params/{params_type}|
-| `Deposit` | [QueryDepositRequest](#lbm.gov.v1beta1.QueryDepositRequest) | [QueryDepositResponse](#lbm.gov.v1beta1.QueryDepositResponse) | Deposit queries single deposit information based proposalID, depositAddr. | GET|/cosmos/gov/v1beta1/proposals/{proposal_id}/deposits/{depositor}|
-| `Deposits` | [QueryDepositsRequest](#lbm.gov.v1beta1.QueryDepositsRequest) | [QueryDepositsResponse](#lbm.gov.v1beta1.QueryDepositsResponse) | Deposits queries all deposits of a single proposal. | GET|/cosmos/gov/v1beta1/proposals/{proposal_id}/deposits|
-| `TallyResult` | [QueryTallyResultRequest](#lbm.gov.v1beta1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.gov.v1beta1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal vote. | GET|/cosmos/gov/v1beta1/proposals/{proposal_id}/tally|
+| `Proposal` | [QueryProposalRequest](#lbm.gov.v1beta1.QueryProposalRequest) | [QueryProposalResponse](#lbm.gov.v1beta1.QueryProposalResponse) | Proposal queries proposal details based on ProposalID. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}|
+| `Proposals` | [QueryProposalsRequest](#lbm.gov.v1beta1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.gov.v1beta1.QueryProposalsResponse) | Proposals queries all proposals based on given status. | GET|/lbm/gov/v1beta1/proposals|
+| `Vote` | [QueryVoteRequest](#lbm.gov.v1beta1.QueryVoteRequest) | [QueryVoteResponse](#lbm.gov.v1beta1.QueryVoteResponse) | Vote queries voted information based on proposalID, voterAddr. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/votes/{voter}|
+| `Votes` | [QueryVotesRequest](#lbm.gov.v1beta1.QueryVotesRequest) | [QueryVotesResponse](#lbm.gov.v1beta1.QueryVotesResponse) | Votes queries votes of a given proposal. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/votes|
+| `Params` | [QueryParamsRequest](#lbm.gov.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.gov.v1beta1.QueryParamsResponse) | Params queries all parameters of the gov module. | GET|/lbm/gov/v1beta1/params/{params_type}|
+| `Deposit` | [QueryDepositRequest](#lbm.gov.v1beta1.QueryDepositRequest) | [QueryDepositResponse](#lbm.gov.v1beta1.QueryDepositResponse) | Deposit queries single deposit information based proposalID, depositAddr. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/deposits/{depositor}|
+| `Deposits` | [QueryDepositsRequest](#lbm.gov.v1beta1.QueryDepositsRequest) | [QueryDepositsResponse](#lbm.gov.v1beta1.QueryDepositsResponse) | Deposits queries all deposits of a single proposal. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/deposits|
+| `TallyResult` | [QueryTallyResultRequest](#lbm.gov.v1beta1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.gov.v1beta1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal vote. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/tally|
 
  <!-- end services -->
 
@@ -7582,9 +7582,9 @@ Query provides defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.mint.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.mint.v1beta1.QueryParamsResponse) | Params returns the total set of minting parameters. | GET|/cosmos/mint/v1beta1/params|
-| `Inflation` | [QueryInflationRequest](#lbm.mint.v1beta1.QueryInflationRequest) | [QueryInflationResponse](#lbm.mint.v1beta1.QueryInflationResponse) | Inflation returns the current minting inflation value. | GET|/cosmos/mint/v1beta1/inflation|
-| `AnnualProvisions` | [QueryAnnualProvisionsRequest](#lbm.mint.v1beta1.QueryAnnualProvisionsRequest) | [QueryAnnualProvisionsResponse](#lbm.mint.v1beta1.QueryAnnualProvisionsResponse) | AnnualProvisions current minting annual provisions value. | GET|/cosmos/mint/v1beta1/annual_provisions|
+| `Params` | [QueryParamsRequest](#lbm.mint.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.mint.v1beta1.QueryParamsResponse) | Params returns the total set of minting parameters. | GET|/lbm/mint/v1beta1/params|
+| `Inflation` | [QueryInflationRequest](#lbm.mint.v1beta1.QueryInflationRequest) | [QueryInflationResponse](#lbm.mint.v1beta1.QueryInflationResponse) | Inflation returns the current minting inflation value. | GET|/lbm/mint/v1beta1/inflation|
+| `AnnualProvisions` | [QueryAnnualProvisionsRequest](#lbm.mint.v1beta1.QueryAnnualProvisionsRequest) | [QueryAnnualProvisionsResponse](#lbm.mint.v1beta1.QueryAnnualProvisionsResponse) | AnnualProvisions current minting annual provisions value. | GET|/lbm/mint/v1beta1/annual_provisions|
 
  <!-- end services -->
 
@@ -7692,7 +7692,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.params.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.params.v1beta1.QueryParamsResponse) | Params queries a specific parameter of a module, given its subspace and key. | GET|/cosmos/params/v1beta1/params|
+| `Params` | [QueryParamsRequest](#lbm.params.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.params.v1beta1.QueryParamsResponse) | Params queries a specific parameter of a module, given its subspace and key. | GET|/lbm/params/v1beta1/params|
 
  <!-- end services -->
 
@@ -7946,9 +7946,9 @@ Query provides defines the gRPC querier service
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.slashing.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.slashing.v1beta1.QueryParamsResponse) | Params queries the parameters of slashing module | GET|/cosmos/slashing/v1beta1/params|
-| `SigningInfo` | [QuerySigningInfoRequest](#lbm.slashing.v1beta1.QuerySigningInfoRequest) | [QuerySigningInfoResponse](#lbm.slashing.v1beta1.QuerySigningInfoResponse) | SigningInfo queries the signing info of given cons address | GET|/cosmos/slashing/v1beta1/signing_infos/{cons_address}|
-| `SigningInfos` | [QuerySigningInfosRequest](#lbm.slashing.v1beta1.QuerySigningInfosRequest) | [QuerySigningInfosResponse](#lbm.slashing.v1beta1.QuerySigningInfosResponse) | SigningInfos queries signing info of all validators | GET|/cosmos/slashing/v1beta1/signing_infos|
+| `Params` | [QueryParamsRequest](#lbm.slashing.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.slashing.v1beta1.QueryParamsResponse) | Params queries the parameters of slashing module | GET|/lbm/slashing/v1beta1/params|
+| `SigningInfo` | [QuerySigningInfoRequest](#lbm.slashing.v1beta1.QuerySigningInfoRequest) | [QuerySigningInfoResponse](#lbm.slashing.v1beta1.QuerySigningInfoResponse) | SigningInfo queries the signing info of given cons address | GET|/lbm/slashing/v1beta1/signing_infos/{cons_address}|
+| `SigningInfos` | [QuerySigningInfosRequest](#lbm.slashing.v1beta1.QuerySigningInfosRequest) | [QuerySigningInfosResponse](#lbm.slashing.v1beta1.QuerySigningInfosResponse) | SigningInfos queries signing info of all validators | GET|/lbm/slashing/v1beta1/signing_infos|
 
  <!-- end services -->
 
@@ -8928,20 +8928,20 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Validators` | [QueryValidatorsRequest](#lbm.staking.v1beta1.QueryValidatorsRequest) | [QueryValidatorsResponse](#lbm.staking.v1beta1.QueryValidatorsResponse) | Validators queries all validators that match the given status. | GET|/cosmos/staking/v1beta1/validators|
-| `Validator` | [QueryValidatorRequest](#lbm.staking.v1beta1.QueryValidatorRequest) | [QueryValidatorResponse](#lbm.staking.v1beta1.QueryValidatorResponse) | Validator queries validator info for given validator address. | GET|/cosmos/staking/v1beta1/validators/{validator_addr}|
-| `ValidatorDelegations` | [QueryValidatorDelegationsRequest](#lbm.staking.v1beta1.QueryValidatorDelegationsRequest) | [QueryValidatorDelegationsResponse](#lbm.staking.v1beta1.QueryValidatorDelegationsResponse) | ValidatorDelegations queries delegate info for given validator. | GET|/cosmos/staking/v1beta1/validators/{validator_addr}/delegations|
-| `ValidatorUnbondingDelegations` | [QueryValidatorUnbondingDelegationsRequest](#lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsRequest) | [QueryValidatorUnbondingDelegationsResponse](#lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse) | ValidatorUnbondingDelegations queries unbonding delegations of a validator. | GET|/cosmos/staking/v1beta1/validators/{validator_addr}/unbonding_delegations|
-| `Delegation` | [QueryDelegationRequest](#lbm.staking.v1beta1.QueryDelegationRequest) | [QueryDelegationResponse](#lbm.staking.v1beta1.QueryDelegationResponse) | Delegation queries delegate info for given validator delegator pair. | GET|/cosmos/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}|
-| `UnbondingDelegation` | [QueryUnbondingDelegationRequest](#lbm.staking.v1beta1.QueryUnbondingDelegationRequest) | [QueryUnbondingDelegationResponse](#lbm.staking.v1beta1.QueryUnbondingDelegationResponse) | UnbondingDelegation queries unbonding info for given validator delegator pair. | GET|/cosmos/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}/unbonding_delegation|
-| `DelegatorDelegations` | [QueryDelegatorDelegationsRequest](#lbm.staking.v1beta1.QueryDelegatorDelegationsRequest) | [QueryDelegatorDelegationsResponse](#lbm.staking.v1beta1.QueryDelegatorDelegationsResponse) | DelegatorDelegations queries all delegations of a given delegator address. | GET|/cosmos/staking/v1beta1/delegations/{delegator_addr}|
-| `DelegatorUnbondingDelegations` | [QueryDelegatorUnbondingDelegationsRequest](#lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsRequest) | [QueryDelegatorUnbondingDelegationsResponse](#lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse) | DelegatorUnbondingDelegations queries all unbonding delegations of a given delegator address. | GET|/cosmos/staking/v1beta1/delegators/{delegator_addr}/unbonding_delegations|
-| `Redelegations` | [QueryRedelegationsRequest](#lbm.staking.v1beta1.QueryRedelegationsRequest) | [QueryRedelegationsResponse](#lbm.staking.v1beta1.QueryRedelegationsResponse) | Redelegations queries redelegations of given address. | GET|/cosmos/staking/v1beta1/delegators/{delegator_addr}/redelegations|
-| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.staking.v1beta1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.staking.v1beta1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries all validators info for given delegator address. | GET|/cosmos/staking/v1beta1/delegators/{delegator_addr}/validators|
-| `DelegatorValidator` | [QueryDelegatorValidatorRequest](#lbm.staking.v1beta1.QueryDelegatorValidatorRequest) | [QueryDelegatorValidatorResponse](#lbm.staking.v1beta1.QueryDelegatorValidatorResponse) | DelegatorValidator queries validator info for given delegator validator pair. | GET|/cosmos/staking/v1beta1/delegators/{delegator_addr}/validators/{validator_addr}|
-| `HistoricalInfo` | [QueryHistoricalInfoRequest](#lbm.staking.v1beta1.QueryHistoricalInfoRequest) | [QueryHistoricalInfoResponse](#lbm.staking.v1beta1.QueryHistoricalInfoResponse) | HistoricalInfo queries the historical info for given height. | GET|/cosmos/staking/v1beta1/historical_info/{height}|
-| `Pool` | [QueryPoolRequest](#lbm.staking.v1beta1.QueryPoolRequest) | [QueryPoolResponse](#lbm.staking.v1beta1.QueryPoolResponse) | Pool queries the pool info. | GET|/cosmos/staking/v1beta1/pool|
-| `Params` | [QueryParamsRequest](#lbm.staking.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.staking.v1beta1.QueryParamsResponse) | Parameters queries the staking parameters. | GET|/cosmos/staking/v1beta1/params|
+| `Validators` | [QueryValidatorsRequest](#lbm.staking.v1beta1.QueryValidatorsRequest) | [QueryValidatorsResponse](#lbm.staking.v1beta1.QueryValidatorsResponse) | Validators queries all validators that match the given status. | GET|/lbm/staking/v1beta1/validators|
+| `Validator` | [QueryValidatorRequest](#lbm.staking.v1beta1.QueryValidatorRequest) | [QueryValidatorResponse](#lbm.staking.v1beta1.QueryValidatorResponse) | Validator queries validator info for given validator address. | GET|/lbm/staking/v1beta1/validators/{validator_addr}|
+| `ValidatorDelegations` | [QueryValidatorDelegationsRequest](#lbm.staking.v1beta1.QueryValidatorDelegationsRequest) | [QueryValidatorDelegationsResponse](#lbm.staking.v1beta1.QueryValidatorDelegationsResponse) | ValidatorDelegations queries delegate info for given validator. | GET|/lbm/staking/v1beta1/validators/{validator_addr}/delegations|
+| `ValidatorUnbondingDelegations` | [QueryValidatorUnbondingDelegationsRequest](#lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsRequest) | [QueryValidatorUnbondingDelegationsResponse](#lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse) | ValidatorUnbondingDelegations queries unbonding delegations of a validator. | GET|/lbm/staking/v1beta1/validators/{validator_addr}/unbonding_delegations|
+| `Delegation` | [QueryDelegationRequest](#lbm.staking.v1beta1.QueryDelegationRequest) | [QueryDelegationResponse](#lbm.staking.v1beta1.QueryDelegationResponse) | Delegation queries delegate info for given validator delegator pair. | GET|/lbm/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}|
+| `UnbondingDelegation` | [QueryUnbondingDelegationRequest](#lbm.staking.v1beta1.QueryUnbondingDelegationRequest) | [QueryUnbondingDelegationResponse](#lbm.staking.v1beta1.QueryUnbondingDelegationResponse) | UnbondingDelegation queries unbonding info for given validator delegator pair. | GET|/lbm/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}/unbonding_delegation|
+| `DelegatorDelegations` | [QueryDelegatorDelegationsRequest](#lbm.staking.v1beta1.QueryDelegatorDelegationsRequest) | [QueryDelegatorDelegationsResponse](#lbm.staking.v1beta1.QueryDelegatorDelegationsResponse) | DelegatorDelegations queries all delegations of a given delegator address. | GET|/lbm/staking/v1beta1/delegations/{delegator_addr}|
+| `DelegatorUnbondingDelegations` | [QueryDelegatorUnbondingDelegationsRequest](#lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsRequest) | [QueryDelegatorUnbondingDelegationsResponse](#lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse) | DelegatorUnbondingDelegations queries all unbonding delegations of a given delegator address. | GET|/lbm/staking/v1beta1/delegators/{delegator_addr}/unbonding_delegations|
+| `Redelegations` | [QueryRedelegationsRequest](#lbm.staking.v1beta1.QueryRedelegationsRequest) | [QueryRedelegationsResponse](#lbm.staking.v1beta1.QueryRedelegationsResponse) | Redelegations queries redelegations of given address. | GET|/lbm/staking/v1beta1/delegators/{delegator_addr}/redelegations|
+| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.staking.v1beta1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.staking.v1beta1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries all validators info for given delegator address. | GET|/lbm/staking/v1beta1/delegators/{delegator_addr}/validators|
+| `DelegatorValidator` | [QueryDelegatorValidatorRequest](#lbm.staking.v1beta1.QueryDelegatorValidatorRequest) | [QueryDelegatorValidatorResponse](#lbm.staking.v1beta1.QueryDelegatorValidatorResponse) | DelegatorValidator queries validator info for given delegator validator pair. | GET|/lbm/staking/v1beta1/delegators/{delegator_addr}/validators/{validator_addr}|
+| `HistoricalInfo` | [QueryHistoricalInfoRequest](#lbm.staking.v1beta1.QueryHistoricalInfoRequest) | [QueryHistoricalInfoResponse](#lbm.staking.v1beta1.QueryHistoricalInfoResponse) | HistoricalInfo queries the historical info for given height. | GET|/lbm/staking/v1beta1/historical_info/{height}|
+| `Pool` | [QueryPoolRequest](#lbm.staking.v1beta1.QueryPoolRequest) | [QueryPoolResponse](#lbm.staking.v1beta1.QueryPoolResponse) | Pool queries the pool info. | GET|/lbm/staking/v1beta1/pool|
+| `Params` | [QueryParamsRequest](#lbm.staking.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.staking.v1beta1.QueryParamsResponse) | Parameters queries the staking parameters. | GET|/lbm/staking/v1beta1/params|
 
  <!-- end services -->
 
@@ -9606,10 +9606,10 @@ Service defines a gRPC service for interacting with transactions.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Simulate` | [SimulateRequest](#lbm.tx.v1beta1.SimulateRequest) | [SimulateResponse](#lbm.tx.v1beta1.SimulateResponse) | Simulate simulates executing a transaction for estimating gas usage. | POST|/cosmos/tx/v1beta1/simulate|
-| `GetTx` | [GetTxRequest](#lbm.tx.v1beta1.GetTxRequest) | [GetTxResponse](#lbm.tx.v1beta1.GetTxResponse) | GetTx fetches a tx by hash. | GET|/cosmos/tx/v1beta1/txs/{hash}|
-| `BroadcastTx` | [BroadcastTxRequest](#lbm.tx.v1beta1.BroadcastTxRequest) | [BroadcastTxResponse](#lbm.tx.v1beta1.BroadcastTxResponse) | BroadcastTx broadcast transaction. | POST|/cosmos/tx/v1beta1/txs|
-| `GetTxsEvent` | [GetTxsEventRequest](#lbm.tx.v1beta1.GetTxsEventRequest) | [GetTxsEventResponse](#lbm.tx.v1beta1.GetTxsEventResponse) | GetTxsEvent fetches txs by event. | GET|/cosmos/tx/v1beta1/txs|
+| `Simulate` | [SimulateRequest](#lbm.tx.v1beta1.SimulateRequest) | [SimulateResponse](#lbm.tx.v1beta1.SimulateResponse) | Simulate simulates executing a transaction for estimating gas usage. | POST|/lbm/tx/v1beta1/simulate|
+| `GetTx` | [GetTxRequest](#lbm.tx.v1beta1.GetTxRequest) | [GetTxResponse](#lbm.tx.v1beta1.GetTxResponse) | GetTx fetches a tx by hash. | GET|/lbm/tx/v1beta1/txs/{hash}|
+| `BroadcastTx` | [BroadcastTxRequest](#lbm.tx.v1beta1.BroadcastTxRequest) | [BroadcastTxResponse](#lbm.tx.v1beta1.BroadcastTxResponse) | BroadcastTx broadcast transaction. | POST|/lbm/tx/v1beta1/txs|
+| `GetTxsEvent` | [GetTxsEventRequest](#lbm.tx.v1beta1.GetTxsEventRequest) | [GetTxsEventResponse](#lbm.tx.v1beta1.GetTxsEventResponse) | GetTxsEvent fetches txs by event. | GET|/lbm/tx/v1beta1/txs|
 
  <!-- end services -->
 
@@ -9796,9 +9796,9 @@ Query defines the gRPC upgrade querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `CurrentPlan` | [QueryCurrentPlanRequest](#lbm.upgrade.v1beta1.QueryCurrentPlanRequest) | [QueryCurrentPlanResponse](#lbm.upgrade.v1beta1.QueryCurrentPlanResponse) | CurrentPlan queries the current upgrade plan. | GET|/cosmos/upgrade/v1beta1/current_plan|
-| `AppliedPlan` | [QueryAppliedPlanRequest](#lbm.upgrade.v1beta1.QueryAppliedPlanRequest) | [QueryAppliedPlanResponse](#lbm.upgrade.v1beta1.QueryAppliedPlanResponse) | AppliedPlan queries a previously applied upgrade plan by its name. | GET|/cosmos/upgrade/v1beta1/applied_plan/{name}|
-| `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1beta1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1beta1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries the consensus state that will serve as a trusted kernel for the next version of this chain. It will only be stored at the last height of this chain. UpgradedConsensusState RPC not supported with legacy querier | GET|/cosmos/upgrade/v1beta1/upgraded_consensus_state/{last_height}|
+| `CurrentPlan` | [QueryCurrentPlanRequest](#lbm.upgrade.v1beta1.QueryCurrentPlanRequest) | [QueryCurrentPlanResponse](#lbm.upgrade.v1beta1.QueryCurrentPlanResponse) | CurrentPlan queries the current upgrade plan. | GET|/lbm/upgrade/v1beta1/current_plan|
+| `AppliedPlan` | [QueryAppliedPlanRequest](#lbm.upgrade.v1beta1.QueryAppliedPlanRequest) | [QueryAppliedPlanResponse](#lbm.upgrade.v1beta1.QueryAppliedPlanResponse) | AppliedPlan queries a previously applied upgrade plan by its name. | GET|/lbm/upgrade/v1beta1/applied_plan/{name}|
+| `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1beta1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1beta1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries the consensus state that will serve as a trusted kernel for the next version of this chain. It will only be stored at the last height of this chain. UpgradedConsensusState RPC not supported with legacy querier | GET|/lbm/upgrade/v1beta1/upgraded_consensus_state/{last_height}|
 
  <!-- end services -->
 
