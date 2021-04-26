@@ -328,10 +328,10 @@ func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sende
 		Source:                source,
 		Builder:               builder,
 		InstantiatePermission: perm,
-		Label:   label,
-		Funds:   amount,
-		InitMsg: []byte(initMsg),
-		Admin:   adminStr,
+		Label:                 label,
+		Funds:                 amount,
+		InitMsg:               []byte(initMsg),
+		Admin:                 adminStr,
 	}
 	return msg, nil
 }
