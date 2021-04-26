@@ -113,7 +113,7 @@ var genStakingState = []byte(`{
         },
         "update_time": "2019-09-24T23:11:22.9692177Z"
       },
-      "consensus_pubkey": "linkvalconspub1addwnpepqgz0vs85hqfwar8eclrhnd47mmd6dvx0uy6yq3n5emn5dzxjv5vv2vpc22h",
+      "consensus_pubkey": "linkvalconspub1cqmsrdepqt2qvn9hxdpnqpwp33hw4znk5stakfp67auztzrqhs5xxvfah6fag55tu22",
       "delegator_shares": "100000000.000000000000000000",
       "description": {
         "details": "",

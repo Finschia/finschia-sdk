@@ -27,13 +27,13 @@ func TestPublicKeyUnsafe(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, priv)
 
-	require.Equal(t, "eb5ae9872102bcd96cab102304ac10e90c5a0f29358e3a4a6fb1217b83e5db657918ea28bec1",
+	require.Equal(t, "c03701b72102bcd96cab102304ac10e90c5a0f29358e3a4a6fb1217b83e5db657918ea28bec1",
 		fmt.Sprintf("%x", cdc.Amino.MustMarshalBinaryBare(priv.PubKey())),
 		"Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 
 	pubKeyAddr, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, priv.PubKey())
 	require.NoError(t, err)
-	require.Equal(t, "linkpub1addwnpepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzszgelc",
+	require.Equal(t, "linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
 		pubKeyAddr, "Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 
 	addr := sdk.AccAddress(priv.PubKey().Address()).String()
@@ -43,16 +43,16 @@ func TestPublicKeyUnsafe(t *testing.T) {
 
 func TestPublicKeyUnsafeHDPath(t *testing.T) {
 	expectedAnswers := []string{
-		"linkpub1addwnpepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzszgelc",
-		"linkpub1addwnpepqf258jtwpyujhxmlg94500j9yzqya5ryl835yp3dm6p9up25ufqcsjs2r6s",
-		"linkpub1addwnpepq2edmckd0zthve9r70err6ctxzqc4vt5648lu4fzqkld8dnaekzjcl9j5ft",
-		"linkpub1addwnpepqg9xfexl88nvmyyzpg5htz5qz30wgdftf0puz5u3sj6jkk9fxy7vzg7q5xn",
-		"linkpub1addwnpepqv09egt2l0u72a4h0stkcrx4hyz0z6mnxe5w5d7lzmmzfdj2mykj755jfdt",
-		"linkpub1addwnpepqfn9d7tew6vlr37sy9crsdud2gufsftm7wz3r2uhze2lfam4a263qsj6a8r",
-		"linkpub1addwnpepqfaq649vgk3levrsya2wkz8aecjxxd40rdfjhr6aqlld5ql54fds2yg7xpt",
-		"linkpub1addwnpepqv43zgg5dauwynq4wyqz3c6xtl9wcmc8z8ftgqvj87xs000lld6s63hlzt9",
-		"linkpub1addwnpepq0kchl479dz7f28hgfn7ve3txkktu9trq2dpmrzjy9awlyuf8w6x7nugtw7",
-		"linkpub1addwnpepqttsm9aacj9pq3w22xjms6lgyzxhhdjrrajt4hzzfl0melff9w9dq9e2ky7",
+		"linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
+		"linkpub1cqmsrdepqf258jtwpyujhxmlg94500j9yzqya5ryl835yp3dm6p9up25ufqcsx6q5xz",
+		"linkpub1cqmsrdepq2edmckd0zthve9r70err6ctxzqc4vt5648lu4fzqkld8dnaekzjct0cr4e",
+		"linkpub1cqmsrdepqg9xfexl88nvmyyzpg5htz5qz30wgdftf0puz5u3sj6jkk9fxy7vzu52r6p",
+		"linkpub1cqmsrdepqv09egt2l0u72a4h0stkcrx4hyz0z6mnxe5w5d7lzmmzfdj2mykj7q7c73e",
+		"linkpub1cqmsrdepqfn9d7tew6vlr37sy9crsdud2gufsftm7wz3r2uhze2lfam4a263qycs2m3",
+		"linkpub1cqmsrdepqfaq649vgk3levrsya2wkz8aecjxxd40rdfjhr6aqlld5ql54fds2sz53ae",
+		"linkpub1cqmsrdepqv43zgg5dauwynq4wyqz3c6xtl9wcmc8z8ftgqvj87xs000lld6s69a44hh",
+		"linkpub1cqmsrdepq0kchl479dz7f28hgfn7ve3txkktu9trq2dpmrzjy9awlyuf8w6x78kzujv",
+		"linkpub1cqmsrdepqttsm9aacj9pq3w22xjms6lgyzxhhdjrrajt4hzzfl0melff9w9dq3nqpcv",
 	}
 
 	const numIters = 10
@@ -105,13 +105,13 @@ func TestPublicKeySafe(t *testing.T) {
 
 	require.Nil(t, ShowAddress(path, priv.PubKey(), sdk.GetConfig().GetBech32AccountAddrPrefix()))
 
-	require.Equal(t, "eb5ae9872102bcd96cab102304ac10e90c5a0f29358e3a4a6fb1217b83e5db657918ea28bec1",
+	require.Equal(t, "c03701b72102bcd96cab102304ac10e90c5a0f29358e3a4a6fb1217b83e5db657918ea28bec1",
 		fmt.Sprintf("%x", cdc.Amino.MustMarshalBinaryBare(priv.PubKey())),
 		"Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 
 	pubKeyAddr, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, priv.PubKey())
 	require.NoError(t, err)
-	require.Equal(t, "linkpub1addwnpepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzszgelc",
+	require.Equal(t, "linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
 		pubKeyAddr, "Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 
 	require.Equal(t, "link1tdl7n2acgmec0y5nng0q2fahl9khyct3cgsktn",
@@ -123,16 +123,16 @@ func TestPublicKeySafe(t *testing.T) {
 
 func TestPublicKeyHDPath(t *testing.T) {
 	expectedPubKeys := []string{
-		"linkpub1addwnpepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzszgelc",
-		"linkpub1addwnpepqf258jtwpyujhxmlg94500j9yzqya5ryl835yp3dm6p9up25ufqcsjs2r6s",
-		"linkpub1addwnpepq2edmckd0zthve9r70err6ctxzqc4vt5648lu4fzqkld8dnaekzjcl9j5ft",
-		"linkpub1addwnpepqg9xfexl88nvmyyzpg5htz5qz30wgdftf0puz5u3sj6jkk9fxy7vzg7q5xn",
-		"linkpub1addwnpepqv09egt2l0u72a4h0stkcrx4hyz0z6mnxe5w5d7lzmmzfdj2mykj755jfdt",
-		"linkpub1addwnpepqfn9d7tew6vlr37sy9crsdud2gufsftm7wz3r2uhze2lfam4a263qsj6a8r",
-		"linkpub1addwnpepqfaq649vgk3levrsya2wkz8aecjxxd40rdfjhr6aqlld5ql54fds2yg7xpt",
-		"linkpub1addwnpepqv43zgg5dauwynq4wyqz3c6xtl9wcmc8z8ftgqvj87xs000lld6s63hlzt9",
-		"linkpub1addwnpepq0kchl479dz7f28hgfn7ve3txkktu9trq2dpmrzjy9awlyuf8w6x7nugtw7",
-		"linkpub1addwnpepqttsm9aacj9pq3w22xjms6lgyzxhhdjrrajt4hzzfl0melff9w9dq9e2ky7",
+		"linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
+		"linkpub1cqmsrdepqf258jtwpyujhxmlg94500j9yzqya5ryl835yp3dm6p9up25ufqcsx6q5xz",
+		"linkpub1cqmsrdepq2edmckd0zthve9r70err6ctxzqc4vt5648lu4fzqkld8dnaekzjct0cr4e",
+		"linkpub1cqmsrdepqg9xfexl88nvmyyzpg5htz5qz30wgdftf0puz5u3sj6jkk9fxy7vzu52r6p",
+		"linkpub1cqmsrdepqv09egt2l0u72a4h0stkcrx4hyz0z6mnxe5w5d7lzmmzfdj2mykj7q7c73e",
+		"linkpub1cqmsrdepqfn9d7tew6vlr37sy9crsdud2gufsftm7wz3r2uhze2lfam4a263qycs2m3",
+		"linkpub1cqmsrdepqfaq649vgk3levrsya2wkz8aecjxxd40rdfjhr6aqlld5ql54fds2sz53ae",
+		"linkpub1cqmsrdepqv43zgg5dauwynq4wyqz3c6xtl9wcmc8z8ftgqvj87xs000lld6s69a44hh",
+		"linkpub1cqmsrdepq0kchl479dz7f28hgfn7ve3txkktu9trq2dpmrzjy9awlyuf8w6x78kzujv",
+		"linkpub1cqmsrdepqttsm9aacj9pq3w22xjms6lgyzxhhdjrrajt4hzzfl0melff9w9dq3nqpcv",
 	}
 
 	expectedAddrs := []string{

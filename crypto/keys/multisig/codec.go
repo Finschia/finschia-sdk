@@ -12,7 +12,7 @@ import (
 // TODO: Figure out API for others to either add their own pubkey types, or
 // to make verify / marshal accept a AminoCdc.
 const (
-	PubKeyAminoRoute = "tendermint/PubKeyMultisigThreshold"
+	PubKeyAminoRoute = "ostracon/PubKeyMultisigThreshold"
 )
 
 var AminoCdc = codec.NewLegacyAmino()

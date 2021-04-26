@@ -24,14 +24,14 @@ var genAuthState = []byte(`{
     {
       "type": "lbm-sdk/Account",
       "value": {
-        "address": "link1fgc3542nakex4w8rl5n77zelpdguppfc3f6wdr",
+        "address": "link1vncp8z0kqt52406m5aq8f5tgw7r62hy9sdc7ts",
         "coins": [
           {
             "denom": "stake",
             "amount": "400000"
           }
         ],
-        "public_key": "linkpub1addwnpepqf2nnrpt3jkwsv6wgs2ndc52y3hyfhwrtldlm80g2hr5z4lzwudgxll3drm",
+        "public_key": "linkpub1cqmsrdepqwygwv232a90sgk5k5wkdq990sg2r27wn5p7kc2cemm2yq50fvh52j2swpu",
         "account_number": 1,
         "sequence": 1
       }
@@ -59,14 +59,14 @@ var genAuthState = []byte(`{
     {
       "type": "lbm-sdk/ContinuousVestingAccount",
       "value": {
-        "address": "link17kxlwdwmjuzh2y9vnfwyhz2fhfkznzuwt87sc6",
+        "address": "link1u3kdlk3ygg54x8xargfaj5qsxr94rzrpslcjla",
         "coins": [
           {
             "denom": "stake",
             "amount": "10000205"
           }
         ],
-        "public_key": "linkpub1addwnpepqw6mp5utlyp85sezqgrvclta80j8zn0p56zvxdexgpgpxh9wvyfeyu683cr",
+        "public_key": "linkpub1cqmsrdepqfh73u2uw0qe4kvptrajmvnep7gvhzc3fuh745scvg7zewl4l76zct2qge9",
         "account_number": 3,
         "sequence": 5,
         "original_vesting": [
@@ -84,14 +84,14 @@ var genAuthState = []byte(`{
     {
       "type": "lbm-sdk/DelayedVestingAccount",
       "value": {
-        "address": "link15q7fcsjxq3j635dk02hqalfu3d2plcp2tw9ngt",
+        "address": "link1yxyannuykr395nhee4rnzkxq9keexd7xgmqrqd",
         "coins": [
           {
             "denom": "stake",
             "amount": "10000205"
           }
         ],
-        "public_key": "linkpub1addwnpepqg7yvmjtly3kn4qwctxghg8zn8mplydedydww904uf33xca8y4zn2temgn4",
+        "public_key": "linkpub1cqmsrdepqt2qvn9hxdpnqpwp33hw4znk5stakfp67auztzrqhs5xxvfah6fagud2wcd",
         "account_number": 4,
         "sequence": 15,
         "original_vesting": [
@@ -108,7 +108,7 @@ var genAuthState = []byte(`{
   ]
 }`)
 
-var expectedGenAuthState = []byte(`{"params":{"max_memo_characters":"10","tx_sig_limit":"10","tx_size_cost_per_byte":"10","sig_verify_cost_ed25519":"10","sig_verify_cost_secp256k1":"10"},"accounts":[{"type":"lbm-sdk/Account","value":{"address":"link1fgc3542nakex4w8rl5n77zelpdguppfc3f6wdr","coins":[{"denom":"stake","amount":"400000"}],"public_key":{"type":"tendermint/PubKeySecp256k1","value":"AlU5jCuMrOgzTkQVNuKKJG5E3cNf2/2d6FXHQVfidxqD"},"account_number":"1","sequence":"1"}},{"type":"lbm-sdk/ModuleAccount","value":{"address":"link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl","coins":[{"denom":"stake","amount":"400000000"}],"public_key":"","account_number":"2","sequence":"4","name":"bonded_tokens_pool","permissions":["burner","staking"]}},{"type":"lbm-sdk/ContinuousVestingAccount","value":{"address":"link17kxlwdwmjuzh2y9vnfwyhz2fhfkznzuwt87sc6","coins":[{"denom":"stake","amount":"10000205"}],"public_key":{"type":"tendermint/PubKeySecp256k1","value":"A7Ww04v5AnpDIgIGzH19O+RxTeGmhMM3JkBQE1yuYROS"},"account_number":"3","sequence":"5","original_vesting":[{"denom":"stake","amount":"10000205"}],"delegated_free":[],"delegated_vesting":[],"end_time":"1596125048","start_time":"1595952248"}},{"type":"lbm-sdk/DelayedVestingAccount","value":{"address":"link15q7fcsjxq3j635dk02hqalfu3d2plcp2tw9ngt","coins":[{"denom":"stake","amount":"10000205"}],"public_key":{"type":"tendermint/PubKeySecp256k1","value":"AjxGbkv5I2nUDsLMi6DimfYfkblpGucV9eJjE2OnJUU1"},"account_number":"4","sequence":"15","original_vesting":[{"denom":"stake","amount":"10000205"}],"delegated_free":[],"delegated_vesting":[],"end_time":"1596125048"}}]}`)
+var expectedGenAuthState = []byte(`{"params":{"max_memo_characters":"10","tx_sig_limit":"10","tx_size_cost_per_byte":"10","sig_verify_cost_ed25519":"10","sig_verify_cost_secp256k1":"10"},"accounts":[{"type":"lbm-sdk/Account","value":{"address":"link1vncp8z0kqt52406m5aq8f5tgw7r62hy9sdc7ts","coins":[{"denom":"stake","amount":"400000"}],"public_key":{"type":"ostracon/PubKeySecp256k1","value":"A4iHMVFXSvgi1LUdZoClfBChq86dA+thWM72ogKPSy9F"},"account_number":"1","sequence":"1"}},{"type":"lbm-sdk/ModuleAccount","value":{"address":"link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl","coins":[{"denom":"stake","amount":"400000000"}],"public_key":"","account_number":"2","sequence":"4","name":"bonded_tokens_pool","permissions":["burner","staking"]}},{"type":"lbm-sdk/ContinuousVestingAccount","value":{"address":"link1u3kdlk3ygg54x8xargfaj5qsxr94rzrpslcjla","coins":[{"denom":"stake","amount":"10000205"}],"public_key":{"type":"ostracon/PubKeySecp256k1","value":"Am/o8VxzwZrZgVj7LbJ5D5DLixFPL+rSGGI8LLv1/7Qs"},"account_number":"3","sequence":"5","original_vesting":[{"denom":"stake","amount":"10000205"}],"delegated_free":[],"delegated_vesting":[],"end_time":"1596125048","start_time":"1595952248"}},{"type":"lbm-sdk/DelayedVestingAccount","value":{"address":"link1yxyannuykr395nhee4rnzkxq9keexd7xgmqrqd","coins":[{"denom":"stake","amount":"10000205"}],"public_key":{"type":"ostracon/PubKeySecp256k1","value":"AtQGTLczQzAFwYxu6op2pBfbJDr3eCWIYLwoYzE9vpPU"},"account_number":"4","sequence":"15","original_vesting":[{"denom":"stake","amount":"10000205"}],"delegated_free":[],"delegated_vesting":[],"end_time":"1596125048"}}]}`)
 
 func TestMigrate(t *testing.T) {
 	genesis := types.AppMap{

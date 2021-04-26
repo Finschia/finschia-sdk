@@ -14,7 +14,7 @@ func TestPrepareConfigForTxCreateValidator(t *testing.T) {
 	chainID := "chainID"
 	ip := "1.1.1.1"
 	nodeID := "nodeID"
-	valPubKey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "linkvalconspub1addwnpepqv0u6gc09v6d4wjnt3cwpcrpk6m5rr899nsheu9t6z8ghfua2ml96ca4hxs")
+	valPubKey, _ := sdk.GetPubKeyFromBech32(sdk.Bech32PubKeyTypeConsPub, "linkvalconspub1cqmsrdepqwygwv232a90sgk5k5wkdq990sg2r27wn5p7kc2cemm2yq50fvh526n3unm")
 	moniker := "DefaultMoniker"
 
 	tests := []struct {

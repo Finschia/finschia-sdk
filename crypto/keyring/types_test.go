@@ -23,7 +23,7 @@ func Test_writeReadLedgerInfo(t *testing.T) {
 	require.NoError(t, err)
 	require.Equal(t, "m/44'/438'/5'/0/1", path.String())
 	require.Equal(t,
-		"linkpub1addwnpepqddddqg2glc8x4fl7vxjlnr7p5a3czm5kcdp4239sg6yqdc4rc2r5lef0hg",
+		"linkpub1cqmsrdepqddddqg2glc8x4fl7vxjlnr7p5a3czm5kcdp4239sg6yqdc4rc2r5tnrct6",
 		sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, lInfo.GetPubKey()))
 
 	// Serialize and restore

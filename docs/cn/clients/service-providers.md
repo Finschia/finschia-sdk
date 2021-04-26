@@ -164,7 +164,7 @@ sequence numbers and it will mostly do the correct thing.
     "signatures": [
       {
         "pub_key": {
-          "type": "tendermint/PubKeySecp256k1",
+          "type": "ostracon/PubKeySecp256k1",
           "value": XXX
         },
         "signature": XXX
