@@ -1,35 +1,48 @@
 package keeper
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	// authexported "github.com/cosmos/cosmos-sdk/x/auth/exported"
-	// "github.com/CosmWasm/wasmd/x/wasm/internal/types"
+	abci "github.com/line/ostracon/abci/types"
 )
+
+// ValidatorSetSource is a subset of the staking keeper
+type ValidatorSetSource interface {
+	ApplyAndReturnValidatorSetUpdates(sdk.Context) (updates []abci.ValidatorUpdate, err error)
+}
 
 // InitGenesis sets supply information for genesis.
 //
 // CONTRACT: all types of accounts must have been already initialized/created
-func InitGenesis(ctx sdk.Context, keeper Keeper, data types.GenesisState) error {
+func InitGenesis(ctx sdk.Context, keeper *Keeper, data types.GenesisState, stakingKeeper ValidatorSetSource, msgHandler sdk.Handler) ([]abci.ValidatorUpdate, error) {
 	keeper.setParams(ctx, data.Params)
 
 	var maxCodeID uint64
 	for i, code := range data.Codes {
-		err := keeper.importCode(ctx, code.CodeID, code.CodeInfo, code.CodesBytes)
+		err := keeper.importCode(ctx, code.CodeID, code.CodeInfo, code.CodeBytes)
 		if err != nil {
-			return sdkerrors.Wrapf(err, "code %d with id: %d", i, code.CodeID)
+			return nil, sdkerrors.Wrapf(err, "code %d with id: %d", i, code.CodeID)
 		}
 		if code.CodeID > maxCodeID {
 			maxCodeID = code.CodeID
+		}
+		if code.Pinned {
+			if err := keeper.PinCode(ctx, code.CodeID); err != nil {
+				return nil, sdkerrors.Wrapf(err, "contract number %d", i)
+			}
 		}
 	}
 
 	var maxContractID int
 	for i, contract := range data.Contracts {
-		err := keeper.importContract(ctx, contract.ContractAddress, &contract.ContractInfo, contract.ContractState)
+		contractAddr, err := sdk.AccAddressFromBech32(contract.ContractAddress)
 		if err != nil {
-			return sdkerrors.Wrapf(err, "contract number %d", i)
+			return nil, sdkerrors.Wrapf(err, "address in contract number %d", i)
+		}
+		err = keeper.importContract(ctx, contractAddr, &contract.ContractInfo, contract.ContractState)
+		if err != nil {
+			return nil, sdkerrors.Wrapf(err, "contract number %d", i)
 		}
 		maxContractID = i + 1 // not ideal but max(contractID) is not persisted otherwise
 	}
@@ -37,23 +50,36 @@ func InitGenesis(ctx sdk.Context, keeper Keeper, data types.GenesisState) error 
 	for i, seq := range data.Sequences {
 		err := keeper.importAutoIncrementID(ctx, seq.IDKey, seq.Value)
 		if err != nil {
-			return sdkerrors.Wrapf(err, "sequence number %d", i)
+			return nil, sdkerrors.Wrapf(err, "sequence number %d", i)
 		}
 	}
 
 	// sanity check seq values
 	if keeper.peekAutoIncrementID(ctx, types.KeyLastCodeID) <= maxCodeID {
-		return sdkerrors.Wrapf(types.ErrInvalid, "seq %s must be greater %d ", string(types.KeyLastCodeID), maxCodeID)
+		return nil, sdkerrors.Wrapf(types.ErrInvalid, "seq %s must be greater %d ", string(types.KeyLastCodeID), maxCodeID)
 	}
 	if keeper.peekAutoIncrementID(ctx, types.KeyLastInstanceID) <= uint64(maxContractID) {
-		return sdkerrors.Wrapf(types.ErrInvalid, "seq %s must be greater %d ", string(types.KeyLastInstanceID), maxContractID)
+		return nil, sdkerrors.Wrapf(types.ErrInvalid, "seq %s must be greater %d ", string(types.KeyLastInstanceID), maxContractID)
 	}
 
-	return nil
+	if len(data.GenMsgs) == 0 {
+		return nil, nil
+	}
+	for _, genTx := range data.GenMsgs {
+		msg := genTx.AsMsg()
+		if msg == nil {
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "unknown message")
+		}
+		_, err := msgHandler(ctx, msg)
+		if err != nil {
+			return nil, sdkerrors.Wrap(err, "genesis")
+		}
+	}
+	return stakingKeeper.ApplyAndReturnValidatorSetUpdates(ctx)
 }
 
 // ExportGenesis returns a GenesisState for a given context and keeper.
-func ExportGenesis(ctx sdk.Context, keeper Keeper) types.GenesisState {
+func ExportGenesis(ctx sdk.Context, keeper *Keeper) *types.GenesisState {
 	var genState types.GenesisState
 
 	genState.Params = keeper.GetParams(ctx)
@@ -64,9 +90,10 @@ func ExportGenesis(ctx sdk.Context, keeper Keeper) types.GenesisState {
 			panic(err)
 		}
 		genState.Codes = append(genState.Codes, types.Code{
-			CodeID:     codeID,
-			CodeInfo:   info,
-			CodesBytes: bytecode,
+			CodeID:    codeID,
+			CodeInfo:  info,
+			CodeBytes: bytecode,
+			Pinned:    keeper.IsPinnedCode(ctx, codeID),
 		})
 		return false
 	})
@@ -83,9 +110,8 @@ func ExportGenesis(ctx sdk.Context, keeper Keeper) types.GenesisState {
 		}
 		// redact contract info
 		contract.Created = nil
-
 		genState.Contracts = append(genState.Contracts, types.Contract{
-			ContractAddress: addr,
+			ContractAddress: addr.String(),
 			ContractInfo:    contract,
 			ContractState:   state,
 		})
@@ -100,5 +126,5 @@ func ExportGenesis(ctx sdk.Context, keeper Keeper) types.GenesisState {
 		})
 	}
 
-	return genState
+	return &genState
 }

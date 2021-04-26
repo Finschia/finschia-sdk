@@ -1,4 +1,3 @@
-// nolint: scopelint
 package client
 
 import (
@@ -7,18 +6,15 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
 	"github.com/gorilla/mux"
 	"github.com/stretchr/testify/require"
-
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-
-	wasmtypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 func TestGovRestHandlers(t *testing.T) {
@@ -34,8 +30,15 @@ func TestGovRestHandlers(t *testing.T) {
 			"fees":           []dict{{"denom": "ustake", "amount": "1000000"}},
 		}
 	)
-	cdc := MakeCodec()
-	clientCtx := context.CLIContext{}.WithChainID("testing").WithCodec(cdc)
+	encodingConfig := keeper.MakeEncodingConfig(t)
+	clientCtx := client.Context{}.
+		WithJSONMarshaler(encodingConfig.Marshaler).
+		WithTxConfig(encodingConfig.TxConfig).
+		WithLegacyAmino(encodingConfig.Amino).
+		WithInput(os.Stdin).
+		WithAccountRetriever(authtypes.AccountRetriever{}).
+		WithBroadcastMode(flags.BroadcastBlock).
+		WithChainID("testing")
 
 	// router setup as in gov/client/rest/tx.go
 	propSubRtr := mux.NewRouter().PathPrefix("/gov/proposals").Subrouter()
@@ -156,7 +159,7 @@ func TestGovRestHandlers(t *testing.T) {
 				"code_id":     "1",
 				"label":       "https://example.com/",
 				"init_msg":    "my/builder:tag",
-				"init_funds":  []dict{{"denom": "ustake", "amount": "100"}},
+				"funds":       []dict{{"denom": "ustake", "amount": "100"}},
 				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
 				"proposer":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
 				"base_req":    aBaseReq,
@@ -221,16 +224,4 @@ func TestGovRestHandlers(t *testing.T) {
 			require.Equal(t, spec.expCode, w.Code, w.Body.String())
 		})
 	}
-}
-
-func MakeCodec() *codec.Codec {
-	var cdc = codec.New()
-	wasmtypes.RegisterCodec(cdc)
-	gov.RegisterCodec(cdc)
-	sdk.RegisterCodec(cdc)
-	codec.RegisterCrypto(cdc)
-	codec.RegisterEvidences(cdc)
-	authvesting.RegisterCodec(cdc)
-
-	return cdc.Seal()
 }

@@ -1,174 +1,261 @@
-// nolint: errcheck, scopelint
 package keeper
 
 import (
-	"bytes"
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	"io/ioutil"
-	"os"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	sdkErrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/CosmWasm/wasmvm"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	sdkErrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lbm-sdk/v2/types/query"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	abci "github.com/tendermint/tendermint/abci/types"
+	"github.com/line/ostracon/libs/log"
 )
 
-func TestQueryContractState(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "wasm")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-	ctx, keepers := CreateTestInput(t, false, tempDir, SupportedFeatures, nil, nil)
-	accKeeper, keeper := keepers.AccountKeeper, keepers.WasmKeeper
+func TestQueryAllContractState(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
 
-	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := createFakeFundedAccount(ctx, accKeeper, deposit.Add(deposit...))
-	anyAddr := createFakeFundedAccount(ctx, accKeeper, topUp)
-
-	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
-	require.NoError(t, err)
-
-	contractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
-	require.NoError(t, err)
-
-	_, _, bob := keyPubAddr()
-	initMsg := InitMsg{
-		Verifier:    anyAddr,
-		Beneficiary: bob,
-	}
-	initMsgBz, err := types.ModuleCdc.MarshalJSON(initMsg)
-	require.NoError(t, err)
-
-	addr, err := keeper.Instantiate(ctx, contractID, creator, nil, initMsgBz, "demo contract to query", deposit)
-	require.NoError(t, err)
-
+	exampleContract := InstantiateHackatomExampleContract(t, ctx, keepers)
+	contractAddr := exampleContract.Contract
 	contractModel := []types.Model{
-		{Key: []byte("foo"), Value: []byte(`"bar"`)},
 		{Key: []byte{0x0, 0x1}, Value: []byte(`{"count":8}`)},
+		{Key: []byte("foo"), Value: []byte(`"bar"`)},
 	}
-	keeper.importContractState(ctx, addr, contractModel)
+	require.NoError(t, keeper.importContractState(ctx, contractAddr, contractModel))
 
-	// this gets us full error, not redacted sdk.Error
 	q := NewQuerier(keeper)
 	specs := map[string]struct {
-		srcPath []string
-		srcReq  abci.RequestQuery
-		// smart and raw queries (not all queries) return raw bytes from contract not []types.Model
-		// if this is set, then we just compare - (should be json encoded string)
-		expRes []byte
-		// if success and expSmartRes is not set, we parse into []types.Model and compare (all state)
-		expModelLen      int
-		expModelContains []types.Model
-		expErr           *sdkErrors.Error
+		srcQuery            *types.QueryAllContractStateRequest
+		expModelContains    []types.Model
+		expModelContainsNot []types.Model
+		expErr              *sdkErrors.Error
 	}{
 		"query all": {
-			srcPath:     []string{QueryGetContractState, addr.String(), QueryMethodContractStateAll},
-			expModelLen: 3,
+			srcQuery:         &types.QueryAllContractStateRequest{Address: contractAddr.String()},
+			expModelContains: contractModel,
+		},
+		"query all with unknown address": {
+			srcQuery: &types.QueryAllContractStateRequest{Address: RandomBech32AccountAddress(t)},
+			expErr:   types.ErrNotFound,
+		},
+		"with pagination offset": {
+			srcQuery: &types.QueryAllContractStateRequest{
+				Address: contractAddr.String(),
+				Pagination: &query.PageRequest{
+					Offset: 1,
+				},
+			},
 			expModelContains: []types.Model{
 				{Key: []byte("foo"), Value: []byte(`"bar"`)},
+			},
+			expModelContainsNot: []types.Model{
 				{Key: []byte{0x0, 0x1}, Value: []byte(`{"count":8}`)},
 			},
 		},
-		"query raw key": {
-			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			srcReq:  abci.RequestQuery{Data: []byte("foo")},
-			expRes:  []byte(`"bar"`),
+		"with pagination limit": {
+			srcQuery: &types.QueryAllContractStateRequest{
+				Address: contractAddr.String(),
+				Pagination: &query.PageRequest{
+					Limit: 1,
+				},
+			},
+			expModelContains: []types.Model{
+				{Key: []byte{0x0, 0x1}, Value: []byte(`{"count":8}`)},
+			},
+			expModelContainsNot: []types.Model{
+				{Key: []byte("foo"), Value: []byte(`"bar"`)},
+			},
 		},
-		"query raw binary key": {
-			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			srcReq:  abci.RequestQuery{Data: []byte{0x0, 0x1}},
-			expRes:  []byte(`{"count":8}`),
-		},
-		"query smart": {
-			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateSmart},
-			srcReq:  abci.RequestQuery{Data: []byte(`{"verifier":{}}`)},
-			expRes:  []byte(fmt.Sprintf(`{"verifier":"%s"}`, anyAddr.String())),
-		},
-		"query smart invalid request": {
-			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateSmart},
-			srcReq:  abci.RequestQuery{Data: []byte(`{"raw":{"key":"config"}}`)},
-			expErr:  types.ErrQueryFailed,
-		},
-		"query smart with invalid json": {
-			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateSmart},
-			srcReq:  abci.RequestQuery{Data: []byte(`not a json string`)},
-			expErr:  types.ErrQueryFailed,
-		},
-		"query non-existent raw key": {
-			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			srcReq:  abci.RequestQuery{Data: []byte("i do not exist")},
-			expRes:  nil,
-		},
-		"query empty raw key": {
-			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			srcReq:  abci.RequestQuery{Data: []byte("")},
-			expRes:  nil,
-		},
-		"query nil raw key": {
-			srcPath: []string{QueryGetContractState, addr.String(), QueryMethodContractStateRaw},
-			srcReq:  abci.RequestQuery{Data: nil},
-			expRes:  nil,
-		},
-		"query raw with unknown address": {
-			srcPath: []string{QueryGetContractState, anyAddr.String(), QueryMethodContractStateRaw},
-			expRes:  nil,
-		},
-		"query all with unknown address": {
-			srcPath:     []string{QueryGetContractState, anyAddr.String(), QueryMethodContractStateAll},
-			expModelLen: 0,
-		},
-		"query smart with unknown address": {
-			srcPath:     []string{QueryGetContractState, anyAddr.String(), QueryMethodContractStateSmart},
-			expModelLen: 0,
-			expErr:      types.ErrNotFound,
+		"with pagination next key": {
+			srcQuery: &types.QueryAllContractStateRequest{
+				Address: contractAddr.String(),
+				Pagination: &query.PageRequest{
+					Key: fromBase64("Y29uZmln"),
+				},
+			},
+			expModelContains: []types.Model{
+				{Key: []byte("foo"), Value: []byte(`"bar"`)},
+			},
+			expModelContainsNot: []types.Model{
+				{Key: []byte{0x0, 0x1}, Value: []byte(`{"count":8}`)},
+			},
 		},
 	}
-
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			binResult, err := q(ctx, spec.srcPath, spec.srcReq)
-			// require.True(t, spec.expErr.Is(err), "unexpected error")
+			got, err := q.AllContractState(sdk.WrapSDKContext(ctx), spec.srcQuery)
 			require.True(t, spec.expErr.Is(err), err)
-
-			// if smart query, check custom response
-			if spec.srcPath[2] != QueryMethodContractStateAll {
-				require.Equal(t, spec.expRes, binResult)
+			if spec.expErr != nil {
 				return
 			}
-
-			// otherwise, check returned models
-			var r []types.Model
-			if spec.expErr == nil {
-				require.NoError(t, types.ModuleCdc.UnmarshalJSON(binResult, &r))
-				if spec.expModelLen == 0 {
-					require.Nil(t, r)
-				} else {
-					require.NotNil(t, r)
-				}
+			for _, exp := range spec.expModelContains {
+				assert.Contains(t, got.Models, exp)
 			}
-			require.Len(t, r, spec.expModelLen)
-			// and in result set
-			for _, v := range spec.expModelContains {
-				assert.Contains(t, r, v)
+			for _, exp := range spec.expModelContainsNot {
+				assert.NotContains(t, got.Models, exp)
 			}
 		})
 	}
 }
 
-func TestListContractByCodeOrdering(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "wasm")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-	ctx, keepers := CreateTestInput(t, false, tempDir, SupportedFeatures, nil, nil)
-	accKeeper, keeper := keepers.AccountKeeper, keepers.WasmKeeper
+func TestQuerySmartContractState(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	exampleContract := InstantiateHackatomExampleContract(t, ctx, keepers)
+	contractAddr := exampleContract.Contract.String()
+
+	q := NewQuerier(keeper)
+	specs := map[string]struct {
+		srcAddr  sdk.AccAddress
+		srcQuery *types.QuerySmartContractStateRequest
+		expResp  string
+		expErr   *sdkErrors.Error
+	}{
+		"query smart": {
+			srcQuery: &types.QuerySmartContractStateRequest{Address: contractAddr, QueryData: []byte(`{"verifier":{}}`)},
+			expResp:  fmt.Sprintf(`{"verifier":"%s"}`, exampleContract.VerifierAddr.String()),
+		},
+		"query smart invalid request": {
+			srcQuery: &types.QuerySmartContractStateRequest{Address: contractAddr, QueryData: []byte(`{"raw":{"key":"config"}}`)},
+			expErr:   types.ErrQueryFailed,
+		},
+		"query smart with invalid json": {
+			srcQuery: &types.QuerySmartContractStateRequest{Address: contractAddr, QueryData: []byte(`not a json string`)},
+			expErr:   types.ErrQueryFailed,
+		},
+		"query smart with unknown address": {
+			srcQuery: &types.QuerySmartContractStateRequest{Address: RandomBech32AccountAddress(t), QueryData: []byte(`{"verifier":{}}`)},
+			expErr:   types.ErrNotFound,
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			got, err := q.SmartContractState(sdk.WrapSDKContext(ctx), spec.srcQuery)
+			require.True(t, spec.expErr.Is(err), "but got %+v", err)
+			if spec.expErr != nil {
+				return
+			}
+			assert.JSONEq(t, string(got.Data), spec.expResp)
+		})
+	}
+}
+
+func TestQuerySmartContractPanics(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	contractAddr := contractAddress(1, 1)
+	keepers.WasmKeeper.storeCodeInfo(ctx, 1, types.CodeInfo{})
+	keepers.WasmKeeper.storeContractInfo(ctx, contractAddr, &types.ContractInfo{
+		CodeID:  1,
+		Created: types.NewAbsoluteTxPosition(ctx),
+	})
+	ctx = ctx.WithGasMeter(sdk.NewGasMeter(InstanceCost)).WithLogger(log.TestingLogger())
+
+	specs := map[string]struct {
+		doInContract func()
+		expErr       *sdkErrors.Error
+	}{
+		"out of gas": {
+			doInContract: func() {
+				ctx.GasMeter().ConsumeGas(ctx.GasMeter().Limit()+1, "test - consume more than limit")
+			},
+			expErr: sdkErrors.ErrOutOfGas,
+		},
+		"other panic": {
+			doInContract: func() {
+				panic("my panic")
+			},
+			expErr: sdkErrors.ErrPanic,
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			keepers.WasmKeeper.wasmer = &wasmtesting.MockWasmer{QueryFn: func(checksum cosmwasm.Checksum, env wasmvmtypes.Env, queryMsg []byte, store cosmwasm.KVStore, goapi cosmwasm.GoAPI, querier cosmwasm.Querier, gasMeter cosmwasm.GasMeter, gasLimit uint64) ([]byte, uint64, error) {
+				spec.doInContract()
+				return nil, 0, nil
+			}}
+			// when
+			q := NewQuerier(keepers.WasmKeeper)
+			got, err := q.SmartContractState(sdk.WrapSDKContext(ctx), &types.QuerySmartContractStateRequest{
+				Address: contractAddr.String(),
+			})
+			require.True(t, spec.expErr.Is(err), "got error: %+v", err)
+			assert.Nil(t, got)
+		})
+	}
+}
+
+func TestQueryRawContractState(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	exampleContract := InstantiateHackatomExampleContract(t, ctx, keepers)
+	contractAddr := exampleContract.Contract.String()
+	contractModel := []types.Model{
+		{Key: []byte("foo"), Value: []byte(`"bar"`)},
+		{Key: []byte{0x0, 0x1}, Value: []byte(`{"count":8}`)},
+	}
+	require.NoError(t, keeper.importContractState(ctx, exampleContract.Contract, contractModel))
+
+	q := NewQuerier(keeper)
+	specs := map[string]struct {
+		srcQuery *types.QueryRawContractStateRequest
+		expData  []byte
+		expErr   *sdkErrors.Error
+	}{
+		"query raw key": {
+			srcQuery: &types.QueryRawContractStateRequest{Address: contractAddr, QueryData: []byte("foo")},
+			expData:  []byte(`"bar"`),
+		},
+		"query raw contract binary key": {
+			srcQuery: &types.QueryRawContractStateRequest{Address: contractAddr, QueryData: []byte{0x0, 0x1}},
+			expData:  []byte(`{"count":8}`),
+		},
+		"query non-existent raw key": {
+			srcQuery: &types.QueryRawContractStateRequest{Address: contractAddr, QueryData: []byte("not existing key")},
+			expData:  nil,
+		},
+		"query empty raw key": {
+			srcQuery: &types.QueryRawContractStateRequest{Address: contractAddr, QueryData: []byte("")},
+			expData:  nil,
+		},
+		"query nil raw key": {
+			srcQuery: &types.QueryRawContractStateRequest{Address: contractAddr},
+			expData:  nil,
+		},
+		"query raw with unknown address": {
+			srcQuery: &types.QueryRawContractStateRequest{Address: RandomBech32AccountAddress(t), QueryData: []byte("foo")},
+			expErr:   types.ErrNotFound,
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			got, err := q.RawContractState(sdk.WrapSDKContext(ctx), spec.srcQuery)
+			require.True(t, spec.expErr.Is(err), err)
+			if spec.expErr != nil {
+				return
+			}
+			assert.Equal(t, spec.expData, got.Data)
+		})
+	}
+}
+
+func TestQueryContractListByCodeOrdering(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 1000000))
 	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 500))
-	creator := createFakeFundedAccount(ctx, accKeeper, deposit)
-	anyAddr := createFakeFundedAccount(ctx, accKeeper, topUp)
+	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
+	anyAddr := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, topUp)
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
@@ -177,11 +264,11 @@ func TestListContractByCodeOrdering(t *testing.T) {
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
-	initMsg := InitMsg{
+	initMsg := HackatomExampleInitMsg{
 		Verifier:    anyAddr,
 		Beneficiary: bob,
 	}
-	initMsgBz, err := types.ModuleCdc.MarshalJSON(initMsg)
+	initMsgBz, err := json.Marshal(initMsg)
 	require.NoError(t, err)
 
 	// manage some realistic block settings
@@ -201,95 +288,137 @@ func TestListContractByCodeOrdering(t *testing.T) {
 			ctx = setBlock(ctx, h)
 			h++
 		}
-		_, err = keeper.Instantiate(ctx, codeID, creator, nil, initMsgBz, fmt.Sprintf("contract %d", i), topUp)
+		_, _, err = keeper.Instantiate(ctx, codeID, creator, nil, initMsgBz, fmt.Sprintf("contract %d", i), topUp)
 		require.NoError(t, err)
 	}
 
 	// query and check the results are properly sorted
 	q := NewQuerier(keeper)
-	query := []string{QueryListContractByCode, fmt.Sprintf("%d", codeID)}
-	data := abci.RequestQuery{}
-	res, err := q(ctx, query, data)
+	res, err := q.ContractsByCode(sdk.WrapSDKContext(ctx), &types.QueryContractsByCodeRequest{CodeId: codeID})
 	require.NoError(t, err)
 
-	var contracts []types.ContractInfoResponse
-	err = types.ModuleCdc.UnmarshalJSON(res, &contracts)
-	require.NoError(t, err)
+	require.Equal(t, 10, len(res.ContractInfos))
 
-	require.Equal(t, 10, len(contracts))
-
-	for i, contract := range contracts {
-		assert.Equal(t, fmt.Sprintf("contract %d", i), contract.GetLabel())
-		assert.NotEmpty(t, contract.GetAddress())
+	for i, contract := range res.ContractInfos {
+		assert.Equal(t, fmt.Sprintf("contract %d", i), contract.Label)
+		assert.NotEmpty(t, contract.Address)
+		// ensure these are not shown
+		assert.Nil(t, contract.Created)
 	}
-	assert.NotContains(t, string(res), "create")
-	assert.NotContains(t, string(res), "Create")
 }
 
 func TestQueryContractHistory(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "wasm")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-	ctx, keepers := CreateTestInput(t, false, tempDir, SupportedFeatures, nil, nil)
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
 	keeper := keepers.WasmKeeper
 
 	var (
-		otherAddr sdk.AccAddress = bytes.Repeat([]byte{0x2}, sdk.AddrLen)
+		myContractBech32Addr = RandomBech32AccountAddress(t)
+		otherBech32Addr      = RandomBech32AccountAddress(t)
 	)
 
 	specs := map[string]struct {
-		srcQueryAddr sdk.AccAddress
-		srcHistory   []types.ContractCodeHistoryEntry
-		expContent   []types.ContractCodeHistoryEntry
+		srcHistory []types.ContractCodeHistoryEntry
+		req        types.QueryContractHistoryRequest
+		expContent []types.ContractCodeHistoryEntry
 	}{
 		"response with internal fields cleared": {
 			srcHistory: []types.ContractCodeHistoryEntry{{
-				Operation: types.GenesisContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeGenesis,
 				CodeID:    firstCodeID,
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"init message"`),
 			}},
+			req: types.QueryContractHistoryRequest{Address: myContractBech32Addr},
 			expContent: []types.ContractCodeHistoryEntry{{
-				Operation: types.GenesisContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeGenesis,
 				CodeID:    firstCodeID,
 				Msg:       []byte(`"init message"`),
 			}},
 		},
 		"response with multiple entries": {
 			srcHistory: []types.ContractCodeHistoryEntry{{
-				Operation: types.InitContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeInit,
 				CodeID:    firstCodeID,
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"init message"`),
 			}, {
-				Operation: types.MigrateContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeMigrate,
 				CodeID:    2,
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"migrate message 1"`),
 			}, {
-				Operation: types.MigrateContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeMigrate,
 				CodeID:    3,
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"migrate message 2"`),
 			}},
+			req: types.QueryContractHistoryRequest{Address: myContractBech32Addr},
 			expContent: []types.ContractCodeHistoryEntry{{
-				Operation: types.InitContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeInit,
 				CodeID:    firstCodeID,
 				Msg:       []byte(`"init message"`),
 			}, {
-				Operation: types.MigrateContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeMigrate,
 				CodeID:    2,
 				Msg:       []byte(`"migrate message 1"`),
 			}, {
-				Operation: types.MigrateContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeMigrate,
 				CodeID:    3,
 				Msg:       []byte(`"migrate message 2"`),
 			}},
 		},
-		"unknown contract address": {
-			srcQueryAddr: otherAddr,
+		"with pagination offset": {
 			srcHistory: []types.ContractCodeHistoryEntry{{
-				Operation: types.GenesisContractCodeHistoryType,
+				Operation: types.ContractCodeHistoryOperationTypeInit,
+				CodeID:    firstCodeID,
+				Updated:   types.NewAbsoluteTxPosition(ctx),
+				Msg:       []byte(`"init message"`),
+			}, {
+				Operation: types.ContractCodeHistoryOperationTypeMigrate,
+				CodeID:    2,
+				Updated:   types.NewAbsoluteTxPosition(ctx),
+				Msg:       []byte(`"migrate message 1"`),
+			}},
+			req: types.QueryContractHistoryRequest{
+				Address: myContractBech32Addr,
+				Pagination: &query.PageRequest{
+					Offset: 1,
+				},
+			},
+			expContent: []types.ContractCodeHistoryEntry{{
+				Operation: types.ContractCodeHistoryOperationTypeMigrate,
+				CodeID:    2,
+				Msg:       []byte(`"migrate message 1"`),
+			}},
+		},
+		"with pagination limit": {
+			srcHistory: []types.ContractCodeHistoryEntry{{
+				Operation: types.ContractCodeHistoryOperationTypeInit,
+				CodeID:    firstCodeID,
+				Updated:   types.NewAbsoluteTxPosition(ctx),
+				Msg:       []byte(`"init message"`),
+			}, {
+				Operation: types.ContractCodeHistoryOperationTypeMigrate,
+				CodeID:    2,
+				Updated:   types.NewAbsoluteTxPosition(ctx),
+				Msg:       []byte(`"migrate message 1"`),
+			}},
+			req: types.QueryContractHistoryRequest{
+				Address: myContractBech32Addr,
+				Pagination: &query.PageRequest{
+					Limit: 1,
+				},
+			},
+			expContent: []types.ContractCodeHistoryEntry{{
+				Operation: types.ContractCodeHistoryOperationTypeInit,
+				CodeID:    firstCodeID,
+				Msg:       []byte(`"init message"`),
+			}},
+		},
+		"unknown contract address": {
+			req: types.QueryContractHistoryRequest{Address: otherBech32Addr},
+			srcHistory: []types.ContractCodeHistoryEntry{{
+				Operation: types.ContractCodeHistoryOperationTypeGenesis,
 				CodeID:    firstCodeID,
 				Updated:   types.NewAbsoluteTxPosition(ctx),
 				Msg:       []byte(`"init message"`),
@@ -299,40 +428,23 @@ func TestQueryContractHistory(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			_, _, myContractAddr := keyPubAddr()
-			keeper.appendToContractHistory(ctx, myContractAddr, spec.srcHistory...)
-			q := NewQuerier(keeper)
-			queryContractAddr := spec.srcQueryAddr
-			if queryContractAddr == nil {
-				queryContractAddr = myContractAddr
-			}
+			xCtx, _ := ctx.CacheContext()
+
+			cAddr, _ := sdk.AccAddressFromBech32(myContractBech32Addr)
+			keeper.appendToContractHistory(xCtx, cAddr, spec.srcHistory...)
 
 			// when
-			query := []string{QueryContractHistory, queryContractAddr.String()}
-			data := abci.RequestQuery{}
-			resData, err := q(ctx, query, data)
+			q := NewQuerier(keeper)
+			got, err := q.ContractHistory(sdk.WrapSDKContext(xCtx), &spec.req)
 
 			// then
-			require.NoError(t, err)
 			if spec.expContent == nil {
-				require.Nil(t, resData)
+				require.Error(t, types.ErrEmpty)
 				return
 			}
-			var got []types.ContractHistoryResponse
-			err = types.ModuleCdc.UnmarshalJSON(resData, &got)
 			require.NoError(t, err)
-
-			assertContractHistory(t, spec.expContent, got)
+			assert.Equal(t, spec.expContent, got.Entries)
 		})
-	}
-}
-
-func assertContractHistory(t *testing.T, expected []types.ContractCodeHistoryEntry, actual []types.ContractHistoryResponse) {
-	assert.Equal(t, len(expected), len(actual))
-
-	for i, entry := range expected {
-		expectedResponse := types.NewContractHistoryResponse(entry)
-		assert.Equal(t, expectedResponse, actual[i])
 	}
 }
 
@@ -340,48 +452,81 @@ func TestQueryCodeList(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
 	specs := map[string]struct {
-		codeIDs []uint64
+		storedCodeIDs []uint64
+		req           types.QueryCodesRequest
+		expCodeIDs    []uint64
 	}{
 		"none": {},
 		"no gaps": {
-			codeIDs: []uint64{1, 2, 3},
+			storedCodeIDs: []uint64{1, 2, 3},
+			expCodeIDs:    []uint64{1, 2, 3},
 		},
 		"with gaps": {
-			codeIDs: []uint64{2, 4, 6},
+			storedCodeIDs: []uint64{2, 4, 6},
+			expCodeIDs:    []uint64{2, 4, 6},
+		},
+		"with pagination offset": {
+			storedCodeIDs: []uint64{1, 2, 3},
+			req: types.QueryCodesRequest{
+				Pagination: &query.PageRequest{
+					Offset: 1,
+				},
+			},
+			expCodeIDs: []uint64{2, 3},
+		},
+		"with pagination limit": {
+			storedCodeIDs: []uint64{1, 2, 3},
+			req: types.QueryCodesRequest{
+				Pagination: &query.PageRequest{
+					Limit: 2,
+				},
+			},
+			expCodeIDs: []uint64{1, 2},
+		},
+		"with pagination next key": {
+			storedCodeIDs: []uint64{1, 2, 3},
+			req: types.QueryCodesRequest{
+				Pagination: &query.PageRequest{
+					Key: fromBase64("AAAAAAAAAAI="),
+				},
+			},
+			expCodeIDs: []uint64{2, 3},
 		},
 	}
 
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			tempDir, err := ioutil.TempDir("", "wasm")
-			require.NoError(t, err)
-			defer os.RemoveAll(tempDir)
-			ctx, keepers := CreateTestInput(t, false, tempDir, SupportedFeatures, nil, nil)
-			keeper := keepers.WasmKeeper
+			xCtx, _ := ctx.CacheContext()
 
-			for _, codeID := range spec.codeIDs {
-				require.NoError(t, keeper.importCode(ctx, codeID,
+			for _, codeID := range spec.storedCodeIDs {
+				require.NoError(t, keeper.importCode(xCtx, codeID,
 					types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode)),
 					wasmCode),
 				)
 			}
-			q := NewQuerier(keeper)
 			// when
-			query := []string{QueryListCode}
-			data := abci.RequestQuery{}
-			resData, err := q(ctx, query, data)
+			q := NewQuerier(keeper)
+			got, err := q.Codes(sdk.WrapSDKContext(xCtx), &spec.req)
 
 			// then
 			require.NoError(t, err)
-
-			var got []types.CodeInfoResponse
-			err = types.ModuleCdc.UnmarshalJSON(resData, &got)
-			require.NoError(t, err)
-			require.Len(t, got, len(spec.codeIDs))
-			for i, exp := range spec.codeIDs {
-				assert.EqualValues(t, exp, got[i].GetID())
+			require.NotNil(t, got.CodeInfos)
+			require.Len(t, got.CodeInfos, len(spec.expCodeIDs))
+			for i, exp := range spec.expCodeIDs {
+				assert.EqualValues(t, exp, got.CodeInfos[i].CodeID)
 			}
 		})
 	}
+}
+
+func fromBase64(s string) []byte {
+	r, err := base64.StdEncoding.DecodeString(s)
+	if err != nil {
+		panic(err)
+	}
+	return r
 }
