@@ -4,22 +4,23 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
-	wasmvm "github.com/CosmWasm/wasmvm"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
 	"io/ioutil"
 	"testing"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	wasmvm "github.com/CosmWasm/wasmvm"
+	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+
 	stypes "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
 )
 
 const SupportedFeatures = "staking,stargate"
@@ -279,7 +280,7 @@ func TestInstantiate(t *testing.T) {
 	// create with no balance is also legal
 	gotContractAddr, _, err := keeper.Instantiate(ctx, codeID, creator, nil, initMsgBz, "demo contract 1", nil)
 	require.NoError(t, err)
-	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", gotContractAddr.String())
+	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", gotContractAddr.String())
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
@@ -480,7 +481,7 @@ func TestExecute(t *testing.T) {
 
 	addr, _, err := keeper.Instantiate(ctx, contractID, creator, nil, initMsgBz, "demo contract 3", deposit)
 	require.NoError(t, err)
-	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", addr.String())
+	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", addr.String())
 
 	// ensure bob doesn't exist
 	bobAcct := accKeeper.GetAccount(ctx, bob)
@@ -1086,7 +1087,7 @@ func TestSudo(t *testing.T) {
 
 	addr, _, err := keeper.Instantiate(ctx, contractID, creator, nil, initMsgBz, "demo contract 3", deposit)
 	require.NoError(t, err)
-	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", addr.String())
+	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", addr.String())
 
 	// the community is broke
 	_, _, community := keyPubAddr()
