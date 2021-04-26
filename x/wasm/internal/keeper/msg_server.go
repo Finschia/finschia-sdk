@@ -114,7 +114,7 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context, msg *t
 	))
 
 	return &types.MsgStoreCodeAndInstantiateContractResponse{
-		CodeID: codeID,
+		CodeID:  codeID,
 		Address: contractAddr.String(),
 		Data:    data,
 	}, nil

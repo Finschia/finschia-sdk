@@ -36,12 +36,11 @@ type instantiateContractReq struct {
 type storeCodeAndInstantiateContractReq struct {
 	BaseReq   rest.BaseReq `json:"base_req" yaml:"base_req"`
 	WasmBytes []byte       `json:"wasm_bytes"`
-	Label   string       `json:"label" yaml:"label"`
-	Deposit sdk.Coins    `json:"deposit" yaml:"deposit"`
-	Admin   string       `json:"admin,omitempty" yaml:"admin"`
-	InitMsg []byte       `json:"init_msg" yaml:"init_msg"`
+	Label     string       `json:"label" yaml:"label"`
+	Deposit   sdk.Coins    `json:"deposit" yaml:"deposit"`
+	Admin     string       `json:"admin,omitempty" yaml:"admin"`
+	InitMsg   []byte       `json:"init_msg" yaml:"init_msg"`
 }
-
 
 type executeContractReq struct {
 	BaseReq rest.BaseReq `json:"base_req" yaml:"base_req"`
@@ -160,10 +159,10 @@ func storeCodeAndInstantiateContractHandlerFn(cliCtx client.Context) http.Handle
 		msg := types.MsgStoreCodeAndInstantiateContract{
 			Sender:       req.BaseReq.From,
 			WASMByteCode: wasm,
-			Label:   req.Label,
-			Funds:   req.Deposit,
-			InitMsg: req.InitMsg,
-			Admin:   req.Admin,
+			Label:        req.Label,
+			Funds:        req.Deposit,
+			InitMsg:      req.InitMsg,
+			Admin:        req.Admin,
 		}
 
 		if err := msg.ValidateBasic(); err != nil {
@@ -174,7 +173,6 @@ func storeCodeAndInstantiateContractHandlerFn(cliCtx client.Context) http.Handle
 		tx.WriteGeneratedTxResponse(cliCtx, w, req.BaseReq, &msg)
 	}
 }
-
 
 func executeContractHandlerFn(cliCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

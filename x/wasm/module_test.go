@@ -6,20 +6,20 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	"github.com/dvsekhvalnov/jose2go/base64url"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/types/module"
 	authkeeper "github.com/line/lbm-sdk/v2/x/auth/keeper"
 	bankkeeper "github.com/line/lbm-sdk/v2/x/bank/keeper"
 	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
-	"github.com/dvsekhvalnov/jose2go/base64url"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/ed25519"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type testData struct {
@@ -134,7 +134,7 @@ type initMsg struct {
 	Beneficiary sdk.AccAddress `json:"beneficiary"`
 }
 
-type emptyMsg struct {}
+type emptyMsg struct{}
 
 type state struct {
 	Verifier    wasmvmtypes.CanonicalAddress `json:"verifier"`
@@ -223,9 +223,9 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 	msg := &MsgStoreCodeAndInstantiateContract{
 		Sender:       creator.String(),
 		WASMByteCode: testContract,
-		InitMsg: initMsgBz,
-		Label: "contract for test",
-		Funds:   nil,
+		InitMsg:      initMsgBz,
+		Label:        "contract for test",
+		Funds:        nil,
 	}
 	res, err := h(data.ctx, msg)
 	require.NoError(t, err)
@@ -278,8 +278,8 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 		expectedBytes []byte
 	}{
 		"empty": {
-			msg: &MsgStoreCodeAndInstantiateContract{},
-			isValid: false,
+			msg:           &MsgStoreCodeAndInstantiateContract{},
+			isValid:       false,
 			expectedCodes: 0,
 			expectedBytes: nil,
 		},
@@ -289,9 +289,9 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				WASMByteCode: testContract,
 				InitMsg:      validInitMsgBz,
 				Label:        "foo",
-				Funds:    nil,
+				Funds:        nil,
 			},
-			isValid: true,
+			isValid:       true,
 			expectedCodes: 1,
 			expectedBytes: testContract,
 		},
@@ -301,9 +301,9 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				WASMByteCode: []byte("foobar"),
 				InitMsg:      validInitMsgBz,
 				Label:        "foo",
-				Funds:    nil,
+				Funds:        nil,
 			},
-			isValid: false,
+			isValid:       false,
 			expectedCodes: 0,
 			expectedBytes: nil,
 		},
@@ -313,9 +313,9 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				WASMByteCode: oldContract,
 				InitMsg:      validInitMsgBz,
 				Label:        "foo",
-				Funds:    nil,
+				Funds:        nil,
 			},
-			isValid: false,
+			isValid:       false,
 			expectedCodes: 0,
 			expectedBytes: nil,
 		},
@@ -325,9 +325,9 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				WASMByteCode: testContract,
 				InitMsg:      invalidInitMsgBz,
 				Label:        "foo",
-				Funds:    nil,
+				Funds:        nil,
 			},
-			isValid: false,
+			isValid:       false,
 			expectedCodes: 1,
 			expectedBytes: testContract,
 		},
