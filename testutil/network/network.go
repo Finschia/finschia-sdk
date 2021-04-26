@@ -105,7 +105,8 @@ func DefaultConfig() Config {
 		AccountRetriever:  authtypes.AccountRetriever{},
 		AppConstructor:    NewAppConstructor(encCfg),
 		GenesisState:      simapp.ModuleBasics.DefaultGenesis(encCfg.Marshaler),
-		TimeoutCommit:     2 * time.Second,
+		// 2 second confirm may make some tests to be failed with `tx already in mempool`
+		TimeoutCommit:     1 * time.Second,
 		ChainID:           "chain-" + ostrand.NewRand().Str(6),
 		NumValidators:     4,
 		BondDenom:         sdk.DefaultBondDenom,
