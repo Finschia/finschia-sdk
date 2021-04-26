@@ -134,6 +134,8 @@ type initMsg struct {
 	Beneficiary sdk.AccAddress `json:"beneficiary"`
 }
 
+type emptyMsg struct {}
+
 type state struct {
 	Verifier    wasmvmtypes.CanonicalAddress `json:"verifier"`
 	Beneficiary wasmvmtypes.CanonicalAddress `json:"beneficiary"`
@@ -196,6 +198,159 @@ func TestHandleInstantiate(t *testing.T) {
 		Beneficiary: []byte(bob),
 		Funder:      []byte(creator),
 	})
+}
+
+func TestHandleStoreAndInstantiate(t *testing.T) {
+	data := setupTest(t)
+
+	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
+	creator := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, deposit)
+
+	h := data.module.Route().Handler()
+	q := data.module.LegacyQuerierHandler(nil)
+
+	_, _, bob := keyPubAddr()
+	_, _, fred := keyPubAddr()
+
+	initMsg := initMsg{
+		Verifier:    fred,
+		Beneficiary: bob,
+	}
+	initMsgBz, err := json.Marshal(initMsg)
+	require.NoError(t, err)
+
+	// create with no balance is legal
+	msg := &MsgStoreCodeAndInstantiateContract{
+		Sender:       creator.String(),
+		WASMByteCode: testContract,
+		InitMsg: initMsgBz,
+		Label: "contract for test",
+		Funds:   nil,
+	}
+	res, err := h(data.ctx, msg)
+	require.NoError(t, err)
+	codeID, contractBech32Addr := parseStoreAndInitResponse(t, res.Data)
+
+	require.Equal(t, uint64(1), codeID)
+	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", contractBech32Addr)
+	// this should be standard x/wasm init event, nothing from contract
+	require.Equal(t, 3, len(res.Events), prettyEvents(res.Events))
+	assert.Equal(t, "message", res.Events[0].Type)
+	assertAttribute(t, "module", "wasm", res.Events[0].Attributes[0])
+	assertAttribute(t, "code_id", "1", res.Events[0].Attributes[2])
+	assert.Equal(t, "wasm", res.Events[1].Type)
+	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[1].Attributes[0])
+	assert.Equal(t, "message", res.Events[2].Type)
+	assertAttribute(t, "module", "wasm", res.Events[2].Attributes[0])
+	assertAttribute(t, "code_id", "1", res.Events[2].Attributes[2])
+	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[2].Attributes[3])
+
+	assertCodeList(t, q, data.ctx, 1)
+	assertCodeBytes(t, q, data.ctx, 1, testContract)
+
+	assertContractList(t, q, data.ctx, 1, []string{contractBech32Addr})
+	assertContractInfo(t, q, data.ctx, contractBech32Addr, 1, creator)
+	assertContractState(t, q, data.ctx, contractBech32Addr, state{
+		Verifier:    []byte(fred),
+		Beneficiary: []byte(bob),
+		Funder:      []byte(creator),
+	})
+}
+
+func TestErrorsCreateAndInstantiate(t *testing.T) {
+	// init messages
+	_, _, bob := keyPubAddr()
+	_, _, fred := keyPubAddr()
+	initMsg := initMsg{
+		Verifier:    fred,
+		Beneficiary: bob,
+	}
+	validInitMsgBz, err := json.Marshal(initMsg)
+	require.NoError(t, err)
+
+	invalidInitMsgBz, err := json.Marshal(emptyMsg{})
+
+	// test cases
+	cases := map[string]struct {
+		msg           sdk.Msg
+		isValid       bool
+		expectedCodes int
+		expectedBytes []byte
+	}{
+		"empty": {
+			msg: &MsgStoreCodeAndInstantiateContract{},
+			isValid: false,
+			expectedCodes: 0,
+			expectedBytes: nil,
+		},
+		"valid one": {
+			msg: &MsgStoreCodeAndInstantiateContract{
+				Sender:       addr1,
+				WASMByteCode: testContract,
+				InitMsg:      validInitMsgBz,
+				Label:        "foo",
+				Funds:    nil,
+			},
+			isValid: true,
+			expectedCodes: 1,
+			expectedBytes: testContract,
+		},
+		"invalid wasm": {
+			msg: &MsgStoreCodeAndInstantiateContract{
+				Sender:       addr1,
+				WASMByteCode: []byte("foobar"),
+				InitMsg:      validInitMsgBz,
+				Label:        "foo",
+				Funds:    nil,
+			},
+			isValid: false,
+			expectedCodes: 0,
+			expectedBytes: nil,
+		},
+		"old wasm (0.7)": {
+			msg: &MsgStoreCodeAndInstantiateContract{
+				Sender:       addr1,
+				WASMByteCode: oldContract,
+				InitMsg:      validInitMsgBz,
+				Label:        "foo",
+				Funds:    nil,
+			},
+			isValid: false,
+			expectedCodes: 0,
+			expectedBytes: nil,
+		},
+		"invalid init message": {
+			msg: &MsgStoreCodeAndInstantiateContract{
+				Sender:       addr1,
+				WASMByteCode: testContract,
+				InitMsg:      invalidInitMsgBz,
+				Label:        "foo",
+				Funds:    nil,
+			},
+			isValid: false,
+			expectedCodes: 1,
+			expectedBytes: testContract,
+		},
+	}
+
+	for name, tc := range cases {
+		tc := tc
+		t.Run(name, func(t *testing.T) {
+			data := setupTest(t)
+
+			h := data.module.Route().Handler()
+			q := data.module.LegacyQuerierHandler(nil)
+
+			res, err := h(data.ctx, tc.msg)
+			if tc.isValid {
+				require.NoError(t, err)
+			} else {
+				require.Error(t, err, "%#v", res)
+			}
+			assertCodeList(t, q, data.ctx, tc.expectedCodes)
+			assertCodeBytes(t, q, data.ctx, 1, tc.expectedBytes)
+		})
+	}
 }
 
 func TestHandleExecute(t *testing.T) {
