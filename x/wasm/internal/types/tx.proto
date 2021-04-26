@@ -12,8 +12,10 @@ option (gogoproto.goproto_getters_all) = false;
 service Msg {
   // StoreCode to submit Wasm code to the system
   rpc StoreCode(MsgStoreCode) returns (MsgStoreCodeResponse);
-  //  Instantiate creates a new smart contract instance for the given code id.
+  // Instantiate creates a new smart contract instance for the given code id.
   rpc InstantiateContract(MsgInstantiateContract) returns (MsgInstantiateContractResponse);
+  // Store Wasm code and Instantiate a new contract
+  rpc StoreCodeAndInstantiateContract(MsgStoreCodeAndInstantiateContract) returns (MsgStoreCodeAndInstantiateContractResponse);
   // Execute submits the given message data to a smart contract
   rpc ExecuteContract(MsgExecuteContract) returns (MsgExecuteContractResponse);
   // Migrate runs a code upgrade/ downgrade for a smart contract

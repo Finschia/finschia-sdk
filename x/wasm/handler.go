@@ -28,6 +28,8 @@ func NewHandler(k *Keeper) sdk.Handler {
 			res, err = msgServer.StoreCode(sdk.WrapSDKContext(ctx), msg)
 		case *MsgInstantiateContract:
 			res, err = msgServer.InstantiateContract(sdk.WrapSDKContext(ctx), msg)
+		case *MsgStoreCodeAndInstantiateContract:
+			res, err = msgServer.StoreCodeAndInstantiateContract(sdk.WrapSDKContext(ctx), msg)
 		case *MsgExecuteContract:
 			res, err = msgServer.ExecuteContract(sdk.WrapSDKContext(ctx), msg)
 		case *MsgMigrateContract:
