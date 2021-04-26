@@ -75,6 +75,6 @@ func newLegacyPrefixIterator(prefix, start, end []byte, parent types.Iterator) *
 }
 
 // Implements Iterator
-func (pi *legacyPrefixIterator) Close() {
-	pi.iter.Close()
+func (pi *legacyPrefixIterator) Close() error {
+	return pi.iter.Close()
 }

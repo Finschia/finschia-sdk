@@ -70,6 +70,5 @@ replace (
 	github.com/cosmos/cosmos-sdk => github.com/line/lbm-sdk v0.39.2-0.2.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	github.com/tendermint/tendermint => github.com/line/linemint v1.0.0
-	github.com/tendermint/tm-db => github.com/line/tm-db v0.5.2
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
