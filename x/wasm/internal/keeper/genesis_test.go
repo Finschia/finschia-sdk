@@ -13,8 +13,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	wasmTypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	fuzz "github.com/google/gofuzz"
 	"github.com/line/lbm-sdk/v2/store"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	authkeeper "github.com/line/lbm-sdk/v2/x/auth/keeper"
@@ -22,14 +21,15 @@ import (
 	paramskeeper "github.com/line/lbm-sdk/v2/x/params/keeper"
 	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
 	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
-	fuzz "github.com/google/gofuzz"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	wasmTypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/proto/ostracon/crypto"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 const firstCodeID = 1
@@ -451,12 +451,12 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
       "code_id": "1",
       "code_info": {
         "code_hash": %q,
-        "creator": "cosmos1qtu5n0cnhfkjj6l2rq97hmky9fd89gwca9yarx",
+        "creator": "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
         "source": "https://example.com",
         "builder": "foo/bar:tag",
         "instantiate_config": {
           "permission": "OnlyAddress",
-          "address": "cosmos1qtu5n0cnhfkjj6l2rq97hmky9fd89gwca9yarx"
+          "address": "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
         }
       },
       "code_bytes": %q
@@ -464,11 +464,11 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
   ],
   "contracts": [
     {
-      "contract_address": "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5",
+      "contract_address": "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
       "contract_info": {
         "code_id": "1",
-        "creator": "cosmos13x849jzd03vne42ynpj25hn8npjecxqrjghd8x",
-        "admin": "cosmos1h5t8zxmjr30e9dqghtlpl40f2zz5cgey6esxtn",
+        "creator": "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj",
+        "admin": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
         "label": "ȀĴnZV芢毤"
       }
     }
@@ -508,7 +508,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	// verify code info
 	gotCodeInfo := keeper.GetCodeInfo(ctx, 1)
 	require.NotNil(t, gotCodeInfo)
-	codeCreatorAddr := "cosmos1qtu5n0cnhfkjj6l2rq97hmky9fd89gwca9yarx"
+	codeCreatorAddr := "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
 	expCodeInfo := types.CodeInfo{
 		CodeHash: wasmCodeHash[:],
 		Creator:  codeCreatorAddr,
@@ -522,11 +522,11 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 	assert.Equal(t, expCodeInfo, *gotCodeInfo)
 
 	// verify contract
-	contractAddr, _ := sdk.AccAddressFromBech32("cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5")
+	contractAddr, _ := sdk.AccAddressFromBech32("link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt")
 	gotContractInfo := keeper.GetContractInfo(ctx, contractAddr)
 	require.NotNil(t, gotContractInfo)
-	contractCreatorAddr := "cosmos13x849jzd03vne42ynpj25hn8npjecxqrjghd8x"
-	adminAddr := "cosmos1h5t8zxmjr30e9dqghtlpl40f2zz5cgey6esxtn"
+	contractCreatorAddr := "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj"
+	adminAddr := "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"
 
 	expContractInfo := types.ContractInfo{
 		CodeID:  firstCodeID,

@@ -70,16 +70,18 @@ func (s Subspace) WithKeyTable(table KeyTable) Subspace {
 
 // Returns a KVStore identical with ctx.KVStore(s.key).Prefix()
 func (s Subspace) kvStore(ctx sdk.Context) sdk.KVStore {
-	// append here is safe, appends within a function won't cause
-	// weird side effects when its singlethreaded
-	return prefix.NewStore(ctx.KVStore(s.key), append(s.name, '/'))
+	// this function can be called concurrently so we should not call append on s.name directly
+	name := make([]byte, len(s.name))
+	copy(name, s.name)
+	return prefix.NewStore(ctx.KVStore(s.key), append(name, '/'))
 }
 
 // Returns a transient store for modification
 func (s Subspace) transientStore(ctx sdk.Context) sdk.KVStore {
-	// append here is safe, appends within a function won't cause
-	// weird side effects when its singlethreaded
-	return prefix.NewStore(ctx.TransientStore(s.tkey), append(s.name, '/'))
+	// this function can be called concurrently so we should not call append on s.name directly
+	name := make([]byte, len(s.name))
+	copy(name, s.name)
+	return prefix.NewStore(ctx.TransientStore(s.tkey), append(name, '/'))
 }
 
 // Validate attempts to validate a parameter value by its key. If the key is not

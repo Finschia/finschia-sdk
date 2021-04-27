@@ -5,15 +5,16 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"errors"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
-	wasmvm "github.com/CosmWasm/wasmvm"
 	"io/ioutil"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	wasmvm "github.com/CosmWasm/wasmvm"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+
 	sdk "github.com/line/lbm-sdk/v2/types"
 	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -97,7 +98,7 @@ func TestInstantiateProposal(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	contractAddr, err := sdk.AccAddressFromBech32("cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5")
+	contractAddr, err := sdk.AccAddressFromBech32("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
 	require.NoError(t, err)
 
 	cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)

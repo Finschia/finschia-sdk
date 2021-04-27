@@ -8,8 +8,6 @@ import (
 	"path"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/flags"
 	"github.com/line/lbm-sdk/v2/crypto/hd"
@@ -22,12 +20,14 @@ import (
 	genutiltest "github.com/line/lbm-sdk/v2/x/genutil/client/testutil"
 	genutiltypes "github.com/line/lbm-sdk/v2/x/genutil/types"
 	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/ostracon/libs/log"
+	osttypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/line/ostracon/libs/log"
-	osttypes "github.com/line/ostracon/types"
 )
 
 var wasmIdent = []byte("\x00\x61\x73\x6D")
@@ -315,7 +315,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 }
 
 func TestExecuteContractCmd(t *testing.T) {
-	const firstContractAddress = "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5"
+	const firstContractAddress = "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
 	minimalWasmGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 	}
@@ -396,7 +396,7 @@ func TestExecuteContractCmd(t *testing.T) {
 				},
 			},
 			mutator: func(cmd *cobra.Command) {
-				cmd.SetArgs([]string{"cosmos1weh0k0l6t6v4jkmkde8e90tzkw2c59g42ccl62", `{}`})
+				cmd.SetArgs([]string{"link1weh0k0l6t6v4jkmkde8e90tzkw2c59g4lkcapz", `{}`})
 				flagSet := cmd.Flags()
 				flagSet.Set("run-as", myWellFundedAccount)
 			},

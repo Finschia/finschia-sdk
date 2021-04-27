@@ -6,20 +6,20 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	"github.com/dvsekhvalnov/jose2go/base64url"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/types/module"
 	authkeeper "github.com/line/lbm-sdk/v2/x/auth/keeper"
 	bankkeeper "github.com/line/lbm-sdk/v2/x/bank/keeper"
 	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
-	"github.com/dvsekhvalnov/jose2go/base64url"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/ed25519"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 type testData struct {
@@ -178,7 +178,7 @@ func TestHandleInstantiate(t *testing.T) {
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
 
-	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", contractBech32Addr)
+	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
 	// this should be standard x/wasm init event, nothing from contract
 	require.Equal(t, 2, len(res.Events), prettyEvents(res.Events))
 	assert.Equal(t, "wasm", res.Events[0].Type)
@@ -235,7 +235,7 @@ func TestHandleExecute(t *testing.T) {
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
 
-	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", contractBech32Addr)
+	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
 	// this should be standard x/wasm init event, plus a bank send event (2), with no custom contract events
 	require.Equal(t, 3, len(res.Events), prettyEvents(res.Events))
 	assert.Equal(t, "transfer", res.Events[0].Type)
@@ -351,7 +351,7 @@ func TestHandleExecuteEscrow(t *testing.T) {
 	res, err = h(data.ctx, &initCmd)
 	require.NoError(t, err)
 	contractBech32Addr := parseInitResponse(t, res.Data)
-	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", contractBech32Addr)
+	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
 
 	handleMsg := map[string]interface{}{
 		"release": map[string]interface{}{},
