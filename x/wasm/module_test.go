@@ -232,7 +232,7 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 	codeID, contractBech32Addr := parseStoreAndInitResponse(t, res.Data)
 
 	require.Equal(t, uint64(1), codeID)
-	require.Equal(t, "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5", contractBech32Addr)
+	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
 	// this should be standard x/wasm init event, nothing from contract
 	require.Equal(t, 3, len(res.Events), prettyEvents(res.Events))
 	assert.Equal(t, "message", res.Events[0].Type)
@@ -269,6 +269,8 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 	require.NoError(t, err)
 
 	invalidInitMsgBz, err := json.Marshal(emptyMsg{})
+
+	expectedContractBech32Addr := "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
 
 	// test cases
 	cases := map[string]struct {
@@ -341,14 +343,34 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 			h := data.module.Route().Handler()
 			q := data.module.LegacyQuerierHandler(nil)
 
+			// asserting response
 			res, err := h(data.ctx, tc.msg)
 			if tc.isValid {
 				require.NoError(t, err)
+				codeID, contractBech32Addr := parseStoreAndInitResponse(t, res.Data)
+				require.Equal(t, uint64(1), codeID)
+				require.Equal(t, expectedContractBech32Addr, contractBech32Addr)
+
 			} else {
 				require.Error(t, err, "%#v", res)
 			}
+
+			// asserting code state
 			assertCodeList(t, q, data.ctx, tc.expectedCodes)
 			assertCodeBytes(t, q, data.ctx, 1, tc.expectedBytes)
+
+			// asserting contract state
+			if tc.isValid {
+				assertContractList(t, q, data.ctx, 1, []string{expectedContractBech32Addr})
+				assertContractInfo(t, q, data.ctx, expectedContractBech32Addr, 1, addrAcc1)
+				assertContractState(t, q, data.ctx, expectedContractBech32Addr, state{
+					Verifier:    []byte(fred),
+					Beneficiary: []byte(bob),
+					Funder:      []byte(addrAcc1),
+				})
+			} else {
+				assertContractList(t, q, data.ctx, 0, []string{})
+			}
 		})
 	}
 }
