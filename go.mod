@@ -28,14 +28,13 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hashicorp/golang-lru v0.5.4
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20210419041411-7de35b5f1306
-	github.com/line/ostracon v0.34.9-0.20210419031811-5254cabf172e
+	github.com/line/ostracon v0.34.9-0.20210427051353-0cd77f80e166
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524
 	github.com/magiconair/properties v1.8.4
 	github.com/mattn/go-isatty v0.0.12
 	github.com/nxadm/tail v1.4.8 // indirect
 	github.com/onsi/ginkgo v1.15.0 // indirect
 	github.com/onsi/gomega v1.10.5 // indirect
-	github.com/otiai10/copy v1.4.2
 	github.com/pelletier/go-toml v1.8.0 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.8.0

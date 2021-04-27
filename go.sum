@@ -355,6 +355,8 @@ github.com/line/linemint v1.0.0/go.mod h1:0yUs9eIuuDq07nQql9BmI30FtYGcEC60Tu5JzB
 github.com/line/ostracon v0.34.9-0.20210315041958-2a1f43c788f5/go.mod h1:1THU+kF+6fxLaNYQKcdNyLCO6t9LnqSMaExDMiLozbM=
 github.com/line/ostracon v0.34.9-0.20210419031811-5254cabf172e h1:+F5duGTfSZiwD9LqMkdtwFgULjKn8pGRz/86U/SyIO0=
 github.com/line/ostracon v0.34.9-0.20210419031811-5254cabf172e/go.mod h1:w/itWXCU8Wttz/2Ftp+yJz0UXv9gX6qT1dASn+3kX5M=
+github.com/line/ostracon v0.34.9-0.20210427051353-0cd77f80e166 h1:MWQz8J6C/Z4Bm8f0fWMlndbsduPE9p25rxZaiZJ8rhs=
+github.com/line/ostracon v0.34.9-0.20210427051353-0cd77f80e166/go.mod h1:w/itWXCU8Wttz/2Ftp+yJz0UXv9gX6qT1dASn+3kX5M=
 github.com/line/tm-db v0.5.2 h1:P8kMpcrm9Xyfl6QLyafssNIoIeC01k0fhw2zDvKhtl4=
 github.com/line/tm-db v0.5.2/go.mod h1:VrPTx04QJhQ9d8TFUTc2GpPBvBf/U9vIdBIzkjBk7Lk=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210406062110-9424ca70955a h1:qSt/WwORC5+nVRnNqx+A0oo5gOCsoVJ0HmHF5Db1YvY=
@@ -441,14 +443,6 @@ github.com/openzipkin-contrib/zipkin-go-opentracing v0.4.5/go.mod h1:/wsWhb9smxS
 github.com/openzipkin/zipkin-go v0.1.6/go.mod h1:QgAqvLzwWbR/WpD4A3cGpPtJrZXNIiJc5AZX7/PBEpw=
 github.com/openzipkin/zipkin-go v0.2.1/go.mod h1:NaW6tEwdmWMaCDZzg8sh+IBNOxHMPnhQw8ySjnjRyN4=
 github.com/openzipkin/zipkin-go v0.2.2/go.mod h1:NaW6tEwdmWMaCDZzg8sh+IBNOxHMPnhQw8ySjnjRyN4=
-github.com/otiai10/copy v1.4.2 h1:RTiz2sol3eoXPLF4o+YWqEybwfUa/Q2Nkc4ZIUs3fwI=
-github.com/otiai10/copy v1.4.2/go.mod h1:XWfuS3CrI0R6IE0FbgHsEazaXO8G0LpMp9o8tos0x4E=
-github.com/otiai10/curr v0.0.0-20150429015615-9b4961190c95/go.mod h1:9qAhocn7zKJG+0mI8eUu6xqkFDYS2kb2saOteoSB3cE=
-github.com/otiai10/curr v1.0.0 h1:TJIWdbX0B+kpNagQrjgq8bCMrbhiuX73M2XwgtDMoOI=
-github.com/otiai10/curr v1.0.0/go.mod h1:LskTG5wDwr8Rs+nNQ+1LlxRjAtTZZjtJW4rMXl6j4vs=
-github.com/otiai10/mint v1.3.0/go.mod h1:F5AjcsTsWUqX+Na9fpHb52P8pcRX2CI6A3ctIT91xUo=
-github.com/otiai10/mint v1.3.2 h1:VYWnrP5fXmz1MXvjuUvcBrXSjGE6xjON+axB/UrpO3E=
-github.com/otiai10/mint v1.3.2/go.mod h1:/yxELlJQ0ufhjUwhshSj+wFjZ78CnZ48/1wtmBH1OTc=
 github.com/pact-foundation/pact-go v1.0.4/go.mod h1:uExwJY4kCzNPcHRj+hCR/HBbOOIwwtUjcrb0b5/5kLM=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pascaldekloe/goe v0.1.0 h1:cBOtyMzM9HTpWjXfbbunk26uA6nG3a8n06Wieeh0MwY=
