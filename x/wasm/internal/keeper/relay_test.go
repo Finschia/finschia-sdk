@@ -67,7 +67,7 @@ func TestOnOpenChannel(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa85)
+			const storageCosts = sdk.Gas(0x1a61)
 			assert.Equal(t, spec.contractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 		})
 	}
@@ -174,7 +174,7 @@ func TestOnConnectChannel(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa85)
+			const storageCosts = sdk.Gas(0x1a61)
 			assert.Equal(t, spec.contractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 			// verify msgs dispatched
 			assert.Equal(t, spec.contractResp.Messages, *capturedMsgs)
@@ -283,7 +283,7 @@ func TestOnCloseChannel(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa85)
+			const storageCosts = sdk.Gas(0x1a61)
 			assert.Equal(t, spec.contractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 			// verify msgs dispatched
 			assert.Equal(t, spec.contractResp.Messages, *capturedMsgs)
@@ -408,7 +408,7 @@ func TestOnRecvPacket(t *testing.T) {
 			require.Equal(t, spec.contractResp.Acknowledgement, gotAck)
 
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa85)
+			const storageCosts = sdk.Gas(0x1a61)
 			assert.Equal(t, spec.contractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 			// verify msgs dispatched
 			assert.Equal(t, spec.contractResp.Messages, *capturedMsgs)
@@ -519,7 +519,7 @@ func TestOnAckPacket(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa85)
+			const storageCosts = sdk.Gas(0x1a61)
 			assert.Equal(t, spec.contractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 			// verify msgs dispatched
 			assert.Equal(t, spec.contractResp.Messages, *capturedMsgs)
@@ -629,7 +629,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 			}
 			require.NoError(t, err)
 			// verify gas consumed
-			const storageCosts = sdk.Gas(0xa85)
+			const storageCosts = sdk.Gas(0x1a61)
 			assert.Equal(t, spec.contractGas, ctx.GasMeter().GasConsumed()-before-storageCosts)
 			// verify msgs dispatched
 			assert.Equal(t, spec.contractResp.Messages, *capturedMsgs)
