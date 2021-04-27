@@ -1,6 +1,7 @@
 package simulation
 
 import (
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -9,6 +10,9 @@ import (
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/feegrant/types"
 )
+
+// Simulation parameter constants
+const feegrant = "feegrant"
 
 // genFeeGrants returns a slice of randomly generated allowances.
 func genFeeGrants(r *rand.Rand, accounts []simtypes.Account) []types.Grant {
@@ -63,7 +67,7 @@ func RandomizedGenState(simState *module.SimulationState) {
 	var feegrants []types.Grant
 
 	simState.AppParams.GetOrGenerate(
-		simState.Cdc, "feegrant", &feegrants, simState.Rand,
+		simState.Cdc, feegrant, &feegrants, simState.Rand,
 		func(r *rand.Rand) { feegrants = genFeeGrants(r, simState.Accounts) },
 	)
 
@@ -73,5 +77,6 @@ func RandomizedGenState(simState *module.SimulationState) {
 		panic(err)
 	}
 
+	fmt.Printf("Selected randomly generated %s parameters:\n%s\n", types.ModuleName, bz)
 	simState.GenState[types.ModuleName] = bz
 }

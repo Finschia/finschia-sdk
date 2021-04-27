@@ -15,11 +15,11 @@ func NewHandler(k keeper.Keeper) sdk.Handler {
 		ctx = ctx.WithEventManager(sdk.NewEventManager())
 
 		switch msg := msg.(type) {
-		case *types.MsgGrantFeeAllowance:
+		case *types.MsgGrantAllowance:
 			res, err := msgServer.GrantFeeAllowance(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 
-		case *types.MsgRevokeFeeAllowance:
+		case *types.MsgRevokeAllowance:
 			res, err := msgServer.RevokeFeeAllowance(sdk.WrapSDKContext(ctx), msg)
 			return sdk.WrapServiceResult(ctx, res, err)
 

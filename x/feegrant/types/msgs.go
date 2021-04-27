@@ -10,14 +10,14 @@ import (
 )
 
 var (
-	_, _ sdk.Msg = &MsgGrantFeeAllowance{}, &MsgRevokeFeeAllowance{}
+	_, _ sdk.Msg = &MsgGrantAllowance{}, &MsgRevokeAllowance{}
 
-	_ types.UnpackInterfacesMessage = &MsgGrantFeeAllowance{}
+	_ types.UnpackInterfacesMessage = &MsgGrantAllowance{}
 )
 
-// NewMsgGrantFeeAllowance creates a new MsgGrantFeeAllowance.
+// NewMsgGrantAllowance creates a new MsgGrantAllowance.
 //nolint:interfacer
-func NewMsgGrantFeeAllowance(feeAllowance FeeAllowanceI, granter, grantee sdk.AccAddress) (*MsgGrantFeeAllowance, error) {
+func NewMsgGrantAllowance(feeAllowance FeeAllowanceI, granter, grantee sdk.AccAddress) (*MsgGrantAllowance, error) {
 	msg, ok := feeAllowance.(proto.Message)
 	if !ok {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrPackAny, "cannot proto marshal %T", msg)
@@ -27,7 +27,7 @@ func NewMsgGrantFeeAllowance(feeAllowance FeeAllowanceI, granter, grantee sdk.Ac
 		return nil, err
 	}
 
-	return &MsgGrantFeeAllowance{
+	return &MsgGrantAllowance{
 		Granter:   granter.String(),
 		Grantee:   grantee.String(),
 		Allowance: any,
@@ -35,7 +35,7 @@ func NewMsgGrantFeeAllowance(feeAllowance FeeAllowanceI, granter, grantee sdk.Ac
 }
 
 // ValidateBasic implements the sdk.Msg interface.
-func (msg MsgGrantFeeAllowance) ValidateBasic() error {
+func (msg MsgGrantAllowance) ValidateBasic() error {
 	if err := sdk.ValidateAccAddress(msg.Granter); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid granter address: %s", err)
 	}
@@ -54,28 +54,28 @@ func (msg MsgGrantFeeAllowance) ValidateBasic() error {
 }
 
 // GetSigners gets the granter account associated with an allowance
-func (msg MsgGrantFeeAllowance) GetSigners() []sdk.AccAddress {
+func (msg MsgGrantAllowance) GetSigners() []sdk.AccAddress {
 	granter := sdk.AccAddress(msg.Granter)
 	return []sdk.AccAddress{granter}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (msg MsgGrantFeeAllowance) Type() string {
+func (msg MsgGrantAllowance) Type() string {
 	return sdk.MsgTypeURL(&msg)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (msg MsgGrantFeeAllowance) Route() string {
+func (msg MsgGrantAllowance) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (msg MsgGrantFeeAllowance) GetSignBytes() []byte {
+func (msg MsgGrantAllowance) GetSignBytes() []byte {
 	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
 }
 
 // GetFeeAllowanceI returns unpacked FeeAllowance
-func (msg MsgGrantFeeAllowance) GetFeeAllowanceI() (FeeAllowanceI, error) {
+func (msg MsgGrantAllowance) GetFeeAllowanceI() (FeeAllowanceI, error) {
 	allowance, ok := msg.Allowance.GetCachedValue().(FeeAllowanceI)
 	if !ok {
 		return nil, sdkerrors.Wrap(ErrNoAllowance, "failed to get allowance")
@@ -85,20 +85,20 @@ func (msg MsgGrantFeeAllowance) GetFeeAllowanceI() (FeeAllowanceI, error) {
 }
 
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
-func (msg MsgGrantFeeAllowance) UnpackInterfaces(unpacker types.AnyUnpacker) error {
+func (msg MsgGrantAllowance) UnpackInterfaces(unpacker types.AnyUnpacker) error {
 	var allowance FeeAllowanceI
 	return unpacker.UnpackAny(msg.Allowance, &allowance)
 }
 
-// NewMsgRevokeFeeAllowance returns a message to revoke a fee allowance for a given
+// NewMsgRevokeAllowance returns a message to revoke a fee allowance for a given
 // granter and grantee
 //nolint:interfacer
-func NewMsgRevokeFeeAllowance(granter sdk.AccAddress, grantee sdk.AccAddress) MsgRevokeFeeAllowance {
-	return MsgRevokeFeeAllowance{Granter: granter.String(), Grantee: grantee.String()}
+func NewMsgRevokeAllowance(granter sdk.AccAddress, grantee sdk.AccAddress) MsgRevokeAllowance {
+	return MsgRevokeAllowance{Granter: granter.String(), Grantee: grantee.String()}
 }
 
 // ValidateBasic implements the sdk.Msg interface.
-func (msg MsgRevokeFeeAllowance) ValidateBasic() error {
+func (msg MsgRevokeAllowance) ValidateBasic() error {
 	if err := sdk.ValidateAccAddress(msg.Granter); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid granter address: %s", err)
 	}
@@ -114,22 +114,22 @@ func (msg MsgRevokeFeeAllowance) ValidateBasic() error {
 
 // GetSigners gets the granter address associated with an Allowance
 // to revoke.
-func (msg MsgRevokeFeeAllowance) GetSigners() []sdk.AccAddress {
+func (msg MsgRevokeAllowance) GetSigners() []sdk.AccAddress {
 	granter := sdk.AccAddress(msg.Granter)
 	return []sdk.AccAddress{granter}
 }
 
 // Type implements the LegacyMsg.Type method.
-func (msg MsgRevokeFeeAllowance) Type() string {
+func (msg MsgRevokeAllowance) Type() string {
 	return sdk.MsgTypeURL(&msg)
 }
 
 // Route implements the LegacyMsg.Route method.
-func (msg MsgRevokeFeeAllowance) Route() string {
+func (msg MsgRevokeAllowance) Route() string {
 	return RouterKey
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
-func (msg MsgRevokeFeeAllowance) GetSignBytes() []byte {
+func (msg MsgRevokeAllowance) GetSignBytes() []byte {
 	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
 }

@@ -75,13 +75,13 @@ func (suite *SimTestSuite) TestWeightedOperations() {
 	}{
 		{
 			simappparams.DefaultWeightGrantFeeAllowance,
-			types.MsgGrantFeeAllowance{}.Route(),
-			simulation.TypeMsgGrantFeeAllowance,
+			types.MsgGrantAllowance{}.Route(),
+			simulation.TypeMsgGrantAllowance,
 		},
 		{
 			simappparams.DefaultWeightRevokeFeeAllowance,
-			types.MsgRevokeFeeAllowance{}.Route(),
-			simulation.TypeMsgRevokeFeeAllowance,
+			types.MsgRevokeAllowance{}.Route(),
+			simulation.TypeMsgRevokeAllowance,
 		},
 	}
 
@@ -96,7 +96,7 @@ func (suite *SimTestSuite) TestWeightedOperations() {
 	}
 }
 
-func (suite *SimTestSuite) TestSimulateMsgGrantFeeAllowance() {
+func (suite *SimTestSuite) TestSimulateMsgGrantAllowance() {
 	app, ctx := suite.app, suite.ctx
 	require := suite.Require()
 
@@ -108,11 +108,11 @@ func (suite *SimTestSuite) TestSimulateMsgGrantFeeAllowance() {
 	app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: app.LastBlockHeight() + 1, AppHash: app.LastCommitID().Hash}})
 
 	// execute operation
-	op := simulation.SimulateMsgGrantFeeAllowance(app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper)
+	op := simulation.SimulateMsgGrantAllowance(app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper)
 	operationMsg, futureOperations, err := op(r, app.BaseApp, ctx, accounts, "")
 	require.NoError(err)
 
-	var msg types.MsgGrantFeeAllowance
+	var msg types.MsgGrantAllowance
 	suite.app.AppCodec().UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(operationMsg.OK)
@@ -121,7 +121,7 @@ func (suite *SimTestSuite) TestSimulateMsgGrantFeeAllowance() {
 	require.Len(futureOperations, 0)
 }
 
-func (suite *SimTestSuite) TestSimulateMsgRevokeFeeAllowance() {
+func (suite *SimTestSuite) TestSimulateMsgRevokeAllowance() {
 	app, ctx := suite.app, suite.ctx
 	require := suite.Require()
 
@@ -150,11 +150,11 @@ func (suite *SimTestSuite) TestSimulateMsgRevokeFeeAllowance() {
 	require.NoError(err)
 
 	// execute operation
-	op := simulation.SimulateMsgRevokeFeeAllowance(app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper)
+	op := simulation.SimulateMsgRevokeAllowance(app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper)
 	operationMsg, futureOperations, err := op(r, app.BaseApp, ctx, accounts, "")
 	require.NoError(err)
 
-	var msg types.MsgRevokeFeeAllowance
+	var msg types.MsgRevokeAllowance
 	suite.app.AppCodec().UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(operationMsg.OK)
