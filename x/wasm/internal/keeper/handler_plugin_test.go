@@ -2,7 +2,7 @@ package keeper
 
 import (
 	"encoding/json"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+	"github.com/golang/protobuf/proto"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
 	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
@@ -10,15 +10,15 @@ import (
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	ibcexported "github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	"github.com/golang/protobuf/proto"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
 	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"
 	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
