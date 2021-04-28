@@ -108,6 +108,9 @@ func (msg MsgRevokeAllowance) ValidateBasic() error {
 	if msg.Grantee == msg.Granter {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses must be different")
 	}
+	if msg.Grantee == msg.Granter {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "addresses must be different")
+	}
 
 	return nil
 }

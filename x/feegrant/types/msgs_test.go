@@ -11,6 +11,8 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/feegrant/"
+	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
 func TestMsgGrantAllowance(t *testing.T) {
