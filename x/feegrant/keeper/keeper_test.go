@@ -3,6 +3,7 @@ package keeper_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
@@ -57,35 +58,35 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 	}
 
 	// let's set up some initial state here
-	err := suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], basic)
+	err := suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], basic)
 	suite.Require().NoError(err)
 
-	err = suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[2], basic2)
+	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[2], basic2)
 	suite.Require().NoError(err)
 
-	err = suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[1], suite.addrs[2], basic)
+	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[1], suite.addrs[2], basic)
 	suite.Require().NoError(err)
 
-	err = suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[1], suite.addrs[3], basic)
+	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[1], suite.addrs[3], basic)
 	suite.Require().NoError(err)
 
-	err = suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[3], suite.addrs[0], basic2)
+	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[3], suite.addrs[0], basic2)
 	suite.Require().NoError(err)
 
 	// remove some, overwrite other
-	_, err = suite.msgSrvr.RevokeFeeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[1].String()})
+	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[1].String()})
 	suite.Require().NoError(err)
-	_, err = suite.msgSrvr.RevokeFeeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[2].String()})
+	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[2].String()})
 	suite.Require().NoError(err)
 
 	// revoke non-exist fee allowance
-	_, err = suite.msgSrvr.RevokeFeeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[2].String()})
+	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[0].String(), Grantee: suite.addrs[2].String()})
 	suite.Require().Error(err)
 
-	err = suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[2], basic)
+	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[2], basic)
 	suite.Require().NoError(err)
 
-	err = suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[1], suite.addrs[2], basic2)
+	err = suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[1], suite.addrs[2], basic2)
 	suite.Require().NoError(err)
 
 	// end state:
@@ -142,7 +143,7 @@ func (suite *KeeperTestSuite) TestKeeperCrud() {
 	_, err = suite.keeper.GetAllowance(suite.sdkCtx, suite.addrs[3], accAddr)
 	suite.Require().NoError(err)
 
-	_, err = suite.msgSrvr.RevokeFeeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[3].String(), Grantee: accAddr.String()})
+	_, err = suite.msgSrvr.RevokeAllowance(suite.ctx, &types.MsgRevokeAllowance{Granter: suite.addrs[3].String(), Grantee: accAddr.String()})
 	suite.Require().NoError(err)
 
 }
@@ -199,7 +200,7 @@ func (suite *KeeperTestSuite) TestUseGrantedFee() {
 	for name, tc := range cases {
 		tc := tc
 		suite.Run(name, func() {
-			err := suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], future)
+			err := suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], future)
 			suite.Require().NoError(err)
 
 			err = suite.keeper.UseGrantedFees(suite.sdkCtx, tc.granter, tc.grantee, tc.fee, []sdk.Msg{})
@@ -253,6 +254,29 @@ func (suite *KeeperTestSuite) TestIterateGrants() {
 	suite.keeper.GrantFeeAllowance(suite.sdkCtx, suite.addrs[2], suite.addrs[1], allowance1)
 
 	suite.keeper.IterateAllFeeAllowances(suite.sdkCtx, func(grant types.Grant) bool {
+		suite.Require().Equal(suite.addrs[1].String(), grant.Grantee)
+		suite.Require().Contains([]string{suite.addrs[0].String(), suite.addrs[2].String()}, grant.Granter)
+		return true
+	})
+
+}
+
+func (suite *KeeperTestSuite) TestIterateGrants() {
+	eth := sdk.NewCoins(sdk.NewInt64Coin("eth", 123))
+	allowance := &types.BasicAllowance{
+		SpendLimit: suite.atom,
+		Expiration: types.ExpiresAtHeight(5678),
+	}
+
+	allowance1 := &types.BasicAllowance{
+		SpendLimit: eth,
+		Expiration: types.ExpiresAtTime(suite.sdkCtx.BlockTime().Add(24 * time.Hour)),
+	}
+
+	suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[0], suite.addrs[1], allowance)
+	suite.keeper.GrantAllowance(suite.sdkCtx, suite.addrs[2], suite.addrs[1], allowance1)
+
+	suite.keeper.IterateAllFeeAllowances(suite.sdkCtx, func(grant types.FeeAllowanceGrant) bool {
 		suite.Require().Equal(suite.addrs[1].String(), grant.Grantee)
 		suite.Require().Contains([]string{suite.addrs[0].String(), suite.addrs[2].String()}, grant.Granter)
 		return true

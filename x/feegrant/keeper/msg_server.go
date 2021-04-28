@@ -73,7 +73,7 @@ func (k msgServer) RevokeFeeAllowance(goCtx context.Context, msg *types.MsgRevok
 	}
 	granter := sdk.AccAddress(msg.Granter)
 
-	err = k.Keeper.RevokeFeeAllowance(ctx, granter, grantee)
+	err = k.Keeper.revokeFeeAllowance(ctx, granter, grantee)
 	if err != nil {
 		return nil, err
 	}
