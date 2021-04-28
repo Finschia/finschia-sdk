@@ -43,7 +43,7 @@ message Params {
   uint64     max_wasm_code_size             = 3 [(gogoproto.moretags) = "yaml:\"max_wasm_code_size\""];
   uint64     gas_multiplier                 = 4 [(gogoproto.moretags) = "yaml:\"max_gas\""];
   uint64     instance_cost                  = 5 [(gogoproto.moretags) = "yaml:\"instance_cost\""];
-  uint64     compile_cost                   = 6 [(gogoproto.moretags) = "yaml:\"compile_cst\""];
+  uint64     compile_cost                   = 6 [(gogoproto.moretags) = "yaml:\"compile_cost\""];
 }
 
 // CodeInfo is data for the uploaded contract WASM code
