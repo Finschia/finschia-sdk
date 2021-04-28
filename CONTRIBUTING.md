@@ -58,6 +58,13 @@ Other notes:
   A convenience git `pre-commit` hook that runs the formatters automatically
   before each commit is available in the `contrib/githooks/` directory.
 
+## Architecture Decision Records (ADR)
+
+When proposing an architecture decision for the SDK, please create an [ADR](./docs/architecture/README.md)
+so further discussions can be made. We are following this process so all involved parties are in
+agreement before any party begins coding the proposed implementation. If you would like to see some examples
+of how these are written refer to the current [ADRs](https://github.com/cosmos/cosmos-sdk/tree/master/docs/architecture)
+
 ## Pull Requests
 
 To accommodate review process we suggest that PRs are categorically broken up.
