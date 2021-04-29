@@ -473,7 +473,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
         "creator": "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj",
         "admin": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
         "label": "ȀĴnZV芢毤",
-		"status": "Active"
+        "status": "Active"
       }
     }
   ],
