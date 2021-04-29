@@ -339,7 +339,7 @@ func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) (validatorsByAddr, erro
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		// extract the validator address from the key (prefix is 1-byte)
+		// extract the validator address from the key (prefix is 1-byte, addrLen is 1-byte)
 		valAddr := string(iterator.Key()[2:])
 		powerBytes := iterator.Value()
 		last[valAddr] = make([]byte, len(powerBytes))
