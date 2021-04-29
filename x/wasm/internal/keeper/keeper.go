@@ -270,14 +270,15 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 	// create prefixed data store
 	// 0x03 | contractAddress (sdk.AccAddress)
 	prefixStoreKey := types.GetContractStorePrefix(contractAddress)
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), prefixStoreKey)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
+	wasmStore := types.NewWasmStore(prefixStore)
 
 	// prepare querier
 	querier := NewQueryHandler(ctx, k.queryPlugins, contractAddress, k.getGasMultiplier(ctx))
 
 	// instantiate wasm contract
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, err := k.wasmer.Instantiate(codeInfo.CodeHash, env, info, initMsg, prefixStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
+	res, gasUsed, err := k.wasmer.Instantiate(codeInfo.CodeHash, env, info, initMsg, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
 	k.consumeGas(ctx, gasUsed)
 	if err != nil {
 		return contractAddress, nil, sdkerrors.Wrap(types.ErrInstantiateFailed, err.Error())
@@ -342,7 +343,8 @@ func (k Keeper) Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	// prepare querier
 	querier := NewQueryHandler(ctx, k.queryPlugins, contractAddress, k.getGasMultiplier(ctx))
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, execErr := k.wasmer.Execute(codeInfo.CodeHash, env, info, msg, prefixStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	res, gasUsed, execErr := k.wasmer.Execute(codeInfo.CodeHash, env, info, msg, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
@@ -408,9 +410,10 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	querier := NewQueryHandler(ctx, k.queryPlugins, contractAddress, k.getGasMultiplier(ctx))
 
 	prefixStoreKey := types.GetContractStorePrefix(contractAddress)
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), prefixStoreKey)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
+	wasmStore := types.NewWasmStore(prefixStore)
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, err := k.wasmer.Migrate(newCodeInfo.CodeHash, env, msg, &prefixStore, k.cosmwasmAPI(ctx), &querier, k.gasMeter(ctx), gas)
+	res, gasUsed, err := k.wasmer.Migrate(newCodeInfo.CodeHash, env, msg, &wasmStore, k.cosmwasmAPI(ctx), &querier, k.gasMeter(ctx), gas)
 	k.consumeGas(ctx, gasUsed)
 	if err != nil {
 		return nil, sdkerrors.Wrap(types.ErrMigrationFailed, err.Error())
@@ -456,7 +459,8 @@ func (k Keeper) Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte
 	// prepare querier
 	querier := NewQueryHandler(ctx, k.queryPlugins, contractAddress, k.getGasMultiplier(ctx))
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, execErr := k.wasmer.Sudo(codeInfo.CodeHash, env, msg, prefixStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	res, gasUsed, execErr := k.wasmer.Sudo(codeInfo.CodeHash, env, msg, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
@@ -499,7 +503,8 @@ func (k Keeper) reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply was
 		GasMultiplier: k.getGasMultiplier(ctx),
 	}
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, execErr := k.wasmer.Reply(codeInfo.CodeHash, env, reply, prefixStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	res, gasUsed, execErr := k.wasmer.Reply(codeInfo.CodeHash, env, reply, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
@@ -551,7 +556,7 @@ func (k Keeper) appendToContractHistory(ctx sdk.Context, contractAddr sdk.AccAdd
 	store := ctx.KVStore(k.storeKey)
 	// find last element position
 	var pos uint64
-	prefixStore := prefix.NewLegacyStore(store, types.GetContractCodeHistoryElementPrefix(contractAddr))
+	prefixStore := prefix.NewStore(store, types.GetContractCodeHistoryElementPrefix(contractAddr))
 	if iter := prefixStore.ReverseIterator(nil, nil); iter.Valid() {
 		pos = sdk.BigEndianToUint64(iter.Value())
 	}
@@ -564,7 +569,7 @@ func (k Keeper) appendToContractHistory(ctx sdk.Context, contractAddr sdk.AccAdd
 }
 
 func (k Keeper) GetContractHistory(ctx sdk.Context, contractAddr sdk.AccAddress) []types.ContractCodeHistoryEntry {
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), types.GetContractCodeHistoryElementPrefix(contractAddr))
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetContractCodeHistoryElementPrefix(contractAddr))
 	r := make([]types.ContractCodeHistoryEntry, 0)
 	iter := prefixStore.Iterator(nil, nil)
 	for ; iter.Valid(); iter.Next() {
@@ -589,7 +594,8 @@ func (k Keeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []b
 	querier := NewQueryHandler(ctx, k.queryPlugins, contractAddr, k.getGasMultiplier(ctx))
 
 	env := types.NewEnv(ctx, contractAddr)
-	queryResult, gasUsed, qErr := k.wasmer.Query(codeInfo.CodeHash, env, req, prefixStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gasForContract(ctx, k.getGasMultiplier(ctx)))
+	wasmStore := types.NewWasmStore(prefixStore)
+	queryResult, gasUsed, qErr := k.wasmer.Query(codeInfo.CodeHash, env, req, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gasForContract(ctx, k.getGasMultiplier(ctx)))
 	k.consumeGas(ctx, gasUsed)
 	if qErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrQueryFailed, qErr.Error())
@@ -603,28 +609,28 @@ func (k Keeper) QueryRaw(ctx sdk.Context, contractAddress sdk.AccAddress, key []
 		return nil
 	}
 	prefixStoreKey := types.GetContractStorePrefix(contractAddress)
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), prefixStoreKey)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
 	return prefixStore.Get(key)
 }
 
-func (k Keeper) contractInstance(ctx sdk.Context, contractAddress sdk.AccAddress) (types.ContractInfo, types.CodeInfo, prefix.LegacyStore, error) {
+func (k Keeper) contractInstance(ctx sdk.Context, contractAddress sdk.AccAddress) (types.ContractInfo, types.CodeInfo, prefix.Store, error) {
 	store := ctx.KVStore(k.storeKey)
 
 	contractBz := store.Get(types.GetContractAddressKey(contractAddress))
 	if contractBz == nil {
-		return types.ContractInfo{}, types.CodeInfo{}, prefix.LegacyStore{}, sdkerrors.Wrap(types.ErrNotFound, "contract")
+		return types.ContractInfo{}, types.CodeInfo{}, prefix.Store{}, sdkerrors.Wrap(types.ErrNotFound, "contract")
 	}
 	var contractInfo types.ContractInfo
 	k.cdc.MustUnmarshalBinaryBare(contractBz, &contractInfo)
 
 	codeInfoBz := store.Get(types.GetCodeKey(contractInfo.CodeID))
 	if codeInfoBz == nil {
-		return contractInfo, types.CodeInfo{}, prefix.LegacyStore{}, sdkerrors.Wrap(types.ErrNotFound, "code info")
+		return contractInfo, types.CodeInfo{}, prefix.Store{}, sdkerrors.Wrap(types.ErrNotFound, "code info")
 	}
 	var codeInfo types.CodeInfo
 	k.cdc.MustUnmarshalBinaryBare(codeInfoBz, &codeInfo)
 	prefixStoreKey := types.GetContractStorePrefix(contractAddress)
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), prefixStoreKey)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
 	return contractInfo, codeInfo, prefixStore, nil
 }
 
@@ -651,7 +657,7 @@ func (k Keeper) storeContractInfo(ctx sdk.Context, contractAddress sdk.AccAddres
 }
 
 func (k Keeper) IterateContractInfo(ctx sdk.Context, cb func(sdk.AccAddress, types.ContractInfo) bool) {
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), types.ContractKeyPrefix)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.ContractKeyPrefix)
 	iter := prefixStore.Iterator(nil, nil)
 	for ; iter.Valid(); iter.Next() {
 		var contract types.ContractInfo
@@ -665,13 +671,13 @@ func (k Keeper) IterateContractInfo(ctx sdk.Context, cb func(sdk.AccAddress, typ
 
 func (k Keeper) GetContractState(ctx sdk.Context, contractAddress sdk.AccAddress) sdk.Iterator {
 	prefixStoreKey := types.GetContractStorePrefix(contractAddress)
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), prefixStoreKey)
-	return prefixStore.SdkIterator(nil, nil)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
+	return prefixStore.Iterator(nil, nil)
 }
 
 func (k Keeper) importContractState(ctx sdk.Context, contractAddress sdk.AccAddress, models []types.Model) error {
 	prefixStoreKey := types.GetContractStorePrefix(contractAddress)
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), prefixStoreKey)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
 	for _, model := range models {
 		if model.Value == nil {
 			model.Value = []byte{}
@@ -701,7 +707,7 @@ func (k Keeper) containsCodeInfo(ctx sdk.Context, codeID uint64) bool {
 }
 
 func (k Keeper) IterateCodeInfos(ctx sdk.Context, cb func(uint64, types.CodeInfo) bool) {
-	prefixStore := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), types.CodeKeyPrefix)
+	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.CodeKeyPrefix)
 	iter := prefixStore.Iterator(nil, nil)
 	for ; iter.Valid(); iter.Next() {
 		var c types.CodeInfo
@@ -763,7 +769,7 @@ func (k Keeper) IsPinnedCode(ctx sdk.Context, codeID uint64) bool {
 
 // InitializePinnedCodes updates wasmvm to pin to cache all contracts marked as pinned
 func (k Keeper) InitializePinnedCodes(ctx sdk.Context) error {
-	store := prefix.NewLegacyStore(ctx.KVStore(k.storeKey), types.PinnedCodeIndexPrefix)
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.PinnedCodeIndexPrefix)
 	iter := store.Iterator(nil, nil)
 	for ; iter.Valid(); iter.Next() {
 		codeInfo := k.GetCodeInfo(ctx, types.ParsePinnedCodeIndex(iter.Value()))
