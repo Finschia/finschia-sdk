@@ -106,3 +106,15 @@ message UnpinCodesProposal {
   // CodeIDs references the WASM codes
   repeated uint64 code_ids = 3 [(gogoproto.customname) = "CodeIDs", (gogoproto.moretags) = "yaml:\"code_ids\""];
 }
+
+// UpdateStatusProposal gov proposal content type to update the contract status.
+message UpdateContractStatusProposal {
+  // Title is a short summary
+  string title = 1;
+  // Description is a human readable text
+  string description = 2;
+  // Contract is the address of the smart contract
+  string contract = 3;
+  // Status to be set
+  ContractStatus status = 4;
+}
