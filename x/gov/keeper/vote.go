@@ -69,9 +69,7 @@ func (keeper Keeper) GetVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 		return vote, false
 	}
 
-	keeper.cdc.MustUnmarshalBinaryBare(bz, &vote)
-	populateLegacyOption(&vote)
-
+	keeper.cdc.MustUnmarshal(bz, &vote)
 	return vote, true
 }
 
@@ -83,7 +81,7 @@ func (keeper Keeper) SetVote(ctx sdk.Context, vote types.Vote) {
 	}
 
 	store := ctx.KVStore(keeper.storeKey)
-	bz := keeper.cdc.MustMarshalBinaryBare(&vote)
+	bz := keeper.cdc.MustMarshal(&vote)
 	addr := sdk.AccAddress(vote.Voter)
 	store.Set(types.VoteKey(vote.ProposalId, addr), bz)
 }
@@ -96,8 +94,7 @@ func (keeper Keeper) IterateAllVotes(ctx sdk.Context, cb func(vote types.Vote) (
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
-		keeper.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
-		populateLegacyOption(&vote)
+		keeper.cdc.MustUnmarshal(iterator.Value(), &vote)
 
 		if cb(vote) {
 			break
@@ -113,8 +110,7 @@ func (keeper Keeper) IterateVotes(ctx sdk.Context, proposalID uint64, cb func(vo
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
-		keeper.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
-		populateLegacyOption(&vote)
+		keeper.cdc.MustUnmarshal(iterator.Value(), &vote)
 
 		if cb(vote) {
 			break

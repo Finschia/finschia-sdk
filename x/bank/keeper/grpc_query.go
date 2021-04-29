@@ -67,7 +67,7 @@ func (k BaseKeeper) AllBalances(ctx context.Context, req *types.QueryAllBalances
 
 	pageRes, err := query.Paginate(accountStore, req.Pagination, func(_, value []byte) error {
 		var result sdk.Coin
-		err := k.cdc.UnmarshalBinaryBare(value, &result)
+		err := k.cdc.Unmarshal(value, &result)
 		if err != nil {
 			return err
 		}
@@ -133,7 +133,7 @@ func (k BaseKeeper) DenomsMetadata(c context.Context, req *types.QueryDenomsMeta
 	metadatas := []types.Metadata{}
 	pageRes, err := query.Paginate(store, req.Pagination, func(_, value []byte) error {
 		var metadata types.Metadata
-		k.cdc.MustUnmarshalBinaryBare(value, &metadata)
+		k.cdc.MustUnmarshal(value, &metadata)
 
 		metadatas = append(metadatas, metadata)
 		return nil

@@ -178,7 +178,7 @@ func createConfigFolder(dir string) error {
 	return os.Mkdir(path.Join(dir, "config"), 0700)
 }
 
-func newDefaultGenesisDoc(cdc codec.Marshaler) *octypes.GenesisDoc {
+func newDefaultGenesisDoc(cdc codec.Codec) *octypes.GenesisDoc {
 	genesisState := simapp.NewDefaultGenesisState(cdc)
 
 	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
