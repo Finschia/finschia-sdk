@@ -7,7 +7,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	"github.com/line/lbm-sdk/v2/codec"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
@@ -16,6 +15,7 @@ import (
 	authkeeper "github.com/line/lbm-sdk/v2/x/auth/keeper"
 	bankkeeper "github.com/line/lbm-sdk/v2/x/bank/keeper"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

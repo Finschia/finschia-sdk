@@ -1142,7 +1142,7 @@ func (s *IntegrationTestSuite) TestNewCmdRedelegate() {
 		{
 			"with wrong source validator address",
 			[]string{
-				`linkvaloper120yvjfy7m2gnu9mvusrs40cxxhpt8nr3jr36d2`, // src-validator-addr
+				`linkvaloper120yvjfy7m2gnu9mvusrs40cxxhpt8nr3jr36d2`,   // src-validator-addr
 				val2.ValAddress.String(),                               // dst-validator-addr
 				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(150)).String(), // amount
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
@@ -1156,7 +1156,7 @@ func (s *IntegrationTestSuite) TestNewCmdRedelegate() {
 			"with wrong destination validator address",
 			[]string{
 				val.ValAddress.String(),                                // dst-validator-addr
-				`linkvaloper120yvjfy7m2gnu9mvusrs40cxxhpt8nr3jr36d2`, // src-validator-addr
+				`linkvaloper120yvjfy7m2gnu9mvusrs40cxxhpt8nr3jr36d2`,   // src-validator-addr
 				sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(150)).String(), // amount
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address.String()),
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),

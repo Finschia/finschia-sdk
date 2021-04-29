@@ -1,12 +1,12 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	authkeeper "github.com/line/lbm-sdk/v2/x/auth/keeper"
 	distributionkeeper "github.com/line/lbm-sdk/v2/x/distribution/keeper"
 	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
 	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

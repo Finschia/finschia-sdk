@@ -4,19 +4,20 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	"io/ioutil"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
-	"github.com/CosmWasm/wasmvm"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+
+	cosmwasm "github.com/CosmWasm/wasmvm"
 	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkErrors "github.com/line/lbm-sdk/v2/types/errors"
 	"github.com/line/lbm-sdk/v2/types/query"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/ostracon/libs/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/line/ostracon/libs/log"
 )
 
 func TestQueryAllContractState(t *testing.T) {
@@ -157,7 +158,7 @@ func TestQuerySmartContractPanics(t *testing.T) {
 		CodeID:  1,
 		Created: types.NewAbsoluteTxPosition(ctx),
 	})
-	ctx = ctx.WithGasMeter(sdk.NewGasMeter(InstanceCost)).WithLogger(log.TestingLogger())
+	ctx = ctx.WithGasMeter(sdk.NewGasMeter(types.DefaultInstanceCost)).WithLogger(log.TestingLogger())
 
 	specs := map[string]struct {
 		doInContract func()
