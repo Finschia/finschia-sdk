@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -35,7 +36,28 @@ func listCodesHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		route := fmt.Sprintf("custom/%s/%s", types.QuerierRoute, keeper.QueryListCode)
-		res, height, err := cliCtx.Query(route)
+		pageKey, offset, limit, page, countTotal, err := parseHTTPArgs(r)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		data := &types.QueryCodesRequest{
+			Pagination: pageReq,
+		}
+		bs, err := cliCtx.LegacyAmino.MarshalJSON(data)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := cliCtx.QueryWithData(route, bs)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -87,7 +109,29 @@ func listContractsByCodeHandlerFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		route := fmt.Sprintf("custom/%s/%s/%d", types.QuerierRoute, keeper.QueryListContractByCode, codeID)
-		res, height, err := cliCtx.Query(route)
+		pageKey, offset, limit, page, countTotal, err := parseHTTPArgs(r)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		data := &types.QueryContractsByCodeRequest{
+			CodeId:     codeID,
+			Pagination: pageReq,
+		}
+		bs, err := cliCtx.LegacyAmino.MarshalJSON(data)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := cliCtx.QueryWithData(route, bs)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -237,7 +281,29 @@ func queryContractHistoryFn(cliCtx client.Context) http.HandlerFunc {
 		}
 
 		route := fmt.Sprintf("custom/%s/%s/%s", types.QuerierRoute, keeper.QueryContractHistory, addr.String())
-		res, height, err := cliCtx.Query(route)
+		pageKey, offset, limit, page, countTotal, err := parseHTTPArgs(r)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		pageReq, err := client.NewPageRequest(pageKey, offset, limit, page, countTotal)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		data := &types.QueryContractHistoryRequest{
+			Address:    addr.String(),
+			Pagination: pageReq,
+		}
+		bs, err := cliCtx.LegacyAmino.MarshalJSON(data)
+		if err != nil {
+			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
+			return
+		}
+
+		res, height, err := cliCtx.QueryWithData(route, bs)
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 			return
@@ -266,4 +332,53 @@ func (a *argumentDecoder) DecodeString(s string) ([]byte, error) {
 	default:
 		return a.dec(s)
 	}
+}
+
+func parseHTTPArgs(r *http.Request) (pageKey string, offset, limit, page uint64, countTotal bool, err error) {
+	pageKey = r.FormValue("page-key")
+
+	offsetStr := r.FormValue("offset")
+	if offsetStr != "" {
+		offset, err = strconv.ParseUint(offsetStr, 10, 64)
+		if err != nil {
+			return pageKey, offset, limit, page, countTotal, err
+		}
+		if offset <= 0 {
+			return pageKey, offset, limit, page, countTotal, errors.New("offset must greater than 0")
+		}
+	}
+
+	pageStr := r.FormValue("page")
+	if pageStr == "" {
+		page = rest.DefaultPage
+	} else {
+		page, err = strconv.ParseUint(pageStr, 10, 64)
+		if err != nil {
+			return pageKey, offset, limit, page, countTotal, err
+		} else if page <= 0 {
+			return pageKey, offset, limit, page, countTotal, errors.New("page must greater than 0")
+		}
+	}
+
+	limitStr := r.FormValue("limit")
+	if limitStr == "" {
+		limit = rest.DefaultLimit
+	} else {
+		limit, err = strconv.ParseUint(limitStr, 10, 64)
+		if err != nil {
+			return pageKey, offset, limit, page, countTotal, err
+		} else if limit <= 0 {
+			return pageKey, offset, limit, page, countTotal, errors.New("limit must greater than 0")
+		}
+	}
+
+	countTotalStr := r.FormValue("count-total")
+	if countTotalStr != "" {
+		countTotal, err = strconv.ParseBool(countTotalStr)
+		if err != nil {
+			return pageKey, offset, limit, page, countTotal, err
+		}
+	}
+
+	return pageKey, offset, limit, page, countTotal, nil
 }

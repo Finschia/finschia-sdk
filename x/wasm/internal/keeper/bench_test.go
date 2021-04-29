@@ -2,11 +2,11 @@ package keeper
 
 import (
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	dbm "github.com/line/tm-db/v2"
+	"github.com/line/tm-db/v2/goleveldb"
+	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 	"github.com/syndtr/goleveldb/leveldb/opt"
-	dbm "github.com/line/tm-db/v2"
-	"github.com/line/tm-db/v2/memdb"
-	"github.com/line/tm-db/v2/goleveldb"
 	"testing"
 )
 

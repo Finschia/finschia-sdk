@@ -24,8 +24,11 @@ func TestStoreCodeProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
-		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		ContractStatusAccess:         types.DefaultContractStatusAccess,
+		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
@@ -66,8 +69,11 @@ func TestInstantiateProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
-		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		ContractStatusAccess:         types.DefaultContractStatusAccess,
+		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -123,8 +129,11 @@ func TestMigrateProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
-		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		ContractStatusAccess:         types.DefaultContractStatusAccess,
+		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -256,8 +265,11 @@ func TestAdminProposals(t *testing.T) {
 			wasmKeeper.setParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowNobody,
 				InstantiateDefaultPermission: types.AccessTypeNobody,
-				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 				ContractStatusAccess:         types.DefaultContractStatusAccess,
+				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+				GasMultiplier:                types.DefaultGasMultiplier,
+				InstanceCost:                 types.DefaultInstanceCost,
+				CompileCost:                  types.DefaultCompileCost,
 			})
 
 			codeInfoFixture := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
@@ -566,8 +578,11 @@ func TestUpdateContractStatusProposals(t *testing.T) {
 			wasmKeeper.setParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowNobody,
 				InstantiateDefaultPermission: types.AccessTypeNobody,
-				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 				ContractStatusAccess:         types.AllowNobody,
+				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+				GasMultiplier:                types.DefaultGasMultiplier,
+				InstanceCost:                 types.DefaultInstanceCost,
+				CompileCost:                  types.DefaultCompileCost,
 			})
 
 			codeInfoFixture := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))

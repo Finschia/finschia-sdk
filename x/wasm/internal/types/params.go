@@ -17,12 +17,27 @@ const (
 	DefaultParamspace = ModuleName
 	// DefaultMaxWasmCodeSize limit max bytes read to prevent gzip bombs
 	DefaultMaxWasmCodeSize = 600 * 1024
+	// GasMultiplier is how many cosmwasm gas points = 1 sdk gas point
+	// SDK reference costs can be found here: https://github.com/cosmos/cosmos-sdk/blob/02c6c9fafd58da88550ab4d7d494724a477c8a68/store/types/gas.go#L153-L164
+	// A write at ~3000 gas and ~200us = 10 gas per us (microsecond) cpu/io
+	// Rough timing have 88k gas at 90us, which is equal to 1k sdk gas... (one read)
+	//
+	// Please not that all gas prices returned to the wasmer engine should have this multiplied
+	DefaultGasMultiplier uint64 = 100
+	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
+	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
+	DefaultInstanceCost = 40_000
+	// CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
+	DefaultCompileCost = 2
 )
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
-var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
 var ParamStoreKeyContractStatusAccess = []byte("contractStatusAccess")
+var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
+var ParamStoreKeyGasMultiplier = []byte("gasMultiplier")
+var ParamStoreKeyInstanceCost = []byte("instanceCost")
+var ParamStoreKeyCompileCost = []byte("compileCost")
 
 var AllAccessTypes = []AccessType{
 	AccessTypeNobody,
@@ -102,6 +117,9 @@ func DefaultParams() Params {
 		InstantiateDefaultPermission: AccessTypeEverybody,
 		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
 		ContractStatusAccess:         DefaultContractStatusAccess,
+		GasMultiplier:                DefaultGasMultiplier,
+		InstanceCost:                 DefaultInstanceCost,
+		CompileCost:                  DefaultCompileCost,
 	}
 }
 
@@ -115,8 +133,11 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(ParamStoreKeyUploadAccess, &p.CodeUploadAccess, validateAccessConfig),
 		paramtypes.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.InstantiateDefaultPermission, validateAccessType),
-		paramtypes.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
 		paramtypes.NewParamSetPair(ParamStoreKeyContractStatusAccess, &p.ContractStatusAccess, validateAccessConfig),
+		paramtypes.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
+		paramtypes.NewParamSetPair(ParamStoreKeyGasMultiplier, &p.GasMultiplier, validateGasMultiplier),
+		paramtypes.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
+		paramtypes.NewParamSetPair(ParamStoreKeyCompileCost, &p.CompileCost, validateCompileCost),
 	}
 }
 
@@ -128,11 +149,20 @@ func (p Params) ValidateBasic() error {
 	if err := validateAccessConfig(p.CodeUploadAccess); err != nil {
 		return errors.Wrap(err, "upload access")
 	}
+	if err := validateAccessConfig(p.ContractStatusAccess); err != nil {
+		return errors.Wrap(err, "contract status access")
+	}
 	if err := validateMaxWasmCodeSize(p.MaxWasmCodeSize); err != nil {
 		return errors.Wrap(err, "max wasm code size")
 	}
-	if err := validateAccessConfig(p.ContractStatusAccess); err != nil {
-		return errors.Wrap(err, "contract status access")
+	if err := validateGasMultiplier(p.GasMultiplier); err != nil {
+		return errors.Wrap(err, "gas multiplier")
+	}
+	if err := validateInstanceCost(p.InstanceCost); err != nil {
+		return errors.Wrap(err, "instance cost")
+	}
+	if err := validateCompileCost(p.CompileCost); err != nil {
+		return errors.Wrap(err, "compile cost")
 	}
 	return nil
 }
@@ -162,6 +192,39 @@ func validateAccessType(i interface{}) error {
 }
 
 func validateMaxWasmCodeSize(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateGasMultiplier(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateInstanceCost(i interface{}) error {
+	a, ok := i.(uint64)
+	if !ok {
+		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
+	}
+	if a == 0 {
+		return sdkerrors.Wrap(ErrInvalid, "must be greater 0")
+	}
+	return nil
+}
+
+func validateCompileCost(i interface{}) error {
 	a, ok := i.(uint64)
 	if !ok {
 		return sdkerrors.Wrapf(ErrInvalid, "type: %T", i)
