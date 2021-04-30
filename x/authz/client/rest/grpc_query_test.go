@@ -20,6 +20,18 @@ import (
 	types "github.com/line/lbm-sdk/x/authz/types"
 	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/keyring"
+	"github.com/line/lbm-sdk/testutil/network"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/rest"
+	"github.com/line/lbm-sdk/x/authz/client/cli"
+	authztestutil "github.com/line/lbm-sdk/x/authz/client/testutil"
+	types "github.com/line/lbm-sdk/x/authz/types"
+	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 type IntegrationTestSuite struct {
@@ -30,7 +42,7 @@ type IntegrationTestSuite struct {
 }
 
 var typeMsgSend = banktypes.SendAuthorization{}.MethodName()
-var typeMsgVote = "/lbm.gov.v1.Msg/Vote"
+var typeMsgVote = sdk.MsgTypeURL(&govtypes.MsgVote{})
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
@@ -48,7 +60,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	newAddr := sdk.BytesToAccAddress(info.GetPubKey().Address())
 
 	// Send some funds to the new account.
-	_, err = banktestutil.MsgSendExec(
+	out, err := banktestutil.MsgSendExec(
 		val.ClientCtx,
 		val.Address,
 		newAddr,
@@ -57,9 +69,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
 	)
 	s.Require().NoError(err)
+	s.Require().Contains(out.String(), `"code":0`)
 
 	// grant authorization
-	_, err = authztestutil.ExecGrantAuthorization(val, []string{
+	out, err = authztestutil.ExecGrantAuthorization(val, []string{
 		newAddr.String(),
 		"send",
 		fmt.Sprintf("--%s=100steak", cli.FlagSpendLimit),
@@ -70,6 +83,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		fmt.Sprintf("--%s=%d", cli.FlagExpiration, time.Now().Add(time.Minute*time.Duration(120)).Unix()),
 	})
 	s.Require().NoError(err)
+	s.Require().Contains(out.String(), `"code":0`)
 
 	s.grantee = newAddr
 	_, err = s.network.WaitForHeight(1)
@@ -185,10 +199,9 @@ func (s *IntegrationTestSuite) TestQueryAuthorizationsGRPC() {
 			fmt.Sprintf("%s/lbm/authz/v1/granters/%s/grantees/%s/grants", baseURL, val.Address.String(), s.grantee.String()),
 			false,
 			"",
-			func() {
-			},
+			func() {},
 			func(authorizations *types.QueryAuthorizationsResponse) {
-				s.Require().Equal(len(authorizations.Authorizations), 1)
+				s.Require().Len(authorizations.Authorizations), 1)
 			},
 		},
 		{

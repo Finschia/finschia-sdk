@@ -18,12 +18,6 @@ const (
 	TypeMsgVote           = "vote"
 	TypeMsgVoteWeighted   = "weighted_vote"
 	TypeMsgSubmitProposal = "submit_proposal"
-
-	// These are used for querying events by action.
-	TypeSvcMsgDeposit        = "/lbm.gov.v1.Msg/Deposit"
-	TypeSvcMsgVote           = "/lbm.gov.v1.Msg/Vote"
-	TypeSvcMsgVoteWeighted   = "/lbm.gov.v1.Msg/VoteWeighted"
-	TypeSvcMsgSubmitProposal = "/lbm.gov.v1.Msg/SubmitProposal"
 )
 
 var (

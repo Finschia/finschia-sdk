@@ -16,13 +16,6 @@ const (
 	TypeMsgCreateValidator = "create_validator"
 	TypeMsgDelegate        = "delegate"
 	TypeMsgBeginRedelegate = "begin_redelegate"
-
-	// These are used for querying events by action.
-	TypeSvcMsgUndelegate      = "/lbm.staking.v1.Msg/Undelegate"
-	TypeSvcMsgEditValidator   = "/lbm.staking.v1.Msg/EditValidator"
-	TypeSvcMsgCreateValidator = "/lbm.staking.v1.Msg/CreateValidator"
-	TypeSvcMsgDelegate        = "/lbm.staking.v1.Msg/Deledate"
-	TypeSvcMsgBeginRedelegate = "/lbm.staking.v1.Msg/BeginRedelegate"
 )
 
 var (

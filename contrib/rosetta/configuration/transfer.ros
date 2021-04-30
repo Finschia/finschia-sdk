@@ -83,7 +83,7 @@ transfer(3){
     transfer.operations = [
       {
         "operation_identifier":{"index":0},
-        "type":"lbm.bank.v1.MsgSend",
+        "type":"/lbm.bank.v1.MsgSend",
         "account":{{sender.account_identifier}},
         "metadata": {
           "amount": [

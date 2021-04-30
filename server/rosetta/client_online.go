@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"fmt"
 	"strconv"
-	"strings"
 	"time"
 
 	rosettatypes "github.com/coinbase/rosetta-sdk-go/types"
@@ -66,7 +65,7 @@ func NewClient(cfg *Config) (*Client, error) {
 		}
 
 		if _, ok := resolvedMsg.(sdk.Msg); ok {
-			supportedOperations = append(supportedOperations, strings.TrimLeft(ii, "/"))
+			supportedOperations = append(supportedOperations, ii)
 		}
 	}
 
