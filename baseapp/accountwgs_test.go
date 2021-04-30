@@ -1,76 +1,66 @@
 package baseapp
 
 import (
-	"reflect"
-	"sort"
-	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/require"
-
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/v2/testutil/testdata"
 	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
-func TestAccountLock(t *testing.T) {
+func TestConvertByteSliceToString(t *testing.T) {
+	b := []byte{65, 66, 67, 0, 65, 66, 67}
+	s := string(b)
+	require.Equal(t, len(b), len(s))
+	require.Equal(t, uint8(0), s[3])
+}
+
+func TestRegister(t *testing.T) {
 	app := setupBaseApp(t)
-	ctx := app.NewContext(true, ostproto.Header{})
 
 	privs := newTestPrivKeys(3)
 	tx := newTestTx(privs)
 
-	accKeys := app.accountLock.Lock(ctx, tx)
+	waits, signals := app.checkAccountWGs.Register(tx)
 
-	for _, accKey := range accKeys {
-		require.True(t, isMutexLock(&app.accountLock.accMtx[accKey]))
-	}
+	require.Equal(t, 0, len(waits))
+	require.Equal(t, 3, len(signals))
 
-	app.accountLock.Unlock(accKeys)
-
-	for _, accKey := range accKeys {
-		require.False(t, isMutexLock(&app.accountLock.accMtx[accKey]))
+	for _, signal := range signals {
+		require.Equal(t, app.checkAccountWGs.wgs[signal.acc], signal.wg)
 	}
 }
 
-func TestUnlockDoNothingWithNil(t *testing.T) {
+func TestDontPanicWithNil(t *testing.T) {
 	app := setupBaseApp(t)
-	require.NotPanics(t, func() { app.accountLock.Unlock(nil) })
+
+	require.NotPanics(t, func() { app.checkAccountWGs.Wait(nil) })
+	require.NotPanics(t, func() { app.checkAccountWGs.Done(nil) })
 }
 
-func TestGetSigner(t *testing.T) {
-	privs := newTestPrivKeys(3)
-	tx := newTestTx(privs)
-	signers := getSigners(tx)
-
-	require.Equal(t, getAddrs(privs), signers)
-}
-
-func TestGetUniqSortedAddressKey(t *testing.T) {
+func TestGetUniqSigners(t *testing.T) {
 	privs := newTestPrivKeys(3)
 
 	addrs := getAddrs(privs)
 	addrs = append(addrs, addrs[1], addrs[0])
 	require.Equal(t, 5, len(addrs))
 
-	accKeys := getUniqSortedAddressKey(addrs)
+	tx := newTestTx(privs)
+	signers := getUniqSigners(tx)
 
 	// length should be reduced because `duplicated` is removed
-	require.Less(t, len(accKeys), len(addrs))
+	require.Less(t, len(signers), len(addrs))
 
 	// check uniqueness
-	for i, iv := range accKeys {
-		for j, jv := range accKeys {
+	for i, iv := range signers {
+		for j, jv := range signers {
 			if i != j {
 				require.True(t, iv != jv)
 			}
 		}
 	}
-
-	// should be sorted
-	require.True(t, sort.IsSorted(uint32Slice(accKeys)))
 }
 
 type AccountLockTestTx struct {
@@ -110,10 +100,4 @@ func newTestTx(privs []*secp256k1.PrivKey) sdk.Tx {
 		msgs[i] = testdata.NewTestMsg(addr)
 	}
 	return AccountLockTestTx{Msgs: msgs}
-}
-
-// Hack (too slow)
-func isMutexLock(mtx *sync.Mutex) bool {
-	state := reflect.ValueOf(mtx).Elem().FieldByName("state")
-	return state.Int() == 1
 }

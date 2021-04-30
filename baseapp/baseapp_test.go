@@ -938,7 +938,7 @@ func TestCheckTx(t *testing.T) {
 		tx := newTxCounter(i, 0) // no messages
 		txBytes, err := codec.MarshalBinaryBare(tx)
 		require.NoError(t, err)
-		r := app.CheckTx(abci.RequestCheckTx{Tx: txBytes})
+		r := app.CheckTxSync(abci.RequestCheckTx{Tx: txBytes})
 		require.Empty(t, r.GetEvents())
 		require.True(t, r.IsOK(), fmt.Sprintf("%v", r))
 	}
