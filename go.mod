@@ -11,7 +11,6 @@ require (
 	github.com/btcsuite/btcd v0.21.0-beta
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/confio/ics23/go v0.6.3
-	github.com/cosmos/cosmos-sdk v0.39.2
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/ledger-cosmos-go v0.11.1
 	github.com/dvsekhvalnov/jose2go v0.0.0-20200901110807-248326c1351b
@@ -27,8 +26,8 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hashicorp/golang-lru v0.5.4
-	github.com/line/iavl/v2 v2.0.0-init.1.0.20210419041411-7de35b5f1306
-	github.com/line/ostracon v0.34.9-0.20210429024836-e5495cecd765
+	github.com/line/iavl/v2 v2.0.0-init.1.0.20210429094929-4f43a5568053
+	github.com/line/ostracon v0.34.9-0.20210429084710-ef4fe0a40c7d
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524
 	github.com/magiconair/properties v1.8.4
 	github.com/mattn/go-isatty v0.0.12
@@ -52,7 +51,6 @@ require (
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
-	github.com/tendermint/tendermint v0.34.7
 	github.com/tendermint/tm-db v0.6.4
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
@@ -66,9 +64,7 @@ require (
 
 replace (
 	github.com/CosmWasm/wasmvm => github.com/line/wasmvm v0.14.0-0.3.0
-	github.com/cosmos/cosmos-sdk => github.com/line/lbm-sdk v0.39.2-0.2.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/tendermint/tendermint => github.com/line/linemint v1.0.0
 	github.com/tendermint/tm-db => github.com/line/tm-db v0.5.2
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
