@@ -33,8 +33,6 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 	suite.Require().Len(exportGenesis.Params.SendEnabled, 0)
 	suite.Require().Equal(types.DefaultParams().DefaultSendEnabled, exportGenesis.Params.DefaultSendEnabled)
 	suite.Require().Equal(totalSupply, exportGenesis.Supply)
-	// add mint module balance as nil
-	expectedBalances = append(expectedBalances, types.Balance{Address: "link1m3h30wlvsf8llruxtpukdvsy0km2kum8al86ug", Coins: nil})
 	suite.Require().Equal(expectedBalances, exportGenesis.Balances)
 	suite.Require().Equal(expectedMetadata, exportGenesis.DenomMetadata)
 }

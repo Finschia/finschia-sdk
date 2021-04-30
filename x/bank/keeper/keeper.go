@@ -140,7 +140,7 @@ func (k BaseKeeper) DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr 
 	balances := sdk.NewCoins()
 
 	for _, coin := range amt {
-		balance := k.GetBalance(ctx, delegatorAddr, coin.Denom)
+		balance := k.GetBalance(ctx, delegatorAddr, coin.GetDenom())
 		if balance.IsLT(coin) {
 			return sdkerrors.Wrapf(
 				sdkerrors.ErrInsufficientFunds, "failed to delegate; %s is smaller than %s", balance, amt,
@@ -227,7 +227,6 @@ func (k BaseKeeper) GetSupply(ctx sdk.Context, denom string) sdk.Coin {
 	}
 }
 
-// SetSupply sets the Supply to store
 func (k BaseKeeper) SetSupply(ctx sdk.Context, coin sdk.Coin) {
 	intBytes, err := coin.Amount.Marshal()
 	if err != nil {
