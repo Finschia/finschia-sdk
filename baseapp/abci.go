@@ -653,6 +653,9 @@ func (app *BaseApp) createQueryContext(height int64, prove bool) (sdk.Context, e
 			)
 	}
 
+	app.checkStateMtx.RLock()
+	defer app.checkStateMtx.RUnlock()
+
 	// branch the commit-multistore for safety
 	ctx := sdk.NewContext(
 		cacheMS, app.checkState.ctx.BlockHeader(), true, app.logger,
