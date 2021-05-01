@@ -1,4 +1,3 @@
-// nolint: dupl, scopelint
 package types
 
 import (
@@ -6,72 +5,75 @@ import (
 	"strings"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
 )
 
-func TestValidateWasmProposal(t *testing.T) {
+func TestValidateProposalCommons(t *testing.T) {
+	type commonProposal struct {
+		Title, Description string
+	}
+
 	specs := map[string]struct {
-		src    WasmProposal
+		src    commonProposal
 		expErr bool
 	}{
-		"all good": {src: WasmProposal{
+		"all good": {src: commonProposal{
 			Title:       "Foo",
 			Description: "Bar",
 		}},
 		"prevent empty title": {
-			src: WasmProposal{
+			src: commonProposal{
 				Description: "Bar",
 			},
 			expErr: true,
 		},
 		"prevent white space only title": {
-			src: WasmProposal{
+			src: commonProposal{
 				Title:       " ",
 				Description: "Bar",
 			},
 			expErr: true,
 		},
 		"prevent leading white spaces in title": {
-			src: WasmProposal{
+			src: commonProposal{
 				Title:       " Foo",
 				Description: "Bar",
 			},
 			expErr: true,
 		},
 		"prevent title exceeds max length ": {
-			src: WasmProposal{
+			src: commonProposal{
 				Title:       strings.Repeat("a", govtypes.MaxTitleLength+1),
 				Description: "Bar",
 			},
 			expErr: true,
 		},
 		"prevent empty description": {
-			src: WasmProposal{
+			src: commonProposal{
 				Title: "Foo",
 			},
 			expErr: true,
 		},
 		"prevent leading white spaces in description": {
-			src: WasmProposal{
+			src: commonProposal{
 				Title:       "Foo",
 				Description: " Bar",
 			},
 			expErr: true,
 		},
 		"prevent white space only description": {
-			src: WasmProposal{
+			src: commonProposal{
 				Title:       "Foo",
 				Description: " ",
 			},
 			expErr: true,
 		},
 		"prevent descr exceeds max length ": {
-			src: WasmProposal{
+			src: commonProposal{
 				Title:       "Foo",
 				Description: strings.Repeat("a", govtypes.MaxDescriptionLength+1),
 			},
@@ -80,7 +82,7 @@ func TestValidateWasmProposal(t *testing.T) {
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			err := spec.src.ValidateBasic()
+			err := validateProposalCommons(spec.src.Title, spec.src.Description)
 			if spec.expErr {
 				require.Error(t, err)
 			} else {
@@ -93,11 +95,11 @@ func TestValidateWasmProposal(t *testing.T) {
 func TestValidateStoreCodeProposal(t *testing.T) {
 	var (
 		anyAddress     sdk.AccAddress = bytes.Repeat([]byte{0x0}, sdk.AddrLen)
-		invalidAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen-1)
+		invalidAddress                = "invalid address"
 	)
 
 	specs := map[string]struct {
-		src    StoreCodeProposal
+		src    *StoreCodeProposal
 		expErr bool
 	}{
 		"all good": {
@@ -105,7 +107,7 @@ func TestValidateStoreCodeProposal(t *testing.T) {
 		},
 		"with instantiate permission": {
 			src: StoreCodeProposalFixture(func(p *StoreCodeProposal) {
-				accessConfig := OnlyAddress.With(anyAddress)
+				accessConfig := AccessTypeOnlyAddress.With(anyAddress)
 				p.InstantiatePermission = &accessConfig
 			}),
 		},
@@ -117,13 +119,13 @@ func TestValidateStoreCodeProposal(t *testing.T) {
 		},
 		"base data missing": {
 			src: StoreCodeProposalFixture(func(p *StoreCodeProposal) {
-				p.WasmProposal = WasmProposal{}
+				p.Title = ""
 			}),
 			expErr: true,
 		},
 		"run_as missing": {
 			src: StoreCodeProposalFixture(func(p *StoreCodeProposal) {
-				p.RunAs = nil
+				p.RunAs = ""
 			}),
 			expErr: true,
 		},
@@ -178,11 +180,11 @@ func TestValidateStoreCodeProposal(t *testing.T) {
 
 func TestValidateInstantiateContractProposal(t *testing.T) {
 	var (
-		invalidAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen-1)
+		invalidAddress = "invalid address"
 	)
 
 	specs := map[string]struct {
-		src    InstantiateContractProposal
+		src    *InstantiateContractProposal
 		expErr bool
 	}{
 		"all good": {
@@ -190,7 +192,7 @@ func TestValidateInstantiateContractProposal(t *testing.T) {
 		},
 		"without admin": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.Admin = nil
+				p.Admin = ""
 			}),
 		},
 		"without init msg": {
@@ -200,18 +202,18 @@ func TestValidateInstantiateContractProposal(t *testing.T) {
 		},
 		"without init funds": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitFunds = nil
+				p.Funds = nil
 			}),
 		},
 		"base data missing": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.WasmProposal = WasmProposal{}
+				p.Title = ""
 			}),
 			expErr: true,
 		},
 		"run_as missing": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.RunAs = nil
+				p.RunAs = ""
 			}),
 			expErr: true,
 		},
@@ -241,13 +243,13 @@ func TestValidateInstantiateContractProposal(t *testing.T) {
 		},
 		"init funds negative": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitFunds = sdk.Coins{{Denom: "foo", Amount: sdk.NewInt(-1)}}
+				p.Funds = sdk.Coins{{Denom: "foo", Amount: sdk.NewInt(-1)}}
 			}),
 			expErr: true,
 		},
 		"init funds with duplicates": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitFunds = sdk.Coins{{Denom: "foo", Amount: sdk.NewInt(1)}, {Denom: "foo", Amount: sdk.NewInt(2)}}
+				p.Funds = sdk.Coins{{Denom: "foo", Amount: sdk.NewInt(1)}, {Denom: "foo", Amount: sdk.NewInt(2)}}
 			}),
 			expErr: true,
 		},
@@ -266,11 +268,11 @@ func TestValidateInstantiateContractProposal(t *testing.T) {
 
 func TestValidateMigrateContractProposal(t *testing.T) {
 	var (
-		invalidAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen-1)
+		invalidAddress = "invalid address2"
 	)
 
 	specs := map[string]struct {
-		src    MigrateContractProposal
+		src    *MigrateContractProposal
 		expErr bool
 	}{
 		"all good": {
@@ -283,13 +285,13 @@ func TestValidateMigrateContractProposal(t *testing.T) {
 		},
 		"base data missing": {
 			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.WasmProposal = WasmProposal{}
+				p.Title = ""
 			}),
 			expErr: true,
 		},
 		"contract missing": {
 			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.Contract = nil
+				p.Contract = ""
 			}),
 			expErr: true,
 		},
@@ -307,7 +309,7 @@ func TestValidateMigrateContractProposal(t *testing.T) {
 		},
 		"run_as missing": {
 			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.RunAs = nil
+				p.RunAs = ""
 			}),
 			expErr: true,
 		},
@@ -332,11 +334,11 @@ func TestValidateMigrateContractProposal(t *testing.T) {
 
 func TestValidateUpdateAdminProposal(t *testing.T) {
 	var (
-		invalidAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen-1)
+		invalidAddress = "invalid address"
 	)
 
 	specs := map[string]struct {
-		src    UpdateAdminProposal
+		src    *UpdateAdminProposal
 		expErr bool
 	}{
 		"all good": {
@@ -344,13 +346,13 @@ func TestValidateUpdateAdminProposal(t *testing.T) {
 		},
 		"base data missing": {
 			src: UpdateAdminProposalFixture(func(p *UpdateAdminProposal) {
-				p.WasmProposal = WasmProposal{}
+				p.Title = ""
 			}),
 			expErr: true,
 		},
 		"contract missing": {
 			src: UpdateAdminProposalFixture(func(p *UpdateAdminProposal) {
-				p.Contract = nil
+				p.Contract = ""
 			}),
 			expErr: true,
 		},
@@ -362,7 +364,7 @@ func TestValidateUpdateAdminProposal(t *testing.T) {
 		},
 		"admin missing": {
 			src: UpdateAdminProposalFixture(func(p *UpdateAdminProposal) {
-				p.NewAdmin = nil
+				p.NewAdmin = ""
 			}),
 			expErr: true,
 		},
@@ -387,11 +389,11 @@ func TestValidateUpdateAdminProposal(t *testing.T) {
 
 func TestValidateClearAdminProposal(t *testing.T) {
 	var (
-		invalidAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen-1)
+		invalidAddress = "invalid address"
 	)
 
 	specs := map[string]struct {
-		src    ClearAdminProposal
+		src    *ClearAdminProposal
 		expErr bool
 	}{
 		"all good": {
@@ -399,13 +401,13 @@ func TestValidateClearAdminProposal(t *testing.T) {
 		},
 		"base data missing": {
 			src: ClearAdminProposalFixture(func(p *ClearAdminProposal) {
-				p.WasmProposal = WasmProposal{}
+				p.Title = ""
 			}),
 			expErr: true,
 		},
 		"contract missing": {
 			src: ClearAdminProposalFixture(func(p *ClearAdminProposal) {
-				p.Contract = nil
+				p.Contract = ""
 			}),
 			expErr: true,
 		},
@@ -430,7 +432,7 @@ func TestValidateClearAdminProposal(t *testing.T) {
 
 func TestProposalStrings(t *testing.T) {
 	specs := map[string]struct {
-		src gov.Content
+		src govtypes.Content
 		exp string
 	}{
 		"store code": {
@@ -440,7 +442,7 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Store Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
   WasmCode:    0102030405060708090A
   Source:      https://example.com/code
   Builder:     foo/bar:latest
@@ -448,43 +450,43 @@ func TestProposalStrings(t *testing.T) {
 		},
 		"instantiate contract": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitFunds = sdk.Coins{{Denom: "foo", Amount: sdk.NewInt(1)}, {Denom: "bar", Amount: sdk.NewInt(2)}}
+				p.Funds = sdk.Coins{{Denom: "foo", Amount: sdk.NewInt(1)}, {Denom: "bar", Amount: sdk.NewInt(2)}}
 			}),
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
-  Admin:       cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du\",\"beneficiary\":\"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du\"}"
-  InitFunds:   1foo,2bar
+  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Funds:       1foo,2bar
 `,
 		},
 		"instantiate contract without funds": {
-			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.InitFunds = nil }),
+			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Funds = nil }),
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
-  Admin:       cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du\",\"beneficiary\":\"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du\"}"
-  InitFunds:   
+  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Funds:       
 `,
 		},
 		"instantiate contract without admin": {
-			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Admin = nil }),
+			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Admin = "" }),
 			exp: `Instantiate Code Proposal:
   Title:       Foo
   Description: Bar
-  Run as:      cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
   Admin:       
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du\",\"beneficiary\":\"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du\"}"
-  InitFunds:   
+  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Funds:       
 `,
 		},
 		"migrate contract": {
@@ -492,10 +494,10 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Migrate Contract Proposal:
   Title:       Foo
   Description: Bar
-  Contract:    cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5
+  Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
   Code id:     1
-  Run as:      cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
-  MigrateMsg   "{\"verifier\":\"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du\"}"
+  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+  MigrateMsg   "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
 `,
 		},
 		"update admin": {
@@ -503,8 +505,8 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Update Contract Admin Proposal:
   Title:       Foo
   Description: Bar
-  Contract:    cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5
-  New Admin:   cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+  Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
+  New Admin:   link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 `,
 		},
 		"clear admin": {
@@ -512,7 +514,31 @@ func TestProposalStrings(t *testing.T) {
 			exp: `Clear Contract Admin Proposal:
   Title:       Foo
   Description: Bar
-  Contract:    cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5
+  Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
+`,
+		},
+		"pin codes": {
+			src: &PinCodesProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				CodeIDs:     []uint64{1, 2, 3},
+			},
+			exp: `Pin Wasm Codes Proposal:
+  Title:       Foo
+  Description: Bar
+  Codes:       [1 2 3]
+`,
+		},
+		"unpin codes": {
+			src: &UnpinCodesProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				CodeIDs:     []uint64{3, 2, 1},
+			},
+			exp: `Unpin Wasm Codes Proposal:
+  Title:       Foo
+  Description: Bar
+  Codes:       [3 2 1]
 `,
 		},
 	}
@@ -525,7 +551,7 @@ func TestProposalStrings(t *testing.T) {
 
 func TestProposalYaml(t *testing.T) {
 	specs := map[string]struct {
-		src gov.Content
+		src govtypes.Content
 		exp string
 	}{
 		"store code": {
@@ -534,7 +560,7 @@ func TestProposalYaml(t *testing.T) {
 			}),
 			exp: `title: Foo
 description: Bar
-run_as: cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 wasm_byte_code: AQIDBAUGBwgJCg==
 source: https://example.com/code
 builder: foo/bar:latest
@@ -543,16 +569,16 @@ instantiate_permission: null
 		},
 		"instantiate contract": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitFunds = sdk.Coins{{Denom: "foo", Amount: sdk.NewInt(1)}, {Denom: "bar", Amount: sdk.NewInt(2)}}
+				p.Funds = sdk.Coins{{Denom: "foo", Amount: sdk.NewInt(1)}, {Denom: "bar", Amount: sdk.NewInt(2)}}
 			}),
 			exp: `title: Foo
 description: Bar
-run_as: cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
-admin: cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 code_id: 1
 label: testing
-init_msg: '{"verifier":"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du","beneficiary":"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du"}'
-init_funds:
+init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+funds:
 - denom: foo
   amount: "1"
 - denom: bar
@@ -560,52 +586,66 @@ init_funds:
 `,
 		},
 		"instantiate contract without funds": {
-			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.InitFunds = nil }),
+			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Funds = nil }),
 			exp: `title: Foo
 description: Bar
-run_as: cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
-admin: cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 code_id: 1
 label: testing
-init_msg: '{"verifier":"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du","beneficiary":"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du"}'
-init_funds: []
+init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+funds: []
 `,
 		},
 		"instantiate contract without admin": {
-			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Admin = nil }),
+			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) { p.Admin = "" }),
 			exp: `title: Foo
 description: Bar
-run_as: cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 admin: ""
 code_id: 1
 label: testing
-init_msg: '{"verifier":"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du","beneficiary":"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du"}'
-init_funds: []
+init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+funds: []
 `,
 		},
 		"migrate contract": {
 			src: MigrateContractProposalFixture(),
 			exp: `title: Foo
 description: Bar
-contract: cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5
+contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
 code_id: 1
-msg: '{"verifier":"cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du"}'
-run_as: cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 `,
 		},
 		"update admin": {
 			src: UpdateAdminProposalFixture(),
 			exp: `title: Foo
 description: Bar
-new_admin: cosmos1qyqszqgpqyqszqgpqyqszqgpqyqszqgpjnp7du
-contract: cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5
+new_admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
+contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
 `,
 		},
 		"clear admin": {
 			src: ClearAdminProposalFixture(),
 			exp: `title: Foo
 description: Bar
-contract: cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5
+contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
+`,
+		},
+		"pin codes": {
+			src: &PinCodesProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				CodeIDs:     []uint64{1, 2, 3},
+			},
+			exp: `title: Foo
+description: Bar
+code_ids:
+- 1
+- 2
+- 3
 `,
 		},
 	}

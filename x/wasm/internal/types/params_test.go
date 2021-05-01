@@ -1,19 +1,20 @@
-// nolint: scopelint
 package types
 
 import (
 	"encoding/json"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/line/lbm-sdk/v2/codec"
+	codectypes "github.com/line/lbm-sdk/v2/codec/types"
+	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestValidateParams(t *testing.T) {
 	var (
-		anyAddress     = make([]byte, sdk.AddrLen)
-		invalidAddress = make([]byte, sdk.AddrLen-1)
+		anyAddress     sdk.AccAddress = make([]byte, sdk.AddrLen)
+		invalidAddress                = "invalid address"
 	)
 
 	specs := map[string]struct {
@@ -25,83 +26,146 @@ func TestValidateParams(t *testing.T) {
 		},
 		"all good with nobody": {
 			src: Params{
-				UploadAccess:                 AllowNobody,
-				DefaultInstantiatePermission: Nobody,
+				CodeUploadAccess:             AllowNobody,
+				InstantiateDefaultPermission: AccessTypeNobody,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 		},
 		"all good with everybody": {
 			src: Params{
-				UploadAccess:                 AllowEverybody,
-				DefaultInstantiatePermission: Everybody,
+				CodeUploadAccess:             AllowEverybody,
+				InstantiateDefaultPermission: AccessTypeEverybody,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 		},
 		"all good with only address": {
 			src: Params{
-				UploadAccess:                 OnlyAddress.With(anyAddress),
-				DefaultInstantiatePermission: OnlyAddress,
+				CodeUploadAccess:             AccessTypeOnlyAddress.With(anyAddress),
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 		},
 		"reject empty type in instantiate permission": {
 			src: Params{
-				UploadAccess:                 AllowNobody,
-				DefaultInstantiatePermission: "",
-				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				CodeUploadAccess: AllowNobody,
+				MaxWasmCodeSize:  DefaultMaxWasmCodeSize,
+				GasMultiplier:    DefaultGasMultiplier,
+				InstanceCost:     DefaultInstanceCost,
+				CompileCost:      DefaultCompileCost,
 			},
 			expErr: true,
 		},
 		"reject unknown type in instantiate": {
 			src: Params{
-				UploadAccess:                 AllowNobody,
-				DefaultInstantiatePermission: "Undefined",
+				CodeUploadAccess:             AllowNobody,
+				InstantiateDefaultPermission: 1111,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 			expErr: true,
 		},
 		"reject invalid address in only address": {
 			src: Params{
-				UploadAccess:                 AccessConfig{Type: OnlyAddress, Address: invalidAddress},
-				DefaultInstantiatePermission: OnlyAddress,
+				CodeUploadAccess:             AccessConfig{Permission: AccessTypeOnlyAddress, Address: invalidAddress},
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 			expErr: true,
 		},
-		"reject UploadAccess Everybody with obsolete address": {
+		"reject CodeUploadAccess Everybody with obsolete address": {
 			src: Params{
-				UploadAccess:                 AccessConfig{Type: Everybody, Address: anyAddress},
-				DefaultInstantiatePermission: OnlyAddress,
+				CodeUploadAccess:             AccessConfig{Permission: AccessTypeEverybody, Address: anyAddress.String()},
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 			expErr: true,
 		},
-		"reject UploadAccess Nobody with obsolete address": {
+		"reject CodeUploadAccess Nobody with obsolete address": {
 			src: Params{
-				UploadAccess:                 AccessConfig{Type: Nobody, Address: anyAddress},
-				DefaultInstantiatePermission: OnlyAddress,
+				CodeUploadAccess:             AccessConfig{Permission: AccessTypeNobody, Address: anyAddress.String()},
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 			expErr: true,
 		},
-		"reject empty UploadAccess": {
+		"reject empty CodeUploadAccess": {
 			src: Params{
-				DefaultInstantiatePermission: OnlyAddress,
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 			expErr: true,
-		}, "reject undefined permission in UploadAccess": {
+		},
+		"reject undefined permission in CodeUploadAccess": {
 			src: Params{
-				UploadAccess:                 AccessConfig{Type: Undefined},
-				DefaultInstantiatePermission: OnlyAddress,
+				CodeUploadAccess:             AccessConfig{Permission: AccessTypeUnspecified},
+				InstantiateDefaultPermission: AccessTypeOnlyAddress,
 				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
 			},
 			expErr: true,
 		},
 		"reject empty max wasm code size": {
 			src: Params{
-				UploadAccess:                 AllowNobody,
-				DefaultInstantiatePermission: Nobody,
+				CodeUploadAccess:             AllowNobody,
+				InstantiateDefaultPermission: AccessTypeNobody,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
+			},
+			expErr: true,
+		},
+		"reject empty gas multiplier": {
+			src: Params{
+				CodeUploadAccess:             AllowNobody,
+				InstantiateDefaultPermission: AccessTypeNobody,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				InstanceCost:                 DefaultInstanceCost,
+				CompileCost:                  DefaultCompileCost,
+			},
+			expErr: true,
+		},
+		"reject empty instance cost": {
+			src: Params{
+				CodeUploadAccess:             AllowNobody,
+				InstantiateDefaultPermission: AccessTypeNobody,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				CompileCost:                  DefaultCompileCost,
+			},
+			expErr: true,
+		},
+		"reject empty compile cost": {
+			src: Params{
+				CodeUploadAccess:             AllowNobody,
+				InstantiateDefaultPermission: AccessTypeNobody,
+				MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+				GasMultiplier:                DefaultGasMultiplier,
+				InstanceCost:                 DefaultInstanceCost,
 			},
 			expErr: true,
 		},
@@ -123,11 +187,11 @@ func TestAccessTypeMarshalJson(t *testing.T) {
 		src AccessType
 		exp string
 	}{
-		"Undefined":   {src: Undefined, exp: `"Undefined"`},
-		"Nobody":      {src: Nobody, exp: `"Nobody"`},
-		"OnlyAddress": {src: OnlyAddress, exp: `"OnlyAddress"`},
-		"Everybody":   {src: Everybody, exp: `"Everybody"`},
-		"unknown":     {src: "", exp: `"Undefined"`},
+		"Unspecified": {src: AccessTypeUnspecified, exp: `"Unspecified"`},
+		"Nobody":      {src: AccessTypeNobody, exp: `"Nobody"`},
+		"OnlyAddress": {src: AccessTypeOnlyAddress, exp: `"OnlyAddress"`},
+		"Everybody":   {src: AccessTypeEverybody, exp: `"Everybody"`},
+		"unknown":     {src: 999, exp: `"Unspecified"`},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
@@ -137,16 +201,17 @@ func TestAccessTypeMarshalJson(t *testing.T) {
 		})
 	}
 }
-func TestAccessTypeUnMarshalJson(t *testing.T) {
+
+func TestAccessTypeUnmarshalJson(t *testing.T) {
 	specs := map[string]struct {
 		src string
 		exp AccessType
 	}{
-		"Undefined":   {src: `"Undefined"`, exp: Undefined},
-		"Nobody":      {src: `"Nobody"`, exp: Nobody},
-		"OnlyAddress": {src: `"OnlyAddress"`, exp: OnlyAddress},
-		"Everybody":   {src: `"Everybody"`, exp: Everybody},
-		"unknown":     {src: `""`, exp: Undefined},
+		"Unspecified": {src: `"Unspecified"`, exp: AccessTypeUnspecified},
+		"Nobody":      {src: `"Nobody"`, exp: AccessTypeNobody},
+		"OnlyAddress": {src: `"OnlyAddress"`, exp: AccessTypeOnlyAddress},
+		"Everybody":   {src: `"Everybody"`, exp: AccessTypeEverybody},
+		"unknown":     {src: `""`, exp: AccessTypeUnspecified},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
@@ -157,7 +222,6 @@ func TestAccessTypeUnMarshalJson(t *testing.T) {
 		})
 	}
 }
-
 func TestParamsUnmarshalJson(t *testing.T) {
 	specs := map[string]struct {
 		src string
@@ -167,15 +231,20 @@ func TestParamsUnmarshalJson(t *testing.T) {
 		"defaults": {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",
-				"max_wasm_code_size": 614400}`,
+				"max_wasm_code_size": 614400,
+				"gas_multiplier": 100,
+				"instance_cost": 40000,
+				"compile_cost": 2}`,
 			exp: DefaultParams(),
 		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
 			var val Params
+			interfaceRegistry := codectypes.NewInterfaceRegistry()
+			marshaler := codec.NewProtoCodec(interfaceRegistry)
 
-			err := json.Unmarshal([]byte(spec.src), &val)
+			err := marshaler.UnmarshalJSON([]byte(spec.src), &val)
 			require.NoError(t, err)
 			assert.Equal(t, spec.exp, val)
 		})

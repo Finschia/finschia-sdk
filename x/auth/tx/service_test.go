@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/suite"
 
@@ -390,6 +391,7 @@ func (s IntegrationTestSuite) TestBroadcastTx_GRPC() {
 			}
 		})
 	}
+	time.Sleep(1 * time.Second) // wait for block confirm time before executing next test
 }
 
 func (s IntegrationTestSuite) TestBroadcastTx_GRPCGateway() {
@@ -428,6 +430,7 @@ func (s IntegrationTestSuite) TestBroadcastTx_GRPCGateway() {
 			}
 		})
 	}
+	time.Sleep(1 * time.Second) // wait for block confirm time before executing next test
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

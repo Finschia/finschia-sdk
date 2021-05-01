@@ -20,7 +20,7 @@ func TestMigrate(t *testing.T) {
 		WithLegacyAmino(encodingConfig.Amino).
 		WithJSONMarshaler(encodingConfig.Marshaler)
 
-	addr1, _ := sdk.AccAddressFromBech32("cosmos1xxkueklal9vejv9unqu80w9vptyepfa95pd53u")
+	addr1, _ := sdk.AccAddressFromBech32("link19d880rl0u36uc4yhdjrsp5yculgd4ak7hdt660")
 
 	evidenceGenState := v038evidence.GenesisState{
 		Params: v038evidence.Params{MaxEvidenceAge: v038evidence.DefaultMaxEvidenceAge},
@@ -32,7 +32,7 @@ func TestMigrate(t *testing.T) {
 	}
 
 	migrated := v040evidence.Migrate(evidenceGenState)
-	expected := `{"evidence":[{"@type":"/lbm.evidence.v1beta1.Equivocation","height":"20","time":"0001-01-01T00:00:00Z","power":"100","consensus_address":"cosmosvalcons1xxkueklal9vejv9unqu80w9vptyepfa99x2a3w"}]}`
+	expected := `{"evidence":[{"@type":"/lbm.evidence.v1beta1.Equivocation","height":"20","time":"0001-01-01T00:00:00Z","power":"100","consensus_address":"linkvalcons19d880rl0u36uc4yhdjrsp5yculgd4ak7326mca"}]}`
 
 	bz, err := clientCtx.JSONMarshaler.MarshalJSON(migrated)
 	require.NoError(t, err)

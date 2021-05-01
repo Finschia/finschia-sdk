@@ -157,7 +157,7 @@
             "signatures": [
               {
                 "pub_key": {
-                  "type": "tendermint/PubKeySecp256k1",
+                  "type": "ostracon/PubKeySecp256k1",
                   "value": "A//cqZxkpH1re0VrHBtH308nb5t8K+Y/hF0GeRdRBmaJ"
                 },
                 "signature": "5QEEIuUVQTEBMuAtOOHnnKo6rPsIbmfzUxUqRnDFERVqwVr1Kg+ex4f/UGIK0yrOAvOG8zDADwFP4yF8lw+o5g=="

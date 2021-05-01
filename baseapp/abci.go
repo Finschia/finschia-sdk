@@ -210,17 +210,22 @@ func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBloc
 // internal CheckTx state if the AnteHandler passes. Otherwise, the ResponseCheckTx
 // will contain releveant error information. Regardless of tx execution outcome,
 // the ResponseCheckTx will contain relevant gas execution context.
-func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
+func (app *BaseApp) CheckTxSync(req abci.RequestCheckTx) abci.ResponseCheckTx {
 	defer telemetry.MeasureSince(time.Now(), "abci", "check_tx")
-
-	tx, err := app.txDecoder(req.Tx)
-	if err != nil {
-		return sdkerrors.ResponseCheckTx(err, 0, 0, app.trace)
-	}
 
 	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
 		panic(fmt.Sprintf("unknown RequestCheckTx type: %s", req.Type))
 	}
+
+	tx, err := app.preCheckTx(req.Tx)
+	if err != nil {
+		return sdkerrors.ResponseCheckTx(err, 0, 0, app.trace)
+	}
+
+	waits, signals := app.checkAccountWGs.Register(tx)
+
+	app.checkAccountWGs.Wait(waits)
+	defer app.checkAccountWGs.Done(signals)
 
 	gInfo, err := app.checkTx(req.Tx, tx, req.Type == abci.CheckTxType_Recheck)
 	if err != nil {
@@ -231,6 +236,22 @@ func (app *BaseApp) CheckTx(req abci.RequestCheckTx) abci.ResponseCheckTx {
 		GasWanted: int64(gInfo.GasWanted), // TODO: Should type accept unsigned ints?
 		GasUsed:   int64(gInfo.GasUsed),   // TODO: Should type accept unsigned ints?
 	}
+}
+
+func (app *BaseApp) CheckTxAsync(req abci.RequestCheckTx, callback abci.CheckTxCallback) {
+	if req.Type != abci.CheckTxType_New && req.Type != abci.CheckTxType_Recheck {
+		panic(fmt.Sprintf("unknown RequestCheckTx type: %s", req.Type))
+	}
+
+	reqCheckTx := &RequestCheckTxAsync{
+		txBytes:  req.Tx,
+		recheck:  req.Type == abci.CheckTxType_Recheck,
+		callback: callback,
+		prepare:  waitGroup1(),
+	}
+	app.chCheckTx <- reqCheckTx
+
+	go app.prepareCheckTx(reqCheckTx)
 }
 
 // BeginRecheckTx implements the ABCI interface and set the check state based on the given header

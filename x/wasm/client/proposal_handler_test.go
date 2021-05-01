@@ -1,4 +1,3 @@
-// nolint: scopelint
 package client
 
 import (
@@ -7,24 +6,21 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/gorilla/mux"
+	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/client/flags"
+	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
 	"github.com/stretchr/testify/require"
-
-	"github.com/cosmos/cosmos-sdk/client/context"
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	authvesting "github.com/cosmos/cosmos-sdk/x/auth/vesting"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-
-	wasmtypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 )
 
 func TestGovRestHandlers(t *testing.T) {
 	type dict map[string]interface{}
 	var (
-		anyAddress = "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz"
+		anyAddress = "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
 		aBaseReq   = dict{
 			"from":           anyAddress,
 			"memo":           "rest test",
@@ -34,8 +30,15 @@ func TestGovRestHandlers(t *testing.T) {
 			"fees":           []dict{{"denom": "ustake", "amount": "1000000"}},
 		}
 	)
-	cdc := MakeCodec()
-	clientCtx := context.CLIContext{}.WithChainID("testing").WithCodec(cdc)
+	encodingConfig := keeper.MakeEncodingConfig(t)
+	clientCtx := client.Context{}.
+		WithJSONMarshaler(encodingConfig.Marshaler).
+		WithTxConfig(encodingConfig.TxConfig).
+		WithLegacyAmino(encodingConfig.Amino).
+		WithInput(os.Stdin).
+		WithAccountRetriever(authtypes.AccountRetriever{}).
+		WithBroadcastMode(flags.BroadcastBlock).
+		WithChainID("testing")
 
 	// router setup as in gov/client/rest/tx.go
 	propSubRtr := mux.NewRouter().PathPrefix("/gov/proposals").Subrouter()
@@ -55,16 +58,16 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":          "Test Proposal",
 				"description":    "My proposal",
 				"type":           "store-code",
-				"run_as":         "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
+				"run_as":         "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"wasm_byte_code": []byte("valid wasm byte code"),
 				"source":         "https://example.com/",
 				"builder":        "my/builder:tag",
 				"instantiate_permission": dict{
 					"permission": "OnlyAddress",
-					"address":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+					"address":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				},
 				"deposit":  []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer": "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req": aBaseReq,
 			},
 			expCode: http.StatusOK,
@@ -75,12 +78,12 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":          "Test Proposal",
 				"description":    "My proposal",
 				"type":           "store-code",
-				"run_as":         "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
+				"run_as":         "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"wasm_byte_code": []byte("valid wasm byte code"),
 				"source":         "https://example.com/",
 				"builder":        "my/builder:tag",
 				"deposit":        []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer":       "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer":       "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req":       aBaseReq,
 			},
 			expCode: http.StatusOK,
@@ -91,16 +94,16 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":          "Test Proposal",
 				"description":    "My proposal",
 				"type":           "store-code",
-				"run_as":         "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
+				"run_as":         "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"wasm_byte_code": []byte("valid wasm byte code"),
 				"source":         "https://example.com/",
 				"builder":        "my/builder:tag",
 				"instantiate_permission": dict{
 					"permission": "Nobody",
-					"address":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+					"address":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				},
 				"deposit":  []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer": "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req": aBaseReq,
 			},
 			expCode: http.StatusBadRequest,
@@ -111,16 +114,16 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":          "",
 				"description":    "My proposal",
 				"type":           "store-code",
-				"run_as":         "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
+				"run_as":         "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"wasm_byte_code": []byte("valid wasm byte code"),
 				"source":         "https://example.com/",
 				"builder":        "my/builder:tag",
 				"instantiate_permission": dict{
 					"permission": "OnlyAddress",
-					"address":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+					"address":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				},
 				"deposit":  []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer": "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req": aBaseReq,
 			},
 			expCode: http.StatusBadRequest,
@@ -131,16 +134,16 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":          "Test Proposal",
 				"description":    "My proposal",
 				"type":           "store-code",
-				"run_as":         "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
+				"run_as":         "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"wasm_byte_code": "",
 				"source":         "https://example.com/",
 				"builder":        "my/builder:tag",
 				"instantiate_permission": dict{
 					"permission": "OnlyAddress",
-					"address":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+					"address":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				},
 				"deposit":  []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer": "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req": aBaseReq,
 			},
 			expCode: http.StatusBadRequest,
@@ -151,14 +154,14 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":       "Test Proposal",
 				"description": "My proposal",
 				"type":        "instantiate",
-				"run_as":      "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
-				"admin":       "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
+				"run_as":      "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
+				"admin":       "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"code_id":     "1",
 				"label":       "https://example.com/",
 				"init_msg":    "my/builder:tag",
-				"init_funds":  []dict{{"denom": "ustake", "amount": "100"}},
+				"funds":       []dict{{"denom": "ustake", "amount": "100"}},
 				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req":    aBaseReq,
 			},
 			expCode: http.StatusOK,
@@ -169,12 +172,12 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":       "Test Proposal",
 				"description": "My proposal",
 				"type":        "migrate",
-				"contract":    "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
 				"code_id":     "1",
 				"msg":         dict{"foo": "bar"},
-				"run_as":      "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
+				"run_as":      "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req":    aBaseReq,
 			},
 			expCode: http.StatusOK,
@@ -185,10 +188,10 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":       "Test Proposal",
 				"description": "My proposal",
 				"type":        "migrate",
-				"contract":    "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5",
-				"new_admin":   "cosmos100dejzacpanrldpjjwksjm62shqhyss44jf5xz",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
+				"new_admin":   "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu",
 				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req":    aBaseReq,
 			},
 			expCode: http.StatusOK,
@@ -199,9 +202,9 @@ func TestGovRestHandlers(t *testing.T) {
 				"title":       "Test Proposal",
 				"description": "My proposal",
 				"type":        "migrate",
-				"contract":    "cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5",
+				"contract":    "link1ghekyjucln7y67ntx7cf27m9dpuxxemnqk82wt",
 				"deposit":     []dict{{"denom": "ustake", "amount": "10"}},
-				"proposer":    "cosmos1ve557a5g9yw2g2z57js3pdmcvd5my6g8ze20np",
+				"proposer":    "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
 				"base_req":    aBaseReq,
 			},
 			expCode: http.StatusOK,
@@ -221,16 +224,4 @@ func TestGovRestHandlers(t *testing.T) {
 			require.Equal(t, spec.expCode, w.Code, w.Body.String())
 		})
 	}
-}
-
-func MakeCodec() *codec.Codec {
-	var cdc = codec.New()
-	wasmtypes.RegisterCodec(cdc)
-	gov.RegisterCodec(cdc)
-	sdk.RegisterCodec(cdc)
-	codec.RegisterCrypto(cdc)
-	codec.RegisterEvidences(cdc)
-	authvesting.RegisterCodec(cdc)
-
-	return cdc.Seal()
 }

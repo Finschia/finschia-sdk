@@ -1,42 +1,42 @@
-// nolint: scopelint
 package keeper
 
 import (
 	"bytes"
 	"encoding/hex"
 	"encoding/json"
+	"errors"
 	"io/ioutil"
-	"os"
 	"testing"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/x/gov"
-	"github.com/cosmos/cosmos-sdk/x/params"
+	wasmvm "github.com/CosmWasm/wasmvm"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+
+	sdk "github.com/line/lbm-sdk/v2/types"
+	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestStoreCodeProposal(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "wasm")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-
-	ctx, keepers := CreateTestInput(t, false, tempDir, "staking", nil, nil)
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
 	wasmKeeper.setParams(ctx, types.Params{
-		UploadAccess:                 types.AllowNobody,
-		DefaultInstantiatePermission: types.Nobody,
+		CodeUploadAccess:             types.AllowNobody,
+		InstantiateDefaultPermission: types.AccessTypeNobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
-
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	var anyAddress sdk.AccAddress = make([]byte, sdk.AddrLen)
+	myActorAddress := RandomBech32AccountAddress(t)
 
 	src := types.StoreCodeProposalFixture(func(p *types.StoreCodeProposal) {
-		p.RunAs = anyAddress
+		p.RunAs = myActorAddress
 		p.WASMByteCode = wasmCode
 		p.Source = "https://example.com/mysource"
 		p.Builder = "foo/bar:v0.0.0"
@@ -48,13 +48,13 @@ func TestStoreCodeProposal(t *testing.T) {
 
 	// and proposal execute
 	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-	err = handler(ctx, storedProposal.Content)
+	err = handler(ctx, storedProposal.GetContent())
 	require.NoError(t, err)
 
 	// then
 	cInfo := wasmKeeper.GetCodeInfo(ctx, 1)
 	require.NotNil(t, cInfo)
-	assert.Equal(t, anyAddress, cInfo.Creator)
+	assert.Equal(t, myActorAddress, cInfo.Creator)
 	assert.Equal(t, "foo/bar:v0.0.0", cInfo.Builder)
 	assert.Equal(t, "https://example.com/mysource", cInfo.Source)
 
@@ -64,16 +64,15 @@ func TestStoreCodeProposal(t *testing.T) {
 }
 
 func TestInstantiateProposal(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "wasm")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-
-	ctx, keepers := CreateTestInput(t, false, tempDir, "staking", nil, nil)
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
 	wasmKeeper.setParams(ctx, types.Params{
-		UploadAccess:                 types.AllowNobody,
-		DefaultInstantiatePermission: types.Nobody,
+		CodeUploadAccess:             types.AllowNobody,
+		InstantiateDefaultPermission: types.AccessTypeNobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -90,8 +89,8 @@ func TestInstantiateProposal(t *testing.T) {
 	)
 	src := types.InstantiateContractProposalFixture(func(p *types.InstantiateContractProposal) {
 		p.CodeID = firstCodeID
-		p.RunAs = oneAddress
-		p.Admin = otherAddress
+		p.RunAs = oneAddress.String()
+		p.Admin = otherAddress.String()
 		p.Label = "testing"
 	})
 
@@ -101,21 +100,21 @@ func TestInstantiateProposal(t *testing.T) {
 
 	// and proposal execute
 	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-	err = handler(ctx, storedProposal.Content)
+	err = handler(ctx, storedProposal.GetContent())
 	require.NoError(t, err)
 
 	// then
-	contractAddr, err := sdk.AccAddressFromBech32("cosmos18vd8fpwxzck93qlwghaj6arh4p7c5n89uzcee5")
+	contractAddr, err := sdk.AccAddressFromBech32("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
 	require.NoError(t, err)
 
 	cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)
 	require.NotNil(t, cInfo)
 	assert.Equal(t, uint64(1), cInfo.CodeID)
-	assert.Equal(t, oneAddress, cInfo.Creator)
-	assert.Equal(t, otherAddress, cInfo.Admin)
+	assert.Equal(t, oneAddress.String(), cInfo.Creator)
+	assert.Equal(t, otherAddress.String(), cInfo.Admin)
 	assert.Equal(t, "testing", cInfo.Label)
 	expHistory := []types.ContractCodeHistoryEntry{{
-		Operation: types.InitContractCodeHistoryType,
+		Operation: types.ContractCodeHistoryOperationTypeInit,
 		CodeID:    src.CodeID,
 		Updated:   types.NewAbsoluteTxPosition(ctx),
 		Msg:       src.InitMsg,
@@ -124,16 +123,15 @@ func TestInstantiateProposal(t *testing.T) {
 }
 
 func TestMigrateProposal(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "wasm")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-
-	ctx, keepers := CreateTestInput(t, false, tempDir, "staking", nil, nil)
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
 	wasmKeeper.setParams(ctx, types.Params{
-		UploadAccess:                 types.AllowNobody,
-		DefaultInstantiatePermission: types.Nobody,
+		CodeUploadAccess:             types.AllowNobody,
+		InstantiateDefaultPermission: types.AccessTypeNobody,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+		GasMultiplier:                types.DefaultGasMultiplier,
+		InstanceCost:                 types.DefaultInstanceCost,
+		CompileCost:                  types.DefaultCompileCost,
 	})
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
@@ -151,7 +149,7 @@ func TestMigrateProposal(t *testing.T) {
 
 	contractInfoFixture := types.ContractInfoFixture(func(c *types.ContractInfo) {
 		c.Label = "testing"
-		c.Admin = anyAddress
+		c.Admin = anyAddress.String()
 	})
 	key, err := hex.DecodeString("636F6E666967")
 	require.NoError(t, err)
@@ -165,23 +163,21 @@ func TestMigrateProposal(t *testing.T) {
 	require.NoError(t, err)
 
 	src := types.MigrateContractProposal{
-		WasmProposal: types.WasmProposal{
-			Title:       "Foo",
-			Description: "Bar",
-		},
-		CodeID:     2,
-		Contract:   contractAddr,
-		MigrateMsg: migMsgBz,
-		RunAs:      otherAddress,
+		Title:       "Foo",
+		Description: "Bar",
+		CodeID:      2,
+		Contract:    contractAddr.String(),
+		MigrateMsg:  migMsgBz,
+		RunAs:       otherAddress.String(),
 	}
 
 	// when stored
-	storedProposal, err := govKeeper.SubmitProposal(ctx, src)
+	storedProposal, err := govKeeper.SubmitProposal(ctx, &src)
 	require.NoError(t, err)
 
 	// and proposal execute
 	handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-	err = handler(ctx, storedProposal.Content)
+	err = handler(ctx, storedProposal.GetContent())
 	require.NoError(t, err)
 
 	// then
@@ -189,14 +185,14 @@ func TestMigrateProposal(t *testing.T) {
 	cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)
 	require.NotNil(t, cInfo)
 	assert.Equal(t, uint64(2), cInfo.CodeID)
-	assert.Equal(t, anyAddress, cInfo.Admin)
+	assert.Equal(t, anyAddress.String(), cInfo.Admin)
 	assert.Equal(t, "testing", cInfo.Label)
 	expHistory := []types.ContractCodeHistoryEntry{{
-		Operation: types.GenesisContractCodeHistoryType,
+		Operation: types.ContractCodeHistoryOperationTypeGenesis,
 		CodeID:    firstCodeID,
 		Updated:   types.NewAbsoluteTxPosition(ctx),
 	}, {
-		Operation: types.MigrateContractCodeHistoryType,
+		Operation: types.ContractCodeHistoryOperationTypeMigrate,
 		CodeID:    src.CodeID,
 		Updated:   types.NewAbsoluteTxPosition(ctx),
 		Msg:       src.MigrateMsg,
@@ -214,71 +210,63 @@ func TestAdminProposals(t *testing.T) {
 
 	specs := map[string]struct {
 		state       types.ContractInfo
-		srcProposal gov.Content
+		srcProposal govtypes.Content
 		expAdmin    sdk.AccAddress
 	}{
 		"update with different admin": {
 			state: types.ContractInfoFixture(),
-			srcProposal: types.UpdateAdminProposal{
-				WasmProposal: types.WasmProposal{
-					Title:       "Foo",
-					Description: "Bar",
-				},
-				Contract: contractAddr,
-				NewAdmin: otherAddress,
+			srcProposal: &types.UpdateAdminProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				Contract:    contractAddr.String(),
+				NewAdmin:    otherAddress.String(),
 			},
 			expAdmin: otherAddress,
 		},
 		"update with old admin empty": {
 			state: types.ContractInfoFixture(func(info *types.ContractInfo) {
-				info.Admin = nil
+				info.Admin = ""
 			}),
-			srcProposal: types.UpdateAdminProposal{
-				WasmProposal: types.WasmProposal{
-					Title:       "Foo",
-					Description: "Bar",
-				},
-				Contract: contractAddr,
-				NewAdmin: otherAddress,
+			srcProposal: &types.UpdateAdminProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				Contract:    contractAddr.String(),
+				NewAdmin:    otherAddress.String(),
 			},
 			expAdmin: otherAddress,
 		},
 		"clear admin": {
 			state: types.ContractInfoFixture(),
-			srcProposal: types.ClearAdminProposal{
-				WasmProposal: types.WasmProposal{
-					Title:       "Foo",
-					Description: "Bar",
-				},
-				Contract: contractAddr,
+			srcProposal: &types.ClearAdminProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				Contract:    contractAddr.String(),
 			},
 			expAdmin: nil,
 		},
 		"clear with old admin empty": {
 			state: types.ContractInfoFixture(func(info *types.ContractInfo) {
-				info.Admin = nil
+				info.Admin = ""
 			}),
-			srcProposal: types.ClearAdminProposal{
-				WasmProposal: types.WasmProposal{
-					Title:       "Foo",
-					Description: "Bar",
-				},
-				Contract: contractAddr,
+			srcProposal: &types.ClearAdminProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				Contract:    contractAddr.String(),
 			},
 			expAdmin: nil,
 		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
-			tempDir, err := ioutil.TempDir("", "wasm")
-			require.NoError(t, err)
-			defer os.RemoveAll(tempDir)
-			ctx, keepers := CreateTestInput(t, false, tempDir, "staking", nil, nil)
+			ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 			govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
 			wasmKeeper.setParams(ctx, types.Params{
-				UploadAccess:                 types.AllowNobody,
-				DefaultInstantiatePermission: types.Nobody,
+				CodeUploadAccess:             types.AllowNobody,
+				InstantiateDefaultPermission: types.AccessTypeNobody,
 				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+				GasMultiplier:                types.DefaultGasMultiplier,
+				InstanceCost:                 types.DefaultInstanceCost,
+				CompileCost:                  types.DefaultCompileCost,
 			})
 
 			codeInfoFixture := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
@@ -291,104 +279,260 @@ func TestAdminProposals(t *testing.T) {
 
 			// and execute proposal
 			handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-			err = handler(ctx, storedProposal.Content)
+			err = handler(ctx, storedProposal.GetContent())
 			require.NoError(t, err)
 
 			// then
 			cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)
 			require.NotNil(t, cInfo)
-			assert.Equal(t, spec.expAdmin, cInfo.Admin)
+			assert.Equal(t, spec.expAdmin.String(), cInfo.Admin)
 		})
 	}
 }
 
 func TestUpdateParamsProposal(t *testing.T) {
-	tempDir, err := ioutil.TempDir("", "wasm")
-	require.NoError(t, err)
-	defer os.RemoveAll(tempDir)
-
-	ctx, keepers := CreateTestInput(t, false, tempDir, "staking", nil, nil)
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
 
 	var (
 		cdc                                   = keepers.WasmKeeper.cdc
 		myAddress              sdk.AccAddress = make([]byte, sdk.AddrLen)
-		oneAddressAccessConfig                = types.OnlyAddress.With(myAddress)
-		newMaxWasmCodeSize                    = uint64(42)
-		defaultParams                         = types.DefaultParams()
+		oneAddressAccessConfig                = types.AccessTypeOnlyAddress.With(myAddress)
 	)
 
+	nobodyJson, err := json.Marshal(types.AccessTypeNobody)
+	require.NoError(t, err)
 	specs := map[string]struct {
-		src                params.ParamChange
+		src                proposal.ParamChange
 		expUploadConfig    types.AccessConfig
 		expInstantiateType types.AccessType
-		expMaxWasmCodeSize uint64
 	}{
 		"update upload permission param": {
-			src: params.ParamChange{
+			src: proposal.ParamChange{
 				Subspace: types.DefaultParamspace,
 				Key:      string(types.ParamStoreKeyUploadAccess),
 				Value:    string(cdc.MustMarshalJSON(&types.AllowNobody)),
 			},
 			expUploadConfig:    types.AllowNobody,
-			expInstantiateType: defaultParams.DefaultInstantiatePermission,
-			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+			expInstantiateType: types.AccessTypeEverybody,
 		},
 		"update upload permission param with address": {
-			src: params.ParamChange{
+			src: proposal.ParamChange{
 				Subspace: types.DefaultParamspace,
 				Key:      string(types.ParamStoreKeyUploadAccess),
 				Value:    string(cdc.MustMarshalJSON(&oneAddressAccessConfig)),
 			},
 			expUploadConfig:    oneAddressAccessConfig,
-			expInstantiateType: defaultParams.DefaultInstantiatePermission,
-			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
+			expInstantiateType: types.AccessTypeEverybody,
 		},
 		"update instantiate param": {
-			src: params.ParamChange{
+			src: proposal.ParamChange{
 				Subspace: types.DefaultParamspace,
 				Key:      string(types.ParamStoreKeyInstantiateAccess),
-				Value:    string(cdc.MustMarshalJSON(types.Nobody)),
+				Value:    string(nobodyJson),
 			},
-			expUploadConfig:    defaultParams.UploadAccess,
-			expInstantiateType: types.Nobody,
-			expMaxWasmCodeSize: defaultParams.MaxWasmCodeSize,
-		},
-		"update max wasm code size": {
-			src: params.ParamChange{
-				Subspace: types.DefaultParamspace,
-				Key:      string(types.ParamStoreKeyMaxWasmCodeSize),
-				Value:    string(cdc.MustMarshalJSON(newMaxWasmCodeSize)),
-			},
-			expUploadConfig:    defaultParams.UploadAccess,
-			expInstantiateType: defaultParams.DefaultInstantiatePermission,
-			expMaxWasmCodeSize: newMaxWasmCodeSize,
+			expUploadConfig:    types.AllowEverybody,
+			expInstantiateType: types.AccessTypeNobody,
 		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
 			wasmKeeper.setParams(ctx, types.DefaultParams())
 
-			proposal := params.ParameterChangeProposal{
+			proposal := proposal.ParameterChangeProposal{
 				Title:       "Foo",
 				Description: "Bar",
-				Changes:     []params.ParamChange{spec.src},
+				Changes:     []proposal.ParamChange{spec.src},
 			}
 
 			// when stored
-			storedProposal, err := govKeeper.SubmitProposal(ctx, proposal)
+			storedProposal, err := govKeeper.SubmitProposal(ctx, &proposal)
 			require.NoError(t, err)
 
 			// and proposal execute
 			handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
-			err = handler(ctx, storedProposal.Content)
+			err = handler(ctx, storedProposal.GetContent())
 			require.NoError(t, err)
 
 			// then
 			assert.True(t, spec.expUploadConfig.Equals(wasmKeeper.getUploadAccessConfig(ctx)),
 				"got %#v not %#v", wasmKeeper.getUploadAccessConfig(ctx), spec.expUploadConfig)
 			assert.Equal(t, spec.expInstantiateType, wasmKeeper.getInstantiateAccessConfig(ctx))
-			assert.Equal(t, spec.expMaxWasmCodeSize, wasmKeeper.GetMaxWasmCodeSize(ctx))
+		})
+	}
+}
+
+func TestPinCodesProposal(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
+	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
+
+	mock := wasmtesting.MockWasmer{
+		CreateFn:      wasmtesting.NoOpCreateFn,
+		AnalyzeCodeFn: wasmtesting.WithoutIBCAnalyzeFn,
+	}
+	var (
+		hackatom           = StoreHackatomExampleContract(t, ctx, keepers)
+		hackatomDuplicate  = StoreHackatomExampleContract(t, ctx, keepers)
+		otherContract      = StoreRandomContract(t, ctx, keepers, &mock)
+		gotPinnedChecksums []wasmvm.Checksum
+	)
+	checksumCollector := func(checksum wasmvm.Checksum) error {
+		gotPinnedChecksums = append(gotPinnedChecksums, checksum)
+		return nil
+	}
+	specs := map[string]struct {
+		srcCodeIDs []uint64
+		mockFn     func(checksum wasmvm.Checksum) error
+		expPinned  []wasmvm.Checksum
+		expErr     bool
+	}{
+		"pin one": {
+			srcCodeIDs: []uint64{hackatom.CodeID},
+			mockFn:     checksumCollector,
+		},
+		"pin multiple": {
+			srcCodeIDs: []uint64{hackatom.CodeID, otherContract.CodeID},
+			mockFn:     checksumCollector,
+		},
+		"pin same code id": {
+			srcCodeIDs: []uint64{hackatom.CodeID, hackatomDuplicate.CodeID},
+			mockFn:     checksumCollector,
+		},
+		"pin non existing code id": {
+			srcCodeIDs: []uint64{999},
+			mockFn:     checksumCollector,
+			expErr:     true,
+		},
+		"pin empty code id list": {
+			srcCodeIDs: []uint64{},
+			mockFn:     checksumCollector,
+			expErr:     true,
+		},
+		"wasmvm failed with error": {
+			srcCodeIDs: []uint64{hackatom.CodeID},
+			mockFn: func(_ wasmvm.Checksum) error {
+				return errors.New("test, ignore")
+			},
+			expErr: true,
+		},
+	}
+	parentCtx := ctx
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			gotPinnedChecksums = nil
+			ctx, _ := parentCtx.CacheContext()
+			mock.PinFn = spec.mockFn
+			proposal := types.PinCodesProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				CodeIDs:     spec.srcCodeIDs,
+			}
+
+			// when stored
+			storedProposal, gotErr := govKeeper.SubmitProposal(ctx, &proposal)
+			if spec.expErr {
+				require.Error(t, gotErr)
+				return
+			}
+			require.NoError(t, gotErr)
+
+			// and proposal execute
+			handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
+			gotErr = handler(ctx, storedProposal.GetContent())
+			require.NoError(t, gotErr)
+
+			// then
+			for i := range spec.srcCodeIDs {
+				c := wasmKeeper.GetCodeInfo(ctx, spec.srcCodeIDs[i])
+				require.Equal(t, wasmvm.Checksum(c.CodeHash), gotPinnedChecksums[i])
+			}
+		})
+	}
+}
+func TestUnpinCodesProposal(t *testing.T) {
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
+	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
+
+	mock := wasmtesting.MockWasmer{
+		CreateFn:      wasmtesting.NoOpCreateFn,
+		AnalyzeCodeFn: wasmtesting.WithoutIBCAnalyzeFn,
+	}
+	var (
+		hackatom             = StoreHackatomExampleContract(t, ctx, keepers)
+		hackatomDuplicate    = StoreHackatomExampleContract(t, ctx, keepers)
+		otherContract        = StoreRandomContract(t, ctx, keepers, &mock)
+		gotUnpinnedChecksums []wasmvm.Checksum
+	)
+	checksumCollector := func(checksum wasmvm.Checksum) error {
+		gotUnpinnedChecksums = append(gotUnpinnedChecksums, checksum)
+		return nil
+	}
+	specs := map[string]struct {
+		srcCodeIDs  []uint64
+		mockFn      func(checksum wasmvm.Checksum) error
+		expUnpinned []wasmvm.Checksum
+		expErr      bool
+	}{
+		"unpin one": {
+			srcCodeIDs: []uint64{hackatom.CodeID},
+			mockFn:     checksumCollector,
+		},
+		"unpin multiple": {
+			srcCodeIDs: []uint64{hackatom.CodeID, otherContract.CodeID},
+			mockFn:     checksumCollector,
+		},
+		"unpin same code id": {
+			srcCodeIDs: []uint64{hackatom.CodeID, hackatomDuplicate.CodeID},
+			mockFn:     checksumCollector,
+		},
+		"unpin non existing code id": {
+			srcCodeIDs: []uint64{999},
+			mockFn:     checksumCollector,
+			expErr:     true,
+		},
+		"unpin empty code id list": {
+			srcCodeIDs: []uint64{},
+			mockFn:     checksumCollector,
+			expErr:     true,
+		},
+		"wasmvm failed with error": {
+			srcCodeIDs: []uint64{hackatom.CodeID},
+			mockFn: func(_ wasmvm.Checksum) error {
+				return errors.New("test, ignore")
+			},
+			expErr: true,
+		},
+	}
+	parentCtx := ctx
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			gotUnpinnedChecksums = nil
+			ctx, _ := parentCtx.CacheContext()
+			mock.UnpinFn = spec.mockFn
+			proposal := types.UnpinCodesProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				CodeIDs:     spec.srcCodeIDs,
+			}
+
+			// when stored
+			storedProposal, gotErr := govKeeper.SubmitProposal(ctx, &proposal)
+			if spec.expErr {
+				require.Error(t, gotErr)
+				return
+			}
+			require.NoError(t, gotErr)
+
+			// and proposal execute
+			handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
+			gotErr = handler(ctx, storedProposal.GetContent())
+			require.NoError(t, gotErr)
+
+			// then
+			for i := range spec.srcCodeIDs {
+				c := wasmKeeper.GetCodeInfo(ctx, spec.srcCodeIDs[i])
+				require.Equal(t, wasmvm.Checksum(c.CodeHash), gotUnpinnedChecksums[i])
+			}
 		})
 	}
 }

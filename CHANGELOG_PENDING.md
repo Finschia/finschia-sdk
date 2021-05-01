@@ -22,6 +22,7 @@ Write the changes made after branching from cosmos-sdk v0.42.1.
 * (global) [\#97](https://github.com/line/lbm-sdk/pull/97) Add codespace to response
 * (global) [\#97](https://github.com/line/lbm-sdk/pull/97) Add codespace to query error
 * (config) [\#114](https://github.com/line/lbm-sdk/pull/114) Add idle-timeout to rest server and rpc server config
+* (x/wasm) [\#127](https://github.com/line/lbm-sdk/pull/127) Add wasm with Staragate migration completed.
 
 ### IMPROVEMENTS
 

@@ -1,39 +1,38 @@
 #!/usr/bin/env bash
 set -ex
 
-LINKCLI=${LINKCLI:-linkwasmcli}
 LINKD=${LINKD:-linkwasmd}
 
 # initialize
-rm -rf ~/.linkwasmd ~/.linkwasmcli
+rm -rf ~/.linkwasmd
 
 # Configure your CLI to eliminate need for chain-id flag
-${LINKCLI} config chain-id linkwasm
-${LINKCLI} config output json
-${LINKCLI} config indent true
-${LINKCLI} config trust-node true
-${LINKCLI} config keyring-backend test
+# ${LINKD} config chain-id linkwasm
+# ${LINKD} config output json
+# ${LINKD} config indent true
+# ${LINKD} config trust-node true
+# ${LINKD} config keyring-backend test
 
 # Initialize configuration files and genesis file
 # moniker is the name of your node
 ${LINKD} init solo --chain-id linkwasm
 
-${LINKCLI} keys add jack
-${LINKCLI} keys add alice
-${LINKCLI} keys add bob
-${LINKCLI} keys add rinah
-${LINKCLI} keys add sam
-${LINKCLI} keys add evelyn
+${LINKD} keys add jack --keyring-backend=test
+${LINKD} keys add alice --keyring-backend=test
+${LINKD} keys add bob --keyring-backend=test
+${LINKD} keys add rinah --keyring-backend=test
+${LINKD} keys add sam --keyring-backend=test
+${LINKD} keys add evelyn --keyring-backend=test
 
 # Add both accounts, with coins to the genesis file
-${LINKD} add-genesis-account $(${LINKCLI} keys show jack -a) 1000link,100000000stake
-${LINKD} add-genesis-account $(${LINKCLI} keys show alice -a) 1000link,100000000stake
-${LINKD} add-genesis-account $(${LINKCLI} keys show bob -a) 1000link,100000000stake
-${LINKD} add-genesis-account $(${LINKCLI} keys show rinah -a) 1000link,100000000stake
-${LINKD} add-genesis-account $(${LINKCLI} keys show sam -a) 1000link,100000000stake
-${LINKD} add-genesis-account $(${LINKCLI} keys show evelyn -a) 1000link,100000000stake
+${LINKD} add-genesis-account $(${LINKD} keys show jack -a --keyring-backend=test) 1000link,100000000stake
+${LINKD} add-genesis-account $(${LINKD} keys show alice -a --keyring-backend=test) 1000link,100000000stake
+${LINKD} add-genesis-account $(${LINKD} keys show bob -a --keyring-backend=test) 1000link,100000000stake
+${LINKD} add-genesis-account $(${LINKD} keys show rinah -a --keyring-backend=test) 1000link,100000000stake
+${LINKD} add-genesis-account $(${LINKD} keys show sam -a --keyring-backend=test) 1000link,100000000stake
+${LINKD} add-genesis-account $(${LINKD} keys show evelyn -a --keyring-backend=test) 1000link,100000000stake
 
-${LINKD} --keyring-backend=test gentx --name jack
+${LINKD} gentx jack 100000000stake --keyring-backend=test --chain-id=linkwasm
 
 ${LINKD} collect-gentxs
 

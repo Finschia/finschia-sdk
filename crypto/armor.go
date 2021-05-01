@@ -15,9 +15,9 @@ import (
 )
 
 const (
-	blockTypePrivKey = "TENDERMINT PRIVATE KEY"
-	blockTypeKeyInfo = "TENDERMINT KEY INFO"
-	blockTypePubKey  = "TENDERMINT PUBLIC KEY"
+	blockTypePrivKey = "OSTRACON PRIVATE KEY"
+	blockTypeKeyInfo = "OSTRACON KEY INFO"
+	blockTypePubKey  = "OSTRACON PUBLIC KEY"
 
 	defaultAlgo = "secp256k1"
 

@@ -2,8 +2,10 @@ package ante
 
 import (
 	"bytes"
+	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"sync"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
@@ -165,12 +167,14 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 type SigVerificationDecorator struct {
 	ak              AccountKeeper
 	signModeHandler authsigning.SignModeHandler
+	txHashCache     sync.Map
 }
 
-func NewSigVerificationDecorator(ak AccountKeeper, signModeHandler authsigning.SignModeHandler) SigVerificationDecorator {
-	return SigVerificationDecorator{
+func NewSigVerificationDecorator(ak AccountKeeper, signModeHandler authsigning.SignModeHandler) *SigVerificationDecorator {
+	return &SigVerificationDecorator{
 		ak:              ak,
 		signModeHandler: signModeHandler,
+		txHashCache:     sync.Map{},
 	}
 }
 
@@ -195,7 +199,8 @@ func OnlyLegacyAminoSigners(sigData signing.SignatureData) bool {
 	}
 }
 
-func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	// TODO https://github.com/line/link/issues/1136
 	// no need to verify signatures on recheck tx
 	if ctx.IsReCheckTx() {
 		return next(ctx, tx, simulate)
@@ -219,15 +224,30 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 		return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "invalid number of signer;  expected: %d, got %d", len(signerAddrs), len(sigs))
 	}
 
+	newSigKeys := make([]string, 0, len(sigs))
+	defer func() {
+		// remove txHashCash if got an error
+		if err != nil {
+			for _, sigKey := range newSigKeys {
+				svd.txHashCache.Delete(sigKey)
+			}
+		}
+	}()
+
 	for i, sig := range sigs {
-		acc, err := GetSignerAcc(ctx, svd.ak, signerAddrs[i])
+		var acc types.AccountI
+		acc, err = GetSignerAcc(ctx, svd.ak, signerAddrs[i])
 		if err != nil {
 			return ctx, err
 		}
 
+		if simulate {
+			continue
+		}
+
 		// retrieve pubkey
 		pubKey := acc.GetPubKey()
-		if !simulate && pubKey == nil {
+		if pubKey == nil {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, "pubkey on account is not set")
 		}
 
@@ -259,24 +279,80 @@ func (svd SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 			Sequence:      acc.GetSequence(),
 		}
 
-		if !simulate {
-			err := authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
-			if err != nil {
-				var errMsg string
-				if onlyAminoSigners {
-					// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
-					// and therefore communicate sequence number as a potential cause of error.
-					errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d), sequence (%d) and chain-id (%s)", accNum, acc.GetSequence(), chainID)
-				} else {
-					errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
-				}
-				return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
+		if !genesis {
+			sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
+			// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
+			txHash := sha256.Sum256(ctx.TxBytes())
+			stored := false
 
+			stored, err = svd.verifySignatureWithCache(ctx, pubKey, signerData, sig.Data, tx, sigKey, txHash[:])
+
+			if stored {
+				newSigKeys = append(newSigKeys, sigKey)
 			}
+		} else {
+			err = authsigning.VerifySignature(pubKey, signerData, sig.Data, svd.signModeHandler, tx)
+		}
+
+		if err != nil {
+			var errMsg string
+			if onlyAminoSigners {
+				// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
+				// and therefore communicate sequence number as a potential cause of error.
+				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d), sequence (%d) and chain-id (%s)", accNum, acc.GetSequence(), chainID)
+			} else {
+				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
+			}
+			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
 		}
 	}
 
 	return next(ctx, tx, simulate)
+}
+
+func (svd *SigVerificationDecorator) verifySignatureWithCache(
+	ctx sdk.Context,
+	pubKey cryptotypes.PubKey,
+	signerData authsigning.SignerData,
+	sigData signing.SignatureData,
+	tx sdk.Tx,
+	sigKey string,
+	txHash []byte,
+) (stored bool, err error) {
+	switch {
+	case ctx.IsCheckTx() && !ctx.IsReCheckTx(): // CheckTx
+		err = authsigning.VerifySignature(pubKey, signerData, sigData, svd.signModeHandler, tx)
+		if err == nil {
+			svd.txHashCache.Store(sigKey, txHash)
+			stored = true
+		}
+
+	case ctx.IsReCheckTx(): // ReCheckTx
+		verified, exist := svd.checkCache(sigKey, txHash)
+		if !verified {
+			if exist {
+				svd.txHashCache.Delete(sigKey)
+			}
+			err = fmt.Errorf("unable to verify signature")
+		}
+
+	default: // DeliverTx
+		verified, exist := svd.checkCache(sigKey, txHash)
+		if exist {
+			svd.txHashCache.Delete(sigKey)
+		}
+		if !verified {
+			err = authsigning.VerifySignature(pubKey, signerData, sigData, svd.signModeHandler, tx)
+		}
+	}
+
+	return stored, err
+}
+
+func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (verified, exist bool) {
+	cached, exist := svd.txHashCache.Load(sigKey)
+	verified = exist && bytes.Equal(cached.([]byte), txHash)
+	return verified, exist
 }
 
 // IncrementSequenceDecorator handles incrementing sequences of all signers.

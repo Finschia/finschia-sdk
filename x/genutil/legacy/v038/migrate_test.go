@@ -16,7 +16,7 @@ import (
 var genAccountsState = []byte(`[
 		{
 			"account_number": "0",
-			"address": "cosmos1q7380u26f7ntke3facjmynajs4umlr329vr4ja",
+			"address": "link1vu6qhekl7ve5gk5exzy36tauyrk96mkphrf5u8",
 			"coins": [
 				{
 					"amount": "1000000000",
@@ -38,7 +38,7 @@ var genAccountsState = []byte(`[
 		},
 		{
 			"account_number": "0",
-			"address": "cosmos1tygms3xhhs3yv487phx3dw4a95jn7t7lpm470r",
+			"address": "link1tygms3xhhs3yv487phx3dw4a95jn7t7l544u5t",
 			"coins": [],
 			"delegated_free": [],
 			"delegated_vesting": [],
@@ -54,7 +54,7 @@ var genAccountsState = []byte(`[
 		},
 		{
 			"account_number": "0",
-			"address": "cosmos1m3h30wlvsf8llruxtpukdvsy0km2kum8g38c8q",
+			"address": "link1m3h30wlvsf8llruxtpukdvsy0km2kum8al86ug",
 			"coins": [],
 			"delegated_free": [],
 			"delegated_vesting": [],
@@ -82,16 +82,16 @@ var genAuthState = []byte(`{
 var genStakingState = []byte(`{
   "delegations": [
     {
-      "delegator_address": "cosmos1q7380u26f7ntke3facjmynajs4umlr329vr4ja",
+      "delegator_address": "link1vu6qhekl7ve5gk5exzy36tauyrk96mkphrf5u8",
       "shares": "100000000.000000000000000000",
-      "validator_address": "cosmosvaloper1q7380u26f7ntke3facjmynajs4umlr32qchq7w"
+      "validator_address": "linkvaloper19ex3qzs2yy73xjfth9dgxxah6pqjdyjtckzx7y"
     }
   ],
   "exported": true,
   "last_total_power": "400",
   "last_validator_powers": [
     {
-      "Address": "cosmosvaloper1q7380u26f7ntke3facjmynajs4umlr32qchq7w",
+      "Address": "linkvaloper1twsfmuj28ndph54k4nw8crwu8h9c8mh33lyrp8",
       "Power": "100"
     }
   ],
@@ -113,7 +113,7 @@ var genStakingState = []byte(`{
         },
         "update_time": "2019-09-24T23:11:22.9692177Z"
       },
-      "consensus_pubkey": "cosmosvalconspub1zcjduepqygqrt0saxf76lhsmp56rx52j0acdxyjvcdkq3tqvwrsmmm0ke28q36kh9h",
+      "consensus_pubkey": "linkvalconspub1cqmsrdepqt2qvn9hxdpnqpwp33hw4znk5stakfp67auztzrqhs5xxvfah6fag55tu22",
       "delegator_shares": "100000000.000000000000000000",
       "description": {
         "details": "",
@@ -123,7 +123,7 @@ var genStakingState = []byte(`{
       },
       "jailed": false,
       "min_self_delegation": "1",
-      "operator_address": "cosmosvaloper1q7380u26f7ntke3facjmynajs4umlr32qchq7w",
+      "operator_address": "linkvaloper19ex3qzs2yy73xjfth9dgxxah6pqjdyjtckzx7y",
       "status": 2,
       "tokens": "100000000",
       "unbonding_height": "0",

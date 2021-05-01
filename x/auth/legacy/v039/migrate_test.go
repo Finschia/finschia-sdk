@@ -65,7 +65,7 @@ func TestMigrate(t *testing.T) {
     {
       "type": "lbm-sdk/Account",
       "value": {
-        "address": "cosmos1j7skdhh9raxdmfhmcy2gxz8hgn0jnhfmujjsfe",
+        "address": "link1j7skdhh9raxdmfhmcy2gxz8hgn0jnhfmfujjj3",
         "coins": [
           {
             "denom": "stake",
@@ -73,7 +73,7 @@ func TestMigrate(t *testing.T) {
           }
         ],
         "public_key": {
-          "type": "tendermint/PubKeyEd25519",
+          "type": "ostracon/PubKeyEd25519",
           "value": "eB0AcLMLKFRNFfh4XAAMstexfAIUQQCDnfjLZ2KJg+A="
         },
         "account_number": "1",
@@ -83,7 +83,7 @@ func TestMigrate(t *testing.T) {
     {
       "type": "lbm-sdk/Account",
       "value": {
-        "address": "cosmos1v57fx2l2rt6ehujuu99u2fw05779m5e2ux4z2h",
+        "address": "link1v57fx2l2rt6ehujuu99u2fw05779m5e2fg4q3l",
         "coins": [
           {
             "denom": "stake",
@@ -91,7 +91,7 @@ func TestMigrate(t *testing.T) {
           }
         ],
         "public_key": {
-          "type": "tendermint/PubKeySecp256k1",
+          "type": "ostracon/PubKeySecp256k1",
           "value": "AruDygh5HprMOpHOEato85dLgAsybMJVyxBGUa3KuWCr"
         },
         "account_number": "2",
