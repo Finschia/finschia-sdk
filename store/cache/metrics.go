@@ -15,9 +15,10 @@ const (
 
 // Metrics contains metrics exposed by this package.
 type Metrics struct {
-	// Time between BeginBlock and EndBlock.
-	InterBlockCacheHits   metrics.Counter
-	InterBlockCacheMisses metrics.Counter
+	InterBlockCacheHits    metrics.Counter
+	InterBlockCacheMisses  metrics.Counter
+	InterBlockCacheEntries metrics.Gauge
+	InterBlockCacheBytes   metrics.Gauge
 }
 
 // PrometheusMetrics returns Metrics build using Prometheus client library.
@@ -41,14 +42,28 @@ func PrometheusMetrics(namespace string, storeName string, labelsAndValues ...st
 			Name:      storeName + "_inter_block_cache_misses",
 			Help:      "Cache misses of the inter block cache",
 		}, labels).With(labelsAndValues...),
+		InterBlockCacheEntries: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      storeName + "_inter_block_cache_entries",
+			Help:      "Cache entry count",
+		}, labels).With(labelsAndValues...),
+		InterBlockCacheBytes: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      storeName + "_inter_block_cache_bytes_size",
+			Help:      "Cache bytes size",
+		}, labels).With(labelsAndValues...),
 	}
 }
 
 // NopMetrics returns no-op Metrics.
 func NopMetrics() *Metrics {
 	return &Metrics{
-		InterBlockCacheHits:   discard.NewCounter(),
-		InterBlockCacheMisses: discard.NewCounter(),
+		InterBlockCacheHits:    discard.NewCounter(),
+		InterBlockCacheMisses:  discard.NewCounter(),
+		InterBlockCacheEntries: discard.NewGauge(),
+		InterBlockCacheBytes:   discard.NewGauge(),
 	}
 }
 

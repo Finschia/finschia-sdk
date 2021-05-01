@@ -109,7 +109,10 @@ func (ckv *CommitKVStoreCache) Get(key []byte) []byte {
 	ckv.metrics.InterBlockCacheMisses.Add(1)
 	value := ckv.CommitKVStore.Get(key)
 	ckv.cache.Set(key, value)
-
+	stats := fastcache.Stats{}
+	ckv.cache.UpdateStats(&stats)
+	ckv.metrics.InterBlockCacheEntries.Set(float64(stats.EntriesCount))
+	ckv.metrics.InterBlockCacheBytes.Set(float64(stats.BytesSize))
 	return value
 }
 
