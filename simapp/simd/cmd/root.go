@@ -11,6 +11,7 @@ import (
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/client"
@@ -158,7 +159,8 @@ func (a appCreator) newApp(logger log.Logger, db tmdb.DB, traceStore io.Writer, 
 	var cache sdk.MultiStorePersistentCache
 
 	if cast.ToBool(appOpts.Get(server.FlagInterBlockCache)) {
-		cache = store.NewCommitKVStoreCacheManager()
+		cacheMetricsProvider := baseapp.MetricsProvider(cast.ToBool(viper.GetBool(server.FlagPrometheus)))
+		cache = store.NewCommitKVStoreCacheManager(cacheMetricsProvider)
 	}
 
 	skipUpgradeHeights := make(map[int64]bool)

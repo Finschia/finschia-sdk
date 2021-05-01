@@ -42,6 +42,7 @@ const (
 	FlagUnsafeSkipUpgrades = "unsafe-skip-upgrades"
 	FlagTrace              = "trace"
 	FlagInvCheckPeriod     = "inv-check-period"
+	FlagPrometheus         = "prometheus"
 
 	FlagPruning           = "pruning"
 	FlagPruningKeepRecent = "pruning-keep-recent"
@@ -152,6 +153,8 @@ which accepts a path for the resulting pprof file.
 
 	cmd.Flags().Uint64(FlagStateSyncSnapshotInterval, 0, "State sync snapshot interval")
 	cmd.Flags().Uint32(FlagStateSyncSnapshotKeepRecent, 2, "State sync snapshot to keep")
+
+	cmd.Flags().Bool(FlagPrometheus, false, "Enable prometheus metric for app")
 
 	// add support for all Ostracon-specific command line options
 	ostcmd.AddNodeFlags(cmd)

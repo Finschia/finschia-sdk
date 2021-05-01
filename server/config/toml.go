@@ -70,6 +70,10 @@ inter-block-cache = {{ .BaseConfig.InterBlockCache }}
 # ["message.sender", "message.recipient"]
 index-events = {{ .BaseConfig.IndexEvents }}
 
+# When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
+# It works when tendermint's prometheus option (config.toml) is set to true.
+prometheus = {{ .BaseConfig.Prometheus }}
+
 ###############################################################################
 ###                         Telemetry Configuration                         ###
 ###############################################################################

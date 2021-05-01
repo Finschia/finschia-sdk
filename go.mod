@@ -16,6 +16,7 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/ledger-cosmos-go v0.11.1
 	github.com/enigmampc/btcutil v1.0.3-0.20200723161021-e2fb6adb2a25
+	github.com/go-kit/kit v0.10.0
 	github.com/gogo/gateway v1.1.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/mock v1.4.4
@@ -25,7 +26,6 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/hashicorp/golang-lru v0.5.4
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20210419041411-7de35b5f1306
 	github.com/line/ostracon v0.34.9-0.20210419031811-5254cabf172e
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/line/lbm-sdk/v2/store/cache"
 	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/codec/types"
@@ -232,4 +233,12 @@ func (app *BaseApp) SetInterfaceRegistry(registry types.InterfaceRegistry) {
 	app.interfaceRegistry = registry
 	app.grpcQueryRouter.SetInterfaceRegistry(registry)
 	app.msgServiceRouter.SetInterfaceRegistry(registry)
+}
+
+func MetricsProvider(prometheus bool) cache.MetricsProvider {
+	namespace := "app"
+	if prometheus {
+		return cache.PrometheusMetricsProvider(namespace)
+	}
+	return cache.NopMetricsProvider()
 }

@@ -65,6 +65,11 @@ type BaseConfig struct {
 	// IndexEvents defines the set of events in the form {eventType}.{attributeKey},
 	// which informs Tendermint what to index. If empty, all events will be indexed.
 	IndexEvents []string `mapstructure:"index-events"`
+
+
+	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
+	// It works when tendermint's prometheus option (config.toml) is set to true.
+	Prometheus bool `mapstructure:"prometheus"`
 }
 
 // APIConfig defines the API listener configuration.
