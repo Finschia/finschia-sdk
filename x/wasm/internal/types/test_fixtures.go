@@ -111,6 +111,7 @@ func ContractInfoFixture(mutators ...func(*ContractInfo)) ContractInfo {
 		Creator: anyAddress,
 		Label:   "any",
 		Created: &AbsoluteTxPosition{BlockHeight: 1, TxIndex: 1},
+		Status:  ContractStatusActive,
 	}
 
 	for _, m := range mutators {
@@ -288,6 +289,21 @@ func ClearAdminProposalFixture(mutators ...func(p *ClearAdminProposal)) *ClearAd
 		Title:       "Foo",
 		Description: "Bar",
 		Contract:    contractAddr,
+	}
+	for _, m := range mutators {
+		m(p)
+	}
+	return p
+}
+
+func UpdateContractStatusProposalFixture(mutators ...func(p *UpdateContractStatusProposal)) *UpdateContractStatusProposal {
+	const contractAddr = "link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8"
+
+	p := &UpdateContractStatusProposal{
+		Title:       "Foo",
+		Description: "Bar",
+		Contract:    contractAddr,
+		Status:      ContractStatusActive,
 	}
 	for _, m := range mutators {
 		m(p)

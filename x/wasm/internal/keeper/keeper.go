@@ -127,6 +127,12 @@ func (k Keeper) getInstantiateAccessConfig(ctx sdk.Context) types.AccessType {
 	return a
 }
 
+func (k Keeper) getContractStatusAccessConfig(ctx sdk.Context) types.AccessConfig {
+	var a types.AccessConfig
+	k.paramSpace.Get(ctx, types.ParamStoreKeyContractStatusAccess, &a)
+	return a
+}
+
 func (k Keeper) getMaxWasmCodeSize(ctx sdk.Context) uint64 {
 	var a uint64
 	k.paramSpace.Get(ctx, types.ParamStoreKeyMaxWasmCodeSize, &a)
@@ -289,7 +295,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 
 	// persist instance first
 	createdAt := types.NewAbsoluteTxPosition(ctx)
-	contractInfo := types.NewContractInfo(codeID, creator, admin, label, createdAt)
+	contractInfo := types.NewContractInfo(codeID, creator, admin, label, createdAt, types.ContractStatusActive)
 
 	// check for IBC flag
 	report, err := k.wasmer.AnalyzeCode(codeInfo.CodeHash)
@@ -323,6 +329,9 @@ func (k Keeper) Execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
 		return nil, err
+	}
+	if contractInfo.Status != types.ContractStatusActive {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
 	}
 
 	if !k.IsPinnedCode(ctx, contractInfo.CodeID) {
@@ -376,6 +385,9 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
+	}
+	if contractInfo.Status != types.ContractStatusActive {
+		return nil, sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not migrate")
@@ -534,10 +546,34 @@ func (k Keeper) ClearContractAdmin(ctx sdk.Context, contractAddress sdk.AccAddre
 	return k.setContractAdmin(ctx, contractAddress, caller, nil, k.authZPolicy)
 }
 
+// UpdateContractStatus sets a new status of the contract on the ContractInfo.
+func (k Keeper) UpdateContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus) error {
+	return k.updateContractStatus(ctx, contractAddress, caller, status, k.authZPolicy)
+}
+
+func (k Keeper) updateContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error {
+	if !authZ.CanUpdateContractStatus(k.getContractStatusAccessConfig(ctx), caller) {
+		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not update contract status")
+	}
+
+	contractInfo := k.GetContractInfo(ctx, contractAddress)
+	if contractInfo == nil {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
+	}
+	if contractInfo.Status != status {
+		contractInfo.Status = status
+		k.storeContractInfo(ctx, contractAddress, contractInfo)
+	}
+	return nil
+}
+
 func (k Keeper) setContractAdmin(ctx sdk.Context, contractAddress, caller, newAdmin sdk.AccAddress, authZ AuthorizationPolicy) error {
 	contractInfo := k.GetContractInfo(ctx, contractAddress)
 	if contractInfo == nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "unknown contract")
+	}
+	if contractInfo.Status != types.ContractStatusActive {
+		return sdkerrors.Wrap(types.ErrInvalid, "inactive contract")
 	}
 	if !authZ.CanModifyContract(contractInfo.AdminAddr(), caller) {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not modify contract")
