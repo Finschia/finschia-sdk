@@ -13,13 +13,14 @@ import (
 type ProposalType string
 
 const (
-	ProposalTypeStoreCode           ProposalType = "StoreCode"
-	ProposalTypeInstantiateContract ProposalType = "InstantiateContract"
-	ProposalTypeMigrateContract     ProposalType = "MigrateContract"
-	ProposalTypeUpdateAdmin         ProposalType = "UpdateAdmin"
-	ProposalTypeClearAdmin          ProposalType = "ClearAdmin"
-	ProposalTypePinCodes            ProposalType = "PinCodes"
-	ProposalTypeUnpinCodes          ProposalType = "UnpinCodes"
+	ProposalTypeStoreCode            ProposalType = "StoreCode"
+	ProposalTypeInstantiateContract  ProposalType = "InstantiateContract"
+	ProposalTypeMigrateContract      ProposalType = "MigrateContract"
+	ProposalTypeUpdateAdmin          ProposalType = "UpdateAdmin"
+	ProposalTypeClearAdmin           ProposalType = "ClearAdmin"
+	ProposalTypePinCodes             ProposalType = "PinCodes"
+	ProposalTypeUnpinCodes           ProposalType = "UnpinCodes"
+	ProposalTypeUpdateContractStatus ProposalType = "UpdateContractStatus"
 )
 
 // DisableAllProposals contains no wasm gov types.
@@ -34,6 +35,7 @@ var EnableAllProposals = []ProposalType{
 	ProposalTypeClearAdmin,
 	ProposalTypePinCodes,
 	ProposalTypeUnpinCodes,
+	ProposalTypeUpdateContractStatus,
 }
 
 // ConvertToProposals maps each key to a ProposalType and returns a typed list.
@@ -62,6 +64,7 @@ func init() { // register new content types with the sdk
 	govtypes.RegisterProposalType(string(ProposalTypeClearAdmin))
 	govtypes.RegisterProposalType(string(ProposalTypePinCodes))
 	govtypes.RegisterProposalType(string(ProposalTypeUnpinCodes))
+	govtypes.RegisterProposalType(string(ProposalTypeUpdateContractStatus))
 	govtypes.RegisterProposalTypeCodec(StoreCodeProposal{}, "wasm/StoreCodeProposal")
 	govtypes.RegisterProposalTypeCodec(InstantiateContractProposal{}, "wasm/InstantiateContractProposal")
 	govtypes.RegisterProposalTypeCodec(MigrateContractProposal{}, "wasm/MigrateContractProposal")
@@ -69,6 +72,7 @@ func init() { // register new content types with the sdk
 	govtypes.RegisterProposalTypeCodec(ClearAdminProposal{}, "wasm/ClearAdminProposal")
 	govtypes.RegisterProposalTypeCodec(PinCodesProposal{}, "wasm/PinCodesProposal")
 	govtypes.RegisterProposalTypeCodec(UnpinCodesProposal{}, "wasm/UnpinCodesProposal")
+	govtypes.RegisterProposalTypeCodec(UpdateContractStatusProposal{}, "wasm/UpdateContractStatusProposal")
 }
 
 // ProposalRoute returns the routing key of a parameter change proposal.
