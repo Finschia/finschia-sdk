@@ -367,7 +367,8 @@ func (app *BaseApp) setCheckState(header ostproto.Header) {
 	defer app.checkStateMtx.Unlock()
 
 	ctx := sdk.NewContext(ms, header, true, app.logger).
-		WithMinGasPrices(app.minGasPrices)
+		WithMinGasPrices(app.minGasPrices).
+		WithVoteInfos(app.voteInfos)
 
 	app.checkState = &state{
 		ms:  ms,
@@ -528,11 +529,8 @@ func (app *BaseApp) getRunContextForTx(txBytes []byte, simulate bool) sdk.Contex
 }
 
 func (app *BaseApp) getContextForTx(s *state, txBytes []byte) sdk.Context {
-	ctx := s.ctx.
-		WithTxBytes(txBytes).
-		WithVoteInfos(app.voteInfos)
-
-	return ctx.WithConsensusParams(app.GetConsensusParams(ctx))
+	ctx := s.ctx.WithTxBytes(txBytes)
+	return ctx
 }
 
 // cacheTxContext returns a new context based off of the provided context with
