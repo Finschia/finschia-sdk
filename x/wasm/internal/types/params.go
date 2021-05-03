@@ -33,10 +33,12 @@ const (
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
 var ParamStoreKeyInstantiateAccess = []byte("instantiateAccess")
+var ParamStoreKeyContractStatusAccess = []byte("contractStatusAccess")
 var ParamStoreKeyMaxWasmCodeSize = []byte("maxWasmCodeSize")
 var ParamStoreKeyGasMultiplier = []byte("gasMultiplier")
 var ParamStoreKeyInstanceCost = []byte("instanceCost")
 var ParamStoreKeyCompileCost = []byte("compileCost")
+
 var AllAccessTypes = []AccessType{
 	AccessTypeNobody,
 	AccessTypeOnlyAddress,
@@ -97,9 +99,10 @@ func (a AccessConfig) Equals(o AccessConfig) bool {
 }
 
 var (
-	DefaultUploadAccess = AllowEverybody
-	AllowEverybody      = AccessConfig{Permission: AccessTypeEverybody}
-	AllowNobody         = AccessConfig{Permission: AccessTypeNobody}
+	DefaultUploadAccess         = AllowEverybody
+	DefaultContractStatusAccess = AllowNobody
+	AllowEverybody              = AccessConfig{Permission: AccessTypeEverybody}
+	AllowNobody                 = AccessConfig{Permission: AccessTypeNobody}
 )
 
 // ParamKeyTable returns the parameter key table.
@@ -113,6 +116,7 @@ func DefaultParams() Params {
 		CodeUploadAccess:             AllowEverybody,
 		InstantiateDefaultPermission: AccessTypeEverybody,
 		MaxWasmCodeSize:              DefaultMaxWasmCodeSize,
+		ContractStatusAccess:         DefaultContractStatusAccess,
 		GasMultiplier:                DefaultGasMultiplier,
 		InstanceCost:                 DefaultInstanceCost,
 		CompileCost:                  DefaultCompileCost,
@@ -129,6 +133,7 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	return paramtypes.ParamSetPairs{
 		paramtypes.NewParamSetPair(ParamStoreKeyUploadAccess, &p.CodeUploadAccess, validateAccessConfig),
 		paramtypes.NewParamSetPair(ParamStoreKeyInstantiateAccess, &p.InstantiateDefaultPermission, validateAccessType),
+		paramtypes.NewParamSetPair(ParamStoreKeyContractStatusAccess, &p.ContractStatusAccess, validateAccessConfig),
 		paramtypes.NewParamSetPair(ParamStoreKeyMaxWasmCodeSize, &p.MaxWasmCodeSize, validateMaxWasmCodeSize),
 		paramtypes.NewParamSetPair(ParamStoreKeyGasMultiplier, &p.GasMultiplier, validateGasMultiplier),
 		paramtypes.NewParamSetPair(ParamStoreKeyInstanceCost, &p.InstanceCost, validateInstanceCost),
@@ -143,6 +148,9 @@ func (p Params) ValidateBasic() error {
 	}
 	if err := validateAccessConfig(p.CodeUploadAccess); err != nil {
 		return errors.Wrap(err, "upload access")
+	}
+	if err := validateAccessConfig(p.ContractStatusAccess); err != nil {
+		return errors.Wrap(err, "contract status access")
 	}
 	if err := validateMaxWasmCodeSize(p.MaxWasmCodeSize); err != nil {
 		return errors.Wrap(err, "max wasm code size")

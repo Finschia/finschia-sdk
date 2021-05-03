@@ -9,11 +9,10 @@ import (
 	"testing"
 
 	wasmvm "github.com/CosmWasm/wasmvm"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
-
 	sdk "github.com/line/lbm-sdk/v2/types"
 	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
+	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -25,6 +24,7 @@ func TestStoreCodeProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
+		ContractStatusAccess:         types.DefaultContractStatusAccess,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		GasMultiplier:                types.DefaultGasMultiplier,
 		InstanceCost:                 types.DefaultInstanceCost,
@@ -69,6 +69,7 @@ func TestInstantiateProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
+		ContractStatusAccess:         types.DefaultContractStatusAccess,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		GasMultiplier:                types.DefaultGasMultiplier,
 		InstanceCost:                 types.DefaultInstanceCost,
@@ -128,6 +129,7 @@ func TestMigrateProposal(t *testing.T) {
 	wasmKeeper.setParams(ctx, types.Params{
 		CodeUploadAccess:             types.AllowNobody,
 		InstantiateDefaultPermission: types.AccessTypeNobody,
+		ContractStatusAccess:         types.DefaultContractStatusAccess,
 		MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 		GasMultiplier:                types.DefaultGasMultiplier,
 		InstanceCost:                 types.DefaultInstanceCost,
@@ -263,6 +265,7 @@ func TestAdminProposals(t *testing.T) {
 			wasmKeeper.setParams(ctx, types.Params{
 				CodeUploadAccess:             types.AllowNobody,
 				InstantiateDefaultPermission: types.AccessTypeNobody,
+				ContractStatusAccess:         types.DefaultContractStatusAccess,
 				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
 				GasMultiplier:                types.DefaultGasMultiplier,
 				InstanceCost:                 types.DefaultInstanceCost,
@@ -533,6 +536,72 @@ func TestUnpinCodesProposal(t *testing.T) {
 				c := wasmKeeper.GetCodeInfo(ctx, spec.srcCodeIDs[i])
 				require.Equal(t, wasmvm.Checksum(c.CodeHash), gotUnpinnedChecksums[i])
 			}
+		})
+	}
+}
+
+func TestUpdateContractStatusProposals(t *testing.T) {
+	var contractAddr = contractAddress(1, 1)
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	specs := map[string]struct {
+		state       types.ContractInfo
+		srcProposal govtypes.Content
+		expStatus   types.ContractStatus
+	}{
+		"update with different Status": {
+			state: types.ContractInfoFixture(),
+			srcProposal: &types.UpdateContractStatusProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				Contract:    contractAddr.String(),
+				Status:      types.ContractStatusInactive,
+			},
+			expStatus: types.ContractStatusInactive,
+		},
+		"update with old Status": {
+			state: types.ContractInfoFixture(),
+			srcProposal: &types.UpdateContractStatusProposal{
+				Title:       "Foo",
+				Description: "Bar",
+				Contract:    contractAddr.String(),
+				Status:      types.ContractStatusActive,
+			},
+			expStatus: types.ContractStatusActive,
+		},
+	}
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
+			govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
+			wasmKeeper.setParams(ctx, types.Params{
+				CodeUploadAccess:             types.AllowNobody,
+				InstantiateDefaultPermission: types.AccessTypeNobody,
+				ContractStatusAccess:         types.AllowNobody,
+				MaxWasmCodeSize:              types.DefaultMaxWasmCodeSize,
+				GasMultiplier:                types.DefaultGasMultiplier,
+				InstanceCost:                 types.DefaultInstanceCost,
+				CompileCost:                  types.DefaultCompileCost,
+			})
+
+			codeInfoFixture := types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode))
+			require.NoError(t, wasmKeeper.importCode(ctx, 1, codeInfoFixture, wasmCode))
+
+			require.NoError(t, wasmKeeper.importContract(ctx, contractAddr, &spec.state, []types.Model{}))
+			// when stored
+			storedProposal, err := govKeeper.SubmitProposal(ctx, spec.srcProposal)
+			require.NoError(t, err)
+
+			// and execute proposal
+			handler := govKeeper.Router().GetRoute(storedProposal.ProposalRoute())
+			err = handler(ctx, storedProposal.GetContent())
+			require.NoError(t, err)
+
+			// then
+			cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)
+			require.NotNil(t, cInfo)
+			assert.Equal(t, spec.expStatus, cInfo.Status)
 		})
 	}
 }

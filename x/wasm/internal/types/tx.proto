@@ -15,7 +15,8 @@ service Msg {
   // Instantiate creates a new smart contract instance for the given code id.
   rpc InstantiateContract(MsgInstantiateContract) returns (MsgInstantiateContractResponse);
   // Store Wasm code and Instantiate a new contract
-  rpc StoreCodeAndInstantiateContract(MsgStoreCodeAndInstantiateContract) returns (MsgStoreCodeAndInstantiateContractResponse);
+  rpc StoreCodeAndInstantiateContract(MsgStoreCodeAndInstantiateContract)
+      returns (MsgStoreCodeAndInstantiateContractResponse);
   // Execute submits the given message data to a smart contract
   rpc ExecuteContract(MsgExecuteContract) returns (MsgExecuteContractResponse);
   // Migrate runs a code upgrade/ downgrade for a smart contract
@@ -24,6 +25,8 @@ service Msg {
   rpc UpdateAdmin(MsgUpdateAdmin) returns (MsgUpdateAdminResponse);
   // ClearAdmin removes any admin stored for a smart contract
   rpc ClearAdmin(MsgClearAdmin) returns (MsgClearAdminResponse);
+  // UpdateContractStatus sets a new status for a smart contract
+  rpc UpdateContractStatus(MsgUpdateContractStatus) returns (MsgUpdateContractStatusResponse);
 }
 
 // MsgStoreCode submit Wasm code to the system
@@ -162,3 +165,16 @@ message MsgClearAdmin {
 
 // MsgClearAdminResponse returns empty data
 message MsgClearAdminResponse {}
+
+// MsgUpdateContractStatus sets a new status for a smart contract
+message MsgUpdateContractStatus {
+  // Sender is the that actor that signed the messages
+  string sender = 1;
+  // Contract is the address of the smart contract
+  string contract = 2;
+  // Status to be set
+  ContractStatus status = 3;
+}
+
+// MsgUpdateContractStatusResponse returns empty data
+message MsgUpdateContractStatusResponse {}
