@@ -317,7 +317,7 @@ func (s *IntegrationTestSuite) TestQueryTxWithServiceMsg() {
 
 	s.Require().NoError(err)
 	var txRes sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &txRes))
+	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &txRes))
 	s.Require().Equal(uint32(0), txRes.Code)
 
 	s.Require().NoError(s.network.WaitForNextBlock())
@@ -470,7 +470,7 @@ func (s *IntegrationTestSuite) testQueryIBCTx(txRes sdk.TxResponse, cmd *cobra.C
 	s.Require().NoError(err)
 
 	var getTxRes txtypes.GetTxResponse
-	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(grpcJSON, &getTxRes))
+	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(grpcJSON, &getTxRes))
 	s.Require().Equal(getTxRes.Tx.Body.Memo, "foobar")
 
 	// generate broadcast only txn.
@@ -658,7 +658,7 @@ func (s *IntegrationTestSuite) TestLegacyMultisig() {
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	var txRes sdk.TxResponse
-	err = val1.ClientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &txRes)
+	err = val1.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &txRes)
 	s.Require().NoError(err)
 	s.Require().Equal(uint32(0), txRes.Code)
 

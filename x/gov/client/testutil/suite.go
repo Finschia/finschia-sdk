@@ -265,7 +265,7 @@ func (s *IntegrationTestSuite) TestCmdTally() {
 				s.Require().Error(err)
 			} else {
 				var tally types.TallyResult
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &tally), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &tally), out.String())
 				s.Require().Equal(tally, tc.expectedOutput)
 			}
 		})
@@ -356,7 +356,7 @@ func (s *IntegrationTestSuite) TestNewCmdSubmitProposal() {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), tc.respType), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), tc.respType), out.String())
 				txResp := tc.respType.(*sdk.TxResponse)
 				s.Require().Equal(tc.expectedCode, txResp.Code, out.String())
 			}
@@ -405,7 +405,7 @@ func (s *IntegrationTestSuite) TestCmdGetProposal() {
 			} else {
 				s.Require().NoError(err)
 				var proposal types.Proposal
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &proposal), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &proposal), out.String())
 				s.Require().Equal(title, proposal.GetTitle())
 			}
 		})
@@ -451,7 +451,7 @@ func (s *IntegrationTestSuite) TestCmdGetProposals() {
 				s.Require().NoError(err)
 				var proposals types.QueryProposalsResponse
 
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &proposals), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &proposals), out.String())
 				s.Require().Len(proposals.Proposals, 3)
 			}
 		})
@@ -497,7 +497,7 @@ func (s *IntegrationTestSuite) TestCmdQueryDeposits() {
 				s.Require().NoError(err)
 
 				var deposits types.QueryDepositsResponse
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &deposits), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &deposits), out.String())
 				s.Require().Len(deposits.Deposits, 1)
 			}
 		})
@@ -553,7 +553,7 @@ func (s *IntegrationTestSuite) TestCmdQueryDeposit() {
 				s.Require().NoError(err)
 
 				var deposit types.Deposit
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &deposit), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &deposit), out.String())
 				s.Require().Equal(depositAmount.String(), deposit.Amount.String())
 			}
 		})
@@ -631,7 +631,7 @@ func (s *IntegrationTestSuite) TestNewCmdDeposit() {
 			} else {
 				s.Require().NoError(err)
 
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &resp), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &resp), out.String())
 				s.Require().Equal(tc.expectedCode, resp.Code, out.String())
 			}
 		})
@@ -682,7 +682,7 @@ func (s *IntegrationTestSuite) TestCmdQueryVotes() {
 				s.Require().NoError(err)
 
 				var votes types.QueryVotesResponse
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &votes), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &votes), out.String())
 				s.Require().Len(votes.Votes, 1)
 			}
 		})
@@ -757,7 +757,7 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 				s.Require().NoError(err)
 
 				var vote types.Vote
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &vote), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &vote), out.String())
 				s.Require().Equal(len(vote.Options), len(tc.expVoteOptions))
 				for i, option := range tc.expVoteOptions {
 					s.Require().Equal(option.Option, vote.Options[i].Option)
@@ -821,7 +821,7 @@ func (s *IntegrationTestSuite) TestNewCmdVote() {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &txResp), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &txResp), out.String())
 				s.Require().Equal(tc.expectedCode, txResp.Code, out.String())
 			}
 		})
@@ -905,7 +905,7 @@ func (s *IntegrationTestSuite) TestNewCmdWeightedVote() {
 				s.Require().Error(err)
 			} else {
 				s.Require().NoError(err)
-				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &txResp), out.String())
+				s.Require().NoError(clientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &txResp), out.String())
 				s.Require().Equal(tc.expectedCode, txResp.Code, out.String())
 			}
 		})

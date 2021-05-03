@@ -78,7 +78,7 @@ func TestAddGenesisAccountCmd(t *testing.T) {
 			require.NoError(t, err)
 
 			serverCtx := server.NewContext(viper.New(), cfg, logger)
-			clientCtx := client.Context{}.WithJSONMarshaler(appCodec).WithHomeDir(home)
+			clientCtx := client.Context{}.WithJSONCodec(appCodec).WithHomeDir(home)
 
 			if tc.withKeyring {
 				path := hd.CreateHDPath(118, 0, 0).String()

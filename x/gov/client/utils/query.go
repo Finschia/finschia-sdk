@@ -216,7 +216,7 @@ func QueryVoteByTxQuery(clientCtx client.Context, params types.QueryVoteParams) 
 			}
 
 			if vote != nil {
-				bz, err := clientCtx.JSONMarshaler.MarshalJSON(vote)
+				bz, err := clientCtx.JSONCodec.MarshalJSON(vote)
 				if err != nil {
 					return nil, err
 				}
@@ -276,7 +276,7 @@ func QueryDepositByTxQuery(clientCtx client.Context, params types.QueryDepositPa
 					Amount:     depMsg.Amount,
 				}
 
-				bz, err := clientCtx.JSONMarshaler.MarshalJSON(&deposit)
+				bz, err := clientCtx.JSONCodec.MarshalJSON(&deposit)
 				if err != nil {
 					return nil, err
 				}

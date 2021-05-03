@@ -221,7 +221,7 @@ $ %s query gov vote 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 					return err
 				}
 
-				if err := clientCtx.JSONMarshaler.UnmarshalJSON(resByTxQuery, &vote); err != nil {
+				if err := clientCtx.JSONCodec.UnmarshalJSON(resByTxQuery, &vote); err != nil {
 					return err
 				}
 			}
@@ -286,7 +286,7 @@ $ %[1]s query gov votes 1 --page=2 --limit=100
 				}
 
 				var votes types.Votes
-				// TODO migrate to use JSONMarshaler (implement MarshalJSONArray
+				// TODO migrate to use JSONCodec (implement MarshalJSONArray
 				// or wrap lists of proto.Message in some other message)
 				clientCtx.LegacyAmino.MustUnmarshalJSON(resByTxQuery, &votes)
 				return clientCtx.PrintObjectLegacy(votes)
@@ -367,7 +367,7 @@ $ %s query gov deposit 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				if err != nil {
 					return err
 				}
-				clientCtx.JSONMarshaler.MustUnmarshalJSON(resByTxQuery, &deposit)
+				clientCtx.JSONCodec.MustUnmarshalJSON(resByTxQuery, &deposit)
 				return clientCtx.PrintProto(&deposit)
 			}
 
@@ -436,7 +436,7 @@ $ %s query gov deposits 1
 				}
 
 				var dep types.Deposits
-				// TODO migrate to use JSONMarshaler (implement MarshalJSONArray
+				// TODO migrate to use JSONCodec (implement MarshalJSONArray
 				// or wrap lists of proto.Message in some other message)
 				clientCtx.LegacyAmino.MustUnmarshalJSON(resByTxQuery, &dep)
 
