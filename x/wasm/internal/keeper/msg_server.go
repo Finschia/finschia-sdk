@@ -75,6 +75,51 @@ func (m msgServer) InstantiateContract(goCtx context.Context, msg *types.MsgInst
 	}, nil
 }
 
+func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context, msg *types.MsgStoreCodeAndInstantiateContract) (*types.MsgStoreCodeAndInstantiateContractResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "sender")
+	}
+	codeID, err := m.keeper.Create(ctx, senderAddr, msg.WASMByteCode, msg.Source, msg.Builder, msg.InstantiatePermission)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
+		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
+	))
+
+	var adminAddr sdk.AccAddress
+	if msg.Admin != "" {
+		if adminAddr, err = sdk.AccAddressFromBech32(msg.Admin); err != nil {
+			return nil, sdkerrors.Wrap(err, "admin")
+		}
+	}
+
+	contractAddr, data, err := m.keeper.Instantiate(ctx, codeID, senderAddr, adminAddr, msg.InitMsg, msg.Label, msg.Funds)
+	if err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
+		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
+		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
+	))
+
+	return &types.MsgStoreCodeAndInstantiateContractResponse{
+		CodeID:  codeID,
+		Address: contractAddr.String(),
+		Data:    data,
+	}, nil
+}
+
 func (m msgServer) ExecuteContract(goCtx context.Context, msg *types.MsgExecuteContract) (*types.MsgExecuteContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
@@ -184,4 +229,38 @@ func (m msgServer) ClearAdmin(goCtx context.Context, msg *types.MsgClearAdmin) (
 	))
 
 	return &types.MsgClearAdminResponse{}, nil
+}
+
+// UpdateContractStatus handles MsgUpdateContractStatus
+// CONTRACT: msg.validateBasic() must be called before calling this
+func (m msgServer) UpdateContractStatus(goCtx context.Context, msg *types.MsgUpdateContractStatus) (*types.MsgUpdateContractStatusResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "sender")
+	}
+	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
+	if err != nil {
+		return nil, sdkerrors.Wrap(err, "contract")
+	}
+
+	if err = m.keeper.UpdateContractStatus(ctx, contractAddr, senderAddr, msg.Status); err != nil {
+		return nil, err
+	}
+
+	ctx.EventManager().EmitEvents(sdk.Events{
+		sdk.NewEvent(
+			sdk.EventTypeMessage,
+			sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+			sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
+			sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
+		),
+		sdk.NewEvent(
+			types.EventTypeUpdateContractStatus,
+			sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
+			sdk.NewAttribute(types.AttributeKeyContractStatus, msg.Status.String()),
+		),
+	})
+
+	return &types.MsgUpdateContractStatusResponse{}, nil
 }

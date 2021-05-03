@@ -12,8 +12,11 @@ option (gogoproto.goproto_getters_all) = false;
 service Msg {
   // StoreCode to submit Wasm code to the system
   rpc StoreCode(MsgStoreCode) returns (MsgStoreCodeResponse);
-  //  Instantiate creates a new smart contract instance for the given code id.
+  // Instantiate creates a new smart contract instance for the given code id.
   rpc InstantiateContract(MsgInstantiateContract) returns (MsgInstantiateContractResponse);
+  // Store Wasm code and Instantiate a new contract
+  rpc StoreCodeAndInstantiateContract(MsgStoreCodeAndInstantiateContract)
+      returns (MsgStoreCodeAndInstantiateContractResponse);
   // Execute submits the given message data to a smart contract
   rpc ExecuteContract(MsgExecuteContract) returns (MsgExecuteContractResponse);
   // Migrate runs a code upgrade/ downgrade for a smart contract
@@ -22,6 +25,8 @@ service Msg {
   rpc UpdateAdmin(MsgUpdateAdmin) returns (MsgUpdateAdminResponse);
   // ClearAdmin removes any admin stored for a smart contract
   rpc ClearAdmin(MsgClearAdmin) returns (MsgClearAdminResponse);
+  // UpdateContractStatus sets a new status for a smart contract
+  rpc UpdateContractStatus(MsgUpdateContractStatus) returns (MsgUpdateContractStatusResponse);
 }
 
 // MsgStoreCode submit Wasm code to the system
@@ -65,6 +70,38 @@ message MsgInstantiateContractResponse {
   string address = 1;
   // Data contains base64-encoded bytes to returned from the contract
   bytes data = 2;
+}
+
+// MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiate a contract using it.
+message MsgStoreCodeAndInstantiateContract {
+  // Sender is the that actor that signed the messages
+  string sender = 1;
+  // WASMByteCode can be raw or gzip compressed
+  bytes wasm_byte_code = 2 [(gogoproto.customname) = "WASMByteCode"];
+  // Source is a valid absolute HTTPS URI to the contract's source code, optional
+  string source = 3;
+  // Builder is a valid docker image name with tag, optional
+  string builder = 4;
+  // InstantiatePermission access control to apply on contract creation, optional
+  AccessConfig instantiate_permission = 5;
+  // Admin is an optional address that can execute migrations
+  string admin = 6;
+  // Label is optional metadata to be stored with a contract instance.
+  string label = 7;
+  // InitMsg json encoded message to be passed to the contract on instantiation
+  bytes init_msg = 8 [(gogoproto.casttype) = "encoding/json.RawMessage"];
+  // Funds coins that are transferred to the contract on instantiation
+  repeated lbm.base.v1beta1.Coin funds = 9
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/v2/types.Coins"];
+}
+// MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result data.
+message MsgStoreCodeAndInstantiateContractResponse {
+  // CodeID is the reference to the stored WASM code
+  uint64 code_id = 1 [(gogoproto.customname) = "CodeID"];
+  // Address is the bech32 address of the new contract instance.
+  string address = 2;
+  // Data contains base64-encoded bytes to returned from the contract
+  bytes data = 3;
 }
 
 // MsgExecuteContract submits the given message data to a smart contract
@@ -128,3 +165,16 @@ message MsgClearAdmin {
 
 // MsgClearAdminResponse returns empty data
 message MsgClearAdminResponse {}
+
+// MsgUpdateContractStatus sets a new status for a smart contract
+message MsgUpdateContractStatus {
+  // Sender is the that actor that signed the messages
+  string sender = 1;
+  // Contract is the address of the smart contract
+  string contract = 2;
+  // Status to be set
+  ContractStatus status = 3;
+}
+
+// MsgUpdateContractStatusResponse returns empty data
+message MsgUpdateContractStatusResponse {}

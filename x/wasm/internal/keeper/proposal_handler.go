@@ -19,6 +19,7 @@ type governing interface {
 	setContractAdmin(ctx sdk.Context, contractAddress, caller, newAdmin sdk.AccAddress, authZ AuthorizationPolicy) error
 	PinCode(ctx sdk.Context, codeID uint64) error
 	UnpinCode(ctx sdk.Context, codeID uint64) error
+	updateContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error
 }
 
 // NewWasmProposalHandler creates a new governance Handler for wasm proposals
@@ -49,6 +50,8 @@ func NewWasmProposalHandler(k governing, enabledProposalTypes []types.ProposalTy
 			return handlePinCodesProposal(ctx, k, *c)
 		case *types.UnpinCodesProposal:
 			return handleUnpinCodesProposal(ctx, k, *c)
+		case *types.UpdateContractStatusProposal:
+			return handleUpdateContractStatusProposal(ctx, k, *c)
 		default:
 			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized wasm proposal content type: %T", c)
 		}
@@ -231,5 +234,26 @@ func handleUnpinCodesProposal(ctx sdk.Context, k governing, p types.UnpinCodesPr
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 
+	return nil
+}
+
+func handleUpdateContractStatusProposal(ctx sdk.Context, k governing, p types.UpdateContractStatusProposal) error {
+	if err := p.ValidateBasic(); err != nil {
+		return err
+	}
+	contractAddr, err := sdk.AccAddressFromBech32(p.Contract)
+	if err != nil {
+		return sdkerrors.Wrap(err, "contract")
+	}
+
+	if err = k.updateContractStatus(ctx, contractAddr, nil, p.Status, GovAuthorizationPolicy{}); err != nil {
+		return err
+	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		types.EventTypeUpdateContractStatus,
+		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyContractStatus, p.Status.String()),
+	))
 	return nil
 }

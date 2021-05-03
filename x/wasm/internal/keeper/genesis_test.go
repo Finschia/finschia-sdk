@@ -444,6 +444,9 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 			"permission": "Everybody"
 		},
 		"instantiate_default_permission": "Everybody",
+		"contract_status_access": {
+			"permission": "Nobody"
+		},
 		"max_wasm_code_size": 500000,
 		"gas_multiplier": 100,
 		"instance_cost": 40000,
@@ -472,7 +475,8 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
         "code_id": "1",
         "creator": "link1p0yx9c9q4xsnedlcn24gqfry5dcu6e9xkhv9aj",
         "admin": "link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5",
-        "label": "ȀĴnZV芢毤"
+        "label": "ȀĴnZV芢毤",
+        "status": "Active"
       }
     }
   ],
@@ -537,6 +541,7 @@ func TestImportContractWithCodeHistoryReset(t *testing.T) {
 		Admin:   adminAddr,
 		Label:   "ȀĴnZV芢毤",
 		Created: &types.AbsoluteTxPosition{BlockHeight: 0, TxIndex: 0},
+		Status:  wasmTypes.ContractStatusActive,
 	}
 	assert.Equal(t, expContractInfo, *gotContractInfo)
 
