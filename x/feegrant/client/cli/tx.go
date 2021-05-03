@@ -45,7 +45,7 @@ func GetTxCmd() *cobra.Command {
 	return feegrantTxCmd
 }
 
-// NewCmdFeeGrant returns a CLI command handler for creating a MsgGrantAllowance transaction.
+// NewCmdFeeGrant returns a CLI command handler for creating a MsgGrantFeeAllowance transaction.
 func NewCmdFeeGrant() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "grant [granter_key_or_address] [grantee]",
@@ -183,7 +183,7 @@ Examples:
 	return cmd
 }
 
-// NewCmdRevokeFeegrant returns a CLI command handler for creating a MsgRevokeAllowance transaction.
+// NewCmdRevokeFeegrant returns a CLI command handler for creating a MsgRevokeFeeAllowance transaction.
 func NewCmdRevokeFeegrant() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "revoke [granter] [grantee]",
@@ -210,10 +210,10 @@ Example:
 			}
 			grantee := sdk.AccAddress(args[1])
 
-			msg := types.NewMsgRevokeAllowance(clientCtx.GetFromAddress(), grantee)
+			msg := types.NewMsgRevokeFeeAllowance(clientCtx.GetFromAddress(), grantee)
 			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
 			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.RevokeAllowance(cmd.Context(), &msg)
+			_, err = msgClient.RevokeFeeAllowance(cmd.Context(), &msg)
 			if err != nil {
 				return err
 			}
