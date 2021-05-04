@@ -51,7 +51,7 @@ const (
 	FlagName             = "name"
 	FlagAccountNumber    = "account-number"
 	FlagSequence         = "sequence"
-	FlagMemo             = "memo"
+	FlagNote             = "note"
 	FlagFees             = "fees"
 	FlagGas              = "gas"
 	FlagGasPrices        = "gas-prices"
@@ -101,7 +101,7 @@ func AddTxFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().String(FlagFrom, "", "Name or address of private key with which to sign")
 	cmd.Flags().Uint64P(FlagAccountNumber, "a", 0, "The account number of the signing account (offline mode only)")
 	cmd.Flags().Uint64P(FlagSequence, "s", 0, "The sequence number of the signing account (offline mode only)")
-	cmd.Flags().String(FlagMemo, "", "Memo to send along with transaction")
+	cmd.Flags().String(FlagNote, "", "Note to add a description to the transaction (previously `--memo`)")
 	cmd.Flags().String(FlagFees, "", "Fees to pay along with transaction; eg: 10uatom")
 	cmd.Flags().String(FlagGasPrices, "", "Gas prices in decimal format to determine the transaction fee (e.g. 0.1uatom)")
 	cmd.Flags().String(FlagNode, "tcp://localhost:26657", "<host>:<port> to ostracon rpc interface for this chain")
