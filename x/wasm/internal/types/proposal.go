@@ -13,13 +13,14 @@ import (
 type ProposalType string
 
 const (
-	ProposalTypeStoreCode           ProposalType = "StoreCode"
-	ProposalTypeInstantiateContract ProposalType = "InstantiateContract"
-	ProposalTypeMigrateContract     ProposalType = "MigrateContract"
-	ProposalTypeUpdateAdmin         ProposalType = "UpdateAdmin"
-	ProposalTypeClearAdmin          ProposalType = "ClearAdmin"
-	ProposalTypePinCodes            ProposalType = "PinCodes"
-	ProposalTypeUnpinCodes          ProposalType = "UnpinCodes"
+	ProposalTypeStoreCode            ProposalType = "StoreCode"
+	ProposalTypeInstantiateContract  ProposalType = "InstantiateContract"
+	ProposalTypeMigrateContract      ProposalType = "MigrateContract"
+	ProposalTypeUpdateAdmin          ProposalType = "UpdateAdmin"
+	ProposalTypeClearAdmin           ProposalType = "ClearAdmin"
+	ProposalTypePinCodes             ProposalType = "PinCodes"
+	ProposalTypeUnpinCodes           ProposalType = "UnpinCodes"
+	ProposalTypeUpdateContractStatus ProposalType = "UpdateContractStatus"
 )
 
 // DisableAllProposals contains no wasm gov types.
@@ -34,6 +35,7 @@ var EnableAllProposals = []ProposalType{
 	ProposalTypeClearAdmin,
 	ProposalTypePinCodes,
 	ProposalTypeUnpinCodes,
+	ProposalTypeUpdateContractStatus,
 }
 
 // ConvertToProposals maps each key to a ProposalType and returns a typed list.
@@ -62,6 +64,7 @@ func init() { // register new content types with the sdk
 	govtypes.RegisterProposalType(string(ProposalTypeClearAdmin))
 	govtypes.RegisterProposalType(string(ProposalTypePinCodes))
 	govtypes.RegisterProposalType(string(ProposalTypeUnpinCodes))
+	govtypes.RegisterProposalType(string(ProposalTypeUpdateContractStatus))
 	govtypes.RegisterProposalTypeCodec(StoreCodeProposal{}, "wasm/StoreCodeProposal")
 	govtypes.RegisterProposalTypeCodec(InstantiateContractProposal{}, "wasm/InstantiateContractProposal")
 	govtypes.RegisterProposalTypeCodec(MigrateContractProposal{}, "wasm/MigrateContractProposal")
@@ -69,6 +72,7 @@ func init() { // register new content types with the sdk
 	govtypes.RegisterProposalTypeCodec(ClearAdminProposal{}, "wasm/ClearAdminProposal")
 	govtypes.RegisterProposalTypeCodec(PinCodesProposal{}, "wasm/PinCodesProposal")
 	govtypes.RegisterProposalTypeCodec(UnpinCodesProposal{}, "wasm/UnpinCodesProposal")
+	govtypes.RegisterProposalTypeCodec(UpdateContractStatusProposal{}, "wasm/UpdateContractStatusProposal")
 }
 
 // ProposalRoute returns the routing key of a parameter change proposal.
@@ -414,6 +418,49 @@ func (p UnpinCodesProposal) String() string {
   Description: %s
   Codes:       %v
 `, p.Title, p.Description, p.CodeIDs)
+}
+
+// ProposalRoute returns the routing key of a parameter change proposal.
+func (p UpdateContractStatusProposal) ProposalRoute() string { return RouterKey }
+
+// GetTitle returns the title of the proposal
+func (p *UpdateContractStatusProposal) GetTitle() string { return p.Title }
+
+// GetDescription returns the human readable description of the proposal
+func (p UpdateContractStatusProposal) GetDescription() string { return p.Description }
+
+// ProposalType returns the type
+func (p UpdateContractStatusProposal) ProposalType() string { return string(ProposalTypeUpdateAdmin) }
+
+// ValidateBasic validates the proposal
+func (p UpdateContractStatusProposal) ValidateBasic() error {
+	if err := validateProposalCommons(p.Title, p.Description); err != nil {
+		return err
+	}
+	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
+		return sdkerrors.Wrap(err, "contract")
+	}
+	found := false
+	for _, v := range AllContractStatus {
+		if p.Status == v {
+			found = true
+			break
+		}
+	}
+	if !found || p.Status == ContractStatusUnspecified {
+		return sdkerrors.Wrap(govtypes.ErrInvalidProposalContent, "invalid status")
+	}
+	return nil
+}
+
+// String implements the Stringer interface.
+func (p UpdateContractStatusProposal) String() string {
+	return fmt.Sprintf(`Update Contract Status Proposal:
+  Title:       %s
+  Description: %s
+  Contract:    %s
+  Status:   %s
+`, p.Title, p.Description, p.Contract, p.Status.String())
 }
 
 func validateProposalCommons(title, description string) error {

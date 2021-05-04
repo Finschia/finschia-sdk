@@ -53,7 +53,6 @@ require (
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
-	github.com/tendermint/tm-db v0.6.4
 	golang.org/x/crypto v0.0.0-20210220033148-5ea612d1eb83
 	golang.org/x/net v0.0.0-20210226172049-e18ecbb05110 // indirect
 	golang.org/x/sys v0.0.0-20210228012217-479acdf4ea46 // indirect
@@ -65,8 +64,7 @@ require (
 )
 
 replace (
-	github.com/CosmWasm/wasmvm => github.com/line/wasmvm v0.14.0-0.3.0
+	github.com/CosmWasm/wasmvm => github.com/line/wasmvm v0.14.0-0.4.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/tendermint/tm-db => github.com/line/tm-db v0.5.2
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
