@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -16,25 +15,27 @@ import (
 	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/version"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
-	"github.com/line/lbm-sdk/x/authz/exported"
-	"github.com/line/lbm-sdk/x/authz/types"
+	"github.com/line/lbm-sdk/x/authz"
 	bank "github.com/line/lbm-sdk/x/bank/types"
 	staking "github.com/line/lbm-sdk/x/staking/types"
 )
 
-const FlagSpendLimit = "spend-limit"
-const FlagMsgType = "msg-type"
-const FlagExpiration = "expiration"
-const FlagAllowedValidators = "allowed-validators"
-const FlagDenyValidators = "deny-validators"
-const delegate = "delegate"
-const redelegate = "redelegate"
-const unbond = "unbond"
+// Flag names and values
+const (
+	FlagSpendLimit        = "spend-limit"
+	FlagMsgType           = "msg-type"
+	FlagExpiration        = "expiration"
+	FlagAllowedValidators = "allowed-validators"
+	FlagDenyValidators    = "deny-validators"
+	delegate              = "delegate"
+	redelegate            = "redelegate"
+	unbond                = "unbond"
+)
 
 // GetTxCmd returns the transaction commands for this module
 func GetTxCmd() *cobra.Command {
 	AuthorizationTxCmd := &cobra.Command{
-		Use:                        types.ModuleName,
+		Use:                        authz.ModuleName,
 		Short:                      "Authorization transactions subcommands",
 		Long:                       "Authorize and revoke access to execute transactions on behalf of your address",
 		DisableFlagParsing:         true,
@@ -56,11 +57,11 @@ func NewCmdGrantAuthorization() *cobra.Command {
 		Use:   "grant <grantee> <authorization_type=\"send\"|\"generic\"|\"delegate\"|\"unbond\"|\"redelegate\"> --from <granter>",
 		Short: "Grant authorization to an address",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Grant authorization to an address to execute a transaction on your behalf:
+			fmt.Sprintf(`grant authorization to an address to execute a transaction on your behalf:
 
 Examples:
  $ %s tx %s grant link1skjw.. send %s --spend-limit=1000stake --from=link1skl..
- $ %s tx %s grant link1skjw.. generic --msg-type=/lbm.gov.v1.Msg/Vote --from=link1sk..
+ $ %s tx %s grant link1skjw.. generic --msg-type=/lbm.gov.v1.MsgVote --from=link1sk..
 	`, version.AppName, types.ModuleName, bank.SendAuthorization{}.MethodName(), version.AppName, types.ModuleName),
 		),
 		Args: cobra.ExactArgs(2),
@@ -81,7 +82,7 @@ Examples:
 				return err
 			}
 
-			var authorization exported.Authorization
+			var authorization authz.Authorization
 			switch args[1] {
 			case "send":
 				limit, err := cmd.Flags().GetString(FlagSpendLimit)
@@ -105,7 +106,7 @@ Examples:
 					return err
 				}
 
-				authorization = types.NewGenericAuthorization(msgType)
+				authorization = authz.NewGenericAuthorization(msgType)
 			case delegate, unbond, redelegate:
 				limit, err := cmd.Flags().GetString(FlagSpendLimit)
 				if err != nil {
@@ -161,14 +162,14 @@ Examples:
 				return fmt.Errorf("invalid authorization type, %s", args[1])
 			}
 
-			msg, err := types.NewMsgGrantAuthorization(clientCtx.GetFromAddress(), grantee, authorization, time.Unix(exp, 0))
+			msg, err := authz.NewMsgGrant(clientCtx.GetFromAddress(), grantee, authorization, time.Unix(exp, 0))
 			if err != nil {
 				return err
 			}
 
 			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.GrantAuthorization(context.Background(), msg)
+			msgClient := authz.NewMsgClient(svcMsgClientConn)
+			_, err = msgClient.Grant(cmd.Context(), msg)
 			if err != nil {
 				return err
 			}
@@ -193,7 +194,7 @@ func NewCmdRevokeAuthorization() *cobra.Command {
 			fmt.Sprintf(`revoke authorization from a granter to a grantee:
 Example:
  $ %s tx %s revoke link1skj.. %s --from=link1skj..
-			`, version.AppName, types.ModuleName, bank.SendAuthorization{}.MethodName()),
+			`, version.AppName, authz.ModuleName, bank.SendAuthorization{}.MsgTypeURL()),
 		),
 		Args: cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -209,14 +210,12 @@ Example:
 			grantee := sdk.AccAddress(args[0])
 
 			granter := clientCtx.GetFromAddress()
-
 			msgAuthorized := args[1]
-
-			msg := types.NewMsgRevokeAuthorization(granter, grantee, msgAuthorized)
+			msg := authz.NewMsgRevoke(granter, grantee, msgAuthorized)
 
 			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.RevokeAuthorization(context.Background(), &msg)
+			msgClient := authz.NewMsgClient(svcMsgClientConn)
+			_, err = msgClient.Revoke(cmd.Context(), &msg)
 			if err != nil {
 				return err
 			}
@@ -237,7 +236,7 @@ func NewCmdExecAuthorization() *cobra.Command {
 Example:
  $ %s tx %s exec tx.json --from grantee
  $ %s tx bank send <granter> <recipient> --from <granter> --chain-id <chain-id> --generate-only > tx.json && %s tx %s exec tx.json --from grantee
-			`, version.AppName, types.ModuleName, version.AppName, version.AppName, types.ModuleName),
+			`, version.AppName, authz.ModuleName, version.AppName, version.AppName, authz.ModuleName),
 		),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -256,10 +255,10 @@ Example:
 			if err != nil {
 				return err
 			}
-			msg := types.NewMsgExecAuthorized(grantee, theTx.GetMsgs())
+			msg := authz.NewMsgExec(grantee, theTx.GetMsgs())
 			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.ExecAuthorized(context.Background(), &msg)
+			msgClient := authz.NewMsgClient(svcMsgClientConn)
+			_, err = msgClient.Exec(cmd.Context(), &msg)
 			if err != nil {
 				return err
 			}

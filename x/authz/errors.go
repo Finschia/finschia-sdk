@@ -1,4 +1,4 @@
-package types
+package authz
 
 import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"

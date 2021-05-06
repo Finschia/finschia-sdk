@@ -19,7 +19,7 @@ import (
 	"github.com/line/lbm-sdk/types/module"
 	"github.com/line/lbm-sdk/x/auth"
 	"github.com/line/lbm-sdk/x/auth/vesting"
-	"github.com/line/lbm-sdk/x/authz"
+	authz_m "github.com/line/lbm-sdk/x/authz/module"
 	"github.com/line/lbm-sdk/x/bank"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/capability"
@@ -27,7 +27,6 @@ import (
 	"github.com/line/lbm-sdk/x/crisis"
 	"github.com/line/lbm-sdk/x/distribution"
 	"github.com/line/lbm-sdk/x/evidence"
-	"github.com/line/lbm-sdk/x/feegrant"
 	"github.com/line/lbm-sdk/x/genutil"
 	"github.com/line/lbm-sdk/x/gov"
 	transfer "github.com/line/lbm-sdk/x/ibc/applications/transfer"
@@ -171,7 +170,7 @@ func TestRunMigrations(t *testing.T) {
 				module.VersionMap{
 					"bank":         1,
 					"auth":         auth.AppModule{}.ConsensusVersion(),
-					"authz":        authz.AppModule{}.ConsensusVersion(),
+					"authz":        authz_m.AppModule{}.ConsensusVersion(),
 					"staking":      staking.AppModule{}.ConsensusVersion(),
 					"mint":         mint.AppModule{}.ConsensusVersion(),
 					"distribution": distribution.AppModule{}.ConsensusVersion(),
@@ -227,7 +226,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 		module.VersionMap{
 			"bank":         bank.AppModule{}.ConsensusVersion(),
 			"auth":         auth.AppModule{}.ConsensusVersion(),
-			"authz":        authz.AppModule{}.ConsensusVersion(),
+			"authz":        authz_m.AppModule{}.ConsensusVersion(),
 			"staking":      staking.AppModule{}.ConsensusVersion(),
 			"mint":         mint.AppModule{}.ConsensusVersion(),
 			"distribution": distribution.AppModule{}.ConsensusVersion(),

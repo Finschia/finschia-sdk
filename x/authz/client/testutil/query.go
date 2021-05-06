@@ -10,8 +10,8 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/authz/client/cli"
-	"github.com/line/lbm-sdk/x/authz/types"
 )
 
 func (s *IntegrationTestSuite) TestQueryAuthorizations() {
@@ -20,7 +20,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizations() {
 	grantee := s.grantee
 	twoHours := time.Now().Add(time.Minute * time.Duration(120)).Unix()
 
-	_, err := ExecGrantAuthorization(
+	_, err := ExecGrant(
 		val,
 		[]string{
 			grantee.String(),
@@ -76,7 +76,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizations() {
 		tc := tc
 
 		s.Run(tc.name, func() {
-			cmd := cli.GetCmdQueryAuthorizations()
+			cmd := cli.GetCmdQueryGrants()
 			clientCtx := val.ClientCtx
 			resp, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
 			if tc.expectErr {
@@ -84,7 +84,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorizations() {
 				s.Require().Contains(string(resp.Bytes()), tc.expErrMsg)
 			} else {
 				s.Require().NoError(err)
-				var grants types.QueryAuthorizationsResponse
+				var grants authz.QueryGrantsResponse
 				err = val.ClientCtx.JSONCodec.UnmarshalJSON(resp.Bytes(), &grants)
 				s.Require().NoError(err)
 			}
@@ -98,7 +98,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 	grantee := s.grantee
 	twoHours := time.Now().Add(time.Minute * time.Duration(120)).Unix()
 
-	_, err := ExecGrantAuthorization(
+	_, err := ExecGrant(
 		val,
 		[]string{
 			grantee.String(),
@@ -168,7 +168,7 @@ func (s *IntegrationTestSuite) TestQueryAuthorization() {
 		tc := tc
 
 		s.Run(tc.name, func() {
-			cmd := cli.GetCmdQueryAuthorization()
+			cmd := cli.GetCmdQueryGrants()
 			clientCtx := val.ClientCtx
 			out, err := clitestutil.ExecTestCLICmd(clientCtx, cmd, tc.args)
 			if tc.expectErr {

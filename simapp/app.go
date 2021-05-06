@@ -7,18 +7,15 @@ import (
 	"path/filepath"
 
 	"github.com/gorilla/mux"
+	"github.com/rakyll/statik/fs"
+	"github.com/spf13/cast"
+
 	abci "github.com/line/ostracon/abci/types"
 	ostjson "github.com/line/ostracon/libs/json"
 	"github.com/line/ostracon/libs/log"
 	ostos "github.com/line/ostracon/libs/os"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	tmdb "github.com/line/tm-db/v2"
-	"github.com/rakyll/statik/fs"
-	"github.com/spf13/cast"
-
-	"github.com/line/lbm-sdk/x/feegrant"
-	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
-	feegranttypes "github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"
@@ -67,6 +64,9 @@ import (
 	"github.com/line/lbm-sdk/x/evidence"
 	evidencekeeper "github.com/line/lbm-sdk/x/evidence/keeper"
 	evidencetypes "github.com/line/lbm-sdk/x/evidence/types"
+	"github.com/line/lbm-sdk/x/feegrant"
+	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
+	feegranttypes "github.com/line/lbm-sdk/x/feegrant/types"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	"github.com/line/lbm-sdk/x/gov"
@@ -450,6 +450,7 @@ func NewSimApp(
 		genutiltypes.ModuleName,
 		evidencetypes.ModuleName,
 		ibctransfertypes.ModuleName,
+		authztypes.ModuleName,
 		feegranttypes.ModuleName,
 		consortiumtypes.ModuleName,
 		token.ModuleName,

@@ -11,8 +11,8 @@ import (
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/authz/simulation"
-	"github.com/line/lbm-sdk/x/authz/types"
 )
 
 func TestRandomizedGenState(t *testing.T) {
@@ -33,8 +33,8 @@ func TestRandomizedGenState(t *testing.T) {
 	}
 
 	simulation.RandomizedGenState(&simState)
-	var authzGenesis types.GenesisState
-	simState.Cdc.MustUnmarshalJSON(simState.GenState[types.ModuleName], &authzGenesis)
+	var authzGenesis authz.GenesisState
+	simState.Cdc.MustUnmarshalJSON(simState.GenState[authz.ModuleName], &authzGenesis)
 
 	require.Len(t, authzGenesis.Authorization, 0)
 }

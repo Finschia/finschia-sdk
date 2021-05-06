@@ -4,6 +4,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	"github.com/line/lbm-sdk/tx/authz"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 )
@@ -19,6 +20,10 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSend{},
 		&MsgMultiSend{},
+	)
+	registry.RegisterImplementations(
+		(*authz.Authorization)(nil),
+		&SendAuthorization{},
 	)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
