@@ -10,7 +10,7 @@ import (
 const (
 	// MetricsSubsystem is a subsystem shared by all metrics exposed by this
 	// package.
-	MetricsSubsystem = "iavlcache"
+	MetricsSubsystem = "iavl_cache"
 )
 
 // Metrics contains metrics exposed by this package.
@@ -33,25 +33,25 @@ func PrometheusMetrics(namespace string, labelsAndValues ...string) *Metrics {
 		IAVLCacheHits: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "iavl_cache_hits",
+			Name:      "hits",
 			Help:      "Cache hit count of the iavl cache",
 		}, labels).With(labelsAndValues...),
 		IAVLCacheMisses: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "iavl_cache_misses",
+			Name:      "misses",
 			Help:      "Cache miss count of the iavl cache",
 		}, labels).With(labelsAndValues...),
 		IAVLCacheEntries: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "iavl_cache_entries",
+			Name:      "entries",
 			Help:      "Cache entry count of the iavl cache",
 		}, labels).With(labelsAndValues...),
 		IAVLCacheBytes: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "iavl_cache_bytes_size",
+			Name:      "bytes_size",
 			Help:      "Cache bytes size of the iavl cache",
 		}, labels).With(labelsAndValues...),
 	}

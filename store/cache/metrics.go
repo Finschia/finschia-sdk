@@ -10,7 +10,7 @@ import (
 const (
 	// MetricsSubsystem is a subsystem shared by all metrics exposed by this
 	// package.
-	MetricsSubsystem = "ibcache"
+	MetricsSubsystem = "inter_block_cache"
 )
 
 // Metrics contains metrics exposed by this package.
@@ -33,26 +33,26 @@ func PrometheusMetrics(namespace string, labelsAndValues ...string) *Metrics {
 		InterBlockCacheHits: prometheus.NewCounterFrom(stdprometheus.CounterOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "inter_block_cache_hits",
+			Name:      "hits",
 			Help:      "Cache hits of the inter block cache",
 		}, labels).With(labelsAndValues...),
 		InterBlockCacheMisses: prometheus.NewCounterFrom(stdprometheus.CounterOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "inter_block_cache_misses",
+			Name:      "misses",
 			Help:      "Cache misses of the inter block cache",
 		}, labels).With(labelsAndValues...),
 		InterBlockCacheEntries: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "inter_block_cache_entries",
-			Help:      "Cache entry count",
+			Name:      "entries",
+			Help:      "Cache entry count of the inter block cache",
 		}, labels).With(labelsAndValues...),
 		InterBlockCacheBytes: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "inter_block_cache_bytes_size",
-			Help:      "Cache bytes size",
+			Name:      "bytes_size",
+			Help:      "Cache bytes size of the inter block cache",
 		}, labels).With(labelsAndValues...),
 	}
 }
