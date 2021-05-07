@@ -6,7 +6,6 @@
 codecov:
   require_ci_to_pass: yes
   bot: Codecov bot for LINK
-  allow_pseudo_compare: false
 
 comment:
   layout: "reach,diff,flags,tree"
@@ -19,10 +18,10 @@ coverage:
       default:
         # basic
         target: 75
-        threshold: 35% # allow this much decrease on project
+        threshold: 1% # allow this much decrease on project
         base: auto
         # advanced
-        branches: v2/develop
+        branches: null
         if_no_uploads: error
         if_not_found: success
         if_ci_failed: error
