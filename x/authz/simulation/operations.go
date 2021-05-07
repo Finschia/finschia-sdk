@@ -1,7 +1,6 @@
 package simulation
 
 import (
-	"context"
 	"math/rand"
 	"strings"
 
@@ -11,7 +10,6 @@ import (
 	"github.com/line/lbm-sdk/simapp/helpers"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/msgservice"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/authz"
 	"github.com/line/lbm-sdk/x/authz/keeper"
@@ -107,15 +105,9 @@ func SimulateMsgGrantAuthorization(ak authz.AccountKeeper, bk authz.BankKeeper, 
 			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgGrantAuthorization, err.Error()), nil, err
 		}
 		txGen := simappparams.MakeTestEncodingConfig().TxConfig
-		svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-		authzMsgClient := authz.NewMsgClient(svcMsgClientConn)
-		_, err = authzMsgClient.Grant(context.Background(), msg)
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgGrantAuthorization, err.Error()), nil, err
-		}
 		tx, err := helpers.GenTx(
 			txGen,
-			svcMsgClientConn.GetMsgs(),
+			[]sdk.Msg{msg},
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
@@ -140,9 +132,9 @@ func SimulateMsgGrantAuthorization(ak authz.AccountKeeper, bk authz.BankKeeper, 
 
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
 		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, sdk.MsgTypeURL(svcMsgClientConn.GetMsgs()[0]), "unable to deliver tx"), nil, err
+			return simtypes.NoOpMsg(authz.ModuleName, sdk.MsgTypeURL(msg), "unable to deliver tx"), nil, err
 		}
-		return simtypes.NewOperationMsg(svcMsgClientConn.GetMsgs()[0], true, "", protoCdc), nil, err
+		return simtypes.NewOperationMsg(msg, true, "", protoCdc), nil, err
 	}
 }
 
@@ -183,15 +175,9 @@ func SimulateMsgRevokeAuthorization(ak authz.AccountKeeper, bk authz.BankKeeper,
 		auth := targetGrant.GetAuthorization()
 		msg := authz.NewMsgRevoke(granterAddr, granteeAddr, auth.MsgTypeURL())
 		txGen := simappparams.MakeTestEncodingConfig().TxConfig
-		svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-		authzMsgClient := authz.NewMsgClient(svcMsgClientConn)
-		_, err = authzMsgClient.Revoke(context.Background(), &msg)
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgRevokeAuthorization, err.Error()), nil, err
-		}
 		tx, err := helpers.GenTx(
 			txGen,
-			svcMsgClientConn.GetMsgs(),
+			[]sdk.Msg{&msg},
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
@@ -215,7 +201,7 @@ func SimulateMsgRevokeAuthorization(ak authz.AccountKeeper, bk authz.BankKeeper,
 		}
 
 		_, _, err = app.Deliver(txGen.TxEncoder(), tx)
-		return simtypes.NewOperationMsg(svcMsgClientConn.GetMsgs()[0], true, "", protoCdc), nil, err
+		return simtypes.NewOperationMsg(&msg, true, "", protoCdc), nil, err
 	}
 }
 
@@ -276,15 +262,9 @@ func SimulateMsgExecuteAuthorized(ak authz.AccountKeeper, bk authz.BankKeeper, k
 		}
 
 		txGen := simappparams.MakeTestEncodingConfig().TxConfig
-		svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-		authzMsgClient := authz.NewMsgClient(svcMsgClientConn)
-		_, err = authzMsgClient.Exec(context.Background(), &msg)
-		if err != nil {
-			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, err.Error()), nil, err
-		}
 		tx, err := helpers.GenTx(
 			txGen,
-			svcMsgClientConn.GetMsgs(),
+			[]sdk.Msg{&msg},
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
@@ -318,6 +298,6 @@ func SimulateMsgExecuteAuthorized(ak authz.AccountKeeper, bk authz.BankKeeper, k
 		if err != nil {
 			return simtypes.NoOpMsg(authz.ModuleName, TypeMsgExecDelegated, "unmarshal error"), nil, err
 		}
-		return simtypes.NewOperationMsg(svcMsgClientConn.GetMsgs()[0], true, "success", protoCdc), nil, nil
+		return simtypes.NewOperationMsg(&msg, true, "success", protoCdc), nil, nil
 	}
 }

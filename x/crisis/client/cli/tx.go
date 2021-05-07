@@ -8,7 +8,6 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
-	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/x/crisis/types"
 )
 
@@ -50,14 +49,8 @@ func NewMsgVerifyInvariantTxCmd() *cobra.Command {
 			senderAddr := clientCtx.GetFromAddress()
 
 			msg := types.NewMsgVerifyInvariant(senderAddr, moduleName, route)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.VerifyInvariant(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 

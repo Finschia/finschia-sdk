@@ -5,12 +5,10 @@ import (
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/codec"
-	"github.com/line/lbm-sdk/simapp/helpers"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/msgservice"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
-	"github.com/line/lbm-sdk/x/feegrant/"
+	"github.com/line/lbm-sdk/x/feegrant"
 	"github.com/line/lbm-sdk/x/feegrant/keeper"
 	"github.com/line/lbm-sdk/x/simulation"
 )

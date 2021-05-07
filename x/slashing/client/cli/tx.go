@@ -6,7 +6,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
-	"github.com/line/lbm-sdk/types/msgservice"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
@@ -40,15 +40,9 @@ $ <appd> tx slashing unjail --from mykey
 			}
 			valAddr := clientCtx.GetFromAddress()
 
-			msg := types.NewMsgUnjail(valAddr.ToValAddress())
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.Unjail(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
+			msg := types.NewMsgUnjail(sdk.ValAddress(valAddr))
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 

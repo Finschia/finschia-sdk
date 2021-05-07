@@ -7,7 +7,6 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/x/bank/types"
 )
 
@@ -47,14 +46,8 @@ ignored as it is implied from [from_key_or_address].`,
 			}
 
 			msg := types.NewMsgSend(clientCtx.GetFromAddress(), toAddr, coins)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.Send(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 

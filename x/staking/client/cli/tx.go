@@ -13,7 +13,6 @@ import (
 	"github.com/line/lbm-sdk/client/tx"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/staking/types"
 )
@@ -66,14 +65,7 @@ func NewCreateValidatorCmd() *cobra.Command {
 				return err
 			}
 
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.CreateValidator(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxWithFactory(clientCtx, txf, msg)
 		},
 	}
 
@@ -136,15 +128,9 @@ func NewEditValidatorCmd() *cobra.Command {
 				newMinSelfDelegation = &msb
 			}
 
-			msg := types.NewMsgEditValidator(valAddr.ToValAddress(), description, newRate, newMinSelfDelegation)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.EditValidator(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
+			msg := types.NewMsgEditValidator(sdk.ValAddress(valAddr), description, newRate, newMinSelfDelegation)
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
@@ -186,14 +172,8 @@ $ %s tx staking delegate %s1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm 1000stake --f
 			valAddr := sdk.ValAddress(args[0])
 
 			msg := types.NewMsgDelegate(delAddr, valAddr, amount)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.Delegate(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
@@ -234,14 +214,8 @@ $ %s tx staking redelegate %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj %s1l2rsakp3
 			}
 
 			msg := types.NewMsgBeginRedelegate(delAddr, valSrcAddr, valDstAddr, amount)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.BeginRedelegate(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
@@ -280,14 +254,8 @@ $ %s tx staking unbond %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj 100stake --from
 			}
 
 			msg := types.NewMsgUndelegate(delAddr, valAddr, amount)
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := types.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.Undelegate(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 

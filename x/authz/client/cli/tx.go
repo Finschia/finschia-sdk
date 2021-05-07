@@ -12,7 +12,6 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/version"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
 	"github.com/line/lbm-sdk/x/authz"
@@ -167,14 +166,7 @@ Examples:
 				return err
 			}
 
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := authz.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.Grant(cmd.Context(), msg)
-			if err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 	flags.AddTxFlagsToCmd(cmd)
@@ -213,14 +205,7 @@ Example:
 			msgAuthorized := args[1]
 			msg := authz.NewMsgRevoke(granter, grantee, msgAuthorized)
 
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := authz.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.Revoke(cmd.Context(), &msg)
-			if err != nil {
-				return err
-			}
-
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 	flags.AddTxFlagsToCmd(cmd)
@@ -256,14 +241,8 @@ Example:
 				return err
 			}
 			msg := authz.NewMsgExec(grantee, theTx.GetMsgs())
-			svcMsgClientConn := &msgservice.ServiceMsgClientConn{}
-			msgClient := authz.NewMsgClient(svcMsgClientConn)
-			_, err = msgClient.Exec(cmd.Context(), &msg)
-			if err != nil {
-				return err
-			}
 
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), svcMsgClientConn.GetMsgs()...)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
 
