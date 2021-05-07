@@ -8,7 +8,7 @@ The feegrant module emits the following events:
 
 # Msg Server
 
-## MsgGrantAllowance
+### MsgGrantAllowance
 
 | Type    | Attribute Key | Attribute Value  |
 | ------- | ------------- | ---------------- |
@@ -16,11 +16,8 @@ The feegrant module emits the following events:
 | message | granter       | {granterAddress} |
 | message | grantee       | {granteeAddress} |
 
-## MsgRevokeAllowance
-
-| Type    | Attribute Key | Attribute Value  |
+### MsgRevokeAllowance
 | ------- | ------------- | ---------------- |
-| message | action        | revoke_feegrant  |
 | message | granter       | {granterAddress} |
 | message | grantee       | {granteeAddress} |
 

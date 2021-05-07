@@ -9,12 +9,12 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
-
+	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/feegrant"
 	"github.com/line/lbm-sdk/x/feegrant/simulation"
 )
 
@@ -75,12 +75,12 @@ func (suite *SimTestSuite) TestWeightedOperations() {
 	}{
 		{
 			simappparams.DefaultWeightGrantAllowance,
-			types.MsgGrantAllowance{}.Route(),
+			feegrant.MsgGrantAllowance{}.Route(),
 			simulation.TypeMsgGrantAllowance,
 		},
 		{
 			simappparams.DefaultWeightRevokeAllowance,
-			types.MsgRevokeAllowance{}.Route(),
+			feegrant.MsgRevokeAllowance{}.Route(),
 			simulation.TypeMsgRevokeAllowance,
 		},
 	}
@@ -112,7 +112,7 @@ func (suite *SimTestSuite) TestSimulateMsgGrantAllowance() {
 	operationMsg, futureOperations, err := op(r, app.BaseApp, ctx, accounts, "")
 	require.NoError(err)
 
-	var msg types.MsgGrantAllowance
+	var msg feegrant.MsgGrantAllowance
 	suite.app.AppCodec().UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(operationMsg.OK)
@@ -142,7 +142,7 @@ func (suite *SimTestSuite) TestSimulateMsgRevokeAllowance() {
 		ctx,
 		granter.Address,
 		grantee.Address,
-		&types.BasicAllowance{
+		&feegrant.BasicAllowance{
 			SpendLimit: feeCoins,
 			Expiration: &oneYear,
 		},
@@ -154,7 +154,7 @@ func (suite *SimTestSuite) TestSimulateMsgRevokeAllowance() {
 	operationMsg, futureOperations, err := op(r, app.BaseApp, ctx, accounts, "")
 	require.NoError(err)
 
-	var msg types.MsgRevokeAllowance
+	var msg feegrant.MsgRevokeAllowance
 	suite.app.AppCodec().UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(operationMsg.OK)

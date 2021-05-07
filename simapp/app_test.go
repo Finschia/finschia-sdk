@@ -27,6 +27,7 @@ import (
 	"github.com/line/lbm-sdk/x/crisis"
 	"github.com/line/lbm-sdk/x/distribution"
 	"github.com/line/lbm-sdk/x/evidence"
+	feegrantmodule "github.com/line/lbm-sdk/x/feegrant/module"
 	"github.com/line/lbm-sdk/x/genutil"
 	"github.com/line/lbm-sdk/x/gov"
 	transfer "github.com/line/lbm-sdk/x/ibc/applications/transfer"
@@ -180,7 +181,7 @@ func TestRunMigrations(t *testing.T) {
 					"ibc":          ibc.AppModule{}.ConsensusVersion(),
 					"upgrade":      upgrade.AppModule{}.ConsensusVersion(),
 					"vesting":      vesting.AppModule{}.ConsensusVersion(),
-					"feegrant":     feegrant.AppModule{}.ConsensusVersion(),
+					"feegrant":     feegrantmodule.AppModule{}.ConsensusVersion(),
 					"transfer":     transfer.AppModule{}.ConsensusVersion(),
 					"evidence":     evidence.AppModule{}.ConsensusVersion(),
 					"crisis":       crisis.AppModule{}.ConsensusVersion(),

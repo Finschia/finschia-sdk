@@ -1,4 +1,4 @@
-package types
+package feegrant
 
 import (
 	"github.com/line/lbm-sdk/codec/types"

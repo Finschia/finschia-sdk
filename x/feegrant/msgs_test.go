@@ -1,4 +1,4 @@
-package types_test
+package feegrant_test
 
 import (
 	"testing"
@@ -11,7 +11,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/feegrant/types"
+	"github.com/line/lbm-sdk/x/feegrant"
 )
 
 func TestMsgGrantAllowance(t *testing.T) {
@@ -20,7 +20,7 @@ func TestMsgGrantAllowance(t *testing.T) {
 	addr2 := sdk.AccAddress("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
 	atom := sdk.NewCoins(sdk.NewInt64Coin("atom", 555))
 	threeHours := time.Now().Add(3 * time.Hour)
-	basic := &types.BasicAllowance{
+	basic := &feegrant.BasicAllowance{
 		SpendLimit: atom,
 		Expiration: &threeHours,
 	}
@@ -28,7 +28,7 @@ func TestMsgGrantAllowance(t *testing.T) {
 	cases := map[string]struct {
 		grantee sdk.AccAddress
 		granter sdk.AccAddress
-		grant   *types.BasicAllowance
+		grant   *feegrant.BasicAllowance
 		valid   bool
 	}{
 		"valid": {
@@ -58,7 +58,7 @@ func TestMsgGrantAllowance(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		msg, err := types.NewMsgGrantAllowance(tc.grant, tc.granter, tc.grantee)
+		msg, err := feegrant.NewMsgGrantAllowance(tc.grant, tc.granter, tc.grantee)
 		require.NoError(t, err)
 		err = msg.ValidateBasic()
 
@@ -86,14 +86,14 @@ func TestMsgRevokeAllowance(t *testing.T) {
 	atom := sdk.NewCoins(sdk.NewInt64Coin("atom", 555))
 	threeHours := time.Now().Add(3 * time.Hour)
 
-	basic := &types.BasicAllowance{
+	basic := &feegrant.BasicAllowance{
 		SpendLimit: atom,
 		Expiration: &threeHours,
 	}
 	cases := map[string]struct {
 		grantee sdk.AccAddress
 		granter sdk.AccAddress
-		grant   *types.BasicAllowance
+		grant   *feegrant.BasicAllowance
 		valid   bool
 	}{
 		"valid": {
@@ -123,7 +123,7 @@ func TestMsgRevokeAllowance(t *testing.T) {
 	}
 
 	for _, tc := range cases {
-		msg := types.NewMsgRevokeAllowance(tc.granter, tc.grantee)
+		msg := feegrant.NewMsgRevokeAllowance(tc.granter, tc.grantee)
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err)

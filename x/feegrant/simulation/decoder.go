@@ -6,7 +6,7 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/types/kv"
-	"github.com/line/lbm-sdk/x/feegrant/types"
+	"github.com/line/lbm-sdk/x/feegrant"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's
@@ -14,8 +14,8 @@ import (
 func NewDecodeStore(cdc codec.Codec) func(kvA, kvB kv.Pair) string {
 	return func(kvA, kvB kv.Pair) string {
 		switch {
-		case bytes.Equal(kvA.Key[:1], types.FeeAllowanceKeyPrefix):
-			var grantA, grantB types.Grant
+		case bytes.Equal(kvA.Key[:1], feegrant.FeeAllowanceKeyPrefix):
+			var grantA, grantB feegrant.Grant
 			cdc.MustUnmarshal(kvA.Value, &grantA)
 			cdc.MustUnmarshal(kvB.Value, &grantB)
 			return fmt.Sprintf("%v\n%v", grantA, grantB)

@@ -6,15 +6,16 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-
+	
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/feegrant/types"
 )
 
-func TestBasicFeeValidAllow(t *testing.T) {
+func TestFilteredFeeValidAllow(t *testing.T) {
 	app := simapp.Setup(false)
 
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
@@ -37,6 +38,7 @@ func TestBasicFeeValidAllow(t *testing.T) {
 
 	cases := map[string]struct {
 		allowance *types.BasicAllowance
+		msgs      []string
 		// all other checks are ignored if valid=false
 		fee       sdk.Coins
 		blockTime time.Time
@@ -45,14 +47,21 @@ func TestBasicFeeValidAllow(t *testing.T) {
 		remove    bool
 		remains   sdk.Coins
 	}{
-		"empty": {
+		"msg contained": {
 			allowance: &types.BasicAllowance{},
+			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
 			accept:    true,
+		},
+		"msg not contained": {
+			allowance: &types.BasicAllowance{},
+			msgs:      []string{"/lbm.feegrant.v1.MsgGrant"},
+			accept:    false,
 		},
 		"small fee without expire": {
 			allowance: &types.BasicAllowance{
 				SpendLimit: atom,
 			},
+			msgs:    []string{"/lbm.auth.v1.MsgEmpty"},
 			fee:     smallAtom,
 			accept:  true,
 			remove:  false,
@@ -62,6 +71,7 @@ func TestBasicFeeValidAllow(t *testing.T) {
 			allowance: &types.BasicAllowance{
 				SpendLimit: smallAtom,
 			},
+			msgs:   []string{"/lbm.auth.v1.MsgEmpty"},
 			fee:    smallAtom,
 			accept: true,
 			remove: true,
@@ -70,6 +80,7 @@ func TestBasicFeeValidAllow(t *testing.T) {
 			allowance: &types.BasicAllowance{
 				SpendLimit: smallAtom,
 			},
+			msgs:   []string{"/lbm.auth.v1.MsgEmpty"},
 			fee:    eth,
 			accept: false,
 		},
@@ -78,6 +89,7 @@ func TestBasicFeeValidAllow(t *testing.T) {
 				SpendLimit: atom,
 				Expiration: &oneHour,
 			},
+			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
 			valid:     true,
 			fee:       smallAtom,
 			blockTime: now,
@@ -90,6 +102,7 @@ func TestBasicFeeValidAllow(t *testing.T) {
 				SpendLimit: atom,
 				Expiration: &now,
 			},
+			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
 			valid:     true,
 			fee:       smallAtom,
 			blockTime: oneHour,
@@ -101,6 +114,7 @@ func TestBasicFeeValidAllow(t *testing.T) {
 				SpendLimit: atom,
 				Expiration: &oneHour,
 			},
+			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
 			valid:     true,
 			fee:       bigAtom,
 			blockTime: now,
@@ -110,6 +124,7 @@ func TestBasicFeeValidAllow(t *testing.T) {
 			allowance: &types.BasicAllowance{
 				Expiration: &oneHour,
 			},
+			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
 			valid:     true,
 			fee:       bigAtom,
 			blockTime: now,
@@ -119,13 +134,13 @@ func TestBasicFeeValidAllow(t *testing.T) {
 			allowance: &types.BasicAllowance{
 				Expiration: &now,
 			},
+			msgs:      []string{"/lbm.auth.v1.MsgEmpty"},
 			valid:     true,
 			fee:       bigAtom,
 			blockTime: oneHour,
 			accept:    false,
 		},
 	}
-	require.Error(t, allowace.ValidateBasic())
 
 	for name, stc := range cases {
 		tc := stc // to make scopelint happy
@@ -135,8 +150,26 @@ func TestBasicFeeValidAllow(t *testing.T) {
 
 			ctx := app.BaseApp.NewContext(false, ocproto.Header{}).WithBlockTime(tc.blockTime)
 
+			// create grant
+			createGrant := func() types.Grant {
+				var granter, grantee sdk.AccAddress
+				allowance, err := types.NewAllowedMsgAllowance(tc.allowance, tc.msgs)
+				require.NoError(t, err)
+				grant, err := types.NewGrant(granter, grantee, allowance)
+				require.NoError(t, err)
+				return grant
+			}
+			grant := createGrant()
+
+			// create empty msg
+			call := authtypes.MsgEmpty{
+				FromAddress: "",
+			}
+
 			// now try to deduct
-			removed, err := tc.allowance.Accept(ctx, tc.fee, []sdk.Msg{})
+			allowance, err := grant.GetGrant()
+			require.NoError(t, err)
+			removed, err := allowance.Accept(ctx, tc.fee, []sdk.Msg{&call})
 			if !tc.accept {
 				require.Error(t, err)
 				return
@@ -145,7 +178,31 @@ func TestBasicFeeValidAllow(t *testing.T) {
 
 			require.Equal(t, tc.remove, removed)
 			if !removed {
-				assert.Equal(t, tc.allowance.SpendLimit, tc.remains)
+				updatedGrant := func(granter, grantee sdk.AccAddress,
+					allowance types.FeeAllowanceI) types.Grant {
+					newGrant, err := types.NewGrant(
+						granter,
+						grantee,
+						allowance)
+					require.NoError(t, err)
+
+					cdc := simapp.MakeTestEncodingConfig().Marshaler
+					bz, err := cdc.MarshalBinaryBare(&newGrant)
+					require.NoError(t, err)
+
+					var loaded types.Grant
+					err = cdc.UnmarshalBinaryBare(bz, &loaded)
+					require.NoError(t, err)
+					return loaded
+				}
+				newGrant := updatedGrant(sdk.AccAddress(grant.Granter),
+					sdk.AccAddress(grant.Grantee), allowance)
+
+				newAllowance, err := newGrant.GetGrant()
+				require.NoError(t, err)
+				feeAllowance, err := newAllowance.(*types.AllowedMsgAllowance).GetAllowance()
+				require.NoError(t, err)
+				assert.Equal(t, tc.remains, feeAllowance.(*types.BasicAllowance).SpendLimit)
 			}
 		})
 	}
