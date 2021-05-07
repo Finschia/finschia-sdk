@@ -28,7 +28,7 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/line/iavl/v2 v2.0.0-init.1.0.20210429094929-4f43a5568053
+	github.com/line/iavl/v2 v2.0.0-init.1.0.20210507092458-8331d3daef36
 	github.com/line/ostracon v0.34.9-0.20210429084710-ef4fe0a40c7d
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524
 	github.com/magiconair/properties v1.8.4

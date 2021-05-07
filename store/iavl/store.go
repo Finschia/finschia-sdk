@@ -7,6 +7,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/VictoriaMetrics/fastcache"
 	ics23 "github.com/confio/ics23/go"
 	"github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
@@ -23,7 +24,7 @@ import (
 )
 
 const (
-	defaultIAVLCacheSize = 10000
+	DefaultIAVLCacheSize = 1024 * 1024 * 100
 )
 
 var (
@@ -32,26 +33,79 @@ var (
 	_ types.CommitKVStore           = (*Store)(nil)
 	_ types.Queryable               = (*Store)(nil)
 	_ types.StoreWithInitialVersion = (*Store)(nil)
+
+	_ types.CacheManager = (*CacheManagerSingleton)(nil)
+	_ types.CacheManager = (*CacheManagerOwnCache)(nil)
 )
 
 // Store Implements types.KVStore and CommitKVStore.
 type Store struct {
-	tree Tree
+	tree    Tree
+	cache   *fastcache.Cache
+	metrics *Metrics
+}
+
+type CacheManagerSingleton struct {
+	cache   *fastcache.Cache
+	metrics *Metrics
+}
+
+func (cms *CacheManagerSingleton) GetCache() *fastcache.Cache {
+	return cms.cache
+}
+
+func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
+	return &CacheManagerSingleton{
+		cache: fastcache.New(cacheSize),
+		metrics: provider(),
+	}
+}
+
+type CacheManagerOwnCache struct {
+	cacheSize int
+}
+
+func (cmo *CacheManagerOwnCache) GetCache() *fastcache.Cache {
+	return fastcache.New(cmo.cacheSize)
+}
+
+func NewCacheManagerOwnCache(cacheSize int) types.CacheManager {
+	return &CacheManagerOwnCache{
+		cacheSize: cacheSize,
+	}
+}
+
+type CacheManagerNoCache struct {
+
+}
+
+func (cmn *CacheManagerNoCache) GetCache() *fastcache.Cache {
+	return nil
+}
+
+func NewCacheManagerNoCache() types.CacheManager {
+	return &CacheManagerNoCache{}
 }
 
 // LoadStore returns an IAVL Store as a CommitKVStore. Internally, it will load the
 // store's version (id) from the provided DB. An error is returned if the version
 // fails to load, or if called with a positive version on an empty tree.
-func LoadStore(db tmdb.DB, id types.CommitID, lazyLoading bool) (types.CommitKVStore, error) {
-	return LoadStoreWithInitialVersion(db, id, lazyLoading, 0)
+func LoadStore(db tmdb.DB, cacheManager types.CacheManager, id types.CommitID, lazyLoading bool) (
+	types.CommitKVStore, error) {
+	return LoadStoreWithInitialVersion(db, cacheManager, id, lazyLoading, 0)
 }
 
 // LoadStoreWithInitialVersion returns an IAVL Store as a CommitKVStore setting its initialVersion
 // to the one given. Internally, it will load the store's version (id) from the
 // provided DB. An error is returned if the version fails to load, or if called with a positive
 // version on an empty tree.
-func LoadStoreWithInitialVersion(db tmdb.DB, id types.CommitID, lazyLoading bool, initialVersion uint64) (types.CommitKVStore, error) {
-	tree, err := iavl.NewMutableTreeWithOpts(db, defaultIAVLCacheSize, &iavl.Options{InitialVersion: initialVersion})
+func LoadStoreWithInitialVersion(db tmdb.DB, cacheManager types.CacheManager, id types.CommitID, lazyLoading bool,
+	initialVersion uint64) (types.CommitKVStore, error) {
+	if cacheManager == nil {
+		cacheManager = NewCacheManagerNoCache()
+	}
+	cache := cacheManager.GetCache()
+	tree, err := iavl.NewMutableTreeWithCacheWithOpts(db, cache, &iavl.Options{InitialVersion: initialVersion})
 	if err != nil {
 		return nil, err
 	}
@@ -66,8 +120,16 @@ func LoadStoreWithInitialVersion(db tmdb.DB, id types.CommitID, lazyLoading bool
 		return nil, err
 	}
 
+	var metrics *Metrics
+	if cms, ok := cacheManager.(*CacheManagerSingleton); ok {
+		metrics = cms.metrics
+	} else {
+		metrics = NopMetrics()
+	}
 	return &Store{
-		tree: tree,
+		tree:    tree,
+		cache:   cache,
+		metrics: metrics,
 	}, nil
 }
 
@@ -170,6 +232,14 @@ func (st *Store) Set(key, value []byte) {
 func (st *Store) Get(key []byte) []byte {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "get")
 	_, value := st.tree.Get(key)
+	if st.cache != nil {
+		stats := fastcache.Stats{}
+		st.cache.UpdateStats(&stats)
+		st.metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
+		st.metrics.IAVLCacheMisses.Set(float64(stats.Misses))
+		st.metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
+		st.metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
+	}
 	return value
 }
 

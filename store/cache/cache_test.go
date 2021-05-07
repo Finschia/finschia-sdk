@@ -52,7 +52,7 @@ func TestStoreCache(t *testing.T) {
 	store := iavlstore.UnsafeNewStore(tree)
 	kvStore := mngr.GetStoreCache(sKey, store)
 
-	for i := uint(0); i < cache.DefaultCommitKVStoreCacheSize*2; i++ {
+	for i := uint(0); i < 10000; i++ {
 		key := []byte(fmt.Sprintf("key_%d", i))
 		value := []byte(fmt.Sprintf("value_%d", i))
 

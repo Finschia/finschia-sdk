@@ -54,7 +54,8 @@ func fauxMerkleModeOpt(bapp *baseapp.BaseApp) {
 // interBlockCacheOpt returns a BaseApp option function that sets the persistent
 // inter-block write-through cache.
 func interBlockCacheOpt() func(*baseapp.BaseApp) {
-	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager(cache.NopMetricsProvider()))
+	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager(
+		cache.DefaultCommitKVStoreCacheSize, cache.NopMetricsProvider()))
 }
 
 func TestFullAppSimulation(t *testing.T) {
@@ -300,7 +301,8 @@ func TestAppStateDeterminism(t *testing.T) {
 			}
 
 			db := memdb.NewDB()
-			app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, FlagPeriodValue, MakeTestEncodingConfig(), EmptyAppOptions{}, interBlockCacheOpt())
+			app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, FlagPeriodValue,
+			MakeTestEncodingConfig(), EmptyAppOptions{}, interBlockCacheOpt())
 
 			fmt.Printf(
 				"running non-determinism simulation; seed %d: %d/%d, attempt: %d/%d\n",

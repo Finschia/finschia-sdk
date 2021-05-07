@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/line/lbm-sdk/v2/store/cache"
+	"github.com/line/lbm-sdk/v2/store/iavl"
 	"github.com/spf13/viper"
 
 	storetypes "github.com/line/lbm-sdk/v2/store/types"
@@ -66,6 +68,11 @@ type BaseConfig struct {
 	// which informs Tendermint what to index. If empty, all events will be indexed.
 	IndexEvents []string `mapstructure:"index-events"`
 
+	// Interblock cache size; bytes size unit
+	InterBlockCacheSize int `mapstructure:"inter-block-cache-size"`
+
+	// IAVL cache size; bytes size unit
+	IAVLCacheSize int `mapstructure:"iavl-cache-size"`
 
 	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
 	// It works when tendermint's prometheus option (config.toml) is set to true.
@@ -168,14 +175,16 @@ func (c *Config) GetMinGasPrices() sdk.DecCoins {
 func DefaultConfig() *Config {
 	return &Config{
 		BaseConfig: BaseConfig{
-			MinGasPrices:      defaultMinGasPrices,
-			InterBlockCache:   true,
-			Pruning:           storetypes.PruningOptionDefault,
-			PruningKeepRecent: "0",
-			PruningKeepEvery:  "0",
-			PruningInterval:   "0",
-			MinRetainBlocks:   0,
-			IndexEvents:       make([]string, 0),
+			MinGasPrices:        defaultMinGasPrices,
+			InterBlockCache:     true,
+			InterBlockCacheSize: cache.DefaultCommitKVStoreCacheSize,
+			IAVLCacheSize:       iavl.DefaultIAVLCacheSize,
+			Pruning:             storetypes.PruningOptionDefault,
+			PruningKeepRecent:   "0",
+			PruningKeepEvery:    "0",
+			PruningInterval:     "0",
+			MinRetainBlocks:     0,
+			IndexEvents:         make([]string, 0),
 		},
 		Telemetry: telemetry.Config{
 			Enabled:      false,

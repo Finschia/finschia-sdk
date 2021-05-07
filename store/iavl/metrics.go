@@ -1,4 +1,4 @@
-package cache
+package iavl
 
 import (
 	"github.com/go-kit/kit/metrics"
@@ -10,15 +10,15 @@ import (
 const (
 	// MetricsSubsystem is a subsystem shared by all metrics exposed by this
 	// package.
-	MetricsSubsystem = "ibcache"
+	MetricsSubsystem = "iavlcache"
 )
 
 // Metrics contains metrics exposed by this package.
 type Metrics struct {
-	InterBlockCacheHits    metrics.Counter
-	InterBlockCacheMisses  metrics.Counter
-	InterBlockCacheEntries metrics.Gauge
-	InterBlockCacheBytes   metrics.Gauge
+	IAVLCacheHits    metrics.Gauge
+	IAVLCacheMisses  metrics.Gauge
+	IAVLCacheEntries metrics.Gauge
+	IAVLCacheBytes   metrics.Gauge
 }
 
 // PrometheusMetrics returns Metrics build using Prometheus client library.
@@ -30,29 +30,29 @@ func PrometheusMetrics(namespace string, labelsAndValues ...string) *Metrics {
 		labels = append(labels, labelsAndValues[i])
 	}
 	return &Metrics{
-		InterBlockCacheHits: prometheus.NewCounterFrom(stdprometheus.CounterOpts{
+		IAVLCacheHits: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "inter_block_cache_hits",
-			Help:      "Cache hits of the inter block cache",
+			Name:      "iavl_cache_hits",
+			Help:      "Cache hit count of the iavl cache",
 		}, labels).With(labelsAndValues...),
-		InterBlockCacheMisses: prometheus.NewCounterFrom(stdprometheus.CounterOpts{
+		IAVLCacheMisses: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "inter_block_cache_misses",
-			Help:      "Cache misses of the inter block cache",
+			Name:      "iavl_cache_misses",
+			Help:      "Cache miss count of the iavl cache",
 		}, labels).With(labelsAndValues...),
-		InterBlockCacheEntries: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
+		IAVLCacheEntries: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "inter_block_cache_entries",
-			Help:      "Cache entry count",
+			Name:      "iavl_cache_entries",
+			Help:      "Cache entry count of the iavl cache",
 		}, labels).With(labelsAndValues...),
-		InterBlockCacheBytes: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
+		IAVLCacheBytes: prometheus.NewGaugeFrom(stdprometheus.GaugeOpts{
 			Namespace: namespace,
 			Subsystem: MetricsSubsystem,
-			Name:      "inter_block_cache_bytes_size",
-			Help:      "Cache bytes size",
+			Name:      "iavl_cache_bytes_size",
+			Help:      "Cache bytes size of the iavl cache",
 		}, labels).With(labelsAndValues...),
 	}
 }
@@ -60,10 +60,10 @@ func PrometheusMetrics(namespace string, labelsAndValues ...string) *Metrics {
 // NopMetrics returns no-op Metrics.
 func NopMetrics() *Metrics {
 	return &Metrics{
-		InterBlockCacheHits:    discard.NewCounter(),
-		InterBlockCacheMisses:  discard.NewCounter(),
-		InterBlockCacheEntries: discard.NewGauge(),
-		InterBlockCacheBytes:   discard.NewGauge(),
+		IAVLCacheHits:    discard.NewGauge(),
+		IAVLCacheMisses:  discard.NewGauge(),
+		IAVLCacheEntries: discard.NewGauge(),
+		IAVLCacheBytes:   discard.NewGauge(),
 	}
 }
 
