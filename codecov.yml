@@ -19,7 +19,7 @@ coverage:
       default:
         # basic
         target: 75
-        threshold: 1% # allow this much decrease on project
+        threshold: 35% # allow this much decrease on project
         base: auto
         # advanced
         branches: v2/develop
