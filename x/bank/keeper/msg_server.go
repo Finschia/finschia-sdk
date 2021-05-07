@@ -26,11 +26,9 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) Send(goCtx context.Context, msg *types.MsgSend) (*types.MsgSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	/*
 	if err := k.SendEnabledCoins(ctx, msg.Amount...); err != nil {
 		return nil, err
 	}
-    */
 	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
 	if err != nil {
 		return nil, err

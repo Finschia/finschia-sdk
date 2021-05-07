@@ -64,11 +64,11 @@ func NewCommitKVStoreCacheManager(cacheSize int, provider MetricsProvider) *Comm
 		cacheSize = DefaultCommitKVStoreCacheSize
 	}
 	return &CommitKVStoreCacheManager{
-		cache:           fastcache.New(cacheSize),
-		caches:          make(map[string]types.CommitKVStore),
-		metrics:         provider(),
-		prefixMap:       make(map[string][]byte),
-		prefixOrder:     0,
+		cache:       fastcache.New(cacheSize),
+		caches:      make(map[string]types.CommitKVStore),
+		metrics:     provider(),
+		prefixMap:   make(map[string][]byte),
+		prefixOrder: 0,
 	}
 }
 

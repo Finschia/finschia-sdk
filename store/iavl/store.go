@@ -56,7 +56,7 @@ func (cms *CacheManagerSingleton) GetCache() *fastcache.Cache {
 
 func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
 	return &CacheManagerSingleton{
-		cache: fastcache.New(cacheSize),
+		cache:   fastcache.New(cacheSize),
 		metrics: provider(),
 	}
 }
