@@ -32,4 +32,6 @@ func TestStore(t *testing.T) {
 	require.False(t, store.Has(k))
 	require.Panics(t, func() { store.Set([]byte(""), v) }, "setting an empty key should panic")
 	require.Panics(t, func() { store.Set(nil, v) }, "setting a nil key should panic")
+
+	require.Panics(t, func() { cms.SetIAVLCacheManager(nil)}, "not implemented")
 }
