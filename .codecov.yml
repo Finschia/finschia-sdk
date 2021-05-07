@@ -26,6 +26,9 @@ coverage:
           - client
     changes: false
 
+codecov:
+  allow_pseudo_compare: False
+
 comment:
   layout: "reach, diff, files"
   behavior: default # update if exists else create new
