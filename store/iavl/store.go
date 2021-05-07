@@ -75,9 +75,7 @@ func NewCacheManagerOwnCache(cacheSize int) types.CacheManager {
 	}
 }
 
-type CacheManagerNoCache struct {
-
-}
+type CacheManagerNoCache struct{}
 
 func (cmn *CacheManagerNoCache) GetCache() *fastcache.Cache {
 	return nil
