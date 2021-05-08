@@ -28,11 +28,36 @@ coverage:
         only_pulls: false
         flags: null
         paths: null
+      app:
+        target: 70%
+        flags:
+          - app
+      modules:
+        target: 70%
+        flags:
+          - modules
+      client:
+        flags:
+          - client
     changes: false
     patch: off
   precision: 2
   range: 50...90
   round: down
+
+flags:
+  app:
+    paths:
+      - "app/"
+      - "baseapp/"
+  modules:
+    paths:
+      - "x/"
+      - "!x/**/client/" # ignore client package
+  client:
+    paths:
+      - "client/"
+      - "x/**/client/"
 
 parsers:
   gcov:
