@@ -40,7 +40,6 @@ coverage:
         flags:
           - client
     changes: false
-    patch: off
   precision: 2
   range: 50...90
   round: down
