@@ -17,7 +17,7 @@ coverage:
     project:
       default:
         # basic
-        target: 75
+        target: 20
         threshold: 1% # allow this much decrease on project
         base: auto
         # advanced
