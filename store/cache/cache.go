@@ -6,6 +6,7 @@ import (
 	"github.com/VictoriaMetrics/fastcache"
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/telemetry"
 )
 
 const (
@@ -26,9 +27,8 @@ type (
 	// CommitKVStore and below is completely irrelevant to this layer.
 	CommitKVStoreCache struct {
 		types.CommitKVStore
-		cache   *fastcache.Cache
-		prefix  []byte
-		metrics *Metrics
+		cache  *fastcache.Cache
+		prefix []byte
 	}
 
 	// CommitKVStoreCacheManager maintains a mapping from a StoreKey to a
@@ -36,10 +36,9 @@ type (
 	// in an inter-block (persistent) manner and typically provided by a
 	// CommitMultiStore.
 	CommitKVStoreCacheManager struct {
-		mutex   sync.Mutex
-		cache   *fastcache.Cache
-		caches  map[string]types.CommitKVStore
-		metrics *Metrics
+		mutex  sync.Mutex
+		cache  *fastcache.Cache
+		caches map[string]types.CommitKVStore
 
 		// All cache stores use the unique prefix that has one byte length
 		// Contract: The number of all cache stores cannot exceed 127(max byte)
@@ -48,17 +47,15 @@ type (
 	}
 )
 
-func NewCommitKVStoreCache(store types.CommitKVStore, prefix []byte, cache *fastcache.Cache,
-	metrics *Metrics) *CommitKVStoreCache {
+func NewCommitKVStoreCache(store types.CommitKVStore, prefix []byte, cache *fastcache.Cache) *CommitKVStoreCache {
 	return &CommitKVStoreCache{
 		CommitKVStore: store,
 		prefix:        prefix,
 		cache:         cache,
-		metrics:       metrics,
 	}
 }
 
-func NewCommitKVStoreCacheManager(cacheSize int, provider MetricsProvider) *CommitKVStoreCacheManager {
+func NewCommitKVStoreCacheManager(cacheSize int) *CommitKVStoreCacheManager {
 	if cacheSize <= 0 {
 		// This function was called because it intended to use the inter block cache, creating a cache of minimal size.
 		cacheSize = DefaultCommitKVStoreCacheSize
@@ -66,7 +63,6 @@ func NewCommitKVStoreCacheManager(cacheSize int, provider MetricsProvider) *Comm
 	return &CommitKVStoreCacheManager{
 		cache:       fastcache.New(cacheSize),
 		caches:      make(map[string]types.CommitKVStore),
-		metrics:     provider(),
 		prefixMap:   make(map[string][]byte),
 		prefixOrder: 0,
 	}
@@ -85,7 +81,7 @@ func (cmgr *CommitKVStoreCacheManager) GetStoreCache(key types.StoreKey, store t
 			if cmgr.prefixOrder <= 0 {
 				panic("The number of cache stores exceed the maximum(127)")
 			}
-			cmgr.caches[key.Name()] = NewCommitKVStoreCache(store, cmgr.prefixMap[key.Name()], cmgr.cache, cmgr.metrics)
+			cmgr.caches[key.Name()] = NewCommitKVStoreCache(store, cmgr.prefixMap[key.Name()], cmgr.cache)
 		}
 		cmgr.mutex.Unlock()
 	}
@@ -127,18 +123,18 @@ func (ckv *CommitKVStoreCache) Get(key []byte) []byte {
 	valueI := ckv.cache.Get(nil, prefixedKey)
 	if valueI != nil {
 		// cache hit
-		ckv.metrics.InterBlockCacheHits.Add(1)
+		telemetry.IncrCounter(1, "store", "inter-block-cache", "hits")
 		return valueI
 	}
 
 	// cache miss; write to cache
-	ckv.metrics.InterBlockCacheMisses.Add(1)
+	telemetry.IncrCounter(1, "store", "inter-block-cache", "misses")
 	value := ckv.CommitKVStore.Get(key)
 	ckv.cache.Set(prefixedKey, value)
 	stats := fastcache.Stats{}
 	ckv.cache.UpdateStats(&stats)
-	ckv.metrics.InterBlockCacheEntries.Set(float64(stats.EntriesCount))
-	ckv.metrics.InterBlockCacheBytes.Set(float64(stats.BytesSize))
+	telemetry.SetGauge(float32(stats.EntriesCount), "store", "inter-block-cache", "entries")
+	telemetry.SetGauge(float32(stats.BytesSize), "store", "inter-block-cache", "bytes")
 	return value
 }
 

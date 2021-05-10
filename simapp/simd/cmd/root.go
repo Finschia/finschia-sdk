@@ -6,13 +6,6 @@ import (
 	"os"
 	"path/filepath"
 
-	ostcli "github.com/line/ostracon/libs/cli"
-	"github.com/line/ostracon/libs/log"
-	tmdb "github.com/line/tm-db/v2"
-	"github.com/spf13/cast"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-
 	"github.com/line/lbm-sdk/v2/baseapp"
 	"github.com/line/lbm-sdk/v2/client"
 	"github.com/line/lbm-sdk/v2/client/debug"
@@ -33,6 +26,11 @@ import (
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
 	"github.com/line/lbm-sdk/v2/x/crisis"
 	genutilcli "github.com/line/lbm-sdk/v2/x/genutil/client/cli"
+	ostcli "github.com/line/ostracon/libs/cli"
+	"github.com/line/ostracon/libs/log"
+	tmdb "github.com/line/tm-db/v2"
+	"github.com/spf13/cast"
+	"github.com/spf13/cobra"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
@@ -158,11 +156,9 @@ type appCreator struct {
 func (a appCreator) newApp(logger log.Logger, db tmdb.DB, traceStore io.Writer, appOpts servertypes.AppOptions) servertypes.Application {
 	var cache sdk.MultiStorePersistentCache
 
-	ibCacheMetricsProvider, iavlCacheMetricsProvider :=
-		baseapp.MetricsProvider(cast.ToBool(viper.GetBool(server.FlagPrometheus)))
 	if cast.ToBool(appOpts.Get(server.FlagInterBlockCache)) {
 		cache = store.NewCommitKVStoreCacheManager(
-			cast.ToInt(appOpts.Get(server.FlagInterBlockCacheSize)), ibCacheMetricsProvider)
+			cast.ToInt(appOpts.Get(server.FlagInterBlockCacheSize)))
 	}
 
 	skipUpgradeHeights := make(map[int64]bool)
@@ -197,7 +193,7 @@ func (a appCreator) newApp(logger log.Logger, db tmdb.DB, traceStore io.Writer, 
 		baseapp.SetHaltTime(cast.ToUint64(appOpts.Get(server.FlagHaltTime))),
 		baseapp.SetMinRetainBlocks(cast.ToUint64(appOpts.Get(server.FlagMinRetainBlocks))),
 		baseapp.SetInterBlockCache(cache),
-		baseapp.SetIAVLCacheManager(cast.ToInt(appOpts.Get(server.FlagIAVLCacheSize)), iavlCacheMetricsProvider),
+		baseapp.SetIAVLCacheManager(cast.ToInt(appOpts.Get(server.FlagIAVLCacheSize))),
 		baseapp.SetTrace(cast.ToBool(appOpts.Get(server.FlagTrace))),
 		baseapp.SetIndexEvents(cast.ToStringSlice(appOpts.Get(server.FlagIndexEvents))),
 		baseapp.SetSnapshotStore(snapshotStore),

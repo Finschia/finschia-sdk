@@ -40,24 +40,21 @@ var (
 
 // Store Implements types.KVStore and CommitKVStore.
 type Store struct {
-	tree    Tree
-	cache   *fastcache.Cache
-	metrics *Metrics
+	tree  Tree
+	cache *fastcache.Cache
 }
 
 type CacheManagerSingleton struct {
-	cache   *fastcache.Cache
-	metrics *Metrics
+	cache *fastcache.Cache
 }
 
 func (cms *CacheManagerSingleton) GetCache() *fastcache.Cache {
 	return cms.cache
 }
 
-func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
+func NewCacheManagerSingleton(cacheSize int) types.CacheManager {
 	return &CacheManagerSingleton{
-		cache:   fastcache.New(cacheSize),
-		metrics: provider(),
+		cache: fastcache.New(cacheSize),
 	}
 }
 
@@ -118,16 +115,9 @@ func LoadStoreWithInitialVersion(db tmdb.DB, cacheManager types.CacheManager, id
 		return nil, err
 	}
 
-	var metrics *Metrics
-	if cms, ok := cacheManager.(*CacheManagerSingleton); ok {
-		metrics = cms.metrics
-	} else {
-		metrics = NopMetrics()
-	}
 	return &Store{
-		tree:    tree,
-		cache:   cache,
-		metrics: metrics,
+		tree:  tree,
+		cache: cache,
 	}, nil
 }
 
@@ -233,10 +223,10 @@ func (st *Store) Get(key []byte) []byte {
 	if st.cache != nil {
 		stats := fastcache.Stats{}
 		st.cache.UpdateStats(&stats)
-		st.metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
-		st.metrics.IAVLCacheMisses.Set(float64(stats.Misses))
-		st.metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
-		st.metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
+		telemetry.SetGauge(float32(stats.GetCalls-stats.Misses), "store", "iavl-cache", "hits")
+		telemetry.SetGauge(float32(stats.Misses), "store", "iavl-cache", "missess")
+		telemetry.SetGauge(float32(stats.EntriesCount), "store", "iavl-cache", "entries")
+		telemetry.SetGauge(float32(stats.BytesSize), "store", "iavl-cache", "bytes")
 	}
 	return value
 }
