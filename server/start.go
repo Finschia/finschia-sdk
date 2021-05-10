@@ -8,6 +8,8 @@ import (
 	"runtime/pprof"
 	"time"
 
+	"github.com/line/lbm-sdk/v2/store/cache"
+	"github.com/line/lbm-sdk/v2/store/iavl"
 	"github.com/line/ostracon/abci/server"
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostos "github.com/line/ostracon/libs/os"
@@ -30,18 +32,21 @@ import (
 
 // Ostracon full-node start flags
 const (
-	flagWithOstracon       = "with-ostracon"
-	flagAddress            = "address"
-	flagTransport          = "transport"
-	flagTraceStore         = "trace-store"
-	flagCPUProfile         = "cpu-profile"
-	FlagMinGasPrices       = "minimum-gas-prices"
-	FlagHaltHeight         = "halt-height"
-	FlagHaltTime           = "halt-time"
-	FlagInterBlockCache    = "inter-block-cache"
-	FlagUnsafeSkipUpgrades = "unsafe-skip-upgrades"
-	FlagTrace              = "trace"
-	FlagInvCheckPeriod     = "inv-check-period"
+	flagWithOstracon        = "with-ostracon"
+	flagAddress             = "address"
+	flagTransport           = "transport"
+	flagTraceStore          = "trace-store"
+	flagCPUProfile          = "cpu-profile"
+	FlagMinGasPrices        = "minimum-gas-prices"
+	FlagHaltHeight          = "halt-height"
+	FlagHaltTime            = "halt-time"
+	FlagInterBlockCache     = "inter-block-cache"
+	FlagInterBlockCacheSize = "inter-block-cache-size"
+	FlagIAVLCacheSize       = "iavl-cache-size"
+	FlagUnsafeSkipUpgrades  = "unsafe-skip-upgrades"
+	FlagTrace               = "trace"
+	FlagInvCheckPeriod      = "inv-check-period"
+	FlagPrometheus          = "prometheus"
 
 	FlagPruning           = "pruning"
 	FlagPruningKeepRecent = "pruning-keep-recent"
@@ -138,6 +143,8 @@ which accepts a path for the resulting pprof file.
 	cmd.Flags().Uint64(FlagHaltHeight, 0, "Block height at which to gracefully halt the chain and shutdown the node")
 	cmd.Flags().Uint64(FlagHaltTime, 0, "Minimum block time (in Unix seconds) at which to gracefully halt the chain and shutdown the node")
 	cmd.Flags().Bool(FlagInterBlockCache, true, "Enable inter-block caching")
+	cmd.Flags().Int(FlagInterBlockCacheSize, cache.DefaultCommitKVStoreCacheSize, "The maximum bytes size of the inter-block cache")
+	cmd.Flags().Int(FlagIAVLCacheSize, iavl.DefaultIAVLCacheSize, "The maximum bytes size of the iavl node cache")
 	cmd.Flags().String(flagCPUProfile, "", "Enable CPU profiling and write to the provided file")
 	cmd.Flags().Bool(FlagTrace, false, "Provide full stack traces for errors in ABCI Log")
 	cmd.Flags().String(FlagPruning, storetypes.PruningOptionDefault, "Pruning strategy (default|nothing|everything|custom)")

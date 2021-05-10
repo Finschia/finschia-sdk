@@ -6,6 +6,7 @@ require (
 	github.com/99designs/keyring v1.1.6
 	github.com/CosmWasm/wasmvm v0.14.0-beta1
 	github.com/DataDog/zstd v1.4.5 // indirect
+	github.com/VictoriaMetrics/fastcache v1.5.8
 	github.com/armon/go-metrics v0.3.6
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.21.0-beta
@@ -15,6 +16,7 @@ require (
 	github.com/cosmos/ledger-cosmos-go v0.11.1
 	github.com/dvsekhvalnov/jose2go v0.0.0-20200901110807-248326c1351b
 	github.com/enigmampc/btcutil v1.0.3-0.20200723161021-e2fb6adb2a25
+	github.com/go-kit/kit v0.10.0
 	github.com/gogo/gateway v1.1.0
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang/mock v1.4.4
@@ -25,8 +27,8 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/hashicorp/golang-lru v0.5.4
-	github.com/line/iavl/v2 v2.0.0-init.1.0.20210429094929-4f43a5568053
+	github.com/hashicorp/golang-lru v0.5.4 // indirect
+	github.com/line/iavl/v2 v2.0.0-init.1.0.20210507092458-8331d3daef36
 	github.com/line/ostracon v0.34.9-0.20210429084710-ef4fe0a40c7d
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524
 	github.com/magiconair/properties v1.8.4

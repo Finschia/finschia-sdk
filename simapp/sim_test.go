@@ -7,6 +7,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/line/lbm-sdk/v2/store/cache"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
@@ -53,7 +54,7 @@ func fauxMerkleModeOpt(bapp *baseapp.BaseApp) {
 // interBlockCacheOpt returns a BaseApp option function that sets the persistent
 // inter-block write-through cache.
 func interBlockCacheOpt() func(*baseapp.BaseApp) {
-	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager())
+	return baseapp.SetInterBlockCache(store.NewCommitKVStoreCacheManager(cache.DefaultCommitKVStoreCacheSize))
 }
 
 func TestFullAppSimulation(t *testing.T) {
@@ -299,7 +300,8 @@ func TestAppStateDeterminism(t *testing.T) {
 			}
 
 			db := memdb.NewDB()
-			app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, FlagPeriodValue, MakeTestEncodingConfig(), EmptyAppOptions{}, interBlockCacheOpt())
+			app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, FlagPeriodValue,
+				MakeTestEncodingConfig(), EmptyAppOptions{}, interBlockCacheOpt())
 
 			fmt.Printf(
 				"running non-determinism simulation; seed %d: %d/%d, attempt: %d/%d\n",

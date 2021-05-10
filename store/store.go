@@ -12,6 +12,6 @@ func NewCommitMultiStore(db tmdb.DB) types.CommitMultiStore {
 	return rootmulti.NewStore(db)
 }
 
-func NewCommitKVStoreCacheManager() types.MultiStorePersistentCache {
-	return cache.NewCommitKVStoreCacheManager(cache.DefaultCommitKVStoreCacheSize)
+func NewCommitKVStoreCacheManager(cacheSize int) types.MultiStorePersistentCache {
+	return cache.NewCommitKVStoreCacheManager(cacheSize)
 }

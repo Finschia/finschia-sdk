@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/VictoriaMetrics/fastcache"
 	abci "github.com/line/ostracon/abci/types"
 	oststrings "github.com/line/ostracon/libs/strings"
 	tmdb "github.com/line/tm-db/v2"
@@ -15,6 +16,10 @@ import (
 type Store interface {
 	GetStoreType() StoreType
 	CacheWrapper
+}
+
+type CacheManager interface {
+	GetCache() *fastcache.Cache
 }
 
 // something that can persist to disk
@@ -181,6 +186,10 @@ type CommitMultiStore interface {
 	// SetInitialVersion sets the initial version of the IAVL tree. It is used when
 	// starting a new chain at an arbitrary height.
 	SetInitialVersion(version int64) error
+
+	// SetIAVLCacheManager sets the CacheManager that is holding nodedb cache of IAVL tree
+	// If a cacheManager is not set, then IAVL tree does not use cache
+	SetIAVLCacheManager(cacheManager CacheManager)
 }
 
 //---------subsp-------------------------------

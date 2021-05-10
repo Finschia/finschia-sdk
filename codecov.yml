@@ -17,7 +17,7 @@ coverage:
     project:
       default:
         # basic
-        target: 75
+        target: 20
         threshold: 1% # allow this much decrease on project
         base: auto
         # advanced
@@ -28,11 +28,35 @@ coverage:
         only_pulls: false
         flags: null
         paths: null
+      app:
+        target: 70%
+        flags:
+          - app
+      modules:
+        target: 70%
+        flags:
+          - modules
+      client:
+        flags:
+          - client
     changes: false
-    patch: off
   precision: 2
   range: 50...90
   round: down
+
+flags:
+  app:
+    paths:
+      - "app/"
+      - "baseapp/"
+  modules:
+    paths:
+      - "x/"
+      - "!x/**/client/" # ignore client package
+  client:
+    paths:
+      - "client/"
+      - "x/**/client/"
 
 parsers:
   gcov:

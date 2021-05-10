@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/line/lbm-sdk/v2/store/iavl"
 	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/codec/types"
@@ -61,6 +62,17 @@ func SetIndexEvents(ie []string) func(*BaseApp) {
 // inter-block cache.
 func SetInterBlockCache(cache sdk.MultiStorePersistentCache) func(*BaseApp) {
 	return func(app *BaseApp) { app.setInterBlockCache(cache) }
+}
+
+// SetIAVLCacheManager provides a BaseApp option function that sets the iavl CacheManager
+func SetIAVLCacheManager(size int) func(*BaseApp) {
+	return func(app *BaseApp) {
+		if size == 0 {
+			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerNoCache())
+		} else {
+			app.cms.SetIAVLCacheManager(iavl.NewCacheManagerSingleton(size))
+		}
+	}
 }
 
 // SetSnapshotInterval sets the snapshot interval.
