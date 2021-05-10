@@ -57,6 +57,7 @@ ignore:
   - "*.sh"
   - "*.png"
   - "*_test.go"
+  - "*.pb.go"
   - "scripts/"
   - "x/**/test_common.go"
   - "*_cmd.go"
