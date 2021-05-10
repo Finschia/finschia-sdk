@@ -3,13 +3,13 @@ package secp256r1
 import (
 	"testing"
 
-	"github.com/line/ostracon/crypto"
+	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	proto "github.com/gogo/protobuf/proto"
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/types"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/ostracon/crypto"
 )
 
 var _ cryptotypes.PrivKey = &PrivKey{}
@@ -41,7 +41,7 @@ func (suite *SKSuite) TestPubKey() {
 	suite.True(suite.sk.(*PrivKey).Secret.PublicKey.Equal(&pk.(*PubKey).Key.PublicKey))
 }
 
-func (suite *SKSuite) Bytes() {
+func (suite *SKSuite) TestBytes() {
 	bz := suite.sk.Bytes()
 	suite.Len(bz, fieldSize)
 	var sk *PrivKey
