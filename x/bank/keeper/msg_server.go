@@ -26,7 +26,9 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) Send(goCtx context.Context, msg *types.MsgSend) (*types.MsgSendResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// NOTICE: We omit the bech32 validation of `from`, `to` for performance in this function.
+	if err := k.IsSendEnabledCoins(ctx, msg.Amount...); err != nil {
+		return nil, err
+	}
 
 	if err := k.SendEnabledCoins(ctx, msg.Amount...); err != nil {
 		return nil, err
@@ -68,7 +70,7 @@ func (k msgServer) MultiSend(goCtx context.Context, msg *types.MsgMultiSend) (*t
 
 	// NOTE: totalIn == totalOut should already have been checked
 	for _, in := range msg.Inputs {
-		if err := k.SendEnabledCoins(ctx, in.Coins...); err != nil {
+		if err := k.IsSendEnabledCoins(ctx, in.Coins...); err != nil {
 			return nil, err
 		}
 	}
