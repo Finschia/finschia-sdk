@@ -8,7 +8,7 @@ codecov:
   bot: Codecov bot for LINK
 
 comment:
-  layout: "reach,diff,flags,tree"
+  layout: "reach, diff, files"
   behavior: default  # update if exists else create new
   require_changes: true
 
