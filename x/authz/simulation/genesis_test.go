@@ -7,8 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/codec"
-	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/authz"
@@ -16,15 +15,14 @@ import (
 )
 
 func TestRandomizedGenState(t *testing.T) {
-	interfaceRegistry := codectypes.NewInterfaceRegistry()
-	cdc := codec.NewProtoCodec(interfaceRegistry)
+	app := simapp.Setup(false)
 
 	s := rand.NewSource(1)
 	r := rand.New(s)
 
 	simState := module.SimulationState{
 		AppParams:    make(simtypes.AppParams),
-		Cdc:          cdc,
+		Cdc:          app.AppCodec(),
 		Rand:         r,
 		NumBonded:    3,
 		Accounts:     simtypes.RandomAccounts(r, 3),
@@ -36,5 +34,5 @@ func TestRandomizedGenState(t *testing.T) {
 	var authzGenesis authz.GenesisState
 	simState.Cdc.MustUnmarshalJSON(simState.GenState[authz.ModuleName], &authzGenesis)
 
-	require.Len(t, authzGenesis.Authorization, 0)
+	require.Len(t, authzGenesis.Authorization, len(simState.Accounts)-1)
 }
