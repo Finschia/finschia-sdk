@@ -8,14 +8,15 @@ codecov:
   bot: Codecov bot for LINK
 
 comment:
-  layout: "reach,diff,flags,tree"
+  layout: "reach, diff, files"
   behavior: default  # update if exists else create new
-  require_changes: no
+  require_changes: true
 
 coverage:
   status:
     project:
       default:
+<<<<<<< HEAD
         # basic
         target: 20
         threshold: 1% # allow this much decrease on project
@@ -28,6 +29,10 @@ coverage:
         only_pulls: false
         flags: null
         paths: null
+=======
+        target: 20
+        threshold: 1% # allow this much decrease on project
+>>>>>>> 04730c0880d8e6af11435a22de07f74475188e1c
       app:
         target: 70%
         flags:
@@ -57,6 +62,7 @@ flags:
     paths:
       - "client/"
       - "x/**/client/"
+<<<<<<< HEAD
 
 parsers:
   gcov:
@@ -65,6 +71,8 @@ parsers:
       loop: yes
       method: no
       macro: no
+=======
+>>>>>>> 04730c0880d8e6af11435a22de07f74475188e1c
 
 ignore:
   - "docs"
@@ -75,12 +83,10 @@ ignore:
   - "*.sh"
   - "*.png"
   - "*_test.go"
+  - "scripts/"
   - "x/**/test_common.go"
   - "*_cmd.go"
-  - "contrib/**/*"
-  - "client/rpc/**/*_wrapper.go"
-  - "client/rpc/**/*_alias.go"
-  - "client/rpc/mock/*.go"
+  - "contrib"
   - "statik.go"
   - "root.go"
   - "x/**/module.go"
