@@ -8,26 +8,16 @@ codecov:
   bot: Codecov bot for LINK
 
 comment:
-  layout: "reach,diff,flags,tree"
+  layout: "reach, diff, files"
   behavior: default  # update if exists else create new
-  require_changes: no
+  require_changes: true
 
 coverage:
   status:
     project:
       default:
-        # basic
         target: 20
         threshold: 1% # allow this much decrease on project
-        base: auto
-        # advanced
-        branches: null
-        if_no_uploads: error
-        if_not_found: success
-        if_ci_failed: error
-        only_pulls: false
-        flags: null
-        paths: null
       app:
         target: 70%
         flags:
@@ -58,14 +48,6 @@ flags:
       - "client/"
       - "x/**/client/"
 
-parsers:
-  gcov:
-    branch_detection:
-      conditional: yes
-      loop: yes
-      method: no
-      macro: no
-
 ignore:
   - "docs"
   - "*.md"
@@ -77,12 +59,10 @@ ignore:
   - "*_test.go"
   - "*.pb.go"
   - "*.pb.gw.go"
+  - "scripts/"
   - "x/**/test_common.go"
   - "*_cmd.go"
-  - "contrib/**/*"
-  - "client/rpc/**/*_wrapper.go"
-  - "client/rpc/**/*_alias.go"
-  - "client/rpc/mock/*.go"
+  - "contrib"
   - "statik.go"
   - "root.go"
   - "x/**/module.go"
