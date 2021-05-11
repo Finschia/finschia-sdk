@@ -11,8 +11,12 @@ import (
 func TestMsgSendRoute(t *testing.T) {
 	msg := NewMsgEmpty(sdk.AccAddress("from"))
 
-	require.Equal(t, msg.Route(), ModuleName)
-	require.Equal(t, msg.Type(), "empty")
+	require.Equal(t, ModuleName, msg.Route(), )
+	require.Equal(t, "empty", msg.Type(), )
+
+	srvMsg := NewServiceMsgEmpty(sdk.AccAddress("from"))
+	require.Equal(t, "/lbm.auth.v1beta1.Msg/Empty", srvMsg.Route())
+	require.Equal(t, "/lbm.auth.v1beta1.Msg/Empty", srvMsg.Type())
 }
 
 func TestMsgSendValidation(t *testing.T) {
@@ -48,6 +52,9 @@ func TestMsgSendGetSignBytes(t *testing.T) {
 
 func TestMsgSendGetSigners(t *testing.T) {
 	res := NewMsgEmpty(sdk.AccAddress("input111111111111111")).GetSigners()
-
 	require.Equal(t, fmt.Sprintf("%v", res), "[696E707574313131313131313131313131313131]")
+
+	require.Panics(t, func() {
+		NewMsgEmpty(sdk.AccAddress("input")).GetSigners()
+	})
 }

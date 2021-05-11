@@ -1200,6 +1200,18 @@ func (s *IntegrationTestSuite) TestNewEmptyTxCmd() {
 			&sdk.TxResponse{},
 			sdkerrors.ErrOutOfGas.ABCICode(),
 		},
+		{
+			"no from",
+			sdk.AccAddress{},
+			[]string{
+				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
+				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
+				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
+			},
+			true,
+			&sdk.TxResponse{},
+			0,
+		},
 	}
 
 	for _, tc := range testCases {
