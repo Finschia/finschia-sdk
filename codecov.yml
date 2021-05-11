@@ -16,23 +16,8 @@ coverage:
   status:
     project:
       default:
-<<<<<<< HEAD
-        # basic
         target: 20
         threshold: 1% # allow this much decrease on project
-        base: auto
-        # advanced
-        branches: null
-        if_no_uploads: error
-        if_not_found: success
-        if_ci_failed: error
-        only_pulls: false
-        flags: null
-        paths: null
-=======
-        target: 20
-        threshold: 1% # allow this much decrease on project
->>>>>>> 04730c0880d8e6af11435a22de07f74475188e1c
       app:
         target: 70%
         flags:
@@ -62,17 +47,6 @@ flags:
     paths:
       - "client/"
       - "x/**/client/"
-<<<<<<< HEAD
-
-parsers:
-  gcov:
-    branch_detection:
-      conditional: yes
-      loop: yes
-      method: no
-      macro: no
-=======
->>>>>>> 04730c0880d8e6af11435a22de07f74475188e1c
 
 ignore:
   - "docs"
