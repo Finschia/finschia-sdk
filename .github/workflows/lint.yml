@@ -20,7 +20,7 @@ jobs:
           TOKEN: ${{ secrets.TOKEN }}
         run: git config --global url."https://${TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v2
-      - uses: technote-space/get-diff-action@v4
+      - uses: technote-space/get-diff-action@v4.1.1
         with:
           PATTERNS: |
             **/**.go
