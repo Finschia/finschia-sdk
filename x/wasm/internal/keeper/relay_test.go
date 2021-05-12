@@ -5,11 +5,11 @@ import (
 	"errors"
 	"testing"
 
-	wasmvm "github.com/line/wasmvm"
-	wasmvmtypes "github.com/line/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

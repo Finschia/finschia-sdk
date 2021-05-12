@@ -8,12 +8,12 @@ import (
 	"io/ioutil"
 	"testing"
 
-	wasmvm "github.com/line/wasmvm"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	wasmvm "github.com/line/wasmvm"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

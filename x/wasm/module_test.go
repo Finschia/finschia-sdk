@@ -6,7 +6,6 @@ import (
 	"io/ioutil"
 	"testing"
 
-	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/dvsekhvalnov/jose2go/base64url"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/types/module"
@@ -18,6 +17,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/ed25519"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

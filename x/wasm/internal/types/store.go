@@ -1,8 +1,8 @@
 package types
 
 import (
-	wasmvm "github.com/line/wasmvm"
 	storetypes "github.com/line/lbm-sdk/v2/store/types"
+	wasmvm "github.com/line/wasmvm"
 )
 
 var _ wasmvm.KVStore = (*WasmStore)(nil)
