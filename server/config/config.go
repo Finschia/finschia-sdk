@@ -73,6 +73,10 @@ type BaseConfig struct {
 
 	// IAVL cache size; bytes size unit
 	IAVLCacheSize int `mapstructure:"iavl-cache-size"`
+
+	// When true, Prometheus metrics are served under /metrics on prometheus_listen_addr in config.toml.
+	// It works when tendermint's prometheus option (config.toml) is set to true.
+	Prometheus bool `mapstructure:"prometheus"`
 }
 
 // APIConfig defines the API listener configuration.
