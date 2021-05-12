@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	wasmvm "github.com/CosmWasm/wasmvm"
+	wasmvm "github.com/line/wasmvm"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
 	"github.com/line/lbm-sdk/v2/x/params/types/proposal"

@@ -3,7 +3,7 @@ package wasm
 import (
 	"math"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"

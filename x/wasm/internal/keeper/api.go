@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	wasmvm "github.com/CosmWasm/wasmvm"
+	wasmvm "github.com/line/wasmvm"
 	sdk "github.com/line/lbm-sdk/v2/types"
 )
 

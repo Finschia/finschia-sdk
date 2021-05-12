@@ -1,8 +1,8 @@
 package types
 
 import (
-	wasmvm "github.com/CosmWasm/wasmvm"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 // WasmerEngine defines the WASM contract runtime engine.

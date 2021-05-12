@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	wasmvm "github.com/CosmWasm/wasmvm"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	stypes "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"

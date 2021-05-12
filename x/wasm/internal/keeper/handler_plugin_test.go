@@ -13,7 +13,7 @@ import (
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 	"testing"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
 	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"

@@ -6,7 +6,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/dvsekhvalnov/jose2go/base64url"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/types/module"

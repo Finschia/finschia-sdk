@@ -7,7 +7,7 @@ import (
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"

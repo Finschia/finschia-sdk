@@ -5,7 +5,7 @@ import (
 	"io/ioutil"
 	"testing"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/v2/types"

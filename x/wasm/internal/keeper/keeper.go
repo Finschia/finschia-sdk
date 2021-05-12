@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"path/filepath"
 
-	wasmvm "github.com/CosmWasm/wasmvm"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"
 	sdk "github.com/line/lbm-sdk/v2/types"

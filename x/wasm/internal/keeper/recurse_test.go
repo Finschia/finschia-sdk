@@ -6,7 +6,7 @@ import (
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 

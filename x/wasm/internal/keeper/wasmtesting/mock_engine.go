@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/sha256"
 
-	wasmvm "github.com/CosmWasm/wasmvm"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 	"github.com/line/ostracon/libs/rand"

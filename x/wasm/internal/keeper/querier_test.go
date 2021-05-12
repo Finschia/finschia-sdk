@@ -9,8 +9,8 @@ import (
 
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
 
-	cosmwasm "github.com/CosmWasm/wasmvm"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
+	cosmwasm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkErrors "github.com/line/lbm-sdk/v2/types/errors"
 	"github.com/line/lbm-sdk/v2/types/query"
