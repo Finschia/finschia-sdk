@@ -7,12 +7,12 @@ import (
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"
 	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 	abci "github.com/line/ostracon/abci/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 type QueryHandler struct {

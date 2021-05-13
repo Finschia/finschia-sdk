@@ -1,10 +1,10 @@
 package keeper
 
 import (
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 // OnOpenChannel calls the contract to participate in the IBC channel handshake step.

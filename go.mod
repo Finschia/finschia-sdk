@@ -4,7 +4,6 @@ module github.com/line/lbm-sdk/v2
 
 require (
 	github.com/99designs/keyring v1.1.6
-	github.com/CosmWasm/wasmvm v0.14.0-beta1
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/VictoriaMetrics/fastcache v1.5.8
 	github.com/armon/go-metrics v0.3.6
@@ -32,6 +31,7 @@ require (
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20210507092458-8331d3daef36
 	github.com/line/ostracon v0.34.9-0.20210429084710-ef4fe0a40c7d
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524
+	github.com/line/wasmvm v0.14.0-0.5.0
 	github.com/magiconair/properties v1.8.4
 	github.com/mattn/go-isatty v0.0.12
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
@@ -67,7 +67,6 @@ require (
 )
 
 replace (
-	github.com/CosmWasm/wasmvm => github.com/line/wasmvm v0.14.0-0.4.0
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
