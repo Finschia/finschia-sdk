@@ -41,8 +41,8 @@ ifeq ($(LEDGER_ENABLED),true)
   endif
 endif
 
-# DB backend and secp256k1 implementation selection
-ifeq (,$(filter $(LBM_BUILD_OPTIONS), cleveldb rocksdb boltdb badgerdb libsecp256k1))
+# DB backend selection
+ifeq (,$(filter $(LBM_BUILD_OPTIONS), cleveldb rocksdb boltdb badgerdb))
   BUILD_TAGS += goleveldb
   DB_BACKEND = goleveldb
 else
@@ -64,10 +64,12 @@ else
     BUILD_TAGS += boltdb
     DB_BACKEND = boltdb
   endif
-  ifeq (libsecp256k1,$(findstring libsecp256k1,$(LBM_BUILD_OPTIONS)))
-      CGO_ENABLED=1
-      BUILD_TAGS += libsecp256k1
-  endif
+endif
+
+# secp256k1 implementation selection
+ifeq (libsecp256k1,$(findstring libsecp256k1,$(LBM_BUILD_OPTIONS)))
+  CGO_ENABLED=1
+  BUILD_TAGS += libsecp256k1
 endif
 
 build_tags += $(BUILD_TAGS)
