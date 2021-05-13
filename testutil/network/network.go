@@ -403,6 +403,17 @@ func NewWithoutInit(t *testing.T, cfg Config, baseDir string, validators []*Vali
 	return network
 }
 
+func AddNewValidator(t *testing.T, network *Network, validator *Validator) {
+	t.Log("adding new validator")
+
+	require.NoError(t, startInProcess(network.Config, validator))
+	network.Validators = append(network.Validators, validator)
+
+	t.Log("added new validator")
+
+	server.TrapSignal(network.Cleanup)
+}
+
 // LatestHeight returns the latest height of the network or an error if the
 // query fails or no validators exist.
 func (n *Network) LatestHeight() (int64, error) {

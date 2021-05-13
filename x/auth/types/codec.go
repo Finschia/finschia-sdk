@@ -4,6 +4,8 @@ import (
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
+	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lbm-sdk/v2/types/msgservice"
 	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
 )
 
@@ -15,6 +17,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*AccountI)(nil), nil)
 	cdc.RegisterConcrete(&BaseAccount{}, "lbm-sdk/BaseAccount", nil)
 	cdc.RegisterConcrete(&ModuleAccount{}, "lbm-sdk/ModuleAccount", nil)
+	cdc.RegisterConcrete(&MsgEmpty{}, "lbm-sdk/MsgEmpty", nil)
 
 	legacytx.RegisterLegacyAminoCodec(cdc)
 }
@@ -22,6 +25,11 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 // RegisterInterfaces associates protoName with AccountI interface
 // and creates a registry of it's concrete implementations
 func RegisterInterfaces(registry types.InterfaceRegistry) {
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgEmpty{},
+	)
+	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
+
 	registry.RegisterInterface(
 		"lbm.auth.v1beta1.AccountI",
 		(*AccountI)(nil),

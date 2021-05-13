@@ -240,6 +240,12 @@
   
     - [Query](#lbm.auth.v1beta1.Query)
   
+- [lbm/auth/v1beta1/tx.proto](#lbm/auth/v1beta1/tx.proto)
+    - [MsgEmpty](#lbm.auth.v1beta1.MsgEmpty)
+    - [MsgEmptyResponse](#lbm.auth.v1beta1.MsgEmptyResponse)
+  
+    - [Msg](#lbm.auth.v1beta1.Msg)
+  
 - [lbm/bank/v1beta1/bank.proto](#lbm/bank/v1beta1/bank.proto)
     - [DenomUnit](#lbm.bank.v1beta1.DenomUnit)
     - [Input](#lbm.bank.v1beta1.Input)
@@ -4013,6 +4019,57 @@ Query defines the gRPC querier service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Account` | [QueryAccountRequest](#lbm.auth.v1beta1.QueryAccountRequest) | [QueryAccountResponse](#lbm.auth.v1beta1.QueryAccountResponse) | Account returns account details based on address. | GET|/lbm/auth/v1beta1/accounts/{address}|
 | `Params` | [QueryParamsRequest](#lbm.auth.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.auth.v1beta1.QueryParamsResponse) | Params queries all parameters. | GET|/lbm/auth/v1beta1/params|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/auth/v1beta1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/auth/v1beta1/tx.proto
+
+
+
+<a name="lbm.auth.v1beta1.MsgEmpty"></a>
+
+### MsgEmpty
+MsgEmpty represents a message that doesn't do anything. Used to measure performance.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `from_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.auth.v1beta1.MsgEmptyResponse"></a>
+
+### MsgEmptyResponse
+MsgEmptyResponse defines the Msg/Empty response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.auth.v1beta1.Msg"></a>
+
+### Msg
+Msg defines the auth Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Empty` | [MsgEmpty](#lbm.auth.v1beta1.MsgEmpty) | [MsgEmptyResponse](#lbm.auth.v1beta1.MsgEmptyResponse) | Empty defines a method that doesn't do anything. Used to measure performance. | |
 
  <!-- end services -->
 
