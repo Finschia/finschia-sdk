@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"testing"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -17,6 +16,7 @@ import (
 	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
 	"github.com/line/lbm-sdk/v2/x/staking/types"
 	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )

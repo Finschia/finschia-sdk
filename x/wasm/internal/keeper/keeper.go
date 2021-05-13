@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"path/filepath"
 
-	wasmvm "github.com/CosmWasm/wasmvm"
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -18,6 +16,8 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/libs/log"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 // MaxGas for a contract is 10 billion wasmer gas (enforced in rust to prevent overflow)

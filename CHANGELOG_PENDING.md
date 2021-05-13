@@ -24,6 +24,7 @@ Write the changes made after branching from cosmos-sdk v0.42.1.
 * (config) [\#114](https://github.com/line/lbm-sdk/pull/114) Add idle-timeout to rest server and rpc server config
 * (x/wasm) [\#127](https://github.com/line/lbm-sdk/pull/127) Add wasm with Staragate migration completed.
 * (x/wasm) [\#151](https://github.com/line/lbm-sdk/pull/151) Add contract access control.
+* (x/wasm) [\#194](https://github.com/line/lbm-sdk/pull/194) Replace importing CosmWasm/wasmvm with line/wasmvm.
 
 ### IMPROVEMENTS
 

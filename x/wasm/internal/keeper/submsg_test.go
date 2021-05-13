@@ -9,8 +9,8 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	wasmvmtypes "github.com/CosmWasm/wasmvm/types"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
@@ -16,6 +15,7 @@ import (
 	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
 	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 type DefaultMessageHandler struct {
