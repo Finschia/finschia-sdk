@@ -16,7 +16,7 @@ coverage:
   status:
     project:
       default:
-        target: 20
+        target: 50
         threshold: 1% # allow this much decrease on project
       app:
         target: 70%
