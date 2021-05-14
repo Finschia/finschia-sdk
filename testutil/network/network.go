@@ -404,7 +404,7 @@ func NewWithoutInit(t *testing.T, cfg Config, baseDir string, validators []*Vali
 }
 
 func AddNewValidator(t *testing.T, network *Network, validator *Validator) {
-	t.Log("adding new validator")
+	t.Log("adding new validator...")
 
 	require.NoError(t, startInProcess(network.Config, validator))
 	network.Validators = append(network.Validators, validator)
