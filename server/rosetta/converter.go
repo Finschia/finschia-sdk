@@ -248,7 +248,7 @@ func (c converter) Ops(status string, msg sdk.Msg) ([]*rosettatypes.Operation, e
 	for i, signer := range msg.GetSigners() {
 		op := &rosettatypes.Operation{
 			Type:     opName,
-			Status:   status,
+			Status:   &status,
 			Account:  &rosettatypes.AccountIdentifier{Address: signer.String()},
 			Metadata: meta,
 		}
@@ -394,7 +394,7 @@ func sdkEventToBalanceOperations(status string, event abci.Event) (operations []
 
 		op := &rosettatypes.Operation{
 			Type:    event.Type,
-			Status:  status,
+			Status:  &status,
 			Account: &rosettatypes.AccountIdentifier{Address: accountIdentifier},
 			Amount: &rosettatypes.Amount{
 				Value: value,
@@ -519,7 +519,7 @@ func (c converter) SyncStatus(status *ostcoretypes.ResultStatus) *rosettatypes.S
 	}
 
 	return &rosettatypes.SyncStatus{
-		CurrentIndex: status.SyncInfo.LatestBlockHeight,
+		CurrentIndex: &status.SyncInfo.LatestBlockHeight,
 		TargetIndex:  nil, // sync info does not allow us to get target height
 		Stage:        &stage,
 	}

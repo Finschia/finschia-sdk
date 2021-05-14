@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"time"
 
-	crgerrs "github.com/tendermint/cosmos-rosetta-gateway/errors"
+	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
 )
 
 // timeToMilliseconds converts time to milliseconds timestamp

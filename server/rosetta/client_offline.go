@@ -5,7 +5,8 @@ import (
 	"encoding/hex"
 
 	"github.com/coinbase/rosetta-sdk-go/types"
-	crgerrs "github.com/tendermint/cosmos-rosetta-gateway/errors"
+
+	crgerrs "github.com/line/lbm-sdk/server/rosetta/lib/errors"
 
 	sdk "github.com/line/lbm-sdk/types"
 )

@@ -5,10 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/server/rosetta"
-
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/server/rosetta"
 )
 
 // RosettaCommand builds the rosetta root command given
