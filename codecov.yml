@@ -10,7 +10,7 @@ codecov:
 comment:
   layout: "reach, diff, files"
   behavior: default  # update if exists else create new
-  require_changes: true
+  require_changes: false
 
 coverage:
   status:
