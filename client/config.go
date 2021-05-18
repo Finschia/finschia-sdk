@@ -2,12 +2,13 @@ package client
 
 import (
 	"fmt"
-	"github.com/line/lbm-sdk/v2/client/flags"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"strconv"
+
+	"github.com/line/lbm-sdk/v2/client/flags"
 
 	"github.com/pelletier/go-toml"
 	"github.com/spf13/cobra"
