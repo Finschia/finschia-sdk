@@ -2,6 +2,7 @@ package client
 
 import (
 	"fmt"
+	"github.com/line/lbm-sdk/v2/client/flags"
 	"io"
 	"io/ioutil"
 	"os"
@@ -27,13 +28,15 @@ var configDefaults = map[string]string{
 
 // ConfigCmd returns a CLI command to interactively create an application CLI
 // config file.
-func ConfigCmd() *cobra.Command {
+func ConfigCmd(defaultCLIHome string) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "config <key> [value]",
 		Short: "Create or query an application CLI configuration file",
 		RunE:  runConfigCmd,
 		Args:  cobra.RangeArgs(0, 2),
 	}
+	cmd.Flags().String(flags.FlagHome, defaultCLIHome,
+		"set client's home directory for configuration")
 	cmd.Flags().Bool(flagGet, false,
 		"print configuration value or its default if unset")
 	return cmd
