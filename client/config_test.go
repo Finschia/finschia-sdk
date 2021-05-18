@@ -30,7 +30,7 @@ func Test_runConfigCmdTwiceWithShorterNodeValue(t *testing.T) {
 	execConfigCmd(t, ctx, configHome, []string{"node", "--get"})
 }
 
-func execConfigCmd(t *testing.T, ctx context.Context, configHome string, args []string ) {
+func execConfigCmd(t *testing.T, ctx context.Context, configHome string, args []string) {
 	cmd := ConfigCmd(configHome)
 	assert.NotNil(t, cmd)
 	cmd.SetArgs(args)
