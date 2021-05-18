@@ -167,6 +167,10 @@ func (p Params) ValidateBasic() error {
 	return nil
 }
 
+func (p *Params) CopyFrom(source interface{}) {
+	*p = *(source.(*Params))
+}
+
 func validateAccessConfig(i interface{}) error {
 	v, ok := i.(AccessConfig)
 	if !ok {

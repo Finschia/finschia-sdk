@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"reflect"
+	"sync"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"
@@ -15,6 +16,11 @@ const (
 
 	// TStoreKey is the string store key for the param transient store
 	TStoreKey = "transient_params"
+)
+
+var (
+	paramSetCache    = make(map[reflect.Type]ParamSet)
+	paramSetCacheMtx = sync.RWMutex{}
 )
 
 // Individual parameter store for each keeper
@@ -220,9 +226,23 @@ func (s Subspace) Update(ctx sdk.Context, key, value []byte) error {
 // retrieve the value and set it to the corresponding value pointer provided
 // in the ParamSetPair by calling Subspace#Get.
 func (s Subspace) GetParamSet(ctx sdk.Context, ps ParamSet) {
+	paramSetCacheMtx.RLock()
+	set := paramSetCache[reflect.TypeOf(ps)]
+	paramSetCacheMtx.RUnlock()
+	if set != nil {
+		ps.CopyFrom(set)
+		return
+	}
 	for _, pair := range ps.ParamSetPairs() {
 		s.Get(ctx, pair.Key, pair.Value)
 	}
+	cacheParamSet(ps)
+}
+
+func cacheParamSet(ps ParamSet) {
+	paramSetCacheMtx.Lock()
+	defer paramSetCacheMtx.Unlock()
+	paramSetCache[reflect.TypeOf(ps)] = ps
 }
 
 // SetParamSet iterates through each ParamSetPair and sets the value with the
@@ -241,6 +261,7 @@ func (s Subspace) SetParamSet(ctx sdk.Context, ps ParamSet) {
 
 		s.Set(ctx, pair.Key, v)
 	}
+	cacheParamSet(ps)
 }
 
 // Name returns the name of the Subspace.

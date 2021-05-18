@@ -55,6 +55,10 @@ func (p Params) IsAllowedClient(clientType string) bool {
 	return false
 }
 
+func (p *Params) CopyFrom(source interface{}) {
+	*p = *(source.(*Params))
+}
+
 func validateClients(i interface{}) error {
 	clients, ok := i.([]string)
 	if !ok {

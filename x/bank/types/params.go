@@ -88,6 +88,10 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	}
 }
 
+func (p *Params) CopyFrom(source interface{}) {
+	*p = *(source.(*Params))
+}
+
 // SendEnabledParams is a collection of parameters indicating if a coin denom is enabled for sending
 type SendEnabledParams []*SendEnabled
 

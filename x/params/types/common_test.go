@@ -67,6 +67,10 @@ func (p *params) ParamSetPairs() types.ParamSetPairs {
 	}
 }
 
+func (p *params) CopyFrom(source interface{}) {
+	*p = *(source.(*params))
+}
+
 func paramKeyTable() types.KeyTable {
 	return types.NewKeyTable().RegisterParamSet(&params{})
 }

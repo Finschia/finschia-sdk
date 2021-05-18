@@ -101,6 +101,10 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	}
 }
 
+func (p *Params) CopyFrom(source interface{}) {
+	*p = *(source.(*Params))
+}
+
 func validateMintDenom(i interface{}) error {
 	v, ok := i.(string)
 	if !ok {

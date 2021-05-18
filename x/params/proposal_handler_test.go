@@ -52,6 +52,10 @@ func (tp *testParams) ParamSetPairs() types.ParamSetPairs {
 	}
 }
 
+func (p *testParams) CopyFrom(source interface{}) {
+	*p = *(source.(*testParams))
+}
+
 func testProposal(changes ...proposal.ParamChange) *proposal.ParameterChangeProposal {
 	return proposal.NewParameterChangeProposal(
 		"Test",
