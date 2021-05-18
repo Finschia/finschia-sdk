@@ -19,7 +19,7 @@ const (
 )
 
 var (
-	paramSetCache    = make(map[reflect.Type]ParamSet)
+	paramSetCache    = make(map[string]ParamSet)
 	paramSetCacheMtx = sync.RWMutex{}
 )
 
@@ -50,6 +50,13 @@ func NewSubspace(cdc codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key 
 // HasKeyTable returns if the Subspace has a KeyTable registered.
 func (s Subspace) HasKeyTable() bool {
 	return len(s.table.m) > 0
+}
+
+// Only for test
+func (s Subspace) GetCachedParamSet() ParamSet {
+	paramSetCacheMtx.RLock()
+	defer paramSetCacheMtx.RUnlock()
+	return paramSetCache[string(s.name)]
 }
 
 // WithKeyTable initializes KeyTable and returns modified Subspace
@@ -189,6 +196,9 @@ func (s Subspace) Set(ctx sdk.Context, key []byte, value interface{}) {
 
 	tstore := s.transientStore(ctx)
 	tstore.Set(key, []byte{})
+
+	// if some field is updated, then it invalidates the cache
+	s.invalidateCachedParamSet()
 }
 
 // Update stores an updated raw value for a given parameter key assuming the
@@ -227,7 +237,7 @@ func (s Subspace) Update(ctx sdk.Context, key, value []byte) error {
 // in the ParamSetPair by calling Subspace#Get.
 func (s Subspace) GetParamSet(ctx sdk.Context, ps ParamSet) {
 	paramSetCacheMtx.RLock()
-	set := paramSetCache[reflect.TypeOf(ps)]
+	set := paramSetCache[string(s.name)]
 	paramSetCacheMtx.RUnlock()
 	if set != nil {
 		ps.CopyFrom(set)
@@ -236,17 +246,23 @@ func (s Subspace) GetParamSet(ctx sdk.Context, ps ParamSet) {
 	for _, pair := range ps.ParamSetPairs() {
 		s.Get(ctx, pair.Key, pair.Value)
 	}
-	cacheParamSet(ps)
+	s.cacheParamSet(ps)
 }
 
-func cacheParamSet(ps ParamSet) {
+func (s Subspace) cacheParamSet(ps ParamSet) {
 	// We must cache param set object copied from original object to be returned to caller
 	// Caller may modify some param set field to other value.
 	// Even in this case, cached param set value should not be changed.
 	cachedPs := reflect.New(reflect.TypeOf(ps).Elem()).Interface().(ParamSet)
 	cachedPs.CopyFrom(ps)
 	paramSetCacheMtx.Lock()
-	paramSetCache[reflect.TypeOf(ps)] = cachedPs
+	paramSetCache[string(s.name)] = cachedPs
+	paramSetCacheMtx.Unlock()
+}
+
+func (s Subspace) invalidateCachedParamSet() {
+	paramSetCacheMtx.Lock()
+	paramSetCache[string(s.name)] = nil
 	paramSetCacheMtx.Unlock()
 }
 
@@ -266,7 +282,7 @@ func (s Subspace) SetParamSet(ctx sdk.Context, ps ParamSet) {
 
 		s.Set(ctx, pair.Key, v)
 	}
-	cacheParamSet(ps)
+	s.cacheParamSet(ps)
 }
 
 // Name returns the name of the Subspace.

@@ -198,6 +198,42 @@ func (suite *SubspaceTestSuite) TestSetParamSet() {
 	suite.Require().Equal(a.BondDenom, b.BondDenom)
 }
 
+func (suite *SubspaceTestSuite) TestParamSetCache() {
+	suite.Require().Nil(suite.ss.GetCachedParamSet())
+	a := params{
+		UnbondingTime: time.Hour * 48,
+		MaxValidators: 100,
+		BondDenom:     "stake",
+	}
+	suite.Require().NotPanics(func() {
+		suite.ss.SetParamSet(suite.ctx, &a)
+	})
+	// confirm cached
+	suite.Require().Equal(*(suite.ss.GetCachedParamSet().(*params)), a)
+
+	// `Set` will invalidate the cache
+	suite.Require().NotPanics(func() {
+		suite.ss.Set(suite.ctx, keyUnbondingTime, a.UnbondingTime)
+	})
+	suite.Require().Nil(suite.ss.GetCachedParamSet())
+
+	// re-caching
+	b := params{}
+	suite.Require().NotPanics(func() {
+		suite.ss.GetParamSet(suite.ctx, &b)
+	})
+	suite.Require().Equal(a.UnbondingTime, b.UnbondingTime)
+	suite.Require().Equal(a.MaxValidators, b.MaxValidators)
+	suite.Require().Equal(a.BondDenom, b.BondDenom)
+
+	// confirm cached
+	suite.Require().Equal(*(suite.ss.GetCachedParamSet().(*params)), a)
+
+	// modify local params; test cached param set not to be changed
+	b.BondDenom = "other value"
+	suite.Require().Equal(*(suite.ss.GetCachedParamSet().(*params)), a)
+}
+
 func (suite *SubspaceTestSuite) TestName() {
 	suite.Require().Equal("testsubspace", suite.ss.Name())
 }
