@@ -240,9 +240,14 @@ func (s Subspace) GetParamSet(ctx sdk.Context, ps ParamSet) {
 }
 
 func cacheParamSet(ps ParamSet) {
+	// We must cache param set object copied from original object to be returned to caller
+	// Caller may modify some param set field to other value.
+	// Even in this case, cached param set value should not be changed.
+	cachedPs := reflect.New(reflect.TypeOf(ps).Elem()).Interface().(ParamSet)
+	cachedPs.CopyFrom(ps)
 	paramSetCacheMtx.Lock()
-	defer paramSetCacheMtx.Unlock()
-	paramSetCache[reflect.TypeOf(ps)] = ps
+	paramSetCache[reflect.TypeOf(ps)] = cachedPs
+	paramSetCacheMtx.Unlock()
 }
 
 // SetParamSet iterates through each ParamSetPair and sets the value with the
