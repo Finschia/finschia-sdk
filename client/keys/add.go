@@ -9,7 +9,6 @@ import (
 	"sort"
 
 	bip39 "github.com/cosmos/go-bip39"
-	"github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
@@ -111,6 +110,7 @@ func RunAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 	noBackup, _ := cmd.Flags().GetBool(flagNoBackup)
 	showMnemonic := !noBackup
 	kb := ctx.Keyring
+	outputFormat := ctx.OutputFormat
 
 	keyringAlgos, _ := kb.SupportedAlgorithms()
 	algoStr, _ := cmd.Flags().GetString(flags.FlagKeyAlgorithm)
@@ -206,7 +206,7 @@ func RunAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 			return err
 		}
 
-		return printCreate(cmd, info, false, "")
+		return printCreate(cmd, info, false, "", outputFormat)
 	}
 
 	// Get bip39 mnemonic
@@ -280,15 +280,14 @@ func RunAddCmd(ctx client.Context, cmd *cobra.Command, args []string, inBuf *buf
 		mnemonic = ""
 	}
 
-	return printCreate(cmd, info, showMnemonic, mnemonic)
+	return printCreate(cmd, info, showMnemonic, mnemonic, outputFormat)
 }
 
-func printCreate(cmd *cobra.Command, info keyring.Info, showMnemonic bool, mnemonic string) error {
-	output, _ := cmd.Flags().GetString(cli.OutputFlag)
-	switch output {
+func printCreate(cmd *cobra.Command, info keyring.Info, showMnemonic bool, mnemonic string, outputFormat string) error {
+	switch outputFormat {
 	case OutputFormatText:
 		cmd.PrintErrln()
-		printKeyInfo(cmd.OutOrStdout(), info, keyring.MkAccKeyOutput, output)
+		printKeyInfo(cmd.OutOrStdout(), info, keyring.MkAccKeyOutput, outputFormat)
 
 		// print mnemonic unless requested not to.
 		if showMnemonic {
@@ -315,7 +314,7 @@ func printCreate(cmd *cobra.Command, info keyring.Info, showMnemonic bool, mnemo
 		cmd.Println(string(jsonString))
 
 	default:
-		return fmt.Errorf("invalid output format %s", output)
+		return fmt.Errorf("invalid output format %s", outputFormat)
 	}
 
 	return nil
