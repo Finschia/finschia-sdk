@@ -6,12 +6,12 @@ import "gogoproto/gogo.proto";
 import "google/protobuf/timestamp.proto";
 
 option go_package                       = "github.com/line/lbm-sdk/x/upgrade/types";
-option (gogoproto.goproto_stringer_all) = false;
-option (gogoproto.goproto_getters_all)  = false;
+option (gogoproto.goproto_getters_all) = false;
 
 // Plan specifies information about a planned upgrade and when it should occur.
 message Plan {
-  option (gogoproto.equal) = true;
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
 
   // Sets the name for the upgrade. This name will be used by the upgraded
   // version of the software to apply any special "on-upgrade" commands during
@@ -43,7 +43,8 @@ message Plan {
 // SoftwareUpgradeProposal is a gov Content type for initiating a software
 // upgrade.
 message SoftwareUpgradeProposal {
-  option (gogoproto.equal) = true;
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
 
   string title       = 1;
   string description = 2;
@@ -53,7 +54,8 @@ message SoftwareUpgradeProposal {
 // CancelSoftwareUpgradeProposal is a gov Content type for cancelling a software
 // upgrade.
 message CancelSoftwareUpgradeProposal {
-  option (gogoproto.equal) = true;
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = false;
 
   string title       = 1;
   string description = 2;
