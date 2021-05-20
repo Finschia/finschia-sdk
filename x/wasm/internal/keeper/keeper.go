@@ -59,7 +59,7 @@ type Keeper struct {
 	// queryGasLimit is the max wasmvm gas that can be spent on executing a query with a contract
 	queryGasLimit uint64
 	authZPolicy   AuthorizationPolicy
-	paramSpace    paramtypes.Subspace
+	paramSpace    *paramtypes.Subspace
 }
 
 // NewKeeper creates a new contract Keeper instance
@@ -67,7 +67,7 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.Marshaler,
 	storeKey sdk.StoreKey,
-	paramSpace paramtypes.Subspace,
+	paramSpace *paramtypes.Subspace,
 	accountKeeper authkeeper.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	stakingKeeper types.StakingKeeper,

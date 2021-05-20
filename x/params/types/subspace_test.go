@@ -23,7 +23,7 @@ type SubspaceTestSuite struct {
 	cdc   codec.BinaryMarshaler
 	amino *codec.LegacyAmino
 	ctx   sdk.Context
-	ss    types.Subspace
+	ss    *types.Subspace
 }
 
 func (suite *SubspaceTestSuite) SetupTest() {
@@ -209,7 +209,7 @@ func (suite *SubspaceTestSuite) TestParamSetCache() {
 		suite.ss.SetParamSet(suite.ctx, &a)
 	})
 	// confirm cached
-	suite.Require().Equal(*(suite.ss.GetCachedParamSet().(*params)), a)
+	suite.Require().Equal(*(*suite.ss.GetCachedParamSet()).(*params), a)
 
 	// `Set` will invalidate the cache
 	suite.Require().NotPanics(func() {
@@ -227,11 +227,11 @@ func (suite *SubspaceTestSuite) TestParamSetCache() {
 	suite.Require().Equal(a.BondDenom, b.BondDenom)
 
 	// confirm cached
-	suite.Require().Equal(*(suite.ss.GetCachedParamSet().(*params)), a)
+	suite.Require().Equal(*(*suite.ss.GetCachedParamSet()).(*params), a)
 
 	// modify local params; test cached param set not to be changed
 	b.BondDenom = "other value"
-	suite.Require().Equal(*(suite.ss.GetCachedParamSet().(*params)), a)
+	suite.Require().Equal(*(*suite.ss.GetCachedParamSet()).(*params), a)
 }
 
 func (suite *SubspaceTestSuite) TestName() {

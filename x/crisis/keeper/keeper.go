@@ -14,7 +14,7 @@ import (
 // Keeper - crisis keeper
 type Keeper struct {
 	routes         []types.InvarRoute
-	paramSpace     paramtypes.Subspace
+	paramSpace     *paramtypes.Subspace
 	invCheckPeriod uint
 
 	supplyKeeper types.SupplyKeeper
@@ -24,7 +24,7 @@ type Keeper struct {
 
 // NewKeeper creates a new Keeper object
 func NewKeeper(
-	paramSpace paramtypes.Subspace, invCheckPeriod uint, supplyKeeper types.SupplyKeeper,
+	paramSpace *paramtypes.Subspace, invCheckPeriod uint, supplyKeeper types.SupplyKeeper,
 	feeCollectorName string,
 ) Keeper {
 

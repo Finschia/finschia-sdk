@@ -13,7 +13,7 @@ import (
 type Keeper struct {
 	cdc              codec.BinaryMarshaler
 	storeKey         sdk.StoreKey
-	paramSpace       paramtypes.Subspace
+	paramSpace       *paramtypes.Subspace
 	stakingKeeper    types.StakingKeeper
 	bankKeeper       types.BankKeeper
 	feeCollectorName string
@@ -21,7 +21,7 @@ type Keeper struct {
 
 // NewKeeper creates a new mint Keeper instance
 func NewKeeper(
-	cdc codec.BinaryMarshaler, key sdk.StoreKey, paramSpace paramtypes.Subspace,
+	cdc codec.BinaryMarshaler, key sdk.StoreKey, paramSpace *paramtypes.Subspace,
 	sk types.StakingKeeper, ak types.AccountKeeper, bk types.BankKeeper,
 	feeCollectorName string,
 ) Keeper {
