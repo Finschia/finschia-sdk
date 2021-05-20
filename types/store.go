@@ -1,6 +1,10 @@
 package types
 
 import (
+	fmt "fmt"
+	"sort"
+	"strings"
+
 	"github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/types/kv"
 )
@@ -79,18 +83,32 @@ type (
 	MemoryStoreKey = types.MemoryStoreKey
 )
 
+// assertNoCommonPrefix will panic if there are two keys: k1 and k2 in keys, such that
+// k1 is a prefix of k2
+func assertNoPrefix(keys []string) {
+	sorted := make([]string, len(keys))
+	copy(sorted, keys)
+	sort.Strings(sorted)
+	for i := 1; i < len(sorted); i++ {
+		if strings.HasPrefix(sorted[i], sorted[i-1]) {
+			panic(fmt.Sprint("Potential key collision between KVStores:", sorted[i], " - ", sorted[i-1]))
+		}
+	}
+}
+
 // NewKVStoreKey returns a new pointer to a KVStoreKey.
-// Use a pointer so keys don't collide.
 func NewKVStoreKey(name string) *KVStoreKey {
 	return types.NewKVStoreKey(name)
 }
 
 // NewKVStoreKeys returns a map of new  pointers to KVStoreKey's.
-// Uses pointers so keys don't collide.
+// The function will panic if there is a potential conflict in names (see `assertNoPrefix`
+// function for more details).
 func NewKVStoreKeys(names ...string) map[string]*KVStoreKey {
-	keys := make(map[string]*KVStoreKey)
-	for _, name := range names {
-		keys[name] = NewKVStoreKey(name)
+	assertNoPrefix(names)
+	keys := make(map[string]*KVStoreKey, len(names))
+	for _, n := range names {
+		keys[n] = NewKVStoreKey(n)
 	}
 
 	return keys
@@ -106,8 +124,9 @@ func NewTransientStoreKey(name string) *types.TransientStoreKey {
 // Must return pointers according to the ocap principle
 // The function will panic if there is a potential conflict in names (see `assertNoPrefix`
 // function for more details).
-func NewTransientStoreKeys(names ...string) map[string]*types.TransientStoreKey {
-	keys := make(map[string]*types.TransientStoreKey)
+func NewTransientStoreKeys(names ...string) map[string]*TransientStoreKey {
+	assertNoPrefix(names)
+	keys := make(map[string]*TransientStoreKey)
 	for _, n := range names {
 		keys[n] = NewTransientStoreKey(n)
 	}
@@ -117,10 +136,13 @@ func NewTransientStoreKeys(names ...string) map[string]*types.TransientStoreKey 
 
 // NewMemoryStoreKeys constructs a new map matching store key names to their
 // respective MemoryStoreKey references.
+// The function will panic if there is a potential conflict in names (see `assertNoPrefix`
+// function for more details).
 func NewMemoryStoreKeys(names ...string) map[string]*MemoryStoreKey {
+	assertNoPrefix(names)
 	keys := make(map[string]*MemoryStoreKey)
-	for _, name := range names {
-		keys[name] = types.NewMemoryStoreKey(name)
+	for _, n := range names {
+		keys[n] = types.NewMemoryStoreKey(n)
 	}
 
 	return keys
