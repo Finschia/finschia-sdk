@@ -60,10 +60,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	}
 }
 
-func (p *Params) CopyFrom(source interface{}) {
-	*p = *(source.(*Params))
-}
-
 // DefaultParams defines the parameters for this module
 func DefaultParams() Params {
 	return NewParams(

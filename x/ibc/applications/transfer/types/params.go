@@ -55,10 +55,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	}
 }
 
-func (p *Params) CopyFrom(source interface{}) {
-	*p = *(source.(*Params))
-}
-
 func validateEnabled(i interface{}) error {
 	_, ok := i.(bool)
 	if !ok {

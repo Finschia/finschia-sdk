@@ -23,5 +23,4 @@ type ParamSetPairs []ParamSetPair
 // ParamSet defines an interface for structs containing parameters for a module
 type ParamSet interface {
 	ParamSetPairs() ParamSetPairs
-	CopyFrom(source interface{})
 }

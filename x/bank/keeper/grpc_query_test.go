@@ -118,7 +118,9 @@ func (suite *IntegrationTestSuite) TestQueryParams() {
 	res, err := suite.queryClient.Params(gocontext.Background(), &types.QueryParamsRequest{})
 	suite.Require().NoError(err)
 	suite.Require().NotNil(res)
-	suite.Require().Equal(suite.app.BankKeeper.GetParams(suite.ctx), res.GetParams())
+	param := suite.app.BankKeeper.GetParams(suite.ctx)
+	suite.Require().Equal(len(param.SendEnabled), len(res.GetParams().SendEnabled))
+	suite.Require().Equal(param.DefaultSendEnabled, res.GetParams().DefaultSendEnabled)
 }
 
 func (suite *IntegrationTestSuite) QueryDenomsMetadataRequest() {

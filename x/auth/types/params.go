@@ -59,10 +59,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	}
 }
 
-func (p *Params) CopyFrom(source interface{}) {
-	*p = *(source.(*Params))
-}
-
 // DefaultParams returns a default set of parameters.
 func DefaultParams() Params {
 	return Params{

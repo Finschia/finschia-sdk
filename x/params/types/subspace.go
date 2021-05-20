@@ -29,7 +29,6 @@ type Subspace struct {
 	tkey           sdk.StoreKey // []byte -> bool, stores parameter change
 	name           []byte
 	table          KeyTable
-	cachedParamSet unsafe.Pointer
 }
 
 // NewSubspace constructs a store with namestore
@@ -47,12 +46,6 @@ func NewSubspace(cdc codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key 
 // HasKeyTable returns if the Subspace has a KeyTable registered.
 func (s *Subspace) HasKeyTable() bool {
 	return len(s.table.m) > 0
-}
-
-// Only for test
-func (s *Subspace) GetCachedParamSet() *ParamSet {
-	cachedParamSet := (*ParamSet)(atomic.LoadPointer(&s.cachedParamSet))
-	return cachedParamSet
 }
 
 // WithKeyTable initializes KeyTable and returns modified Subspace
@@ -113,18 +106,27 @@ func (s *Subspace) Validate(ctx sdk.Context, key []byte, value interface{}) erro
 func (s *Subspace) Get(ctx sdk.Context, key []byte, ptr interface{}) {
 	s.checkType(key, ptr)
 
+	if s.loadFromCache(key, ptr) {
+		// cache hit
+		return
+	}
 	store := s.kvStore(ctx)
 	bz := store.Get(key)
 
 	if err := s.legacyAmino.UnmarshalJSON(bz, ptr); err != nil {
 		panic(err)
 	}
+	s.cacheValue(key, ptr)
 }
 
 // GetIfExists queries for a parameter by key from the Subspace's KVStore and
 // sets the value to the provided pointer. If the value does not exist, it will
 // perform a no-op.
 func (s *Subspace) GetIfExists(ctx sdk.Context, key []byte, ptr interface{}) {
+	if s.loadFromCache(key, ptr) {
+		// cache hit
+		return
+	}
 	store := s.kvStore(ctx)
 	bz := store.Get(key)
 	if bz == nil {
@@ -136,6 +138,7 @@ func (s *Subspace) GetIfExists(ctx sdk.Context, key []byte, ptr interface{}) {
 	if err := s.legacyAmino.UnmarshalJSON(bz, ptr); err != nil {
 		panic(err)
 	}
+	s.cacheValue(key, ptr)
 }
 
 // GetRaw queries for the raw values bytes for a parameter by key.
@@ -146,6 +149,9 @@ func (s *Subspace) GetRaw(ctx sdk.Context, key []byte) []byte {
 
 // Has returns if a parameter key exists or not in the Subspace's KVStore.
 func (s *Subspace) Has(ctx sdk.Context, key []byte) bool {
+	if s.hasCache(key) {
+		return true
+	}
 	store := s.kvStore(ctx)
 	return store.Has(key)
 }
@@ -175,6 +181,64 @@ func (s *Subspace) checkType(key []byte, value interface{}) {
 	}
 }
 
+func (s *Subspace) cacheValue(key []byte, value interface{}) {
+	attr, ok := s.table.m[string(key)]
+	if !ok {
+		panic(fmt.Sprintf("parameter %s not registered", string(key)))
+	}
+	val := reflect.ValueOf(value)
+	if reflect.TypeOf(value).Kind() == reflect.Ptr {
+		val = val.Elem()
+	}
+	valueToBeCached := reflect.New(val.Type())
+	valueToBeCached.Elem().Set(val)
+	atomic.StorePointer(&attr.cachedValue, unsafe.Pointer(&valueToBeCached))
+}
+
+func (s *Subspace) hasCache(key []byte) bool {
+	attr, ok := s.table.m[string(key)]
+	if !ok {
+		panic(fmt.Sprintf("parameter %s not registered", string(key)))
+	}
+	cachedValuePtr := (*reflect.Value)(atomic.LoadPointer(&attr.cachedValue))
+	if cachedValuePtr == nil {
+		return false
+	}
+	return true
+}
+
+func (s *Subspace) loadFromCache(key []byte, value interface{}) bool {
+	attr, ok := s.table.m[string(key)]
+	if !ok {
+		return false
+	}
+	if reflect.TypeOf(value).Kind() != reflect.Ptr {
+		panic("value should be a Pointer")
+	}
+
+	cachedValuePtr := (*reflect.Value)(atomic.LoadPointer(&attr.cachedValue))
+	if cachedValuePtr == nil {
+		return false
+	}
+	reflect.ValueOf(value).Elem().Set((*cachedValuePtr).Elem())
+	return true
+}
+
+// Only for test
+func (s *Subspace) GetCachedValueForTesting(key []byte, value interface{}) bool {
+	return s.loadFromCache(key, value)
+}
+
+// Only for test
+func (s *Subspace) HasCacheForTesting(key []byte) bool {
+	return s.hasCache(key)
+}
+
+// Only for test
+func (s*Subspace) SetCacheForTesting(key []byte, value interface{}) {
+	s.cacheValue(key, value)
+}
+
 // Set stores a value for given a parameter key assuming the parameter type has
 // been registered. It will panic if the parameter type has not been registered
 // or if the value cannot be encoded. A change record is also set in the Subspace's
@@ -193,8 +257,7 @@ func (s *Subspace) Set(ctx sdk.Context, key []byte, value interface{}) {
 	tstore := s.transientStore(ctx)
 	tstore.Set(key, []byte{})
 
-	// if some field is updated, then it invalidates the cache
-	s.invalidateCachedParamSet()
+	s.cacheValue(key, value)
 }
 
 // Update stores an updated raw value for a given parameter key assuming the
@@ -232,28 +295,9 @@ func (s *Subspace) Update(ctx sdk.Context, key, value []byte) error {
 // retrieve the value and set it to the corresponding value pointer provided
 // in the ParamSetPair by calling Subspace#Get.
 func (s *Subspace) GetParamSet(ctx sdk.Context, ps ParamSet) {
-	cachedParamSet := (*ParamSet)(atomic.LoadPointer(&s.cachedParamSet))
-	if cachedParamSet != nil {
-		ps.CopyFrom(*cachedParamSet)
-		return
-	}
 	for _, pair := range ps.ParamSetPairs() {
 		s.Get(ctx, pair.Key, pair.Value)
 	}
-	s.cacheParamSet(ps)
-}
-
-func (s *Subspace) cacheParamSet(ps ParamSet) {
-	// We must cache param set object copied from original object to be returned to caller
-	// Caller may modify some param set field to other value.
-	// Even in this case, cached param set value should not be changed.
-	cachedPs := reflect.New(reflect.TypeOf(ps).Elem()).Interface().(ParamSet)
-	cachedPs.CopyFrom(ps)
-	atomic.StorePointer(&s.cachedParamSet, unsafe.Pointer(&cachedPs))
-}
-
-func (s *Subspace) invalidateCachedParamSet() {
-	atomic.StorePointer(&s.cachedParamSet, nil)
 }
 
 // SetParamSet iterates through each ParamSetPair and sets the value with the
@@ -272,7 +316,6 @@ func (s *Subspace) SetParamSet(ctx sdk.Context, ps ParamSet) {
 
 		s.Set(ctx, pair.Key, v)
 	}
-	s.cacheParamSet(ps)
 }
 
 // Name returns the name of the Subspace.

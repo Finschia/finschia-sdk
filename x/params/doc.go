@@ -61,10 +61,6 @@ Basic Usage:
 		}
 	}
 
-	func (p *Params) CopyFrom(source interface{}) {
-		*p = *(source.(*Params))
-	}
-
 	func paramKeyTable() params.KeyTable {
 		return params.NewKeyTable().RegisterParamSet(&MyParams{})
 	}

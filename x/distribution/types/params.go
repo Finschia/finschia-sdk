@@ -73,10 +73,6 @@ func (p Params) ValidateBasic() error {
 	return nil
 }
 
-func (p *Params) CopyFrom(source interface{}) {
-	*p = *(source.(*Params))
-}
-
 func validateCommunityTax(i interface{}) error {
 	v, ok := i.(sdk.Dec)
 	if !ok {

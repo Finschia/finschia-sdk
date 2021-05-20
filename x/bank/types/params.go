@@ -88,22 +88,6 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 	}
 }
 
-func (p *Params) CopyFrom(source interface{}) {
-	sourceParam := source.(*Params)
-	if len(sourceParam.SendEnabled) == 0 {
-		// This prevents the test to be failed
-		// grpc_query_test.go:121
-		// Not equal:
-		//	expected: types.Params{SendEnabled:[]*types.SendEnabled{}, DefaultSendEnabled:true}
-		//	actual  : types.Params{SendEnabled:[]*types.SendEnabled(nil), DefaultSendEnabled:true}
-		p.SendEnabled = nil
-	} else {
-		p.SendEnabled = make([]*SendEnabled, len(sourceParam.SendEnabled))
-	}
-	copy(p.SendEnabled, sourceParam.SendEnabled)
-	p.DefaultSendEnabled = sourceParam.DefaultSendEnabled
-}
-
 // SendEnabledParams is a collection of parameters indicating if a coin denom is enabled for sending
 type SendEnabledParams []*SendEnabled
 
