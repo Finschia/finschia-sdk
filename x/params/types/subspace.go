@@ -23,12 +23,12 @@ const (
 // Transient store persists for a block, so we use it for
 // recording whether the parameter has been changed or not
 type Subspace struct {
-	cdc            codec.BinaryMarshaler
-	legacyAmino    *codec.LegacyAmino
-	key            sdk.StoreKey // []byte -> []byte, stores parameter
-	tkey           sdk.StoreKey // []byte -> bool, stores parameter change
-	name           []byte
-	table          KeyTable
+	cdc          codec.BinaryMarshaler
+	legacyAmino  *codec.LegacyAmino
+	key          sdk.StoreKey // []byte -> []byte, stores parameter
+	tkey         sdk.StoreKey // []byte -> bool, stores parameter change
+	name         []byte
+	table        KeyTable
 }
 
 // NewSubspace constructs a store with namestore
