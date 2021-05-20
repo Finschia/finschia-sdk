@@ -23,12 +23,12 @@ const (
 // Transient store persists for a block, so we use it for
 // recording whether the parameter has been changed or not
 type Subspace struct {
-	cdc          codec.BinaryMarshaler
-	legacyAmino  *codec.LegacyAmino
-	key          sdk.StoreKey // []byte -> []byte, stores parameter
-	tkey         sdk.StoreKey // []byte -> bool, stores parameter change
-	name         []byte
-	table        KeyTable
+	cdc         codec.BinaryMarshaler
+	legacyAmino *codec.LegacyAmino
+	key         sdk.StoreKey // []byte -> []byte, stores parameter
+	tkey        sdk.StoreKey // []byte -> bool, stores parameter change
+	name        []byte
+	table       KeyTable
 }
 
 // NewSubspace constructs a store with namestore
@@ -201,10 +201,7 @@ func (s *Subspace) hasCache(key []byte) bool {
 		panic(fmt.Sprintf("parameter %s not registered", string(key)))
 	}
 	cachedValuePtr := (*reflect.Value)(atomic.LoadPointer(&attr.cachedValue))
-	if cachedValuePtr == nil {
-		return false
-	}
-	return true
+	return cachedValuePtr != nil
 }
 
 func (s *Subspace) loadFromCache(key []byte, value interface{}) bool {
@@ -235,7 +232,7 @@ func (s *Subspace) HasCacheForTesting(key []byte) bool {
 }
 
 // Only for test
-func (s*Subspace) SetCacheForTesting(key []byte, value interface{}) {
+func (s *Subspace) SetCacheForTesting(key []byte, value interface{}) {
 	s.cacheValue(key, value)
 }
 
