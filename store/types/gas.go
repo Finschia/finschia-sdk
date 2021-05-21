@@ -174,7 +174,6 @@ func KVGasConfig() GasConfig {
 	}
 }
 
-
 // TransientGasConfig returns a default gas config for TransientStores.
 func TransientGasConfig() GasConfig {
 	// TODO: define gasconfig for transient stores
