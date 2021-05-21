@@ -2,23 +2,25 @@ package types
 
 import (
 	"reflect"
+	"unsafe"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
 type attribute struct {
-	ty  reflect.Type
-	vfn ValueValidatorFn
+	ty          reflect.Type
+	vfn         ValueValidatorFn
+	cachedValue unsafe.Pointer
 }
 
 // KeyTable subspaces appropriate type for each parameter key
 type KeyTable struct {
-	m map[string]attribute
+	m map[string]*attribute
 }
 
 func NewKeyTable(pairs ...ParamSetPair) KeyTable {
 	keyTable := KeyTable{
-		m: make(map[string]attribute),
+		m: make(map[string]*attribute),
 	}
 
 	for _, psp := range pairs {
@@ -52,7 +54,7 @@ func (t KeyTable) RegisterType(psp ParamSetPair) KeyTable {
 		rty = rty.Elem()
 	}
 
-	t.m[keystr] = attribute{
+	t.m[keystr] = &attribute{
 		vfn: psp.ValidatorFn,
 		ty:  rty,
 	}
