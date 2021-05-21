@@ -181,6 +181,14 @@ func (s *Subspace) checkType(key []byte, value interface{}) {
 	}
 }
 
+// All the cache-related functions here are thread-safe.
+// Currently, since `CheckTx` and `DeliverTx` can run without abci locking,
+// these functions must be thread-safe as tx can run concurrently.
+// The map data type is not thread-safe by itself, but concurrent access is
+// possible with entry fixed. If we access the subspace with an unregistered key,
+// it panics, ensuring that the entry of the map is not extended after the server runs.
+// Value update and read operations for a single entry of a map can be performed concurrently by
+// `atomic.StorePointer` and `atomic.LoadPointer`.
 func (s *Subspace) cacheValue(key []byte, value interface{}) {
 	attr, ok := s.table.m[string(key)]
 	if !ok {
