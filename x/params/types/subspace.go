@@ -75,15 +75,7 @@ func (s *Subspace) kvStore(ctx sdk.Context) sdk.KVStore {
 	// this function can be called concurrently so we should not call append on s.name directly
 	name := make([]byte, len(s.name))
 	copy(name, s.name)
-	return prefix.NewStore(ctx.KVStore(s.key), append(name, '/'))
-}
-
-// Returns a transient store for modification
-func (s *Subspace) transientStore(ctx sdk.Context) sdk.KVStore {
-	// this function can be called concurrently so we should not call append on s.name directly
-	name := make([]byte, len(s.name))
-	copy(name, s.name)
-	return prefix.NewStore(ctx.TransientStore(s.tkey), append(name, '/'))
+	return prefix.NewStore(ctx.MultiStore().GetKVStore(s.key), append(name, '/'))
 }
 
 // Validate attempts to validate a parameter value by its key. If the key is not
@@ -154,13 +146,6 @@ func (s *Subspace) Has(ctx sdk.Context, key []byte) bool {
 	}
 	store := s.kvStore(ctx)
 	return store.Has(key)
-}
-
-// Modified returns true if the parameter key is set in the Subspace's transient
-// KVStore.
-func (s *Subspace) Modified(ctx sdk.Context, key []byte) bool {
-	tstore := s.transientStore(ctx)
-	return tstore.Has(key)
 }
 
 // checkType verifies that the provided key and value are comptable and registered.
@@ -258,10 +243,6 @@ func (s *Subspace) Set(ctx sdk.Context, key []byte, value interface{}) {
 	}
 
 	store.Set(key, bz)
-
-	tstore := s.transientStore(ctx)
-	tstore.Set(key, []byte{})
-
 	s.cacheValue(key, value)
 }
 
@@ -346,11 +327,6 @@ func (ros ReadOnlySubspace) GetRaw(ctx sdk.Context, key []byte) []byte {
 // Has delegates a read-only Has call to the Subspace.
 func (ros ReadOnlySubspace) Has(ctx sdk.Context, key []byte) bool {
 	return ros.s.Has(ctx, key)
-}
-
-// Modified delegates a read-only Modified call to the Subspace.
-func (ros ReadOnlySubspace) Modified(ctx sdk.Context, key []byte) bool {
-	return ros.s.Modified(ctx, key)
 }
 
 // Name delegates a read-only Name call to the Subspace.

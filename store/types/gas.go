@@ -173,9 +173,3 @@ func KVGasConfig() GasConfig {
 		IterNextCostFlat: 30,
 	}
 }
-
-// TransientGasConfig returns a default gas config for TransientStores.
-func TransientGasConfig() GasConfig {
-	// TODO: define gasconfig for transient stores
-	return KVGasConfig()
-}

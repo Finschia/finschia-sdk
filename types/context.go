@@ -229,11 +229,6 @@ func (c Context) KVStore(key StoreKey) KVStore {
 	return gaskv.NewStore(c.MultiStore().GetKVStore(key), c.GasMeter(), stypes.KVGasConfig())
 }
 
-// TransientStore fetches a TransientStore from the MultiStore.
-func (c Context) TransientStore(key StoreKey) KVStore {
-	return gaskv.NewStore(c.MultiStore().GetKVStore(key), c.GasMeter(), stypes.TransientGasConfig())
-}
-
 // CacheContext returns a new Context with the multi-store cached and a new
 // EventManager. The cached context is written to the context when writeCache
 // is called.
