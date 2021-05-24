@@ -189,12 +189,10 @@ func TestSubspace(t *testing.T) {
 	store := prefix.NewStore(ctx.KVStore(key), []byte("test/"))
 	space := keeper.Subspace("test").WithKeyTable(table)
 
-	// Test space.Set, space.Modified
+	// Test space.Set
 	for i, kv := range kvs {
 		i, kv := i, kv
-		require.False(t, space.Modified(ctx, []byte(kv.key)), "space.Modified returns true before setting, tc #%d", i)
 		require.NotPanics(t, func() { space.Set(ctx, []byte(kv.key), kv.param) }, "space.Set panics, tc #%d", i)
-		require.True(t, space.Modified(ctx, []byte(kv.key)), "space.Modified returns false after setting, tc #%d", i)
 	}
 
 	// Test space.Get, space.GetIfExists

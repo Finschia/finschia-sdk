@@ -102,16 +102,6 @@ func (suite *SubspaceTestSuite) TestHas() {
 	suite.Require().True(suite.ss.Has(suite.ctx, keyUnbondingTime))
 }
 
-func (suite *SubspaceTestSuite) TestModified() {
-	t := time.Hour * 48
-
-	suite.Require().False(suite.ss.Modified(suite.ctx, keyUnbondingTime))
-	suite.Require().NotPanics(func() {
-		suite.ss.Set(suite.ctx, keyUnbondingTime, t)
-	})
-	suite.Require().True(suite.ss.Modified(suite.ctx, keyUnbondingTime))
-}
-
 func (suite *SubspaceTestSuite) TestUpdate() {
 	suite.Require().Panics(func() {
 		suite.ss.Update(suite.ctx, []byte("invalid_key"), nil) // nolint:errcheck
