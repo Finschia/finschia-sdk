@@ -73,7 +73,7 @@ func TestKeeper(t *testing.T) {
 		types.NewParamSetPair([]byte("extra2"), string(""), validateNoOp),
 	)
 
-	cdc, ctx, skey, _, keeper := testComponents()
+	cdc, ctx, skey, keeper := testComponents()
 
 	store := prefix.NewStore(ctx.KVStore(skey), []byte("test/"))
 	space := keeper.Subspace("test")
@@ -149,7 +149,7 @@ func indirect(ptr interface{}) interface{} {
 }
 
 func TestSubspace(t *testing.T) {
-	cdc, ctx, key, _, keeper := testComponents()
+	cdc, ctx, key, keeper := testComponents()
 
 	kvs := []struct {
 		key   string
@@ -231,7 +231,7 @@ type paramJSON struct {
 }
 
 func TestJSONUpdate(t *testing.T) {
-	_, ctx, _, _, keeper := testComponents()
+	_, ctx, _, keeper := testComponents()
 
 	key := []byte("key")
 

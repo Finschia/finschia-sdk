@@ -14,17 +14,15 @@ type Keeper struct {
 	cdc         codec.BinaryMarshaler
 	legacyAmino *codec.LegacyAmino
 	key         sdk.StoreKey
-	tkey        sdk.StoreKey
 	spaces      map[string]*types.Subspace
 }
 
 // NewKeeper constructs a params keeper
-func NewKeeper(cdc codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key, tkey sdk.StoreKey) Keeper {
+func NewKeeper(cdc codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key sdk.StoreKey) Keeper {
 	return Keeper{
 		cdc:         cdc,
 		legacyAmino: legacyAmino,
 		key:         key,
-		tkey:        tkey,
 		spaces:      make(map[string]*types.Subspace),
 	}
 }
@@ -45,7 +43,7 @@ func (k Keeper) Subspace(s string) *types.Subspace {
 		panic("cannot use empty string for subspace")
 	}
 
-	space := types.NewSubspace(k.cdc, k.legacyAmino, k.key, k.tkey, s)
+	space := types.NewSubspace(k.cdc, k.legacyAmino, k.key, s)
 	k.spaces[s] = space
 
 	return space

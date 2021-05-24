@@ -40,7 +40,7 @@ func TestConstructorOptions(t *testing.T) {
 			k := NewKeeper(
 				nil,
 				nil,
-				paramtypes.NewSubspace(nil, nil, nil, nil, ""),
+				paramtypes.NewSubspace(nil, nil, nil, ""),
 				authkeeper.AccountKeeper{},
 				nil,
 				stakingkeeper.Keeper{},

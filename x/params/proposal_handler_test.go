@@ -68,16 +68,14 @@ func newTestInput(t *testing.T) testInput {
 	cms := store.NewCommitMultiStore(db)
 
 	keyParams := sdk.NewKVStoreKey("params")
-	tKeyParams := sdk.NewTransientStoreKey("transient_params")
 
 	cms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)
-	cms.MountStoreWithDB(tKeyParams, sdk.StoreTypeTransient, db)
 
 	err := cms.LoadLatestVersion()
 	require.Nil(t, err)
 
 	encCfg := simapp.MakeTestEncodingConfig()
-	keeper := keeper.NewKeeper(encCfg.Marshaler, encCfg.Amino, keyParams, tKeyParams)
+	keeper := keeper.NewKeeper(encCfg.Marshaler, encCfg.Amino, keyParams)
 	ctx := sdk.NewContext(cms, ostproto.Header{}, false, log.NewNopLogger())
 
 	return testInput{ctx, cdc, keeper}

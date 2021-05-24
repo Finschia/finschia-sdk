@@ -25,7 +25,6 @@ import (
 	"github.com/line/lbm-sdk/v2/store/iavl"
 	"github.com/line/lbm-sdk/v2/store/mem"
 	"github.com/line/lbm-sdk/v2/store/tracekv"
-	"github.com/line/lbm-sdk/v2/store/transient"
 	"github.com/line/lbm-sdk/v2/store/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 )
@@ -612,7 +611,7 @@ func (rs *Store) Snapshot(height uint64, format uint32) (<-chan io.ReadCloser, e
 		switch store := rs.GetCommitKVStore(key).(type) {
 		case *iavl.Store:
 			stores = append(stores, namedStore{name: key.Name(), Store: store})
-		case *transient.Store, *mem.Store:
+		case *mem.Store:
 			// Non-persisted stores shouldn't be snapshotted
 			continue
 		default:
@@ -857,14 +856,6 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 	case types.StoreTypeDB:
 		return commitDBStoreAdapter{Store: dbadapter.Store{DB: db}}, nil
 
-	case types.StoreTypeTransient:
-		_, ok := key.(*types.TransientStoreKey)
-		if !ok {
-			return nil, fmt.Errorf("invalid StoreKey for StoreTypeTransient: %s", key.String())
-		}
-
-		return transient.NewStore(), nil
-
 	case types.StoreTypeMemory:
 		if _, ok := key.(*types.MemoryStoreKey); !ok {
 			return nil, fmt.Errorf("unexpected key type for a MemoryStoreKey; got: %s", key.String())
@@ -880,9 +871,6 @@ func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID
 func (rs *Store) buildCommitInfo(version int64) *types.CommitInfo {
 	storeInfos := []types.StoreInfo{}
 	for key, store := range rs.stores {
-		if store.GetStoreType() == types.StoreTypeTransient {
-			continue
-		}
 		storeInfos = append(storeInfos, types.StoreInfo{
 			Name:     key.Name(),
 			CommitId: store.LastCommitID(),
@@ -924,10 +912,6 @@ func commitStores(version int64, storeMap map[types.StoreKey]types.CommitKVStore
 
 	for key, store := range storeMap {
 		commitID := store.Commit()
-
-		if store.GetStoreType() == types.StoreTypeTransient {
-			continue
-		}
 
 		si := types.StoreInfo{}
 		si.Name = key.Name()

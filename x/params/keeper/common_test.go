@@ -13,15 +13,14 @@ import (
 	paramskeeper "github.com/line/lbm-sdk/v2/x/params/keeper"
 )
 
-func testComponents() (*codec.LegacyAmino, sdk.Context, sdk.StoreKey, sdk.StoreKey, paramskeeper.Keeper) {
+func testComponents() (*codec.LegacyAmino, sdk.Context, sdk.StoreKey, paramskeeper.Keeper) {
 	marshaler := simapp.MakeTestEncodingConfig().Marshaler
 	legacyAmino := createTestCodec()
 	mkey := sdk.NewKVStoreKey("test")
-	tkey := sdk.NewTransientStoreKey("transient_test")
-	ctx := defaultContext(mkey, tkey)
-	keeper := paramskeeper.NewKeeper(marshaler, legacyAmino, mkey, tkey)
+	ctx := defaultContext(mkey)
+	keeper := paramskeeper.NewKeeper(marshaler, legacyAmino, mkey)
 
-	return legacyAmino, ctx, mkey, tkey, keeper
+	return legacyAmino, ctx, mkey, keeper
 }
 
 type invalid struct{}
@@ -38,11 +37,10 @@ func createTestCodec() *codec.LegacyAmino {
 	return cdc
 }
 
-func defaultContext(key sdk.StoreKey, tkey sdk.StoreKey) sdk.Context {
+func defaultContext(key sdk.StoreKey) sdk.Context {
 	db := memdb.NewDB()
 	cms := store.NewCommitMultiStore(db)
 	cms.MountStoreWithDB(key, sdk.StoreTypeIAVL, db)
-	cms.MountStoreWithDB(tkey, sdk.StoreTypeTransient, db)
 	err := cms.LoadLatestVersion()
 	if err != nil {
 		panic(err)
