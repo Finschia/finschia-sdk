@@ -631,7 +631,6 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	t.Cleanup(func() { os.RemoveAll(tempDir) })
 	var (
 		keyParams  = sdk.NewKVStoreKey(paramtypes.StoreKey)
-		tkeyParams = sdk.NewTransientStoreKey(paramtypes.TStoreKey)
 		keyWasm    = sdk.NewKVStoreKey(wasmTypes.StoreKey)
 	)
 
@@ -639,7 +638,6 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(keyWasm, sdk.StoreTypeIAVL, db)
 	ms.MountStoreWithDB(keyParams, sdk.StoreTypeIAVL, db)
-	ms.MountStoreWithDB(tkeyParams, sdk.StoreTypeTransient, db)
 	require.NoError(t, ms.LoadLatestVersion())
 
 	ctx := sdk.NewContext(ms, tmproto.Header{
@@ -649,7 +647,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 
 	encodingConfig := MakeEncodingConfig(t)
 	wasmConfig := wasmTypes.DefaultWasmConfig()
-	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams, tkeyParams)
+	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams)
 
 	srcKeeper := NewKeeper(encodingConfig.Marshaler, keyWasm, pk.Subspace(wasmTypes.DefaultParamspace), authkeeper.AccountKeeper{}, nil, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, tempDir, wasmConfig, SupportedFeatures, nil, nil)
 	return &srcKeeper, ctx, []sdk.StoreKey{keyWasm, keyParams}

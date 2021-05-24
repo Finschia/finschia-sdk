@@ -60,11 +60,6 @@ func (s *storeTestSuite) TestNewKVStoreKeys() {
 	s.Require().Equal(1, len(sdk.NewKVStoreKeys("one")))
 }
 
-func (s *storeTestSuite) TestNewTransientStoreKeys() {
-	s.Require().Equal(map[string]*sdk.TransientStoreKey{}, sdk.NewTransientStoreKeys())
-	s.Require().Equal(1, len(sdk.NewTransientStoreKeys("one")))
-}
-
 func (s *storeTestSuite) TestNewInfiniteGasMeter() {
 	gm := sdk.NewInfiniteGasMeter()
 	s.Require().NotNil(gm)

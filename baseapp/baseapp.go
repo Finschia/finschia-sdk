@@ -197,9 +197,6 @@ func (app *BaseApp) MountStores(keys ...sdk.StoreKey) {
 				app.MountStore(key, sdk.StoreTypeDB)
 			}
 
-		case *sdk.TransientStoreKey:
-			app.MountStore(key, sdk.StoreTypeTransient)
-
 		default:
 			panic("Unrecognized store key type " + reflect.TypeOf(key).Name())
 		}
@@ -217,14 +214,6 @@ func (app *BaseApp) MountKVStores(keys map[string]*sdk.KVStoreKey) {
 			// retain history, but it's useful for faster simulation.
 			app.MountStore(key, sdk.StoreTypeDB)
 		}
-	}
-}
-
-// MountTransientStores mounts all transient stores to the provided keys in
-// the BaseApp multistore.
-func (app *BaseApp) MountTransientStores(keys map[string]*sdk.TransientStoreKey) {
-	for _, key := range keys {
-		app.MountStore(key, sdk.StoreTypeTransient)
 	}
 }
 

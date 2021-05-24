@@ -646,13 +646,7 @@ func TestMultistoreSnapshotRestore(t *testing.T) {
 	assert.Equal(t, source.LastCommitID(), target.LastCommitID())
 	for key, sourceStore := range source.stores {
 		targetStore := target.getStoreByName(key.Name()).(types.CommitKVStore)
-		switch sourceStore.GetStoreType() {
-		case types.StoreTypeTransient:
-			assert.False(t, targetStore.Iterator(nil, nil).Valid(),
-				"transient store %v not empty", key.Name())
-		default:
-			assertStoresEqual(t, sourceStore, targetStore, "store %q not equal", key.Name())
-		}
+		assertStoresEqual(t, sourceStore, targetStore, "store %q not equal", key.Name())
 	}
 }
 
@@ -760,7 +754,6 @@ func newMultiStoreWithMixedMounts(db tmdb.DB) *Store {
 	store.MountStoreWithDB(types.NewKVStoreKey("iavl1"), types.StoreTypeIAVL, nil)
 	store.MountStoreWithDB(types.NewKVStoreKey("iavl2"), types.StoreTypeIAVL, nil)
 	store.MountStoreWithDB(types.NewKVStoreKey("iavl3"), types.StoreTypeIAVL, nil)
-	store.MountStoreWithDB(types.NewTransientStoreKey("trans1"), types.StoreTypeTransient, nil)
 	store.LoadLatestVersion()
 
 	return store
@@ -770,13 +763,11 @@ func newMultiStoreWithMixedMountsAndBasicData(db tmdb.DB) *Store {
 	store := newMultiStoreWithMixedMounts(db)
 	store1 := store.getStoreByName("iavl1").(types.CommitKVStore)
 	store2 := store.getStoreByName("iavl2").(types.CommitKVStore)
-	trans1 := store.getStoreByName("trans1").(types.KVStore)
 
 	store1.Set([]byte("a"), []byte{1})
 	store1.Set([]byte("b"), []byte{1})
 	store2.Set([]byte("X"), []byte{255})
 	store2.Set([]byte("A"), []byte{101})
-	trans1.Set([]byte("x1"), []byte{91})
 	store.Commit()
 
 	store1.Set([]byte("b"), []byte{2})
@@ -786,7 +777,6 @@ func newMultiStoreWithMixedMountsAndBasicData(db tmdb.DB) *Store {
 
 	store2.Set([]byte("C"), []byte{103})
 	store2.Delete([]byte("X"))
-	trans1.Set([]byte("x2"), []byte{92})
 	store.Commit()
 
 	return store

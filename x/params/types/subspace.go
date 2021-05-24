@@ -14,30 +14,23 @@ import (
 const (
 	// StoreKey is the string store key for the param store
 	StoreKey = "params"
-
-	// TStoreKey is the string store key for the param transient store
-	TStoreKey = "transient_params"
 )
 
 // Individual parameter store for each keeper
-// Transient store persists for a block, so we use it for
-// recording whether the parameter has been changed or not
 type Subspace struct {
 	cdc         codec.BinaryMarshaler
 	legacyAmino *codec.LegacyAmino
 	key         sdk.StoreKey // []byte -> []byte, stores parameter
-	tkey        sdk.StoreKey // []byte -> bool, stores parameter change
 	name        []byte
 	table       KeyTable
 }
 
 // NewSubspace constructs a store with namestore
-func NewSubspace(cdc codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key sdk.StoreKey, tkey sdk.StoreKey, name string) *Subspace {
+func NewSubspace(cdc codec.BinaryMarshaler, legacyAmino *codec.LegacyAmino, key sdk.StoreKey, name string) *Subspace {
 	return &Subspace{
 		cdc:         cdc,
 		legacyAmino: legacyAmino,
 		key:         key,
-		tkey:        tkey,
 		name:        []byte(name),
 		table:       NewKeyTable(),
 	}

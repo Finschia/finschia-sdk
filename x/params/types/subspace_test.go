@@ -31,11 +31,10 @@ func (suite *SubspaceTestSuite) SetupTest() {
 
 	ms := store.NewCommitMultiStore(db)
 	ms.MountStoreWithDB(key, sdk.StoreTypeIAVL, db)
-	ms.MountStoreWithDB(tkey, sdk.StoreTypeTransient, db)
 	suite.NoError(ms.LoadLatestVersion())
 
 	encCfg := simapp.MakeTestEncodingConfig()
-	ss := types.NewSubspace(encCfg.Marshaler, encCfg.Amino, key, tkey, "testsubspace")
+	ss := types.NewSubspace(encCfg.Marshaler, encCfg.Amino, key, "testsubspace")
 
 	suite.cdc = encCfg.Marshaler
 	suite.amino = encCfg.Amino
@@ -49,7 +48,7 @@ func (suite *SubspaceTestSuite) TestKeyTable() {
 		suite.ss.WithKeyTable(paramKeyTable())
 	})
 	suite.Require().NotPanics(func() {
-		ss := types.NewSubspace(suite.cdc, suite.amino, key, tkey, "testsubspace2")
+		ss := types.NewSubspace(suite.cdc, suite.amino, key, "testsubspace2")
 		ss = ss.WithKeyTable(paramKeyTable())
 	})
 }

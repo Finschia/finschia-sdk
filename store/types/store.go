@@ -290,7 +290,6 @@ const (
 	StoreTypeMulti StoreType = iota
 	StoreTypeDB
 	StoreTypeIAVL
-	StoreTypeTransient
 	StoreTypeMemory
 )
 
@@ -304,9 +303,6 @@ func (st StoreType) String() string {
 
 	case StoreTypeIAVL:
 		return "StoreTypeIAVL"
-
-	case StoreTypeTransient:
-		return "StoreTypeTransient"
 
 	case StoreTypeMemory:
 		return "StoreTypeMemory"
@@ -351,29 +347,6 @@ func (key *KVStoreKey) Name() string {
 
 func (key *KVStoreKey) String() string {
 	return fmt.Sprintf("KVStoreKey{%p, %s}", key, key.name)
-}
-
-// TransientStoreKey is used for indexing transient stores in a MultiStore
-type TransientStoreKey struct {
-	name string
-}
-
-// Constructs new TransientStoreKey
-// Must return a pointer according to the ocap principle
-func NewTransientStoreKey(name string) *TransientStoreKey {
-	return &TransientStoreKey{
-		name: name,
-	}
-}
-
-// Implements StoreKey
-func (key *TransientStoreKey) Name() string {
-	return key.name
-}
-
-// Implements StoreKey
-func (key *TransientStoreKey) String() string {
-	return fmt.Sprintf("TransientStoreKey{%p, %s}", key, key.name)
 }
 
 // MemoryStoreKey defines a typed key to be used with an in-memory KVStore.
