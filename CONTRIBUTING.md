@@ -94,6 +94,8 @@ If you open a PR on the LBM SDK, it is mandatory to update the relevant document
 - If your changes relate to the core of the CLI (not specifically to module's CLI/Rest), please modify the `docs/run-node/` folder.
 - If your changes relate to a module, please update the module's spec in `x/moduleName/docs/spec/`.
 
+When writing documentation, follow the [Documentation Writing Guidelines](./docs/DOC_WRITING_GUIDELINES.md).
+
 ## Forking
 
 Please note that Go requires code to live under absolute paths, which complicates forking.
@@ -163,7 +165,7 @@ For example, in vscode your `.vscode/settings.json` should look like:
 
 ## Testing
 
-Tests can be ran by running `make test` at the top level of the SDK repository. 
+Tests can be ran by running `make test` at the top level of the SDK repository.
 
 We expect tests to use `require` or `assert` rather than `t.Skip` or `t.Fail`,
 unless there is a reason to do otherwise.
@@ -321,7 +323,7 @@ the community of this project.
 ## Concept & Release Approval Process
 
 The process for how Cosmos SDK maintainers take features and ADRs from concept to release
-is broken up into three distinct stages: **Strategy Discovery**, **Concept Approval**, and 
+is broken up into three distinct stages: **Strategy Discovery**, **Concept Approval**, and
 **Implementation & Release Approval**
 
 
@@ -349,7 +351,7 @@ If an individual Pull Request for an ADR needs more time than 2 weeks to reach r
 in current state (`Draft` or `Proposed`), with its contents updated to summarize
 the current state of its discussion.
 
-If an ADR is taking longer than 4 weeks to reach a final conclusion, the **Concept Approval Committee** 
+If an ADR is taking longer than 4 weeks to reach a final conclusion, the **Concept Approval Committee**
 should convene to rectify the situation by either:
 - unanimously setting a new time bound period for this ADR
 - making changes to the Concept Approval Process (as outlined here)
@@ -393,7 +395,7 @@ well as for PRs made as part of a release process:
 * Code reviewers should ensure the PR does exactly what the ADR said it should
 * Code reviewers should have more senior engineering capability
 * 1/2 approval is required from the **primary repo maintainers** in `CODEOWNERS`
- 
+
 *Note: For any major or minor release series denoted as a "Stable Release" (e.g. v0.39 "Launchpad"), a separate release
 committee is often established. Stable Releases, and their corresponding release committees are documented
 separately in [STABLE_RELEASES.md](./STABLE_RELEASES.md)*
