@@ -1,4 +1,4 @@
-The LBM-SDK is a framework for building blockchain applications in Golang.
+The LBM SDK is a framework for building blockchain applications in Golang.
 It is being used to build [`LBM`](https://github.com/line/lbm), the first implementation of the LINE Blockchain Mainnet.
 This is forked from [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) at 2021-03-15.
 
@@ -8,13 +8,13 @@ This is forked from [`cosmos-sdk`](https://github.com/cosmos/cosmos-sdk) at 2021
 
 ## What is the LBM SDK?
 
-The [LBM-SDK](https://github.com/line/lbm-sdk) is an open-source framework for building multi-asset public Proof-of-Stake (PoS) <df value="blockchain">blockchains</df>, as well as permissioned Proof-Of-Authority (PoA) blockchains. Blockchains built with the Cosmos SDK are generally referred to as **application-specific blockchains**. 
+The [LBM SDK](https://github.com/line/lbm-sdk) is an open-source framework for building multi-asset public Proof-of-Stake (PoS) <df value="blockchain">blockchains</df>, as well as permissioned Proof-Of-Authority (PoA) blockchains. Blockchains built with the Cosmos SDK are generally referred to as **application-specific blockchains**. 
 
 The purpose of `LBM SDK` is to succeed to [the objectives of `Cosmos sdk`](https://github.com/cosmos/cosmos-sdk/blob/master/docs/intro/overview.md) while helping develop blockchains that requires faster transaction processing to be applied to reality.
 
 ## Why the LBM SDK?
 
-Cosmos-sdk, which created the philosophy of application-specific blockchain, established its status as a framework for various application blockchain development. `LBM-SDK` inherited this `cosmos-sdk` philosophy, addressing slow transaction processing problem that was difficult for cosmos-sdk to apply in real financial system. Real financial systems require thousands of processing performance per second, with LBM-SDK adding many performance improvements to meet that demand.
+Cosmos-sdk, which created the philosophy of application-specific blockchain, established its status as a framework for various application blockchain development. `LBM SDK` inherited this `cosmos-sdk` philosophy, addressing slow transaction processing problem that was difficult for cosmos-sdk to apply in real financial system. Real financial systems require thousands of processing performance per second, with LBM SDK adding many performance improvements to meet that demand.
 The following work was carried out to improve performance.
 
 - Concurrent checkTx, deliverTx
