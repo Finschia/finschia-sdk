@@ -135,10 +135,13 @@ func (ckv *CommitKVStoreCache) Get(key []byte) []byte {
 	ckv.metrics.InterBlockCacheMisses.Add(1)
 	value := ckv.CommitKVStore.Get(key)
 	ckv.cache.Set(prefixedKey, value)
-	stats := fastcache.Stats{}
-	ckv.cache.UpdateStats(&stats)
-	ckv.metrics.InterBlockCacheEntries.Set(float64(stats.EntriesCount))
-	ckv.metrics.InterBlockCacheBytes.Set(float64(stats.BytesSize))
+	go func() {
+		// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
+		stats := fastcache.Stats{}
+		ckv.cache.UpdateStats(&stats)
+		ckv.metrics.InterBlockCacheEntries.Set(float64(stats.EntriesCount))
+		ckv.metrics.InterBlockCacheBytes.Set(float64(stats.BytesSize))
+	}()
 	return value
 }
 

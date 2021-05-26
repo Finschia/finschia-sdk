@@ -231,12 +231,15 @@ func (st *Store) Get(key []byte) []byte {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "get")
 	_, value := st.tree.Get(key)
 	if st.cache != nil {
-		stats := fastcache.Stats{}
-		st.cache.UpdateStats(&stats)
-		st.metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
-		st.metrics.IAVLCacheMisses.Set(float64(stats.Misses))
-		st.metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
-		st.metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
+		go func() {
+			// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
+			stats := fastcache.Stats{}
+			st.cache.UpdateStats(&stats)
+			st.metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
+			st.metrics.IAVLCacheMisses.Set(float64(stats.Misses))
+			st.metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
+			st.metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
+		}()
 	}
 	return value
 }
