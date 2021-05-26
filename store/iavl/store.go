@@ -35,7 +35,6 @@ var (
 	_ types.StoreWithInitialVersion = (*Store)(nil)
 
 	_ types.CacheManager = (*CacheManagerSingleton)(nil)
-	_ types.CacheManager = (*CacheManagerOwnCache)(nil)
 )
 
 // Store Implements types.KVStore and CommitKVStore.
@@ -55,24 +54,26 @@ func (cms *CacheManagerSingleton) GetCache() *fastcache.Cache {
 }
 
 func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
-	return &CacheManagerSingleton{
+	cm := &CacheManagerSingleton{
 		cache:   fastcache.New(cacheSize),
 		metrics: provider(),
 	}
+	startCacheMetricUpdator(cm.cache, cm.metrics)
+	return cm
 }
 
-type CacheManagerOwnCache struct {
-	cacheSize int
-}
-
-func (cmo *CacheManagerOwnCache) GetCache() *fastcache.Cache {
-	return fastcache.New(cmo.cacheSize)
-}
-
-func NewCacheManagerOwnCache(cacheSize int) types.CacheManager {
-	return &CacheManagerOwnCache{
-		cacheSize: cacheSize,
-	}
+func startCacheMetricUpdator(cache *fastcache.Cache, metrics *Metrics) {
+	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
+	// So we update the metric to a separate go route.
+	go func() {
+		stats := fastcache.Stats{}
+		cache.UpdateStats(&stats)
+		metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
+		metrics.IAVLCacheMisses.Set(float64(stats.Misses))
+		metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
+		metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
+		time.Sleep(1 * time.Minute)
+	}()
 }
 
 type CacheManagerNoCache struct{}
@@ -230,17 +231,6 @@ func (st *Store) Set(key, value []byte) {
 func (st *Store) Get(key []byte) []byte {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "get")
 	_, value := st.tree.Get(key)
-	if st.cache != nil {
-		go func() {
-			// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
-			stats := fastcache.Stats{}
-			st.cache.UpdateStats(&stats)
-			st.metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
-			st.metrics.IAVLCacheMisses.Set(float64(stats.Misses))
-			st.metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
-			st.metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
-		}()
-	}
 	return value
 }
 
