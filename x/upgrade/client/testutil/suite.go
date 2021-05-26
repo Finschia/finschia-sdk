@@ -7,12 +7,12 @@ import (
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
-	"github.com/line/link-sdk/simapp"
-	clitestutil "github.com/line/link-sdk/testutil/cli"
-	"github.com/line/link-sdk/testutil/network"
-	sdk "github.com/line/link-sdk/types"
-	"github.com/line/link-sdk/x/upgrade/client/cli"
-	"github.com/line/link-sdk/x/upgrade/types"
+	"github.com/line/lbm-sdk/simapp"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	"github.com/line/lbm-sdk/testutil/network"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/upgrade/client/cli"
+	"github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
