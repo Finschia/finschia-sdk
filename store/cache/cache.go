@@ -77,7 +77,7 @@ func NewCommitKVStoreCacheManager(cacheSize int, provider MetricsProvider) *Comm
 
 func startCacheMetricUpdator(cache *fastcache.Cache, metrics *Metrics) {
 	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
-	// So we update the metric to a separate go route.
+	// So we update the metrics with a separate go route.
 	go func() {
 		for {
 			stats := fastcache.Stats{}
