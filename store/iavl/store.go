@@ -66,13 +66,15 @@ func startCacheMetricUpdator(cache *fastcache.Cache, metrics *Metrics) {
 	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
 	// So we update the metric to a separate go route.
 	go func() {
-		stats := fastcache.Stats{}
-		cache.UpdateStats(&stats)
-		metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
-		metrics.IAVLCacheMisses.Set(float64(stats.Misses))
-		metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
-		metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
-		time.Sleep(1 * time.Minute)
+		for {
+			stats := fastcache.Stats{}
+			cache.UpdateStats(&stats)
+			metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
+			metrics.IAVLCacheMisses.Set(float64(stats.Misses))
+			metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
+			metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
+			time.Sleep(1 * time.Minute)
+		}
 	}()
 }
 
