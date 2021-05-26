@@ -112,6 +112,9 @@ func (s *resultTestSuite) TestABCIMessageLog() {
 		s.Require().NoError(err)
 		s.Require().Equal(string(bz), msgLogs.String())
 	}
+
+	var msgLogs sdk.ABCIMessageLogs
+	s.Require().Equal("", msgLogs.String())
 }
 
 func (s *resultTestSuite) TestNewSearchTxsResult() {
