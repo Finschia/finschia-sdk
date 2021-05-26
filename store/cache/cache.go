@@ -2,6 +2,7 @@ package cache
 
 import (
 	"sync"
+	"time"
 
 	"github.com/VictoriaMetrics/fastcache"
 	"github.com/line/lbm-sdk/v2/store/cachekv"
@@ -63,13 +64,29 @@ func NewCommitKVStoreCacheManager(cacheSize int, provider MetricsProvider) *Comm
 		// This function was called because it intended to use the inter block cache, creating a cache of minimal size.
 		cacheSize = DefaultCommitKVStoreCacheSize
 	}
-	return &CommitKVStoreCacheManager{
+	cm := &CommitKVStoreCacheManager{
 		cache:       fastcache.New(cacheSize),
 		caches:      make(map[string]types.CommitKVStore),
 		metrics:     provider(),
 		prefixMap:   make(map[string][]byte),
 		prefixOrder: 0,
 	}
+	startCacheMetricUpdator(cm.cache, cm.metrics)
+	return cm
+}
+
+func startCacheMetricUpdator(cache *fastcache.Cache, metrics *Metrics) {
+	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
+	// So we update the metrics with a separate go route.
+	go func() {
+		for {
+			stats := fastcache.Stats{}
+			cache.UpdateStats(&stats)
+			metrics.InterBlockCacheEntries.Set(float64(stats.EntriesCount))
+			metrics.InterBlockCacheBytes.Set(float64(stats.BytesSize))
+			time.Sleep(1 * time.Minute)
+		}
+	}()
 }
 
 // GetStoreCache returns a Cache from the CommitStoreCacheManager for a given
@@ -135,10 +152,6 @@ func (ckv *CommitKVStoreCache) Get(key []byte) []byte {
 	ckv.metrics.InterBlockCacheMisses.Add(1)
 	value := ckv.CommitKVStore.Get(key)
 	ckv.cache.Set(prefixedKey, value)
-	stats := fastcache.Stats{}
-	ckv.cache.UpdateStats(&stats)
-	ckv.metrics.InterBlockCacheEntries.Set(float64(stats.EntriesCount))
-	ckv.metrics.InterBlockCacheBytes.Set(float64(stats.BytesSize))
 	return value
 }
 
