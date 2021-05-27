@@ -378,6 +378,15 @@ devdoc-update:
 .PHONY: devdoc devdoc-clean devdoc-init devdoc-save devdoc-update
 
 ###############################################################################
+###                                easyjson                                 ###
+###############################################################################
+# easyjson must be used for types that are not registered in amino by RegisterConcrete.
+easyjson-gen:
+	@echo "Generating easyjson files"
+	go get github.com/mailru/easyjson@v0.7.7
+	easyjson ./types/result.go
+
+###############################################################################
 ###                                Protobuf                                 ###
 ###############################################################################
 

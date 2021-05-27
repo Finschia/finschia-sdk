@@ -9,16 +9,13 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	abci "github.com/line/ostracon/abci/types"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
-	"github.com/line/lbm-sdk/v2/codec"
 	codectypes "github.com/line/lbm-sdk/v2/codec/types"
 )
-
-var cdc = codec.NewLegacyAmino()
 
 func (gi GasInfo) String() string {
 	bz, _ := yaml.Marshal(gi)
@@ -40,6 +37,7 @@ func (r Result) GetEvents() Events {
 }
 
 // ABCIMessageLogs represents a slice of ABCIMessageLog.
+//easyjson:json
 type ABCIMessageLogs []ABCIMessageLog
 
 func NewABCIMessageLog(i uint32, log string, events Events) ABCIMessageLog {
@@ -51,15 +49,15 @@ func NewABCIMessageLog(i uint32, log string, events Events) ABCIMessageLog {
 }
 
 // String implements the fmt.Stringer interface for the ABCIMessageLogs type.
-func (logs ABCIMessageLogs) String() (str string) {
+func (logs ABCIMessageLogs) String() string {
 	if logs != nil {
-		raw, err := cdc.MarshalJSON(logs)
-		if err == nil {
-			str = string(raw)
+		res, err := logs.MarshalJSON()
+		if err != nil {
+			panic(err)
 		}
+		return string(res)
 	}
-
-	return str
+	return ""
 }
 
 // NewResponseResultTx returns a TxResponse given a ResultTx from ostracon
