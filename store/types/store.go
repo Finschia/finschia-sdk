@@ -5,6 +5,8 @@ import (
 	"io"
 
 	"github.com/VictoriaMetrics/fastcache"
+	"github.com/golang/protobuf/proto"
+	"github.com/line/lbm-sdk/v2/codec"
 	abci "github.com/line/ostracon/abci/types"
 	oststrings "github.com/line/ostracon/libs/strings"
 	tmdb "github.com/line/tm-db/v2"
@@ -202,11 +204,15 @@ type KVStore interface {
 	// Get returns nil iff key doesn't exist. Panics on nil key.
 	Get(key []byte) []byte
 
+	GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{}
+
 	// Has checks if a key exists. Panics on nil key.
 	Has(key []byte) bool
 
 	// Set sets the key. Panics on nil key or value.
 	Set(key, value []byte)
+
+	SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message)
 
 	// Delete deletes the key. Panics on nil key.
 	Delete(key []byte)

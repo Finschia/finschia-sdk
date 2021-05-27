@@ -9,7 +9,9 @@ import (
 
 	"github.com/VictoriaMetrics/fastcache"
 	ics23 "github.com/confio/ics23/go"
+	"github.com/golang/protobuf/proto"
 	"github.com/line/iavl/v2"
+	"github.com/line/lbm-sdk/v2/codec"
 	abci "github.com/line/ostracon/abci/types"
 	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	tmdb "github.com/line/tm-db/v2"
@@ -229,11 +231,19 @@ func (st *Store) Set(key, value []byte) {
 	st.tree.Set(key, value)
 }
 
+func (st *Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+	panic("This must not be called")
+}
+
 // Implements types.KVStore.
 func (st *Store) Get(key []byte) []byte {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "get")
 	_, value := st.tree.Get(key)
 	return value
+}
+
+func (st *Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+	panic("This must not be called")
 }
 
 // Implements types.KVStore.

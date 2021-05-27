@@ -10,6 +10,8 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/golang/protobuf/proto"
+	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/tracekv"
 	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/lbm-sdk/v2/telemetry"
@@ -68,6 +70,10 @@ func (store *Store) Get(key []byte) []byte {
 	return value
 }
 
+func (store *Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+	return store.parent.GetObj(key, cdc, ptr)
+}
+
 // Set implements types.KVStore.
 func (store *Store) Set(key []byte, value []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "set")
@@ -78,6 +84,10 @@ func (store *Store) Set(key []byte, value []byte) {
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
 	store.setCacheValue(key, value, false, true)
+}
+
+func (store *Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+	panic("This must not be called")
 }
 
 // Has implements types.KVStore.

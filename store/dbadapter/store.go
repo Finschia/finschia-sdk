@@ -3,6 +3,8 @@ package dbadapter
 import (
 	"io"
 
+	"github.com/golang/protobuf/proto"
+	"github.com/line/lbm-sdk/v2/codec"
 	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/store/cachekv"
@@ -25,6 +27,10 @@ func (dsa Store) Get(key []byte) []byte {
 	return v
 }
 
+func (dsa Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+	panic("This must not be called")
+}
+
 // Has wraps the underlying DB's Has method panicing on error.
 func (dsa Store) Has(key []byte) bool {
 	ok, err := dsa.DB.Has(key)
@@ -41,6 +47,10 @@ func (dsa Store) Set(key, value []byte) {
 	if err := dsa.DB.Set(key, value); err != nil {
 		panic(err)
 	}
+}
+
+func (dsa Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+	panic("This must not be called")
 }
 
 // Delete wraps the underlying DB's Delete method panicing on error.

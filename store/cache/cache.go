@@ -5,6 +5,8 @@ import (
 	"time"
 
 	"github.com/VictoriaMetrics/fastcache"
+	"github.com/golang/protobuf/proto"
+	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/types"
 )
@@ -155,6 +157,10 @@ func (ckv *CommitKVStoreCache) Get(key []byte) []byte {
 	return value
 }
 
+func (ckv *CommitKVStoreCache) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+	panic("This must not be called")
+}
+
 // Set inserts a key/value pair into both the write-through cache and the
 // underlying CommitKVStore.
 func (ckv *CommitKVStoreCache) Set(key, value []byte) {
@@ -164,6 +170,10 @@ func (ckv *CommitKVStoreCache) Set(key, value []byte) {
 	prefixedKey := append(ckv.prefix, key...)
 	ckv.cache.Set(prefixedKey, value)
 	ckv.CommitKVStore.Set(key, value)
+}
+
+func (ckv *CommitKVStoreCache) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+	panic("This must not be called")
 }
 
 // Delete removes a key/value pair from both the write-through cache and the

@@ -5,6 +5,8 @@ import (
 	"errors"
 	"io"
 
+	"github.com/golang/protobuf/proto"
+	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/tracekv"
 	"github.com/line/lbm-sdk/v2/store/types"
@@ -63,6 +65,10 @@ func (s Store) Get(key []byte) []byte {
 	return res
 }
 
+func (s Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+	panic("This must not be called")
+}
+
 // Implements KVStore
 func (s Store) Has(key []byte) bool {
 	return s.parent.Has(s.key(key))
@@ -73,6 +79,10 @@ func (s Store) Set(key, value []byte) {
 	types.AssertValidKey(key)
 	types.AssertValidValue(value)
 	s.parent.Set(s.key(key), value)
+}
+
+func (s Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+	panic("This must not be called")
 }
 
 // Implements KVStore

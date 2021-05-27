@@ -4,6 +4,9 @@ import (
 	"io"
 	"time"
 
+	"github.com/dgraph-io/ristretto"
+	"github.com/golang/protobuf/proto"
+	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/lbm-sdk/v2/telemetry"
 )
@@ -16,6 +19,21 @@ type Store struct {
 	gasMeter  types.GasMeter
 	gasConfig types.GasConfig
 	parent    types.KVStore
+}
+
+type CacheItem struct {
+	value interface{}
+	gas   types.Gas
+}
+
+var cache     *ristretto.Cache
+
+func init() {
+	cache, _= ristretto.NewCache(&ristretto.Config{
+		NumCounters: 1e7,     // number of keys to track frequency of (10M).
+		MaxCost:     2 << 30, // maximum cost of cache (1GB).
+		BufferItems: 64,      // number of keys per Get buffer.
+	})
 }
 
 // NewStore returns a reference to a new GasKVStore.
@@ -47,6 +65,24 @@ func (gs *Store) Get(key []byte) (value []byte) {
 	return value
 }
 
+func (gs *Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+	val, exist := cache.Get(key)
+	if exist {
+		gs.gasMeter.ConsumeGas(val.(*CacheItem).gas, types.GasReadCostFlatDesc)
+		return val.(*CacheItem).value
+	}
+	gs.gasMeter.ConsumeGas(gs.gasConfig.ReadCostFlat, types.GasReadCostFlatDesc)
+	bz := gs.parent.Get(key)
+
+	gs.gasMeter.ConsumeGas(gs.gasConfig.ReadCostPerByte*types.Gas(len(bz)), types.GasReadPerByteDesc)
+	cdc.UnmarshalInterface(bz, ptr)
+	cache.Set(key, &CacheItem{
+		value: ptr,
+		gas:   gs.gasConfig.ReadCostFlat+gs.gasConfig.ReadCostPerByte*types.Gas(len(bz)),
+	}, 1)
+	return ptr
+}
+
 // Implements KVStore.
 func (gs *Store) Set(key []byte, value []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "gaskv", "set")
@@ -57,6 +93,23 @@ func (gs *Store) Set(key []byte, value []byte) {
 	// TODO overflow-safe math?
 	gs.gasMeter.ConsumeGas(gs.gasConfig.WriteCostPerByte*types.Gas(len(value)), types.GasWritePerByteDesc)
 	gs.parent.Set(key, value)
+}
+
+func (gs *Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+	types.AssertValidKey(key)
+	value, err := cdc.MarshalInterface(obj)
+	if err != nil {
+		panic("...")
+	}
+	types.AssertValidValue(value)
+	gs.gasMeter.ConsumeGas(gs.gasConfig.WriteCostFlat, types.GasWriteCostFlatDesc)
+	// TODO overflow-safe math?
+	gs.gasMeter.ConsumeGas(gs.gasConfig.WriteCostPerByte*types.Gas(len(value)), types.GasWritePerByteDesc)
+	gs.parent.Set(key, value)
+	cache.Set(key, &CacheItem{
+		value: obj,
+		gas:   gs.gasConfig.ReadCostFlat+gs.gasConfig.ReadCostPerByte*types.Gas(len(value)),
+	}, 1)
 }
 
 // Implements KVStore.
