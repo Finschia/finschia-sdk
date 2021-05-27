@@ -9,6 +9,7 @@ import (
 	"math"
 	"sort"
 	"strings"
+	"sync"
 
 	protoio "github.com/gogo/protobuf/io"
 	gogotypes "github.com/gogo/protobuf/types"
@@ -908,16 +909,24 @@ func getLatestVersion(db tmdb.DB) int64 {
 
 // Commits each store and returns a new commitInfo.
 func commitStores(version int64, storeMap map[types.StoreKey]types.CommitKVStore) *types.CommitInfo {
-	storeInfos := make([]types.StoreInfo, 0, len(storeMap))
+	storeInfos := make([]types.StoreInfo, len(storeMap))
 
+	var wg sync.WaitGroup
+	ix := 0
 	for key, store := range storeMap {
-		commitID := store.Commit()
+		wg.Add(1)
+		go func(i int, k types.StoreKey, s types.CommitKVStore) {
+			commitID := s.Commit()
 
-		si := types.StoreInfo{}
-		si.Name = key.Name()
-		si.CommitId = commitID
-		storeInfos = append(storeInfos, si)
+			si := types.StoreInfo{}
+			si.Name = k.Name()
+			si.CommitId = commitID
+			storeInfos[i] = si
+			wg.Done()
+		}(ix, key, store)
+		ix += 1
 	}
+	wg.Wait()
 
 	return &types.CommitInfo{
 		Version:    version,
