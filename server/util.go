@@ -199,6 +199,11 @@ func interceptConfigs(rootViper *viper.Viper) (*ostcfg.Config, error) {
 		conf.RPC.PprofListenAddress = "localhost:6060"
 		conf.P2P.RecvRate = 5120000
 		conf.P2P.SendRate = 5120000
+		conf.P2P.PexRecvBufSize = 10000
+		conf.P2P.MempoolRecvBufSize = 100000
+		conf.P2P.EvidenceRecvBufSize = 10000
+		conf.P2P.ConsensusRecvBufSize = 10000
+		conf.P2P.BlockchainRecvBufSize = 10000
 		conf.Consensus.TimeoutCommit = 5 * time.Second
 		ostcfg.WriteConfigFile(tmCfgFile, conf)
 
