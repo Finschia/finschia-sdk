@@ -29,7 +29,7 @@ message MsgSubmitProposal {
   option (gogoproto.stringer)         = false;
   option (gogoproto.goproto_getters)  = false;
 
-  google.protobuf.Any content                       = 1 [(cosmos_proto.accepts_interface) = "Content"];
+  google.protobuf.Any content                    = 1 [(cosmos_proto.accepts_interface) = "Content"];
   repeated lbm.base.v1beta1.Coin initial_deposit = 2 [
     (gogoproto.nullable)     = false,
     (gogoproto.castrepeated) = "github.com/line/lbm-sdk/v2/types.Coins",
