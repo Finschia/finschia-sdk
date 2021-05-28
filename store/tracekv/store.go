@@ -3,6 +3,7 @@ package tracekv
 import (
 	"encoding/base64"
 	"encoding/json"
+	"fmt"
 	"io"
 
 	"github.com/golang/protobuf/proto"
@@ -27,7 +28,7 @@ type (
 	// TODO: Should we use a buffered writer and implement Commit on
 	// Store?
 	Store struct {
-		parent  types.KVStore
+		parent  types.KVObjectStore
 		writer  io.Writer
 		context types.TraceContext
 	}
@@ -46,16 +47,16 @@ type (
 
 // NewStore returns a reference to a new traceKVStore given a parent
 // KVStore implementation and a buffered writer.
-func NewStore(parent types.KVStore, writer io.Writer, tc types.TraceContext) *Store {
+func NewStore(parent types.KVObjectStore, writer io.Writer, tc types.TraceContext) *Store {
 	return &Store{parent: parent, writer: writer, context: tc}
 }
 
 // Get implements the KVStore interface. It traces a read operation and
 // delegates a Get call to the parent KVStore.
-func (tkv *Store) Get(key []byte) []byte {
-	value := tkv.parent.Get(key)
+func (tkv *Store) Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+	value := tkv.parent.Get(key, cdc, ptr)
 
-	writeOperation(tkv.writer, readOp, tkv.context, key, value)
+	writeOperation(tkv.writer, readOp, tkv.context, key, cdc, value)
 	return value
 }
 
@@ -65,10 +66,10 @@ func (tkv *Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{})
 
 // Set implements the KVStore interface. It traces a write operation and
 // delegates the Set call to the parent KVStore.
-func (tkv *Store) Set(key []byte, value []byte) {
+func (tkv *Store) Set(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
 	types.AssertValidKey(key)
-	writeOperation(tkv.writer, writeOp, tkv.context, key, value)
-	tkv.parent.Set(key, value)
+	writeOperation(tkv.writer, writeOp, tkv.context, key, cdc, obj)
+	tkv.parent.Set(key, cdc, obj)
 }
 
 func (tkv *Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
@@ -78,7 +79,7 @@ func (tkv *Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Messag
 // Delete implements the KVStore interface. It traces a write operation and
 // delegates the Delete call to the parent KVStore.
 func (tkv *Store) Delete(key []byte) {
-	writeOperation(tkv.writer, deleteOp, tkv.context, key, nil)
+	writeOperation(tkv.writer, deleteOp, tkv.context, key, nil, nil)
 	tkv.parent.Delete(key)
 }
 
@@ -138,7 +139,7 @@ func (ti *traceIterator) Next() {
 func (ti *traceIterator) Key() []byte {
 	key := ti.parent.Key()
 
-	writeOperation(ti.writer, iterKeyOp, ti.context, key, nil)
+	writeOperation(ti.writer, iterKeyOp, ti.context, key, nil, nil)
 	return key
 }
 
@@ -146,7 +147,7 @@ func (ti *traceIterator) Key() []byte {
 func (ti *traceIterator) Value() []byte {
 	value := ti.parent.Value()
 
-	writeOperation(ti.writer, iterValueOp, ti.context, nil, value)
+	writeOperation(ti.writer, iterValueOp, ti.context, nil, nil, value)
 	return value
 }
 
@@ -180,11 +181,25 @@ func (tkv *Store) CacheWrapWithTrace(_ io.Writer, _ types.TraceContext) types.Ca
 
 // writeOperation writes a KVStore operation to the underlying io.Writer as
 // JSON-encoded data where the key/value pair is base64 encoded.
-func writeOperation(w io.Writer, op operation, tc types.TraceContext, key, value []byte) {
+func writeOperation(w io.Writer, op operation, tc types.TraceContext, key []byte,
+	cdc codec.BinaryMarshaler, value interface{}) {
+	var bz []byte
+	if value == nil {
+		bz = nil
+	} else if val, ok := value.([]byte); ok {
+		bz = val
+	} else {
+		var err error
+		bz, err = cdc.MarshalInterface(value.(proto.Message))
+		if err != nil {
+			panic(fmt.Sprintf("Unable to marshal the object: %s\n", err.Error()))
+		}
+	}
+
 	traceOp := traceOperation{
 		Operation: op,
 		Key:       base64.StdEncoding.EncodeToString(key),
-		Value:     base64.StdEncoding.EncodeToString(value),
+		Value:     base64.StdEncoding.EncodeToString(bz),
 	}
 
 	if tc != nil {

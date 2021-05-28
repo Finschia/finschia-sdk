@@ -233,6 +233,38 @@ type KVStore interface {
 	ReverseIterator(start, end []byte) Iterator
 }
 
+// KVStore is a simple interface to get/set data
+type KVObjectStore interface {
+	Store
+
+	// Get returns nil iff key doesn't exist. Panics on nil key.
+	Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{}
+
+	// Has checks if a key exists. Panics on nil key.
+	Has(key []byte) bool
+
+	// Set sets the key. Panics on nil key or value.
+	Set(key []byte, cdc codec.BinaryMarshaler, obj proto.Message)
+
+	// Delete deletes the key. Panics on nil key.
+	Delete(key []byte)
+
+	// Iterator over a domain of keys in ascending order. End is exclusive.
+	// Start must be less than end, or the Iterator is invalid.
+	// Iterator must be closed by caller.
+	// To iterate over entire domain, use store.Iterator(nil, nil)
+	// CONTRACT: No writes may happen within a domain while an iterator exists over it.
+	// Exceptionally allowed for cachekv.Store, safe to write in the modules.
+	Iterator(start, end []byte) Iterator
+
+	// Iterator over a domain of keys in descending order. End is exclusive.
+	// Start must be less than end, or the Iterator is invalid.
+	// Iterator must be closed by caller.
+	// CONTRACT: No writes may happen within a domain while an iterator exists over it.
+	// Exceptionally allowed for cachekv.Store, safe to write in the modules.
+	ReverseIterator(start, end []byte) Iterator
+}
+
 // Iterator is an alias db's Iterator for convenience.
 type Iterator = tmdb.Iterator
 
@@ -240,7 +272,7 @@ type Iterator = tmdb.Iterator
 // After calling .Write() on the CacheKVStore, all previously created
 // CacheKVStores on the object expire.
 type CacheKVStore interface {
-	KVStore
+	KVObjectStore
 
 	// Writes operations to underlying KVStore
 	Write()
@@ -250,6 +282,11 @@ type CacheKVStore interface {
 type CommitKVStore interface {
 	Committer
 	KVStore
+}
+
+type CommitKVObjectStore interface {
+	Committer
+	KVObjectStore
 }
 
 //----------------------------------------
@@ -390,7 +427,7 @@ type TraceContext map[string]interface{}
 type MultiStorePersistentCache interface {
 	// Wrap and return the provided CommitKVStore with an inter-block (persistent)
 	// cache.
-	GetStoreCache(key StoreKey, store CommitKVStore) CommitKVStore
+	GetStoreCache(key StoreKey, store CommitKVStore) CommitKVObjectStore
 
 	// Return the underlying CommitKVStore for a StoreKey.
 	Unwrap(key StoreKey) CommitKVStore
