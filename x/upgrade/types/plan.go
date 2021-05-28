@@ -3,7 +3,6 @@ package types
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -49,8 +48,5 @@ func (p Plan) ShouldExecute(ctx sdk.Context) bool {
 
 // DueAt is a string representation of when this plan is due to be executed
 func (p Plan) DueAt() string {
-	if p.Time.Unix() > 0 {
-		return fmt.Sprintf("time: %s", p.Time.UTC().Format(time.RFC3339))
-	}
 	return fmt.Sprintf("height: %d", p.Height)
 }

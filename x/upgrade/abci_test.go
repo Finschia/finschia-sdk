@@ -240,12 +240,13 @@ func TestPlanStringer(t *testing.T) {
   Info: .`, types.Plan{Name: "test", Time: ti}.String())
 	require.Equal(t, `Upgrade Plan
   Name: test
-  Height: 100
-  Info: .`, types.Plan{Name: "test", Height: 100}.String())
+  height: 100
+  Info: .`, types.Plan{Name: "test", Height: 100, Info: ""}.String())
+
 	require.Equal(t, fmt.Sprintf(`Upgrade Plan
   Name: test
-  Height: 100
-  Info: .`), types.Plan{Name: "test", Height: 100}.String())
+  height: 100
+  Info: .`), types.Plan{Name: "test", Height: 100, Info: ""}.String())
 }
 
 func VerifyNotDone(t *testing.T, newCtx sdk.Context, name string) {
