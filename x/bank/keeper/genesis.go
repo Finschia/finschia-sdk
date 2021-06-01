@@ -16,7 +16,8 @@ func (k BaseKeeper) InitGenesis(ctx sdk.Context, genState *types.GenesisState) {
 
 	genState.Balances = types.SanitizeGenesisBalances(genState.Balances)
 	for _, balance := range genState.Balances {
-		if err := k.setBalances(ctx, sdk.AccAddress(balance.Address), balance.Coins); err != nil {
+		addr := sdk.AccAddress(balance.Address)
+		if err := k.initBalances(ctx, addr, balance.Coins); err != nil {
 			panic(fmt.Errorf("error on setting balances %w", err))
 		}
 
