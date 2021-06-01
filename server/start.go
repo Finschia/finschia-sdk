@@ -43,6 +43,7 @@ const (
 	FlagInterBlockCache     = "inter-block-cache"
 	FlagInterBlockCacheSize = "inter-block-cache-size"
 	FlagIAVLCacheSize       = "iavl-cache-size"
+	FlagBech32CacheSize     = "bech32-cache-size"
 	FlagUnsafeSkipUpgrades  = "unsafe-skip-upgrades"
 	FlagTrace               = "trace"
 	FlagInvCheckPeriod      = "inv-check-period"

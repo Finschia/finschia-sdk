@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 	"strings"
 
 	"github.com/dgraph-io/ristretto"
@@ -97,12 +98,15 @@ var _ yaml.Marshaler = ConsAddress{}
 var bech32ToAddrCache *ristretto.Cache
 var addrToBech32Cache *ristretto.Cache
 
-func init() {
+const DefaultBech32CacheSize = 1 << 30 // maximum size of cache (1GB).
+
+func SetBech32Cache(size int64) {
+	log.Println(size)
 	var err error
 	config := &ristretto.Config{
-		NumCounters: 1e7,     // number of keys to track frequency of (10M).
-		MaxCost:     1 << 30, // maximum cost of cache (1GB).
-		BufferItems: 64,      // number of keys per Get buffer.
+		NumCounters: 1e7, // number of keys to track frequency of (10M).
+		MaxCost:     size,
+		BufferItems: 64, // number of keys per Get buffer.
 	}
 	bech32ToAddrCache, err = ristretto.NewCache(config)
 	if err != nil {
@@ -140,9 +144,11 @@ func VerifyAddressFormat(bz []byte) error {
 
 // AccAddressFromBech32 creates an AccAddress from a Bech32 string.
 func AccAddressFromBech32(address string) (AccAddress, error) {
-	addr, ok := bech32ToAddrCache.Get(address)
-	if ok {
-		return addr.([]byte), nil
+	if bech32ToAddrCache != nil {
+		addr, ok := bech32ToAddrCache.Get(address)
+		if ok {
+			return addr.([]byte), nil
+		}
 	}
 
 	if len(strings.TrimSpace(address)) == 0 {
@@ -160,8 +166,9 @@ func AccAddressFromBech32(address string) (AccAddress, error) {
 	if err != nil {
 		return nil, err
 	}
-	bech32ToAddrCache.Set(address, bz, 1)
-
+	if bech32ToAddrCache != nil {
+		bech32ToAddrCache.Set(address, bz, int64(len(bz)))
+	}
 	return bz, nil
 }
 
@@ -257,9 +264,11 @@ func (aa AccAddress) Bytes() []byte {
 
 // String implements the Stringer interface.
 func (aa AccAddress) String() string {
-	addr, ok := addrToBech32Cache.Get(string(aa))
-	if ok {
-		return addr.(string)
+	if addrToBech32Cache != nil {
+		addr, ok := addrToBech32Cache.Get(string(aa))
+		if ok {
+			return addr.(string)
+		}
 	}
 
 	if aa.Empty() {
@@ -272,8 +281,9 @@ func (aa AccAddress) String() string {
 	if err != nil {
 		panic(err)
 	}
-	addrToBech32Cache.Set(string(aa), bech32Addr, 1)
-
+	if addrToBech32Cache != nil {
+		addrToBech32Cache.Set(string(aa), bech32Addr, int64(len(bech32Addr)))
+	}
 	return bech32Addr
 }
 
