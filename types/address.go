@@ -93,12 +93,14 @@ var _ yaml.Marshaler = ConsAddress{}
 // account
 // ----------------------------------------------------------------------------
 
-// TODO We need to create a type that wraps the two caches, and add a layer that references the cache through that type.
+// TODO We should add a layer to choose whether to access the cache or to run actual conversion
 // bech32 encoding and decoding takes a lot of time, so memoize it
-var bech32ToAddrCache *ristretto.Cache
-var addrToBech32Cache *ristretto.Cache
+var bech32Cache Bech32Cache
 
-const DefaultBech32CacheSize = 1 << 30 // maximum size of cache (1GB).
+type Bech32Cache struct {
+	bech32ToAddrCache *ristretto.Cache
+	addrToBech32Cache *ristretto.Cache
+}
 
 func SetBech32Cache(size int64) {
 	var err error
@@ -107,15 +109,42 @@ func SetBech32Cache(size int64) {
 		MaxCost:     size,
 		BufferItems: 64, // number of keys per Get buffer.
 	}
-	bech32ToAddrCache, err = ristretto.NewCache(config)
+	bech32Cache.bech32ToAddrCache, err = ristretto.NewCache(config)
 	if err != nil {
 		panic(err)
 	}
-	addrToBech32Cache, err = ristretto.NewCache(config)
+	bech32Cache.addrToBech32Cache, err = ristretto.NewCache(config)
 	if err != nil {
 		panic(err)
 	}
 }
+
+func (cache *Bech32Cache) GetAddr(bech32Addr string) ([]byte, bool) {
+	if cache.bech32ToAddrCache != nil {
+		rawAddr, ok := cache.bech32ToAddrCache.Get(bech32Addr)
+		return rawAddr.([]byte), ok
+	}
+	return nil, false
+}
+
+func (cache *Bech32Cache) GetBech32(rawAddr []byte) (string, bool) {
+	if cache.bech32ToAddrCache != nil {
+		bech32Addr, ok := cache.bech32ToAddrCache.Get(rawAddr)
+		return bech32Addr.(string), ok
+	}
+	return "", false
+}
+
+func (cache *Bech32Cache) Set(bech32Addr string, rawAddr []byte) {
+	if cache.bech32ToAddrCache != nil {
+		cache.bech32ToAddrCache.Set(bech32Addr, rawAddr, int64(len(rawAddr)))
+	}
+	if cache.addrToBech32Cache != nil {
+		cache.addrToBech32Cache.Set(string(rawAddr), bech32Addr, int64(len(bech32Addr)))
+	}
+}
+
+const DefaultBech32CacheSize = 1 << 30 // maximum size of cache (1GB).
 
 // AccAddress a wrapper around bytes meant to represent an account address.
 // When marshaled to a string or JSON, it uses Bech32.
@@ -142,21 +171,19 @@ func VerifyAddressFormat(bz []byte) error {
 }
 
 // AccAddressFromBech32 creates an AccAddress from a Bech32 string.
-func AccAddressFromBech32(address string) (AccAddress, error) {
-	if bech32ToAddrCache != nil {
-		addr, ok := bech32ToAddrCache.Get(address)
-		if ok {
-			return addr.([]byte), nil
-		}
+func AccAddressFromBech32(bech32Addr string) (AccAddress, error) {
+	addr, ok := bech32Cache.GetAddr(bech32Addr)
+	if ok {
+		return addr, nil
 	}
 
-	if len(strings.TrimSpace(address)) == 0 {
+	if len(strings.TrimSpace(bech32Addr)) == 0 {
 		return AccAddress{}, errors.New("empty address string is not allowed")
 	}
 
 	bech32PrefixAccAddr := GetConfig().GetBech32AccountAddrPrefix()
 
-	bz, err := GetFromBech32(address, bech32PrefixAccAddr)
+	bz, err := GetFromBech32(bech32Addr, bech32PrefixAccAddr)
 	if err != nil {
 		return nil, err
 	}
@@ -165,9 +192,7 @@ func AccAddressFromBech32(address string) (AccAddress, error) {
 	if err != nil {
 		return nil, err
 	}
-	if bech32ToAddrCache != nil {
-		bech32ToAddrCache.Set(address, bz, int64(len(bz)))
-	}
+	bech32Cache.Set(bech32Addr, bz)
 	return bz, nil
 }
 
@@ -263,11 +288,9 @@ func (aa AccAddress) Bytes() []byte {
 
 // String implements the Stringer interface.
 func (aa AccAddress) String() string {
-	if addrToBech32Cache != nil {
-		addr, ok := addrToBech32Cache.Get(string(aa))
-		if ok {
-			return addr.(string)
-		}
+	bech32Addr, ok := bech32Cache.GetBech32(aa)
+	if ok {
+		return bech32Addr
 	}
 
 	if aa.Empty() {
@@ -280,9 +303,7 @@ func (aa AccAddress) String() string {
 	if err != nil {
 		panic(err)
 	}
-	if addrToBech32Cache != nil {
-		addrToBech32Cache.Set(string(aa), bech32Addr, int64(len(bech32Addr)))
-	}
+	bech32Cache.Set(bech32Addr, aa)
 	return bech32Addr
 }
 
