@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"io/ioutil"
+	"math"
 	"testing"
 	"time"
 
@@ -1726,5 +1727,43 @@ func TestNewDefaultWasmVMContractResponseHandler(t *testing.T) {
 			assert.Equal(t, spec.expData, gotData)
 		})
 	}
+}
 
+func TestBuildContractAddress(t *testing.T) {
+	specs := map[string]struct {
+		srcCodeID     uint64
+		srcInstanceID uint64
+		expPanic      bool
+	}{
+		"both empty": {},
+		"both below max": {
+			srcCodeID:     math.MaxUint32 - 1,
+			srcInstanceID: math.MaxUint32 - 1,
+		},
+		"both at max": {
+			srcCodeID:     math.MaxUint32,
+			srcInstanceID: math.MaxUint32,
+		},
+		"codeID > max": {
+			srcCodeID: math.MaxUint32 + 1,
+			expPanic:  true,
+		},
+		"instanceID > max": {
+			srcInstanceID: math.MaxUint32 + 1,
+			expPanic:      true,
+		},
+	}
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			if spec.expPanic {
+				require.Panics(t, func() {
+					BuildContractAddress(spec.srcCodeID, spec.srcInstanceID)
+				})
+				return
+			}
+			gotAddr := BuildContractAddress(spec.srcCodeID, spec.srcInstanceID)
+			require.NotNil(t, gotAddr)
+			assert.Nil(t, sdk.ValidateAccAddress(gotAddr.String()))
+		})
+	}
 }

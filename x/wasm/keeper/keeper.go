@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
+	"math"
 	"path/filepath"
 	"time"
 
@@ -276,7 +277,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 	info := types.NewInfo(creator, deposit)
 
 	// create prefixed data store
-	// 0x03 | contractAddress (sdk.AccAddress)
+	// 0x03 | BuildContractAddress (sdk.AccAddress)
 	prefixStoreKey := types.GetContractStorePrefix(contractAddress)
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
 	wasmStore := types.NewWasmStore(prefixStore)
@@ -878,14 +879,16 @@ func (k Keeper) consumeGas(ctx sdk.Context, gas uint64) {
 // generates a contract address from codeID + instanceID
 func (k Keeper) generateContractAddress(ctx sdk.Context, codeID uint64) sdk.AccAddress {
 	instanceID := k.autoIncrementID(ctx, types.KeyLastInstanceID)
-	return contractAddress(codeID, instanceID)
+	return BuildContractAddress(codeID, instanceID)
 }
 
-// contractAddress builds an sdk account address for a contract.
-// Intentionally kept private as this is module internal logic.
-func contractAddress(codeID, instanceID uint64) sdk.AccAddress {
-	// NOTE: It is possible to get a duplicate address if either codeID or instanceID
-	// overflow 32 bits. This is highly improbable, but something that could be refactored.
+// BuildContractAddress builds an sdk account address for a contract.
+func BuildContractAddress(codeID, instanceID uint64) sdk.AccAddress {
+	if codeID > math.MaxUint32 || instanceID > math.MaxUint32 {
+		// NOTE: It is possible to get a duplicate address if either codeID or instanceID
+		// overflow 32 bits. This is highly improbable, but something that could be refactored.
+		panic(fmt.Sprintf("address uint32 reached: codeID: %d, instanceID: %d", codeID, instanceID))
+	}
 	contractID := codeID<<32 + instanceID
 	return addrFromUint64(contractID)
 }

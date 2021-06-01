@@ -147,7 +147,7 @@ func TestMigrateProposal(t *testing.T) {
 	var (
 		anyAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
 		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
-		contractAddr = contractAddress(1, 1)
+		contractAddr = BuildContractAddress(1, 1)
 	)
 
 	contractInfoFixture := types.ContractInfoFixture(func(c *types.ContractInfo) {
@@ -206,7 +206,7 @@ func TestMigrateProposal(t *testing.T) {
 func TestAdminProposals(t *testing.T) {
 	var (
 		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
-		contractAddr = contractAddress(1, 1)
+		contractAddr = BuildContractAddress(1, 1)
 	)
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
@@ -542,7 +542,7 @@ func TestUnpinCodesProposal(t *testing.T) {
 }
 
 func TestUpdateContractStatusProposals(t *testing.T) {
-	var contractAddr = contractAddress(1, 1)
+	var contractAddr = BuildContractAddress(1, 1)
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
