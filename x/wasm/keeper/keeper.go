@@ -11,7 +11,6 @@ import (
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/line/ostracon/crypto"
@@ -77,7 +76,7 @@ func NewKeeper(
 	cdc codec.Marshaler,
 	storeKey sdk.StoreKey,
 	paramSpace *paramtypes.Subspace,
-	accountKeeper authkeeper.AccountKeeper,
+	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 	stakingKeeper types.StakingKeeper,
 	distKeeper types.DistributionKeeper,
