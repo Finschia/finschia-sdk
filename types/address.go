@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/dgraph-io/ristretto"
 	yaml "gopkg.in/yaml.v2"
 
 	"github.com/line/lbm-sdk/v2/codec/legacy"
@@ -92,6 +93,27 @@ var _ yaml.Marshaler = ConsAddress{}
 // account
 // ----------------------------------------------------------------------------
 
+// bech32 encoding and decoding takes a lot of time, so memoize it
+var bech32ToAddrCache *ristretto.Cache
+var addrToBech32Cache *ristretto.Cache
+
+func init() {
+	var err error
+	config := &ristretto.Config{
+		NumCounters: 1e7,     // number of keys to track frequency of (10M).
+		MaxCost:     1 << 30, // maximum cost of cache (1GB).
+		BufferItems: 64,      // number of keys per Get buffer.
+	}
+	bech32ToAddrCache, err = ristretto.NewCache(config)
+	if err != nil {
+		panic(err)
+	}
+	addrToBech32Cache, err = ristretto.NewCache(config)
+	if err != nil {
+		panic(err)
+	}
+}
+
 // AccAddress a wrapper around bytes meant to represent an account address.
 // When marshaled to a string or JSON, it uses Bech32.
 type AccAddress []byte
@@ -117,7 +139,12 @@ func VerifyAddressFormat(bz []byte) error {
 }
 
 // AccAddressFromBech32 creates an AccAddress from a Bech32 string.
-func AccAddressFromBech32(address string) (addr AccAddress, err error) {
+func AccAddressFromBech32(address string) (AccAddress, error) {
+	addr, ok := bech32ToAddrCache.Get(address)
+	if ok {
+		return addr.([]byte), nil
+	}
+
 	if len(strings.TrimSpace(address)) == 0 {
 		return AccAddress{}, errors.New("empty address string is not allowed")
 	}
@@ -133,8 +160,9 @@ func AccAddressFromBech32(address string) (addr AccAddress, err error) {
 	if err != nil {
 		return nil, err
 	}
+	bech32ToAddrCache.Set(address, bz, 1)
 
-	return AccAddress(bz), nil
+	return bz, nil
 }
 
 // Returns boolean for whether two AccAddresses are Equal
@@ -229,6 +257,11 @@ func (aa AccAddress) Bytes() []byte {
 
 // String implements the Stringer interface.
 func (aa AccAddress) String() string {
+	addr, ok := addrToBech32Cache.Get(string(aa))
+	if ok {
+		return addr.(string)
+	}
+
 	if aa.Empty() {
 		return ""
 	}
@@ -239,6 +272,7 @@ func (aa AccAddress) String() string {
 	if err != nil {
 		panic(err)
 	}
+	addrToBech32Cache.Set(string(aa), bech32Addr, 1)
 
 	return bech32Addr
 }
