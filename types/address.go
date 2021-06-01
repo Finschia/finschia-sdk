@@ -130,8 +130,8 @@ func (cache *Bech32Cache) GetAddr(bech32Addr string) ([]byte, bool) {
 }
 
 func (cache *Bech32Cache) GetBech32(rawAddr []byte) (string, bool) {
-	if cache.bech32ToAddrCache != nil {
-		bech32Addr, ok := cache.bech32ToAddrCache.Get(rawAddr)
+	if cache.addrToBech32Cache != nil {
+		bech32Addr, ok := cache.addrToBech32Cache.Get(string(rawAddr))
 		if ok {
 			return bech32Addr.(string), ok
 		}
