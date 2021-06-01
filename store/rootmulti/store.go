@@ -924,7 +924,7 @@ func commitStores(version int64, storeMap map[types.StoreKey]types.CommitKVStore
 			storeInfos[i] = si
 			wg.Done()
 		}(ix, key, store)
-		ix += 1
+		ix++
 	}
 	wg.Wait()
 
