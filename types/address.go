@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/dgraph-io/ristretto"
@@ -94,6 +93,7 @@ var _ yaml.Marshaler = ConsAddress{}
 // account
 // ----------------------------------------------------------------------------
 
+// TODO We need to create a type that wraps the two caches, and add a layer that references the cache through that type.
 // bech32 encoding and decoding takes a lot of time, so memoize it
 var bech32ToAddrCache *ristretto.Cache
 var addrToBech32Cache *ristretto.Cache
@@ -101,7 +101,6 @@ var addrToBech32Cache *ristretto.Cache
 const DefaultBech32CacheSize = 1 << 30 // maximum size of cache (1GB).
 
 func SetBech32Cache(size int64) {
-	log.Println(size)
 	var err error
 	config := &ristretto.Config{
 		NumCounters: 1e7, // number of keys to track frequency of (10M).
