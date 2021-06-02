@@ -520,3 +520,35 @@ func (s *addressTestSuite) TestGetFromBech32() {
 	s.Require().Error(err)
 	s.Require().Equal("invalid Bech32 prefix; expected x, got cosmos", err.Error())
 }
+
+func (s *addressTestSuite) TestBech32Cache() {
+	pubBz := make([]byte, ed25519.PubKeySize)
+	pub := &ed25519.PubKey{Key: pubBz}
+
+	s.T().Log("access bech32ToAddrCache before access addrToBech32Cache")
+	{
+		rand.Read(pub.Key)
+		addr := types.AccAddress(pub.Address())
+		bech32Addr := addr.String()
+		types.SetBech32Cache(types.DefaultBech32CacheSize)
+
+		rawAddr, err := types.AccAddressFromBech32(bech32Addr)
+		s.Require().Nil(err)
+		require.Equal(s.T(), addr, rawAddr)
+
+		require.Equal(s.T(), bech32Addr, addr.String())
+	}
+	s.T().Log("access addrToBech32Cache before access bech32ToAddrCache")
+	{
+		rand.Read(pub.Key)
+		addr := types.AccAddress(pub.Address())
+		bech32Addr := addr.String()
+		types.SetBech32Cache(types.DefaultBech32CacheSize)
+
+		require.Equal(s.T(), bech32Addr, addr.String())
+
+		rawAddr, err := types.AccAddressFromBech32(bech32Addr)
+		s.Require().Nil(err)
+		require.Equal(s.T(), addr, rawAddr)
+	}
+}
