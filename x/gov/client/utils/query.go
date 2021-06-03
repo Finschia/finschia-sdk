@@ -50,14 +50,19 @@ func QueryDepositsByTxQuery(clientCtx client.Context, params types.QueryProposal
 		deposits = append(deposits, initialDeposit)
 	}
 
-	events := []string{
-		fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeyAction, types.TypeMsgDeposit),
-		fmt.Sprintf("%s.%s='%s'", types.EventTypeProposalDeposit, types.AttributeKeyProposalID, []byte(fmt.Sprintf("%d", params.ProposalID))),
-	}
-
-	// NOTE: SearchTxs is used to facilitate the txs query which does not currently
-	// support configurable pagination.
-	searchResult, err := authtx.QueryTxsByEvents(clientCtx, events, defaultPage, defaultLimit, "")
+	searchResult, err := combineEvents(
+		clientCtx, defaultPage,
+		// Query legacy Msgs event action
+		[]string{
+			fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeyAction, types.TypeMsgDeposit),
+			fmt.Sprintf("%s.%s='%s'", types.EventTypeProposalDeposit, types.AttributeKeyProposalID, []byte(fmt.Sprintf("%d", params.ProposalID))),
+		},
+		// Query proto Msgs event action
+		[]string{
+			fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeyAction, sdk.MsgTypeURL(&types.MsgDeposit{})),
+			fmt.Sprintf("%s.%s='%s'", types.EventTypeProposalDeposit, types.AttributeKeyProposalID, []byte(fmt.Sprintf("%d", params.ProposalID))),
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -341,12 +346,19 @@ func QueryProposalByID(proposalID uint64, clientCtx client.Context, queryRoute s
 // queryInitialDepositByTxQuery will query for a initial deposit of a governance proposal by
 // ID.
 func queryInitialDepositByTxQuery(clientCtx client.Context, proposalID uint64) (types.Deposit, error) {
-	// Query legacy Msgs event action
-	events := []string{
-		fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeyAction, types.TypeMsgSubmitProposal),
-		fmt.Sprintf("%s.%s='%s'", types.EventTypeSubmitProposal, types.AttributeKeyProposalID, []byte(fmt.Sprintf("%d", proposalID))),
-	}
-	searchResult, err := authtx.QueryTxsByEvents(clientCtx, events, defaultPage, defaultLimit, "")
+	searchResult, err := combineEvents(
+		clientCtx, defaultPage,
+		// Query legacy Msgs event action
+		[]string{
+			fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeyAction, types.TypeMsgSubmitProposal),
+			fmt.Sprintf("%s.%s='%s'", types.EventTypeSubmitProposal, types.AttributeKeyProposalID, []byte(fmt.Sprintf("%d", proposalID))),
+		},
+		// Query proto Msgs event action
+		[]string{
+			fmt.Sprintf("%s.%s='%s'", sdk.EventTypeMessage, sdk.AttributeKeyAction, sdk.MsgTypeURL(&types.MsgSubmitProposal{})),
+			fmt.Sprintf("%s.%s='%s'", types.EventTypeSubmitProposal, types.AttributeKeyProposalID, []byte(fmt.Sprintf("%d", proposalID))),
+		},
+	)
 
 	if err != nil {
 		return types.Deposit{}, err
@@ -365,7 +377,7 @@ func queryInitialDepositByTxQuery(clientCtx client.Context, proposalID uint64) (
 		}
 	}
 
-	return types.Deposit{}, sdkerrors.Wrapf(sdkerrors.ErrKeyNotFound, "failed to find the initial deposit for proposalID %d", proposalID)
+	return types.Deposit{}, sdkerrors.ErrNotFound.Wrapf("failed to find the initial deposit for proposalID %d", proposalID)
 }
 
 // combineEvents queries txs by events with all events from each event group,
