@@ -1078,7 +1078,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 }
 
 // CoinTransferrer replicates the cosmos-sdk behaviour as in
-// https://github.com/cosmos/cosmos-sdk/blob/v0.41.4/x/bank/keeper/msg_server.go#L26
+// lfb-sdk's x/bank/keeper/msg_server.go Send
+// (https://github.com/line/lfb-sdk/blob/2a5a2d2c885b03e278bcd67546d4f21e74614ead/x/bank/keeper/msg_server.go#L26)
 type CoinTransferrer struct {
 	keeper types.BankKeeper
 }
