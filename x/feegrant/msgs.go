@@ -7,10 +7,12 @@ import (
 	"github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
 var (
-	_, _ sdk.Msg = &MsgGrantAllowance{}, &MsgRevokeAllowance{}
+	_, _ sdk.Msg            = &MsgGrantAllowance{}, &MsgRevokeAllowance{}
+	_, _ legacytx.LegacyMsg = &MsgGrantAllowance{}, &MsgRevokeAllowance{} // For amino support.
 
 	_ types.UnpackInterfacesMessage = &MsgGrantAllowance{}
 )
@@ -66,7 +68,7 @@ func (msg MsgGrantAllowance) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (msg MsgGrantAllowance) Route() string {
-	return RouterKey
+	return sdk.MsgTypeURL(&msg)
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
@@ -129,7 +131,7 @@ func (msg MsgRevokeAllowance) Type() string {
 
 // Route implements the LegacyMsg.Route method.
 func (msg MsgRevokeAllowance) Route() string {
-	return RouterKey
+	return sdk.MsgTypeURL(&msg)
 }
 
 // GetSignBytes implements the LegacyMsg.GetSignBytes method.
