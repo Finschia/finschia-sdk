@@ -15,25 +15,25 @@ func TestStore(t *testing.T) {
 
 	require.Equal(t, types.StoreTypeMemory, db.GetStoreType())
 
-	require.Nil(t, db.Get(key))
-	db.Set(key, value)
-	require.Equal(t, value, db.Get(key))
+	require.Nil(t, db.Get(key, types.GetBytesUnmarshalFunc()))
+	db.Set(key, value, types.GetBytesMarshalFunc())
+	require.Equal(t, value, db.Get(key, types.GetBytesUnmarshalFunc()))
 
 	newValue := []byte("newValue")
-	db.Set(key, newValue)
-	require.Equal(t, newValue, db.Get(key))
+	db.Set(key, newValue, types.GetBytesMarshalFunc())
+	require.Equal(t, newValue, db.Get(key, types.GetBytesUnmarshalFunc()))
 
 	db.Delete(key)
-	require.Nil(t, db.Get(key))
+	require.Nil(t, db.Get(key, types.GetBytesUnmarshalFunc()))
 }
 
 func TestCommit(t *testing.T) {
 	db := mem.NewStore()
 	key, value := []byte("key"), []byte("value")
 
-	db.Set(key, value)
+	db.Set(key, value, types.GetBytesMarshalFunc())
 	id := db.Commit()
 	require.True(t, id.IsZero())
 	require.True(t, db.LastCommitID().IsZero())
-	require.Equal(t, value, db.Get(key))
+	require.Equal(t, value, db.Get(key, types.GetBytesUnmarshalFunc()))
 }

@@ -4,19 +4,15 @@ import (
 	"fmt"
 	"testing"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/simulation"
 	"github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
 	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 )
 
 func TestDecodeStore(t *testing.T) {
-	app := simapp.Setup(false)
-	cdc := app.AppCodec()
-
 	connectionID := "connectionidone"
 
 	connection := types.ConnectionEnd{
@@ -28,21 +24,19 @@ func TestDecodeStore(t *testing.T) {
 		Paths: []string{connectionID},
 	}
 
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
+	kvPairs := []types2.KOPair{
 			{
 				Key:   host.ClientConnectionsKey(connection.ClientId),
-				Value: cdc.MustMarshalBinaryBare(&paths),
+				Value: &paths,
 			},
 			{
 				Key:   host.ConnectionKey(connectionID),
-				Value: cdc.MustMarshalBinaryBare(&connection),
+				Value: &connection,
 			},
 			{
 				Key:   []byte{0x99},
 				Value: []byte{0x99},
 			},
-		},
 	}
 	tests := []struct {
 		name        string
@@ -56,13 +50,13 @@ func TestDecodeStore(t *testing.T) {
 	for i, tt := range tests {
 		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
-			res, found := simulation.NewDecodeStore(cdc, kvPairs.Pairs[i], kvPairs.Pairs[i])
+			res, found := simulation.NewDecodeStore(kvPairs[i], kvPairs[i])
 			if i == len(tests)-1 {
-				require.False(t, found, string(kvPairs.Pairs[i].Key))
-				require.Empty(t, res, string(kvPairs.Pairs[i].Key))
+				require.False(t, found, string(kvPairs[i].Key))
+				require.Empty(t, res, string(kvPairs[i].Key))
 			} else {
-				require.True(t, found, string(kvPairs.Pairs[i].Key))
-				require.Equal(t, tt.expectedLog, res, string(kvPairs.Pairs[i].Key))
+				require.True(t, found, string(kvPairs[i].Key))
+				require.Equal(t, tt.expectedLog, res, string(kvPairs[i].Key))
 			}
 		})
 	}

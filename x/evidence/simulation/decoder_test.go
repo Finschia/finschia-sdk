@@ -5,19 +5,19 @@ import (
 	"testing"
 	"time"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/evidence/simulation"
 	"github.com/line/lbm-sdk/v2/x/evidence/types"
 )
 
 func TestDecodeStore(t *testing.T) {
-	app := simapp.Setup(false)
-	dec := simulation.NewDecodeStore(app.EvidenceKeeper)
+	cdc, _ := simapp.MakeCodecs()
+	dec := simulation.NewDecodeStore(cdc)
 
 	delPk1 := ed25519.GenPrivKey().PubKey()
 
@@ -28,20 +28,15 @@ func TestDecodeStore(t *testing.T) {
 		ConsensusAddress: sdk.ConsAddress(delPk1.Address()).String(),
 	}
 
-	evBz, err := app.EvidenceKeeper.MarshalEvidence(ev)
-	require.NoError(t, err)
-
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
+	kvPairs := []types2.KOPair{
 			{
 				Key:   types.KeyPrefixEvidence,
-				Value: evBz,
+				Value: ev,
 			},
 			{
 				Key:   []byte{0x99},
 				Value: []byte{0x99},
 			},
-		},
 	}
 	tests := []struct {
 		name        string
@@ -56,9 +51,9 @@ func TestDecodeStore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec(kvPairs.Pairs[i], kvPairs.Pairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec(kvPairs.Pairs[i], kvPairs.Pairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
 			}
 		})
 	}

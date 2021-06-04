@@ -32,7 +32,7 @@ func TestIavlRangeBounds(t *testing.T) {
 
 	// set up test cases, like `ensure_proper_range_bounds` in `cw-storage-plus`
 	for _, kv := range expected {
-		kvstore.Set(kv.Key, kv.Value)
+		kvstore.SetObject(kv.Key, kv.Value)
 	}
 
 	cases := map[string]struct {

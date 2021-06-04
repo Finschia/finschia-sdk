@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/golang/mock/gomock"
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
@@ -44,22 +45,22 @@ func (s *contextTestSuite) TestCacheContext() {
 
 	ctx := s.defaultContext(key)
 	store := ctx.KVStore(key)
-	store.Set(k1, v1)
-	s.Require().Equal(v1, store.Get(k1))
-	s.Require().Nil(store.Get(k2))
+	store.Set(k1, v1, types2.GetBytesMarshalFunc())
+	s.Require().Equal(v1, store.Get(k1, types2.GetBytesUnmarshalFunc()).([]byte))
+	s.Require().Nil(store.Get(k2, types2.GetBytesUnmarshalFunc()))
 
 	cctx, write := ctx.CacheContext()
 	cstore := cctx.KVStore(key)
-	s.Require().Equal(v1, cstore.Get(k1))
-	s.Require().Nil(cstore.Get(k2))
+	s.Require().Equal(v1, cstore.Get(k1, types2.GetBytesUnmarshalFunc()).([]byte))
+	s.Require().Nil(cstore.Get(k2, types2.GetBytesUnmarshalFunc()))
 
-	cstore.Set(k2, v2)
-	s.Require().Equal(v2, cstore.Get(k2))
-	s.Require().Nil(store.Get(k2))
+	cstore.Set(k2, v2, types2.GetBytesMarshalFunc())
+	s.Require().Equal(v2, cstore.Get(k2, types2.GetBytesUnmarshalFunc()).([]byte))
+	s.Require().Nil(store.Get(k2, types2.GetBytesUnmarshalFunc()))
 
 	write()
 
-	s.Require().Equal(v2, store.Get(k2))
+	s.Require().Equal(v2, store.Get(k2, types2.GetBytesUnmarshalFunc()).([]byte))
 }
 
 func (s *contextTestSuite) TestLogContext() {

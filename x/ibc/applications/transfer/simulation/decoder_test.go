@@ -4,38 +4,36 @@ import (
 	"fmt"
 	"testing"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/simulation"
 	"github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
 )
 
 func TestDecodeStore(t *testing.T) {
-	app := simapp.Setup(false)
-	dec := simulation.NewDecodeStore(app.TransferKeeper)
+	cdc, _ := simapp.MakeCodecs()
+	dec := simulation.NewDecodeStore(cdc)
 
 	trace := types.DenomTrace{
 		BaseDenom: "uatom",
 		Path:      "transfer/channelToA",
 	}
 
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
+	kvPairs := []types2.KOPair{
 			{
 				Key:   types.PortKey,
 				Value: []byte(types.PortID),
 			},
 			{
 				Key:   types.DenomTraceKey,
-				Value: app.TransferKeeper.MustMarshalDenomTrace(trace),
+				Value: &trace,
 			},
 			{
 				Key:   []byte{0x99},
 				Value: []byte{0x99},
 			},
-		},
 	}
 	tests := []struct {
 		name        string
@@ -50,9 +48,9 @@ func TestDecodeStore(t *testing.T) {
 		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
 			if i == len(tests)-1 {
-				require.Panics(t, func() { dec(kvPairs.Pairs[i], kvPairs.Pairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
 			} else {
-				require.Equal(t, tt.expectedLog, dec(kvPairs.Pairs[i], kvPairs.Pairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
 			}
 		})
 	}

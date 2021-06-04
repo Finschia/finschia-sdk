@@ -4,28 +4,26 @@ import (
 	"fmt"
 	"testing"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/bank/simulation"
 	"github.com/line/lbm-sdk/v2/x/bank/types"
 )
 
 func TestDecodeStore(t *testing.T) {
-	app := simapp.Setup(false)
-	dec := simulation.NewDecodeStore(app.BankKeeper)
-
+	cdc, _ := simapp.MakeCodecs()
+	dec := simulation.NewDecodeStore(cdc)
 	totalSupply := types.NewSupply(sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 1000)))
 
-	supplyBz, err := app.BankKeeper.MarshalSupply(totalSupply)
-	require.NoError(t, err)
-
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
-			{Key: types.SupplyKey, Value: supplyBz},
-			{Key: []byte{0x99}, Value: []byte{0x99}},
+	kvPairs := []types2.KOPair{
+		{
+			Key: types.SupplyKey, Value: totalSupply,
+		},
+		{
+			Key: []byte{0x99}, Value: []byte{0x99},
 		},
 	}
 
@@ -42,9 +40,9 @@ func TestDecodeStore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec(kvPairs.Pairs[i], kvPairs.Pairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec(kvPairs.Pairs[i], kvPairs.Pairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
 			}
 		})
 	}

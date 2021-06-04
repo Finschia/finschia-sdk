@@ -46,7 +46,7 @@ func genRandomKVPairs(t *testing.T) []kvpair {
 func setRandomKVPairs(t *testing.T, store types.KVStore) []kvpair {
 	kvps := genRandomKVPairs(t)
 	for _, kvp := range kvps {
-		store.Set(kvp.key, kvp.value)
+		store.Set(kvp.key, kvp.value, types.GetBytesMarshalFunc())
 	}
 	return kvps
 }
@@ -55,8 +55,8 @@ func testPrefixStore(t *testing.T, baseStore types.KVStore, prefix []byte) {
 	prefixStore := NewStore(baseStore, prefix)
 	prefixPrefixStore := NewStore(prefixStore, []byte("prefix"))
 
-	require.Panics(t, func() { prefixStore.Get(nil) })
-	require.Panics(t, func() { prefixStore.Set(nil, []byte{}) })
+	require.Panics(t, func() { prefixStore.Get(nil, types.GetBytesUnmarshalFunc()) })
+	require.Panics(t, func() { prefixStore.Set(nil, []byte{}, types.GetBytesMarshalFunc()) })
 
 	kvps := setRandomKVPairs(t, prefixPrefixStore)
 
@@ -64,25 +64,25 @@ func testPrefixStore(t *testing.T, baseStore types.KVStore, prefix []byte) {
 		key := kvps[i].key
 		value := kvps[i].value
 		require.True(t, prefixPrefixStore.Has(key))
-		require.Equal(t, value, prefixPrefixStore.Get(key))
+		require.Equal(t, value, prefixPrefixStore.Get(key, types.GetBytesUnmarshalFunc()))
 
 		key = append([]byte("prefix"), key...)
 		require.True(t, prefixStore.Has(key))
-		require.Equal(t, value, prefixStore.Get(key))
+		require.Equal(t, value, prefixStore.Get(key, types.GetBytesUnmarshalFunc()))
 		key = append(prefix, key...)
 		require.True(t, baseStore.Has(key))
-		require.Equal(t, value, baseStore.Get(key))
+		require.Equal(t, value, baseStore.Get(key, types.GetBytesUnmarshalFunc()))
 
 		key = kvps[i].key
 		prefixPrefixStore.Delete(key)
 		require.False(t, prefixPrefixStore.Has(key))
-		require.Nil(t, prefixPrefixStore.Get(key))
+		require.Nil(t, prefixPrefixStore.Get(key, types.GetBytesUnmarshalFunc()))
 		key = append([]byte("prefix"), key...)
 		require.False(t, prefixStore.Has(key))
-		require.Nil(t, prefixStore.Get(key))
+		require.Nil(t, prefixStore.Get(key, types.GetBytesUnmarshalFunc()))
 		key = append(prefix, key...)
 		require.False(t, baseStore.Has(key))
-		require.Nil(t, baseStore.Get(key))
+		require.Nil(t, baseStore.Get(key, types.GetBytesUnmarshalFunc()))
 	}
 }
 
@@ -99,7 +99,7 @@ func TestPrefixKVStoreNoNilSet(t *testing.T) {
 	meter := types.NewGasMeter(100000000)
 	mem := dbadapter.Store{DB: memdb.NewDB()}
 	gasStore := gaskv.NewStore(mem, meter, types.KVGasConfig())
-	require.Panics(t, func() { gasStore.Set([]byte("key"), nil) }, "setting a nil value should panic")
+	require.Panics(t, func() { gasStore.Set([]byte("key"), nil, types.GetBytesMarshalFunc()) }, "setting a nil value should panic")
 }
 
 func TestPrefixStoreIterate(t *testing.T) {
@@ -157,13 +157,13 @@ func TestPrefixStoreIteratorEdgeCase(t *testing.T) {
 	prefixStore := NewStore(baseStore, prefix)
 
 	// ascending order
-	baseStore.Set([]byte{0xAA, 0xFF, 0xFE}, []byte{})
-	baseStore.Set([]byte{0xAA, 0xFF, 0xFE, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAA, 0xFF, 0xFF}, []byte{})
-	baseStore.Set([]byte{0xAA, 0xFF, 0xFF, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAB}, []byte{})
-	baseStore.Set([]byte{0xAB, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAB, 0x00, 0x00}, []byte{})
+	baseStore.Set([]byte{0xAA, 0xFF, 0xFE}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0xFF, 0xFE, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0xFF, 0xFF}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0xFF, 0xFF, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAB}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAB, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAB, 0x00, 0x00}, []byte{}, types.GetBytesMarshalFunc())
 
 	iter := prefixStore.Iterator(nil, nil)
 
@@ -186,13 +186,13 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 	prefixStore := NewStore(baseStore, prefix)
 
 	// descending order
-	baseStore.Set([]byte{0xAB, 0x00, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAB, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAB}, []byte{})
-	baseStore.Set([]byte{0xAA, 0xFF, 0xFF, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAA, 0xFF, 0xFF}, []byte{})
-	baseStore.Set([]byte{0xAA, 0xFF, 0xFE, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAA, 0xFF, 0xFE}, []byte{})
+	baseStore.Set([]byte{0xAB, 0x00, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAB, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAB}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0xFF, 0xFF, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0xFF, 0xFF}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0xFF, 0xFE, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0xFF, 0xFE}, []byte{}, types.GetBytesMarshalFunc())
 
 	iter := prefixStore.ReverseIterator(nil, nil)
 
@@ -212,13 +212,13 @@ func TestPrefixStoreReverseIteratorEdgeCase(t *testing.T) {
 	prefix = []byte{0xAA, 0x00, 0x00}
 	prefixStore = NewStore(baseStore, prefix)
 
-	baseStore.Set([]byte{0xAB, 0x00, 0x01, 0x00, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAB, 0x00, 0x01, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAB, 0x00, 0x01}, []byte{})
-	baseStore.Set([]byte{0xAA, 0x00, 0x00, 0x00}, []byte{})
-	baseStore.Set([]byte{0xAA, 0x00, 0x00}, []byte{})
-	baseStore.Set([]byte{0xA9, 0xFF, 0xFF, 0x00}, []byte{})
-	baseStore.Set([]byte{0xA9, 0xFF, 0xFF}, []byte{})
+	baseStore.Set([]byte{0xAB, 0x00, 0x01, 0x00, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAB, 0x00, 0x01, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAB, 0x00, 0x01}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0x00, 0x00, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xAA, 0x00, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xA9, 0xFF, 0xFF, 0x00}, []byte{}, types.GetBytesMarshalFunc())
+	baseStore.Set([]byte{0xA9, 0xFF, 0xFF}, []byte{}, types.GetBytesMarshalFunc())
 
 	iter = prefixStore.ReverseIterator(nil, nil)
 
@@ -238,19 +238,19 @@ func mockStoreWithStuff() types.KVStore {
 	db := memdb.NewDB()
 	store := dbadapter.Store{DB: db}
 	// Under "key" prefix
-	store.Set(bz("key"), bz("value"))
-	store.Set(bz("key1"), bz("value1"))
-	store.Set(bz("key2"), bz("value2"))
-	store.Set(bz("key3"), bz("value3"))
-	store.Set(bz("something"), bz("else"))
-	store.Set(bz("k"), bz(sdk.PrefixValidator))
-	store.Set(bz("ke"), bz("valu"))
-	store.Set(bz("kee"), bz("valuu"))
+	store.Set(bz("key"), bz("value"), types.GetBytesMarshalFunc())
+	store.Set(bz("key1"), bz("value1"), types.GetBytesMarshalFunc())
+	store.Set(bz("key2"), bz("value2"), types.GetBytesMarshalFunc())
+	store.Set(bz("key3"), bz("value3"), types.GetBytesMarshalFunc())
+	store.Set(bz("something"), bz("else"), types.GetBytesMarshalFunc())
+	store.Set(bz("k"), bz(sdk.PrefixValidator), types.GetBytesMarshalFunc())
+	store.Set(bz("ke"), bz("valu"), types.GetBytesMarshalFunc())
+	store.Set(bz("kee"), bz("valuu"), types.GetBytesMarshalFunc())
 	return store
 }
 
-func checkValue(t *testing.T, store types.KVStore, key []byte, expected []byte) {
-	bz := store.Get(key)
+func checkValue(t *testing.T, store types.KVStore, key []byte, expected interface{}) {
+	bz := store.Get(key, types.GetBytesUnmarshalFunc())
 	require.Equal(t, expected, bz)
 }
 

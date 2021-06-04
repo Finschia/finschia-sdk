@@ -10,8 +10,6 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/tracekv"
 	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/lbm-sdk/v2/telemetry"
@@ -20,15 +18,10 @@ import (
 // If value is nil but deleted is false, it means the parent doesn't have the
 // key.  (No need to delete upon Write())
 type cValue struct {
-	value   proto.Message
-	cdc     codec.BinaryMarshaler
+	value   interface{}
+	marshal func(obj interface{}) []byte
 	deleted bool
 	dirty   bool
-}
-
-type KOPair struct {
-	key    []byte
-	object proto.Message
 }
 
 // Store wraps an in-memory cache around an underlying types.KVStore.
@@ -38,13 +31,13 @@ type Store struct {
 	cache         sync.Map
 	unsortedCache sync.Map
 	sortedCache   *list.List // always ascending sorted
-	parent        types.KVObjectStore // cachekv has only KVObjectStore type as parent
+	parent        types.KVStore // cachekv has only KVObjectStore type as parent
 }
 
 var _ types.CacheKVStore = (*Store)(nil)
 
 // NewStore creates a new Store object
-func NewStore(parent types.KVObjectStore) *Store {
+func NewStore(parent types.KVStore) *Store {
 	return &Store{
 		cache:         sync.Map{},
 		unsortedCache: sync.Map{},
@@ -59,7 +52,7 @@ func (store *Store) GetStoreType() types.StoreType {
 }
 
 // Get implements types.KVStore.
-func (store *Store) Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+func (store *Store) Get(key []byte, unmarshal func(value []byte) interface{}) interface{} {
 	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "get")
 
 	types.AssertValidKey(key)
@@ -70,25 +63,35 @@ func (store *Store) Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) 
 		return cacheValue.(*cValue).value
 	}
 
-	value := store.parent.Get(key, cdc, ptr)
-	store.setCacheValue(key, cdc, value, false, false)
+	value := store.parent.Get(key, unmarshal)
+	store.setCacheValue(key, value, nil, false, false)
 	return value
 }
 
 // Set implements types.KVStore.
-func (store *Store) Set(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+func (store *Store) Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "set")
 
 	types.AssertValidKey(key)
-
+	types.AssertValidObjectValue(obj)
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
-	store.setCacheValue(key, cdc, obj, false, true)
+	store.setCacheValue(key, obj, marshal, false, true)
 }
 
 // Has implements types.KVStore.
 func (store *Store) Has(key []byte) bool {
-	return store.Has(key)
+	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "has")
+
+	types.AssertValidKey(key)
+	store.mtx.RLock()
+	defer store.mtx.RUnlock()
+	_, ok := store.cache.Load(string(key))
+	if ok {
+		return true
+	}
+
+	return store.parent.Has(key)
 }
 
 // Delete implements types.KVStore.
@@ -98,7 +101,7 @@ func (store *Store) Delete(key []byte) {
 	types.AssertValidKey(key)
 	store.mtx.Lock()
 	defer store.mtx.Unlock()
-	store.setCacheValue(key, nil,nil, true, true)
+	store.setCacheValue(key, nil, nil, true, true)
 }
 
 // Implements Cachetypes.KVStore.
@@ -131,7 +134,7 @@ func (store *Store) Write() {
 		case cacheValue.value == nil:
 			// Skip, it already doesn't exist in parent.
 		default:
-			store.parent.Set([]byte(key), cacheValue.cdc, cacheValue.value)
+			store.parent.Set([]byte(key), cacheValue.value, cacheValue.marshal)
 		}
 	}
 
@@ -206,31 +209,31 @@ func byteSliceToStr(b []byte) string {
 
 // Constructs a slice of dirty items, to use w/ memIterator.
 func (store *Store) dirtyItems(start, end []byte) {
-	unsorted := make([]*KOPair, 0)
+	unsorted := make([]*types.KOPair, 0)
 
 	store.unsortedCache.Range(func(k, _ interface{}) bool {
 		key := k.(string)
 		if IsKeyInDomain(strToByte(key), start, end) {
 			cacheValue, ok := store.cache.Load(key)
 			if ok {
-				unsorted = append(unsorted, &KOPair{key: []byte(key), object: cacheValue.(*cValue).value})
+				unsorted = append(unsorted, &types.KOPair{Key: []byte(key), Value: cacheValue.(*cValue).value})
 			}
 		}
 		return true
 	})
 
 	for _, ko := range unsorted {
-		store.unsortedCache.Delete(byteSliceToStr(ko.key))
+		store.unsortedCache.Delete(byteSliceToStr(ko.Key))
 	}
 
 	sort.Slice(unsorted, func(i, j int) bool {
-		return bytes.Compare(unsorted[i].key, unsorted[j].key) < 0
+		return bytes.Compare(unsorted[i].Key, unsorted[j].Key) < 0
 	})
 
 	for e := store.sortedCache.Front(); e != nil && len(unsorted) != 0; {
 		uitem := unsorted[0]
-		sitem := e.Value.(*KOPair)
-		comp := bytes.Compare(uitem.key, sitem.key)
+		sitem := e.Value.(*types.KOPair)
+		comp := bytes.Compare(uitem.Key, sitem.Key)
 
 		switch comp {
 		case -1:
@@ -255,10 +258,10 @@ func (store *Store) dirtyItems(start, end []byte) {
 // etc
 
 // Only entrypoint to mutate store.cache.
-func (store *Store) setCacheValue(key []byte, cdc codec.BinaryMarshaler, value proto.Message, deleted bool, dirty bool) {
+func (store *Store) setCacheValue(key []byte, value interface{}, marshal func(obj interface{}) []byte, deleted bool, dirty bool) {
 	store.cache.Store(string(key), &cValue{
 		value:   value,
-		cdc:     cdc,
+		marshal: marshal,
 		deleted: deleted,
 		dirty:   dirty,
 	})

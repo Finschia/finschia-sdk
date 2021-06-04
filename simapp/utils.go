@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/ostracon/libs/log"
 	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/simapp/helpers"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/types/module"
 	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
 )
@@ -112,16 +112,16 @@ func PrintStats(db tmdb.DB) {
 
 // GetSimulationLog unmarshals the KVPair's Value to the corresponding type based on the
 // each's module store key and the prefix bytes of the KVPair's key.
-func GetSimulationLog(storeName string, sdr sdk.StoreDecoderRegistry, kvAs, kvBs []kv.Pair) (log string) {
+func GetSimulationLog(storeName string, sdr sdk.StoreDecoderRegistry, kvAs, kvBs []types.KOPair) (log string) {
 	for i := 0; i < len(kvAs); i++ {
-		if len(kvAs[i].Value) == 0 && len(kvBs[i].Value) == 0 {
+		if kvAs[i].Value == nil && kvBs[i].Value == nil {
 			// skip if the value doesn't have any bytes
 			continue
 		}
 
 		decoder, ok := sdr[storeName]
 		if ok {
-			log += decoder(kvAs[i], kvBs[i])
+			log += decoder.LogPair(kvAs[i], kvBs[i])
 		} else {
 			log += fmt.Sprintf("store A %X => %X\nstore B %X => %X\n", kvAs[i].Key, kvAs[i].Value, kvBs[i].Key, kvBs[i].Value)
 		}

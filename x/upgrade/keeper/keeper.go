@@ -13,7 +13,7 @@ import (
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"
-	store "github.com/line/lbm-sdk/v2/store/types"
+	storetype "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
@@ -50,6 +50,20 @@ func (k Keeper) SetUpgradeHandler(name string, upgradeHandler types.UpgradeHandl
 	k.upgradeHandlers[name] = upgradeHandler
 }
 
+func getPlanUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.Plan{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func getPlanMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.Plan))
+	}
+}
+
 // ScheduleUpgrade schedules an upgrade based on the specified plan.
 // If there is another Plan already scheduled, it will overwrite it
 // (implicitly cancelling the current plan)
@@ -80,8 +94,7 @@ func (k Keeper) ScheduleUpgrade(ctx sdk.Context, plan types.Plan) error {
 		k.ClearIBCState(ctx, oldPlan.Height-1)
 	}
 
-	bz := k.cdc.MustMarshalBinaryBare(&plan)
-	store.Set(types.PlanKey(), bz)
+	store.Set(types.PlanKey(), &plan, getPlanMarshalFunc(k.cdc))
 
 	if plan.IsIBCPlan() {
 		// Set UpgradedClientState in store
@@ -102,12 +115,7 @@ func (k Keeper) SetUpgradedClient(ctx sdk.Context, planHeight int64, cs ibcexpor
 
 	// zero out any custom fields before setting
 	cs = cs.ZeroCustomFields()
-	bz, err := clienttypes.MarshalClientState(k.cdc, cs)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "could not marshal clientstate: %v", err)
-	}
-
-	store.Set(types.UpgradedClientKey(planHeight), bz)
+	store.Set(types.UpgradedClientKey(planHeight), cs, clienttypes.GetClientStateMarshalFunc(k.cdc))
 	return nil
 }
 
@@ -115,28 +123,19 @@ func (k Keeper) SetUpgradedClient(ctx sdk.Context, planHeight int64, cs ibcexpor
 func (k Keeper) GetUpgradedClient(ctx sdk.Context, height int64) (ibcexported.ClientState, error) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := store.Get(types.UpgradedClientKey(height))
-	if len(bz) == 0 {
+	val := store.Get(types.UpgradedClientKey(height), clienttypes.GetClientStateUnmarshalFunc(k.cdc))
+	if val == nil {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "upgraded client not found in store for height %d", height)
 	}
 
-	clientState, err := clienttypes.UnmarshalClientState(k.cdc, bz)
-	if err != nil {
-		return nil, err
-	}
-	return clientState, nil
+	return val.(ibcexported.ClientState), nil
 }
 
 // SetUpgradedConsensusState set the expected upgraded consensus state for the next version of this chain
 // using the last height committed on this chain.
 func (k Keeper) SetUpgradedConsensusState(ctx sdk.Context, planHeight int64, cs ibcexported.ConsensusState) error {
 	store := ctx.KVStore(k.storeKey)
-	bz, err := clienttypes.MarshalConsensusState(k.cdc, cs)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "could not marshal consensus state: %v", err)
-	}
-
-	store.Set(types.UpgradedConsStateKey(planHeight), bz)
+	store.Set(types.UpgradedConsStateKey(planHeight), cs, clienttypes.GetConsensusStateMarshalFunc(k.cdc))
 	return nil
 }
 
@@ -144,26 +143,22 @@ func (k Keeper) SetUpgradedConsensusState(ctx sdk.Context, planHeight int64, cs 
 func (k Keeper) GetUpgradedConsensusState(ctx sdk.Context, lastHeight int64) (ibcexported.ConsensusState, error) {
 	store := ctx.KVStore(k.storeKey)
 
-	bz := store.Get(types.UpgradedConsStateKey(lastHeight))
-	if len(bz) == 0 {
+	val := store.Get(types.UpgradedConsStateKey(lastHeight), clienttypes.GetConsensusStateUnmarshalFunc(k.cdc))
+	if val == nil {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "upgraded consensus state not found in store for height: %d", lastHeight)
 	}
-	consState, err := clienttypes.UnmarshalConsensusState(k.cdc, bz)
-	if err != nil {
-		return nil, err
-	}
-	return consState, nil
+	return val.(ibcexported.ConsensusState), nil
 }
 
 // GetDoneHeight returns the height at which the given upgrade was executed
 func (k Keeper) GetDoneHeight(ctx sdk.Context, name string) int64 {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{types.DoneByte})
-	bz := store.Get([]byte(name))
-	if len(bz) == 0 {
+	val := store.Get([]byte(name), storetype.GetBytesUnmarshalFunc())
+	if val == nil {
 		return 0
 	}
 
-	return int64(binary.BigEndian.Uint64(bz))
+	return int64(binary.BigEndian.Uint64(val.([]byte)))
 }
 
 // ClearIBCState clears any planned IBC state
@@ -189,13 +184,12 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 // upgrade or false if there is none
 func (k Keeper) GetUpgradePlan(ctx sdk.Context) (plan types.Plan, havePlan bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.PlanKey())
-	if bz == nil {
+	val := store.Get(types.PlanKey(), getPlanUnmarshalFunc(k.cdc))
+	if val == nil {
 		return plan, false
 	}
 
-	k.cdc.MustUnmarshalBinaryBare(bz, &plan)
-	return plan, true
+	return *val.(*types.Plan), true
 }
 
 // setDone marks this upgrade name as being done so the name can't be reused accidentally
@@ -203,7 +197,7 @@ func (k Keeper) setDone(ctx sdk.Context, name string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{types.DoneByte})
 	bz := make([]byte, 8)
 	binary.BigEndian.PutUint64(bz, uint64(ctx.BlockHeight()))
-	store.Set([]byte(name), bz)
+	store.Set([]byte(name), bz, storetype.GetBytesMarshalFunc())
 }
 
 // HasHandler returns true iff there is a handler registered for this name
@@ -242,7 +236,7 @@ func (k Keeper) DumpUpgradeInfoToDisk(height int64, name string) error {
 		return err
 	}
 
-	upgradeInfo := store.UpgradeInfo{
+	upgradeInfo := storetype.UpgradeInfo{
 		Name:   name,
 		Height: height,
 	}
@@ -274,8 +268,8 @@ func (k Keeper) getHomeDir() string {
 // written to disk by the old binary when panicking. An error is returned if
 // the upgrade path directory cannot be created or if the file exists and
 // cannot be read or if the upgrade info fails to unmarshal.
-func (k Keeper) ReadUpgradeInfoFromDisk() (store.UpgradeInfo, error) {
-	var upgradeInfo store.UpgradeInfo
+func (k Keeper) ReadUpgradeInfoFromDisk() (storetype.UpgradeInfo, error) {
+	var upgradeInfo storetype.UpgradeInfo
 
 	upgradeInfoPath, err := k.GetUpgradeInfoPath()
 	if err != nil {

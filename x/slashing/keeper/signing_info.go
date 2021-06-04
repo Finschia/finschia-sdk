@@ -4,21 +4,36 @@ import (
 	"time"
 
 	gogotypes "github.com/gogo/protobuf/types"
+	"github.com/line/lbm-sdk/v2/codec"
 
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/x/slashing/types"
 )
 
+func GetValidatorSigningInfoUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.ValidatorSigningInfo{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetValidatorSigningInfoMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.ValidatorSigningInfo))
+	}
+}
+
 // GetValidatorSigningInfo retruns the ValidatorSigningInfo for a specific validator
 // ConsAddress
 func (k Keeper) GetValidatorSigningInfo(ctx sdk.Context, address sdk.ConsAddress) (info types.ValidatorSigningInfo, found bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.ValidatorSigningInfoKey(address))
-	if bz == nil {
+	val := store.Get(types.ValidatorSigningInfoKey(address), GetValidatorSigningInfoUnmarshalFunc(k.cdc))
+	if val == nil {
 		found = false
 		return
 	}
-	k.cdc.MustUnmarshalBinaryBare(bz, &info)
+	info = *val.(*types.ValidatorSigningInfo)
 	found = true
 	return
 }
@@ -33,8 +48,7 @@ func (k Keeper) HasValidatorSigningInfo(ctx sdk.Context, consAddr sdk.ConsAddres
 // SetValidatorSigningInfo sets the validator signing info to a consensus address key
 func (k Keeper) SetValidatorSigningInfo(ctx sdk.Context, address sdk.ConsAddress, info types.ValidatorSigningInfo) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&info)
-	store.Set(types.ValidatorSigningInfoKey(address), bz)
+	store.Set(types.ValidatorSigningInfoKey(address), &info, GetValidatorSigningInfoMarshalFunc(k.cdc))
 }
 
 // IterateValidatorSigningInfos iterates over the stored ValidatorSigningInfo
@@ -54,18 +68,29 @@ func (k Keeper) IterateValidatorSigningInfos(ctx sdk.Context,
 	}
 }
 
+func GetBoolValueUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		var val gogotypes.BoolValue
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetBoolValueMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*gogotypes.BoolValue))
+	}
+}
+
 // GetValidatorMissedBlockBitArray gets the bit for the missed blocks array
 func (k Keeper) GetValidatorMissedBlockBitArray(ctx sdk.Context, address sdk.ConsAddress, index int64) bool {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.ValidatorMissedBlockBitArrayKey(address, index))
-	var missed gogotypes.BoolValue
-	if bz == nil {
+	val := store.Get(types.ValidatorMissedBlockBitArrayKey(address, index), GetBoolValueUnmarshalFunc(k.cdc))
+	if val == nil {
 		// lazy: treat empty key as not missed
 		return false
 	}
-	k.cdc.MustUnmarshalBinaryBare(bz, &missed)
-
-	return missed.Value
+	return (*val.(*gogotypes.BoolValue)).Value
 }
 
 // IterateValidatorMissedBlockBitArray iterates over the signed blocks window
@@ -77,14 +102,12 @@ func (k Keeper) IterateValidatorMissedBlockBitArray(ctx sdk.Context,
 	index := int64(0)
 	// Array may be sparse
 	for ; index < k.SignedBlocksWindow(ctx); index++ {
-		var missed gogotypes.BoolValue
-		bz := store.Get(types.ValidatorMissedBlockBitArrayKey(address, index))
-		if bz == nil {
+		val := store.Get(types.ValidatorMissedBlockBitArrayKey(address, index), GetBoolValueUnmarshalFunc(k.cdc))
+		if val == nil {
 			continue
 		}
 
-		k.cdc.MustUnmarshalBinaryBare(bz, &missed)
-		if handler(index, missed.Value) {
+		if handler(index, (*val.(*gogotypes.BoolValue)).Value) {
 			break
 		}
 	}
@@ -143,8 +166,8 @@ func (k Keeper) IsTombstoned(ctx sdk.Context, consAddr sdk.ConsAddress) bool {
 // missed a block in the current window
 func (k Keeper) SetValidatorMissedBlockBitArray(ctx sdk.Context, address sdk.ConsAddress, index int64, missed bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&gogotypes.BoolValue{Value: missed})
-	store.Set(types.ValidatorMissedBlockBitArrayKey(address, index), bz)
+	store.Set(types.ValidatorMissedBlockBitArrayKey(address, index), &gogotypes.BoolValue{Value: missed},
+		GetBoolValueMarshalFunc(k.cdc))
 }
 
 // clearValidatorMissedBlockBitArray deletes every instance of ValidatorMissedBlockBitArray in the store

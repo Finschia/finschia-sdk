@@ -5,9 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"reflect"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/lbm-sdk/v2/types/errors"
 )
@@ -28,7 +27,7 @@ type (
 	// TODO: Should we use a buffered writer and implement Commit on
 	// Store?
 	Store struct {
-		parent  types.KVObjectStore
+		parent  types.KVStore
 		writer  io.Writer
 		context types.TraceContext
 	}
@@ -47,39 +46,31 @@ type (
 
 // NewStore returns a reference to a new traceKVStore given a parent
 // KVStore implementation and a buffered writer.
-func NewStore(parent types.KVObjectStore, writer io.Writer, tc types.TraceContext) *Store {
+func NewStore(parent types.KVStore, writer io.Writer, tc types.TraceContext) *Store {
 	return &Store{parent: parent, writer: writer, context: tc}
 }
 
 // Get implements the KVStore interface. It traces a read operation and
 // delegates a Get call to the parent KVStore.
-func (tkv *Store) Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
-	value := tkv.parent.Get(key, cdc, ptr)
+func (tkv *Store) Get(key []byte, unmarshal func(value []byte) interface{}) interface{} {
+	value := tkv.parent.Get(key, unmarshal)
 
-	writeOperation(tkv.writer, readOp, tkv.context, key, cdc, value)
+	writeOperation(tkv.writer, readOp, tkv.context, key, value)
 	return value
-}
-
-func (tkv *Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
-	panic("This must not be called")
 }
 
 // Set implements the KVStore interface. It traces a write operation and
 // delegates the Set call to the parent KVStore.
-func (tkv *Store) Set(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+func (tkv *Store) Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte) {
 	types.AssertValidKey(key)
-	writeOperation(tkv.writer, writeOp, tkv.context, key, cdc, obj)
-	tkv.parent.Set(key, cdc, obj)
-}
-
-func (tkv *Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
-	panic("This must not be called")
+	writeOperation(tkv.writer, writeOp, tkv.context, key, marshal(obj))
+	tkv.parent.Set(key, obj, marshal)
 }
 
 // Delete implements the KVStore interface. It traces a write operation and
 // delegates the Delete call to the parent KVStore.
 func (tkv *Store) Delete(key []byte) {
-	writeOperation(tkv.writer, deleteOp, tkv.context, key, nil, nil)
+	writeOperation(tkv.writer, deleteOp, tkv.context, key, nil)
 	tkv.parent.Delete(key)
 }
 
@@ -139,7 +130,7 @@ func (ti *traceIterator) Next() {
 func (ti *traceIterator) Key() []byte {
 	key := ti.parent.Key()
 
-	writeOperation(ti.writer, iterKeyOp, ti.context, key, nil, nil)
+	writeOperation(ti.writer, iterKeyOp, ti.context, key, nil)
 	return key
 }
 
@@ -147,7 +138,21 @@ func (ti *traceIterator) Key() []byte {
 func (ti *traceIterator) Value() []byte {
 	value := ti.parent.Value()
 
-	writeOperation(ti.writer, iterValueOp, ti.context, nil, nil, value)
+	writeOperation(ti.writer, iterValueOp, ti.context, nil, value)
+	return value
+}
+
+func (ti *traceIterator) IsValueNil() bool {
+	value := ti.parent.Value()
+
+	writeOperation(ti.writer, iterValueOp, ti.context, nil, value)
+	return value == nil
+}
+
+func (ti *traceIterator) ValueObject(unmarshal func(value []byte) interface{}) interface{} {
+	value := ti.parent.ValueObject(unmarshal)
+
+	writeOperation(ti.writer, iterValueOp, ti.context, nil, value)
 	return value
 }
 
@@ -181,25 +186,21 @@ func (tkv *Store) CacheWrapWithTrace(_ io.Writer, _ types.TraceContext) types.Ca
 
 // writeOperation writes a KVStore operation to the underlying io.Writer as
 // JSON-encoded data where the key/value pair is base64 encoded.
-func writeOperation(w io.Writer, op operation, tc types.TraceContext, key []byte,
-	cdc codec.BinaryMarshaler, value interface{}) {
-	var bz []byte
+func writeOperation(w io.Writer, op operation, tc types.TraceContext, key []byte, value interface{}) {
+	var valueInfo []byte
 	if value == nil {
-		bz = nil
-	} else if val, ok := value.([]byte); ok {
-		bz = val
+		valueInfo = nil
+	} else if bytesVal, ok := value.([]byte); ok {
+		valueInfo = bytesVal
 	} else {
-		var err error
-		bz, err = cdc.MarshalInterface(value.(proto.Message))
-		if err != nil {
-			panic(fmt.Sprintf("Unable to marshal the object: %s\n", err.Error()))
-		}
+		valueInfo = []byte(fmt.Sprintf("object value(len=%d)", reflect.TypeOf(value).Size()))
 	}
 
 	traceOp := traceOperation{
 		Operation: op,
 		Key:       base64.StdEncoding.EncodeToString(key),
-		Value:     base64.StdEncoding.EncodeToString(bz),
+		// cannot marshal value here, so we write only value type info
+		Value:     base64.StdEncoding.EncodeToString(valueInfo),
 	}
 
 	if tc != nil {

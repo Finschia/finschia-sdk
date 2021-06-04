@@ -11,7 +11,7 @@ import (
 )
 
 func (suite *MerkleTestSuite) TestVerifyMembership() {
-	suite.iavlStore.Set([]byte("MYKEY"), []byte("MYVALUE"))
+	suite.iavlStore.SetObject([]byte("MYKEY"), []byte("MYVALUE"))
 	cid := suite.store.Commit()
 
 	res := suite.store.Query(abci.RequestQuery{
@@ -76,7 +76,7 @@ func (suite *MerkleTestSuite) TestVerifyMembership() {
 }
 
 func (suite *MerkleTestSuite) TestVerifyNonMembership() {
-	suite.iavlStore.Set([]byte("MYKEY"), []byte("MYVALUE"))
+	suite.iavlStore.SetObject([]byte("MYKEY"), []byte("MYVALUE"))
 	cid := suite.store.Commit()
 
 	// Get Proof

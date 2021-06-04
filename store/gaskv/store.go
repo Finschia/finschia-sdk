@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"github.com/dgraph-io/ristretto"
-	"github.com/golang/protobuf/proto"
-	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/lbm-sdk/v2/telemetry"
 )
@@ -19,7 +17,7 @@ var _ types.KVStore = &Store{}
 type Store struct {
 	gasMeter  types.GasMeter
 	gasConfig types.GasConfig
-	parent    types.KVObjectStore
+	parent    types.KVStore
 }
 
 var cache     *ristretto.Cache
@@ -34,7 +32,7 @@ func init() {
 
 // NewStore returns a reference to a new GasKVStore.
 // nolint
-func NewStore(parent types.KVObjectStore, gasMeter types.GasMeter, gasConfig types.GasConfig) *Store {
+func NewStore(parent types.KVStore, gasMeter types.GasMeter, gasConfig types.GasConfig) *Store {
 	kvs := &Store{
 		gasMeter:  gasMeter,
 		gasConfig: gasConfig,
@@ -49,61 +47,34 @@ func (gs *Store) GetStoreType() types.StoreType {
 }
 
 // Implements KVStore.
-func (gs *Store) Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+func (gs *Store) Get(key []byte, unmarshal func(value []byte) interface{}) interface{} {
 	defer telemetry.MeasureSince(time.Now(), "store", "gaskv", "get")
 
 	gs.gasMeter.ConsumeGas(gs.gasConfig.ReadCostFlat, types.GasReadCostFlatDesc)
-	value := gs.parent.Get(key, cdc, ptr)
+	value := gs.parent.Get(key, unmarshal)
 
 	// TODO overflow-safe math?
-	gs.gasMeter.ConsumeGas(gs.gasConfig.ReadCostPerByte*types.Gas(reflect.TypeOf(value).Size()), types.GasReadPerByteDesc)
+	if value == nil {
+		gs.gasMeter.ConsumeGas(gs.gasConfig.ReadCostPerByte*types.Gas(0), types.GasReadPerByteDesc)
+	} else {
+		gs.gasMeter.ConsumeGas(gs.gasConfig.ReadCostPerByte*types.Gas(reflect.TypeOf(value).Size()),
+			types.GasReadPerByteDesc)
+	}
 
 	return value
 }
 
-func (gs *Store) Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
-	val, exist := cache.Get(key)
-	if exist {
-		//gs.gasMeter.ConsumeGas(val.(*CacheItem).gas, types.GasReadCostFlatDesc)
-		return val.(*CacheItem).value
-	}
-	//gs.gasMeter.ConsumeGas(gs.gasConfig.ReadCostFlat, types.GasReadCostFlatDesc)
-	bz := gs.parent.Get(key)
-
-	//gs.gasMeter.ConsumeGas(gs.gasConfig.ReadCostPerByte*types.Gas(len(bz)), types.GasReadPerByteDesc)
-	if cdc.UnmarshalInterface(bz, ptr) != nil {
-		panic("...")
-	}
-	cache.Set(key, &CacheItem{
-		value: ptr,
-		gas:   gs.gasConfig.ReadCostFlat+gs.gasConfig.ReadCostPerByte*types.Gas(len(bz)),
-	}, 1)
-	return ptr
-}
-
 // Implements KVStore.
-func (gs *Store) Set(key []byte, value []byte) {
+func (gs *Store) Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "gaskv", "set")
 
 	types.AssertValidKey(key)
-	types.AssertValidValue(value)
+	types.AssertValidObjectValue(obj)
 	gs.gasMeter.ConsumeGas(gs.gasConfig.WriteCostFlat, types.GasWriteCostFlatDesc)
 	// TODO overflow-safe math?
-	gs.gasMeter.ConsumeGas(gs.gasConfig.WriteCostPerByte*types.Gas(len(value)), types.GasWritePerByteDesc)
-	gs.parent.Set(key, value)
-}
-
-func (gs *Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
-	types.AssertValidKey(key)
-
-	gs.gasMeter.ConsumeGas(gs.gasConfig.WriteCostFlat, types.GasWriteCostFlatDesc)
-	// TODO overflow-safe math?
-	gs.gasMeter.ConsumeGas(gs.gasConfig.WriteCostPerByte*types.Gas(len(value)), types.GasWritePerByteDesc)
-	gs.parent.Set(key, value)
-	cache.Set(key, &CacheItem{
-		value: obj,
-		gas:   gs.gasConfig.ReadCostFlat+gs.gasConfig.ReadCostPerByte*types.Gas(len(value)),
-	}, 1)
+	gs.gasMeter.ConsumeGas(gs.gasConfig.WriteCostPerByte*types.Gas(reflect.TypeOf(obj).Size()),
+		types.GasWritePerByteDesc)
+	gs.parent.Set(key, obj, marshal)
 }
 
 // Implements KVStore.
@@ -206,6 +177,15 @@ func (gi *gasIterator) Value() (value []byte) {
 	return value
 }
 
+func (gi *gasIterator) IsValueNil() bool {
+	return gi.parent.Value() == nil
+}
+
+func (gi *gasIterator) ValueObject(unmarshal func(value []byte) interface{}) interface{} {
+	value := gi.parent.ValueObject(unmarshal)
+	return value
+}
+
 // Implements Iterator.
 func (gi *gasIterator) Close() error {
 	return gi.parent.Close()
@@ -216,11 +196,21 @@ func (gi *gasIterator) Error() error {
 	return gi.parent.Error()
 }
 
+func getNoUnmarshalFunc() func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		return nil
+	}
+}
+
 // consumeSeekGas consumes a flat gas cost for seeking and a variable gas cost
 // based on the current value's length.
 func (gi *gasIterator) consumeSeekGas() {
-	value := gi.Value()
+	value := gi.ValueObject(getNoUnmarshalFunc())
 
-	gi.gasMeter.ConsumeGas(gi.gasConfig.ReadCostPerByte*types.Gas(len(value)), types.GasValuePerByteDesc)
+	if value == nil {
+		gi.gasMeter.ConsumeGas(gi.gasConfig.ReadCostPerByte*types.Gas(0), types.GasValuePerByteDesc)
+	} else {
+		gi.gasMeter.ConsumeGas(gi.gasConfig.ReadCostPerByte*types.Gas(reflect.TypeOf(value).Size()), types.GasValuePerByteDesc)
+	}
 	gi.gasMeter.ConsumeGas(gi.gasConfig.IterNextCostFlat, types.GasIterNextCostFlatDesc)
 }

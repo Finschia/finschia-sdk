@@ -6,12 +6,12 @@ import (
 	"testing"
 	"time"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/gov/simulation"
 	"github.com/line/lbm-sdk/v2/x/gov/types"
 )
@@ -36,17 +36,12 @@ func TestDecodeStore(t *testing.T) {
 	deposit := types.NewDeposit(1, delAddr1, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())))
 	vote := types.NewVote(1, delAddr1, types.OptionYes)
 
-	proposalBz, err := cdc.MarshalBinaryBare(&proposal)
-	require.NoError(t, err)
-
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
-			{Key: types.ProposalKey(1), Value: proposalBz},
+	kvPairs := []types2.KOPair{
+			{Key: types.ProposalKey(1), Value: &proposal},
 			{Key: types.InactiveProposalQueueKey(1, endTime), Value: proposalIDBz},
-			{Key: types.DepositKey(1, delAddr1), Value: cdc.MustMarshalBinaryBare(&deposit)},
-			{Key: types.VoteKey(1, delAddr1), Value: cdc.MustMarshalBinaryBare(&vote)},
+			{Key: types.DepositKey(1, delAddr1), Value: &deposit},
+			{Key: types.VoteKey(1, delAddr1), Value: &vote},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
-		},
 	}
 
 	tests := []struct {
@@ -65,9 +60,9 @@ func TestDecodeStore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec(kvPairs.Pairs[i], kvPairs.Pairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec(kvPairs.Pairs[i], kvPairs.Pairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
 			}
 		})
 	}

@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 	"io"
+	"reflect"
 
 	"github.com/VictoriaMetrics/fastcache"
 	"github.com/golang/protobuf/proto"
@@ -18,6 +19,11 @@ import (
 type Store interface {
 	GetStoreType() StoreType
 	CacheWrapper
+}
+
+type KOPair struct {
+	Key   []byte
+	Value interface{}
 }
 
 type CacheManager interface {
@@ -201,18 +207,14 @@ type CommitMultiStore interface {
 type KVStore interface {
 	Store
 
-	// Get returns nil iff key doesn't exist. Panics on nil key.
-	Get(key []byte) []byte
-
-	GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{}
+	// Get returns nil iff key doesn't exist. Panics on nil key. ptr is an address of an interface
+	Get(key []byte, unmarshal func(value []byte) interface{}) interface{}
 
 	// Has checks if a key exists. Panics on nil key.
 	Has(key []byte) bool
 
 	// Set sets the key. Panics on nil key or value.
-	Set(key, value []byte)
-
-	SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message)
+	Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte)
 
 	// Delete deletes the key. Panics on nil key.
 	Delete(key []byte)
@@ -233,46 +235,18 @@ type KVStore interface {
 	ReverseIterator(start, end []byte) Iterator
 }
 
-// KVStore is a simple interface to get/set data
-type KVObjectStore interface {
-	Store
-
-	// Get returns nil iff key doesn't exist. Panics on nil key.
-	Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{}
-
-	// Has checks if a key exists. Panics on nil key.
-	Has(key []byte) bool
-
-	// Set sets the key. Panics on nil key or value.
-	Set(key []byte, cdc codec.BinaryMarshaler, obj proto.Message)
-
-	// Delete deletes the key. Panics on nil key.
-	Delete(key []byte)
-
-	// Iterator over a domain of keys in ascending order. End is exclusive.
-	// Start must be less than end, or the Iterator is invalid.
-	// Iterator must be closed by caller.
-	// To iterate over entire domain, use store.Iterator(nil, nil)
-	// CONTRACT: No writes may happen within a domain while an iterator exists over it.
-	// Exceptionally allowed for cachekv.Store, safe to write in the modules.
-	Iterator(start, end []byte) Iterator
-
-	// Iterator over a domain of keys in descending order. End is exclusive.
-	// Start must be less than end, or the Iterator is invalid.
-	// Iterator must be closed by caller.
-	// CONTRACT: No writes may happen within a domain while an iterator exists over it.
-	// Exceptionally allowed for cachekv.Store, safe to write in the modules.
-	ReverseIterator(start, end []byte) Iterator
+// Iterator inherits db's Iterator.
+type Iterator interface {
+	tmdb.Iterator
+	IsValueNil() bool // used only inside a store
+	ValueObject(unmarshal func(value []byte) interface{}) interface{}
 }
-
-// Iterator is an alias db's Iterator for convenience.
-type Iterator = tmdb.Iterator
 
 // CacheKVStore branches a KVStore and provides read cache functionality.
 // After calling .Write() on the CacheKVStore, all previously created
 // CacheKVStores on the object expire.
 type CacheKVStore interface {
-	KVObjectStore
+	KVStore
 
 	// Writes operations to underlying KVStore
 	Write()
@@ -282,11 +256,6 @@ type CacheKVStore interface {
 type CommitKVStore interface {
 	Committer
 	KVStore
-}
-
-type CommitKVObjectStore interface {
-	Committer
-	KVObjectStore
 }
 
 //----------------------------------------
@@ -335,6 +304,89 @@ const (
 	StoreTypeIAVL
 	StoreTypeMemory
 )
+
+func GetBytesMarshalFunc() func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		if obj == nil {
+			return nil
+		}
+		bytes, ok := obj.([]byte)
+		if !ok {
+			panic(fmt.Sprintf("Value is not []byte: %v", obj))
+		}
+		return bytes
+	}
+}
+
+func GetBytesUnmarshalFunc() func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		return value
+	}
+}
+
+type MarshalType int
+const (
+	NoMarshal MarshalType = iota
+	MarshalBinaryBare
+	MarshalInterface
+)
+
+func ToValueBytes(cdc codec.BinaryMarshaler, mt MarshalType, ptr interface{}) []byte {
+	switch mt {
+	case NoMarshal:
+		valBytes, ok := ptr.([]byte)
+		if !ok {
+			panic(fmt.Sprintf("Value is not []byte: %v", ptr))
+		}
+		return valBytes
+	case MarshalBinaryBare:
+		protoObj, ok := ptr.(codec.ProtoMarshaler)
+		if !ok {
+			panic(fmt.Sprintf("Value is not ProtoMarshaler: %v", ptr))
+		}
+		return cdc.MustMarshalBinaryBare(protoObj)
+	case MarshalInterface:
+		protoMsg, ok3 := ptr.(proto.Message)
+		if ok3 {
+			val, err := cdc.MarshalInterface(protoMsg)
+			if err != nil {
+				panic(fmt.Sprintf("Value is not ProtoMarshaler: %v", ptr))
+			}
+			return val
+		}
+	}
+	panic(fmt.Sprintf("Unknown marshal type: %d", mt))
+}
+
+func ToValueObject(cdc codec.BinaryMarshaler, mt MarshalType, val []byte, ptr interface{}) interface{} {
+	if val == nil {
+		return nil
+	}
+	switch mt {
+	case NoMarshal:
+		valBytes, ok := ptr.([]byte)
+		if !ok {
+			panic(fmt.Sprintf("Value is not []byte: %v", ptr))
+		}
+		return valBytes
+	case MarshalBinaryBare:
+		protoObj, ok := ptr.(codec.ProtoMarshaler)
+		if ok {
+			cdc.MustUnmarshalBinaryBare(val, protoObj)
+			return reflect.ValueOf(protoObj).Elem().Interface()
+		}
+	case MarshalInterface:
+		if err := cdc.UnmarshalInterface(val, ptr); err != nil {
+			panic(fmt.Sprintf("Unable to unmarshal: %s\n", err.Error()))
+		}
+		obj := reflect.ValueOf(ptr).Elem().Interface()
+		if obj == nil {
+			return nil
+		}
+		return obj.(proto.Message)
+	}
+	panic(fmt.Sprintf("Unknown marshal type: %d", mt))
+}
 
 func (st StoreType) String() string {
 	switch st {
@@ -427,7 +479,7 @@ type TraceContext map[string]interface{}
 type MultiStorePersistentCache interface {
 	// Wrap and return the provided CommitKVStore with an inter-block (persistent)
 	// cache.
-	GetStoreCache(key StoreKey, store CommitKVStore) CommitKVObjectStore
+	GetStoreCache(key StoreKey, store CommitKVStore) CommitKVStore
 
 	// Return the underlying CommitKVStore for a StoreKey.
 	Unwrap(key StoreKey) CommitKVStore

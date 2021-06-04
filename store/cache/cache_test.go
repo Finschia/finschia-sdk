@@ -4,6 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/line/lbm-sdk/v2/codec"
+	store2 "github.com/line/lbm-sdk/v2/testutil/store"
+	types2 "github.com/line/lbm-sdk/v2/x/auth/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/iavl/v2"
@@ -51,20 +54,29 @@ func TestStoreCache(t *testing.T) {
 	require.NoError(t, err)
 	store := iavlstore.UnsafeNewStore(tree)
 	kvStore := mngr.GetStoreCache(sKey, store)
+	cdc := codec.NewProtoCodec(store2.CreateTestInterfaceRegistry())
 
-	for i := uint(0); i < 10000; i++ {
+	for i := 0; i < 10000; i++ {
 		key := []byte(fmt.Sprintf("key_%d", i))
-		value := []byte(fmt.Sprintf("value_%d", i))
+		value := store2.ValFmt(i)
 
-		kvStore.Set(key, value)
+		kvStore.Set(key, value, types2.GetAccountMarshalFunc(cdc))
 
-		res := kvStore.Get(key)
+		res := kvStore.Get(key, types2.GetAccountUnmarshalFunc(cdc))
 		require.Equal(t, res, value)
-		require.Equal(t, res, store.Get(key))
+		require.Equal(t, res, store.Get(key, types2.GetAccountUnmarshalFunc(cdc)))
+	}
 
+	// ristretto cache operates asynchronously.
+	// Thus, when Set and Del are called consecutively, they sometimes get a value, so we separate the for loop.
+	for i := 0; i < 10000; i++ {
+		key := []byte(fmt.Sprintf("key_%d", i))
 		kvStore.Delete(key)
+	}
 
-		require.Nil(t, kvStore.Get(key))
-		require.Nil(t, store.Get(key))
+	for i := 0; i < 10000; i++ {
+		key := []byte(fmt.Sprintf("key_%d", i))
+		require.Nil(t, kvStore.Get(key, types2.GetAccountUnmarshalFunc(cdc)))
+		require.Nil(t, store.Get(key, types2.GetAccountUnmarshalFunc(cdc)))
 	}
 }

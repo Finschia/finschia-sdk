@@ -29,30 +29,36 @@ func TestDiffKVStores(t *testing.T) {
 	store1, store2 := initTestStores(t)
 	// Two equal stores
 	k1, v1 := []byte("k1"), []byte("v1")
-	store1.Set(k1, v1)
-	store2.Set(k1, v1)
+	store1.Set(k1, v1, types.GetBytesMarshalFunc())
+	store2.Set(k1, v1, types.GetBytesMarshalFunc())
 
-	kvAs, kvBs := types.DiffKVStores(store1, store2, nil)
+	marshal := func(key []byte) func(obj interface{}) []byte {
+		return types.GetBytesMarshalFunc()
+	}
+	unmarshal := func(key []byte) func(value []byte) interface{} {
+		return types.GetBytesUnmarshalFunc()
+	}
+	kvAs, kvBs := types.DiffKVStores(store1, store2, nil, marshal, unmarshal)
 	require.Equal(t, 0, len(kvAs))
 	require.Equal(t, len(kvAs), len(kvBs))
 
 	// delete k1 from store2, which is now empty
 	store2.Delete(k1)
-	kvAs, kvBs = types.DiffKVStores(store1, store2, nil)
+	kvAs, kvBs = types.DiffKVStores(store1, store2, nil, marshal, unmarshal)
 	require.Equal(t, 1, len(kvAs))
 	require.Equal(t, len(kvAs), len(kvBs))
 
 	// set k1 in store2, different value than what store1 holds for k1
 	v2 := []byte("v2")
-	store2.Set(k1, v2)
-	kvAs, kvBs = types.DiffKVStores(store1, store2, nil)
+	store2.Set(k1, v2, types.GetBytesMarshalFunc())
+	kvAs, kvBs = types.DiffKVStores(store1, store2, nil, marshal, unmarshal)
 	require.Equal(t, 1, len(kvAs))
 	require.Equal(t, len(kvAs), len(kvBs))
 
 	// add k2 to store2
 	k2 := []byte("k2")
-	store2.Set(k2, v2)
-	kvAs, kvBs = types.DiffKVStores(store1, store2, nil)
+	store2.Set(k2, v2, types.GetBytesMarshalFunc())
+	kvAs, kvBs = types.DiffKVStores(store1, store2, nil, marshal, unmarshal)
 	require.Equal(t, 2, len(kvAs))
 	require.Equal(t, len(kvAs), len(kvBs))
 
@@ -64,9 +70,9 @@ func TestDiffKVStores(t *testing.T) {
 	// Same keys, different value. Comparisons will be nil as prefixes are skipped.
 	prefix := []byte("prefix:")
 	k1Prefixed := append(prefix, k1...)
-	store1.Set(k1Prefixed, v1)
-	store2.Set(k1Prefixed, v2)
-	kvAs, kvBs = types.DiffKVStores(store1, store2, [][]byte{prefix})
+	store1.Set(k1Prefixed, v1, types.GetBytesMarshalFunc())
+	store2.Set(k1Prefixed, v2, types.GetBytesMarshalFunc())
+	kvAs, kvBs = types.DiffKVStores(store1, store2, [][]byte{prefix}, marshal, unmarshal)
 	require.Equal(t, 0, len(kvAs))
 	require.Equal(t, len(kvAs), len(kvBs))
 }

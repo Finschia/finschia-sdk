@@ -42,23 +42,6 @@ func MustMarshalDelegation(cdc codec.BinaryMarshaler, delegation Delegation) []b
 	return cdc.MustMarshalBinaryBare(&delegation)
 }
 
-// MustUnmarshalDelegation return the unmarshaled delegation from bytes.
-// Panics if fails.
-func MustUnmarshalDelegation(cdc codec.BinaryMarshaler, value []byte) Delegation {
-	delegation, err := UnmarshalDelegation(cdc, value)
-	if err != nil {
-		panic(err)
-	}
-
-	return delegation
-}
-
-// return the delegation
-func UnmarshalDelegation(cdc codec.BinaryMarshaler, value []byte) (delegation Delegation, err error) {
-	err = cdc.UnmarshalBinaryBare(value, &delegation)
-	return delegation, err
-}
-
 func (d Delegation) GetDelegatorAddr() sdk.AccAddress {
 	delAddr, err := sdk.AccAddressFromBech32(d.DelegatorAddress)
 	if err != nil {
@@ -138,27 +121,6 @@ func (ubd *UnbondingDelegation) RemoveEntry(i int64) {
 	ubd.Entries = append(ubd.Entries[:i], ubd.Entries[i+1:]...)
 }
 
-// return the unbonding delegation
-func MustMarshalUBD(cdc codec.BinaryMarshaler, ubd UnbondingDelegation) []byte {
-	return cdc.MustMarshalBinaryBare(&ubd)
-}
-
-// unmarshal a unbonding delegation from a store value
-func MustUnmarshalUBD(cdc codec.BinaryMarshaler, value []byte) UnbondingDelegation {
-	ubd, err := UnmarshalUBD(cdc, value)
-	if err != nil {
-		panic(err)
-	}
-
-	return ubd
-}
-
-// unmarshal a unbonding delegation from a store value
-func UnmarshalUBD(cdc codec.BinaryMarshaler, value []byte) (ubd UnbondingDelegation, err error) {
-	err = cdc.UnmarshalBinaryBare(value, &ubd)
-	return ubd, err
-}
-
 // String returns a human readable string representation of an UnbondingDelegation.
 func (ubd UnbondingDelegation) String() string {
 	out := fmt.Sprintf(`Unbonding Delegations between:
@@ -233,27 +195,7 @@ func (red *Redelegation) RemoveEntry(i int64) {
 	red.Entries = append(red.Entries[:i], red.Entries[i+1:]...)
 }
 
-// MustMarshalRED returns the Redelegation bytes. Panics if fails.
-func MustMarshalRED(cdc codec.BinaryMarshaler, red Redelegation) []byte {
-	return cdc.MustMarshalBinaryBare(&red)
-}
-
-// MustUnmarshalRED unmarshals a redelegation from a store value. Panics if fails.
-func MustUnmarshalRED(cdc codec.BinaryMarshaler, value []byte) Redelegation {
-	red, err := UnmarshalRED(cdc, value)
-	if err != nil {
-		panic(err)
-	}
-
-	return red
-}
-
 // UnmarshalRED unmarshals a redelegation from a store value
-func UnmarshalRED(cdc codec.BinaryMarshaler, value []byte) (red Redelegation, err error) {
-	err = cdc.UnmarshalBinaryBare(value, &red)
-	return red, err
-}
-
 // String returns a human readable string representation of a Redelegation.
 func (red Redelegation) String() string {
 	out := fmt.Sprintf(`Redelegations between:

@@ -273,7 +273,7 @@ func moveKVStoreData(oldDB types.KVStore, newDB types.KVStore) error {
 	// we read from one and write to another
 	itr := oldDB.Iterator(nil, nil)
 	for itr.Valid() {
-		newDB.Set(itr.Key(), itr.Value())
+		newDB.Set(itr.Key(), itr.Value(), types.GetBytesMarshalFunc())
 		itr.Next()
 	}
 	itr.Close()
@@ -815,7 +815,8 @@ func (rs *Store) Restore(
 	return rs.LoadLatestVersion()
 }
 
-func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID, params storeParams) (types.CommitKVStore, error) {
+func (rs *Store) loadCommitStoreFromParams(key types.StoreKey, id types.CommitID,
+	params storeParams) (types.CommitKVStore, error) {
 	var db tmdb.DB
 
 	if params.db != nil {

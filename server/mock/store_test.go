@@ -25,13 +25,13 @@ func TestStore(t *testing.T) {
 	k := []byte("hello")
 	v := []byte("world")
 	require.False(t, store.Has(k))
-	store.Set(k, v)
+	store.Set(k, v, nil)
 	require.True(t, store.Has(k))
-	require.Equal(t, v, store.Get(k))
+	require.Equal(t, v, store.Get(k, nil))
 	store.Delete(k)
 	require.False(t, store.Has(k))
-	require.Panics(t, func() { store.Set([]byte(""), v) }, "setting an empty key should panic")
-	require.Panics(t, func() { store.Set(nil, v) }, "setting a nil key should panic")
+	require.Panics(t, func() { store.Set([]byte(""), v, nil) }, "setting an empty key should panic")
+	require.Panics(t, func() { store.Set(nil, v, nil) }, "setting a nil key should panic")
 
 	require.Panics(t, func() { cms.SetIAVLCacheManager(nil) }, "not implemented")
 }

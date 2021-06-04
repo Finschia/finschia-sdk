@@ -225,7 +225,7 @@ func (c Context) Value(key interface{}) interface{} {
 // ----------------------------------------------------------------------------
 
 // KVStore fetches a KVStore from the MultiStore.
-func (c Context) KVObjectStore(key StoreKey) stypes.KVObjectStore {
+func (c Context) KVStore(key StoreKey) stypes.KVStore {
 	return gaskv.NewStore(c.MultiStore().GetKVStore(key), c.GasMeter(), stypes.KVGasConfig())
 }
 

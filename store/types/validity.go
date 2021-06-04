@@ -13,3 +13,9 @@ func AssertValidValue(value []byte) {
 		panic("value is nil")
 	}
 }
+
+func AssertValidObjectValue(value interface{}) {
+	if value == nil {
+		panic("value is nil")
+	}
+}

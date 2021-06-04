@@ -5,7 +5,7 @@ import (
 	"container/list"
 	"errors"
 
-	"github.com/line/lbm-sdk/v2/types/kv"
+	"github.com/line/lbm-sdk/v2/store/types"
 )
 
 // Iterates over iterKVCache items.
@@ -13,7 +13,7 @@ import (
 // Implements Iterator.
 type memIterator struct {
 	start, end []byte
-	items      []*kv.Pair
+	items      []*types.KOPair
 	ascending  bool
 }
 
@@ -28,12 +28,12 @@ func IsKeyInDomain(key, start, end []byte) bool {
 }
 
 func newMemIterator(start, end []byte, items *list.List, ascending bool) *memIterator {
-	itemsInDomain := make([]*kv.Pair, 0, items.Len())
+	itemsInDomain := make([]*types.KOPair, 0, items.Len())
 
 	var entered bool
 
 	for e := items.Front(); e != nil; e = e.Next() {
-		item := e.Value.(*kv.Pair)
+		item := e.Value.(*types.KOPair)
 		if !IsKeyInDomain(item.Key, start, end) {
 			if entered {
 				break
@@ -88,14 +88,36 @@ func (mi *memIterator) Key() []byte {
 	return mi.items[len(mi.items)-1].Key
 }
 
+func (mi *memIterator) valueIndex() int {
+	var index int
+	if mi.ascending {
+		index = 0
+	} else {
+		index = len(mi.items)-1
+	}
+	return index
+}
+
 func (mi *memIterator) Value() []byte {
 	mi.assertValid()
 
-	if mi.ascending {
-		return mi.items[0].Value
+	val := mi.items[mi.valueIndex()].Value
+	if val == nil {
+		return nil
 	}
+	return val.([]byte)
+}
 
-	return mi.items[len(mi.items)-1].Value
+func (mi *memIterator) IsValueNil() bool {
+	mi.assertValid()
+
+	return mi.items[mi.valueIndex()].Value == nil
+}
+
+func (mi *memIterator) ValueObject(unmarshal func(value []byte) interface{}) interface{} {
+	mi.assertValid()
+
+	return mi.items[mi.valueIndex()].Value
 }
 
 func (mi *memIterator) Close() error {

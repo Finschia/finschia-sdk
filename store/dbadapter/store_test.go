@@ -24,18 +24,18 @@ func TestAccessors(t *testing.T) {
 	key := []byte("test")
 	value := []byte("testvalue")
 
-	require.Panics(t, func() { store.Set(nil, []byte("value")) }, "setting a nil key should panic")
-	require.Panics(t, func() { store.Set([]byte(""), []byte("value")) }, "setting an empty key should panic")
+	require.Panics(t, func() { store.Set(nil, []byte("value"), types.GetBytesMarshalFunc()) }, "setting a nil key should panic")
+	require.Panics(t, func() { store.Set([]byte(""), []byte("value"), types.GetBytesMarshalFunc()) }, "setting an empty key should panic")
 
 	require.Equal(t, types.StoreTypeDB, store.GetStoreType())
 	store.GetStoreType()
 
 	retFoo := []byte("xxx")
 	mockDB.EXPECT().Get(gomock.Eq(key)).Times(1).Return(retFoo, nil)
-	require.True(t, bytes.Equal(retFoo, store.Get(key)))
+	require.True(t, bytes.Equal(retFoo, store.Get(key, types.GetBytesUnmarshalFunc()).([]byte)))
 
 	mockDB.EXPECT().Get(gomock.Eq(key)).Times(1).Return(nil, errFoo)
-	require.Panics(t, func() { store.Get(key) })
+	require.Panics(t, func() { store.Get(key, types.GetBytesUnmarshalFunc()) })
 
 	mockDB.EXPECT().Has(gomock.Eq(key)).Times(1).Return(true, nil)
 	require.True(t, store.Has(key))
@@ -47,10 +47,10 @@ func TestAccessors(t *testing.T) {
 	require.Panics(t, func() { store.Has(key) })
 
 	mockDB.EXPECT().Set(gomock.Eq(key), gomock.Eq(value)).Times(1).Return(nil)
-	require.NotPanics(t, func() { store.Set(key, value) })
+	require.NotPanics(t, func() { store.Set(key, value, types.GetBytesMarshalFunc()) })
 
 	mockDB.EXPECT().Set(gomock.Eq(key), gomock.Eq(value)).Times(1).Return(errFoo)
-	require.Panics(t, func() { store.Set(key, value) })
+	require.Panics(t, func() { store.Set(key, value, types.GetBytesMarshalFunc()) })
 
 	mockDB.EXPECT().Delete(gomock.Eq(key)).Times(1).Return(nil)
 	require.NotPanics(t, func() { store.Delete(key) })

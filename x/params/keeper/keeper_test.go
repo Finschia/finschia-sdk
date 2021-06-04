@@ -107,7 +107,7 @@ func TestKeeper(t *testing.T) {
 	// Test store.Get equals space.Get
 	for i, kv := range kvs {
 		var param int64
-		bz := store.Get([]byte(kv.key))
+		bz := store.GetObject([]byte(kv.key))
 		require.NotNil(t, bz, "KVStore.Get returns nil, tc #%d", i)
 		err := cdc.UnmarshalJSON(bz, &param)
 		require.NoError(t, err, "UnmarshalJSON returns error, tc #%d", i)
@@ -217,7 +217,7 @@ func TestSubspace(t *testing.T) {
 
 	// Test store.Get equals space.Get
 	for i, kv := range kvs {
-		bz := store.Get([]byte(kv.key))
+		bz := store.GetObject([]byte(kv.key))
 		require.NotNil(t, bz, "store.Get() returns nil, tc #%d", i)
 		err := cdc.UnmarshalJSON(bz, kv.ptr)
 		require.NoError(t, err, "cdc.UnmarshalJSON() returns error, tc #%d", i)

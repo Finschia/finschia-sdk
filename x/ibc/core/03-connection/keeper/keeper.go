@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/v2/codec"
@@ -53,25 +54,35 @@ func (k Keeper) GenerateConnectionIdentifier(ctx sdk.Context) string {
 	return connectionID
 }
 
+func GetConnectionEndUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.ConnectionEnd{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetConnectionEndMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.ConnectionEnd))
+	}
+}
+
 // GetConnection returns a connection with a particular identifier
 func (k Keeper) GetConnection(ctx sdk.Context, connectionID string) (types.ConnectionEnd, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.ConnectionKey(connectionID))
-	if bz == nil {
+	val := store.Get(host.ConnectionKey(connectionID), GetConnectionEndUnmarshalFunc(k.cdc))
+	if val == nil {
 		return types.ConnectionEnd{}, false
 	}
 
-	var connection types.ConnectionEnd
-	k.cdc.MustUnmarshalBinaryBare(bz, &connection)
-
-	return connection, true
+	return *val.(*types.ConnectionEnd), true
 }
 
 // SetConnection sets a connection to the store
 func (k Keeper) SetConnection(ctx sdk.Context, connectionID string, connection types.ConnectionEnd) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&connection)
-	store.Set(host.ConnectionKey(connectionID), bz)
+	store.Set(host.ConnectionKey(connectionID), &connection, GetConnectionEndMarshalFunc(k.cdc))
 }
 
 // GetTimestampAtHeight returns the timestamp in nanoseconds of the consensus state at the
@@ -91,44 +102,55 @@ func (k Keeper) GetTimestampAtHeight(ctx sdk.Context, connection types.Connectio
 	return consensusState.GetTimestamp(), nil
 }
 
+func GetClientPathsUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.ClientPaths{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetClientPathsMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.ClientPaths))
+	}
+}
+
 // GetClientConnectionPaths returns all the connection paths stored under a
 // particular client
 func (k Keeper) GetClientConnectionPaths(ctx sdk.Context, clientID string) ([]string, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.ClientConnectionsKey(clientID))
-	if bz == nil {
+	val := store.Get(host.ClientConnectionsKey(clientID), GetClientPathsUnmarshalFunc(k.cdc))
+	if val == nil {
 		return nil, false
 	}
 
-	var clientPaths types.ClientPaths
-	k.cdc.MustUnmarshalBinaryBare(bz, &clientPaths)
-	return clientPaths.Paths, true
+	return (*val.(*types.ClientPaths)).Paths, true
 }
 
 // SetClientConnectionPaths sets the connections paths for client
 func (k Keeper) SetClientConnectionPaths(ctx sdk.Context, clientID string, paths []string) {
 	store := ctx.KVStore(k.storeKey)
 	clientPaths := types.ClientPaths{Paths: paths}
-	bz := k.cdc.MustMarshalBinaryBare(&clientPaths)
-	store.Set(host.ClientConnectionsKey(clientID), bz)
+	store.Set(host.ClientConnectionsKey(clientID), &clientPaths, GetClientPathsMarshalFunc(k.cdc))
 }
 
 // GetNextConnectionSequence gets the next connection sequence from the store.
 func (k Keeper) GetNextConnectionSequence(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte(types.KeyNextConnectionSequence))
+	bz := store.Get([]byte(types.KeyNextConnectionSequence), types2.GetBytesUnmarshalFunc())
 	if bz == nil {
 		panic("next connection sequence is nil")
 	}
 
-	return sdk.BigEndianToUint64(bz)
+	return sdk.BigEndianToUint64(bz.([]byte))
 }
 
 // SetNextConnectionSequence sets the next connection sequence to the store.
 func (k Keeper) SetNextConnectionSequence(ctx sdk.Context, sequence uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(sequence)
-	store.Set([]byte(types.KeyNextConnectionSequence), bz)
+	store.Set([]byte(types.KeyNextConnectionSequence), bz, types2.GetBytesMarshalFunc())
 }
 
 // GetAllClientConnectionPaths returns all stored clients connection id paths. It

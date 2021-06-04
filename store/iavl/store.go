@@ -9,9 +9,7 @@ import (
 
 	"github.com/VictoriaMetrics/fastcache"
 	ics23 "github.com/confio/ics23/go"
-	"github.com/golang/protobuf/proto"
 	"github.com/line/iavl/v2"
-	"github.com/line/lbm-sdk/v2/codec"
 	abci "github.com/line/ostracon/abci/types"
 	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	tmdb "github.com/line/tm-db/v2"
@@ -225,25 +223,23 @@ func (st *Store) CacheWrapWithTrace(w io.Writer, tc types.TraceContext) types.Ca
 }
 
 // Implements types.KVStore.
-func (st *Store) Set(key, value []byte) {
+func (st *Store) Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte) {
 	types.AssertValidKey(key)
+	types.AssertValidObjectValue(obj)
+	value := marshal(obj)
 	types.AssertValidValue(value)
 	st.tree.Set(key, value)
 }
 
-func (st *Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
-	panic("This must not be called")
-}
-
 // Implements types.KVStore.
-func (st *Store) Get(key []byte) []byte {
+func (st *Store) Get(key []byte, unmarshal func(value []byte) interface{}) interface{} {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "get")
-	_, value := st.tree.Get(key)
-	return value
-}
+	_, v := st.tree.Get(key)
 
-func (st *Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
-	panic("This must not be called")
+	if v == nil {
+		return nil
+	}
+	return unmarshal(v)
 }
 
 // Implements types.KVStore.
@@ -557,6 +553,24 @@ func (iter *iavlIterator) Value() []byte {
 	val := iter.value
 	iter.mtx.Unlock()
 	return val
+}
+
+func (iter *iavlIterator) IsValueNil() bool {
+	iter.waitInit()
+	iter.mtx.Lock()
+	iter.assertIsValid(true)
+
+	val := iter.value == nil
+	iter.mtx.Unlock()
+	return val
+}
+
+func (iter *iavlIterator) ValueObject(unmarshal func(value []byte) interface{}) interface{} {
+	value := iter.Value()
+	if value == nil {
+		return nil
+	}
+	return unmarshal(value)
 }
 
 // Close closes the IAVL iterator by closing the quit channel and waiting for

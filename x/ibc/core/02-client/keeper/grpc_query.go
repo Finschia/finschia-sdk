@@ -68,7 +68,8 @@ func (q Keeper) ClientStates(c context.Context, req *types.QueryClientStatesRequ
 			return nil
 		}
 
-		clientState, err := q.UnmarshalClientState(value)
+		var clientState exported.ClientState
+		err := q.cdc.UnmarshalInterface(value, &clientState)
 		if err != nil {
 			return err
 		}
@@ -168,7 +169,8 @@ func (q Keeper) ConsensusStates(c context.Context, req *types.QueryConsensusStat
 			return false, err
 		}
 
-		consensusState, err := q.UnmarshalConsensusState(value)
+		var consensusState exported.ConsensusState
+		err = q.cdc.UnmarshalInterface(value, &consensusState)
 		if err != nil {
 			return false, err
 		}

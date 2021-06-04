@@ -646,7 +646,7 @@ func (k Keeper) QueryRaw(ctx sdk.Context, contractAddress sdk.AccAddress, key []
 	}
 	prefixStoreKey := types.GetContractStorePrefix(contractAddress)
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), prefixStoreKey)
-	return prefixStore.Get(key)
+	return prefixStore.GetObject(key)
 }
 
 func (k Keeper) contractInstance(ctx sdk.Context, contractAddress sdk.AccAddress) (types.ContractInfo, types.CodeInfo, prefix.Store, error) {
@@ -721,7 +721,7 @@ func (k Keeper) importContractState(ctx sdk.Context, contractAddress sdk.AccAddr
 		if prefixStore.Has(model.Key) {
 			return sdkerrors.Wrapf(types.ErrDuplicate, "duplicate key: %x", model.Key)
 		}
-		prefixStore.Set(model.Key, model.Value)
+		prefixStore.SetObject(model.Key, model.Value)
 	}
 	return nil
 }

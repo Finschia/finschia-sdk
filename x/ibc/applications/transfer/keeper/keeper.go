@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	ostbytes "github.com/line/ostracon/libs/bytes"
 	"github.com/line/ostracon/libs/log"
 
@@ -96,25 +97,37 @@ func (k Keeper) BindPort(ctx sdk.Context, portID string) error {
 // GetPort returns the portID for the transfer module. Used in ExportGenesis
 func (k Keeper) GetPort(ctx sdk.Context) string {
 	store := ctx.KVStore(k.storeKey)
-	return string(store.Get(types.PortKey))
+	return string(store.Get(types.PortKey, types2.GetBytesUnmarshalFunc()).([]byte))
 }
 
 // SetPort sets the portID for the transfer module. Used in InitGenesis
 func (k Keeper) SetPort(ctx sdk.Context, portID string) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(types.PortKey, []byte(portID))
+	store.Set(types.PortKey, []byte(portID), types2.GetBytesMarshalFunc())
+}
+
+func GetDenomTraceUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.DenomTrace{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetDenomTraceMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.DenomTrace))
+	}
 }
 
 // GetDenomTrace retreives the full identifiers trace and base denomination from the store.
 func (k Keeper) GetDenomTrace(ctx sdk.Context, denomTraceHash ostbytes.HexBytes) (types.DenomTrace, bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DenomTraceKey)
-	bz := store.Get(denomTraceHash)
-	if bz == nil {
+	val := store.Get(denomTraceHash, GetDenomTraceUnmarshalFunc(k.cdc))
+	if val == nil {
 		return types.DenomTrace{}, false
 	}
-
-	denomTrace := k.MustUnmarshalDenomTrace(bz)
-	return denomTrace, true
+	return *val.(*types.DenomTrace), true
 }
 
 // HasDenomTrace checks if a the key with the given denomination trace hash exists on the store.
@@ -126,8 +139,7 @@ func (k Keeper) HasDenomTrace(ctx sdk.Context, denomTraceHash ostbytes.HexBytes)
 // SetDenomTrace sets a new {trace hash -> denom trace} pair to the store.
 func (k Keeper) SetDenomTrace(ctx sdk.Context, denomTrace types.DenomTrace) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DenomTraceKey)
-	bz := k.MustMarshalDenomTrace(denomTrace)
-	store.Set(denomTrace.Hash(), bz)
+	store.Set(denomTrace.Hash(), &denomTrace, GetDenomTraceMarshalFunc(k.cdc))
 }
 
 // GetAllDenomTraces returns the trace information for all the denominations.
@@ -150,8 +162,8 @@ func (k Keeper) IterateDenomTraces(ctx sdk.Context, cb func(denomTrace types.Den
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 
-		denomTrace := k.MustUnmarshalDenomTrace(iterator.Value())
-		if cb(denomTrace) {
+		denomTrace := iterator.ValueObject(GetDenomTraceUnmarshalFunc(k.cdc))
+		if cb(*denomTrace.(*types.DenomTrace)) {
 			break
 		}
 	}

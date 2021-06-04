@@ -99,10 +99,28 @@ func (k Keeper) SubmitEvidence(ctx sdk.Context, evidence exported.Evidence) erro
 	return nil
 }
 
+func GetEvidenceUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		var val exported.Evidence
+		cdc.UnmarshalInterface(value, &val)
+		return val
+	}
+}
+
+func GetEvidenceMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		value, err := cdc.MarshalInterface(obj.(exported.Evidence))
+		if err != nil {
+			panic(err)
+		}
+		return value
+	}
+}
+
 // SetEvidence sets Evidence by hash in the module's KVStore.
 func (k Keeper) SetEvidence(ctx sdk.Context, evidence exported.Evidence) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixEvidence)
-	store.Set(evidence.Hash(), k.MustMarshalEvidence(evidence))
+	store.Set(evidence.Hash(), evidence, GetEvidenceMarshalFunc(k.cdc))
 }
 
 // GetEvidence retrieves Evidence by hash if it exists. If no Evidence exists for
@@ -110,12 +128,12 @@ func (k Keeper) SetEvidence(ctx sdk.Context, evidence exported.Evidence) {
 func (k Keeper) GetEvidence(ctx sdk.Context, hash ostbytes.HexBytes) (exported.Evidence, bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixEvidence)
 
-	bz := store.Get(hash)
-	if len(bz) == 0 {
+	value := store.Get(hash, GetEvidenceUnmarshalFunc(k.cdc))
+	if value == nil {
 		return nil, false
 	}
 
-	return k.MustUnmarshalEvidence(bz), true
+	return value.(exported.Evidence), true
 }
 
 // IterateEvidence provides an interator over all stored Evidence objects. For
@@ -127,9 +145,9 @@ func (k Keeper) IterateEvidence(ctx sdk.Context, cb func(exported.Evidence) bool
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		evidence := k.MustUnmarshalEvidence(iterator.Value())
+		evidence := iterator.ValueObject(GetEvidenceUnmarshalFunc(k.cdc))
 
-		if cb(evidence) {
+		if cb(evidence.(exported.Evidence)) {
 			break
 		}
 	}
@@ -143,38 +161,4 @@ func (k Keeper) GetAllEvidence(ctx sdk.Context) (evidence []exported.Evidence) {
 	})
 
 	return evidence
-}
-
-// MustUnmarshalEvidence attempts to decode and return an Evidence object from
-// raw encoded bytes. It panics on error.
-func (k Keeper) MustUnmarshalEvidence(bz []byte) exported.Evidence {
-	evidence, err := k.UnmarshalEvidence(bz)
-	if err != nil {
-		panic(fmt.Errorf("failed to decode evidence: %w", err))
-	}
-
-	return evidence
-}
-
-// MustMarshalEvidence attempts to encode an Evidence object and returns the
-// raw encoded bytes. It panics on error.
-func (k Keeper) MustMarshalEvidence(evidence exported.Evidence) []byte {
-	bz, err := k.MarshalEvidence(evidence)
-	if err != nil {
-		panic(fmt.Errorf("failed to encode evidence: %w", err))
-	}
-
-	return bz
-}
-
-// MarshalEvidence protobuf serializes an Evidence interface
-func (k Keeper) MarshalEvidence(evidenceI exported.Evidence) ([]byte, error) {
-	return k.cdc.MarshalInterface(evidenceI)
-}
-
-// UnmarshalEvidence returns an Evidence interface from raw encoded evidence
-// bytes of a Proto-based Evidence type
-func (k Keeper) UnmarshalEvidence(bz []byte) (exported.Evidence, error) {
-	var evi exported.Evidence
-	return evi, k.cdc.UnmarshalInterface(bz, &evi)
 }

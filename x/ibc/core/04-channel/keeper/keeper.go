@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"strings"
 
+	types3 "github.com/line/lbm-sdk/v2/store/types"
+	types2 "github.com/line/lbm-sdk/v2/x/ibc/light-clients/09-localhost/types"
 	"github.com/line/ostracon/libs/log"
 	tmdb "github.com/line/tm-db/v2"
 
@@ -67,117 +69,116 @@ func (k Keeper) GenerateChannelIdentifier(ctx sdk.Context) string {
 // GetChannel returns a channel with a particular identifier binded to a specific port
 func (k Keeper) GetChannel(ctx sdk.Context, portID, channelID string) (types.Channel, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.ChannelKey(portID, channelID))
-	if bz == nil {
+	val := store.Get(host.ChannelKey(portID, channelID), types2.GetChannelUnmarshalFunc(k.cdc))
+	if val == nil {
 		return types.Channel{}, false
 	}
-
-	var channel types.Channel
-	k.cdc.MustUnmarshalBinaryBare(bz, &channel)
-	return channel, true
+	return *val.(*types.Channel), true
 }
 
 // SetChannel sets a channel to the store
 func (k Keeper) SetChannel(ctx sdk.Context, portID, channelID string, channel types.Channel) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&channel)
-	store.Set(host.ChannelKey(portID, channelID), bz)
+	store.Set(host.ChannelKey(portID, channelID), &channel, types2.GetChannelMarshalFunc(k.cdc))
 }
 
 // GetNextChannelSequence gets the next channel sequence from the store.
 func (k Keeper) GetNextChannelSequence(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte(types.KeyNextChannelSequence))
+	bz := store.Get([]byte(types.KeyNextChannelSequence), types3.GetBytesUnmarshalFunc())
 	if bz == nil {
 		panic("next channel sequence is nil")
 	}
 
-	return sdk.BigEndianToUint64(bz)
+	return sdk.BigEndianToUint64(bz.([]byte))
 }
 
 // SetNextChannelSequence sets the next channel sequence to the store.
 func (k Keeper) SetNextChannelSequence(ctx sdk.Context, sequence uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(sequence)
-	store.Set([]byte(types.KeyNextChannelSequence), bz)
+	store.Set([]byte(types.KeyNextChannelSequence), bz, types3.GetBytesMarshalFunc())
 }
 
 // GetNextSequenceSend gets a channel's next send sequence from the store
 func (k Keeper) GetNextSequenceSend(ctx sdk.Context, portID, channelID string) (uint64, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.NextSequenceSendKey(portID, channelID))
+	bz := store.Get(host.NextSequenceSendKey(portID, channelID), types3.GetBytesUnmarshalFunc())
 	if bz == nil {
 		return 0, false
 	}
 
-	return sdk.BigEndianToUint64(bz), true
+	return sdk.BigEndianToUint64(bz.([]byte)), true
 }
 
 // SetNextSequenceSend sets a channel's next send sequence to the store
 func (k Keeper) SetNextSequenceSend(ctx sdk.Context, portID, channelID string, sequence uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(sequence)
-	store.Set(host.NextSequenceSendKey(portID, channelID), bz)
+	store.Set(host.NextSequenceSendKey(portID, channelID), bz, types3.GetBytesMarshalFunc())
 }
 
 // GetNextSequenceRecv gets a channel's next receive sequence from the store
 func (k Keeper) GetNextSequenceRecv(ctx sdk.Context, portID, channelID string) (uint64, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.NextSequenceRecvKey(portID, channelID))
+	bz := store.Get(host.NextSequenceRecvKey(portID, channelID), types3.GetBytesUnmarshalFunc())
 	if bz == nil {
 		return 0, false
 	}
 
-	return sdk.BigEndianToUint64(bz), true
+	return sdk.BigEndianToUint64(bz.([]byte)), true
 }
 
 // SetNextSequenceRecv sets a channel's next receive sequence to the store
 func (k Keeper) SetNextSequenceRecv(ctx sdk.Context, portID, channelID string, sequence uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(sequence)
-	store.Set(host.NextSequenceRecvKey(portID, channelID), bz)
+	store.Set(host.NextSequenceRecvKey(portID, channelID), bz, types3.GetBytesMarshalFunc())
 }
 
 // GetNextSequenceAck gets a channel's next ack sequence from the store
 func (k Keeper) GetNextSequenceAck(ctx sdk.Context, portID, channelID string) (uint64, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.NextSequenceAckKey(portID, channelID))
+	bz := store.Get(host.NextSequenceAckKey(portID, channelID), types3.GetBytesUnmarshalFunc())
 	if bz == nil {
 		return 0, false
 	}
 
-	return sdk.BigEndianToUint64(bz), true
+	return sdk.BigEndianToUint64(bz.([]byte)), true
 }
 
 // SetNextSequenceAck sets a channel's next ack sequence to the store
 func (k Keeper) SetNextSequenceAck(ctx sdk.Context, portID, channelID string, sequence uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(sequence)
-	store.Set(host.NextSequenceAckKey(portID, channelID), bz)
+	store.Set(host.NextSequenceAckKey(portID, channelID), bz, types3.GetBytesMarshalFunc())
 }
 
 // GetPacketReceipt gets a packet receipt from the store
 func (k Keeper) GetPacketReceipt(ctx sdk.Context, portID, channelID string, sequence uint64) (string, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.PacketReceiptKey(portID, channelID, sequence))
+	bz := store.Get(host.PacketReceiptKey(portID, channelID, sequence), types3.GetBytesUnmarshalFunc())
 	if bz == nil {
 		return "", false
 	}
 
-	return string(bz), true
+	return string(bz.([]byte)), true
 }
 
 // SetPacketReceipt sets an empty packet receipt to the store
 func (k Keeper) SetPacketReceipt(ctx sdk.Context, portID, channelID string, sequence uint64) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(host.PacketReceiptKey(portID, channelID, sequence), []byte{byte(1)})
+	store.Set(host.PacketReceiptKey(portID, channelID, sequence), []byte{byte(1)}, types3.GetBytesMarshalFunc())
 }
 
 // GetPacketCommitment gets the packet commitment hash from the store
 func (k Keeper) GetPacketCommitment(ctx sdk.Context, portID, channelID string, sequence uint64) []byte {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.PacketCommitmentKey(portID, channelID, sequence))
-	return bz
+	bz := store.Get(host.PacketCommitmentKey(portID, channelID, sequence), types3.GetBytesUnmarshalFunc())
+	if bz == nil {
+		return nil
+	}
+	return bz.([]byte)
 }
 
 // HasPacketCommitment returns true if the packet commitment exists
@@ -189,7 +190,7 @@ func (k Keeper) HasPacketCommitment(ctx sdk.Context, portID, channelID string, s
 // SetPacketCommitment sets the packet commitment hash to the store
 func (k Keeper) SetPacketCommitment(ctx sdk.Context, portID, channelID string, sequence uint64, commitmentHash []byte) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(host.PacketCommitmentKey(portID, channelID, sequence), commitmentHash)
+	store.Set(host.PacketCommitmentKey(portID, channelID, sequence), commitmentHash, types3.GetBytesMarshalFunc())
 }
 
 func (k Keeper) deletePacketCommitment(ctx sdk.Context, portID, channelID string, sequence uint64) {
@@ -200,17 +201,17 @@ func (k Keeper) deletePacketCommitment(ctx sdk.Context, portID, channelID string
 // SetPacketAcknowledgement sets the packet ack hash to the store
 func (k Keeper) SetPacketAcknowledgement(ctx sdk.Context, portID, channelID string, sequence uint64, ackHash []byte) {
 	store := ctx.KVStore(k.storeKey)
-	store.Set(host.PacketAcknowledgementKey(portID, channelID, sequence), ackHash)
+	store.Set(host.PacketAcknowledgementKey(portID, channelID, sequence), ackHash, types3.GetBytesMarshalFunc())
 }
 
 // GetPacketAcknowledgement gets the packet ack hash from the store
 func (k Keeper) GetPacketAcknowledgement(ctx sdk.Context, portID, channelID string, sequence uint64) ([]byte, bool) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(host.PacketAcknowledgementKey(portID, channelID, sequence))
+	bz := store.Get(host.PacketAcknowledgementKey(portID, channelID, sequence), types3.GetBytesUnmarshalFunc())
 	if bz == nil {
 		return nil, false
 	}
-	return bz, true
+	return bz.([]byte), true
 }
 
 // HasPacketAcknowledgement check if the packet ack hash is already on the store
@@ -361,11 +362,10 @@ func (k Keeper) IterateChannels(ctx sdk.Context, cb func(types.IdentifiedChannel
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var channel types.Channel
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &channel)
+		channel := iterator.ValueObject(types2.GetChannelUnmarshalFunc(k.cdc))
 
 		portID, channelID := host.MustParseChannelPath(string(iterator.Key()))
-		identifiedChannel := types.NewIdentifiedChannel(portID, channelID, channel)
+		identifiedChannel := types.NewIdentifiedChannel(portID, channelID, *channel.(*types.Channel))
 		if cb(identifiedChannel) {
 			break
 		}

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"testing"
 
+	types3 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/ostracon/abci/types"
 	types2 "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
@@ -11,7 +12,6 @@ import (
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/std"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/types/module"
 	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
 )
@@ -44,26 +44,30 @@ func TestGetSimulationLog(t *testing.T) {
 	cdc := makeCodec(ModuleBasics)
 
 	decoders := make(sdk.StoreDecoderRegistry)
-	decoders[authtypes.StoreKey] = func(kvAs, kvBs kv.Pair) string { return "10" }
+	decoders[authtypes.StoreKey] = sdk.StoreDecoder{
+		Marshal:   nil,
+		Unmarshal: nil,
+		LogPair:   func(kvAs, kvBs types3.KOPair) string { return "10" },
+	}
 
 	tests := []struct {
 		store       string
-		kvPairs     []kv.Pair
+		kvPairs     []types3.KOPair
 		expectedLog string
 	}{
 		{
 			"Empty",
-			[]kv.Pair{{}},
+			[]types3.KOPair{{}},
 			"",
 		},
 		{
 			authtypes.StoreKey,
-			[]kv.Pair{{Key: authtypes.GlobalAccountNumberKey, Value: cdc.MustMarshalBinaryBare(uint64(10))}},
+			[]types3.KOPair{{Key: authtypes.GlobalAccountNumberKey, Value: cdc.MustMarshalBinaryBare(uint64(10))}},
 			"10",
 		},
 		{
 			"OtherStore",
-			[]kv.Pair{{Key: []byte("key"), Value: []byte("value")}},
+			[]types3.KOPair{{Key: []byte("key"), Value: []byte("value")}},
 			fmt.Sprintf("store A %X => %X\nstore B %X => %X\n", []byte("key"), []byte("value"), []byte("key"), []byte("value")),
 		},
 	}

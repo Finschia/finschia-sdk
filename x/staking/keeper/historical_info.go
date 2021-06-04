@@ -1,29 +1,43 @@
 package keeper
 
 import (
+	"github.com/line/lbm-sdk/v2/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/x/staking/types"
 )
+
+func GetHistoricalInfoUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.HistoricalInfo{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetHistoricalInfoMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.HistoricalInfo))
+	}
+}
 
 // GetHistoricalInfo gets the historical info at a given height
 func (k Keeper) GetHistoricalInfo(ctx sdk.Context, height int64) (types.HistoricalInfo, bool) {
 	store := ctx.KVStore(k.storeKey)
 	key := types.GetHistoricalInfoKey(height)
 
-	value := store.Get(key)
+	value := store.Get(key, GetHistoricalInfoUnmarshalFunc(k.cdc))
 	if value == nil {
 		return types.HistoricalInfo{}, false
 	}
 
-	return types.MustUnmarshalHistoricalInfo(k.cdc, value), true
+	return *value.(*types.HistoricalInfo), true
 }
 
 // SetHistoricalInfo sets the historical info at a given height
 func (k Keeper) SetHistoricalInfo(ctx sdk.Context, height int64, hi *types.HistoricalInfo) {
 	store := ctx.KVStore(k.storeKey)
 	key := types.GetHistoricalInfoKey(height)
-	value := k.cdc.MustMarshalBinaryBare(hi)
-	store.Set(key, value)
+	store.Set(key, hi, GetHistoricalInfoMarshalFunc(k.cdc))
 }
 
 // DeleteHistoricalInfo deletes the historical info at a given height
@@ -44,8 +58,8 @@ func (k Keeper) IterateHistoricalInfo(ctx sdk.Context, cb func(types.HistoricalI
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		histInfo := types.MustUnmarshalHistoricalInfo(k.cdc, iterator.Value())
-		if cb(histInfo) {
+		histInfo := iterator.ValueObject(GetHistoricalInfoUnmarshalFunc(k.cdc))
+		if cb(*histInfo.(*types.HistoricalInfo)) {
 			break
 		}
 	}

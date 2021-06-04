@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"strings"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/light"
 
@@ -63,56 +64,54 @@ func (k Keeper) GenerateClientIdentifier(ctx sdk.Context, clientType string) str
 // GetClientState gets a particular client from the store
 func (k Keeper) GetClientState(ctx sdk.Context, clientID string) (exported.ClientState, bool) {
 	store := k.ClientStore(ctx, clientID)
-	bz := store.Get(host.ClientStateKey())
-	if bz == nil {
+	val := store.Get(host.ClientStateKey(), types.GetClientStateUnmarshalFunc(k.cdc))
+	if val == nil {
 		return nil, false
 	}
 
-	clientState := k.MustUnmarshalClientState(bz)
-	return clientState, true
+	return val.(exported.ClientState), true
 }
 
 // SetClientState sets a particular Client to the store
 func (k Keeper) SetClientState(ctx sdk.Context, clientID string, clientState exported.ClientState) {
 	store := k.ClientStore(ctx, clientID)
-	store.Set(host.ClientStateKey(), k.MustMarshalClientState(clientState))
+	store.Set(host.ClientStateKey(), clientState, types.GetClientStateMarshalFunc(k.cdc))
 }
 
 // GetClientConsensusState gets the stored consensus state from a client at a given height.
 func (k Keeper) GetClientConsensusState(ctx sdk.Context, clientID string, height exported.Height) (exported.ConsensusState, bool) {
 	store := k.ClientStore(ctx, clientID)
-	bz := store.Get(host.ConsensusStateKey(height))
-	if bz == nil {
+	val := store.Get(host.ConsensusStateKey(height), types.GetConsensusStateUnmarshalFunc(k.cdc))
+	if val == nil {
 		return nil, false
 	}
 
-	consensusState := k.MustUnmarshalConsensusState(bz)
-	return consensusState, true
+	return val.(exported.ConsensusState), true
 }
 
 // SetClientConsensusState sets a ConsensusState to a particular client at the given
 // height
 func (k Keeper) SetClientConsensusState(ctx sdk.Context, clientID string, height exported.Height, consensusState exported.ConsensusState) {
 	store := k.ClientStore(ctx, clientID)
-	store.Set(host.ConsensusStateKey(height), k.MustMarshalConsensusState(consensusState))
+	store.Set(host.ConsensusStateKey(height), consensusState, types.GetConsensusStateMarshalFunc(k.cdc))
 }
 
 // GetNextClientSequence gets the next client sequence from the store.
 func (k Keeper) GetNextClientSequence(ctx sdk.Context) uint64 {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get([]byte(types.KeyNextClientSequence))
+	bz := store.Get([]byte(types.KeyNextClientSequence), types2.GetBytesUnmarshalFunc())
 	if bz == nil {
 		panic("next client sequence is nil")
 	}
 
-	return sdk.BigEndianToUint64(bz)
+	return sdk.BigEndianToUint64(bz.([]byte))
 }
 
 // SetNextClientSequence sets the next client sequence to the store.
 func (k Keeper) SetNextClientSequence(ctx sdk.Context, sequence uint64) {
 	store := ctx.KVStore(k.storeKey)
 	bz := sdk.Uint64ToBigEndian(sequence)
-	store.Set([]byte(types.KeyNextClientSequence), bz)
+	store.Set([]byte(types.KeyNextClientSequence), bz, types2.GetBytesMarshalFunc())
 }
 
 // IterateConsensusStates provides an iterator over all stored consensus states.
@@ -131,9 +130,8 @@ func (k Keeper) IterateConsensusStates(ctx sdk.Context, cb func(clientID string,
 		}
 		clientID := keySplit[1]
 		height := types.MustParseHeight(keySplit[3])
-		consensusState := k.MustUnmarshalConsensusState(iterator.Value())
-
-		consensusStateWithHeight := types.NewConsensusStateWithHeight(height, consensusState)
+		consensusState := iterator.ValueObject(types.GetConsensusStateUnmarshalFunc(k.cdc))
+		consensusStateWithHeight := types.NewConsensusStateWithHeight(height, consensusState.(exported.ConsensusState))
 
 		if cb(clientID, consensusStateWithHeight) {
 			break
@@ -190,7 +188,7 @@ func (k Keeper) SetAllClientMetadata(ctx sdk.Context, genMetadata []types.Identi
 		store := k.ClientStore(ctx, igm.ClientId)
 		// set all metadata kv pairs in client store
 		for _, md := range igm.ClientMetadata {
-			store.Set(md.GetKey(), md.GetValue())
+			store.Set(md.GetKey(), md.GetValue(), types2.GetBytesMarshalFunc())
 		}
 	}
 }
@@ -340,11 +338,11 @@ func (k Keeper) IterateClients(ctx sdk.Context, cb func(clientID string, cs expo
 		if keySplit[len(keySplit)-1] != host.KeyClientState {
 			continue
 		}
-		clientState := k.MustUnmarshalClientState(iterator.Value())
+		clientState := iterator.ValueObject(types.GetClientStateUnmarshalFunc(k.cdc))
 
 		// key is ibc/{clientid}/clientState
 		// Thus, keySplit[1] is clientID
-		if cb(keySplit[1], clientState) {
+		if cb(keySplit[1], clientState.(exported.ClientState)) {
 			break
 		}
 	}

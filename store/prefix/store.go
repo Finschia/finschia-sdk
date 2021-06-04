@@ -5,8 +5,6 @@ import (
 	"errors"
 	"io"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/tracekv"
 	"github.com/line/lbm-sdk/v2/store/types"
@@ -60,13 +58,8 @@ func (s Store) CacheWrapWithTrace(w io.Writer, tc types.TraceContext) types.Cach
 }
 
 // Implements KVStore
-func (s Store) Get(key []byte) []byte {
-	res := s.parent.Get(s.key(key))
-	return res
-}
-
-func (s Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
-	panic("This must not be called")
+func (s Store) Get(key []byte, unmarshal func(value []byte) interface{}) interface{} {
+	return s.parent.Get(s.key(key), unmarshal)
 }
 
 // Implements KVStore
@@ -75,14 +68,9 @@ func (s Store) Has(key []byte) bool {
 }
 
 // Implements KVStore
-func (s Store) Set(key, value []byte) {
+func (s Store) Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte) {
 	types.AssertValidKey(key)
-	types.AssertValidValue(value)
-	s.parent.Set(s.key(key), value)
-}
-
-func (s Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
-	panic("This must not be called")
+	s.parent.Set(s.key(key), obj, marshal)
 }
 
 // Implements KVStore
@@ -185,6 +173,22 @@ func (pi *prefixIterator) Value() []byte {
 	}
 
 	return pi.iter.Value()
+}
+
+func (pi *prefixIterator) IsValueNil() bool {
+	if !pi.valid {
+		panic("prefixIterator invalid, cannot call Value()")
+	}
+
+	return pi.iter.IsValueNil()
+}
+
+func (pi *prefixIterator) ValueObject(unmarshal func(value []byte) interface{}) interface{} {
+	if !pi.valid {
+		panic("prefixIterator invalid, cannot call Value()")
+	}
+
+	return pi.iter.ValueObject(unmarshal)
 }
 
 // Implements Iterator

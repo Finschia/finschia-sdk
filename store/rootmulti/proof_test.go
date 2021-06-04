@@ -17,7 +17,7 @@ func TestVerifyIAVLStoreQueryProof(t *testing.T) {
 	iStore, err := iavl.LoadStore(db, iavl.NewCacheManagerNoCache(), types.CommitID{}, false)
 	store := iStore.(*iavl.Store)
 	require.Nil(t, err)
-	store.Set([]byte("MYKEY"), []byte("MYVALUE"))
+	store.Set([]byte("MYKEY"), []byte("MYVALUE"), types.GetBytesMarshalFunc())
 	cid := store.Commit()
 
 	// Get Proof
@@ -64,7 +64,7 @@ func TestVerifyMultiStoreQueryProof(t *testing.T) {
 	require.NoError(t, store.LoadVersion(0))
 
 	iavlStore := store.GetCommitStore(iavlStoreKey).(*iavl.Store)
-	iavlStore.Set([]byte("MYKEY"), []byte("MYVALUE"))
+	iavlStore.Set([]byte("MYKEY"), []byte("MYVALUE"), types.GetBytesMarshalFunc())
 	cid := store.Commit()
 
 	// Get Proof
@@ -120,7 +120,7 @@ func TestVerifyMultiStoreQueryProofAbsence(t *testing.T) {
 	require.NoError(t, err)
 
 	iavlStore := store.GetCommitStore(iavlStoreKey).(*iavl.Store)
-	iavlStore.Set([]byte("MYKEY"), []byte("MYVALUE"))
+	iavlStore.Set([]byte("MYKEY"), []byte("MYVALUE"), types.GetBytesMarshalFunc())
 	cid := store.Commit() // Commit with empty iavl store.
 
 	// Get Proof

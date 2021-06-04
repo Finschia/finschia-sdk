@@ -27,7 +27,7 @@ func TestPaginatedIterator(t *testing.T) {
 	// store returns values in lexicographic order (or reverse lex order)
 	for i := 0; i < total; i++ {
 		key := []byte{byte(i)}
-		kvs.Set(key, key)
+		kvs.Set(key, key, types.GetBytesMarshalFunc())
 		asc[i] = key
 		desc[lth-i] = key
 	}
@@ -111,7 +111,7 @@ func TestPaginatedIteratorPanicIfInvalid(t *testing.T) {
 	require.False(t, iter.Valid())
 	require.Panics(t, func() { iter.Next() }) // "iterator is empty"
 
-	kvs.Set([]byte{1}, []byte{})
+	kvs.Set([]byte{1}, []byte{}, types.GetBytesMarshalFunc())
 
 	iter = types.KVStorePrefixIteratorPaginated(kvs, nil, 1, 0)
 	defer iter.Close()

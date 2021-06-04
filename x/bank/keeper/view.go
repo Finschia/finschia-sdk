@@ -101,15 +101,12 @@ func (k BaseViewKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom s
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
 	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
 
-	bz := accountStore.Get([]byte(denom))
-	if bz == nil {
+	val := accountStore.Get([]byte(denom), GetCoinUnmarshalFunc(k.cdc))
+	if val == nil {
 		return sdk.NewCoin(denom, sdk.ZeroInt())
 	}
 
-	var balance sdk.Coin
-	k.cdc.MustUnmarshalBinaryBare(bz, &balance)
-
-	return balance
+	return *val.(*sdk.Coin)
 }
 
 // IterateAccountBalances iterates over the balances of a single account and
@@ -124,10 +121,8 @@ func (k BaseViewKeeper) IterateAccountBalances(ctx sdk.Context, addr sdk.AccAddr
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var balance sdk.Coin
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &balance)
-
-		if cb(balance) {
+		balance := iterator.ValueObject(GetCoinUnmarshalFunc(k.cdc))
+		if cb(*balance.(*sdk.Coin)) {
 			break
 		}
 	}
@@ -146,10 +141,8 @@ func (k BaseViewKeeper) IterateAllBalances(ctx sdk.Context, cb func(sdk.AccAddre
 	for ; iterator.Valid(); iterator.Next() {
 		address := types.AddressFromBalancesStore(iterator.Key())
 
-		var balance sdk.Coin
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &balance)
-
-		if cb(address, balance) {
+		balance := iterator.ValueObject(GetCoinUnmarshalFunc(k.cdc))
+		if cb(address, *balance.(*sdk.Coin)) {
 			break
 		}
 	}

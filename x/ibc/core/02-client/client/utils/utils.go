@@ -52,7 +52,8 @@ func QueryClientStateABCI(
 
 	cdc := codec.NewProtoCodec(clientCtx.InterfaceRegistry)
 
-	clientState, err := types.UnmarshalClientState(cdc, value)
+	var clientState exported.ClientState
+	err = cdc.UnmarshalInterface(value, &clientState)
 	if err != nil {
 		return nil, err
 	}
@@ -104,8 +105,8 @@ func QueryConsensusStateABCI(
 	}
 
 	cdc := codec.NewProtoCodec(clientCtx.InterfaceRegistry)
-
-	cs, err := types.UnmarshalConsensusState(cdc, value)
+	var cs exported.ConsensusState
+	err = cdc.UnmarshalInterface(value, &cs)
 	if err != nil {
 		return nil, err
 	}

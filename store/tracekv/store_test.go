@@ -31,7 +31,7 @@ func newTraceKVStore(w io.Writer) *tracekv.Store {
 	store := newEmptyTraceKVStore(w)
 
 	for _, kvPair := range kvPairs {
-		store.Set(kvPair.Key, kvPair.Value)
+		store.Set(kvPair.Key, kvPair.Value, types.GetBytesMarshalFunc())
 	}
 
 	return store
@@ -47,7 +47,7 @@ func newEmptyTraceKVStore(w io.Writer) *tracekv.Store {
 func TestTraceKVStoreGet(t *testing.T) {
 	testCases := []struct {
 		key           []byte
-		expectedValue []byte
+		expectedValue interface{}
 		expectedOut   string
 	}{
 		{
@@ -67,7 +67,7 @@ func TestTraceKVStoreGet(t *testing.T) {
 
 		store := newTraceKVStore(&buf)
 		buf.Reset()
-		value := store.Get(tc.key)
+		value := store.Get(tc.key, types.GetBytesUnmarshalFunc())
 
 		require.Equal(t, tc.expectedValue, value)
 		require.Equal(t, tc.expectedOut, buf.String())
@@ -102,15 +102,15 @@ func TestTraceKVStoreSet(t *testing.T) {
 
 		store := newEmptyTraceKVStore(&buf)
 		buf.Reset()
-		store.Set(tc.key, tc.value)
+		store.Set(tc.key, tc.value, types.GetBytesMarshalFunc())
 
 		require.Equal(t, tc.expectedOut, buf.String())
 	}
 
 	var buf bytes.Buffer
 	store := newEmptyTraceKVStore(&buf)
-	require.Panics(t, func() { store.Set([]byte(""), []byte("value")) }, "setting an empty key should panic")
-	require.Panics(t, func() { store.Set(nil, []byte("value")) }, "setting a nil key should panic")
+	require.Panics(t, func() { store.Set([]byte(""), []byte("value"), types.GetBytesMarshalFunc()) }, "setting an empty key should panic")
+	require.Panics(t, func() { store.Set(nil, []byte("value"), types.GetBytesMarshalFunc()) }, "setting a nil key should panic")
 
 }
 

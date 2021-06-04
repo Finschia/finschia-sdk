@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	"github.com/line/lbm-sdk/v2/x/evidence/exported"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -62,7 +63,8 @@ func (k Keeper) AllEvidence(c context.Context, req *types.QueryAllEvidenceReques
 	evidenceStore := prefix.NewStore(store, types.KeyPrefixEvidence)
 
 	pageRes, err := query.Paginate(evidenceStore, req.Pagination, func(key []byte, value []byte) error {
-		result, err := k.UnmarshalEvidence(value)
+		var result exported.Evidence
+		 err := k.cdc.UnmarshalInterface(value, &result)
 		if err != nil {
 			return err
 		}

@@ -6,12 +6,12 @@ import (
 	"time"
 
 	gogotypes "github.com/gogo/protobuf/types"
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/slashing/simulation"
 	"github.com/line/lbm-sdk/v2/x/slashing/types"
 )
@@ -32,13 +32,11 @@ func TestDecodeStore(t *testing.T) {
 	bechPK := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeConsPub, delPk1)
 	missed := gogotypes.BoolValue{Value: true}
 
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
-			{Key: types.ValidatorSigningInfoKey(consAddr1), Value: cdc.MustMarshalBinaryBare(&info)},
-			{Key: types.ValidatorMissedBlockBitArrayKey(consAddr1, 6), Value: cdc.MustMarshalBinaryBare(&missed)},
-			{Key: types.AddrPubkeyRelationKey(delAddr1), Value: cdc.MustMarshalBinaryBare(&gogotypes.StringValue{Value: bechPK})},
+	kvPairs := []types2.KOPair{
+			{Key: types.ValidatorSigningInfoKey(consAddr1), Value: &info},
+			{Key: types.ValidatorMissedBlockBitArrayKey(consAddr1, 6), Value: &missed},
+			{Key: types.AddrPubkeyRelationKey(delAddr1), Value: &gogotypes.StringValue{Value: bechPK}},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
-		},
 	}
 
 	tests := []struct {
@@ -55,9 +53,9 @@ func TestDecodeStore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec(kvPairs.Pairs[i], kvPairs.Pairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec(kvPairs.Pairs[i], kvPairs.Pairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
 			}
 		})
 	}

@@ -39,27 +39,40 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)
 }
 
+func getPubKeyUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		var val cryptotypes.PubKey
+		cdc.UnmarshalInterface(value, &val)
+		return val
+	}
+}
+
+func getPubKeyMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		value, err := cdc.MarshalInterface(obj.(cryptotypes.PubKey))
+		if err != nil {
+			panic(err)
+		}
+		return value
+	}
+}
+
 // AddPubkey sets a address-pubkey relation
 func (k Keeper) AddPubkey(ctx sdk.Context, pubkey cryptotypes.PubKey) error {
-	bz, err := k.cdc.MarshalInterface(pubkey)
-	if err != nil {
-		return err
-	}
 	store := ctx.KVStore(k.storeKey)
 	key := types.AddrPubkeyRelationKey(pubkey.Address())
-	store.Set(key, bz)
+	store.Set(key, pubkey, getPubKeyMarshalFunc(k.cdc))
 	return nil
 }
 
 // GetPubkey returns the pubkey from the adddress-pubkey relation
 func (k Keeper) GetPubkey(ctx sdk.Context, a cryptotypes.Address) (cryptotypes.PubKey, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.AddrPubkeyRelationKey(a))
-	if bz == nil {
+	pubkey := store.Get(types.AddrPubkeyRelationKey(a), getPubKeyUnmarshalFunc(k.cdc))
+	if pubkey == nil {
 		return nil, fmt.Errorf("address %s not found", sdk.ConsAddress(a))
 	}
-	var pk cryptotypes.PubKey
-	return pk, k.cdc.UnmarshalInterface(bz, &pk)
+	return pubkey.(cryptotypes.PubKey), nil
 }
 
 // Slash attempts to slash a validator. The slash is delegated to the staking

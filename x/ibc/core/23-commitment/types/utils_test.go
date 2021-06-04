@@ -11,7 +11,7 @@ import (
 )
 
 func (suite *MerkleTestSuite) TestConvertProofs() {
-	suite.iavlStore.Set([]byte("MYKEY"), []byte("MYVALUE"))
+	suite.iavlStore.SetObject([]byte("MYKEY"), []byte("MYVALUE"))
 	cid := suite.store.Commit()
 
 	root := types.NewMerkleRoot(cid.Hash)

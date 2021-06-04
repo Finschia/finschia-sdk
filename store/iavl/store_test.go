@@ -51,6 +51,10 @@ func newAlohaTree(t *testing.T, db tmdb.DB) (*iavl.MutableTree, types.CommitID) 
 	return tree, types.CommitID{Version: ver, Hash: hash}
 }
 
+func GetValue(store *Store, key string) string {
+	return string(store.Get([]byte(key), types.GetBytesUnmarshalFunc()).([]byte))
+}
+
 func TestLoadStore(t *testing.T) {
 	db := memdb.NewDB()
 	tree, _ := newAlohaTree(t, db)
@@ -79,32 +83,32 @@ func TestLoadStore(t *testing.T) {
 	// Querying an existing store at some previous non-pruned height H
 	hStore, err := store.GetImmutable(verH)
 	require.NoError(t, err)
-	require.Equal(t, string(hStore.Get([]byte("hello"))), "hallo")
+	require.Equal(t, GetValue(hStore, "hello"), "hallo")
 
 	// Querying an existing store at some previous pruned height Hp
 	hpStore, err := store.GetImmutable(verHp)
 	require.NoError(t, err)
-	require.Equal(t, string(hpStore.Get([]byte("hello"))), "hola")
+	require.Equal(t, GetValue(hpStore, "hello"), "hola")
 
 	// Querying an existing store at current height Hc
 	hcStore, err := store.GetImmutable(verHc)
 	require.NoError(t, err)
-	require.Equal(t, string(hcStore.Get([]byte("hello"))), "ciao")
+	require.Equal(t, GetValue(hcStore, "hello"), "ciao")
 
 	// Querying a new store at some previous non-pruned height H
 	newHStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDH, false)
 	require.NoError(t, err)
-	require.Equal(t, string(newHStore.Get([]byte("hello"))), "hallo")
+	require.Equal(t, string(newHStore.Get([]byte("hello"), types.GetBytesUnmarshalFunc()).([]byte)), "hallo")
 
 	// Querying a new store at some previous pruned height Hp
 	newHpStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHp, false)
 	require.NoError(t, err)
-	require.Equal(t, string(newHpStore.Get([]byte("hello"))), "hola")
+	require.Equal(t, string(newHpStore.Get([]byte("hello"), types.GetBytesUnmarshalFunc()).([]byte)), "hola")
 
 	// Querying a new store at current height H
 	newHcStore, err := LoadStore(db, NewCacheManagerNoCache(), cIDHc, false)
 	require.NoError(t, err)
-	require.Equal(t, string(newHcStore.Get([]byte("hello"))), "ciao")
+	require.Equal(t, string(newHcStore.Get([]byte("hello"), types.GetBytesUnmarshalFunc()).([]byte)), "ciao")
 }
 
 func TestGetImmutable(t *testing.T) {
@@ -122,17 +126,17 @@ func TestGetImmutable(t *testing.T) {
 
 	newStore, err := store.GetImmutable(cID.Version - 1)
 	require.NoError(t, err)
-	require.Equal(t, newStore.Get([]byte("hello")), []byte("goodbye"))
+	require.Equal(t, newStore.Get([]byte("hello"), types.GetBytesUnmarshalFunc()), []byte("goodbye"))
 
 	newStore, err = store.GetImmutable(cID.Version)
 	require.NoError(t, err)
-	require.Equal(t, newStore.Get([]byte("hello")), []byte("adios"))
+	require.Equal(t, newStore.Get([]byte("hello"), types.GetBytesUnmarshalFunc()), []byte("adios"))
 
 	res := newStore.Query(abci.RequestQuery{Data: []byte("hello"), Height: cID.Version, Path: "/key", Prove: true})
 	require.Equal(t, res.Value, []byte("adios"))
 	require.NotNil(t, res.ProofOps)
 
-	require.Panics(t, func() { newStore.Set(nil, nil) })
+	require.Panics(t, func() { newStore.Set(nil, nil, types.GetBytesMarshalFunc()) })
 	require.Panics(t, func() { newStore.Delete(nil) })
 	require.Panics(t, func() { newStore.Commit() })
 }
@@ -170,13 +174,13 @@ func TestIAVLStoreGetSetHasDelete(t *testing.T) {
 	exists := iavlStore.Has([]byte(key))
 	require.True(t, exists)
 
-	value := iavlStore.Get([]byte(key))
+	value := iavlStore.Get([]byte(key), types.GetBytesUnmarshalFunc())
 	require.EqualValues(t, value, treeData[key])
 
 	value2 := "notgoodbye"
-	iavlStore.Set([]byte(key), []byte(value2))
+	iavlStore.Set([]byte(key), []byte(value2), types.GetBytesMarshalFunc())
 
-	value = iavlStore.Get([]byte(key))
+	value = iavlStore.Get([]byte(key), types.GetBytesUnmarshalFunc())
 	require.EqualValues(t, value, value2)
 
 	iavlStore.Delete([]byte(key))
@@ -190,10 +194,10 @@ func TestIAVLStoreNoNilSet(t *testing.T) {
 	tree, _ := newAlohaTree(t, db)
 	iavlStore := UnsafeNewStore(tree)
 
-	require.Panics(t, func() { iavlStore.Set(nil, []byte("value")) }, "setting a nil key should panic")
-	require.Panics(t, func() { iavlStore.Set([]byte(""), []byte("value")) }, "setting an empty key should panic")
+	require.Panics(t, func() { iavlStore.Set(nil, []byte("value"), types.GetBytesMarshalFunc()) }, "setting a nil key should panic")
+	require.Panics(t, func() { iavlStore.Set([]byte(""), []byte("value"), types.GetBytesMarshalFunc()) }, "setting an empty key should panic")
 
-	require.Panics(t, func() { iavlStore.Set([]byte("key"), nil) }, "setting a nil value should panic")
+	require.Panics(t, func() { iavlStore.Set([]byte("key"), nil, types.GetBytesMarshalFunc()) }, "setting a nil value should panic")
 }
 
 func TestIAVLIterator(t *testing.T) {
@@ -277,11 +281,11 @@ func TestIAVLReverseIterator(t *testing.T) {
 
 	iavlStore := UnsafeNewStore(tree)
 
-	iavlStore.Set([]byte{0x00}, []byte("0"))
-	iavlStore.Set([]byte{0x00, 0x00}, []byte("0 0"))
-	iavlStore.Set([]byte{0x00, 0x01}, []byte("0 1"))
-	iavlStore.Set([]byte{0x00, 0x02}, []byte("0 2"))
-	iavlStore.Set([]byte{0x01}, []byte("1"))
+	iavlStore.Set([]byte{0x00}, []byte("0"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{0x00, 0x00}, []byte("0 0"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{0x00, 0x01}, []byte("0 1"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{0x00, 0x02}, []byte("0 2"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{0x01}, []byte("1"), types.GetBytesMarshalFunc())
 
 	var testReverseIterator = func(t *testing.T, start []byte, end []byte, expected []string) {
 		iter := iavlStore.ReverseIterator(start, end)
@@ -310,15 +314,15 @@ func TestIAVLPrefixIterator(t *testing.T) {
 
 	iavlStore := UnsafeNewStore(tree)
 
-	iavlStore.Set([]byte("test1"), []byte("test1"))
-	iavlStore.Set([]byte("test2"), []byte("test2"))
-	iavlStore.Set([]byte("test3"), []byte("test3"))
-	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(0)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(1)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(255)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(255), byte(255), byte(0)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(255), byte(255), byte(1)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(255), byte(255), byte(255)}, []byte("test4"))
+	iavlStore.Set([]byte("test1"), []byte("test1"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte("test2"), []byte("test2"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte("test3"), []byte("test3"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(0)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(1)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(255)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(255), byte(255), byte(0)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(255), byte(255), byte(1)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(255), byte(255), byte(255)}, []byte("test4"), types.GetBytesMarshalFunc())
 
 	var i int
 
@@ -374,15 +378,15 @@ func TestIAVLReversePrefixIterator(t *testing.T) {
 
 	iavlStore := UnsafeNewStore(tree)
 
-	iavlStore.Set([]byte("test1"), []byte("test1"))
-	iavlStore.Set([]byte("test2"), []byte("test2"))
-	iavlStore.Set([]byte("test3"), []byte("test3"))
-	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(0)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(1)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(255)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(255), byte(255), byte(0)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(255), byte(255), byte(1)}, []byte("test4"))
-	iavlStore.Set([]byte{byte(255), byte(255), byte(255)}, []byte("test4"))
+	iavlStore.Set([]byte("test1"), []byte("test1"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte("test2"), []byte("test2"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte("test3"), []byte("test3"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(0)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(1)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(55), byte(255), byte(255), byte(255)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(255), byte(255), byte(0)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(255), byte(255), byte(1)}, []byte("test4"), types.GetBytesMarshalFunc())
+	iavlStore.Set([]byte{byte(255), byte(255), byte(255)}, []byte("test4"), types.GetBytesMarshalFunc())
 
 	var i int
 
@@ -431,7 +435,7 @@ func TestIAVLReversePrefixIterator(t *testing.T) {
 func nextVersion(iavl *Store) {
 	key := []byte(fmt.Sprintf("Key for tree: %d", iavl.LastCommitID().Version))
 	value := []byte(fmt.Sprintf("Value for tree: %d", iavl.LastCommitID().Version))
-	iavl.Set(key, value)
+	iavl.Set(key, value, types.GetBytesMarshalFunc())
 	iavl.Commit()
 }
 
@@ -500,8 +504,8 @@ func TestIAVLStoreQuery(t *testing.T) {
 	require.Equal(t, valExpSubEmpty, qres.Value)
 
 	// set data
-	iavlStore.Set(k1, v1)
-	iavlStore.Set(k2, v2)
+	iavlStore.Set(k1, v1, types.GetBytesMarshalFunc())
+	iavlStore.Set(k2, v2, types.GetBytesMarshalFunc())
 
 	// set data without commit, doesn't show up
 	qres = iavlStore.Query(query)
@@ -526,7 +530,7 @@ func TestIAVLStoreQuery(t *testing.T) {
 	require.Equal(t, valExpSub1, qres.Value)
 
 	// modify
-	iavlStore.Set(k1, v3)
+	iavlStore.Set(k1, v3, types.GetBytesMarshalFunc())
 	cid = iavlStore.Commit()
 
 	// query will return old values, as height is fixed

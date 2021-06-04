@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/v2/codec"
@@ -87,7 +88,7 @@ func (keeper Keeper) GetGovernanceAccount(ctx sdk.Context) authtypes.ModuleAccou
 func (keeper Keeper) InsertActiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
 	store := ctx.KVStore(keeper.storeKey)
 	bz := types.GetProposalIDBytes(proposalID)
-	store.Set(types.ActiveProposalQueueKey(proposalID, endTime), bz)
+	store.Set(types.ActiveProposalQueueKey(proposalID, endTime), bz, types2.GetBytesMarshalFunc())
 }
 
 // RemoveFromActiveProposalQueue removes a proposalID from the Active Proposal Queue
@@ -100,7 +101,7 @@ func (keeper Keeper) RemoveFromActiveProposalQueue(ctx sdk.Context, proposalID u
 func (keeper Keeper) InsertInactiveProposalQueue(ctx sdk.Context, proposalID uint64, endTime time.Time) {
 	store := ctx.KVStore(keeper.storeKey)
 	bz := types.GetProposalIDBytes(proposalID)
-	store.Set(types.InactiveProposalQueueKey(proposalID, endTime), bz)
+	store.Set(types.InactiveProposalQueueKey(proposalID, endTime), bz, types2.GetBytesMarshalFunc())
 }
 
 // RemoveFromInactiveProposalQueue removes a proposalID from the Inactive Proposal Queue

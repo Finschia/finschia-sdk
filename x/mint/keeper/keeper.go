@@ -52,23 +52,35 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)
 }
 
+func GetMinterUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.Minter{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetMinterMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.Minter))
+	}
+}
+
 // get the minter
-func (k Keeper) GetMinter(ctx sdk.Context) (minter types.Minter) {
+func (k Keeper) GetMinter(ctx sdk.Context) types.Minter {
 	store := ctx.KVStore(k.storeKey)
-	b := store.Get(types.MinterKey)
-	if b == nil {
+	minter := store.Get(types.MinterKey, GetMinterUnmarshalFunc(k.cdc))
+	if minter == nil {
 		panic("stored minter should not have been nil")
 	}
 
-	k.cdc.MustUnmarshalBinaryBare(b, &minter)
-	return
+	return *minter.(*types.Minter)
 }
 
 // set the minter
 func (k Keeper) SetMinter(ctx sdk.Context, minter types.Minter) {
 	store := ctx.KVStore(k.storeKey)
-	b := k.cdc.MustMarshalBinaryBare(&minter)
-	store.Set(types.MinterKey, b)
+	store.Set(types.MinterKey, &minter, GetMinterMarshalFunc(k.cdc))
 }
 
 //______________________________________________________________________

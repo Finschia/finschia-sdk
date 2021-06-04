@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"path/filepath"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/line/ostracon/types"
 
 	abci "github.com/line/ostracon/abci/types"
@@ -61,7 +62,7 @@ func KVStoreHandler(storeKey sdk.StoreKey) sdk.Handler {
 		value := dTx.value
 
 		store := ctx.KVStore(storeKey)
-		store.Set(key, value)
+		store.Set(key, value, types2.GetBytesMarshalFunc())
 
 		return &sdk.Result{
 			Log: fmt.Sprintf("set %s=%s", key, value),
@@ -95,7 +96,7 @@ func InitChainer(key sdk.StoreKey) func(sdk.Context, abci.RequestInitChain) abci
 
 		for _, val := range genesisState.Values {
 			store := ctx.KVStore(key)
-			store.Set([]byte(val.Key), []byte(val.Value))
+			store.Set([]byte(val.Key), []byte(val.Value), types2.GetBytesMarshalFunc())
 		}
 		return abci.ResponseInitChain{}
 	}

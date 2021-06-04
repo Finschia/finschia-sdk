@@ -8,6 +8,7 @@ import (
 
 	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/prefix"
+	"github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 )
 
@@ -96,7 +97,7 @@ func (s *Subspace) Get(ctx sdk.Context, key []byte, ptr interface{}) {
 		return
 	}
 	store := s.kvStore(ctx)
-	bz := store.Get(key)
+	bz := store.Get(key, types.GetBytesUnmarshalFunc()).([]byte)
 
 	if err := s.legacyAmino.UnmarshalJSON(bz, ptr); err != nil {
 		panic(err)
@@ -113,7 +114,7 @@ func (s *Subspace) GetIfExists(ctx sdk.Context, key []byte, ptr interface{}) {
 		return
 	}
 	store := s.kvStore(ctx)
-	bz := store.Get(key)
+	bz := store.Get(key, types.GetBytesUnmarshalFunc()).([]byte)
 	if bz == nil {
 		return
 	}
@@ -129,7 +130,11 @@ func (s *Subspace) GetIfExists(ctx sdk.Context, key []byte, ptr interface{}) {
 // GetRaw queries for the raw values bytes for a parameter by key.
 func (s *Subspace) GetRaw(ctx sdk.Context, key []byte) []byte {
 	store := s.kvStore(ctx)
-	return store.Get(key)
+	val := store.Get(key, types.GetBytesUnmarshalFunc())
+	if val == nil {
+		return nil
+	}
+	return val.([]byte)
 }
 
 // Has returns if a parameter key exists or not in the Subspace's KVStore.
@@ -235,7 +240,7 @@ func (s *Subspace) Set(ctx sdk.Context, key []byte, value interface{}) {
 		panic(err)
 	}
 
-	store.Set(key, bz)
+	store.Set(key, bz, types.GetBytesMarshalFunc())
 	s.cacheValue(key, value)
 }
 
@@ -310,11 +315,6 @@ type ReadOnlySubspace struct {
 // Get delegates a read-only Get call to the Subspace.
 func (ros ReadOnlySubspace) Get(ctx sdk.Context, key []byte, ptr interface{}) {
 	ros.s.Get(ctx, key, ptr)
-}
-
-// GetRaw delegates a read-only GetRaw call to the Subspace.
-func (ros ReadOnlySubspace) GetRaw(ctx sdk.Context, key []byte) []byte {
-	return ros.s.GetRaw(ctx, key)
 }
 
 // Has delegates a read-only Has call to the Subspace.

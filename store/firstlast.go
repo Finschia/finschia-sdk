@@ -3,6 +3,7 @@ package store
 import (
 	"bytes"
 
+	"github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkkv "github.com/line/lbm-sdk/v2/types/kv"
 )
@@ -22,7 +23,7 @@ func First(st KVStore, start, end []byte) (kv sdkkv.Pair, ok bool) {
 func Last(st KVStore, start, end []byte) (kv sdkkv.Pair, ok bool) {
 	iter := st.ReverseIterator(end, start)
 	if !iter.Valid() {
-		if v := st.Get(start); v != nil {
+		if v := st.Get(start, types.GetBytesUnmarshalFunc()).([]byte); v != nil {
 			return sdkkv.Pair{Key: sdk.CopyBytes(start), Value: sdk.CopyBytes(v)}, true
 		}
 		return kv, false

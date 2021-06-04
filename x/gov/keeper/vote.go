@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/line/lbm-sdk/v2/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	"github.com/line/lbm-sdk/v2/x/gov/types"
@@ -54,27 +55,39 @@ func (keeper Keeper) GetVotes(ctx sdk.Context, proposalID uint64) (votes types.V
 	return
 }
 
+func GetVoteUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.Vote{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetVoteMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.Vote))
+	}
+}
+
 // GetVote gets the vote from an address on a specific proposal
 func (keeper Keeper) GetVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.AccAddress) (vote types.Vote, found bool) {
 	store := ctx.KVStore(keeper.storeKey)
-	bz := store.Get(types.VoteKey(proposalID, voterAddr))
-	if bz == nil {
+	val := store.Get(types.VoteKey(proposalID, voterAddr), GetVoteUnmarshalFunc(keeper.cdc))
+	if val == nil {
 		return vote, false
 	}
 
-	keeper.cdc.MustUnmarshalBinaryBare(bz, &vote)
-	return vote, true
+	return *val.(*types.Vote), true
 }
 
 // SetVote sets a Vote to the gov store
 func (keeper Keeper) SetVote(ctx sdk.Context, vote types.Vote) {
 	store := ctx.KVStore(keeper.storeKey)
-	bz := keeper.cdc.MustMarshalBinaryBare(&vote)
 	addr, err := sdk.AccAddressFromBech32(vote.Voter)
 	if err != nil {
 		panic(err)
 	}
-	store.Set(types.VoteKey(vote.ProposalId, addr), bz)
+	store.Set(types.VoteKey(vote.ProposalId, addr), &vote, GetVoteMarshalFunc(keeper.cdc))
 }
 
 // IterateAllVotes iterates over the all the stored votes and performs a callback function
@@ -84,10 +97,8 @@ func (keeper Keeper) IterateAllVotes(ctx sdk.Context, cb func(vote types.Vote) (
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var vote types.Vote
-		keeper.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
-
-		if cb(vote) {
+		vote := iterator.ValueObject(GetVoteUnmarshalFunc(keeper.cdc))
+		if cb(*vote.(*types.Vote)) {
 			break
 		}
 	}
@@ -100,10 +111,8 @@ func (keeper Keeper) IterateVotes(ctx sdk.Context, proposalID uint64, cb func(vo
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var vote types.Vote
-		keeper.cdc.MustUnmarshalBinaryBare(iterator.Value(), &vote)
-
-		if cb(vote) {
+		vote := iterator.ValueObject(GetVoteUnmarshalFunc(keeper.cdc))
+		if cb(*vote.(*types.Vote)) {
 			break
 		}
 	}

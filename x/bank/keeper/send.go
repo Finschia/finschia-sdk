@@ -258,6 +258,20 @@ func (k BaseSendKeeper) SetBalances(ctx sdk.Context, addr sdk.AccAddress, balanc
 	return nil
 }
 
+func GetCoinUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := sdk.Coin{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetCoinMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*sdk.Coin))
+	}
+}
+
 // SetBalance sets the coin balance for an account by address.
 func (k BaseSendKeeper) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance sdk.Coin) error {
 	if !balance.IsValid() {
@@ -268,8 +282,7 @@ func (k BaseSendKeeper) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
 	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
 
-	bz := k.cdc.MustMarshalBinaryBare(&balance)
-	accountStore.Set([]byte(balance.Denom), bz)
+	accountStore.Set([]byte(balance.Denom), &balance, GetCoinMarshalFunc(k.cdc))
 
 	return nil
 }

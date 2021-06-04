@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
 	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
@@ -17,8 +17,8 @@ import (
 )
 
 func TestDecodeStore(t *testing.T) {
-	app := simapp.Setup(false)
-	dec := simulation.NewDecodeStore(*app.IBCKeeper)
+	cdc, _ := simapp.MakeCodecs()
+	dec := simulation.NewDecodeStore(cdc)
 
 	clientID := "clientidone"
 	connectionID := "connectionidone"
@@ -37,25 +37,23 @@ func TestDecodeStore(t *testing.T) {
 		Version: "1.0",
 	}
 
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
+	kvPairs := []types.KOPair{
 			{
 				Key:   host.FullClientStateKey(clientID),
-				Value: app.IBCKeeper.ClientKeeper.MustMarshalClientState(clientState),
+				Value: clientState,
 			},
 			{
 				Key:   host.ConnectionKey(connectionID),
-				Value: app.IBCKeeper.Codec().MustMarshalBinaryBare(&connection),
+				Value: &connection,
 			},
 			{
 				Key:   host.ChannelKey(portID, channelID),
-				Value: app.IBCKeeper.Codec().MustMarshalBinaryBare(&channel),
+				Value: &channel,
 			},
 			{
 				Key:   []byte{0x99},
 				Value: []byte{0x99},
 			},
-		},
 	}
 	tests := []struct {
 		name        string
@@ -71,9 +69,9 @@ func TestDecodeStore(t *testing.T) {
 		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
 			if i == len(tests)-1 {
-				require.Panics(t, func() { dec(kvPairs.Pairs[i], kvPairs.Pairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
 			} else {
-				require.Equal(t, tt.expectedLog, dec(kvPairs.Pairs[i], kvPairs.Pairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
 			}
 		})
 	}

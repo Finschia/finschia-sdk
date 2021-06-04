@@ -3,8 +3,6 @@ package dbadapter
 import (
 	"io"
 
-	"github.com/golang/protobuf/proto"
-	"github.com/line/lbm-sdk/v2/codec"
 	tmdb "github.com/line/tm-db/v2"
 
 	"github.com/line/lbm-sdk/v2/store/cachekv"
@@ -18,17 +16,16 @@ type Store struct {
 }
 
 // Get wraps the underlying DB's Get method panicing on error.
-func (dsa Store) Get(key []byte) []byte {
+func (dsa Store) Get(key []byte, unmarshal func(value []byte) interface{}) interface{} {
 	v, err := dsa.DB.Get(key)
 	if err != nil {
 		panic(err)
 	}
 
-	return v
-}
-
-func (dsa Store) GetObj(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
-	panic("This must not be called")
+	if v == nil {
+		return nil
+	}
+	return unmarshal(v)
 }
 
 // Has wraps the underlying DB's Has method panicing on error.
@@ -42,15 +39,13 @@ func (dsa Store) Has(key []byte) bool {
 }
 
 // Set wraps the underlying DB's Set method panicing on error.
-func (dsa Store) Set(key, value []byte) {
+func (dsa Store) Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte) {
 	types.AssertValidKey(key)
+	types.AssertValidObjectValue(obj)
+	value := marshal(obj)
 	if err := dsa.DB.Set(key, value); err != nil {
 		panic(err)
 	}
-}
-
-func (dsa Store) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
-	panic("This must not be called")
 }
 
 // Delete wraps the underlying DB's Delete method panicing on error.
@@ -60,6 +55,54 @@ func (dsa Store) Delete(key []byte) {
 	}
 }
 
+type dbAdapterIterator struct {
+	dbIterator tmdb.Iterator
+}
+
+var _ types.Iterator = (*dbAdapterIterator)(nil)
+
+func NewDbAdapterIterator(iterator tmdb.Iterator) types.Iterator {
+	return &dbAdapterIterator{
+		dbIterator: iterator,
+	}
+}
+
+func (iter *dbAdapterIterator) Valid() bool {
+	return iter.dbIterator.Valid()
+}
+
+func (iter *dbAdapterIterator) Next() {
+	iter.dbIterator.Next()
+}
+
+func (iter *dbAdapterIterator) Key() (key []byte) {
+	return iter.dbIterator.Key()
+}
+
+func (iter *dbAdapterIterator) Value() (value []byte) {
+	return iter.dbIterator.Value()
+}
+
+func (iter *dbAdapterIterator) IsValueNil() bool {
+	return iter.dbIterator.Value() == nil
+}
+
+func (iter *dbAdapterIterator) ValueObject(unmarshal func(value []byte) interface{}) interface{} {
+	v := iter.Value()
+	if v == nil {
+		return nil
+	}
+	return unmarshal(v)
+}
+
+func (iter *dbAdapterIterator) Error() error {
+	return iter.dbIterator.Error()
+}
+
+func (iter *dbAdapterIterator) Close() error {
+	return iter.dbIterator.Close()
+}
+
 // Iterator wraps the underlying DB's Iterator method panicing on error.
 func (dsa Store) Iterator(start, end []byte) types.Iterator {
 	iter, err := dsa.DB.Iterator(start, end)
@@ -67,7 +110,7 @@ func (dsa Store) Iterator(start, end []byte) types.Iterator {
 		panic(err)
 	}
 
-	return iter
+	return NewDbAdapterIterator(iter)
 }
 
 // ReverseIterator wraps the underlying DB's ReverseIterator method panicing on error.
@@ -77,7 +120,7 @@ func (dsa Store) ReverseIterator(start, end []byte) types.Iterator {
 		panic(err)
 	}
 
-	return iter
+	return NewDbAdapterIterator(iter)
 }
 
 // GetStoreType returns the type of the store.

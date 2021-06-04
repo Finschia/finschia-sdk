@@ -41,8 +41,6 @@ type Keeper interface {
 
 	DelegateCoins(ctx sdk.Context, delegatorAddr, moduleAccAddr sdk.AccAddress, amt sdk.Coins) error
 	UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAddr sdk.AccAddress, amt sdk.Coins) error
-	MarshalSupply(supplyI exported.SupplyI) ([]byte, error)
-	UnmarshalSupply(bz []byte) (exported.SupplyI, error)
 
 	types.QueryServer
 }
@@ -152,47 +150,60 @@ func (k BaseKeeper) UndelegateCoins(ctx sdk.Context, moduleAccAddr, delegatorAdd
 	return nil
 }
 
+func GetSupplyUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		var val exported.SupplyI
+		cdc.UnmarshalInterface(value, &val)
+		return val
+	}
+}
+
+func GetSupplyMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		bz, err := cdc.MarshalInterface(obj.(exported.SupplyI))
+		if err != nil {
+			panic(err)
+		}
+		return bz
+	}
+}
+
 // GetSupply retrieves the Supply from store
 func (k BaseKeeper) GetSupply(ctx sdk.Context) exported.SupplyI {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.SupplyKey)
-	if bz == nil {
-		panic("stored supply should not have been nil")
-	}
-
-	supply, err := k.UnmarshalSupply(bz)
-	if err != nil {
-		panic(err)
-	}
-
+	supply := store.Get(types.SupplyKey, GetSupplyUnmarshalFunc(k.cdc)).(exported.SupplyI)
 	return supply
 }
 
 // SetSupply sets the Supply to store
 func (k BaseKeeper) SetSupply(ctx sdk.Context, supply exported.SupplyI) {
 	store := ctx.KVStore(k.storeKey)
-	bz, err := k.MarshalSupply(supply)
-	if err != nil {
-		panic(err)
-	}
+	store.Set(types.SupplyKey, supply, GetSupplyMarshalFunc(k.cdc))
+}
 
-	store.Set(types.SupplyKey, bz)
+func getMetadataUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.Metadata{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func getMetadataMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.Metadata))
+	}
 }
 
 // GetDenomMetaData retrieves the denomination metadata
 func (k BaseKeeper) GetDenomMetaData(ctx sdk.Context, denom string) types.Metadata {
 	store := ctx.KVStore(k.storeKey)
 	store = prefix.NewStore(store, types.DenomMetadataKey(denom))
-
-	bz := store.Get([]byte(denom))
-	if bz == nil {
+	metadata := store.Get([]byte(denom), getMetadataUnmarshalFunc(k.cdc))
+	if metadata == nil {
 		return types.Metadata{}
 	}
-
-	var metadata types.Metadata
-	k.cdc.MustUnmarshalBinaryBare(bz, &metadata)
-
-	return metadata
+	return *metadata.(*types.Metadata)
 }
 
 // GetAllDenomMetaData retrieves all denominations metadata
@@ -231,8 +242,7 @@ func (k BaseKeeper) SetDenomMetaData(ctx sdk.Context, denomMetaData types.Metada
 	store := ctx.KVStore(k.storeKey)
 	denomMetaDataStore := prefix.NewStore(store, types.DenomMetadataKey(denomMetaData.Base))
 
-	m := k.cdc.MustMarshalBinaryBare(&denomMetaData)
-	denomMetaDataStore.Set([]byte(denomMetaData.Base), m)
+	denomMetaDataStore.Set([]byte(denomMetaData.Base), &denomMetaData, getMetadataMarshalFunc(k.cdc))
 }
 
 // SendCoinsFromModuleToAccount transfers coins from a ModuleAccount to an AccAddress.
@@ -405,16 +415,4 @@ func (k BaseKeeper) trackUndelegation(ctx sdk.Context, addr sdk.AccAddress, amt 
 	}
 
 	return nil
-}
-
-// MarshalSupply protobuf serializes a Supply interface
-func (k BaseKeeper) MarshalSupply(supplyI exported.SupplyI) ([]byte, error) {
-	return k.cdc.MarshalInterface(supplyI)
-}
-
-// UnmarshalSupply returns a Supply interface from raw encoded supply
-// bytes of a Proto-based Supply type
-func (k BaseKeeper) UnmarshalSupply(bz []byte) (exported.SupplyI, error) {
-	var evi exported.SupplyI
-	return evi, k.cdc.UnmarshalInterface(bz, &evi)
 }

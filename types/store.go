@@ -2,7 +2,6 @@ package types
 
 import (
 	"github.com/line/lbm-sdk/v2/store/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 )
 
 type (
@@ -22,9 +21,15 @@ type (
 	Iterator                  = types.Iterator
 )
 
+type StoreDecoder struct {
+	Marshal   func(key []byte) func(obj interface{}) []byte
+	Unmarshal func(key []byte) func(value []byte) interface{}
+	LogPair   func(kvA, kvB types.KOPair) string
+}
+
 // StoreDecoderRegistry defines each of the modules store decoders. Used for ImportExport
 // simulation.
-type StoreDecoderRegistry map[string]func(kvA, kvB kv.Pair) string
+type StoreDecoderRegistry map[string]StoreDecoder
 
 // Iterator over all the keys with a certain prefix in ascending order
 func KVStorePrefixIterator(kvs KVStore, prefix []byte) Iterator {
@@ -50,8 +55,9 @@ func KVStoreReversePrefixIteratorPaginated(kvs KVStore, prefix []byte, page, lim
 
 // DiffKVStores compares two KVstores and returns all the key/value pairs
 // that differ from one another. It also skips value comparison for a set of provided prefixes
-func DiffKVStores(a KVStore, b KVStore, prefixesToSkip [][]byte) (kvAs, kvBs []kv.Pair) {
-	return types.DiffKVStores(a, b, prefixesToSkip)
+func DiffKVStores(a KVStore, b KVStore, prefixesToSkip [][]byte, marshal func(key []byte) func(obj interface{}) []byte,
+	unmarshal func(key []byte) func(value []byte) interface{}) (kvAs, kvBs []types.KOPair) {
+	return types.DiffKVStores(a, b, prefixesToSkip, marshal, unmarshal)
 }
 
 type (

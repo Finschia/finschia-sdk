@@ -4,32 +4,23 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/types/kv"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/keeper"
+	"github.com/line/lbm-sdk/v2/store/types"
 	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
 )
 
-var _ ClientUnmarshaler = (*keeper.Keeper)(nil)
-
-// ClientUnmarshaler defines an interface for unmarshaling ICS02 interfaces.
-type ClientUnmarshaler interface {
-	MustUnmarshalClientState([]byte) exported.ClientState
-	MustUnmarshalConsensusState([]byte) exported.ConsensusState
-}
-
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's
 // Value to the corresponding client type.
-func NewDecodeStore(cdc ClientUnmarshaler, kvA, kvB kv.Pair) (string, bool) {
+func NewDecodeStore(kvA, kvB types.KOPair) (string, bool) {
 	switch {
 	case bytes.HasPrefix(kvA.Key, host.KeyClientStorePrefix) && bytes.HasSuffix(kvA.Key, []byte(host.KeyClientState)):
-		clientStateA := cdc.MustUnmarshalClientState(kvA.Value)
-		clientStateB := cdc.MustUnmarshalClientState(kvB.Value)
+		clientStateA := kvA.Value.(exported.ClientState)
+		clientStateB := kvB.Value.(exported.ClientState)
 		return fmt.Sprintf("ClientState A: %v\nClientState B: %v", clientStateA, clientStateB), true
 
 	case bytes.HasPrefix(kvA.Key, host.KeyClientStorePrefix) && bytes.Contains(kvA.Key, []byte(host.KeyConsensusStatePrefix)):
-		consensusStateA := cdc.MustUnmarshalConsensusState(kvA.Value)
-		consensusStateB := cdc.MustUnmarshalConsensusState(kvB.Value)
+		consensusStateA := kvA.Value.(exported.ConsensusState)
+		consensusStateB := kvB.Value.(exported.ConsensusState)
 		return fmt.Sprintf("ConsensusState A: %v\nConsensusState B: %v", consensusStateA, consensusStateB), true
 
 	default:

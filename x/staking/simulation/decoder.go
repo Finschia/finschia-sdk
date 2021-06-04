@@ -5,60 +5,99 @@ import (
 	"fmt"
 
 	"github.com/line/lbm-sdk/v2/codec"
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
+	"github.com/line/lbm-sdk/v2/x/staking/keeper"
 	"github.com/line/lbm-sdk/v2/x/staking/types"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's
 // Value to the corresponding staking type.
-func NewDecodeStore(cdc codec.Marshaler) func(kvA, kvB kv.Pair) string {
-	return func(kvA, kvB kv.Pair) string {
-		switch {
-		case bytes.Equal(kvA.Key[:1], types.LastTotalPowerKey):
-			var powerA, powerB sdk.IntProto
+func NewDecodeStore(cdc codec.Marshaler) sdk.StoreDecoder {
+	return sdk.StoreDecoder{
+		Marshal: func(key []byte) func(obj interface{}) []byte {
+			switch {
+			case bytes.Equal(key[:1], types.LastTotalPowerKey):
+				return keeper.GetIntProtoMarshalFunc(cdc)
+			case bytes.Equal(key[:1], types.ValidatorsKey):
+				return keeper.GetValidatorMarshalFunc(cdc)
+			case bytes.Equal(key[:1], types.LastValidatorPowerKey),
+				 bytes.Equal(key[:1], types.ValidatorsByConsAddrKey),
+				 bytes.Equal(key[:1], types.ValidatorsByPowerIndexKey):
+			 	return types2.GetBytesMarshalFunc()
+			case bytes.Equal(key[:1], types.DelegationKey):
+				return keeper.GetDelegationMarshalFunc(cdc)
+			case bytes.Equal(key[:1], types.UnbondingDelegationKey),
+				 bytes.Equal(key[:1], types.UnbondingDelegationByValIndexKey):
+				return keeper.GetUnbondingDelegationMarshalFunc(cdc)
+			case bytes.Equal(key[:1], types.RedelegationKey),
+				 bytes.Equal(key[:1], types.RedelegationByValSrcIndexKey):
+				return keeper.GetRedelegationMarshalFunc(cdc)
+			default:
+				panic(fmt.Sprintf("unexpected %s key %X (%s)", types.ModuleName, key, key))
+			}
+		},
+		Unmarshal: func(key []byte) func(value []byte) interface{} {
+			switch {
+			case bytes.Equal(key[:1], types.LastTotalPowerKey):
+				return keeper.GetIntProtoUnmarshalFunc(cdc)
+			case bytes.Equal(key[:1], types.ValidatorsKey):
+				return keeper.GetValidatorUnmarshalFunc(cdc)
+			case bytes.Equal(key[:1], types.LastValidatorPowerKey),
+				bytes.Equal(key[:1], types.ValidatorsByConsAddrKey),
+				bytes.Equal(key[:1], types.ValidatorsByPowerIndexKey):
+				return types2.GetBytesUnmarshalFunc()
+			case bytes.Equal(key[:1], types.DelegationKey):
+				return keeper.GetDelegationUnmarshalFunc(cdc)
+			case bytes.Equal(key[:1], types.UnbondingDelegationKey),
+				bytes.Equal(key[:1], types.UnbondingDelegationByValIndexKey):
+				return keeper.GetUnbondingDelegationUnmarshalFunc(cdc)
+			case bytes.Equal(key[:1], types.RedelegationKey),
+				bytes.Equal(key[:1], types.RedelegationByValSrcIndexKey):
+				return keeper.GetRedelegationUnmarshalFunc(cdc)
 
-			cdc.MustUnmarshalBinaryBare(kvA.Value, &powerA)
-			cdc.MustUnmarshalBinaryBare(kvB.Value, &powerB)
+			default:
+				panic(fmt.Sprintf("unexpected %s key %X (%s)", types.ModuleName, key, key))
+			}
+		},
+		LogPair: func(kvA, kvB types2.KOPair) string {
+			switch {
+			case bytes.Equal(kvA.Key[:1], types.LastTotalPowerKey):
+				powerA := *kvA.Value.(*sdk.IntProto)
+				powerB := *kvB.Value.(*sdk.IntProto)
 
-			return fmt.Sprintf("%v\n%v", powerA, powerB)
-		case bytes.Equal(kvA.Key[:1], types.ValidatorsKey):
-			var validatorA, validatorB types.Validator
+				return fmt.Sprintf("%v\n%v", powerA, powerB)
+			case bytes.Equal(kvA.Key[:1], types.ValidatorsKey):
+				validatorA := *kvA.Value.(*types.Validator)
+				validatorB := *kvB.Value.(*types.Validator)
 
-			cdc.MustUnmarshalBinaryBare(kvA.Value, &validatorA)
-			cdc.MustUnmarshalBinaryBare(kvB.Value, &validatorB)
+				return fmt.Sprintf("%v\n%v", validatorA, validatorB)
+			case bytes.Equal(kvA.Key[:1], types.LastValidatorPowerKey),
+				bytes.Equal(kvA.Key[:1], types.ValidatorsByConsAddrKey),
+				bytes.Equal(kvA.Key[:1], types.ValidatorsByPowerIndexKey):
+				return fmt.Sprintf("%v\n%v", sdk.ValAddress(kvA.Value.([]byte)),
+					sdk.ValAddress(kvB.Value.([]byte)))
 
-			return fmt.Sprintf("%v\n%v", validatorA, validatorB)
-		case bytes.Equal(kvA.Key[:1], types.LastValidatorPowerKey),
-			bytes.Equal(kvA.Key[:1], types.ValidatorsByConsAddrKey),
-			bytes.Equal(kvA.Key[:1], types.ValidatorsByPowerIndexKey):
-			return fmt.Sprintf("%v\n%v", sdk.ValAddress(kvA.Value), sdk.ValAddress(kvB.Value))
+			case bytes.Equal(kvA.Key[:1], types.DelegationKey):
+				delegationA := *kvA.Value.(*types.Delegation)
+				delegationB := *kvB.Value.(*types.Delegation)
 
-		case bytes.Equal(kvA.Key[:1], types.DelegationKey):
-			var delegationA, delegationB types.Delegation
+				return fmt.Sprintf("%v\n%v", delegationA, delegationB)
+			case bytes.Equal(kvA.Key[:1], types.UnbondingDelegationKey),
+				bytes.Equal(kvA.Key[:1], types.UnbondingDelegationByValIndexKey):
+				ubdA := *kvA.Value.(*types.UnbondingDelegation)
+				ubdB := *kvB.Value.(*types.UnbondingDelegation)
 
-			cdc.MustUnmarshalBinaryBare(kvA.Value, &delegationA)
-			cdc.MustUnmarshalBinaryBare(kvB.Value, &delegationB)
+				return fmt.Sprintf("%v\n%v", ubdA, ubdB)
+			case bytes.Equal(kvA.Key[:1], types.RedelegationKey),
+				bytes.Equal(kvA.Key[:1], types.RedelegationByValSrcIndexKey):
+				redA := *kvA.Value.(*types.Redelegation)
+				redB := *kvB.Value.(*types.Redelegation)
 
-			return fmt.Sprintf("%v\n%v", delegationA, delegationB)
-		case bytes.Equal(kvA.Key[:1], types.UnbondingDelegationKey),
-			bytes.Equal(kvA.Key[:1], types.UnbondingDelegationByValIndexKey):
-			var ubdA, ubdB types.UnbondingDelegation
-
-			cdc.MustUnmarshalBinaryBare(kvA.Value, &ubdA)
-			cdc.MustUnmarshalBinaryBare(kvB.Value, &ubdB)
-
-			return fmt.Sprintf("%v\n%v", ubdA, ubdB)
-		case bytes.Equal(kvA.Key[:1], types.RedelegationKey),
-			bytes.Equal(kvA.Key[:1], types.RedelegationByValSrcIndexKey):
-			var redA, redB types.Redelegation
-
-			cdc.MustUnmarshalBinaryBare(kvA.Value, &redA)
-			cdc.MustUnmarshalBinaryBare(kvB.Value, &redB)
-
-			return fmt.Sprintf("%v\n%v", redA, redB)
-		default:
-			panic(fmt.Sprintf("invalid staking key prefix %X", kvA.Key[:1]))
-		}
+				return fmt.Sprintf("%v\n%v", redA, redB)
+			default:
+				panic(fmt.Sprintf("invalid staking key prefix %X", kvA.Key[:1]))
+			}
+		},
 	}
 }

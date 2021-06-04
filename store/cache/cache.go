@@ -4,12 +4,8 @@ import (
 	"fmt"
 	"reflect"
 	"sync"
-	"time"
 
-	"github.com/VictoriaMetrics/fastcache"
 	"github.com/dgraph-io/ristretto"
-	"github.com/golang/protobuf/proto"
-	"github.com/line/lbm-sdk/v2/codec"
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/types"
 )
@@ -19,7 +15,7 @@ const (
 )
 
 var (
-	_ types.CommitKVObjectStore             = (*CommitKVStoreCache)(nil)
+	_ types.CommitKVStore       = (*CommitKVStoreCache)(nil)
 	_ types.MultiStorePersistentCache = (*CommitKVStoreCacheManager)(nil)
 )
 
@@ -44,7 +40,7 @@ type (
 	CommitKVStoreCacheManager struct {
 		mutex   sync.Mutex
 		cache   *ristretto.Cache
-		caches  map[string]types.CommitKVObjectStore
+		caches  map[string]types.CommitKVStore
 		metrics *Metrics
 
 		// All cache stores use the unique prefix that has one byte length
@@ -79,7 +75,7 @@ func NewCommitKVStoreCacheManager(cacheSize int, provider MetricsProvider) *Comm
 	}
 	cm := &CommitKVStoreCacheManager{
 		cache:       cache,
-		caches:      make(map[string]types.CommitKVObjectStore),
+		caches:      make(map[string]types.CommitKVStore),
 		metrics:     provider(),
 		prefixMap:   make(map[string][]byte),
 		prefixOrder: 0,
@@ -87,25 +83,11 @@ func NewCommitKVStoreCacheManager(cacheSize int, provider MetricsProvider) *Comm
 	return cm
 }
 
-func startCacheMetricUpdator(cache *fastcache.Cache, metrics *Metrics) {
-	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
-	// So we update the metrics with a separate go route.
-	go func() {
-		for {
-			stats := fastcache.Stats{}
-			cache.UpdateStats(&stats)
-			metrics.InterBlockCacheEntries.Set(float64(stats.EntriesCount))
-			metrics.InterBlockCacheBytes.Set(float64(stats.BytesSize))
-			time.Sleep(1 * time.Minute)
-		}
-	}()
-}
-
 // GetStoreCache returns a Cache from the CommitStoreCacheManager for a given
 // StoreKey. If no Cache exists for the StoreKey, then one is created and set.
 // The returned Cache is meant to be used in a persistent manner.
 func (cmgr *CommitKVStoreCacheManager) GetStoreCache(key types.StoreKey,
-	store types.CommitKVStore) types.CommitKVObjectStore {
+	store types.CommitKVStore) types.CommitKVStore {
 	if cmgr.caches[key.Name()] == nil {
 		// After concurrent checkTx, delieverTx becomes to be possible, this should be protected by a mutex
 		cmgr.mutex.Lock()
@@ -150,7 +132,7 @@ func (ckv *CommitKVStoreCache) CacheWrap() types.CacheWrap {
 // Get retrieves a value by key. It will first look in the write-through cache.
 // If the value doesn't exist in the write-through cache, the query is delegated
 // to the underlying CommitKVStore.
-func (ckv *CommitKVStoreCache) Get(key []byte, cdc codec.BinaryMarshaler, ptr interface{}) interface{} {
+func (ckv *CommitKVStoreCache) Get(key []byte, unmarshal func(value []byte) interface{}) interface{} {
 	types.AssertValidKey(key)
 	prefixedKey := append(ckv.prefix, key...)
 
@@ -162,32 +144,22 @@ func (ckv *CommitKVStoreCache) Get(key []byte, cdc codec.BinaryMarshaler, ptr in
 
 	// cache miss; write to cache
 	ckv.metrics.InterBlockCacheMisses.Add(1)
-	value := ckv.CommitKVStore.Get(key)
-	if err := cdc.UnmarshalInterface(value, ptr); err != nil {
-		panic(fmt.Sprintf("Unable to unmarshal: %s\n", err.Error()))
+	value := ckv.CommitKVStore.Get(key, unmarshal)
+	if value != nil {
+		ckv.cache.Set(prefixedKey, value, int64(reflect.TypeOf(value).Size()))
 	}
-	ckv.cache.Set(prefixedKey, ptr, int64(reflect.TypeOf(ptr).Size()))
-	return ptr
+	return value
 }
 
 // Set inserts a key/value pair into both the write-through cache and the
 // underlying CommitKVStore.
-func (ckv *CommitKVStoreCache) Set(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
+func (ckv *CommitKVStoreCache) Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte) {
 	types.AssertValidKey(key)
-
-	value, err := cdc.MarshalInterface(obj)
-	if err != nil {
-		panic(fmt.Sprintf("Unable to marshal: %s\n", err.Error()))
-	}
-	types.AssertValidValue(value)
-	ckv.CommitKVStore.Set(key, value)
+	types.AssertValidObjectValue(obj)
+	ckv.CommitKVStore.Set(key, obj, marshal)
 
 	prefixedKey := append(ckv.prefix, key...)
 	ckv.cache.Set(prefixedKey, obj, int64(reflect.TypeOf(obj).Size()))
-}
-
-func (ckv *CommitKVStoreCache) SetObj(key []byte, cdc codec.BinaryMarshaler, obj proto.Message) {
-	panic("This must not be called")
 }
 
 // Delete removes a key/value pair from both the write-through cache and the

@@ -126,7 +126,7 @@ func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []ab
 	for count := 0; iterator.Valid() && count < int(maxValidators); iterator.Next() {
 		// everything that is iterated in this loop is becoming or already a
 		// part of the bonded validator set
-		valAddr := sdk.ValAddress(iterator.Value())
+		valAddr := iterator.Value()
 		validator := k.mustGetValidator(ctx, valAddr)
 
 		if validator.Jailed {
@@ -353,9 +353,12 @@ func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) validatorsByAddr {
 		var valAddr [sdk.AddrLen]byte
 		// extract the validator address from the key (prefix is 1-byte)
 		copy(valAddr[:], iterator.Key()[1:])
-		powerBytes := iterator.Value()
-		last[valAddr] = make([]byte, len(powerBytes))
-		copy(last[valAddr], powerBytes)
+		power := iterator.ValueObject(GetInt64ValueUnmarshalFunc(k.cdc))
+		if power != nil {
+			powerBytes := k.cdc.MustMarshalBinaryBare(power.(*gogotypes.Int64Value))
+			last[valAddr] = make([]byte, len(powerBytes))
+			copy(last[valAddr], powerBytes)
+		}
 	}
 
 	return last

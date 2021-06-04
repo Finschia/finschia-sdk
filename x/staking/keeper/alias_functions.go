@@ -124,9 +124,8 @@ func (k Keeper) IterateDelegations(ctx sdk.Context, delAddr sdk.AccAddress,
 	defer iterator.Close()
 
 	for i := int64(0); iterator.Valid(); iterator.Next() {
-		del := types.MustUnmarshalDelegation(k.cdc, iterator.Value())
-
-		stop := fn(i, del)
+		del := iterator.ValueObject(GetDelegationUnmarshalFunc(k.cdc))
+		stop := fn(i, *del.(*types.Delegation))
 		if stop {
 			break
 		}
@@ -143,8 +142,8 @@ func (k Keeper) GetAllSDKDelegations(ctx sdk.Context) (delegations []types.Deleg
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		delegation := types.MustUnmarshalDelegation(k.cdc, iterator.Value())
-		delegations = append(delegations, delegation)
+		delegation := iterator.ValueObject(GetDelegationUnmarshalFunc(k.cdc))
+		delegations = append(delegations, *delegation.(*types.Delegation))
 	}
 
 	return

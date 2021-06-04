@@ -75,24 +75,33 @@ func (k *Keeper) SetHooks(sh types.StakingHooks) *Keeper {
 	return k
 }
 
+func GetIntProtoUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := sdk.IntProto{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetIntProtoMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*sdk.IntProto))
+	}
+}
+
 // Load the last total validator power.
 func (k Keeper) GetLastTotalPower(ctx sdk.Context) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(types.LastTotalPowerKey)
+	val := store.Get(types.LastTotalPowerKey, GetIntProtoUnmarshalFunc(k.cdc))
 
-	if bz == nil {
+	if val == nil {
 		return sdk.ZeroInt()
 	}
 
-	ip := sdk.IntProto{}
-	k.cdc.MustUnmarshalBinaryBare(bz, &ip)
-
-	return ip.Int
+	return (*val.(*sdk.IntProto)).Int
 }
 
 // Set the last total validator power.
 func (k Keeper) SetLastTotalPower(ctx sdk.Context, power sdk.Int) {
 	store := ctx.KVStore(k.storeKey)
-	bz := k.cdc.MustMarshalBinaryBare(&sdk.IntProto{Int: power})
-	store.Set(types.LastTotalPowerKey, bz)
-}
+	store.Set(types.LastTotalPowerKey, &sdk.IntProto{Int: power}, GetIntProtoMarshalFunc(k.cdc))}

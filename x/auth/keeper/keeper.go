@@ -109,29 +109,37 @@ func (ak AccountKeeper) GetSequence(ctx sdk.Context, addr sdk.AccAddress) (uint6
 	return acc.GetSequence(), nil
 }
 
+func GetUInt64ValueUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := gogotypes.UInt64Value{}
+		if err := cdc.UnmarshalBinaryBare(value, &val); err != nil {
+			panic(err)
+		}
+		return &val
+	}
+}
+
+func GetUInt64ValueMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*gogotypes.UInt64Value))
+	}
+}
+
 // GetNextAccountNumber returns and increments the global account number counter.
 // If the global account number is not set, it initializes it with value 0.
 func (ak AccountKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
 	var accNumber uint64
 	store := ctx.KVStore(ak.key)
 
-	bz := store.Get(types.GlobalAccountNumberKey)
-	if bz == nil {
+	val := store.Get(types.GlobalAccountNumberKey, GetUInt64ValueUnmarshalFunc(ak.cdc))
+	if val == nil {
 		// initialize the account numbers
 		accNumber = 0
 	} else {
-		val := gogotypes.UInt64Value{}
-
-		err := ak.cdc.UnmarshalBinaryBare(bz, &val)
-		if err != nil {
-			panic(err)
-		}
-
-		accNumber = val.GetValue()
+		accNumber = val.(*gogotypes.UInt64Value).GetValue()
 	}
 
-	bz = ak.cdc.MustMarshalBinaryBare(&gogotypes.UInt64Value{Value: accNumber + 1})
-	store.Set(types.GlobalAccountNumberKey, bz)
+	store.Set(types.GlobalAccountNumberKey, &gogotypes.UInt64Value{Value: accNumber + 1}, GetUInt64ValueMarshalFunc(ak.cdc))
 
 	return accNumber
 }

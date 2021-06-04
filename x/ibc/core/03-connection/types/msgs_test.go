@@ -53,7 +53,7 @@ func (suite *MsgTestSuite) SetupTest() {
 	store.LoadVersion(0)
 	iavlStore := store.GetCommitStore(storeKey).(*iavl.Store)
 
-	iavlStore.Set([]byte("KEY"), []byte("VALUE"))
+	iavlStore.SetObject([]byte("KEY"), []byte("VALUE"))
 	_ = store.Commit()
 
 	res := store.Query(abci.RequestQuery{

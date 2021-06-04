@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/line/lbm-sdk/v2/codec"
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
@@ -14,23 +15,25 @@ import (
 // KeyProcessedTime is appended to consensus state key to store the processed time
 var KeyProcessedTime = []byte("/processedTime")
 
+func GetConsensusStateUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := ConsensusState{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetConsensusStateMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*ConsensusState))
+	}
+}
+
 // GetConsensusState retrieves the consensus state from the client prefixed
 // store. An error is returned if the consensus state does not exist.
 func GetConsensusState(store sdk.KVStore, cdc codec.BinaryMarshaler, height exported.Height) (*ConsensusState, error) {
-	bz := store.Get(host.ConsensusStateKey(height))
-	if bz == nil {
-		return nil, sdkerrors.Wrapf(
-			clienttypes.ErrConsensusStateNotFound,
-			"consensus state does not exist for height %s", height,
-		)
-	}
-
-	consensusStateI, err := clienttypes.UnmarshalConsensusState(cdc, bz)
-	if err != nil {
-		return nil, sdkerrors.Wrapf(clienttypes.ErrInvalidConsensus, "unmarshal error: %v", err)
-	}
-
-	consensusState, ok := consensusStateI.(*ConsensusState)
+	val := store.Get(host.ConsensusStateKey(height), GetConsensusStateUnmarshalFunc(cdc))
+	consensusState, ok := val.(*ConsensusState)
 	if !ok {
 		return nil, sdkerrors.Wrapf(
 			clienttypes.ErrInvalidConsensus,
@@ -74,16 +77,16 @@ func ProcessedTimeKey(height exported.Height) []byte {
 func SetProcessedTime(clientStore sdk.KVStore, height exported.Height, timeNs uint64) {
 	key := ProcessedTimeKey(height)
 	val := sdk.Uint64ToBigEndian(timeNs)
-	clientStore.Set(key, val)
+	clientStore.Set(key, val, types2.GetBytesMarshalFunc())
 }
 
 // GetProcessedTime gets the time (in nanoseconds) at which this chain received and processed a tendermint header.
 // This is used to validate that a received packet has passed the delay period.
 func GetProcessedTime(clientStore sdk.KVStore, height exported.Height) (uint64, bool) {
 	key := ProcessedTimeKey(height)
-	bz := clientStore.Get(key)
+	bz := clientStore.Get(key, types2.GetBytesUnmarshalFunc())
 	if bz == nil {
 		return 0, false
 	}
-	return sdk.BigEndianToUint64(bz), true
+	return sdk.BigEndianToUint64(bz.([]byte)), true
 }

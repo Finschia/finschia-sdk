@@ -3,34 +3,45 @@ package keeper
 import (
 	"fmt"
 
+	"github.com/line/lbm-sdk/v2/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	"github.com/line/lbm-sdk/v2/x/gov/types"
 )
 
+func GetDepositUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.Deposit{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetDepositMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.Deposit))
+	}
+}
+
 // GetDeposit gets the deposit of a specific depositor on a specific proposal
 func (keeper Keeper) GetDeposit(ctx sdk.Context, proposalID uint64, depositorAddr sdk.AccAddress) (deposit types.Deposit, found bool) {
 	store := ctx.KVStore(keeper.storeKey)
-	bz := store.Get(types.DepositKey(proposalID, depositorAddr))
-	if bz == nil {
+	val := store.Get(types.DepositKey(proposalID, depositorAddr), GetDepositUnmarshalFunc(keeper.cdc))
+	if val == nil {
 		return deposit, false
 	}
-
-	keeper.cdc.MustUnmarshalBinaryBare(bz, &deposit)
-
-	return deposit, true
+	return *val.(*types.Deposit), true
 }
 
 // SetDeposit sets a Deposit to the gov store
 func (keeper Keeper) SetDeposit(ctx sdk.Context, deposit types.Deposit) {
 	store := ctx.KVStore(keeper.storeKey)
-	bz := keeper.cdc.MustMarshalBinaryBare(&deposit)
 	depositor, err := sdk.AccAddressFromBech32(deposit.Depositor)
 	if err != nil {
 		panic(err)
 	}
 
-	store.Set(types.DepositKey(deposit.ProposalId, depositor), bz)
+	store.Set(types.DepositKey(deposit.ProposalId, depositor), &deposit, GetDepositMarshalFunc(keeper.cdc))
 }
 
 // GetAllDeposits returns all the deposits from the store

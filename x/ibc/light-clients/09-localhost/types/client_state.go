@@ -7,6 +7,8 @@ import (
 	"strings"
 
 	ics23 "github.com/confio/ics23/go"
+	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/keeper"
 
 	"github.com/line/lbm-sdk/v2/codec"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -129,13 +131,13 @@ func (cs ClientState) VerifyClientState(
 	_ exported.Height, _ exported.Prefix, _ string, _ []byte, clientState exported.ClientState,
 ) error {
 	path := host.KeyClientState
-	bz := store.Get([]byte(path))
-	if bz == nil {
+	val := store.Get([]byte(path), clienttypes.GetConsensusStateUnmarshalFunc(cdc))
+	if val == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedClientStateVerification,
 			"not found for path: %s", path)
 	}
 
-	selfClient := clienttypes.MustUnmarshalClientState(cdc, bz)
+	selfClient := val.(exported.ClientState)
 
 	if !reflect.DeepEqual(selfClient, clientState) {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedClientStateVerification,
@@ -168,17 +170,11 @@ func (cs ClientState) VerifyConnectionState(
 	connectionEnd exported.ConnectionI,
 ) error {
 	path := host.ConnectionKey(connectionID)
-	bz := store.Get(path)
-	if bz == nil {
+	val := store.Get(path, keeper.GetConnectionEndUnmarshalFunc(cdc))
+	if val == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedConnectionStateVerification, "not found for path %s", path)
 	}
-
-	var prevConnection connectiontypes.ConnectionEnd
-	err := cdc.UnmarshalBinaryBare(bz, &prevConnection)
-	if err != nil {
-		return err
-	}
-
+	prevConnection := *val.(*connectiontypes.ConnectionEnd)
 	if !reflect.DeepEqual(&prevConnection, connectionEnd) {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrFailedConnectionStateVerification,
@@ -187,6 +183,20 @@ func (cs ClientState) VerifyConnectionState(
 	}
 
 	return nil
+}
+
+func GetChannelUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := channeltypes.Channel{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetChannelMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*channeltypes.Channel))
+	}
 }
 
 // VerifyChannelState verifies a proof of the channel state of the specified
@@ -202,17 +212,12 @@ func (cs ClientState) VerifyChannelState(
 	channel exported.ChannelI,
 ) error {
 	path := host.ChannelKey(portID, channelID)
-	bz := store.Get(path)
-	if bz == nil {
+	val := store.Get(path, GetChannelUnmarshalFunc(cdc))
+	if val == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedChannelStateVerification, "not found for path %s", path)
 	}
 
-	var prevChannel channeltypes.Channel
-	err := cdc.UnmarshalBinaryBare(bz, &prevChannel)
-	if err != nil {
-		return err
-	}
-
+	prevChannel := *val.(*channeltypes.Channel)
 	if !reflect.DeepEqual(&prevChannel, channel) {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrFailedChannelStateVerification,
@@ -240,12 +245,12 @@ func (cs ClientState) VerifyPacketCommitment(
 ) error {
 	path := host.PacketCommitmentKey(portID, channelID, sequence)
 
-	data := store.Get(path)
-	if len(data) == 0 {
+	data := store.Get(path, types.GetBytesUnmarshalFunc())
+	if data == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedPacketCommitmentVerification, "not found for path %s", path)
 	}
 
-	if !bytes.Equal(data, commitmentBytes) {
+	if !bytes.Equal(data.([]byte), commitmentBytes) {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrFailedPacketCommitmentVerification,
 			"commitment ≠ previous commitment: \n%X\n≠\n%X", commitmentBytes, data,
@@ -272,12 +277,12 @@ func (cs ClientState) VerifyPacketAcknowledgement(
 ) error {
 	path := host.PacketAcknowledgementKey(portID, channelID, sequence)
 
-	data := store.Get(path)
-	if len(data) == 0 {
+	data := store.Get(path, types.GetBytesUnmarshalFunc())
+	if data == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedPacketAckVerification, "not found for path %s", path)
 	}
 
-	if !bytes.Equal(data, acknowledgement) {
+	if !bytes.Equal(data.([]byte), acknowledgement) {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrFailedPacketAckVerification,
 			"ak bytes ≠ previous ack: \n%X\n≠\n%X", acknowledgement, data,
@@ -304,7 +309,7 @@ func (cs ClientState) VerifyPacketReceiptAbsence(
 ) error {
 	path := host.PacketReceiptKey(portID, channelID, sequence)
 
-	data := store.Get(path)
+	data := store.Get(path, types.GetBytesUnmarshalFunc())
 	if data != nil {
 		return sdkerrors.Wrap(clienttypes.ErrFailedPacketReceiptVerification, "expected no packet receipt")
 	}
@@ -328,12 +333,12 @@ func (cs ClientState) VerifyNextSequenceRecv(
 ) error {
 	path := host.NextSequenceRecvKey(portID, channelID)
 
-	data := store.Get(path)
-	if len(data) == 0 {
+	data := store.Get(path, types.GetBytesUnmarshalFunc())
+	if data == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedNextSeqRecvVerification, "not found for path %s", path)
 	}
 
-	prevSequenceRecv := binary.BigEndian.Uint64(data)
+	prevSequenceRecv := binary.BigEndian.Uint64(data.([]byte))
 	if prevSequenceRecv != nextSequenceRecv {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrFailedNextSeqRecvVerification,

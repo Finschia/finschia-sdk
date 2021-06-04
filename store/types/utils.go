@@ -2,8 +2,6 @@ package types
 
 import (
 	"bytes"
-
-	"github.com/line/lbm-sdk/v2/types/kv"
 )
 
 // Iterator over all the keys with a certain prefix in ascending order
@@ -18,7 +16,8 @@ func KVStoreReversePrefixIterator(kvs KVStore, prefix []byte) Iterator {
 
 // DiffKVStores compares two KVstores and returns all the key/value pairs
 // that differ from one another. It also skips value comparison for a set of provided prefixes.
-func DiffKVStores(a KVStore, b KVStore, prefixesToSkip [][]byte) (kvAs, kvBs []kv.Pair) {
+func DiffKVStores(a KVStore, b KVStore, prefixesToSkip [][]byte, marshal func(key []byte) func(obj interface{}) []byte,
+	unmarshal func(key []byte) func(value []byte) interface{}) (kvAs, kvBs []KOPair) {
 	iterA := a.Iterator(nil, nil)
 
 	defer iterA.Close()
@@ -32,15 +31,15 @@ func DiffKVStores(a KVStore, b KVStore, prefixesToSkip [][]byte) (kvAs, kvBs []k
 			return kvAs, kvBs
 		}
 
-		var kvA, kvB kv.Pair
+		var kvA, kvB KOPair
 		if iterA.Valid() {
-			kvA = kv.Pair{Key: iterA.Key(), Value: iterA.Value()}
+			kvA = KOPair{Key: iterA.Key(), Value: iterA.ValueObject(unmarshal(iterA.Key()))}
 
 			iterA.Next()
 		}
 
 		if iterB.Valid() {
-			kvB = kv.Pair{Key: iterB.Key(), Value: iterB.Value()}
+			kvB = KOPair{Key: iterB.Key(), Value: iterB.ValueObject(unmarshal(iterB.Key()))}
 
 			iterB.Next()
 		}
@@ -55,7 +54,9 @@ func DiffKVStores(a KVStore, b KVStore, prefixesToSkip [][]byte) (kvAs, kvBs []k
 			}
 		}
 
-		if compareValue && (!bytes.Equal(kvA.Key, kvB.Key) || !bytes.Equal(kvA.Value, kvB.Value)) {
+		valA := marshal(kvA.Key)(kvA.Value)
+		valB := marshal(kvB.Key)(kvB.Value)
+		if compareValue && (!bytes.Equal(kvA.Key, kvB.Key) || !bytes.Equal(valA, valB)) {
 			kvAs = append(kvAs, kvA)
 			kvBs = append(kvBs, kvB)
 		}

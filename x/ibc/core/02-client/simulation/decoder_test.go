@@ -5,10 +5,9 @@ import (
 	"testing"
 	"time"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/simulation"
 	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
 	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
@@ -16,7 +15,6 @@ import (
 )
 
 func TestDecodeStore(t *testing.T) {
-	app := simapp.Setup(false)
 	clientID := "clientidone"
 
 	height := types.NewHeight(0, 10)
@@ -29,21 +27,19 @@ func TestDecodeStore(t *testing.T) {
 		Timestamp: time.Now().UTC(),
 	}
 
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
+	kvPairs := []types2.KOPair{
 			{
 				Key:   host.FullClientStateKey(clientID),
-				Value: app.IBCKeeper.ClientKeeper.MustMarshalClientState(clientState),
+				Value: clientState,
 			},
 			{
 				Key:   host.FullConsensusStateKey(clientID, height),
-				Value: app.IBCKeeper.ClientKeeper.MustMarshalConsensusState(consState),
+				Value: consState,
 			},
 			{
 				Key:   []byte{0x99},
 				Value: []byte{0x99},
 			},
-		},
 	}
 	tests := []struct {
 		name        string
@@ -57,13 +53,13 @@ func TestDecodeStore(t *testing.T) {
 	for i, tt := range tests {
 		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
-			res, found := simulation.NewDecodeStore(app.IBCKeeper.ClientKeeper, kvPairs.Pairs[i], kvPairs.Pairs[i])
+			res, found := simulation.NewDecodeStore(kvPairs[i], kvPairs[i])
 			if i == len(tests)-1 {
-				require.False(t, found, string(kvPairs.Pairs[i].Key))
-				require.Empty(t, res, string(kvPairs.Pairs[i].Key))
+				require.False(t, found, string(kvPairs[i].Key))
+				require.Empty(t, res, string(kvPairs[i].Key))
 			} else {
-				require.True(t, found, string(kvPairs.Pairs[i].Key))
-				require.Equal(t, tt.expectedLog, res, string(kvPairs.Pairs[i].Key))
+				require.True(t, found, string(kvPairs[i].Key))
+				require.Equal(t, tt.expectedLog, res, string(kvPairs[i].Key))
 			}
 		})
 	}

@@ -128,7 +128,7 @@ func setupBaseAppWithSnapshots(t *testing.T, blocks uint, blockTxs int, options 
 	routerOpt := func(bapp *BaseApp) {
 		bapp.Router().AddRoute(sdk.NewRoute(routeMsgKeyValue, func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
 			kv := msg.(*msgKeyValue)
-			bapp.cms.GetCommitKVStore(capKey2).Set(kv.Key, kv.Value)
+			bapp.cms.GetCommitKVStore(capKey2).Set(kv.Key, kv.Value, store.GetBytesMarshalFunc())
 			return &sdk.Result{}, nil
 		}))
 	}
@@ -270,7 +270,7 @@ func initStore(t *testing.T, db tmdb.DB, storeKey string, k, v []byte) {
 	// write some data in substore
 	kv, _ := rs.GetStore(key).(store.KVStore)
 	require.NotNil(t, kv)
-	kv.Set(k, v)
+	kv.Set(k, v, store.GetBytesMarshalFunc())
 	commitID := rs.Commit()
 	require.Equal(t, int64(1), commitID.Version)
 }
@@ -287,7 +287,11 @@ func checkStore(t *testing.T, db tmdb.DB, ver int64, storeKey string, k, v []byt
 	// query data in substore
 	kv, _ := rs.GetStore(key).(store.KVStore)
 	require.NotNil(t, kv)
-	require.Equal(t, v, kv.Get(k))
+	if v == nil {
+		require.Nil(t, kv.Get(k, store.GetBytesUnmarshalFunc()))
+	} else {
+		require.Equal(t, v, kv.Get(k, store.GetBytesUnmarshalFunc()).([]byte))
+	}
 }
 
 // Test that we can make commits and then reload old versions.
@@ -565,8 +569,8 @@ func TestInitChainer(t *testing.T) {
 	// set a value in the store on init chain
 	key, value := []byte("hello"), []byte("goodbye")
 	var initChainer sdk.InitChainer = func(ctx sdk.Context, req abci.RequestInitChain) abci.ResponseInitChain {
-		store := ctx.KVStore(capKey)
-		store.Set(key, value)
+		kvstore := ctx.KVStore(capKey)
+		kvstore.Set(key, value, store.GetBytesMarshalFunc())
 		return abci.ResponseInitChain{}
 	}
 
@@ -876,22 +880,22 @@ func handlerMsgCounter(t *testing.T, capKey sdk.StoreKey, deliverKey []byte) sdk
 	}
 }
 
-func getIntFromStore(store sdk.KVStore, key []byte) int64 {
-	bz := store.Get(key)
-	if len(bz) == 0 {
+func getIntFromStore(kvstore sdk.KVStore, key []byte) int64 {
+	bz := kvstore.Get(key, store.GetBytesUnmarshalFunc())
+	if bz == nil {
 		return 0
 	}
-	i, err := binary.ReadVarint(bytes.NewBuffer(bz))
+	i, err := binary.ReadVarint(bytes.NewBuffer(bz.([]byte)))
 	if err != nil {
 		panic(err)
 	}
 	return i
 }
 
-func setIntOnStore(store sdk.KVStore, key []byte, i int64) {
+func setIntOnStore(kvstore sdk.KVStore, key []byte, i int64) {
 	bz := make([]byte, 8)
 	n := binary.PutVarint(bz, i)
-	store.Set(key, bz[:n])
+	kvstore.Set(key, bz[:n], store.GetBytesMarshalFunc())
 }
 
 // check counter matches what's in store.
@@ -960,7 +964,7 @@ func TestCheckTx(t *testing.T) {
 	app.EndRecheckTx(abci.RequestEndRecheckTx{})
 
 	checkStateStore = app.checkState.ctx.KVStore(capKey1)
-	storedBytes := checkStateStore.Get(counterKey)
+	storedBytes := checkStateStore.Get(counterKey, store.GetBytesUnmarshalFunc())
 	require.Nil(t, storedBytes)
 }
 
@@ -1649,16 +1653,16 @@ func TestQuery(t *testing.T) {
 	key, value := []byte("hello"), []byte("goodbye")
 	anteOpt := func(bapp *BaseApp) {
 		bapp.SetAnteHandler(func(ctx sdk.Context, tx sdk.Tx, simulate bool) (newCtx sdk.Context, err error) {
-			store := ctx.KVStore(capKey1)
-			store.Set(key, value)
+			kvstore := ctx.KVStore(capKey1)
+			kvstore.Set(key, value, store.GetBytesMarshalFunc())
 			return
 		})
 	}
 
 	routerOpt := func(bapp *BaseApp) {
 		r := sdk.NewRoute(routeMsgCounter, func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
-			store := ctx.KVStore(capKey1)
-			store.Set(key, value)
+			kvstore := ctx.KVStore(capKey1)
+			kvstore.Set(key, value, store.GetBytesMarshalFunc())
 			return &sdk.Result{}, nil
 		})
 		bapp.Router().AddRoute(r)

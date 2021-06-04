@@ -19,9 +19,9 @@ func (k Keeper) GetDelegatorValidators(
 
 	i := 0
 	for ; iterator.Valid() && i < int(maxRetrieve); iterator.Next() {
-		delegation := types.MustUnmarshalDelegation(k.cdc, iterator.Value())
+		delegation := iterator.ValueObject(GetDelegationUnmarshalFunc(k.cdc))
 
-		validator, found := k.GetValidator(ctx, delegation.GetValidatorAddr())
+		validator, found := k.GetValidator(ctx, (*delegation.(*types.Delegation)).GetValidatorAddr())
 		if !found {
 			panic(types.ErrNoValidatorFound)
 		}
@@ -65,8 +65,8 @@ func (k Keeper) GetAllDelegatorDelegations(ctx sdk.Context, delegator sdk.AccAdd
 	i := 0
 
 	for ; iterator.Valid(); iterator.Next() {
-		delegation := types.MustUnmarshalDelegation(k.cdc, iterator.Value())
-		delegations = append(delegations, delegation)
+		delegation := iterator.ValueObject(GetDelegationUnmarshalFunc(k.cdc))
+		delegations = append(delegations, *delegation.(*types.Delegation))
 		i++
 	}
 
@@ -84,8 +84,8 @@ func (k Keeper) GetAllUnbondingDelegations(ctx sdk.Context, delegator sdk.AccAdd
 	defer iterator.Close()
 
 	for i := 0; iterator.Valid(); iterator.Next() {
-		unbondingDelegation := types.MustUnmarshalUBD(k.cdc, iterator.Value())
-		unbondingDelegations = append(unbondingDelegations, unbondingDelegation)
+		unbondingDelegation := iterator.ValueObject(GetUnbondingDelegationUnmarshalFunc(k.cdc))
+		unbondingDelegations = append(unbondingDelegations, *unbondingDelegation.(*types.UnbondingDelegation))
 		i++
 	}
 
@@ -108,12 +108,12 @@ func (k Keeper) GetAllRedelegations(
 	redelegations := []types.Redelegation{}
 
 	for ; iterator.Valid(); iterator.Next() {
-		redelegation := types.MustUnmarshalRED(k.cdc, iterator.Value())
-		valSrcAddr, err := sdk.ValAddressFromBech32(redelegation.ValidatorSrcAddress)
+		redelegation := iterator.ValueObject(GetRedelegationUnmarshalFunc(k.cdc))
+		valSrcAddr, err := sdk.ValAddressFromBech32((*redelegation.(*types.Redelegation)).ValidatorSrcAddress)
 		if err != nil {
 			panic(err)
 		}
-		valDstAddr, err := sdk.ValAddressFromBech32(redelegation.ValidatorDstAddress)
+		valDstAddr, err := sdk.ValAddressFromBech32((*redelegation.(*types.Redelegation)).ValidatorSrcAddress)
 		if err != nil {
 			panic(err)
 		}
@@ -125,7 +125,7 @@ func (k Keeper) GetAllRedelegations(
 			continue
 		}
 
-		redelegations = append(redelegations, redelegation)
+		redelegations = append(redelegations, *redelegation.(*types.Redelegation))
 	}
 
 	return redelegations

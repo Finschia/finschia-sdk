@@ -28,10 +28,12 @@ func (ak AccountKeeper) NewAccount(ctx sdk.Context, acc types.AccountI) types.Ac
 // GetAccount implements AccountKeeperI.
 func (ak AccountKeeper) GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI {
 	store := ctx.KVStore(ak.key)
-	var acc types.AccountI
-	var accResult *types.AccountI
-	accResult = store.GetObj(types.AddressStoreKey(addr), ak.cdc, &acc).(*types.AccountI)
-	return *accResult
+
+	accResult := store.Get(types.AddressStoreKey(addr), types.GetAccountUnmarshalFunc(ak.cdc))
+	if accResult == nil {
+		return nil
+	}
+	return accResult.(types.AccountI)
 }
 
 // GetAllAccounts returns all accounts in the accountKeeper.
@@ -48,7 +50,7 @@ func (ak AccountKeeper) GetAllAccounts(ctx sdk.Context) (accounts []types.Accoun
 func (ak AccountKeeper) SetAccount(ctx sdk.Context, acc types.AccountI) {
 	addr := acc.GetAddress()
 	store := ctx.KVStore(ak.key)
-	store.SetObj(types.AddressStoreKey(addr), ak.cdc, acc)
+	store.Set(types.AddressStoreKey(addr), acc, types.GetAccountMarshalFunc(ak.cdc))
 }
 
 // RemoveAccount removes an account for the account mapper store.

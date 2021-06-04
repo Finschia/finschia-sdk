@@ -359,3 +359,27 @@ type GenesisAccount interface {
 
 	Validate() error
 }
+
+func GetAccountMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		accObj, ok := obj.(AccountI)
+		if !ok {
+			panic(fmt.Sprintf("Value is not AccountI: %v", obj))
+		}
+		val, err := cdc.MarshalInterface(accObj)
+		if err != nil {
+			panic(fmt.Sprintf("Unable to marshal: %v", accObj))
+		}
+		return val
+	}
+}
+
+func GetAccountUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		var acc AccountI
+		if err := cdc.UnmarshalInterface(value, &acc); err != nil {
+			panic(fmt.Sprintf("Unable to unmarshal: %s\n", err.Error()))
+		}
+		return acc
+	}
+}

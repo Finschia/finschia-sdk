@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"testing"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/mint/simulation"
 	"github.com/line/lbm-sdk/v2/x/mint/types"
 )
@@ -19,11 +19,9 @@ func TestDecodeStore(t *testing.T) {
 
 	minter := types.NewMinter(sdk.OneDec(), sdk.NewDec(15))
 
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
-			{Key: types.MinterKey, Value: cdc.MustMarshalBinaryBare(&minter)},
+	kvPairs := []types2.KOPair{
+			{Key: types.MinterKey, Value: &minter},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
-		},
 	}
 	tests := []struct {
 		name        string
@@ -38,9 +36,9 @@ func TestDecodeStore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec(kvPairs.Pairs[i], kvPairs.Pairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec(kvPairs.Pairs[i], kvPairs.Pairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
 			}
 		})
 	}

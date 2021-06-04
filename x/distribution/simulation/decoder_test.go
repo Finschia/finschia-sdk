@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"testing"
 
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
 	"github.com/line/lbm-sdk/v2/simapp"
 	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/line/lbm-sdk/v2/x/distribution/simulation"
 	"github.com/line/lbm-sdk/v2/x/distribution/types"
 )
@@ -35,19 +35,17 @@ func TestDecodeDistributionStore(t *testing.T) {
 	currentRewards := types.NewValidatorCurrentRewards(decCoins, 5)
 	slashEvent := types.NewValidatorSlashEvent(10, sdk.OneDec())
 
-	kvPairs := kv.Pairs{
-		Pairs: []kv.Pair{
-			{Key: types.FeePoolKey, Value: cdc.MustMarshalBinaryBare(&feePool)},
+	kvPairs := []types2.KOPair{
+			{Key: types.FeePoolKey, Value: &feePool},
 			{Key: types.ProposerKey, Value: consAddr1.Bytes()},
-			{Key: types.GetValidatorOutstandingRewardsKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&outstanding)},
+			{Key: types.GetValidatorOutstandingRewardsKey(valAddr1), Value: &outstanding},
 			{Key: types.GetDelegatorWithdrawAddrKey(delAddr1), Value: delAddr1.Bytes()},
-			{Key: types.GetDelegatorStartingInfoKey(valAddr1, delAddr1), Value: cdc.MustMarshalBinaryBare(&info)},
-			{Key: types.GetValidatorHistoricalRewardsKey(valAddr1, 100), Value: cdc.MustMarshalBinaryBare(&historicalRewards)},
-			{Key: types.GetValidatorCurrentRewardsKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&currentRewards)},
-			{Key: types.GetValidatorAccumulatedCommissionKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&commission)},
-			{Key: types.GetValidatorSlashEventKeyPrefix(valAddr1, 13), Value: cdc.MustMarshalBinaryBare(&slashEvent)},
+			{Key: types.GetDelegatorStartingInfoKey(valAddr1, delAddr1), Value: &info},
+			{Key: types.GetValidatorHistoricalRewardsKey(valAddr1, 100), Value: &historicalRewards},
+			{Key: types.GetValidatorCurrentRewardsKey(valAddr1), Value: &currentRewards},
+			{Key: types.GetValidatorAccumulatedCommissionKey(valAddr1), Value: &commission},
+			{Key: types.GetValidatorSlashEventKeyPrefix(valAddr1, 13), Value: &slashEvent},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
-		},
 	}
 
 	tests := []struct {
@@ -70,9 +68,9 @@ func TestDecodeDistributionStore(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec(kvPairs.Pairs[i], kvPairs.Pairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec(kvPairs.Pairs[i], kvPairs.Pairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
 			}
 		})
 	}

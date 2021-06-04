@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lbm-sdk/v2/codec"
+	types2 "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
 	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
 	"github.com/line/lbm-sdk/v2/x/gov/types"
@@ -51,28 +53,37 @@ func (keeper Keeper) SubmitProposal(ctx sdk.Context, content types.Content) (typ
 	return proposal, nil
 }
 
+func GetProposerUnmarshalFunc(cdc codec.BinaryMarshaler) func (value []byte) interface{} {
+	return func (value []byte) interface{} {
+		val := types.Proposal{}
+		cdc.MustUnmarshalBinaryBare(value, &val)
+		return &val
+	}
+}
+
+func GetProposerMarshalFunc(cdc codec.BinaryMarshaler) func (obj interface{}) []byte {
+	return func (obj interface{}) []byte {
+		return cdc.MustMarshalBinaryBare(obj.(*types.Proposal))
+	}
+}
+
 // GetProposal get proposal from store by ProposalID
 func (keeper Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Proposal, bool) {
 	store := ctx.KVStore(keeper.storeKey)
 
-	bz := store.Get(types.ProposalKey(proposalID))
-	if bz == nil {
+	val := store.Get(types.ProposalKey(proposalID), GetProposerUnmarshalFunc(keeper.cdc))
+	if val == nil {
 		return types.Proposal{}, false
 	}
 
-	var proposal types.Proposal
-	keeper.MustUnmarshalProposal(bz, &proposal)
-
-	return proposal, true
+	return *val.(*types.Proposal), true
 }
 
 // SetProposal set a proposal to store
 func (keeper Keeper) SetProposal(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(keeper.storeKey)
 
-	bz := keeper.MustMarshalProposal(proposal)
-
-	store.Set(types.ProposalKey(proposal.ProposalId), bz)
+	store.Set(types.ProposalKey(proposal.ProposalId), &proposal, GetProposerMarshalFunc(keeper.cdc))
 }
 
 // DeleteProposal deletes a proposal from store
@@ -95,13 +106,8 @@ func (keeper Keeper) IterateProposals(ctx sdk.Context, cb func(proposal types.Pr
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var proposal types.Proposal
-		err := keeper.UnmarshalProposal(iterator.Value(), &proposal)
-		if err != nil {
-			panic(err)
-		}
-
-		if cb(proposal) {
+		proposal := iterator.ValueObject(GetProposerUnmarshalFunc(keeper.cdc))
+		if cb(*proposal.(*types.Proposal)) {
 			break
 		}
 	}
@@ -165,19 +171,19 @@ func (keeper Keeper) GetProposalsFiltered(ctx sdk.Context, params types.QueryPro
 // GetProposalID gets the highest proposal ID
 func (keeper Keeper) GetProposalID(ctx sdk.Context) (proposalID uint64, err error) {
 	store := ctx.KVStore(keeper.storeKey)
-	bz := store.Get(types.ProposalIDKey)
+	bz := store.Get(types.ProposalIDKey, types2.GetBytesUnmarshalFunc())
 	if bz == nil {
 		return 0, sdkerrors.Wrap(types.ErrInvalidGenesis, "initial proposal ID hasn't been set")
 	}
 
-	proposalID = types.GetProposalIDFromBytes(bz)
+	proposalID = types.GetProposalIDFromBytes(bz.([]byte))
 	return proposalID, nil
 }
 
 // SetProposalID sets the new proposal ID to the store
 func (keeper Keeper) SetProposalID(ctx sdk.Context, proposalID uint64) {
 	store := ctx.KVStore(keeper.storeKey)
-	store.Set(types.ProposalIDKey, types.GetProposalIDBytes(proposalID))
+	store.Set(types.ProposalIDKey, types.GetProposalIDBytes(proposalID), types2.GetBytesMarshalFunc())
 }
 
 func (keeper Keeper) ActivateVotingPeriod(ctx sdk.Context, proposal types.Proposal) {
@@ -189,35 +195,4 @@ func (keeper Keeper) ActivateVotingPeriod(ctx sdk.Context, proposal types.Propos
 
 	keeper.RemoveFromInactiveProposalQueue(ctx, proposal.ProposalId, proposal.DepositEndTime)
 	keeper.InsertActiveProposalQueue(ctx, proposal.ProposalId, proposal.VotingEndTime)
-}
-
-func (keeper Keeper) MarshalProposal(proposal types.Proposal) ([]byte, error) {
-	bz, err := keeper.cdc.MarshalBinaryBare(&proposal)
-	if err != nil {
-		return nil, err
-	}
-	return bz, nil
-}
-
-func (keeper Keeper) UnmarshalProposal(bz []byte, proposal *types.Proposal) error {
-	err := keeper.cdc.UnmarshalBinaryBare(bz, proposal)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (keeper Keeper) MustMarshalProposal(proposal types.Proposal) []byte {
-	bz, err := keeper.MarshalProposal(proposal)
-	if err != nil {
-		panic(err)
-	}
-	return bz
-}
-
-func (keeper Keeper) MustUnmarshalProposal(bz []byte, proposal *types.Proposal) {
-	err := keeper.UnmarshalProposal(bz, proposal)
-	if err != nil {
-		panic(err)
-	}
 }

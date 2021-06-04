@@ -5,6 +5,9 @@ import (
 	"sort"
 	"testing"
 
+	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lbm-sdk/v2/testutil/store"
+	types2 "github.com/line/lbm-sdk/v2/x/auth/types"
 	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/v2/store/cachekv"
@@ -13,18 +16,18 @@ import (
 
 func benchmarkCacheKVStoreIterator(numKVs int, b *testing.B) {
 	mem := dbadapter.Store{DB: memdb.NewDB()}
+	cdc := codec.NewProtoCodec(store.CreateTestInterfaceRegistry())
 	cstore := cachekv.NewStore(mem)
 	keys := make([]string, numKVs)
 
 	for i := 0; i < numKVs; i++ {
 		key := make([]byte, 32)
-		value := make([]byte, 32)
+		value := store.ValFmt(i)
 
 		_, _ = rand.Read(key)
-		_, _ = rand.Read(value)
 
 		keys[i] = string(key)
-		cstore.Set(key, value)
+		cstore.Set(key, value, types2.GetAccountMarshalFunc(cdc))
 	}
 
 	sort.Strings(keys)

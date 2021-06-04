@@ -93,15 +93,17 @@ func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) 
 type AppModule struct {
 	AppModuleBasic
 	keeper *keeper.Keeper
+	cdc    codec.Marshaler
 
 	// create localhost by default
 	createLocalhost bool
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(k *keeper.Keeper) AppModule {
+func NewAppModule(k *keeper.Keeper, cdc codec.Marshaler) AppModule {
 	return AppModule{
 		keeper: k,
+		cdc:    cdc,
 	}
 }
 
@@ -188,7 +190,7 @@ func (AppModule) RandomizedParams(_ *rand.Rand) []simtypes.ParamChange {
 
 // RegisterStoreDecoder registers a decoder for ibc module's types
 func (am AppModule) RegisterStoreDecoder(sdr sdk.StoreDecoderRegistry) {
-	sdr[host.StoreKey] = simulation.NewDecodeStore(*am.keeper)
+	sdr[host.StoreKey] = simulation.NewDecodeStore(am.cdc)
 }
 
 // WeightedOperations returns the all the ibc module operations with their respective weights.

@@ -68,7 +68,7 @@ func (ms multiStore) GetCommitStore(key sdk.StoreKey) sdk.CommitStore {
 }
 
 func (ms multiStore) MountStoreWithDB(key sdk.StoreKey, typ sdk.StoreType, db tmdb.DB) {
-	ms.kv[key] = kvStore{store: make(map[string][]byte)}
+	ms.kv[key] = kvStore{store: make(map[string]interface{})}
 }
 
 func (ms multiStore) LoadLatestVersion() error {
@@ -124,7 +124,7 @@ func (ms multiStore) SetIAVLCacheManager(cacheManager store.CacheManager) {
 var _ sdk.KVStore = kvStore{}
 
 type kvStore struct {
-	store map[string][]byte
+	store map[string]interface{}
 }
 
 func (kv kvStore) CacheWrap() sdk.CacheWrap {
@@ -139,7 +139,7 @@ func (kv kvStore) GetStoreType() sdk.StoreType {
 	panic("not implemented")
 }
 
-func (kv kvStore) Get(key []byte) []byte {
+func (kv kvStore) Get(key []byte, unmarshal func(value []byte) interface{}) interface{} {
 	v, ok := kv.store[string(key)]
 	if !ok {
 		return nil
@@ -152,9 +152,9 @@ func (kv kvStore) Has(key []byte) bool {
 	return ok
 }
 
-func (kv kvStore) Set(key, value []byte) {
+func (kv kvStore) Set(key []byte, obj interface{}, marshal func(obj interface{}) []byte) {
 	store.AssertValidKey(key)
-	kv.store[string(key)] = value
+	kv.store[string(key)] = obj
 }
 
 func (kv kvStore) Delete(key []byte) {
