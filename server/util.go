@@ -137,7 +137,7 @@ func InterceptConfigsPreRunHandler(cmd *cobra.Command) error {
 	var logWriter io.Writer
 	if strings.ToLower(serverCtx.Viper.GetString(flags.FlagLogFormat)) == ostcfg.LogFormatPlain {
 		logWriter = zerolog.ConsoleWriter{
-			Out: os.Stderr,
+			Out:        os.Stderr,
 			TimeFormat: "2006/01/02-15:04:05.999",
 		}
 	} else {
