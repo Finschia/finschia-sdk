@@ -335,8 +335,8 @@ github.com/line/gorocksdb v0.0.0-20210406043732-d4bea34b6d55/go.mod h1:DHRJroSL7
 github.com/line/iavl/v2 v2.0.0-init.1.0.20210602045707-fddfe1f85001 h1:c2URk0zxM1vRgaRfIFoWkLzvj17nl/To9Q3NUVwY4+g=
 github.com/line/iavl/v2 v2.0.0-init.1.0.20210602045707-fddfe1f85001/go.mod h1:0Xz+0i1nlB9lrjUDEwpDRhcmjfEAkOjd20dRb40FBso=
 github.com/line/ostracon v0.34.9-0.20210429084710-ef4fe0a40c7d/go.mod h1:ttnbq+yQJMQ9a2MT5SEisOoa/+pOgh2KenTiK/rVdiw=
-github.com/line/ostracon v0.34.9-0.20210527015318-b6eb70fc2584 h1:sgmj2QQZ3rXa34lkKGyLxwM7zxpyoFeIhWqWYOAJtxY=
-github.com/line/ostracon v0.34.9-0.20210527015318-b6eb70fc2584/go.mod h1:ttnbq+yQJMQ9a2MT5SEisOoa/+pOgh2KenTiK/rVdiw=
+github.com/line/ostracon v0.34.9-0.20210604100226-19aab99b593b h1:AAwOAbruzHxGrItOpGYNcsSE1KPycaJUcQlsUKBB/Vs=
+github.com/line/ostracon v0.34.9-0.20210604100226-19aab99b593b/go.mod h1:ttnbq+yQJMQ9a2MT5SEisOoa/+pOgh2KenTiK/rVdiw=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524 h1:eKXXnUm1SblC0AIXAMNDaSyvIbQ50yXqFbh9+Q8Kjvg=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
 github.com/line/wasmvm v0.14.0-0.5.0 h1:FRjzcUh+LiTMvCrSoucL7a5DlWHHRQgZ78h8YB8l4Fs=
