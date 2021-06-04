@@ -20,9 +20,8 @@ import (
 	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
-// MaxGas for a contract is 10 billion wasmer gas (enforced in rust to prevent overflow)
-// The limit for v0.9.3 is defined here: https://github.com/CosmWasm/cosmwasm/blob/v0.9.3/packages/vm/src/backends/singlepass.rs#L15-L23
-// (this will be increased in future releases)
+// MaxGas was restriction is increased to 0x7FFFFFFFFFFFFFFF in CosmWasm 0.10.
+// This const is not needed now and we can manage it in another way.
 const MaxGas = 10_000_000_000
 
 // contractMemoryLimit is the memory limit of each contract execution (in MiB)
