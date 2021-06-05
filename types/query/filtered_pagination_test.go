@@ -8,6 +8,7 @@ import (
 	sdk "github.com/line/lbm-sdk/v2/types"
 	"github.com/line/lbm-sdk/v2/types/query"
 	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lbm-sdk/v2/x/bank/keeper"
 	"github.com/line/lbm-sdk/v2/x/bank/types"
 )
 
@@ -114,24 +115,23 @@ func ExampleFilteredPaginate() {
 	accountStore := prefix.NewStore(balancesStore, addr1.Bytes())
 
 	var balResult sdk.Coins
-	pageRes, err := query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var bal sdk.Coin
-		err := appCodec.UnmarshalBinaryBare(value, &bal)
-		if err != nil {
-			return false, err
-		}
+	pageRes, err := query.FilteredPaginate(accountStore, pageReq,
+		func(key []byte, value interface{}, accumulate bool) (bool, error) {
+			bal := *value.(*sdk.Coin)
 
-		// filter balances with amount greater than 100
-		if bal.Amount.Int64() > int64(100) {
-			if accumulate {
-				balResult = append(balResult, bal)
+			// filter balances with amount greater than 100
+			if bal.Amount.Int64() > int64(100) {
+				if accumulate {
+					balResult = append(balResult, bal)
+				}
+
+				return true, nil
 			}
 
-			return true, nil
-		}
-
-		return false, nil
-	})
+			return false, nil
+		},
+		keeper.GetCoinUnmarshalFunc(appCodec),
+	)
 
 	if err != nil { // should return no error
 		fmt.Println(err)
@@ -146,24 +146,23 @@ func execFilterPaginate(store sdk.KVStore, pageReq *query.PageRequest, appCodec 
 	accountStore := prefix.NewStore(balancesStore, addr1.Bytes())
 
 	var balResult sdk.Coins
-	res, err = query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var bal sdk.Coin
-		err := appCodec.UnmarshalBinaryBare(value, &bal)
-		if err != nil {
-			return false, err
-		}
+	res, err = query.FilteredPaginate(accountStore, pageReq,
+		func(key []byte, value interface{}, accumulate bool) (bool, error) {
+			bal := *value.(*sdk.Coin)
 
-		// filter balances with amount greater than 100
-		if bal.Amount.Int64() > int64(100) {
-			if accumulate {
-				balResult = append(balResult, bal)
+			// filter balances with amount greater than 100
+			if bal.Amount.Int64() > int64(100) {
+				if accumulate {
+					balResult = append(balResult, bal)
+				}
+
+				return true, nil
 			}
 
-			return true, nil
-		}
-
-		return false, nil
-	})
+			return false, nil
+		},
+		keeper.GetCoinUnmarshalFunc(appCodec),
+		)
 
 	return balResult, res, err
 }

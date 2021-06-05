@@ -42,48 +42,46 @@ func (q Keeper) Proposals(c context.Context, req *types.QueryProposalsRequest) (
 	store := ctx.KVStore(q.storeKey)
 	proposalStore := prefix.NewStore(store, types.ProposalsKeyPrefix)
 
-	pageRes, err := query.FilteredPaginate(proposalStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var p types.Proposal
-		if err := q.cdc.UnmarshalBinaryBare(value, &p); err != nil {
-			return false, status.Error(codes.Internal, err.Error())
-		}
+	pageRes, err := query.FilteredPaginate(proposalStore, req.Pagination, func(key []byte, value interface{}, accumulate bool) (bool, error) {
+				p := *value.(*types.Proposal)
 
-		matchVoter, matchDepositor, matchStatus := true, true, true
+				matchVoter, matchDepositor, matchStatus := true, true, true
 
-		// match status (if supplied/valid)
-		if types.ValidProposalStatus(req.ProposalStatus) {
-			matchStatus = p.Status == req.ProposalStatus
-		}
+				// match status (if supplied/valid)
+				if types.ValidProposalStatus(req.ProposalStatus) {
+					matchStatus = p.Status == req.ProposalStatus
+				}
 
-		// match voter address (if supplied)
-		if len(req.Voter) > 0 {
-			voter, err := sdk.AccAddressFromBech32(req.Voter)
-			if err != nil {
-				return false, err
-			}
+				// match voter address (if supplied)
+				if len(req.Voter) > 0 {
+					voter, err := sdk.AccAddressFromBech32(req.Voter)
+					if err != nil {
+						return false, err
+					}
 
-			_, matchVoter = q.GetVote(ctx, p.ProposalId, voter)
-		}
+					_, matchVoter = q.GetVote(ctx, p.ProposalId, voter)
+				}
 
-		// match depositor (if supplied)
-		if len(req.Depositor) > 0 {
-			depositor, err := sdk.AccAddressFromBech32(req.Depositor)
-			if err != nil {
-				return false, err
-			}
-			_, matchDepositor = q.GetDeposit(ctx, p.ProposalId, depositor)
-		}
+				// match depositor (if supplied)
+				if len(req.Depositor) > 0 {
+					depositor, err := sdk.AccAddressFromBech32(req.Depositor)
+					if err != nil {
+						return false, err
+					}
+					_, matchDepositor = q.GetDeposit(ctx, p.ProposalId, depositor)
+				}
 
-		if matchVoter && matchDepositor && matchStatus {
-			if accumulate {
-				filteredProposals = append(filteredProposals, p)
-			}
+				if matchVoter && matchDepositor && matchStatus {
+					if accumulate {
+						filteredProposals = append(filteredProposals, p)
+					}
 
-			return true, nil
-		}
+					return true, nil
+				}
 
-		return false, nil
-	})
+				return false, nil
+			},
+			GetProposerUnmarshalFunc(q.cdc))
 
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
@@ -137,15 +135,12 @@ func (q Keeper) Votes(c context.Context, req *types.QueryVotesRequest) (*types.Q
 	store := ctx.KVStore(q.storeKey)
 	votesStore := prefix.NewStore(store, types.VotesKey(req.ProposalId))
 
-	pageRes, err := query.Paginate(votesStore, req.Pagination, func(key []byte, value []byte) error {
-		var vote types.Vote
-		if err := q.cdc.UnmarshalBinaryBare(value, &vote); err != nil {
-			return err
-		}
-
-		votes = append(votes, vote)
-		return nil
-	})
+	pageRes, err := query.Paginate(votesStore, req.Pagination, func(key []byte, value interface{}) error {
+				vote := *value.(*types.Vote)
+				votes = append(votes, vote)
+				return nil
+			},
+			GetVoteUnmarshalFunc(q.cdc))
 
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
@@ -226,15 +221,12 @@ func (q Keeper) Deposits(c context.Context, req *types.QueryDepositsRequest) (*t
 	store := ctx.KVStore(q.storeKey)
 	depositStore := prefix.NewStore(store, types.DepositsKey(req.ProposalId))
 
-	pageRes, err := query.Paginate(depositStore, req.Pagination, func(key []byte, value []byte) error {
-		var deposit types.Deposit
-		if err := q.cdc.UnmarshalBinaryBare(value, &deposit); err != nil {
-			return err
-		}
-
-		deposits = append(deposits, deposit)
-		return nil
-	})
+	pageRes, err := query.Paginate(depositStore, req.Pagination, func(key []byte, value interface{}) error {
+				deposit := *value.(*types.Deposit)
+				deposits = append(deposits, deposit)
+				return nil
+			},
+			GetDepositUnmarshalFunc(q.cdc))
 
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())

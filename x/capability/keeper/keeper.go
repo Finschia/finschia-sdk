@@ -394,8 +394,11 @@ func (sk ScopedKeeper) GetCapabilityName(ctx sdk.Context, cap *types.Capability)
 		return ""
 	}
 	memStore := ctx.KVStore(sk.memKey)
-
-	return string(memStore.Get(types.FwdCapabilityKey(sk.module, cap), types2.GetBytesUnmarshalFunc()).([]byte))
+	val := memStore.Get(types.FwdCapabilityKey(sk.module, cap), types2.GetBytesUnmarshalFunc())
+	if val == nil {
+		return ""
+	}
+	return string(val.([]byte))
 }
 
 // GetOwners all the Owners that own the capability associated with the name this ScopedKeeper uses

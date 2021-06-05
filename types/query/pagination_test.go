@@ -194,15 +194,13 @@ func ExamplePaginate() {
 	authStore := ctx.KVStore(app.GetKey(authtypes.StoreKey))
 	balancesStore := prefix.NewStore(authStore, types.BalancesPrefix)
 	accountStore := prefix.NewStore(balancesStore, addr1.Bytes())
-	pageRes, err := query.Paginate(accountStore, request.Pagination, func(key []byte, value []byte) error {
-		var tempRes sdk.Coin
-		err := app.AppCodec().UnmarshalBinaryBare(value, &tempRes)
-		if err != nil {
-			return err
-		}
-		balResult = append(balResult, tempRes)
-		return nil
-	})
+	pageRes, err := query.Paginate(accountStore, request.Pagination, func(key []byte, value interface{}) error {
+			tempRes := *value.(*sdk.Coin)
+			balResult = append(balResult, tempRes)
+			return nil
+		},
+		bankkeeper.GetCoinUnmarshalFunc(app.AppCodec()),
+		)
 	if err != nil { // should return no error
 		fmt.Println(err)
 	}

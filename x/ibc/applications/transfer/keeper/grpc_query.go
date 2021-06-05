@@ -52,15 +52,12 @@ func (q Keeper) DenomTraces(c context.Context, req *types.QueryDenomTracesReques
 	traces := types.Traces{}
 	store := prefix.NewStore(ctx.KVStore(q.storeKey), types.DenomTraceKey)
 
-	pageRes, err := query.Paginate(store, req.Pagination, func(_, value []byte) error {
-		result, err := q.UnmarshalDenomTrace(value)
-		if err != nil {
-			return err
-		}
-
-		traces = append(traces, result)
-		return nil
-	})
+	pageRes, err := query.Paginate(store, req.Pagination, func(_ []byte, value interface{}) error {
+				result := *value.(*types.DenomTrace)
+				traces = append(traces, result)
+				return nil
+			},
+			GetDenomTraceUnmarshalFunc(q.cdc))
 
 	if err != nil {
 		return nil, err

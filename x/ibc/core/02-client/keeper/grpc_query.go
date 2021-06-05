@@ -62,27 +62,23 @@ func (q Keeper) ClientStates(c context.Context, req *types.QueryClientStatesRequ
 	clientStates := types.IdentifiedClientStates{}
 	store := prefix.NewStore(ctx.KVStore(q.storeKey), host.KeyClientStorePrefix)
 
-	pageRes, err := query.Paginate(store, req.Pagination, func(key, value []byte) error {
-		keySplit := strings.Split(string(key), "/")
-		if keySplit[len(keySplit)-1] != "clientState" {
-			return nil
-		}
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value interface{}) error {
+				keySplit := strings.Split(string(key), "/")
+				if keySplit[len(keySplit)-1] != "clientState" {
+					return nil
+				}
 
-		var clientState exported.ClientState
-		err := q.cdc.UnmarshalInterface(value, &clientState)
-		if err != nil {
-			return err
-		}
+				clientState := value.(exported.ClientState)
+				clientID := keySplit[1]
+				if err := host.ClientIdentifierValidator(clientID); err != nil {
+					return err
+				}
 
-		clientID := keySplit[1]
-		if err := host.ClientIdentifierValidator(clientID); err != nil {
-			return err
-		}
-
-		identifiedClient := types.NewIdentifiedClientState(clientID, clientState)
-		clientStates = append(clientStates, identifiedClient)
-		return nil
-	})
+				identifiedClient := types.NewIdentifiedClientState(clientID, clientState)
+				clientStates = append(clientStates, identifiedClient)
+				return nil
+			},
+			types.GetClientStateUnmarshalFunc(q.cdc))
 
 	if err != nil {
 		return nil, err
@@ -158,26 +154,22 @@ func (q Keeper) ConsensusStates(c context.Context, req *types.QueryConsensusStat
 	consensusStates := []types.ConsensusStateWithHeight{}
 	store := prefix.NewStore(ctx.KVStore(q.storeKey), host.FullClientKey(req.ClientId, []byte(fmt.Sprintf("%s/", host.KeyConsensusStatePrefix))))
 
-	pageRes, err := query.FilteredPaginate(store, req.Pagination, func(key, value []byte, accumulate bool) (bool, error) {
-		// filter any metadata stored under consensus state key
-		if strings.Contains(string(key), "/") {
-			return false, nil
-		}
+	pageRes, err := query.FilteredPaginate(store, req.Pagination, func(key []byte, value interface{}, accumulate bool) (bool, error) {
+				// filter any metadata stored under consensus state key
+				if strings.Contains(string(key), "/") {
+					return false, nil
+				}
 
-		height, err := types.ParseHeight(string(key))
-		if err != nil {
-			return false, err
-		}
+				height, err := types.ParseHeight(string(key))
+				if err != nil {
+					return false, err
+				}
 
-		var consensusState exported.ConsensusState
-		err = q.cdc.UnmarshalInterface(value, &consensusState)
-		if err != nil {
-			return false, err
-		}
-
-		consensusStates = append(consensusStates, types.NewConsensusStateWithHeight(height, consensusState))
-		return true, nil
-	})
+				consensusState := value.(exported.ConsensusState)
+				consensusStates = append(consensusStates, types.NewConsensusStateWithHeight(height, consensusState))
+				return true, nil
+			},
+			types.GetConsensusStateUnmarshalFunc(q.cdc))
 
 	if err != nil {
 		return nil, err

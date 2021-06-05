@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 
+	types3 "github.com/line/lbm-sdk/v2/store/types"
+	types2 "github.com/line/lbm-sdk/v2/x/ibc/light-clients/09-localhost/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -51,24 +53,21 @@ func (q Keeper) Channels(c context.Context, req *types.QueryChannelsRequest) (*t
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	channels := []*types.IdentifiedChannel{}
+	var channels []*types.IdentifiedChannel
 	store := prefix.NewStore(ctx.KVStore(q.storeKey), []byte(host.KeyChannelEndPrefix))
 
-	pageRes, err := query.Paginate(store, req.Pagination, func(key, value []byte) error {
-		var result types.Channel
-		if err := q.cdc.UnmarshalBinaryBare(value, &result); err != nil {
-			return err
-		}
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value interface{}) error {
+				result := *value.(*types.Channel)
+				portID, channelID, err := host.ParseChannelPath(string(key))
+				if err != nil {
+					return err
+				}
 
-		portID, channelID, err := host.ParseChannelPath(string(key))
-		if err != nil {
-			return err
-		}
-
-		identifiedChannel := types.NewIdentifiedChannel(portID, channelID, result)
-		channels = append(channels, &identifiedChannel)
-		return nil
-	})
+				identifiedChannel := types.NewIdentifiedChannel(portID, channelID, result)
+				channels = append(channels, &identifiedChannel)
+				return nil
+			},
+			types2.GetChannelUnmarshalFunc(q.cdc))
 
 	if err != nil {
 		return nil, err
@@ -97,27 +96,25 @@ func (q Keeper) ConnectionChannels(c context.Context, req *types.QueryConnection
 	channels := []*types.IdentifiedChannel{}
 	store := prefix.NewStore(ctx.KVStore(q.storeKey), []byte(host.KeyChannelEndPrefix))
 
-	pageRes, err := query.Paginate(store, req.Pagination, func(key, value []byte) error {
-		var result types.Channel
-		if err := q.cdc.UnmarshalBinaryBare(value, &result); err != nil {
-			return err
-		}
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value interface{}) error {
+				result := *value.(*types.Channel)
 
-		// ignore channel and continue to the next item if the connection is
-		// different than the requested one
-		if result.ConnectionHops[0] != req.Connection {
-			return nil
-		}
+				// ignore channel and continue to the next item if the connection is
+				// different than the requested one
+				if result.ConnectionHops[0] != req.Connection {
+					return nil
+				}
 
-		portID, channelID, err := host.ParseChannelPath(string(key))
-		if err != nil {
-			return err
-		}
+				portID, channelID, err := host.ParseChannelPath(string(key))
+				if err != nil {
+					return err
+				}
 
-		identifiedChannel := types.NewIdentifiedChannel(portID, channelID, result)
-		channels = append(channels, &identifiedChannel)
-		return nil
-	})
+				identifiedChannel := types.NewIdentifiedChannel(portID, channelID, result)
+				channels = append(channels, &identifiedChannel)
+				return nil
+			},
+			types2.GetChannelUnmarshalFunc(q.cdc))
 
 	if err != nil {
 		return nil, err
@@ -240,18 +237,19 @@ func (q Keeper) PacketCommitments(c context.Context, req *types.QueryPacketCommi
 	commitments := []*types.PacketState{}
 	store := prefix.NewStore(ctx.KVStore(q.storeKey), []byte(host.PacketCommitmentPrefixPath(req.PortId, req.ChannelId)))
 
-	pageRes, err := query.Paginate(store, req.Pagination, func(key, value []byte) error {
-		keySplit := strings.Split(string(key), "/")
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value interface{}) error {
+				keySplit := strings.Split(string(key), "/")
 
-		sequence, err := strconv.ParseUint(keySplit[len(keySplit)-1], 10, 64)
-		if err != nil {
-			return err
-		}
+				sequence, err := strconv.ParseUint(keySplit[len(keySplit)-1], 10, 64)
+				if err != nil {
+					return err
+				}
 
-		commitment := types.NewPacketState(req.PortId, req.ChannelId, sequence, value)
-		commitments = append(commitments, &commitment)
-		return nil
-	})
+				commitment := types.NewPacketState(req.PortId, req.ChannelId, sequence, value.([]byte))
+				commitments = append(commitments, &commitment)
+				return nil
+			},
+			types3.GetBytesUnmarshalFunc())
 
 	if err != nil {
 		return nil, err
@@ -327,18 +325,19 @@ func (q Keeper) PacketAcknowledgements(c context.Context, req *types.QueryPacket
 	acks := []*types.PacketState{}
 	store := prefix.NewStore(ctx.KVStore(q.storeKey), []byte(host.PacketAcknowledgementPrefixPath(req.PortId, req.ChannelId)))
 
-	pageRes, err := query.Paginate(store, req.Pagination, func(key, value []byte) error {
-		keySplit := strings.Split(string(key), "/")
+	pageRes, err := query.Paginate(store, req.Pagination, func(key []byte, value interface{}) error {
+				keySplit := strings.Split(string(key), "/")
 
-		sequence, err := strconv.ParseUint(keySplit[len(keySplit)-1], 10, 64)
-		if err != nil {
-			return err
-		}
+				sequence, err := strconv.ParseUint(keySplit[len(keySplit)-1], 10, 64)
+				if err != nil {
+					return err
+				}
 
-		ack := types.NewPacketState(req.PortId, req.ChannelId, sequence, value)
-		acks = append(acks, &ack)
-		return nil
-	})
+				ack := types.NewPacketState(req.PortId, req.ChannelId, sequence, value.([]byte))
+				acks = append(acks, &ack)
+				return nil
+			},
+			types3.GetBytesUnmarshalFunc())
 
 	if err != nil {
 		return nil, err

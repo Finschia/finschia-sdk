@@ -61,15 +61,12 @@ func (k BaseKeeper) AllBalances(ctx context.Context, req *types.QueryAllBalances
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
 	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
 
-	pageRes, err := query.Paginate(accountStore, req.Pagination, func(_, value []byte) error {
-		var result sdk.Coin
-		err := k.cdc.UnmarshalBinaryBare(value, &result)
-		if err != nil {
-			return err
-		}
-		balances = append(balances, result)
-		return nil
-	})
+	pageRes, err := query.Paginate(accountStore, req.Pagination, func(_ []byte, value interface{}) error {
+				result := *value.(*sdk.Coin)
+				balances = append(balances, result)
+				return nil
+			},
+			GetCoinUnmarshalFunc(k.cdc))
 
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "paginate: %v", err)
@@ -124,13 +121,12 @@ func (k BaseKeeper) DenomsMetadata(c context.Context, req *types.QueryDenomsMeta
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.DenomMetadataPrefix)
 
 	metadatas := []types.Metadata{}
-	pageRes, err := query.Paginate(store, req.Pagination, func(_, value []byte) error {
-		var metadata types.Metadata
-		k.cdc.MustUnmarshalBinaryBare(value, &metadata)
-
-		metadatas = append(metadatas, metadata)
-		return nil
-	})
+	pageRes, err := query.Paginate(store, req.Pagination, func(_ []byte, value interface{}) error {
+				metadata := *value.(*types.Metadata)
+				metadatas = append(metadatas, metadata)
+				return nil
+			},
+			getMetadataUnmarshalFunc(k.cdc))
 
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())

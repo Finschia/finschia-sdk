@@ -42,7 +42,8 @@ func ParsePagination(pageReq *PageRequest) (page, limit int, err error) {
 func Paginate(
 	prefixStore types.KVStore,
 	pageRequest *PageRequest,
-	onResult func(key []byte, value []byte) error,
+	onResult func(key []byte, value interface{}) error,
+	unmarshal func(value []byte) interface{},
 ) (*PageResponse, error) {
 
 	// if the PageRequest is nil, use default PageRequest
@@ -81,7 +82,7 @@ func Paginate(
 			if iterator.Error() != nil {
 				return nil, iterator.Error()
 			}
-			err := onResult(iterator.Key(), iterator.Value())
+			err := onResult(iterator.Key(), iterator.ValueObject(unmarshal))
 			if err != nil {
 				return nil, err
 			}
@@ -109,7 +110,7 @@ func Paginate(
 			continue
 		}
 		if count <= end {
-			err := onResult(iterator.Key(), iterator.Value())
+			err := onResult(iterator.Key(), iterator.ValueObject(unmarshal))
 			if err != nil {
 				return nil, err
 			}

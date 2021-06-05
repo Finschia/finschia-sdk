@@ -62,25 +62,21 @@ func (k Keeper) AllEvidence(c context.Context, req *types.QueryAllEvidenceReques
 	store := ctx.KVStore(k.storeKey)
 	evidenceStore := prefix.NewStore(store, types.KeyPrefixEvidence)
 
-	pageRes, err := query.Paginate(evidenceStore, req.Pagination, func(key []byte, value []byte) error {
-		var result exported.Evidence
-		 err := k.cdc.UnmarshalInterface(value, &result)
-		if err != nil {
-			return err
-		}
+	pageRes, err := query.Paginate(evidenceStore, req.Pagination, func(key []byte, value interface{}) error {
+				result := value.(exported.Evidence)
+				msg, ok := result.(proto.Message)
+				if !ok {
+					return status.Errorf(codes.Internal, "can't protomarshal %T", msg)
+				}
 
-		msg, ok := result.(proto.Message)
-		if !ok {
-			return status.Errorf(codes.Internal, "can't protomarshal %T", msg)
-		}
-
-		evidenceAny, err := codectypes.NewAnyWithValue(msg)
-		if err != nil {
-			return err
-		}
-		evidence = append(evidence, evidenceAny)
-		return nil
-	})
+				evidenceAny, err := codectypes.NewAnyWithValue(msg)
+				if err != nil {
+					return err
+				}
+				evidence = append(evidence, evidenceAny)
+				return nil
+			},
+			GetEvidenceUnmarshalFunc(k.cdc))
 
 	if err != nil {
 		return &types.QueryAllEvidenceResponse{}, err

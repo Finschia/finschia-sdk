@@ -17,7 +17,8 @@ import (
 func FilteredPaginate(
 	prefixStore types.KVStore,
 	pageRequest *PageRequest,
-	onResult func(key []byte, value []byte, accumulate bool) (bool, error),
+	onResult func(key []byte, value interface{}, accumulate bool) (bool, error),
+	unmarshal func(value []byte) interface{},
 ) (*PageResponse, error) {
 
 	// if the PageRequest is nil, use default PageRequest
@@ -58,7 +59,7 @@ func FilteredPaginate(
 				return nil, iterator.Error()
 			}
 
-			hit, err := onResult(iterator.Key(), iterator.Value(), true)
+			hit, err := onResult(iterator.Key(), iterator.ValueObject(unmarshal), true)
 			if err != nil {
 				return nil, err
 			}
@@ -87,7 +88,7 @@ func FilteredPaginate(
 		}
 
 		accumulate := numHits >= offset && numHits < end
-		hit, err := onResult(iterator.Key(), iterator.Value(), accumulate)
+		hit, err := onResult(iterator.Key(), iterator.ValueObject(unmarshal), accumulate)
 		if err != nil {
 			return nil, err
 		}

@@ -90,23 +90,18 @@ func (k Keeper) ValidatorSlashes(c context.Context, req *types.QueryValidatorSla
 	}
 	slashesStore := prefix.NewStore(store, types.GetValidatorSlashEventPrefix(valAddr))
 
-	pageRes, err := query.FilteredPaginate(slashesStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var result types.ValidatorSlashEvent
-		err := k.cdc.UnmarshalBinaryBare(value, &result)
+	pageRes, err := query.FilteredPaginate(slashesStore, req.Pagination, func(key []byte, value interface{}, accumulate bool) (bool, error) {
+				result := *value.(*types.ValidatorSlashEvent)
+				if result.ValidatorPeriod < req.StartingHeight || result.ValidatorPeriod > req.EndingHeight {
+					return false, nil
+				}
 
-		if err != nil {
-			return false, err
-		}
-
-		if result.ValidatorPeriod < req.StartingHeight || result.ValidatorPeriod > req.EndingHeight {
-			return false, nil
-		}
-
-		if accumulate {
-			events = append(events, result)
-		}
-		return true, nil
-	})
+				if accumulate {
+					events = append(events, result)
+				}
+				return true, nil
+			},
+			GetValidatorSlashEventUnmarshalFunc(k.cdc))
 
 	if err != nil {
 		return nil, err
