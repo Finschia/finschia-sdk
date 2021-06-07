@@ -13,6 +13,10 @@ type ZeroLogWrapper struct {
 	zerolog.Logger
 }
 
+func init() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnixMs
+}
+
 // Info implements Tendermint's Logger interface and logs with level INFO. A set
 // of key/value tuples may be provided to add context to the log. The number of
 // tuples must be even and the key of the tuple must be a string.
