@@ -60,9 +60,8 @@ func (k Keeper) IterateValidatorSigningInfos(ctx sdk.Context,
 	defer iter.Close()
 	for ; iter.Valid(); iter.Next() {
 		address := types.ValidatorSigningInfoAddress(iter.Key())
-		var info types.ValidatorSigningInfo
-		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &info)
-		if handler(address, info) {
+		info := iter.ValueObject(GetValidatorSigningInfoUnmarshalFunc(k.cdc))
+		if handler(address, *info.(*types.ValidatorSigningInfo)) {
 			break
 		}
 	}

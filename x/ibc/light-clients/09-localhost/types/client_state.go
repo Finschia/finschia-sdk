@@ -174,11 +174,15 @@ func (cs ClientState) VerifyConnectionState(
 	if val == nil {
 		return sdkerrors.Wrapf(clienttypes.ErrFailedConnectionStateVerification, "not found for path %s", path)
 	}
-	prevConnection := *val.(*connectiontypes.ConnectionEnd)
-	if !reflect.DeepEqual(&prevConnection, connectionEnd) {
+	prevConnection, ok := val.(*connectiontypes.ConnectionEnd)
+	if !ok {
+		return sdkerrors.Wrapf(
+			clienttypes.ErrFailedConnectionStateVerification, "unable to unmarshal connection")
+	}
+	if !reflect.DeepEqual(prevConnection, connectionEnd) {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrFailedConnectionStateVerification,
-			"connection end ≠ previous stored connection: \n%v\n≠\n%v", connectionEnd, prevConnection,
+			"connection end ≠ previous stored connection: \n%v\n≠\n%v", connectionEnd, *prevConnection,
 		)
 	}
 
@@ -217,11 +221,15 @@ func (cs ClientState) VerifyChannelState(
 		return sdkerrors.Wrapf(clienttypes.ErrFailedChannelStateVerification, "not found for path %s", path)
 	}
 
-	prevChannel := *val.(*channeltypes.Channel)
-	if !reflect.DeepEqual(&prevChannel, channel) {
+	prevChannel, ok := val.(*channeltypes.Channel)
+	if !ok {
+		return sdkerrors.Wrapf(clienttypes.ErrFailedChannelStateVerification,
+			"unable to unmarshal the channel")
+	}
+	if !reflect.DeepEqual(prevChannel, channel) {
 		return sdkerrors.Wrapf(
 			clienttypes.ErrFailedChannelStateVerification,
-			"channel end ≠ previous stored channel: \n%v\n≠\n%v", channel, prevChannel,
+			"channel end ≠ previous stored channel: \n%v\n≠\n%v", channel, *prevChannel,
 		)
 	}
 

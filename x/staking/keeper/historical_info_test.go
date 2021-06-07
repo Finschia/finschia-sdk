@@ -135,9 +135,16 @@ func TestGetAllHistoricalInfo(t *testing.T) {
 
 	expHistInfos := []types.HistoricalInfo{hist1, hist2, hist3}
 
+	/*
+	Note: Don't use for loop to set values to store
+	      `&hi` points same address in for loop, so it modifies cached object
 	for i, hi := range expHistInfos {
 		app.StakingKeeper.SetHistoricalInfo(ctx, int64(10+i), &hi)
 	}
+	*/
+	app.StakingKeeper.SetHistoricalInfo(ctx, header1.Height, &hist1)
+	app.StakingKeeper.SetHistoricalInfo(ctx, header2.Height, &hist2)
+	app.StakingKeeper.SetHistoricalInfo(ctx, header3.Height, &hist3)
 
 	infos := app.StakingKeeper.GetAllHistoricalInfo(ctx)
 	require.Equal(t, expHistInfos, infos)

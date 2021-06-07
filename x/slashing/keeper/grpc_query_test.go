@@ -63,6 +63,15 @@ func (suite *SlashingTestSuite) TestGRPCQueryParams() {
 	suite.Equal(testslashing.TestParams(), paramsResp.Params)
 }
 
+func (suite *SlashingTestSuite) equalExceptLocale(info1, info2 types.ValidatorSigningInfo) {
+	suite.Equal(info1.Address, info2.Address)
+	suite.Equal(info1.IndexOffset, info2.IndexOffset)
+	suite.Equal(info1.MissedBlocksCounter, info2.MissedBlocksCounter)
+	suite.Equal(info1.StartHeight, info2.StartHeight)
+	suite.Equal(info1.Tombstoned, info2.Tombstoned)
+	suite.Equal(info1.JailedUntil.UTC(), info2.JailedUntil.UTC())
+}
+
 func (suite *SlashingTestSuite) TestGRPCSigningInfo() {
 	queryClient := suite.queryClient
 
@@ -77,7 +86,7 @@ func (suite *SlashingTestSuite) TestGRPCSigningInfo() {
 	infoResp, err = queryClient.SigningInfo(gocontext.Background(),
 		&types.QuerySigningInfoRequest{ConsAddress: consAddr.String()})
 	suite.NoError(err)
-	suite.Equal(info, infoResp.ValSigningInfo)
+	suite.equalExceptLocale(info, infoResp.ValSigningInfo)
 }
 
 func (suite *SlashingTestSuite) TestGRPCSigningInfos() {
@@ -94,13 +103,15 @@ func (suite *SlashingTestSuite) TestGRPCSigningInfos() {
 	var infoResp, err = queryClient.SigningInfos(gocontext.Background(),
 		&types.QuerySigningInfosRequest{Pagination: nil})
 	suite.NoError(err)
-	suite.Equal(signingInfos, infoResp.Info)
+	for i := 0; i < len(signingInfos); i++ {
+		suite.equalExceptLocale(signingInfos[i], infoResp.Info[i])
+	}
 
 	infoResp, err = queryClient.SigningInfos(gocontext.Background(),
 		&types.QuerySigningInfosRequest{Pagination: &query.PageRequest{Limit: 1, CountTotal: true}})
 	suite.NoError(err)
 	suite.Len(infoResp.Info, 1)
-	suite.Equal(signingInfos[0], infoResp.Info[0])
+	suite.equalExceptLocale(signingInfos[0], infoResp.Info[0])
 	suite.NotNil(infoResp.Pagination.NextKey)
 	suite.Equal(uint64(2), infoResp.Pagination.Total)
 }
