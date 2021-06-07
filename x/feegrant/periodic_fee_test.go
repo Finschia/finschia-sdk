@@ -32,8 +32,7 @@ func TestPeriodicFeeValidAllow(t *testing.T) {
 	tenMinutes := time.Duration(10) * time.Minute
 
 	cases := map[string]struct {
-		allow feegrant.PeriodicAllowance
-		// all other checks are ignored if valid=false
+		allow         feegrant.PeriodicAllowance
 		fee           sdk.Coins
 		blockTime     time.Time
 		valid         bool // all other checks are ignored if valid=false
