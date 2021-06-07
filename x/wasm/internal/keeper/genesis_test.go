@@ -630,8 +630,8 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	require.NoError(t, err)
 	t.Cleanup(func() { os.RemoveAll(tempDir) })
 	var (
-		keyParams  = sdk.NewKVStoreKey(paramtypes.StoreKey)
-		keyWasm    = sdk.NewKVStoreKey(wasmTypes.StoreKey)
+		keyParams = sdk.NewKVStoreKey(paramtypes.StoreKey)
+		keyWasm   = sdk.NewKVStoreKey(wasmTypes.StoreKey)
 	)
 
 	db := memdb.NewDB()
