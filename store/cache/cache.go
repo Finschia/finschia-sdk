@@ -1,11 +1,10 @@
 package cache
 
 import (
-	"fmt"
-	"reflect"
 	"sync"
+	"time"
 
-	"github.com/dgraph-io/ristretto"
+	"github.com/karlseguin/ccache/v2"
 	"github.com/line/lbm-sdk/v2/store/cachekv"
 	"github.com/line/lbm-sdk/v2/store/types"
 )
@@ -28,7 +27,7 @@ type (
 	// CommitKVStore and below is completely irrelevant to this layer.
 	CommitKVStoreCache struct {
 		types.CommitKVStore
-		cache   *ristretto.Cache
+		cache   *ccache.Cache
 		prefix  []byte
 		metrics *Metrics
 	}
@@ -39,7 +38,7 @@ type (
 	// CommitMultiStore.
 	CommitKVStoreCacheManager struct {
 		mutex   sync.Mutex
-		cache   *ristretto.Cache
+		cache   *ccache.Cache
 		caches  map[string]types.CommitKVStore
 		metrics *Metrics
 
@@ -50,7 +49,7 @@ type (
 	}
 )
 
-func NewCommitKVStoreCache(store types.CommitKVStore, prefix []byte, cache *ristretto.Cache,
+func NewCommitKVStoreCache(store types.CommitKVStore, prefix []byte, cache *ccache.Cache,
 	metrics *Metrics) *CommitKVStoreCache {
 	return &CommitKVStoreCache{
 		CommitKVStore: store,
@@ -65,14 +64,7 @@ func NewCommitKVStoreCacheManager(cacheSize int, provider MetricsProvider) *Comm
 		// This function was called because it intended to use the inter block cache, creating a cache of minimal size.
 		cacheSize = DefaultCommitKVStoreCacheSize
 	}
-	cache, err := ristretto.NewCache(&ristretto.Config{
-		NumCounters: 1e7,               // number of keys to track frequency of (10M).
-		MaxCost:     int64(cacheSize),
-		BufferItems: 64,                // number of keys per Get buffer.
-	})
-	if err != nil {
-		panic(fmt.Sprintf("Cannot create a ristretto cache: %s\n", err.Error()))
-	}
+	cache := ccache.New(ccache.Configure().MaxSize(1000000))
 	cm := &CommitKVStoreCacheManager{
 		cache:       cache,
 		caches:      make(map[string]types.CommitKVStore),
@@ -136,17 +128,17 @@ func (ckv *CommitKVStoreCache) Get(key []byte, unmarshal func(value []byte) inte
 	types.AssertValidKey(key)
 	prefixedKey := append(ckv.prefix, key...)
 
-	val, exist := ckv.cache.Get(prefixedKey)
-	if exist {
+	item := ckv.cache.Get(string(prefixedKey))
+	if item != nil {
 		ckv.metrics.InterBlockCacheHits.Add(1)
-		return val
+		return item.Value()
 	}
 
 	// cache miss; write to cache
 	ckv.metrics.InterBlockCacheMisses.Add(1)
 	value := ckv.CommitKVStore.Get(key, unmarshal)
 	if value != nil {
-		ckv.cache.Set(prefixedKey, value, int64(reflect.TypeOf(value).Size()))
+		ckv.cache.Set(string(prefixedKey), value, time.Hour * 24)
 	}
 	return value
 }
@@ -159,13 +151,13 @@ func (ckv *CommitKVStoreCache) Set(key []byte, obj interface{}, marshal func(obj
 	ckv.CommitKVStore.Set(key, obj, marshal)
 
 	prefixedKey := append(ckv.prefix, key...)
-	ckv.cache.Set(prefixedKey, obj, int64(reflect.TypeOf(obj).Size()))
+	ckv.cache.Set(string(prefixedKey), obj, time.Hour * 24)
 }
 
 // Delete removes a key/value pair from both the write-through cache and the
 // underlying CommitKVStore.
 func (ckv *CommitKVStoreCache) Delete(key []byte) {
 	prefixedKey := append(ckv.prefix, key...)
-	ckv.cache.Del(prefixedKey)
+	ckv.cache.Delete(string(prefixedKey))
 	ckv.CommitKVStore.Delete(key)
 }
