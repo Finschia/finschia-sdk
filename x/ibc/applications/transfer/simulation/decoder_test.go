@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	types2 "github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/simapp"
@@ -21,19 +22,21 @@ func TestDecodeStore(t *testing.T) {
 		Path:      "transfer/channelToA",
 	}
 
-	kvPairs := []types2.KOPair{
+	kvPairs := kv.Pairs{
+		Pairs: []kv.Pair{
 			{
 				Key:   types.PortKey,
 				Value: []byte(types.PortID),
 			},
 			{
 				Key:   types.DenomTraceKey,
-				Value: &trace,
+				Value: cdc.MustMarshalBinaryBare(&trace),
 			},
 			{
 				Key:   []byte{0x99},
 				Value: []byte{0x99},
 			},
+		},
 	}
 	tests := []struct {
 		name        string
@@ -47,10 +50,22 @@ func TestDecodeStore(t *testing.T) {
 	for i, tt := range tests {
 		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
-			if i == len(tests)-1 {
-				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
+			var value interface{}
+			if i == len(tests) - 1 {
+				require.Panics(t, func () {dec.Unmarshal(kvPairs.Pairs[i].Key)(kvPairs.Pairs[i].Value)}, tt.name)
+				value = nil
 			} else {
-				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
+				value = dec.Unmarshal(kvPairs.Pairs[i].Key)(kvPairs.Pairs[i].Value)
+			}
+			pair := types2.KOPair{
+				Key:   kvPairs.Pairs[i].Key,
+				Value: value,
+			}
+			switch i {
+			case len(tests) - 1:
+				require.Panics(t, func() { dec.LogPair(pair, pair) }, tt.name)
+			default:
+				require.Equal(t, tt.expectedLog, dec.LogPair(pair, pair), tt.name)
 			}
 		})
 	}

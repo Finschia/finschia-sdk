@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
+	gogotypes "github.com/gogo/protobuf/types"
 	"github.com/line/lbm-sdk/v2/codec"
 	types2 "github.com/line/lbm-sdk/v2/store/types"
 	sdk "github.com/line/lbm-sdk/v2/types"
@@ -71,8 +72,8 @@ func NewDecodeStore(cdc codec.Marshaler) sdk.StoreDecoder {
 				return fmt.Sprintf("%v\n%v", feePoolA, feePoolB)
 
 			case bytes.Equal(kvA.Key[:1], types.ProposerKey):
-				return fmt.Sprintf("%v\n%v", sdk.ConsAddress(kvA.Value.([]byte)),
-					sdk.ConsAddress(kvB.Value.([]byte)))
+				return fmt.Sprintf("%v\n%v", sdk.ConsAddress((*kvA.Value.(*gogotypes.BytesValue)).Value),
+					sdk.ConsAddress((*kvA.Value.(*gogotypes.BytesValue)).Value))
 
 			case bytes.Equal(kvA.Key[:1], types.ValidatorOutstandingRewardsPrefix):
 				rewardsA := *kvA.Value.(*types.ValidatorOutstandingRewards)

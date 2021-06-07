@@ -6,6 +6,7 @@ import (
 	"time"
 
 	types2 "github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/codec"
@@ -43,16 +44,17 @@ func TestDecodeStore(t *testing.T) {
 	ubd := types.NewUnbondingDelegation(delAddr1, valAddr1, 15, bondTime, sdk.OneInt())
 	red := types.NewRedelegation(delAddr1, valAddr1, valAddr1, 12, bondTime, sdk.OneInt(), sdk.OneDec())
 
-	kvPairs := []types2.KOPair{
-			{Key: types.LastTotalPowerKey, Value: &sdk.IntProto{Int: sdk.OneInt()}},
-			{Key: types.GetValidatorKey(valAddr1), Value: &val},
+	kvPairs := kv.Pairs{
+		Pairs: []kv.Pair{
+			{Key: types.LastTotalPowerKey, Value: cdc.MustMarshalBinaryBare(&sdk.IntProto{Int: sdk.OneInt()})},
+			{Key: types.GetValidatorKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&val)},
 			{Key: types.LastValidatorPowerKey, Value: valAddr1.Bytes()},
-			{Key: types.GetDelegationKey(delAddr1, valAddr1), Value: &del},
-			{Key: types.GetUBDKey(delAddr1, valAddr1), Value: &ubd},
-			{Key: types.GetREDKey(delAddr1, valAddr1, valAddr1), Value: &red},
+			{Key: types.GetDelegationKey(delAddr1, valAddr1), Value: cdc.MustMarshalBinaryBare(&del)},
+			{Key: types.GetUBDKey(delAddr1, valAddr1), Value: cdc.MustMarshalBinaryBare(&ubd)},
+			{Key: types.GetREDKey(delAddr1, valAddr1, valAddr1), Value: cdc.MustMarshalBinaryBare(&red)},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
+		},
 	}
-
 	tests := []struct {
 		name        string
 		expectedLog string
@@ -68,11 +70,22 @@ func TestDecodeStore(t *testing.T) {
 	for i, tt := range tests {
 		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
+			var value interface{}
+			if i == len(tests) - 1 {
+				require.Panics(t, func () {dec.Unmarshal(kvPairs.Pairs[i].Key)(kvPairs.Pairs[i].Value)}, tt.name)
+				value = nil
+			} else {
+				value = dec.Unmarshal(kvPairs.Pairs[i].Key)(kvPairs.Pairs[i].Value)
+			}
+			pair := types2.KOPair{
+				Key:   kvPairs.Pairs[i].Key,
+				Value: value,
+			}
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(pair, pair) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(pair, pair), tt.name)
 			}
 		})
 	}

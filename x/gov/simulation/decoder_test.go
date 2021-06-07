@@ -7,6 +7,7 @@ import (
 	"time"
 
 	types2 "github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
@@ -24,7 +25,6 @@ var (
 func TestDecodeStore(t *testing.T) {
 	cdc, _ := simapp.MakeCodecs()
 	dec := simulation.NewDecodeStore(cdc)
-
 	endTime := time.Now().UTC()
 
 	content := types.ContentFromProposalType("test", "test", types.ProposalTypeText)
@@ -36,12 +36,17 @@ func TestDecodeStore(t *testing.T) {
 	deposit := types.NewDeposit(1, delAddr1, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.OneInt())))
 	vote := types.NewVote(1, delAddr1, types.OptionYes)
 
-	kvPairs := []types2.KOPair{
-			{Key: types.ProposalKey(1), Value: &proposal},
+	proposalBz, err := cdc.MarshalBinaryBare(&proposal)
+	require.NoError(t, err)
+
+	kvPairs := kv.Pairs{
+		Pairs: []kv.Pair{
+			{Key: types.ProposalKey(1), Value: proposalBz},
 			{Key: types.InactiveProposalQueueKey(1, endTime), Value: proposalIDBz},
-			{Key: types.DepositKey(1, delAddr1), Value: &deposit},
-			{Key: types.VoteKey(1, delAddr1), Value: &vote},
+			{Key: types.DepositKey(1, delAddr1), Value: cdc.MustMarshalBinaryBare(&deposit)},
+			{Key: types.VoteKey(1, delAddr1), Value: cdc.MustMarshalBinaryBare(&vote)},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
+		},
 	}
 
 	tests := []struct {
@@ -58,11 +63,22 @@ func TestDecodeStore(t *testing.T) {
 	for i, tt := range tests {
 		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
+			var value interface{}
+			if i == len(tests) - 1 {
+				require.Panics(t, func () {dec.Unmarshal(kvPairs.Pairs[i].Key)(kvPairs.Pairs[i].Value)}, tt.name)
+				value = nil
+			} else {
+				value = dec.Unmarshal(kvPairs.Pairs[i].Key)(kvPairs.Pairs[i].Value)
+			}
+			pair := types2.KOPair{
+				Key:   kvPairs.Pairs[i].Key,
+				Value: value,
+			}
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(pair, pair) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(pair, pair), tt.name)
 			}
 		})
 	}

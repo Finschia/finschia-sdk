@@ -359,6 +359,9 @@ func GetValidatorOutstandingRewardsMarshalFunc(cdc codec.BinaryMarshaler) func (
 func (k Keeper) GetValidatorOutstandingRewards(ctx sdk.Context, val sdk.ValAddress) types.ValidatorOutstandingRewards {
 	store := ctx.KVStore(k.storeKey)
 	v := store.Get(types.GetValidatorOutstandingRewardsKey(val), GetValidatorOutstandingRewardsUnmarshalFunc(k.cdc))
+	if v == nil {
+		return types.ValidatorOutstandingRewards{}
+	}
 	return *v.(*types.ValidatorOutstandingRewards)
 }
 

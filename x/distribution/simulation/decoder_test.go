@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"testing"
 
+	gogotypes "github.com/gogo/protobuf/types"
 	types2 "github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lbm-sdk/v2/types/kv"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
@@ -35,18 +37,21 @@ func TestDecodeDistributionStore(t *testing.T) {
 	currentRewards := types.NewValidatorCurrentRewards(decCoins, 5)
 	slashEvent := types.NewValidatorSlashEvent(10, sdk.OneDec())
 
-	kvPairs := []types2.KOPair{
-			{Key: types.FeePoolKey, Value: &feePool},
-			{Key: types.ProposerKey, Value: consAddr1.Bytes()},
-			{Key: types.GetValidatorOutstandingRewardsKey(valAddr1), Value: &outstanding},
+	kvPairs := kv.Pairs{
+		Pairs: []kv.Pair{
+			{Key: types.FeePoolKey, Value: cdc.MustMarshalBinaryBare(&feePool)},
+			{Key: types.ProposerKey, Value: cdc.MustMarshalBinaryBare(&gogotypes.BytesValue{Value: consAddr1})},
+			{Key: types.GetValidatorOutstandingRewardsKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&outstanding)},
 			{Key: types.GetDelegatorWithdrawAddrKey(delAddr1), Value: delAddr1.Bytes()},
-			{Key: types.GetDelegatorStartingInfoKey(valAddr1, delAddr1), Value: &info},
-			{Key: types.GetValidatorHistoricalRewardsKey(valAddr1, 100), Value: &historicalRewards},
-			{Key: types.GetValidatorCurrentRewardsKey(valAddr1), Value: &currentRewards},
-			{Key: types.GetValidatorAccumulatedCommissionKey(valAddr1), Value: &commission},
-			{Key: types.GetValidatorSlashEventKeyPrefix(valAddr1, 13), Value: &slashEvent},
+			{Key: types.GetDelegatorStartingInfoKey(valAddr1, delAddr1), Value: cdc.MustMarshalBinaryBare(&info)},
+			{Key: types.GetValidatorHistoricalRewardsKey(valAddr1, 100), Value: cdc.MustMarshalBinaryBare(&historicalRewards)},
+			{Key: types.GetValidatorCurrentRewardsKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&currentRewards)},
+			{Key: types.GetValidatorAccumulatedCommissionKey(valAddr1), Value: cdc.MustMarshalBinaryBare(&commission)},
+			{Key: types.GetValidatorSlashEventKeyPrefix(valAddr1, 13), Value: cdc.MustMarshalBinaryBare(&slashEvent)},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
+		},
 	}
+
 
 	tests := []struct {
 		name        string
@@ -66,11 +71,22 @@ func TestDecodeDistributionStore(t *testing.T) {
 	for i, tt := range tests {
 		i, tt := i, tt
 		t.Run(tt.name, func(t *testing.T) {
+			var value interface{}
+			if i == len(tests) - 1 {
+				require.Panics(t, func () {dec.Unmarshal(kvPairs.Pairs[i].Key)(kvPairs.Pairs[i].Value)}, tt.name)
+				value = nil
+			} else {
+				value = dec.Unmarshal(kvPairs.Pairs[i].Key)(kvPairs.Pairs[i].Value)
+			}
+			pair := types2.KOPair{
+				Key:   kvPairs.Pairs[i].Key,
+				Value: value,
+			}
 			switch i {
 			case len(tests) - 1:
-				require.Panics(t, func() { dec.LogPair(kvPairs[i], kvPairs[i]) }, tt.name)
+				require.Panics(t, func() { dec.LogPair(pair, pair) }, tt.name)
 			default:
-				require.Equal(t, tt.expectedLog, dec.LogPair(kvPairs[i], kvPairs[i]), tt.name)
+				require.Equal(t, tt.expectedLog, dec.LogPair(pair, pair), tt.name)
 			}
 		})
 	}
