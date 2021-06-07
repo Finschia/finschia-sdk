@@ -10,8 +10,8 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp/helpers"
-	"github.com/line/lbm-sdk/types"
-	simtype "github.com/line/lbm-sdk/types/simulation"
+	sdk "github.com/line/lbm-sdk/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
 )
 
 func getTestingMode(tb testing.TB) (testingMode bool, t *testing.T, b *testing.B) {
@@ -67,42 +67,42 @@ type OperationInput struct {
 	App             *baseapp.BaseApp
 	TxGen           client.TxConfig
 	Cdc             *codec.ProtoCodec
-	Msg             types.Msg
+	Msg             sdk.Msg
 	MsgType         string
-	CoinsSpentInMsg types.Coins
-	Context         types.Context
-	SimAccount      simtype.Account
+	CoinsSpentInMsg sdk.Coins
+	Context         sdk.Context
+	SimAccount      simtypes.Account
 	AccountKeeper   AccountKeeper
 	Bankkeeper      BankKeeper
 	ModuleName      string
 }
 
 // GenAndDeliverTxWithRandFees generates a transaction with a random fee and delivers it.
-func GenAndDeliverTxWithRandFees(txCtx OperationInput) (simtype.OperationMsg, []simtype.FutureOperation, error) {
+func GenAndDeliverTxWithRandFees(txCtx OperationInput) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 	account := txCtx.AccountKeeper.GetAccount(txCtx.Context, txCtx.SimAccount.Address)
 	spendable := txCtx.Bankkeeper.SpendableCoins(txCtx.Context, account.GetAddress())
 
-	var fees types.Coins
+	var fees sdk.Coins
 	var err error
 
 	coins, hasNeg := spendable.SafeSub(txCtx.CoinsSpentInMsg)
 	if hasNeg {
-		return simtype.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "message doesn't leave room for fees"), nil, err
+		return simtypes.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "message doesn't leave room for fees"), nil, err
 	}
 
-	fees, err = simtype.RandomFees(txCtx.R, txCtx.Context, coins)
+	fees, err = simtypes.RandomFees(txCtx.R, txCtx.Context, coins)
 	if err != nil {
-		return simtype.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "unable to generate fees"), nil, err
+		return simtypes.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "unable to generate fees"), nil, err
 	}
 	return GenAndDeliverTx(txCtx, fees)
 }
 
 // GenAndDeliverTx generates a transactions and delivers it.
-func GenAndDeliverTx(txCtx OperationInput, fees types.Coins) (simtype.OperationMsg, []simtype.FutureOperation, error) {
+func GenAndDeliverTx(txCtx OperationInput, fees sdk.Coins) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 	account := txCtx.AccountKeeper.GetAccount(txCtx.Context, txCtx.SimAccount.Address)
 	tx, err := helpers.GenTx(
 		txCtx.TxGen,
-		[]types.Msg{txCtx.Msg},
+		[]sdk.Msg{txCtx.Msg},
 		fees,
 		helpers.DefaultGenTxGas,
 		txCtx.Context.ChainID(),
@@ -112,13 +112,13 @@ func GenAndDeliverTx(txCtx OperationInput, fees types.Coins) (simtype.OperationM
 	)
 
 	if err != nil {
-		return simtype.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "unable to generate mock tx"), nil, err
+		return simtypes.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "unable to generate mock tx"), nil, err
 	}
 
 	_, _, err = txCtx.App.Deliver(txCtx.TxGen.TxEncoder(), tx)
 	if err != nil {
-		return simtype.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "unable to deliver tx"), nil, err
+		return simtypes.NoOpMsg(txCtx.ModuleName, txCtx.MsgType, "unable to deliver tx"), nil, err
 	}
 
-	return simtype.NewOperationMsg(txCtx.Msg, true, "", nil), nil, nil
+	return simtypes.NewOperationMsg(txCtx.Msg, true, "", txCtx.Cdc), nil, nil
 }
