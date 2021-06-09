@@ -4,17 +4,17 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/client/tx"
+	"github.com/line/lfb-sdk/client/tx"
 
 	"github.com/gorilla/mux"
 
-	govrest "github.com/line/lbm-sdk/v2/x/gov/client/rest"
+	govrest "github.com/line/lfb-sdk/x/gov/client/rest"
 
-	"github.com/line/lbm-sdk/v2/client"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
-	"github.com/line/lbm-sdk/v2/x/upgrade/types"
+	"github.com/line/lfb-sdk/client"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/rest"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lfb-sdk/x/upgrade/types"
 )
 
 func registerTxHandlers(

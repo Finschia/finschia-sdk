@@ -6,12 +6,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
-	"github.com/line/lbm-sdk/v2/x/distribution/simulation"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/kv"
+	"github.com/line/lfb-sdk/x/distribution/simulation"
+	"github.com/line/lfb-sdk/x/distribution/types"
 )
 
 var (

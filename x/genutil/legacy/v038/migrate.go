@@ -1,19 +1,19 @@
 package v038
 
 import (
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	v036auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v036"
-	v038auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v038"
-	v036distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v036"
-	v038distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v038"
-	v036genaccounts "github.com/line/lbm-sdk/v2/x/genaccounts/legacy/v036"
-	"github.com/line/lbm-sdk/v2/x/genutil/types"
-	v036gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v036"
-	v036params "github.com/line/lbm-sdk/v2/x/params/legacy/v036"
-	v036staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v036"
-	v038staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v038"
-	v038upgrade "github.com/line/lbm-sdk/v2/x/upgrade/legacy/v038"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	v036auth "github.com/line/lfb-sdk/x/auth/legacy/v036"
+	v038auth "github.com/line/lfb-sdk/x/auth/legacy/v038"
+	v036distr "github.com/line/lfb-sdk/x/distribution/legacy/v036"
+	v038distr "github.com/line/lfb-sdk/x/distribution/legacy/v038"
+	v036genaccounts "github.com/line/lfb-sdk/x/genaccounts/legacy/v036"
+	"github.com/line/lfb-sdk/x/genutil/types"
+	v036gov "github.com/line/lfb-sdk/x/gov/legacy/v036"
+	v036params "github.com/line/lfb-sdk/x/params/legacy/v036"
+	v036staking "github.com/line/lfb-sdk/x/staking/legacy/v036"
+	v038staking "github.com/line/lfb-sdk/x/staking/legacy/v038"
+	v038upgrade "github.com/line/lfb-sdk/x/upgrade/legacy/v038"
 )
 
 // Migrate migrates exported state from v0.36/v0.37 to a v0.38 genesis state.

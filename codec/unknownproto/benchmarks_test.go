@@ -6,8 +6,8 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/v2/codec/unknownproto"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	"github.com/line/lfb-sdk/codec/unknownproto"
+	"github.com/line/lfb-sdk/testutil/testdata"
 )
 
 var n1BBlob []byte

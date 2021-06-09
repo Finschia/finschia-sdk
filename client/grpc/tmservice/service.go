@@ -8,12 +8,12 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/rpc"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	qtypes "github.com/line/lbm-sdk/v2/types/query"
-	"github.com/line/lbm-sdk/v2/version"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/rpc"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	qtypes "github.com/line/lfb-sdk/types/query"
+	"github.com/line/lfb-sdk/version"
 )
 
 // This is the struct that we will implement all the handlers on.

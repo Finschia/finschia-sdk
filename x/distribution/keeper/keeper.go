@@ -5,11 +5,11 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
-	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/distribution/types"
+	paramtypes "github.com/line/lfb-sdk/x/params/types"
 )
 
 // Keeper of the distribution store

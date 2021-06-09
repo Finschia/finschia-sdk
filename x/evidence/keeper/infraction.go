@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
+	"github.com/line/lfb-sdk/x/evidence/types"
 )
 
 // HandleEquivocationEvidence implements an equivocation evidence handler. Assuming the

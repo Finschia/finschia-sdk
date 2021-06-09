@@ -3,10 +3,10 @@ package signing
 import (
 	"fmt"
 
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/crypto/types/multisig"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/crypto/types/multisig"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/tx/signing"
 )
 
 // VerifySignature verifies a transaction signature contained in SignatureData abstracting over different signing modes

@@ -6,9 +6,9 @@ import (
 	"github.com/gogo/protobuf/proto"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // NewHistoricalInfo will create a historical information struct from header and valset

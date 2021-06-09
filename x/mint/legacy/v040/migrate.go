@@ -1,8 +1,8 @@
 package v040
 
 import (
-	v039mint "github.com/line/lbm-sdk/v2/x/mint/legacy/v039"
-	v040mint "github.com/line/lbm-sdk/v2/x/mint/types"
+	v039mint "github.com/line/lfb-sdk/x/mint/legacy/v039"
+	v040mint "github.com/line/lfb-sdk/x/mint/types"
 )
 
 // Migrate accepts exported v0.39 x/mint genesis state and

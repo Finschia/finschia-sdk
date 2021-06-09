@@ -8,17 +8,17 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/ostracon/light"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/store/prefix"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
-	upgradetypes "github.com/line/lbm-sdk/v2/x/upgrade/types"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/store/prefix"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	paramtypes "github.com/line/lfb-sdk/x/params/types"
+	upgradetypes "github.com/line/lfb-sdk/x/upgrade/types"
 )
 
 // Keeper represents a type that grants read and write permissions to any client

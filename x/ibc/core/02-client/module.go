@@ -4,8 +4,8 @@ import (
 	"github.com/gogo/protobuf/grpc"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/client/cli"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/02-client/client/cli"
+	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 )
 
 // Name returns the IBC client name

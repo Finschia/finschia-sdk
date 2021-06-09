@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 	abci "github.com/line/ostracon/abci/types"
 )
 

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 )
 
 type byter interface {

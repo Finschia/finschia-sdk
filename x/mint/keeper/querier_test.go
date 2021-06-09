@@ -3,13 +3,13 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lfb-sdk/codec"
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	keep "github.com/line/lbm-sdk/v2/x/mint/keeper"
-	"github.com/line/lbm-sdk/v2/x/mint/types"
+	sdk "github.com/line/lfb-sdk/types"
+	keep "github.com/line/lfb-sdk/x/mint/keeper"
+	"github.com/line/lfb-sdk/x/mint/types"
 
 	abci "github.com/line/ostracon/abci/types"
 )

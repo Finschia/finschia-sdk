@@ -8,8 +8,8 @@ import (
 	"runtime/pprof"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/store/cache"
-	"github.com/line/lbm-sdk/v2/store/iavl"
+	"github.com/line/lfb-sdk/store/cache"
+	"github.com/line/lfb-sdk/store/iavl"
 	"github.com/line/ostracon/abci/server"
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostos "github.com/line/ostracon/libs/os"
@@ -21,13 +21,13 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/server/api"
-	"github.com/line/lbm-sdk/v2/server/config"
-	servergrpc "github.com/line/lbm-sdk/v2/server/grpc"
-	"github.com/line/lbm-sdk/v2/server/types"
-	storetypes "github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/server/api"
+	"github.com/line/lfb-sdk/server/config"
+	servergrpc "github.com/line/lfb-sdk/server/grpc"
+	"github.com/line/lfb-sdk/server/types"
+	storetypes "github.com/line/lfb-sdk/store/types"
 )
 
 // Ostracon full-node start flags

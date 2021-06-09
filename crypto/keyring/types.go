@@ -1,8 +1,8 @@
 package keyring
 
 import (
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lfb-sdk/crypto/hd"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 )
 
 // Language is a language to create the BIP 39 mnemonic in.

@@ -6,9 +6,9 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/simulation"
 )
 
 // AppModuleSimulation defines the standard functions that every module should expose

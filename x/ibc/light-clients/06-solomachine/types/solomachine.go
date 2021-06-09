@@ -1,9 +1,9 @@
 package types
 
 import (
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 // Interface implementation checks.

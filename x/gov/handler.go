@@ -1,10 +1,10 @@
 package gov
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/gov/keeper"
-	"github.com/line/lbm-sdk/v2/x/gov/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/gov/keeper"
+	"github.com/line/lfb-sdk/x/gov/types"
 )
 
 // NewHandler creates an sdk.Handler for all the gov type messages

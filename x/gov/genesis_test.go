@@ -10,12 +10,12 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/x/auth"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/gov"
-	"github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/x/auth"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/gov"
+	"github.com/line/lfb-sdk/x/gov/types"
 )
 
 func TestImportExportQueues(t *testing.T) {

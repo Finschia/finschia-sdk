@@ -10,8 +10,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/testutil"
-	"github.com/line/lbm-sdk/v2/version"
+	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lfb-sdk/version"
 )
 
 func TestNewInfo(t *testing.T) {

@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	distributiontypes "github.com/line/lfb-sdk/x/distribution/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 	abci "github.com/line/ostracon/abci/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 )

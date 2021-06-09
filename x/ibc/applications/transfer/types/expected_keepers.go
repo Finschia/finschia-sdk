@@ -1,12 +1,12 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/auth/types"
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	ibcexported "github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/auth/types"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	ibcexported "github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 // AccountKeeper defines the contract required for account APIs.

@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/testutil"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/codec/legacy"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/testutil"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func TestErrorHandling(t *testing.T) {

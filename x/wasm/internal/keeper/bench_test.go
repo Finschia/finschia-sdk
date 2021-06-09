@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 	dbm "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/goleveldb"
 	"github.com/line/tm-db/v2/memdb"

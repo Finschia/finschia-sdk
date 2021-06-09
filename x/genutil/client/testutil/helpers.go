@@ -9,12 +9,12 @@ import (
 	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/server"
-	"github.com/line/lbm-sdk/v2/testutil"
-	"github.com/line/lbm-sdk/v2/types/module"
-	genutilcli "github.com/line/lbm-sdk/v2/x/genutil/client/cli"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/server"
+	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lfb-sdk/types/module"
+	genutilcli "github.com/line/lfb-sdk/x/genutil/client/cli"
 )
 
 func ExecInitCmd(testMbm module.BasicManager, home string, cdc codec.JSONMarshaler) error {

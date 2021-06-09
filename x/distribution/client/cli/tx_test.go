@@ -5,17 +5,17 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/simapp/params"
-	"github.com/line/lbm-sdk/v2/testutil"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/simapp/params"
+	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lfb-sdk/testutil/testdata"
 
 	"github.com/stretchr/testify/require"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/line/lbm-sdk/v2/client"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/client"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func Test_splitAndCall_NoMessages(t *testing.T) {

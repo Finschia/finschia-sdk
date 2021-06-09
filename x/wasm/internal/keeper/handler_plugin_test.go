@@ -3,21 +3,21 @@ package keeper
 import (
 	"encoding/json"
 	"github.com/golang/protobuf/proto"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
-	ibctransfertypes "github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	ibcexported "github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	ibctransfertypes "github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	ibcexported "github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lfb-sdk/x/wasm/internal/keeper/wasmtesting"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	distributiontypes "github.com/line/lbm-sdk/v2/x/distribution/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	sdk "github.com/line/lfb-sdk/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	distributiontypes "github.com/line/lfb-sdk/x/distribution/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -325,7 +325,7 @@ func TestEncoding(t *testing.T) {
 			sender: addr2,
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Stargate: &wasmvmtypes.StargateMsg{
-					TypeURL: "/lbm.bank.v1beta1.MsgSend",
+					TypeURL: "/lfb.bank.v1beta1.MsgSend",
 					Value:   bankMsgBin,
 				},
 			},
@@ -335,7 +335,7 @@ func TestEncoding(t *testing.T) {
 			sender: addr2,
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Stargate: &wasmvmtypes.StargateMsg{
-					TypeURL: "/lbm.gov.v1beta1.MsgSubmitProposal",
+					TypeURL: "/lfb.gov.v1beta1.MsgSubmitProposal",
 					Value:   proposalMsgBin,
 				},
 			},
@@ -345,7 +345,7 @@ func TestEncoding(t *testing.T) {
 			sender: addr2,
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Stargate: &wasmvmtypes.StargateMsg{
-					TypeURL: "/lbm.bank.v2.MsgSend",
+					TypeURL: "/lfb.bank.v2.MsgSend",
 					Value:   bankMsgBin,
 				},
 			},

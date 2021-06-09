@@ -1,10 +1,10 @@
 package slashing
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/slashing/keeper"
-	"github.com/line/lbm-sdk/v2/x/slashing/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/slashing/keeper"
+	"github.com/line/lfb-sdk/x/slashing/types"
 )
 
 // NewHandler creates an sdk.Handler for all the slashing type messages

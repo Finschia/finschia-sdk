@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	sdk "github.com/line/lfb-sdk/types"
+	signingtypes "github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/x/auth/signing"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
 )
 
 func MakeTestHandlerMap() signing.SignModeHandler {

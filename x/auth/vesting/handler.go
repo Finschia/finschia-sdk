@@ -1,10 +1,10 @@
 package vesting
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/auth/keeper"
-	"github.com/line/lbm-sdk/v2/x/auth/vesting/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/auth/keeper"
+	"github.com/line/lfb-sdk/x/auth/vesting/types"
 )
 
 // NewHandler returns a handler for x/auth message types.

@@ -3,9 +3,9 @@ package common
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/client"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
+	"github.com/line/lfb-sdk/client"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/distribution/types"
 )
 
 // QueryDelegationRewards queries a delegation rewards between a delegator and a

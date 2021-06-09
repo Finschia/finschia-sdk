@@ -1,11 +1,11 @@
 package v040
 
 import (
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	v039auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v039"
-	v040auth "github.com/line/lbm-sdk/v2/x/auth/types"
-	v040vesting "github.com/line/lbm-sdk/v2/x/auth/vesting/types"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	v039auth "github.com/line/lfb-sdk/x/auth/legacy/v039"
+	v040auth "github.com/line/lfb-sdk/x/auth/types"
+	v040vesting "github.com/line/lfb-sdk/x/auth/vesting/types"
 )
 
 // convertBaseAccount converts a 0.39 BaseAccount to a 0.40 BaseAccount.

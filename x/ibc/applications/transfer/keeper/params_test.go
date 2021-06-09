@@ -1,6 +1,6 @@
 package keeper_test
 
-import "github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
+import "github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
 
 func (suite *KeeperTestSuite) TestParams() {
 	expParams := types.DefaultParams()

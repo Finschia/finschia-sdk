@@ -8,17 +8,17 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/ante"
-	xauthsigning "github.com/line/lbm-sdk/v2/x/auth/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/types"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/tx"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/ante"
+	xauthsigning "github.com/line/lfb-sdk/x/auth/signing"
+	"github.com/line/lfb-sdk/x/auth/types"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
 )
 
 // TestAccount represents an account used in the tests in x/auth/ante.

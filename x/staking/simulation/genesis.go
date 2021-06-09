@@ -8,10 +8,10 @@ import (
 	"math/rand"
 	"time"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/module"
-	"github.com/line/lbm-sdk/v2/types/simulation"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/module"
+	"github.com/line/lfb-sdk/types/simulation"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 // Simulation parameter constants

@@ -3,7 +3,7 @@ package rootmulti
 import (
 	"github.com/line/ostracon/crypto/merkle"
 
-	storetypes "github.com/line/lbm-sdk/v2/store/types"
+	storetypes "github.com/line/lfb-sdk/store/types"
 )
 
 // RequireProof returns whether proof is required for the subpath.

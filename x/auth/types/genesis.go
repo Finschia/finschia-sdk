@@ -7,9 +7,9 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/types/module"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/types/module"
 )
 
 var _ types.UnpackInterfacesMessage = GenesisState{}

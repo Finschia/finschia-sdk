@@ -3,7 +3,7 @@
 package v036
 
 import (
-	v034staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v034"
+	v034staking "github.com/line/lfb-sdk/x/staking/legacy/v034"
 )
 
 // Migrate accepts exported genesis state from v0.34 and migrates it to v0.36

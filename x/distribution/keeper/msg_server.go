@@ -5,9 +5,9 @@ import (
 
 	"github.com/armon/go-metrics"
 
-	"github.com/line/lbm-sdk/v2/telemetry"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
+	"github.com/line/lfb-sdk/telemetry"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/distribution/types"
 )
 
 type msgServer struct {

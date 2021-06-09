@@ -8,12 +8,12 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/testutil"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
-	"github.com/line/lbm-sdk/v2/types/query"
-	"github.com/line/lbm-sdk/v2/x/slashing/types"
+	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lfb-sdk/testutil/network"
+	sdk "github.com/line/lfb-sdk/types"
+	grpctypes "github.com/line/lfb-sdk/types/grpc"
+	"github.com/line/lfb-sdk/types/query"
+	"github.com/line/lfb-sdk/x/slashing/types"
 )
 
 type IntegrationTestSuite struct {
@@ -57,7 +57,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 	}{
 		{
 			"get signing infos (height specific)",
-			fmt.Sprintf("%s/lbm/slashing/v1beta1/signing_infos", baseURL),
+			fmt.Sprintf("%s/lfb/slashing/v1beta1/signing_infos", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -77,7 +77,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		},
 		{
 			"get signing info (height specific)",
-			fmt.Sprintf("%s/lbm/slashing/v1beta1/signing_infos/%s", baseURL, consAddr),
+			fmt.Sprintf("%s/lfb/slashing/v1beta1/signing_infos/%s", baseURL, consAddr),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -92,7 +92,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		},
 		{
 			"get signing info wrong address",
-			fmt.Sprintf("%s/lbm/slashing/v1beta1/signing_infos/%s", baseURL, "wrongAddress"),
+			fmt.Sprintf("%s/lfb/slashing/v1beta1/signing_infos/%s", baseURL, "wrongAddress"),
 			map[string]string{},
 			true,
 			&types.QuerySigningInfoResponse{},
@@ -100,7 +100,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		},
 		{
 			"params",
-			fmt.Sprintf("%s/lbm/slashing/v1beta1/params", baseURL),
+			fmt.Sprintf("%s/lfb/slashing/v1beta1/params", baseURL),
 			map[string]string{},
 			false,
 			&types.QueryParamsResponse{},

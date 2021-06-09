@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // Account contains a privkey, pubkey, address tuple

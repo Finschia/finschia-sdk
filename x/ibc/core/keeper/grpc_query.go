@@ -3,9 +3,9 @@ package keeper
 import (
 	"context"
 
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 )
 
 // ClientState implements the IBC QueryServer interface

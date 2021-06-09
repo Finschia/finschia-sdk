@@ -3,7 +3,7 @@ package v039
 import (
 	"fmt"
 
-	v038auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v038"
+	v038auth "github.com/line/lfb-sdk/x/auth/legacy/v038"
 )
 
 // Migrate accepts exported genesis state from v0.38 and migrates it to v0.39

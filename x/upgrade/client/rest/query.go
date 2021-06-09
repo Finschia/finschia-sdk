@@ -7,9 +7,9 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/upgrade/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/upgrade/types"
 )
 
 func registerQueryRoutes(clientCtx client.Context, r *mux.Router) {

@@ -13,18 +13,18 @@ import (
 
 	"github.com/golang/protobuf/proto"
 
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/staking"
-	"github.com/line/lbm-sdk/v2/x/staking/keeper"
-	"github.com/line/lbm-sdk/v2/x/staking/teststaking"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/staking"
+	"github.com/line/lfb-sdk/x/staking/keeper"
+	"github.com/line/lfb-sdk/x/staking/teststaking"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 func bootstrapHandlerGenesisTest(t *testing.T, power int64, numAddrs int, accAmount sdk.Int) (*simapp.SimApp, sdk.Context, []sdk.AccAddress, []sdk.ValAddress) {

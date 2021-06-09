@@ -8,8 +8,8 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"google.golang.org/grpc"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // QueryServiceTestHelper provides a helper for making grpc query service

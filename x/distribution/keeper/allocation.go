@@ -5,9 +5,9 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/distribution/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 // AllocateTokens handles distribution of the collected fees

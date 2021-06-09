@@ -14,8 +14,8 @@ import (
 	"github.com/line/ostracon/privval"
 	osttypes "github.com/line/ostracon/types"
 
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 )
 
 // ExportGenesisFile creates and writes the genesis configuration to disk. An

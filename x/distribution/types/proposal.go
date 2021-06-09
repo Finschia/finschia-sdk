@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
+	sdk "github.com/line/lfb-sdk/types"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
 )
 
 const (
@@ -18,7 +18,7 @@ var _ govtypes.Content = &CommunityPoolSpendProposal{}
 
 func init() {
 	govtypes.RegisterProposalType(ProposalTypeCommunityPoolSpend)
-	govtypes.RegisterProposalTypeCodec(&CommunityPoolSpendProposal{}, "lbm-sdk/CommunityPoolSpendProposal")
+	govtypes.RegisterProposalTypeCodec(&CommunityPoolSpendProposal{}, "lfb-sdk/CommunityPoolSpendProposal")
 }
 
 // NewCommunityPoolSpendProposal creates a new community pool spned proposal.

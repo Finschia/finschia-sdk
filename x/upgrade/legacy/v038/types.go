@@ -5,10 +5,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	v036gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v036"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	v036gov "github.com/line/lfb-sdk/x/gov/legacy/v036"
 )
 
 const (
@@ -162,6 +162,6 @@ func (sup CancelSoftwareUpgradeProposal) String() string {
 }
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(SoftwareUpgradeProposal{}, "lbm-sdk/SoftwareUpgradeProposal", nil)
-	cdc.RegisterConcrete(CancelSoftwareUpgradeProposal{}, "lbm-sdk/CancelSoftwareUpgradeProposal", nil)
+	cdc.RegisterConcrete(SoftwareUpgradeProposal{}, "lfb-sdk/SoftwareUpgradeProposal", nil)
+	cdc.RegisterConcrete(CancelSoftwareUpgradeProposal{}, "lfb-sdk/CancelSoftwareUpgradeProposal", nil)
 }

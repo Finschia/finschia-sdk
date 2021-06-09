@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client/keys"
+	"github.com/line/lfb-sdk/client/keys"
 )
 
 func TestConstructors(t *testing.T) {

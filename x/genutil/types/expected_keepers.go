@@ -5,10 +5,10 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	auth "github.com/line/lbm-sdk/v2/x/auth/types"
-	bankexported "github.com/line/lbm-sdk/v2/x/bank/exported"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	auth "github.com/line/lfb-sdk/x/auth/types"
+	bankexported "github.com/line/lfb-sdk/x/bank/exported"
 )
 
 // StakingKeeper defines the expected staking keeper (noalias)

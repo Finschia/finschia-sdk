@@ -3,8 +3,8 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/line/lbm-sdk/v2/client"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lfb-sdk/client"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 )
 
 // DONTCOVER

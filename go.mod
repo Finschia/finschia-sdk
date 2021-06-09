@@ -1,6 +1,6 @@
 go 1.15
 
-module github.com/line/lbm-sdk/v2
+module github.com/line/lfb-sdk
 
 require (
 	github.com/99designs/keyring v1.1.6

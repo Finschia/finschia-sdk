@@ -3,8 +3,8 @@ package rest
 import (
 	"net/http"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/rest"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/rest"
 
 	"github.com/gorilla/mux"
 )

@@ -5,11 +5,11 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	capabilitykeeper "github.com/line/lbm-sdk/v2/x/capability/keeper"
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/05-port/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	sdk "github.com/line/lfb-sdk/types"
+	capabilitykeeper "github.com/line/lfb-sdk/x/capability/keeper"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	"github.com/line/lfb-sdk/x/ibc/core/05-port/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 )
 
 // Keeper defines the IBC connection keeper

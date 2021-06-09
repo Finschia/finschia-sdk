@@ -3,12 +3,12 @@ package query_test
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/store/prefix"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/query"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	"github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/store/prefix"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/query"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lfb-sdk/x/bank/types"
 )
 
 var addr1 = sdk.AccAddress([]byte("addr1"))

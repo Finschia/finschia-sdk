@@ -13,13 +13,13 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/tendermint/crypto/bcrypt"
 
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	"github.com/line/lbm-sdk/v2/crypto"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/codec/legacy"
+	"github.com/line/lfb-sdk/crypto"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/keyring"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/types"
 )
 
 func TestArmorUnarmorPrivKey(t *testing.T) {

@@ -143,7 +143,7 @@ func (s *abciTestSuite) TestABCIInfoStacktrace() {
 		},
 	}
 
-	const thisTestSrc = "github.com/line/lbm-sdk/v2/types/errors.(*abciTestSuite).TestABCIInfoStacktrace"
+	const thisTestSrc = "github.com/line/lfb-sdk/types/errors.(*abciTestSuite).TestABCIInfoStacktrace"
 
 	for testName, tc := range cases {
 		_, _, log := ABCIInfo(tc.err, tc.debug)

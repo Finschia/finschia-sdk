@@ -5,16 +5,16 @@ import (
 
 	proto "github.com/gogo/protobuf/proto"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	v036distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v036"
-	v040distr "github.com/line/lbm-sdk/v2/x/distribution/types"
-	v034gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v034"
-	v036gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v036"
-	v040gov "github.com/line/lbm-sdk/v2/x/gov/types"
-	v036params "github.com/line/lbm-sdk/v2/x/params/legacy/v036"
-	v040params "github.com/line/lbm-sdk/v2/x/params/types/proposal"
-	v038upgrade "github.com/line/lbm-sdk/v2/x/upgrade/legacy/v038"
-	v040upgrade "github.com/line/lbm-sdk/v2/x/upgrade/types"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	v036distr "github.com/line/lfb-sdk/x/distribution/legacy/v036"
+	v040distr "github.com/line/lfb-sdk/x/distribution/types"
+	v034gov "github.com/line/lfb-sdk/x/gov/legacy/v034"
+	v036gov "github.com/line/lfb-sdk/x/gov/legacy/v036"
+	v040gov "github.com/line/lfb-sdk/x/gov/types"
+	v036params "github.com/line/lfb-sdk/x/params/legacy/v036"
+	v040params "github.com/line/lfb-sdk/x/params/types/proposal"
+	v038upgrade "github.com/line/lfb-sdk/x/upgrade/legacy/v038"
+	v040upgrade "github.com/line/lfb-sdk/x/upgrade/types"
 )
 
 func migrateVoteOption(oldVoteOption v034gov.VoteOption) v040gov.VoteOption {

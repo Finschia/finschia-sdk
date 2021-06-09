@@ -7,9 +7,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/module"
-	"github.com/line/lbm-sdk/v2/x/bank/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/module"
+	"github.com/line/lfb-sdk/x/bank/types"
 )
 
 // RandomGenesisDefaultSendParam computes randomized allow all send transfers param for the bank module

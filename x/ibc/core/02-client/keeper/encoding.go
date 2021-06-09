@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 // UnmarshalClientState attempts to decode and return an ClientState object from

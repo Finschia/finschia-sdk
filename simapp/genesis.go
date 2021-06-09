@@ -3,7 +3,7 @@ package simapp
 import (
 	"encoding/json"
 
-	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lfb-sdk/codec"
 )
 
 // The genesis state of the blockchain is represented here as a map of raw json

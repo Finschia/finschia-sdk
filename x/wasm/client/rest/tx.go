@@ -5,12 +5,12 @@ import (
 	"strconv"
 
 	"github.com/gorilla/mux"
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	wasmUtils "github.com/line/lbm-sdk/v2/x/wasm/client/utils"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/tx"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/rest"
+	wasmUtils "github.com/line/lfb-sdk/x/wasm/client/utils"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 )
 
 func registerTxRoutes(cliCtx client.Context, r *mux.Router) {

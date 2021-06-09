@@ -5,11 +5,11 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 )
 
 // QueryTendermintProof performs an ABCI query with the given key and returns
@@ -20,7 +20,7 @@ import (
 // the correct merkle proof. Proof queries at height less than or equal to 2 are
 // not supported. Queries with a client context height of 0 will perform a query
 // at the lastest state available.
-// Issue: https://github.com/line/lbm-sdk/v2/issues/6567
+// Issue: https://github.com/line/lfb-sdk/issues/6567
 func QueryTendermintProof(clientCtx client.Context, key []byte) ([]byte, []byte, clienttypes.Height, error) {
 	height := clientCtx.Height
 

@@ -1,9 +1,9 @@
 package client
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
+	sdk "github.com/line/lfb-sdk/types"
+	signingtypes "github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/signing"
 )
 
 type (

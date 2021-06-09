@@ -7,8 +7,8 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lbm-sdk/v2/store/cachekv"
-	"github.com/line/lbm-sdk/v2/store/dbadapter"
+	"github.com/line/lfb-sdk/store/cachekv"
+	"github.com/line/lfb-sdk/store/dbadapter"
 )
 
 func benchmarkCacheKVStoreIterator(numKVs int, b *testing.B) {

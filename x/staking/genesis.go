@@ -7,10 +7,10 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	osttypes "github.com/line/ostracon/types"
 
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/staking/keeper"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/staking/keeper"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 // InitGenesis sets the pool and parameters for the provided keeper.  For each

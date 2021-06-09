@@ -3,7 +3,7 @@ package codec
 import (
 	"bytes"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lfb-sdk/codec/types"
 
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"

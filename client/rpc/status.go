@@ -10,12 +10,12 @@ import (
 	"github.com/line/ostracon/p2p"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/version"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/version"
 )
 
 // ValidatorInfo is info about the node's validator, same as Tendermint,

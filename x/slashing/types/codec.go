@@ -1,16 +1,16 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/msgservice"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/codec/types"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/msgservice"
 )
 
 // RegisterLegacyAminoCodec registers concrete types on LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgUnjail{}, "lbm-sdk/MsgUnjail", nil)
+	cdc.RegisterConcrete(&MsgUnjail{}, "lfb-sdk/MsgUnjail", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

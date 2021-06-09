@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 )
 
 func TestParseIdentifier(t *testing.T) {

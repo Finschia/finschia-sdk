@@ -9,8 +9,8 @@ import (
 	"github.com/line/ostracon/libs/log"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
-	"github.com/line/lbm-sdk/v2/store/gaskv"
-	stypes "github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lfb-sdk/store/gaskv"
+	stypes "github.com/line/lfb-sdk/store/types"
 )
 
 /*

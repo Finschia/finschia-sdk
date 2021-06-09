@@ -4,9 +4,9 @@ package cosmwasm.wasm.v1beta1;
 import "gogoproto/gogo.proto";
 import "types.proto";
 import "google/api/annotations.proto";
-import "lbm/base/query/v1beta1/pagination.proto";
+import "lfb/base/query/v1beta1/pagination.proto";
 
-option go_package                      = "github.com/line/lbm-sdk/v2/x/wasm/internal/types";
+option go_package                      = "github.com/line/lfb-sdk/x/wasm/internal/types";
 option (gogoproto.goproto_getters_all) = false;
 option (gogoproto.equal_all)           = false;
 
@@ -65,21 +65,21 @@ message QueryContractHistoryRequest {
   // address is the address of the contract to query
   string address = 1;
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1beta1.PageRequest pagination = 2;
+  lfb.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryContractHistoryResponse is the response type for the Query/ContractHistory RPC method
 message QueryContractHistoryResponse {
   repeated ContractCodeHistoryEntry entries = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  lbm.base.query.v1beta1.PageResponse pagination = 2;
+  lfb.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryContractsByCodeRequest is the request type for the Query/ContractsByCode RPC method
 message QueryContractsByCodeRequest {
   uint64 code_id = 1; // grpc-gateway_out does not support Go style CodID
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1beta1.PageRequest pagination = 2;
+  lfb.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // ContractInfoWithAddress adds the address (key) to the ContractInfo representation
@@ -93,7 +93,7 @@ message ContractInfoWithAddress {
 message QueryContractsByCodeResponse {
   repeated ContractInfoWithAddress contract_infos = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  lbm.base.query.v1beta1.PageResponse pagination = 2;
+  lfb.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryAllContractStateRequest is the request type for the Query/AllContractState RPC method
@@ -101,14 +101,14 @@ message QueryAllContractStateRequest {
   // address is the address of the contract
   string address = 1;
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1beta1.PageRequest pagination = 2;
+  lfb.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryAllContractStateResponse is the response type for the Query/AllContractState RPC method
 message QueryAllContractStateResponse {
   repeated Model models = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  lbm.base.query.v1beta1.PageResponse pagination = 2;
+  lfb.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryRawContractStateRequest is the request type for the Query/RawContractState RPC method
@@ -164,12 +164,12 @@ message QueryCodeResponse {
 // QueryCodesRequest is the request type for the Query/Codes RPC method
 message QueryCodesRequest {
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1beta1.PageRequest pagination = 1;
+  lfb.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryCodesResponse is the response type for the Query/Codes RPC method
 message QueryCodesResponse {
   repeated CodeInfoResponse code_infos = 1 [(gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  lbm.base.query.v1beta1.PageResponse pagination = 2;
+  lfb.base.query.v1beta1.PageResponse pagination = 2;
 }

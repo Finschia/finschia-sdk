@@ -8,8 +8,8 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
+	sdk "github.com/line/lfb-sdk/types"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
 )
 
 func TestParamChange(t *testing.T) {

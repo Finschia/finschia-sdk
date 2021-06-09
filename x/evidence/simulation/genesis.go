@@ -7,10 +7,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lbm-sdk/v2/types/module"
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	"github.com/line/lbm-sdk/v2/x/evidence/exported"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
+	"github.com/line/lfb-sdk/types/module"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
+	"github.com/line/lfb-sdk/x/evidence/exported"
+	"github.com/line/lfb-sdk/x/evidence/types"
 )
 
 // Simulation parameter constants

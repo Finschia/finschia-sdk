@@ -5,9 +5,9 @@ package v034
 import (
 	"time"
 
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/codec/legacy"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 const (

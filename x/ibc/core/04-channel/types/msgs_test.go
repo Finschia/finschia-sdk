@@ -8,15 +8,15 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/store/iavl"
-	"github.com/line/lbm-sdk/v2/store/rootmulti"
-	storetypes "github.com/line/lbm-sdk/v2/store/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/store/iavl"
+	"github.com/line/lfb-sdk/store/rootmulti"
+	storetypes "github.com/line/lfb-sdk/store/types"
+	sdk "github.com/line/lfb-sdk/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 	abci "github.com/line/ostracon/abci/types"
 )
 

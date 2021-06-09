@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cdctypes "github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
+	cdctypes "github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	signingtypes "github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/x/auth/signing"
 )
 
 var (

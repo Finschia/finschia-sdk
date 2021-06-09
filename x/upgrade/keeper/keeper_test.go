@@ -8,15 +8,15 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	store "github.com/line/lbm-sdk/v2/store/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
-	ibcexported "github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	"github.com/line/lbm-sdk/v2/x/upgrade/keeper"
-	"github.com/line/lbm-sdk/v2/x/upgrade/types"
+	"github.com/line/lfb-sdk/simapp"
+	store "github.com/line/lfb-sdk/store/types"
+	sdk "github.com/line/lfb-sdk/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
+	ibcexported "github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/upgrade/keeper"
+	"github.com/line/lfb-sdk/x/upgrade/types"
 )
 
 type KeeperTestSuite struct {

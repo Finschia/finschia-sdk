@@ -3,12 +3,12 @@ package types
 import (
 	"github.com/gogo/protobuf/grpc"
 
-	client "github.com/line/lbm-sdk/v2/x/ibc/core/02-client"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	connection "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection"
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	channel "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	client "github.com/line/lfb-sdk/x/ibc/core/02-client"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	connection "github.com/line/lfb-sdk/x/ibc/core/03-connection"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	channel "github.com/line/lfb-sdk/x/ibc/core/04-channel"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 )
 
 // QueryServer defines the IBC interfaces that the gRPC query server must implement

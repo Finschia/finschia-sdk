@@ -32,8 +32,8 @@ func (s *errorsTestSuite) TestStackTrace() {
 
 	// Wrapping code is unwanted in the errors stack trace.
 	unwantedSrc := []string{
-		"github.com/line/lbm-sdk/v2/types/errors.Wrap\n",
-		"github.com/line/lbm-sdk/v2/types/errors.Wrapf\n",
+		"github.com/line/lfb-sdk/types/errors.Wrap\n",
+		"github.com/line/lfb-sdk/types/errors.Wrapf\n",
 		"runtime.goexit\n",
 	}
 	const thisTestSrc = "types/errors/stacktrace_test.go"

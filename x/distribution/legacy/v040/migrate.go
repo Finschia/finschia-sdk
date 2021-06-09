@@ -1,8 +1,8 @@
 package v040
 
 import (
-	v038distribution "github.com/line/lbm-sdk/v2/x/distribution/legacy/v038"
-	v040distribution "github.com/line/lbm-sdk/v2/x/distribution/types"
+	v038distribution "github.com/line/lfb-sdk/x/distribution/legacy/v038"
+	v040distribution "github.com/line/lfb-sdk/x/distribution/types"
 )
 
 // Migrate accepts exported x/distribution genesis state from v0.38 and migrates it

@@ -8,8 +8,8 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/testutil/testdata"
 )
 
 type errOnMarshal struct {

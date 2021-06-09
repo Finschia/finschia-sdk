@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"strings"
 
-	"github.com/line/lbm-sdk/v2/simapp"
+	"github.com/line/lfb-sdk/simapp"
 
-	"github.com/line/lbm-sdk/v2/x/evidence/exported"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
+	"github.com/line/lfb-sdk/x/evidence/exported"
+	"github.com/line/lfb-sdk/x/evidence/types"
 
 	abci "github.com/line/ostracon/abci/types"
 )

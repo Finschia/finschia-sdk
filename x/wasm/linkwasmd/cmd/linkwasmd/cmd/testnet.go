@@ -17,21 +17,21 @@ import (
 	osttime "github.com/line/ostracon/types/time"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/server"
-	srvconfig "github.com/line/lbm-sdk/v2/server/config"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/module"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/genutil"
-	genutiltypes "github.com/line/lbm-sdk/v2/x/genutil/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/keyring"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/server"
+	srvconfig "github.com/line/lfb-sdk/server/config"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/module"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/genutil"
+	genutiltypes "github.com/line/lfb-sdk/x/genutil/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 var (
@@ -51,7 +51,7 @@ func testnetCmd(mbm module.BasicManager, genBalIterator banktypes.GenesisBalance
 necessary files (private validator, genesis, config, etc.).
 Note, strict routability for addresses is turned off in the config file.
 Example:
-	lbm testnet --v 4 --output-dir ./output --starting-ip-address 192.168.10.2
+	lfb testnet --v 4 --output-dir ./output --starting-ip-address 192.168.10.2
 	`,
 		RunE: func(cmd *cobra.Command, _ []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
@@ -81,7 +81,7 @@ Example:
 	cmd.Flags().Int(flagNumValidators, 4, "Number of validators to initialize the testnet with")
 	cmd.Flags().StringP(flagOutputDir, "o", "./mytestnet", "Directory to store initialization data for the testnet")
 	cmd.Flags().String(flagNodeDirPrefix, "node", "Prefix the directory name for each node with (node results in node0, node1, ...)")
-	cmd.Flags().String(flagNodeDaemonHome, "lbm", "Home directory of the node's daemon configuration")
+	cmd.Flags().String(flagNodeDaemonHome, "lfb", "Home directory of the node's daemon configuration")
 	cmd.Flags().String(flagStartingIPAddress, "192.168.0.1", "Starting IP address (192.168.0.1 results in persistent peers list ID0@192.168.0.1:46656, ID1@192.168.0.2:46656, ...)")
 	cmd.Flags().String(flags.FlagChainID, "", "genesis file chain-id, if left blank will be randomly created")
 	cmd.Flags().String(server.FlagMinGasPrices, fmt.Sprintf("0.000006%s", sdk.DefaultBondDenom), "Minimum gas prices to accept for transactions; All fees in a tx must meet this minimum (e.g. 0.01photino,0.001stake)")

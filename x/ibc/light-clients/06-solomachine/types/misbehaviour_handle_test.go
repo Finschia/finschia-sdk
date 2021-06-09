@@ -1,10 +1,10 @@
 package types_test
 
 import (
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 func (suite *SoloMachineTestSuite) TestCheckMisbehaviourAndUpdateState() {

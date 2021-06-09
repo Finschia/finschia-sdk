@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/types/kv"
-	"github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
+	"github.com/line/lfb-sdk/types/kv"
+	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
 )
 
 // TransferUnmarshaler defines the expected encoding store functions.

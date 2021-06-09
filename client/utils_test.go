@@ -7,8 +7,8 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
 )
 
 func TestPaginate(t *testing.T) {

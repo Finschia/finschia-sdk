@@ -7,7 +7,7 @@ import (
 	"strconv"
 	"time"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 const (

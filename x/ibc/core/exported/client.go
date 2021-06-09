@@ -4,8 +4,8 @@ import (
 	ics23 "github.com/confio/ics23/go"
 	proto "github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 const (

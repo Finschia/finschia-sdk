@@ -3,7 +3,7 @@ package rpc
 import (
 	"github.com/gorilla/mux"
 
-	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lfb-sdk/client"
 )
 
 // Register REST endpoints.

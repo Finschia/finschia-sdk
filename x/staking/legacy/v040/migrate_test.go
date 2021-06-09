@@ -6,12 +6,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/simapp"
-	v034staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v034"
-	v038staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v038"
-	v040staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v040"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/simapp"
+	v034staking "github.com/line/lfb-sdk/x/staking/legacy/v034"
+	v038staking "github.com/line/lfb-sdk/x/staking/legacy/v038"
+	v040staking "github.com/line/lfb-sdk/x/staking/legacy/v040"
 )
 
 func TestMigrate(t *testing.T) {
@@ -70,7 +70,7 @@ func TestMigrate(t *testing.T) {
         "update_time": "0001-01-01T00:00:00Z"
       },
       "consensus_pubkey": {
-        "@type": "/lbm.crypto.ed25519.PubKey",
+        "@type": "/lfb.crypto.ed25519.PubKey",
         "key": "KTeVrjP7NJIufvgMJsQRxZjfFyD+Exda6O7x+oxIvmA="
       },
       "delegator_shares": "0",

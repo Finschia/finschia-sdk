@@ -15,7 +15,7 @@ import (
 	"github.com/gogo/protobuf/protoc-gen-gogo/descriptor"
 	"google.golang.org/protobuf/encoding/protowire"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lfb-sdk/codec/types"
 )
 
 const bit11NonCritical = 1 << 10

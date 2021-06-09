@@ -2,13 +2,13 @@ syntax = "proto3";
 package ibc.core.connection.v1;
 
 import "gogoproto/gogo.proto";
-import "lbm/base/query/v1beta1/pagination.proto";
+import "lfb/base/query/v1beta1/pagination.proto";
 import "ibc/core/client/v1/client.proto";
 import "ibc/core/connection/v1/connection.proto";
 import "google/api/annotations.proto";
 import "google/protobuf/any.proto";
 
-option go_package = "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types";
+option go_package = "github.com/line/lfb-sdk/x/ibc/core/03-connection/types";
 
 // Query provides defines the gRPC querier service
 service Query {
@@ -64,7 +64,7 @@ message QueryConnectionResponse {
 // QueryConnectionsRequest is the request type for the Query/Connections RPC
 // method
 message QueryConnectionsRequest {
-  lbm.base.query.v1beta1.PageRequest pagination = 1;
+  lfb.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryConnectionsResponse is the response type for the Query/Connections RPC
@@ -73,7 +73,7 @@ message QueryConnectionsResponse {
   // list of stored connections of the chain.
   repeated ibc.core.connection.v1.IdentifiedConnection connections = 1;
   // pagination response
-  lbm.base.query.v1beta1.PageResponse pagination = 2;
+  lfb.base.query.v1beta1.PageResponse pagination = 2;
   // query block height
   ibc.core.client.v1.Height height = 3 [(gogoproto.nullable) = false];
 }

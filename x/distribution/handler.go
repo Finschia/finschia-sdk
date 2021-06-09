@@ -1,11 +1,11 @@
 package distribution
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/distribution/keeper"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/distribution/keeper"
+	"github.com/line/lfb-sdk/x/distribution/types"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
 )
 
 func NewHandler(k keeper.Keeper) sdk.Handler {

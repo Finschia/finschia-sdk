@@ -1,9 +1,9 @@
 package keyring
 
 import (
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/codec/legacy"
+	"github.com/line/lfb-sdk/crypto/hd"
 )
 
 func init() {

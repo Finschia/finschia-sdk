@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 )
 
 const (

@@ -2,7 +2,7 @@ package rest
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lfb-sdk/client"
 )
 
 // RegisterRoutes registers staking-related REST handlers to a router

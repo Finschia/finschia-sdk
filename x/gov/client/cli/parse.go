@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/pflag"
 
-	govutils "github.com/line/lbm-sdk/v2/x/gov/client/utils"
+	govutils "github.com/line/lfb-sdk/x/gov/client/utils"
 )
 
 func parseSubmitProposalFlags(fs *pflag.FlagSet) (*proposal, error) {

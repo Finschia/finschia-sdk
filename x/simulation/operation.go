@@ -5,7 +5,7 @@ import (
 	"math/rand"
 	"sort"
 
-	"github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lfb-sdk/types/simulation"
 )
 
 // entry kinds for use within OperationEntry

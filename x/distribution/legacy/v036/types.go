@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v034distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v034"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
-	v036gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v036"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	v034distr "github.com/line/lfb-sdk/x/distribution/legacy/v034"
+	"github.com/line/lfb-sdk/x/distribution/types"
+	v036gov "github.com/line/lfb-sdk/x/gov/legacy/v036"
 )
 
 // ----------------------------------------------------------------------------
@@ -130,5 +130,5 @@ func (csp CommunityPoolSpendProposal) String() string {
 }
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(CommunityPoolSpendProposal{}, "lbm-sdk/CommunityPoolSpendProposal", nil)
+	cdc.RegisterConcrete(CommunityPoolSpendProposal{}, "lfb-sdk/CommunityPoolSpendProposal", nil)
 }

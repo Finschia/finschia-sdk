@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v038auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v038"
-	v039auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v039"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	sdk "github.com/line/lfb-sdk/types"
+	v038auth "github.com/line/lfb-sdk/x/auth/legacy/v038"
+	v039auth "github.com/line/lfb-sdk/x/auth/legacy/v039"
 )
 
 func TestMigrate(t *testing.T) {
@@ -63,7 +63,7 @@ func TestMigrate(t *testing.T) {
   },
   "accounts": [
     {
-      "type": "lbm-sdk/Account",
+      "type": "lfb-sdk/Account",
       "value": {
         "address": "link1j7skdhh9raxdmfhmcy2gxz8hgn0jnhfmfujjj3",
         "coins": [
@@ -81,7 +81,7 @@ func TestMigrate(t *testing.T) {
       }
     },
     {
-      "type": "lbm-sdk/Account",
+      "type": "lfb-sdk/Account",
       "value": {
         "address": "link1v57fx2l2rt6ehujuu99u2fw05779m5e2fg4q3l",
         "coins": [

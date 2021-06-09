@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm"
+	"github.com/line/lfb-sdk/x/wasm"
 	"github.com/line/ostracon/libs/log"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/assert"

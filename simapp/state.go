@@ -11,12 +11,12 @@ import (
 	ostjson "github.com/line/ostracon/libs/json"
 	osttypes "github.com/line/ostracon/types"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	simappparams "github.com/line/lbm-sdk/v2/simapp/params"
-	"github.com/line/lbm-sdk/v2/types/module"
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	simappparams "github.com/line/lfb-sdk/simapp/params"
+	"github.com/line/lfb-sdk/types/module"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
 )
 
 // AppStateFn returns the initial application state using a genesis or the simulation parameters.

@@ -5,10 +5,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func TestBech32KeysOutput(t *testing.T) {

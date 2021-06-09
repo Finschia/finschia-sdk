@@ -4,7 +4,7 @@ package v038
 // nolint
 
 import (
-	v036distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v036"
+	v036distr "github.com/line/lfb-sdk/x/distribution/legacy/v036"
 )
 
 // Migrate accepts exported genesis state from v0.36 or v0.37 and migrates it to

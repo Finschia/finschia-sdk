@@ -1,7 +1,7 @@
 package v036
 
 import (
-	v034gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v034"
+	v034gov "github.com/line/lfb-sdk/x/gov/legacy/v034"
 )
 
 // Migrate accepts exported genesis state from v0.34 and migrates it to v0.36

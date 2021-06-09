@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // x/distribution module sentinel errors

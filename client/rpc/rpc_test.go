@@ -7,11 +7,11 @@ import (
 	ctypes "github.com/line/ostracon/rpc/core/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/client/rpc"
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	"github.com/line/lbm-sdk/v2/types/rest"
+	"github.com/line/lfb-sdk/client/rpc"
+	"github.com/line/lfb-sdk/codec/legacy"
+	clitestutil "github.com/line/lfb-sdk/testutil/cli"
+	"github.com/line/lfb-sdk/testutil/network"
+	"github.com/line/lfb-sdk/types/rest"
 )
 
 type IntegrationTestSuite struct {

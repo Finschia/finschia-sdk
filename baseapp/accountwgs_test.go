@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func TestConvertByteSliceToString(t *testing.T) {

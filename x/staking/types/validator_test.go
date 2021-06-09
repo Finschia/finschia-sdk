@@ -9,13 +9,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/staking/teststaking"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/codec/legacy"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/staking/teststaking"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 func TestValidatorTestEquivalent(t *testing.T) {

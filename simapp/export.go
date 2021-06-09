@@ -6,11 +6,11 @@ import (
 
 	osttypes "github.com/line/ostracon/proto/ostracon/types"
 
-	servertypes "github.com/line/lbm-sdk/v2/server/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	slashingtypes "github.com/line/lbm-sdk/v2/x/slashing/types"
-	"github.com/line/lbm-sdk/v2/x/staking"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	servertypes "github.com/line/lfb-sdk/server/types"
+	sdk "github.com/line/lfb-sdk/types"
+	slashingtypes "github.com/line/lfb-sdk/x/slashing/types"
+	"github.com/line/lfb-sdk/x/staking"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 // ExportAppStateAndValidators exports the state of the application for a genesis

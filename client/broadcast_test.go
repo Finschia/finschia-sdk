@@ -12,8 +12,8 @@ import (
 	osttypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client/flags"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/client/flags"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 type MockClient struct {

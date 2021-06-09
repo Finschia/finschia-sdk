@@ -13,10 +13,10 @@ import (
 	"google.golang.org/grpc/encoding/proto"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
-	"github.com/line/lbm-sdk/v2/types/tx"
+	"github.com/line/lfb-sdk/codec/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	grpctypes "github.com/line/lfb-sdk/types/grpc"
+	"github.com/line/lfb-sdk/types/tx"
 )
 
 var _ gogogrpc.ClientConn = Context{}

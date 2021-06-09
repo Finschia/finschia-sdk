@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/types"
 )
 
 var coinStrs = []string{

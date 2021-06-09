@@ -7,14 +7,14 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	authkeeper "github.com/line/lbm-sdk/v2/x/auth/keeper"
-	bankkeeper "github.com/line/lbm-sdk/v2/x/bank/keeper"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	authkeeper "github.com/line/lfb-sdk/x/auth/keeper"
+	bankkeeper "github.com/line/lfb-sdk/x/bank/keeper"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -358,7 +358,7 @@ func TestReflectStargateQuery(t *testing.T) {
 	protoQueryBin, err := proto.Marshal(&protoQuery)
 	protoRequest := wasmvmtypes.QueryRequest{
 		Stargate: &wasmvmtypes.StargateQuery{
-			Path: "/lbm.bank.v1beta1.Query/AllBalances",
+			Path: "/lfb.bank.v1beta1.Query/AllBalances",
 			Data: protoQueryBin,
 		},
 	}

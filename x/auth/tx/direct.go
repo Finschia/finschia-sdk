@@ -3,11 +3,11 @@ package tx
 import (
 	"fmt"
 
-	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
+	signingtypes "github.com/line/lfb-sdk/types/tx/signing"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	types "github.com/line/lbm-sdk/v2/types/tx"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
+	sdk "github.com/line/lfb-sdk/types"
+	types "github.com/line/lfb-sdk/types/tx"
+	"github.com/line/lfb-sdk/x/auth/signing"
 )
 
 // signModeDirectHandler defines the SIGN_MODE_DIRECT SignModeHandler

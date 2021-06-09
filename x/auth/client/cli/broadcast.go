@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	authclient "github.com/line/lfb-sdk/x/auth/client"
 )
 
 // GetBroadcastCommand returns the tx broadcast command.

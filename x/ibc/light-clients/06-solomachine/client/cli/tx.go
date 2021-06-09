@@ -8,13 +8,13 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/version"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/version"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
 )
 
 const (
@@ -27,7 +27,7 @@ func NewCreateClientCmd() *cobra.Command {
 		Use:   "create [sequence] [path/to/consensus_state.json]",
 		Short: "create new solo machine client",
 		Long: `create a new solo machine client with the specified identifier and public key
-	- ConsensusState json example: {"public_key":{"@type":"/lbm.crypto.secp256k1.PubKey","key":"A/3SXL2ONYaOkxpdR5P8tHTlSlPv1AwQwSFxKRee5JQW"},"diversifier":"diversifier","timestamp":"10"}`,
+	- ConsensusState json example: {"public_key":{"@type":"/lfb.crypto.secp256k1.PubKey","key":"A/3SXL2ONYaOkxpdR5P8tHTlSlPv1AwQwSFxKRee5JQW"},"diversifier":"diversifier","timestamp":"10"}`,
 		Example: fmt.Sprintf("%s tx ibc %s create [sequence] [path/to/consensus_state] --from node0 --home ../node0/<app>cli --chain-id $CID", version.AppName, types.SubModuleName),
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {

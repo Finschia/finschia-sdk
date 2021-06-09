@@ -11,12 +11,12 @@ import (
 	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	"gopkg.in/yaml.v2"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 const (

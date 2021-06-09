@@ -17,15 +17,15 @@
     - [Point Release Procedure](#point-release-procedure)
   - [Code Owner Membership](#code-owner-membership)
 
-Thank you for considering making contributions to lbm-sdk and related
+Thank you for considering making contributions to lfb-sdk and related
 repositories!
 
 Contributing to this repo can mean many things such as participating in
 discussion or proposing code changes. To ensure a smooth workflow for all
 contributors, the general procedure for contributing has been established:
 
-1. Either [open](https://github.com/line/lbm-sdk/issues/new/choose) or
-   [find](https://github.com/line/lbm-sdk/issues) an issue you'd like to help with
+1. Either [open](https://github.com/line/lfb-sdk/issues/new/choose) or
+   [find](https://github.com/line/lfb-sdk/issues) an issue you'd like to help with
 2. Participate in thoughtful discussion on that issue
 3. If you would like to contribute:
    1. If the issue is a proposal, ensure that the proposal has been accepted
@@ -89,7 +89,7 @@ All PRs require two Reviews before merge (except docs changes, or variable name-
 
 ### Updating Documentation
 
-If you open a PR on the LBM SDK, it is mandatory to update the relevant documentation in /docs.
+If you open a PR on the LFB SDK, it is mandatory to update the relevant documentation in /docs.
 
 - If your change relates to the core SDK (baseapp, store, ...), please update the `docs/basics/`, `docs/core/` and/or `docs/building-modules/` folders.
 - If your changes relate to the core of the CLI or Light-client (not specifically to module's CLI/Rest), please modify the `docs/interfaces/` folder.
@@ -98,20 +98,20 @@ If you open a PR on the LBM SDK, it is mandatory to update the relevant document
 ## Forking
 
 Please note that Go requires code to live under absolute paths, which complicates forking.
-While my fork lives at `https://github.com/someone/lbm-sdk`,
-the code should never exist at `$GOPATH/src/github.com/someone/lbm-sdk`.
+While my fork lives at `https://github.com/someone/lfb-sdk`,
+the code should never exist at `$GOPATH/src/github.com/someone/lfb-sdk`.
 Instead, we use `git remote` to add the fork as a new remote for the original repo,
-`$GOPATH/src/github.com/line/lbm-sdk`, and do all the work there.
+`$GOPATH/src/github.com/line/lfb-sdk`, and do all the work there.
 
 For instance, to create a fork and work on a branch of it, I would:
 
 - Create the fork on github, using the fork button.
-- Go to the original repo checked out locally (i.e. `$GOPATH/src/github.com/line/lbm-sdk`)
+- Go to the original repo checked out locally (i.e. `$GOPATH/src/github.com/line/lfb-sdk`)
 - `git remote rename origin upstream`
-- `git remote add origin git@github.com:someone/lbm-sdk.git`
+- `git remote add origin git@github.com:someone/lfb-sdk.git`
 
-Now `origin` refers to my fork and `upstream` refers to the lbm-sdk version.
-So I can `git push -u origin master` to update my fork, and make pull requests to lbm-sdk from there.
+Now `origin` refers to my fork and `upstream` refers to the lfb-sdk version.
+So I can `git push -u origin master` to update my fork, and make pull requests to lfb-sdk from there.
 Of course, replace `someone` with your git handle.
 
 To pull in updates from the origin repo, run
@@ -126,7 +126,7 @@ Please don't make Pull Requests from `master`.
 We use [Go 1.15 Modules](https://github.com/golang/go/wiki/Modules) to manage
 dependency versions.
 
-The master branch of every LBM repository should just build with `go get`,
+The master branch of every LFB repository should just build with `go get`,
 which means they should be kept up-to-date with their dependencies, so we can
 get away with telling people they can just `go get` our software.
 
@@ -135,7 +135,7 @@ build, in which case we can fall back on `go mod tidy -v`.
 
 ## Protobuf
 
-We use [Protocol Buffers](https://developers.google.com/protocol-buffers) along with [gogoproto](https://github.com/gogo/protobuf) to generate code for use in lbm-sdk.
+We use [Protocol Buffers](https://developers.google.com/protocol-buffers) along with [gogoproto](https://github.com/gogo/protobuf) to generate code for use in lfb-sdk.
 
 For determinstic behavior around Protobuf tooling, everything is containerized using Docker. Make sure to have Docker installed on your machine, or head to [Docker's website](https://docs.docker.com/get-docker/) to install it.
 

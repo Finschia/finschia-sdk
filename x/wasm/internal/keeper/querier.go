@@ -5,11 +5,11 @@ import (
 	"encoding/binary"
 	"runtime/debug"
 
-	"github.com/line/lbm-sdk/v2/store/prefix"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/query"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/store/prefix"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/query"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 )
 
 var _ types.QueryServer = &GrpcQuerier{}

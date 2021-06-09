@@ -14,8 +14,8 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lbm-sdk/v2/snapshots"
-	"github.com/line/lbm-sdk/v2/snapshots/types"
+	"github.com/line/lfb-sdk/snapshots"
+	"github.com/line/lfb-sdk/snapshots/types"
 )
 
 func checksums(slice [][]byte) [][]byte {

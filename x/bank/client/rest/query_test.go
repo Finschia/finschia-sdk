@@ -8,10 +8,10 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lfb-sdk/testutil/network"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/bank/types"
 )
 
 type IntegrationTestSuite struct {

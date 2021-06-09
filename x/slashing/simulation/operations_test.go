@@ -9,15 +9,15 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	simappparams "github.com/line/lbm-sdk/v2/simapp/params"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	distrtypes "github.com/line/lbm-sdk/v2/x/distribution/types"
-	minttypes "github.com/line/lbm-sdk/v2/x/mint/types"
-	"github.com/line/lbm-sdk/v2/x/slashing/simulation"
-	"github.com/line/lbm-sdk/v2/x/slashing/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/simapp"
+	simappparams "github.com/line/lfb-sdk/simapp/params"
+	sdk "github.com/line/lfb-sdk/types"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
+	distrtypes "github.com/line/lfb-sdk/x/distribution/types"
+	minttypes "github.com/line/lfb-sdk/x/mint/types"
+	"github.com/line/lfb-sdk/x/slashing/simulation"
+	"github.com/line/lfb-sdk/x/slashing/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 // TestWeightedOperations tests the weights of the operations.

@@ -6,14 +6,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v036distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v036"
-	v036gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v036"
-	v040gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v040"
-	v036params "github.com/line/lbm-sdk/v2/x/params/legacy/v036"
-	v038upgrade "github.com/line/lbm-sdk/v2/x/upgrade/legacy/v038"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	v036distr "github.com/line/lfb-sdk/x/distribution/legacy/v036"
+	v036gov "github.com/line/lfb-sdk/x/gov/legacy/v036"
+	v040gov "github.com/line/lfb-sdk/x/gov/legacy/v040"
+	v036params "github.com/line/lfb-sdk/x/params/legacy/v036"
+	v038upgrade "github.com/line/lfb-sdk/x/upgrade/legacy/v038"
 )
 
 func TestMigrate(t *testing.T) {
@@ -103,7 +103,7 @@ func TestMigrate(t *testing.T) {
 	"proposals": [
 		{
 			"content": {
-				"@type": "/lbm.gov.v1beta1.TextProposal",
+				"@type": "/lfb.gov.v1beta1.TextProposal",
 				"description": "bar_text",
 				"title": "foo_text"
 			},
@@ -123,7 +123,7 @@ func TestMigrate(t *testing.T) {
 		},
 		{
 			"content": {
-				"@type": "/lbm.distribution.v1beta1.CommunityPoolSpendProposal",
+				"@type": "/lfb.distribution.v1beta1.CommunityPoolSpendProposal",
 				"amount": [
 					{
 						"amount": "2",
@@ -150,7 +150,7 @@ func TestMigrate(t *testing.T) {
 		},
 		{
 			"content": {
-				"@type": "/lbm.upgrade.v1beta1.CancelSoftwareUpgradeProposal",
+				"@type": "/lfb.upgrade.v1beta1.CancelSoftwareUpgradeProposal",
 				"description": "bar_cancel_upgrade",
 				"title": "foo_cancel_upgrade"
 			},
@@ -170,7 +170,7 @@ func TestMigrate(t *testing.T) {
 		},
 		{
 			"content": {
-				"@type": "/lbm.upgrade.v1beta1.SoftwareUpgradeProposal",
+				"@type": "/lfb.upgrade.v1beta1.SoftwareUpgradeProposal",
 				"description": "bar_software_upgrade",
 				"plan": {
 					"height": "123",
@@ -197,7 +197,7 @@ func TestMigrate(t *testing.T) {
 		},
 		{
 			"content": {
-				"@type": "/lbm.params.v1beta1.ParameterChangeProposal",
+				"@type": "/lfb.params.v1beta1.ParameterChangeProposal",
 				"changes": [
 					{
 						"key": "foo_param_change_key",

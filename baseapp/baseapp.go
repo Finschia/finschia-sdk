@@ -14,12 +14,12 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/snapshots"
-	"github.com/line/lbm-sdk/v2/store"
-	"github.com/line/lbm-sdk/v2/store/rootmulti"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/snapshots"
+	"github.com/line/lfb-sdk/store"
+	"github.com/line/lfb-sdk/store/rootmulti"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 var (

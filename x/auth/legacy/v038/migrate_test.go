@@ -4,10 +4,10 @@ import (
 	"testing"
 	"time"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v034auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v034"
-	v036auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v036"
-	v036genaccounts "github.com/line/lbm-sdk/v2/x/genaccounts/legacy/v036"
+	sdk "github.com/line/lfb-sdk/types"
+	v034auth "github.com/line/lfb-sdk/x/auth/legacy/v034"
+	v036auth "github.com/line/lfb-sdk/x/auth/legacy/v036"
+	v036genaccounts "github.com/line/lfb-sdk/x/genaccounts/legacy/v036"
 
 	"github.com/stretchr/testify/require"
 )

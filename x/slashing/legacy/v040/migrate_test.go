@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v039slashing "github.com/line/lbm-sdk/v2/x/slashing/legacy/v039"
-	v040slashing "github.com/line/lbm-sdk/v2/x/slashing/legacy/v040"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	v039slashing "github.com/line/lfb-sdk/x/slashing/legacy/v039"
+	v040slashing "github.com/line/lfb-sdk/x/slashing/legacy/v040"
 )
 
 func TestMigrate(t *testing.T) {

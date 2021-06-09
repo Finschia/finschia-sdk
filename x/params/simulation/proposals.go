@@ -1,9 +1,9 @@
 package simulation
 
 import (
-	simappparams "github.com/line/lbm-sdk/v2/simapp/params"
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	"github.com/line/lbm-sdk/v2/x/simulation"
+	simappparams "github.com/line/lfb-sdk/simapp/params"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
+	"github.com/line/lfb-sdk/x/simulation"
 )
 
 // OpWeightSubmitParamChangeProposal app params key for param change proposal

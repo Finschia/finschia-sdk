@@ -7,16 +7,16 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	"github.com/line/lbm-sdk/v2/x/bank"
-	bankkeeper "github.com/line/lbm-sdk/v2/x/bank/keeper"
-	"github.com/line/lbm-sdk/v2/x/bank/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lfb-sdk/x/bank"
+	bankkeeper "github.com/line/lfb-sdk/x/bank/keeper"
+	"github.com/line/lfb-sdk/x/bank/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 func TestInvalidMsg(t *testing.T) {

@@ -8,11 +8,11 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/server"
-	"github.com/line/lbm-sdk/v2/x/genutil"
-	"github.com/line/lbm-sdk/v2/x/genutil/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/server"
+	"github.com/line/lfb-sdk/x/genutil"
+	"github.com/line/lfb-sdk/x/genutil/types"
 )
 
 const flagGenTxDir = "gentx-dir"

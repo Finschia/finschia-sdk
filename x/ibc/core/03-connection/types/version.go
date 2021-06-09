@@ -3,8 +3,8 @@ package types
 import (
 	"strings"
 
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 var (

@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/gov/types"
-	"github.com/line/lbm-sdk/v2/x/staking"
-	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lfb-sdk/x/staking"
+	stakingkeeper "github.com/line/lfb-sdk/x/staking/keeper"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 var (

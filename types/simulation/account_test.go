@@ -7,8 +7,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/simulation"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/simulation"
 )
 
 func TestRandomAccounts(t *testing.T) {

@@ -1,10 +1,10 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 )
 
 // IBCModule defines an interface that implements all the callbacks

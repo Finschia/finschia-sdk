@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/x/bank/types"
 )
 
 func TestMetadataValidate(t *testing.T) {

@@ -1,8 +1,8 @@
 package types
 
 import (
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 // RegisterInterfaces registers the commitment interfaces to protobuf Any.

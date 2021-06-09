@@ -5,9 +5,9 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/baseapp"
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/baseapp"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 type WeightedProposalContent interface {

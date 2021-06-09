@@ -2,11 +2,11 @@ syntax = "proto3";
 package ibc.applications.transfer.v1;
 
 import "gogoproto/gogo.proto";
-import "lbm/base/query/v1beta1/pagination.proto";
+import "lfb/base/query/v1beta1/pagination.proto";
 import "ibc/applications/transfer/v1/transfer.proto";
 import "google/api/annotations.proto";
 
-option go_package = "github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types";
+option go_package = "github.com/line/lfb-sdk/x/ibc/applications/transfer/types";
 
 // Query provides defines the gRPC querier service.
 service Query {
@@ -44,7 +44,7 @@ message QueryDenomTraceResponse {
 // method
 message QueryDenomTracesRequest {
   // pagination defines an optional pagination for the request.
-  lbm.base.query.v1beta1.PageRequest pagination = 1;
+  lfb.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryConnectionsResponse is the response type for the Query/DenomTraces RPC
@@ -53,7 +53,7 @@ message QueryDenomTracesResponse {
   // denom_traces returns all denominations trace information.
   repeated DenomTrace denom_traces = 1 [(gogoproto.castrepeated) = "Traces", (gogoproto.nullable) = false];
   // pagination defines the pagination in the response.
-  lbm.base.query.v1beta1.PageResponse pagination = 2;
+  lfb.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.

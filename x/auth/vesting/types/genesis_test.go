@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	sdk "github.com/line/lfb-sdk/types"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
 )
 
 var (

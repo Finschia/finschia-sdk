@@ -3,7 +3,7 @@ package cosmwasm.wasm.v1beta1;
 
 import "gogoproto/gogo.proto";
 
-option go_package                      = "github.com/line/lbm-sdk/v2/x/wasm/internal/types";
+option go_package                      = "github.com/line/lfb-sdk/x/wasm/internal/types";
 option (gogoproto.goproto_getters_all) = false;
 
 // MsgIBCSend

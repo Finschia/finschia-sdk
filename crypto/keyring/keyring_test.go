@@ -10,13 +10,13 @@ import (
 	bip39 "github.com/cosmos/go-bip39"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/crypto/keys/multisig"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/crypto"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/crypto/keys/multisig"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 const (

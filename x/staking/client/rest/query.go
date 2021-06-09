@@ -8,11 +8,11 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/line/lbm-sdk/v2/client"
-	clientrest "github.com/line/lbm-sdk/v2/client/rest"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/client"
+	clientrest "github.com/line/lfb-sdk/client/rest"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 func registerQueryRoutes(clientCtx client.Context, r *mux.Router) {

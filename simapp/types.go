@@ -3,10 +3,10 @@ package simapp
 import (
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/server/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/module"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/server/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/module"
 )
 
 // App implements the common methods for a Cosmos SDK-based application

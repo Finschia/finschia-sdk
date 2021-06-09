@@ -2,10 +2,10 @@ syntax = "proto3";
 package cosmwasm.wasm.v1beta1;
 
 import "gogoproto/gogo.proto";
-import "lbm/base/v1beta1/coin.proto";
+import "lfb/base/v1beta1/coin.proto";
 import "types.proto";
 
-option go_package                       = "github.com/line/lbm-sdk/v2/x/wasm/internal/types";
+option go_package                       = "github.com/line/lfb-sdk/x/wasm/internal/types";
 option (gogoproto.goproto_stringer_all) = false;
 option (gogoproto.goproto_getters_all)  = false;
 option (gogoproto.equal_all)            = true;
@@ -45,8 +45,8 @@ message InstantiateContractProposal {
   // InitMsg json encoded message to be passed to the contract on instantiation
   bytes init_msg = 7 [(gogoproto.casttype) = "encoding/json.RawMessage"];
   // Funds coins that are transferred to the contract on instantiation
-  repeated lbm.base.v1beta1.Coin funds = 8
-      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lbm-sdk/v2/types.Coins"];
+  repeated lfb.base.v1beta1.Coin funds = 8
+      [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "github.com/line/lfb-sdk/types.Coins"];
 }
 
 // MigrateContractProposal gov proposal content type to migrate a contract.

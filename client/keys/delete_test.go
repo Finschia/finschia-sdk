@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	"github.com/line/lbm-sdk/v2/testutil"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/keyring"
+	"github.com/line/lfb-sdk/testutil"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func Test_runDeleteCmd(t *testing.T) {

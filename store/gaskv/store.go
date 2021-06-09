@@ -4,8 +4,8 @@ import (
 	"io"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/store/types"
-	"github.com/line/lbm-sdk/v2/telemetry"
+	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lfb-sdk/telemetry"
 )
 
 var _ types.KVStore = &Store{}

@@ -3,12 +3,12 @@ package ante_test
 import (
 	"strings"
 
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/crypto/types/multisig"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/ante"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/crypto/types/multisig"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/ante"
 )
 
 func (suite *AnteTestSuite) TestValidateBasic() {

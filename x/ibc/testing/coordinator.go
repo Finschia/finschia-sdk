@@ -9,10 +9,10 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	sdk "github.com/line/lfb-sdk/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 var (

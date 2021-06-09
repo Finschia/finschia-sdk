@@ -4,17 +4,17 @@ import (
 	"fmt"
 	"testing"
 
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 
-	"github.com/line/lbm-sdk/v2/types/tx"
-	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lfb-sdk/types/tx"
+	signingtypes "github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/signing"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/testutil/testdata"
 )
 
 func TestDefaultTxDecoderError(t *testing.T) {

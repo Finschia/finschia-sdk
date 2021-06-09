@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/gov/client/utils"
+	"github.com/line/lfb-sdk/x/gov/client/utils"
 )
 
 func TestNormalizeProposalStatus(t *testing.T) {

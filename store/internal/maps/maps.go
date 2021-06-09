@@ -7,7 +7,7 @@ import (
 	"github.com/line/ostracon/crypto/tmhash"
 	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	"github.com/line/lbm-sdk/v2/types/kv"
+	"github.com/line/lfb-sdk/types/kv"
 )
 
 // merkleMap defines a merkle-ized tree from a map. Leave values are treated as

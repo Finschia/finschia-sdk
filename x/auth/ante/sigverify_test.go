@@ -3,20 +3,20 @@ package ante_test
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/crypto/types/multisig"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/ante"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/crypto/types/multisig"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/ante"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/x/auth/types"
 )
 
 func (suite *AnteTestSuite) TestSetPubKey() {
@@ -184,10 +184,10 @@ func (suite *AnteTestSuite) TestSigVerification() {
 
 // This test is exactly like the one above, but we set the codec explicitly to
 // Amino.
-// Once https://github.com/line/lbm-sdk/v2/issues/6190 is in, we can remove
+// Once https://github.com/line/lfb-sdk/issues/6190 is in, we can remove
 // this, since it'll be handled by the test matrix.
 // In the meantime, we want to make double-sure amino compatibility works.
-// ref: https://github.com/line/lbm-sdk/v2/issues/7229
+// ref: https://github.com/line/lfb-sdk/issues/7229
 func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 	suite.app, suite.ctx = createTestApp(true)
 	suite.ctx = suite.ctx.WithBlockHeight(1)

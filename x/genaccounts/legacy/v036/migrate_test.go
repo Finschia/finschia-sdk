@@ -5,12 +5,12 @@ import (
 
 	"github.com/line/ostracon/crypto"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/types"
-	v034distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v034"
-	v034accounts "github.com/line/lbm-sdk/v2/x/genaccounts/legacy/v034"
-	v034gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v034"
-	v034staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v034"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/types"
+	v034distr "github.com/line/lfb-sdk/x/distribution/legacy/v034"
+	v034accounts "github.com/line/lfb-sdk/x/genaccounts/legacy/v034"
+	v034gov "github.com/line/lfb-sdk/x/gov/legacy/v034"
+	v034staking "github.com/line/lfb-sdk/x/staking/legacy/v034"
 
 	"github.com/stretchr/testify/require"
 )

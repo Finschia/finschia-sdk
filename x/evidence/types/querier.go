@@ -3,7 +3,7 @@ package types
 import (
 	ostbytes "github.com/line/ostracon/libs/bytes"
 
-	query "github.com/line/lbm-sdk/v2/types/query"
+	query "github.com/line/lfb-sdk/types/query"
 )
 
 // Querier routes for the evidence module

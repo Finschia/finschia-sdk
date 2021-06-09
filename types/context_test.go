@@ -12,10 +12,10 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/store"
-	"github.com/line/lbm-sdk/v2/tests/mocks"
-	"github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/store"
+	"github.com/line/lfb-sdk/tests/mocks"
+	"github.com/line/lfb-sdk/types"
 )
 
 type contextTestSuite struct {

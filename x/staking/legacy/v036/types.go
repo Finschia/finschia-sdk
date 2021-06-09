@@ -5,10 +5,10 @@ package v036
 import (
 	"time"
 
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v034staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v034"
+	"github.com/line/lfb-sdk/codec/legacy"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	v034staking "github.com/line/lfb-sdk/x/staking/legacy/v034"
 )
 
 const (

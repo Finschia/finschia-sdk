@@ -6,7 +6,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	cryptokeyring "github.com/line/lbm-sdk/v2/crypto/keyring"
+	cryptokeyring "github.com/line/lfb-sdk/crypto/keyring"
 )
 
 // available output formats.

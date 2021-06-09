@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/jsonpb"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	paramtypes "github.com/line/lfb-sdk/x/params/types"
 	"github.com/pkg/errors"
 	"gopkg.in/yaml.v2"
 )

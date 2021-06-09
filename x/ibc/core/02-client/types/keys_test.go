@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 )
 
 // tests ParseClientIdentifier and IsValidClientID

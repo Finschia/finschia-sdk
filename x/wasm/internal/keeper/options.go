@@ -1,6 +1,6 @@
 package keeper
 
-import "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+import "github.com/line/lfb-sdk/x/wasm/internal/types"
 
 type optsFn func(*Keeper)
 

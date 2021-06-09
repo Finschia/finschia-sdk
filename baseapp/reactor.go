@@ -5,8 +5,8 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 func (app *BaseApp) startReactors() {

@@ -11,11 +11,11 @@ import (
 	"strconv"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 )

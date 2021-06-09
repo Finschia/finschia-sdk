@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/params/types"
+	"github.com/line/lfb-sdk/x/params/types"
 )
 
 func TestKeyTable(t *testing.T) {

@@ -1,0 +1,14 @@
+syntax = "proto3";
+package lfb.crisis.v1beta1;
+
+option go_package = "github.com/line/lfb-sdk/x/crisis/types";
+
+import "gogoproto/gogo.proto";
+import "lfb/base/v1beta1/coin.proto";
+
+// GenesisState defines the crisis module's genesis state.
+message GenesisState {
+  // constant_fee is the fee used to verify the invariant in the crisis
+  // module.
+  lfb.base.v1beta1.Coin constant_fee = 3 [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"constant_fee\""];
+}

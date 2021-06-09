@@ -3,8 +3,8 @@ package tendermint
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/client/cli"
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/client/cli"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
 )
 
 // Name returns the IBC client name

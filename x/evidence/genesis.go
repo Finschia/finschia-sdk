@@ -5,11 +5,11 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/evidence/exported"
-	"github.com/line/lbm-sdk/v2/x/evidence/keeper"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/evidence/exported"
+	"github.com/line/lfb-sdk/x/evidence/keeper"
+	"github.com/line/lfb-sdk/x/evidence/types"
 )
 
 // InitGenesis initializes the evidence module's state from a provided genesis

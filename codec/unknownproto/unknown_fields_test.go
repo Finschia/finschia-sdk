@@ -8,8 +8,8 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
+	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/testutil/testdata"
 )
 
 func TestRejectUnknownFieldsRepeated(t *testing.T) {
@@ -651,7 +651,7 @@ func TestRejectUnknownFieldsFlat(t *testing.T) {
 	}
 }
 
-// Issue https://github.com/line/lbm-sdk/v2/issues/7222, we need to ensure that repeated
+// Issue https://github.com/line/lfb-sdk/issues/7222, we need to ensure that repeated
 // uint64 are recognized as packed.
 func TestPackedEncoding(t *testing.T) {
 	data := testdata.TestRepeatedUints{Nums: []uint64{12, 13}}

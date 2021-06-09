@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/testutil"
+	"github.com/line/lfb-sdk/testutil"
 )
 
 func TestParseSubmitProposalFlags(t *testing.T) {

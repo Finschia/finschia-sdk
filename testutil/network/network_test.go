@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/testutil/network"
+	"github.com/line/lfb-sdk/testutil/network"
 )
 
 type IntegrationTestSuite struct {

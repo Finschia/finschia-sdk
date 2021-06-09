@@ -1,8 +1,8 @@
 package v040
 
 import (
-	v039crisis "github.com/line/lbm-sdk/v2/x/crisis/legacy/v039"
-	v040crisis "github.com/line/lbm-sdk/v2/x/crisis/types"
+	v039crisis "github.com/line/lfb-sdk/x/crisis/legacy/v039"
+	v040crisis "github.com/line/lfb-sdk/x/crisis/types"
 )
 
 // Migrate accepts exported v0.39 x/crisis genesis state and

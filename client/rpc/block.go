@@ -9,10 +9,10 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	"github.com/line/lbm-sdk/v2/types/rest"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/codec/legacy"
+	"github.com/line/lfb-sdk/types/rest"
 )
 
 //BlockCommand returns the verified block data for a given heights

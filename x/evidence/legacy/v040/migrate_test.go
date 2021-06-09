@@ -5,11 +5,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v038evidence "github.com/line/lbm-sdk/v2/x/evidence/legacy/v038"
-	v040evidence "github.com/line/lbm-sdk/v2/x/evidence/legacy/v040"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	v038evidence "github.com/line/lfb-sdk/x/evidence/legacy/v038"
+	v040evidence "github.com/line/lfb-sdk/x/evidence/legacy/v040"
 )
 
 func TestMigrate(t *testing.T) {
@@ -32,7 +32,7 @@ func TestMigrate(t *testing.T) {
 	}
 
 	migrated := v040evidence.Migrate(evidenceGenState)
-	expected := `{"evidence":[{"@type":"/lbm.evidence.v1beta1.Equivocation","height":"20","time":"0001-01-01T00:00:00Z","power":"100","consensus_address":"linkvalcons19d880rl0u36uc4yhdjrsp5yculgd4ak7326mca"}]}`
+	expected := `{"evidence":[{"@type":"/lfb.evidence.v1beta1.Equivocation","height":"20","time":"0001-01-01T00:00:00Z","power":"100","consensus_address":"linkvalcons19d880rl0u36uc4yhdjrsp5yculgd4ak7326mca"}]}`
 
 	bz, err := clientCtx.JSONMarshaler.MarshalJSON(migrated)
 	require.NoError(t, err)

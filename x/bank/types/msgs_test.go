@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func TestMsgSendRoute(t *testing.T) {
@@ -61,7 +61,7 @@ func TestMsgSendGetSignBytes(t *testing.T) {
 	var msg = NewMsgSend(addr1, addr2, coins)
 	res := msg.GetSignBytes()
 
-	expected := `{"type":"lbm-sdk/MsgSend","value":{"amount":[{"amount":"10","denom":"atom"}],"from_address":"link1d9h8qat5fnwd3e","to_address":"link1da6hgur4ws537sex"}}`
+	expected := `{"type":"lfb-sdk/MsgSend","value":{"amount":[{"amount":"10","denom":"atom"}],"from_address":"link1d9h8qat5fnwd3e","to_address":"link1da6hgur4ws537sex"}}`
 	require.Equal(t, expected, string(res))
 }
 
@@ -233,7 +233,7 @@ func TestMsgMultiSendGetSignBytes(t *testing.T) {
 	}
 	res := msg.GetSignBytes()
 
-	expected := `{"type":"lbm-sdk/MsgMultiSend","value":{"inputs":[{"address":"link1d9h8qat5fnwd3e","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"link1da6hgur4ws537sex","coins":[{"amount":"10","denom":"atom"}]}]}}`
+	expected := `{"type":"lfb-sdk/MsgMultiSend","value":{"inputs":[{"address":"link1d9h8qat5fnwd3e","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"link1da6hgur4ws537sex","coins":[{"amount":"10","denom":"atom"}]}]}}`
 	require.Equal(t, expected, string(res))
 }
 

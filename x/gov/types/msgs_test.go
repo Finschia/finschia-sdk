@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 var (
@@ -64,7 +64,7 @@ func TestMsgDepositGetSignBytes(t *testing.T) {
 	msg := NewMsgDeposit(addr, 0, coinsPos)
 	res := msg.GetSignBytes()
 
-	expected := `{"type":"lbm-sdk/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"link1v9jxgu33p9vj2k","proposal_id":"0"}}`
+	expected := `{"type":"lfb-sdk/MsgDeposit","value":{"amount":[{"amount":"1000","denom":"stake"}],"depositor":"link1v9jxgu33p9vj2k","proposal_id":"0"}}`
 	require.Equal(t, expected, string(res))
 }
 
@@ -127,6 +127,6 @@ func TestMsgSubmitProposal_GetSignBytes(t *testing.T) {
 		bz = msg.GetSignBytes()
 	})
 	require.Equal(t,
-		`{"type":"lbm-sdk/MsgSubmitProposal","value":{"content":{"type":"lbm-sdk/TextProposal","value":{"description":"abcd","title":"test"}},"initial_deposit":[]}}`,
+		`{"type":"lfb-sdk/MsgSubmitProposal","value":{"content":{"type":"lfb-sdk/TextProposal","value":{"description":"abcd","title":"test"}},"initial_deposit":[]}}`,
 		string(bz))
 }

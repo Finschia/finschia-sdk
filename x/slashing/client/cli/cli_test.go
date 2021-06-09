@@ -11,11 +11,11 @@ import (
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/client/flags"
-	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/slashing/client/cli"
+	"github.com/line/lfb-sdk/client/flags"
+	clitestutil "github.com/line/lfb-sdk/testutil/cli"
+	"github.com/line/lfb-sdk/testutil/network"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/slashing/client/cli"
 )
 
 type IntegrationTestSuite struct {

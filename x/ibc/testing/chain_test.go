@@ -6,8 +6,8 @@ import (
 	osttypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
-	"github.com/line/lbm-sdk/v2/x/ibc/testing/mock"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	"github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
 
 func TestCreateSortedSignerArray(t *testing.T) {

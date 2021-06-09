@@ -3,11 +3,11 @@ package params
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
-	"github.com/line/lbm-sdk/v2/x/params/keeper"
-	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lfb-sdk/x/params/keeper"
+	"github.com/line/lfb-sdk/x/params/types/proposal"
 )
 
 // NewParamChangeProposalHandler creates a new governance Handler for a ParamChangeProposal

@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // NewGenesisState creates a new GenesisState object

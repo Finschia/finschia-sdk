@@ -1,14 +1,14 @@
 package ante
 
 import (
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	"github.com/line/lbm-sdk/v2/crypto/keys/multisig"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
-	authsigning "github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lfb-sdk/codec/legacy"
+	"github.com/line/lfb-sdk/crypto/keys/multisig"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	authsigning "github.com/line/lfb-sdk/x/auth/signing"
 )
 
 // ValidateBasicDecorator will call tx.ValidateBasic and return any non-nil error.

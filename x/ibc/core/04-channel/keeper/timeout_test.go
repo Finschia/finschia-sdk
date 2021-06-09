@@ -3,12 +3,12 @@ package keeper_test
 import (
 	"fmt"
 
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 // TestTimeoutPacket test the TimeoutPacket call on chainA by ensuring the timeout has passed

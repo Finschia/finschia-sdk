@@ -17,14 +17,14 @@ import (
 	"github.com/pkg/errors"
 	"github.com/tendermint/crypto/bcrypt"
 
-	"github.com/line/lbm-sdk/v2/client/input"
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	"github.com/line/lbm-sdk/v2/crypto"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/ledger"
-	"github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/client/input"
+	"github.com/line/lfb-sdk/codec/legacy"
+	"github.com/line/lfb-sdk/crypto"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/ledger"
+	"github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // Backend options for Keyring

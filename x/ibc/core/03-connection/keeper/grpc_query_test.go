@@ -3,13 +3,13 @@ package keeper_test
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/query"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/query"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 func (suite *KeeperTestSuite) TestQueryConnection() {

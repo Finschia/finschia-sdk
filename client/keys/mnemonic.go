@@ -8,7 +8,7 @@ import (
 	bip39 "github.com/cosmos/go-bip39"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client/input"
+	"github.com/line/lfb-sdk/client/input"
 )
 
 const (

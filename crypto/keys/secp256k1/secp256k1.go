@@ -12,9 +12,9 @@ import (
 	"github.com/line/ostracon/crypto"
 	"golang.org/x/crypto/ripemd160" // nolint: staticcheck // necessary for Bitcoin address format
 
-	"github.com/line/lbm-sdk/v2/codec"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/codec"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/types/errors"
 )
 
 var _ cryptotypes.PrivKey = &PrivKey{}

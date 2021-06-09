@@ -4,7 +4,7 @@ import (
 	"net/url"
 	"regexp"
 
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 const (

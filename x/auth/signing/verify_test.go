@@ -6,17 +6,17 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/crypto/types/multisig"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/auth/ante"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lfb-sdk/codec"
+	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/crypto/types/multisig"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/auth/ante"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/x/auth/signing"
+	"github.com/line/lfb-sdk/x/auth/types"
 )
 
 func TestVerifySignature(t *testing.T) {
@@ -34,7 +34,7 @@ func TestVerifySignature(t *testing.T) {
 	cdc := codec.NewLegacyAmino()
 	sdk.RegisterLegacyAminoCodec(cdc)
 	types.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "lbm-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "lfb-sdk/Test", nil)
 
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr)
 	_ = app.AccountKeeper.NewAccountWithAddress(ctx, addr1)

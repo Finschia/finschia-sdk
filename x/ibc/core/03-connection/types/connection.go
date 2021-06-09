@@ -1,10 +1,10 @@
 package types
 
 import (
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 var _ exported.ConnectionI = (*ConnectionEnd)(nil)

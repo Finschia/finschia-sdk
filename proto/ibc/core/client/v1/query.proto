@@ -1,13 +1,13 @@
 syntax = "proto3";
 package ibc.core.client.v1;
 
-import "lbm/base/query/v1beta1/pagination.proto";
+import "lfb/base/query/v1beta1/pagination.proto";
 import "ibc/core/client/v1/client.proto";
 import "google/protobuf/any.proto";
 import "google/api/annotations.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types";
+option go_package = "github.com/line/lfb-sdk/x/ibc/core/02-client/types";
 
 // Query provides defines the gRPC querier service
 service Query {
@@ -63,7 +63,7 @@ message QueryClientStateResponse {
 // method
 message QueryClientStatesRequest {
   // pagination request
-  lbm.base.query.v1beta1.PageRequest pagination = 1;
+  lfb.base.query.v1beta1.PageRequest pagination = 1;
 }
 
 // QueryClientStatesResponse is the response type for the Query/ClientStates RPC
@@ -73,7 +73,7 @@ message QueryClientStatesResponse {
   repeated IdentifiedClientState client_states = 1
       [(gogoproto.nullable) = false, (gogoproto.castrepeated) = "IdentifiedClientStates"];
   // pagination response
-  lbm.base.query.v1beta1.PageResponse pagination = 2;
+  lfb.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryConsensusStateRequest is the request type for the Query/ConsensusState
@@ -108,7 +108,7 @@ message QueryConsensusStatesRequest {
   // client identifier
   string client_id = 1;
   // pagination request
-  lbm.base.query.v1beta1.PageRequest pagination = 2;
+  lfb.base.query.v1beta1.PageRequest pagination = 2;
 }
 
 // QueryConsensusStatesResponse is the response type for the
@@ -117,7 +117,7 @@ message QueryConsensusStatesResponse {
   // consensus states associated with the identifier
   repeated ConsensusStateWithHeight consensus_states = 1 [(gogoproto.nullable) = false];
   // pagination response
-  lbm.base.query.v1beta1.PageResponse pagination = 2;
+  lfb.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 // QueryClientParamsRequest is the request type for the Query/ClientParams RPC method.

@@ -6,7 +6,7 @@ import (
 
 	ics23 "github.com/confio/ics23/go"
 
-	sdkmaps "github.com/line/lbm-sdk/v2/store/internal/maps"
+	sdkmaps "github.com/line/lfb-sdk/store/internal/maps"
 )
 
 // TendermintSpec constrains the format from ics23-tendermint (crypto/merkle SimpleProof)

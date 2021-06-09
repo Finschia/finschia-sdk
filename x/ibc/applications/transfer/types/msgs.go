@@ -3,10 +3,10 @@ package types
 import (
 	"strings"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 )
 
 // msg types

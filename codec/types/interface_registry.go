@@ -36,7 +36,7 @@ type InterfaceRegistry interface {
 	// as implementations of iface.
 	//
 	// Ex:
-	//   registry.RegisterInterface("lbm.base.v1beta1.Msg", (*sdk.Msg)(nil))
+	//   registry.RegisterInterface("lfb.base.v1beta1.Msg", (*sdk.Msg)(nil))
 	RegisterInterface(protoName string, iface interface{}, impls ...proto.Message)
 
 	// RegisterImplementations registers impls as concrete implementations of

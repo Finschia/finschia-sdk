@@ -6,14 +6,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v034 "github.com/line/lbm-sdk/v2/x/auth/legacy/v034"
-	v038auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v038"
-	v039auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v039"
-	v040auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v040"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	v034 "github.com/line/lfb-sdk/x/auth/legacy/v034"
+	v038auth "github.com/line/lfb-sdk/x/auth/legacy/v038"
+	v039auth "github.com/line/lfb-sdk/x/auth/legacy/v039"
+	v040auth "github.com/line/lfb-sdk/x/auth/legacy/v040"
 )
 
 func TestMigrate(t *testing.T) {
@@ -86,22 +86,22 @@ func TestMigrate(t *testing.T) {
 	expected := `{
   "accounts": [
     {
-      "@type": "/lbm.auth.v1beta1.BaseAccount",
+      "@type": "/lfb.auth.v1beta1.BaseAccount",
       "account_number": "1",
       "address": "link13syh7de9xndv9wmklccpfvc0d8dcyvayq76qph",
       "pub_key": {
-        "@type": "/lbm.crypto.secp256k1.PubKey",
+        "@type": "/lfb.crypto.secp256k1.PubKey",
         "key": "A8oWyJkohwy8XZ0Df92jFMBTtTPMvYJplYIrlEHTKPYk"
       },
       "sequence": "0"
     },
     {
-      "@type": "/lbm.auth.v1beta1.ModuleAccount",
+      "@type": "/lfb.auth.v1beta1.ModuleAccount",
       "base_account": {
         "account_number": "1",
         "address": "link1v57fx2l2rt6ehujuu99u2fw05779m5e2fg4q3l",
         "pub_key": {
-          "@type": "/lbm.crypto.secp256k1.PubKey",
+          "@type": "/lfb.crypto.secp256k1.PubKey",
           "key": "AruDygh5HprMOpHOEato85dLgAsybMJVyxBGUa3KuWCr"
         },
         "sequence": "0"
@@ -112,12 +112,12 @@ func TestMigrate(t *testing.T) {
       ]
     },
     {
-      "@type": "/lbm.vesting.v1beta1.BaseVestingAccount",
+      "@type": "/lfb.vesting.v1beta1.BaseVestingAccount",
       "base_account": {
         "account_number": "1",
         "address": "link18hnp9fjflrkeeqn4gmhjhzljusxzmjeak9d6dx",
         "pub_key": {
-          "@type": "/lbm.crypto.secp256k1.PubKey",
+          "@type": "/lfb.crypto.secp256k1.PubKey",
           "key": "A5aEFDIdQHh0OYmNXNv1sHBNURDWWgVkXC2IALcWLLwJ"
         },
         "sequence": "0"
@@ -143,13 +143,13 @@ func TestMigrate(t *testing.T) {
       ]
     },
     {
-      "@type": "/lbm.vesting.v1beta1.ContinuousVestingAccount",
+      "@type": "/lfb.vesting.v1beta1.ContinuousVestingAccount",
       "base_vesting_account": {
         "base_account": {
           "account_number": "1",
           "address": "link1t9kvvejvk6hjtddx6antck39s206csqdfw35ze",
           "pub_key": {
-            "@type": "/lbm.crypto.secp256k1.PubKey",
+            "@type": "/lfb.crypto.secp256k1.PubKey",
             "key": "AoXDzxwTnljemHxfnJcwrKqODBP6Q2l3K3U3UhVDzyah"
           },
           "sequence": "0"
@@ -167,13 +167,13 @@ func TestMigrate(t *testing.T) {
       "start_time": "1580309974"
     },
     {
-      "@type": "/lbm.vesting.v1beta1.PeriodicVestingAccount",
+      "@type": "/lfb.vesting.v1beta1.PeriodicVestingAccount",
       "base_vesting_account": {
         "base_account": {
           "account_number": "1",
           "address": "link1s4ss9zquz7skvguechzlk3na635jdrec2ps2lz",
           "pub_key": {
-            "@type": "/lbm.crypto.secp256k1.PubKey",
+            "@type": "/lfb.crypto.secp256k1.PubKey",
             "key": "A2a4P4TQ1OKzpfu0eKnCoEtmTvoiclSx0G9higenUGws"
           },
           "sequence": "0"
@@ -202,13 +202,13 @@ func TestMigrate(t *testing.T) {
       ]
     },
     {
-      "@type": "/lbm.vesting.v1beta1.DelayedVestingAccount",
+      "@type": "/lfb.vesting.v1beta1.DelayedVestingAccount",
       "base_vesting_account": {
         "base_account": {
           "account_number": "1",
           "address": "link1mcc6rwrj4hswf8p9ct82c7lmf77w9tuk6sr4xa",
           "pub_key": {
-            "@type": "/lbm.crypto.secp256k1.PubKey",
+            "@type": "/lfb.crypto.secp256k1.PubKey",
             "key": "A4tuAfmZlhjK5cjp6ImR704miybHnITVNOyJORdDPFu3"
           },
           "sequence": "0"
@@ -225,7 +225,7 @@ func TestMigrate(t *testing.T) {
       }
     },
     {
-      "@type": "/lbm.auth.v1beta1.BaseAccount",
+      "@type": "/lfb.auth.v1beta1.BaseAccount",
       "account_number": "1",
       "address": "link16ydaqh0fcnh4qt7a3jme4mmztm2qel5ankpv58",
       "pub_key": null,

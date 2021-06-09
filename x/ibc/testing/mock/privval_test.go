@@ -7,7 +7,7 @@ import (
 	osttypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/testing/mock"
+	"github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
 
 const chainID = "testChain"

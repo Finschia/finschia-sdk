@@ -1,11 +1,11 @@
 package types_test
 
 import (
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/types"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 func (suite SoloMachineTestSuite) TestUnmarshalDataByType() {

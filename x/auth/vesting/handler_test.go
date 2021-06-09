@@ -6,10 +6,10 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/auth/vesting"
-	"github.com/line/lbm-sdk/v2/x/auth/vesting/types"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/auth/vesting"
+	"github.com/line/lfb-sdk/x/auth/vesting/types"
 )
 
 type HandlerTestSuite struct {

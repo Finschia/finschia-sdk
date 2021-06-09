@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/testutil"
-	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
-	"github.com/line/lbm-sdk/v2/x/genutil/client/cli"
+	"github.com/line/lfb-sdk/testutil"
+	clitestutil "github.com/line/lfb-sdk/testutil/cli"
+	"github.com/line/lfb-sdk/x/genutil/client/cli"
 )
 
 func TestGetMigrationCallback(t *testing.T) {

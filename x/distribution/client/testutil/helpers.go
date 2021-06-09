@@ -5,8 +5,8 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/client"
-	distrcli "github.com/line/lbm-sdk/v2/x/distribution/client/cli"
+	"github.com/line/lfb-sdk/client"
+	distrcli "github.com/line/lfb-sdk/x/distribution/client/cli"
 )
 
 func MsgWithdrawDelegatorRewardExec(clientCtx client.Context, valAddr fmt.Stringer, extraArgs ...string) ([]byte, error) {

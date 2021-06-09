@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // auth message types
@@ -20,7 +20,7 @@ func NewMsgEmpty(fromAddr sdk.AccAddress) *MsgEmpty {
 
 func NewServiceMsgEmpty(fromAddr sdk.AccAddress) sdk.ServiceMsg {
 	return sdk.ServiceMsg{
-		MethodName: "/lbm.auth.v1beta1.Msg/Empty",
+		MethodName: "/lfb.auth.v1beta1.Msg/Empty",
 		Request:    NewMsgEmpty(fromAddr),
 	}
 }

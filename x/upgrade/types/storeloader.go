@@ -1,9 +1,9 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/v2/baseapp"
-	store "github.com/line/lbm-sdk/v2/store/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/baseapp"
+	store "github.com/line/lfb-sdk/store/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // UpgradeStoreLoader is used to prepare baseapp with a fixed StoreLoader

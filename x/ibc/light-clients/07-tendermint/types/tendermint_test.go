@@ -9,13 +9,13 @@ import (
 	osttypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
-	ibctestingmock "github.com/line/lbm-sdk/v2/x/ibc/testing/mock"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	ibctestingmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
 
 const (

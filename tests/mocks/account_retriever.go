@@ -6,9 +6,9 @@ package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	client "github.com/line/lbm-sdk/v2/client"
-	types "github.com/line/lbm-sdk/v2/crypto/types"
-	types0 "github.com/line/lbm-sdk/v2/types"
+	client "github.com/line/lfb-sdk/client"
+	types "github.com/line/lfb-sdk/crypto/types"
+	types0 "github.com/line/lfb-sdk/types"
 	reflect "reflect"
 )
 

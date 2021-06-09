@@ -3,10 +3,10 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/x/distribution/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 // initialize starting info for a new delegation

@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	sdk "github.com/line/lfb-sdk/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 )
 
 // define constants used for testing
@@ -54,7 +54,7 @@ func TestMsgTransferType(t *testing.T) {
 
 func TestMsgTransferGetSignBytes(t *testing.T) {
 	msg := NewMsgTransfer(validPort, validChannel, coin, addr1, addr2, timeoutHeight, 0)
-	expected := fmt.Sprintf(`{"type":"lbm-sdk/MsgTransfer","value":{"receiver":"%s","sender":"%s","source_channel":"testchannel","source_port":"testportid","timeout_height":{"revision_height":"10"},"token":{"amount":"100","denom":"atom"}}}`, addr2, addr1)
+	expected := fmt.Sprintf(`{"type":"lfb-sdk/MsgTransfer","value":{"receiver":"%s","sender":"%s","source_channel":"testchannel","source_port":"testportid","timeout_height":{"revision_height":"10"},"token":{"amount":"100","denom":"atom"}}}`, addr2, addr1)
 	require.NotPanics(t, func() {
 		res := msg.GetSignBytes()
 		require.Equal(t, expected, string(res))

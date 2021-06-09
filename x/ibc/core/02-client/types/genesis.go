@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"sort"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 var (

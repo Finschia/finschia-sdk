@@ -3,9 +3,9 @@ package keys
 import (
 	"bufio"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/input"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/input"
+	"github.com/line/lfb-sdk/crypto/keyring"
 
 	"github.com/spf13/cobra"
 )

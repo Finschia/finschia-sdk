@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 // KeeperTestSuite is a testing suite to test keeper functions.

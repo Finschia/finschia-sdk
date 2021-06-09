@@ -1,15 +1,15 @@
 package v039
 
 import (
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	v038auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v038"
-	v039auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v039"
-	v036distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v036"
-	"github.com/line/lbm-sdk/v2/x/genutil/types"
-	v036gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v036"
-	v036params "github.com/line/lbm-sdk/v2/x/params/legacy/v036"
-	v038upgrade "github.com/line/lbm-sdk/v2/x/upgrade/legacy/v038"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	v038auth "github.com/line/lfb-sdk/x/auth/legacy/v038"
+	v039auth "github.com/line/lfb-sdk/x/auth/legacy/v039"
+	v036distr "github.com/line/lfb-sdk/x/distribution/legacy/v036"
+	"github.com/line/lfb-sdk/x/genutil/types"
+	v036gov "github.com/line/lfb-sdk/x/gov/legacy/v036"
+	v036params "github.com/line/lfb-sdk/x/params/legacy/v036"
+	v038upgrade "github.com/line/lfb-sdk/x/upgrade/legacy/v038"
 )
 
 // Migrate migrates exported state from v0.38 to a v0.39 genesis state.

@@ -5,10 +5,10 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/v2/telemetry"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/distribution/keeper"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
+	"github.com/line/lfb-sdk/telemetry"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/distribution/keeper"
+	"github.com/line/lfb-sdk/x/distribution/types"
 )
 
 // BeginBlocker sets the proposer for determining distribution during endblock

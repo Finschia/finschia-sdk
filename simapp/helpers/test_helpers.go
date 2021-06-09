@@ -4,12 +4,12 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/client"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/simulation"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	authsign "github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lfb-sdk/client"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/simulation"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	authsign "github.com/line/lfb-sdk/x/auth/signing"
 )
 
 // SimAppChainID hardcoded chainID for simulation

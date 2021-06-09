@@ -7,10 +7,10 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/v2/store/prefix"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/query"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/store/prefix"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/query"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 // Querier is used as Keeper will have duplicate methods if used directly, and gRPC names take precedence over keeper

@@ -1,17 +1,17 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	capabilitykeeper "github.com/line/lbm-sdk/v2/x/capability/keeper"
-	clientkeeper "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/keeper"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	connectionkeeper "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/keeper"
-	channelkeeper "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/keeper"
-	portkeeper "github.com/line/lbm-sdk/v2/x/ibc/core/05-port/keeper"
-	porttypes "github.com/line/lbm-sdk/v2/x/ibc/core/05-port/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/types"
-	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	capabilitykeeper "github.com/line/lfb-sdk/x/capability/keeper"
+	clientkeeper "github.com/line/lfb-sdk/x/ibc/core/02-client/keeper"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	connectionkeeper "github.com/line/lfb-sdk/x/ibc/core/03-connection/keeper"
+	channelkeeper "github.com/line/lfb-sdk/x/ibc/core/04-channel/keeper"
+	portkeeper "github.com/line/lfb-sdk/x/ibc/core/05-port/keeper"
+	porttypes "github.com/line/lfb-sdk/x/ibc/core/05-port/types"
+	"github.com/line/lfb-sdk/x/ibc/core/types"
+	paramtypes "github.com/line/lfb-sdk/x/params/types"
 )
 
 var _ types.QueryServer = (*Keeper)(nil)

@@ -8,14 +8,14 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/baseapp"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/query"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/slashing/testslashing"
-	"github.com/line/lbm-sdk/v2/x/slashing/types"
+	"github.com/line/lfb-sdk/baseapp"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/query"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/slashing/testslashing"
+	"github.com/line/lfb-sdk/x/slashing/types"
 )
 
 type SlashingTestSuite struct {

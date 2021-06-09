@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"time"
 
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
-	ibcmock "github.com/line/lbm-sdk/v2/x/ibc/testing/mock"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	ibcmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
 
 var defaultTimeoutHeight = clienttypes.NewHeight(0, 100000)

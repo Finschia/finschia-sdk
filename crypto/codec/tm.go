@@ -5,10 +5,10 @@ import (
 	"github.com/line/ostracon/crypto/encoding"
 	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // FromTmProtoPublicKey converts a TM's ostprotocrypto.PublicKey into our own PubKey.

@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
-	"github.com/line/lbm-sdk/v2/x/capability/simulation"
-	"github.com/line/lbm-sdk/v2/x/capability/types"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/kv"
+	"github.com/line/lfb-sdk/x/capability/simulation"
+	"github.com/line/lfb-sdk/x/capability/types"
 )
 
 func TestDecodeStore(t *testing.T) {

@@ -11,7 +11,7 @@ import (
 	proto "github.com/gogo/protobuf/proto"
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lfb-sdk/codec"
 )
 
 // ----------------------------------------------------------------------------

@@ -6,12 +6,12 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	gov "github.com/line/lbm-sdk/v2/x/gov/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	"github.com/line/lbm-sdk/v2/x/upgrade/types"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	gov "github.com/line/lfb-sdk/x/gov/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/upgrade/types"
 )
 
 type ProposalWrapper struct {

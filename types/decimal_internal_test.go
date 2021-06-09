@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lfb-sdk/codec"
 	"github.com/stretchr/testify/suite"
 )
 

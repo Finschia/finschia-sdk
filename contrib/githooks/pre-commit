@@ -31,7 +31,7 @@ if [[ $STAGED_GO_FILES != "" ]]; then
 
     gofmt -w -s $file
     misspell -w $file
-    goimports -w -local github.com/line/lbm-sdk/v2 $file
+    goimports -w -local github.com/line/lfb-sdk $file
     git add $file
 
   done

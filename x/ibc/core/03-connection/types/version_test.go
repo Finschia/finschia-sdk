@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	"github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 func TestValidateVersion(t *testing.T) {

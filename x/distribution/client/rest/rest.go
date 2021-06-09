@@ -5,13 +5,13 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/line/lbm-sdk/v2/client"
-	clientrest "github.com/line/lbm-sdk/v2/client/rest"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
-	govrest "github.com/line/lbm-sdk/v2/x/gov/client/rest"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lfb-sdk/client"
+	clientrest "github.com/line/lfb-sdk/client/rest"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/distribution/types"
+	govrest "github.com/line/lfb-sdk/x/gov/client/rest"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
 )
 
 func RegisterHandlers(clientCtx client.Context, rtr *mux.Router) {

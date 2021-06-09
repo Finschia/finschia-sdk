@@ -13,10 +13,10 @@ import (
 
 	"github.com/cosmos/go-bip39"
 
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	csecp256k1 "github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/testutil"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/crypto/hd"
+	csecp256k1 "github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/testutil"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // If ledger support (build tag) has been enabled, which implies a CGO dependency,

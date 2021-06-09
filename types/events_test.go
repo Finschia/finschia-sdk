@@ -8,9 +8,9 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/suite"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	testdata "github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	testdata "github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 type eventsTestSuite struct {

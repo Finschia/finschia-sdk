@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	gov "github.com/line/lbm-sdk/v2/x/gov/types"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	gov "github.com/line/lfb-sdk/x/gov/types"
 )
 
 const (
@@ -22,9 +22,9 @@ var _ codectypes.UnpackInterfacesMessage = SoftwareUpgradeProposal{}
 
 func init() {
 	gov.RegisterProposalType(ProposalTypeSoftwareUpgrade)
-	gov.RegisterProposalTypeCodec(&SoftwareUpgradeProposal{}, "lbm-sdk/SoftwareUpgradeProposal")
+	gov.RegisterProposalTypeCodec(&SoftwareUpgradeProposal{}, "lfb-sdk/SoftwareUpgradeProposal")
 	gov.RegisterProposalType(ProposalTypeCancelSoftwareUpgrade)
-	gov.RegisterProposalTypeCodec(&CancelSoftwareUpgradeProposal{}, "lbm-sdk/CancelSoftwareUpgradeProposal")
+	gov.RegisterProposalTypeCodec(&CancelSoftwareUpgradeProposal{}, "lfb-sdk/CancelSoftwareUpgradeProposal")
 }
 
 func (sup *SoftwareUpgradeProposal) GetTitle() string       { return sup.Title }

@@ -18,7 +18,7 @@ An input of a multiparty transfer
 // Input models transaction input.
 message Input {
   string   address                        = 1;
-  repeated lbm.base.v1beta1.Coin coins = 2;
+  repeated lfb.base.v1beta1.Coin coins = 2;
 }
 ```
 
@@ -30,7 +30,7 @@ An output of a multiparty transfer.
 // Output models transaction outputs.
 message Output {
   string   address                        = 1;
-  repeated lbm.base.v1beta1.Coin coins = 2;
+  repeated lfb.base.v1beta1.Coin coins = 2;
 }
 ```
 

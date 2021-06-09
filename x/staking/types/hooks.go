@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // combine multiple staking hooks, all hook functions are run in array sequence

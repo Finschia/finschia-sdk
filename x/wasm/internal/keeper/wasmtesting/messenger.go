@@ -3,7 +3,7 @@ package wasmtesting
 import (
 	"errors"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 )
 

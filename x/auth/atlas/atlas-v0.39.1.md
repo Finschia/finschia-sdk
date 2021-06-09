@@ -9,7 +9,7 @@ account types for an application, as well as AnteHandler and authentication logi
 
    ```go
    import (
-       "github.com/line/lbm-sdk/v2/x/auth"
+       "github.com/line/lfb-sdk/x/auth"
    )
    ```
 
@@ -103,7 +103,7 @@ Where ever you define the application `Codec`, be sure to register types via:
 
 ```go
 import (
-    "github.com/line/lbm-sdk/v2/x/auth/vesting"
+    "github.com/line/lfb-sdk/x/auth/vesting"
 )
 
 func MakeCodec() *codec.Codec {

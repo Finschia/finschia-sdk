@@ -5,14 +5,14 @@ import (
 
 	ics23 "github.com/confio/ics23/go"
 
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
-	ibcmock "github.com/line/lbm-sdk/v2/x/ibc/testing/mock"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	ibcmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
 
 const (

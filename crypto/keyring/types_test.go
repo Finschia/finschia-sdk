@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func Test_writeReadLedgerInfo(t *testing.T) {

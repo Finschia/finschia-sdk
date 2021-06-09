@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/line/lbm-sdk/v2/store/cache"
-	"github.com/line/lbm-sdk/v2/store/iavl"
+	"github.com/line/lfb-sdk/store/cache"
+	"github.com/line/lfb-sdk/store/iavl"
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/snapshots"
-	"github.com/line/lbm-sdk/v2/store"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/snapshots"
+	"github.com/line/lfb-sdk/store"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // File for storing in-package BaseApp optional functions,
