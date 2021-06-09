@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	"github.com/line/lbm-sdk/v2/x/auth/types"
-	"github.com/line/lbm-sdk/v2/x/simulation"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
+	"github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lfb-sdk/x/simulation"
 )
 
 const (

@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/mint/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/mint/types"
 )
 
 var _ types.QueryServer = Keeper{}

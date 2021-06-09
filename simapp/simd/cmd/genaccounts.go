@@ -8,17 +8,17 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	"github.com/line/lbm-sdk/v2/server"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	authvesting "github.com/line/lbm-sdk/v2/x/auth/vesting/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/genutil"
-	genutiltypes "github.com/line/lbm-sdk/v2/x/genutil/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/crypto/keyring"
+	"github.com/line/lfb-sdk/server"
+	sdk "github.com/line/lfb-sdk/types"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	authvesting "github.com/line/lfb-sdk/x/auth/vesting/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/genutil"
+	genutiltypes "github.com/line/lfb-sdk/x/genutil/types"
 )
 
 const (

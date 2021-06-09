@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 )
 
 // NewPacketState creates a new PacketState instance.

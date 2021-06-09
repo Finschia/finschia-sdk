@@ -8,14 +8,14 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/v2/store/prefix"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/query"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/store/prefix"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/query"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 )
 
 var _ types.QueryServer = (*Keeper)(nil)

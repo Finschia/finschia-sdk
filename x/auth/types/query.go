@@ -1,6 +1,6 @@
 package types
 
-import codectypes "github.com/line/lbm-sdk/v2/codec/types"
+import codectypes "github.com/line/lfb-sdk/codec/types"
 
 func (m *QueryAccountResponse) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	var account AccountI

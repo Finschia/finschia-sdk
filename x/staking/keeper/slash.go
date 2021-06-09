@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	types "github.com/line/lbm-sdk/v2/x/staking/types"
+	sdk "github.com/line/lfb-sdk/types"
+	types "github.com/line/lfb-sdk/x/staking/types"
 )
 
 // Slash a validator for an infraction committed at a known height
@@ -33,7 +33,7 @@ func (k Keeper) Slash(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeigh
 	slashAmountDec := amount.ToDec().Mul(slashFactor)
 	slashAmount := slashAmountDec.TruncateInt()
 
-	// ref https://github.com/line/lbm-sdk/v2/issues/1348
+	// ref https://github.com/line/lfb-sdk/issues/1348
 
 	validator, found := k.GetValidatorByConsAddr(ctx, consAddr)
 	if !found {

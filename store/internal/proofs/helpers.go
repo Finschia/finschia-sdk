@@ -6,7 +6,7 @@ import (
 	"github.com/line/ostracon/libs/rand"
 	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	sdkmaps "github.com/line/lbm-sdk/v2/store/internal/maps"
+	sdkmaps "github.com/line/lfb-sdk/store/internal/maps"
 )
 
 // SimpleResult contains a merkle.SimpleProof along with all data needed to build the confio/proof

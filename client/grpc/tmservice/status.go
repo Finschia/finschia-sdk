@@ -5,7 +5,7 @@ import (
 
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
-	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lfb-sdk/client"
 )
 
 func getNodeStatus(clientCtx client.Context) (*ctypes.ResultStatus, error) {

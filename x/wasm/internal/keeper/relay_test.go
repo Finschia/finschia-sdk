@@ -5,9 +5,9 @@ import (
 	"errors"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/keeper/wasmtesting"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"

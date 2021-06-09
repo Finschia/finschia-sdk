@@ -7,17 +7,17 @@ import (
 	"github.com/line/ostracon/libs/log"
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	capabilitykeeper "github.com/line/lbm-sdk/v2/x/capability/keeper"
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	porttypes "github.com/line/lbm-sdk/v2/x/ibc/core/05-port/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	capabilitykeeper "github.com/line/lfb-sdk/x/capability/keeper"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	porttypes "github.com/line/lfb-sdk/x/ibc/core/05-port/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 // Keeper defines the IBC channel keeper

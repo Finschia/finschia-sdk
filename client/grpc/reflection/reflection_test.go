@@ -7,9 +7,9 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/baseapp"
-	"github.com/line/lbm-sdk/v2/client/grpc/reflection"
-	"github.com/line/lbm-sdk/v2/simapp"
+	"github.com/line/lfb-sdk/baseapp"
+	"github.com/line/lfb-sdk/client/grpc/reflection"
+	"github.com/line/lfb-sdk/simapp"
 )
 
 type IntegrationTestSuite struct {
@@ -29,9 +29,9 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 func (s IntegrationTestSuite) TestSimulateService() {
 	// We will test the following interface for testing.
-	var iface = "lbm.evidence.v1beta1.Evidence"
+	var iface = "lfb.evidence.v1beta1.Evidence"
 
-	// Test that "lbm.evidence.v1beta1.Evidence" is included in the
+	// Test that "lfb.evidence.v1beta1.Evidence" is included in the
 	// interfaces.
 	resIface, err := s.queryClient.ListAllInterfaces(
 		context.Background(),
@@ -40,14 +40,14 @@ func (s IntegrationTestSuite) TestSimulateService() {
 	s.Require().NoError(err)
 	s.Require().Contains(resIface.GetInterfaceNames(), iface)
 
-	// Test that "lbm.evidence.v1beta1.Evidence" has at least the
+	// Test that "lfb.evidence.v1beta1.Evidence" has at least the
 	// Equivocation implementations.
 	resImpl, err := s.queryClient.ListImplementations(
 		context.Background(),
 		&reflection.ListImplementationsRequest{InterfaceName: iface},
 	)
 	s.Require().NoError(err)
-	s.Require().Contains(resImpl.GetImplementationMessageNames(), "/lbm.evidence.v1beta1.Equivocation")
+	s.Require().Contains(resImpl.GetImplementationMessageNames(), "/lfb.evidence.v1beta1.Equivocation")
 }
 
 func TestSimulateTestSuite(t *testing.T) {

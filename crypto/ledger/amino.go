@@ -1,8 +1,8 @@
 package ledger
 
 import (
-	"github.com/line/lbm-sdk/v2/codec"
-	cryptoAmino "github.com/line/lbm-sdk/v2/crypto/codec"
+	"github.com/line/lfb-sdk/codec"
+	cryptoAmino "github.com/line/lfb-sdk/crypto/codec"
 )
 
 var cdc = codec.NewLegacyAmino()

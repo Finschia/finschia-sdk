@@ -1,12 +1,12 @@
 package types_test
 
 import (
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 func (suite *TypesTestSuite) TestNewUpdateClientProposal() {

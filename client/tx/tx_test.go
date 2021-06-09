@@ -6,17 +6,17 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	txtypes "github.com/line/lbm-sdk/v2/types/tx"
-	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/keyring"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	txtypes "github.com/line/lfb-sdk/types/tx"
+	signingtypes "github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lfb-sdk/x/auth/signing"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
 )
 
 func NewTestTxConfig() client.TxConfig {

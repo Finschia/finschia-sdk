@@ -13,10 +13,10 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
-	"github.com/line/lbm-sdk/v2/baseapp"
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lfb-sdk/baseapp"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/simulation"
 )
 
 const AverageBlockTime = 6 * time.Second

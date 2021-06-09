@@ -8,29 +8,29 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/testutil"
-	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	txtypes "github.com/line/lbm-sdk/v2/types/tx"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
-	authcli "github.com/line/lbm-sdk/v2/x/auth/client/cli"
-	authrest "github.com/line/lbm-sdk/v2/x/auth/client/rest"
-	authtest "github.com/line/lbm-sdk/v2/x/auth/client/testutil"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
-	bankcli "github.com/line/lbm-sdk/v2/x/bank/client/testutil"
-	"github.com/line/lbm-sdk/v2/x/bank/types"
-	ibccli "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/client/cli"
-	ibcsolomachinecli "github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/client/cli"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/keyring"
+	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/testutil"
+	clitestutil "github.com/line/lfb-sdk/testutil/cli"
+	"github.com/line/lfb-sdk/testutil/network"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/rest"
+	txtypes "github.com/line/lfb-sdk/types/tx"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	authclient "github.com/line/lfb-sdk/x/auth/client"
+	authcli "github.com/line/lfb-sdk/x/auth/client/cli"
+	authrest "github.com/line/lfb-sdk/x/auth/client/rest"
+	authtest "github.com/line/lfb-sdk/x/auth/client/testutil"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	bankcli "github.com/line/lfb-sdk/x/bank/client/testutil"
+	"github.com/line/lfb-sdk/x/bank/types"
+	ibccli "github.com/line/lfb-sdk/x/ibc/core/04-channel/client/cli"
+	ibcsolomachinecli "github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -99,8 +99,8 @@ func mkStdTx() legacytx.StdTx {
 }
 
 // Create an IBC tx that's encoded as amino-JSON. Since we can't amino-marshal
-// a tx with "lbm-sdk/MsgTransfer" using the SDK, we just hardcode the tx
-// here. But external clients might, see https://github.com/line/lbm-sdk/v2/issues/8022.
+// a tx with "lfb-sdk/MsgTransfer" using the SDK, we just hardcode the tx
+// here. But external clients might, see https://github.com/line/lfb-sdk/issues/8022.
 func mkIBCStdTx() []byte {
 	ibcTx := `{
 		"account_number": "68",
@@ -117,7 +117,7 @@ func mkIBCStdTx() []byte {
 		"memo": "",
 		"msg": [
 		  {
-			"type": "lbm-sdk/MsgTransfer",
+			"type": "lfb-sdk/MsgTransfer",
 			"value": {
 			  "receiver": "cosmos1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
 			  "sender": "cosmos1q9wtnlwdjrhwtcjmt2uq77jrgx7z3usrq2yz7z",
@@ -454,7 +454,7 @@ func (s *IntegrationTestSuite) testQueryIBCTx(txRes sdk.TxResponse, cmd *cobra.C
 	}
 
 	// try fetching the txn using gRPC req, it will fetch info since it has proto codec.
-	grpcJSON, err := rest.GetRequest(fmt.Sprintf("%s/lbm/tx/v1beta1/txs/%s", val.APIAddress, txRes.TxHash))
+	grpcJSON, err := rest.GetRequest(fmt.Sprintf("%s/lfb/tx/v1beta1/txs/%s", val.APIAddress, txRes.TxHash))
 	s.Require().NoError(err)
 
 	var getTxRes txtypes.GetTxResponse
@@ -496,7 +496,7 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 	// Write consensus json to temp file, used for an IBC message.
 	consensusJSON := testutil.WriteToNewTempFile(
 		s.T(),
-		`{"public_key":{"@type":"/lbm.crypto.secp256k1.PubKey","key":"A/3SXL2ONYaOkxpdR5P8tHTlSlPv1AwQwSFxKRee5JQW"},"diversifier":"diversifier","timestamp":"10"}`,
+		`{"public_key":{"@type":"/lfb.crypto.secp256k1.PubKey","key":"A/3SXL2ONYaOkxpdR5P8tHTlSlPv1AwQwSFxKRee5JQW"},"diversifier":"diversifier","timestamp":"10"}`,
 	)
 
 	testCases := []struct {
@@ -554,7 +554,7 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 
 // TestLegacyMultiSig creates a legacy multisig transaction, and makes sure
 // we can query it via the legacy REST endpoint.
-// ref: https://github.com/line/lbm-sdk/v2/issues/8679
+// ref: https://github.com/line/lfb-sdk/issues/8679
 func (s *IntegrationTestSuite) TestLegacyMultisig() {
 	val1 := *s.network.Validators[0]
 

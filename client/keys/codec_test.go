@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client/keys"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	"github.com/line/lfb-sdk/client/keys"
+	"github.com/line/lfb-sdk/crypto/keyring"
 )
 
 type testCases struct {

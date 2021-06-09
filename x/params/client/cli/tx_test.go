@@ -5,9 +5,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/testutil"
-	"github.com/line/lbm-sdk/v2/x/params/client/utils"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lfb-sdk/x/params/client/utils"
 )
 
 func TestParseProposal(t *testing.T) {

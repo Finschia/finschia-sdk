@@ -6,11 +6,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/staking"
-	"github.com/line/lbm-sdk/v2/x/staking/keeper"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/staking"
+	"github.com/line/lfb-sdk/x/staking/keeper"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 // Helper is a structure which wraps the staking handler

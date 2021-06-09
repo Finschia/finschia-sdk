@@ -9,12 +9,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/version"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/version"
 )
 
 func Cmd() *cobra.Command {

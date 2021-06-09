@@ -5,16 +5,16 @@ import (
 
 	osttypes "github.com/line/ostracon/types"
 
-	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lfb-sdk/client"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lbm-sdk/v2/x/ibc/core/23-commitment/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	ibcclient "github.com/line/lbm-sdk/v2/x/ibc/core/client"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/codec"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	ibcclient "github.com/line/lfb-sdk/x/ibc/core/client"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
 )
 
 // QueryClientState returns a client state. If prove is true, it performs an ABCI store query

@@ -6,13 +6,13 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	ibctransfertypes "github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	connectionutils "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/client/utils"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/client/tx"
+	ibctransfertypes "github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	connectionutils "github.com/line/lfb-sdk/x/ibc/core/03-connection/client/utils"
+	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 )
 
 // IBC Channel flags

@@ -1,9 +1,9 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	sdk "github.com/line/lfb-sdk/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 // ExportMetadata exports all the processed times in the client store so they can be included in clients genesis

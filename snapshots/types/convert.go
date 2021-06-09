@@ -4,7 +4,7 @@ import (
 	proto "github.com/gogo/protobuf/proto"
 	abci "github.com/line/ostracon/abci/types"
 
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // Converts an ABCI snapshot to a snapshot. Mainly to decode the SDK metadata.

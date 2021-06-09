@@ -8,12 +8,12 @@ import (
 	types2 "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/std"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
-	"github.com/line/lbm-sdk/v2/types/module"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/std"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/kv"
+	"github.com/line/lfb-sdk/types/module"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
 )
 
 func makeCodec(bm module.BasicManager) *codec.LegacyAmino {

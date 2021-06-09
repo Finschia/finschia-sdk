@@ -3,9 +3,9 @@ package testdata;
 
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
-import "lbm/tx/v1beta1/tx.proto";
+import "lfb/tx/v1beta1/tx.proto";
 
-option go_package = "github.com/line/lbm-sdk/v2/testutil/testdata";
+option go_package = "github.com/line/lfb-sdk/testutil/testdata";
 
 message Customer1 {
   int32  id               = 1;
@@ -297,8 +297,8 @@ message TestUpdatedTxBody {
 }
 
 message TestUpdatedAuthInfo {
-  repeated lbm.tx.v1beta1.SignerInfo signer_infos   = 1;
-  lbm.tx.v1beta1.Fee                 fee            = 2;
+  repeated lfb.tx.v1beta1.SignerInfo signer_infos   = 1;
+  lfb.tx.v1beta1.Fee                 fee            = 2;
   bytes                              new_field_3    = 3;
   bytes                              new_field_1024 = 1024;
 }

@@ -3,7 +3,7 @@ package simapp
 import (
 	"flag"
 
-	"github.com/line/lbm-sdk/v2/types/simulation"
+	"github.com/line/lfb-sdk/types/simulation"
 )
 
 // List of available flags for the simulator

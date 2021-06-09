@@ -7,13 +7,13 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/client/grpc/tmservice"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	qtypes "github.com/line/lbm-sdk/v2/types/query"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/version"
+	"github.com/line/lfb-sdk/client/grpc/tmservice"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/testutil/network"
+	qtypes "github.com/line/lfb-sdk/types/query"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/version"
 )
 
 type IntegrationTestSuite struct {
@@ -54,7 +54,7 @@ func (s IntegrationTestSuite) TestQueryNodeInfo() {
 	s.Require().NoError(err)
 	s.Require().Equal(res.ApplicationVersion.AppName, version.NewInfo().AppName)
 
-	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1beta1/node_info", val.APIAddress))
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/node_info", val.APIAddress))
 	s.Require().NoError(err)
 	var getInfoRes tmservice.GetNodeInfoResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &getInfoRes))
@@ -67,7 +67,7 @@ func (s IntegrationTestSuite) TestQuerySyncing() {
 	_, err := s.queryClient.GetSyncing(context.Background(), &tmservice.GetSyncingRequest{})
 	s.Require().NoError(err)
 
-	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1beta1/syncing", val.APIAddress))
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/syncing", val.APIAddress))
 	s.Require().NoError(err)
 	var syncingRes tmservice.GetSyncingResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &syncingRes))
@@ -79,7 +79,7 @@ func (s IntegrationTestSuite) TestQueryLatestBlock() {
 	_, err := s.queryClient.GetLatestBlock(context.Background(), &tmservice.GetLatestBlockRequest{})
 	s.Require().NoError(err)
 
-	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1beta1/blocks/latest", val.APIAddress))
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/blocks/latest", val.APIAddress))
 	s.Require().NoError(err)
 	var blockInfoRes tmservice.GetLatestBlockResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &blockInfoRes))
@@ -90,7 +90,7 @@ func (s IntegrationTestSuite) TestQueryBlockByHeight() {
 	_, err := s.queryClient.GetBlockByHeight(context.Background(), &tmservice.GetBlockByHeightRequest{Height: 1})
 	s.Require().NoError(err)
 
-	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1beta1/blocks/%d", val.APIAddress, 1))
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/blocks/%d", val.APIAddress, 1))
 	s.Require().NoError(err)
 	var blockInfoRes tmservice.GetBlockByHeightResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &blockInfoRes))
@@ -117,11 +117,11 @@ func (s IntegrationTestSuite) TestQueryLatestValidatorSet() {
 	s.Require().NoError(err)
 
 	// rest request without pagination
-	_, err = rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1beta1/validatorsets/latest", val.APIAddress))
+	_, err = rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/validatorsets/latest", val.APIAddress))
 	s.Require().NoError(err)
 
 	// rest request with pagination
-	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1beta1/validatorsets/latest?pagination.offset=%d&pagination.limit=%d", val.APIAddress, 0, 1))
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/validatorsets/latest?pagination.offset=%d&pagination.limit=%d", val.APIAddress, 0, 1))
 	s.Require().NoError(err)
 	var validatorSetRes tmservice.GetLatestValidatorSetResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &validatorSetRes))
@@ -150,11 +150,11 @@ func (s IntegrationTestSuite) TestQueryValidatorSetByHeight() {
 	s.Require().NoError(err)
 
 	// no pagination rest
-	_, err = rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1beta1/validatorsets/%d", val.APIAddress, 1))
+	_, err = rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/validatorsets/%d", val.APIAddress, 1))
 	s.Require().NoError(err)
 
 	// rest query with pagination
-	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lbm/base/ostracon/v1beta1/validatorsets/%d?pagination.offset=%d&pagination.limit=%d", val.APIAddress, 1, 0, 1))
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/validatorsets/%d?pagination.offset=%d&pagination.limit=%d", val.APIAddress, 1, 0, 1))
 	var validatorSetRes tmservice.GetValidatorSetByHeightResponse
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &validatorSetRes))
 }

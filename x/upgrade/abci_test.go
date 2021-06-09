@@ -15,17 +15,17 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	storetypes "github.com/line/lbm-sdk/v2/store/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/module"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
-	"github.com/line/lbm-sdk/v2/x/upgrade"
-	"github.com/line/lbm-sdk/v2/x/upgrade/keeper"
-	"github.com/line/lbm-sdk/v2/x/upgrade/types"
+	"github.com/line/lfb-sdk/simapp"
+	storetypes "github.com/line/lfb-sdk/store/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/module"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/upgrade"
+	"github.com/line/lfb-sdk/x/upgrade/keeper"
+	"github.com/line/lfb-sdk/x/upgrade/types"
 )
 
 type TestSuite struct {

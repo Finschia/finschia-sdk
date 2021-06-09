@@ -16,11 +16,11 @@ import (
 	"google.golang.org/grpc/codes"
 	grpcstatus "google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	snapshottypes "github.com/line/lbm-sdk/v2/snapshots/types"
-	"github.com/line/lbm-sdk/v2/telemetry"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/codec"
+	snapshottypes "github.com/line/lfb-sdk/snapshots/types"
+	"github.com/line/lfb-sdk/telemetry"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // InitChain implements the ABCI interface. It runs the initialization logic

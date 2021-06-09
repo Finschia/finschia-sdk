@@ -1,9 +1,9 @@
 package client
 
 import (
-	govclient "github.com/line/lbm-sdk/v2/x/gov/client"
-	"github.com/line/lbm-sdk/v2/x/params/client/cli"
-	"github.com/line/lbm-sdk/v2/x/params/client/rest"
+	govclient "github.com/line/lfb-sdk/x/gov/client"
+	"github.com/line/lfb-sdk/x/params/client/cli"
+	"github.com/line/lfb-sdk/x/params/client/rest"
 )
 
 // ProposalHandler is the param change proposal handler.

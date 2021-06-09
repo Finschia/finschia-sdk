@@ -9,8 +9,8 @@ import (
 	ostbytes "github.com/line/ostracon/libs/bytes"
 	"gopkg.in/yaml.v2"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/evidence/exported"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/evidence/exported"
 )
 
 // Evidence type constants

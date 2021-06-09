@@ -6,12 +6,12 @@ import (
 
 	ostcli "github.com/line/ostracon/libs/cli"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
-	"github.com/line/lbm-sdk/v2/testutil"
-	clitestutil "github.com/line/lbm-sdk/v2/testutil/cli"
-	"github.com/line/lbm-sdk/v2/x/auth/client/cli"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/crypto/keyring"
+	"github.com/line/lfb-sdk/testutil"
+	clitestutil "github.com/line/lfb-sdk/testutil/cli"
+	"github.com/line/lfb-sdk/x/auth/client/cli"
 )
 
 func TxSignExec(clientCtx client.Context, from fmt.Stringer, filename string, extraArgs ...string) (testutil.BufferWriter, error) {

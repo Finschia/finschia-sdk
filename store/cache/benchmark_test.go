@@ -3,7 +3,7 @@ package cache
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lfb-sdk/store/types"
 )
 
 func freshMgr() *CommitKVStoreCacheManager {

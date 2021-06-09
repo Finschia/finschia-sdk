@@ -9,14 +9,14 @@ import (
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/testutil"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/gov/client/cli"
-	govtestutil "github.com/line/lbm-sdk/v2/x/gov/client/testutil"
-	"github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lfb-sdk/testutil/network"
+	sdk "github.com/line/lfb-sdk/types"
+	grpctypes "github.com/line/lfb-sdk/types/grpc"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/gov/client/cli"
+	govtestutil "github.com/line/lfb-sdk/x/gov/client/testutil"
+	"github.com/line/lfb-sdk/x/gov/types"
 )
 
 type IntegrationTestSuite struct {
@@ -69,17 +69,17 @@ func (s *IntegrationTestSuite) TestGetProposalGRPC() {
 	}{
 		{
 			"empty proposal",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s", val.APIAddress, ""),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s", val.APIAddress, ""),
 			true,
 		},
 		{
 			"get non existing proposal",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s", val.APIAddress, "10"),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s", val.APIAddress, "10"),
 			true,
 		},
 		{
 			"get proposal with id",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s", val.APIAddress, "1"),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s", val.APIAddress, "1"),
 			false,
 		},
 	}
@@ -115,7 +115,7 @@ func (s *IntegrationTestSuite) TestGetProposalsGRPC() {
 	}{
 		{
 			"get proposals with height 1",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals", val.APIAddress),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals", val.APIAddress),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -124,14 +124,14 @@ func (s *IntegrationTestSuite) TestGetProposalsGRPC() {
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals", val.APIAddress),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals", val.APIAddress),
 			map[string]string{},
 			2,
 			false,
 		},
 		{
 			"valid request with filter by status",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals?proposal_status=1", val.APIAddress),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals?proposal_status=1", val.APIAddress),
 			map[string]string{},
 			1,
 			false,
@@ -169,22 +169,22 @@ func (s *IntegrationTestSuite) TestGetProposalVoteGRPC() {
 	}{
 		{
 			"empty proposal",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "", voterAddressBech32),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "", voterAddressBech32),
 			true,
 		},
 		{
 			"get non existing proposal",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "10", voterAddressBech32),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "10", voterAddressBech32),
 			true,
 		},
 		{
 			"get proposal with wrong voter address",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "1", "wrongVoterAddress"),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "1", "wrongVoterAddress"),
 			true,
 		},
 		{
 			"get proposal with id",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "1", voterAddressBech32),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/votes/%s", val.APIAddress, "1", voterAddressBech32),
 			false,
 		},
 	}
@@ -219,12 +219,12 @@ func (s *IntegrationTestSuite) TestGetProposalVotesGRPC() {
 	}{
 		{
 			"votes with empty proposal id",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/votes", val.APIAddress, ""),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/votes", val.APIAddress, ""),
 			true,
 		},
 		{
 			"get votes with valid id",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/votes", val.APIAddress, "1"),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/votes", val.APIAddress, "1"),
 			false,
 		},
 	}
@@ -258,22 +258,22 @@ func (s *IntegrationTestSuite) TestGetProposalDepositGRPC() {
 	}{
 		{
 			"get deposit with empty proposal id",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "", val.Address.String()),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "", val.Address.String()),
 			true,
 		},
 		{
 			"get deposit of non existing proposal",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "10", val.Address.String()),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "10", val.Address.String()),
 			true,
 		},
 		{
 			"get deposit with wrong depositer address",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "1", "wrongDepositerAddress"),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "1", "wrongDepositerAddress"),
 			true,
 		},
 		{
 			"get deposit valid request",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "1", val.Address.String()),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/deposits/%s", val.APIAddress, "1", val.Address.String()),
 			false,
 		},
 	}
@@ -307,12 +307,12 @@ func (s *IntegrationTestSuite) TestGetProposalDepositsGRPC() {
 	}{
 		{
 			"get deposits with empty proposal id",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/deposits", val.APIAddress, ""),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/deposits", val.APIAddress, ""),
 			true,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/deposits", val.APIAddress, "1"),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/deposits", val.APIAddress, "1"),
 			false,
 		},
 	}
@@ -347,17 +347,17 @@ func (s *IntegrationTestSuite) TestGetTallyGRPC() {
 	}{
 		{
 			"get tally with no proposal id",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/tally", val.APIAddress, ""),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/tally", val.APIAddress, ""),
 			true,
 		},
 		{
 			"get tally with non existing proposal",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/tally", val.APIAddress, "10"),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/tally", val.APIAddress, "10"),
 			true,
 		},
 		{
 			"get tally valid request",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/proposals/%s/tally", val.APIAddress, "1"),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/proposals/%s/tally", val.APIAddress, "1"),
 			false,
 		},
 	}
@@ -393,12 +393,12 @@ func (s *IntegrationTestSuite) TestGetParamsGRPC() {
 	}{
 		{
 			"request params with empty params type",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/params/%s", val.APIAddress, ""),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/params/%s", val.APIAddress, ""),
 			true, nil, nil,
 		},
 		{
 			"get deposit params",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/params/%s", val.APIAddress, types.ParamDeposit),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/params/%s", val.APIAddress, types.ParamDeposit),
 			false,
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{
@@ -407,7 +407,7 @@ func (s *IntegrationTestSuite) TestGetParamsGRPC() {
 		},
 		{
 			"get vote params",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/params/%s", val.APIAddress, types.ParamVoting),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/params/%s", val.APIAddress, types.ParamVoting),
 			false,
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{
@@ -416,7 +416,7 @@ func (s *IntegrationTestSuite) TestGetParamsGRPC() {
 		},
 		{
 			"get tally params",
-			fmt.Sprintf("%s/lbm/gov/v1beta1/params/%s", val.APIAddress, types.ParamTallying),
+			fmt.Sprintf("%s/lfb/gov/v1beta1/params/%s", val.APIAddress, types.ParamTallying),
 			false,
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{

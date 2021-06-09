@@ -4,7 +4,7 @@ package testdata;
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
 
-option go_package = "github.com/line/lbm-sdk/v2/testutil/testdata";
+option go_package = "github.com/line/lfb-sdk/testutil/testdata";
 
 message Dog {
   string size = 1;

@@ -6,11 +6,11 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	gcutils "github.com/line/lbm-sdk/v2/x/gov/client/utils"
-	"github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/types/rest"
+	gcutils "github.com/line/lfb-sdk/x/gov/client/utils"
+	"github.com/line/lfb-sdk/x/gov/types"
 )
 
 func registerTxHandlers(clientCtx client.Context, r *mux.Router, phs []ProposalRESTHandler) {

@@ -7,9 +7,9 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lbm-sdk/v2/store/rootmulti"
-	"github.com/line/lbm-sdk/v2/store/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/store/rootmulti"
+	"github.com/line/lfb-sdk/store/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 type storeTestSuite struct {

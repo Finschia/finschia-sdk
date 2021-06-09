@@ -1,8 +1,8 @@
 package signing
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/tx/signing"
 )
 
 // SignModeHandler defines a interface to be implemented by types which will handle

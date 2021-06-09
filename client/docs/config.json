@@ -94,7 +94,7 @@
       }
     },
     {
-      "url": "./tmp-swagger-gen/lbm/tx/v1beta1/service.swagger.json",
+      "url": "./tmp-swagger-gen/lfb/tx/v1beta1/service.swagger.json",
       "dereference": {
         "circular": "ignore"
       }

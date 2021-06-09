@@ -3,11 +3,11 @@ package main
 import (
 	"os"
 
-	"github.com/line/lbm-sdk/v2/server"
-	svrcmd "github.com/line/lbm-sdk/v2/server/cmd"
+	"github.com/line/lfb-sdk/server"
+	svrcmd "github.com/line/lfb-sdk/server/cmd"
 
-	app "github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/app"
-	"github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/cmd/linkwasmd/cmd"
+	app "github.com/line/lfb-sdk/x/wasm/linkwasmd/app"
+	"github.com/line/lfb-sdk/x/wasm/linkwasmd/cmd/linkwasmd/cmd"
 )
 
 func main() {

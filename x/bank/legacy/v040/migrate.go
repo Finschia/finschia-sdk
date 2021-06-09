@@ -1,10 +1,10 @@
 package v040
 
 import (
-	v039auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v039"
-	v036supply "github.com/line/lbm-sdk/v2/x/bank/legacy/v036"
-	v038bank "github.com/line/lbm-sdk/v2/x/bank/legacy/v038"
-	v040bank "github.com/line/lbm-sdk/v2/x/bank/types"
+	v039auth "github.com/line/lfb-sdk/x/auth/legacy/v039"
+	v036supply "github.com/line/lfb-sdk/x/bank/legacy/v036"
+	v038bank "github.com/line/lfb-sdk/x/bank/legacy/v038"
+	v040bank "github.com/line/lfb-sdk/x/bank/types"
 )
 
 // Migrate accepts exported v0.39 x/auth and v0.38 x/bank genesis state and

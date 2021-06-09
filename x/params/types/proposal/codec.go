@@ -1,14 +1,14 @@
 package proposal
 
 import (
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/codec/types"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/codec/types"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers all necessary param module types with a given LegacyAmino codec.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&ParameterChangeProposal{}, "lbm-sdk/ParameterChangeProposal", nil)
+	cdc.RegisterConcrete(&ParameterChangeProposal{}, "lfb-sdk/ParameterChangeProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

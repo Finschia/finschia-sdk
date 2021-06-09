@@ -10,11 +10,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/v2/client"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	pagination "github.com/line/lbm-sdk/v2/types/query"
-	txtypes "github.com/line/lbm-sdk/v2/types/tx"
+	"github.com/line/lfb-sdk/client"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	pagination "github.com/line/lfb-sdk/types/query"
+	txtypes "github.com/line/lfb-sdk/types/tx"
 )
 
 // baseAppSimulateFn is the signature of the Baseapp#Simulate function.
@@ -122,7 +122,7 @@ func (s txServer) GetTx(ctx context.Context, req *txtypes.GetTxRequest) (*txtype
 	}
 
 	// TODO We should also check the proof flag in gRPC header.
-	// https://github.com/line/lbm-sdk/v2/issues/7036.
+	// https://github.com/line/lfb-sdk/issues/7036.
 	result, err := queryTx(ctx, s.clientCtx, req.Hash)
 	if err != nil {
 		return nil, err

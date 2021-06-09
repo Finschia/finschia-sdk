@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // NewGenesisState creates a new genesis state for the governance module

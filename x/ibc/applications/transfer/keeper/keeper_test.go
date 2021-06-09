@@ -6,10 +6,10 @@ import (
 	"github.com/line/ostracon/crypto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/baseapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	"github.com/line/lfb-sdk/baseapp"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 type KeeperTestSuite struct {

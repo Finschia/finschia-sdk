@@ -1,21 +1,21 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/msgservice"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/codec/types"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/msgservice"
 )
 
 // RegisterLegacyAminoCodec registers the necessary x/staking interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgCreateValidator{}, "lbm-sdk/MsgCreateValidator", nil)
-	cdc.RegisterConcrete(&MsgEditValidator{}, "lbm-sdk/MsgEditValidator", nil)
-	cdc.RegisterConcrete(&MsgDelegate{}, "lbm-sdk/MsgDelegate", nil)
-	cdc.RegisterConcrete(&MsgUndelegate{}, "lbm-sdk/MsgUndelegate", nil)
-	cdc.RegisterConcrete(&MsgBeginRedelegate{}, "lbm-sdk/MsgBeginRedelegate", nil)
+	cdc.RegisterConcrete(&MsgCreateValidator{}, "lfb-sdk/MsgCreateValidator", nil)
+	cdc.RegisterConcrete(&MsgEditValidator{}, "lfb-sdk/MsgEditValidator", nil)
+	cdc.RegisterConcrete(&MsgDelegate{}, "lfb-sdk/MsgDelegate", nil)
+	cdc.RegisterConcrete(&MsgUndelegate{}, "lfb-sdk/MsgUndelegate", nil)
+	cdc.RegisterConcrete(&MsgBeginRedelegate{}, "lfb-sdk/MsgBeginRedelegate", nil)
 }
 
 // RegisterInterfaces registers the x/staking interfaces types with the interface registry

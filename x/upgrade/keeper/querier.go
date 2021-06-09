@@ -3,14 +3,14 @@ package keeper
 import (
 	"encoding/binary"
 
-	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lfb-sdk/codec"
 
-	"github.com/line/lbm-sdk/v2/x/upgrade/types"
+	"github.com/line/lfb-sdk/x/upgrade/types"
 
 	abci "github.com/line/ostracon/abci/types"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // NewQuerier creates a querier for upgrade cli and REST endpoints

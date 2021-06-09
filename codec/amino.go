@@ -10,7 +10,7 @@ import (
 	osttypes "github.com/line/ostracon/types"
 	amino "github.com/tendermint/go-amino"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
+	"github.com/line/lfb-sdk/codec/types"
 )
 
 // deprecated: LegacyAmino defines a wrapper for an Amino codec that properly handles protobuf

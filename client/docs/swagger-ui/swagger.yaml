@@ -18030,7 +18030,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /lbm/tx/v1beta1/simulate:
+  /lfb/tx/v1beta1/simulate:
     post:
       summary: Simulate simulates executing a transaction for estimating gas usage.
       operationId: Simulate
@@ -18305,10 +18305,10 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/lbm.tx.v1beta1.SimulateRequest'
+            $ref: '#/definitions/lfb.tx.v1beta1.SimulateRequest'
       tags:
         - Service
-  /lbm/tx/v1beta1/txs:
+  /lfb/tx/v1beta1/txs:
     get:
       summary: GetTxsEvent fetches txs by event.
       operationId: GetTxsEvent
@@ -18316,7 +18316,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            $ref: '#/definitions/lbm.tx.v1beta1.GetTxsEventResponse'
+            $ref: '#/definitions/lfb.tx.v1beta1.GetTxsEventResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -18966,7 +18966,7 @@ paths:
               RPC method.
       tags:
         - Service
-  '/lbm/tx/v1beta1/txs/{hash}':
+  '/lfb/tx/v1beta1/txs/{hash}':
     get:
       summary: GetTx fetches a tx by hash.
       operationId: GetTx
@@ -18974,7 +18974,7 @@ paths:
         '200':
           description: A successful response.
           schema:
-            $ref: '#/definitions/lbm.tx.v1beta1.GetTxResponse'
+            $ref: '#/definitions/lfb.tx.v1beta1.GetTxResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -29862,7 +29862,7 @@ definitions:
             amount:
               type: string
               example: '50'
-  lbm.auth.v1beta1.Params:
+  lfb.auth.v1beta1.Params:
     type: object
     properties:
       max_memo_characters:
@@ -29881,7 +29881,7 @@ definitions:
         type: string
         format: uint64
     description: Params defines the parameters for the auth module.
-  lbm.auth.v1beta1.QueryAccountResponse:
+  lfb.auth.v1beta1.QueryAccountResponse:
     type: object
     properties:
       account:
@@ -29949,7 +29949,7 @@ definitions:
     description: >-
       QueryAccountResponse is the response type for the Query/Account RPC
       method.
-  lbm.auth.v1beta1.QueryParamsResponse:
+  lfb.auth.v1beta1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -30301,7 +30301,7 @@ definitions:
                   "@type": "type.googleapis.com/google.protobuf.Duration",
                   "value": "1.212s"
                 }
-  lbm.bank.v1beta1.Params:
+  lfb.bank.v1beta1.Params:
     type: object
     properties:
       send_enabled:
@@ -30321,7 +30321,7 @@ definitions:
       default_send_enabled:
         type: boolean
     description: Params defines the parameters for the bank module.
-  lbm.bank.v1beta1.QueryAllBalancesResponse:
+  lfb.bank.v1beta1.QueryAllBalancesResponse:
     type: object
     properties:
       balances:
@@ -30362,7 +30362,7 @@ definitions:
       RPC
 
       method.
-  lbm.bank.v1beta1.QueryBalanceResponse:
+  lfb.bank.v1beta1.QueryBalanceResponse:
     type: object
     properties:
       balance:
@@ -30376,7 +30376,7 @@ definitions:
     description: >-
       QueryBalanceResponse is the response type for the Query/Balance RPC
       method.
-  lbm.bank.v1beta1.QueryParamsResponse:
+  lfb.bank.v1beta1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -30402,7 +30402,7 @@ definitions:
     description: >-
       QueryParamsResponse defines the response type for querying x/bank
       parameters.
-  lbm.bank.v1beta1.QuerySupplyOfResponse:
+  lfb.bank.v1beta1.QuerySupplyOfResponse:
     type: object
     properties:
       amount:
@@ -30416,7 +30416,7 @@ definitions:
     description: >-
       QuerySupplyOfResponse is the response type for the Query/SupplyOf RPC
       method.
-  lbm.bank.v1beta1.QueryTotalSupplyResponse:
+  lfb.bank.v1beta1.QueryTotalSupplyResponse:
     type: object
     properties:
       supply:
@@ -30439,7 +30439,7 @@ definitions:
       RPC
 
       method
-  lbm.bank.v1beta1.SendEnabled:
+  lfb.bank.v1beta1.SendEnabled:
     type: object
     properties:
       denom:
@@ -30449,7 +30449,7 @@ definitions:
     description: |-
       SendEnabled maps coin denom to a send_enabled status (whether a denom is
       sendable).
-  lbm.base.query.v1beta1.PageRequest:
+  lfb.base.query.v1beta1.PageRequest:
     type: object
     properties:
       key:
@@ -30494,7 +30494,7 @@ definitions:
     title: |-
       PageRequest is to be embedded in gRPC request messages for efficient
       pagination. Ex:
-  lbm.base.query.v1beta1.PageResponse:
+  lfb.base.query.v1beta1.PageResponse:
     type: object
     properties:
       next_key:
@@ -30517,7 +30517,7 @@ definitions:
                repeated Bar results = 1;
                PageResponse page = 2;
        }
-  lbm.base.v1beta1.Coin:
+  lfb.base.v1beta1.Coin:
     type: object
     properties:
       denom:
@@ -30529,7 +30529,7 @@ definitions:
 
       NOTE: The amount field is an Int which implements the custom method
       signatures required by gogoproto.
-  lbm.base.tendermint.v1beta1.GetBlockByHeightResponse:
+  lfb.base.tendermint.v1beta1.GetBlockByHeightResponse:
     type: object
     properties:
       block_id:
@@ -31080,7 +31080,7 @@ definitions:
     description: >-
       GetBlockByHeightResponse is the response type for the
       Query/GetBlockByHeight RPC method.
-  lbm.base.tendermint.v1beta1.GetLatestBlockResponse:
+  lfb.base.tendermint.v1beta1.GetLatestBlockResponse:
     type: object
     properties:
       block_id:
@@ -31631,7 +31631,7 @@ definitions:
     description: >-
       GetLatestBlockResponse is the response type for the Query/GetLatestBlock
       RPC method.
-  lbm.base.tendermint.v1beta1.GetLatestValidatorSetResponse:
+  lfb.base.tendermint.v1beta1.GetLatestValidatorSetResponse:
     type: object
     properties:
       block_height:
@@ -31841,7 +31841,7 @@ definitions:
     description: >-
       GetLatestValidatorSetResponse is the response type for the
       Query/GetValidatorSetByHeight RPC method.
-  lbm.base.tendermint.v1beta1.GetNodeInfoResponse:
+  lfb.base.tendermint.v1beta1.GetNodeInfoResponse:
     type: object
     properties:
       default_node_info:
@@ -31913,7 +31913,7 @@ definitions:
     description: >-
       GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC
       method.
-  lbm.base.tendermint.v1beta1.GetSyncingResponse:
+  lfb.base.tendermint.v1beta1.GetSyncingResponse:
     type: object
     properties:
       syncing:
@@ -31921,7 +31921,7 @@ definitions:
     description: >-
       GetSyncingResponse is the response type for the Query/GetSyncing RPC
       method.
-  lbm.base.tendermint.v1beta1.GetValidatorSetByHeightResponse:
+  lfb.base.tendermint.v1beta1.GetValidatorSetByHeightResponse:
     type: object
     properties:
       block_height:
@@ -32131,7 +32131,7 @@ definitions:
     description: >-
       GetValidatorSetByHeightResponse is the response type for the
       Query/GetValidatorSetByHeight RPC method.
-  lbm.base.tendermint.v1beta1.Module:
+  lfb.base.tendermint.v1beta1.Module:
     type: object
     properties:
       path:
@@ -32144,7 +32144,7 @@ definitions:
         type: string
         title: checksum
     title: Module is the type for VersionInfo
-  lbm.base.tendermint.v1beta1.Validator:
+  lfb.base.tendermint.v1beta1.Validator:
     type: object
     properties:
       address:
@@ -32315,7 +32315,7 @@ definitions:
         type: string
         format: int64
     description: Validator is the type for the validator-set.
-  lbm.base.tendermint.v1beta1.VersionInfo:
+  lfb.base.tendermint.v1beta1.VersionInfo:
     type: object
     properties:
       name:
@@ -34735,7 +34735,7 @@ definitions:
       application's
 
       state transition machine.
-  lbm.base.v1beta1.DecCoin:
+  lfb.base.v1beta1.DecCoin:
     type: object
     properties:
       denom:
@@ -34747,7 +34747,7 @@ definitions:
 
       NOTE: The amount field is an Dec which implements the custom method
       signatures required by gogoproto.
-  lbm.distribution.v1beta1.DelegationDelegatorReward:
+  lfb.distribution.v1beta1.DelegationDelegatorReward:
     type: object
     properties:
       validator_address:
@@ -34769,7 +34769,7 @@ definitions:
     description: |-
       DelegationDelegatorReward represents the properties
       of a delegator's delegation reward.
-  lbm.distribution.v1beta1.Params:
+  lfb.distribution.v1beta1.Params:
     type: object
     properties:
       community_tax:
@@ -34781,7 +34781,7 @@ definitions:
       withdraw_addr_enabled:
         type: boolean
     description: Params defines the set of params for the distribution module.
-  lbm.distribution.v1beta1.QueryCommunityPoolResponse:
+  lfb.distribution.v1beta1.QueryCommunityPoolResponse:
     type: object
     properties:
       pool:
@@ -34804,7 +34804,7 @@ definitions:
       Query/CommunityPool
 
       RPC method.
-  lbm.distribution.v1beta1.QueryDelegationRewardsResponse:
+  lfb.distribution.v1beta1.QueryDelegationRewardsResponse:
     type: object
     properties:
       rewards:
@@ -34825,7 +34825,7 @@ definitions:
     description: |-
       QueryDelegationRewardsResponse is the response type for the
       Query/DelegationRewards RPC method.
-  lbm.distribution.v1beta1.QueryDelegationTotalRewardsResponse:
+  lfb.distribution.v1beta1.QueryDelegationTotalRewardsResponse:
     type: object
     properties:
       rewards:
@@ -34875,7 +34875,7 @@ definitions:
     description: |-
       QueryDelegationTotalRewardsResponse is the response type for the
       Query/DelegationTotalRewards RPC method.
-  lbm.distribution.v1beta1.QueryDelegatorValidatorsResponse:
+  lfb.distribution.v1beta1.QueryDelegatorValidatorsResponse:
     type: object
     properties:
       validators:
@@ -34886,7 +34886,7 @@ definitions:
     description: |-
       QueryDelegatorValidatorsResponse is the response type for the
       Query/DelegatorValidators RPC method.
-  lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse:
+  lfb.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse:
     type: object
     properties:
       withdraw_address:
@@ -34895,7 +34895,7 @@ definitions:
     description: |-
       QueryDelegatorWithdrawAddressResponse is the response type for the
       Query/DelegatorWithdrawAddress RPC method.
-  lbm.distribution.v1beta1.QueryParamsResponse:
+  lfb.distribution.v1beta1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -34911,7 +34911,7 @@ definitions:
           withdraw_addr_enabled:
             type: boolean
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
-  lbm.distribution.v1beta1.QueryValidatorCommissionResponse:
+  lfb.distribution.v1beta1.QueryValidatorCommissionResponse:
     type: object
     properties:
       commission:
@@ -34939,7 +34939,7 @@ definitions:
     title: |-
       QueryValidatorCommissionResponse is the response type for the
       Query/ValidatorCommission RPC method
-  lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse:
+  lfb.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse:
     type: object
     properties:
       rewards:
@@ -34971,7 +34971,7 @@ definitions:
     description: |-
       QueryValidatorOutstandingRewardsResponse is the response type for the
       Query/ValidatorOutstandingRewards RPC method.
-  lbm.distribution.v1beta1.QueryValidatorSlashesResponse:
+  lfb.distribution.v1beta1.QueryValidatorSlashesResponse:
     type: object
     properties:
       slashes:
@@ -35011,7 +35011,7 @@ definitions:
     description: |-
       QueryValidatorSlashesResponse is the response type for the
       Query/ValidatorSlashes RPC method.
-  lbm.distribution.v1beta1.ValidatorAccumulatedCommission:
+  lfb.distribution.v1beta1.ValidatorAccumulatedCommission:
     type: object
     properties:
       commission:
@@ -35031,7 +35031,7 @@ definitions:
     description: |-
       ValidatorAccumulatedCommission represents accumulated commission
       for a validator kept as a running counter, can be withdrawn at any time.
-  lbm.distribution.v1beta1.ValidatorOutstandingRewards:
+  lfb.distribution.v1beta1.ValidatorOutstandingRewards:
     type: object
     properties:
       rewards:
@@ -35051,7 +35051,7 @@ definitions:
     description: |-
       ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards
       for a validator inexpensive to track, allows simple sanity checks.
-  lbm.distribution.v1beta1.ValidatorSlashEvent:
+  lfb.distribution.v1beta1.ValidatorSlashEvent:
     type: object
     properties:
       validator_period:
@@ -35064,7 +35064,7 @@ definitions:
       Height is implicit within the store key.
       This is needed to calculate appropriate amount of staking tokens
       for delegations which are withdrawn after a slash has occurred.
-  lbm.evidence.v1beta1.QueryAllEvidenceResponse:
+  lfb.evidence.v1beta1.QueryAllEvidenceResponse:
     type: object
     properties:
       evidence:
@@ -35255,7 +35255,7 @@ definitions:
       RPC
 
       method.
-  lbm.evidence.v1beta1.QueryEvidenceResponse:
+  lfb.evidence.v1beta1.QueryEvidenceResponse:
     type: object
     properties:
       evidence:
@@ -35323,7 +35323,7 @@ definitions:
     description: >-
       QueryEvidenceResponse is the response type for the Query/Evidence RPC
       method.
-  lbm.gov.v1beta1.Deposit:
+  lfb.gov.v1beta1.Deposit:
     type: object
     properties:
       proposal_id:
@@ -35348,7 +35348,7 @@ definitions:
     description: |-
       Deposit defines an amount deposited by an account address to an active
       proposal.
-  lbm.gov.v1beta1.DepositParams:
+  lfb.gov.v1beta1.DepositParams:
     type: object
     properties:
       min_deposit:
@@ -35373,7 +35373,7 @@ definitions:
           value: 2
            months.
     description: DepositParams defines the params for deposits on governance proposals.
-  lbm.gov.v1beta1.Proposal:
+  lfb.gov.v1beta1.Proposal:
     type: object
     properties:
       proposal_id:
@@ -35601,7 +35601,7 @@ definitions:
         type: string
         format: date-time
     description: Proposal defines the core field members of a governance proposal.
-  lbm.gov.v1beta1.ProposalStatus:
+  lfb.gov.v1beta1.ProposalStatus:
     type: string
     enum:
       - PROPOSAL_STATUS_UNSPECIFIED
@@ -35625,7 +35625,7 @@ definitions:
       been rejected.
        - PROPOSAL_STATUS_FAILED: PROPOSAL_STATUS_FAILED defines a proposal status of a proposal that has
       failed.
-  lbm.gov.v1beta1.QueryDepositResponse:
+  lfb.gov.v1beta1.QueryDepositResponse:
     type: object
     properties:
       deposit:
@@ -35657,7 +35657,7 @@ definitions:
     description: >-
       QueryDepositResponse is the response type for the Query/Deposit RPC
       method.
-  lbm.gov.v1beta1.QueryDepositsResponse:
+  lfb.gov.v1beta1.QueryDepositsResponse:
     type: object
     properties:
       deposits:
@@ -35713,7 +35713,7 @@ definitions:
     description: >-
       QueryDepositsResponse is the response type for the Query/Deposits RPC
       method.
-  lbm.gov.v1beta1.QueryParamsResponse:
+  lfb.gov.v1beta1.QueryParamsResponse:
     type: object
     properties:
       voting_params:
@@ -35776,7 +35776,7 @@ definitions:
               be
                vetoed. Default value: 1/3.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
-  lbm.gov.v1beta1.QueryProposalResponse:
+  lfb.gov.v1beta1.QueryProposalResponse:
     type: object
     properties:
       proposal:
@@ -36019,7 +36019,7 @@ definitions:
     description: >-
       QueryProposalResponse is the response type for the Query/Proposal RPC
       method.
-  lbm.gov.v1beta1.QueryProposalsResponse:
+  lfb.gov.v1beta1.QueryProposalsResponse:
     type: object
     properties:
       proposals:
@@ -36286,7 +36286,7 @@ definitions:
     description: |-
       QueryProposalsResponse is the response type for the Query/Proposals RPC
       method.
-  lbm.gov.v1beta1.QueryTallyResultResponse:
+  lfb.gov.v1beta1.QueryTallyResultResponse:
     type: object
     properties:
       tally:
@@ -36304,7 +36304,7 @@ definitions:
     description: >-
       QueryTallyResultResponse is the response type for the Query/Tally RPC
       method.
-  lbm.gov.v1beta1.QueryVoteResponse:
+  lfb.gov.v1beta1.QueryVoteResponse:
     type: object
     properties:
       vote:
@@ -36335,7 +36335,7 @@ definitions:
                - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
                - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
     description: QueryVoteResponse is the response type for the Query/Vote RPC method.
-  lbm.gov.v1beta1.QueryVotesResponse:
+  lfb.gov.v1beta1.QueryVotesResponse:
     type: object
     properties:
       votes:
@@ -36389,7 +36389,7 @@ definitions:
 
               was set, its value is undefined otherwise
     description: QueryVotesResponse is the response type for the Query/Votes RPC method.
-  lbm.gov.v1beta1.TallyParams:
+  lfb.gov.v1beta1.TallyParams:
     type: object
     properties:
       quorum:
@@ -36411,7 +36411,7 @@ definitions:
           Minimum value of Veto votes to Total votes ratio for proposal to be
            vetoed. Default value: 1/3.
     description: TallyParams defines the params for tallying votes on governance proposals.
-  lbm.gov.v1beta1.TallyResult:
+  lfb.gov.v1beta1.TallyResult:
     type: object
     properties:
       'yes':
@@ -36423,7 +36423,7 @@ definitions:
       no_with_veto:
         type: string
     description: TallyResult defines a standard tally for a governance proposal.
-  lbm.gov.v1beta1.Vote:
+  lfb.gov.v1beta1.Vote:
     type: object
     properties:
       proposal_id:
@@ -36452,7 +36452,7 @@ definitions:
     description: |-
       Vote defines a vote on a governance proposal.
       A Vote consists of a proposal ID, the voter, and the vote option.
-  lbm.gov.v1beta1.VoteOption:
+  lfb.gov.v1beta1.VoteOption:
     type: string
     enum:
       - VOTE_OPTION_UNSPECIFIED
@@ -36470,14 +36470,14 @@ definitions:
        - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
        - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
        - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
-  lbm.gov.v1beta1.VotingParams:
+  lfb.gov.v1beta1.VotingParams:
     type: object
     properties:
       voting_period:
         type: string
         description: Length of the voting period.
     description: VotingParams defines the params for voting on governance proposals.
-  lbm.mint.v1beta1.Params:
+  lfb.mint.v1beta1.Params:
     type: object
     properties:
       mint_denom:
@@ -36500,7 +36500,7 @@ definitions:
         format: uint64
         title: expected blocks per year
     description: Params holds parameters for the mint module.
-  lbm.mint.v1beta1.QueryAnnualProvisionsResponse:
+  lfb.mint.v1beta1.QueryAnnualProvisionsResponse:
     type: object
     properties:
       annual_provisions:
@@ -36510,7 +36510,7 @@ definitions:
     description: |-
       QueryAnnualProvisionsResponse is the response type for the
       Query/AnnualProvisions RPC method.
-  lbm.mint.v1beta1.QueryInflationResponse:
+  lfb.mint.v1beta1.QueryInflationResponse:
     type: object
     properties:
       inflation:
@@ -36520,7 +36520,7 @@ definitions:
     description: |-
       QueryInflationResponse is the response type for the Query/Inflation RPC
       method.
-  lbm.mint.v1beta1.QueryParamsResponse:
+  lfb.mint.v1beta1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -36547,7 +36547,7 @@ definitions:
             format: uint64
             title: expected blocks per year
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
-  lbm.params.v1beta1.ParamChange:
+  lfb.params.v1beta1.ParamChange:
     type: object
     properties:
       subspace:
@@ -36559,7 +36559,7 @@ definitions:
     description: |-
       ParamChange defines an individual parameter change, for use in
       ParameterChangeProposal.
-  lbm.params.v1beta1.QueryParamsResponse:
+  lfb.params.v1beta1.QueryParamsResponse:
     type: object
     properties:
       param:
@@ -36573,7 +36573,7 @@ definitions:
           value:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  lbm.slashing.v1beta1.Params:
+  lfb.slashing.v1beta1.Params:
     type: object
     properties:
       signed_blocks_window:
@@ -36591,7 +36591,7 @@ definitions:
         type: string
         format: byte
     description: Params represents the parameters used for by the slashing module.
-  lbm.slashing.v1beta1.QueryParamsResponse:
+  lfb.slashing.v1beta1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -36613,7 +36613,7 @@ definitions:
             format: byte
         description: Params represents the parameters used for by the slashing module.
     title: QueryParamsResponse is the response type for the Query/Params RPC method
-  lbm.slashing.v1beta1.QuerySigningInfoResponse:
+  lfb.slashing.v1beta1.QuerySigningInfoResponse:
     type: object
     properties:
       val_signing_info:
@@ -36655,7 +36655,7 @@ definitions:
       RPC
 
       method
-  lbm.slashing.v1beta1.QuerySigningInfosResponse:
+  lfb.slashing.v1beta1.QuerySigningInfosResponse:
     type: object
     properties:
       info:
@@ -36724,7 +36724,7 @@ definitions:
       RPC
 
       method
-  lbm.slashing.v1beta1.ValidatorSigningInfo:
+  lfb.slashing.v1beta1.ValidatorSigningInfo:
     type: object
     properties:
       address:
@@ -36757,7 +36757,7 @@ definitions:
       their
 
       liveness activity.
-  lbm.staking.v1beta1.BondStatus:
+  lfb.staking.v1beta1.BondStatus:
     type: string
     enum:
       - BOND_STATUS_UNSPECIFIED
@@ -36772,7 +36772,7 @@ definitions:
        - BOND_STATUS_UNBONDED: UNBONDED defines a validator that is not bonded.
        - BOND_STATUS_UNBONDING: UNBONDING defines a validator that is unbonding.
        - BOND_STATUS_BONDED: BONDED defines a validator that is bonded.
-  lbm.staking.v1beta1.Commission:
+  lfb.staking.v1beta1.Commission:
     type: object
     properties:
       commission_rates:
@@ -36793,7 +36793,7 @@ definitions:
         type: string
         format: date-time
     description: Commission defines commission parameters for a given validator.
-  lbm.staking.v1beta1.CommissionRates:
+  lfb.staking.v1beta1.CommissionRates:
     type: object
     properties:
       rate:
@@ -36807,7 +36807,7 @@ definitions:
       creating
 
       a validator.
-  lbm.staking.v1beta1.Delegation:
+  lfb.staking.v1beta1.Delegation:
     type: object
     properties:
       delegator_address:
@@ -36820,7 +36820,7 @@ definitions:
       Delegation represents the bond with tokens held by an account. It is
       owned by one delegator, and is associated with the voting power of one
       validator.
-  lbm.staking.v1beta1.DelegationResponse:
+  lfb.staking.v1beta1.DelegationResponse:
     type: object
     properties:
       delegation:
@@ -36851,7 +36851,7 @@ definitions:
     description: |-
       DelegationResponse is equivalent to Delegation except that it contains a
       balance in addition to shares which is more suitable for client responses.
-  lbm.staking.v1beta1.Description:
+  lfb.staking.v1beta1.Description:
     type: object
     properties:
       moniker:
@@ -36865,7 +36865,7 @@ definitions:
       details:
         type: string
     description: Description defines a validator description.
-  lbm.staking.v1beta1.HistoricalInfo:
+  lfb.staking.v1beta1.HistoricalInfo:
     type: object
     properties:
       header:
@@ -37216,7 +37216,7 @@ definitions:
       recent HistoricalInfo
 
       (`n` is set by the staking module's `historical_entries` parameter).
-  lbm.staking.v1beta1.Params:
+  lfb.staking.v1beta1.Params:
     type: object
     properties:
       unbonding_time:
@@ -37233,7 +37233,7 @@ definitions:
       bond_denom:
         type: string
     description: Params defines the parameters for the staking module.
-  lbm.staking.v1beta1.Pool:
+  lfb.staking.v1beta1.Pool:
     type: object
     properties:
       not_bonded_tokens:
@@ -37243,7 +37243,7 @@ definitions:
     description: |-
       Pool is used for tracking bonded and not-bonded token supply of the bond
       denomination.
-  lbm.staking.v1beta1.QueryDelegationResponse:
+  lfb.staking.v1beta1.QueryDelegationResponse:
     type: object
     properties:
       delegation_response:
@@ -37285,7 +37285,7 @@ definitions:
     description: >-
       QueryDelegationResponse is response type for the Query/Delegation RPC
       method.
-  lbm.staking.v1beta1.QueryDelegatorDelegationsResponse:
+  lfb.staking.v1beta1.QueryDelegatorDelegationsResponse:
     type: object
     properties:
       delegation_responses:
@@ -37353,7 +37353,7 @@ definitions:
     description: |-
       QueryDelegatorDelegationsResponse is response type for the
       Query/DelegatorDelegations RPC method.
-  lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse:
+  lfb.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse:
     type: object
     properties:
       unbonding_responses:
@@ -37409,7 +37409,7 @@ definitions:
     description: |-
       QueryUnbondingDelegatorDelegationsResponse is response type for the
       Query/UnbondingDelegatorDelegations RPC method.
-  lbm.staking.v1beta1.QueryDelegatorValidatorResponse:
+  lfb.staking.v1beta1.QueryDelegatorValidatorResponse:
     type: object
     properties:
       validator:
@@ -37650,7 +37650,7 @@ definitions:
     description: |-
       QueryDelegatorValidatorResponse response type for the
       Query/DelegatorValidator RPC method.
-  lbm.staking.v1beta1.QueryDelegatorValidatorsResponse:
+  lfb.staking.v1beta1.QueryDelegatorValidatorsResponse:
     type: object
     properties:
       validators:
@@ -37936,7 +37936,7 @@ definitions:
     description: |-
       QueryDelegatorValidatorsResponse is response type for the
       Query/DelegatorValidators RPC method.
-  lbm.staking.v1beta1.QueryHistoricalInfoResponse:
+  lfb.staking.v1beta1.QueryHistoricalInfoResponse:
     type: object
     properties:
       hist:
@@ -38296,7 +38296,7 @@ definitions:
       RPC
 
       method.
-  lbm.staking.v1beta1.QueryParamsResponse:
+  lfb.staking.v1beta1.QueryParamsResponse:
     type: object
     properties:
       params:
@@ -38317,7 +38317,7 @@ definitions:
           bond_denom:
             type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  lbm.staking.v1beta1.QueryPoolResponse:
+  lfb.staking.v1beta1.QueryPoolResponse:
     type: object
     properties:
       pool:
@@ -38329,7 +38329,7 @@ definitions:
           bonded_tokens:
             type: string
     description: QueryPoolResponse is response type for the Query/Pool RPC method.
-  lbm.staking.v1beta1.QueryRedelegationsResponse:
+  lfb.staking.v1beta1.QueryRedelegationsResponse:
     type: object
     properties:
       redelegation_responses:
@@ -38432,7 +38432,7 @@ definitions:
       RPC
 
       method.
-  lbm.staking.v1beta1.QueryUnbondingDelegationResponse:
+  lfb.staking.v1beta1.QueryUnbondingDelegationResponse:
     type: object
     properties:
       unbond:
@@ -38464,7 +38464,7 @@ definitions:
     description: |-
       QueryDelegationResponse is response type for the Query/UnbondingDelegation
       RPC method.
-  lbm.staking.v1beta1.QueryValidatorDelegationsResponse:
+  lfb.staking.v1beta1.QueryValidatorDelegationsResponse:
     type: object
     properties:
       delegation_responses:
@@ -38531,7 +38531,7 @@ definitions:
     title: |-
       QueryValidatorDelegationsResponse is response type for the
       Query/ValidatorDelegations RPC method
-  lbm.staking.v1beta1.QueryValidatorResponse:
+  lfb.staking.v1beta1.QueryValidatorResponse:
     type: object
     properties:
       validator:
@@ -38770,7 +38770,7 @@ definitions:
           min_self_delegation:
             type: string
     title: QueryValidatorResponse is response type for the Query/Validator RPC method
-  lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse:
+  lfb.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse:
     type: object
     properties:
       unbonding_responses:
@@ -38826,7 +38826,7 @@ definitions:
     description: |-
       QueryValidatorUnbondingDelegationsResponse is response type for the
       Query/ValidatorUnbondingDelegations RPC method.
-  lbm.staking.v1beta1.QueryValidatorsResponse:
+  lfb.staking.v1beta1.QueryValidatorsResponse:
     type: object
     properties:
       validators:
@@ -39112,7 +39112,7 @@ definitions:
     title: >-
       QueryValidatorsResponse is response type for the Query/Validators RPC
       method
-  lbm.staking.v1beta1.Redelegation:
+  lfb.staking.v1beta1.Redelegation:
     type: object
     properties:
       delegator_address:
@@ -39144,7 +39144,7 @@ definitions:
       bonds
 
       from a particular source validator to a particular destination validator.
-  lbm.staking.v1beta1.RedelegationEntry:
+  lfb.staking.v1beta1.RedelegationEntry:
     type: object
     properties:
       creation_height:
@@ -39158,7 +39158,7 @@ definitions:
       shares_dst:
         type: string
     description: RedelegationEntry defines a redelegation object with relevant metadata.
-  lbm.staking.v1beta1.RedelegationEntryResponse:
+  lfb.staking.v1beta1.RedelegationEntryResponse:
     type: object
     properties:
       redelegation_entry:
@@ -39186,7 +39186,7 @@ definitions:
       contains a balance in addition to shares which is more suitable for client
 
       responses.
-  lbm.staking.v1beta1.RedelegationResponse:
+  lfb.staking.v1beta1.RedelegationResponse:
     type: object
     properties:
       redelegation:
@@ -39260,7 +39260,7 @@ definitions:
       contain a balance in addition to shares which is more suitable for client
 
       responses.
-  lbm.staking.v1beta1.UnbondingDelegation:
+  lfb.staking.v1beta1.UnbondingDelegation:
     type: object
     properties:
       delegator_address:
@@ -39288,7 +39288,7 @@ definitions:
     description: |-
       UnbondingDelegation stores all of a single delegator's unbonding bonds
       for a single validator in an time-ordered list.
-  lbm.staking.v1beta1.UnbondingDelegationEntry:
+  lfb.staking.v1beta1.UnbondingDelegationEntry:
     type: object
     properties:
       creation_height:
@@ -39304,7 +39304,7 @@ definitions:
     description: >-
       UnbondingDelegationEntry defines an unbonding object with relevant
       metadata.
-  lbm.staking.v1beta1.Validator:
+  lfb.staking.v1beta1.Validator:
     type: object
     properties:
       operator_address:
@@ -39552,7 +39552,7 @@ definitions:
       exchange rate. Voting power can be calculated as total bonded shares
 
       multiplied by exchange rate.
-  lbm.base.abci.v1beta1.ABCIMessageLog:
+  lfb.base.abci.v1beta1.ABCIMessageLog:
     type: object
     properties:
       msg_index:
@@ -39590,7 +39590,7 @@ definitions:
     description: >-
       ABCIMessageLog defines a structure containing an indexed tx ABCI message
       log.
-  lbm.base.abci.v1beta1.Attribute:
+  lfb.base.abci.v1beta1.Attribute:
     type: object
     properties:
       key:
@@ -39600,7 +39600,7 @@ definitions:
     description: |-
       Attribute defines an attribute wrapper where the key and value are
       strings instead of raw bytes.
-  lbm.base.abci.v1beta1.GasInfo:
+  lfb.base.abci.v1beta1.GasInfo:
     type: object
     properties:
       gas_wanted:
@@ -39612,7 +39612,7 @@ definitions:
         format: uint64
         description: GasUsed is the amount of gas actually consumed.
     description: GasInfo defines tx execution gas context.
-  lbm.base.abci.v1beta1.Result:
+  lfb.base.abci.v1beta1.Result:
     type: object
     properties:
       data:
@@ -39664,7 +39664,7 @@ definitions:
 
           or handler execution.
     description: Result is the union of ResponseFormat and ResponseCheckTx.
-  lbm.base.abci.v1beta1.StringEvent:
+  lfb.base.abci.v1beta1.StringEvent:
     type: object
     properties:
       type:
@@ -39684,7 +39684,7 @@ definitions:
     description: |-
       StringEvent defines en Event object wrapper where all the attributes
       contain key/value pairs that are strings instead of raw bytes.
-  lbm.base.abci.v1beta1.TxResponse:
+  lfb.base.abci.v1beta1.TxResponse:
     type: object
     properties:
       height:
@@ -39844,7 +39844,7 @@ definitions:
       The
 
       tags are stringified and the log is JSON decoded.
-  lbm.crypto.multisig.v1beta1.CompactBitArray:
+  lfb.crypto.multisig.v1beta1.CompactBitArray:
     type: object
     properties:
       extra_bits_stored:
@@ -39858,7 +39858,7 @@ definitions:
       This is used to ensure that the encoded data takes up a minimal amount of
       space after proto encoding.
       This is not thread safe, and is not intended for concurrent usage.
-  lbm.tx.signing.v1beta1.SignMode:
+  lfb.tx.signing.v1beta1.SignMode:
     type: string
     enum:
       - SIGN_MODE_UNSPECIFIED
@@ -39878,13 +39878,13 @@ definitions:
       from SIGN_MODE_DIRECT
        - SIGN_MODE_LEGACY_AMINO_JSON: SIGN_MODE_LEGACY_AMINO_JSON is a backwards compatibility mode which uses
       Amino JSON and will be removed in the future
-  lbm.tx.v1beta1.AuthInfo:
+  lfb.tx.v1beta1.AuthInfo:
     type: object
     properties:
       signer_infos:
         type: array
         items:
-          $ref: '#/definitions/lbm.tx.v1beta1.SignerInfo'
+          $ref: '#/definitions/lfb.tx.v1beta1.SignerInfo'
         description: >-
           signer_infos defines the signing modes for the required signers. The
           number
@@ -39959,7 +39959,7 @@ definitions:
     description: |-
       AuthInfo describes the fee and signer modes that are used to sign a
       transaction.
-  lbm.tx.v1beta1.BroadcastMode:
+  lfb.tx.v1beta1.BroadcastMode:
     type: string
     enum:
       - BROADCAST_MODE_UNSPECIFIED
@@ -39978,7 +39978,7 @@ definitions:
       a CheckTx execution response only.
        - BROADCAST_MODE_ASYNC: BROADCAST_MODE_ASYNC defines a tx broadcasting mode where the client returns
       immediately.
-  lbm.tx.v1beta1.BroadcastTxRequest:
+  lfb.tx.v1beta1.BroadcastTxRequest:
     type: object
     properties:
       tx_bytes:
@@ -40007,7 +40007,7 @@ definitions:
     description: |-
       BroadcastTxRequest is the request type for the Service.BroadcastTxRequest
       RPC method.
-  lbm.tx.v1beta1.BroadcastTxResponse:
+  lfb.tx.v1beta1.BroadcastTxResponse:
     type: object
     properties:
       tx_response:
@@ -40173,7 +40173,7 @@ definitions:
     description: |-
       BroadcastTxResponse is the response type for the
       Service.BroadcastTx method.
-  lbm.tx.v1beta1.Fee:
+  lfb.tx.v1beta1.Fee:
     type: object
     properties:
       amount:
@@ -40227,11 +40227,11 @@ definitions:
       "gasprice",
 
       which must be above some miminum to be accepted into the mempool.
-  lbm.tx.v1beta1.GetTxResponse:
+  lfb.tx.v1beta1.GetTxResponse:
     type: object
     properties:
       tx:
-        $ref: '#/definitions/lbm.tx.v1beta1.Tx'
+        $ref: '#/definitions/lfb.tx.v1beta1.Tx'
         description: tx is the queried transaction.
       tx_response:
         description: tx_response is the queried TxResponses.
@@ -40394,13 +40394,13 @@ definitions:
 
               it's genesis time.
     description: GetTxResponse is the response type for the Service.GetTx method.
-  lbm.tx.v1beta1.GetTxsEventResponse:
+  lfb.tx.v1beta1.GetTxsEventResponse:
     type: object
     properties:
       txs:
         type: array
         items:
-          $ref: '#/definitions/lbm.tx.v1beta1.Tx'
+          $ref: '#/definitions/lfb.tx.v1beta1.Tx'
         description: txs is the list of queried transactions.
       tx_responses:
         type: array
@@ -40592,7 +40592,7 @@ definitions:
     description: |-
       GetTxsEventResponse is the response type for the Service.TxsByEvents
       RPC method.
-  lbm.tx.v1beta1.ModeInfo:
+  lfb.tx.v1beta1.ModeInfo:
     type: object
     properties:
       single:
@@ -40624,10 +40624,10 @@ definitions:
                - SIGN_MODE_LEGACY_AMINO_JSON: SIGN_MODE_LEGACY_AMINO_JSON is a backwards compatibility mode which uses
               Amino JSON and will be removed in the future
       multi:
-        $ref: '#/definitions/lbm.tx.v1beta1.ModeInfo.Multi'
+        $ref: '#/definitions/lfb.tx.v1beta1.ModeInfo.Multi'
         title: multi represents a nested multisig signer
     description: ModeInfo describes the signing mode of a single or nested multisig signer.
-  lbm.tx.v1beta1.ModeInfo.Multi:
+  lfb.tx.v1beta1.ModeInfo.Multi:
     type: object
     properties:
       bitarray:
@@ -40652,12 +40652,12 @@ definitions:
       mode_infos:
         type: array
         items:
-          $ref: '#/definitions/lbm.tx.v1beta1.ModeInfo'
+          $ref: '#/definitions/lfb.tx.v1beta1.ModeInfo'
         title: |-
           mode_infos is the corresponding modes of the signers of the multisig
           which could include nested multisig public keys
     title: Multi is the mode info for a multisig public key
-  lbm.tx.v1beta1.ModeInfo.Single:
+  lfb.tx.v1beta1.ModeInfo.Single:
     type: object
     properties:
       mode:
@@ -40687,7 +40687,7 @@ definitions:
       Single is the mode info for a single signer. It is structured as a message
       to allow for additional fields such as locale for SIGN_MODE_TEXTUAL in the
       future
-  lbm.tx.v1beta1.SignerInfo:
+  lfb.tx.v1beta1.SignerInfo:
     type: object
     properties:
       public_key:
@@ -40760,7 +40760,7 @@ definitions:
               Must be a valid serialized protocol buffer of the above specified
               type.
       mode_info:
-        $ref: '#/definitions/lbm.tx.v1beta1.ModeInfo'
+        $ref: '#/definitions/lfb.tx.v1beta1.ModeInfo'
         title: |-
           mode_info describes the signing mode of the signer and is a nested
           structure to support nested multisig pubkey's
@@ -40777,16 +40777,16 @@ definitions:
     description: |-
       SignerInfo describes the public key and signing mode of a single top-level
       signer.
-  lbm.tx.v1beta1.SimulateRequest:
+  lfb.tx.v1beta1.SimulateRequest:
     type: object
     properties:
       tx:
-        $ref: '#/definitions/lbm.tx.v1beta1.Tx'
+        $ref: '#/definitions/lfb.tx.v1beta1.Tx'
         description: tx is the transaction to simulate.
     description: |-
       SimulateRequest is the request type for the Service.Simulate
       RPC method.
-  lbm.tx.v1beta1.SimulateResponse:
+  lfb.tx.v1beta1.SimulateResponse:
     type: object
     properties:
       gas_info:
@@ -40860,7 +40860,7 @@ definitions:
     description: |-
       SimulateResponse is the response type for the
       Service.SimulateRPC method.
-  lbm.tx.v1beta1.Tx:
+  lfb.tx.v1beta1.Tx:
     type: object
     properties:
       body:
@@ -41427,7 +41427,7 @@ definitions:
               and can't be handled, they will be ignored
         description: TxBody is the body of a transaction that all signers sign over.
       auth_info:
-        $ref: '#/definitions/lbm.tx.v1beta1.AuthInfo'
+        $ref: '#/definitions/lfb.tx.v1beta1.AuthInfo'
         title: |-
           auth_info is the authorization related content of the transaction,
           specifically signers, signer modes and fee
@@ -41445,7 +41445,7 @@ definitions:
 
           public key and signing mode by position.
     description: Tx is the standard type used for broadcasting transactions.
-  lbm.tx.v1beta1.TxBody:
+  lfb.tx.v1beta1.TxBody:
     type: object
     properties:
       messages:
@@ -42019,7 +42019,7 @@ definitions:
       index:
         type: boolean
     description: 'EventAttribute is a single key-value pair, associated with an event.'
-  lbm.upgrade.v1beta1.Plan:
+  lfb.upgrade.v1beta1.Plan:
     type: object
     properties:
       name:
@@ -42235,7 +42235,7 @@ definitions:
     description: >-
       Plan specifies information about a planned upgrade and when it should
       occur.
-  lbm.upgrade.v1beta1.QueryAppliedPlanResponse:
+  lfb.upgrade.v1beta1.QueryAppliedPlanResponse:
     type: object
     properties:
       height:
@@ -42247,7 +42247,7 @@ definitions:
       RPC
 
       method.
-  lbm.upgrade.v1beta1.QueryCurrentPlanResponse:
+  lfb.upgrade.v1beta1.QueryCurrentPlanResponse:
     type: object
     properties:
       plan:
@@ -42479,7 +42479,7 @@ definitions:
       RPC
 
       method.
-  lbm.upgrade.v1beta1.QueryUpgradedConsensusStateResponse:
+  lfb.upgrade.v1beta1.QueryUpgradedConsensusStateResponse:
     type: object
     properties:
       upgraded_consensus_state:

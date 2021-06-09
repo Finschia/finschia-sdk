@@ -8,11 +8,11 @@ import (
 	ostbytes "github.com/line/ostracon/libs/bytes"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/x/evidence/exported"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/x/evidence/exported"
+	"github.com/line/lfb-sdk/x/evidence/types"
 )
 
 func TestDefaultGenesisState(t *testing.T) {

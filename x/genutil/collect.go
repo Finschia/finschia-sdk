@@ -16,12 +16,12 @@ import (
 	cfg "github.com/line/ostracon/config"
 	osttypes "github.com/line/ostracon/types"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	bankexported "github.com/line/lbm-sdk/v2/x/bank/exported"
-	"github.com/line/lbm-sdk/v2/x/genutil/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	bankexported "github.com/line/lfb-sdk/x/bank/exported"
+	"github.com/line/lfb-sdk/x/genutil/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 // GenAppStateFromConfig gets the genesis app state from the config

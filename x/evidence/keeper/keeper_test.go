@@ -8,17 +8,17 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/baseapp"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/evidence/exported"
-	"github.com/line/lbm-sdk/v2/x/evidence/keeper"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
-	"github.com/line/lbm-sdk/v2/x/staking"
+	"github.com/line/lfb-sdk/baseapp"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/evidence/exported"
+	"github.com/line/lfb-sdk/x/evidence/keeper"
+	"github.com/line/lfb-sdk/x/evidence/types"
+	"github.com/line/lfb-sdk/x/staking"
 )
 
 var (

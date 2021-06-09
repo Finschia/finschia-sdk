@@ -6,7 +6,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // NewCapability returns a reference to a new Capability to be used as an

@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/store/mem"
-	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lfb-sdk/store/mem"
+	"github.com/line/lfb-sdk/store/types"
 )
 
 func TestStore(t *testing.T) {

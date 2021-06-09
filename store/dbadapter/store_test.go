@@ -8,9 +8,9 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/store/dbadapter"
-	"github.com/line/lbm-sdk/v2/store/types"
-	"github.com/line/lbm-sdk/v2/tests/mocks"
+	"github.com/line/lfb-sdk/store/dbadapter"
+	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lfb-sdk/tests/mocks"
 )
 
 var errFoo = errors.New("dummy")

@@ -3,9 +3,9 @@ package server
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/crypto/keyring"
+	"github.com/line/lfb-sdk/crypto/keyring"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // GenerateCoinKey returns the address of a public key, along with the secret

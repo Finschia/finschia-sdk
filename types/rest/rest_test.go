@@ -13,15 +13,15 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/codec"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	simappparams "github.com/line/lbm-sdk/v2/simapp/params"
-	"github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/codec"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	simappparams "github.com/line/lfb-sdk/simapp/params"
+	"github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/rest"
 )
 
 func TestBaseReq_Sanitize(t *testing.T) {
@@ -202,7 +202,7 @@ func TestProcessPostResponse(t *testing.T) {
 	acc := mockAccount{addr, coins, pubKey, accNumber, sequence}
 	cdc := codec.NewLegacyAmino()
 	cryptocodec.RegisterCrypto(cdc)
-	cdc.RegisterConcrete(&mockAccount{}, "lbm-sdk/mockAccount", nil)
+	cdc.RegisterConcrete(&mockAccount{}, "lfb-sdk/mockAccount", nil)
 	ctx = ctx.WithLegacyAmino(cdc)
 
 	// setup expected results

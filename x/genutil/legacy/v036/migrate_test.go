@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/x/genutil/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/x/genutil/types"
 )
 
 var basic034Gov = []byte(`

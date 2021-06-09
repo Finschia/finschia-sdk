@@ -4,8 +4,8 @@ import (
 	ostcrypto "github.com/line/ostracon/crypto"
 	osttypes "github.com/line/ostracon/types"
 
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 // GetTmConsPubKey gets the validator's public key as a ostcrypto.PubKey.

@@ -7,13 +7,13 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/testutil"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
-	"github.com/line/lbm-sdk/v2/types/query"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
+	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lfb-sdk/testutil/network"
+	sdk "github.com/line/lfb-sdk/types"
+	grpctypes "github.com/line/lfb-sdk/types/grpc"
+	"github.com/line/lfb-sdk/types/query"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/distribution/types"
 )
 
 type IntegrationTestSuite struct {
@@ -48,7 +48,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 	}{
 		{
 			"gRPC request params",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/params", baseURL),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/params", baseURL),
 			&types.QueryParamsResponse{},
 			&types.QueryParamsResponse{
 				Params: types.DefaultParams(),
@@ -84,7 +84,7 @@ func (s *IntegrationTestSuite) TestQueryOutstandingRewardsGRPC() {
 	}{
 		{
 			"gRPC request params with wrong validator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/validators/%s/outstanding_rewards", baseURL, "wrongAddress"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/validators/%s/outstanding_rewards", baseURL, "wrongAddress"),
 			map[string]string{},
 			true,
 			&types.QueryValidatorOutstandingRewardsResponse{},
@@ -92,7 +92,7 @@ func (s *IntegrationTestSuite) TestQueryOutstandingRewardsGRPC() {
 		},
 		{
 			"gRPC request params valid address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/validators/%s/outstanding_rewards", baseURL, val.ValAddress.String()),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/validators/%s/outstanding_rewards", baseURL, val.ValAddress.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -138,7 +138,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorCommissionGRPC() {
 	}{
 		{
 			"gRPC request params with wrong validator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/validators/%s/commission", baseURL, "wrongAddress"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/validators/%s/commission", baseURL, "wrongAddress"),
 			map[string]string{},
 			true,
 			&types.QueryValidatorCommissionResponse{},
@@ -146,7 +146,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorCommissionGRPC() {
 		},
 		{
 			"gRPC request params valid address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/validators/%s/commission", baseURL, val.ValAddress.String()),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/validators/%s/commission", baseURL, val.ValAddress.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -188,28 +188,28 @@ func (s *IntegrationTestSuite) TestQuerySlashesGRPC() {
 	}{
 		{
 			"invalid validator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/validators/%s/slashes", baseURL, ""),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/validators/%s/slashes", baseURL, ""),
 			true,
 			&types.QueryValidatorSlashesResponse{},
 			nil,
 		},
 		{
 			"invalid start height",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "-1", "3"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "-1", "3"),
 			true,
 			&types.QueryValidatorSlashesResponse{},
 			nil,
 		},
 		{
 			"invalid start height",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "1", "-3"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "1", "-3"),
 			true,
 			&types.QueryValidatorSlashesResponse{},
 			nil,
 		},
 		{
 			"valid request get slashes",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "1", "3"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/validators/%s/slashes?starting_height=%s&ending_height=%s", baseURL, val.ValAddress.String(), "1", "3"),
 			false,
 			&types.QueryValidatorSlashesResponse{},
 			&types.QueryValidatorSlashesResponse{
@@ -251,7 +251,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 	}{
 		{
 			"wrong delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/rewards", baseUrl, "wrongDelegatorAddress"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/rewards", baseUrl, "wrongDelegatorAddress"),
 			map[string]string{},
 			true,
 			&types.QueryDelegationTotalRewardsResponse{},
@@ -259,7 +259,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/rewards", baseUrl, val.Address.String()),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/rewards", baseUrl, val.Address.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -274,7 +274,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 		},
 		{
 			"wrong validator address(specific validator rewards)",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/rewards/%s", baseUrl, val.Address.String(), "wrongValAddress"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/rewards/%s", baseUrl, val.Address.String(), "wrongValAddress"),
 			map[string]string{},
 			true,
 			&types.QueryDelegationTotalRewardsResponse{},
@@ -282,7 +282,7 @@ func (s *IntegrationTestSuite) TestQueryDelegatorRewardsGRPC() {
 		},
 		{
 			"valid request(specific validator rewards)",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/rewards/%s", baseUrl, val.Address.String(), val.ValAddress.String()),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/rewards/%s", baseUrl, val.Address.String(), val.ValAddress.String()),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},
@@ -323,21 +323,21 @@ func (s *IntegrationTestSuite) TestQueryDelegatorValidatorsGRPC() {
 	}{
 		{
 			"empty delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/validators", baseUrl, ""),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/validators", baseUrl, ""),
 			true,
 			&types.QueryDelegatorValidatorsResponse{},
 			nil,
 		},
 		{
 			"wrong delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/validators", baseUrl, "wrongDelegatorAddress"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/validators", baseUrl, "wrongDelegatorAddress"),
 			true,
 			&types.QueryDelegatorValidatorsResponse{},
 			nil,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/validators", baseUrl, val.Address.String()),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/validators", baseUrl, val.Address.String()),
 			false,
 			&types.QueryDelegatorValidatorsResponse{},
 			&types.QueryDelegatorValidatorsResponse{
@@ -375,21 +375,21 @@ func (s *IntegrationTestSuite) TestQueryWithdrawAddressGRPC() {
 	}{
 		{
 			"empty delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, ""),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, ""),
 			true,
 			&types.QueryDelegatorWithdrawAddressResponse{},
 			nil,
 		},
 		{
 			"wrong delegator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, "wrongDelegatorAddress"),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, "wrongDelegatorAddress"),
 			true,
 			&types.QueryDelegatorWithdrawAddressResponse{},
 			nil,
 		},
 		{
 			"valid request",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, val.Address.String()),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/delegators/%s/withdraw_address", baseUrl, val.Address.String()),
 			false,
 			&types.QueryDelegatorWithdrawAddressResponse{},
 			&types.QueryDelegatorWithdrawAddressResponse{
@@ -431,7 +431,7 @@ func (s *IntegrationTestSuite) TestQueryValidatorCommunityPoolGRPC() {
 	}{
 		{
 			"gRPC request params with wrong validator address",
-			fmt.Sprintf("%s/lbm/distribution/v1beta1/community_pool", baseURL),
+			fmt.Sprintf("%s/lfb/distribution/v1beta1/community_pool", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "2",
 			},

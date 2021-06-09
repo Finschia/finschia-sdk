@@ -3,9 +3,9 @@ package v036
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/types"
-	v034distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v034"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/types"
+	v034distr "github.com/line/lfb-sdk/x/distribution/legacy/v034"
 
 	"github.com/stretchr/testify/require"
 )

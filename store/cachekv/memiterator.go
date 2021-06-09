@@ -5,7 +5,7 @@ import (
 	"container/list"
 	"errors"
 
-	"github.com/line/lbm-sdk/v2/types/kv"
+	"github.com/line/lfb-sdk/types/kv"
 )
 
 // Iterates over iterKVCache items.

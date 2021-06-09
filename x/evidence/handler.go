@@ -1,10 +1,10 @@
 package evidence
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/evidence/keeper"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/evidence/keeper"
+	"github.com/line/lfb-sdk/x/evidence/types"
 )
 
 // NewHandler returns a handler for evidence messages.

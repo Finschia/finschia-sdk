@@ -11,17 +11,17 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/module"
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	"github.com/line/lbm-sdk/v2/x/params/client/cli"
-	"github.com/line/lbm-sdk/v2/x/params/keeper"
-	"github.com/line/lbm-sdk/v2/x/params/simulation"
-	"github.com/line/lbm-sdk/v2/x/params/types"
-	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/module"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
+	"github.com/line/lfb-sdk/x/params/client/cli"
+	"github.com/line/lfb-sdk/x/params/keeper"
+	"github.com/line/lfb-sdk/x/params/simulation"
+	"github.com/line/lfb-sdk/x/params/types"
+	"github.com/line/lfb-sdk/x/params/types/proposal"
 )
 
 var (

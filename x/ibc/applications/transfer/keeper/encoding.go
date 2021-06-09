@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
+	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
 )
 
 // UnmarshalDenomTrace attempts to decode and return an DenomTrace object from

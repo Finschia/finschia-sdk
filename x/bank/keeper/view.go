@@ -5,12 +5,12 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/store/prefix"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	vestexported "github.com/line/lbm-sdk/v2/x/auth/vesting/exported"
-	"github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/store/prefix"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	vestexported "github.com/line/lfb-sdk/x/auth/vesting/exported"
+	"github.com/line/lfb-sdk/x/bank/types"
 )
 
 var _ ViewKeeper = (*BaseViewKeeper)(nil)

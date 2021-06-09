@@ -5,8 +5,8 @@ import (
 
 	tmdb "github.com/line/tm-db/v2"
 
-	store "github.com/line/lbm-sdk/v2/store/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	store "github.com/line/lfb-sdk/store/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 var _ sdk.MultiStore = multiStore{}

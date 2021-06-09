@@ -1,7 +1,7 @@
 package testslashing
 
 import (
-	"github.com/line/lbm-sdk/v2/x/slashing/types"
+	"github.com/line/lfb-sdk/x/slashing/types"
 )
 
 // TestParams construct default slashing params for tests.

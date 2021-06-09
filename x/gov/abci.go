@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/telemetry"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/gov/keeper"
-	"github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lfb-sdk/telemetry"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/gov/keeper"
+	"github.com/line/lfb-sdk/x/gov/types"
 )
 
 // EndBlocker called every block, process inflation, update validator set.

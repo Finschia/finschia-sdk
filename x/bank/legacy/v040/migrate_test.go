@@ -5,14 +5,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/simapp"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v038auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v038"
-	v039auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v039"
-	v036supply "github.com/line/lbm-sdk/v2/x/bank/legacy/v036"
-	v038bank "github.com/line/lbm-sdk/v2/x/bank/legacy/v038"
-	v040bank "github.com/line/lbm-sdk/v2/x/bank/legacy/v040"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/simapp"
+	sdk "github.com/line/lfb-sdk/types"
+	v038auth "github.com/line/lfb-sdk/x/auth/legacy/v038"
+	v039auth "github.com/line/lfb-sdk/x/auth/legacy/v039"
+	v036supply "github.com/line/lfb-sdk/x/bank/legacy/v036"
+	v038bank "github.com/line/lfb-sdk/x/bank/legacy/v038"
+	v040bank "github.com/line/lfb-sdk/x/bank/legacy/v040"
 )
 
 func TestMigrate(t *testing.T) {

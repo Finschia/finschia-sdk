@@ -6,14 +6,14 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lbm-sdk/v2/store/prefix"
-	"github.com/line/lbm-sdk/v2/types/query"
+	"github.com/line/lfb-sdk/store/prefix"
+	"github.com/line/lfb-sdk/types/query"
 
 	proto "github.com/gogo/protobuf/proto"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/evidence/types"
 )
 
 var _ types.QueryServer = Keeper{}

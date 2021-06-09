@@ -10,10 +10,10 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/line/lbm-sdk/v2/store/tracekv"
-	"github.com/line/lbm-sdk/v2/store/types"
-	"github.com/line/lbm-sdk/v2/telemetry"
-	"github.com/line/lbm-sdk/v2/types/kv"
+	"github.com/line/lfb-sdk/store/tracekv"
+	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lfb-sdk/telemetry"
+	"github.com/line/lfb-sdk/types/kv"
 )
 
 // If value is nil but deleted is false, it means the parent doesn't have the

@@ -1,7 +1,7 @@
 package host
 
 import (
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // SubModuleName defines the ICS 24 host

@@ -1,8 +1,8 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/v2/store/types"
-	"github.com/line/lbm-sdk/v2/types/kv"
+	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lfb-sdk/types/kv"
 )
 
 type (

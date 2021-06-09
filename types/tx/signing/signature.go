@@ -3,8 +3,8 @@ package signing
 import (
 	"fmt"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 )
 
 // SignatureV2 is a convenience type that is easier to use in application logic

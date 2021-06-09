@@ -4,7 +4,7 @@ import (
 	"github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lfb-sdk/client"
 )
 
 const flagListNames = "list-names"

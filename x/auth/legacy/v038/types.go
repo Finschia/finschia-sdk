@@ -13,11 +13,11 @@ import (
 
 	ostcrypto "github.com/line/ostracon/crypto"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v034auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v034"
+	"github.com/line/lfb-sdk/codec"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	v034auth "github.com/line/lfb-sdk/x/auth/legacy/v034"
 )
 
 const (
@@ -522,9 +522,9 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cryptocodec.RegisterCrypto(cdc)
 	cdc.RegisterInterface((*GenesisAccount)(nil), nil)
 	cdc.RegisterInterface((*Account)(nil), nil)
-	cdc.RegisterConcrete(&BaseAccount{}, "lbm-sdk/Account", nil)
-	cdc.RegisterConcrete(&BaseVestingAccount{}, "lbm-sdk/BaseVestingAccount", nil)
-	cdc.RegisterConcrete(&ContinuousVestingAccount{}, "lbm-sdk/ContinuousVestingAccount", nil)
-	cdc.RegisterConcrete(&DelayedVestingAccount{}, "lbm-sdk/DelayedVestingAccount", nil)
-	cdc.RegisterConcrete(&ModuleAccount{}, "lbm-sdk/ModuleAccount", nil)
+	cdc.RegisterConcrete(&BaseAccount{}, "lfb-sdk/Account", nil)
+	cdc.RegisterConcrete(&BaseVestingAccount{}, "lfb-sdk/BaseVestingAccount", nil)
+	cdc.RegisterConcrete(&ContinuousVestingAccount{}, "lfb-sdk/ContinuousVestingAccount", nil)
+	cdc.RegisterConcrete(&DelayedVestingAccount{}, "lfb-sdk/DelayedVestingAccount", nil)
+	cdc.RegisterConcrete(&ModuleAccount{}, "lfb-sdk/ModuleAccount", nil)
 }

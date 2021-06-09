@@ -6,12 +6,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/gov/client/cli"
-	gov "github.com/line/lbm-sdk/v2/x/gov/types"
-	"github.com/line/lbm-sdk/v2/x/upgrade/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/tx"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/gov/client/cli"
+	gov "github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lfb-sdk/x/upgrade/types"
 )
 
 const (
@@ -41,7 +41,7 @@ func NewCmdSubmitUpgradeProposal() *cobra.Command {
 		Short: "Submit a software upgrade proposal",
 		Long: "Submit a software upgrade along with an initial deposit.\n" +
 			"Please specify a unique name and height OR time for the upgrade to take effect.\n" +
-			"You may include info to reference a binary download link, in a format compatible with: https://github.com/line/lbm-sdk/v2/tree/master/cosmovisor",
+			"You may include info to reference a binary download link, in a format compatible with: https://github.com/line/lfb-sdk/tree/master/cosmovisor",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {

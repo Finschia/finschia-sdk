@@ -6,15 +6,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/testutil"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	grpctypes "github.com/line/lbm-sdk/v2/types/grpc"
+	"github.com/line/lfb-sdk/testutil"
+	sdk "github.com/line/lfb-sdk/types"
+	grpctypes "github.com/line/lfb-sdk/types/grpc"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	minttypes "github.com/line/lbm-sdk/v2/x/mint/types"
+	"github.com/line/lfb-sdk/testutil/network"
+	minttypes "github.com/line/lfb-sdk/x/mint/types"
 )
 
 type IntegrationTestSuite struct {
@@ -68,7 +68,7 @@ func (s *IntegrationTestSuite) TestQueryGRPC() {
 	}{
 		{
 			"gRPC request params",
-			fmt.Sprintf("%s/lbm/mint/v1beta1/params", baseURL),
+			fmt.Sprintf("%s/lfb/mint/v1beta1/params", baseURL),
 			map[string]string{},
 			&minttypes.QueryParamsResponse{},
 			&minttypes.QueryParamsResponse{
@@ -78,7 +78,7 @@ func (s *IntegrationTestSuite) TestQueryGRPC() {
 		},
 		{
 			"gRPC request inflation",
-			fmt.Sprintf("%s/lbm/mint/v1beta1/inflation", baseURL),
+			fmt.Sprintf("%s/lfb/mint/v1beta1/inflation", baseURL),
 			map[string]string{},
 			&minttypes.QueryInflationResponse{},
 			&minttypes.QueryInflationResponse{
@@ -87,7 +87,7 @@ func (s *IntegrationTestSuite) TestQueryGRPC() {
 		},
 		{
 			"gRPC request annual provisions",
-			fmt.Sprintf("%s/lbm/mint/v1beta1/annual_provisions", baseURL),
+			fmt.Sprintf("%s/lfb/mint/v1beta1/annual_provisions", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},

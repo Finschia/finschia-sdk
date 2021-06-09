@@ -7,12 +7,12 @@ import (
 	"io/ioutil"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper/wasmtesting"
+	"github.com/line/lfb-sdk/x/wasm/internal/keeper/wasmtesting"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkErrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/query"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkErrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/query"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 	"github.com/line/ostracon/libs/log"
 	cosmwasm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"

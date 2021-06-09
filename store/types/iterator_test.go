@@ -7,8 +7,8 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lbm-sdk/v2/store/iavl"
-	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lfb-sdk/store/iavl"
+	"github.com/line/lfb-sdk/store/types"
 )
 
 func newMemTestKVStore(t *testing.T) types.KVStore {

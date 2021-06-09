@@ -3,13 +3,13 @@ package wasm
 import (
 	"math"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	porttypes "github.com/line/lbm-sdk/v2/x/ibc/core/05-port/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	wasmTypes "github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	porttypes "github.com/line/lfb-sdk/x/ibc/core/05-port/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	wasmTypes "github.com/line/lfb-sdk/x/wasm/internal/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 )
 

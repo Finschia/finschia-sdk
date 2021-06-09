@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/query"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/query"
 )
 
 // Querier path constants

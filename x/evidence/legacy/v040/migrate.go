@@ -3,9 +3,9 @@ package v040
 import (
 	"fmt"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	v038evidence "github.com/line/lbm-sdk/v2/x/evidence/legacy/v038"
-	v040evidence "github.com/line/lbm-sdk/v2/x/evidence/types"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	v038evidence "github.com/line/lfb-sdk/x/evidence/legacy/v038"
+	v040evidence "github.com/line/lfb-sdk/x/evidence/types"
 )
 
 func migrateEvidence(oldEvidence v038evidence.Evidence) *codectypes.Any {

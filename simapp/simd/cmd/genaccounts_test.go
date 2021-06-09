@@ -9,15 +9,15 @@ import (
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/server"
-	"github.com/line/lbm-sdk/v2/simapp"
-	simcmd "github.com/line/lbm-sdk/v2/simapp/simd/cmd"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	"github.com/line/lbm-sdk/v2/types/module"
-	"github.com/line/lbm-sdk/v2/x/genutil"
-	genutiltest "github.com/line/lbm-sdk/v2/x/genutil/client/testutil"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/server"
+	"github.com/line/lfb-sdk/simapp"
+	simcmd "github.com/line/lfb-sdk/simapp/simd/cmd"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	"github.com/line/lfb-sdk/types/module"
+	"github.com/line/lfb-sdk/x/genutil"
+	genutiltest "github.com/line/lfb-sdk/x/genutil/client/testutil"
 )
 
 var testMbm = module.NewBasicManager(genutil.AppModuleBasic{})

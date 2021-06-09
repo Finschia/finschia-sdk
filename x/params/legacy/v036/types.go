@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	v036gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v036"
+	"github.com/line/lfb-sdk/codec"
+	v036gov "github.com/line/lfb-sdk/x/gov/legacy/v036"
 )
 
 const (
@@ -168,5 +168,5 @@ func ErrEmptyValue(codespace string) error {
 }
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(ParameterChangeProposal{}, "lbm-sdk/ParameterChangeProposal", nil)
+	cdc.RegisterConcrete(ParameterChangeProposal{}, "lfb-sdk/ParameterChangeProposal", nil)
 }

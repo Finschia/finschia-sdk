@@ -6,8 +6,8 @@ import (
 	ics23 "github.com/confio/ics23/go"
 	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	sdkmaps "github.com/line/lbm-sdk/v2/store/internal/maps"
-	sdkproofs "github.com/line/lbm-sdk/v2/store/internal/proofs"
+	sdkmaps "github.com/line/lfb-sdk/store/internal/maps"
+	sdkproofs "github.com/line/lfb-sdk/store/internal/proofs"
 )
 
 // GetHash returns the GetHash from the CommitID.

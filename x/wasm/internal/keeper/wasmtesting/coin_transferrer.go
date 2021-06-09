@@ -1,6 +1,6 @@
 package wasmtesting
 
-import sdk "github.com/line/lbm-sdk/v2/types"
+import sdk "github.com/line/lfb-sdk/types"
 
 type MockCoinTransferrer struct {
 	TransferCoinsFn func(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error

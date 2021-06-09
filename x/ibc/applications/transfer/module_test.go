@@ -3,12 +3,12 @@ package transfer_test
 import (
 	"math"
 
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	ibctesting "github.com/line/lbm-sdk/v2/x/ibc/testing"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
 func (suite *TransferTestSuite) TestOnChanOpenInit() {

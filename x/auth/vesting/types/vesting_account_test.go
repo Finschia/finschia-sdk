@@ -7,11 +7,11 @@ import (
 	osttime "github.com/line/ostracon/types/time"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	"github.com/line/lbm-sdk/v2/x/auth/vesting/types"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lfb-sdk/x/auth/vesting/types"
 )
 
 var (

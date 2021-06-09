@@ -9,14 +9,14 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/crisis"
-	"github.com/line/lbm-sdk/v2/x/crisis/types"
-	distrtypes "github.com/line/lbm-sdk/v2/x/distribution/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/crisis"
+	"github.com/line/lfb-sdk/x/crisis/types"
+	distrtypes "github.com/line/lfb-sdk/x/distribution/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 var (

@@ -4,12 +4,12 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/keeper"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 	abci "github.com/line/ostracon/abci/types"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // NewHandler returns a handler for "bank" type messages.

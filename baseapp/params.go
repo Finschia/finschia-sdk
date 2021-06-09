@@ -7,7 +7,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // Paramspace defines the parameter subspace to be used for the paramstore.

@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v034gov "github.com/line/lbm-sdk/v2/x/gov/legacy/v034"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	v034gov "github.com/line/lfb-sdk/x/gov/legacy/v034"
 )
 
 const (
@@ -129,5 +129,5 @@ func ValidateAbstract(c Content) error {
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*Content)(nil), nil)
-	cdc.RegisterConcrete(TextProposal{}, "lbm-sdk/TextProposal", nil)
+	cdc.RegisterConcrete(TextProposal{}, "lfb-sdk/TextProposal", nil)
 }

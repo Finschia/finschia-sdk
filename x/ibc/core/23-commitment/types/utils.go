@@ -4,7 +4,7 @@ import (
 	ics23 "github.com/confio/ics23/go"
 	crypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // ConvertProofs converts crypto.ProofOps into MerkleProof

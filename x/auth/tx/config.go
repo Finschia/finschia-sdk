@@ -3,13 +3,13 @@ package tx
 import (
 	"fmt"
 
-	signingtypes "github.com/line/lbm-sdk/v2/types/tx/signing"
+	signingtypes "github.com/line/lfb-sdk/types/tx/signing"
 
-	"github.com/line/lbm-sdk/v2/codec"
+	"github.com/line/lfb-sdk/codec"
 
-	"github.com/line/lbm-sdk/v2/client"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lfb-sdk/client"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/auth/signing"
 )
 
 type config struct {

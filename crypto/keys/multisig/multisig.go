@@ -5,10 +5,10 @@ import (
 
 	ostcrypto "github.com/line/ostracon/crypto"
 
-	"github.com/line/lbm-sdk/v2/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	multisigtypes "github.com/line/lbm-sdk/v2/crypto/types/multisig"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	"github.com/line/lfb-sdk/codec/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	multisigtypes "github.com/line/lfb-sdk/crypto/types/multisig"
+	"github.com/line/lfb-sdk/types/tx/signing"
 )
 
 var _ multisigtypes.PubKey = &LegacyAminoPubKey{}
@@ -91,7 +91,7 @@ func (m *LegacyAminoPubKey) VerifyMultisignature(getSignBytes multisigtypes.GetS
 
 // VerifySignature implements cryptotypes.PubKey VerifySignature method,
 // it panics because it can't handle MultiSignatureData
-// cf. https://github.com/line/lbm-sdk/v2/issues/7109#issuecomment-686329936
+// cf. https://github.com/line/lfb-sdk/issues/7109#issuecomment-686329936
 func (m *LegacyAminoPubKey) VerifySignature(msg []byte, sig []byte) bool {
 	panic("not implemented")
 }

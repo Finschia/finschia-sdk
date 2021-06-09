@@ -3,12 +3,12 @@ package v038_test
 import (
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/client"
-	v036auth "github.com/line/lbm-sdk/v2/x/auth/legacy/v036"
-	v036genaccounts "github.com/line/lbm-sdk/v2/x/genaccounts/legacy/v036"
-	v038 "github.com/line/lbm-sdk/v2/x/genutil/legacy/v038"
-	"github.com/line/lbm-sdk/v2/x/genutil/types"
-	v036staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v036"
+	"github.com/line/lfb-sdk/client"
+	v036auth "github.com/line/lfb-sdk/x/auth/legacy/v036"
+	v036genaccounts "github.com/line/lfb-sdk/x/genaccounts/legacy/v036"
+	v038 "github.com/line/lfb-sdk/x/genutil/legacy/v038"
+	"github.com/line/lfb-sdk/x/genutil/types"
+	v036staking "github.com/line/lfb-sdk/x/staking/legacy/v036"
 
 	"github.com/stretchr/testify/require"
 )

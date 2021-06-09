@@ -1,7 +1,7 @@
 package ibctesting
 
 import (
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 )
 
 // TestConnection is a testing helper struct to keep track of the connectionID, source clientID,

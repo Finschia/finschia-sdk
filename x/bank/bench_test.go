@@ -7,12 +7,12 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	simappparams "github.com/line/lbm-sdk/v2/simapp/params"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/auth/types"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/simapp"
+	simappparams "github.com/line/lfb-sdk/simapp/params"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/auth/types"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 var moduleAccAddr = authtypes.NewModuleAddress(stakingtypes.BondedPoolName)

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/hd"
 )
 
 func TestNewSigningAlgoByString(t *testing.T) {

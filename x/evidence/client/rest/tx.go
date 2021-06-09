@@ -1,7 +1,7 @@
 package rest
 
 import (
-	"github.com/line/lbm-sdk/v2/client"
+	"github.com/line/lfb-sdk/client"
 
 	"github.com/gorilla/mux"
 )

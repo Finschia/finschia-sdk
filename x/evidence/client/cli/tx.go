@@ -1,8 +1,8 @@
 package cli
 
 import (
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/x/evidence/types"
 
 	"github.com/spf13/cobra"
 )

@@ -3,13 +3,13 @@ package rest
 import (
 	"net/http"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	govrest "github.com/line/lbm-sdk/v2/x/gov/client/rest"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
-	paramscutils "github.com/line/lbm-sdk/v2/x/params/client/utils"
-	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/types/rest"
+	govrest "github.com/line/lfb-sdk/x/gov/client/rest"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	paramscutils "github.com/line/lfb-sdk/x/params/client/utils"
+	"github.com/line/lfb-sdk/x/params/types/proposal"
 )
 
 // ProposalRESTHandler returns a ProposalRESTHandler that exposes the param

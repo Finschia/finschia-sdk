@@ -7,9 +7,9 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lbm-sdk/v2/store/iavl"
-	"github.com/line/lbm-sdk/v2/store/rootmulti"
-	storetypes "github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lfb-sdk/store/iavl"
+	"github.com/line/lfb-sdk/store/rootmulti"
+	storetypes "github.com/line/lfb-sdk/store/types"
 )
 
 type MerkleTestSuite struct {

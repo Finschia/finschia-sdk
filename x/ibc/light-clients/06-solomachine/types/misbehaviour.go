@@ -3,10 +3,10 @@ package types
 import (
 	"bytes"
 
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 var (

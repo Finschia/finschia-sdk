@@ -10,12 +10,12 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/baseapp"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	authsigning "github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lfb-sdk/baseapp"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	authsigning "github.com/line/lfb-sdk/x/auth/signing"
 )
 
 func TestRegisterMsgService(t *testing.T) {

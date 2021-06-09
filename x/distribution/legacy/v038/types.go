@@ -1,9 +1,9 @@
 package v038
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
-	v034distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v034"
-	v036distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v036"
+	sdk "github.com/line/lfb-sdk/types"
+	v034distr "github.com/line/lfb-sdk/x/distribution/legacy/v034"
+	v036distr "github.com/line/lfb-sdk/x/distribution/legacy/v036"
 )
 
 // DONTCOVER

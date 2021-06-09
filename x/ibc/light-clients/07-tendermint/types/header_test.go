@@ -5,9 +5,9 @@ import (
 
 	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
 )
 
 func (suite *TendermintTestSuite) TestGetHeight() {

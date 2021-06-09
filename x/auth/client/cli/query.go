@@ -8,13 +8,13 @@ import (
 	osttypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/version"
-	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
-	"github.com/line/lbm-sdk/v2/x/auth/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/version"
+	authclient "github.com/line/lfb-sdk/x/auth/client"
+	"github.com/line/lfb-sdk/x/auth/types"
 )
 
 const (

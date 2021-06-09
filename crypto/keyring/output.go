@@ -1,7 +1,7 @@
 package keyring
 
 import (
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 // KeyOutput defines a structure wrapping around an Info object used for output

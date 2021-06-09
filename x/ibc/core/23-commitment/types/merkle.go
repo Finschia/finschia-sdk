@@ -9,8 +9,8 @@ import (
 	"github.com/gogo/protobuf/proto"
 	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 // var representing the proofspecs for a SDK chain

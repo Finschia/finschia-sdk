@@ -1,7 +1,7 @@
 package v036
 
 import (
-	v034distr "github.com/line/lbm-sdk/v2/x/distribution/legacy/v034"
+	v034distr "github.com/line/lfb-sdk/x/distribution/legacy/v034"
 )
 
 // Migrate accepts exported genesis state from v0.34 and migrates it to v0.36

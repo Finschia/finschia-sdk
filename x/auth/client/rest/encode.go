@@ -6,11 +6,11 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/line/lbm-sdk/v2/client"
-	clientrest "github.com/line/lbm-sdk/v2/client/rest"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/client"
+	clientrest "github.com/line/lfb-sdk/client/rest"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
 )
 
 // EncodeResp defines a tx encoding response.

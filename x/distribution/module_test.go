@@ -7,9 +7,9 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	"github.com/line/lbm-sdk/v2/x/distribution/types"
+	"github.com/line/lfb-sdk/simapp"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lfb-sdk/x/distribution/types"
 )
 
 func TestItCreatesModuleAccountOnInitBlock(t *testing.T) {

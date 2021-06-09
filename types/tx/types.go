@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 // MaxGasWanted defines the max gas allowed.
@@ -188,12 +188,12 @@ func (m *SignerInfo) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 
 // RegisterInterfaces registers the sdk.Tx interface.
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	registry.RegisterInterface("lbm.tx.v1beta1.Tx", (*sdk.Tx)(nil))
+	registry.RegisterInterface("lfb.tx.v1beta1.Tx", (*sdk.Tx)(nil))
 	registry.RegisterImplementations((*sdk.Tx)(nil), &Tx{})
 }
 
 // isServiceMsg checks if a type URL corresponds to a service method name,
-// i.e. /lbm.bank.Msg/Send vs /lbm.bank.MsgSend
+// i.e. /lfb.bank.Msg/Send vs /lfb.bank.MsgSend
 func isServiceMsg(typeURL string) bool {
 	return strings.Count(typeURL, "/") >= 2
 }

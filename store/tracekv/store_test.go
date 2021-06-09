@@ -10,10 +10,10 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lbm-sdk/v2/store/dbadapter"
-	"github.com/line/lbm-sdk/v2/store/prefix"
-	"github.com/line/lbm-sdk/v2/store/tracekv"
-	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lfb-sdk/store/dbadapter"
+	"github.com/line/lfb-sdk/store/prefix"
+	"github.com/line/lfb-sdk/store/tracekv"
+	"github.com/line/lfb-sdk/store/types"
 )
 
 func bz(s string) []byte { return []byte(s) }

@@ -3,8 +3,8 @@ package v040
 import (
 	"sort"
 
-	v039slashing "github.com/line/lbm-sdk/v2/x/slashing/legacy/v039"
-	v040slashing "github.com/line/lbm-sdk/v2/x/slashing/types"
+	v039slashing "github.com/line/lfb-sdk/x/slashing/legacy/v039"
+	v040slashing "github.com/line/lfb-sdk/x/slashing/types"
 )
 
 // Migrate accepts exported x/slashing genesis state from v0.39 and migrates it

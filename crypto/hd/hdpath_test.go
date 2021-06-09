@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/types"
 
 	bip39 "github.com/cosmos/go-bip39"
 	"github.com/stretchr/testify/require"

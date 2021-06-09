@@ -9,16 +9,16 @@ import (
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	kmultisig "github.com/line/lbm-sdk/v2/crypto/keys/multisig"
-	"github.com/line/lbm-sdk/v2/crypto/types"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	"github.com/line/lfb-sdk/codec"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
+	"github.com/line/lfb-sdk/crypto/types"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/tx/signing"
 )
 
 var (
@@ -164,7 +164,7 @@ func TestTxValidateBasic(t *testing.T) {
 func TestDefaultTxEncoder(t *testing.T) {
 	cdc := codec.NewLegacyAmino()
 	sdk.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "lbm-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "lfb-sdk/Test", nil)
 	encoder := DefaultTxEncoder(cdc)
 
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}

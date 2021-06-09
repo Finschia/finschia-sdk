@@ -8,21 +8,21 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	clienttx "github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/query"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/types/tx"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
-	authtx "github.com/line/lbm-sdk/v2/x/auth/tx"
-	bankcli "github.com/line/lbm-sdk/v2/x/bank/client/testutil"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	clienttx "github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/testutil/network"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/query"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/types/tx"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	authclient "github.com/line/lfb-sdk/x/auth/client"
+	authtx "github.com/line/lfb-sdk/x/auth/tx"
+	bankcli "github.com/line/lfb-sdk/x/bank/client/testutil"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
 )
 
 type IntegrationTestSuite struct {
@@ -135,7 +135,7 @@ func (s IntegrationTestSuite) TestSimulateTx_GRPCGateway() {
 		s.Run(tc.name, func() {
 			req, err := val.ClientCtx.JSONMarshaler.MarshalJSON(tc.req)
 			s.Require().NoError(err)
-			res, err := rest.PostRequest(fmt.Sprintf("%s/lbm/tx/v1beta1/simulate", val.APIAddress), "application/json", req)
+			res, err := rest.PostRequest(fmt.Sprintf("%s/lfb/tx/v1beta1/simulate", val.APIAddress), "application/json", req)
 			s.Require().NoError(err)
 			if tc.expErr {
 				s.Require().Contains(string(res), tc.expErrMsg)
@@ -213,8 +213,8 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPC() {
 				s.Require().Equal("foobar", grpcRes.Txs[0].Body.Memo)
 
 				// Make sure fields are populated.
-				// ref: https://github.com/line/lbm-sdk/v2/issues/8680
-				// ref: https://github.com/line/lbm-sdk/v2/issues/8681
+				// ref: https://github.com/line/lfb-sdk/issues/8680
+				// ref: https://github.com/line/lfb-sdk/issues/8681
 				s.Require().NotEmpty(grpcRes.TxResponses[0].Timestamp)
 				s.Require().NotEmpty(grpcRes.TxResponses[0].RawLog)
 			}
@@ -232,31 +232,31 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPCGateway() {
 	}{
 		{
 			"empty params",
-			fmt.Sprintf("%s/lbm/tx/v1beta1/txs", val.APIAddress),
+			fmt.Sprintf("%s/lfb/tx/v1beta1/txs", val.APIAddress),
 			true,
 			"must declare at least one event to search",
 		},
 		{
 			"without pagination",
-			fmt.Sprintf("%s/lbm/tx/v1beta1/txs?events=%s", val.APIAddress, "message.action='send'"),
+			fmt.Sprintf("%s/lfb/tx/v1beta1/txs?events=%s", val.APIAddress, "message.action='send'"),
 			false,
 			"",
 		},
 		{
 			"with pagination",
-			fmt.Sprintf("%s/lbm/tx/v1beta1/txs?events=%s&pagination.offset=%d&pagination.limit=%d", val.APIAddress, "message.action='send'", 0, 10),
+			fmt.Sprintf("%s/lfb/tx/v1beta1/txs?events=%s&pagination.offset=%d&pagination.limit=%d", val.APIAddress, "message.action='send'", 0, 10),
 			false,
 			"",
 		},
 		{
 			"expect pass with multiple-events",
-			fmt.Sprintf("%s/lbm/tx/v1beta1/txs?events=%s&events=%s", val.APIAddress, "message.action='send'", "message.module='bank'"),
+			fmt.Sprintf("%s/lfb/tx/v1beta1/txs?events=%s&events=%s", val.APIAddress, "message.action='send'", "message.module='bank'"),
 			false,
 			"",
 		},
 		{
 			"expect pass with escape event",
-			fmt.Sprintf("%s/lbm/tx/v1beta1/txs?events=%s", val.APIAddress, "message.action%3D'send'"),
+			fmt.Sprintf("%s/lfb/tx/v1beta1/txs?events=%s", val.APIAddress, "message.action%3D'send'"),
 			false,
 			"",
 		},
@@ -316,17 +316,17 @@ func (s IntegrationTestSuite) TestGetTx_GRPCGateway() {
 	}{
 		{
 			"empty params",
-			fmt.Sprintf("%s/lbm/tx/v1beta1/txs/", val.APIAddress),
+			fmt.Sprintf("%s/lfb/tx/v1beta1/txs/", val.APIAddress),
 			true, "transaction hash cannot be empty",
 		},
 		{
 			"dummy hash",
-			fmt.Sprintf("%s/lbm/tx/v1beta1/txs/%s", val.APIAddress, "deadbeef"),
+			fmt.Sprintf("%s/lfb/tx/v1beta1/txs/%s", val.APIAddress, "deadbeef"),
 			true, "tx (DEADBEEF) not found",
 		},
 		{
 			"good hash",
-			fmt.Sprintf("%s/lbm/tx/v1beta1/txs/%s", val.APIAddress, s.txRes.TxHash),
+			fmt.Sprintf("%s/lfb/tx/v1beta1/txs/%s", val.APIAddress, s.txRes.TxHash),
 			false, "",
 		},
 	}
@@ -344,8 +344,8 @@ func (s IntegrationTestSuite) TestGetTx_GRPCGateway() {
 				s.Require().NotZero(result.TxResponse.Height)
 
 				// Make sure fields are populated.
-				// ref: https://github.com/line/lbm-sdk/v2/issues/8680
-				// ref: https://github.com/line/lbm-sdk/v2/issues/8681
+				// ref: https://github.com/line/lfb-sdk/issues/8680
+				// ref: https://github.com/line/lfb-sdk/issues/8681
 				s.Require().NotEmpty(result.TxResponse.Timestamp)
 				s.Require().NotEmpty(result.TxResponse.RawLog)
 			}
@@ -418,7 +418,7 @@ func (s IntegrationTestSuite) TestBroadcastTx_GRPCGateway() {
 		s.Run(tc.name, func() {
 			req, err := val.ClientCtx.JSONMarshaler.MarshalJSON(tc.req)
 			s.Require().NoError(err)
-			res, err := rest.PostRequest(fmt.Sprintf("%s/lbm/tx/v1beta1/txs", val.APIAddress), "application/json", req)
+			res, err := rest.PostRequest(fmt.Sprintf("%s/lfb/tx/v1beta1/txs", val.APIAddress), "application/json", req)
 			s.Require().NoError(err)
 			if tc.expErr {
 				s.Require().Contains(string(res), tc.expErrMsg)

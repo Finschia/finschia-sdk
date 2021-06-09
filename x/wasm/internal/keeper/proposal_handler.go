@@ -5,10 +5,10 @@ import (
 	"strconv"
 	"strings"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	govtypes "github.com/line/lbm-sdk/v2/x/gov/types"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 )
 
 // governing contains a subset of the wasm keeper used by gov processes

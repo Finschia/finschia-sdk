@@ -6,10 +6,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	svrcmd "github.com/line/lbm-sdk/v2/server/cmd"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/simapp/simd/cmd"
-	"github.com/line/lbm-sdk/v2/x/genutil/client/cli"
+	svrcmd "github.com/line/lfb-sdk/server/cmd"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/simapp/simd/cmd"
+	"github.com/line/lfb-sdk/x/genutil/client/cli"
 )
 
 func TestInitCmd(t *testing.T) {

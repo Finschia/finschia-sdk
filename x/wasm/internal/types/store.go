@@ -1,7 +1,7 @@
 package types
 
 import (
-	storetypes "github.com/line/lbm-sdk/v2/store/types"
+	storetypes "github.com/line/lfb-sdk/store/types"
 	wasmvm "github.com/line/wasmvm"
 )
 

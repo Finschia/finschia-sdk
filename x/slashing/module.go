@@ -13,18 +13,18 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	cdctypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/module"
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	"github.com/line/lbm-sdk/v2/x/slashing/client/cli"
-	"github.com/line/lbm-sdk/v2/x/slashing/client/rest"
-	"github.com/line/lbm-sdk/v2/x/slashing/keeper"
-	"github.com/line/lbm-sdk/v2/x/slashing/simulation"
-	"github.com/line/lbm-sdk/v2/x/slashing/types"
-	stakingkeeper "github.com/line/lbm-sdk/v2/x/staking/keeper"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	cdctypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/module"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
+	"github.com/line/lfb-sdk/x/slashing/client/cli"
+	"github.com/line/lfb-sdk/x/slashing/client/rest"
+	"github.com/line/lfb-sdk/x/slashing/keeper"
+	"github.com/line/lfb-sdk/x/slashing/simulation"
+	"github.com/line/lfb-sdk/x/slashing/types"
+	stakingkeeper "github.com/line/lfb-sdk/x/staking/keeper"
 )
 
 var (

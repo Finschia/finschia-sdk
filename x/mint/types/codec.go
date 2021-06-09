@@ -1,8 +1,8 @@
 package types
 
 import (
-	"github.com/line/lbm-sdk/v2/codec"
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
+	"github.com/line/lfb-sdk/codec"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
 )
 
 var (

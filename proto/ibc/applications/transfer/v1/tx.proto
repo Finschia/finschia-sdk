@@ -1,10 +1,10 @@
 syntax = "proto3";
 package ibc.applications.transfer.v1;
 
-option go_package = "github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types";
+option go_package = "github.com/line/lfb-sdk/x/ibc/applications/transfer/types";
 
 import "gogoproto/gogo.proto";
-import "lbm/base/v1beta1/coin.proto";
+import "lfb/base/v1beta1/coin.proto";
 import "ibc/core/client/v1/client.proto";
 
 // Msg defines the ibc/transfer Msg service.
@@ -25,7 +25,7 @@ message MsgTransfer {
   // the channel by which the packet will be sent
   string source_channel = 2 [(gogoproto.moretags) = "yaml:\"source_channel\""];
   // the tokens to be transferred
-  lbm.base.v1beta1.Coin token = 3 [(gogoproto.nullable) = false];
+  lfb.base.v1beta1.Coin token = 3 [(gogoproto.nullable) = false];
   // the sender address
   string sender = 4;
   // the recipient address on the destination chain

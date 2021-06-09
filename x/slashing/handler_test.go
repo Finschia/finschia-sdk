@@ -9,16 +9,16 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/slashing"
-	"github.com/line/lbm-sdk/v2/x/slashing/keeper"
-	"github.com/line/lbm-sdk/v2/x/slashing/testslashing"
-	"github.com/line/lbm-sdk/v2/x/slashing/types"
-	"github.com/line/lbm-sdk/v2/x/staking"
-	"github.com/line/lbm-sdk/v2/x/staking/teststaking"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/slashing"
+	"github.com/line/lfb-sdk/x/slashing/keeper"
+	"github.com/line/lfb-sdk/x/slashing/testslashing"
+	"github.com/line/lfb-sdk/x/slashing/types"
+	"github.com/line/lfb-sdk/x/staking"
+	"github.com/line/lfb-sdk/x/staking/teststaking"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 func TestCannotUnjailUnlessJailed(t *testing.T) {

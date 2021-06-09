@@ -3,8 +3,8 @@ package solomachine
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/client/cli"
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/06-solomachine/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/client/cli"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
 )
 
 // Name returns the solo machine client name.

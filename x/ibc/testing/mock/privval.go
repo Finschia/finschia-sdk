@@ -5,9 +5,9 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	osttypes "github.com/line/ostracon/types"
 
-	cryptocodec "github.com/line/lbm-sdk/v2/crypto/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
+	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 )
 
 var _ osttypes.PrivValidator = PV{}

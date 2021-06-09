@@ -6,9 +6,9 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	vestexported "github.com/line/lbm-sdk/v2/x/auth/vesting/exported"
+	sdk "github.com/line/lfb-sdk/types"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	vestexported "github.com/line/lfb-sdk/x/auth/vesting/exported"
 )
 
 // Compile-time type assertions

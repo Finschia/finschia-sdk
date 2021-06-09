@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
+	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
 )
 
 // Test that there is domain separation between the port id and the channel id otherwise an

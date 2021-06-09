@@ -10,7 +10,7 @@ with particular kinds of accounts.
 
    ```go
    import (
-       "github.com/line/lbm-sdk/v2/x/bank"
+       "github.com/line/lfb-sdk/x/bank"
    )
    ```
 

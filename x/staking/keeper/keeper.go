@@ -6,10 +6,10 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/codec"
+	sdk "github.com/line/lfb-sdk/types"
+	paramtypes "github.com/line/lfb-sdk/x/params/types"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 // Implements ValidatorSet interface

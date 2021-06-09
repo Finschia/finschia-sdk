@@ -8,14 +8,14 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/line/lbm-sdk/v2/client"
-	clientrest "github.com/line/lbm-sdk/v2/client/rest"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	authclient "github.com/line/lbm-sdk/v2/x/auth/client"
-	"github.com/line/lbm-sdk/v2/x/auth/types"
-	genutilrest "github.com/line/lbm-sdk/v2/x/genutil/client/rest"
+	"github.com/line/lfb-sdk/client"
+	clientrest "github.com/line/lfb-sdk/client/rest"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/rest"
+	authclient "github.com/line/lfb-sdk/x/auth/client"
+	"github.com/line/lfb-sdk/x/auth/types"
+	genutilrest "github.com/line/lfb-sdk/x/genutil/client/rest"
 )
 
 // QueryAccountRequestHandlerFn is the query accountREST Handler.
@@ -106,7 +106,7 @@ func QueryTxsRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			packStdTxResponse(w, clientCtx, txRes)
 		}
 
-		err = checkAminoMarshalError(clientCtx, searchResult, "/lbm/tx/v1beta1/txs")
+		err = checkAminoMarshalError(clientCtx, searchResult, "/lfb/tx/v1beta1/txs")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 
@@ -149,7 +149,7 @@ func QueryTxRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			rest.WriteErrorResponse(w, http.StatusNotFound, fmt.Sprintf("no transaction found with hash %s", hashHexStr))
 		}
 
-		err = checkAminoMarshalError(clientCtx, output, "/lbm/tx/v1beta1/txs/{txhash}")
+		err = checkAminoMarshalError(clientCtx, output, "/lfb/tx/v1beta1/txs/{txhash}")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 

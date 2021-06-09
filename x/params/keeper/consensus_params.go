@@ -4,8 +4,8 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 
-	"github.com/line/lbm-sdk/v2/baseapp"
-	"github.com/line/lbm-sdk/v2/x/params/types"
+	"github.com/line/lfb-sdk/baseapp"
+	"github.com/line/lfb-sdk/x/params/types"
 )
 
 // ConsensusParamsKeyTable returns an x/params module keyTable to be used in

@@ -5,11 +5,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/crypto/keys/ed25519"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	v034staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v034"
-	v036staking "github.com/line/lbm-sdk/v2/x/staking/legacy/v036"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	v034staking "github.com/line/lfb-sdk/x/staking/legacy/v034"
+	v036staking "github.com/line/lfb-sdk/x/staking/legacy/v036"
 )
 
 func TestMigrate(t *testing.T) {

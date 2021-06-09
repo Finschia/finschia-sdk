@@ -9,9 +9,9 @@ import (
 	ostproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/ostracon/types"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/types/simulation"
-	stakingtypes "github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/types/simulation"
+	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
 )
 
 const (

@@ -3,12 +3,12 @@ package keyring
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/crypto/hd"
-	"github.com/line/lbm-sdk/v2/crypto/keys/multisig"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/codec/legacy"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lfb-sdk/crypto/keys/multisig"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/types"
 )
 
 // Info is the publicly exposed information about a keypair

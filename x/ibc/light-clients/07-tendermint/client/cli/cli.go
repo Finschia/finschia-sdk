@@ -3,7 +3,7 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/ibc/light-clients/07-tendermint transaction commands.

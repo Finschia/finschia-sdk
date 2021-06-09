@@ -2,8 +2,8 @@ package types
 
 import (
 	iavl2 "github.com/line/iavl/v2"
-	"github.com/line/lbm-sdk/v2/store"
-	"github.com/line/lbm-sdk/v2/store/iavl"
+	"github.com/line/lfb-sdk/store"
+	"github.com/line/lfb-sdk/store/iavl"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 	"testing"

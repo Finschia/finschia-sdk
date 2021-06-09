@@ -3,10 +3,10 @@ package keeper_test
 import (
 	"time"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/evidence/types"
-	"github.com/line/lbm-sdk/v2/x/staking"
-	"github.com/line/lbm-sdk/v2/x/staking/teststaking"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/evidence/types"
+	"github.com/line/lfb-sdk/x/staking"
+	"github.com/line/lfb-sdk/x/staking/teststaking"
 )
 
 func (suite *KeeperTestSuite) TestHandleDoubleSign() {

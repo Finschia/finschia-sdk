@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	"github.com/line/lbm-sdk/v2/x/auth/client/rest"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	"github.com/line/lfb-sdk/x/auth/client/rest"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
 )
 
 func createTestCodec() *codec.LegacyAmino {
@@ -120,7 +120,7 @@ func TestAminoCodecUnpackAnyFails(t *testing.T) {
 
 func TestAminoCodecFullDecodeAndEncode(t *testing.T) {
 	// This tx comes from https://github.com/cosmos/cosmos-sdk/issues/8117.
-	txSigned := `{"type":"lbm-sdk/StdTx","value":{"msg":[{"type":"lbm-sdk/MsgCreateValidator","value":{"description":{"moniker":"fulltest","identity":"satoshi","website":"example.com","details":"example inc"},"commission":{"rate":"0.500000000000000000","max_rate":"1.000000000000000000","max_change_rate":"0.200000000000000000"},"min_self_delegation":"1000000","delegator_address":"link120yvjfy7m2gnu9mvusrs40cxxhpt8nr3qhn8re","validator_address":"linkvaloper120yvjfy7m2gnu9mvusrs40cxxhpt8nr3jr36d2","pubkey":{"type":"ostracon/PubKeyEd25519","value":"CYrOiM3HtS7uv1B1OAkknZnFYSRpQYSYII8AtMMtev0="},"value":{"denom":"umuon","amount":"700000000"}}}],"fee":{"amount":[{"denom":"umuon","amount":"6000"}],"gas":"160000"},"signatures":[{"pub_key":{"type":"ostracon/PubKeySecp256k1","value":"AwAOXeWgNf1FjMaayrSnrOOKz+Fivr6DiI/i0x0sZCHw"},"signature":"RcnfS/u2yl7uIShTrSUlDWvsXo2p2dYu6WJC8VDVHMBLEQZWc8bsINSCjOnlsIVkUNNe1q/WCA9n3Gy1+0zhYA=="}],"memo":"","timeout_height":"0"}}`
+	txSigned := `{"type":"lfb-sdk/StdTx","value":{"msg":[{"type":"lfb-sdk/MsgCreateValidator","value":{"description":{"moniker":"fulltest","identity":"satoshi","website":"example.com","details":"example inc"},"commission":{"rate":"0.500000000000000000","max_rate":"1.000000000000000000","max_change_rate":"0.200000000000000000"},"min_self_delegation":"1000000","delegator_address":"link120yvjfy7m2gnu9mvusrs40cxxhpt8nr3qhn8re","validator_address":"linkvaloper120yvjfy7m2gnu9mvusrs40cxxhpt8nr3jr36d2","pubkey":{"type":"ostracon/PubKeyEd25519","value":"CYrOiM3HtS7uv1B1OAkknZnFYSRpQYSYII8AtMMtev0="},"value":{"denom":"umuon","amount":"700000000"}}}],"fee":{"amount":[{"denom":"umuon","amount":"6000"}],"gas":"160000"},"signatures":[{"pub_key":{"type":"ostracon/PubKeySecp256k1","value":"AwAOXeWgNf1FjMaayrSnrOOKz+Fivr6DiI/i0x0sZCHw"},"signature":"RcnfS/u2yl7uIShTrSUlDWvsXo2p2dYu6WJC8VDVHMBLEQZWc8bsINSCjOnlsIVkUNNe1q/WCA9n3Gy1+0zhYA=="}],"memo":"","timeout_height":"0"}}`
 	_, legacyCdc := simapp.MakeCodecs()
 
 	var tx legacytx.StdTx

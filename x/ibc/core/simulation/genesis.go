@@ -7,15 +7,15 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lbm-sdk/v2/types/module"
-	clientsims "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/simulation"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	connectionsims "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/simulation"
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	channelsims "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/simulation"
-	channeltypes "github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/types"
+	"github.com/line/lfb-sdk/types/module"
+	clientsims "github.com/line/lfb-sdk/x/ibc/core/02-client/simulation"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	connectionsims "github.com/line/lfb-sdk/x/ibc/core/03-connection/simulation"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	channelsims "github.com/line/lfb-sdk/x/ibc/core/04-channel/simulation"
+	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/types"
 )
 
 // Simulation parameter constants

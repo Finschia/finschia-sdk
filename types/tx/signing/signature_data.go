@@ -1,7 +1,7 @@
 package signing
 
 import (
-	"github.com/line/lbm-sdk/v2/crypto/types"
+	"github.com/line/lfb-sdk/crypto/types"
 )
 
 // SignatureData represents either a *SingleSignatureData or *MultiSignatureData.

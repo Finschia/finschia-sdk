@@ -5,11 +5,11 @@ import (
 	"strings"
 	"time"
 
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	clienttypes "github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	ibcexported "github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	ibcexported "github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 var _ codectypes.UnpackInterfacesMessage = Plan{}

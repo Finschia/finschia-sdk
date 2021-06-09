@@ -5,9 +5,9 @@ import (
 
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lbm-sdk/v2/store/cachekv"
-	"github.com/line/lbm-sdk/v2/store/tracekv"
-	"github.com/line/lbm-sdk/v2/store/types"
+	"github.com/line/lfb-sdk/store/cachekv"
+	"github.com/line/lfb-sdk/store/tracekv"
+	"github.com/line/lfb-sdk/store/types"
 )
 
 // Wrapper type for tmdb.Db with implementation of KVStore

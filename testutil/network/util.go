@@ -14,12 +14,12 @@ import (
 	"github.com/line/ostracon/types"
 	osttime "github.com/line/ostracon/types/time"
 
-	"github.com/line/lbm-sdk/v2/server/api"
-	servergrpc "github.com/line/lbm-sdk/v2/server/grpc"
-	authtypes "github.com/line/lbm-sdk/v2/x/auth/types"
-	banktypes "github.com/line/lbm-sdk/v2/x/bank/types"
-	"github.com/line/lbm-sdk/v2/x/genutil"
-	genutiltypes "github.com/line/lbm-sdk/v2/x/genutil/types"
+	"github.com/line/lfb-sdk/server/api"
+	servergrpc "github.com/line/lfb-sdk/server/grpc"
+	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lfb-sdk/x/genutil"
+	genutiltypes "github.com/line/lfb-sdk/x/genutil/types"
 )
 
 func startInProcess(cfg Config, val *Validator) error {

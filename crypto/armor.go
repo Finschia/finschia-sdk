@@ -9,9 +9,9 @@ import (
 	"github.com/line/ostracon/crypto/xsalsa20symmetric"
 	"github.com/tendermint/crypto/bcrypt"
 
-	"github.com/line/lbm-sdk/v2/codec/legacy"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
+	"github.com/line/lfb-sdk/codec/legacy"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
 const (

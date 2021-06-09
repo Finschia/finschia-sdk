@@ -11,7 +11,7 @@ endif
 
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 LEDGER_ENABLED ?= true
-SDK_PACK := $(shell go list -m github.com/line/lbm-sdk/v2 | sed  's/ /\@/g')
+SDK_PACK := $(shell go list -m github.com/line/lfb-sdk | sed  's/ /\@/g')
 OST_VERSION := $(shell go list -m github.com/line/ostracon | sed 's:.* ::') # grab everything after the space in "github.com/line/ostracon v0.34.7"
 DOCKER := $(shell which docker)
 BUILDDIR ?= $(CURDIR)/build
@@ -63,16 +63,16 @@ build_tags_comma_sep := $(subst $(whitespace),$(comma),$(build_tags))
 
 # process linker flags
 
-ldflags = -X github.com/line/lbm-sdk/v2/version.Name=link \
-		  -X github.com/line/lbm-sdk/v2/version.AppName=linkwasmd \
-		  -X github.com/line/lbm-sdk/v2/version.Version=$(VERSION) \
-		  -X github.com/line/lbm-sdk/v2/version.Commit=$(COMMIT) \
-		  -X github.com/line/lbm-sdk/v2/x/wasm/linkwasmd/app.ProposalsEnabled=true \
-		  -X "github.com/line/lbm-sdk/v2/version.BuildTags=$(build_tags_comma_sep)" \
+ldflags = -X github.com/line/lfb-sdk/version.Name=link \
+		  -X github.com/line/lfb-sdk/version.AppName=linkwasmd \
+		  -X github.com/line/lfb-sdk/version.Version=$(VERSION) \
+		  -X github.com/line/lfb-sdk/version.Commit=$(COMMIT) \
+		  -X github.com/line/lfb-sdk/x/wasm/linkwasmd/app.ProposalsEnabled=true \
+		  -X "github.com/line/lfb-sdk/version.BuildTags=$(build_tags_comma_sep)" \
 			-X github.com/line/ostracon/version.TMCoreSemVer=$(OST_VERSION)
 
 ifeq (cleveldb,$(findstring cleveldb,$(LBM_BUILD_OPTIONS)))
-  ldflags += -X github.com/line/lbm-sdk/v2/types.DBBackend=cleveldb
+  ldflags += -X github.com/line/lfb-sdk/types.DBBackend=cleveldb
 endif
 ifeq (,$(findstring nostrip,$(LBM_BUILD_OPTIONS)))
   ldflags += -w -s
@@ -112,7 +112,7 @@ build-reproducible: go.sum
 	$(DOCKER) rm latest-build || true
 	$(DOCKER) run --volume=$(CURDIR):/sources:ro \
         --env TARGET_PLATFORMS='linux/amd64 darwin/amd64 linux/arm64 windows/amd64' \
-        --env APP=lbm \
+        --env APP=lfb \
         --env VERSION=$(VERSION) \
         --env COMMIT=$(COMMIT) \
         --env LEDGER_ENABLED=$(LEDGER_ENABLED) \

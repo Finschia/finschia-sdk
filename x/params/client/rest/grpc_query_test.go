@@ -7,9 +7,9 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/testutil"
-	"github.com/line/lbm-sdk/v2/testutil/network"
-	"github.com/line/lbm-sdk/v2/x/params/types/proposal"
+	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lfb-sdk/testutil/network"
+	"github.com/line/lfb-sdk/x/params/types/proposal"
 )
 
 type IntegrationTestSuite struct {
@@ -51,7 +51,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 	}{
 		{
 			"with no subspace, key",
-			fmt.Sprintf("%s/lbm/params/v1beta1/params?subspace=%s&key=%s", baseURL, "", ""),
+			fmt.Sprintf("%s/lfb/params/v1beta1/params?subspace=%s&key=%s", baseURL, "", ""),
 			map[string]string{},
 			true,
 			&proposal.QueryParamsResponse{},
@@ -65,7 +65,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 		},
 		{
 			"with wrong subspace",
-			fmt.Sprintf("%s/lbm/params/v1beta1/params?subspace=%s&key=%s", baseURL, "wrongSubspace", "MaxValidators"),
+			fmt.Sprintf("%s/lfb/params/v1beta1/params?subspace=%s&key=%s", baseURL, "wrongSubspace", "MaxValidators"),
 			map[string]string{},
 			true,
 			&proposal.QueryParamsResponse{},
@@ -79,7 +79,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 		},
 		{
 			"with wrong key",
-			fmt.Sprintf("%s/lbm/params/v1beta1/params?subspace=%s&key=%s", baseURL, "staking", "wrongKey"),
+			fmt.Sprintf("%s/lfb/params/v1beta1/params?subspace=%s&key=%s", baseURL, "staking", "wrongKey"),
 			map[string]string{},
 			false,
 			&proposal.QueryParamsResponse{},
@@ -93,7 +93,7 @@ func (s *IntegrationTestSuite) TestQueryParamsGRPC() {
 		},
 		{
 			"params",
-			fmt.Sprintf("%s/lbm/params/v1beta1/params?subspace=%s&key=%s", baseURL, "staking", "MaxValidators"),
+			fmt.Sprintf("%s/lfb/params/v1beta1/params?subspace=%s&key=%s", baseURL, "staking", "MaxValidators"),
 			map[string]string{},
 			false,
 			&proposal.QueryParamsResponse{},

@@ -5,8 +5,8 @@ package rest_test
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/staking/types"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/staking/types"
 )
 
 func (s *IntegrationTestSuite) TestLegacyGetValidators() {

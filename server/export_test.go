@@ -21,14 +21,14 @@ import (
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/codec"
-	"github.com/line/lbm-sdk/v2/server"
-	"github.com/line/lbm-sdk/v2/server/types"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/x/genutil"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lfb-sdk/server"
+	"github.com/line/lfb-sdk/server/types"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/x/genutil"
 )
 
 func TestExportCmd_ConsensusParams(t *testing.T) {

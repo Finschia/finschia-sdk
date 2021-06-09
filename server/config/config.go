@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lbm-sdk/v2/store/cache"
-	"github.com/line/lbm-sdk/v2/store/iavl"
+	"github.com/line/lfb-sdk/store/cache"
+	"github.com/line/lfb-sdk/store/iavl"
 	"github.com/spf13/viper"
 
-	storetypes "github.com/line/lbm-sdk/v2/store/types"
-	"github.com/line/lbm-sdk/v2/telemetry"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	storetypes "github.com/line/lfb-sdk/store/types"
+	"github.com/line/lfb-sdk/telemetry"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 const (

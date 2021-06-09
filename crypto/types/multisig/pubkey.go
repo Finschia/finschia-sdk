@@ -1,8 +1,8 @@
 package multisig
 
 import (
-	"github.com/line/lbm-sdk/v2/crypto/types"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
+	"github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lfb-sdk/types/tx/signing"
 )
 
 // PubKey defines a type which supports multi-signature verification via MultiSignatureData

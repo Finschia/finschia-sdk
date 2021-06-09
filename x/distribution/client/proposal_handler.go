@@ -1,9 +1,9 @@
 package client
 
 import (
-	"github.com/line/lbm-sdk/v2/x/distribution/client/cli"
-	"github.com/line/lbm-sdk/v2/x/distribution/client/rest"
-	govclient "github.com/line/lbm-sdk/v2/x/gov/client"
+	"github.com/line/lfb-sdk/x/distribution/client/cli"
+	"github.com/line/lfb-sdk/x/distribution/client/rest"
+	govclient "github.com/line/lfb-sdk/x/gov/client"
 )
 
 // ProposalHandler is the community spend proposal handler.

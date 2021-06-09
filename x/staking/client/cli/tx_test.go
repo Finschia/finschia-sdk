@@ -6,8 +6,8 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/client/flags"
-	sdk "github.com/line/lbm-sdk/v2/types"
+	"github.com/line/lfb-sdk/client/flags"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func TestPrepareConfigForTxCreateValidator(t *testing.T) {

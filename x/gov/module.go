@@ -15,18 +15,18 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/module"
-	simtypes "github.com/line/lbm-sdk/v2/types/simulation"
-	govclient "github.com/line/lbm-sdk/v2/x/gov/client"
-	"github.com/line/lbm-sdk/v2/x/gov/client/cli"
-	"github.com/line/lbm-sdk/v2/x/gov/client/rest"
-	"github.com/line/lbm-sdk/v2/x/gov/keeper"
-	"github.com/line/lbm-sdk/v2/x/gov/simulation"
-	"github.com/line/lbm-sdk/v2/x/gov/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/module"
+	simtypes "github.com/line/lfb-sdk/types/simulation"
+	govclient "github.com/line/lfb-sdk/x/gov/client"
+	"github.com/line/lfb-sdk/x/gov/client/cli"
+	"github.com/line/lfb-sdk/x/gov/client/rest"
+	"github.com/line/lfb-sdk/x/gov/keeper"
+	"github.com/line/lfb-sdk/x/gov/simulation"
+	"github.com/line/lfb-sdk/x/gov/types"
 )
 
 var (

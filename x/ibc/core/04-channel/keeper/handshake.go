@@ -1,15 +1,15 @@
 package keeper
 
 import (
-	"github.com/line/lbm-sdk/v2/telemetry"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	capabilitytypes "github.com/line/lbm-sdk/v2/x/capability/types"
-	connectiontypes "github.com/line/lbm-sdk/v2/x/ibc/core/03-connection/types"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/04-channel/types"
-	porttypes "github.com/line/lbm-sdk/v2/x/ibc/core/05-port/types"
-	host "github.com/line/lbm-sdk/v2/x/ibc/core/24-host"
-	"github.com/line/lbm-sdk/v2/x/ibc/core/exported"
+	"github.com/line/lfb-sdk/telemetry"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	porttypes "github.com/line/lfb-sdk/x/ibc/core/05-port/types"
+	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lfb-sdk/x/ibc/core/exported"
 )
 
 // CounterpartyHops returns the connection hops of the counterparty channel.

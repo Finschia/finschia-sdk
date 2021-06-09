@@ -9,18 +9,18 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/flags"
-	"github.com/line/lbm-sdk/v2/client/input"
-	"github.com/line/lbm-sdk/v2/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lbm-sdk/v2/crypto/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/types/tx"
-	"github.com/line/lbm-sdk/v2/types/tx/signing"
-	authsigning "github.com/line/lbm-sdk/v2/x/auth/signing"
-	authtx "github.com/line/lbm-sdk/v2/x/auth/tx"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lfb-sdk/client/input"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	sdk "github.com/line/lfb-sdk/types"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/types/tx"
+	"github.com/line/lfb-sdk/types/tx/signing"
+	authsigning "github.com/line/lfb-sdk/x/auth/signing"
+	authtx "github.com/line/lfb-sdk/x/auth/tx"
 )
 
 // GenerateOrBroadcastTxCLI will either generate and print and unsigned transaction
@@ -287,8 +287,8 @@ func CalculateGas(
 	}
 
 	// TODO This should use the generated tx service Client.
-	// https://github.com/line/lbm-sdk/v2/issues/7726
-	bz, _, err := queryFunc("/lbm.tx.v1beta1.Service/Simulate", txBytes)
+	// https://github.com/line/lfb-sdk/issues/7726
+	bz, _, err := queryFunc("/lfb.tx.v1beta1.Service/Simulate", txBytes)
 	if err != nil {
 		return tx.SimulateResponse{}, 0, err
 	}

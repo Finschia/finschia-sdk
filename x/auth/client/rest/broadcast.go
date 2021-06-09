@@ -5,12 +5,12 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/line/lbm-sdk/v2/client"
-	clientrest "github.com/line/lbm-sdk/v2/client/rest"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/client"
+	clientrest "github.com/line/lfb-sdk/client/rest"
+	"github.com/line/lfb-sdk/client/tx"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
 )
 
 // BroadcastReq defines a tx broadcasting request.
@@ -43,7 +43,7 @@ func BroadcastTxRequest(clientCtx client.Context) http.HandlerFunc {
 		if err != nil {
 			err := fmt.Errorf("this transaction cannot be broadcasted via legacy REST endpoints, because it does not support"+
 				" Amino serialization. Please either use CLI, gRPC, gRPC-gateway, or directly query the Tendermint RPC"+
-				" endpoint to broadcast this transaction. The new REST endpoint (via gRPC-gateway) is POST /lbm/tx/v1beta1/txs."+
+				" endpoint to broadcast this transaction. The new REST endpoint (via gRPC-gateway) is POST /lfb/tx/v1beta1/txs."+
 				" Please also see the REST endpoints migration guide at %s for more info", clientrest.DeprecationURL)
 			if rest.CheckBadRequestError(w, err) {
 				return

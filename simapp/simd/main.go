@@ -3,10 +3,10 @@ package main
 import (
 	"os"
 
-	"github.com/line/lbm-sdk/v2/server"
-	svrcmd "github.com/line/lbm-sdk/v2/server/cmd"
-	"github.com/line/lbm-sdk/v2/simapp"
-	"github.com/line/lbm-sdk/v2/simapp/simd/cmd"
+	"github.com/line/lfb-sdk/server"
+	svrcmd "github.com/line/lfb-sdk/server/cmd"
+	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lfb-sdk/simapp/simd/cmd"
 )
 
 func main() {

@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/mint/simulation"
+	"github.com/line/lfb-sdk/x/mint/simulation"
 )
 
 func TestParamChangest(t *testing.T) {

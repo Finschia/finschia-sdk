@@ -5,19 +5,19 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/v2/codec"
-	cryptoAmino "github.com/line/lbm-sdk/v2/crypto/codec"
-	"github.com/line/lbm-sdk/v2/testutil/testdata"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/v2/x/auth/testutil"
+	"github.com/line/lfb-sdk/codec"
+	cryptoAmino "github.com/line/lfb-sdk/crypto/codec"
+	"github.com/line/lfb-sdk/testutil/testdata"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/x/auth/testutil"
 )
 
 func testCodec() *codec.LegacyAmino {
 	cdc := codec.NewLegacyAmino()
 	sdk.RegisterLegacyAminoCodec(cdc)
 	cryptoAmino.RegisterCrypto(cdc)
-	cdc.RegisterConcrete(&testdata.TestMsg{}, "lbm-sdk/Test", nil)
+	cdc.RegisterConcrete(&testdata.TestMsg{}, "lfb-sdk/Test", nil)
 	return cdc
 }
 

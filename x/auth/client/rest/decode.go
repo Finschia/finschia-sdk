@@ -6,12 +6,12 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/line/lbm-sdk/v2/client"
-	clienttx "github.com/line/lbm-sdk/v2/client/tx"
-	sdkerrors "github.com/line/lbm-sdk/v2/types/errors"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/auth/legacy/legacytx"
-	"github.com/line/lbm-sdk/v2/x/auth/signing"
+	"github.com/line/lfb-sdk/client"
+	clienttx "github.com/line/lfb-sdk/client/tx"
+	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lfb-sdk/x/auth/signing"
 )
 
 type (
@@ -55,7 +55,7 @@ func DecodeTxRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 
 		response := DecodeResp(stdTx)
 
-		err = checkAminoMarshalError(clientCtx, response, "/lbm/tx/v1beta1/txs/decode")
+		err = checkAminoMarshalError(clientCtx, response, "/lfb/tx/v1beta1/txs/decode")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 

@@ -8,14 +8,14 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/codec"
-	codectypes "github.com/line/lbm-sdk/v2/codec/types"
-	sdk "github.com/line/lbm-sdk/v2/types"
-	"github.com/line/lbm-sdk/v2/types/module"
-	"github.com/line/lbm-sdk/v2/x/auth/keeper"
-	"github.com/line/lbm-sdk/v2/x/auth/vesting/client/cli"
-	"github.com/line/lbm-sdk/v2/x/auth/vesting/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/codec"
+	codectypes "github.com/line/lfb-sdk/codec/types"
+	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/module"
+	"github.com/line/lfb-sdk/x/auth/keeper"
+	"github.com/line/lfb-sdk/x/auth/vesting/client/cli"
+	"github.com/line/lfb-sdk/x/auth/vesting/types"
 )
 
 var (

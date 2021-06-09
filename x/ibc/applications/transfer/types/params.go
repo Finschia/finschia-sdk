@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	paramtypes "github.com/line/lbm-sdk/v2/x/params/types"
+	paramtypes "github.com/line/lfb-sdk/x/params/types"
 )
 
 const (

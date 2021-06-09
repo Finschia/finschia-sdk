@@ -1,8 +1,8 @@
 package types_test
 
 import (
-	"github.com/line/lbm-sdk/v2/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lbm-sdk/v2/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
 )
 
 func (suite *TypesTestSuite) TestMarshalHeader() {

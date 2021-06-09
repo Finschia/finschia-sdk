@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 func TestMsgUnjailGetSignBytes(t *testing.T) {
@@ -14,7 +14,7 @@ func TestMsgUnjailGetSignBytes(t *testing.T) {
 	bytes := msg.GetSignBytes()
 	require.Equal(
 		t,
-		`{"type":"lbm-sdk/MsgUnjail","value":{"address":"linkvaloper1v93xxeqn4h65f"}}`,
+		`{"type":"lfb-sdk/MsgUnjail","value":{"address":"linkvaloper1v93xxeqn4h65f"}}`,
 		string(bytes),
 	)
 }

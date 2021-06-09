@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/v2/types"
+	sdk "github.com/line/lfb-sdk/types"
 )
 
 const (

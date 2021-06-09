@@ -4,10 +4,10 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/line/lbm-sdk/v2/client"
-	"github.com/line/lbm-sdk/v2/client/tx"
-	"github.com/line/lbm-sdk/v2/types/rest"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/client"
+	"github.com/line/lfb-sdk/client/tx"
+	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 )
 
 func registerNewTxRoutes(cliCtx client.Context, r *mux.Router) {

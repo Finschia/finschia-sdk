@@ -6,8 +6,8 @@
 package wasm
 
 import (
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/keeper"
-	"github.com/line/lbm-sdk/v2/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/internal/keeper"
+	"github.com/line/lfb-sdk/x/wasm/internal/types"
 )
 
 const (

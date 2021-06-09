@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/v2/x/ibc/applications/transfer/types"
+	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
 )
 
 func TestValidateGenesis(t *testing.T) {
