@@ -30,7 +30,7 @@ require (
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20210602045707-fddfe1f85001
-	github.com/line/ostracon v0.34.9-0.20210604100226-19aab99b593b
+	github.com/line/ostracon v0.34.9-0.20210610071151-a52812ac9add
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524
 	github.com/line/wasmvm v0.14.0-0.5.0
 	github.com/magiconair/properties v1.8.4
