@@ -299,7 +299,7 @@ Where proposal.json contains:
 			if err != nil {
 				return err
 			}
-			proposal, err := ParseCommunityPoolSpendProposalWithDeposit(clientCtx.JSONCodec, args[0])
+			proposal, err := ParseCommunityPoolSpendProposalWithDeposit(clientCtx.Codec, args[0])
 			if err != nil {
 				return err
 			}

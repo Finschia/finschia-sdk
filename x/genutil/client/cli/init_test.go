@@ -66,7 +66,7 @@ func TestInitCmd(t *testing.T) {
 			interfaceRegistry := types.NewInterfaceRegistry()
 			marshaler := codec.NewProtoCodec(interfaceRegistry)
 			clientCtx := client.Context{}.
-				WithJSONCodec(marshaler).
+				WithCodec(marshaler).
 				WithLegacyAmino(makeCodec()).
 				WithHomeDir(home)
 
@@ -100,7 +100,7 @@ func TestInitRecover(t *testing.T) {
 	interfaceRegistry := types.NewInterfaceRegistry()
 	marshaler := codec.NewProtoCodec(interfaceRegistry)
 	clientCtx := client.Context{}.
-		WithJSONCodec(marshaler).
+		WithCodec(marshaler).
 		WithLegacyAmino(makeCodec()).
 		WithHomeDir(home)
 
@@ -131,7 +131,7 @@ func TestEmptyState(t *testing.T) {
 	interfaceRegistry := types.NewInterfaceRegistry()
 	marshaler := codec.NewProtoCodec(interfaceRegistry)
 	clientCtx := client.Context{}.
-		WithJSONCodec(marshaler).
+		WithCodec(marshaler).
 		WithLegacyAmino(makeCodec()).
 		WithHomeDir(home)
 

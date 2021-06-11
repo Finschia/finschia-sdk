@@ -221,7 +221,7 @@ $ %s query gov vote 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 					return err
 				}
 
-				if err := clientCtx.JSONCodec.UnmarshalJSON(resByTxQuery, &vote); err != nil {
+				if err := clientCtx.Codec.UnmarshalJSON(resByTxQuery, &vote); err != nil {
 					return err
 				}
 			}
@@ -367,7 +367,7 @@ $ %s query gov deposit 1 link1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				if err != nil {
 					return err
 				}
-				clientCtx.JSONCodec.MustUnmarshalJSON(resByTxQuery, &deposit)
+				clientCtx.Codec.MustUnmarshalJSON(resByTxQuery, &deposit)
 				return clientCtx.PrintProto(&deposit)
 			}
 
