@@ -331,7 +331,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 }
 
 // Execute executes the contract instance
-func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) (*sdk.Result, error) {
+func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) ([]byte, error) {
 	defer func(begin time.Time) { k.metrics.ExecuteElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
@@ -374,13 +374,10 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "dispatch")
 	}
-
-	return &sdk.Result{
-		Data: data,
-	}, nil
+	return data, nil
 }
 
-func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte, authZ AuthorizationPolicy) (*sdk.Result, error) {
+func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte, authZ AuthorizationPolicy) ([]byte, error) {
 	defer func(begin time.Time) { k.metrics.MigrateElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	if !k.IsPinnedCode(ctx, newCodeID) {
 		ctx.GasMeter().ConsumeGas(k.getInstanceCost(ctx), "Loading CosmWasm module: migrate")
@@ -450,16 +447,13 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "dispatch")
 	}
-
-	return &sdk.Result{
-		Data: data,
-	}, nil
+	return data, nil
 }
 
 // Sudo allows priviledged access to a contract. This can never be called by governance or external tx, but only by
 // another native Go module directly. Thus, the keeper doesn't place any access controls on it, that is the
 // responsibility or the app developer (who passes the wasm.Keeper in app.go)
-func (k Keeper) Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) (*sdk.Result, error) {
+func (k Keeper) Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) ([]byte, error) {
 	defer func(begin time.Time) { k.metrics.SudoElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
@@ -491,15 +485,12 @@ func (k Keeper) Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "dispatch")
 	}
-
-	return &sdk.Result{
-		Data: data,
-	}, nil
+	return data, nil
 }
 
 // reply is only called from keeper internal functions (dispatchSubmessages) after processing the submessage
 // it
-func (k Keeper) reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply wasmvmtypes.Reply) (*sdk.Result, error) {
+func (k Keeper) reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply wasmvmtypes.Reply) ([]byte, error) {
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
 		return nil, err
@@ -535,9 +526,7 @@ func (k Keeper) reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply was
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "dispatch")
 	}
-	return &sdk.Result{
-		Data: data,
-	}, nil
+	return data, nil
 }
 
 // addToContractCodeSecondaryIndex adds element to the index for contracts-by-codeid queries

@@ -412,13 +412,15 @@ func handleExecute(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgExe
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "admin")
 	}
-	res, err := k.Execute(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.Msg, msg.Funds)
+	data, err := k.Execute(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.Msg, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
 
-	res.Events = ctx.EventManager().Events().ToABCIEvents()
-	return res, nil
+	return &sdk.Result{
+		Data:   data,
+		Events: ctx.EventManager().Events().ToABCIEvents(),
+	}, nil
 }
 
 func RandomAccountAddress(_ TestingT) sdk.AccAddress {

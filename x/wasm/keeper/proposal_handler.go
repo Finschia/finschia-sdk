@@ -114,7 +114,7 @@ func handleMigrateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.M
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	res, err := k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.CodeID, p.MigrateMsg)
+	_, err = k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.CodeID, p.MigrateMsg)
 	if err != nil {
 		return err
 	}
@@ -124,14 +124,6 @@ func handleMigrateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.M
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
-
-	for _, e := range res.Events {
-		attr := make([]sdk.Attribute, len(e.Attributes))
-		for i, a := range e.Attributes {
-			attr[i] = sdk.NewAttribute(string(a.Key), string(a.Value))
-		}
-		ctx.EventManager().EmitEvent(sdk.NewEvent(e.Type, attr...))
-	}
 	return nil
 }
 
