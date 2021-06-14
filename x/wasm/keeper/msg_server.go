@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"encoding/hex"
 	"fmt"
 
 	sdk "github.com/line/lbm-sdk/types"
@@ -75,6 +76,7 @@ func (m msgServer) InstantiateContract(goCtx context.Context, msg *types.MsgInst
 		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", msg.CodeID)),
 		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
+		sdk.NewAttribute(types.AttributeResultDataHex, hex.EncodeToString(data)),
 	))
 
 	return &types.MsgInstantiateContractResponse{
@@ -123,7 +125,7 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context,
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
-		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
+		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),		sdk.NewAttribute(types.AttributeResultDataHex, hex.EncodeToString(data)),
 	))
 
 	return &types.MsgStoreCodeAndInstantiateContractResponse{
@@ -157,6 +159,7 @@ func (m msgServer) ExecuteContract(goCtx context.Context, msg *types.MsgExecuteC
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeExecuteContract,
 		sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
+		sdk.NewAttribute(types.AttributeResultDataHex, hex.EncodeToString(data)),
 	))
 
 	return &types.MsgExecuteContractResponse{
@@ -189,6 +192,7 @@ func (m msgServer) MigrateContract(goCtx context.Context, msg *types.MsgMigrateC
 		types.EventTypeMigrateContract,
 		sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", msg.CodeID)),
+		sdk.NewAttribute(types.AttributeResultDataHex, hex.EncodeToString(data)),
 	))
 
 	return &types.MsgMigrateContractResponse{

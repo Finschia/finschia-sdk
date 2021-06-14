@@ -15,6 +15,7 @@ const ( // event attributes
 	AttributeKeyContract       = "contract_address"
 	AttributeKeyCodeID         = "code_id"
 	AttributeKeySigner         = "signer"
+	AttributeResultDataHex     = "result"
 	AttributeKeyCodeIDs        = "code_ids"
 	AttributeKeyContractStatus = "contract_status"
 )

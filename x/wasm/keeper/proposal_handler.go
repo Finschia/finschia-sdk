@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strconv"
 	"strings"
@@ -87,7 +88,8 @@ func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 		return sdkerrors.Wrap(err, "admin")
 	}
 
-	contractAddr, _, err := k.Instantiate(ctx, p.CodeID, sdk.AccAddress(p.RunAs), sdk.AccAddress(p.Admin), p.InitMsg, p.Label, p.Funds)
+
+	contractAddr, data, err := k.Instantiate(ctx, p.CodeID, sdk.AccAddress(p.RunAs), sdk.AccAddress(p.Admin), p.InitMsg, p.Label, p.Funds)
 	if err != nil {
 		return err
 	}
@@ -96,6 +98,7 @@ func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
 		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
+		sdk.NewAttribute(types.AttributeResultDataHex, hex.EncodeToString(data)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 	return nil
@@ -114,14 +117,16 @@ func handleMigrateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.M
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	_, err = k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.CodeID, p.MigrateMsg)
+	data, err := k.Migrate(ctx, sdk.AccAddress(p.Contract), sdk.AccAddress(p.RunAs), p.CodeID, p.MigrateMsg)
 	if err != nil {
 		return err
 	}
 	ourEvent := sdk.NewEvent(
 		types.EventTypeMigrateContract,
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
+		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeResultDataHex, hex.EncodeToString(data)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 	return nil
