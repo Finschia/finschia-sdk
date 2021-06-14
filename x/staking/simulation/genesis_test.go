@@ -10,7 +10,6 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	simtypes "github.com/line/lbm-sdk/types/simulation"
 	"github.com/line/lbm-sdk/x/staking/simulation"
@@ -47,7 +46,6 @@ func TestRandomizedGenState(t *testing.T) {
 	require.Equal(t, uint32(8687), stakingGenesis.Params.HistoricalEntries)
 	require.Equal(t, "stake", stakingGenesis.Params.BondDenom)
 	require.Equal(t, float64(238280), stakingGenesis.Params.UnbondingTime.Seconds())
-	require.Equal(t, sdk.DefaultPowerReduction, stakingGenesis.Params.PowerReduction)
 	// check numbers of Delegations and Validators
 	require.Len(t, stakingGenesis.Delegations, 3)
 	require.Len(t, stakingGenesis.Validators, 3)
