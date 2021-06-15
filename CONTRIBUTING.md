@@ -35,8 +35,8 @@ contributors, the general procedure for contributing has been established:
       make a comment on the issue to inform the community of your intentions
       to begin work
    4. Follow standard Github best practices: fork the repo, branch from the
-      HEAD of `master`, make some commits, and submit a PR to `master`
-      - For core developers working within the cosmos-sdk repo, to ensure a clear
+      HEAD of `main`, make some commits, and submit a PR to `main`
+      - For core developers working within the lfb-sdk repo, to ensure a clear
         ownership of branches, branches must be named with the convention
         `{moniker}/{issue#}-branch-name`
    5. Be sure to submit the PR in `Draft` mode submit your PR early, even if
@@ -58,13 +58,6 @@ Other notes:
   please ensure that your code is lint compliant by running `golangci-lint run`.
   A convenience git `pre-commit` hook that runs the formatters automatically
   before each commit is available in the `contrib/githooks/` directory.
-
-## Architecture Decision Records (ADR)
-
-When proposing an architecture decision for the SDK, please create an [ADR](./docs/architecture/README.md)
-so further discussions can be made. We are following this process so all involved parties are in
-agreement before any party begins coding the proposed implementation. If you would like to see some examples
-of how these are written refer to the current [ADRs](./docs/architecture)
 
 ## Pull Requests
 
@@ -111,22 +104,22 @@ For instance, to create a fork and work on a branch of it, I would:
 - `git remote add origin git@github.com:someone/lfb-sdk.git`
 
 Now `origin` refers to my fork and `upstream` refers to the lfb-sdk version.
-So I can `git push -u origin master` to update my fork, and make pull requests to lfb-sdk from there.
+So I can `git push -u origin main` to update my fork, and make pull requests to lfb-sdk from there.
 Of course, replace `someone` with your git handle.
 
 To pull in updates from the origin repo, run
 
 - `git fetch upstream`
-- `git rebase upstream/master` (or whatever branch you want)
+- `git rebase upstream/main` (or whatever branch you want)
 
-Please don't make Pull Requests from `master`.
+Please don't make Pull Requests from `main`.
 
 ## Dependencies
 
 We use [Go 1.15 Modules](https://github.com/golang/go/wiki/Modules) to manage
 dependency versions.
 
-The master branch of every LFB repository should just build with `go get`,
+The `main` branch of every LFB repository should just build with `go get`,
 which means they should be kept up-to-date with their dependencies, so we can
 get away with telling people they can just `go get` our software.
 
@@ -191,23 +184,52 @@ for tcIndex, tc := range cases {
 
 ## Branching Model and Release
 
-TBD
+User-facing repos should adhere to the trunk based development branching model: https://trunkbaseddevelopment.com/.
+
+Libraries need not follow the model strictly, but would be wise to.
+
+The SDK utilizes [semantic versioning](https://semver.org/).
 
 ### PR Targeting
 
-TBD
+Ensure that you base and target your PR on the `main` branch.
+
+All feature additions should be targeted against `main`. Bug fixes for an outstanding release candidate
+should be targeted against the release candidate branch.
 
 ### Development Procedure
 
-TBD
+- the latest state of development is on `main`
+- `main` must never fail `make lint test test-race`
+- `main` should not fail `make lint`
+- no `--force` onto `main` (except when reverting a broken commit, which should seldom happen)
+- create a development branch either on github.com/line/lfb-sdk, or your fork (using `git remote add origin`)
+- before submitting a pull request, begin `git rebase` on top of `main`
 
 ### Pull Merge Procedure
 
-TBD
+- ensure pull branch is rebased on `main`
+- run `make test` to ensure that all tests pass
+- merge pull request (We are using `squash and merge` for small features)
 
 ### Release Procedure
 
-TBD
+- Start on `main`
+- Create the release candidate branch `rc/v*` (going forward known as **RC**)
+  and ensure it's protected against pushing from anyone except the release
+  manager/coordinator
+  - **no PRs targeting this branch should be merged unless exceptional circumstances arise**
+- On the `RC` branch, prepare a new version section in the `CHANGELOG.md`
+  - All links must be link-ified: `$ python ./scripts/linkify_changelog.py CHANGELOG.md`
+  - Copy the entries into a `RELEASE_CHANGELOG.md`, this is needed so the bot knows which entries to add to the release page on github.
+- Kick off a large round of simulation testing (e.g. 400 seeds for 2k blocks)
+- If errors are found during the simulation testing, commit the fixes to `main`
+  and create a new `RC` branch (making sure to increment the `rcN`)
+- After simulation has successfully completed, create the release branch
+  (`release/vX.XX.X`) from the `RC` branch
+- Create a PR to `main` to incorporate the `CHANGELOG.md` updates
+- Tag the release (use `git tag -a`) and create a release in Github
+- Delete the `RC` branches
 
 ### Point Release Procedure
 
