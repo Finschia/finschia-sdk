@@ -272,10 +272,8 @@ func AddCommands(rootCmd *cobra.Command, defaultNodeHome string, appCreator type
 	rootCmd.AddCommand(
 		startCmd,
 		UnsafeResetAllCmd(),
-		flags.LineBreak,
 		ostraconCmd,
 		ExportCmd(appExport, defaultNodeHome),
-		flags.LineBreak,
 		version.NewVersionCommand(),
 	)
 }

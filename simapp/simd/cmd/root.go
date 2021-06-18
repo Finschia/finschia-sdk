@@ -30,7 +30,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	authcmd "github.com/line/lbm-sdk/x/auth/client/cli"
 	"github.com/line/lbm-sdk/x/auth/types"
-	vestingcli "github.com/line/lbm-sdk/x/auth/vesting/client/cli"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/crisis"
 	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
@@ -158,12 +157,9 @@ func txCommand() *cobra.Command {
 		authcmd.GetMultiSignCommand(),
 		authcmd.GetMultiSignBatchCmd(),
 		authcmd.GetValidateSignaturesCommand(),
-		flags.LineBreak,
 		authcmd.GetBroadcastCommand(),
 		authcmd.GetEncodeCommand(),
 		authcmd.GetDecodeCommand(),
-		flags.LineBreak,
-		vestingcli.GetTxCmd(),
 	)
 
 	simapp.ModuleBasics.AddTxCommands(cmd)
