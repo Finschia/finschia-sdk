@@ -172,7 +172,7 @@ func TestHandleInstantiate(t *testing.T) {
 	// create with no balance is also legal
 	initCmd := MsgInstantiateContract{
 		Sender:  creator.String(),
-		CodeID:  firstCodeID,
+		CodeID:  FirstCodeID,
 		InitMsg: initMsgBz,
 		Funds:   nil,
 	}
@@ -404,7 +404,7 @@ func TestHandleExecute(t *testing.T) {
 
 	initCmd := MsgInstantiateContract{
 		Sender:  creator.String(),
-		CodeID:  firstCodeID,
+		CodeID:  FirstCodeID,
 		InitMsg: initMsgBz,
 		Funds:   deposit,
 	}
@@ -521,7 +521,7 @@ func TestHandleExecuteEscrow(t *testing.T) {
 
 	initCmd := MsgInstantiateContract{
 		Sender:  creator.String(),
-		CodeID:  firstCodeID,
+		CodeID:  FirstCodeID,
 		InitMsg: initMsgBz,
 		Funds:   deposit,
 	}

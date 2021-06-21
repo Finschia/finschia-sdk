@@ -1,5 +1,5 @@
 package wasm
 
 const (
-	firstCodeID = 1
+	FirstCodeID = 1
 )

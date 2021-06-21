@@ -42,7 +42,7 @@ func TestInitGenesis(t *testing.T) {
 
 	initCmd := MsgInstantiateContract{
 		Sender:  creator.String(),
-		CodeID:  firstCodeID,
+		CodeID:  FirstCodeID,
 		InitMsg: initMsgBz,
 		Funds:   deposit,
 	}
