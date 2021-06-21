@@ -58,7 +58,7 @@ func TestInitGenesis(t *testing.T) {
 	}
 	res, err = h(data.ctx, &execCmd)
 	require.NoError(t, err)
-	// executing https://github.com/line/cosmwasm/blob/develop/contracts/hackatom/src/contract.rs do_release
+	// executing https://github.com/line/cosmwasm/blob/main/contracts/hackatom/src/contract.rs do_release
 	assertExecuteResponse(t, res.Data, []byte{0xf0, 0x0b, 0xaa})
 
 	// ensure all contract state is as after init
