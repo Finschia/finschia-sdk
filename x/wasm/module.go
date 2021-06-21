@@ -40,7 +40,7 @@ const (
 type AppModuleBasic struct{}
 
 func (b AppModuleBasic) RegisterLegacyAminoCodec(amino *codec.LegacyAmino) {
-	RegisterCodec(amino)
+	RegisterLegacyAminoCodec(amino)
 }
 
 func (b AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, serveMux *runtime.ServeMux) {
