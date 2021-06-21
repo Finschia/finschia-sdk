@@ -16,7 +16,7 @@ type Factory struct {
 	keybase            keyring.Keyring
 	txConfig           client.TxConfig
 	accountRetriever   client.AccountRetriever
-	accountNumber      uint64
+	signBlockHeight    uint64
 	sequence           uint64
 	gas                uint64
 	timeoutHeight      uint64
@@ -41,7 +41,7 @@ func NewFactoryCLI(clientCtx client.Context, flagSet *pflag.FlagSet) Factory {
 		signMode = signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON
 	}
 
-	accNum, _ := flagSet.GetUint64(flags.FlagAccountNumber)
+	signBlockHeight, _ := flagSet.GetUint64(flags.FlagSignBlockHeight)
 	accSeq, _ := flagSet.GetUint64(flags.FlagSequence)
 	gasAdj, _ := flagSet.GetFloat64(flags.FlagGasAdjustment)
 	memo, _ := flagSet.GetString(flags.FlagMemo)
@@ -57,7 +57,7 @@ func NewFactoryCLI(clientCtx client.Context, flagSet *pflag.FlagSet) Factory {
 		chainID:            clientCtx.ChainID,
 		gas:                gasSetting.Gas,
 		simulateAndExecute: gasSetting.Simulate,
-		accountNumber:      accNum,
+		signBlockHeight:    signBlockHeight,
 		sequence:           accSeq,
 		timeoutHeight:      timeoutHeight,
 		gasAdjustment:      gasAdj,
@@ -74,7 +74,7 @@ func NewFactoryCLI(clientCtx client.Context, flagSet *pflag.FlagSet) Factory {
 	return f
 }
 
-func (f Factory) AccountNumber() uint64                     { return f.accountNumber }
+func (f Factory) SignBlockHeight() uint64                   { return f.signBlockHeight }
 func (f Factory) Sequence() uint64                          { return f.sequence }
 func (f Factory) Gas() uint64                               { return f.gas }
 func (f Factory) GasAdjustment() float64                    { return f.gasAdjustment }
@@ -155,8 +155,8 @@ func (f Factory) WithMemo(memo string) Factory {
 }
 
 // WithAccountNumber returns a copy of the Factory with an updated account number.
-func (f Factory) WithAccountNumber(accnum uint64) Factory {
-	f.accountNumber = accnum
+func (f Factory) WithSignBlockHeight(signBlockHeight uint64) Factory {
+	f.signBlockHeight = signBlockHeight
 	return f
 }
 

@@ -27,10 +27,9 @@ var (
 
 // NewBaseAccount creates a new BaseAccount object
 //nolint:interfacer
-func NewBaseAccount(address sdk.AccAddress, pubKey cryptotypes.PubKey, accountNumber, sequence uint64) *BaseAccount {
+func NewBaseAccount(address sdk.AccAddress, pubKey cryptotypes.PubKey, sequence uint64) *BaseAccount {
 	acc := &BaseAccount{
 		Address:       address.String(),
-		AccountNumber: accountNumber,
 		Sequence:      sequence,
 	}
 
@@ -93,17 +92,6 @@ func (acc *BaseAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 		acc.PubKey = any
 	}
 	return err
-}
-
-// GetAccountNumber - Implements AccountI
-func (acc BaseAccount) GetAccountNumber() uint64 {
-	return acc.AccountNumber
-}
-
-// SetAccountNumber - Implements AccountI
-func (acc *BaseAccount) SetAccountNumber(accNumber uint64) error {
-	acc.AccountNumber = accNumber
-	return nil
 }
 
 // GetSequence - Implements sdk.AccountI.
@@ -238,7 +226,6 @@ func (ma ModuleAccount) Validate() error {
 type moduleAccountPretty struct {
 	Address       sdk.AccAddress `json:"address" yaml:"address"`
 	PubKey        string         `json:"public_key" yaml:"public_key"`
-	AccountNumber uint64         `json:"account_number" yaml:"account_number"`
 	Sequence      uint64         `json:"sequence" yaml:"sequence"`
 	Name          string         `json:"name" yaml:"name"`
 	Permissions   []string       `json:"permissions" yaml:"permissions"`
@@ -259,7 +246,6 @@ func (ma ModuleAccount) MarshalYAML() (interface{}, error) {
 	bs, err := yaml.Marshal(moduleAccountPretty{
 		Address:       accAddr,
 		PubKey:        "",
-		AccountNumber: ma.AccountNumber,
 		Sequence:      ma.Sequence,
 		Name:          ma.Name,
 		Permissions:   ma.Permissions,
@@ -282,7 +268,6 @@ func (ma ModuleAccount) MarshalJSON() ([]byte, error) {
 	return json.Marshal(moduleAccountPretty{
 		Address:       accAddr,
 		PubKey:        "",
-		AccountNumber: ma.AccountNumber,
 		Sequence:      ma.Sequence,
 		Name:          ma.Name,
 		Permissions:   ma.Permissions,
@@ -296,7 +281,7 @@ func (ma *ModuleAccount) UnmarshalJSON(bz []byte) error {
 		return err
 	}
 
-	ma.BaseAccount = NewBaseAccount(alias.Address, nil, alias.AccountNumber, alias.Sequence)
+	ma.BaseAccount = NewBaseAccount(alias.Address, nil, alias.Sequence)
 	ma.Name = alias.Name
 	ma.Permissions = alias.Permissions
 
@@ -317,9 +302,6 @@ type AccountI interface {
 
 	GetPubKey() cryptotypes.PubKey // can return nil.
 	SetPubKey(cryptotypes.PubKey) error
-
-	GetAccountNumber() uint64
-	SetAccountNumber(uint64) error
 
 	GetSequence() uint64
 	SetSequence(uint64) error

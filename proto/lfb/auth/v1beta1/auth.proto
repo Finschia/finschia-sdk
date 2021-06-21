@@ -20,8 +20,7 @@ message BaseAccount {
   string              address = 1;
   google.protobuf.Any pub_key = 2
       [(gogoproto.jsontag) = "public_key,omitempty", (gogoproto.moretags) = "yaml:\"public_key\""];
-  uint64 account_number = 3 [(gogoproto.moretags) = "yaml:\"account_number\""];
-  uint64 sequence       = 4;
+  uint64 sequence       = 3;
 }
 
 // ModuleAccount defines an account for modules that holds coins on a pool.

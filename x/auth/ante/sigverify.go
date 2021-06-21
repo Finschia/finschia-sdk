@@ -269,18 +269,15 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		// retrieve signer data
 		genesis := ctx.BlockHeight() == 0
 		chainID := ctx.ChainID()
-		var accNum uint64
-		if !genesis {
-			accNum = acc.GetAccountNumber()
-		}
+		signBlockHeight := sigTx.GetSignBlockHeight()
 		signerData := authsigning.SignerData{
-			ChainID:       chainID,
-			AccountNumber: accNum,
-			Sequence:      acc.GetSequence(),
+			ChainID:         chainID,
+			SignBlockHeight: signBlockHeight,
+			Sequence:        acc.GetSequence(),
 		}
 
 		if !genesis {
-			sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
+			sigKey := fmt.Sprintf("%d:%d", signerData.SignBlockHeight, signerData.Sequence)
 			// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
 			txHash := sha256.Sum256(ctx.TxBytes())
 			stored := false
@@ -299,9 +296,9 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 			if onlyAminoSigners {
 				// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
 				// and therefore communicate sequence number as a potential cause of error.
-				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d), sequence (%d) and chain-id (%s)", accNum, acc.GetSequence(), chainID)
+				errMsg = fmt.Sprintf("signature verification failed; please verify sign block height (%d), sequence (%d) and chain-id (%s)", signBlockHeight, acc.GetSequence(), chainID)
 			} else {
-				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
+				errMsg = fmt.Sprintf("signature verification failed; please verify sign block height (%d) and chain-id (%s)", signBlockHeight, chainID)
 			}
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
 		}

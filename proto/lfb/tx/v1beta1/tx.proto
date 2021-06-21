@@ -59,8 +59,8 @@ message SignDoc {
   // attacker
   string chain_id = 3;
 
-  // account_number is the account number of the account in state
-  uint64 account_number = 4;
+  // near block height from current block for replay protection
+  uint64 sign_block_height = 4;
 }
 
 // TxBody is the body of a transaction that all signers sign over.

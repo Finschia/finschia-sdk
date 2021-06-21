@@ -3857,7 +3857,6 @@ type for additional functionality (e.g. vesting).
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
 | `pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
 
@@ -9405,7 +9404,7 @@ SignDoc is the type used for generating sign bytes for SIGN_MODE_DIRECT.
 | `body_bytes` | [bytes](#bytes) |  | body_bytes is protobuf serialization of a TxBody that matches the representation in TxRaw. |
 | `auth_info_bytes` | [bytes](#bytes) |  | auth_info_bytes is a protobuf serialization of an AuthInfo that matches the representation in TxRaw. |
 | `chain_id` | [string](#string) |  | chain_id is the unique identifier of the chain this transaction targets. It prevents signed transactions from being used on another chain by an attacker |
-| `account_number` | [uint64](#uint64) |  | account_number is the account number of the account in state |
+| `sign_block_height` | [uint64](#uint64) |  | near block height from current block for replay protection |
 
 
 
