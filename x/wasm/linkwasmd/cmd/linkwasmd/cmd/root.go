@@ -158,8 +158,11 @@ func txCommand() *cobra.Command {
 func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts servertypes.AppOptions) servertypes.Application {
 	var cache sdk.MultiStorePersistentCache
 
+	ibCacheMetricsProvider, iavlCacheMetricsProvider :=
+		baseapp.MetricsProvider(cast.ToBool(viper.GetBool(server.FlagPrometheus)))
 	if cast.ToBool(appOpts.Get(server.FlagInterBlockCache)) {
-		cache = store.NewCommitKVStoreCacheManager()
+		cache = store.NewCommitKVStoreCacheManager(
+			cast.ToInt(appOpts.Get(server.FlagInterBlockCacheSize)), ibCacheMetricsProvider)
 	}
 
 	skipUpgradeHeights := make(map[int64]bool)
@@ -199,6 +202,7 @@ func newApp(logger log.Logger, db dbm.DB, traceStore io.Writer, appOpts serverty
 		baseapp.SetHaltTime(cast.ToUint64(appOpts.Get(server.FlagHaltTime))),
 		baseapp.SetMinRetainBlocks(cast.ToUint64(appOpts.Get(server.FlagMinRetainBlocks))),
 		baseapp.SetInterBlockCache(cache),
+		baseapp.SetIAVLCacheManager(cast.ToInt(appOpts.Get(server.FlagIAVLCacheSize)), iavlCacheMetricsProvider),
 		baseapp.SetTrace(cast.ToBool(appOpts.Get(server.FlagTrace))),
 		baseapp.SetIndexEvents(cast.ToStringSlice(appOpts.Get(server.FlagIndexEvents))),
 		baseapp.SetSnapshotStore(snapshotStore),
