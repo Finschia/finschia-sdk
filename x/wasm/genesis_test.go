@@ -22,7 +22,7 @@ func TestInitGenesis(t *testing.T) {
 	msg := MsgStoreCode{
 		Sender:       creator.String(),
 		WASMByteCode: testContract,
-		Source:       "https://github.com/line/lfb-sdk/blob/v2/develop/x/wasm/internal/keeper/testdata/hackatom.wasm",
+		Source:       "https://github.com/line/lfb-sdk/blob/main/x/wasm/internal/keeper/testdata/hackatom.wasm",
 		Builder:      "confio/cosmwasm-opt:0.7.0",
 	}
 	err := msg.ValidateBasic()
