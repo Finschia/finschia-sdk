@@ -4,11 +4,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/ostracon/libs/log"
-	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/ostracon/libs/log"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+
+	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/upgrade/types"
 )
@@ -74,6 +76,17 @@ func TestPlanValid(t *testing.T) {
 		"no name": {
 			p: types.Plan{
 				Height: 123450000,
+			},
+		},
+		"time-base upgrade": {
+			p: types.Plan{
+				Time: time.Now(),
+			},
+		},
+		"IBC upgrade": {
+			p: types.Plan{
+				Height:              123450000,
+				UpgradedClientState: &codectypes.Any{},
 			},
 		},
 		"no due at": {

@@ -395,8 +395,13 @@ func (suite *KeeperTestSuite) TestGRPCQueryVotes() {
 				app.GovKeeper.SetProposal(ctx, proposal)
 
 				votes = []types.Vote{
+<<<<<<< HEAD
 					{ProposalId: proposal.ProposalId, Voter: addrs[0].String(), Option: types.OptionAbstain, Options: types.NewNonSplitVoteOption(types.OptionAbstain)},
 					{ProposalId: proposal.ProposalId, Voter: addrs[1].String(), Option: types.OptionYes, Options: types.NewNonSplitVoteOption(types.OptionYes)},
+=======
+					{ProposalId: proposal.ProposalId, Voter: addrs[0].String(), Options: types.NewNonSplitVoteOption(types.OptionAbstain)},
+					{ProposalId: proposal.ProposalId, Voter: addrs[1].String(), Options: types.NewNonSplitVoteOption(types.OptionYes)},
+>>>>>>> 29c7a469f (refactor: Bring back deprecated proto fields to `v1beta1` (#9534))
 				}
 				accAddr1 := sdk.AccAddress(votes[0].Voter)
 				accAddr2 := sdk.AccAddress(votes[1].Voter)

@@ -70,11 +70,18 @@ func (keeper Keeper) GetVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 	}
 
 	keeper.cdc.MustUnmarshal(bz, &vote)
+	populateLegacyOption(&vote)
+
 	return vote, true
 }
 
 // SetVote sets a Vote to the gov store
 func (keeper Keeper) SetVote(ctx sdk.Context, vote types.Vote) {
+	// vote.Option is a deprecated field, we don't set it in state
+	if vote.Option != types.OptionEmpty { //nolint
+		vote.Option = types.OptionEmpty //nolint
+	}
+
 	store := ctx.KVStore(keeper.storeKey)
 	bz := keeper.cdc.MustMarshal(&vote)
 	addr := sdk.AccAddress(vote.Voter)
@@ -90,6 +97,7 @@ func (keeper Keeper) IterateAllVotes(ctx sdk.Context, cb func(vote types.Vote) (
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
 		keeper.cdc.MustUnmarshal(iterator.Value(), &vote)
+		populateLegacyOption(&vote)
 
 		if cb(vote) {
 			break
@@ -106,6 +114,7 @@ func (keeper Keeper) IterateVotes(ctx sdk.Context, proposalID uint64, cb func(vo
 	for ; iterator.Valid(); iterator.Next() {
 		var vote types.Vote
 		keeper.cdc.MustUnmarshal(iterator.Value(), &vote)
+		populateLegacyOption(&vote)
 
 		if cb(vote) {
 			break

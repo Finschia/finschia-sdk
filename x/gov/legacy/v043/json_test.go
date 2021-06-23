@@ -10,7 +10,6 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
-	v040gov "github.com/line/lbm-sdk/x/gov/legacy/v040"
 	v043gov "github.com/line/lbm-sdk/x/gov/legacy/v043"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
@@ -25,13 +24,13 @@ func TestMigrateJSON(t *testing.T) {
 	voter := sdk.AccAddress("link1fl48vsnmsdzcv85q5d2q4z5ajdha8yu3q4fdzl")
 	err := sdk.ValidateAccAddress(voter.String())
 	require.NoError(t, err)
-	govGenState := &v040gov.GenesisState{
-		Votes: v040gov.Votes{
-			v040gov.NewVote(1, voter, types.OptionAbstain),
-			v040gov.NewVote(2, voter, types.OptionEmpty),
-			v040gov.NewVote(3, voter, types.OptionNo),
-			v040gov.NewVote(4, voter, types.OptionNoWithVeto),
-			v040gov.NewVote(5, voter, types.OptionYes),
+	govGenState := &types.GenesisState{
+		Votes: types.Votes{
+			types.Vote{ProposalId: 1, Voter: voter.String(), Option: types.OptionAbstain},
+			types.Vote{ProposalId: 2, Voter: voter.String(), Option: types.OptionEmpty},
+			types.Vote{ProposalId: 3, Voter: voter.String(), Option: types.OptionNo},
+			types.Vote{ProposalId: 4, Voter: voter.String(), Option: types.OptionNoWithVeto},
+			types.Vote{ProposalId: 5, Voter: voter.String(), Option: types.OptionYes},
 		},
 	}
 
