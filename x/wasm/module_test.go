@@ -185,7 +185,7 @@ func TestHandleInstantiate(t *testing.T) {
 	require.Equal(t, 2, len(res.Events), prettyEvents(res.Events))
 	assert.Equal(t, "wasm", res.Events[0].Type)
 	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[0].Attributes[0])
-	assert.Equal(t, "message", res.Events[1].Type)
+	assert.Equal(t, "instantiate_contract", res.Events[1].Type)
 	assertAttribute(t, "module", "wasm", res.Events[1].Attributes[0])
 
 	assertCodeList(t, q, data.ctx, 1)
@@ -235,12 +235,12 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", contractBech32Addr)
 	// this should be standard x/wasm init event, nothing from contract
 	require.Equal(t, 3, len(res.Events), prettyEvents(res.Events))
-	assert.Equal(t, "message", res.Events[0].Type)
+	assert.Equal(t, "store_code", res.Events[0].Type)
 	assertAttribute(t, "module", "wasm", res.Events[0].Attributes[0])
 	assertAttribute(t, "code_id", "1", res.Events[0].Attributes[2])
 	assert.Equal(t, "wasm", res.Events[1].Type)
 	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[1].Attributes[0])
-	assert.Equal(t, "message", res.Events[2].Type)
+	assert.Equal(t, "instantiate_contract", res.Events[2].Type)
 	assertAttribute(t, "module", "wasm", res.Events[2].Attributes[0])
 	assertAttribute(t, "code_id", "1", res.Events[2].Attributes[2])
 	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[2].Attributes[3])
@@ -418,7 +418,7 @@ func TestHandleExecute(t *testing.T) {
 	assert.Equal(t, "transfer", res.Events[0].Type)
 	assert.Equal(t, "wasm", res.Events[1].Type)
 	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[1].Attributes[0])
-	assert.Equal(t, "message", res.Events[2].Type)
+	assert.Equal(t, "instantiate_contract", res.Events[2].Type)
 	assertAttribute(t, "module", "wasm", res.Events[2].Attributes[0])
 
 	// ensure bob doesn't exist
@@ -466,7 +466,7 @@ func TestHandleExecute(t *testing.T) {
 	assertAttribute(t, "sender", contractBech32Addr, res.Events[2].Attributes[1])
 	assertAttribute(t, "amount", "105000denom", res.Events[2].Attributes[2])
 	// finally, standard x/wasm tag
-	assert.Equal(t, "message", res.Events[3].Type)
+	assert.Equal(t, "execute_contract", res.Events[3].Type)
 	assertAttribute(t, "module", "wasm", res.Events[3].Attributes[0])
 
 	// ensure bob now exists and got both payments released

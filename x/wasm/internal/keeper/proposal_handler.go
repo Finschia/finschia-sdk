@@ -73,7 +73,7 @@ func handleStoreCodeProposal(ctx sdk.Context, k governing, p types.StoreCodeProp
 	}
 
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeStoreCode,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
 	)
@@ -100,7 +100,7 @@ func handleInstantiateProposal(ctx sdk.Context, k governing, p types.Instantiate
 	}
 
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
 		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
@@ -128,7 +128,7 @@ func handleMigrateProposal(ctx sdk.Context, k governing, p types.MigrateContract
 	}
 
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeMigrateContract,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
 	)
@@ -162,7 +162,7 @@ func handleUpdateAdminProposal(ctx sdk.Context, k governing, p types.UpdateAdmin
 	}
 
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeUpdateAdmin,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
 	)

@@ -31,7 +31,7 @@ func (m msgServer) StoreCode(goCtx context.Context, msg *types.MsgStoreCode) (*t
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeStoreCode,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
@@ -62,7 +62,7 @@ func (m msgServer) InstantiateContract(goCtx context.Context, msg *types.MsgInst
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", msg.CodeID)),
@@ -87,7 +87,7 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context, msg *t
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeStoreCode,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
@@ -106,7 +106,7 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context, msg *t
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
@@ -137,7 +137,7 @@ func (m msgServer) ExecuteContract(goCtx context.Context, msg *types.MsgExecuteC
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeExecuteContract,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
 		sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
@@ -166,7 +166,7 @@ func (m msgServer) MigrateContract(goCtx context.Context, msg *types.MsgMigrateC
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeMigrateContract,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
 		sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
@@ -197,7 +197,7 @@ func (m msgServer) UpdateAdmin(goCtx context.Context, msg *types.MsgUpdateAdmin)
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeUpdateAdmin,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
 		sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
@@ -222,7 +222,7 @@ func (m msgServer) ClearAdmin(goCtx context.Context, msg *types.MsgClearAdmin) (
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
+		types.EventTypeClearAdmin,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeySigner, msg.Sender),
 		sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
