@@ -72,9 +72,12 @@ func handleStoreCodeProposal(ctx sdk.Context, k governing, p types.StoreCodeProp
 		return err
 	}
 
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+	))	
 	ourEvent := sdk.NewEvent(
 		types.EventTypeStoreCode,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -99,9 +102,12 @@ func handleInstantiateProposal(ctx sdk.Context, k governing, p types.Instantiate
 		return err
 	}
 
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+	))	
 	ourEvent := sdk.NewEvent(
 		types.EventTypeInstantiateContract,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
 		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
 	)
@@ -126,10 +132,12 @@ func handleMigrateProposal(ctx sdk.Context, k governing, p types.MigrateContract
 	if err != nil {
 		return err
 	}
-
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		))	
 	ourEvent := sdk.NewEvent(
 		types.EventTypeMigrateContract,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -161,9 +169,12 @@ func handleUpdateAdminProposal(ctx sdk.Context, k governing, p types.UpdateAdmin
 		return err
 	}
 
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		))		
 	ourEvent := sdk.NewEvent(
 		types.EventTypeUpdateAdmin,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -182,9 +193,13 @@ func handleClearAdminProposal(ctx sdk.Context, k governing, p types.ClearAdminPr
 	if err := k.setContractAdmin(ctx, contractAddr, nil, nil, GovAuthorizationPolicy{}); err != nil {
 		return err
 	}
-	ourEvent := sdk.NewEvent(
+	
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		))		
+	ourEvent := sdk.NewEvent(
+		types.EventTypeClearAdmin,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -204,9 +219,13 @@ func handlePinCodesProposal(ctx sdk.Context, k governing, p types.PinCodesPropos
 	for i, v := range p.CodeIDs {
 		s[i] = strconv.FormatUint(v, 10)
 	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		))	
 	ourEvent := sdk.NewEvent(
 		types.EventTypePinCode,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeIDs, strings.Join(s, ",")),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -227,9 +246,13 @@ func handleUnpinCodesProposal(ctx sdk.Context, k governing, p types.UnpinCodesPr
 	for i, v := range p.CodeIDs {
 		s[i] = strconv.FormatUint(v, 10)
 	}
+
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		))		
 	ourEvent := sdk.NewEvent(
 		types.EventTypeUnpinCode,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeIDs, strings.Join(s, ",")),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -250,6 +273,10 @@ func handleUpdateContractStatusProposal(ctx sdk.Context, k governing, p types.Up
 		return err
 	}
 
+	ctx.EventManager().EmitEvent(sdk.NewEvent(
+		sdk.EventTypeMessage,
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		))		
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeUpdateContractStatus,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
