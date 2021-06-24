@@ -188,6 +188,7 @@ func (m msgServer) MigrateContract(goCtx context.Context, msg *types.MsgMigrateC
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeMigrateContract,
 		sdk.NewAttribute(types.AttributeKeyContract, msg.Contract),
+		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", msg.CodeID)),
 	))
 
 	return &types.MsgMigrateContractResponse{

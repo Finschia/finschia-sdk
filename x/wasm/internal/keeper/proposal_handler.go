@@ -139,6 +139,7 @@ func handleMigrateProposal(ctx sdk.Context, k governing, p types.MigrateContract
 	ourEvent := sdk.NewEvent(
 		types.EventTypeMigrateContract,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 
