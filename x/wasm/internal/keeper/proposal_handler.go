@@ -75,7 +75,7 @@ func handleStoreCodeProposal(ctx sdk.Context, k governing, p types.StoreCodeProp
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-	))	
+	))
 	ourEvent := sdk.NewEvent(
 		types.EventTypeStoreCode,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
@@ -105,7 +105,7 @@ func handleInstantiateProposal(ctx sdk.Context, k governing, p types.Instantiate
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-	))	
+	))
 	ourEvent := sdk.NewEvent(
 		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
@@ -135,7 +135,7 @@ func handleMigrateProposal(ctx sdk.Context, k governing, p types.MigrateContract
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-		))	
+	))
 	ourEvent := sdk.NewEvent(
 		types.EventTypeMigrateContract,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
@@ -172,7 +172,7 @@ func handleUpdateAdminProposal(ctx sdk.Context, k governing, p types.UpdateAdmin
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-		))		
+	))
 	ourEvent := sdk.NewEvent(
 		types.EventTypeUpdateAdmin,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
@@ -193,11 +193,11 @@ func handleClearAdminProposal(ctx sdk.Context, k governing, p types.ClearAdminPr
 	if err := k.setContractAdmin(ctx, contractAddr, nil, nil, GovAuthorizationPolicy{}); err != nil {
 		return err
 	}
-	
+
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-		))		
+	))
 	ourEvent := sdk.NewEvent(
 		types.EventTypeClearAdmin,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
@@ -223,7 +223,7 @@ func handlePinCodesProposal(ctx sdk.Context, k governing, p types.PinCodesPropos
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-		))	
+	))
 	ourEvent := sdk.NewEvent(
 		types.EventTypePinCode,
 		sdk.NewAttribute(types.AttributeKeyCodeIDs, strings.Join(s, ",")),
@@ -250,7 +250,7 @@ func handleUnpinCodesProposal(ctx sdk.Context, k governing, p types.UnpinCodesPr
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-		))		
+	))
 	ourEvent := sdk.NewEvent(
 		types.EventTypeUnpinCode,
 		sdk.NewAttribute(types.AttributeKeyCodeIDs, strings.Join(s, ",")),
@@ -276,7 +276,7 @@ func handleUpdateContractStatusProposal(ctx sdk.Context, k governing, p types.Up
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		sdk.EventTypeMessage,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-		))		
+	))
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeUpdateContractStatus,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
