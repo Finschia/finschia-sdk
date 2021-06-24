@@ -115,11 +115,6 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context, msg *t
 	}
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
-		sdk.EventTypeMessage,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
-		sdk.NewAttribute(sdk.AttributeKeySender, msg.Sender),
-	))
-	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
 		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
