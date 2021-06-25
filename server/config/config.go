@@ -12,6 +12,7 @@ import (
 	storetypes "github.com/line/lbm-sdk/store/types"
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 const (
@@ -117,7 +118,7 @@ type APIConfig struct {
 
 	// TODO: TLS/Proxy configuration.
 	//
-	// Ref: https://github.com/cosmos/cosmos-sdk/issues/6420
+	// Ref: https://github.com/line/lbm-sdk/issues/6420
 }
 
 // RosettaConfig defines the Rosetta API listener configuration.
@@ -334,4 +335,13 @@ func GetConfig(v *viper.Viper) Config {
 			SnapshotKeepRecent: v.GetUint32("state-sync.snapshot-keep-recent"),
 		},
 	}
+}
+
+// ValidateBasic returns an error if min-gas-prices field is empty in BaseConfig. Otherwise, it returns nil.
+func (c Config) ValidateBasic() error {
+	if c.BaseConfig.MinGasPrices == "" {
+		return sdkerrors.ErrAppConfig.Wrap("set min gas price in app.toml or flag or env variable")
+	}
+
+	return nil
 }
