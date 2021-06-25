@@ -4,8 +4,10 @@
 package keys
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
 	"testing"
 
 	"github.com/line/ostracon/libs/cli"
@@ -124,4 +126,67 @@ func Test_runAddCmdLedger(t *testing.T) {
 	require.Equal(t,
 		"PubKeySecp256k1{02BCD96CAB102304AC10E90C5A0F29358E3A4A6FB1217B83E5DB657918EA28BEC1}",
 		key1.GetPubKey().String())
+}
+
+func Test_runAddCmdLedgerDryRun(t *testing.T) {
+	testData := []struct {
+		name  string
+		args  []string
+		added bool
+	}{
+		{
+			name: "ledger account is added",
+			args: []string{
+				"testkey",
+				fmt.Sprintf("--%s=%s", flags.FlagDryRun, "false"),
+				fmt.Sprintf("--%s=%s", flags.FlagUseLedger, "true"),
+			},
+			added: true,
+		},
+		{
+			name: "ledger account is not added with dry run",
+			args: []string{
+				"testkey",
+				fmt.Sprintf("--%s=%s", flags.FlagDryRun, "true"),
+				fmt.Sprintf("--%s=%s", flags.FlagUseLedger, "true"),
+			},
+			added: false,
+		},
+	}
+	for _, tt := range testData {
+		tt := tt
+		t.Run(tt.name, func(t *testing.T) {
+			cmd := AddKeyCommand()
+			cmd.Flags().AddFlagSet(Commands("home").PersistentFlags())
+
+			kbHome := t.TempDir()
+			mockIn := testutil.ApplyMockIODiscardOutErr(cmd)
+			kb, err := keyring.New(sdk.KeyringServiceName(), keyring.BackendTest, kbHome, mockIn)
+			require.NoError(t, err)
+
+			clientCtx := client.Context{}.
+				WithKeyringDir(kbHome).
+				WithKeyring(kb)
+			ctx := context.WithValue(context.Background(), client.ClientContextKey, &clientCtx)
+
+			b := bytes.NewBufferString("")
+			cmd.SetOut(b)
+
+			cmd.SetArgs(tt.args)
+			require.NoError(t, cmd.ExecuteContext(ctx))
+
+			if tt.added {
+				_, err = kb.Key("testkey")
+				require.NoError(t, err)
+
+				out, err := ioutil.ReadAll(b)
+				require.NoError(t, err)
+				require.Contains(t, string(out), "name: testkey")
+			} else {
+				_, err = kb.Key("testkey")
+				require.Error(t, err)
+				require.Equal(t, "testkey.info: key not found", err.Error())
+			}
+		})
+	}
 }
