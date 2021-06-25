@@ -19,10 +19,10 @@ type QueryHandler struct {
 	Ctx           sdk.Context
 	Plugins       WasmVMQueryHandler
 	Caller        sdk.AccAddress
-	GasMultiplier uint64
+	GasMultiplier GasMultiplier
 }
 
-func NewQueryHandler(ctx sdk.Context, vmQueryHandler WasmVMQueryHandler, caller sdk.AccAddress, gasMultiplier uint64) QueryHandler {
+func NewQueryHandler(ctx sdk.Context, vmQueryHandler WasmVMQueryHandler, caller sdk.AccAddress, gasMultiplier GasMultiplier) QueryHandler {
 	return QueryHandler{
 		Ctx:           ctx,
 		Plugins:       vmQueryHandler,
@@ -47,7 +47,7 @@ var _ wasmvmtypes.Querier = QueryHandler{}
 
 func (q QueryHandler) Query(request wasmvmtypes.QueryRequest, gasLimit uint64) ([]byte, error) {
 	// set a limit for a subctx
-	sdkGas := gasLimit / q.GasMultiplier
+	sdkGas := q.GasMultiplier.FromWasmVMGas(gasLimit)
 	subctx := q.Ctx.WithGasMeter(sdk.NewGasMeter(sdkGas))
 
 	// make sure we charge the higher level context even on panic

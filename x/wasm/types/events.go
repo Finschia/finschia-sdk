@@ -10,9 +10,11 @@ const (
 	EventTypePinCode              = "pin_code"
 	EventTypeUnpinCode            = "unpin_code"
 	EventTypeUpdateContractStatus = "update_contract_status"
+	CustomEventType               = "wasm"
 )
+
 const ( // event attributes
-	AttributeKeyContract       = "contract_address"
+	AttributeKeyContractAddr   = "contract_address"
 	AttributeKeyCodeID         = "code_id"
 	AttributeKeySigner         = "signer"
 	AttributeResultDataHex     = "result"

@@ -97,7 +97,7 @@ func handleInstantiateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 	ourEvent := sdk.NewEvent(
 		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
-		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
+		sdk.NewAttribute(types.AttributeKeyContractAddr, contractAddr.String()),
 		sdk.NewAttribute(types.AttributeResultDataHex, hex.EncodeToString(data)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -125,7 +125,7 @@ func handleMigrateProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.M
 		types.EventTypeMigrateContract,
 		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
 		sdk.NewAttribute(types.AttributeResultDataHex, hex.EncodeToString(data)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -151,7 +151,8 @@ func handleUpdateAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p typ
 
 	ourEvent := sdk.NewEvent(
 		types.EventTypeUpdateAdmin,
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 	return nil
@@ -172,7 +173,8 @@ func handleClearAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 
 	ourEvent := sdk.NewEvent(
 		types.EventTypeClearAdmin,
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
+		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 	return nil
@@ -248,7 +250,7 @@ func handleUpdateContractStatusProposal(ctx sdk.Context, k types.ContractOpsKeep
 
 	ctx.EventManager().EmitEvent(sdk.NewEvent(
 		types.EventTypeUpdateContractStatus,
-		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyContractAddr, p.Contract),
 		sdk.NewAttribute(types.AttributeKeyContractStatus, p.Status.String()),
 	))
 	return nil
