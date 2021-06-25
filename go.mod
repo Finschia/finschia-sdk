@@ -4,6 +4,7 @@ module github.com/line/lbm-sdk
 
 require (
 	github.com/99designs/keyring v1.1.6
+	github.com/CosmWasm/wasmvm v0.16.3 // indirect
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/VictoriaMetrics/fastcache v1.7.0
 	github.com/armon/go-metrics v0.3.10
@@ -58,5 +59,6 @@ require (
 
 replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
+	github.com/line/wasmvm => github.com/CosmWasm/wasmvm v0.15.1
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

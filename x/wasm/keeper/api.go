@@ -4,12 +4,26 @@ import (
 	"fmt"
 
 	sdk "github.com/line/lbm-sdk/types"
+	types "github.com/line/lbm-sdk/x/wasm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	wasmvm "github.com/line/wasmvm"
 )
 
 type cosmwasmAPIImpl struct {
 	gasMultiplier GasMultiplier
 }
+
+const (
+	// DefaultDeserializationCostPerByte The formular should be `len(data) * deserializationCostPerByte`
+	DefaultDeserializationCostPerByte = 1
+)
+
+var (
+	costJsonDeserialization = wasmvmtypes.UFraction{
+		Numerator:   DefaultDeserializationCostPerByte * types.DefaultGasMultiplier,
+		Denominator: 1,
+	}
+)
 
 func (a cosmwasmAPIImpl) humanAddress(canon []byte) (string, uint64, error) {
 	gas := a.gasMultiplier.FromWasmVMGas(5)

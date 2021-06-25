@@ -1,9 +1,10 @@
 package types
 
 import (
+	"github.com/line/lbm-sdk/types"
 	sdk "github.com/line/lbm-sdk/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
-	types2 "github.com/line/wasmvm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 // ViewKeeper provides read only operations
@@ -60,32 +61,32 @@ type IBCContractKeeper interface {
 	OnOpenChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel types2.IBCChannel,
+		channel wasmvmtypes.IBCChannel,
 	) error
 	OnConnectChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel types2.IBCChannel,
+		channel wasmvmtypes.IBCChannel,
 	) error
 	OnCloseChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel types2.IBCChannel,
+		channel wasmvmtypes.IBCChannel,
 	) error
 	OnRecvPacket(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		packet types2.IBCPacket,
+		packet wasmvmtypes.IBCPacket,
 	) ([]byte, error)
 	OnAckPacket(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		acknowledgement types2.IBCAcknowledgement,
+		acknowledgement wasmvmtypes.IBCAcknowledgementWithPacket,
 	) error
 	OnTimeoutPacket(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		packet types2.IBCPacket,
+		packet wasmvmtypes.IBCPacket,
 	) error
 	// ClaimCapability allows the transfer module to claim a capability
 	//that IBC module passes to it
