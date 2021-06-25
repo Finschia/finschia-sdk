@@ -1,7 +1,6 @@
 # Contributing
 
 - [Contributing](#contributing)
-  - [Architecture Decision Records (ADR)](#architecture-decision-records-adr)
   - [Pull Requests](#pull-requests)
     - [Process for reviewing PRs](#process-for-reviewing-prs)
     - [Updating Documentation](#updating-documentation)
@@ -231,10 +230,3 @@ should be targeted against the release candidate branch.
 - Tag the release (use `git tag -a`) and create a release in Github
 - Delete the `RC` branches
 
-### Point Release Procedure
-
-TBD
-
-## Code Owner Membership
-
-TBD
