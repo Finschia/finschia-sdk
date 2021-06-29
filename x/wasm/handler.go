@@ -2,18 +2,17 @@ package wasm
 
 import (
 	"fmt"
-
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/lfb-sdk/x/wasm/internal/keeper"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/keeper"
+	"github.com/line/lfb-sdk/x/wasm/types"
 	abci "github.com/line/ostracon/abci/types"
 
 	sdk "github.com/line/lfb-sdk/types"
 	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
-// NewHandler returns a handler for "bank" type messages.
-func NewHandler(k *Keeper) sdk.Handler {
+// NewHandler returns a handler for "wasm" type messages.
+func NewHandler(k types.ContractOpsKeeper) sdk.Handler {
 	msgServer := keeper.NewMsgServerImpl(k)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {

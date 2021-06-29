@@ -2,7 +2,7 @@ package simulation
 
 import (
 	"github.com/line/lfb-sdk/types/module"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/types"
 )
 
 // RandomizeGenState generates a random GenesisState for wasm

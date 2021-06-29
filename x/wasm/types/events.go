@@ -1,0 +1,20 @@
+package types
+
+const (
+	EventTypeStoreCode            = "store_code"
+	EventTypeInstantiateContract  = "instantiate_contract"
+	EventTypeExecuteContract      = "execute_contract"
+	EventTypeMigrateContract      = "migrate_contract"
+	EventTypeUpdateAdmin          = "update_admin"
+	EventTypeClearAdmin           = "clear_admin"
+	EventTypePinCode              = "pin_code"
+	EventTypeUnpinCode            = "unpin_code"
+	EventTypeUpdateContractStatus = "update_contract_status"
+)
+const ( // event attributes
+	AttributeKeyContract       = "contract_address"
+	AttributeKeyCodeID         = "code_id"
+	AttributeKeySigner         = "signer"
+	AttributeKeyCodeIDs        = "code_ids"
+	AttributeKeyContractStatus = "contract_status"
+)

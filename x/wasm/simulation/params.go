@@ -7,7 +7,7 @@ import (
 	"github.com/line/lfb-sdk/codec"
 	simtypes "github.com/line/lfb-sdk/types/simulation"
 	"github.com/line/lfb-sdk/x/simulation"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/types"
 )
 
 func ParamChanges(r *rand.Rand, cdc codec.Marshaler) []simtypes.ParamChange {
