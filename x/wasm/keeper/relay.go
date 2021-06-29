@@ -31,7 +31,8 @@ func (k Keeper) OnOpenChannel(
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	gasUsed, execErr := k.wasmVM.IBCChannelOpen(codeInfo.CodeHash, env, channel, prefixStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	gasUsed, execErr := k.wasmVM.IBCChannelOpen(codeInfo.CodeHash, env, channel, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
@@ -62,7 +63,8 @@ func (k Keeper) OnConnectChannel(
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, execErr := k.wasmVM.IBCChannelConnect(codeInfo.CodeHash, env, channel, prefixStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	res, gasUsed, execErr := k.wasmVM.IBCChannelConnect(codeInfo.CodeHash, env, channel, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
@@ -100,7 +102,8 @@ func (k Keeper) OnCloseChannel(
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, execErr := k.wasmVM.IBCChannelClose(codeInfo.CodeHash, params, channel, prefixStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	res, gasUsed, execErr := k.wasmVM.IBCChannelClose(codeInfo.CodeHash, params, channel, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
@@ -137,7 +140,8 @@ func (k Keeper) OnRecvPacket(
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, execErr := k.wasmVM.IBCPacketReceive(codeInfo.CodeHash, env, packet, prefixStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	res, gasUsed, execErr := k.wasmVM.IBCPacketReceive(codeInfo.CodeHash, env, packet, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return nil, sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
@@ -171,7 +175,8 @@ func (k Keeper) OnAckPacket(
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, execErr := k.wasmVM.IBCPacketAck(codeInfo.CodeHash, env, acknowledgement, prefixStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	res, gasUsed, execErr := k.wasmVM.IBCPacketAck(codeInfo.CodeHash, env, acknowledgement, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())
@@ -206,7 +211,8 @@ func (k Keeper) OnTimeoutPacket(
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
 	gas := gasForContract(ctx, k.getGasMultiplier(ctx))
-	res, gasUsed, execErr := k.wasmVM.IBCPacketTimeout(codeInfo.CodeHash, env, packet, prefixStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
+	wasmStore := types.NewWasmStore(prefixStore)
+	res, gasUsed, execErr := k.wasmVM.IBCPacketTimeout(codeInfo.CodeHash, env, packet, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas)
 	k.consumeGas(ctx, gasUsed)
 	if execErr != nil {
 		return sdkerrors.Wrap(types.ErrExecuteFailed, execErr.Error())

@@ -248,7 +248,7 @@ func handleUnpinCodesProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 	return nil
 }
 
-func handleUpdateContractStatusProposal(ctx sdk.Context, k governing, p types.UpdateContractStatusProposal) error {
+func handleUpdateContractStatusProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types.UpdateContractStatusProposal) error {
 	if err := p.ValidateBasic(); err != nil {
 		return err
 	}
@@ -256,8 +256,7 @@ func handleUpdateContractStatusProposal(ctx sdk.Context, k governing, p types.Up
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-
-	if err = k.updateContractStatus(ctx, contractAddr, nil, p.Status, GovAuthorizationPolicy{}); err != nil {
+	if err = k.UpdateContractStatus(ctx, contractAddr, nil, p.Status); err != nil {
 		return err
 	}
 

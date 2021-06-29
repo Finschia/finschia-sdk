@@ -6,11 +6,11 @@ import (
 	"reflect"
 
 	"github.com/gogo/protobuf/jsonpb"
+	"github.com/gogo/protobuf/proto"
 	codectypes "github.com/line/lfb-sdk/codec/types"
 	sdk "github.com/line/lfb-sdk/types"
 	sdkerrors "github.com/line/lfb-sdk/types/errors"
 	wasmvmtypes "github.com/line/wasmvm/types"
-	"google.golang.org/protobuf/proto"
 )
 
 const (

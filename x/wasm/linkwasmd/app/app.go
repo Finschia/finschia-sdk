@@ -360,6 +360,7 @@ func NewLinkApp(
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
 		scopedWasmKeeper,
+		app.transferKeeper,
 		app.Router(),
 		encodeRouter,
 		app.GRPCQueryRouter(),

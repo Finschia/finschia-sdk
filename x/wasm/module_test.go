@@ -17,7 +17,6 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/ed25519"
-	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -33,7 +32,7 @@ type testData struct {
 
 // returns a cleanup function, which must be defered on
 func setupTest(t *testing.T) testData {
-	ctx, keepers := CreateTestInput(t, false, "staking,stargate")
+	ctx, keepers := CreateTestInput(t, false, "staking,stargate", nil, nil)
 	cdc := keeper.MakeTestCodec(t)
 	data := testData{
 		module:        NewAppModule(cdc, keepers.WasmKeeper, keepers.StakingKeeper),
@@ -252,9 +251,9 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 	assertContractList(t, q, data.ctx, 1, []string{contractBech32Addr})
 	assertContractInfo(t, q, data.ctx, contractBech32Addr, 1, creator)
 	assertContractState(t, q, data.ctx, contractBech32Addr, state{
-		Verifier:    []byte(fred),
-		Beneficiary: []byte(bob),
-		Funder:      []byte(creator),
+		Verifier:    fred.String(),
+		Beneficiary: bob.String(),
+		Funder:      creator.String(),
 	})
 }
 
@@ -365,9 +364,9 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				assertContractList(t, q, data.ctx, 1, []string{expectedContractBech32Addr})
 				assertContractInfo(t, q, data.ctx, expectedContractBech32Addr, 1, addrAcc1)
 				assertContractState(t, q, data.ctx, expectedContractBech32Addr, state{
-					Verifier:    []byte(fred),
-					Beneficiary: []byte(bob),
-					Funder:      []byte(addrAcc1),
+					Verifier:    fred.String(),
+					Beneficiary: bob.String(),
+					Funder:      addrAcc1.String(),
 				})
 			} else {
 				assertContractList(t, q, data.ctx, 0, []string{})

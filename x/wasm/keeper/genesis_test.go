@@ -18,6 +18,7 @@ import (
 	sdk "github.com/line/lfb-sdk/types"
 	authkeeper "github.com/line/lfb-sdk/x/auth/keeper"
 	distributionkeeper "github.com/line/lfb-sdk/x/distribution/keeper"
+	govtypes "github.com/line/lfb-sdk/x/gov/types"
 	paramskeeper "github.com/line/lfb-sdk/x/params/keeper"
 	paramtypes "github.com/line/lfb-sdk/x/params/types"
 	stakingkeeper "github.com/line/lfb-sdk/x/staking/keeper"
@@ -668,7 +669,7 @@ func setupKeeper(t *testing.T) (*Keeper, sdk.Context, []sdk.StoreKey) {
 	wasmConfig := wasmTypes.DefaultWasmConfig()
 	pk := paramskeeper.NewKeeper(encodingConfig.Marshaler, encodingConfig.Amino, keyParams)
 
-	srcKeeper := NewKeeper(encodingConfig.Marshaler, keyWasm, pk.Subspace(wasmTypes.DefaultParamspace), authkeeper.AccountKeeper{}, nil, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, tempDir, wasmConfig, SupportedFeatures)
+	srcKeeper := NewKeeper(encodingConfig.Marshaler, keyWasm, pk.Subspace(wasmTypes.DefaultParamspace), authkeeper.AccountKeeper{}, nil, stakingkeeper.Keeper{}, distributionkeeper.Keeper{}, nil, nil, nil, nil, nil, nil, nil, tempDir, wasmConfig, SupportedFeatures, nil, nil)
 	return &srcKeeper, ctx, []sdk.StoreKey{keyWasm, keyParams}
 }
 

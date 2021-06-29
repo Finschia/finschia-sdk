@@ -203,7 +203,7 @@ func TestContractInfoMarshalUnmarshal(t *testing.T) {
 	require.NoError(t, err)
 	myExtension.TotalDeposit = nil
 
-	src := NewContractInfo(1, myAddr, myOtherAddr, "bar", &anyPos)
+	src := NewContractInfo(1, myAddr, myOtherAddr, "bar", &anyPos, ContractStatusActive)
 	err = src.SetExtension(&myExtension)
 	require.NoError(t, err)
 

@@ -17,6 +17,7 @@ type decoratedKeeper interface {
 	unpinCode(ctx sdk.Context, codeID uint64) error
 	execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) (*sdk.Result, error)
 	setContractInfoExtension(ctx sdk.Context, contract sdk.AccAddress, extra types.ContractInfoExtension) error
+	updateContractStatus(ctx sdk.Context, contract sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error
 }
 
 type PermissionedKeeper struct {
@@ -71,4 +72,8 @@ func (p PermissionedKeeper) UnpinCode(ctx sdk.Context, codeID uint64) error {
 // SetExtraContractAttributes updates the extra attributes that can be stored with the contract info
 func (p PermissionedKeeper) SetContractInfoExtension(ctx sdk.Context, contract sdk.AccAddress, extra types.ContractInfoExtension) error {
 	return p.nested.setContractInfoExtension(ctx, contract, extra)
+}
+
+func (p PermissionedKeeper) UpdateContractStatus(ctx sdk.Context, contract sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus) error {
+	return p.nested.updateContractStatus(ctx, contract, caller, status, p.authZPolicy)
 }
