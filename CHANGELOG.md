@@ -35,8 +35,6 @@ Ref: https://keepachangelog.com/en/1.0.0/
 
 # Changelog
 
-## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.45.0-rc0...HEAD)
-
 ### Features
 
 ### Improvements
