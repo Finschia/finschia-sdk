@@ -4,7 +4,7 @@ order: 6
 
 # Metrics
 
-The transfer IBC application module exposes the following set of [metrics](./../../../../../docs/core/telemetry.md).
+The transfer IBC application module exposes the following set of metrics.
 
 | Metric                          | Description                                                                               | Unit            | Type    |
 |:--------------------------------|:------------------------------------------------------------------------------------------|:----------------|:--------|
