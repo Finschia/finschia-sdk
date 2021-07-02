@@ -16,7 +16,7 @@ const (
 	// DefaultParamspace for params keeper
 	DefaultParamspace = ModuleName
 	// DefaultMaxWasmCodeSize limit max bytes read to prevent gzip bombs
-	DefaultMaxWasmCodeSize = 600 * 1024
+	DefaultMaxWasmCodeSize = 600 * 1024 * 2
 	// GasMultiplier is how many cosmwasm gas points = 1 sdk gas point
 	// SDK reference costs is defined in x/store/types/gas.go KVGasConfig()
 	// https://github.com/line/lbm-sdk/blob/main/store/types/gas.go
