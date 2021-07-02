@@ -73,8 +73,7 @@ func handleStoreCodeProposal(ctx sdk.Context, k governing, p types.StoreCodeProp
 	}
 
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		types.EventTypeStoreCode,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", codeID)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -100,8 +99,7 @@ func handleInstantiateProposal(ctx sdk.Context, k governing, p types.Instantiate
 	}
 
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		types.EventTypeInstantiateContract,
 		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
 		sdk.NewAttribute(types.AttributeKeyContract, contractAddr.String()),
 	)
@@ -126,11 +124,10 @@ func handleMigrateProposal(ctx sdk.Context, k governing, p types.MigrateContract
 	if err != nil {
 		return err
 	}
-
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		types.EventTypeMigrateContract,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
+		sdk.NewAttribute(types.AttributeKeyCodeID, fmt.Sprintf("%d", p.CodeID)),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
 
@@ -162,8 +159,7 @@ func handleUpdateAdminProposal(ctx sdk.Context, k governing, p types.UpdateAdmin
 	}
 
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		types.EventTypeUpdateAdmin,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -182,9 +178,9 @@ func handleClearAdminProposal(ctx sdk.Context, k governing, p types.ClearAdminPr
 	if err := k.setContractAdmin(ctx, contractAddr, nil, nil, GovAuthorizationPolicy{}); err != nil {
 		return err
 	}
+
 	ourEvent := sdk.NewEvent(
-		sdk.EventTypeMessage,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
+		types.EventTypeClearAdmin,
 		sdk.NewAttribute(types.AttributeKeyContract, p.Contract),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -204,9 +200,9 @@ func handlePinCodesProposal(ctx sdk.Context, k governing, p types.PinCodesPropos
 	for i, v := range p.CodeIDs {
 		s[i] = strconv.FormatUint(v, 10)
 	}
+
 	ourEvent := sdk.NewEvent(
 		types.EventTypePinCode,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeIDs, strings.Join(s, ",")),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
@@ -227,9 +223,9 @@ func handleUnpinCodesProposal(ctx sdk.Context, k governing, p types.UnpinCodesPr
 	for i, v := range p.CodeIDs {
 		s[i] = strconv.FormatUint(v, 10)
 	}
+
 	ourEvent := sdk.NewEvent(
 		types.EventTypeUnpinCode,
-		sdk.NewAttribute(sdk.AttributeKeyModule, types.ModuleName),
 		sdk.NewAttribute(types.AttributeKeyCodeIDs, strings.Join(s, ",")),
 	)
 	ctx.EventManager().EmitEvent(ourEvent)
