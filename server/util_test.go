@@ -11,15 +11,9 @@ import (
 	"testing"
 
 	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/require"
 
-	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/server"
-	"github.com/line/lbm-sdk/server/config"
-	"github.com/line/lbm-sdk/simapp"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
 )
 
 var cancelledInPreRun = errors.New("Cancelled in prerun")
@@ -405,35 +399,4 @@ func TestInterceptConfigsWithBadPermissions(t *testing.T) {
 	if err := cmd.ExecuteContext(ctx); !os.IsPermission(err) {
 		t.Fatalf("Failed to catch permissions error, got: [%T] %v", err, err)
 	}
-}
-
-func TestEmptyMinGasPrices(t *testing.T) {
-	tempDir := t.TempDir()
-	err := os.Mkdir(filepath.Join(tempDir, "config"), os.ModePerm)
-	require.NoError(t, err)
-	encCfg := simapp.MakeTestEncodingConfig()
-
-	// Run InitCmd to create necessary config files.
-	clientCtx := client.Context{}.WithHomeDir(tempDir).WithJSONCodec(encCfg.Marshaler)
-	serverCtx := server.NewDefaultContext()
-	ctx := context.WithValue(context.Background(), server.ServerContextKey, serverCtx)
-	ctx = context.WithValue(ctx, client.ClientContextKey, &clientCtx)
-	cmd := genutilcli.InitCmd(simapp.ModuleBasics, tempDir)
-	cmd.SetArgs([]string{"appnode-test"})
-	err = cmd.ExecuteContext(ctx)
-	require.NoError(t, err)
-
-	// Modify app.toml.
-	appCfgTempFilePath := filepath.Join(tempDir, "config", "app.toml")
-	appConf := config.DefaultConfig()
-	appConf.BaseConfig.MinGasPrices = ""
-	config.WriteConfigFile(appCfgTempFilePath, appConf)
-
-	// Run StartCmd.
-	cmd = server.StartCmd(nil, tempDir)
-	cmd.PreRunE = func(cmd *cobra.Command, _ []string) error {
-		return server.InterceptConfigsPreRunHandler(cmd, "", nil)
-	}
-	err = cmd.ExecuteContext(ctx)
-	require.Errorf(t, err, sdkerrors.ErrAppConfig.Error())
 }
