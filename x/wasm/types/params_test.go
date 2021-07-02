@@ -302,7 +302,7 @@ func TestParamsUnmarshalJson(t *testing.T) {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",
 				"contract_status_access": {"permission": "Nobody"},
-				"max_wasm_code_size": 614400,
+				"max_wasm_code_size": 1228800,
 				"gas_multiplier": 100,
 				"instance_cost": 40000,
 				"compile_cost": 2}`,
