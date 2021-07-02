@@ -35,7 +35,6 @@ func (suite *AnteTestSuite) TestSetPubKey() {
 	// set accounts and create msg for each address
 	for i, addr := range addrs {
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		msgs[i] = testdata.NewTestMsg(addr)
 	}
@@ -133,7 +132,6 @@ func (suite *AnteTestSuite) TestSigVerification() {
 	// set accounts and create msg for each address
 	for i, addr := range addrs {
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		msgs[i] = testdata.NewTestMsg(addr)
 	}
@@ -218,7 +216,6 @@ func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 	// set accounts and create msg for each address
 	for i, addr := range addrs {
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		msgs[i] = testdata.NewTestMsg(addr)
 	}
@@ -302,7 +299,6 @@ func (suite *AnteTestSuite) runSigDecorators(params types.Params, _ bool, privs 
 	for i, priv := range privs {
 		addr := sdk.AccAddress(priv.PubKey().Address())
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		msgs[i] = testdata.NewTestMsg(addr)
 		accNums[i] = uint64(i)
@@ -337,20 +333,19 @@ func (suite *AnteTestSuite) TestIncrementSequenceDecorator() {
 
 	priv, _, addr := testdata.KeyTestPubAddr()
 	acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-	suite.Require().NoError(acc.SetAccountNumber(uint64(50)))
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}
 	suite.Require().NoError(suite.txBuilder.SetMsgs(msgs...))
 	privs := []cryptotypes.PrivKey{priv}
-	accNums := []uint64{suite.app.AccountKeeper.GetAccount(suite.ctx, addr).GetAccountNumber()}
+	sbh := []uint64{ 1 }
 	accSeqs := []uint64{suite.app.AccountKeeper.GetAccount(suite.ctx, addr).GetSequence()}
 	feeAmount := testdata.NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 	suite.txBuilder.SetFeeAmount(feeAmount)
 	suite.txBuilder.SetGasLimit(gasLimit)
 
-	tx, err := suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
+	tx, err := suite.CreateTestTx(privs, sbh, accSeqs, suite.ctx.ChainID())
 	suite.Require().NoError(err)
 
 	isd := ante.NewIncrementSequenceDecorator(suite.app.AccountKeeper)

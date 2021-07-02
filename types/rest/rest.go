@@ -62,17 +62,17 @@ type GasEstimateResponse struct {
 // BaseReq defines a structure that can be embedded in other request structures
 // that all share common "base" fields.
 type BaseReq struct {
-	From            string       `json:"from"`
-	Memo            string       `json:"memo"`
-	ChainID         string       `json:"chain_id"`
-	SignBlockHeight uint64       `json:"sign_block_height"`
-	Sequence        uint64       `json:"sequence"`
-	TimeoutHeight   uint64       `json:"timeout_height"`
-	Fees            sdk.Coins    `json:"fees"`
-	GasPrices       sdk.DecCoins `json:"gas_prices"`
-	Gas             string       `json:"gas"`
-	GasAdjustment   string       `json:"gas_adjustment"`
-	Simulate        bool         `json:"simulate"`
+	From           string       `json:"from"`
+	Memo           string       `json:"memo"`
+	ChainID        string       `json:"chain_id"`
+	SigBlockHeight uint64       `json:"sig_block_height"`
+	Sequence       uint64       `json:"sequence"`
+	TimeoutHeight  uint64       `json:"timeout_height"`
+	Fees           sdk.Coins    `json:"fees"`
+	GasPrices      sdk.DecCoins `json:"gas_prices"`
+	Gas            string       `json:"gas"`
+	GasAdjustment  string       `json:"gas_adjustment"`
+	Simulate       bool         `json:"simulate"`
 }
 
 // NewBaseReq creates a new basic request instance and sanitizes its values
@@ -81,16 +81,16 @@ func NewBaseReq(
 	fees sdk.Coins, gasPrices sdk.DecCoins, simulate bool,
 ) BaseReq {
 	return BaseReq{
-		From:            strings.TrimSpace(from),
-		Memo:            strings.TrimSpace(memo),
-		ChainID:         strings.TrimSpace(chainID),
-		Fees:            fees,
-		GasPrices:       gasPrices,
-		Gas:             strings.TrimSpace(gas),
-		GasAdjustment:   strings.TrimSpace(gasAdjustment),
-		SignBlockHeight: signBlockHeight,
-		Sequence:        seq,
-		Simulate:        simulate,
+		From:           strings.TrimSpace(from),
+		Memo:           strings.TrimSpace(memo),
+		ChainID:        strings.TrimSpace(chainID),
+		Fees:           fees,
+		GasPrices:      gasPrices,
+		Gas:            strings.TrimSpace(gas),
+		GasAdjustment:  strings.TrimSpace(gasAdjustment),
+		SigBlockHeight: signBlockHeight,
+		Sequence:       seq,
+		Simulate:       simulate,
 	}
 }
 
@@ -98,7 +98,7 @@ func NewBaseReq(
 func (br BaseReq) Sanitize() BaseReq {
 	return NewBaseReq(
 		br.From, br.Memo, br.ChainID, br.Gas, br.GasAdjustment,
-		br.SignBlockHeight, br.Sequence, br.Fees, br.GasPrices, br.Simulate,
+		br.SigBlockHeight, br.Sequence, br.Fees, br.GasPrices, br.Simulate,
 	)
 }
 

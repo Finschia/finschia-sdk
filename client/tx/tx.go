@@ -155,7 +155,7 @@ func WriteGeneratedTxResponse(
 	}
 
 	txf := Factory{fees: br.Fees, gasPrices: br.GasPrices}.
-		WithSignBlockHeight(br.SignBlockHeight).
+		WithSigBlockHeight(br.SigBlockHeight).
 		WithSequence(br.Sequence).
 		WithGas(gasSetting.Gas).
 		WithGasAdjustment(gasAdj).
@@ -240,6 +240,7 @@ func BuildUnsignedTx(txf Factory, msgs ...sdk.Msg) (client.TxBuilder, error) {
 	tx.SetMemo(txf.memo)
 	tx.SetFeeAmount(fees)
 	tx.SetGasLimit(txf.gas)
+	tx.SetSigBlockHeight(txf.sigBlockHeight)
 	tx.SetTimeoutHeight(txf.TimeoutHeight())
 
 	return tx, nil
@@ -313,16 +314,17 @@ func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 		return txf, err
 	}
 
-	signBlockHeight, initSeq := txf.signBlockHeight, txf.sequence
-	if signBlockHeight == 0 || initSeq == 0 {
+	sigBlockHeight, initSeq := txf.sigBlockHeight, txf.sequence
+	if sigBlockHeight == 0 || initSeq == 0 {
 		seq, err := txf.accountRetriever.GetAccountSequence(clientCtx, from)
 		if err != nil {
 			return txf, err
 		}
 
-		if signBlockHeight == 0 {
-			txf = txf.WithSignBlockHeight(signBlockHeight)
+		if sigBlockHeight == 0 {
+			sigBlockHeight = uint64(clientCtx.Height)
 		}
+		txf = txf.WithSigBlockHeight(sigBlockHeight)
 
 		if initSeq == 0 {
 			txf = txf.WithSequence(seq)
@@ -402,9 +404,8 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 	}
 	pubKey := key.GetPubKey()
 	signerData := authsigning.SignerData{
-		ChainID:         txf.chainID,
-		SignBlockHeight: txf.signBlockHeight,
-		Sequence:        txf.sequence,
+		ChainID:        txf.chainID,
+		Sequence:       txf.sequence,
 	}
 
 	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on

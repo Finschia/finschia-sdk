@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"testing"
 
-	gogotypes "github.com/gogo/protobuf/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/crypto/keys/ed25519"
@@ -22,24 +21,17 @@ var (
 
 func TestDecodeStore(t *testing.T) {
 	app := simapp.Setup(false)
-	cdc, _ := simapp.MakeCodecs()
 	acc := types.NewBaseAccountWithAddress(delAddr1)
 	dec := simulation.NewDecodeStore(app.AccountKeeper)
 
 	accBz, err := app.AccountKeeper.MarshalAccount(acc)
 	require.NoError(t, err)
 
-	globalAccNumber := gogotypes.UInt64Value{Value: 10}
-
 	kvPairs := kv.Pairs{
 		Pairs: []kv.Pair{
 			{
 				Key:   types.AddressStoreKey(delAddr1),
 				Value: accBz,
-			},
-			{
-				Key:   types.GlobalAccountNumberKey,
-				Value: cdc.MustMarshalBinaryBare(&globalAccNumber),
 			},
 			{
 				Key:   []byte{0x99},
@@ -52,7 +44,6 @@ func TestDecodeStore(t *testing.T) {
 		expectedLog string
 	}{
 		{"Account", fmt.Sprintf("%v\n%v", acc, acc)},
-		{"GlobalAccNumber", fmt.Sprintf("GlobalAccNumberA: %d\nGlobalAccNumberB: %d", globalAccNumber, globalAccNumber)},
 		{"other", ""},
 	}
 

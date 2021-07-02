@@ -23,6 +23,7 @@ import (
 const (
 	memo          = "waboom"
 	gas           = uint64(10000)
+	sbh           = 1
 	timeoutHeight = 5
 )
 
@@ -44,6 +45,7 @@ func buildTestTx(t *testing.T, builder client.TxBuilder) {
 	builder.SetMemo(memo)
 	builder.SetGasLimit(gas)
 	builder.SetFeeAmount(fee)
+	builder.SetSigBlockHeight(sbh)
 	err := builder.SetMsgs(msg)
 	require.NoError(t, err)
 	err = builder.SetSignatures(sig)

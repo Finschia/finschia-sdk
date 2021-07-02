@@ -18,30 +18,30 @@ import (
 // and the Sequence numbers for each signature (prevent
 // inchain replay and enforce tx ordering per account).
 type StdSignDoc struct {
-	AccountNumber uint64            `json:"account_number" yaml:"account_number"`
-	Sequence      uint64            `json:"sequence" yaml:"sequence"`
-	TimeoutHeight uint64            `json:"timeout_height,omitempty" yaml:"timeout_height"`
-	ChainID       string            `json:"chain_id" yaml:"chain_id"`
-	Memo          string            `json:"memo" yaml:"memo"`
-	Fee           json.RawMessage   `json:"fee" yaml:"fee"`
-	Msgs          []json.RawMessage `json:"msgs" yaml:"msgs"`
+	SigBlockHeight uint64            `json:"sig_block_height" yaml:"sig_block_height"`
+	Sequence       uint64            `json:"sequence" yaml:"sequence"`
+	TimeoutHeight  uint64            `json:"timeout_height,omitempty" yaml:"timeout_height"`
+	ChainID        string            `json:"chain_id" yaml:"chain_id"`
+	Memo           string            `json:"memo" yaml:"memo"`
+	Fee            json.RawMessage   `json:"fee" yaml:"fee"`
+	Msgs           []json.RawMessage `json:"msgs" yaml:"msgs"`
 }
 
 // StdSignBytes returns the bytes to sign for a transaction.
-func StdSignBytes(chainID string, accnum, sequence, timeout uint64, fee StdFee, msgs []sdk.Msg, memo string) []byte {
+func StdSignBytes(chainID string, sbh, sequence, timeout uint64, fee StdFee, msgs []sdk.Msg, memo string) []byte {
 	msgsBytes := make([]json.RawMessage, 0, len(msgs))
 	for _, msg := range msgs {
 		msgsBytes = append(msgsBytes, json.RawMessage(msg.GetSignBytes()))
 	}
 
 	bz, err := legacy.Cdc.MarshalJSON(StdSignDoc{
-		AccountNumber: accnum,
-		ChainID:       chainID,
-		Fee:           json.RawMessage(fee.Bytes()),
-		Memo:          memo,
-		Msgs:          msgsBytes,
-		Sequence:      sequence,
-		TimeoutHeight: timeout,
+		SigBlockHeight: sbh,
+		ChainID:        chainID,
+		Fee:            json.RawMessage(fee.Bytes()),
+		Memo:           memo,
+		Msgs:           msgsBytes,
+		Sequence:       sequence,
+		TimeoutHeight:  timeout,
 	})
 	if err != nil {
 		panic(err)

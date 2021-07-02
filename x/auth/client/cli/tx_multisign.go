@@ -93,12 +93,12 @@ func makeMultiSignCmd() func(cmd *cobra.Command, args []string) (err error) {
 		multisigPub := multisigInfo.GetPubKey().(*kmultisig.LegacyAminoPubKey)
 		multisigSig := multisig.NewMultisig(len(multisigPub.PubKeys))
 		if !clientCtx.Offline {
-			accnum, seq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, multisigInfo.GetAddress())
+			seq, err := clientCtx.AccountRetriever.GetAccountSequence(clientCtx, multisigInfo.GetAddress())
 			if err != nil {
 				return err
 			}
 
-			txFactory = txFactory.WithAccountNumber(accnum).WithSequence(seq)
+			txFactory = txFactory.WithSigBlockHeight(uint64(clientCtx.Height)).WithSequence(seq)
 		}
 
 		// read each signature and add it to the multisig if valid
@@ -109,9 +109,8 @@ func makeMultiSignCmd() func(cmd *cobra.Command, args []string) (err error) {
 			}
 
 			signingData := signing.SignerData{
-				ChainID:       txFactory.ChainID(),
-				AccountNumber: txFactory.AccountNumber(),
-				Sequence:      txFactory.Sequence(),
+				ChainID:        txFactory.ChainID(),
+				Sequence:       txFactory.Sequence(),
 			}
 
 			for _, sig := range sigs {
@@ -267,12 +266,12 @@ func makeBatchMultisignCmd() func(cmd *cobra.Command, args []string) error {
 		}
 
 		if !clientCtx.Offline {
-			accnum, seq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, multisigInfo.GetAddress())
+			seq, err := clientCtx.AccountRetriever.GetAccountSequence(clientCtx, multisigInfo.GetAddress())
 			if err != nil {
 				return err
 			}
 
-			txFactory = txFactory.WithAccountNumber(accnum).WithSequence(seq)
+			txFactory = txFactory.WithSequence(seq)
 		}
 
 		for i := 0; scanner.Scan(); i++ {
@@ -284,9 +283,8 @@ func makeBatchMultisignCmd() func(cmd *cobra.Command, args []string) error {
 			multisigPub := multisigInfo.GetPubKey().(*kmultisig.LegacyAminoPubKey)
 			multisigSig := multisig.NewMultisig(len(multisigPub.PubKeys))
 			signingData := signing.SignerData{
-				ChainID:       txFactory.ChainID(),
-				AccountNumber: txFactory.AccountNumber(),
-				Sequence:      txFactory.Sequence(),
+				ChainID:        txFactory.ChainID(),
+				Sequence:       txFactory.Sequence(),
 			}
 
 			for _, sig := range signatureBatch {

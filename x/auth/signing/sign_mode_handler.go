@@ -26,10 +26,6 @@ type SignerData struct {
 	// ChainID is the chain that this transaction is targeted
 	ChainID string
 
-	// SignBlockHeight is a block height equal to or less than current block and greater than
-	// (current block - AvailableSignBlockDuration) for replay protection
-	SignBlockHeight uint64
-
 	// Sequence is the account sequence number of the signer that is used
 	// for replay protection. This field is only useful for Legacy Amino signing,
 	// since in SIGN_MODE_DIRECT the account sequence is already in the signer

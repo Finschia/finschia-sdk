@@ -43,26 +43,26 @@ func TestHandlerMap_GetSignBytes(t *testing.T) {
 		},
 	}
 
-	tx := legacytx.StdTx{
-		Msgs:       msgs,
-		Fee:        fee,
-		Signatures: nil,
-		Memo:       memo,
-	}
-
 	var (
 		chainId        = "test-chain"
-		accNum  uint64 = 7
+		sbh     uint64 = 7
 		seqNum  uint64 = 7
 	)
+
+	tx := legacytx.StdTx{
+		Msgs:           msgs,
+		Fee:            fee,
+		Signatures:     nil,
+		SigBlockHeight: sbh,
+		Memo:           memo,
+	}
 
 	handler := MakeTestHandlerMap()
 	aminoJSONHandler := legacytx.NewStdTxSignModeHandler()
 
 	signingData := signing.SignerData{
-		ChainID:       chainId,
-		AccountNumber: accNum,
-		Sequence:      seqNum,
+		ChainID:        chainId,
+		Sequence:       seqNum,
 	}
 	signBz, err := handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
 	require.NoError(t, err)

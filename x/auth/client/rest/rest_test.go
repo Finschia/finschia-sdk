@@ -364,7 +364,7 @@ func (s *IntegrationTestSuite) TestMultipleSyncBroadcastTxRequests() {
 	}
 }
 
-func (s *IntegrationTestSuite) createTestStdTx(val *network.Validator, accNum, sequence uint64) legacytx.StdTx {
+func (s *IntegrationTestSuite) createTestStdTx(val *network.Validator, sbh, sequence uint64) legacytx.StdTx {
 	txConfig := legacytx.StdTxConfig{Cdc: s.cfg.LegacyAmino}
 
 	msg := &types.MsgSend{
@@ -388,7 +388,7 @@ func (s *IntegrationTestSuite) createTestStdTx(val *network.Validator, accNum, s
 		WithKeybase(val.ClientCtx.Keyring).
 		WithTxConfig(txConfig).
 		WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON).
-		WithAccountNumber(accNum).
+		WithSigBlockHeight(sbh).
 		WithSequence(sequence)
 
 	// sign Tx (offline mode so we can manually set sequence number)

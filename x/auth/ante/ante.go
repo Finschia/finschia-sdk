@@ -19,6 +19,7 @@ func NewAnteHandler(
 		NewRejectExtensionOptionsDecorator(),
 		NewMempoolFeeDecorator(),
 		NewValidateBasicDecorator(),
+		NewTxSigBlockHeightDecorator(ak),
 		TxTimeoutHeightDecorator{},
 		NewValidateMemoDecorator(ak),
 		NewConsumeGasForTxSizeDecorator(ak),
