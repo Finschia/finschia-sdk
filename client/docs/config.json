@@ -116,6 +116,14 @@
       }
     },
     {
+      "url": "./tmp-swagger-gen/lbm/authz/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "AuthzParams"
+        }
+      }
+    },
+    {
       "url": "./tmp-swagger-gen/ibc/core/client/v1/query.swagger.json",
       "operationIds": {
         "rename": {
@@ -158,5 +166,13 @@
         }
       }
     },
+    {
+      "url": "./tmp-swagger-gen/lbm/feegrant/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "FeegrantParams"
+        }
+      }
+    }
   ]
 }
