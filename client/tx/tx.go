@@ -311,18 +311,20 @@ func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	from := clientCtx.GetFromAddress()
 	sigBlockHeight := txf.sigBlockHeight
 
-	_, height, err := txf.accountRetriever.GetAccountWithHeight(clientCtx, from)
-	if err != nil {
-		return txf, err
+	if !clientCtx.Offline {
+		_, height, err := txf.accountRetriever.GetAccountWithHeight(clientCtx, from)
+		if err != nil {
+			return txf, err
+		}
+		if sigBlockHeight == 0 {
+			sigBlockHeight = uint64(height)
+		}
 	}
 
-	if sigBlockHeight == 0 {
-		sigBlockHeight = uint64(height)
-	}
 	txf = txf.WithSigBlockHeight(sigBlockHeight)
 
 	initSeq := txf.sequence
-	if initSeq == 0 {
+	if initSeq == 0 && !clientCtx.Offline {
 		seq, err := txf.accountRetriever.GetAccountSequence(clientCtx, from)
 		if err != nil {
 			return txf, err
