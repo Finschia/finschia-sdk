@@ -52,7 +52,7 @@ func TestLegacyAminoJSONHandler_GetSignBytes(t *testing.T) {
 	signBz, err := handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
 	require.NoError(t, err)
 
-	expectedSignBz := legacytx.StdSignBytes(chainId, 0, seqNum, timeout, legacytx.StdFee{
+	expectedSignBz := legacytx.StdSignBytes(chainId, sbh, seqNum, timeout, legacytx.StdFee{
 		Amount: coins,
 		Gas:    gas,
 	}, []sdk.Msg{msg}, memo)

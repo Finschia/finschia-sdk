@@ -141,12 +141,13 @@ func (suite *AnteTestSuite) TestSigVerification() {
 
 	spkd := ante.NewSetPubKeyDecorator(suite.app.AccountKeeper)
 	svd := ante.NewSigVerificationDecorator(suite.app.AccountKeeper, suite.clientCtx.TxConfig.SignModeHandler())
-	antehandler := sdk.ChainAnteDecorators(spkd, svd)
+	sbhv := ante.NewTxSigBlockHeightDecorator(suite.app.AccountKeeper)
+	antehandler := sdk.ChainAnteDecorators(spkd, svd, sbhv)
 
 	type testCase struct {
 		name      string
 		privs     []cryptotypes.PrivKey
-		accNums   []uint64
+		sbh       []uint64
 		accSeqs   []uint64
 		recheck   bool
 		shouldErr bool
@@ -154,10 +155,10 @@ func (suite *AnteTestSuite) TestSigVerification() {
 	testCases := []testCase{
 		{"no signers", []cryptotypes.PrivKey{}, []uint64{}, []uint64{}, false, true},
 		{"not enough signers", []cryptotypes.PrivKey{priv1, priv2}, []uint64{0, 1}, []uint64{0, 0}, false, true},
-		{"wrong order signers", []cryptotypes.PrivKey{priv3, priv2, priv1}, []uint64{2, 1, 0}, []uint64{0, 0, 0}, false, true},
-		{"wrong accnums", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{7, 8, 9}, []uint64{0, 0, 0}, false, true},
-		{"wrong sequences", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{3, 4, 5}, false, true},
-		{"valid tx", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{0, 0, 0}, false, false},
+		{"wrong order signers", []cryptotypes.PrivKey{priv3, priv2, priv1}, []uint64{1, 1, 1}, []uint64{0, 0, 0}, false, true},
+		{"wrong sig block height", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{2, 2, 2}, []uint64{0, 0, 0}, false, true},
+		{"wrong sequences", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 1}, []uint64{3, 4, 5}, false, true},
+		{"valid tx", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{1, 1, 1}, []uint64{0, 0, 0}, false, false},
 		{"no err on recheck", []cryptotypes.PrivKey{}, []uint64{}, []uint64{}, true, false},
 	}
 	for i, tc := range testCases {
@@ -168,7 +169,7 @@ func (suite *AnteTestSuite) TestSigVerification() {
 		suite.txBuilder.SetFeeAmount(feeAmount)
 		suite.txBuilder.SetGasLimit(gasLimit)
 
-		tx, err := suite.CreateTestTx(tc.privs, tc.accNums, tc.accSeqs, suite.ctx.ChainID())
+		tx, err := suite.CreateTestTx(tc.privs, tc.sbh, tc.accSeqs, suite.ctx.ChainID())
 		suite.Require().NoError(err)
 
 		_, err = antehandler(suite.ctx, tx, false)
@@ -225,7 +226,8 @@ func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 
 	spkd := ante.NewSetPubKeyDecorator(suite.app.AccountKeeper)
 	svd := ante.NewSigVerificationDecorator(suite.app.AccountKeeper, suite.clientCtx.TxConfig.SignModeHandler())
-	antehandler := sdk.ChainAnteDecorators(spkd, svd)
+	sbhv := ante.NewTxSigBlockHeightDecorator(suite.app.AccountKeeper)
+	antehandler := sdk.ChainAnteDecorators(spkd, svd, sbhv)
 
 	type testCase struct {
 		name      string
@@ -238,10 +240,10 @@ func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 	testCases := []testCase{
 		{"no signers", []cryptotypes.PrivKey{}, []uint64{}, []uint64{}, false, true},
 		{"not enough signers", []cryptotypes.PrivKey{priv1, priv2}, []uint64{0, 1}, []uint64{0, 0}, false, true},
-		{"wrong order signers", []cryptotypes.PrivKey{priv3, priv2, priv1}, []uint64{2, 1, 0}, []uint64{0, 0, 0}, false, true},
-		{"wrong accnums", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{7, 8, 9}, []uint64{0, 0, 0}, false, true},
-		{"wrong sequences", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{3, 4, 5}, false, true},
-		{"valid tx", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{0, 0, 0}, false, false},
+		{"wrong order signers", []cryptotypes.PrivKey{priv3, priv2, priv1}, []uint64{1, 1, 1}, []uint64{0, 0, 0}, false, true},
+		{"wrong sig block height", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{7, 8, 9}, []uint64{0, 0, 0}, false, true},
+		{"wrong sequences", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 1}, []uint64{3, 4, 5}, false, true},
+		{"valid tx", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 1}, []uint64{0, 0, 0}, false, false},
 		{"no err on recheck", []cryptotypes.PrivKey{}, []uint64{}, []uint64{}, true, false},
 	}
 	for i, tc := range testCases {

@@ -41,7 +41,7 @@ func NewFactoryCLI(clientCtx client.Context, flagSet *pflag.FlagSet) Factory {
 		signMode = signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON
 	}
 
-	signBlockHeight, _ := flagSet.GetUint64(flags.FlagSigBlockHeight)
+	sigBlockHeight, _ := flagSet.GetUint64(flags.FlagSigBlockHeight)
 	accSeq, _ := flagSet.GetUint64(flags.FlagSequence)
 	gasAdj, _ := flagSet.GetFloat64(flags.FlagGasAdjustment)
 	memo, _ := flagSet.GetString(flags.FlagMemo)
@@ -57,7 +57,7 @@ func NewFactoryCLI(clientCtx client.Context, flagSet *pflag.FlagSet) Factory {
 		chainID:            clientCtx.ChainID,
 		gas:                gasSetting.Gas,
 		simulateAndExecute: gasSetting.Simulate,
-		sigBlockHeight:     signBlockHeight,
+		sigBlockHeight:     sigBlockHeight,
 		sequence:           accSeq,
 		timeoutHeight:      timeoutHeight,
 		gasAdjustment:      gasAdj,

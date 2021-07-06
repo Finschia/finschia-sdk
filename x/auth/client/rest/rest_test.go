@@ -615,9 +615,9 @@ func (s *IntegrationTestSuite) TestLegacyMultisig() {
 
 	sign2File := testutil.WriteToNewTempFile(s.T(), account2Signature.String())
 
-	// Does not work in offline mode.
+	// Offline mode requires --sequence flag.
 	_, err = authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), "--offline", sign1File.Name(), sign2File.Name())
-	s.Require().EqualError(err, fmt.Sprintf("couldn't verify signature: unable to verify single signer signature"))
+	s.Require().EqualError(err, fmt.Sprintf("required flag(s) \"sequence\" not set"))
 
 	val1.ClientCtx.Offline = false
 	multiSigWith2Signatures, err := authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), sign1File.Name(), sign2File.Name())

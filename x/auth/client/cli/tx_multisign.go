@@ -50,6 +50,7 @@ The SIGN_MODE_DIRECT sign mode is not supported.'
 				version.AppName,
 			),
 		),
+		PreRun: preMultisignCmd,
 		RunE: makeMultiSignCmd(),
 		Args: cobra.MinimumNArgs(3),
 	}
@@ -61,6 +62,14 @@ The SIGN_MODE_DIRECT sign mode is not supported.'
 	cmd.Flags().String(flags.FlagChainID, "", "network chain ID")
 
 	return cmd
+}
+
+func preMultisignCmd(cmd *cobra.Command, _ []string) {
+	// Conditionally mark sig block height and the account sequence required as no RPC
+	// query will be done.
+	if offline, _ := cmd.Flags().GetBool(flags.FlagOffline); offline {
+		cmd.MarkFlagRequired(flags.FlagSequence)
+	}
 }
 
 func makeMultiSignCmd() func(cmd *cobra.Command, args []string) (err error) {

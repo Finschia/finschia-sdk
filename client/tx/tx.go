@@ -309,22 +309,24 @@ func CalculateGas(
 // the updated fields will be returned.
 func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	from := clientCtx.GetFromAddress()
+	sigBlockHeight := txf.sigBlockHeight
 
-	if err := txf.accountRetriever.EnsureExists(clientCtx, from); err != nil {
+	_, height, err := txf.accountRetriever.GetAccountWithHeight(clientCtx, from)
+	if err != nil {
 		return txf, err
 	}
 
-	sigBlockHeight, initSeq := txf.sigBlockHeight, txf.sequence
-	if sigBlockHeight == 0 || initSeq == 0 {
+	if sigBlockHeight == 0 {
+		sigBlockHeight = uint64(height)
+	}
+	txf = txf.WithSigBlockHeight(sigBlockHeight)
+
+	initSeq := txf.sequence
+	if initSeq == 0 {
 		seq, err := txf.accountRetriever.GetAccountSequence(clientCtx, from)
 		if err != nil {
 			return txf, err
 		}
-
-		if sigBlockHeight == 0 {
-			sigBlockHeight = uint64(clientCtx.Height)
-		}
-		txf = txf.WithSigBlockHeight(sigBlockHeight)
 
 		if initSeq == 0 {
 			txf = txf.WithSequence(seq)

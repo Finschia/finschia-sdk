@@ -226,7 +226,7 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 
 	newSigKeys := make([]string, 0, len(sigs))
 	defer func() {
-		// remove txHashCash if got an error
+		// remove txHashCache if got an error
 		if err != nil {
 			for _, sigKey := range newSigKeys {
 				svd.txHashCache.Delete(sigKey)
@@ -275,7 +275,7 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		}
 
 		if !genesis {
-			sigKey := fmt.Sprintf("%d", signerData.Sequence)
+			sigKey := fmt.Sprintf("%s:%d", acc.GetAddress().String(), signerData.Sequence)
 			// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
 			txHash := sha256.Sum256(ctx.TxBytes())
 			stored := false

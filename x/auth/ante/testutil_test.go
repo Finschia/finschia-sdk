@@ -89,6 +89,7 @@ func (suite *AnteTestSuite) CreateTestTx(privs []cryptotypes.PrivKey, sbh []uint
 	// signature" hack to do that.
 	var sigsV2 []signing.SignatureV2
 	for i, priv := range privs {
+		suite.txBuilder.SetSigBlockHeight(sbh[i])
 		sigV2 := signing.SignatureV2{
 			PubKey: priv.PubKey(),
 			Data: &signing.SingleSignatureData{

@@ -110,7 +110,7 @@ func (s *IntegrationTestSuite) TestCLISignBatch() {
 
 	// sign-batch file - offline is set but account-number and sequence are not
 	res, err := authtest.TxSignBatchExec(val.ClientCtx, val.Address, outputFile.Name(), fmt.Sprintf("--%s=%s", flags.FlagChainID, val.ClientCtx.ChainID), "--offline")
-	s.Require().EqualError(err, "required flag(s) \"account-number\", \"sequence\" not set")
+	s.Require().EqualError(err, "required flag(s) \"sequence\" not set")
 
 	// sign-batch file
 	res, err = authtest.TxSignBatchExec(val.ClientCtx, val.Address, outputFile.Name(), fmt.Sprintf("--%s=%s", flags.FlagChainID, val.ClientCtx.ChainID))
@@ -414,11 +414,11 @@ func (s *IntegrationTestSuite) TestCLISendGenerateSignAndBroadcast() {
 
 	// Does not work in offline mode
 	res, err = authtest.TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name(), "--offline")
-	s.Require().EqualError(err, "required flag(s) \"account-number\", \"sequence\" not set")
+	s.Require().EqualError(err, "required flag(s) \"sequence\" not set")
 
-	// But works offline if we set account number and sequence
+	// But works offline if we set sequence
 	val1.ClientCtx.HomeDir = strings.Replace(val1.ClientCtx.HomeDir, "simd", "simcli", 1)
-	res, err = authtest.TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name(), "--offline", "--account-number", "1", "--sequence", "1")
+	res, err = authtest.TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name(), "--offline", "--sequence", "1", "--sig-block-height", "1")
 	s.Require().NoError(err)
 
 	// Sign transaction
@@ -737,9 +737,9 @@ func (s *IntegrationTestSuite) TestCLIMultisign() {
 
 	sign2File := testutil.WriteToNewTempFile(s.T(), account2Signature.String())
 
-	// Does not work in offline mode.
+	// Offline mode requires --sequence flag
 	_, err = authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), "--offline", sign1File.Name(), sign2File.Name())
-	s.Require().EqualError(err, "couldn't verify signature: unable to verify single signer signature")
+	s.Require().EqualError(err, "required flag(s) \"sequence\" not set")
 
 	val1.ClientCtx.Offline = false
 	multiSigWith2Signatures, err := authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), sign1File.Name(), sign2File.Name())

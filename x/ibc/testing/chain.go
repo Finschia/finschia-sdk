@@ -124,7 +124,7 @@ func NewTestChain(t *testing.T, chainID string) *TestChain {
 
 	// generate genesis account
 	senderPrivKey := secp256k1.GenPrivKey()
-	acc := authtypes.NewBaseAccount(senderPrivKey.PubKey().Address().Bytes(), senderPrivKey.PubKey(), 0, 0)
+	acc := authtypes.NewBaseAccount(senderPrivKey.PubKey().Address().Bytes(), senderPrivKey.PubKey(), 0)
 	balance := banktypes.Balance{
 		Address: acc.GetAddress().String(),
 		Coins:   sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100000000000000))),
@@ -294,7 +294,7 @@ func (chain *TestChain) SendMsgs(msgs ...sdk.Msg) (*sdk.Result, error) {
 		chain.GetContext().BlockHeader(),
 		msgs,
 		chain.ChainID,
-		[]uint64{chain.SenderAccount.GetAccountNumber()},
+		[]uint64{0},
 		[]uint64{chain.SenderAccount.GetSequence()},
 		true, true, chain.senderPrivKey,
 	)
