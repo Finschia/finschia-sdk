@@ -18,7 +18,8 @@ const (
 	// DefaultMaxWasmCodeSize limit max bytes read to prevent gzip bombs
 	DefaultMaxWasmCodeSize = 600 * 1024
 	// GasMultiplier is how many cosmwasm gas points = 1 sdk gas point
-	// SDK reference costs can be found here: https://github.com/cosmos/cosmos-sdk/blob/02c6c9fafd58da88550ab4d7d494724a477c8a68/store/types/gas.go#L153-L164
+	// SDK reference costs is defined in x/store/types/gas.go KVGasConfig()
+	// https://github.com/line/lfb-sdk/blob/main/store/types/gas.go
 	// A write at ~3000 gas and ~200us = 10 gas per us (microsecond) cpu/io
 	// Rough timing have 88k gas at 90us, which is equal to 1k sdk gas... (one read)
 	//

@@ -13,6 +13,7 @@
 - Add tests for managing max contract size (#51)
 
 ### Changed
+- Replace links to original CosmWasm code with ours (#244)
 - Change used marshal/unmarshal from json.(Un)Marshal -> codec.(Un)Marshal (#37)
 - Change the max size of contract managed with the parameter module (#44)
 - Update linkwasmd to follow CosmWasm's wasmd v0.11.1 (#65)
