@@ -18,7 +18,7 @@ const (
 	MaxLabelSize                    = types.MaxLabelSize
 	BuildTagRegexp                  = types.BuildTagRegexp
 	MaxBuildTagSize                 = types.MaxBuildTagSize
-	CustomEventType                 = types.WasmModuleEventType
+	WasmModuleEventType             = types.WasmModuleEventType
 	AttributeKeyContractAddr        = types.AttributeKeyContractAddr
 	ProposalTypeStoreCode           = types.ProposalTypeStoreCode
 	ProposalTypeInstantiateContract = types.ProposalTypeInstantiateContract
