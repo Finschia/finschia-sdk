@@ -29,8 +29,8 @@ var (
 //nolint:interfacer
 func NewBaseAccount(address sdk.AccAddress, pubKey cryptotypes.PubKey, sequence uint64) *BaseAccount {
 	acc := &BaseAccount{
-		Address:       address.String(),
-		Sequence:      sequence,
+		Address:  address.String(),
+		Sequence: sequence,
 	}
 
 	err := acc.SetPubKey(pubKey)
@@ -224,11 +224,11 @@ func (ma ModuleAccount) Validate() error {
 }
 
 type moduleAccountPretty struct {
-	Address       sdk.AccAddress `json:"address" yaml:"address"`
-	PubKey        string         `json:"public_key" yaml:"public_key"`
-	Sequence      uint64         `json:"sequence" yaml:"sequence"`
-	Name          string         `json:"name" yaml:"name"`
-	Permissions   []string       `json:"permissions" yaml:"permissions"`
+	Address     sdk.AccAddress `json:"address" yaml:"address"`
+	PubKey      string         `json:"public_key" yaml:"public_key"`
+	Sequence    uint64         `json:"sequence" yaml:"sequence"`
+	Name        string         `json:"name" yaml:"name"`
+	Permissions []string       `json:"permissions" yaml:"permissions"`
 }
 
 func (ma ModuleAccount) String() string {
@@ -244,11 +244,11 @@ func (ma ModuleAccount) MarshalYAML() (interface{}, error) {
 	}
 
 	bs, err := yaml.Marshal(moduleAccountPretty{
-		Address:       accAddr,
-		PubKey:        "",
-		Sequence:      ma.Sequence,
-		Name:          ma.Name,
-		Permissions:   ma.Permissions,
+		Address:     accAddr,
+		PubKey:      "",
+		Sequence:    ma.Sequence,
+		Name:        ma.Name,
+		Permissions: ma.Permissions,
 	})
 
 	if err != nil {
@@ -266,11 +266,11 @@ func (ma ModuleAccount) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(moduleAccountPretty{
-		Address:       accAddr,
-		PubKey:        "",
-		Sequence:      ma.Sequence,
-		Name:          ma.Name,
-		Permissions:   ma.Permissions,
+		Address:     accAddr,
+		PubKey:      "",
+		Sequence:    ma.Sequence,
+		Name:        ma.Name,
+		Permissions: ma.Permissions,
 	})
 }
 

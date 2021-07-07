@@ -412,8 +412,8 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 	}
 	pubKey := key.GetPubKey()
 	signerData := authsigning.SignerData{
-		ChainID:        txf.chainID,
-		Sequence:       txf.sequence,
+		ChainID:  txf.chainID,
+		Sequence: txf.sequence,
 	}
 
 	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on

@@ -57,8 +57,8 @@ func GenTx(gen client.TxConfig, msgs []sdk.Msg, feeAmt sdk.Coins, gas uint64, ch
 	// 2nd round: once all signer infos are set, every signer can sign.
 	for i, p := range priv {
 		signerData := authsign.SignerData{
-			ChainID:        chainID,
-			Sequence:       accSeqs[i],
+			ChainID:  chainID,
+			Sequence: accSeqs[i],
 		}
 		tx.SetSigBlockHeight(sbh[i])
 		signBytes, err := gen.SignModeHandler().GetSignBytes(signMode, signerData, tx.GetTx())

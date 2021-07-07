@@ -51,8 +51,8 @@ The SIGN_MODE_DIRECT sign mode is not supported.'
 			),
 		),
 		PreRun: preMultisignCmd,
-		RunE: makeMultiSignCmd(),
-		Args: cobra.MinimumNArgs(3),
+		RunE:   makeMultiSignCmd(),
+		Args:   cobra.MinimumNArgs(3),
 	}
 
 	cmd.Flags().Bool(flagSigOnly, false, "Print only the generated signature, then exit")
@@ -117,8 +117,8 @@ func makeMultiSignCmd() func(cmd *cobra.Command, args []string) (err error) {
 			}
 
 			signingData := signing.SignerData{
-				ChainID:        txFactory.ChainID(),
-				Sequence:       txFactory.Sequence(),
+				ChainID:  txFactory.ChainID(),
+				Sequence: txFactory.Sequence(),
 			}
 
 			for _, sig := range sigs {
@@ -291,8 +291,8 @@ func makeBatchMultisignCmd() func(cmd *cobra.Command, args []string) error {
 			multisigPub := multisigInfo.GetPubKey().(*kmultisig.LegacyAminoPubKey)
 			multisigSig := multisig.NewMultisig(len(multisigPub.PubKeys))
 			signingData := signing.SignerData{
-				ChainID:        txFactory.ChainID(),
-				Sequence:       txFactory.Sequence(),
+				ChainID:  txFactory.ChainID(),
+				Sequence: txFactory.Sequence(),
 			}
 
 			for _, sig := range signatureBatch {

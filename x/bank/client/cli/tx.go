@@ -31,7 +31,7 @@ func NewSendTxCmd() *cobra.Command {
 		Use: "send [from_key_or_address] [to_address] [amount]",
 		Short: `Send funds from one account to another. Note, the'--from' flag is
 ignored as it is implied from [from_key_or_address].`,
-		Args: cobra.ExactArgs(3),
+		Args:   cobra.ExactArgs(3),
 		PreRun: preSendCmd,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cmd.Flags().Set(flags.FlagFrom, args[0])

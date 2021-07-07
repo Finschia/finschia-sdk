@@ -46,9 +46,9 @@ func (signModeDirectHandler) GetSignBytes(mode signingtypes.SignMode, data signi
 // account number and sequence.
 func DirectSignBytes(bodyBytes, authInfoBytes []byte, chainID string) ([]byte, error) {
 	signDoc := types.SignDoc{
-		BodyBytes:      bodyBytes,
-		AuthInfoBytes:  authInfoBytes,
-		ChainId:        chainID,
+		BodyBytes:     bodyBytes,
+		AuthInfoBytes: authInfoBytes,
+		ChainId:       chainID,
 	}
 	return signDoc.Marshal()
 }

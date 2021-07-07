@@ -273,8 +273,8 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		genesis := ctx.BlockHeight() == 0
 		chainID := ctx.ChainID()
 		signerData := authsigning.SignerData{
-			ChainID:        chainID,
-			Sequence:       acc.GetSequence(),
+			ChainID:  chainID,
+			Sequence: acc.GetSequence(),
 		}
 
 		if !genesis {
