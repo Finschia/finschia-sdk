@@ -71,7 +71,7 @@ message TxBody {
   // transaction.
   repeated google.protobuf.Any messages = 1;
 
-  // sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_DURATION`
+  // sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_PERIOD`
   // this is used for distinguish signatures instead of account number. this is mandatory.
   uint64 sig_block_height = 2;
 

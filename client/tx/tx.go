@@ -311,11 +311,11 @@ func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	sigBlockHeight := txf.sigBlockHeight
 
 	if !clientCtx.Offline {
-		height, err := txf.accountRetriever.GetLatestHeight(clientCtx)
-		if err != nil {
-			return txf, err
-		}
 		if sigBlockHeight == 0 {
+			height, err := txf.accountRetriever.GetLatestHeight(clientCtx)
+			if err != nil {
+				return txf, err
+			}
 			sigBlockHeight = height
 		}
 	}
@@ -326,10 +326,8 @@ func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	if initSeq == 0 && !clientCtx.Offline {
 		seq, err := txf.accountRetriever.GetAccountSequence(clientCtx, from)
 		if err != nil {
-			if sdkError, ok := err.(*sdkerrors.Error); ok {
-				if !(sdkError == sdkerrors.ErrKeyNotFound) {
-					return txf, err
-				}
+			if sdkError, _ := err.(*sdkerrors.Error); sdkError != sdkerrors.ErrKeyNotFound {
+				return txf, err
 			}
 		}
 

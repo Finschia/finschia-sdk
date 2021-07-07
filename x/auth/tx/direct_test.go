@@ -102,9 +102,9 @@ func TestDirectModeHandler(t *testing.T) {
 
 	t.Log("verify GetSignBytes with generating sign bytes by marshaling SignDoc")
 	signDoc := txtypes.SignDoc{
-		AuthInfoBytes:  authInfoBytes,
-		BodyBytes:      bodyBytes,
-		ChainId:        "test-chain",
+		AuthInfoBytes: authInfoBytes,
+		BodyBytes:     bodyBytes,
+		ChainId:       "test-chain",
 	}
 
 	expectedSignBytes, err := signDoc.Marshal()
