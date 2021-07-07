@@ -48,6 +48,10 @@ func (t TestAccountRetriever) GetAccount(_ Context, addr sdk.AccAddress) (Accoun
 	return acc, nil
 }
 
+func (t TestAccountRetriever) GetLatestHeight(_ Context) (uint64, error) {
+	return 0, nil
+}
+
 // GetAccountWithHeight implements AccountRetriever.GetAccountWithHeight
 func (t TestAccountRetriever) GetAccountWithHeight(clientCtx Context, addr sdk.AccAddress) (Account, int64, error) {
 	acc, err := t.GetAccount(clientCtx, addr)

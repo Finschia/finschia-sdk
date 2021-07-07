@@ -130,7 +130,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 			},
 			false,
 			false,
-			sdkerrors.ErrUnknownAddress,
+			sdkerrors.ErrInsufficientFunds, // unknown account may send tx, but he doesn't have enough balance to pay fee
 		},
 		{
 			"save the first account, but second is still unrecognized",
@@ -141,8 +141,8 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 				suite.Require().NoError(err)
 			},
 			false,
-			false,
-			sdkerrors.ErrUnknownAddress,
+			true,
+			nil, // unknown account may send tx; now they have enough money to pay fee
 		},
 	}
 

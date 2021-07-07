@@ -17,6 +17,7 @@ type Account interface {
 // for signing.
 type AccountRetriever interface {
 	GetAccount(clientCtx Context, addr sdk.AccAddress) (Account, error)
+	GetLatestHeight(clientCtx Context) (uint64, error)
 	GetAccountWithHeight(clientCtx Context, addr sdk.AccAddress) (Account, int64, error)
 	EnsureExists(clientCtx Context, addr sdk.AccAddress) error
 	GetAccountSequence(clientCtx Context, addr sdk.AccAddress) (accSeq uint64, err error)

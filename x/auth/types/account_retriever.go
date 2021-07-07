@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/line/lfb-sdk/client/grpc/tmservice"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
@@ -27,6 +28,15 @@ type AccountRetriever struct{}
 func (ar AccountRetriever) GetAccount(clientCtx client.Context, addr sdk.AccAddress) (client.Account, error) {
 	account, _, err := ar.GetAccountWithHeight(clientCtx, addr)
 	return account, err
+}
+
+func (ar AccountRetriever) GetLatestHeight(clientCtx client.Context) (uint64, error) {
+	queryClient := tmservice.NewServiceClient(clientCtx)
+	res, err := queryClient.GetLatestBlock(context.Background(), &tmservice.GetLatestBlockRequest{})
+	if err != nil {
+		return 0, err
+	}
+	return uint64(res.Block.Header.Height), nil
 }
 
 // GetAccountWithHeight queries for an account given an address. Returns the

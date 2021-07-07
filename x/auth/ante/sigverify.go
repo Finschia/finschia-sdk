@@ -79,8 +79,11 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 
 		acc, err := GetSignerAcc(ctx, spkd.ak, signers[i])
 		if err != nil {
-			return ctx, err
+			// At this point, the signer may not be in account keeper.
+			// So we make an account with address.
+			acc = spkd.ak.NewAccountWithAddress(ctx, signers[i])
 		}
+
 		// account already has pubkey set,no need to reset
 		if acc.GetPubKey() != nil {
 			continue
@@ -89,7 +92,7 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 		if err != nil {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, err.Error())
 		}
-		spkd.ak.SetAccount(ctx, acc)
+		spkd.ak.SetAccount(ctx, acc) // After here, we can call `GetAccount` or `GetSignerAcc` from other ante handlers
 	}
 
 	return next(ctx, tx, simulate)
@@ -123,7 +126,7 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 		return ctx, err
 	}
 
-	// stdSigs contains the sequence number, account number, and signatures.
+	// stdSigs contains the sequence number, signatures.
 	// When simulating, this would just be a 0-length slice.
 	signerAddrs := sigTx.GetSigners()
 

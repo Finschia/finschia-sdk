@@ -24,7 +24,9 @@ func NewAnteHandler(
 		NewValidateMemoDecorator(ak),
 		NewConsumeGasForTxSizeDecorator(ak),
 		NewRejectFeeGranterDecorator(),
+		// The above handlers should not call `GetAccount` or `GetSignerAcc` for signer
 		NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
+		// The handlers below may call `GetAccount` or `GetSignerAcc` for signer
 		NewValidateSigCountDecorator(ak),
 		NewDeductFeeDecorator(ak, bankKeeper),
 		NewSigGasConsumeDecorator(ak, sigGasConsumer),
