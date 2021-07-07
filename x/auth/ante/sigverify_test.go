@@ -118,7 +118,7 @@ func (suite *AnteTestSuite) TestSigVerification() {
 	suite.SetupTest(true) // setup
 	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 
-	// make block height non-zero to ensure account numbers part of signBytes
+	// make block height non-zero to ensure sig block height part
 	suite.ctx = suite.ctx.WithBlockHeight(1)
 
 	// keys and addresses
@@ -203,7 +203,7 @@ func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 
 	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 
-	// make block height non-zero to ensure account numbers part of signBytes
+	// make block height non-zero to ensure sig block height
 	suite.ctx = suite.ctx.WithBlockHeight(1)
 
 	// keys and addresses

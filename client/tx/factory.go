@@ -154,7 +154,7 @@ func (f Factory) WithMemo(memo string) Factory {
 	return f
 }
 
-// WithAccountNumber returns a copy of the Factory with an updated account number.
+// WithSigBlockHeight returns a copy of the Factory with an updated sig block height.
 func (f Factory) WithSigBlockHeight(sigBlockHeight uint64) Factory {
 	f.sigBlockHeight = sigBlockHeight
 	return f

@@ -303,10 +303,9 @@ func CalculateGas(
 	return simRes, uint64(txf.GasAdjustment() * float64(simRes.GasInfo.GasUsed)), nil
 }
 
-// PrepareFactory ensures the account defined by ctx.GetFromAddress() exists and
-// if the account number and/or the account sequence number are zero (not set),
-// they will be queried for and set on the provided Factory. A new Factory with
-// the updated fields will be returned.
+// PrepareFactory set sig block height and account sequence to the tx factory.
+// It doesn't require that the account should exist.
+// If the account does not exist, then it use the zero sequence number.
 func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	from := clientCtx.GetFromAddress()
 	sigBlockHeight := txf.sigBlockHeight

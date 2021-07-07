@@ -7,7 +7,7 @@ import (
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence
-// numbers, checks signatures & account numbers, and deducts fees from the first
+// numbers, checks signatures & sig block height, and deducts fees from the first
 // signer.
 func NewAnteHandler(
 	ak AccountKeeper, bankKeeper types.BankKeeper,

@@ -290,7 +290,7 @@ func (ma *ModuleAccount) UnmarshalJSON(bz []byte) error {
 
 // AccountI is an interface used to store coins at a given address within state.
 // It presumes a notion of sequence numbers for replay protection,
-// a notion of account numbers for replay protection for previously pruned accounts,
+// a notion of sig block height for replay protection for previously pruned accounts,
 // and a pubkey for authentication purposes.
 //
 // Many complex conditions can be used in the concrete struct which implements AccountI.

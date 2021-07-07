@@ -15,7 +15,7 @@ import (
 
 // AccountKeeperI is the interface contract that x/auth's keeper implements.
 type AccountKeeperI interface {
-	// Return a new account with the next account number and the specified address. Does not save the new account to the store.
+	// Return a new account with the specified address. Does not save the new account to the store.
 	NewAccountWithAddress(sdk.Context, sdk.AccAddress) types.AccountI
 
 	// Retrieve an account from the store.
