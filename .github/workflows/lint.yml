@@ -15,10 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
-      - name: Configure git for private modules
-        env:
-          TOKEN: ${{ secrets.TOKEN }}
-        run: git config --global url."https://${TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v2
       - uses: technote-space/get-diff-action@v4
         with:
@@ -31,5 +27,5 @@ jobs:
           # Required: the version of golangci-lint is required and must be specified without patch version: we always use the latest patch version.
           version: v1.28
           args: --timeout 10m
-          github-token: ${{ secrets.github_token }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
         if: env.GIT_DIFF
