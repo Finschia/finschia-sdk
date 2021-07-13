@@ -278,7 +278,8 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		}
 
 		if !genesis {
-			sigKey := fmt.Sprintf("%s:%d", acc.GetAddress().String(), signerData.Sequence)
+			sigKey := fmt.Sprintf("%s:%d:%d", acc.GetAddress().String(),
+				tx.GetSigBlockHeight(), signerData.Sequence)
 			// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
 			txHash := sha256.Sum256(ctx.TxBytes())
 			stored := false
