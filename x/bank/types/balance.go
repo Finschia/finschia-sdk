@@ -15,12 +15,7 @@ var _ exported.GenesisBalance = (*Balance)(nil)
 
 // GetAddress returns the account address of the Balance object.
 func (b Balance) GetAddress() sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(b.Address)
-	if err != nil {
-		panic(fmt.Errorf("couldn't convert %q to account address: %v", b.Address, err))
-	}
-
-	return addr
+	return sdk.AccAddress(b.Address)
 }
 
 // GetCoins returns the account coins of the Balance object.
@@ -30,9 +25,8 @@ func (b Balance) GetCoins() sdk.Coins {
 
 // Validate checks for address and coins correctness.
 func (b Balance) Validate() error {
-	_, err := sdk.AccAddressFromBech32(b.Address)
-	if err != nil {
-		return err
+	if len(b.Address) == 0 {
+		return fmt.Errorf("empty address")
 	}
 	seenDenoms := make(map[string]bool)
 
@@ -84,10 +78,9 @@ func SanitizeGenesisBalances(balances []Balance) []Balance {
 	adL := make([]*addrToBalance, 0, len(balances))
 	for _, balance := range balances {
 		balance := balance
-		addr, _ := sdk.AccAddressFromBech32(balance.Address)
 		adL = append(adL, &addrToBalance{
 			balance: &balance,
-			accAddr: []byte(addr),
+			accAddr: balance.Address,
 		})
 	}
 

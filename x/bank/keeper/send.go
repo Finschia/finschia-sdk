@@ -85,12 +85,8 @@ func (k BaseSendKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, 
 	}
 
 	for _, in := range inputs {
-		inAddress, err := sdk.AccAddressFromBech32(in.Address)
-		if err != nil {
-			return err
-		}
-
-		err = k.SubtractCoins(ctx, inAddress, in.Coins)
+		inAddress := sdk.AccAddress(in.Address)
+		err := k.SubtractCoins(ctx, inAddress, in.Coins)
 		if err != nil {
 			return err
 		}
@@ -98,17 +94,14 @@ func (k BaseSendKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, 
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				sdk.EventTypeMessage,
-				sdk.NewAttribute(types.AttributeKeySender, in.Address),
+				sdk.NewAttribute(types.AttributeKeySender, inAddress.String()),
 			),
 		)
 	}
 
 	for _, out := range outputs {
-		outAddress, err := sdk.AccAddressFromBech32(out.Address)
-		if err != nil {
-			return err
-		}
-		err = k.AddCoins(ctx, outAddress, out.Coins)
+		outAddress := sdk.AccAddress(out.Address)
+		err := k.AddCoins(ctx, outAddress, out.Coins)
 		if err != nil {
 			return err
 		}
@@ -116,7 +109,7 @@ func (k BaseSendKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, 
 		ctx.EventManager().EmitEvent(
 			sdk.NewEvent(
 				types.EventTypeTransfer,
-				sdk.NewAttribute(types.AttributeKeyRecipient, out.Address),
+				sdk.NewAttribute(types.AttributeKeyRecipient, outAddress.String()),
 				sdk.NewAttribute(sdk.AttributeKeyAmount, out.Coins.String()),
 			),
 		)
@@ -268,9 +261,11 @@ func (k BaseSendKeeper) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
 	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
 
-	bz := k.cdc.MustMarshalBinaryBare(&balance)
-	accountStore.Set([]byte(balance.Denom), bz)
-
+	if bz, err := balance.Marshal(); err != nil {
+		return err
+	} else {
+		accountStore.Set([]byte(balance.Denom), bz)
+	}
 	return nil
 }
 

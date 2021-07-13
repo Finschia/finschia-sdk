@@ -224,6 +224,10 @@
     - [Header](#ibc.lightclients.tendermint.v1.Header)
     - [Misbehaviour](#ibc.lightclients.tendermint.v1.Misbehaviour)
   
+- [lfb/crypto/secp256k1/keys.proto](#lfb/crypto/secp256k1/keys.proto)
+    - [PrivKey](#lfb.crypto.secp256k1.PrivKey)
+    - [PubKey](#lfb.crypto.secp256k1.PubKey)
+  
 - [lfb/auth/v1beta1/auth.proto](#lfb/auth/v1beta1/auth.proto)
     - [BaseAccount](#lfb.auth.v1beta1.BaseAccount)
     - [ModuleAccount](#lfb.auth.v1beta1.ModuleAccount)
@@ -370,10 +374,6 @@
 - [lfb/crypto/multisig/v1beta1/multisig.proto](#lfb/crypto/multisig/v1beta1/multisig.proto)
     - [CompactBitArray](#lfb.crypto.multisig.v1beta1.CompactBitArray)
     - [MultiSignature](#lfb.crypto.multisig.v1beta1.MultiSignature)
-  
-- [lfb/crypto/secp256k1/keys.proto](#lfb/crypto/secp256k1/keys.proto)
-    - [PrivKey](#lfb.crypto.secp256k1.PrivKey)
-    - [PubKey](#lfb.crypto.secp256k1.PubKey)
   
 - [lfb/distribution/v1beta1/distribution.proto](#lfb/distribution/v1beta1/distribution.proto)
     - [CommunityPoolSpendProposal](#lfb.distribution.v1beta1.CommunityPoolSpendProposal)
@@ -3838,6 +3838,56 @@ that implements Misbehaviour interface expected by ICS-02
 
 
 
+<a name="lfb/crypto/secp256k1/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lfb/crypto/secp256k1/keys.proto
+
+
+
+<a name="lfb.crypto.secp256k1.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a secp256k1 private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lfb.crypto.secp256k1.PubKey"></a>
+
+### PubKey
+PubKey defines a secp256k1 public key
+Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
+if the y-coordinate is the lexicographically largest of the two associated with
+the x-coordinate. Otherwise the first byte is a 0x03.
+This prefix is followed with the x-coordinate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lfb/auth/v1beta1/auth.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -3855,8 +3905,8 @@ type for additional functionality (e.g. vesting).
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  |  |
-| `pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `address` | [bytes](#bytes) |  |  |
+| `pub_key` | [lfb.crypto.secp256k1.PubKey](#lfb.crypto.secp256k1.PubKey) |  |  |
 | `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
@@ -4108,7 +4158,7 @@ Input models transaction input.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  |  |
+| `address` | [bytes](#bytes) |  |  |
 | `coins` | [lfb.base.v1beta1.Coin](#lfb.base.v1beta1.Coin) | repeated |  |
 
 
@@ -4143,7 +4193,7 @@ Output models transaction outputs.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  |  |
+| `address` | [bytes](#bytes) |  |  |
 | `coins` | [lfb.base.v1beta1.Coin](#lfb.base.v1beta1.Coin) | repeated |  |
 
 
@@ -4225,7 +4275,7 @@ genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `address` | [string](#string) |  | address is the address of the balance holder. |
+| `address` | [bytes](#bytes) |  | address is the address of the balance holder. |
 | `coins` | [lfb.base.v1beta1.Coin](#lfb.base.v1beta1.Coin) | repeated | coins defines the different coins this balance holds. |
 
 
@@ -4542,8 +4592,8 @@ MsgSend represents a message to send coins from one account to another.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `from_address` | [string](#string) |  |  |
-| `to_address` | [string](#string) |  |  |
+| `from_address` | [bytes](#bytes) |  |  |
+| `to_address` | [bytes](#bytes) |  |  |
 | `amount` | [lfb.base.v1beta1.Coin](#lfb.base.v1beta1.Coin) | repeated |  |
 
 
@@ -5669,56 +5719,6 @@ signed and with which modes.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `signatures` | [bytes](#bytes) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lfb/crypto/secp256k1/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lfb/crypto/secp256k1/keys.proto
-
-
-
-<a name="lfb.crypto.secp256k1.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a secp256k1 private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lfb.crypto.secp256k1.PubKey"></a>
-
-### PubKey
-PubKey defines a secp256k1 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
 
 
 

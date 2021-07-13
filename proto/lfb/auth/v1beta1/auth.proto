@@ -1,6 +1,7 @@
 syntax = "proto3";
 package lfb.auth.v1beta1;
 
+import "lfb/crypto/secp256k1/keys.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
 import "google/protobuf/any.proto";
@@ -17,8 +18,8 @@ message BaseAccount {
 
   option (cosmos_proto.implements_interface) = "AccountI";
 
-  string              address = 1;
-  google.protobuf.Any pub_key = 2
+  bytes                       address = 1;
+  lfb.crypto.secp256k1.PubKey pub_key = 2
       [(gogoproto.jsontag) = "public_key,omitempty", (gogoproto.moretags) = "yaml:\"public_key\""];
   uint64 account_number = 3 [(gogoproto.moretags) = "yaml:\"account_number\""];
   uint64 sequence       = 4;

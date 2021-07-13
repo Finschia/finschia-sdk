@@ -16,7 +16,7 @@ var _ sdk.Msg = &MsgSend{}
 // NewMsgSend - construct a msg to send coins from one account to another.
 //nolint:interfacer
 func NewMsgSend(fromAddr, toAddr sdk.AccAddress, amount sdk.Coins) *MsgSend {
-	return &MsgSend{FromAddress: fromAddr.String(), ToAddress: toAddr.String(), Amount: amount}
+	return &MsgSend{FromAddress: fromAddr, ToAddress: toAddr, Amount: amount}
 }
 
 // Route Implements Msg.
@@ -27,14 +27,11 @@ func (msg MsgSend) Type() string { return TypeMsgSend }
 
 // ValidateBasic Implements Msg.
 func (msg MsgSend) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.FromAddress)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid sender address (%s)", err)
+	if len(msg.FromAddress) == 0 {
+		return sdkerrors.ErrInvalidAddress
 	}
-
-	_, err = sdk.AccAddressFromBech32(msg.ToAddress)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid recipient address (%s)", err)
+	if len(msg.ToAddress) == 0 {
+		return sdkerrors.ErrInvalidAddress
 	}
 
 	if !msg.Amount.IsValid() {
@@ -55,11 +52,7 @@ func (msg MsgSend) GetSignBytes() []byte {
 
 // GetSigners Implements Msg.
 func (msg MsgSend) GetSigners() []sdk.AccAddress {
-	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{from}
+	return []sdk.AccAddress{sdk.AccAddress(msg.FromAddress)}
 }
 
 var _ sdk.Msg = &MsgMultiSend{}
@@ -99,8 +92,7 @@ func (msg MsgMultiSend) GetSignBytes() []byte {
 func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, len(msg.Inputs))
 	for i, in := range msg.Inputs {
-		addr, _ := sdk.AccAddressFromBech32(in.Address)
-		addrs[i] = addr
+		addrs[i] = sdk.AccAddress(in.Address)
 	}
 
 	return addrs
@@ -108,9 +100,8 @@ func (msg MsgMultiSend) GetSigners() []sdk.AccAddress {
 
 // ValidateBasic - validate transaction input
 func (in Input) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(in.Address)
-	if err != nil {
-		return err
+	if len(in.Address) == 0 {
+		return sdkerrors.ErrInvalidAddress
 	}
 
 	if !in.Coins.IsValid() {
@@ -128,16 +119,15 @@ func (in Input) ValidateBasic() error {
 //nolint:interfacer
 func NewInput(addr sdk.AccAddress, coins sdk.Coins) Input {
 	return Input{
-		Address: addr.String(),
+		Address: addr,
 		Coins:   coins,
 	}
 }
 
 // ValidateBasic - validate transaction output
 func (out Output) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(out.Address)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid output address (%s)", err)
+	if len(out.Address) == 0 {
+		return sdkerrors.ErrInvalidAddress
 	}
 
 	if !out.Coins.IsValid() {
@@ -155,7 +145,7 @@ func (out Output) ValidateBasic() error {
 //nolint:interfacer
 func NewOutput(addr sdk.AccAddress, coins sdk.Coins) Output {
 	return Output{
-		Address: addr.String(),
+		Address: addr,
 		Coins:   coins,
 	}
 }

@@ -19,7 +19,8 @@ func (gs GenesisState) Validate() error {
 	seenMetadatas := make(map[string]bool)
 
 	for _, balance := range gs.Balances {
-		if seenBalances[balance.Address] {
+		addr := balance.GetAddress().String()
+		if seenBalances[addr] {
 			return fmt.Errorf("duplicate balance for address %s", balance.Address)
 		}
 
@@ -27,7 +28,7 @@ func (gs GenesisState) Validate() error {
 			return err
 		}
 
-		seenBalances[balance.Address] = true
+		seenBalances[addr] = true
 	}
 
 	for _, metadata := range gs.DenomMetadata {

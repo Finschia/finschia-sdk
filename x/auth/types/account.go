@@ -13,6 +13,7 @@ import (
 
 	"github.com/line/lfb-sdk/codec"
 	codectypes "github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 	sdk "github.com/line/lfb-sdk/types"
 )
@@ -23,13 +24,16 @@ var (
 	_ codectypes.UnpackInterfacesMessage = (*BaseAccount)(nil)
 	_ GenesisAccount                     = (*ModuleAccount)(nil)
 	_ ModuleAccountI                     = (*ModuleAccount)(nil)
+
+	BaseAccountSig   = []byte("bacc")
+	ModuleAccountSig = []byte("macc")
 )
 
 // NewBaseAccount creates a new BaseAccount object
 //nolint:interfacer
 func NewBaseAccount(address sdk.AccAddress, pubKey cryptotypes.PubKey, accountNumber, sequence uint64) *BaseAccount {
 	acc := &BaseAccount{
-		Address:       address.String(),
+		Address:       address,
 		AccountNumber: accountNumber,
 		Sequence:      sequence,
 	}
@@ -50,14 +54,13 @@ func ProtoBaseAccount() AccountI {
 // NewBaseAccountWithAddress - returns a new base account with a given address
 func NewBaseAccountWithAddress(addr sdk.AccAddress) *BaseAccount {
 	return &BaseAccount{
-		Address: addr.String(),
+		Address: addr,
 	}
 }
 
 // GetAddress - Implements sdk.AccountI.
 func (acc BaseAccount) GetAddress() sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(acc.Address)
-	return addr
+	return sdk.AccAddress(acc.Address)
 }
 
 // SetAddress - Implements sdk.AccountI.
@@ -66,20 +69,16 @@ func (acc *BaseAccount) SetAddress(addr sdk.AccAddress) error {
 		return errors.New("cannot override BaseAccount address")
 	}
 
-	acc.Address = addr.String()
+	acc.Address = addr.Bytes()
 	return nil
 }
 
 // GetPubKey - Implements sdk.AccountI.
-func (acc BaseAccount) GetPubKey() (pk cryptotypes.PubKey) {
+func (acc BaseAccount) GetPubKey() cryptotypes.PubKey {
 	if acc.PubKey == nil {
 		return nil
 	}
-	content, ok := acc.PubKey.GetCachedValue().(cryptotypes.PubKey)
-	if !ok {
-		return nil
-	}
-	return content
+	return acc.PubKey
 }
 
 // SetPubKey - Implements sdk.AccountI.
@@ -87,12 +86,12 @@ func (acc *BaseAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 	if pubKey == nil {
 		acc.PubKey = nil
 		return nil
+	} else if pk, ok := pubKey.(*secp256k1.PubKey); !ok {
+		return fmt.Errorf("invalid pubkey")
+	} else {
+		acc.PubKey = pk
 	}
-	any, err := codectypes.NewAnyWithValue(pubKey)
-	if err == nil {
-		acc.PubKey = any
-	}
-	return err
+	return nil
 }
 
 // GetAccountNumber - Implements AccountI
@@ -119,16 +118,11 @@ func (acc *BaseAccount) SetSequence(seq uint64) error {
 
 // Validate checks for errors on the account fields
 func (acc BaseAccount) Validate() error {
-	if acc.Address == "" || acc.PubKey == nil {
+	if acc.Address == nil || acc.PubKey == nil {
 		return nil
 	}
 
-	accAddr, err := sdk.AccAddressFromBech32(acc.Address)
-	if err != nil {
-		return err
-	}
-
-	if !bytes.Equal(acc.GetPubKey().Address().Bytes(), accAddr.Bytes()) {
+	if !bytes.Equal(acc.GetPubKey().Address().Bytes(), acc.Address) {
 		return errors.New("account address and pubkey address do not match")
 	}
 
@@ -151,11 +145,19 @@ func (acc BaseAccount) MarshalYAML() (interface{}, error) {
 
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
 func (acc BaseAccount) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
-	if acc.PubKey == nil {
-		return nil
+	return nil
+}
+
+func (acc *BaseAccount) MarshalX() ([]byte, error) {
+	bz, err := acc.Marshal()
+	if err != nil {
+		return nil, err
 	}
-	var pubKey cryptotypes.PubKey
-	return unpacker.UnpackAny(acc.PubKey, &pubKey)
+	t := BaseAccountSig
+	b := make([]byte, len(t)+len(bz))
+	copy(b, t)
+	copy(b[len(t):], bz)
+	return b, nil
 }
 
 // NewModuleAddress creates an AccAddress from the hash of the module's name
@@ -228,11 +230,23 @@ func (ma ModuleAccount) Validate() error {
 		return errors.New("module account name cannot be blank")
 	}
 
-	if ma.Address != sdk.AccAddress(crypto.AddressHash([]byte(ma.Name))).String() {
+	if !bytes.Equal(ma.Address, sdk.AccAddress(crypto.AddressHash([]byte(ma.Name))).Bytes()) {
 		return fmt.Errorf("address %s cannot be derived from the module name '%s'", ma.Address, ma.Name)
 	}
 
 	return ma.BaseAccount.Validate()
+}
+
+func (ma *ModuleAccount) MarshalX() ([]byte, error) {
+	bz, err := ma.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	t := ModuleAccountSig
+	b := make([]byte, len(t)+len(bz))
+	copy(b, t)
+	copy(b[len(t):], bz)
+	return b, nil
 }
 
 type moduleAccountPretty struct {
@@ -251,13 +265,8 @@ func (ma ModuleAccount) String() string {
 
 // MarshalYAML returns the YAML representation of a ModuleAccount.
 func (ma ModuleAccount) MarshalYAML() (interface{}, error) {
-	accAddr, err := sdk.AccAddressFromBech32(ma.Address)
-	if err != nil {
-		return nil, err
-	}
-
 	bs, err := yaml.Marshal(moduleAccountPretty{
-		Address:       accAddr,
+		Address:       ma.Address,
 		PubKey:        "",
 		AccountNumber: ma.AccountNumber,
 		Sequence:      ma.Sequence,
@@ -274,13 +283,8 @@ func (ma ModuleAccount) MarshalYAML() (interface{}, error) {
 
 // MarshalJSON returns the JSON representation of a ModuleAccount.
 func (ma ModuleAccount) MarshalJSON() ([]byte, error) {
-	accAddr, err := sdk.AccAddressFromBech32(ma.Address)
-	if err != nil {
-		return nil, err
-	}
-
 	return json.Marshal(moduleAccountPretty{
-		Address:       accAddr,
+		Address:       ma.Address,
 		PubKey:        "",
 		AccountNumber: ma.AccountNumber,
 		Sequence:      ma.Sequence,
@@ -301,6 +305,28 @@ func (ma *ModuleAccount) UnmarshalJSON(bz []byte) error {
 	ma.Permissions = alias.Permissions
 
 	return nil
+}
+
+func UnmarshalAccountX(bz []byte) (AccountI, error) {
+	sigLen := len(BaseAccountSig)
+	if len(bz) < sigLen {
+		return nil, fmt.Errorf("invalid data")
+	}
+	if bytes.Equal(bz[:sigLen], BaseAccountSig) {
+		acc := &BaseAccount{}
+		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
+			return nil, err
+		}
+		return acc, nil
+	} else if bytes.Equal(bz[:sigLen], ModuleAccountSig) {
+		acc := &ModuleAccount{}
+		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
+			return nil, err
+		}
+		return acc, nil
+	} else {
+		return nil, fmt.Errorf("invalid header")
+	}
 }
 
 // AccountI is an interface used to store coins at a given address within state.
@@ -326,6 +352,8 @@ type AccountI interface {
 
 	// Ensure that account implements stringer
 	String() string
+
+	MarshalX() ([]byte, error)
 }
 
 // ModuleAccountI defines an account interface for modules that hold tokens in
