@@ -4,8 +4,6 @@ set -eo pipefail
 
 # TODO ebony
 apk add --no-cache git
-go env -w GOPRIVATE=github.com/line/*
-git config --global url."https://${GITHUB_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"
 
 protoc_gen_gocosmos() {
   if ! grep "github.com/gogo/protobuf => github.com/regen-network/protobuf" go.mod &>/dev/null ; then
