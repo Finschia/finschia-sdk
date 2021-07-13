@@ -32,7 +32,7 @@ require (
 	github.com/line/ostracon v0.34.9-0.20210610071151-a52812ac9add
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524
 	github.com/line/wasmvm v0.14.0-0.5.0
-	github.com/magiconair/properties v1.8.4
+	github.com/magiconair/properties v1.8.5
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.12
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
