@@ -15,10 +15,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 6
     steps:
-      - name: Configure git for private modules
-        env:
-          TOKEN: ${{ secrets.TOKEN }}
-        run: git config --global url."https://${TOKEN}:x-oauth-basic@github.com".insteadOf "https://github.com"
       - uses: actions/checkout@v2
       - uses: technote-space/get-diff-action@v4
         with:
