@@ -32,7 +32,7 @@ func TestOnOpenChannel(t *testing.T) {
 		},
 		"consume max gas": {
 			contractAddr: example.Contract,
-			contractGas:  MaxGas,
+			contractGas:  math.MaxUint64 / DefaultGasMultiplier,
 		},
 		"consume gas on error": {
 			contractAddr: example.Contract,

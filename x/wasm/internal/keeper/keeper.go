@@ -20,10 +20,6 @@ import (
 	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
-// MaxGas was restriction is increased to 0x7FFFFFFFFFFFFFFF in CosmWasm 0.10.
-// This const is not needed now and we can manage it in another way.
-const MaxGas = 10_000_000_000
-
 // contractMemoryLimit is the memory limit of each contract execution (in MiB)
 // constant value so all nodes run with the same limit.
 const contractMemoryLimit = 32
@@ -957,9 +953,6 @@ func gasForContract(ctx sdk.Context, gasMultiplier uint64) uint64 {
 		return 0
 	}
 	remaining := (meter.Limit() - meter.GasConsumedToLimit()) * gasMultiplier
-	if remaining > MaxGas {
-		return MaxGas
-	}
 	return remaining
 }
 
