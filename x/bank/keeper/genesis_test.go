@@ -12,10 +12,7 @@ func (suite *IntegrationTestSuite) TestExportGenesis() {
 	expectedBalances := suite.getTestBalances()
 	for i := range []int{1, 2} {
 		app.BankKeeper.SetDenomMetaData(ctx, expectedMetadata[i])
-		accAddr, err1 := sdk.AccAddressFromBech32(expectedBalances[i].Address)
-		if err1 != nil {
-			panic(err1)
-		}
+		accAddr := sdk.AccAddress(expectedBalances[i].Address)
 		err := app.BankKeeper.SetBalances(ctx, accAddr, expectedBalances[i].Coins)
 		suite.Require().NoError(err)
 	}
@@ -37,8 +34,8 @@ func (suite *IntegrationTestSuite) getTestBalances() []types.Balance {
 	addr2, _ := sdk.AccAddressFromBech32("link15klks9yty6rwvnqk47q4cg92r38qj4gsvxdfj8")
 	addr1, _ := sdk.AccAddressFromBech32("link14uxsrqf2cakphyw9ywwy9a9fv7yjspku4lkrny")
 	return []types.Balance{
-		{Address: addr2.String(), Coins: sdk.Coins{sdk.NewInt64Coin("testcoin1", 32), sdk.NewInt64Coin("testcoin2", 34)}},
-		{Address: addr1.String(), Coins: sdk.Coins{sdk.NewInt64Coin("testcoin3", 10)}},
+		{Address: addr2, Coins: sdk.Coins{sdk.NewInt64Coin("testcoin1", 32), sdk.NewInt64Coin("testcoin2", 34)}},
+		{Address: addr1, Coins: sdk.Coins{sdk.NewInt64Coin("testcoin3", 10)}},
 	}
 
 }

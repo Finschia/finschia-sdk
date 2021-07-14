@@ -447,8 +447,8 @@ func (s IntegrationTestSuite) mkTxBuilder() client.TxBuilder {
 	gasLimit := testdata.NewTestGasLimit()
 	s.Require().NoError(
 		txBuilder.SetMsgs(&banktypes.MsgSend{
-			FromAddress: val.Address.String(),
-			ToAddress:   val.Address.String(),
+			FromAddress: val.Address,
+			ToAddress:   val.Address,
 			Amount:      sdk.Coins{sdk.NewInt64Coin(s.cfg.BondDenom, 10)},
 		}),
 	)

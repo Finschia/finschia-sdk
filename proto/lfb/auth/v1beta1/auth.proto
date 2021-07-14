@@ -1,6 +1,8 @@
 syntax = "proto3";
 package lfb.auth.v1beta1;
 
+import "lfb/crypto/ed25519/keys.proto";
+import "lfb/crypto/multisig/keys.proto";
 import "lfb/crypto/secp256k1/keys.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
@@ -18,11 +20,15 @@ message BaseAccount {
 
   option (cosmos_proto.implements_interface) = "AccountI";
 
-  bytes                       address = 1;
-  lfb.crypto.secp256k1.PubKey pub_key = 2
-      [(gogoproto.jsontag) = "public_key,omitempty", (gogoproto.moretags) = "yaml:\"public_key\""];
-  uint64 account_number = 3 [(gogoproto.moretags) = "yaml:\"account_number\""];
-  uint64 sequence       = 4;
+  bytes                     address         = 1;
+  lfb.crypto.ed25519.PubKey ed25519_pub_key = 2
+      [(gogoproto.jsontag) = "ed25519_public_key,omitempty", (gogoproto.moretags) = "yaml:\"ed25519_public_key\""];
+  lfb.crypto.secp256k1.PubKey secp256k1_pub_key = 3
+      [(gogoproto.jsontag) = "secp256k1_public_key,omitempty", (gogoproto.moretags) = "yaml:\"secp256k1_public_key\""];
+  lfb.crypto.multisig.LegacyAminoPubKey multisig_pub_key = 4
+      [(gogoproto.jsontag) = "multisig_public_key,omitempty", (gogoproto.moretags) = "yaml:\"multisig_public_key\""];
+  uint64 account_number = 5 [(gogoproto.moretags) = "yaml:\"account_number\""];
+  uint64 sequence       = 6;
 }
 
 // ModuleAccount defines an account for modules that holds coins on a pool.

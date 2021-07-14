@@ -114,9 +114,13 @@ func EncodeBankMsg(sender sdk.AccAddress, msg *wasmvmtypes.BankMsg) ([]sdk.Msg, 
 	if err != nil {
 		return nil, err
 	}
+	toAddr, err := sdk.AccAddressFromBech32(msg.Send.ToAddress)
+	if err != nil {
+		return nil, err
+	}
 	sdkMsg := banktypes.MsgSend{
-		FromAddress: sender.String(),
-		ToAddress:   msg.Send.ToAddress,
+		FromAddress: sender,
+		ToAddress:   toAddr,
 		Amount:      toSend,
 	}
 	return []sdk.Msg{&sdkMsg}, nil

@@ -33,7 +33,7 @@ func (k msgServer) Send(goCtx context.Context, msg *types.MsgSend) (*types.MsgSe
 	to := sdk.AccAddress(msg.ToAddress)
 
 	if k.BlockedAddr(to) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", to.String())
 	}
 
 	err := k.SendCoins(ctx, from, to, msg.Amount)

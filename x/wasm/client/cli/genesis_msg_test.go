@@ -622,10 +622,12 @@ func setupGenesis(t *testing.T, wasmGenesis types.GenesisState) string {
 	appState := make(map[string]json.RawMessage)
 	appState[types.ModuleName] = appCodec.MustMarshalJSON(&wasmGenesis)
 
+	addr, _ := sdk.AccAddressFromBech32(myWellFundedAccount)
+
 	bankGenesis := banktypes.DefaultGenesisState()
 	bankGenesis.Balances = append(bankGenesis.Balances, banktypes.Balance{
 		// add a balance for the default sender account
-		Address: myWellFundedAccount,
+		Address: addr,
 		Coins:   sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(10000000000))),
 	})
 	appState[banktypes.ModuleName] = appCodec.MustMarshalJSON(bankGenesis)

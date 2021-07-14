@@ -13,6 +13,8 @@ import (
 
 	"github.com/line/lfb-sdk/codec"
 	codectypes "github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lfb-sdk/crypto/keys/ed25519"
+	"github.com/line/lfb-sdk/crypto/keys/multisig"
 	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 	sdk "github.com/line/lfb-sdk/types"
@@ -75,21 +77,28 @@ func (acc *BaseAccount) SetAddress(addr sdk.AccAddress) error {
 
 // GetPubKey - Implements sdk.AccountI.
 func (acc BaseAccount) GetPubKey() cryptotypes.PubKey {
-	if acc.PubKey == nil {
-		return nil
+	if acc.Ed25519PubKey != nil {
+		return acc.Ed25519PubKey
+	} else if acc.Secp256K1PubKey != nil {
+		return acc.Secp256K1PubKey
+	} else if acc.MultisigPubKey != nil {
+		return acc.MultisigPubKey
 	}
-	return acc.PubKey
+	return nil
 }
 
 // SetPubKey - Implements sdk.AccountI.
 func (acc *BaseAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 	if pubKey == nil {
-		acc.PubKey = nil
-		return nil
-	} else if pk, ok := pubKey.(*secp256k1.PubKey); !ok {
-		return fmt.Errorf("invalid pubkey")
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, nil, nil
+	} else if pk, ok := pubKey.(*ed25519.PubKey); ok {
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = pk, nil, nil
+	} else if pk, ok := pubKey.(*secp256k1.PubKey); ok {
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, pk, nil
+	} else if pk, ok := pubKey.(*multisig.LegacyAminoPubKey); ok {
+		acc.Ed25519PubKey, acc.Secp256K1PubKey, acc.MultisigPubKey = nil, nil, pk
 	} else {
-		acc.PubKey = pk
+		return fmt.Errorf("invalid pubkey")
 	}
 	return nil
 }
@@ -118,7 +127,7 @@ func (acc *BaseAccount) SetSequence(seq uint64) error {
 
 // Validate checks for errors on the account fields
 func (acc BaseAccount) Validate() error {
-	if acc.Address == nil || acc.PubKey == nil {
+	if acc.Address == nil || acc.GetPubKey() == nil {
 		return nil
 	}
 
@@ -145,6 +154,9 @@ func (acc BaseAccount) MarshalYAML() (interface{}, error) {
 
 // UnpackInterfaces implements UnpackInterfacesMessage.UnpackInterfaces
 func (acc BaseAccount) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
+	if acc.MultisigPubKey != nil {
+		return codectypes.UnpackInterfaces(acc.MultisigPubKey, unpacker)
+	}
 	return nil
 }
 
@@ -231,7 +243,7 @@ func (ma ModuleAccount) Validate() error {
 	}
 
 	if !bytes.Equal(ma.Address, sdk.AccAddress(crypto.AddressHash([]byte(ma.Name))).Bytes()) {
-		return fmt.Errorf("address %s cannot be derived from the module name '%s'", ma.Address, ma.Name)
+		return fmt.Errorf("address %s cannot be derived from the module name '%s'", sdk.AccAddress(ma.Address).String(), ma.Name)
 	}
 
 	return ma.BaseAccount.Validate()
@@ -307,28 +319,6 @@ func (ma *ModuleAccount) UnmarshalJSON(bz []byte) error {
 	return nil
 }
 
-func UnmarshalAccountX(bz []byte) (AccountI, error) {
-	sigLen := len(BaseAccountSig)
-	if len(bz) < sigLen {
-		return nil, fmt.Errorf("invalid data")
-	}
-	if bytes.Equal(bz[:sigLen], BaseAccountSig) {
-		acc := &BaseAccount{}
-		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
-			return nil, err
-		}
-		return acc, nil
-	} else if bytes.Equal(bz[:sigLen], ModuleAccountSig) {
-		acc := &ModuleAccount{}
-		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
-			return nil, err
-		}
-		return acc, nil
-	} else {
-		return nil, fmt.Errorf("invalid header")
-	}
-}
-
 // AccountI is an interface used to store coins at a given address within state.
 // It presumes a notion of sequence numbers for replay protection,
 // a notion of account numbers for replay protection for previously pruned accounts,
@@ -354,6 +344,39 @@ type AccountI interface {
 	String() string
 
 	MarshalX() ([]byte, error)
+}
+
+func MarshalAccountX(cdc codec.BinaryMarshaler, acc AccountI) ([]byte, error) {
+	if bacc, ok := acc.(*BaseAccount); ok && bacc.MultisigPubKey == nil {
+		return acc.MarshalX()
+	} else if macc, ok := acc.(*ModuleAccount); ok && macc.MultisigPubKey == nil {
+		return acc.MarshalX()
+	} else {
+		return cdc.MarshalInterface(acc)
+	}
+}
+
+func UnmarshalAccountX(cdc codec.BinaryMarshaler, bz []byte) (AccountI, error) {
+	sigLen := len(BaseAccountSig)
+	if len(bz) < sigLen {
+		return nil, fmt.Errorf("invalid data")
+	}
+	if bytes.Equal(bz[:sigLen], BaseAccountSig) {
+		acc := &BaseAccount{}
+		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
+			return nil, err
+		}
+		return acc, nil
+	} else if bytes.Equal(bz[:sigLen], ModuleAccountSig) {
+		acc := &ModuleAccount{}
+		if err := acc.Unmarshal(bz[sigLen:]); err != nil {
+			return nil, err
+		}
+		return acc, nil
+	} else {
+		var acc AccountI
+		return acc, cdc.UnmarshalInterface(bz, &acc)
+	}
 }
 
 // ModuleAccountI defines an account interface for modules that hold tokens in

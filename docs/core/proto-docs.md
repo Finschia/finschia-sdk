@@ -224,6 +224,13 @@
     - [Header](#ibc.lightclients.tendermint.v1.Header)
     - [Misbehaviour](#ibc.lightclients.tendermint.v1.Misbehaviour)
   
+- [lfb/crypto/ed25519/keys.proto](#lfb/crypto/ed25519/keys.proto)
+    - [PrivKey](#lfb.crypto.ed25519.PrivKey)
+    - [PubKey](#lfb.crypto.ed25519.PubKey)
+  
+- [lfb/crypto/multisig/keys.proto](#lfb/crypto/multisig/keys.proto)
+    - [LegacyAminoPubKey](#lfb.crypto.multisig.LegacyAminoPubKey)
+  
 - [lfb/crypto/secp256k1/keys.proto](#lfb/crypto/secp256k1/keys.proto)
     - [PrivKey](#lfb.crypto.secp256k1.PrivKey)
     - [PubKey](#lfb.crypto.secp256k1.PubKey)
@@ -363,13 +370,6 @@
     - [MsgVerifyInvariantResponse](#lfb.crisis.v1beta1.MsgVerifyInvariantResponse)
   
     - [Msg](#lfb.crisis.v1beta1.Msg)
-  
-- [lfb/crypto/ed25519/keys.proto](#lfb/crypto/ed25519/keys.proto)
-    - [PrivKey](#lfb.crypto.ed25519.PrivKey)
-    - [PubKey](#lfb.crypto.ed25519.PubKey)
-  
-- [lfb/crypto/multisig/keys.proto](#lfb/crypto/multisig/keys.proto)
-    - [LegacyAminoPubKey](#lfb.crypto.multisig.LegacyAminoPubKey)
   
 - [lfb/crypto/multisig/v1beta1/multisig.proto](#lfb/crypto/multisig/v1beta1/multisig.proto)
     - [CompactBitArray](#lfb.crypto.multisig.v1beta1.CompactBitArray)
@@ -3838,6 +3838,90 @@ that implements Misbehaviour interface expected by ICS-02
 
 
 
+<a name="lfb/crypto/ed25519/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lfb/crypto/ed25519/keys.proto
+
+
+
+<a name="lfb.crypto.ed25519.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a ed25519 private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lfb.crypto.ed25519.PubKey"></a>
+
+### PubKey
+PubKey defines a ed25519 public key
+Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
+if the y-coordinate is the lexicographically largest of the two associated with
+the x-coordinate. Otherwise the first byte is a 0x03.
+This prefix is followed with the x-coordinate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lfb/crypto/multisig/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lfb/crypto/multisig/keys.proto
+
+
+
+<a name="lfb.crypto.multisig.LegacyAminoPubKey"></a>
+
+### LegacyAminoPubKey
+LegacyAminoPubKey specifies a public key type
+which nests multiple public keys and a threshold,
+it uses legacy amino address rules.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `threshold` | [uint32](#uint32) |  |  |
+| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lfb/crypto/secp256k1/keys.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -3906,7 +3990,9 @@ type for additional functionality (e.g. vesting).
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [bytes](#bytes) |  |  |
-| `pub_key` | [lfb.crypto.secp256k1.PubKey](#lfb.crypto.secp256k1.PubKey) |  |  |
+| `ed25519_pub_key` | [lfb.crypto.ed25519.PubKey](#lfb.crypto.ed25519.PubKey) |  |  |
+| `secp256k1_pub_key` | [lfb.crypto.secp256k1.PubKey](#lfb.crypto.secp256k1.PubKey) |  |  |
+| `multisig_pub_key` | [lfb.crypto.multisig.LegacyAminoPubKey](#lfb.crypto.multisig.LegacyAminoPubKey) |  |  |
 | `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
@@ -5593,90 +5679,6 @@ Msg defines the bank Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `VerifyInvariant` | [MsgVerifyInvariant](#lfb.crisis.v1beta1.MsgVerifyInvariant) | [MsgVerifyInvariantResponse](#lfb.crisis.v1beta1.MsgVerifyInvariantResponse) | VerifyInvariant defines a method to verify a particular invariance. | |
-
- <!-- end services -->
-
-
-
-<a name="lfb/crypto/ed25519/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lfb/crypto/ed25519/keys.proto
-
-
-
-<a name="lfb.crypto.ed25519.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a ed25519 private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lfb.crypto.ed25519.PubKey"></a>
-
-### PubKey
-PubKey defines a ed25519 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lfb/crypto/multisig/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lfb/crypto/multisig/keys.proto
-
-
-
-<a name="lfb.crypto.multisig.LegacyAminoPubKey"></a>
-
-### LegacyAminoPubKey
-LegacyAminoPubKey specifies a public key type
-which nests multiple public keys and a threshold,
-it uses legacy amino address rules.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `threshold` | [uint32](#uint32) |  |  |
-| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
 
  <!-- end services -->
 

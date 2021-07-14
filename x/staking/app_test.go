@@ -45,16 +45,16 @@ func TestStakingMsgs(t *testing.T) {
 	genCoin := sdk.NewCoin(sdk.DefaultBondDenom, genTokens)
 	bondCoin := sdk.NewCoin(sdk.DefaultBondDenom, bondTokens)
 
-	acc1 := &authtypes.BaseAccount{Address: addr1.String()}
-	acc2 := &authtypes.BaseAccount{Address: addr2.String()}
+	acc1 := &authtypes.BaseAccount{Address: addr1}
+	acc2 := &authtypes.BaseAccount{Address: addr2}
 	accs := authtypes.GenesisAccounts{acc1, acc2}
 	balances := []banktypes.Balance{
 		{
-			Address: addr1.String(),
+			Address: addr1,
 			Coins:   sdk.Coins{genCoin},
 		},
 		{
-			Address: addr2.String(),
+			Address: addr2,
 			Coins:   sdk.Coins{genCoin},
 		},
 	}

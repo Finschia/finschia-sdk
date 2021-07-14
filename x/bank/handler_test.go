@@ -55,12 +55,12 @@ func TestSendToModuleAccount(t *testing.T) {
 	}
 
 	acc1 := &authtypes.BaseAccount{
-		Address: addr1.String(),
+		Address: addr1,
 	}
 	accs := authtypes.GenesisAccounts{acc1}
 	balances := []types.Balance{
 		{
-			Address: addr1.String(),
+			Address: addr1,
 			Coins:   coins,
 		},
 	}

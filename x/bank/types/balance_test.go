@@ -12,6 +12,7 @@ import (
 )
 
 func TestBalanceValidate(t *testing.T) {
+	addr, _ := sdk.AccAddressFromBech32("link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c")
 	testCases := []struct {
 		name    string
 		balance bank.Balance
@@ -20,7 +21,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"valid balance",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: addr,
 				Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 			},
 			false,
@@ -29,14 +30,14 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"nil balance coins",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: addr,
 			},
 			false,
 		},
 		{
 			"dup coins",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: addr,
 				Coins: sdk.Coins{
 					sdk.NewInt64Coin("uatom", 1),
 					sdk.NewInt64Coin("uatom", 1),
@@ -47,7 +48,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"invalid coin denom",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: addr,
 				Coins: sdk.Coins{
 					sdk.Coin{Denom: "", Amount: sdk.OneInt()},
 				},
@@ -57,7 +58,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"negative coin",
 			bank.Balance{
-				Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+				Address: addr,
 				Coins: sdk.Coins{
 					sdk.Coin{Denom: "uatom", Amount: sdk.NewInt(-1)},
 				},
@@ -94,7 +95,12 @@ func TestBalance_GetAddress(t *testing.T) {
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
-			b := bank.Balance{Address: tt.Address}
+			addr, err := sdk.AccAddressFromBech32(tt.Address)
+			require.True(t, (err != nil) == tt.wantPanic)
+			if err != nil {
+				return
+			}
+			b := bank.Balance{Address: addr}
 			if tt.wantPanic {
 				require.Panics(t, func() { b.GetAddress() })
 			} else {
@@ -114,7 +120,7 @@ func TestSanitizeBalances(t *testing.T) {
 	var balances []bank.Balance
 	for _, addr := range addrs {
 		balances = append(balances, bank.Balance{
-			Address: addr.String(),
+			Address: addr,
 			Coins:   coins,
 		})
 	}
@@ -168,7 +174,7 @@ func benchmarkSanitizeBalances(b *testing.B, nAddresses int) {
 		var balances []bank.Balance
 		for _, addr := range addrs {
 			balances = append(balances, bank.Balance{
-				Address: addr.String(),
+				Address: addr,
 				Coins:   coins,
 			})
 		}

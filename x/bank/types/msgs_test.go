@@ -38,9 +38,9 @@ func TestMsgSendValidation(t *testing.T) {
 		{"", NewMsgSend(addr1, addr2, atom123eth123)},                          // valid send with multiple coins
 		{": invalid coins", NewMsgSend(addr1, addr2, atom0)},                   // non positive coin
 		{"123atom,0eth: invalid coins", NewMsgSend(addr1, addr2, atom123eth0)}, // non positive coin in multicoins
-		{"Invalid sender address (empty address string is not allowed): invalid address", NewMsgSend(addrEmpty, addr2, atom123)},
+		{"Invalid sender address (incorrect address length (expected: 20, actual: 0)): invalid address", NewMsgSend(addrEmpty, addr2, atom123)},
 		{"Invalid sender address (incorrect address length (expected: 20, actual: 33)): invalid address", NewMsgSend(addrTooLong, addr2, atom123)},
-		{"Invalid recipient address (empty address string is not allowed): invalid address", NewMsgSend(addr1, addrEmpty, atom123)},
+		{"Invalid recipient address (incorrect address length (expected: 20, actual: 0)): invalid address", NewMsgSend(addr1, addrEmpty, atom123)},
 		{"Invalid recipient address (incorrect address length (expected: 20, actual: 33)): invalid address", NewMsgSend(addr1, addrTooLong, atom123)},
 	}
 
@@ -61,7 +61,7 @@ func TestMsgSendGetSignBytes(t *testing.T) {
 	var msg = NewMsgSend(addr1, addr2, coins)
 	res := msg.GetSignBytes()
 
-	expected := `{"type":"lfb-sdk/MsgSend","value":{"amount":[{"amount":"10","denom":"atom"}],"from_address":"link1d9h8qat5fnwd3e","to_address":"link1da6hgur4ws537sex"}}`
+	expected := `{"type":"lfb-sdk/MsgSend","value":{"amount":[{"amount":"10","denom":"atom"}],"from_address":"aW5wdXQ=","to_address":"b3V0cHV0"}}`
 	require.Equal(t, expected, string(res))
 }
 
@@ -110,7 +110,7 @@ func TestInputValidation(t *testing.T) {
 		{"", NewInput(addr2, someCoins)},
 		{"", NewInput(addr2, multiCoins)},
 
-		{"empty address string is not allowed", NewInput(addrEmpty, someCoins)},
+		{"incorrect address length (expected: 20, actual: 0)", NewInput(addrEmpty, someCoins)},
 		{"incorrect address length (expected: 20, actual: 33)", NewInput(addrTooLong, someCoins)},
 		{": invalid coins", NewInput(addr1, emptyCoins)},                // invalid coins
 		{": invalid coins", NewInput(addr1, emptyCoins2)},               // invalid coins
@@ -151,7 +151,7 @@ func TestOutputValidation(t *testing.T) {
 		{"", NewOutput(addr2, someCoins)},
 		{"", NewOutput(addr2, multiCoins)},
 
-		{"Invalid output address (empty address string is not allowed): invalid address", NewOutput(addrEmpty, someCoins)},
+		{"Invalid output address (incorrect address length (expected: 20, actual: 0)): invalid address", NewOutput(addrEmpty, someCoins)},
 		{"Invalid output address (incorrect address length (expected: 20, actual: 33)): invalid address", NewOutput(addrTooLong, someCoins)},
 		{": invalid coins", NewOutput(addr1, emptyCoins)},                // invalid coins
 		{": invalid coins", NewOutput(addr1, emptyCoins2)},               // invalid coins
@@ -197,7 +197,7 @@ func TestMsgMultiSendValidation(t *testing.T) {
 			Outputs: []Output{output1}}},
 		{false, MsgMultiSend{
 			Inputs:  []Input{input1},
-			Outputs: []Output{{emptyAddr.String(), atom123}}}, // invalid output
+			Outputs: []Output{{emptyAddr, atom123}}}, // invalid output
 		},
 		{false, MsgMultiSend{
 			Inputs:  []Input{input1},
@@ -233,7 +233,7 @@ func TestMsgMultiSendGetSignBytes(t *testing.T) {
 	}
 	res := msg.GetSignBytes()
 
-	expected := `{"type":"lfb-sdk/MsgMultiSend","value":{"inputs":[{"address":"link1d9h8qat5fnwd3e","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"link1da6hgur4ws537sex","coins":[{"amount":"10","denom":"atom"}]}]}}`
+	expected := `{"type":"lfb-sdk/MsgMultiSend","value":{"inputs":[{"address":"aW5wdXQ=","coins":[{"amount":"10","denom":"atom"}]}],"outputs":[{"address":"b3V0cHV0","coins":[{"amount":"10","denom":"atom"}]}]}}`
 	require.Equal(t, expected, string(res))
 }
 

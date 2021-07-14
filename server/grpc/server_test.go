@@ -136,8 +136,8 @@ func (s *IntegrationTestSuite) TestGRPCServer_BroadcastTx() {
 	gasLimit := testdata.NewTestGasLimit()
 	s.Require().NoError(
 		txBuilder.SetMsgs(&banktypes.MsgSend{
-			FromAddress: val0.Address.String(),
-			ToAddress:   val0.Address.String(),
+			FromAddress: val0.Address,
+			ToAddress:   val0.Address,
 			Amount:      sdk.Coins{sdk.NewInt64Coin(s.cfg.BondDenom, 10)},
 		}),
 	)

@@ -268,7 +268,7 @@ func (s *IntegrationTestSuite) testQueryTx(txHeight int64, txHash, txRecipient s
 			s.Require().Equal(len(msgs), 1)
 			msg, ok := msgs[0].(*types.MsgSend)
 			s.Require().True(ok)
-			s.Require().Equal(txRecipient, msg.ToAddress)
+			s.Require().Equal(txRecipient, sdk.AccAddress(msg.ToAddress).String())
 		})
 	}
 }
@@ -368,8 +368,8 @@ func (s *IntegrationTestSuite) createTestStdTx(val *network.Validator, accNum, s
 	txConfig := legacytx.StdTxConfig{Cdc: s.cfg.LegacyAmino}
 
 	msg := &types.MsgSend{
-		FromAddress: val.Address.String(),
-		ToAddress:   val.Address.String(),
+		FromAddress: val.Address,
+		ToAddress:   val.Address,
 		Amount:      sdk.Coins{sdk.NewInt64Coin(fmt.Sprintf("%stoken", val.Moniker), 100)},
 	}
 

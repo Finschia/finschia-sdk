@@ -217,13 +217,13 @@ func (ak AccountKeeper) decodeAccount(bz []byte) types.AccountI {
 
 // MarshalAccount protobuf serializes an Account interface
 func (ak AccountKeeper) MarshalAccount(accountI types.AccountI) ([]byte, error) { // nolint:interfacer
-	return accountI.MarshalX()
+	return types.MarshalAccountX(ak.cdc, accountI)
 }
 
 // UnmarshalAccount returns an Account interface from raw encoded account
 // bytes of a Proto-based Account type
 func (ak AccountKeeper) UnmarshalAccount(bz []byte) (types.AccountI, error) {
-	return types.UnmarshalAccountX(bz)
+	return types.UnmarshalAccountX(ak.cdc, bz)
 }
 
 // GetCodec return codec.Marshaler object used by the keeper

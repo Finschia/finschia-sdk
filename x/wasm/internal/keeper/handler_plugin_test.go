@@ -26,7 +26,7 @@ import (
 func TestEncoding(t *testing.T) {
 	addr1 := RandomAccountAddress(t)
 	addr2 := RandomAccountAddress(t)
-	invalidAddr := "xrnd1d02kd90n38qvr3qb9qof83fn2d2"
+	invalidAddr := sdk.AccAddress{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20}
 	valAddr := make(sdk.ValAddress, sdk.AddrLen)
 	valAddr[0] = 12
 	valAddr2 := make(sdk.ValAddress, sdk.AddrLen)
@@ -36,8 +36,8 @@ func TestEncoding(t *testing.T) {
 	jsonMsg := json.RawMessage(`{"foo": 123}`)
 
 	bankMsg := &banktypes.MsgSend{
-		FromAddress: addr2.String(),
-		ToAddress:   addr1.String(),
+		FromAddress: addr2,
+		ToAddress:   addr1,
 		Amount: sdk.Coins{
 			sdk.NewInt64Coin("uatom", 12345),
 			sdk.NewInt64Coin("utgd", 54321),
@@ -87,8 +87,8 @@ func TestEncoding(t *testing.T) {
 			},
 			output: []sdk.Msg{
 				&banktypes.MsgSend{
-					FromAddress: addr1.String(),
-					ToAddress:   addr2.String(),
+					FromAddress: addr1,
+					ToAddress:   addr2,
 					Amount: sdk.Coins{
 						sdk.NewInt64Coin("uatom", 12345),
 						sdk.NewInt64Coin("usdt", 54321),
@@ -118,7 +118,7 @@ func TestEncoding(t *testing.T) {
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Bank: &wasmvmtypes.BankMsg{
 					Send: &wasmvmtypes.SendMsg{
-						ToAddress: invalidAddr,
+						ToAddress: invalidAddr.String(),
 						Amount: []wasmvmtypes.Coin{
 							{
 								Denom:  "uatom",
@@ -131,8 +131,8 @@ func TestEncoding(t *testing.T) {
 			isError: false, // addresses are checked in the handler
 			output: []sdk.Msg{
 				&banktypes.MsgSend{
-					FromAddress: addr1.String(),
-					ToAddress:   invalidAddr,
+					FromAddress: addr1,
+					ToAddress:   invalidAddr.Bytes(),
 					Amount: sdk.Coins{
 						sdk.NewInt64Coin("uatom", 7890),
 					},

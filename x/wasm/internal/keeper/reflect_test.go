@@ -233,8 +233,8 @@ func TestReflectCustomMsg(t *testing.T) {
 
 	// construct an opaque message
 	var sdkSendMsg sdk.Msg = &banktypes.MsgSend{
-		FromAddress: contractAddr.String(),
-		ToAddress:   fred.String(),
+		FromAddress: contractAddr,
+		ToAddress:   fred,
 		Amount:      sdk.NewCoins(sdk.NewInt64Coin("denom", 23000)),
 	}
 	opaque, err := toReflectRawMsg(cdc, sdkSendMsg)

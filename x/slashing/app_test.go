@@ -47,12 +47,12 @@ func TestSlashingMsgs(t *testing.T) {
 	bondCoin := sdk.NewCoin(sdk.DefaultBondDenom, bondTokens)
 
 	acc1 := &authtypes.BaseAccount{
-		Address: addr1.String(),
+		Address: addr1,
 	}
 	accs := authtypes.GenesisAccounts{acc1}
 	balances := []banktypes.Balance{
 		{
-			Address: addr1.String(),
+			Address: addr1,
 			Coins:   sdk.Coins{genCoin},
 		},
 	}

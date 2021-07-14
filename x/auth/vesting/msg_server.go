@@ -46,11 +46,11 @@ func (s msgServer) CreateVestingAccount(goCtx context.Context, msg *types.MsgCre
 	}
 
 	if bk.BlockedAddr(to) {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", to.String())
 	}
 
 	if acc := ak.GetAccount(ctx, to); acc != nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "account %s already exists", msg.ToAddress)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "account %s already exists", to.String())
 	}
 
 	baseAccount := ak.NewAccountWithAddress(ctx, to)

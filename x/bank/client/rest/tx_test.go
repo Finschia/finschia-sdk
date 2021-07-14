@@ -37,8 +37,8 @@ func (s *IntegrationTestSuite) TestCoinSend() {
 	s.Require().Nil(stdTx.Signatures)
 	s.Require().Equal([]types.Msg{
 		&banktypes.MsgSend{
-			FromAddress: account.GetAddress().String(),
-			ToAddress:   account.GetAddress().String(),
+			FromAddress: account.GetAddress(),
+			ToAddress:   account.GetAddress(),
 			Amount:      sendReq.Amount,
 		},
 	}, stdTx.GetMsgs())

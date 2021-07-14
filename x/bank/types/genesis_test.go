@@ -11,6 +11,7 @@ import (
 
 func TestGenesisStateValidate(t *testing.T) {
 
+	addr, _ := sdk.AccAddressFromBech32("link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c")
 	testCases := []struct {
 		name         string
 		genesisState types.GenesisState
@@ -22,7 +23,7 @@ func TestGenesisStateValidate(t *testing.T) {
 				Params: types.DefaultParams(),
 				Balances: []types.Balance{
 					{
-						Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+						Address: addr,
 						Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 					},
 				},
@@ -59,11 +60,11 @@ func TestGenesisStateValidate(t *testing.T) {
 			types.GenesisState{
 				Balances: []types.Balance{
 					{
-						Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+						Address: addr,
 						Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 					},
 					{
-						Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+						Address: addr,
 						Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 					},
 				},
@@ -75,7 +76,7 @@ func TestGenesisStateValidate(t *testing.T) {
 			types.GenesisState{
 				Balances: []types.Balance{
 					{
-						Address: "link1mejkku76a2ec35262rdqddggzwrgtrh52t3t0c",
+						Address: addr,
 					},
 				},
 			},
