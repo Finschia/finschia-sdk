@@ -32,6 +32,7 @@
 * (perf) [\#198](https://github.com/line/lfb-sdk/pull/198) Caching paramset
 * (global) [\#200](https://github.com/line/lfb-sdk/pull/200) Add a env prefix
 * (store) [\#202](https://github.com/line/lfb-sdk/pull/202) param store doesn't use gas kv
+* (x/wasm) [\#253](https://github.com/line/lfb-sdk/pull/253) remove MaxGas const
 
 ### Bug Fixes
 * (test) [\#92](https://github.com/line/lfb-sdk/pull/92) Fix SendToModuleAccountTest
