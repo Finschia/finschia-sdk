@@ -110,7 +110,7 @@ func sendMsgSend(
 		fees,
 		helpers.DefaultGenTxGas,
 		chainID,
-		[]uint64{account.GetAccountNumber()},
+		[]uint64{0},
 		[]uint64{account.GetSequence()},
 		privkeys...,
 	)
@@ -225,13 +225,13 @@ func sendMsgMultiSend(
 	msg *types.MsgMultiSend, ctx sdk.Context, chainID string, privkeys []cryptotypes.PrivKey,
 ) error {
 
-	accountNumbers := make([]uint64, len(msg.Inputs))
+	sbh := make([]uint64, len(msg.Inputs))
 	sequenceNumbers := make([]uint64, len(msg.Inputs))
 
 	for i := 0; i < len(msg.Inputs); i++ {
 		addr := sdk.AccAddress(msg.Inputs[i].Address)
 		acc := ak.GetAccount(ctx, addr)
-		accountNumbers[i] = acc.GetAccountNumber()
+		sbh[i] = 0
 		sequenceNumbers[i] = acc.GetSequence()
 	}
 
@@ -261,7 +261,7 @@ func sendMsgMultiSend(
 		fees,
 		helpers.DefaultGenTxGas,
 		chainID,
-		accountNumbers,
+		sbh,
 		sequenceNumbers,
 		privkeys...,
 	)

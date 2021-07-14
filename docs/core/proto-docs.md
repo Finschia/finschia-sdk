@@ -3993,7 +3993,6 @@ type for additional functionality (e.g. vesting).
 | `ed25519_pub_key` | [lfb.crypto.ed25519.PubKey](#lfb.crypto.ed25519.PubKey) |  |  |
 | `secp256k1_pub_key` | [lfb.crypto.secp256k1.PubKey](#lfb.crypto.secp256k1.PubKey) |  |  |
 | `multisig_pub_key` | [lfb.crypto.multisig.LegacyAminoPubKey](#lfb.crypto.multisig.LegacyAminoPubKey) |  |  |
-| `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
 
@@ -4031,6 +4030,7 @@ Params defines the parameters for the auth module.
 | `tx_size_cost_per_byte` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_ed25519` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_secp256k1` | [uint64](#uint64) |  |  |
+| `valid_sig_block_period` | [uint64](#uint64) |  |  |
 
 
 

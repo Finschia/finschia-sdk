@@ -183,7 +183,6 @@ func TestProcessPostResponse(t *testing.T) {
 		Address       types.AccAddress   `json:"address"`
 		Coins         types.Coins        `json:"coins"`
 		PubKey        cryptotypes.PubKey `json:"public_key"`
-		AccountNumber uint64             `json:"account_number"`
 		Sequence      uint64             `json:"sequence"`
 	}
 
@@ -196,10 +195,9 @@ func TestProcessPostResponse(t *testing.T) {
 	pubKey := privKey.PubKey()
 	addr := types.AccAddress(pubKey.Address())
 	coins := types.NewCoins(types.NewCoin("atom", types.NewInt(100)), types.NewCoin("tree", types.NewInt(125)))
-	accNumber := uint64(104)
 	sequence := uint64(32)
 
-	acc := mockAccount{addr, coins, pubKey, accNumber, sequence}
+	acc := mockAccount{addr, coins, pubKey, sequence}
 	cdc := codec.NewLegacyAmino()
 	cryptocodec.RegisterCrypto(cdc)
 	cdc.RegisterConcrete(&mockAccount{}, "lfb-sdk/mockAccount", nil)

@@ -21,6 +21,7 @@ var (
 	gas     = uint64(10000)
 	msg     = testdata.NewTestMsg(addr1, addr2)
 	memo    = "foo"
+	sbh     = uint64(1)
 	timeout = uint64(10)
 )
 
@@ -28,6 +29,7 @@ func buildTx(t *testing.T, bldr *wrapper) {
 	bldr.SetFeeAmount(coins)
 	bldr.SetGasLimit(gas)
 	bldr.SetMemo(memo)
+	bldr.SetSigBlockHeight(sbh)
 	bldr.SetTimeoutHeight(timeout)
 	require.NoError(t, bldr.SetMsgs(msg))
 }
@@ -39,20 +41,18 @@ func TestLegacyAminoJSONHandler_GetSignBytes(t *testing.T) {
 
 	var (
 		chainId        = "test-chain"
-		accNum  uint64 = 7
 		seqNum  uint64 = 7
 	)
 
 	handler := signModeLegacyAminoJSONHandler{}
 	signingData := signing.SignerData{
 		ChainID:       chainId,
-		AccountNumber: accNum,
 		Sequence:      seqNum,
 	}
 	signBz, err := handler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_LEGACY_AMINO_JSON, signingData, tx)
 	require.NoError(t, err)
 
-	expectedSignBz := legacytx.StdSignBytes(chainId, accNum, seqNum, timeout, legacytx.StdFee{
+	expectedSignBz := legacytx.StdSignBytes(chainId, sbh, seqNum, timeout, legacytx.StdFee{
 		Amount: coins,
 		Gas:    gas,
 	}, []sdk.Msg{msg}, memo)

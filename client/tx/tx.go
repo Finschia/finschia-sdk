@@ -155,7 +155,7 @@ func WriteGeneratedTxResponse(
 	}
 
 	txf := Factory{fees: br.Fees, gasPrices: br.GasPrices}.
-		WithAccountNumber(br.AccountNumber).
+		WithSigBlockHeight(br.SigBlockHeight).
 		WithSequence(br.Sequence).
 		WithGas(gasSetting.Gas).
 		WithGasAdjustment(gasAdj).
@@ -240,6 +240,7 @@ func BuildUnsignedTx(txf Factory, msgs ...sdk.Msg) (client.TxBuilder, error) {
 	tx.SetMemo(txf.memo)
 	tx.SetFeeAmount(fees)
 	tx.SetGasLimit(txf.gas)
+	tx.SetSigBlockHeight(txf.sigBlockHeight)
 	tx.SetTimeoutHeight(txf.TimeoutHeight())
 
 	return tx, nil
@@ -302,26 +303,32 @@ func CalculateGas(
 	return simRes, uint64(txf.GasAdjustment() * float64(simRes.GasInfo.GasUsed)), nil
 }
 
-// PrepareFactory ensures the account defined by ctx.GetFromAddress() exists and
-// if the account number and/or the account sequence number are zero (not set),
-// they will be queried for and set on the provided Factory. A new Factory with
-// the updated fields will be returned.
+// PrepareFactory set sig block height and account sequence to the tx factory.
+// It doesn't require that the account should exist.
+// If the account does not exist, then it use the zero sequence number.
 func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	from := clientCtx.GetFromAddress()
+	sigBlockHeight := txf.sigBlockHeight
 
-	if err := txf.accountRetriever.EnsureExists(clientCtx, from); err != nil {
-		return txf, err
+	if !clientCtx.Offline {
+		if sigBlockHeight == 0 {
+			height, err := txf.accountRetriever.GetLatestHeight(clientCtx)
+			if err != nil {
+				return txf, err
+			}
+			sigBlockHeight = height
+		}
 	}
 
-	initNum, initSeq := txf.accountNumber, txf.sequence
-	if initNum == 0 || initSeq == 0 {
-		num, seq, err := txf.accountRetriever.GetAccountNumberSequence(clientCtx, from)
-		if err != nil {
-			return txf, err
-		}
+	txf = txf.WithSigBlockHeight(sigBlockHeight)
 
-		if initNum == 0 {
-			txf = txf.WithAccountNumber(num)
+	initSeq := txf.sequence
+	if initSeq == 0 && !clientCtx.Offline {
+		seq, err := txf.accountRetriever.GetAccountSequence(clientCtx, from)
+		if err != nil {
+			if sdkError, _ := err.(*sdkerrors.Error); sdkError != sdkerrors.ErrKeyNotFound {
+				return txf, err
+			}
 		}
 
 		if initSeq == 0 {
@@ -402,9 +409,8 @@ func Sign(txf Factory, name string, txBuilder client.TxBuilder, overwriteSig boo
 	}
 	pubKey := key.GetPubKey()
 	signerData := authsigning.SignerData{
-		ChainID:       txf.chainID,
-		AccountNumber: txf.accountNumber,
-		Sequence:      txf.sequence,
+		ChainID:  txf.chainID,
+		Sequence: txf.sequence,
 	}
 
 	// For SIGN_MODE_DIRECT, calling SetSignatures calls setSignerInfos on

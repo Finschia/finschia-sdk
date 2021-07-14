@@ -79,6 +79,10 @@ func (s *StdTxBuilder) SetMemo(memo string) {
 	s.Memo = memo
 }
 
+func (s *StdTxBuilder) SetSigBlockHeight(sbh uint64) {
+	s.SigBlockHeight = sbh
+}
+
 // SetTimeoutHeight sets the transaction's height timeout.
 func (s *StdTxBuilder) SetTimeoutHeight(height uint64) {
 	s.TimeoutHeight = height

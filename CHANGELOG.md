@@ -31,7 +31,23 @@
 * (build) [\#195](https://github.com/line/lfb-sdk/pull/195) Build properly when using libsecp256k1
 * (perf) [\#198](https://github.com/line/lfb-sdk/pull/198) Caching paramset
 * (global) [\#200](https://github.com/line/lfb-sdk/pull/200) Add a env prefix
-* (store) [\#202](https://github.com/line/lfb-sdk/pull/202) param store doesn't use gas kv
+* (store) [\#202](https://github.com/line/lfb-sdk/pull/202) Param store doesn't use gas kv
+* (store) [\#203](https://github.com/line/lfb-sdk/pull/203) Remove transient store that is not used now
+* (perf) [\#204](https://github.com/line/lfb-sdk/pull/204) Apply rw mutex to cachekv
+* (perf) [\#208](https://github.com/line/lfb-sdk/pull/208) Use easyjson instead of amino when marshal abci logs 
+* (perf) [\#209](https://github.com/line/lfb-sdk/pull/209) Apply async reactor ostracon
+* (proto) [\#212](https://github.com/line/lfb-sdk/pull/212) Reformat proto files and restore proto docs
+* (perf) [\#216](https://github.com/line/lfb-sdk/pull/216) Memoize bech32 encoding and decoding
+* (perf) [\#218](https://github.com/line/lfb-sdk/pull/218) Rootmulti store parallel commit
+* (perf) [\#219](https://github.com/line/lfb-sdk/pull/219) Fix bech32 cache to get bech32 from proper cache
+* (bump-up) [\#221](https://github.com/line/lfb-sdk/pull/221) Bump up iavl for parallel processing of batches
+* (perf) [\#224](https://github.com/line/lfb-sdk/pull/224) Updated log time to have milliseconds
+* (bump-up) [\#228](https://github.com/line/lfb-sdk/pull/228) Bump up ostracon to optimize checking the txs size
+* (global) [\#230](https://github.com/line/lfb-sdk/pull/230) Modify module name to lfb-sdk
+* (bump-up) [\#246](https://github.com/line/lfb-sdk/pull/246) Bump up ostracon to not flush wal when receive consensus msgs
+* (wasm) [\#250](https://github.com/line/lfb-sdk/pull/250) Migrate linkwasmd to the latest commit
+* (wasm) [\#254](https://github.com/line/lfb-sdk/pull/254) Specify wasm event types
+* (x) [\#255](https://github.com/line/lfb-sdk/pull/255) Remove legacy from modules
 
 ### Bug Fixes
 * (test) [\#92](https://github.com/line/lfb-sdk/pull/92) Fix SendToModuleAccountTest
@@ -40,12 +56,27 @@
 * (config) [\#138](https://github.com/line/lfb-sdk/pull/138) Fix getting coin type at running cmd 
 * (race) [\#159](https://github.com/line/lfb-sdk/pull/159) Fix test-race failure
 * (test) [\#193](https://github.com/line/lfb-sdk/pull/193) Allow to add new validator in test network
-
+ 
 ### Breaking Changes
 * (global) [\#90](https://github.com/line/lfb-sdk/pull/90) Revise module path to `github.com/line/lfb-sdk`
 * (rpc) [\#97](https://github.com/line/lfb-sdk/pull/97) Send response with 404 status when quering non-exist account
 * (proto) [\#106](https://github.com/line/lfb-sdk/pull/106) Rename package of proto files
 * (api) [\#130](https://github.com/line/lfb-sdk/pull/130) Rename rest apis
+* (auth) [\#265](https://github.com/line/lfb-sdk/pull/265) Introduce sig block height for the new replay protection
+
+### Build, CI
+* (ci) [\#234](https://github.com/line/lfb-sdk/pull/234) Fix branch name in ci script
+* (docker) [\#264](https://github.com/line/lfb-sdk/pull/264) Remove docker publish
+ 
+### Document Updates
+* (docs) [\#205](https://github.com/line/lfb-sdk/pull/205) Renewal docs for open source
+* (docs) [\#207](https://github.com/line/lfb-sdk/pull/207) Fix license
+* (docs) [\#211](https://github.com/line/lfb-sdk/pull/211) Remove codeowners
+* (docs) [\#248](https://github.com/line/lfb-sdk/pull/248) Add PR procedure, apply main branch
+* (docs) [\#256](https://github.com/line/lfb-sdk/pull/256) Modify copyright and contributing
+* (docs) [\#259](https://github.com/line/lfb-sdk/pull/259) Modify copyright, verified from legal team
+* (docs) [\#260](https://github.com/line/lfb-sdk/pull/260) Remove gov, ibc and readme of wasm module
+* (docs) [\#262](https://github.com/line/lfb-sdk/pull/262) Fix link urls, remove invalid reference
 
 ## [cosmos-sdk v0.42.1] - 2021-03-15
 Initial lfb-sdk is based on the cosmos-sdk v0.42.1

@@ -164,7 +164,6 @@ func (bva BaseVestingAccount) Validate() error {
 type vestingAccountYAML struct {
 	Address          sdk.AccAddress `json:"address" yaml:"address"`
 	PubKey           string         `json:"public_key" yaml:"public_key"`
-	AccountNumber    uint64         `json:"account_number" yaml:"account_number"`
 	Sequence         uint64         `json:"sequence" yaml:"sequence"`
 	OriginalVesting  sdk.Coins      `json:"original_vesting" yaml:"original_vesting"`
 	DelegatedFree    sdk.Coins      `json:"delegated_free" yaml:"delegated_free"`
@@ -185,7 +184,6 @@ func (bva BaseVestingAccount) String() string {
 func (bva BaseVestingAccount) MarshalYAML() (interface{}, error) {
 	alias := vestingAccountYAML{
 		Address:          bva.Address,
-		AccountNumber:    bva.AccountNumber,
 		Sequence:         bva.Sequence,
 		OriginalVesting:  bva.OriginalVesting,
 		DelegatedFree:    bva.DelegatedFree,
@@ -308,7 +306,6 @@ func (cva ContinuousVestingAccount) String() string {
 func (cva ContinuousVestingAccount) MarshalYAML() (interface{}, error) {
 	alias := vestingAccountYAML{
 		Address:          cva.Address,
-		AccountNumber:    cva.AccountNumber,
 		Sequence:         cva.Sequence,
 		OriginalVesting:  cva.OriginalVesting,
 		DelegatedFree:    cva.DelegatedFree,
@@ -461,7 +458,6 @@ func (pva PeriodicVestingAccount) String() string {
 func (pva PeriodicVestingAccount) MarshalYAML() (interface{}, error) {
 	alias := vestingAccountYAML{
 		Address:          pva.Address,
-		AccountNumber:    pva.AccountNumber,
 		Sequence:         pva.Sequence,
 		OriginalVesting:  pva.OriginalVesting,
 		DelegatedFree:    pva.DelegatedFree,

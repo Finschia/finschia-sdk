@@ -172,8 +172,8 @@ func (s *IntegrationTestSuite) TestGRPCServer_BroadcastTx() {
 }
 
 // Test and enforce that we upfront reject any connections to baseapp containing
-// invalid initial x-cosmos-block-height that aren't positive  and in the range [0, max(int64)]
-// See issue https://github.com/line/lfb-sdk/issues/7662.
+// invalid initial x-lfb-block-height that aren't positive  and in the range [0, max(int64)]
+// See issue https://github.com/cosmos/cosmos-sdk/issues/7662.
 func (s *IntegrationTestSuite) TestGRPCServerInvalidHeaderHeights() {
 	t := s.T()
 	val0 := s.network.Validators[0]
@@ -183,9 +183,9 @@ func (s *IntegrationTestSuite) TestGRPCServerInvalidHeaderHeights() {
 		value   string
 		wantErr string
 	}{
-		{"-1", "\"x-cosmos-block-height\" must be >= 0"},
+		{"-1", "\"x-lfb-block-height\" must be >= 0"},
 		{"9223372036854775808", "value out of range"}, // > max(int64) by 1
-		{"-10", "\"x-cosmos-block-height\" must be >= 0"},
+		{"-10", "\"x-lfb-block-height\" must be >= 0"},
 		{"18446744073709551615", "value out of range"}, // max uint64, which is  > max(int64)
 		{"-9223372036854775809", "value out of range"}, // Out of the range of for negative int64
 	}
