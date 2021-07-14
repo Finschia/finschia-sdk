@@ -90,7 +90,7 @@ func TestBuildSimTx(t *testing.T) {
 
 	txf := tx.Factory{}.
 		WithTxConfig(txCfg).
-		WithAccountNumber(50).
+		WithSigBlockHeight(1).
 		WithSequence(23).
 		WithFees("50stake").
 		WithMemo("memo").
@@ -106,7 +106,7 @@ func TestBuildSimTx(t *testing.T) {
 func TestBuildUnsignedTx(t *testing.T) {
 	txf := tx.Factory{}.
 		WithTxConfig(NewTestTxConfig()).
-		WithAccountNumber(50).
+		WithSigBlockHeight(1).
 		WithSequence(23).
 		WithFees("50stake").
 		WithMemo("memo").
@@ -148,7 +148,7 @@ func TestSign(t *testing.T) {
 
 	txfNoKeybase := tx.Factory{}.
 		WithTxConfig(NewTestTxConfig()).
-		WithAccountNumber(50).
+		WithSigBlockHeight(1).
 		WithSequence(23).
 		WithFees("50stake").
 		WithMemo("memo").

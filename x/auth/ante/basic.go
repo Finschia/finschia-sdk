@@ -200,3 +200,32 @@ func (txh TxTimeoutHeightDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simul
 
 	return next(ctx, tx, simulate)
 }
+
+type TxSigBlockHeightDecorator struct {
+	ak AccountKeeper
+}
+
+func NewTxSigBlockHeightDecorator(ak AccountKeeper) TxSigBlockHeightDecorator {
+	return TxSigBlockHeightDecorator{
+		ak: ak,
+	}
+}
+
+func (txs TxSigBlockHeightDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (sdk.Context, error) {
+	if !simulate {
+		params := txs.ak.GetParams(ctx)
+		sbh := tx.GetSigBlockHeight()
+		current := uint64(ctx.BlockHeight())
+		validMin := uint64(0)
+		if current > params.ValidSigBlockPeriod {
+			validMin = current - params.ValidSigBlockPeriod
+		}
+		if sbh > uint64(ctx.BlockHeight()) || sbh < validMin {
+			return ctx, sdkerrors.Wrapf(
+				sdkerrors.ErrInvalidSigBlockHeight, "sig block height: %d, current: %d, valid sig block period: %d",
+				sbh, ctx.BlockHeight(), params.ValidSigBlockPeriod,
+			)
+		}
+	}
+	return next(ctx, tx, simulate)
+}

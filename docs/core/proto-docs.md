@@ -3857,7 +3857,6 @@ type for additional functionality (e.g. vesting).
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
 | `pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
 
@@ -3895,6 +3894,7 @@ Params defines the parameters for the auth module.
 | `tx_size_cost_per_byte` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_ed25519` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_secp256k1` | [uint64](#uint64) |  |  |
+| `valid_sig_block_period` | [uint64](#uint64) |  |  |
 
 
 
@@ -9405,7 +9405,6 @@ SignDoc is the type used for generating sign bytes for SIGN_MODE_DIRECT.
 | `body_bytes` | [bytes](#bytes) |  | body_bytes is protobuf serialization of a TxBody that matches the representation in TxRaw. |
 | `auth_info_bytes` | [bytes](#bytes) |  | auth_info_bytes is a protobuf serialization of an AuthInfo that matches the representation in TxRaw. |
 | `chain_id` | [string](#string) |  | chain_id is the unique identifier of the chain this transaction targets. It prevents signed transactions from being used on another chain by an attacker |
-| `account_number` | [uint64](#uint64) |  | account_number is the account number of the account in state |
 
 
 
@@ -9456,6 +9455,7 @@ TxBody is the body of a transaction that all signers sign over.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | messages is a list of messages to be executed. The required signers of those messages define the number and order of elements in AuthInfo's signer_infos and Tx's signatures. Each required signer address is added to the list only the first time it occurs. By convention, the first required signer (usually from the first message) is referred to as the primary signer and pays the fee for the whole transaction. |
+| `sig_block_height` | [uint64](#uint64) |  | sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_DURATION` this is used for distinguish signatures instead of account number. this is mandatory. |
 | `memo` | [string](#string) |  | memo is any arbitrary memo to be added to the transaction |
 | `timeout_height` | [uint64](#uint64) |  | timeout is the block height after which this transaction will not be processed by the chain |
 | `extension_options` | [google.protobuf.Any](#google.protobuf.Any) | repeated | extension_options are arbitrary options that can be added by chains when the default options are not sufficient. If any of these are present and can't be handled, the transaction will be rejected |

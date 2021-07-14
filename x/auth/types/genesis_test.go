@@ -16,20 +16,15 @@ import (
 func TestSanitize(t *testing.T) {
 	addr1 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	authAcc1 := types.NewBaseAccountWithAddress(addr1)
-	err := authAcc1.SetAccountNumber(1)
-	require.NoError(t, err)
 
 	addr2 := sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
 	authAcc2 := types.NewBaseAccountWithAddress(addr2)
 
 	genAccs := types.GenesisAccounts{authAcc1, authAcc2}
 
-	require.True(t, genAccs[0].GetAccountNumber() > genAccs[1].GetAccountNumber())
-	require.Equal(t, genAccs[1].GetAddress(), addr2)
 	genAccs = types.SanitizeGenesisAccounts(genAccs)
 
-	require.False(t, genAccs[0].GetAccountNumber() > genAccs[1].GetAccountNumber())
-	require.Equal(t, genAccs[1].GetAddress(), addr1)
+	require.False(t, genAccs[0].GetAddress().String() > genAccs[1].GetAddress().String())
 }
 
 var (

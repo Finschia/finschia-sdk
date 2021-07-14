@@ -107,7 +107,7 @@ func SimulateMsgSetWithdrawAddress(ak types.AccountKeeper, bk types.BankKeeper, 
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{account.GetAccountNumber()},
+			[]uint64{0},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -159,7 +159,7 @@ func SimulateMsgWithdrawDelegatorReward(ak types.AccountKeeper, bk types.BankKee
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{account.GetAccountNumber()},
+			[]uint64{0},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -214,7 +214,7 @@ func SimulateMsgWithdrawValidatorCommission(ak types.AccountKeeper, bk types.Ban
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{account.GetAccountNumber()},
+			[]uint64{0},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -269,7 +269,7 @@ func SimulateMsgFundCommunityPool(ak types.AccountKeeper, bk types.BankKeeper, k
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{account.GetAccountNumber()},
+			[]uint64{0},
 			[]uint64{account.GetSequence()},
 			funder.PrivKey,
 		)

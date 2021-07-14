@@ -364,7 +364,7 @@ func (s *IntegrationTestSuite) TestMultipleSyncBroadcastTxRequests() {
 	}
 }
 
-func (s *IntegrationTestSuite) createTestStdTx(val *network.Validator, accNum, sequence uint64) legacytx.StdTx {
+func (s *IntegrationTestSuite) createTestStdTx(val *network.Validator, sbh, sequence uint64) legacytx.StdTx {
 	txConfig := legacytx.StdTxConfig{Cdc: s.cfg.LegacyAmino}
 
 	msg := &types.MsgSend{
@@ -388,7 +388,7 @@ func (s *IntegrationTestSuite) createTestStdTx(val *network.Validator, accNum, s
 		WithKeybase(val.ClientCtx.Keyring).
 		WithTxConfig(txConfig).
 		WithSignMode(signing.SignMode_SIGN_MODE_LEGACY_AMINO_JSON).
-		WithAccountNumber(accNum).
+		WithSigBlockHeight(sbh).
 		WithSequence(sequence)
 
 	// sign Tx (offline mode so we can manually set sequence number)
@@ -615,9 +615,9 @@ func (s *IntegrationTestSuite) TestLegacyMultisig() {
 
 	sign2File := testutil.WriteToNewTempFile(s.T(), account2Signature.String())
 
-	// Does not work in offline mode.
+	// Offline mode requires --sequence flag.
 	_, err = authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), "--offline", sign1File.Name(), sign2File.Name())
-	s.Require().EqualError(err, fmt.Sprintf("couldn't verify signature: unable to verify single signer signature"))
+	s.Require().EqualError(err, fmt.Sprintf("required flag(s) \"sequence\" not set"))
 
 	val1.ClientCtx.Offline = false
 	multiSigWith2Signatures, err := authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), sign1File.Name(), sign2File.Name())

@@ -27,11 +27,10 @@ var (
 
 // NewBaseAccount creates a new BaseAccount object
 //nolint:interfacer
-func NewBaseAccount(address sdk.AccAddress, pubKey cryptotypes.PubKey, accountNumber, sequence uint64) *BaseAccount {
+func NewBaseAccount(address sdk.AccAddress, pubKey cryptotypes.PubKey, sequence uint64) *BaseAccount {
 	acc := &BaseAccount{
-		Address:       address.String(),
-		AccountNumber: accountNumber,
-		Sequence:      sequence,
+		Address:  address.String(),
+		Sequence: sequence,
 	}
 
 	err := acc.SetPubKey(pubKey)
@@ -93,17 +92,6 @@ func (acc *BaseAccount) SetPubKey(pubKey cryptotypes.PubKey) error {
 		acc.PubKey = any
 	}
 	return err
-}
-
-// GetAccountNumber - Implements AccountI
-func (acc BaseAccount) GetAccountNumber() uint64 {
-	return acc.AccountNumber
-}
-
-// SetAccountNumber - Implements AccountI
-func (acc *BaseAccount) SetAccountNumber(accNumber uint64) error {
-	acc.AccountNumber = accNumber
-	return nil
 }
 
 // GetSequence - Implements sdk.AccountI.
@@ -236,12 +224,11 @@ func (ma ModuleAccount) Validate() error {
 }
 
 type moduleAccountPretty struct {
-	Address       sdk.AccAddress `json:"address" yaml:"address"`
-	PubKey        string         `json:"public_key" yaml:"public_key"`
-	AccountNumber uint64         `json:"account_number" yaml:"account_number"`
-	Sequence      uint64         `json:"sequence" yaml:"sequence"`
-	Name          string         `json:"name" yaml:"name"`
-	Permissions   []string       `json:"permissions" yaml:"permissions"`
+	Address     sdk.AccAddress `json:"address" yaml:"address"`
+	PubKey      string         `json:"public_key" yaml:"public_key"`
+	Sequence    uint64         `json:"sequence" yaml:"sequence"`
+	Name        string         `json:"name" yaml:"name"`
+	Permissions []string       `json:"permissions" yaml:"permissions"`
 }
 
 func (ma ModuleAccount) String() string {
@@ -257,12 +244,11 @@ func (ma ModuleAccount) MarshalYAML() (interface{}, error) {
 	}
 
 	bs, err := yaml.Marshal(moduleAccountPretty{
-		Address:       accAddr,
-		PubKey:        "",
-		AccountNumber: ma.AccountNumber,
-		Sequence:      ma.Sequence,
-		Name:          ma.Name,
-		Permissions:   ma.Permissions,
+		Address:     accAddr,
+		PubKey:      "",
+		Sequence:    ma.Sequence,
+		Name:        ma.Name,
+		Permissions: ma.Permissions,
 	})
 
 	if err != nil {
@@ -280,12 +266,11 @@ func (ma ModuleAccount) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(moduleAccountPretty{
-		Address:       accAddr,
-		PubKey:        "",
-		AccountNumber: ma.AccountNumber,
-		Sequence:      ma.Sequence,
-		Name:          ma.Name,
-		Permissions:   ma.Permissions,
+		Address:     accAddr,
+		PubKey:      "",
+		Sequence:    ma.Sequence,
+		Name:        ma.Name,
+		Permissions: ma.Permissions,
 	})
 }
 
@@ -296,7 +281,7 @@ func (ma *ModuleAccount) UnmarshalJSON(bz []byte) error {
 		return err
 	}
 
-	ma.BaseAccount = NewBaseAccount(alias.Address, nil, alias.AccountNumber, alias.Sequence)
+	ma.BaseAccount = NewBaseAccount(alias.Address, nil, alias.Sequence)
 	ma.Name = alias.Name
 	ma.Permissions = alias.Permissions
 
@@ -305,7 +290,7 @@ func (ma *ModuleAccount) UnmarshalJSON(bz []byte) error {
 
 // AccountI is an interface used to store coins at a given address within state.
 // It presumes a notion of sequence numbers for replay protection,
-// a notion of account numbers for replay protection for previously pruned accounts,
+// a notion of sig block height for replay protection for previously pruned accounts,
 // and a pubkey for authentication purposes.
 //
 // Many complex conditions can be used in the concrete struct which implements AccountI.
@@ -317,9 +302,6 @@ type AccountI interface {
 
 	GetPubKey() cryptotypes.PubKey // can return nil.
 	SetPubKey(cryptotypes.PubKey) error
-
-	GetAccountNumber() uint64
-	SetAccountNumber(uint64) error
 
 	GetSequence() uint64
 	SetSequence(uint64) error

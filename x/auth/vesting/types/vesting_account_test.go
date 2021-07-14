@@ -581,7 +581,7 @@ func TestTrackUndelegationPeriodicVestingAcc(t *testing.T) {
 func TestGenesisAccountValidate(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
 	addr := sdk.AccAddress(pubkey.Address())
-	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 0, 0)
+	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 0)
 	initialVesting := sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 50))
 	baseVestingWithCoins := types.NewBaseVestingAccount(baseAcc, initialVesting, 100)
 	tests := []struct {
@@ -596,7 +596,7 @@ func TestGenesisAccountValidate(t *testing.T) {
 		},
 		{
 			"invalid base valid account",
-			authtypes.NewBaseAccount(addr, secp256k1.GenPrivKey().PubKey(), 0, 0),
+			authtypes.NewBaseAccount(addr, secp256k1.GenPrivKey().PubKey(), 0),
 			true,
 		},
 		{
@@ -648,7 +648,7 @@ func TestContinuousVestingAccountMarshal(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
 	addr := sdk.AccAddress(pubkey.Address())
 	coins := sdk.NewCoins(sdk.NewInt64Coin("test", 5))
-	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 10, 50)
+	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 50)
 
 	baseVesting := types.NewBaseVestingAccount(baseAcc, coins, time.Now().Unix())
 	acc := types.NewContinuousVestingAccountRaw(baseVesting, baseVesting.EndTime)
@@ -670,7 +670,7 @@ func TestPeriodicVestingAccountMarshal(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
 	addr := sdk.AccAddress(pubkey.Address())
 	coins := sdk.NewCoins(sdk.NewInt64Coin("test", 5))
-	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 10, 50)
+	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 50)
 
 	acc := types.NewPeriodicVestingAccount(baseAcc, coins, time.Now().Unix(), types.Periods{types.Period{3600, coins}})
 
@@ -691,7 +691,7 @@ func TestDelayedVestingAccountMarshal(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
 	addr := sdk.AccAddress(pubkey.Address())
 	coins := sdk.NewCoins(sdk.NewInt64Coin("test", 5))
-	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 10, 50)
+	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 50)
 
 	acc := types.NewDelayedVestingAccount(baseAcc, coins, time.Now().Unix())
 

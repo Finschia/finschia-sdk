@@ -153,6 +153,10 @@ func (w *wrapper) FeeGranter() sdk.AccAddress {
 	return nil
 }
 
+func (w *wrapper) GetSigBlockHeight() uint64 {
+	return w.tx.Body.SigBlockHeight
+}
+
 func (w *wrapper) GetMemo() string {
 	return w.tx.Body.Memo
 }
@@ -230,6 +234,10 @@ func (w *wrapper) SetMemo(memo string) {
 
 	// set bodyBz to nil because the cached bodyBz no longer matches tx.Body
 	w.bodyBz = nil
+}
+
+func (w *wrapper) SetSigBlockHeight(sbh uint64) {
+	w.tx.Body.SigBlockHeight = sbh
 }
 
 func (w *wrapper) SetGasLimit(limit uint64) {

@@ -48,7 +48,7 @@ const (
 	FlagGasAdjustment    = "gas-adjustment"
 	FlagFrom             = "from"
 	FlagName             = "name"
-	FlagAccountNumber    = "account-number"
+	FlagSigBlockHeight   = "sig-block-height"
 	FlagSequence         = "sequence"
 	FlagMemo             = "memo"
 	FlagFees             = "fees"
@@ -96,7 +96,7 @@ func AddQueryFlagsToCmd(cmd *cobra.Command) {
 func AddTxFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().String(FlagKeyringDir, "", "The client Keyring directory; if omitted, the default 'home' directory will be used")
 	cmd.Flags().String(FlagFrom, "", "Name or address of private key with which to sign")
-	cmd.Flags().Uint64P(FlagAccountNumber, "a", 0, "The account number of the signing account (offline mode only)")
+	cmd.Flags().Uint64P(FlagSigBlockHeight, "n", 0, "The block height to be included in the tx body to protect from replaying")
 	cmd.Flags().Uint64P(FlagSequence, "s", 0, "The sequence number of the signing account (offline mode only)")
 	cmd.Flags().String(FlagMemo, "", "Memo to send along with transaction")
 	cmd.Flags().String(FlagFees, "", "Fees to pay along with transaction; eg: 10uatom")

@@ -75,7 +75,7 @@ func generateSendReq(from authtypes.AccountI, amount types.Coins) bankrest.SendR
 		"some-id",
 		"10000",
 		fmt.Sprintf("%f", 1.0),
-		from.GetAccountNumber(),
+		0,
 		from.GetSequence(),
 		types.NewCoins(),
 		nil,
