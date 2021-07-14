@@ -326,7 +326,7 @@ func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 	if initSeq == 0 && !clientCtx.Offline {
 		seq, err := txf.accountRetriever.GetAccountSequence(clientCtx, from)
 		if err != nil {
-			if sdkError, _ := err.(*sdkerrors.Error); sdkError != sdkerrors.ErrKeyNotFound {
+			if cliError, ok := err.(*client.Error); !ok || cliError.Code != sdkerrors.ErrKeyNotFound.ABCICode() {
 				return txf, err
 			}
 		}
