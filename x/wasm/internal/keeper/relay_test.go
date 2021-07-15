@@ -3,6 +3,7 @@ package keeper
 import (
 	"encoding/json"
 	"errors"
+	"math"
 	"testing"
 
 	sdk "github.com/line/lfb-sdk/types"
@@ -32,7 +33,7 @@ func TestOnOpenChannel(t *testing.T) {
 		},
 		"consume max gas": {
 			contractAddr: example.Contract,
-			contractGas:  math.MaxUint64 / DefaultGasMultiplier,
+			contractGas:  math.MaxUint64 / types.DefaultGasMultiplier,
 		},
 		"consume gas on error": {
 			contractAddr: example.Contract,
