@@ -68,7 +68,6 @@ type Keeper struct {
 	messenger             Messenger
 	// queryGasLimit is the max wasmvm gas that can be spent on executing a query with a contract
 	queryGasLimit uint64
-	authZPolicy   AuthorizationPolicy
 	paramSpace    *paramtypes.Subspace
 }
 
@@ -562,12 +561,7 @@ func (k Keeper) IterateContractsByCode(ctx sdk.Context, codeID uint64, cb func(a
 	}
 }
 
-// UpdateContractStatus sets a new status of the contract on the ContractInfo.
-func (k Keeper) UpdateContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus) error {
-	return k.updateContractStatus(ctx, contractAddress, caller, status, k.authZPolicy)
-}
-
-func (k Keeper) updateContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error {
+func (k Keeper) setContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error {
 	if !authZ.CanUpdateContractStatus(k.getContractStatusAccessConfig(ctx), caller) {
 		return sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not update contract status")
 	}
