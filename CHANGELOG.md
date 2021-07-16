@@ -31,6 +31,7 @@
 * (build) [\#195](https://github.com/line/lfb-sdk/pull/195) Build properly when using libsecp256k1
 * (perf) [\#198](https://github.com/line/lfb-sdk/pull/198) Caching paramset
 * (global) [\#200](https://github.com/line/lfb-sdk/pull/200) Add a env prefix
+* (store) [\#202](https://github.com/line/lfb-sdk/pull/202) param store doesn't use gas kv
 * (store) [\#202](https://github.com/line/lfb-sdk/pull/202) Param store doesn't use gas kv
 * (store) [\#203](https://github.com/line/lfb-sdk/pull/203) Remove transient store that is not used now
 * (perf) [\#204](https://github.com/line/lfb-sdk/pull/204) Apply rw mutex to cachekv
@@ -46,6 +47,7 @@
 * (global) [\#230](https://github.com/line/lfb-sdk/pull/230) Modify module name to lfb-sdk
 * (bump-up) [\#246](https://github.com/line/lfb-sdk/pull/246) Bump up ostracon to not flush wal when receive consensus msgs
 * (wasm) [\#250](https://github.com/line/lfb-sdk/pull/250) Migrate linkwasmd to the latest commit
+* (wasm) [\#253](https://github.com/line/lfb-sdk/pull/253) remove MaxGas const
 * (wasm) [\#254](https://github.com/line/lfb-sdk/pull/254) Specify wasm event types
 * (x) [\#255](https://github.com/line/lfb-sdk/pull/255) Remove legacy from modules
 
