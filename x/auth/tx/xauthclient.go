@@ -46,8 +46,6 @@ func queryTxsByEvents(goCtx context.Context, clientCtx client.Context, events []
 		return nil, err
 	}
 
-	// TODO: this may not always need to be proven
-	// https://github.com/line/lfb-sdk/issues/6807
 	resTxs, err := node.TxSearch(goCtx, query, prove, &page, &limit, orderBy)
 	if err != nil {
 		return nil, err
