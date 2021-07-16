@@ -76,7 +76,7 @@ func ValidateGenesis(data GenesisState) error {
 // SanitizeGenesisAccounts sorts accounts and coin sets.
 func SanitizeGenesisAccounts(genAccs GenesisAccounts) GenesisAccounts {
 	sort.Slice(genAccs, func(i, j int) bool {
-		return genAccs[i].GetAccountNumber() < genAccs[j].GetAccountNumber()
+		return genAccs[i].GetAddress().String() < genAccs[j].GetAddress().String()
 	})
 
 	return genAccs

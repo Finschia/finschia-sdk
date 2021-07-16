@@ -96,7 +96,7 @@ func SimulateMsgUnjail(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Kee
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{account.GetAccountNumber()},
+			[]uint64{0},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)

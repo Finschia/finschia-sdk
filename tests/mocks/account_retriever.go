@@ -63,20 +63,6 @@ func (mr *MockAccountMockRecorder) GetPubKey() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetPubKey", reflect.TypeOf((*MockAccount)(nil).GetPubKey))
 }
 
-// GetAccountNumber mocks base method
-func (m *MockAccount) GetAccountNumber() uint64 {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAccountNumber")
-	ret0, _ := ret[0].(uint64)
-	return ret0
-}
-
-// GetAccountNumber indicates an expected call of GetAccountNumber
-func (mr *MockAccountMockRecorder) GetAccountNumber() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountNumber", reflect.TypeOf((*MockAccount)(nil).GetAccountNumber))
-}
-
 // GetSequence mocks base method
 func (m *MockAccount) GetSequence() uint64 {
 	m.ctrl.T.Helper()
@@ -159,18 +145,18 @@ func (mr *MockAccountRetrieverMockRecorder) EnsureExists(clientCtx, addr interfa
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnsureExists", reflect.TypeOf((*MockAccountRetriever)(nil).EnsureExists), clientCtx, addr)
 }
 
-// GetAccountNumberSequence mocks base method
-func (m *MockAccountRetriever) GetAccountNumberSequence(clientCtx client.Context, addr types0.AccAddress) (uint64, uint64, error) {
+// GetAccountSequence mocks base method
+func (m *MockAccountRetriever) GetAccountSequence(clientCtx client.Context, addr types0.AccAddress) (uint64, uint64, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetAccountNumberSequence", clientCtx, addr)
+	ret := m.ctrl.Call(m, "GetAccountSequence", clientCtx, addr)
 	ret0, _ := ret[0].(uint64)
 	ret1, _ := ret[1].(uint64)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
 }
 
-// GetAccountNumberSequence indicates an expected call of GetAccountNumberSequence
-func (mr *MockAccountRetrieverMockRecorder) GetAccountNumberSequence(clientCtx, addr interface{}) *gomock.Call {
+// GetAccountSequence indicates an expected call of GetAccountSequence
+func (mr *MockAccountRetrieverMockRecorder) GetAccountSequence(clientCtx, addr interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountNumberSequence", reflect.TypeOf((*MockAccountRetriever)(nil).GetAccountNumberSequence), clientCtx, addr)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetAccountSequence", reflect.TypeOf((*MockAccountRetriever)(nil).GetAccountSequence), clientCtx, addr)
 }

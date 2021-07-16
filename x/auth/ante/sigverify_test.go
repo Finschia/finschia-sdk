@@ -35,7 +35,6 @@ func (suite *AnteTestSuite) TestSetPubKey() {
 	// set accounts and create msg for each address
 	for i, addr := range addrs {
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		msgs[i] = testdata.NewTestMsg(addr)
 	}
@@ -119,7 +118,7 @@ func (suite *AnteTestSuite) TestSigVerification() {
 	suite.SetupTest(true) // setup
 	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 
-	// make block height non-zero to ensure account numbers part of signBytes
+	// make block height non-zero to ensure sig block height part
 	suite.ctx = suite.ctx.WithBlockHeight(1)
 
 	// keys and addresses
@@ -133,7 +132,6 @@ func (suite *AnteTestSuite) TestSigVerification() {
 	// set accounts and create msg for each address
 	for i, addr := range addrs {
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		msgs[i] = testdata.NewTestMsg(addr)
 	}
@@ -143,12 +141,13 @@ func (suite *AnteTestSuite) TestSigVerification() {
 
 	spkd := ante.NewSetPubKeyDecorator(suite.app.AccountKeeper)
 	svd := ante.NewSigVerificationDecorator(suite.app.AccountKeeper, suite.clientCtx.TxConfig.SignModeHandler())
-	antehandler := sdk.ChainAnteDecorators(spkd, svd)
+	sbhv := ante.NewTxSigBlockHeightDecorator(suite.app.AccountKeeper)
+	antehandler := sdk.ChainAnteDecorators(spkd, svd, sbhv)
 
 	type testCase struct {
 		name      string
 		privs     []cryptotypes.PrivKey
-		accNums   []uint64
+		sbh       []uint64
 		accSeqs   []uint64
 		recheck   bool
 		shouldErr bool
@@ -156,10 +155,10 @@ func (suite *AnteTestSuite) TestSigVerification() {
 	testCases := []testCase{
 		{"no signers", []cryptotypes.PrivKey{}, []uint64{}, []uint64{}, false, true},
 		{"not enough signers", []cryptotypes.PrivKey{priv1, priv2}, []uint64{0, 1}, []uint64{0, 0}, false, true},
-		{"wrong order signers", []cryptotypes.PrivKey{priv3, priv2, priv1}, []uint64{2, 1, 0}, []uint64{0, 0, 0}, false, true},
-		{"wrong accnums", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{7, 8, 9}, []uint64{0, 0, 0}, false, true},
-		{"wrong sequences", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{3, 4, 5}, false, true},
-		{"valid tx", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{0, 0, 0}, false, false},
+		{"wrong order signers", []cryptotypes.PrivKey{priv3, priv2, priv1}, []uint64{1, 1, 1}, []uint64{0, 0, 0}, false, true},
+		{"wrong sig block height", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{2, 2, 2}, []uint64{0, 0, 0}, false, true},
+		{"wrong sequences", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 1}, []uint64{3, 4, 5}, false, true},
+		{"valid tx", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{1, 1, 1}, []uint64{0, 0, 0}, false, false},
 		{"no err on recheck", []cryptotypes.PrivKey{}, []uint64{}, []uint64{}, true, false},
 	}
 	for i, tc := range testCases {
@@ -170,7 +169,7 @@ func (suite *AnteTestSuite) TestSigVerification() {
 		suite.txBuilder.SetFeeAmount(feeAmount)
 		suite.txBuilder.SetGasLimit(gasLimit)
 
-		tx, err := suite.CreateTestTx(tc.privs, tc.accNums, tc.accSeqs, suite.ctx.ChainID())
+		tx, err := suite.CreateTestTx(tc.privs, tc.sbh, tc.accSeqs, suite.ctx.ChainID())
 		suite.Require().NoError(err)
 
 		_, err = antehandler(suite.ctx, tx, false)
@@ -204,7 +203,7 @@ func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 
 	suite.txBuilder = suite.clientCtx.TxConfig.NewTxBuilder()
 
-	// make block height non-zero to ensure account numbers part of signBytes
+	// make block height non-zero to ensure sig block height
 	suite.ctx = suite.ctx.WithBlockHeight(1)
 
 	// keys and addresses
@@ -218,7 +217,6 @@ func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 	// set accounts and create msg for each address
 	for i, addr := range addrs {
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		msgs[i] = testdata.NewTestMsg(addr)
 	}
@@ -228,7 +226,8 @@ func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 
 	spkd := ante.NewSetPubKeyDecorator(suite.app.AccountKeeper)
 	svd := ante.NewSigVerificationDecorator(suite.app.AccountKeeper, suite.clientCtx.TxConfig.SignModeHandler())
-	antehandler := sdk.ChainAnteDecorators(spkd, svd)
+	sbhv := ante.NewTxSigBlockHeightDecorator(suite.app.AccountKeeper)
+	antehandler := sdk.ChainAnteDecorators(spkd, svd, sbhv)
 
 	type testCase struct {
 		name      string
@@ -241,10 +240,10 @@ func (suite *AnteTestSuite) TestSigVerification_ExplicitAmino() {
 	testCases := []testCase{
 		{"no signers", []cryptotypes.PrivKey{}, []uint64{}, []uint64{}, false, true},
 		{"not enough signers", []cryptotypes.PrivKey{priv1, priv2}, []uint64{0, 1}, []uint64{0, 0}, false, true},
-		{"wrong order signers", []cryptotypes.PrivKey{priv3, priv2, priv1}, []uint64{2, 1, 0}, []uint64{0, 0, 0}, false, true},
-		{"wrong accnums", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{7, 8, 9}, []uint64{0, 0, 0}, false, true},
-		{"wrong sequences", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{3, 4, 5}, false, true},
-		{"valid tx", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 2}, []uint64{0, 0, 0}, false, false},
+		{"wrong order signers", []cryptotypes.PrivKey{priv3, priv2, priv1}, []uint64{1, 1, 1}, []uint64{0, 0, 0}, false, true},
+		{"wrong sig block height", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{7, 8, 9}, []uint64{0, 0, 0}, false, true},
+		{"wrong sequences", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 1}, []uint64{3, 4, 5}, false, true},
+		{"valid tx", []cryptotypes.PrivKey{priv1, priv2, priv3}, []uint64{0, 1, 1}, []uint64{0, 0, 0}, false, false},
 		{"no err on recheck", []cryptotypes.PrivKey{}, []uint64{}, []uint64{}, true, false},
 	}
 	for i, tc := range testCases {
@@ -302,7 +301,6 @@ func (suite *AnteTestSuite) runSigDecorators(params types.Params, _ bool, privs 
 	for i, priv := range privs {
 		addr := sdk.AccAddress(priv.PubKey().Address())
 		acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-		suite.Require().NoError(acc.SetAccountNumber(uint64(i)))
 		suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 		msgs[i] = testdata.NewTestMsg(addr)
 		accNums[i] = uint64(i)
@@ -337,20 +335,19 @@ func (suite *AnteTestSuite) TestIncrementSequenceDecorator() {
 
 	priv, _, addr := testdata.KeyTestPubAddr()
 	acc := suite.app.AccountKeeper.NewAccountWithAddress(suite.ctx, addr)
-	suite.Require().NoError(acc.SetAccountNumber(uint64(50)))
 	suite.app.AccountKeeper.SetAccount(suite.ctx, acc)
 
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}
 	suite.Require().NoError(suite.txBuilder.SetMsgs(msgs...))
 	privs := []cryptotypes.PrivKey{priv}
-	accNums := []uint64{suite.app.AccountKeeper.GetAccount(suite.ctx, addr).GetAccountNumber()}
+	sbh := []uint64{ 1 }
 	accSeqs := []uint64{suite.app.AccountKeeper.GetAccount(suite.ctx, addr).GetSequence()}
 	feeAmount := testdata.NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()
 	suite.txBuilder.SetFeeAmount(feeAmount)
 	suite.txBuilder.SetGasLimit(gasLimit)
 
-	tx, err := suite.CreateTestTx(privs, accNums, accSeqs, suite.ctx.ChainID())
+	tx, err := suite.CreateTestTx(privs, sbh, accSeqs, suite.ctx.ChainID())
 	suite.Require().NoError(err)
 
 	isd := ante.NewIncrementSequenceDecorator(suite.app.AccountKeeper)

@@ -10,7 +10,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.0-beta
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
-	github.com/confio/ics23/go v0.6.3
+	github.com/confio/ics23/go v0.6.6
 	github.com/cosmos/go-bip39 v1.0.0
 	github.com/cosmos/ledger-cosmos-go v0.11.1
 	github.com/dgraph-io/ristretto v0.0.3-0.20200630154024-f66de99634de
@@ -24,7 +24,7 @@ require (
 	github.com/google/gofuzz v1.2.0
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
-	github.com/grpc-ecosystem/go-grpc-middleware v1.2.2
+	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/kr/text v0.2.0 // indirect

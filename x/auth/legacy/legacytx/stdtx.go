@@ -128,20 +128,22 @@ func (ss StdSignature) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 // NOTE: the first signature is the fee payer (Signatures must not be nil).
 // Deprecated
 type StdTx struct {
-	Msgs          []sdk.Msg      `json:"msg" yaml:"msg"`
-	Fee           StdFee         `json:"fee" yaml:"fee"`
-	Signatures    []StdSignature `json:"signatures" yaml:"signatures"`
-	Memo          string         `json:"memo" yaml:"memo"`
-	TimeoutHeight uint64         `json:"timeout_height" yaml:"timeout_height"`
+	Msgs           []sdk.Msg      `json:"msg" yaml:"msg"`
+	Fee            StdFee         `json:"fee" yaml:"fee"`
+	Signatures     []StdSignature `json:"signatures" yaml:"signatures"`
+	SigBlockHeight uint64         `json:"sig_block_height"`
+	Memo           string         `json:"memo" yaml:"memo"`
+	TimeoutHeight  uint64         `json:"timeout_height" yaml:"timeout_height"`
 }
 
 // Deprecated
-func NewStdTx(msgs []sdk.Msg, fee StdFee, sigs []StdSignature, memo string) StdTx {
+func NewStdTx(msgs []sdk.Msg, fee StdFee, sigs []StdSignature, sbh uint64, memo string) StdTx {
 	return StdTx{
-		Msgs:       msgs,
-		Fee:        fee,
-		Signatures: sigs,
-		Memo:       memo,
+		Msgs:           msgs,
+		Fee:            fee,
+		Signatures:     sigs,
+		SigBlockHeight: sbh,
+		Memo:           memo,
 	}
 }
 
@@ -255,6 +257,8 @@ func (tx StdTx) GetPubKeys() []cryptotypes.PubKey {
 
 	return pks
 }
+
+func (tx StdTx) GetSigBlockHeight() uint64 { return tx.SigBlockHeight }
 
 // GetGas returns the Gas in StdFee
 func (tx StdTx) GetGas() uint64 { return tx.Fee.Gas }

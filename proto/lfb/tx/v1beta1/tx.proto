@@ -58,9 +58,6 @@ message SignDoc {
   // It prevents signed transactions from being used on another chain by an
   // attacker
   string chain_id = 3;
-
-  // account_number is the account number of the account in state
-  uint64 account_number = 4;
 }
 
 // TxBody is the body of a transaction that all signers sign over.
@@ -74,12 +71,16 @@ message TxBody {
   // transaction.
   repeated google.protobuf.Any messages = 1;
 
+  // sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_PERIOD`
+  // this is used for distinguish signatures instead of account number. this is mandatory.
+  uint64 sig_block_height = 2;
+
   // memo is any arbitrary memo to be added to the transaction
-  string memo = 2;
+  string memo = 3;
 
   // timeout is the block height after which this transaction will not
   // be processed by the chain
-  uint64 timeout_height = 3;
+  uint64 timeout_height = 4;
 
   // extension_options are arbitrary options that can be added by chains
   // when the default options are not sufficient. If any of these are present
