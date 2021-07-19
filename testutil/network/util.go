@@ -16,6 +16,7 @@ import (
 
 	"github.com/line/lbm-sdk/server/api"
 	servergrpc "github.com/line/lbm-sdk/server/grpc"
+	srvtypes "github.com/line/lbm-sdk/server/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/genutil"
@@ -94,7 +95,7 @@ func startInProcess(cfg Config, val *Validator) error {
 		select {
 		case err := <-errCh:
 			return err
-		case <-time.After(5 * time.Second): // assume server started successfully
+		case <-time.After(srvtypes.ServerStartTime): // assume server started successfully
 		}
 
 		val.api = apiSrv
@@ -109,21 +110,10 @@ func startInProcess(cfg Config, val *Validator) error {
 		val.grpc = grpcSrv
 
 		if val.AppConfig.GRPCWeb.Enable {
-			errCh1 := make(chan error)
-			go func() {
-				grpcWeb, err := servergrpc.StartGRPCWeb(grpcSrv, *val.AppConfig)
-				if err != nil {
-					errCh1 <- err
-				}
-
-				val.grpcWeb = grpcWeb
-			}()
-			select {
-			case err := <-errCh1:
+			val.grpcWeb, err = servergrpc.StartGRPCWeb(grpcSrv, *val.AppConfig)
+			if err != nil {
 				return err
-			case <-time.After(5 * time.Second): // assume server started successfully
 			}
-
 		}
 	}
 
