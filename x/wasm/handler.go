@@ -2,6 +2,7 @@ package wasm
 
 import (
 	"fmt"
+
 	"github.com/gogo/protobuf/proto"
 	"github.com/line/lfb-sdk/x/wasm/keeper"
 	"github.com/line/lfb-sdk/x/wasm/types"

@@ -9,7 +9,6 @@ import (
 	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 	porttypes "github.com/line/lfb-sdk/x/ibc/core/05-port/types"
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/wasm/types"
 	wasmTypes "github.com/line/lfb-sdk/x/wasm/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 )
@@ -21,7 +20,7 @@ type IBCHandler struct {
 	channelKeeper wasmTypes.ChannelKeeper
 }
 
-func NewIBCHandler(k wasmTypes.IBCContractKeeper, ck types.ChannelKeeper) IBCHandler {
+func NewIBCHandler(k wasmTypes.IBCContractKeeper, ck wasmTypes.ChannelKeeper) IBCHandler {
 	return IBCHandler{keeper: k, channelKeeper: ck}
 }
 
@@ -273,7 +272,7 @@ func ValidateChannelParams(channelID string) error {
 		return err
 	}
 	if channelSequence > math.MaxUint32 {
-		return sdkerrors.Wrapf(types.ErrMaxIBCChannels, "channel sequence %d is greater than max allowed transfer channels %d", channelSequence, math.MaxUint32)
+		return sdkerrors.Wrapf(wasmTypes.ErrMaxIBCChannels, "channel sequence %d is greater than max allowed transfer channels %d", channelSequence, math.MaxUint32)
 	}
 	return nil
 }

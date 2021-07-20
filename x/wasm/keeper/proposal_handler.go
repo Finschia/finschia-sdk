@@ -11,17 +11,6 @@ import (
 	"github.com/line/lfb-sdk/x/wasm/types"
 )
 
-// governing contains a subset of the wasm keeper used by gov processes
-type governing interface {
-	create(ctx sdk.Context, creator sdk.AccAddress, wasmCode []byte, source string, builder string, instantiateAccess *types.AccessConfig, authZ AuthorizationPolicy) (codeID uint64, err error)
-	instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.AccAddress, initMsg []byte, label string, deposit sdk.Coins, authZ AuthorizationPolicy) (sdk.AccAddress, []byte, error)
-	migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte, authZ AuthorizationPolicy) (*sdk.Result, error)
-	setContractAdmin(ctx sdk.Context, contractAddress, caller, newAdmin sdk.AccAddress, authZ AuthorizationPolicy) error
-	PinCode(ctx sdk.Context, codeID uint64) error
-	UnpinCode(ctx sdk.Context, codeID uint64) error
-	updateContractStatus(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, status types.ContractStatus, authZ AuthorizationPolicy) error
-}
-
 // NewWasmProposalHandler creates a new governance Handler for wasm proposals
 func NewWasmProposalHandler(k decoratedKeeper, enabledProposalTypes []types.ProposalType) govtypes.Handler {
 	return NewWasmProposalHandlerX(NewGovPermissionKeeper(k), enabledProposalTypes)

@@ -198,7 +198,7 @@ func TestCreateWithSimulation(t *testing.T) {
 
 	// then try to create it in non-simulation mode (should not fail)
 	ctx, keepers = CreateTestInput(t, false, SupportedFeatures, nil, nil)
-	accKeeper, keeper = keepers.AccountKeeper, keepers.WasmKeeper
+	accKeeper, keeper = keepers.AccountKeeper, keepers.ContractKeeper
 	contractID, err = keeper.Create(ctx, creator, wasmCode, "https://github.com/line/lfb-sdk/blob/main/x/wasm/keeper/testdata/hackatom.wasm", "any/builder:tag", nil)
 	require.NoError(t, err)
 	require.Equal(t, uint64(1), contractID)
@@ -287,11 +287,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-<<<<<<< HEAD
-		require.Equal(t, uint64(0x120ce), gasAfter-gasBefore)
-=======
 		require.Equal(t, uint64(0x114c2), gasAfter-gasBefore)
->>>>>>> b8a676303... fix: apply review
 	}
 
 	// ensure it is stored properly
@@ -525,11 +521,7 @@ func TestExecute(t *testing.T) {
 	// make sure gas is properly deducted from ctx
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-<<<<<<< HEAD
-		require.Equal(t, uint64(0x1186a), gasAfter-gasBefore)
-=======
 		require.Equal(t, uint64(0x10c22), gasAfter-gasBefore)
->>>>>>> b8a676303... fix: apply review
 	}
 	// ensure bob now exists and got both payments released
 	bobAcct = accKeeper.GetAccount(ctx, bob)
