@@ -3,7 +3,7 @@ package cosmwasm.wasm.v1beta1;
 
 import "lfb/base/v1beta1/coin.proto";
 import "gogoproto/gogo.proto";
-import "types.proto";
+import "cosmwasm/wasm/v1beta1/types.proto";
 
 option go_package                      = "github.com/line/lfb-sdk/x/wasm/types";
 option (gogoproto.goproto_getters_all) = false;
@@ -14,6 +14,7 @@ service Msg {
   rpc StoreCode(MsgStoreCode) returns (MsgStoreCodeResponse);
   // Instantiate creates a new smart contract instance for the given code id.
   rpc InstantiateContract(MsgInstantiateContract) returns (MsgInstantiateContractResponse);
+  // StoreCodeAndInstantiatecontract upload code and instantiate a contract using it.
   rpc StoreCodeAndInstantiateContract(MsgStoreCodeAndInstantiateContract)
       returns (MsgStoreCodeAndInstantiateContractResponse);
   // Execute submits the given message data to a smart contract
