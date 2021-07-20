@@ -17,9 +17,9 @@ import (
 	simtypes "github.com/line/lfb-sdk/types/simulation"
 	"github.com/line/lfb-sdk/x/wasm/client/cli"
 	"github.com/line/lfb-sdk/x/wasm/client/rest"
-	"github.com/line/lfb-sdk/x/wasm/internal/keeper"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/keeper"
 	"github.com/line/lfb-sdk/x/wasm/simulation"
+	"github.com/line/lfb-sdk/x/wasm/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
@@ -111,12 +111,12 @@ func NewAppModule(cdc codec.Marshaler, keeper *Keeper, validatorSetSource keeper
 }
 
 func (am AppModule) RegisterServices(cfg module.Configurator) {
-	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(keeper.NewDefaultPermissionKeeper(am.keeper)))
 	types.RegisterQueryServer(cfg.QueryServer(), NewQuerier(am.keeper))
 }
 
 func (am AppModule) LegacyQuerierHandler(amino *codec.LegacyAmino) sdk.Querier {
-	return keeper.NewLegacyQuerier(am.keeper)
+	return keeper.NewLegacyQuerier(am.keeper, am.keeper.QueryGasLimit())
 }
 
 // RegisterInvariants registers the wasm module invariants.
@@ -124,7 +124,7 @@ func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
 
 // Route returns the message routing key for the wasm module.
 func (am AppModule) Route() sdk.Route {
-	return sdk.NewRoute(RouterKey, NewHandler(am.keeper))
+	return sdk.NewRoute(RouterKey, NewHandler(keeper.NewDefaultPermissionKeeper(am.keeper)))
 }
 
 // QuerierRoute returns the wasm module's querier route name.

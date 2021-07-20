@@ -88,7 +88,7 @@ import (
 	upgradetypes "github.com/line/lfb-sdk/x/upgrade/types"
 	"github.com/line/lfb-sdk/x/wasm"
 	wasmclient "github.com/line/lfb-sdk/x/wasm/client"
-	wasmtypes "github.com/line/lfb-sdk/x/wasm/internal/types"
+	wasmtypes "github.com/line/lfb-sdk/x/wasm/types"
 
 	appparams "github.com/line/lfb-sdk/x/wasm/linkwasmd/app/params"
 
@@ -360,6 +360,7 @@ func NewLinkApp(
 		app.IBCKeeper.ChannelKeeper,
 		&app.IBCKeeper.PortKeeper,
 		scopedWasmKeeper,
+		app.transferKeeper,
 		app.Router(),
 		encodeRouter,
 		app.GRPCQueryRouter(),

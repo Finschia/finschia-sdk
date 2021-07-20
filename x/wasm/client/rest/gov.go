@@ -10,7 +10,7 @@ import (
 	"github.com/line/lfb-sdk/types/rest"
 	govrest "github.com/line/lfb-sdk/x/gov/client/rest"
 	govtypes "github.com/line/lfb-sdk/x/gov/types"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/types"
 )
 
 type StoreCodeProposalJSONReq struct {

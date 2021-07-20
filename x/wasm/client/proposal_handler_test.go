@@ -13,7 +13,7 @@ import (
 	"github.com/line/lfb-sdk/client"
 	"github.com/line/lfb-sdk/client/flags"
 	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	"github.com/line/lfb-sdk/x/wasm/internal/keeper"
+	"github.com/line/lfb-sdk/x/wasm/keeper"
 	"github.com/stretchr/testify/require"
 )
 

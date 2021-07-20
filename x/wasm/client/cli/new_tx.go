@@ -7,7 +7,7 @@ import (
 	"github.com/line/lfb-sdk/client/flags"
 	"github.com/line/lfb-sdk/client/tx"
 	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/types"
 	"github.com/spf13/cobra"
 )
 

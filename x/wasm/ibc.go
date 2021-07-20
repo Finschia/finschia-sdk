@@ -9,19 +9,19 @@ import (
 	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 	porttypes "github.com/line/lfb-sdk/x/ibc/core/05-port/types"
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	wasmTypes "github.com/line/lfb-sdk/x/wasm/internal/types"
+	wasmTypes "github.com/line/lfb-sdk/x/wasm/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 var _ porttypes.IBCModule = IBCHandler{}
 
 type IBCHandler struct {
-	keeper        Keeper
+	keeper        wasmTypes.IBCContractKeeper
 	channelKeeper wasmTypes.ChannelKeeper
 }
 
-func NewIBCHandler(keeper Keeper) IBCHandler {
-	return IBCHandler{keeper: keeper, channelKeeper: keeper.ChannelKeeper}
+func NewIBCHandler(k wasmTypes.IBCContractKeeper, ck wasmTypes.ChannelKeeper) IBCHandler {
+	return IBCHandler{keeper: k, channelKeeper: ck}
 }
 
 // OnChanOpenInit implements the IBCModule interface
@@ -245,16 +245,22 @@ func (i IBCHandler) OnTimeoutPacket(ctx sdk.Context, packet channeltypes.Packet)
 }
 
 func newIBCPacket(packet channeltypes.Packet) wasmvmtypes.IBCPacket {
+	timeout := wasmvmtypes.IBCTimeout{
+		Timestamp: packet.TimeoutTimestamp,
+	}
+	if !packet.TimeoutHeight.IsZero() {
+		timeout.Block = &wasmvmtypes.IBCTimeoutBlock{
+			Height:   packet.TimeoutHeight.RevisionHeight,
+			Revision: packet.TimeoutHeight.RevisionNumber,
+		}
+	}
+
 	return wasmvmtypes.IBCPacket{
 		Data:     packet.Data,
 		Src:      wasmvmtypes.IBCEndpoint{ChannelID: packet.SourceChannel, PortID: packet.SourcePort},
 		Dest:     wasmvmtypes.IBCEndpoint{ChannelID: packet.DestinationChannel, PortID: packet.DestinationPort},
 		Sequence: packet.Sequence,
-		TimeoutBlock: &wasmvmtypes.IBCTimeoutBlock{
-			Height:   packet.TimeoutHeight.RevisionHeight,
-			Revision: packet.TimeoutHeight.RevisionNumber,
-		},
-		TimeoutTimestamp: &packet.TimeoutTimestamp,
+		Timeout:  timeout,
 	}
 }
 
