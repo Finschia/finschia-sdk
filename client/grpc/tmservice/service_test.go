@@ -96,6 +96,17 @@ func (s IntegrationTestSuite) TestQueryBlockByHeight() {
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &blockInfoRes))
 }
 
+func (s IntegrationTestSuite) TestQueryBlockResultsByHeight() {
+	val := s.network.Validators[0]
+	_, err := s.queryClient.GetBlockResultsByHeight(context.Background(), &tmservice.GetBlockResultsByHeightRequest{Height: 1})
+	s.Require().NoError(err)
+
+	restRes, err := rest.GetRequest(fmt.Sprintf("%s/lfb/base/ostracon/v1beta1/blockresults/%d", val.APIAddress, 1))
+	s.Require().NoError(err)
+	var blockResultsRes tmservice.GetBlockResultsByHeightResponse
+	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(restRes, &blockResultsRes))
+}
+
 func (s IntegrationTestSuite) TestQueryLatestValidatorSet() {
 	val := s.network.Validators[0]
 

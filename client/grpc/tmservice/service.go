@@ -14,6 +14,7 @@ import (
 	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 	qtypes "github.com/line/lfb-sdk/types/query"
 	"github.com/line/lfb-sdk/version"
+	abci "github.com/line/ostracon/abci/types"
 )
 
 // This is the struct that we will implement all the handlers on.
@@ -86,6 +87,43 @@ func (s queryServer) GetBlockByHeight(_ context.Context, req *GetBlockByHeightRe
 	return &GetBlockByHeightResponse{
 		BlockId: &protoBlockID,
 		Block:   protoBlock,
+	}, nil
+}
+
+// GetBlockByHash implements ServiceServer.GetBlockByHash
+func (s queryServer) GetBlockByHash(_ context.Context, req *GetBlockByHashRequest) (*GetBlockByHashResponse, error) {
+	res, err := getBlockByHash(s.clientCtx, req.Hash)
+	if err != nil {
+		return nil, err
+	}
+	protoBlockID := res.BlockID.ToProto()
+	protoBlock, err := res.Block.ToProto()
+	if err != nil {
+		return nil, err
+	}
+	return &GetBlockByHashResponse{
+		BlockId: &protoBlockID,
+		Block:   protoBlock,
+	}, nil
+}
+
+// GetBlockResultsByHeight implements ServiceServer.GetBlockResultsByHeight
+func (s queryServer) GetBlockResultsByHeight(_ context.Context, req *GetBlockResultsByHeightRequest) (*GetBlockResultsByHeightResponse, error) {
+	res, err := getBlockResultsByHeight(s.clientCtx, &req.Height)
+	if err != nil {
+		return nil, err
+	}
+	return &GetBlockResultsByHeightResponse{
+		Height:     res.Height,
+		TxsResults: res.TxsResults,
+		ResBeginBlock: &abci.ResponseBeginBlock{
+			Events: res.BeginBlockEvents,
+		},
+		ResEndBlock: &abci.ResponseEndBlock{
+			ValidatorUpdates:      res.ValidatorUpdates,
+			ConsensusParamUpdates: res.ConsensusParamUpdates,
+			Events:                res.EndBlockEvents,
+		},
 	}, nil
 }
 

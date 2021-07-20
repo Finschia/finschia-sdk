@@ -10,6 +10,7 @@
 * (x/wasm) [\#194](https://github.com/line/lfb-sdk/pull/194) Replace importing CosmWasm/wasmvm with line/wasmvm.
 * (x/auth) [\#176](https://github.com/line/lfb-sdk/pull/176) Add MsgEmpty to auth module
 * (metric) [\#184](https://github.com/line/lfb-sdk/pull/184) Add prometheus metrics for caches reverting telemetry metrics
+* (grpc) [\#291](https://github.com/line/lfb-sdk/pull/291) Add GRPC API the BlockByHash and BlockResultsByHeight, add prove parameter to GetTxsEvent
 
 ### Improvements
 * (bump-up) [\#93](https://github.com/line/lfb-sdk/pull/93) Adopt ostracon, line/tm-db and line/iavl
