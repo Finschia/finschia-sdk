@@ -31,8 +31,6 @@ acting as the "source zone". When the token is sent back to the chain it previou
 prefix is removed. This is a backwards movement in the token's timeline and the sender chain is
 acting as the "sink zone".
 
-It is strongly recommended to read the full details of [ADR 001: Coin Source Tracing](./../../../../../docs/architecture/adr-001-coin-source-tracing.md) to understand the implications and context of the IBC token representations.
-
 ### UX suggestions for clients
 
 For clients (wallets, exchanges, applications, block explorers, etc) that want to display the source of the token, it is recommended to use the following

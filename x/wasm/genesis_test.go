@@ -22,7 +22,7 @@ func TestInitGenesis(t *testing.T) {
 	msg := MsgStoreCode{
 		Sender:       creator.String(),
 		WASMByteCode: testContract,
-		Source:       "https://github.com/CosmWasm/wasmd/blob/master/x/wasm/testdata/hackatom.wasm",
+		Source:       "https://github.com/line/lfb-sdk/blob/main/x/wasm/internal/keeper/testdata/hackatom.wasm",
 		Builder:      "confio/cosmwasm-opt:0.7.0",
 	}
 	err := msg.ValidateBasic()
@@ -58,7 +58,7 @@ func TestInitGenesis(t *testing.T) {
 	}
 	res, err = h(data.ctx, &execCmd)
 	require.NoError(t, err)
-	// from https://github.com/CosmWasm/cosmwasm/blob/master/contracts/hackatom/src/contract.rs#L167
+	// executing https://github.com/line/cosmwasm/blob/main/contracts/hackatom/src/contract.rs do_release
 	assertExecuteResponse(t, res.Data, []byte{0xf0, 0x0b, 0xaa})
 
 	// ensure all contract state is as after init

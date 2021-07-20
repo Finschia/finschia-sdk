@@ -326,7 +326,7 @@ func CheckBalance(t *testing.T, app *SimApp, addr sdk.AccAddress, balances sdk.C
 // returned.
 func SignCheckDeliver(
 	t *testing.T, txCfg client.TxConfig, app *bam.BaseApp, header ostproto.Header, msgs []sdk.Msg,
-	chainID string, accNums, accSeqs []uint64, expSimPass, expPass bool, priv ...cryptotypes.PrivKey,
+	chainID string, sbh, accSeqs []uint64, expSimPass, expPass bool, priv ...cryptotypes.PrivKey,
 ) (sdk.GasInfo, *sdk.Result, error) {
 
 	tx, err := helpers.GenTx(
@@ -335,7 +335,7 @@ func SignCheckDeliver(
 		sdk.Coins{sdk.NewInt64Coin(sdk.DefaultBondDenom, 0)},
 		helpers.DefaultGenTxGas,
 		chainID,
-		accNums,
+		sbh,
 		accSeqs,
 		priv...,
 	)

@@ -8,7 +8,6 @@ import (
 // AccountKeeper defines the account contract that must be fulfilled when
 // creating a x/bank keeper.
 type AccountKeeper interface {
-	NewAccount(sdk.Context, types.AccountI) types.AccountI
 	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
 
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI

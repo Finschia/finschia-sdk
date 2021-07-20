@@ -446,7 +446,7 @@ func TestHandleExecute(t *testing.T) {
 	}
 	res, err = h(data.ctx, &execCmd)
 	require.NoError(t, err)
-	// from https://github.com/CosmWasm/cosmwasm/blob/master/contracts/hackatom/src/contract.rs#L167
+	// executing https://github.com/line/cosmwasm/blob/main/contracts/hackatom/src/contract.rs do_release
 	assertExecuteResponse(t, res.Data, []byte{0xf0, 0x0b, 0xaa})
 
 	// this should be standard x/wasm init event, plus 2 bank send event, plus a special event from the contract
@@ -547,7 +547,7 @@ func TestHandleExecuteEscrow(t *testing.T) {
 	}
 	res, err = h(data.ctx, &execCmd)
 	require.NoError(t, err)
-	// from https://github.com/CosmWasm/cosmwasm/blob/master/contracts/hackatom/src/contract.rs#L167
+	// executing https://github.com/line/cosmwasm/blob/main/contracts/hackatom/src/contract.rs do_release
 	assertExecuteResponse(t, res.Data, []byte{0xf0, 0x0b, 0xaa})
 
 	// ensure bob now exists and got both payments released

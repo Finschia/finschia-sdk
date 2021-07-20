@@ -77,6 +77,10 @@ func (tx AccountLockTestTx) ValidateBasic() error {
 	return nil
 }
 
+func (tx AccountLockTestTx) GetSigBlockHeight() uint64 {
+	return 0
+}
+
 func newTestPrivKeys(num int) []*secp256k1.PrivKey {
 	privs := make([]*secp256k1.PrivKey, 0, num)
 	for i := 0; i < num; i++ {

@@ -258,7 +258,7 @@ func createTestInput(
 	distKeeper.SetFeePool(ctx, distributiontypes.InitialFeePool())
 
 	// set some funds ot pay out validatores, based on code from:
-	// https://github.com/cosmos/cosmos-sdk/blob/fea231556aee4d549d7551a6190389c4328194eb/x/distribution/keeper/keeper_test.go#L50-L57
+	// https://github.com/line/lfb-sdk/blob/95b22d3a685f7eb531198e0023ef06873835e632/x/distribution/keeper/keeper_test.go#L49-L56
 	distrAcc := distKeeper.GetDistributionAccount(ctx)
 	err := bankKeeper.SetBalances(ctx, distrAcc.GetAddress(), sdk.NewCoins(
 		sdk.NewCoin("stake", sdk.NewInt(2000000)),

@@ -84,7 +84,7 @@ func TestBaseAccountMarshal(t *testing.T) {
 func TestGenesisAccountValidate(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
 	addr := sdk.AccAddress(pubkey.Address())
-	baseAcc := types.NewBaseAccount(addr, pubkey, 0, 0)
+	baseAcc := types.NewBaseAccount(addr, pubkey, 0)
 
 	tests := []struct {
 		name   string
@@ -98,7 +98,7 @@ func TestGenesisAccountValidate(t *testing.T) {
 		},
 		{
 			"invalid base valid account",
-			types.NewBaseAccount(addr, secp256k1.GenPrivKey().PubKey(), 0, 0),
+			types.NewBaseAccount(addr, secp256k1.GenPrivKey().PubKey(), 0),
 			true,
 		},
 	}
@@ -118,7 +118,7 @@ func TestModuleAccountMarshalYAML(t *testing.T) {
 	bs, err := yaml.Marshal(moduleAcc)
 	require.NoError(t, err)
 
-	want := "|\n  address: link1n7rdpqvgf37ktx30a2sv2kkszk3m7ncma6dpv3\n  public_key: \"\"\n  account_number: 0\n  sequence: 0\n  name: test\n  permissions:\n  - minter\n  - burner\n  - staking\n"
+	want := "|\n  address: link1n7rdpqvgf37ktx30a2sv2kkszk3m7ncma6dpv3\n  public_key: \"\"\n  sequence: 0\n  name: test\n  permissions:\n  - minter\n  - burner\n  - staking\n"
 	require.Equal(t, want, string(bs))
 }
 
@@ -147,7 +147,7 @@ func TestHasPermissions(t *testing.T) {
 
 func TestValidate(t *testing.T) {
 	addr := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	baseAcc := types.NewBaseAccount(addr, nil, 0, 0)
+	baseAcc := types.NewBaseAccount(addr, nil, 0)
 	tests := []struct {
 		name   string
 		acc    types.GenesisAccount
@@ -181,7 +181,7 @@ func TestValidate(t *testing.T) {
 func TestModuleAccountJSON(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
 	addr := sdk.AccAddress(pubkey.Address())
-	baseAcc := types.NewBaseAccount(addr, nil, 10, 50)
+	baseAcc := types.NewBaseAccount(addr, nil, 50)
 	acc := types.NewModuleAccount(baseAcc, "test", "burner")
 
 	bz, err := json.Marshal(acc)
@@ -199,7 +199,7 @@ func TestModuleAccountJSON(t *testing.T) {
 func TestGenesisAccountsContains(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
 	addr := sdk.AccAddress(pubkey.Address())
-	acc := types.NewBaseAccount(addr, secp256k1.GenPrivKey().PubKey(), 0, 0)
+	acc := types.NewBaseAccount(addr, secp256k1.GenPrivKey().PubKey(), 0)
 
 	genAccounts := types.GenesisAccounts{}
 	require.False(t, genAccounts.Contains(acc.GetAddress()))

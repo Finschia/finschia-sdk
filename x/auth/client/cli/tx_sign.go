@@ -195,10 +195,8 @@ be generated via the 'multisign' command.
 }
 
 func preSignCmd(cmd *cobra.Command, _ []string) {
-	// Conditionally mark the account and sequence numbers required as no RPC
-	// query will be done.
+	// Conditionally mark the account sequence required as no RPC query will be done.
 	if offline, _ := cmd.Flags().GetBool(flags.FlagOffline); offline {
-		cmd.MarkFlagRequired(flags.FlagAccountNumber)
 		cmd.MarkFlagRequired(flags.FlagSequence)
 	}
 }

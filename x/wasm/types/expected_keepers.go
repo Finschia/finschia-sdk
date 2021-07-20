@@ -35,7 +35,7 @@ type BankKeeper interface {
 
 // AccountKeeper defines a subset of methods implemented by the cosmos-sdk account keeper
 type AccountKeeper interface {
-	// Return a new account with the next account number and the specified address. Does not save the new account to the store.
+	// Return a new account with the specified address. Does not save the new account to the store.
 	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	// Retrieve an account from the store.
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI

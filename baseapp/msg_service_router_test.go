@@ -104,7 +104,6 @@ func TestMsgService(t *testing.T) {
 	// Second round: all signer infos are set, so each signer can sign.
 	signerData := authsigning.SignerData{
 		ChainID:       "test",
-		AccountNumber: 0,
 		Sequence:      0,
 	}
 	sigV2, err = tx.SignWithPrivKey(

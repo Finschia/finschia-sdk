@@ -25,7 +25,7 @@ import (
 // concatenated with an 'AND' operand. It returns a slice of Info object
 // containing txs and metadata. An error is returned if the query fails.
 // If an empty string is provided it will order txs by asc
-func queryTxsByEvents(goCtx context.Context, clientCtx client.Context, events []string, page, limit int, orderBy string) (*sdk.SearchTxsResult, error) {
+func queryTxsByEvents(goCtx context.Context, clientCtx client.Context, events []string, prove bool, page, limit int, orderBy string) (*sdk.SearchTxsResult, error) {
 	if len(events) == 0 {
 		return nil, errors.New("must declare at least one event to search")
 	}
@@ -46,9 +46,7 @@ func queryTxsByEvents(goCtx context.Context, clientCtx client.Context, events []
 		return nil, err
 	}
 
-	// TODO: this may not always need to be proven
-	// https://github.com/line/lfb-sdk/issues/6807
-	resTxs, err := node.TxSearch(goCtx, query, true, &page, &limit, orderBy)
+	resTxs, err := node.TxSearch(goCtx, query, prove, &page, &limit, orderBy)
 	if err != nil {
 		return nil, err
 	}

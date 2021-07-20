@@ -302,8 +302,12 @@
     - [Pairs](#lfb.base.kv.v1beta1.Pairs)
   
 - [lfb/base/ostracon/v1beta1/query.proto](#lfb/base/ostracon/v1beta1/query.proto)
+    - [GetBlockByHashRequest](#lfb.base.ostracon.v1beta1.GetBlockByHashRequest)
+    - [GetBlockByHashResponse](#lfb.base.ostracon.v1beta1.GetBlockByHashResponse)
     - [GetBlockByHeightRequest](#lfb.base.ostracon.v1beta1.GetBlockByHeightRequest)
     - [GetBlockByHeightResponse](#lfb.base.ostracon.v1beta1.GetBlockByHeightResponse)
+    - [GetBlockResultsByHeightRequest](#lfb.base.ostracon.v1beta1.GetBlockResultsByHeightRequest)
+    - [GetBlockResultsByHeightResponse](#lfb.base.ostracon.v1beta1.GetBlockResultsByHeightResponse)
     - [GetLatestBlockRequest](#lfb.base.ostracon.v1beta1.GetLatestBlockRequest)
     - [GetLatestBlockResponse](#lfb.base.ostracon.v1beta1.GetLatestBlockResponse)
     - [GetLatestValidatorSetRequest](#lfb.base.ostracon.v1beta1.GetLatestValidatorSetRequest)
@@ -3857,7 +3861,6 @@ type for additional functionality (e.g. vesting).
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
 | `pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
 
@@ -3895,6 +3898,7 @@ Params defines the parameters for the auth module.
 | `tx_size_cost_per_byte` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_ed25519` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_secp256k1` | [uint64](#uint64) |  |  |
+| `valid_sig_block_period` | [uint64](#uint64) |  |  |
 
 
 
@@ -4832,6 +4836,37 @@ Pairs defines a repeated slice of Pair objects.
 
 
 
+<a name="lfb.base.ostracon.v1beta1.GetBlockByHashRequest"></a>
+
+### GetBlockByHashRequest
+GetBlockByHashRequest is the request type for the Query/GetBlockByHash RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `hash` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lfb.base.ostracon.v1beta1.GetBlockByHashResponse"></a>
+
+### GetBlockByHashResponse
+GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
+| `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+
+
+
+
+
+
 <a name="lfb.base.ostracon.v1beta1.GetBlockByHeightRequest"></a>
 
 ### GetBlockByHeightRequest
@@ -4857,6 +4892,39 @@ GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC
 | ----- | ---- | ----- | ----------- |
 | `block_id` | [ostracon.types.BlockID](#ostracon.types.BlockID) |  |  |
 | `block` | [ostracon.types.Block](#ostracon.types.Block) |  |  |
+
+
+
+
+
+
+<a name="lfb.base.ostracon.v1beta1.GetBlockResultsByHeightRequest"></a>
+
+### GetBlockResultsByHeightRequest
+GetBlockResultsByHeightRequest is the request type for the Query/GetBlockResultsByHeight RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [int64](#int64) |  |  |
+
+
+
+
+
+
+<a name="lfb.base.ostracon.v1beta1.GetBlockResultsByHeightResponse"></a>
+
+### GetBlockResultsByHeightResponse
+GetBlockResultsByHeightResponse is the response type for the Query/GetBlockResultsByHeight RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `height` | [int64](#int64) |  |  |
+| `txs_results` | [ostracon.abci.ResponseDeliverTx](#ostracon.abci.ResponseDeliverTx) | repeated |  |
+| `res_begin_block` | [ostracon.abci.ResponseBeginBlock](#ostracon.abci.ResponseBeginBlock) |  |  |
+| `res_end_block` | [ostracon.abci.ResponseEndBlock](#ostracon.abci.ResponseEndBlock) |  |  |
 
 
 
@@ -5078,6 +5146,8 @@ Service defines the gRPC querier service for ostracon queries.
 | `GetSyncing` | [GetSyncingRequest](#lfb.base.ostracon.v1beta1.GetSyncingRequest) | [GetSyncingResponse](#lfb.base.ostracon.v1beta1.GetSyncingResponse) | GetSyncing queries node syncing. | GET|/lfb/base/ostracon/v1beta1/syncing|
 | `GetLatestBlock` | [GetLatestBlockRequest](#lfb.base.ostracon.v1beta1.GetLatestBlockRequest) | [GetLatestBlockResponse](#lfb.base.ostracon.v1beta1.GetLatestBlockResponse) | GetLatestBlock returns the latest block. | GET|/lfb/base/ostracon/v1beta1/blocks/latest|
 | `GetBlockByHeight` | [GetBlockByHeightRequest](#lfb.base.ostracon.v1beta1.GetBlockByHeightRequest) | [GetBlockByHeightResponse](#lfb.base.ostracon.v1beta1.GetBlockByHeightResponse) | GetBlockByHeight queries block for given height. | GET|/lfb/base/ostracon/v1beta1/blocks/{height}|
+| `GetBlockByHash` | [GetBlockByHashRequest](#lfb.base.ostracon.v1beta1.GetBlockByHashRequest) | [GetBlockByHashResponse](#lfb.base.ostracon.v1beta1.GetBlockByHashResponse) | GetBlockByHash queries block for given hash. | GET|/lfb/base/ostracon/v1beta1/blocks/{hash}|
+| `GetBlockResultsByHeight` | [GetBlockResultsByHeightRequest](#lfb.base.ostracon.v1beta1.GetBlockResultsByHeightRequest) | [GetBlockResultsByHeightResponse](#lfb.base.ostracon.v1beta1.GetBlockResultsByHeightResponse) | GetBlockResultsByHeight queries block results for given height. | GET|/lfb/base/ostracon/v1beta1/blockresults/{height}|
 | `GetLatestValidatorSet` | [GetLatestValidatorSetRequest](#lfb.base.ostracon.v1beta1.GetLatestValidatorSetRequest) | [GetLatestValidatorSetResponse](#lfb.base.ostracon.v1beta1.GetLatestValidatorSetResponse) | GetLatestValidatorSet queries latest validator-set. | GET|/lfb/base/ostracon/v1beta1/validatorsets/latest|
 | `GetValidatorSetByHeight` | [GetValidatorSetByHeightRequest](#lfb.base.ostracon.v1beta1.GetValidatorSetByHeightRequest) | [GetValidatorSetByHeightResponse](#lfb.base.ostracon.v1beta1.GetValidatorSetByHeightResponse) | GetValidatorSetByHeight queries validator-set at a given height. | GET|/lfb/base/ostracon/v1beta1/validatorsets/{height}|
 
@@ -9405,7 +9475,6 @@ SignDoc is the type used for generating sign bytes for SIGN_MODE_DIRECT.
 | `body_bytes` | [bytes](#bytes) |  | body_bytes is protobuf serialization of a TxBody that matches the representation in TxRaw. |
 | `auth_info_bytes` | [bytes](#bytes) |  | auth_info_bytes is a protobuf serialization of an AuthInfo that matches the representation in TxRaw. |
 | `chain_id` | [string](#string) |  | chain_id is the unique identifier of the chain this transaction targets. It prevents signed transactions from being used on another chain by an attacker |
-| `account_number` | [uint64](#uint64) |  | account_number is the account number of the account in state |
 
 
 
@@ -9456,6 +9525,7 @@ TxBody is the body of a transaction that all signers sign over.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | messages is a list of messages to be executed. The required signers of those messages define the number and order of elements in AuthInfo's signer_infos and Tx's signatures. Each required signer address is added to the list only the first time it occurs. By convention, the first required signer (usually from the first message) is referred to as the primary signer and pays the fee for the whole transaction. |
+| `sig_block_height` | [uint64](#uint64) |  | sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_DURATION` this is used for distinguish signatures instead of account number. this is mandatory. |
 | `memo` | [string](#string) |  | memo is any arbitrary memo to be added to the transaction |
 | `timeout_height` | [uint64](#uint64) |  | timeout is the block height after which this transaction will not be processed by the chain |
 | `extension_options` | [google.protobuf.Any](#google.protobuf.Any) | repeated | extension_options are arbitrary options that can be added by chains when the default options are not sufficient. If any of these are present and can't be handled, the transaction will be rejected |
@@ -9578,6 +9648,7 @@ RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `events` | [string](#string) | repeated | events is the list of transaction event type. |
+| `prove` | [bool](#bool) |  | prove is Include proofs of the transactions inclusion in the block |
 | `pagination` | [lfb.base.query.v1beta1.PageRequest](#lfb.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
 
 
