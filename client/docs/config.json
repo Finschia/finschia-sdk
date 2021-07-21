@@ -138,6 +138,9 @@
           "Params": "IBCTransferParams"
         }
       }
-    }
+    },
+    {
+      "url": "./tmp-swagger-gen/cosmwasm/wasm/v1beta1/query.swagger.json"
+    }    
   ]
 }
