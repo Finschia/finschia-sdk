@@ -19,6 +19,8 @@ func (k Keeper) OnOpenChannel(
 	ctx sdk.Context,
 	contractAddr sdk.AccAddress,
 	channel wasmvmtypes.IBCChannel,
+	// this is unset on init, set on try
+	counterpartyVersion string,
 ) error {
 	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "ibc-open-channel")
 
@@ -30,9 +32,21 @@ func (k Keeper) OnOpenChannel(
 	env := types.NewEnv(ctx, contractAddr)
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
+	msg := wasmvmtypes.IBCChannelOpenMsg{}
+	if counterpartyVersion == "" {
+		msg.OpenInit = &wasmvmtypes.IBCOpenInit{
+			Channel: channel,
+		}
+	} else {
+		msg.OpenTry = &wasmvmtypes.IBCOpenTry{
+			Channel:             channel,
+			CounterpartyVersion: counterpartyVersion,
+		}
+	}
+
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
-	gasUsed, execErr := k.wasmVM.IBCChannelOpen(codeInfo.CodeHash, env, channel, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
+	gasUsed, execErr := k.wasmVM.IBCChannelOpen(codeInfo.CodeHash, env, msg, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
 	k.consumeRuntimeGas(ctx, gasUsed)
 
 	if execErr != nil {
@@ -53,6 +67,8 @@ func (k Keeper) OnConnectChannel(
 	ctx sdk.Context,
 	contractAddr sdk.AccAddress,
 	channel wasmvmtypes.IBCChannel,
+	// this is set on ack, unset on confirm
+	counterpartyVersion string,
 ) error {
 	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "ibc-connect-channel")
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddr)
@@ -63,9 +79,21 @@ func (k Keeper) OnConnectChannel(
 	env := types.NewEnv(ctx, contractAddr)
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
+	msg := wasmvmtypes.IBCChannelConnectMsg{}
+	if counterpartyVersion == "" {
+		msg.OpenConfirm = &wasmvmtypes.IBCOpenConfirm{
+			Channel: channel,
+		}
+	} else {
+		msg.OpenAck = &wasmvmtypes.IBCOpenAck{
+			Channel:             channel,
+			CounterpartyVersion: counterpartyVersion,
+		}
+	}
+
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
-	res, gasUsed, execErr := k.wasmVM.IBCChannelConnect(codeInfo.CodeHash, env, channel, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
+	res, gasUsed, execErr := k.wasmVM.IBCChannelConnect(codeInfo.CodeHash, env, msg, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
 	k.consumeRuntimeGas(ctx, gasUsed)
 
 	if execErr != nil {
@@ -85,6 +113,8 @@ func (k Keeper) OnCloseChannel(
 	ctx sdk.Context,
 	contractAddr sdk.AccAddress,
 	channel wasmvmtypes.IBCChannel,
+	// false for init, true for confirm
+	confirm bool,
 ) error {
 	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "ibc-close-channel")
 
@@ -96,9 +126,20 @@ func (k Keeper) OnCloseChannel(
 	params := types.NewEnv(ctx, contractAddr)
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
 
+	msg := wasmvmtypes.IBCChannelCloseMsg{}
+	if confirm {
+		msg.CloseConfirm = &wasmvmtypes.IBCCloseConfirm{
+			Channel: channel,
+		}
+	} else {
+		msg.CloseInit = &wasmvmtypes.IBCCloseInit{
+			Channel: channel,
+		}
+	}
+
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
-	res, gasUsed, execErr := k.wasmVM.IBCChannelClose(codeInfo.CodeHash, params, channel, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
+	res, gasUsed, execErr := k.wasmVM.IBCChannelClose(codeInfo.CodeHash, params, msg, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
 	k.consumeRuntimeGas(ctx, gasUsed)
 
 	if execErr != nil {
@@ -127,10 +168,11 @@ func (k Keeper) OnRecvPacket(
 
 	env := types.NewEnv(ctx, contractAddr)
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	msg := wasmvmtypes.IBCPacketReceiveMsg{Packet: packet}
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
-	res, gasUsed, execErr := k.wasmVM.IBCPacketReceive(codeInfo.CodeHash, env, packet, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
+	res, gasUsed, execErr := k.wasmVM.IBCPacketReceive(codeInfo.CodeHash, env, msg, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
 	k.consumeRuntimeGas(ctx, gasUsed)
 
 	if execErr != nil {
@@ -160,10 +202,11 @@ func (k Keeper) OnAckPacket(
 
 	env := types.NewEnv(ctx, contractAddr)
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	msg := wasmvmtypes.IBCPacketAckMsg{Ack: acknowledgement}
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
-	res, gasUsed, execErr := k.wasmVM.IBCPacketAck(codeInfo.CodeHash, env, acknowledgement, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
+	res, gasUsed, execErr := k.wasmVM.IBCPacketAck(codeInfo.CodeHash, env, msg, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
 	k.consumeRuntimeGas(ctx, gasUsed)
 
 	if execErr != nil {
@@ -189,10 +232,11 @@ func (k Keeper) OnTimeoutPacket(
 
 	env := types.NewEnv(ctx, contractAddr)
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
+	msg := wasmvmtypes.IBCPacketTimeoutMsg{Packet: packet}
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
-	res, gasUsed, execErr := k.wasmVM.IBCPacketTimeout(codeInfo.CodeHash, env, packet, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
+	res, gasUsed, execErr := k.wasmVM.IBCPacketTimeout(codeInfo.CodeHash, env, msg, wasmStore, k.cosmwasmAPI(ctx), querier, ctx.GasMeter(), gas, costJsonDeserialization)
 	k.consumeRuntimeGas(ctx, gasUsed)
 
 	if execErr != nil {

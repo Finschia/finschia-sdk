@@ -7,8 +7,6 @@ const (
 	EventTypeMigrateContract      = "migrate_contract"
 	EventTypeUpdateAdmin          = "update_admin"
 	EventTypeClearAdmin           = "clear_admin"
-	EventTypePinCode              = "pin_code"
-	EventTypeUnpinCode            = "unpin_code"
 	EventTypeUpdateContractStatus = "update_contract_status"
 	// WasmModuleEventType is stored with any contract TX
 	WasmModuleEventType = "wasm"
