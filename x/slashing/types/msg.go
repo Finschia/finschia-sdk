@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/errors"
 )
 
 // slashing message types
@@ -36,6 +37,9 @@ func (msg MsgUnjail) GetSignBytes() []byte {
 func (msg MsgUnjail) ValidateBasic() error {
 	if msg.ValidatorAddr == "" {
 		return ErrBadValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddr); err != nil {
+		return errors.Wrapf(errors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 
 	return nil

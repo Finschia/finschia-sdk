@@ -172,6 +172,9 @@ func (msg MsgEditValidator) ValidateBasic() error {
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
 	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
+	}
 
 	if msg.Description == (Description{}) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty description")
@@ -226,9 +229,15 @@ func (msg MsgDelegate) ValidateBasic() error {
 	if msg.DelegatorAddress == "" {
 		return ErrEmptyDelegatorAddr
 	}
+	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
+	}
 
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
@@ -277,13 +286,22 @@ func (msg MsgBeginRedelegate) ValidateBasic() error {
 	if msg.DelegatorAddress == "" {
 		return ErrEmptyDelegatorAddr
 	}
+	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
+	}
 
 	if msg.ValidatorSrcAddress == "" {
 		return ErrEmptyValidatorAddr
 	}
+	if err := sdk.ValidateValAddress(msg.ValidatorSrcAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid source validator address (%s)", err)
+	}
 
 	if msg.ValidatorDstAddress == "" {
 		return ErrEmptyValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorDstAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination validator address (%s)", err)
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
@@ -329,9 +347,15 @@ func (msg MsgUndelegate) ValidateBasic() error {
 	if msg.DelegatorAddress == "" {
 		return ErrEmptyDelegatorAddr
 	}
+	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
+	}
 
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {

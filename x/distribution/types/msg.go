@@ -46,7 +46,12 @@ func (msg MsgSetWithdrawAddress) ValidateBasic() error {
 	if msg.WithdrawAddress == "" {
 		return ErrEmptyWithdrawAddr
 	}
-
+	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
+	}
+	if err := sdk.ValidateAccAddress(msg.WithdrawAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid withdraw address (%s)", err)
+	}
 	return nil
 }
 
@@ -80,6 +85,12 @@ func (msg MsgWithdrawDelegatorReward) ValidateBasic() error {
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
 	}
+	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
+	}
 	return nil
 }
 
@@ -111,6 +122,9 @@ func (msg MsgWithdrawValidatorCommission) GetSignBytes() []byte {
 func (msg MsgWithdrawValidatorCommission) ValidateBasic() error {
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 	return nil
 }
@@ -151,6 +165,9 @@ func (msg MsgFundCommunityPool) ValidateBasic() error {
 	}
 	if msg.Depositor == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Depositor)
+	}
+	if err := sdk.ValidateAccAddress(msg.Depositor); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid depositor address (%s)", err)
 	}
 
 	return nil
