@@ -37,11 +37,11 @@ func (k Keeper) ValidatorOutstandingRewards(c context.Context, req *types.QueryV
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	valAdr, err := sdk.ValAddressFromBech32(req.ValidatorAddress)
+	err := sdk.ValidateValAddress(req.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
-	rewards := k.GetValidatorOutstandingRewards(ctx, valAdr)
+	rewards := k.GetValidatorOutstandingRewards(ctx, sdk.ValAddress(req.ValidatorAddress))
 
 	return &types.QueryValidatorOutstandingRewardsResponse{Rewards: rewards}, nil
 }
@@ -58,11 +58,11 @@ func (k Keeper) ValidatorCommission(c context.Context, req *types.QueryValidator
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	valAdr, err := sdk.ValAddressFromBech32(req.ValidatorAddress)
+	err := sdk.ValidateValAddress(req.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
-	commission := k.GetValidatorAccumulatedCommission(ctx, valAdr)
+	commission := k.GetValidatorAccumulatedCommission(ctx, sdk.ValAddress(req.ValidatorAddress))
 
 	return &types.QueryValidatorCommissionResponse{Commission: commission}, nil
 }
@@ -84,11 +84,11 @@ func (k Keeper) ValidatorSlashes(c context.Context, req *types.QueryValidatorSla
 	ctx := sdk.UnwrapSDKContext(c)
 	events := make([]types.ValidatorSlashEvent, 0)
 	store := ctx.KVStore(k.storeKey)
-	valAddr, err := sdk.ValAddressFromBech32(req.ValidatorAddress)
+	err := sdk.ValidateValAddress(req.ValidatorAddress)
 	if err != nil {
 		return nil, status.Errorf(codes.InvalidArgument, "invalid validator address")
 	}
-	slashesStore := prefix.NewStore(store, types.GetValidatorSlashEventPrefix(valAddr))
+	slashesStore := prefix.NewStore(store, types.GetValidatorSlashEventPrefix(sdk.ValAddress(req.ValidatorAddress)))
 
 	pageRes, err := query.FilteredPaginate(slashesStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		var result types.ValidatorSlashEvent
@@ -131,21 +131,21 @@ func (k Keeper) DelegationRewards(c context.Context, req *types.QueryDelegationR
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	valAdr, err := sdk.ValAddressFromBech32(req.ValidatorAddress)
+	err := sdk.ValidateValAddress(req.ValidatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
-	val := k.stakingKeeper.Validator(ctx, valAdr)
+	val := k.stakingKeeper.Validator(ctx, sdk.ValAddress(req.ValidatorAddress))
 	if val == nil {
 		return nil, sdkerrors.Wrap(types.ErrNoValidatorExists, req.ValidatorAddress)
 	}
 
-	delAdr, err := sdk.AccAddressFromBech32(req.DelegatorAddress)
+	err = sdk.ValidateAccAddress(req.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
-	del := k.stakingKeeper.Delegation(ctx, delAdr, valAdr)
+	del := k.stakingKeeper.Delegation(ctx, sdk.AccAddress(req.DelegatorAddress), sdk.ValAddress(req.ValidatorAddress))
 	if del == nil {
 		return nil, types.ErrNoDelegationExists
 	}
@@ -171,13 +171,13 @@ func (k Keeper) DelegationTotalRewards(c context.Context, req *types.QueryDelega
 	total := sdk.DecCoins{}
 	var delRewards []types.DelegationDelegatorReward
 
-	delAdr, err := sdk.AccAddressFromBech32(req.DelegatorAddress)
+	err := sdk.ValidateAccAddress(req.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
 	k.stakingKeeper.IterateDelegations(
-		ctx, delAdr,
+		ctx, sdk.AccAddress(req.DelegatorAddress),
 		func(_ int64, del stakingtypes.DelegationI) (stop bool) {
 			valAddr := del.GetValidatorAddr()
 			val := k.stakingKeeper.Validator(ctx, valAddr)
@@ -204,14 +204,14 @@ func (k Keeper) DelegatorValidators(c context.Context, req *types.QueryDelegator
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	delAdr, err := sdk.AccAddressFromBech32(req.DelegatorAddress)
+	err := sdk.ValidateAccAddress(req.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
 	var validators []string
 
 	k.stakingKeeper.IterateDelegations(
-		ctx, delAdr,
+		ctx, sdk.AccAddress(req.DelegatorAddress),
 		func(_ int64, del stakingtypes.DelegationI) (stop bool) {
 			validators = append(validators, del.GetValidatorAddr().String())
 			return false
@@ -230,13 +230,13 @@ func (k Keeper) DelegatorWithdrawAddress(c context.Context, req *types.QueryDele
 	if req.DelegatorAddress == "" {
 		return nil, status.Error(codes.InvalidArgument, "empty delegator address")
 	}
-	delAdr, err := sdk.AccAddressFromBech32(req.DelegatorAddress)
+	err := sdk.ValidateAccAddress(req.DelegatorAddress)
 	if err != nil {
 		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	withdrawAddr := k.GetDelegatorWithdrawAddr(ctx, delAdr)
+	withdrawAddr := k.GetDelegatorWithdrawAddr(ctx, sdk.AccAddress(req.DelegatorAddress))
 
 	return &types.QueryDelegatorWithdrawAddressResponse{WithdrawAddress: withdrawAddr.String()}, nil
 }

@@ -3,6 +3,7 @@ package types_test
 import (
 	"testing"
 
+	"github.com/line/lfb-sdk/x/bank/keeper"
 	"github.com/stretchr/testify/require"
 
 	sdk "github.com/line/lfb-sdk/types"
@@ -17,10 +18,11 @@ func cloneAppend(bz []byte, tail []byte) (res []byte) {
 }
 
 func TestAddressFromBalancesStore(t *testing.T) {
-	addr, err := sdk.AccAddressFromBech32("link19tzp7e489drh9qfs9m84k2qe5a5yyknzen48tz")
+	addr := sdk.AccAddress("link19tzp7e489drh9qfs9m84k2qe5a5yyknzen48tz")
+	err := sdk.ValidateAccAddress(addr.String())
 	require.NoError(t, err)
 
-	key := cloneAppend(addr.Bytes(), []byte("stake"))
+	key := cloneAppend(keeper.AddressToPrefixKey(addr), []byte("stake"))
 	res := types.AddressFromBalancesStore(key)
 	require.Equal(t, res, addr)
 }

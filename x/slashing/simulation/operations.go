@@ -55,7 +55,7 @@ func SimulateMsgUnjail(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Kee
 			return simtypes.NoOpMsg(types.ModuleName, types.TypeMsgUnjail, "validator is not ok"), nil, nil // skip
 		}
 
-		simAccount, found := simtypes.FindAccount(accs, sdk.AccAddress(validator.GetOperator()))
+		simAccount, found := simtypes.FindAccount(accs, validator.GetOperator().ToAccAddress())
 		if !found {
 			return simtypes.NoOpMsg(types.ModuleName, types.TypeMsgUnjail, "unable to find account"), nil, nil // skip
 		}
@@ -79,7 +79,7 @@ func SimulateMsgUnjail(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Kee
 			return simtypes.NoOpMsg(types.ModuleName, types.TypeMsgUnjail, "self delegation is nil"), nil, nil // skip
 		}
 
-		account := ak.GetAccount(ctx, sdk.AccAddress(validator.GetOperator()))
+		account := ak.GetAccount(ctx, validator.GetOperator().ToAccAddress())
 		spendable := bk.SpendableCoins(ctx, account.GetAddress())
 
 		fees, err := simtypes.RandomFees(r, ctx, spendable)
@@ -129,7 +129,7 @@ func SimulateMsgUnjail(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Kee
 		}
 
 		if err != nil {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "unable to deliver tx"), nil, errors.New(res.Log)
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "unable to deliver tx"), nil, err
 		}
 
 		return simtypes.NewOperationMsg(msg, true, ""), nil, nil

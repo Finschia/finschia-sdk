@@ -26,7 +26,7 @@ func NewKeeper(
 	feeCollectorName string,
 ) Keeper {
 	// ensure mint module account is set
-	if addr := ak.GetModuleAddress(types.ModuleName); addr == nil {
+	if addr := ak.GetModuleAddress(types.ModuleName); addr == "" {
 		panic("the mint module account has not been set")
 	}
 

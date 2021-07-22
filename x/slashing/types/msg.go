@@ -23,11 +23,7 @@ func NewMsgUnjail(validatorAddr sdk.ValAddress) *MsgUnjail {
 func (msg MsgUnjail) Route() string { return RouterKey }
 func (msg MsgUnjail) Type() string  { return TypeMsgUnjail }
 func (msg MsgUnjail) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddr)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{valAddr.Bytes()}
+	return []sdk.AccAddress{sdk.ValAddress(msg.ValidatorAddr).ToAccAddress()}
 }
 
 // GetSignBytes gets the bytes for the message signer to sign on

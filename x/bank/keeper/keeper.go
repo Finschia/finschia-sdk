@@ -242,7 +242,7 @@ func (k BaseKeeper) SendCoinsFromModuleToAccount(
 ) error {
 
 	senderAddr := k.ak.GetModuleAddress(senderModule)
-	if senderAddr == nil {
+	if senderAddr == "" {
 		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
 	}
 
@@ -256,7 +256,7 @@ func (k BaseKeeper) SendCoinsFromModuleToModule(
 ) error {
 
 	senderAddr := k.ak.GetModuleAddress(senderModule)
-	if senderAddr == nil {
+	if senderAddr == "" {
 		panic(sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "module account %s does not exist", senderModule))
 	}
 

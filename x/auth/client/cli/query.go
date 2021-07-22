@@ -84,10 +84,7 @@ func GetAccountCmd() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			key, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
+			key := sdk.AccAddress(args[0])
 
 			queryClient := types.NewQueryClient(clientCtx)
 			res, err := queryClient.Account(context.Background(), &types.QueryAccountRequest{Address: key.String()})

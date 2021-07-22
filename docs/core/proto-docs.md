@@ -9455,7 +9455,7 @@ TxBody is the body of a transaction that all signers sign over.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `messages` | [google.protobuf.Any](#google.protobuf.Any) | repeated | messages is a list of messages to be executed. The required signers of those messages define the number and order of elements in AuthInfo's signer_infos and Tx's signatures. Each required signer address is added to the list only the first time it occurs. By convention, the first required signer (usually from the first message) is referred to as the primary signer and pays the fee for the whole transaction. |
-| `sig_block_height` | [uint64](#uint64) |  | sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_DURATION` this is used for distinguish signatures instead of account number. this is mandatory. |
+| `sig_block_height` | [uint64](#uint64) |  | sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_PERIOD` this is used for distinguish signatures instead of account number. this is mandatory. |
 | `memo` | [string](#string) |  | memo is any arbitrary memo to be added to the transaction |
 | `timeout_height` | [uint64](#uint64) |  | timeout is the block height after which this transaction will not be processed by the chain |
 | `extension_options` | [google.protobuf.Any](#google.protobuf.Any) | repeated | extension_options are arbitrary options that can be added by chains when the default options are not sufficient. If any of these are present and can't be handled, the transaction will be rejected |

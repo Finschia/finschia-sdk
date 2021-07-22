@@ -21,11 +21,12 @@ func NewMsgServerImpl(k *Keeper) types.MsgServer {
 
 func (m msgServer) StoreCode(goCtx context.Context, msg *types.MsgStoreCode) (*types.MsgStoreCodeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	codeID, err := m.keeper.Create(ctx, senderAddr, msg.WASMByteCode, msg.Source, msg.Builder, msg.InstantiatePermission)
+	codeID, err := m.keeper.Create(ctx, sdk.AccAddress(msg.Sender), msg.WASMByteCode, msg.Source, msg.Builder,
+		msg.InstantiatePermission)
 	if err != nil {
 		return nil, err
 	}
@@ -48,18 +49,19 @@ func (m msgServer) StoreCode(goCtx context.Context, msg *types.MsgStoreCode) (*t
 func (m msgServer) InstantiateContract(goCtx context.Context, msg *types.MsgInstantiateContract) (*types.MsgInstantiateContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
 	var adminAddr sdk.AccAddress
 	if msg.Admin != "" {
-		if adminAddr, err = sdk.AccAddressFromBech32(msg.Admin); err != nil {
+		if err = sdk.ValidateAccAddress(msg.Admin); err != nil {
 			return nil, sdkerrors.Wrap(err, "admin")
 		}
+		adminAddr = sdk.AccAddress(msg.Admin)
 	}
 
-	contractAddr, data, err := m.keeper.Instantiate(ctx, msg.CodeID, senderAddr, adminAddr, msg.InitMsg, msg.Label, msg.Funds)
+	contractAddr, data, err := m.keeper.Instantiate(ctx, msg.CodeID, sdk.AccAddress(msg.Sender), adminAddr, msg.InitMsg, msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
@@ -81,13 +83,15 @@ func (m msgServer) InstantiateContract(goCtx context.Context, msg *types.MsgInst
 	}, nil
 }
 
-func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context, msg *types.MsgStoreCodeAndInstantiateContract) (*types.MsgStoreCodeAndInstantiateContractResponse, error) {
+func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context,
+	msg *types.MsgStoreCodeAndInstantiateContract) (*types.MsgStoreCodeAndInstantiateContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	codeID, err := m.keeper.Create(ctx, senderAddr, msg.WASMByteCode, msg.Source, msg.Builder, msg.InstantiatePermission)
+	codeID, err := m.keeper.Create(ctx, sdk.AccAddress(msg.Sender), msg.WASMByteCode, msg.Source, msg.Builder,
+		msg.InstantiatePermission)
 	if err != nil {
 		return nil, err
 	}
@@ -104,12 +108,14 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context, msg *t
 
 	var adminAddr sdk.AccAddress
 	if msg.Admin != "" {
-		if adminAddr, err = sdk.AccAddressFromBech32(msg.Admin); err != nil {
+		if err = sdk.ValidateAccAddress(msg.Admin); err != nil {
 			return nil, sdkerrors.Wrap(err, "admin")
 		}
+		adminAddr = sdk.AccAddress(msg.Admin)
 	}
 
-	contractAddr, data, err := m.keeper.Instantiate(ctx, codeID, senderAddr, adminAddr, msg.InitMsg, msg.Label, msg.Funds)
+	contractAddr, data, err := m.keeper.Instantiate(ctx, codeID, sdk.AccAddress(msg.Sender), adminAddr, msg.InitMsg,
+		msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
@@ -129,16 +135,16 @@ func (m msgServer) StoreCodeAndInstantiateContract(goCtx context.Context, msg *t
 
 func (m msgServer) ExecuteContract(goCtx context.Context, msg *types.MsgExecuteContract) (*types.MsgExecuteContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
+	err = sdk.ValidateAccAddress(msg.Contract)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "contract")
 	}
 
-	res, err := m.keeper.Execute(ctx, contractAddr, senderAddr, msg.Msg, msg.Funds)
+	res, err := m.keeper.Execute(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.Msg, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
@@ -161,16 +167,16 @@ func (m msgServer) ExecuteContract(goCtx context.Context, msg *types.MsgExecuteC
 
 func (m msgServer) MigrateContract(goCtx context.Context, msg *types.MsgMigrateContract) (*types.MsgMigrateContractResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
+	err = sdk.ValidateAccAddress(msg.Contract)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "contract")
 	}
 
-	res, err := m.keeper.Migrate(ctx, contractAddr, senderAddr, msg.CodeID, msg.MigrateMsg)
+	res, err := m.keeper.Migrate(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.CodeID, msg.MigrateMsg)
 	if err != nil {
 		return nil, err
 	}
@@ -193,20 +199,21 @@ func (m msgServer) MigrateContract(goCtx context.Context, msg *types.MsgMigrateC
 
 func (m msgServer) UpdateAdmin(goCtx context.Context, msg *types.MsgUpdateAdmin) (*types.MsgUpdateAdminResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
+	err = sdk.ValidateAccAddress(msg.Contract)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "contract")
 	}
-	newAdminAddr, err := sdk.AccAddressFromBech32(msg.NewAdmin)
+	err = sdk.ValidateAccAddress(msg.NewAdmin)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "new admin")
 	}
 
-	if err := m.keeper.UpdateContractAdmin(ctx, contractAddr, senderAddr, newAdminAddr); err != nil {
+	if err := m.keeper.UpdateContractAdmin(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender),
+		sdk.AccAddress(msg.NewAdmin)); err != nil {
 		return nil, err
 	}
 
@@ -225,16 +232,16 @@ func (m msgServer) UpdateAdmin(goCtx context.Context, msg *types.MsgUpdateAdmin)
 
 func (m msgServer) ClearAdmin(goCtx context.Context, msg *types.MsgClearAdmin) (*types.MsgClearAdminResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
+	err = sdk.ValidateAccAddress(msg.Contract)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "contract")
 	}
 
-	if err := m.keeper.ClearContractAdmin(ctx, contractAddr, senderAddr); err != nil {
+	if err := m.keeper.ClearContractAdmin(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender)); err != nil {
 		return nil, err
 	}
 
@@ -255,16 +262,17 @@ func (m msgServer) ClearAdmin(goCtx context.Context, msg *types.MsgClearAdmin) (
 // CONTRACT: msg.validateBasic() must be called before calling this
 func (m msgServer) UpdateContractStatus(goCtx context.Context, msg *types.MsgUpdateContractStatus) (*types.MsgUpdateContractStatusResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
+	err = sdk.ValidateAccAddress(msg.Contract)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "contract")
 	}
 
-	if err = m.keeper.UpdateContractStatus(ctx, contractAddr, senderAddr, msg.Status); err != nil {
+	if err = m.keeper.UpdateContractStatus(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender),
+		msg.Status); err != nil {
 		return nil, err
 	}
 

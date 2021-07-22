@@ -10,7 +10,7 @@ import (
 	sdk "github.com/line/lfb-sdk/types"
 )
 
-var addr = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+var addr = sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address())
 
 func TestProposalKeys(t *testing.T) {
 	// key proposal
@@ -50,7 +50,8 @@ func TestDepositKeys(t *testing.T) {
 	// invalid key
 	addr2 := sdk.AccAddress("test1")
 	key = DepositKey(5, addr2)
-	require.Panics(t, func() { SplitKeyDeposit(key) })
+	// SplitKeyDeposit does not check key length
+	require.NotPanics(t, func() { SplitKeyDeposit(key) })
 }
 
 func TestVoteKeys(t *testing.T) {
@@ -67,5 +68,6 @@ func TestVoteKeys(t *testing.T) {
 	// invalid key
 	addr2 := sdk.AccAddress("test1")
 	key = VoteKey(5, addr2)
-	require.Panics(t, func() { SplitKeyVote(key) })
+	// SplitKeyVote does not check key length
+	require.NotPanics(t, func() { SplitKeyVote(key) })
 }

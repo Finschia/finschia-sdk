@@ -23,11 +23,11 @@ func NewQuerier(keeper *Keeper) GrpcQuerier {
 }
 
 func (q GrpcQuerier) ContractInfo(c context.Context, req *types.QueryContractInfoRequest) (*types.QueryContractInfoResponse, error) {
-	contractAddr, err := sdk.AccAddressFromBech32(req.Address)
+	err := sdk.ValidateAccAddress(req.Address)
 	if err != nil {
 		return nil, err
 	}
-	rsp, err := queryContractInfo(sdk.UnwrapSDKContext(c), contractAddr, *q.keeper)
+	rsp, err := queryContractInfo(sdk.UnwrapSDKContext(c), sdk.AccAddress(req.Address), *q.keeper)
 	switch {
 	case err != nil:
 		return nil, err
@@ -41,7 +41,7 @@ func (q GrpcQuerier) ContractInfo(c context.Context, req *types.QueryContractInf
 }
 
 func (q GrpcQuerier) ContractHistory(c context.Context, req *types.QueryContractHistoryRequest) (*types.QueryContractHistoryResponse, error) {
-	contractAddr, err := sdk.AccAddressFromBech32(req.Address)
+	err := sdk.ValidateAccAddress(req.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +49,8 @@ func (q GrpcQuerier) ContractHistory(c context.Context, req *types.QueryContract
 	ctx := sdk.UnwrapSDKContext(c)
 	r := make([]types.ContractCodeHistoryEntry, 0)
 
-	prefixStore := prefix.NewStore(ctx.KVStore(q.keeper.storeKey), types.GetContractCodeHistoryElementPrefix(contractAddr))
+	prefixStore := prefix.NewStore(ctx.KVStore(q.keeper.storeKey), types.GetContractCodeHistoryElementPrefix(
+		sdk.AccAddress(req.Address)))
 	pageRes, err := query.FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
 			var e types.ContractCodeHistoryEntry
@@ -79,7 +80,7 @@ func (q GrpcQuerier) ContractsByCode(c context.Context, req *types.QueryContract
 
 	prefixStore := prefix.NewStore(ctx.KVStore(q.keeper.storeKey), types.GetContractByCodeIDSecondaryIndexPrefix(req.CodeId))
 	pageRes, err := query.FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
-		var contractAddr sdk.AccAddress = key[types.AbsoluteTxPositionLen:]
+		contractAddr := sdk.AccAddress(string(key[types.AbsoluteTxPositionLen:]))
 		c := q.keeper.GetContractInfo(ctx, contractAddr)
 		if c == nil {
 			return false, types.ErrNotFound
@@ -103,17 +104,18 @@ func (q GrpcQuerier) ContractsByCode(c context.Context, req *types.QueryContract
 }
 
 func (q GrpcQuerier) AllContractState(c context.Context, req *types.QueryAllContractStateRequest) (*types.QueryAllContractStateResponse, error) {
-	contractAddr, err := sdk.AccAddressFromBech32(req.Address)
+	err := sdk.ValidateAccAddress(req.Address)
 	if err != nil {
 		return nil, err
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	if !q.keeper.containsContractInfo(ctx, contractAddr) {
+	if !q.keeper.containsContractInfo(ctx, sdk.AccAddress(req.Address)) {
 		return nil, types.ErrNotFound
 	}
 
 	r := make([]types.Model, 0)
-	prefixStore := prefix.NewStore(ctx.KVStore(q.keeper.storeKey), types.GetContractStorePrefix(contractAddr))
+	prefixStore := prefix.NewStore(ctx.KVStore(q.keeper.storeKey), types.GetContractStorePrefix(
+		sdk.AccAddress(req.Address)))
 	pageRes, err := query.FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
 			r = append(r, types.Model{
@@ -135,20 +137,20 @@ func (q GrpcQuerier) AllContractState(c context.Context, req *types.QueryAllCont
 func (q GrpcQuerier) RawContractState(c context.Context, req *types.QueryRawContractStateRequest) (*types.QueryRawContractStateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
-	contractAddr, err := sdk.AccAddressFromBech32(req.Address)
+	err := sdk.ValidateAccAddress(req.Address)
 	if err != nil {
 		return nil, err
 	}
 
-	if !q.keeper.containsContractInfo(ctx, contractAddr) {
+	if !q.keeper.containsContractInfo(ctx, sdk.AccAddress(req.Address)) {
 		return nil, types.ErrNotFound
 	}
-	rsp := q.keeper.QueryRaw(ctx, contractAddr, req.QueryData)
+	rsp := q.keeper.QueryRaw(ctx, sdk.AccAddress(req.Address), req.QueryData)
 	return &types.QueryRawContractStateResponse{Data: rsp}, nil
 }
 
 func (q GrpcQuerier) SmartContractState(c context.Context, req *types.QuerySmartContractStateRequest) (rsp *types.QuerySmartContractStateResponse, err error) {
-	contractAddr, err := sdk.AccAddressFromBech32(req.Address)
+	err = sdk.ValidateAccAddress(req.Address)
 	if err != nil {
 		return nil, err
 	}
@@ -174,7 +176,7 @@ func (q GrpcQuerier) SmartContractState(c context.Context, req *types.QuerySmart
 		}
 	}()
 
-	bz, err := q.keeper.QuerySmart(ctx, contractAddr, req.QueryData)
+	bz, err := q.keeper.QuerySmart(ctx, sdk.AccAddress(req.Address), req.QueryData)
 	switch {
 	case err != nil:
 		return nil, err

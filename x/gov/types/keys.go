@@ -154,10 +154,6 @@ func splitKeyWithTime(key []byte) (proposalID uint64, endTime time.Time) {
 }
 
 func splitKeyWithAddress(key []byte) (proposalID uint64, addr sdk.AccAddress) {
-	if len(key[1:]) != 8+sdk.AddrLen {
-		panic(fmt.Sprintf("unexpected key length (%d ≠ %d)", len(key), 8+sdk.AddrLen))
-	}
-
 	proposalID = GetProposalIDFromBytes(key[1:9])
 	addr = sdk.AccAddress(key[9:])
 	return

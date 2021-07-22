@@ -29,10 +29,7 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateValidator) (*types.MsgCreateValidatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	if err != nil {
-		return nil, err
-	}
+	valAddr := sdk.ValAddress(msg.ValidatorAddress)
 
 	// check to see if the pubkey or sender has been registered before
 	if _, found := k.GetValidator(ctx, valAddr); found {
@@ -81,10 +78,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 		return nil, err
 	}
 
-	delegatorAddress, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
-	if err != nil {
-		return nil, err
-	}
+	delegatorAddress := sdk.AccAddress(msg.DelegatorAddress)
 
 	validator.MinSelfDelegation = msg.MinSelfDelegation
 
@@ -121,10 +115,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 
 func (k msgServer) EditValidator(goCtx context.Context, msg *types.MsgEditValidator) (*types.MsgEditValidatorResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	if err != nil {
-		return nil, err
-	}
+	valAddr := sdk.ValAddress(msg.ValidatorAddress)
 	// validator must already be registered
 	validator, found := k.GetValidator(ctx, valAddr)
 	if !found {
@@ -183,20 +174,14 @@ func (k msgServer) EditValidator(goCtx context.Context, msg *types.MsgEditValida
 
 func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*types.MsgDelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	valAddr, valErr := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	if valErr != nil {
-		return nil, valErr
-	}
+	valAddr := sdk.ValAddress(msg.ValidatorAddress)
 
 	validator, found := k.GetValidator(ctx, valAddr)
 	if !found {
 		return nil, types.ErrNoValidatorFound
 	}
 
-	delegatorAddress, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
-	if err != nil {
-		return nil, err
-	}
+	delegatorAddress := sdk.AccAddress(msg.DelegatorAddress)
 
 	bondDenom := k.BondDenom(ctx)
 	if msg.Amount.Denom != bondDenom {
@@ -204,7 +189,7 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 	}
 
 	// NOTE: source funds are always unbonded
-	_, err = k.Keeper.Delegate(ctx, delegatorAddress, msg.Amount.Amount, types.Unbonded, validator, true)
+	_, err := k.Keeper.Delegate(ctx, delegatorAddress, msg.Amount.Amount, types.Unbonded, validator, true)
 	if err != nil {
 		return nil, err
 	}
@@ -238,14 +223,8 @@ func (k msgServer) Delegate(goCtx context.Context, msg *types.MsgDelegate) (*typ
 
 func (k msgServer) BeginRedelegate(goCtx context.Context, msg *types.MsgBeginRedelegate) (*types.MsgBeginRedelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	valSrcAddr, err := sdk.ValAddressFromBech32(msg.ValidatorSrcAddress)
-	if err != nil {
-		return nil, err
-	}
-	delegatorAddress, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
-	if err != nil {
-		return nil, err
-	}
+	valSrcAddr := sdk.ValAddress(msg.ValidatorSrcAddress)
+	delegatorAddress := sdk.AccAddress(msg.DelegatorAddress)
 	shares, err := k.ValidateUnbondAmount(
 		ctx, delegatorAddress, valSrcAddr, msg.Amount.Amount,
 	)
@@ -258,10 +237,7 @@ func (k msgServer) BeginRedelegate(goCtx context.Context, msg *types.MsgBeginRed
 		return nil, sdkerrors.Wrapf(types.ErrBadDenom, "got %s, expected %s", msg.Amount.Denom, bondDenom)
 	}
 
-	valDstAddr, err := sdk.ValAddressFromBech32(msg.ValidatorDstAddress)
-	if err != nil {
-		return nil, err
-	}
+	valDstAddr := sdk.ValAddress(msg.ValidatorDstAddress)
 
 	completionTime, err := k.BeginRedelegation(
 		ctx, delegatorAddress, valSrcAddr, valDstAddr, shares,
@@ -304,14 +280,8 @@ func (k msgServer) BeginRedelegate(goCtx context.Context, msg *types.MsgBeginRed
 func (k msgServer) Undelegate(goCtx context.Context, msg *types.MsgUndelegate) (*types.MsgUndelegateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	addr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	if err != nil {
-		return nil, err
-	}
-	delegatorAddress, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
-	if err != nil {
-		return nil, err
-	}
+	addr := sdk.ValAddress(msg.ValidatorAddress)
+	delegatorAddress := sdk.AccAddress(msg.DelegatorAddress)
 	shares, err := k.ValidateUnbondAmount(
 		ctx, delegatorAddress, addr, msg.Amount.Amount,
 	)

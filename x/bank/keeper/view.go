@@ -99,7 +99,7 @@ func (k BaseViewKeeper) GetAccountsBalances(ctx sdk.Context) []types.Balance {
 func (k BaseViewKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin {
 	store := ctx.KVStore(k.storeKey)
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
+	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
 
 	bz := accountStore.Get([]byte(denom))
 	if bz == nil {
@@ -118,7 +118,7 @@ func (k BaseViewKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom s
 func (k BaseViewKeeper) IterateAccountBalances(ctx sdk.Context, addr sdk.AccAddress, cb func(sdk.Coin) bool) {
 	store := ctx.KVStore(k.storeKey)
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
+	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
 
 	iterator := accountStore.Iterator(nil, nil)
 	defer iterator.Close()

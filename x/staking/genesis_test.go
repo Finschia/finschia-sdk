@@ -52,13 +52,13 @@ func TestInitGenesis(t *testing.T) {
 	require.NoError(t, err)
 
 	// initialize the validators
-	validators[0].OperatorAddress = sdk.ValAddress(addrs[0]).String()
+	validators[0].OperatorAddress = addrs[0].ToValAddress().String()
 	validators[0].ConsensusPubkey = pk0
 	validators[0].Description = types.NewDescription("hoop", "", "", "", "")
 	validators[0].Status = types.Bonded
 	validators[0].Tokens = valTokens
 	validators[0].DelegatorShares = valTokens.ToDec()
-	validators[1].OperatorAddress = sdk.ValAddress(addrs[1]).String()
+	validators[1].OperatorAddress = addrs[1].ToValAddress().String()
 	validators[1].ConsensusPubkey = pk1
 	validators[1].Description = types.NewDescription("bloop", "", "", "", "")
 	validators[1].Status = types.Bonded
@@ -81,11 +81,11 @@ func TestInitGenesis(t *testing.T) {
 	}
 
 	// now make sure the validators are bonded and intra-tx counters are correct
-	resVal, found := app.StakingKeeper.GetValidator(ctx, sdk.ValAddress(addrs[0]))
+	resVal, found := app.StakingKeeper.GetValidator(ctx, addrs[0].ToValAddress())
 	require.True(t, found)
 	require.Equal(t, types.Bonded, resVal.Status)
 
-	resVal, found = app.StakingKeeper.GetValidator(ctx, sdk.ValAddress(addrs[1]))
+	resVal, found = app.StakingKeeper.GetValidator(ctx, addrs[1].ToValAddress())
 	require.True(t, found)
 	require.Equal(t, types.Bonded, resVal.Status)
 
@@ -108,7 +108,7 @@ func TestInitGenesisLargeValidatorSet(t *testing.T) {
 	validators := make([]types.Validator, size)
 	var err error
 	for i := range validators {
-		validators[i], err = types.NewValidator(sdk.ValAddress(addrs[i]),
+		validators[i], err = types.NewValidator(addrs[i].ToValAddress(),
 			PKs[i], types.NewDescription(fmt.Sprintf("#%d", i), "", "", "", ""))
 		require.NoError(t, err)
 		validators[i].Status = types.Bonded
@@ -135,7 +135,7 @@ func TestInitGenesisLargeValidatorSet(t *testing.T) {
 func TestValidateGenesis(t *testing.T) {
 	genValidators1 := make([]types.Validator, 1, 5)
 	pk := ed25519.GenPrivKey().PubKey()
-	genValidators1[0] = teststaking.NewValidator(t, sdk.ValAddress(pk.Address()), pk)
+	genValidators1[0] = teststaking.NewValidator(t, sdk.BytesToValAddress(pk.Address()), pk)
 	genValidators1[0].Tokens = sdk.OneInt()
 	genValidators1[0].DelegatorShares = sdk.OneDec()
 

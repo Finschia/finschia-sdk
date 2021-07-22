@@ -169,7 +169,7 @@ func GetCmdGetContractInfo() *cobra.Command {
 				return err
 			}
 
-			_, err = sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
@@ -220,7 +220,7 @@ func GetCmdGetContractStateAll() *cobra.Command {
 				return err
 			}
 
-			_, err = sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
@@ -261,7 +261,7 @@ func GetCmdGetContractStateRaw() *cobra.Command {
 				return err
 			}
 
-			_, err = sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
@@ -302,7 +302,7 @@ func GetCmdGetContractStateSmart() *cobra.Command {
 				return err
 			}
 
-			_, err = sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}
@@ -350,7 +350,7 @@ func GetCmdGetContractHistory() *cobra.Command {
 				return err
 			}
 
-			_, err = sdk.AccAddressFromBech32(args[0])
+			err = sdk.ValidateAccAddress(args[0])
 			if err != nil {
 				return err
 			}

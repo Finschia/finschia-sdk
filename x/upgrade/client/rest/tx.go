@@ -71,13 +71,11 @@ func newPostPlanHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
-		if rest.CheckBadRequestError(w, err) {
-			return
-		}
+		fromAddr := sdk.AccAddress(req.BaseReq.From)
 
 		var t time.Time
 		if req.UpgradeTime != "" {
+			var err error
 			t, err = time.Parse(time.RFC3339, req.UpgradeTime)
 			if rest.CheckBadRequestError(w, err) {
 				return
@@ -111,10 +109,7 @@ func newCancelPlanHandler(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
-		if rest.CheckBadRequestError(w, err) {
-			return
-		}
+		fromAddr := sdk.AccAddress(req.BaseReq.From)
 
 		content := types.NewCancelSoftwareUpgradeProposal(req.Title, req.Description)
 

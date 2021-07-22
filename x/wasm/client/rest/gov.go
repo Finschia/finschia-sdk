@@ -259,12 +259,12 @@ type wasmProposalData interface {
 }
 
 func toStdTxResponse(cliCtx client.Context, w http.ResponseWriter, data wasmProposalData) {
-	proposerAddr, err := sdk.AccAddressFromBech32(data.GetProposer())
+	err := sdk.ValidateAccAddress(data.GetProposer())
 	if err != nil {
 		rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 		return
 	}
-	msg, err := govtypes.NewMsgSubmitProposal(data.Content(), data.GetDeposit(), proposerAddr)
+	msg, err := govtypes.NewMsgSubmitProposal(data.Content(), data.GetDeposit(), sdk.AccAddress(data.GetProposer()))
 	if err != nil {
 		rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 		return

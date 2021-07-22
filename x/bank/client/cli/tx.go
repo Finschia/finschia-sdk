@@ -39,10 +39,7 @@ ignored as it is implied from [from_key_or_address].`,
 			if err != nil {
 				return err
 			}
-			toAddr, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
+			toAddr := sdk.AccAddress(args[1])
 
 			coins, err := sdk.ParseCoinsNormalized(args[2])
 			if err != nil {

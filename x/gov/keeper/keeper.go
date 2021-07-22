@@ -46,7 +46,7 @@ func NewKeeper(
 ) Keeper {
 
 	// ensure governance module account is set
-	if addr := authKeeper.GetModuleAddress(types.ModuleName); addr == nil {
+	if addr := authKeeper.GetModuleAddress(types.ModuleName); addr == "" {
 		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
 	}
 

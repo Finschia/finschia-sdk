@@ -29,9 +29,9 @@ var (
 	}
 
 	valAddresses = []sdk.ValAddress{
-		sdk.ValAddress(pubkeys[0].Address()),
-		sdk.ValAddress(pubkeys[1].Address()),
-		sdk.ValAddress(pubkeys[2].Address()),
+		sdk.BytesToValAddress(pubkeys[0].Address()),
+		sdk.BytesToValAddress(pubkeys[1].Address()),
+		sdk.BytesToValAddress(pubkeys[2].Address()),
 	}
 
 	initAmt   = sdk.TokensFromConsensusPower(200)
@@ -97,7 +97,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app = app
 
 	for i, addr := range valAddresses {
-		addr := sdk.AccAddress(addr)
+		addr := addr.ToAccAddress()
 		app.AccountKeeper.SetAccount(suite.ctx, authtypes.NewBaseAccount(addr, pubkeys[i], 0))
 	}
 
@@ -117,7 +117,7 @@ func (suite *KeeperTestSuite) populateEvidence(ctx sdk.Context, numEvidence int)
 			Height:           11,
 			Power:            100,
 			Time:             time.Now().UTC(),
-			ConsensusAddress: sdk.ConsAddress(pk.PubKey().Address().Bytes()).String(),
+			ConsensusAddress: sdk.BytesToConsAddress(pk.PubKey().Address()).String(),
 		}
 
 		suite.Nil(suite.app.EvidenceKeeper.SubmitEvidence(ctx, evidence[i]))
@@ -133,7 +133,7 @@ func (suite *KeeperTestSuite) populateValidators(ctx sdk.Context) {
 	suite.app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(totalSupply))
 
 	for _, addr := range valAddresses {
-		err := suite.app.BankKeeper.AddCoins(ctx, sdk.AccAddress(addr), initCoins)
+		err := suite.app.BankKeeper.AddCoins(ctx, addr.ToAccAddress(), initCoins)
 		suite.NoError(err)
 	}
 }
@@ -146,7 +146,7 @@ func (suite *KeeperTestSuite) TestSubmitValidEvidence() {
 		Height:           1,
 		Power:            100,
 		Time:             time.Now().UTC(),
-		ConsensusAddress: sdk.ConsAddress(pk.PubKey().Address().Bytes()).String(),
+		ConsensusAddress: sdk.BytesToConsAddress(pk.PubKey().Address()).String(),
 	}
 
 	suite.Nil(suite.app.EvidenceKeeper.SubmitEvidence(ctx, e))
@@ -164,7 +164,7 @@ func (suite *KeeperTestSuite) TestSubmitValidEvidence_Duplicate() {
 		Height:           1,
 		Power:            100,
 		Time:             time.Now().UTC(),
-		ConsensusAddress: sdk.ConsAddress(pk.PubKey().Address().Bytes()).String(),
+		ConsensusAddress: sdk.BytesToConsAddress(pk.PubKey().Address()).String(),
 	}
 
 	suite.Nil(suite.app.EvidenceKeeper.SubmitEvidence(ctx, e))
@@ -182,7 +182,7 @@ func (suite *KeeperTestSuite) TestSubmitInvalidEvidence() {
 		Height:           0,
 		Power:            100,
 		Time:             time.Now().UTC(),
-		ConsensusAddress: sdk.ConsAddress(pk.PubKey().Address().Bytes()).String(),
+		ConsensusAddress: sdk.BytesToConsAddress(pk.PubKey().Address()).String(),
 	}
 
 	suite.Error(suite.app.EvidenceKeeper.SubmitEvidence(ctx, e))

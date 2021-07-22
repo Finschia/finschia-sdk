@@ -38,7 +38,7 @@ func NewKeeper(
 ) Keeper {
 
 	// ensure ibc transfer module account is set
-	if addr := authKeeper.GetModuleAddress(types.ModuleName); addr == nil {
+	if addr := authKeeper.GetModuleAddress(types.ModuleName); addr == "" {
 		panic("the IBC transfer module account has not been set")
 	}
 

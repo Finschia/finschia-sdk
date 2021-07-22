@@ -67,12 +67,7 @@ func (m MsgSubmitEvidence) GetSignBytes() []byte {
 
 // GetSigners returns the single expected signer for a MsgSubmitEvidence.
 func (m MsgSubmitEvidence) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(m.Submitter)
-	if err != nil {
-		return nil
-	}
-
-	return []sdk.AccAddress{accAddr}
+	return []sdk.AccAddress{sdk.AccAddress(m.Submitter)}
 }
 
 func (m MsgSubmitEvidence) GetEvidence() exported.Evidence {
@@ -84,11 +79,7 @@ func (m MsgSubmitEvidence) GetEvidence() exported.Evidence {
 }
 
 func (m MsgSubmitEvidence) GetSubmitter() sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(m.Submitter)
-	if err != nil {
-		return nil
-	}
-	return accAddr
+	return sdk.AccAddress(m.Submitter)
 }
 
 func (m MsgSubmitEvidence) UnpackInterfaces(ctx types.AnyUnpacker) error {

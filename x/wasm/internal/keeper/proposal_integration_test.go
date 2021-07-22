@@ -85,8 +85,8 @@ func TestInstantiateProposal(t *testing.T) {
 	)
 
 	var (
-		oneAddress   sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen)
-		otherAddress sdk.AccAddress = bytes.Repeat([]byte{0x2}, sdk.AddrLen)
+		oneAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
+		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
 	)
 	src := types.InstantiateContractProposalFixture(func(p *types.InstantiateContractProposal) {
 		p.CodeID = firstCodeID
@@ -105,10 +105,11 @@ func TestInstantiateProposal(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	contractAddr, err := sdk.AccAddressFromBech32("link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu")
+	contractAddr := "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
+	err = sdk.ValidateAccAddress(contractAddr)
 	require.NoError(t, err)
 
-	cInfo := wasmKeeper.GetContractInfo(ctx, contractAddr)
+	cInfo := wasmKeeper.GetContractInfo(ctx, sdk.AccAddress(contractAddr))
 	require.NotNil(t, cInfo)
 	assert.Equal(t, uint64(1), cInfo.CodeID)
 	assert.Equal(t, oneAddress.String(), cInfo.Creator)
@@ -120,7 +121,7 @@ func TestInstantiateProposal(t *testing.T) {
 		Updated:   types.NewAbsoluteTxPosition(ctx),
 		Msg:       src.InitMsg,
 	}}
-	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, contractAddr))
+	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, sdk.AccAddress(contractAddr)))
 }
 
 func TestMigrateProposal(t *testing.T) {
@@ -144,8 +145,8 @@ func TestMigrateProposal(t *testing.T) {
 	require.NoError(t, wasmKeeper.importCode(ctx, 2, codeInfoFixture, wasmCode))
 
 	var (
-		anyAddress   sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen)
-		otherAddress sdk.AccAddress = bytes.Repeat([]byte{0x2}, sdk.AddrLen)
+		anyAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
+		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
 		contractAddr                = contractAddress(1, 1)
 	)
 
@@ -204,8 +205,8 @@ func TestMigrateProposal(t *testing.T) {
 
 func TestAdminProposals(t *testing.T) {
 	var (
-		otherAddress sdk.AccAddress = bytes.Repeat([]byte{0x2}, sdk.AddrLen)
-		contractAddr                = contractAddress(1, 1)
+		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
+		contractAddr = contractAddress(1, 1)
 	)
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
@@ -298,9 +299,9 @@ func TestUpdateParamsProposal(t *testing.T) {
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
 
 	var (
-		cdc                                   = keepers.WasmKeeper.cdc
-		myAddress              sdk.AccAddress = make([]byte, sdk.AddrLen)
-		oneAddressAccessConfig                = types.AccessTypeOnlyAddress.With(myAddress)
+		cdc                    = keepers.WasmKeeper.cdc
+		myAddress              = sdk.BytesToAccAddress(make([]byte, sdk.BytesAddrLen))
+		oneAddressAccessConfig = types.AccessTypeOnlyAddress.With(myAddress)
 	)
 
 	nobodyJson, err := json.Marshal(types.AccessTypeNobody)

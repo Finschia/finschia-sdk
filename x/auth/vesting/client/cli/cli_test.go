@@ -52,7 +52,7 @@ func (s *IntegrationTestSuite) TestNewMsgCreateVestingAccountCmd() {
 	}{
 		"create a continuous vesting account": {
 			args: []string{
-				sdk.AccAddress("addr2_______________").String(),
+				sdk.BytesToAccAddress([]byte("addr2_______________")).String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String(),
 				"4070908800",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
@@ -66,7 +66,7 @@ func (s *IntegrationTestSuite) TestNewMsgCreateVestingAccountCmd() {
 		},
 		"create a delayed vesting account": {
 			args: []string{
-				sdk.AccAddress("addr3_______________").String(),
+				sdk.BytesToAccAddress([]byte("addr3_______________")).String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String(),
 				"4070908800",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
@@ -81,7 +81,7 @@ func (s *IntegrationTestSuite) TestNewMsgCreateVestingAccountCmd() {
 		},
 		"invalid address": {
 			args: []string{
-				sdk.AccAddress("addr4").String(),
+				sdk.BytesToAccAddress([]byte("addr4")).String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String(),
 				"4070908800",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
@@ -92,7 +92,7 @@ func (s *IntegrationTestSuite) TestNewMsgCreateVestingAccountCmd() {
 		},
 		"invalid coins": {
 			args: []string{
-				sdk.AccAddress("addr4_______________").String(),
+				sdk.BytesToAccAddress([]byte("addr4_______________")).String(),
 				"fooo",
 				"4070908800",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
@@ -103,7 +103,7 @@ func (s *IntegrationTestSuite) TestNewMsgCreateVestingAccountCmd() {
 		},
 		"invalid end time": {
 			args: []string{
-				sdk.AccAddress("addr4_______________").String(),
+				sdk.BytesToAccAddress([]byte("addr4_______________")).String(),
 				sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String(),
 				"-4070908800",
 				fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),

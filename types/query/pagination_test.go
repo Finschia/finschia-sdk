@@ -75,7 +75,7 @@ func (s *paginationTestSuite) TestPagination() {
 		balances = append(balances, sdk.NewInt64Coin(denom, 100))
 	}
 
-	addr1 := sdk.AccAddress(secp256k1.GenPrivKey().PubKey().Address())
+	addr1 := sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	s.Require().NoError(app.BankKeeper.SetBalances(ctx, addr1, balances))
@@ -193,7 +193,7 @@ func ExamplePaginate() {
 	balResult := sdk.NewCoins()
 	authStore := ctx.KVStore(app.GetKey(authtypes.StoreKey))
 	balancesStore := prefix.NewStore(authStore, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, addr1.Bytes())
+	accountStore := prefix.NewStore(balancesStore, bankkeeper.AddressToPrefixKey(addr1))
 	pageRes, err := query.Paginate(accountStore, request.Pagination, func(key []byte, value []byte) error {
 		var tempRes sdk.Coin
 		err := app.AppCodec().UnmarshalBinaryBare(value, &tempRes)

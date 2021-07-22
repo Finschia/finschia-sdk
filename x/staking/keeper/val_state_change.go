@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"sort"
+	"strings"
 
 	gogotypes "github.com/gogo/protobuf/types"
 	abci "github.com/line/ostracon/abci/types"
@@ -35,15 +36,8 @@ func (k Keeper) BlockValidatorUpdates(ctx sdk.Context) []abci.ValidatorUpdate {
 	// Remove all mature unbonding delegations from the ubd queue.
 	matureUnbonds := k.DequeueAllMatureUBDQueue(ctx, ctx.BlockHeader().Time)
 	for _, dvPair := range matureUnbonds {
-		addr, err := sdk.ValAddressFromBech32(dvPair.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
-		delegatorAddress, err := sdk.AccAddressFromBech32(dvPair.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
-		balances, err := k.CompleteUnbonding(ctx, delegatorAddress, addr)
+		balances, err := k.CompleteUnbonding(ctx, sdk.AccAddress(dvPair.DelegatorAddress),
+			sdk.ValAddress(dvPair.ValidatorAddress))
 		if err != nil {
 			continue
 		}
@@ -61,23 +55,11 @@ func (k Keeper) BlockValidatorUpdates(ctx sdk.Context) []abci.ValidatorUpdate {
 	// Remove all mature redelegations from the red queue.
 	matureRedelegations := k.DequeueAllMatureRedelegationQueue(ctx, ctx.BlockHeader().Time)
 	for _, dvvTriplet := range matureRedelegations {
-		valSrcAddr, err := sdk.ValAddressFromBech32(dvvTriplet.ValidatorSrcAddress)
-		if err != nil {
-			panic(err)
-		}
-		valDstAddr, err := sdk.ValAddressFromBech32(dvvTriplet.ValidatorDstAddress)
-		if err != nil {
-			panic(err)
-		}
-		delegatorAddress, err := sdk.AccAddressFromBech32(dvvTriplet.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
 		balances, err := k.CompleteRedelegation(
 			ctx,
-			delegatorAddress,
-			valSrcAddr,
-			valDstAddr,
+			sdk.AccAddress(dvvTriplet.DelegatorAddress),
+			sdk.ValAddress(dvvTriplet.ValidatorSrcAddress),
+			sdk.ValAddress(dvvTriplet.ValidatorDstAddress),
 		)
 		if err != nil {
 			continue
@@ -160,10 +142,7 @@ func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []ab
 		}
 
 		// fetch the old power bytes
-		var valAddrBytes [sdk.AddrLen]byte
-
-		copy(valAddrBytes[:], valAddr[:])
-		oldPowerBytes, found := last[valAddrBytes]
+		oldPowerBytes, found := last[valAddr.String()]
 		newPower := validator.ConsensusPower()
 		newPowerBytes := k.cdc.MustMarshalBinaryBare(&gogotypes.Int64Value{Value: newPower})
 
@@ -174,7 +153,7 @@ func (k Keeper) ApplyAndReturnValidatorSetUpdates(ctx sdk.Context) (updates []ab
 			k.SetLastValidatorPower(ctx, valAddr, newPower)
 		}
 
-		delete(last, valAddrBytes)
+		delete(last, valAddr.String())
 		count++
 
 		totalPower = totalPower.Add(sdk.NewInt(newPower))
@@ -340,7 +319,7 @@ func (k Keeper) completeUnbondingValidator(ctx sdk.Context, validator types.Vali
 }
 
 // map of operator addresses to serialized power
-type validatorsByAddr map[[sdk.AddrLen]byte][]byte
+type validatorsByAddr map[string][]byte
 
 // get the last validator set
 func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) validatorsByAddr {
@@ -350,9 +329,8 @@ func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) validatorsByAddr {
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		var valAddr [sdk.AddrLen]byte
 		// extract the validator address from the key (prefix is 1-byte)
-		copy(valAddr[:], iterator.Key()[1:])
+		valAddr := string(iterator.Key()[1:])
 		powerBytes := iterator.Value()
 		last[valAddr] = make([]byte, len(powerBytes))
 		copy(last[valAddr], powerBytes)
@@ -363,21 +341,19 @@ func (k Keeper) getLastValidatorsByAddr(ctx sdk.Context) validatorsByAddr {
 
 // given a map of remaining validators to previous bonded power
 // returns the list of validators to be unbonded, sorted by operator address
-func sortNoLongerBonded(last validatorsByAddr) [][]byte {
+func sortNoLongerBonded(last validatorsByAddr) []string {
 	// sort the map keys for determinism
-	noLongerBonded := make([][]byte, len(last))
+	noLongerBonded := make([]string, len(last))
 	index := 0
 
 	for valAddrBytes := range last {
-		valAddr := make([]byte, sdk.AddrLen)
-		copy(valAddr, valAddrBytes[:])
-		noLongerBonded[index] = valAddr
+		noLongerBonded[index] = valAddrBytes
 		index++
 	}
 	// sorted by address - order doesn't matter
 	sort.SliceStable(noLongerBonded, func(i, j int) bool {
 		// -1 means strictly less than
-		return bytes.Compare(noLongerBonded[i], noLongerBonded[j]) == -1
+		return strings.Compare(noLongerBonded[i], noLongerBonded[j]) == -1
 	})
 
 	return noLongerBonded

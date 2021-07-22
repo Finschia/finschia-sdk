@@ -15,74 +15,43 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data types.GenesisState) {
 	k.SetParams(ctx, data.Params)
 
 	for _, dwi := range data.DelegatorWithdrawInfos {
-		delegatorAddress, err := sdk.AccAddressFromBech32(dwi.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
-		withdrawAddress, err := sdk.AccAddressFromBech32(dwi.WithdrawAddress)
-		if err != nil {
-			panic(err)
-		}
+		delegatorAddress := sdk.AccAddress(dwi.DelegatorAddress)
+		withdrawAddress := sdk.AccAddress(dwi.WithdrawAddress)
 
 		k.SetDelegatorWithdrawAddr(ctx, delegatorAddress, withdrawAddress)
 	}
 
 	var previousProposer sdk.ConsAddress
 	if data.PreviousProposer != "" {
-		var err error
-		previousProposer, err = sdk.ConsAddressFromBech32(data.PreviousProposer)
-		if err != nil {
-			panic(err)
-		}
+		previousProposer = sdk.ConsAddress(data.PreviousProposer)
 	}
 
 	k.SetPreviousProposerConsAddr(ctx, previousProposer)
 
 	for _, rew := range data.OutstandingRewards {
-		valAddr, err := sdk.ValAddressFromBech32(rew.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		valAddr := sdk.ValAddress(rew.ValidatorAddress)
 		k.SetValidatorOutstandingRewards(ctx, valAddr, types.ValidatorOutstandingRewards{Rewards: rew.OutstandingRewards})
-		moduleHoldings = moduleHoldings.Add(rew.OutstandingRewards...)
+		moduleHoldings = rew.OutstandingRewards
 	}
 	for _, acc := range data.ValidatorAccumulatedCommissions {
-		valAddr, err := sdk.ValAddressFromBech32(acc.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		valAddr := sdk.ValAddress(acc.ValidatorAddress)
 		k.SetValidatorAccumulatedCommission(ctx, valAddr, acc.Accumulated)
 	}
 	for _, his := range data.ValidatorHistoricalRewards {
-		valAddr, err := sdk.ValAddressFromBech32(his.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		valAddr := sdk.ValAddress(his.ValidatorAddress)
 		k.SetValidatorHistoricalRewards(ctx, valAddr, his.Period, his.Rewards)
 	}
 	for _, cur := range data.ValidatorCurrentRewards {
-		valAddr, err := sdk.ValAddressFromBech32(cur.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		valAddr := sdk.ValAddress(cur.ValidatorAddress)
 		k.SetValidatorCurrentRewards(ctx, valAddr, cur.Rewards)
 	}
 	for _, del := range data.DelegatorStartingInfos {
-		valAddr, err := sdk.ValAddressFromBech32(del.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
-		delegatorAddress, err := sdk.AccAddressFromBech32(del.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		valAddr := sdk.ValAddress(del.ValidatorAddress)
+		delegatorAddress := sdk.AccAddress(del.DelegatorAddress)
 		k.SetDelegatorStartingInfo(ctx, valAddr, delegatorAddress, del.StartingInfo)
 	}
 	for _, evt := range data.ValidatorSlashEvents {
-		valAddr, err := sdk.ValAddressFromBech32(evt.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		valAddr := sdk.ValAddress(evt.ValidatorAddress)
 		k.SetValidatorSlashEvent(ctx, valAddr, evt.Height, evt.Period, evt.ValidatorSlashEvent)
 	}
 

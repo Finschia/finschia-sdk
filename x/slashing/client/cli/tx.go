@@ -6,7 +6,6 @@ import (
 	"github.com/line/lfb-sdk/client"
 	"github.com/line/lfb-sdk/client/flags"
 	"github.com/line/lfb-sdk/client/tx"
-	sdk "github.com/line/lfb-sdk/types"
 	"github.com/line/lfb-sdk/x/slashing/types"
 )
 
@@ -40,7 +39,7 @@ $ <appd> tx slashing unjail --from mykey
 			}
 			valAddr := clientCtx.GetFromAddress()
 
-			msg := types.NewMsgUnjail(sdk.ValAddress(valAddr))
+			msg := types.NewMsgUnjail(valAddr.ToValAddress())
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}

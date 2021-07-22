@@ -132,22 +132,22 @@ func (e QueryPlugins) Merge(o *QueryPlugins) QueryPlugins {
 func BankQuerier(bankKeeper types.BankViewKeeper) func(ctx sdk.Context, request *wasmvmtypes.BankQuery) ([]byte, error) {
 	return func(ctx sdk.Context, request *wasmvmtypes.BankQuery) ([]byte, error) {
 		if request.AllBalances != nil {
-			addr, err := sdk.AccAddressFromBech32(request.AllBalances.Address)
+			err := sdk.ValidateAccAddress(request.AllBalances.Address)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.AllBalances.Address)
 			}
-			coins := bankKeeper.GetAllBalances(ctx, addr)
+			coins := bankKeeper.GetAllBalances(ctx, sdk.AccAddress(request.AllBalances.Address))
 			res := wasmvmtypes.AllBalancesResponse{
 				Amount: convertSdkCoinsToWasmCoins(coins),
 			}
 			return json.Marshal(res)
 		}
 		if request.Balance != nil {
-			addr, err := sdk.AccAddressFromBech32(request.Balance.Address)
+			err := sdk.ValidateAccAddress(request.Balance.Address)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Balance.Address)
 			}
-			coins := bankKeeper.GetAllBalances(ctx, addr)
+			coins := bankKeeper.GetAllBalances(ctx, sdk.AccAddress(request.Balance.Address))
 			amount := coins.AmountOf(request.Balance.Denom)
 			res := wasmvmtypes.BalanceResponse{
 				Amount: wasmvmtypes.Coin{
@@ -299,11 +299,11 @@ func StakingQuerier(keeper types.StakingKeeper, distKeeper types.DistributionKee
 			return json.Marshal(res)
 		}
 		if request.AllDelegations != nil {
-			delegator, err := sdk.AccAddressFromBech32(request.AllDelegations.Delegator)
+			err := sdk.ValidateAccAddress(request.AllDelegations.Delegator)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.AllDelegations.Delegator)
 			}
-			sdkDels := keeper.GetAllDelegatorDelegations(ctx, delegator)
+			sdkDels := keeper.GetAllDelegatorDelegations(ctx, sdk.AccAddress(request.AllDelegations.Delegator))
 			delegations, err := sdkToDelegations(ctx, keeper, sdkDels)
 			if err != nil {
 				return nil, err
@@ -314,17 +314,18 @@ func StakingQuerier(keeper types.StakingKeeper, distKeeper types.DistributionKee
 			return json.Marshal(res)
 		}
 		if request.Delegation != nil {
-			delegator, err := sdk.AccAddressFromBech32(request.Delegation.Delegator)
+			err := sdk.ValidateAccAddress(request.Delegation.Delegator)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Delegation.Delegator)
 			}
-			validator, err := sdk.ValAddressFromBech32(request.Delegation.Validator)
+			err = sdk.ValidateValAddress(request.Delegation.Validator)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Delegation.Validator)
 			}
 
 			var res wasmvmtypes.DelegationResponse
-			d, found := keeper.GetDelegation(ctx, delegator, validator)
+			d, found := keeper.GetDelegation(ctx, sdk.AccAddress(request.Delegation.Delegator),
+				sdk.ValAddress(request.Delegation.Validator))
 			if found {
 				res.Delegation, err = sdkToFullDelegation(ctx, keeper, distKeeper, d)
 				if err != nil {
@@ -342,27 +343,27 @@ func sdkToDelegations(ctx sdk.Context, keeper types.StakingKeeper, delegations [
 	bondDenom := keeper.BondDenom(ctx)
 
 	for i, d := range delegations {
-		delAddr, err := sdk.AccAddressFromBech32(d.DelegatorAddress)
+		err := sdk.ValidateAccAddress(d.DelegatorAddress)
 		if err != nil {
 			return nil, sdkerrors.Wrap(err, "delegator address")
 		}
-		valAddr, err := sdk.ValAddressFromBech32(d.ValidatorAddress)
+		err = sdk.ValidateValAddress(d.ValidatorAddress)
 		if err != nil {
 			return nil, sdkerrors.Wrap(err, "validator address")
 		}
 
 		// shares to amount logic comes from here:
 		// x/staking/keeper/querier.go DelegationToDelegationResponse
-		/// https://github.com/line/lfb-sdk/blob/3ccf3913f53e2a9ccb4be8429bee32e67669e89a/x/staking/keeper/querier.go#L450
-		val, found := keeper.GetValidator(ctx, valAddr)
+		/// https://github.com/cosmos/cosmos-sdk/blob/3ccf3913f53e2a9ccb4be8429bee32e67669e89a/x/staking/keeper/querier.go#L450
+		val, found := keeper.GetValidator(ctx, sdk.ValAddress(d.ValidatorAddress))
 		if !found {
 			return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, "can't load validator for delegation")
 		}
 		amount := sdk.NewCoin(bondDenom, val.TokensFromShares(d.Shares).TruncateInt())
 
 		result[i] = wasmvmtypes.Delegation{
-			Delegator: delAddr.String(),
-			Validator: valAddr.String(),
+			Delegator: sdk.AccAddress(d.DelegatorAddress).String(),
+			Validator: sdk.ValAddress(d.ValidatorAddress).String(),
 			Amount:    convertSdkCoinToWasmCoin(amount),
 		}
 	}
@@ -370,15 +371,15 @@ func sdkToDelegations(ctx sdk.Context, keeper types.StakingKeeper, delegations [
 }
 
 func sdkToFullDelegation(ctx sdk.Context, keeper types.StakingKeeper, distKeeper types.DistributionKeeper, delegation stakingtypes.Delegation) (*wasmvmtypes.FullDelegation, error) {
-	delAddr, err := sdk.AccAddressFromBech32(delegation.DelegatorAddress)
+	err := sdk.ValidateAccAddress(delegation.DelegatorAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "delegator address")
 	}
-	valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
+	err = sdk.ValidateValAddress(delegation.ValidatorAddress)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "validator address")
 	}
-	val, found := keeper.GetValidator(ctx, valAddr)
+	val, found := keeper.GetValidator(ctx, sdk.ValAddress(delegation.ValidatorAddress))
 	if !found {
 		return nil, sdkerrors.Wrap(stakingtypes.ErrNoValidatorFound, "can't load validator for delegation")
 	}
@@ -393,7 +394,8 @@ func sdkToFullDelegation(ctx sdk.Context, keeper types.StakingKeeper, distKeeper
 	// otherwise, it can redelegate the full amount
 	// (there are cases of partial funds redelegated, but this is a start)
 	redelegateCoins := wasmvmtypes.NewCoin(0, bondDenom)
-	if !keeper.HasReceivingRedelegation(ctx, delAddr, valAddr) {
+	if !keeper.HasReceivingRedelegation(ctx, sdk.AccAddress(delegation.DelegatorAddress),
+		sdk.ValAddress(delegation.ValidatorAddress)) {
 		redelegateCoins = delegationCoins
 	}
 
@@ -407,8 +409,8 @@ func sdkToFullDelegation(ctx sdk.Context, keeper types.StakingKeeper, distKeeper
 	}
 
 	return &wasmvmtypes.FullDelegation{
-		Delegator:          delAddr.String(),
-		Validator:          valAddr.String(),
+		Delegator:          sdk.AccAddress(delegation.DelegatorAddress).String(),
+		Validator:          sdk.ValAddress(delegation.ValidatorAddress).String(),
 		Amount:             delegationCoins,
 		AccumulatedRewards: accRewards,
 		CanRedelegate:      redelegateCoins,
@@ -443,18 +445,18 @@ func getAccumulatedRewards(ctx sdk.Context, distKeeper types.DistributionKeeper,
 func WasmQuerier(wasm *Keeper) func(ctx sdk.Context, request *wasmvmtypes.WasmQuery) ([]byte, error) {
 	return func(ctx sdk.Context, request *wasmvmtypes.WasmQuery) ([]byte, error) {
 		if request.Smart != nil {
-			addr, err := sdk.AccAddressFromBech32(request.Smart.ContractAddr)
+			err := sdk.ValidateAccAddress(request.Smart.ContractAddr)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Smart.ContractAddr)
 			}
-			return wasm.QuerySmart(ctx, addr, request.Smart.Msg)
+			return wasm.QuerySmart(ctx, sdk.AccAddress(request.Smart.ContractAddr), request.Smart.Msg)
 		}
 		if request.Raw != nil {
-			addr, err := sdk.AccAddressFromBech32(request.Raw.ContractAddr)
+			err := sdk.ValidateAccAddress(request.Raw.ContractAddr)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Raw.ContractAddr)
 			}
-			return wasm.QueryRaw(ctx, addr, request.Raw.Key), nil
+			return wasm.QueryRaw(ctx, sdk.AccAddress(request.Raw.ContractAddr), request.Raw.Key), nil
 		}
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown WasmQuery variant"}
 	}

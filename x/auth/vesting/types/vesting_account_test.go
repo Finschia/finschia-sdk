@@ -580,7 +580,7 @@ func TestTrackUndelegationPeriodicVestingAcc(t *testing.T) {
 
 func TestGenesisAccountValidate(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
-	addr := sdk.AccAddress(pubkey.Address())
+	addr := sdk.BytesToAccAddress(pubkey.Address())
 	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 0)
 	initialVesting := sdk.NewCoins(sdk.NewInt64Coin(sdk.DefaultBondDenom, 50))
 	baseVestingWithCoins := types.NewBaseVestingAccount(baseAcc, initialVesting, 100)
@@ -646,7 +646,7 @@ func TestGenesisAccountValidate(t *testing.T) {
 
 func TestContinuousVestingAccountMarshal(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
-	addr := sdk.AccAddress(pubkey.Address())
+	addr := sdk.BytesToAccAddress(pubkey.Address())
 	coins := sdk.NewCoins(sdk.NewInt64Coin("test", 5))
 	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 50)
 
@@ -668,7 +668,7 @@ func TestContinuousVestingAccountMarshal(t *testing.T) {
 
 func TestPeriodicVestingAccountMarshal(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
-	addr := sdk.AccAddress(pubkey.Address())
+	addr := sdk.BytesToAccAddress(pubkey.Address())
 	coins := sdk.NewCoins(sdk.NewInt64Coin("test", 5))
 	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 50)
 
@@ -689,7 +689,7 @@ func TestPeriodicVestingAccountMarshal(t *testing.T) {
 
 func TestDelayedVestingAccountMarshal(t *testing.T) {
 	pubkey := secp256k1.GenPrivKey().PubKey()
-	addr := sdk.AccAddress(pubkey.Address())
+	addr := sdk.BytesToAccAddress(pubkey.Address())
 	coins := sdk.NewCoins(sdk.NewInt64Coin("test", 5))
 	baseAcc := authtypes.NewBaseAccount(addr, pubkey, 50)
 

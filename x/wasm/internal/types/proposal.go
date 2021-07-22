@@ -92,7 +92,7 @@ func (p StoreCodeProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if _, err := sdk.AccAddressFromBech32(p.RunAs); err != nil {
+	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
 		return sdkerrors.Wrap(err, "run as")
 	}
 
@@ -167,7 +167,7 @@ func (p InstantiateContractProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if _, err := sdk.AccAddressFromBech32(p.RunAs); err != nil {
+	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "run as")
 	}
 
@@ -184,7 +184,7 @@ func (p InstantiateContractProposal) ValidateBasic() error {
 	}
 
 	if len(p.Admin) != 0 {
-		if _, err := sdk.AccAddressFromBech32(p.Admin); err != nil {
+		if err := sdk.ValidateAccAddress(p.Admin); err != nil {
 			return err
 		}
 	}
@@ -248,10 +248,10 @@ func (p MigrateContractProposal) ValidateBasic() error {
 	if p.CodeID == 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "code_id is required")
 	}
-	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
+	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	if _, err := sdk.AccAddressFromBech32(p.RunAs); err != nil {
+	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
 		return sdkerrors.Wrap(err, "run as")
 	}
 	return nil
@@ -305,10 +305,10 @@ func (p UpdateAdminProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
+	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	if _, err := sdk.AccAddressFromBech32(p.NewAdmin); err != nil {
+	if err := sdk.ValidateAccAddress(p.NewAdmin); err != nil {
 		return sdkerrors.Wrap(err, "new admin")
 	}
 	return nil
@@ -341,7 +341,7 @@ func (p ClearAdminProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
+	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
 	return nil
@@ -437,7 +437,7 @@ func (p UpdateContractStatusProposal) ValidateBasic() error {
 	if err := validateProposalCommons(p.Title, p.Description); err != nil {
 		return err
 	}
-	if _, err := sdk.AccAddressFromBech32(p.Contract); err != nil {
+	if err := sdk.ValidateAccAddress(p.Contract); err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
 	found := false

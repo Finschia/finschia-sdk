@@ -56,7 +56,7 @@ func TestWithdrawValidatorCommission(t *testing.T) {
 	app.AccountKeeper.SetModuleAccount(ctx, distrAcc)
 
 	// check initial balance
-	balance := app.BankKeeper.GetAllBalances(ctx, sdk.AccAddress(valAddrs[0]))
+	balance := app.BankKeeper.GetAllBalances(ctx, valAddrs[0].ToAccAddress())
 	expTokens := sdk.TokensFromConsensusPower(1000)
 	expCoins := sdk.NewCoins(sdk.NewCoin("stake", expTokens))
 	require.Equal(t, expCoins, balance)
@@ -72,7 +72,7 @@ func TestWithdrawValidatorCommission(t *testing.T) {
 	require.NoError(t, err)
 
 	// check balance increase
-	balance = app.BankKeeper.GetAllBalances(ctx, sdk.AccAddress(valAddrs[0]))
+	balance = app.BankKeeper.GetAllBalances(ctx, valAddrs[0].ToAccAddress())
 	require.Equal(t, sdk.NewCoins(
 		sdk.NewCoin("mytoken", sdk.NewInt(1)),
 		sdk.NewCoin("stake", expTokens.AddRaw(1)),

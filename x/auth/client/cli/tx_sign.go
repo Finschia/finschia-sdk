@@ -73,10 +73,7 @@ func makeSignBatchCmd() func(cmd *cobra.Command, args []string) error {
 
 		// validate multisig address if there's any
 		if ms, _ := cmd.Flags().GetString(flagMultisig); ms != "" {
-			multisigAddr, err = sdk.AccAddressFromBech32(ms)
-			if err != nil {
-				return err
-			}
+			multisigAddr = sdk.AccAddress(ms)
 		}
 
 		// prepare output document
@@ -236,10 +233,7 @@ func makeSignCmd() func(cmd *cobra.Command, args []string) error {
 		overwrite, _ := f.GetBool(flagOverwrite)
 		if multisigAddrStr != "" {
 			var multisigAddr sdk.AccAddress
-			multisigAddr, err = sdk.AccAddressFromBech32(multisigAddrStr)
-			if err != nil {
-				return err
-			}
+			multisigAddr = sdk.AccAddress(multisigAddrStr)
 			err = authclient.SignTxWithSignerAddress(
 				txF, clientCtx, multisigAddr, fromName, txBuilder, clientCtx.Offline, overwrite)
 			printSignatureOnly = true

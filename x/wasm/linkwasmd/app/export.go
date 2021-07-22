@@ -79,16 +79,17 @@ func (app *LinkApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs [
 	// withdraw all delegator rewards
 	dels := app.StakingKeeper.GetAllDelegations(ctx)
 	for _, delegation := range dels {
-		valAddr, err := sdk.ValAddressFromBech32(delegation.ValidatorAddress)
+		err := sdk.ValidateValAddress(delegation.ValidatorAddress)
 		if err != nil {
 			panic(err)
 		}
 
-		delAddr, err := sdk.AccAddressFromBech32(delegation.DelegatorAddress)
+		err := sdk.ValidateAccAddress(delegation.DelegatorAddress)
 		if err != nil {
 			panic(err)
 		}
-		_, _ = app.DistrKeeper.WithdrawDelegationRewards(ctx, delAddr, valAddr)
+		_, _ = app.DistrKeeper.WithdrawDelegationRewards(ctx, sdk.AccAddress(delegation.DelegatorAddress),
+			sdk.ValAddress(delegation.ValidatorAddress))
 	}
 
 	// clear validator slash events
@@ -115,14 +116,8 @@ func (app *LinkApp) prepForZeroHeightGenesis(ctx sdk.Context, jailAllowedAddrs [
 
 	// reinitialize all delegations
 	for _, del := range dels {
-		valAddr, err := sdk.ValAddressFromBech32(del.ValidatorAddress)
-		if err != nil {
-			panic(err)
-		}
-		delAddr, err := sdk.AccAddressFromBech32(del.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		valAddr := sdk.ValAddress(del.ValidatorAddress)
+		delAddr := sdk.AccAddress(del.DelegatorAddress)
 		app.DistrKeeper.Hooks().BeforeDelegationCreated(ctx, delAddr, valAddr)
 		app.DistrKeeper.Hooks().AfterDelegationModified(ctx, delAddr, valAddr)
 	}

@@ -63,6 +63,10 @@ func NewBaseSendKeeper(
 	}
 }
 
+func AddressToPrefixKey(addr sdk.AccAddress) []byte {
+	return []byte(addr.String() + types.AddressDenomDelimiter)
+}
+
 // GetParams returns the total set of bank parameters.
 func (k BaseSendKeeper) GetParams(ctx sdk.Context) (params types.Params) {
 	k.paramSpace.GetParamSet(ctx, &params)
@@ -85,12 +89,9 @@ func (k BaseSendKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, 
 	}
 
 	for _, in := range inputs {
-		inAddress, err := sdk.AccAddressFromBech32(in.Address)
-		if err != nil {
-			return err
-		}
+		inAddress := sdk.AccAddress(in.Address)
 
-		err = k.SubtractCoins(ctx, inAddress, in.Coins)
+		err := k.SubtractCoins(ctx, inAddress, in.Coins)
 		if err != nil {
 			return err
 		}
@@ -104,11 +105,8 @@ func (k BaseSendKeeper) InputOutputCoins(ctx sdk.Context, inputs []types.Input, 
 	}
 
 	for _, out := range outputs {
-		outAddress, err := sdk.AccAddressFromBech32(out.Address)
-		if err != nil {
-			return err
-		}
-		err = k.AddCoins(ctx, outAddress, out.Coins)
+		outAddress := sdk.AccAddress(out.Address)
+		err := k.AddCoins(ctx, outAddress, out.Coins)
 		if err != nil {
 			return err
 		}
@@ -235,7 +233,7 @@ func (k BaseSendKeeper) ClearBalances(ctx sdk.Context, addr sdk.AccAddress) {
 
 	store := ctx.KVStore(k.storeKey)
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
+	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
 
 	for _, key := range keys {
 		accountStore.Delete(key)
@@ -266,7 +264,7 @@ func (k BaseSendKeeper) SetBalance(ctx sdk.Context, addr sdk.AccAddress, balance
 
 	store := ctx.KVStore(k.storeKey)
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
+	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
 
 	bz := k.cdc.MustMarshalBinaryBare(&balance)
 	accountStore.Set([]byte(balance.Denom), bz)

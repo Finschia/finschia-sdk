@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+	"strings"
 
 	sdk "github.com/line/lfb-sdk/types"
 )
@@ -18,6 +19,7 @@ const (
 
 	// QuerierRoute defines the module's query routing key
 	QuerierRoute = ModuleName
+
 )
 
 // KVStore keys
@@ -25,6 +27,9 @@ var (
 	BalancesPrefix      = []byte("balances")
 	SupplyKey           = []byte{0x00}
 	DenomMetadataPrefix = []byte{0x1}
+
+	// Contract: Address must not contain this character
+	AddressDenomDelimiter = ","
 )
 
 // DenomMetadataKey returns the denomination metadata key.
@@ -37,10 +42,14 @@ func DenomMetadataKey(denom string) []byte {
 // store. The key must not contain the perfix BalancesPrefix as the prefix store
 // iterator discards the actual prefix.
 func AddressFromBalancesStore(key []byte) sdk.AccAddress {
-	addr := key[:sdk.AddrLen]
-	if len(addr) != sdk.AddrLen {
-		panic(fmt.Sprintf("unexpected account address key length; got: %d, expected: %d", len(addr), sdk.AddrLen))
+	addr := string(key)
+	if !strings.Contains(addr, sdk.Bech32MainPrefix) {
+		panic(fmt.Sprintf("unexpected account address key; key does not start with (%s): %s",
+			sdk.Bech32MainPrefix, addr))
 	}
-
-	return sdk.AccAddress(addr)
+	index := strings.Index(addr, AddressDenomDelimiter)
+	if index <= 0 {
+		panic(fmt.Sprintf("AddressBalance store key does not contain the delimiter(,): %s", addr))
+	}
+	return sdk.AccAddress(addr[:index])
 }

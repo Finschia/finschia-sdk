@@ -245,7 +245,7 @@ type TxBody struct {
 	// is referred to as the primary signer and pays the fee for the whole
 	// transaction.
 	Messages []*types.Any `protobuf:"bytes,1,rep,name=messages,proto3" json:"messages,omitempty"`
-	// sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_DURATION`
+	// sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_PERIOD`
 	// this is used for distinguish signatures instead of account number. this is mandatory.
 	SigBlockHeight uint64 `protobuf:"varint,2,opt,name=sig_block_height,json=sigBlockHeight,proto3" json:"sig_block_height,omitempty"`
 	// memo is any arbitrary memo to be added to the transaction

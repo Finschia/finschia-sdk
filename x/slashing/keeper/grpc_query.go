@@ -34,10 +34,7 @@ func (k Keeper) SigningInfo(c context.Context, req *types.QuerySigningInfoReques
 		return nil, status.Errorf(codes.InvalidArgument, "invalid request")
 	}
 
-	consAddr, err := sdk.ConsAddressFromBech32(req.ConsAddress)
-	if err != nil {
-		return nil, err
-	}
+	consAddr := sdk.ConsAddress(req.ConsAddress)
 
 	ctx := sdk.UnwrapSDKContext(c)
 	signingInfo, found := k.GetValidatorSigningInfo(ctx, consAddr)

@@ -273,12 +273,12 @@ func (tx StdTx) FeePayer() sdk.AccAddress {
 	if tx.GetSigners() != nil {
 		return tx.GetSigners()[0]
 	}
-	return sdk.AccAddress{}
+	return ""
 }
 
 // FeeGranter always returns nil for StdTx
 func (tx StdTx) FeeGranter() sdk.AccAddress {
-	return nil
+	return ""
 }
 
 func (tx StdTx) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {

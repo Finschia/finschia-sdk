@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	sdk "github.com/line/lfb-sdk/types"
@@ -46,6 +47,8 @@ var (
 	ValidatorQueueKey    = []byte{0x43} // prefix for the timestamps in validator queue
 
 	HistoricalInfoKey = []byte{0x50} // prefix for the historical info
+
+	AddressDelimiter = ","
 )
 
 // gets the key for the validator with address
@@ -81,21 +84,17 @@ func GetValidatorsByPowerIndexKey(validator Validator) []byte {
 	powerBytesLen := len(powerBytes) // 8
 
 	// key is of format prefix || powerbytes || addrBytes
-	key := make([]byte, 1+powerBytesLen+sdk.AddrLen)
+	key := make([]byte, 1+powerBytesLen)
 
 	key[0] = ValidatorsByPowerIndexKey[0]
 	copy(key[1:powerBytesLen+1], powerBytes)
-	addr, err := sdk.ValAddressFromBech32(validator.OperatorAddress)
-	if err != nil {
-		panic(err)
-	}
-	operAddrInvr := sdk.CopyBytes(addr)
+	operAddrInvr := sdk.CopyBytes([]byte(validator.OperatorAddress))
 
 	for i, b := range operAddrInvr {
 		operAddrInvr[i] = ^b
 	}
 
-	copy(key[powerBytesLen+1:], operAddrInvr)
+	key = append(key, operAddrInvr...)
 
 	return key
 }
@@ -108,9 +107,6 @@ func GetLastValidatorPowerKey(operator sdk.ValAddress) []byte {
 // parse the validators operator address from power rank key
 func ParseValidatorPowerRankKey(key []byte) (operAddr []byte) {
 	powerBytesLen := 8
-	if len(key) != 1+powerBytesLen+sdk.AddrLen {
-		panic("Invalid validator power rank key length")
-	}
 
 	operAddr = sdk.CopyBytes(key[powerBytesLen+1:])
 
@@ -168,7 +164,7 @@ func ParseValidatorQueueKey(bz []byte) (time.Time, int64, error) {
 // gets the key for delegator bond with validator
 // VALUE: staking/Delegation
 func GetDelegationKey(delAddr sdk.AccAddress, valAddr sdk.ValAddress) []byte {
-	return append(GetDelegationsKey(delAddr), valAddr.Bytes()...)
+	return append(append(GetDelegationsKey(delAddr), AddressDelimiter...), valAddr.Bytes()...)
 }
 
 // gets the prefix for a delegator for all validators
@@ -179,28 +175,20 @@ func GetDelegationsKey(delAddr sdk.AccAddress) []byte {
 // gets the key for an unbonding delegation by delegator and validator addr
 // VALUE: staking/UnbondingDelegation
 func GetUBDKey(delAddr sdk.AccAddress, valAddr sdk.ValAddress) []byte {
-	return append(
-		GetUBDsKey(delAddr.Bytes()),
-		valAddr.Bytes()...)
+	return append(append(GetUBDsKey(delAddr), AddressDelimiter...), valAddr...)
 }
 
 // gets the index-key for an unbonding delegation, stored by validator-index
 // VALUE: none (key rearrangement used)
 func GetUBDByValIndexKey(delAddr sdk.AccAddress, valAddr sdk.ValAddress) []byte {
-	return append(GetUBDsByValIndexKey(valAddr), delAddr.Bytes()...)
+	return append(append(GetUBDsByValIndexKey(valAddr), AddressDelimiter...), delAddr...)
 }
 
 // rearranges the ValIndexKey to get the UBDKey
 func GetUBDKeyFromValIndexKey(indexKey []byte) []byte {
 	addrs := indexKey[1:] // remove prefix bytes
-	if len(addrs) != 2*sdk.AddrLen {
-		panic("unexpected key length")
-	}
-
-	valAddr := addrs[:sdk.AddrLen]
-	delAddr := addrs[sdk.AddrLen:]
-
-	return GetUBDKey(delAddr, valAddr)
+	addresses := strings.Split(string(addrs), AddressDelimiter)
+	return GetUBDKey(sdk.AccAddress(addresses[1]), sdk.ValAddress(addresses[0]))
 }
 
 // gets the prefix for all unbonding delegations from a delegator
@@ -222,11 +210,10 @@ func GetUnbondingDelegationTimeKey(timestamp time.Time) []byte {
 // GetREDKey returns a key prefix for indexing a redelegation from a delegator
 // and source validator to a destination validator.
 func GetREDKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.ValAddress) []byte {
-	key := make([]byte, 1+sdk.AddrLen*3)
+	key := GetREDsKey(delAddr)
 
-	copy(key[0:sdk.AddrLen+1], GetREDsKey(delAddr.Bytes()))
-	copy(key[sdk.AddrLen+1:2*sdk.AddrLen+1], valSrcAddr.Bytes())
-	copy(key[2*sdk.AddrLen+1:3*sdk.AddrLen+1], valDstAddr.Bytes())
+	key = append(append(key, AddressDelimiter...), valSrcAddr...)
+	key = append(append(key, AddressDelimiter...), valDstAddr...)
 
 	return key
 }
@@ -235,13 +222,10 @@ func GetREDKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.ValAddress) []
 // VALUE: none (key rearrangement used)
 func GetREDByValSrcIndexKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.ValAddress) []byte {
 	REDSFromValsSrcKey := GetREDsFromValSrcIndexKey(valSrcAddr)
-	offset := len(REDSFromValsSrcKey)
 
 	// key is of the form REDSFromValsSrcKey || delAddr || valDstAddr
-	key := make([]byte, len(REDSFromValsSrcKey)+2*sdk.AddrLen)
-	copy(key[0:offset], REDSFromValsSrcKey)
-	copy(key[offset:offset+sdk.AddrLen], delAddr.Bytes())
-	copy(key[offset+sdk.AddrLen:offset+2*sdk.AddrLen], valDstAddr.Bytes())
+	key := append(append(REDSFromValsSrcKey, AddressDelimiter...), delAddr...)
+	key = append(append(key, AddressDelimiter...), valDstAddr...)
 
 	return key
 }
@@ -250,13 +234,10 @@ func GetREDByValSrcIndexKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.V
 // VALUE: none (key rearrangement used)
 func GetREDByValDstIndexKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.ValAddress) []byte {
 	REDSToValsDstKey := GetREDsToValDstIndexKey(valDstAddr)
-	offset := len(REDSToValsDstKey)
 
 	// key is of the form REDSToValsDstKey || delAddr || valSrcAddr
-	key := make([]byte, len(REDSToValsDstKey)+2*sdk.AddrLen)
-	copy(key[0:offset], REDSToValsDstKey)
-	copy(key[offset:offset+sdk.AddrLen], delAddr.Bytes())
-	copy(key[offset+sdk.AddrLen:offset+2*sdk.AddrLen], valSrcAddr.Bytes())
+	key := append(append(REDSToValsDstKey, AddressDelimiter...), delAddr...)
+	key = append(append(key, AddressDelimiter...), valSrcAddr...)
 
 	return key
 }
@@ -264,29 +245,25 @@ func GetREDByValDstIndexKey(delAddr sdk.AccAddress, valSrcAddr, valDstAddr sdk.V
 // GetREDKeyFromValSrcIndexKey rearranges the ValSrcIndexKey to get the REDKey
 func GetREDKeyFromValSrcIndexKey(indexKey []byte) []byte {
 	// note that first byte is prefix byte
-	if len(indexKey) != 3*sdk.AddrLen+1 {
-		panic("unexpected key length")
+	addrs := indexKey[1:] // remove prefix bytes
+
+	addresses := strings.Split(string(addrs), AddressDelimiter)
+	if len(addresses) != 3 {
+		panic(fmt.Sprintf("%s does not contain three addresses", addrs))
 	}
-
-	valSrcAddr := indexKey[1 : sdk.AddrLen+1]
-	delAddr := indexKey[sdk.AddrLen+1 : 2*sdk.AddrLen+1]
-	valDstAddr := indexKey[2*sdk.AddrLen+1 : 3*sdk.AddrLen+1]
-
-	return GetREDKey(delAddr, valSrcAddr, valDstAddr)
+	return GetREDKey(sdk.AccAddress(addresses[1]), sdk.ValAddress(addresses[0]), sdk.ValAddress(addresses[2]))
 }
 
 // GetREDKeyFromValDstIndexKey rearranges the ValDstIndexKey to get the REDKey
 func GetREDKeyFromValDstIndexKey(indexKey []byte) []byte {
 	// note that first byte is prefix byte
-	if len(indexKey) != 3*sdk.AddrLen+1 {
-		panic("unexpected key length")
+	addrs := indexKey[1:] // remove prefix bytes
+
+	addresses := strings.Split(string(addrs), AddressDelimiter)
+	if len(addresses) != 3 {
+		panic(fmt.Sprintf("%s does not contain three addresses", addrs))
 	}
-
-	valDstAddr := indexKey[1 : sdk.AddrLen+1]
-	delAddr := indexKey[sdk.AddrLen+1 : 2*sdk.AddrLen+1]
-	valSrcAddr := indexKey[2*sdk.AddrLen+1 : 3*sdk.AddrLen+1]
-
-	return GetREDKey(delAddr, valSrcAddr, valDstAddr)
+	return GetREDKey(sdk.AccAddress(addresses[1]), sdk.ValAddress(addresses[2]), sdk.ValAddress(addresses[0]))
 }
 
 // GetRedelegationTimeKey returns a key prefix for indexing an unbonding
@@ -317,7 +294,7 @@ func GetREDsToValDstIndexKey(valDstAddr sdk.ValAddress) []byte {
 // GetREDsByDelToValDstIndexKey returns a key prefix for indexing a redelegation
 // from an address to a source validator.
 func GetREDsByDelToValDstIndexKey(delAddr sdk.AccAddress, valDstAddr sdk.ValAddress) []byte {
-	return append(GetREDsToValDstIndexKey(valDstAddr), delAddr.Bytes()...)
+	return append(append(GetREDsToValDstIndexKey(valDstAddr), AddressDelimiter...), delAddr.Bytes()...)
 }
 
 // GetHistoricalInfoKey returns a key prefix for indexing HistoricalInfo objects.

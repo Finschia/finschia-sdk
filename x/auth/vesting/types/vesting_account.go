@@ -182,13 +182,8 @@ func (bva BaseVestingAccount) String() string {
 
 // MarshalYAML returns the YAML representation of a BaseVestingAccount.
 func (bva BaseVestingAccount) MarshalYAML() (interface{}, error) {
-	accAddr, err := sdk.AccAddressFromBech32(bva.Address)
-	if err != nil {
-		return nil, err
-	}
-
 	alias := vestingAccountYAML{
-		Address:          accAddr,
+		Address:          sdk.AccAddress(bva.Address),
 		Sequence:         bva.Sequence,
 		OriginalVesting:  bva.OriginalVesting,
 		DelegatedFree:    bva.DelegatedFree,
@@ -309,13 +304,8 @@ func (cva ContinuousVestingAccount) String() string {
 
 // MarshalYAML returns the YAML representation of a ContinuousVestingAccount.
 func (cva ContinuousVestingAccount) MarshalYAML() (interface{}, error) {
-	accAddr, err := sdk.AccAddressFromBech32(cva.Address)
-	if err != nil {
-		return nil, err
-	}
-
 	alias := vestingAccountYAML{
-		Address:          accAddr,
+		Address:          sdk.AccAddress(cva.Address),
 		Sequence:         cva.Sequence,
 		OriginalVesting:  cva.OriginalVesting,
 		DelegatedFree:    cva.DelegatedFree,
@@ -466,13 +456,8 @@ func (pva PeriodicVestingAccount) String() string {
 
 // MarshalYAML returns the YAML representation of a PeriodicVestingAccount.
 func (pva PeriodicVestingAccount) MarshalYAML() (interface{}, error) {
-	accAddr, err := sdk.AccAddressFromBech32(pva.Address)
-	if err != nil {
-		return nil, err
-	}
-
 	alias := vestingAccountYAML{
-		Address:          accAddr,
+		Address:          sdk.AccAddress(pva.Address),
 		Sequence:         pva.Sequence,
 		OriginalVesting:  pva.OriginalVesting,
 		DelegatedFree:    pva.DelegatedFree,

@@ -87,7 +87,7 @@ func (s *TxConfigTestSuite) TestTxBuilderSetSignatures() {
 
 	// set test msg
 	msg := testdata.NewTestMsg(addr)
-	msigAddr := sdk.AccAddress(multisigPk.Address())
+	msigAddr := sdk.BytesToAccAddress(multisigPk.Address())
 	msg2 := testdata.NewTestMsg(msigAddr)
 	err := txBuilder.SetMsgs(msg, msg2)
 	s.Require().NoError(err)

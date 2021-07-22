@@ -36,14 +36,8 @@ func (s msgServer) CreateVestingAccount(goCtx context.Context, msg *types.MsgCre
 		return nil, err
 	}
 
-	from, err := sdk.AccAddressFromBech32(msg.FromAddress)
-	if err != nil {
-		return nil, err
-	}
-	to, err := sdk.AccAddressFromBech32(msg.ToAddress)
-	if err != nil {
-		return nil, err
-	}
+	from := sdk.AccAddress(msg.FromAddress)
+	to := sdk.AccAddress(msg.ToAddress)
 
 	if bk.BlockedAddr(to) {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", msg.ToAddress)
@@ -84,7 +78,7 @@ func (s msgServer) CreateVestingAccount(goCtx context.Context, msg *types.MsgCre
 		}
 	}()
 
-	err = bk.SendCoins(ctx, from, to, msg.Amount)
+	err := bk.SendCoins(ctx, from, to, msg.Amount)
 	if err != nil {
 		return nil, err
 	}

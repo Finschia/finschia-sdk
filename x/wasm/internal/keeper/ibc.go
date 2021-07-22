@@ -38,9 +38,9 @@ func PortIDForContract(addr sdk.AccAddress) string {
 
 func ContractFromPortID(portID string) (sdk.AccAddress, error) {
 	if !strings.HasPrefix(portID, portIDPrefix) {
-		return nil, sdkerrors.Wrapf(types.ErrInvalid, "without prefix")
+		return "", sdkerrors.Wrapf(types.ErrInvalid, "without prefix")
 	}
-	return sdk.AccAddressFromBech32(portID[len(portIDPrefix):])
+	return sdk.AccAddress(portID[len(portIDPrefix):]), nil
 }
 
 // AuthenticateCapability wraps the scopedKeeper's AuthenticateCapability function

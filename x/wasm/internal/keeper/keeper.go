@@ -1043,7 +1043,7 @@ func addrFromUint64(id uint64) sdk.AccAddress {
 	addr := make([]byte, 20)
 	addr[0] = 'C'
 	binary.PutUvarint(addr[1:], id)
-	return sdk.AccAddress(crypto.AddressHash(addr))
+	return sdk.BytesToAccAddress(crypto.AddressHash(addr))
 }
 
 // MultipliedGasMeter wraps the GasMeter from context and multiplies all reads by out defined multiplier

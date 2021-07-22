@@ -69,10 +69,10 @@ $ %s query staking validator %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			addr, err := sdk.ValAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateValAddress(args[0]); err != nil {
 				return err
 			}
+			addr := sdk.ValAddress(args[0])
 
 			params := &types.QueryValidatorRequest{ValidatorAddr: addr.String()}
 			res, err := queryClient.Validator(cmd.Context(), params)
@@ -157,10 +157,10 @@ $ %s query staking unbonding-delegations-from %s1gghjut3ccd8ay0zduzj64hwre2fxs9l
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			valAddr, err := sdk.ValAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateValAddress(args[0]); err != nil {
 				return err
 			}
+			valAddr := sdk.ValAddress(args[0])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -212,10 +212,10 @@ $ %s query staking redelegations-from %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			valSrcAddr, err := sdk.ValAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateValAddress(args[0]); err != nil {
 				return err
 			}
+			valSrcAddr := sdk.ValAddress(args[0])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -267,15 +267,15 @@ $ %s query staking delegation %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p %s1gghju
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			delAddr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateAccAddress(args[0]); err != nil {
 				return err
 			}
+			delAddr := sdk.AccAddress(args[0])
 
-			valAddr, err := sdk.ValAddressFromBech32(args[1])
-			if err != nil {
+			if err := sdk.ValidateValAddress(args[1]); err != nil {
 				return err
 			}
+			valAddr := sdk.ValAddress(args[1])
 
 			params := &types.QueryDelegationRequest{
 				DelegatorAddr: delAddr.String(),
@@ -321,10 +321,10 @@ $ %s query staking delegations %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			delAddr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateAccAddress(args[0]); err != nil {
 				return err
 			}
+			delAddr := sdk.AccAddress(args[0])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -376,10 +376,10 @@ $ %s query staking delegations-to %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			valAddr, err := sdk.ValAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateValAddress(args[0]); err != nil {
 				return err
 			}
+			valAddr := sdk.ValAddress(args[0])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -432,15 +432,15 @@ $ %s query staking unbonding-delegation %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			valAddr, err := sdk.ValAddressFromBech32(args[1])
-			if err != nil {
+			if err := sdk.ValidateAccAddress(args[0]); err != nil {
 				return err
 			}
+			delAddr := sdk.AccAddress(args[0])
 
-			delAddr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateValAddress(args[1]); err != nil {
 				return err
 			}
+			valAddr := sdk.ValAddress(args[1])
 
 			params := &types.QueryUnbondingDelegationRequest{
 				DelegatorAddr: delAddr.String(),
@@ -486,10 +486,10 @@ $ %s query staking unbonding-delegations %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			delegatorAddr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateAccAddress(args[0]); err != nil {
 				return err
 			}
+			delegatorAddr := sdk.AccAddress(args[0])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -542,20 +542,20 @@ $ %s query staking redelegation %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p %s1l2r
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			delAddr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateAccAddress(args[0]); err != nil {
 				return err
 			}
+			delAddr := sdk.AccAddress(args[0])
 
-			valSrcAddr, err := sdk.ValAddressFromBech32(args[1])
-			if err != nil {
+			if err := sdk.ValidateValAddress(args[1]); err != nil {
 				return err
 			}
+			valSrcAddr := sdk.ValAddress(args[1])
 
-			valDstAddr, err := sdk.ValAddressFromBech32(args[2])
-			if err != nil {
+			if err := sdk.ValidateValAddress(args[2]); err != nil {
 				return err
 			}
+			valDstAddr := sdk.ValAddress(args[2])
 
 			params := &types.QueryRedelegationsRequest{
 				DelegatorAddr:    delAddr.String(),
@@ -602,10 +602,10 @@ $ %s query staking redelegation %s1gghjut3ccd8ay0zduzj64hwre2fxs9ld75ru9p
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			delAddr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
+			if err := sdk.ValidateAccAddress(args[0]); err != nil {
 				return err
 			}
+			delAddr := sdk.AccAddress(args[0])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {

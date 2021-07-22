@@ -33,7 +33,7 @@ func (k Keeper) Slash(ctx sdk.Context, consAddr sdk.ConsAddress, infractionHeigh
 	slashAmountDec := amount.ToDec().Mul(slashFactor)
 	slashAmount := slashAmountDec.TruncateInt()
 
-	// ref https://github.com/line/lfb-sdk/issues/1348
+	// ref https://github.com/cosmos/cosmos-sdk/issues/1348
 
 	validator, found := k.GetValidatorByConsAddr(ctx, consAddr)
 	if !found {
@@ -245,15 +245,9 @@ func (k Keeper) SlashRedelegation(ctx sdk.Context, srcValidator types.Validator,
 			continue
 		}
 
-		valDstAddr, err := sdk.ValAddressFromBech32(redelegation.ValidatorDstAddress)
-		if err != nil {
-			panic(err)
-		}
+		valDstAddr := sdk.ValAddress(redelegation.ValidatorDstAddress)
 
-		delegatorAddress, err := sdk.AccAddressFromBech32(redelegation.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		delegatorAddress := sdk.AccAddress(redelegation.DelegatorAddress)
 
 		delegation, found := k.GetDelegation(ctx, delegatorAddress, valDstAddr)
 		if !found {

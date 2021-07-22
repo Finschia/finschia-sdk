@@ -127,7 +127,7 @@ func NewEditValidatorCmd() *cobra.Command {
 				newMinSelfDelegation = &msb
 			}
 
-			msg := types.NewMsgEditValidator(sdk.ValAddress(valAddr), description, newRate, newMinSelfDelegation)
+			msg := types.NewMsgEditValidator(valAddr.ToValAddress(), description, newRate, newMinSelfDelegation)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
 			}
@@ -171,10 +171,7 @@ $ %s tx staking delegate %s1l2rsakp388kuv9k8qzq6lrm9taddae7fpx59wm 1000stake --f
 			}
 
 			delAddr := clientCtx.GetFromAddress()
-			valAddr, err := sdk.ValAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
+			valAddr := sdk.ValAddress(args[0])
 
 			msg := types.NewMsgDelegate(delAddr, valAddr, amount)
 			if err := msg.ValidateBasic(); err != nil {
@@ -212,15 +209,9 @@ $ %s tx staking redelegate %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj %s1l2rsakp3
 				return err
 			}
 			delAddr := clientCtx.GetFromAddress()
-			valSrcAddr, err := sdk.ValAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
+			valSrcAddr := sdk.ValAddress(args[0])
 
-			valDstAddr, err := sdk.ValAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
+			valDstAddr := sdk.ValAddress(args[1])
 
 			amount, err := sdk.ParseCoinNormalized(args[2])
 			if err != nil {
@@ -263,10 +254,7 @@ $ %s tx staking unbond %s1gghjut3ccd8ay0zduzj64hwre2fxs9ldmqhffj 100stake --from
 				return err
 			}
 			delAddr := clientCtx.GetFromAddress()
-			valAddr, err := sdk.ValAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
+			valAddr := sdk.ValAddress(args[0])
 
 			amount, err := sdk.ParseCoinNormalized(args[1])
 			if err != nil {
@@ -334,7 +322,7 @@ func NewBuildCreateValidatorMsg(clientCtx client.Context, txf tx.Factory, fs *fl
 	}
 
 	msg, err := types.NewMsgCreateValidator(
-		sdk.ValAddress(valAddr), pk, amount, description, commissionRates, minSelfDelegation,
+		valAddr.ToValAddress(), pk, amount, description, commissionRates, minSelfDelegation,
 	)
 	if err != nil {
 		return txf, nil, err
@@ -544,7 +532,7 @@ func BuildCreateValidatorMsg(clientCtx client.Context, config TxCreateValidatorC
 	}
 
 	msg, err := types.NewMsgCreateValidator(
-		sdk.ValAddress(valAddr), pk, amount, description, commissionRates, minSelfDelegation,
+		valAddr.ToValAddress(), pk, amount, description, commissionRates, minSelfDelegation,
 	)
 	if err != nil {
 		return txBldr, msg, err

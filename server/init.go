@@ -16,7 +16,7 @@ func GenerateCoinKey(algo keyring.SignatureAlgo) (sdk.AccAddress, string, error)
 	if err != nil {
 		return sdk.AccAddress([]byte{}), "", err
 	}
-	return sdk.AccAddress(info.GetPubKey().Address()), secret, nil
+	return sdk.BytesToAccAddress(info.GetPubKey().Address()), secret, nil
 }
 
 // GenerateSaveCoinKey returns the address of a public key, along with the secret
@@ -48,5 +48,5 @@ func GenerateSaveCoinKey(keybase keyring.Keyring, keyName string, overwrite bool
 		return sdk.AccAddress([]byte{}), "", err
 	}
 
-	return sdk.AccAddress(info.GetPubKey().Address()), secret, nil
+	return sdk.BytesToAccAddress(info.GetPubKey().Address()), secret, nil
 }

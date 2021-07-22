@@ -36,7 +36,7 @@ func TestPublicKeyUnsafe(t *testing.T) {
 	require.Equal(t, "linkpub1cqmsrdepq27djm9tzq3sftqsayx95refxk8r5jn0kyshhql9mdjhjx829zlvzygzwr2",
 		pubKeyAddr, "Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 
-	addr := sdk.AccAddress(priv.PubKey().Address()).String()
+	addr := sdk.BytesToAccAddress(priv.PubKey().Address()).String()
 	require.Equal(t, "link1tdl7n2acgmec0y5nng0q2fahl9khyct3cgsktn",
 		addr, "Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 }
@@ -117,7 +117,7 @@ func TestPublicKeySafe(t *testing.T) {
 	require.Equal(t, "link1tdl7n2acgmec0y5nng0q2fahl9khyct3cgsktn",
 		addr, "Is your device using test mnemonic: %s ?", testutil.TestMnemonic)
 
-	addr2 := sdk.AccAddress(priv.PubKey().Address()).String()
+	addr2 := sdk.BytesToAccAddress(priv.PubKey().Address()).String()
 	require.Equal(t, addr, addr2)
 }
 
@@ -162,7 +162,7 @@ func TestPublicKeyHDPath(t *testing.T) {
 		require.NotNil(t, addr)
 		require.NotNil(t, priv)
 
-		addr2 := sdk.AccAddress(priv.PubKey().Address()).String()
+		addr2 := sdk.BytesToAccAddress(priv.PubKey().Address()).String()
 		require.Equal(t, addr2, addr)
 		require.Equal(t,
 			expectedAddrs[i], addr,

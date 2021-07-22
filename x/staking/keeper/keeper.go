@@ -40,11 +40,11 @@ func NewKeeper(
 	}
 
 	// ensure bonded and not bonded module accounts are set
-	if addr := ak.GetModuleAddress(types.BondedPoolName); addr == nil {
+	if addr := ak.GetModuleAddress(types.BondedPoolName); addr == "" {
 		panic(fmt.Sprintf("%s module account has not been set", types.BondedPoolName))
 	}
 
-	if addr := ak.GetModuleAddress(types.NotBondedPoolName); addr == nil {
+	if addr := ak.GetModuleAddress(types.NotBondedPoolName); addr == "" {
 		panic(fmt.Sprintf("%s module account has not been set", types.NotBondedPoolName))
 	}
 

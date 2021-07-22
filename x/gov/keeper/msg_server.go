@@ -61,10 +61,7 @@ func (k msgServer) SubmitProposal(goCtx context.Context, msg *types.MsgSubmitPro
 
 func (k msgServer) Vote(goCtx context.Context, msg *types.MsgVote) (*types.MsgVoteResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	accAddr, accErr := sdk.AccAddressFromBech32(msg.Voter)
-	if accErr != nil {
-		return nil, accErr
-	}
+	accAddr := sdk.AccAddress(msg.Voter)
 	err := k.Keeper.AddVote(ctx, msg.ProposalId, accAddr, msg.Option)
 	if err != nil {
 		return nil, err
@@ -91,10 +88,7 @@ func (k msgServer) Vote(goCtx context.Context, msg *types.MsgVote) (*types.MsgVo
 
 func (k msgServer) Deposit(goCtx context.Context, msg *types.MsgDeposit) (*types.MsgDepositResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	accAddr, err := sdk.AccAddressFromBech32(msg.Depositor)
-	if err != nil {
-		return nil, err
-	}
+	accAddr := sdk.AccAddress(msg.Depositor)
 	votingStarted, err := k.Keeper.AddDeposit(ctx, msg.ProposalId, accAddr, msg.Amount)
 	if err != nil {
 		return nil, err
