@@ -323,16 +323,18 @@ func TestOnRecvPacket(t *testing.T) {
 	const myContractGas = 40
 
 	specs := map[string]struct {
-		contractAddr          sdk.AccAddress
-		contractResp          *wasmvmtypes.IBCReceiveResponse
-		contractErr           error
-		overwriteMessenger    *wasmtesting.MockMessageHandler
-		mockReplyFn           func(codeID wasmvm.Checksum, env wasmvmtypes.Env, reply wasmvmtypes.Reply, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error)
-		expContractGas        sdk.Gas
-		expAck                []byte
-		expErr                bool
+		contractAddr       sdk.AccAddress
+		contractResp       *wasmvmtypes.IBCReceiveResponse
+		contractErr        error
+		overwriteMessenger *wasmtesting.MockMessageHandler
+		mockReplyFn        func(codeID wasmvm.Checksum, env wasmvmtypes.Env, reply wasmvmtypes.Reply, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error)
+		expContractGas     sdk.Gas
+		expAck             []byte
+		expErr             bool
+		// normally 0 on error, 1 on success, if we return custom events, this may be > 1
+		expContractEvents int
+		// how many custom attributes are on the "wasm" event (not counting _contract_address)
 		expContractEventAttrs int
-		expNoEvents           bool
 	}{
 		"consume contract gas": {
 			contractAddr:   example.Contract,
@@ -340,12 +342,14 @@ func TestOnRecvPacket(t *testing.T) {
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 			},
-			expAck: []byte("myAck"),
+			expAck:            []byte("myAck"),
+			expContractEvents: 1,
 		},
 		"can return empty ack": {
-			contractAddr:   example.Contract,
-			expContractGas: myContractGas,
-			contractResp:   &wasmvmtypes.IBCReceiveResponse{},
+			contractAddr:      example.Contract,
+			expContractGas:    myContractGas,
+			contractResp:      &wasmvmtypes.IBCReceiveResponse{},
+			expContractEvents: 1,
 		},
 		"consume gas on error, ignore events + messages": {
 			contractAddr:   example.Contract,
@@ -357,7 +361,6 @@ func TestOnRecvPacket(t *testing.T) {
 			},
 			contractErr: errors.New("test, ignore"),
 			expErr:      true,
-			expNoEvents: true,
 		},
 		"dispatch contract messages on success": {
 			contractAddr:   example.Contract,
@@ -366,15 +369,35 @@ func TestOnRecvPacket(t *testing.T) {
 				Acknowledgement: []byte("myAck"),
 				Messages:        []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
-			expAck: []byte("myAck"),
+			expContractEvents: 1,
+			expAck:            []byte("myAck"),
 		},
-		"emit contract events on success": {
+		"emit contract attributes on success": {
 			contractAddr:   example.Contract,
 			expContractGas: myContractGas + 10,
 			contractResp: &wasmvmtypes.IBCReceiveResponse{
 				Acknowledgement: []byte("myAck"),
 				Attributes:      []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
+			expContractEvents:     1,
+			expContractEventAttrs: 1,
+			expAck:                []byte("myAck"),
+		},
+		"emit contract events on success": {
+			contractAddr:   example.Contract,
+			expContractGas: myContractGas + 46, // charge or custom event as well
+			contractResp: &wasmvmtypes.IBCReceiveResponse{
+				Acknowledgement: []byte("myAck"),
+				Attributes:      []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
+				Events: []wasmvmtypes.Event{{
+					Type: "custom",
+					Attributes: []wasmvmtypes.EventAttribute{{
+						Key:   "message",
+						Value: "to rudi",
+					}},
+				}},
+			},
+			expContractEvents:     2,
 			expContractEventAttrs: 1,
 			expAck:                []byte("myAck"),
 		},
@@ -388,6 +411,7 @@ func TestOnRecvPacket(t *testing.T) {
 			},
 			overwriteMessenger:    wasmtesting.NewErroringMessageHandler(),
 			expErr:                true,
+			expContractEvents:     1,
 			expContractEventAttrs: 1,
 		},
 		"submessage reply can overwrite ack data": {
@@ -400,12 +424,12 @@ func TestOnRecvPacket(t *testing.T) {
 			mockReplyFn: func(codeID wasmvm.Checksum, env wasmvmtypes.Env, reply wasmvmtypes.Reply, store wasmvm.KVStore, goapi wasmvm.GoAPI, querier wasmvm.Querier, gasMeter wasmvm.GasMeter, gasLimit uint64, deserCost wasmvmtypes.UFraction) (*wasmvmtypes.Response, uint64, error) {
 				return &wasmvmtypes.Response{Data: []byte("myBetterAck")}, 0, nil
 			},
-			expAck: []byte("myBetterAck"),
+			expAck:            []byte("myBetterAck"),
+			expContractEvents: 1,
 		},
 		"unknown contract address": {
 			contractAddr: RandomAccountAddress(t),
 			expErr:       true,
-			expNoEvents:  true,
 		},
 	}
 	for name, spec := range specs {
@@ -441,10 +465,8 @@ func TestOnRecvPacket(t *testing.T) {
 			if spec.expErr {
 				require.Error(t, err)
 				assert.Empty(t, capturedMsgs) // no messages captured on error
-				if spec.expNoEvents {
-					require.Len(t, events, 0)
-				} else {
-					require.Len(t, events, 1)
+				require.Len(t, events, spec.expContractEvents)
+				if spec.expContractEvents > 0 {
 					assert.Len(t, events[0].Attributes, 1+spec.expContractEventAttrs)
 				}
 				return
@@ -461,7 +483,7 @@ func TestOnRecvPacket(t *testing.T) {
 			for i, m := range spec.contractResp.Messages {
 				assert.Equal(t, (*capturedMsgs)[i], m.Msg)
 			}
-			require.Len(t, events, 1)
+			require.Len(t, events, spec.expContractEvents)
 			assert.Len(t, events[0].Attributes, 1+spec.expContractEventAttrs)
 		})
 	}
@@ -594,19 +616,22 @@ func TestOnTimeoutPacket(t *testing.T) {
 	const myContractGas = 40
 
 	specs := map[string]struct {
-		contractAddr          sdk.AccAddress
-		contractResp          *wasmvmtypes.IBCBasicResponse
-		contractErr           error
-		overwriteMessenger    *wasmtesting.MockMessageHandler
-		expContractGas        sdk.Gas
-		expErr                bool
+		contractAddr       sdk.AccAddress
+		contractResp       *wasmvmtypes.IBCBasicResponse
+		contractErr        error
+		overwriteMessenger *wasmtesting.MockMessageHandler
+		expContractGas     sdk.Gas
+		expErr             bool
+		// normally 0 on error, 1 on success, if we return custom events, this may be > 1
+		expContractEvents int
+		// how many custom attributes are on the "wasm" event (not counting _contract_address)
 		expContractEventAttrs int
-		expNoEvents           bool
 	}{
 		"consume contract gas": {
-			contractAddr:   example.Contract,
-			expContractGas: myContractGas,
-			contractResp:   &wasmvmtypes.IBCBasicResponse{},
+			contractAddr:      example.Contract,
+			expContractGas:    myContractGas,
+			contractResp:      &wasmvmtypes.IBCBasicResponse{},
+			expContractEvents: 1,
 		},
 		"consume gas on error, ignore events + messages": {
 			contractAddr:   example.Contract,
@@ -617,7 +642,6 @@ func TestOnTimeoutPacket(t *testing.T) {
 			},
 			contractErr: errors.New("test, ignore"),
 			expErr:      true,
-			expNoEvents: true,
 		},
 		"dispatch contract messages on success": {
 			contractAddr: example.Contract,
@@ -626,15 +650,34 @@ func TestOnTimeoutPacket(t *testing.T) {
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Messages: []wasmvmtypes.SubMsg{{ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Bank: &wasmvmtypes.BankMsg{}}}, {ReplyOn: wasmvmtypes.ReplyNever, Msg: wasmvmtypes.CosmosMsg{Custom: json.RawMessage(`{"foo":"bar"}`)}}},
 			},
+			expContractEvents: 1,
+		},
+		"emit contract attributes on success": {
+			contractAddr:   example.Contract,
+			expContractGas: myContractGas + 10,
+			contractResp: &wasmvmtypes.IBCBasicResponse{
+				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
+			},
+			expContractEvents:     1,
+			expContractEventAttrs: 1,
 		},
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
 			expContractGas: myContractGas + 10,
 			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
+				Events: []wasmvmtypes.Event{{
+					Type: "custom",
+					Attributes: []wasmvmtypes.EventAttribute{{
+						Key:   "message",
+						Value: "to rudi",
+					}},
+				}},
 			},
+			expContractEvents:     2,
 			expContractEventAttrs: 1,
 		},
+		// TODO: I am a bit confued this does return events on error...
 		"messenger errors returned, events stored": {
 			contractAddr:   example.Contract,
 			expContractGas: myContractGas + 10,
@@ -644,12 +687,12 @@ func TestOnTimeoutPacket(t *testing.T) {
 			},
 			overwriteMessenger:    wasmtesting.NewErroringMessageHandler(),
 			expErr:                true,
+			expContractEvents:     1,
 			expContractEventAttrs: 1,
 		},
 		"unknown contract address": {
 			contractAddr: RandomAccountAddress(t),
 			expErr:       true,
-			expNoEvents:  true,
 		},
 	}
 	for name, spec := range specs {
@@ -677,10 +720,8 @@ func TestOnTimeoutPacket(t *testing.T) {
 			if spec.expErr {
 				require.Error(t, err)
 				assert.Empty(t, capturedMsgs) // no messages captured on error
-				if spec.expNoEvents {
-					require.Len(t, events, 0)
-				} else {
-					require.Len(t, events, 1)
+				require.Len(t, events, spec.expContractEvents)
+				if spec.expContractEvents > 0 {
 					assert.Len(t, events[0].Attributes, 1+spec.expContractEventAttrs)
 				}
 				return
@@ -695,7 +736,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 			for i, m := range spec.contractResp.Messages {
 				assert.Equal(t, (*capturedMsgs)[i], m.Msg)
 			}
-			require.Len(t, events, 1)
+			require.Len(t, events, spec.expContractEvents)
 			assert.Len(t, events[0].Attributes, 1+spec.expContractEventAttrs)
 		})
 	}
