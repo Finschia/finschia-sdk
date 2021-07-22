@@ -121,6 +121,7 @@ func SetBech32Cache(size int64) {
 	}
 }
 
+// Used only for test cases
 func InvalidateBech32Cache() {
 	bech32Cache.bech32ToAddrCache = nil
 	bech32Cache.addrToBech32Cache = nil

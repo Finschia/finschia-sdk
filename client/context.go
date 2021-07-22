@@ -308,7 +308,7 @@ func GetFromFields(kr keyring.Keyring, from string, genOnly bool) (sdk.AccAddres
 	} else {
 		info, err = kr.Key(from)
 		if err != nil {
-			return sdk.AccAddress(from), "", 0, err
+			return "", "", 0, err
 		}
 	}
 
