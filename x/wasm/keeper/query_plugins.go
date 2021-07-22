@@ -320,11 +320,11 @@ func StakingQuerier(keeper types.StakingKeeper, distKeeper types.DistributionKee
 			return json.Marshal(res)
 		}
 		if request.Validator != nil {
-			valAddr, err := sdk.ValAddressFromBech32(request.Validator.Address)
+			err := sdk.ValidateValAddress(request.Validator.Address)
 			if err != nil {
 				return nil, err
 			}
-			v, found := keeper.GetValidator(ctx, valAddr)
+			v, found := keeper.GetValidator(ctx, sdk.ValAddress(request.Validator.Address))
 			res := wasmvmtypes.ValidatorResponse{}
 			if found {
 				res.Validator = &wasmvmtypes.Validator{

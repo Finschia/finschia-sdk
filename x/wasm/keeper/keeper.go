@@ -242,13 +242,13 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 	contractAddress := k.generateContractAddress(ctx, codeID)
 	existingAcct := k.accountKeeper.GetAccount(ctx, contractAddress)
 	if existingAcct != nil {
-		return nil, nil, sdkerrors.Wrap(types.ErrAccountExists, existingAcct.GetAddress().String())
+		return "", nil, sdkerrors.Wrap(types.ErrAccountExists, existingAcct.GetAddress().String())
 	}
 
 	// deposit initial contract funds
 	if !deposit.IsZero() {
 		if err := k.bank.TransferCoins(ctx, creator, contractAddress, deposit); err != nil {
-			return nil, nil, err
+			return "", nil, err
 		}
 
 	} else {
@@ -262,13 +262,13 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(types.GetCodeKey(codeID))
 	if bz == nil {
-		return nil, nil, sdkerrors.Wrap(types.ErrNotFound, "code")
+		return "", nil, sdkerrors.Wrap(types.ErrNotFound, "code")
 	}
 	var codeInfo types.CodeInfo
 	k.cdc.MustUnmarshalBinaryBare(bz, &codeInfo)
 
 	if !authZ.CanInstantiateContract(codeInfo.InstantiateConfig, creator) {
-		return nil, nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not instantiate")
+		return "", nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not instantiate")
 	}
 
 	// prepare params for contract instantiate call
@@ -309,7 +309,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 		// register IBC port
 		ibcPort, err := k.ensureIbcPort(ctx, contractAddress)
 		if err != nil {
-			return nil, nil, err
+			return "", nil, err
 		}
 		contractInfo.IBCPortID = ibcPort
 	}
@@ -323,7 +323,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 	// dispatch submessages then messages
 	data, err := k.handleContractResponse(ctx, contractAddress, contractInfo.IBCPortID, res)
 	if err != nil {
-		return nil, nil, sdkerrors.Wrap(err, "dispatch")
+		return "", nil, sdkerrors.Wrap(err, "dispatch")
 	}
 
 	return contractAddress, data, nil
@@ -555,7 +555,7 @@ func (k Keeper) IterateContractsByCode(ctx sdk.Context, codeID uint64, cb func(a
 	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.GetContractByCodeIDSecondaryIndexPrefix(codeID))
 	for iter := prefixStore.Iterator(nil, nil); iter.Valid(); iter.Next() {
 		key := iter.Key()
-		if cb(key[types.AbsoluteTxPositionLen:]) {
+		if cb(sdk.AccAddress(string(key[types.AbsoluteTxPositionLen:]))) {
 			return
 		}
 	}
@@ -719,7 +719,7 @@ func (k Keeper) IterateContractInfo(ctx sdk.Context, cb func(sdk.AccAddress, typ
 		var contract types.ContractInfo
 		k.cdc.MustUnmarshalBinaryBare(iter.Value(), &contract)
 		// cb returns true to stop early
-		if cb(iter.Key(), contract) {
+		if cb(sdk.AccAddress(string(iter.Key())), contract) {
 			break
 		}
 	}

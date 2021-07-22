@@ -200,7 +200,7 @@ func StoreCodeProposalFixture(mutators ...func(*StoreCodeProposal)) *StoreCodePr
 
 func InstantiateContractProposalFixture(mutators ...func(p *InstantiateContractProposal)) *InstantiateContractProposal {
 	var (
-		anyValidAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen)
+		anyValidAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
 
 		initMsg = struct {
 			Verifier    sdk.AccAddress `json:"verifier"`
@@ -235,7 +235,7 @@ func InstantiateContractProposalFixture(mutators ...func(p *InstantiateContractP
 
 func MigrateContractProposalFixture(mutators ...func(p *MigrateContractProposal)) *MigrateContractProposal {
 	var (
-		anyValidAddress sdk.AccAddress = bytes.Repeat([]byte{0x1}, sdk.AddrLen)
+		anyValidAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
 
 		migMsg = struct {
 			Verifier sdk.AccAddress `json:"verifier"`

@@ -24,7 +24,7 @@ func (p DefaultAuthorizationPolicy) CanInstantiateContract(config types.AccessCo
 }
 
 func (p DefaultAuthorizationPolicy) CanModifyContract(admin, actor sdk.AccAddress) bool {
-	return admin != nil && admin.Equals(actor)
+	return admin != "" && admin.Equals(actor)
 }
 
 func (p DefaultAuthorizationPolicy) CanUpdateContractStatus(config types.AccessConfig, actor sdk.AccAddress) bool {

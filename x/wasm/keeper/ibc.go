@@ -40,6 +40,9 @@ func ContractFromPortID(portID string) (sdk.AccAddress, error) {
 	if !strings.HasPrefix(portID, portIDPrefix) {
 		return "", sdkerrors.Wrapf(types.ErrInvalid, "without prefix")
 	}
+	if err := sdk.ValidateAccAddress(portID[len(portIDPrefix):]); err != nil {
+		return "", sdkerrors.Wrapf(types.ErrInvalid, err.Error())
+	}
 	return sdk.AccAddress(portID[len(portIDPrefix):]), nil
 }
 

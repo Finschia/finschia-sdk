@@ -624,6 +624,6 @@ func keyPubAddr() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress) {
 
 	key := ed25519.GenPrivKeyFromSecret(seed)
 	pub := key.PubKey()
-	addr := sdk.AccAddress(pub.Address())
+	addr := sdk.BytesToAccAddress(pub.Address())
 	return key, pub, addr
 }

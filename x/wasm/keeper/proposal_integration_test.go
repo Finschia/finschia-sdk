@@ -245,7 +245,7 @@ func TestAdminProposals(t *testing.T) {
 				Description: "Bar",
 				Contract:    contractAddr.String(),
 			},
-			expAdmin: nil,
+			expAdmin: "",
 		},
 		"clear with old admin empty": {
 			state: types.ContractInfoFixture(func(info *types.ContractInfo) {
@@ -256,7 +256,7 @@ func TestAdminProposals(t *testing.T) {
 				Description: "Bar",
 				Contract:    contractAddr.String(),
 			},
-			expAdmin: nil,
+			expAdmin: "",
 		},
 	}
 	for msg, spec := range specs {

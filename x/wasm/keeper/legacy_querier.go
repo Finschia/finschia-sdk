@@ -42,10 +42,6 @@ func NewLegacyQuerier(keeper types.ViewKeeper, gasLimit sdk.Gas) sdk.Querier {
 			//nolint:staticcheck
 			rsp, err = queryContractInfo(ctx, sdk.AccAddress(path[1]), keeper)
 		case QueryListContractByCode:
-			err := sdk.ValidateAccAddress(path[1])
-			if err != nil {
-				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
-			}
 			codeID, err := strconv.ParseUint(path[1], 10, 64)
 			if err != nil {
 				return nil, sdkerrors.Wrapf(types.ErrInvalid, "code id: %s", err.Error())
@@ -62,10 +58,6 @@ func NewLegacyQuerier(keeper types.ViewKeeper, gasLimit sdk.Gas) sdk.Querier {
 			}
 			return queryContractState(ctx, path[1], path[2], req.Data, gasLimit, keeper)
 		case QueryGetCode:
-			err := sdk.ValidateAccAddress(path[1])
-			if err != nil {
-				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
-			}
 			codeID, err := strconv.ParseUint(path[1], 10, 64)
 			if err != nil {
 				return nil, sdkerrors.Wrapf(types.ErrInvalid, "code id: %s", err.Error())
