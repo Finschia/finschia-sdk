@@ -504,8 +504,8 @@ github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524/go.mod h1:w
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210824011847-fcfa67dd3c70/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20211202001648-945e88fd2edf h1:Pg6wSHMii2zYusYbCHkaeozDgFqfJZWnkjjHPNG9BgA=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20211202001648-945e88fd2edf/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
-github.com/line/wasmvm v0.16.0-rc1-testing h1:5tj5xNjXCRSfuJ2tNxu6FeuyvlzRHWlBqCK0IAar0lo=
-github.com/line/wasmvm v0.16.0-rc1-testing/go.mod h1:cgsILoCDigfQ2XplFI4rOo2ImOLEZH/OM8sulxGoKUA=
+github.com/line/wasmvm v0.16.0-rc2-testing h1:8UnwA1xUKdeGJi9+bFbbRl3e5iQHxJhUYEI3XsjabtU=
+github.com/line/wasmvm v0.16.0-rc2-testing/go.mod h1:cgsILoCDigfQ2XplFI4rOo2ImOLEZH/OM8sulxGoKUA=
 github.com/lyft/protoc-gen-star v0.5.3/go.mod h1:V0xaHgaf5oCCqmcxYcWiDfTiKsZsRc87/1qhoTACD8w=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=
 github.com/magiconair/properties v1.8.1/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=

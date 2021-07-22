@@ -192,7 +192,7 @@ func (k Keeper) OnRecvPacket(
 func (k Keeper) OnAckPacket(
 	ctx sdk.Context,
 	contractAddr sdk.AccAddress,
-	acknowledgement wasmvmtypes.IBCAcknowledgementWithPacket,
+	msg wasmvmtypes.IBCPacketAckMsg,
 ) error {
 	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "ibc-ack-packet")
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddr)
@@ -202,7 +202,6 @@ func (k Keeper) OnAckPacket(
 
 	env := types.NewEnv(ctx, contractAddr)
 	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddr, k.getGasMultiplier(ctx))
-	msg := wasmvmtypes.IBCPacketAckMsg{Ack: acknowledgement}
 
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
