@@ -12,7 +12,7 @@ import (
 	sdk "github.com/line/lfb-sdk/types"
 	sdkerrors "github.com/line/lfb-sdk/types/errors"
 	wasmUtils "github.com/line/lfb-sdk/x/wasm/client/utils"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/types"
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 )

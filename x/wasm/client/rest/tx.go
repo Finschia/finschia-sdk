@@ -10,7 +10,7 @@ import (
 	sdk "github.com/line/lfb-sdk/types"
 	"github.com/line/lfb-sdk/types/rest"
 	wasmUtils "github.com/line/lfb-sdk/x/wasm/client/utils"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/types"
 )
 
 func registerTxRoutes(cliCtx client.Context, r *mux.Router) {

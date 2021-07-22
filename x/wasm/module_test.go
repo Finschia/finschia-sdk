@@ -12,12 +12,11 @@ import (
 	authkeeper "github.com/line/lfb-sdk/x/auth/keeper"
 	bankkeeper "github.com/line/lfb-sdk/x/bank/keeper"
 	stakingkeeper "github.com/line/lfb-sdk/x/staking/keeper"
-	"github.com/line/lfb-sdk/x/wasm/internal/keeper"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/keeper"
+	"github.com/line/lfb-sdk/x/wasm/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/ed25519"
-	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -64,8 +63,8 @@ func mustLoad(path string) []byte {
 var (
 	_, _, addrAcc1 = keyPubAddr()
 	addr1          = addrAcc1.String()
-	testContract   = mustLoad("./internal/keeper/testdata/hackatom.wasm")
-	maskContract   = mustLoad("./internal/keeper/testdata/reflect.wasm")
+	testContract   = mustLoad("./keeper/testdata/hackatom.wasm")
+	maskContract   = mustLoad("./keeper/testdata/reflect.wasm")
 	oldContract    = mustLoad("./testdata/escrow_0.7.wasm")
 )
 
@@ -137,9 +136,9 @@ type initMsg struct {
 type emptyMsg struct{}
 
 type state struct {
-	Verifier    wasmvmtypes.CanonicalAddress `json:"verifier"`
-	Beneficiary wasmvmtypes.CanonicalAddress `json:"beneficiary"`
-	Funder      wasmvmtypes.CanonicalAddress `json:"funder"`
+	Verifier    string `json:"verifier"`
+	Beneficiary string `json:"beneficiary"`
+	Funder      string `json:"funder"`
 }
 
 func TestHandleInstantiate(t *testing.T) {
@@ -195,9 +194,9 @@ func TestHandleInstantiate(t *testing.T) {
 	assertContractList(t, q, data.ctx, 1, []string{contractBech32Addr})
 	assertContractInfo(t, q, data.ctx, contractBech32Addr, 1, creator)
 	assertContractState(t, q, data.ctx, contractBech32Addr, state{
-		Verifier:    []byte(fred),
-		Beneficiary: []byte(bob),
-		Funder:      []byte(creator),
+		Verifier:    fred.String(),
+		Beneficiary: bob.String(),
+		Funder:      creator.String(),
 	})
 }
 
@@ -252,9 +251,9 @@ func TestHandleStoreAndInstantiate(t *testing.T) {
 	assertContractList(t, q, data.ctx, 1, []string{contractBech32Addr})
 	assertContractInfo(t, q, data.ctx, contractBech32Addr, 1, creator)
 	assertContractState(t, q, data.ctx, contractBech32Addr, state{
-		Verifier:    []byte(fred),
-		Beneficiary: []byte(bob),
-		Funder:      []byte(creator),
+		Verifier:    fred.String(),
+		Beneficiary: bob.String(),
+		Funder:      creator.String(),
 	})
 }
 
@@ -365,9 +364,9 @@ func TestErrorsCreateAndInstantiate(t *testing.T) {
 				assertContractList(t, q, data.ctx, 1, []string{expectedContractBech32Addr})
 				assertContractInfo(t, q, data.ctx, expectedContractBech32Addr, 1, addrAcc1)
 				assertContractState(t, q, data.ctx, expectedContractBech32Addr, state{
-					Verifier:    []byte(fred),
-					Beneficiary: []byte(bob),
-					Funder:      []byte(addrAcc1),
+					Verifier:    fred.String(),
+					Beneficiary: bob.String(),
+					Funder:      addrAcc1.String(),
 				})
 			} else {
 				assertContractList(t, q, data.ctx, 0, []string{})
@@ -492,9 +491,9 @@ func TestHandleExecute(t *testing.T) {
 	assertContractList(t, q, data.ctx, 1, []string{contractBech32Addr})
 	assertContractInfo(t, q, data.ctx, contractBech32Addr, 1, creator)
 	assertContractState(t, q, data.ctx, contractBech32Addr, state{
-		Verifier:    []byte(fred),
-		Beneficiary: []byte(bob),
-		Funder:      []byte(creator),
+		Verifier:    fred.String(),
+		Beneficiary: bob.String(),
+		Funder:      creator.String(),
 	})
 }
 
@@ -691,25 +690,25 @@ func assertCodeBytes(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64
 	assert.EqualValues(t, codeID, res["id"])
 }
 
-func assertContractList(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64, addrs []string) {
+func assertContractList(t *testing.T, q sdk.Querier, ctx sdk.Context, codeID uint64, expContractAddrs []string) {
 	bz, sdkerr := q(ctx, []string{QueryListContractByCode, fmt.Sprintf("%d", codeID)}, abci.RequestQuery{})
 	require.NoError(t, sdkerr)
 
 	if len(bz) == 0 {
-		require.Equal(t, len(addrs), 0)
+		require.Equal(t, len(expContractAddrs), 0)
 		return
 	}
 
-	var res []ContractInfoWithAddress
+	var res []string
 	err := json.Unmarshal(bz, &res)
 	require.NoError(t, err)
 
 	var hasAddrs = make([]string, len(res))
 	for i, r := range res {
-		hasAddrs[i] = r.Address
+		hasAddrs[i] = r
 	}
 
-	assert.Equal(t, hasAddrs, addrs)
+	assert.Equal(t, expContractAddrs, hasAddrs)
 }
 
 func assertContractState(t *testing.T, q sdk.Querier, ctx sdk.Context, contractBech32Addr string, expected state) {

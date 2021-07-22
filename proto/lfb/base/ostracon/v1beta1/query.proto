@@ -7,6 +7,7 @@ import "google/api/annotations.proto";
 import "ostracon/p2p/types.proto";
 import "ostracon/types/block.proto";
 import "ostracon/types/types.proto";
+import "ostracon/abci/types.proto";
 import "lfb/base/query/v1beta1/pagination.proto";
 
 option go_package = "github.com/line/lfb-sdk/client/grpc/tmservice";
@@ -28,6 +29,14 @@ service Service {
   // GetBlockByHeight queries block for given height.
   rpc GetBlockByHeight(GetBlockByHeightRequest) returns (GetBlockByHeightResponse) {
     option (google.api.http).get = "/lfb/base/ostracon/v1beta1/blocks/{height}";
+  }
+  // GetBlockByHash queries block for given hash.
+  rpc GetBlockByHash(GetBlockByHashRequest) returns (GetBlockByHashResponse) {
+    option (google.api.http).get = "/lfb/base/ostracon/v1beta1/blocks/{hash}";
+  }
+  // GetBlockResultsByHeight queries block results for given height.
+  rpc GetBlockResultsByHeight(GetBlockResultsByHeightRequest) returns (GetBlockResultsByHeightResponse) {
+    option (google.api.http).get = "/lfb/base/ostracon/v1beta1/blockresults/{height}";
   }
 
   // GetLatestValidatorSet queries latest validator-set.
@@ -86,6 +95,30 @@ message GetBlockByHeightRequest {
 message GetBlockByHeightResponse {
   .ostracon.types.BlockID block_id = 1;
   .ostracon.types.Block   block    = 2;
+}
+
+// GetBlockByHashRequest is the request type for the Query/GetBlockByHash RPC method.
+message GetBlockByHashRequest {
+  bytes hash = 1;
+}
+
+// GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC method.
+message GetBlockByHashResponse {
+  .ostracon.types.BlockID block_id = 1;
+  .ostracon.types.Block   block    = 2;
+}
+
+// GetBlockResultsByHeightRequest is the request type for the Query/GetBlockResultsByHeight RPC method.
+message GetBlockResultsByHeightRequest {
+  int64 height = 1;
+}
+
+// GetBlockResultsByHeightResponse is the response type for the Query/GetBlockResultsByHeight RPC method.
+message GetBlockResultsByHeightResponse {
+  int64                                     height          = 1;
+  repeated .ostracon.abci.ResponseDeliverTx txs_results     = 2;
+  .ostracon.abci.ResponseBeginBlock         res_begin_block = 3;
+  .ostracon.abci.ResponseEndBlock           res_end_block   = 4;
 }
 
 // GetLatestBlockRequest is the request type for the Query/GetLatestBlock RPC method.

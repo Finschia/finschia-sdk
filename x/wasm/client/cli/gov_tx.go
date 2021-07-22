@@ -8,7 +8,7 @@ import (
 	sdk "github.com/line/lfb-sdk/types"
 	"github.com/line/lfb-sdk/x/gov/client/cli"
 	govtypes "github.com/line/lfb-sdk/x/gov/types"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/types"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )

@@ -13,8 +13,8 @@ import (
 	"github.com/line/lfb-sdk/client"
 	sdk "github.com/line/lfb-sdk/types"
 	"github.com/line/lfb-sdk/types/rest"
-	"github.com/line/lfb-sdk/x/wasm/internal/keeper"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/keeper"
+	"github.com/line/lfb-sdk/x/wasm/types"
 )
 
 func registerQueryRoutes(cliCtx client.Context, r *mux.Router) {

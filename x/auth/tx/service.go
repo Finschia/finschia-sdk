@@ -63,7 +63,7 @@ func (s txServer) GetTxsEvent(ctx context.Context, req *txtypes.GetTxsEventReque
 		}
 	}
 
-	result, err := queryTxsByEvents(ctx, s.clientCtx, req.Events, page, limit, "")
+	result, err := queryTxsByEvents(ctx, s.clientCtx, req.Events, req.Prove, page, limit, "")
 	if err != nil {
 		return nil, err
 	}

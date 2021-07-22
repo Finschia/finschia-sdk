@@ -2,8 +2,8 @@
 package wasm
 
 import (
-	"github.com/line/lfb-sdk/x/wasm/internal/keeper"
-	"github.com/line/lfb-sdk/x/wasm/internal/types"
+	"github.com/line/lfb-sdk/x/wasm/keeper"
+	"github.com/line/lfb-sdk/x/wasm/types"
 )
 
 const (
@@ -68,7 +68,7 @@ var (
 	CreateTestInput           = keeper.CreateTestInput
 	TestHandler               = keeper.TestHandler
 	NewWasmProposalHandler    = keeper.NewWasmProposalHandler
-	NewQuerier                = keeper.NewQuerier
+	NewQuerier                = keeper.Querier
 	ContractFromPortID        = keeper.ContractFromPortID
 	WithWasmEngine            = keeper.WithWasmEngine
 
@@ -119,9 +119,8 @@ type (
 	ContractInfo                               = types.ContractInfo
 	CreatedAt                                  = types.AbsoluteTxPosition
 	Config                                     = types.WasmConfig
-	ContractInfoWithAddress                    = types.ContractInfoWithAddress
 	CodeInfoResponse                           = types.CodeInfoResponse
-	MessageHandler                             = keeper.DefaultMessageHandler
+	MessageHandler                             = keeper.SDKMessageHandler
 	BankEncoder                                = keeper.BankEncoder
 	CustomEncoder                              = keeper.CustomEncoder
 	StakingEncoder                             = keeper.StakingEncoder
