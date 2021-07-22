@@ -232,8 +232,7 @@ func makeSignCmd() func(cmd *cobra.Command, args []string) error {
 
 		overwrite, _ := f.GetBool(flagOverwrite)
 		if multisigAddrStr != "" {
-			var multisigAddr sdk.AccAddress
-			multisigAddr = sdk.AccAddress(multisigAddrStr)
+			multisigAddr := sdk.AccAddress(multisigAddrStr)
 			err = authclient.SignTxWithSignerAddress(
 				txF, clientCtx, multisigAddr, fromName, txBuilder, clientCtx.Offline, overwrite)
 			printSignatureOnly = true

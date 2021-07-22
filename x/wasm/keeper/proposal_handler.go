@@ -169,7 +169,7 @@ func handleClearAdminProposal(ctx sdk.Context, k types.ContractOpsKeeper, p type
 	if err != nil {
 		return sdkerrors.Wrap(err, "contract")
 	}
-	if err := k.ClearContractAdmin(ctx,  sdk.AccAddress(p.Contract), ""); err != nil {
+	if err := k.ClearContractAdmin(ctx, sdk.AccAddress(p.Contract), ""); err != nil {
 		return err
 	}
 

@@ -193,11 +193,7 @@ func (aa AccAddress) Equals(aa2 Address) bool {
 
 // Returns boolean for whether an AccAddress is empty
 func (aa AccAddress) Empty() bool {
-	if len(string(aa)) == 0 {
-		return true
-	}
-
-	return false
+	return len(string(aa)) == 0
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -382,11 +378,7 @@ func (va ValAddress) Equals(va2 Address) bool {
 
 // Returns boolean for whether an AccAddress is empty
 func (va ValAddress) Empty() bool {
-	if va == "" {
-		return true
-	}
-
-	return false
+	return va == ""
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -531,11 +523,7 @@ func (ca ConsAddress) Equals(ca2 Address) bool {
 
 // Returns boolean for whether an ConsAddress is empty
 func (ca ConsAddress) Empty() bool {
-	if ca == "" {
-		return true
-	}
-
-	return false
+	return ca == ""
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf

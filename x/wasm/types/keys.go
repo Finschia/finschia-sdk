@@ -33,8 +33,6 @@ var (
 
 	KeyLastCodeID     = append(SequenceKeyPrefix, []byte("lastCodeId")...)
 	KeyLastInstanceID = append(SequenceKeyPrefix, []byte("lastContractId")...)
-
-	AddressDelimiter = ","
 )
 
 // GetCodeKey constructs the key for retreiving the ID for the WASM code
