@@ -204,7 +204,7 @@ func (p InstantiateContractProposal) String() string {
   Admin:       %s
   Code id:     %d
   Label:       %s
-  Msg:     %q
+  Msg:         %q
   Funds:       %s
 `, p.Title, p.Description, p.RunAs, p.Admin, p.CodeID, p.Label, p.Msg, p.Funds)
 }
@@ -272,7 +272,7 @@ func (p MigrateContractProposal) String() string {
   Contract:    %s
   Code id:     %d
   Run as:      %s
-  Msg   %q
+  Msg:         %q
 `, p.Title, p.Description, p.Contract, p.CodeID, p.RunAs, p.Msg)
 }
 
