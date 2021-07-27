@@ -217,12 +217,12 @@ $ %s query txs --%s 'message.sender=link1...&message.action=withdraw_delegator_r
 func QueryTxCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "tx --type=[hash|acc_seq|signature] [hash|acc_seq|signature]",
-		Short: "Query for a transaction by hash, \"<addr>/<seq>\" combination or comma-separated signatures in a committed block",
+		Short: "Query for a transaction by hash, addr++seq combination or signature in a committed block",
 		Long: strings.TrimSpace(fmt.Sprintf(`
 Example:
 $ %s query tx <hash>
-$ %s query tx --%s=%s <addr>/<sequence>
-$ %s query tx --%s=%s <sig1_base64>,<sig2_base64...>
+$ %s query tx --%s=%s <addr>:<sequence>
+$ %s query tx --%s=%s <sig1_base64,sig2_base64...>
 `,
 			version.AppName,
 			version.AppName, flagType, typeAccSeq,
@@ -275,7 +275,7 @@ $ %s query tx --%s=%s <sig1_base64>,<sig2_base64...>
 					}
 					if len(txs.Txs) > 1 {
 						// This case means there's a bug somewhere else in the code. Should not happen.
-						return errors.Wrapf(errors.ErrLogic, "found %d txs matching given signatures", len(txs.Txs))
+						return errors.ErrLogic.Wrapf("found %d txs matching given signatures", len(txs.Txs))
 					}
 
 					return clientCtx.PrintProto(txs.Txs[0])

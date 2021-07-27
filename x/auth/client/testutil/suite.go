@@ -328,13 +328,13 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 	)
 	s.Require().NoError(err)
 	var txRes sdk.TxResponse
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &txRes))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &txRes))
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	// Query the tx by hash to get the inner tx.
 	out, err = clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.QueryTxCmd(), []string{txRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)})
 	s.Require().NoError(err)
-	s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &txRes))
+	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &txRes))
 	protoTx := txRes.GetTx().(*tx.Tx)
 
 	testCases := []struct {
@@ -420,7 +420,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmdByEvents() {
 				s.Require().Contains(err.Error(), tc.expectErrStr)
 			} else {
 				var result sdk.TxResponse
-				s.Require().NoError(val.ClientCtx.JSONCodec.UnmarshalJSON(out.Bytes(), &result))
+				s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &result))
 				s.Require().NotNil(result.Height)
 			}
 		})
