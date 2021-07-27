@@ -62,7 +62,7 @@ func handleStoreCodeProposal(ctx sdk.Context, k types.ContractOpsKeeper, p types
 	if err != nil {
 		return sdkerrors.Wrap(err, "run as address")
 	}
-	codeID, err := k.Create(ctx, sdk.AccAddress(p.RunAs), p.WASMByteCode, p.Source, p.Builder, p.InstantiatePermission)
+	codeID, err := k.Create(ctx, sdk.AccAddress(p.RunAs), p.WASMByteCode, p.InstantiatePermission)
 	if err != nil {
 		return err
 	}
