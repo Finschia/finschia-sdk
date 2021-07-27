@@ -106,7 +106,7 @@ func TestInstantiateProposal(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	contractAddr := "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
+	contractAddr := "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
 	err = sdk.ValidateAccAddress(contractAddr)
 	require.NoError(t, err)
 

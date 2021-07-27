@@ -284,7 +284,7 @@ func TestInstantiate(t *testing.T) {
 	// create with no balance is also legal
 	gotContractAddr, _, err := keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", initMsgBz, "demo contract 1", nil)
 	require.NoError(t, err)
-	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", gotContractAddr.String())
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", gotContractAddr.String())
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
@@ -486,7 +486,7 @@ func TestExecute(t *testing.T) {
 
 	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract 3", deposit)
 	require.NoError(t, err)
-	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", addr.String())
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
 
 	// ensure bob doesn't exist
 	bobAcct := accKeeper.GetAccount(ctx, bob)
@@ -792,7 +792,7 @@ func TestExecuteInactiveContract(t *testing.T) {
 
 	addr, _, err := keeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract 3", deposit)
 	require.NoError(t, err)
-	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", addr.String())
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
 
 	// execute inactive contract
 	params := wasmKeeper.GetParams(ctx)
@@ -1240,7 +1240,7 @@ func TestSudo(t *testing.T) {
 
 	addr, _, err := keepers.ContractKeeper.Instantiate(ctx, contractID, creator, "", initMsgBz, "demo contract 3", deposit)
 	require.NoError(t, err)
-	require.Equal(t, "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu", addr.String())
+	require.Equal(t, "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j", addr.String())
 
 	// the community is broke
 	_, _, community := keyPubAddr()
@@ -1756,7 +1756,6 @@ func TestBuildContractAddress(t *testing.T) {
 	specs := map[string]struct {
 		srcCodeID     uint64
 		srcInstanceID uint64
-		expPanic      bool
 	}{
 		"both empty": {},
 		"both below max": {
@@ -1767,23 +1766,17 @@ func TestBuildContractAddress(t *testing.T) {
 			srcCodeID:     math.MaxUint32,
 			srcInstanceID: math.MaxUint32,
 		},
-		"codeID > max": {
-			srcCodeID: math.MaxUint32 + 1,
-			expPanic:  true,
+		"codeID > max u32": {
+			srcCodeID:     math.MaxUint32 + 1,
+			srcInstanceID: 17,
 		},
-		"instanceID > max": {
+		"instanceID > max u32": {
+			srcCodeID:     22,
 			srcInstanceID: math.MaxUint32 + 1,
-			expPanic:      true,
 		},
 	}
 	for name, spec := range specs {
 		t.Run(name, func(t *testing.T) {
-			if spec.expPanic {
-				require.Panics(t, func() {
-					BuildContractAddress(spec.srcCodeID, spec.srcInstanceID)
-				})
-				return
-			}
 			gotAddr := BuildContractAddress(spec.srcCodeID, spec.srcInstanceID)
 			require.NotNil(t, gotAddr)
 			assert.Nil(t, sdk.ValidateAccAddress(gotAddr.String()))
