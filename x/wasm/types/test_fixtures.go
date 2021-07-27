@@ -74,8 +74,6 @@ func CodeInfoFixture(mutators ...func(*CodeInfo)) CodeInfo {
 	fixture := CodeInfo{
 		CodeHash:          codeHash[:],
 		Creator:           anyAddress,
-		Source:            "https://example.com",
-		Builder:           "my/builder:tag",
 		InstantiateConfig: AllowEverybody,
 	}
 	for _, m := range mutators {
@@ -133,8 +131,6 @@ func MsgStoreCodeFixture(mutators ...func(*MsgStoreCode)) *MsgStoreCode {
 	r := &MsgStoreCode{
 		Sender:                anyAddress,
 		WASMByteCode:          wasmIdent,
-		Source:                "https://example.com/code",
-		Builder:               "foo/bar:latest",
 		InstantiatePermission: &AllowEverybody,
 	}
 	for _, m := range mutators {
@@ -189,8 +185,6 @@ func StoreCodeProposalFixture(mutators ...func(*StoreCodeProposal)) *StoreCodePr
 		Description:  "Bar",
 		RunAs:        anyAddress,
 		WASMByteCode: []byte{0x0},
-		Source:       "https://example.com/code",
-		Builder:      "foo/bar:latest",
 	}
 	for _, m := range mutators {
 		m(p)
