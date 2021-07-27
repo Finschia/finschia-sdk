@@ -647,7 +647,7 @@ run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 code_id: 1
 label: testing
-init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
 funds:
 - denom: foo
   amount: "1"
@@ -663,7 +663,7 @@ run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 admin: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 code_id: 1
 label: testing
-init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
 funds: []
 `,
 		},
@@ -675,7 +675,7 @@ run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 admin: ""
 code_id: 1
 label: testing
-init_msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
+msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5","beneficiary":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
 funds: []
 `,
 		},
@@ -780,7 +780,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 	"admin": "myAdminAddress",
 	"code_id": 1,
 	"funds": [{"denom": "ALX", "amount": "2"},{"denom": "BLX","amount": "3"}],
-	"init_msg": "e30=",
+	"msg": "e30=",
 	"label": "testing",
 	"run_as": "myRunAsAddress"
 }`,
@@ -803,7 +803,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 	"description": "bar",
 	"code_id": 1,
 	"contract": "myContractAddr",
-	"migrate_msg": "e30=",
+	"msg": "e30=",
 	"run_as": "myRunAsAddress"
 }`,
 			got: &MigrateContractProposal{},

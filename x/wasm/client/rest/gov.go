@@ -80,7 +80,7 @@ type InstantiateProposalJSONReq struct {
 	Admin string          `json:"admin,omitempty" yaml:"admin"`
 	Code  uint64          `json:"code_id" yaml:"code_id"`
 	Label string          `json:"label" yaml:"label"`
-	Msg   json.RawMessage `json:"msg" yaml:"init_msg"`
+	Msg   json.RawMessage `json:"msg" yaml:"msg"`
 	Funds sdk.Coins       `json:"funds" yaml:"funds"`
 }
 
