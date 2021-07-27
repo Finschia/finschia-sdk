@@ -1756,8 +1756,18 @@ func TestBuildContractAddress(t *testing.T) {
 	specs := map[string]struct {
 		srcCodeID     uint64
 		srcInstanceID uint64
+		expectedAddr  string
 	}{
-		"both empty": {},
+		"initial contract": {
+			srcCodeID:     1,
+			srcInstanceID: 1,
+			expectedAddr:  "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j",
+		},
+		"demo value": {
+			srcCodeID:     1,
+			srcInstanceID: 100,
+			expectedAddr:  "link1mujpjkwhut9yjw4xueyugc02evfv46y0qnephq",
+		},
 		"both below max": {
 			srcCodeID:     math.MaxUint32 - 1,
 			srcInstanceID: math.MaxUint32 - 1,
@@ -1769,10 +1779,12 @@ func TestBuildContractAddress(t *testing.T) {
 		"codeID > max u32": {
 			srcCodeID:     math.MaxUint32 + 1,
 			srcInstanceID: 17,
+			expectedAddr:  "link1673hrexz4h6s0ft04l96ygq667djzh2ne27tt5",
 		},
 		"instanceID > max u32": {
 			srcCodeID:     22,
 			srcInstanceID: math.MaxUint32 + 1,
+			expectedAddr:  "link10q3pgfvmeyy0veekgtqhxujxkhz0vm9z06c5ml",
 		},
 	}
 	for name, spec := range specs {
@@ -1780,6 +1792,9 @@ func TestBuildContractAddress(t *testing.T) {
 			gotAddr := BuildContractAddress(spec.srcCodeID, spec.srcInstanceID)
 			require.NotNil(t, gotAddr)
 			assert.Nil(t, sdk.ValidateAccAddress(gotAddr.String()))
+			if len(spec.expectedAddr) > 0 {
+				require.Equal(t, spec.expectedAddr, gotAddr.String())
+			}
 		})
 	}
 }
