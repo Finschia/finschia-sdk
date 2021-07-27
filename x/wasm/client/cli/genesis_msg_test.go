@@ -315,7 +315,7 @@ func TestInstantiateContractCmd(t *testing.T) {
 }
 
 func TestExecuteContractCmd(t *testing.T) {
-	const firstContractAddress = "link18vd8fpwxzck93qlwghaj6arh4p7c5n89fvcmzu"
+	const firstContractAddress = "link14hj2tavq8fpesdwxxcu44rty3hh90vhud63e6j"
 	minimalWasmGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 	}
@@ -396,6 +396,7 @@ func TestExecuteContractCmd(t *testing.T) {
 				},
 			},
 			mutator: func(cmd *cobra.Command) {
+				// TODO: calculate desired address
 				cmd.SetArgs([]string{"link1weh0k0l6t6v4jkmkde8e90tzkw2c59g4lkcapz", `{}`})
 				flagSet := cmd.Flags()
 				flagSet.Set("run-as", myWellFundedAccount)
