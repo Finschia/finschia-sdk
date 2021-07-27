@@ -391,7 +391,7 @@ func handleInstantiate(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.Ms
 	}
 
 	contractAddr, _, err := k.Instantiate(ctx, msg.CodeID, sdk.AccAddress(msg.Sender), sdk.AccAddress(msg.Admin),
-		msg.InitMsg, msg.Label, msg.Funds)
+		msg.Msg, msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
 	}

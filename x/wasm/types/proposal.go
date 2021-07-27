@@ -188,7 +188,7 @@ func (p InstantiateContractProposal) ValidateBasic() error {
 			return err
 		}
 	}
-	if !json.Valid(p.InitMsg) {
+	if !json.Valid(p.Msg) {
 		return sdkerrors.Wrap(ErrInvalid, "init msg json")
 	}
 
@@ -204,9 +204,9 @@ func (p InstantiateContractProposal) String() string {
   Admin:       %s
   Code id:     %d
   Label:       %s
-  InitMsg:     %q
+  Msg:     %q
   Funds:       %s
-`, p.Title, p.Description, p.RunAs, p.Admin, p.CodeID, p.Label, p.InitMsg, p.Funds)
+`, p.Title, p.Description, p.RunAs, p.Admin, p.CodeID, p.Label, p.Msg, p.Funds)
 }
 
 // MarshalYAML pretty prints the init message
@@ -227,7 +227,7 @@ func (p InstantiateContractProposal) MarshalYAML() (interface{}, error) {
 		Admin:       p.Admin,
 		CodeID:      p.CodeID,
 		Label:       p.Label,
-		InitMsg:     string(p.InitMsg),
+		InitMsg:     string(p.Msg),
 		Funds:       p.Funds,
 	}, nil
 }
@@ -258,7 +258,7 @@ func (p MigrateContractProposal) ValidateBasic() error {
 	if err := sdk.ValidateAccAddress(p.RunAs); err != nil {
 		return sdkerrors.Wrap(err, "run as")
 	}
-	if !json.Valid(p.MigrateMsg) {
+	if !json.Valid(p.Msg) {
 		return sdkerrors.Wrap(ErrInvalid, "migrate msg json")
 	}
 	return nil
@@ -272,8 +272,8 @@ func (p MigrateContractProposal) String() string {
   Contract:    %s
   Code id:     %d
   Run as:      %s
-  MigrateMsg   %q
-`, p.Title, p.Description, p.Contract, p.CodeID, p.RunAs, p.MigrateMsg)
+  Msg   %q
+`, p.Title, p.Description, p.Contract, p.CodeID, p.RunAs, p.Msg)
 }
 
 // MarshalYAML pretty prints the migrate message
@@ -290,7 +290,7 @@ func (p MigrateContractProposal) MarshalYAML() (interface{}, error) {
 		Description: p.Description,
 		Contract:    p.Contract,
 		CodeID:      p.CodeID,
-		MigrateMsg:  string(p.MigrateMsg),
+		MigrateMsg:  string(p.Msg),
 		RunAs:       p.RunAs,
 	}, nil
 }

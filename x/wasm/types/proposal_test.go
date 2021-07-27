@@ -198,13 +198,13 @@ func TestValidateInstantiateContractProposal(t *testing.T) {
 		},
 		"without init msg": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitMsg = nil
+				p.Msg = nil
 			}),
 			expErr: true,
 		},
 		"with invalid init msg": {
 			src: InstantiateContractProposalFixture(func(p *InstantiateContractProposal) {
-				p.InitMsg = []byte("not a json string")
+				p.Msg = []byte("not a json string")
 			}),
 			expErr: true,
 		},
@@ -288,13 +288,13 @@ func TestValidateMigrateContractProposal(t *testing.T) {
 		},
 		"without migrate msg": {
 			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.MigrateMsg = nil
+				p.Msg = nil
 			}),
 			expErr: true,
 		},
 		"migrate msg with invalid json": {
 			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.MigrateMsg = []byte("not a json message")
+				p.Msg = []byte("not a json message")
 			}),
 			expErr: true,
 		},
@@ -529,7 +529,7 @@ func TestProposalStrings(t *testing.T) {
   Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
   Funds:       1foo,2bar
 `,
 		},
@@ -542,7 +542,7 @@ func TestProposalStrings(t *testing.T) {
   Admin:       link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
   Funds:       
 `,
 		},
@@ -555,7 +555,7 @@ func TestProposalStrings(t *testing.T) {
   Admin:       
   Code id:     1
   Label:       testing
-  InitMsg:     "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\",\"beneficiary\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
   Funds:       
 `,
 		},
@@ -567,7 +567,7 @@ func TestProposalStrings(t *testing.T) {
   Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
   Code id:     1
   Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
-  MigrateMsg   "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
+  Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
 `,
 		},
 		"update admin": {
@@ -792,7 +792,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 				Admin:       "myAdminAddress",
 				CodeID:      1,
 				Label:       "testing",
-				InitMsg:     []byte("{}"),
+				Msg:         []byte("{}"),
 				Funds:       sdk.NewCoins(sdk.NewCoin("ALX", sdk.NewInt(2)), sdk.NewCoin("BLX", sdk.NewInt(3))),
 			},
 		},
@@ -813,7 +813,7 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 				RunAs:       "myRunAsAddress",
 				Contract:    "myContractAddr",
 				CodeID:      1,
-				MigrateMsg:  []byte("{}"),
+				Msg:         []byte("{}"),
 			},
 		},
 	}

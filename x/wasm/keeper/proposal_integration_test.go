@@ -120,7 +120,7 @@ func TestInstantiateProposal(t *testing.T) {
 		Operation: types.ContractCodeHistoryOperationTypeInit,
 		CodeID:    src.CodeID,
 		Updated:   types.NewAbsoluteTxPosition(ctx),
-		Msg:       src.InitMsg,
+		Msg:       src.Msg,
 	}}
 	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, sdk.AccAddress(contractAddr)))
 	// and event
@@ -175,7 +175,7 @@ func TestMigrateProposal(t *testing.T) {
 		Description: "Bar",
 		CodeID:      2,
 		Contract:    contractAddr.String(),
-		MigrateMsg:  migMsgBz,
+		Msg:         migMsgBz,
 		RunAs:       otherAddress.String(),
 	}
 
@@ -205,7 +205,7 @@ func TestMigrateProposal(t *testing.T) {
 		Operation: types.ContractCodeHistoryOperationTypeMigrate,
 		CodeID:    src.CodeID,
 		Updated:   types.NewAbsoluteTxPosition(ctx),
-		Msg:       src.MigrateMsg,
+		Msg:       src.Msg,
 	}}
 	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, contractAddr))
 	// and events emitted

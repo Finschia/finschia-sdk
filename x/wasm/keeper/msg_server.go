@@ -62,7 +62,7 @@ func (m msgServer) InstantiateContract(goCtx context.Context, msg *types.MsgInst
 		adminAddr = sdk.AccAddress(msg.Admin)
 	}
 
-	contractAddr, data, err := m.keeper.Instantiate(ctx, msg.CodeID, sdk.AccAddress(msg.Sender), adminAddr, msg.InitMsg, msg.Label, msg.Funds)
+	contractAddr, data, err := m.keeper.Instantiate(ctx, msg.CodeID, sdk.AccAddress(msg.Sender), adminAddr, msg.Msg, msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
@@ -178,7 +178,7 @@ func (m msgServer) MigrateContract(goCtx context.Context, msg *types.MsgMigrateC
 		return nil, sdkerrors.Wrap(err, "contract")
 	}
 
-	data, err := m.keeper.Migrate(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.CodeID, msg.MigrateMsg)
+	data, err := m.keeper.Migrate(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.CodeID, msg.Msg)
 	if err != nil {
 		return nil, err
 	}
