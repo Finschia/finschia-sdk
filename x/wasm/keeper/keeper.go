@@ -190,7 +190,7 @@ func (k Keeper) replyCosts(g WasmGasRegister, ctx sdk.Context, pinned bool, repl
 		msgLen += len(reply.Result.Ok.Data)
 		var attrs []wasmvmtypes.EventAttribute
 		for _, e := range reply.Result.Ok.Events {
-			msgLen += len(e.Type)
+			eventGas += sdk.Gas(len(e.Type)) * g.c.EventAttributeDataCost
 			attrs = append(e.Attributes)
 		}
 		// apply free tier on the whole set not per event

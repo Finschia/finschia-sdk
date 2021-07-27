@@ -11,6 +11,7 @@ const (
 	DefaultEventAttributeDataCost uint64 = 1
 	// DefaultContractMessageDataCost is how much SDK gas is charged *per byte* of the message that goes to the contract
 	// This is used with len(msg)
+	// Note: also used for error fields on reply, and data on reply
 	DefaultContractMessageDataCost uint64 = 0
 	// DefaultPerAttributeCost is how much SDK gas we charge per attribute count.
 	DefaultPerAttributeCost uint64 = 10
