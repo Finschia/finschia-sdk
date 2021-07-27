@@ -10948,9 +10948,9 @@ CodeInfo is data for the uploaded contract WASM code
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `code_hash` | [bytes](#bytes) |  | CodeHash is the unique identifier created by wasmvm |
-| `creator` | [string](#string) |  | Creator address who initially stored the code |
-| `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
-| `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
+| `creator` | [string](#string) |  | Creator address who initially stored the code
+
+3 and 4 intentionally left empty (used in v1beta1) |
 | `instantiate_config` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiateConfig access control to apply on contract creation, optional |
 
 
@@ -11230,9 +11230,9 @@ MsgStoreCode submit Wasm code to the system
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
-| `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
+| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed
+
+3 and 4 intentionally left empty (used in v1beta1) |
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
 
 
@@ -11249,10 +11249,10 @@ MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiat
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
-| `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
+| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed
+
+3 and 4 intentionally left empty (used in v1beta1) |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 | `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
 | `init_msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
@@ -11622,9 +11622,9 @@ StoreCodeProposal gov proposal content type to submit WASM code to the system
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
 | `run_as` | [string](#string) |  | RunAs is the address that is passed to the contract's environment as sender |
-| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
-| `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
-| `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
+| `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed
+
+Source is a valid absolute HTTPS URI to the contract's source code, optional 5 and 6 intentionally left empty (used in v1beta1) |
 | `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
 
 
@@ -11712,9 +11712,7 @@ CodeInfoResponse contains code meta data from CodeInfo
 | `code_id` | [uint64](#uint64) |  | id for legacy support |
 | `creator` | [string](#string) |  |  |
 | `data_hash` | [bytes](#bytes) |  |  |
-| `source` | [string](#string) |  |  |
-| `builder` | [string](#string) |  |  |
-| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  | 4 and 5 intentionally left empty (used in v1beta1) |
 
 
 
