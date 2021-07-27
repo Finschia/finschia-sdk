@@ -288,7 +288,7 @@ func TestInstantiate(t *testing.T) {
 
 	gasAfter := ctx.GasMeter().GasConsumed()
 	if types.EnableGasVerification {
-		require.Equal(t, uint64(0x1121a), gasAfter-gasBefore)
+		require.Equal(t, uint64(0x1110f), gasAfter-gasBefore)
 	}
 
 	// ensure it is stored properly
@@ -473,7 +473,7 @@ func TestExecute(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	contractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -656,7 +656,7 @@ func TestExecuteWithPanic(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	contractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -690,7 +690,7 @@ func TestExecuteWithCpuLoop(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	contractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -735,7 +735,7 @@ func TestExecuteWithStorageLoop(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	contractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -779,7 +779,7 @@ func TestExecuteInactiveContract(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	contractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -1032,9 +1032,9 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 	burnerCode, err := ioutil.ReadFile("./testdata/burner.wasm")
 	require.NoError(t, err)
 
-	originalContractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
-	burnerContractID, err := keeper.Create(ctx, creator, burnerCode, "", "", nil)
+	burnerContractID, err := keeper.Create(ctx, creator, burnerCode, nil)
 	require.NoError(t, err)
 	require.NotEqual(t, originalContractID, burnerContractID)
 
@@ -1226,7 +1226,7 @@ func TestSudo(t *testing.T) {
 
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
-	contractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	contractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, bob := keyPubAddr()
@@ -1307,7 +1307,7 @@ func TestUpdateContractAdmin(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	originalContractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, anyAddr := keyPubAddr()
@@ -1378,7 +1378,7 @@ func TestUpdateContractAdminInactiveContract(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	originalContractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, anyAddr := keyPubAddr()
@@ -1414,7 +1414,7 @@ func TestClearContractAdmin(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	originalContractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, anyAddr := keyPubAddr()
@@ -1480,7 +1480,7 @@ func TestClearContractAdminInactiveContract(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	originalContractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, anyAddr := keyPubAddr()
@@ -1516,7 +1516,7 @@ func TestUpdateContractStatus(t *testing.T) {
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
 
-	originalContractID, err := keeper.Create(ctx, creator, wasmCode, "", "", nil)
+	originalContractID, err := keeper.Create(ctx, creator, wasmCode, nil)
 	require.NoError(t, err)
 
 	_, _, anyAddr := keyPubAddr()
