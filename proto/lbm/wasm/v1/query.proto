@@ -152,7 +152,8 @@ message CodeInfoResponse {
                       (gogoproto.jsontag)    = "id"]; // id for legacy support
   string creator   = 2;
   bytes  data_hash = 3 [(gogoproto.casttype) = "github.com/line/ostracon/libs/bytes.HexBytes"];
-  // 4 and 5 intentionally left empty (used in v1beta1)
+  // Used in v1beta1
+  reserved 4, 5;
   AccessConfig instantiate_permission = 6 [(gogoproto.nullable) = false];
 }
 
