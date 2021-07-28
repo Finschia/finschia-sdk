@@ -60,28 +60,22 @@ type IBCContractKeeper interface {
 	OnOpenChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel wasmvmtypes.IBCChannel,
-		// this is unset on init, set on try
-		counterpartyVersion string,
+		msg wasmvmtypes.IBCChannelOpenMsg,
 	) error
 	OnConnectChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel wasmvmtypes.IBCChannel,
-		// this is set on ack, unset on confirm
-		counterpartyVersion string,
+		msg wasmvmtypes.IBCChannelConnectMsg,
 	) error
 	OnCloseChannel(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		channel wasmvmtypes.IBCChannel,
-		// false for init, true for confirm
-		confirm bool,
+		msg wasmvmtypes.IBCChannelCloseMsg,
 	) error
 	OnRecvPacket(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		packet wasmvmtypes.IBCPacket,
+		msg wasmvmtypes.IBCPacketReceiveMsg,
 	) ([]byte, error)
 	OnAckPacket(
 		ctx sdk.Context,
@@ -91,7 +85,7 @@ type IBCContractKeeper interface {
 	OnTimeoutPacket(
 		ctx sdk.Context,
 		contractAddr sdk.AccAddress,
-		packet wasmvmtypes.IBCPacket,
+		msg wasmvmtypes.IBCPacketTimeoutMsg,
 	) error
 	// ClaimCapability allows the transfer module to claim a capability
 	//that IBC module passes to it
