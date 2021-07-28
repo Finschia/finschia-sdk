@@ -15,6 +15,7 @@ import (
 
 func TestIBCQuerier(t *testing.T) {
 	myExampleChannels := []channeltypes.IdentifiedChannel{
+		// this is returned
 		{
 			State:    channeltypes.OPEN,
 			Ordering: channeltypes.ORDERED,
@@ -27,8 +28,21 @@ func TestIBCQuerier(t *testing.T) {
 			PortId:         "myPortID",
 			ChannelId:      "myChannelID",
 		},
+		// this is filtered out
 		{
 			State:    channeltypes.INIT,
+			Ordering: channeltypes.UNORDERED,
+			Counterparty: channeltypes.Counterparty{
+				PortId: "foobar",
+			},
+			ConnectionHops: []string{"one"},
+			Version:        "initversion",
+			PortId:         "initPortID",
+			ChannelId:      "initChannelID",
+		},
+		// this is returned
+		{
+			State:    channeltypes.OPEN,
 			Ordering: channeltypes.UNORDERED,
 			Counterparty: channeltypes.Counterparty{
 				PortId:    "otherCounterPartyPortID",
@@ -38,6 +52,19 @@ func TestIBCQuerier(t *testing.T) {
 			Version:        "otherVersion",
 			PortId:         "otherPortID",
 			ChannelId:      "otherChannelID",
+		},
+		// this is filtered out
+		{
+			State:    channeltypes.CLOSED,
+			Ordering: channeltypes.ORDERED,
+			Counterparty: channeltypes.Counterparty{
+				PortId:    "super",
+				ChannelId: "duper",
+			},
+			ConnectionHops: []string{"no-more"},
+			Version:        "closedVersion",
+			PortId:         "closedPortID",
+			ChannelId:      "closedChannelID",
 		},
 	}
 	specs := map[string]struct {
@@ -184,7 +211,7 @@ func TestIBCQuerier(t *testing.T) {
 			channelKeeper: &wasmtesting.MockChannelKeeper{
 				GetChannelFn: func(ctx sdk.Context, srcPort, srcChan string) (channel channeltypes.Channel, found bool) {
 					return channeltypes.Channel{
-						State:    channeltypes.INIT,
+						State:    channeltypes.OPEN,
 						Ordering: channeltypes.UNORDERED,
 						Counterparty: channeltypes.Counterparty{
 							PortId:    "counterPartyPortID",
@@ -210,6 +237,51 @@ func TestIBCQuerier(t *testing.T) {
     "connection_id": "one"
   }
 }`,
+		},
+		"query channel in init state": {
+			srcQuery: &wasmvmtypes.IBCQuery{
+				Channel: &wasmvmtypes.ChannelQuery{
+					PortID:    "myQueryPortID",
+					ChannelID: "myQueryChannelID",
+				},
+			},
+			channelKeeper: &wasmtesting.MockChannelKeeper{
+				GetChannelFn: func(ctx sdk.Context, srcPort, srcChan string) (channel channeltypes.Channel, found bool) {
+					return channeltypes.Channel{
+						State:    channeltypes.INIT,
+						Ordering: channeltypes.UNORDERED,
+						Counterparty: channeltypes.Counterparty{
+							PortId: "foobar",
+						},
+						ConnectionHops: []string{"one"},
+						Version:        "initversion",
+					}, true
+				},
+			},
+			expJsonResult: "{}",
+		},
+		"query channel in closed state": {
+			srcQuery: &wasmvmtypes.IBCQuery{
+				Channel: &wasmvmtypes.ChannelQuery{
+					PortID:    "myQueryPortID",
+					ChannelID: "myQueryChannelID",
+				},
+			},
+			channelKeeper: &wasmtesting.MockChannelKeeper{
+				GetChannelFn: func(ctx sdk.Context, srcPort, srcChan string) (channel channeltypes.Channel, found bool) {
+					return channeltypes.Channel{
+						State:    channeltypes.CLOSED,
+						Ordering: channeltypes.ORDERED,
+						Counterparty: channeltypes.Counterparty{
+							PortId:    "super",
+							ChannelId: "duper",
+						},
+						ConnectionHops: []string{"no-more"},
+						Version:        "closedVersion",
+					}, true
+				},
+			},
+			expJsonResult: "{}",
 		},
 		"query channel - empty result": {
 			srcQuery: &wasmvmtypes.IBCQuery{
