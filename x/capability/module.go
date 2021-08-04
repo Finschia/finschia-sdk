@@ -146,11 +146,8 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 // ConsensusVersion implements AppModule/ConsensusVersion.
 func (AppModule) ConsensusVersion() uint64 { return 1 }
 
-// BeginBlocker will call InitMemStore to initialize the memory stores in the case
-// that this is the first time the node is executing a block since restarting (wiping memory).
-// In this case, the BeginBlocker method will reinitialize the memory stores locally, so that subsequent
-// capability transactions will pass.
-// Otherwise BeginBlocker performs a no-op.
+// BeginBlocker calls InitMemStore to assert that the memory store is initialized.
+// It's safe to run multiple times.
 func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
 	defer telemetry.ModuleMeasureSince(types.ModuleName, time.Now(), telemetry.MetricKeyBeginBlocker)
 

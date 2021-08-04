@@ -13,14 +13,6 @@ import (
 	"github.com/line/lbm-sdk/x/capability/types"
 )
 
-// initialized is a global variable used by GetCapability to ensure that the memory store
-// and capability map are correctly populated. A state-synced node may copy over all the persistent
-// state and start running the application without having the in-memory state required for x/capability.
-// Thus, we must initialized the memory stores on-the-fly during tx execution once the first GetCapability
-// is called.
-// This is a temporary fix and should be replaced by a more robust solution in the next breaking release.
-var initialized = false
-
 type (
 	// Keeper defines the capability module's keeper. It is responsible for provisioning,
 	// tracking, and authenticating capabilities at runtime. During application
@@ -97,9 +89,9 @@ func (k *Keeper) ScopeToModule(moduleName string) ScopedKeeper {
 	}
 }
 
-// InitializeAndSeal seals the keeper to prevent further modules from creating
-// a scoped keeper. It also panics if the memory store is not of storetype `StoreTypeMemory`.
-func (k *Keeper) InitializeAndSeal(ctx sdk.Context) {
+// Seal seals the keeper to prevent further modules from creating a scoped keeper.
+// Seal may be called during app initialization for applications that do not wish to create scoped keepers dynamically.
+func (k *Keeper) Seal() {
 	if k.sealed {
 		panic("cannot initialize and seal an already sealed capability keeper")
 	}
@@ -113,15 +105,14 @@ func (k *Keeper) InitializeAndSeal(ctx sdk.Context) {
 // `BeginBlock` or `InitChain` - whichever is first). We need access to the store so we
 // can't initialize it in a constructor.
 func (k *Keeper) InitMemStore(ctx sdk.Context) {
-	// create context with no block gas meter to ensure we do not consume gas during local initialization logic.
-	noGasCtx := ctx.WithBlockGasMeter(sdk.NewInfiniteGasMeter())
-
-	memStore := noGasCtx.KVStore(k.memKey)
+	memStore := ctx.KVStore(k.memKey)
 	memStoreType := memStore.GetStoreType()
-
 	if memStoreType != sdk.StoreTypeMemory {
 		panic(fmt.Sprintf("invalid memory store type; got %s, expected: %s", memStoreType, sdk.StoreTypeMemory))
 	}
+
+	// create context with no block gas meter to ensure we do not consume gas during local initialization logic.
+	noGasCtx := ctx.WithBlockGasMeter(sdk.NewInfiniteGasMeter())
 
 	// check if memory store has not been initialized yet by checking if initialized flag is nil.
 	if !k.IsInitialized(noGasCtx) {
@@ -371,22 +362,6 @@ func (sk ScopedKeeper) ReleaseCapability(ctx sdk.Context, cap *types.Capability)
 // by name. The module is not allowed to retrieve capabilities which it does not
 // own.
 func (sk ScopedKeeper) GetCapability(ctx sdk.Context, name string) (*types.Capability, bool) {
-	// Create a keeper that will set all in-memory mappings correctly into memstore and capmap if scoped keeper is not initialized yet.
-	// This ensures that the in-memory mappings are correctly filled in, in case this is a state-synced node.
-	// This is a temporary non-breaking fix, a future PR should store the reverse mapping in the persistent store and reconstruct forward mapping and capmap on the fly.
-	if !initialized {
-		// create context with infinite gas meter to avoid app state mismatch.
-		initCtx := ctx.WithGasMeter(sdk.NewInfiniteGasMeter())
-		k := Keeper{
-			cdc:      sk.cdc,
-			storeKey: sk.storeKey,
-			memKey:   sk.memKey,
-			capMap:   sk.capMap,
-		}
-		k.InitializeAndSeal(initCtx)
-		initialized = true
-	}
-
 	if strings.TrimSpace(name) == "" {
 		return nil, false
 	}
