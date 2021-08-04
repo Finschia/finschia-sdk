@@ -99,8 +99,8 @@ func (k *Keeper) Seal() {
 	k.sealed = true
 }
 
-// InitMemStore will initialize the memory store if it hasn't been initialized yet.
-// The function is safe to be called multiple times.
+// InitMemStore will assure that the module store is a memory store (it will panic if it's not)
+// and willl initialize it. The function is safe to be called multiple times.
 // InitMemStore must be called every time the app starts before the keeper is used (so
 // `BeginBlock` or `InitChain` - whichever is first). We need access to the store so we
 // can't initialize it in a constructor.
@@ -137,7 +137,7 @@ func (k *Keeper) InitMemStore(ctx sdk.Context) {
 	}
 }
 
-// IsInitialized returns true if the keeper is properly initialized, and false otherwise
+// IsInitialized returns true if the keeper is properly initialized, and false otherwise.
 func (k *Keeper) IsInitialized(ctx sdk.Context) bool {
 	memStore := ctx.KVStore(k.memKey)
 	return memStore.Get(types.KeyMemInitialized) != nil
