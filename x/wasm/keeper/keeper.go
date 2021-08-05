@@ -122,7 +122,6 @@ func NewKeeper(
 		metrics:          NopMetrics(),
 		gasRegister:      NewDefaultWasmGasRegister(),
 	}
-
 	keeper.wasmVMQueryHandler = DefaultQueryPlugins(bankKeeper, stakingKeeper, distKeeper, channelKeeper, queryRouter, keeper).Merge(customPlugins)
 	for _, o := range opts {
 		o.apply(keeper)
@@ -237,16 +236,21 @@ func (k Keeper) create(ctx sdk.Context, creator sdk.AccAddress, wasmCode []byte,
 	}
 	ctx.GasMeter().ConsumeGas(k.compileCosts(ctx, len(wasmCode)), "Compiling WASM Bytecode")
 
-	codeHash, err := k.wasmVM.Create(wasmCode)
+	checksum, err := k.wasmVM.Create(wasmCode)
+	if err != nil {
+		return 0, sdkerrors.Wrap(types.ErrCreateFailed, err.Error())
+	}
+	report, err := k.wasmVM.AnalyzeCode(checksum)
 	if err != nil {
 		return 0, sdkerrors.Wrap(types.ErrCreateFailed, err.Error())
 	}
 	codeID = k.autoIncrementID(ctx, types.KeyLastCodeID)
+	k.Logger(ctx).Debug("storing new contract", "features", report.RequiredFeatures, "code_id", codeID)
 	if instantiateAccess == nil {
 		defaultAccessConfig := k.getInstantiateAccessConfig(ctx).With(creator)
 		instantiateAccess = &defaultAccessConfig
 	}
-	codeInfo := types.NewCodeInfo(codeHash, creator, *instantiateAccess)
+	codeInfo := types.NewCodeInfo(checksum, creator, *instantiateAccess)
 	k.storeCodeInfo(ctx, codeID, codeInfo)
 	return codeID, nil
 }
