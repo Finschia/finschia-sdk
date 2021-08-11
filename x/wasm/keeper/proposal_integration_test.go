@@ -121,8 +121,8 @@ func TestInstantiateProposal(t *testing.T) {
 	assert.Equal(t, expHistory, wasmKeeper.GetContractHistory(ctx, sdk.AccAddress(contractAddr)))
 	// and event
 	require.Len(t, em.Events(), 3, "%#v", em.Events())
-	require.Equal(t, types.WasmModuleEventType, em.Events()[0].Type)
-	require.Equal(t, types.EventTypeInstantiate, em.Events()[1].Type)
+	require.Equal(t, types.EventTypeInstantiate, em.Events()[0].Type)
+	require.Equal(t, types.WasmModuleEventType, em.Events()[1].Type)
 	require.Equal(t, types.EventTypeGovContractResult, em.Events()[2].Type)
 	require.Len(t, em.Events()[0].Attributes, 2)
 	require.Len(t, em.Events()[1].Attributes, 2)

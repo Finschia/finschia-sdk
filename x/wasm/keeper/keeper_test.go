@@ -314,10 +314,10 @@ func TestInstantiate(t *testing.T) {
 
 	// and events emitted
 	expEvt := sdk.Events{
-		sdk.NewEvent("wasm",
-			sdk.NewAttribute("_contract_address", gotContractAddr.String()), sdk.NewAttribute("Let the", "hacking begin")),
 		sdk.NewEvent("instantiate",
 			sdk.NewAttribute("_contract_address", gotContractAddr.String()), sdk.NewAttribute("code_id", "1")),
+		sdk.NewEvent("wasm",
+			sdk.NewAttribute("_contract_address", gotContractAddr.String()), sdk.NewAttribute("Let the", "hacking begin")),
 	}
 	assert.Equal(t, expEvt, em.Events())
 }
@@ -551,10 +551,10 @@ func TestExecute(t *testing.T) {
 	assert.Equal(t, sdk.Coins(nil), bankKeeper.GetAllBalances(ctx, contractAcct.GetAddress()))
 
 	// and events emitted
-	require.Len(t, em.Events(), 7)
+	require.Len(t, em.Events(), 5)
 	expEvt := sdk.NewEvent("execute",
 		sdk.NewAttribute("_contract_address", addr.String()))
-	assert.Equal(t, expEvt, em.Events()[6])
+	assert.Equal(t, expEvt, em.Events()[1])
 
 	t.Logf("Duration: %v (%d gas)\n", diff, gasAfter-gasBefore)
 }
@@ -1078,6 +1078,13 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 	type dict map[string]interface{}
 	expEvents := []dict{
 		{
+			"Type": "migrate",
+			"Attr": []dict{
+				{"code_id": "2"},
+				{"_contract_address": contractAddr},
+			},
+		},
+		{
 			"Type": "wasm",
 			"Attr": []dict{
 				{"_contract_address": contractAddr},
@@ -1091,25 +1098,6 @@ func TestMigrateWithDispatchedMessage(t *testing.T) {
 				{"recipient": myPayoutAddr},
 				{"sender": contractAddr},
 				{"amount": "100000denom"},
-			},
-		},
-		{
-			"Type": "message",
-			"Attr": []dict{
-				{"sender": contractAddr},
-			},
-		},
-		{
-			"Type": "message",
-			"Attr": []dict{
-				{"module": "bank"},
-			},
-		},
-		{
-			"Type": "migrate",
-			"Attr": []dict{
-				{"code_id": "2"},
-				{"_contract_address": contractAddr},
 			},
 		},
 	}
@@ -1300,10 +1288,10 @@ func TestSudo(t *testing.T) {
 	balance := bankKeeper.GetBalance(ctx, comAcct.GetAddress(), "denom")
 	assert.Equal(t, sdk.NewInt64Coin("denom", 76543), balance)
 	// and events emitted
-	require.Len(t, em.Events(), 4)
+	require.Len(t, em.Events(), 2)
 	expEvt := sdk.NewEvent("sudo",
 		sdk.NewAttribute("_contract_address", addr.String()))
-	assert.Equal(t, expEvt, em.Events()[3])
+	assert.Equal(t, expEvt, em.Events()[0])
 
 }
 
@@ -1788,6 +1776,7 @@ func TestNewDefaultWasmVMContractResponseHandler(t *testing.T) {
 		setup   func(m *wasmtesting.MockMsgDispatcher)
 		expErr  bool
 		expData []byte
+		expEvts sdk.Events
 	}{
 		"submessage overwrites result when set": {
 			srcData: []byte("otherData"),
@@ -1798,6 +1787,7 @@ func TestNewDefaultWasmVMContractResponseHandler(t *testing.T) {
 			},
 			expErr:  false,
 			expData: []byte("mySubMsgData"),
+			expEvts: sdk.Events{},
 		},
 		"submessage overwrites result when empty": {
 			srcData: []byte("otherData"),
@@ -1808,6 +1798,7 @@ func TestNewDefaultWasmVMContractResponseHandler(t *testing.T) {
 			},
 			expErr:  false,
 			expData: []byte(""),
+			expEvts: sdk.Events{},
 		},
 		"submessage do not overwrite result when nil": {
 			srcData: []byte("otherData"),
@@ -1818,6 +1809,7 @@ func TestNewDefaultWasmVMContractResponseHandler(t *testing.T) {
 			},
 			expErr:  false,
 			expData: []byte("otherData"),
+			expEvts: sdk.Events{},
 		},
 		"submessage error aborts process": {
 			setup: func(m *wasmtesting.MockMsgDispatcher) {
@@ -1826,6 +1818,24 @@ func TestNewDefaultWasmVMContractResponseHandler(t *testing.T) {
 				}
 			},
 			expErr: true,
+		},
+		"message events filtered out": {
+			setup: func(m *wasmtesting.MockMsgDispatcher) {
+				m.DispatchSubmessagesFn = func(ctx sdk.Context, contractAddr sdk.AccAddress, ibcPort string, msgs []wasmvmtypes.SubMsg) ([]byte, error) {
+					ctx.EventManager().EmitEvent(sdk.NewEvent(sdk.EventTypeMessage))
+					return nil, nil
+				}
+			},
+			expEvts: sdk.Events{},
+		},
+		"message emit non message events": {
+			setup: func(m *wasmtesting.MockMsgDispatcher) {
+				m.DispatchSubmessagesFn = func(ctx sdk.Context, contractAddr sdk.AccAddress, ibcPort string, msgs []wasmvmtypes.SubMsg) ([]byte, error) {
+					ctx.EventManager().EmitEvent(sdk.NewEvent("myEvent"))
+					return nil, nil
+				}
+			},
+			expEvts: sdk.Events{sdk.NewEvent("myEvent")},
 		},
 	}
 	for name, spec := range specs {
@@ -1836,15 +1846,17 @@ func TestNewDefaultWasmVMContractResponseHandler(t *testing.T) {
 			var mock wasmtesting.MockMsgDispatcher
 			spec.setup(&mock)
 			d := NewDefaultWasmVMContractResponseHandler(&mock)
-			// when
+			em := sdk.NewEventManager()
 
-			gotData, gotErr := d.Handle(sdk.Context{}, RandomAccountAddress(t), "ibc-port", msgs, spec.srcData)
+			// when
+			gotData, gotErr := d.Handle(sdk.Context{}.WithEventManager(em), RandomAccountAddress(t), "ibc-port", msgs, spec.srcData)
 			if spec.expErr {
 				require.Error(t, gotErr)
 				return
 			}
 			require.NoError(t, gotErr)
 			assert.Equal(t, spec.expData, gotData)
+			assert.Equal(t, spec.expEvts, em.Events())
 		})
 	}
 }
