@@ -229,6 +229,10 @@ func (k Keeper) setParams(ctx sdk.Context, ps types.Params) {
 }
 
 func (k Keeper) create(ctx sdk.Context, creator sdk.AccAddress, wasmCode []byte, instantiateAccess *types.AccessConfig, authZ AuthorizationPolicy) (codeID uint64, err error) {
+	if creator == "" {
+		return 0, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "cannot be empty")
+	}
+
 	if !authZ.CanCreateCode(k.getUploadAccessConfig(ctx), creator) {
 		return 0, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "can not create code")
 	}
@@ -557,7 +561,6 @@ func (k Keeper) Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte
 }
 
 // reply is only called from keeper internal functions (dispatchSubmessages) after processing the submessage
-// it
 func (k Keeper) reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply wasmvmtypes.Reply) ([]byte, error) {
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {

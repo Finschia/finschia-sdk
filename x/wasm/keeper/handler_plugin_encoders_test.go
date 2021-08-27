@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"encoding/json"
+	"testing"
+
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -10,7 +12,6 @@ import (
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	"github.com/golang/protobuf/proto"
 	"github.com/stretchr/testify/assert"
-	"testing"
 
 	"github.com/line/lbm-sdk/x/wasm/types"
 	wasmvmtypes "github.com/line/wasmvm/types"

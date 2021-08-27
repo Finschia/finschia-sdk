@@ -2,6 +2,8 @@ package keeper
 
 import (
 	"encoding/json"
+	"testing"
+
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/x/wasm/types"
 	wasmvm "github.com/line/wasmvm"
@@ -14,9 +16,9 @@ import (
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
+
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"testing"
 )
 
 func TestMessageHandlerChainDispatch(t *testing.T) {
