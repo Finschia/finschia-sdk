@@ -12,7 +12,7 @@ import "ibc/core/client/v1/client.proto";
 import "ibc/core/commitment/v1/commitment.proto";
 import "gogoproto/gogo.proto";
 
-// ClientState from Tendermint tracks the current validator set, latest height,
+// ClientState from Ostracon tracks the current validator set, latest height,
 // and a possible frozen height.
 message ClientState {
   option (gogoproto.goproto_getters) = false;
@@ -57,7 +57,7 @@ message ClientState {
   bool allow_update_after_misbehaviour = 11 [(gogoproto.moretags) = "yaml:\"allow_update_after_misbehaviour\""];
 }
 
-// ConsensusState defines the consensus state from Tendermint.
+// ConsensusState defines the consensus state from Ostracon.
 message ConsensusState {
   option (gogoproto.goproto_getters) = false;
 
@@ -82,9 +82,9 @@ message Misbehaviour {
   Header header_2  = 3 [(gogoproto.customname) = "Header2", (gogoproto.moretags) = "yaml:\"header_2\""];
 }
 
-// Header defines the Tendermint client consensus Header.
+// Header defines the Ostracon client consensus Header.
 // It encapsulates all the information necessary to update from a trusted
-// Tendermint ConsensusState. The inclusion of TrustedHeight and
+// Ostracon ConsensusState. The inclusion of TrustedHeight and
 // TrustedValidators allows this update to process correctly, so long as the
 // ConsensusState for the TrustedHeight exists, this removes race conditions
 // among relayers The SignedHeader and ValidatorSet are the new untrusted update
@@ -98,10 +98,12 @@ message Header {
   .ostracon.types.SignedHeader signed_header = 1
       [(gogoproto.embed) = true, (gogoproto.moretags) = "yaml:\"signed_header\""];
 
-  .ostracon.types.ValidatorSet validator_set  = 2 [(gogoproto.moretags) = "yaml:\"validator_set\""];
-  ibc.core.client.v1.Height    trusted_height = 3
+  .ostracon.types.ValidatorSet validator_set = 2 [(gogoproto.moretags) = "yaml:\"validator_set\""];
+  .ostracon.types.VoterSet voter_set         = 3 [(gogoproto.moretags) = "yaml:\"voter_set\""];
+  ibc.core.client.v1.Height trusted_height   = 4
       [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"trusted_height\""];
-  .ostracon.types.ValidatorSet trusted_validators = 4 [(gogoproto.moretags) = "yaml:\"trusted_validators\""];
+  .ostracon.types.ValidatorSet trusted_validators = 5 [(gogoproto.moretags) = "yaml:\"trusted_validators\""];
+  .ostracon.types.VoterSet trusted_voters    = 6 [(gogoproto.moretags) = "yaml:\"trusted_voters\""];
 }
 
 // Fraction defines the protobuf message type for tmmath.Fraction that only supports positive values.

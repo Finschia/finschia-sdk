@@ -71,7 +71,7 @@ func (vals mockValidators) randomProposer(r *rand.Rand) ostbytes.HexBytes {
 	key := keys[r.Intn(len(keys))]
 
 	proposer := vals[key].val
-	pk, err := cryptoenc.PubKeyFromProto(proposer.PubKey)
+	pk, err := cryptoenc.PubKeyFromProto(&proposer.PubKey)
 	if err != nil { //nolint:wsl
 		panic(err)
 	}
@@ -79,7 +79,7 @@ func (vals mockValidators) randomProposer(r *rand.Rand) ostbytes.HexBytes {
 	return pk.Address()
 }
 
-// updateValidators mimics Tendermint's update logic.
+// updateValidators mimics Ostracon's update logic.
 func updateValidators(
 	tb testing.TB,
 	r *rand.Rand,
@@ -151,7 +151,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 			event("begin_block", "signing", "missed")
 		}
 
-		pubkey, err := cryptoenc.PubKeyFromProto(mVal.val.PubKey)
+		pubkey, err := cryptoenc.PubKeyFromProto(&mVal.val.PubKey)
 		if err != nil {
 			panic(err)
 		}
@@ -161,6 +161,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 				Address: pubkey.Address(),
 				Power:   mVal.val.Power,
 			},
+			VotingPower: mVal.val.Power,
 			SignedLastBlock: signed,
 		}
 	}
@@ -184,7 +185,7 @@ func RandomRequestBeginBlock(r *rand.Rand, params Params,
 		vals := voteInfos
 
 		if r.Float64() < params.PastEvidenceFraction() && header.Height > 1 {
-			height = int64(r.Intn(int(header.Height)-1)) + 1 // Tendermint starts at height 1
+			height = int64(r.Intn(int(header.Height)-1)) + 1 // Ostracon starts at height 1
 			// array indices offset by one
 			time = pastTimes[height-1]
 			vals = pastVoteInfos[height-1]

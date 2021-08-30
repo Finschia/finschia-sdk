@@ -104,19 +104,19 @@ func checkValidity(
 		)
 	}
 
-	tmTrustedValidators, err := osttypes.ValidatorSetFromProto(header.TrustedValidators)
+	ocTrustedValidators, err := osttypes.ValidatorSetFromProto(header.TrustedValidators)
 	if err != nil {
-		return sdkerrors.Wrap(err, "trusted validator set in not tendermint validator set type")
+		return sdkerrors.Wrap(err, "trusted validator set in not ostracon validator set type")
 	}
 
-	tmSignedHeader, err := osttypes.SignedHeaderFromProto(header.SignedHeader)
+	ocSignedHeader, err := osttypes.SignedHeaderFromProto(header.SignedHeader)
 	if err != nil {
-		return sdkerrors.Wrap(err, "signed header in not tendermint signed header type")
+		return sdkerrors.Wrap(err, "signed header in not ostracon signed header type")
 	}
 
-	tmValidatorSet, err := osttypes.ValidatorSetFromProto(header.ValidatorSet)
+	ocValidatorSet, err := osttypes.ValidatorSetFromProto(header.ValidatorSet)
 	if err != nil {
-		return sdkerrors.Wrap(err, "validator set in not tendermint validator set type")
+		return sdkerrors.Wrap(err, "validator set in not ostracon validator set type")
 	}
 
 	// assert header height is newer than consensus state
@@ -157,7 +157,7 @@ func checkValidity(
 	// - assert that a TrustLevel proportion of TrustedValidators signed new Commit
 	err = light.Verify(
 		&signedHeader,
-		tmTrustedValidators, tmSignedHeader, tmValidatorSet,
+		ocTrustedValidators, ocSignedHeader, ocValidatorSet,
 		clientState.TrustingPeriod, currentTimestamp, clientState.MaxClockDrift, clientState.TrustLevel.ToTendermint(),
 	)
 	if err != nil {

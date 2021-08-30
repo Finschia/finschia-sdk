@@ -133,7 +133,7 @@ func validCommit(chainID string, blockID osttypes.BlockID, commit *ostproto.Comm
 		return sdkerrors.Wrap(err, "validator set is not tendermint validator set type")
 	}
 
-	if err := tmValset.VerifyCommitLight(chainID, blockID, tmCommit.Height, tmCommit); err != nil {
+	if err := tmValset.VerifyCommit(chainID, blockID, tmCommit.Height, tmCommit); err != nil {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidMisbehaviour, "validator set did not commit to header")
 	}
 

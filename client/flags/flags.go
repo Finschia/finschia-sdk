@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	ostcli "github.com/line/ostracon/libs/cli"
+	"github.com/line/ostracon/privval"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lfb-sdk/crypto/keyring"
@@ -70,10 +71,12 @@ const (
 	FlagCountTotal       = "count-total"
 	FlagTimeoutHeight    = "timeout-height"
 	FlagKeyAlgorithm     = "algo"
+	FlagPrivKeyType      = "priv_key_type"
 
 	// Tendermint logging flags
-	FlagLogLevel  = "log_level"
-	FlagLogFormat = "log_format"
+	FlagLogLevel       = "log_level"
+	FlagLogFormat      = "log_format"
+	DefaultPrivKeyType = privval.PrivKeyTypeEd25519
 )
 
 // LineBreak can be included in a command list to provide a blank line
@@ -112,6 +115,8 @@ func AddTxFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().String(FlagKeyringBackend, DefaultKeyringBackend, "Select keyring's backend (os|file|kwallet|pass|test)")
 	cmd.Flags().String(FlagSignMode, "", "Choose sign mode (direct|amino-json), this is an advanced feature")
 	cmd.Flags().Uint64(FlagTimeoutHeight, 0, "Set a block timeout height to prevent the tx from being committed past a certain height")
+	cmd.Flags().String(FlagPrivKeyType, DefaultPrivKeyType, "specify validator's private key type (ed25519|composite). \n"+
+		"set this to priv_key.type in priv_validator_key.json; default `ed25519`")
 
 	// --gas can accept integers and "auto"
 	cmd.Flags().String(FlagGas, "", fmt.Sprintf("gas limit to set per-transaction; set to %q to calculate sufficient gas automatically (default %d)", GasFlagAuto, DefaultGasLimit))

@@ -45,6 +45,7 @@ func TestBeginBlocker(t *testing.T) {
 		LastCommitInfo: abci.LastCommitInfo{
 			Votes: []abci.VoteInfo{{
 				Validator:       val,
+				VotingPower:     val.Power,
 				SignedLastBlock: true,
 			}},
 		},

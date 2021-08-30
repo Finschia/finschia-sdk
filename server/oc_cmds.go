@@ -19,7 +19,7 @@ import (
 	sdk "github.com/line/lfb-sdk/types"
 )
 
-// ShowNodeIDCmd - ported from Tendermint, dump node ID to stdout
+// ShowNodeIDCmd - ported from Ostracon, dump node ID to stdout
 func ShowNodeIDCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "show-node-id",
@@ -39,7 +39,7 @@ func ShowNodeIDCmd() *cobra.Command {
 	}
 }
 
-// ShowValidatorCmd - ported from Tendermint, show this node's validator info
+// ShowValidatorCmd - ported from Ostracon, show this node's validator info
 func ShowValidatorCmd() *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "show-validator",
@@ -113,12 +113,12 @@ against which this app has been compiled.
 `,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			bs, err := yaml.Marshal(&struct {
-				Tendermint    string
+				Ostracon      string
 				ABCI          string
 				BlockProtocol uint64
 				P2PProtocol   uint64
 			}{
-				Tendermint:    ostversion.TMCoreSemVer,
+				Ostracon:      ostversion.OCCoreSemVer,
 				ABCI:          ostversion.ABCIVersion,
 				BlockProtocol: ostversion.BlockProtocol,
 				P2PProtocol:   ostversion.P2PProtocol,
@@ -155,7 +155,8 @@ func UnsafeResetAllCmd() *cobra.Command {
 			serverCtx := GetServerContextFromCmd(cmd)
 			cfg := serverCtx.Config
 
-			ostcmd.ResetAll(cfg.DBDir(), cfg.P2P.AddrBookFile(), cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), serverCtx.Logger)
+			ostcmd.ResetAll(cfg.DBDir(), cfg.P2P.AddrBookFile(), cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(),
+				cfg.PrivKeyType, serverCtx.Logger)
 			return nil
 		},
 	}
