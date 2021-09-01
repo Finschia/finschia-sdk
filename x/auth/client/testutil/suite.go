@@ -30,7 +30,6 @@ import (
 	"github.com/line/lbm-sdk/types/tx"
 	"github.com/line/lbm-sdk/types/tx/signing"
 	authcli "github.com/line/lbm-sdk/x/auth/client/cli"
-	authrest "github.com/line/lbm-sdk/x/auth/client/rest"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	bankcli "github.com/line/lbm-sdk/x/bank/client/testutil"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
@@ -227,7 +226,7 @@ func (s *IntegrationTestSuite) TestCLISignAminoJSON() {
 		"--amino=true", signModeAminoFlag)
 	require.NoError(err)
 
-	var txAmino authrest.BroadcastReq
+	var txAmino authcli.BroadcastReq
 	err = val1.ClientCtx.LegacyAmino.UnmarshalJSON(res.Bytes(), &txAmino)
 	require.NoError(err)
 	require.Len(txAmino.Tx.Signatures, 2)
@@ -446,7 +445,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	// Query the tx by hash to get the inner tx.
-	out, err = clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.QueryTxCmd(), []string{txRes.TxHash, fmt.Sprintf("--%s=json", tmcli.OutputFlag)})
+	out, err = clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.QueryTxCmd(), []string{txRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)})
 	s.Require().NoError(err)
 	s.Require().NoError(val.ClientCtx.Codec.UnmarshalJSON(out.Bytes(), &txRes))
 
@@ -460,7 +459,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 			[]string{
 				fmt.Sprintf("--events=tx.fee=%s",
 					sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 		},
@@ -469,7 +468,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxsCmdByEvents() {
 			[]string{
 				fmt.Sprintf("--events=tx.fee=%s",
 					sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(0))).String()),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			true,
 		},

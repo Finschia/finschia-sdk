@@ -10,7 +10,6 @@ import (
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
-	"github.com/line/lbm-sdk/x/auth/client/rest"
 )
 
 const (
@@ -263,7 +262,7 @@ func makeSignCmd() func(cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return err
 			}
-			req := rest.BroadcastReq{
+			req := BroadcastReq{
 				Tx:   stdTx,
 				Mode: "block|sync|async",
 			}

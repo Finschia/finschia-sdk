@@ -132,7 +132,7 @@ func TestAminoCodecFullDecodeAndEncode(t *testing.T) {
 	require.Equal(t, string(marshaledTx), txSigned)
 
 	// Marshalling/unmarshalling the tx wrapped in a struct should work.
-	txRequest := &rest.BroadcastReq{
+	txRequest := &cli.BroadcastReq{
 		Mode: "block",
 		Tx:   tx,
 	}

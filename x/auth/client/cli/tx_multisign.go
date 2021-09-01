@@ -20,9 +20,15 @@ import (
 	signingtypes "github.com/line/lbm-sdk/types/tx/signing"
 	"github.com/line/lbm-sdk/version"
 	authclient "github.com/line/lbm-sdk/x/auth/client"
-	"github.com/line/lbm-sdk/x/auth/client/rest"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	"github.com/line/lbm-sdk/x/auth/signing"
 )
+
+// BroadcastReq defines a tx broadcasting request.
+type BroadcastReq struct {
+	Tx   legacytx.StdTx `json:"tx" yaml:"tx"`
+	Mode string         `json:"mode" yaml:"mode"`
+}
 
 // GetSignCommand returns the sign command
 func GetMultiSignCommand() *cobra.Command {
@@ -155,7 +161,7 @@ func makeMultiSignCmd() func(cmd *cobra.Command, args []string) (err error) {
 				return err
 			}
 
-			req := rest.BroadcastReq{
+			req := BroadcastReq{
 				Tx:   stdTx,
 				Mode: "block|sync|async",
 			}
@@ -338,7 +344,7 @@ func makeBatchMultisignCmd() func(cmd *cobra.Command, args []string) error {
 					return err
 				}
 
-				req := rest.BroadcastReq{
+				req := BroadcastReq{
 					Tx:   stdTx,
 					Mode: "block|sync|async",
 				}
