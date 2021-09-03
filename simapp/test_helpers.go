@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strconv"
 	"testing"
 	"time"
@@ -102,8 +103,9 @@ func SetupWithGenesisValSet(t *testing.T, valSet *osttypes.ValidatorSet, genAccs
 		require.NoError(t, err)
 		pkAny, err := codectypes.NewAnyWithValue(pk)
 		require.NoError(t, err)
+		valAddr := sdk.BytesToValAddress(val.Address)
 		validator := stakingtypes.Validator{
-			OperatorAddress:   sdk.ValAddress(val.Address).String(),
+			OperatorAddress:   valAddr.String(),
 			ConsensusPubkey:   pkAny,
 			Jailed:            false,
 			Status:            stakingtypes.Bonded,
@@ -116,7 +118,7 @@ func SetupWithGenesisValSet(t *testing.T, valSet *osttypes.ValidatorSet, genAccs
 			MinSelfDelegation: sdk.ZeroInt(),
 		}
 		validators = append(validators, validator)
-		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), val.Address.Bytes(), sdk.OneDec()))
+		delegations = append(delegations, stakingtypes.NewDelegation(genAccs[0].GetAddress(), valAddr, sdk.OneDec()))
 
 	}
 
@@ -199,7 +201,7 @@ func createRandomAccounts(accNum int) []sdk.AccAddress {
 	testAddrs := make([]sdk.AccAddress, accNum)
 	for i := 0; i < accNum; i++ {
 		pk := ed25519.GenPrivKey().PubKey()
-		testAddrs[i] = sdk.AccAddress(pk.Address())
+		testAddrs[i] = sdk.BytesToAccAddress(pk.Address())
 	}
 
 	return testAddrs
@@ -235,7 +237,7 @@ func AddTestAddrsFromPubKeys(app *SimApp, ctx sdk.Context, pubKeys []cryptotypes
 
 	// fill all the addresses with some coins, set the loose pool tokens simultaneously
 	for _, pubKey := range pubKeys {
-		saveAccount(app, ctx, sdk.AccAddress(pubKey.Address()), initCoins)
+		saveAccount(app, ctx, sdk.BytesToAccAddress(pubKey.Address()), initCoins)
 	}
 }
 
@@ -244,6 +246,51 @@ func setTotalSupply(app *SimApp, ctx sdk.Context, accAmt sdk.Int, totalAccounts 
 	totalSupply := sdk.NewCoins(sdk.NewCoin(app.StakingKeeper.BondDenom(ctx), accAmt.MulRaw(int64(totalAccounts))))
 	prevSupply := app.BankKeeper.GetSupply(ctx)
 	app.BankKeeper.SetSupply(ctx, banktypes.NewSupply(prevSupply.GetTotal().Add(totalSupply...)))
+}
+
+// SortAddresses - Sorts Addresses
+func SortAddresses(addrs []sdk.AccAddress) {
+	byteAddrs := make([][]byte, len(addrs))
+
+	for i, addr := range addrs {
+		byteAddrs[i] = addr.Bytes()
+	}
+
+	SortByteArrays(byteAddrs)
+
+	for i, byteAddr := range byteAddrs {
+		addrs[i] = sdk.AccAddress(string(byteAddr))
+	}
+}
+
+// implement `Interface` in sort package.
+type sortByteArrays [][]byte
+
+func (b sortByteArrays) Len() int {
+	return len(b)
+}
+
+func (b sortByteArrays) Less(i, j int) bool {
+	// bytes package already implements Comparable for []byte.
+	switch bytes.Compare(b[i], b[j]) {
+	case -1:
+		return true
+	case 0, 1:
+		return false
+	default:
+		panic("not fail-able with `bytes.Comparable` bounded [-1, 1].")
+	}
+}
+
+func (b sortByteArrays) Swap(i, j int) {
+	b[j], b[i] = b[i], b[j]
+}
+
+// SortByteArrays - sorts the provided byte array
+func SortByteArrays(src [][]byte) [][]byte {
+	sorted := sortByteArrays(src)
+	sort.Sort(sorted)
+	return sorted
 }
 
 // AddTestAddrs constructs and returns accNum amount of accounts with an
@@ -269,6 +316,7 @@ func addTestAddrs(app *SimApp, ctx sdk.Context, accNum int, accAmt sdk.Int, stra
 		saveAccount(app, ctx, addr, initCoins)
 	}
 
+	SortAddresses(testAddrs)
 	return testAddrs
 }
 
@@ -287,7 +335,7 @@ func ConvertAddrsToValAddrs(addrs []sdk.AccAddress) []sdk.ValAddress {
 	valAddrs := make([]sdk.ValAddress, len(addrs))
 
 	for i, addr := range addrs {
-		valAddrs[i] = sdk.ValAddress(addr)
+		valAddrs[i] = addr.ToValAddress()
 	}
 
 	return valAddrs
@@ -296,19 +344,19 @@ func ConvertAddrsToValAddrs(addrs []sdk.AccAddress) []sdk.ValAddress {
 func TestAddr(addr string, bech string) (sdk.AccAddress, error) {
 	res, err := sdk.AccAddressFromHex(addr)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	bechexpected := res.String()
 	if bech != bechexpected {
-		return nil, fmt.Errorf("bech encoding doesn't match reference")
+		return "", fmt.Errorf("bech encoding doesn't match reference")
 	}
 
-	bechres, err := sdk.AccAddressFromBech32(bech)
+	err = sdk.ValidateAccAddress(bech)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	if !bytes.Equal(bechres, res) {
-		return nil, err
+	if !sdk.AccAddress(bech).Equals(res) {
+		return "", err
 	}
 
 	return res, nil

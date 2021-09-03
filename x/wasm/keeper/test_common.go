@@ -364,11 +364,12 @@ func TestHandler(k types.ContractOpsKeeper) sdk.Handler {
 }
 
 func handleStoreCode(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgStoreCode) (*sdk.Result, error) {
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	codeID, err := k.Create(ctx, senderAddr, msg.WASMByteCode, msg.Source, msg.Builder, msg.InstantiatePermission)
+	codeID, err := k.Create(ctx, sdk.AccAddress(msg.Sender), msg.WASMByteCode, msg.Source, msg.Builder,
+		msg.InstantiatePermission)
 	if err != nil {
 		return nil, err
 	}
@@ -380,38 +381,38 @@ func handleStoreCode(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgS
 }
 
 func handleInstantiate(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgInstantiateContract) (*sdk.Result, error) {
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	var adminAddr sdk.AccAddress
 	if msg.Admin != "" {
-		if adminAddr, err = sdk.AccAddressFromBech32(msg.Admin); err != nil {
+		if err = sdk.ValidateAccAddress(msg.Admin); err != nil {
 			return nil, sdkerrors.Wrap(err, "admin")
 		}
 	}
 
-	contractAddr, _, err := k.Instantiate(ctx, msg.CodeID, senderAddr, adminAddr, msg.InitMsg, msg.Label, msg.Funds)
+	contractAddr, _, err := k.Instantiate(ctx, msg.CodeID, sdk.AccAddress(msg.Sender), sdk.AccAddress(msg.Admin),
+		msg.InitMsg, msg.Label, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
 
 	return &sdk.Result{
-		Data:   contractAddr,
+		Data:   contractAddr.Bytes(),
 		Events: ctx.EventManager().Events().ToABCIEvents(),
 	}, nil
 }
 
 func handleExecute(ctx sdk.Context, k types.ContractOpsKeeper, msg *types.MsgExecuteContract) (*sdk.Result, error) {
-	senderAddr, err := sdk.AccAddressFromBech32(msg.Sender)
+	err := sdk.ValidateAccAddress(msg.Sender)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "sender")
 	}
-	contractAddr, err := sdk.AccAddressFromBech32(msg.Contract)
+	err = sdk.ValidateAccAddress(msg.Contract)
 	if err != nil {
 		return nil, sdkerrors.Wrap(err, "admin")
 	}
-	res, err := k.Execute(ctx, contractAddr, senderAddr, msg.Msg, msg.Funds)
+	res, err := k.Execute(ctx, sdk.AccAddress(msg.Contract), sdk.AccAddress(msg.Sender), msg.Msg, msg.Funds)
 	if err != nil {
 		return nil, err
 	}
@@ -623,6 +624,6 @@ func keyPubAddr() (crypto.PrivKey, crypto.PubKey, sdk.AccAddress) {
 
 	key := ed25519.GenPrivKeyFromSecret(seed)
 	pub := key.PubKey()
-	addr := sdk.AccAddress(pub.Address())
+	addr := sdk.BytesToAccAddress(pub.Address())
 	return key, pub, addr
 }

@@ -63,10 +63,7 @@ func InitGenesis(
 	}
 
 	for _, delegation := range data.Delegations {
-		delegatorAddress, err := sdk.AccAddressFromBech32(delegation.DelegatorAddress)
-		if err != nil {
-			panic(err)
-		}
+		delegatorAddress := sdk.AccAddress(delegation.DelegatorAddress)
 
 		// Call the before-creation hook if not exported
 		if !data.Exported {
@@ -132,10 +129,7 @@ func InitGenesis(
 	// don't need to run Tendermint updates if we exported
 	if data.Exported {
 		for _, lv := range data.LastValidatorPowers {
-			valAddr, err := sdk.ValAddressFromBech32(lv.Address)
-			if err != nil {
-				panic(err)
-			}
+			valAddr := sdk.ValAddress(lv.Address)
 			keeper.SetLastValidatorPower(ctx, valAddr, lv.Power)
 			validator, found := keeper.GetValidator(ctx, valAddr)
 
@@ -208,7 +202,7 @@ func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []osttypes.Gen
 		}
 
 		vals = append(vals, osttypes.GenesisValidator{
-			Address: sdk.ConsAddress(tmPk.Address()).Bytes(),
+			Address: tmPk.Address(),
 			PubKey:  tmPk,
 			Power:   validator.GetConsensusPower(),
 			Name:    validator.GetMoniker(),

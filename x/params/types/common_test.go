@@ -14,7 +14,7 @@ var (
 	keyMaxValidators = []byte("MaxValidators")
 	keyBondDenom     = []byte("BondDenom")
 
-	key  = sdk.NewKVStoreKey("storekey")
+	key = sdk.NewKVStoreKey("storekey")
 )
 
 type params struct {

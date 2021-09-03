@@ -960,11 +960,12 @@ func TestGetBroadcastCommand_WithoutOfflineFlag(t *testing.T) {
 	// Create new file with tx
 	builder := txCfg.NewTxBuilder()
 	builder.SetGasLimit(200000)
-	from, err := sdk.AccAddressFromBech32("link1xpesesq0zddk2ersedyezgtywr0q92a34ddfku")
+	fromBytes, err := sdk.AccAddressToBytes("link1xpesesq0zddk2ersedyezgtywr0q92a34ddfku")
 	require.NoError(t, err)
-	to, err := sdk.AccAddressFromBech32("link1xpesesq0zddk2ersedyezgtywr0q92a34ddfku")
+	toBytes, err := sdk.AccAddressToBytes("link1xpesesq0zddk2ersedyezgtywr0q92a34ddfku")
 	require.NoError(t, err)
-	err = builder.SetMsgs(banktypes.NewMsgSend(from, to, sdk.Coins{sdk.NewInt64Coin("stake", 10000)}))
+	err = builder.SetMsgs(banktypes.NewMsgSend(sdk.BytesToAccAddress(fromBytes),
+		sdk.BytesToAccAddress(toBytes), sdk.Coins{sdk.NewInt64Coin("stake", 10000)}))
 	require.NoError(t, err)
 	txContents, err := txCfg.TxJSONEncoder()(builder.GetTx())
 	require.NoError(t, err)
@@ -1202,7 +1203,7 @@ func (s *IntegrationTestSuite) TestNewEmptyTxCmd() {
 		},
 		{
 			"no from",
-			sdk.AccAddress{},
+			sdk.AccAddress(""),
 			[]string{
 				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),

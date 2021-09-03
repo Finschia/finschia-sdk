@@ -98,7 +98,9 @@ func (v Validators) Len() int {
 
 // Implements sort interface
 func (v Validators) Less(i, j int) bool {
-	return bytes.Compare(v[i].GetOperator().Bytes(), v[j].GetOperator().Bytes()) == -1
+	valIBytes, _ := sdk.ValAddressToBytes(v[i].GetOperator().String())
+	valJBytes, _ := sdk.ValAddressToBytes(v[j].GetOperator().String())
+	return bytes.Compare(valIBytes, valJBytes) == -1
 }
 
 // Implements sort interface
@@ -124,7 +126,9 @@ func (valz ValidatorsByVotingPower) Less(i, j int) bool {
 		if errI != nil || errJ != nil {
 			return false
 		}
-		return bytes.Compare(addrI, addrJ) == -1
+		bytesI, _ := sdk.ConsAddressToBytes(addrI.String())
+		bytesJ, _ := sdk.ConsAddressToBytes(addrJ.String())
+		return bytes.Compare(bytesI, bytesJ) == -1
 	}
 	return valz[i].ConsensusPower() > valz[j].ConsensusPower()
 }
@@ -460,13 +464,9 @@ func (v Validator) GetMoniker() string    { return v.Description.Moniker }
 func (v Validator) GetStatus() BondStatus { return v.Status }
 func (v Validator) GetOperator() sdk.ValAddress {
 	if v.OperatorAddress == "" {
-		return nil
+		return ""
 	}
-	addr, err := sdk.ValAddressFromBech32(v.OperatorAddress)
-	if err != nil {
-		panic(err)
-	}
-	return addr
+	return sdk.ValAddress(v.OperatorAddress)
 }
 
 // ConsPubKey returns the validator PubKey as a cryptotypes.PubKey.
@@ -499,10 +499,10 @@ func (v Validator) TmConsPublicKey() (ostprotocrypto.PublicKey, error) {
 func (v Validator) GetConsAddr() (sdk.ConsAddress, error) {
 	pk, ok := v.ConsensusPubkey.GetCachedValue().(cryptotypes.PubKey)
 	if !ok {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
+		return "", sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "expecting cryptotypes.PubKey, got %T", pk)
 	}
 
-	return sdk.ConsAddress(pk.Address()), nil
+	return sdk.BytesToConsAddress(pk.Address()), nil
 }
 
 func (v Validator) GetTokens() sdk.Int            { return v.Tokens }

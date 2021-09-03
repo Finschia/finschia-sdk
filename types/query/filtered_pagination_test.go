@@ -8,10 +8,11 @@ import (
 	sdk "github.com/line/lfb-sdk/types"
 	"github.com/line/lfb-sdk/types/query"
 	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lfb-sdk/x/bank/keeper"
 	"github.com/line/lfb-sdk/x/bank/types"
 )
 
-var addr1 = sdk.AccAddress([]byte("addr1"))
+var addr1 = sdk.BytesToAccAddress([]byte("addr1"))
 
 func (s *paginationTestSuite) TestFilteredPaginations() {
 	app, ctx, appCodec := setupTest()
@@ -27,7 +28,7 @@ func (s *paginationTestSuite) TestFilteredPaginations() {
 		balances = append(balances, sdk.NewInt64Coin(denom, 250))
 	}
 
-	addr1 := sdk.AccAddress([]byte("addr1"))
+	addr1 := sdk.BytesToAccAddress([]byte("addr1"))
 	acc1 := app.AccountKeeper.NewAccountWithAddress(ctx, addr1)
 	app.AccountKeeper.SetAccount(ctx, acc1)
 	s.Require().NoError(app.BankKeeper.SetBalances(ctx, addr1, balances))
@@ -111,7 +112,7 @@ func ExampleFilteredPaginate() {
 	pageReq := &query.PageRequest{Key: nil, Limit: 1, CountTotal: true}
 	store := ctx.KVStore(app.GetKey(authtypes.StoreKey))
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, addr1.Bytes())
+	accountStore := prefix.NewStore(balancesStore, keeper.AddressToPrefixKey(addr1))
 
 	var balResult sdk.Coins
 	pageRes, err := query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {
@@ -143,7 +144,7 @@ func ExampleFilteredPaginate() {
 
 func execFilterPaginate(store sdk.KVStore, pageReq *query.PageRequest, appCodec codec.Marshaler) (balances sdk.Coins, res *query.PageResponse, err error) {
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, addr1.Bytes())
+	accountStore := prefix.NewStore(balancesStore, keeper.AddressToPrefixKey(addr1))
 
 	var balResult sdk.Coins
 	res, err = query.FilteredPaginate(accountStore, pageReq, func(key []byte, value []byte, accumulate bool) (bool, error) {

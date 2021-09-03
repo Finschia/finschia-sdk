@@ -13,11 +13,7 @@ func (k Keeper) VerifyInvariant(goCtx context.Context, msg *types.MsgVerifyInvar
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	constantFee := sdk.NewCoins(k.GetConstantFee(ctx))
 
-	sender, err := sdk.AccAddressFromBech32(msg.Sender)
-	if err != nil {
-		return nil, err
-	}
-	if err := k.SendCoinsFromAccountToFeeCollector(ctx, sender, constantFee); err != nil {
+	if err := k.SendCoinsFromAccountToFeeCollector(ctx, sdk.AccAddress(msg.Sender), constantFee); err != nil {
 		return nil, err
 	}
 

@@ -59,7 +59,7 @@ var (
 	invalidProofs1 = exported.Proof(nil)
 	invalidProofs2 = emptyProof
 
-	addr      = sdk.AccAddress("testaddr111111111111")
+	addr      = sdk.BytesToAccAddress([]byte("testaddr111111111111"))
 	emptyAddr sdk.AccAddress
 
 	connHops             = []string{"testconnection"}
@@ -353,7 +353,7 @@ func (suite *TypesTestSuite) TestMsgRecvPacketGetSigners() {
 	msg := types.NewMsgRecvPacket(packet, suite.proof, height, addr)
 	res := msg.GetSigners()
 
-	expected := "[7465737461646472313131313131313131313131]"
+	expected := "[6C696E6B3177336A687861727076336A38797666337879636E7A7666337879636E7A7666336339777A7374]"
 	suite.Equal(expected, fmt.Sprintf("%v", res))
 }
 

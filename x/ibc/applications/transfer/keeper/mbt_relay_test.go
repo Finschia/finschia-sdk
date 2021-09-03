@@ -91,7 +91,7 @@ type Balance struct {
 }
 
 func AddressFromString(address string) string {
-	return sdk.AccAddress(crypto.AddressHash([]byte(address))).String()
+	return sdk.BytesToAccAddress(crypto.AddressHash([]byte(address))).String()
 }
 
 func AddressFromTla(addr []string) string {
@@ -265,12 +265,13 @@ func BankOfChain(chain *ibctesting.TestChain) Bank {
 // Set balances of the chain bank for balances present in the bank
 func (suite *KeeperTestSuite) SetChainBankBalances(chain *ibctesting.TestChain, bank *Bank) error {
 	for coin, amount := range bank.balances {
-		address, err := sdk.AccAddressFromBech32(coin.Address)
+		err := sdk.ValidateAccAddress(coin.Address)
 		if err != nil {
 			return err
 		}
 		trace := types.ParseDenomTrace(coin.Denom)
-		err = chain.App.BankKeeper.SetBalance(chain.GetContext(), address, sdk.NewCoin(trace.IBCDenom(), amount))
+		err = chain.App.BankKeeper.SetBalance(chain.GetContext(), sdk.AccAddress(coin.Address),
+			sdk.NewCoin(trace.IBCDenom(), amount))
 		if err != nil {
 			return err
 		}
@@ -340,8 +341,7 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 				}
 				switch tc.handler {
 				case "SendTransfer":
-					var sender sdk.AccAddress
-					sender, err = sdk.AccAddressFromBech32(tc.packet.Data.Sender)
+					err = sdk.ValidateAccAddress(tc.packet.Data.Sender)
 					if err != nil {
 						panic("MBT failed to convert sender address")
 					}
@@ -355,7 +355,7 @@ func (suite *KeeperTestSuite) TestModelBasedRelay() {
 							tc.packet.SourcePort,
 							tc.packet.SourceChannel,
 							sdk.NewCoin(denom, sdk.NewIntFromUint64(tc.packet.Data.Amount)),
-							sender,
+							sdk.AccAddress(tc.packet.Data.Sender),
 							tc.packet.Data.Receiver,
 							clienttypes.NewHeight(0, 110),
 							0)

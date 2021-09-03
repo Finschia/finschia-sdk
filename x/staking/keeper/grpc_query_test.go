@@ -223,10 +223,8 @@ func (suite *KeeperTestSuite) TestGRPCQueryDelegatorValidator() {
 func (suite *KeeperTestSuite) TestGRPCQueryDelegation() {
 	app, ctx, queryClient, addrs, vals := suite.app, suite.ctx, suite.queryClient, suite.addrs, suite.vals
 	addrAcc, addrAcc1 := addrs[0], addrs[1]
-	addrVal := vals[0].OperatorAddress
-	valAddr, err := sdk.ValAddressFromBech32(addrVal)
-	suite.NoError(err)
-	delegation, found := app.StakingKeeper.GetDelegation(ctx, addrAcc, valAddr)
+	addrVal := sdk.ValAddress(vals[0].OperatorAddress)
+	delegation, found := app.StakingKeeper.GetDelegation(ctx, addrAcc, addrVal)
 	suite.True(found)
 	var req *types.QueryDelegationRequest
 
@@ -245,14 +243,14 @@ func (suite *KeeperTestSuite) TestGRPCQueryDelegation() {
 			func() {
 				req = &types.QueryDelegationRequest{
 					DelegatorAddr: addrAcc1.String(),
-					ValidatorAddr: addrVal,
+					ValidatorAddr: addrVal.String(),
 				}
 			},
 			false,
 		},
 		{"valid request",
 			func() {
-				req = &types.QueryDelegationRequest{DelegatorAddr: addrAcc.String(), ValidatorAddr: addrVal}
+				req = &types.QueryDelegationRequest{DelegatorAddr: addrAcc.String(), ValidatorAddr: addrVal.String()}
 			},
 			true,
 		},
@@ -278,8 +276,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryDelegatorDelegations() {
 	app, ctx, queryClient, addrs, vals := suite.app, suite.ctx, suite.queryClient, suite.addrs, suite.vals
 	addrAcc := addrs[0]
 	addrVal1 := vals[0].OperatorAddress
-	valAddr, err := sdk.ValAddressFromBech32(addrVal1)
-	suite.NoError(err)
+	valAddr := sdk.ValAddress(addrVal1)
 	delegation, found := app.StakingKeeper.GetDelegation(ctx, addrAcc, valAddr)
 	suite.True(found)
 	var req *types.QueryDelegatorDelegationsRequest
@@ -332,8 +329,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryValidatorDelegations() {
 	addrVal1 := vals[1].OperatorAddress
 	valAddrs := simapp.ConvertAddrsToValAddrs(addrs)
 	addrVal2 := valAddrs[4]
-	valAddr, err := sdk.ValAddressFromBech32(addrVal1)
-	suite.NoError(err)
+	valAddr := sdk.ValAddress(addrVal1)
 	delegation, found := app.StakingKeeper.GetDelegation(ctx, addrAcc, valAddr)
 	suite.True(found)
 
@@ -396,8 +392,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryUnbondingDelegation() {
 	addrVal2 := vals[1].OperatorAddress
 
 	unbondingTokens := sdk.TokensFromConsensusPower(2)
-	valAddr, err1 := sdk.ValAddressFromBech32(addrVal2)
-	suite.NoError(err1)
+	valAddr := sdk.ValAddress(addrVal2)
 	_, err := app.StakingKeeper.Undelegate(ctx, addrAcc2, valAddr, unbondingTokens.ToDec())
 	suite.NoError(err)
 
@@ -451,12 +446,10 @@ func (suite *KeeperTestSuite) TestGRPCQueryDelegatorUnbondingDelegations() {
 	addrVal, addrVal2 := vals[0].OperatorAddress, vals[1].OperatorAddress
 
 	unbondingTokens := sdk.TokensFromConsensusPower(2)
-	valAddr1, err1 := sdk.ValAddressFromBech32(addrVal)
-	suite.NoError(err1)
+	valAddr1 := sdk.ValAddress(addrVal)
 	_, err := app.StakingKeeper.Undelegate(ctx, addrAcc, valAddr1, unbondingTokens.ToDec())
 	suite.NoError(err)
-	valAddr2, err1 := sdk.ValAddressFromBech32(addrVal2)
-	suite.NoError(err1)
+	valAddr2 := sdk.ValAddress(addrVal2)
 	_, err = app.StakingKeeper.Undelegate(ctx, addrAcc, valAddr2, unbondingTokens.ToDec())
 	suite.NoError(err)
 

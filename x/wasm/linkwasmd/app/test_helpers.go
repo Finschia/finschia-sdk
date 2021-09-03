@@ -199,7 +199,7 @@ func createRandomAccounts(accNum int) []sdk.AccAddress {
 	testAddrs := make([]sdk.AccAddress, accNum)
 	for i := 0; i < accNum; i++ {
 		pk := ed25519.GenPrivKey().PubKey()
-		testAddrs[i] = sdk.AccAddress(pk.Address())
+		testAddrs[i] = sdk.BytesToAccAddress(pk.Address())
 	}
 
 	return testAddrs
@@ -235,7 +235,7 @@ func AddTestAddrsFromPubKeys(app *LinkApp, ctx sdk.Context, pubKeys []cryptotype
 
 	// fill all the addresses with some coins, set the loose pool tokens simultaneously
 	for _, pubKey := range pubKeys {
-		saveAccount(app, ctx, sdk.AccAddress(pubKey.Address()), initCoins)
+		saveAccount(app, ctx, sdk.BytesAccAddress(pubKey.Address()), initCoins)
 	}
 }
 
@@ -296,19 +296,19 @@ func ConvertAddrsToValAddrs(addrs []sdk.AccAddress) []sdk.ValAddress {
 func TestAddr(addr string, bech string) (sdk.AccAddress, error) {
 	res, err := sdk.AccAddressFromHex(addr)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	bechexpected := res.String()
 	if bech != bechexpected {
-		return nil, fmt.Errorf("bech encoding doesn't match reference")
+		return "", fmt.Errorf("bech encoding doesn't match reference")
 	}
 
-	bechres, err := sdk.AccAddressFromBech32(bech)
+	err = sdk.ValidateAccAddress(bech)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	if !bytes.Equal(bechres, res) {
-		return nil, err
+	if !bytes.Equal(sdk.AccAddress(bech), res) {
+		return "", err
 	}
 
 	return res, nil

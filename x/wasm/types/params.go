@@ -51,7 +51,8 @@ func (a AccessType) With(addr sdk.AccAddress) AccessConfig {
 	case AccessTypeNobody:
 		return AllowNobody
 	case AccessTypeOnlyAddress:
-		if err := sdk.VerifyAddressFormat(addr); err != nil {
+		addrBytes, _ := sdk.AccAddressToBytes(addr.String())
+		if err := sdk.VerifyAddressFormat(addrBytes); err != nil {
 			panic(err)
 		}
 		return AccessConfig{Permission: AccessTypeOnlyAddress, Address: addr.String()}
@@ -246,7 +247,7 @@ func (a AccessConfig) ValidateBasic() error {
 		}
 		return nil
 	case AccessTypeOnlyAddress:
-		_, err := sdk.AccAddressFromBech32(a.Address)
+		err := sdk.ValidateAccAddress(a.Address)
 		return err
 	}
 	return sdkerrors.Wrapf(ErrInvalid, "unknown type: %q", a.Permission)

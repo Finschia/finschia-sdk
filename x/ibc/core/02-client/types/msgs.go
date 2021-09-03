@@ -63,10 +63,6 @@ func (msg MsgCreateClient) Type() string {
 
 // ValidateBasic implements sdk.Msg
 func (msg MsgCreateClient) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
-	}
 	clientState, err := UnpackClientState(msg.ClientState)
 	if err != nil {
 		return err
@@ -87,6 +83,9 @@ func (msg MsgCreateClient) ValidateBasic() error {
 	if err := ValidateClientType(clientState.ClientType()); err != nil {
 		return sdkerrors.Wrap(err, "client type does not meet naming constraints")
 	}
+	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
+	}
 	return consensusState.ValidateBasic()
 }
 
@@ -98,10 +97,7 @@ func (msg MsgCreateClient) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgCreateClient) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	accAddr := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -144,10 +140,6 @@ func (msg MsgUpdateClient) Type() string {
 
 // ValidateBasic implements sdk.Msg
 func (msg MsgUpdateClient) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
-	}
 	header, err := UnpackHeader(msg.Header)
 	if err != nil {
 		return err
@@ -157,6 +149,9 @@ func (msg MsgUpdateClient) ValidateBasic() error {
 	}
 	if msg.ClientId == exported.Localhost {
 		return sdkerrors.Wrap(ErrInvalidClient, "localhost client is only updated on ABCI BeginBlock")
+	}
+	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return host.ClientIdentifierValidator(msg.ClientId)
 }
@@ -169,10 +164,7 @@ func (msg MsgUpdateClient) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgUpdateClient) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	accAddr := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -240,8 +232,7 @@ func (msg MsgUpgradeClient) ValidateBasic() error {
 	if len(msg.ProofUpgradeConsensusState) == 0 {
 		return sdkerrors.Wrap(ErrInvalidUpgradeClient, "proof of upgrade consensus state cannot be empty")
 	}
-	_, err = sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
+	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
 	return host.ClientIdentifierValidator(msg.ClientId)
@@ -255,10 +246,7 @@ func (msg MsgUpgradeClient) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgUpgradeClient) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	accAddr := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{accAddr}
 }
 
@@ -299,10 +287,6 @@ func (msg MsgSubmitMisbehaviour) Type() string {
 
 // ValidateBasic performs basic (non-state-dependant) validation on a MsgSubmitMisbehaviour.
 func (msg MsgSubmitMisbehaviour) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
-	}
 	misbehaviour, err := UnpackMisbehaviour(msg.Misbehaviour)
 	if err != nil {
 		return err
@@ -317,6 +301,9 @@ func (msg MsgSubmitMisbehaviour) ValidateBasic() error {
 			misbehaviour.GetClientID(), msg.ClientId,
 		)
 	}
+	if err := sdk.ValidateAccAddress(msg.Signer); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
+	}
 
 	return host.ClientIdentifierValidator(msg.ClientId)
 }
@@ -329,10 +316,7 @@ func (msg MsgSubmitMisbehaviour) GetSignBytes() []byte {
 
 // GetSigners returns the single expected signer for a MsgSubmitMisbehaviour.
 func (msg MsgSubmitMisbehaviour) GetSigners() []sdk.AccAddress {
-	accAddr, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	accAddr := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{accAddr}
 }
 

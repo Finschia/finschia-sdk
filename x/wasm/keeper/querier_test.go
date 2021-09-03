@@ -291,7 +291,7 @@ func TestQueryContractListByCodeOrdering(t *testing.T) {
 			ctx = setBlock(ctx, h)
 			h++
 		}
-		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, nil, initMsgBz, fmt.Sprintf("contract %d", i), topUp)
+		_, _, err = keepers.ContractKeeper.Instantiate(ctx, codeID, creator, "", initMsgBz, fmt.Sprintf("contract %d", i), topUp)
 		require.NoError(t, err)
 	}
 
@@ -430,7 +430,7 @@ func TestQueryContractHistory(t *testing.T) {
 		t.Run(msg, func(t *testing.T) {
 			xCtx, _ := ctx.CacheContext()
 
-			cAddr, _ := sdk.AccAddressFromBech32(myContractBech32Addr)
+			cAddr := sdk.AccAddress(myContractBech32Addr)
 			keeper.appendToContractHistory(xCtx, cAddr, spec.srcHistory...)
 
 			// when

@@ -65,10 +65,7 @@ Example:
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			addr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
+			addr := sdk.AccAddress(args[0])
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {

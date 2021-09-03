@@ -29,12 +29,7 @@ func (k BaseKeeper) Balance(ctx context.Context, req *types.QueryBalanceRequest)
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
-	address, err := sdk.AccAddressFromBech32(req.Address)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
-	}
-
-	balance := k.GetBalance(sdkCtx, address, req.Denom)
+	balance := k.GetBalance(sdkCtx, sdk.AccAddress(req.Address), req.Denom)
 
 	return &types.QueryBalanceResponse{Balance: &balance}, nil
 }
@@ -49,17 +44,12 @@ func (k BaseKeeper) AllBalances(ctx context.Context, req *types.QueryAllBalances
 		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
 	}
 
-	addr, err := sdk.AccAddressFromBech32(req.Address)
-	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid address: %s", err.Error())
-	}
-
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 
 	balances := sdk.NewCoins()
 	store := sdkCtx.KVStore(k.storeKey)
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, addr.Bytes())
+	accountStore := prefix.NewStore(balancesStore, sdk.AccAddress(req.Address).Bytes())
 
 	pageRes, err := query.Paginate(accountStore, req.Pagination, func(_, value []byte) error {
 		var result sdk.Coin

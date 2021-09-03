@@ -87,7 +87,7 @@ func ShowAddressCmd() *cobra.Command {
 			cfg := serverCtx.Config
 
 			privValidator := pvm.LoadFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile())
-			valConsAddr := (sdk.ConsAddress)(privValidator.GetAddress())
+			valConsAddr := sdk.BytesToConsAddress(privValidator.GetAddress())
 
 			output, _ := cmd.Flags().GetString(cli.OutputFlag)
 			if strings.ToLower(output) == "json" {

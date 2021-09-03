@@ -12,7 +12,7 @@ import (
 func KeyTestPubAddr() (cryptotypes.PrivKey, cryptotypes.PubKey, sdk.AccAddress) {
 	key := secp256k1.GenPrivKey()
 	pub := key.PubKey()
-	addr := sdk.AccAddress(pub.Address())
+	addr := sdk.BytesToAccAddress(pub.Address())
 	return key, pub, addr
 }
 
@@ -53,12 +53,12 @@ func (msg *TestMsg) GetSignBytes() []byte {
 func (msg *TestMsg) GetSigners() []sdk.AccAddress {
 	addrs := make([]sdk.AccAddress, len(msg.Signers))
 	for i, in := range msg.Signers {
-		addr, err := sdk.AccAddressFromBech32(in)
+		err := sdk.ValidateAccAddress(in)
 		if err != nil {
 			panic(err)
 		}
 
-		addrs[i] = addr
+		addrs[i] = sdk.AccAddress(in)
 	}
 
 	return addrs

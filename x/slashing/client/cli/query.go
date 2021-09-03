@@ -56,7 +56,7 @@ $ <appd> query slashing signing-info cosmosvalconspub1zcjduepqfhvwcmt7p06fvdgexx
 				return err
 			}
 
-			consAddr := sdk.ConsAddress(pk.Address())
+			consAddr := sdk.BytesToConsAddress(pk.Address())
 			params := &types.QuerySigningInfoRequest{ConsAddress: consAddr.String()}
 			res, err := queryClient.SigningInfo(context.Background(), params)
 			if err != nil {

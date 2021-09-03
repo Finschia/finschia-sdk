@@ -187,12 +187,12 @@ func newFundCommunityPoolHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
+		err := sdk.ValidateAccAddress(req.BaseReq.From)
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
-		msg := types.NewMsgFundCommunityPool(req.Amount, fromAddr)
+		msg := types.NewMsgFundCommunityPool(req.Amount, sdk.AccAddress(req.BaseReq.From))
 		if rest.CheckBadRequestError(w, msg.ValidateBasic()) {
 			return
 		}
@@ -204,19 +204,21 @@ func newFundCommunityPoolHandlerFn(clientCtx client.Context) http.HandlerFunc {
 // Auxiliary
 
 func checkDelegatorAddressVar(w http.ResponseWriter, r *http.Request) (sdk.AccAddress, bool) {
-	addr, err := sdk.AccAddressFromBech32(mux.Vars(r)["delegatorAddr"])
+	addr := mux.Vars(r)["delegatorAddr"]
+	err := sdk.ValidateAccAddress(addr)
 	if rest.CheckBadRequestError(w, err) {
-		return nil, false
+		return "", false
 	}
 
-	return addr, true
+	return sdk.AccAddress(addr), true
 }
 
 func checkValidatorAddressVar(w http.ResponseWriter, r *http.Request) (sdk.ValAddress, bool) {
-	addr, err := sdk.ValAddressFromBech32(mux.Vars(r)["validatorAddr"])
+	addr := mux.Vars(r)["validatorAddr"]
+	err := sdk.ValidateValAddress(addr)
 	if rest.CheckBadRequestError(w, err) {
-		return nil, false
+		return "", false
 	}
 
-	return addr, true
+	return sdk.ValAddress(addr), true
 }

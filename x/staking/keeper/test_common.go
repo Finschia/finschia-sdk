@@ -1,7 +1,6 @@
 package keeper // noalias
 
 import (
-	"bytes"
 	"math/rand"
 
 	sdk "github.com/line/lfb-sdk/types"
@@ -26,8 +25,8 @@ func TestingUpdateValidator(keeper Keeper, ctx sdk.Context, validator types.Vali
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		valAddr := types.ParseValidatorPowerRankKey(iterator.Key())
-		if bytes.Equal(valAddr, validator.GetOperator()) {
+		valAddr := sdk.ValAddress(string(types.ParseValidatorPowerRankKey(iterator.Key())))
+		if valAddr.Equals(validator.GetOperator()) {
 			if deleted {
 				panic("found duplicate power index key")
 			} else {

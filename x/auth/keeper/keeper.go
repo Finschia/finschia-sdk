@@ -119,7 +119,7 @@ func (ak AccountKeeper) ValidatePermissions(macc types.ModuleAccountI) error {
 func (ak AccountKeeper) GetModuleAddress(moduleName string) sdk.AccAddress {
 	permAddr, ok := ak.permAddrs[moduleName]
 	if !ok {
-		return nil
+		return ""
 	}
 
 	return permAddr.GetAddress()
@@ -139,7 +139,7 @@ func (ak AccountKeeper) GetModuleAddressAndPermissions(moduleName string) (addr 
 // registered permissions
 func (ak AccountKeeper) GetModuleAccountAndPermissions(ctx sdk.Context, moduleName string) (types.ModuleAccountI, []string) {
 	addr, perms := ak.GetModuleAddressAndPermissions(moduleName)
-	if addr == nil {
+	if addr.Empty() {
 		return nil, []string{}
 	}
 

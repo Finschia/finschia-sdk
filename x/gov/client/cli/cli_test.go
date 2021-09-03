@@ -7,9 +7,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/line/lfb-sdk/testutil"
-
 	"github.com/gogo/protobuf/proto"
+	"github.com/line/lfb-sdk/testutil"
 	"github.com/stretchr/testify/suite"
 
 	ostcli "github.com/line/ostracon/libs/cli"

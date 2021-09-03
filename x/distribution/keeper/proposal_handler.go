@@ -12,12 +12,12 @@ func HandleCommunityPoolSpendProposal(ctx sdk.Context, k Keeper, p *types.Commun
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive external funds", p.Recipient)
 	}
 
-	recipient, addrErr := sdk.AccAddressFromBech32(p.Recipient)
+	addrErr := sdk.ValidateAccAddress(p.Recipient)
 	if addrErr != nil {
 		return addrErr
 	}
 
-	err := k.DistributeFromFeePool(ctx, p.Amount, recipient)
+	err := k.DistributeFromFeePool(ctx, p.Amount, sdk.AccAddress(p.Recipient))
 	if err != nil {
 		return err
 	}

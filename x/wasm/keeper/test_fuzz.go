@@ -12,9 +12,11 @@ import (
 var ModelFuzzers = []interface{}{FuzzAddr, FuzzAddrString, FuzzAbsoluteTxPosition, FuzzContractInfo, FuzzStateModel, FuzzAccessType, FuzzAccessConfig, FuzzContractCodeHistory}
 
 func FuzzAddr(m *sdk.AccAddress, c fuzz.Continue) {
-	*m = make([]byte, 20)
-	c.Read(*m)
+	addrBytes := make([]byte, 20)
+	c.Read(addrBytes)
+	*m = sdk.BytesToAccAddress(addrBytes)
 }
+
 func FuzzAddrString(m *string, c fuzz.Continue) {
 	var x sdk.AccAddress
 	FuzzAddr(&x, c)

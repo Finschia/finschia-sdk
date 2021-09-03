@@ -193,8 +193,8 @@ func TestContractInfoSetExtension(t *testing.T) {
 }
 
 func TestContractInfoMarshalUnmarshal(t *testing.T) {
-	var myAddr sdk.AccAddress = rand.Bytes(sdk.AddrLen)
-	var myOtherAddr sdk.AccAddress = rand.Bytes(sdk.AddrLen)
+	var myAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
+	var myOtherAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
 	var anyPos = AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
 
 	anyTime := time.Now().UTC()
@@ -314,7 +314,7 @@ func TestContractInfoReadExtension(t *testing.T) {
 func TestNewEnv(t *testing.T) {
 	myTime := time.Unix(0, 1619700924259075000)
 	t.Logf("++ unix: %d", myTime.UnixNano())
-	var myContractAddr sdk.AccAddress = randBytes(sdk.AddrLen)
+	var myContractAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
 	specs := map[string]struct {
 		srcCtx sdk.Context
 		exp    wasmvmtypes.Env

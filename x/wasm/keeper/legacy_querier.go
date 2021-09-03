@@ -35,12 +35,12 @@ func NewLegacyQuerier(keeper types.ViewKeeper, gasLimit sdk.Gas) sdk.Querier {
 		)
 		switch path[0] {
 		case QueryGetContract:
-			addr, err := sdk.AccAddressFromBech32(path[1])
+			err := sdk.ValidateAccAddress(path[1])
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 			}
 			//nolint:staticcheck
-			rsp, err = queryContractInfo(ctx, addr, keeper)
+			rsp, err = queryContractInfo(ctx, sdk.AccAddress(path[1]), keeper)
 		case QueryListContractByCode:
 			codeID, err := strconv.ParseUint(path[1], 10, 64)
 			if err != nil {
@@ -49,6 +49,10 @@ func NewLegacyQuerier(keeper types.ViewKeeper, gasLimit sdk.Gas) sdk.Querier {
 			//nolint:staticcheck
 			rsp = queryContractListByCode(ctx, codeID, keeper)
 		case QueryGetContractState:
+			err := sdk.ValidateAccAddress(path[1])
+			if err != nil {
+				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
+			}
 			if len(path) < 3 {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown data query endpoint")
 			}
@@ -64,12 +68,12 @@ func NewLegacyQuerier(keeper types.ViewKeeper, gasLimit sdk.Gas) sdk.Querier {
 			//nolint:staticcheck
 			rsp, err = queryCodeList(ctx, keeper)
 		case QueryContractHistory:
-			contractAddr, err := sdk.AccAddressFromBech32(path[1])
+			err := sdk.ValidateAccAddress(path[1])
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, err.Error())
 			}
 			//nolint:staticcheck
-			rsp, err = queryContractHistory(ctx, contractAddr, keeper)
+			rsp, err = queryContractHistory(ctx, sdk.AccAddress(path[1]), keeper)
 		default:
 			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "unknown data query endpoint")
 		}
@@ -88,11 +92,11 @@ func NewLegacyQuerier(keeper types.ViewKeeper, gasLimit sdk.Gas) sdk.Querier {
 }
 
 func queryContractState(ctx sdk.Context, bech, queryMethod string, data []byte, gasLimit sdk.Gas, keeper types.ViewKeeper) (json.RawMessage, error) {
-	contractAddr, err := sdk.AccAddressFromBech32(bech)
+	err := sdk.ValidateAccAddress(bech)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, bech)
 	}
-
+	contractAddr := sdk.AccAddress(bech)
 	var resultData []types.Model
 	switch queryMethod {
 	case QueryMethodContractStateAll:

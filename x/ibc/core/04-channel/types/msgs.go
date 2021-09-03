@@ -52,7 +52,7 @@ func (msg MsgChannelOpenInit) ValidateBasic() error {
 	if msg.Channel.Counterparty.ChannelId != "" {
 		return sdkerrors.Wrap(ErrInvalidCounterparty, "counterparty channel identifier must be empty")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -67,10 +67,7 @@ func (msg MsgChannelOpenInit) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgChannelOpenInit) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -133,7 +130,7 @@ func (msg MsgChannelOpenTry) ValidateBasic() error {
 		return sdkerrors.Wrap(err, "invalid counterparty channel ID")
 	}
 
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -148,10 +145,7 @@ func (msg MsgChannelOpenTry) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgChannelOpenTry) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -201,7 +195,7 @@ func (msg MsgChannelOpenAck) ValidateBasic() error {
 	if msg.ProofHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "proof height must be non-zero")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -216,10 +210,7 @@ func (msg MsgChannelOpenAck) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgChannelOpenAck) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -264,7 +255,7 @@ func (msg MsgChannelOpenConfirm) ValidateBasic() error {
 	if msg.ProofHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "proof height must be non-zero")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -279,10 +270,7 @@ func (msg MsgChannelOpenConfirm) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgChannelOpenConfirm) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -318,7 +306,7 @@ func (msg MsgChannelCloseInit) ValidateBasic() error {
 	if !IsValidChannelID(msg.ChannelId) {
 		return ErrInvalidChannelIdentifier
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -333,10 +321,7 @@ func (msg MsgChannelCloseInit) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgChannelCloseInit) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -381,7 +366,7 @@ func (msg MsgChannelCloseConfirm) ValidateBasic() error {
 	if msg.ProofHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "proof height must be non-zero")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -396,10 +381,7 @@ func (msg MsgChannelCloseConfirm) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgChannelCloseConfirm) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -432,7 +414,7 @@ func (msg MsgRecvPacket) ValidateBasic() error {
 	if msg.ProofHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "proof height must be non-zero")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -454,10 +436,7 @@ func (msg MsgRecvPacket) GetDataSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgRecvPacket) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -499,7 +478,7 @@ func (msg MsgTimeout) ValidateBasic() error {
 	if msg.NextSequenceRecv == 0 {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidSequence, "next sequence receive cannot be 0")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -514,10 +493,7 @@ func (msg MsgTimeout) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgTimeout) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -562,7 +538,7 @@ func (msg MsgTimeoutOnClose) ValidateBasic() error {
 	if msg.ProofHeight.IsZero() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidHeight, "proof height must be non-zero")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -577,10 +553,7 @@ func (msg MsgTimeoutOnClose) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgTimeoutOnClose) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 
@@ -624,7 +597,7 @@ func (msg MsgAcknowledgement) ValidateBasic() error {
 	if len(msg.Acknowledgement) == 0 {
 		return sdkerrors.Wrap(ErrInvalidAcknowledgement, "ack bytes cannot be empty")
 	}
-	_, err := sdk.AccAddressFromBech32(msg.Signer)
+	err := sdk.ValidateAccAddress(msg.Signer)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "string could not be parsed as address: %v", err)
 	}
@@ -639,10 +612,7 @@ func (msg MsgAcknowledgement) GetSignBytes() []byte {
 
 // GetSigners implements sdk.Msg
 func (msg MsgAcknowledgement) GetSigners() []sdk.AccAddress {
-	signer, err := sdk.AccAddressFromBech32(msg.Signer)
-	if err != nil {
-		panic(err)
-	}
+	signer := sdk.AccAddress(msg.Signer)
 	return []sdk.AccAddress{signer}
 }
 

@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/hex"
 	"fmt"
 	"testing"
 
@@ -20,9 +21,9 @@ func TestMsgSendRoute(t *testing.T) {
 }
 
 func TestMsgSendValidation(t *testing.T) {
-	addr1 := sdk.AccAddress("from________________")
-	addrEmpty := sdk.AccAddress("")
-	addrTooLong := sdk.AccAddress("Accidentally used 33 bytes pubkey")
+	addr1 := sdk.BytesToAccAddress([]byte("from________________"))
+	addrEmpty := sdk.BytesToAccAddress([]byte(""))
+	addrTooLong := sdk.BytesToAccAddress([]byte("Accidentally used 33 bytes pubkey"))
 
 	cases := []struct {
 		expectedErr string // empty means no error expected
@@ -44,17 +45,18 @@ func TestMsgSendValidation(t *testing.T) {
 }
 
 func TestMsgSendGetSignBytes(t *testing.T) {
-	res := NewMsgEmpty(sdk.AccAddress("input")).GetSignBytes()
+	res := NewMsgEmpty(sdk.BytesToAccAddress([]byte("input"))).GetSignBytes()
 
 	expected := `{"type":"lfb-sdk/MsgEmpty","value":{"from_address":"link1d9h8qat5fnwd3e"}}`
 	require.Equal(t, expected, string(res))
 }
 
 func TestMsgSendGetSigners(t *testing.T) {
-	res := NewMsgEmpty(sdk.AccAddress("input111111111111111")).GetSigners()
-	require.Equal(t, fmt.Sprintf("%v", res), "[696E707574313131313131313131313131313131]")
+	res := NewMsgEmpty(sdk.BytesToAccAddress([]byte("input111111111111111"))).GetSigners()
+	bytes, _ := sdk.AccAddressToBytes(res[0].String())
+	require.Equal(t, fmt.Sprintf("%v", hex.EncodeToString(bytes)), "696e707574313131313131313131313131313131")
 
 	require.Panics(t, func() {
-		NewMsgEmpty(sdk.AccAddress("input")).GetSigners()
+		NewMsgEmpty(sdk.BytesToAccAddress([]byte("input"))).GetSigners()
 	})
 }

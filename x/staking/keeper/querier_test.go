@@ -90,7 +90,7 @@ func TestNewQuerier(t *testing.T) {
 	_, err = querier(ctx, []string{"delegatorValidators"}, query)
 	require.NoError(t, err)
 
-	bz, errRes = cdc.MarshalJSON(types.NewQueryRedelegationParams(nil, nil, nil))
+	bz, errRes = cdc.MarshalJSON(types.NewQueryRedelegationParams("", "", ""))
 	require.NoError(t, errRes)
 	query.Data = bz
 
@@ -210,7 +210,7 @@ func TestQueryDelegation(t *testing.T) {
 
 	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.TokensFromConsensusPower(10000))
 	addrAcc1, addrAcc2 := addrs[0], addrs[1]
-	addrVal1, addrVal2 := sdk.ValAddress(addrAcc1), sdk.ValAddress(addrAcc2)
+	addrVal1, addrVal2 := addrAcc1.ToValAddress(), addrAcc2.ToValAddress()
 
 	pubKeys := simapp.CreateTestPubKeys(2)
 	pk1, pk2 := pubKeys[0], pubKeys[1]
@@ -459,7 +459,7 @@ func TestQueryValidatorDelegations_Pagination(t *testing.T) {
 	addrs := simapp.AddTestAddrs(app, ctx, 100, sdk.TokensFromConsensusPower(10000))
 	pubKeys := simapp.CreateTestPubKeys(1)
 
-	valAddress := sdk.ValAddress(addrs[0])
+	valAddress := addrs[0].ToValAddress()
 
 	val1 := teststaking.NewValidator(t, valAddress, pubKeys[0])
 	app.StakingKeeper.SetValidator(ctx, val1)
@@ -543,7 +543,7 @@ func TestQueryRedelegations(t *testing.T) {
 
 	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.TokensFromConsensusPower(10000))
 	addrAcc1, addrAcc2 := addrs[0], addrs[1]
-	addrVal1, addrVal2 := sdk.ValAddress(addrAcc1), sdk.ValAddress(addrAcc2)
+	addrVal1, addrVal2 := addrAcc1.ToValAddress(), addrAcc2.ToValAddress()
 
 	// Create Validators and Delegation
 	val1 := teststaking.NewValidator(t, addrVal1, PKs[0])
@@ -615,7 +615,7 @@ func TestQueryUnbondingDelegation(t *testing.T) {
 
 	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.TokensFromConsensusPower(10000))
 	addrAcc1, addrAcc2 := addrs[0], addrs[1]
-	addrVal1 := sdk.ValAddress(addrAcc1)
+	addrVal1 := addrAcc1.ToValAddress()
 
 	// Create Validators and Delegation
 	val1 := teststaking.NewValidator(t, addrVal1, PKs[0])
@@ -711,7 +711,7 @@ func TestQueryHistoricalInfo(t *testing.T) {
 
 	addrs := simapp.AddTestAddrs(app, ctx, 2, sdk.TokensFromConsensusPower(10000))
 	addrAcc1, addrAcc2 := addrs[0], addrs[1]
-	addrVal1, addrVal2 := sdk.ValAddress(addrAcc1), sdk.ValAddress(addrAcc2)
+	addrVal1, addrVal2 := addrAcc1.ToValAddress(), addrAcc2.ToValAddress()
 
 	// Create Validators and Delegation
 	val1 := teststaking.NewValidator(t, addrVal1, PKs[0])

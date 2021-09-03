@@ -124,8 +124,8 @@ func delegatorTxsHandlerFn(clientCtx client.Context) http.HandlerFunc {
 
 		vars := mux.Vars(r)
 		delegatorAddr := vars["delegatorAddr"]
-
-		if _, err := sdk.AccAddressFromBech32(delegatorAddr); rest.CheckBadRequestError(w, err) {
+		err := sdk.ValidateAccAddress(delegatorAddr)
+		if rest.CheckBadRequestError(w, err) {
 			return
 		}
 
@@ -209,28 +209,34 @@ func redelegationsHandlerFn(clientCtx client.Context) http.HandlerFunc {
 		bechDstValidatorAddr := r.URL.Query().Get("validator_to")
 
 		if len(bechDelegatorAddr) != 0 {
-			delegatorAddr, err := sdk.AccAddressFromBech32(bechDelegatorAddr)
+			err := sdk.ValidateAccAddress(bechDelegatorAddr)
 			if rest.CheckBadRequestError(w, err) {
 				return
 			}
+
+			delegatorAddr := sdk.AccAddress(bechDelegatorAddr)
 
 			params.DelegatorAddr = delegatorAddr
 		}
 
 		if len(bechSrcValidatorAddr) != 0 {
-			srcValidatorAddr, err := sdk.ValAddressFromBech32(bechSrcValidatorAddr)
+			err := sdk.ValidateValAddress(bechSrcValidatorAddr)
 			if rest.CheckBadRequestError(w, err) {
 				return
 			}
+
+			srcValidatorAddr := sdk.ValAddress(bechSrcValidatorAddr)
 
 			params.SrcValidatorAddr = srcValidatorAddr
 		}
 
 		if len(bechDstValidatorAddr) != 0 {
-			dstValidatorAddr, err := sdk.ValAddressFromBech32(bechDstValidatorAddr)
+			err := sdk.ValidateValAddress(bechDstValidatorAddr)
 			if rest.CheckBadRequestError(w, err) {
 				return
 			}
+
+			dstValidatorAddr := sdk.ValAddress(bechDstValidatorAddr)
 
 			params.DstValidatorAddr = dstValidatorAddr
 		}

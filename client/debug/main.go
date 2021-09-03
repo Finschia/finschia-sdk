@@ -75,7 +75,7 @@ func PubkeyCmd() *cobra.Command {
 
 Example:
 $ %s debug pubkey TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz
-$ %s debug pubkey cosmos1e0jnq2sun3dzjh8p2xq95kk0expwmd7shwjpfg
+$ %s debug pubkey linkpub1cqmsrdepq28g8wmpa2hmq06y770jcjr48ntw932wc8l0cl7fz5xr4sahy3s3v0r3mez
 			`, version.AppName, version.AppName),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -127,23 +127,23 @@ func AddrCmd() *cobra.Command {
 		Long: fmt.Sprintf(`Convert an address between hex encoding and bech32.
 			
 Example:
-$ %s debug addr cosmos1e0jnq2sun3dzjh8p2xq95kk0expwmd7shwjpfg
+$ %s debug addr link19wgf6ymq2ur6r59st95e04e49m69z4al4fc982
 			`, version.AppName),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 
 			addrString := args[0]
-			var addr []byte
+			var addrBytes []byte
 
 			// try hex, then bech32
 			var err error
-			addr, err = hex.DecodeString(addrString)
+			addrBytes, err = hex.DecodeString(addrString)
 			if err != nil {
 				var err2 error
-				addr, err2 = sdk.AccAddressFromBech32(addrString)
+				addrBytes, err2 = sdk.AccAddressToBytes(addrString)
 				if err2 != nil {
 					var err3 error
-					addr, err3 = sdk.ValAddressFromBech32(addrString)
+					addrBytes, err3 = sdk.ValAddressToBytes(addrString)
 
 					if err3 != nil {
 						return fmt.Errorf("expected hex or bech32. Got errors: hex: %v, bech32 acc: %v, bech32 val: %v", err, err2, err3)
@@ -152,11 +152,11 @@ $ %s debug addr cosmos1e0jnq2sun3dzjh8p2xq95kk0expwmd7shwjpfg
 				}
 			}
 
-			accAddr := sdk.AccAddress(addr)
-			valAddr := sdk.ValAddress(addr)
+			accAddr := sdk.BytesToAccAddress(addrBytes)
+			valAddr := sdk.BytesToValAddress(addrBytes)
 
-			cmd.Println("Address:", addr)
-			cmd.Printf("Address (hex): %X\n", addr)
+			cmd.Println("Address Bytes:", addrBytes)
+			cmd.Printf("Address (hex): %X\n", addrBytes)
 			cmd.Printf("Bech32 Acc: %s\n", accAddr)
 			cmd.Printf("Bech32 Val: %s\n", valAddr)
 			return nil

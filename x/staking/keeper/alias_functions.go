@@ -40,8 +40,7 @@ func (k Keeper) IterateBondedValidatorsByPower(ctx sdk.Context, fn func(index in
 
 	i := int64(0)
 	for ; iterator.Valid() && i < int64(maxValidators); iterator.Next() {
-		address := iterator.Value()
-		validator := k.mustGetValidator(ctx, address)
+		validator := k.mustGetValidator(ctx, sdk.ValAddress(string(iterator.Value())))
 
 		if validator.IsBonded() {
 			stop := fn(i, validator) // XXX is this safe will the validator unexposed fields be able to get written to?
@@ -63,7 +62,7 @@ func (k Keeper) IterateLastValidators(ctx sdk.Context, fn func(index int64, vali
 	for ; iterator.Valid(); iterator.Next() {
 		address := types.AddressFromLastValidatorPowerKey(iterator.Key())
 
-		validator, found := k.GetValidator(ctx, address)
+		validator, found := k.GetValidator(ctx, sdk.ValAddress(string(address)))
 		if !found {
 			panic(fmt.Sprintf("validator record not found for address: %v\n", address))
 		}

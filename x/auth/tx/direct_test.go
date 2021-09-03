@@ -69,7 +69,7 @@ func TestDirectModeHandler(t *testing.T) {
 	require.Len(t, modeHandler.Modes(), 1)
 
 	signingData := signing.SignerData{
-		ChainID:        "test-chain",
+		ChainID: "test-chain",
 	}
 
 	signBytes, err := modeHandler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_DIRECT, signingData, txBuilder.GetTx())

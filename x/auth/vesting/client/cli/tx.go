@@ -51,10 +51,7 @@ timestamp.`,
 			if err != nil {
 				return err
 			}
-			toAddr, err := sdk.AccAddressFromBech32(args[0])
-			if err != nil {
-				return err
-			}
+			toAddr := sdk.AccAddress(args[0])
 
 			amount, err := sdk.ParseCoinsNormalized(args[1])
 			if err != nil {

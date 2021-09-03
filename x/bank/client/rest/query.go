@@ -21,10 +21,7 @@ func QueryBalancesRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 		vars := mux.Vars(r)
 		bech32addr := vars["address"]
 
-		addr, err := sdk.AccAddressFromBech32(bech32addr)
-		if rest.CheckInternalServerError(w, err) {
-			return
-		}
+		addr := sdk.AccAddress(bech32addr)
 
 		ctx, ok := rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {

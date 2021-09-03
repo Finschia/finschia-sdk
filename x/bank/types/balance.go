@@ -1,10 +1,10 @@
 package types
 
 import (
-	"bytes"
 	"encoding/json"
 	fmt "fmt"
 	"sort"
+	"strings"
 
 	"github.com/line/lfb-sdk/codec"
 	sdk "github.com/line/lfb-sdk/types"
@@ -15,12 +15,7 @@ var _ exported.GenesisBalance = (*Balance)(nil)
 
 // GetAddress returns the account address of the Balance object.
 func (b Balance) GetAddress() sdk.AccAddress {
-	addr, err := sdk.AccAddressFromBech32(b.Address)
-	if err != nil {
-		panic(fmt.Errorf("couldn't convert %q to account address: %v", b.Address, err))
-	}
-
-	return addr
+	return sdk.AccAddress(b.Address)
 }
 
 // GetCoins returns the account coins of the Balance object.
@@ -30,7 +25,7 @@ func (b Balance) GetCoins() sdk.Coins {
 
 // Validate checks for address and coins correctness.
 func (b Balance) Validate() error {
-	_, err := sdk.AccAddressFromBech32(b.Address)
+	err := sdk.ValidateAccAddress(b.Address)
 	if err != nil {
 		return err
 	}
@@ -79,15 +74,14 @@ func SanitizeGenesisBalances(balances []Balance) []Balance {
 		// We use a pointer here to avoid averse effects of value copying
 		// wasting RAM all around.
 		balance *Balance
-		accAddr []byte
+		accAddr sdk.AccAddress
 	}
 	adL := make([]*addrToBalance, 0, len(balances))
 	for _, balance := range balances {
 		balance := balance
-		addr, _ := sdk.AccAddressFromBech32(balance.Address)
 		adL = append(adL, &addrToBalance{
 			balance: &balance,
-			accAddr: []byte(addr),
+			accAddr: sdk.AccAddress(balance.Address),
 		})
 	}
 
@@ -95,7 +89,7 @@ func SanitizeGenesisBalances(balances []Balance) []Balance {
 	// already accAddr bytes values which is a cheaper operation.
 	sort.Slice(adL, func(i, j int) bool {
 		ai, aj := adL[i], adL[j]
-		return bytes.Compare(ai.accAddr, aj.accAddr) < 0
+		return strings.Compare(string(ai.accAddr), string(aj.accAddr)) < 0
 	})
 
 	// 3. To complete the sorting, we have to now just insert

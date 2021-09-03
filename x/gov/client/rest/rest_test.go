@@ -101,7 +101,6 @@ func (s *IntegrationTestSuite) TestLegacyGetVote() {
 			if tc.expErr {
 				var errResp rest.ErrorResponse
 				s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(respJSON, &errResp))
-
 				s.Require().Equal(errResp.Error, tc.expErrMsg)
 			} else {
 				var resp = rest.ResponseWithHeight{}

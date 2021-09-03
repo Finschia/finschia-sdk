@@ -276,11 +276,11 @@ func getAllCodes(state *types.GenesisState) ([]codeMeta, error) {
 				accessConfig = *msg.InstantiatePermission
 			} else {
 				// default
-				creator, err := sdk.AccAddressFromBech32(msg.Sender)
+				err := sdk.ValidateAccAddress(msg.Sender)
 				if err != nil {
 					return nil, fmt.Errorf("sender: %s", err)
 				}
-				accessConfig = state.Params.InstantiateDefaultPermission.With(creator)
+				accessConfig = state.Params.InstantiateDefaultPermission.With(sdk.AccAddress(msg.Sender))
 			}
 			hash := sha256.Sum256(msg.WASMByteCode)
 			all = append(all, codeMeta{
@@ -484,15 +484,15 @@ func codeSeqValue(state *types.GenesisState) uint64 {
 func getActorAddress(cmd *cobra.Command) (sdk.AccAddress, error) {
 	actorArg, err := cmd.Flags().GetString(flagRunAs)
 	if err != nil {
-		return nil, fmt.Errorf("run-as: %s", err.Error())
+		return "", fmt.Errorf("run-as: %s", err.Error())
 	}
 	if len(actorArg) == 0 {
-		return nil, errors.New("run-as address is required")
+		return "", errors.New("run-as address is required")
 	}
 
-	actorAddr, err := sdk.AccAddressFromBech32(actorArg)
+	err = sdk.ValidateAccAddress(actorArg)
 	if err == nil {
-		return actorAddr, nil
+		return sdk.AccAddress(actorArg), nil
 	}
 	inBuf := bufio.NewReader(cmd.InOrStdin())
 	keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)
@@ -501,12 +501,12 @@ func getActorAddress(cmd *cobra.Command) (sdk.AccAddress, error) {
 	// attempt to lookup address from Keybase if no address was provided
 	kb, err := keyring.New(sdk.KeyringServiceName(), keyringBackend, homeDir, inBuf)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	info, err := kb.Key(actorArg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to get address from Keybase: %w", err)
+		return "", fmt.Errorf("failed to get address from Keybase: %w", err)
 	}
 	return info.GetAddress(), nil
 }
@@ -524,5 +524,5 @@ func addrFromUint64(id uint64) sdk.AccAddress {
 	addr := make([]byte, 20)
 	addr[0] = 'C'
 	binary.PutUvarint(addr[1:], id)
-	return sdk.AccAddress(crypto.AddressHash(addr))
+	return sdk.BytesToAccAddress(crypto.AddressHash(addr))
 }

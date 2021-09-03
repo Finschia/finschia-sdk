@@ -80,7 +80,7 @@ func (t *Tx) ValidateBasic() error {
 	}
 
 	if fee.Payer != "" {
-		_, err := sdk.AccAddressFromBech32(fee.Payer)
+		err := sdk.ValidateAccAddress(fee.Payer)
 		if err != nil {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid fee payer address (%s)", err)
 		}
@@ -121,11 +121,7 @@ func (t *Tx) GetSigners() []sdk.AccAddress {
 	// ensure any specified fee payer is included in the required signers (at the end)
 	feePayer := t.AuthInfo.Fee.Payer
 	if feePayer != "" && !seen[feePayer] {
-		payerAddr, err := sdk.AccAddressFromBech32(feePayer)
-		if err != nil {
-			panic(err)
-		}
-		signers = append(signers, payerAddr)
+		signers = append(signers, sdk.AccAddress(feePayer))
 		seen[feePayer] = true
 	}
 

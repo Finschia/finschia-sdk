@@ -115,20 +115,6 @@ $ %s query gov proposals --page=2 --limit=100
 
 			var proposalStatus types.ProposalStatus
 
-			if len(bechDepositorAddr) != 0 {
-				_, err := sdk.AccAddressFromBech32(bechDepositorAddr)
-				if err != nil {
-					return err
-				}
-			}
-
-			if len(bechVoterAddr) != 0 {
-				_, err := sdk.AccAddressFromBech32(bechVoterAddr)
-				if err != nil {
-					return err
-				}
-			}
-
 			if len(strProposalStatus) != 0 {
 				proposalStatus1, err := types.ProposalStatusFromString(gcutils.NormalizeProposalStatus(strProposalStatus))
 				proposalStatus = proposalStatus1
@@ -216,10 +202,7 @@ $ %s query gov vote 1 cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
 			}
 
-			voterAddr, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
+			voterAddr := sdk.AccAddress(args[1])
 
 			res, err := queryClient.Vote(
 				context.Background(),
@@ -372,10 +355,7 @@ $ %s query gov deposit 1 cosmos1skjwj5whet0lpe65qaq4rpq03hjxlwd9nf39lk
 				return fmt.Errorf("failed to fetch proposal-id %d: %s", proposalID, err)
 			}
 
-			depositorAddr, err := sdk.AccAddressFromBech32(args[1])
-			if err != nil {
-				return err
-			}
+			depositorAddr := sdk.AccAddress(args[1])
 
 			res, err := queryClient.Deposit(
 				context.Background(),

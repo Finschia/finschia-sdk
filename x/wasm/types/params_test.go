@@ -13,8 +13,8 @@ import (
 
 func TestValidateParams(t *testing.T) {
 	var (
-		anyAddress     sdk.AccAddress = make([]byte, sdk.AddrLen)
-		invalidAddress                = "invalid address"
+		anyAddress     = sdk.BytesToAccAddress(make([]byte, sdk.BytesAddrLen))
+		invalidAddress = "invalid address"
 	)
 
 	specs := map[string]struct {

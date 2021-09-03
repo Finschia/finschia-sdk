@@ -180,10 +180,12 @@ func queryDepositHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		depositorAddr, err := sdk.AccAddressFromBech32(bechDepositorAddr)
-		if rest.CheckBadRequestError(w, err) {
+		if err := sdk.ValidateAccAddress(bechDepositorAddr); err != nil {
+			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
+
+		depositorAddr := sdk.AccAddress(bechDepositorAddr)
 
 		clientCtx, ok = rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {
@@ -256,11 +258,12 @@ func queryVoteHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		voterAddr, err := sdk.AccAddressFromBech32(bechVoterAddr)
-		if err != nil {
+		if err := sdk.ValidateAccAddress(bechVoterAddr); err != nil {
 			rest.WriteErrorResponse(w, http.StatusBadRequest, err.Error())
 			return
 		}
+
+		voterAddr := sdk.AccAddress(bechVoterAddr)
 
 		clientCtx, ok = rest.ParseQueryHeightOrReturnBadRequest(w, clientCtx, r)
 		if !ok {
@@ -396,17 +399,11 @@ func queryProposalsWithParameterFn(clientCtx client.Context) http.HandlerFunc {
 		)
 
 		if v := r.URL.Query().Get(RestVoter); len(v) != 0 {
-			voterAddr, err = sdk.AccAddressFromBech32(v)
-			if rest.CheckBadRequestError(w, err) {
-				return
-			}
+			voterAddr = sdk.AccAddress(v)
 		}
 
 		if v := r.URL.Query().Get(RestDepositor); len(v) != 0 {
-			depositorAddr, err = sdk.AccAddressFromBech32(v)
-			if rest.CheckBadRequestError(w, err) {
-				return
-			}
+			depositorAddr = sdk.AccAddress(v)
 		}
 
 		if v := r.URL.Query().Get(RestProposalStatus); len(v) != 0 {

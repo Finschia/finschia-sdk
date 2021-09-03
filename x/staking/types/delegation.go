@@ -60,19 +60,17 @@ func UnmarshalDelegation(cdc codec.BinaryMarshaler, value []byte) (delegation De
 }
 
 func (d Delegation) GetDelegatorAddr() sdk.AccAddress {
-	delAddr, err := sdk.AccAddressFromBech32(d.DelegatorAddress)
-	if err != nil {
-		panic(err)
-	}
-	return delAddr
+	return sdk.AccAddress(d.DelegatorAddress)
 }
+
 func (d Delegation) GetValidatorAddr() sdk.ValAddress {
-	addr, err := sdk.ValAddressFromBech32(d.ValidatorAddress)
+	err := sdk.ValidateValAddress(d.ValidatorAddress)
 	if err != nil {
 		panic(err)
 	}
-	return addr
+	return sdk.ValAddress(d.ValidatorAddress)
 }
+
 func (d Delegation) GetShares() sdk.Dec { return d.Shares }
 
 // String returns a human readable string representation of a Delegation.

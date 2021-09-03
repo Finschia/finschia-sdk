@@ -43,7 +43,7 @@ func NewMsgCreateValidator(
 	}
 	return &MsgCreateValidator{
 		Description:       description,
-		DelegatorAddress:  sdk.AccAddress(valAddr).String(),
+		DelegatorAddress:  valAddr.ToAccAddress().String(),
 		ValidatorAddress:  valAddr.String(),
 		Pubkey:            pkAny,
 		Value:             selfDelegation,
@@ -64,17 +64,10 @@ func (msg MsgCreateValidator) Type() string { return TypeMsgCreateValidator }
 // sign the msg as well.
 func (msg MsgCreateValidator) GetSigners() []sdk.AccAddress {
 	// delegator is first signer so delegator pays fees
-	delAddr, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
-	if err != nil {
-		panic(err)
-	}
-	addrs := []sdk.AccAddress{delAddr}
-	addr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	if err != nil {
-		panic(err)
-	}
-	if !bytes.Equal(delAddr.Bytes(), addr.Bytes()) {
-		addrs = append(addrs, sdk.AccAddress(addr))
+	addrs := []sdk.AccAddress{sdk.AccAddress(msg.DelegatorAddress)}
+	valAddr := sdk.ValAddress(msg.ValidatorAddress).ToAccAddress()
+	if !addrs[0].Equals(valAddr) {
+		addrs = append(addrs, valAddr)
 	}
 
 	return addrs
@@ -89,11 +82,11 @@ func (msg MsgCreateValidator) GetSignBytes() []byte {
 // ValidateBasic implements the sdk.Msg interface.
 func (msg MsgCreateValidator) ValidateBasic() error {
 	// note that unmarshaling from bech32 ensures either empty or valid
-	delAddr, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	delAddrBytes, err := sdk.AccAddressToBytes(msg.DelegatorAddress)
 	if err != nil {
 		return err
 	}
-	if delAddr.Empty() {
+	if len(delAddrBytes) == 0 {
 		return ErrEmptyDelegatorAddr
 	}
 
@@ -101,11 +94,11 @@ func (msg MsgCreateValidator) ValidateBasic() error {
 		return ErrEmptyValidatorAddr
 	}
 
-	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
+	valAddrBytes, err := sdk.ValAddressToBytes(msg.ValidatorAddress)
 	if err != nil {
 		return err
 	}
-	if !sdk.AccAddress(valAddr).Equals(delAddr) {
+	if !bytes.Equal(delAddrBytes, valAddrBytes) {
 		return ErrBadValidatorAddr
 	}
 
@@ -165,11 +158,7 @@ func (msg MsgEditValidator) Type() string { return TypeMsgEditValidator }
 
 // GetSigners implements the sdk.Msg interface.
 func (msg MsgEditValidator) GetSigners() []sdk.AccAddress {
-	valAddr, err := sdk.ValAddressFromBech32(msg.ValidatorAddress)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{valAddr.Bytes()}
+	return []sdk.AccAddress{sdk.ValAddress(msg.ValidatorAddress).ToAccAddress()}
 }
 
 // GetSignBytes implements the sdk.Msg interface.
@@ -182,6 +171,9 @@ func (msg MsgEditValidator) GetSignBytes() []byte {
 func (msg MsgEditValidator) ValidateBasic() error {
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 
 	if msg.Description == (Description{}) {
@@ -219,11 +211,11 @@ func (msg MsgDelegate) Type() string { return TypeMsgDelegate }
 
 // GetSigners implements the sdk.Msg interface.
 func (msg MsgDelegate) GetSigners() []sdk.AccAddress {
-	delAddr, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	err := sdk.ValidateAccAddress(msg.DelegatorAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{delAddr}
+	return []sdk.AccAddress{sdk.AccAddress(msg.DelegatorAddress)}
 }
 
 // GetSignBytes implements the sdk.Msg interface.
@@ -237,9 +229,15 @@ func (msg MsgDelegate) ValidateBasic() error {
 	if msg.DelegatorAddress == "" {
 		return ErrEmptyDelegatorAddr
 	}
+	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
+	}
 
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
@@ -270,11 +268,11 @@ func (msg MsgBeginRedelegate) Type() string { return TypeMsgBeginRedelegate }
 
 // GetSigners implements the sdk.Msg interface
 func (msg MsgBeginRedelegate) GetSigners() []sdk.AccAddress {
-	delAddr, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	err := sdk.ValidateAccAddress(msg.DelegatorAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{delAddr}
+	return []sdk.AccAddress{sdk.AccAddress(msg.DelegatorAddress)}
 }
 
 // GetSignBytes implements the sdk.Msg interface.
@@ -288,13 +286,22 @@ func (msg MsgBeginRedelegate) ValidateBasic() error {
 	if msg.DelegatorAddress == "" {
 		return ErrEmptyDelegatorAddr
 	}
+	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
+	}
 
 	if msg.ValidatorSrcAddress == "" {
 		return ErrEmptyValidatorAddr
 	}
+	if err := sdk.ValidateValAddress(msg.ValidatorSrcAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid source validator address (%s)", err)
+	}
 
 	if msg.ValidatorDstAddress == "" {
 		return ErrEmptyValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorDstAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid destination validator address (%s)", err)
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {
@@ -322,11 +329,11 @@ func (msg MsgUndelegate) Type() string { return TypeMsgUndelegate }
 
 // GetSigners implements the sdk.Msg interface.
 func (msg MsgUndelegate) GetSigners() []sdk.AccAddress {
-	delAddr, err := sdk.AccAddressFromBech32(msg.DelegatorAddress)
+	err := sdk.ValidateAccAddress(msg.DelegatorAddress)
 	if err != nil {
 		panic(err)
 	}
-	return []sdk.AccAddress{delAddr}
+	return []sdk.AccAddress{sdk.AccAddress(msg.DelegatorAddress)}
 }
 
 // GetSignBytes implements the sdk.Msg interface.
@@ -340,9 +347,15 @@ func (msg MsgUndelegate) ValidateBasic() error {
 	if msg.DelegatorAddress == "" {
 		return ErrEmptyDelegatorAddr
 	}
+	if err := sdk.ValidateAccAddress(msg.DelegatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid delegator address (%s)", err)
+	}
 
 	if msg.ValidatorAddress == "" {
 		return ErrEmptyValidatorAddr
+	}
+	if err := sdk.ValidateValAddress(msg.ValidatorAddress); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 
 	if !msg.Amount.IsValid() || !msg.Amount.Amount.IsPositive() {

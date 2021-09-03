@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"bytes"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -87,10 +87,11 @@ func TestBalance_GetAddress(t *testing.T) {
 		Address   string
 		wantPanic bool
 	}{
-		{"empty address", "", true},
-		{"malformed address", "invalid", true},
+		{"empty address", "", false},
+		{"malformed address", "invalid", false},
 		{"valid address", "link1qz9c0r2jvpkccx67d5svg8kms6eu3k832hdc6p", false},
 	}
+	// Balance.GetAddress() does not validate the address.
 	for _, tt := range tests {
 		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
@@ -98,7 +99,7 @@ func TestBalance_GetAddress(t *testing.T) {
 			if tt.wantPanic {
 				require.Panics(t, func() { b.GetAddress() })
 			} else {
-				require.False(t, b.GetAddress().Empty())
+				require.True(t, b.GetAddress().Equals(sdk.AccAddress(tt.Address)))
 			}
 		})
 	}
@@ -130,7 +131,7 @@ func TestSanitizeBalances(t *testing.T) {
 		for j := i + 1; j < len(sorted); j++ {
 			aj := sorted[j]
 
-			if got := bytes.Compare(ai.GetAddress(), aj.GetAddress()); got > 0 {
+			if got := strings.Compare(ai.GetAddress().String(), aj.GetAddress().String()); got > 0 {
 				t.Errorf("Balance(%d) > Balance(%d)", i, j)
 			}
 		}
@@ -141,7 +142,7 @@ func makeRandomAddressesAndPublicKeys(n int) (accL []sdk.AccAddress, pkL []*ed25
 	for i := 0; i < n; i++ {
 		pk := ed25519.GenPrivKey().PubKey().(*ed25519.PubKey)
 		pkL = append(pkL, pk)
-		accL = append(accL, sdk.AccAddress(pk.Address()))
+		accL = append(accL, sdk.BytesToAccAddress(pk.Address()))
 	}
 	return accL, pkL
 }

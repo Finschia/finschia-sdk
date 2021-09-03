@@ -1,7 +1,6 @@
 package rest
 
 import (
-	"bytes"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -72,12 +71,9 @@ func newPostDelegationsHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
-		if rest.CheckBadRequestError(w, err) {
-			return
-		}
+		fromAddr := sdk.AccAddress(req.BaseReq.From)
 
-		if !bytes.Equal(fromAddr, req.DelegatorAddress) {
+		if !fromAddr.Equals(req.DelegatorAddress) {
 			rest.WriteErrorResponse(w, http.StatusUnauthorized, "must use own delegator address")
 			return
 		}
@@ -103,12 +99,9 @@ func newPostRedelegationsHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			return
 		}
 
-		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
-		if rest.CheckBadRequestError(w, err) {
-			return
-		}
+		fromAddr := sdk.AccAddress(req.BaseReq.From)
 
-		if !bytes.Equal(fromAddr, req.DelegatorAddress) {
+		if !fromAddr.Equals(req.DelegatorAddress) {
 			rest.WriteErrorResponse(w, http.StatusUnauthorized, "must use own delegator address")
 			return
 		}
@@ -134,12 +127,9 @@ func newPostUnbondingDelegationsHandlerFn(clientCtx client.Context) http.Handler
 			return
 		}
 
-		fromAddr, err := sdk.AccAddressFromBech32(req.BaseReq.From)
-		if rest.CheckBadRequestError(w, err) {
-			return
-		}
+		fromAddr := sdk.AccAddress(req.BaseReq.From)
 
-		if !bytes.Equal(fromAddr, req.DelegatorAddress) {
+		if !fromAddr.Equals(req.DelegatorAddress) {
 			rest.WriteErrorResponse(w, http.StatusUnauthorized, "must use own delegator address")
 			return
 		}

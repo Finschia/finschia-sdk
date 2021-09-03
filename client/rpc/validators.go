@@ -109,7 +109,7 @@ func validatorOutput(validator *osttypes.Validator) (ValidatorOutput, error) {
 	}
 
 	return ValidatorOutput{
-		Address:          sdk.ConsAddress(validator.Address),
+		Address:          sdk.BytesToConsAddress(validator.Address),
 		PubKey:           pk,
 		ProposerPriority: validator.ProposerPriority,
 		VotingPower:      validator.VotingPower,

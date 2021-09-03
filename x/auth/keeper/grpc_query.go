@@ -24,12 +24,10 @@ func (ak AccountKeeper) Account(c context.Context, req *types.QueryAccountReques
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	addr, err := sdk.AccAddressFromBech32(req.Address)
-
-	if err != nil {
+	if err := sdk.ValidateAccAddress(req.Address); err != nil {
 		return nil, err
 	}
-	account := ak.GetAccount(ctx, addr)
+	account := ak.GetAccount(ctx, sdk.AccAddress(req.Address))
 	if account == nil {
 		return nil, status.Errorf(codes.NotFound, "account %s not found", req.Address)
 	}

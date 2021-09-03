@@ -14,11 +14,11 @@ import (
 func TestBech32KeysOutput(t *testing.T) {
 	tmpKey := secp256k1.GenPrivKey().PubKey()
 	bechTmpKey := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, tmpKey)
-	tmpAddr := sdk.AccAddress(tmpKey.Address().Bytes())
+	tmpAddr := sdk.BytesToAccAddress(tmpKey.Address())
 
 	multisigPks := kmultisig.NewLegacyAminoPubKey(1, []types.PubKey{tmpKey})
 	multiInfo := NewMultiInfo("multisig", multisigPks)
-	accAddr := sdk.AccAddress(multiInfo.GetPubKey().Address().Bytes())
+	accAddr := sdk.BytesToAccAddress(multiInfo.GetPubKey().Address())
 	bechPubKey := sdk.MustBech32ifyPubKey(sdk.Bech32PubKeyTypeAccPub, multiInfo.GetPubKey())
 
 	expectedOutput := NewKeyOutput(multiInfo.GetName(), multiInfo.GetType().String(), accAddr.String(), bechPubKey)

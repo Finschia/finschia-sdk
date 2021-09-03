@@ -316,7 +316,9 @@ func PrepareFactory(clientCtx client.Context, txf Factory) (Factory, error) {
 			if err != nil {
 				return txf, err
 			}
-			sigBlockHeight = height
+			// `ctx.Height` of checkTx may be later by 1 block than consensus block height.
+			// Some cli integrated test fails because of this(sigBlockHeight = height).
+			sigBlockHeight = height - 1
 		}
 	}
 

@@ -19,9 +19,9 @@ import (
 // nolint:deadcode,unused,varcheck
 var (
 	delPk1    = ed25519.GenPrivKey().PubKey()
-	delAddr1  = sdk.AccAddress(delPk1.Address())
-	valAddr1  = sdk.ValAddress(delPk1.Address())
-	consAddr1 = sdk.ConsAddress(delPk1.Address().Bytes())
+	delAddr1  = sdk.BytesToAccAddress(delPk1.Address())
+	valAddr1  = sdk.BytesToValAddress(delPk1.Address())
+	consAddr1 = sdk.BytesToConsAddress(delPk1.Address())
 )
 
 func TestDecodeStore(t *testing.T) {
@@ -36,7 +36,7 @@ func TestDecodeStore(t *testing.T) {
 		Pairs: []kv.Pair{
 			{Key: types.ValidatorSigningInfoKey(consAddr1), Value: cdc.MustMarshalBinaryBare(&info)},
 			{Key: types.ValidatorMissedBlockBitArrayKey(consAddr1, 6), Value: cdc.MustMarshalBinaryBare(&missed)},
-			{Key: types.AddrPubkeyRelationKey(delAddr1), Value: cdc.MustMarshalBinaryBare(&gogotypes.StringValue{Value: bechPK})},
+			{Key: types.AddrPubkeyRelationKey(delAddr1.Bytes()), Value: cdc.MustMarshalBinaryBare(&gogotypes.StringValue{Value: bechPK})},
 			{Key: []byte{0x99}, Value: []byte{0x99}},
 		},
 	}

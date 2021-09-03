@@ -104,11 +104,11 @@ func parseStoreCodeArgs(file string, sender sdk.AccAddress, flags *flag.FlagSet)
 		return types.MsgStoreCode{}, fmt.Errorf("instantiate by address: %s", err)
 	}
 	if onlyAddrStr != "" {
-		allowedAddr, err := sdk.AccAddressFromBech32(onlyAddrStr)
+		err := sdk.ValidateAccAddress(onlyAddrStr)
 		if err != nil {
 			return types.MsgStoreCode{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
 		}
-		x := types.AccessTypeOnlyAddress.With(allowedAddr)
+		x := types.AccessTypeOnlyAddress.With(sdk.AccAddress(onlyAddrStr))
 		perm = &x
 	} else {
 		everybodyStr, err := flags.GetString(flagInstantiateByEverybody)
@@ -271,11 +271,11 @@ func parseStoreCodeAndInstantiateContractArgs(file string, initMsg string, sende
 		return types.MsgStoreCodeAndInstantiateContract{}, fmt.Errorf("instantiate by address: %s", err)
 	}
 	if onlyAddrStr != "" {
-		allowedAddr, err := sdk.AccAddressFromBech32(onlyAddrStr)
+		err := sdk.ValidateAccAddress(onlyAddrStr)
 		if err != nil {
 			return types.MsgStoreCodeAndInstantiateContract{}, sdkerrors.Wrap(err, flagInstantiateByAddress)
 		}
-		x := types.AccessTypeOnlyAddress.With(allowedAddr)
+		x := types.AccessTypeOnlyAddress.With(sdk.AccAddress(onlyAddrStr))
 		perm = &x
 	} else {
 		everybodyStr, err := flags.GetString(flagInstantiateByEverybody)
