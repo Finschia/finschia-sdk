@@ -489,7 +489,7 @@ func (s *addressTestSuite) TestGetConsAddress() {
 	pk := secp256k1.GenPrivKey().PubKey()
 	s.Require().NotEqual(types.GetConsAddress(pk), pk.Address())
 	consBytes, _ := types.ConsAddressToBytes(types.GetConsAddress(pk).String())
-	s.Require().True(bytes.Equal(consBytes, pk.Address().Bytes()))
+	s.Require().True(bytes.Equal(consBytes, pk.Address()))
 	s.Require().Panics(func() { types.GetConsAddress(cryptotypes.PubKey(nil)) })
 }
 

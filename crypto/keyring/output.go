@@ -62,7 +62,7 @@ func Bech32ConsKeyOutput(keyInfo Info) (KeyOutput, error) {
 
 // Bech32ValKeyOutput create a KeyOutput in with "val" Bech32 prefixes.
 func Bech32ValKeyOutput(keyInfo Info) (KeyOutput, error) {
-	valAddr := sdk.BytesToValAddress(keyInfo.GetPubKey().Address().Bytes())
+	valAddr := sdk.BytesToValAddress(keyInfo.GetPubKey().Address())
 
 	bechPubKey, err := sdk.Bech32ifyPubKey(sdk.Bech32PubKeyTypeValPub, keyInfo.GetPubKey())
 	if err != nil {

@@ -124,7 +124,7 @@ func NewTestChain(t *testing.T, chainID string) *TestChain {
 
 	// generate genesis account
 	senderPrivKey := secp256k1.GenPrivKey()
-	acc := authtypes.NewBaseAccount(sdk.BytesToAccAddress(senderPrivKey.PubKey().Address().Bytes()),
+	acc := authtypes.NewBaseAccount(sdk.BytesToAccAddress(senderPrivKey.PubKey().Address()),
 		senderPrivKey.PubKey(), 0)
 	balance := banktypes.Balance{
 		Address: acc.GetAddress().String(),

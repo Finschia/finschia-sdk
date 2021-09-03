@@ -227,6 +227,7 @@ func (aa *AccAddress) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
+	// TODO: address validation?
 	*aa = AccAddress(s)
 	return nil
 }
@@ -238,6 +239,7 @@ func (aa *AccAddress) UnmarshalYAML(data []byte) error {
 	if err != nil {
 		return err
 	}
+	// TODO: address validation?
 	*aa = AccAddress(s)
 	return nil
 }
