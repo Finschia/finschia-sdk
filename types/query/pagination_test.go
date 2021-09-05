@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lfb-sdk/baseapp"
@@ -213,7 +213,7 @@ func ExamplePaginate() {
 
 func setupTest() (*simapp.SimApp, sdk.Context, codec.Marshaler) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	db := memdb.NewDB()

@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	simappparams "github.com/line/lfb-sdk/simapp/params"
@@ -18,7 +18,7 @@ func TestProposalContents(t *testing.T) {
 	s := rand.NewSource(1)
 	r := rand.New(s)
 
-	ctx := sdk.NewContext(nil, ostproto.Header{}, true, nil)
+	ctx := sdk.NewContext(nil, ocproto.Header{}, true, nil)
 	accounts := simtypes.RandomAccounts(r, 3)
 
 	// execute ProposalContents function

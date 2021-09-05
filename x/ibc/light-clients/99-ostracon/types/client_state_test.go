@@ -10,7 +10,7 @@ import (
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 	ibcmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
@@ -119,7 +119,7 @@ func (suite *TendermintTestSuite) TestInitialize() {
 		},
 	}
 
-	clientA, err := suite.coordinator.CreateClient(suite.chainA, suite.chainB, exported.Tendermint)
+	clientA, err := suite.coordinator.CreateClient(suite.chainA, suite.chainB, exported.Ostracon)
 	suite.Require().NoError(err)
 
 	clientState := suite.chainA.GetClientState(clientA)
@@ -639,7 +639,7 @@ func (suite *TendermintTestSuite) TestVerifyPacketReceiptAbsence() {
 			suite.Require().NoError(err)
 
 			// need to update chainA's client representing chainB to prove missing ack
-			suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Tendermint)
+			suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Ostracon)
 
 			var ok bool
 			clientStateI := suite.chainA.GetClientState(clientA)
@@ -746,7 +746,7 @@ func (suite *TendermintTestSuite) TestVerifyNextSeqRecv() {
 			suite.Require().NoError(err)
 
 			// need to update chainA's client representing chainB
-			suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Tendermint)
+			suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Ostracon)
 
 			var ok bool
 			clientStateI := suite.chainA.GetClientState(clientA)

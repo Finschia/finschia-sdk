@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	"github.com/line/lfb-sdk/codec"
 	sdk "github.com/line/lfb-sdk/types"
@@ -77,12 +77,12 @@ func checkMisbehaviourHeader(
 	clientState *ClientState, consState *ConsensusState, header *Header, currentTimestamp time.Time,
 ) error {
 
-	tmTrustedValset, err := osttypes.ValidatorSetFromProto(header.TrustedValidators)
+	ocTrustedVoterSet, err := octypes.VoterSetFromProto(header.TrustedVoters)
 	if err != nil {
 		return sdkerrors.Wrap(err, "trusted validator set is not tendermint validator set type")
 	}
 
-	tmCommit, err := osttypes.CommitFromProto(header.Commit)
+	tmCommit, err := octypes.CommitFromProto(header.Commit)
 	if err != nil {
 		return sdkerrors.Wrap(err, "commit is not tendermint commit type")
 	}
@@ -110,8 +110,8 @@ func checkMisbehaviourHeader(
 
 	// - ValidatorSet must have TrustLevel similarity with trusted FromValidatorSet
 	// - ValidatorSets on both headers are valid given the last trusted ValidatorSet
-	if err := tmTrustedValset.VerifyCommitLightTrusting(
-		chainID, tmCommit, clientState.TrustLevel.ToTendermint(),
+	if err := ocTrustedVoterSet.VerifyCommitLightTrusting(
+		chainID, tmCommit, clientState.TrustLevel.ToOstracon(),
 	); err != nil {
 		return sdkerrors.Wrapf(clienttypes.ErrInvalidMisbehaviour, "validator set in header has too much change from trusted validator set: %v", err)
 	}

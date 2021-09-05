@@ -8,8 +8,8 @@ import (
 	"os"
 
 	ostjson "github.com/line/ostracon/libs/json"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	osttypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lfb-sdk/client/flags"
@@ -73,7 +73,7 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 				return fmt.Errorf("error exporting state: %v", err)
 			}
 
-			doc, err := osttypes.GenesisDocFromFile(serverCtx.Config.GenesisFile())
+			doc, err := octypes.GenesisDocFromFile(serverCtx.Config.GenesisFile())
 			if err != nil {
 				return err
 			}
@@ -81,18 +81,18 @@ func ExportCmd(appExporter types.AppExporter, defaultNodeHome string) *cobra.Com
 			doc.AppState = exported.AppState
 			doc.Validators = exported.Validators
 			doc.InitialHeight = exported.Height
-			doc.ConsensusParams = &ostproto.ConsensusParams{
-				Block: ostproto.BlockParams{
+			doc.ConsensusParams = &ocproto.ConsensusParams{
+				Block: ocproto.BlockParams{
 					MaxBytes:   exported.ConsensusParams.Block.MaxBytes,
 					MaxGas:     exported.ConsensusParams.Block.MaxGas,
 					TimeIotaMs: doc.ConsensusParams.Block.TimeIotaMs,
 				},
-				Evidence: ostproto.EvidenceParams{
+				Evidence: ocproto.EvidenceParams{
 					MaxAgeNumBlocks: exported.ConsensusParams.Evidence.MaxAgeNumBlocks,
 					MaxAgeDuration:  exported.ConsensusParams.Evidence.MaxAgeDuration,
 					MaxBytes:        exported.ConsensusParams.Evidence.MaxBytes,
 				},
-				Validator: ostproto.ValidatorParams{
+				Validator: ocproto.ValidatorParams{
 					PubKeyTypes: exported.ConsensusParams.Validator.PubKeyTypes,
 				},
 			}

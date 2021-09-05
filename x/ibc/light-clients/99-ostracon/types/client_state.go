@@ -49,7 +49,7 @@ func (cs ClientState) GetChainID() string {
 
 // ClientType is tendermint.
 func (cs ClientState) ClientType() string {
-	return exported.Tendermint
+	return exported.Ostracon
 }
 
 // GetLatestHeight returns latest block height.
@@ -80,7 +80,7 @@ func (cs ClientState) Validate() error {
 	if strings.TrimSpace(cs.ChainId) == "" {
 		return sdkerrors.Wrap(ErrInvalidChainID, "chain id cannot be empty string")
 	}
-	if err := light.ValidateTrustLevel(cs.TrustLevel.ToTendermint()); err != nil {
+	if err := light.ValidateTrustLevel(cs.TrustLevel.ToOstracon()); err != nil {
 		return err
 	}
 	if cs.TrustingPeriod == 0 {
@@ -140,7 +140,7 @@ func (cs ClientState) ZeroCustomFields() exported.ClientState {
 	}
 }
 
-// Initialize will check that initial consensus state is a Tendermint consensus state
+// Initialize will check that initial consensus state is a Ostracon consensus state
 // and will store ProcessedTime for initial consensus state as ctx.BlockTime()
 func (cs ClientState) Initialize(ctx sdk.Context, _ codec.BinaryMarshaler, clientStore sdk.KVStore, consState exported.ConsensusState) error {
 	if _, ok := consState.(*ConsensusState); !ok {
@@ -192,7 +192,7 @@ func (cs ClientState) VerifyClientState(
 }
 
 // VerifyClientConsensusState verifies a proof of the consensus state of the
-// Tendermint client stored on the target machine.
+// Ostracon client stored on the target machine.
 func (cs ClientState) VerifyClientConsensusState(
 	store sdk.KVStore,
 	cdc codec.BinaryMarshaler,

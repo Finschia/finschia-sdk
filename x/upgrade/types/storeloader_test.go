@@ -9,7 +9,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
@@ -27,7 +27,7 @@ func useUpgradeLoader(height int64, upgrades *store.StoreUpgrades) func(*baseapp
 }
 
 func defaultLogger() log.Logger {
-	return log.NewTMLogger(log.NewSyncWriter(os.Stdout)).With("module", "sdk/app")
+	return log.NewOCLogger(log.NewSyncWriter(os.Stdout)).With("module", "sdk/app")
 }
 
 func initStore(t *testing.T, db tmdb.DB, storeKey string, k, v []byte) {
@@ -126,7 +126,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			for i := int64(2); i <= upgradeHeight-1; i++ {
-				origapp.BeginBlock(abci.RequestBeginBlock{Header: ostproto.Header{Height: i}})
+				origapp.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: i}})
 				res := origapp.Commit()
 				require.NotNil(t, res.Data)
 			}
@@ -142,7 +142,7 @@ func TestSetLoader(t *testing.T) {
 			require.Nil(t, err)
 
 			// "execute" one block
-			app.BeginBlock(abci.RequestBeginBlock{Header: ostproto.Header{Height: upgradeHeight}})
+			app.BeginBlock(abci.RequestBeginBlock{Header: ocproto.Header{Height: upgradeHeight}})
 			res := app.Commit()
 			require.NotNil(t, res.Data)
 

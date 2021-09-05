@@ -3,7 +3,7 @@ package types
 import (
 	"time"
 
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	"github.com/line/lfb-sdk/codec"
 	sdk "github.com/line/lfb-sdk/types"
@@ -85,7 +85,7 @@ func (cs ClientState) unexpireClient(
 	return newClientState, consensusState, nil
 }
 
-// checkProposedHeader checks if the Tendermint header is valid for updating a client after
+// checkProposedHeader checks if the Ostracon header is valid for updating a client after
 // a passed proposal.
 // It returns an error if:
 // - the header provided is not parseable to tendermint types
@@ -96,7 +96,7 @@ func (cs ClientState) unexpireClient(
 // NOTE: header.ValidateBasic is called in the 02-client proposal handler. Additional checks
 // on the validator set and the validator set hash are done in header.ValidateBasic.
 func (cs ClientState) checkProposedHeader(consensusState *ConsensusState, header *Header, currentTimestamp time.Time) error {
-	tmSignedHeader, err := osttypes.SignedHeaderFromProto(header.SignedHeader)
+	tmSignedHeader, err := octypes.SignedHeaderFromProto(header.SignedHeader)
 	if err != nil {
 		return sdkerrors.Wrap(err, "signed header in not tendermint signed header type")
 	}

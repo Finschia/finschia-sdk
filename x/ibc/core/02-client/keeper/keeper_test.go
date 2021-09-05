@@ -6,8 +6,8 @@ import (
 	"time"
 
 	ostbytes "github.com/line/ostracon/libs/bytes"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	osttypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lfb-sdk/baseapp"
@@ -19,8 +19,8 @@ import (
 	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
-	localhosttypes "github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
+	localhoctypes "github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 	ibctestingmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
 	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
@@ -60,9 +60,9 @@ type KeeperTestSuite struct {
 	keeper         *keeper.Keeper
 	consensusState *ibctmtypes.ConsensusState
 	header         *ibctmtypes.Header
-	valSet         *osttypes.ValidatorSet
+	valSet         *octypes.ValidatorSet
 	valSetHash     ostbytes.HexBytes
-	privVal        osttypes.PrivValidator
+	privVal        octypes.PrivValidator
 	now            time.Time
 	past           time.Time
 
@@ -82,7 +82,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	app := simapp.Setup(isCheckTx)
 
 	suite.cdc = app.AppCodec()
-	suite.ctx = app.BaseApp.NewContext(isCheckTx, ostproto.Header{Height: height, ChainID: testClientID, Time: now2})
+	suite.ctx = app.BaseApp.NewContext(isCheckTx, ocproto.Header{Height: height, ChainID: testClientID, Time: now2})
 	suite.keeper = &app.IBCKeeper.ClientKeeper
 	suite.privVal = ibctestingmock.NewPV()
 
@@ -91,10 +91,11 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	testClientHeightMinus1 := types.NewHeight(0, height-1)
 
-	validator := osttypes.NewValidator(pubKey, 1)
-	suite.valSet = osttypes.NewValidatorSet([]*osttypes.Validator{validator})
+	validator := ibctesting.NewTestValidator(pubKey, 1)
+	suite.valSet = octypes.NewValidatorSet([]*octypes.Validator{validator})
 	suite.valSetHash = suite.valSet.Hash()
-	suite.header = suite.chainA.CreateTMClientHeader(testChainID, int64(testClientHeight.RevisionHeight), testClientHeightMinus1, now2, suite.valSet, suite.valSet, []osttypes.PrivValidator{suite.privVal})
+	voterSet := octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
+	suite.header = suite.chainA.CreateOCClientHeader(testChainID, int64(testClientHeight.RevisionHeight), testClientHeightMinus1, now2, suite.valSet, suite.valSet, voterSet, voterSet, []octypes.PrivValidator{suite.privVal})
 	suite.consensusState = ibctmtypes.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot([]byte("hash")), suite.valSetHash)
 
 	var validators stakingtypes.Validators
@@ -117,7 +118,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	// add localhost client
 	revision := types.ParseChainID(suite.chainA.ChainID)
-	localHostClient := localhosttypes.NewClientState(
+	localHostClient := localhoctypes.NewClientState(
 		suite.chainA.ChainID, types.NewHeight(revision, uint64(suite.chainA.GetContext().BlockHeight())),
 	)
 	suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), exported.Localhost, localHostClient)
@@ -171,7 +172,7 @@ func (suite *KeeperTestSuite) TestValidateSelfClient() {
 		},
 		{
 			"invalid client type",
-			localhosttypes.NewClientState(suite.chainA.ChainID, testClientHeight),
+			localhoctypes.NewClientState(suite.chainA.ChainID, testClientHeight),
 			false,
 		},
 		{
@@ -279,7 +280,7 @@ func (suite KeeperTestSuite) TestGetAllGenesisMetadata() {
 
 	genClients := []types.IdentifiedClientState{
 		types.NewIdentifiedClientState("clientA", &ibctmtypes.ClientState{}), types.NewIdentifiedClientState("clientB", &ibctmtypes.ClientState{}),
-		types.NewIdentifiedClientState("clientC", &ibctmtypes.ClientState{}), types.NewIdentifiedClientState("clientD", &localhosttypes.ClientState{}),
+		types.NewIdentifiedClientState("clientC", &ibctmtypes.ClientState{}), types.NewIdentifiedClientState("clientD", &localhoctypes.ClientState{}),
 	}
 
 	suite.chainA.App.IBCKeeper.ClientKeeper.SetAllClientMetadata(suite.chainA.GetContext(), expectedGenMetadata)
@@ -325,9 +326,9 @@ func (suite KeeperTestSuite) TestConsensusStateHelpers() {
 	nextState := ibctmtypes.NewConsensusState(suite.now, commitmenttypes.NewMerkleRoot([]byte("next")), suite.valSetHash)
 
 	testClientHeightPlus5 := types.NewHeight(0, height+5)
-
-	header := suite.chainA.CreateTMClientHeader(testClientID, int64(testClientHeightPlus5.RevisionHeight), testClientHeight, suite.header.Header.Time.Add(time.Minute),
-		suite.valSet, suite.valSet, []osttypes.PrivValidator{suite.privVal})
+	voterSet := octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
+	header := suite.chainA.CreateOCClientHeader(testClientID, int64(testClientHeightPlus5.RevisionHeight), testClientHeight, suite.header.Header.Time.Add(time.Minute),
+		suite.valSet, suite.valSet, voterSet, voterSet, []octypes.PrivValidator{suite.privVal})
 
 	// mock update functionality
 	clientState.LatestHeight = header.GetHeight().(types.Height)
@@ -342,7 +343,7 @@ func (suite KeeperTestSuite) TestConsensusStateHelpers() {
 // 2 clients in total are created on chainA. The first client is updated so it contains an initial consensus state
 // and a consensus state at the update height.
 func (suite KeeperTestSuite) TestGetAllConsensusStates() {
-	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 
 	clientState := suite.chainA.GetClientState(clientA)
 	expConsensusHeight0 := clientState.GetLatestHeight()
@@ -350,7 +351,7 @@ func (suite KeeperTestSuite) TestGetAllConsensusStates() {
 	suite.Require().True(ok)
 
 	// update client to create a second consensus state
-	err := suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Tendermint)
+	err := suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Ostracon)
 	suite.Require().NoError(err)
 
 	clientState = suite.chainA.GetClientState(clientA)
@@ -365,7 +366,7 @@ func (suite KeeperTestSuite) TestGetAllConsensusStates() {
 	}
 
 	// create second client on chainA
-	clientA2, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+	clientA2, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 	clientState = suite.chainA.GetClientState(clientA2)
 
 	expConsensusHeight2 := clientState.GetLatestHeight()

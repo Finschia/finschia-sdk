@@ -13,7 +13,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
@@ -45,7 +45,7 @@ var DefaultConsensusParams = &abci.ConsensusParams{
 	},
 	Validator: &tmproto.ValidatorParams{
 		PubKeyTypes: []string{
-			osttypes.ABCIPubKeyTypeEd25519,
+			octypes.ABCIPubKeyTypeEd25519,
 		},
 	},
 }
@@ -86,7 +86,7 @@ func Setup(isCheckTx bool) *LinkApp {
 // that also act as delegators. For simplicity, each validator is bonded with a delegation
 // of one consensus engine unit (10^6) in the default token of the LinkApp from first genesis
 // account. A Nop logger is set in LinkApp.
-func SetupWithGenesisValSet(t *testing.T, valSet *osttypes.ValidatorSet, genAccs []authtypes.GenesisAccount, opts []wasm.Option, balances ...banktypes.Balance) *LinkApp {
+func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs []authtypes.GenesisAccount, opts []wasm.Option, balances ...banktypes.Balance) *LinkApp {
 	app, genesisState := setup(true, 5, opts...)
 	// set genesis accounts
 	authGenesis := authtypes.NewGenesisState(authtypes.DefaultParams(), genAccs)

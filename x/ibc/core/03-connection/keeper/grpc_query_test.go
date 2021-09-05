@@ -47,7 +47,7 @@ func (suite *KeeperTestSuite) TestQueryConnection() {
 		{
 			"success",
 			func() {
-				clientA, clientB := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+				clientA, clientB := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 				connA := suite.chainA.GetFirstTestConnection(clientA, clientB)
 				connB := suite.chainB.GetFirstTestConnection(clientB, clientA)
 
@@ -111,8 +111,8 @@ func (suite *KeeperTestSuite) TestQueryConnections() {
 		{
 			"success",
 			func() {
-				clientA, clientB, connA0, connB0 := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
-				clientA1, clientB1, connA1, connB1 := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+				clientA, clientB, connA0, connB0 := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
+				clientA1, clientB1, connA1, connB1 := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 				connA2, _, err := suite.coordinator.ConnOpenInit(suite.chainA, suite.chainB, clientA, clientB)
 				suite.Require().NoError(err)
 
@@ -197,7 +197,7 @@ func (suite *KeeperTestSuite) TestQueryClientConnections() {
 		{
 			"success",
 			func() {
-				clientA, clientB, connA0, _ := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+				clientA, clientB, connA0, _ := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 				connA1, _ := suite.coordinator.CreateConnection(suite.chainA, suite.chainB, clientA, clientB)
 				expPaths = []string{connA0.ID, connA1.ID}
 				suite.chainA.App.IBCKeeper.ConnectionKeeper.SetClientConnectionPaths(suite.chainA.GetContext(), clientA, expPaths)
@@ -282,7 +282,7 @@ func (suite *KeeperTestSuite) TestQueryConnectionClientState() {
 		{
 			"success",
 			func() {
-				clientA, _, connA, _ := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+				clientA, _, connA, _ := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 
 				expClientState := suite.chainA.GetClientState(clientA)
 				expIdentifiedClientState = clienttypes.NewIdentifiedClientState(clientA, expClientState)
@@ -375,7 +375,7 @@ func (suite *KeeperTestSuite) TestQueryConnectionConsensusState() {
 		{
 			"success",
 			func() {
-				clientA, _, connA, _ := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+				clientA, _, connA, _ := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 
 				clientState := suite.chainA.GetClientState(clientA)
 				expConsensusState, _ = suite.chainA.GetConsensusState(clientA, clientState.GetLatestHeight())

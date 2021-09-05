@@ -5,7 +5,7 @@ import (
 	"time"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	osttime "github.com/line/ostracon/types/time"
 	"github.com/stretchr/testify/suite"
 
@@ -68,7 +68,7 @@ type IntegrationTestSuite struct {
 
 func (suite *IntegrationTestSuite) SetupTest() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	app.AccountKeeper.SetParams(ctx, authtypes.DefaultParams())
 	app.BankKeeper.SetParams(ctx, types.DefaultParams())
@@ -97,7 +97,7 @@ func (suite *IntegrationTestSuite) TestSupply() {
 
 func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	// add module accounts to supply keeper
@@ -160,7 +160,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 
 func (suite *IntegrationTestSuite) TestSupply_MintCoins() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
 	appCodec := app.AppCodec()
 
 	// add module accounts to supply keeper
@@ -214,7 +214,7 @@ func (suite *IntegrationTestSuite) TestSupply_MintCoins() {
 
 func (suite *IntegrationTestSuite) TestSupply_BurnCoins() {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{Height: 1})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
 	appCodec, _ := simapp.MakeCodecs()
 
 	// add module accounts to supply keeper
@@ -408,7 +408,7 @@ func (suite *IntegrationTestSuite) TestSendCoins() {
 func (suite *IntegrationTestSuite) TestValidateBalance() {
 	app, ctx := suite.app, suite.ctx
 	now := osttime.Now()
-	ctx = ctx.WithBlockHeader(ostproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 	endTime := now.Add(24 * time.Hour)
 
 	addr1 := sdk.AccAddress([]byte("addr1_______________"))
@@ -673,7 +673,7 @@ func (suite *IntegrationTestSuite) TestMsgMultiSendEvents() {
 func (suite *IntegrationTestSuite) TestSpendableCoins() {
 	app, ctx := suite.app, suite.ctx
 	now := osttime.Now()
-	ctx = ctx.WithBlockHeader(ostproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 	endTime := now.Add(24 * time.Hour)
 
 	origCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 100))
@@ -704,7 +704,7 @@ func (suite *IntegrationTestSuite) TestSpendableCoins() {
 func (suite *IntegrationTestSuite) TestVestingAccountSend() {
 	app, ctx := suite.app, suite.ctx
 	now := osttime.Now()
-	ctx = ctx.WithBlockHeader(ostproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 	endTime := now.Add(24 * time.Hour)
 
 	origCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 100))
@@ -734,7 +734,7 @@ func (suite *IntegrationTestSuite) TestVestingAccountSend() {
 func (suite *IntegrationTestSuite) TestPeriodicVestingAccountSend() {
 	app, ctx := suite.app, suite.ctx
 	now := osttime.Now()
-	ctx = ctx.WithBlockHeader(ostproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 	origCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 100))
 	sendCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 50))
 
@@ -767,7 +767,7 @@ func (suite *IntegrationTestSuite) TestPeriodicVestingAccountSend() {
 func (suite *IntegrationTestSuite) TestVestingAccountReceive() {
 	app, ctx := suite.app, suite.ctx
 	now := osttime.Now()
-	ctx = ctx.WithBlockHeader(ostproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 	endTime := now.Add(24 * time.Hour)
 
 	origCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 100))
@@ -801,7 +801,7 @@ func (suite *IntegrationTestSuite) TestVestingAccountReceive() {
 func (suite *IntegrationTestSuite) TestPeriodicVestingAccountReceive() {
 	app, ctx := suite.app, suite.ctx
 	now := osttime.Now()
-	ctx = ctx.WithBlockHeader(ostproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 
 	origCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 100))
 	sendCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 50))
@@ -840,7 +840,7 @@ func (suite *IntegrationTestSuite) TestPeriodicVestingAccountReceive() {
 func (suite *IntegrationTestSuite) TestDelegateCoins() {
 	app, ctx := suite.app, suite.ctx
 	now := osttime.Now()
-	ctx = ctx.WithBlockHeader(ostproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 	endTime := now.Add(24 * time.Hour)
 
 	origCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 100))
@@ -900,7 +900,7 @@ func (suite *IntegrationTestSuite) TestDelegateCoins_Invalid() {
 func (suite *IntegrationTestSuite) TestUndelegateCoins() {
 	app, ctx := suite.app, suite.ctx
 	now := osttime.Now()
-	ctx = ctx.WithBlockHeader(ostproto.Header{Time: now})
+	ctx = ctx.WithBlockHeader(ocproto.Header{Time: now})
 	endTime := now.Add(24 * time.Hour)
 
 	origCoins := sdk.NewCoins(sdk.NewInt64Coin("stake", 100))

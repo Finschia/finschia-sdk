@@ -3,7 +3,7 @@ package multisig
 import (
 	fmt "fmt"
 
-	ostcrypto "github.com/line/ostracon/crypto"
+	occrypto "github.com/line/ostracon/crypto"
 
 	"github.com/line/lfb-sdk/codec/types"
 	cryptotypes "github.com/line/lfb-sdk/crypto/types"
@@ -32,7 +32,7 @@ func NewLegacyAminoPubKey(k int, pubKeys []cryptotypes.PubKey) *LegacyAminoPubKe
 
 // Address implements cryptotypes.PubKey Address method
 func (m *LegacyAminoPubKey) Address() cryptotypes.Address {
-	return ostcrypto.AddressHash(m.Bytes())
+	return occrypto.AddressHash(m.Bytes())
 }
 
 // Bytes returns the proto encoded version of the LegacyAminoPubKey

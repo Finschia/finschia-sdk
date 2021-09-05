@@ -193,7 +193,7 @@ func GetCmdQueryHeader() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			header, height, err := utils.QueryTendermintHeader(clientCtx)
+			header, height, err := utils.QueryOstraconHeader(clientCtx)
 			if err != nil {
 				return err
 			}

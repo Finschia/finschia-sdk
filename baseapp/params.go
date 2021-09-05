@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	sdk "github.com/line/lfb-sdk/types"
 )
@@ -50,7 +50,7 @@ func ValidateBlockParams(i interface{}) error {
 // ValidateEvidenceParams defines a stateless validation on EvidenceParams. This
 // function is called whenever the parameters are updated or stored.
 func ValidateEvidenceParams(i interface{}) error {
-	v, ok := i.(ostproto.EvidenceParams)
+	v, ok := i.(ocproto.EvidenceParams)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}
@@ -73,7 +73,7 @@ func ValidateEvidenceParams(i interface{}) error {
 // ValidateValidatorParams defines a stateless validation on ValidatorParams. This
 // function is called whenever the parameters are updated or stored.
 func ValidateValidatorParams(i interface{}) error {
-	v, ok := i.(ostproto.ValidatorParams)
+	v, ok := i.(ocproto.ValidatorParams)
 	if !ok {
 		return fmt.Errorf("invalid parameter type: %T", i)
 	}

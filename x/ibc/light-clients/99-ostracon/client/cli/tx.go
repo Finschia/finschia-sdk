@@ -19,7 +19,7 @@ import (
 	"github.com/line/lfb-sdk/version"
 	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 const (
@@ -71,7 +71,7 @@ func NewCreateClientCmd() *cobra.Command {
 			lvl, _ := cmd.Flags().GetString(flagTrustLevel)
 
 			if lvl == "default" {
-				trustLevel = types.NewFractionFromTm(light.DefaultTrustLevel)
+				trustLevel = types.NewFractionFromOc(light.DefaultTrustLevel)
 			} else {
 				trustLevel, err = parseFraction(lvl)
 				if err != nil {

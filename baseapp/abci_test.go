@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostprototypes "github.com/line/ostracon/proto/ostracon/types"
+	ocprototypes "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
@@ -106,7 +106,7 @@ func TestGetBlockRentionHeight(t *testing.T) {
 		tc.bapp.SetParamStore(&paramStore{db: memdb.NewDB()})
 		tc.bapp.InitChain(abci.RequestInitChain{
 			ConsensusParams: &abci.ConsensusParams{
-				Evidence: &ostprototypes.EvidenceParams{
+				Evidence: &ocprototypes.EvidenceParams{
 					MaxAgeNumBlocks: tc.maxAgeBlocks,
 				},
 			},

@@ -5,13 +5,13 @@ import (
 	"sort"
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/x/staking/types"
 )
 
-var header = ostproto.Header{
+var header = ocproto.Header{
 	ChainID: "hello",
 	Height:  5,
 }

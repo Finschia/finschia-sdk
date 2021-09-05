@@ -4,7 +4,7 @@ import (
 	"time"
 
 	ostbytes "github.com/line/ostracon/libs/bytes"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	sdkerrors "github.com/line/lfb-sdk/types/errors"
 	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
@@ -23,9 +23,9 @@ func NewConsensusState(
 	}
 }
 
-// ClientType returns Tendermint
+// ClientType returns Ostracon
 func (ConsensusState) ClientType() string {
-	return exported.Tendermint
+	return exported.Ostracon
 }
 
 // GetRoot returns the commitment Root for the specific
@@ -45,7 +45,7 @@ func (cs ConsensusState) ValidateBasic() error {
 	if cs.Root.Empty() {
 		return sdkerrors.Wrap(clienttypes.ErrInvalidConsensus, "root cannot be empty")
 	}
-	if err := osttypes.ValidateHash(cs.NextValidatorsHash); err != nil {
+	if err := octypes.ValidateHash(cs.NextValidatorsHash); err != nil {
 		return sdkerrors.Wrap(err, "next validators hash is invalid")
 	}
 	if cs.Timestamp.Unix() <= 0 {

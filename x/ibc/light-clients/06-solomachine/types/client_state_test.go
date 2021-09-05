@@ -7,7 +7,7 @@ import (
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
 	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
@@ -103,7 +103,7 @@ func (suite *SoloMachineTestSuite) TestInitialize() {
 				false,
 			},
 			{
-				"invalid consensus state: Tendermint consensus state",
+				"invalid consensus state: Ostracon consensus state",
 				&ibctmtypes.ConsensusState{},
 				false,
 			},
@@ -132,7 +132,7 @@ func (suite *SoloMachineTestSuite) TestInitialize() {
 
 func (suite *SoloMachineTestSuite) TestVerifyClientState() {
 	// create client for tendermint so we can use client state for verification
-	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 	clientState := suite.chainA.GetClientState(clientA)
 	path := suite.solomachine.GetClientStatePath(counterpartyClientIdentifier)
 
@@ -258,7 +258,7 @@ func (suite *SoloMachineTestSuite) TestVerifyClientState() {
 
 func (suite *SoloMachineTestSuite) TestVerifyClientConsensusState() {
 	// create client for tendermint so we can use consensus state for verification
-	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 	clientState := suite.chainA.GetClientState(clientA)
 	consensusState, found := suite.chainA.GetConsensusState(clientA, clientState.GetLatestHeight())
 	suite.Require().True(found)

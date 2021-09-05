@@ -6,7 +6,7 @@ import (
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
 	solomachinetypes "github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
@@ -81,7 +81,7 @@ func (suite *TendermintTestSuite) TestGetProcessedTime() {
 	// coordinator increments time before creating client
 	expectedTime := suite.chainA.CurrentHeader.Time.Add(ibctesting.TimeIncrement)
 
-	clientA, err := suite.coordinator.CreateClient(suite.chainA, suite.chainB, exported.Tendermint)
+	clientA, err := suite.coordinator.CreateClient(suite.chainA, suite.chainB, exported.Ostracon)
 	suite.Require().NoError(err)
 
 	clientState := suite.chainA.GetClientState(clientA)
@@ -96,7 +96,7 @@ func (suite *TendermintTestSuite) TestGetProcessedTime() {
 	// coordinator increments time before updating client
 	expectedTime = suite.chainA.CurrentHeader.Time.Add(ibctesting.TimeIncrement)
 
-	err = suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Tendermint)
+	err = suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Ostracon)
 	suite.Require().NoError(err)
 
 	clientState = suite.chainA.GetClientState(clientA)

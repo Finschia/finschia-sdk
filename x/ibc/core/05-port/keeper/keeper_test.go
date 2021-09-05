@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
@@ -28,7 +28,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	isCheckTx := false
 	app := simapp.Setup(isCheckTx)
 
-	suite.ctx = app.BaseApp.NewContext(isCheckTx, ostproto.Header{})
+	suite.ctx = app.BaseApp.NewContext(isCheckTx, ocproto.Header{})
 	suite.keeper = &app.IBCKeeper.PortKeeper
 }
 

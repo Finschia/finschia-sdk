@@ -5,24 +5,24 @@ import (
 	"time"
 
 	ostbytes "github.com/line/ostracon/libs/bytes"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	osttypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lfb-sdk/codec"
 	"github.com/line/lfb-sdk/simapp"
 	sdk "github.com/line/lfb-sdk/types"
 	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 	ibctestingmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
 
 const (
-	chainID                        = "gaia"
-	chainIDRevision0               = "gaia-revision-0"
-	chainIDRevision1               = "gaia-revision-1"
-	clientID                       = "gaiamainnet"
+	chainID                        = "lfb"
+	chainIDRevision0               = "lfb-revision-0"
+	chainIDRevision1               = "lfb-revision-1"
+	clientID                       = "lfbmainnet"
 	trustingPeriod   time.Duration = time.Hour * 24 * 7 * 2
 	ubdPeriod        time.Duration = time.Hour * 24 * 7 * 3
 	maxClockDrift    time.Duration = time.Second * 10
@@ -46,8 +46,8 @@ type TendermintTestSuite struct {
 	// TODO: deprecate usage in favor of testing package
 	ctx        sdk.Context
 	cdc        codec.Marshaler
-	privVal    osttypes.PrivValidator
-	valSet     *osttypes.ValidatorSet
+	privVal    octypes.PrivValidator
+	valSet     *octypes.ValidatorSet
 	valsHash   ostbytes.HexBytes
 	header     *ibctmtypes.Header
 	now        time.Time
@@ -83,11 +83,12 @@ func (suite *TendermintTestSuite) SetupTest() {
 
 	heightMinus1 := clienttypes.NewHeight(0, height.RevisionHeight-1)
 
-	val := osttypes.NewValidator(pubKey, 10)
-	suite.valSet = osttypes.NewValidatorSet([]*osttypes.Validator{val})
+	val := ibctesting.NewTestValidator(pubKey, 10)
+	suite.valSet = octypes.NewValidatorSet([]*octypes.Validator{val})
 	suite.valsHash = suite.valSet.Hash()
-	suite.header = suite.chainA.CreateTMClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, []osttypes.PrivValidator{suite.privVal})
-	suite.ctx = app.BaseApp.NewContext(checkTx, ostproto.Header{Height: 1, Time: suite.now})
+	voterSet := octypes.WrapValidatorsToVoterSet(suite.valSet.Validators)
+	suite.header = suite.chainA.CreateOCClientHeader(chainID, int64(height.RevisionHeight), heightMinus1, suite.now, suite.valSet, suite.valSet, voterSet, voterSet, []octypes.PrivValidator{suite.privVal})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{Height: 1, Time: suite.now})
 }
 
 func TestTendermintTestSuite(t *testing.T) {

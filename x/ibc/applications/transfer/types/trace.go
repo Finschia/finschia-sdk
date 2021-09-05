@@ -8,7 +8,7 @@ import (
 	"strings"
 
 	ostbytes "github.com/line/ostracon/libs/bytes"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	sdk "github.com/line/lfb-sdk/types"
 	sdkerrors "github.com/line/lfb-sdk/types/errors"
@@ -195,7 +195,7 @@ func ParseHexHash(hexHash string) (ostbytes.HexBytes, error) {
 		return nil, err
 	}
 
-	if err := osttypes.ValidateHash(hash); err != nil {
+	if err := octypes.ValidateHash(hash); err != nil {
 		return nil, err
 	}
 

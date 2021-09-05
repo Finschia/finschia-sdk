@@ -5,10 +5,10 @@ import (
 )
 
 const (
-	SubModuleName = "tendermint-client"
+	SubModuleName = "ostracon-client"
 )
 
-// IBC tendermint client sentinel errors
+// IBC ostracon client sentinel errors
 var (
 	ErrInvalidChainID         = sdkerrors.Register(SubModuleName, 2, "invalid chain-id")
 	ErrInvalidTrustingPeriod  = sdkerrors.Register(SubModuleName, 3, "invalid trusting period")
@@ -22,4 +22,5 @@ var (
 	ErrUnbondingPeriodExpired = sdkerrors.Register(SubModuleName, 11, "time since latest trusted state has passed the unbonding period")
 	ErrInvalidProofSpecs      = sdkerrors.Register(SubModuleName, 12, "invalid proof specs")
 	ErrInvalidValidatorSet    = sdkerrors.Register(SubModuleName, 13, "invalid validator set")
+	ErrInvalidVoterSet        = sdkerrors.Register(SubModuleName, 99, "invalid voter set")
 )

@@ -11,7 +11,7 @@ import (
 	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
@@ -114,8 +114,8 @@ func (suite *KeeperTestSuite) TestQueryClientStates() {
 		{
 			"success",
 			func() {
-				clientA1, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
-				clientA2, _ := suite.coordinator.CreateClient(suite.chainA, suite.chainB, exported.Tendermint)
+				clientA1, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
+				clientA2, _ := suite.coordinator.CreateClient(suite.chainA, suite.chainB, exported.Ostracon)
 
 				clientStateA1 := suite.chainA.GetClientState(clientA1)
 				clientStateA2 := suite.chainA.GetClientState(clientA2)

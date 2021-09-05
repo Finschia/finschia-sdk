@@ -25,7 +25,7 @@ For the general specification please refer to the [Interchain Standards](https:/
 
     3.1 [Solo Machine Client](./../light-clients/06-solomachine/spec/README.md)
 
-    3.2 [Tendermint Client](./../light-clients/07-tendermint/spec/README.md)
+    3.2 [Tendermint Client](./../light-clients/99-ostracon/spec/README.md)
 
     3.3 [Localhost Client](./../light-clients/09-localhost/spec/README.md)
 
@@ -46,7 +46,7 @@ in the SDK's `x/ibc` module:
 * [ICS 004 - Channel and Packet Semantics](https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics): Implemented in [`x/ibc/core/04-channel`](github.com/line/lfb-sdk/tree/main/x/ibc/core/04-channel)
 * [ICS 005 - Port Allocation](https://github.com/cosmos/ics/blob/master/spec/core/ics-005-port-allocation): Implemented in [`x/ibc/core/05-port`](github.com/line/lfb-sdk/tree/main/x/ibc/core/05-port)
 * [ICS 006 - Solo Machine Client](https://github.com/cosmos/ics/blob/master/spec/client/ics-006-solo-machine-client): Implemented in [`x/ibc/light-clients/06-solomachine`](https://github.com/line/lfb-sdk/tree/main/x/ibc/light-clients/06-solomachine)
-* [ICS 007 - Tendermint Client](https://github.com/cosmos/ics/blob/master/spec/client/ics-007-tendermint-client): Implemented in [`x/ibc/light-clients/07-tendermint`](https://github.com/line/lfb-sdk/tree/main/x/ibc/light-clients/07-tendermint)
+* [ICS 007 - Tendermint Client](https://github.com/cosmos/ics/blob/master/spec/client/ics-099-ostracon-client): Implemented in [`x/ibc/light-clients/99-ostracon`](https://github.com/line/lfb-sdk/tree/main/x/ibc/light-clients/99-ostracon)
 * [ICS 009 - Loopback Client](https://github.com/cosmos/ibc/tree/master/spec/client/ics-009-loopback-client):  Implemented in [`x/ibc/light-clients/09-localhost`](https://github.com/line/lfb-sdk/tree/main/x/ibc/light-clients/09-localhost)
 * [ICS 018- Relayer Algorithms](https://github.com/cosmos/ibc/tree/master/spec/relayer/ics-018-relayer-algorithms): Not implemented yet.
 * [ICS 020 - Fungible Token Transfer](https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer): Implemented in [`x/ibc/applications/transfer`](https://github.com/line/lfb-sdk/tree/main/x/ibc/applications/transfer)
@@ -90,7 +90,7 @@ x/ibc
 │   └── module.go
 ├── light-clients/
 │   ├── 06-solomachine/
-│   ├── 07-tendermint/
+│   ├── 99-ostracon/
 │   └── 09-localhost/
 └── testing/
 ```

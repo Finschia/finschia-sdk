@@ -62,7 +62,7 @@ func (suite *TransferTestSuite) TestOnChanOpenInit() {
 		suite.Run(tc.name, func() {
 			suite.SetupTest() // reset
 
-			_, _, connA, _ = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, _ = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 			testChannel = suite.chainA.NextTestChannel(connA, ibctesting.TransferPort)
 			counterparty := channeltypes.NewCounterparty(testChannel.PortID, testChannel.ID)
 			channel = &channeltypes.Channel{
@@ -155,7 +155,7 @@ func (suite *TransferTestSuite) TestOnChanOpenTry() {
 		suite.Run(tc.name, func() {
 			suite.SetupTest() // reset
 
-			_, _, connA, _ = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, _ = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 			testChannel = suite.chainA.NextTestChannel(connA, ibctesting.TransferPort)
 			counterparty := channeltypes.NewCounterparty(testChannel.PortID, testChannel.ID)
 			channel = &channeltypes.Channel{
@@ -221,7 +221,7 @@ func (suite *TransferTestSuite) TestOnChanOpenAck() {
 		suite.Run(tc.name, func() {
 			suite.SetupTest() // reset
 
-			_, _, connA, _ = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, _ = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 			testChannel = suite.chainA.NextTestChannel(connA, ibctesting.TransferPort)
 			counterpartyVersion = types.Version
 

@@ -1,7 +1,7 @@
 package baseapp
 
 import (
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	sdk "github.com/line/lfb-sdk/types"
 	sdkerrors "github.com/line/lfb-sdk/types/errors"
@@ -36,7 +36,7 @@ func (app *BaseApp) Deliver(txEncoder sdk.TxEncoder, tx sdk.Tx) (sdk.GasInfo, *s
 }
 
 // Context with current {check, deliver}State of the app used by tests.
-func (app *BaseApp) NewContext(isCheckTx bool, header ostproto.Header) sdk.Context {
+func (app *BaseApp) NewContext(isCheckTx bool, header ocproto.Header) sdk.Context {
 	if isCheckTx {
 		ctx := sdk.NewContext(app.checkState.ms, header, true, app.logger).
 			WithMinGasPrices(app.minGasPrices)
@@ -46,6 +46,6 @@ func (app *BaseApp) NewContext(isCheckTx bool, header ostproto.Header) sdk.Conte
 	return sdk.NewContext(app.deliverState.ms, header, false, app.logger)
 }
 
-func (app *BaseApp) NewUncachedContext(isCheckTx bool, header ostproto.Header) sdk.Context {
+func (app *BaseApp) NewUncachedContext(isCheckTx bool, header ocproto.Header) sdk.Context {
 	return sdk.NewContext(app.cms, header, isCheckTx, app.logger)
 }

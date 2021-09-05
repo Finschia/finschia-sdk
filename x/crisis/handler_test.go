@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/line/ostracon/libs/log"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
@@ -28,7 +28,7 @@ var (
 func createTestApp() (*simapp.SimApp, sdk.Context, []sdk.AccAddress) {
 	db := memdb.NewDB()
 	app := simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, 1, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{})
-	ctx := app.NewContext(true, ostproto.Header{})
+	ctx := app.NewContext(true, ocproto.Header{})
 
 	constantFee := sdk.NewInt64Coin(sdk.DefaultBondDenom, 10)
 	app.CrisisKeeper.SetConstantFee(ctx, constantFee)

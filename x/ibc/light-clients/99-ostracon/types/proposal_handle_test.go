@@ -3,7 +3,7 @@ package types_test
 import (
 	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
@@ -13,7 +13,7 @@ var (
 
 // sanity checks
 func (suite *TendermintTestSuite) TestCheckProposedHeaderAndUpdateStateBasic() {
-	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+	clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 	clientState := suite.chainA.GetClientState(clientA).(*types.ClientState)
 	clientStore := suite.chainA.App.IBCKeeper.ClientKeeper.ClientStore(suite.chainA.GetContext(), clientA)
 
@@ -202,7 +202,7 @@ func (suite *TendermintTestSuite) TestCheckProposedHeaderAndUpdateState() {
 			suite.SetupTest() // reset
 
 			// construct client state based on test case parameters
-			clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+			clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 			clientState := suite.chainA.GetClientState(clientA).(*types.ClientState)
 			clientState.AllowUpdateAfterExpiry = tc.AllowUpdateAfterExpiry
 			clientState.AllowUpdateAfterMisbehaviour = tc.AllowUpdateAfterMisbehaviour
@@ -216,7 +216,7 @@ func (suite *TendermintTestSuite) TestCheckProposedHeaderAndUpdateState() {
 			}
 
 			// use next header for chainB to unfreeze client on chainA
-			unfreezeClientHeader, err := suite.chainA.ConstructUpdateTMClientHeader(suite.chainB, clientA)
+			unfreezeClientHeader, err := suite.chainA.ConstructUpdateOCClientHeader(suite.chainB, clientA)
 			suite.Require().NoError(err)
 
 			clientStore := suite.chainA.App.IBCKeeper.ClientKeeper.ClientStore(suite.chainA.GetContext(), clientA)
@@ -234,7 +234,7 @@ func (suite *TendermintTestSuite) TestCheckProposedHeaderAndUpdateState() {
 
 			// use next header for chainB to unexpire clients but with empty trusted heights
 			// and validators. Update chainB time so header won't be expired.
-			unexpireClientHeader, err := suite.chainA.ConstructUpdateTMClientHeader(suite.chainB, clientA)
+			unexpireClientHeader, err := suite.chainA.ConstructUpdateOCClientHeader(suite.chainB, clientA)
 			suite.Require().NoError(err)
 			unexpireClientHeader.TrustedHeight = clienttypes.ZeroHeight()
 			unexpireClientHeader.TrustedValidators = nil
@@ -320,7 +320,7 @@ func (suite *TendermintTestSuite) TestCheckProposedHeader() {
 		suite.Run(tc.name, func() {
 			suite.SetupTest() // reset
 
-			clientA, _ = suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+			clientA, _ = suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 			clientState = suite.chainA.GetClientState(clientA).(*types.ClientState)
 			clientState.AllowUpdateAfterExpiry = true
 			clientState.AllowUpdateAfterMisbehaviour = false
@@ -332,7 +332,7 @@ func (suite *TendermintTestSuite) TestCheckProposedHeader() {
 
 			// use next header for chainB to unexpire clients but with empty trusted heights
 			// and validators.
-			header, err = suite.chainA.ConstructUpdateTMClientHeader(suite.chainB, clientA)
+			header, err = suite.chainA.ConstructUpdateOCClientHeader(suite.chainB, clientA)
 			suite.Require().NoError(err)
 			header.TrustedHeight = clienttypes.ZeroHeight()
 			header.TrustedValidators = nil

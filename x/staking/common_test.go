@@ -3,7 +3,7 @@ package staking_test
 import (
 	"math/big"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lfb-sdk/codec"
 	"github.com/line/lfb-sdk/crypto/keys/ed25519"
@@ -37,7 +37,7 @@ var (
 // to avoid messing with the hooks.
 func getBaseSimappWithCustomKeeper() (*codec.LegacyAmino, *simapp.SimApp, sdk.Context) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	appCodec := app.AppCodec()
 

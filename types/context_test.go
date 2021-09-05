@@ -8,7 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/suite"
 
@@ -31,7 +31,7 @@ func (s *contextTestSuite) defaultContext(key types.StoreKey) types.Context {
 	cms := store.NewCommitMultiStore(db)
 	cms.MountStoreWithDB(key, types.StoreTypeIAVL, db)
 	s.Require().NoError(cms.LoadLatestVersion())
-	ctx := types.NewContext(cms, ostproto.Header{}, false, log.NewNopLogger())
+	ctx := types.NewContext(cms, ocproto.Header{}, false, log.NewNopLogger())
 	return ctx
 }
 
@@ -93,7 +93,7 @@ func (s *contextTestSuite) TestContextWithCustom() {
 	ctrl := gomock.NewController(s.T())
 	s.T().Cleanup(ctrl.Finish)
 
-	header := ostproto.Header{}
+	header := ocproto.Header{}
 	height := int64(1)
 	chainid := "chainid"
 	ischeck := true
@@ -152,7 +152,7 @@ func (s *contextTestSuite) TestContextHeader() {
 	addr := secp256k1.GenPrivKey().PubKey().Address()
 	proposer := types.ConsAddress(addr)
 
-	ctx = types.NewContext(nil, ostproto.Header{}, false, nil)
+	ctx = types.NewContext(nil, ocproto.Header{}, false, nil)
 
 	ctx = ctx.
 		WithBlockHeight(height).
@@ -166,35 +166,35 @@ func (s *contextTestSuite) TestContextHeader() {
 
 func (s *contextTestSuite) TestContextHeaderClone() {
 	cases := map[string]struct {
-		h ostproto.Header
+		h ocproto.Header
 	}{
 		"empty": {
-			h: ostproto.Header{},
+			h: ocproto.Header{},
 		},
 		"height": {
-			h: ostproto.Header{
+			h: ocproto.Header{
 				Height: 77,
 			},
 		},
 		"time": {
-			h: ostproto.Header{
+			h: ocproto.Header{
 				Time: time.Unix(12345677, 12345),
 			},
 		},
 		"zero time": {
-			h: ostproto.Header{
+			h: ocproto.Header{
 				Time: time.Unix(0, 0),
 			},
 		},
 		"many items": {
-			h: ostproto.Header{
+			h: ocproto.Header{
 				Height:  823,
 				Time:    time.Unix(9999999999, 0),
 				ChainID: "silly-demo",
 			},
 		},
 		"many items with hash": {
-			h: ostproto.Header{
+			h: ocproto.Header{
 				Height:        823,
 				Time:          time.Unix(9999999999, 0),
 				ChainID:       "silly-demo",
@@ -221,7 +221,7 @@ func (s *contextTestSuite) TestContextHeaderClone() {
 }
 
 func (s *contextTestSuite) TestUnwrapSDKContext() {
-	sdkCtx := types.NewContext(nil, ostproto.Header{}, false, nil)
+	sdkCtx := types.NewContext(nil, ocproto.Header{}, false, nil)
 	ctx := types.WrapSDKContext(sdkCtx)
 	sdkCtx2 := types.UnwrapSDKContext(ctx)
 	s.Require().Equal(sdkCtx, sdkCtx2)

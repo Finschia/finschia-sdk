@@ -8,7 +8,7 @@ import (
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	"github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
 )
 

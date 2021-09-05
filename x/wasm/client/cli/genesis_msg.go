@@ -20,7 +20,7 @@ import (
 	genutiltypes "github.com/line/lfb-sdk/x/genutil/types"
 	"github.com/line/lfb-sdk/x/wasm/types"
 	"github.com/line/ostracon/crypto"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 )
 
@@ -370,12 +370,12 @@ func hasContract(state *types.GenesisState, contractAddr string) bool {
 // GenesisData contains raw and unmarshalled data from the genesis file
 type GenesisData struct {
 	GenesisFile     string
-	GenDoc          *osttypes.GenesisDoc
+	GenDoc          *octypes.GenesisDoc
 	AppState        map[string]json.RawMessage
 	WasmModuleState *types.GenesisState
 }
 
-func NewGenesisData(genesisFile string, genDoc *osttypes.GenesisDoc, appState map[string]json.RawMessage, wasmModuleState *types.GenesisState) *GenesisData {
+func NewGenesisData(genesisFile string, genDoc *octypes.GenesisDoc, appState map[string]json.RawMessage, wasmModuleState *types.GenesisState) *GenesisData {
 	return &GenesisData{GenesisFile: genesisFile, GenDoc: genDoc, AppState: appState, WasmModuleState: wasmModuleState}
 }
 

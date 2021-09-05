@@ -23,7 +23,7 @@ import (
 	"github.com/line/lfb-sdk/x/wasm/keeper"
 	"github.com/line/lfb-sdk/x/wasm/types"
 	"github.com/line/ostracon/libs/log"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -633,7 +633,7 @@ func setupGenesis(t *testing.T, wasmGenesis types.GenesisState) string {
 
 	appStateBz, err := json.Marshal(appState)
 	require.NoError(t, err)
-	genDoc := osttypes.GenesisDoc{
+	genDoc := octypes.GenesisDoc{
 		ChainID:  "testing",
 		AppState: appStateBz,
 	}

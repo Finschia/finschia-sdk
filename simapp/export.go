@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"log"
 
-	osttypes "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/proto/ostracon/types"
 
 	servertypes "github.com/line/lfb-sdk/server/types"
 	sdk "github.com/line/lfb-sdk/types"
@@ -19,7 +19,7 @@ func (app *SimApp) ExportAppStateAndValidators(
 	forZeroHeight bool, jailAllowedAddrs []string,
 ) (servertypes.ExportedApp, error) {
 	// as if they could withdraw from the start of the next block
-	ctx := app.NewContext(true, osttypes.Header{Height: app.LastBlockHeight()})
+	ctx := app.NewContext(true, octypes.Header{Height: app.LastBlockHeight()})
 
 	// We export at last height + 1, because that's the height at which
 	// Tendermint will start InitChain.

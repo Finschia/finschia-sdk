@@ -5,7 +5,7 @@ import (
 
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func (suite *TendermintTestSuite) TestConsensusStateValidateBasic() {
@@ -56,7 +56,7 @@ func (suite *TendermintTestSuite) TestConsensusStateValidateBasic() {
 		tc := tc
 
 		// check just to increase coverage
-		suite.Require().Equal(exported.Tendermint, tc.consensusState.ClientType())
+		suite.Require().Equal(exported.Ostracon, tc.consensusState.ClientType())
 		suite.Require().Equal(tc.consensusState.GetRoot(), tc.consensusState.Root)
 
 		err := tc.consensusState.ValidateBasic()

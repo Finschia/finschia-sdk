@@ -13,7 +13,7 @@ import (
 	slashing "github.com/line/lfb-sdk/x/slashing/types"
 	staking "github.com/line/lfb-sdk/x/staking/types"
 	cryptocodec "github.com/line/ostracon/crypto/encoding"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/pkg/errors"
 )
 
@@ -35,7 +35,7 @@ type replacementConfig struct {
 	ConsensusPubkey  string `json:"stargate_consensus_public_key"`
 }
 
-func loadKeydataFromFile(clientCtx client.Context, replacementrJSON string, genDoc *osttypes.GenesisDoc) *osttypes.GenesisDoc {
+func loadKeydataFromFile(clientCtx client.Context, replacementrJSON string, genDoc *octypes.GenesisDoc) *octypes.GenesisDoc {
 	jsonReplacementBlob, err := ioutil.ReadFile(replacementrJSON)
 	if err != nil {
 		log.Fatal(errors.Wrapf(err, "failed to read replacement keys from file %s", replacementrJSON))

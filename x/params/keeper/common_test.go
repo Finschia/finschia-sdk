@@ -2,7 +2,7 @@ package keeper_test
 
 import (
 	"github.com/line/ostracon/libs/log"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lfb-sdk/simapp"
@@ -45,6 +45,6 @@ func defaultContext(key sdk.StoreKey) sdk.Context {
 	if err != nil {
 		panic(err)
 	}
-	ctx := sdk.NewContext(cms, ostproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(cms, ocproto.Header{}, false, log.NewNopLogger())
 	return ctx
 }

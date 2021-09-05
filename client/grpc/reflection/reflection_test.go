@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lfb-sdk/baseapp"
@@ -21,7 +21,7 @@ type IntegrationTestSuite struct {
 func (s *IntegrationTestSuite) SetupSuite() {
 	app := simapp.Setup(false)
 
-	sdkCtx := app.BaseApp.NewContext(false, ostproto.Header{})
+	sdkCtx := app.BaseApp.NewContext(false, ocproto.Header{})
 	queryHelper := baseapp.NewQueryServerTestHelper(sdkCtx, app.InterfaceRegistry())
 	queryClient := reflection.NewReflectionServiceClient(queryHelper)
 	s.queryClient = queryClient

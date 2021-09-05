@@ -10,7 +10,7 @@ import (
 	"github.com/line/lfb-sdk/store/cache"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
@@ -155,8 +155,8 @@ func TestAppImportExport(t *testing.T) {
 	err = json.Unmarshal(exported.AppState, &genesisState)
 	require.NoError(t, err)
 
-	ctxA := app.NewContext(true, ostproto.Header{Height: app.LastBlockHeight()})
-	ctxB := newApp.NewContext(true, ostproto.Header{Height: app.LastBlockHeight()})
+	ctxA := app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()})
+	ctxB := newApp.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()})
 	newApp.mm.InitGenesis(ctxB, app.AppCodec(), genesisState)
 	newApp.StoreConsensusParams(ctxB, exported.ConsensusParams)
 

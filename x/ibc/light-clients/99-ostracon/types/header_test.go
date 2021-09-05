@@ -3,11 +3,11 @@ package types_test
 import (
 	"time"
 
-	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	ocprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func (suite *TendermintTestSuite) TestGetHeight() {
@@ -50,7 +50,7 @@ func (suite *TendermintTestSuite) TestHeaderValidateBasic() {
 			header.ValidatorSet = nil
 		}, false},
 		{"ValidatorSetFromProto failed", func() {
-			header.ValidatorSet.Validators[0].PubKey = ostprotocrypto.PublicKey{}
+			header.ValidatorSet.Validators[0].PubKey = ocprotocrypto.PublicKey{}
 		}, false},
 		{"header validator hash does not equal hash of validator set", func() {
 			// use chainB's randomly generated validator set
@@ -58,7 +58,7 @@ func (suite *TendermintTestSuite) TestHeaderValidateBasic() {
 		}, false},
 	}
 
-	suite.Require().Equal(exported.Tendermint, suite.header.ClientType())
+	suite.Require().Equal(exported.Ostracon, suite.header.ClientType())
 
 	for _, tc := range testCases {
 		tc := tc

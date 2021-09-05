@@ -3,7 +3,7 @@ package vesting_test
 import (
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lfb-sdk/simapp"
@@ -28,7 +28,7 @@ func (suite *HandlerTestSuite) SetupTest() {
 }
 
 func (suite *HandlerTestSuite) TestMsgCreateVestingAccount() {
-	ctx := suite.app.BaseApp.NewContext(false, ostproto.Header{Height: suite.app.LastBlockHeight() + 1})
+	ctx := suite.app.BaseApp.NewContext(false, ocproto.Header{Height: suite.app.LastBlockHeight() + 1})
 
 	balances := sdk.NewCoins(sdk.NewInt64Coin("test", 1000))
 	addr1 := sdk.BytesToAccAddress([]byte("addr1_______________"))
