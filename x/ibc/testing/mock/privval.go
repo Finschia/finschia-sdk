@@ -24,7 +24,7 @@ func NewPV() PV {
 
 // GetPubKey implements PrivValidator interface
 func (pv PV) GetPubKey() (crypto.PubKey, error) {
-	return cryptocodec.ToTmPubKeyInterface(pv.PrivKey.PubKey())
+	return cryptocodec.ToOcPubKeyInterface(pv.PrivKey.PubKey())
 }
 
 // SignVote implements PrivValidator interface

@@ -103,7 +103,7 @@ func (rvo ResultValidatorsOutput) String() string {
 }
 
 func validatorOutput(validator *octypes.Validator) (ValidatorOutput, error) {
-	pk, err := cryptocodec.FromTmPubKeyInterface(validator.PubKey)
+	pk, err := cryptocodec.FromOcPubKeyInterface(validator.PubKey)
 	if err != nil {
 		return ValidatorOutput{}, err
 	}

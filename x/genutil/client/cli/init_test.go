@@ -10,12 +10,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/line/lfb-sdk/client/flags"
+	ed255192 "github.com/line/lfb-sdk/crypto/keys/ed25519"
 	abci_server "github.com/line/ostracon/abci/server"
-	"github.com/line/ostracon/cmd/ostracon/commands"
 	"github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/libs/log"
-	"github.com/line/ostracon/proto/ostracon/crypto"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
@@ -207,23 +205,8 @@ func TestInitNodeValidatorFiles(t *testing.T) {
 
 	require.Nil(t, err)
 	require.NotEqual(t, "", nodeID)
-	require.Equal(t, 37, len(valPubKey.Bytes()))
-	require.EqualValues(t, reflect.TypeOf(crypto.PublicKey_Ed25519{}), reflect.TypeOf(valPubKey))
-}
-
-func TestInitNodeValidatorFilesWithComposite(t *testing.T) {
-	home := t.TempDir()
-	viper.Set(cli.HomeFlag, home)
-	viper.Set(flags.FlagPrivKeyType, "composite")
-	viper.Set(flags.FlagName, "moniker")
-	cfg, err := commands.ParseConfig()
-	cfg.PrivKeyType = viper.GetString(flags.FlagPrivKeyType)
-	require.Nil(t, err)
-	nodeID, valPubKey, err := genutil.InitializeNodeValidatorFiles(cfg)
-	require.Nil(t, err)
-	require.NotEqual(t, "", nodeID)
-	require.Equal(t, 98, len(valPubKey.Bytes()))
-	require.EqualValues(t, reflect.TypeOf(crypto.PublicKey_Composite{}), reflect.TypeOf(valPubKey))
+	require.Equal(t, 32, len(valPubKey.Bytes()))
+	require.EqualValues(t, reflect.TypeOf(&ed255192.PubKey{}), reflect.TypeOf(valPubKey))
 }
 
 // custom tx codec

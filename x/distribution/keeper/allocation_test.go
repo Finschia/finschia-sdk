@@ -60,12 +60,14 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	tstaking.CreateValidator(valAddrs[1], valConsPk2, sdk.NewInt(100), true)
 
 	abciValA := abci.Validator{
-		Address: valConsPk1.Address(),
-		Power:   100,
+		Address:     valConsPk1.Address(),
+		Power:       100,
+		VotingPower: 100,
 	}
 	abciValB := abci.Validator{
-		Address: valConsPk2.Address(),
-		Power:   100,
+		Address:     valConsPk2.Address(),
+		Power:       100,
+		VotingPower: 100,
 	}
 
 	// assert initial state: zero outstanding rewards, zero community pool, zero commission, zero current rewards
@@ -89,12 +91,10 @@ func TestAllocateTokensToManyValidators(t *testing.T) {
 	votes := []abci.VoteInfo{
 		{
 			Validator:       abciValA,
-			VotingPower:     abciValA.Power,
 			SignedLastBlock: true,
 		},
 		{
 			Validator:       abciValB,
-			VotingPower:     abciValB.Power,
 			SignedLastBlock: true,
 		},
 	}
@@ -136,16 +136,19 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	tstaking.CreateValidator(valAddrs[2], valConsPk3, sdk.NewInt(100), true)
 
 	abciValA := abci.Validator{
-		Address: valConsPk1.Address(),
-		Power:   11,
+		Address:     valConsPk1.Address(),
+		Power:       11,
+		VotingPower: 11,
 	}
 	abciValB := abci.Validator{
-		Address: valConsPk2.Address(),
-		Power:   10,
+		Address:     valConsPk2.Address(),
+		Power:       10,
+		VotingPower: 10,
 	}
 	abciValС := abci.Validator{
-		Address: valConsPk3.Address(),
-		Power:   10,
+		Address:     valConsPk3.Address(),
+		Power:       10,
+		VotingPower: 10,
 	}
 
 	// assert initial state: zero outstanding rewards, zero community pool, zero commission, zero current rewards
@@ -172,17 +175,14 @@ func TestAllocateTokensTruncation(t *testing.T) {
 	votes := []abci.VoteInfo{
 		{
 			Validator:       abciValA,
-			VotingPower:     abciValA.Power,
 			SignedLastBlock: true,
 		},
 		{
 			Validator:       abciValB,
-			VotingPower:     abciValB.Power,
 			SignedLastBlock: true,
 		},
 		{
 			Validator:       abciValС,
-			VotingPower:     abciValС.Power,
 			SignedLastBlock: true,
 		},
 	}

@@ -59,7 +59,7 @@ func ShowValidatorCmd() *cobra.Command {
 				return printlnJSON(valPubKey)
 			}
 
-			pubkey, err := cryptocodec.FromTmPubKeyInterface(valPubKey)
+			pubkey, err := cryptocodec.FromOcPubKeyInterface(valPubKey)
 			if err != nil {
 				return err
 			}

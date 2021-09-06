@@ -196,7 +196,7 @@ func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []octypes.Gene
 		if err != nil {
 			return true
 		}
-		tmPk, err := cryptocodec.ToTmPubKeyInterface(pk)
+		tmPk, err := cryptocodec.ToOcPubKeyInterface(pk)
 		if err != nil {
 			return true
 		}

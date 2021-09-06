@@ -15,7 +15,7 @@ func GetOcConsPubKey(v types.Validator) (occrypto.PubKey, error) {
 		return nil, err
 	}
 
-	return cryptocodec.ToTmPubKeyInterface(pk)
+	return cryptocodec.ToOcPubKeyInterface(pk)
 }
 
 // ToOcValidator casts an SDK validator to an ostracon type Validator.

@@ -99,7 +99,7 @@ func SetupWithGenesisValSet(t *testing.T, valSet *octypes.ValidatorSet, genAccs 
 	bondAmt := sdk.NewInt(1000000)
 
 	for _, val := range valSet.Validators {
-		pk, err := cryptocodec.FromTmPubKeyInterface(val.PubKey)
+		pk, err := cryptocodec.FromOcPubKeyInterface(val.PubKey)
 		require.NoError(t, err)
 		pkAny, err := codectypes.NewAnyWithValue(pk)
 		require.NoError(t, err)

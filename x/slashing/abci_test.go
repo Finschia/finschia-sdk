@@ -36,8 +36,9 @@ func TestBeginBlocker(t *testing.T) {
 	require.Equal(t, amt, app.StakingKeeper.Validator(ctx, addr).GetBondedTokens())
 
 	val := abci.Validator{
-		Address: pk.Address(),
-		Power:   power,
+		Address:     pk.Address(),
+		Power:       power,
+		VotingPower: power,
 	}
 
 	// mark the validator as having signed
@@ -45,7 +46,6 @@ func TestBeginBlocker(t *testing.T) {
 		LastCommitInfo: abci.LastCommitInfo{
 			Votes: []abci.VoteInfo{{
 				Validator:       val,
-				VotingPower:     val.Power,
 				SignedLastBlock: true,
 			}},
 		},

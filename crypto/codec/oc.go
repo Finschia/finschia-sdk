@@ -11,8 +11,8 @@ import (
 	sdkerrors "github.com/line/lfb-sdk/types/errors"
 )
 
-// FromTmProtoPublicKey converts a TM's ocprotocrypto.PublicKey into our own PubKey.
-func FromTmProtoPublicKey(protoPk ocprotocrypto.PublicKey) (cryptotypes.PubKey, error) {
+// FromOcProtoPublicKey converts a OC's ocprotocrypto.PublicKey into our own PubKey.
+func FromOcProtoPublicKey(protoPk ocprotocrypto.PublicKey) (cryptotypes.PubKey, error) {
 	switch protoPk := protoPk.Sum.(type) {
 	case *ocprotocrypto.PublicKey_Ed25519:
 		return &ed25519.PubKey{
@@ -27,8 +27,8 @@ func FromTmProtoPublicKey(protoPk ocprotocrypto.PublicKey) (cryptotypes.PubKey, 
 	}
 }
 
-// ToTmProtoPublicKey converts our own PubKey to TM's ocprotocrypto.PublicKey.
-func ToTmProtoPublicKey(pk cryptotypes.PubKey) (ocprotocrypto.PublicKey, error) {
+// ToOcProtoPublicKey converts our own PubKey to OC's ocprotocrypto.PublicKey.
+func ToOcProtoPublicKey(pk cryptotypes.PubKey) (ocprotocrypto.PublicKey, error) {
 	switch pk := pk.(type) {
 	case *ed25519.PubKey:
 		return ocprotocrypto.PublicKey{
@@ -47,22 +47,22 @@ func ToTmProtoPublicKey(pk cryptotypes.PubKey) (ocprotocrypto.PublicKey, error) 
 	}
 }
 
-// FromTmPubKeyInterface converts TM's occrypto.PubKey to our own PubKey.
-func FromTmPubKeyInterface(tmPk occrypto.PubKey) (cryptotypes.PubKey, error) {
-	tmProtoPk, err := encoding.PubKeyToProto(tmPk)
+// FromOcPubKeyInterface converts OC's occrypto.PubKey to our own PubKey.
+func FromOcPubKeyInterface(tmPk occrypto.PubKey) (cryptotypes.PubKey, error) {
+	ocProtoPk, err := encoding.PubKeyToProto(tmPk)
 	if err != nil {
 		return nil, err
 	}
 
-	return FromTmProtoPublicKey(tmProtoPk)
+	return FromOcProtoPublicKey(ocProtoPk)
 }
 
-// ToTmPubKeyInterface converts our own PubKey to TM's occrypto.PubKey.
-func ToTmPubKeyInterface(pk cryptotypes.PubKey) (occrypto.PubKey, error) {
-	tmProtoPk, err := ToTmProtoPublicKey(pk)
+// ToOcPubKeyInterface converts our own PubKey to OC's occrypto.PubKey.
+func ToOcPubKeyInterface(pk cryptotypes.PubKey) (occrypto.PubKey, error) {
+	ocProtoPk, err := ToOcProtoPublicKey(pk)
 	if err != nil {
 		return nil, err
 	}
 
-	return encoding.PubKeyFromProto(&tmProtoPk)
+	return encoding.PubKeyFromProto(&ocProtoPk)
 }

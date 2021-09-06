@@ -312,7 +312,7 @@ func TestValidatorToTm(t *testing.T) {
 		val.Status = types.Bonded
 		val.Tokens = sdk.NewInt(rand.Int63())
 		vals[i] = val
-		tmPk, err := cryptocodec.ToTmPubKeyInterface(pk)
+		tmPk, err := cryptocodec.ToOcPubKeyInterface(pk)
 		require.NoError(t, err)
 		expected[i] = octypes.NewValidator(tmPk, val.ConsensusPower())
 	}

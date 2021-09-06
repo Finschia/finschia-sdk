@@ -440,6 +440,10 @@
   
     - [Msg](#lfb.crisis.v1beta1.Msg)
   
+- [lfb/crypto/composite/keys.proto](#lfb/crypto/composite/keys.proto)
+    - [PrivKey](#lfb.crypto.composite.PrivKey)
+    - [PubKey](#lfb.crypto.composite.PubKey)
+  
 - [lfb/crypto/ed25519/keys.proto](#lfb/crypto/ed25519/keys.proto)
     - [PrivKey](#lfb.crypto.ed25519.PrivKey)
     - [PubKey](#lfb.crypto.ed25519.PubKey)
@@ -6810,6 +6814,54 @@ Msg defines the bank Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `VerifyInvariant` | [MsgVerifyInvariant](#lfb.crisis.v1beta1.MsgVerifyInvariant) | [MsgVerifyInvariantResponse](#lfb.crisis.v1beta1.MsgVerifyInvariantResponse) | VerifyInvariant defines a method to verify a particular invariance. | |
+
+ <!-- end services -->
+
+
+
+<a name="lfb/crypto/composite/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lfb/crypto/composite/keys.proto
+
+
+
+<a name="lfb.crypto.composite.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a composite private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sign_key` | [bytes](#bytes) |  |  |
+| `vrf_key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lfb.crypto.composite.PubKey"></a>
+
+### PubKey
+PubKey defines a composite public key
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `sign_key` | [bytes](#bytes) |  |  |
+| `vrf_key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
 
  <!-- end services -->
 

@@ -487,7 +487,7 @@ func (v Validator) TmConsPublicKey() (ocprotocrypto.PublicKey, error) {
 		return ocprotocrypto.PublicKey{}, err
 	}
 
-	tmPk, err := cryptocodec.ToTmProtoPublicKey(pk)
+	tmPk, err := cryptocodec.ToOcProtoPublicKey(pk)
 	if err != nil {
 		return ocprotocrypto.PublicKey{}, err
 	}
