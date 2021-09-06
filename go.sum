@@ -429,6 +429,9 @@ github.com/line/gorocksdb v0.0.0-20210406043732-d4bea34b6d55 h1:cXVtMiJkvQ4kn0px
 github.com/line/gorocksdb v0.0.0-20210406043732-d4bea34b6d55/go.mod h1:DHRJroSL7NaRkpvocRx3OtRsleXVsYSxBI9SfHFlTQ0=
 github.com/line/iavl/v2 v2.0.0-init.1.0.20210602045707-fddfe1f85001 h1:c2URk0zxM1vRgaRfIFoWkLzvj17nl/To9Q3NUVwY4+g=
 github.com/line/iavl/v2 v2.0.0-init.1.0.20210602045707-fddfe1f85001/go.mod h1:0Xz+0i1nlB9lrjUDEwpDRhcmjfEAkOjd20dRb40FBso=
+github.com/line/ostracon v0.34.9-0.20210429084710-ef4fe0a40c7d/go.mod h1:ttnbq+yQJMQ9a2MT5SEisOoa/+pOgh2KenTiK/rVdiw=
+github.com/line/ostracon v0.34.9-0.20210906083237-658e85d9b160 h1:lA/c9x9KpcUrQ9lR7itFe1CO0k544nwdCW5gCaPWWWw=
+github.com/line/ostracon v0.34.9-0.20210906083237-658e85d9b160/go.mod h1:elTiUFLvBz6Yaze+ZZLlbUnhqKWLJ7cMy/P9rSabafQ=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210824011847-fcfa67dd3c70 h1:Izv/u19P8salnSZGAgNHFugNlzWLgREiL+AmWK8C/lE=
 github.com/line/tm-db/v2 v2.0.0-init.1.0.20210824011847-fcfa67dd3c70/go.mod h1:wmkyPabXjtVZ1dvRofmurjaceghywtCSYGqFuFS+TbI=
