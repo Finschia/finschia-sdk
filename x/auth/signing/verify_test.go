@@ -48,8 +48,8 @@ func TestVerifySignature(t *testing.T) {
 	sbh := uint64(1)
 	fee := legacytx.NewStdFee(50000, sdk.Coins{sdk.NewInt64Coin("atom", 150)})
 	signerData := signing.SignerData{
-		ChainID:        chainId,
-		Sequence:       acc.GetSequence(),
+		ChainID:  chainId,
+		Sequence: acc.GetSequence(),
 	}
 	signBytes := legacytx.StdSignBytes(signerData.ChainID, sbh, signerData.Sequence, 10, fee, msgs, memo)
 	signature, err := priv.Sign(signBytes)

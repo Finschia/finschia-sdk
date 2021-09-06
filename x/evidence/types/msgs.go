@@ -47,6 +47,9 @@ func (m MsgSubmitEvidence) ValidateBasic() error {
 	if m.Submitter == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, m.Submitter)
 	}
+	if err := sdk.ValidateAccAddress(m.Submitter); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid submitter address (%s)", err)
+	}
 
 	evi := m.GetEvidence()
 	if evi == nil {

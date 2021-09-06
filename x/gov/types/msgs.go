@@ -90,6 +90,9 @@ func (m MsgSubmitProposal) ValidateBasic() error {
 	if m.InitialDeposit.IsAnyNegative() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, m.InitialDeposit.String())
 	}
+	if err := sdk.ValidateAccAddress(m.Proposer); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid proposer address (%s)", err)
+	}
 
 	content := m.GetContent()
 	if content == nil {
@@ -145,6 +148,9 @@ func (msg MsgDeposit) ValidateBasic() error {
 	if msg.Depositor == "" {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Depositor)
 	}
+	if err := sdk.ValidateAccAddress(msg.Depositor); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid depositor address (%s)", err)
+	}
 	if !msg.Amount.IsValid() {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidCoins, msg.Amount.String())
 	}
@@ -190,7 +196,7 @@ func (msg MsgVote) ValidateBasic() error {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, msg.Voter)
 	}
 	if err := sdk.ValidateAccAddress(msg.Voter); err != nil {
-		return sdkerrors.Wrap(err, msg.Voter)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid voter address (%s)", err)
 	}
 	if !ValidVoteOption(msg.Option) {
 		return sdkerrors.Wrap(ErrInvalidVote, msg.Option.String())

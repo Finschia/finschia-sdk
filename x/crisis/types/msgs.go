@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lfb-sdk/types/errors"
 )
 
 // ensure Msg interface compliance at compile time
@@ -35,6 +36,9 @@ func (msg MsgVerifyInvariant) GetSignBytes() []byte {
 func (msg MsgVerifyInvariant) ValidateBasic() error {
 	if msg.Sender == "" {
 		return ErrNoSender
+	}
+	if err := sdk.ValidateAccAddress(msg.Sender); err != nil {
+		return errors.Wrapf(errors.ErrInvalidAddress, "Invalid sender address (%s)", err)
 	}
 	return nil
 }

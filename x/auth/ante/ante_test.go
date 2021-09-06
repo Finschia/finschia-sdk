@@ -92,7 +92,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 	// Variable data per test case
 	var (
 		privs   []cryptotypes.PrivKey
-		sbh []uint64
+		sbh     []uint64
 		accSeqs []uint64
 	)
 
@@ -159,6 +159,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 // Test logic around sig block height checking with one signer and many signers.
 func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 	suite.SetupTest(false) // reset
+
 	suite.ctx = suite.ctx.WithBlockHeight(200) // init block height is 200
 
 	// Same data for every test cases
@@ -168,7 +169,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 
 	// Variable data per test case
 	var (
-		sbh []uint64
+		sbh     []uint64
 		msgs    []sdk.Msg
 		privs   []cryptotypes.PrivKey
 		accSeqs []uint64

@@ -127,12 +127,12 @@ func TestMsgDelegate(t *testing.T) {
 		bond          sdk.Coin
 		expectPass    bool
 	}{
-		{"basic good", sdk.AccAddress(valAddr1), valAddr2, coinPos, true},
-		{"self bond", sdk.AccAddress(valAddr1), valAddr1, coinPos, true},
-		{"empty delegator", sdk.AccAddress(emptyAddr), valAddr1, coinPos, false},
-		{"empty validator", sdk.AccAddress(valAddr1), emptyAddr, coinPos, false},
-		{"empty bond", sdk.AccAddress(valAddr1), valAddr2, coinZero, false},
-		{"nil bold", sdk.AccAddress(valAddr1), valAddr2, sdk.Coin{}, false},
+		{"basic good", valAddr1.ToAccAddress(), valAddr2, coinPos, true},
+		{"self bond", valAddr1.ToAccAddress(), valAddr1, coinPos, true},
+		{"empty delegator", emptyAddr.ToAccAddress(), valAddr1, coinPos, false},
+		{"empty validator", valAddr1.ToAccAddress(), emptyAddr, coinPos, false},
+		{"empty bond", valAddr1.ToAccAddress(), valAddr2, coinZero, false},
+		{"nil bold", valAddr1.ToAccAddress(), valAddr2, sdk.Coin{}, false},
 	}
 
 	for _, tc := range tests {
@@ -155,12 +155,12 @@ func TestMsgBeginRedelegate(t *testing.T) {
 		amount           sdk.Coin
 		expectPass       bool
 	}{
-		{"regular", sdk.AccAddress(valAddr1), valAddr2, valAddr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), true},
-		{"zero amount", sdk.AccAddress(valAddr1), valAddr2, valAddr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 0), false},
-		{"nil amount", sdk.AccAddress(valAddr1), valAddr2, valAddr3, sdk.Coin{}, false},
-		{"empty delegator", sdk.AccAddress(emptyAddr), valAddr1, valAddr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
-		{"empty source validator", sdk.AccAddress(valAddr1), emptyAddr, valAddr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
-		{"empty destination validator", sdk.AccAddress(valAddr1), valAddr2, emptyAddr, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
+		{"regular", valAddr1.ToAccAddress(), valAddr2, valAddr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), true},
+		{"zero amount", valAddr1.ToAccAddress(), valAddr2, valAddr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 0), false},
+		{"nil amount", valAddr1.ToAccAddress(), valAddr2, valAddr3, sdk.Coin{}, false},
+		{"empty delegator", emptyAddr.ToAccAddress(), valAddr1, valAddr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
+		{"empty source validator", valAddr1.ToAccAddress(), emptyAddr, valAddr3, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
+		{"empty destination validator", valAddr1.ToAccAddress(), valAddr2, emptyAddr, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
 	}
 
 	for _, tc := range tests {
@@ -182,11 +182,11 @@ func TestMsgUndelegate(t *testing.T) {
 		amount        sdk.Coin
 		expectPass    bool
 	}{
-		{"regular", sdk.AccAddress(valAddr1), valAddr2, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), true},
-		{"zero amount", sdk.AccAddress(valAddr1), valAddr2, sdk.NewInt64Coin(sdk.DefaultBondDenom, 0), false},
-		{"nil amount", sdk.AccAddress(valAddr1), valAddr2, sdk.Coin{}, false},
-		{"empty delegator", sdk.AccAddress(emptyAddr), valAddr1, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
-		{"empty validator", sdk.AccAddress(valAddr1), emptyAddr, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
+		{"regular", valAddr1.ToAccAddress(), valAddr2, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), true},
+		{"zero amount", valAddr1.ToAccAddress(), valAddr2, sdk.NewInt64Coin(sdk.DefaultBondDenom, 0), false},
+		{"nil amount", valAddr1.ToAccAddress(), valAddr2, sdk.Coin{}, false},
+		{"empty delegator", emptyAddr.ToAccAddress(), valAddr1, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
+		{"empty validator", valAddr1.ToAccAddress(), emptyAddr, sdk.NewInt64Coin(sdk.DefaultBondDenom, 1), false},
 	}
 
 	for _, tc := range tests {

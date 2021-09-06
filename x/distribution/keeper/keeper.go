@@ -34,7 +34,7 @@ func NewKeeper(
 ) Keeper {
 
 	// ensure distribution module account is set
-	if addr := ak.GetModuleAddress(types.ModuleName); addr == "" {
+	if addr := ak.GetModuleAddress(types.ModuleName); addr.Empty() {
 		panic(fmt.Sprintf("%s module account has not been set", types.ModuleName))
 	}
 

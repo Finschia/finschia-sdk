@@ -340,7 +340,7 @@ func (suite *AnteTestSuite) TestIncrementSequenceDecorator() {
 	msgs := []sdk.Msg{testdata.NewTestMsg(addr)}
 	suite.Require().NoError(suite.txBuilder.SetMsgs(msgs...))
 	privs := []cryptotypes.PrivKey{priv}
-	sbh := []uint64{ 1 }
+	sbh := []uint64{1}
 	accSeqs := []uint64{suite.app.AccountKeeper.GetAccount(suite.ctx, addr).GetSequence()}
 	feeAmount := testdata.NewTestFeeAmount()
 	gasLimit := testdata.NewTestGasLimit()

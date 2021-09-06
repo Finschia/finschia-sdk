@@ -279,7 +279,6 @@ func (b sortByteArrays) Less(i, j int) bool {
 		return false
 	default:
 		panic("not fail-able with `bytes.Comparable` bounded [-1, 1].")
-		return false
 	}
 }
 

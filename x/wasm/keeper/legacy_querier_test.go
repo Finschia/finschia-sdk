@@ -292,7 +292,7 @@ func TestLegacyQueryContractHistory(t *testing.T) {
 			var defaultQueryGasLimit sdk.Gas = 3000000
 			q := NewLegacyQuerier(keeper, defaultQueryGasLimit)
 			queryContractAddr := spec.srcQueryAddr
-			if queryContractAddr == "" {
+			if queryContractAddr.Empty() {
 				queryContractAddr = myContractAddr
 			}
 

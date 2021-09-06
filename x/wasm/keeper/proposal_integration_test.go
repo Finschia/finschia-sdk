@@ -147,7 +147,7 @@ func TestMigrateProposal(t *testing.T) {
 	var (
 		anyAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
 		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
-		contractAddr                = contractAddress(1, 1)
+		contractAddr = contractAddress(1, 1)
 	)
 
 	contractInfoFixture := types.ContractInfoFixture(func(c *types.ContractInfo) {

@@ -121,6 +121,7 @@ func SetBech32Cache(size int64) {
 	}
 }
 
+// Used only for test cases
 func InvalidateBech32Cache() {
 	bech32Cache.bech32ToAddrCache = nil
 	bech32Cache.addrToBech32Cache = nil
@@ -193,11 +194,7 @@ func (aa AccAddress) Equals(aa2 Address) bool {
 
 // Returns boolean for whether an AccAddress is empty
 func (aa AccAddress) Empty() bool {
-	if len(string(aa)) == 0 {
-		return true
-	}
-
-	return false
+	return len(string(aa)) == 0
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -230,6 +227,7 @@ func (aa *AccAddress) UnmarshalJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
+	// TODO: address validation?
 	*aa = AccAddress(s)
 	return nil
 }
@@ -241,6 +239,7 @@ func (aa *AccAddress) UnmarshalYAML(data []byte) error {
 	if err != nil {
 		return err
 	}
+	// TODO: address validation?
 	*aa = AccAddress(s)
 	return nil
 }
@@ -382,11 +381,7 @@ func (va ValAddress) Equals(va2 Address) bool {
 
 // Returns boolean for whether an AccAddress is empty
 func (va ValAddress) Empty() bool {
-	if va == "" {
-		return true
-	}
-
-	return false
+	return va == ""
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf
@@ -531,11 +526,7 @@ func (ca ConsAddress) Equals(ca2 Address) bool {
 
 // Returns boolean for whether an ConsAddress is empty
 func (ca ConsAddress) Empty() bool {
-	if ca == "" {
-		return true
-	}
-
-	return false
+	return ca == ""
 }
 
 // Marshal returns the raw address bytes. It is needed for protobuf

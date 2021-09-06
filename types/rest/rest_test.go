@@ -180,10 +180,10 @@ func TestProcessPostResponse(t *testing.T) {
 
 	t.Parallel()
 	type mockAccount struct {
-		Address       types.AccAddress   `json:"address"`
-		Coins         types.Coins        `json:"coins"`
-		PubKey        cryptotypes.PubKey `json:"public_key"`
-		Sequence      uint64             `json:"sequence"`
+		Address  types.AccAddress   `json:"address"`
+		Coins    types.Coins        `json:"coins"`
+		PubKey   cryptotypes.PubKey `json:"public_key"`
+		Sequence uint64             `json:"sequence"`
 	}
 
 	// setup
