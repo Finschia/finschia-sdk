@@ -24,7 +24,7 @@ type ValidatorI interface {
 	IsUnbonding() bool                                      // check if has status unbonding
 	GetOperator() sdk.ValAddress                            // operator address to receive/return validators coins
 	ConsPubKey() (cryptotypes.PubKey, error)                // validation consensus pubkey (cryptotypes.PubKey)
-	TmConsPublicKey() (ocprotocrypto.PublicKey, error)     // validation consensus pubkey (Tendermint)
+	OcConsPublicKey() (ocprotocrypto.PublicKey, error)      // validation consensus pubkey (Ostracon)
 	GetConsAddr() (sdk.ConsAddress, error)                  // validation consensus address
 	GetTokens() sdk.Int                                     // validation tokens
 	GetBondedTokens() sdk.Int                               // validator bonded tokens

@@ -88,13 +88,13 @@ type TestChain struct {
 	App           *simapp.SimApp
 	ChainID       string
 	LastHeader    *ibctmtypes.Header // header for last block height committed
-	CurrentHeader ocproto.Header    // header for current block height
+	CurrentHeader ocproto.Header     // header for current block height
 	QueryServer   types.QueryServer
 	TxConfig      client.TxConfig
 	Codec         codec.BinaryMarshaler
 
-	Vals     *octypes.ValidatorSet
-	Voters   *octypes.VoterSet
+	Vals   *octypes.ValidatorSet
+	Voters *octypes.VoterSet
 
 	Signers []octypes.PrivValidator
 

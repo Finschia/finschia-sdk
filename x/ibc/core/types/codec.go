@@ -7,8 +7,8 @@ import (
 	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
 	solomachinetypes "github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	localhoctypes "github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // RegisterInterfaces registers x/ibc interfaces into protobuf Any.
