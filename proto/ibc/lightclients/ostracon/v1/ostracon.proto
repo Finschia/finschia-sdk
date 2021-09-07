@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ibc.lightclients.tendermint.v1;
+package ibc.lightclients.ostracon.v1;
 
 option go_package = "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types";
 

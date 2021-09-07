@@ -18,7 +18,7 @@ import (
 	"github.com/line/lfb-sdk/version"
 )
 
-// ValidatorInfo is info about the node's validator, same as Tendermint,
+// ValidatorInfo is info about the node's validator, same as Ostracon,
 // except that we use our own PubKey.
 type validatorInfo struct {
 	Address     bytes.HexBytes
@@ -26,7 +26,7 @@ type validatorInfo struct {
 	VotingPower int64
 }
 
-// ResultStatus is node's info, same as Tendermint, except that we use our own
+// ResultStatus is node's info, same as Ostracon, except that we use our own
 // PubKey.
 type resultStatus struct {
 	NodeInfo      p2p.DefaultNodeInfo
@@ -50,7 +50,7 @@ func StatusCommand() *cobra.Command {
 				return err
 			}
 
-			// `status` has TM pubkeys, we need to convert them to our pubkeys.
+			// `status` has OC pubkeys, we need to convert them to our pubkeys.
 			pk, err := cryptocodec.FromOcPubKeyInterface(status.ValidatorInfo.PubKey)
 			if err != nil {
 				return err
