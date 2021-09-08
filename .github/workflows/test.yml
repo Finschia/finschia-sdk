@@ -63,7 +63,7 @@ jobs:
             go.mod
             go.sum
       - name: Build
-        run: GOARCH=${{ matrix.goarch }} CC=${{ matrix.gcc }} LEDGER_ENABLED=false make build
+        run: GOOS=linux GOARCH=${{ matrix.goarch }} CC=${{ matrix.gcc }} LEDGER_ENABLED=false make build
 
   # TODO: disable test-race. please enable this after fixing concurrent checkTx
   # test-cosmovisor:
