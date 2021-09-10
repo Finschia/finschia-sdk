@@ -20,7 +20,7 @@ require (
 	github.com/go-kit/kit v0.11.0
 	github.com/gogo/gateway v1.1.0
 	github.com/gogo/protobuf v1.3.3
-	github.com/golang/mock v1.4.4
+	github.com/golang/mock v1.6.0
 	github.com/golang/protobuf v1.5.2
 	github.com/google/gofuzz v1.2.0
 	github.com/gorilla/handlers v1.5.1
