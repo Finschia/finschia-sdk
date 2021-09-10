@@ -51,6 +51,7 @@
 * (wasm) [\#253](https://github.com/line/lfb-sdk/pull/253) remove MaxGas const
 * (wasm) [\#254](https://github.com/line/lfb-sdk/pull/254) Specify wasm event types
 * (x) [\#255](https://github.com/line/lfb-sdk/pull/255) Remove legacy from modules
+* (perf) [\#320](https:/github.com/line/lfb-sdk/pull/320) internal objects optimization (BaseAccount, Balance & Supply)
 
 ### Bug Fixes
 * (test) [\#92](https://github.com/line/lfb-sdk/pull/92) Fix SendToModuleAccountTest
