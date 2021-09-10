@@ -1,12 +1,12 @@
 package types
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/msgservice"
-	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
 // RegisterLegacyAminoCodec registers the account interfaces and concrete types on the
@@ -15,9 +15,9 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*ModuleAccountI)(nil), nil)
 	cdc.RegisterInterface((*GenesisAccount)(nil), nil)
 	cdc.RegisterInterface((*AccountI)(nil), nil)
-	cdc.RegisterConcrete(&BaseAccount{}, "lfb-sdk/BaseAccount", nil)
-	cdc.RegisterConcrete(&ModuleAccount{}, "lfb-sdk/ModuleAccount", nil)
-	cdc.RegisterConcrete(&MsgEmpty{}, "lfb-sdk/MsgEmpty", nil)
+	cdc.RegisterConcrete(&BaseAccount{}, "lbm-sdk/BaseAccount", nil)
+	cdc.RegisterConcrete(&ModuleAccount{}, "lbm-sdk/ModuleAccount", nil)
+	cdc.RegisterConcrete(&MsgEmpty{}, "lbm-sdk/MsgEmpty", nil)
 
 	legacytx.RegisterLegacyAminoCodec(cdc)
 }
@@ -31,14 +31,14 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
 	registry.RegisterInterface(
-		"lfb.auth.v1beta1.AccountI",
+		"lbm.auth.v1beta1.AccountI",
 		(*AccountI)(nil),
 		&BaseAccount{},
 		&ModuleAccount{},
 	)
 
 	registry.RegisterInterface(
-		"lfb.auth.v1beta1.GenesisAccount",
+		"lbm.auth.v1beta1.GenesisAccount",
 		(*GenesisAccount)(nil),
 		&BaseAccount{},
 		&ModuleAccount{},

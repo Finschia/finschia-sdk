@@ -3,11 +3,11 @@ package tx
 import (
 	"github.com/spf13/pflag"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/crypto/keyring"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/crypto/keyring"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/tx/signing"
 )
 
 // Factory defines a client transaction factory that facilitates generating and

@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 )
 
 // GetAllowedClients retrieves the receive enabled boolean from the paramstore

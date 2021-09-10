@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/line/lfb-sdk/cosmovisor"
+	"github.com/line/lbm-sdk/cosmovisor"
 )
 
 func main() {

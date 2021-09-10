@@ -6,10 +6,10 @@ import (
 	gocontext "context"
 	"fmt"
 
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/query"
-	"github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/x/bank/types"
 )
 
 func (suite *IntegrationTestSuite) TestQueryBalance() {

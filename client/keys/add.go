@@ -12,14 +12,14 @@ import (
 	"github.com/line/ostracon/libs/cli"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/input"
-	"github.com/line/lfb-sdk/crypto/hd"
-	"github.com/line/lfb-sdk/crypto/keyring"
-	"github.com/line/lfb-sdk/crypto/keys/multisig"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/input"
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/keyring"
+	"github.com/line/lbm-sdk/crypto/keys/multisig"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const (
@@ -34,7 +34,7 @@ const (
 	flagHDPath      = "hd-path"
 
 	// CoinTypeNotAssigned means a coin type not assigned
-	// lfb-sdk cannot support the coin type MaxUint32
+	// lbm-sdk cannot support the coin type MaxUint32
 	CoinTypeNotAssigned = math.MaxUint32
 )
 

@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"testing"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/crypto/hd"
-	"github.com/line/lfb-sdk/crypto/keyring"
-	"github.com/line/lfb-sdk/testutil"
-	"github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/keyring"
+	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 

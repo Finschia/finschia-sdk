@@ -6,7 +6,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lbm-sdk/codec/types"
 )
 
 type QueryImpl struct{}

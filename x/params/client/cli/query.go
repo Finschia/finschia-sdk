@@ -5,10 +5,10 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/x/params/types"
-	"github.com/line/lfb-sdk/x/params/types/proposal"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/x/params/types"
+	"github.com/line/lbm-sdk/x/params/types/proposal"
 )
 
 // NewQueryCmd returns a root CLI command handler for all x/params query commands.

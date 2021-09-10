@@ -1,9 +1,9 @@
 package params
 
 import (
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
 )
 
 // EncodingConfig specifies the concrete encoding types to use for a given app.

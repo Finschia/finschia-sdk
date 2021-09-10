@@ -3,10 +3,10 @@
 package types
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	auth "github.com/line/lfb-sdk/x/auth/types"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/types"
+	auth "github.com/line/lbm-sdk/x/auth/types"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 // AccountKeeper expected account keeper

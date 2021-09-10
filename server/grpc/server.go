@@ -8,8 +8,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/server/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/server/types"
 )
 
 // StartGRPCServer starts a gRPC server on the given address.

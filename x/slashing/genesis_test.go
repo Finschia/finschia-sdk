@@ -7,11 +7,11 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/simapp"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/slashing"
-	"github.com/line/lfb-sdk/x/slashing/testslashing"
-	"github.com/line/lfb-sdk/x/slashing/types"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/slashing"
+	"github.com/line/lbm-sdk/x/slashing/testslashing"
+	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
 func TestExportAndInitGenesis(t *testing.T) {

@@ -4,8 +4,8 @@ package rest
 import (
 	"net/http"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/types/errors"
 )
 
 // HTTPStatusMappingTable is map to mapping an error type and a http status

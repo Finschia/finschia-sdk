@@ -5,12 +5,12 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lbm-sdk/simapp"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/store"
-	sdk "github.com/line/lfb-sdk/types"
-	paramskeeper "github.com/line/lfb-sdk/x/params/keeper"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store"
+	sdk "github.com/line/lbm-sdk/types"
+	paramskeeper "github.com/line/lbm-sdk/x/params/keeper"
 )
 
 func testComponents() (*codec.LegacyAmino, sdk.Context, sdk.StoreKey, paramskeeper.Keeper) {

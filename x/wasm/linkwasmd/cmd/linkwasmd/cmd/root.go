@@ -7,25 +7,25 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/debug"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/keys"
-	"github.com/line/lfb-sdk/client/rpc"
-	"github.com/line/lfb-sdk/server"
-	servertypes "github.com/line/lfb-sdk/server/types"
-	"github.com/line/lfb-sdk/snapshots"
-	"github.com/line/lfb-sdk/store"
-	sdk "github.com/line/lfb-sdk/types"
-	authclient "github.com/line/lfb-sdk/x/auth/client"
-	authcmd "github.com/line/lfb-sdk/x/auth/client/cli"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	vestingcli "github.com/line/lfb-sdk/x/auth/vesting/client/cli"
-	banktypes "github.com/line/lfb-sdk/x/bank/types"
-	"github.com/line/lfb-sdk/x/crisis"
-	genutilcli "github.com/line/lfb-sdk/x/genutil/client/cli"
-	"github.com/line/lfb-sdk/x/wasm"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/debug"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/keys"
+	"github.com/line/lbm-sdk/client/rpc"
+	"github.com/line/lbm-sdk/server"
+	servertypes "github.com/line/lbm-sdk/server/types"
+	"github.com/line/lbm-sdk/snapshots"
+	"github.com/line/lbm-sdk/store"
+	sdk "github.com/line/lbm-sdk/types"
+	authclient "github.com/line/lbm-sdk/x/auth/client"
+	authcmd "github.com/line/lbm-sdk/x/auth/client/cli"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	vestingcli "github.com/line/lbm-sdk/x/auth/vesting/client/cli"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/x/crisis"
+	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
+	"github.com/line/lbm-sdk/x/wasm"
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/libs/log"
 	dbm "github.com/line/tm-db/v2"
@@ -33,9 +33,9 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"github.com/line/lfb-sdk/x/wasm/linkwasmd/app"
-	"github.com/line/lfb-sdk/x/wasm/linkwasmd/app/params"
-	lfbtypes "github.com/line/lfb-sdk/x/wasm/linkwasmd/types"
+	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app"
+	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app/params"
+	lbmtypes "github.com/line/lbm-sdk/x/wasm/linkwasmd/types"
 )
 
 const (
@@ -236,16 +236,16 @@ func createLinkAppAndExport(
 	return linkApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs)
 }
 
-func lfbPreRunE(cmd *cobra.Command) (err error) {
+func lbmPreRunE(cmd *cobra.Command) (err error) {
 	err = server.InterceptConfigsPreRunHandler(cmd)
 
 	testnet := viper.GetBool(flagTestnet)
 	config := sdk.GetConfig()
-	config.SetBech32PrefixForAccount(lfbtypes.Bech32PrefixAcc(testnet), lfbtypes.Bech32PrefixAccPub(testnet))
-	config.SetBech32PrefixForConsensusNode(lfbtypes.Bech32PrefixConsAddr(testnet), lfbtypes.Bech32PrefixConsPub(testnet))
-	config.SetBech32PrefixForValidator(lfbtypes.Bech32PrefixValAddr(testnet), lfbtypes.Bech32PrefixValPub(testnet))
-	config.SetCoinType(lfbtypes.CoinType)
-	config.SetFullFundraiserPath(lfbtypes.FullFundraiserPath)
+	config.SetBech32PrefixForAccount(lbmtypes.Bech32PrefixAcc(testnet), lbmtypes.Bech32PrefixAccPub(testnet))
+	config.SetBech32PrefixForConsensusNode(lbmtypes.Bech32PrefixConsAddr(testnet), lbmtypes.Bech32PrefixConsPub(testnet))
+	config.SetBech32PrefixForValidator(lbmtypes.Bech32PrefixValAddr(testnet), lbmtypes.Bech32PrefixValPub(testnet))
+	config.SetCoinType(lbmtypes.CoinType)
+	config.SetFullFundraiserPath(lbmtypes.FullFundraiserPath)
 	config.Seal()
 
 	ctx := server.GetServerContextFromCmd(cmd)

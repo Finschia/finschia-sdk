@@ -8,13 +8,13 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/tx"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/version"
-	"github.com/line/lfb-sdk/x/distribution/types"
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/tx"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/version"
+	"github.com/line/lbm-sdk/x/distribution/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Transaction flags for the x/distribution module

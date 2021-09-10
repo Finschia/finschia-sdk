@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lfb-sdk/x/simulation"
+	"github.com/line/lbm-sdk/x/simulation"
 
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/staking/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 // ParamChanges defines the parameters that can be modified by param change proposals

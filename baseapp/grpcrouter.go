@@ -10,10 +10,10 @@ import (
 	"google.golang.org/grpc/encoding"
 	"google.golang.org/grpc/encoding/proto"
 
-	"github.com/line/lfb-sdk/client/grpc/reflection"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lbm-sdk/client/grpc/reflection"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 var protoCodec = encoding.GetCodec(proto.Name)

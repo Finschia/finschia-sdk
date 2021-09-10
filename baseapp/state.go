@@ -1,7 +1,7 @@
 package baseapp
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 type state struct {

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // NewGenesisState creates a new GenesisState object

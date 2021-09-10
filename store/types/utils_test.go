@@ -8,8 +8,8 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lfb-sdk/store/rootmulti"
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/rootmulti"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 func initTestStores(t *testing.T) (types.KVStore, types.KVStore) {

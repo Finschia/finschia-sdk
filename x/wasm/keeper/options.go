@@ -3,7 +3,7 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/prometheus/client_golang/prometheus"
 )
 

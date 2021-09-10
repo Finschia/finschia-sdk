@@ -13,18 +13,18 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/module"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	eviclient "github.com/line/lfb-sdk/x/evidence/client"
-	"github.com/line/lfb-sdk/x/evidence/client/cli"
-	"github.com/line/lfb-sdk/x/evidence/client/rest"
-	"github.com/line/lfb-sdk/x/evidence/keeper"
-	"github.com/line/lfb-sdk/x/evidence/simulation"
-	"github.com/line/lfb-sdk/x/evidence/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	eviclient "github.com/line/lbm-sdk/x/evidence/client"
+	"github.com/line/lbm-sdk/x/evidence/client/cli"
+	"github.com/line/lbm-sdk/x/evidence/client/rest"
+	"github.com/line/lbm-sdk/x/evidence/keeper"
+	"github.com/line/lbm-sdk/x/evidence/simulation"
+	"github.com/line/lbm-sdk/x/evidence/types"
 )
 
 var (

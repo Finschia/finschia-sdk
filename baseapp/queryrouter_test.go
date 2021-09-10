@@ -7,7 +7,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var testQuerier = func(_ sdk.Context, _ []string, _ abci.RequestQuery) ([]byte, error) {

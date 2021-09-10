@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/types/module"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/simulation"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/types/module"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/simulation"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
 // TestRandomizedGenState tests the normal scenario of applying RandomizedGenState.

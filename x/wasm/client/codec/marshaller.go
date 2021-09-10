@@ -6,8 +6,8 @@ import (
 
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
 )
 
 var _ codec.Marshaler = (*ProtoCodec)(nil)

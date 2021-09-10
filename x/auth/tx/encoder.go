@@ -5,9 +5,9 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	txtypes "github.com/line/lfb-sdk/types/tx"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	txtypes "github.com/line/lbm-sdk/types/tx"
 )
 
 // DefaultTxEncoder returns a default protobuf TxEncoder using the provided Marshaler

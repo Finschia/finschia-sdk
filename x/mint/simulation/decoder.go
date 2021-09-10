@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/x/mint/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/x/mint/types"
 )
 
 // NewDecodeStore returns a decoder function closure that umarshals the KVPair's

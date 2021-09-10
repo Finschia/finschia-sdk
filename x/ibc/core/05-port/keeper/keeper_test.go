@@ -7,9 +7,9 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/simapp"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/ibc/core/05-port/keeper"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/ibc/core/05-port/keeper"
 )
 
 var (

@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/distribution/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/distribution/types"
 )
 
 // InitGenesis sets distribution information for genesis

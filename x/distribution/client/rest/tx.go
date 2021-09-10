@@ -5,12 +5,12 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/tx"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/rest"
-	"github.com/line/lfb-sdk/x/distribution/client/common"
-	"github.com/line/lfb-sdk/x/distribution/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/tx"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/rest"
+	"github.com/line/lbm-sdk/x/distribution/client/common"
+	"github.com/line/lbm-sdk/x/distribution/types"
 )
 
 type (

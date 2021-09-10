@@ -6,10 +6,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/evidence/exported"
-	"github.com/line/lfb-sdk/x/evidence/types"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/evidence/exported"
+	"github.com/line/lbm-sdk/x/evidence/types"
 )
 
 func testMsgSubmitEvidence(t *testing.T, e exported.Evidence, s sdk.AccAddress) exported.MsgSubmitEvidenceI {

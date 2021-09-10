@@ -5,12 +5,12 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/std"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/auth/testutil"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/std"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/testutil"
 )
 
 func TestGenerator(t *testing.T) {

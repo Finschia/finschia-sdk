@@ -4,17 +4,17 @@ import (
 	ostbytes "github.com/line/ostracon/libs/bytes"
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/store/prefix"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	capabilitykeeper "github.com/line/lfb-sdk/x/capability/keeper"
-	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/prefix"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
 
 // Keeper defines the IBC fungible transfer keeper

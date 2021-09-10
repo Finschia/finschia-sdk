@@ -10,31 +10,31 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/crypto/hd"
-	"github.com/line/lfb-sdk/crypto/keyring"
-	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/testutil"
-	clitestutil "github.com/line/lfb-sdk/testutil/cli"
-	"github.com/line/lfb-sdk/testutil/network"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/tx"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	authcli "github.com/line/lfb-sdk/x/auth/client/cli"
-	authrest "github.com/line/lfb-sdk/x/auth/client/rest"
-	authtest "github.com/line/lfb-sdk/x/auth/client/testutil"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	bankcli "github.com/line/lfb-sdk/x/bank/client/testutil"
-	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/keyring"
+	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/tx"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	authcli "github.com/line/lbm-sdk/x/auth/client/cli"
+	authrest "github.com/line/lbm-sdk/x/auth/client/rest"
+	authtest "github.com/line/lbm-sdk/x/auth/client/testutil"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	bankcli "github.com/line/lbm-sdk/x/bank/client/testutil"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
 type IntegrationTestSuite struct {
@@ -292,7 +292,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmd() {
 			"happy case (service Msg)",
 			[]string{txRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			false,
-			"/lfb.bank.v1beta1.Msg/Send",
+			"/lbm.bank.v1beta1.Msg/Send",
 		},
 	}
 

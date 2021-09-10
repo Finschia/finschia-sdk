@@ -5,7 +5,7 @@ import (
 	"github.com/line/ostracon/crypto/merkle"
 	ostmerkle "github.com/line/ostracon/proto/ostracon/crypto"
 
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 const (

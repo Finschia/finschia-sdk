@@ -3,10 +3,10 @@ package keeper
 import (
 	"time"
 
-	"github.com/line/lfb-sdk/telemetry"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/telemetry"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 )
 

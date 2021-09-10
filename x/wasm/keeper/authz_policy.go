@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 type AuthorizationPolicy interface {

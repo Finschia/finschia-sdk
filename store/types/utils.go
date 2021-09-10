@@ -3,7 +3,7 @@ package types
 import (
 	"bytes"
 
-	"github.com/line/lfb-sdk/types/kv"
+	"github.com/line/lbm-sdk/types/kv"
 )
 
 // Iterator over all the keys with a certain prefix in ascending order

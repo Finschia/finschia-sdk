@@ -6,12 +6,12 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	bankexported "github.com/line/lfb-sdk/x/bank/exported"
-	"github.com/line/lfb-sdk/x/genutil/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	bankexported "github.com/line/lbm-sdk/x/bank/exported"
+	"github.com/line/lbm-sdk/x/genutil/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 // SetGenTxsInAppGenesisState - sets the genesis transactions in the app genesis state

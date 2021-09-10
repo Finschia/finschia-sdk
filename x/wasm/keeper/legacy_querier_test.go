@@ -7,9 +7,9 @@ import (
 	"io/ioutil"
 	"testing"
 
-	sdk "github.com/line/lfb-sdk/types"
-	sdkErrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkErrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

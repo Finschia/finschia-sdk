@@ -255,7 +255,7 @@ github.com/go-toolsmith/astfmt v1.0.0/go.mod h1:cnWmsOAuq4jJY6Ct5YWlVLmcmLMn1JUP
 github.com/go-toolsmith/astinfo v0.0.0-20180906194353-9809ff7efb21/go.mod h1:dDStQCHtmZpYOmjRP/8gHHnCCch3Zz3oEgCdZVdtweU=
 github.com/go-toolsmith/astp v1.0.0/go.mod h1:RSyrtpVlfTFGDYRbrjyWP1pYu//tSFcvdYrA8meBmLI=
 github.com/go-toolsmith/pkgload v1.0.0/go.mod h1:5eFArkbO80v7Z0kdngIxsRXRMTaX4Ilcwuh3clNrQJc=
-github.com/go-toolsmith/strparse v1.0.0/go.mod h1:YI2nUKP9YGZnL/L1/DLFBfixrcjslWct4wyljWhSRy8=
+github.com/go-toolsmith/strparse v1.0.0/go.mod h1:YI2nUKP9YGZnL/L1/DLBMfixrcjslWct4wyljWhSRy8=
 github.com/go-toolsmith/typep v1.0.0/go.mod h1:JSQCQMUPdRlMZFswiq3TGpNp1GMktqkR2Ns5AIQkATU=
 github.com/go-toolsmith/typep v1.0.2/go.mod h1:JSQCQMUPdRlMZFswiq3TGpNp1GMktqkR2Ns5AIQkATU=
 github.com/go-xmlfmt/xmlfmt v0.0.0-20191208150333-d5b6f63a941b/go.mod h1:aUCEOzzezBEjDBbFBoSiya/gduyIiWYRP6CnSFIV8AM=

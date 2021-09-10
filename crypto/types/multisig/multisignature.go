@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/types/tx/signing"
 )
 
 // AminoMultisignature is used to represent amino multi-signatures for StdTx's.

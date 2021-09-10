@@ -7,11 +7,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/client"
-	simappparams "github.com/line/lfb-sdk/simapp/params"
-	"github.com/line/lfb-sdk/testutil"
-	sdk "github.com/line/lfb-sdk/types"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/client"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
+	"github.com/line/lbm-sdk/testutil"
+	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 )
 
 func TestGetCommandEncode(t *testing.T) {

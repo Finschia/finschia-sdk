@@ -6,9 +6,9 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lfb-sdk/store/dbadapter"
-	"github.com/line/lfb-sdk/store/gaskv"
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/dbadapter"
+	"github.com/line/lbm-sdk/store/gaskv"
+	"github.com/line/lbm-sdk/store/types"
 
 	"github.com/stretchr/testify/require"
 )

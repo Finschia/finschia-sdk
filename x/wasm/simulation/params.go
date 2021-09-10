@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lfb-sdk/codec"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/simulation"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/codec"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/simulation"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 func ParamChanges(r *rand.Rand, cdc codec.Marshaler) []simtypes.ParamChange {

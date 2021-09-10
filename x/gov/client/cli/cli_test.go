@@ -8,18 +8,18 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil"
 	"github.com/stretchr/testify/suite"
 
 	ostcli "github.com/line/ostracon/libs/cli"
 
-	"github.com/line/lfb-sdk/client/flags"
-	clitestutil "github.com/line/lfb-sdk/testutil/cli"
-	"github.com/line/lfb-sdk/testutil/network"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/gov/client/cli"
-	govtestutil "github.com/line/lfb-sdk/x/gov/client/testutil"
-	"github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/client/flags"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	"github.com/line/lbm-sdk/testutil/network"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/gov/client/cli"
+	govtestutil "github.com/line/lbm-sdk/x/gov/client/testutil"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 type IntegrationTestSuite struct {

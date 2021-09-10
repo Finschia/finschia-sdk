@@ -3,11 +3,11 @@ package cli
 import (
 	"strconv"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/tx"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/tx"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/spf13/cobra"
 )
 

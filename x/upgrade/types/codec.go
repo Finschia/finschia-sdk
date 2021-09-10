@@ -1,16 +1,16 @@
 package types
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(Plan{}, "lfb-sdk/Plan", nil)
-	cdc.RegisterConcrete(&SoftwareUpgradeProposal{}, "lfb-sdk/SoftwareUpgradeProposal", nil)
-	cdc.RegisterConcrete(&CancelSoftwareUpgradeProposal{}, "lfb-sdk/CancelSoftwareUpgradeProposal", nil)
+	cdc.RegisterConcrete(Plan{}, "lbm-sdk/Plan", nil)
+	cdc.RegisterConcrete(&SoftwareUpgradeProposal{}, "lbm-sdk/SoftwareUpgradeProposal", nil)
+	cdc.RegisterConcrete(&CancelSoftwareUpgradeProposal{}, "lbm-sdk/CancelSoftwareUpgradeProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

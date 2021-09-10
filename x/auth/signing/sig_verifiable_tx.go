@@ -1,9 +1,9 @@
 package signing
 
 import (
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/tx/signing"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/tx/signing"
 )
 
 // SigVerifiableTx defines a transaction interface for all signature verification

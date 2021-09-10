@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // Validate performs basic validation of supply genesis data returning an

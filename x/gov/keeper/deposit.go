@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/gov/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 // GetDeposit gets the deposit of a specific depositor on a specific proposal

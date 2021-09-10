@@ -8,14 +8,14 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
-	"github.com/line/lfb-sdk/simapp"
-	sdk "github.com/line/lfb-sdk/types"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	banktypes "github.com/line/lfb-sdk/x/bank/types"
-	"github.com/line/lfb-sdk/x/slashing/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/x/slashing/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 var (

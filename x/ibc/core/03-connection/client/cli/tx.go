@@ -8,15 +8,15 @@ import (
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/tx"
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/version"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lfb-sdk/x/ibc/core/03-connection/client/utils"
-	"github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/tx"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/version"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/client/utils"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 const (

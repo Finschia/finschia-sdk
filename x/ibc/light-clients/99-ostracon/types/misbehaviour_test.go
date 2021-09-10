@@ -7,11 +7,11 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	octypes "github.com/line/ostracon/types"
 
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
-	ibctestingmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
 func (suite *TendermintTestSuite) TestMisbehaviour() {

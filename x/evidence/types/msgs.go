@@ -5,10 +5,10 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/evidence/exported"
+	"github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/evidence/exported"
 )
 
 // Message types for the evidence module

@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"time"
 
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/line/lfb-sdk/types/query"
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	"github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 func (suite *KeeperTestSuite) TestQueryClientState() {

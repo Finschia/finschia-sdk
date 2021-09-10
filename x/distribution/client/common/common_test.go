@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/x/distribution/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/x/distribution/types"
 )
 
 func TestQueryDelegationRewardsAddrValidation(t *testing.T) {

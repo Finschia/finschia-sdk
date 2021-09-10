@@ -2,8 +2,8 @@
 package wasm
 
 import (
-	"github.com/line/lfb-sdk/x/wasm/keeper"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 const (

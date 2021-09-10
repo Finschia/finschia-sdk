@@ -3,11 +3,11 @@ package tx
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
-	"github.com/line/lfb-sdk/x/auth/signing"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lbm-sdk/x/auth/signing"
 )
 
 // ConvertTxToStdTx converts a transaction to the legacy StdTx format

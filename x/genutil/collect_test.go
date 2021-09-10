@@ -11,13 +11,13 @@ import (
 
 	octypes "github.com/line/ostracon/types"
 
-	"github.com/line/lfb-sdk/codec"
-	cdctypes "github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/server"
-	"github.com/line/lfb-sdk/types"
-	bankexported "github.com/line/lfb-sdk/x/bank/exported"
-	"github.com/line/lfb-sdk/x/genutil"
-	gtypes "github.com/line/lfb-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/codec"
+	cdctypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/server"
+	"github.com/line/lbm-sdk/types"
+	bankexported "github.com/line/lbm-sdk/x/bank/exported"
+	"github.com/line/lbm-sdk/x/genutil"
+	gtypes "github.com/line/lbm-sdk/x/genutil/types"
 )
 
 type doNothingUnmarshalJSON struct {

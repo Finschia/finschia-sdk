@@ -3,12 +3,12 @@ package testutil
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/testutil"
-	clitestutil "github.com/line/lfb-sdk/testutil/cli"
-	sdk "github.com/line/lfb-sdk/types"
-	govcli "github.com/line/lfb-sdk/x/gov/client/cli"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/testutil"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	sdk "github.com/line/lbm-sdk/types"
+	govcli "github.com/line/lbm-sdk/x/gov/client/cli"
 )
 
 var commonArgs = []string{

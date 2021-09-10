@@ -3,9 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/slashing/types"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
 // HandleValidatorSignature handles a validator signature, must be called once per validator per block.

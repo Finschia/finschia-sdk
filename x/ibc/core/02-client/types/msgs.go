@@ -1,11 +1,11 @@
 package types
 
 import (
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 // message types for the IBC client

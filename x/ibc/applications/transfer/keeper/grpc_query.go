@@ -7,11 +7,11 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lfb-sdk/store/prefix"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/query"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
+	"github.com/line/lbm-sdk/store/prefix"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
 var _ types.QueryServer = Keeper{}

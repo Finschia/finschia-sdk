@@ -1,11 +1,11 @@
 package types
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/msgservice"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 // RegisterInterfaces register the ibc channel submodule interfaces to protobuf

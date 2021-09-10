@@ -6,9 +6,9 @@ import (
 
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lfb-sdk/store/cachekv"
-	"github.com/line/lfb-sdk/store/dbadapter"
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/cachekv"
+	"github.com/line/lbm-sdk/store/dbadapter"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 //----------------------------------------

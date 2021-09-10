@@ -3,11 +3,11 @@ package codec
 import (
 	"github.com/line/ostracon/crypto/sr25519"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
-	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 )
 
 // RegisterCrypto registers all crypto dependency types with the provided Amino

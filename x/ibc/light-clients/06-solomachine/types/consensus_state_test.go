@@ -1,9 +1,9 @@
 package types_test
 
 import (
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 func (suite *SoloMachineTestSuite) TestConsensusState() {

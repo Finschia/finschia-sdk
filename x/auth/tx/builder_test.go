@@ -5,14 +5,14 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/legacy"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	txtypes "github.com/line/lfb-sdk/types/tx"
-	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	txtypes "github.com/line/lbm-sdk/types/tx"
+	"github.com/line/lbm-sdk/types/tx/signing"
 )
 
 func TestTxBuilder(t *testing.T) {

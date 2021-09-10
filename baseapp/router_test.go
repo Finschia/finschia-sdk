@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var testHandler = func(_ sdk.Context, _ sdk.Msg) (*sdk.Result, error) {

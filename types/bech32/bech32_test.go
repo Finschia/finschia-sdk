@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/types/bech32"
+	"github.com/line/lbm-sdk/types/bech32"
 )
 
 func TestEncodeAndDecode(t *testing.T) {

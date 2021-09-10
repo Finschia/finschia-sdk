@@ -3,7 +3,7 @@ package mock
 import (
 	"encoding/json"
 
-	"github.com/line/lfb-sdk/types/module"
+	"github.com/line/lbm-sdk/types/module"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
@@ -12,14 +12,14 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	capabilitykeeper "github.com/line/lfb-sdk/x/capability/keeper"
-	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 const (

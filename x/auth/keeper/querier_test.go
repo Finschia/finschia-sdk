@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lbm-sdk/codec"
 
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/testutil/testdata"
-	keep "github.com/line/lfb-sdk/x/auth/keeper"
-	"github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	keep "github.com/line/lbm-sdk/x/auth/keeper"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 func TestQueryAccount(t *testing.T) {

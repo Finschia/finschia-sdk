@@ -6,9 +6,9 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/testutil/testdata"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
 )
 
 type interfaceMarshaler struct {

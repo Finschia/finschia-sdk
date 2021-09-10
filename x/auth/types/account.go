@@ -10,10 +10,10 @@ import (
 	"github.com/line/ostracon/crypto"
 	"gopkg.in/yaml.v2"
 
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var (

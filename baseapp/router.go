@@ -3,7 +3,7 @@ package baseapp
 import (
 	"fmt"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 type Router struct {

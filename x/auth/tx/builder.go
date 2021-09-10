@@ -3,14 +3,14 @@ package tx
 import (
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/line/lfb-sdk/client"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/tx"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	"github.com/line/lfb-sdk/x/auth/ante"
-	authsigning "github.com/line/lfb-sdk/x/auth/signing"
+	"github.com/line/lbm-sdk/client"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/tx"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/x/auth/ante"
+	authsigning "github.com/line/lbm-sdk/x/auth/signing"
 )
 
 // wrapper is a wrapper around the tx.Tx proto.Message which retain the raw

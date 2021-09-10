@@ -5,7 +5,7 @@ import (
 
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
-	"github.com/line/lfb-sdk/client"
+	"github.com/line/lbm-sdk/client"
 )
 
 func getBlock(clientCtx client.Context, height *int64) (*ctypes.ResultBlock, error) {

@@ -3,9 +3,9 @@ package types
 import (
 	"time"
 
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 type (

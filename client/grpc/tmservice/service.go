@@ -8,12 +8,12 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/rpc"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	qtypes "github.com/line/lfb-sdk/types/query"
-	"github.com/line/lfb-sdk/version"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/rpc"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	qtypes "github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/version"
 	abci "github.com/line/ostracon/abci/types"
 )
 

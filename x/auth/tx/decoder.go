@@ -1,11 +1,11 @@
 package tx
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/unknownproto"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/tx"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/unknownproto"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/tx"
 )
 
 // DefaultTxDecoder returns a default protobuf TxDecoder using the provided Marshaler.

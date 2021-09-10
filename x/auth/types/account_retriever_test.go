@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/testutil/network"
-	"github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 func TestAccountRetriever(t *testing.T) {

@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/tx"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/rest"
-	govrest "github.com/line/lfb-sdk/x/gov/client/rest"
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/tx"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/rest"
+	govrest "github.com/line/lbm-sdk/x/gov/client/rest"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 type StoreCodeProposalJSONReq struct {

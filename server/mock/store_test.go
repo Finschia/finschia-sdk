@@ -7,7 +7,7 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestStore(t *testing.T) {

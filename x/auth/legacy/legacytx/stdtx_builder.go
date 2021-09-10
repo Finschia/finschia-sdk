@@ -3,12 +3,12 @@ package legacytx
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	authsigning "github.com/line/lfb-sdk/x/auth/signing"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	authsigning "github.com/line/lbm-sdk/x/auth/signing"
 )
 
 // StdTxBuilder wraps StdTx to implement to the context.TxBuilder interface.

@@ -7,13 +7,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/tx"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/version"
-	govutils "github.com/line/lfb-sdk/x/gov/client/utils"
-	"github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/tx"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/version"
+	govutils "github.com/line/lbm-sdk/x/gov/client/utils"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Proposal flags

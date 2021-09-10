@@ -7,17 +7,17 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/testutil"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	authclient "github.com/line/lfb-sdk/x/auth/client"
-	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	authclient "github.com/line/lbm-sdk/x/auth/client"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
 )
 
 var (
@@ -153,6 +153,6 @@ func makeCodec() *codec.LegacyAmino {
 	sdk.RegisterLegacyAminoCodec(cdc)
 	cryptocodec.RegisterCrypto(cdc)
 	authtypes.RegisterLegacyAminoCodec(cdc)
-	cdc.RegisterConcrete(testdata.TestMsg{}, "lfb-sdk/Test", nil)
+	cdc.RegisterConcrete(testdata.TestMsg{}, "lbm-sdk/Test", nil)
 	return cdc
 }

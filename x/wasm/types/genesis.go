@@ -2,8 +2,8 @@ package types
 
 import "C"
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 func (s Sequence) ValidateBasic() error {

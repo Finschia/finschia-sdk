@@ -3,7 +3,7 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
+	"github.com/line/lbm-sdk/client"
 )
 
 // GetQueryCmd returns the query commands for IBC connections

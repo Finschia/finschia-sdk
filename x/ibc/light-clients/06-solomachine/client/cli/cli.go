@@ -3,8 +3,8 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
 )
 
 // NewTxCmd returns a root CLI command handler for all solo machine transaction commands.

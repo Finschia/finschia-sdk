@@ -3,7 +3,7 @@ package types
 import (
 	"encoding/binary"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const (

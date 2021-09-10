@@ -1,12 +1,12 @@
 package ante_test
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/auth/ante"
-	"github.com/line/lfb-sdk/x/auth/tx"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/ante"
+	"github.com/line/lbm-sdk/x/auth/tx"
 )
 
 type setFeeGranter interface {

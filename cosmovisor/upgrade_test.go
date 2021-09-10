@@ -14,7 +14,7 @@ import (
 	"github.com/otiai10/copy"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/cosmovisor"
+	"github.com/line/lbm-sdk/cosmovisor"
 )
 
 type upgradeTestSuite struct {

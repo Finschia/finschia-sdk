@@ -4,11 +4,11 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's

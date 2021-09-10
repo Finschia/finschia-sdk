@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 // DefaultLimit is the default `limit` for queries

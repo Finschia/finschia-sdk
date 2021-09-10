@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
 // GetSendEnabled retrieves the send enabled boolean from the paramstore

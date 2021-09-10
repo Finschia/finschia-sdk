@@ -1,21 +1,21 @@
 package types
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/msgservice"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
 )
 
 // RegisterLegacyAminoCodec registers all the necessary types and interfaces for the
 // governance module.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*Content)(nil), nil)
-	cdc.RegisterConcrete(&MsgSubmitProposal{}, "lfb-sdk/MsgSubmitProposal", nil)
-	cdc.RegisterConcrete(&MsgDeposit{}, "lfb-sdk/MsgDeposit", nil)
-	cdc.RegisterConcrete(&MsgVote{}, "lfb-sdk/MsgVote", nil)
-	cdc.RegisterConcrete(&TextProposal{}, "lfb-sdk/TextProposal", nil)
+	cdc.RegisterConcrete(&MsgSubmitProposal{}, "lbm-sdk/MsgSubmitProposal", nil)
+	cdc.RegisterConcrete(&MsgDeposit{}, "lbm-sdk/MsgDeposit", nil)
+	cdc.RegisterConcrete(&MsgVote{}, "lbm-sdk/MsgVote", nil)
+	cdc.RegisterConcrete(&TextProposal{}, "lbm-sdk/TextProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -25,7 +25,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgDeposit{},
 	)
 	registry.RegisterInterface(
-		"lfb.gov.v1beta1.Content",
+		"lbm.gov.v1beta1.Content",
 		(*Content)(nil),
 		&TextProposal{},
 	)

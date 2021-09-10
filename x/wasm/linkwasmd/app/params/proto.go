@@ -1,9 +1,9 @@
 package params
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/x/auth/tx"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/x/auth/tx"
 )
 
 // MakeEncodingConfig creates an EncodingConfig for an amino based test configuration.

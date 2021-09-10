@@ -8,12 +8,12 @@ import (
 	"github.com/line/ostracon/libs/log"
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/simapp/helpers"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/types/module"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp/helpers"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/types/module"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
 )
 
 // SetupSimulation creates the config, db (levelDB), temporary directory and logger for

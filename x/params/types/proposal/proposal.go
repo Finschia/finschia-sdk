@@ -6,7 +6,7 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 const (
@@ -19,7 +19,7 @@ var _ govtypes.Content = &ParameterChangeProposal{}
 
 func init() {
 	govtypes.RegisterProposalType(ProposalTypeChange)
-	govtypes.RegisterProposalTypeCodec(&ParameterChangeProposal{}, "lfb-sdk/ParameterChangeProposal")
+	govtypes.RegisterProposalTypeCodec(&ParameterChangeProposal{}, "lbm-sdk/ParameterChangeProposal")
 }
 
 func NewParameterChangeProposal(title, description string, changes []ParamChange) *ParameterChangeProposal {

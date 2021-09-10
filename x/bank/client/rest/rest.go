@@ -3,9 +3,9 @@ package rest
 import (
 	"github.com/gorilla/mux"
 
-	"github.com/line/lfb-sdk/client/rest"
+	"github.com/line/lbm-sdk/client/rest"
 
-	"github.com/line/lfb-sdk/client"
+	"github.com/line/lbm-sdk/client"
 )
 
 // RegisterHandlers registers all x/bank transaction and query HTTP REST handlers

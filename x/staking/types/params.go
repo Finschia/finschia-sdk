@@ -8,9 +8,9 @@ import (
 
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
 
 // Staking params default values

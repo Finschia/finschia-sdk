@@ -4,7 +4,7 @@ import (
 	"regexp"
 	"strings"
 
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // DefaultMaxCharacterLength defines the default maximum character length used

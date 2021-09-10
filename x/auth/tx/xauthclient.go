@@ -1,7 +1,7 @@
 // Package tx 's xauthclient.go file is copy-pasted from
-// https://github.com/line/lfb-sdk/blob/v0.41.3/x/auth/client/query.go
+// https://github.com/line/lbm-sdk/blob/v0.41.3/x/auth/client/query.go
 // It is duplicated as to not introduce any breaking change in 0.41.4, see PR:
-// https://github.com/line/lfb-sdk/pull/8732#discussion_r584746947
+// https://github.com/line/lbm-sdk/pull/8732#discussion_r584746947
 package tx
 
 import (
@@ -14,9 +14,9 @@ import (
 
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
-	"github.com/line/lfb-sdk/client"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/client"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // QueryTxsByEvents performs a search for transactions for a given set of events
@@ -80,7 +80,7 @@ func queryTx(goCtx context.Context, clientCtx client.Context, hashHexStr string)
 	}
 
 	//TODO: this may not always need to be proven
-	// https://github.com/line/lfb-sdk/issues/6807
+	// https://github.com/line/lbm-sdk/issues/6807
 	resTx, err := node.Tx(goCtx, hash, true)
 	if err != nil {
 		return nil, err

@@ -3,8 +3,8 @@ package simulation
 import (
 	"math/rand"
 
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
 )
 
 // GenConnectionGenesis returns the default connection genesis state.

@@ -7,9 +7,9 @@ import (
 	"strconv"
 	"strings"
 
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 var _ exported.Height = (*Height)(nil)

@@ -12,9 +12,9 @@ import (
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/server/types"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/server/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const (

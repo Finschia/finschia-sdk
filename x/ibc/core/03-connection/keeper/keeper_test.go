@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 type KeeperTestSuite struct {

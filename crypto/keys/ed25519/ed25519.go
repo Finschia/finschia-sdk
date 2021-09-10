@@ -9,9 +9,9 @@ import (
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/crypto/tmhash"
 
-	"github.com/line/lfb-sdk/codec"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lbm-sdk/codec"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/types/errors"
 )
 
 //-------------------------------------

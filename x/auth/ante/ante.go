@@ -1,9 +1,9 @@
 package ante
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/auth/signing"
-	"github.com/line/lfb-sdk/x/auth/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/signing"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 // NewAnteHandler returns an AnteHandler that checks and increments sequence

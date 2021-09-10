@@ -6,9 +6,9 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/bank/exported"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/bank/exported"
 )
 
 var _ exported.GenesisBalance = (*Balance)(nil)

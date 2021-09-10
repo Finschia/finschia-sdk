@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var addr = sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address())

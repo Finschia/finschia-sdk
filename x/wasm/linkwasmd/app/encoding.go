@@ -1,8 +1,8 @@
 package app
 
 import (
-	"github.com/line/lfb-sdk/std"
-	"github.com/line/lfb-sdk/x/wasm/linkwasmd/app/params"
+	"github.com/line/lbm-sdk/std"
+	"github.com/line/lbm-sdk/x/wasm/linkwasmd/app/params"
 )
 
 // MakeEncodingConfig creates an EncodingConfig for testing

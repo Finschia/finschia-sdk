@@ -3,9 +3,9 @@ package simulation
 import (
 	"math/rand"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/params/types/proposal"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/params/types/proposal"
 )
 
 // SimulateParamChangeProposalContent returns random parameter change content.

@@ -7,7 +7,7 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/baseapp"
+	"github.com/line/lbm-sdk/baseapp"
 )
 
 func TestValidateBlockParams(t *testing.T) {

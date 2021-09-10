@@ -9,11 +9,11 @@ import (
 	liavl "github.com/line/iavl/v2"
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lfb-sdk/store/dbadapter"
-	"github.com/line/lfb-sdk/store/gaskv"
-	"github.com/line/lfb-sdk/store/iavl"
-	"github.com/line/lfb-sdk/store/types"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/store/dbadapter"
+	"github.com/line/lbm-sdk/store/gaskv"
+	"github.com/line/lbm-sdk/store/iavl"
+	"github.com/line/lbm-sdk/store/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // copied from iavl/store_test.go

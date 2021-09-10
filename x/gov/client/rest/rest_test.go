@@ -5,8 +5,8 @@ package rest_test
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/types/rest"
-	"github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/types/rest"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 func (s *IntegrationTestSuite) TestLegacyGetAllProposals() {

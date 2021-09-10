@@ -5,7 +5,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/line/lfb-sdk/codec/types"
+	"github.com/line/lbm-sdk/codec/types"
 
 	"github.com/golang/mock/gomock"
 	"github.com/gorilla/mux"
@@ -13,11 +13,11 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/tests/mocks"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/module"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/tests/mocks"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
 )
 
 var errFoo = errors.New("dummy")

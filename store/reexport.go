@@ -1,7 +1,7 @@
 package store
 
 import (
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 // Import cosmos-sdk/types/store.go for convenience.

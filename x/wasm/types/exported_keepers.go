@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
+	sdk "github.com/line/lbm-sdk/types"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
 	types2 "github.com/line/wasmvm/types"
 )
 

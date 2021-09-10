@@ -5,10 +5,10 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/telemetry"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/slashing/keeper"
-	"github.com/line/lfb-sdk/x/slashing/types"
+	"github.com/line/lbm-sdk/telemetry"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/slashing/keeper"
+	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
 // BeginBlocker check for infraction evidence or downtime of validators

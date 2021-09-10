@@ -3,9 +3,9 @@ package client
 import (
 	"github.com/spf13/pflag"
 
-	"github.com/line/lfb-sdk/client/flags"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/query"
+	"github.com/line/lbm-sdk/client/flags"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/query"
 )
 
 // Paginate returns the correct starting and ending index for a paginated query,

@@ -1,11 +1,11 @@
-module github.com/line/lfb-sdk/x/wasm/linkwasmd
+module github.com/line/lbm-sdk/x/wasm/linkwasmd
 
 go 1.13
 
 require (
 	github.com/gorilla/mux v1.8.0
 	github.com/hashicorp/golang-lru v0.5.5-0.20210104140557-80c98217689d // indirect
-	github.com/line/lfb-sdk v1.0.0-init.1.0.20210615020754-786df84b8e0a
+	github.com/line/lbm-sdk v1.0.0-init.1.0.20210615020754-786df84b8e0a
 	github.com/line/ostracon v0.34.9-0.20210610071151-a52812ac9add
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210413083915-5bb60e117524
 	github.com/pkg/errors v0.9.1
@@ -21,7 +21,7 @@ require (
 
 replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/line/lfb-sdk => ../../..
+	github.com/line/lbm-sdk => ../../..
 	github.com/tendermint/tm-db => github.com/line/tm-db v0.5.2
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )

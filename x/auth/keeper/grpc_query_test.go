@@ -3,9 +3,9 @@ package keeper_test
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 func (suite *KeeperTestSuite) TestGRPCQueryAccount() {

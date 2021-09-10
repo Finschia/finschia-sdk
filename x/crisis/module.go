@@ -10,15 +10,15 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/telemetry"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/module"
-	"github.com/line/lfb-sdk/x/crisis/client/cli"
-	"github.com/line/lfb-sdk/x/crisis/keeper"
-	"github.com/line/lfb-sdk/x/crisis/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/telemetry"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
+	"github.com/line/lbm-sdk/x/crisis/client/cli"
+	"github.com/line/lbm-sdk/x/crisis/keeper"
+	"github.com/line/lbm-sdk/x/crisis/types"
 )
 
 var (

@@ -13,8 +13,8 @@ import (
 	"github.com/gogo/protobuf/proto"
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lfb-sdk/snapshots/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lbm-sdk/snapshots/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 const (

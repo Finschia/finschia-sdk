@@ -5,13 +5,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 var (

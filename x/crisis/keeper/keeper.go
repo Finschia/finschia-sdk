@@ -6,9 +6,9 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/crisis/types"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/crisis/types"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
 
 // Keeper - crisis keeper

@@ -5,12 +5,12 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/tx"
-	sdk "github.com/line/lfb-sdk/types"
-	authclient "github.com/line/lfb-sdk/x/auth/client"
-	authsigning "github.com/line/lfb-sdk/x/auth/signing"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/tx"
+	sdk "github.com/line/lbm-sdk/types"
+	authclient "github.com/line/lbm-sdk/x/auth/client"
+	authsigning "github.com/line/lbm-sdk/x/auth/signing"
 )
 
 func GetValidateSignaturesCommand() *cobra.Command {

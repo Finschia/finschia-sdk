@@ -3,8 +3,8 @@ package simulation
 import (
 	"math/rand"
 
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 )
 
 // GenClientGenesis returns the default client genesis state.

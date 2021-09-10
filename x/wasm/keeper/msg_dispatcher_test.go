@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/wasm/keeper/wasmtesting"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	abci "github.com/line/ostracon/abci/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"

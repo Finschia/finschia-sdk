@@ -4,8 +4,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/line/lfb-sdk/crypto/keys/internal/benchmarking"
-	"github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lbm-sdk/crypto/keys/internal/benchmarking"
+	"github.com/line/lbm-sdk/crypto/types"
 )
 
 func BenchmarkKeyGeneration(b *testing.B) {

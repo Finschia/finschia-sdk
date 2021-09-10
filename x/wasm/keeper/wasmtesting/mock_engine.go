@@ -4,8 +4,8 @@ import (
 	"bytes"
 	"crypto/sha256"
 
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/line/ostracon/libs/rand"
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"

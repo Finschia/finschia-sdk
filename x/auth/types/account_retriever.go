@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/line/lfb-sdk/client/grpc/tmservice"
+	"github.com/line/lbm-sdk/client/grpc/tmservice"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/line/lfb-sdk/client"
-	sdk "github.com/line/lfb-sdk/types"
-	grpctypes "github.com/line/lfb-sdk/types/grpc"
+	"github.com/line/lbm-sdk/client"
+	sdk "github.com/line/lbm-sdk/types"
+	grpctypes "github.com/line/lbm-sdk/types/grpc"
 )
 
 var (
