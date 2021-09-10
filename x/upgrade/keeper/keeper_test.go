@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lfb-sdk/simapp"
@@ -14,7 +14,7 @@ import (
 	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
 	ibcexported "github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	"github.com/line/lfb-sdk/x/upgrade/keeper"
 	"github.com/line/lfb-sdk/x/upgrade/types"
 )
@@ -36,7 +36,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.T().Log("home dir:", homeDir)
 	s.homeDir = homeDir
 	s.app = app
-	s.ctx = app.BaseApp.NewContext(false, ostproto.Header{
+	s.ctx = app.BaseApp.NewContext(false, ocproto.Header{
 		Time:   time.Now(),
 		Height: 10,
 	})

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	abcitypes "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/simapp"
@@ -13,7 +13,7 @@ import (
 
 func TestItCreatesModuleAccountOnInitBlock(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	app.InitChain(
 		abcitypes.RequestInitChain{

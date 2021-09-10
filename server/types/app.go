@@ -7,7 +7,7 @@ import (
 	"github.com/gogo/protobuf/grpc"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/spf13/cobra"
 
@@ -61,7 +61,7 @@ type (
 		// AppState is the application state as JSON.
 		AppState json.RawMessage
 		// Validators is the exported validator set.
-		Validators []osttypes.GenesisValidator
+		Validators []octypes.GenesisValidator
 		// Height is the app's latest block height.
 		Height int64
 		// ConsensusParams are the exported consensus params for ABCI.

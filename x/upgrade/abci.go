@@ -11,7 +11,7 @@ import (
 	"github.com/line/lfb-sdk/x/upgrade/keeper"
 	"github.com/line/lfb-sdk/x/upgrade/types"
 
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // BeginBlock will check if there is a scheduled plan and if it is ready to be executed.

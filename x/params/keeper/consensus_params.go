@@ -2,7 +2,7 @@ package keeper
 
 import (
 	abci "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lfb-sdk/baseapp"
 	"github.com/line/lfb-sdk/x/params/types"
@@ -19,10 +19,10 @@ func ConsensusParamsKeyTable() types.KeyTable {
 			baseapp.ParamStoreKeyBlockParams, abci.BlockParams{}, baseapp.ValidateBlockParams,
 		),
 		types.NewParamSetPair(
-			baseapp.ParamStoreKeyEvidenceParams, ostproto.EvidenceParams{}, baseapp.ValidateEvidenceParams,
+			baseapp.ParamStoreKeyEvidenceParams, ocproto.EvidenceParams{}, baseapp.ValidateEvidenceParams,
 		),
 		types.NewParamSetPair(
-			baseapp.ParamStoreKeyValidatorParams, ostproto.ValidatorParams{}, baseapp.ValidateValidatorParams,
+			baseapp.ParamStoreKeyValidatorParams, ocproto.ValidatorParams{}, baseapp.ValidateValidatorParams,
 		),
 	)
 }

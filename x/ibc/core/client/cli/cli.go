@@ -9,7 +9,7 @@ import (
 	channel "github.com/line/lfb-sdk/x/ibc/core/04-channel"
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 	solomachine "github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine"
-	tendermint "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint"
+	tendermint "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon"
 )
 
 // GetTxCmd returns the transaction commands for this module

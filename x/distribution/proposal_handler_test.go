@@ -3,7 +3,7 @@ package distribution_test
 import (
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/crypto/keys/ed25519"
@@ -26,7 +26,7 @@ func testProposal(recipient sdk.AccAddress, amount sdk.Coins) *types.CommunityPo
 
 func TestProposalHandlerPassed(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	recipient := delAddr1
 
@@ -56,7 +56,7 @@ func TestProposalHandlerPassed(t *testing.T) {
 
 func TestProposalHandlerFailed(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	recipient := delAddr1
 

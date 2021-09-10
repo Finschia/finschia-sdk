@@ -5,7 +5,7 @@ import (
 
 	"github.com/line/ostracon/crypto/merkle"
 	"github.com/line/ostracon/crypto/tmhash"
-	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	"github.com/line/lfb-sdk/types/kv"
 )
@@ -183,7 +183,7 @@ func HashFromMap(m map[string][]byte) []byte {
 // ProofsFromMap generates proofs from a map. The keys/values of the map will be used as the keys/values
 // in the underlying key-value pairs.
 // The keys are sorted before the proofs are computed.
-func ProofsFromMap(m map[string][]byte) ([]byte, map[string]*ostcrypto.Proof, []string) {
+func ProofsFromMap(m map[string][]byte) ([]byte, map[string]*occrypto.Proof, []string) {
 	sm := newSimpleMap()
 	for k, v := range m {
 		sm.Set(k, v)
@@ -197,7 +197,7 @@ func ProofsFromMap(m map[string][]byte) ([]byte, map[string]*ostcrypto.Proof, []
 	}
 
 	rootHash, proofList := merkle.ProofsFromByteSlices(kvsBytes)
-	proofs := make(map[string]*ostcrypto.Proof)
+	proofs := make(map[string]*occrypto.Proof)
 	keys := make([]string, len(proofList))
 
 	for i, kvp := range kvs.Pairs {

@@ -67,6 +67,7 @@
 * (api) [\#130](https://github.com/line/lfb-sdk/pull/130) Rename rest apis
 * (auth) [\#265](https://github.com/line/lfb-sdk/pull/265) Introduce sig block height for the new replay protection
 * (global) [\#298](https://github.com/line/lfb-sdk/pull/298) Treat addresses as strings
+* (ostracon) [\#317](https://github.com/line/lfb-sdk/pull/317) Integrate Ostracon including vrf election and voter concept
 
 ### Build, CI
 * (ci) [\#234](https://github.com/line/lfb-sdk/pull/234) Fix branch name in ci script

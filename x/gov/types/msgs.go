@@ -198,9 +198,6 @@ func (msg MsgVote) ValidateBasic() error {
 	if err := sdk.ValidateAccAddress(msg.Voter); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid voter address (%s)", err)
 	}
-	if err := sdk.ValidateAccAddress(msg.Voter); err != nil {
-		return sdkerrors.Wrap(err, msg.Voter)
-	}
 	if !ValidVoteOption(msg.Option) {
 		return sdkerrors.Wrap(ErrInvalidVote, msg.Option.String())
 	}

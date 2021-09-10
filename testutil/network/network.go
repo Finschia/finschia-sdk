@@ -234,7 +234,7 @@ func New(t *testing.T, cfg Config) *Network {
 
 		logger := log.NewNopLogger()
 		if cfg.EnableLogging {
-			logger = log.NewTMLogger(log.NewSyncWriter(os.Stdout))
+			logger = log.NewOCLogger(log.NewSyncWriter(os.Stdout))
 			logger, _ = ostflags.ParseLogLevel("info", logger, ostcfg.DefaultLogLevel)
 		}
 

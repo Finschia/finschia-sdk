@@ -12,7 +12,7 @@ import (
 	"github.com/line/lfb-sdk/x/ibc/core/02-client/simulation"
 	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func TestDecodeStore(t *testing.T) {

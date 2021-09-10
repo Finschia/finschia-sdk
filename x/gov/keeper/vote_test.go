@@ -3,7 +3,7 @@ package keeper_test
 import (
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/simapp"
@@ -13,7 +13,7 @@ import (
 
 func TestVotes(t *testing.T) {
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	addrs := simapp.AddTestAddrsIncremental(app, ctx, 5, sdk.NewInt(30000000))
 

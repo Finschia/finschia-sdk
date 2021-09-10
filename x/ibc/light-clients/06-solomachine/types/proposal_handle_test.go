@@ -3,7 +3,7 @@ package types_test
 import (
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
 	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 

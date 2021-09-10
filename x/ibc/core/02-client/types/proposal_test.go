@@ -5,7 +5,7 @@ import (
 	codectypes "github.com/line/lfb-sdk/codec/types"
 	govtypes "github.com/line/lfb-sdk/x/gov/types"
 	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
@@ -81,7 +81,7 @@ func (suite *TypesTestSuite) TestMarshalClientUpdateProposalProposal() {
 	suite.Require().NoError(err)
 
 	// create proposal
-	header := suite.chainA.CurrentTMClientHeader()
+	header := suite.chainA.CurrentOCClientHeader()
 	proposal, err := types.NewClientUpdateProposal("update IBC client", "description", "client-id", header)
 	suite.Require().NoError(err)
 

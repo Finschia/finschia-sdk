@@ -1,7 +1,7 @@
 package types
 
 import (
-	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	ocprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	cryptotypes "github.com/line/lfb-sdk/crypto/types"
 	sdk "github.com/line/lfb-sdk/types"
@@ -24,7 +24,7 @@ type ValidatorI interface {
 	IsUnbonding() bool                                      // check if has status unbonding
 	GetOperator() sdk.ValAddress                            // operator address to receive/return validators coins
 	ConsPubKey() (cryptotypes.PubKey, error)                // validation consensus pubkey (cryptotypes.PubKey)
-	TmConsPublicKey() (ostprotocrypto.PublicKey, error)     // validation consensus pubkey (Tendermint)
+	OcConsPublicKey() (ocprotocrypto.PublicKey, error)      // validation consensus pubkey (Ostracon)
 	GetConsAddr() (sdk.ConsAddress, error)                  // validation consensus address
 	GetTokens() sdk.Int                                     // validation tokens
 	GetBondedTokens() sdk.Int                               // validator bonded tokens

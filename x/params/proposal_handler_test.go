@@ -6,7 +6,7 @@ import (
 	"github.com/line/lfb-sdk/simapp"
 
 	"github.com/line/ostracon/libs/log"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
@@ -76,7 +76,7 @@ func newTestInput(t *testing.T) testInput {
 
 	encCfg := simapp.MakeTestEncodingConfig()
 	keeper := keeper.NewKeeper(encCfg.Marshaler, encCfg.Amino, keyParams)
-	ctx := sdk.NewContext(cms, ostproto.Header{}, false, log.NewNopLogger())
+	ctx := sdk.NewContext(cms, ocproto.Header{}, false, log.NewNopLogger())
 
 	return testInput{ctx, cdc, keeper}
 }

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
 	"github.com/line/lfb-sdk/client"
@@ -144,7 +144,7 @@ $ %s query txs --%s 'message.sender=cosmos1...&message.action=withdraw_delegator
 				}
 
 				tokens := strings.Split(event, "=")
-				if tokens[0] == osttypes.TxHeightKey {
+				if tokens[0] == octypes.TxHeightKey {
 					event = fmt.Sprintf("%s=%s", tokens[0], tokens[1])
 				} else {
 					event = fmt.Sprintf("%s='%s'", tokens[0], tokens[1])

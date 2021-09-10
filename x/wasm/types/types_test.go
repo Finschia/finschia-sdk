@@ -193,7 +193,7 @@ func TestContractInfoSetExtension(t *testing.T) {
 }
 
 func TestContractInfoMarshalUnmarshal(t *testing.T) {
-	var myAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
+	var myAddr      = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
 	var myOtherAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
 	var anyPos = AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
 

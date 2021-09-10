@@ -3,7 +3,7 @@ package utils
 import (
 	"context"
 
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	"github.com/line/lfb-sdk/client"
 
@@ -14,7 +14,7 @@ import (
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 	ibcclient "github.com/line/lfb-sdk/x/ibc/core/client"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // QueryClientState returns a client state. If prove is true, it performs an ABCI store query
@@ -118,9 +118,9 @@ func QueryConsensusStateABCI(
 	return types.NewQueryConsensusStateResponse(anyConsensusState, proofBz, proofHeight), nil
 }
 
-// QueryTendermintHeader takes a client context and returns the appropriate
-// tendermint header
-func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, error) {
+// QueryOstraconHeader takes a client context and returns the appropriate
+// ostracon header
+func QueryOstraconHeader(clientCtx client.Context) (ibctmtypes.Header, int64, error) {
 	node, err := clientCtx.GetNode()
 	if err != nil {
 		return ibctmtypes.Header{}, 0, err
@@ -146,8 +146,20 @@ func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, 
 		return ibctmtypes.Header{}, 0, err
 	}
 
+	page = 0
+	count = 10_000
+	voters, err := node.Voters(context.Background(), &height, &page, &count)
+	if err != nil {
+		return ibctmtypes.Header{}, 0, err
+	}
+
 	protoCommit := commit.SignedHeader.ToProto()
-	protoValset, err := osttypes.NewValidatorSet(validators.Validators).ToProto()
+	protoValset, err := octypes.NewValidatorSet(validators.Validators).ToProto()
+	if err != nil {
+		return ibctmtypes.Header{}, 0, err
+	}
+
+	protoVoterSet, err := octypes.WrapValidatorsToVoterSet(voters.Voters).ToProto()
 	if err != nil {
 		return ibctmtypes.Header{}, 0, err
 	}
@@ -155,6 +167,7 @@ func QueryTendermintHeader(clientCtx client.Context) (ibctmtypes.Header, int64, 
 	header := ibctmtypes.Header{
 		SignedHeader: protoCommit,
 		ValidatorSet: protoValset,
+		VoterSet:     protoVoterSet,
 	}
 
 	return header, height, nil
@@ -192,7 +205,7 @@ func QueryNodeConsensusState(clientCtx client.Context) (*ibctmtypes.ConsensusSta
 	state := &ibctmtypes.ConsensusState{
 		Timestamp:          commit.Time,
 		Root:               commitmenttypes.NewMerkleRoot(commit.AppHash),
-		NextValidatorsHash: osttypes.NewValidatorSet(nextVals.Validators).Hash(),
+		NextValidatorsHash: octypes.NewValidatorSet(nextVals.Validators).Hash(),
 	}
 
 	return state, height, nil

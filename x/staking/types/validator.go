@@ -8,7 +8,7 @@ import (
 	"time"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	ocprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	"gopkg.in/yaml.v2"
 
 	"github.com/line/lfb-sdk/codec"
@@ -262,7 +262,7 @@ func (d Description) EnsureLength() (Description, error) {
 // ABCIValidatorUpdate returns an abci.ValidatorUpdate from a staking validator type
 // with the full validator power
 func (v Validator) ABCIValidatorUpdate() abci.ValidatorUpdate {
-	tmProtoPk, err := v.TmConsPublicKey()
+	tmProtoPk, err := v.OcConsPublicKey()
 	if err != nil {
 		panic(err)
 	}
@@ -276,7 +276,7 @@ func (v Validator) ABCIValidatorUpdate() abci.ValidatorUpdate {
 // ABCIValidatorUpdateZero returns an abci.ValidatorUpdate from a staking validator type
 // with zero power used for validator updates.
 func (v Validator) ABCIValidatorUpdateZero() abci.ValidatorUpdate {
-	tmProtoPk, err := v.TmConsPublicKey()
+	tmProtoPk, err := v.OcConsPublicKey()
 	if err != nil {
 		panic(err)
 	}
@@ -480,16 +480,16 @@ func (v Validator) ConsPubKey() (cryptotypes.PubKey, error) {
 
 }
 
-// TmConsPublicKey casts Validator.ConsensusPubkey to ostprotocrypto.PubKey.
-func (v Validator) TmConsPublicKey() (ostprotocrypto.PublicKey, error) {
+// OcConsPublicKey casts Validator.ConsensusPubkey to ocprotocrypto.PubKey.
+func (v Validator) OcConsPublicKey() (ocprotocrypto.PublicKey, error) {
 	pk, err := v.ConsPubKey()
 	if err != nil {
-		return ostprotocrypto.PublicKey{}, err
+		return ocprotocrypto.PublicKey{}, err
 	}
 
-	tmPk, err := cryptocodec.ToTmProtoPublicKey(pk)
+	tmPk, err := cryptocodec.ToOcProtoPublicKey(pk)
 	if err != nil {
-		return ostprotocrypto.PublicKey{}, err
+		return ocprotocrypto.PublicKey{}, err
 	}
 
 	return tmPk, nil

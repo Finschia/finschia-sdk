@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/codec"
@@ -33,7 +33,7 @@ func TestNewQuerier(t *testing.T) {
 		app.StakingKeeper.SetValidatorByPowerIndex(ctx, validators[i])
 	}
 
-	header := ostproto.Header{
+	header := ocproto.Header{
 		ChainID: "HelloChain",
 		Height:  5,
 	}
@@ -720,7 +720,7 @@ func TestQueryHistoricalInfo(t *testing.T) {
 	app.StakingKeeper.SetValidator(ctx, val1)
 	app.StakingKeeper.SetValidator(ctx, val2)
 
-	header := ostproto.Header{
+	header := ocproto.Header{
 		ChainID: "HelloChain",
 		Height:  5,
 	}

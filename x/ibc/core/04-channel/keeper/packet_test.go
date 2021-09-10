@@ -8,7 +8,7 @@ import (
 	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 	ibcmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
@@ -147,7 +147,7 @@ func (suite *KeeperTestSuite) TestSendPacket() {
 			channelCap = suite.chainA.GetChannelCapability(channelA.PortID, channelA.ID)
 		}, false},
 		{"next sequence send not found", func() {
-			_, _, connA, connB := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, connB := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 			channelA := suite.chainA.NextTestChannel(connA, ibctesting.TransferPort)
 			channelB := suite.chainB.NextTestChannel(connB, ibctesting.TransferPort)
 			packet = types.NewPacket(validPacketData, 1, channelA.PortID, channelA.ID, channelB.PortID, channelB.ID, timeoutHeight, disabledTimeoutTimestamp)
@@ -293,7 +293,7 @@ func (suite *KeeperTestSuite) TestRecvPacket() {
 			channelCap = suite.chainB.GetChannelCapability(channelB.PortID, channelB.ID)
 		}, false},
 		{"connection not OPEN", func() {
-			clientA, clientB := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+			clientA, clientB := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 			// connection on chainB is in INIT
 			connB, connA, err := suite.coordinator.ConnOpenInit(suite.chainB, suite.chainA, clientB, clientA)
 			suite.Require().NoError(err)
@@ -321,7 +321,7 @@ func (suite *KeeperTestSuite) TestRecvPacket() {
 			channelCap = suite.chainB.GetChannelCapability(channelB.PortID, channelB.ID)
 		}, false},
 		{"next receive sequence is not found", func() {
-			_, _, connA, connB := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, connB := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 			channelA := suite.chainA.NextTestChannel(connA, ibctesting.TransferPort)
 			channelB := suite.chainB.NextTestChannel(connB, ibctesting.TransferPort)
 
@@ -565,7 +565,7 @@ func (suite *KeeperTestSuite) TestAcknowledgePacket() {
 			channelCap = suite.chainA.GetChannelCapability(channelA.PortID, channelA.ID)
 		}, false},
 		{"connection not OPEN", func() {
-			clientA, clientB := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+			clientA, clientB := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 			// connection on chainA is in INIT
 			connA, connB, err := suite.coordinator.ConnOpenInit(suite.chainA, suite.chainB, clientA, clientB)
 			suite.Require().NoError(err)
@@ -598,7 +598,7 @@ func (suite *KeeperTestSuite) TestAcknowledgePacket() {
 			channelCap = suite.chainA.GetChannelCapability(channelA.PortID, channelA.ID)
 		}, false},
 		{"next ack sequence not found", func() {
-			_, _, connA, connB := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, connB := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 			channelA := suite.chainA.NextTestChannel(connA, ibctesting.TransferPort)
 			channelB := suite.chainB.NextTestChannel(connB, ibctesting.TransferPort)
 			packet = types.NewPacket(validPacketData, 1, channelA.PortID, channelA.ID, channelB.PortID, channelB.ID, timeoutHeight, disabledTimeoutTimestamp)

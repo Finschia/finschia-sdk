@@ -9,7 +9,7 @@ import (
 	"time"
 
 	ostjson "github.com/line/ostracon/libs/json"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	"github.com/line/lfb-sdk/codec"
 	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
@@ -129,13 +129,13 @@ func AppStateRandomizedFn(
 
 // AppStateFromGenesisFileFn util function to generate the genesis AppState
 // from a genesis.json file.
-func AppStateFromGenesisFileFn(r io.Reader, cdc codec.JSONMarshaler, genesisFile string) (osttypes.GenesisDoc, []simtypes.Account) {
+func AppStateFromGenesisFileFn(r io.Reader, cdc codec.JSONMarshaler, genesisFile string) (octypes.GenesisDoc, []simtypes.Account) {
 	bytes, err := ioutil.ReadFile(genesisFile)
 	if err != nil {
 		panic(err)
 	}
 
-	var genesis osttypes.GenesisDoc
+	var genesis octypes.GenesisDoc
 	// NOTE: Tendermint uses a custom JSON decoder for GenesisDoc
 	err = ostjson.Unmarshal(bytes, &genesis)
 	if err != nil {

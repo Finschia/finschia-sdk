@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lfb-sdk/baseapp"
@@ -92,7 +92,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 
 	app.EvidenceKeeper = *evidenceKeeper
 
-	suite.ctx = app.BaseApp.NewContext(checkTx, ostproto.Header{Height: 1})
+	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{Height: 1})
 	suite.querier = keeper.NewQuerier(*evidenceKeeper, app.LegacyAmino())
 	suite.app = app
 

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/codec"
@@ -117,7 +117,7 @@ func TestQueries(t *testing.T) {
 	banktypes.RegisterLegacyAminoCodec(cdc)
 
 	app := simapp.Setup(false)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	addr := simapp.AddTestAddrs(app, ctx, 1, sdk.NewInt(1000000000))
 	valAddrs := simapp.ConvertAddrsToValAddrs(addr)

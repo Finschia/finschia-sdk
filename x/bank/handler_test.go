@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
@@ -22,7 +22,7 @@ import (
 func TestInvalidMsg(t *testing.T) {
 	h := bank.NewHandler(nil)
 
-	res, err := h(sdk.NewContext(nil, ostproto.Header{}, false, nil), testdata.NewTestMsg())
+	res, err := h(sdk.NewContext(nil, ocproto.Header{}, false, nil), testdata.NewTestMsg())
 	require.Error(t, err)
 	require.Nil(t, res)
 
@@ -66,7 +66,7 @@ func TestSendToModuleAccount(t *testing.T) {
 	}
 
 	app := simapp.SetupWithGenesisAccounts(accs, balances...)
-	ctx := app.BaseApp.NewContext(false, ostproto.Header{})
+	ctx := app.BaseApp.NewContext(false, ocproto.Header{})
 
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		app.AppCodec(), app.GetKey(types.StoreKey), app.AccountKeeper, app.GetSubspace(types.ModuleName), map[string]bool{

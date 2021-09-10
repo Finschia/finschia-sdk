@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
 	"github.com/line/lfb-sdk/testutil/testdata"
 
@@ -19,7 +19,7 @@ func TestInvalidMsg(t *testing.T) {
 	k := keeper.Keeper{}
 	h := gov.NewHandler(k)
 
-	res, err := h(sdk.NewContext(nil, ostproto.Header{}, false, nil), testdata.NewTestMsg())
+	res, err := h(sdk.NewContext(nil, ocproto.Header{}, false, nil), testdata.NewTestMsg())
 	require.Error(t, err)
 	require.Nil(t, res)
 	require.True(t, strings.Contains(err.Error(), "unrecognized gov message type"))
