@@ -1,11 +1,11 @@
 package channel
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
-	"github.com/line/lfb-sdk/x/ibc/core/04-channel/keeper"
-	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	"github.com/line/lbm-sdk/x/ibc/core/04-channel/keeper"
+	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 )
 
 // HandleMsgChannelOpenInit defines the sdk.Handler for MsgChannelOpenInit

@@ -6,9 +6,9 @@ import (
 
 	gogotypes "github.com/gogo/protobuf/types"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/x/slashing/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's

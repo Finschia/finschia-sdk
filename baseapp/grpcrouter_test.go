@@ -9,11 +9,11 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestGRPCGatewayRouter(t *testing.T) {

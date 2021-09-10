@@ -8,10 +8,10 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lfb-sdk/types"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/params/simulation"
-	"github.com/line/lfb-sdk/x/params/types/proposal"
+	sdk "github.com/line/lbm-sdk/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/params/simulation"
+	"github.com/line/lbm-sdk/x/params/types/proposal"
 )
 
 type MockParamChange struct {

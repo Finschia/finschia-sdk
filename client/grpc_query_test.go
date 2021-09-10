@@ -11,11 +11,11 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/line/lfb-sdk/testutil/network"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	grpctypes "github.com/line/lfb-sdk/types/grpc"
-	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	grpctypes "github.com/line/lbm-sdk/types/grpc"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
 type IntegrationTestSuite struct {

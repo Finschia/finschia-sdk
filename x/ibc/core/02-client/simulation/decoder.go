@@ -4,10 +4,10 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/keeper"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/keeper"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 var _ ClientUnmarshaler = (*keeper.Keeper)(nil)

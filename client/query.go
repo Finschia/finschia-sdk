@@ -11,8 +11,8 @@ import (
 	ostbytes "github.com/line/ostracon/libs/bytes"
 	rpcclient "github.com/line/ostracon/rpc/client"
 
-	"github.com/line/lfb-sdk/store/rootmulti"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/store/rootmulti"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // GetNode returns an RPC client. If the context's client is not defined, an

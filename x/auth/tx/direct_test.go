@@ -6,13 +6,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	txtypes "github.com/line/lfb-sdk/types/tx"
-	signingtypes "github.com/line/lfb-sdk/types/tx/signing"
-	"github.com/line/lfb-sdk/x/auth/signing"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	txtypes "github.com/line/lbm-sdk/types/tx"
+	signingtypes "github.com/line/lbm-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/x/auth/signing"
 )
 
 func TestDirectModeHandler(t *testing.T) {

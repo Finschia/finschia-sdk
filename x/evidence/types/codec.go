@@ -1,26 +1,26 @@
 package types
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/msgservice"
-	"github.com/line/lfb-sdk/x/evidence/exported"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
+	"github.com/line/lbm-sdk/x/evidence/exported"
 )
 
 // RegisterLegacyAminoCodec registers all the necessary types and interfaces for the
 // evidence module.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*exported.Evidence)(nil), nil)
-	cdc.RegisterConcrete(&MsgSubmitEvidence{}, "lfb-sdk/MsgSubmitEvidence", nil)
-	cdc.RegisterConcrete(&Equivocation{}, "lfb-sdk/Equivocation", nil)
+	cdc.RegisterConcrete(&MsgSubmitEvidence{}, "lbm-sdk/MsgSubmitEvidence", nil)
+	cdc.RegisterConcrete(&Equivocation{}, "lbm-sdk/Equivocation", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil), &MsgSubmitEvidence{})
 	registry.RegisterInterface(
-		"lfb.evidence.v1beta1.Evidence",
+		"lbm.evidence.v1beta1.Evidence",
 		(*exported.Evidence)(nil),
 		&Equivocation{},
 	)

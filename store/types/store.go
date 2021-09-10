@@ -9,8 +9,8 @@ import (
 	oststrings "github.com/line/ostracon/libs/strings"
 	tmdb "github.com/line/tm-db/v2"
 
-	snapshottypes "github.com/line/lfb-sdk/snapshots/types"
-	"github.com/line/lfb-sdk/types/kv"
+	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
+	"github.com/line/lbm-sdk/types/kv"
 )
 
 type Store interface {

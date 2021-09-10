@@ -8,13 +8,13 @@ import (
 	"github.com/rs/zerolog"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/server"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/server"
 )
 
 const (
-	envPrefix = "LFB"
+	envPrefix = "LBM"
 )
 
 // Execute executes the root command of an application. It handles creating a

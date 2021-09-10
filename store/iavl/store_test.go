@@ -11,8 +11,8 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/store/types"
-	"github.com/line/lfb-sdk/types/kv"
+	"github.com/line/lbm-sdk/store/types"
+	"github.com/line/lbm-sdk/types/kv"
 )
 
 var (

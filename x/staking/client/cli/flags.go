@@ -3,7 +3,7 @@ package cli
 import (
 	flag "github.com/spf13/pflag"
 
-	"github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 const (

@@ -1,10 +1,10 @@
 package types
 
 import (
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 const (

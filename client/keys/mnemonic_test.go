@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lbm-sdk/testutil"
 )
 
 func Test_RunMnemonicCmdNormal(t *testing.T) {

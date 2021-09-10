@@ -7,8 +7,8 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/evidence/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/evidence/types"
 )
 
 func TestEquivocation_Valid(t *testing.T) {

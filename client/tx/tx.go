@@ -9,18 +9,18 @@ import (
 
 	"github.com/spf13/pflag"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/input"
-	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/rest"
-	"github.com/line/lfb-sdk/types/tx"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	authsigning "github.com/line/lfb-sdk/x/auth/signing"
-	authtx "github.com/line/lfb-sdk/x/auth/tx"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/input"
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/rest"
+	"github.com/line/lbm-sdk/types/tx"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	authsigning "github.com/line/lbm-sdk/x/auth/signing"
+	authtx "github.com/line/lbm-sdk/x/auth/tx"
 )
 
 // GenerateOrBroadcastTxCLI will either generate and print and unsigned transaction
@@ -288,8 +288,8 @@ func CalculateGas(
 	}
 
 	// TODO This should use the generated tx service Client.
-	// https://github.com/line/lfb-sdk/issues/7726
-	bz, _, err := queryFunc("/lfb.tx.v1beta1.Service/Simulate", txBytes)
+	// https://github.com/line/lbm-sdk/issues/7726
+	bz, _, err := queryFunc("/lbm.tx.v1beta1.Service/Simulate", txBytes)
 	if err != nil {
 		return tx.SimulateResponse{}, 0, err
 	}

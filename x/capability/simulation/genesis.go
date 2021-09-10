@@ -7,8 +7,8 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lfb-sdk/types/module"
-	"github.com/line/lfb-sdk/x/capability/types"
+	"github.com/line/lbm-sdk/types/module"
+	"github.com/line/lbm-sdk/x/capability/types"
 )
 
 // Simulation parameter constants

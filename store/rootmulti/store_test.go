@@ -18,11 +18,11 @@ import (
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/memdb"
 
-	snapshottypes "github.com/line/lfb-sdk/snapshots/types"
-	"github.com/line/lfb-sdk/store/iavl"
-	sdkmaps "github.com/line/lfb-sdk/store/internal/maps"
-	"github.com/line/lfb-sdk/store/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
+	"github.com/line/lbm-sdk/store/iavl"
+	sdkmaps "github.com/line/lbm-sdk/store/internal/maps"
+	"github.com/line/lbm-sdk/store/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 func TestStoreType(t *testing.T) {

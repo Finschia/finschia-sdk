@@ -23,11 +23,11 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/server/config"
-	"github.com/line/lfb-sdk/server/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/version"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/server/config"
+	"github.com/line/lbm-sdk/server/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/version"
 )
 
 // DONTCOVER

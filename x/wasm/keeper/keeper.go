@@ -7,14 +7,14 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/store/prefix"
-	"github.com/line/lfb-sdk/telemetry"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	authkeeper "github.com/line/lfb-sdk/x/auth/keeper"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/prefix"
+	"github.com/line/lbm-sdk/telemetry"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/line/ostracon/crypto"
 	"github.com/line/ostracon/libs/log"
 	wasmvm "github.com/line/wasmvm"
@@ -996,8 +996,8 @@ func (k Keeper) QueryGasLimit() sdk.Gas {
 }
 
 // BankCoinTransferrer replicates the cosmos-sdk behaviour as in
-// lfb-sdk's x/bank/keeper/msg_server.go Send
-// (https://github.com/line/lfb-sdk/blob/2a5a2d2c885b03e278bcd67546d4f21e74614ead/x/bank/keeper/msg_server.go#L26)
+// lbm-sdk's x/bank/keeper/msg_server.go Send
+// (https://github.com/line/lbm-sdk/blob/2a5a2d2c885b03e278bcd67546d4f21e74614ead/x/bank/keeper/msg_server.go#L26)
 type BankCoinTransferrer struct {
 	keeper types.BankKeeper
 }

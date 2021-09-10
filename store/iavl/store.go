@@ -14,13 +14,13 @@ import (
 	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lfb-sdk/store/cachekv"
-	"github.com/line/lfb-sdk/store/tracekv"
-	"github.com/line/lfb-sdk/store/types"
-	"github.com/line/lfb-sdk/telemetry"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/kv"
+	"github.com/line/lbm-sdk/store/cachekv"
+	"github.com/line/lbm-sdk/store/tracekv"
+	"github.com/line/lbm-sdk/store/types"
+	"github.com/line/lbm-sdk/telemetry"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/kv"
 )
 
 const (

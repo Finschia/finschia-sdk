@@ -1,5 +1,5 @@
 /*
-Package params defines the simulation parameters in the lfb.
+Package params defines the simulation parameters in the lbm.
 It contains the default weights used for each transaction used on the module's
 simulation. These weights define the chance for a transaction to be simulated at
 any gived operation.

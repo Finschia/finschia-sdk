@@ -6,11 +6,11 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/line/lfb-sdk/client"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/rest"
-	authclient "github.com/line/lfb-sdk/x/auth/client"
-	"github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/client"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/rest"
+	authclient "github.com/line/lbm-sdk/x/auth/client"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 // contains checks if the a given query contains one of the tx types

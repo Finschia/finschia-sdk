@@ -3,15 +3,15 @@ package keeper
 import (
 	"time"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/store/prefix"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	vestexported "github.com/line/lfb-sdk/x/auth/vesting/exported"
-	"github.com/line/lfb-sdk/x/bank/exported"
-	"github.com/line/lfb-sdk/x/bank/types"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/prefix"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	vestexported "github.com/line/lbm-sdk/x/auth/vesting/exported"
+	"github.com/line/lbm-sdk/x/bank/exported"
+	"github.com/line/lbm-sdk/x/bank/types"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
 
 var _ Keeper = (*BaseKeeper)(nil)

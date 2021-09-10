@@ -22,15 +22,15 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/snapshots"
-	snapshottypes "github.com/line/lfb-sdk/snapshots/types"
-	"github.com/line/lfb-sdk/store/rootmulti"
-	store "github.com/line/lfb-sdk/store/types"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/snapshots"
+	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
+	"github.com/line/lbm-sdk/store/rootmulti"
+	store "github.com/line/lbm-sdk/store/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 )
 
 var (
@@ -92,11 +92,11 @@ func registerTestCodec(cdc *codec.LegacyAmino) {
 	sdk.RegisterLegacyAminoCodec(cdc)
 
 	// register test types
-	cdc.RegisterConcrete(&txTest{}, "lfb-sdk/baseapp/txTest", nil)
-	cdc.RegisterConcrete(&msgCounter{}, "lfb-sdk/baseapp/msgCounter", nil)
-	cdc.RegisterConcrete(&msgCounter2{}, "lfb-sdk/baseapp/msgCounter2", nil)
-	cdc.RegisterConcrete(&msgKeyValue{}, "lfb-sdk/baseapp/msgKeyValue", nil)
-	cdc.RegisterConcrete(&msgNoRoute{}, "lfb-sdk/baseapp/msgNoRoute", nil)
+	cdc.RegisterConcrete(&txTest{}, "lbm-sdk/baseapp/txTest", nil)
+	cdc.RegisterConcrete(&msgCounter{}, "lbm-sdk/baseapp/msgCounter", nil)
+	cdc.RegisterConcrete(&msgCounter2{}, "lbm-sdk/baseapp/msgCounter2", nil)
+	cdc.RegisterConcrete(&msgKeyValue{}, "lbm-sdk/baseapp/msgKeyValue", nil)
+	cdc.RegisterConcrete(&msgNoRoute{}, "lbm-sdk/baseapp/msgNoRoute", nil)
 }
 
 // aminoTxEncoder creates a amino TxEncoder for testing purposes.
@@ -1256,7 +1256,7 @@ func TestRunInvalidTransaction(t *testing.T) {
 		// new codec so we can encode the tx, but we shouldn't be able to decode
 		newCdc := codec.NewLegacyAmino()
 		registerTestCodec(newCdc)
-		newCdc.RegisterConcrete(&msgNoDecode{}, "lfb-sdk/baseapp/msgNoDecode", nil)
+		newCdc.RegisterConcrete(&msgNoDecode{}, "lbm-sdk/baseapp/msgNoDecode", nil)
 
 		txBytes, err := newCdc.MarshalBinaryBare(tx)
 		require.NoError(t, err)

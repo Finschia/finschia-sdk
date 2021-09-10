@@ -9,20 +9,20 @@ import (
 	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/simapp"
-	sdk "github.com/line/lfb-sdk/types"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
-	ibctestingmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
 )
 
 const (
-	chainID                        = "lfb"
-	chainIDRevision0               = "lfb-revision-0"
-	chainIDRevision1               = "lfb-revision-1"
-	clientID                       = "lfbmainnet"
+	chainID                        = "lbm"
+	chainIDRevision0               = "lbm-revision-0"
+	chainIDRevision1               = "lbm-revision-1"
+	clientID                       = "lbmmainnet"
 	trustingPeriod   time.Duration = time.Hour * 24 * 7 * 2
 	ubdPeriod        time.Duration = time.Hour * 24 * 7 * 3
 	maxClockDrift    time.Duration = time.Second * 10

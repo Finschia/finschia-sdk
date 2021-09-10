@@ -3,7 +3,7 @@ package host
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 const (

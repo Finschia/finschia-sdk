@@ -3,11 +3,11 @@ package keeper
 import (
 	"testing"
 
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	"github.com/line/lfb-sdk/x/wasm/keeper/wasmtesting"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"

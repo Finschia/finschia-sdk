@@ -1,8 +1,8 @@
 package types
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/errors"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/errors"
 )
 
 // ensure Msg interface compliance at compile time

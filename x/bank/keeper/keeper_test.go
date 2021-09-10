@@ -9,14 +9,14 @@ import (
 	osttime "github.com/line/ostracon/types/time"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/simapp"
-	sdk "github.com/line/lfb-sdk/types"
-	authkeeper "github.com/line/lfb-sdk/x/auth/keeper"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	vesting "github.com/line/lfb-sdk/x/auth/vesting/types"
-	"github.com/line/lfb-sdk/x/bank/keeper"
-	"github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	vesting "github.com/line/lbm-sdk/x/auth/vesting/types"
+	"github.com/line/lbm-sdk/x/bank/keeper"
+	"github.com/line/lbm-sdk/x/bank/types"
 )
 
 const (

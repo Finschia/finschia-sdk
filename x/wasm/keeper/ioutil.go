@@ -6,7 +6,7 @@ import (
 	"io"
 	"io/ioutil"
 
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 // magic bytes to identify gzip.

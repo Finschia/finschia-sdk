@@ -6,12 +6,12 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/telemetry"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/upgrade/keeper"
-	"github.com/line/lfb-sdk/x/upgrade/types"
+	"github.com/line/lbm-sdk/telemetry"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/upgrade/keeper"
+	"github.com/line/lbm-sdk/x/upgrade/types"
 
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // BeginBlock will check if there is a scheduled plan and if it is ready to be executed.

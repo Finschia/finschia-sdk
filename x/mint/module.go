@@ -11,17 +11,17 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	cdctypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/module"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/mint/client/cli"
-	"github.com/line/lfb-sdk/x/mint/client/rest"
-	"github.com/line/lfb-sdk/x/mint/keeper"
-	"github.com/line/lfb-sdk/x/mint/simulation"
-	"github.com/line/lfb-sdk/x/mint/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	cdctypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/mint/client/cli"
+	"github.com/line/lbm-sdk/x/mint/client/rest"
+	"github.com/line/lbm-sdk/x/mint/keeper"
+	"github.com/line/lbm-sdk/x/mint/simulation"
+	"github.com/line/lbm-sdk/x/mint/types"
 )
 
 var (

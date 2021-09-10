@@ -1,22 +1,22 @@
 package types
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/msgservice"
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/msgservice"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // RegisterLegacyAminoCodec registers the necessary x/distribution interfaces and concrete types
 // on the provided LegacyAmino codec. These types are used for Amino JSON serialization.
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgWithdrawDelegatorReward{}, "lfb-sdk/MsgWithdrawDelegationReward", nil)
-	cdc.RegisterConcrete(&MsgWithdrawValidatorCommission{}, "lfb-sdk/MsgWithdrawValidatorCommission", nil)
-	cdc.RegisterConcrete(&MsgSetWithdrawAddress{}, "lfb-sdk/MsgModifyWithdrawAddress", nil)
-	cdc.RegisterConcrete(&MsgFundCommunityPool{}, "lfb-sdk/MsgFundCommunityPool", nil)
-	cdc.RegisterConcrete(&CommunityPoolSpendProposal{}, "lfb-sdk/CommunityPoolSpendProposal", nil)
+	cdc.RegisterConcrete(&MsgWithdrawDelegatorReward{}, "lbm-sdk/MsgWithdrawDelegationReward", nil)
+	cdc.RegisterConcrete(&MsgWithdrawValidatorCommission{}, "lbm-sdk/MsgWithdrawValidatorCommission", nil)
+	cdc.RegisterConcrete(&MsgSetWithdrawAddress{}, "lbm-sdk/MsgModifyWithdrawAddress", nil)
+	cdc.RegisterConcrete(&MsgFundCommunityPool{}, "lbm-sdk/MsgFundCommunityPool", nil)
+	cdc.RegisterConcrete(&CommunityPoolSpendProposal{}, "lbm-sdk/CommunityPoolSpendProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {

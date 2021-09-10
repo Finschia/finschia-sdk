@@ -8,14 +8,14 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/simapp"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/query"
-	"github.com/line/lfb-sdk/x/distribution/types"
-	"github.com/line/lfb-sdk/x/staking"
-	"github.com/line/lfb-sdk/x/staking/teststaking"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/x/distribution/types"
+	"github.com/line/lbm-sdk/x/staking"
+	"github.com/line/lbm-sdk/x/staking/teststaking"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 type KeeperTestSuite struct {

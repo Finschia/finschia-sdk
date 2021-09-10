@@ -15,9 +15,9 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lfb-sdk/snapshots"
-	"github.com/line/lfb-sdk/snapshots/types"
-	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lbm-sdk/snapshots"
+	"github.com/line/lbm-sdk/snapshots/types"
+	"github.com/line/lbm-sdk/testutil"
 )
 
 func setupStore(t *testing.T) *snapshots.Store {

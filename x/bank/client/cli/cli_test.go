@@ -9,16 +9,16 @@ import (
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	clitestutil "github.com/line/lfb-sdk/testutil/cli"
-	"github.com/line/lfb-sdk/testutil/network"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/query"
-	"github.com/line/lfb-sdk/x/bank/client/cli"
-	banktestutil "github.com/line/lfb-sdk/x/bank/client/testutil"
-	"github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	"github.com/line/lbm-sdk/testutil/network"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/x/bank/client/cli"
+	banktestutil "github.com/line/lbm-sdk/x/bank/client/testutil"
+	"github.com/line/lbm-sdk/x/bank/types"
 )
 
 type IntegrationTestSuite struct {
@@ -492,7 +492,7 @@ func (s *IntegrationTestSuite) TestBankMsgService() {
 			false,
 			&sdk.TxResponse{},
 			0,
-			"/lfb.bank.v1beta1.Msg/Send", // indicates we are using ServiceMsg and not a regular Msg
+			"/lbm.bank.v1beta1.Msg/Send", // indicates we are using ServiceMsg and not a regular Msg
 		},
 	}
 

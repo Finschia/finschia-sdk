@@ -3,10 +3,10 @@ package utils
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/client"
-	sdk "github.com/line/lfb-sdk/types"
-	authclient "github.com/line/lfb-sdk/x/auth/client"
-	"github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/client"
+	sdk "github.com/line/lbm-sdk/types"
+	authclient "github.com/line/lbm-sdk/x/auth/client"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 const (

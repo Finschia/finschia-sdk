@@ -1,9 +1,9 @@
 package types
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	bankexported "github.com/line/lfb-sdk/x/bank/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	bankexported "github.com/line/lbm-sdk/x/bank/exported"
 )
 
 // DistributionKeeper expected distribution keeper (noalias)

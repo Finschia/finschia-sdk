@@ -9,7 +9,7 @@ parent:
 
 ## Abstract
 
-This specification defines the implementation of the IBC protocol on the LFB SDK, the
+This specification defines the implementation of the IBC protocol on the LBM SDK, the
 changes made to the specification and where to find each specific ICS spec within
 the module.
 
@@ -31,7 +31,7 @@ For the general specification please refer to the [Interchain Standards](https:/
 
 ## Implementation Details
 
-As stated above, the IBC implementation on the LFB SDK introduces some changes
+As stated above, the IBC implementation on the LBM SDK introduces some changes
 to the general specification, in order to avoid code duplication and to take
 advantage of the SDK architectural components such as the transaction routing
 through `Handlers`.
@@ -41,23 +41,23 @@ through `Handlers`.
 The following list is a mapping from each Interchain Standard to their implementation
 in the SDK's `x/ibc` module:
 
-* [ICS 002 - Client Semantics](https://github.com/cosmos/ibc/tree/master/spec/core/ics-002-client-semantics): Implemented in [`x/ibc/core/02-client`](github.com/line/lfb-sdk/tree/main/x/ibc/core/02-client)
-* [ICS 003 - Connection Semantics](https://github.com/cosmos/ibc/tree/master/spec/core/ics-003-connection-semantics): Implemented in [`x/ibc/core/03-connection`](github.com/line/lfb-sdk/tree/main/x/ibc/core/03-connection)
-* [ICS 004 - Channel and Packet Semantics](https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics): Implemented in [`x/ibc/core/04-channel`](github.com/line/lfb-sdk/tree/main/x/ibc/core/04-channel)
-* [ICS 005 - Port Allocation](https://github.com/cosmos/ics/blob/master/spec/core/ics-005-port-allocation): Implemented in [`x/ibc/core/05-port`](github.com/line/lfb-sdk/tree/main/x/ibc/core/05-port)
-* [ICS 006 - Solo Machine Client](https://github.com/cosmos/ics/blob/master/spec/client/ics-006-solo-machine-client): Implemented in [`x/ibc/light-clients/06-solomachine`](https://github.com/line/lfb-sdk/tree/main/x/ibc/light-clients/06-solomachine)
-* [ICS 007 - Tendermint Client](https://github.com/cosmos/ics/blob/master/spec/client/ics-099-ostracon-client): Implemented in [`x/ibc/light-clients/99-ostracon`](https://github.com/line/lfb-sdk/tree/main/x/ibc/light-clients/99-ostracon)
-* [ICS 009 - Loopback Client](https://github.com/cosmos/ibc/tree/master/spec/client/ics-009-loopback-client):  Implemented in [`x/ibc/light-clients/09-localhost`](https://github.com/line/lfb-sdk/tree/main/x/ibc/light-clients/09-localhost)
+* [ICS 002 - Client Semantics](https://github.com/cosmos/ibc/tree/master/spec/core/ics-002-client-semantics): Implemented in [`x/ibc/core/02-client`](github.com/line/lbm-sdk/tree/main/x/ibc/core/02-client)
+* [ICS 003 - Connection Semantics](https://github.com/cosmos/ibc/tree/master/spec/core/ics-003-connection-semantics): Implemented in [`x/ibc/core/03-connection`](github.com/line/lbm-sdk/tree/main/x/ibc/core/03-connection)
+* [ICS 004 - Channel and Packet Semantics](https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics): Implemented in [`x/ibc/core/04-channel`](github.com/line/lbm-sdk/tree/main/x/ibc/core/04-channel)
+* [ICS 005 - Port Allocation](https://github.com/cosmos/ics/blob/master/spec/core/ics-005-port-allocation): Implemented in [`x/ibc/core/05-port`](github.com/line/lbm-sdk/tree/main/x/ibc/core/05-port)
+* [ICS 006 - Solo Machine Client](https://github.com/cosmos/ics/blob/master/spec/client/ics-006-solo-machine-client): Implemented in [`x/ibc/light-clients/06-solomachine`](https://github.com/line/lbm-sdk/tree/main/x/ibc/light-clients/06-solomachine)
+* [ICS 007 - Tendermint Client](https://github.com/cosmos/ics/blob/master/spec/client/ics-099-ostracon-client): Implemented in [`x/ibc/light-clients/99-ostracon`](https://github.com/line/lbm-sdk/tree/main/x/ibc/light-clients/99-ostracon)
+* [ICS 009 - Loopback Client](https://github.com/cosmos/ibc/tree/master/spec/client/ics-009-loopback-client):  Implemented in [`x/ibc/light-clients/09-localhost`](https://github.com/line/lbm-sdk/tree/main/x/ibc/light-clients/09-localhost)
 * [ICS 018- Relayer Algorithms](https://github.com/cosmos/ibc/tree/master/spec/relayer/ics-018-relayer-algorithms): Not implemented yet.
-* [ICS 020 - Fungible Token Transfer](https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer): Implemented in [`x/ibc/applications/transfer`](https://github.com/line/lfb-sdk/tree/main/x/ibc/applications/transfer)
-* [ICS 023 - Vector Commitments](https://github.com/cosmos/ibc/tree/master/spec/core/ics-023-vector-commitments): Implemented in [`x/ibc/core/23-commitment`](github.com/line/lfb-sdk/tree/main/x/ibc/core/23-commitment)
-* [ICS 024 - Host Requirements](https://github.com/cosmos/ics/tree/master/spec/core/ics-024-host-requirements): Implemented in [`x/ibc/core/24-host`](github.com/line/lfb-sdk/tree/main/x/ibc/core/24-host)
+* [ICS 020 - Fungible Token Transfer](https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer): Implemented in [`x/ibc/applications/transfer`](https://github.com/line/lbm-sdk/tree/main/x/ibc/applications/transfer)
+* [ICS 023 - Vector Commitments](https://github.com/cosmos/ibc/tree/master/spec/core/ics-023-vector-commitments): Implemented in [`x/ibc/core/23-commitment`](github.com/line/lbm-sdk/tree/main/x/ibc/core/23-commitment)
+* [ICS 024 - Host Requirements](https://github.com/cosmos/ics/tree/master/spec/core/ics-024-host-requirements): Implemented in [`x/ibc/core/24-host`](github.com/line/lbm-sdk/tree/main/x/ibc/core/24-host)
 * [ICS 025 - Handler Interface](https://github.com/cosmos/ics/tree/master/spec/core/ics-025-handler-interface): `Handler` interfaces are implemented at the top level in `x/ibc/handler.go`,
 which call each ICS submodule's handlers (i.e `x/ibc/*/{XX-ICS}/handler.go`).
 
 ### SDK Modules
 
-* [`x/capability`](https://github.com/line/lfb-sdk/tree/main/x/capability): The capability module provides object-capability keys support through scoped keepers in order to authenticate usage of ports or channels. Check [ADR 3 - Dynamic Capability Store](../../../docs/architecture/adr-003-dynamic-capability-store.md) for more details.
+* [`x/capability`](https://github.com/line/lbm-sdk/tree/main/x/capability): The capability module provides object-capability keys support through scoped keepers in order to authenticate usage of ports or channels. Check [ADR 3 - Dynamic Capability Store](../../../docs/architecture/adr-003-dynamic-capability-store.md) for more details.
 
 ## IBC module architecture
 

@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 func TestParamsEqual(t *testing.T) {

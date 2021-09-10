@@ -5,9 +5,9 @@ import (
 	"encoding/binary"
 	"fmt"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 // NewDecodeStore returns a decoder function closure that unmarshals the KVPair's

@@ -3,8 +3,8 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/auth/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 type msgServer struct {

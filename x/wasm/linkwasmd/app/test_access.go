@@ -3,13 +3,13 @@ package app
 import (
 	"testing"
 
-	"github.com/line/lfb-sdk/codec"
-	bankkeeper "github.com/line/lfb-sdk/x/bank/keeper"
-	capabilitykeeper "github.com/line/lfb-sdk/x/capability/keeper"
-	ibctransferkeeper "github.com/line/lfb-sdk/x/ibc/applications/transfer/keeper"
-	ibckeeper "github.com/line/lfb-sdk/x/ibc/core/keeper"
-	stakingkeeper "github.com/line/lfb-sdk/x/staking/keeper"
-	"github.com/line/lfb-sdk/x/wasm"
+	"github.com/line/lbm-sdk/codec"
+	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
+	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
+	ibctransferkeeper "github.com/line/lbm-sdk/x/ibc/applications/transfer/keeper"
+	ibckeeper "github.com/line/lbm-sdk/x/ibc/core/keeper"
+	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
+	"github.com/line/lbm-sdk/x/wasm"
 )
 
 type TestSupport struct {

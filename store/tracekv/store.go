@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/line/lfb-sdk/store/types"
-	"github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lbm-sdk/store/types"
+	"github.com/line/lbm-sdk/types/errors"
 )
 
 const (

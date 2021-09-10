@@ -3,8 +3,8 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/line/lfb-sdk/types"
-	types "github.com/line/lfb-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/types"
+	types "github.com/line/lbm-sdk/x/staking/types"
 )
 
 // Slash a validator for an infraction committed at a known height

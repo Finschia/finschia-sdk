@@ -15,10 +15,10 @@ import (
 
 	"github.com/line/ostracon/types"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/legacy"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const (

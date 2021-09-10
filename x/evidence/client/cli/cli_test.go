@@ -6,9 +6,9 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	clitestutil "github.com/line/lfb-sdk/testutil/cli"
-	testnet "github.com/line/lfb-sdk/testutil/network"
-	"github.com/line/lfb-sdk/x/evidence/client/cli"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	testnet "github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/x/evidence/client/cli"
 )
 
 type IntegrationTestSuite struct {

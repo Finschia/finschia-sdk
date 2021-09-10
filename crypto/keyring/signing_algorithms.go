@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lfb-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/hd"
 )
 
 // SignatureAlgo defines the interface for a keyring supported algorithm.

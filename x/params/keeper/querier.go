@@ -3,11 +3,11 @@ package keeper
 import (
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/params/types"
-	"github.com/line/lfb-sdk/x/params/types/proposal"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/params/types"
+	"github.com/line/lbm-sdk/x/params/types/proposal"
 )
 
 // NewQuerier returns a new querier handler for the x/params module.

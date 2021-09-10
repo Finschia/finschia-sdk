@@ -1,15 +1,15 @@
 package types_test
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
+	sdk "github.com/line/lbm-sdk/types"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
 )
 
 const (

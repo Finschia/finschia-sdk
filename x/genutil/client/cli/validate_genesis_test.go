@@ -1,9 +1,9 @@
 package cli_test
 
 import (
-	"github.com/line/lfb-sdk/testutil"
-	clitestutil "github.com/line/lfb-sdk/testutil/cli"
-	"github.com/line/lfb-sdk/x/genutil/client/cli"
+	"github.com/line/lbm-sdk/testutil"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	"github.com/line/lbm-sdk/x/genutil/client/cli"
 )
 
 // An example exported genesis file from a 0.37 chain. Note that evidence

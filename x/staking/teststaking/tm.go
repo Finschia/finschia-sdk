@@ -4,8 +4,8 @@ import (
 	occrypto "github.com/line/ostracon/crypto"
 	octypes "github.com/line/ostracon/types"
 
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	"github.com/line/lfb-sdk/x/staking/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 // GetOcConsPubKey gets the validator's public key as an occrypto.PubKey.

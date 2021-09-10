@@ -9,9 +9,9 @@ import (
 	"github.com/line/iavl/v2"
 	"github.com/line/tm-db/v2/memdb"
 
-	"github.com/line/lfb-sdk/store/cache"
-	iavlstore "github.com/line/lfb-sdk/store/iavl"
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/cache"
+	iavlstore "github.com/line/lbm-sdk/store/iavl"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 func TestGetOrSetStoreCache(t *testing.T) {

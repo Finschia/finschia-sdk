@@ -3,8 +3,8 @@ package types
 import (
 	"fmt"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/evidence/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/evidence/exported"
 )
 
 type (

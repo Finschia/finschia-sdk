@@ -6,13 +6,13 @@ import (
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
-	"github.com/line/lfb-sdk/testutil/testdata"
+	"github.com/line/lbm-sdk/testutil/testdata"
 
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/gov"
-	"github.com/line/lfb-sdk/x/gov/keeper"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/gov"
+	"github.com/line/lbm-sdk/x/gov/keeper"
 )
 
 func TestInvalidMsg(t *testing.T) {

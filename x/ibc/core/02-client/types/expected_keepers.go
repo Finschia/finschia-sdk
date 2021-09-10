@@ -3,8 +3,8 @@ package types
 import (
 	"time"
 
-	sdk "github.com/line/lfb-sdk/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 // StakingKeeper expected staking keeper

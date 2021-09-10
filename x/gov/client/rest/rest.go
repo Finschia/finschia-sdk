@@ -5,10 +5,10 @@ import (
 
 	"github.com/gorilla/mux"
 
-	"github.com/line/lfb-sdk/client"
-	clientrest "github.com/line/lfb-sdk/client/rest"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lbm-sdk/client"
+	clientrest "github.com/line/lbm-sdk/client/rest"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/rest"
 )
 
 // REST Variable names

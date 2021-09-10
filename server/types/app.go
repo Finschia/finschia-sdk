@@ -11,9 +11,9 @@ import (
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/server/api"
-	"github.com/line/lfb-sdk/server/config"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/server/api"
+	"github.com/line/lbm-sdk/server/config"
 )
 
 type (

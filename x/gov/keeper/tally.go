@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/gov/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/gov/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 // TODO: Break into several smaller functions for clarity

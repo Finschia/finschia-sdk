@@ -7,13 +7,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/crypto/hd"
-	"github.com/line/lfb-sdk/testutil"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/testutil"
 
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/crypto/keyring"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/crypto/keyring"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func Test_runExportCmd(t *testing.T) {

@@ -6,13 +6,13 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/tx"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/version"
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
-	paramscutils "github.com/line/lfb-sdk/x/params/client/utils"
-	paramproposal "github.com/line/lfb-sdk/x/params/types/proposal"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/tx"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/version"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	paramscutils "github.com/line/lbm-sdk/x/params/client/utils"
+	paramproposal "github.com/line/lbm-sdk/x/params/types/proposal"
 )
 
 // NewSubmitParamChangeProposalTxCmd returns a CLI command handler for creating

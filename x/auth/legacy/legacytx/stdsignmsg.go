@@ -1,8 +1,8 @@
 package legacytx
 
 import (
-	"github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var _ types.UnpackInterfacesMessage = StdSignMsg{}

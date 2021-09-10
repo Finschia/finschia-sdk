@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/require"
 )
 
@@ -16,8 +16,8 @@ func TestMsgSendRoute(t *testing.T) {
 	require.Equal(t, "empty", msg.Type())
 
 	srvMsg := NewServiceMsgEmpty(sdk.AccAddress("from"))
-	require.Equal(t, "/lfb.auth.v1beta1.Msg/Empty", srvMsg.Route())
-	require.Equal(t, "/lfb.auth.v1beta1.Msg/Empty", srvMsg.Type())
+	require.Equal(t, "/lbm.auth.v1beta1.Msg/Empty", srvMsg.Route())
+	require.Equal(t, "/lbm.auth.v1beta1.Msg/Empty", srvMsg.Type())
 }
 
 func TestMsgSendValidation(t *testing.T) {
@@ -47,7 +47,7 @@ func TestMsgSendValidation(t *testing.T) {
 func TestMsgSendGetSignBytes(t *testing.T) {
 	res := NewMsgEmpty(sdk.BytesToAccAddress([]byte("input"))).GetSignBytes()
 
-	expected := `{"type":"lfb-sdk/MsgEmpty","value":{"from_address":"link1d9h8qat5fnwd3e"}}`
+	expected := `{"type":"lbm-sdk/MsgEmpty","value":{"from_address":"link1d9h8qat5fnwd3e"}}`
 	require.Equal(t, expected, string(res))
 }
 

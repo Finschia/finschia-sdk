@@ -3,14 +3,14 @@ package types
 import (
 	"context"
 
-	sdk "github.com/line/lfb-sdk/types"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
-	"github.com/line/lfb-sdk/x/distribution/types"
-	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	ibcexported "github.com/line/lfb-sdk/x/ibc/core/exported"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	"github.com/line/lbm-sdk/x/distribution/types"
+	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 // BankViewKeeper defines a subset of methods implemented by the cosmos-sdk bank keeper
