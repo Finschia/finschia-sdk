@@ -45,7 +45,7 @@
 * (bump-up) [\#221](https://github.com/line/lbm-sdk/pull/221) Bump up iavl for parallel processing of batches
 * (perf) [\#224](https://github.com/line/lbm-sdk/pull/224) Updated log time to have milliseconds
 * (bump-up) [\#228](https://github.com/line/lbm-sdk/pull/228) Bump up ostracon to optimize checking the txs size
-* (global) [\#230](https://github.com/line/lbm-sdk/pull/230) Modify module name to lbm-sdk
+* (global) [\#230](https://github.com/line/lbm-sdk/pull/230) Modify module name to lfb-sdk
 * (bump-up) [\#246](https://github.com/line/lbm-sdk/pull/246) Bump up ostracon to not flush wal when receive consensus msgs
 * (wasm) [\#250](https://github.com/line/lbm-sdk/pull/250) Migrate linkwasmd to the latest commit
 * (wasm) [\#253](https://github.com/line/lbm-sdk/pull/253) remove MaxGas const
@@ -61,13 +61,14 @@
 * (test) [\#193](https://github.com/line/lbm-sdk/pull/193) Allow to add new validator in test network
  
 ### Breaking Changes
-* (global) [\#90](https://github.com/line/lbm-sdk/pull/90) Revise module path to `github.com/line/lbm-sdk`
+* (global) [\#90](https://github.com/line/lbm-sdk/pull/90) Revise module path to `github.com/line/lfb-sdk`
 * (rpc) [\#97](https://github.com/line/lbm-sdk/pull/97) Send response with 404 status when quering non-exist account
 * (proto) [\#106](https://github.com/line/lbm-sdk/pull/106) Rename package of proto files
 * (api) [\#130](https://github.com/line/lbm-sdk/pull/130) Rename rest apis
 * (auth) [\#265](https://github.com/line/lbm-sdk/pull/265) Introduce sig block height for the new replay protection
 * (global) [\#298](https://github.com/line/lbm-sdk/pull/298) Treat addresses as strings
 * (ostracon) [\#317](https://github.com/line/lbm-sdk/pull/317) Integrate Ostracon including vrf election and voter concept
+* (global) [\#323](https://github.com/line/lfb-sdk/pull/323) Re-brand lfb-sdk to lbm-sdk
 
 ### Build, CI
 * (ci) [\#234](https://github.com/line/lbm-sdk/pull/234) Fix branch name in ci script
