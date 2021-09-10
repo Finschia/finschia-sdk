@@ -6,7 +6,6 @@ import "lbm/crypto/multisig/keys.proto";
 import "lbm/crypto/secp256k1/keys.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-import "google/protobuf/any.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/auth/types";
 
