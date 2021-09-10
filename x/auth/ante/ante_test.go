@@ -9,16 +9,16 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
-	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	"github.com/line/lfb-sdk/x/auth/ante"
-	"github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/x/auth/ante"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 // Test that simulate transaction accurately estimates gas cost

@@ -7,7 +7,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 )
 
 func (suite *MerkleTestSuite) TestVerifyMembership() {

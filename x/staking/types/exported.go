@@ -3,8 +3,8 @@ package types
 import (
 	ocprotocrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // DelegationI delegation bond for a delegated proof of stake system

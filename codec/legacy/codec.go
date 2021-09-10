@@ -1,9 +1,9 @@
 package legacy
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
+	"github.com/line/lbm-sdk/codec"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
 )
 
 // Cdc defines a global generic sealed Amino codec to be used throughout sdk. It

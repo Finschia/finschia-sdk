@@ -7,16 +7,16 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	clientutils "github.com/line/lfb-sdk/x/ibc/core/02-client/client/utils"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	ibcclient "github.com/line/lfb-sdk/x/ibc/core/client"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	clientutils "github.com/line/lbm-sdk/x/ibc/core/02-client/client/utils"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	ibcclient "github.com/line/lbm-sdk/x/ibc/core/client"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 // QueryConnection returns a connection end.

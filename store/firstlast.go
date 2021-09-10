@@ -3,8 +3,8 @@ package store
 import (
 	"bytes"
 
-	sdk "github.com/line/lfb-sdk/types"
-	sdkkv "github.com/line/lfb-sdk/types/kv"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkkv "github.com/line/lbm-sdk/types/kv"
 )
 
 // Gets the first item.

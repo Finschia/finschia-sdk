@@ -3,7 +3,7 @@ package types
 import (
 	"fmt"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 var _ Router = (*router)(nil)

@@ -5,15 +5,15 @@ import (
 	"encoding/binary"
 	"runtime/debug"
 
-	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lbm-sdk/codec"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/line/lfb-sdk/store/prefix"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/query"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/store/prefix"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/query"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 var _ types.QueryServer = &GrpcQuerier{}

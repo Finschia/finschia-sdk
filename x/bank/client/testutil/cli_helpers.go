@@ -9,14 +9,14 @@ import (
 	"github.com/spf13/cobra"
 	grpc "google.golang.org/grpc"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	"github.com/line/lfb-sdk/client/tx"
-	"github.com/line/lfb-sdk/testutil"
-	clitestutil "github.com/line/lfb-sdk/testutil/cli"
-	sdk "github.com/line/lfb-sdk/types"
-	bankcli "github.com/line/lfb-sdk/x/bank/client/cli"
-	"github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/tx"
+	"github.com/line/lbm-sdk/testutil"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	sdk "github.com/line/lbm-sdk/types"
+	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
+	"github.com/line/lbm-sdk/x/bank/types"
 )
 
 func MsgSendExec(clientCtx client.Context, from, to, amount fmt.Stringer, extraArgs ...string) (testutil.BufferWriter, error) {

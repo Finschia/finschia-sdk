@@ -1,7 +1,7 @@
 package types
 
 import (
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // x/staking module sentinel errors

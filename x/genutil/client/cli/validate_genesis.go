@@ -7,9 +7,9 @@ import (
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/server"
-	"github.com/line/lfb-sdk/types/module"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/server"
+	"github.com/line/lbm-sdk/types/module"
 )
 
 const chainUpgradeGuide = "https://docs.cosmos.network/master/migrations/chain-upgrade-guide-040.html"

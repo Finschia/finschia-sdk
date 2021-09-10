@@ -3,9 +3,9 @@ package genutil
 import (
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/client"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/genutil/types"
+	"github.com/line/lbm-sdk/client"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/genutil/types"
 )
 
 // InitGenesis - initialize accounts and deliver genesis transactions

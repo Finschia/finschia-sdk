@@ -1,11 +1,11 @@
 package types_test
 
 import (
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
-	solomachinetypes "github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
+	solomachinetypes "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 func (suite *SoloMachineTestSuite) TestVerifySignature() {

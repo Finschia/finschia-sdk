@@ -8,7 +8,7 @@ import (
 	"github.com/line/ostracon/privval"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/crypto/keyring"
+	"github.com/line/lbm-sdk/crypto/keyring"
 )
 
 const (

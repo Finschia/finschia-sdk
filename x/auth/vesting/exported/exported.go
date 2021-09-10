@@ -3,9 +3,9 @@ package exported
 import (
 	"time"
 
-	"github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/auth/types"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // VestingAccount defines an account type that vests coins via a vesting schedule.

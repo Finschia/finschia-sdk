@@ -1,9 +1,9 @@
 package legacytx
 
 import (
-	"github.com/line/lfb-sdk/codec"
+	"github.com/line/lbm-sdk/codec"
 )
 
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(StdTx{}, "lfb-sdk/StdTx", nil)
+	cdc.RegisterConcrete(StdTx{}, "lbm-sdk/StdTx", nil)
 }

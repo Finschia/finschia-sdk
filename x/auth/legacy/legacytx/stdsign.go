@@ -3,13 +3,13 @@ package legacytx
 import (
 	"encoding/json"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/legacy"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/crypto/types/multisig"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/crypto/types/multisig"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/tx/signing"
 )
 
 // StdSignDoc is replay-prevention structure.

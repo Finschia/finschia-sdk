@@ -3,7 +3,7 @@ package types
 import (
 	yaml "gopkg.in/yaml.v2"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // ValidatorGovInfo used for tallying

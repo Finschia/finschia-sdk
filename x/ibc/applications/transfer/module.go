@@ -14,21 +14,21 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/module"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/client/cli"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/keeper"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/simulation"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	porttypes "github.com/line/lfb-sdk/x/ibc/core/05-port/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/module"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/client/cli"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/keeper"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/simulation"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	porttypes "github.com/line/lbm-sdk/x/ibc/core/05-port/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 )
 
 var (
@@ -197,7 +197,7 @@ func ValidateTransferChannelParams(
 	version string,
 ) error {
 	// NOTE: for escrow address security only 2^32 channels are allowed to be created
-	// Issue: https://github.com/line/lfb-sdk/issues/7737
+	// Issue: https://github.com/line/lbm-sdk/issues/7737
 	channelSequence, err := channeltypes.ParseChannelSequence(channelID)
 	if err != nil {
 		return err

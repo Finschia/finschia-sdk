@@ -7,12 +7,12 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/simulation"
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/simulation"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func TestDecodeStore(t *testing.T) {

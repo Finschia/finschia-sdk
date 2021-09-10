@@ -6,7 +6,7 @@ package mocks
 
 import (
 	gomock "github.com/golang/mock/gomock"
-	types "github.com/line/lfb-sdk/types"
+	types "github.com/line/lbm-sdk/types"
 	reflect "reflect"
 )
 

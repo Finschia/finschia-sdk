@@ -11,9 +11,9 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 
-	bam "github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
+	bam "github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // NewApp creates a simple mock kvstore app for testing. It should work

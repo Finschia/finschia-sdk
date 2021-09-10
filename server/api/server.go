@@ -14,14 +14,14 @@ import (
 	"github.com/line/ostracon/libs/log"
 	ostrpcserver "github.com/line/ostracon/rpc/jsonrpc/server"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/server/config"
-	"github.com/line/lfb-sdk/telemetry"
-	grpctypes "github.com/line/lfb-sdk/types/grpc"
-	"github.com/line/lfb-sdk/types/rest"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/server/config"
+	"github.com/line/lbm-sdk/telemetry"
+	grpctypes "github.com/line/lbm-sdk/types/grpc"
+	"github.com/line/lbm-sdk/types/rest"
 
 	// unnamed import of statik for swagger UI support
-	_ "github.com/line/lfb-sdk/client/docs/statik"
+	_ "github.com/line/lbm-sdk/client/docs/statik"
 )
 
 // Server defines the server's API interface.

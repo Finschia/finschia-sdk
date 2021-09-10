@@ -6,8 +6,8 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/tests/mocks"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/tests/mocks"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 type handlerTestSuite struct {

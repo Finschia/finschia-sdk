@@ -5,10 +5,10 @@ import (
 
 	"github.com/line/ostracon/libs/log"
 
-	"github.com/line/lfb-sdk/codec"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/slashing/types"
+	"github.com/line/lbm-sdk/codec"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
 // Keeper of the slashing store

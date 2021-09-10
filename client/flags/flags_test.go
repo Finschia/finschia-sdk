@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/client/flags"
+	"github.com/line/lbm-sdk/client/flags"
 )
 
 func TestParseGasSetting(t *testing.T) {

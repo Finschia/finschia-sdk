@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"strings"
 
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 type ProposalType string

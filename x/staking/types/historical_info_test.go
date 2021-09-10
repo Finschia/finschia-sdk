@@ -8,7 +8,7 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 var header = ocproto.Header{

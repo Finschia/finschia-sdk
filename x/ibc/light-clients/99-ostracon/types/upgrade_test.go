@@ -1,11 +1,11 @@
 package types_test
 
 import (
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
-	upgradetypes "github.com/line/lfb-sdk/x/upgrade/types"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 func (suite *TendermintTestSuite) TestVerifyUpgrade() {

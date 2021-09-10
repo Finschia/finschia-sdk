@@ -7,11 +7,11 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/simapp"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/staking/keeper"
-	"github.com/line/lfb-sdk/x/staking/teststaking"
-	"github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/staking/keeper"
+	"github.com/line/lbm-sdk/x/staking/teststaking"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 // tests GetDelegation, GetDelegatorDelegations, SetDelegation, RemoveDelegation, GetDelegatorDelegations

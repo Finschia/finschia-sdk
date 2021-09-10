@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/x/auth/simulation"
+	"github.com/line/lbm-sdk/x/auth/simulation"
 )
 
 func TestParamChanges(t *testing.T) {

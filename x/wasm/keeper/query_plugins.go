@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	distributiontypes "github.com/line/lfb-sdk/x/distribution/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	distributiontypes "github.com/line/lbm-sdk/x/distribution/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	abci "github.com/line/ostracon/abci/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 )
@@ -427,7 +427,7 @@ func sdkToFullDelegation(ctx sdk.Context, keeper types.StakingKeeper, distKeeper
 	delegationCoins := convertSdkCoinToWasmCoin(amount)
 
 	// FIXME: this is very rough but better than nothing...
-	// https://github.com/line/lfb-sdk/issues/225
+	// https://github.com/line/lbm-sdk/issues/225
 	// if this (val, delegate) pair is receiving a redelegation, it cannot redelegate more
 	// otherwise, it can redelegate the full amount
 	// (there are cases of partial funds redelegated, but this is a start)

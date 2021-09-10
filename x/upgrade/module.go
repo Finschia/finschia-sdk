@@ -9,15 +9,15 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/module"
-	"github.com/line/lfb-sdk/x/upgrade/client/cli"
-	"github.com/line/lfb-sdk/x/upgrade/client/rest"
-	"github.com/line/lfb-sdk/x/upgrade/keeper"
-	"github.com/line/lfb-sdk/x/upgrade/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
+	"github.com/line/lbm-sdk/x/upgrade/client/cli"
+	"github.com/line/lbm-sdk/x/upgrade/client/rest"
+	"github.com/line/lbm-sdk/x/upgrade/keeper"
+	"github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 func init() {

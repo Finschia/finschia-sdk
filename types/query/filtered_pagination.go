@@ -3,7 +3,7 @@ package query
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 // FilteredPaginate does pagination of all the results in the PrefixStore based on the

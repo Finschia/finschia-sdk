@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
 
 var (

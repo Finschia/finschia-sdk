@@ -1,16 +1,16 @@
 package types
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/crypto/types/multisig"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/codec"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/crypto/types/multisig"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 // VerifySignature verifies if the the provided public key generated the signature

@@ -17,7 +17,7 @@ and defines overall functioning of the staking module.
 
 - Params: `Paramsspace("staking") -> legacy_amino(params)`
 
-+++ https://github.com/line/lfb-sdk/blob/main/proto/lfb/staking/v1beta1/staking.proto#L269-L284
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1beta1/staking.proto#L269-L284
 
 ## Validator
 
@@ -70,7 +70,7 @@ is updated during the validator set update process which takes place in [`EndBlo
 
 Each validator's state is stored in a `Validator` struct:
 
-+++ https://github.com/line/lfb-sdk/blob/main/proto/lfb/staking/v1beta1/staking.proto#L83-L120
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1beta1/staking.proto#L83-L120
 
 ## Delegation
 
@@ -84,7 +84,7 @@ funds are held in a `Delegation` data structure. It is owned by one
 delegator, and is associated with the shares for one validator. The sender of
 the transaction is the owner of the bond.
 
-+++ https://github.com/line/lfb-sdk/blob/main/proto/lfb/staking/v1beta1/staking.proto#L183-L194
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1beta1/staking.proto#L183-L194
 
 ### Delegator Shares
 
@@ -123,7 +123,7 @@ slashed.
 
 A UnbondingDelegation object is created every time an unbonding is initiated.
 
-+++ https://github.com/line/lfb-sdk/blob/main/proto/lfb/staking/v1beta1/staking.proto#L198-L209
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1beta1/staking.proto#L198-L209
 
 ## Redelegation
 
@@ -151,7 +151,7 @@ A redelegation object is created every time a redelegation occurs. To prevent
 - and, the (re)delegator is attempting to create a _new_ redelegation
   where the source validator for this new redelegation is `Validator-X`.
 
-+++ https://github.com/line/lfb-sdk/blob/main/proto/lfb/staking/v1beta1/staking.proto#L253-L266
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1beta1/staking.proto#L253-L266
 
 ## Queues
 
@@ -173,7 +173,7 @@ delegations queue is kept.
 
 - UnbondingDelegation: `0x41 | format(time) -> []DVPair`
 
-+++ https://github.com/line/lfb-sdk/blob/main/proto/lfb/staking/v1beta1/staking.proto#L212-L229
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1beta1/staking.proto#L212-L229
 
 ### RedelegationQueue
 
@@ -182,7 +182,7 @@ kept.
 
 - UnbondingDelegation: `0x42 | format(time) -> []DVVTriplet`
 
-+++ https://github.com/line/lfb-sdk/blob/main/proto/lfb/staking/v1beta1/staking.proto#L232-L249
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1beta1/staking.proto#L232-L249
 
 ### ValidatorQueue
 
@@ -201,7 +201,7 @@ that multiple validators exist in the queue at the same location.
 HistoricalInfo objects are stored and pruned at each block such that the staking keeper persists
 the `n` most recent historical info defined by staking module parameter: `HistoricalEntries`.
 
-+++ https://github.com/line/lfb-sdk/blob/main/proto/lfb/staking/v1beta1/staking.proto#L19-L22
++++ https://github.com/line/lbm-sdk/blob/main/proto/lbm/staking/v1beta1/staking.proto#L19-L22
 
 At each BeginBlock, the staking keeper will persist the current Header and the Validators that committed
 the current block in a `HistoricalInfo` object. The Validators are sorted on their address to ensure that

@@ -6,16 +6,16 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 type SoloMachineTestSuite struct {

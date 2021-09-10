@@ -5,17 +5,17 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	sdk "github.com/line/lfb-sdk/types"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/ibc/core/keeper"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
-	ibcmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
-	upgradetypes "github.com/line/lfb-sdk/x/upgrade/types"
+	sdk "github.com/line/lbm-sdk/types"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/x/ibc/core/keeper"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	ibcmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 const height = 10

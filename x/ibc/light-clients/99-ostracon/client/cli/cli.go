@@ -3,7 +3,7 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
+	"github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // NewTxCmd returns a root CLI command handler for all x/ibc/light-clients/99-ostracon transaction commands.

@@ -1,8 +1,8 @@
 package types_test
 
 import (
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 func (suite *TypesTestSuite) TestMarshalHeader() {

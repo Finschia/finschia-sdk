@@ -1,10 +1,10 @@
 package types
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
-	connectiontypes "github.com/line/lfb-sdk/x/ibc/core/03-connection/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	sdk "github.com/line/lbm-sdk/types"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	connectiontypes "github.com/line/lbm-sdk/x/ibc/core/03-connection/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 // ClientKeeper expected account IBC client keeper

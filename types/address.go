@@ -10,9 +10,9 @@ import (
 	"github.com/dgraph-io/ristretto"
 	yaml "gopkg.in/yaml.v2"
 
-	"github.com/line/lfb-sdk/codec/legacy"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/types/bech32"
+	"github.com/line/lbm-sdk/codec/legacy"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/types/bech32"
 )
 
 const (

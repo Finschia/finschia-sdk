@@ -3,11 +3,11 @@ package types_test
 import (
 	"testing"
 
-	"github.com/line/lfb-sdk/x/bank/keeper"
+	"github.com/line/lbm-sdk/x/bank/keeper"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/bank/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/bank/types"
 )
 
 func cloneAppend(bz []byte, tail []byte) (res []byte) {

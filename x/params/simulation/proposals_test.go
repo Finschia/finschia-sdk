@@ -7,11 +7,11 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	simappparams "github.com/line/lfb-sdk/simapp/params"
-	sdk "github.com/line/lfb-sdk/types"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/params/simulation"
-	"github.com/line/lfb-sdk/x/params/types/proposal"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
+	sdk "github.com/line/lbm-sdk/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/params/simulation"
+	"github.com/line/lbm-sdk/x/params/types/proposal"
 )
 
 func TestProposalContents(t *testing.T) {

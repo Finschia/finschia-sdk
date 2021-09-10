@@ -4,11 +4,11 @@ import (
 	"context"
 	"sync"
 
-	"github.com/line/lfb-sdk/version"
+	"github.com/line/lbm-sdk/version"
 )
 
 // DefaultKeyringServiceName defines a default service name for the keyring.
-const DefaultKeyringServiceName = "lfb"
+const DefaultKeyringServiceName = "lbm"
 
 // Config is the structure that holds the SDK configuration parameters.
 // This could be used to initialize certain configuration parameters for the SDK.

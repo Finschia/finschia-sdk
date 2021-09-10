@@ -9,13 +9,13 @@ import (
 	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/simapp"
-	sdk "github.com/line/lfb-sdk/types"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	"github.com/line/lfb-sdk/x/gov/client/utils"
-	"github.com/line/lfb-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp"
+	sdk "github.com/line/lbm-sdk/types"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/gov/client/utils"
+	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 type TxSearchMock struct {

@@ -10,10 +10,10 @@ import (
 	"testing"
 
 	"github.com/gorilla/mux"
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/client/flags"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	"github.com/line/lfb-sdk/x/wasm/keeper"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/stretchr/testify/require"
 )
 

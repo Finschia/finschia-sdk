@@ -3,9 +3,9 @@ package store
 import (
 	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lfb-sdk/store/cache"
-	"github.com/line/lfb-sdk/store/rootmulti"
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/cache"
+	"github.com/line/lbm-sdk/store/rootmulti"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 func NewCommitMultiStore(db tmdb.DB) types.CommitMultiStore {

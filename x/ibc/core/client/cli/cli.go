@@ -3,13 +3,13 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	ibcclient "github.com/line/lfb-sdk/x/ibc/core/02-client"
-	connection "github.com/line/lfb-sdk/x/ibc/core/03-connection"
-	channel "github.com/line/lfb-sdk/x/ibc/core/04-channel"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	solomachine "github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine"
-	tendermint "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon"
+	"github.com/line/lbm-sdk/client"
+	ibcclient "github.com/line/lbm-sdk/x/ibc/core/02-client"
+	connection "github.com/line/lbm-sdk/x/ibc/core/03-connection"
+	channel "github.com/line/lbm-sdk/x/ibc/core/04-channel"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	solomachine "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine"
+	tendermint "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon"
 )
 
 // GetTxCmd returns the transaction commands for this module

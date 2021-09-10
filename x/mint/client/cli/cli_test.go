@@ -10,12 +10,12 @@ import (
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/client/flags"
-	clitestutil "github.com/line/lfb-sdk/testutil/cli"
-	testnet "github.com/line/lfb-sdk/testutil/network"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/mint/client/cli"
-	minttypes "github.com/line/lfb-sdk/x/mint/types"
+	"github.com/line/lbm-sdk/client/flags"
+	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	testnet "github.com/line/lbm-sdk/testutil/network"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/mint/client/cli"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
 )
 
 type IntegrationTestSuite struct {

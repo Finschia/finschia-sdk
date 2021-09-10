@@ -14,7 +14,7 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
-	codectypes "github.com/line/lfb-sdk/codec/types"
+	codectypes "github.com/line/lbm-sdk/codec/types"
 )
 
 func (gi GasInfo) String() string {

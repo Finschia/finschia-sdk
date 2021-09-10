@@ -11,14 +11,14 @@ import (
 	"github.com/line/ostracon/libs/log"
 	ostos "github.com/line/ostracon/libs/os"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/store/prefix"
-	store "github.com/line/lfb-sdk/store/types"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	ibcexported "github.com/line/lfb-sdk/x/ibc/core/exported"
-	"github.com/line/lfb-sdk/x/upgrade/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/store/prefix"
+	store "github.com/line/lbm-sdk/store/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
+	"github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 // UpgradeInfoFileName file to store upgrade information

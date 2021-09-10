@@ -1,14 +1,14 @@
 package client_test
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	distributiontypes "github.com/line/lfb-sdk/x/distribution/types"
-	govtypes "github.com/line/lfb-sdk/x/gov/types"
-	client "github.com/line/lfb-sdk/x/ibc/core/02-client"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	sdk "github.com/line/lbm-sdk/types"
+	distributiontypes "github.com/line/lbm-sdk/x/distribution/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
+	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {

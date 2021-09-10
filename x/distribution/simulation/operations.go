@@ -4,16 +4,16 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/simapp/helpers"
-	simappparams "github.com/line/lfb-sdk/simapp/params"
-	sdk "github.com/line/lfb-sdk/types"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/distribution/keeper"
-	"github.com/line/lfb-sdk/x/distribution/types"
-	"github.com/line/lfb-sdk/x/simulation"
-	stakingkeeper "github.com/line/lfb-sdk/x/staking/keeper"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp/helpers"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
+	sdk "github.com/line/lbm-sdk/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/distribution/keeper"
+	"github.com/line/lbm-sdk/x/distribution/types"
+	"github.com/line/lbm-sdk/x/simulation"
+	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 )
 
 // Simulation operation weights constants

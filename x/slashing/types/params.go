@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	sdk "github.com/line/lfb-sdk/types"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
+	sdk "github.com/line/lbm-sdk/types"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
 
 // Default parameter namespace

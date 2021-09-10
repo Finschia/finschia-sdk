@@ -1,12 +1,12 @@
 package keeper
 
 import (
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/evidence/exported"
-	"github.com/line/lfb-sdk/x/evidence/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/evidence/exported"
+	"github.com/line/lbm-sdk/x/evidence/types"
 
 	abci "github.com/line/ostracon/abci/types"
 )

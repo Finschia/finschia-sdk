@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"math/rand"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func GenesisFixture(mutators ...func(*GenesisState)) GenesisState {

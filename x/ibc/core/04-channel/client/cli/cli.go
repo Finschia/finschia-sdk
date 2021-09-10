@@ -3,8 +3,8 @@ package cli
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/line/lfb-sdk/client"
-	"github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
+	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 )
 
 // GetQueryCmd returns the query commands for IBC channels

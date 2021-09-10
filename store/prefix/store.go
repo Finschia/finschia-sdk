@@ -5,9 +5,9 @@ import (
 	"errors"
 	"io"
 
-	"github.com/line/lfb-sdk/store/cachekv"
-	"github.com/line/lfb-sdk/store/tracekv"
-	"github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/store/cachekv"
+	"github.com/line/lbm-sdk/store/tracekv"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 var _ types.KVStore = Store{}

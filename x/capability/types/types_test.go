@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/x/capability/types"
+	"github.com/line/lbm-sdk/x/capability/types"
 )
 
 func TestCapabilityKey(t *testing.T) {

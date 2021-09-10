@@ -7,8 +7,8 @@ import (
 	"io/ioutil"
 	"sync"
 
-	"github.com/line/lfb-sdk/snapshots/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lbm-sdk/snapshots/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 const (

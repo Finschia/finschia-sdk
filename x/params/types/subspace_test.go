@@ -10,11 +10,11 @@ import (
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/store"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/params/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/store"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/params/types"
 )
 
 type SubspaceTestSuite struct {

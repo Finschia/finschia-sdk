@@ -5,18 +5,18 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/codec"
-	codectypes "github.com/line/lfb-sdk/codec/types"
-	kmultisig "github.com/line/lfb-sdk/crypto/keys/multisig"
-	"github.com/line/lfb-sdk/crypto/keys/secp256k1"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/crypto/types/multisig"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	solomachinetypes "github.com/line/lfb-sdk/x/ibc/light-clients/06-solomachine/types"
+	"github.com/line/lbm-sdk/codec"
+	codectypes "github.com/line/lbm-sdk/codec/types"
+	kmultisig "github.com/line/lbm-sdk/crypto/keys/multisig"
+	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/crypto/types/multisig"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	solomachinetypes "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/types"
 )
 
 var prefix = commitmenttypes.NewMerklePrefix([]byte("ibc"))

@@ -7,15 +7,15 @@ import (
 
 	octypes "github.com/line/ostracon/types"
 
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
-	localhoctypes "github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
-	ibctestingmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
-	upgradetypes "github.com/line/lfb-sdk/x/upgrade/types"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
+	localhoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
+	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
+	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
 )
 
 func (suite *KeeperTestSuite) TestCreateClient() {

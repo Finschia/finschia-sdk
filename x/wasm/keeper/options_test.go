@@ -3,12 +3,12 @@ package keeper
 import (
 	"testing"
 
-	authkeeper "github.com/line/lfb-sdk/x/auth/keeper"
-	distributionkeeper "github.com/line/lfb-sdk/x/distribution/keeper"
-	paramtypes "github.com/line/lfb-sdk/x/params/types"
-	stakingkeeper "github.com/line/lfb-sdk/x/staking/keeper"
-	"github.com/line/lfb-sdk/x/wasm/keeper/wasmtesting"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
+	distributionkeeper "github.com/line/lbm-sdk/x/distribution/keeper"
+	paramtypes "github.com/line/lbm-sdk/x/params/types"
+	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
+	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/stretchr/testify/assert"
 )
 

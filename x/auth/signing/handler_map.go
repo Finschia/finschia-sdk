@@ -3,9 +3,9 @@ package signing
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/types/tx/signing"
+	"github.com/line/lbm-sdk/types/tx/signing"
 
-	sdk "github.com/line/lfb-sdk/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // SignModeHandlerMap is SignModeHandler that aggregates multiple SignModeHandler's into

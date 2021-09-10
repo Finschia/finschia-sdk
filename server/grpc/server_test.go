@@ -13,16 +13,16 @@ import (
 	"google.golang.org/grpc/metadata"
 	rpb "google.golang.org/grpc/reflection/grpc_reflection_v1alpha"
 
-	clienttx "github.com/line/lfb-sdk/client/tx"
-	"github.com/line/lfb-sdk/testutil/network"
-	"github.com/line/lfb-sdk/testutil/testdata"
-	sdk "github.com/line/lfb-sdk/types"
-	grpctypes "github.com/line/lfb-sdk/types/grpc"
-	"github.com/line/lfb-sdk/types/tx"
-	txtypes "github.com/line/lfb-sdk/types/tx"
-	"github.com/line/lfb-sdk/types/tx/signing"
-	authclient "github.com/line/lfb-sdk/x/auth/client"
-	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	clienttx "github.com/line/lbm-sdk/client/tx"
+	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
+	grpctypes "github.com/line/lbm-sdk/types/grpc"
+	"github.com/line/lbm-sdk/types/tx"
+	txtypes "github.com/line/lbm-sdk/types/tx"
+	"github.com/line/lbm-sdk/types/tx/signing"
+	authclient "github.com/line/lbm-sdk/x/auth/client"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
 type IntegrationTestSuite struct {
@@ -111,12 +111,12 @@ func (s *IntegrationTestSuite) TestGRPCServer_Reflection() {
 		servicesMap[s.Name] = true
 	}
 	// Make sure the following services are present
-	s.Require().True(servicesMap["lfb.bank.v1beta1.Query"])
+	s.Require().True(servicesMap["lbm.bank.v1beta1.Query"])
 }
 
 func (s *IntegrationTestSuite) TestGRPCServer_GetTxsEvent() {
 	// Query the tx via gRPC without pagination. This used to panic, see
-	// https://github.com/line/lfb-sdk/issues/8038.
+	// https://github.com/line/lbm-sdk/issues/8038.
 	txServiceClient := txtypes.NewServiceClient(s.conn)
 	_, err := txServiceClient.GetTxsEvent(
 		context.Background(),
@@ -172,7 +172,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_BroadcastTx() {
 }
 
 // Test and enforce that we upfront reject any connections to baseapp containing
-// invalid initial x-lfb-block-height that aren't positive  and in the range [0, max(int64)]
+// invalid initial x-lbm-block-height that aren't positive  and in the range [0, max(int64)]
 // See issue https://github.com/cosmos/cosmos-sdk/issues/7662.
 func (s *IntegrationTestSuite) TestGRPCServerInvalidHeaderHeights() {
 	t := s.T()
@@ -183,9 +183,9 @@ func (s *IntegrationTestSuite) TestGRPCServerInvalidHeaderHeights() {
 		value   string
 		wantErr string
 	}{
-		{"-1", "\"x-lfb-block-height\" must be >= 0"},
+		{"-1", "\"x-lbm-block-height\" must be >= 0"},
 		{"9223372036854775808", "value out of range"}, // > max(int64) by 1
-		{"-10", "\"x-lfb-block-height\" must be >= 0"},
+		{"-10", "\"x-lbm-block-height\" must be >= 0"},
 		{"18446744073709551615", "value out of range"}, // max uint64, which is  > max(int64)
 		{"-9223372036854775809", "value out of range"}, // Out of the range of for negative int64
 	}

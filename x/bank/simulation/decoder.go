@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/x/bank/exported"
-	"github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/x/bank/exported"
+	"github.com/line/lbm-sdk/x/bank/types"
 )
 
 // SupplyUnmarshaler defines the expected encoding store functions.

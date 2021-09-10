@@ -9,15 +9,15 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/simapp"
-	simappparams "github.com/line/lfb-sdk/simapp/params"
-	sdk "github.com/line/lfb-sdk/types"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	distrtypes "github.com/line/lfb-sdk/x/distribution/types"
-	minttypes "github.com/line/lfb-sdk/x/mint/types"
-	"github.com/line/lfb-sdk/x/staking/simulation"
-	"github.com/line/lfb-sdk/x/staking/teststaking"
-	"github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/simapp"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
+	sdk "github.com/line/lbm-sdk/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	distrtypes "github.com/line/lbm-sdk/x/distribution/types"
+	minttypes "github.com/line/lbm-sdk/x/mint/types"
+	"github.com/line/lbm-sdk/x/staking/simulation"
+	"github.com/line/lbm-sdk/x/staking/teststaking"
+	"github.com/line/lbm-sdk/x/staking/types"
 )
 
 // TestWeightedOperations tests the weights of the operations.

@@ -5,16 +5,16 @@ import (
 
 	octypes "github.com/line/ostracon/types"
 
-	"github.com/line/lfb-sdk/client"
+	"github.com/line/lbm-sdk/client"
 
-	"github.com/line/lfb-sdk/codec"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	ibcclient "github.com/line/lfb-sdk/x/ibc/core/client"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
+	"github.com/line/lbm-sdk/codec"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	ibcclient "github.com/line/lbm-sdk/x/ibc/core/client"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 )
 
 // QueryClientState returns a client state. If prove is true, it performs an ABCI store query

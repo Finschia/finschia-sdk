@@ -5,16 +5,16 @@ package rest_test
 import (
 	"fmt"
 
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/testutil/network"
-	"github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/types/errors"
-	"github.com/line/lfb-sdk/types/rest"
-	authclient "github.com/line/lfb-sdk/x/auth/client"
-	"github.com/line/lfb-sdk/x/auth/legacy/legacytx"
-	authtypes "github.com/line/lfb-sdk/x/auth/types"
-	bankrest "github.com/line/lfb-sdk/x/bank/client/rest"
-	banktypes "github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/testutil/network"
+	"github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/rest"
+	authclient "github.com/line/lbm-sdk/x/auth/client"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	authtypes "github.com/line/lbm-sdk/x/auth/types"
+	bankrest "github.com/line/lbm-sdk/x/bank/client/rest"
+	banktypes "github.com/line/lbm-sdk/x/bank/types"
 )
 
 func (s *IntegrationTestSuite) TestCoinSend() {

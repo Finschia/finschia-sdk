@@ -6,9 +6,9 @@ import (
 
 	"github.com/spf13/cast"
 
-	"github.com/line/lfb-sdk/server/types"
-	"github.com/line/lfb-sdk/store"
-	storetypes "github.com/line/lfb-sdk/store/types"
+	"github.com/line/lbm-sdk/server/types"
+	"github.com/line/lbm-sdk/store"
+	storetypes "github.com/line/lbm-sdk/store/types"
 )
 
 // GetPruningOptionsFromFlags parses command flags and returns the correct

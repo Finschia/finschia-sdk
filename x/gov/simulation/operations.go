@@ -5,15 +5,15 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/simapp/helpers"
-	simappparams "github.com/line/lfb-sdk/simapp/params"
-	sdk "github.com/line/lfb-sdk/types"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/gov/keeper"
-	"github.com/line/lfb-sdk/x/gov/types"
-	"github.com/line/lfb-sdk/x/simulation"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp/helpers"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
+	sdk "github.com/line/lbm-sdk/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/gov/keeper"
+	"github.com/line/lbm-sdk/x/gov/types"
+	"github.com/line/lbm-sdk/x/simulation"
 )
 
 var initialProposalID = uint64(100000000000000)

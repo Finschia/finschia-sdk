@@ -1,11 +1,11 @@
 package std
 
 import (
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/codec/types"
-	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	txtypes "github.com/line/lfb-sdk/types/tx"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/types"
+	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	txtypes "github.com/line/lbm-sdk/types/tx"
 )
 
 // RegisterLegacyAminoCodec registers types with the Amino codec.

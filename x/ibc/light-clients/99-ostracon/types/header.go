@@ -6,10 +6,10 @@ import (
 
 	octypes "github.com/line/ostracon/types"
 
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	commitmenttypes "github.com/line/lfb-sdk/x/ibc/core/23-commitment/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
 )
 
 var _ exported.Header = &Header{}

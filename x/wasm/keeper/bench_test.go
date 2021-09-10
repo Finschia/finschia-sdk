@@ -3,7 +3,7 @@ package keeper
 import (
 	"testing"
 
-	"github.com/line/lfb-sdk/x/wasm/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 	dbm "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/goleveldb"
 	"github.com/line/tm-db/v2/memdb"

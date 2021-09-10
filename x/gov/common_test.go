@@ -8,11 +8,11 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/gov/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/gov/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 var (

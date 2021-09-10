@@ -3,16 +3,16 @@ package simulation
 import (
 	"math/rand"
 
-	"github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/codec"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/simapp/helpers"
-	simappparams "github.com/line/lfb-sdk/simapp/params"
-	sdk "github.com/line/lfb-sdk/types"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/bank/keeper"
-	"github.com/line/lfb-sdk/x/bank/types"
-	"github.com/line/lfb-sdk/x/simulation"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/codec"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/simapp/helpers"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
+	sdk "github.com/line/lbm-sdk/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/bank/keeper"
+	"github.com/line/lbm-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/x/simulation"
 )
 
 // Simulation operation weights constants

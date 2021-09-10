@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/crisis/types"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/crisis/types"
 )
 
 // new crisis genesis

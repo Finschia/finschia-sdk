@@ -5,10 +5,10 @@ import (
 
 	gogotypes "github.com/gogo/protobuf/types"
 
-	"github.com/line/lfb-sdk/x/simulation"
+	"github.com/line/lbm-sdk/x/simulation"
 
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/ibc/applications/transfer/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 )
 
 // ParamChanges defines the parameters that can be modified by param change proposals

@@ -1,7 +1,7 @@
 package types_test
 
 import (
-	"github.com/line/lfb-sdk/simapp"
+	"github.com/line/lbm-sdk/simapp"
 )
 
 var (

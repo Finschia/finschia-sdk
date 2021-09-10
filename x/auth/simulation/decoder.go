@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/types/kv"
-	"github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 type AuthUnmarshaler interface {

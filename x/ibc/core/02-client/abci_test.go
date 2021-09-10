@@ -5,11 +5,11 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	client "github.com/line/lfb-sdk/x/ibc/core/02-client"
-	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	localhoctypes "github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
-	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
+	client "github.com/line/lbm-sdk/x/ibc/core/02-client"
+	"github.com/line/lbm-sdk/x/ibc/core/02-client/types"
+	"github.com/line/lbm-sdk/x/ibc/core/exported"
+	localhoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
+	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 )
 
 type ClientTestSuite struct {

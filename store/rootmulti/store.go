@@ -19,15 +19,15 @@ import (
 	"github.com/line/tm-db/v2/prefixdb"
 	"github.com/pkg/errors"
 
-	"github.com/line/lfb-sdk/snapshots"
-	snapshottypes "github.com/line/lfb-sdk/snapshots/types"
-	"github.com/line/lfb-sdk/store/cachemulti"
-	"github.com/line/lfb-sdk/store/dbadapter"
-	"github.com/line/lfb-sdk/store/iavl"
-	"github.com/line/lfb-sdk/store/mem"
-	"github.com/line/lfb-sdk/store/tracekv"
-	"github.com/line/lfb-sdk/store/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lbm-sdk/snapshots"
+	snapshottypes "github.com/line/lbm-sdk/snapshots/types"
+	"github.com/line/lbm-sdk/store/cachemulti"
+	"github.com/line/lbm-sdk/store/dbadapter"
+	"github.com/line/lbm-sdk/store/iavl"
+	"github.com/line/lbm-sdk/store/mem"
+	"github.com/line/lbm-sdk/store/tracekv"
+	"github.com/line/lbm-sdk/store/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 const (

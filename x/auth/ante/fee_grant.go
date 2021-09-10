@@ -1,8 +1,8 @@
 package ante
 
 import (
-	"github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
+	"github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // RejectFeeGranterDecorator is an AnteDecorator which rejects transactions which

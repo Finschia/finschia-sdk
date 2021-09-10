@@ -8,12 +8,12 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/simapp"
-	simappparams "github.com/line/lfb-sdk/simapp/params"
-	sdk "github.com/line/lfb-sdk/types"
-	simtypes "github.com/line/lfb-sdk/types/simulation"
-	"github.com/line/lfb-sdk/x/bank/simulation"
-	"github.com/line/lfb-sdk/x/bank/types"
+	"github.com/line/lbm-sdk/simapp"
+	simappparams "github.com/line/lbm-sdk/simapp/params"
+	sdk "github.com/line/lbm-sdk/types"
+	simtypes "github.com/line/lbm-sdk/types/simulation"
+	"github.com/line/lbm-sdk/x/bank/simulation"
+	"github.com/line/lbm-sdk/x/bank/types"
 )
 
 type SimTestSuite struct {

@@ -8,9 +8,9 @@ import (
 	ostos "github.com/line/ostracon/libs/os"
 	octypes "github.com/line/ostracon/types"
 
-	"github.com/line/lfb-sdk/codec"
-	sdk "github.com/line/lfb-sdk/types"
-	stakingtypes "github.com/line/lfb-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
+	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
 // NewGenesisState creates a new GenesisState object

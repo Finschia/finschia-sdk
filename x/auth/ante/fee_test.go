@@ -1,11 +1,11 @@
 package ante_test
 
 import (
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	"github.com/line/lfb-sdk/testutil/testdata"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	"github.com/line/lbm-sdk/testutil/testdata"
 
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/auth/ante"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/ante"
 )
 
 func (suite *AnteTestSuite) TestEnsureMempoolFees() {

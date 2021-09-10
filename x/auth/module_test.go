@@ -7,8 +7,8 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/x/auth/types"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/x/auth/types"
 )
 
 func TestItCreatesModuleAccountOnInitBlock(t *testing.T) {

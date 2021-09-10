@@ -5,10 +5,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/crypto/hd"
-	"github.com/line/lfb-sdk/crypto/keyring"
-	"github.com/line/lfb-sdk/server"
-	"github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/keyring"
+	"github.com/line/lbm-sdk/server"
+	"github.com/line/lbm-sdk/types"
 )
 
 func TestGenerateCoinKey(t *testing.T) {

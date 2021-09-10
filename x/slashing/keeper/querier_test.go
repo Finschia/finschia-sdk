@@ -8,11 +8,11 @@ import (
 	abci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
-	"github.com/line/lfb-sdk/codec"
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/x/slashing/keeper"
-	"github.com/line/lfb-sdk/x/slashing/testslashing"
-	"github.com/line/lfb-sdk/x/slashing/types"
+	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/x/slashing/keeper"
+	"github.com/line/lbm-sdk/x/slashing/testslashing"
+	"github.com/line/lbm-sdk/x/slashing/types"
 )
 
 func TestNewQuerier(t *testing.T) {

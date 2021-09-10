@@ -7,8 +7,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/lfb-sdk/snapshots"
-	"github.com/line/lfb-sdk/snapshots/types"
+	"github.com/line/lbm-sdk/snapshots"
+	"github.com/line/lbm-sdk/snapshots/types"
 )
 
 func TestManager_List(t *testing.T) {

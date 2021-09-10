@@ -8,12 +8,12 @@ import (
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lfb-sdk/baseapp"
-	"github.com/line/lfb-sdk/simapp"
-	"github.com/line/lfb-sdk/store/prefix"
-	sdk "github.com/line/lfb-sdk/types"
-	"github.com/line/lfb-sdk/x/params/types"
-	"github.com/line/lfb-sdk/x/params/types/proposal"
+	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/simapp"
+	"github.com/line/lbm-sdk/store/prefix"
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/params/types"
+	"github.com/line/lbm-sdk/x/params/types/proposal"
 )
 
 type KeeperTestSuite struct {

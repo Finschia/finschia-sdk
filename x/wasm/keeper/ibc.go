@@ -3,11 +3,11 @@ package keeper
 import (
 	"strings"
 
-	sdk "github.com/line/lfb-sdk/types"
-	sdkerrors "github.com/line/lfb-sdk/types/errors"
-	capabilitytypes "github.com/line/lfb-sdk/x/capability/types"
-	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
-	"github.com/line/lfb-sdk/x/wasm/types"
+	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
+	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 // bindIbcPort will reserve the port.

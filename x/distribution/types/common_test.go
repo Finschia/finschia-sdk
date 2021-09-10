@@ -1,9 +1,9 @@
 package types
 
 import (
-	"github.com/line/lfb-sdk/crypto/keys/ed25519"
-	cryptotypes "github.com/line/lfb-sdk/crypto/types"
-	sdk "github.com/line/lfb-sdk/types"
+	"github.com/line/lbm-sdk/crypto/keys/ed25519"
+	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // nolint:deadcode,unused,varcheck
