@@ -56,3 +56,16 @@ func (supply Supply) ValidateBasic() error {
 
 	return nil
 }
+
+func (supply *Supply) MarshalX() ([]byte, error) {
+	return supply.Marshal()
+}
+
+func UnmarshalSupplyX(bz []byte) (exported.SupplyI, error) {
+	var supply Supply
+
+	if err := supply.Unmarshal(bz); err != nil {
+		return nil, err
+	}
+	return &supply, nil
+}

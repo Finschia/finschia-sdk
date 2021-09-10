@@ -300,6 +300,17 @@
   
     - [DataType](#ibc.lightclients.solomachine.v1.DataType)
   
+- [lbm/crypto/ed25519/keys.proto](#lbm/crypto/ed25519/keys.proto)
+    - [PrivKey](#lbm.crypto.ed25519.PrivKey)
+    - [PubKey](#lbm.crypto.ed25519.PubKey)
+  
+- [lbm/crypto/multisig/keys.proto](#lbm/crypto/multisig/keys.proto)
+    - [LegacyAminoPubKey](#lbm.crypto.multisig.LegacyAminoPubKey)
+  
+- [lbm/crypto/secp256k1/keys.proto](#lbm/crypto/secp256k1/keys.proto)
+    - [PrivKey](#lbm.crypto.secp256k1.PrivKey)
+    - [PubKey](#lbm.crypto.secp256k1.PubKey)
+  
 - [lbm/auth/v1beta1/auth.proto](#lbm/auth/v1beta1/auth.proto)
     - [BaseAccount](#lbm.auth.v1beta1.BaseAccount)
     - [ModuleAccount](#lbm.auth.v1beta1.ModuleAccount)
@@ -440,20 +451,9 @@
   
     - [Msg](#lbm.crisis.v1beta1.Msg)
   
-- [lbm/crypto/ed25519/keys.proto](#lbm/crypto/ed25519/keys.proto)
-    - [PrivKey](#lbm.crypto.ed25519.PrivKey)
-    - [PubKey](#lbm.crypto.ed25519.PubKey)
-  
-- [lbm/crypto/multisig/keys.proto](#lbm/crypto/multisig/keys.proto)
-    - [LegacyAminoPubKey](#lbm.crypto.multisig.LegacyAminoPubKey)
-  
 - [lbm/crypto/multisig/v1beta1/multisig.proto](#lbm/crypto/multisig/v1beta1/multisig.proto)
     - [CompactBitArray](#lbm.crypto.multisig.v1beta1.CompactBitArray)
     - [MultiSignature](#lbm.crypto.multisig.v1beta1.MultiSignature)
-  
-- [lbm/crypto/secp256k1/keys.proto](#lbm/crypto/secp256k1/keys.proto)
-    - [PrivKey](#lbm.crypto.secp256k1.PrivKey)
-    - [PubKey](#lbm.crypto.secp256k1.PubKey)
   
 - [lbm/distribution/v1beta1/distribution.proto](#lbm/distribution/v1beta1/distribution.proto)
     - [CommunityPoolSpendProposal](#lbm.distribution.v1beta1.CommunityPoolSpendProposal)
@@ -5039,6 +5039,140 @@ data sign byte encodings.
 
 
 
+<a name="lbm/crypto/ed25519/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/crypto/ed25519/keys.proto
+
+
+
+<a name="lbm.crypto.ed25519.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a ed25519 private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lbm.crypto.ed25519.PubKey"></a>
+
+### PubKey
+PubKey defines a ed25519 public key
+Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
+if the y-coordinate is the lexicographically largest of the two associated with
+the x-coordinate. Otherwise the first byte is a 0x03.
+This prefix is followed with the x-coordinate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/crypto/multisig/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/crypto/multisig/keys.proto
+
+
+
+<a name="lbm.crypto.multisig.LegacyAminoPubKey"></a>
+
+### LegacyAminoPubKey
+LegacyAminoPubKey specifies a public key type
+which nests multiple public keys and a threshold,
+it uses legacy amino address rules.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `threshold` | [uint32](#uint32) |  |  |
+| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/crypto/secp256k1/keys.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/crypto/secp256k1/keys.proto
+
+
+
+<a name="lbm.crypto.secp256k1.PrivKey"></a>
+
+### PrivKey
+PrivKey defines a secp256k1 private key.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="lbm.crypto.secp256k1.PubKey"></a>
+
+### PubKey
+PubKey defines a secp256k1 public key
+Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
+if the y-coordinate is the lexicographically largest of the two associated with
+the x-coordinate. Otherwise the first byte is a 0x03.
+This prefix is followed with the x-coordinate.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [bytes](#bytes) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/auth/v1beta1/auth.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -5057,7 +5191,9 @@ type for additional functionality (e.g. vesting).
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `pub_key` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `ed25519_pub_key` | [lbm.crypto.ed25519.PubKey](#lbm.crypto.ed25519.PubKey) |  |  |
+| `secp256k1_pub_key` | [lbm.crypto.secp256k1.PubKey](#lbm.crypto.secp256k1.PubKey) |  |  |
+| `multisig_pub_key` | [lbm.crypto.multisig.LegacyAminoPubKey](#lbm.crypto.multisig.LegacyAminoPubKey) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
 
@@ -6815,90 +6951,6 @@ Msg defines the bank Msg service.
 
 
 
-<a name="lbm/crypto/ed25519/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/crypto/ed25519/keys.proto
-
-
-
-<a name="lbm.crypto.ed25519.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a ed25519 private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lbm.crypto.ed25519.PubKey"></a>
-
-### PubKey
-PubKey defines a ed25519 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/crypto/multisig/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/crypto/multisig/keys.proto
-
-
-
-<a name="lbm.crypto.multisig.LegacyAminoPubKey"></a>
-
-### LegacyAminoPubKey
-LegacyAminoPubKey specifies a public key type
-which nests multiple public keys and a threshold,
-it uses legacy amino address rules.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `threshold` | [uint32](#uint32) |  |  |
-| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
 <a name="lbm/crypto/multisig/v1beta1/multisig.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -6936,56 +6988,6 @@ signed and with which modes.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `signatures` | [bytes](#bytes) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lbm/crypto/secp256k1/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lbm/crypto/secp256k1/keys.proto
-
-
-
-<a name="lbm.crypto.secp256k1.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a secp256k1 private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lbm.crypto.secp256k1.PubKey"></a>
-
-### PubKey
-PubKey defines a secp256k1 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
 
 
 

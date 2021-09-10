@@ -26,4 +26,6 @@ type SupplyI interface {
 
 	String() string
 	ValidateBasic() error
+
+	MarshalX() ([]byte, error)
 }

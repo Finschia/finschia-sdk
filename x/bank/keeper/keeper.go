@@ -190,7 +190,9 @@ func (k BaseKeeper) GetDenomMetaData(ctx sdk.Context, denom string) types.Metada
 	}
 
 	var metadata types.Metadata
-	k.cdc.MustUnmarshalBinaryBare(bz, &metadata)
+	if err := metadata.Unmarshal(bz); err != nil {
+		panic(err)
+	}
 
 	return metadata
 }
@@ -409,12 +411,11 @@ func (k BaseKeeper) trackUndelegation(ctx sdk.Context, addr sdk.AccAddress, amt 
 
 // MarshalSupply protobuf serializes a Supply interface
 func (k BaseKeeper) MarshalSupply(supplyI exported.SupplyI) ([]byte, error) {
-	return k.cdc.MarshalInterface(supplyI)
+	return supplyI.MarshalX()
 }
 
 // UnmarshalSupply returns a Supply interface from raw encoded supply
 // bytes of a Proto-based Supply type
 func (k BaseKeeper) UnmarshalSupply(bz []byte) (exported.SupplyI, error) {
-	var evi exported.SupplyI
-	return evi, k.cdc.UnmarshalInterface(bz, &evi)
+	return types.UnmarshalSupplyX(bz)
 }

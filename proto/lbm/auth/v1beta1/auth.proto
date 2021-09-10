@@ -1,9 +1,11 @@
 syntax = "proto3";
 package lbm.auth.v1beta1;
 
+import "lbm/crypto/ed25519/keys.proto";
+import "lbm/crypto/multisig/keys.proto";
+import "lbm/crypto/secp256k1/keys.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
-import "google/protobuf/any.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/auth/types";
 
@@ -17,10 +19,14 @@ message BaseAccount {
 
   option (cosmos_proto.implements_interface) = "AccountI";
 
-  string              address = 1;
-  google.protobuf.Any pub_key = 2
-      [(gogoproto.jsontag) = "public_key,omitempty", (gogoproto.moretags) = "yaml:\"public_key\""];
-  uint64 sequence       = 3;
+  string                    address         = 1;
+  lbm.crypto.ed25519.PubKey ed25519_pub_key = 2
+      [(gogoproto.jsontag) = "ed25519_public_key,omitempty", (gogoproto.moretags) = "yaml:\"ed25519_public_key\""];
+  lbm.crypto.secp256k1.PubKey secp256k1_pub_key = 3
+      [(gogoproto.jsontag) = "secp256k1_public_key,omitempty", (gogoproto.moretags) = "yaml:\"secp256k1_public_key\""];
+  lbm.crypto.multisig.LegacyAminoPubKey multisig_pub_key = 4
+      [(gogoproto.jsontag) = "multisig_public_key,omitempty", (gogoproto.moretags) = "yaml:\"multisig_public_key\""];
+  uint64 sequence = 5;
 }
 
 // ModuleAccount defines an account for modules that holds coins on a pool.
