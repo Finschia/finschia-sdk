@@ -7,7 +7,7 @@ import (
 	client "github.com/line/lfb-sdk/x/ibc/core/02-client"
 	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
@@ -24,7 +24,7 @@ func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {
 	}{
 		{
 			"valid update client proposal", func() {
-				clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+				clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 				clientState := suite.chainA.GetClientState(clientA)
 
 				tmClientState, ok := clientState.(*ibctmtypes.ClientState)
@@ -34,7 +34,7 @@ func (suite *ClientTestSuite) TestNewClientUpdateProposalHandler() {
 				suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), clientA, tmClientState)
 
 				// use next header for chainB to update the client on chainA
-				header, err := suite.chainA.ConstructUpdateTMClientHeader(suite.chainB, clientA)
+				header, err := suite.chainA.ConstructUpdateOCClientHeader(suite.chainB, clientA)
 				suite.Require().NoError(err)
 
 				content, err = clienttypes.NewClientUpdateProposal(ibctesting.Title, ibctesting.Description, clientA, header)

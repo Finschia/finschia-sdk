@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/baseapp"
@@ -34,13 +34,13 @@ func TestValidateEvidenceParams(t *testing.T) {
 		expectErr bool
 	}{
 		{nil, true},
-		{&ostproto.EvidenceParams{}, true},
-		{ostproto.EvidenceParams{}, true},
-		{ostproto.EvidenceParams{MaxAgeNumBlocks: -1, MaxAgeDuration: 18004000, MaxBytes: 5000000}, true},
-		{ostproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: -1, MaxBytes: 5000000}, true},
-		{ostproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: -1}, true},
-		{ostproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: 5000000}, false},
-		{ostproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: 0}, false},
+		{&ocproto.EvidenceParams{}, true},
+		{ocproto.EvidenceParams{}, true},
+		{ocproto.EvidenceParams{MaxAgeNumBlocks: -1, MaxAgeDuration: 18004000, MaxBytes: 5000000}, true},
+		{ocproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: -1, MaxBytes: 5000000}, true},
+		{ocproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: -1}, true},
+		{ocproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: 5000000}, false},
+		{ocproto.EvidenceParams{MaxAgeNumBlocks: 360000, MaxAgeDuration: 18004000, MaxBytes: 0}, false},
 	}
 
 	for _, tc := range testCases {
@@ -54,10 +54,10 @@ func TestValidateValidatorParams(t *testing.T) {
 		expectErr bool
 	}{
 		{nil, true},
-		{&ostproto.ValidatorParams{}, true},
-		{ostproto.ValidatorParams{}, true},
-		{ostproto.ValidatorParams{PubKeyTypes: []string{}}, true},
-		{ostproto.ValidatorParams{PubKeyTypes: []string{"secp256k1"}}, false},
+		{&ocproto.ValidatorParams{}, true},
+		{ocproto.ValidatorParams{}, true},
+		{ocproto.ValidatorParams{PubKeyTypes: []string{}}, true},
+		{ocproto.ValidatorParams{PubKeyTypes: []string{"secp256k1"}}, false},
 	}
 
 	for _, tc := range testCases {

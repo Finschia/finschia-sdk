@@ -251,9 +251,13 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	}
 
 	genDocProvider := node.DefaultGenesisDocProviderFunc(cfg)
-	tmNode, err := node.NewNode(
+	pv, err2 := pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile(), cfg.PrivKeyType)
+	if err2 != nil {
+		return err2
+	}
+	ocNode, err := node.NewNode(
 		cfg,
-		pvm.LoadOrGenFilePV(cfg.PrivValidatorKeyFile(), cfg.PrivValidatorStateFile()),
+		pv,
 		nodeKey,
 		proxy.NewLocalClientCreator(app),
 		genDocProvider,
@@ -265,11 +269,11 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 		return err
 	}
 
-	ctx.Logger.Debug("initialization: tmNode created")
-	if err := tmNode.Start(); err != nil {
+	ctx.Logger.Debug("initialization: ocNode created")
+	if err := ocNode.Start(); err != nil {
 		return err
 	}
-	ctx.Logger.Debug("initialization: tmNode started")
+	ctx.Logger.Debug("initialization: ocNode started")
 
 	config := config.GetConfig(ctx.Viper)
 
@@ -277,7 +281,7 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	// service if API or gRPC is enabled, and avoid doing so in the general
 	// case, because it spawns a new local ostracon RPC client.
 	if config.API.Enable || config.GRPC.Enable {
-		clientCtx = clientCtx.WithClient(local.New(tmNode))
+		clientCtx = clientCtx.WithClient(local.New(ocNode))
 
 		app.RegisterTxService(clientCtx)
 		app.RegisterTendermintService(clientCtx)
@@ -321,8 +325,8 @@ func startInProcess(ctx *Context, clientCtx client.Context, appCreator types.App
 	}
 
 	defer func() {
-		if tmNode.IsRunning() {
-			_ = tmNode.Stop()
+		if ocNode.IsRunning() {
+			_ = ocNode.Stop()
 		}
 
 		if cpuProfileCleanup != nil {

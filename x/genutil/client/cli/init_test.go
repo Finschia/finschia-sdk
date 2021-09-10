@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"reflect"
 	"testing"
 	"time"
 
+	ed255192 "github.com/line/lfb-sdk/crypto/keys/ed25519"
 	abci_server "github.com/line/ostracon/abci/server"
 	"github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/libs/log"
@@ -203,7 +205,8 @@ func TestInitNodeValidatorFiles(t *testing.T) {
 
 	require.Nil(t, err)
 	require.NotEqual(t, "", nodeID)
-	require.NotEqual(t, 0, len(valPubKey.Bytes()))
+	require.Equal(t, 32, len(valPubKey.Bytes()))
+	require.EqualValues(t, reflect.TypeOf(&ed255192.PubKey{}), reflect.TypeOf(valPubKey))
 }
 
 // custom tx codec

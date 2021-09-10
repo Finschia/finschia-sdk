@@ -5,7 +5,7 @@ import (
 	"sort"
 	"testing"
 
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -59,7 +59,7 @@ func TestUpdateDescription(t *testing.T) {
 func TestABCIValidatorUpdate(t *testing.T) {
 	validator := newValidator(t, valAddr1, pk1)
 	abciVal := validator.ABCIValidatorUpdate()
-	pk, err := validator.TmConsPublicKey()
+	pk, err := validator.OcConsPublicKey()
 	require.NoError(t, err)
 	require.Equal(t, pk, abciVal.PubKey)
 	require.Equal(t, validator.BondedTokens().Int64(), abciVal.Power)
@@ -68,7 +68,7 @@ func TestABCIValidatorUpdate(t *testing.T) {
 func TestABCIValidatorUpdateZero(t *testing.T) {
 	validator := newValidator(t, valAddr1, pk1)
 	abciVal := validator.ABCIValidatorUpdateZero()
-	pk, err := validator.TmConsPublicKey()
+	pk, err := validator.OcConsPublicKey()
 	require.NoError(t, err)
 	require.Equal(t, pk, abciVal.PubKey)
 	require.Equal(t, int64(0), abciVal.Power)
@@ -290,13 +290,13 @@ func TestValidatorsSortTendermint(t *testing.T) {
 	valz := types.Validators(vals)
 
 	// create expected ostracon validators by converting to ostracon then sorting
-	expectedVals, err := teststaking.ToTmValidators(valz)
+	expectedVals, err := teststaking.ToOcValidators(valz)
 	require.NoError(t, err)
-	sort.Sort(osttypes.ValidatorsByVotingPower(expectedVals))
+	sort.Sort(octypes.ValidatorsByVotingPower(expectedVals))
 
 	// sort in SDK and then convert to ostracon
 	sort.Sort(types.ValidatorsByVotingPower(valz))
-	actualVals, err := teststaking.ToTmValidators(valz)
+	actualVals, err := teststaking.ToOcValidators(valz)
 	require.NoError(t, err)
 
 	require.Equal(t, expectedVals, actualVals, "sorting in SDK is not the same as sorting in Tendermint")
@@ -304,7 +304,7 @@ func TestValidatorsSortTendermint(t *testing.T) {
 
 func TestValidatorToTm(t *testing.T) {
 	vals := make(types.Validators, 10)
-	expected := make([]*osttypes.Validator, 10)
+	expected := make([]*octypes.Validator, 10)
 
 	for i := range vals {
 		pk := ed25519.GenPrivKey().PubKey()
@@ -312,11 +312,11 @@ func TestValidatorToTm(t *testing.T) {
 		val.Status = types.Bonded
 		val.Tokens = sdk.NewInt(rand.Int63())
 		vals[i] = val
-		tmPk, err := cryptocodec.ToTmPubKeyInterface(pk)
+		tmPk, err := cryptocodec.ToOcPubKeyInterface(pk)
 		require.NoError(t, err)
-		expected[i] = osttypes.NewValidator(tmPk, val.ConsensusPower())
+		expected[i] = octypes.NewValidator(tmPk, val.ConsensusPower())
 	}
-	vs, err := teststaking.ToTmValidators(vals)
+	vs, err := teststaking.ToOcValidators(vals)
 	require.NoError(t, err)
 	require.Equal(t, expected, vs)
 }

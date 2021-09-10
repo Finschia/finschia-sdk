@@ -6,7 +6,7 @@ import (
 
 	"github.com/line/ostracon/rpc/client/mock"
 	ctypes "github.com/line/ostracon/rpc/core/types"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/client"
@@ -20,7 +20,7 @@ import (
 
 type TxSearchMock struct {
 	mock.Client
-	txs []osttypes.Tx
+	txs []octypes.Tx
 }
 
 func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool, page, perPage *int, orderBy string) (*ctypes.ResultTxSearch, error) {
@@ -47,7 +47,7 @@ func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool,
 
 func (mock TxSearchMock) Block(ctx context.Context, height *int64) (*ctypes.ResultBlock, error) {
 	// any non nil Block needs to be returned. used to get time value
-	return &ctypes.ResultBlock{Block: &osttypes.Block{}}, nil
+	return &ctypes.ResultBlock{Block: &octypes.Block{}}, nil
 }
 
 func newTestCodec() *codec.LegacyAmino {
@@ -145,7 +145,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 
 		t.Run(tc.description, func(t *testing.T) {
 			var (
-				marshalled = make([]osttypes.Tx, len(tc.msgs))
+				marshalled = make([]octypes.Tx, len(tc.msgs))
 				cdc        = newTestCodec()
 			)
 

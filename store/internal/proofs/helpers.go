@@ -4,7 +4,7 @@ import (
 	"sort"
 
 	"github.com/line/ostracon/libs/rand"
-	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	sdkmaps "github.com/line/lfb-sdk/store/internal/maps"
 )
@@ -13,7 +13,7 @@ import (
 type SimpleResult struct {
 	Key      []byte
 	Value    []byte
-	Proof    *ostcrypto.Proof
+	Proof    *occrypto.Proof
 	RootHash []byte
 }
 

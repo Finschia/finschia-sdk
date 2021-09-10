@@ -5,7 +5,7 @@ import (
 	"log"
 
 	abci "github.com/line/ostracon/abci/types"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
 	sdk "github.com/line/lfb-sdk/types"
@@ -190,18 +190,18 @@ func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) *types.GenesisState {
 }
 
 // WriteValidators returns a slice of bonded genesis validators.
-func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []osttypes.GenesisValidator, err error) {
+func WriteValidators(ctx sdk.Context, keeper keeper.Keeper) (vals []octypes.GenesisValidator, err error) {
 	keeper.IterateLastValidators(ctx, func(_ int64, validator types.ValidatorI) (stop bool) {
 		pk, err := validator.ConsPubKey()
 		if err != nil {
 			return true
 		}
-		tmPk, err := cryptocodec.ToTmPubKeyInterface(pk)
+		tmPk, err := cryptocodec.ToOcPubKeyInterface(pk)
 		if err != nil {
 			return true
 		}
 
-		vals = append(vals, osttypes.GenesisValidator{
+		vals = append(vals, octypes.GenesisValidator{
 			Address: tmPk.Address(),
 			PubKey:  tmPk,
 			Power:   validator.GetConsensusPower(),

@@ -8,7 +8,7 @@ import (
 	client "github.com/line/lfb-sdk/x/ibc/core/02-client"
 	"github.com/line/lfb-sdk/x/ibc/core/02-client/types"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	localhosttypes "github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
+	localhoctypes "github.com/line/lfb-sdk/x/ibc/light-clients/09-localhost/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 )
 
@@ -29,7 +29,7 @@ func (suite *ClientTestSuite) SetupTest() {
 
 	// set localhost client
 	revision := types.ParseChainID(suite.chainA.GetContext().ChainID())
-	localHostClient := localhosttypes.NewClientState(
+	localHostClient := localhoctypes.NewClientState(
 		suite.chainA.GetContext().ChainID(), types.NewHeight(revision, uint64(suite.chainA.GetContext().BlockHeight())),
 	)
 	suite.chainA.App.IBCKeeper.ClientKeeper.SetClientState(suite.chainA.GetContext(), exported.Localhost, localHostClient)

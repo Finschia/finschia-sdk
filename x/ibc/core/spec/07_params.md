@@ -10,7 +10,7 @@ The ibc clients contain the following parameters:
 
 | Key              | Type | Default Value |
 |------------------|------|---------------|
-| `AllowedClients`    | []string | `"06-solomachine","07-tendermint"`        |
+| `AllowedClients`    | []string | `"06-solomachine","99-ostracon"`        |
 
 ### AllowedClients
 

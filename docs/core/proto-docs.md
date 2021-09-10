@@ -273,6 +273,13 @@
 - [ibc/lightclients/localhost/v1/localhost.proto](#ibc/lightclients/localhost/v1/localhost.proto)
     - [ClientState](#ibc.lightclients.localhost.v1.ClientState)
   
+- [ibc/lightclients/ostracon/v1/ostracon.proto](#ibc/lightclients/ostracon/v1/ostracon.proto)
+    - [ClientState](#ibc.lightclients.ostracon.v1.ClientState)
+    - [ConsensusState](#ibc.lightclients.ostracon.v1.ConsensusState)
+    - [Fraction](#ibc.lightclients.ostracon.v1.Fraction)
+    - [Header](#ibc.lightclients.ostracon.v1.Header)
+    - [Misbehaviour](#ibc.lightclients.ostracon.v1.Misbehaviour)
+  
 - [ibc/lightclients/solomachine/v1/solomachine.proto](#ibc/lightclients/solomachine/v1/solomachine.proto)
     - [ChannelStateData](#ibc.lightclients.solomachine.v1.ChannelStateData)
     - [ClientState](#ibc.lightclients.solomachine.v1.ClientState)
@@ -292,24 +299,6 @@
     - [TimestampedSignatureData](#ibc.lightclients.solomachine.v1.TimestampedSignatureData)
   
     - [DataType](#ibc.lightclients.solomachine.v1.DataType)
-  
-- [ibc/lightclients/tendermint/v1/tendermint.proto](#ibc/lightclients/tendermint/v1/tendermint.proto)
-    - [ClientState](#ibc.lightclients.tendermint.v1.ClientState)
-    - [ConsensusState](#ibc.lightclients.tendermint.v1.ConsensusState)
-    - [Fraction](#ibc.lightclients.tendermint.v1.Fraction)
-    - [Header](#ibc.lightclients.tendermint.v1.Header)
-    - [Misbehaviour](#ibc.lightclients.tendermint.v1.Misbehaviour)
-  
-- [lfb/crypto/ed25519/keys.proto](#lfb/crypto/ed25519/keys.proto)
-    - [PrivKey](#lfb.crypto.ed25519.PrivKey)
-    - [PubKey](#lfb.crypto.ed25519.PubKey)
-  
-- [lfb/crypto/multisig/keys.proto](#lfb/crypto/multisig/keys.proto)
-    - [LegacyAminoPubKey](#lfb.crypto.multisig.LegacyAminoPubKey)
-  
-- [lfb/crypto/secp256k1/keys.proto](#lfb/crypto/secp256k1/keys.proto)
-    - [PrivKey](#lfb.crypto.secp256k1.PrivKey)
-    - [PubKey](#lfb.crypto.secp256k1.PubKey)
   
 - [lfb/auth/v1beta1/auth.proto](#lfb/auth/v1beta1/auth.proto)
     - [BaseAccount](#lfb.auth.v1beta1.BaseAccount)
@@ -4598,6 +4587,130 @@ access to keys outside the client prefix.
 
 
 
+<a name="ibc/lightclients/ostracon/v1/ostracon.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## ibc/lightclients/ostracon/v1/ostracon.proto
+
+
+
+<a name="ibc.lightclients.ostracon.v1.ClientState"></a>
+
+### ClientState
+ClientState from Ostracon tracks the current validator set, latest height,
+and a possible frozen height.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `chain_id` | [string](#string) |  |  |
+| `trust_level` | [Fraction](#ibc.lightclients.ostracon.v1.Fraction) |  |  |
+| `trusting_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | duration of the period since the LastestTimestamp during which the submitted headers are valid for upgrade |
+| `unbonding_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | duration of the staking unbonding period |
+| `max_clock_drift` | [google.protobuf.Duration](#google.protobuf.Duration) |  | defines how much new (untrusted) header's Time can drift into the future. |
+| `frozen_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Block height when the client was frozen due to a misbehaviour |
+| `latest_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Latest height the client was updated to |
+| `proof_specs` | [ics23.ProofSpec](#ics23.ProofSpec) | repeated | Proof specifications used in verifying counterparty state |
+| `upgrade_path` | [string](#string) | repeated | Path at which next upgraded client will be committed. Each element corresponds to the key for a single CommitmentProof in the chained proof. NOTE: ClientState must stored under `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using the default upgrade module, upgrade_path should be []string{"upgrade", "upgradedIBCState"}` |
+| `allow_update_after_expiry` | [bool](#bool) |  | This flag, when set to true, will allow governance to recover a client which has expired |
+| `allow_update_after_misbehaviour` | [bool](#bool) |  | This flag, when set to true, will allow governance to unfreeze a client whose chain has experienced a misbehaviour event |
+
+
+
+
+
+
+<a name="ibc.lightclients.ostracon.v1.ConsensusState"></a>
+
+### ConsensusState
+ConsensusState defines the consensus state from Ostracon.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp that corresponds to the block height in which the ConsensusState was stored. |
+| `root` | [ibc.core.commitment.v1.MerkleRoot](#ibc.core.commitment.v1.MerkleRoot) |  | commitment root (i.e app hash) |
+| `next_validators_hash` | [bytes](#bytes) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.ostracon.v1.Fraction"></a>
+
+### Fraction
+Fraction defines the protobuf message type for tmmath.Fraction that only supports positive values.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `numerator` | [uint64](#uint64) |  |  |
+| `denominator` | [uint64](#uint64) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.ostracon.v1.Header"></a>
+
+### Header
+Header defines the Ostracon client consensus Header.
+It encapsulates all the information necessary to update from a trusted
+Ostracon ConsensusState. The inclusion of TrustedHeight and
+TrustedValidators allows this update to process correctly, so long as the
+ConsensusState for the TrustedHeight exists, this removes race conditions
+among relayers The SignedHeader and ValidatorSet are the new untrusted update
+fields for the client. The TrustedHeight is the height of a stored
+ConsensusState on the client that will be used to verify the new untrusted
+header. The Trusted ConsensusState must be within the unbonding period of
+current time in order to correctly verify, and the TrustedValidators must
+hash to TrustedConsensusState.NextValidatorsHash since that is the last
+trusted validator set at the TrustedHeight.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `signed_header` | [ostracon.types.SignedHeader](#ostracon.types.SignedHeader) |  |  |
+| `validator_set` | [ostracon.types.ValidatorSet](#ostracon.types.ValidatorSet) |  |  |
+| `voter_set` | [ostracon.types.VoterSet](#ostracon.types.VoterSet) |  |  |
+| `trusted_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
+| `trusted_validators` | [ostracon.types.ValidatorSet](#ostracon.types.ValidatorSet) |  |  |
+| `trusted_voters` | [ostracon.types.VoterSet](#ostracon.types.VoterSet) |  |  |
+
+
+
+
+
+
+<a name="ibc.lightclients.ostracon.v1.Misbehaviour"></a>
+
+### Misbehaviour
+Misbehaviour is a wrapper over two conflicting Headers
+that implements Misbehaviour interface expected by ICS-02
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `client_id` | [string](#string) |  |  |
+| `header_1` | [Header](#ibc.lightclients.ostracon.v1.Header) |  |  |
+| `header_2` | [Header](#ibc.lightclients.ostracon.v1.Header) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="ibc/lightclients/solomachine/v1/solomachine.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -4906,262 +5019,6 @@ data sign byte encodings.
 | DATA_TYPE_NEXT_SEQUENCE_RECV | 8 | Data type for next sequence recv verification |
 | DATA_TYPE_HEADER | 9 | Data type for header verification |
 
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="ibc/lightclients/tendermint/v1/tendermint.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## ibc/lightclients/tendermint/v1/tendermint.proto
-
-
-
-<a name="ibc.lightclients.tendermint.v1.ClientState"></a>
-
-### ClientState
-ClientState from Tendermint tracks the current validator set, latest height,
-and a possible frozen height.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `chain_id` | [string](#string) |  |  |
-| `trust_level` | [Fraction](#ibc.lightclients.tendermint.v1.Fraction) |  |  |
-| `trusting_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | duration of the period since the LastestTimestamp during which the submitted headers are valid for upgrade |
-| `unbonding_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | duration of the staking unbonding period |
-| `max_clock_drift` | [google.protobuf.Duration](#google.protobuf.Duration) |  | defines how much new (untrusted) header's Time can drift into the future. |
-| `frozen_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Block height when the client was frozen due to a misbehaviour |
-| `latest_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Latest height the client was updated to |
-| `proof_specs` | [ics23.ProofSpec](#ics23.ProofSpec) | repeated | Proof specifications used in verifying counterparty state |
-| `upgrade_path` | [string](#string) | repeated | Path at which next upgraded client will be committed. Each element corresponds to the key for a single CommitmentProof in the chained proof. NOTE: ClientState must stored under `{upgradePath}/{upgradeHeight}/clientState` ConsensusState must be stored under `{upgradepath}/{upgradeHeight}/consensusState` For SDK chains using the default upgrade module, upgrade_path should be []string{"upgrade", "upgradedIBCState"}` |
-| `allow_update_after_expiry` | [bool](#bool) |  | This flag, when set to true, will allow governance to recover a client which has expired |
-| `allow_update_after_misbehaviour` | [bool](#bool) |  | This flag, when set to true, will allow governance to unfreeze a client whose chain has experienced a misbehaviour event |
-
-
-
-
-
-
-<a name="ibc.lightclients.tendermint.v1.ConsensusState"></a>
-
-### ConsensusState
-ConsensusState defines the consensus state from Tendermint.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `timestamp` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp that corresponds to the block height in which the ConsensusState was stored. |
-| `root` | [ibc.core.commitment.v1.MerkleRoot](#ibc.core.commitment.v1.MerkleRoot) |  | commitment root (i.e app hash) |
-| `next_validators_hash` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.tendermint.v1.Fraction"></a>
-
-### Fraction
-Fraction defines the protobuf message type for tmmath.Fraction that only supports positive values.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `numerator` | [uint64](#uint64) |  |  |
-| `denominator` | [uint64](#uint64) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.tendermint.v1.Header"></a>
-
-### Header
-Header defines the Tendermint client consensus Header.
-It encapsulates all the information necessary to update from a trusted
-Tendermint ConsensusState. The inclusion of TrustedHeight and
-TrustedValidators allows this update to process correctly, so long as the
-ConsensusState for the TrustedHeight exists, this removes race conditions
-among relayers The SignedHeader and ValidatorSet are the new untrusted update
-fields for the client. The TrustedHeight is the height of a stored
-ConsensusState on the client that will be used to verify the new untrusted
-header. The Trusted ConsensusState must be within the unbonding period of
-current time in order to correctly verify, and the TrustedValidators must
-hash to TrustedConsensusState.NextValidatorsHash since that is the last
-trusted validator set at the TrustedHeight.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `signed_header` | [ostracon.types.SignedHeader](#ostracon.types.SignedHeader) |  |  |
-| `validator_set` | [ostracon.types.ValidatorSet](#ostracon.types.ValidatorSet) |  |  |
-| `trusted_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  |  |
-| `trusted_validators` | [ostracon.types.ValidatorSet](#ostracon.types.ValidatorSet) |  |  |
-
-
-
-
-
-
-<a name="ibc.lightclients.tendermint.v1.Misbehaviour"></a>
-
-### Misbehaviour
-Misbehaviour is a wrapper over two conflicting Headers
-that implements Misbehaviour interface expected by ICS-02
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `client_id` | [string](#string) |  |  |
-| `header_1` | [Header](#ibc.lightclients.tendermint.v1.Header) |  |  |
-| `header_2` | [Header](#ibc.lightclients.tendermint.v1.Header) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lfb/crypto/ed25519/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lfb/crypto/ed25519/keys.proto
-
-
-
-<a name="lfb.crypto.ed25519.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a ed25519 private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lfb.crypto.ed25519.PubKey"></a>
-
-### PubKey
-PubKey defines a ed25519 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lfb/crypto/multisig/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lfb/crypto/multisig/keys.proto
-
-
-
-<a name="lfb.crypto.multisig.LegacyAminoPubKey"></a>
-
-### LegacyAminoPubKey
-LegacyAminoPubKey specifies a public key type
-which nests multiple public keys and a threshold,
-it uses legacy amino address rules.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `threshold` | [uint32](#uint32) |  |  |
-| `public_keys` | [google.protobuf.Any](#google.protobuf.Any) | repeated |  |
-
-
-
-
-
- <!-- end messages -->
-
- <!-- end enums -->
-
- <!-- end HasExtensions -->
-
- <!-- end services -->
-
-
-
-<a name="lfb/crypto/secp256k1/keys.proto"></a>
-<p align="right"><a href="#top">Top</a></p>
-
-## lfb/crypto/secp256k1/keys.proto
-
-
-
-<a name="lfb.crypto.secp256k1.PrivKey"></a>
-
-### PrivKey
-PrivKey defines a secp256k1 private key.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
-
-<a name="lfb.crypto.secp256k1.PubKey"></a>
-
-### PubKey
-PubKey defines a secp256k1 public key
-Key is the compressed form of the pubkey. The first byte depends is a 0x02 byte
-if the y-coordinate is the lexicographically largest of the two associated with
-the x-coordinate. Otherwise the first byte is a 0x03.
-This prefix is followed with the x-coordinate.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `key` | [bytes](#bytes) |  |  |
-
-
-
-
-
- <!-- end messages -->
 
  <!-- end enums -->
 
@@ -9496,7 +9353,7 @@ Description defines a validator description.
 <a name="lfb.staking.v1beta1.HistoricalInfo"></a>
 
 ### HistoricalInfo
-HistoricalInfo contains header and validator information for a given block.
+HistoricalInfo contains header and validator, voter information for a given block.
 It is stored as part of staking module's state, which persists the `n` most
 recent HistoricalInfo
 (`n` is set by the staking module's `historical_entries` parameter).

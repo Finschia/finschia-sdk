@@ -6,8 +6,8 @@ import (
 	"time"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
-	osttypes "github.com/line/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -135,9 +135,9 @@ func TestDuplicatesMsgCreateValidator(t *testing.T) {
 
 	validator := tstaking.CheckValidator(addr1, types.Bonded, false)
 	assert.Equal(t, addr1.String(), validator.OperatorAddress)
-	consKey, err := validator.TmConsPublicKey()
+	consKey, err := validator.OcConsPublicKey()
 	require.NoError(t, err)
-	tmPk1, err := cryptocodec.ToTmProtoPublicKey(pk1)
+	tmPk1, err := cryptocodec.ToOcProtoPublicKey(pk1)
 	require.NoError(t, err)
 	assert.Equal(t, tmPk1, consKey)
 	assert.Equal(t, valTokens, validator.BondedTokens())
@@ -160,9 +160,9 @@ func TestDuplicatesMsgCreateValidator(t *testing.T) {
 
 	validator = tstaking.CheckValidator(addr2, types.Bonded, false)
 	assert.Equal(t, addr2.String(), validator.OperatorAddress)
-	consPk, err := validator.TmConsPublicKey()
+	consPk, err := validator.OcConsPublicKey()
 	require.NoError(t, err)
-	tmPk2, err := cryptocodec.ToTmProtoPublicKey(pk2)
+	tmPk2, err := cryptocodec.ToOcProtoPublicKey(pk2)
 	require.NoError(t, err)
 	assert.Equal(t, tmPk2, consPk)
 	assert.True(sdk.IntEq(t, valTokens, validator.Tokens))
@@ -174,7 +174,7 @@ func TestInvalidPubKeyTypeMsgCreateValidator(t *testing.T) {
 	initPower := int64(1000)
 	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, initPower, 1, sdk.TokensFromConsensusPower(initPower))
 	ctx = ctx.WithConsensusParams(&abci.ConsensusParams{
-		Validator: &ostproto.ValidatorParams{PubKeyTypes: []string{osttypes.ABCIPubKeyTypeEd25519}},
+		Validator: &ocproto.ValidatorParams{PubKeyTypes: []string{octypes.ABCIPubKeyTypeEd25519}},
 	})
 
 	addr := valAddrs[0]
@@ -188,7 +188,7 @@ func TestInvalidPubKeyTypeMsgCreateValidator(t *testing.T) {
 func TestBothPubKeyTypesMsgCreateValidator(t *testing.T) {
 	app, ctx, _, valAddrs := bootstrapHandlerGenesisTest(t, 1000, 2, sdk.NewInt(1000))
 	ctx = ctx.WithConsensusParams(&abci.ConsensusParams{
-		Validator: &ostproto.ValidatorParams{PubKeyTypes: []string{osttypes.ABCIPubKeyTypeEd25519, osttypes.ABCIPubKeyTypeSecp256k1}},
+		Validator: &ocproto.ValidatorParams{PubKeyTypes: []string{octypes.ABCIPubKeyTypeEd25519, octypes.ABCIPubKeyTypeSecp256k1}},
 	})
 
 	tstaking := teststaking.NewHelper(t, ctx, app.StakingKeeper)
@@ -1170,7 +1170,7 @@ func TestInvalidMsg(t *testing.T) {
 	k := keeper.Keeper{}
 	h := staking.NewHandler(k)
 
-	res, err := h(sdk.NewContext(nil, ostproto.Header{}, false, nil), testdata.NewTestMsg())
+	res, err := h(sdk.NewContext(nil, ocproto.Header{}, false, nil), testdata.NewTestMsg())
 	require.Error(t, err)
 	require.Nil(t, res)
 	require.True(t, strings.Contains(err.Error(), "unrecognized staking message type"))

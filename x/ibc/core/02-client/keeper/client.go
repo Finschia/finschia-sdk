@@ -31,7 +31,7 @@ func (k Keeper) CreateClient(
 	k.Logger(ctx).Info("client created at height", "client-id", clientID, "height", clientState.GetLatestHeight().String())
 
 	// verifies initial consensus state against client state and initializes client store with any client-specific metadata
-	// e.g. set ProcessedTime in Tendermint clients
+	// e.g. set ProcessedTime in Ostracon clients
 	if err := clientState.Initialize(ctx, k.cdc, k.ClientStore(ctx, clientID), consensusState); err != nil {
 		return "", err
 	}

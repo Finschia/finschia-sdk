@@ -4,7 +4,7 @@ import (
 	fmt "fmt"
 
 	ics23 "github.com/confio/ics23/go"
-	ostcrypto "github.com/line/ostracon/proto/ostracon/crypto"
+	occrypto "github.com/line/ostracon/proto/ostracon/crypto"
 
 	sdkmaps "github.com/line/lfb-sdk/store/internal/maps"
 	sdkproofs "github.com/line/lfb-sdk/store/internal/proofs"
@@ -41,7 +41,7 @@ func (ci CommitInfo) Hash() []byte {
 	return rootHash
 }
 
-func (ci CommitInfo) ProofOp(storeName string) ostcrypto.ProofOp {
+func (ci CommitInfo) ProofOp(storeName string) occrypto.ProofOp {
 	cmap := ci.toMap()
 	_, proofs, _ := sdkmaps.ProofsFromMap(cmap)
 

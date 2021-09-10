@@ -94,7 +94,7 @@ func (q GrpcQuerier) ContractsByCode(c context.Context, req *types.QueryContract
 	prefixStore := prefix.NewStore(ctx.KVStore(q.storeKey), types.GetContractByCodeIDSecondaryIndexPrefix(req.CodeId))
 	pageRes, err := query.FilteredPaginate(prefixStore, req.Pagination, func(key []byte, value []byte, accumulate bool) (bool, error) {
 		if accumulate {
-			var contractAddr sdk.AccAddress = sdk.AccAddress(string(key[types.AbsoluteTxPositionLen:]))
+			var contractAddr = sdk.AccAddress(string(key[types.AbsoluteTxPositionLen:]))
 			r = append(r, contractAddr.String())
 		}
 		return true, nil

@@ -9,7 +9,7 @@ import (
 	channeltypes "github.com/line/lfb-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lfb-sdk/x/ibc/core/24-host"
 	"github.com/line/lfb-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
 	ibcmock "github.com/line/lfb-sdk/x/ibc/testing/mock"
 )
@@ -38,7 +38,7 @@ func (suite *KeeperTestSuite) TestVerifyClientState() {
 		suite.Run(tc.msg, func() {
 			suite.SetupTest() // reset
 
-			_, clientB, connA, _ := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, clientB, connA, _ := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 
 			counterpartyClient, clientProof := suite.chainB.QueryClientStateProof(clientB)
 			proofHeight := clienttypes.NewHeight(0, uint64(suite.chainB.GetContext().BlockHeight()-1))
@@ -83,20 +83,20 @@ func (suite *KeeperTestSuite) TestVerifyClientConsensusState() {
 		expPass  bool
 	}{
 		{"verification success", func() {
-			_, _, connA, connB = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, connB = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 		}, true},
 		{"client state not found", func() {
-			_, _, connA, connB = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, connB = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 
 			changeClientID = true
 		}, false},
 		{"consensus state not found", func() {
-			_, _, connA, connB = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, connB = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 
 			heightDiff = 5
 		}, false},
 		{"verification failed", func() {
-			_, _, connA, connB = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, connB = suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 			clientB := connB.ClientID
 			clientState := suite.chainB.GetClientState(clientB)
 
@@ -170,7 +170,7 @@ func (suite *KeeperTestSuite) TestVerifyConnectionState() {
 		suite.Run(tc.msg, func() {
 			suite.SetupTest() // reset
 
-			_, _, connA, connB := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Tendermint)
+			_, _, connA, connB := suite.coordinator.SetupClientConnections(suite.chainA, suite.chainB, exported.Ostracon)
 
 			connection := suite.chainA.GetConnection(connA)
 			if tc.changeClientID {
@@ -426,7 +426,7 @@ func (suite *KeeperTestSuite) TestVerifyPacketReceiptAbsence() {
 			} else {
 				// need to update height to prove absence
 				suite.coordinator.CommitBlock(suite.chainA, suite.chainB)
-				suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Tendermint)
+				suite.coordinator.UpdateClient(suite.chainA, suite.chainB, clientA, exported.Ostracon)
 			}
 
 			packetReceiptKey := host.PacketReceiptKey(packet.GetDestPort(), packet.GetDestChannel(), packet.GetSequence())

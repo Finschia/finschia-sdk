@@ -12,7 +12,7 @@ import (
 	ostos "github.com/line/ostracon/libs/os"
 	"github.com/line/ostracon/p2p"
 	"github.com/line/ostracon/privval"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 
 	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
 	cryptotypes "github.com/line/lfb-sdk/crypto/types"
@@ -20,7 +20,7 @@ import (
 
 // ExportGenesisFile creates and writes the genesis configuration to disk. An
 // error is returned if building or writing the configuration to file fails.
-func ExportGenesisFile(genDoc *osttypes.GenesisDoc, genFile string) error {
+func ExportGenesisFile(genDoc *octypes.GenesisDoc, genFile string) error {
 	if err := genDoc.ValidateAndComplete(); err != nil {
 		return err
 	}
@@ -31,11 +31,11 @@ func ExportGenesisFile(genDoc *osttypes.GenesisDoc, genFile string) error {
 // ExportGenesisFileWithTime creates and writes the genesis configuration to disk.
 // An error is returned if building or writing the configuration to file fails.
 func ExportGenesisFileWithTime(
-	genFile, chainID string, validators []osttypes.GenesisValidator,
+	genFile, chainID string, validators []octypes.GenesisValidator,
 	appState json.RawMessage, genTime time.Time,
 ) error {
 
-	genDoc := osttypes.GenesisDoc{
+	genDoc := octypes.GenesisDoc{
 		GenesisTime: genTime,
 		ChainID:     chainID,
 		Validators:  validators,
@@ -80,7 +80,10 @@ func InitializeNodeValidatorFilesFromMnemonic(config *cfg.Config, mnemonic strin
 
 	var filePV *privval.FilePV
 	if len(mnemonic) == 0 {
-		filePV = privval.LoadOrGenFilePV(pvKeyFile, pvStateFile)
+		filePV, err = privval.LoadOrGenFilePV(pvKeyFile, pvStateFile, config.PrivKeyType)
+		if err != nil {
+			return "", nil, err
+		}
 	} else {
 		privKey := osted25519.GenPrivKeyFromSecret([]byte(mnemonic))
 		filePV = privval.NewFilePV(privKey, pvKeyFile, pvStateFile)
@@ -91,7 +94,7 @@ func InitializeNodeValidatorFilesFromMnemonic(config *cfg.Config, mnemonic strin
 		return "", nil, err
 	}
 
-	valPubKey, err = cryptocodec.FromTmPubKeyInterface(tmValPubKey)
+	valPubKey, err = cryptocodec.FromOcPubKeyInterface(tmValPubKey)
 	if err != nil {
 		return "", nil, err
 	}

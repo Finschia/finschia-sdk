@@ -27,7 +27,7 @@ func (suite *TypesTestSuite) TestMarshalConsensusStateWithHeight() {
 		},
 		{
 			"tendermint client", func() {
-				clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Tendermint)
+				clientA, _ := suite.coordinator.SetupClients(suite.chainA, suite.chainB, exported.Ostracon)
 				clientState := suite.chainA.GetClientState(clientA)
 				consensusState, ok := suite.chainA.GetConsensusState(clientA, clientState.GetLatestHeight())
 				suite.Require().True(ok)

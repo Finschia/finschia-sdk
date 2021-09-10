@@ -9,7 +9,7 @@ import (
 	"github.com/line/ostracon/mempool"
 	"github.com/line/ostracon/rpc/client/mock"
 	ctypes "github.com/line/ostracon/rpc/core/types"
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lfb-sdk/client/flags"
@@ -21,15 +21,15 @@ type MockClient struct {
 	err error
 }
 
-func (c MockClient) BroadcastTxCommit(ctx context.Context, tx osttypes.Tx) (*ctypes.ResultBroadcastTxCommit, error) {
+func (c MockClient) BroadcastTxCommit(ctx context.Context, tx octypes.Tx) (*ctypes.ResultBroadcastTxCommit, error) {
 	return nil, c.err
 }
 
-func (c MockClient) BroadcastTxAsync(ctx context.Context, tx osttypes.Tx) (*ctypes.ResultBroadcastTx, error) {
+func (c MockClient) BroadcastTxAsync(ctx context.Context, tx octypes.Tx) (*ctypes.ResultBroadcastTx, error) {
 	return nil, c.err
 }
 
-func (c MockClient) BroadcastTxSync(ctx context.Context, tx osttypes.Tx) (*ctypes.ResultBroadcastTx, error) {
+func (c MockClient) BroadcastTxSync(ctx context.Context, tx octypes.Tx) (*ctypes.ResultBroadcastTx, error) {
 	return nil, c.err
 }
 

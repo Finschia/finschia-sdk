@@ -3,7 +3,7 @@ package ibctesting_test
 import (
 	"testing"
 
-	osttypes "github.com/line/ostracon/types"
+	octypes "github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 
 	ibctesting "github.com/line/lfb-sdk/x/ibc/testing"
@@ -19,10 +19,10 @@ func TestCreateSortedSignerArray(t *testing.T) {
 	pubKey2, err := privVal2.GetPubKey()
 	require.NoError(t, err)
 
-	validator1 := osttypes.NewValidator(pubKey1, 1)
-	validator2 := osttypes.NewValidator(pubKey2, 2)
+	validator1 := ibctesting.NewTestValidator(pubKey1, 1)
+	validator2 := ibctesting.NewTestValidator(pubKey2, 2)
 
-	expected := []osttypes.PrivValidator{privVal2, privVal1}
+	expected := []octypes.PrivValidator{privVal2, privVal1}
 
 	actual := ibctesting.CreateSortedSignerArray(privVal1, privVal2, validator1, validator2)
 	require.Equal(t, expected, actual)
@@ -36,7 +36,7 @@ func TestCreateSortedSignerArray(t *testing.T) {
 	validator2.Address = []byte{2}
 	validator2.VotingPower = 1
 
-	expected = []osttypes.PrivValidator{privVal1, privVal2}
+	expected = []octypes.PrivValidator{privVal1, privVal2}
 
 	actual = ibctesting.CreateSortedSignerArray(privVal1, privVal2, validator1, validator2)
 	require.Equal(t, expected, actual)

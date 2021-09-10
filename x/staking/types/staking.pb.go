@@ -76,7 +76,7 @@ func (BondStatus) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_7e7ccde09813ae51, []int{0}
 }
 
-// HistoricalInfo contains header and validator information for a given block.
+// HistoricalInfo contains header and validator, voter information for a given block.
 // It is stored as part of staking module's state, which persists the `n` most
 // recent HistoricalInfo
 // (`n` is set by the staking module's `historical_entries` parameter).

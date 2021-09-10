@@ -15,7 +15,7 @@ import (
 	ostjson "github.com/line/ostracon/libs/json"
 	"github.com/line/ostracon/libs/log"
 	ostos "github.com/line/ostracon/libs/os"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	dbm "github.com/line/tm-db/v2"
 
 	"github.com/line/lfb-sdk/baseapp"
@@ -498,7 +498,7 @@ func NewLinkApp(
 		// that in-memory capabilities get regenerated on app restart.
 		// Note that since this reads from the store, we can only perform it when
 		// `loadLatest` is set to true.
-		ctx := app.BaseApp.NewUncachedContext(true, ostproto.Header{})
+		ctx := app.BaseApp.NewUncachedContext(true, ocproto.Header{})
 		app.CapabilityKeeper.InitializeAndSeal(ctx)
 
 		// Initialize pinned codes in wasmvm as they are not persisted there

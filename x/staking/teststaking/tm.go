@@ -1,39 +1,39 @@
 package teststaking
 
 import (
-	ostcrypto "github.com/line/ostracon/crypto"
-	osttypes "github.com/line/ostracon/types"
+	occrypto "github.com/line/ostracon/crypto"
+	octypes "github.com/line/ostracon/types"
 
 	cryptocodec "github.com/line/lfb-sdk/crypto/codec"
 	"github.com/line/lfb-sdk/x/staking/types"
 )
 
-// GetTmConsPubKey gets the validator's public key as a ostcrypto.PubKey.
-func GetTmConsPubKey(v types.Validator) (ostcrypto.PubKey, error) {
+// GetOcConsPubKey gets the validator's public key as an occrypto.PubKey.
+func GetOcConsPubKey(v types.Validator) (occrypto.PubKey, error) {
 	pk, err := v.ConsPubKey()
 	if err != nil {
 		return nil, err
 	}
 
-	return cryptocodec.ToTmPubKeyInterface(pk)
+	return cryptocodec.ToOcPubKeyInterface(pk)
 }
 
-// ToTmValidator casts an SDK validator to a tendermint type Validator.
-func ToTmValidator(v types.Validator) (*osttypes.Validator, error) {
-	tmPk, err := GetTmConsPubKey(v)
+// ToOcValidator casts an SDK validator to an ostracon type Validator.
+func ToOcValidator(v types.Validator) (*octypes.Validator, error) {
+	tmPk, err := GetOcConsPubKey(v)
 	if err != nil {
 		return nil, err
 	}
 
-	return osttypes.NewValidator(tmPk, v.ConsensusPower()), nil
+	return octypes.NewValidator(tmPk, v.ConsensusPower()), nil
 }
 
-// ToTmValidators casts all validators to the corresponding tendermint type.
-func ToTmValidators(v types.Validators) ([]*osttypes.Validator, error) {
-	validators := make([]*osttypes.Validator, len(v))
+// ToOcValidators casts all validators to the corresponding tendermint type.
+func ToOcValidators(v types.Validators) ([]*octypes.Validator, error) {
+	validators := make([]*octypes.Validator, len(v))
 	var err error
 	for i, val := range v {
-		validators[i], err = ToTmValidator(val)
+		validators[i], err = ToOcValidator(val)
 		if err != nil {
 			return nil, err
 		}

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	abci "github.com/line/ostracon/abci/types"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/ostracon/types"
 	"github.com/stretchr/testify/require"
 )
@@ -56,7 +56,7 @@ func TestDeliverTx(t *testing.T) {
 	tx := NewTx(key, value)
 	txBytes := tx.GetSignBytes()
 
-	header := ostproto.Header{
+	header := ocproto.Header{
 		AppHash: []byte("apphash"),
 		Height:  1,
 	}

@@ -11,7 +11,7 @@ import (
 
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
-	ostproto "github.com/line/ostracon/proto/ostracon/types"
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
@@ -22,7 +22,7 @@ import (
 	"github.com/line/lfb-sdk/types/module"
 	govtypes "github.com/line/lfb-sdk/x/gov/types"
 	clienttypes "github.com/line/lfb-sdk/x/ibc/core/02-client/types"
-	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/07-tendermint/types"
+	ibctmtypes "github.com/line/lfb-sdk/x/ibc/light-clients/99-ostracon/types"
 	"github.com/line/lfb-sdk/x/upgrade"
 	"github.com/line/lfb-sdk/x/upgrade/keeper"
 	"github.com/line/lfb-sdk/x/upgrade/types"
@@ -54,7 +54,7 @@ func setupTest(height int64, skip map[int64]bool) TestSuite {
 	)
 
 	s.keeper = app.UpgradeKeeper
-	s.ctx = app.BaseApp.NewContext(false, ostproto.Header{Height: height, Time: time.Now()})
+	s.ctx = app.BaseApp.NewContext(false, ocproto.Header{Height: height, Time: time.Now()})
 
 	s.module = upgrade.NewAppModule(s.keeper)
 	s.querier = s.module.LegacyQuerierHandler(app.LegacyAmino())
@@ -123,7 +123,7 @@ func TestCanOverwriteScheduleUpgrade(t *testing.T) {
 func VerifyDoIBCLastBlock(t *testing.T) {
 	t.Log("Verify that chain committed to consensus state on the last height it will commit")
 	nextValsHash := []byte("nextValsHash")
-	newCtx := s.ctx.WithBlockHeader(ostproto.Header{
+	newCtx := s.ctx.WithBlockHeader(ocproto.Header{
 		Height:             s.ctx.BlockHeight(),
 		NextValidatorsHash: nextValsHash,
 	})

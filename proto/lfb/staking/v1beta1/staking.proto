@@ -12,7 +12,7 @@ import "ostracon/types/types.proto";
 
 option go_package = "github.com/line/lfb-sdk/x/staking/types";
 
-// HistoricalInfo contains header and validator information for a given block.
+// HistoricalInfo contains header and validator, voter information for a given block.
 // It is stored as part of staking module's state, which persists the `n` most
 // recent HistoricalInfo
 // (`n` is set by the staking module's `historical_entries` parameter).

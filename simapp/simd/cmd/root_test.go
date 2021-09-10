@@ -21,6 +21,6 @@ func TestNewApp(t *testing.T) {
 	ctx := server.NewDefaultContext()
 	ctx.Viper.Set(flags.FlagHome, tempDir)
 	ctx.Viper.Set(server.FlagPruning, types.PruningOptionNothing)
-	app := a.newApp(log.NewTMLogger(log.NewSyncWriter(os.Stdout)), db, nil, ctx.Viper)
+	app := a.newApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, ctx.Viper)
 	require.NotNil(t, app)
 }
