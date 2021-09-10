@@ -35,7 +35,7 @@ require (
 	github.com/line/wasmvm v0.14.0-0.6.1
 	github.com/magiconair/properties v1.8.5
 	github.com/mailru/easyjson v0.7.7
-	github.com/mattn/go-isatty v0.0.12
+	github.com/mattn/go-isatty v0.0.14
 	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/onsi/ginkgo v1.16.1 // indirect
