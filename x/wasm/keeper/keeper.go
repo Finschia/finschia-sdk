@@ -573,11 +573,7 @@ func (k Keeper) reply(ctx sdk.Context, contractAddress sdk.AccAddress, reply was
 	env := types.NewEnv(ctx, contractAddress)
 
 	// prepare querier
-	querier := QueryHandler{
-		Ctx:           ctx,
-		Plugins:       k.wasmVMQueryHandler,
-		GasMultiplier: k.getGasMultiplier(ctx),
-	}
+	querier := NewQueryHandler(ctx, k.wasmVMQueryHandler, contractAddress, k.getGasMultiplier(ctx))
 	gas := k.runtimeGasForContract(ctx)
 	wasmStore := types.NewWasmStore(prefixStore)
 	res, gasUsed, execErr := k.wasmVM.Reply(codeInfo.CodeHash, env, reply, wasmStore, k.cosmwasmAPI(ctx), querier, k.gasMeter(ctx), gas, costJsonDeserialization)
