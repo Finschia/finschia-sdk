@@ -168,12 +168,11 @@ func BankQuerier(bankKeeper types.BankViewKeeper) func(ctx sdk.Context, request 
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Balance.Address)
 			}
-			coins := bankKeeper.GetAllBalances(ctx, sdk.AccAddress(request.Balance.Address))
-			amount := coins.AmountOf(request.Balance.Denom)
+			coin := bankKeeper.GetBalance(ctx, sdk.AccAddress(request.Balance.Address), request.Balance.Denom)
 			res := wasmvmtypes.BalanceResponse{
 				Amount: wasmvmtypes.Coin{
-					Denom:  request.Balance.Denom,
-					Amount: amount.String(),
+					Denom:  coin.Denom,
+					Amount: coin.Amount.String(),
 				},
 			}
 			return json.Marshal(res)
