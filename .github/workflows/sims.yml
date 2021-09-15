@@ -4,12 +4,11 @@ name: Sims
 env:
   GOPRIVATE: "github.com/line/*"
 
-# TODO ebony: fix sim test failure
 on:
-#  pull_request:
-#  push:
-#    branches:
-#      - main
+  pull_request:
+  push:
+    branches:
+      - main
 
 jobs:
   cleanup-runs:
