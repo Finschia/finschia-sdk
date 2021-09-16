@@ -3,7 +3,6 @@ package types
 import (
 	"encoding/json"
 	"errors"
-	"strings"
 	"time"
 
 	"github.com/gogo/protobuf/jsonpb"
@@ -247,15 +246,15 @@ func (bva *BaseVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte)
 		return err
 	}
 
-	ba := new(authtypes.BaseAccount)
-	if err := m.Unmarshal(strings.NewReader(string(va.BaseAccount)), ba); err != nil {
+	var ba authtypes.BaseAccount
+	if err := (&ba).UnmarshalJSONPB(m, va.BaseAccount); err != nil {
 		return err
 	}
-	bva.BaseAccount     = ba
+	bva.BaseAccount = &ba
 	bva.OriginalVesting = va.OriginalVesting
-	bva.DelegatedFree   = va.DelegatedFree
+	bva.DelegatedFree = va.DelegatedFree
 	bva.OriginalVesting = va.DelegatedVesting
-	bva.EndTime         = va.EndTime
+	bva.EndTime = va.EndTime
 
 	return nil
 }
@@ -396,7 +395,6 @@ func (cva ContinuousVestingAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, 
 		EndTime:          cva.BaseVestingAccount.EndTime,
 		StartTime:        cva.StartTime,
 	}
-
 	return json.Marshal(alias)
 }
 
@@ -408,19 +406,18 @@ func (cva *ContinuousVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz [
 		return err
 	}
 
-	ba := new(authtypes.BaseAccount)
-	if err := m.Unmarshal(strings.NewReader(string(va.BaseAccount)), ba); err != nil {
+	var ba authtypes.BaseAccount
+	if err := (&ba).UnmarshalJSONPB(m, va.BaseAccount); err != nil {
 		return err
 	}
 	cva.BaseVestingAccount = &BaseVestingAccount{
-		BaseAccount:      ba,
+		BaseAccount:      &ba,
 		OriginalVesting:  va.OriginalVesting,
 		DelegatedFree:    va.DelegatedFree,
 		DelegatedVesting: va.DelegatedVesting,
 		EndTime:          va.EndTime,
 	}
-	cva.StartTime          = va.StartTime
-
+	cva.StartTime = va.StartTime
 	return nil
 }
 
@@ -603,19 +600,19 @@ func (pva *PeriodicVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []b
 		return err
 	}
 
-	ba := new(authtypes.BaseAccount)
-	if err := m.Unmarshal(strings.NewReader(string(va.BaseAccount)), ba); err != nil {
+	var ba authtypes.BaseAccount
+	if err := (&ba).UnmarshalJSONPB(m, va.BaseAccount); err != nil {
 		return err
 	}
 	pva.BaseVestingAccount = &BaseVestingAccount{
-		BaseAccount:      ba,
+		BaseAccount:      &ba,
 		OriginalVesting:  va.OriginalVesting,
 		DelegatedFree:    va.DelegatedFree,
 		DelegatedVesting: va.DelegatedVesting,
 		EndTime:          va.EndTime,
 	}
-	pva.StartTime       = va.StartTime
-	pva.VestingPeriods  = va.VestingPeriods
+	pva.StartTime = va.StartTime
+	pva.VestingPeriods = va.VestingPeriods
 
 	return nil
 }
@@ -711,12 +708,12 @@ func (dva *DelayedVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []by
 		return err
 	}
 
-	ba := new(authtypes.BaseAccount)
-	if err := m.Unmarshal(strings.NewReader(string(va.BaseAccount)), ba); err != nil {
+	var ba authtypes.BaseAccount
+	if err := (&ba).UnmarshalJSONPB(m, va.BaseAccount); err != nil {
 		return err
 	}
 	dva.BaseVestingAccount = &BaseVestingAccount{
-		BaseAccount:      ba,
+		BaseAccount:      &ba,
 		OriginalVesting:  va.OriginalVesting,
 		DelegatedFree:    va.DelegatedFree,
 		DelegatedVesting: va.DelegatedVesting,

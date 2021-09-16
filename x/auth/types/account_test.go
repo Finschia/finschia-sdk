@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/line/lbm-sdk/codec"
+	types2 "github.com/line/lbm-sdk/codec/types"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
 
@@ -46,6 +48,21 @@ func TestBaseAddressPubKey(t *testing.T) {
 	err = acc2.SetAddress(addr2)
 	require.Nil(t, err)
 	require.EqualValues(t, addr2, acc2.GetAddress())
+}
+
+func TestBaseAccountMarshalUnmarshalJSON(t *testing.T) {
+	interfaceRegistry := types2.NewInterfaceRegistry()
+
+	cdc := codec.NewProtoCodec(interfaceRegistry)
+	_, pub, addr := testdata.KeyTestPubAddr()
+	acc := types.NewBaseAccountWithAddress(addr)
+	acc.SetPubKey(pub)
+
+	bz := cdc.MustMarshalJSON(acc)
+	var acc2 types.BaseAccount
+
+	cdc.MustUnmarshalJSON(bz, &acc2)
+	require.Equal(t, acc, &acc2)
 }
 
 func TestBaseSequence(t *testing.T) {

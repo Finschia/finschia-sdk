@@ -31,6 +31,10 @@ var (
 
 	BaseAccountSig   = []byte("bacc")
 	ModuleAccountSig = []byte("macc")
+
+	PubKeyTypeSecp256k1 = byte(1)
+	PubKeyTypeEd25519   = byte(2)
+	PubKeyTypeMultisig  = byte(3)
 )
 
 // NewBaseAccount creates a new BaseAccount object
@@ -408,9 +412,10 @@ type GenesisAccount interface {
 // custom json marshaler for BaseAccount & ModuleAccount
 
 type BaseAccountJSON struct {
-	Address  string          `json:"address"`
-	PubKey   json.RawMessage `json:"pub_key"`
-	Sequence string          `json:"sequence"`
+	Address  string `json:"address"`
+	PubType  byte   `json:"pub_type"`
+	PubKey   []byte `json:"pub_key"`
+	Sequence string `json:"sequence"`
 }
 
 func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
@@ -420,14 +425,17 @@ func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
 	bi.Sequence = strconv.FormatUint(acc.Sequence, 10)
 	var bz []byte
 	var err error
-	if acc.Ed25519PubKey != nil {
-		bz, err = codec.ProtoMarshalJSON(acc.Ed25519PubKey, m.AnyResolver)
-	}
 	if acc.Secp256K1PubKey != nil {
-		bz, err = codec.ProtoMarshalJSON(acc.Secp256K1PubKey, m.AnyResolver)
+		bi.PubType = PubKeyTypeSecp256k1
+		bz, err = acc.Secp256K1PubKey.Marshal()
+	}
+	if acc.Ed25519PubKey != nil {
+		bi.PubType = PubKeyTypeEd25519
+		bz, err = acc.Ed25519PubKey.Marshal()
 	}
 	if acc.MultisigPubKey != nil {
-		bz, err = codec.ProtoMarshalJSON(acc.MultisigPubKey, m.AnyResolver)
+		bi.PubType = PubKeyTypeMultisig
+		bz, err = acc.MultisigPubKey.Marshal()
 	}
 	if err != nil {
 		return nil, err
@@ -443,12 +451,6 @@ func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error 
 	if err != nil {
 		return err
 	}
-	/* TODO: do we need to validate address format here
-	err = sdk.ValidateAccAddress(bi.Address)
-	if err != nil {
-		return err
-	}
-	*/
 
 	acc.Address = bi.Address
 	acc.Sequence, err = strconv.ParseUint(bi.Sequence, 10, 64)
@@ -456,29 +458,25 @@ func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error 
 		return err
 	}
 
-	done := false
-	if !done {
+	switch bi.PubType {
+	case PubKeyTypeSecp256k1:
 		pk := new(secp256k1.PubKey)
-		any, _ := codectypes.NewAnyWithValue(pk)
-		if m.Unmarshal(strings.NewReader(string(bi.PubKey)), any) == nil {
-			acc.SetPubKey(pk)
-			done = true
+		if err := pk.Unmarshal(bi.PubKey); err != nil {
+			return err
 		}
-	}
-	if !done {
-		pk := new(ed25519.PubKey)
-		any, _ := codectypes.NewAnyWithValue(pk)
-		if m.Unmarshal(strings.NewReader(string(bi.PubKey)), any) == nil {
-			acc.SetPubKey(pk)
-			done = true
+		acc.SetPubKey(pk)
+	case PubKeyTypeEd25519:
+		pk := new(secp256k1.PubKey)
+		if err := pk.Unmarshal(bi.PubKey); err != nil {
+			return err
 		}
-	}
-	if !done {
+		acc.SetPubKey(pk)
+	case PubKeyTypeMultisig:
 		pk := new(multisig.LegacyAminoPubKey)
-		any, _ := codectypes.NewAnyWithValue(pk)
-		if m.Unmarshal(strings.NewReader(string(bi.PubKey)), any) == nil {
-			acc.SetPubKey(pk)
+		if err := pk.Unmarshal(bi.PubKey); err != nil {
+			return err
 		}
+		acc.SetPubKey(pk)
 	}
 	return nil
 }
