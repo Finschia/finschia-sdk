@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package client_test
@@ -49,15 +50,14 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			req := abci.RequestQuery{
 				Path:   fmt.Sprintf("store/%s/key", banktypes.StoreKey),
 				Height: tc.reqHeight,
-				Data:   append(banktypes.BalancesPrefix, val.Address.Bytes()...),
+				Data:   banktypes.CreateAccountBalancesPrefix(val.Address),
 				Prove:  true,
 			}
 
 			res, err := clientCtx.QueryABCI(req)
 			s.Require().NoError(err)
 
-			// Line: block height could be higher if execution gets slowed down
-			s.Require().LessOrEqual(tc.expHeight, res.Height)
+			s.Require().Equal(tc.expHeight, res.Height)
 		})
 	}
 }
