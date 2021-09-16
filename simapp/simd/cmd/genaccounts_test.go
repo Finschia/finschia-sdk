@@ -5,20 +5,20 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lbm-sdk/crypto/hd"
-	"github.com/line/lbm-sdk/crypto/keyring"
-	sdk "github.com/line/lbm-sdk/types"
-
-	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/ostracon/libs/log"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/server"
 	"github.com/line/lbm-sdk/simapp"
 	simcmd "github.com/line/lbm-sdk/simapp/simd/cmd"
 	"github.com/line/lbm-sdk/testutil/testdata"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltest "github.com/line/lbm-sdk/x/genutil/client/testutil"
