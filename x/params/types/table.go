@@ -2,7 +2,6 @@ package types
 
 import (
 	"reflect"
-	"unsafe"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -10,7 +9,6 @@ import (
 type attribute struct {
 	ty          reflect.Type
 	vfn         ValueValidatorFn
-	cachedValue unsafe.Pointer
 }
 
 // KeyTable subspaces appropriate type for each parameter key
