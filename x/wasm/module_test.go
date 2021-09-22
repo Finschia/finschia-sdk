@@ -32,7 +32,7 @@ type testData struct {
 }
 
 func setupTest(t *testing.T) testData {
-	ctx, keepers := CreateTestInput(t, false, "staking,stargate", nil, nil)
+	ctx, keepers := CreateTestInput(t, false, "iterator,staking,stargate", nil, nil)
 	cdc := keeper.MakeTestCodec(t)
 	data := testData{
 		module:        NewAppModule(cdc, keepers.WasmKeeper, keepers.StakingKeeper),
