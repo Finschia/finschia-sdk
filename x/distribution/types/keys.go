@@ -100,9 +100,9 @@ func GetValidatorAccumulatedCommissionAddress(key []byte) (valAddr sdk.ValAddres
 
 // gets the height from a validator's slash event key
 func GetValidatorSlashEventAddressHeight(key []byte) (valAddr sdk.ValAddress, height uint64) {
-	addr := key[1 : len(key)-8]
+	addr := key[1 : len(key)-16] // 8 bytes height + 8 bytes period
 	valAddr = sdk.ValAddress(addr)
-	b := key[len(key)-8:] // the next 8 bytes represent the height
+	b := key[len(key)-16:len(key)-8] // the next 8 bytes represent the height
 	height = binary.BigEndian.Uint64(b)
 	return
 }
