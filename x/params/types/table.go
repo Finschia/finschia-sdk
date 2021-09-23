@@ -7,8 +7,8 @@ import (
 )
 
 type attribute struct {
-	ty          reflect.Type
-	vfn         ValueValidatorFn
+	ty  reflect.Type
+	vfn ValueValidatorFn
 }
 
 // KeyTable subspaces appropriate type for each parameter key
