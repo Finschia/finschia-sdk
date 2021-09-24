@@ -33,7 +33,8 @@ func (s *handlerTestSuite) TestChainAnteDecorators() {
 	sdk.ChainAnteDecorators(mockAnteDecorator1)(ctx, tx, true) //nolint:errcheck
 
 	mockAnteDecorator2 := mocks.NewMockAnteDecorator(mockCtrl)
-	mockAnteDecorator1.EXPECT().AnteHandle(gomock.Eq(ctx), gomock.Eq(tx), true, mockAnteDecorator2).Times(1)
-	mockAnteDecorator2.EXPECT().AnteHandle(gomock.Eq(ctx), gomock.Eq(tx), true, nil).Times(1)
-	sdk.ChainAnteDecorators(mockAnteDecorator1, mockAnteDecorator2)
+	mockAnteDecorator3 := mocks.NewMockAnteDecorator(mockCtrl)
+	mockAnteDecorator2.EXPECT().AnteHandle(gomock.Eq(ctx), gomock.Eq(tx), true, gomock.Any()).Times(1)
+	// next handler does not called by mock
+	sdk.ChainAnteDecorators(mockAnteDecorator2, mockAnteDecorator3)(ctx, tx, true)
 }
