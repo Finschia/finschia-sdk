@@ -412,8 +412,8 @@ type GenesisAccount interface {
 // custom json marshaler for BaseAccount & ModuleAccount
 
 type PubKeyJSON struct {
-	Type  byte   `json:"type"`
-	Key   []byte `json:"key"`
+	Type byte   `json:"type"`
+	Key  []byte `json:"key"`
 }
 type BaseAccountJSON struct {
 	Address  string     `json:"address"`
