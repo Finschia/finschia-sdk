@@ -141,7 +141,7 @@ jobs:
         run: go version
       - uses: technote-space/get-diff-action@v5.0.1
         with:
-          PATTERNSR: |
+          PATTERNS: |
             **/**.go
             !**/**_test.go
             go.mod
