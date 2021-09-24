@@ -411,11 +411,14 @@ type GenesisAccount interface {
 
 // custom json marshaler for BaseAccount & ModuleAccount
 
+type PubKeyJSON struct {
+	Type  byte   `json:"type"`
+	Key   []byte `json:"key"`
+}
 type BaseAccountJSON struct {
-	Address  string `json:"address"`
-	PubType  byte   `json:"pub_type"`
-	PubKey   []byte `json:"pub_key"`
-	Sequence string `json:"sequence"`
+	Address  string     `json:"address"`
+	PubKey   PubKeyJSON `json:"pub_key"`
+	Sequence string     `json:"sequence"`
 }
 
 func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
@@ -426,21 +429,21 @@ func (acc BaseAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
 	var bz []byte
 	var err error
 	if acc.Secp256K1PubKey != nil {
-		bi.PubType = PubKeyTypeSecp256k1
+		bi.PubKey.Type = PubKeyTypeSecp256k1
 		bz, err = acc.Secp256K1PubKey.Marshal()
 	}
 	if acc.Ed25519PubKey != nil {
-		bi.PubType = PubKeyTypeEd25519
+		bi.PubKey.Type = PubKeyTypeEd25519
 		bz, err = acc.Ed25519PubKey.Marshal()
 	}
 	if acc.MultisigPubKey != nil {
-		bi.PubType = PubKeyTypeMultisig
+		bi.PubKey.Type = PubKeyTypeMultisig
 		bz, err = acc.MultisigPubKey.Marshal()
 	}
 	if err != nil {
 		return nil, err
 	}
-	bi.PubKey = bz
+	bi.PubKey.Key = bz
 	return json.Marshal(bi)
 }
 
@@ -458,22 +461,22 @@ func (acc *BaseAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error 
 		return err
 	}
 
-	switch bi.PubType {
+	switch bi.PubKey.Type {
 	case PubKeyTypeSecp256k1:
 		pk := new(secp256k1.PubKey)
-		if err := pk.Unmarshal(bi.PubKey); err != nil {
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
 			return err
 		}
 		acc.SetPubKey(pk)
 	case PubKeyTypeEd25519:
 		pk := new(secp256k1.PubKey)
-		if err := pk.Unmarshal(bi.PubKey); err != nil {
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
 			return err
 		}
 		acc.SetPubKey(pk)
 	case PubKeyTypeMultisig:
 		pk := new(multisig.LegacyAminoPubKey)
-		if err := pk.Unmarshal(bi.PubKey); err != nil {
+		if err := pk.Unmarshal(bi.PubKey.Key); err != nil {
 			return err
 		}
 		acc.SetPubKey(pk)
