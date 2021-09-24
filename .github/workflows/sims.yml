@@ -61,6 +61,7 @@ jobs:
         with:
           PATTERNS: |
             **/**.go
+            !**/**_test.go
             go.mod
             go.sum
       - uses: actions/cache@v2.1.3
@@ -85,8 +86,9 @@ jobs:
         run: go version
       - uses: technote-space/get-diff-action@v5.0.1
         with:
-          SUFFIX_FILTER: |
+          PATTERNS: |
             **/**.go
+            !**/**_test.go
             go.mod
             go.sum
           SET_ENV_NAME_INSERTIONS: 1
@@ -113,8 +115,9 @@ jobs:
         run: go version
       - uses: technote-space/get-diff-action@v5.0.1
         with:
-          SUFFIX_FILTER: |
+          PATTERNS: |
             **/**.go
+            !**/**_test.go
             go.mod
             go.sum
           SET_ENV_NAME_INSERTIONS: 1
@@ -141,8 +144,9 @@ jobs:
         run: go version
       - uses: technote-space/get-diff-action@v5.0.1
         with:
-          SUFFIX_FILTER: |
+          PATTERNSR: |
             **/**.go
+            !**/**_test.go
             go.mod
             go.sum
           SET_ENV_NAME_INSERTIONS: 1
