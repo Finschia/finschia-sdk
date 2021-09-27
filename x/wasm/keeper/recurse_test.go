@@ -77,7 +77,7 @@ func TestGasCostOnQuery(t *testing.T) {
 			msg: Recurse{
 				Work: 50, // 50 rounds of sha256 inside the contract
 			},
-			expectedGas: GasWork50,
+			expectedGas: GasWork50 + 1,
 		},
 		"recursion 1, no work": {
 			gasLimit: 400_000,
@@ -238,7 +238,7 @@ func TestLimitRecursiveQueryGas(t *testing.T) {
 				Work:  2000,
 			},
 			expectQueriesFromContract: 0,
-			expectedGas:               GasWork2k,
+			expectedGas:               GasWork2k + 1,
 		},
 		"recursion 5, lots of work": {
 			gasLimit: 4_000_000,
