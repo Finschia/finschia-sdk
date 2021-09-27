@@ -82,6 +82,7 @@ type wasmQueryKeeper interface {
 	contractMetaDataSource
 	QueryRaw(ctx sdk.Context, contractAddress sdk.AccAddress, key []byte) []byte
 	QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []byte) ([]byte, error)
+	IsPinnedCode(ctx sdk.Context, codeID uint64) bool
 }
 
 func DefaultQueryPlugins(
@@ -482,10 +483,11 @@ func getAccumulatedRewards(ctx sdk.Context, distKeeper types.DistributionKeeper,
 	return rewards, nil
 }
 
-func WasmQuerier(wasm wasmQueryKeeper) func(ctx sdk.Context, request *wasmvmtypes.WasmQuery) ([]byte, error) {
+func WasmQuerier(k wasmQueryKeeper) func(ctx sdk.Context, request *wasmvmtypes.WasmQuery) ([]byte, error) {
 	return func(ctx sdk.Context, request *wasmvmtypes.WasmQuery) ([]byte, error) {
-		if request.Smart != nil {
-			err := sdk.ValidateAccAddress(request.Smart.ContractAddr)
+		switch {
+		case request.Smart != nil:
+			addr, err := sdk.AccAddressFromHex(request.Smart.ContractAddr)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Smart.ContractAddr)
 			}
@@ -493,14 +495,31 @@ func WasmQuerier(wasm wasmQueryKeeper) func(ctx sdk.Context, request *wasmvmtype
 			if err := msg.ValidateBasic(); err != nil {
 				return nil, sdkerrors.Wrap(err, "json msg")
 			}
-			return wasm.QuerySmart(ctx, sdk.AccAddress(request.Smart.ContractAddr), msg)
-		}
-		if request.Raw != nil {
-			err := sdk.ValidateAccAddress(request.Raw.ContractAddr)
+			return k.QuerySmart(ctx, addr, msg)
+		case request.Raw != nil:
+			addr, err := sdk.AccAddressFromHex(request.Raw.ContractAddr)
 			if err != nil {
 				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.Raw.ContractAddr)
 			}
-			return wasm.QueryRaw(ctx, sdk.AccAddress(request.Raw.ContractAddr), request.Raw.Key), nil
+			return k.QueryRaw(ctx, addr, request.Raw.Key), nil
+		case request.ContractInfo != nil:
+			addr, err := sdk.AccAddressFromHex(request.ContractInfo.ContractAddr)
+			if err != nil {
+				return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, request.ContractInfo.ContractAddr)
+			}
+			info := k.GetContractInfo(ctx, addr)
+			if info == nil {
+				return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownAddress, request.ContractInfo.ContractAddr)
+			}
+
+			res := wasmvmtypes.ContractInfoResponse{
+				CodeID:  info.CodeID,
+				Creator: info.Creator,
+				Admin:   info.Admin,
+				Pinned:  k.IsPinnedCode(ctx, info.CodeID),
+				IBCPort: info.IBCPortID,
+			}
+			return json.Marshal(res)
 		}
 		return nil, wasmvmtypes.UnsupportedRequest{Kind: "unknown WasmQuery variant"}
 	}
