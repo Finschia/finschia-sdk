@@ -361,7 +361,7 @@ func (app *BaseApp) setCheckState(header ocproto.Header) {
 
 	app.checkState = &state{
 		ms:  ms,
-		ctx: ctx.WithConsensusParams(app.GetConsensusParams(ctx)),
+		ctx: ctx,
 	}
 }
 

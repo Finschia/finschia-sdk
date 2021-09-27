@@ -1,9 +1,11 @@
 package types
 
 import (
+	"encoding/json"
 	"errors"
 	"time"
 
+	"github.com/gogo/protobuf/jsonpb"
 	yaml "gopkg.in/yaml.v2"
 
 	sdk "github.com/line/lbm-sdk/types"
@@ -209,6 +211,54 @@ func (bva BaseVestingAccount) MarshalYAML() (interface{}, error) {
 	return string(bz), err
 }
 
+type vestingAccountJSON struct {
+	BaseAccount      json.RawMessage `json:"base_account"`
+	OriginalVesting  sdk.Coins       `json:"original_vesting"`
+	DelegatedFree    sdk.Coins       `json:"delegated_free"`
+	DelegatedVesting sdk.Coins       `json:"delegated_vesting"`
+	EndTime          int64           `json:"end_time"`
+
+	StartTime      int64   `json:"start_time,omitempty"`
+	VestingPeriods Periods `json:"vesting_periods,omitempty"`
+}
+
+func (bva BaseVestingAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
+	bz, err := bva.BaseAccount.MarshalJSONPB(m)
+	if err != nil {
+		return nil, err
+	}
+	alias := vestingAccountJSON{
+		BaseAccount:      bz,
+		OriginalVesting:  bva.OriginalVesting,
+		DelegatedFree:    bva.DelegatedFree,
+		DelegatedVesting: bva.DelegatedVesting,
+		EndTime:          bva.EndTime,
+	}
+
+	return json.Marshal(alias)
+}
+
+func (bva *BaseVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error {
+	var va vestingAccountJSON
+
+	err := json.Unmarshal(bz, &va)
+	if err != nil {
+		return err
+	}
+
+	var ba authtypes.BaseAccount
+	if err := (&ba).UnmarshalJSONPB(m, va.BaseAccount); err != nil {
+		return err
+	}
+	bva.BaseAccount = &ba
+	bva.OriginalVesting = va.OriginalVesting
+	bva.DelegatedFree = va.DelegatedFree
+	bva.OriginalVesting = va.DelegatedVesting
+	bva.EndTime = va.EndTime
+
+	return nil
+}
+
 //-----------------------------------------------------------------------------
 // Continuous Vesting Account
 
@@ -330,6 +380,45 @@ func (cva ContinuousVestingAccount) MarshalYAML() (interface{}, error) {
 	}
 
 	return string(bz), err
+}
+
+func (cva ContinuousVestingAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
+	bz, err := cva.BaseVestingAccount.BaseAccount.MarshalJSONPB(m)
+	if err != nil {
+		return nil, err
+	}
+	alias := vestingAccountJSON{
+		BaseAccount:      bz,
+		OriginalVesting:  cva.BaseVestingAccount.OriginalVesting,
+		DelegatedFree:    cva.BaseVestingAccount.DelegatedFree,
+		DelegatedVesting: cva.BaseVestingAccount.DelegatedVesting,
+		EndTime:          cva.BaseVestingAccount.EndTime,
+		StartTime:        cva.StartTime,
+	}
+	return json.Marshal(alias)
+}
+
+func (cva *ContinuousVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error {
+	var va vestingAccountJSON
+
+	err := json.Unmarshal(bz, &va)
+	if err != nil {
+		return err
+	}
+
+	var ba authtypes.BaseAccount
+	if err := (&ba).UnmarshalJSONPB(m, va.BaseAccount); err != nil {
+		return err
+	}
+	cva.BaseVestingAccount = &BaseVestingAccount{
+		BaseAccount:      &ba,
+		OriginalVesting:  va.OriginalVesting,
+		DelegatedFree:    va.DelegatedFree,
+		DelegatedVesting: va.DelegatedVesting,
+		EndTime:          va.EndTime,
+	}
+	cva.StartTime = va.StartTime
+	return nil
 }
 
 //-----------------------------------------------------------------------------
@@ -485,6 +574,49 @@ func (pva PeriodicVestingAccount) MarshalYAML() (interface{}, error) {
 	return string(bz), err
 }
 
+func (pva PeriodicVestingAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
+	bz, err := pva.BaseVestingAccount.BaseAccount.MarshalJSONPB(m)
+	if err != nil {
+		return nil, err
+	}
+	alias := vestingAccountJSON{
+		BaseAccount:      bz,
+		OriginalVesting:  pva.BaseVestingAccount.OriginalVesting,
+		DelegatedFree:    pva.BaseVestingAccount.DelegatedFree,
+		DelegatedVesting: pva.BaseVestingAccount.DelegatedVesting,
+		EndTime:          pva.BaseVestingAccount.EndTime,
+		StartTime:        pva.StartTime,
+		VestingPeriods:   pva.VestingPeriods,
+	}
+
+	return json.Marshal(alias)
+}
+
+func (pva *PeriodicVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error {
+	var va vestingAccountJSON
+
+	err := json.Unmarshal(bz, &va)
+	if err != nil {
+		return err
+	}
+
+	var ba authtypes.BaseAccount
+	if err := (&ba).UnmarshalJSONPB(m, va.BaseAccount); err != nil {
+		return err
+	}
+	pva.BaseVestingAccount = &BaseVestingAccount{
+		BaseAccount:      &ba,
+		OriginalVesting:  va.OriginalVesting,
+		DelegatedFree:    va.DelegatedFree,
+		DelegatedVesting: va.DelegatedVesting,
+		EndTime:          va.EndTime,
+	}
+	pva.StartTime = va.StartTime
+	pva.VestingPeriods = va.VestingPeriods
+
+	return nil
+}
+
 //-----------------------------------------------------------------------------
 // Delayed Vesting Account
 
@@ -550,4 +682,43 @@ func (dva DelayedVestingAccount) Validate() error {
 func (dva DelayedVestingAccount) String() string {
 	out, _ := dva.MarshalYAML()
 	return out.(string)
+}
+
+func (dva DelayedVestingAccount) MarshalJSONPB(m *jsonpb.Marshaler) ([]byte, error) {
+	bz, err := dva.BaseAccount.MarshalJSONPB(m)
+	if err != nil {
+		return nil, err
+	}
+	alias := vestingAccountJSON{
+		BaseAccount:      bz,
+		OriginalVesting:  dva.BaseVestingAccount.OriginalVesting,
+		DelegatedFree:    dva.BaseVestingAccount.DelegatedFree,
+		DelegatedVesting: dva.BaseVestingAccount.DelegatedVesting,
+		EndTime:          dva.BaseVestingAccount.EndTime,
+	}
+
+	return json.Marshal(alias)
+}
+
+func (dva *DelayedVestingAccount) UnmarshalJSONPB(m *jsonpb.Unmarshaler, bz []byte) error {
+	var va vestingAccountJSON
+
+	err := json.Unmarshal(bz, &va)
+	if err != nil {
+		return err
+	}
+
+	var ba authtypes.BaseAccount
+	if err := (&ba).UnmarshalJSONPB(m, va.BaseAccount); err != nil {
+		return err
+	}
+	dva.BaseVestingAccount = &BaseVestingAccount{
+		BaseAccount:      &ba,
+		OriginalVesting:  va.OriginalVesting,
+		DelegatedFree:    va.DelegatedFree,
+		DelegatedVesting: va.DelegatedVesting,
+		EndTime:          va.EndTime,
+	}
+
+	return nil
 }

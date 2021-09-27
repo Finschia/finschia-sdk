@@ -187,55 +187,6 @@ func (suite *SubspaceTestSuite) TestSetParamSet() {
 	suite.Require().Equal(a.BondDenom, b.BondDenom)
 }
 
-func (suite *SubspaceTestSuite) TestParamSetCache() {
-	a := params{
-		UnbondingTime: time.Hour * 48,
-		MaxValidators: 100,
-		BondDenom:     "stake",
-	}
-	b := params{}
-	// confirm cache is empty
-	suite.Require().False(suite.ss.GetCachedValueForTesting(keyUnbondingTime, &b.UnbondingTime))
-	suite.Require().False(suite.ss.GetCachedValueForTesting(keyMaxValidators, &b.MaxValidators))
-	suite.Require().False(suite.ss.GetCachedValueForTesting(keyBondDenom, &b.BondDenom))
-	suite.Require().False(suite.ss.HasCacheForTesting(keyUnbondingTime))
-	suite.Require().False(suite.ss.HasCacheForTesting(keyMaxValidators))
-	suite.Require().False(suite.ss.HasCacheForTesting(keyBondDenom))
-	suite.Require().NotEqual(a, b)
-
-	suite.Require().NotPanics(func() {
-		suite.ss.SetParamSet(suite.ctx, &a)
-	})
-	// confirm cached
-	suite.Require().True(suite.ss.GetCachedValueForTesting(keyUnbondingTime, &b.UnbondingTime))
-	suite.Require().True(suite.ss.GetCachedValueForTesting(keyMaxValidators, &b.MaxValidators))
-	suite.Require().True(suite.ss.GetCachedValueForTesting(keyBondDenom, &b.BondDenom))
-	suite.Require().Equal(a, b)
-
-	// update local variable
-	a.UnbondingTime = time.Hour * 24
-	a.MaxValidators = 50
-	a.BondDenom = "link"
-
-	// confirm the cache is not updated
-	c := params{}
-	suite.Require().True(suite.ss.GetCachedValueForTesting(keyUnbondingTime, &c.UnbondingTime))
-	suite.Require().True(suite.ss.GetCachedValueForTesting(keyMaxValidators, &c.MaxValidators))
-	suite.Require().True(suite.ss.GetCachedValueForTesting(keyBondDenom, &c.BondDenom))
-	suite.Require().Equal(b, c) // cached value is not updated
-
-	// update only cache
-	suite.ss.SetCacheForTesting(keyUnbondingTime, &a.UnbondingTime)
-	suite.ss.SetCacheForTesting(keyMaxValidators, &a.MaxValidators)
-	suite.ss.SetCacheForTesting(keyBondDenom, &a.BondDenom)
-
-	// ensure GetParamSet to get value not from db but from cache
-	suite.Require().NotPanics(func() {
-		suite.ss.GetParamSet(suite.ctx, &c)
-	})
-	suite.Require().Equal(a, c)
-}
-
 func (suite *SubspaceTestSuite) TestName() {
 	suite.Require().Equal("testsubspace", suite.ss.Name())
 }
