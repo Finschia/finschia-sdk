@@ -209,8 +209,8 @@ func (rs *Store) loadVersion(ver int64, upgrades *types.StoreUpgrades) error {
 	}
 	if upgrades != nil {
 		// deterministic iteration order for upgrades
-		// (as the underlyin store may change and
-		// upgrades make store change where the execution order may matter)
+		// (as the underlying store may change and
+		// upgrades make store changes where the execution order may matter)
 		sort.Slice(storesKeys, func(i, j int) bool {
 			return storesKeys[i].Name() < storesKeys[j].Name()
 		})
