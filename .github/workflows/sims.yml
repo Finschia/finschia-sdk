@@ -26,6 +26,10 @@ jobs:
           go-version: 1.15
       - name: Display go version
         run: go version
+      - name: clear mod cache
+        run: go clean -modcache
+      - name: go mod tidy
+        run: go mod tidy
       - run: make build
 
   install-runsim:
