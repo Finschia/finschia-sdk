@@ -36,17 +36,26 @@ To learn about Cosmos SDK, please refer [Cosmos SDK Docs](https://github.com/cos
 ```
 make build
 make install
-simd version    # you can see the version!
+
+# you can see the version!
+simd version
 ```
 
 **Configure**
 ```
-sh init_node.sh sim
+sh init_node.sh sim {N(number of nodes), default=1}
 ```
 
 **Run**
 ```
-simd start      # run a node
+# run a node
+simd start --home ~/.simapp/simapp0
+
+# If N is larger than 1, run all node.
+# simapp0 has other nodes as persistant_peer. 
+simd start --home ~/.simapp/simapp0
+simd start --home ~/.simapp/simapp1
+...
 ```
 
 **Visit with your browser**
@@ -59,33 +68,57 @@ simd start      # run a node
 
 **Create new account**
 ```
-simd keys add {new-account-name} --keyring-backend test
-simd keys list --keyring-backend test                       # check if new account was added successfully
+simd keys add user0 --keyring-backend test --home ~/.simapp/simapp0
+
+# check if new account was added successfully
+simd keys list --keyring-backend test --home ~/.simapp/simapp0               
 ```
 
-Let the new, user and validator account address be new-addr, user-addr and val-addr each.
+Let the user0 and validator0 **account address** be each 
+* **user0: link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj**
+* **validator0: link146asaycmtydq45kxc8evntqfgepagygelel00h**
+
+If you run multi node, home option's value can be ~/.simapp/simapp1, ~/.simapp/simapp2, ...
+You can get same result whatever --home option you use
 
 **Send funds(Bank)**
 ```
-simd query bank balances {new-addr}                 # balances: "0"
-simd query bank balances {user-addr}                # balances: 100000000000stake, 100000000000ukrw
-simd tx bank send {user-addr} {new-addr} 10000stake —keyring-backend test —chain-id sim
-                                                    # send 10000stake to new-account from user-account
-                                                            
-simd query bank balances {new-addr}                 # balances: 10000stake
-simd query bank balances {user-addr}                # balances: 99999990000stake, 100000000000ukrw
+# user0 balances: "0"
+simd query bank balances link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --home ~/.simapp/simapp0
+
+# validator0 balances: 90000000000stake, 100000000000ukrw
+simd query bank balances link146asaycmtydq45kxc8evntqfgepagygelel00h --home ~/.simapp/simapp0
+
+# send 10000stake from validator0 to user0
+simd tx bank send link146asaycmtydq45kxc8evntqfgepagygelel00h link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj 10000000000stake --keyring-backend test --chain-id sim --home ~/.simapp/simapp0
+
+# user0 balances: 10000000000stake
+simd query bank balances link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --home ~/.simapp/simapp0
+
+# validator0 balances: 80000000000stake, 100000000000ukrw
+simd query bank balances link146asaycmtydq45kxc8evntqfgepagygelel00h --home ~/.simapp/simapp0
 ```
 
 **Staking(deligate)**
 ```
-simd query staking validators                       # operator_address is Bech32 of val-addr(let it be val-addr-Bech32)
-simd tx staking delegate {val-addr-Bech32} 1000stake --from {new-addr} --keyring-backend test --chain-id sim
-                                                    # deligate 1000stake to validator
-simd query staking validators                       # check if deligation was successful
+# Bech32 Val is operator address of validator0
+simd debug addr link146asaycmtydq45kxc8evntqfgepagygelel00h --home ~/.simapp/simapp0
+```
+Let the validator0 operator address be linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy
 
-simd tx staking unbond {val-addr-Bech32} 1000stake --from {new-addr} --keyring-backend test --chain-id sim
-                                                    # undeligate 1000stake from validator
-simd query staking validators                       # check if undeligation was successful
+```
+# deligate 10000000000stake to validator0
+simd tx staking delegate linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy 10000000000stake 
+--from link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --keyring-backend test --chain-id sim --home ~/.simapp/simapp0
+
+# check if deligation was successful
+simd query staking validators --chain-id sim --home ~/.simapp/simapp0
+
+# undeligate 10000000000stake from validator
+simd tx staking unbond linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy 10000000000stake --from link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --keyring-backend test --chain-id sim --home ~/.simapp/simapp0
+
+# check if undeligation was successful
+simd query staking validators --chain-id sim --home ~/.simapp/simapp0
 ```
 
 Test different commands to get a broader understanding of lbm
