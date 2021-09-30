@@ -31,7 +31,6 @@ To learn about Cosmos SDK, please refer [Cosmos SDK Docs](https://github.com/cos
 
 ## Quick Start
 
-
 **Build**
 ```
 make build
@@ -41,10 +40,14 @@ make install
 simd version
 ```
 
+&nbsp;
+
 **Configure**
 ```
-sh init_node.sh sim {N(number of nodes), default=1}
+zsh init_node.sh sim {N(number of nodes), default=1}
 ```
+
+&nbsp;
 
 **Run**
 ```
@@ -62,6 +65,7 @@ simd start --home ~/.simapp/simapp1
 * Node: http://localhost:26657/
 * REST: http://localhost:1317/swagger-ui/
 
+&nbsp;
 
 ## Follow Guide
 
@@ -81,6 +85,8 @@ Let the user0 and validator0 **account address** be each
 If you run multi node, home option's value can be ~/.simapp/simapp1, ~/.simapp/simapp2, ...
 You can get same result whatever --home option you use
 
+&nbsp;
+
 **Send funds(Bank)**
 ```
 # user0 balances: "0"
@@ -99,12 +105,16 @@ simd query bank balances link1lu5hgjp2gyvgdpf674aklzrpdeuyhjr4fsuqrj --home ~/.s
 simd query bank balances link146asaycmtydq45kxc8evntqfgepagygelel00h --home ~/.simapp/simapp0
 ```
 
+&nbsp;
+
 **Staking(deligate)**
 ```
 # Bech32 Val is operator address of validator0
 simd debug addr link146asaycmtydq45kxc8evntqfgepagygelel00h --home ~/.simapp/simapp0
 ```
-Let the validator0 operator address be linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy
+Let the **validator0 operator address** be **linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy**
+
+&nbsp;
 
 ```
 # deligate 10000000000stake to validator0
@@ -121,4 +131,7 @@ simd tx staking unbond linkvaloper146asaycmtydq45kxc8evntqfgepagygeddajpy 100000
 simd query staking validators --chain-id sim --home ~/.simapp/simapp0
 ```
 
+&nbsp;
+
 Test different commands to get a broader understanding of lbm
+
