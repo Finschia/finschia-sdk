@@ -4,7 +4,6 @@ package lbm.tx.v1;
 import "google/api/annotations.proto";
 import "lbm/base/abci/v1/abci.proto";
 import "lbm/tx/v1/tx.proto";
-import "gogoproto/gogo.proto";
 import "lbm/base/query/v1/pagination.proto";
 
 option go_package = "github.com/line/lbm-sdk/types/tx";

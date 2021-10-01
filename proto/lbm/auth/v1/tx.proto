@@ -2,7 +2,6 @@ syntax = "proto3";
 package lbm.auth.v1;
 
 import "gogoproto/gogo.proto";
-import "lbm/auth/v1/auth.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/auth/types";
 
