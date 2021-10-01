@@ -1,8 +1,7 @@
 # Changelog
 
-## [Unreleased]
-
 ## [v0.1.0]
+
 ### Features
 * (global) [\#97](https://github.com/line/lbm-sdk/pull/97) Add codespace to query error
 * (config) [\#114](https://github.com/line/lbm-sdk/pull/114) Add idle-timeout to rest server and rpc server config
