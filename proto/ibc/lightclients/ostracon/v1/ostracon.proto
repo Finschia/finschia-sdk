@@ -99,12 +99,12 @@ message Header {
   .ostracon.types.SignedHeader signed_header = 1
       [(gogoproto.embed) = true, (gogoproto.moretags) = "yaml:\"signed_header\""];
 
-  .ostracon.types.ValidatorSet validator_set = 2 [(gogoproto.moretags) = "yaml:\"validator_set\""];
-  .ostracon.types.VoterSet voter_set         = 3 [(gogoproto.moretags) = "yaml:\"voter_set\""];
-  ibc.core.client.v1.Height trusted_height   = 4
+  .ostracon.types.ValidatorSet validator_set  = 2 [(gogoproto.moretags) = "yaml:\"validator_set\""];
+  .ostracon.types.VoterSet     voter_set      = 3 [(gogoproto.moretags) = "yaml:\"voter_set\""];
+  ibc.core.client.v1.Height    trusted_height = 4
       [(gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"trusted_height\""];
   .ostracon.types.ValidatorSet trusted_validators = 5 [(gogoproto.moretags) = "yaml:\"trusted_validators\""];
-  .ostracon.types.VoterSet trusted_voters    = 6 [(gogoproto.moretags) = "yaml:\"trusted_voters\""];
+  .ostracon.types.VoterSet     trusted_voters     = 6 [(gogoproto.moretags) = "yaml:\"trusted_voters\""];
 }
 
 // Fraction defines the protobuf message type for tmmath.Fraction that only supports positive values.
