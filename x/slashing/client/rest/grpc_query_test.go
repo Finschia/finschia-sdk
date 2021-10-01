@@ -57,7 +57,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 	}{
 		{
 			"get signing infos (height specific)",
-			fmt.Sprintf("%s/lbm/slashing/v1beta1/signing_infos", baseURL),
+			fmt.Sprintf("%s/lbm/slashing/v1/signing_infos", baseURL),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -77,7 +77,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		},
 		{
 			"get signing info (height specific)",
-			fmt.Sprintf("%s/lbm/slashing/v1beta1/signing_infos/%s", baseURL, consAddr),
+			fmt.Sprintf("%s/lbm/slashing/v1/signing_infos/%s", baseURL, consAddr),
 			map[string]string{
 				grpctypes.GRPCBlockHeightHeader: "1",
 			},
@@ -92,7 +92,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		},
 		{
 			"get signing info wrong address",
-			fmt.Sprintf("%s/lbm/slashing/v1beta1/signing_infos/%s", baseURL, "wrongAddress"),
+			fmt.Sprintf("%s/lbm/slashing/v1/signing_infos/%s", baseURL, "wrongAddress"),
 			map[string]string{},
 			true,
 			&types.QuerySigningInfoResponse{},
@@ -100,7 +100,7 @@ func (s *IntegrationTestSuite) TestGRPCQueries() {
 		},
 		{
 			"params",
-			fmt.Sprintf("%s/lbm/slashing/v1beta1/params", baseURL),
+			fmt.Sprintf("%s/lbm/slashing/v1/params", baseURL),
 			map[string]string{},
 			false,
 			&types.QueryParamsResponse{},

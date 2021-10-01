@@ -32,7 +32,6 @@
 * (build) [\#195](https://github.com/line/lbm-sdk/pull/195) Build properly when using libsecp256k1
 * (perf) [\#198](https://github.com/line/lbm-sdk/pull/198) Caching paramset
 * (global) [\#200](https://github.com/line/lbm-sdk/pull/200) Add a env prefix
-* (store) [\#202](https://github.com/line/lbm-sdk/pull/202) param store doesn't use gas kv
 * (store) [\#202](https://github.com/line/lbm-sdk/pull/202) Param store doesn't use gas kv
 * (store) [\#203](https://github.com/line/lbm-sdk/pull/203) Remove transient store that is not used now
 * (perf) [\#204](https://github.com/line/lbm-sdk/pull/204) Apply rw mutex to cachekv
@@ -60,6 +59,8 @@
 * (config) [\#138](https://github.com/line/lbm-sdk/pull/138) Fix getting coin type at running cmd 
 * (race) [\#159](https://github.com/line/lbm-sdk/pull/159) Fix test-race failure
 * (test) [\#193](https://github.com/line/lbm-sdk/pull/193) Allow to add new validator in test network
+* (client) [\#286](https://github.com/line/lbm-sdk/pull/286) Fix invalid type casting for error
+* (test) [\#326](https://github.com/line/lbm-sdk/pull/326) Enable sim test and fix address related bug
  
 ### Breaking Changes
 * (global) [\#90](https://github.com/line/lbm-sdk/pull/90) Revise module path to `github.com/line/lfb-sdk`
@@ -70,6 +71,7 @@
 * (global) [\#298](https://github.com/line/lbm-sdk/pull/298) Treat addresses as strings
 * (ostracon) [\#317](https://github.com/line/lbm-sdk/pull/317) Integrate Ostracon including vrf election and voter concept
 * (global) [\#323](https://github.com/line/lfb-sdk/pull/323) Re-brand lfb-sdk to lbm-sdk
+* (proto) [\#338](https://github.com/line/lbm-sdk/pull/338) Upgrade proto buf from v1beta1 to v1
 
 ### Build, CI
 * (ci) [\#234](https://github.com/line/lbm-sdk/pull/234) Fix branch name in ci script
@@ -84,6 +86,7 @@
 * (docs) [\#259](https://github.com/line/lbm-sdk/pull/259) Modify copyright, verified from legal team
 * (docs) [\#260](https://github.com/line/lbm-sdk/pull/260) Remove gov, ibc and readme of wasm module
 * (docs) [\#262](https://github.com/line/lbm-sdk/pull/262) Fix link urls, remove invalid reference
+* (docs) [\#328](https://github.com/line/lbm-sdk/pull/328) Update quick start guide
 
 ## [cosmos-sdk v0.42.1] - 2021-03-15
 Initial lbm-sdk is based on the cosmos-sdk v0.42.1

@@ -111,7 +111,7 @@ func (s *IntegrationTestSuite) TestGRPCServer_Reflection() {
 		servicesMap[s.Name] = true
 	}
 	// Make sure the following services are present
-	s.Require().True(servicesMap["lbm.bank.v1beta1.Query"])
+	s.Require().True(servicesMap["lbm.bank.v1.Query"])
 }
 
 func (s *IntegrationTestSuite) TestGRPCServer_GetTxsEvent() {

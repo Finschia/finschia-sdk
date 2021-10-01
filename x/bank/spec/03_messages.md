@@ -6,7 +6,7 @@ order: 3
 
 ## MsgSend
 
-+++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/bank/v1beta1/tx.proto#L19-L28
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/bank/v1/tx.proto#L19-L28
 
 `handleMsgSend` just runs `inputOutputCoins`.
 

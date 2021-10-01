@@ -359,7 +359,7 @@ func TestReflectStargateQuery(t *testing.T) {
 	protoQueryBin, err := proto.Marshal(&protoQuery)
 	protoRequest := wasmvmtypes.QueryRequest{
 		Stargate: &wasmvmtypes.StargateQuery{
-			Path: "/lbm.bank.v1beta1.Query/AllBalances",
+			Path: "/lbm.bank.v1.Query/AllBalances",
 			Data: protoQueryBin,
 		},
 	}

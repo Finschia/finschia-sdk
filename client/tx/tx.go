@@ -289,7 +289,7 @@ func CalculateGas(
 
 	// TODO This should use the generated tx service Client.
 	// https://github.com/line/lbm-sdk/issues/7726
-	bz, _, err := queryFunc("/lbm.tx.v1beta1.Service/Simulate", txBytes)
+	bz, _, err := queryFunc("/lbm.tx.v1.Service/Simulate", txBytes)
 	if err != nil {
 		return tx.SimulateResponse{}, 0, err
 	}
