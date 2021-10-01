@@ -59,6 +59,7 @@
 * (config) [\#138](https://github.com/line/lbm-sdk/pull/138) Fix getting coin type at running cmd 
 * (race) [\#159](https://github.com/line/lbm-sdk/pull/159) Fix test-race failure
 * (test) [\#193](https://github.com/line/lbm-sdk/pull/193) Allow to add new validator in test network
+* (client) [\#286](https://github.com/line/lbm-sdk/pull/286) Fix invalid type casting for error
 * (test) [\#326](https://github.com/line/lbm-sdk/pull/326) Enable sim test and fix address related bug
  
 ### Breaking Changes
