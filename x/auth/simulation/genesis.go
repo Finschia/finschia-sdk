@@ -89,8 +89,8 @@ func GenSigVerifyCostSECP256K1(r *rand.Rand) uint64 {
 }
 
 func GenValidSigBlockPeriod(r *rand.Rand) uint64 {
-	// We use valid sig block period greater than 100 for testing
-	return uint64(simulation.RandIntBetween(r, 100, 1000))
+	// We use valid sig block period greater than 500 for testing (to include test-sim-multi-seed-long 500 blocks)
+	return uint64(simulation.RandIntBetween(r, 501, 10000))
 }
 
 // RandomizedGenState generates a random GenesisState for auth
