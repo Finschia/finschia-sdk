@@ -62,15 +62,13 @@ service Query {
 
   // PacketAcknowledgement queries a stored packet acknowledgement hash.
   rpc PacketAcknowledgement(QueryPacketAcknowledgementRequest) returns (QueryPacketAcknowledgementResponse) {
-    option (google.api.http).get =
-        "/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acks/{sequence}";
+    option (google.api.http).get = "/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acks/{sequence}";
   }
 
   // PacketAcknowledgements returns all the packet acknowledgements associated
   // with a channel.
   rpc PacketAcknowledgements(QueryPacketAcknowledgementsRequest) returns (QueryPacketAcknowledgementsResponse) {
-    option (google.api.http).get =
-        "/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acknowledgements";
+    option (google.api.http).get = "/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acknowledgements";
   }
 
   // UnreceivedPackets returns all the unreceived IBC packets associated with a
