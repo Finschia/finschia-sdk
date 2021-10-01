@@ -1,6 +1,4 @@
-# Changelog
-
-## [Unreleased]
+# Release Changelog
 
 ## [v0.1.0]
 
