@@ -9,7 +9,7 @@ order: 4
 By default a withdrawal address is delegator address. If a delegator wants to change it's
 withdrawal address it must send `MsgSetWithdrawAddress`.
 
-+++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/distribution/v1beta1/tx.proto#L29-L37
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/distribution/v1/tx.proto#L29-L37
 
 ```go
 
@@ -30,7 +30,7 @@ func (k Keeper) SetWithdrawAddr(ctx sdk.Context, delegatorAddr sdk.AccAddress, w
 Under special circumstances a delegator may wish to withdraw rewards from only
 a single validator. 
 
-+++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/distribution/v1beta1/tx.proto#L42-L50
++++ https://github.com/cosmos/cosmos-sdk/blob/v0.40.0/proto/cosmos/distribution/v1/tx.proto#L42-L50
 
 ```go
 // withdraw rewards from a delegation

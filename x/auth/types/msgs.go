@@ -20,7 +20,7 @@ func NewMsgEmpty(fromAddr sdk.AccAddress) *MsgEmpty {
 
 func NewServiceMsgEmpty(fromAddr sdk.AccAddress) sdk.ServiceMsg {
 	return sdk.ServiceMsg{
-		MethodName: "/lbm.auth.v1beta1.Msg/Empty",
+		MethodName: "/lbm.auth.v1.Msg/Empty",
 		Request:    NewMsgEmpty(fromAddr),
 	}
 }

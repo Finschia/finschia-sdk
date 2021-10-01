@@ -103,7 +103,7 @@ func QueryTxsRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			packStdTxResponse(w, clientCtx, txRes)
 		}
 
-		err = checkAminoMarshalError(clientCtx, searchResult, "/lbm/tx/v1beta1/txs")
+		err = checkAminoMarshalError(clientCtx, searchResult, "/lbm/tx/v1/txs")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 
@@ -146,7 +146,7 @@ func QueryTxRequestHandlerFn(clientCtx client.Context) http.HandlerFunc {
 			rest.WriteErrorResponse(w, http.StatusNotFound, fmt.Sprintf("no transaction found with hash %s", hashHexStr))
 		}
 
-		err = checkAminoMarshalError(clientCtx, output, "/lbm/tx/v1beta1/txs/{txhash}")
+		err = checkAminoMarshalError(clientCtx, output, "/lbm/tx/v1/txs/{txhash}")
 		if err != nil {
 			rest.WriteErrorResponse(w, http.StatusInternalServerError, err.Error())
 

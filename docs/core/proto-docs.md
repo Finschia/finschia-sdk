@@ -4,91 +4,91 @@
 
 ## Table of Contents
 
-- [cosmwasm/wasm/v1beta1/types.proto](#cosmwasm/wasm/v1beta1/types.proto)
-    - [AbsoluteTxPosition](#cosmwasm.wasm.v1beta1.AbsoluteTxPosition)
-    - [AccessConfig](#cosmwasm.wasm.v1beta1.AccessConfig)
-    - [AccessTypeParam](#cosmwasm.wasm.v1beta1.AccessTypeParam)
-    - [CodeInfo](#cosmwasm.wasm.v1beta1.CodeInfo)
-    - [ContractCodeHistoryEntry](#cosmwasm.wasm.v1beta1.ContractCodeHistoryEntry)
-    - [ContractInfo](#cosmwasm.wasm.v1beta1.ContractInfo)
-    - [Model](#cosmwasm.wasm.v1beta1.Model)
-    - [Params](#cosmwasm.wasm.v1beta1.Params)
+- [cosmwasm/wasm/v1/types.proto](#cosmwasm/wasm/v1/types.proto)
+    - [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition)
+    - [AccessConfig](#cosmwasm.wasm.v1.AccessConfig)
+    - [AccessTypeParam](#cosmwasm.wasm.v1.AccessTypeParam)
+    - [CodeInfo](#cosmwasm.wasm.v1.CodeInfo)
+    - [ContractCodeHistoryEntry](#cosmwasm.wasm.v1.ContractCodeHistoryEntry)
+    - [ContractInfo](#cosmwasm.wasm.v1.ContractInfo)
+    - [Model](#cosmwasm.wasm.v1.Model)
+    - [Params](#cosmwasm.wasm.v1.Params)
   
-    - [AccessType](#cosmwasm.wasm.v1beta1.AccessType)
-    - [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1beta1.ContractCodeHistoryOperationType)
-    - [ContractStatus](#cosmwasm.wasm.v1beta1.ContractStatus)
+    - [AccessType](#cosmwasm.wasm.v1.AccessType)
+    - [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1.ContractCodeHistoryOperationType)
+    - [ContractStatus](#cosmwasm.wasm.v1.ContractStatus)
   
-- [lbm/base/v1beta1/coin.proto](#lbm/base/v1beta1/coin.proto)
-    - [Coin](#lbm.base.v1beta1.Coin)
-    - [DecCoin](#lbm.base.v1beta1.DecCoin)
-    - [DecProto](#lbm.base.v1beta1.DecProto)
-    - [IntProto](#lbm.base.v1beta1.IntProto)
+- [lbm/base/v1/coin.proto](#lbm/base/v1/coin.proto)
+    - [Coin](#lbm.base.v1.Coin)
+    - [DecCoin](#lbm.base.v1.DecCoin)
+    - [DecProto](#lbm.base.v1.DecProto)
+    - [IntProto](#lbm.base.v1.IntProto)
   
-- [cosmwasm/wasm/v1beta1/tx.proto](#cosmwasm/wasm/v1beta1/tx.proto)
-    - [MsgClearAdmin](#cosmwasm.wasm.v1beta1.MsgClearAdmin)
-    - [MsgClearAdminResponse](#cosmwasm.wasm.v1beta1.MsgClearAdminResponse)
-    - [MsgExecuteContract](#cosmwasm.wasm.v1beta1.MsgExecuteContract)
-    - [MsgExecuteContractResponse](#cosmwasm.wasm.v1beta1.MsgExecuteContractResponse)
-    - [MsgInstantiateContract](#cosmwasm.wasm.v1beta1.MsgInstantiateContract)
-    - [MsgInstantiateContractResponse](#cosmwasm.wasm.v1beta1.MsgInstantiateContractResponse)
-    - [MsgMigrateContract](#cosmwasm.wasm.v1beta1.MsgMigrateContract)
-    - [MsgMigrateContractResponse](#cosmwasm.wasm.v1beta1.MsgMigrateContractResponse)
-    - [MsgStoreCode](#cosmwasm.wasm.v1beta1.MsgStoreCode)
-    - [MsgStoreCodeAndInstantiateContract](#cosmwasm.wasm.v1beta1.MsgStoreCodeAndInstantiateContract)
-    - [MsgStoreCodeAndInstantiateContractResponse](#cosmwasm.wasm.v1beta1.MsgStoreCodeAndInstantiateContractResponse)
-    - [MsgStoreCodeResponse](#cosmwasm.wasm.v1beta1.MsgStoreCodeResponse)
-    - [MsgUpdateAdmin](#cosmwasm.wasm.v1beta1.MsgUpdateAdmin)
-    - [MsgUpdateAdminResponse](#cosmwasm.wasm.v1beta1.MsgUpdateAdminResponse)
-    - [MsgUpdateContractStatus](#cosmwasm.wasm.v1beta1.MsgUpdateContractStatus)
-    - [MsgUpdateContractStatusResponse](#cosmwasm.wasm.v1beta1.MsgUpdateContractStatusResponse)
+- [cosmwasm/wasm/v1/tx.proto](#cosmwasm/wasm/v1/tx.proto)
+    - [MsgClearAdmin](#cosmwasm.wasm.v1.MsgClearAdmin)
+    - [MsgClearAdminResponse](#cosmwasm.wasm.v1.MsgClearAdminResponse)
+    - [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract)
+    - [MsgExecuteContractResponse](#cosmwasm.wasm.v1.MsgExecuteContractResponse)
+    - [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract)
+    - [MsgInstantiateContractResponse](#cosmwasm.wasm.v1.MsgInstantiateContractResponse)
+    - [MsgMigrateContract](#cosmwasm.wasm.v1.MsgMigrateContract)
+    - [MsgMigrateContractResponse](#cosmwasm.wasm.v1.MsgMigrateContractResponse)
+    - [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode)
+    - [MsgStoreCodeAndInstantiateContract](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract)
+    - [MsgStoreCodeAndInstantiateContractResponse](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse)
+    - [MsgStoreCodeResponse](#cosmwasm.wasm.v1.MsgStoreCodeResponse)
+    - [MsgUpdateAdmin](#cosmwasm.wasm.v1.MsgUpdateAdmin)
+    - [MsgUpdateAdminResponse](#cosmwasm.wasm.v1.MsgUpdateAdminResponse)
+    - [MsgUpdateContractStatus](#cosmwasm.wasm.v1.MsgUpdateContractStatus)
+    - [MsgUpdateContractStatusResponse](#cosmwasm.wasm.v1.MsgUpdateContractStatusResponse)
   
-    - [Msg](#cosmwasm.wasm.v1beta1.Msg)
+    - [Msg](#cosmwasm.wasm.v1.Msg)
   
-- [cosmwasm/wasm/v1beta1/genesis.proto](#cosmwasm/wasm/v1beta1/genesis.proto)
-    - [Code](#cosmwasm.wasm.v1beta1.Code)
-    - [Contract](#cosmwasm.wasm.v1beta1.Contract)
-    - [GenesisState](#cosmwasm.wasm.v1beta1.GenesisState)
-    - [GenesisState.GenMsgs](#cosmwasm.wasm.v1beta1.GenesisState.GenMsgs)
-    - [Sequence](#cosmwasm.wasm.v1beta1.Sequence)
+- [cosmwasm/wasm/v1/genesis.proto](#cosmwasm/wasm/v1/genesis.proto)
+    - [Code](#cosmwasm.wasm.v1.Code)
+    - [Contract](#cosmwasm.wasm.v1.Contract)
+    - [GenesisState](#cosmwasm.wasm.v1.GenesisState)
+    - [GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs)
+    - [Sequence](#cosmwasm.wasm.v1.Sequence)
   
-- [cosmwasm/wasm/v1beta1/ibc.proto](#cosmwasm/wasm/v1beta1/ibc.proto)
-    - [MsgIBCCloseChannel](#cosmwasm.wasm.v1beta1.MsgIBCCloseChannel)
-    - [MsgIBCSend](#cosmwasm.wasm.v1beta1.MsgIBCSend)
+- [cosmwasm/wasm/v1/ibc.proto](#cosmwasm/wasm/v1/ibc.proto)
+    - [MsgIBCCloseChannel](#cosmwasm.wasm.v1.MsgIBCCloseChannel)
+    - [MsgIBCSend](#cosmwasm.wasm.v1.MsgIBCSend)
   
-- [cosmwasm/wasm/v1beta1/proposal.proto](#cosmwasm/wasm/v1beta1/proposal.proto)
-    - [ClearAdminProposal](#cosmwasm.wasm.v1beta1.ClearAdminProposal)
-    - [InstantiateContractProposal](#cosmwasm.wasm.v1beta1.InstantiateContractProposal)
-    - [MigrateContractProposal](#cosmwasm.wasm.v1beta1.MigrateContractProposal)
-    - [PinCodesProposal](#cosmwasm.wasm.v1beta1.PinCodesProposal)
-    - [StoreCodeProposal](#cosmwasm.wasm.v1beta1.StoreCodeProposal)
-    - [UnpinCodesProposal](#cosmwasm.wasm.v1beta1.UnpinCodesProposal)
-    - [UpdateAdminProposal](#cosmwasm.wasm.v1beta1.UpdateAdminProposal)
-    - [UpdateContractStatusProposal](#cosmwasm.wasm.v1beta1.UpdateContractStatusProposal)
+- [cosmwasm/wasm/v1/proposal.proto](#cosmwasm/wasm/v1/proposal.proto)
+    - [ClearAdminProposal](#cosmwasm.wasm.v1.ClearAdminProposal)
+    - [InstantiateContractProposal](#cosmwasm.wasm.v1.InstantiateContractProposal)
+    - [MigrateContractProposal](#cosmwasm.wasm.v1.MigrateContractProposal)
+    - [PinCodesProposal](#cosmwasm.wasm.v1.PinCodesProposal)
+    - [StoreCodeProposal](#cosmwasm.wasm.v1.StoreCodeProposal)
+    - [UnpinCodesProposal](#cosmwasm.wasm.v1.UnpinCodesProposal)
+    - [UpdateAdminProposal](#cosmwasm.wasm.v1.UpdateAdminProposal)
+    - [UpdateContractStatusProposal](#cosmwasm.wasm.v1.UpdateContractStatusProposal)
   
-- [lbm/base/query/v1beta1/pagination.proto](#lbm/base/query/v1beta1/pagination.proto)
-    - [PageRequest](#lbm.base.query.v1beta1.PageRequest)
-    - [PageResponse](#lbm.base.query.v1beta1.PageResponse)
+- [lbm/base/query/v1/pagination.proto](#lbm/base/query/v1/pagination.proto)
+    - [PageRequest](#lbm.base.query.v1.PageRequest)
+    - [PageResponse](#lbm.base.query.v1.PageResponse)
   
-- [cosmwasm/wasm/v1beta1/query.proto](#cosmwasm/wasm/v1beta1/query.proto)
-    - [CodeInfoResponse](#cosmwasm.wasm.v1beta1.CodeInfoResponse)
-    - [QueryAllContractStateRequest](#cosmwasm.wasm.v1beta1.QueryAllContractStateRequest)
-    - [QueryAllContractStateResponse](#cosmwasm.wasm.v1beta1.QueryAllContractStateResponse)
-    - [QueryCodeRequest](#cosmwasm.wasm.v1beta1.QueryCodeRequest)
-    - [QueryCodeResponse](#cosmwasm.wasm.v1beta1.QueryCodeResponse)
-    - [QueryCodesRequest](#cosmwasm.wasm.v1beta1.QueryCodesRequest)
-    - [QueryCodesResponse](#cosmwasm.wasm.v1beta1.QueryCodesResponse)
-    - [QueryContractHistoryRequest](#cosmwasm.wasm.v1beta1.QueryContractHistoryRequest)
-    - [QueryContractHistoryResponse](#cosmwasm.wasm.v1beta1.QueryContractHistoryResponse)
-    - [QueryContractInfoRequest](#cosmwasm.wasm.v1beta1.QueryContractInfoRequest)
-    - [QueryContractInfoResponse](#cosmwasm.wasm.v1beta1.QueryContractInfoResponse)
-    - [QueryContractsByCodeRequest](#cosmwasm.wasm.v1beta1.QueryContractsByCodeRequest)
-    - [QueryContractsByCodeResponse](#cosmwasm.wasm.v1beta1.QueryContractsByCodeResponse)
-    - [QueryRawContractStateRequest](#cosmwasm.wasm.v1beta1.QueryRawContractStateRequest)
-    - [QueryRawContractStateResponse](#cosmwasm.wasm.v1beta1.QueryRawContractStateResponse)
-    - [QuerySmartContractStateRequest](#cosmwasm.wasm.v1beta1.QuerySmartContractStateRequest)
-    - [QuerySmartContractStateResponse](#cosmwasm.wasm.v1beta1.QuerySmartContractStateResponse)
+- [cosmwasm/wasm/v1/query.proto](#cosmwasm/wasm/v1/query.proto)
+    - [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse)
+    - [QueryAllContractStateRequest](#cosmwasm.wasm.v1.QueryAllContractStateRequest)
+    - [QueryAllContractStateResponse](#cosmwasm.wasm.v1.QueryAllContractStateResponse)
+    - [QueryCodeRequest](#cosmwasm.wasm.v1.QueryCodeRequest)
+    - [QueryCodeResponse](#cosmwasm.wasm.v1.QueryCodeResponse)
+    - [QueryCodesRequest](#cosmwasm.wasm.v1.QueryCodesRequest)
+    - [QueryCodesResponse](#cosmwasm.wasm.v1.QueryCodesResponse)
+    - [QueryContractHistoryRequest](#cosmwasm.wasm.v1.QueryContractHistoryRequest)
+    - [QueryContractHistoryResponse](#cosmwasm.wasm.v1.QueryContractHistoryResponse)
+    - [QueryContractInfoRequest](#cosmwasm.wasm.v1.QueryContractInfoRequest)
+    - [QueryContractInfoResponse](#cosmwasm.wasm.v1.QueryContractInfoResponse)
+    - [QueryContractsByCodeRequest](#cosmwasm.wasm.v1.QueryContractsByCodeRequest)
+    - [QueryContractsByCodeResponse](#cosmwasm.wasm.v1.QueryContractsByCodeResponse)
+    - [QueryRawContractStateRequest](#cosmwasm.wasm.v1.QueryRawContractStateRequest)
+    - [QueryRawContractStateResponse](#cosmwasm.wasm.v1.QueryRawContractStateResponse)
+    - [QuerySmartContractStateRequest](#cosmwasm.wasm.v1.QuerySmartContractStateRequest)
+    - [QuerySmartContractStateResponse](#cosmwasm.wasm.v1.QuerySmartContractStateResponse)
   
-    - [Query](#cosmwasm.wasm.v1beta1.Query)
+    - [Query](#cosmwasm.wasm.v1.Query)
   
 - [ibc/applications/transfer/v1/transfer.proto](#ibc/applications/transfer/v1/transfer.proto)
     - [DenomTrace](#ibc.applications.transfer.v1.DenomTrace)
@@ -311,479 +311,479 @@
     - [PrivKey](#lbm.crypto.secp256k1.PrivKey)
     - [PubKey](#lbm.crypto.secp256k1.PubKey)
   
-- [lbm/auth/v1beta1/auth.proto](#lbm/auth/v1beta1/auth.proto)
-    - [BaseAccount](#lbm.auth.v1beta1.BaseAccount)
-    - [ModuleAccount](#lbm.auth.v1beta1.ModuleAccount)
-    - [Params](#lbm.auth.v1beta1.Params)
-  
-- [lbm/auth/v1beta1/genesis.proto](#lbm/auth/v1beta1/genesis.proto)
-    - [GenesisState](#lbm.auth.v1beta1.GenesisState)
-  
-- [lbm/auth/v1beta1/query.proto](#lbm/auth/v1beta1/query.proto)
-    - [QueryAccountRequest](#lbm.auth.v1beta1.QueryAccountRequest)
-    - [QueryAccountResponse](#lbm.auth.v1beta1.QueryAccountResponse)
-    - [QueryParamsRequest](#lbm.auth.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.auth.v1beta1.QueryParamsResponse)
-  
-    - [Query](#lbm.auth.v1beta1.Query)
-  
-- [lbm/auth/v1beta1/tx.proto](#lbm/auth/v1beta1/tx.proto)
-    - [MsgEmpty](#lbm.auth.v1beta1.MsgEmpty)
-    - [MsgEmptyResponse](#lbm.auth.v1beta1.MsgEmptyResponse)
-  
-    - [Msg](#lbm.auth.v1beta1.Msg)
-  
-- [lbm/bank/v1beta1/bank.proto](#lbm/bank/v1beta1/bank.proto)
-    - [DenomUnit](#lbm.bank.v1beta1.DenomUnit)
-    - [Input](#lbm.bank.v1beta1.Input)
-    - [Metadata](#lbm.bank.v1beta1.Metadata)
-    - [Output](#lbm.bank.v1beta1.Output)
-    - [Params](#lbm.bank.v1beta1.Params)
-    - [SendEnabled](#lbm.bank.v1beta1.SendEnabled)
-    - [Supply](#lbm.bank.v1beta1.Supply)
-  
-- [lbm/bank/v1beta1/genesis.proto](#lbm/bank/v1beta1/genesis.proto)
-    - [Balance](#lbm.bank.v1beta1.Balance)
-    - [GenesisState](#lbm.bank.v1beta1.GenesisState)
-  
-- [lbm/bank/v1beta1/query.proto](#lbm/bank/v1beta1/query.proto)
-    - [QueryAllBalancesRequest](#lbm.bank.v1beta1.QueryAllBalancesRequest)
-    - [QueryAllBalancesResponse](#lbm.bank.v1beta1.QueryAllBalancesResponse)
-    - [QueryBalanceRequest](#lbm.bank.v1beta1.QueryBalanceRequest)
-    - [QueryBalanceResponse](#lbm.bank.v1beta1.QueryBalanceResponse)
-    - [QueryDenomMetadataRequest](#lbm.bank.v1beta1.QueryDenomMetadataRequest)
-    - [QueryDenomMetadataResponse](#lbm.bank.v1beta1.QueryDenomMetadataResponse)
-    - [QueryDenomsMetadataRequest](#lbm.bank.v1beta1.QueryDenomsMetadataRequest)
-    - [QueryDenomsMetadataResponse](#lbm.bank.v1beta1.QueryDenomsMetadataResponse)
-    - [QueryParamsRequest](#lbm.bank.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.bank.v1beta1.QueryParamsResponse)
-    - [QuerySupplyOfRequest](#lbm.bank.v1beta1.QuerySupplyOfRequest)
-    - [QuerySupplyOfResponse](#lbm.bank.v1beta1.QuerySupplyOfResponse)
-    - [QueryTotalSupplyRequest](#lbm.bank.v1beta1.QueryTotalSupplyRequest)
-    - [QueryTotalSupplyResponse](#lbm.bank.v1beta1.QueryTotalSupplyResponse)
-  
-    - [Query](#lbm.bank.v1beta1.Query)
-  
-- [lbm/bank/v1beta1/tx.proto](#lbm/bank/v1beta1/tx.proto)
-    - [MsgMultiSend](#lbm.bank.v1beta1.MsgMultiSend)
-    - [MsgMultiSendResponse](#lbm.bank.v1beta1.MsgMultiSendResponse)
-    - [MsgSend](#lbm.bank.v1beta1.MsgSend)
-    - [MsgSendResponse](#lbm.bank.v1beta1.MsgSendResponse)
-  
-    - [Msg](#lbm.bank.v1beta1.Msg)
-  
-- [lbm/base/abci/v1beta1/abci.proto](#lbm/base/abci/v1beta1/abci.proto)
-    - [ABCIMessageLog](#lbm.base.abci.v1beta1.ABCIMessageLog)
-    - [Attribute](#lbm.base.abci.v1beta1.Attribute)
-    - [GasInfo](#lbm.base.abci.v1beta1.GasInfo)
-    - [MsgData](#lbm.base.abci.v1beta1.MsgData)
-    - [Result](#lbm.base.abci.v1beta1.Result)
-    - [SearchTxsResult](#lbm.base.abci.v1beta1.SearchTxsResult)
-    - [SimulationResponse](#lbm.base.abci.v1beta1.SimulationResponse)
-    - [StringEvent](#lbm.base.abci.v1beta1.StringEvent)
-    - [TxMsgData](#lbm.base.abci.v1beta1.TxMsgData)
-    - [TxResponse](#lbm.base.abci.v1beta1.TxResponse)
-  
-- [lbm/base/kv/v1beta1/kv.proto](#lbm/base/kv/v1beta1/kv.proto)
-    - [Pair](#lbm.base.kv.v1beta1.Pair)
-    - [Pairs](#lbm.base.kv.v1beta1.Pairs)
-  
-- [lbm/base/ostracon/v1beta1/query.proto](#lbm/base/ostracon/v1beta1/query.proto)
-    - [GetBlockByHashRequest](#lbm.base.ostracon.v1beta1.GetBlockByHashRequest)
-    - [GetBlockByHashResponse](#lbm.base.ostracon.v1beta1.GetBlockByHashResponse)
-    - [GetBlockByHeightRequest](#lbm.base.ostracon.v1beta1.GetBlockByHeightRequest)
-    - [GetBlockByHeightResponse](#lbm.base.ostracon.v1beta1.GetBlockByHeightResponse)
-    - [GetBlockResultsByHeightRequest](#lbm.base.ostracon.v1beta1.GetBlockResultsByHeightRequest)
-    - [GetBlockResultsByHeightResponse](#lbm.base.ostracon.v1beta1.GetBlockResultsByHeightResponse)
-    - [GetLatestBlockRequest](#lbm.base.ostracon.v1beta1.GetLatestBlockRequest)
-    - [GetLatestBlockResponse](#lbm.base.ostracon.v1beta1.GetLatestBlockResponse)
-    - [GetLatestValidatorSetRequest](#lbm.base.ostracon.v1beta1.GetLatestValidatorSetRequest)
-    - [GetLatestValidatorSetResponse](#lbm.base.ostracon.v1beta1.GetLatestValidatorSetResponse)
-    - [GetNodeInfoRequest](#lbm.base.ostracon.v1beta1.GetNodeInfoRequest)
-    - [GetNodeInfoResponse](#lbm.base.ostracon.v1beta1.GetNodeInfoResponse)
-    - [GetSyncingRequest](#lbm.base.ostracon.v1beta1.GetSyncingRequest)
-    - [GetSyncingResponse](#lbm.base.ostracon.v1beta1.GetSyncingResponse)
-    - [GetValidatorSetByHeightRequest](#lbm.base.ostracon.v1beta1.GetValidatorSetByHeightRequest)
-    - [GetValidatorSetByHeightResponse](#lbm.base.ostracon.v1beta1.GetValidatorSetByHeightResponse)
-    - [Module](#lbm.base.ostracon.v1beta1.Module)
-    - [Validator](#lbm.base.ostracon.v1beta1.Validator)
-    - [VersionInfo](#lbm.base.ostracon.v1beta1.VersionInfo)
-  
-    - [Service](#lbm.base.ostracon.v1beta1.Service)
-  
-- [lbm/base/reflection/v1beta1/reflection.proto](#lbm/base/reflection/v1beta1/reflection.proto)
-    - [ListAllInterfacesRequest](#lbm.base.reflection.v1beta1.ListAllInterfacesRequest)
-    - [ListAllInterfacesResponse](#lbm.base.reflection.v1beta1.ListAllInterfacesResponse)
-    - [ListImplementationsRequest](#lbm.base.reflection.v1beta1.ListImplementationsRequest)
-    - [ListImplementationsResponse](#lbm.base.reflection.v1beta1.ListImplementationsResponse)
-  
-    - [ReflectionService](#lbm.base.reflection.v1beta1.ReflectionService)
-  
-- [lbm/base/snapshots/v1beta1/snapshot.proto](#lbm/base/snapshots/v1beta1/snapshot.proto)
-    - [Metadata](#lbm.base.snapshots.v1beta1.Metadata)
-    - [Snapshot](#lbm.base.snapshots.v1beta1.Snapshot)
-  
-- [lbm/base/store/v1beta1/commit_info.proto](#lbm/base/store/v1beta1/commit_info.proto)
-    - [CommitID](#lbm.base.store.v1beta1.CommitID)
-    - [CommitInfo](#lbm.base.store.v1beta1.CommitInfo)
-    - [StoreInfo](#lbm.base.store.v1beta1.StoreInfo)
-  
-- [lbm/base/store/v1beta1/snapshot.proto](#lbm/base/store/v1beta1/snapshot.proto)
-    - [SnapshotIAVLItem](#lbm.base.store.v1beta1.SnapshotIAVLItem)
-    - [SnapshotItem](#lbm.base.store.v1beta1.SnapshotItem)
-    - [SnapshotStoreItem](#lbm.base.store.v1beta1.SnapshotStoreItem)
-  
-- [lbm/capability/v1beta1/capability.proto](#lbm/capability/v1beta1/capability.proto)
-    - [Capability](#lbm.capability.v1beta1.Capability)
-    - [CapabilityOwners](#lbm.capability.v1beta1.CapabilityOwners)
-    - [Owner](#lbm.capability.v1beta1.Owner)
-  
-- [lbm/capability/v1beta1/genesis.proto](#lbm/capability/v1beta1/genesis.proto)
-    - [GenesisOwners](#lbm.capability.v1beta1.GenesisOwners)
-    - [GenesisState](#lbm.capability.v1beta1.GenesisState)
-  
-- [lbm/crisis/v1beta1/genesis.proto](#lbm/crisis/v1beta1/genesis.proto)
-    - [GenesisState](#lbm.crisis.v1beta1.GenesisState)
-  
-- [lbm/crisis/v1beta1/tx.proto](#lbm/crisis/v1beta1/tx.proto)
-    - [MsgVerifyInvariant](#lbm.crisis.v1beta1.MsgVerifyInvariant)
-    - [MsgVerifyInvariantResponse](#lbm.crisis.v1beta1.MsgVerifyInvariantResponse)
-  
-    - [Msg](#lbm.crisis.v1beta1.Msg)
-  
-- [lbm/crypto/multisig/v1beta1/multisig.proto](#lbm/crypto/multisig/v1beta1/multisig.proto)
-    - [CompactBitArray](#lbm.crypto.multisig.v1beta1.CompactBitArray)
-    - [MultiSignature](#lbm.crypto.multisig.v1beta1.MultiSignature)
-  
-- [lbm/distribution/v1beta1/distribution.proto](#lbm/distribution/v1beta1/distribution.proto)
-    - [CommunityPoolSpendProposal](#lbm.distribution.v1beta1.CommunityPoolSpendProposal)
-    - [CommunityPoolSpendProposalWithDeposit](#lbm.distribution.v1beta1.CommunityPoolSpendProposalWithDeposit)
-    - [DelegationDelegatorReward](#lbm.distribution.v1beta1.DelegationDelegatorReward)
-    - [DelegatorStartingInfo](#lbm.distribution.v1beta1.DelegatorStartingInfo)
-    - [FeePool](#lbm.distribution.v1beta1.FeePool)
-    - [Params](#lbm.distribution.v1beta1.Params)
-    - [ValidatorAccumulatedCommission](#lbm.distribution.v1beta1.ValidatorAccumulatedCommission)
-    - [ValidatorCurrentRewards](#lbm.distribution.v1beta1.ValidatorCurrentRewards)
-    - [ValidatorHistoricalRewards](#lbm.distribution.v1beta1.ValidatorHistoricalRewards)
-    - [ValidatorOutstandingRewards](#lbm.distribution.v1beta1.ValidatorOutstandingRewards)
-    - [ValidatorSlashEvent](#lbm.distribution.v1beta1.ValidatorSlashEvent)
-    - [ValidatorSlashEvents](#lbm.distribution.v1beta1.ValidatorSlashEvents)
-  
-- [lbm/distribution/v1beta1/genesis.proto](#lbm/distribution/v1beta1/genesis.proto)
-    - [DelegatorStartingInfoRecord](#lbm.distribution.v1beta1.DelegatorStartingInfoRecord)
-    - [DelegatorWithdrawInfo](#lbm.distribution.v1beta1.DelegatorWithdrawInfo)
-    - [GenesisState](#lbm.distribution.v1beta1.GenesisState)
-    - [ValidatorAccumulatedCommissionRecord](#lbm.distribution.v1beta1.ValidatorAccumulatedCommissionRecord)
-    - [ValidatorCurrentRewardsRecord](#lbm.distribution.v1beta1.ValidatorCurrentRewardsRecord)
-    - [ValidatorHistoricalRewardsRecord](#lbm.distribution.v1beta1.ValidatorHistoricalRewardsRecord)
-    - [ValidatorOutstandingRewardsRecord](#lbm.distribution.v1beta1.ValidatorOutstandingRewardsRecord)
-    - [ValidatorSlashEventRecord](#lbm.distribution.v1beta1.ValidatorSlashEventRecord)
-  
-- [lbm/distribution/v1beta1/query.proto](#lbm/distribution/v1beta1/query.proto)
-    - [QueryCommunityPoolRequest](#lbm.distribution.v1beta1.QueryCommunityPoolRequest)
-    - [QueryCommunityPoolResponse](#lbm.distribution.v1beta1.QueryCommunityPoolResponse)
-    - [QueryDelegationRewardsRequest](#lbm.distribution.v1beta1.QueryDelegationRewardsRequest)
-    - [QueryDelegationRewardsResponse](#lbm.distribution.v1beta1.QueryDelegationRewardsResponse)
-    - [QueryDelegationTotalRewardsRequest](#lbm.distribution.v1beta1.QueryDelegationTotalRewardsRequest)
-    - [QueryDelegationTotalRewardsResponse](#lbm.distribution.v1beta1.QueryDelegationTotalRewardsResponse)
-    - [QueryDelegatorValidatorsRequest](#lbm.distribution.v1beta1.QueryDelegatorValidatorsRequest)
-    - [QueryDelegatorValidatorsResponse](#lbm.distribution.v1beta1.QueryDelegatorValidatorsResponse)
-    - [QueryDelegatorWithdrawAddressRequest](#lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressRequest)
-    - [QueryDelegatorWithdrawAddressResponse](#lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse)
-    - [QueryParamsRequest](#lbm.distribution.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.distribution.v1beta1.QueryParamsResponse)
-    - [QueryValidatorCommissionRequest](#lbm.distribution.v1beta1.QueryValidatorCommissionRequest)
-    - [QueryValidatorCommissionResponse](#lbm.distribution.v1beta1.QueryValidatorCommissionResponse)
-    - [QueryValidatorOutstandingRewardsRequest](#lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsRequest)
-    - [QueryValidatorOutstandingRewardsResponse](#lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse)
-    - [QueryValidatorSlashesRequest](#lbm.distribution.v1beta1.QueryValidatorSlashesRequest)
-    - [QueryValidatorSlashesResponse](#lbm.distribution.v1beta1.QueryValidatorSlashesResponse)
-  
-    - [Query](#lbm.distribution.v1beta1.Query)
-  
-- [lbm/distribution/v1beta1/tx.proto](#lbm/distribution/v1beta1/tx.proto)
-    - [MsgFundCommunityPool](#lbm.distribution.v1beta1.MsgFundCommunityPool)
-    - [MsgFundCommunityPoolResponse](#lbm.distribution.v1beta1.MsgFundCommunityPoolResponse)
-    - [MsgSetWithdrawAddress](#lbm.distribution.v1beta1.MsgSetWithdrawAddress)
-    - [MsgSetWithdrawAddressResponse](#lbm.distribution.v1beta1.MsgSetWithdrawAddressResponse)
-    - [MsgWithdrawDelegatorReward](#lbm.distribution.v1beta1.MsgWithdrawDelegatorReward)
-    - [MsgWithdrawDelegatorRewardResponse](#lbm.distribution.v1beta1.MsgWithdrawDelegatorRewardResponse)
-    - [MsgWithdrawValidatorCommission](#lbm.distribution.v1beta1.MsgWithdrawValidatorCommission)
-    - [MsgWithdrawValidatorCommissionResponse](#lbm.distribution.v1beta1.MsgWithdrawValidatorCommissionResponse)
-  
-    - [Msg](#lbm.distribution.v1beta1.Msg)
-  
-- [lbm/evidence/v1beta1/evidence.proto](#lbm/evidence/v1beta1/evidence.proto)
-    - [Equivocation](#lbm.evidence.v1beta1.Equivocation)
-  
-- [lbm/evidence/v1beta1/genesis.proto](#lbm/evidence/v1beta1/genesis.proto)
-    - [GenesisState](#lbm.evidence.v1beta1.GenesisState)
-  
-- [lbm/evidence/v1beta1/query.proto](#lbm/evidence/v1beta1/query.proto)
-    - [QueryAllEvidenceRequest](#lbm.evidence.v1beta1.QueryAllEvidenceRequest)
-    - [QueryAllEvidenceResponse](#lbm.evidence.v1beta1.QueryAllEvidenceResponse)
-    - [QueryEvidenceRequest](#lbm.evidence.v1beta1.QueryEvidenceRequest)
-    - [QueryEvidenceResponse](#lbm.evidence.v1beta1.QueryEvidenceResponse)
-  
-    - [Query](#lbm.evidence.v1beta1.Query)
-  
-- [lbm/evidence/v1beta1/tx.proto](#lbm/evidence/v1beta1/tx.proto)
-    - [MsgSubmitEvidence](#lbm.evidence.v1beta1.MsgSubmitEvidence)
-    - [MsgSubmitEvidenceResponse](#lbm.evidence.v1beta1.MsgSubmitEvidenceResponse)
-  
-    - [Msg](#lbm.evidence.v1beta1.Msg)
-  
-- [lbm/genutil/v1beta1/genesis.proto](#lbm/genutil/v1beta1/genesis.proto)
-    - [GenesisState](#lbm.genutil.v1beta1.GenesisState)
-  
-- [lbm/gov/v1beta1/gov.proto](#lbm/gov/v1beta1/gov.proto)
-    - [Deposit](#lbm.gov.v1beta1.Deposit)
-    - [DepositParams](#lbm.gov.v1beta1.DepositParams)
-    - [Proposal](#lbm.gov.v1beta1.Proposal)
-    - [TallyParams](#lbm.gov.v1beta1.TallyParams)
-    - [TallyResult](#lbm.gov.v1beta1.TallyResult)
-    - [TextProposal](#lbm.gov.v1beta1.TextProposal)
-    - [Vote](#lbm.gov.v1beta1.Vote)
-    - [VotingParams](#lbm.gov.v1beta1.VotingParams)
-  
-    - [ProposalStatus](#lbm.gov.v1beta1.ProposalStatus)
-    - [VoteOption](#lbm.gov.v1beta1.VoteOption)
-  
-- [lbm/gov/v1beta1/genesis.proto](#lbm/gov/v1beta1/genesis.proto)
-    - [GenesisState](#lbm.gov.v1beta1.GenesisState)
-  
-- [lbm/gov/v1beta1/query.proto](#lbm/gov/v1beta1/query.proto)
-    - [QueryDepositRequest](#lbm.gov.v1beta1.QueryDepositRequest)
-    - [QueryDepositResponse](#lbm.gov.v1beta1.QueryDepositResponse)
-    - [QueryDepositsRequest](#lbm.gov.v1beta1.QueryDepositsRequest)
-    - [QueryDepositsResponse](#lbm.gov.v1beta1.QueryDepositsResponse)
-    - [QueryParamsRequest](#lbm.gov.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.gov.v1beta1.QueryParamsResponse)
-    - [QueryProposalRequest](#lbm.gov.v1beta1.QueryProposalRequest)
-    - [QueryProposalResponse](#lbm.gov.v1beta1.QueryProposalResponse)
-    - [QueryProposalsRequest](#lbm.gov.v1beta1.QueryProposalsRequest)
-    - [QueryProposalsResponse](#lbm.gov.v1beta1.QueryProposalsResponse)
-    - [QueryTallyResultRequest](#lbm.gov.v1beta1.QueryTallyResultRequest)
-    - [QueryTallyResultResponse](#lbm.gov.v1beta1.QueryTallyResultResponse)
-    - [QueryVoteRequest](#lbm.gov.v1beta1.QueryVoteRequest)
-    - [QueryVoteResponse](#lbm.gov.v1beta1.QueryVoteResponse)
-    - [QueryVotesRequest](#lbm.gov.v1beta1.QueryVotesRequest)
-    - [QueryVotesResponse](#lbm.gov.v1beta1.QueryVotesResponse)
-  
-    - [Query](#lbm.gov.v1beta1.Query)
-  
-- [lbm/gov/v1beta1/tx.proto](#lbm/gov/v1beta1/tx.proto)
-    - [MsgDeposit](#lbm.gov.v1beta1.MsgDeposit)
-    - [MsgDepositResponse](#lbm.gov.v1beta1.MsgDepositResponse)
-    - [MsgSubmitProposal](#lbm.gov.v1beta1.MsgSubmitProposal)
-    - [MsgSubmitProposalResponse](#lbm.gov.v1beta1.MsgSubmitProposalResponse)
-    - [MsgVote](#lbm.gov.v1beta1.MsgVote)
-    - [MsgVoteResponse](#lbm.gov.v1beta1.MsgVoteResponse)
-  
-    - [Msg](#lbm.gov.v1beta1.Msg)
-  
-- [lbm/mint/v1beta1/mint.proto](#lbm/mint/v1beta1/mint.proto)
-    - [Minter](#lbm.mint.v1beta1.Minter)
-    - [Params](#lbm.mint.v1beta1.Params)
-  
-- [lbm/mint/v1beta1/genesis.proto](#lbm/mint/v1beta1/genesis.proto)
-    - [GenesisState](#lbm.mint.v1beta1.GenesisState)
-  
-- [lbm/mint/v1beta1/query.proto](#lbm/mint/v1beta1/query.proto)
-    - [QueryAnnualProvisionsRequest](#lbm.mint.v1beta1.QueryAnnualProvisionsRequest)
-    - [QueryAnnualProvisionsResponse](#lbm.mint.v1beta1.QueryAnnualProvisionsResponse)
-    - [QueryInflationRequest](#lbm.mint.v1beta1.QueryInflationRequest)
-    - [QueryInflationResponse](#lbm.mint.v1beta1.QueryInflationResponse)
-    - [QueryParamsRequest](#lbm.mint.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.mint.v1beta1.QueryParamsResponse)
-  
-    - [Query](#lbm.mint.v1beta1.Query)
-  
-- [lbm/params/v1beta1/params.proto](#lbm/params/v1beta1/params.proto)
-    - [ParamChange](#lbm.params.v1beta1.ParamChange)
-    - [ParameterChangeProposal](#lbm.params.v1beta1.ParameterChangeProposal)
-  
-- [lbm/params/v1beta1/query.proto](#lbm/params/v1beta1/query.proto)
-    - [QueryParamsRequest](#lbm.params.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.params.v1beta1.QueryParamsResponse)
-  
-    - [Query](#lbm.params.v1beta1.Query)
-  
-- [lbm/slashing/v1beta1/slashing.proto](#lbm/slashing/v1beta1/slashing.proto)
-    - [Params](#lbm.slashing.v1beta1.Params)
-    - [ValidatorSigningInfo](#lbm.slashing.v1beta1.ValidatorSigningInfo)
-  
-- [lbm/slashing/v1beta1/genesis.proto](#lbm/slashing/v1beta1/genesis.proto)
-    - [GenesisState](#lbm.slashing.v1beta1.GenesisState)
-    - [MissedBlock](#lbm.slashing.v1beta1.MissedBlock)
-    - [SigningInfo](#lbm.slashing.v1beta1.SigningInfo)
-    - [ValidatorMissedBlocks](#lbm.slashing.v1beta1.ValidatorMissedBlocks)
-  
-- [lbm/slashing/v1beta1/query.proto](#lbm/slashing/v1beta1/query.proto)
-    - [QueryParamsRequest](#lbm.slashing.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.slashing.v1beta1.QueryParamsResponse)
-    - [QuerySigningInfoRequest](#lbm.slashing.v1beta1.QuerySigningInfoRequest)
-    - [QuerySigningInfoResponse](#lbm.slashing.v1beta1.QuerySigningInfoResponse)
-    - [QuerySigningInfosRequest](#lbm.slashing.v1beta1.QuerySigningInfosRequest)
-    - [QuerySigningInfosResponse](#lbm.slashing.v1beta1.QuerySigningInfosResponse)
-  
-    - [Query](#lbm.slashing.v1beta1.Query)
-  
-- [lbm/slashing/v1beta1/tx.proto](#lbm/slashing/v1beta1/tx.proto)
-    - [MsgUnjail](#lbm.slashing.v1beta1.MsgUnjail)
-    - [MsgUnjailResponse](#lbm.slashing.v1beta1.MsgUnjailResponse)
-  
-    - [Msg](#lbm.slashing.v1beta1.Msg)
-  
-- [lbm/staking/v1beta1/staking.proto](#lbm/staking/v1beta1/staking.proto)
-    - [Commission](#lbm.staking.v1beta1.Commission)
-    - [CommissionRates](#lbm.staking.v1beta1.CommissionRates)
-    - [DVPair](#lbm.staking.v1beta1.DVPair)
-    - [DVPairs](#lbm.staking.v1beta1.DVPairs)
-    - [DVVTriplet](#lbm.staking.v1beta1.DVVTriplet)
-    - [DVVTriplets](#lbm.staking.v1beta1.DVVTriplets)
-    - [Delegation](#lbm.staking.v1beta1.Delegation)
-    - [DelegationResponse](#lbm.staking.v1beta1.DelegationResponse)
-    - [Description](#lbm.staking.v1beta1.Description)
-    - [HistoricalInfo](#lbm.staking.v1beta1.HistoricalInfo)
-    - [Params](#lbm.staking.v1beta1.Params)
-    - [Pool](#lbm.staking.v1beta1.Pool)
-    - [Redelegation](#lbm.staking.v1beta1.Redelegation)
-    - [RedelegationEntry](#lbm.staking.v1beta1.RedelegationEntry)
-    - [RedelegationEntryResponse](#lbm.staking.v1beta1.RedelegationEntryResponse)
-    - [RedelegationResponse](#lbm.staking.v1beta1.RedelegationResponse)
-    - [UnbondingDelegation](#lbm.staking.v1beta1.UnbondingDelegation)
-    - [UnbondingDelegationEntry](#lbm.staking.v1beta1.UnbondingDelegationEntry)
-    - [ValAddresses](#lbm.staking.v1beta1.ValAddresses)
-    - [Validator](#lbm.staking.v1beta1.Validator)
-  
-    - [BondStatus](#lbm.staking.v1beta1.BondStatus)
-  
-- [lbm/staking/v1beta1/genesis.proto](#lbm/staking/v1beta1/genesis.proto)
-    - [GenesisState](#lbm.staking.v1beta1.GenesisState)
-    - [LastValidatorPower](#lbm.staking.v1beta1.LastValidatorPower)
-  
-- [lbm/staking/v1beta1/query.proto](#lbm/staking/v1beta1/query.proto)
-    - [QueryDelegationRequest](#lbm.staking.v1beta1.QueryDelegationRequest)
-    - [QueryDelegationResponse](#lbm.staking.v1beta1.QueryDelegationResponse)
-    - [QueryDelegatorDelegationsRequest](#lbm.staking.v1beta1.QueryDelegatorDelegationsRequest)
-    - [QueryDelegatorDelegationsResponse](#lbm.staking.v1beta1.QueryDelegatorDelegationsResponse)
-    - [QueryDelegatorUnbondingDelegationsRequest](#lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsRequest)
-    - [QueryDelegatorUnbondingDelegationsResponse](#lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse)
-    - [QueryDelegatorValidatorRequest](#lbm.staking.v1beta1.QueryDelegatorValidatorRequest)
-    - [QueryDelegatorValidatorResponse](#lbm.staking.v1beta1.QueryDelegatorValidatorResponse)
-    - [QueryDelegatorValidatorsRequest](#lbm.staking.v1beta1.QueryDelegatorValidatorsRequest)
-    - [QueryDelegatorValidatorsResponse](#lbm.staking.v1beta1.QueryDelegatorValidatorsResponse)
-    - [QueryHistoricalInfoRequest](#lbm.staking.v1beta1.QueryHistoricalInfoRequest)
-    - [QueryHistoricalInfoResponse](#lbm.staking.v1beta1.QueryHistoricalInfoResponse)
-    - [QueryParamsRequest](#lbm.staking.v1beta1.QueryParamsRequest)
-    - [QueryParamsResponse](#lbm.staking.v1beta1.QueryParamsResponse)
-    - [QueryPoolRequest](#lbm.staking.v1beta1.QueryPoolRequest)
-    - [QueryPoolResponse](#lbm.staking.v1beta1.QueryPoolResponse)
-    - [QueryRedelegationsRequest](#lbm.staking.v1beta1.QueryRedelegationsRequest)
-    - [QueryRedelegationsResponse](#lbm.staking.v1beta1.QueryRedelegationsResponse)
-    - [QueryUnbondingDelegationRequest](#lbm.staking.v1beta1.QueryUnbondingDelegationRequest)
-    - [QueryUnbondingDelegationResponse](#lbm.staking.v1beta1.QueryUnbondingDelegationResponse)
-    - [QueryValidatorDelegationsRequest](#lbm.staking.v1beta1.QueryValidatorDelegationsRequest)
-    - [QueryValidatorDelegationsResponse](#lbm.staking.v1beta1.QueryValidatorDelegationsResponse)
-    - [QueryValidatorRequest](#lbm.staking.v1beta1.QueryValidatorRequest)
-    - [QueryValidatorResponse](#lbm.staking.v1beta1.QueryValidatorResponse)
-    - [QueryValidatorUnbondingDelegationsRequest](#lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsRequest)
-    - [QueryValidatorUnbondingDelegationsResponse](#lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse)
-    - [QueryValidatorsRequest](#lbm.staking.v1beta1.QueryValidatorsRequest)
-    - [QueryValidatorsResponse](#lbm.staking.v1beta1.QueryValidatorsResponse)
-  
-    - [Query](#lbm.staking.v1beta1.Query)
-  
-- [lbm/staking/v1beta1/tx.proto](#lbm/staking/v1beta1/tx.proto)
-    - [MsgBeginRedelegate](#lbm.staking.v1beta1.MsgBeginRedelegate)
-    - [MsgBeginRedelegateResponse](#lbm.staking.v1beta1.MsgBeginRedelegateResponse)
-    - [MsgCreateValidator](#lbm.staking.v1beta1.MsgCreateValidator)
-    - [MsgCreateValidatorResponse](#lbm.staking.v1beta1.MsgCreateValidatorResponse)
-    - [MsgDelegate](#lbm.staking.v1beta1.MsgDelegate)
-    - [MsgDelegateResponse](#lbm.staking.v1beta1.MsgDelegateResponse)
-    - [MsgEditValidator](#lbm.staking.v1beta1.MsgEditValidator)
-    - [MsgEditValidatorResponse](#lbm.staking.v1beta1.MsgEditValidatorResponse)
-    - [MsgUndelegate](#lbm.staking.v1beta1.MsgUndelegate)
-    - [MsgUndelegateResponse](#lbm.staking.v1beta1.MsgUndelegateResponse)
-  
-    - [Msg](#lbm.staking.v1beta1.Msg)
-  
-- [lbm/tx/signing/v1beta1/signing.proto](#lbm/tx/signing/v1beta1/signing.proto)
-    - [SignatureDescriptor](#lbm.tx.signing.v1beta1.SignatureDescriptor)
-    - [SignatureDescriptor.Data](#lbm.tx.signing.v1beta1.SignatureDescriptor.Data)
-    - [SignatureDescriptor.Data.Multi](#lbm.tx.signing.v1beta1.SignatureDescriptor.Data.Multi)
-    - [SignatureDescriptor.Data.Single](#lbm.tx.signing.v1beta1.SignatureDescriptor.Data.Single)
-    - [SignatureDescriptors](#lbm.tx.signing.v1beta1.SignatureDescriptors)
-  
-    - [SignMode](#lbm.tx.signing.v1beta1.SignMode)
-  
-- [lbm/tx/v1beta1/tx.proto](#lbm/tx/v1beta1/tx.proto)
-    - [AuthInfo](#lbm.tx.v1beta1.AuthInfo)
-    - [Fee](#lbm.tx.v1beta1.Fee)
-    - [ModeInfo](#lbm.tx.v1beta1.ModeInfo)
-    - [ModeInfo.Multi](#lbm.tx.v1beta1.ModeInfo.Multi)
-    - [ModeInfo.Single](#lbm.tx.v1beta1.ModeInfo.Single)
-    - [SignDoc](#lbm.tx.v1beta1.SignDoc)
-    - [SignerInfo](#lbm.tx.v1beta1.SignerInfo)
-    - [Tx](#lbm.tx.v1beta1.Tx)
-    - [TxBody](#lbm.tx.v1beta1.TxBody)
-    - [TxRaw](#lbm.tx.v1beta1.TxRaw)
-  
-- [lbm/tx/v1beta1/service.proto](#lbm/tx/v1beta1/service.proto)
-    - [BroadcastTxRequest](#lbm.tx.v1beta1.BroadcastTxRequest)
-    - [BroadcastTxResponse](#lbm.tx.v1beta1.BroadcastTxResponse)
-    - [GetTxRequest](#lbm.tx.v1beta1.GetTxRequest)
-    - [GetTxResponse](#lbm.tx.v1beta1.GetTxResponse)
-    - [GetTxsEventRequest](#lbm.tx.v1beta1.GetTxsEventRequest)
-    - [GetTxsEventResponse](#lbm.tx.v1beta1.GetTxsEventResponse)
-    - [SimulateRequest](#lbm.tx.v1beta1.SimulateRequest)
-    - [SimulateResponse](#lbm.tx.v1beta1.SimulateResponse)
-  
-    - [BroadcastMode](#lbm.tx.v1beta1.BroadcastMode)
-  
-    - [Service](#lbm.tx.v1beta1.Service)
-  
-- [lbm/upgrade/v1beta1/upgrade.proto](#lbm/upgrade/v1beta1/upgrade.proto)
-    - [CancelSoftwareUpgradeProposal](#lbm.upgrade.v1beta1.CancelSoftwareUpgradeProposal)
-    - [Plan](#lbm.upgrade.v1beta1.Plan)
-    - [SoftwareUpgradeProposal](#lbm.upgrade.v1beta1.SoftwareUpgradeProposal)
-  
-- [lbm/upgrade/v1beta1/query.proto](#lbm/upgrade/v1beta1/query.proto)
-    - [QueryAppliedPlanRequest](#lbm.upgrade.v1beta1.QueryAppliedPlanRequest)
-    - [QueryAppliedPlanResponse](#lbm.upgrade.v1beta1.QueryAppliedPlanResponse)
-    - [QueryCurrentPlanRequest](#lbm.upgrade.v1beta1.QueryCurrentPlanRequest)
-    - [QueryCurrentPlanResponse](#lbm.upgrade.v1beta1.QueryCurrentPlanResponse)
-    - [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1beta1.QueryUpgradedConsensusStateRequest)
-    - [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1beta1.QueryUpgradedConsensusStateResponse)
-  
-    - [Query](#lbm.upgrade.v1beta1.Query)
-  
-- [lbm/vesting/v1beta1/tx.proto](#lbm/vesting/v1beta1/tx.proto)
-    - [MsgCreateVestingAccount](#lbm.vesting.v1beta1.MsgCreateVestingAccount)
-    - [MsgCreateVestingAccountResponse](#lbm.vesting.v1beta1.MsgCreateVestingAccountResponse)
-  
-    - [Msg](#lbm.vesting.v1beta1.Msg)
-  
-- [lbm/vesting/v1beta1/vesting.proto](#lbm/vesting/v1beta1/vesting.proto)
-    - [BaseVestingAccount](#lbm.vesting.v1beta1.BaseVestingAccount)
-    - [ContinuousVestingAccount](#lbm.vesting.v1beta1.ContinuousVestingAccount)
-    - [DelayedVestingAccount](#lbm.vesting.v1beta1.DelayedVestingAccount)
-    - [Period](#lbm.vesting.v1beta1.Period)
-    - [PeriodicVestingAccount](#lbm.vesting.v1beta1.PeriodicVestingAccount)
+- [lbm/auth/v1/auth.proto](#lbm/auth/v1/auth.proto)
+    - [BaseAccount](#lbm.auth.v1.BaseAccount)
+    - [ModuleAccount](#lbm.auth.v1.ModuleAccount)
+    - [Params](#lbm.auth.v1.Params)
+  
+- [lbm/auth/v1/genesis.proto](#lbm/auth/v1/genesis.proto)
+    - [GenesisState](#lbm.auth.v1.GenesisState)
+  
+- [lbm/auth/v1/query.proto](#lbm/auth/v1/query.proto)
+    - [QueryAccountRequest](#lbm.auth.v1.QueryAccountRequest)
+    - [QueryAccountResponse](#lbm.auth.v1.QueryAccountResponse)
+    - [QueryParamsRequest](#lbm.auth.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.auth.v1.QueryParamsResponse)
+  
+    - [Query](#lbm.auth.v1.Query)
+  
+- [lbm/auth/v1/tx.proto](#lbm/auth/v1/tx.proto)
+    - [MsgEmpty](#lbm.auth.v1.MsgEmpty)
+    - [MsgEmptyResponse](#lbm.auth.v1.MsgEmptyResponse)
+  
+    - [Msg](#lbm.auth.v1.Msg)
+  
+- [lbm/bank/v1/bank.proto](#lbm/bank/v1/bank.proto)
+    - [DenomUnit](#lbm.bank.v1.DenomUnit)
+    - [Input](#lbm.bank.v1.Input)
+    - [Metadata](#lbm.bank.v1.Metadata)
+    - [Output](#lbm.bank.v1.Output)
+    - [Params](#lbm.bank.v1.Params)
+    - [SendEnabled](#lbm.bank.v1.SendEnabled)
+    - [Supply](#lbm.bank.v1.Supply)
+  
+- [lbm/bank/v1/genesis.proto](#lbm/bank/v1/genesis.proto)
+    - [Balance](#lbm.bank.v1.Balance)
+    - [GenesisState](#lbm.bank.v1.GenesisState)
+  
+- [lbm/bank/v1/query.proto](#lbm/bank/v1/query.proto)
+    - [QueryAllBalancesRequest](#lbm.bank.v1.QueryAllBalancesRequest)
+    - [QueryAllBalancesResponse](#lbm.bank.v1.QueryAllBalancesResponse)
+    - [QueryBalanceRequest](#lbm.bank.v1.QueryBalanceRequest)
+    - [QueryBalanceResponse](#lbm.bank.v1.QueryBalanceResponse)
+    - [QueryDenomMetadataRequest](#lbm.bank.v1.QueryDenomMetadataRequest)
+    - [QueryDenomMetadataResponse](#lbm.bank.v1.QueryDenomMetadataResponse)
+    - [QueryDenomsMetadataRequest](#lbm.bank.v1.QueryDenomsMetadataRequest)
+    - [QueryDenomsMetadataResponse](#lbm.bank.v1.QueryDenomsMetadataResponse)
+    - [QueryParamsRequest](#lbm.bank.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.bank.v1.QueryParamsResponse)
+    - [QuerySupplyOfRequest](#lbm.bank.v1.QuerySupplyOfRequest)
+    - [QuerySupplyOfResponse](#lbm.bank.v1.QuerySupplyOfResponse)
+    - [QueryTotalSupplyRequest](#lbm.bank.v1.QueryTotalSupplyRequest)
+    - [QueryTotalSupplyResponse](#lbm.bank.v1.QueryTotalSupplyResponse)
+  
+    - [Query](#lbm.bank.v1.Query)
+  
+- [lbm/bank/v1/tx.proto](#lbm/bank/v1/tx.proto)
+    - [MsgMultiSend](#lbm.bank.v1.MsgMultiSend)
+    - [MsgMultiSendResponse](#lbm.bank.v1.MsgMultiSendResponse)
+    - [MsgSend](#lbm.bank.v1.MsgSend)
+    - [MsgSendResponse](#lbm.bank.v1.MsgSendResponse)
+  
+    - [Msg](#lbm.bank.v1.Msg)
+  
+- [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
+    - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
+    - [Attribute](#lbm.base.abci.v1.Attribute)
+    - [GasInfo](#lbm.base.abci.v1.GasInfo)
+    - [MsgData](#lbm.base.abci.v1.MsgData)
+    - [Result](#lbm.base.abci.v1.Result)
+    - [SearchTxsResult](#lbm.base.abci.v1.SearchTxsResult)
+    - [SimulationResponse](#lbm.base.abci.v1.SimulationResponse)
+    - [StringEvent](#lbm.base.abci.v1.StringEvent)
+    - [TxMsgData](#lbm.base.abci.v1.TxMsgData)
+    - [TxResponse](#lbm.base.abci.v1.TxResponse)
+  
+- [lbm/base/kv/v1/kv.proto](#lbm/base/kv/v1/kv.proto)
+    - [Pair](#lbm.base.kv.v1.Pair)
+    - [Pairs](#lbm.base.kv.v1.Pairs)
+  
+- [lbm/base/ostracon/v1/query.proto](#lbm/base/ostracon/v1/query.proto)
+    - [GetBlockByHashRequest](#lbm.base.ostracon.v1.GetBlockByHashRequest)
+    - [GetBlockByHashResponse](#lbm.base.ostracon.v1.GetBlockByHashResponse)
+    - [GetBlockByHeightRequest](#lbm.base.ostracon.v1.GetBlockByHeightRequest)
+    - [GetBlockByHeightResponse](#lbm.base.ostracon.v1.GetBlockByHeightResponse)
+    - [GetBlockResultsByHeightRequest](#lbm.base.ostracon.v1.GetBlockResultsByHeightRequest)
+    - [GetBlockResultsByHeightResponse](#lbm.base.ostracon.v1.GetBlockResultsByHeightResponse)
+    - [GetLatestBlockRequest](#lbm.base.ostracon.v1.GetLatestBlockRequest)
+    - [GetLatestBlockResponse](#lbm.base.ostracon.v1.GetLatestBlockResponse)
+    - [GetLatestValidatorSetRequest](#lbm.base.ostracon.v1.GetLatestValidatorSetRequest)
+    - [GetLatestValidatorSetResponse](#lbm.base.ostracon.v1.GetLatestValidatorSetResponse)
+    - [GetNodeInfoRequest](#lbm.base.ostracon.v1.GetNodeInfoRequest)
+    - [GetNodeInfoResponse](#lbm.base.ostracon.v1.GetNodeInfoResponse)
+    - [GetSyncingRequest](#lbm.base.ostracon.v1.GetSyncingRequest)
+    - [GetSyncingResponse](#lbm.base.ostracon.v1.GetSyncingResponse)
+    - [GetValidatorSetByHeightRequest](#lbm.base.ostracon.v1.GetValidatorSetByHeightRequest)
+    - [GetValidatorSetByHeightResponse](#lbm.base.ostracon.v1.GetValidatorSetByHeightResponse)
+    - [Module](#lbm.base.ostracon.v1.Module)
+    - [Validator](#lbm.base.ostracon.v1.Validator)
+    - [VersionInfo](#lbm.base.ostracon.v1.VersionInfo)
+  
+    - [Service](#lbm.base.ostracon.v1.Service)
+  
+- [lbm/base/reflection/v1/reflection.proto](#lbm/base/reflection/v1/reflection.proto)
+    - [ListAllInterfacesRequest](#lbm.base.reflection.v1.ListAllInterfacesRequest)
+    - [ListAllInterfacesResponse](#lbm.base.reflection.v1.ListAllInterfacesResponse)
+    - [ListImplementationsRequest](#lbm.base.reflection.v1.ListImplementationsRequest)
+    - [ListImplementationsResponse](#lbm.base.reflection.v1.ListImplementationsResponse)
+  
+    - [ReflectionService](#lbm.base.reflection.v1.ReflectionService)
+  
+- [lbm/base/snapshots/v1/snapshot.proto](#lbm/base/snapshots/v1/snapshot.proto)
+    - [Metadata](#lbm.base.snapshots.v1.Metadata)
+    - [Snapshot](#lbm.base.snapshots.v1.Snapshot)
+  
+- [lbm/base/store/v1/commit_info.proto](#lbm/base/store/v1/commit_info.proto)
+    - [CommitID](#lbm.base.store.v1.CommitID)
+    - [CommitInfo](#lbm.base.store.v1.CommitInfo)
+    - [StoreInfo](#lbm.base.store.v1.StoreInfo)
+  
+- [lbm/base/store/v1/snapshot.proto](#lbm/base/store/v1/snapshot.proto)
+    - [SnapshotIAVLItem](#lbm.base.store.v1.SnapshotIAVLItem)
+    - [SnapshotItem](#lbm.base.store.v1.SnapshotItem)
+    - [SnapshotStoreItem](#lbm.base.store.v1.SnapshotStoreItem)
+  
+- [lbm/capability/v1/capability.proto](#lbm/capability/v1/capability.proto)
+    - [Capability](#lbm.capability.v1.Capability)
+    - [CapabilityOwners](#lbm.capability.v1.CapabilityOwners)
+    - [Owner](#lbm.capability.v1.Owner)
+  
+- [lbm/capability/v1/genesis.proto](#lbm/capability/v1/genesis.proto)
+    - [GenesisOwners](#lbm.capability.v1.GenesisOwners)
+    - [GenesisState](#lbm.capability.v1.GenesisState)
+  
+- [lbm/crisis/v1/genesis.proto](#lbm/crisis/v1/genesis.proto)
+    - [GenesisState](#lbm.crisis.v1.GenesisState)
+  
+- [lbm/crisis/v1/tx.proto](#lbm/crisis/v1/tx.proto)
+    - [MsgVerifyInvariant](#lbm.crisis.v1.MsgVerifyInvariant)
+    - [MsgVerifyInvariantResponse](#lbm.crisis.v1.MsgVerifyInvariantResponse)
+  
+    - [Msg](#lbm.crisis.v1.Msg)
+  
+- [lbm/crypto/multisig/v1/multisig.proto](#lbm/crypto/multisig/v1/multisig.proto)
+    - [CompactBitArray](#lbm.crypto.multisig.v1.CompactBitArray)
+    - [MultiSignature](#lbm.crypto.multisig.v1.MultiSignature)
+  
+- [lbm/distribution/v1/distribution.proto](#lbm/distribution/v1/distribution.proto)
+    - [CommunityPoolSpendProposal](#lbm.distribution.v1.CommunityPoolSpendProposal)
+    - [CommunityPoolSpendProposalWithDeposit](#lbm.distribution.v1.CommunityPoolSpendProposalWithDeposit)
+    - [DelegationDelegatorReward](#lbm.distribution.v1.DelegationDelegatorReward)
+    - [DelegatorStartingInfo](#lbm.distribution.v1.DelegatorStartingInfo)
+    - [FeePool](#lbm.distribution.v1.FeePool)
+    - [Params](#lbm.distribution.v1.Params)
+    - [ValidatorAccumulatedCommission](#lbm.distribution.v1.ValidatorAccumulatedCommission)
+    - [ValidatorCurrentRewards](#lbm.distribution.v1.ValidatorCurrentRewards)
+    - [ValidatorHistoricalRewards](#lbm.distribution.v1.ValidatorHistoricalRewards)
+    - [ValidatorOutstandingRewards](#lbm.distribution.v1.ValidatorOutstandingRewards)
+    - [ValidatorSlashEvent](#lbm.distribution.v1.ValidatorSlashEvent)
+    - [ValidatorSlashEvents](#lbm.distribution.v1.ValidatorSlashEvents)
+  
+- [lbm/distribution/v1/genesis.proto](#lbm/distribution/v1/genesis.proto)
+    - [DelegatorStartingInfoRecord](#lbm.distribution.v1.DelegatorStartingInfoRecord)
+    - [DelegatorWithdrawInfo](#lbm.distribution.v1.DelegatorWithdrawInfo)
+    - [GenesisState](#lbm.distribution.v1.GenesisState)
+    - [ValidatorAccumulatedCommissionRecord](#lbm.distribution.v1.ValidatorAccumulatedCommissionRecord)
+    - [ValidatorCurrentRewardsRecord](#lbm.distribution.v1.ValidatorCurrentRewardsRecord)
+    - [ValidatorHistoricalRewardsRecord](#lbm.distribution.v1.ValidatorHistoricalRewardsRecord)
+    - [ValidatorOutstandingRewardsRecord](#lbm.distribution.v1.ValidatorOutstandingRewardsRecord)
+    - [ValidatorSlashEventRecord](#lbm.distribution.v1.ValidatorSlashEventRecord)
+  
+- [lbm/distribution/v1/query.proto](#lbm/distribution/v1/query.proto)
+    - [QueryCommunityPoolRequest](#lbm.distribution.v1.QueryCommunityPoolRequest)
+    - [QueryCommunityPoolResponse](#lbm.distribution.v1.QueryCommunityPoolResponse)
+    - [QueryDelegationRewardsRequest](#lbm.distribution.v1.QueryDelegationRewardsRequest)
+    - [QueryDelegationRewardsResponse](#lbm.distribution.v1.QueryDelegationRewardsResponse)
+    - [QueryDelegationTotalRewardsRequest](#lbm.distribution.v1.QueryDelegationTotalRewardsRequest)
+    - [QueryDelegationTotalRewardsResponse](#lbm.distribution.v1.QueryDelegationTotalRewardsResponse)
+    - [QueryDelegatorValidatorsRequest](#lbm.distribution.v1.QueryDelegatorValidatorsRequest)
+    - [QueryDelegatorValidatorsResponse](#lbm.distribution.v1.QueryDelegatorValidatorsResponse)
+    - [QueryDelegatorWithdrawAddressRequest](#lbm.distribution.v1.QueryDelegatorWithdrawAddressRequest)
+    - [QueryDelegatorWithdrawAddressResponse](#lbm.distribution.v1.QueryDelegatorWithdrawAddressResponse)
+    - [QueryParamsRequest](#lbm.distribution.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.distribution.v1.QueryParamsResponse)
+    - [QueryValidatorCommissionRequest](#lbm.distribution.v1.QueryValidatorCommissionRequest)
+    - [QueryValidatorCommissionResponse](#lbm.distribution.v1.QueryValidatorCommissionResponse)
+    - [QueryValidatorOutstandingRewardsRequest](#lbm.distribution.v1.QueryValidatorOutstandingRewardsRequest)
+    - [QueryValidatorOutstandingRewardsResponse](#lbm.distribution.v1.QueryValidatorOutstandingRewardsResponse)
+    - [QueryValidatorSlashesRequest](#lbm.distribution.v1.QueryValidatorSlashesRequest)
+    - [QueryValidatorSlashesResponse](#lbm.distribution.v1.QueryValidatorSlashesResponse)
+  
+    - [Query](#lbm.distribution.v1.Query)
+  
+- [lbm/distribution/v1/tx.proto](#lbm/distribution/v1/tx.proto)
+    - [MsgFundCommunityPool](#lbm.distribution.v1.MsgFundCommunityPool)
+    - [MsgFundCommunityPoolResponse](#lbm.distribution.v1.MsgFundCommunityPoolResponse)
+    - [MsgSetWithdrawAddress](#lbm.distribution.v1.MsgSetWithdrawAddress)
+    - [MsgSetWithdrawAddressResponse](#lbm.distribution.v1.MsgSetWithdrawAddressResponse)
+    - [MsgWithdrawDelegatorReward](#lbm.distribution.v1.MsgWithdrawDelegatorReward)
+    - [MsgWithdrawDelegatorRewardResponse](#lbm.distribution.v1.MsgWithdrawDelegatorRewardResponse)
+    - [MsgWithdrawValidatorCommission](#lbm.distribution.v1.MsgWithdrawValidatorCommission)
+    - [MsgWithdrawValidatorCommissionResponse](#lbm.distribution.v1.MsgWithdrawValidatorCommissionResponse)
+  
+    - [Msg](#lbm.distribution.v1.Msg)
+  
+- [lbm/evidence/v1/evidence.proto](#lbm/evidence/v1/evidence.proto)
+    - [Equivocation](#lbm.evidence.v1.Equivocation)
+  
+- [lbm/evidence/v1/genesis.proto](#lbm/evidence/v1/genesis.proto)
+    - [GenesisState](#lbm.evidence.v1.GenesisState)
+  
+- [lbm/evidence/v1/query.proto](#lbm/evidence/v1/query.proto)
+    - [QueryAllEvidenceRequest](#lbm.evidence.v1.QueryAllEvidenceRequest)
+    - [QueryAllEvidenceResponse](#lbm.evidence.v1.QueryAllEvidenceResponse)
+    - [QueryEvidenceRequest](#lbm.evidence.v1.QueryEvidenceRequest)
+    - [QueryEvidenceResponse](#lbm.evidence.v1.QueryEvidenceResponse)
+  
+    - [Query](#lbm.evidence.v1.Query)
+  
+- [lbm/evidence/v1/tx.proto](#lbm/evidence/v1/tx.proto)
+    - [MsgSubmitEvidence](#lbm.evidence.v1.MsgSubmitEvidence)
+    - [MsgSubmitEvidenceResponse](#lbm.evidence.v1.MsgSubmitEvidenceResponse)
+  
+    - [Msg](#lbm.evidence.v1.Msg)
+  
+- [lbm/genutil/v1/genesis.proto](#lbm/genutil/v1/genesis.proto)
+    - [GenesisState](#lbm.genutil.v1.GenesisState)
+  
+- [lbm/gov/v1/gov.proto](#lbm/gov/v1/gov.proto)
+    - [Deposit](#lbm.gov.v1.Deposit)
+    - [DepositParams](#lbm.gov.v1.DepositParams)
+    - [Proposal](#lbm.gov.v1.Proposal)
+    - [TallyParams](#lbm.gov.v1.TallyParams)
+    - [TallyResult](#lbm.gov.v1.TallyResult)
+    - [TextProposal](#lbm.gov.v1.TextProposal)
+    - [Vote](#lbm.gov.v1.Vote)
+    - [VotingParams](#lbm.gov.v1.VotingParams)
+  
+    - [ProposalStatus](#lbm.gov.v1.ProposalStatus)
+    - [VoteOption](#lbm.gov.v1.VoteOption)
+  
+- [lbm/gov/v1/genesis.proto](#lbm/gov/v1/genesis.proto)
+    - [GenesisState](#lbm.gov.v1.GenesisState)
+  
+- [lbm/gov/v1/query.proto](#lbm/gov/v1/query.proto)
+    - [QueryDepositRequest](#lbm.gov.v1.QueryDepositRequest)
+    - [QueryDepositResponse](#lbm.gov.v1.QueryDepositResponse)
+    - [QueryDepositsRequest](#lbm.gov.v1.QueryDepositsRequest)
+    - [QueryDepositsResponse](#lbm.gov.v1.QueryDepositsResponse)
+    - [QueryParamsRequest](#lbm.gov.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.gov.v1.QueryParamsResponse)
+    - [QueryProposalRequest](#lbm.gov.v1.QueryProposalRequest)
+    - [QueryProposalResponse](#lbm.gov.v1.QueryProposalResponse)
+    - [QueryProposalsRequest](#lbm.gov.v1.QueryProposalsRequest)
+    - [QueryProposalsResponse](#lbm.gov.v1.QueryProposalsResponse)
+    - [QueryTallyResultRequest](#lbm.gov.v1.QueryTallyResultRequest)
+    - [QueryTallyResultResponse](#lbm.gov.v1.QueryTallyResultResponse)
+    - [QueryVoteRequest](#lbm.gov.v1.QueryVoteRequest)
+    - [QueryVoteResponse](#lbm.gov.v1.QueryVoteResponse)
+    - [QueryVotesRequest](#lbm.gov.v1.QueryVotesRequest)
+    - [QueryVotesResponse](#lbm.gov.v1.QueryVotesResponse)
+  
+    - [Query](#lbm.gov.v1.Query)
+  
+- [lbm/gov/v1/tx.proto](#lbm/gov/v1/tx.proto)
+    - [MsgDeposit](#lbm.gov.v1.MsgDeposit)
+    - [MsgDepositResponse](#lbm.gov.v1.MsgDepositResponse)
+    - [MsgSubmitProposal](#lbm.gov.v1.MsgSubmitProposal)
+    - [MsgSubmitProposalResponse](#lbm.gov.v1.MsgSubmitProposalResponse)
+    - [MsgVote](#lbm.gov.v1.MsgVote)
+    - [MsgVoteResponse](#lbm.gov.v1.MsgVoteResponse)
+  
+    - [Msg](#lbm.gov.v1.Msg)
+  
+- [lbm/mint/v1/mint.proto](#lbm/mint/v1/mint.proto)
+    - [Minter](#lbm.mint.v1.Minter)
+    - [Params](#lbm.mint.v1.Params)
+  
+- [lbm/mint/v1/genesis.proto](#lbm/mint/v1/genesis.proto)
+    - [GenesisState](#lbm.mint.v1.GenesisState)
+  
+- [lbm/mint/v1/query.proto](#lbm/mint/v1/query.proto)
+    - [QueryAnnualProvisionsRequest](#lbm.mint.v1.QueryAnnualProvisionsRequest)
+    - [QueryAnnualProvisionsResponse](#lbm.mint.v1.QueryAnnualProvisionsResponse)
+    - [QueryInflationRequest](#lbm.mint.v1.QueryInflationRequest)
+    - [QueryInflationResponse](#lbm.mint.v1.QueryInflationResponse)
+    - [QueryParamsRequest](#lbm.mint.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.mint.v1.QueryParamsResponse)
+  
+    - [Query](#lbm.mint.v1.Query)
+  
+- [lbm/params/v1/params.proto](#lbm/params/v1/params.proto)
+    - [ParamChange](#lbm.params.v1.ParamChange)
+    - [ParameterChangeProposal](#lbm.params.v1.ParameterChangeProposal)
+  
+- [lbm/params/v1/query.proto](#lbm/params/v1/query.proto)
+    - [QueryParamsRequest](#lbm.params.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.params.v1.QueryParamsResponse)
+  
+    - [Query](#lbm.params.v1.Query)
+  
+- [lbm/slashing/v1/slashing.proto](#lbm/slashing/v1/slashing.proto)
+    - [Params](#lbm.slashing.v1.Params)
+    - [ValidatorSigningInfo](#lbm.slashing.v1.ValidatorSigningInfo)
+  
+- [lbm/slashing/v1/genesis.proto](#lbm/slashing/v1/genesis.proto)
+    - [GenesisState](#lbm.slashing.v1.GenesisState)
+    - [MissedBlock](#lbm.slashing.v1.MissedBlock)
+    - [SigningInfo](#lbm.slashing.v1.SigningInfo)
+    - [ValidatorMissedBlocks](#lbm.slashing.v1.ValidatorMissedBlocks)
+  
+- [lbm/slashing/v1/query.proto](#lbm/slashing/v1/query.proto)
+    - [QueryParamsRequest](#lbm.slashing.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.slashing.v1.QueryParamsResponse)
+    - [QuerySigningInfoRequest](#lbm.slashing.v1.QuerySigningInfoRequest)
+    - [QuerySigningInfoResponse](#lbm.slashing.v1.QuerySigningInfoResponse)
+    - [QuerySigningInfosRequest](#lbm.slashing.v1.QuerySigningInfosRequest)
+    - [QuerySigningInfosResponse](#lbm.slashing.v1.QuerySigningInfosResponse)
+  
+    - [Query](#lbm.slashing.v1.Query)
+  
+- [lbm/slashing/v1/tx.proto](#lbm/slashing/v1/tx.proto)
+    - [MsgUnjail](#lbm.slashing.v1.MsgUnjail)
+    - [MsgUnjailResponse](#lbm.slashing.v1.MsgUnjailResponse)
+  
+    - [Msg](#lbm.slashing.v1.Msg)
+  
+- [lbm/staking/v1/staking.proto](#lbm/staking/v1/staking.proto)
+    - [Commission](#lbm.staking.v1.Commission)
+    - [CommissionRates](#lbm.staking.v1.CommissionRates)
+    - [DVPair](#lbm.staking.v1.DVPair)
+    - [DVPairs](#lbm.staking.v1.DVPairs)
+    - [DVVTriplet](#lbm.staking.v1.DVVTriplet)
+    - [DVVTriplets](#lbm.staking.v1.DVVTriplets)
+    - [Delegation](#lbm.staking.v1.Delegation)
+    - [DelegationResponse](#lbm.staking.v1.DelegationResponse)
+    - [Description](#lbm.staking.v1.Description)
+    - [HistoricalInfo](#lbm.staking.v1.HistoricalInfo)
+    - [Params](#lbm.staking.v1.Params)
+    - [Pool](#lbm.staking.v1.Pool)
+    - [Redelegation](#lbm.staking.v1.Redelegation)
+    - [RedelegationEntry](#lbm.staking.v1.RedelegationEntry)
+    - [RedelegationEntryResponse](#lbm.staking.v1.RedelegationEntryResponse)
+    - [RedelegationResponse](#lbm.staking.v1.RedelegationResponse)
+    - [UnbondingDelegation](#lbm.staking.v1.UnbondingDelegation)
+    - [UnbondingDelegationEntry](#lbm.staking.v1.UnbondingDelegationEntry)
+    - [ValAddresses](#lbm.staking.v1.ValAddresses)
+    - [Validator](#lbm.staking.v1.Validator)
+  
+    - [BondStatus](#lbm.staking.v1.BondStatus)
+  
+- [lbm/staking/v1/genesis.proto](#lbm/staking/v1/genesis.proto)
+    - [GenesisState](#lbm.staking.v1.GenesisState)
+    - [LastValidatorPower](#lbm.staking.v1.LastValidatorPower)
+  
+- [lbm/staking/v1/query.proto](#lbm/staking/v1/query.proto)
+    - [QueryDelegationRequest](#lbm.staking.v1.QueryDelegationRequest)
+    - [QueryDelegationResponse](#lbm.staking.v1.QueryDelegationResponse)
+    - [QueryDelegatorDelegationsRequest](#lbm.staking.v1.QueryDelegatorDelegationsRequest)
+    - [QueryDelegatorDelegationsResponse](#lbm.staking.v1.QueryDelegatorDelegationsResponse)
+    - [QueryDelegatorUnbondingDelegationsRequest](#lbm.staking.v1.QueryDelegatorUnbondingDelegationsRequest)
+    - [QueryDelegatorUnbondingDelegationsResponse](#lbm.staking.v1.QueryDelegatorUnbondingDelegationsResponse)
+    - [QueryDelegatorValidatorRequest](#lbm.staking.v1.QueryDelegatorValidatorRequest)
+    - [QueryDelegatorValidatorResponse](#lbm.staking.v1.QueryDelegatorValidatorResponse)
+    - [QueryDelegatorValidatorsRequest](#lbm.staking.v1.QueryDelegatorValidatorsRequest)
+    - [QueryDelegatorValidatorsResponse](#lbm.staking.v1.QueryDelegatorValidatorsResponse)
+    - [QueryHistoricalInfoRequest](#lbm.staking.v1.QueryHistoricalInfoRequest)
+    - [QueryHistoricalInfoResponse](#lbm.staking.v1.QueryHistoricalInfoResponse)
+    - [QueryParamsRequest](#lbm.staking.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.staking.v1.QueryParamsResponse)
+    - [QueryPoolRequest](#lbm.staking.v1.QueryPoolRequest)
+    - [QueryPoolResponse](#lbm.staking.v1.QueryPoolResponse)
+    - [QueryRedelegationsRequest](#lbm.staking.v1.QueryRedelegationsRequest)
+    - [QueryRedelegationsResponse](#lbm.staking.v1.QueryRedelegationsResponse)
+    - [QueryUnbondingDelegationRequest](#lbm.staking.v1.QueryUnbondingDelegationRequest)
+    - [QueryUnbondingDelegationResponse](#lbm.staking.v1.QueryUnbondingDelegationResponse)
+    - [QueryValidatorDelegationsRequest](#lbm.staking.v1.QueryValidatorDelegationsRequest)
+    - [QueryValidatorDelegationsResponse](#lbm.staking.v1.QueryValidatorDelegationsResponse)
+    - [QueryValidatorRequest](#lbm.staking.v1.QueryValidatorRequest)
+    - [QueryValidatorResponse](#lbm.staking.v1.QueryValidatorResponse)
+    - [QueryValidatorUnbondingDelegationsRequest](#lbm.staking.v1.QueryValidatorUnbondingDelegationsRequest)
+    - [QueryValidatorUnbondingDelegationsResponse](#lbm.staking.v1.QueryValidatorUnbondingDelegationsResponse)
+    - [QueryValidatorsRequest](#lbm.staking.v1.QueryValidatorsRequest)
+    - [QueryValidatorsResponse](#lbm.staking.v1.QueryValidatorsResponse)
+  
+    - [Query](#lbm.staking.v1.Query)
+  
+- [lbm/staking/v1/tx.proto](#lbm/staking/v1/tx.proto)
+    - [MsgBeginRedelegate](#lbm.staking.v1.MsgBeginRedelegate)
+    - [MsgBeginRedelegateResponse](#lbm.staking.v1.MsgBeginRedelegateResponse)
+    - [MsgCreateValidator](#lbm.staking.v1.MsgCreateValidator)
+    - [MsgCreateValidatorResponse](#lbm.staking.v1.MsgCreateValidatorResponse)
+    - [MsgDelegate](#lbm.staking.v1.MsgDelegate)
+    - [MsgDelegateResponse](#lbm.staking.v1.MsgDelegateResponse)
+    - [MsgEditValidator](#lbm.staking.v1.MsgEditValidator)
+    - [MsgEditValidatorResponse](#lbm.staking.v1.MsgEditValidatorResponse)
+    - [MsgUndelegate](#lbm.staking.v1.MsgUndelegate)
+    - [MsgUndelegateResponse](#lbm.staking.v1.MsgUndelegateResponse)
+  
+    - [Msg](#lbm.staking.v1.Msg)
+  
+- [lbm/tx/signing/v1/signing.proto](#lbm/tx/signing/v1/signing.proto)
+    - [SignatureDescriptor](#lbm.tx.signing.v1.SignatureDescriptor)
+    - [SignatureDescriptor.Data](#lbm.tx.signing.v1.SignatureDescriptor.Data)
+    - [SignatureDescriptor.Data.Multi](#lbm.tx.signing.v1.SignatureDescriptor.Data.Multi)
+    - [SignatureDescriptor.Data.Single](#lbm.tx.signing.v1.SignatureDescriptor.Data.Single)
+    - [SignatureDescriptors](#lbm.tx.signing.v1.SignatureDescriptors)
+  
+    - [SignMode](#lbm.tx.signing.v1.SignMode)
+  
+- [lbm/tx/v1/tx.proto](#lbm/tx/v1/tx.proto)
+    - [AuthInfo](#lbm.tx.v1.AuthInfo)
+    - [Fee](#lbm.tx.v1.Fee)
+    - [ModeInfo](#lbm.tx.v1.ModeInfo)
+    - [ModeInfo.Multi](#lbm.tx.v1.ModeInfo.Multi)
+    - [ModeInfo.Single](#lbm.tx.v1.ModeInfo.Single)
+    - [SignDoc](#lbm.tx.v1.SignDoc)
+    - [SignerInfo](#lbm.tx.v1.SignerInfo)
+    - [Tx](#lbm.tx.v1.Tx)
+    - [TxBody](#lbm.tx.v1.TxBody)
+    - [TxRaw](#lbm.tx.v1.TxRaw)
+  
+- [lbm/tx/v1/service.proto](#lbm/tx/v1/service.proto)
+    - [BroadcastTxRequest](#lbm.tx.v1.BroadcastTxRequest)
+    - [BroadcastTxResponse](#lbm.tx.v1.BroadcastTxResponse)
+    - [GetTxRequest](#lbm.tx.v1.GetTxRequest)
+    - [GetTxResponse](#lbm.tx.v1.GetTxResponse)
+    - [GetTxsEventRequest](#lbm.tx.v1.GetTxsEventRequest)
+    - [GetTxsEventResponse](#lbm.tx.v1.GetTxsEventResponse)
+    - [SimulateRequest](#lbm.tx.v1.SimulateRequest)
+    - [SimulateResponse](#lbm.tx.v1.SimulateResponse)
+  
+    - [BroadcastMode](#lbm.tx.v1.BroadcastMode)
+  
+    - [Service](#lbm.tx.v1.Service)
+  
+- [lbm/upgrade/v1/upgrade.proto](#lbm/upgrade/v1/upgrade.proto)
+    - [CancelSoftwareUpgradeProposal](#lbm.upgrade.v1.CancelSoftwareUpgradeProposal)
+    - [Plan](#lbm.upgrade.v1.Plan)
+    - [SoftwareUpgradeProposal](#lbm.upgrade.v1.SoftwareUpgradeProposal)
+  
+- [lbm/upgrade/v1/query.proto](#lbm/upgrade/v1/query.proto)
+    - [QueryAppliedPlanRequest](#lbm.upgrade.v1.QueryAppliedPlanRequest)
+    - [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse)
+    - [QueryCurrentPlanRequest](#lbm.upgrade.v1.QueryCurrentPlanRequest)
+    - [QueryCurrentPlanResponse](#lbm.upgrade.v1.QueryCurrentPlanResponse)
+    - [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1.QueryUpgradedConsensusStateRequest)
+    - [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1.QueryUpgradedConsensusStateResponse)
+  
+    - [Query](#lbm.upgrade.v1.Query)
+  
+- [lbm/vesting/v1/tx.proto](#lbm/vesting/v1/tx.proto)
+    - [MsgCreateVestingAccount](#lbm.vesting.v1.MsgCreateVestingAccount)
+    - [MsgCreateVestingAccountResponse](#lbm.vesting.v1.MsgCreateVestingAccountResponse)
+  
+    - [Msg](#lbm.vesting.v1.Msg)
+  
+- [lbm/vesting/v1/vesting.proto](#lbm/vesting/v1/vesting.proto)
+    - [BaseVestingAccount](#lbm.vesting.v1.BaseVestingAccount)
+    - [ContinuousVestingAccount](#lbm.vesting.v1.ContinuousVestingAccount)
+    - [DelayedVestingAccount](#lbm.vesting.v1.DelayedVestingAccount)
+    - [Period](#lbm.vesting.v1.Period)
+    - [PeriodicVestingAccount](#lbm.vesting.v1.PeriodicVestingAccount)
   
 - [Scalar Value Types](#scalar-value-types)
 
 
 
-<a name="cosmwasm/wasm/v1beta1/types.proto"></a>
+<a name="cosmwasm/wasm/v1/types.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## cosmwasm/wasm/v1beta1/types.proto
+## cosmwasm/wasm/v1/types.proto
 
 
 
-<a name="cosmwasm.wasm.v1beta1.AbsoluteTxPosition"></a>
+<a name="cosmwasm.wasm.v1.AbsoluteTxPosition"></a>
 
 ### AbsoluteTxPosition
 AbsoluteTxPosition is a unique transaction position that allows for global
@@ -800,7 +800,7 @@ ordering of transactions.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.AccessConfig"></a>
+<a name="cosmwasm.wasm.v1.AccessConfig"></a>
 
 ### AccessConfig
 AccessConfig access control type.
@@ -808,7 +808,7 @@ AccessConfig access control type.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `permission` | [AccessType](#cosmwasm.wasm.v1beta1.AccessType) |  |  |
+| `permission` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
 | `address` | [string](#string) |  |  |
 
 
@@ -816,7 +816,7 @@ AccessConfig access control type.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.AccessTypeParam"></a>
+<a name="cosmwasm.wasm.v1.AccessTypeParam"></a>
 
 ### AccessTypeParam
 AccessTypeParam
@@ -824,14 +824,14 @@ AccessTypeParam
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `value` | [AccessType](#cosmwasm.wasm.v1beta1.AccessType) |  |  |
+| `value` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.CodeInfo"></a>
+<a name="cosmwasm.wasm.v1.CodeInfo"></a>
 
 ### CodeInfo
 CodeInfo is data for the uploaded contract WASM code
@@ -843,14 +843,14 @@ CodeInfo is data for the uploaded contract WASM code
 | `creator` | [string](#string) |  | Creator address who initially stored the code |
 | `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
 | `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
-| `instantiate_config` | [AccessConfig](#cosmwasm.wasm.v1beta1.AccessConfig) |  | InstantiateConfig access control to apply on contract creation, optional |
+| `instantiate_config` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiateConfig access control to apply on contract creation, optional |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.ContractCodeHistoryEntry"></a>
+<a name="cosmwasm.wasm.v1.ContractCodeHistoryEntry"></a>
 
 ### ContractCodeHistoryEntry
 ContractCodeHistoryEntry metadata to a contract.
@@ -858,9 +858,9 @@ ContractCodeHistoryEntry metadata to a contract.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operation` | [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1beta1.ContractCodeHistoryOperationType) |  |  |
+| `operation` | [ContractCodeHistoryOperationType](#cosmwasm.wasm.v1.ContractCodeHistoryOperationType) |  |  |
 | `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
-| `updated` | [AbsoluteTxPosition](#cosmwasm.wasm.v1beta1.AbsoluteTxPosition) |  | Updated Tx position when the operation was executed. |
+| `updated` | [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition) |  | Updated Tx position when the operation was executed. |
 | `msg` | [bytes](#bytes) |  |  |
 
 
@@ -868,7 +868,7 @@ ContractCodeHistoryEntry metadata to a contract.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.ContractInfo"></a>
+<a name="cosmwasm.wasm.v1.ContractInfo"></a>
 
 ### ContractInfo
 ContractInfo stores a WASM contract instance
@@ -880,9 +880,9 @@ ContractInfo stores a WASM contract instance
 | `creator` | [string](#string) |  | Creator address who initially instantiated the contract |
 | `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
-| `created` | [AbsoluteTxPosition](#cosmwasm.wasm.v1beta1.AbsoluteTxPosition) |  | Created Tx position when the contract was instantiated. This data should kept internal and not be exposed via query results. Just use for sorting |
+| `created` | [AbsoluteTxPosition](#cosmwasm.wasm.v1.AbsoluteTxPosition) |  | Created Tx position when the contract was instantiated. This data should kept internal and not be exposed via query results. Just use for sorting |
 | `ibc_port_id` | [string](#string) |  |  |
-| `status` | [ContractStatus](#cosmwasm.wasm.v1beta1.ContractStatus) |  | Status is a status of a contract |
+| `status` | [ContractStatus](#cosmwasm.wasm.v1.ContractStatus) |  | Status is a status of a contract |
 | `extension` | [google.protobuf.Any](#google.protobuf.Any) |  | Extension is an extension point to store custom metadata within the persistence model. |
 
 
@@ -890,7 +890,7 @@ ContractInfo stores a WASM contract instance
 
 
 
-<a name="cosmwasm.wasm.v1beta1.Model"></a>
+<a name="cosmwasm.wasm.v1.Model"></a>
 
 ### Model
 Model is a struct that holds a KV pair
@@ -906,7 +906,7 @@ Model is a struct that holds a KV pair
 
 
 
-<a name="cosmwasm.wasm.v1beta1.Params"></a>
+<a name="cosmwasm.wasm.v1.Params"></a>
 
 ### Params
 Params defines the set of wasm parameters.
@@ -914,9 +914,9 @@ Params defines the set of wasm parameters.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `code_upload_access` | [AccessConfig](#cosmwasm.wasm.v1beta1.AccessConfig) |  |  |
-| `instantiate_default_permission` | [AccessType](#cosmwasm.wasm.v1beta1.AccessType) |  |  |
-| `contract_status_access` | [AccessConfig](#cosmwasm.wasm.v1beta1.AccessConfig) |  |  |
+| `code_upload_access` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
+| `instantiate_default_permission` | [AccessType](#cosmwasm.wasm.v1.AccessType) |  |  |
+| `contract_status_access` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  |  |
 | `max_wasm_code_size` | [uint64](#uint64) |  |  |
 | `gas_multiplier` | [uint64](#uint64) |  |  |
 | `instance_cost` | [uint64](#uint64) |  |  |
@@ -929,7 +929,7 @@ Params defines the set of wasm parameters.
  <!-- end messages -->
 
 
-<a name="cosmwasm.wasm.v1beta1.AccessType"></a>
+<a name="cosmwasm.wasm.v1.AccessType"></a>
 
 ### AccessType
 AccessType permission types
@@ -943,7 +943,7 @@ AccessType permission types
 
 
 
-<a name="cosmwasm.wasm.v1beta1.ContractCodeHistoryOperationType"></a>
+<a name="cosmwasm.wasm.v1.ContractCodeHistoryOperationType"></a>
 
 ### ContractCodeHistoryOperationType
 ContractCodeHistoryOperationType actions that caused a code change
@@ -957,7 +957,7 @@ ContractCodeHistoryOperationType actions that caused a code change
 
 
 
-<a name="cosmwasm.wasm.v1beta1.ContractStatus"></a>
+<a name="cosmwasm.wasm.v1.ContractStatus"></a>
 
 ### ContractStatus
 ContractStatus types
@@ -977,14 +977,14 @@ ContractStatus types
 
 
 
-<a name="lbm/base/v1beta1/coin.proto"></a>
+<a name="lbm/base/v1/coin.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/v1beta1/coin.proto
+## lbm/base/v1/coin.proto
 
 
 
-<a name="lbm.base.v1beta1.Coin"></a>
+<a name="lbm.base.v1.Coin"></a>
 
 ### Coin
 Coin defines a token with a denomination and an amount.
@@ -1003,7 +1003,7 @@ signatures required by gogoproto.
 
 
 
-<a name="lbm.base.v1beta1.DecCoin"></a>
+<a name="lbm.base.v1.DecCoin"></a>
 
 ### DecCoin
 DecCoin defines a token with a denomination and a decimal amount.
@@ -1022,7 +1022,7 @@ signatures required by gogoproto.
 
 
 
-<a name="lbm.base.v1beta1.DecProto"></a>
+<a name="lbm.base.v1.DecProto"></a>
 
 ### DecProto
 DecProto defines a Protobuf wrapper around a Dec object.
@@ -1037,7 +1037,7 @@ DecProto defines a Protobuf wrapper around a Dec object.
 
 
 
-<a name="lbm.base.v1beta1.IntProto"></a>
+<a name="lbm.base.v1.IntProto"></a>
 
 ### IntProto
 IntProto defines a Protobuf wrapper around an Int object.
@@ -1061,14 +1061,14 @@ IntProto defines a Protobuf wrapper around an Int object.
 
 
 
-<a name="cosmwasm/wasm/v1beta1/tx.proto"></a>
+<a name="cosmwasm/wasm/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## cosmwasm/wasm/v1beta1/tx.proto
+## cosmwasm/wasm/v1/tx.proto
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgClearAdmin"></a>
+<a name="cosmwasm.wasm.v1.MsgClearAdmin"></a>
 
 ### MsgClearAdmin
 MsgClearAdmin removes any admin stored for a smart contract
@@ -1084,7 +1084,7 @@ MsgClearAdmin removes any admin stored for a smart contract
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgClearAdminResponse"></a>
+<a name="cosmwasm.wasm.v1.MsgClearAdminResponse"></a>
 
 ### MsgClearAdminResponse
 MsgClearAdminResponse returns empty data
@@ -1094,7 +1094,7 @@ MsgClearAdminResponse returns empty data
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgExecuteContract"></a>
+<a name="cosmwasm.wasm.v1.MsgExecuteContract"></a>
 
 ### MsgExecuteContract
 MsgExecuteContract submits the given message data to a smart contract
@@ -1105,14 +1105,14 @@ MsgExecuteContract submits the given message data to a smart contract
 | `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
 | `msg` | [bytes](#bytes) |  | Msg json encoded message to be passed to the contract |
-| `funds` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on execution |
+| `funds` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Funds coins that are transferred to the contract on execution |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgExecuteContractResponse"></a>
+<a name="cosmwasm.wasm.v1.MsgExecuteContractResponse"></a>
 
 ### MsgExecuteContractResponse
 MsgExecuteContractResponse returns execution result data.
@@ -1127,7 +1127,7 @@ MsgExecuteContractResponse returns execution result data.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgInstantiateContract"></a>
+<a name="cosmwasm.wasm.v1.MsgInstantiateContract"></a>
 
 ### MsgInstantiateContract
 MsgInstantiateContract create a new smart contract instance for the given
@@ -1141,14 +1141,14 @@ code id.
 | `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
 | `init_msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
-| `funds` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
+| `funds` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgInstantiateContractResponse"></a>
+<a name="cosmwasm.wasm.v1.MsgInstantiateContractResponse"></a>
 
 ### MsgInstantiateContractResponse
 MsgInstantiateContractResponse return instantiation result data
@@ -1164,7 +1164,7 @@ MsgInstantiateContractResponse return instantiation result data
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgMigrateContract"></a>
+<a name="cosmwasm.wasm.v1.MsgMigrateContract"></a>
 
 ### MsgMigrateContract
 MsgMigrateContract runs a code upgrade/ downgrade for a smart contract
@@ -1182,7 +1182,7 @@ MsgMigrateContract runs a code upgrade/ downgrade for a smart contract
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgMigrateContractResponse"></a>
+<a name="cosmwasm.wasm.v1.MsgMigrateContractResponse"></a>
 
 ### MsgMigrateContractResponse
 MsgMigrateContractResponse returns contract migration result data.
@@ -1197,7 +1197,7 @@ MsgMigrateContractResponse returns contract migration result data.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgStoreCode"></a>
+<a name="cosmwasm.wasm.v1.MsgStoreCode"></a>
 
 ### MsgStoreCode
 MsgStoreCode submit Wasm code to the system
@@ -1209,14 +1209,14 @@ MsgStoreCode submit Wasm code to the system
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
 | `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
 | `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
-| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1beta1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
+| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgStoreCodeAndInstantiateContract"></a>
+<a name="cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract"></a>
 
 ### MsgStoreCodeAndInstantiateContract
 MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiate a contract using it.
@@ -1228,18 +1228,18 @@ MsgStoreCodeAndInstantiateContract submit Wasm code to the system and instantiat
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
 | `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
 | `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
-| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1beta1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
+| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission access control to apply on contract creation, optional |
 | `admin` | [string](#string) |  | Admin is an optional address that can execute migrations |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a contract instance. |
 | `init_msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
-| `funds` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
+| `funds` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgStoreCodeAndInstantiateContractResponse"></a>
+<a name="cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse"></a>
 
 ### MsgStoreCodeAndInstantiateContractResponse
 MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result data.
@@ -1256,7 +1256,7 @@ MsgStoreCodeAndInstantiateContractResponse returns store and instantiate result 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgStoreCodeResponse"></a>
+<a name="cosmwasm.wasm.v1.MsgStoreCodeResponse"></a>
 
 ### MsgStoreCodeResponse
 MsgStoreCodeResponse returns store result data.
@@ -1271,7 +1271,7 @@ MsgStoreCodeResponse returns store result data.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgUpdateAdmin"></a>
+<a name="cosmwasm.wasm.v1.MsgUpdateAdmin"></a>
 
 ### MsgUpdateAdmin
 MsgUpdateAdmin sets a new admin for a smart contract
@@ -1288,7 +1288,7 @@ MsgUpdateAdmin sets a new admin for a smart contract
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgUpdateAdminResponse"></a>
+<a name="cosmwasm.wasm.v1.MsgUpdateAdminResponse"></a>
 
 ### MsgUpdateAdminResponse
 MsgUpdateAdminResponse returns empty data
@@ -1298,7 +1298,7 @@ MsgUpdateAdminResponse returns empty data
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgUpdateContractStatus"></a>
+<a name="cosmwasm.wasm.v1.MsgUpdateContractStatus"></a>
 
 ### MsgUpdateContractStatus
 MsgUpdateContractStatus sets a new status for a smart contract
@@ -1308,14 +1308,14 @@ MsgUpdateContractStatus sets a new status for a smart contract
 | ----- | ---- | ----- | ----------- |
 | `sender` | [string](#string) |  | Sender is the that actor that signed the messages |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `status` | [ContractStatus](#cosmwasm.wasm.v1beta1.ContractStatus) |  | Status to be set |
+| `status` | [ContractStatus](#cosmwasm.wasm.v1.ContractStatus) |  | Status to be set |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgUpdateContractStatusResponse"></a>
+<a name="cosmwasm.wasm.v1.MsgUpdateContractStatusResponse"></a>
 
 ### MsgUpdateContractStatusResponse
 MsgUpdateContractStatusResponse returns empty data
@@ -1331,34 +1331,34 @@ MsgUpdateContractStatusResponse returns empty data
  <!-- end HasExtensions -->
 
 
-<a name="cosmwasm.wasm.v1beta1.Msg"></a>
+<a name="cosmwasm.wasm.v1.Msg"></a>
 
 ### Msg
 Msg defines the wasm Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `StoreCode` | [MsgStoreCode](#cosmwasm.wasm.v1beta1.MsgStoreCode) | [MsgStoreCodeResponse](#cosmwasm.wasm.v1beta1.MsgStoreCodeResponse) | StoreCode to submit Wasm code to the system | |
-| `InstantiateContract` | [MsgInstantiateContract](#cosmwasm.wasm.v1beta1.MsgInstantiateContract) | [MsgInstantiateContractResponse](#cosmwasm.wasm.v1beta1.MsgInstantiateContractResponse) | Instantiate creates a new smart contract instance for the given code id. | |
-| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#cosmwasm.wasm.v1beta1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#cosmwasm.wasm.v1beta1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiatecontract upload code and instantiate a contract using it. | |
-| `ExecuteContract` | [MsgExecuteContract](#cosmwasm.wasm.v1beta1.MsgExecuteContract) | [MsgExecuteContractResponse](#cosmwasm.wasm.v1beta1.MsgExecuteContractResponse) | Execute submits the given message data to a smart contract | |
-| `MigrateContract` | [MsgMigrateContract](#cosmwasm.wasm.v1beta1.MsgMigrateContract) | [MsgMigrateContractResponse](#cosmwasm.wasm.v1beta1.MsgMigrateContractResponse) | Migrate runs a code upgrade/ downgrade for a smart contract | |
-| `UpdateAdmin` | [MsgUpdateAdmin](#cosmwasm.wasm.v1beta1.MsgUpdateAdmin) | [MsgUpdateAdminResponse](#cosmwasm.wasm.v1beta1.MsgUpdateAdminResponse) | UpdateAdmin sets a new admin for a smart contract | |
-| `ClearAdmin` | [MsgClearAdmin](#cosmwasm.wasm.v1beta1.MsgClearAdmin) | [MsgClearAdminResponse](#cosmwasm.wasm.v1beta1.MsgClearAdminResponse) | ClearAdmin removes any admin stored for a smart contract | |
-| `UpdateContractStatus` | [MsgUpdateContractStatus](#cosmwasm.wasm.v1beta1.MsgUpdateContractStatus) | [MsgUpdateContractStatusResponse](#cosmwasm.wasm.v1beta1.MsgUpdateContractStatusResponse) | UpdateContractStatus sets a new status for a smart contract | |
+| `StoreCode` | [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode) | [MsgStoreCodeResponse](#cosmwasm.wasm.v1.MsgStoreCodeResponse) | StoreCode to submit Wasm code to the system | |
+| `InstantiateContract` | [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract) | [MsgInstantiateContractResponse](#cosmwasm.wasm.v1.MsgInstantiateContractResponse) | Instantiate creates a new smart contract instance for the given code id. | |
+| `StoreCodeAndInstantiateContract` | [MsgStoreCodeAndInstantiateContract](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContract) | [MsgStoreCodeAndInstantiateContractResponse](#cosmwasm.wasm.v1.MsgStoreCodeAndInstantiateContractResponse) | StoreCodeAndInstantiatecontract upload code and instantiate a contract using it. | |
+| `ExecuteContract` | [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract) | [MsgExecuteContractResponse](#cosmwasm.wasm.v1.MsgExecuteContractResponse) | Execute submits the given message data to a smart contract | |
+| `MigrateContract` | [MsgMigrateContract](#cosmwasm.wasm.v1.MsgMigrateContract) | [MsgMigrateContractResponse](#cosmwasm.wasm.v1.MsgMigrateContractResponse) | Migrate runs a code upgrade/ downgrade for a smart contract | |
+| `UpdateAdmin` | [MsgUpdateAdmin](#cosmwasm.wasm.v1.MsgUpdateAdmin) | [MsgUpdateAdminResponse](#cosmwasm.wasm.v1.MsgUpdateAdminResponse) | UpdateAdmin sets a new admin for a smart contract | |
+| `ClearAdmin` | [MsgClearAdmin](#cosmwasm.wasm.v1.MsgClearAdmin) | [MsgClearAdminResponse](#cosmwasm.wasm.v1.MsgClearAdminResponse) | ClearAdmin removes any admin stored for a smart contract | |
+| `UpdateContractStatus` | [MsgUpdateContractStatus](#cosmwasm.wasm.v1.MsgUpdateContractStatus) | [MsgUpdateContractStatusResponse](#cosmwasm.wasm.v1.MsgUpdateContractStatusResponse) | UpdateContractStatus sets a new status for a smart contract | |
 
  <!-- end services -->
 
 
 
-<a name="cosmwasm/wasm/v1beta1/genesis.proto"></a>
+<a name="cosmwasm/wasm/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## cosmwasm/wasm/v1beta1/genesis.proto
+## cosmwasm/wasm/v1/genesis.proto
 
 
 
-<a name="cosmwasm.wasm.v1beta1.Code"></a>
+<a name="cosmwasm.wasm.v1.Code"></a>
 
 ### Code
 Code struct encompasses CodeInfo and CodeBytes
@@ -1367,7 +1367,7 @@ Code struct encompasses CodeInfo and CodeBytes
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `code_id` | [uint64](#uint64) |  |  |
-| `code_info` | [CodeInfo](#cosmwasm.wasm.v1beta1.CodeInfo) |  |  |
+| `code_info` | [CodeInfo](#cosmwasm.wasm.v1.CodeInfo) |  |  |
 | `code_bytes` | [bytes](#bytes) |  |  |
 | `pinned` | [bool](#bool) |  | Pinned to wasmvm cache |
 
@@ -1376,7 +1376,7 @@ Code struct encompasses CodeInfo and CodeBytes
 
 
 
-<a name="cosmwasm.wasm.v1beta1.Contract"></a>
+<a name="cosmwasm.wasm.v1.Contract"></a>
 
 ### Contract
 Contract struct encompasses ContractAddress, ContractInfo, and ContractState
@@ -1385,15 +1385,15 @@ Contract struct encompasses ContractAddress, ContractInfo, and ContractState
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contract_address` | [string](#string) |  |  |
-| `contract_info` | [ContractInfo](#cosmwasm.wasm.v1beta1.ContractInfo) |  |  |
-| `contract_state` | [Model](#cosmwasm.wasm.v1beta1.Model) | repeated |  |
+| `contract_info` | [ContractInfo](#cosmwasm.wasm.v1.ContractInfo) |  |  |
+| `contract_state` | [Model](#cosmwasm.wasm.v1.Model) | repeated |  |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.GenesisState"></a>
+<a name="cosmwasm.wasm.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState - genesis state of x/wasm
@@ -1401,18 +1401,18 @@ GenesisState - genesis state of x/wasm
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#cosmwasm.wasm.v1beta1.Params) |  |  |
-| `codes` | [Code](#cosmwasm.wasm.v1beta1.Code) | repeated |  |
-| `contracts` | [Contract](#cosmwasm.wasm.v1beta1.Contract) | repeated |  |
-| `sequences` | [Sequence](#cosmwasm.wasm.v1beta1.Sequence) | repeated |  |
-| `gen_msgs` | [GenesisState.GenMsgs](#cosmwasm.wasm.v1beta1.GenesisState.GenMsgs) | repeated |  |
+| `params` | [Params](#cosmwasm.wasm.v1.Params) |  |  |
+| `codes` | [Code](#cosmwasm.wasm.v1.Code) | repeated |  |
+| `contracts` | [Contract](#cosmwasm.wasm.v1.Contract) | repeated |  |
+| `sequences` | [Sequence](#cosmwasm.wasm.v1.Sequence) | repeated |  |
+| `gen_msgs` | [GenesisState.GenMsgs](#cosmwasm.wasm.v1.GenesisState.GenMsgs) | repeated |  |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.GenesisState.GenMsgs"></a>
+<a name="cosmwasm.wasm.v1.GenesisState.GenMsgs"></a>
 
 ### GenesisState.GenMsgs
 GenMsgs define the messages that can be executed during genesis phase in order.
@@ -1421,16 +1421,16 @@ The intention is to have more human readable data that is auditable.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `store_code` | [MsgStoreCode](#cosmwasm.wasm.v1beta1.MsgStoreCode) |  |  |
-| `instantiate_contract` | [MsgInstantiateContract](#cosmwasm.wasm.v1beta1.MsgInstantiateContract) |  |  |
-| `execute_contract` | [MsgExecuteContract](#cosmwasm.wasm.v1beta1.MsgExecuteContract) |  |  |
+| `store_code` | [MsgStoreCode](#cosmwasm.wasm.v1.MsgStoreCode) |  |  |
+| `instantiate_contract` | [MsgInstantiateContract](#cosmwasm.wasm.v1.MsgInstantiateContract) |  |  |
+| `execute_contract` | [MsgExecuteContract](#cosmwasm.wasm.v1.MsgExecuteContract) |  |  |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.Sequence"></a>
+<a name="cosmwasm.wasm.v1.Sequence"></a>
 
 ### Sequence
 Sequence key and value of an id generation counter
@@ -1455,14 +1455,14 @@ Sequence key and value of an id generation counter
 
 
 
-<a name="cosmwasm/wasm/v1beta1/ibc.proto"></a>
+<a name="cosmwasm/wasm/v1/ibc.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## cosmwasm/wasm/v1beta1/ibc.proto
+## cosmwasm/wasm/v1/ibc.proto
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgIBCCloseChannel"></a>
+<a name="cosmwasm.wasm.v1.MsgIBCCloseChannel"></a>
 
 ### MsgIBCCloseChannel
 MsgIBCCloseChannel port and channel need to be owned by the contract
@@ -1477,7 +1477,7 @@ MsgIBCCloseChannel port and channel need to be owned by the contract
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MsgIBCSend"></a>
+<a name="cosmwasm.wasm.v1.MsgIBCSend"></a>
 
 ### MsgIBCSend
 MsgIBCSend
@@ -1504,14 +1504,14 @@ MsgIBCSend
 
 
 
-<a name="cosmwasm/wasm/v1beta1/proposal.proto"></a>
+<a name="cosmwasm/wasm/v1/proposal.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## cosmwasm/wasm/v1beta1/proposal.proto
+## cosmwasm/wasm/v1/proposal.proto
 
 
 
-<a name="cosmwasm.wasm.v1beta1.ClearAdminProposal"></a>
+<a name="cosmwasm.wasm.v1.ClearAdminProposal"></a>
 
 ### ClearAdminProposal
 ClearAdminProposal gov proposal content type to clear the admin of a contract.
@@ -1528,7 +1528,7 @@ ClearAdminProposal gov proposal content type to clear the admin of a contract.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.InstantiateContractProposal"></a>
+<a name="cosmwasm.wasm.v1.InstantiateContractProposal"></a>
 
 ### InstantiateContractProposal
 InstantiateContractProposal gov proposal content type to instantiate a contract.
@@ -1543,14 +1543,14 @@ InstantiateContractProposal gov proposal content type to instantiate a contract.
 | `code_id` | [uint64](#uint64) |  | CodeID is the reference to the stored WASM code |
 | `label` | [string](#string) |  | Label is optional metadata to be stored with a constract instance. |
 | `init_msg` | [bytes](#bytes) |  | InitMsg json encoded message to be passed to the contract on instantiation |
-| `funds` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
+| `funds` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Funds coins that are transferred to the contract on instantiation |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.MigrateContractProposal"></a>
+<a name="cosmwasm.wasm.v1.MigrateContractProposal"></a>
 
 ### MigrateContractProposal
 MigrateContractProposal gov proposal content type to migrate a contract.
@@ -1570,7 +1570,7 @@ MigrateContractProposal gov proposal content type to migrate a contract.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.PinCodesProposal"></a>
+<a name="cosmwasm.wasm.v1.PinCodesProposal"></a>
 
 ### PinCodesProposal
 PinCodesProposal gov proposal content type to pin a set of code ids in the wasmvm cache.
@@ -1587,7 +1587,7 @@ PinCodesProposal gov proposal content type to pin a set of code ids in the wasmv
 
 
 
-<a name="cosmwasm.wasm.v1beta1.StoreCodeProposal"></a>
+<a name="cosmwasm.wasm.v1.StoreCodeProposal"></a>
 
 ### StoreCodeProposal
 StoreCodeProposal gov proposal content type to submit WASM code to the system
@@ -1601,14 +1601,14 @@ StoreCodeProposal gov proposal content type to submit WASM code to the system
 | `wasm_byte_code` | [bytes](#bytes) |  | WASMByteCode can be raw or gzip compressed |
 | `source` | [string](#string) |  | Source is a valid absolute HTTPS URI to the contract's source code, optional |
 | `builder` | [string](#string) |  | Builder is a valid docker image name with tag, optional |
-| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1beta1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
+| `instantiate_permission` | [AccessConfig](#cosmwasm.wasm.v1.AccessConfig) |  | InstantiatePermission to apply on contract creation, optional |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.UnpinCodesProposal"></a>
+<a name="cosmwasm.wasm.v1.UnpinCodesProposal"></a>
 
 ### UnpinCodesProposal
 UnpinCodesProposal gov proposal content type to unpin a set of code ids in the wasmvm cache.
@@ -1625,7 +1625,7 @@ UnpinCodesProposal gov proposal content type to unpin a set of code ids in the w
 
 
 
-<a name="cosmwasm.wasm.v1beta1.UpdateAdminProposal"></a>
+<a name="cosmwasm.wasm.v1.UpdateAdminProposal"></a>
 
 ### UpdateAdminProposal
 UpdateAdminProposal gov proposal content type to set an admin for a contract.
@@ -1643,7 +1643,7 @@ UpdateAdminProposal gov proposal content type to set an admin for a contract.
 
 
 
-<a name="cosmwasm.wasm.v1beta1.UpdateContractStatusProposal"></a>
+<a name="cosmwasm.wasm.v1.UpdateContractStatusProposal"></a>
 
 ### UpdateContractStatusProposal
 UpdateStatusProposal gov proposal content type to update the contract status.
@@ -1654,7 +1654,7 @@ UpdateStatusProposal gov proposal content type to update the contract status.
 | `title` | [string](#string) |  | Title is a short summary |
 | `description` | [string](#string) |  | Description is a human readable text |
 | `contract` | [string](#string) |  | Contract is the address of the smart contract |
-| `status` | [ContractStatus](#cosmwasm.wasm.v1beta1.ContractStatus) |  | Status to be set |
+| `status` | [ContractStatus](#cosmwasm.wasm.v1.ContractStatus) |  | Status to be set |
 
 
 
@@ -1670,14 +1670,14 @@ UpdateStatusProposal gov proposal content type to update the contract status.
 
 
 
-<a name="lbm/base/query/v1beta1/pagination.proto"></a>
+<a name="lbm/base/query/v1/pagination.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/query/v1beta1/pagination.proto
+## lbm/base/query/v1/pagination.proto
 
 
 
-<a name="lbm.base.query.v1beta1.PageRequest"></a>
+<a name="lbm.base.query.v1.PageRequest"></a>
 
 ### PageRequest
 PageRequest is to be embedded in gRPC request messages for efficient
@@ -1701,7 +1701,7 @@ pagination. Ex:
 
 
 
-<a name="lbm.base.query.v1beta1.PageResponse"></a>
+<a name="lbm.base.query.v1.PageResponse"></a>
 
 ### PageResponse
 PageResponse is to be embedded in gRPC response messages where the
@@ -1732,14 +1732,14 @@ corresponding request message has used PageRequest.
 
 
 
-<a name="cosmwasm/wasm/v1beta1/query.proto"></a>
+<a name="cosmwasm/wasm/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## cosmwasm/wasm/v1beta1/query.proto
+## cosmwasm/wasm/v1/query.proto
 
 
 
-<a name="cosmwasm.wasm.v1beta1.CodeInfoResponse"></a>
+<a name="cosmwasm.wasm.v1.CodeInfoResponse"></a>
 
 ### CodeInfoResponse
 CodeInfoResponse contains code meta data from CodeInfo
@@ -1758,7 +1758,7 @@ CodeInfoResponse contains code meta data from CodeInfo
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryAllContractStateRequest"></a>
+<a name="cosmwasm.wasm.v1.QueryAllContractStateRequest"></a>
 
 ### QueryAllContractStateRequest
 QueryAllContractStateRequest is the request type for the Query/AllContractState RPC method
@@ -1767,14 +1767,14 @@ QueryAllContractStateRequest is the request type for the Query/AllContractState 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the address of the contract |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryAllContractStateResponse"></a>
+<a name="cosmwasm.wasm.v1.QueryAllContractStateResponse"></a>
 
 ### QueryAllContractStateResponse
 QueryAllContractStateResponse is the response type for the
@@ -1783,15 +1783,15 @@ Query/AllContractState RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `models` | [Model](#cosmwasm.wasm.v1beta1.Model) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `models` | [Model](#cosmwasm.wasm.v1.Model) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryCodeRequest"></a>
+<a name="cosmwasm.wasm.v1.QueryCodeRequest"></a>
 
 ### QueryCodeRequest
 QueryCodeRequest is the request type for the Query/Code RPC method
@@ -1806,7 +1806,7 @@ QueryCodeRequest is the request type for the Query/Code RPC method
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryCodeResponse"></a>
+<a name="cosmwasm.wasm.v1.QueryCodeResponse"></a>
 
 ### QueryCodeResponse
 QueryCodeResponse is the response type for the Query/Code RPC method
@@ -1814,7 +1814,7 @@ QueryCodeResponse is the response type for the Query/Code RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `code_info` | [CodeInfoResponse](#cosmwasm.wasm.v1beta1.CodeInfoResponse) |  |  |
+| `code_info` | [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse) |  |  |
 | `data` | [bytes](#bytes) |  |  |
 
 
@@ -1822,7 +1822,7 @@ QueryCodeResponse is the response type for the Query/Code RPC method
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryCodesRequest"></a>
+<a name="cosmwasm.wasm.v1.QueryCodesRequest"></a>
 
 ### QueryCodesRequest
 QueryCodesRequest is the request type for the Query/Codes RPC method
@@ -1830,14 +1830,14 @@ QueryCodesRequest is the request type for the Query/Codes RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryCodesResponse"></a>
+<a name="cosmwasm.wasm.v1.QueryCodesResponse"></a>
 
 ### QueryCodesResponse
 QueryCodesResponse is the response type for the Query/Codes RPC method
@@ -1845,15 +1845,15 @@ QueryCodesResponse is the response type for the Query/Codes RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `code_infos` | [CodeInfoResponse](#cosmwasm.wasm.v1beta1.CodeInfoResponse) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `code_infos` | [CodeInfoResponse](#cosmwasm.wasm.v1.CodeInfoResponse) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryContractHistoryRequest"></a>
+<a name="cosmwasm.wasm.v1.QueryContractHistoryRequest"></a>
 
 ### QueryContractHistoryRequest
 QueryContractHistoryRequest is the request type for the Query/ContractHistory RPC method
@@ -1862,14 +1862,14 @@ QueryContractHistoryRequest is the request type for the Query/ContractHistory RP
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the address of the contract to query |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryContractHistoryResponse"></a>
+<a name="cosmwasm.wasm.v1.QueryContractHistoryResponse"></a>
 
 ### QueryContractHistoryResponse
 QueryContractHistoryResponse is the response type for the Query/ContractHistory RPC method
@@ -1877,15 +1877,15 @@ QueryContractHistoryResponse is the response type for the Query/ContractHistory 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `entries` | [ContractCodeHistoryEntry](#cosmwasm.wasm.v1beta1.ContractCodeHistoryEntry) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `entries` | [ContractCodeHistoryEntry](#cosmwasm.wasm.v1.ContractCodeHistoryEntry) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryContractInfoRequest"></a>
+<a name="cosmwasm.wasm.v1.QueryContractInfoRequest"></a>
 
 ### QueryContractInfoRequest
 QueryContractInfoRequest is the request type for the Query/ContractInfo RPC method
@@ -1900,7 +1900,7 @@ QueryContractInfoRequest is the request type for the Query/ContractInfo RPC meth
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryContractInfoResponse"></a>
+<a name="cosmwasm.wasm.v1.QueryContractInfoResponse"></a>
 
 ### QueryContractInfoResponse
 QueryContractInfoResponse is the response type for the Query/ContractInfo RPC method
@@ -1909,14 +1909,14 @@ QueryContractInfoResponse is the response type for the Query/ContractInfo RPC me
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the address of the contract |
-| `contract_info` | [ContractInfo](#cosmwasm.wasm.v1beta1.ContractInfo) |  |  |
+| `contract_info` | [ContractInfo](#cosmwasm.wasm.v1.ContractInfo) |  |  |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryContractsByCodeRequest"></a>
+<a name="cosmwasm.wasm.v1.QueryContractsByCodeRequest"></a>
 
 ### QueryContractsByCodeRequest
 QueryContractsByCodeRequest is the request type for the Query/ContractsByCode RPC method
@@ -1925,14 +1925,14 @@ QueryContractsByCodeRequest is the request type for the Query/ContractsByCode RP
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `code_id` | [uint64](#uint64) |  | grpc-gateway_out does not support Go style CodID |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryContractsByCodeResponse"></a>
+<a name="cosmwasm.wasm.v1.QueryContractsByCodeResponse"></a>
 
 ### QueryContractsByCodeResponse
 QueryContractsByCodeResponse is the response type for the
@@ -1942,14 +1942,14 @@ Query/ContractsByCode RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `contracts` | [string](#string) | repeated | contracts are a set of contract addresses |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryRawContractStateRequest"></a>
+<a name="cosmwasm.wasm.v1.QueryRawContractStateRequest"></a>
 
 ### QueryRawContractStateRequest
 QueryRawContractStateRequest is the request type for the
@@ -1966,7 +1966,7 @@ Query/RawContractState RPC method
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QueryRawContractStateResponse"></a>
+<a name="cosmwasm.wasm.v1.QueryRawContractStateResponse"></a>
 
 ### QueryRawContractStateResponse
 QueryRawContractStateResponse is the response type for the
@@ -1982,7 +1982,7 @@ Query/RawContractState RPC method
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QuerySmartContractStateRequest"></a>
+<a name="cosmwasm.wasm.v1.QuerySmartContractStateRequest"></a>
 
 ### QuerySmartContractStateRequest
 QuerySmartContractStateRequest is the request type for the
@@ -1999,7 +1999,7 @@ Query/SmartContractState RPC method
 
 
 
-<a name="cosmwasm.wasm.v1beta1.QuerySmartContractStateResponse"></a>
+<a name="cosmwasm.wasm.v1.QuerySmartContractStateResponse"></a>
 
 ### QuerySmartContractStateResponse
 QuerySmartContractStateResponse is the response type for the
@@ -2021,21 +2021,21 @@ Query/SmartContractState RPC method
  <!-- end HasExtensions -->
 
 
-<a name="cosmwasm.wasm.v1beta1.Query"></a>
+<a name="cosmwasm.wasm.v1.Query"></a>
 
 ### Query
 Query provides defines the gRPC querier service
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ContractInfo` | [QueryContractInfoRequest](#cosmwasm.wasm.v1beta1.QueryContractInfoRequest) | [QueryContractInfoResponse](#cosmwasm.wasm.v1beta1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/wasm/v1beta1/contract/{address}|
-| `ContractHistory` | [QueryContractHistoryRequest](#cosmwasm.wasm.v1beta1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#cosmwasm.wasm.v1beta1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/wasm/v1beta1/contract/{address}/history|
-| `ContractsByCode` | [QueryContractsByCodeRequest](#cosmwasm.wasm.v1beta1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#cosmwasm.wasm.v1beta1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/wasm/v1beta1/code/{code_id}/contracts|
-| `AllContractState` | [QueryAllContractStateRequest](#cosmwasm.wasm.v1beta1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#cosmwasm.wasm.v1beta1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/wasm/v1beta1/contract/{address}/state|
-| `RawContractState` | [QueryRawContractStateRequest](#cosmwasm.wasm.v1beta1.QueryRawContractStateRequest) | [QueryRawContractStateResponse](#cosmwasm.wasm.v1beta1.QueryRawContractStateResponse) | RawContractState gets single key from the raw store data of a contract | GET|/wasm/v1beta1/contract/{address}/raw/{query_data}|
-| `SmartContractState` | [QuerySmartContractStateRequest](#cosmwasm.wasm.v1beta1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#cosmwasm.wasm.v1beta1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/wasm/v1beta1/contract/{address}/smart/{query_data}|
-| `Code` | [QueryCodeRequest](#cosmwasm.wasm.v1beta1.QueryCodeRequest) | [QueryCodeResponse](#cosmwasm.wasm.v1beta1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/wasm/v1beta1/code/{code_id}|
-| `Codes` | [QueryCodesRequest](#cosmwasm.wasm.v1beta1.QueryCodesRequest) | [QueryCodesResponse](#cosmwasm.wasm.v1beta1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/wasm/v1beta1/code|
+| `ContractInfo` | [QueryContractInfoRequest](#cosmwasm.wasm.v1.QueryContractInfoRequest) | [QueryContractInfoResponse](#cosmwasm.wasm.v1.QueryContractInfoResponse) | ContractInfo gets the contract meta data | GET|/wasm/v1/contract/{address}|
+| `ContractHistory` | [QueryContractHistoryRequest](#cosmwasm.wasm.v1.QueryContractHistoryRequest) | [QueryContractHistoryResponse](#cosmwasm.wasm.v1.QueryContractHistoryResponse) | ContractHistory gets the contract code history | GET|/wasm/v1/contract/{address}/history|
+| `ContractsByCode` | [QueryContractsByCodeRequest](#cosmwasm.wasm.v1.QueryContractsByCodeRequest) | [QueryContractsByCodeResponse](#cosmwasm.wasm.v1.QueryContractsByCodeResponse) | ContractsByCode lists all smart contracts for a code id | GET|/wasm/v1/code/{code_id}/contracts|
+| `AllContractState` | [QueryAllContractStateRequest](#cosmwasm.wasm.v1.QueryAllContractStateRequest) | [QueryAllContractStateResponse](#cosmwasm.wasm.v1.QueryAllContractStateResponse) | AllContractState gets all raw store data for a single contract | GET|/wasm/v1/contract/{address}/state|
+| `RawContractState` | [QueryRawContractStateRequest](#cosmwasm.wasm.v1.QueryRawContractStateRequest) | [QueryRawContractStateResponse](#cosmwasm.wasm.v1.QueryRawContractStateResponse) | RawContractState gets single key from the raw store data of a contract | GET|/wasm/v1/contract/{address}/raw/{query_data}|
+| `SmartContractState` | [QuerySmartContractStateRequest](#cosmwasm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#cosmwasm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/wasm/v1/contract/{address}/smart/{query_data}|
+| `Code` | [QueryCodeRequest](#cosmwasm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#cosmwasm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/wasm/v1/code/{code_id}|
+| `Codes` | [QueryCodesRequest](#cosmwasm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#cosmwasm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/wasm/v1/code|
 
  <!-- end services -->
 
@@ -2070,7 +2070,7 @@ source tracing information path.
 ### FungibleTokenPacketData
 FungibleTokenPacketData defines a struct for the packet payload
 See FungibleTokenPacketData spec:
-https://github.com/cosmos/ibc/tree/master/spec/app/ics-020-fungible-token-transfer#data-structures
+https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#data-structures
 
 
 | Field | Type | Label | Description |
@@ -2194,7 +2194,7 @@ method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
@@ -2211,7 +2211,7 @@ method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `denom_traces` | [DenomTrace](#ibc.applications.transfer.v1.DenomTrace) | repeated | denom_traces returns all denominations trace information. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -2256,9 +2256,9 @@ Query provides defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `DenomTrace` | [QueryDenomTraceRequest](#ibc.applications.transfer.v1.QueryDenomTraceRequest) | [QueryDenomTraceResponse](#ibc.applications.transfer.v1.QueryDenomTraceResponse) | DenomTrace queries a denomination trace information. | GET|/ibc/applications/transfer/v1beta1/denom_traces/{hash}|
-| `DenomTraces` | [QueryDenomTracesRequest](#ibc.applications.transfer.v1.QueryDenomTracesRequest) | [QueryDenomTracesResponse](#ibc.applications.transfer.v1.QueryDenomTracesResponse) | DenomTraces queries all denomination traces. | GET|/ibc/applications/transfer/v1beta1/denom_traces|
-| `Params` | [QueryParamsRequest](#ibc.applications.transfer.v1.QueryParamsRequest) | [QueryParamsResponse](#ibc.applications.transfer.v1.QueryParamsResponse) | Params queries all parameters of the ibc-transfer module. | GET|/ibc/applications/transfer/v1beta1/params|
+| `DenomTrace` | [QueryDenomTraceRequest](#ibc.applications.transfer.v1.QueryDenomTraceRequest) | [QueryDenomTraceResponse](#ibc.applications.transfer.v1.QueryDenomTraceResponse) | DenomTrace queries a denomination trace information. | GET|/ibc/applications/transfer/v1/denom_traces/{hash}|
+| `DenomTraces` | [QueryDenomTracesRequest](#ibc.applications.transfer.v1.QueryDenomTracesRequest) | [QueryDenomTracesResponse](#ibc.applications.transfer.v1.QueryDenomTracesResponse) | DenomTraces queries all denomination traces. | GET|/ibc/applications/transfer/v1/denom_traces|
+| `Params` | [QueryParamsRequest](#ibc.applications.transfer.v1.QueryParamsRequest) | [QueryParamsResponse](#ibc.applications.transfer.v1.QueryParamsResponse) | Params queries all parameters of the ibc-transfer module. | GET|/ibc/applications/transfer/v1/params|
 
  <!-- end services -->
 
@@ -2401,14 +2401,14 @@ Params defines the set of IBC light client parameters.
 ### MsgTransfer
 MsgTransfer defines a msg to transfer fungible tokens (i.e Coins) between
 ICS20 enabled chains. See ICS Spec here:
-https://github.com/cosmos/ics/tree/master/spec/app/ics-020-fungible-token-transfer#data-structures
+https://github.com/cosmos/ics/tree/master/spec/ics-020-fungible-token-transfer#data-structures
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `source_port` | [string](#string) |  | the port on which the packet will be sent |
 | `source_channel` | [string](#string) |  | the channel by which the packet will be sent |
-| `token` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  | the tokens to be transferred |
+| `token` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  | the tokens to be transferred |
 | `sender` | [string](#string) |  | the sender address |
 | `receiver` | [string](#string) |  | the recipient address on the destination chain |
 | `timeout_height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | Timeout height relative to the current block height. The timeout is disabled when set to 0. |
@@ -2464,7 +2464,7 @@ NOTE: The field numbers 21 and 22 were explicitly chosen to avoid accidental
 conflicts with other protobuf message formats used for acknowledgements.
 The first byte of any message with this format will be the non-ASCII values
 `0xaa` (result) or `0xb2` (error). Implemented as defined by ICS:
-https://github.com/cosmos/ibc/tree/master/spec/core/ics-004-channel-and-packet-semantics#acknowledgement-envelope
+https://github.com/cosmos/ics/tree/master/spec/ics-004-channel-and-packet-semantics#acknowledgement-envelope
 
 
 | Field | Type | Label | Description |
@@ -2796,7 +2796,7 @@ QueryChannelsRequest is the request type for the Query/Channels RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination request |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination request |
 
 
 
@@ -2812,7 +2812,7 @@ QueryChannelsResponse is the response type for the Query/Channels RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `channels` | [IdentifiedChannel](#ibc.core.channel.v1.IdentifiedChannel) | repeated | list of stored channels of the chain. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination response |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination response |
 | `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
 
 
@@ -2830,7 +2830,7 @@ Query/QueryConnectionChannels RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `connection` | [string](#string) |  | connection unique identifier |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination request |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination request |
 
 
 
@@ -2847,7 +2847,7 @@ Query/QueryConnectionChannels RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `channels` | [IdentifiedChannel](#ibc.core.channel.v1.IdentifiedChannel) | repeated | list of channels associated with a connection. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination response |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination response |
 | `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
 
 
@@ -2938,7 +2938,7 @@ Query/QueryPacketCommitments RPC method
 | ----- | ---- | ----- | ----------- |
 | `port_id` | [string](#string) |  | port unique identifier |
 | `channel_id` | [string](#string) |  | channel unique identifier |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination request |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination request |
 
 
 
@@ -2955,7 +2955,7 @@ Query/QueryPacketAcknowledgements RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `acknowledgements` | [PacketState](#ibc.core.channel.v1.PacketState) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination response |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination response |
 | `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
 
 
@@ -3011,7 +3011,7 @@ Query/QueryPacketCommitments RPC method
 | ----- | ---- | ----- | ----------- |
 | `port_id` | [string](#string) |  | port unique identifier |
 | `channel_id` | [string](#string) |  | channel unique identifier |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination request |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination request |
 
 
 
@@ -3028,7 +3028,7 @@ Query/QueryPacketCommitments RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `commitments` | [PacketState](#ibc.core.channel.v1.PacketState) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination response |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination response |
 | `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
 
 
@@ -3156,19 +3156,19 @@ Query provides defines the gRPC querier service
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Channel` | [QueryChannelRequest](#ibc.core.channel.v1.QueryChannelRequest) | [QueryChannelResponse](#ibc.core.channel.v1.QueryChannelResponse) | Channel queries an IBC Channel. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}|
-| `Channels` | [QueryChannelsRequest](#ibc.core.channel.v1.QueryChannelsRequest) | [QueryChannelsResponse](#ibc.core.channel.v1.QueryChannelsResponse) | Channels queries all the IBC channels of a chain. | GET|/ibc/core/channel/v1beta1/channels|
-| `ConnectionChannels` | [QueryConnectionChannelsRequest](#ibc.core.channel.v1.QueryConnectionChannelsRequest) | [QueryConnectionChannelsResponse](#ibc.core.channel.v1.QueryConnectionChannelsResponse) | ConnectionChannels queries all the channels associated with a connection end. | GET|/ibc/core/channel/v1beta1/connections/{connection}/channels|
-| `ChannelClientState` | [QueryChannelClientStateRequest](#ibc.core.channel.v1.QueryChannelClientStateRequest) | [QueryChannelClientStateResponse](#ibc.core.channel.v1.QueryChannelClientStateResponse) | ChannelClientState queries for the client state for the channel associated with the provided channel identifiers. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/client_state|
-| `ChannelConsensusState` | [QueryChannelConsensusStateRequest](#ibc.core.channel.v1.QueryChannelConsensusStateRequest) | [QueryChannelConsensusStateResponse](#ibc.core.channel.v1.QueryChannelConsensusStateResponse) | ChannelConsensusState queries for the consensus state for the channel associated with the provided channel identifiers. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/consensus_state/revision/{revision_number}/height/{revision_height}|
-| `PacketCommitment` | [QueryPacketCommitmentRequest](#ibc.core.channel.v1.QueryPacketCommitmentRequest) | [QueryPacketCommitmentResponse](#ibc.core.channel.v1.QueryPacketCommitmentResponse) | PacketCommitment queries a stored packet commitment hash. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/packet_commitments/{sequence}|
-| `PacketCommitments` | [QueryPacketCommitmentsRequest](#ibc.core.channel.v1.QueryPacketCommitmentsRequest) | [QueryPacketCommitmentsResponse](#ibc.core.channel.v1.QueryPacketCommitmentsResponse) | PacketCommitments returns all the packet commitments hashes associated with a channel. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/packet_commitments|
-| `PacketReceipt` | [QueryPacketReceiptRequest](#ibc.core.channel.v1.QueryPacketReceiptRequest) | [QueryPacketReceiptResponse](#ibc.core.channel.v1.QueryPacketReceiptResponse) | PacketReceipt queries if a given packet sequence has been received on the queried chain | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/packet_receipts/{sequence}|
-| `PacketAcknowledgement` | [QueryPacketAcknowledgementRequest](#ibc.core.channel.v1.QueryPacketAcknowledgementRequest) | [QueryPacketAcknowledgementResponse](#ibc.core.channel.v1.QueryPacketAcknowledgementResponse) | PacketAcknowledgement queries a stored packet acknowledgement hash. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/packet_acks/{sequence}|
-| `PacketAcknowledgements` | [QueryPacketAcknowledgementsRequest](#ibc.core.channel.v1.QueryPacketAcknowledgementsRequest) | [QueryPacketAcknowledgementsResponse](#ibc.core.channel.v1.QueryPacketAcknowledgementsResponse) | PacketAcknowledgements returns all the packet acknowledgements associated with a channel. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/packet_acknowledgements|
-| `UnreceivedPackets` | [QueryUnreceivedPacketsRequest](#ibc.core.channel.v1.QueryUnreceivedPacketsRequest) | [QueryUnreceivedPacketsResponse](#ibc.core.channel.v1.QueryUnreceivedPacketsResponse) | UnreceivedPackets returns all the unreceived IBC packets associated with a channel and sequences. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/packet_commitments/{packet_commitment_sequences}/unreceived_packets|
-| `UnreceivedAcks` | [QueryUnreceivedAcksRequest](#ibc.core.channel.v1.QueryUnreceivedAcksRequest) | [QueryUnreceivedAcksResponse](#ibc.core.channel.v1.QueryUnreceivedAcksResponse) | UnreceivedAcks returns all the unreceived IBC acknowledgements associated with a channel and sequences. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/packet_commitments/{packet_ack_sequences}/unreceived_acks|
-| `NextSequenceReceive` | [QueryNextSequenceReceiveRequest](#ibc.core.channel.v1.QueryNextSequenceReceiveRequest) | [QueryNextSequenceReceiveResponse](#ibc.core.channel.v1.QueryNextSequenceReceiveResponse) | NextSequenceReceive returns the next receive sequence for a given channel. | GET|/ibc/core/channel/v1beta1/channels/{channel_id}/ports/{port_id}/next_sequence|
+| `Channel` | [QueryChannelRequest](#ibc.core.channel.v1.QueryChannelRequest) | [QueryChannelResponse](#ibc.core.channel.v1.QueryChannelResponse) | Channel queries an IBC Channel. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}|
+| `Channels` | [QueryChannelsRequest](#ibc.core.channel.v1.QueryChannelsRequest) | [QueryChannelsResponse](#ibc.core.channel.v1.QueryChannelsResponse) | Channels queries all the IBC channels of a chain. | GET|/ibc/core/channel/v1/channels|
+| `ConnectionChannels` | [QueryConnectionChannelsRequest](#ibc.core.channel.v1.QueryConnectionChannelsRequest) | [QueryConnectionChannelsResponse](#ibc.core.channel.v1.QueryConnectionChannelsResponse) | ConnectionChannels queries all the channels associated with a connection end. | GET|/ibc/core/channel/v1/connections/{connection}/channels|
+| `ChannelClientState` | [QueryChannelClientStateRequest](#ibc.core.channel.v1.QueryChannelClientStateRequest) | [QueryChannelClientStateResponse](#ibc.core.channel.v1.QueryChannelClientStateResponse) | ChannelClientState queries for the client state for the channel associated with the provided channel identifiers. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/client_state|
+| `ChannelConsensusState` | [QueryChannelConsensusStateRequest](#ibc.core.channel.v1.QueryChannelConsensusStateRequest) | [QueryChannelConsensusStateResponse](#ibc.core.channel.v1.QueryChannelConsensusStateResponse) | ChannelConsensusState queries for the consensus state for the channel associated with the provided channel identifiers. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/consensus_state/revision/{revision_number}/height/{revision_height}|
+| `PacketCommitment` | [QueryPacketCommitmentRequest](#ibc.core.channel.v1.QueryPacketCommitmentRequest) | [QueryPacketCommitmentResponse](#ibc.core.channel.v1.QueryPacketCommitmentResponse) | PacketCommitment queries a stored packet commitment hash. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_commitments/{sequence}|
+| `PacketCommitments` | [QueryPacketCommitmentsRequest](#ibc.core.channel.v1.QueryPacketCommitmentsRequest) | [QueryPacketCommitmentsResponse](#ibc.core.channel.v1.QueryPacketCommitmentsResponse) | PacketCommitments returns all the packet commitments hashes associated with a channel. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_commitments|
+| `PacketReceipt` | [QueryPacketReceiptRequest](#ibc.core.channel.v1.QueryPacketReceiptRequest) | [QueryPacketReceiptResponse](#ibc.core.channel.v1.QueryPacketReceiptResponse) | PacketReceipt queries if a given packet sequence has been received on the queried chain | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_receipts/{sequence}|
+| `PacketAcknowledgement` | [QueryPacketAcknowledgementRequest](#ibc.core.channel.v1.QueryPacketAcknowledgementRequest) | [QueryPacketAcknowledgementResponse](#ibc.core.channel.v1.QueryPacketAcknowledgementResponse) | PacketAcknowledgement queries a stored packet acknowledgement hash. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acks/{sequence}|
+| `PacketAcknowledgements` | [QueryPacketAcknowledgementsRequest](#ibc.core.channel.v1.QueryPacketAcknowledgementsRequest) | [QueryPacketAcknowledgementsResponse](#ibc.core.channel.v1.QueryPacketAcknowledgementsResponse) | PacketAcknowledgements returns all the packet acknowledgements associated with a channel. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_acknowledgements|
+| `UnreceivedPackets` | [QueryUnreceivedPacketsRequest](#ibc.core.channel.v1.QueryUnreceivedPacketsRequest) | [QueryUnreceivedPacketsResponse](#ibc.core.channel.v1.QueryUnreceivedPacketsResponse) | UnreceivedPackets returns all the unreceived IBC packets associated with a channel and sequences. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_commitments/{packet_commitment_sequences}/unreceived_packets|
+| `UnreceivedAcks` | [QueryUnreceivedAcksRequest](#ibc.core.channel.v1.QueryUnreceivedAcksRequest) | [QueryUnreceivedAcksResponse](#ibc.core.channel.v1.QueryUnreceivedAcksResponse) | UnreceivedAcks returns all the unreceived IBC acknowledgements associated with a channel and sequences. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/packet_commitments/{packet_ack_sequences}/unreceived_acks|
+| `NextSequenceReceive` | [QueryNextSequenceReceiveRequest](#ibc.core.channel.v1.QueryNextSequenceReceiveRequest) | [QueryNextSequenceReceiveResponse](#ibc.core.channel.v1.QueryNextSequenceReceiveResponse) | NextSequenceReceive returns the next receive sequence for a given channel. | GET|/ibc/core/channel/v1/channels/{channel_id}/ports/{port_id}/next_sequence|
 
  <!-- end services -->
 
@@ -3650,7 +3650,7 @@ method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination request |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination request |
 
 
 
@@ -3667,7 +3667,7 @@ method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `client_states` | [IdentifiedClientState](#ibc.core.client.v1.IdentifiedClientState) | repeated | list of stored ClientStates of the chain. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination response |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination response |
 
 
 
@@ -3722,7 +3722,7 @@ RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `client_id` | [string](#string) |  | client identifier |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination request |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination request |
 
 
 
@@ -3739,7 +3739,7 @@ Query/ConsensusStates RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `consensus_states` | [ConsensusStateWithHeight](#ibc.core.client.v1.ConsensusStateWithHeight) | repeated | consensus states associated with the identifier |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination response |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination response |
 
 
 
@@ -3759,11 +3759,11 @@ Query provides defines the gRPC querier service
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ClientState` | [QueryClientStateRequest](#ibc.core.client.v1.QueryClientStateRequest) | [QueryClientStateResponse](#ibc.core.client.v1.QueryClientStateResponse) | ClientState queries an IBC light client. | GET|/ibc/core/client/v1beta1/client_states/{client_id}|
-| `ClientStates` | [QueryClientStatesRequest](#ibc.core.client.v1.QueryClientStatesRequest) | [QueryClientStatesResponse](#ibc.core.client.v1.QueryClientStatesResponse) | ClientStates queries all the IBC light clients of a chain. | GET|/ibc/core/client/v1beta1/client_states|
-| `ConsensusState` | [QueryConsensusStateRequest](#ibc.core.client.v1.QueryConsensusStateRequest) | [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse) | ConsensusState queries a consensus state associated with a client state at a given height. | GET|/ibc/core/client/v1beta1/consensus_states/{client_id}/revision/{revision_number}/height/{revision_height}|
-| `ConsensusStates` | [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest) | [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse) | ConsensusStates queries all the consensus state associated with a given client. | GET|/ibc/core/client/v1beta1/consensus_states/{client_id}|
-| `ClientParams` | [QueryClientParamsRequest](#ibc.core.client.v1.QueryClientParamsRequest) | [QueryClientParamsResponse](#ibc.core.client.v1.QueryClientParamsResponse) | ClientParams queries all parameters of the ibc client. | GET|/ibc/client/v1beta1/params|
+| `ClientState` | [QueryClientStateRequest](#ibc.core.client.v1.QueryClientStateRequest) | [QueryClientStateResponse](#ibc.core.client.v1.QueryClientStateResponse) | ClientState queries an IBC light client. | GET|/ibc/core/client/v1/client_states/{client_id}|
+| `ClientStates` | [QueryClientStatesRequest](#ibc.core.client.v1.QueryClientStatesRequest) | [QueryClientStatesResponse](#ibc.core.client.v1.QueryClientStatesResponse) | ClientStates queries all the IBC light clients of a chain. | GET|/ibc/core/client/v1/client_states|
+| `ConsensusState` | [QueryConsensusStateRequest](#ibc.core.client.v1.QueryConsensusStateRequest) | [QueryConsensusStateResponse](#ibc.core.client.v1.QueryConsensusStateResponse) | ConsensusState queries a consensus state associated with a client state at a given height. | GET|/ibc/core/client/v1/consensus_states/{client_id}/revision/{revision_number}/height/{revision_height}|
+| `ConsensusStates` | [QueryConsensusStatesRequest](#ibc.core.client.v1.QueryConsensusStatesRequest) | [QueryConsensusStatesResponse](#ibc.core.client.v1.QueryConsensusStatesResponse) | ConsensusStates queries all the consensus state associated with a given client. | GET|/ibc/core/client/v1/consensus_states/{client_id}|
+| `ClientParams` | [QueryClientParamsRequest](#ibc.core.client.v1.QueryClientParamsRequest) | [QueryClientParamsResponse](#ibc.core.client.v1.QueryClientParamsResponse) | ClientParams queries all parameters of the ibc client. | GET|/ibc/client/v1/params|
 
  <!-- end services -->
 
@@ -4324,7 +4324,7 @@ method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  |  |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  |  |
 
 
 
@@ -4341,7 +4341,7 @@ method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `connections` | [IdentifiedConnection](#ibc.core.connection.v1.IdentifiedConnection) | repeated | list of stored connections of the chain. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination response |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination response |
 | `height` | [ibc.core.client.v1.Height](#ibc.core.client.v1.Height) |  | query block height |
 
 
@@ -4362,11 +4362,11 @@ Query provides defines the gRPC querier service
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Connection` | [QueryConnectionRequest](#ibc.core.connection.v1.QueryConnectionRequest) | [QueryConnectionResponse](#ibc.core.connection.v1.QueryConnectionResponse) | Connection queries an IBC connection end. | GET|/ibc/core/connection/v1beta1/connections/{connection_id}|
-| `Connections` | [QueryConnectionsRequest](#ibc.core.connection.v1.QueryConnectionsRequest) | [QueryConnectionsResponse](#ibc.core.connection.v1.QueryConnectionsResponse) | Connections queries all the IBC connections of a chain. | GET|/ibc/core/connection/v1beta1/connections|
-| `ClientConnections` | [QueryClientConnectionsRequest](#ibc.core.connection.v1.QueryClientConnectionsRequest) | [QueryClientConnectionsResponse](#ibc.core.connection.v1.QueryClientConnectionsResponse) | ClientConnections queries the connection paths associated with a client state. | GET|/ibc/core/connection/v1beta1/client_connections/{client_id}|
-| `ConnectionClientState` | [QueryConnectionClientStateRequest](#ibc.core.connection.v1.QueryConnectionClientStateRequest) | [QueryConnectionClientStateResponse](#ibc.core.connection.v1.QueryConnectionClientStateResponse) | ConnectionClientState queries the client state associated with the connection. | GET|/ibc/core/connection/v1beta1/connections/{connection_id}/client_state|
-| `ConnectionConsensusState` | [QueryConnectionConsensusStateRequest](#ibc.core.connection.v1.QueryConnectionConsensusStateRequest) | [QueryConnectionConsensusStateResponse](#ibc.core.connection.v1.QueryConnectionConsensusStateResponse) | ConnectionConsensusState queries the consensus state associated with the connection. | GET|/ibc/core/connection/v1beta1/connections/{connection_id}/consensus_state/revision/{revision_number}/height/{revision_height}|
+| `Connection` | [QueryConnectionRequest](#ibc.core.connection.v1.QueryConnectionRequest) | [QueryConnectionResponse](#ibc.core.connection.v1.QueryConnectionResponse) | Connection queries an IBC connection end. | GET|/ibc/core/connection/v1/connections/{connection_id}|
+| `Connections` | [QueryConnectionsRequest](#ibc.core.connection.v1.QueryConnectionsRequest) | [QueryConnectionsResponse](#ibc.core.connection.v1.QueryConnectionsResponse) | Connections queries all the IBC connections of a chain. | GET|/ibc/core/connection/v1/connections|
+| `ClientConnections` | [QueryClientConnectionsRequest](#ibc.core.connection.v1.QueryClientConnectionsRequest) | [QueryClientConnectionsResponse](#ibc.core.connection.v1.QueryClientConnectionsResponse) | ClientConnections queries the connection paths associated with a client state. | GET|/ibc/core/connection/v1/client_connections/{client_id}|
+| `ConnectionClientState` | [QueryConnectionClientStateRequest](#ibc.core.connection.v1.QueryConnectionClientStateRequest) | [QueryConnectionClientStateResponse](#ibc.core.connection.v1.QueryConnectionClientStateResponse) | ConnectionClientState queries the client state associated with the connection. | GET|/ibc/core/connection/v1/connections/{connection_id}/client_state|
+| `ConnectionConsensusState` | [QueryConnectionConsensusStateRequest](#ibc.core.connection.v1.QueryConnectionConsensusStateRequest) | [QueryConnectionConsensusStateResponse](#ibc.core.connection.v1.QueryConnectionConsensusStateResponse) | ConnectionConsensusState queries the consensus state associated with the connection. | GET|/ibc/core/connection/v1/connections/{connection_id}/consensus_state/revision/{revision_number}/height/{revision_height}|
 
  <!-- end services -->
 
@@ -5173,14 +5173,14 @@ This prefix is followed with the x-coordinate.
 
 
 
-<a name="lbm/auth/v1beta1/auth.proto"></a>
+<a name="lbm/auth/v1/auth.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/auth/v1beta1/auth.proto
+## lbm/auth/v1/auth.proto
 
 
 
-<a name="lbm.auth.v1beta1.BaseAccount"></a>
+<a name="lbm.auth.v1.BaseAccount"></a>
 
 ### BaseAccount
 BaseAccount defines a base account type. It contains all the necessary fields
@@ -5201,7 +5201,7 @@ type for additional functionality (e.g. vesting).
 
 
 
-<a name="lbm.auth.v1beta1.ModuleAccount"></a>
+<a name="lbm.auth.v1.ModuleAccount"></a>
 
 ### ModuleAccount
 ModuleAccount defines an account for modules that holds coins on a pool.
@@ -5209,7 +5209,7 @@ ModuleAccount defines an account for modules that holds coins on a pool.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_account` | [BaseAccount](#lbm.auth.v1beta1.BaseAccount) |  |  |
+| `base_account` | [BaseAccount](#lbm.auth.v1.BaseAccount) |  |  |
 | `name` | [string](#string) |  |  |
 | `permissions` | [string](#string) | repeated |  |
 
@@ -5218,7 +5218,7 @@ ModuleAccount defines an account for modules that holds coins on a pool.
 
 
 
-<a name="lbm.auth.v1beta1.Params"></a>
+<a name="lbm.auth.v1.Params"></a>
 
 ### Params
 Params defines the parameters for the auth module.
@@ -5247,14 +5247,14 @@ Params defines the parameters for the auth module.
 
 
 
-<a name="lbm/auth/v1beta1/genesis.proto"></a>
+<a name="lbm/auth/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/auth/v1beta1/genesis.proto
+## lbm/auth/v1/genesis.proto
 
 
 
-<a name="lbm.auth.v1beta1.GenesisState"></a>
+<a name="lbm.auth.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the auth module's genesis state.
@@ -5262,7 +5262,7 @@ GenesisState defines the auth module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.auth.v1beta1.Params) |  | params defines all the paramaters of the module. |
+| `params` | [Params](#lbm.auth.v1.Params) |  | params defines all the paramaters of the module. |
 | `accounts` | [google.protobuf.Any](#google.protobuf.Any) | repeated | accounts are the accounts present at genesis. |
 
 
@@ -5279,14 +5279,14 @@ GenesisState defines the auth module's genesis state.
 
 
 
-<a name="lbm/auth/v1beta1/query.proto"></a>
+<a name="lbm/auth/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/auth/v1beta1/query.proto
+## lbm/auth/v1/query.proto
 
 
 
-<a name="lbm.auth.v1beta1.QueryAccountRequest"></a>
+<a name="lbm.auth.v1.QueryAccountRequest"></a>
 
 ### QueryAccountRequest
 QueryAccountRequest is the request type for the Query/Account RPC method.
@@ -5301,7 +5301,7 @@ QueryAccountRequest is the request type for the Query/Account RPC method.
 
 
 
-<a name="lbm.auth.v1beta1.QueryAccountResponse"></a>
+<a name="lbm.auth.v1.QueryAccountResponse"></a>
 
 ### QueryAccountResponse
 QueryAccountResponse is the response type for the Query/Account RPC method.
@@ -5316,7 +5316,7 @@ QueryAccountResponse is the response type for the Query/Account RPC method.
 
 
 
-<a name="lbm.auth.v1beta1.QueryParamsRequest"></a>
+<a name="lbm.auth.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -5326,7 +5326,7 @@ QueryParamsRequest is the request type for the Query/Params RPC method.
 
 
 
-<a name="lbm.auth.v1beta1.QueryParamsResponse"></a>
+<a name="lbm.auth.v1.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 QueryParamsResponse is the response type for the Query/Params RPC method.
@@ -5334,7 +5334,7 @@ QueryParamsResponse is the response type for the Query/Params RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.auth.v1beta1.Params) |  | params defines the parameters of the module. |
+| `params` | [Params](#lbm.auth.v1.Params) |  | params defines the parameters of the module. |
 
 
 
@@ -5347,28 +5347,28 @@ QueryParamsResponse is the response type for the Query/Params RPC method.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.auth.v1beta1.Query"></a>
+<a name="lbm.auth.v1.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Account` | [QueryAccountRequest](#lbm.auth.v1beta1.QueryAccountRequest) | [QueryAccountResponse](#lbm.auth.v1beta1.QueryAccountResponse) | Account returns account details based on address. | GET|/lbm/auth/v1beta1/accounts/{address}|
-| `Params` | [QueryParamsRequest](#lbm.auth.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.auth.v1beta1.QueryParamsResponse) | Params queries all parameters. | GET|/lbm/auth/v1beta1/params|
+| `Account` | [QueryAccountRequest](#lbm.auth.v1.QueryAccountRequest) | [QueryAccountResponse](#lbm.auth.v1.QueryAccountResponse) | Account returns account details based on address. | GET|/lbm/auth/v1/accounts/{address}|
+| `Params` | [QueryParamsRequest](#lbm.auth.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.auth.v1.QueryParamsResponse) | Params queries all parameters. | GET|/lbm/auth/v1/params|
 
  <!-- end services -->
 
 
 
-<a name="lbm/auth/v1beta1/tx.proto"></a>
+<a name="lbm/auth/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/auth/v1beta1/tx.proto
+## lbm/auth/v1/tx.proto
 
 
 
-<a name="lbm.auth.v1beta1.MsgEmpty"></a>
+<a name="lbm.auth.v1.MsgEmpty"></a>
 
 ### MsgEmpty
 MsgEmpty represents a message that doesn't do anything. Used to measure performance.
@@ -5383,7 +5383,7 @@ MsgEmpty represents a message that doesn't do anything. Used to measure performa
 
 
 
-<a name="lbm.auth.v1beta1.MsgEmptyResponse"></a>
+<a name="lbm.auth.v1.MsgEmptyResponse"></a>
 
 ### MsgEmptyResponse
 MsgEmptyResponse defines the Msg/Empty response type.
@@ -5399,27 +5399,27 @@ MsgEmptyResponse defines the Msg/Empty response type.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.auth.v1beta1.Msg"></a>
+<a name="lbm.auth.v1.Msg"></a>
 
 ### Msg
 Msg defines the auth Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Empty` | [MsgEmpty](#lbm.auth.v1beta1.MsgEmpty) | [MsgEmptyResponse](#lbm.auth.v1beta1.MsgEmptyResponse) | Empty defines a method that doesn't do anything. Used to measure performance. | |
+| `Empty` | [MsgEmpty](#lbm.auth.v1.MsgEmpty) | [MsgEmptyResponse](#lbm.auth.v1.MsgEmptyResponse) | Empty defines a method that doesn't do anything. Used to measure performance. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/bank/v1beta1/bank.proto"></a>
+<a name="lbm/bank/v1/bank.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/bank/v1beta1/bank.proto
+## lbm/bank/v1/bank.proto
 
 
 
-<a name="lbm.bank.v1beta1.DenomUnit"></a>
+<a name="lbm.bank.v1.DenomUnit"></a>
 
 ### DenomUnit
 DenomUnit represents a struct that describes a given
@@ -5437,7 +5437,7 @@ denomination unit of the basic token.
 
 
 
-<a name="lbm.bank.v1beta1.Input"></a>
+<a name="lbm.bank.v1.Input"></a>
 
 ### Input
 Input models transaction input.
@@ -5446,14 +5446,14 @@ Input models transaction input.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `coins` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `coins` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.Metadata"></a>
+<a name="lbm.bank.v1.Metadata"></a>
 
 ### Metadata
 Metadata represents a struct that describes
@@ -5463,7 +5463,7 @@ a basic token.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `description` | [string](#string) |  |  |
-| `denom_units` | [DenomUnit](#lbm.bank.v1beta1.DenomUnit) | repeated | denom_units represents the list of DenomUnit's for a given coin |
+| `denom_units` | [DenomUnit](#lbm.bank.v1.DenomUnit) | repeated | denom_units represents the list of DenomUnit's for a given coin |
 | `base` | [string](#string) |  | base represents the base denom (should be the DenomUnit with exponent = 0). |
 | `display` | [string](#string) |  | display indicates the suggested denom that should be displayed in clients. |
 
@@ -5472,7 +5472,7 @@ a basic token.
 
 
 
-<a name="lbm.bank.v1beta1.Output"></a>
+<a name="lbm.bank.v1.Output"></a>
 
 ### Output
 Output models transaction outputs.
@@ -5481,14 +5481,14 @@ Output models transaction outputs.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `coins` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `coins` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.Params"></a>
+<a name="lbm.bank.v1.Params"></a>
 
 ### Params
 Params defines the parameters for the bank module.
@@ -5496,7 +5496,7 @@ Params defines the parameters for the bank module.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `send_enabled` | [SendEnabled](#lbm.bank.v1beta1.SendEnabled) | repeated |  |
+| `send_enabled` | [SendEnabled](#lbm.bank.v1.SendEnabled) | repeated |  |
 | `default_send_enabled` | [bool](#bool) |  |  |
 
 
@@ -5504,7 +5504,7 @@ Params defines the parameters for the bank module.
 
 
 
-<a name="lbm.bank.v1beta1.SendEnabled"></a>
+<a name="lbm.bank.v1.SendEnabled"></a>
 
 ### SendEnabled
 SendEnabled maps coin denom to a send_enabled status (whether a denom is
@@ -5521,7 +5521,7 @@ sendable).
 
 
 
-<a name="lbm.bank.v1beta1.Supply"></a>
+<a name="lbm.bank.v1.Supply"></a>
 
 ### Supply
 Supply represents a struct that passively keeps track of the total supply
@@ -5530,7 +5530,7 @@ amounts in the network.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `total` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `total` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 
@@ -5546,14 +5546,14 @@ amounts in the network.
 
 
 
-<a name="lbm/bank/v1beta1/genesis.proto"></a>
+<a name="lbm/bank/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/bank/v1beta1/genesis.proto
+## lbm/bank/v1/genesis.proto
 
 
 
-<a name="lbm.bank.v1beta1.Balance"></a>
+<a name="lbm.bank.v1.Balance"></a>
 
 ### Balance
 Balance defines an account address and balance pair used in the bank module's
@@ -5563,14 +5563,14 @@ genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the address of the balance holder. |
-| `coins` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | coins defines the different coins this balance holds. |
+| `coins` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | coins defines the different coins this balance holds. |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.GenesisState"></a>
+<a name="lbm.bank.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the bank module's genesis state.
@@ -5578,10 +5578,10 @@ GenesisState defines the bank module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.bank.v1beta1.Params) |  | params defines all the paramaters of the module. |
-| `balances` | [Balance](#lbm.bank.v1beta1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
-| `supply` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | supply represents the total supply. |
-| `denom_metadata` | [Metadata](#lbm.bank.v1beta1.Metadata) | repeated | denom_metadata defines the metadata of the differents coins. |
+| `params` | [Params](#lbm.bank.v1.Params) |  | params defines all the paramaters of the module. |
+| `balances` | [Balance](#lbm.bank.v1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
+| `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply represents the total supply. |
+| `denom_metadata` | [Metadata](#lbm.bank.v1.Metadata) | repeated | denom_metadata defines the metadata of the differents coins. |
 
 
 
@@ -5597,14 +5597,14 @@ GenesisState defines the bank module's genesis state.
 
 
 
-<a name="lbm/bank/v1beta1/query.proto"></a>
+<a name="lbm/bank/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/bank/v1beta1/query.proto
+## lbm/bank/v1/query.proto
 
 
 
-<a name="lbm.bank.v1beta1.QueryAllBalancesRequest"></a>
+<a name="lbm.bank.v1.QueryAllBalancesRequest"></a>
 
 ### QueryAllBalancesRequest
 QueryBalanceRequest is the request type for the Query/AllBalances RPC method.
@@ -5613,14 +5613,14 @@ QueryBalanceRequest is the request type for the Query/AllBalances RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the address to query balances for. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.QueryAllBalancesResponse"></a>
+<a name="lbm.bank.v1.QueryAllBalancesResponse"></a>
 
 ### QueryAllBalancesResponse
 QueryAllBalancesResponse is the response type for the Query/AllBalances RPC
@@ -5629,15 +5629,15 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `balances` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | balances is the balances of all the coins. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `balances` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | balances is the balances of all the coins. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.QueryBalanceRequest"></a>
+<a name="lbm.bank.v1.QueryBalanceRequest"></a>
 
 ### QueryBalanceRequest
 QueryBalanceRequest is the request type for the Query/Balance RPC method.
@@ -5653,7 +5653,7 @@ QueryBalanceRequest is the request type for the Query/Balance RPC method.
 
 
 
-<a name="lbm.bank.v1beta1.QueryBalanceResponse"></a>
+<a name="lbm.bank.v1.QueryBalanceResponse"></a>
 
 ### QueryBalanceResponse
 QueryBalanceResponse is the response type for the Query/Balance RPC method.
@@ -5661,14 +5661,14 @@ QueryBalanceResponse is the response type for the Query/Balance RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `balance` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  | balance is the balance of the coin. |
+| `balance` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  | balance is the balance of the coin. |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.QueryDenomMetadataRequest"></a>
+<a name="lbm.bank.v1.QueryDenomMetadataRequest"></a>
 
 ### QueryDenomMetadataRequest
 QueryDenomMetadataRequest is the request type for the Query/DenomMetadata RPC method.
@@ -5683,7 +5683,7 @@ QueryDenomMetadataRequest is the request type for the Query/DenomMetadata RPC me
 
 
 
-<a name="lbm.bank.v1beta1.QueryDenomMetadataResponse"></a>
+<a name="lbm.bank.v1.QueryDenomMetadataResponse"></a>
 
 ### QueryDenomMetadataResponse
 QueryDenomMetadataResponse is the response type for the Query/DenomMetadata RPC
@@ -5692,14 +5692,14 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `metadata` | [Metadata](#lbm.bank.v1beta1.Metadata) |  | metadata describes and provides all the client information for the requested token. |
+| `metadata` | [Metadata](#lbm.bank.v1.Metadata) |  | metadata describes and provides all the client information for the requested token. |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.QueryDenomsMetadataRequest"></a>
+<a name="lbm.bank.v1.QueryDenomsMetadataRequest"></a>
 
 ### QueryDenomsMetadataRequest
 QueryDenomsMetadataRequest is the request type for the Query/DenomsMetadata RPC method.
@@ -5707,14 +5707,14 @@ QueryDenomsMetadataRequest is the request type for the Query/DenomsMetadata RPC 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.QueryDenomsMetadataResponse"></a>
+<a name="lbm.bank.v1.QueryDenomsMetadataResponse"></a>
 
 ### QueryDenomsMetadataResponse
 QueryDenomsMetadataResponse is the response type for the Query/DenomsMetadata RPC
@@ -5723,15 +5723,15 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `metadatas` | [Metadata](#lbm.bank.v1beta1.Metadata) | repeated | metadata provides the client information for all the registered tokens. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `metadatas` | [Metadata](#lbm.bank.v1.Metadata) | repeated | metadata provides the client information for all the registered tokens. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.QueryParamsRequest"></a>
+<a name="lbm.bank.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 QueryParamsRequest defines the request type for querying x/bank parameters.
@@ -5741,7 +5741,7 @@ QueryParamsRequest defines the request type for querying x/bank parameters.
 
 
 
-<a name="lbm.bank.v1beta1.QueryParamsResponse"></a>
+<a name="lbm.bank.v1.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 QueryParamsResponse defines the response type for querying x/bank parameters.
@@ -5749,14 +5749,14 @@ QueryParamsResponse defines the response type for querying x/bank parameters.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.bank.v1beta1.Params) |  |  |
+| `params` | [Params](#lbm.bank.v1.Params) |  |  |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.QuerySupplyOfRequest"></a>
+<a name="lbm.bank.v1.QuerySupplyOfRequest"></a>
 
 ### QuerySupplyOfRequest
 QuerySupplyOfRequest is the request type for the Query/SupplyOf RPC method.
@@ -5771,7 +5771,7 @@ QuerySupplyOfRequest is the request type for the Query/SupplyOf RPC method.
 
 
 
-<a name="lbm.bank.v1beta1.QuerySupplyOfResponse"></a>
+<a name="lbm.bank.v1.QuerySupplyOfResponse"></a>
 
 ### QuerySupplyOfResponse
 QuerySupplyOfResponse is the response type for the Query/SupplyOf RPC method.
@@ -5779,14 +5779,14 @@ QuerySupplyOfResponse is the response type for the Query/SupplyOf RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  | amount is the supply of the coin. |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  | amount is the supply of the coin. |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.QueryTotalSupplyRequest"></a>
+<a name="lbm.bank.v1.QueryTotalSupplyRequest"></a>
 
 ### QueryTotalSupplyRequest
 QueryTotalSupplyRequest is the request type for the Query/TotalSupply RPC
@@ -5797,7 +5797,7 @@ method.
 
 
 
-<a name="lbm.bank.v1beta1.QueryTotalSupplyResponse"></a>
+<a name="lbm.bank.v1.QueryTotalSupplyResponse"></a>
 
 ### QueryTotalSupplyResponse
 QueryTotalSupplyResponse is the response type for the Query/TotalSupply RPC
@@ -5806,7 +5806,7 @@ method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `supply` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | supply is the supply of the coins |
+| `supply` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | supply is the supply of the coins |
 
 
 
@@ -5819,33 +5819,33 @@ method
  <!-- end HasExtensions -->
 
 
-<a name="lbm.bank.v1beta1.Query"></a>
+<a name="lbm.bank.v1.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Balance` | [QueryBalanceRequest](#lbm.bank.v1beta1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.bank.v1beta1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/lbm/bank/v1beta1/balances/{address}/{denom}|
-| `AllBalances` | [QueryAllBalancesRequest](#lbm.bank.v1beta1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.bank.v1beta1.QueryAllBalancesResponse) | AllBalances queries the balance of all coins for a single account. | GET|/lbm/bank/v1beta1/balances/{address}|
-| `TotalSupply` | [QueryTotalSupplyRequest](#lbm.bank.v1beta1.QueryTotalSupplyRequest) | [QueryTotalSupplyResponse](#lbm.bank.v1beta1.QueryTotalSupplyResponse) | TotalSupply queries the total supply of all coins. | GET|/lbm/bank/v1beta1/supply|
-| `SupplyOf` | [QuerySupplyOfRequest](#lbm.bank.v1beta1.QuerySupplyOfRequest) | [QuerySupplyOfResponse](#lbm.bank.v1beta1.QuerySupplyOfResponse) | SupplyOf queries the supply of a single coin. | GET|/lbm/bank/v1beta1/supply/{denom}|
-| `Params` | [QueryParamsRequest](#lbm.bank.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.bank.v1beta1.QueryParamsResponse) | Params queries the parameters of x/bank module. | GET|/lbm/bank/v1beta1/params|
-| `DenomMetadata` | [QueryDenomMetadataRequest](#lbm.bank.v1beta1.QueryDenomMetadataRequest) | [QueryDenomMetadataResponse](#lbm.bank.v1beta1.QueryDenomMetadataResponse) | DenomsMetadata queries the client metadata of a given coin denomination. | GET|/lbm/bank/v1beta1/denoms_metadata/{denom}|
-| `DenomsMetadata` | [QueryDenomsMetadataRequest](#lbm.bank.v1beta1.QueryDenomsMetadataRequest) | [QueryDenomsMetadataResponse](#lbm.bank.v1beta1.QueryDenomsMetadataResponse) | DenomsMetadata queries the client metadata for all registered coin denominations. | GET|/lbm/bank/v1beta1/denoms_metadata|
+| `Balance` | [QueryBalanceRequest](#lbm.bank.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.bank.v1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/lbm/bank/v1/balances/{address}/{denom}|
+| `AllBalances` | [QueryAllBalancesRequest](#lbm.bank.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.bank.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all coins for a single account. | GET|/lbm/bank/v1/balances/{address}|
+| `TotalSupply` | [QueryTotalSupplyRequest](#lbm.bank.v1.QueryTotalSupplyRequest) | [QueryTotalSupplyResponse](#lbm.bank.v1.QueryTotalSupplyResponse) | TotalSupply queries the total supply of all coins. | GET|/lbm/bank/v1/supply|
+| `SupplyOf` | [QuerySupplyOfRequest](#lbm.bank.v1.QuerySupplyOfRequest) | [QuerySupplyOfResponse](#lbm.bank.v1.QuerySupplyOfResponse) | SupplyOf queries the supply of a single coin. | GET|/lbm/bank/v1/supply/{denom}|
+| `Params` | [QueryParamsRequest](#lbm.bank.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.bank.v1.QueryParamsResponse) | Params queries the parameters of x/bank module. | GET|/lbm/bank/v1/params|
+| `DenomMetadata` | [QueryDenomMetadataRequest](#lbm.bank.v1.QueryDenomMetadataRequest) | [QueryDenomMetadataResponse](#lbm.bank.v1.QueryDenomMetadataResponse) | DenomsMetadata queries the client metadata of a given coin denomination. | GET|/lbm/bank/v1/denoms_metadata/{denom}|
+| `DenomsMetadata` | [QueryDenomsMetadataRequest](#lbm.bank.v1.QueryDenomsMetadataRequest) | [QueryDenomsMetadataResponse](#lbm.bank.v1.QueryDenomsMetadataResponse) | DenomsMetadata queries the client metadata for all registered coin denominations. | GET|/lbm/bank/v1/denoms_metadata|
 
  <!-- end services -->
 
 
 
-<a name="lbm/bank/v1beta1/tx.proto"></a>
+<a name="lbm/bank/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/bank/v1beta1/tx.proto
+## lbm/bank/v1/tx.proto
 
 
 
-<a name="lbm.bank.v1beta1.MsgMultiSend"></a>
+<a name="lbm.bank.v1.MsgMultiSend"></a>
 
 ### MsgMultiSend
 MsgMultiSend represents an arbitrary multi-in, multi-out send message.
@@ -5853,15 +5853,15 @@ MsgMultiSend represents an arbitrary multi-in, multi-out send message.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `inputs` | [Input](#lbm.bank.v1beta1.Input) | repeated |  |
-| `outputs` | [Output](#lbm.bank.v1beta1.Output) | repeated |  |
+| `inputs` | [Input](#lbm.bank.v1.Input) | repeated |  |
+| `outputs` | [Output](#lbm.bank.v1.Output) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.MsgMultiSendResponse"></a>
+<a name="lbm.bank.v1.MsgMultiSendResponse"></a>
 
 ### MsgMultiSendResponse
 MsgMultiSendResponse defines the Msg/MultiSend response type.
@@ -5871,7 +5871,7 @@ MsgMultiSendResponse defines the Msg/MultiSend response type.
 
 
 
-<a name="lbm.bank.v1beta1.MsgSend"></a>
+<a name="lbm.bank.v1.MsgSend"></a>
 
 ### MsgSend
 MsgSend represents a message to send coins from one account to another.
@@ -5881,14 +5881,14 @@ MsgSend represents a message to send coins from one account to another.
 | ----- | ---- | ----- | ----------- |
 | `from_address` | [string](#string) |  |  |
 | `to_address` | [string](#string) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.bank.v1beta1.MsgSendResponse"></a>
+<a name="lbm.bank.v1.MsgSendResponse"></a>
 
 ### MsgSendResponse
 MsgSendResponse defines the Msg/Send response type.
@@ -5904,28 +5904,28 @@ MsgSendResponse defines the Msg/Send response type.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.bank.v1beta1.Msg"></a>
+<a name="lbm.bank.v1.Msg"></a>
 
 ### Msg
 Msg defines the bank Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Send` | [MsgSend](#lbm.bank.v1beta1.MsgSend) | [MsgSendResponse](#lbm.bank.v1beta1.MsgSendResponse) | Send defines a method for sending coins from one account to another account. | |
-| `MultiSend` | [MsgMultiSend](#lbm.bank.v1beta1.MsgMultiSend) | [MsgMultiSendResponse](#lbm.bank.v1beta1.MsgMultiSendResponse) | MultiSend defines a method for sending coins from some accounts to other accounts. | |
+| `Send` | [MsgSend](#lbm.bank.v1.MsgSend) | [MsgSendResponse](#lbm.bank.v1.MsgSendResponse) | Send defines a method for sending coins from one account to another account. | |
+| `MultiSend` | [MsgMultiSend](#lbm.bank.v1.MsgMultiSend) | [MsgMultiSendResponse](#lbm.bank.v1.MsgMultiSendResponse) | MultiSend defines a method for sending coins from some accounts to other accounts. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/base/abci/v1beta1/abci.proto"></a>
+<a name="lbm/base/abci/v1/abci.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/abci/v1beta1/abci.proto
+## lbm/base/abci/v1/abci.proto
 
 
 
-<a name="lbm.base.abci.v1beta1.ABCIMessageLog"></a>
+<a name="lbm.base.abci.v1.ABCIMessageLog"></a>
 
 ### ABCIMessageLog
 ABCIMessageLog defines a structure containing an indexed tx ABCI message log.
@@ -5935,14 +5935,14 @@ ABCIMessageLog defines a structure containing an indexed tx ABCI message log.
 | ----- | ---- | ----- | ----------- |
 | `msg_index` | [uint32](#uint32) |  |  |
 | `log` | [string](#string) |  |  |
-| `events` | [StringEvent](#lbm.base.abci.v1beta1.StringEvent) | repeated | Events contains a slice of Event objects that were emitted during some execution. |
+| `events` | [StringEvent](#lbm.base.abci.v1.StringEvent) | repeated | Events contains a slice of Event objects that were emitted during some execution. |
 
 
 
 
 
 
-<a name="lbm.base.abci.v1beta1.Attribute"></a>
+<a name="lbm.base.abci.v1.Attribute"></a>
 
 ### Attribute
 Attribute defines an attribute wrapper where the key and value are
@@ -5959,7 +5959,7 @@ strings instead of raw bytes.
 
 
 
-<a name="lbm.base.abci.v1beta1.GasInfo"></a>
+<a name="lbm.base.abci.v1.GasInfo"></a>
 
 ### GasInfo
 GasInfo defines tx execution gas context.
@@ -5975,7 +5975,7 @@ GasInfo defines tx execution gas context.
 
 
 
-<a name="lbm.base.abci.v1beta1.MsgData"></a>
+<a name="lbm.base.abci.v1.MsgData"></a>
 
 ### MsgData
 MsgData defines the data returned in a Result object during message
@@ -5992,7 +5992,7 @@ execution.
 
 
 
-<a name="lbm.base.abci.v1beta1.Result"></a>
+<a name="lbm.base.abci.v1.Result"></a>
 
 ### Result
 Result is the union of ResponseFormat and ResponseCheckTx.
@@ -6009,7 +6009,7 @@ Result is the union of ResponseFormat and ResponseCheckTx.
 
 
 
-<a name="lbm.base.abci.v1beta1.SearchTxsResult"></a>
+<a name="lbm.base.abci.v1.SearchTxsResult"></a>
 
 ### SearchTxsResult
 SearchTxsResult defines a structure for querying txs pageable
@@ -6022,14 +6022,14 @@ SearchTxsResult defines a structure for querying txs pageable
 | `page_number` | [uint64](#uint64) |  | Index of current page, start from 1 |
 | `page_total` | [uint64](#uint64) |  | Count of total pages |
 | `limit` | [uint64](#uint64) |  | Max count txs per page |
-| `txs` | [TxResponse](#lbm.base.abci.v1beta1.TxResponse) | repeated | List of txs in current page |
+| `txs` | [TxResponse](#lbm.base.abci.v1.TxResponse) | repeated | List of txs in current page |
 
 
 
 
 
 
-<a name="lbm.base.abci.v1beta1.SimulationResponse"></a>
+<a name="lbm.base.abci.v1.SimulationResponse"></a>
 
 ### SimulationResponse
 SimulationResponse defines the response generated when a transaction is
@@ -6038,15 +6038,15 @@ successfully simulated.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `gas_info` | [GasInfo](#lbm.base.abci.v1beta1.GasInfo) |  |  |
-| `result` | [Result](#lbm.base.abci.v1beta1.Result) |  |  |
+| `gas_info` | [GasInfo](#lbm.base.abci.v1.GasInfo) |  |  |
+| `result` | [Result](#lbm.base.abci.v1.Result) |  |  |
 
 
 
 
 
 
-<a name="lbm.base.abci.v1beta1.StringEvent"></a>
+<a name="lbm.base.abci.v1.StringEvent"></a>
 
 ### StringEvent
 StringEvent defines en Event object wrapper where all the attributes
@@ -6056,14 +6056,14 @@ contain key/value pairs that are strings instead of raw bytes.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `type` | [string](#string) |  |  |
-| `attributes` | [Attribute](#lbm.base.abci.v1beta1.Attribute) | repeated |  |
+| `attributes` | [Attribute](#lbm.base.abci.v1.Attribute) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.base.abci.v1beta1.TxMsgData"></a>
+<a name="lbm.base.abci.v1.TxMsgData"></a>
 
 ### TxMsgData
 TxMsgData defines a list of MsgData. A transaction will have a MsgData object
@@ -6072,14 +6072,14 @@ for each message.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `data` | [MsgData](#lbm.base.abci.v1beta1.MsgData) | repeated |  |
+| `data` | [MsgData](#lbm.base.abci.v1.MsgData) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.base.abci.v1beta1.TxResponse"></a>
+<a name="lbm.base.abci.v1.TxResponse"></a>
 
 ### TxResponse
 TxResponse defines a structure containing relevant tx data and metadata. The
@@ -6094,7 +6094,7 @@ tags are stringified and the log is JSON decoded.
 | `code` | [uint32](#uint32) |  | Response code. |
 | `data` | [string](#string) |  | Result bytes, if any. |
 | `raw_log` | [string](#string) |  | The output of the application's logger (raw string). May be non-deterministic. |
-| `logs` | [ABCIMessageLog](#lbm.base.abci.v1beta1.ABCIMessageLog) | repeated | The output of the application's logger (typed). May be non-deterministic. |
+| `logs` | [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog) | repeated | The output of the application's logger (typed). May be non-deterministic. |
 | `info` | [string](#string) |  | Additional information. May be non-deterministic. |
 | `gas_wanted` | [int64](#int64) |  | Amount of gas requested for transaction. |
 | `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
@@ -6115,14 +6115,14 @@ tags are stringified and the log is JSON decoded.
 
 
 
-<a name="lbm/base/kv/v1beta1/kv.proto"></a>
+<a name="lbm/base/kv/v1/kv.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/kv/v1beta1/kv.proto
+## lbm/base/kv/v1/kv.proto
 
 
 
-<a name="lbm.base.kv.v1beta1.Pair"></a>
+<a name="lbm.base.kv.v1.Pair"></a>
 
 ### Pair
 Pair defines a key/value bytes tuple.
@@ -6138,7 +6138,7 @@ Pair defines a key/value bytes tuple.
 
 
 
-<a name="lbm.base.kv.v1beta1.Pairs"></a>
+<a name="lbm.base.kv.v1.Pairs"></a>
 
 ### Pairs
 Pairs defines a repeated slice of Pair objects.
@@ -6146,7 +6146,7 @@ Pairs defines a repeated slice of Pair objects.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pairs` | [Pair](#lbm.base.kv.v1beta1.Pair) | repeated |  |
+| `pairs` | [Pair](#lbm.base.kv.v1.Pair) | repeated |  |
 
 
 
@@ -6162,14 +6162,14 @@ Pairs defines a repeated slice of Pair objects.
 
 
 
-<a name="lbm/base/ostracon/v1beta1/query.proto"></a>
+<a name="lbm/base/ostracon/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/ostracon/v1beta1/query.proto
+## lbm/base/ostracon/v1/query.proto
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetBlockByHashRequest"></a>
+<a name="lbm.base.ostracon.v1.GetBlockByHashRequest"></a>
 
 ### GetBlockByHashRequest
 GetBlockByHashRequest is the request type for the Query/GetBlockByHash RPC method.
@@ -6184,7 +6184,7 @@ GetBlockByHashRequest is the request type for the Query/GetBlockByHash RPC metho
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetBlockByHashResponse"></a>
+<a name="lbm.base.ostracon.v1.GetBlockByHashResponse"></a>
 
 ### GetBlockByHashResponse
 GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC method.
@@ -6200,7 +6200,7 @@ GetBlockByHashResponse is the response type for the Query/GetBlockByHash RPC met
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetBlockByHeightRequest"></a>
+<a name="lbm.base.ostracon.v1.GetBlockByHeightRequest"></a>
 
 ### GetBlockByHeightRequest
 GetBlockByHeightRequest is the request type for the Query/GetBlockByHeight RPC method.
@@ -6215,7 +6215,7 @@ GetBlockByHeightRequest is the request type for the Query/GetBlockByHeight RPC m
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetBlockByHeightResponse"></a>
+<a name="lbm.base.ostracon.v1.GetBlockByHeightResponse"></a>
 
 ### GetBlockByHeightResponse
 GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC method.
@@ -6231,7 +6231,7 @@ GetBlockByHeightResponse is the response type for the Query/GetBlockByHeight RPC
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetBlockResultsByHeightRequest"></a>
+<a name="lbm.base.ostracon.v1.GetBlockResultsByHeightRequest"></a>
 
 ### GetBlockResultsByHeightRequest
 GetBlockResultsByHeightRequest is the request type for the Query/GetBlockResultsByHeight RPC method.
@@ -6246,7 +6246,7 @@ GetBlockResultsByHeightRequest is the request type for the Query/GetBlockResults
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetBlockResultsByHeightResponse"></a>
+<a name="lbm.base.ostracon.v1.GetBlockResultsByHeightResponse"></a>
 
 ### GetBlockResultsByHeightResponse
 GetBlockResultsByHeightResponse is the response type for the Query/GetBlockResultsByHeight RPC method.
@@ -6264,7 +6264,7 @@ GetBlockResultsByHeightResponse is the response type for the Query/GetBlockResul
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetLatestBlockRequest"></a>
+<a name="lbm.base.ostracon.v1.GetLatestBlockRequest"></a>
 
 ### GetLatestBlockRequest
 GetLatestBlockRequest is the request type for the Query/GetLatestBlock RPC method.
@@ -6274,7 +6274,7 @@ GetLatestBlockRequest is the request type for the Query/GetLatestBlock RPC metho
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetLatestBlockResponse"></a>
+<a name="lbm.base.ostracon.v1.GetLatestBlockResponse"></a>
 
 ### GetLatestBlockResponse
 GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC method.
@@ -6290,7 +6290,7 @@ GetLatestBlockResponse is the response type for the Query/GetLatestBlock RPC met
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetLatestValidatorSetRequest"></a>
+<a name="lbm.base.ostracon.v1.GetLatestValidatorSetRequest"></a>
 
 ### GetLatestValidatorSetRequest
 GetLatestValidatorSetRequest is the request type for the Query/GetValidatorSetByHeight RPC method.
@@ -6298,14 +6298,14 @@ GetLatestValidatorSetRequest is the request type for the Query/GetValidatorSetBy
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetLatestValidatorSetResponse"></a>
+<a name="lbm.base.ostracon.v1.GetLatestValidatorSetResponse"></a>
 
 ### GetLatestValidatorSetResponse
 GetLatestValidatorSetResponse is the response type for the Query/GetValidatorSetByHeight RPC method.
@@ -6314,15 +6314,15 @@ GetLatestValidatorSetResponse is the response type for the Query/GetValidatorSet
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `block_height` | [int64](#int64) |  |  |
-| `validators` | [Validator](#lbm.base.ostracon.v1beta1.Validator) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+| `validators` | [Validator](#lbm.base.ostracon.v1.Validator) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
 
 
 
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetNodeInfoRequest"></a>
+<a name="lbm.base.ostracon.v1.GetNodeInfoRequest"></a>
 
 ### GetNodeInfoRequest
 GetNodeInfoRequest is the request type for the Query/GetNodeInfo RPC method.
@@ -6332,7 +6332,7 @@ GetNodeInfoRequest is the request type for the Query/GetNodeInfo RPC method.
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetNodeInfoResponse"></a>
+<a name="lbm.base.ostracon.v1.GetNodeInfoResponse"></a>
 
 ### GetNodeInfoResponse
 GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC method.
@@ -6341,14 +6341,14 @@ GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `default_node_info` | [ostracon.p2p.DefaultNodeInfo](#ostracon.p2p.DefaultNodeInfo) |  |  |
-| `application_version` | [VersionInfo](#lbm.base.ostracon.v1beta1.VersionInfo) |  |  |
+| `application_version` | [VersionInfo](#lbm.base.ostracon.v1.VersionInfo) |  |  |
 
 
 
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetSyncingRequest"></a>
+<a name="lbm.base.ostracon.v1.GetSyncingRequest"></a>
 
 ### GetSyncingRequest
 GetSyncingRequest is the request type for the Query/GetSyncing RPC method.
@@ -6358,7 +6358,7 @@ GetSyncingRequest is the request type for the Query/GetSyncing RPC method.
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetSyncingResponse"></a>
+<a name="lbm.base.ostracon.v1.GetSyncingResponse"></a>
 
 ### GetSyncingResponse
 GetSyncingResponse is the response type for the Query/GetSyncing RPC method.
@@ -6373,7 +6373,7 @@ GetSyncingResponse is the response type for the Query/GetSyncing RPC method.
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetValidatorSetByHeightRequest"></a>
+<a name="lbm.base.ostracon.v1.GetValidatorSetByHeightRequest"></a>
 
 ### GetValidatorSetByHeightRequest
 GetValidatorSetByHeightRequest is the request type for the Query/GetValidatorSetByHeight RPC method.
@@ -6382,14 +6382,14 @@ GetValidatorSetByHeightRequest is the request type for the Query/GetValidatorSet
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `height` | [int64](#int64) |  |  |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.base.ostracon.v1beta1.GetValidatorSetByHeightResponse"></a>
+<a name="lbm.base.ostracon.v1.GetValidatorSetByHeightResponse"></a>
 
 ### GetValidatorSetByHeightResponse
 GetValidatorSetByHeightResponse is the response type for the Query/GetValidatorSetByHeight RPC method.
@@ -6398,15 +6398,15 @@ GetValidatorSetByHeightResponse is the response type for the Query/GetValidatorS
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `block_height` | [int64](#int64) |  |  |
-| `validators` | [Validator](#lbm.base.ostracon.v1beta1.Validator) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+| `validators` | [Validator](#lbm.base.ostracon.v1.Validator) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
 
 
 
 
 
 
-<a name="lbm.base.ostracon.v1beta1.Module"></a>
+<a name="lbm.base.ostracon.v1.Module"></a>
 
 ### Module
 Module is the type for VersionInfo
@@ -6423,7 +6423,7 @@ Module is the type for VersionInfo
 
 
 
-<a name="lbm.base.ostracon.v1beta1.Validator"></a>
+<a name="lbm.base.ostracon.v1.Validator"></a>
 
 ### Validator
 Validator is the type for the validator-set.
@@ -6441,7 +6441,7 @@ Validator is the type for the validator-set.
 
 
 
-<a name="lbm.base.ostracon.v1beta1.VersionInfo"></a>
+<a name="lbm.base.ostracon.v1.VersionInfo"></a>
 
 ### VersionInfo
 VersionInfo is the type for the GetNodeInfoResponse message.
@@ -6455,7 +6455,7 @@ VersionInfo is the type for the GetNodeInfoResponse message.
 | `git_commit` | [string](#string) |  |  |
 | `build_tags` | [string](#string) |  |  |
 | `go_version` | [string](#string) |  |  |
-| `build_deps` | [Module](#lbm.base.ostracon.v1beta1.Module) | repeated |  |
+| `build_deps` | [Module](#lbm.base.ostracon.v1.Module) | repeated |  |
 
 
 
@@ -6468,34 +6468,34 @@ VersionInfo is the type for the GetNodeInfoResponse message.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.base.ostracon.v1beta1.Service"></a>
+<a name="lbm.base.ostracon.v1.Service"></a>
 
 ### Service
 Service defines the gRPC querier service for ostracon queries.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `GetNodeInfo` | [GetNodeInfoRequest](#lbm.base.ostracon.v1beta1.GetNodeInfoRequest) | [GetNodeInfoResponse](#lbm.base.ostracon.v1beta1.GetNodeInfoResponse) | GetNodeInfo queries the current node info. | GET|/lbm/base/ostracon/v1beta1/node_info|
-| `GetSyncing` | [GetSyncingRequest](#lbm.base.ostracon.v1beta1.GetSyncingRequest) | [GetSyncingResponse](#lbm.base.ostracon.v1beta1.GetSyncingResponse) | GetSyncing queries node syncing. | GET|/lbm/base/ostracon/v1beta1/syncing|
-| `GetLatestBlock` | [GetLatestBlockRequest](#lbm.base.ostracon.v1beta1.GetLatestBlockRequest) | [GetLatestBlockResponse](#lbm.base.ostracon.v1beta1.GetLatestBlockResponse) | GetLatestBlock returns the latest block. | GET|/lbm/base/ostracon/v1beta1/blocks/latest|
-| `GetBlockByHeight` | [GetBlockByHeightRequest](#lbm.base.ostracon.v1beta1.GetBlockByHeightRequest) | [GetBlockByHeightResponse](#lbm.base.ostracon.v1beta1.GetBlockByHeightResponse) | GetBlockByHeight queries block for given height. | GET|/lbm/base/ostracon/v1beta1/blocks/{height}|
-| `GetBlockByHash` | [GetBlockByHashRequest](#lbm.base.ostracon.v1beta1.GetBlockByHashRequest) | [GetBlockByHashResponse](#lbm.base.ostracon.v1beta1.GetBlockByHashResponse) | GetBlockByHash queries block for given hash. | GET|/lbm/base/ostracon/v1beta1/blocks/{hash}|
-| `GetBlockResultsByHeight` | [GetBlockResultsByHeightRequest](#lbm.base.ostracon.v1beta1.GetBlockResultsByHeightRequest) | [GetBlockResultsByHeightResponse](#lbm.base.ostracon.v1beta1.GetBlockResultsByHeightResponse) | GetBlockResultsByHeight queries block results for given height. | GET|/lbm/base/ostracon/v1beta1/blockresults/{height}|
-| `GetLatestValidatorSet` | [GetLatestValidatorSetRequest](#lbm.base.ostracon.v1beta1.GetLatestValidatorSetRequest) | [GetLatestValidatorSetResponse](#lbm.base.ostracon.v1beta1.GetLatestValidatorSetResponse) | GetLatestValidatorSet queries latest validator-set. | GET|/lbm/base/ostracon/v1beta1/validatorsets/latest|
-| `GetValidatorSetByHeight` | [GetValidatorSetByHeightRequest](#lbm.base.ostracon.v1beta1.GetValidatorSetByHeightRequest) | [GetValidatorSetByHeightResponse](#lbm.base.ostracon.v1beta1.GetValidatorSetByHeightResponse) | GetValidatorSetByHeight queries validator-set at a given height. | GET|/lbm/base/ostracon/v1beta1/validatorsets/{height}|
+| `GetNodeInfo` | [GetNodeInfoRequest](#lbm.base.ostracon.v1.GetNodeInfoRequest) | [GetNodeInfoResponse](#lbm.base.ostracon.v1.GetNodeInfoResponse) | GetNodeInfo queries the current node info. | GET|/lbm/base/ostracon/v1/node_info|
+| `GetSyncing` | [GetSyncingRequest](#lbm.base.ostracon.v1.GetSyncingRequest) | [GetSyncingResponse](#lbm.base.ostracon.v1.GetSyncingResponse) | GetSyncing queries node syncing. | GET|/lbm/base/ostracon/v1/syncing|
+| `GetLatestBlock` | [GetLatestBlockRequest](#lbm.base.ostracon.v1.GetLatestBlockRequest) | [GetLatestBlockResponse](#lbm.base.ostracon.v1.GetLatestBlockResponse) | GetLatestBlock returns the latest block. | GET|/lbm/base/ostracon/v1/blocks/latest|
+| `GetBlockByHeight` | [GetBlockByHeightRequest](#lbm.base.ostracon.v1.GetBlockByHeightRequest) | [GetBlockByHeightResponse](#lbm.base.ostracon.v1.GetBlockByHeightResponse) | GetBlockByHeight queries block for given height. | GET|/lbm/base/ostracon/v1/blocks/{height}|
+| `GetBlockByHash` | [GetBlockByHashRequest](#lbm.base.ostracon.v1.GetBlockByHashRequest) | [GetBlockByHashResponse](#lbm.base.ostracon.v1.GetBlockByHashResponse) | GetBlockByHash queries block for given hash. | GET|/lbm/base/ostracon/v1/blocks/{hash}|
+| `GetBlockResultsByHeight` | [GetBlockResultsByHeightRequest](#lbm.base.ostracon.v1.GetBlockResultsByHeightRequest) | [GetBlockResultsByHeightResponse](#lbm.base.ostracon.v1.GetBlockResultsByHeightResponse) | GetBlockResultsByHeight queries block results for given height. | GET|/lbm/base/ostracon/v1/blockresults/{height}|
+| `GetLatestValidatorSet` | [GetLatestValidatorSetRequest](#lbm.base.ostracon.v1.GetLatestValidatorSetRequest) | [GetLatestValidatorSetResponse](#lbm.base.ostracon.v1.GetLatestValidatorSetResponse) | GetLatestValidatorSet queries latest validator-set. | GET|/lbm/base/ostracon/v1/validatorsets/latest|
+| `GetValidatorSetByHeight` | [GetValidatorSetByHeightRequest](#lbm.base.ostracon.v1.GetValidatorSetByHeightRequest) | [GetValidatorSetByHeightResponse](#lbm.base.ostracon.v1.GetValidatorSetByHeightResponse) | GetValidatorSetByHeight queries validator-set at a given height. | GET|/lbm/base/ostracon/v1/validatorsets/{height}|
 
  <!-- end services -->
 
 
 
-<a name="lbm/base/reflection/v1beta1/reflection.proto"></a>
+<a name="lbm/base/reflection/v1/reflection.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/reflection/v1beta1/reflection.proto
+## lbm/base/reflection/v1/reflection.proto
 
 
 
-<a name="lbm.base.reflection.v1beta1.ListAllInterfacesRequest"></a>
+<a name="lbm.base.reflection.v1.ListAllInterfacesRequest"></a>
 
 ### ListAllInterfacesRequest
 ListAllInterfacesRequest is the request type of the ListAllInterfaces RPC.
@@ -6505,7 +6505,7 @@ ListAllInterfacesRequest is the request type of the ListAllInterfaces RPC.
 
 
 
-<a name="lbm.base.reflection.v1beta1.ListAllInterfacesResponse"></a>
+<a name="lbm.base.reflection.v1.ListAllInterfacesResponse"></a>
 
 ### ListAllInterfacesResponse
 ListAllInterfacesResponse is the response type of the ListAllInterfaces RPC.
@@ -6520,7 +6520,7 @@ ListAllInterfacesResponse is the response type of the ListAllInterfaces RPC.
 
 
 
-<a name="lbm.base.reflection.v1beta1.ListImplementationsRequest"></a>
+<a name="lbm.base.reflection.v1.ListImplementationsRequest"></a>
 
 ### ListImplementationsRequest
 ListImplementationsRequest is the request type of the ListImplementations
@@ -6536,7 +6536,7 @@ RPC.
 
 
 
-<a name="lbm.base.reflection.v1beta1.ListImplementationsResponse"></a>
+<a name="lbm.base.reflection.v1.ListImplementationsResponse"></a>
 
 ### ListImplementationsResponse
 ListImplementationsResponse is the response type of the ListImplementations
@@ -6558,28 +6558,28 @@ RPC.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.base.reflection.v1beta1.ReflectionService"></a>
+<a name="lbm.base.reflection.v1.ReflectionService"></a>
 
 ### ReflectionService
 ReflectionService defines a service for interface reflection.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `ListAllInterfaces` | [ListAllInterfacesRequest](#lbm.base.reflection.v1beta1.ListAllInterfacesRequest) | [ListAllInterfacesResponse](#lbm.base.reflection.v1beta1.ListAllInterfacesResponse) | ListAllInterfaces lists all the interfaces registered in the interface registry. | GET|/lbm/base/reflection/v1beta1/interfaces|
-| `ListImplementations` | [ListImplementationsRequest](#lbm.base.reflection.v1beta1.ListImplementationsRequest) | [ListImplementationsResponse](#lbm.base.reflection.v1beta1.ListImplementationsResponse) | ListImplementations list all the concrete types that implement a given interface. | GET|/lbm/base/reflection/v1beta1/interfaces/{interface_name}/implementations|
+| `ListAllInterfaces` | [ListAllInterfacesRequest](#lbm.base.reflection.v1.ListAllInterfacesRequest) | [ListAllInterfacesResponse](#lbm.base.reflection.v1.ListAllInterfacesResponse) | ListAllInterfaces lists all the interfaces registered in the interface registry. | GET|/lbm/base/reflection/v1/interfaces|
+| `ListImplementations` | [ListImplementationsRequest](#lbm.base.reflection.v1.ListImplementationsRequest) | [ListImplementationsResponse](#lbm.base.reflection.v1.ListImplementationsResponse) | ListImplementations list all the concrete types that implement a given interface. | GET|/lbm/base/reflection/v1/interfaces/{interface_name}/implementations|
 
  <!-- end services -->
 
 
 
-<a name="lbm/base/snapshots/v1beta1/snapshot.proto"></a>
+<a name="lbm/base/snapshots/v1/snapshot.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/snapshots/v1beta1/snapshot.proto
+## lbm/base/snapshots/v1/snapshot.proto
 
 
 
-<a name="lbm.base.snapshots.v1beta1.Metadata"></a>
+<a name="lbm.base.snapshots.v1.Metadata"></a>
 
 ### Metadata
 Metadata contains SDK-specific snapshot metadata.
@@ -6594,7 +6594,7 @@ Metadata contains SDK-specific snapshot metadata.
 
 
 
-<a name="lbm.base.snapshots.v1beta1.Snapshot"></a>
+<a name="lbm.base.snapshots.v1.Snapshot"></a>
 
 ### Snapshot
 Snapshot contains Tendermint state sync snapshot info.
@@ -6606,7 +6606,7 @@ Snapshot contains Tendermint state sync snapshot info.
 | `format` | [uint32](#uint32) |  |  |
 | `chunks` | [uint32](#uint32) |  |  |
 | `hash` | [bytes](#bytes) |  |  |
-| `metadata` | [Metadata](#lbm.base.snapshots.v1beta1.Metadata) |  |  |
+| `metadata` | [Metadata](#lbm.base.snapshots.v1.Metadata) |  |  |
 
 
 
@@ -6622,14 +6622,14 @@ Snapshot contains Tendermint state sync snapshot info.
 
 
 
-<a name="lbm/base/store/v1beta1/commit_info.proto"></a>
+<a name="lbm/base/store/v1/commit_info.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/store/v1beta1/commit_info.proto
+## lbm/base/store/v1/commit_info.proto
 
 
 
-<a name="lbm.base.store.v1beta1.CommitID"></a>
+<a name="lbm.base.store.v1.CommitID"></a>
 
 ### CommitID
 CommitID defines the committment information when a specific store is
@@ -6646,7 +6646,7 @@ committed.
 
 
 
-<a name="lbm.base.store.v1beta1.CommitInfo"></a>
+<a name="lbm.base.store.v1.CommitInfo"></a>
 
 ### CommitInfo
 CommitInfo defines commit information used by the multi-store when committing
@@ -6656,14 +6656,14 @@ a version/height.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `version` | [int64](#int64) |  |  |
-| `store_infos` | [StoreInfo](#lbm.base.store.v1beta1.StoreInfo) | repeated |  |
+| `store_infos` | [StoreInfo](#lbm.base.store.v1.StoreInfo) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.base.store.v1beta1.StoreInfo"></a>
+<a name="lbm.base.store.v1.StoreInfo"></a>
 
 ### StoreInfo
 StoreInfo defines store-specific commit information. It contains a reference
@@ -6673,7 +6673,7 @@ between a store name and the commit ID.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `name` | [string](#string) |  |  |
-| `commit_id` | [CommitID](#lbm.base.store.v1beta1.CommitID) |  |  |
+| `commit_id` | [CommitID](#lbm.base.store.v1.CommitID) |  |  |
 
 
 
@@ -6689,14 +6689,14 @@ between a store name and the commit ID.
 
 
 
-<a name="lbm/base/store/v1beta1/snapshot.proto"></a>
+<a name="lbm/base/store/v1/snapshot.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/base/store/v1beta1/snapshot.proto
+## lbm/base/store/v1/snapshot.proto
 
 
 
-<a name="lbm.base.store.v1beta1.SnapshotIAVLItem"></a>
+<a name="lbm.base.store.v1.SnapshotIAVLItem"></a>
 
 ### SnapshotIAVLItem
 SnapshotIAVLItem is an exported IAVL node.
@@ -6714,7 +6714,7 @@ SnapshotIAVLItem is an exported IAVL node.
 
 
 
-<a name="lbm.base.store.v1beta1.SnapshotItem"></a>
+<a name="lbm.base.store.v1.SnapshotItem"></a>
 
 ### SnapshotItem
 SnapshotItem is an item contained in a rootmulti.Store snapshot.
@@ -6722,15 +6722,15 @@ SnapshotItem is an item contained in a rootmulti.Store snapshot.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `store` | [SnapshotStoreItem](#lbm.base.store.v1beta1.SnapshotStoreItem) |  |  |
-| `iavl` | [SnapshotIAVLItem](#lbm.base.store.v1beta1.SnapshotIAVLItem) |  |  |
+| `store` | [SnapshotStoreItem](#lbm.base.store.v1.SnapshotStoreItem) |  |  |
+| `iavl` | [SnapshotIAVLItem](#lbm.base.store.v1.SnapshotIAVLItem) |  |  |
 
 
 
 
 
 
-<a name="lbm.base.store.v1beta1.SnapshotStoreItem"></a>
+<a name="lbm.base.store.v1.SnapshotStoreItem"></a>
 
 ### SnapshotStoreItem
 SnapshotStoreItem contains metadata about a snapshotted store.
@@ -6754,14 +6754,14 @@ SnapshotStoreItem contains metadata about a snapshotted store.
 
 
 
-<a name="lbm/capability/v1beta1/capability.proto"></a>
+<a name="lbm/capability/v1/capability.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/capability/v1beta1/capability.proto
+## lbm/capability/v1/capability.proto
 
 
 
-<a name="lbm.capability.v1beta1.Capability"></a>
+<a name="lbm.capability.v1.Capability"></a>
 
 ### Capability
 Capability defines an implementation of an object capability. The index
@@ -6777,7 +6777,7 @@ provided to a Capability must be globally unique.
 
 
 
-<a name="lbm.capability.v1beta1.CapabilityOwners"></a>
+<a name="lbm.capability.v1.CapabilityOwners"></a>
 
 ### CapabilityOwners
 CapabilityOwners defines a set of owners of a single Capability. The set of
@@ -6786,14 +6786,14 @@ owners must be unique.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `owners` | [Owner](#lbm.capability.v1beta1.Owner) | repeated |  |
+| `owners` | [Owner](#lbm.capability.v1.Owner) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.capability.v1beta1.Owner"></a>
+<a name="lbm.capability.v1.Owner"></a>
 
 ### Owner
 Owner defines a single capability owner. An owner is defined by the name of
@@ -6819,14 +6819,14 @@ capability and the module name.
 
 
 
-<a name="lbm/capability/v1beta1/genesis.proto"></a>
+<a name="lbm/capability/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/capability/v1beta1/genesis.proto
+## lbm/capability/v1/genesis.proto
 
 
 
-<a name="lbm.capability.v1beta1.GenesisOwners"></a>
+<a name="lbm.capability.v1.GenesisOwners"></a>
 
 ### GenesisOwners
 GenesisOwners defines the capability owners with their corresponding index.
@@ -6835,14 +6835,14 @@ GenesisOwners defines the capability owners with their corresponding index.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `index` | [uint64](#uint64) |  | index is the index of the capability owner. |
-| `index_owners` | [CapabilityOwners](#lbm.capability.v1beta1.CapabilityOwners) |  | index_owners are the owners at the given index. |
+| `index_owners` | [CapabilityOwners](#lbm.capability.v1.CapabilityOwners) |  | index_owners are the owners at the given index. |
 
 
 
 
 
 
-<a name="lbm.capability.v1beta1.GenesisState"></a>
+<a name="lbm.capability.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the capability module's genesis state.
@@ -6851,7 +6851,7 @@ GenesisState defines the capability module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `index` | [uint64](#uint64) |  | index is the capability global index. |
-| `owners` | [GenesisOwners](#lbm.capability.v1beta1.GenesisOwners) | repeated | owners represents a map from index to owners of the capability index index key is string to allow amino marshalling. |
+| `owners` | [GenesisOwners](#lbm.capability.v1.GenesisOwners) | repeated | owners represents a map from index to owners of the capability index index key is string to allow amino marshalling. |
 
 
 
@@ -6867,14 +6867,14 @@ GenesisState defines the capability module's genesis state.
 
 
 
-<a name="lbm/crisis/v1beta1/genesis.proto"></a>
+<a name="lbm/crisis/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/crisis/v1beta1/genesis.proto
+## lbm/crisis/v1/genesis.proto
 
 
 
-<a name="lbm.crisis.v1beta1.GenesisState"></a>
+<a name="lbm.crisis.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the crisis module's genesis state.
@@ -6882,7 +6882,7 @@ GenesisState defines the crisis module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `constant_fee` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  | constant_fee is the fee used to verify the invariant in the crisis module. |
+| `constant_fee` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  | constant_fee is the fee used to verify the invariant in the crisis module. |
 
 
 
@@ -6898,14 +6898,14 @@ GenesisState defines the crisis module's genesis state.
 
 
 
-<a name="lbm/crisis/v1beta1/tx.proto"></a>
+<a name="lbm/crisis/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/crisis/v1beta1/tx.proto
+## lbm/crisis/v1/tx.proto
 
 
 
-<a name="lbm.crisis.v1beta1.MsgVerifyInvariant"></a>
+<a name="lbm.crisis.v1.MsgVerifyInvariant"></a>
 
 ### MsgVerifyInvariant
 MsgVerifyInvariant represents a message to verify a particular invariance.
@@ -6922,7 +6922,7 @@ MsgVerifyInvariant represents a message to verify a particular invariance.
 
 
 
-<a name="lbm.crisis.v1beta1.MsgVerifyInvariantResponse"></a>
+<a name="lbm.crisis.v1.MsgVerifyInvariantResponse"></a>
 
 ### MsgVerifyInvariantResponse
 MsgVerifyInvariantResponse defines the Msg/VerifyInvariant response type.
@@ -6938,27 +6938,27 @@ MsgVerifyInvariantResponse defines the Msg/VerifyInvariant response type.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.crisis.v1beta1.Msg"></a>
+<a name="lbm.crisis.v1.Msg"></a>
 
 ### Msg
 Msg defines the bank Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `VerifyInvariant` | [MsgVerifyInvariant](#lbm.crisis.v1beta1.MsgVerifyInvariant) | [MsgVerifyInvariantResponse](#lbm.crisis.v1beta1.MsgVerifyInvariantResponse) | VerifyInvariant defines a method to verify a particular invariance. | |
+| `VerifyInvariant` | [MsgVerifyInvariant](#lbm.crisis.v1.MsgVerifyInvariant) | [MsgVerifyInvariantResponse](#lbm.crisis.v1.MsgVerifyInvariantResponse) | VerifyInvariant defines a method to verify a particular invariance. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/crypto/multisig/v1beta1/multisig.proto"></a>
+<a name="lbm/crypto/multisig/v1/multisig.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/crypto/multisig/v1beta1/multisig.proto
+## lbm/crypto/multisig/v1/multisig.proto
 
 
 
-<a name="lbm.crypto.multisig.v1beta1.CompactBitArray"></a>
+<a name="lbm.crypto.multisig.v1.CompactBitArray"></a>
 
 ### CompactBitArray
 CompactBitArray is an implementation of a space efficient bit array.
@@ -6977,7 +6977,7 @@ This is not thread safe, and is not intended for concurrent usage.
 
 
 
-<a name="lbm.crypto.multisig.v1beta1.MultiSignature"></a>
+<a name="lbm.crypto.multisig.v1.MultiSignature"></a>
 
 ### MultiSignature
 MultiSignature wraps the signatures from a multisig.LegacyAminoPubKey.
@@ -7003,14 +7003,14 @@ signed and with which modes.
 
 
 
-<a name="lbm/distribution/v1beta1/distribution.proto"></a>
+<a name="lbm/distribution/v1/distribution.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/distribution/v1beta1/distribution.proto
+## lbm/distribution/v1/distribution.proto
 
 
 
-<a name="lbm.distribution.v1beta1.CommunityPoolSpendProposal"></a>
+<a name="lbm.distribution.v1.CommunityPoolSpendProposal"></a>
 
 ### CommunityPoolSpendProposal
 CommunityPoolSpendProposal details a proposal for use of community funds,
@@ -7023,14 +7023,14 @@ recipient account.
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
 | `recipient` | [string](#string) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.CommunityPoolSpendProposalWithDeposit"></a>
+<a name="lbm.distribution.v1.CommunityPoolSpendProposalWithDeposit"></a>
 
 ### CommunityPoolSpendProposalWithDeposit
 CommunityPoolSpendProposalWithDeposit defines a CommunityPoolSpendProposal
@@ -7050,7 +7050,7 @@ with a deposit
 
 
 
-<a name="lbm.distribution.v1beta1.DelegationDelegatorReward"></a>
+<a name="lbm.distribution.v1.DelegationDelegatorReward"></a>
 
 ### DelegationDelegatorReward
 DelegationDelegatorReward represents the properties
@@ -7060,14 +7060,14 @@ of a delegator's delegation reward.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `validator_address` | [string](#string) |  |  |
-| `reward` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated |  |
+| `reward` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.DelegatorStartingInfo"></a>
+<a name="lbm.distribution.v1.DelegatorStartingInfo"></a>
 
 ### DelegatorStartingInfo
 DelegatorStartingInfo represents the starting info for a delegator reward
@@ -7089,7 +7089,7 @@ thus sdk.Dec is used.
 
 
 
-<a name="lbm.distribution.v1beta1.FeePool"></a>
+<a name="lbm.distribution.v1.FeePool"></a>
 
 ### FeePool
 FeePool is the global fee pool for distribution.
@@ -7097,14 +7097,14 @@ FeePool is the global fee pool for distribution.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `community_pool` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated |  |
+| `community_pool` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.Params"></a>
+<a name="lbm.distribution.v1.Params"></a>
 
 ### Params
 Params defines the set of params for the distribution module.
@@ -7122,7 +7122,7 @@ Params defines the set of params for the distribution module.
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorAccumulatedCommission"></a>
+<a name="lbm.distribution.v1.ValidatorAccumulatedCommission"></a>
 
 ### ValidatorAccumulatedCommission
 ValidatorAccumulatedCommission represents accumulated commission
@@ -7131,14 +7131,14 @@ for a validator kept as a running counter, can be withdrawn at any time.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `commission` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated |  |
+| `commission` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorCurrentRewards"></a>
+<a name="lbm.distribution.v1.ValidatorCurrentRewards"></a>
 
 ### ValidatorCurrentRewards
 ValidatorCurrentRewards represents current rewards and current
@@ -7148,7 +7148,7 @@ each block as long as the validator's tokens remain constant.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rewards` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated |  |
+| `rewards` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
 | `period` | [uint64](#uint64) |  |  |
 
 
@@ -7156,7 +7156,7 @@ each block as long as the validator's tokens remain constant.
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorHistoricalRewards"></a>
+<a name="lbm.distribution.v1.ValidatorHistoricalRewards"></a>
 
 ### ValidatorHistoricalRewards
 ValidatorHistoricalRewards represents historical rewards for a validator.
@@ -7175,7 +7175,7 @@ ReferenceCount =
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `cumulative_reward_ratio` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated |  |
+| `cumulative_reward_ratio` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
 | `reference_count` | [uint32](#uint32) |  |  |
 
 
@@ -7183,7 +7183,7 @@ ReferenceCount =
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorOutstandingRewards"></a>
+<a name="lbm.distribution.v1.ValidatorOutstandingRewards"></a>
 
 ### ValidatorOutstandingRewards
 ValidatorOutstandingRewards represents outstanding (un-withdrawn) rewards
@@ -7192,14 +7192,14 @@ for a validator inexpensive to track, allows simple sanity checks.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rewards` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated |  |
+| `rewards` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorSlashEvent"></a>
+<a name="lbm.distribution.v1.ValidatorSlashEvent"></a>
 
 ### ValidatorSlashEvent
 ValidatorSlashEvent represents a validator slash event.
@@ -7218,7 +7218,7 @@ for delegations which are withdrawn after a slash has occurred.
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorSlashEvents"></a>
+<a name="lbm.distribution.v1.ValidatorSlashEvents"></a>
 
 ### ValidatorSlashEvents
 ValidatorSlashEvents is a collection of ValidatorSlashEvent messages.
@@ -7226,7 +7226,7 @@ ValidatorSlashEvents is a collection of ValidatorSlashEvent messages.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `validator_slash_events` | [ValidatorSlashEvent](#lbm.distribution.v1beta1.ValidatorSlashEvent) | repeated |  |
+| `validator_slash_events` | [ValidatorSlashEvent](#lbm.distribution.v1.ValidatorSlashEvent) | repeated |  |
 
 
 
@@ -7242,14 +7242,14 @@ ValidatorSlashEvents is a collection of ValidatorSlashEvent messages.
 
 
 
-<a name="lbm/distribution/v1beta1/genesis.proto"></a>
+<a name="lbm/distribution/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/distribution/v1beta1/genesis.proto
+## lbm/distribution/v1/genesis.proto
 
 
 
-<a name="lbm.distribution.v1beta1.DelegatorStartingInfoRecord"></a>
+<a name="lbm.distribution.v1.DelegatorStartingInfoRecord"></a>
 
 ### DelegatorStartingInfoRecord
 DelegatorStartingInfoRecord used for import / export via genesis json.
@@ -7259,14 +7259,14 @@ DelegatorStartingInfoRecord used for import / export via genesis json.
 | ----- | ---- | ----- | ----------- |
 | `delegator_address` | [string](#string) |  | delegator_address is the address of the delegator. |
 | `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
-| `starting_info` | [DelegatorStartingInfo](#lbm.distribution.v1beta1.DelegatorStartingInfo) |  | starting_info defines the starting info of a delegator. |
+| `starting_info` | [DelegatorStartingInfo](#lbm.distribution.v1.DelegatorStartingInfo) |  | starting_info defines the starting info of a delegator. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.DelegatorWithdrawInfo"></a>
+<a name="lbm.distribution.v1.DelegatorWithdrawInfo"></a>
 
 ### DelegatorWithdrawInfo
 DelegatorWithdrawInfo is the address for where distributions rewards are
@@ -7284,7 +7284,7 @@ default withdraw addresses.
 
 
 
-<a name="lbm.distribution.v1beta1.GenesisState"></a>
+<a name="lbm.distribution.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the distribution module's genesis state.
@@ -7292,23 +7292,23 @@ GenesisState defines the distribution module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.distribution.v1beta1.Params) |  | params defines all the paramaters of the module. |
-| `fee_pool` | [FeePool](#lbm.distribution.v1beta1.FeePool) |  | fee_pool defines the fee pool at genesis. |
-| `delegator_withdraw_infos` | [DelegatorWithdrawInfo](#lbm.distribution.v1beta1.DelegatorWithdrawInfo) | repeated | fee_pool defines the delegator withdraw infos at genesis. |
+| `params` | [Params](#lbm.distribution.v1.Params) |  | params defines all the paramaters of the module. |
+| `fee_pool` | [FeePool](#lbm.distribution.v1.FeePool) |  | fee_pool defines the fee pool at genesis. |
+| `delegator_withdraw_infos` | [DelegatorWithdrawInfo](#lbm.distribution.v1.DelegatorWithdrawInfo) | repeated | fee_pool defines the delegator withdraw infos at genesis. |
 | `previous_proposer` | [string](#string) |  | fee_pool defines the previous proposer at genesis. |
-| `outstanding_rewards` | [ValidatorOutstandingRewardsRecord](#lbm.distribution.v1beta1.ValidatorOutstandingRewardsRecord) | repeated | fee_pool defines the outstanding rewards of all validators at genesis. |
-| `validator_accumulated_commissions` | [ValidatorAccumulatedCommissionRecord](#lbm.distribution.v1beta1.ValidatorAccumulatedCommissionRecord) | repeated | fee_pool defines the accumulated commisions of all validators at genesis. |
-| `validator_historical_rewards` | [ValidatorHistoricalRewardsRecord](#lbm.distribution.v1beta1.ValidatorHistoricalRewardsRecord) | repeated | fee_pool defines the historical rewards of all validators at genesis. |
-| `validator_current_rewards` | [ValidatorCurrentRewardsRecord](#lbm.distribution.v1beta1.ValidatorCurrentRewardsRecord) | repeated | fee_pool defines the current rewards of all validators at genesis. |
-| `delegator_starting_infos` | [DelegatorStartingInfoRecord](#lbm.distribution.v1beta1.DelegatorStartingInfoRecord) | repeated | fee_pool defines the delegator starting infos at genesis. |
-| `validator_slash_events` | [ValidatorSlashEventRecord](#lbm.distribution.v1beta1.ValidatorSlashEventRecord) | repeated | fee_pool defines the validator slash events at genesis. |
+| `outstanding_rewards` | [ValidatorOutstandingRewardsRecord](#lbm.distribution.v1.ValidatorOutstandingRewardsRecord) | repeated | fee_pool defines the outstanding rewards of all validators at genesis. |
+| `validator_accumulated_commissions` | [ValidatorAccumulatedCommissionRecord](#lbm.distribution.v1.ValidatorAccumulatedCommissionRecord) | repeated | fee_pool defines the accumulated commisions of all validators at genesis. |
+| `validator_historical_rewards` | [ValidatorHistoricalRewardsRecord](#lbm.distribution.v1.ValidatorHistoricalRewardsRecord) | repeated | fee_pool defines the historical rewards of all validators at genesis. |
+| `validator_current_rewards` | [ValidatorCurrentRewardsRecord](#lbm.distribution.v1.ValidatorCurrentRewardsRecord) | repeated | fee_pool defines the current rewards of all validators at genesis. |
+| `delegator_starting_infos` | [DelegatorStartingInfoRecord](#lbm.distribution.v1.DelegatorStartingInfoRecord) | repeated | fee_pool defines the delegator starting infos at genesis. |
+| `validator_slash_events` | [ValidatorSlashEventRecord](#lbm.distribution.v1.ValidatorSlashEventRecord) | repeated | fee_pool defines the validator slash events at genesis. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorAccumulatedCommissionRecord"></a>
+<a name="lbm.distribution.v1.ValidatorAccumulatedCommissionRecord"></a>
 
 ### ValidatorAccumulatedCommissionRecord
 ValidatorAccumulatedCommissionRecord is used for import / export via genesis
@@ -7318,14 +7318,14 @@ json.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
-| `accumulated` | [ValidatorAccumulatedCommission](#lbm.distribution.v1beta1.ValidatorAccumulatedCommission) |  | accumulated is the accumulated commission of a validator. |
+| `accumulated` | [ValidatorAccumulatedCommission](#lbm.distribution.v1.ValidatorAccumulatedCommission) |  | accumulated is the accumulated commission of a validator. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorCurrentRewardsRecord"></a>
+<a name="lbm.distribution.v1.ValidatorCurrentRewardsRecord"></a>
 
 ### ValidatorCurrentRewardsRecord
 ValidatorCurrentRewardsRecord is used for import / export via genesis json.
@@ -7334,14 +7334,14 @@ ValidatorCurrentRewardsRecord is used for import / export via genesis json.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
-| `rewards` | [ValidatorCurrentRewards](#lbm.distribution.v1beta1.ValidatorCurrentRewards) |  | rewards defines the current rewards of a validator. |
+| `rewards` | [ValidatorCurrentRewards](#lbm.distribution.v1.ValidatorCurrentRewards) |  | rewards defines the current rewards of a validator. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorHistoricalRewardsRecord"></a>
+<a name="lbm.distribution.v1.ValidatorHistoricalRewardsRecord"></a>
 
 ### ValidatorHistoricalRewardsRecord
 ValidatorHistoricalRewardsRecord is used for import / export via genesis
@@ -7352,14 +7352,14 @@ json.
 | ----- | ---- | ----- | ----------- |
 | `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
 | `period` | [uint64](#uint64) |  | period defines the period the historical rewards apply to. |
-| `rewards` | [ValidatorHistoricalRewards](#lbm.distribution.v1beta1.ValidatorHistoricalRewards) |  | rewards defines the historical rewards of a validator. |
+| `rewards` | [ValidatorHistoricalRewards](#lbm.distribution.v1.ValidatorHistoricalRewards) |  | rewards defines the historical rewards of a validator. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorOutstandingRewardsRecord"></a>
+<a name="lbm.distribution.v1.ValidatorOutstandingRewardsRecord"></a>
 
 ### ValidatorOutstandingRewardsRecord
 ValidatorOutstandingRewardsRecord is used for import/export via genesis json.
@@ -7368,14 +7368,14 @@ ValidatorOutstandingRewardsRecord is used for import/export via genesis json.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
-| `outstanding_rewards` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated | outstanding_rewards represents the oustanding rewards of a validator. |
+| `outstanding_rewards` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated | outstanding_rewards represents the oustanding rewards of a validator. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.ValidatorSlashEventRecord"></a>
+<a name="lbm.distribution.v1.ValidatorSlashEventRecord"></a>
 
 ### ValidatorSlashEventRecord
 ValidatorSlashEventRecord is used for import / export via genesis json.
@@ -7386,7 +7386,7 @@ ValidatorSlashEventRecord is used for import / export via genesis json.
 | `validator_address` | [string](#string) |  | validator_address is the address of the validator. |
 | `height` | [uint64](#uint64) |  | height defines the block height at which the slash event occured. |
 | `period` | [uint64](#uint64) |  | period is the period of the slash event. |
-| `validator_slash_event` | [ValidatorSlashEvent](#lbm.distribution.v1beta1.ValidatorSlashEvent) |  | validator_slash_event describes the slash event. |
+| `validator_slash_event` | [ValidatorSlashEvent](#lbm.distribution.v1.ValidatorSlashEvent) |  | validator_slash_event describes the slash event. |
 
 
 
@@ -7402,14 +7402,14 @@ ValidatorSlashEventRecord is used for import / export via genesis json.
 
 
 
-<a name="lbm/distribution/v1beta1/query.proto"></a>
+<a name="lbm/distribution/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/distribution/v1beta1/query.proto
+## lbm/distribution/v1/query.proto
 
 
 
-<a name="lbm.distribution.v1beta1.QueryCommunityPoolRequest"></a>
+<a name="lbm.distribution.v1.QueryCommunityPoolRequest"></a>
 
 ### QueryCommunityPoolRequest
 QueryCommunityPoolRequest is the request type for the Query/CommunityPool RPC
@@ -7420,7 +7420,7 @@ method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryCommunityPoolResponse"></a>
+<a name="lbm.distribution.v1.QueryCommunityPoolResponse"></a>
 
 ### QueryCommunityPoolResponse
 QueryCommunityPoolResponse is the response type for the Query/CommunityPool
@@ -7429,14 +7429,14 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pool` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated | pool defines community pool's coins. |
+| `pool` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated | pool defines community pool's coins. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.QueryDelegationRewardsRequest"></a>
+<a name="lbm.distribution.v1.QueryDelegationRewardsRequest"></a>
 
 ### QueryDelegationRewardsRequest
 QueryDelegationRewardsRequest is the request type for the
@@ -7453,7 +7453,7 @@ Query/DelegationRewards RPC method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryDelegationRewardsResponse"></a>
+<a name="lbm.distribution.v1.QueryDelegationRewardsResponse"></a>
 
 ### QueryDelegationRewardsResponse
 QueryDelegationRewardsResponse is the response type for the
@@ -7462,14 +7462,14 @@ Query/DelegationRewards RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rewards` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated | rewards defines the rewards accrued by a delegation. |
+| `rewards` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated | rewards defines the rewards accrued by a delegation. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.QueryDelegationTotalRewardsRequest"></a>
+<a name="lbm.distribution.v1.QueryDelegationTotalRewardsRequest"></a>
 
 ### QueryDelegationTotalRewardsRequest
 QueryDelegationTotalRewardsRequest is the request type for the
@@ -7485,7 +7485,7 @@ Query/DelegationTotalRewards RPC method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryDelegationTotalRewardsResponse"></a>
+<a name="lbm.distribution.v1.QueryDelegationTotalRewardsResponse"></a>
 
 ### QueryDelegationTotalRewardsResponse
 QueryDelegationTotalRewardsResponse is the response type for the
@@ -7494,15 +7494,15 @@ Query/DelegationTotalRewards RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rewards` | [DelegationDelegatorReward](#lbm.distribution.v1beta1.DelegationDelegatorReward) | repeated | rewards defines all the rewards accrued by a delegator. |
-| `total` | [lbm.base.v1beta1.DecCoin](#lbm.base.v1beta1.DecCoin) | repeated | total defines the sum of all the rewards. |
+| `rewards` | [DelegationDelegatorReward](#lbm.distribution.v1.DelegationDelegatorReward) | repeated | rewards defines all the rewards accrued by a delegator. |
+| `total` | [lbm.base.v1.DecCoin](#lbm.base.v1.DecCoin) | repeated | total defines the sum of all the rewards. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.QueryDelegatorValidatorsRequest"></a>
+<a name="lbm.distribution.v1.QueryDelegatorValidatorsRequest"></a>
 
 ### QueryDelegatorValidatorsRequest
 QueryDelegatorValidatorsRequest is the request type for the
@@ -7518,7 +7518,7 @@ Query/DelegatorValidators RPC method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryDelegatorValidatorsResponse"></a>
+<a name="lbm.distribution.v1.QueryDelegatorValidatorsResponse"></a>
 
 ### QueryDelegatorValidatorsResponse
 QueryDelegatorValidatorsResponse is the response type for the
@@ -7534,7 +7534,7 @@ Query/DelegatorValidators RPC method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressRequest"></a>
+<a name="lbm.distribution.v1.QueryDelegatorWithdrawAddressRequest"></a>
 
 ### QueryDelegatorWithdrawAddressRequest
 QueryDelegatorWithdrawAddressRequest is the request type for the
@@ -7550,7 +7550,7 @@ Query/DelegatorWithdrawAddress RPC method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse"></a>
+<a name="lbm.distribution.v1.QueryDelegatorWithdrawAddressResponse"></a>
 
 ### QueryDelegatorWithdrawAddressResponse
 QueryDelegatorWithdrawAddressResponse is the response type for the
@@ -7566,7 +7566,7 @@ Query/DelegatorWithdrawAddress RPC method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryParamsRequest"></a>
+<a name="lbm.distribution.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -7576,7 +7576,7 @@ QueryParamsRequest is the request type for the Query/Params RPC method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryParamsResponse"></a>
+<a name="lbm.distribution.v1.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 QueryParamsResponse is the response type for the Query/Params RPC method.
@@ -7584,14 +7584,14 @@ QueryParamsResponse is the response type for the Query/Params RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.distribution.v1beta1.Params) |  | params defines the parameters of the module. |
+| `params` | [Params](#lbm.distribution.v1.Params) |  | params defines the parameters of the module. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.QueryValidatorCommissionRequest"></a>
+<a name="lbm.distribution.v1.QueryValidatorCommissionRequest"></a>
 
 ### QueryValidatorCommissionRequest
 QueryValidatorCommissionRequest is the request type for the
@@ -7607,7 +7607,7 @@ Query/ValidatorCommission RPC method
 
 
 
-<a name="lbm.distribution.v1beta1.QueryValidatorCommissionResponse"></a>
+<a name="lbm.distribution.v1.QueryValidatorCommissionResponse"></a>
 
 ### QueryValidatorCommissionResponse
 QueryValidatorCommissionResponse is the response type for the
@@ -7616,14 +7616,14 @@ Query/ValidatorCommission RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `commission` | [ValidatorAccumulatedCommission](#lbm.distribution.v1beta1.ValidatorAccumulatedCommission) |  | commission defines the commision the validator received. |
+| `commission` | [ValidatorAccumulatedCommission](#lbm.distribution.v1.ValidatorAccumulatedCommission) |  | commission defines the commision the validator received. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsRequest"></a>
+<a name="lbm.distribution.v1.QueryValidatorOutstandingRewardsRequest"></a>
 
 ### QueryValidatorOutstandingRewardsRequest
 QueryValidatorOutstandingRewardsRequest is the request type for the
@@ -7639,7 +7639,7 @@ Query/ValidatorOutstandingRewards RPC method.
 
 
 
-<a name="lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse"></a>
+<a name="lbm.distribution.v1.QueryValidatorOutstandingRewardsResponse"></a>
 
 ### QueryValidatorOutstandingRewardsResponse
 QueryValidatorOutstandingRewardsResponse is the response type for the
@@ -7648,14 +7648,14 @@ Query/ValidatorOutstandingRewards RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `rewards` | [ValidatorOutstandingRewards](#lbm.distribution.v1beta1.ValidatorOutstandingRewards) |  |  |
+| `rewards` | [ValidatorOutstandingRewards](#lbm.distribution.v1.ValidatorOutstandingRewards) |  |  |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.QueryValidatorSlashesRequest"></a>
+<a name="lbm.distribution.v1.QueryValidatorSlashesRequest"></a>
 
 ### QueryValidatorSlashesRequest
 QueryValidatorSlashesRequest is the request type for the
@@ -7667,14 +7667,14 @@ Query/ValidatorSlashes RPC method
 | `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
 | `starting_height` | [uint64](#uint64) |  | starting_height defines the optional starting height to query the slashes. |
 | `ending_height` | [uint64](#uint64) |  | starting_height defines the optional ending height to query the slashes. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.distribution.v1beta1.QueryValidatorSlashesResponse"></a>
+<a name="lbm.distribution.v1.QueryValidatorSlashesResponse"></a>
 
 ### QueryValidatorSlashesResponse
 QueryValidatorSlashesResponse is the response type for the
@@ -7683,8 +7683,8 @@ Query/ValidatorSlashes RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `slashes` | [ValidatorSlashEvent](#lbm.distribution.v1beta1.ValidatorSlashEvent) | repeated | slashes defines the slashes the validator received. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `slashes` | [ValidatorSlashEvent](#lbm.distribution.v1.ValidatorSlashEvent) | repeated | slashes defines the slashes the validator received. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -7697,35 +7697,35 @@ Query/ValidatorSlashes RPC method.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.distribution.v1beta1.Query"></a>
+<a name="lbm.distribution.v1.Query"></a>
 
 ### Query
 Query defines the gRPC querier service for distribution module.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.distribution.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.distribution.v1beta1.QueryParamsResponse) | Params queries params of the distribution module. | GET|/lbm/distribution/v1beta1/params|
-| `ValidatorOutstandingRewards` | [QueryValidatorOutstandingRewardsRequest](#lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsRequest) | [QueryValidatorOutstandingRewardsResponse](#lbm.distribution.v1beta1.QueryValidatorOutstandingRewardsResponse) | ValidatorOutstandingRewards queries rewards of a validator address. | GET|/lbm/distribution/v1beta1/validators/{validator_address}/outstanding_rewards|
-| `ValidatorCommission` | [QueryValidatorCommissionRequest](#lbm.distribution.v1beta1.QueryValidatorCommissionRequest) | [QueryValidatorCommissionResponse](#lbm.distribution.v1beta1.QueryValidatorCommissionResponse) | ValidatorCommission queries accumulated commission for a validator. | GET|/lbm/distribution/v1beta1/validators/{validator_address}/commission|
-| `ValidatorSlashes` | [QueryValidatorSlashesRequest](#lbm.distribution.v1beta1.QueryValidatorSlashesRequest) | [QueryValidatorSlashesResponse](#lbm.distribution.v1beta1.QueryValidatorSlashesResponse) | ValidatorSlashes queries slash events of a validator. | GET|/lbm/distribution/v1beta1/validators/{validator_address}/slashes|
-| `DelegationRewards` | [QueryDelegationRewardsRequest](#lbm.distribution.v1beta1.QueryDelegationRewardsRequest) | [QueryDelegationRewardsResponse](#lbm.distribution.v1beta1.QueryDelegationRewardsResponse) | DelegationRewards queries the total rewards accrued by a delegation. | GET|/lbm/distribution/v1beta1/delegators/{delegator_address}/rewards/{validator_address}|
-| `DelegationTotalRewards` | [QueryDelegationTotalRewardsRequest](#lbm.distribution.v1beta1.QueryDelegationTotalRewardsRequest) | [QueryDelegationTotalRewardsResponse](#lbm.distribution.v1beta1.QueryDelegationTotalRewardsResponse) | DelegationTotalRewards queries the total rewards accrued by a each validator. | GET|/lbm/distribution/v1beta1/delegators/{delegator_address}/rewards|
-| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.distribution.v1beta1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.distribution.v1beta1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries the validators of a delegator. | GET|/lbm/distribution/v1beta1/delegators/{delegator_address}/validators|
-| `DelegatorWithdrawAddress` | [QueryDelegatorWithdrawAddressRequest](#lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressRequest) | [QueryDelegatorWithdrawAddressResponse](#lbm.distribution.v1beta1.QueryDelegatorWithdrawAddressResponse) | DelegatorWithdrawAddress queries withdraw address of a delegator. | GET|/lbm/distribution/v1beta1/delegators/{delegator_address}/withdraw_address|
-| `CommunityPool` | [QueryCommunityPoolRequest](#lbm.distribution.v1beta1.QueryCommunityPoolRequest) | [QueryCommunityPoolResponse](#lbm.distribution.v1beta1.QueryCommunityPoolResponse) | CommunityPool queries the community pool coins. | GET|/lbm/distribution/v1beta1/community_pool|
+| `Params` | [QueryParamsRequest](#lbm.distribution.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.distribution.v1.QueryParamsResponse) | Params queries params of the distribution module. | GET|/lbm/distribution/v1/params|
+| `ValidatorOutstandingRewards` | [QueryValidatorOutstandingRewardsRequest](#lbm.distribution.v1.QueryValidatorOutstandingRewardsRequest) | [QueryValidatorOutstandingRewardsResponse](#lbm.distribution.v1.QueryValidatorOutstandingRewardsResponse) | ValidatorOutstandingRewards queries rewards of a validator address. | GET|/lbm/distribution/v1/validators/{validator_address}/outstanding_rewards|
+| `ValidatorCommission` | [QueryValidatorCommissionRequest](#lbm.distribution.v1.QueryValidatorCommissionRequest) | [QueryValidatorCommissionResponse](#lbm.distribution.v1.QueryValidatorCommissionResponse) | ValidatorCommission queries accumulated commission for a validator. | GET|/lbm/distribution/v1/validators/{validator_address}/commission|
+| `ValidatorSlashes` | [QueryValidatorSlashesRequest](#lbm.distribution.v1.QueryValidatorSlashesRequest) | [QueryValidatorSlashesResponse](#lbm.distribution.v1.QueryValidatorSlashesResponse) | ValidatorSlashes queries slash events of a validator. | GET|/lbm/distribution/v1/validators/{validator_address}/slashes|
+| `DelegationRewards` | [QueryDelegationRewardsRequest](#lbm.distribution.v1.QueryDelegationRewardsRequest) | [QueryDelegationRewardsResponse](#lbm.distribution.v1.QueryDelegationRewardsResponse) | DelegationRewards queries the total rewards accrued by a delegation. | GET|/lbm/distribution/v1/delegators/{delegator_address}/rewards/{validator_address}|
+| `DelegationTotalRewards` | [QueryDelegationTotalRewardsRequest](#lbm.distribution.v1.QueryDelegationTotalRewardsRequest) | [QueryDelegationTotalRewardsResponse](#lbm.distribution.v1.QueryDelegationTotalRewardsResponse) | DelegationTotalRewards queries the total rewards accrued by a each validator. | GET|/lbm/distribution/v1/delegators/{delegator_address}/rewards|
+| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.distribution.v1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.distribution.v1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries the validators of a delegator. | GET|/lbm/distribution/v1/delegators/{delegator_address}/validators|
+| `DelegatorWithdrawAddress` | [QueryDelegatorWithdrawAddressRequest](#lbm.distribution.v1.QueryDelegatorWithdrawAddressRequest) | [QueryDelegatorWithdrawAddressResponse](#lbm.distribution.v1.QueryDelegatorWithdrawAddressResponse) | DelegatorWithdrawAddress queries withdraw address of a delegator. | GET|/lbm/distribution/v1/delegators/{delegator_address}/withdraw_address|
+| `CommunityPool` | [QueryCommunityPoolRequest](#lbm.distribution.v1.QueryCommunityPoolRequest) | [QueryCommunityPoolResponse](#lbm.distribution.v1.QueryCommunityPoolResponse) | CommunityPool queries the community pool coins. | GET|/lbm/distribution/v1/community_pool|
 
  <!-- end services -->
 
 
 
-<a name="lbm/distribution/v1beta1/tx.proto"></a>
+<a name="lbm/distribution/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/distribution/v1beta1/tx.proto
+## lbm/distribution/v1/tx.proto
 
 
 
-<a name="lbm.distribution.v1beta1.MsgFundCommunityPool"></a>
+<a name="lbm.distribution.v1.MsgFundCommunityPool"></a>
 
 ### MsgFundCommunityPool
 MsgFundCommunityPool allows an account to directly
@@ -7734,7 +7734,7 @@ fund the community pool.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 | `depositor` | [string](#string) |  |  |
 
 
@@ -7742,7 +7742,7 @@ fund the community pool.
 
 
 
-<a name="lbm.distribution.v1beta1.MsgFundCommunityPoolResponse"></a>
+<a name="lbm.distribution.v1.MsgFundCommunityPoolResponse"></a>
 
 ### MsgFundCommunityPoolResponse
 MsgFundCommunityPoolResponse defines the Msg/FundCommunityPool response type.
@@ -7752,7 +7752,7 @@ MsgFundCommunityPoolResponse defines the Msg/FundCommunityPool response type.
 
 
 
-<a name="lbm.distribution.v1beta1.MsgSetWithdrawAddress"></a>
+<a name="lbm.distribution.v1.MsgSetWithdrawAddress"></a>
 
 ### MsgSetWithdrawAddress
 MsgSetWithdrawAddress sets the withdraw address for
@@ -7769,7 +7769,7 @@ a delegator (or validator self-delegation).
 
 
 
-<a name="lbm.distribution.v1beta1.MsgSetWithdrawAddressResponse"></a>
+<a name="lbm.distribution.v1.MsgSetWithdrawAddressResponse"></a>
 
 ### MsgSetWithdrawAddressResponse
 MsgSetWithdrawAddressResponse defines the Msg/SetWithdrawAddress response type.
@@ -7779,7 +7779,7 @@ MsgSetWithdrawAddressResponse defines the Msg/SetWithdrawAddress response type.
 
 
 
-<a name="lbm.distribution.v1beta1.MsgWithdrawDelegatorReward"></a>
+<a name="lbm.distribution.v1.MsgWithdrawDelegatorReward"></a>
 
 ### MsgWithdrawDelegatorReward
 MsgWithdrawDelegatorReward represents delegation withdrawal to a delegator
@@ -7796,7 +7796,7 @@ from a single validator.
 
 
 
-<a name="lbm.distribution.v1beta1.MsgWithdrawDelegatorRewardResponse"></a>
+<a name="lbm.distribution.v1.MsgWithdrawDelegatorRewardResponse"></a>
 
 ### MsgWithdrawDelegatorRewardResponse
 MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward response type.
@@ -7806,7 +7806,7 @@ MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward respo
 
 
 
-<a name="lbm.distribution.v1beta1.MsgWithdrawValidatorCommission"></a>
+<a name="lbm.distribution.v1.MsgWithdrawValidatorCommission"></a>
 
 ### MsgWithdrawValidatorCommission
 MsgWithdrawValidatorCommission withdraws the full commission to the validator
@@ -7822,7 +7822,7 @@ address.
 
 
 
-<a name="lbm.distribution.v1beta1.MsgWithdrawValidatorCommissionResponse"></a>
+<a name="lbm.distribution.v1.MsgWithdrawValidatorCommissionResponse"></a>
 
 ### MsgWithdrawValidatorCommissionResponse
 MsgWithdrawValidatorCommissionResponse defines the Msg/WithdrawValidatorCommission response type.
@@ -7838,30 +7838,30 @@ MsgWithdrawValidatorCommissionResponse defines the Msg/WithdrawValidatorCommissi
  <!-- end HasExtensions -->
 
 
-<a name="lbm.distribution.v1beta1.Msg"></a>
+<a name="lbm.distribution.v1.Msg"></a>
 
 ### Msg
 Msg defines the distribution Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `SetWithdrawAddress` | [MsgSetWithdrawAddress](#lbm.distribution.v1beta1.MsgSetWithdrawAddress) | [MsgSetWithdrawAddressResponse](#lbm.distribution.v1beta1.MsgSetWithdrawAddressResponse) | SetWithdrawAddress defines a method to change the withdraw address for a delegator (or validator self-delegation). | |
-| `WithdrawDelegatorReward` | [MsgWithdrawDelegatorReward](#lbm.distribution.v1beta1.MsgWithdrawDelegatorReward) | [MsgWithdrawDelegatorRewardResponse](#lbm.distribution.v1beta1.MsgWithdrawDelegatorRewardResponse) | WithdrawDelegatorReward defines a method to withdraw rewards of delegator from a single validator. | |
-| `WithdrawValidatorCommission` | [MsgWithdrawValidatorCommission](#lbm.distribution.v1beta1.MsgWithdrawValidatorCommission) | [MsgWithdrawValidatorCommissionResponse](#lbm.distribution.v1beta1.MsgWithdrawValidatorCommissionResponse) | WithdrawValidatorCommission defines a method to withdraw the full commission to the validator address. | |
-| `FundCommunityPool` | [MsgFundCommunityPool](#lbm.distribution.v1beta1.MsgFundCommunityPool) | [MsgFundCommunityPoolResponse](#lbm.distribution.v1beta1.MsgFundCommunityPoolResponse) | FundCommunityPool defines a method to allow an account to directly fund the community pool. | |
+| `SetWithdrawAddress` | [MsgSetWithdrawAddress](#lbm.distribution.v1.MsgSetWithdrawAddress) | [MsgSetWithdrawAddressResponse](#lbm.distribution.v1.MsgSetWithdrawAddressResponse) | SetWithdrawAddress defines a method to change the withdraw address for a delegator (or validator self-delegation). | |
+| `WithdrawDelegatorReward` | [MsgWithdrawDelegatorReward](#lbm.distribution.v1.MsgWithdrawDelegatorReward) | [MsgWithdrawDelegatorRewardResponse](#lbm.distribution.v1.MsgWithdrawDelegatorRewardResponse) | WithdrawDelegatorReward defines a method to withdraw rewards of delegator from a single validator. | |
+| `WithdrawValidatorCommission` | [MsgWithdrawValidatorCommission](#lbm.distribution.v1.MsgWithdrawValidatorCommission) | [MsgWithdrawValidatorCommissionResponse](#lbm.distribution.v1.MsgWithdrawValidatorCommissionResponse) | WithdrawValidatorCommission defines a method to withdraw the full commission to the validator address. | |
+| `FundCommunityPool` | [MsgFundCommunityPool](#lbm.distribution.v1.MsgFundCommunityPool) | [MsgFundCommunityPoolResponse](#lbm.distribution.v1.MsgFundCommunityPoolResponse) | FundCommunityPool defines a method to allow an account to directly fund the community pool. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/evidence/v1beta1/evidence.proto"></a>
+<a name="lbm/evidence/v1/evidence.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/evidence/v1beta1/evidence.proto
+## lbm/evidence/v1/evidence.proto
 
 
 
-<a name="lbm.evidence.v1beta1.Equivocation"></a>
+<a name="lbm.evidence.v1.Equivocation"></a>
 
 ### Equivocation
 Equivocation implements the Evidence interface and defines evidence of double
@@ -7889,14 +7889,14 @@ signing misbehavior.
 
 
 
-<a name="lbm/evidence/v1beta1/genesis.proto"></a>
+<a name="lbm/evidence/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/evidence/v1beta1/genesis.proto
+## lbm/evidence/v1/genesis.proto
 
 
 
-<a name="lbm.evidence.v1beta1.GenesisState"></a>
+<a name="lbm.evidence.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the evidence module's genesis state.
@@ -7920,14 +7920,14 @@ GenesisState defines the evidence module's genesis state.
 
 
 
-<a name="lbm/evidence/v1beta1/query.proto"></a>
+<a name="lbm/evidence/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/evidence/v1beta1/query.proto
+## lbm/evidence/v1/query.proto
 
 
 
-<a name="lbm.evidence.v1beta1.QueryAllEvidenceRequest"></a>
+<a name="lbm.evidence.v1.QueryAllEvidenceRequest"></a>
 
 ### QueryAllEvidenceRequest
 QueryEvidenceRequest is the request type for the Query/AllEvidence RPC
@@ -7936,14 +7936,14 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.evidence.v1beta1.QueryAllEvidenceResponse"></a>
+<a name="lbm.evidence.v1.QueryAllEvidenceResponse"></a>
 
 ### QueryAllEvidenceResponse
 QueryAllEvidenceResponse is the response type for the Query/AllEvidence RPC
@@ -7953,14 +7953,14 @@ method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `evidence` | [google.protobuf.Any](#google.protobuf.Any) | repeated | evidence returns all evidences. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.evidence.v1beta1.QueryEvidenceRequest"></a>
+<a name="lbm.evidence.v1.QueryEvidenceRequest"></a>
 
 ### QueryEvidenceRequest
 QueryEvidenceRequest is the request type for the Query/Evidence RPC method.
@@ -7975,7 +7975,7 @@ QueryEvidenceRequest is the request type for the Query/Evidence RPC method.
 
 
 
-<a name="lbm.evidence.v1beta1.QueryEvidenceResponse"></a>
+<a name="lbm.evidence.v1.QueryEvidenceResponse"></a>
 
 ### QueryEvidenceResponse
 QueryEvidenceResponse is the response type for the Query/Evidence RPC method.
@@ -7996,28 +7996,28 @@ QueryEvidenceResponse is the response type for the Query/Evidence RPC method.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.evidence.v1beta1.Query"></a>
+<a name="lbm.evidence.v1.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Evidence` | [QueryEvidenceRequest](#lbm.evidence.v1beta1.QueryEvidenceRequest) | [QueryEvidenceResponse](#lbm.evidence.v1beta1.QueryEvidenceResponse) | Evidence queries evidence based on evidence hash. | GET|/lbm/evidence/v1beta1/evidence/{evidence_hash}|
-| `AllEvidence` | [QueryAllEvidenceRequest](#lbm.evidence.v1beta1.QueryAllEvidenceRequest) | [QueryAllEvidenceResponse](#lbm.evidence.v1beta1.QueryAllEvidenceResponse) | AllEvidence queries all evidence. | GET|/lbm/evidence/v1beta1/evidence|
+| `Evidence` | [QueryEvidenceRequest](#lbm.evidence.v1.QueryEvidenceRequest) | [QueryEvidenceResponse](#lbm.evidence.v1.QueryEvidenceResponse) | Evidence queries evidence based on evidence hash. | GET|/lbm/evidence/v1/evidence/{evidence_hash}|
+| `AllEvidence` | [QueryAllEvidenceRequest](#lbm.evidence.v1.QueryAllEvidenceRequest) | [QueryAllEvidenceResponse](#lbm.evidence.v1.QueryAllEvidenceResponse) | AllEvidence queries all evidence. | GET|/lbm/evidence/v1/evidence|
 
  <!-- end services -->
 
 
 
-<a name="lbm/evidence/v1beta1/tx.proto"></a>
+<a name="lbm/evidence/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/evidence/v1beta1/tx.proto
+## lbm/evidence/v1/tx.proto
 
 
 
-<a name="lbm.evidence.v1beta1.MsgSubmitEvidence"></a>
+<a name="lbm.evidence.v1.MsgSubmitEvidence"></a>
 
 ### MsgSubmitEvidence
 MsgSubmitEvidence represents a message that supports submitting arbitrary
@@ -8034,7 +8034,7 @@ Evidence of misbehavior such as equivocation or counterfactual signing.
 
 
 
-<a name="lbm.evidence.v1beta1.MsgSubmitEvidenceResponse"></a>
+<a name="lbm.evidence.v1.MsgSubmitEvidenceResponse"></a>
 
 ### MsgSubmitEvidenceResponse
 MsgSubmitEvidenceResponse defines the Msg/SubmitEvidence response type.
@@ -8055,27 +8055,27 @@ MsgSubmitEvidenceResponse defines the Msg/SubmitEvidence response type.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.evidence.v1beta1.Msg"></a>
+<a name="lbm.evidence.v1.Msg"></a>
 
 ### Msg
 Msg defines the evidence Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `SubmitEvidence` | [MsgSubmitEvidence](#lbm.evidence.v1beta1.MsgSubmitEvidence) | [MsgSubmitEvidenceResponse](#lbm.evidence.v1beta1.MsgSubmitEvidenceResponse) | SubmitEvidence submits an arbitrary Evidence of misbehavior such as equivocation or counterfactual signing. | |
+| `SubmitEvidence` | [MsgSubmitEvidence](#lbm.evidence.v1.MsgSubmitEvidence) | [MsgSubmitEvidenceResponse](#lbm.evidence.v1.MsgSubmitEvidenceResponse) | SubmitEvidence submits an arbitrary Evidence of misbehavior such as equivocation or counterfactual signing. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/genutil/v1beta1/genesis.proto"></a>
+<a name="lbm/genutil/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/genutil/v1beta1/genesis.proto
+## lbm/genutil/v1/genesis.proto
 
 
 
-<a name="lbm.genutil.v1beta1.GenesisState"></a>
+<a name="lbm.genutil.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the raw genesis transaction in JSON.
@@ -8099,14 +8099,14 @@ GenesisState defines the raw genesis transaction in JSON.
 
 
 
-<a name="lbm/gov/v1beta1/gov.proto"></a>
+<a name="lbm/gov/v1/gov.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/gov/v1beta1/gov.proto
+## lbm/gov/v1/gov.proto
 
 
 
-<a name="lbm.gov.v1beta1.Deposit"></a>
+<a name="lbm.gov.v1.Deposit"></a>
 
 ### Deposit
 Deposit defines an amount deposited by an account address to an active
@@ -8117,14 +8117,14 @@ proposal.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  |  |
 | `depositor` | [string](#string) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.DepositParams"></a>
+<a name="lbm.gov.v1.DepositParams"></a>
 
 ### DepositParams
 DepositParams defines the params for deposits on governance proposals.
@@ -8132,7 +8132,7 @@ DepositParams defines the params for deposits on governance proposals.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `min_deposit` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | Minimum deposit for a proposal to enter voting period. |
+| `min_deposit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | Minimum deposit for a proposal to enter voting period. |
 | `max_deposit_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | Maximum period for Atom holders to deposit on a proposal. Initial value: 2 months. |
 
 
@@ -8140,7 +8140,7 @@ DepositParams defines the params for deposits on governance proposals.
 
 
 
-<a name="lbm.gov.v1beta1.Proposal"></a>
+<a name="lbm.gov.v1.Proposal"></a>
 
 ### Proposal
 Proposal defines the core field members of a governance proposal.
@@ -8150,11 +8150,11 @@ Proposal defines the core field members of a governance proposal.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  |  |
 | `content` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `status` | [ProposalStatus](#lbm.gov.v1beta1.ProposalStatus) |  |  |
-| `final_tally_result` | [TallyResult](#lbm.gov.v1beta1.TallyResult) |  |  |
+| `status` | [ProposalStatus](#lbm.gov.v1.ProposalStatus) |  |  |
+| `final_tally_result` | [TallyResult](#lbm.gov.v1.TallyResult) |  |  |
 | `submit_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `deposit_end_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
-| `total_deposit` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `total_deposit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 | `voting_start_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `voting_end_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 
@@ -8163,7 +8163,7 @@ Proposal defines the core field members of a governance proposal.
 
 
 
-<a name="lbm.gov.v1beta1.TallyParams"></a>
+<a name="lbm.gov.v1.TallyParams"></a>
 
 ### TallyParams
 TallyParams defines the params for tallying votes on governance proposals.
@@ -8180,7 +8180,7 @@ TallyParams defines the params for tallying votes on governance proposals.
 
 
 
-<a name="lbm.gov.v1beta1.TallyResult"></a>
+<a name="lbm.gov.v1.TallyResult"></a>
 
 ### TallyResult
 TallyResult defines a standard tally for a governance proposal.
@@ -8198,7 +8198,7 @@ TallyResult defines a standard tally for a governance proposal.
 
 
 
-<a name="lbm.gov.v1beta1.TextProposal"></a>
+<a name="lbm.gov.v1.TextProposal"></a>
 
 ### TextProposal
 TextProposal defines a standard text proposal whose changes need to be
@@ -8215,7 +8215,7 @@ manually updated in case of approval.
 
 
 
-<a name="lbm.gov.v1beta1.Vote"></a>
+<a name="lbm.gov.v1.Vote"></a>
 
 ### Vote
 Vote defines a vote on a governance proposal.
@@ -8226,14 +8226,14 @@ A Vote consists of a proposal ID, the voter, and the vote option.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  |  |
 | `voter` | [string](#string) |  |  |
-| `option` | [VoteOption](#lbm.gov.v1beta1.VoteOption) |  |  |
+| `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  |  |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.VotingParams"></a>
+<a name="lbm.gov.v1.VotingParams"></a>
 
 ### VotingParams
 VotingParams defines the params for voting on governance proposals.
@@ -8250,7 +8250,7 @@ VotingParams defines the params for voting on governance proposals.
  <!-- end messages -->
 
 
-<a name="lbm.gov.v1beta1.ProposalStatus"></a>
+<a name="lbm.gov.v1.ProposalStatus"></a>
 
 ### ProposalStatus
 ProposalStatus enumerates the valid statuses of a proposal.
@@ -8266,7 +8266,7 @@ ProposalStatus enumerates the valid statuses of a proposal.
 
 
 
-<a name="lbm.gov.v1beta1.VoteOption"></a>
+<a name="lbm.gov.v1.VoteOption"></a>
 
 ### VoteOption
 VoteOption enumerates the valid vote options for a given governance proposal.
@@ -8288,14 +8288,14 @@ VoteOption enumerates the valid vote options for a given governance proposal.
 
 
 
-<a name="lbm/gov/v1beta1/genesis.proto"></a>
+<a name="lbm/gov/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/gov/v1beta1/genesis.proto
+## lbm/gov/v1/genesis.proto
 
 
 
-<a name="lbm.gov.v1beta1.GenesisState"></a>
+<a name="lbm.gov.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the gov module's genesis state.
@@ -8304,12 +8304,12 @@ GenesisState defines the gov module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `starting_proposal_id` | [uint64](#uint64) |  | starting_proposal_id is the ID of the starting proposal. |
-| `deposits` | [Deposit](#lbm.gov.v1beta1.Deposit) | repeated | deposits defines all the deposits present at genesis. |
-| `votes` | [Vote](#lbm.gov.v1beta1.Vote) | repeated | votes defines all the votes present at genesis. |
-| `proposals` | [Proposal](#lbm.gov.v1beta1.Proposal) | repeated | proposals defines all the proposals present at genesis. |
-| `deposit_params` | [DepositParams](#lbm.gov.v1beta1.DepositParams) |  | params defines all the paramaters of related to deposit. |
-| `voting_params` | [VotingParams](#lbm.gov.v1beta1.VotingParams) |  | params defines all the paramaters of related to voting. |
-| `tally_params` | [TallyParams](#lbm.gov.v1beta1.TallyParams) |  | params defines all the paramaters of related to tally. |
+| `deposits` | [Deposit](#lbm.gov.v1.Deposit) | repeated | deposits defines all the deposits present at genesis. |
+| `votes` | [Vote](#lbm.gov.v1.Vote) | repeated | votes defines all the votes present at genesis. |
+| `proposals` | [Proposal](#lbm.gov.v1.Proposal) | repeated | proposals defines all the proposals present at genesis. |
+| `deposit_params` | [DepositParams](#lbm.gov.v1.DepositParams) |  | params defines all the paramaters of related to deposit. |
+| `voting_params` | [VotingParams](#lbm.gov.v1.VotingParams) |  | params defines all the paramaters of related to voting. |
+| `tally_params` | [TallyParams](#lbm.gov.v1.TallyParams) |  | params defines all the paramaters of related to tally. |
 
 
 
@@ -8325,14 +8325,14 @@ GenesisState defines the gov module's genesis state.
 
 
 
-<a name="lbm/gov/v1beta1/query.proto"></a>
+<a name="lbm/gov/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/gov/v1beta1/query.proto
+## lbm/gov/v1/query.proto
 
 
 
-<a name="lbm.gov.v1beta1.QueryDepositRequest"></a>
+<a name="lbm.gov.v1.QueryDepositRequest"></a>
 
 ### QueryDepositRequest
 QueryDepositRequest is the request type for the Query/Deposit RPC method.
@@ -8348,7 +8348,7 @@ QueryDepositRequest is the request type for the Query/Deposit RPC method.
 
 
 
-<a name="lbm.gov.v1beta1.QueryDepositResponse"></a>
+<a name="lbm.gov.v1.QueryDepositResponse"></a>
 
 ### QueryDepositResponse
 QueryDepositResponse is the response type for the Query/Deposit RPC method.
@@ -8356,14 +8356,14 @@ QueryDepositResponse is the response type for the Query/Deposit RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `deposit` | [Deposit](#lbm.gov.v1beta1.Deposit) |  | deposit defines the requested deposit. |
+| `deposit` | [Deposit](#lbm.gov.v1.Deposit) |  | deposit defines the requested deposit. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryDepositsRequest"></a>
+<a name="lbm.gov.v1.QueryDepositsRequest"></a>
 
 ### QueryDepositsRequest
 QueryDepositsRequest is the request type for the Query/Deposits RPC method.
@@ -8372,14 +8372,14 @@ QueryDepositsRequest is the request type for the Query/Deposits RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  | proposal_id defines the unique id of the proposal. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryDepositsResponse"></a>
+<a name="lbm.gov.v1.QueryDepositsResponse"></a>
 
 ### QueryDepositsResponse
 QueryDepositsResponse is the response type for the Query/Deposits RPC method.
@@ -8387,15 +8387,15 @@ QueryDepositsResponse is the response type for the Query/Deposits RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `deposits` | [Deposit](#lbm.gov.v1beta1.Deposit) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `deposits` | [Deposit](#lbm.gov.v1.Deposit) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryParamsRequest"></a>
+<a name="lbm.gov.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -8410,7 +8410,7 @@ QueryParamsRequest is the request type for the Query/Params RPC method.
 
 
 
-<a name="lbm.gov.v1beta1.QueryParamsResponse"></a>
+<a name="lbm.gov.v1.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 QueryParamsResponse is the response type for the Query/Params RPC method.
@@ -8418,16 +8418,16 @@ QueryParamsResponse is the response type for the Query/Params RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `voting_params` | [VotingParams](#lbm.gov.v1beta1.VotingParams) |  | voting_params defines the parameters related to voting. |
-| `deposit_params` | [DepositParams](#lbm.gov.v1beta1.DepositParams) |  | deposit_params defines the parameters related to deposit. |
-| `tally_params` | [TallyParams](#lbm.gov.v1beta1.TallyParams) |  | tally_params defines the parameters related to tally. |
+| `voting_params` | [VotingParams](#lbm.gov.v1.VotingParams) |  | voting_params defines the parameters related to voting. |
+| `deposit_params` | [DepositParams](#lbm.gov.v1.DepositParams) |  | deposit_params defines the parameters related to deposit. |
+| `tally_params` | [TallyParams](#lbm.gov.v1.TallyParams) |  | tally_params defines the parameters related to tally. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryProposalRequest"></a>
+<a name="lbm.gov.v1.QueryProposalRequest"></a>
 
 ### QueryProposalRequest
 QueryProposalRequest is the request type for the Query/Proposal RPC method.
@@ -8442,7 +8442,7 @@ QueryProposalRequest is the request type for the Query/Proposal RPC method.
 
 
 
-<a name="lbm.gov.v1beta1.QueryProposalResponse"></a>
+<a name="lbm.gov.v1.QueryProposalResponse"></a>
 
 ### QueryProposalResponse
 QueryProposalResponse is the response type for the Query/Proposal RPC method.
@@ -8450,14 +8450,14 @@ QueryProposalResponse is the response type for the Query/Proposal RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `proposal` | [Proposal](#lbm.gov.v1beta1.Proposal) |  |  |
+| `proposal` | [Proposal](#lbm.gov.v1.Proposal) |  |  |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryProposalsRequest"></a>
+<a name="lbm.gov.v1.QueryProposalsRequest"></a>
 
 ### QueryProposalsRequest
 QueryProposalsRequest is the request type for the Query/Proposals RPC method.
@@ -8465,17 +8465,17 @@ QueryProposalsRequest is the request type for the Query/Proposals RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `proposal_status` | [ProposalStatus](#lbm.gov.v1beta1.ProposalStatus) |  | proposal_status defines the status of the proposals. |
+| `proposal_status` | [ProposalStatus](#lbm.gov.v1.ProposalStatus) |  | proposal_status defines the status of the proposals. |
 | `voter` | [string](#string) |  | voter defines the voter address for the proposals. |
 | `depositor` | [string](#string) |  | depositor defines the deposit addresses from the proposals. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryProposalsResponse"></a>
+<a name="lbm.gov.v1.QueryProposalsResponse"></a>
 
 ### QueryProposalsResponse
 QueryProposalsResponse is the response type for the Query/Proposals RPC
@@ -8484,15 +8484,15 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `proposals` | [Proposal](#lbm.gov.v1beta1.Proposal) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `proposals` | [Proposal](#lbm.gov.v1.Proposal) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryTallyResultRequest"></a>
+<a name="lbm.gov.v1.QueryTallyResultRequest"></a>
 
 ### QueryTallyResultRequest
 QueryTallyResultRequest is the request type for the Query/Tally RPC method.
@@ -8507,7 +8507,7 @@ QueryTallyResultRequest is the request type for the Query/Tally RPC method.
 
 
 
-<a name="lbm.gov.v1beta1.QueryTallyResultResponse"></a>
+<a name="lbm.gov.v1.QueryTallyResultResponse"></a>
 
 ### QueryTallyResultResponse
 QueryTallyResultResponse is the response type for the Query/Tally RPC method.
@@ -8515,14 +8515,14 @@ QueryTallyResultResponse is the response type for the Query/Tally RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `tally` | [TallyResult](#lbm.gov.v1beta1.TallyResult) |  | tally defines the requested tally. |
+| `tally` | [TallyResult](#lbm.gov.v1.TallyResult) |  | tally defines the requested tally. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryVoteRequest"></a>
+<a name="lbm.gov.v1.QueryVoteRequest"></a>
 
 ### QueryVoteRequest
 QueryVoteRequest is the request type for the Query/Vote RPC method.
@@ -8538,7 +8538,7 @@ QueryVoteRequest is the request type for the Query/Vote RPC method.
 
 
 
-<a name="lbm.gov.v1beta1.QueryVoteResponse"></a>
+<a name="lbm.gov.v1.QueryVoteResponse"></a>
 
 ### QueryVoteResponse
 QueryVoteResponse is the response type for the Query/Vote RPC method.
@@ -8546,14 +8546,14 @@ QueryVoteResponse is the response type for the Query/Vote RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `vote` | [Vote](#lbm.gov.v1beta1.Vote) |  | vote defined the queried vote. |
+| `vote` | [Vote](#lbm.gov.v1.Vote) |  | vote defined the queried vote. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryVotesRequest"></a>
+<a name="lbm.gov.v1.QueryVotesRequest"></a>
 
 ### QueryVotesRequest
 QueryVotesRequest is the request type for the Query/Votes RPC method.
@@ -8562,14 +8562,14 @@ QueryVotesRequest is the request type for the Query/Votes RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  | proposal_id defines the unique id of the proposal. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.QueryVotesResponse"></a>
+<a name="lbm.gov.v1.QueryVotesResponse"></a>
 
 ### QueryVotesResponse
 QueryVotesResponse is the response type for the Query/Votes RPC method.
@@ -8577,8 +8577,8 @@ QueryVotesResponse is the response type for the Query/Votes RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `votes` | [Vote](#lbm.gov.v1beta1.Vote) | repeated | votes defined the queried votes. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `votes` | [Vote](#lbm.gov.v1.Vote) | repeated | votes defined the queried votes. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -8591,34 +8591,34 @@ QueryVotesResponse is the response type for the Query/Votes RPC method.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.gov.v1beta1.Query"></a>
+<a name="lbm.gov.v1.Query"></a>
 
 ### Query
 Query defines the gRPC querier service for gov module
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Proposal` | [QueryProposalRequest](#lbm.gov.v1beta1.QueryProposalRequest) | [QueryProposalResponse](#lbm.gov.v1beta1.QueryProposalResponse) | Proposal queries proposal details based on ProposalID. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}|
-| `Proposals` | [QueryProposalsRequest](#lbm.gov.v1beta1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.gov.v1beta1.QueryProposalsResponse) | Proposals queries all proposals based on given status. | GET|/lbm/gov/v1beta1/proposals|
-| `Vote` | [QueryVoteRequest](#lbm.gov.v1beta1.QueryVoteRequest) | [QueryVoteResponse](#lbm.gov.v1beta1.QueryVoteResponse) | Vote queries voted information based on proposalID, voterAddr. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/votes/{voter}|
-| `Votes` | [QueryVotesRequest](#lbm.gov.v1beta1.QueryVotesRequest) | [QueryVotesResponse](#lbm.gov.v1beta1.QueryVotesResponse) | Votes queries votes of a given proposal. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/votes|
-| `Params` | [QueryParamsRequest](#lbm.gov.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.gov.v1beta1.QueryParamsResponse) | Params queries all parameters of the gov module. | GET|/lbm/gov/v1beta1/params/{params_type}|
-| `Deposit` | [QueryDepositRequest](#lbm.gov.v1beta1.QueryDepositRequest) | [QueryDepositResponse](#lbm.gov.v1beta1.QueryDepositResponse) | Deposit queries single deposit information based proposalID, depositAddr. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/deposits/{depositor}|
-| `Deposits` | [QueryDepositsRequest](#lbm.gov.v1beta1.QueryDepositsRequest) | [QueryDepositsResponse](#lbm.gov.v1beta1.QueryDepositsResponse) | Deposits queries all deposits of a single proposal. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/deposits|
-| `TallyResult` | [QueryTallyResultRequest](#lbm.gov.v1beta1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.gov.v1beta1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal vote. | GET|/lbm/gov/v1beta1/proposals/{proposal_id}/tally|
+| `Proposal` | [QueryProposalRequest](#lbm.gov.v1.QueryProposalRequest) | [QueryProposalResponse](#lbm.gov.v1.QueryProposalResponse) | Proposal queries proposal details based on ProposalID. | GET|/lbm/gov/v1/proposals/{proposal_id}|
+| `Proposals` | [QueryProposalsRequest](#lbm.gov.v1.QueryProposalsRequest) | [QueryProposalsResponse](#lbm.gov.v1.QueryProposalsResponse) | Proposals queries all proposals based on given status. | GET|/lbm/gov/v1/proposals|
+| `Vote` | [QueryVoteRequest](#lbm.gov.v1.QueryVoteRequest) | [QueryVoteResponse](#lbm.gov.v1.QueryVoteResponse) | Vote queries voted information based on proposalID, voterAddr. | GET|/lbm/gov/v1/proposals/{proposal_id}/votes/{voter}|
+| `Votes` | [QueryVotesRequest](#lbm.gov.v1.QueryVotesRequest) | [QueryVotesResponse](#lbm.gov.v1.QueryVotesResponse) | Votes queries votes of a given proposal. | GET|/lbm/gov/v1/proposals/{proposal_id}/votes|
+| `Params` | [QueryParamsRequest](#lbm.gov.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.gov.v1.QueryParamsResponse) | Params queries all parameters of the gov module. | GET|/lbm/gov/v1/params/{params_type}|
+| `Deposit` | [QueryDepositRequest](#lbm.gov.v1.QueryDepositRequest) | [QueryDepositResponse](#lbm.gov.v1.QueryDepositResponse) | Deposit queries single deposit information based proposalID, depositAddr. | GET|/lbm/gov/v1/proposals/{proposal_id}/deposits/{depositor}|
+| `Deposits` | [QueryDepositsRequest](#lbm.gov.v1.QueryDepositsRequest) | [QueryDepositsResponse](#lbm.gov.v1.QueryDepositsResponse) | Deposits queries all deposits of a single proposal. | GET|/lbm/gov/v1/proposals/{proposal_id}/deposits|
+| `TallyResult` | [QueryTallyResultRequest](#lbm.gov.v1.QueryTallyResultRequest) | [QueryTallyResultResponse](#lbm.gov.v1.QueryTallyResultResponse) | TallyResult queries the tally of a proposal vote. | GET|/lbm/gov/v1/proposals/{proposal_id}/tally|
 
  <!-- end services -->
 
 
 
-<a name="lbm/gov/v1beta1/tx.proto"></a>
+<a name="lbm/gov/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/gov/v1beta1/tx.proto
+## lbm/gov/v1/tx.proto
 
 
 
-<a name="lbm.gov.v1beta1.MsgDeposit"></a>
+<a name="lbm.gov.v1.MsgDeposit"></a>
 
 ### MsgDeposit
 MsgDeposit defines a message to submit a deposit to an existing proposal.
@@ -8628,14 +8628,14 @@ MsgDeposit defines a message to submit a deposit to an existing proposal.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  |  |
 | `depositor` | [string](#string) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.MsgDepositResponse"></a>
+<a name="lbm.gov.v1.MsgDepositResponse"></a>
 
 ### MsgDepositResponse
 MsgDepositResponse defines the Msg/Deposit response type.
@@ -8645,7 +8645,7 @@ MsgDepositResponse defines the Msg/Deposit response type.
 
 
 
-<a name="lbm.gov.v1beta1.MsgSubmitProposal"></a>
+<a name="lbm.gov.v1.MsgSubmitProposal"></a>
 
 ### MsgSubmitProposal
 MsgSubmitProposal defines an sdk.Msg type that supports submitting arbitrary
@@ -8655,7 +8655,7 @@ proposal Content.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `content` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `initial_deposit` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `initial_deposit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 | `proposer` | [string](#string) |  |  |
 
 
@@ -8663,7 +8663,7 @@ proposal Content.
 
 
 
-<a name="lbm.gov.v1beta1.MsgSubmitProposalResponse"></a>
+<a name="lbm.gov.v1.MsgSubmitProposalResponse"></a>
 
 ### MsgSubmitProposalResponse
 MsgSubmitProposalResponse defines the Msg/SubmitProposal response type.
@@ -8678,7 +8678,7 @@ MsgSubmitProposalResponse defines the Msg/SubmitProposal response type.
 
 
 
-<a name="lbm.gov.v1beta1.MsgVote"></a>
+<a name="lbm.gov.v1.MsgVote"></a>
 
 ### MsgVote
 MsgVote defines a message to cast a vote.
@@ -8688,14 +8688,14 @@ MsgVote defines a message to cast a vote.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  |  |
 | `voter` | [string](#string) |  |  |
-| `option` | [VoteOption](#lbm.gov.v1beta1.VoteOption) |  |  |
+| `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  |  |
 
 
 
 
 
 
-<a name="lbm.gov.v1beta1.MsgVoteResponse"></a>
+<a name="lbm.gov.v1.MsgVoteResponse"></a>
 
 ### MsgVoteResponse
 MsgVoteResponse defines the Msg/Vote response type.
@@ -8711,29 +8711,29 @@ MsgVoteResponse defines the Msg/Vote response type.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.gov.v1beta1.Msg"></a>
+<a name="lbm.gov.v1.Msg"></a>
 
 ### Msg
 Msg defines the bank Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `SubmitProposal` | [MsgSubmitProposal](#lbm.gov.v1beta1.MsgSubmitProposal) | [MsgSubmitProposalResponse](#lbm.gov.v1beta1.MsgSubmitProposalResponse) | SubmitProposal defines a method to create new proposal given a content. | |
-| `Vote` | [MsgVote](#lbm.gov.v1beta1.MsgVote) | [MsgVoteResponse](#lbm.gov.v1beta1.MsgVoteResponse) | Vote defines a method to add a vote on a specific proposal. | |
-| `Deposit` | [MsgDeposit](#lbm.gov.v1beta1.MsgDeposit) | [MsgDepositResponse](#lbm.gov.v1beta1.MsgDepositResponse) | Deposit defines a method to add deposit on a specific proposal. | |
+| `SubmitProposal` | [MsgSubmitProposal](#lbm.gov.v1.MsgSubmitProposal) | [MsgSubmitProposalResponse](#lbm.gov.v1.MsgSubmitProposalResponse) | SubmitProposal defines a method to create new proposal given a content. | |
+| `Vote` | [MsgVote](#lbm.gov.v1.MsgVote) | [MsgVoteResponse](#lbm.gov.v1.MsgVoteResponse) | Vote defines a method to add a vote on a specific proposal. | |
+| `Deposit` | [MsgDeposit](#lbm.gov.v1.MsgDeposit) | [MsgDepositResponse](#lbm.gov.v1.MsgDepositResponse) | Deposit defines a method to add deposit on a specific proposal. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/mint/v1beta1/mint.proto"></a>
+<a name="lbm/mint/v1/mint.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/mint/v1beta1/mint.proto
+## lbm/mint/v1/mint.proto
 
 
 
-<a name="lbm.mint.v1beta1.Minter"></a>
+<a name="lbm.mint.v1.Minter"></a>
 
 ### Minter
 Minter represents the minting state.
@@ -8749,7 +8749,7 @@ Minter represents the minting state.
 
 
 
-<a name="lbm.mint.v1beta1.Params"></a>
+<a name="lbm.mint.v1.Params"></a>
 
 ### Params
 Params holds parameters for the mint module.
@@ -8778,14 +8778,14 @@ Params holds parameters for the mint module.
 
 
 
-<a name="lbm/mint/v1beta1/genesis.proto"></a>
+<a name="lbm/mint/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/mint/v1beta1/genesis.proto
+## lbm/mint/v1/genesis.proto
 
 
 
-<a name="lbm.mint.v1beta1.GenesisState"></a>
+<a name="lbm.mint.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the mint module's genesis state.
@@ -8793,8 +8793,8 @@ GenesisState defines the mint module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `minter` | [Minter](#lbm.mint.v1beta1.Minter) |  | minter is a space for holding current inflation information. |
-| `params` | [Params](#lbm.mint.v1beta1.Params) |  | params defines all the paramaters of the module. |
+| `minter` | [Minter](#lbm.mint.v1.Minter) |  | minter is a space for holding current inflation information. |
+| `params` | [Params](#lbm.mint.v1.Params) |  | params defines all the paramaters of the module. |
 
 
 
@@ -8810,14 +8810,14 @@ GenesisState defines the mint module's genesis state.
 
 
 
-<a name="lbm/mint/v1beta1/query.proto"></a>
+<a name="lbm/mint/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/mint/v1beta1/query.proto
+## lbm/mint/v1/query.proto
 
 
 
-<a name="lbm.mint.v1beta1.QueryAnnualProvisionsRequest"></a>
+<a name="lbm.mint.v1.QueryAnnualProvisionsRequest"></a>
 
 ### QueryAnnualProvisionsRequest
 QueryAnnualProvisionsRequest is the request type for the
@@ -8828,7 +8828,7 @@ Query/AnnualProvisions RPC method.
 
 
 
-<a name="lbm.mint.v1beta1.QueryAnnualProvisionsResponse"></a>
+<a name="lbm.mint.v1.QueryAnnualProvisionsResponse"></a>
 
 ### QueryAnnualProvisionsResponse
 QueryAnnualProvisionsResponse is the response type for the
@@ -8844,7 +8844,7 @@ Query/AnnualProvisions RPC method.
 
 
 
-<a name="lbm.mint.v1beta1.QueryInflationRequest"></a>
+<a name="lbm.mint.v1.QueryInflationRequest"></a>
 
 ### QueryInflationRequest
 QueryInflationRequest is the request type for the Query/Inflation RPC method.
@@ -8854,7 +8854,7 @@ QueryInflationRequest is the request type for the Query/Inflation RPC method.
 
 
 
-<a name="lbm.mint.v1beta1.QueryInflationResponse"></a>
+<a name="lbm.mint.v1.QueryInflationResponse"></a>
 
 ### QueryInflationResponse
 QueryInflationResponse is the response type for the Query/Inflation RPC
@@ -8870,7 +8870,7 @@ method.
 
 
 
-<a name="lbm.mint.v1beta1.QueryParamsRequest"></a>
+<a name="lbm.mint.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -8880,7 +8880,7 @@ QueryParamsRequest is the request type for the Query/Params RPC method.
 
 
 
-<a name="lbm.mint.v1beta1.QueryParamsResponse"></a>
+<a name="lbm.mint.v1.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 QueryParamsResponse is the response type for the Query/Params RPC method.
@@ -8888,7 +8888,7 @@ QueryParamsResponse is the response type for the Query/Params RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.mint.v1beta1.Params) |  | params defines the parameters of the module. |
+| `params` | [Params](#lbm.mint.v1.Params) |  | params defines the parameters of the module. |
 
 
 
@@ -8901,29 +8901,29 @@ QueryParamsResponse is the response type for the Query/Params RPC method.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.mint.v1beta1.Query"></a>
+<a name="lbm.mint.v1.Query"></a>
 
 ### Query
 Query provides defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.mint.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.mint.v1beta1.QueryParamsResponse) | Params returns the total set of minting parameters. | GET|/lbm/mint/v1beta1/params|
-| `Inflation` | [QueryInflationRequest](#lbm.mint.v1beta1.QueryInflationRequest) | [QueryInflationResponse](#lbm.mint.v1beta1.QueryInflationResponse) | Inflation returns the current minting inflation value. | GET|/lbm/mint/v1beta1/inflation|
-| `AnnualProvisions` | [QueryAnnualProvisionsRequest](#lbm.mint.v1beta1.QueryAnnualProvisionsRequest) | [QueryAnnualProvisionsResponse](#lbm.mint.v1beta1.QueryAnnualProvisionsResponse) | AnnualProvisions current minting annual provisions value. | GET|/lbm/mint/v1beta1/annual_provisions|
+| `Params` | [QueryParamsRequest](#lbm.mint.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.mint.v1.QueryParamsResponse) | Params returns the total set of minting parameters. | GET|/lbm/mint/v1/params|
+| `Inflation` | [QueryInflationRequest](#lbm.mint.v1.QueryInflationRequest) | [QueryInflationResponse](#lbm.mint.v1.QueryInflationResponse) | Inflation returns the current minting inflation value. | GET|/lbm/mint/v1/inflation|
+| `AnnualProvisions` | [QueryAnnualProvisionsRequest](#lbm.mint.v1.QueryAnnualProvisionsRequest) | [QueryAnnualProvisionsResponse](#lbm.mint.v1.QueryAnnualProvisionsResponse) | AnnualProvisions current minting annual provisions value. | GET|/lbm/mint/v1/annual_provisions|
 
  <!-- end services -->
 
 
 
-<a name="lbm/params/v1beta1/params.proto"></a>
+<a name="lbm/params/v1/params.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/params/v1beta1/params.proto
+## lbm/params/v1/params.proto
 
 
 
-<a name="lbm.params.v1beta1.ParamChange"></a>
+<a name="lbm.params.v1.ParamChange"></a>
 
 ### ParamChange
 ParamChange defines an individual parameter change, for use in
@@ -8941,7 +8941,7 @@ ParameterChangeProposal.
 
 
 
-<a name="lbm.params.v1beta1.ParameterChangeProposal"></a>
+<a name="lbm.params.v1.ParameterChangeProposal"></a>
 
 ### ParameterChangeProposal
 ParameterChangeProposal defines a proposal to change one or more parameters.
@@ -8951,7 +8951,7 @@ ParameterChangeProposal defines a proposal to change one or more parameters.
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
-| `changes` | [ParamChange](#lbm.params.v1beta1.ParamChange) | repeated |  |
+| `changes` | [ParamChange](#lbm.params.v1.ParamChange) | repeated |  |
 
 
 
@@ -8967,14 +8967,14 @@ ParameterChangeProposal defines a proposal to change one or more parameters.
 
 
 
-<a name="lbm/params/v1beta1/query.proto"></a>
+<a name="lbm/params/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/params/v1beta1/query.proto
+## lbm/params/v1/query.proto
 
 
 
-<a name="lbm.params.v1beta1.QueryParamsRequest"></a>
+<a name="lbm.params.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 QueryParamsRequest is request type for the Query/Params RPC method.
@@ -8990,7 +8990,7 @@ QueryParamsRequest is request type for the Query/Params RPC method.
 
 
 
-<a name="lbm.params.v1beta1.QueryParamsResponse"></a>
+<a name="lbm.params.v1.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 QueryParamsResponse is response type for the Query/Params RPC method.
@@ -8998,7 +8998,7 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `param` | [ParamChange](#lbm.params.v1beta1.ParamChange) |  | param defines the queried parameter. |
+| `param` | [ParamChange](#lbm.params.v1.ParamChange) |  | param defines the queried parameter. |
 
 
 
@@ -9011,27 +9011,27 @@ QueryParamsResponse is response type for the Query/Params RPC method.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.params.v1beta1.Query"></a>
+<a name="lbm.params.v1.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.params.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.params.v1beta1.QueryParamsResponse) | Params queries a specific parameter of a module, given its subspace and key. | GET|/lbm/params/v1beta1/params|
+| `Params` | [QueryParamsRequest](#lbm.params.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.params.v1.QueryParamsResponse) | Params queries a specific parameter of a module, given its subspace and key. | GET|/lbm/params/v1/params|
 
  <!-- end services -->
 
 
 
-<a name="lbm/slashing/v1beta1/slashing.proto"></a>
+<a name="lbm/slashing/v1/slashing.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/slashing/v1beta1/slashing.proto
+## lbm/slashing/v1/slashing.proto
 
 
 
-<a name="lbm.slashing.v1beta1.Params"></a>
+<a name="lbm.slashing.v1.Params"></a>
 
 ### Params
 Params represents the parameters used for by the slashing module.
@@ -9050,7 +9050,7 @@ Params represents the parameters used for by the slashing module.
 
 
 
-<a name="lbm.slashing.v1beta1.ValidatorSigningInfo"></a>
+<a name="lbm.slashing.v1.ValidatorSigningInfo"></a>
 
 ### ValidatorSigningInfo
 ValidatorSigningInfo defines a validator's signing info for monitoring their
@@ -9080,14 +9080,14 @@ liveness activity.
 
 
 
-<a name="lbm/slashing/v1beta1/genesis.proto"></a>
+<a name="lbm/slashing/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/slashing/v1beta1/genesis.proto
+## lbm/slashing/v1/genesis.proto
 
 
 
-<a name="lbm.slashing.v1beta1.GenesisState"></a>
+<a name="lbm.slashing.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the slashing module's genesis state.
@@ -9095,16 +9095,16 @@ GenesisState defines the slashing module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.slashing.v1beta1.Params) |  | params defines all the paramaters of related to deposit. |
-| `signing_infos` | [SigningInfo](#lbm.slashing.v1beta1.SigningInfo) | repeated | signing_infos represents a map between validator addresses and their signing infos. |
-| `missed_blocks` | [ValidatorMissedBlocks](#lbm.slashing.v1beta1.ValidatorMissedBlocks) | repeated | signing_infos represents a map between validator addresses and their missed blocks. |
+| `params` | [Params](#lbm.slashing.v1.Params) |  | params defines all the paramaters of related to deposit. |
+| `signing_infos` | [SigningInfo](#lbm.slashing.v1.SigningInfo) | repeated | signing_infos represents a map between validator addresses and their signing infos. |
+| `missed_blocks` | [ValidatorMissedBlocks](#lbm.slashing.v1.ValidatorMissedBlocks) | repeated | signing_infos represents a map between validator addresses and their missed blocks. |
 
 
 
 
 
 
-<a name="lbm.slashing.v1beta1.MissedBlock"></a>
+<a name="lbm.slashing.v1.MissedBlock"></a>
 
 ### MissedBlock
 MissedBlock contains height and missed status as boolean.
@@ -9120,7 +9120,7 @@ MissedBlock contains height and missed status as boolean.
 
 
 
-<a name="lbm.slashing.v1beta1.SigningInfo"></a>
+<a name="lbm.slashing.v1.SigningInfo"></a>
 
 ### SigningInfo
 SigningInfo stores validator signing info of corresponding address.
@@ -9129,14 +9129,14 @@ SigningInfo stores validator signing info of corresponding address.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the validator address. |
-| `validator_signing_info` | [ValidatorSigningInfo](#lbm.slashing.v1beta1.ValidatorSigningInfo) |  | validator_signing_info represents the signing info of this validator. |
+| `validator_signing_info` | [ValidatorSigningInfo](#lbm.slashing.v1.ValidatorSigningInfo) |  | validator_signing_info represents the signing info of this validator. |
 
 
 
 
 
 
-<a name="lbm.slashing.v1beta1.ValidatorMissedBlocks"></a>
+<a name="lbm.slashing.v1.ValidatorMissedBlocks"></a>
 
 ### ValidatorMissedBlocks
 ValidatorMissedBlocks contains array of missed blocks of corresponding
@@ -9146,7 +9146,7 @@ address.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  | address is the validator address. |
-| `missed_blocks` | [MissedBlock](#lbm.slashing.v1beta1.MissedBlock) | repeated | missed_blocks is an array of missed blocks by the validator. |
+| `missed_blocks` | [MissedBlock](#lbm.slashing.v1.MissedBlock) | repeated | missed_blocks is an array of missed blocks by the validator. |
 
 
 
@@ -9162,14 +9162,14 @@ address.
 
 
 
-<a name="lbm/slashing/v1beta1/query.proto"></a>
+<a name="lbm/slashing/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/slashing/v1beta1/query.proto
+## lbm/slashing/v1/query.proto
 
 
 
-<a name="lbm.slashing.v1beta1.QueryParamsRequest"></a>
+<a name="lbm.slashing.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 QueryParamsRequest is the request type for the Query/Params RPC method
@@ -9179,7 +9179,7 @@ QueryParamsRequest is the request type for the Query/Params RPC method
 
 
 
-<a name="lbm.slashing.v1beta1.QueryParamsResponse"></a>
+<a name="lbm.slashing.v1.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 QueryParamsResponse is the response type for the Query/Params RPC method
@@ -9187,14 +9187,14 @@ QueryParamsResponse is the response type for the Query/Params RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.slashing.v1beta1.Params) |  |  |
+| `params` | [Params](#lbm.slashing.v1.Params) |  |  |
 
 
 
 
 
 
-<a name="lbm.slashing.v1beta1.QuerySigningInfoRequest"></a>
+<a name="lbm.slashing.v1.QuerySigningInfoRequest"></a>
 
 ### QuerySigningInfoRequest
 QuerySigningInfoRequest is the request type for the Query/SigningInfo RPC
@@ -9210,7 +9210,7 @@ method
 
 
 
-<a name="lbm.slashing.v1beta1.QuerySigningInfoResponse"></a>
+<a name="lbm.slashing.v1.QuerySigningInfoResponse"></a>
 
 ### QuerySigningInfoResponse
 QuerySigningInfoResponse is the response type for the Query/SigningInfo RPC
@@ -9219,14 +9219,14 @@ method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `val_signing_info` | [ValidatorSigningInfo](#lbm.slashing.v1beta1.ValidatorSigningInfo) |  | val_signing_info is the signing info of requested val cons address |
+| `val_signing_info` | [ValidatorSigningInfo](#lbm.slashing.v1.ValidatorSigningInfo) |  | val_signing_info is the signing info of requested val cons address |
 
 
 
 
 
 
-<a name="lbm.slashing.v1beta1.QuerySigningInfosRequest"></a>
+<a name="lbm.slashing.v1.QuerySigningInfosRequest"></a>
 
 ### QuerySigningInfosRequest
 QuerySigningInfosRequest is the request type for the Query/SigningInfos RPC
@@ -9235,14 +9235,14 @@ method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  |  |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  |  |
 
 
 
 
 
 
-<a name="lbm.slashing.v1beta1.QuerySigningInfosResponse"></a>
+<a name="lbm.slashing.v1.QuerySigningInfosResponse"></a>
 
 ### QuerySigningInfosResponse
 QuerySigningInfosResponse is the response type for the Query/SigningInfos RPC
@@ -9251,8 +9251,8 @@ method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `info` | [ValidatorSigningInfo](#lbm.slashing.v1beta1.ValidatorSigningInfo) | repeated | info is the signing info of all validators |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  |  |
+| `info` | [ValidatorSigningInfo](#lbm.slashing.v1.ValidatorSigningInfo) | repeated | info is the signing info of all validators |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  |  |
 
 
 
@@ -9265,29 +9265,29 @@ method
  <!-- end HasExtensions -->
 
 
-<a name="lbm.slashing.v1beta1.Query"></a>
+<a name="lbm.slashing.v1.Query"></a>
 
 ### Query
 Query provides defines the gRPC querier service
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Params` | [QueryParamsRequest](#lbm.slashing.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.slashing.v1beta1.QueryParamsResponse) | Params queries the parameters of slashing module | GET|/lbm/slashing/v1beta1/params|
-| `SigningInfo` | [QuerySigningInfoRequest](#lbm.slashing.v1beta1.QuerySigningInfoRequest) | [QuerySigningInfoResponse](#lbm.slashing.v1beta1.QuerySigningInfoResponse) | SigningInfo queries the signing info of given cons address | GET|/lbm/slashing/v1beta1/signing_infos/{cons_address}|
-| `SigningInfos` | [QuerySigningInfosRequest](#lbm.slashing.v1beta1.QuerySigningInfosRequest) | [QuerySigningInfosResponse](#lbm.slashing.v1beta1.QuerySigningInfosResponse) | SigningInfos queries signing info of all validators | GET|/lbm/slashing/v1beta1/signing_infos|
+| `Params` | [QueryParamsRequest](#lbm.slashing.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.slashing.v1.QueryParamsResponse) | Params queries the parameters of slashing module | GET|/lbm/slashing/v1/params|
+| `SigningInfo` | [QuerySigningInfoRequest](#lbm.slashing.v1.QuerySigningInfoRequest) | [QuerySigningInfoResponse](#lbm.slashing.v1.QuerySigningInfoResponse) | SigningInfo queries the signing info of given cons address | GET|/lbm/slashing/v1/signing_infos/{cons_address}|
+| `SigningInfos` | [QuerySigningInfosRequest](#lbm.slashing.v1.QuerySigningInfosRequest) | [QuerySigningInfosResponse](#lbm.slashing.v1.QuerySigningInfosResponse) | SigningInfos queries signing info of all validators | GET|/lbm/slashing/v1/signing_infos|
 
  <!-- end services -->
 
 
 
-<a name="lbm/slashing/v1beta1/tx.proto"></a>
+<a name="lbm/slashing/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/slashing/v1beta1/tx.proto
+## lbm/slashing/v1/tx.proto
 
 
 
-<a name="lbm.slashing.v1beta1.MsgUnjail"></a>
+<a name="lbm.slashing.v1.MsgUnjail"></a>
 
 ### MsgUnjail
 MsgUnjail defines the Msg/Unjail request type
@@ -9302,7 +9302,7 @@ MsgUnjail defines the Msg/Unjail request type
 
 
 
-<a name="lbm.slashing.v1beta1.MsgUnjailResponse"></a>
+<a name="lbm.slashing.v1.MsgUnjailResponse"></a>
 
 ### MsgUnjailResponse
 MsgUnjailResponse defines the Msg/Unjail response type
@@ -9318,27 +9318,27 @@ MsgUnjailResponse defines the Msg/Unjail response type
  <!-- end HasExtensions -->
 
 
-<a name="lbm.slashing.v1beta1.Msg"></a>
+<a name="lbm.slashing.v1.Msg"></a>
 
 ### Msg
 Msg defines the slashing Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Unjail` | [MsgUnjail](#lbm.slashing.v1beta1.MsgUnjail) | [MsgUnjailResponse](#lbm.slashing.v1beta1.MsgUnjailResponse) | Unjail defines a method for unjailing a jailed validator, thus returning them into the bonded validator set, so they can begin receiving provisions and rewards again. | |
+| `Unjail` | [MsgUnjail](#lbm.slashing.v1.MsgUnjail) | [MsgUnjailResponse](#lbm.slashing.v1.MsgUnjailResponse) | Unjail defines a method for unjailing a jailed validator, thus returning them into the bonded validator set, so they can begin receiving provisions and rewards again. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/staking/v1beta1/staking.proto"></a>
+<a name="lbm/staking/v1/staking.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/staking/v1beta1/staking.proto
+## lbm/staking/v1/staking.proto
 
 
 
-<a name="lbm.staking.v1beta1.Commission"></a>
+<a name="lbm.staking.v1.Commission"></a>
 
 ### Commission
 Commission defines commission parameters for a given validator.
@@ -9346,7 +9346,7 @@ Commission defines commission parameters for a given validator.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `commission_rates` | [CommissionRates](#lbm.staking.v1beta1.CommissionRates) |  | commission_rates defines the initial commission rates to be used for creating a validator. |
+| `commission_rates` | [CommissionRates](#lbm.staking.v1.CommissionRates) |  | commission_rates defines the initial commission rates to be used for creating a validator. |
 | `update_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | update_time is the last time the commission rate was changed. |
 
 
@@ -9354,7 +9354,7 @@ Commission defines commission parameters for a given validator.
 
 
 
-<a name="lbm.staking.v1beta1.CommissionRates"></a>
+<a name="lbm.staking.v1.CommissionRates"></a>
 
 ### CommissionRates
 CommissionRates defines the initial commission rates to be used for creating
@@ -9372,7 +9372,7 @@ a validator.
 
 
 
-<a name="lbm.staking.v1beta1.DVPair"></a>
+<a name="lbm.staking.v1.DVPair"></a>
 
 ### DVPair
 DVPair is struct that just has a delegator-validator pair with no other data.
@@ -9390,7 +9390,7 @@ be used to construct the key to getting an UnbondingDelegation from state.
 
 
 
-<a name="lbm.staking.v1beta1.DVPairs"></a>
+<a name="lbm.staking.v1.DVPairs"></a>
 
 ### DVPairs
 DVPairs defines an array of DVPair objects.
@@ -9398,14 +9398,14 @@ DVPairs defines an array of DVPair objects.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pairs` | [DVPair](#lbm.staking.v1beta1.DVPair) | repeated |  |
+| `pairs` | [DVPair](#lbm.staking.v1.DVPair) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.DVVTriplet"></a>
+<a name="lbm.staking.v1.DVVTriplet"></a>
 
 ### DVVTriplet
 DVVTriplet is struct that just has a delegator-validator-validator triplet
@@ -9425,7 +9425,7 @@ Redelegation from state.
 
 
 
-<a name="lbm.staking.v1beta1.DVVTriplets"></a>
+<a name="lbm.staking.v1.DVVTriplets"></a>
 
 ### DVVTriplets
 DVVTriplets defines an array of DVVTriplet objects.
@@ -9433,14 +9433,14 @@ DVVTriplets defines an array of DVVTriplet objects.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `triplets` | [DVVTriplet](#lbm.staking.v1beta1.DVVTriplet) | repeated |  |
+| `triplets` | [DVVTriplet](#lbm.staking.v1.DVVTriplet) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.Delegation"></a>
+<a name="lbm.staking.v1.Delegation"></a>
 
 ### Delegation
 Delegation represents the bond with tokens held by an account. It is
@@ -9459,7 +9459,7 @@ validator.
 
 
 
-<a name="lbm.staking.v1beta1.DelegationResponse"></a>
+<a name="lbm.staking.v1.DelegationResponse"></a>
 
 ### DelegationResponse
 DelegationResponse is equivalent to Delegation except that it contains a
@@ -9468,15 +9468,15 @@ balance in addition to shares which is more suitable for client responses.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `delegation` | [Delegation](#lbm.staking.v1beta1.Delegation) |  |  |
-| `balance` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  |  |
+| `delegation` | [Delegation](#lbm.staking.v1.Delegation) |  |  |
+| `balance` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.Description"></a>
+<a name="lbm.staking.v1.Description"></a>
 
 ### Description
 Description defines a validator description.
@@ -9495,7 +9495,7 @@ Description defines a validator description.
 
 
 
-<a name="lbm.staking.v1beta1.HistoricalInfo"></a>
+<a name="lbm.staking.v1.HistoricalInfo"></a>
 
 ### HistoricalInfo
 HistoricalInfo contains header and validator, voter information for a given block.
@@ -9507,14 +9507,14 @@ recent HistoricalInfo
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `header` | [ostracon.types.Header](#ostracon.types.Header) |  |  |
-| `valset` | [Validator](#lbm.staking.v1beta1.Validator) | repeated |  |
+| `valset` | [Validator](#lbm.staking.v1.Validator) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.Params"></a>
+<a name="lbm.staking.v1.Params"></a>
 
 ### Params
 Params defines the parameters for the staking module.
@@ -9533,7 +9533,7 @@ Params defines the parameters for the staking module.
 
 
 
-<a name="lbm.staking.v1beta1.Pool"></a>
+<a name="lbm.staking.v1.Pool"></a>
 
 ### Pool
 Pool is used for tracking bonded and not-bonded token supply of the bond
@@ -9550,7 +9550,7 @@ denomination.
 
 
 
-<a name="lbm.staking.v1beta1.Redelegation"></a>
+<a name="lbm.staking.v1.Redelegation"></a>
 
 ### Redelegation
 Redelegation contains the list of a particular delegator's redelegating bonds
@@ -9562,7 +9562,7 @@ from a particular source validator to a particular destination validator.
 | `delegator_address` | [string](#string) |  | delegator_address is the bech32-encoded address of the delegator. |
 | `validator_src_address` | [string](#string) |  | validator_src_address is the validator redelegation source operator address. |
 | `validator_dst_address` | [string](#string) |  | validator_dst_address is the validator redelegation destination operator address. |
-| `entries` | [RedelegationEntry](#lbm.staking.v1beta1.RedelegationEntry) | repeated | entries are the redelegation entries.
+| `entries` | [RedelegationEntry](#lbm.staking.v1.RedelegationEntry) | repeated | entries are the redelegation entries.
 
 redelegation entries |
 
@@ -9571,7 +9571,7 @@ redelegation entries |
 
 
 
-<a name="lbm.staking.v1beta1.RedelegationEntry"></a>
+<a name="lbm.staking.v1.RedelegationEntry"></a>
 
 ### RedelegationEntry
 RedelegationEntry defines a redelegation object with relevant metadata.
@@ -9589,7 +9589,7 @@ RedelegationEntry defines a redelegation object with relevant metadata.
 
 
 
-<a name="lbm.staking.v1beta1.RedelegationEntryResponse"></a>
+<a name="lbm.staking.v1.RedelegationEntryResponse"></a>
 
 ### RedelegationEntryResponse
 RedelegationEntryResponse is equivalent to a RedelegationEntry except that it
@@ -9599,7 +9599,7 @@ responses.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `redelegation_entry` | [RedelegationEntry](#lbm.staking.v1beta1.RedelegationEntry) |  |  |
+| `redelegation_entry` | [RedelegationEntry](#lbm.staking.v1.RedelegationEntry) |  |  |
 | `balance` | [string](#string) |  |  |
 
 
@@ -9607,7 +9607,7 @@ responses.
 
 
 
-<a name="lbm.staking.v1beta1.RedelegationResponse"></a>
+<a name="lbm.staking.v1.RedelegationResponse"></a>
 
 ### RedelegationResponse
 RedelegationResponse is equivalent to a Redelegation except that its entries
@@ -9617,15 +9617,15 @@ responses.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `redelegation` | [Redelegation](#lbm.staking.v1beta1.Redelegation) |  |  |
-| `entries` | [RedelegationEntryResponse](#lbm.staking.v1beta1.RedelegationEntryResponse) | repeated |  |
+| `redelegation` | [Redelegation](#lbm.staking.v1.Redelegation) |  |  |
+| `entries` | [RedelegationEntryResponse](#lbm.staking.v1.RedelegationEntryResponse) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.UnbondingDelegation"></a>
+<a name="lbm.staking.v1.UnbondingDelegation"></a>
 
 ### UnbondingDelegation
 UnbondingDelegation stores all of a single delegator's unbonding bonds
@@ -9636,7 +9636,7 @@ for a single validator in an time-ordered list.
 | ----- | ---- | ----- | ----------- |
 | `delegator_address` | [string](#string) |  | delegator_address is the bech32-encoded address of the delegator. |
 | `validator_address` | [string](#string) |  | validator_address is the bech32-encoded address of the validator. |
-| `entries` | [UnbondingDelegationEntry](#lbm.staking.v1beta1.UnbondingDelegationEntry) | repeated | entries are the unbonding delegation entries.
+| `entries` | [UnbondingDelegationEntry](#lbm.staking.v1.UnbondingDelegationEntry) | repeated | entries are the unbonding delegation entries.
 
 unbonding delegation entries |
 
@@ -9645,7 +9645,7 @@ unbonding delegation entries |
 
 
 
-<a name="lbm.staking.v1beta1.UnbondingDelegationEntry"></a>
+<a name="lbm.staking.v1.UnbondingDelegationEntry"></a>
 
 ### UnbondingDelegationEntry
 UnbondingDelegationEntry defines an unbonding object with relevant metadata.
@@ -9663,7 +9663,7 @@ UnbondingDelegationEntry defines an unbonding object with relevant metadata.
 
 
 
-<a name="lbm.staking.v1beta1.ValAddresses"></a>
+<a name="lbm.staking.v1.ValAddresses"></a>
 
 ### ValAddresses
 ValAddresses defines a repeated set of validator addresses.
@@ -9678,7 +9678,7 @@ ValAddresses defines a repeated set of validator addresses.
 
 
 
-<a name="lbm.staking.v1beta1.Validator"></a>
+<a name="lbm.staking.v1.Validator"></a>
 
 ### Validator
 Validator defines a validator, together with the total amount of the
@@ -9696,13 +9696,13 @@ multiplied by exchange rate.
 | `operator_address` | [string](#string) |  | operator_address defines the address of the validator's operator; bech encoded in JSON. |
 | `consensus_pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  | consensus_pubkey is the consensus public key of the validator, as a Protobuf Any. |
 | `jailed` | [bool](#bool) |  | jailed defined whether the validator has been jailed from bonded status or not. |
-| `status` | [BondStatus](#lbm.staking.v1beta1.BondStatus) |  | status is the validator status (bonded/unbonding/unbonded). |
+| `status` | [BondStatus](#lbm.staking.v1.BondStatus) |  | status is the validator status (bonded/unbonding/unbonded). |
 | `tokens` | [string](#string) |  | tokens define the delegated tokens (incl. self-delegation). |
 | `delegator_shares` | [string](#string) |  | delegator_shares defines total shares issued to a validator's delegators. |
-| `description` | [Description](#lbm.staking.v1beta1.Description) |  | description defines the description terms for the validator. |
+| `description` | [Description](#lbm.staking.v1.Description) |  | description defines the description terms for the validator. |
 | `unbonding_height` | [int64](#int64) |  | unbonding_height defines, if unbonding, the height at which this validator has begun unbonding. |
 | `unbonding_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | unbonding_time defines, if unbonding, the min time for the validator to complete unbonding. |
-| `commission` | [Commission](#lbm.staking.v1beta1.Commission) |  | commission defines the commission parameters. |
+| `commission` | [Commission](#lbm.staking.v1.Commission) |  | commission defines the commission parameters. |
 | `min_self_delegation` | [string](#string) |  | min_self_delegation is the validator's self declared minimum self delegation. |
 
 
@@ -9712,7 +9712,7 @@ multiplied by exchange rate.
  <!-- end messages -->
 
 
-<a name="lbm.staking.v1beta1.BondStatus"></a>
+<a name="lbm.staking.v1.BondStatus"></a>
 
 ### BondStatus
 BondStatus is the status of a validator.
@@ -9733,14 +9733,14 @@ BondStatus is the status of a validator.
 
 
 
-<a name="lbm/staking/v1beta1/genesis.proto"></a>
+<a name="lbm/staking/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/staking/v1beta1/genesis.proto
+## lbm/staking/v1/genesis.proto
 
 
 
-<a name="lbm.staking.v1beta1.GenesisState"></a>
+<a name="lbm.staking.v1.GenesisState"></a>
 
 ### GenesisState
 GenesisState defines the staking module's genesis state.
@@ -9748,13 +9748,13 @@ GenesisState defines the staking module's genesis state.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.staking.v1beta1.Params) |  | params defines all the paramaters of related to deposit. |
+| `params` | [Params](#lbm.staking.v1.Params) |  | params defines all the paramaters of related to deposit. |
 | `last_total_power` | [bytes](#bytes) |  | last_total_power tracks the total amounts of bonded tokens recorded during the previous end block. |
-| `last_validator_powers` | [LastValidatorPower](#lbm.staking.v1beta1.LastValidatorPower) | repeated | last_validator_powers is a special index that provides a historical list of the last-block's bonded validators. |
-| `validators` | [Validator](#lbm.staking.v1beta1.Validator) | repeated | delegations defines the validator set at genesis. |
-| `delegations` | [Delegation](#lbm.staking.v1beta1.Delegation) | repeated | delegations defines the delegations active at genesis. |
-| `unbonding_delegations` | [UnbondingDelegation](#lbm.staking.v1beta1.UnbondingDelegation) | repeated | unbonding_delegations defines the unbonding delegations active at genesis. |
-| `redelegations` | [Redelegation](#lbm.staking.v1beta1.Redelegation) | repeated | redelegations defines the redelegations active at genesis. |
+| `last_validator_powers` | [LastValidatorPower](#lbm.staking.v1.LastValidatorPower) | repeated | last_validator_powers is a special index that provides a historical list of the last-block's bonded validators. |
+| `validators` | [Validator](#lbm.staking.v1.Validator) | repeated | delegations defines the validator set at genesis. |
+| `delegations` | [Delegation](#lbm.staking.v1.Delegation) | repeated | delegations defines the delegations active at genesis. |
+| `unbonding_delegations` | [UnbondingDelegation](#lbm.staking.v1.UnbondingDelegation) | repeated | unbonding_delegations defines the unbonding delegations active at genesis. |
+| `redelegations` | [Redelegation](#lbm.staking.v1.Redelegation) | repeated | redelegations defines the redelegations active at genesis. |
 | `exported` | [bool](#bool) |  |  |
 
 
@@ -9762,7 +9762,7 @@ GenesisState defines the staking module's genesis state.
 
 
 
-<a name="lbm.staking.v1beta1.LastValidatorPower"></a>
+<a name="lbm.staking.v1.LastValidatorPower"></a>
 
 ### LastValidatorPower
 LastValidatorPower required for validator set update logic.
@@ -9787,14 +9787,14 @@ LastValidatorPower required for validator set update logic.
 
 
 
-<a name="lbm/staking/v1beta1/query.proto"></a>
+<a name="lbm/staking/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/staking/v1beta1/query.proto
+## lbm/staking/v1/query.proto
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegationRequest"></a>
+<a name="lbm.staking.v1.QueryDelegationRequest"></a>
 
 ### QueryDelegationRequest
 QueryDelegationRequest is request type for the Query/Delegation RPC method.
@@ -9810,7 +9810,7 @@ QueryDelegationRequest is request type for the Query/Delegation RPC method.
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegationResponse"></a>
+<a name="lbm.staking.v1.QueryDelegationResponse"></a>
 
 ### QueryDelegationResponse
 QueryDelegationResponse is response type for the Query/Delegation RPC method.
@@ -9818,14 +9818,14 @@ QueryDelegationResponse is response type for the Query/Delegation RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `delegation_response` | [DelegationResponse](#lbm.staking.v1beta1.DelegationResponse) |  | delegation_responses defines the delegation info of a delegation. |
+| `delegation_response` | [DelegationResponse](#lbm.staking.v1.DelegationResponse) |  | delegation_responses defines the delegation info of a delegation. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegatorDelegationsRequest"></a>
+<a name="lbm.staking.v1.QueryDelegatorDelegationsRequest"></a>
 
 ### QueryDelegatorDelegationsRequest
 QueryDelegatorDelegationsRequest is request type for the
@@ -9835,14 +9835,14 @@ Query/DelegatorDelegations RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `delegator_addr` | [string](#string) |  | delegator_addr defines the delegator address to query for. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegatorDelegationsResponse"></a>
+<a name="lbm.staking.v1.QueryDelegatorDelegationsResponse"></a>
 
 ### QueryDelegatorDelegationsResponse
 QueryDelegatorDelegationsResponse is response type for the
@@ -9851,15 +9851,15 @@ Query/DelegatorDelegations RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `delegation_responses` | [DelegationResponse](#lbm.staking.v1beta1.DelegationResponse) | repeated | delegation_responses defines all the delegations' info of a delegator. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `delegation_responses` | [DelegationResponse](#lbm.staking.v1.DelegationResponse) | repeated | delegation_responses defines all the delegations' info of a delegator. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsRequest"></a>
+<a name="lbm.staking.v1.QueryDelegatorUnbondingDelegationsRequest"></a>
 
 ### QueryDelegatorUnbondingDelegationsRequest
 QueryDelegatorUnbondingDelegationsRequest is request type for the
@@ -9869,14 +9869,14 @@ Query/DelegatorUnbondingDelegations RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `delegator_addr` | [string](#string) |  | delegator_addr defines the delegator address to query for. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse"></a>
+<a name="lbm.staking.v1.QueryDelegatorUnbondingDelegationsResponse"></a>
 
 ### QueryDelegatorUnbondingDelegationsResponse
 QueryUnbondingDelegatorDelegationsResponse is response type for the
@@ -9885,15 +9885,15 @@ Query/UnbondingDelegatorDelegations RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `unbonding_responses` | [UnbondingDelegation](#lbm.staking.v1beta1.UnbondingDelegation) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `unbonding_responses` | [UnbondingDelegation](#lbm.staking.v1.UnbondingDelegation) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegatorValidatorRequest"></a>
+<a name="lbm.staking.v1.QueryDelegatorValidatorRequest"></a>
 
 ### QueryDelegatorValidatorRequest
 QueryDelegatorValidatorRequest is request type for the
@@ -9910,7 +9910,7 @@ Query/DelegatorValidator RPC method.
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegatorValidatorResponse"></a>
+<a name="lbm.staking.v1.QueryDelegatorValidatorResponse"></a>
 
 ### QueryDelegatorValidatorResponse
 QueryDelegatorValidatorResponse response type for the
@@ -9919,14 +9919,14 @@ Query/DelegatorValidator RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `validator` | [Validator](#lbm.staking.v1beta1.Validator) |  | validator defines the the validator info. |
+| `validator` | [Validator](#lbm.staking.v1.Validator) |  | validator defines the the validator info. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegatorValidatorsRequest"></a>
+<a name="lbm.staking.v1.QueryDelegatorValidatorsRequest"></a>
 
 ### QueryDelegatorValidatorsRequest
 QueryDelegatorValidatorsRequest is request type for the
@@ -9936,14 +9936,14 @@ Query/DelegatorValidators RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `delegator_addr` | [string](#string) |  | delegator_addr defines the delegator address to query for. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryDelegatorValidatorsResponse"></a>
+<a name="lbm.staking.v1.QueryDelegatorValidatorsResponse"></a>
 
 ### QueryDelegatorValidatorsResponse
 QueryDelegatorValidatorsResponse is response type for the
@@ -9952,15 +9952,15 @@ Query/DelegatorValidators RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `validators` | [Validator](#lbm.staking.v1beta1.Validator) | repeated | validators defines the the validators' info of a delegator. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `validators` | [Validator](#lbm.staking.v1.Validator) | repeated | validators defines the the validators' info of a delegator. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryHistoricalInfoRequest"></a>
+<a name="lbm.staking.v1.QueryHistoricalInfoRequest"></a>
 
 ### QueryHistoricalInfoRequest
 QueryHistoricalInfoRequest is request type for the Query/HistoricalInfo RPC
@@ -9976,7 +9976,7 @@ method.
 
 
 
-<a name="lbm.staking.v1beta1.QueryHistoricalInfoResponse"></a>
+<a name="lbm.staking.v1.QueryHistoricalInfoResponse"></a>
 
 ### QueryHistoricalInfoResponse
 QueryHistoricalInfoResponse is response type for the Query/HistoricalInfo RPC
@@ -9985,14 +9985,14 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `hist` | [HistoricalInfo](#lbm.staking.v1beta1.HistoricalInfo) |  | hist defines the historical info at the given height. |
+| `hist` | [HistoricalInfo](#lbm.staking.v1.HistoricalInfo) |  | hist defines the historical info at the given height. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryParamsRequest"></a>
+<a name="lbm.staking.v1.QueryParamsRequest"></a>
 
 ### QueryParamsRequest
 QueryParamsRequest is request type for the Query/Params RPC method.
@@ -10002,7 +10002,7 @@ QueryParamsRequest is request type for the Query/Params RPC method.
 
 
 
-<a name="lbm.staking.v1beta1.QueryParamsResponse"></a>
+<a name="lbm.staking.v1.QueryParamsResponse"></a>
 
 ### QueryParamsResponse
 QueryParamsResponse is response type for the Query/Params RPC method.
@@ -10010,14 +10010,14 @@ QueryParamsResponse is response type for the Query/Params RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `params` | [Params](#lbm.staking.v1beta1.Params) |  | params holds all the parameters of this module. |
+| `params` | [Params](#lbm.staking.v1.Params) |  | params holds all the parameters of this module. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryPoolRequest"></a>
+<a name="lbm.staking.v1.QueryPoolRequest"></a>
 
 ### QueryPoolRequest
 QueryPoolRequest is request type for the Query/Pool RPC method.
@@ -10027,7 +10027,7 @@ QueryPoolRequest is request type for the Query/Pool RPC method.
 
 
 
-<a name="lbm.staking.v1beta1.QueryPoolResponse"></a>
+<a name="lbm.staking.v1.QueryPoolResponse"></a>
 
 ### QueryPoolResponse
 QueryPoolResponse is response type for the Query/Pool RPC method.
@@ -10035,14 +10035,14 @@ QueryPoolResponse is response type for the Query/Pool RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `pool` | [Pool](#lbm.staking.v1beta1.Pool) |  | pool defines the pool info. |
+| `pool` | [Pool](#lbm.staking.v1.Pool) |  | pool defines the pool info. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryRedelegationsRequest"></a>
+<a name="lbm.staking.v1.QueryRedelegationsRequest"></a>
 
 ### QueryRedelegationsRequest
 QueryRedelegationsRequest is request type for the Query/Redelegations RPC
@@ -10054,14 +10054,14 @@ method.
 | `delegator_addr` | [string](#string) |  | delegator_addr defines the delegator address to query for. |
 | `src_validator_addr` | [string](#string) |  | src_validator_addr defines the validator address to redelegate from. |
 | `dst_validator_addr` | [string](#string) |  | dst_validator_addr defines the validator address to redelegate to. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryRedelegationsResponse"></a>
+<a name="lbm.staking.v1.QueryRedelegationsResponse"></a>
 
 ### QueryRedelegationsResponse
 QueryRedelegationsResponse is response type for the Query/Redelegations RPC
@@ -10070,15 +10070,15 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `redelegation_responses` | [RedelegationResponse](#lbm.staking.v1beta1.RedelegationResponse) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `redelegation_responses` | [RedelegationResponse](#lbm.staking.v1.RedelegationResponse) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryUnbondingDelegationRequest"></a>
+<a name="lbm.staking.v1.QueryUnbondingDelegationRequest"></a>
 
 ### QueryUnbondingDelegationRequest
 QueryUnbondingDelegationRequest is request type for the
@@ -10095,7 +10095,7 @@ Query/UnbondingDelegation RPC method.
 
 
 
-<a name="lbm.staking.v1beta1.QueryUnbondingDelegationResponse"></a>
+<a name="lbm.staking.v1.QueryUnbondingDelegationResponse"></a>
 
 ### QueryUnbondingDelegationResponse
 QueryDelegationResponse is response type for the Query/UnbondingDelegation
@@ -10104,14 +10104,14 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `unbond` | [UnbondingDelegation](#lbm.staking.v1beta1.UnbondingDelegation) |  | unbond defines the unbonding information of a delegation. |
+| `unbond` | [UnbondingDelegation](#lbm.staking.v1.UnbondingDelegation) |  | unbond defines the unbonding information of a delegation. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryValidatorDelegationsRequest"></a>
+<a name="lbm.staking.v1.QueryValidatorDelegationsRequest"></a>
 
 ### QueryValidatorDelegationsRequest
 QueryValidatorDelegationsRequest is request type for the
@@ -10121,14 +10121,14 @@ Query/ValidatorDelegations RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `validator_addr` | [string](#string) |  | validator_addr defines the validator address to query for. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryValidatorDelegationsResponse"></a>
+<a name="lbm.staking.v1.QueryValidatorDelegationsResponse"></a>
 
 ### QueryValidatorDelegationsResponse
 QueryValidatorDelegationsResponse is response type for the
@@ -10137,15 +10137,15 @@ Query/ValidatorDelegations RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `delegation_responses` | [DelegationResponse](#lbm.staking.v1beta1.DelegationResponse) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `delegation_responses` | [DelegationResponse](#lbm.staking.v1.DelegationResponse) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryValidatorRequest"></a>
+<a name="lbm.staking.v1.QueryValidatorRequest"></a>
 
 ### QueryValidatorRequest
 QueryValidatorRequest is response type for the Query/Validator RPC method
@@ -10160,7 +10160,7 @@ QueryValidatorRequest is response type for the Query/Validator RPC method
 
 
 
-<a name="lbm.staking.v1beta1.QueryValidatorResponse"></a>
+<a name="lbm.staking.v1.QueryValidatorResponse"></a>
 
 ### QueryValidatorResponse
 QueryValidatorResponse is response type for the Query/Validator RPC method
@@ -10168,14 +10168,14 @@ QueryValidatorResponse is response type for the Query/Validator RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `validator` | [Validator](#lbm.staking.v1beta1.Validator) |  | validator defines the the validator info. |
+| `validator` | [Validator](#lbm.staking.v1.Validator) |  | validator defines the the validator info. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsRequest"></a>
+<a name="lbm.staking.v1.QueryValidatorUnbondingDelegationsRequest"></a>
 
 ### QueryValidatorUnbondingDelegationsRequest
 QueryValidatorUnbondingDelegationsRequest is required type for the
@@ -10185,14 +10185,14 @@ Query/ValidatorUnbondingDelegations RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `validator_addr` | [string](#string) |  | validator_addr defines the validator address to query for. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse"></a>
+<a name="lbm.staking.v1.QueryValidatorUnbondingDelegationsResponse"></a>
 
 ### QueryValidatorUnbondingDelegationsResponse
 QueryValidatorUnbondingDelegationsResponse is response type for the
@@ -10201,15 +10201,15 @@ Query/ValidatorUnbondingDelegations RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `unbonding_responses` | [UnbondingDelegation](#lbm.staking.v1beta1.UnbondingDelegation) | repeated |  |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `unbonding_responses` | [UnbondingDelegation](#lbm.staking.v1.UnbondingDelegation) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryValidatorsRequest"></a>
+<a name="lbm.staking.v1.QueryValidatorsRequest"></a>
 
 ### QueryValidatorsRequest
 QueryValidatorsRequest is request type for Query/Validators RPC method.
@@ -10218,14 +10218,14 @@ QueryValidatorsRequest is request type for Query/Validators RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `status` | [string](#string) |  | status enables to query for validators matching a given status. |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an optional pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.QueryValidatorsResponse"></a>
+<a name="lbm.staking.v1.QueryValidatorsResponse"></a>
 
 ### QueryValidatorsResponse
 QueryValidatorsResponse is response type for the Query/Validators RPC method
@@ -10233,8 +10233,8 @@ QueryValidatorsResponse is response type for the Query/Validators RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `validators` | [Validator](#lbm.staking.v1beta1.Validator) | repeated | validators contains all the queried validators. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines the pagination in the response. |
+| `validators` | [Validator](#lbm.staking.v1.Validator) | repeated | validators contains all the queried validators. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
 
 
 
@@ -10247,40 +10247,40 @@ QueryValidatorsResponse is response type for the Query/Validators RPC method
  <!-- end HasExtensions -->
 
 
-<a name="lbm.staking.v1beta1.Query"></a>
+<a name="lbm.staking.v1.Query"></a>
 
 ### Query
 Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Validators` | [QueryValidatorsRequest](#lbm.staking.v1beta1.QueryValidatorsRequest) | [QueryValidatorsResponse](#lbm.staking.v1beta1.QueryValidatorsResponse) | Validators queries all validators that match the given status. | GET|/lbm/staking/v1beta1/validators|
-| `Validator` | [QueryValidatorRequest](#lbm.staking.v1beta1.QueryValidatorRequest) | [QueryValidatorResponse](#lbm.staking.v1beta1.QueryValidatorResponse) | Validator queries validator info for given validator address. | GET|/lbm/staking/v1beta1/validators/{validator_addr}|
-| `ValidatorDelegations` | [QueryValidatorDelegationsRequest](#lbm.staking.v1beta1.QueryValidatorDelegationsRequest) | [QueryValidatorDelegationsResponse](#lbm.staking.v1beta1.QueryValidatorDelegationsResponse) | ValidatorDelegations queries delegate info for given validator. | GET|/lbm/staking/v1beta1/validators/{validator_addr}/delegations|
-| `ValidatorUnbondingDelegations` | [QueryValidatorUnbondingDelegationsRequest](#lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsRequest) | [QueryValidatorUnbondingDelegationsResponse](#lbm.staking.v1beta1.QueryValidatorUnbondingDelegationsResponse) | ValidatorUnbondingDelegations queries unbonding delegations of a validator. | GET|/lbm/staking/v1beta1/validators/{validator_addr}/unbonding_delegations|
-| `Delegation` | [QueryDelegationRequest](#lbm.staking.v1beta1.QueryDelegationRequest) | [QueryDelegationResponse](#lbm.staking.v1beta1.QueryDelegationResponse) | Delegation queries delegate info for given validator delegator pair. | GET|/lbm/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}|
-| `UnbondingDelegation` | [QueryUnbondingDelegationRequest](#lbm.staking.v1beta1.QueryUnbondingDelegationRequest) | [QueryUnbondingDelegationResponse](#lbm.staking.v1beta1.QueryUnbondingDelegationResponse) | UnbondingDelegation queries unbonding info for given validator delegator pair. | GET|/lbm/staking/v1beta1/validators/{validator_addr}/delegations/{delegator_addr}/unbonding_delegation|
-| `DelegatorDelegations` | [QueryDelegatorDelegationsRequest](#lbm.staking.v1beta1.QueryDelegatorDelegationsRequest) | [QueryDelegatorDelegationsResponse](#lbm.staking.v1beta1.QueryDelegatorDelegationsResponse) | DelegatorDelegations queries all delegations of a given delegator address. | GET|/lbm/staking/v1beta1/delegations/{delegator_addr}|
-| `DelegatorUnbondingDelegations` | [QueryDelegatorUnbondingDelegationsRequest](#lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsRequest) | [QueryDelegatorUnbondingDelegationsResponse](#lbm.staking.v1beta1.QueryDelegatorUnbondingDelegationsResponse) | DelegatorUnbondingDelegations queries all unbonding delegations of a given delegator address. | GET|/lbm/staking/v1beta1/delegators/{delegator_addr}/unbonding_delegations|
-| `Redelegations` | [QueryRedelegationsRequest](#lbm.staking.v1beta1.QueryRedelegationsRequest) | [QueryRedelegationsResponse](#lbm.staking.v1beta1.QueryRedelegationsResponse) | Redelegations queries redelegations of given address. | GET|/lbm/staking/v1beta1/delegators/{delegator_addr}/redelegations|
-| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.staking.v1beta1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.staking.v1beta1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries all validators info for given delegator address. | GET|/lbm/staking/v1beta1/delegators/{delegator_addr}/validators|
-| `DelegatorValidator` | [QueryDelegatorValidatorRequest](#lbm.staking.v1beta1.QueryDelegatorValidatorRequest) | [QueryDelegatorValidatorResponse](#lbm.staking.v1beta1.QueryDelegatorValidatorResponse) | DelegatorValidator queries validator info for given delegator validator pair. | GET|/lbm/staking/v1beta1/delegators/{delegator_addr}/validators/{validator_addr}|
-| `HistoricalInfo` | [QueryHistoricalInfoRequest](#lbm.staking.v1beta1.QueryHistoricalInfoRequest) | [QueryHistoricalInfoResponse](#lbm.staking.v1beta1.QueryHistoricalInfoResponse) | HistoricalInfo queries the historical info for given height. | GET|/lbm/staking/v1beta1/historical_info/{height}|
-| `Pool` | [QueryPoolRequest](#lbm.staking.v1beta1.QueryPoolRequest) | [QueryPoolResponse](#lbm.staking.v1beta1.QueryPoolResponse) | Pool queries the pool info. | GET|/lbm/staking/v1beta1/pool|
-| `Params` | [QueryParamsRequest](#lbm.staking.v1beta1.QueryParamsRequest) | [QueryParamsResponse](#lbm.staking.v1beta1.QueryParamsResponse) | Parameters queries the staking parameters. | GET|/lbm/staking/v1beta1/params|
+| `Validators` | [QueryValidatorsRequest](#lbm.staking.v1.QueryValidatorsRequest) | [QueryValidatorsResponse](#lbm.staking.v1.QueryValidatorsResponse) | Validators queries all validators that match the given status. | GET|/lbm/staking/v1/validators|
+| `Validator` | [QueryValidatorRequest](#lbm.staking.v1.QueryValidatorRequest) | [QueryValidatorResponse](#lbm.staking.v1.QueryValidatorResponse) | Validator queries validator info for given validator address. | GET|/lbm/staking/v1/validators/{validator_addr}|
+| `ValidatorDelegations` | [QueryValidatorDelegationsRequest](#lbm.staking.v1.QueryValidatorDelegationsRequest) | [QueryValidatorDelegationsResponse](#lbm.staking.v1.QueryValidatorDelegationsResponse) | ValidatorDelegations queries delegate info for given validator. | GET|/lbm/staking/v1/validators/{validator_addr}/delegations|
+| `ValidatorUnbondingDelegations` | [QueryValidatorUnbondingDelegationsRequest](#lbm.staking.v1.QueryValidatorUnbondingDelegationsRequest) | [QueryValidatorUnbondingDelegationsResponse](#lbm.staking.v1.QueryValidatorUnbondingDelegationsResponse) | ValidatorUnbondingDelegations queries unbonding delegations of a validator. | GET|/lbm/staking/v1/validators/{validator_addr}/unbonding_delegations|
+| `Delegation` | [QueryDelegationRequest](#lbm.staking.v1.QueryDelegationRequest) | [QueryDelegationResponse](#lbm.staking.v1.QueryDelegationResponse) | Delegation queries delegate info for given validator delegator pair. | GET|/lbm/staking/v1/validators/{validator_addr}/delegations/{delegator_addr}|
+| `UnbondingDelegation` | [QueryUnbondingDelegationRequest](#lbm.staking.v1.QueryUnbondingDelegationRequest) | [QueryUnbondingDelegationResponse](#lbm.staking.v1.QueryUnbondingDelegationResponse) | UnbondingDelegation queries unbonding info for given validator delegator pair. | GET|/lbm/staking/v1/validators/{validator_addr}/delegations/{delegator_addr}/unbonding_delegation|
+| `DelegatorDelegations` | [QueryDelegatorDelegationsRequest](#lbm.staking.v1.QueryDelegatorDelegationsRequest) | [QueryDelegatorDelegationsResponse](#lbm.staking.v1.QueryDelegatorDelegationsResponse) | DelegatorDelegations queries all delegations of a given delegator address. | GET|/lbm/staking/v1/delegations/{delegator_addr}|
+| `DelegatorUnbondingDelegations` | [QueryDelegatorUnbondingDelegationsRequest](#lbm.staking.v1.QueryDelegatorUnbondingDelegationsRequest) | [QueryDelegatorUnbondingDelegationsResponse](#lbm.staking.v1.QueryDelegatorUnbondingDelegationsResponse) | DelegatorUnbondingDelegations queries all unbonding delegations of a given delegator address. | GET|/lbm/staking/v1/delegators/{delegator_addr}/unbonding_delegations|
+| `Redelegations` | [QueryRedelegationsRequest](#lbm.staking.v1.QueryRedelegationsRequest) | [QueryRedelegationsResponse](#lbm.staking.v1.QueryRedelegationsResponse) | Redelegations queries redelegations of given address. | GET|/lbm/staking/v1/delegators/{delegator_addr}/redelegations|
+| `DelegatorValidators` | [QueryDelegatorValidatorsRequest](#lbm.staking.v1.QueryDelegatorValidatorsRequest) | [QueryDelegatorValidatorsResponse](#lbm.staking.v1.QueryDelegatorValidatorsResponse) | DelegatorValidators queries all validators info for given delegator address. | GET|/lbm/staking/v1/delegators/{delegator_addr}/validators|
+| `DelegatorValidator` | [QueryDelegatorValidatorRequest](#lbm.staking.v1.QueryDelegatorValidatorRequest) | [QueryDelegatorValidatorResponse](#lbm.staking.v1.QueryDelegatorValidatorResponse) | DelegatorValidator queries validator info for given delegator validator pair. | GET|/lbm/staking/v1/delegators/{delegator_addr}/validators/{validator_addr}|
+| `HistoricalInfo` | [QueryHistoricalInfoRequest](#lbm.staking.v1.QueryHistoricalInfoRequest) | [QueryHistoricalInfoResponse](#lbm.staking.v1.QueryHistoricalInfoResponse) | HistoricalInfo queries the historical info for given height. | GET|/lbm/staking/v1/historical_info/{height}|
+| `Pool` | [QueryPoolRequest](#lbm.staking.v1.QueryPoolRequest) | [QueryPoolResponse](#lbm.staking.v1.QueryPoolResponse) | Pool queries the pool info. | GET|/lbm/staking/v1/pool|
+| `Params` | [QueryParamsRequest](#lbm.staking.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.staking.v1.QueryParamsResponse) | Parameters queries the staking parameters. | GET|/lbm/staking/v1/params|
 
  <!-- end services -->
 
 
 
-<a name="lbm/staking/v1beta1/tx.proto"></a>
+<a name="lbm/staking/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/staking/v1beta1/tx.proto
+## lbm/staking/v1/tx.proto
 
 
 
-<a name="lbm.staking.v1beta1.MsgBeginRedelegate"></a>
+<a name="lbm.staking.v1.MsgBeginRedelegate"></a>
 
 ### MsgBeginRedelegate
 MsgBeginRedelegate defines a SDK message for performing a redelegation
@@ -10292,14 +10292,14 @@ of coins from a delegator and source validator to a destination validator.
 | `delegator_address` | [string](#string) |  |  |
 | `validator_src_address` | [string](#string) |  |  |
 | `validator_dst_address` | [string](#string) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.MsgBeginRedelegateResponse"></a>
+<a name="lbm.staking.v1.MsgBeginRedelegateResponse"></a>
 
 ### MsgBeginRedelegateResponse
 MsgBeginRedelegateResponse defines the Msg/BeginRedelegate response type.
@@ -10314,7 +10314,7 @@ MsgBeginRedelegateResponse defines the Msg/BeginRedelegate response type.
 
 
 
-<a name="lbm.staking.v1beta1.MsgCreateValidator"></a>
+<a name="lbm.staking.v1.MsgCreateValidator"></a>
 
 ### MsgCreateValidator
 MsgCreateValidator defines a SDK message for creating a new validator.
@@ -10322,20 +10322,20 @@ MsgCreateValidator defines a SDK message for creating a new validator.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `description` | [Description](#lbm.staking.v1beta1.Description) |  |  |
-| `commission` | [CommissionRates](#lbm.staking.v1beta1.CommissionRates) |  |  |
+| `description` | [Description](#lbm.staking.v1.Description) |  |  |
+| `commission` | [CommissionRates](#lbm.staking.v1.CommissionRates) |  |  |
 | `min_self_delegation` | [string](#string) |  |  |
 | `delegator_address` | [string](#string) |  |  |
 | `validator_address` | [string](#string) |  |  |
 | `pubkey` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
-| `value` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  |  |
+| `value` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.MsgCreateValidatorResponse"></a>
+<a name="lbm.staking.v1.MsgCreateValidatorResponse"></a>
 
 ### MsgCreateValidatorResponse
 MsgCreateValidatorResponse defines the Msg/CreateValidator response type.
@@ -10345,7 +10345,7 @@ MsgCreateValidatorResponse defines the Msg/CreateValidator response type.
 
 
 
-<a name="lbm.staking.v1beta1.MsgDelegate"></a>
+<a name="lbm.staking.v1.MsgDelegate"></a>
 
 ### MsgDelegate
 MsgDelegate defines a SDK message for performing a delegation of coins
@@ -10356,14 +10356,14 @@ from a delegator to a validator.
 | ----- | ---- | ----- | ----------- |
 | `delegator_address` | [string](#string) |  |  |
 | `validator_address` | [string](#string) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.MsgDelegateResponse"></a>
+<a name="lbm.staking.v1.MsgDelegateResponse"></a>
 
 ### MsgDelegateResponse
 MsgDelegateResponse defines the Msg/Delegate response type.
@@ -10373,7 +10373,7 @@ MsgDelegateResponse defines the Msg/Delegate response type.
 
 
 
-<a name="lbm.staking.v1beta1.MsgEditValidator"></a>
+<a name="lbm.staking.v1.MsgEditValidator"></a>
 
 ### MsgEditValidator
 MsgEditValidator defines a SDK message for editing an existing validator.
@@ -10381,7 +10381,7 @@ MsgEditValidator defines a SDK message for editing an existing validator.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `description` | [Description](#lbm.staking.v1beta1.Description) |  |  |
+| `description` | [Description](#lbm.staking.v1.Description) |  |  |
 | `validator_address` | [string](#string) |  |  |
 | `commission_rate` | [string](#string) |  | We pass a reference to the new commission rate and min self delegation as it's not mandatory to update. If not updated, the deserialized rate will be zero with no way to distinguish if an update was intended. REF: #2373 |
 | `min_self_delegation` | [string](#string) |  |  |
@@ -10391,7 +10391,7 @@ MsgEditValidator defines a SDK message for editing an existing validator.
 
 
 
-<a name="lbm.staking.v1beta1.MsgEditValidatorResponse"></a>
+<a name="lbm.staking.v1.MsgEditValidatorResponse"></a>
 
 ### MsgEditValidatorResponse
 MsgEditValidatorResponse defines the Msg/EditValidator response type.
@@ -10401,7 +10401,7 @@ MsgEditValidatorResponse defines the Msg/EditValidator response type.
 
 
 
-<a name="lbm.staking.v1beta1.MsgUndelegate"></a>
+<a name="lbm.staking.v1.MsgUndelegate"></a>
 
 ### MsgUndelegate
 MsgUndelegate defines a SDK message for performing an undelegation from a
@@ -10412,14 +10412,14 @@ delegate and a validator.
 | ----- | ---- | ----- | ----------- |
 | `delegator_address` | [string](#string) |  |  |
 | `validator_address` | [string](#string) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) |  |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) |  |  |
 
 
 
 
 
 
-<a name="lbm.staking.v1beta1.MsgUndelegateResponse"></a>
+<a name="lbm.staking.v1.MsgUndelegateResponse"></a>
 
 ### MsgUndelegateResponse
 MsgUndelegateResponse defines the Msg/Undelegate response type.
@@ -10440,31 +10440,31 @@ MsgUndelegateResponse defines the Msg/Undelegate response type.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.staking.v1beta1.Msg"></a>
+<a name="lbm.staking.v1.Msg"></a>
 
 ### Msg
 Msg defines the staking Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `CreateValidator` | [MsgCreateValidator](#lbm.staking.v1beta1.MsgCreateValidator) | [MsgCreateValidatorResponse](#lbm.staking.v1beta1.MsgCreateValidatorResponse) | CreateValidator defines a method for creating a new validator. | |
-| `EditValidator` | [MsgEditValidator](#lbm.staking.v1beta1.MsgEditValidator) | [MsgEditValidatorResponse](#lbm.staking.v1beta1.MsgEditValidatorResponse) | EditValidator defines a method for editing an existing validator. | |
-| `Delegate` | [MsgDelegate](#lbm.staking.v1beta1.MsgDelegate) | [MsgDelegateResponse](#lbm.staking.v1beta1.MsgDelegateResponse) | Delegate defines a method for performing a delegation of coins from a delegator to a validator. | |
-| `BeginRedelegate` | [MsgBeginRedelegate](#lbm.staking.v1beta1.MsgBeginRedelegate) | [MsgBeginRedelegateResponse](#lbm.staking.v1beta1.MsgBeginRedelegateResponse) | BeginRedelegate defines a method for performing a redelegation of coins from a delegator and source validator to a destination validator. | |
-| `Undelegate` | [MsgUndelegate](#lbm.staking.v1beta1.MsgUndelegate) | [MsgUndelegateResponse](#lbm.staking.v1beta1.MsgUndelegateResponse) | Undelegate defines a method for performing an undelegation from a delegate and a validator. | |
+| `CreateValidator` | [MsgCreateValidator](#lbm.staking.v1.MsgCreateValidator) | [MsgCreateValidatorResponse](#lbm.staking.v1.MsgCreateValidatorResponse) | CreateValidator defines a method for creating a new validator. | |
+| `EditValidator` | [MsgEditValidator](#lbm.staking.v1.MsgEditValidator) | [MsgEditValidatorResponse](#lbm.staking.v1.MsgEditValidatorResponse) | EditValidator defines a method for editing an existing validator. | |
+| `Delegate` | [MsgDelegate](#lbm.staking.v1.MsgDelegate) | [MsgDelegateResponse](#lbm.staking.v1.MsgDelegateResponse) | Delegate defines a method for performing a delegation of coins from a delegator to a validator. | |
+| `BeginRedelegate` | [MsgBeginRedelegate](#lbm.staking.v1.MsgBeginRedelegate) | [MsgBeginRedelegateResponse](#lbm.staking.v1.MsgBeginRedelegateResponse) | BeginRedelegate defines a method for performing a redelegation of coins from a delegator and source validator to a destination validator. | |
+| `Undelegate` | [MsgUndelegate](#lbm.staking.v1.MsgUndelegate) | [MsgUndelegateResponse](#lbm.staking.v1.MsgUndelegateResponse) | Undelegate defines a method for performing an undelegation from a delegate and a validator. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/tx/signing/v1beta1/signing.proto"></a>
+<a name="lbm/tx/signing/v1/signing.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/tx/signing/v1beta1/signing.proto
+## lbm/tx/signing/v1/signing.proto
 
 
 
-<a name="lbm.tx.signing.v1beta1.SignatureDescriptor"></a>
+<a name="lbm.tx.signing.v1.SignatureDescriptor"></a>
 
 ### SignatureDescriptor
 SignatureDescriptor is a convenience type which represents the full data for
@@ -10476,7 +10476,7 @@ clients.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `public_key` | [google.protobuf.Any](#google.protobuf.Any) |  | public_key is the public key of the signer |
-| `data` | [SignatureDescriptor.Data](#lbm.tx.signing.v1beta1.SignatureDescriptor.Data) |  |  |
+| `data` | [SignatureDescriptor.Data](#lbm.tx.signing.v1.SignatureDescriptor.Data) |  |  |
 | `sequence` | [uint64](#uint64) |  | sequence is the sequence of the account, which describes the number of committed transactions signed by a given address. It is used to prevent replay attacks. |
 
 
@@ -10484,7 +10484,7 @@ clients.
 
 
 
-<a name="lbm.tx.signing.v1beta1.SignatureDescriptor.Data"></a>
+<a name="lbm.tx.signing.v1.SignatureDescriptor.Data"></a>
 
 ### SignatureDescriptor.Data
 Data represents signature data
@@ -10492,15 +10492,15 @@ Data represents signature data
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `single` | [SignatureDescriptor.Data.Single](#lbm.tx.signing.v1beta1.SignatureDescriptor.Data.Single) |  | single represents a single signer |
-| `multi` | [SignatureDescriptor.Data.Multi](#lbm.tx.signing.v1beta1.SignatureDescriptor.Data.Multi) |  | multi represents a multisig signer |
+| `single` | [SignatureDescriptor.Data.Single](#lbm.tx.signing.v1.SignatureDescriptor.Data.Single) |  | single represents a single signer |
+| `multi` | [SignatureDescriptor.Data.Multi](#lbm.tx.signing.v1.SignatureDescriptor.Data.Multi) |  | multi represents a multisig signer |
 
 
 
 
 
 
-<a name="lbm.tx.signing.v1beta1.SignatureDescriptor.Data.Multi"></a>
+<a name="lbm.tx.signing.v1.SignatureDescriptor.Data.Multi"></a>
 
 ### SignatureDescriptor.Data.Multi
 Multi is the signature data for a multisig public key
@@ -10508,15 +10508,15 @@ Multi is the signature data for a multisig public key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `bitarray` | [lbm.crypto.multisig.v1beta1.CompactBitArray](#lbm.crypto.multisig.v1beta1.CompactBitArray) |  | bitarray specifies which keys within the multisig are signing |
-| `signatures` | [SignatureDescriptor.Data](#lbm.tx.signing.v1beta1.SignatureDescriptor.Data) | repeated | signatures is the signatures of the multi-signature |
+| `bitarray` | [lbm.crypto.multisig.v1.CompactBitArray](#lbm.crypto.multisig.v1.CompactBitArray) |  | bitarray specifies which keys within the multisig are signing |
+| `signatures` | [SignatureDescriptor.Data](#lbm.tx.signing.v1.SignatureDescriptor.Data) | repeated | signatures is the signatures of the multi-signature |
 
 
 
 
 
 
-<a name="lbm.tx.signing.v1beta1.SignatureDescriptor.Data.Single"></a>
+<a name="lbm.tx.signing.v1.SignatureDescriptor.Data.Single"></a>
 
 ### SignatureDescriptor.Data.Single
 Single is the signature data for a single signer
@@ -10524,7 +10524,7 @@ Single is the signature data for a single signer
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `mode` | [SignMode](#lbm.tx.signing.v1beta1.SignMode) |  | mode is the signing mode of the single signer |
+| `mode` | [SignMode](#lbm.tx.signing.v1.SignMode) |  | mode is the signing mode of the single signer |
 | `signature` | [bytes](#bytes) |  | signature is the raw signature bytes |
 
 
@@ -10532,7 +10532,7 @@ Single is the signature data for a single signer
 
 
 
-<a name="lbm.tx.signing.v1beta1.SignatureDescriptors"></a>
+<a name="lbm.tx.signing.v1.SignatureDescriptors"></a>
 
 ### SignatureDescriptors
 SignatureDescriptors wraps multiple SignatureDescriptor's.
@@ -10540,7 +10540,7 @@ SignatureDescriptors wraps multiple SignatureDescriptor's.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `signatures` | [SignatureDescriptor](#lbm.tx.signing.v1beta1.SignatureDescriptor) | repeated | signatures are the signature descriptors |
+| `signatures` | [SignatureDescriptor](#lbm.tx.signing.v1.SignatureDescriptor) | repeated | signatures are the signature descriptors |
 
 
 
@@ -10549,7 +10549,7 @@ SignatureDescriptors wraps multiple SignatureDescriptor's.
  <!-- end messages -->
 
 
-<a name="lbm.tx.signing.v1beta1.SignMode"></a>
+<a name="lbm.tx.signing.v1.SignMode"></a>
 
 ### SignMode
 SignMode represents a signing mode with its own security guarantees.
@@ -10570,14 +10570,14 @@ SignMode represents a signing mode with its own security guarantees.
 
 
 
-<a name="lbm/tx/v1beta1/tx.proto"></a>
+<a name="lbm/tx/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/tx/v1beta1/tx.proto
+## lbm/tx/v1/tx.proto
 
 
 
-<a name="lbm.tx.v1beta1.AuthInfo"></a>
+<a name="lbm.tx.v1.AuthInfo"></a>
 
 ### AuthInfo
 AuthInfo describes the fee and signer modes that are used to sign a
@@ -10586,15 +10586,15 @@ transaction.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `signer_infos` | [SignerInfo](#lbm.tx.v1beta1.SignerInfo) | repeated | signer_infos defines the signing modes for the required signers. The number and order of elements must match the required signers from TxBody's messages. The first element is the primary signer and the one which pays the fee. |
-| `fee` | [Fee](#lbm.tx.v1beta1.Fee) |  | Fee is the fee and gas limit for the transaction. The first signer is the primary signer and the one which pays the fee. The fee can be calculated based on the cost of evaluating the body and doing signature verification of the signers. This can be estimated via simulation. |
+| `signer_infos` | [SignerInfo](#lbm.tx.v1.SignerInfo) | repeated | signer_infos defines the signing modes for the required signers. The number and order of elements must match the required signers from TxBody's messages. The first element is the primary signer and the one which pays the fee. |
+| `fee` | [Fee](#lbm.tx.v1.Fee) |  | Fee is the fee and gas limit for the transaction. The first signer is the primary signer and the one which pays the fee. The fee can be calculated based on the cost of evaluating the body and doing signature verification of the signers. This can be estimated via simulation. |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.Fee"></a>
+<a name="lbm.tx.v1.Fee"></a>
 
 ### Fee
 Fee includes the amount of coins paid in fees and the maximum
@@ -10604,7 +10604,7 @@ which must be above some miminum to be accepted into the mempool.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated | amount is the amount of coins to be paid as a fee |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | amount is the amount of coins to be paid as a fee |
 | `gas_limit` | [uint64](#uint64) |  | gas_limit is the maximum gas that can be used in transaction processing before an out of gas error occurs |
 | `payer` | [string](#string) |  | if unset, the first signer is responsible for paying the fees. If set, the specified account must pay the fees. the payer must be a tx signer (and thus have signed this field in AuthInfo). setting this field does *not* change the ordering of required signers for the transaction. |
 | `granter` | [string](#string) |  | if set, the fee payer (either the first signer or the value of the payer field) requests that a fee grant be used to pay fees instead of the fee payer's own balance. If an appropriate fee grant does not exist or the chain does not support fee grants, this will fail |
@@ -10614,7 +10614,7 @@ which must be above some miminum to be accepted into the mempool.
 
 
 
-<a name="lbm.tx.v1beta1.ModeInfo"></a>
+<a name="lbm.tx.v1.ModeInfo"></a>
 
 ### ModeInfo
 ModeInfo describes the signing mode of a single or nested multisig signer.
@@ -10622,15 +10622,15 @@ ModeInfo describes the signing mode of a single or nested multisig signer.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `single` | [ModeInfo.Single](#lbm.tx.v1beta1.ModeInfo.Single) |  | single represents a single signer |
-| `multi` | [ModeInfo.Multi](#lbm.tx.v1beta1.ModeInfo.Multi) |  | multi represents a nested multisig signer |
+| `single` | [ModeInfo.Single](#lbm.tx.v1.ModeInfo.Single) |  | single represents a single signer |
+| `multi` | [ModeInfo.Multi](#lbm.tx.v1.ModeInfo.Multi) |  | multi represents a nested multisig signer |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.ModeInfo.Multi"></a>
+<a name="lbm.tx.v1.ModeInfo.Multi"></a>
 
 ### ModeInfo.Multi
 Multi is the mode info for a multisig public key
@@ -10638,15 +10638,15 @@ Multi is the mode info for a multisig public key
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `bitarray` | [lbm.crypto.multisig.v1beta1.CompactBitArray](#lbm.crypto.multisig.v1beta1.CompactBitArray) |  | bitarray specifies which keys within the multisig are signing |
-| `mode_infos` | [ModeInfo](#lbm.tx.v1beta1.ModeInfo) | repeated | mode_infos is the corresponding modes of the signers of the multisig which could include nested multisig public keys |
+| `bitarray` | [lbm.crypto.multisig.v1.CompactBitArray](#lbm.crypto.multisig.v1.CompactBitArray) |  | bitarray specifies which keys within the multisig are signing |
+| `mode_infos` | [ModeInfo](#lbm.tx.v1.ModeInfo) | repeated | mode_infos is the corresponding modes of the signers of the multisig which could include nested multisig public keys |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.ModeInfo.Single"></a>
+<a name="lbm.tx.v1.ModeInfo.Single"></a>
 
 ### ModeInfo.Single
 Single is the mode info for a single signer. It is structured as a message
@@ -10656,14 +10656,14 @@ future
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `mode` | [lbm.tx.signing.v1beta1.SignMode](#lbm.tx.signing.v1beta1.SignMode) |  | mode is the signing mode of the single signer |
+| `mode` | [lbm.tx.signing.v1.SignMode](#lbm.tx.signing.v1.SignMode) |  | mode is the signing mode of the single signer |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.SignDoc"></a>
+<a name="lbm.tx.v1.SignDoc"></a>
 
 ### SignDoc
 SignDoc is the type used for generating sign bytes for SIGN_MODE_DIRECT.
@@ -10680,7 +10680,7 @@ SignDoc is the type used for generating sign bytes for SIGN_MODE_DIRECT.
 
 
 
-<a name="lbm.tx.v1beta1.SignerInfo"></a>
+<a name="lbm.tx.v1.SignerInfo"></a>
 
 ### SignerInfo
 SignerInfo describes the public key and signing mode of a single top-level
@@ -10690,7 +10690,7 @@ signer.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `public_key` | [google.protobuf.Any](#google.protobuf.Any) |  | public_key is the public key of the signer. It is optional for accounts that already exist in state. If unset, the verifier can use the required \ signer address for this position and lookup the public key. |
-| `mode_info` | [ModeInfo](#lbm.tx.v1beta1.ModeInfo) |  | mode_info describes the signing mode of the signer and is a nested structure to support nested multisig pubkey's |
+| `mode_info` | [ModeInfo](#lbm.tx.v1.ModeInfo) |  | mode_info describes the signing mode of the signer and is a nested structure to support nested multisig pubkey's |
 | `sequence` | [uint64](#uint64) |  | sequence is the sequence of the account, which describes the number of committed transactions signed by a given address. It is used to prevent replay attacks. |
 
 
@@ -10698,7 +10698,7 @@ signer.
 
 
 
-<a name="lbm.tx.v1beta1.Tx"></a>
+<a name="lbm.tx.v1.Tx"></a>
 
 ### Tx
 Tx is the standard type used for broadcasting transactions.
@@ -10706,8 +10706,8 @@ Tx is the standard type used for broadcasting transactions.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `body` | [TxBody](#lbm.tx.v1beta1.TxBody) |  | body is the processable content of the transaction |
-| `auth_info` | [AuthInfo](#lbm.tx.v1beta1.AuthInfo) |  | auth_info is the authorization related content of the transaction, specifically signers, signer modes and fee |
+| `body` | [TxBody](#lbm.tx.v1.TxBody) |  | body is the processable content of the transaction |
+| `auth_info` | [AuthInfo](#lbm.tx.v1.AuthInfo) |  | auth_info is the authorization related content of the transaction, specifically signers, signer modes and fee |
 | `signatures` | [bytes](#bytes) | repeated | signatures is a list of signatures that matches the length and order of AuthInfo's signer_infos to allow connecting signature meta information like public key and signing mode by position. |
 
 
@@ -10715,7 +10715,7 @@ Tx is the standard type used for broadcasting transactions.
 
 
 
-<a name="lbm.tx.v1beta1.TxBody"></a>
+<a name="lbm.tx.v1.TxBody"></a>
 
 ### TxBody
 TxBody is the body of a transaction that all signers sign over.
@@ -10735,7 +10735,7 @@ TxBody is the body of a transaction that all signers sign over.
 
 
 
-<a name="lbm.tx.v1beta1.TxRaw"></a>
+<a name="lbm.tx.v1.TxRaw"></a>
 
 ### TxRaw
 TxRaw is a variant of Tx that pins the signer's exact binary representation
@@ -10765,14 +10765,14 @@ as the transaction ID.
 
 
 
-<a name="lbm/tx/v1beta1/service.proto"></a>
+<a name="lbm/tx/v1/service.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/tx/v1beta1/service.proto
+## lbm/tx/v1/service.proto
 
 
 
-<a name="lbm.tx.v1beta1.BroadcastTxRequest"></a>
+<a name="lbm.tx.v1.BroadcastTxRequest"></a>
 
 ### BroadcastTxRequest
 BroadcastTxRequest is the request type for the Service.BroadcastTxRequest
@@ -10782,14 +10782,14 @@ RPC method.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `tx_bytes` | [bytes](#bytes) |  | tx_bytes is the raw transaction. |
-| `mode` | [BroadcastMode](#lbm.tx.v1beta1.BroadcastMode) |  |  |
+| `mode` | [BroadcastMode](#lbm.tx.v1.BroadcastMode) |  |  |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.BroadcastTxResponse"></a>
+<a name="lbm.tx.v1.BroadcastTxResponse"></a>
 
 ### BroadcastTxResponse
 BroadcastTxResponse is the response type for the
@@ -10798,14 +10798,14 @@ Service.BroadcastTx method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `tx_response` | [lbm.base.abci.v1beta1.TxResponse](#lbm.base.abci.v1beta1.TxResponse) |  | tx_response is the queried TxResponses. |
+| `tx_response` | [lbm.base.abci.v1.TxResponse](#lbm.base.abci.v1.TxResponse) |  | tx_response is the queried TxResponses. |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.GetTxRequest"></a>
+<a name="lbm.tx.v1.GetTxRequest"></a>
 
 ### GetTxRequest
 GetTxRequest is the request type for the Service.GetTx
@@ -10821,7 +10821,7 @@ RPC method.
 
 
 
-<a name="lbm.tx.v1beta1.GetTxResponse"></a>
+<a name="lbm.tx.v1.GetTxResponse"></a>
 
 ### GetTxResponse
 GetTxResponse is the response type for the Service.GetTx method.
@@ -10829,15 +10829,15 @@ GetTxResponse is the response type for the Service.GetTx method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `tx` | [Tx](#lbm.tx.v1beta1.Tx) |  | tx is the queried transaction. |
-| `tx_response` | [lbm.base.abci.v1beta1.TxResponse](#lbm.base.abci.v1beta1.TxResponse) |  | tx_response is the queried TxResponses. |
+| `tx` | [Tx](#lbm.tx.v1.Tx) |  | tx is the queried transaction. |
+| `tx_response` | [lbm.base.abci.v1.TxResponse](#lbm.base.abci.v1.TxResponse) |  | tx_response is the queried TxResponses. |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.GetTxsEventRequest"></a>
+<a name="lbm.tx.v1.GetTxsEventRequest"></a>
 
 ### GetTxsEventRequest
 GetTxsEventRequest is the request type for the Service.TxsByEvents
@@ -10848,14 +10848,14 @@ RPC method.
 | ----- | ---- | ----- | ----------- |
 | `events` | [string](#string) | repeated | events is the list of transaction event type. |
 | `prove` | [bool](#bool) |  | prove is Include proofs of the transactions inclusion in the block |
-| `pagination` | [lbm.base.query.v1beta1.PageRequest](#lbm.base.query.v1beta1.PageRequest) |  | pagination defines an pagination for the request. |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.GetTxsEventResponse"></a>
+<a name="lbm.tx.v1.GetTxsEventResponse"></a>
 
 ### GetTxsEventResponse
 GetTxsEventResponse is the response type for the Service.TxsByEvents
@@ -10864,16 +10864,16 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `txs` | [Tx](#lbm.tx.v1beta1.Tx) | repeated | txs is the list of queried transactions. |
-| `tx_responses` | [lbm.base.abci.v1beta1.TxResponse](#lbm.base.abci.v1beta1.TxResponse) | repeated | tx_responses is the list of queried TxResponses. |
-| `pagination` | [lbm.base.query.v1beta1.PageResponse](#lbm.base.query.v1beta1.PageResponse) |  | pagination defines an pagination for the response. |
+| `txs` | [Tx](#lbm.tx.v1.Tx) | repeated | txs is the list of queried transactions. |
+| `tx_responses` | [lbm.base.abci.v1.TxResponse](#lbm.base.abci.v1.TxResponse) | repeated | tx_responses is the list of queried TxResponses. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.SimulateRequest"></a>
+<a name="lbm.tx.v1.SimulateRequest"></a>
 
 ### SimulateRequest
 SimulateRequest is the request type for the Service.Simulate
@@ -10882,14 +10882,14 @@ RPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `tx` | [Tx](#lbm.tx.v1beta1.Tx) |  | tx is the transaction to simulate. |
+| `tx` | [Tx](#lbm.tx.v1.Tx) |  | tx is the transaction to simulate. |
 
 
 
 
 
 
-<a name="lbm.tx.v1beta1.SimulateResponse"></a>
+<a name="lbm.tx.v1.SimulateResponse"></a>
 
 ### SimulateResponse
 SimulateResponse is the response type for the
@@ -10898,8 +10898,8 @@ Service.SimulateRPC method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `gas_info` | [lbm.base.abci.v1beta1.GasInfo](#lbm.base.abci.v1beta1.GasInfo) |  | gas_info is the information about gas used in the simulation. |
-| `result` | [lbm.base.abci.v1beta1.Result](#lbm.base.abci.v1beta1.Result) |  | result is the result of the simulation. |
+| `gas_info` | [lbm.base.abci.v1.GasInfo](#lbm.base.abci.v1.GasInfo) |  | gas_info is the information about gas used in the simulation. |
+| `result` | [lbm.base.abci.v1.Result](#lbm.base.abci.v1.Result) |  | result is the result of the simulation. |
 
 
 
@@ -10908,7 +10908,7 @@ Service.SimulateRPC method.
  <!-- end messages -->
 
 
-<a name="lbm.tx.v1beta1.BroadcastMode"></a>
+<a name="lbm.tx.v1.BroadcastMode"></a>
 
 ### BroadcastMode
 BroadcastMode specifies the broadcast mode for the TxService.Broadcast RPC method.
@@ -10926,30 +10926,30 @@ BroadcastMode specifies the broadcast mode for the TxService.Broadcast RPC metho
  <!-- end HasExtensions -->
 
 
-<a name="lbm.tx.v1beta1.Service"></a>
+<a name="lbm.tx.v1.Service"></a>
 
 ### Service
 Service defines a gRPC service for interacting with transactions.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Simulate` | [SimulateRequest](#lbm.tx.v1beta1.SimulateRequest) | [SimulateResponse](#lbm.tx.v1beta1.SimulateResponse) | Simulate simulates executing a transaction for estimating gas usage. | POST|/lbm/tx/v1beta1/simulate|
-| `GetTx` | [GetTxRequest](#lbm.tx.v1beta1.GetTxRequest) | [GetTxResponse](#lbm.tx.v1beta1.GetTxResponse) | GetTx fetches a tx by hash. | GET|/lbm/tx/v1beta1/txs/{hash}|
-| `BroadcastTx` | [BroadcastTxRequest](#lbm.tx.v1beta1.BroadcastTxRequest) | [BroadcastTxResponse](#lbm.tx.v1beta1.BroadcastTxResponse) | BroadcastTx broadcast transaction. | POST|/lbm/tx/v1beta1/txs|
-| `GetTxsEvent` | [GetTxsEventRequest](#lbm.tx.v1beta1.GetTxsEventRequest) | [GetTxsEventResponse](#lbm.tx.v1beta1.GetTxsEventResponse) | GetTxsEvent fetches txs by event. | GET|/lbm/tx/v1beta1/txs|
+| `Simulate` | [SimulateRequest](#lbm.tx.v1.SimulateRequest) | [SimulateResponse](#lbm.tx.v1.SimulateResponse) | Simulate simulates executing a transaction for estimating gas usage. | POST|/lbm/tx/v1/simulate|
+| `GetTx` | [GetTxRequest](#lbm.tx.v1.GetTxRequest) | [GetTxResponse](#lbm.tx.v1.GetTxResponse) | GetTx fetches a tx by hash. | GET|/lbm/tx/v1/txs/{hash}|
+| `BroadcastTx` | [BroadcastTxRequest](#lbm.tx.v1.BroadcastTxRequest) | [BroadcastTxResponse](#lbm.tx.v1.BroadcastTxResponse) | BroadcastTx broadcast transaction. | POST|/lbm/tx/v1/txs|
+| `GetTxsEvent` | [GetTxsEventRequest](#lbm.tx.v1.GetTxsEventRequest) | [GetTxsEventResponse](#lbm.tx.v1.GetTxsEventResponse) | GetTxsEvent fetches txs by event. | GET|/lbm/tx/v1/txs|
 
  <!-- end services -->
 
 
 
-<a name="lbm/upgrade/v1beta1/upgrade.proto"></a>
+<a name="lbm/upgrade/v1/upgrade.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/upgrade/v1beta1/upgrade.proto
+## lbm/upgrade/v1/upgrade.proto
 
 
 
-<a name="lbm.upgrade.v1beta1.CancelSoftwareUpgradeProposal"></a>
+<a name="lbm.upgrade.v1.CancelSoftwareUpgradeProposal"></a>
 
 ### CancelSoftwareUpgradeProposal
 CancelSoftwareUpgradeProposal is a gov Content type for cancelling a software
@@ -10966,7 +10966,7 @@ upgrade.
 
 
 
-<a name="lbm.upgrade.v1beta1.Plan"></a>
+<a name="lbm.upgrade.v1.Plan"></a>
 
 ### Plan
 Plan specifies information about a planned upgrade and when it should occur.
@@ -10985,7 +10985,7 @@ Plan specifies information about a planned upgrade and when it should occur.
 
 
 
-<a name="lbm.upgrade.v1beta1.SoftwareUpgradeProposal"></a>
+<a name="lbm.upgrade.v1.SoftwareUpgradeProposal"></a>
 
 ### SoftwareUpgradeProposal
 SoftwareUpgradeProposal is a gov Content type for initiating a software
@@ -10996,7 +10996,7 @@ upgrade.
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
-| `plan` | [Plan](#lbm.upgrade.v1beta1.Plan) |  |  |
+| `plan` | [Plan](#lbm.upgrade.v1.Plan) |  |  |
 
 
 
@@ -11012,14 +11012,14 @@ upgrade.
 
 
 
-<a name="lbm/upgrade/v1beta1/query.proto"></a>
+<a name="lbm/upgrade/v1/query.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/upgrade/v1beta1/query.proto
+## lbm/upgrade/v1/query.proto
 
 
 
-<a name="lbm.upgrade.v1beta1.QueryAppliedPlanRequest"></a>
+<a name="lbm.upgrade.v1.QueryAppliedPlanRequest"></a>
 
 ### QueryAppliedPlanRequest
 QueryCurrentPlanRequest is the request type for the Query/AppliedPlan RPC
@@ -11035,7 +11035,7 @@ method.
 
 
 
-<a name="lbm.upgrade.v1beta1.QueryAppliedPlanResponse"></a>
+<a name="lbm.upgrade.v1.QueryAppliedPlanResponse"></a>
 
 ### QueryAppliedPlanResponse
 QueryAppliedPlanResponse is the response type for the Query/AppliedPlan RPC
@@ -11051,7 +11051,7 @@ method.
 
 
 
-<a name="lbm.upgrade.v1beta1.QueryCurrentPlanRequest"></a>
+<a name="lbm.upgrade.v1.QueryCurrentPlanRequest"></a>
 
 ### QueryCurrentPlanRequest
 QueryCurrentPlanRequest is the request type for the Query/CurrentPlan RPC
@@ -11062,7 +11062,7 @@ method.
 
 
 
-<a name="lbm.upgrade.v1beta1.QueryCurrentPlanResponse"></a>
+<a name="lbm.upgrade.v1.QueryCurrentPlanResponse"></a>
 
 ### QueryCurrentPlanResponse
 QueryCurrentPlanResponse is the response type for the Query/CurrentPlan RPC
@@ -11071,14 +11071,14 @@ method.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `plan` | [Plan](#lbm.upgrade.v1beta1.Plan) |  | plan is the current upgrade plan. |
+| `plan` | [Plan](#lbm.upgrade.v1.Plan) |  | plan is the current upgrade plan. |
 
 
 
 
 
 
-<a name="lbm.upgrade.v1beta1.QueryUpgradedConsensusStateRequest"></a>
+<a name="lbm.upgrade.v1.QueryUpgradedConsensusStateRequest"></a>
 
 ### QueryUpgradedConsensusStateRequest
 QueryUpgradedConsensusStateRequest is the request type for the Query/UpgradedConsensusState
@@ -11094,7 +11094,7 @@ RPC method.
 
 
 
-<a name="lbm.upgrade.v1beta1.QueryUpgradedConsensusStateResponse"></a>
+<a name="lbm.upgrade.v1.QueryUpgradedConsensusStateResponse"></a>
 
 ### QueryUpgradedConsensusStateResponse
 QueryUpgradedConsensusStateResponse is the response type for the Query/UpgradedConsensusState
@@ -11116,29 +11116,29 @@ RPC method.
  <!-- end HasExtensions -->
 
 
-<a name="lbm.upgrade.v1beta1.Query"></a>
+<a name="lbm.upgrade.v1.Query"></a>
 
 ### Query
 Query defines the gRPC upgrade querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `CurrentPlan` | [QueryCurrentPlanRequest](#lbm.upgrade.v1beta1.QueryCurrentPlanRequest) | [QueryCurrentPlanResponse](#lbm.upgrade.v1beta1.QueryCurrentPlanResponse) | CurrentPlan queries the current upgrade plan. | GET|/lbm/upgrade/v1beta1/current_plan|
-| `AppliedPlan` | [QueryAppliedPlanRequest](#lbm.upgrade.v1beta1.QueryAppliedPlanRequest) | [QueryAppliedPlanResponse](#lbm.upgrade.v1beta1.QueryAppliedPlanResponse) | AppliedPlan queries a previously applied upgrade plan by its name. | GET|/lbm/upgrade/v1beta1/applied_plan/{name}|
-| `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1beta1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1beta1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries the consensus state that will serve as a trusted kernel for the next version of this chain. It will only be stored at the last height of this chain. UpgradedConsensusState RPC not supported with legacy querier | GET|/lbm/upgrade/v1beta1/upgraded_consensus_state/{last_height}|
+| `CurrentPlan` | [QueryCurrentPlanRequest](#lbm.upgrade.v1.QueryCurrentPlanRequest) | [QueryCurrentPlanResponse](#lbm.upgrade.v1.QueryCurrentPlanResponse) | CurrentPlan queries the current upgrade plan. | GET|/lbm/upgrade/v1/current_plan|
+| `AppliedPlan` | [QueryAppliedPlanRequest](#lbm.upgrade.v1.QueryAppliedPlanRequest) | [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse) | AppliedPlan queries a previously applied upgrade plan by its name. | GET|/lbm/upgrade/v1/applied_plan/{name}|
+| `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries the consensus state that will serve as a trusted kernel for the next version of this chain. It will only be stored at the last height of this chain. UpgradedConsensusState RPC not supported with legacy querier | GET|/lbm/upgrade/v1/upgraded_consensus_state/{last_height}|
 
  <!-- end services -->
 
 
 
-<a name="lbm/vesting/v1beta1/tx.proto"></a>
+<a name="lbm/vesting/v1/tx.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/vesting/v1beta1/tx.proto
+## lbm/vesting/v1/tx.proto
 
 
 
-<a name="lbm.vesting.v1beta1.MsgCreateVestingAccount"></a>
+<a name="lbm.vesting.v1.MsgCreateVestingAccount"></a>
 
 ### MsgCreateVestingAccount
 MsgCreateVestingAccount defines a message that enables creating a vesting
@@ -11149,7 +11149,7 @@ account.
 | ----- | ---- | ----- | ----------- |
 | `from_address` | [string](#string) |  |  |
 | `to_address` | [string](#string) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 | `end_time` | [int64](#int64) |  |  |
 | `delayed` | [bool](#bool) |  |  |
 
@@ -11158,7 +11158,7 @@ account.
 
 
 
-<a name="lbm.vesting.v1beta1.MsgCreateVestingAccountResponse"></a>
+<a name="lbm.vesting.v1.MsgCreateVestingAccountResponse"></a>
 
 ### MsgCreateVestingAccountResponse
 MsgCreateVestingAccountResponse defines the Msg/CreateVestingAccount response type.
@@ -11174,27 +11174,27 @@ MsgCreateVestingAccountResponse defines the Msg/CreateVestingAccount response ty
  <!-- end HasExtensions -->
 
 
-<a name="lbm.vesting.v1beta1.Msg"></a>
+<a name="lbm.vesting.v1.Msg"></a>
 
 ### Msg
 Msg defines the bank Msg service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `CreateVestingAccount` | [MsgCreateVestingAccount](#lbm.vesting.v1beta1.MsgCreateVestingAccount) | [MsgCreateVestingAccountResponse](#lbm.vesting.v1beta1.MsgCreateVestingAccountResponse) | CreateVestingAccount defines a method that enables creating a vesting account. | |
+| `CreateVestingAccount` | [MsgCreateVestingAccount](#lbm.vesting.v1.MsgCreateVestingAccount) | [MsgCreateVestingAccountResponse](#lbm.vesting.v1.MsgCreateVestingAccountResponse) | CreateVestingAccount defines a method that enables creating a vesting account. | |
 
  <!-- end services -->
 
 
 
-<a name="lbm/vesting/v1beta1/vesting.proto"></a>
+<a name="lbm/vesting/v1/vesting.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
-## lbm/vesting/v1beta1/vesting.proto
+## lbm/vesting/v1/vesting.proto
 
 
 
-<a name="lbm.vesting.v1beta1.BaseVestingAccount"></a>
+<a name="lbm.vesting.v1.BaseVestingAccount"></a>
 
 ### BaseVestingAccount
 BaseVestingAccount implements the VestingAccount interface. It contains all
@@ -11203,10 +11203,10 @@ the necessary fields needed for any vesting account implementation.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_account` | [lbm.auth.v1beta1.BaseAccount](#lbm.auth.v1beta1.BaseAccount) |  |  |
-| `original_vesting` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
-| `delegated_free` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
-| `delegated_vesting` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `base_account` | [lbm.auth.v1.BaseAccount](#lbm.auth.v1.BaseAccount) |  |  |
+| `original_vesting` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+| `delegated_free` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+| `delegated_vesting` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 | `end_time` | [int64](#int64) |  |  |
 
 
@@ -11214,7 +11214,7 @@ the necessary fields needed for any vesting account implementation.
 
 
 
-<a name="lbm.vesting.v1beta1.ContinuousVestingAccount"></a>
+<a name="lbm.vesting.v1.ContinuousVestingAccount"></a>
 
 ### ContinuousVestingAccount
 ContinuousVestingAccount implements the VestingAccount interface. It
@@ -11223,7 +11223,7 @@ continuously vests by unlocking coins linearly with respect to time.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1beta1.BaseVestingAccount) |  |  |
+| `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1.BaseVestingAccount) |  |  |
 | `start_time` | [int64](#int64) |  |  |
 
 
@@ -11231,7 +11231,7 @@ continuously vests by unlocking coins linearly with respect to time.
 
 
 
-<a name="lbm.vesting.v1beta1.DelayedVestingAccount"></a>
+<a name="lbm.vesting.v1.DelayedVestingAccount"></a>
 
 ### DelayedVestingAccount
 DelayedVestingAccount implements the VestingAccount interface. It vests all
@@ -11241,14 +11241,14 @@ locked until a specified time.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1beta1.BaseVestingAccount) |  |  |
+| `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1.BaseVestingAccount) |  |  |
 
 
 
 
 
 
-<a name="lbm.vesting.v1beta1.Period"></a>
+<a name="lbm.vesting.v1.Period"></a>
 
 ### Period
 Period defines a length of time and amount of coins that will vest.
@@ -11257,14 +11257,14 @@ Period defines a length of time and amount of coins that will vest.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `length` | [int64](#int64) |  |  |
-| `amount` | [lbm.base.v1beta1.Coin](#lbm.base.v1beta1.Coin) | repeated |  |
+| `amount` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 
 
 
 
 
 
-<a name="lbm.vesting.v1beta1.PeriodicVestingAccount"></a>
+<a name="lbm.vesting.v1.PeriodicVestingAccount"></a>
 
 ### PeriodicVestingAccount
 PeriodicVestingAccount implements the VestingAccount interface. It
@@ -11273,9 +11273,9 @@ periodically vests by unlocking coins during each specified period.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1beta1.BaseVestingAccount) |  |  |
+| `base_vesting_account` | [BaseVestingAccount](#lbm.vesting.v1.BaseVestingAccount) |  |  |
 | `start_time` | [int64](#int64) |  |  |
-| `vesting_periods` | [Period](#lbm.vesting.v1beta1.Period) | repeated |  |
+| `vesting_periods` | [Period](#lbm.vesting.v1.Period) | repeated |  |
 
 
 

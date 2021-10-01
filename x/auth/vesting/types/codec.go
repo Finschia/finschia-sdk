@@ -23,7 +23,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 // Interfaces and creates a registry of it's concrete implementations
 func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterInterface(
-		"lbm.vesting.v1beta1.VestingAccount",
+		"lbm.vesting.v1.VestingAccount",
 		(*exported.VestingAccount)(nil),
 		&ContinuousVestingAccount{},
 		&DelayedVestingAccount{},

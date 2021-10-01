@@ -25,7 +25,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	)
 
 	registry.RegisterInterface(
-		"lbm.bank.v1beta1.SupplyI",
+		"lbm.bank.v1.SupplyI",
 		(*exported.SupplyI)(nil),
 		&Supply{},
 	)

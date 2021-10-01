@@ -292,7 +292,7 @@ func (s *IntegrationTestSuite) TestCLIQueryTxCmd() {
 			"happy case (service Msg)",
 			[]string{txRes.TxHash, fmt.Sprintf("--%s=json", ostcli.OutputFlag)},
 			false,
-			"/lbm.bank.v1beta1.Msg/Send",
+			"/lbm.bank.v1.Msg/Send",
 		},
 	}
 

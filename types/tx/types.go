@@ -188,7 +188,7 @@ func (m *SignerInfo) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 
 // RegisterInterfaces registers the sdk.Tx interface.
 func RegisterInterfaces(registry codectypes.InterfaceRegistry) {
-	registry.RegisterInterface("lbm.tx.v1beta1.Tx", (*sdk.Tx)(nil))
+	registry.RegisterInterface("lbm.tx.v1.Tx", (*sdk.Tx)(nil))
 	registry.RegisterImplementations((*sdk.Tx)(nil), &Tx{})
 }
 
