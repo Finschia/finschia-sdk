@@ -286,6 +286,19 @@ test-sim-multi-seed-long: runsim
 	@echo "Running long multi-seed application simulation. This may take awhile!"
 	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 500 50 TestFullAppSimulation
 
+# Seeds is from https://github.com/cosmos/tools/blob/master/cmd/runsim/main.go
+test-sim-multi-seed-longi-part1: runsim
+        @echo "Running long multi-seed application simulation. This may take awhile!"
+        @$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail -Seeds="1,2,4,7,32,123,124,582,1893,2989,3012,4728" 500 50 TestFullAppSimulation
+
+test-sim-multi-seed-longi-part2: runsim
+        @echo "Running long multi-seed application simulation. This may take awhile!"
+        @$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail -Seeds="37827,981928,87821,891823782,989182,89182391,11,22,44,77,99,2020" 500 50 TestFullAppSimulation
+
+test-sim-multi-seed-longi-part3: runsim
+        @echo "Running long multi-seed application simulation. This may take awhile!"
+        @$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail -Seeds="3232,123123,124124,582582,18931893,29892989,30123012,47284728,7601778,8090485,977367484,491163361,424254581,673398983" 500 50 TestFullAppSimulation
+
 test-sim-multi-seed-short: runsim
 	@echo "Running short multi-seed application simulation. This may take awhile!"
 	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 50 10 TestFullAppSimulation
