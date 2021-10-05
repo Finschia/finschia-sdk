@@ -50,8 +50,8 @@
 * (wasm) [\#253](https://github.com/line/lbm-sdk/pull/253) remove MaxGas const
 * (wasm) [\#254](https://github.com/line/lbm-sdk/pull/254) Specify wasm event types
 * (x) [\#255](https://github.com/line/lbm-sdk/pull/255) Remove legacy from modules
-* (proto) [\#293](https://github.com/line/lbm-sdk/pull/293) Is it appropriate for sig_block_height to be included in the tx_body?
 * (perf) [\#320](https:/github.com/line/lbm-sdk/pull/320) internal objects optimization (BaseAccount, Balance & Supply)
+* (proto) [\#344](https://github.com/line/lbm-sdk/pull/344) move SigBlockHeight from TxBody into AuthInfo
 
 ### Bug Fixes
 * (test) [\#92](https://github.com/line/lbm-sdk/pull/92) Fix SendToModuleAccountTest
