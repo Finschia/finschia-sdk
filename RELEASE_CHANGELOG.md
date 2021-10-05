@@ -1,6 +1,6 @@
 # Release Changelog
 
-## [v0.1.0]
+## [v0.1.0](https://github.com/line/lbm-sdk/releases/tag/v0.1.0) - 2021-10-05
 
 ### Features
 * (global) [\#97](https://github.com/line/lbm-sdk/pull/97) Add codespace to query error
