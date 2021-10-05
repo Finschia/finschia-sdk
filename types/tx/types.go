@@ -144,7 +144,7 @@ func (t *Tx) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 }
 
 func (t *Tx) GetSigBlockHeight() uint64 {
-	return t.Body.SigBlockHeight
+	return t.AuthInfo.SigBlockHeight
 }
 
 // UnpackInterfaces implements the UnpackInterfaceMessages.UnpackInterfaces method
