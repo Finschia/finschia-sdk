@@ -51,6 +51,7 @@
 * (wasm) [\#254](https://github.com/line/lbm-sdk/pull/254) Specify wasm event types
 * (x) [\#255](https://github.com/line/lbm-sdk/pull/255) Remove legacy from modules
 * (perf) [\#320](https:/github.com/line/lbm-sdk/pull/320) internal objects optimization (BaseAccount, Balance & Supply)
+* (auth) [\#344](https://github.com/line/lbm-sdk/pull/344) move SigBlockHeight from TxBody into AuthInfo
 
 ### Bug Fixes
 * (test) [\#92](https://github.com/line/lbm-sdk/pull/92) Fix SendToModuleAccountTest

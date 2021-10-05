@@ -146,7 +146,7 @@ func (w *wrapper) FeeGranter() sdk.AccAddress {
 }
 
 func (w *wrapper) GetSigBlockHeight() uint64 {
-	return w.tx.Body.SigBlockHeight
+	return w.tx.AuthInfo.SigBlockHeight
 }
 
 func (w *wrapper) GetMemo() string {
@@ -229,7 +229,7 @@ func (w *wrapper) SetMemo(memo string) {
 }
 
 func (w *wrapper) SetSigBlockHeight(sbh uint64) {
-	w.tx.Body.SigBlockHeight = sbh
+	w.tx.AuthInfo.SigBlockHeight = sbh
 }
 
 func (w *wrapper) SetGasLimit(limit uint64) {
