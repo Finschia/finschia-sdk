@@ -1,7 +1,5 @@
 # Changelog
 
-## [Unreleased]
-
 ## [v0.43.0](https://github.com/line/lbm-sdk/releases/tag/v0.43.0)
 
 ### Features
