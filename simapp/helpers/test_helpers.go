@@ -60,6 +60,7 @@ func GenTx(gen client.TxConfig, msgs []sdk.Msg, feeAmt sdk.Coins, gas uint64, ch
 			ChainID:  chainID,
 			Sequence: accSeqs[i],
 		}
+		tx.SetSigBlockHeight(sbh[i])
 		signBytes, err := gen.SignModeHandler().GetSignBytes(signMode, signerData, tx.GetTx())
 		if err != nil {
 			panic(err)
