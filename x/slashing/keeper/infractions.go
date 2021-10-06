@@ -27,9 +27,9 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 
 	// this is a relative index, so it counts blocks the validator *should* have signed
 	// will use the 0-value default signing info if not present, except for the beginning
-	voterSetCounter := signInfo.VoterSetCounter
 	signInfo.VoterSetCounter++
-	index := voterSetCounter % k.SignedBlocksWindow(ctx)
+	voterSetCounter := signInfo.VoterSetCounter
+	index := (voterSetCounter - 1) % k.SignedBlocksWindow(ctx)
 
 	// Update signed block bit array & counter
 	// This counter just tracks the sum of the bit array
@@ -70,7 +70,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 		)
 	}
 
-	minVoterSetCount := k.SignedBlocksWindow(ctx) - 1
+	minVoterSetCount := k.SignedBlocksWindow(ctx)
 	maxMissed := k.SignedBlocksWindow(ctx) - minSignedPerWindow
 
 	// if we have joined enough times to voter set and the validator has missed too many blocks, punish them
