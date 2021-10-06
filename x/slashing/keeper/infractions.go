@@ -70,7 +70,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 		)
 	}
 
-	minVoterSetCount := k.SignedBlocksWindow(ctx)
+	minVoterSetCount := k.SignedBlocksWindow(ctx) - 1
 	maxMissed := k.SignedBlocksWindow(ctx) - minSignedPerWindow
 
 	// if we have joined enough times to voter set and the validator has missed too many blocks, punish them
