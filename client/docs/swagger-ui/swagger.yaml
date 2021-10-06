@@ -14283,16 +14283,6 @@ paths:
                   properties:
                     address:
                       type: string
-                    start_height:
-                      type: string
-                      format: int64
-                      title: >-
-                        height at which validator was first a candidate OR was
-                        unjailed
-                    index_offset:
-                      type: string
-                      format: int64
-                      title: index offset into signed block bit array
                     jailed_until:
                       type: string
                       format: date-time
@@ -14311,6 +14301,10 @@ paths:
                       title: >-
                         missed blocks counter (to avoid scanning the array every
                         time)
+                    voter_set_counter:
+                      type: string
+                      format: int64
+                      title: how many times the validator joined to voter set
                   description: >-
                     ValidatorSigningInfo defines a validator's signing info for
                     monitoring their
@@ -14436,16 +14430,6 @@ paths:
                 properties:
                   address:
                     type: string
-                  start_height:
-                    type: string
-                    format: int64
-                    title: >-
-                      height at which validator was first a candidate OR was
-                      unjailed
-                  index_offset:
-                    type: string
-                    format: int64
-                    title: index offset into signed block bit array
                   jailed_until:
                     type: string
                     format: date-time
@@ -14464,6 +14448,10 @@ paths:
                     title: >-
                       missed blocks counter (to avoid scanning the array every
                       time)
+                  voter_set_counter:
+                    type: string
+                    format: int64
+                    title: how many times the validator joined to voter set
                 description: >-
                   ValidatorSigningInfo defines a validator's signing info for
                   monitoring their
@@ -42581,14 +42569,6 @@ definitions:
         properties:
           address:
             type: string
-          start_height:
-            type: string
-            format: int64
-            title: height at which validator was first a candidate OR was unjailed
-          index_offset:
-            type: string
-            format: int64
-            title: index offset into signed block bit array
           jailed_until:
             type: string
             format: date-time
@@ -42605,6 +42585,10 @@ definitions:
             type: string
             format: int64
             title: missed blocks counter (to avoid scanning the array every time)
+          voter_set_counter:
+            type: string
+            format: int64
+            title: how many times the validator joined to voter set
         description: >-
           ValidatorSigningInfo defines a validator's signing info for monitoring
           their
@@ -42626,14 +42610,6 @@ definitions:
           properties:
             address:
               type: string
-            start_height:
-              type: string
-              format: int64
-              title: height at which validator was first a candidate OR was unjailed
-            index_offset:
-              type: string
-              format: int64
-              title: index offset into signed block bit array
             jailed_until:
               type: string
               format: date-time
@@ -42650,6 +42626,10 @@ definitions:
               type: string
               format: int64
               title: missed blocks counter (to avoid scanning the array every time)
+            voter_set_counter:
+              type: string
+              format: int64
+              title: how many times the validator joined to voter set
           description: >-
             ValidatorSigningInfo defines a validator's signing info for
             monitoring their
@@ -42691,14 +42671,6 @@ definitions:
     properties:
       address:
         type: string
-      start_height:
-        type: string
-        format: int64
-        title: height at which validator was first a candidate OR was unjailed
-      index_offset:
-        type: string
-        format: int64
-        title: index offset into signed block bit array
       jailed_until:
         type: string
         format: date-time
@@ -42715,6 +42687,10 @@ definitions:
         type: string
         format: int64
         title: missed blocks counter (to avoid scanning the array every time)
+      voter_set_counter:
+        type: string
+        format: int64
+        title: how many times the validator joined to voter set
     description: >-
       ValidatorSigningInfo defines a validator's signing info for monitoring
       their

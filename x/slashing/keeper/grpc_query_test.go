@@ -37,10 +37,10 @@ func (suite *SlashingTestSuite) SetupTest() {
 
 	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(200))
 
-	info1 := types.NewValidatorSigningInfo(addrDels[0].ToConsAddress(), int64(4), int64(3),
-		time.Unix(2, 0), false, int64(10))
-	info2 := types.NewValidatorSigningInfo(addrDels[1].ToConsAddress(), int64(5), int64(4),
-		time.Unix(2, 0), false, int64(10))
+	info1 := types.NewValidatorSigningInfo(addrDels[0].ToConsAddress(),
+		time.Unix(2, 0), false, int64(10), int64(3))
+	info2 := types.NewValidatorSigningInfo(addrDels[1].ToConsAddress(),
+		time.Unix(2, 0), false, int64(10), int64(4))
 
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress(), info1)
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[1].ToConsAddress(), info2)
