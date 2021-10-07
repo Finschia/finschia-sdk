@@ -1040,6 +1040,8 @@
     - [QueryContractInfoResponse](#lbm.wasm.v1.QueryContractInfoResponse)
     - [QueryContractsByCodeRequest](#lbm.wasm.v1.QueryContractsByCodeRequest)
     - [QueryContractsByCodeResponse](#lbm.wasm.v1.QueryContractsByCodeResponse)
+    - [QueryPinnedCodesRequest](#lbm.wasm.v1.QueryPinnedCodesRequest)
+    - [QueryPinnedCodesResponse](#lbm.wasm.v1.QueryPinnedCodesResponse)
     - [QueryRawContractStateRequest](#lbm.wasm.v1.QueryRawContractStateRequest)
     - [QueryRawContractStateResponse](#lbm.wasm.v1.QueryRawContractStateResponse)
     - [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest)
@@ -15163,6 +15165,39 @@ Query/ContractsByCode RPC method
 
 
 
+<a name="lbm.wasm.v1.QueryPinnedCodesRequest"></a>
+
+### QueryPinnedCodesRequest
+QueryPinnedCodesRequest is the request type for the Query/PinnedCodes
+RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.wasm.v1.QueryPinnedCodesResponse"></a>
+
+### QueryPinnedCodesResponse
+QueryPinnedCodesResponse is the response type for the
+Query/PinnedCodes RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `code_ids` | [uint64](#uint64) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
 <a name="lbm.wasm.v1.QueryRawContractStateRequest"></a>
 
 ### QueryRawContractStateRequest
@@ -15250,6 +15285,7 @@ Query provides defines the gRPC querier service
 | `SmartContractState` | [QuerySmartContractStateRequest](#lbm.wasm.v1.QuerySmartContractStateRequest) | [QuerySmartContractStateResponse](#lbm.wasm.v1.QuerySmartContractStateResponse) | SmartContractState get smart query result from the contract | GET|/lbm/wasm/v1/contract/{address}/smart/{query_data}|
 | `Code` | [QueryCodeRequest](#lbm.wasm.v1.QueryCodeRequest) | [QueryCodeResponse](#lbm.wasm.v1.QueryCodeResponse) | Code gets the binary code and metadata for a singe wasm code | GET|/lbm/wasm/v1/code/{code_id}|
 | `Codes` | [QueryCodesRequest](#lbm.wasm.v1.QueryCodesRequest) | [QueryCodesResponse](#lbm.wasm.v1.QueryCodesResponse) | Codes gets the metadata for all stored wasm codes | GET|/lbm/wasm/v1/code|
+| `PinnedCodes` | [QueryPinnedCodesRequest](#lbm.wasm.v1.QueryPinnedCodesRequest) | [QueryPinnedCodesResponse](#lbm.wasm.v1.QueryPinnedCodesResponse) | PinnedCodes gets the pinned code ids | GET|/cosmwasm/wasm/v1/codes/pinned|
 
  <!-- end services -->
 

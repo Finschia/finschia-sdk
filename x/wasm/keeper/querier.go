@@ -26,6 +26,7 @@ type GrpcQuerier struct {
 	queryGasLimit sdk.Gas
 }
 
+// NewGrpcQuerier constructor
 func NewGrpcQuerier(cdc codec.Codec, storeKey sdk.StoreKey, keeper types.ViewKeeper, queryGasLimit sdk.Gas) *GrpcQuerier {
 	return &GrpcQuerier{cdc: cdc, storeKey: storeKey, keeper: keeper, queryGasLimit: queryGasLimit}
 }
@@ -287,4 +288,29 @@ func queryCode(ctx sdk.Context, codeID uint64, keeper types.ViewKeeper) (*types.
 	}
 
 	return &types.QueryCodeResponse{CodeInfoResponse: &info, Data: code}, nil
+}
+
+func (q grpcQuerier) PinnedCodes(c context.Context, req *types.QueryPinnedCodesRequest) (*types.QueryPinnedCodesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+	r := make([]uint64, 0)
+
+	prefixStore := prefix.NewStore(ctx.KVStore(q.storeKey), types.PinnedCodeIndexPrefix)
+	pageRes, err := query.FilteredPaginate(prefixStore, req.Pagination, func(key []byte, _ []byte, accumulate bool) (bool, error) {
+		if accumulate {
+
+			r = append(r, sdk.BigEndianToUint64(key))
+		}
+		return true, nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &types.QueryPinnedCodesResponse{
+		CodeIDs:    r,
+		Pagination: pageRes,
+	}, nil
+
 }
