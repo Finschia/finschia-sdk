@@ -229,15 +229,15 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, false)
 	}
 
-	// 398 more blocks happend
+	// 399 more blocks happend
 	latest = height
-	for ; height < latest+398; height++ {
+	for ; height < latest+399; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, true)
 	}
 
-	// shouldn't be jailed/kicked yet because it had not joined to vote set 1000 times
-	// 100 times + (kicked) + 501 times + 398 times = 999 times
+	// shouldn't be jailed/kicked yet because it had not joined to vote set 1000 + 1 times
+	// 100 times + (kicked) + 501 times + 398 times = 1000 times
 	tstaking.CheckValidator(valAddr, stakingtypes.Bonded, false)
 
 	// another block happend
@@ -253,7 +253,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	signInfo, found := app.SlashingKeeper.GetValidatorSigningInfo(ctx, consAddr)
 	require.True(t, found)
 	require.Equal(t, int64(0), signInfo.MissedBlocksCounter)
-	require.Equal(t, int64(1000), signInfo.VoterSetCounter)
+	require.Equal(t, int64(1001), signInfo.VoterSetCounter)
 	// array should be cleared
 	for offset := int64(0); offset < app.SlashingKeeper.SignedBlocksWindow(ctx); offset++ {
 		missed := app.SlashingKeeper.GetValidatorMissedBlockBitArray(ctx, consAddr, offset)
