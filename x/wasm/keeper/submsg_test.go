@@ -9,10 +9,9 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
+	sdk "github.com/line/lbm-sdk/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/require"
-
-	sdk "github.com/line/lbm-sdk/types"
 )
 
 // test handing of submessages, very closely related to the reflect_test
@@ -245,17 +244,16 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 		resultAssertions []assertion
 	}{
 		"send tokens": {
-			submsgID: 5,
-			msg:      validBankSend,
-			// note we charge another 40k for the reply call
-			resultAssertions: []assertion{assertReturnedEvents(3), assertGasUsed(115534, 134000)},
+			submsgID:         5,
+			msg:              validBankSend,
+			resultAssertions: []assertion{assertReturnedEvents(1), assertGasUsed(76000, 81000)},
 		},
 		"not enough tokens": {
 			submsgID:    6,
 			msg:         invalidBankSend,
 			subMsgError: true,
 			// uses less gas than the send tokens (cost of bank transfer)
-			resultAssertions: []assertion{assertGasUsed(96000, 110000), assertErrorString("insufficient funds")},
+			resultAssertions: []assertion{assertGasUsed(57000, 59000), assertErrorString("insufficient funds")},
 		},
 		"out of gas panic with no gas limit": {
 			submsgID:        7,
@@ -267,24 +265,24 @@ func TestDispatchSubMsgErrorHandling(t *testing.T) {
 			submsgID: 15,
 			msg:      validBankSend,
 			gasLimit: &subGasLimit,
-			// uses same gas as call without limit
-			resultAssertions: []assertion{assertReturnedEvents(3), assertGasUsed(115534, 134000)},
+			// uses same gas as call without limit (note we do not charge the 40k on reply)
+			resultAssertions: []assertion{assertReturnedEvents(1), assertGasUsed(76000, 81000)},
 		},
 		"not enough tokens with limit": {
 			submsgID:    16,
 			msg:         invalidBankSend,
 			subMsgError: true,
 			gasLimit:    &subGasLimit,
-			// uses same gas as call without limit
-			resultAssertions: []assertion{assertGasUsed(96000, 110000), assertErrorString("insufficient funds")},
+			// uses same gas as call without limit (note we do not charge the 40k on reply)
+			resultAssertions: []assertion{assertGasUsed(57000, 59000), assertErrorString("insufficient funds")},
 		},
 		"out of gas caught with gas limit": {
 			submsgID:    17,
 			msg:         infiniteLoop,
 			subMsgError: true,
 			gasLimit:    &subGasLimit,
-			// uses all the subGasLimit, plus the 92k or so for the main contract
-			resultAssertions: []assertion{assertGasUsed(subGasLimit+92000, subGasLimit+106000), assertErrorString("out of gas")},
+			// uses all the subGasLimit, plus the 52k or so for the main contract
+			resultAssertions: []assertion{assertGasUsed(subGasLimit+52000, subGasLimit+54000), assertErrorString("out of gas")},
 		},
 		"instantiate contract gets address in data and events": {
 			submsgID:         21,
