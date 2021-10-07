@@ -211,7 +211,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	tstaking.CheckValidator(valAddr, stakingtypes.Unbonding, false)
 
 	// 600 more blocks happened
-	height = 700
+	height = int64(700)
 	ctx = ctx.WithBlockHeight(height)
 
 	// validator added back in
@@ -229,18 +229,18 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, false)
 	}
 
-	// 399 more blocks happend
+	// 399 more blocks happened
 	latest = height
 	for ; height < latest+399; height++ {
 		ctx = ctx.WithBlockHeight(height)
 		app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, true)
 	}
 
-	// shouldn't be jailed/kicked yet because it had not joined to vote set 1000 + 1 times
+	// shouldn't be jailed/kicked yet because it have not joined to vote set 1000 + 1 times
 	// 100 times + (kicked) + 501 times + 398 times = 1000 times
 	tstaking.CheckValidator(valAddr, stakingtypes.Bonded, false)
 
-	// another block happend
+	// another block happened
 	ctx = ctx.WithBlockHeight(height)
 	app.SlashingKeeper.HandleValidatorSignature(ctx, val.Address(), newPower, true)
 	height++
@@ -297,7 +297,7 @@ func TestValidatorDippingInAndOut(t *testing.T) {
 	staking.EndBlocker(ctx, app.StakingKeeper)
 	tstaking.CheckValidator(valAddr, stakingtypes.Bonded, false)
 
-	// 1000 blocks happend
+	// 1000 blocks happened
 	latest = height
 	for ; height < latest+1000; height++ {
 		ctx = ctx.WithBlockHeight(height)
