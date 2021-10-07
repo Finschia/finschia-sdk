@@ -107,7 +107,7 @@ func (k Keeper) HandleValidatorSignature(ctx sdk.Context, addr cryptotypes.Addre
 				"slashing and jailing validator due to liveness fault",
 				"height", height,
 				"validator", consAddr.String(),
-				"min_voter_set_count", minVoterSetCount,
+				"voter_set_counter", voterSetCounter,
 				"threshold", minSignedPerWindow,
 				"slashed", k.SlashFractionDowntime(ctx).String(),
 				"jailed_until", signInfo.JailedUntil,
