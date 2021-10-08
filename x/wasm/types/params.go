@@ -36,12 +36,12 @@ const (
 	// such as hardcoding them in contracts.
 	//
 	// Please not that all gas prices returned to the wasmer engine should have this multiplied
-	DefaultGasMultiplier uint64 = 15_000_000
+	DefaultGasMultiplier uint64 = 140_000_000
 	// InstanceCost is how much SDK gas we charge each time we load a WASM instance.
 	// Creating a new instance is costly, and this helps put a recursion limit to contracts calling contracts.
-	DefaultInstanceCost = 40_000
+	DefaultInstanceCost = 60_000
 	// CompileCost is how much SDK gas we charge *per byte* for compiling WASM code.
-	DefaultCompileCost = 2
+	DefaultCompileCost = 3
 )
 
 var ParamStoreKeyUploadAccess = []byte("uploadAccess")
