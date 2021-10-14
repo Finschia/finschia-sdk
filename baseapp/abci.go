@@ -22,7 +22,9 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
-// meaningless comment for running actions. TODO: remove this comment
+
+// TODO: remove this comment
+// meaningless comment for running actions.
 
 // InitChain implements the ABCI interface. It runs the initialization logic
 // directly on the CommitMultiStore.
