@@ -21,17 +21,15 @@ func TestGetSetValidatorSigningInfo(t *testing.T) {
 	require.False(t, found)
 	newInfo := types.NewValidatorSigningInfo(
 		addrDels[0].ToConsAddress(),
-		int64(4),
-		int64(3),
 		time.Unix(2, 0),
 		false,
 		int64(10),
+		int64(3),
 	)
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress(), newInfo)
 	info, found = app.SlashingKeeper.GetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress())
 	require.True(t, found)
-	require.Equal(t, info.StartHeight, int64(4))
-	require.Equal(t, info.IndexOffset, int64(3))
+	require.Equal(t, info.VoterSetCounter, int64(3))
 	require.Equal(t, info.JailedUntil, time.Unix(2, 0).UTC())
 	require.Equal(t, info.MissedBlocksCounter, int64(10))
 }
@@ -58,11 +56,10 @@ func TestTombstoned(t *testing.T) {
 
 	newInfo := types.NewValidatorSigningInfo(
 		addrDels[0].ToConsAddress(),
-		int64(4),
-		int64(3),
 		time.Unix(2, 0),
 		false,
 		int64(10),
+		int64(3),
 	)
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress(), newInfo)
 
@@ -81,11 +78,10 @@ func TestJailUntil(t *testing.T) {
 
 	newInfo := types.NewValidatorSigningInfo(
 		addrDels[0].ToConsAddress(),
-		int64(4),
-		int64(3),
 		time.Unix(2, 0),
 		false,
 		int64(10),
+		int64(3),
 	)
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress(), newInfo)
 	app.SlashingKeeper.JailUntil(ctx, addrDels[0].ToConsAddress(), time.Unix(253402300799, 0).UTC())

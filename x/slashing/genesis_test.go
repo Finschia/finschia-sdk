@@ -21,10 +21,10 @@ func TestExportAndInitGenesis(t *testing.T) {
 	app.SlashingKeeper.SetParams(ctx, testslashing.TestParams())
 
 	addrDels := simapp.AddTestAddrsIncremental(app, ctx, 2, sdk.TokensFromConsensusPower(200))
-	info1 := types.NewValidatorSigningInfo(addrDels[0].ToConsAddress(), int64(4), int64(3),
-		time.Now().UTC().Add(100000000000), false, int64(10))
-	info2 := types.NewValidatorSigningInfo(addrDels[1].ToConsAddress(), int64(5), int64(4),
-		time.Now().UTC().Add(10000000000), false, int64(10))
+	info1 := types.NewValidatorSigningInfo(addrDels[0].ToConsAddress(),
+		time.Now().UTC().Add(100000000000), false, int64(10), int64(3))
+	info2 := types.NewValidatorSigningInfo(addrDels[1].ToConsAddress(),
+		time.Now().UTC().Add(10000000000), false, int64(10), int64(4))
 
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[0].ToConsAddress(), info1)
 	app.SlashingKeeper.SetValidatorSigningInfo(ctx, addrDels[1].ToConsAddress(), info2)
