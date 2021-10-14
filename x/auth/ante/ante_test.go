@@ -160,7 +160,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigErrors() {
 func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 	suite.SetupTest(false) // reset
 
-	suite.ctx = suite.ctx.WithBlockHeight(20000) // init block height is 200
+	suite.ctx = suite.ctx.WithBlockHeight(5000) // init block height is 5000
 
 	// Same data for every test cases
 	accounts := suite.CreateTestAccounts(2)
@@ -182,7 +182,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 				msg := testdata.NewTestMsg(accounts[0].acc.GetAddress())
 				msgs = []sdk.Msg{msg}
 
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{10000}, []uint64{0}
+				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{3600}, []uint64{0}
 			},
 			false,
 			true,
@@ -200,7 +200,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 		{
 			"new tx from correct sig block height",
 			func() {
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{10000}, []uint64{1}
+				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv}, []uint64{3600}, []uint64{1}
 			},
 			false,
 			true,
@@ -221,7 +221,7 @@ func (suite *AnteTestSuite) TestAnteHandlerSigBlockHeight() {
 		{
 			"new tx with correct sig block height",
 			func() {
-				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{10000, 10001}, []uint64{2, 0}
+				privs, sbh, accSeqs = []cryptotypes.PrivKey{accounts[0].priv, accounts[1].priv}, []uint64{3600, 3601}, []uint64{2, 0}
 			},
 			false,
 			true,
