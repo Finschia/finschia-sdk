@@ -270,16 +270,16 @@ test-sim-custom-genesis-fast:
 		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
 
 test-sim-import-export-short: runsim
-        @echo "Running application import/export simulation. This may take several minutes..."
-        @$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 20 5 TestAppImportExport
+	@echo "Running application import/export simulation. This may take several minutes..."
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 20 5 TestAppImportExport
 
 test-sim-import-export: runsim
 	@echo "Running application import/export simulation. This may take several minutes..."
 	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 50 5 TestAppImportExport
 
 test-sim-after-import-short: runsim
-        @echo "Running application simulation-after-import. This may take several minutes..."
-        @$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 10 5 TestAppSimulationAfterImport
+	@echo "Running application simulation-after-import. This may take several minutes..."
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 10 5 TestAppSimulationAfterImport
 
 test-sim-after-import: runsim
 	@echo "Running application simulation-after-import. This may take several minutes..."
