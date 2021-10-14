@@ -45,30 +45,26 @@ The information stored for tracking validator liveness is as follows:
 // liveness activity.
 message ValidatorSigningInfo {
   string address = 1;
-  // height at which validator was first a candidate OR was unjailed
-  int64 start_height = 2;
-  // index offset into signed block bit array
-  int64 index_offset = 3;
   // timestamp validator cannot be unjailed until
-  google.protobuf.Timestamp jailed_until = 4;
+  google.protobuf.Timestamp jailed_until = 2;
   // whether or not a validator has been tombstoned (killed out of validator
   // set)
-  bool tombstoned = 5;
+  bool tombstoned = 3;
   // missed blocks counter (to avoid scanning the array every time)
-  int64 missed_blocks_counter = 6;
+  int64 missed_blocks_counter = 4;
+  // how many times the validator joined to voter set
+  int64 voter_set_counter = 5;
 }
 ```
 
 Where:
 
 - **Address**: The validator's consensus address.
-- **StartHeight**: The height that the candidate became an active validator
-  (with non-zero voting power).
-- **IndexOffset**: Index which is incremented each time the validator was a bonded
-  in a block and may have signed a precommit or not. This in conjunction with the
-  `SignedBlocksWindow` param determines the index in the `MissedBlocksBitArray`.
 - **JailedUntil**: Time for which the validator is jailed until due to liveness downtime.
 - **Tombstoned**: Desribes if the validator is tombstoned or not. It is set once the
   validator commits an equivocation or for any other configured misbehiavor.
 - **MissedBlocksCounter**: A counter kept to avoid unnecessary array reads. Note
   that `Sum(MissedBlocksBitArray)` equals `MissedBlocksCounter` always.
+- **VoterSetCounter**: A counter keeps tracking the number of incidents the validator
+  joins to the voter set. This in conjunction with the `SignedBlocksWindow` param
+  determines the index in the `MissedBlocksBitArray`.

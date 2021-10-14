@@ -8,15 +8,14 @@ import (
 )
 
 func (k Keeper) AfterValidatorBonded(ctx sdk.Context, address sdk.ConsAddress, _ sdk.ValAddress) {
-	// Update the signing info start height or create a new signing info
+	// Update the signing info voter set counter or create a new signing info
 	_, found := k.GetValidatorSigningInfo(ctx, address)
 	if !found {
 		signingInfo := types.NewValidatorSigningInfo(
 			address,
-			ctx.BlockHeight(),
-			0,
 			time.Unix(0, 0),
 			false,
+			0,
 			0,
 		)
 		k.SetValidatorSigningInfo(ctx, address, signingInfo)
