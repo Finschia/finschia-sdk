@@ -276,7 +276,7 @@ test-sim-custom-genesis-fast:
 
 test-sim-import-export-short: runsim
 	@echo "Running application import/export simulation. This may take several minutes..."
-	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 20 5 TestAppImportExport
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=$(SIMAPP) -ExitOnFail 10 5 TestAppImportExport
 
 test-sim-import-export: runsim
 	@echo "Running application import/export simulation. This may take several minutes..."
