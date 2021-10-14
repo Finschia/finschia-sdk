@@ -258,6 +258,11 @@ endif
 
 .PHONY: run-tests test test-all $(TEST_TARGETS)
 
+test-sim-nondeterminism-short:
+	@echo "Running non-determinism test..."
+	@go test -mod=readonly $(SIMAPP) -run TestAppStateDeterminism -Enabled=true \
+		-NumBlocks=50 -BlockSize=100 -Commit=true -Period=0 -v -timeout 24h
+
 test-sim-nondeterminism:
 	@echo "Running non-determinism test..."
 	@go test -mod=readonly $(SIMAPP) -run TestAppStateDeterminism -Enabled=true \

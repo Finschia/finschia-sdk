@@ -44,7 +44,7 @@ jobs:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
 
-  test-sim-nondeterminism:
+  test-sim-nondeterminism-short:
     runs-on: ubuntu-latest
     needs: [build, install-runsim]
     steps:
@@ -66,9 +66,9 @@ jobs:
           path: ~/go/bin
           key: ${{ runner.os }}-go-runsim-binary
         if: env.GIT_DIFF
-      - name: test-sim-nondeterminism
+      - name: test-sim-nondeterminism-short
         run: |
-          make test-sim-nondeterminism
+          make test-sim-nondeterminism-short
         if: env.GIT_DIFF
 
   test-sim-import-export-short:
