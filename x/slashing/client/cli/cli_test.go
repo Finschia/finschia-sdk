@@ -68,7 +68,7 @@ func (s *IntegrationTestSuite) TestGetCmdQuerySigningInfo() {
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 			},
 			false,
-			fmt.Sprintf("{\"address\":\"%s\",\"start_height\":\"0\",\"index_offset\":\"0\",\"jailed_until\":\"1970-01-01T00:00:00Z\",\"tombstoned\":false,\"missed_blocks_counter\":\"0\"}", sdk.BytesToConsAddress(val.PubKey.Address())),
+			fmt.Sprintf("{\"address\":\"%s\",\"jailed_until\":\"1970-01-01T00:00:00Z\",\"tombstoned\":false,\"missed_blocks_counter\":\"0\",\"voter_set_counter\":\"0\"}", sdk.BytesToConsAddress(val.PubKey.Address())),
 		},
 		{
 			"valid address (text output)",
@@ -79,11 +79,10 @@ func (s *IntegrationTestSuite) TestGetCmdQuerySigningInfo() {
 			},
 			false,
 			fmt.Sprintf(`address: %s
-index_offset: "0"
 jailed_until: "1970-01-01T00:00:00Z"
 missed_blocks_counter: "0"
-start_height: "0"
-tombstoned: false`, sdk.BytesToConsAddress(val.PubKey.Address())),
+tombstoned: false
+voter_set_counter: "0"`, sdk.BytesToConsAddress(val.PubKey.Address())),
 		},
 	}
 

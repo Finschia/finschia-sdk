@@ -7941,11 +7941,10 @@ liveness activity.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `start_height` | [int64](#int64) |  | height at which validator was first a candidate OR was unjailed |
-| `index_offset` | [int64](#int64) |  | index offset into signed block bit array |
 | `jailed_until` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp validator cannot be unjailed until |
 | `tombstoned` | [bool](#bool) |  | whether or not a validator has been tombstoned (killed out of validator set) |
 | `missed_blocks_counter` | [int64](#int64) |  | missed blocks counter (to avoid scanning the array every time) |
+| `voter_set_counter` | [int64](#int64) |  | how many times the validator joined to voter set |
 
 
 
