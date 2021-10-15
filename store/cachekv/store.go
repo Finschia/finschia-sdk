@@ -190,8 +190,95 @@ func (store *Store) iterator(start, end []byte, ascending bool) types.Iterator {
 	return newCacheMergeIterator(parent, cache, ascending)
 }
 
+func findStartIndex(strL []string, startQ string) int {
+	// Modified binary search to find the very first element in >=startQ.
+	if len(strL) == 0 {
+		return -1
+	}
+
+	var left, right, mid int
+	right = len(strL) - 1
+	for left <= right {
+		mid = (left + right) >> 1
+		midStr := strL[mid]
+		if midStr == startQ {
+			// Handle condition where there might be multiple values equal to startQ.
+			// We are looking for the very first value < midStL, that i+1 will be the first
+			// element >= midStr.
+			for i := mid - 1; i >= 0; i-- {
+				if strL[i] != midStr {
+					return i + 1
+				}
+			}
+			return 0
+		}
+		if midStr < startQ {
+			left = mid + 1
+		} else { // midStrL > startQ
+			right = mid - 1
+		}
+	}
+	if left >= 0 && left < len(strL) && strL[left] >= startQ {
+		return left
+	}
+	return -1
+}
+
+func findEndIndex(strL []string, endQ string) int {
+	if len(strL) == 0 {
+		return -1
+	}
+
+	// Modified binary search to find the very first element <endQ.
+	var left, right, mid int
+	right = len(strL) - 1
+	for left <= right {
+		mid = (left + right) >> 1
+		midStr := strL[mid]
+		if midStr == endQ {
+			// Handle condition where there might be multiple values equal to startQ.
+			// We are looking for the very first value < midStL, that i+1 will be the first
+			// element >= midStr.
+			for i := mid - 1; i >= 0; i-- {
+				if strL[i] < midStr {
+					return i + 1
+				}
+			}
+			return 0
+		}
+		if midStr < endQ {
+			left = mid + 1
+		} else { // midStrL > startQ
+			right = mid - 1
+		}
+	}
+
+	// Binary search failed, now let's find a value less than endQ.
+	for i := right; i >= 0; i-- {
+		if strL[i] < endQ {
+			return i
+		}
+	}
+
+	return -1
+}
+
+// TODO(dudong2): need to comment out below - (https://github.com/cosmos/cosmos-sdk/pull/10024)
+// type sortState int
+// const (
+// 	stateUnsorted sortState = iota
+// 	stateAlreadySorted
+// )
+
+// TODO(dudong2): need to bump up this func - (https://github.com/cosmos/cosmos-sdk/pull/10024)
 // Constructs a slice of dirty items, to use w/ memIterator.
 func (store *Store) dirtyItems(start, end []byte) {
+	startStr, endStr := conv.UnsafeBytesToStr(start), conv.UnsafeBytesToStr(end)
+	if startStr > endStr {
+		// Nothing to do here.
+		return
+	}
+
 	unsorted := make([]*kv.Pair, 0)
 	// If the unsortedCache is too big, its costs too much to determine
 	// whats in the subset we are concerned about.
@@ -212,6 +299,7 @@ func (store *Store) dirtyItems(start, end []byte) {
 	store.clearUnsortedCacheSubset(unsorted)
 }
 
+// TODO(dudong2): need to bump up this func - (https://github.com/cosmos/cosmos-sdk/pull/10024)
 func (store *Store) clearUnsortedCacheSubset(unsorted []*kv.Pair) {
 	for _, kv := range unsorted {
 		store.unsortedCache.Delete(conv.UnsafeBytesToStr(kv.Key))
