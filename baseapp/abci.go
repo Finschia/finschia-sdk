@@ -23,9 +23,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
-// TODO: remove this comment
-// meaningless comment for running actions.
-
 // InitChain implements the ABCI interface. It runs the initialization logic
 // directly on the CommitMultiStore.
 func (app *BaseApp) InitChain(req abci.RequestInitChain) (res abci.ResponseInitChain) {
