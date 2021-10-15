@@ -77,10 +77,7 @@
 ### Build, CI
 * (ci) [\#234](https://github.com/line/lbm-sdk/pull/234) Fix branch name in ci script
 * (docker) [\#264](https://github.com/line/lbm-sdk/pull/264) Remove docker publish
-<<<<<<< HEAD
 * (ci) [\#345](https://github.com/line/lbm-sdk/pull/345) Split long sim test into 3 parts
-=======
->>>>>>> e5a2be9a4 (docs: update changelog (#346) (#349))
  
 ### Document Updates
 * (docs) [\#205](https://github.com/line/lbm-sdk/pull/205) Renewal docs for open source
