@@ -14,6 +14,7 @@
 
 ### Build, CI
 * (ci) [\#350](https://github.com/line/lbm-sdk/pull/350) Reduce sim test time
+* (ci) [\#351](https://github.com/line/lbm-sdk/pull/351) Remove diff condition from sim-normal
  
 ### Document Updates
 
