@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -533,6 +534,8 @@ func TestMultiStore_PruningRestart(t *testing.T) {
 
 	// commit one more block and ensure the heights have been pruned
 	ms.Commit()
+	// pruning is background job, sleeps for a few seconds for the pruning to finish
+	time.Sleep(5 * time.Second)
 	require.Empty(t, ms.pruneHeights)
 
 	for _, v := range pruneHeights {
