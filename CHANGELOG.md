@@ -3,6 +3,7 @@
 ## [Unreleased]
 
 ### Features
+* (feat) [\#352] (https://github.com/line/lbm-sdk/pull/352) iavl, db & disk stats logging
 
 ### Improvements
 * (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter 

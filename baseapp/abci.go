@@ -327,6 +327,9 @@ func (app *BaseApp) Commit() (res abci.ResponseCommit) {
 	commitID := app.cms.Commit()
 	app.logger.Info("commit synced", "commit", fmt.Sprintf("%X", commitID))
 
+	// iavl, db & disk stats
+	logIoStats(app.logger)
+
 	// empty/reset the deliver state
 	app.deliverState = nil
 
