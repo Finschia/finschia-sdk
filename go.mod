@@ -27,7 +27,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/line/iavl/v2 v2.0.0-init.1.0.20210602045707-fddfe1f85001
+	github.com/line/iavl/v2 v2.0.0-init.1.0.20211019080724-001e2272a25d
 	github.com/line/ostracon v0.34.9-0.20210930060702-30b70e254d83
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210824011847-fcfa67dd3c70
 	github.com/line/wasmvm v0.14.0-0.8.0
