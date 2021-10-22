@@ -82,3 +82,9 @@ func WithVMCacheMetrics(r prometheus.Registerer) Option {
 		NewWasmVMMetricsCollector(k.wasmVM).Register(r)
 	})
 }
+
+func WithVMMetrics(provider MetricsProvider) Option {
+	return optsFn(func(k *Keeper) {
+		k.metrics = provider()
+	})
+}

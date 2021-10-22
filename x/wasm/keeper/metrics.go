@@ -1,15 +1,97 @@
 package keeper
 
 import (
+	"github.com/go-kit/kit/metrics"
+	"github.com/go-kit/kit/metrics/discard"
+	go_prometheus "github.com/go-kit/kit/metrics/prometheus"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/prometheus/client_golang/prometheus"
 )
 
 const (
-	labelPinned = "pinned"
-	labelMemory = "memory"
-	labelFs     = "fs"
+	labelPinned      = "pinned"
+	labelMemory      = "memory"
+	labelFs          = "fs"
+	MetricsSubsystem = "wasm"
 )
+
+type Metrics struct {
+	InstantiateElapsedTimes metrics.Histogram
+	ExecuteElapsedTimes     metrics.Histogram
+	MigrateElapsedTimes     metrics.Histogram
+	SudoElapsedTimes        metrics.Histogram
+	QuerySmartElapsedTimes  metrics.Histogram
+	QueryRawElapsedTimes    metrics.Histogram
+}
+
+func PrometheusMetrics(namespace string, labelsAndValues ...string) *Metrics {
+	return &Metrics{
+		InstantiateElapsedTimes: go_prometheus.NewSummaryFrom(prometheus.SummaryOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      "instantiate",
+			Help:      "elapsed time of Instantiate the wasm contract",
+		}, nil),
+		ExecuteElapsedTimes: go_prometheus.NewSummaryFrom(prometheus.SummaryOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      "execute",
+			Help:      "elapsed time of Execute the wasm contract",
+		}, nil),
+		MigrateElapsedTimes: go_prometheus.NewSummaryFrom(prometheus.SummaryOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      "migrate",
+			Help:      "elapsed time of Migrate the wasm contract",
+		}, nil),
+		SudoElapsedTimes: go_prometheus.NewSummaryFrom(prometheus.SummaryOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      "sudo",
+			Help:      "elapsed time of Sudo the wasm contract",
+		}, nil),
+		QuerySmartElapsedTimes: go_prometheus.NewSummaryFrom(prometheus.SummaryOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      "query_smart",
+			Help:      "elapsed time of QuerySmart the wasm contract",
+		}, nil),
+		QueryRawElapsedTimes: go_prometheus.NewSummaryFrom(prometheus.SummaryOpts{
+			Namespace: namespace,
+			Subsystem: MetricsSubsystem,
+			Name:      "query_raw",
+			Help:      "elapsed time of QueryRaw the wasm contract",
+		}, nil),
+	}
+}
+
+// NopMetrics returns no-op Metrics.
+func NopMetrics() *Metrics {
+	return &Metrics{
+		InstantiateElapsedTimes: discard.NewHistogram(),
+		ExecuteElapsedTimes:     discard.NewHistogram(),
+		MigrateElapsedTimes:     discard.NewHistogram(),
+		SudoElapsedTimes:        discard.NewHistogram(),
+		QuerySmartElapsedTimes:  discard.NewHistogram(),
+		QueryRawElapsedTimes:    discard.NewHistogram(),
+	}
+}
+
+type MetricsProvider func() *Metrics
+
+// PrometheusMetricsProvider returns PrometheusMetrics for each store
+func PrometheusMetricsProvider(namespace string, labelsAndValues ...string) func() *Metrics {
+	return func() *Metrics {
+		return PrometheusMetrics(namespace, labelsAndValues...)
+	}
+}
+
+// NopMetricsProvider returns NopMetrics for each store
+func NopMetricsProvider() func() *Metrics {
+	return func() *Metrics {
+		return NopMetrics()
+	}
+}
 
 // metricSource source of wasmvm metrics
 type metricSource interface {
