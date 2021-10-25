@@ -139,7 +139,6 @@ func InstantiateContractCmd() *cobra.Command {
 		Aliases: []string{"start", "init", "inst", "i"},
 		Args:    cobra.ExactArgs(2),
 		RunE: func(cmd *cobra.Command, args []string) error {
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err

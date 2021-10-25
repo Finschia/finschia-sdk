@@ -674,7 +674,7 @@ func TestExecuteWithNonExistingAddress(t *testing.T) {
 	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit.Add(deposit...))
 
 	// unauthorized - trialCtx so we don't change state
-	nonExistingAddress := addrFromUint64(9999)
+	nonExistingAddress := RandomAccountAddress(t)
 	_, err := keeper.Execute(ctx, nonExistingAddress, creator, []byte(`{}`), nil)
 	require.True(t, types.ErrNotFound.Is(err), err)
 }

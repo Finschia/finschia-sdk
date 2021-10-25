@@ -1,6 +1,5 @@
 package types
 
-import "C"
 import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"

@@ -20,7 +20,10 @@ func MigrateContractCmd() *cobra.Command {
 		Aliases: []string{"update", "mig", "m"},
 		Args:    cobra.ExactArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, _ := client.GetClientTxContext(cmd)
+			clientCtx, err := client.GetClientTxContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			msg, err := parseMigrateContractArgs(args, clientCtx)
 			if err != nil {

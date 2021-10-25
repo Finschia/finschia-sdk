@@ -259,12 +259,12 @@ type codeMeta struct {
 }
 
 func getAllCodes(state *types.GenesisState) ([]codeMeta, error) {
-	all := make([]codeMeta, 0, len(state.Codes))
-	for _, c := range state.Codes {
-		all = append(all, codeMeta{
+	all := make([]codeMeta, len(state.Codes))
+	for i, c := range state.Codes {
+		all[i] = codeMeta{
 			CodeID: c.CodeID,
 			Info:   c.CodeInfo,
-		})
+		}
 	}
 	// add inflight
 	seq := codeSeqValue(state)
@@ -302,12 +302,12 @@ type contractMeta struct {
 }
 
 func getAllContracts(state *types.GenesisState) []contractMeta {
-	all := make([]contractMeta, 0, len(state.Contracts))
-	for _, c := range state.Contracts {
-		all = append(all, contractMeta{
+	all := make([]contractMeta, len(state.Contracts))
+	for i, c := range state.Contracts {
+		all[i] = contractMeta{
 			ContractAddress: c.ContractAddress,
 			Info:            c.ContractInfo,
-		})
+		}
 	}
 	// add inflight
 	seq := contractSeqValue(state)
@@ -492,7 +492,10 @@ func getActorAddress(cmd *cobra.Command) (sdk.AccAddress, error) {
 		return sdk.AccAddress(actorArg), nil
 	}
 	inBuf := bufio.NewReader(cmd.InOrStdin())
-	keyringBackend, _ := cmd.Flags().GetString(flags.FlagKeyringBackend)
+	keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
+	if err != nil {
+		return nil, err
+	}
 
 	homeDir := client.GetClientContextFromCmd(cmd).HomeDir
 	// attempt to lookup address from Keybase if no address was provided
