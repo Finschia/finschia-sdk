@@ -177,7 +177,6 @@ func (p InstantiateContractProposal) ValidateBasic() error {
 	if err := p.Msg.ValidateBasic(); err != nil {
 		return sdkerrors.Wrap(err, "payload msg")
 	}
-
 	return nil
 }
 

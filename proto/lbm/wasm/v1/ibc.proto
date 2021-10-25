@@ -20,7 +20,7 @@ message MsgIBCSend {
 
   // Data is the payload to transfer. We must not make assumption what format or
   // content is in here.
-  bytes data = 6 [(gogoproto.casttype) = "encoding/json.RawMessage"];
+  bytes data = 6;
 }
 
 // MsgIBCCloseChannel port and channel need to be owned by the contract
