@@ -666,7 +666,7 @@ func (k Keeper) appendToContractHistory(ctx sdk.Context, contractAddr sdk.AccAdd
 	for i := range newEntries {
 		pos++
 		key := types.GetContractCodeHistoryElementKey(contractAddr, pos)
-		store.Set(key, k.cdc.MustMarshal(&newEntries[i]))
+		store.Set(key, k.cdc.MustMarshal(&newEntries[i])) //nolint:gosec
 	}
 }
 
