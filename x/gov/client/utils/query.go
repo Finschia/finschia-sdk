@@ -95,13 +95,19 @@ func QueryVotesByTxQuery(clientCtx client.Context, params types.QueryProposalVot
 		nextTxPage++
 		for _, info := range searchResult.Txs {
 			for _, msg := range info.GetTx().GetMsgs() {
-				if msg.Type() == types.TypeMsgVote {
-					voteMsg := msg.(*types.MsgVote)
-
+				if voteMsg, ok := msg.(*types.MsgVote); ok {
 					votes = append(votes, types.Vote{
 						Voter:      voteMsg.Voter,
 						ProposalId: params.ProposalID,
-						Option:     voteMsg.Option,
+						Options:    types.NewNonSplitVoteOption(voteMsg.Option),
+					})
+				}
+
+				if voteWeightedMsg, ok := msg.(*types.MsgVoteWeighted); ok {
+					votes = append(votes, types.Vote{
+						Voter:      voteWeightedMsg.Voter,
+						ProposalId: params.ProposalID,
+						Options:    voteWeightedMsg.Options,
 					})
 				}
 			}

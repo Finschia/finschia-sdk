@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package rest_test
@@ -112,7 +113,7 @@ func (s *IntegrationTestSuite) TestLegacyGetVote() {
 				s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(resp.Result, &vote))
 				s.Require().Equal(val.Address.String(), vote.Voter)
 				// Note that option is now an int.
-				s.Require().Equal(types.VoteOption(1), vote.Option)
+				s.Require().Equal([]types.WeightedVoteOption{{types.VoteOption(1), sdk.NewDec(1)}}, vote.Options)
 			}
 		})
 	}
