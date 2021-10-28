@@ -13467,6 +13467,29 @@ paths:
                     voter:
                       type: string
                     option:
+                      description: >-
+                        Deprecated: Prefer to use `options` instead. This field
+                        is set in queries
+
+                        if and only if `len(options) == 1` and that option has
+                        weight 1. In all
+
+                        other cases, this field will default to
+                        VOTE_OPTION_UNSPECIFIED.
+                      type: string
+                      enum:
+                        - VOTE_OPTION_UNSPECIFIED
+                        - VOTE_OPTION_YES
+                        - VOTE_OPTION_ABSTAIN
+                        - VOTE_OPTION_NO
+                        - VOTE_OPTION_NO_WITH_VETO
+                      default: VOTE_OPTION_UNSPECIFIED
+                    options:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          option:
                       type: string
                       enum:
                         - VOTE_OPTION_UNSPECIFIED
@@ -13476,14 +13499,19 @@ paths:
                         - VOTE_OPTION_NO_WITH_VETO
                       default: VOTE_OPTION_UNSPECIFIED
                       description: >-
-                        VoteOption enumerates the valid vote options for a given
-                        governance proposal.
+                              VoteOption enumerates the valid vote options for a
+                              given governance proposal.
 
                          - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
                          - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
                          - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
                          - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
                          - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                          weight:
+                            type: string
+                        description: >-
+                          WeightedVoteOption defines a unit of vote for vote
+                          split.
                   description: >-
                     Vote defines a vote on a governance proposal.
 
@@ -13775,6 +13803,29 @@ paths:
                   voter:
                     type: string
                   option:
+                    description: >-
+                      Deprecated: Prefer to use `options` instead. This field is
+                      set in queries
+
+                      if and only if `len(options) == 1` and that option has
+                      weight 1. In all
+
+                      other cases, this field will default to
+                      VOTE_OPTION_UNSPECIFIED.
+                    type: string
+                    enum:
+                      - VOTE_OPTION_UNSPECIFIED
+                      - VOTE_OPTION_YES
+                      - VOTE_OPTION_ABSTAIN
+                      - VOTE_OPTION_NO
+                      - VOTE_OPTION_NO_WITH_VETO
+                    default: VOTE_OPTION_UNSPECIFIED
+                  options:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        option:
                     type: string
                     enum:
                       - VOTE_OPTION_UNSPECIFIED
@@ -13784,14 +13835,19 @@ paths:
                       - VOTE_OPTION_NO_WITH_VETO
                     default: VOTE_OPTION_UNSPECIFIED
                     description: >-
-                      VoteOption enumerates the valid vote options for a given
-                      governance proposal.
+                            VoteOption enumerates the valid vote options for a
+                            given governance proposal.
 
                        - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
                        - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
                        - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
                        - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
                        - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                        weight:
+                          type: string
+                      description: >-
+                        WeightedVoteOption defines a unit of vote for vote
+                        split.
                 description: >-
                   Vote defines a vote on a governance proposal.
 
@@ -42274,6 +42330,28 @@ definitions:
           voter:
             type: string
           option:
+            description: >-
+              Deprecated: Prefer to use `options` instead. This field is set in
+              queries
+
+              if and only if `len(options) == 1` and that option has weight 1.
+              In all
+
+              other cases, this field will default to VOTE_OPTION_UNSPECIFIED.
+            type: string
+            enum:
+              - VOTE_OPTION_UNSPECIFIED
+              - VOTE_OPTION_YES
+              - VOTE_OPTION_ABSTAIN
+              - VOTE_OPTION_NO
+              - VOTE_OPTION_NO_WITH_VETO
+            default: VOTE_OPTION_UNSPECIFIED
+          options:
+            type: array
+            items:
+              type: object
+              properties:
+                option:
             type: string
             enum:
               - VOTE_OPTION_UNSPECIFIED
@@ -42291,6 +42369,9 @@ definitions:
                - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
                - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
                - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                weight:
+                  type: string
+              description: WeightedVoteOption defines a unit of vote for vote split.
         description: |-
           Vote defines a vote on a governance proposal.
           A Vote consists of a proposal ID, the voter, and the vote option.
@@ -42309,6 +42390,28 @@ definitions:
             voter:
               type: string
             option:
+              description: >-
+                Deprecated: Prefer to use `options` instead. This field is set
+                in queries
+
+                if and only if `len(options) == 1` and that option has weight 1.
+                In all
+
+                other cases, this field will default to VOTE_OPTION_UNSPECIFIED.
+              type: string
+              enum:
+                - VOTE_OPTION_UNSPECIFIED
+                - VOTE_OPTION_YES
+                - VOTE_OPTION_ABSTAIN
+                - VOTE_OPTION_NO
+                - VOTE_OPTION_NO_WITH_VETO
+              default: VOTE_OPTION_UNSPECIFIED
+            options:
+              type: array
+              items:
+                type: object
+                properties:
+                  option:
               type: string
               enum:
                 - VOTE_OPTION_UNSPECIFIED
@@ -42326,6 +42429,9 @@ definitions:
                  - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
                  - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
                  - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                  weight:
+                    type: string
+                description: WeightedVoteOption defines a unit of vote for vote split.
           description: |-
             Vote defines a vote on a governance proposal.
             A Vote consists of a proposal ID, the voter, and the vote option.
@@ -42392,6 +42498,28 @@ definitions:
       voter:
         type: string
       option:
+        description: >-
+          Deprecated: Prefer to use `options` instead. This field is set in
+          queries
+
+          if and only if `len(options) == 1` and that option has weight 1. In
+          all
+
+          other cases, this field will default to VOTE_OPTION_UNSPECIFIED.
+        type: string
+        enum:
+          - VOTE_OPTION_UNSPECIFIED
+          - VOTE_OPTION_YES
+          - VOTE_OPTION_ABSTAIN
+          - VOTE_OPTION_NO
+          - VOTE_OPTION_NO_WITH_VETO
+        default: VOTE_OPTION_UNSPECIFIED
+      options:
+        type: array
+        items:
+          type: object
+          properties:
+            option:
         type: string
         enum:
           - VOTE_OPTION_UNSPECIFIED
@@ -42401,14 +42529,17 @@ definitions:
           - VOTE_OPTION_NO_WITH_VETO
         default: VOTE_OPTION_UNSPECIFIED
         description: >-
-          VoteOption enumerates the valid vote options for a given governance
-          proposal.
+                VoteOption enumerates the valid vote options for a given
+                governance proposal.
 
            - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
            - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
            - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
            - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
            - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+            weight:
+              type: string
+          description: WeightedVoteOption defines a unit of vote for vote split.
     description: |-
       Vote defines a vote on a governance proposal.
       A Vote consists of a proposal ID, the voter, and the vote option.
@@ -42437,6 +42568,30 @@ definitions:
         type: string
         description: Length of the voting period.
     description: VotingParams defines the params for voting on governance proposals.
+  lbm.gov.v1.WeightedVoteOption:
+    type: object
+    properties:
+      option:
+        type: string
+        enum:
+          - VOTE_OPTION_UNSPECIFIED
+          - VOTE_OPTION_YES
+          - VOTE_OPTION_ABSTAIN
+          - VOTE_OPTION_NO
+          - VOTE_OPTION_NO_WITH_VETO
+        default: VOTE_OPTION_UNSPECIFIED
+        description: >-
+          VoteOption enumerates the valid vote options for a given governance
+          proposal.
+
+           - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+           - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+           - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+           - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+           - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+      weight:
+        type: string
+    description: WeightedVoteOption defines a unit of vote for vote split.
   lbm.mint.v1.Params:
     type: object
     properties:

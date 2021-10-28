@@ -14,7 +14,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterInterface((*Content)(nil), nil)
 	cdc.RegisterConcrete(&MsgSubmitProposal{}, "lbm-sdk/MsgSubmitProposal", nil)
 	cdc.RegisterConcrete(&MsgDeposit{}, "lbm-sdk/MsgDeposit", nil)
-	cdc.RegisterConcrete(&MsgVote{}, "lbm-sdk/MsgVote", nil)
+	cdc.RegisterConcrete(&MsgVoteWeighted{}, "lbm-sdk/MsgVoteWeighted", nil)
 	cdc.RegisterConcrete(&TextProposal{}, "lbm-sdk/TextProposal", nil)
 }
 
@@ -22,6 +22,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgSubmitProposal{},
 		&MsgVote{},
+		&MsgVoteWeighted{},
 		&MsgDeposit{},
 	)
 	registry.RegisterInterface(
