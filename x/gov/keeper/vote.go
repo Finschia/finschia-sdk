@@ -9,7 +9,7 @@ import (
 )
 
 // AddVote adds a vote on a specific proposal
-func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.AccAddress, option types.VoteOption) error {
+func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.AccAddress, options types.WeightedVoteOptions) error {
 	proposal, ok := keeper.GetProposal(ctx, proposalID)
 	if !ok {
 		return sdkerrors.Wrapf(types.ErrUnknownProposal, "%d", proposalID)
@@ -18,17 +18,19 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 		return sdkerrors.Wrapf(types.ErrInactiveProposal, "%d", proposalID)
 	}
 
-	if !types.ValidVoteOption(option) {
-		return sdkerrors.Wrap(types.ErrInvalidVote, option.String())
+	for _, option := range options {
+		if !types.ValidWeightedVoteOption(option) {
+			return sdkerrors.Wrap(types.ErrInvalidVote, options.String())
+		}
 	}
 
-	vote := types.NewVote(proposalID, voterAddr, option)
+	vote := types.NewVote(proposalID, voterAddr, options)
 	keeper.SetVote(ctx, vote)
 
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent(
 			types.EventTypeProposalVote,
-			sdk.NewAttribute(types.AttributeKeyOption, option.String()),
+			sdk.NewAttribute(types.AttributeKeyOption, options.String()),
 			sdk.NewAttribute(types.AttributeKeyProposalID, fmt.Sprintf("%d", proposalID)),
 		),
 	)
@@ -39,6 +41,7 @@ func (keeper Keeper) AddVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 // GetAllVotes returns all the votes from the store
 func (keeper Keeper) GetAllVotes(ctx sdk.Context) (votes types.Votes) {
 	keeper.IterateAllVotes(ctx, func(vote types.Vote) bool {
+		populateLegacyOption(&vote)
 		votes = append(votes, vote)
 		return false
 	})
@@ -48,6 +51,7 @@ func (keeper Keeper) GetAllVotes(ctx sdk.Context) (votes types.Votes) {
 // GetVotes returns all the votes from a proposal
 func (keeper Keeper) GetVotes(ctx sdk.Context, proposalID uint64) (votes types.Votes) {
 	keeper.IterateVotes(ctx, proposalID, func(vote types.Vote) bool {
+		populateLegacyOption(&vote)
 		votes = append(votes, vote)
 		return false
 	})
@@ -63,6 +67,8 @@ func (keeper Keeper) GetVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.A
 	}
 
 	keeper.cdc.MustUnmarshalBinaryBare(bz, &vote)
+	populateLegacyOption(&vote)
+
 	return vote, true
 }
 
@@ -110,4 +116,12 @@ func (keeper Keeper) IterateVotes(ctx sdk.Context, proposalID uint64, cb func(vo
 func (keeper Keeper) deleteVote(ctx sdk.Context, proposalID uint64, voterAddr sdk.AccAddress) {
 	store := ctx.KVStore(keeper.storeKey)
 	store.Delete(types.VoteKey(proposalID, voterAddr))
+}
+
+// populateLegacyOption adds graceful fallback of deprecated `Option` field, in case
+// there's only 1 VoteOption.
+func populateLegacyOption(vote *types.Vote) {
+	if len(vote.Options) == 1 && vote.Options[0].Weight.Equal(sdk.MustNewDecFromStr("1.0")) {
+		vote.Option = vote.Options[0].Option //nolint
+	}
 }
