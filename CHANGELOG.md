@@ -18,4 +18,4 @@
 * (ci) [\#351](https://github.com/line/lbm-sdk/pull/351) Remove diff condition from sim-normal
  
 ### Document Updates
-
+* (docs) [\#361](https://github.com/line/lbm-sdk/pull/361) Add sample command docs
