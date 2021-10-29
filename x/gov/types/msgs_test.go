@@ -118,6 +118,7 @@ func TestMsgVote(t *testing.T) {
 	}
 }
 
+// test ValidateBasic for MsgVoteWeighted
 func TestMsgVoteWeighted(t *testing.T) {
 	tests := []struct {
 		proposalID uint64
