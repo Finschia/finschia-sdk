@@ -2,6 +2,7 @@ package utils_test
 
 import (
 	"context"
+	"regexp"
 	"testing"
 
 	"github.com/line/ostracon/rpc/client/mock"
@@ -13,12 +14,14 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/gov/client/utils"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
 
 type TxSearchMock struct {
+	txConfig client.TxConfig
 	mock.Client
 	txs []octypes.Tx
 }
@@ -32,11 +35,34 @@ func (mock TxSearchMock) TxSearch(ctx context.Context, query string, prove bool,
 		*perPage = 0
 	}
 
+	// Get the `message.action` value from the query.
+	messageAction := regexp.MustCompile(`message\.action='(.*)' .*$`)
+	msgType := messageAction.FindStringSubmatch(query)[1]
+
+	// Filter only the txs that match the query
+	matchingTxs := make([]octypes.Tx, 0)
+	for _, tx := range mock.txs {
+		sdkTx, err := mock.txConfig.TxDecoder()(tx)
+		if err != nil {
+			return nil, err
+		}
+		for _, msg := range sdkTx.GetMsgs() {
+			if msg.(legacytx.LegacyMsg).Type() == msgType {
+				matchingTxs = append(matchingTxs, tx)
+				break
+			}
+		}
+	}
+
 	start, end := client.Paginate(len(mock.txs), *page, *perPage, 100)
 	if start < 0 || end < 0 {
 		// nil result with nil error crashes utils.QueryTxsByEvents
 		return &ctypes.ResultTxSearch{}, nil
 	}
+	if len(matchingTxs) < end {
+		return &ctypes.ResultTxSearch{}, nil
+	}
+
 	txs := mock.txs[start:end]
 	rst := &ctypes.ResultTxSearch{Txs: make([]*ctypes.ResultTx, len(txs)), TotalCount: len(txs)}
 	for i := range txs {
@@ -150,7 +176,7 @@ func TestGetPaginatedVotes(t *testing.T) {
 			)
 
 			encodingConfig := simapp.MakeTestEncodingConfig()
-			cli := TxSearchMock{txs: marshalled}
+			cli := TxSearchMock{txs: marshalled, txConfig: encodingConfig.TxConfig}
 			clientCtx := client.Context{}.
 				WithLegacyAmino(cdc).
 				WithClient(cli).
