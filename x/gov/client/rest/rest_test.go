@@ -1,6 +1,3 @@
-//go:build norace
-// +build norace
-
 package rest_test
 
 import (
@@ -24,7 +21,7 @@ func (s *IntegrationTestSuite) TestLegacyGetAllProposals() {
 		{
 			"get all existing proposals",
 			fmt.Sprintf("%s/gov/proposals", val.APIAddress),
-			2, false, "",
+			3, false, "",
 		},
 		{
 			"get proposals in deposit period",
@@ -34,7 +31,7 @@ func (s *IntegrationTestSuite) TestLegacyGetAllProposals() {
 		{
 			"get proposals in voting period",
 			fmt.Sprintf("%s/gov/proposals?status=voting_period", val.APIAddress),
-			1, false, "",
+			2, false, "",
 		},
 		{
 			"wrong status parameter",
