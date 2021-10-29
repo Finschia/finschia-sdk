@@ -79,6 +79,7 @@ func TestWeightedOperations(t *testing.T) {
 		{1, types.ModuleName, "submit_proposal"},
 		{2, types.ModuleName, "submit_proposal"},
 		{simappparams.DefaultWeightMsgDeposit, types.ModuleName, types.TypeMsgDeposit},
+		{simappparams.DefaultWeightMsgVote, types.ModuleName, types.TypeMsgVote},
 		{simappparams.DefaultWeightMsgVoteWeighted, types.ModuleName, types.TypeMsgVoteWeighted},
 	}
 
