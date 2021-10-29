@@ -1,6 +1,3 @@
-//go:build norace
-// +build norace
-
 package rest_test
 
 import (
@@ -139,7 +136,7 @@ func (s *IntegrationTestSuite) TestGetProposalsGRPC() {
 			"valid request",
 			fmt.Sprintf("%s/lbm/gov/v1/proposals", val.APIAddress),
 			map[string]string{},
-			2,
+			3,
 			false,
 		},
 		{
