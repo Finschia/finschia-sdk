@@ -6,6 +6,7 @@ package rest_test
 import (
 	"fmt"
 
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
