@@ -723,7 +723,7 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 			[]string{
 				"3",
 				val.Address.String(),
-				fmt.Sprintf("--%s=json", tmcli.OutputFlag),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
 			types.WeightedVoteOptions{
@@ -749,7 +749,7 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 				s.Require().NoError(err)
 
 				var vote types.Vote
-				s.Require().NoError(clientCtx.Codec.UnmarshalJSON(out.Bytes(), &vote), out.String())
+				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &vote), out.String())
 				s.Require().Equal(len(vote.Options), len(tc.expVoteOptions))
 				for i, option := range tc.expVoteOptions {
 					s.Require().Equal(option.Option, vote.Options[i].Option)

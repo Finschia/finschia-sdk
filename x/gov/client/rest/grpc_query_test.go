@@ -58,6 +58,18 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.Require().NoError(err)
 	_, err = s.network.WaitForHeight(1)
 	s.Require().NoError(err)
+
+	// create a proposal3 with deposit
+	_, err = govtestutil.MsgSubmitProposal(val.ClientCtx, val.Address.String(),
+		"Text Proposal 3", "Where is the title!?", types.ProposalTypeText,
+		fmt.Sprintf("--%s=%s", cli.FlagDeposit, sdk.NewCoin(s.cfg.BondDenom, types.DefaultMinDepositTokens).String()))
+	s.Require().NoError(err)
+	_, err = s.network.WaitForHeight(1)
+	s.Require().NoError(err)
+
+	// vote for proposal3 as val
+	_, err = govtestutil.MsgVote(val.ClientCtx, val.Address.String(), "3", "yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05")
+	s.Require().NoError(err)
 }
 
 func (s *IntegrationTestSuite) TestGetProposalGRPC() {
