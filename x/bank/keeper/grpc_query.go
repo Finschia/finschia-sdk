@@ -24,6 +24,10 @@ func (k BaseKeeper) Balance(ctx context.Context, req *types.QueryBalanceRequest)
 		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
 	}
 
+	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid bech32 format")
+	}
+
 	if req.Denom == "" {
 		return nil, status.Error(codes.InvalidArgument, "invalid denom")
 	}
@@ -42,6 +46,10 @@ func (k BaseKeeper) AllBalances(ctx context.Context, req *types.QueryAllBalances
 
 	if req.Address == "" {
 		return nil, status.Error(codes.InvalidArgument, "address cannot be empty")
+	}
+
+	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid bech32 format")
 	}
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
