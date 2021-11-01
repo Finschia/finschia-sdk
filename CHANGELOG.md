@@ -8,6 +8,7 @@
 ### Improvements
 * (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter 
 * (auth) [\#348](https://github.com/line/lbm-sdk/pull/348) Increase default valid_sig_block_period
+* (gov) [\#7733](https://github.com/line/lbm-sdk/pull/360) Governance Split Votes, use `MsgWeightedVote` to send a split vote. Sending a regular `MsgVote` will convert the underlying vote option into a weighted vote with weight 1.
 
 ### Bug Fixes
 
