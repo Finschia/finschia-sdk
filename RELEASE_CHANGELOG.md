@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.43.1](https://github.com/line/lbm-sdk/releases/tag/v0.43.1)
+
+### Bug Fixes
+* (distribution) [\#365](https://github.com/line/lbm-sdk/pull/365) Emit error in tx withdraw-all-rewards when the signer has no delegations
+* (bank) [\#366](https://github.com/line/lbm-sdk/pull/366) Check bech32 address format in bank query
+
 ## [v0.43.0](https://github.com/line/lbm-sdk/releases/tag/v0.43.0)
 
 ### Features
