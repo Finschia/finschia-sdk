@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [v0.43.0](https://github.com/line/lbm-sdk/releases/tag/v0.43.0)
+
 ### Features
 * (feat) [\#352] (https://github.com/line/lbm-sdk/pull/352) iavl, db & disk stats logging
 
