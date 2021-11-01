@@ -13,6 +13,7 @@
 * (x/auth) [\#176](https://github.com/line/lbm-sdk/pull/176) Add MsgEmpty to auth module
 * (metric) [\#184](https://github.com/line/lbm-sdk/pull/184) Add prometheus metrics for caches reverting telemetry metrics
 * (grpc) [\#291](https://github.com/line/lbm-sdk/pull/291) Add GRPC API the BlockByHash and BlockResultsByHeight, add prove parameter to GetTxsEvent
+* (x/gov) [\#365](https://github.com/line/lbm-sdk/pull/365) Governance Split Votes, use `MsgWeightedVote` to send a split vote. Sending a regular `MsgVote` will convert the underlying vote option into a weighted vote with weight 1.
 
 ### Improvements
 * (bump-up) [\#93](https://github.com/line/lbm-sdk/pull/93) Adopt ostracon, line/tm-db and line/iavl
