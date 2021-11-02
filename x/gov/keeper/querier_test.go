@@ -252,13 +252,13 @@ func TestQueries(t *testing.T) {
 	require.Equal(t, proposal3, proposals[1])
 
 	// Addrs[0] votes on proposals #2 & #3
-	vote1 := types.NewVote(proposal2.ProposalId, TestAddrs[0], types.OptionYes)
-	vote2 := types.NewVote(proposal3.ProposalId, TestAddrs[0], types.OptionYes)
+	vote1 := types.NewVote(proposal2.ProposalId, TestAddrs[0], types.NewNonSplitVoteOption(types.OptionYes))
+	vote2 := types.NewVote(proposal3.ProposalId, TestAddrs[0], types.NewNonSplitVoteOption(types.OptionYes))
 	app.GovKeeper.SetVote(ctx, vote1)
 	app.GovKeeper.SetVote(ctx, vote2)
 
 	// Addrs[1] votes on proposal #3
-	vote3 := types.NewVote(proposal3.ProposalId, TestAddrs[1], types.OptionYes)
+	vote3 := types.NewVote(proposal3.ProposalId, TestAddrs[1], types.NewNonSplitVoteOption(types.OptionYes))
 	app.GovKeeper.SetVote(ctx, vote3)
 
 	// Test query voted by TestAddrs[0]
@@ -269,16 +269,16 @@ func TestQueries(t *testing.T) {
 	// Test query votes on types.Proposal 2
 	votes := getQueriedVotes(t, ctx, legacyQuerierCdc, querier, proposal2.ProposalId, 1, 0)
 	require.Len(t, votes, 1)
-	require.Equal(t, vote1, votes[0])
+	checkEqualVotes(t, vote1, votes[0])
 
 	vote := getQueriedVote(t, ctx, legacyQuerierCdc, querier, proposal2.ProposalId, TestAddrs[0])
-	require.Equal(t, vote1, vote)
+	checkEqualVotes(t, vote1, vote)
 
 	// Test query votes on types.Proposal 3
 	votes = getQueriedVotes(t, ctx, legacyQuerierCdc, querier, proposal3.ProposalId, 1, 0)
 	require.Len(t, votes, 2)
-	require.Equal(t, vote2, votes[0])
-	require.Equal(t, vote3, votes[1])
+	checkEqualVotes(t, vote2, votes[0])
+	checkEqualVotes(t, vote3, votes[1])
 
 	// Test query all proposals
 	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", "", types.StatusNil, 1, 0)
@@ -374,4 +374,15 @@ func TestPaginatedVotesQuery(t *testing.T) {
 			}
 		})
 	}
+}
+
+// checkEqualVotes checks that two votes are equal, without taking into account
+// graceful fallback for `Option`.
+// When querying, the keeper populates the `vote.Option` field when there's
+// only 1 vote, this function checks equality of structs while skipping that
+// field.
+func checkEqualVotes(t *testing.T, vote1, vote2 types.Vote) {
+	require.Equal(t, vote1.Options, vote2.Options)
+	require.Equal(t, vote1.Voter, vote2.Voter)
+	require.Equal(t, vote1.ProposalId, vote2.ProposalId)
 }

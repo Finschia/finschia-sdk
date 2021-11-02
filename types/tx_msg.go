@@ -88,3 +88,8 @@ type TxDecoder func(txBytes []byte) (Tx, error)
 
 // TxEncoder marshals transaction to bytes
 type TxEncoder func(tx Tx) ([]byte, error)
+
+// MsgTypeURL returns the TypeURL of a `sdk.Msg`.
+func MsgTypeURL(msg Msg) string {
+	return "/" + proto.MessageName(msg)
+}
