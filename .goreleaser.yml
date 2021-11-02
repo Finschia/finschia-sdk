@@ -1,10 +1,10 @@
 ---
-project_name: cosmos-sdk
+project_name: lbm-sdk
 
 release:
   github:
-    owner: cosmos
-    name: cosmos-sdk
+    owner: line
+    name: lbm-sdk
 
 builds:
   - skip: true
