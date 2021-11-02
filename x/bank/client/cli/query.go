@@ -65,8 +65,10 @@ Example:
 
 			queryClient := types.NewQueryClient(clientCtx)
 
+			if err := sdk.ValidateAccAddress(args[0]); err != nil {
+				return err
+			}
 			addr := sdk.AccAddress(args[0])
-
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
 				return err
