@@ -1,5 +1,11 @@
 # Changelog
 
+## [v0.43.1](https://github.com/line/lbm-sdk/releases/tag/v0.43.1)
+
+### Bug Fixes
+* (distribution) [\#364](https://github.com/line/lbm-sdk/pull/364) Force genOrBroadcastFn even when max-msgs != 0
+* (bank) [\#366](https://github.com/line/lbm-sdk/pull/366) Check bech32 address format in bank query
+
 ## [v0.43.0](https://github.com/line/lbm-sdk/releases/tag/v0.43.0)
 
 ### Features
