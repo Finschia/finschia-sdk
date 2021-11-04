@@ -139,6 +139,9 @@ var (
 	// less than (current block height - ValidSigBlockPeriod)
 	ErrInvalidSigBlockHeight = Register(RootCodespace, 38, "invalid sig block height")
 
+	// ErrNotFound defines an error when requested entity doesn't exist in the state.
+	ErrNotFound = Register(RootCodespace, 39, "not found")
+
 	// ErrPanic is only set when we recover from a panic, so we know to
 	// redact potentially sensitive system info
 	ErrPanic = Register(UndefinedCodespace, 111222, "panic")

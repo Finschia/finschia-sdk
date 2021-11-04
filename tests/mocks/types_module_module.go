@@ -323,6 +323,9 @@ func (m *MockAppModuleGenesis) ExportGenesis(arg0 types0.Context, arg1 codec.JSO
 	return ret0
 }
 
+// ConsensusVersion mocks base method
+func (m *MockAppModule) ConsensusVersion() uint64 { return 1 }
+
 // ExportGenesis indicates an expected call of ExportGenesis
 func (mr *MockAppModuleGenesisMockRecorder) ExportGenesis(arg0, arg1 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()

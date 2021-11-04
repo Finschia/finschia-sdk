@@ -7,14 +7,12 @@ import (
 
 	"github.com/golang/mock/gomock"
 	abci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
-	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/suite"
 
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
-	"github.com/line/lbm-sdk/store"
 	"github.com/line/lbm-sdk/tests/mocks"
+	"github.com/line/lbm-sdk/testutil"
 	"github.com/line/lbm-sdk/types"
 )
 
@@ -26,15 +24,6 @@ func TestContextTestSuite(t *testing.T) {
 	suite.Run(t, new(contextTestSuite))
 }
 
-func (s *contextTestSuite) defaultContext(key types.StoreKey) types.Context {
-	db := memdb.NewDB()
-	cms := store.NewCommitMultiStore(db)
-	cms.MountStoreWithDB(key, types.StoreTypeIAVL, db)
-	s.Require().NoError(cms.LoadLatestVersion())
-	ctx := types.NewContext(cms, ocproto.Header{}, false, log.NewNopLogger())
-	return ctx
-}
-
 func (s *contextTestSuite) TestCacheContext() {
 	key := types.NewKVStoreKey(s.T().Name() + "_TestCacheContext")
 	k1 := []byte("hello")
@@ -42,7 +31,7 @@ func (s *contextTestSuite) TestCacheContext() {
 	k2 := []byte("key")
 	v2 := []byte("value")
 
-	ctx := s.defaultContext(key)
+	ctx := testutil.DefaultContext(key)
 	store := ctx.KVStore(key)
 	store.Set(k1, v1)
 	s.Require().Equal(v1, store.Get(k1))
@@ -64,7 +53,7 @@ func (s *contextTestSuite) TestCacheContext() {
 
 func (s *contextTestSuite) TestLogContext() {
 	key := types.NewKVStoreKey(s.T().Name())
-	ctx := s.defaultContext(key)
+	ctx := testutil.DefaultContext(key)
 	ctrl := gomock.NewController(s.T())
 	s.T().Cleanup(ctrl.Finish)
 
