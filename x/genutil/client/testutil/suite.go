@@ -3,7 +3,7 @@ package testutil
 import (
 	"context"
 	"fmt"
-	"io"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 
@@ -78,7 +78,7 @@ func (s *IntegrationTestSuite) TestGenTxCmd() {
 	open, err := os.Open(genTxFile)
 	s.Require().NoError(err)
 
-	all, err := io.ReadAll(open)
+	all, err := ioutil.ReadAll(open)
 	s.Require().NoError(err)
 
 	tx, err := val.ClientCtx.TxConfig.TxJSONDecoder()(all)
