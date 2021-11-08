@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package cli_test
@@ -59,6 +60,18 @@ func (s *IntegrationTestSuite) SetupSuite() {
 		"Text Proposal 2", "Where is the title!?", types.ProposalTypeText)
 	s.Require().NoError(err)
 	_, err = s.network.WaitForHeight(1)
+	s.Require().NoError(err)
+
+	// create a proposal3 with deposit
+	_, err = govtestutil.MsgSubmitProposal(val.ClientCtx, val.Address.String(),
+		"Text Proposal 3", "Where is the title!?", types.ProposalTypeText,
+		fmt.Sprintf("--%s=%s", cli.FlagDeposit, sdk.NewCoin(s.cfg.BondDenom, types.DefaultMinDepositTokens).String()))
+	s.Require().NoError(err)
+	_, err = s.network.WaitForHeight(1)
+	s.Require().NoError(err)
+
+	// vote for proposal3 as val
+	_, err = govtestutil.MsgVote(val.ClientCtx, val.Address.String(), "3", "yes=0.6,no=0.3,abstain=0.05,no_with_veto=0.05")
 	s.Require().NoError(err)
 }
 
@@ -443,7 +456,7 @@ func (s *IntegrationTestSuite) TestCmdGetProposals() {
 				var proposals types.QueryProposalsResponse
 
 				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &proposals), out.String())
-				s.Require().Len(proposals.Proposals, 2)
+				s.Require().Len(proposals.Proposals, 3)
 			}
 		})
 	}
@@ -684,9 +697,10 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 	val := s.network.Validators[0]
 
 	testCases := []struct {
-		name      string
-		args      []string
-		expectErr bool
+		name           string
+		args           []string
+		expectErr      bool
+		expVoteOptions types.WeightedVoteOptions
 	}{
 		{
 			"get vote of non existing proposal",
@@ -695,6 +709,7 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 				val.Address.String(),
 			},
 			true,
+			types.NewNonSplitVoteOption(types.OptionYes),
 		},
 		{
 			"get vote by wrong voter",
@@ -703,6 +718,7 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 				"wrong address",
 			},
 			true,
+			types.NewNonSplitVoteOption(types.OptionYes),
 		},
 		{
 			"vote for valid proposal",
@@ -712,6 +728,22 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			false,
+			types.NewNonSplitVoteOption(types.OptionYes),
+		},
+		{
+			"split vote for valid proposal",
+			[]string{
+				"3",
+				val.Address.String(),
+				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+			},
+			false,
+			types.WeightedVoteOptions{
+				types.WeightedVoteOption{Option: types.OptionYes, Weight: sdk.NewDecWithPrec(60, 2)},
+				types.WeightedVoteOption{Option: types.OptionNo, Weight: sdk.NewDecWithPrec(30, 2)},
+				types.WeightedVoteOption{Option: types.OptionAbstain, Weight: sdk.NewDecWithPrec(5, 2)},
+				types.WeightedVoteOption{Option: types.OptionNoWithVeto, Weight: sdk.NewDecWithPrec(5, 2)},
+			},
 		},
 	}
 
@@ -730,7 +762,11 @@ func (s *IntegrationTestSuite) TestCmdQueryVote() {
 
 				var vote types.Vote
 				s.Require().NoError(clientCtx.JSONMarshaler.UnmarshalJSON(out.Bytes(), &vote), out.String())
-				s.Require().Equal(types.OptionYes, vote.Option)
+				s.Require().Equal(len(vote.Options), len(tc.expVoteOptions))
+				for i, option := range tc.expVoteOptions {
+					s.Require().Equal(option.Option, vote.Options[i].Option)
+					s.Require().True(option.Weight.Equal(vote.Options[i].Weight))
+				}
 			}
 		})
 	}

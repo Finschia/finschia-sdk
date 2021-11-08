@@ -469,6 +469,7 @@
     - [TextProposal](#lbm.gov.v1.TextProposal)
     - [Vote](#lbm.gov.v1.Vote)
     - [VotingParams](#lbm.gov.v1.VotingParams)
+    - [WeightedVoteOption](#lbm.gov.v1.WeightedVoteOption)
   
     - [ProposalStatus](#lbm.gov.v1.ProposalStatus)
     - [VoteOption](#lbm.gov.v1.VoteOption)
@@ -503,6 +504,8 @@
     - [MsgSubmitProposalResponse](#lbm.gov.v1.MsgSubmitProposalResponse)
     - [MsgVote](#lbm.gov.v1.MsgVote)
     - [MsgVoteResponse](#lbm.gov.v1.MsgVoteResponse)
+    - [MsgVoteWeighted](#lbm.gov.v1.MsgVoteWeighted)
+    - [MsgVoteWeightedResponse](#lbm.gov.v1.MsgVoteWeightedResponse)
   
     - [Msg](#lbm.gov.v1.Msg)
   
@@ -7107,7 +7110,8 @@ A Vote consists of a proposal ID, the voter, and the vote option.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  |  |
 | `voter` | [string](#string) |  |  |
-| `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  |  |
+| `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  | **Deprecated.** Deprecated: Prefer to use `options` instead. This field is set in queries if and only if `len(options) == 1` and that option has weight 1. In all other cases, this field will default to VOTE_OPTION_UNSPECIFIED. |
+| `options` | [WeightedVoteOption](#lbm.gov.v1.WeightedVoteOption) | repeated |  |
 
 
 
@@ -7123,6 +7127,22 @@ VotingParams defines the params for voting on governance proposals.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `voting_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | Length of the voting period. |
+
+
+
+
+
+
+<a name="lbm.gov.v1.WeightedVoteOption"></a>
+
+### WeightedVoteOption
+WeightedVoteOption defines a unit of vote for vote split.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  |  |
+| `weight` | [string](#string) |  |  |
 
 
 
@@ -7585,6 +7605,33 @@ MsgVoteResponse defines the Msg/Vote response type.
 
 
 
+
+<a name="lbm.gov.v1.MsgVoteWeighted"></a>
+
+### MsgVoteWeighted
+MsgVoteWeighted defines a message to cast a vote.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  |  |
+| `voter` | [string](#string) |  |  |
+| `options` | [WeightedVoteOption](#lbm.gov.v1.WeightedVoteOption) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.gov.v1.MsgVoteWeightedResponse"></a>
+
+### MsgVoteWeightedResponse
+MsgVoteWeightedResponse defines the Msg/VoteWeighted response type.
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -7601,6 +7648,7 @@ Msg defines the bank Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `SubmitProposal` | [MsgSubmitProposal](#lbm.gov.v1.MsgSubmitProposal) | [MsgSubmitProposalResponse](#lbm.gov.v1.MsgSubmitProposalResponse) | SubmitProposal defines a method to create new proposal given a content. | |
 | `Vote` | [MsgVote](#lbm.gov.v1.MsgVote) | [MsgVoteResponse](#lbm.gov.v1.MsgVoteResponse) | Vote defines a method to add a vote on a specific proposal. | |
+| `VoteWeighted` | [MsgVoteWeighted](#lbm.gov.v1.MsgVoteWeighted) | [MsgVoteWeightedResponse](#lbm.gov.v1.MsgVoteWeightedResponse) | VoteWeighted defines a method to add a weighted vote on a specific proposal. | |
 | `Deposit` | [MsgDeposit](#lbm.gov.v1.MsgDeposit) | [MsgDepositResponse](#lbm.gov.v1.MsgDepositResponse) | Deposit defines a method to add deposit on a specific proposal. | |
 
  <!-- end services -->
