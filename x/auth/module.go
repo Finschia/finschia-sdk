@@ -131,10 +131,10 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.accountKeeper))
 	types.RegisterQueryServer(cfg.QueryServer(), am.accountKeeper)
 
-	/* m := keeper.NewMigrator(am.accountKeeper)
-	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
-		panic(fmt.Sprintf("failed to migrate x/auth from version 1 to 2: %v", err))
-	} */
+	// m := keeper.NewMigrator(am.accountKeeper)
+	// if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+	// 	panic(fmt.Sprintf("failed to migrate x/auth from version 1 to 2: %v", err))
+	// }
 }
 
 // InitGenesis performs genesis initialization for the auth module. It returns
