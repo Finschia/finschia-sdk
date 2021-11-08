@@ -18,7 +18,7 @@ import (
 
 const flagGenesisTime = "genesis-time"
 
-// Allow applications to extend and modify the migration process.
+// VersionMap allow applications to extend and modify the migration process.
 //
 // Ref: https://github.com/cosmos/cosmos-sdk/issues/5041
 var VersionMap = types.VersionMap{}
