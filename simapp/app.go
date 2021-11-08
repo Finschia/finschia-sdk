@@ -368,7 +368,7 @@ func NewSimApp(
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
 	app.mm.RegisterRoutes(app.Router(), app.QueryRouter(), encodingConfig.Amino)
-	app.configurator = module.NewConfigurator(app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 	app.mm.RegisterServices(app.configurator)
 
 	// add test gRPC service for testing gRPC queries in isolation
@@ -463,6 +463,7 @@ func (app *SimApp) InitChainer(ctx sdk.Context, req abci.RequestInitChain) abci.
 	if err := ostjson.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
 	}
+	app.UpgradeKeeper.SetModuleVersionMap(ctx, app.mm.GetVersionMap())
 	return app.mm.InitGenesis(ctx, app.appCodec, genesisState)
 }
 
@@ -571,7 +572,7 @@ func (app *SimApp) RegisterTendermintService(clientCtx client.Context) {
 // Example:
 //   cfg := module.NewConfigurator(...)
 //   app.UpgradeKeeper.SetUpgradeHandler("store-migration", func(ctx sdk.Context, plan upgradetypes.Plan) {
-//       err := app.RunMigrations(ctx, module.MigrationMap{
+//       err := app.RunMigrations(ctx, module.VersionMap{
 //           "bank": 1,     // Migrate x/bank from v1 to current x/bank's ConsensusVersion
 //           "staking": 8,  // Migrate x/staking from v8 to current x/staking's ConsensusVersion
 //      })
@@ -579,7 +580,7 @@ func (app *SimApp) RegisterTendermintService(clientCtx client.Context) {
 //           panic(err)
 //      }
 //   })
-func (app *SimApp) RunMigrations(ctx sdk.Context, migrateFromVersions module.MigrationMap) error {
+func (app *SimApp) RunMigrations(ctx sdk.Context, migrateFromVersions module.VersionMap) (module.VersionMap, error) {
 	return app.mm.RunMigrations(ctx, app.configurator, migrateFromVersions)
 }
 

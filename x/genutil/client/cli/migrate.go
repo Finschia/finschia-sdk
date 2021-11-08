@@ -21,20 +21,20 @@ const flagGenesisTime = "genesis-time"
 // Allow applications to extend and modify the migration process.
 //
 // Ref: https://github.com/cosmos/cosmos-sdk/issues/5041
-var migrationMap = types.MigrationMap{}
+var VersionMap = types.VersionMap{}
 
 // GetMigrationCallback returns a MigrationCallback for a given version.
 func GetMigrationCallback(version string) types.MigrationCallback {
-	return migrationMap[version]
+	return VersionMap[version]
 }
 
 // GetMigrationVersions get all migration version in a sorted slice.
 func GetMigrationVersions() []string {
-	versions := make([]string, len(migrationMap))
+	versions := make([]string, len(VersionMap))
 
 	var i int
 
-	for version := range migrationMap {
+	for version := range VersionMap {
 		versions[i] = version
 		i++
 	}

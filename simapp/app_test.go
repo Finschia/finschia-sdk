@@ -5,12 +5,14 @@ import (
 	"os"
 	"testing"
 
+	"github.com/golang/mock/gomock"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/baseapp"
+	"github.com/line/lbm-sdk/tests/mocks"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	abci "github.com/line/ostracon/abci/types"
@@ -81,7 +83,7 @@ func TestRunMigrations(t *testing.T) {
 	bApp.SetCommitMultiStoreTracer(nil)
 	bApp.SetInterfaceRegistry(encCfg.InterfaceRegistry)
 	app.BaseApp = bApp
-	app.configurator = module.NewConfigurator(app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
 
 	// We register all modules on the Configurator, except x/bank. x/bank will
 	// serve as the test subject on which we run the migration tests.
@@ -161,9 +163,9 @@ func TestRunMigrations(t *testing.T) {
 			// Run migrations only for bank. That's why we put the initial
 			// version for bank as 1, and for all other modules, we put as
 			// their latest ConsensusVersion.
-			err = app.RunMigrations(
+			_, err = app.RunMigrations(
 				app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}),
-				module.MigrationMap{
+				module.VersionMap{
 					"bank":         1,
 					"auth":         auth.AppModule{}.ConsensusVersion(),
 					"staking":      staking.AppModule{}.ConsensusVersion(),
@@ -189,5 +191,75 @@ func TestRunMigrations(t *testing.T) {
 				require.Equal(t, tc.expCalled, called)
 			}
 		})
+	}
+}
+
+func TestInitGenesisOnMigration(t *testing.T) {
+	db := memdb.NewDB()
+	encCfg := MakeTestEncodingConfig()
+	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
+	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	ctx := app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()})
+
+	// Create a mock module. This module will serve as the new module we're
+	// adding during a migration.
+	mockCtrl := gomock.NewController(t)
+	t.Cleanup(mockCtrl.Finish)
+	mockModule := mocks.NewMockAppModule(mockCtrl)
+	mockDefaultGenesis := json.RawMessage(`{"key": "value"}`)
+	mockModule.EXPECT().DefaultGenesis(gomock.Eq(app.appCodec)).Times(1).Return(mockDefaultGenesis)
+	mockModule.EXPECT().InitGenesis(gomock.Eq(ctx), gomock.Eq(app.appCodec), gomock.Eq(mockDefaultGenesis)).Times(1).Return(nil)
+	mockModule.EXPECT().ConsensusVersion().Times(1).Return(uint64(0))
+
+	app.mm.Modules["mock"] = mockModule
+
+	// Run migrations only for "mock" module. We exclude it from
+	// the VersionMap to simulate upgrading with a new module.
+	_, err := app.RunMigrations(
+		app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()}),
+		module.VersionMap{
+			"bank":         1,
+			"auth":         auth.AppModule{}.ConsensusVersion(),
+			"staking":      staking.AppModule{}.ConsensusVersion(),
+			"mint":         mint.AppModule{}.ConsensusVersion(),
+			"distribution": distribution.AppModule{}.ConsensusVersion(),
+			"slashing":     slashing.AppModule{}.ConsensusVersion(),
+			"gov":          gov.AppModule{}.ConsensusVersion(),
+			"params":       params.AppModule{}.ConsensusVersion(),
+			"ibc":          ibc.AppModule{}.ConsensusVersion(),
+			"upgrade":      upgrade.AppModule{}.ConsensusVersion(),
+			"vesting":      vesting.AppModule{}.ConsensusVersion(),
+			"transfer":     transfer.AppModule{}.ConsensusVersion(),
+			"evidence":     evidence.AppModule{}.ConsensusVersion(),
+			"crisis":       crisis.AppModule{}.ConsensusVersion(),
+			"genutil":      genutil.AppModule{}.ConsensusVersion(),
+			"capability":   capability.AppModule{}.ConsensusVersion(),
+		},
+	)
+
+	require.NoError(t, err)
+}
+
+func TestUpgradeStateOnGenesis(t *testing.T) {
+	encCfg := MakeTestEncodingConfig()
+	db := memdb.NewDB()
+	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	genesisState := NewDefaultGenesisState(encCfg.Marshaler)
+	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
+	require.NoError(t, err)
+
+	// Initialize the chain
+	app.InitChain(
+		abci.RequestInitChain{
+			Validators:    []abci.ValidatorUpdate{},
+			AppStateBytes: stateBytes,
+		},
+	)
+
+	// make sure the upgrade keeper has version map in state
+	ctx := app.NewContext(false, ocproto.Header{})
+	vm := app.UpgradeKeeper.GetModuleVersionMap(ctx)
+	for v, i := range app.mm.Modules {
+		require.Equal(t, vm[v], i.ConsensusVersion())
 	}
 }
