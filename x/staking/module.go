@@ -139,8 +139,10 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	querier := keeper.Querier{Keeper: am.keeper}
 	types.RegisterQueryServer(cfg.QueryServer(), querier)
 
-	m := keeper.NewMigrator(am.keeper)
-	cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2)
+	/* m := keeper.NewMigrator(am.keeper)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/staking from version 1 to 2: %v", err))
+	} */
 }
 
 // InitGenesis performs genesis initialization for the staking module. It returns
@@ -161,7 +163,7 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json
 }
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return 2 }
+func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock returns the begin blocker for the staking module.
 func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {

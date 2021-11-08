@@ -113,6 +113,11 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 // module-specific gRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	proposal.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+
+	/* m := keeper.NewMigrator(am.keeper)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/params from version 1 to 2: %v", err))
+	} */
 }
 
 // ProposalContents returns all the params content functions used to
