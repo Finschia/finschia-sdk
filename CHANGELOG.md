@@ -4,6 +4,7 @@
 
 ### Features
 * (feat) [\#352] (https://github.com/line/lbm-sdk/pull/352) iavl, db & disk stats logging
+* (x) [\#373] (https://github.com/line/lbm-sdk/pull/373) To smoothen the update to the latest stable release, the SDK includes a set of CLI commands for managing migrations between SDK versions, under the `migrate` subcommand. Only migration scripts between stable releases are included.
 
 ### Improvements
 * (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter 

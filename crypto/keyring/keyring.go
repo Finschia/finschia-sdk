@@ -199,6 +199,8 @@ type keystore struct {
 
 func infoKey(name string) []byte { return []byte(fmt.Sprintf("%s.%s", name, infoSuffix)) }
 
+func infoKeyBz(name string) []byte { return []byte(infoKey(name)) }
+
 func newKeystore(kr keyring.Keyring, opts ...Option) keystore {
 	// Default options for keybase
 	options := Options{
