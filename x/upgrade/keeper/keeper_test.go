@@ -11,6 +11,7 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	store "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/module"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
@@ -197,7 +198,9 @@ func (s *KeeperTestSuite) TestScheduleUpgrade() {
 				Height: 123450000,
 			},
 			setup: func() {
-				s.app.UpgradeKeeper.SetUpgradeHandler("all-good", func(_ sdk.Context, _ types.Plan) {})
+				s.app.UpgradeKeeper.SetUpgradeHandler("all-good", func(ctx sdk.Context, plan types.Plan, vm module.VersionMap) (module.VersionMap, error) {
+					return vm, nil
+				})
 				s.app.UpgradeKeeper.ApplyUpgrade(s.ctx, types.Plan{
 					Name:   "all-good",
 					Info:   "some text here",
@@ -294,6 +297,28 @@ func (s *KeeperTestSuite) TestSetUpgradedClient() {
 		}
 	}
 
+}
+
+// Tests that the underlying state of x/upgrade is set correctly after
+// an upgrade.
+func (s *KeeperTestSuite) TestMigrations() {
+	initialVM := module.VersionMap{"bank": uint64(1)}
+	s.app.UpgradeKeeper.SetModuleVersionMap(s.ctx, initialVM)
+	vmBefore := s.app.UpgradeKeeper.GetModuleVersionMap(s.ctx)
+	s.app.UpgradeKeeper.SetUpgradeHandler("dummy", func(_ sdk.Context, _ types.Plan, vm module.VersionMap) (module.VersionMap, error) {
+		// simulate upgrading the bank module
+		vm["bank"] = vm["bank"] + 1
+		return vm, nil
+	})
+	dummyPlan := types.Plan{
+		Name:   "dummy",
+		Info:   "some text here",
+		Height: 123450000,
+	}
+
+	s.app.UpgradeKeeper.ApplyUpgrade(s.ctx, dummyPlan)
+	vm := s.app.UpgradeKeeper.GetModuleVersionMap(s.ctx)
+	s.Require().Equal(vmBefore["bank"]+1, vm["bank"])
 }
 
 func TestKeeperTestSuite(t *testing.T) {

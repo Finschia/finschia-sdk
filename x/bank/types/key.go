@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/address"
 )
 
 const (
@@ -23,7 +24,7 @@ const (
 
 // KVStore keys
 var (
-	BalancesPrefix      = []byte("balances")
+	BalancesPrefix      = []byte{0x02}
 	SupplyKey           = []byte{0x00}
 	DenomMetadataPrefix = []byte{0x1}
 
@@ -51,4 +52,9 @@ func AddressFromBalancesStore(key []byte) sdk.AccAddress {
 		panic(fmt.Sprintf("AddressBalance store key does not contain the delimiter(,): %s", addr))
 	}
 	return sdk.AccAddress(addr[:index])
+}
+
+// CreateAccountBalancesPrefix creates the prefix for an account's balances.
+func CreateAccountBalancesPrefix(addr []byte) []byte {
+	return append(BalancesPrefix, address.MustLengthPrefix(addr)...)
 }

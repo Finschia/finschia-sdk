@@ -98,6 +98,11 @@ func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sd
 // module-specific GRPC queries.
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	types.RegisterQueryServer(cfg.QueryServer(), am.keeper)
+
+	/* m := keeper.NewMigrator(am.keeper)
+	if err := cfg.RegisterMigration(types.ModuleName, 1, m.Migrate1to2); err != nil {
+		panic(fmt.Sprintf("failed to migrate x/upgrade from version 1 to 2: %v", err))
+	} */
 }
 
 // InitGenesis is ignored, no sense in serializing future upgrades
@@ -119,6 +124,9 @@ func (AppModuleBasic) ValidateGenesis(_ codec.JSONMarshaler, config client.TxEnc
 func (am AppModule) ExportGenesis(_ sdk.Context, cdc codec.JSONMarshaler) json.RawMessage {
 	return am.DefaultGenesis(cdc)
 }
+
+// ConsensusVersion implements AppModule/ConsensusVersion.
+func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock calls the upgrade module hooks
 //
