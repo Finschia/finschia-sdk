@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 
 	"github.com/line/ostracon/libs/log"
 	ostos "github.com/line/ostracon/libs/os"
@@ -16,6 +17,7 @@ import (
 	store "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/types/module"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	ibcexported "github.com/line/lbm-sdk/x/ibc/core/exported"
 	"github.com/line/lbm-sdk/x/upgrade/types"
@@ -48,6 +50,85 @@ func NewKeeper(skipUpgradeHeights map[int64]bool, storeKey sdk.StoreKey, cdc cod
 // must be set even if it is a no-op function.
 func (k Keeper) SetUpgradeHandler(name string, upgradeHandler types.UpgradeHandler) {
 	k.upgradeHandlers[name] = upgradeHandler
+}
+
+// SetModuleVersionMap saves a given version map to state
+func (k Keeper) SetModuleVersionMap(ctx sdk.Context, vm module.VersionMap) {
+	if len(vm) > 0 {
+		store := ctx.KVStore(k.storeKey)
+		versionStore := prefix.NewStore(store, []byte{types.VersionMapByte})
+		// Even though the underlying store (cachekv) store is sorted, we still
+		// prefer a deterministic iteration order of the map, to avoid undesired
+		// surprises if we ever change stores.
+		sortedModNames := make([]string, 0, len(vm))
+
+		for key := range vm {
+			sortedModNames = append(sortedModNames, key)
+		}
+		sort.Strings(sortedModNames)
+
+		for _, modName := range sortedModNames {
+			ver := vm[modName]
+			nameBytes := []byte(modName)
+			verBytes := make([]byte, 8)
+			binary.BigEndian.PutUint64(verBytes, ver)
+			versionStore.Set(nameBytes, verBytes)
+		}
+	}
+}
+
+// GetModuleVersionMap returns a map of key module name and value module consensus version
+// as defined in ADR-041.
+func (k Keeper) GetModuleVersionMap(ctx sdk.Context) module.VersionMap {
+	store := ctx.KVStore(k.storeKey)
+	it := sdk.KVStorePrefixIterator(store, []byte{types.VersionMapByte})
+
+	vm := make(module.VersionMap)
+	defer it.Close()
+	for ; it.Valid(); it.Next() {
+		moduleBytes := it.Key()
+		// first byte is prefix key, so we remove it here
+		name := string(moduleBytes[1:])
+		moduleVersion := binary.BigEndian.Uint64(it.Value())
+		vm[name] = moduleVersion
+	}
+
+	return vm
+}
+
+// GetModuleVersions gets a slice of module consensus versions
+func (k Keeper) GetModuleVersions(ctx sdk.Context) []*types.ModuleVersion {
+	store := ctx.KVStore(k.storeKey)
+	it := sdk.KVStorePrefixIterator(store, []byte{types.VersionMapByte})
+	defer it.Close()
+
+	mv := make([]*types.ModuleVersion, 0)
+	for ; it.Valid(); it.Next() {
+		moduleBytes := it.Key()
+		name := string(moduleBytes[1:])
+		moduleVersion := binary.BigEndian.Uint64(it.Value())
+		mv = append(mv, &types.ModuleVersion{
+			Name:    name,
+			Version: moduleVersion,
+		})
+	}
+	return mv
+}
+
+// gets the version for a given module, and returns true if it exists, false otherwise
+func (k Keeper) getModuleVersion(ctx sdk.Context, name string) (uint64, bool) {
+	store := ctx.KVStore(k.storeKey)
+	it := sdk.KVStorePrefixIterator(store, []byte{types.VersionMapByte})
+	defer it.Close()
+
+	for ; it.Valid(); it.Next() {
+		moduleName := string(it.Key()[1:])
+		if moduleName == name {
+			version := binary.BigEndian.Uint64(it.Value())
+			return version, true
+		}
+	}
+	return 0, false
 }
 
 // ScheduleUpgrade schedules an upgrade based on the specified plan.
@@ -219,7 +300,12 @@ func (k Keeper) ApplyUpgrade(ctx sdk.Context, plan types.Plan) {
 		panic("ApplyUpgrade should never be called without first checking HasHandler")
 	}
 
-	handler(ctx, plan)
+	updatedVM, err := handler(ctx, plan, k.GetModuleVersionMap(ctx))
+	if err != nil {
+		panic(err)
+	}
+
+	k.SetModuleVersionMap(ctx, updatedVM)
 
 	// Must clear IBC state after upgrade is applied as it is stored separately from the upgrade plan.
 	// This will prevent resubmission of upgrade msg after upgrade is already completed.

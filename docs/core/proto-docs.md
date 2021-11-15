@@ -698,6 +698,7 @@
   
 - [lbm/upgrade/v1/upgrade.proto](#lbm/upgrade/v1/upgrade.proto)
     - [CancelSoftwareUpgradeProposal](#lbm.upgrade.v1.CancelSoftwareUpgradeProposal)
+    - [ModuleVersion](#lbm.upgrade.v1.ModuleVersion)
     - [Plan](#lbm.upgrade.v1.Plan)
     - [SoftwareUpgradeProposal](#lbm.upgrade.v1.SoftwareUpgradeProposal)
   
@@ -706,6 +707,8 @@
     - [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse)
     - [QueryCurrentPlanRequest](#lbm.upgrade.v1.QueryCurrentPlanRequest)
     - [QueryCurrentPlanResponse](#lbm.upgrade.v1.QueryCurrentPlanResponse)
+    - [QueryModuleVersionsRequest](#lbm.upgrade.v1.QueryModuleVersionsRequest)
+    - [QueryModuleVersionsResponse](#lbm.upgrade.v1.QueryModuleVersionsResponse)
     - [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1.QueryUpgradedConsensusStateRequest)
     - [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1.QueryUpgradedConsensusStateResponse)
   
@@ -10207,6 +10210,22 @@ upgrade.
 
 
 
+<a name="lbm.upgrade.v1.ModuleVersion"></a>
+
+### ModuleVersion
+ModuleVersion specifies a module and its consensus version.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name of the app module |
+| `version` | [uint64](#uint64) |  | consensus version of the app module |
+
+
+
+
+
+
 <a name="lbm.upgrade.v1.Plan"></a>
 
 ### Plan
@@ -10319,6 +10338,38 @@ method.
 
 
 
+<a name="lbm.upgrade.v1.QueryModuleVersionsRequest"></a>
+
+### QueryModuleVersionsRequest
+QueryModuleVersionsRequest is the request type for the Query/ModuleVersions
+RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `module_name` | [string](#string) |  | module_name is a field to query a specific module consensus version from state. Leaving this empty will fetch the full list of module versions from state |
+
+
+
+
+
+
+<a name="lbm.upgrade.v1.QueryModuleVersionsResponse"></a>
+
+### QueryModuleVersionsResponse
+QueryModuleVersionsResponse is the response type for the Query/ModuleVersions
+RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `module_versions` | [ModuleVersion](#lbm.upgrade.v1.ModuleVersion) | repeated | module_versions is a list of module names with their consensus versions. |
+
+
+
+
+
+
 <a name="lbm.upgrade.v1.QueryUpgradedConsensusStateRequest"></a>
 
 ### QueryUpgradedConsensusStateRequest
@@ -10367,6 +10418,7 @@ Query defines the gRPC upgrade querier service.
 | `CurrentPlan` | [QueryCurrentPlanRequest](#lbm.upgrade.v1.QueryCurrentPlanRequest) | [QueryCurrentPlanResponse](#lbm.upgrade.v1.QueryCurrentPlanResponse) | CurrentPlan queries the current upgrade plan. | GET|/lbm/upgrade/v1/current_plan|
 | `AppliedPlan` | [QueryAppliedPlanRequest](#lbm.upgrade.v1.QueryAppliedPlanRequest) | [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse) | AppliedPlan queries a previously applied upgrade plan by its name. | GET|/lbm/upgrade/v1/applied_plan/{name}|
 | `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries the consensus state that will serve as a trusted kernel for the next version of this chain. It will only be stored at the last height of this chain. UpgradedConsensusState RPC not supported with legacy querier | GET|/lbm/upgrade/v1/upgraded_consensus_state/{last_height}|
+| `ModuleVersions` | [QueryModuleVersionsRequest](#lbm.upgrade.v1.QueryModuleVersionsRequest) | [QueryModuleVersionsResponse](#lbm.upgrade.v1.QueryModuleVersionsResponse) | ModuleVersions queries the list of module versions from state. | GET|/lbm/upgrade/v1/module_versions|
 
  <!-- end services -->
 
