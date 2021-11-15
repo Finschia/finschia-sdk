@@ -5,7 +5,6 @@ import "gogoproto/gogo.proto";
 import "lbm/feegrant/v1/feegrant.proto";
 import "lbm/base/query/v1/pagination.proto";
 import "google/api/annotations.proto";
-import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/feegrant/types";
 
