@@ -3,7 +3,6 @@ package ante
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/auth/keeper"
@@ -22,10 +21,10 @@ func NewRejectFeeGranterDecorator() RejectFeeGranterDecorator {
 	return RejectFeeGranterDecorator{}
 }
 
-var _ types.AnteDecorator = RejectFeeGranterDecorator{}
+var _ sdk.AnteDecorator = RejectFeeGranterDecorator{}
 
-func (d RejectFeeGranterDecorator) AnteHandle(ctx types.Context, tx types.Tx, simulate bool, next types.AnteHandler) (newCtx types.Context, err error) {
-	feeTx, ok := tx.(types.FeeTx)
+func (d RejectFeeGranterDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bool, next sdk.AnteHandler) (newCtx sdk.Context, err error) {
+	feeTx, ok := tx.(sdk.FeeTx)
 	if ok && len(feeTx.FeeGranter()) != 0 {
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "fee grants are not supported")
 	}
