@@ -457,6 +457,31 @@
   
     - [Msg](#lbm.evidence.v1.Msg)
   
+- [lbm/feegrant/v1/feegrant.proto](#lbm/feegrant/v1/feegrant.proto)
+    - [AllowedMsgAllowance](#lbm.feegrant.v1.AllowedMsgAllowance)
+    - [BasicAllowance](#lbm.feegrant.v1.BasicAllowance)
+    - [Grant](#lbm.feegrant.v1.Grant)
+    - [PeriodicAllowance](#lbm.feegrant.v1.PeriodicAllowance)
+  
+- [lbm/feegrant/v1/genesis.proto](#lbm/feegrant/v1/genesis.proto)
+    - [GenesisState](#lbm.feegrant.v1.GenesisState)
+  
+- [lbm/feegrant/v1/query.proto](#lbm/feegrant/v1/query.proto)
+    - [QueryAllowanceRequest](#lbm.feegrant.v1.QueryAllowanceRequest)
+    - [QueryAllowanceResponse](#lbm.feegrant.v1.QueryAllowanceResponse)
+    - [QueryAllowancesRequest](#lbm.feegrant.v1.QueryAllowancesRequest)
+    - [QueryAllowancesResponse](#lbm.feegrant.v1.QueryAllowancesResponse)
+  
+    - [Query](#lbm.feegrant.v1.Query)
+  
+- [lbm/feegrant/v1/tx.proto](#lbm/feegrant/v1/tx.proto)
+    - [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance)
+    - [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse)
+    - [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance)
+    - [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse)
+  
+    - [Msg](#lbm.feegrant.v1.Msg)
+  
 - [lbm/genutil/v1/genesis.proto](#lbm/genutil/v1/genesis.proto)
     - [GenesisState](#lbm.genutil.v1.GenesisState)
   
@@ -6947,6 +6972,294 @@ Msg defines the evidence Msg service.
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `SubmitEvidence` | [MsgSubmitEvidence](#lbm.evidence.v1.MsgSubmitEvidence) | [MsgSubmitEvidenceResponse](#lbm.evidence.v1.MsgSubmitEvidenceResponse) | SubmitEvidence submits an arbitrary Evidence of misbehavior such as equivocation or counterfactual signing. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/feegrant.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/feegrant.proto
+
+
+
+<a name="lbm.feegrant.v1.AllowedMsgAllowance"></a>
+
+### AllowedMsgAllowance
+AllowedMsgAllowance creates allowance only for specified message types.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+| `allowed_messages` | [string](#string) | repeated | allowed_messages are the messages for which the grantee has the access. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.BasicAllowance"></a>
+
+### BasicAllowance
+BasicAllowance implements Allowance with a one-time grant of tokens
+that optionally expires. The grantee can use up to SpendLimit to cover fees.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | spend_limit specifies the maximum amount of tokens that can be spent by this allowance and will be updated as tokens are spent. If it is empty, there is no spend limit and any amount of coins can be spent. |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | expiration specifies an optional time when this allowance expires |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.Grant"></a>
+
+### Grant
+Grant is stored in the KVStore to record a grant with full context
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.PeriodicAllowance"></a>
+
+### PeriodicAllowance
+PeriodicAllowance extends Allowance to allow for both a maximum cap,
+as well as a limit per time period.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `basic` | [BasicAllowance](#lbm.feegrant.v1.BasicAllowance) |  | basic specifies a struct of `BasicAllowance` |
+| `period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | period specifies the time duration in which period_spend_limit coins can be spent before that allowance is reset |
+| `period_spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | period_spend_limit specifies the maximum number of coins that can be spent in the period |
+| `period_can_spend` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | period_can_spend is the number of coins left to be spent before the period_reset time |
+| `period_reset` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | period_reset is the time at which this period resets and a new one begins, it is calculated from the start time of the first transaction after the last period ended |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/genesis.proto
+
+
+
+<a name="lbm.feegrant.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState contains a set of fee allowances, persisted from the store
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowances` | [Grant](#lbm.feegrant.v1.Grant) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/query.proto
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowanceRequest"></a>
+
+### QueryAllowanceRequest
+QueryAllowanceRequest is the request type for the Query/Allowance RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowanceResponse"></a>
+
+### QueryAllowanceResponse
+QueryAllowanceResponse is the response type for the Query/Allowance RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowance` | [Grant](#lbm.feegrant.v1.Grant) |  | allowance is a allowance granted for grantee by granter. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowancesRequest"></a>
+
+### QueryAllowancesRequest
+QueryAllowancesRequest is the request type for the Query/Allowances RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowancesResponse"></a>
+
+### QueryAllowancesResponse
+QueryAllowancesResponse is the response type for the Query/Allowances RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowances` | [Grant](#lbm.feegrant.v1.Grant) | repeated | allowances are allowance's granted for grantee by granter. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.feegrant.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Allowance` | [QueryAllowanceRequest](#lbm.feegrant.v1.QueryAllowanceRequest) | [QueryAllowanceResponse](#lbm.feegrant.v1.QueryAllowanceResponse) | Allowance returns fee granted to the grantee by the granter. | GET|/lbm/feegrant/v1/allowance/{granter}/{grantee}|
+| `Allowances` | [QueryAllowancesRequest](#lbm.feegrant.v1.QueryAllowancesRequest) | [QueryAllowancesResponse](#lbm.feegrant.v1.QueryAllowancesResponse) | Allowances returns all the grants for address. | GET|/lbm/feegrant/v1/allowances/{grantee}|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/tx.proto
+
+
+
+<a name="lbm.feegrant.v1.MsgGrantAllowance"></a>
+
+### MsgGrantAllowance
+MsgGrantAllowance adds permission for Grantee to spend up to Allowance
+of fees from the account of Granter.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgGrantAllowanceResponse"></a>
+
+### MsgGrantAllowanceResponse
+MsgGrantAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgRevokeAllowance"></a>
+
+### MsgRevokeAllowance
+MsgRevokeAllowance removes any existing Allowance from Granter to Grantee.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgRevokeAllowanceResponse"></a>
+
+### MsgRevokeAllowanceResponse
+MsgRevokeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.feegrant.v1.Msg"></a>
+
+### Msg
+Msg defines the feegrant msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GrantAllowance` | [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance) | [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse) | GrantAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
+| `RevokeAllowance` | [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance) | [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse) | RevokeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
 
  <!-- end services -->
 

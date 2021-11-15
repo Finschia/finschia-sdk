@@ -72,6 +72,7 @@ const (
 	FlagTimeoutHeight    = "timeout-height"
 	FlagKeyAlgorithm     = "algo"
 	FlagPrivKeyType      = "priv_key_type"
+	FlagFeeAccount       = "fee-account"
 
 	// Tendermint logging flags
 	FlagLogLevel       = "log_level"
@@ -117,6 +118,7 @@ func AddTxFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().Uint64(FlagTimeoutHeight, 0, "Set a block timeout height to prevent the tx from being committed past a certain height")
 	cmd.Flags().String(FlagPrivKeyType, DefaultPrivKeyType, "specify validator's private key type (ed25519|composite). \n"+
 		"set this to priv_key.type in priv_validator_key.json; default `ed25519`")
+	cmd.Flags().String(FlagFeeAccount, "", "Fee account pays fees for the transaction instead of deducting from the signer")
 
 	// --gas can accept integers and "auto"
 	cmd.Flags().String(FlagGas, "", fmt.Sprintf("gas limit to set per-transaction; set to %q to calculate sufficient gas automatically (default %d)", GasFlagAuto, DefaultGasLimit))

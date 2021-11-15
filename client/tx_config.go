@@ -43,5 +43,6 @@ type (
 		SetFeeAmount(amount sdk.Coins)
 		SetGasLimit(limit uint64)
 		SetTimeoutHeight(height uint64)
+		SetFeeGranter(feeGranter sdk.AccAddress)
 	}
 )
