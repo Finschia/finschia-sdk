@@ -31,7 +31,6 @@ func NewAnteHandler(
 		NewSetPubKeyDecorator(ak), // SetPubKeyDecorator must be called before all signature verification decorators
 		// The handlers below may call `GetAccount` or `GetSignerAcc` for signer
 		NewValidateSigCountDecorator(ak),
-		NewDeductFeeDecorator(ak, bankKeeper),
 		NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		NewSigVerificationDecorator(ak, signModeHandler),
 		NewIncrementSequenceDecorator(ak),
