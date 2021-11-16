@@ -55,12 +55,12 @@ func (a *AllowedMsgAllowance) Accept(ctx sdk.Context, fee sdk.Coins, msgs []sdk.
 		return false, sdkerrors.Wrap(ErrMessageNotAllowed, "message does not exist in allowed messages")
 	}
 
-	_, err := a.GetAllowance()
+	allowance, err := a.GetAllowance()
 	if err != nil {
 		return false, err
 	}
 
-	return a.Accept(ctx, fee, msgs)
+	return allowance.Accept(ctx, fee, msgs)
 }
 
 func (a *AllowedMsgAllowance) allowedMsgsToMap(ctx sdk.Context) map[string]bool {
@@ -95,10 +95,10 @@ func (a *AllowedMsgAllowance) ValidateBasic() error {
 		return sdkerrors.Wrap(ErrNoMessages, "allowed messages shouldn't be empty")
 	}
 
-	_, err := a.GetAllowance()
+	allowance, err := a.GetAllowance()
 	if err != nil {
 		return err
 	}
 
-	return a.ValidateBasic()
+	return allowance.ValidateBasic()
 }
