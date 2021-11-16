@@ -44,6 +44,7 @@ type Context struct {
 	TxConfig          TxConfig
 	AccountRetriever  AccountRetriever
 	NodeURI           string
+	FeeGranter        sdk.AccAddress
 
 	// TODO: Deprecated (remove).
 	LegacyAmino *codec.LegacyAmino
@@ -83,6 +84,13 @@ func (ctx Context) WithOutput(w io.Writer) Context {
 // WithFrom returns a copy of the context with an updated from address or name.
 func (ctx Context) WithFrom(from string) Context {
 	ctx.From = from
+	return ctx
+}
+
+// WithFeeGranterAddress returns a copy of the context with an updated fee granter account
+// address.
+func (ctx Context) WithFeeGranterAddress(addr sdk.AccAddress) Context {
+	ctx.FeeGranter = addr
 	return ctx
 }
 

@@ -7,6 +7,7 @@
 * (x/gov) [\#368](https://github.com/line/lbm-sdk/pull/368) Governance Split Votes, use `MsgWeightedVote` to send a split vote. Sending a regular `MsgVote` will convert the underlying vote option into a weighted vote with weight 1.
 * (x/upgrade) [\#377] (https://github.com/line/lbm-sdk/pull/377) To smoothen the update to the latest stable release, the SDK includes vesion map for managing migrations between SDK versions.
 * (x/wasm) [\#358] (https://github.com/line/lbm-sdk/pull/358) change wasm metrics method to using prometheus directly
+* (x/feegrant) [\#380] (https://github.com/line/lbm-sdk/pull/380) Feegrant module
 
 ### Improvements
 * (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter

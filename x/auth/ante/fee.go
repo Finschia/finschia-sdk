@@ -63,6 +63,7 @@ type DeductFeeDecorator struct {
 	bankKeeper types.BankKeeper
 }
 
+// This DeductFeeDecorator is not used anymore. Instead of it, DeductGrantedFeeDecorator will be used.
 func NewDeductFeeDecorator(ak AccountKeeper, bk types.BankKeeper) DeductFeeDecorator {
 	return DeductFeeDecorator{
 		ak:         ak,
