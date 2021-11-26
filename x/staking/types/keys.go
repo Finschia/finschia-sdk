@@ -34,6 +34,7 @@ var (
 	ValidatorsKey             = []byte{0x21} // prefix for each key to a validator
 	ValidatorsByConsAddrKey   = []byte{0x22} // prefix for each key to a validator index, by pubkey
 	ValidatorsByPowerIndexKey = []byte{0x23} // prefix for each key to a validator index, sorted by power
+	ValidatorsWhitelistKey    = []byte{0x24} // key for a validator whitelist, by operator address
 
 	DelegationKey                    = []byte{0x31} // key for a delegation
 	UnbondingDelegationKey           = []byte{0x32} // key for an unbonding-delegation
@@ -97,6 +98,11 @@ func GetValidatorsByPowerIndexKey(validator Validator) []byte {
 	key = append(key, operAddrInvr...)
 
 	return key
+}
+
+// get the key for the validator whitelist
+func GetValidatorsWhitelistKey(addr sdk.ValAddress) []byte {
+	return append(ValidatorsWhitelistKey, addr.Bytes()...)
 }
 
 // get the bonded validator index key for an operator address

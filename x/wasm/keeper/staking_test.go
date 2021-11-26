@@ -659,6 +659,8 @@ func addValidator(t *testing.T, ctx sdk.Context, stakingKeeper stakingkeeper.Kee
 
 	pkAny, err := codectypes.NewAnyWithValue(pubKey)
 	require.NoError(t, err)
+
+	stakingKeeper.SetValidatorWhitelist(ctx, addr)
 	msg := stakingtypes.MsgCreateValidator{
 		Description: types.Description{
 			Moniker: "Validator power",

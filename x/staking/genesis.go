@@ -41,6 +41,7 @@ func InitGenesis(
 		// Manually set indices for the first time
 		keeper.SetValidatorByConsAddr(ctx, validator)
 		keeper.SetValidatorByPowerIndex(ctx, validator)
+		keeper.SetValidatorWhitelist(ctx, validator.GetOperator())
 
 		// Call the creation hook if not exported
 		if !data.Exported {

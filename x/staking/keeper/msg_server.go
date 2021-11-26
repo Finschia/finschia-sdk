@@ -31,6 +31,14 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *types.MsgCreateVa
 
 	valAddr := sdk.ValAddress(msg.ValidatorAddress)
 
+	// Check if validator is in whitelist.
+	// In case of genesis block, add operator address to whitelist.
+	if ctx.BlockHeight() == 0 {
+		k.SetValidatorWhitelist(ctx, valAddr)
+	} else if found := k.CheckValidatorWhitelist(ctx, valAddr); !found {
+		return nil, types.ErrValidatorNotFoundInWhitelist
+	}
+
 	// check to see if the pubkey or sender has been registered before
 	if _, found := k.GetValidator(ctx, valAddr); found {
 		return nil, types.ErrValidatorOwnerExists

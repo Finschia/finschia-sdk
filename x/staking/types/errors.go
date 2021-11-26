@@ -57,4 +57,5 @@ var (
 	ErrInvalidHistoricalInfo           = sdkerrors.Register(ModuleName, 45, "invalid historical info")
 	ErrNoHistoricalInfo                = sdkerrors.Register(ModuleName, 46, "no historical info found")
 	ErrEmptyValidatorPubKey            = sdkerrors.Register(ModuleName, 47, "empty validator public key")
+	ErrValidatorNotFoundInWhitelist    = sdkerrors.Register(ModuleName, 48, "validator not found in whitelist")
 )

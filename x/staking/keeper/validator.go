@@ -94,6 +94,24 @@ func (k Keeper) SetNewValidatorByPowerIndex(ctx sdk.Context, validator types.Val
 	store.Set(types.GetValidatorsByPowerIndexKey(validator), validator.GetOperator().Bytes())
 }
 
+// validator whitelist
+func (k Keeper) SetValidatorWhitelist(ctx sdk.Context, operatorAddr sdk.ValAddress) {
+	store := ctx.KVStore(k.storeKey)
+	store.Set(types.GetValidatorsWhitelistKey(operatorAddr), []byte(""))
+}
+
+// validator whitelist
+func (k Keeper) DeleteValidatorWhitelist(ctx sdk.Context, operatorAddr sdk.ValAddress) {
+	store := ctx.KVStore(k.storeKey)
+	store.Delete(types.GetValidatorsWhitelistKey(operatorAddr))
+}
+
+// validator whitelist
+func (k Keeper) CheckValidatorWhitelist(ctx sdk.Context, operatorAddr sdk.ValAddress) bool {
+	store := ctx.KVStore(k.storeKey)
+	return store.Has(types.GetValidatorsWhitelistKey(operatorAddr))
+}
+
 // Update the tokens of an existing validator, update the validators power index key
 func (k Keeper) AddValidatorTokensAndShares(ctx sdk.Context, validator types.Validator,
 	tokensToAdd sdk.Int) (valOut types.Validator, addedShares sdk.Dec) {

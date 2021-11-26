@@ -18,6 +18,7 @@ func (suite *KeeperTestSuite) TestHandleDoubleSign() {
 	operatorAddr, val := valAddresses[0], pubkeys[0]
 	tstaking := teststaking.NewHelper(suite.T(), ctx, suite.app.StakingKeeper)
 
+	suite.app.StakingKeeper.SetValidatorWhitelist(ctx, operatorAddr)
 	selfDelegation := tstaking.CreateValidatorWithValPower(operatorAddr, val, power, true)
 
 	// execute end-blocker and verify validator attributes
@@ -80,6 +81,7 @@ func (suite *KeeperTestSuite) TestHandleDoubleSign_TooOld() {
 	operatorAddr, val := valAddresses[0], pubkeys[0]
 	tstaking := teststaking.NewHelper(suite.T(), ctx, suite.app.StakingKeeper)
 
+	suite.app.StakingKeeper.SetValidatorWhitelist(ctx, operatorAddr)
 	amt := tstaking.CreateValidatorWithValPower(operatorAddr, val, power, true)
 
 	// execute end-blocker and verify validator attributes
