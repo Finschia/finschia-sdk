@@ -8,6 +8,7 @@
 * (x/upgrade) [\#377] (https://github.com/line/lbm-sdk/pull/377) To smoothen the update to the latest stable release, the SDK includes vesion map for managing migrations between SDK versions.
 * (x/wasm) [\#358] (https://github.com/line/lbm-sdk/pull/358) change wasm metrics method to using prometheus directly
 * (x/feegrant) [\#380] (https://github.com/line/lbm-sdk/pull/380) Feegrant module
+* (x/staking) [\#387] (https://github.com/line/lbm-sdk/pull/387) Validator whitelist for MsgCreateValidator
 
 ### Improvements
 * (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter
