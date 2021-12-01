@@ -633,14 +633,14 @@ func (app *BaseApp) anteTx(ctx sdk.Context, txBytes []byte, tx sdk.Tx, simulate 
 // Note, gas execution info is always returned. A reference to a Result is
 // returned if the tx does not run out of gas and if all the messages are valid
 // and execute successfully. An error is returned otherwise.
-func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, err error) {
+func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.GasInfo, result *sdk.Result, anteEvents []abci.Event, err error) {
 	ctx := app.getRunContextForTx(txBytes, simulate)
 	ms := ctx.MultiStore()
 
 	// only run the tx if there is block gas remaining
 	if !simulate && ctx.BlockGasMeter().IsOutOfGas() {
 		gInfo = sdk.GasInfo{GasUsed: ctx.BlockGasMeter().GasConsumed()}
-		return gInfo, nil, sdkerrors.Wrap(sdkerrors.ErrOutOfGas, "no block gas left to run tx")
+		return gInfo, nil, nil, sdkerrors.Wrap(sdkerrors.ErrOutOfGas, "no block gas left to run tx")
 	}
 
 	var startingGas uint64
@@ -676,7 +676,7 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 
 	msgs := tx.GetMsgs()
 	if err = validateBasicTxMsgs(msgs); err != nil {
-		return sdk.GasInfo{}, nil, err
+		return sdk.GasInfo{}, nil, nil, err
 	}
 
 	var newCtx sdk.Context
@@ -691,11 +691,12 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 		ctx = newCtx.WithMultiStore(ms)
 	}
 
-	events := ctx.EventManager().Events()
-
 	if err != nil {
-		return gInfo, nil, err
+		return gInfo, nil, nil, err
 	}
+
+	events := ctx.EventManager().Events()
+	anteEvents = events.ToABCIEvents()
 
 	// Create a new Context based off of the existing Context with a MultiStore branch
 	// in case message processing fails. At this point, the MultiStore
@@ -709,13 +710,13 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 	if err == nil && !simulate {
 		msCache.Write()
 
-		if len(events) > 0 {
+		if len(anteEvents) > 0 {
 			// append the events in the order of occurrence
-			result.Events = append(events.ToABCIEvents(), result.Events...)
+			result.Events = append(anteEvents, result.Events...)
 		}
 	}
 
-	return gInfo, result, err
+	return gInfo, result, anteEvents, err
 }
 
 // runMsgs iterates through a list of messages and executes them with the provided
