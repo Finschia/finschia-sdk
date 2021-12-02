@@ -14,7 +14,8 @@
 * (auth) [\#348](https://github.com/line/lbm-sdk/pull/348) Increase default valid_sig_block_period
 
 ### Bug Fixes
-* (x/feegrant) [\#383] (https://github.com/line/lbm-sdk/pull/383) update allowance inside AllowedMsgAllowance
+* (x/feegrant) [\#383] (https://github.com/line/lbm-sdk/pull/383) Update allowance inside AllowedMsgAllowance
+* (tm-db) [\#388] (https://github.com/line/lbm-sdk/pull/388) Bump up tm-db fixing invalid memory reference
 
 ### Breaking Changes
 
