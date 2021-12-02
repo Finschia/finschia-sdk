@@ -1,7 +1,6 @@
 package v1
 
 import (
-
 	types3 "github.com/line/lbm-sdk/x/gov/types"
 	yaml "gopkg.in/yaml.v2"
 
