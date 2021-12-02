@@ -41,6 +41,7 @@ var (
 	ActiveProposalQueuePrefix   = []byte{0x01}
 	InactiveProposalQueuePrefix = []byte{0x02}
 	ProposalIDKey               = []byte{0x03}
+	VersionKey                  = []byte{0x04}
 
 	DepositsKeyPrefix = []byte{0x10}
 
@@ -58,6 +59,16 @@ func GetProposalIDBytes(proposalID uint64) (proposalIDBz []byte) {
 
 // GetProposalIDFromBytes returns proposalID in uint64 format from a byte array
 func GetProposalIDFromBytes(bz []byte) (proposalID uint64) {
+	return binary.BigEndian.Uint64(bz)
+}
+
+func GetVersionBytes(version uint64) (versionBz []byte) {
+	versionBz = make([]byte, 8)
+	binary.BigEndian.PutUint64(versionBz, version)
+	return
+}
+
+func GetVersionFromBytes(bz []byte) (version uint64) {
 	return binary.BigEndian.Uint64(bz)
 }
 

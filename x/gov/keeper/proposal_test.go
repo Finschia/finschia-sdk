@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	v1 "github.com/line/lbm-sdk/x/gov/migrations/v1"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
@@ -27,7 +28,9 @@ func TestGetSetProposal(t *testing.T) {
 
 	gotProposal, ok := app.GovKeeper.GetProposal(ctx, proposalID)
 	require.True(t, ok)
-	require.True(t, proposal.Equal(gotProposal))
+	proposalv1 := v1.ProposalToProposalV1(proposal)
+	gotProposalv1 := v1.ProposalToProposalV1(gotProposal)
+	require.True(t, proposalv1.Equal(gotProposalv1))
 }
 
 func TestActivateVotingPeriod(t *testing.T) {

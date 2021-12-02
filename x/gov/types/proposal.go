@@ -38,6 +38,7 @@ func NewProposal(content Content, id uint64, submitTime, depositEndTime time.Tim
 	}
 
 	p.Content = any
+	p.NewFieldSample = 100 // dummy value
 
 	return p, nil
 }

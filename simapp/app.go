@@ -420,6 +420,17 @@ func NewSimApp(
 	)
 	app.SetEndBlocker(app.EndBlocker)
 
+	app.UpgradeKeeper.SetUpgradeHandler(
+		"sample",
+		func(ctx sdk.Context, _ upgradetypes.Plan, vm module.VersionMap) (module.VersionMap, error) {
+			vm, err := app.mm.RunMigrations(ctx, app.configurator, vm)
+			app.GovKeeper.UpgradeVersionTo2(ctx)
+
+			app.Logger().Info("The sample upgrade plan executed and gov module upgraded to v2 successfully")
+			return vm, err
+		},
+	)
+
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
 			ostos.Exit(err.Error())

@@ -8,8 +8,15 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
+	v1 "github.com/line/lbm-sdk/x/gov/migrations/v1"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
+
+func (suite *KeeperTestSuite) requireProposalEqual(exp types.Proposal, res types.Proposal) {
+	proposalv1 := v1.ProposalToProposalV1(exp)
+	resProposalv1 := v1.ProposalToProposalV1(res)
+	suite.Require().Equal(proposalv1.String(), resProposalv1.String())
+}
 
 func (suite *KeeperTestSuite) TestGRPCQueryProposal() {
 	app, ctx, queryClient := suite.app, suite.ctx, suite.queryClient
@@ -68,7 +75,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryProposal() {
 
 			if testCase.expPass {
 				suite.Require().NoError(err)
-				suite.Require().Equal(expProposal.String(), proposalRes.Proposal.String())
+				suite.requireProposalEqual(expProposal, proposalRes.Proposal)
 			} else {
 				suite.Require().Error(err)
 				suite.Require().Nil(proposalRes)
@@ -208,7 +215,7 @@ func (suite *KeeperTestSuite) TestGRPCQueryProposals() {
 
 				suite.Require().Len(proposals.GetProposals(), len(expRes.GetProposals()))
 				for i := 0; i < len(proposals.GetProposals()); i++ {
-					suite.Require().Equal(proposals.GetProposals()[i].String(), expRes.GetProposals()[i].String())
+					suite.requireProposalEqual(proposals.GetProposals()[i], expRes.GetProposals()[i])
 				}
 
 			} else {

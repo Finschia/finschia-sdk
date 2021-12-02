@@ -6,6 +6,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	v1 "github.com/line/lbm-sdk/x/gov/migrations/v1"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -61,7 +62,7 @@ func (keeper Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Prop
 	}
 
 	var proposal types.Proposal
-	keeper.MustUnmarshalProposal(bz, &proposal)
+	keeper.MustUnmarshalProposal(ctx, bz, &proposal)
 
 	return proposal, true
 }
@@ -70,7 +71,7 @@ func (keeper Keeper) GetProposal(ctx sdk.Context, proposalID uint64) (types.Prop
 func (keeper Keeper) SetProposal(ctx sdk.Context, proposal types.Proposal) {
 	store := ctx.KVStore(keeper.storeKey)
 
-	bz := keeper.MustMarshalProposal(proposal)
+	bz := keeper.MustMarshalProposal(ctx, proposal)
 
 	store.Set(types.ProposalKey(proposal.ProposalId), bz)
 }
@@ -96,10 +97,7 @@ func (keeper Keeper) IterateProposals(ctx sdk.Context, cb func(proposal types.Pr
 
 	for ; iterator.Valid(); iterator.Next() {
 		var proposal types.Proposal
-		err := keeper.UnmarshalProposal(iterator.Value(), &proposal)
-		if err != nil {
-			panic(err)
-		}
+		keeper.MustUnmarshalProposal(ctx, iterator.Value(), &proposal)
 
 		if cb(proposal) {
 			break
@@ -191,33 +189,23 @@ func (keeper Keeper) ActivateVotingPeriod(ctx sdk.Context, proposal types.Propos
 	keeper.InsertActiveProposalQueue(ctx, proposal.ProposalId, proposal.VotingEndTime)
 }
 
-func (keeper Keeper) MarshalProposal(proposal types.Proposal) ([]byte, error) {
-	bz, err := keeper.cdc.MarshalBinaryBare(&proposal)
-	if err != nil {
-		return nil, err
-	}
-	return bz, nil
-}
-
-func (keeper Keeper) UnmarshalProposal(bz []byte, proposal *types.Proposal) error {
-	err := keeper.cdc.UnmarshalBinaryBare(bz, proposal)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func (keeper Keeper) MustMarshalProposal(proposal types.Proposal) []byte {
-	bz, err := keeper.MarshalProposal(proposal)
-	if err != nil {
-		panic(err)
+func (keeper Keeper) MustMarshalProposal(ctx sdk.Context, proposal types.Proposal) []byte {
+	var bz []byte
+	if keeper.GetModuleVersion(ctx) == 1 {
+		proposalv1 := v1.ProposalToProposalV1(proposal)
+		bz = keeper.cdc.MustMarshalBinaryBare(&proposalv1)
+	} else {
+		bz = keeper.cdc.MustMarshalBinaryBare(&proposal)
 	}
 	return bz
 }
 
-func (keeper Keeper) MustUnmarshalProposal(bz []byte, proposal *types.Proposal) {
-	err := keeper.UnmarshalProposal(bz, proposal)
-	if err != nil {
-		panic(err)
+func (keeper Keeper) MustUnmarshalProposal(ctx sdk.Context, bz []byte, proposal *types.Proposal) {
+	if keeper.GetModuleVersion(ctx) == 1 {
+		var proposalv1 v1.ProposalV1
+		keeper.cdc.MustUnmarshalBinaryBare(bz, &proposalv1)
+		*proposal = v1.ProposalV1ToProposal(proposalv1)
+	} else {
+		keeper.cdc.MustUnmarshalBinaryBare(bz, proposal)
 	}
 }

@@ -84,6 +84,8 @@ message Proposal {
       [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_start_time\""];
   google.protobuf.Timestamp voting_end_time = 9
       [(gogoproto.stdtime) = true, (gogoproto.nullable) = false, (gogoproto.moretags) = "yaml:\"voting_end_time\""];
+
+  uint64 new_field_sample = 10 [(gogoproto.jsontag) = "new_field_sample", (gogoproto.moretags) = "yaml:\"new_field_sample\""];
 }
 
 // ProposalStatus enumerates the valid statuses of a proposal.

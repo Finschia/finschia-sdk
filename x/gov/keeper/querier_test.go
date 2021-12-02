@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	v1 "github.com/line/lbm-sdk/x/gov/migrations/v1"
 	abci "github.com/line/ostracon/abci/types"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
@@ -243,13 +244,13 @@ func TestQueries(t *testing.T) {
 	proposals := getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", "", types.StatusDepositPeriod, 1, 0)
 
 	require.Len(t, proposals, 1)
-	require.Equal(t, proposal1, proposals[0])
+	require.Equal(t, v1.ProposalToProposalV1(proposal1), v1.ProposalToProposalV1(proposals[0]))
 
 	// Only proposals #2 and #3 should be in Voting Period
 	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", "", types.StatusVotingPeriod, 1, 0)
 	require.Len(t, proposals, 2)
-	require.Equal(t, proposal2, proposals[0])
-	require.Equal(t, proposal3, proposals[1])
+	require.Equal(t, v1.ProposalToProposalV1(proposal2), v1.ProposalToProposalV1(proposals[0]))
+	require.Equal(t, v1.ProposalToProposalV1(proposal3), v1.ProposalToProposalV1(proposals[1]))
 
 	// Addrs[0] votes on proposals #2 & #3
 	vote1 := types.NewVote(proposal2.ProposalId, TestAddrs[0], types.NewNonSplitVoteOption(types.OptionYes))
@@ -263,8 +264,8 @@ func TestQueries(t *testing.T) {
 
 	// Test query voted by TestAddrs[0]
 	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", TestAddrs[0], types.StatusNil, 1, 0)
-	require.Equal(t, proposal2, proposals[0])
-	require.Equal(t, proposal3, proposals[1])
+	require.Equal(t, v1.ProposalToProposalV1(proposal2), v1.ProposalToProposalV1(proposals[0]))
+	require.Equal(t, v1.ProposalToProposalV1(proposal3), v1.ProposalToProposalV1(proposals[1]))
 
 	// Test query votes on types.Proposal 2
 	votes := getQueriedVotes(t, ctx, legacyQuerierCdc, querier, proposal2.ProposalId, 1, 0)
@@ -282,9 +283,9 @@ func TestQueries(t *testing.T) {
 
 	// Test query all proposals
 	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", "", types.StatusNil, 1, 0)
-	require.Equal(t, proposal1, proposals[0])
-	require.Equal(t, proposal2, proposals[1])
-	require.Equal(t, proposal3, proposals[2])
+	require.Equal(t, v1.ProposalToProposalV1(proposal1), v1.ProposalToProposalV1(proposals[0]))
+	require.Equal(t, v1.ProposalToProposalV1(proposal2), v1.ProposalToProposalV1(proposals[1]))
+	require.Equal(t, v1.ProposalToProposalV1(proposal3), v1.ProposalToProposalV1(proposals[2]))
 
 	// Test query voted by TestAddrs[1]
 	proposals = getQueriedProposals(t, ctx, legacyQuerierCdc, querier, "", TestAddrs[1], types.StatusNil, 1, 0)
