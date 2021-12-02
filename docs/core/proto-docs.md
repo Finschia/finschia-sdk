@@ -7519,7 +7519,7 @@ VoteOption enumerates the valid vote options for a given governance proposal.
 <a name="lbm.gov.migrations.v1.ProposalV1"></a>
 
 ### ProposalV1
-
+Old Proposal type (v1)
 
 
 | Field | Type | Label | Description |

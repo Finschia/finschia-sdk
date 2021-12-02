@@ -13,6 +13,7 @@ option (gogoproto.goproto_stringer_all) = false;
 option (gogoproto.stringer_all)         = false;
 option (gogoproto.goproto_getters_all)  = false;
 
+// Old Proposal type (v1)
 message ProposalV1 {
 	option (gogoproto.equal) = true;
 

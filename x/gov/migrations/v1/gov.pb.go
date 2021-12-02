@@ -32,6 +32,7 @@ var _ = time.Kitchen
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// Old Proposal type (v1)
 type ProposalV1 struct {
 	ProposalId       uint64                              `protobuf:"varint,1,opt,name=proposal_id,json=proposalId,proto3" json:"id" yaml:"id"`
 	Content          *types.Any                          `protobuf:"bytes,2,opt,name=content,proto3" json:"content,omitempty"`
