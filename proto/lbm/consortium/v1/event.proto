@@ -1,0 +1,14 @@
+syntax = "proto3";
+package lbm.consortium.v1;
+
+option go_package = "github.com/line/lbm-sdk/x/consortium/types";
+
+// EventAddAllowedValidator is emitted after adding allowed validator
+message EventAddAllowedValidator {
+  string validator_address = 1;
+}
+
+// EventRemoveAllowedValidator is emitted after removing allowed validator
+message EventRemoveAllowedValidator {
+  string validator_address = 1;
+}

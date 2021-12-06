@@ -1,0 +1,62 @@
+syntax = "proto3";
+package lbm.consortium.v1;
+
+import "lbm/base/query/v1/pagination.proto";
+import "google/api/annotations.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/consortium/types";
+
+// Query defines the gRPC querier service for consortium module.
+service Query {
+  // Enabled queries the modules availability.
+  rpc Enabled(QueryEnabledRequest) returns (QueryEnabledResponse) {
+    option (google.api.http).get = "/lbm/consortium/v1/enabled";
+  }
+
+  // AllowedValidators queries allowed validators.
+  rpc AllowedValidators(QueryAllowedValidatorsRequest) returns (QueryAllowedValidatorsResponse) {
+    option (google.api.http).get = "/lbm/consortium/v1/validators";
+  }
+
+  // AllowedValidator queries whether the address is allowed by consortium.
+  rpc AllowedValidator(QueryAllowedValidatorRequest) returns (QueryAllowedValidatorResponse) {
+    option (google.api.http).get = "/lbm/consortium/v1/validators/{validator_address}/allowed";
+  }
+}
+
+// QueryEnabledRequest is the request type for the Query/Params RPC method.
+message QueryEnabledRequest {}
+
+// QueryEnabledResponse is the response type for the Query/Params RPC method.
+message QueryEnabledResponse {
+  bool enabled = 1;
+}
+
+// QueryAllowedValidatorsRequest is the request type for the
+// Query/AllowedValidators RPC method.
+message QueryAllowedValidatorsRequest {
+  // pagination defines an optional pagination for the request.
+  lbm.base.query.v1.PageRequest pagination = 1;
+}
+
+// QueryAllowedValidatorsResponse is the response type for the
+// Query/AllowedValidators RPC method.
+message QueryAllowedValidatorsResponse {
+  repeated string validator_addresses = 1;
+
+  // pagination defines the pagination in the response.
+  lbm.base.query.v1.PageResponse pagination = 2;
+}
+
+// QueryAllowedValidatorRequest is the request type for the
+// Query/AllowedValidator RPC method.
+message QueryAllowedValidatorRequest {
+  // validator_address defines the validator address to query for.
+  string validator_address = 1;
+}
+
+// QueryAllowedValidatorResponse is the request type for the
+// Query/AllowedValidator RPC method.
+message QueryAllowedValidatorResponse {
+  bool allowed = 1;
+}

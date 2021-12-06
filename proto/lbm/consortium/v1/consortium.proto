@@ -1,0 +1,31 @@
+syntax = "proto3";
+package lbm.consortium.v1;
+
+option go_package            = "github.com/line/lbm-sdk/x/consortium/types";
+option (gogoproto.equal_all) = true;
+
+import "gogoproto/gogo.proto";
+
+// DisableConsortiumProposal details a proposal for turning off consortium module.
+message DisableConsortiumProposal {
+  option (gogoproto.equal)            = false;
+  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_stringer) = false;
+
+  string title       = 1;
+  string description = 2;
+}
+
+// EditAllowedValidatorsProposal details a proposal for editing allowed validators on consortium.
+// If the operator sending `CreateValidator` is not allowed first, corresponding validator
+// would be tombstoned.
+message EditAllowedValidatorsProposal {
+  option (gogoproto.equal)            = false;
+  option (gogoproto.goproto_getters)  = false;
+  option (gogoproto.goproto_stringer) = false;
+
+  string          title              = 1;
+  string          description        = 2;
+  repeated string adding_addresses   = 3 [(gogoproto.moretags) = "yaml:\"adding_addresses\""];
+  repeated string removing_addresses = 4 [(gogoproto.moretags) = "yaml:\"removing_addresses\""];
+}

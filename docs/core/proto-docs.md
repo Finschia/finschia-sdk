@@ -366,6 +366,27 @@
     - [GenesisOwners](#lbm.capability.v1.GenesisOwners)
     - [GenesisState](#lbm.capability.v1.GenesisState)
   
+- [lbm/consortium/v1/consortium.proto](#lbm/consortium/v1/consortium.proto)
+    - [DisableConsortiumProposal](#lbm.consortium.v1.DisableConsortiumProposal)
+    - [EditAllowedValidatorsProposal](#lbm.consortium.v1.EditAllowedValidatorsProposal)
+  
+- [lbm/consortium/v1/event.proto](#lbm/consortium/v1/event.proto)
+    - [EventAddAllowedValidator](#lbm.consortium.v1.EventAddAllowedValidator)
+    - [EventRemoveAllowedValidator](#lbm.consortium.v1.EventRemoveAllowedValidator)
+  
+- [lbm/consortium/v1/genesis.proto](#lbm/consortium/v1/genesis.proto)
+    - [GenesisState](#lbm.consortium.v1.GenesisState)
+  
+- [lbm/consortium/v1/query.proto](#lbm/consortium/v1/query.proto)
+    - [QueryAllowedValidatorRequest](#lbm.consortium.v1.QueryAllowedValidatorRequest)
+    - [QueryAllowedValidatorResponse](#lbm.consortium.v1.QueryAllowedValidatorResponse)
+    - [QueryAllowedValidatorsRequest](#lbm.consortium.v1.QueryAllowedValidatorsRequest)
+    - [QueryAllowedValidatorsResponse](#lbm.consortium.v1.QueryAllowedValidatorsResponse)
+    - [QueryEnabledRequest](#lbm.consortium.v1.QueryEnabledRequest)
+    - [QueryEnabledResponse](#lbm.consortium.v1.QueryEnabledResponse)
+  
+    - [Query](#lbm.consortium.v1.Query)
+  
 - [lbm/crisis/v1/genesis.proto](#lbm/crisis/v1/genesis.proto)
     - [GenesisState](#lbm.crisis.v1.GenesisState)
   
@@ -5774,6 +5795,255 @@ GenesisState defines the capability module's genesis state.
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/consortium/v1/consortium.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/consortium/v1/consortium.proto
+
+
+
+<a name="lbm.consortium.v1.DisableConsortiumProposal"></a>
+
+### DisableConsortiumProposal
+DisableConsortiumProposal details a proposal for turning off consortium module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.EditAllowedValidatorsProposal"></a>
+
+### EditAllowedValidatorsProposal
+EditAllowedValidatorsProposal details a proposal for editing allowed validators on consortium.
+If the operator sending `CreateValidator` is not allowed first, corresponding validator
+would be tombstoned.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `adding_addresses` | [string](#string) | repeated |  |
+| `removing_addresses` | [string](#string) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/consortium/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/consortium/v1/event.proto
+
+
+
+<a name="lbm.consortium.v1.EventAddAllowedValidator"></a>
+
+### EventAddAllowedValidator
+EventAddAllowedValidator is emitted after adding allowed validator
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.EventRemoveAllowedValidator"></a>
+
+### EventRemoveAllowedValidator
+EventRemoveAllowedValidator is emitted after removing allowed validator
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/consortium/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/consortium/v1/genesis.proto
+
+
+
+<a name="lbm.consortium.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the consortium module's genesis state.
+No need to import/export denied validators, because it is transient information.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `enabled` | [bool](#bool) |  | enabled defines the module's availability at genesis. |
+| `allowed_validators` | [string](#string) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/consortium/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/consortium/v1/query.proto
+
+
+
+<a name="lbm.consortium.v1.QueryAllowedValidatorRequest"></a>
+
+### QueryAllowedValidatorRequest
+QueryAllowedValidatorRequest is the request type for the
+Query/AllowedValidator RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryAllowedValidatorResponse"></a>
+
+### QueryAllowedValidatorResponse
+QueryAllowedValidatorResponse is the request type for the
+Query/AllowedValidator RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowed` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryAllowedValidatorsRequest"></a>
+
+### QueryAllowedValidatorsRequest
+QueryAllowedValidatorsRequest is the request type for the
+Query/AllowedValidators RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryAllowedValidatorsResponse"></a>
+
+### QueryAllowedValidatorsResponse
+QueryAllowedValidatorsResponse is the response type for the
+Query/AllowedValidators RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_addresses` | [string](#string) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryEnabledRequest"></a>
+
+### QueryEnabledRequest
+QueryEnabledRequest is the request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryEnabledResponse"></a>
+
+### QueryEnabledResponse
+QueryEnabledResponse is the response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `enabled` | [bool](#bool) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.consortium.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service for consortium module.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Enabled` | [QueryEnabledRequest](#lbm.consortium.v1.QueryEnabledRequest) | [QueryEnabledResponse](#lbm.consortium.v1.QueryEnabledResponse) | Enabled queries the modules availability. | GET|/lbm/consortium/v1/enabled|
+| `AllowedValidators` | [QueryAllowedValidatorsRequest](#lbm.consortium.v1.QueryAllowedValidatorsRequest) | [QueryAllowedValidatorsResponse](#lbm.consortium.v1.QueryAllowedValidatorsResponse) | AllowedValidators queries allowed validators. | GET|/lbm/consortium/v1/validators|
+| `AllowedValidator` | [QueryAllowedValidatorRequest](#lbm.consortium.v1.QueryAllowedValidatorRequest) | [QueryAllowedValidatorResponse](#lbm.consortium.v1.QueryAllowedValidatorResponse) | AllowedValidator queries whether the address is allowed by consortium. | GET|/lbm/consortium/v1/validators/{validator_address}/allowed|
 
  <!-- end services -->
 
