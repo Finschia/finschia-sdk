@@ -15,6 +15,7 @@
 
 ### Bug Fixes
 * (x/feegrant) [\#383] (https://github.com/line/lbm-sdk/pull/383) update allowance inside AllowedMsgAllowance
+* (swagger) [\#391] (https://github.com/line/lbm-sdk/pull/391) fix swagger's config path for wasm
 
 ### Breaking Changes
 
