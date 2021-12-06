@@ -13490,23 +13490,23 @@ paths:
                         type: object
                         properties:
                           option:
-                      type: string
-                      enum:
-                        - VOTE_OPTION_UNSPECIFIED
-                        - VOTE_OPTION_YES
-                        - VOTE_OPTION_ABSTAIN
-                        - VOTE_OPTION_NO
-                        - VOTE_OPTION_NO_WITH_VETO
-                      default: VOTE_OPTION_UNSPECIFIED
-                      description: >-
+                            type: string
+                            enum:
+                              - VOTE_OPTION_UNSPECIFIED
+                              - VOTE_OPTION_YES
+                              - VOTE_OPTION_ABSTAIN
+                              - VOTE_OPTION_NO
+                              - VOTE_OPTION_NO_WITH_VETO
+                            default: VOTE_OPTION_UNSPECIFIED
+                            description: >-
                               VoteOption enumerates the valid vote options for a
                               given governance proposal.
 
-                         - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-                         - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-                         - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-                         - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-                         - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                               - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                               - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                               - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                               - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                               - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
                           weight:
                             type: string
                         description: >-
@@ -13826,23 +13826,23 @@ paths:
                       type: object
                       properties:
                         option:
-                    type: string
-                    enum:
-                      - VOTE_OPTION_UNSPECIFIED
-                      - VOTE_OPTION_YES
-                      - VOTE_OPTION_ABSTAIN
-                      - VOTE_OPTION_NO
-                      - VOTE_OPTION_NO_WITH_VETO
-                    default: VOTE_OPTION_UNSPECIFIED
-                    description: >-
+                          type: string
+                          enum:
+                            - VOTE_OPTION_UNSPECIFIED
+                            - VOTE_OPTION_YES
+                            - VOTE_OPTION_ABSTAIN
+                            - VOTE_OPTION_NO
+                            - VOTE_OPTION_NO_WITH_VETO
+                          default: VOTE_OPTION_UNSPECIFIED
+                          description: >-
                             VoteOption enumerates the valid vote options for a
                             given governance proposal.
 
-                       - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-                       - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-                       - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-                       - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-                       - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                             - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                             - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                             - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                             - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                             - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
                         weight:
                           type: string
                       description: >-
@@ -42571,23 +42571,23 @@ definitions:
               type: object
               properties:
                 option:
-            type: string
-            enum:
-              - VOTE_OPTION_UNSPECIFIED
-              - VOTE_OPTION_YES
-              - VOTE_OPTION_ABSTAIN
-              - VOTE_OPTION_NO
-              - VOTE_OPTION_NO_WITH_VETO
-            default: VOTE_OPTION_UNSPECIFIED
-            description: >-
-              VoteOption enumerates the valid vote options for a given
-              governance proposal.
+                  type: string
+                  enum:
+                    - VOTE_OPTION_UNSPECIFIED
+                    - VOTE_OPTION_YES
+                    - VOTE_OPTION_ABSTAIN
+                    - VOTE_OPTION_NO
+                    - VOTE_OPTION_NO_WITH_VETO
+                  default: VOTE_OPTION_UNSPECIFIED
+                  description: >-
+                    VoteOption enumerates the valid vote options for a given
+                    governance proposal.
 
-               - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-               - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-               - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-               - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-               - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                     - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                     - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                     - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                     - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                     - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
                 weight:
                   type: string
               description: WeightedVoteOption defines a unit of vote for vote split.
@@ -42631,23 +42631,23 @@ definitions:
                 type: object
                 properties:
                   option:
-              type: string
-              enum:
-                - VOTE_OPTION_UNSPECIFIED
-                - VOTE_OPTION_YES
-                - VOTE_OPTION_ABSTAIN
-                - VOTE_OPTION_NO
-                - VOTE_OPTION_NO_WITH_VETO
-              default: VOTE_OPTION_UNSPECIFIED
-              description: >-
-                VoteOption enumerates the valid vote options for a given
-                governance proposal.
+                    type: string
+                    enum:
+                      - VOTE_OPTION_UNSPECIFIED
+                      - VOTE_OPTION_YES
+                      - VOTE_OPTION_ABSTAIN
+                      - VOTE_OPTION_NO
+                      - VOTE_OPTION_NO_WITH_VETO
+                    default: VOTE_OPTION_UNSPECIFIED
+                    description: >-
+                      VoteOption enumerates the valid vote options for a given
+                      governance proposal.
 
-                 - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-                 - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-                 - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-                 - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-                 - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                       - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                       - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                       - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                       - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                       - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
                   weight:
                     type: string
                 description: WeightedVoteOption defines a unit of vote for vote split.
@@ -42739,23 +42739,23 @@ definitions:
           type: object
           properties:
             option:
-        type: string
-        enum:
-          - VOTE_OPTION_UNSPECIFIED
-          - VOTE_OPTION_YES
-          - VOTE_OPTION_ABSTAIN
-          - VOTE_OPTION_NO
-          - VOTE_OPTION_NO_WITH_VETO
-        default: VOTE_OPTION_UNSPECIFIED
-        description: >-
+              type: string
+              enum:
+                - VOTE_OPTION_UNSPECIFIED
+                - VOTE_OPTION_YES
+                - VOTE_OPTION_ABSTAIN
+                - VOTE_OPTION_NO
+                - VOTE_OPTION_NO_WITH_VETO
+              default: VOTE_OPTION_UNSPECIFIED
+              description: >-
                 VoteOption enumerates the valid vote options for a given
                 governance proposal.
 
-           - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-           - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-           - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-           - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-           - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                 - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                 - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                 - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                 - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                 - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
             weight:
               type: string
           description: WeightedVoteOption defines a unit of vote for vote split.
@@ -43591,8 +43591,8 @@ definitions:
 
             multiplied by exchange rate.
     description: >-
-      HistoricalInfo contains header and validator information for a given
-      block.
+      HistoricalInfo contains header and validator, voter information for a
+      given block.
 
       It is stored as part of staking module's state, which persists the `n`
       most
@@ -46866,6 +46866,15 @@ definitions:
               appropriate fee grant does not exist or the chain does
 
               not support fee grants, this will fail
+      sig_block_height:
+        type: string
+        format: uint64
+        description: >-
+          sig block height is available between current block height and current
+          block height - `VALID_SIG_BLOCK_PERIOD`
+
+          this is used for distinguish signatures instead of account number.
+          this is mandatory.
     description: |-
       AuthInfo describes the fee and signer modes that are used to sign a
       transaction.
@@ -48368,15 +48377,6 @@ definitions:
               whole
 
               transaction.
-          sig_block_height:
-            type: string
-            format: uint64
-            description: >-
-              sig block height is available between current block height and
-              current block height - `VALID_SIG_BLOCK_PERIOD`
-
-              this is used for distinguish signatures instead of account number.
-              this is mandatory.
           memo:
             type: string
             title: memo is any arbitrary memo to be added to the transaction
@@ -48947,15 +48947,6 @@ definitions:
           is referred to as the primary signer and pays the fee for the whole
 
           transaction.
-      sig_block_height:
-        type: string
-        format: uint64
-        description: >-
-          sig block height is available between current block height and current
-          block height - `VALID_SIG_BLOCK_PERIOD`
-
-          this is used for distinguish signatures instead of account number.
-          this is mandatory.
       memo:
         type: string
         title: memo is any arbitrary memo to be added to the transaction
@@ -53724,7 +53715,7 @@ definitions:
 
               chain.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
-  cosmwasm.wasm.v1.AbsoluteTxPosition:
+  lbm.wasm.v1.AbsoluteTxPosition:
     type: object
     properties:
       block_height:
@@ -53742,7 +53733,7 @@ definitions:
     description: |-
       AbsoluteTxPosition is a unique transaction position that allows for global
       ordering of transactions.
-  cosmwasm.wasm.v1.CodeInfoResponse:
+  lbm.wasm.v1.CodeInfoResponse:
     type: object
     properties:
       code_id:
@@ -53758,7 +53749,7 @@ definitions:
       builder:
         type: string
     title: CodeInfoResponse contains code meta data from CodeInfo
-  cosmwasm.wasm.v1.ContractCodeHistoryEntry:
+  lbm.wasm.v1.ContractCodeHistoryEntry:
     type: object
     properties:
       operation:
@@ -53801,7 +53792,7 @@ definitions:
         type: string
         format: byte
     description: ContractCodeHistoryEntry metadata to a contract.
-  cosmwasm.wasm.v1.ContractCodeHistoryOperationType:
+  lbm.wasm.v1.ContractCodeHistoryOperationType:
     type: string
     enum:
       - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
@@ -53816,7 +53807,7 @@ definitions:
        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE: ContractCodeHistoryOperationTypeMigrate code migration
        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS: ContractCodeHistoryOperationTypeGenesis based on genesis data
     title: ContractCodeHistoryOperationType actions that caused a code change
-  cosmwasm.wasm.v1.ContractInfo:
+  lbm.wasm.v1.ContractInfo:
     type: object
     properties:
       code_id:
@@ -54033,7 +54024,7 @@ definitions:
                 "value": "1.212s"
               }
     title: ContractInfo stores a WASM contract instance
-  cosmwasm.wasm.v1.ContractStatus:
+  lbm.wasm.v1.ContractStatus:
     type: string
     enum:
       - CONTRACT_STATUS_UNSPECIFIED
@@ -54045,7 +54036,7 @@ definitions:
        - CONTRACT_STATUS_ACTIVE: ContractStatus active
        - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
     title: ContractStatus types
-  cosmwasm.wasm.v1.Model:
+  lbm.wasm.v1.Model:
     type: object
     properties:
       key:
@@ -54057,7 +54048,7 @@ definitions:
         format: byte
         title: base64-encode raw value
     title: Model is a struct that holds a KV pair
-  cosmwasm.wasm.v1.QueryAllContractStateResponse:
+  lbm.wasm.v1.QueryAllContractStateResponse:
     type: object
     properties:
       models:
@@ -54095,7 +54086,7 @@ definitions:
     title: |-
       QueryAllContractStateResponse is the response type for the
       Query/AllContractState RPC method
-  cosmwasm.wasm.v1.QueryCodeResponse:
+  lbm.wasm.v1.QueryCodeResponse:
     type: object
     properties:
       code_info:
@@ -54118,7 +54109,7 @@ definitions:
         type: string
         format: byte
     title: QueryCodeResponse is the response type for the Query/Code RPC method
-  cosmwasm.wasm.v1.QueryCodesResponse:
+  lbm.wasm.v1.QueryCodesResponse:
     type: object
     properties:
       code_infos:
@@ -54158,7 +54149,7 @@ definitions:
 
               was set, its value is undefined otherwise
     title: QueryCodesResponse is the response type for the Query/Codes RPC method
-  cosmwasm.wasm.v1.QueryContractHistoryResponse:
+  lbm.wasm.v1.QueryContractHistoryResponse:
     type: object
     properties:
       entries:
@@ -54229,7 +54220,7 @@ definitions:
     title: >-
       QueryContractHistoryResponse is the response type for the
       Query/ContractHistory RPC method
-  cosmwasm.wasm.v1.QueryContractInfoResponse:
+  lbm.wasm.v1.QueryContractInfoResponse:
     type: object
     properties:
       address:
@@ -54461,7 +54452,7 @@ definitions:
     title: >-
       QueryContractInfoResponse is the response type for the Query/ContractInfo
       RPC method
-  cosmwasm.wasm.v1.QueryContractsByCodeResponse:
+  lbm.wasm.v1.QueryContractsByCodeResponse:
     type: object
     properties:
       contracts:
@@ -54490,7 +54481,7 @@ definitions:
     title: |-
       QueryContractsByCodeResponse is the response type for the
       Query/ContractsByCode RPC method
-  cosmwasm.wasm.v1.QueryRawContractStateResponse:
+  lbm.wasm.v1.QueryRawContractStateResponse:
     type: object
     properties:
       data:
@@ -54500,7 +54491,7 @@ definitions:
     title: |-
       QueryRawContractStateResponse is the response type for the
       Query/RawContractState RPC method
-  cosmwasm.wasm.v1.QuerySmartContractStateResponse:
+  lbm.wasm.v1.QuerySmartContractStateResponse:
     type: object
     properties:
       data:
