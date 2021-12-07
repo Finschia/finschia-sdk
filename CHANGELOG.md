@@ -16,6 +16,7 @@
 ### Bug Fixes
 * (x/feegrant) [\#383] (https://github.com/line/lbm-sdk/pull/383) Update allowance inside AllowedMsgAllowance
 * (tm-db) [\#388] (https://github.com/line/lbm-sdk/pull/388) Bump up tm-db fixing invalid memory reference
+* (swagger) [\#391] (https://github.com/line/lbm-sdk/pull/391) fix swagger's config path for wasm
 
 ### Breaking Changes
 
