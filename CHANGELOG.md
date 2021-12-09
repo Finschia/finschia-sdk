@@ -26,3 +26,4 @@
 
 ### Document Updates
 * (docs) [\#361](https://github.com/line/lbm-sdk/pull/361) Add sample command docs
+* (docs) [\#392](https://github.com/line/lbm-sdk/pull/392) Modify with latest version of swagger REST interface docs.
