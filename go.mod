@@ -8,7 +8,7 @@ require (
 	github.com/armon/go-metrics v0.3.10
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.0-beta
-	github.com/coinbase/rosetta-sdk-go v0.6.10
+	github.com/coinbase/rosetta-sdk-go v0.7.0
 	github.com/confio/ics23/go v0.6.6
 	github.com/coocood/freecache v1.2.0
 	github.com/cosmos/btcutil v1.0.4
