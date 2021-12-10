@@ -18,6 +18,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgMigrateContract{}, "wasm/MsgMigrateContract", nil)
 	cdc.RegisterConcrete(&MsgUpdateAdmin{}, "wasm/MsgUpdateAdmin", nil)
 	cdc.RegisterConcrete(&MsgClearAdmin{}, "wasm/MsgClearAdmin", nil)
+	cdc.RegisterConcrete(&MsgUpdateContractStatus{}, "wasm/MsgUpdateContractStatus", nil)
 	cdc.RegisterConcrete(&PinCodesProposal{}, "wasm/PinCodesProposal", nil)
 	cdc.RegisterConcrete(&UnpinCodesProposal{}, "wasm/UnpinCodesProposal", nil)
 
@@ -26,6 +27,7 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MigrateContractProposal{}, "wasm/MigrateContractProposal", nil)
 	cdc.RegisterConcrete(&UpdateAdminProposal{}, "wasm/UpdateAdminProposal", nil)
 	cdc.RegisterConcrete(&ClearAdminProposal{}, "wasm/ClearAdminProposal", nil)
+	cdc.RegisterConcrete(&UpdateContractStatusProposal{}, "wasm/UpdateContractStatusProposal", nil)
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
@@ -38,6 +40,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&MsgMigrateContract{},
 		&MsgUpdateAdmin{},
 		&MsgClearAdmin{},
+		&MsgUpdateContractStatus{},
 		&MsgIBCCloseChannel{},
 		&MsgIBCSend{},
 	)
@@ -50,6 +53,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 		&ClearAdminProposal{},
 		&PinCodesProposal{},
 		&UnpinCodesProposal{},
+		&UpdateContractStatusProposal{},
 	)
 
 	registry.RegisterInterface("ContractInfoExtension", (*ContractInfoExtension)(nil))
