@@ -11414,6 +11414,7 @@ CodeInfoResponse contains code meta data from CodeInfo
 | `data_hash` | [bytes](#bytes) |  |  |
 | `source` | [string](#string) |  |  |
 | `builder` | [string](#string) |  |  |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 
 
 

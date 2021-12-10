@@ -4,6 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 	"io/ioutil"
 	"testing"
 	"time"
@@ -444,6 +446,59 @@ func TestQueryContractHistory(t *testing.T) {
 			}
 			require.NoError(t, err)
 			assert.Equal(t, spec.expContent, got.Entries)
+		})
+	}
+}
+
+func TestQueryCode(t *testing.T) {
+	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
+	require.NoError(t, err)
+
+	ctx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+	keeper := keepers.WasmKeeper
+
+	codeID := uint64(1)
+	require.NoError(t, keeper.importCode(ctx, codeID,
+		types.CodeInfoFixture(types.WithSHA256CodeHash(wasmCode)), wasmCode))
+
+	specs := map[string]struct {
+		req    *types.QueryCodeRequest
+		expErr error
+	}{
+		"req nil": {
+			req:    nil,
+			expErr: status.Error(codes.InvalidArgument, "empty request"),
+		},
+		"req.CodeId=0": {
+			req:    &types.QueryCodeRequest{CodeId: 0},
+			expErr: sdkErrors.Wrap(types.ErrInvalid, "code id"),
+		},
+		"not exist codeID": {
+			req:    &types.QueryCodeRequest{CodeId: 2},
+			expErr: types.ErrNotFound,
+		},
+		"code codeID": {
+			req:    &types.QueryCodeRequest{CodeId: 1},
+			expErr: nil,
+		},
+	}
+
+	for msg, spec := range specs {
+		t.Run(msg, func(t *testing.T) {
+			xCtx, _ := ctx.CacheContext()
+
+			q := Querier(keeper)
+			got, err := q.Code(sdk.WrapSDKContext(xCtx), spec.req)
+			if spec.expErr != nil {
+				assert.Nil(t, got)
+				assert.NotNil(t, err)
+				assert.EqualError(t, err, spec.expErr.Error())
+			} else {
+				assert.Nil(t, err)
+				assert.NotNil(t, got)
+				assert.EqualValues(t, got.CodeID, codeID)
+				assert.NotNil(t, got.InstantiatePermission)
+			}
 		})
 	}
 }
