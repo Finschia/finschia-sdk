@@ -5,17 +5,17 @@ option go_package            = "github.com/line/lbm-sdk/x/consortium/types";
 option (gogoproto.equal_all) = true;
 
 import "gogoproto/gogo.proto";
+import "lbm/consortium/v1/consortium.proto";
 
 // GenesisState defines the consortium module's genesis state.
-// No need to import/export denied validators, because it is transient information.
 message GenesisState {
   option (gogoproto.equal)           = false;
   option (gogoproto.goproto_getters) = false;
 
-  // enabled defines the module's availability at genesis.
-  bool enabled = 1 [(gogoproto.moretags) = "yaml:\"enabled\""];
+  // params defines the module parameters at genesis.
+  Params params = 1 [(gogoproto.moretags) = "yaml:\"params\""];
 
   // allowed_validators defines the allowed validator addresses at genesis.
   // provided empty, the module gathers information from staking module.
-  repeated string allowed_validators = 2 [(gogoproto.moretags) = "yaml:\"allowed_validators\""];
+  repeated ValidatorAuth validator_auths = 2 [(gogoproto.moretags) = "yaml:\"validator_auths\""];
 }

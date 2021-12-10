@@ -23,23 +23,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// DisableConsortiumProposal details a proposal for turning off consortium module.
-type DisableConsortiumProposal struct {
-	Title       string `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+// Params defines the parameters for the consortium module.
+type Params struct {
+	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty" yaml:"enabled"`
 }
 
-func (m *DisableConsortiumProposal) Reset()      { *m = DisableConsortiumProposal{} }
-func (*DisableConsortiumProposal) ProtoMessage() {}
-func (*DisableConsortiumProposal) Descriptor() ([]byte, []int) {
+func (m *Params) Reset()         { *m = Params{} }
+func (m *Params) String() string { return proto.CompactTextString(m) }
+func (*Params) ProtoMessage()    {}
+func (*Params) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ff3cd9d46ac10ef2, []int{0}
 }
-func (m *DisableConsortiumProposal) XXX_Unmarshal(b []byte) error {
+func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *DisableConsortiumProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Params) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_DisableConsortiumProposal.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Params.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -49,39 +49,43 @@ func (m *DisableConsortiumProposal) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *DisableConsortiumProposal) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_DisableConsortiumProposal.Merge(m, src)
+func (m *Params) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Params.Merge(m, src)
 }
-func (m *DisableConsortiumProposal) XXX_Size() int {
+func (m *Params) XXX_Size() int {
 	return m.Size()
 }
-func (m *DisableConsortiumProposal) XXX_DiscardUnknown() {
-	xxx_messageInfo_DisableConsortiumProposal.DiscardUnknown(m)
+func (m *Params) XXX_DiscardUnknown() {
+	xxx_messageInfo_Params.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_DisableConsortiumProposal proto.InternalMessageInfo
+var xxx_messageInfo_Params proto.InternalMessageInfo
 
-// EditAllowedValidatorsProposal details a proposal for editing allowed validators on consortium.
-// If the operator sending `CreateValidator` is not allowed first, corresponding validator
-// would be tombstoned.
-type EditAllowedValidatorsProposal struct {
-	Title             string   `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
-	Description       string   `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	AddingAddresses   []string `protobuf:"bytes,3,rep,name=adding_addresses,json=addingAddresses,proto3" json:"adding_addresses,omitempty" yaml:"adding_addresses"`
-	RemovingAddresses []string `protobuf:"bytes,4,rep,name=removing_addresses,json=removingAddresses,proto3" json:"removing_addresses,omitempty" yaml:"removing_addresses"`
+func (m *Params) GetEnabled() bool {
+	if m != nil {
+		return m.Enabled
+	}
+	return false
 }
 
-func (m *EditAllowedValidatorsProposal) Reset()      { *m = EditAllowedValidatorsProposal{} }
-func (*EditAllowedValidatorsProposal) ProtoMessage() {}
-func (*EditAllowedValidatorsProposal) Descriptor() ([]byte, []int) {
+// ValidatorAuth defines authorization info of a validator.
+type ValidatorAuth struct {
+	OperatorAddress string `protobuf:"bytes,1,opt,name=operator_address,json=operatorAddress,proto3" json:"operator_address,omitempty" yaml:"operator_address"`
+	CreationAllowed bool   `protobuf:"varint,2,opt,name=creation_allowed,json=creationAllowed,proto3" json:"creation_allowed,omitempty" yaml:"creation_allowed"`
+}
+
+func (m *ValidatorAuth) Reset()         { *m = ValidatorAuth{} }
+func (m *ValidatorAuth) String() string { return proto.CompactTextString(m) }
+func (*ValidatorAuth) ProtoMessage()    {}
+func (*ValidatorAuth) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ff3cd9d46ac10ef2, []int{1}
 }
-func (m *EditAllowedValidatorsProposal) XXX_Unmarshal(b []byte) error {
+func (m *ValidatorAuth) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *EditAllowedValidatorsProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ValidatorAuth) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_EditAllowedValidatorsProposal.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ValidatorAuth.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -91,21 +95,115 @@ func (m *EditAllowedValidatorsProposal) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *EditAllowedValidatorsProposal) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_EditAllowedValidatorsProposal.Merge(m, src)
+func (m *ValidatorAuth) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ValidatorAuth.Merge(m, src)
 }
-func (m *EditAllowedValidatorsProposal) XXX_Size() int {
+func (m *ValidatorAuth) XXX_Size() int {
 	return m.Size()
 }
-func (m *EditAllowedValidatorsProposal) XXX_DiscardUnknown() {
-	xxx_messageInfo_EditAllowedValidatorsProposal.DiscardUnknown(m)
+func (m *ValidatorAuth) XXX_DiscardUnknown() {
+	xxx_messageInfo_ValidatorAuth.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_EditAllowedValidatorsProposal proto.InternalMessageInfo
+var xxx_messageInfo_ValidatorAuth proto.InternalMessageInfo
+
+func (m *ValidatorAuth) GetOperatorAddress() string {
+	if m != nil {
+		return m.OperatorAddress
+	}
+	return ""
+}
+
+func (m *ValidatorAuth) GetCreationAllowed() bool {
+	if m != nil {
+		return m.CreationAllowed
+	}
+	return false
+}
+
+// UpdateConsortiumParamsProposal details a proposal to update params of cosortium module.
+type UpdateConsortiumParamsProposal struct {
+	Title       string  `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description string  `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Params      *Params `protobuf:"bytes,3,opt,name=params,proto3" json:"params,omitempty"`
+}
+
+func (m *UpdateConsortiumParamsProposal) Reset()      { *m = UpdateConsortiumParamsProposal{} }
+func (*UpdateConsortiumParamsProposal) ProtoMessage() {}
+func (*UpdateConsortiumParamsProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ff3cd9d46ac10ef2, []int{2}
+}
+func (m *UpdateConsortiumParamsProposal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UpdateConsortiumParamsProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UpdateConsortiumParamsProposal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UpdateConsortiumParamsProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateConsortiumParamsProposal.Merge(m, src)
+}
+func (m *UpdateConsortiumParamsProposal) XXX_Size() int {
+	return m.Size()
+}
+func (m *UpdateConsortiumParamsProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateConsortiumParamsProposal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateConsortiumParamsProposal proto.InternalMessageInfo
+
+// UpdateValidatorAuthsProposal details a proposal to update validator auths on consortium.
+type UpdateValidatorAuthsProposal struct {
+	Title       string           `protobuf:"bytes,1,opt,name=title,proto3" json:"title,omitempty"`
+	Description string           `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Auths       []*ValidatorAuth `protobuf:"bytes,3,rep,name=auths,proto3" json:"auths,omitempty" yaml:"auths"`
+}
+
+func (m *UpdateValidatorAuthsProposal) Reset()      { *m = UpdateValidatorAuthsProposal{} }
+func (*UpdateValidatorAuthsProposal) ProtoMessage() {}
+func (*UpdateValidatorAuthsProposal) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ff3cd9d46ac10ef2, []int{3}
+}
+func (m *UpdateValidatorAuthsProposal) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *UpdateValidatorAuthsProposal) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_UpdateValidatorAuthsProposal.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *UpdateValidatorAuthsProposal) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_UpdateValidatorAuthsProposal.Merge(m, src)
+}
+func (m *UpdateValidatorAuthsProposal) XXX_Size() int {
+	return m.Size()
+}
+func (m *UpdateValidatorAuthsProposal) XXX_DiscardUnknown() {
+	xxx_messageInfo_UpdateValidatorAuthsProposal.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_UpdateValidatorAuthsProposal proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*DisableConsortiumProposal)(nil), "lbm.consortium.v1.DisableConsortiumProposal")
-	proto.RegisterType((*EditAllowedValidatorsProposal)(nil), "lbm.consortium.v1.EditAllowedValidatorsProposal")
+	proto.RegisterType((*Params)(nil), "lbm.consortium.v1.Params")
+	proto.RegisterType((*ValidatorAuth)(nil), "lbm.consortium.v1.ValidatorAuth")
+	proto.RegisterType((*UpdateConsortiumParamsProposal)(nil), "lbm.consortium.v1.UpdateConsortiumParamsProposal")
+	proto.RegisterType((*UpdateValidatorAuthsProposal)(nil), "lbm.consortium.v1.UpdateValidatorAuthsProposal")
 }
 
 func init() {
@@ -113,31 +211,88 @@ func init() {
 }
 
 var fileDescriptor_ff3cd9d46ac10ef2 = []byte{
-	// 330 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xca, 0x49, 0xca, 0xd5,
-	0x4f, 0xce, 0xcf, 0x2b, 0xce, 0x2f, 0x2a, 0xc9, 0x2c, 0xcd, 0xd5, 0x2f, 0x33, 0x44, 0xe2, 0xe9,
-	0x15, 0x14, 0xe5, 0x97, 0xe4, 0x0b, 0x09, 0xe6, 0x24, 0xe5, 0xea, 0x21, 0x89, 0x96, 0x19, 0x4a,
-	0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x65, 0xf5, 0x41, 0x2c, 0x88, 0x42, 0xa5, 0x44, 0x2e, 0x49,
-	0x97, 0xcc, 0xe2, 0xc4, 0xa4, 0x9c, 0x54, 0x67, 0xb8, 0xea, 0x80, 0xa2, 0xfc, 0x82, 0xfc, 0xe2,
-	0xc4, 0x1c, 0x21, 0x11, 0x2e, 0xd6, 0x92, 0xcc, 0x92, 0x9c, 0x54, 0x09, 0x46, 0x05, 0x46, 0x0d,
-	0xce, 0x20, 0x08, 0x47, 0x48, 0x81, 0x8b, 0x3b, 0x25, 0xb5, 0x38, 0xb9, 0x28, 0xb3, 0xa0, 0x24,
-	0x33, 0x3f, 0x4f, 0x82, 0x09, 0x2c, 0x87, 0x2c, 0x64, 0xc5, 0xd3, 0xb1, 0x40, 0x9e, 0x61, 0xc6,
-	0x02, 0x79, 0x86, 0x17, 0x0b, 0xe4, 0x19, 0x94, 0x7e, 0x33, 0x72, 0xc9, 0xba, 0xa6, 0x64, 0x96,
-	0x38, 0xe6, 0xe4, 0xe4, 0x97, 0xa7, 0xa6, 0x84, 0x25, 0xe6, 0x64, 0xa6, 0x24, 0x96, 0xe4, 0x17,
-	0x15, 0x53, 0x6a, 0x8f, 0x90, 0x1b, 0x97, 0x40, 0x62, 0x4a, 0x4a, 0x66, 0x5e, 0x7a, 0x7c, 0x62,
-	0x4a, 0x4a, 0x51, 0x6a, 0x71, 0x71, 0x6a, 0xb1, 0x04, 0xb3, 0x02, 0xb3, 0x06, 0xa7, 0x93, 0xf4,
-	0xa7, 0x7b, 0xf2, 0xe2, 0x95, 0x89, 0xb9, 0x39, 0x56, 0x4a, 0xe8, 0x2a, 0x94, 0x82, 0xf8, 0x21,
-	0x42, 0x8e, 0x30, 0x11, 0x21, 0x1f, 0x2e, 0xa1, 0xa2, 0xd4, 0xdc, 0xfc, 0x32, 0x54, 0x93, 0x58,
-	0xc0, 0x26, 0xc9, 0x7e, 0xba, 0x27, 0x2f, 0x09, 0x31, 0x09, 0x53, 0x8d, 0x52, 0x90, 0x20, 0x4c,
-	0x10, 0x6e, 0x1a, 0xaa, 0xef, 0x9d, 0x3c, 0x56, 0x3c, 0x92, 0x63, 0x3c, 0xf1, 0x48, 0x8e, 0xf1,
-	0xc2, 0x23, 0x39, 0xc6, 0x07, 0x8f, 0xe4, 0x18, 0x27, 0x3c, 0x96, 0x63, 0xb8, 0xf0, 0x58, 0x8e,
-	0xe1, 0xc6, 0x63, 0x39, 0x86, 0x28, 0xad, 0xf4, 0xcc, 0x92, 0x8c, 0xd2, 0x24, 0xbd, 0xe4, 0xfc,
-	0x5c, 0xfd, 0x9c, 0xcc, 0xbc, 0x54, 0xfd, 0x9c, 0xa4, 0x5c, 0xdd, 0xe2, 0x94, 0x6c, 0xfd, 0x0a,
-	0xe4, 0x18, 0x2e, 0xa9, 0x2c, 0x48, 0x2d, 0x4e, 0x62, 0x03, 0xc7, 0x98, 0x31, 0x20, 0x00, 0x00,
-	0xff, 0xff, 0x0f, 0xf5, 0x03, 0x1b, 0x00, 0x02, 0x00, 0x00,
+	// 420 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x92, 0xbf, 0xae, 0xd3, 0x30,
+	0x18, 0xc5, 0x63, 0xaa, 0x5b, 0xb8, 0xee, 0x85, 0x7b, 0x89, 0xae, 0x44, 0xf8, 0x23, 0x27, 0xf2,
+	0x54, 0x21, 0x48, 0xd4, 0x22, 0x31, 0x74, 0x6b, 0x90, 0x50, 0xc7, 0x2a, 0x12, 0x0c, 0x2c, 0x95,
+	0x13, 0x5b, 0x6d, 0x84, 0x13, 0x47, 0xb6, 0x5b, 0xe8, 0x1b, 0x30, 0x32, 0xc2, 0x44, 0x47, 0x26,
+	0x9e, 0x83, 0xb1, 0x23, 0x53, 0x85, 0xd2, 0x85, 0xb9, 0x4f, 0x80, 0x12, 0xb7, 0x28, 0x2d, 0x6c,
+	0x6c, 0xf9, 0x8e, 0x4f, 0x7e, 0xdf, 0xf1, 0x91, 0x21, 0xe6, 0x71, 0x16, 0x24, 0x22, 0x57, 0x42,
+	0xea, 0x74, 0x9e, 0x05, 0x8b, 0x5e, 0x63, 0xf2, 0x0b, 0x29, 0xb4, 0xb0, 0xef, 0xf2, 0x38, 0xf3,
+	0x1b, 0xea, 0xa2, 0xf7, 0xe0, 0x7a, 0x2a, 0xa6, 0xa2, 0x3e, 0x0d, 0xaa, 0x2f, 0x63, 0xc4, 0xcf,
+	0x61, 0x7b, 0x4c, 0x24, 0xc9, 0x94, 0xfd, 0x04, 0xde, 0x64, 0x39, 0x89, 0x39, 0xa3, 0x0e, 0xf0,
+	0x40, 0xf7, 0x56, 0x68, 0xef, 0x36, 0xee, 0x9d, 0x25, 0xc9, 0xf8, 0x00, 0xef, 0x0f, 0x70, 0x74,
+	0xb0, 0xe0, 0x2f, 0x00, 0xde, 0x7e, 0x4d, 0x78, 0x4a, 0x89, 0x16, 0x72, 0x38, 0xd7, 0x33, 0xfb,
+	0x25, 0xbc, 0x12, 0x05, 0x93, 0xd5, 0x3c, 0x21, 0x94, 0x4a, 0xa6, 0x54, 0x0d, 0x3a, 0x0f, 0x1f,
+	0xee, 0x36, 0xee, 0x3d, 0x03, 0x3a, 0x75, 0xe0, 0xe8, 0xf2, 0x20, 0x0d, 0x8d, 0x52, 0x71, 0x12,
+	0xc9, 0x88, 0x4e, 0x45, 0x3e, 0x21, 0x9c, 0x8b, 0x77, 0x8c, 0x3a, 0x37, 0xea, 0x40, 0x0d, 0xce,
+	0xa9, 0x03, 0x47, 0x97, 0x07, 0x69, 0xb8, 0x57, 0x3e, 0x03, 0x88, 0x5e, 0x15, 0x94, 0x68, 0xf6,
+	0xe2, 0x4f, 0x0f, 0xe6, 0xaa, 0x63, 0x29, 0x0a, 0xa1, 0x08, 0xb7, 0xaf, 0xe1, 0x99, 0x4e, 0x35,
+	0x67, 0x26, 0x67, 0x64, 0x06, 0xdb, 0x83, 0x1d, 0xca, 0x54, 0x22, 0xd3, 0xa2, 0xc2, 0xd5, 0xbb,
+	0xcf, 0xa3, 0xa6, 0x64, 0xf7, 0x60, 0xbb, 0xa8, 0x49, 0x4e, 0xcb, 0x03, 0xdd, 0x4e, 0xff, 0xbe,
+	0xff, 0x57, 0xdd, 0xbe, 0x59, 0x15, 0xed, 0x8d, 0x83, 0x8b, 0x0f, 0x2b, 0xd7, 0xfa, 0xb4, 0x72,
+	0xad, 0x5f, 0x2b, 0xd7, 0xc2, 0xdf, 0x00, 0x7c, 0x64, 0xb2, 0x1d, 0x75, 0xf8, 0xff, 0xc9, 0x46,
+	0xf0, 0x8c, 0x54, 0x20, 0xa7, 0xe5, 0xb5, 0xba, 0x9d, 0xbe, 0xf7, 0x8f, 0x60, 0x47, 0x1b, 0xc3,
+	0xab, 0xdd, 0xc6, 0xbd, 0x30, 0x9d, 0xd6, 0x3f, 0xe2, 0xc8, 0x00, 0x8e, 0x03, 0x87, 0xa3, 0xaf,
+	0x25, 0x02, 0xdf, 0x4b, 0x04, 0xd6, 0x25, 0x02, 0x3f, 0x4b, 0x04, 0x3e, 0x6e, 0x91, 0xb5, 0xde,
+	0x22, 0xeb, 0xc7, 0x16, 0x59, 0x6f, 0x1e, 0x4f, 0x53, 0x3d, 0x9b, 0xc7, 0x7e, 0x22, 0xb2, 0x80,
+	0xa7, 0x39, 0x0b, 0x78, 0x9c, 0x3d, 0x55, 0xf4, 0x6d, 0xf0, 0xbe, 0xf9, 0x4e, 0xf5, 0xb2, 0x60,
+	0x2a, 0x6e, 0xd7, 0xef, 0xee, 0xd9, 0xef, 0x00, 0x00, 0x00, 0xff, 0xff, 0x90, 0xf5, 0xd5, 0xf4,
+	0xc6, 0x02, 0x00, 0x00,
 }
 
-func (m *DisableConsortiumProposal) Marshal() (dAtA []byte, err error) {
+func (this *Params) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Params)
+	if !ok {
+		that2, ok := that.(Params)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.Enabled != that1.Enabled {
+		return false
+	}
+	return true
+}
+func (this *ValidatorAuth) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*ValidatorAuth)
+	if !ok {
+		that2, ok := that.(ValidatorAuth)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if this.OperatorAddress != that1.OperatorAddress {
+		return false
+	}
+	if this.CreationAllowed != that1.CreationAllowed {
+		return false
+	}
+	return true
+}
+func (m *Params) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -147,16 +302,101 @@ func (m *DisableConsortiumProposal) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *DisableConsortiumProposal) MarshalTo(dAtA []byte) (int, error) {
+func (m *Params) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *DisableConsortiumProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.Enabled {
+		i--
+		if m.Enabled {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ValidatorAuth) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ValidatorAuth) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ValidatorAuth) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.CreationAllowed {
+		i--
+		if m.CreationAllowed {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.OperatorAddress) > 0 {
+		i -= len(m.OperatorAddress)
+		copy(dAtA[i:], m.OperatorAddress)
+		i = encodeVarintConsortium(dAtA, i, uint64(len(m.OperatorAddress)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *UpdateConsortiumParamsProposal) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *UpdateConsortiumParamsProposal) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *UpdateConsortiumParamsProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Params != nil {
+		{
+			size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintConsortium(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.Description) > 0 {
 		i -= len(m.Description)
 		copy(dAtA[i:], m.Description)
@@ -174,7 +414,7 @@ func (m *DisableConsortiumProposal) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *EditAllowedValidatorsProposal) Marshal() (dAtA []byte, err error) {
+func (m *UpdateValidatorAuthsProposal) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -184,30 +424,26 @@ func (m *EditAllowedValidatorsProposal) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *EditAllowedValidatorsProposal) MarshalTo(dAtA []byte) (int, error) {
+func (m *UpdateValidatorAuthsProposal) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *EditAllowedValidatorsProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *UpdateValidatorAuthsProposal) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.RemovingAddresses) > 0 {
-		for iNdEx := len(m.RemovingAddresses) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.RemovingAddresses[iNdEx])
-			copy(dAtA[i:], m.RemovingAddresses[iNdEx])
-			i = encodeVarintConsortium(dAtA, i, uint64(len(m.RemovingAddresses[iNdEx])))
-			i--
-			dAtA[i] = 0x22
-		}
-	}
-	if len(m.AddingAddresses) > 0 {
-		for iNdEx := len(m.AddingAddresses) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.AddingAddresses[iNdEx])
-			copy(dAtA[i:], m.AddingAddresses[iNdEx])
-			i = encodeVarintConsortium(dAtA, i, uint64(len(m.AddingAddresses[iNdEx])))
+	if len(m.Auths) > 0 {
+		for iNdEx := len(m.Auths) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Auths[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintConsortium(dAtA, i, uint64(size))
+			}
 			i--
 			dAtA[i] = 0x1a
 		}
@@ -240,7 +476,35 @@ func encodeVarintConsortium(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *DisableConsortiumProposal) Size() (n int) {
+func (m *Params) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Enabled {
+		n += 2
+	}
+	return n
+}
+
+func (m *ValidatorAuth) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.OperatorAddress)
+	if l > 0 {
+		n += 1 + l + sovConsortium(uint64(l))
+	}
+	if m.CreationAllowed {
+		n += 2
+	}
+	return n
+}
+
+func (m *UpdateConsortiumParamsProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -252,12 +516,16 @@ func (m *DisableConsortiumProposal) Size() (n int) {
 	}
 	l = len(m.Description)
 	if l > 0 {
+		n += 1 + l + sovConsortium(uint64(l))
+	}
+	if m.Params != nil {
+		l = m.Params.Size()
 		n += 1 + l + sovConsortium(uint64(l))
 	}
 	return n
 }
 
-func (m *EditAllowedValidatorsProposal) Size() (n int) {
+func (m *UpdateValidatorAuthsProposal) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -271,15 +539,9 @@ func (m *EditAllowedValidatorsProposal) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovConsortium(uint64(l))
 	}
-	if len(m.AddingAddresses) > 0 {
-		for _, s := range m.AddingAddresses {
-			l = len(s)
-			n += 1 + l + sovConsortium(uint64(l))
-		}
-	}
-	if len(m.RemovingAddresses) > 0 {
-		for _, s := range m.RemovingAddresses {
-			l = len(s)
+	if len(m.Auths) > 0 {
+		for _, e := range m.Auths {
+			l = e.Size()
 			n += 1 + l + sovConsortium(uint64(l))
 		}
 	}
@@ -292,7 +554,7 @@ func sovConsortium(x uint64) (n int) {
 func sozConsortium(x uint64) (n int) {
 	return sovConsortium(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *DisableConsortiumProposal) Unmarshal(dAtA []byte) error {
+func (m *Params) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -315,17 +577,17 @@ func (m *DisableConsortiumProposal) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: DisableConsortiumProposal: wiretype end group for non-group")
+			return fmt.Errorf("proto: Params: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: DisableConsortiumProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Enabled", wireType)
 			}
-			var stringLen uint64
+			var v int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowConsortium
@@ -335,56 +597,12 @@ func (m *DisableConsortiumProposal) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConsortium
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthConsortium
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Title = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowConsortium
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthConsortium
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthConsortium
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Description = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
+			m.Enabled = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipConsortium(dAtA[iNdEx:])
@@ -406,7 +624,7 @@ func (m *DisableConsortiumProposal) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *EditAllowedValidatorsProposal) Unmarshal(dAtA []byte) error {
+func (m *ValidatorAuth) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -429,10 +647,112 @@ func (m *EditAllowedValidatorsProposal) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: EditAllowedValidatorsProposal: wiretype end group for non-group")
+			return fmt.Errorf("proto: ValidatorAuth: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: EditAllowedValidatorsProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ValidatorAuth: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field OperatorAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowConsortium
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthConsortium
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthConsortium
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.OperatorAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CreationAllowed", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowConsortium
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.CreationAllowed = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipConsortium(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthConsortium
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UpdateConsortiumParamsProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowConsortium
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UpdateConsortiumParamsProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UpdateConsortiumParamsProposal: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -501,9 +821,9 @@ func (m *EditAllowedValidatorsProposal) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AddingAddresses", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowConsortium
@@ -513,27 +833,81 @@ func (m *EditAllowedValidatorsProposal) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthConsortium
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthConsortium
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AddingAddresses = append(m.AddingAddresses, string(dAtA[iNdEx:postIndex]))
+			if m.Params == nil {
+				m.Params = &Params{}
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
-		case 4:
+		default:
+			iNdEx = preIndex
+			skippy, err := skipConsortium(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthConsortium
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *UpdateValidatorAuthsProposal) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowConsortium
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: UpdateValidatorAuthsProposal: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: UpdateValidatorAuthsProposal: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RemovingAddresses", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Title", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -561,7 +935,73 @@ func (m *EditAllowedValidatorsProposal) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.RemovingAddresses = append(m.RemovingAddresses, string(dAtA[iNdEx:postIndex]))
+			m.Title = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowConsortium
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthConsortium
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthConsortium
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Auths", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowConsortium
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthConsortium
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthConsortium
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Auths = append(m.Auths, &ValidatorAuth{})
+			if err := m.Auths[len(m.Auths)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

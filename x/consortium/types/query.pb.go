@@ -29,22 +29,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// QueryEnabledRequest is the request type for the Query/Params RPC method.
-type QueryEnabledRequest struct {
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+type QueryParamsRequest struct {
 }
 
-func (m *QueryEnabledRequest) Reset()         { *m = QueryEnabledRequest{} }
-func (m *QueryEnabledRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryEnabledRequest) ProtoMessage()    {}
-func (*QueryEnabledRequest) Descriptor() ([]byte, []int) {
+func (m *QueryParamsRequest) Reset()         { *m = QueryParamsRequest{} }
+func (m *QueryParamsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryParamsRequest) ProtoMessage()    {}
+func (*QueryParamsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e916717a75144447, []int{0}
 }
-func (m *QueryEnabledRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryParamsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEnabledRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryParamsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEnabledRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryParamsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -54,35 +54,35 @@ func (m *QueryEnabledRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *QueryEnabledRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEnabledRequest.Merge(m, src)
+func (m *QueryParamsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryParamsRequest.Merge(m, src)
 }
-func (m *QueryEnabledRequest) XXX_Size() int {
+func (m *QueryParamsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEnabledRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEnabledRequest.DiscardUnknown(m)
+func (m *QueryParamsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryParamsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEnabledRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryParamsRequest proto.InternalMessageInfo
 
-// QueryEnabledResponse is the response type for the Query/Params RPC method.
-type QueryEnabledResponse struct {
-	Enabled bool `protobuf:"varint,1,opt,name=enabled,proto3" json:"enabled,omitempty"`
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+type QueryParamsResponse struct {
+	Params *Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
 }
 
-func (m *QueryEnabledResponse) Reset()         { *m = QueryEnabledResponse{} }
-func (m *QueryEnabledResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryEnabledResponse) ProtoMessage()    {}
-func (*QueryEnabledResponse) Descriptor() ([]byte, []int) {
+func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
+func (m *QueryParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryParamsResponse) ProtoMessage()    {}
+func (*QueryParamsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e916717a75144447, []int{1}
 }
-func (m *QueryEnabledResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryEnabledResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryEnabledResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryParamsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -92,44 +92,44 @@ func (m *QueryEnabledResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *QueryEnabledResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryEnabledResponse.Merge(m, src)
+func (m *QueryParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryParamsResponse.Merge(m, src)
 }
-func (m *QueryEnabledResponse) XXX_Size() int {
+func (m *QueryParamsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryEnabledResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryEnabledResponse.DiscardUnknown(m)
+func (m *QueryParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryParamsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryEnabledResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryParamsResponse proto.InternalMessageInfo
 
-func (m *QueryEnabledResponse) GetEnabled() bool {
+func (m *QueryParamsResponse) GetParams() *Params {
 	if m != nil {
-		return m.Enabled
+		return m.Params
 	}
-	return false
+	return nil
 }
 
-// QueryAllowedValidatorsRequest is the request type for the
-// Query/AllowedValidators RPC method.
-type QueryAllowedValidatorsRequest struct {
+// QueryValidatorAuthsRequest is the request type for the
+// Query/ValidatorAuths RPC method.
+type QueryValidatorAuthsRequest struct {
 	// pagination defines an optional pagination for the request.
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryAllowedValidatorsRequest) Reset()         { *m = QueryAllowedValidatorsRequest{} }
-func (m *QueryAllowedValidatorsRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAllowedValidatorsRequest) ProtoMessage()    {}
-func (*QueryAllowedValidatorsRequest) Descriptor() ([]byte, []int) {
+func (m *QueryValidatorAuthsRequest) Reset()         { *m = QueryValidatorAuthsRequest{} }
+func (m *QueryValidatorAuthsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryValidatorAuthsRequest) ProtoMessage()    {}
+func (*QueryValidatorAuthsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e916717a75144447, []int{2}
 }
-func (m *QueryAllowedValidatorsRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryValidatorAuthsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllowedValidatorsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryValidatorAuthsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllowedValidatorsRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryValidatorAuthsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -139,45 +139,45 @@ func (m *QueryAllowedValidatorsRequest) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryAllowedValidatorsRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllowedValidatorsRequest.Merge(m, src)
+func (m *QueryValidatorAuthsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryValidatorAuthsRequest.Merge(m, src)
 }
-func (m *QueryAllowedValidatorsRequest) XXX_Size() int {
+func (m *QueryValidatorAuthsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllowedValidatorsRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllowedValidatorsRequest.DiscardUnknown(m)
+func (m *QueryValidatorAuthsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryValidatorAuthsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllowedValidatorsRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryValidatorAuthsRequest proto.InternalMessageInfo
 
-func (m *QueryAllowedValidatorsRequest) GetPagination() *query.PageRequest {
+func (m *QueryValidatorAuthsRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-// QueryAllowedValidatorsResponse is the response type for the
-// Query/AllowedValidators RPC method.
-type QueryAllowedValidatorsResponse struct {
-	ValidatorAddresses []string `protobuf:"bytes,1,rep,name=validator_addresses,json=validatorAddresses,proto3" json:"validator_addresses,omitempty"`
+// QueryValidatorAuthsResponse is the response type for the
+// Query/ValidatorAuths RPC method.
+type QueryValidatorAuthsResponse struct {
+	Auths []*ValidatorAuth `protobuf:"bytes,1,rep,name=auths,proto3" json:"auths,omitempty"`
 	// pagination defines the pagination in the response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *QueryAllowedValidatorsResponse) Reset()         { *m = QueryAllowedValidatorsResponse{} }
-func (m *QueryAllowedValidatorsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAllowedValidatorsResponse) ProtoMessage()    {}
-func (*QueryAllowedValidatorsResponse) Descriptor() ([]byte, []int) {
+func (m *QueryValidatorAuthsResponse) Reset()         { *m = QueryValidatorAuthsResponse{} }
+func (m *QueryValidatorAuthsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryValidatorAuthsResponse) ProtoMessage()    {}
+func (*QueryValidatorAuthsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e916717a75144447, []int{3}
 }
-func (m *QueryAllowedValidatorsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryValidatorAuthsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllowedValidatorsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryValidatorAuthsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllowedValidatorsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryValidatorAuthsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -187,51 +187,51 @@ func (m *QueryAllowedValidatorsResponse) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *QueryAllowedValidatorsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllowedValidatorsResponse.Merge(m, src)
+func (m *QueryValidatorAuthsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryValidatorAuthsResponse.Merge(m, src)
 }
-func (m *QueryAllowedValidatorsResponse) XXX_Size() int {
+func (m *QueryValidatorAuthsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllowedValidatorsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllowedValidatorsResponse.DiscardUnknown(m)
+func (m *QueryValidatorAuthsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryValidatorAuthsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllowedValidatorsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryValidatorAuthsResponse proto.InternalMessageInfo
 
-func (m *QueryAllowedValidatorsResponse) GetValidatorAddresses() []string {
+func (m *QueryValidatorAuthsResponse) GetAuths() []*ValidatorAuth {
 	if m != nil {
-		return m.ValidatorAddresses
+		return m.Auths
 	}
 	return nil
 }
 
-func (m *QueryAllowedValidatorsResponse) GetPagination() *query.PageResponse {
+func (m *QueryValidatorAuthsResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
 	return nil
 }
 
-// QueryAllowedValidatorRequest is the request type for the
-// Query/AllowedValidator RPC method.
-type QueryAllowedValidatorRequest struct {
+// QueryValidatorAuthRequest is the request type for the
+// Query/ValidatorAuth RPC method.
+type QueryValidatorAuthRequest struct {
 	// validator_address defines the validator address to query for.
 	ValidatorAddress string `protobuf:"bytes,1,opt,name=validator_address,json=validatorAddress,proto3" json:"validator_address,omitempty"`
 }
 
-func (m *QueryAllowedValidatorRequest) Reset()         { *m = QueryAllowedValidatorRequest{} }
-func (m *QueryAllowedValidatorRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryAllowedValidatorRequest) ProtoMessage()    {}
-func (*QueryAllowedValidatorRequest) Descriptor() ([]byte, []int) {
+func (m *QueryValidatorAuthRequest) Reset()         { *m = QueryValidatorAuthRequest{} }
+func (m *QueryValidatorAuthRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryValidatorAuthRequest) ProtoMessage()    {}
+func (*QueryValidatorAuthRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e916717a75144447, []int{4}
 }
-func (m *QueryAllowedValidatorRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryValidatorAuthRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllowedValidatorRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryValidatorAuthRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllowedValidatorRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryValidatorAuthRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -241,43 +241,43 @@ func (m *QueryAllowedValidatorRequest) XXX_Marshal(b []byte, deterministic bool)
 		return b[:n], nil
 	}
 }
-func (m *QueryAllowedValidatorRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllowedValidatorRequest.Merge(m, src)
+func (m *QueryValidatorAuthRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryValidatorAuthRequest.Merge(m, src)
 }
-func (m *QueryAllowedValidatorRequest) XXX_Size() int {
+func (m *QueryValidatorAuthRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllowedValidatorRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllowedValidatorRequest.DiscardUnknown(m)
+func (m *QueryValidatorAuthRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryValidatorAuthRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllowedValidatorRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryValidatorAuthRequest proto.InternalMessageInfo
 
-func (m *QueryAllowedValidatorRequest) GetValidatorAddress() string {
+func (m *QueryValidatorAuthRequest) GetValidatorAddress() string {
 	if m != nil {
 		return m.ValidatorAddress
 	}
 	return ""
 }
 
-// QueryAllowedValidatorResponse is the request type for the
-// Query/AllowedValidator RPC method.
-type QueryAllowedValidatorResponse struct {
-	Allowed bool `protobuf:"varint,1,opt,name=allowed,proto3" json:"allowed,omitempty"`
+// QueryValidatorAuthResponse is the request type for the
+// Query/ValidatorAuth RPC method.
+type QueryValidatorAuthResponse struct {
+	Auth *ValidatorAuth `protobuf:"bytes,1,opt,name=auth,proto3" json:"auth,omitempty"`
 }
 
-func (m *QueryAllowedValidatorResponse) Reset()         { *m = QueryAllowedValidatorResponse{} }
-func (m *QueryAllowedValidatorResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAllowedValidatorResponse) ProtoMessage()    {}
-func (*QueryAllowedValidatorResponse) Descriptor() ([]byte, []int) {
+func (m *QueryValidatorAuthResponse) Reset()         { *m = QueryValidatorAuthResponse{} }
+func (m *QueryValidatorAuthResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryValidatorAuthResponse) ProtoMessage()    {}
+func (*QueryValidatorAuthResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e916717a75144447, []int{5}
 }
-func (m *QueryAllowedValidatorResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryValidatorAuthResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryAllowedValidatorResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryValidatorAuthResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryAllowedValidatorResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryValidatorAuthResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -287,68 +287,69 @@ func (m *QueryAllowedValidatorResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *QueryAllowedValidatorResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAllowedValidatorResponse.Merge(m, src)
+func (m *QueryValidatorAuthResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryValidatorAuthResponse.Merge(m, src)
 }
-func (m *QueryAllowedValidatorResponse) XXX_Size() int {
+func (m *QueryValidatorAuthResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryAllowedValidatorResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAllowedValidatorResponse.DiscardUnknown(m)
+func (m *QueryValidatorAuthResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryValidatorAuthResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryAllowedValidatorResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryValidatorAuthResponse proto.InternalMessageInfo
 
-func (m *QueryAllowedValidatorResponse) GetAllowed() bool {
+func (m *QueryValidatorAuthResponse) GetAuth() *ValidatorAuth {
 	if m != nil {
-		return m.Allowed
+		return m.Auth
 	}
-	return false
+	return nil
 }
 
 func init() {
-	proto.RegisterType((*QueryEnabledRequest)(nil), "lbm.consortium.v1.QueryEnabledRequest")
-	proto.RegisterType((*QueryEnabledResponse)(nil), "lbm.consortium.v1.QueryEnabledResponse")
-	proto.RegisterType((*QueryAllowedValidatorsRequest)(nil), "lbm.consortium.v1.QueryAllowedValidatorsRequest")
-	proto.RegisterType((*QueryAllowedValidatorsResponse)(nil), "lbm.consortium.v1.QueryAllowedValidatorsResponse")
-	proto.RegisterType((*QueryAllowedValidatorRequest)(nil), "lbm.consortium.v1.QueryAllowedValidatorRequest")
-	proto.RegisterType((*QueryAllowedValidatorResponse)(nil), "lbm.consortium.v1.QueryAllowedValidatorResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "lbm.consortium.v1.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "lbm.consortium.v1.QueryParamsResponse")
+	proto.RegisterType((*QueryValidatorAuthsRequest)(nil), "lbm.consortium.v1.QueryValidatorAuthsRequest")
+	proto.RegisterType((*QueryValidatorAuthsResponse)(nil), "lbm.consortium.v1.QueryValidatorAuthsResponse")
+	proto.RegisterType((*QueryValidatorAuthRequest)(nil), "lbm.consortium.v1.QueryValidatorAuthRequest")
+	proto.RegisterType((*QueryValidatorAuthResponse)(nil), "lbm.consortium.v1.QueryValidatorAuthResponse")
 }
 
 func init() { proto.RegisterFile("lbm/consortium/v1/query.proto", fileDescriptor_e916717a75144447) }
 
 var fileDescriptor_e916717a75144447 = []byte{
-	// 477 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x93, 0xcf, 0x6e, 0xd3, 0x30,
-	0x1c, 0xc7, 0xeb, 0x4d, 0x30, 0x66, 0x2e, 0xab, 0x07, 0x52, 0x15, 0xb5, 0xd9, 0x14, 0x09, 0x98,
-	0x40, 0xd8, 0xed, 0x38, 0x4d, 0x48, 0xa0, 0x22, 0x38, 0x71, 0x81, 0x1c, 0x38, 0x70, 0x99, 0x9c,
-	0xc5, 0x0a, 0x11, 0xae, 0x9d, 0xc5, 0x4e, 0x60, 0x42, 0x70, 0xe0, 0x09, 0x10, 0x3c, 0x00, 0xaf,
-	0xc1, 0x23, 0x70, 0x9c, 0xc4, 0x85, 0x23, 0x6a, 0xf7, 0x20, 0x28, 0xb6, 0x43, 0xdb, 0xa5, 0x81,
-	0x71, 0x8c, 0xbf, 0xfe, 0xfa, 0xfb, 0xf9, 0xfd, 0x09, 0x1c, 0xf0, 0x68, 0x42, 0x8e, 0xa4, 0x50,
-	0x32, 0xd7, 0x69, 0x31, 0x21, 0xe5, 0x88, 0x1c, 0x17, 0x2c, 0x3f, 0xc1, 0x59, 0x2e, 0xb5, 0x44,
-	0x5d, 0x1e, 0x4d, 0xf0, 0x5c, 0xc6, 0xe5, 0xc8, 0x0b, 0x2a, 0x47, 0x44, 0x15, 0xb3, 0x17, 0x2b,
-	0x47, 0x46, 0x93, 0x54, 0x50, 0x9d, 0x4a, 0x61, 0x6d, 0x5e, 0x3f, 0x91, 0x32, 0xe1, 0x8c, 0xd0,
-	0x2c, 0x25, 0x54, 0x08, 0xa9, 0x8d, 0xa8, 0xac, 0x1a, 0x5c, 0x87, 0xdb, 0xcf, 0x2b, 0xeb, 0x13,
-	0x41, 0x23, 0xce, 0xe2, 0x90, 0x1d, 0x17, 0x4c, 0xe9, 0x60, 0x08, 0xaf, 0x2d, 0x1f, 0xab, 0x4c,
-	0x0a, 0xc5, 0x50, 0x0f, 0x6e, 0x30, 0x7b, 0xd4, 0x03, 0xbb, 0x60, 0xef, 0x4a, 0x58, 0x7f, 0x06,
-	0x87, 0x70, 0x60, 0x1c, 0x63, 0xce, 0xe5, 0x1b, 0x16, 0xbf, 0xa0, 0x3c, 0x8d, 0xa9, 0x96, 0xb9,
-	0x72, 0x4f, 0xa2, 0x07, 0x10, 0xce, 0xd9, 0x8c, 0xfb, 0xea, 0xbe, 0x8f, 0xab, 0x9a, 0xaa, 0x02,
-	0xb0, 0xad, 0xb4, 0x1c, 0xe1, 0x67, 0x34, 0x61, 0xce, 0x13, 0x2e, 0x38, 0x82, 0xcf, 0x00, 0xfa,
-	0x6d, 0x09, 0x8e, 0x8e, 0xc0, 0xed, 0xb2, 0x3e, 0x3d, 0xa4, 0x71, 0x9c, 0x33, 0xa5, 0x98, 0xea,
-	0x81, 0xdd, 0xf5, 0xbd, 0xcd, 0x10, 0xfd, 0x91, 0xc6, 0xb5, 0x82, 0x1e, 0x2e, 0x31, 0xad, 0x19,
-	0xa6, 0x9d, 0x56, 0x26, 0x9b, 0xb2, 0x04, 0xf5, 0x14, 0xf6, 0x57, 0x32, 0xd5, 0x45, 0xdf, 0x81,
-	0xdd, 0x06, 0x91, 0xa9, 0x7d, 0x33, 0xdc, 0x3a, 0xcf, 0x13, 0x1c, 0xb4, 0xb4, 0x70, 0xb1, 0xfb,
-	0xd4, 0x6a, 0x75, 0xf7, 0xdd, 0xe7, 0xfe, 0xd9, 0x3a, 0xbc, 0x64, 0xbc, 0xe8, 0x03, 0xdc, 0x70,
-	0x43, 0x43, 0x37, 0x71, 0x63, 0x63, 0xf0, 0x8a, 0x61, 0x7b, 0xb7, 0xfe, 0x79, 0xcf, 0xe6, 0x07,
-	0xc1, 0xc7, 0x1f, 0x67, 0x5f, 0xd6, 0xfa, 0xc8, 0x23, 0xcd, 0x4d, 0x75, 0x7b, 0x80, 0xbe, 0x02,
-	0xd8, 0x6d, 0x4c, 0x08, 0x0d, 0xdb, 0x22, 0xda, 0xd6, 0xc5, 0x1b, 0xfd, 0x87, 0xc3, 0xe1, 0xdd,
-	0x30, 0x78, 0x3b, 0x68, 0xb0, 0x02, 0xaf, 0x9c, 0xb3, 0x7c, 0x03, 0x70, 0xeb, 0xfc, 0x23, 0x88,
-	0x5c, 0x34, 0xae, 0xe6, 0x1b, 0x5e, 0xdc, 0xe0, 0xf0, 0xc6, 0x06, 0xef, 0x3e, 0x3a, 0xf8, 0x2b,
-	0x1e, 0x79, 0xd7, 0x58, 0x98, 0xf7, 0xc4, 0x8d, 0xf9, 0xd1, 0xe3, 0xef, 0x53, 0x1f, 0x9c, 0x4e,
-	0x7d, 0xf0, 0x6b, 0xea, 0x83, 0x4f, 0x33, 0xbf, 0x73, 0x3a, 0xf3, 0x3b, 0x3f, 0x67, 0x7e, 0xe7,
-	0xe5, 0xed, 0x24, 0xd5, 0xaf, 0x8a, 0x08, 0x1f, 0xc9, 0x09, 0xe1, 0xa9, 0x60, 0x55, 0xc6, 0x5d,
-	0x15, 0xbf, 0x26, 0x6f, 0x17, 0x93, 0xf4, 0x49, 0xc6, 0x54, 0x74, 0xd9, 0xfc, 0xfa, 0xf7, 0x7e,
-	0x07, 0x00, 0x00, 0xff, 0xff, 0xb0, 0x77, 0x48, 0x12, 0x70, 0x04, 0x00, 0x00,
+	// 488 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x94, 0x41, 0x6b, 0xd4, 0x40,
+	0x14, 0xc7, 0x77, 0x5a, 0xbb, 0xe0, 0x2b, 0x8a, 0x1d, 0x3d, 0x74, 0x53, 0x9b, 0xae, 0x81, 0x4a,
+	0x51, 0x77, 0x86, 0xdd, 0x8a, 0xe0, 0x45, 0xa9, 0x78, 0xe8, 0x51, 0x73, 0xf0, 0x20, 0x82, 0x4c,
+	0xba, 0x43, 0x1a, 0x4c, 0x32, 0x69, 0x66, 0xb2, 0x58, 0xc5, 0x8b, 0x9f, 0x40, 0x10, 0xfa, 0x15,
+	0xfc, 0x26, 0xe2, 0xb1, 0xe0, 0xc5, 0xa3, 0xec, 0xfa, 0x41, 0x24, 0x33, 0xb3, 0xdb, 0x0d, 0x49,
+	0xbb, 0x7b, 0x7d, 0xf3, 0xff, 0xff, 0xdf, 0xef, 0xbd, 0x3c, 0x02, 0xdb, 0x71, 0x90, 0xd0, 0x23,
+	0x91, 0x4a, 0x91, 0xab, 0xa8, 0x48, 0xe8, 0xa8, 0x4f, 0x4f, 0x0a, 0x9e, 0x9f, 0x92, 0x2c, 0x17,
+	0x4a, 0xe0, 0x8d, 0x38, 0x48, 0xc8, 0xc5, 0x33, 0x19, 0xf5, 0x1d, 0xaf, 0x74, 0x04, 0x4c, 0x72,
+	0x23, 0x2c, 0x1d, 0x19, 0x0b, 0xa3, 0x94, 0xa9, 0x48, 0xa4, 0xc6, 0xe6, 0xdc, 0x0d, 0x85, 0x08,
+	0x63, 0x4e, 0x59, 0x16, 0x51, 0x96, 0xa6, 0x42, 0xe9, 0x47, 0x69, 0x5f, 0xbd, 0x7a, 0xcf, 0xb9,
+	0x16, 0x5a, 0xe3, 0xdd, 0x01, 0xfc, 0xba, 0x8c, 0x7f, 0xc5, 0x72, 0x96, 0x48, 0x9f, 0x9f, 0x14,
+	0x5c, 0x2a, 0xef, 0x10, 0x6e, 0x57, 0xaa, 0x32, 0x13, 0xa9, 0xe4, 0xb8, 0x0f, 0xed, 0x4c, 0x57,
+	0x36, 0x51, 0x17, 0xed, 0xad, 0x0f, 0x3a, 0xa4, 0x86, 0x4d, 0xac, 0xc5, 0x0a, 0xbd, 0x77, 0xe0,
+	0xe8, 0xa4, 0x37, 0x2c, 0x8e, 0x86, 0x4c, 0x89, 0xfc, 0xa0, 0x50, 0xc7, 0xd3, 0x3e, 0xf8, 0x19,
+	0xc0, 0xc5, 0x4c, 0x36, 0xd4, 0xd5, 0xa1, 0xe5, 0xe0, 0xc4, 0x6c, 0x48, 0x87, 0x86, 0xdc, 0x7a,
+	0xfc, 0x39, 0x87, 0x77, 0x86, 0x60, 0xab, 0x31, 0xde, 0x02, 0x3f, 0x81, 0x35, 0x56, 0x16, 0x36,
+	0x51, 0x77, 0x75, 0x6f, 0x7d, 0xd0, 0x6d, 0xe0, 0xad, 0x38, 0x7d, 0x23, 0xc7, 0xcf, 0x2b, 0x5c,
+	0x2b, 0x9a, 0x6b, 0xe7, 0x52, 0x2e, 0xd3, 0xac, 0x02, 0x76, 0x08, 0x9d, 0x3a, 0xd7, 0x74, 0xea,
+	0x87, 0xb0, 0x31, 0x9a, 0xd6, 0xdf, 0xb3, 0xe1, 0x30, 0xe7, 0xd2, 0x6c, 0xf4, 0xba, 0x7f, 0x6b,
+	0xf6, 0x70, 0x60, 0xea, 0x9e, 0xdf, 0xb4, 0xc0, 0xd9, 0x80, 0x8f, 0xe1, 0x5a, 0x49, 0x6c, 0x57,
+	0xb7, 0x78, 0x3e, 0xad, 0x1e, 0xfc, 0x5c, 0x85, 0x35, 0x1d, 0x8a, 0x3f, 0x41, 0xdb, 0x7c, 0x30,
+	0xbc, 0xdb, 0xe0, 0xad, 0x5f, 0x86, 0x73, 0x7f, 0x91, 0xcc, 0x80, 0x79, 0xf7, 0xbe, 0xfe, 0xfe,
+	0xf7, 0x7d, 0x65, 0x0b, 0x77, 0x68, 0xfd, 0x08, 0xcd, 0x69, 0xe0, 0x33, 0x04, 0x37, 0xab, 0xdf,
+	0x0d, 0xf7, 0x2e, 0x4b, 0x6f, 0x3c, 0x1f, 0x87, 0x2c, 0x2b, 0xb7, 0x50, 0xbb, 0x1a, 0x6a, 0x07,
+	0x6f, 0x37, 0x40, 0xcd, 0x16, 0x2f, 0xf1, 0x0f, 0x04, 0x37, 0x2a, 0x09, 0xf8, 0xd1, 0x52, 0x8d,
+	0xa6, 0x58, 0xbd, 0x25, 0xd5, 0x96, 0xea, 0xa9, 0xa6, 0xda, 0xc7, 0xfd, 0x2b, 0xa9, 0xe8, 0xe7,
+	0xda, 0xcd, 0x7c, 0x79, 0xf1, 0xf2, 0xd7, 0xd8, 0x45, 0xe7, 0x63, 0x17, 0xfd, 0x1d, 0xbb, 0xe8,
+	0xdb, 0xc4, 0x6d, 0x9d, 0x4f, 0xdc, 0xd6, 0x9f, 0x89, 0xdb, 0x7a, 0xfb, 0x20, 0x8c, 0xd4, 0x71,
+	0x11, 0x90, 0x23, 0x91, 0xd0, 0x38, 0x4a, 0x79, 0x99, 0xdd, 0x93, 0xc3, 0x0f, 0xf4, 0xe3, 0x7c,
+	0x07, 0x75, 0x9a, 0x71, 0x19, 0xb4, 0xf5, 0xaf, 0x60, 0xff, 0x7f, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0xf2, 0x7a, 0x5d, 0xb4, 0xa4, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -363,12 +364,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Enabled queries the modules availability.
-	Enabled(ctx context.Context, in *QueryEnabledRequest, opts ...grpc.CallOption) (*QueryEnabledResponse, error)
-	// AllowedValidators queries allowed validators.
-	AllowedValidators(ctx context.Context, in *QueryAllowedValidatorsRequest, opts ...grpc.CallOption) (*QueryAllowedValidatorsResponse, error)
-	// AllowedValidator queries whether the address is allowed by consortium.
-	AllowedValidator(ctx context.Context, in *QueryAllowedValidatorRequest, opts ...grpc.CallOption) (*QueryAllowedValidatorResponse, error)
+	// Params queries the module params.
+	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// ValidatorAuths queries authorization infos of validators.
+	ValidatorAuths(ctx context.Context, in *QueryValidatorAuthsRequest, opts ...grpc.CallOption) (*QueryValidatorAuthsResponse, error)
+	// ValidatorAuth queries authorization info of a validator.
+	ValidatorAuth(ctx context.Context, in *QueryValidatorAuthRequest, opts ...grpc.CallOption) (*QueryValidatorAuthResponse, error)
 }
 
 type queryClient struct {
@@ -379,27 +380,27 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) Enabled(ctx context.Context, in *QueryEnabledRequest, opts ...grpc.CallOption) (*QueryEnabledResponse, error) {
-	out := new(QueryEnabledResponse)
-	err := c.cc.Invoke(ctx, "/lbm.consortium.v1.Query/Enabled", in, out, opts...)
+func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
+	out := new(QueryParamsResponse)
+	err := c.cc.Invoke(ctx, "/lbm.consortium.v1.Query/Params", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) AllowedValidators(ctx context.Context, in *QueryAllowedValidatorsRequest, opts ...grpc.CallOption) (*QueryAllowedValidatorsResponse, error) {
-	out := new(QueryAllowedValidatorsResponse)
-	err := c.cc.Invoke(ctx, "/lbm.consortium.v1.Query/AllowedValidators", in, out, opts...)
+func (c *queryClient) ValidatorAuths(ctx context.Context, in *QueryValidatorAuthsRequest, opts ...grpc.CallOption) (*QueryValidatorAuthsResponse, error) {
+	out := new(QueryValidatorAuthsResponse)
+	err := c.cc.Invoke(ctx, "/lbm.consortium.v1.Query/ValidatorAuths", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) AllowedValidator(ctx context.Context, in *QueryAllowedValidatorRequest, opts ...grpc.CallOption) (*QueryAllowedValidatorResponse, error) {
-	out := new(QueryAllowedValidatorResponse)
-	err := c.cc.Invoke(ctx, "/lbm.consortium.v1.Query/AllowedValidator", in, out, opts...)
+func (c *queryClient) ValidatorAuth(ctx context.Context, in *QueryValidatorAuthRequest, opts ...grpc.CallOption) (*QueryValidatorAuthResponse, error) {
+	out := new(QueryValidatorAuthResponse)
+	err := c.cc.Invoke(ctx, "/lbm.consortium.v1.Query/ValidatorAuth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -408,82 +409,82 @@ func (c *queryClient) AllowedValidator(ctx context.Context, in *QueryAllowedVali
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Enabled queries the modules availability.
-	Enabled(context.Context, *QueryEnabledRequest) (*QueryEnabledResponse, error)
-	// AllowedValidators queries allowed validators.
-	AllowedValidators(context.Context, *QueryAllowedValidatorsRequest) (*QueryAllowedValidatorsResponse, error)
-	// AllowedValidator queries whether the address is allowed by consortium.
-	AllowedValidator(context.Context, *QueryAllowedValidatorRequest) (*QueryAllowedValidatorResponse, error)
+	// Params queries the module params.
+	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// ValidatorAuths queries authorization infos of validators.
+	ValidatorAuths(context.Context, *QueryValidatorAuthsRequest) (*QueryValidatorAuthsResponse, error)
+	// ValidatorAuth queries authorization info of a validator.
+	ValidatorAuth(context.Context, *QueryValidatorAuthRequest) (*QueryValidatorAuthResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
 type UnimplementedQueryServer struct {
 }
 
-func (*UnimplementedQueryServer) Enabled(ctx context.Context, req *QueryEnabledRequest) (*QueryEnabledResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Enabled not implemented")
+func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) AllowedValidators(ctx context.Context, req *QueryAllowedValidatorsRequest) (*QueryAllowedValidatorsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AllowedValidators not implemented")
+func (*UnimplementedQueryServer) ValidatorAuths(ctx context.Context, req *QueryValidatorAuthsRequest) (*QueryValidatorAuthsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidatorAuths not implemented")
 }
-func (*UnimplementedQueryServer) AllowedValidator(ctx context.Context, req *QueryAllowedValidatorRequest) (*QueryAllowedValidatorResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AllowedValidator not implemented")
+func (*UnimplementedQueryServer) ValidatorAuth(ctx context.Context, req *QueryValidatorAuthRequest) (*QueryValidatorAuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidatorAuth not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
 	s.RegisterService(&_Query_serviceDesc, srv)
 }
 
-func _Query_Enabled_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryEnabledRequest)
+func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryParamsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Enabled(ctx, in)
+		return srv.(QueryServer).Params(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.consortium.v1.Query/Enabled",
+		FullMethod: "/lbm.consortium.v1.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Enabled(ctx, req.(*QueryEnabledRequest))
+		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_AllowedValidators_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllowedValidatorsRequest)
+func _Query_ValidatorAuths_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryValidatorAuthsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).AllowedValidators(ctx, in)
+		return srv.(QueryServer).ValidatorAuths(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.consortium.v1.Query/AllowedValidators",
+		FullMethod: "/lbm.consortium.v1.Query/ValidatorAuths",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AllowedValidators(ctx, req.(*QueryAllowedValidatorsRequest))
+		return srv.(QueryServer).ValidatorAuths(ctx, req.(*QueryValidatorAuthsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_AllowedValidator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllowedValidatorRequest)
+func _Query_ValidatorAuth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryValidatorAuthRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).AllowedValidator(ctx, in)
+		return srv.(QueryServer).ValidatorAuth(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/lbm.consortium.v1.Query/AllowedValidator",
+		FullMethod: "/lbm.consortium.v1.Query/ValidatorAuth",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).AllowedValidator(ctx, req.(*QueryAllowedValidatorRequest))
+		return srv.(QueryServer).ValidatorAuth(ctx, req.(*QueryValidatorAuthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -493,23 +494,23 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Enabled",
-			Handler:    _Query_Enabled_Handler,
+			MethodName: "Params",
+			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "AllowedValidators",
-			Handler:    _Query_AllowedValidators_Handler,
+			MethodName: "ValidatorAuths",
+			Handler:    _Query_ValidatorAuths_Handler,
 		},
 		{
-			MethodName: "AllowedValidator",
-			Handler:    _Query_AllowedValidator_Handler,
+			MethodName: "ValidatorAuth",
+			Handler:    _Query_ValidatorAuth_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "lbm/consortium/v1/query.proto",
 }
 
-func (m *QueryEnabledRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryParamsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -519,12 +520,12 @@ func (m *QueryEnabledRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryEnabledRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryParamsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEnabledRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryParamsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -532,7 +533,7 @@ func (m *QueryEnabledRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryEnabledResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryParamsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -542,30 +543,32 @@ func (m *QueryEnabledResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryEnabledResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryParamsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryEnabledResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Enabled {
-		i--
-		if m.Enabled {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
+	if m.Params != nil {
+		{
+			size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllowedValidatorsRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryValidatorAuthsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -575,12 +578,12 @@ func (m *QueryAllowedValidatorsRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllowedValidatorsRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryValidatorAuthsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllowedValidatorsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryValidatorAuthsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -600,7 +603,7 @@ func (m *QueryAllowedValidatorsRequest) MarshalToSizedBuffer(dAtA []byte) (int, 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllowedValidatorsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryValidatorAuthsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -610,12 +613,12 @@ func (m *QueryAllowedValidatorsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllowedValidatorsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryValidatorAuthsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllowedValidatorsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryValidatorAuthsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -632,11 +635,16 @@ func (m *QueryAllowedValidatorsResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.ValidatorAddresses) > 0 {
-		for iNdEx := len(m.ValidatorAddresses) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.ValidatorAddresses[iNdEx])
-			copy(dAtA[i:], m.ValidatorAddresses[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.ValidatorAddresses[iNdEx])))
+	if len(m.Auths) > 0 {
+		for iNdEx := len(m.Auths) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Auths[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
 			i--
 			dAtA[i] = 0xa
 		}
@@ -644,7 +652,7 @@ func (m *QueryAllowedValidatorsResponse) MarshalToSizedBuffer(dAtA []byte) (int,
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllowedValidatorRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryValidatorAuthRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -654,12 +662,12 @@ func (m *QueryAllowedValidatorRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllowedValidatorRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryValidatorAuthRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllowedValidatorRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryValidatorAuthRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -674,7 +682,7 @@ func (m *QueryAllowedValidatorRequest) MarshalToSizedBuffer(dAtA []byte) (int, e
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAllowedValidatorResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryValidatorAuthResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -684,25 +692,27 @@ func (m *QueryAllowedValidatorResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAllowedValidatorResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryValidatorAuthResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAllowedValidatorResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryValidatorAuthResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Allowed {
-		i--
-		if m.Allowed {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
+	if m.Auth != nil {
+		{
+			size, err := m.Auth.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x8
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -718,7 +728,7 @@ func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *QueryEnabledRequest) Size() (n int) {
+func (m *QueryParamsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -727,19 +737,20 @@ func (m *QueryEnabledRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryEnabledResponse) Size() (n int) {
+func (m *QueryParamsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Enabled {
-		n += 2
+	if m.Params != nil {
+		l = m.Params.Size()
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
 
-func (m *QueryAllowedValidatorsRequest) Size() (n int) {
+func (m *QueryValidatorAuthsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -752,15 +763,15 @@ func (m *QueryAllowedValidatorsRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllowedValidatorsResponse) Size() (n int) {
+func (m *QueryValidatorAuthsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if len(m.ValidatorAddresses) > 0 {
-		for _, s := range m.ValidatorAddresses {
-			l = len(s)
+	if len(m.Auths) > 0 {
+		for _, e := range m.Auths {
+			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
 	}
@@ -771,7 +782,7 @@ func (m *QueryAllowedValidatorsResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllowedValidatorRequest) Size() (n int) {
+func (m *QueryValidatorAuthRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -784,14 +795,15 @@ func (m *QueryAllowedValidatorRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryAllowedValidatorResponse) Size() (n int) {
+func (m *QueryValidatorAuthResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Allowed {
-		n += 2
+	if m.Auth != nil {
+		l = m.Auth.Size()
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
@@ -802,7 +814,7 @@ func sovQuery(x uint64) (n int) {
 func sozQuery(x uint64) (n int) {
 	return sovQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *QueryEnabledRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryParamsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -825,10 +837,10 @@ func (m *QueryEnabledRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEnabledRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryParamsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEnabledRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryParamsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:
@@ -852,7 +864,7 @@ func (m *QueryEnabledRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryEnabledResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -875,17 +887,17 @@ func (m *QueryEnabledResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryEnabledResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryParamsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryEnabledResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Enabled", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
 			}
-			var v int
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -895,12 +907,28 @@ func (m *QueryEnabledResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			m.Enabled = bool(v != 0)
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Params == nil {
+				m.Params = &Params{}
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -922,7 +950,7 @@ func (m *QueryEnabledResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllowedValidatorsRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryValidatorAuthsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -945,10 +973,10 @@ func (m *QueryAllowedValidatorsRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllowedValidatorsRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryValidatorAuthsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllowedValidatorsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryValidatorAuthsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1008,7 +1036,7 @@ func (m *QueryAllowedValidatorsRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllowedValidatorsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryValidatorAuthsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1031,17 +1059,17 @@ func (m *QueryAllowedValidatorsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllowedValidatorsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryValidatorAuthsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllowedValidatorsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryValidatorAuthsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ValidatorAddresses", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Auths", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1051,23 +1079,25 @@ func (m *QueryAllowedValidatorsResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ValidatorAddresses = append(m.ValidatorAddresses, string(dAtA[iNdEx:postIndex]))
+			m.Auths = append(m.Auths, &ValidatorAuth{})
+			if err := m.Auths[len(m.Auths)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -1126,7 +1156,7 @@ func (m *QueryAllowedValidatorsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllowedValidatorRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryValidatorAuthRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1149,10 +1179,10 @@ func (m *QueryAllowedValidatorRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllowedValidatorRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryValidatorAuthRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllowedValidatorRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryValidatorAuthRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1208,7 +1238,7 @@ func (m *QueryAllowedValidatorRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAllowedValidatorResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryValidatorAuthResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1231,17 +1261,17 @@ func (m *QueryAllowedValidatorResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAllowedValidatorResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryValidatorAuthResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAllowedValidatorResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryValidatorAuthResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Allowed", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Auth", wireType)
 			}
-			var v int
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1251,12 +1281,28 @@ func (m *QueryAllowedValidatorResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			m.Allowed = bool(v != 0)
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Auth == nil {
+				m.Auth = &ValidatorAuth{}
+			}
+			if err := m.Auth.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])

@@ -367,23 +367,24 @@
     - [GenesisState](#lbm.capability.v1.GenesisState)
   
 - [lbm/consortium/v1/consortium.proto](#lbm/consortium/v1/consortium.proto)
-    - [DisableConsortiumProposal](#lbm.consortium.v1.DisableConsortiumProposal)
-    - [EditAllowedValidatorsProposal](#lbm.consortium.v1.EditAllowedValidatorsProposal)
+    - [Params](#lbm.consortium.v1.Params)
+    - [UpdateConsortiumParamsProposal](#lbm.consortium.v1.UpdateConsortiumParamsProposal)
+    - [UpdateValidatorAuthsProposal](#lbm.consortium.v1.UpdateValidatorAuthsProposal)
+    - [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth)
   
 - [lbm/consortium/v1/event.proto](#lbm/consortium/v1/event.proto)
-    - [EventAddAllowedValidator](#lbm.consortium.v1.EventAddAllowedValidator)
-    - [EventRemoveAllowedValidator](#lbm.consortium.v1.EventRemoveAllowedValidator)
+    - [EventUpdateValidatorAuth](#lbm.consortium.v1.EventUpdateValidatorAuth)
   
 - [lbm/consortium/v1/genesis.proto](#lbm/consortium/v1/genesis.proto)
     - [GenesisState](#lbm.consortium.v1.GenesisState)
   
 - [lbm/consortium/v1/query.proto](#lbm/consortium/v1/query.proto)
-    - [QueryAllowedValidatorRequest](#lbm.consortium.v1.QueryAllowedValidatorRequest)
-    - [QueryAllowedValidatorResponse](#lbm.consortium.v1.QueryAllowedValidatorResponse)
-    - [QueryAllowedValidatorsRequest](#lbm.consortium.v1.QueryAllowedValidatorsRequest)
-    - [QueryAllowedValidatorsResponse](#lbm.consortium.v1.QueryAllowedValidatorsResponse)
-    - [QueryEnabledRequest](#lbm.consortium.v1.QueryEnabledRequest)
-    - [QueryEnabledResponse](#lbm.consortium.v1.QueryEnabledResponse)
+    - [QueryParamsRequest](#lbm.consortium.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.consortium.v1.QueryParamsResponse)
+    - [QueryValidatorAuthRequest](#lbm.consortium.v1.QueryValidatorAuthRequest)
+    - [QueryValidatorAuthResponse](#lbm.consortium.v1.QueryValidatorAuthResponse)
+    - [QueryValidatorAuthsRequest](#lbm.consortium.v1.QueryValidatorAuthsRequest)
+    - [QueryValidatorAuthsResponse](#lbm.consortium.v1.QueryValidatorAuthsResponse)
   
     - [Query](#lbm.consortium.v1.Query)
   
@@ -5807,36 +5808,65 @@ GenesisState defines the capability module's genesis state.
 
 
 
-<a name="lbm.consortium.v1.DisableConsortiumProposal"></a>
+<a name="lbm.consortium.v1.Params"></a>
 
-### DisableConsortiumProposal
-DisableConsortiumProposal details a proposal for turning off consortium module.
+### Params
+Params defines the parameters for the consortium module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `enabled` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.UpdateConsortiumParamsProposal"></a>
+
+### UpdateConsortiumParamsProposal
+UpdateConsortiumParamsProposal details a proposal to update params of cosortium module.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
+| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
 
 
 
 
 
 
-<a name="lbm.consortium.v1.EditAllowedValidatorsProposal"></a>
+<a name="lbm.consortium.v1.UpdateValidatorAuthsProposal"></a>
 
-### EditAllowedValidatorsProposal
-EditAllowedValidatorsProposal details a proposal for editing allowed validators on consortium.
-If the operator sending `CreateValidator` is not allowed first, corresponding validator
-would be tombstoned.
+### UpdateValidatorAuthsProposal
+UpdateValidatorAuthsProposal details a proposal to update validator auths on consortium.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `title` | [string](#string) |  |  |
 | `description` | [string](#string) |  |  |
-| `adding_addresses` | [string](#string) | repeated |  |
-| `removing_addresses` | [string](#string) | repeated |  |
+| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.ValidatorAuth"></a>
+
+### ValidatorAuth
+ValidatorAuth defines authorization info of a validator.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator_address` | [string](#string) |  |  |
+| `creation_allowed` | [bool](#bool) |  |  |
 
 
 
@@ -5859,30 +5889,15 @@ would be tombstoned.
 
 
 
-<a name="lbm.consortium.v1.EventAddAllowedValidator"></a>
+<a name="lbm.consortium.v1.EventUpdateValidatorAuth"></a>
 
-### EventAddAllowedValidator
-EventAddAllowedValidator is emitted after adding allowed validator
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `validator_address` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.EventRemoveAllowedValidator"></a>
-
-### EventRemoveAllowedValidator
-EventRemoveAllowedValidator is emitted after removing allowed validator
+### EventUpdateValidatorAuth
+EventUpdateValidatorAuth is emitted after updating validator auth info.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `validator_address` | [string](#string) |  |  |
+| `operator_address` | [string](#string) |  |  |
 
 
 
@@ -5909,13 +5924,12 @@ EventRemoveAllowedValidator is emitted after removing allowed validator
 
 ### GenesisState
 GenesisState defines the consortium module's genesis state.
-No need to import/export denied validators, because it is transient information.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `enabled` | [bool](#bool) |  | enabled defines the module's availability at genesis. |
-| `allowed_validators` | [string](#string) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
+| `params` | [Params](#lbm.consortium.v1.Params) |  | params defines the module parameters at genesis. |
+| `validator_auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
 
 
 
@@ -5938,11 +5952,36 @@ No need to import/export denied validators, because it is transient information.
 
 
 
-<a name="lbm.consortium.v1.QueryAllowedValidatorRequest"></a>
+<a name="lbm.consortium.v1.QueryParamsRequest"></a>
 
-### QueryAllowedValidatorRequest
-QueryAllowedValidatorRequest is the request type for the
-Query/AllowedValidator RPC method.
+### QueryParamsRequest
+QueryParamsRequest is the request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is the response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryValidatorAuthRequest"></a>
+
+### QueryValidatorAuthRequest
+QueryValidatorAuthRequest is the request type for the
+Query/ValidatorAuth RPC method.
 
 
 | Field | Type | Label | Description |
@@ -5954,27 +5993,27 @@ Query/AllowedValidator RPC method.
 
 
 
-<a name="lbm.consortium.v1.QueryAllowedValidatorResponse"></a>
+<a name="lbm.consortium.v1.QueryValidatorAuthResponse"></a>
 
-### QueryAllowedValidatorResponse
-QueryAllowedValidatorResponse is the request type for the
-Query/AllowedValidator RPC method.
+### QueryValidatorAuthResponse
+QueryValidatorAuthResponse is the request type for the
+Query/ValidatorAuth RPC method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `allowed` | [bool](#bool) |  |  |
+| `auth` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) |  |  |
 
 
 
 
 
 
-<a name="lbm.consortium.v1.QueryAllowedValidatorsRequest"></a>
+<a name="lbm.consortium.v1.QueryValidatorAuthsRequest"></a>
 
-### QueryAllowedValidatorsRequest
-QueryAllowedValidatorsRequest is the request type for the
-Query/AllowedValidators RPC method.
+### QueryValidatorAuthsRequest
+QueryValidatorAuthsRequest is the request type for the
+Query/ValidatorAuths RPC method.
 
 
 | Field | Type | Label | Description |
@@ -5986,42 +6025,17 @@ Query/AllowedValidators RPC method.
 
 
 
-<a name="lbm.consortium.v1.QueryAllowedValidatorsResponse"></a>
+<a name="lbm.consortium.v1.QueryValidatorAuthsResponse"></a>
 
-### QueryAllowedValidatorsResponse
-QueryAllowedValidatorsResponse is the response type for the
-Query/AllowedValidators RPC method.
+### QueryValidatorAuthsResponse
+QueryValidatorAuthsResponse is the response type for the
+Query/ValidatorAuths RPC method.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `validator_addresses` | [string](#string) | repeated |  |
+| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
 | `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
-
-
-
-
-
-
-<a name="lbm.consortium.v1.QueryEnabledRequest"></a>
-
-### QueryEnabledRequest
-QueryEnabledRequest is the request type for the Query/Params RPC method.
-
-
-
-
-
-
-<a name="lbm.consortium.v1.QueryEnabledResponse"></a>
-
-### QueryEnabledResponse
-QueryEnabledResponse is the response type for the Query/Params RPC method.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `enabled` | [bool](#bool) |  |  |
 
 
 
@@ -6041,9 +6055,9 @@ Query defines the gRPC querier service for consortium module.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Enabled` | [QueryEnabledRequest](#lbm.consortium.v1.QueryEnabledRequest) | [QueryEnabledResponse](#lbm.consortium.v1.QueryEnabledResponse) | Enabled queries the modules availability. | GET|/lbm/consortium/v1/enabled|
-| `AllowedValidators` | [QueryAllowedValidatorsRequest](#lbm.consortium.v1.QueryAllowedValidatorsRequest) | [QueryAllowedValidatorsResponse](#lbm.consortium.v1.QueryAllowedValidatorsResponse) | AllowedValidators queries allowed validators. | GET|/lbm/consortium/v1/validators|
-| `AllowedValidator` | [QueryAllowedValidatorRequest](#lbm.consortium.v1.QueryAllowedValidatorRequest) | [QueryAllowedValidatorResponse](#lbm.consortium.v1.QueryAllowedValidatorResponse) | AllowedValidator queries whether the address is allowed by consortium. | GET|/lbm/consortium/v1/validators/{validator_address}/allowed|
+| `Params` | [QueryParamsRequest](#lbm.consortium.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.consortium.v1.QueryParamsResponse) | Params queries the module params. | GET|/lbm/consortium/v1/params|
+| `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.consortium.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.consortium.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/consortium/v1/validators|
+| `ValidatorAuth` | [QueryValidatorAuthRequest](#lbm.consortium.v1.QueryValidatorAuthRequest) | [QueryValidatorAuthResponse](#lbm.consortium.v1.QueryValidatorAuthResponse) | ValidatorAuth queries authorization info of a validator. | GET|/lbm/consortium/v1/validators/{validator_address}|
 
  <!-- end services -->
 
