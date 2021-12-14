@@ -6,5 +6,5 @@ import (
 	"github.com/line/lbm-sdk/x/consortium/client/rest"
 )
 
-var DisableConsortiumProposalHandler = govclient.NewProposalHandler(cli.NewCmdSubmitDisableConsortiumProposal, rest.ProposalDisableConsortiumRESTHandler)
-var EditAllowedValidatorsProposalHandler = govclient.NewProposalHandler(cli.NewCmdSubmitEditAllowedValidatorsProposal, rest.ProposalEditAllowedValidatorsRESTHandler)
+var UpdateConsortiumParamsProposalHandler = govclient.NewProposalHandler(cli.NewCmdSubmitUpdateConsortiumParamsProposal, rest.ProposalUpdateConsortiumParamsRESTHandler)
+var UpdateValidatorAuthsProposalHandler = govclient.NewProposalHandler(cli.NewCmdSubmitUpdateValidatorAuthsProposal, rest.ProposalUpdateValidatorAuthsRESTHandler)

@@ -1,6 +1,9 @@
 package types
 
 import (
+	"fmt"
+	"strings"
+
 	sdk "github.com/line/lbm-sdk/types"
 )
 
@@ -21,33 +24,41 @@ const (
 // Keys for consortium store
 // Items are stored with the following key: values
 //
-// - 0x00: bool
+// - 0x00: Params
 //
 // - 0x01<valAddress_Bytes>: bool
 //
 // - 0x02<valAddress_Bytes>: bool
 var (
-	EnabledKeyPrefix = []byte{0x00}
+	ParamsKey = []byte{0x00}
+	ValidatorAuthKeyPrefix = []byte{0x01}
 
-	AllowedValidatorKeyPrefix = []byte{0x01}
-	DeniedValidatorKeyPrefix  = []byte{0x02}
+	PendingRejectedDelegationKeyPrefix = []byte{0x10}
+
+	AddressDelimiter = ","
 )
 
-// AllowedValidatorKey key for a specific validator from the store
-func AllowedValidatorKey(valAddr sdk.ValAddress) []byte {
-	return append(AllowedValidatorKeyPrefix, valAddr.Bytes()...)
+// ValidatorAuthKey key for a specific validator from the store
+func ValidatorAuthKey(valAddr sdk.ValAddress) []byte {
+	return append(ValidatorAuthKeyPrefix, valAddr.Bytes()...)
 }
 
-// DeniedValidatorKey key for a specific validator from the store
-func DeniedValidatorKey(valAddr sdk.ValAddress) []byte {
-	return append(DeniedValidatorKeyPrefix, valAddr.Bytes()...)
+// PendingRejectedDelegationKey key for a specific delegator-validator pair from the store
+func PendingRejectedDelegationKey(delAddr sdk.AccAddress, valAddr sdk.ValAddress) []byte {
+	return append(append(append(PendingRejectedDelegationKeyPrefix, valAddr.Bytes()...), AddressDelimiter...), delAddr.Bytes()...)
 }
 
-// SplitAllowedValidatorKey split the proposal key and returns the proposal id
-func SplitValidatorKey(key []byte) (valAddr sdk.ValAddress) {
-	// if len(key[1:]) != 8 {
-	// 	panic(fmt.Sprintf("unexpected key length (%d ≠ 8)", len(key[1:])))
-	// }
+// SplitValidatorAuthKey splits the validator auth key and returns validator
+func SplitValidatorAuthKey(key []byte) sdk.ValAddress {
+	return sdk.ValAddress(key[1:]) // remove prefix
+}
 
-	return sdk.ValAddress(key[1:])
+// SplitPendingRejectedDelegationKey splits the pending rejected delegation key and returns the delegator-validator pair
+func SplitPendingRejectedDelegationKey(key []byte) (sdk.AccAddress, sdk.ValAddress) {
+	addrsStr := key[1:] // remove prefix
+	addrs := strings.Split(string(addrsStr), AddressDelimiter)
+	if len(addrs) != 2 {
+		panic(fmt.Sprintf("%s does not contain two addresses", addrsStr))
+	}
+	return sdk.AccAddress(addrs[1]), sdk.ValAddress(addrs[0])
 }

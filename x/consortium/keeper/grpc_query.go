@@ -14,39 +14,39 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-func (q Keeper) Enabled(c context.Context, req *types.QueryEnabledRequest) (*types.QueryEnabledResponse, error) {
+func (q Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	enabled := q.GetEnabled(ctx)
-	return &types.QueryEnabledResponse{Enabled: enabled}, nil
+	return &types.QueryParamsResponse{q.GetParams(ctx)}, nil
 }
 
-func (q Keeper) AllowedValidators(c context.Context, req *types.QueryAllowedValidatorsRequest) (*types.QueryAllowedValidatorsResponse, error) {
+func (q Keeper) ValidatorAuths(c context.Context, req *types.QueryValidatorAuthsRequest) (*types.QueryValidatorAuthsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	addrs := []string{}
+	auths := []*types.ValidatorAuth{}
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(q.storeKey)
-	validatorStore := prefix.NewStore(store, types.AllowedValidatorKeyPrefix)
+	validatorStore := prefix.NewStore(store, types.ValidatorAuthKeyPrefix)
 	pageRes, err := query.Paginate(validatorStore, req.Pagination, func(key []byte, value []byte) error {
-		addr := string(key)
-		addrs = append(addrs, addr)
+		var auth types.ValidatorAuth
+		q.cdc.MustUnmarshalBinaryBare(value, &auth)
+		auths = append(auths, &auth)
 		return nil
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	return &types.QueryAllowedValidatorsResponse{ValidatorAddresses: addrs, Pagination: pageRes}, nil
+	return &types.QueryValidatorAuthsResponse{Auths: auths, Pagination: pageRes}, nil
 }
 
-func (q Keeper) AllowedValidator(c context.Context, req *types.QueryAllowedValidatorRequest) (*types.QueryAllowedValidatorResponse, error) {
+func (q Keeper) ValidatorAuth(c context.Context, req *types.QueryValidatorAuthRequest) (*types.QueryValidatorAuthResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -58,7 +58,10 @@ func (q Keeper) AllowedValidator(c context.Context, req *types.QueryAllowedValid
 	ctx := sdk.UnwrapSDKContext(c)
 
 	addr := sdk.ValAddress(req.ValidatorAddress)
-	allowed := q.GetAllowedValidator(ctx, addr)
+	auth, err := q.GetValidatorAuth(ctx, addr)
+	if err != nil {
+		return nil, err
+	}
 
-	return &types.QueryAllowedValidatorResponse{Allowed: allowed}, nil
+	return &types.QueryValidatorAuthResponse{Auth: auth}, nil
 }

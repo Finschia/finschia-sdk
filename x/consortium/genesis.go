@@ -2,51 +2,40 @@ package consortium
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/consortium/keeper"
 	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/consortium/keeper"
 
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )
 
-func InitGenesis(ctx sdk.Context, k keeper.Keeper, sk types.StakingKeeper, data *types.GenesisState) {
-	if !data.Enabled {
-		return
-	}
+func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, sk types.StakingKeeper, data *types.GenesisState) error {
+	keeper.SetParams(ctx, data.Params)
 
-	k.SetEnabled(ctx, data.Enabled)
-
-	allowedValidators := []sdk.ValAddress{}
-	if len(data.AllowedValidators) != 0 {
-		// Import the allowed validators from the previous chain data.
-		for _, addr := range data.AllowedValidators {
-			allowedValidators = append(allowedValidators, sdk.ValAddress(addr))
-		}
-	} else {
+	validatorAuths := data.ValidatorAuths
+	if keeper.GetEnabled(ctx) && len(validatorAuths) == 0 {
 		// Allowed validators must exist if the module is enabled,
 		// so it should be the very first block of the chain.
 		// We gather the information from staking module.
 		sk.IterateValidators(ctx, func(_ int64, addr stakingtypes.ValidatorI) (stop bool) {
-			allowedValidators = append(allowedValidators, addr.GetOperator())
+			auth := &types.ValidatorAuth{
+				OperatorAddress: addr.GetOperator().String(),
+				CreationAllowed: true,
+			}
+			validatorAuths = append(validatorAuths, auth)
 			return false
 		})
 	}
 
-	for _, addr := range allowedValidators {
-		k.SetAllowedValidator(ctx, addr, true)
+	for _, auth := range validatorAuths {
+		keeper.SetValidatorAuth(ctx, auth)
 	}
+
+	return nil
 }
 
-func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
-	enabled := k.GetEnabled(ctx)
-
-	allowedValidators := []string{}
-	k.IterateAllowedValidators(ctx, func(valAddr sdk.ValAddress) (stop bool) {
-		allowedValidators = append(allowedValidators, valAddr.String())
-		return false
-	})
-
+func ExportGenesis(ctx sdk.Context, keeper keeper.Keeper) *types.GenesisState {
 	return &types.GenesisState{
-		Enabled:           enabled,
-		AllowedValidators: allowedValidators,
+		Params:         keeper.GetParams(ctx),
+		ValidatorAuths: keeper.GetValidatorAuths(ctx),
 	}
 }

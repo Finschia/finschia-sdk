@@ -94,16 +94,14 @@ type AppModule struct {
 
 	keeper         keeper.Keeper
 	stakingKeeper  types.StakingKeeper
-	slashingKeeper types.SlashingKeeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Marshaler, keeper keeper.Keeper, stk types.StakingKeeper, slk types.SlashingKeeper) AppModule {
+func NewAppModule(cdc codec.Marshaler, keeper keeper.Keeper, stk types.StakingKeeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
 		stakingKeeper:  stk,
-		slashingKeeper: slk,
 	}
 }
 

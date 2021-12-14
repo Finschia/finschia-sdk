@@ -6,5 +6,7 @@ import (
 
 // x/consortium module sentinel errors
 var (
-	ErrInvalidProposalValidator = sdkerrors.Register(ModuleName, 1, "invalid proposal validator")
+	ErrInvalidParams = sdkerrors.Register(ModuleName, 1, "invalid params")
+
+	ErrInvalidProposalValidator = sdkerrors.Register(ModuleName, 2, "invalid proposal validator")
 )

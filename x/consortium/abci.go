@@ -17,6 +17,6 @@ func EndBlocker(ctx sdk.Context, keeper keeper.Keeper) {
 		return
 	}
 
-	// Tombstone validators whose operators are in the denied operator list.
-	keeper.TombstoneValidators(ctx)
+	// reject delegations whose operators are not allowed to create a validator.
+	keeper.RejectDelegations(ctx)
 }

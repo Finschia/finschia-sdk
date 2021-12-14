@@ -18,20 +18,21 @@ import (
 // Proposal flags
 const (
 	FlagAllowedValidatorAdd    = "add"
-	FlagAllowedValidatorRemove = "remove"
+	FlagAllowedValidatorDelete = "delete"
 )
 
-// NewCmdSubmitDisableConsortiumProposal implements the command to submit a disable-consortium proposal
-func NewCmdSubmitDisableConsortiumProposal() *cobra.Command {
+// NewCmdSubmitUpdateConsortiumParamsProposal implements the command to submit a update-consortium-params proposal
+func NewCmdSubmitUpdateConsortiumParamsProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "disable-consortium",
+		Use:   "update-consortium-params",
 		Args:  cobra.NoArgs,
-		Short: "Submit a disable consortium proposal",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Submit a disable consortium proposal.
+		Short: "Submit a update consortium params proposal",
+		Long:  strings.TrimSpace(
+			fmt.Sprintf(`Submit a update consortium params proposal.
+For now, you have no other options, so we make the corresponding params json file for you.
 
 Example:
-$ %s tx gov submit-proposal disable-consortium [flags]
+$ %s tx gov submit-proposal update-consortium-params [flags]
 `,
 				version.AppName,
 			),
@@ -63,7 +64,10 @@ $ %s tx gov submit-proposal disable-consortium [flags]
 				return err
 			}
 
-			content := types.NewDisableConsortiumProposal(title, description)
+			params := &types.Params{
+				Enabled: false,
+			}
+			content := types.NewUpdateConsortiumParamsProposal(title, description, params)
 
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
@@ -85,17 +89,17 @@ $ %s tx gov submit-proposal disable-consortium [flags]
 	return cmd
 }
 
-// NewCmdSubmitEditAllowedValidatorsProposal implements the command to submit a edit-allowed-validators proposal
-func NewCmdSubmitEditAllowedValidatorsProposal() *cobra.Command {
+// NewCmdSubmitUpdateValidatorAuthsProposal implements the command to submit a update-validator-auths proposal
+func NewCmdSubmitUpdateValidatorAuthsProposal() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "edit-allowed-validators",
+		Use:   "update-validator-auths",
 		Args:  cobra.NoArgs,
-		Short: "Submit a edit allowed validators proposal",
-		Long: strings.TrimSpace(
-			fmt.Sprintf(`Submit a edit allowed validators proposal.
+		Short: "Submit a update validator auths proposal",
+		Long:  strings.TrimSpace(
+			fmt.Sprintf(`Submit a update validator auths proposal.
 
 Example:
-$ %s tx gov submit-proposal edit-allowed-validators [flags]
+$ %s tx gov submit-proposal update-validator-auths [flags]
 `,
 				version.AppName,
 			),
@@ -141,13 +145,47 @@ $ %s tx gov submit-proposal edit-allowed-validators [flags]
 			}
 			addingValidators := parseCommaSeparated(addingValidatorsStr)
 
-			removingValidatorsStr, err := cmd.Flags().GetString(FlagAllowedValidatorRemove)
+			deletingValidatorsStr, err := cmd.Flags().GetString(FlagAllowedValidatorDelete)
 			if err != nil {
 				return err
 			}
-			removingValidators := parseCommaSeparated(removingValidatorsStr)
+			deletingValidators := parseCommaSeparated(deletingValidatorsStr)
 
-			content := types.NewEditAllowedValidatorsProposal(title, description, addingValidators, removingValidators)
+			createAuths := func(addings, deletings []string) ([]*types.ValidatorAuth, error) {
+				auths := []*types.ValidatorAuth{}
+				addingsMap := map[string]bool{}
+				for _, addr := range addings {
+					addingsMap[addr] = true
+				}
+				for _, addr := range deletings {
+					if addingsMap[addr] {
+						return auths, types.ErrInvalidProposalValidator
+					}
+				}
+
+				for _, addr := range addings {
+					auth := &types.ValidatorAuth{
+						OperatorAddress: addr,
+						CreationAllowed: true,
+					}
+					auths = append(auths, auth)
+				}
+				for _, addr := range deletings {
+					auth := &types.ValidatorAuth{
+						OperatorAddress: addr,
+						CreationAllowed: false,
+					}
+					auths = append(auths, auth)
+				}
+
+				return auths, nil
+			}
+
+			auths, err := createAuths(addingValidators, deletingValidators)
+			if err != nil {
+				return err
+			}
+			content := types.NewUpdateValidatorAuthsProposal(title, description, auths)
 
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
@@ -167,7 +205,7 @@ $ %s tx gov submit-proposal edit-allowed-validators [flags]
 	cmd.Flags().String(cli.FlagDeposit, "", "deposit of proposal")
 
 	cmd.Flags().String(FlagAllowedValidatorAdd, "", "validator addresses to add")
-	cmd.Flags().String(FlagAllowedValidatorRemove, "", "validator addresses to remove")
+	cmd.Flags().String(FlagAllowedValidatorDelete, "", "validator addresses to delete")
 
 	return cmd
 }

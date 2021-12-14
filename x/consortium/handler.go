@@ -33,12 +33,12 @@ func NewProposalHandler(k keeper.Keeper) govtypes.Handler {
 		}
 
 		switch c := content.(type) {
-		case *types.DisableConsortiumProposal:
-			return HandleDisableConsortiumProposal(ctx, k, c)
-		case *types.EditAllowedValidatorsProposal:
-			return HandleEditAllowedValidatorsProposal(ctx, k, c)
+		case *types.UpdateConsortiumParamsProposal:
+			return HandleUpdateConsortiumParamsProposal(ctx, k, c)
+		case *types.UpdateValidatorAuthsProposal:
+			return HandleUpdateValidatorAuthsProposal(ctx, k, c)
 		default:
-			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized staking proposal content type: %T", c)
+			return sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unrecognized consortium proposal content type: %T", c)
 		}
 	}
 }

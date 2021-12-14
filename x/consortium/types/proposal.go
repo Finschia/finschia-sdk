@@ -2,95 +2,93 @@ package types
 
 import (
 	"fmt"
-	"strings"
 
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 const (
-	// ProposalTypeDisableConsortium disables consortium module
-	ProposalTypeDisableConsortium = "DisableConsortium"
-	// ProposalTypeEditAllowedValidators edits allowed validators
-	ProposalTypeEditAllowedValidators = "EditAllowedValidators"
+	// ProposalTypeUpdateConsortiumParams updates parameters of consortium.
+	ProposalTypeUpdateConsortiumParams = "UpdateConsortiumParams"
+	// ProposalTypeUpdateValidatorAuths updates validator authorizations.
+	ProposalTypeUpdateValidatorAuths = "UpdateValidatorAuths"
 )
 
-func NewDisableConsortiumProposal(title, description string) govtypes.Content {
-	return &DisableConsortiumProposal{title, description}
+func NewUpdateConsortiumParamsProposal(title, description string, params *Params) govtypes.Content {
+	return &UpdateConsortiumParamsProposal{title, description, params}
 }
 
 // Assert proposals implements govtypes.Content at compile-time
-var _ govtypes.Content = &DisableConsortiumProposal{}
+var _ govtypes.Content = &UpdateConsortiumParamsProposal{}
 
 func init() {
-	govtypes.RegisterProposalType(ProposalTypeDisableConsortium)
-	govtypes.RegisterProposalTypeCodec(&DisableConsortiumProposal{}, "lbm-sdk/DisableConsortiumProposal")
-	govtypes.RegisterProposalType(ProposalTypeEditAllowedValidators)
-	govtypes.RegisterProposalTypeCodec(&EditAllowedValidatorsProposal{}, "lbm-sdk/EditAllowedValidators")
+	govtypes.RegisterProposalType(ProposalTypeUpdateConsortiumParams)
+	govtypes.RegisterProposalTypeCodec(&UpdateConsortiumParamsProposal{}, "lbm-sdk/UpdateConsortiumParamsProposal")
+	govtypes.RegisterProposalType(ProposalTypeUpdateValidatorAuths)
+	govtypes.RegisterProposalTypeCodec(&UpdateValidatorAuthsProposal{}, "lbm-sdk/UpdateValidatorAuths")
 }
 
-func (p *DisableConsortiumProposal) GetTitle() string       { return p.Title }
-func (p *DisableConsortiumProposal) GetDescription() string { return p.Description }
-func (p *DisableConsortiumProposal) ProposalRoute() string  { return RouterKey }
-func (p *DisableConsortiumProposal) ProposalType() string   { return ProposalTypeDisableConsortium }
-func (p *DisableConsortiumProposal) ValidateBasic() error   { return nil }
+func (p *UpdateConsortiumParamsProposal) GetTitle() string       { return p.Title }
+func (p *UpdateConsortiumParamsProposal) GetDescription() string { return p.Description }
+func (p *UpdateConsortiumParamsProposal) ProposalRoute() string  { return RouterKey }
+func (p *UpdateConsortiumParamsProposal) ProposalType() string   { return ProposalTypeUpdateConsortiumParams }
+func (p *UpdateConsortiumParamsProposal) ValidateBasic() error   {
+	params := p.Params
+	if params.Enabled {
+		return ErrInvalidParams
+	}
 
-func (p DisableConsortiumProposal) String() string {
-	return fmt.Sprintf(`Disable Consortium Proposal:
+	return nil
+}
+
+func (p UpdateConsortiumParamsProposal) String() string {
+	return fmt.Sprintf(`Update Consortium Params Proposal:
   Title:       %s
   Description: %s
-`, p.Title, p.Description)
+  Enabled:     %t
+`, p.Title, p.Description, p.Params.Enabled)
 }
 
-func NewEditAllowedValidatorsProposal(title, description string,
-	adding_validators, removing_validators []string) govtypes.Content {
-	return &EditAllowedValidatorsProposal{title, description, adding_validators, removing_validators}
+func NewUpdateValidatorAuthsProposal(title, description string,
+	auths []*ValidatorAuth) govtypes.Content {
+	return &UpdateValidatorAuthsProposal{title, description, auths}
 }
 
-var _ govtypes.Content = &EditAllowedValidatorsProposal{}
+var _ govtypes.Content = &UpdateValidatorAuthsProposal{}
 
-func (p *EditAllowedValidatorsProposal) GetTitle() string       { return p.Title }
-func (p *EditAllowedValidatorsProposal) GetDescription() string { return p.Description }
-func (p *EditAllowedValidatorsProposal) ProposalRoute() string  { return RouterKey }
-func (p *EditAllowedValidatorsProposal) ProposalType() string   { return ProposalTypeEditAllowedValidators }
+func (p *UpdateValidatorAuthsProposal) GetTitle() string       { return p.Title }
+func (p *UpdateValidatorAuthsProposal) GetDescription() string { return p.Description }
+func (p *UpdateValidatorAuthsProposal) ProposalRoute() string  { return RouterKey }
+func (p *UpdateValidatorAuthsProposal) ProposalType() string   { return ProposalTypeUpdateValidatorAuths }
 
-func (p *EditAllowedValidatorsProposal) ValidateBasic() error {
-	addingEmpty := len(p.AddingAddresses) == 0
-	removingEmpty := len(p.RemovingAddresses) == 0
-	if addingEmpty && removingEmpty {
+func (p *UpdateValidatorAuthsProposal) ValidateBasic() error {
+	if len(p.Auths) == 0 {
 		return ErrInvalidProposalValidator
-	} else if addingEmpty != removingEmpty {
-		return nil
-	} else {
-		addings := map[string]bool{}
-		for _, adding := range p.AddingAddresses {
-			addings[adding] = true
-		}
-		for _, removing := range p.RemovingAddresses {
-			if overlapped := addings[removing]; overlapped {
-				return ErrInvalidProposalValidator
-			}
-		}
-		return nil
 	}
+
+	usedAddrs := map[string]bool{}
+	for _, auth := range p.Auths {
+		addr := auth.OperatorAddress
+		if usedAddrs[addr] {
+			return ErrInvalidProposalValidator
+		}
+		usedAddrs[addr] = true
+	}
+
+	return nil
 }
 
-func (p EditAllowedValidatorsProposal) String() string {
-	var addingStr string
-	if len(p.AddingAddresses) != 0 {
-		addingStr = fmt.Sprintf(`Adding validators:
-    %s
-`, strings.Join(p.AddingAddresses, "\n    "))
-	}
-
-	var removingStr string
-	if len(p.RemovingAddresses) != 0 {
-		removingStr = fmt.Sprintf(`Removing validators:
-    %s
-`, strings.Join(p.RemovingAddresses, "\n    "))
+func (p UpdateValidatorAuthsProposal) String() string {
+	authsStr := "Auths:"
+	for _, auth := range p.Auths {
+		authsStr += fmt.Sprintf(`
+    - OperatorAddress: %s
+    - CreationAllowed: %t`,
+		auth.OperatorAddress, auth.CreationAllowed)
 	}
 
 	return fmt.Sprintf(`Edit Allowed Validators Proposal:
   Title:       %s
   Description: %s
-%s%s`, p.Title, p.Description, addingStr, removingStr)
+%s
+`, p.Title, p.Description, authsStr)
 }

@@ -19,30 +19,30 @@ func GetQueryCmd() *cobra.Command {
 	}
 
 	cmd.AddCommand(
-		GetEnabledCmd(),
-		GetAllowedValidatorsCmd(),
-		GetAllowedValidatorCmd(),
+		GetParamsCmd(),
+		GetValidatorAuthsCmd(),
+		GetValidatorAuthCmd(),
 	)
 
 	return cmd
 }
 
-// GetEnabledCmd returns the query consortium status command.
-func GetEnabledCmd() *cobra.Command {
+// GetParamsCmd returns the query consortium parameters command.
+func GetParamsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "enabled",
-		Short: "get consortium status",
-		Long:  "Gets the current status of consortium",
+		Use:   "params",
+		Short: "Query consortium params",
+		Long:  "Gets the current parameters of consortium",
 		Args:  cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE:  func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := types.QueryEnabledRequest{}
-			res, err := queryClient.Enabled(context.Background(), &params)
+			params := types.QueryParamsRequest{}
+			res, err := queryClient.Params(context.Background(), &params)
 			if err != nil {
 				return err
 			}
@@ -56,14 +56,14 @@ func GetEnabledCmd() *cobra.Command {
 	return cmd
 }
 
-// GetAllowedValidatorsCmd returns allowed validators by consortium
-func GetAllowedValidatorsCmd() *cobra.Command {
+// GetValidatorAuthsCmd returns validator authorization by consortium
+func GetValidatorAuthsCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "allowed-validators",
-		Short: "allowed validators",
-		Long: "Gets allowed validators by consortium",
-		Args: cobra.NoArgs,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Use:   "validator-auths",
+		Short: "Query validator authorizations",
+		Long:  "Gets validator authorizations by consortium",
+		Args:  cobra.NoArgs,
+		RunE:  func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -75,8 +75,8 @@ func GetAllowedValidatorsCmd() *cobra.Command {
 				return err
 			}
 
-			params := types.QueryAllowedValidatorsRequest{Pagination: pageReq}
-			res, err := queryClient.AllowedValidators(context.Background(), &params)
+			params := types.QueryValidatorAuthsRequest{Pagination: pageReq}
+			res, err := queryClient.ValidatorAuths(context.Background(), &params)
 			if err != nil {
 				return err
 			}
@@ -86,19 +86,19 @@ func GetAllowedValidatorsCmd() *cobra.Command {
 	}
 
 	flags.AddQueryFlagsToCmd(cmd)
-	flags.AddPaginationFlagsToCmd(cmd, "allowed validators")
+	flags.AddPaginationFlagsToCmd(cmd, "validator auths")
 
 	return cmd
 }
 
-// GetAllowedValidatorCmd returns allowed validators by consortium
-func GetAllowedValidatorCmd() *cobra.Command {
+// GetValidatorAuthCmd returns validator authorizations by consortium
+func GetValidatorAuthCmd() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "allowed-validator [validator-address]",
-		Short: "allowed validator",
-		Long: "Gets allowed validator by consortium",
-		Args: cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		Use:   "validator-auth [validator-address]",
+		Short: "Query validator authorization",
+		Long:  "Gets validator authorization by consortium",
+		Args:  cobra.ExactArgs(1),
+		RunE:  func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -110,8 +110,8 @@ func GetAllowedValidatorCmd() *cobra.Command {
 				return err
 			}
 
-			params := types.QueryAllowedValidatorRequest{ValidatorAddress: valAddr}
-			res, err := queryClient.AllowedValidator(context.Background(), &params)
+			params := types.QueryValidatorAuthRequest{ValidatorAddress: valAddr}
+			res, err := queryClient.ValidatorAuth(context.Background(), &params)
 			if err != nil {
 				return err
 			}

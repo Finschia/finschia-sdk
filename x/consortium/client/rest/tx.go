@@ -19,46 +19,47 @@ import (
 func registerTxHandlers(
 	clientCtx client.Context,
 	r *mux.Router) {
-	r.HandleFunc("/consortium/disable_consortium", newPostDisableConsortiumHandler(clientCtx)).Methods("POST")
-	r.HandleFunc("/consortium/edit_allowed_validators", newEditAllowedValidatorsHandler(clientCtx)).Methods("POST")
+	r.HandleFunc("/consortium/params", newPostUpdateConsortiumParamsHandler(clientCtx)).Methods("POST")
+	r.HandleFunc("/consortium/validators", newPostUpdateValidatorAuthsHandler(clientCtx)).Methods("POST")
 }
 
-// DisableConsortiumRequest defines a proposal to disable consortium.
-type DisableConsortiumRequest struct {
+// UpdateConsortiumParamsRequest defines a proposal to update parameters of consortium.
+type UpdateConsortiumParamsRequest struct {
 	BaseReq       rest.BaseReq `json:"base_req" yaml:"base_req"`
 	Title         string       `json:"title" yaml:"title"`
 	Description   string       `json:"description" yaml:"description"`
 	Deposit       sdk.Coins    `json:"deposit" yaml:"deposit"`
+
+	Params *types.Params `json:"params" yaml:"params"`
 }
 
-// EditAllowedValidatorsRequest defines a proposal to edit allowed validators.
-type EditAllowedValidatorsRequest struct {
+// UpdateValidatorAuthsRequest defines a proposal to update validator authorizations.
+type UpdateValidatorAuthsRequest struct {
 	BaseReq     rest.BaseReq `json:"base_req" yaml:"base_req"`
 	Title       string       `json:"title" yaml:"title"`
 	Description string       `json:"description" yaml:"description"`
 	Deposit     sdk.Coins    `json:"deposit" yaml:"deposit"`
 
-	AddingAddresses   []string `json:"adding_addresses" yaml:"adding_addresses"`
-	RemovingAddresses []string `json:"removing_addresses" yaml:"removing_addresses"`
+	Auths []*types.ValidatorAuth `json:"auths" yaml:"auths"`
 }
 
-func ProposalDisableConsortiumRESTHandler(clientCtx client.Context) govrest.ProposalRESTHandler {
+func ProposalUpdateConsortiumParamsRESTHandler(clientCtx client.Context) govrest.ProposalRESTHandler {
 	return govrest.ProposalRESTHandler{
 		SubRoute: "consortium",
-		Handler:  newPostDisableConsortiumHandler(clientCtx),
+		Handler:  newPostUpdateConsortiumParamsHandler(clientCtx),
 	}
 }
 
-func ProposalEditAllowedValidatorsRESTHandler(clientCtx client.Context) govrest.ProposalRESTHandler {
+func ProposalUpdateValidatorAuthsRESTHandler(clientCtx client.Context) govrest.ProposalRESTHandler {
 	return govrest.ProposalRESTHandler{
 		SubRoute: "consortium",
-		Handler:  newEditAllowedValidatorsHandler(clientCtx),
+		Handler:  newPostUpdateValidatorAuthsHandler(clientCtx),
 	}
 }
 
-func newPostDisableConsortiumHandler(clientCtx client.Context) http.HandlerFunc {
+func newPostUpdateConsortiumParamsHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req DisableConsortiumRequest
+		var req UpdateConsortiumParamsRequest
 
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
 			return
@@ -71,7 +72,7 @@ func newPostDisableConsortiumHandler(clientCtx client.Context) http.HandlerFunc 
 
 		fromAddr := sdk.AccAddress(req.BaseReq.From)
 
-		content := types.NewDisableConsortiumProposal(req.Title, req.Description)
+		content := types.NewUpdateConsortiumParamsProposal(req.Title, req.Description, req.Params)
 		msg, err := govtypes.NewMsgSubmitProposal(content, req.Deposit, fromAddr)
 		if rest.CheckBadRequestError(w, err) {
 			return
@@ -84,9 +85,9 @@ func newPostDisableConsortiumHandler(clientCtx client.Context) http.HandlerFunc 
 	}
 }
 
-func newEditAllowedValidatorsHandler(clientCtx client.Context) http.HandlerFunc {
+func newPostUpdateValidatorAuthsHandler(clientCtx client.Context) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req EditAllowedValidatorsRequest
+		var req UpdateValidatorAuthsRequest
 
 		if !rest.ReadRESTReq(w, r, clientCtx.LegacyAmino, &req) {
 			return
@@ -99,7 +100,7 @@ func newEditAllowedValidatorsHandler(clientCtx client.Context) http.HandlerFunc 
 
 		fromAddr := sdk.AccAddress(req.BaseReq.From)
 
-		content := types.NewEditAllowedValidatorsProposal(req.Title, req.Description, req.AddingAddresses, req.RemovingAddresses)
+		content := types.NewUpdateValidatorAuthsProposal(req.Title, req.Description, req.Auths)
 
 		msg, err := govtypes.NewMsgSubmitProposal(content, req.Deposit, fromAddr)
 		if rest.CheckBadRequestError(w, err) {

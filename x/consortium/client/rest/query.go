@@ -13,20 +13,20 @@ import (
 
 func registerQueryRoutes(clientCtx client.Context, r *mux.Router) {
 	r.HandleFunc(
-		"/consortium/enabled", getEnabledHandler(clientCtx),
+		"/consortium/enabled", getParamsHandler(clientCtx),
 	).Methods("GET")
 	r.HandleFunc(
-		"/consortium/allowed_operator", getAllowedOperatorHandler(clientCtx),
+		"/consortium/validator", getValidatorAuthHandler(clientCtx),
 	).Methods("GET")
 	r.HandleFunc(
-		"/consortium/allowed_operators", getAllowedOperatorsHandler(clientCtx),
+		"/consortium/validators", getValidatorAuthsHandler(clientCtx),
 	).Methods("GET")
 }
 
-func getEnabledHandler(clientCtx client.Context) func(http.ResponseWriter, *http.Request) {
+func getParamsHandler(clientCtx client.Context) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, request *http.Request) {
 		// ignore height for now
-		res, _, err := clientCtx.Query(fmt.Sprintf("custom/%s/%s", types.QuerierKey, types.QueryEnabled))
+		res, _, err := clientCtx.Query(fmt.Sprintf("custom/%s/%s", types.QuerierKey, types.QueryParams))
 		if rest.CheckInternalServerError(w, err) {
 			return
 		}
@@ -45,9 +45,9 @@ func getEnabledHandler(clientCtx client.Context) func(http.ResponseWriter, *http
 	}
 }
 
-func getAllowedOperatorsHandler(clientCtx client.Context) func(http.ResponseWriter, *http.Request) {
+func getValidatorAuthsHandler(clientCtx client.Context) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		res, _, err := clientCtx.Query(fmt.Sprintf("custom/%s/%s", types.QuerierKey, types.QueryAllowedValidators))
+		res, _, err := clientCtx.Query(fmt.Sprintf("custom/%s/%s", types.QuerierKey, types.QueryValidatorAuths))
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}
@@ -67,9 +67,9 @@ func getAllowedOperatorsHandler(clientCtx client.Context) func(http.ResponseWrit
 	}
 }
 
-func getAllowedOperatorHandler(clientCtx client.Context) func(http.ResponseWriter, *http.Request) {
+func getValidatorAuthHandler(clientCtx client.Context) func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		res, _, err := clientCtx.Query(fmt.Sprintf("custom/%s/%s", types.QuerierKey, types.QueryAllowedValidator))
+		res, _, err := clientCtx.Query(fmt.Sprintf("custom/%s/%s", types.QuerierKey, types.QueryValidatorAuth))
 		if rest.CheckBadRequestError(w, err) {
 			return
 		}

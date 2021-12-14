@@ -14,14 +14,14 @@ import (
 func NewQuerier(keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 	return func(ctx sdk.Context, path []string, req abci.RequestQuery) ([]byte, error) {
 		switch path[0] {
-		case types.QueryEnabled:
+		case types.QueryParams:
 			return queryEnabled(ctx, req, keeper, legacyQuerierCdc)
 
-		case types.QueryAllowedValidator:
-			return queryAllowedValidator(ctx, path[1:], req, keeper, legacyQuerierCdc)
+		case types.QueryValidatorAuth:
+			return queryValidatorAuth(ctx, path[1:], req, keeper, legacyQuerierCdc)
 
-		case types.QueryAllowedValidators:
-			return queryAllowedValidators(ctx, path[1:], req, keeper, legacyQuerierCdc)
+		case types.QueryValidatorAuths:
+			return queryValidatorAuths(ctx, path[1:], req, keeper, legacyQuerierCdc)
 
 		default:
 			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "unknown query path: %s", path[0])
@@ -40,15 +40,19 @@ func queryEnabled(ctx sdk.Context, _ abci.RequestQuery, keeper Keeper, legacyQue
 	return res, nil
 }
 
-func queryAllowedValidator(ctx sdk.Context, path []string, _ abci.RequestQuery, keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+func queryValidatorAuth(ctx sdk.Context, path []string, _ abci.RequestQuery, keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	addr := path[0]
 	if err := sdk.ValidateValAddress(addr); err != nil {
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 	valAddr := sdk.ValAddress(addr)
 		
-	allowed := keeper.GetAllowedValidator(ctx, valAddr)
-	res, err := legacyQuerierCdc.MarshalJSON(&allowed)
+	auth, err := keeper.GetValidatorAuth(ctx, valAddr)
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := legacyQuerierCdc.MarshalJSON(&auth)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONMarshal, err.Error())
 	}
@@ -57,18 +61,18 @@ func queryAllowedValidator(ctx sdk.Context, path []string, _ abci.RequestQuery, 
 }
 
 // nolint: unparam
-func queryAllowedValidators(ctx sdk.Context, path []string, req abci.RequestQuery, keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
-	var params types.QueryAllowedValidatorsRequest
+func queryValidatorAuths(ctx sdk.Context, path []string, req abci.RequestQuery, keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+	var params types.QueryValidatorAuthsRequest
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrJSONUnmarshal, err.Error())
 	}
 
-	addrs := keeper.GetAllowedValidators(ctx)
+	addrs := keeper.GetValidatorAuths(ctx)
 	if len(addrs) != 0 {
 		start, end := client.Paginate(len(addrs), int(params.Pagination.Offset), int(params.Pagination.Limit), 100)
 		if start < 0 || end < 0 {
-			addrs = []sdk.ValAddress{}
+			addrs = []*types.ValidatorAuth{}
 		} else {
 			addrs = addrs[start:end]
 		}
