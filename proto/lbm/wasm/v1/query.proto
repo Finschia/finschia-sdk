@@ -148,12 +148,13 @@ message QueryCodeRequest {
 message CodeInfoResponse {
   option (gogoproto.equal) = true;
 
-  uint64 code_id   = 1 [(gogoproto.customname) = "CodeID",
+  uint64       code_id                = 1 [(gogoproto.customname) = "CodeID",
                       (gogoproto.jsontag)    = "id"]; // id for legacy support
-  string creator   = 2;
-  bytes  data_hash = 3 [(gogoproto.casttype) = "github.com/line/ostracon/libs/bytes.HexBytes"];
-  string source    = 4;
-  string builder   = 5;
+  string       creator                = 2;
+  bytes        data_hash              = 3 [(gogoproto.casttype) = "github.com/line/ostracon/libs/bytes.HexBytes"];
+  string       source                 = 4;
+  string       builder                = 5;
+  AccessConfig instantiate_permission = 6 [(gogoproto.nullable) = false];
 }
 
 // QueryCodeResponse is the response type for the Query/Code RPC method

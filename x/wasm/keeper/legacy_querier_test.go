@@ -359,6 +359,7 @@ func TestLegacyQueryCodeList(t *testing.T) {
 			require.Len(t, got, len(spec.codeIDs))
 			for i, exp := range spec.codeIDs {
 				assert.EqualValues(t, exp, got[i]["id"])
+				assert.NotNil(t, got[i]["instantiate_permission"])
 			}
 		})
 	}
