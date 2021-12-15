@@ -1,0 +1,12 @@
+syntax = "proto3";
+package lbm.bankplus.v1;
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/bankplus/types";
+
+message BlockedAddr {
+  option (gogoproto.equal) = true;
+
+  string address = 1;
+}

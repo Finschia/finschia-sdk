@@ -296,6 +296,9 @@
   
     - [Msg](#lbm.bank.v1.Msg)
   
+- [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
+    - [BlockedAddr](#lbm.bankplus.v1.BlockedAddr)
+  
 - [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
     - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
     - [Attribute](#lbm.base.abci.v1.Attribute)
@@ -4825,6 +4828,37 @@ Msg defines the bank Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `Send` | [MsgSend](#lbm.bank.v1.MsgSend) | [MsgSendResponse](#lbm.bank.v1.MsgSendResponse) | Send defines a method for sending coins from one account to another account. | |
 | `MultiSend` | [MsgMultiSend](#lbm.bank.v1.MsgMultiSend) | [MsgMultiSendResponse](#lbm.bank.v1.MsgMultiSendResponse) | MultiSend defines a method for sending coins from some accounts to other accounts. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/bankplus/v1/bankplus.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/bankplus/v1/bankplus.proto
+
+
+
+<a name="lbm.bankplus.v1.BlockedAddr"></a>
+
+### BlockedAddr
+
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
 
  <!-- end services -->
 
