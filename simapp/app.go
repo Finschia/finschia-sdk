@@ -117,8 +117,8 @@ var (
 		distr.AppModuleBasic{},
 		consortium.AppModuleBasic{},
 		gov.NewAppModuleBasic(
-			consortiumclient.DisableConsortiumProposalHandler,
-			consortiumclient.EditAllowedValidatorsProposalHandler,
+			consortiumclient.UpdateConsortiumParamsProposalHandler,
+			consortiumclient.UpdateValidatorAuthsProposalHandler,
 			paramsclient.ProposalHandler,
 			distrclient.ProposalHandler,
 			upgradeclient.ProposalHandler,
@@ -285,7 +285,7 @@ func NewSimApp(
 
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegranttypes.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
-	app.ConsortiumKeeper = consortiumkeeper.NewKeeper(appCodec, keys[consortiumtypes.StoreKey], stakingKeeper, app.SlashingKeeper)
+	app.ConsortiumKeeper = consortiumkeeper.NewKeeper(appCodec, keys[consortiumtypes.StoreKey], stakingKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -359,7 +359,7 @@ func NewSimApp(
 		capability.NewAppModule(appCodec, *app.CapabilityKeeper),
 		crisis.NewAppModule(&app.CrisisKeeper, skipGenesisInvariants),
 		feegrant.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		consortium.NewAppModule(appCodec, app.ConsortiumKeeper, app.StakingKeeper, app.SlashingKeeper),
+		consortium.NewAppModule(appCodec, app.ConsortiumKeeper, app.StakingKeeper),
 		gov.NewAppModule(appCodec, app.GovKeeper, app.AccountKeeper, app.BankKeeper),
 		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
