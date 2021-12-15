@@ -9,7 +9,17 @@ import (
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 )
 
-var _ bankkeeper.Keeper = (*BaseKeeper)(nil)
+var _ Keeper = (*BaseKeeper)(nil)
+
+type Keeper interface {
+	bankkeeper.Keeper
+
+	AddBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
+	DeleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
+	IsBlockedAddr(address sdk.AccAddress) bool
+
+	InitializeBankPlus(ctx sdk.Context)
+}
 
 type BaseKeeper struct {
 	bankkeeper.BaseKeeper
@@ -23,7 +33,7 @@ type BaseKeeper struct {
 func NewBaseKeeper(
 	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace *paramtypes.Subspace,
 	blockedAddrs map[string]bool,
-) bankkeeper.Keeper {
+) BaseKeeper {
 	return BaseKeeper{
 		BaseKeeper:   bankkeeper.NewBaseKeeper(cdc, storeKey, ak, paramSpace, blockedAddrs),
 		ak:           ak,

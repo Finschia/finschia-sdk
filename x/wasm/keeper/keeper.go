@@ -12,6 +12,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
+	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/line/ostracon/crypto"
@@ -38,6 +39,8 @@ type WasmVMQueryHandler interface {
 type CoinTransferrer interface {
 	// TransferCoins sends the coin amounts from the source to the destination with rules applied.
 	TransferCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	AddBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
+	DeleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
 }
 
 // WasmVMResponseHandler is an extension point to handles the response data returned by a contract call.
@@ -574,6 +577,13 @@ func (k Keeper) setContractStatus(ctx sdk.Context, contractAddress sdk.AccAddres
 	if contractInfo.Status != status {
 		contractInfo.Status = status
 		k.storeContractInfo(ctx, contractAddress, contractInfo)
+
+		switch status {
+		case types.ContractStatusInactive:
+			k.bank.AddBlockedAddr(ctx, contractAddress)
+		case types.ContractStatusActive:
+			k.bank.DeleteBlockedAddr(ctx, contractAddress)
+		}
 	}
 	return nil
 }
@@ -1000,12 +1010,13 @@ func (k Keeper) QueryGasLimit() sdk.Gas {
 // lbm-sdk's x/bank/keeper/msg_server.go Send
 // (https://github.com/line/lbm-sdk/blob/2a5a2d2c885b03e278bcd67546d4f21e74614ead/x/bank/keeper/msg_server.go#L26)
 type BankCoinTransferrer struct {
-	keeper types.BankKeeper
+	keeper bankpluskeeper.Keeper
 }
 
 func NewBankCoinTransferrer(keeper types.BankKeeper) BankCoinTransferrer {
+	bankPlusKeeper := keeper.(bankpluskeeper.Keeper)
 	return BankCoinTransferrer{
-		keeper: keeper,
+		keeper: bankPlusKeeper,
 	}
 }
 
@@ -1015,6 +1026,7 @@ func (c BankCoinTransferrer) TransferCoins(ctx sdk.Context, fromAddr sdk.AccAddr
 	if err := c.keeper.SendEnabledCoins(ctx, amt...); err != nil {
 		return err
 	}
+
 	if c.keeper.BlockedAddr(fromAddr) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "blocked address can not be used")
 	}
@@ -1023,6 +1035,14 @@ func (c BankCoinTransferrer) TransferCoins(ctx sdk.Context, fromAddr sdk.AccAddr
 		return sdkerr
 	}
 	return nil
+}
+
+func (c BankCoinTransferrer) AddBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
+	c.keeper.AddBlockedAddr(ctx, address)
+}
+
+func (c BankCoinTransferrer) DeleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
+	c.keeper.DeleteBlockedAddr(ctx, address)
 }
 
 type msgDispatcher interface {
