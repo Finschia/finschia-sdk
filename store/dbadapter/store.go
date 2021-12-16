@@ -50,6 +50,14 @@ func (dsa Store) Delete(key []byte) {
 	}
 }
 
+// Load wraps the underlying DB's Get method panicing on error.
+func (dsa Store) Load(key []byte) {
+	_, err := dsa.DB.Get(key)
+	if err != nil {
+		panic(err)
+	}
+}
+
 // Iterator wraps the underlying DB's Iterator method panicing on error.
 func (dsa Store) Iterator(start, end []byte) types.Iterator {
 	iter, err := dsa.DB.Iterator(start, end)

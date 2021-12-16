@@ -4,10 +4,12 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
+	"runtime"
 	"sync"
+	"sync/atomic"
 	"time"
 
-	"github.com/VictoriaMetrics/fastcache"
 	ics23 "github.com/confio/ics23/go"
 	"github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
@@ -40,47 +42,55 @@ var (
 // Store Implements types.KVStore and CommitKVStore.
 type Store struct {
 	tree    Tree
-	cache   *fastcache.Cache
+	cache   types.Cache
 	metrics *Metrics
 }
 
 type CacheManagerSingleton struct {
-	cache   *fastcache.Cache
+	cache   types.Cache
 	metrics *Metrics
 }
 
-func (cms *CacheManagerSingleton) GetCache() *fastcache.Cache {
+func (cms *CacheManagerSingleton) GetCache() types.Cache {
 	return cms.cache
 }
 
 func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
 	cm := &CacheManagerSingleton{
-		cache:   fastcache.New(cacheSize),
+		cache: newFastCache(cacheSize),
+		// cache:   newRistrettoCache(cacheSize),
+		// cache:   newFreeCache(cacheSize),
+		// cache:   NewFixedMap(cacheSize),
 		metrics: provider(),
 	}
 	startCacheMetricUpdator(cm.cache, cm.metrics)
 	return cm
 }
 
-func startCacheMetricUpdator(cache *fastcache.Cache, metrics *Metrics) {
+var peakCacheBytes uint64
+
+func startCacheMetricUpdator(cache types.Cache, metrics *Metrics) {
 	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
 	// So we update the metrics with a separate go route.
 	go func() {
 		for {
-			stats := fastcache.Stats{}
-			cache.UpdateStats(&stats)
-			metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
-			metrics.IAVLCacheMisses.Set(float64(stats.Misses))
-			metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
-			metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
-			time.Sleep(1 * time.Minute)
+			hits, misses, entries, bytes := cache.Stats()
+			metrics.IAVLCacheHits.Set(float64(hits))
+			metrics.IAVLCacheMisses.Set(float64(misses))
+			metrics.IAVLCacheEntries.Set(float64(entries))
+			metrics.IAVLCacheBytes.Set(float64(bytes))
+			if bytes > peakCacheBytes {
+				peakCacheBytes = bytes
+				metrics.IAVLCachePeakBytes.Set(float64(bytes))
+			}
+			time.Sleep(10 * time.Second)
 		}
 	}()
 }
 
 type CacheManagerNoCache struct{}
 
-func (cmn *CacheManagerNoCache) GetCache() *fastcache.Cache {
+func (cmn *CacheManagerNoCache) GetCache() types.Cache {
 	return nil
 }
 
@@ -246,6 +256,90 @@ func (st *Store) Has(key []byte) (exists bool) {
 func (st *Store) Delete(key []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "delete")
 	st.tree.Remove(key)
+}
+
+// prefetcher
+var use_prefetch = 0
+var prefetch_commiters int64
+var prefetch_dropped int64
+var prefetch_jobs chan func()
+
+func StartPrefetch() {
+	use_prefetch = 1
+}
+
+func StopPrefetch() {
+	use_prefetch = -1
+}
+
+func PausePrefetcher() {
+	atomic.AddInt64(&prefetch_commiters, 1)
+	// fmt.Println("XXX: pausing prefetcher")
+}
+
+func ResumePrefetcher() {
+	// fmt.Println("XXX: resuming prefetcher")
+	atomic.AddInt64(&prefetch_commiters, -1)
+}
+
+func prefetcher() {
+	workers := runtime.NumCPU() / 4
+	jobs := 20000 // should be pending queue * 4
+	prefetch_jobs = make(chan func(), jobs)
+	prefetch_locks := make(chan bool, workers)
+	for {
+		f := <-prefetch_jobs
+		//			fmt.Printf("XXX: got jobs=%d threads=%d commiters=%d\n", len(prefetch_jobs), len(prefetch_locks), atomic.LoadInt64(&prefetch_commiters))
+		state := 0
+		for {
+			if atomic.LoadInt64(&prefetch_commiters) == 0 {
+				if state == 1 {
+					state = 0
+					// fmt.Printf("XXX: unstalling jobs=%d dropped=%d commiters=%d\n", len(prefetch_jobs), atomic.LoadInt64(&prefetch_dropped), atomic.LoadInt64(&prefetch_commiters))
+					atomic.StoreInt64(&prefetch_dropped, 0)
+				}
+				break
+			}
+			if state == 0 {
+				state = 1
+				// fmt.Printf("XXX: stalling jobs=%d commiters=%d\n", len(prefetch_jobs), atomic.LoadInt64(&prefetch_commiters))
+			}
+			time.Sleep(10 * time.Millisecond)
+		}
+		prefetch_locks <- true
+		go func(f func()) {
+			f()
+			<-prefetch_locks
+		}(f)
+	}
+}
+
+func init() {
+	if os.Getenv("USE_PREFETCH") == "YES" {
+		use_prefetch = 1
+	} else {
+		use_prefetch = -1
+	}
+	go prefetcher()
+}
+
+// Implements type.KVStore.
+func (st *Store) Load(key []byte) {
+	if use_prefetch != 1 {
+		return
+	}
+	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "load")
+	select {
+	case prefetch_jobs <- func() {
+		st.tree.Get(key)
+	}:
+		// good
+	default:
+		// drop this request
+		if atomic.AddInt64(&prefetch_dropped, 1) == 1 {
+			// fmt.Printf("XXX: prefetch jobs too many %d, %d dropped\n", len(prefetch_jobs), atomic.LoadInt64(&prefetch_dropped))
+		}
+	}
 }
 
 // DeleteVersions deletes a series of versions from the MutableTree. An error

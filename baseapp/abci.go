@@ -21,6 +21,8 @@ import (
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+
+	iavlstore "github.com/line/lbm-sdk/store/iavl"
 )
 
 // InitChain implements the ABCI interface. It runs the initialization logic
@@ -185,12 +187,15 @@ func (app *BaseApp) BeginBlock(req abci.RequestBeginBlock) (res abci.ResponseBeg
 		res.Events = sdk.MarkEventsToIndex(res.Events, app.indexEvents)
 	}
 
+	iavlstore.PausePrefetcher()
 	return res
 }
 
 // EndBlock implements the ABCI interface.
 func (app *BaseApp) EndBlock(req abci.RequestEndBlock) (res abci.ResponseEndBlock) {
 	defer telemetry.MeasureSince(time.Now(), "abci", "end_block")
+
+	iavlstore.ResumePrefetcher()
 
 	if app.deliverState.ms.TracingEnabled() {
 		app.deliverState.ms = app.deliverState.ms.SetTracingContext(nil).(sdk.CacheMultiStore)

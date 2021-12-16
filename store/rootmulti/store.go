@@ -28,7 +28,7 @@ import (
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-)
+) ; import "github.com/charlanxcc/o_o" // o.i 2000
 
 const (
 	latestVersionKey = "s/latest"
@@ -350,7 +350,7 @@ func (rs *Store) LastCommitID() types.CommitID {
 }
 
 // Commit implements Committer/CommitStore.
-func (rs *Store) Commit() types.CommitID {
+func (rs *Store) Commit() types.CommitID { ;;; O__o := o_o.B(2000); defer O__o.E(); O__o.M(1)
 	var previousHeight, version int64
 	if rs.lastCommitInfo.GetVersion() == 0 && rs.initialVersion > 1 {
 		// This case means that no commit has been made in the store, we
@@ -365,9 +365,9 @@ func (rs *Store) Commit() types.CommitID {
 		// in which case we start at version 1.
 		previousHeight = rs.lastCommitInfo.GetVersion()
 		version = previousHeight + 1
-	}
+	} ;;; O__o.M(2)
 
-	rs.lastCommitInfo = commitStores(version, rs.stores)
+	rs.lastCommitInfo = commitStores(version, rs.stores) ;;; O__o.N(3, "comitsto")
 
 	// Determine if pruneHeight height needs to be added to the list of heights to
 	// be pruned, where pruneHeight = (commitHeight - 1) - KeepRecent.
@@ -386,9 +386,9 @@ func (rs *Store) Commit() types.CommitID {
 	// batch prune if the current height is a pruning interval height
 	if rs.pruningOpts.Interval > 0 && version%int64(rs.pruningOpts.Interval) == 0 {
 		go rs.pruneStores()
-	}
+	} ;;; O__o.N(4, "prunestores")
 
-	flushMetadata(rs.db, version, rs.lastCommitInfo, rs.pruneHeights)
+	flushMetadata(rs.db, version, rs.lastCommitInfo, rs.pruneHeights) ;;; O__o.N(5, "flushmeta")
 
 	return types.CommitID{
 		Version: version,
@@ -432,6 +432,9 @@ func (rs *Store) pruneStores() {
 			store = rs.GetCommitKVStore(key)
 
 			if err := store.(*iavl.Store).DeleteVersions(pruneHeights...); err != nil {
+				if err == iavltree.ErrBusy {
+					return
+				}
 				if errCause := errors.Cause(err); errCause != nil && errCause != iavltree.ErrVersionDoesNotExist {
 					panic(err)
 				}
@@ -964,7 +967,7 @@ func getLatestVersion(db tmdb.DB) int64 {
 }
 
 // Commits each store and returns a new commitInfo.
-func commitStores(version int64, storeMap map[types.StoreKey]types.CommitKVStore) *types.CommitInfo {
+func commitStores(version int64, storeMap map[types.StoreKey]types.CommitKVStore) *types.CommitInfo { ;;; O__o := o_o.B(2010); defer O__o.E(); O__o.M(1)
 	storeInfos := make([]types.StoreInfo, len(storeMap))
 
 	var wg sync.WaitGroup

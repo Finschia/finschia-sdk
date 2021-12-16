@@ -96,6 +96,15 @@ func (store *Store) Delete(key []byte) {
 	store.setCacheValue(key, nil, true, true)
 }
 
+// Load implements types.KVStore.
+func (store *Store) Load(key []byte) {
+	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "load")
+
+	// do not update cache
+	types.AssertValidKey(key)
+	store.parent.Load(key)
+}
+
 // Implements Cachetypes.KVStore.
 func (store *Store) Write() {
 	store.mtx.Lock()

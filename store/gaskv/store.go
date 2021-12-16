@@ -74,6 +74,12 @@ func (gs *Store) Delete(key []byte) {
 	gs.parent.Delete(key)
 }
 
+// Implements KVStore.
+func (gs *Store) Load(key []byte) {
+	defer telemetry.MeasureSince(time.Now(), "store", "gaskv", "load")
+	gs.parent.Load(key)
+}
+
 // Iterator implements the KVStore interface. It returns an iterator which
 // incurs a flat gas cost for seeking to the first key/value pair and a variable
 // gas cost based on the current value's length if the iterator is valid.

@@ -26,6 +26,9 @@ type ViewKeeper interface {
 	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
 	LockedCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
+	LoadBalance(ctx sdk.Context, addr sdk.AccAddress, denom string)
+
+	Prefetch(ctx sdk.Context, tx sdk.Tx)
 
 	IterateAccountBalances(ctx sdk.Context, addr sdk.AccAddress, cb func(coin sdk.Coin) (stop bool))
 	IterateAllBalances(ctx sdk.Context, cb func(address sdk.AccAddress, coin sdk.Coin) (stop bool))
@@ -112,6 +115,65 @@ func (k BaseViewKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom s
 	}
 
 	return balance
+}
+
+// LoadBalance loads the balance of a specific denomination for a given account
+// by address, filling caches along the way.
+func (k BaseViewKeeper) LoadBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) {
+	store := ctx.KVStore(k.storeKey)
+	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
+	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
+	accountStore.Load([]byte(denom))
+}
+
+func (k BaseViewKeeper) Prefetch(ctx sdk.Context, tx sdk.Tx) {
+	store := ctx.KVStore(k.storeKey)
+	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
+
+	for _, msg := range tx.GetMsgs() {
+		switch msg := msg.(type) {
+		case *types.MsgSend:
+			addrs := map[string]bool{}
+			denoms := map[string]bool{}
+			addrs[msg.FromAddress] = true
+			addrs[msg.ToAddress] = true
+			for _, a := range msg.Amount {
+				denoms[a.Denom] = true
+			}
+			for a, _ := range addrs {
+				addr := sdk.AccAddress(a)
+				k.ak.LoadAccount(ctx, addr)
+				accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
+				for denom, _ := range denoms {
+					accountStore.Load([]byte(denom))
+				}
+			}
+
+		case *types.MsgMultiSend:
+			addrs := map[string]bool{}
+			denoms := map[string]bool{}
+			for _, i := range msg.Inputs {
+				addrs[i.Address] = true
+				for _, a := range i.Coins {
+					denoms[a.Denom] = true
+				}
+			}
+			for _, i := range msg.Outputs {
+				addrs[i.Address] = true
+				for _, a := range i.Coins {
+					denoms[a.Denom] = true
+				}
+			}
+			for a, _ := range addrs {
+				addr := sdk.AccAddress(a)
+				k.ak.LoadAccount(ctx, addr)
+				accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
+				for denom, _ := range denoms {
+					accountStore.Load([]byte(denom))
+				}
+			}
+		}
+	}
 }
 
 // IterateAccountBalances iterates over the balances of a single account and

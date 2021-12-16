@@ -81,6 +81,11 @@ func (s Store) Delete(key []byte) {
 }
 
 // Implements KVStore
+func (s Store) Load(key []byte) {
+	s.parent.Load(s.key(key))
+}
+
+// Implements KVStore
 // Check https://github.com/tendermint/tendermint/blob/master/libs/db/prefix_db.go#L106
 func (s Store) Iterator(start, end []byte) types.Iterator {
 	newstart := cloneAppend(s.prefix, start)

@@ -78,6 +78,12 @@ func (tkv *Store) Has(key []byte) bool {
 	return tkv.parent.Has(key)
 }
 
+// Load implements the KVStore interface. It traces a read operation and
+// delegates a Get call to the parent KVStore.
+func (tkv *Store) Load(key []byte) {
+	tkv.parent.Load(key)
+}
+
 // Iterator implements the KVStore interface. It delegates the Iterator call
 // the to the parent KVStore.
 func (tkv *Store) Iterator(start, end []byte) types.Iterator {

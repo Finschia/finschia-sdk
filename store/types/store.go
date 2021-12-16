@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/VictoriaMetrics/fastcache"
 	abci "github.com/line/ostracon/abci/types"
 	oststrings "github.com/line/ostracon/libs/strings"
 	tmdb "github.com/line/tm-db/v2"
@@ -18,8 +17,16 @@ type Store interface {
 	CacheWrapper
 }
 
+type Cache interface {
+	Set(key, value []byte)
+	Has(key []byte) bool
+	Get(dst, key []byte) []byte
+	Del(key []byte)
+	Stats() (hits, misses, entries, bytes uint64)
+}
+
 type CacheManager interface {
-	GetCache() *fastcache.Cache
+	GetCache() Cache
 }
 
 // something that can persist to disk
@@ -210,6 +217,9 @@ type KVStore interface {
 
 	// Delete deletes the key. Panics on nil key.
 	Delete(key []byte)
+
+	// Load fetches the key'ed object, filling ibc & iavl cache along the way.
+	Load(key []byte)
 
 	// Iterator over a domain of keys in ascending order. End is exclusive.
 	// Start must be less than end, or the Iterator is invalid.

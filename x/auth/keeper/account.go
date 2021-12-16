@@ -27,6 +27,12 @@ func (ak AccountKeeper) GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.A
 	return ak.decodeAccount(bz)
 }
 
+// LoadAccount implements AccountKeeperI.
+func (ak AccountKeeper) LoadAccount(ctx sdk.Context, addr sdk.AccAddress) {
+	store := ctx.KVStore(ak.key)
+	store.Load(types.AddressStoreKey(addr))
+}
+
 // GetAllAccounts returns all accounts in the accountKeeper.
 func (ak AccountKeeper) GetAllAccounts(ctx sdk.Context) (accounts []types.AccountI) {
 	ak.IterateAccounts(ctx, func(acc types.AccountI) (stop bool) {
