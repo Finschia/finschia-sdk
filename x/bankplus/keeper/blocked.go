@@ -13,8 +13,8 @@ func blockedAddrKey(addr sdk.AccAddress) []byte {
 	return append(blockedAddrsKeyPrefix, addr.Bytes()...)
 }
 
-// isBlockedAddr check if the address is stored or not as blocked address
-func (keeper BaseKeeper) getBlockedAddr(ctx sdk.Context, address sdk.AccAddress) bool {
+// isExistBlockedAddr check if the address is stored or not as blocked address
+func (keeper BaseKeeper) isAddedBlockedAddr(ctx sdk.Context, address sdk.AccAddress) bool {
 	store := ctx.KVStore(keeper.storeKey)
 	bz := store.Get(blockedAddrKey(address))
 	if bz == nil {
@@ -32,7 +32,7 @@ func (keeper BaseKeeper) addBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
 	store.Set(blockedAddrKey(address), bz)
 }
 
-// deleteBlockedAddr
+// deleteBlockedAddr delete blocked address from store
 func (keeper BaseKeeper) deleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(keeper.storeKey)
 	store.Delete(blockedAddrKey(address))

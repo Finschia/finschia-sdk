@@ -55,16 +55,16 @@ func TestBlockedAddr(t *testing.T) {
 	require.Equal(t, 0, len(bankKeeper.blockedAddrs))
 
 	bankKeeper.addBlockedAddr(ctx, addr)
-	require.True(t, bankKeeper.getBlockedAddr(ctx, addr))
+	require.True(t, bankKeeper.isAddedBlockedAddr(ctx, addr))
 
 	bankKeeper.addBlockedAddr(ctx, addr)
-	require.True(t, bankKeeper.getBlockedAddr(ctx, addr))
+	require.True(t, bankKeeper.isAddedBlockedAddr(ctx, addr))
 
 	bankKeeper.deleteBlockedAddr(ctx, addr)
-	require.False(t, bankKeeper.getBlockedAddr(ctx, addr))
+	require.False(t, bankKeeper.isAddedBlockedAddr(ctx, addr))
 
 	addr2 := genAddress()
-	require.False(t, bankKeeper.getBlockedAddr(ctx, addr2))
+	require.False(t, bankKeeper.isAddedBlockedAddr(ctx, addr2))
 
 	// expect no error
 	bankKeeper.deleteBlockedAddr(ctx, addr2)
