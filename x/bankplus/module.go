@@ -2,6 +2,7 @@ package bankplus
 
 import (
 	"fmt"
+
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/types/module"
 	accountkeeper "github.com/line/lbm-sdk/x/auth/keeper"
