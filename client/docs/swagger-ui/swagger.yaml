@@ -31011,6 +31011,27 @@ paths:
                       type: string
                     builder:
                       type: string
+                    instantiate_permission:
+                      type: object
+                      properties:
+                        permission:
+                          type: string
+                          enum:
+                            - ACCESS_TYPE_UNSPECIFIED
+                            - ACCESS_TYPE_NOBODY
+                            - ACCESS_TYPE_ONLY_ADDRESS
+                            - ACCESS_TYPE_EVERYBODY
+                          default: ACCESS_TYPE_UNSPECIFIED
+                          description: >-
+                            - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
+                            placeholder for empty value
+                             - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                             - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                             - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                          title: AccessType permission types
+                        address:
+                          type: string
+                      description: AccessConfig access control type.
                   title: CodeInfoResponse contains code meta data from CodeInfo
               pagination:
                 description: pagination defines the pagination in the response.
@@ -31297,6 +31318,27 @@ paths:
                     type: string
                   builder:
                     type: string
+                  instantiate_permission:
+                    type: object
+                    properties:
+                      permission:
+                        type: string
+                        enum:
+                          - ACCESS_TYPE_UNSPECIFIED
+                          - ACCESS_TYPE_NOBODY
+                          - ACCESS_TYPE_ONLY_ADDRESS
+                          - ACCESS_TYPE_EVERYBODY
+                        default: ACCESS_TYPE_UNSPECIFIED
+                        description: >-
+                          - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
+                          placeholder for empty value
+                           - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                           - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                        title: AccessType permission types
+                      address:
+                        type: string
+                    description: AccessConfig access control type.
                 title: CodeInfoResponse contains code meta data from CodeInfo
               data:
                 type: string
@@ -53733,6 +53775,42 @@ definitions:
     description: |-
       AbsoluteTxPosition is a unique transaction position that allows for global
       ordering of transactions.
+  lbm.wasm.v1.AccessConfig:
+    type: object
+    properties:
+      permission:
+        type: string
+        enum:
+          - ACCESS_TYPE_UNSPECIFIED
+          - ACCESS_TYPE_NOBODY
+          - ACCESS_TYPE_ONLY_ADDRESS
+          - ACCESS_TYPE_EVERYBODY
+        default: ACCESS_TYPE_UNSPECIFIED
+        description: >-
+          - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
+          value
+           - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+           - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+        title: AccessType permission types
+      address:
+        type: string
+    description: AccessConfig access control type.
+  lbm.wasm.v1.AccessType:
+    type: string
+    enum:
+      - ACCESS_TYPE_UNSPECIFIED
+      - ACCESS_TYPE_NOBODY
+      - ACCESS_TYPE_ONLY_ADDRESS
+      - ACCESS_TYPE_EVERYBODY
+    default: ACCESS_TYPE_UNSPECIFIED
+    description: >-
+      - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
+      value
+       - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+       - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+       - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+    title: AccessType permission types
   lbm.wasm.v1.CodeInfoResponse:
     type: object
     properties:
@@ -53748,6 +53826,27 @@ definitions:
         type: string
       builder:
         type: string
+      instantiate_permission:
+        type: object
+        properties:
+          permission:
+            type: string
+            enum:
+              - ACCESS_TYPE_UNSPECIFIED
+              - ACCESS_TYPE_NOBODY
+              - ACCESS_TYPE_ONLY_ADDRESS
+              - ACCESS_TYPE_EVERYBODY
+            default: ACCESS_TYPE_UNSPECIFIED
+            description: >-
+              - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for
+              empty value
+               - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+               - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+               - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+            title: AccessType permission types
+          address:
+            type: string
+        description: AccessConfig access control type.
     title: CodeInfoResponse contains code meta data from CodeInfo
   lbm.wasm.v1.ContractCodeHistoryEntry:
     type: object
@@ -54104,6 +54203,27 @@ definitions:
             type: string
           builder:
             type: string
+          instantiate_permission:
+            type: object
+            properties:
+              permission:
+                type: string
+                enum:
+                  - ACCESS_TYPE_UNSPECIFIED
+                  - ACCESS_TYPE_NOBODY
+                  - ACCESS_TYPE_ONLY_ADDRESS
+                  - ACCESS_TYPE_EVERYBODY
+                default: ACCESS_TYPE_UNSPECIFIED
+                description: >-
+                  - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
+                  for empty value
+                   - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                   - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                   - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                title: AccessType permission types
+              address:
+                type: string
+            description: AccessConfig access control type.
         title: CodeInfoResponse contains code meta data from CodeInfo
       data:
         type: string
@@ -54129,6 +54249,27 @@ definitions:
               type: string
             builder:
               type: string
+            instantiate_permission:
+              type: object
+              properties:
+                permission:
+                  type: string
+                  enum:
+                    - ACCESS_TYPE_UNSPECIFIED
+                    - ACCESS_TYPE_NOBODY
+                    - ACCESS_TYPE_ONLY_ADDRESS
+                    - ACCESS_TYPE_EVERYBODY
+                  default: ACCESS_TYPE_UNSPECIFIED
+                  description: >-
+                    - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
+                    for empty value
+                     - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                     - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                     - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                  title: AccessType permission types
+                address:
+                  type: string
+              description: AccessConfig access control type.
           title: CodeInfoResponse contains code meta data from CodeInfo
       pagination:
         description: pagination defines the pagination in the response.
