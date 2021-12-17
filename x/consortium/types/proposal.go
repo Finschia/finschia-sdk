@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
@@ -36,7 +37,7 @@ func (p *UpdateConsortiumParamsProposal) ProposalType() string {
 func (p *UpdateConsortiumParamsProposal) ValidateBasic() error {
 	params := p.Params
 	if params.Enabled {
-		return ErrInvalidParams
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "cannot enable consortium")
 	}
 
 	return nil
@@ -64,14 +65,14 @@ func (p *UpdateValidatorAuthsProposal) ProposalType() string   { return Proposal
 
 func (p *UpdateValidatorAuthsProposal) ValidateBasic() error {
 	if len(p.Auths) == 0 {
-		return ErrInvalidProposalValidator
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "empty auths")
 	}
 
 	usedAddrs := map[string]bool{}
 	for _, auth := range p.Auths {
 		addr := auth.OperatorAddress
 		if usedAddrs[addr] {
-			return ErrInvalidProposalValidator
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "multiple auths for same validator: %s", addr)
 		}
 		usedAddrs[addr] = true
 	}
@@ -88,7 +89,7 @@ func (p UpdateValidatorAuthsProposal) String() string {
 			auth.OperatorAddress, auth.CreationAllowed)
 	}
 
-	return fmt.Sprintf(`Edit Allowed Validators Proposal:
+	return fmt.Sprintf(`Update Validator Auths Proposal:
   Title:       %s
   Description: %s
 %s

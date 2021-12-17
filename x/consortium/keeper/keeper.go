@@ -20,7 +20,7 @@ type Keeper struct {
 }
 
 // NewKeeper returns a consortium keeper. It handles:
-// - editing allowed validators list
+// - editing validator auths.
 //
 // CONTRACT: the parameter Subspace must have the param key table already initialized
 func NewKeeper(

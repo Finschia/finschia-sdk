@@ -33,7 +33,7 @@ func (k msgServer) CreateValidator(goCtx context.Context, msg *stakingtypes.MsgC
 	if k.ck.GetEnabled(ctx) {
 		valAddr := sdk.ValAddress(msg.ValidatorAddress)
 		if auth, err := k.ck.GetValidatorAuth(ctx, valAddr); err != nil || !auth.CreationAllowed {
-			return nil, sdkerrors.ErrInvalidRequest
+			return nil, sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "not allowed for operator: %s", valAddr)
 		}
 	}
 

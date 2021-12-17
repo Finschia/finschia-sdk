@@ -9,6 +9,7 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/consortium/types"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
@@ -159,7 +160,7 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 				}
 				for _, addr := range deletings {
 					if addingsMap[addr] {
-						return auths, types.ErrInvalidProposalValidator
+						return auths, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "multiple auths for same validator: %s", addr)
 					}
 				}
 

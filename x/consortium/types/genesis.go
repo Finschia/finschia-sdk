@@ -2,6 +2,7 @@ package types
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // NewGenesisState creates a new GenesisState object
@@ -25,7 +26,7 @@ func DefaultGenesisState() *GenesisState {
 func ValidateGenesis(data GenesisState) error {
 	// validator auths are redundant where consortium is off
 	if !data.Params.Enabled && len(data.ValidatorAuths) != 0 {
-		return ErrInvalidParams
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "redundant validator auths for disabled consortium")
 	}
 
 	for _, auth := range data.ValidatorAuths {
