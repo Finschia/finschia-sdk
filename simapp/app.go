@@ -293,7 +293,6 @@ func NewSimApp(
 		stakingtypes.NewMultiStakingHooks(
 			app.DistrKeeper.Hooks(),
 			app.SlashingKeeper.Hooks(),
-			app.ConsortiumKeeper.Hooks(),
 		),
 	)
 
@@ -382,7 +381,6 @@ func NewSimApp(
 	)
 	app.mm.SetOrderEndBlockers(
 		crisistypes.ModuleName,
-		consortiumtypes.ModuleName,
 		govtypes.ModuleName,
 		stakingtypes.ModuleName,
 	)
