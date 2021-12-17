@@ -8,6 +8,7 @@
 * (x/upgrade) [\#377] (https://github.com/line/lbm-sdk/pull/377) To smoothen the update to the latest stable release, the SDK includes vesion map for managing migrations between SDK versions.
 * (x/wasm) [\#358] (https://github.com/line/lbm-sdk/pull/358) change wasm metrics method to using prometheus directly
 * (x/feegrant) [\#380] (https://github.com/line/lbm-sdk/pull/380) Feegrant module
+* (x/bank) [\#400] (https://github.com/line/lbm-sdk/pull/380) add `bankplus` function to restrict to send coin to inactive smart contract.
 
 ### Improvements
 * (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter
@@ -16,7 +17,7 @@
 ### Bug Fixes
 * (x/feegrant) [\#383] (https://github.com/line/lbm-sdk/pull/383) Update allowance inside AllowedMsgAllowance
 * (tm-db) [\#388] (https://github.com/line/lbm-sdk/pull/388) Bump up tm-db fixing invalid memory reference
-* (swagger) [\#391] (https://github.com/line/lbm-sdk/pull/391) fix swagger's config path for wasm
+* (swagger) [\#391] (https://github.com/li ne/lbm-sdk/pull/391) fix swagger's config path for wasm
 * (x/wasm) [\#393] (https://github.com/line/lbm-sdk/pull/393) fix bug where `StoreCodeAndInstantiateContract`, `UpdateContractStatus`, `UpdateContractStatusProposal` API does not work
 
 ### Breaking Changes
