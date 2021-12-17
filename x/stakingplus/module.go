@@ -6,8 +6,8 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 
-	"github.com/line/lbm-sdk/x/stakingplus/types"
 	"github.com/line/lbm-sdk/x/stakingplus/keeper"
+	"github.com/line/lbm-sdk/x/stakingplus/types"
 
 	"github.com/line/lbm-sdk/x/staking"
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"

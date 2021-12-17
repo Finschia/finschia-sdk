@@ -12,8 +12,8 @@ import (
 	"github.com/line/lbm-sdk/client"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/consortium/types"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 func registerTxHandlers(
@@ -25,10 +25,10 @@ func registerTxHandlers(
 
 // UpdateConsortiumParamsRequest defines a proposal to update parameters of consortium.
 type UpdateConsortiumParamsRequest struct {
-	BaseReq       rest.BaseReq `json:"base_req" yaml:"base_req"`
-	Title         string       `json:"title" yaml:"title"`
-	Description   string       `json:"description" yaml:"description"`
-	Deposit       sdk.Coins    `json:"deposit" yaml:"deposit"`
+	BaseReq     rest.BaseReq `json:"base_req" yaml:"base_req"`
+	Title       string       `json:"title" yaml:"title"`
+	Description string       `json:"description" yaml:"description"`
+	Deposit     sdk.Coins    `json:"deposit" yaml:"deposit"`
 
 	Params *types.Params `json:"params" yaml:"params"`
 }

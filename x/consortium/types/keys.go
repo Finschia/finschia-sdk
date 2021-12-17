@@ -30,7 +30,7 @@ const (
 //
 // - 0x02<valAddress_Bytes>: bool
 var (
-	ParamsKey = []byte{0x00}
+	ParamsKey              = []byte{0x00}
 	ValidatorAuthKeyPrefix = []byte{0x01}
 
 	PendingRejectedDelegationKeyPrefix = []byte{0x10}

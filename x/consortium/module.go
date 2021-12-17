@@ -1,9 +1,9 @@
 package consortium
 
 import (
-	"fmt"
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -28,7 +28,7 @@ var (
 
 // AppModuleBasic defines the basic application module used by the consortium module.
 type AppModuleBasic struct {
-	cdc              codec.Marshaler
+	cdc codec.Marshaler
 }
 
 // NewAppModuleBasic creates a new AppModuleBasic object
@@ -92,8 +92,8 @@ func (b AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry
 type AppModule struct {
 	AppModuleBasic
 
-	keeper         keeper.Keeper
-	stakingKeeper  types.StakingKeeper
+	keeper        keeper.Keeper
+	stakingKeeper types.StakingKeeper
 }
 
 // NewAppModule creates a new AppModule object
@@ -145,7 +145,6 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json
 	gs := ExportGenesis(ctx, am.keeper)
 	return cdc.MustMarshalJSON(gs)
 }
-
 
 // ConsensusVersion implements AppModule/ConsensusVersion.
 func (AppModule) ConsensusVersion() uint64 { return 1 }

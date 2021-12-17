@@ -9,10 +9,10 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/gov/client/cli"
-	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/consortium/types"
+	"github.com/line/lbm-sdk/x/gov/client/cli"
+	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
 
 // Proposal flags
@@ -27,7 +27,7 @@ func NewCmdSubmitUpdateConsortiumParamsProposal() *cobra.Command {
 		Use:   "update-consortium-params",
 		Args:  cobra.NoArgs,
 		Short: "Submit a update consortium params proposal",
-		Long:  strings.TrimSpace(
+		Long: strings.TrimSpace(
 			fmt.Sprintf(`Submit a update consortium params proposal.
 For now, you have no other options, so we make the corresponding params json file for you.
 
@@ -95,7 +95,7 @@ func NewCmdSubmitUpdateValidatorAuthsProposal() *cobra.Command {
 		Use:   "update-validator-auths",
 		Args:  cobra.NoArgs,
 		Short: "Submit a update validator auths proposal",
-		Long:  strings.TrimSpace(
+		Long: strings.TrimSpace(
 			fmt.Sprintf(`Submit a update validator auths proposal.
 
 Example:

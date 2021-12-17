@@ -46,7 +46,7 @@ func queryValidatorAuth(ctx sdk.Context, path []string, _ abci.RequestQuery, kee
 		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid validator address (%s)", err)
 	}
 	valAddr := sdk.ValAddress(addr)
-		
+
 	auth, err := keeper.GetValidatorAuth(ctx, valAddr)
 	if err != nil {
 		return nil, err

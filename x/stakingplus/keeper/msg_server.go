@@ -22,7 +22,7 @@ type msgServer struct {
 func NewMsgServerImpl(keeper stakingkeeper.Keeper, ck types.ConsortiumKeeper) stakingtypes.MsgServer {
 	return &msgServer{
 		MsgServer: stakingkeeper.NewMsgServerImpl(keeper),
-		ck       : ck,
+		ck:        ck,
 	}
 }
 

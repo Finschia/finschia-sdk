@@ -7,8 +7,8 @@ import (
 	"google.golang.org/grpc/status"
 
 	"github.com/line/lbm-sdk/store/prefix"
-	"github.com/line/lbm-sdk/types/query"
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/consortium/types"
 )
 

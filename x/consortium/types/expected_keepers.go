@@ -16,4 +16,3 @@ type (
 		GetValidator(ctx sdk.Context, addr sdk.ValAddress) (validator stakingtypes.Validator, found bool)
 	}
 )
-

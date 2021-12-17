@@ -1,9 +1,9 @@
 package client
 
 import (
-	govclient "github.com/line/lbm-sdk/x/gov/client"
 	"github.com/line/lbm-sdk/x/consortium/client/cli"
 	"github.com/line/lbm-sdk/x/consortium/client/rest"
+	govclient "github.com/line/lbm-sdk/x/gov/client"
 )
 
 var UpdateConsortiumParamsProposalHandler = govclient.NewProposalHandler(cli.NewCmdSubmitUpdateConsortiumParamsProposal, rest.ProposalUpdateConsortiumParamsRESTHandler)

@@ -102,7 +102,7 @@ func (k Keeper) RejectDelegations(ctx sdk.Context) {
 		share := delegation.GetShares()
 		if _, err := k.stakingKeeper.Undelegate(ctx, delAddr, valAddr, share); err != nil {
 			// TODO: prevent DoS attack
-			if _/*validator*/, found := k.stakingKeeper.GetValidator(ctx, valAddr); !found {
+			if _ /*validator*/, found := k.stakingKeeper.GetValidator(ctx, valAddr); !found {
 				panic("validator must exist")
 			} else {
 				// k.stakingKeeper.jailValidator(ctx, validator)

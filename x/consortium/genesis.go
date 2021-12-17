@@ -2,8 +2,8 @@ package consortium
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/consortium/types"
 	"github.com/line/lbm-sdk/x/consortium/keeper"
+	"github.com/line/lbm-sdk/x/consortium/types"
 
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 )

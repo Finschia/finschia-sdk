@@ -30,8 +30,10 @@ func init() {
 func (p *UpdateConsortiumParamsProposal) GetTitle() string       { return p.Title }
 func (p *UpdateConsortiumParamsProposal) GetDescription() string { return p.Description }
 func (p *UpdateConsortiumParamsProposal) ProposalRoute() string  { return RouterKey }
-func (p *UpdateConsortiumParamsProposal) ProposalType() string   { return ProposalTypeUpdateConsortiumParams }
-func (p *UpdateConsortiumParamsProposal) ValidateBasic() error   {
+func (p *UpdateConsortiumParamsProposal) ProposalType() string {
+	return ProposalTypeUpdateConsortiumParams
+}
+func (p *UpdateConsortiumParamsProposal) ValidateBasic() error {
 	params := p.Params
 	if params.Enabled {
 		return ErrInvalidParams
@@ -83,7 +85,7 @@ func (p UpdateValidatorAuthsProposal) String() string {
 		authsStr += fmt.Sprintf(`
     - OperatorAddress: %s
     - CreationAllowed: %t`,
-		auth.OperatorAddress, auth.CreationAllowed)
+			auth.OperatorAddress, auth.CreationAllowed)
 	}
 
 	return fmt.Sprintf(`Edit Allowed Validators Proposal:

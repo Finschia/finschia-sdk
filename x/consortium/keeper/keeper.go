@@ -10,7 +10,7 @@ import (
 
 // Keeper defines the consortium module Keeper
 type Keeper struct {
-	stakingKeeper  types.StakingKeeper
+	stakingKeeper types.StakingKeeper
 
 	// The (unexposed) keys used to access the stores from the Context.
 	storeKey sdk.StoreKey
@@ -28,9 +28,9 @@ func NewKeeper(
 	stakingKeeper types.StakingKeeper,
 ) Keeper {
 	return Keeper{
-		storeKey:       key,
-		stakingKeeper:  stakingKeeper,
-		cdc:            cdc,
+		storeKey:      key,
+		stakingKeeper: stakingKeeper,
+		cdc:           cdc,
 	}
 }
 
