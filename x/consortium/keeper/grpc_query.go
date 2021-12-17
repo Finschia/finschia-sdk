@@ -21,7 +21,7 @@ func (q Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types
 
 	ctx := sdk.UnwrapSDKContext(c)
 
-	return &types.QueryParamsResponse{q.GetParams(ctx)}, nil
+	return &types.QueryParamsResponse{Params: q.GetParams(ctx)}, nil
 }
 
 func (q Keeper) ValidatorAuths(c context.Context, req *types.QueryValidatorAuthsRequest) (*types.QueryValidatorAuthsResponse, error) {

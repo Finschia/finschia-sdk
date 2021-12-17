@@ -5,8 +5,6 @@ import (
 
 	"github.com/line/lbm-sdk/client/tx"
 
-	"github.com/gorilla/mux"
-
 	govrest "github.com/line/lbm-sdk/x/gov/client/rest"
 
 	"github.com/line/lbm-sdk/client"
@@ -15,13 +13,6 @@ import (
 	"github.com/line/lbm-sdk/x/consortium/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
-
-func registerTxHandlers(
-	clientCtx client.Context,
-	r *mux.Router) {
-	r.HandleFunc("/consortium/params", newPostUpdateConsortiumParamsHandler(clientCtx)).Methods("POST")
-	r.HandleFunc("/consortium/validators", newPostUpdateValidatorAuthsHandler(clientCtx)).Methods("POST")
-}
 
 // UpdateConsortiumParamsRequest defines a proposal to update parameters of consortium.
 type UpdateConsortiumParamsRequest struct {

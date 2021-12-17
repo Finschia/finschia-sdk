@@ -135,9 +135,8 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 			parseCommaSeparated := func(concat string) []string {
 				if concat == "" {
 					return []string{}
-				} else {
-					return strings.Split(concat, ",")
 				}
+				return strings.Split(concat, ",")
 			}
 
 			addingValidatorsStr, err := cmd.Flags().GetString(FlagAllowedValidatorAdd)
