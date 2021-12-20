@@ -19,7 +19,7 @@ var (
 	_ module.AppModuleSimulation = AppModule{}
 )
 
-// AppModule implements an application module for the staking module.
+// AppModule implements an application module for the stakingplus module.
 type AppModule struct {
 	staking.AppModule
 
@@ -48,7 +48,7 @@ func (am AppModule) RegisterServices(cfg module.Configurator) {
 	// }
 }
 
-// Route returns the message routing key for the staking module.
+// Route returns the message routing key for the stakingplus module.
 func (am AppModule) Route() sdk.Route {
 	return sdk.NewRoute(stakingtypes.RouterKey, NewHandler(am.keeper, am.ck))
 }

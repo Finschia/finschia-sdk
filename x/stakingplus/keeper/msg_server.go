@@ -17,7 +17,7 @@ type msgServer struct {
 	ck types.ConsortiumKeeper
 }
 
-// NewMsgServerImpl returns an implementation of the bank MsgServer interface
+// NewMsgServerImpl returns an implementation of the staking MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper stakingkeeper.Keeper, ck types.ConsortiumKeeper) stakingtypes.MsgServer {
 	return &msgServer{

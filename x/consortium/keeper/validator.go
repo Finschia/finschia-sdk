@@ -37,7 +37,7 @@ func (k Keeper) SetValidatorAuth(ctx sdk.Context, auth *types.ValidatorAuth) err
 
 // Iterators
 
-// IterateValidatorAuths iterates over the allowed validators
+// IterateValidatorAuths iterates over the validator auths
 // and performs a callback function
 func (k Keeper) IterateValidatorAuths(ctx sdk.Context, cb func(auth types.ValidatorAuth) (stop bool)) {
 	store := ctx.KVStore(k.storeKey)

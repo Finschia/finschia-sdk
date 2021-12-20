@@ -12,7 +12,7 @@ import (
 )
 
 func NewHandler(k stakingkeeper.Keeper, ck types.ConsortiumKeeper) sdk.Handler {
-	overriding := staking.NewHandler(k)
+	overriden := staking.NewHandler(k)
 	msgServer := keeper.NewMsgServerImpl(k, ck)
 
 	return func(ctx sdk.Context, msg sdk.Msg) (*sdk.Result, error) {
@@ -24,7 +24,7 @@ func NewHandler(k stakingkeeper.Keeper, ck types.ConsortiumKeeper) sdk.Handler {
 			return sdk.WrapServiceResult(ctx, res, err)
 
 		default:
-			return overriding(ctx, msg)
+			return overriden(ctx, msg)
 		}
 	}
 }
