@@ -8,11 +8,11 @@ type MockCoinTransferrer struct {
 	TransferCoinsFn func(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
 }
 
-func (m *MockCoinTransferrer) AddBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
+func (m *MockCoinTransferrer) AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	panic("implement me")
 }
 
-func (m *MockCoinTransferrer) DeleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
+func (m *MockCoinTransferrer) DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	panic("implement me")
 }
 

@@ -5,8 +5,8 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/bankplus/types";
 
-// BlockedAddr models the blocked address for the bankplus module
-message BlockedAddr {
+// InactiveAddr models the blocked address for the bankplus module
+message InactiveAddr {
   option (gogoproto.equal) = true;
 
   string address = 1;

@@ -23,22 +23,23 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type BlockedAddr struct {
+// InactiveAddr models the blocked address for the bankplus module
+type InactiveAddr struct {
 	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 }
 
-func (m *BlockedAddr) Reset()         { *m = BlockedAddr{} }
-func (m *BlockedAddr) String() string { return proto.CompactTextString(m) }
-func (*BlockedAddr) ProtoMessage()    {}
-func (*BlockedAddr) Descriptor() ([]byte, []int) {
+func (m *InactiveAddr) Reset()         { *m = InactiveAddr{} }
+func (m *InactiveAddr) String() string { return proto.CompactTextString(m) }
+func (*InactiveAddr) ProtoMessage()    {}
+func (*InactiveAddr) Descriptor() ([]byte, []int) {
 	return fileDescriptor_79e8c66834b4419a, []int{0}
 }
-func (m *BlockedAddr) XXX_Unmarshal(b []byte) error {
+func (m *InactiveAddr) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *BlockedAddr) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *InactiveAddr) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_BlockedAddr.Marshal(b, m, deterministic)
+		return xxx_messageInfo_InactiveAddr.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -48,19 +49,19 @@ func (m *BlockedAddr) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-func (m *BlockedAddr) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_BlockedAddr.Merge(m, src)
+func (m *InactiveAddr) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InactiveAddr.Merge(m, src)
 }
-func (m *BlockedAddr) XXX_Size() int {
+func (m *InactiveAddr) XXX_Size() int {
 	return m.Size()
 }
-func (m *BlockedAddr) XXX_DiscardUnknown() {
-	xxx_messageInfo_BlockedAddr.DiscardUnknown(m)
+func (m *InactiveAddr) XXX_DiscardUnknown() {
+	xxx_messageInfo_InactiveAddr.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_BlockedAddr proto.InternalMessageInfo
+var xxx_messageInfo_InactiveAddr proto.InternalMessageInfo
 
-func (m *BlockedAddr) GetAddress() string {
+func (m *InactiveAddr) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
@@ -68,35 +69,35 @@ func (m *BlockedAddr) GetAddress() string {
 }
 
 func init() {
-	proto.RegisterType((*BlockedAddr)(nil), "lbm.bankplus.v1.BlockedAddr")
+	proto.RegisterType((*InactiveAddr)(nil), "lbm.bankplus.v1.InactiveAddr")
 }
 
 func init() { proto.RegisterFile("lbm/bankplus/v1/bankplus.proto", fileDescriptor_79e8c66834b4419a) }
 
 var fileDescriptor_79e8c66834b4419a = []byte{
-	// 179 bytes of a gzipped FileDescriptorProto
+	// 180 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcb, 0x49, 0xca, 0xd5,
 	0x4f, 0x4a, 0xcc, 0xcb, 0x2e, 0xc8, 0x29, 0x2d, 0xd6, 0x2f, 0x33, 0x84, 0xb3, 0xf5, 0x0a, 0x8a,
 	0xf2, 0x4b, 0xf2, 0x85, 0xf8, 0x73, 0x92, 0x72, 0xf5, 0xe0, 0x62, 0x65, 0x86, 0x52, 0x22, 0xe9,
-	0xf9, 0xe9, 0xf9, 0x60, 0x39, 0x7d, 0x10, 0x0b, 0xa2, 0x4c, 0x49, 0x97, 0x8b, 0xdb, 0x29, 0x27,
-	0x3f, 0x39, 0x3b, 0x35, 0xc5, 0x31, 0x25, 0xa5, 0x48, 0x48, 0x82, 0x8b, 0x3d, 0x31, 0x25, 0xa5,
-	0x28, 0xb5, 0xb8, 0x58, 0x82, 0x51, 0x81, 0x51, 0x83, 0x33, 0x08, 0xc6, 0xb5, 0x62, 0x79, 0xb1,
-	0x40, 0x9e, 0xd1, 0xc9, 0xe9, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c, 0x92,
-	0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2, 0x34,
-	0xd2, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0x73, 0x32, 0xf3, 0x52, 0xf5,
-	0x73, 0x92, 0x72, 0x75, 0x8b, 0x53, 0xb2, 0xf5, 0x2b, 0x10, 0xae, 0x2c, 0xa9, 0x2c, 0x48, 0x2d,
-	0x4e, 0x62, 0x03, 0xdb, 0x6c, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xa3, 0x26, 0xa3, 0xc4, 0xc2,
-	0x00, 0x00, 0x00,
+	0xf9, 0xe9, 0xf9, 0x60, 0x39, 0x7d, 0x10, 0x0b, 0xa2, 0x4c, 0x49, 0x8f, 0x8b, 0xc7, 0x33, 0x2f,
+	0x31, 0xb9, 0x24, 0xb3, 0x2c, 0xd5, 0x31, 0x25, 0xa5, 0x48, 0x48, 0x82, 0x8b, 0x3d, 0x31, 0x25,
+	0xa5, 0x28, 0xb5, 0xb8, 0x58, 0x82, 0x51, 0x81, 0x51, 0x83, 0x33, 0x08, 0xc6, 0xb5, 0x62, 0x79,
+	0xb1, 0x40, 0x9e, 0xd1, 0xc9, 0xe9, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f, 0xe4, 0x18, 0x1f, 0x3c,
+	0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b, 0x8f, 0xe5, 0x18, 0xa2,
+	0x34, 0xd2, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5, 0x73, 0x32, 0xf3, 0x52,
+	0xf5, 0x73, 0x92, 0x72, 0x75, 0x8b, 0x53, 0xb2, 0xf5, 0x2b, 0x10, 0xce, 0x2c, 0xa9, 0x2c, 0x48,
+	0x2d, 0x4e, 0x62, 0x03, 0x5b, 0x6d, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0x57, 0x32, 0x20, 0x7a,
+	0xc3, 0x00, 0x00, 0x00,
 }
 
-func (this *BlockedAddr) Equal(that interface{}) bool {
+func (this *InactiveAddr) Equal(that interface{}) bool {
 	if that == nil {
 		return this == nil
 	}
 
-	that1, ok := that.(*BlockedAddr)
+	that1, ok := that.(*InactiveAddr)
 	if !ok {
-		that2, ok := that.(BlockedAddr)
+		that2, ok := that.(InactiveAddr)
 		if ok {
 			that1 = &that2
 		} else {
@@ -113,7 +114,7 @@ func (this *BlockedAddr) Equal(that interface{}) bool {
 	}
 	return true
 }
-func (m *BlockedAddr) Marshal() (dAtA []byte, err error) {
+func (m *InactiveAddr) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -123,12 +124,12 @@ func (m *BlockedAddr) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *BlockedAddr) MarshalTo(dAtA []byte) (int, error) {
+func (m *InactiveAddr) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *BlockedAddr) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *InactiveAddr) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -154,7 +155,7 @@ func encodeVarintBankplus(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *BlockedAddr) Size() (n int) {
+func (m *InactiveAddr) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -173,7 +174,7 @@ func sovBankplus(x uint64) (n int) {
 func sozBankplus(x uint64) (n int) {
 	return sovBankplus(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *BlockedAddr) Unmarshal(dAtA []byte) error {
+func (m *InactiveAddr) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -196,10 +197,10 @@ func (m *BlockedAddr) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: BlockedAddr: wiretype end group for non-group")
+			return fmt.Errorf("proto: InactiveAddr: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: BlockedAddr: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: InactiveAddr: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

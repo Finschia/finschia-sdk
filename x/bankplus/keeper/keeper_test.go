@@ -107,7 +107,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 	suite.Require().Equal(initCoins, getCoinsByName(ctx, keeper, authKeeper, authtypes.Burner))
 }
 
-func (suite *IntegrationTestSuite) TestBlockedAddrOfSendCoins() {
+func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 	app := simapp.Setup(false)
 	ctx := app.BaseApp.NewContext(false, ocproto.Header{Height: 1})
 	appCodec := app.AppCodec()
@@ -132,19 +132,19 @@ func (suite *IntegrationTestSuite) TestBlockedAddrOfSendCoins() {
 	keeper.SetSupply(ctx, types.NewSupply(initCoins))
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
 
-	suite.Require().False(keeper.IsBlockedAddr(blockedAcc.GetAddress()))
+	suite.Require().False(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
 
 	// add blocked address
-	keeper.AddBlockedAddr(ctx, blockedAcc.GetAddress())
-	suite.Require().True(keeper.IsBlockedAddr(blockedAcc.GetAddress()))
+	keeper.AddToInactiveAddr(ctx, blockedAcc.GetAddress())
+	suite.Require().True(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
 
 	err := keeper.SendCoins(ctx, holderAcc.GetAddress(), blockedAcc.GetAddress(), initCoins)
 	suite.Require().Contains(err.Error(), "is not allowed to receive funds")
 	suite.Require().Equal(initCoins, keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
 
 	// delete blocked address
-	keeper.DeleteBlockedAddr(ctx, blockedAcc.GetAddress())
-	suite.Require().False(keeper.IsBlockedAddr(blockedAcc.GetAddress()))
+	keeper.DeleteFromInactiveAddr(ctx, blockedAcc.GetAddress())
+	suite.Require().False(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
 
 	suite.Require().NoError(keeper.SendCoins(ctx, holderAcc.GetAddress(), blockedAcc.GetAddress(), initCoins))
 	suite.Require().Equal(sdk.Coins(nil), keeper.GetAllBalances(ctx, holderAcc.GetAddress()))
@@ -173,8 +173,8 @@ func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 		)
 
 		// add blocked address
-		keeper.AddBlockedAddr(ctx, blockedAcc.GetAddress())
-		suite.Require().True(keeper.IsBlockedAddr(blockedAcc.GetAddress()))
+		keeper.AddToInactiveAddr(ctx, blockedAcc.GetAddress())
+		suite.Require().True(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
 	}
 
 	{
@@ -183,7 +183,7 @@ func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 			app.GetSubspace(types.ModuleName), make(map[string]bool),
 		)
 		keeper.InitializeBankPlus(ctx)
-		suite.Require().True(keeper.IsBlockedAddr(blockedAcc.GetAddress()))
+		suite.Require().True(keeper.IsInactiveAddr(blockedAcc.GetAddress()))
 	}
 }
 

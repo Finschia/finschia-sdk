@@ -297,7 +297,7 @@
     - [Msg](#lbm.bank.v1.Msg)
   
 - [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
-    - [BlockedAddr](#lbm.bankplus.v1.BlockedAddr)
+    - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
   
 - [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
     - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
@@ -4840,10 +4840,10 @@ Msg defines the bank Msg service.
 
 
 
-<a name="lbm.bankplus.v1.BlockedAddr"></a>
+<a name="lbm.bankplus.v1.InactiveAddr"></a>
 
-### BlockedAddr
-
+### InactiveAddr
+InactiveAddr models the blocked address for the bankplus module
 
 
 | Field | Type | Label | Description |

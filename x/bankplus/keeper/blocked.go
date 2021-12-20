@@ -6,45 +6,45 @@ import (
 )
 
 // Keys for bankplus store but this prefix must not be overlap with bank key prefix.
-var blockedAddrsKeyPrefix = []byte{0xa0}
+var inactiveAddrsKeyPrefix = []byte{0xa0}
 
-// blockedAddrKey key of a specific blockedAddr from store
-func blockedAddrKey(addr sdk.AccAddress) []byte {
-	return append(blockedAddrsKeyPrefix, addr.Bytes()...)
+// inactiveAddrKey key of a specific inactiveAddr from store
+func inactiveAddrKey(addr sdk.AccAddress) []byte {
+	return append(inactiveAddrsKeyPrefix, addr.Bytes()...)
 }
 
 //nolint:deadcode,unused
-// isAddedBlockedAddr check if the address is stored or not as blocked address
-func (keeper BaseKeeper) isAddedBlockedAddr(ctx sdk.Context, address sdk.AccAddress) bool {
+// isStoredInactiveAddr check if the address is stored or not as blocked address
+func (keeper BaseKeeper) isStoredInactiveAddr(ctx sdk.Context, address sdk.AccAddress) bool {
 	store := ctx.KVStore(keeper.storeKey)
-	bz := store.Get(blockedAddrKey(address))
+	bz := store.Get(inactiveAddrKey(address))
 	return bz != nil
 }
 
-// addBlockedAddr add a blocked address to the store.
-func (keeper BaseKeeper) addBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
+// addToInactiveAddr add a blocked address to the store.
+func (keeper BaseKeeper) addToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(keeper.storeKey)
-	blockedCAddr := types.BlockedAddr{Address: address.String()}
+	blockedCAddr := types.InactiveAddr{Address: address.String()}
 	bz := keeper.cdc.MustMarshalBinaryBare(&blockedCAddr)
-	store.Set(blockedAddrKey(address), bz)
+	store.Set(inactiveAddrKey(address), bz)
 }
 
-// deleteBlockedAddr delete blocked address from store
-func (keeper BaseKeeper) deleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
+// deleteFromInactiveAddr delete blocked address from store
+func (keeper BaseKeeper) deleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(keeper.storeKey)
-	store.Delete(blockedAddrKey(address))
+	store.Delete(inactiveAddrKey(address))
 }
 
-// loadAllBlockedAddrs load all blocked address and set to `blockedAddr`.
-func (keeper BaseKeeper) loadAllBlockedAddrs(ctx sdk.Context) {
+// loadAllInactiveAddrs load all blocked address and set to `inactiveAddr`.
+func (keeper BaseKeeper) loadAllInactiveAddrs(ctx sdk.Context) {
 	store := ctx.KVStore(keeper.storeKey)
-	iterator := sdk.KVStorePrefixIterator(store, blockedAddrsKeyPrefix)
+	iterator := sdk.KVStorePrefixIterator(store, inactiveAddrsKeyPrefix)
 
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
-		var bAddr types.BlockedAddr
+		var bAddr types.InactiveAddr
 		keeper.cdc.MustUnmarshalBinaryBare(iterator.Value(), &bAddr)
 
-		keeper.blockedAddrs[bAddr.Address] = true
+		keeper.inactiveAddrs[bAddr.Address] = true
 	}
 }

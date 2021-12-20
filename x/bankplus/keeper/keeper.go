@@ -14,9 +14,9 @@ var _ Keeper = (*BaseKeeper)(nil)
 type Keeper interface {
 	bankkeeper.Keeper
 
-	AddBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
-	DeleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
-	IsBlockedAddr(address sdk.AccAddress) bool
+	AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress)
+	DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress)
+	IsInactiveAddr(address sdk.AccAddress) bool
 
 	InitializeBankPlus(ctx sdk.Context)
 }
@@ -24,27 +24,27 @@ type Keeper interface {
 type BaseKeeper struct {
 	bankkeeper.BaseKeeper
 
-	ak           types.AccountKeeper
-	cdc          codec.BinaryMarshaler
-	storeKey     sdk.StoreKey
-	blockedAddrs map[string]bool
+	ak            types.AccountKeeper
+	cdc           codec.BinaryMarshaler
+	storeKey      sdk.StoreKey
+	inactiveAddrs map[string]bool
 }
 
 func NewBaseKeeper(
 	cdc codec.BinaryMarshaler, storeKey sdk.StoreKey, ak types.AccountKeeper, paramSpace *paramtypes.Subspace,
-	blockedAddrs map[string]bool,
+	blockedAddr map[string]bool,
 ) BaseKeeper {
 	return BaseKeeper{
-		BaseKeeper:   bankkeeper.NewBaseKeeper(cdc, storeKey, ak, paramSpace, blockedAddrs),
-		ak:           ak,
-		cdc:          cdc,
-		storeKey:     storeKey,
-		blockedAddrs: map[string]bool{},
+		BaseKeeper:    bankkeeper.NewBaseKeeper(cdc, storeKey, ak, paramSpace, blockedAddr),
+		ak:            ak,
+		cdc:           cdc,
+		storeKey:      storeKey,
+		inactiveAddrs: map[string]bool{},
 	}
 }
 
 func (keeper BaseKeeper) InitializeBankPlus(ctx sdk.Context) {
-	keeper.loadAllBlockedAddrs(ctx)
+	keeper.loadAllInactiveAddrs(ctx)
 }
 
 // SendCoinsFromModuleToAccount transfers coins from a ModuleAccount to an AccAddress.
@@ -91,41 +91,41 @@ func (keeper BaseKeeper) SendCoinsFromAccountToModule(
 	return keeper.SendCoins(ctx, senderAddr, recipientAcc.GetAddress(), amt)
 }
 
-func (keeper BaseKeeper) isBlockedAddr(addr sdk.AccAddress) bool {
-	return keeper.blockedAddrs[addr.String()]
+func (keeper BaseKeeper) isInactiveAddr(addr sdk.AccAddress) bool {
+	return keeper.inactiveAddrs[addr.String()]
 }
 
 // SendCoins transfers amt coins from a sending account to a receiving account.
 // This is wrapped bank the `SendKeeper` interface of `bank` module,
-// and check if `toAddr` is a blockedAddr managed by the module.
+// and check if `toAddr` is a inactiveAddr managed by the module.
 func (keeper BaseKeeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	// if toAddr is smart contract, check the status of contract.
-	if keeper.isBlockedAddr(toAddr) {
+	if keeper.isInactiveAddr(toAddr) {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not allowed to receive funds", toAddr)
 	}
 
 	return keeper.BaseSendKeeper.SendCoins(ctx, fromAddr, toAddr, amt)
 }
 
-// AddBlockedAddr add the address to `blockedAddr`.
-func (keeper BaseKeeper) AddBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
-	if !keeper.blockedAddrs[address.String()] {
-		keeper.blockedAddrs[address.String()] = true
+// AddToInactiveAddr add the address to `inactiveAddr`.
+func (keeper BaseKeeper) AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+	if !keeper.inactiveAddrs[address.String()] {
+		keeper.inactiveAddrs[address.String()] = true
 
-		keeper.addBlockedAddr(ctx, address)
+		keeper.addToInactiveAddr(ctx, address)
 	}
 }
 
-// DeleteBlockedAddr remove the address fro `blockedAddr`.
-func (keeper BaseKeeper) DeleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
-	if keeper.blockedAddrs[address.String()] {
-		delete(keeper.blockedAddrs, address.String())
+// DeleteFromInactiveAddr remove the address fro `inactiveAddr`.
+func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+	if keeper.inactiveAddrs[address.String()] {
+		delete(keeper.inactiveAddrs, address.String())
 
-		keeper.deleteBlockedAddr(ctx, address)
+		keeper.deleteFromInactiveAddr(ctx, address)
 	}
 }
 
-// IsBlockedAddr return if the address is added in blockedAddr.
-func (keeper BaseKeeper) IsBlockedAddr(address sdk.AccAddress) bool {
-	return keeper.blockedAddrs[address.String()]
+// IsInactiveAddr return if the address is added in inactiveAddr.
+func (keeper BaseKeeper) IsInactiveAddr(address sdk.AccAddress) bool {
+	return keeper.inactiveAddrs[address.String()]
 }

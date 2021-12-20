@@ -39,8 +39,8 @@ type WasmVMQueryHandler interface {
 type CoinTransferrer interface {
 	// TransferCoins sends the coin amounts from the source to the destination with rules applied.
 	TransferCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
-	AddBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
-	DeleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress)
+	AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress)
+	DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress)
 }
 
 // WasmVMResponseHandler is an extension point to handles the response data returned by a contract call.
@@ -580,9 +580,9 @@ func (k Keeper) setContractStatus(ctx sdk.Context, contractAddress sdk.AccAddres
 
 		switch status {
 		case types.ContractStatusInactive:
-			k.bank.AddBlockedAddr(ctx, contractAddress)
+			k.bank.AddToInactiveAddr(ctx, contractAddress)
 		case types.ContractStatusActive:
-			k.bank.DeleteBlockedAddr(ctx, contractAddress)
+			k.bank.DeleteFromInactiveAddr(ctx, contractAddress)
 		}
 	}
 	return nil
@@ -1037,12 +1037,12 @@ func (c BankCoinTransferrer) TransferCoins(ctx sdk.Context, fromAddr sdk.AccAddr
 	return nil
 }
 
-func (c BankCoinTransferrer) AddBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
-	c.keeper.AddBlockedAddr(ctx, address)
+func (c BankCoinTransferrer) AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+	c.keeper.AddToInactiveAddr(ctx, address)
 }
 
-func (c BankCoinTransferrer) DeleteBlockedAddr(ctx sdk.Context, address sdk.AccAddress) {
-	c.keeper.DeleteBlockedAddr(ctx, address)
+func (c BankCoinTransferrer) DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+	c.keeper.DeleteFromInactiveAddr(ctx, address)
 }
 
 type msgDispatcher interface {

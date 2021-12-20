@@ -45,34 +45,34 @@ func setupContext(t *testing.T, storeKey *sdk.KVStoreKey) sdk.Context {
 	return sdk.NewContext(stateStore, ostproto.Header{}, false, log.NewNopLogger())
 }
 
-func TestBlockedAddr(t *testing.T) {
+func TestInactiveAddr(t *testing.T) {
 	storeKey := sdk.NewKVStoreKey(banktypes.StoreKey)
 	bankKeeper := setupKeeper(storeKey)
 	ctx := setupContext(t, storeKey)
 
 	addr := genAddress()
 
-	require.Equal(t, 0, len(bankKeeper.blockedAddrs))
+	require.Equal(t, 0, len(bankKeeper.inactiveAddrs))
 
-	bankKeeper.addBlockedAddr(ctx, addr)
-	require.True(t, bankKeeper.isAddedBlockedAddr(ctx, addr))
+	bankKeeper.addToInactiveAddr(ctx, addr)
+	require.True(t, bankKeeper.isStoredInactiveAddr(ctx, addr))
 
-	bankKeeper.addBlockedAddr(ctx, addr)
-	require.True(t, bankKeeper.isAddedBlockedAddr(ctx, addr))
+	bankKeeper.addToInactiveAddr(ctx, addr)
+	require.True(t, bankKeeper.isStoredInactiveAddr(ctx, addr))
 
-	bankKeeper.deleteBlockedAddr(ctx, addr)
-	require.False(t, bankKeeper.isAddedBlockedAddr(ctx, addr))
+	bankKeeper.deleteFromInactiveAddr(ctx, addr)
+	require.False(t, bankKeeper.isStoredInactiveAddr(ctx, addr))
 
 	addr2 := genAddress()
-	require.False(t, bankKeeper.isAddedBlockedAddr(ctx, addr2))
+	require.False(t, bankKeeper.isStoredInactiveAddr(ctx, addr2))
 
 	// expect no error
-	bankKeeper.deleteBlockedAddr(ctx, addr2)
+	bankKeeper.deleteFromInactiveAddr(ctx, addr2)
 
-	// test loadAllBlockedAddress
-	bankKeeper.addBlockedAddr(ctx, addr)
-	bankKeeper.addBlockedAddr(ctx, addr2)
-	require.Equal(t, 0, len(bankKeeper.blockedAddrs))
-	bankKeeper.loadAllBlockedAddrs(ctx)
-	require.Equal(t, 2, len(bankKeeper.blockedAddrs))
+	// test loadAllInactiveAddrs
+	bankKeeper.addToInactiveAddr(ctx, addr)
+	bankKeeper.addToInactiveAddr(ctx, addr2)
+	require.Equal(t, 0, len(bankKeeper.inactiveAddrs))
+	bankKeeper.loadAllInactiveAddrs(ctx)
+	require.Equal(t, 2, len(bankKeeper.inactiveAddrs))
 }
