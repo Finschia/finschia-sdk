@@ -60,7 +60,7 @@ func queryValidatorAuth(ctx sdk.Context, path []string, _ abci.RequestQuery, kee
 	return res, nil
 }
 
-func queryValidatorAuths(ctx sdk.Context, path []string, req abci.RequestQuery, keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
+func queryValidatorAuths(ctx sdk.Context, _ []string, req abci.RequestQuery, keeper Keeper, legacyQuerierCdc *codec.LegacyAmino) ([]byte, error) {
 	var params types.QueryValidatorAuthsRequest
 	err := legacyQuerierCdc.UnmarshalJSON(req.Data, &params)
 	if err != nil {
