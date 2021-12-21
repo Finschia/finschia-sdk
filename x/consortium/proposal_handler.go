@@ -6,8 +6,8 @@ import (
 	"github.com/line/lbm-sdk/x/consortium/types"
 )
 
-// HandleUpdateConsortiumParamsProposal is a handler for update consortium params proposal
-func HandleUpdateConsortiumParamsProposal(ctx sdk.Context, k keeper.Keeper, p *types.UpdateConsortiumParamsProposal) error {
+// handleUpdateConsortiumParamsProposal is a handler for update consortium params proposal
+func handleUpdateConsortiumParamsProposal(ctx sdk.Context, k keeper.Keeper, p *types.UpdateConsortiumParamsProposal) error {
 	params := p.Params
 	k.SetParams(ctx, params)
 
@@ -15,16 +15,20 @@ func HandleUpdateConsortiumParamsProposal(ctx sdk.Context, k keeper.Keeper, p *t
 		k.Cleanup(ctx)
 	}
 
-	return nil
+	return ctx.EventManager().EmitTypedEvent(&types.EventUpdateConsortiumParams{
+		Params: params,
+	})
 }
 
-// HandleUpdateValidatorAuthsProposal is a handler for update validator auths proposal
-func HandleUpdateValidatorAuthsProposal(ctx sdk.Context, k keeper.Keeper, p *types.UpdateValidatorAuthsProposal) error {
+// handleUpdateValidatorAuthsProposal is a handler for update validator auths proposal
+func handleUpdateValidatorAuthsProposal(ctx sdk.Context, k keeper.Keeper, p *types.UpdateValidatorAuthsProposal) error {
 	for _, auth := range p.Auths {
 		if err := k.SetValidatorAuth(ctx, auth); err != nil {
 			return err
 		}
 	}
 
-	return nil
+	return ctx.EventManager().EmitTypedEvent(&types.EventUpdateValidatorAuths{
+		Auths: p.Auths,
+	})
 }
