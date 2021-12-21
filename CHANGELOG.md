@@ -19,6 +19,7 @@
 * (tm-db) [\#388] (https://github.com/line/lbm-sdk/pull/388) Bump up tm-db fixing invalid memory reference
 * (swagger) [\#391] (https://github.com/line/lbm-sdk/pull/391) fix swagger's config path for wasm
 * (x/wasm) [\#393] (https://github.com/line/lbm-sdk/pull/393) fix bug where `StoreCodeAndInstantiateContract`, `UpdateContractStatus`, `UpdateContractStatusProposal` API does not work
+* (x/slashing) [\#407] (https://github.com/line/lbm-sdk/pull/407) Fix query signing infos command
 
 ### Breaking Changes
 
