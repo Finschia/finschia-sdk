@@ -373,7 +373,8 @@
     - [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth)
   
 - [lbm/consortium/v1/event.proto](#lbm/consortium/v1/event.proto)
-    - [EventUpdateValidatorAuth](#lbm.consortium.v1.EventUpdateValidatorAuth)
+    - [EventUpdateConsortiumParams](#lbm.consortium.v1.EventUpdateConsortiumParams)
+    - [EventUpdateValidatorAuths](#lbm.consortium.v1.EventUpdateValidatorAuths)
   
 - [lbm/consortium/v1/genesis.proto](#lbm/consortium/v1/genesis.proto)
     - [GenesisState](#lbm.consortium.v1.GenesisState)
@@ -5889,15 +5890,30 @@ ValidatorAuth defines authorization info of a validator.
 
 
 
-<a name="lbm.consortium.v1.EventUpdateValidatorAuth"></a>
+<a name="lbm.consortium.v1.EventUpdateConsortiumParams"></a>
 
-### EventUpdateValidatorAuth
-EventUpdateValidatorAuth is emitted after updating validator auth info.
+### EventUpdateConsortiumParams
+EventUpdateConsortiumParams is emitted after updating consortium parameters.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `operator_address` | [string](#string) |  |  |
+| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.EventUpdateValidatorAuths"></a>
+
+### EventUpdateValidatorAuths
+EventUpdateValidatorAuths is emitted after updating validator auth info.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
 
 
 

@@ -3,7 +3,14 @@ package lbm.consortium.v1;
 
 option go_package = "github.com/line/lbm-sdk/x/consortium/types";
 
-// EventUpdateValidatorAuth is emitted after updating validator auth info.
-message EventUpdateValidatorAuth {
-  string operator_address = 1;
+import "lbm/consortium/v1/consortium.proto";
+
+// EventUpdateConsortiumParams is emitted after updating consortium parameters.
+message EventUpdateConsortiumParams {
+  Params params = 1;
+}
+
+// EventUpdateValidatorAuths is emitted after updating validator auth info.
+message EventUpdateValidatorAuths {
+  repeated ValidatorAuth auths = 1;
 }
