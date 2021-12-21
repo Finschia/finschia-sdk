@@ -14,14 +14,14 @@ func inactiveAddrKey(addr sdk.AccAddress) []byte {
 }
 
 //nolint:deadcode,unused
-// isStoredInactiveAddr check if the address is stored or not as blocked address
+// isStoredInactiveAddr checks if the address is stored or not as blocked address
 func (keeper BaseKeeper) isStoredInactiveAddr(ctx sdk.Context, address sdk.AccAddress) bool {
 	store := ctx.KVStore(keeper.storeKey)
 	bz := store.Get(inactiveAddrKey(address))
 	return bz != nil
 }
 
-// addToInactiveAddr add a blocked address to the store.
+// addToInactiveAddr adds a blocked address to the store.
 func (keeper BaseKeeper) addToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(keeper.storeKey)
 	blockedCAddr := types.InactiveAddr{Address: address.String()}
@@ -29,13 +29,15 @@ func (keeper BaseKeeper) addToInactiveAddr(ctx sdk.Context, address sdk.AccAddre
 	store.Set(inactiveAddrKey(address), bz)
 }
 
-// deleteFromInactiveAddr delete blocked address from store
+// deleteFromInactiveAddr deletes blocked address from store
 func (keeper BaseKeeper) deleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	store := ctx.KVStore(keeper.storeKey)
 	store.Delete(inactiveAddrKey(address))
 }
 
-// loadAllInactiveAddrs load all blocked address and set to `inactiveAddr`.
+// loadAllInactiveAddrs loads all blocked address and set to `inactiveAddr`.
+// This function is executed when the app is initiated and save all inactive address in caches
+// in order to prevent to query to store in every time to send
 func (keeper BaseKeeper) loadAllInactiveAddrs(ctx sdk.Context) {
 	store := ctx.KVStore(keeper.storeKey)
 	iterator := sdk.KVStorePrefixIterator(store, inactiveAddrsKeyPrefix)

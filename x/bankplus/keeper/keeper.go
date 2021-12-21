@@ -97,7 +97,7 @@ func (keeper BaseKeeper) isInactiveAddr(addr sdk.AccAddress) bool {
 
 // SendCoins transfers amt coins from a sending account to a receiving account.
 // This is wrapped bank the `SendKeeper` interface of `bank` module,
-// and check if `toAddr` is a inactiveAddr managed by the module.
+// and checks if `toAddr` is a inactiveAddr managed by the module.
 func (keeper BaseKeeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error {
 	// if toAddr is smart contract, check the status of contract.
 	if keeper.isInactiveAddr(toAddr) {
@@ -107,7 +107,7 @@ func (keeper BaseKeeper) SendCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toA
 	return keeper.BaseSendKeeper.SendCoins(ctx, fromAddr, toAddr, amt)
 }
 
-// AddToInactiveAddr add the address to `inactiveAddr`.
+// AddToInactiveAddr adds the address to `inactiveAddr`.
 func (keeper BaseKeeper) AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	if !keeper.inactiveAddrs[address.String()] {
 		keeper.inactiveAddrs[address.String()] = true
@@ -116,7 +116,7 @@ func (keeper BaseKeeper) AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddre
 	}
 }
 
-// DeleteFromInactiveAddr remove the address fro `inactiveAddr`.
+// DeleteFromInactiveAddr removes the address from `inactiveAddr`.
 func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
 	if keeper.inactiveAddrs[address.String()] {
 		delete(keeper.inactiveAddrs, address.String())
@@ -125,7 +125,7 @@ func (keeper BaseKeeper) DeleteFromInactiveAddr(ctx sdk.Context, address sdk.Acc
 	}
 }
 
-// IsInactiveAddr return if the address is added in inactiveAddr.
+// IsInactiveAddr returns if the address is added in inactiveAddr.
 func (keeper BaseKeeper) IsInactiveAddr(address sdk.AccAddress) bool {
 	return keeper.inactiveAddrs[address.String()]
 }

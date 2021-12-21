@@ -1,4 +1,4 @@
-package keeper
+package keeper_test
 
 import (
 	"github.com/line/lbm-sdk/simapp"
@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/line/lbm-sdk/x/bank/types"
+	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 )
@@ -28,7 +29,7 @@ var (
 )
 
 // nolint: interfacer
-func getCoinsByName(ctx sdk.Context, bk Keeper, ak types.AccountKeeper, moduleName string) sdk.Coins {
+func getCoinsByName(ctx sdk.Context, bk bankpluskeeper.Keeper, ak types.AccountKeeper, moduleName string) sdk.Coins {
 	moduleAddress := ak.GetModuleAddress(moduleName)
 	macc := ak.GetAccount(ctx, moduleAddress)
 	if macc == nil {
@@ -61,7 +62,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 		appCodec, app.GetKey(types.StoreKey), app.GetSubspace(types.ModuleName),
 		authtypes.ProtoBaseAccount, maccPerms,
 	)
-	keeper := NewBaseKeeper(
+	keeper := bankpluskeeper.NewBaseKeeper(
 		appCodec, app.GetKey(types.StoreKey), authKeeper,
 		app.GetSubspace(types.ModuleName), make(map[string]bool),
 	)
@@ -86,6 +87,7 @@ func (suite *IntegrationTestSuite) TestSupply_SendCoins() {
 		keeper.SendCoinsFromModuleToAccount(ctx, "", baseAcc.GetAddress(), initCoins) // nolint:errcheck
 	})
 
+	// not enough balance (100stake - 200stake)
 	suite.Require().Error(
 		keeper.SendCoinsFromModuleToAccount(ctx, holderAcc.GetName(), baseAcc.GetAddress(), initCoins.Add(initCoins...)),
 	)
@@ -123,7 +125,7 @@ func (suite *IntegrationTestSuite) TestInactiveAddrOfSendCoins() {
 		authtypes.ProtoBaseAccount, maccPerms,
 	)
 
-	keeper := NewBaseKeeper(
+	keeper := bankpluskeeper.NewBaseKeeper(
 		appCodec, app.GetKey(types.StoreKey), authKeeper,
 		app.GetSubspace(types.ModuleName), make(map[string]bool),
 	)
@@ -167,7 +169,7 @@ func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 	)
 
 	{
-		keeper := NewBaseKeeper(
+		keeper := bankpluskeeper.NewBaseKeeper(
 			appCodec, app.GetKey(types.StoreKey), authKeeper,
 			app.GetSubspace(types.ModuleName), make(map[string]bool),
 		)
@@ -178,7 +180,7 @@ func (suite *IntegrationTestSuite) TestInitializeBankPlus() {
 	}
 
 	{
-		keeper := NewBaseKeeper(
+		keeper := bankpluskeeper.NewBaseKeeper(
 			appCodec, app.GetKey(types.StoreKey), authKeeper,
 			app.GetSubspace(types.ModuleName), make(map[string]bool),
 		)

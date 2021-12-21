@@ -57,6 +57,7 @@ func TestInactiveAddr(t *testing.T) {
 	bankKeeper.addToInactiveAddr(ctx, addr)
 	require.True(t, bankKeeper.isStoredInactiveAddr(ctx, addr))
 
+	// duplicate addition, no error expects.
 	bankKeeper.addToInactiveAddr(ctx, addr)
 	require.True(t, bankKeeper.isStoredInactiveAddr(ctx, addr))
 
