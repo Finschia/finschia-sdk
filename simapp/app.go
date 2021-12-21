@@ -42,6 +42,7 @@ import (
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	"github.com/line/lbm-sdk/x/auth/vesting"
 	"github.com/line/lbm-sdk/x/bank"
+	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/bankplus"
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
@@ -165,7 +166,7 @@ type SimApp struct {
 
 	// keepers
 	AccountKeeper    authkeeper.AccountKeeper
-	BankKeeper       bankpluskeeper.Keeper
+	BankKeeper       bankkeeper.Keeper
 	CapabilityKeeper *capabilitykeeper.Keeper
 	StakingKeeper    stakingkeeper.Keeper
 	SlashingKeeper   slashingkeeper.Keeper
@@ -441,7 +442,7 @@ func NewSimApp(
 		app.CapabilityKeeper.InitializeAndSeal(ctx)
 
 		// Initialize the keeper of bankkeeper
-		app.BankKeeper.InitializeBankPlus(ctx)
+		app.BankKeeper.(bankpluskeeper.Keeper).InitializeBankPlus(ctx)
 	}
 
 	app.ScopedIBCKeeper = scopedIBCKeeper
