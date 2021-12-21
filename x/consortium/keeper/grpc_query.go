@@ -29,7 +29,7 @@ func (q Keeper) ValidatorAuths(c context.Context, req *types.QueryValidatorAuths
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	auths := []*types.ValidatorAuth{}
+	var auths []*types.ValidatorAuth
 	ctx := sdk.UnwrapSDKContext(c)
 	store := ctx.KVStore(q.storeKey)
 	validatorStore := prefix.NewStore(store, types.ValidatorAuthKeyPrefix)

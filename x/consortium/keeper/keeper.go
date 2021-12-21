@@ -20,11 +20,12 @@ type Keeper struct {
 }
 
 // NewKeeper returns a consortium keeper. It handles:
-// - editing validator auths.
+// - updating validator auths.
 //
 // CONTRACT: the parameter Subspace must have the param key table already initialized
 func NewKeeper(
-	cdc codec.BinaryMarshaler, key sdk.StoreKey,
+	cdc codec.BinaryMarshaler,
+	key sdk.StoreKey,
 	stakingKeeper types.StakingKeeper,
 ) Keeper {
 	return Keeper{
@@ -39,7 +40,7 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)
 }
 
-// Clean up the states
+// Cleaning up the states
 func (k Keeper) Cleanup(ctx sdk.Context) {
 	valAddrs := []sdk.ValAddress{}
 	k.IterateValidatorAuths(ctx, func(auth types.ValidatorAuth) (stop bool) {

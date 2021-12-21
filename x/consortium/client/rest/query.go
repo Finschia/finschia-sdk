@@ -57,7 +57,7 @@ func getValidatorAuthsHandler(clientCtx client.Context) func(http.ResponseWriter
 			return
 		}
 
-		allowedOperators := []string{}
+		var allowedOperators []string
 		err = clientCtx.LegacyAmino.UnmarshalJSON(res, &allowedOperators)
 		if rest.CheckInternalServerError(w, err) {
 			return
@@ -79,7 +79,7 @@ func getValidatorAuthHandler(clientCtx client.Context) func(http.ResponseWriter,
 			return
 		}
 
-		allowedOperators := []string{}
+		var allowedOperators []string
 		err = clientCtx.LegacyAmino.UnmarshalJSON(res, &allowedOperators)
 		if rest.CheckInternalServerError(w, err) {
 			return

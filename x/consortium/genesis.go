@@ -27,7 +27,9 @@ func InitGenesis(ctx sdk.Context, keeper keeper.Keeper, sk types.StakingKeeper, 
 	}
 
 	for _, auth := range validatorAuths {
-		keeper.SetValidatorAuth(ctx, auth)
+		if err := keeper.SetValidatorAuth(ctx, auth); err != nil {
+			return err
+		}
 	}
 
 	return nil

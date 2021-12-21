@@ -22,14 +22,14 @@ const (
 	FlagAllowedValidatorDelete = "delete"
 )
 
-// NewCmdSubmitUpdateConsortiumParamsProposal implements the command to submit a update-consortium-params proposal
+// NewCmdSubmitUpdateConsortiumParamsProposal implements the command to submit an update-consortium-params proposal
 func NewCmdSubmitUpdateConsortiumParamsProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-consortium-params",
 		Args:  cobra.NoArgs,
-		Short: "Submit a update consortium params proposal",
+		Short: "Submit an update consortium params proposal",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Submit a update consortium params proposal.
+			fmt.Sprintf(`Submit an update consortium params proposal.
 For now, you have no other options, so we make the corresponding params json file for you.
 
 Example:
@@ -90,14 +90,14 @@ $ %s tx gov submit-proposal update-consortium-params [flags]
 	return cmd
 }
 
-// NewCmdSubmitUpdateValidatorAuthsProposal implements the command to submit a update-validator-auths proposal
+// NewCmdSubmitUpdateValidatorAuthsProposal implements the command to submit an update-validator-auths proposal
 func NewCmdSubmitUpdateValidatorAuthsProposal() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-validator-auths",
 		Args:  cobra.NoArgs,
-		Short: "Submit a update validator auths proposal",
+		Short: "Submit an update validator auths proposal",
 		Long: strings.TrimSpace(
-			fmt.Sprintf(`Submit a update validator auths proposal.
+			fmt.Sprintf(`Submit an update validator auths proposal.
 
 Example:
 $ %s tx gov submit-proposal update-validator-auths [flags]
@@ -152,15 +152,15 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 			deletingValidators := parseCommaSeparated(deletingValidatorsStr)
 
 			createAuths := func(addings, deletings []string) ([]*types.ValidatorAuth, error) {
-				auths := []*types.ValidatorAuth{}
-				addingsMap := map[string]bool{}
-				for _, addr := range addings {
-					addingsMap[addr] = true
-				}
-				for _, addr := range deletings {
-					if addingsMap[addr] {
+				var auths []*types.ValidatorAuth
+
+				// check duplications
+				usedAddrs := map[string]bool{}
+				for _, addr := range append(addings, deletings...) {
+					if usedAddrs[addr] {
 						return auths, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "multiple auths for same validator: %s", addr)
 					}
+					usedAddrs[addr] = true
 				}
 
 				for _, addr := range addings {
