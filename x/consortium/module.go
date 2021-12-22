@@ -16,7 +16,6 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	"github.com/line/lbm-sdk/x/consortium/client/cli"
-	"github.com/line/lbm-sdk/x/consortium/client/rest"
 	"github.com/line/lbm-sdk/x/consortium/keeper"
 	"github.com/line/lbm-sdk/x/consortium/types"
 )
@@ -63,9 +62,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONMarshaler, config client.TxE
 }
 
 // RegisterRESTRoutes registers all REST query handlers
-func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, r *mux.Router) {
-	rest.RegisterRoutes(clientCtx, r)
-}
+func (AppModuleBasic) RegisterRESTRoutes(clientCtx client.Context, r *mux.Router) {}
 
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the consortium module.
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
