@@ -26,6 +26,7 @@ import (
 	"github.com/line/lbm-sdk/x/evidence"
 	"github.com/line/lbm-sdk/x/genutil"
 	"github.com/line/lbm-sdk/x/gov"
+	"github.com/line/lbm-sdk/x/consortium"
 	transfer "github.com/line/lbm-sdk/x/ibc/applications/transfer"
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
 	"github.com/line/lbm-sdk/x/mint"
@@ -182,6 +183,7 @@ func TestRunMigrations(t *testing.T) {
 					"crisis":       crisis.AppModule{}.ConsensusVersion(),
 					"genutil":      genutil.AppModule{}.ConsensusVersion(),
 					"capability":   capability.AppModule{}.ConsensusVersion(),
+					"consortium":   consortium.AppModule{}.ConsensusVersion(),
 				},
 			)
 			if tc.expRunErr {
@@ -234,6 +236,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 			"crisis":       crisis.AppModule{}.ConsensusVersion(),
 			"genutil":      genutil.AppModule{}.ConsensusVersion(),
 			"capability":   capability.AppModule{}.ConsensusVersion(),
+			"consortium":   consortium.AppModule{}.ConsensusVersion(),
 		},
 	)
 
