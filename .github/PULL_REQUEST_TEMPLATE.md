@@ -19,5 +19,7 @@ closes: #XXXX
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
 - [ ] I followed the [contributing guidelines](./CONTRIBUTING.md).
-- [ ] I have updated the documentation accordingly.
+- [ ] I have added a relevant changelog to `CHANGELOG.md`
 - [ ] I have added tests to cover my changes.
+- [ ] I have updated the documentation accordingly.
+- [ ] I have updated API documentation (client/docs/swagger-ui/swagger.yaml).
