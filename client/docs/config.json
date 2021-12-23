@@ -141,6 +141,14 @@
     },
     {
       "url": "./tmp-swagger-gen/lbm/wasm/v1/query.swagger.json"
-    }    
+    },
+    {
+      "url": "./tmp-swagger-gen/lbm/consortium/v1/query.swagger.json",
+      "operationIds": {
+        "rename": {
+          "Params": "ConsortiumParams"
+        }
+      }
+    },
   ]
 }
