@@ -26,7 +26,6 @@ type ViewKeeper interface {
 	GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) sdk.Coin
 	LockedCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
 	SpendableCoins(ctx sdk.Context, addr sdk.AccAddress) sdk.Coins
-	LoadBalance(ctx sdk.Context, addr sdk.AccAddress, denom string)
 
 	Prefetch(ctx sdk.Context, tx sdk.Tx)
 
@@ -117,15 +116,6 @@ func (k BaseViewKeeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, denom s
 	return balance
 }
 
-// LoadBalance loads the balance of a specific denomination for a given account
-// by address, filling caches along the way.
-func (k BaseViewKeeper) LoadBalance(ctx sdk.Context, addr sdk.AccAddress, denom string) {
-	store := ctx.KVStore(k.storeKey)
-	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
-	accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
-	accountStore.Load([]byte(denom))
-}
-
 func (k BaseViewKeeper) Prefetch(ctx sdk.Context, tx sdk.Tx) {
 	store := ctx.KVStore(k.storeKey)
 	balancesStore := prefix.NewStore(store, types.BalancesPrefix)
@@ -135,17 +125,17 @@ func (k BaseViewKeeper) Prefetch(ctx sdk.Context, tx sdk.Tx) {
 		case *types.MsgSend:
 			addrs := map[string]bool{}
 			denoms := map[string]bool{}
-			addrs[msg.FromAddress] = true
+			addrs[msg.FromAddress] = false
 			addrs[msg.ToAddress] = true
 			for _, a := range msg.Amount {
 				denoms[a.Denom] = true
 			}
-			for a, _ := range addrs {
+			for a, isReceiver := range addrs {
 				addr := sdk.AccAddress(a)
-				k.ak.LoadAccount(ctx, addr)
+				k.ak.Prefetch(ctx, addr, isReceiver)
 				accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
 				for denom, _ := range denoms {
-					accountStore.Load([]byte(denom))
+					accountStore.Prefetch([]byte(denom), isReceiver)
 				}
 			}
 
@@ -153,7 +143,7 @@ func (k BaseViewKeeper) Prefetch(ctx sdk.Context, tx sdk.Tx) {
 			addrs := map[string]bool{}
 			denoms := map[string]bool{}
 			for _, i := range msg.Inputs {
-				addrs[i.Address] = true
+				addrs[i.Address] = false
 				for _, a := range i.Coins {
 					denoms[a.Denom] = true
 				}
@@ -164,12 +154,12 @@ func (k BaseViewKeeper) Prefetch(ctx sdk.Context, tx sdk.Tx) {
 					denoms[a.Denom] = true
 				}
 			}
-			for a, _ := range addrs {
+			for a, isReceiver := range addrs {
 				addr := sdk.AccAddress(a)
-				k.ak.LoadAccount(ctx, addr)
+				k.ak.Prefetch(ctx, addr, isReceiver)
 				accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
 				for denom, _ := range denoms {
-					accountStore.Load([]byte(denom))
+					accountStore.Prefetch([]byte(denom), isReceiver)
 				}
 			}
 		}

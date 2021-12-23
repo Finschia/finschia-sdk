@@ -263,6 +263,8 @@ var use_prefetch = 0
 var prefetch_commiters int64
 var prefetch_dropped int64
 var prefetch_jobs chan func()
+var prefetch_locks chan bool
+var prefetch_token chan bool
 
 func StartPrefetch() {
 	use_prefetch = 1
@@ -273,38 +275,38 @@ func StopPrefetch() {
 }
 
 func PausePrefetcher() {
-	atomic.AddInt64(&prefetch_commiters, 1)
-	// fmt.Println("XXX: pausing prefetcher")
+	if atomic.AddInt64(&prefetch_commiters, 1) == 1 {
+		prefetch_token <- true
+	}
+	// fmt.Printf("XXX: pausing prefetcher jobs=%d workers=%d\n", len(prefetch_jobs), len(prefetch_locks))
 }
 
 func ResumePrefetcher() {
-	// fmt.Println("XXX: resuming prefetcher")
-	atomic.AddInt64(&prefetch_commiters, -1)
+	// fmt.Printf("XXX: resuming prefetcher jobs=%d workers=%d\n", len(prefetch_jobs), len(prefetch_locks))
+	if atomic.AddInt64(&prefetch_commiters, -1) == 0 {
+		<-prefetch_token
+	}
 }
 
 func prefetcher() {
 	workers := runtime.NumCPU() / 4
-	jobs := 20000 // should be pending queue * 4
+	if workers < 4 {
+		workers = 4
+	}
+
+	jobs := 100000 // should be pending queue * 4
 	prefetch_jobs = make(chan func(), jobs)
-	prefetch_locks := make(chan bool, workers)
+	prefetch_locks = make(chan bool, workers)
+	prefetch_token = make(chan bool, 1)
+
 	for {
 		f := <-prefetch_jobs
-		//			fmt.Printf("XXX: got jobs=%d threads=%d commiters=%d\n", len(prefetch_jobs), len(prefetch_locks), atomic.LoadInt64(&prefetch_commiters))
-		state := 0
-		for {
-			if atomic.LoadInt64(&prefetch_commiters) == 0 {
-				if state == 1 {
-					state = 0
-					// fmt.Printf("XXX: unstalling jobs=%d dropped=%d commiters=%d\n", len(prefetch_jobs), atomic.LoadInt64(&prefetch_dropped), atomic.LoadInt64(&prefetch_commiters))
-					atomic.StoreInt64(&prefetch_dropped, 0)
-				}
-				break
-			}
-			if state == 0 {
-				state = 1
-				// fmt.Printf("XXX: stalling jobs=%d commiters=%d\n", len(prefetch_jobs), atomic.LoadInt64(&prefetch_commiters))
-			}
-			time.Sleep(10 * time.Millisecond)
+		// fmt.Printf("XXX: got jobs=%d threads=%d commiters=%d\n", len(prefetch_jobs), len(prefetch_locks), atomic.LoadInt64(&prefetch_commiters))
+		if len(prefetch_token) != 0 {
+			// fmt.Printf("XXX: stalling jobs=%d workers=%d commiters=%d\n", len(prefetch_jobs) + 1, len(prefetch_locks), atomic.LoadInt64(&prefetch_commiters))
+			prefetch_token <- true
+			<-prefetch_token
+			// fmt.Printf("XXX: unstalling jobs=%d workers=%d commiters=%d\n", len(prefetch_jobs) + 1, len(prefetch_locks), atomic.LoadInt64(&prefetch_commiters))
 		}
 		prefetch_locks <- true
 		go func(f func()) {
@@ -324,14 +326,18 @@ func init() {
 }
 
 // Implements type.KVStore.
-func (st *Store) Load(key []byte) {
+func (st *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
 	if use_prefetch != 1 {
 		return
 	}
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "load")
 	select {
 	case prefetch_jobs <- func() {
-		st.tree.Get(key)
+		defer func() {
+			// ignore panic
+			recover()
+		}()
+		st.tree.Prefetch(key, forSet)
 	}:
 		// good
 	default:
@@ -340,6 +346,7 @@ func (st *Store) Load(key []byte) {
 			// fmt.Printf("XXX: prefetch jobs too many %d, %d dropped\n", len(prefetch_jobs), atomic.LoadInt64(&prefetch_dropped))
 		}
 	}
+	return
 }
 
 // DeleteVersions deletes a series of versions from the MutableTree. An error

@@ -78,10 +78,10 @@ func (tkv *Store) Has(key []byte) bool {
 	return tkv.parent.Has(key)
 }
 
-// Load implements the KVStore interface. It traces a read operation and
+// Prefetch implements the KVStore interface. It traces a read operation and
 // delegates a Get call to the parent KVStore.
-func (tkv *Store) Load(key []byte) {
-	tkv.parent.Load(key)
+func (tkv *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
+	return tkv.parent.Prefetch(key, forSet)
 }
 
 // Iterator implements the KVStore interface. It delegates the Iterator call

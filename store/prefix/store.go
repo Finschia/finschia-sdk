@@ -81,8 +81,8 @@ func (s Store) Delete(key []byte) {
 }
 
 // Implements KVStore
-func (s Store) Load(key []byte) {
-	s.parent.Load(s.key(key))
+func (s Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
+	return s.parent.Prefetch(s.key(key), forSet)
 }
 
 // Implements KVStore

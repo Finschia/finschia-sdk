@@ -75,9 +75,9 @@ func (gs *Store) Delete(key []byte) {
 }
 
 // Implements KVStore.
-func (gs *Store) Load(key []byte) {
+func (gs *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "gaskv", "load")
-	gs.parent.Load(key)
+	return gs.parent.Prefetch(key, forSet)
 }
 
 // Iterator implements the KVStore interface. It returns an iterator which

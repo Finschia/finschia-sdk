@@ -3,6 +3,7 @@ package cachemulti
 import (
 	"fmt"
 	"io"
+	"sync"
 
 	tmdb "github.com/line/tm-db/v2"
 
@@ -110,9 +111,15 @@ func (cms Store) GetStoreType() types.StoreType {
 // Write calls Write on each underlying store.
 func (cms Store) Write() {
 	cms.db.Write()
+	var wg sync.WaitGroup
 	for _, store := range cms.stores {
-		store.Write()
+		wg.Add(1)
+		go func(s types.CacheWrap) {
+			s.Write()
+			wg.Done()
+		}(store)
 	}
+	wg.Wait()
 }
 
 // Implements CacheWrapper.

@@ -36,8 +36,8 @@ type AccountKeeperI interface {
 	// Fetch the sequence of an account at a specified address.
 	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
 
-	// Load an account, i.e. pre-fetch
-	LoadAccount(sdk.Context, sdk.AccAddress)
+	// Prefetch an account, i.e. pre-fetch
+	Prefetch(sdk.Context, sdk.AccAddress, bool)
 }
 
 // AccountKeeper encodes/decodes accounts using the go-amino (binary)
