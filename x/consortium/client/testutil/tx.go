@@ -37,8 +37,7 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateConsortiumParams() {
 		},
 		{
 			"valid transaction",
-			append([]string{
-			}, commonFlags...),
+			commonFlags,
 			false, 0, &sdk.TxResponse{},
 		},
 	}
@@ -84,8 +83,7 @@ func (s *IntegrationTestSuite) TestNewProposalCmdUpdateValidatorAuths() {
 	}{
 		{
 			"with no args",
-			append([]string{
-			}, commonFlags...),
+			commonFlags,
 			true, 0, nil,
 		},
 		{

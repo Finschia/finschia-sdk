@@ -3,10 +3,10 @@ package testutil
 import (
 	"fmt"
 	"strings"
-	
-	"github.com/line/lbm-sdk/x/consortium/client/cli"
+
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	"github.com/line/lbm-sdk/x/consortium/client/cli"
 	ostcli "github.com/line/ostracon/libs/cli"
 )
 
@@ -98,7 +98,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuth() {
 			"with an invalid address",
 			[]string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
-				fmt.Sprintf("this-is-an-invalid-address"),
+				"this-is-an-invalid-address",
 			},
 			true,
 			"",

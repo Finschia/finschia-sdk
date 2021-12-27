@@ -34,7 +34,7 @@ func NewQueryCmdParams() *cobra.Command {
 		Short: "Query consortium params",
 		Long:  "Gets the current parameters of consortium",
 		Args:  cobra.NoArgs,
-		RunE:  func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -63,7 +63,7 @@ func NewQueryCmdValidatorAuth() *cobra.Command {
 		Short: "Query validator authorization",
 		Long:  "Gets validator authorization by consortium",
 		Args:  cobra.ExactArgs(1),
-		RunE:  func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
@@ -97,7 +97,7 @@ func NewQueryCmdValidatorAuths() *cobra.Command {
 		Short: "Query validator authorizations",
 		Long:  "Gets validator authorizations by consortium",
 		Args:  cobra.NoArgs,
-		RunE:  func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
