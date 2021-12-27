@@ -22,8 +22,8 @@ const (
 	FlagAllowedValidatorDelete = "delete"
 )
 
-// NewCmdSubmitUpdateConsortiumParamsProposal implements the command to submit an update-consortium-params proposal
-func NewCmdSubmitUpdateConsortiumParamsProposal() *cobra.Command {
+// NewProposalCmdUpdateConsortiumParams implements the command to submit an update-consortium-params proposal
+func NewProposalCmdUpdateConsortiumParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-consortium-params",
 		Args:  cobra.NoArgs,
@@ -90,8 +90,8 @@ $ %s tx gov submit-proposal update-consortium-params [flags]
 	return cmd
 }
 
-// NewCmdSubmitUpdateValidatorAuthsProposal implements the command to submit an update-validator-auths proposal
-func NewCmdSubmitUpdateValidatorAuthsProposal() *cobra.Command {
+// NewProposalCmdUpdateValidatorAuths implements the command to submit an update-validator-auths proposal
+func NewProposalCmdUpdateValidatorAuths() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-validator-auths",
 		Args:  cobra.NoArgs,
