@@ -154,9 +154,12 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 			createAuths := func(addings, deletings []string) ([]*types.ValidatorAuth, error) {
 				var auths []*types.ValidatorAuth
 
-				// check duplications
+				// check duplications & validate validator addresses
 				usedAddrs := map[string]bool{}
 				for _, addr := range append(addings, deletings...) {
+					if err := sdk.ValidateValAddress(addr); err != nil {
+						return auths, err
+					}
 					if usedAddrs[addr] {
 						return auths, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "multiple auths for same validator: %s", addr)
 					}
