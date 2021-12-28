@@ -24,6 +24,26 @@ func (q Keeper) Params(c context.Context, req *types.QueryParamsRequest) (*types
 	return &types.QueryParamsResponse{Params: q.GetParams(ctx)}, nil
 }
 
+func (q Keeper) ValidatorAuth(c context.Context, req *types.QueryValidatorAuthRequest) (*types.QueryValidatorAuthResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	if req.ValidatorAddress == "" {
+		return nil, status.Error(codes.InvalidArgument, "empty validator address")
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+
+	addr := sdk.ValAddress(req.ValidatorAddress)
+	auth, err := q.GetValidatorAuth(ctx, addr)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.QueryValidatorAuthResponse{Auth: auth}, nil
+}
+
 func (q Keeper) ValidatorAuths(c context.Context, req *types.QueryValidatorAuthsRequest) (*types.QueryValidatorAuthsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -44,24 +64,4 @@ func (q Keeper) ValidatorAuths(c context.Context, req *types.QueryValidatorAuths
 	}
 
 	return &types.QueryValidatorAuthsResponse{Auths: auths, Pagination: pageRes}, nil
-}
-
-func (q Keeper) ValidatorAuth(c context.Context, req *types.QueryValidatorAuthRequest) (*types.QueryValidatorAuthResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	if req.ValidatorAddress == "" {
-		return nil, status.Error(codes.InvalidArgument, "empty validator address")
-	}
-
-	ctx := sdk.UnwrapSDKContext(c)
-
-	addr := sdk.ValAddress(req.ValidatorAddress)
-	auth, err := q.GetValidatorAuth(ctx, addr)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.QueryValidatorAuthResponse{Auth: auth}, nil
 }
