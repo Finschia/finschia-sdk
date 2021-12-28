@@ -100,11 +100,11 @@ func (s *IntegrationTestSuite) TestGRPCValidatorAuths() {
 	val := s.network.Validators[0]
 
 	testCases := []struct {
-		name             string
-		url              string
-		headers          map[string]string
-		wantNumAuths     int
-		expErr           bool
+		name         string
+		url          string
+		headers      map[string]string
+		wantNumAuths int
+		expErr       bool
 	}{
 		{
 			"valid request",
