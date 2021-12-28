@@ -21,6 +21,7 @@
 * (swagger) [\#391] (https://github.com/line/lbm-sdk/pull/391) fix swagger's config path for wasm
 * (x/wasm) [\#393] (https://github.com/line/lbm-sdk/pull/393) fix bug where `StoreCodeAndInstantiateContract`, `UpdateContractStatus`, `UpdateContractStatusProposal` API does not work
 * (x/slashing) [\#407] (https://github.com/line/lbm-sdk/pull/407) Fix query signing infos command
+* (x/consortium) [\#411] (https://github.com/line/lbm-sdk/pull/411) Validate validator addresses in update-validator-auths proposal
 
 ### Breaking Changes
 
