@@ -223,4 +223,6 @@ type WasmerEngine interface {
 
 	// GetMetrics some internal metrics for monitoring purposes.
 	GetMetrics() (*wasmvmtypes.Metrics, error)
+
+	GetCache() *wasmvm.Cache
 }
