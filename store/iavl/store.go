@@ -317,7 +317,7 @@ func prefetcher() {
 }
 
 func init() {
-	if os.Getenv("USE_PREFETCH") == "YES" {
+	if os.Getenv("USE_PREFETCH") != "NO" {
 		use_prefetch = 1
 	} else {
 		use_prefetch = -1
