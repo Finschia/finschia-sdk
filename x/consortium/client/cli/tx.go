@@ -9,7 +9,6 @@ import (
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/version"
 	"github.com/line/lbm-sdk/x/consortium/types"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
@@ -69,7 +68,6 @@ $ %s tx gov submit-proposal update-consortium-params [flags]
 				Enabled: false,
 			}
 			content := types.NewUpdateConsortiumParamsProposal(title, description, params)
-
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
 				return err
@@ -151,21 +149,8 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 			}
 			deletingValidators := parseCommaSeparated(deletingValidatorsStr)
 
-			createAuths := func(addings, deletings []string) ([]*types.ValidatorAuth, error) {
+			createAuths := func(addings, deletings []string) []*types.ValidatorAuth {
 				var auths []*types.ValidatorAuth
-
-				// check duplications & validate validator addresses
-				usedAddrs := map[string]bool{}
-				for _, addr := range append(addings, deletings...) {
-					if err := sdk.ValidateValAddress(addr); err != nil {
-						return auths, err
-					}
-					if usedAddrs[addr] {
-						return auths, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "multiple auths for same validator: %s", addr)
-					}
-					usedAddrs[addr] = true
-				}
-
 				for _, addr := range addings {
 					auth := &types.ValidatorAuth{
 						OperatorAddress: addr,
@@ -181,15 +166,11 @@ $ %s tx gov submit-proposal update-validator-auths [flags]
 					auths = append(auths, auth)
 				}
 
-				return auths, nil
+				return auths
 			}
 
-			auths, err := createAuths(addingValidators, deletingValidators)
-			if err != nil {
-				return err
-			}
+			auths := createAuths(addingValidators, deletingValidators)
 			content := types.NewUpdateValidatorAuthsProposal(title, description, auths)
-
 			msg, err := govtypes.NewMsgSubmitProposal(content, deposit, from)
 			if err != nil {
 				return err
