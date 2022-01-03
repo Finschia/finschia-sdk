@@ -3,6 +3,7 @@ package types
 import (
 	"fmt"
 
+	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 )
@@ -71,6 +72,9 @@ func (p *UpdateValidatorAuthsProposal) ValidateBasic() error {
 	usedAddrs := map[string]bool{}
 	for _, auth := range p.Auths {
 		addr := auth.OperatorAddress
+		if err := sdk.ValidateValAddress(addr); err != nil {
+			return err
+		}
 		if usedAddrs[addr] {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "multiple auths for same validator: %s", addr)
 		}
