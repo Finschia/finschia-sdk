@@ -65,11 +65,11 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuth() {
 			[]string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
-				string(val.ValAddress),
+				val.ValAddress.String(),
 			},
 			false,
 			fmt.Sprintf(`{"auth":{"operator_address":"%s","creation_allowed":true}}`,
-				string(val.ValAddress),
+				val.ValAddress.String(),
 			),
 		},
 		{
@@ -77,13 +77,13 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuth() {
 			[]string{
 				fmt.Sprintf("--%s=1", flags.FlagHeight),
 				fmt.Sprintf("--%s=text", ostcli.OutputFlag),
-				string(val.ValAddress),
+				val.ValAddress.String(),
 			},
 			false,
 			fmt.Sprintf(`auth:
   creation_allowed: true
   operator_address: %s`,
-				string(val.ValAddress),
+				val.ValAddress.String(),
 			),
 		},
 		{
@@ -138,7 +138,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuths() {
 				fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 			},
 			fmt.Sprintf(`{"auths":[{"operator_address":"%s","creation_allowed":true}],"pagination":{"next_key":null,"total":"0"}}`,
-				string(val.ValAddress),
+				val.ValAddress.String(),
 			),
 		},
 		{
@@ -153,7 +153,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdValidatorAuths() {
 pagination:
   next_key: null
   total: "0"`,
-				string(val.ValAddress),
+				val.ValAddress.String(),
 			),
 		},
 	}
