@@ -686,7 +686,7 @@ func (app *BaseApp) createQueryContext(height int64, prove bool) (sdk.Context, e
 	app.checkStateMtx.RLock()
 	ctx := sdk.NewContext(
 		cacheMS, app.checkState.ctx.BlockHeader(), true, app.logger,
-	).WithMinGasPrices(app.minGasPrices)
+	).WithMinGasPrices(app.minGasPrices).WithBlockHeight(height)
 	app.checkStateMtx.RUnlock()
 
 	return ctx, nil
