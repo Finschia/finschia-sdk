@@ -639,7 +639,6 @@ func (app *BaseApp) runTx(txBytes []byte, tx sdk.Tx, simulate bool) (gInfo sdk.G
 
 	// only run the tx if there is block gas remaining
 	if !simulate && ctx.BlockGasMeter().IsOutOfGas() {
-		gInfo = sdk.GasInfo{GasUsed: ctx.BlockGasMeter().GasConsumed()}
 		return gInfo, nil, nil, sdkerrors.Wrap(sdkerrors.ErrOutOfGas, "no block gas left to run tx")
 	}
 
