@@ -10,6 +10,7 @@
 * (x/feegrant) [\#380] (https://github.com/line/lbm-sdk/pull/380) Feegrant module
 * (x/wasm) [\#395] (https://github.com/line/lbm-sdk/pull/395) Add the instantiate_permission in the CodeInfoResponse
 * (x/consortium) [\#406] (https://github.com/line/lbm-sdk/pull/406) Add CreateValidator access control feature
+* (x/bank) [\#400] (https://github.com/line/lbm-sdk/pull/400) add `bankplus` function to restrict to send coin to inactive smart contract.
 
 ### Improvements
 * (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter
