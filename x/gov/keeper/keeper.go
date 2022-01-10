@@ -66,6 +66,32 @@ func NewKeeper(
 	}
 }
 
+const InitialVersion = 1
+
+func (keeper Keeper) GetModuleVersion(ctx sdk.Context) (version uint64) {
+	store := ctx.KVStore(keeper.storeKey)
+	return keeper.getModuleVersionInternal(store)
+}
+
+func (keeper Keeper) getModuleVersionInternal(store sdk.KVStore) (version uint64) {
+	bz := store.Get(types.VersionKey)
+	if bz == nil {
+		// if no version in store, then the version is 1
+		return InitialVersion
+	}
+
+	return types.GetVersionFromBytes(bz)
+}
+
+func (keeper Keeper) UpgradeVersionTo2(ctx sdk.Context) {
+	store := ctx.KVStore(keeper.storeKey)
+	cur := keeper.getModuleVersionInternal(store)
+	if cur != 1 {
+		panic("The version must be 1")
+	}
+	store.Set(types.VersionKey, types.GetVersionBytes(cur+1))
+}
+
 // Logger returns a module-specific logger.
 func (keeper Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", "x/"+types.ModuleName)

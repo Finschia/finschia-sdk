@@ -76,13 +76,9 @@ func BeginBlocker(k keeper.Keeper, ctx sdk.Context, _ abci.RequestBeginBlock) {
 		return
 	}
 
+	// We don't call panic even if the handler
 	// if we have a pending upgrade, but it is not yet time, make sure we did not
-	// set the handler already
-	if k.HasHandler(plan.Name) {
-		downgradeMsg := fmt.Sprintf("BINARY UPDATED BEFORE TRIGGER! UPGRADE \"%s\" - in binary but not executed on chain", plan.Name)
-		ctx.Logger().Error(downgradeMsg)
-		panic(downgradeMsg)
-	}
+	// set the handler is already registered in advance
 }
 
 // BuildUpgradeNeededMsg prints the message that notifies that an upgrade is needed.

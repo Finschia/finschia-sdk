@@ -499,6 +499,9 @@
     - [ProposalStatus](#lbm.gov.v1.ProposalStatus)
     - [VoteOption](#lbm.gov.v1.VoteOption)
   
+- [lbm/gov/migrations/v1/gov.proto](#lbm/gov/migrations/v1/gov.proto)
+    - [ProposalV1](#lbm.gov.migrations.v1.ProposalV1)
+  
 - [lbm/gov/v1/genesis.proto](#lbm/gov/v1/genesis.proto)
     - [GenesisState](#lbm.gov.v1.GenesisState)
   
@@ -7357,6 +7360,7 @@ Proposal defines the core field members of a governance proposal.
 | `total_deposit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
 | `voting_start_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
 | `voting_end_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `new_field_sample` | [uint64](#uint64) |  |  |
 
 
 
@@ -7496,6 +7500,45 @@ VoteOption enumerates the valid vote options for a given governance proposal.
 | VOTE_OPTION_NO | 3 | VOTE_OPTION_NO defines a no vote option. |
 | VOTE_OPTION_NO_WITH_VETO | 4 | VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option. |
 
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/gov/migrations/v1/gov.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/gov/migrations/v1/gov.proto
+
+
+
+<a name="lbm.gov.migrations.v1.ProposalV1"></a>
+
+### ProposalV1
+Old Proposal type (v1)
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  |  |
+| `content` | [google.protobuf.Any](#google.protobuf.Any) |  |  |
+| `status` | [lbm.gov.v1.ProposalStatus](#lbm.gov.v1.ProposalStatus) |  |  |
+| `final_tally_result` | [lbm.gov.v1.TallyResult](#lbm.gov.v1.TallyResult) |  |  |
+| `submit_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `deposit_end_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `total_deposit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated |  |
+| `voting_start_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+| `voting_end_time` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  |  |
+
+
+
+
+
+ <!-- end messages -->
 
  <!-- end enums -->
 

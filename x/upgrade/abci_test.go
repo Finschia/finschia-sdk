@@ -232,7 +232,7 @@ func TestHaltIfTooNew(t *testing.T) {
 	t.Log("Verify we panic if we have a registered handler ahead of time")
 	err := s.handler(s.ctx, &types.SoftwareUpgradeProposal{Title: "prop", Plan: types.Plan{Name: "future", Height: s.ctx.BlockHeight() + 3}})
 	require.NoError(t, err)
-	require.Panics(t, func() {
+	require.NotPanics(t, func() {
 		s.module.BeginBlock(newCtx, req)
 	})
 	require.Equal(t, 0, called)
