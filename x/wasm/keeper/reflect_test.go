@@ -555,7 +555,7 @@ func reflectEncoders(cdc codec.Marshaler) *MessageEncoders {
 // fromReflectRawMsg decodes msg.Data to an sdk.Msg using proto Any and json encoding.
 // this needs to be registered on the Encoders
 func fromReflectRawMsg(cdc codec.Marshaler) CustomEncoder {
-	return func(_sender sdk.AccAddress, msg json.RawMessage, customEncodeRouter types.Router) ([]sdk.Msg, error) {
+	return func(_sender sdk.AccAddress, msg json.RawMessage) ([]sdk.Msg, error) {
 		var custom reflectCustomMsg
 		err := json.Unmarshal(msg, &custom)
 		if err != nil {

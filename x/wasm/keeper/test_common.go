@@ -301,7 +301,6 @@ func createTestInput(
 		scopedWasmKeeper,
 		wasmtesting.MockIBCTransferKeeper{},
 		router,
-		nil,
 		querier,
 		tempDir,
 		wasmConfig,
