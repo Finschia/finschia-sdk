@@ -23,4 +23,4 @@ closes: #XXXX
 - [ ] I have added a relevant changelog to `CHANGELOG.md`
 - [ ] I have added tests to cover my changes.
 - [ ] I have updated the documentation accordingly.
-- [ ] I have updated API documentation (client/docs/swagger-ui/swagger.yaml).
+- [ ] I have updated API documentation `client/docs/swagger-ui/swagger.yaml`
