@@ -112,14 +112,26 @@ func (cms Store) GetStoreType() types.StoreType {
 func (cms Store) Write() {
 	cms.db.Write()
 	var wg sync.WaitGroup
+	var panicMsg interface{}
 	for _, store := range cms.stores {
 		wg.Add(1)
 		go func(s types.CacheWrap) {
+			defer func() {
+				if msg := recover(); msg != nil {
+					if panicMsg == nil {
+						panicMsg = msg
+					}
+				}
+			}()
+
 			s.Write()
 			wg.Done()
 		}(store)
 	}
 	wg.Wait()
+	if panicMsg != nil {
+		panic(panicMsg)
+	}
 }
 
 // Implements CacheWrapper.
