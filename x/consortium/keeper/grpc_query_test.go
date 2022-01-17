@@ -89,7 +89,7 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuth() {
 		{
 			"with non-existent auth",
 			func() {
-				req = &types.QueryValidatorAuthRequest{ValidatorAddress: string(valAddr)}
+				req = &types.QueryValidatorAuthRequest{ValidatorAddress: valAddr.String()}
 				expResponse = types.QueryValidatorAuthResponse{}
 			},
 			false,
@@ -98,12 +98,12 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuth() {
 			"with existing auth",
 			func() {
 				auth := &types.ValidatorAuth{
-					OperatorAddress: string(valAddr),
+					OperatorAddress: valAddr.String(),
 					CreationAllowed: true,
 				}
 				suite.app.ConsortiumKeeper.SetValidatorAuth(suite.ctx, auth)
 
-				req = &types.QueryValidatorAuthRequest{ValidatorAddress: string(valAddr)}
+				req = &types.QueryValidatorAuthRequest{ValidatorAddress: valAddr.String()}
 				expResponse = types.QueryValidatorAuthResponse{Auth: auth}
 			},
 			true,
@@ -162,7 +162,7 @@ func (suite *ConsortiumTestSuite) TestQueryValidatorAuths() {
 			"with non-empty auths",
 			func() {
 				auth := &types.ValidatorAuth{
-					OperatorAddress: string(valAddr),
+					OperatorAddress: valAddr.String(),
 					CreationAllowed: true,
 				}
 				suite.app.ConsortiumKeeper.SetValidatorAuth(suite.ctx, auth)

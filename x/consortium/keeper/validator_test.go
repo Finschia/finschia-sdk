@@ -22,7 +22,7 @@ func TestGetSetValidatorAuth(t *testing.T) {
 
 	// test adding creation allowed validators
 	expected := &types.ValidatorAuth{
-		OperatorAddress: string(valAddr),
+		OperatorAddress: valAddr.String(),
 		CreationAllowed: true,
 	}
 	require.NoError(t, k.SetValidatorAuth(ctx, expected))

@@ -26,7 +26,7 @@ func TestCleanup(t *testing.T) {
 
 	// add auths
 	auth :=	&types.ValidatorAuth{
-		OperatorAddress: string(valAddr),
+		OperatorAddress: valAddr.String(),
 		CreationAllowed: true,
 	}
 	require.NoError(t, k.SetValidatorAuth(ctx, auth))
