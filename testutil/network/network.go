@@ -40,6 +40,7 @@ import (
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/simapp/params"
 	storetypes "github.com/line/lbm-sdk/store/types"
+	"github.com/line/lbm-sdk/testutil"
 	sdk "github.com/line/lbm-sdk/types"
 	authtypes "github.com/line/lbm-sdk/x/auth/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
@@ -289,7 +290,7 @@ func New(t *testing.T, cfg Config) *Network {
 			mnemonic = cfg.Mnemonics[i]
 		}
 
-		addr, secret, err := server.GenerateSaveCoinKey(kb, nodeDirName, mnemonic, true, algo)
+		addr, secret, err := testutil.GenerateSaveCoinKey(kb, nodeDirName, mnemonic, true, algo)
 		require.NoError(t, err)
 
 		info := map[string]string{"secret": secret}

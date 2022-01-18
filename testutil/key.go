@@ -1,4 +1,4 @@
-package server
+package testutil
 
 import (
 	"fmt"
@@ -7,8 +7,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-// Deprecated: GenerateCoinKey generates a new key mnemonic along with its addrress.
-// Please use testutils.GenerateCoinKey instead.
+// GenerateCoinKey generates a new key mnemonic along with its addrress.
 func GenerateCoinKey(algo keyring.SignatureAlgo) (sdk.AccAddress, string, error) {
 	// generate a private key, with mnemonic
 	info, secret, err := keyring.NewInMemory().NewMnemonic(
@@ -21,17 +20,17 @@ func GenerateCoinKey(algo keyring.SignatureAlgo) (sdk.AccAddress, string, error)
 	if err != nil {
 		return sdk.AccAddress(""), "", err
 	}
-	return sdk.BytesToAccAddress(info.GetPubKey().Address()), secret, nil
+
+	return sdk.AccAddress(info.GetPubKey().Address()), secret, nil
 }
 
-// Deprecated: GenerateSaveCoinKey generates a new key mnemonic with its addrress.
+// GenerateSaveCoinKey generates a new key mnemonic with its addrress.
 // If mnemonic is provided then it's used for key generation.
 // The key is saved in the keyring. The function returns error if overwrite=true and the key
 // already exists.
-// Please use testutils.GenerateSaveCoinKey instead.
 func GenerateSaveCoinKey(
 	keybase keyring.Keyring,
-	keyName string,
+	keyName, mnemonic string,
 	overwrite bool,
 	algo keyring.SignatureAlgo,
 ) (sdk.AccAddress, string, error) {
@@ -46,17 +45,38 @@ func GenerateSaveCoinKey(
 		return sdk.AccAddress(""), "", fmt.Errorf("key already exists, overwrite is disabled")
 	}
 
-	// remove the old key by name if it exists
 	if exists {
 		if err := keybase.Delete(keyName); err != nil {
 			return sdk.AccAddress(""), "", fmt.Errorf("failed to overwrite key")
 		}
 	}
 
-	k, mnemonic, err := keybase.NewMnemonic(keyName, keyring.English, sdk.GetConfig().GetFullBIP44Path(), keyring.DefaultBIP39Passphrase, algo)
+	var (
+		info   keyring.Info
+		secret string
+	)
+
+	if mnemonic != "" {
+		secret = mnemonic
+		info, err = keybase.NewAccount(
+			keyName,
+			mnemonic,
+			keyring.DefaultBIP39Passphrase,
+			sdk.GetConfig().GetFullBIP44Path(),
+			algo,
+		)
+	} else {
+		info, secret, err = keybase.NewMnemonic(
+			keyName,
+			keyring.English,
+			sdk.GetConfig().GetFullBIP44Path(),
+			keyring.DefaultBIP39Passphrase,
+			algo,
+		)
+	}
 	if err != nil {
 		return sdk.AccAddress(""), "", err
 	}
 
-	return sdk.BytesToAccAddress(k.GetPubKey().Address()), mnemonic, nil
+	return sdk.AccAddress(info.GetAddress()), secret, nil
 }
