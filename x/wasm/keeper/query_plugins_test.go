@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"testing"
 
+	"github.com/line/tm-db/v2/memdb"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/lbm-sdk/store"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
@@ -438,6 +440,36 @@ func TestContractInfoWasmQuerier(t *testing.T) {
 			var gotRes wasmvmtypes.ContractInfoResponse
 			require.NoError(t, json.Unmarshal(gotBz, &gotRes))
 			assert.Equal(t, spec.expRes, gotRes)
+		})
+	}
+}
+
+func TestQueryErrors(t *testing.T) {
+	_, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil)
+
+	specs := map[string]struct {
+		src    error
+		expErr error
+	}{
+		"no error": {},
+		"no such contract": {
+			src:    &types.ErrNoSuchContract{Addr: "contract-addr"},
+			expErr: wasmvmtypes.NoSuchContract{Addr: "contract-addr"},
+		},
+		"no such contract - wrapped": {
+			src:    sdkerrors.Wrap(&types.ErrNoSuchContract{Addr: "contract-addr"}, "my additional data"),
+			expErr: wasmvmtypes.NoSuchContract{Addr: "contract-addr"},
+		},
+	}
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			mock := WasmVMQueryHandlerFn(func(ctx sdk.Context, caller sdk.AccAddress, request wasmvmtypes.QueryRequest) ([]byte, error) {
+				return nil, spec.src
+			})
+			ctx := sdk.Context{}.WithGasMeter(sdk.NewInfiniteGasMeter()).WithMultiStore(store.NewCommitMultiStore(memdb.NewDB()))
+			q := NewQueryHandler(ctx, mock, sdk.AccAddress(""), keepers.WasmKeeper.getGasMultiplier(ctx))
+			_, gotErr := q.Query(wasmvmtypes.QueryRequest{}, 1)
+			assert.Equal(t, spec.expErr, gotErr)
 		})
 	}
 }
