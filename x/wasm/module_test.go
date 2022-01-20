@@ -29,6 +29,7 @@ type testData struct {
 	keeper        Keeper
 	bankKeeper    bankkeeper.Keeper
 	stakingKeeper stakingkeeper.Keeper
+	faucet        *keeper.TestFaucet
 }
 
 func setupTest(t *testing.T) testData {
@@ -41,6 +42,7 @@ func setupTest(t *testing.T) testData {
 		keeper:        *keepers.WasmKeeper,
 		bankKeeper:    keepers.BankKeeper,
 		stakingKeeper: keepers.StakingKeeper,
+		faucet:        keepers.Faucet,
 	}
 	return data
 }
@@ -143,9 +145,7 @@ type state struct {
 
 func TestHandleInstantiate(t *testing.T) {
 	data := setupTest(t)
-
-	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	creator := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, deposit)
+	creator := data.faucet.NewFundedAccount(data.ctx, sdk.NewInt64Coin("denom", 100000))
 
 	h := data.module.Route().Handler()
 	q := data.module.LegacyQuerierHandler(nil)
@@ -380,8 +380,9 @@ func TestHandleExecute(t *testing.T) {
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
 	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, deposit.Add(deposit...))
-	fred := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, topUp)
+
+	creator := data.faucet.NewFundedAccount(data.ctx, deposit.Add(deposit...)...)
+	fred := data.faucet.NewFundedAccount(data.ctx, topUp...)
 
 	h := data.module.Route().Handler()
 	q := data.module.LegacyQuerierHandler(nil)
@@ -456,6 +457,8 @@ func TestHandleExecute(t *testing.T) {
 
 	assert.Equal(t, "message", res.Events[0].Type)
 	assertAttribute(t, "module", "wasm", res.Events[0].Attributes[0])
+	assert.Equal(t, "coin_spent", res.Events[1].Type)
+	assert.Equal(t, "coin_received", res.Events[2].Type)
 
 	assert.Equal(t, "coin_spent", res.Events[1].Type)
 	assertAttribute(t, "spender", fred.String(), res.Events[1].Attributes[0])
@@ -487,6 +490,7 @@ func TestHandleExecute(t *testing.T) {
 	assertAttribute(t, "recipient", bob.String(), res.Events[9].Attributes[0])
 	assertAttribute(t, "sender", contractBech32Addr, res.Events[9].Attributes[1])
 	assertAttribute(t, "amount", "105000denom", res.Events[9].Attributes[2])
+	// finally, standard x/wasm tag
 
 	// ensure bob now exists and got both payments released
 	bobAcct = data.acctKeeper.GetAccount(data.ctx, bob)
@@ -498,7 +502,7 @@ func TestHandleExecute(t *testing.T) {
 
 	contractAcct = data.acctKeeper.GetAccount(data.ctx, contractAddr)
 	require.NotNil(t, contractAcct)
-	assert.Equal(t, sdk.NewCoins().String(), data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()).String())
+	assert.Equal(t, sdk.Coins{}, data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()))
 
 	// ensure all contract state is as after init
 	assertCodeList(t, q, data.ctx, 1)
@@ -518,8 +522,8 @@ func TestHandleExecuteEscrow(t *testing.T) {
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
 	topUp := sdk.NewCoins(sdk.NewInt64Coin("denom", 5000))
-	creator := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, deposit.Add(deposit...))
-	fred := createFakeFundedAccount(t, data.ctx, data.acctKeeper, data.bankKeeper, topUp)
+	creator := data.faucet.NewFundedAccount(data.ctx, deposit.Add(deposit...)...)
+	fred := data.faucet.NewFundedAccount(data.ctx, topUp...)
 
 	h := data.module.Route().Handler()
 
@@ -576,7 +580,7 @@ func TestHandleExecuteEscrow(t *testing.T) {
 	contractAddr := sdk.AccAddress(contractBech32Addr)
 	contractAcct := data.acctKeeper.GetAccount(data.ctx, contractAddr)
 	require.NotNil(t, contractAcct)
-	assert.Equal(t, sdk.NewCoins().String(), data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()).String())
+	assert.Equal(t, sdk.Coins{}, data.bankKeeper.GetAllBalances(data.ctx, contractAcct.GetAddress()))
 }
 
 func TestReadWasmConfig(t *testing.T) {
@@ -757,7 +761,6 @@ func assertContractInfo(t *testing.T, q sdk.Querier, ctx sdk.Context, contractBe
 	assert.Equal(t, codeID, res.CodeID)
 	assert.Equal(t, creator.String(), res.Creator)
 }
-
 func createFakeFundedAccount(t *testing.T, ctx sdk.Context, am authkeeper.AccountKeeper, bankKeeper bankkeeper.Keeper, coins sdk.Coins) sdk.AccAddress {
 	t.Helper()
 	_, _, addr := keyPubAddr()

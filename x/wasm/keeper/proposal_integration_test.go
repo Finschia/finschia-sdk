@@ -80,8 +80,8 @@ func TestInstantiateProposal(t *testing.T) {
 	)
 
 	var (
-		oneAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
-		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
+		oneAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, types.ContractAddrLen))
+		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, types.ContractAddrLen))
 	)
 	src := types.InstantiateContractProposalFixture(func(p *types.InstantiateContractProposal) {
 		p.CodeID = firstCodeID
@@ -149,9 +149,9 @@ func TestMigrateProposal(t *testing.T) {
 	require.NoError(t, wasmKeeper.importCode(ctx, 2, codeInfoFixture, wasmCode))
 
 	var (
-		anyAddress   = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, sdk.BytesAddrLen))
-		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
-		contractAddr = BuildContractAddress(1, 1)
+		anyAddress   sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x1}, types.ContractAddrLen))
+		otherAddress sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, types.ContractAddrLen))
+		contractAddr                = BuildContractAddress(1, 1)
 	)
 
 	contractInfoFixture := types.ContractInfoFixture(func(c *types.ContractInfo) {
@@ -217,8 +217,8 @@ func TestMigrateProposal(t *testing.T) {
 
 func TestAdminProposals(t *testing.T) {
 	var (
-		otherAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, sdk.BytesAddrLen))
-		contractAddr = BuildContractAddress(1, 1)
+		otherAddress sdk.AccAddress = sdk.BytesToAccAddress(bytes.Repeat([]byte{0x2}, types.ContractAddrLen))
+		contractAddr                = BuildContractAddress(1, 1)
 	)
 	wasmCode, err := ioutil.ReadFile("./testdata/hackatom.wasm")
 	require.NoError(t, err)
@@ -310,9 +310,9 @@ func TestUpdateParamsProposal(t *testing.T) {
 	govKeeper, wasmKeeper := keepers.GovKeeper, keepers.WasmKeeper
 
 	var (
-		cdc                    = keepers.WasmKeeper.cdc
-		myAddress              = sdk.BytesToAccAddress(make([]byte, sdk.BytesAddrLen))
-		oneAddressAccessConfig = types.AccessTypeOnlyAddress.With(myAddress)
+		cdc                                   = keepers.WasmKeeper.cdc
+		myAddress              sdk.AccAddress = sdk.BytesToAccAddress(make([]byte, types.ContractAddrLen))
+		oneAddressAccessConfig                = types.AccessTypeOnlyAddress.With(myAddress)
 	)
 
 	nobodyJson, err := json.Marshal(types.AccessTypeNobody)
@@ -324,7 +324,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 	}{
 		"update upload permission param": {
 			src: proposal.ParamChange{
-				Subspace: types.DefaultParamspace,
+				Subspace: types.ModuleName,
 				Key:      string(types.ParamStoreKeyUploadAccess),
 				Value:    string(cdc.MustMarshalJSON(&types.AllowNobody)),
 			},
@@ -333,7 +333,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 		},
 		"update upload permission param with address": {
 			src: proposal.ParamChange{
-				Subspace: types.DefaultParamspace,
+				Subspace: types.ModuleName,
 				Key:      string(types.ParamStoreKeyUploadAccess),
 				Value:    string(cdc.MustMarshalJSON(&oneAddressAccessConfig)),
 			},
@@ -342,7 +342,7 @@ func TestUpdateParamsProposal(t *testing.T) {
 		},
 		"update instantiate param": {
 			src: proposal.ParamChange{
-				Subspace: types.DefaultParamspace,
+				Subspace: types.ModuleName,
 				Key:      string(types.ParamStoreKeyInstantiateAccess),
 				Value:    string(nobodyJson),
 			},

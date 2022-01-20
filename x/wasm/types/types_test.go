@@ -1,6 +1,7 @@
 package types
 
 import (
+	"bytes"
 	"context"
 	"strings"
 	"testing"
@@ -172,8 +173,8 @@ func TestContractInfoSetExtension(t *testing.T) {
 }
 
 func TestContractInfoMarshalUnmarshal(t *testing.T) {
-	var myAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
-	var myOtherAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
+	var myAddr = sdk.BytesToAccAddress(rand.Bytes(ContractAddrLen))
+	var myOtherAddr = sdk.BytesToAccAddress(rand.Bytes(ContractAddrLen))
 	var anyPos = AbsoluteTxPosition{BlockHeight: 1, TxIndex: 2}
 
 	anyTime := time.Now().UTC()
@@ -293,7 +294,7 @@ func TestContractInfoReadExtension(t *testing.T) {
 func TestNewEnv(t *testing.T) {
 	myTime := time.Unix(0, 1619700924259075000)
 	t.Logf("++ unix: %d", myTime.UnixNano())
-	var myContractAddr = sdk.BytesToAccAddress(rand.Bytes(sdk.BytesAddrLen))
+	var myContractAddr = sdk.BytesToAccAddress(randBytes(ContractAddrLen))
 	specs := map[string]struct {
 		srcCtx sdk.Context
 		exp    wasmvmtypes.Env
@@ -331,5 +332,44 @@ func TestNewEnv(t *testing.T) {
 			assert.Equal(t, spec.exp, NewEnv(spec.srcCtx, myContractAddr))
 		})
 	}
+}
 
+func TestVerifyAddressLen(t *testing.T) {
+	specs := map[string]struct {
+		src    []byte
+		expErr bool
+	}{
+		"valid contract address": {
+			src: bytes.Repeat([]byte{1}, 32),
+		},
+		"valid legacy address": {
+			src: bytes.Repeat([]byte{1}, 20),
+		},
+		"address too short for legacy": {
+			src:    bytes.Repeat([]byte{1}, 19),
+			expErr: true,
+		},
+		"address too short for contract": {
+			src:    bytes.Repeat([]byte{1}, 31),
+			expErr: true,
+		},
+		"address too long for legacy": {
+			src:    bytes.Repeat([]byte{1}, 21),
+			expErr: true,
+		},
+		"address too long for contract": {
+			src:    bytes.Repeat([]byte{1}, 33),
+			expErr: true,
+		},
+	}
+	for name, spec := range specs {
+		t.Run(name, func(t *testing.T) {
+			gotErr := VerifyAddressLen()(spec.src)
+			if spec.expErr {
+				require.Error(t, gotErr)
+				return
+			}
+			require.NoError(t, gotErr)
+		})
+	}
 }

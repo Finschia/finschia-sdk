@@ -90,7 +90,7 @@ func TestReflectContractSend(t *testing.T) {
 	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 	_, _, bob := keyPubAddr()
 
 	// upload reflect code
@@ -172,8 +172,8 @@ func TestReflectCustomMsg(t *testing.T) {
 	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.ContractKeeper, keepers.BankKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
-	bob := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
+	bob := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 	_, _, fred := keyPubAddr()
 
 	// upload code
@@ -262,10 +262,10 @@ func TestReflectCustomMsg(t *testing.T) {
 func TestMaskReflectCustomQuery(t *testing.T) {
 	cdc := MakeEncodingConfig(t).Marshaler
 	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageEncoders(reflectEncoders(cdc)), WithQueryPlugins(reflectPlugins()))
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, deposit)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
@@ -312,12 +312,12 @@ func TestMaskReflectCustomQuery(t *testing.T) {
 func TestReflectStargateQuery(t *testing.T) {
 	cdc := MakeEncodingConfig(t).Marshaler
 	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageEncoders(reflectEncoders(cdc)), WithQueryPlugins(reflectPlugins()))
-	accKeeper, keeper, bankKeeper := keepers.AccountKeeper, keepers.WasmKeeper, keepers.BankKeeper
+	keeper := keepers.WasmKeeper
 
 	funds := sdk.NewCoins(sdk.NewInt64Coin("denom", 320000))
 	contractStart := sdk.NewCoins(sdk.NewInt64Coin("denom", 40000))
 	expectedBalance := funds.Sub(contractStart)
-	creator := createFakeFundedAccount(t, ctx, accKeeper, bankKeeper, funds)
+	creator := keepers.Faucet.NewFundedAccount(ctx, funds...)
 
 	// upload code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
@@ -389,10 +389,10 @@ type reflectState struct {
 func TestMaskReflectWasmQueries(t *testing.T) {
 	cdc := MakeEncodingConfig(t).Marshaler
 	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageEncoders(reflectEncoders(cdc)), WithQueryPlugins(reflectPlugins()))
-	accKeeper, keeper := keepers.AccountKeeper, keepers.WasmKeeper
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, keepers.BankKeeper, deposit)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload reflect code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")
@@ -461,10 +461,10 @@ func TestMaskReflectWasmQueries(t *testing.T) {
 func TestWasmRawQueryWithNil(t *testing.T) {
 	cdc := MakeEncodingConfig(t).Marshaler
 	ctx, keepers := CreateTestInput(t, false, ReflectFeatures, nil, nil, WithMessageEncoders(reflectEncoders(cdc)), WithQueryPlugins(reflectPlugins()))
-	accKeeper, keeper := keepers.AccountKeeper, keepers.WasmKeeper
+	keeper := keepers.WasmKeeper
 
 	deposit := sdk.NewCoins(sdk.NewInt64Coin("denom", 100000))
-	creator := createFakeFundedAccount(t, ctx, accKeeper, keepers.BankKeeper, deposit)
+	creator := keepers.Faucet.NewFundedAccount(ctx, deposit...)
 
 	// upload reflect code
 	reflectCode, err := ioutil.ReadFile("./testdata/reflect.wasm")

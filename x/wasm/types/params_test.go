@@ -14,7 +14,7 @@ import (
 
 func TestValidateParams(t *testing.T) {
 	var (
-		anyAddress     = sdk.BytesToAccAddress(make([]byte, sdk.BytesAddrLen))
+		anyAddress     = sdk.BytesToAccAddress(make([]byte, ContractAddrLen))
 		invalidAddress = "invalid address"
 	)
 
@@ -233,9 +233,9 @@ func TestParamsUnmarshalJson(t *testing.T) {
 			src: `{"code_upload_access": {"permission": "Everybody"},
 				"instantiate_default_permission": "Everybody",
 				"max_wasm_code_size": 1228800,
-				"gas_multiplier": 100,
-				"instance_cost": 40000,
-				"compile_cost": 2}`,
+				"gas_multiplier": 140000000,
+				"instance_cost": 60000,
+				"compile_cost": 3}`,
 			exp: DefaultParams(),
 		},
 	}

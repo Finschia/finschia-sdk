@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	fmt "fmt"
 	"strings"
 	"testing"
 
@@ -19,8 +20,7 @@ func TestStoreCodeValidation(t *testing.T) {
 	require.NoError(t, err)
 	badAddress := bad.String()
 	// proper address size
-	goodAddress := sdk.BytesToAccAddress(make([]byte, 20)).String()
-
+	goodAddress := sdk.BytesToAccAddress(make([]byte, ContractAddrLen)).String()
 	cases := map[string]struct {
 		msg   MsgStoreCode
 		valid bool
@@ -70,6 +70,7 @@ func TestStoreCodeValidation(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			err := tc.msg.ValidateBasic()
 			if tc.valid {
+				fmt.Printf("err=%v\n", err)
 				assert.NoError(t, err)
 			} else {
 				assert.Error(t, err)

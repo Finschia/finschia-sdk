@@ -14,6 +14,8 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	distributiontypes "github.com/line/lbm-sdk/x/distribution/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+
+	baseapp "github.com/line/lbm-sdk/baseapp"
 )
 
 type QueryHandler struct {
@@ -32,14 +34,8 @@ func NewQueryHandler(ctx sdk.Context, vmQueryHandler WasmVMQueryHandler, caller 
 	}
 }
 
-// -- interfaces from baseapp - so we can use the GPRQueryRouter --
-
-// GRPCQueryHandler defines a function type which handles ABCI Query requests
-// using gRPC
-type GRPCQueryHandler = func(ctx sdk.Context, req abci.RequestQuery) (abci.ResponseQuery, error)
-
 type GRPCQueryRouter interface {
-	Route(path string) GRPCQueryHandler
+	Route(path string) baseapp.GRPCQueryHandler
 }
 
 // -- end baseapp interfaces --

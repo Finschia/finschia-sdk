@@ -14,8 +14,6 @@ import (
 )
 
 const (
-	// DefaultParamspace for params keeper
-	DefaultParamspace = ModuleName
 	// DefaultMaxWasmCodeSize limit max bytes read to prevent gzip bombs
 	DefaultMaxWasmCodeSize = 600 * 1024 * 2
 	// DefaultGasMultiplier is how many CosmWasm gas points = 1 Cosmos SDK gas point.
@@ -255,6 +253,7 @@ func (a AccessConfig) ValidateBasic() error {
 		}
 		return nil
 	case AccessTypeOnlyAddress:
+		fmt.Println("case AccessTypeOnlyAddress")
 		err := sdk.ValidateAccAddress(a.Address)
 		return err
 	}

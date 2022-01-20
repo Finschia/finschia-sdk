@@ -30,8 +30,10 @@ func TestEncoding(t *testing.T) {
 		addr3       = RandomAccountAddress(t)
 		invalidAddr = "xrnd1d02kd90n38qvr3qb9qof83fn2d2"
 	)
-	valAddr := sdk.ValAddress("foo")
-	valAddr2 := sdk.ValAddress("bar")
+	valAddr := make([]byte, types.SDKAddrLen)
+	valAddr[0] = 12
+	valAddr2 := make([]byte, types.SDKAddrLen)
+	valAddr2[1] = 123
 
 	jsonMsg := types.RawContractMessage(`{"foo": 123}`)
 
@@ -247,7 +249,7 @@ func TestEncoding(t *testing.T) {
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Staking: &wasmvmtypes.StakingMsg{
 					Delegate: &wasmvmtypes.DelegateMsg{
-						Validator: valAddr.String(),
+						Validator: sdk.BytesToAccAddress(valAddr).String(),
 						Amount:    wasmvmtypes.NewCoin(777, "stake"),
 					},
 				},
@@ -255,7 +257,7 @@ func TestEncoding(t *testing.T) {
 			output: []sdk.Msg{
 				&stakingtypes.MsgDelegate{
 					DelegatorAddress: addr1.String(),
-					ValidatorAddress: valAddr.String(),
+					ValidatorAddress: sdk.BytesToAccAddress(valAddr).String(),
 					Amount:           sdk.NewInt64Coin("stake", 777),
 				},
 			},
@@ -284,7 +286,7 @@ func TestEncoding(t *testing.T) {
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Staking: &wasmvmtypes.StakingMsg{
 					Undelegate: &wasmvmtypes.UndelegateMsg{
-						Validator: valAddr.String(),
+						Validator: sdk.BytesToAccAddress(valAddr).String(),
 						Amount:    wasmvmtypes.NewCoin(555, "stake"),
 					},
 				},
@@ -292,7 +294,7 @@ func TestEncoding(t *testing.T) {
 			output: []sdk.Msg{
 				&stakingtypes.MsgUndelegate{
 					DelegatorAddress: addr1.String(),
-					ValidatorAddress: valAddr.String(),
+					ValidatorAddress: sdk.BytesToAccAddress(valAddr).String(),
 					Amount:           sdk.NewInt64Coin("stake", 555),
 				},
 			},
@@ -302,8 +304,8 @@ func TestEncoding(t *testing.T) {
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Staking: &wasmvmtypes.StakingMsg{
 					Redelegate: &wasmvmtypes.RedelegateMsg{
-						SrcValidator: valAddr.String(),
-						DstValidator: valAddr2.String(),
+						SrcValidator: sdk.BytesToAccAddress(valAddr).String(),
+						DstValidator: sdk.BytesToAccAddress(valAddr2).String(),
 						Amount:       wasmvmtypes.NewCoin(222, "stake"),
 					},
 				},
@@ -311,8 +313,8 @@ func TestEncoding(t *testing.T) {
 			output: []sdk.Msg{
 				&stakingtypes.MsgBeginRedelegate{
 					DelegatorAddress:    addr1.String(),
-					ValidatorSrcAddress: valAddr.String(),
-					ValidatorDstAddress: valAddr2.String(),
+					ValidatorSrcAddress: sdk.BytesToAccAddress(valAddr).String(),
+					ValidatorDstAddress: sdk.BytesToAccAddress(valAddr2).String(),
 					Amount:              sdk.NewInt64Coin("stake", 222),
 				},
 			},
@@ -322,14 +324,14 @@ func TestEncoding(t *testing.T) {
 			srcMsg: wasmvmtypes.CosmosMsg{
 				Distribution: &wasmvmtypes.DistributionMsg{
 					WithdrawDelegatorReward: &wasmvmtypes.WithdrawDelegatorRewardMsg{
-						Validator: valAddr2.String(),
+						Validator: sdk.BytesToAccAddress(valAddr2).String(),
 					},
 				},
 			},
 			output: []sdk.Msg{
 				&distributiontypes.MsgWithdrawDelegatorReward{
 					DelegatorAddress: addr1.String(),
-					ValidatorAddress: valAddr2.String(),
+					ValidatorAddress: sdk.BytesToAccAddress(valAddr2).String(),
 				},
 			},
 		},

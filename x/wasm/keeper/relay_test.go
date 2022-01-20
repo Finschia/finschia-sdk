@@ -317,6 +317,7 @@ func TestOnRecvPacket(t *testing.T) {
 	parentCtx, keepers := CreateTestInput(t, false, SupportedFeatures, nil, nil, WithMessageHandler(messenger))
 	example := SeedNewContractInstance(t, parentCtx, keepers, &m)
 	const myContractGas = 40
+	const storageCosts = sdk.Gas(2903)
 
 	specs := map[string]struct {
 		contractAddr       sdk.AccAddress

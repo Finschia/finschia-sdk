@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/line/lbm-sdk/baseapp"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/wasm/types"
@@ -20,14 +20,19 @@ type msgEncoder interface {
 	Encode(ctx sdk.Context, contractAddr sdk.AccAddress, contractIBCPortID string, msg wasmvmtypes.CosmosMsg) ([]sdk.Msg, error)
 }
 
+// MessageRouter ADR 031 request type routing
+type MessageRouter interface {
+	Handler(msg sdk.Msg) baseapp.MsgServiceHandler
+}
+
 // SDKMessageHandler can handles messages that can be encoded into sdk.Message types and routed.
 type SDKMessageHandler struct {
-	router   sdk.Router
+	router   MessageRouter
 	encoders msgEncoder
 }
 
 func NewDefaultMessageHandler(
-	router sdk.Router,
+	router MessageRouter,
 	channelKeeper types.ChannelKeeper,
 	capabilityKeeper types.CapabilityKeeper,
 	bankKeeper types.Burner,
@@ -46,7 +51,7 @@ func NewDefaultMessageHandler(
 	)
 }
 
-func NewSDKMessageHandler(router sdk.Router, encoders msgEncoder) SDKMessageHandler {
+func NewSDKMessageHandler(router MessageRouter, encoders msgEncoder) SDKMessageHandler {
 	return SDKMessageHandler{
 		router:   router,
 		encoders: encoders,
@@ -86,21 +91,18 @@ func (h SDKMessageHandler) handleSdkMessage(ctx sdk.Context, contractAddr sdk.Ad
 		}
 	}
 
-	if legacyMsg, ok := msg.(legacytx.LegacyMsg); ok {
-		msgRoute := legacyMsg.Route()
-		// find the handler and execute it
-		handler := h.router.Route(ctx, msgRoute)
-		if handler == nil {
-			return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, msgRoute)
-		}
-		res, err := handler(ctx, msg)
-		if err != nil {
-			return nil, err
-		}
-		return res, nil
+	// find the handler and execute it
+	if handler := h.router.Handler(msg); handler != nil {
+		// ADR 031 request type routing
+		msgResult, err := handler(ctx, msg)
+		return msgResult, err
 	}
-
-	return nil, sdkerrors.Wrap(sdkerrors.ErrUnknownRequest, "no route")
+	// legacy sdk.Msg routing
+	// Assuming that the app developer has migrated all their Msgs to
+	// proto messages and has registered all `Msg services`, then this
+	// path should never be called, because all those Msgs should be
+	// registered within the `msgServiceRouter` already.
+	return nil, sdkerrors.Wrapf(sdkerrors.ErrUnknownRequest, "can't route message %+v", msg)
 }
 
 // MessageHandlerChain defines a chain of handlers that are called one by one until it can be handled.
