@@ -495,7 +495,7 @@ func getActorAddress(cmd *cobra.Command) (sdk.AccAddress, error) {
 	inBuf := bufio.NewReader(cmd.InOrStdin())
 	keyringBackend, err := cmd.Flags().GetString(flags.FlagKeyringBackend)
 	if err != nil {
-		return nil, err
+		return sdk.AccAddress(""), err
 	}
 
 	homeDir := client.GetClientContextFromCmd(cmd).HomeDir
