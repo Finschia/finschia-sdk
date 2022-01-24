@@ -305,18 +305,6 @@ func TestValidateMigrateContractProposal(t *testing.T) {
 			}),
 			expErr: true,
 		},
-		"run_as missing": {
-			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.RunAs = ""
-			}),
-			expErr: true,
-		},
-		"run_as invalid": {
-			src: MigrateContractProposalFixture(func(p *MigrateContractProposal) {
-				p.RunAs = invalidAddress
-			}),
-			expErr: true,
-		},
 	}
 	for msg, spec := range specs {
 		t.Run(msg, func(t *testing.T) {
@@ -547,7 +535,6 @@ func TestProposalStrings(t *testing.T) {
   Description: Bar
   Contract:    link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
   Code id:     1
-  Run as:      link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
   Msg:         "{\"verifier\":\"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5\"}"
 `,
 		},
@@ -665,7 +652,6 @@ description: Bar
 contract: link1hcttwju93d5m39467gjcq63p5kc4fdcn30dgd8
 code_id: 1
 msg: '{"verifier":"link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5"}'
-run_as: link1qyqszqgpqyqszqgpqyqszqgpqyqszqgp8apuk5
 `,
 		},
 		"update admin": {
@@ -789,7 +775,6 @@ func TestUnmarshalContentFromJson(t *testing.T) {
 			exp: &MigrateContractProposal{
 				Title:       "foo",
 				Description: "bar",
-				RunAs:       "myRunAsAddress",
 				Contract:    "myContractAddr",
 				CodeID:      1,
 				Msg:         []byte("{}"),
