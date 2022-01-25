@@ -443,7 +443,7 @@ func (rs *Store) pruneStores() {
 	}
 
 	// remove pruned heights from rs.pruneHeights
-	// new rs.pruneHeights will be updated by next flushMedataData cycle
+	// new rs.pruneHeights will be updated by next flushMetaData cycle
 	rs.pruneLock.Lock()
 	rph := map[int64]bool{}
 	for _, h := range pruneHeights {
