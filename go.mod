@@ -6,7 +6,7 @@ require (
 	github.com/99designs/keyring v1.1.6
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/VictoriaMetrics/fastcache v1.7.0
-	github.com/armon/go-metrics v0.3.9
+	github.com/armon/go-metrics v0.3.10
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.0-beta
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
@@ -27,31 +27,31 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/line/iavl/v2 v2.0.0-init.1.0.20210602045707-fddfe1f85001
-	github.com/line/ostracon v0.34.9-0.20210930060702-30b70e254d83
-	github.com/line/tm-db/v2 v2.0.0-init.1.0.20210824011847-fcfa67dd3c70
+	github.com/line/iavl/v2 v2.0.0-init.1.0.20211019080724-001e2272a25d
+	github.com/line/ostracon v1.0.2
+	github.com/line/tm-db/v2 v2.0.0-init.1.0.20211202001648-945e88fd2edf
 	github.com/line/wasmvm v0.14.0-0.8.0
 	github.com/magiconair/properties v1.8.5
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.14
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.0
-	github.com/prometheus/common v0.31.1
+	github.com/prometheus/common v0.32.1
 	github.com/rakyll/statik v0.1.7
 	github.com/regen-network/cosmos-proto v0.3.1
-	github.com/rs/zerolog v1.25.0
+	github.com/rs/zerolog v1.26.1
 	github.com/spf13/cast v1.4.1
-	github.com/spf13/cobra v1.1.3
+	github.com/spf13/cobra v1.3.0
 	github.com/spf13/pflag v1.0.5
-	github.com/spf13/viper v1.9.0
+	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.0
 	github.com/syndtr/goleveldb v1.0.1-0.20200815110645-5c35d600f0ca
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
-	golang.org/x/crypto v0.0.0-20210915214749-c084706c2272
-	google.golang.org/genproto v0.0.0-20210917145530-b395a37504d4
-	google.golang.org/grpc v1.41.0
+	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e
+	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa
+	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/yaml.v2 v2.4.0
 )

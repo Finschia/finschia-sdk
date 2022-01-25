@@ -221,6 +221,18 @@ func readTxCommandFlags(clientCtx Context, flagSet *pflag.FlagSet) (Context, err
 		clientCtx = clientCtx.WithSignModeStr(signModeStr)
 	}
 
+	if clientCtx.FeeGranter == "" || flagSet.Changed(flags.FlagFeeAccount) {
+		granter, _ := flagSet.GetString(flags.FlagFeeAccount)
+
+		if granter != "" {
+			err := sdk.ValidateAccAddress(granter)
+			if err != nil {
+				return clientCtx, err
+			}
+			clientCtx = clientCtx.WithFeeGranterAddress(sdk.AccAddress(granter))
+		}
+	}
+
 	if clientCtx.From == "" || flagSet.Changed(flags.FlagFrom) {
 		from, _ := flagSet.GetString(flags.FlagFrom)
 		fromAddr, fromName, keyType, err := GetFromFields(clientCtx.Keyring, from, clientCtx.GenerateOnly)

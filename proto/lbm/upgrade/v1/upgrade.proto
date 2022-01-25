@@ -60,3 +60,15 @@ message CancelSoftwareUpgradeProposal {
   string title       = 1;
   string description = 2;
 }
+
+// ModuleVersion specifies a module and its consensus version.
+message ModuleVersion {
+  option (gogoproto.equal)            = true;
+  option (gogoproto.goproto_stringer) = true;
+
+  // name of the app module
+  string name = 1;
+
+  // consensus version of the app module
+  uint64 version = 2;
+}

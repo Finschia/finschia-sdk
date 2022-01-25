@@ -9,10 +9,10 @@ import (
 
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/store/prefix"
-	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
+	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/line/ostracon/crypto"
@@ -39,6 +39,8 @@ type WasmVMQueryHandler interface {
 type CoinTransferrer interface {
 	// TransferCoins sends the coin amounts from the source to the destination with rules applied.
 	TransferCoins(ctx sdk.Context, fromAddr sdk.AccAddress, toAddr sdk.AccAddress, amt sdk.Coins) error
+	AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress)
+	DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress)
 }
 
 // WasmVMResponseHandler is an extension point to handles the response data returned by a contract call.
@@ -66,6 +68,7 @@ type Keeper struct {
 	wasmVMQueryHandler    WasmVMQueryHandler
 	wasmVMResponseHandler WasmVMResponseHandler
 	messenger             Messenger
+	metrics               *Metrics
 	// queryGasLimit is the max wasmvm gas that can be spent on executing a query with a contract
 	queryGasLimit uint64
 	paramSpace    *paramtypes.Subspace
@@ -115,6 +118,7 @@ func NewKeeper(
 		messenger:        NewDefaultMessageHandler(router, encodeRouter, channelKeeper, capabilityKeeper, bankKeeper, cdc, portSource, customEncoders),
 		queryGasLimit:    wasmConfig.SmartQueryGasLimit,
 		paramSpace:       paramSpace,
+		metrics:          NopMetrics(),
 	}
 
 	keeper.wasmVMQueryHandler = DefaultQueryPlugins(bankKeeper, stakingKeeper, distKeeper, channelKeeper, queryRouter, keeper).Merge(customPlugins)
@@ -233,7 +237,7 @@ func (k Keeper) importCode(ctx sdk.Context, codeID uint64, codeInfo types.CodeIn
 }
 
 func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.AccAddress, initMsg []byte, label string, deposit sdk.Coins, authZ AuthorizationPolicy) (sdk.AccAddress, []byte, error) {
-	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "instantiate")
+	defer func(begin time.Time) { k.metrics.InstantiateElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	if !k.IsPinnedCode(ctx, codeID) {
 		ctx.GasMeter().ConsumeGas(k.getInstanceCost(ctx), "Loading CosmWasm module: instantiate")
 	}
@@ -331,7 +335,7 @@ func (k Keeper) instantiate(ctx sdk.Context, codeID uint64, creator, admin sdk.A
 
 // Execute executes the contract instance
 func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, msg []byte, coins sdk.Coins) (*sdk.Result, error) {
-	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "execute")
+	defer func(begin time.Time) { k.metrics.ExecuteElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
 		return nil, err
@@ -380,7 +384,7 @@ func (k Keeper) execute(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 }
 
 func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller sdk.AccAddress, newCodeID uint64, msg []byte, authZ AuthorizationPolicy) (*sdk.Result, error) {
-	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "migrate")
+	defer func(begin time.Time) { k.metrics.MigrateElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	if !k.IsPinnedCode(ctx, newCodeID) {
 		ctx.GasMeter().ConsumeGas(k.getInstanceCost(ctx), "Loading CosmWasm module: migrate")
 	}
@@ -459,7 +463,7 @@ func (k Keeper) migrate(ctx sdk.Context, contractAddress sdk.AccAddress, caller 
 // another native Go module directly. Thus, the keeper doesn't place any access controls on it, that is the
 // responsibility or the app developer (who passes the wasm.Keeper in app.go)
 func (k Keeper) Sudo(ctx sdk.Context, contractAddress sdk.AccAddress, msg []byte) (*sdk.Result, error) {
-	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "sudo")
+	defer func(begin time.Time) { k.metrics.SudoElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddress)
 	if err != nil {
 		return nil, err
@@ -573,6 +577,13 @@ func (k Keeper) setContractStatus(ctx sdk.Context, contractAddress sdk.AccAddres
 	if contractInfo.Status != status {
 		contractInfo.Status = status
 		k.storeContractInfo(ctx, contractAddress, contractInfo)
+
+		switch status {
+		case types.ContractStatusInactive:
+			k.bank.AddToInactiveAddr(ctx, contractAddress)
+		case types.ContractStatusActive:
+			k.bank.DeleteFromInactiveAddr(ctx, contractAddress)
+		}
 	}
 	return nil
 }
@@ -636,7 +647,7 @@ func (k Keeper) getLastContractHistoryEntry(ctx sdk.Context, contractAddr sdk.Ac
 
 // QuerySmart queries the smart contract itself.
 func (k Keeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []byte) ([]byte, error) {
-	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "query-smart")
+	defer func(begin time.Time) { k.metrics.QuerySmartElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	contractInfo, codeInfo, prefixStore, err := k.contractInstance(ctx, contractAddr)
 	if err != nil {
 		return nil, err
@@ -660,7 +671,7 @@ func (k Keeper) QuerySmart(ctx sdk.Context, contractAddr sdk.AccAddress, req []b
 
 // QueryRaw returns the contract's state for give key. Returns `nil` when key is `nil`.
 func (k Keeper) QueryRaw(ctx sdk.Context, contractAddress sdk.AccAddress, key []byte) []byte {
-	defer telemetry.MeasureSince(time.Now(), "wasm", "contract", "query-raw")
+	defer func(begin time.Time) { k.metrics.QueryRawElapsedTimes.Observe(time.Since(begin).Seconds()) }(time.Now())
 	if key == nil {
 		return nil
 	}
@@ -999,12 +1010,13 @@ func (k Keeper) QueryGasLimit() sdk.Gas {
 // lbm-sdk's x/bank/keeper/msg_server.go Send
 // (https://github.com/line/lbm-sdk/blob/2a5a2d2c885b03e278bcd67546d4f21e74614ead/x/bank/keeper/msg_server.go#L26)
 type BankCoinTransferrer struct {
-	keeper types.BankKeeper
+	keeper bankpluskeeper.Keeper
 }
 
 func NewBankCoinTransferrer(keeper types.BankKeeper) BankCoinTransferrer {
+	bankPlusKeeper := keeper.(bankpluskeeper.Keeper)
 	return BankCoinTransferrer{
-		keeper: keeper,
+		keeper: bankPlusKeeper,
 	}
 }
 
@@ -1014,6 +1026,7 @@ func (c BankCoinTransferrer) TransferCoins(ctx sdk.Context, fromAddr sdk.AccAddr
 	if err := c.keeper.SendEnabledCoins(ctx, amt...); err != nil {
 		return err
 	}
+
 	if c.keeper.BlockedAddr(fromAddr) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidAddress, "blocked address can not be used")
 	}
@@ -1022,6 +1035,14 @@ func (c BankCoinTransferrer) TransferCoins(ctx sdk.Context, fromAddr sdk.AccAddr
 		return sdkerr
 	}
 	return nil
+}
+
+func (c BankCoinTransferrer) AddToInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+	c.keeper.AddToInactiveAddr(ctx, address)
+}
+
+func (c BankCoinTransferrer) DeleteFromInactiveAddr(ctx sdk.Context, address sdk.AccAddress) {
+	c.keeper.DeleteFromInactiveAddr(ctx, address)
 }
 
 type msgDispatcher interface {

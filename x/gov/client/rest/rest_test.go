@@ -1,10 +1,9 @@
-// +build norace
-
 package rest_test
 
 import (
 	"fmt"
 
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/rest"
 	"github.com/line/lbm-sdk/x/gov/types"
 )
@@ -22,7 +21,7 @@ func (s *IntegrationTestSuite) TestLegacyGetAllProposals() {
 		{
 			"get all existing proposals",
 			fmt.Sprintf("%s/gov/proposals", val.APIAddress),
-			2, false, "",
+			3, false, "",
 		},
 		{
 			"get proposals in deposit period",
@@ -32,7 +31,7 @@ func (s *IntegrationTestSuite) TestLegacyGetAllProposals() {
 		{
 			"get proposals in voting period",
 			fmt.Sprintf("%s/gov/proposals?status=voting_period", val.APIAddress),
-			1, false, "",
+			2, false, "",
 		},
 		{
 			"wrong status parameter",
@@ -112,7 +111,7 @@ func (s *IntegrationTestSuite) TestLegacyGetVote() {
 				s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(resp.Result, &vote))
 				s.Require().Equal(val.Address.String(), vote.Voter)
 				// Note that option is now an int.
-				s.Require().Equal(types.VoteOption(1), vote.Option)
+				s.Require().Equal([]types.WeightedVoteOption{{types.VoteOption(1), sdk.NewDec(1)}}, vote.Options)
 			}
 		})
 	}

@@ -234,11 +234,12 @@ func (q GrpcQuerier) Codes(c context.Context, req *types.QueryCodesRequest) (*ty
 				return false, err
 			}
 			r = append(r, types.CodeInfoResponse{
-				CodeID:   binary.BigEndian.Uint64(key),
-				Creator:  c.Creator,
-				DataHash: c.CodeHash,
-				Source:   c.Source,
-				Builder:  c.Builder,
+				CodeID:                binary.BigEndian.Uint64(key),
+				Creator:               c.Creator,
+				DataHash:              c.CodeHash,
+				Source:                c.Source,
+				Builder:               c.Builder,
+				InstantiatePermission: c.InstantiateConfig,
 			})
 		}
 		return true, nil
@@ -272,11 +273,12 @@ func queryCode(ctx sdk.Context, codeID uint64, keeper types.ViewKeeper) (*types.
 		return nil, nil
 	}
 	info := types.CodeInfoResponse{
-		CodeID:   codeID,
-		Creator:  res.Creator,
-		DataHash: res.CodeHash,
-		Source:   res.Source,
-		Builder:  res.Builder,
+		CodeID:                codeID,
+		Creator:               res.Creator,
+		DataHash:              res.CodeHash,
+		Source:                res.Source,
+		Builder:               res.Builder,
+		InstantiatePermission: res.InstantiateConfig,
 	}
 
 	code, err := keeper.GetByteCode(ctx, codeID)

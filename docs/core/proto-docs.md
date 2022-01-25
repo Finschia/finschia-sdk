@@ -296,6 +296,9 @@
   
     - [Msg](#lbm.bank.v1.Msg)
   
+- [lbm/bankplus/v1/bankplus.proto](#lbm/bankplus/v1/bankplus.proto)
+    - [InactiveAddr](#lbm.bankplus.v1.InactiveAddr)
+  
 - [lbm/base/abci/v1/abci.proto](#lbm/base/abci/v1/abci.proto)
     - [ABCIMessageLog](#lbm.base.abci.v1.ABCIMessageLog)
     - [Attribute](#lbm.base.abci.v1.Attribute)
@@ -365,6 +368,29 @@
 - [lbm/capability/v1/genesis.proto](#lbm/capability/v1/genesis.proto)
     - [GenesisOwners](#lbm.capability.v1.GenesisOwners)
     - [GenesisState](#lbm.capability.v1.GenesisState)
+  
+- [lbm/consortium/v1/consortium.proto](#lbm/consortium/v1/consortium.proto)
+    - [Params](#lbm.consortium.v1.Params)
+    - [UpdateConsortiumParamsProposal](#lbm.consortium.v1.UpdateConsortiumParamsProposal)
+    - [UpdateValidatorAuthsProposal](#lbm.consortium.v1.UpdateValidatorAuthsProposal)
+    - [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth)
+  
+- [lbm/consortium/v1/event.proto](#lbm/consortium/v1/event.proto)
+    - [EventUpdateConsortiumParams](#lbm.consortium.v1.EventUpdateConsortiumParams)
+    - [EventUpdateValidatorAuths](#lbm.consortium.v1.EventUpdateValidatorAuths)
+  
+- [lbm/consortium/v1/genesis.proto](#lbm/consortium/v1/genesis.proto)
+    - [GenesisState](#lbm.consortium.v1.GenesisState)
+  
+- [lbm/consortium/v1/query.proto](#lbm/consortium/v1/query.proto)
+    - [QueryParamsRequest](#lbm.consortium.v1.QueryParamsRequest)
+    - [QueryParamsResponse](#lbm.consortium.v1.QueryParamsResponse)
+    - [QueryValidatorAuthRequest](#lbm.consortium.v1.QueryValidatorAuthRequest)
+    - [QueryValidatorAuthResponse](#lbm.consortium.v1.QueryValidatorAuthResponse)
+    - [QueryValidatorAuthsRequest](#lbm.consortium.v1.QueryValidatorAuthsRequest)
+    - [QueryValidatorAuthsResponse](#lbm.consortium.v1.QueryValidatorAuthsResponse)
+  
+    - [Query](#lbm.consortium.v1.Query)
   
 - [lbm/crisis/v1/genesis.proto](#lbm/crisis/v1/genesis.proto)
     - [GenesisState](#lbm.crisis.v1.GenesisState)
@@ -457,6 +483,31 @@
   
     - [Msg](#lbm.evidence.v1.Msg)
   
+- [lbm/feegrant/v1/feegrant.proto](#lbm/feegrant/v1/feegrant.proto)
+    - [AllowedMsgAllowance](#lbm.feegrant.v1.AllowedMsgAllowance)
+    - [BasicAllowance](#lbm.feegrant.v1.BasicAllowance)
+    - [Grant](#lbm.feegrant.v1.Grant)
+    - [PeriodicAllowance](#lbm.feegrant.v1.PeriodicAllowance)
+  
+- [lbm/feegrant/v1/genesis.proto](#lbm/feegrant/v1/genesis.proto)
+    - [GenesisState](#lbm.feegrant.v1.GenesisState)
+  
+- [lbm/feegrant/v1/query.proto](#lbm/feegrant/v1/query.proto)
+    - [QueryAllowanceRequest](#lbm.feegrant.v1.QueryAllowanceRequest)
+    - [QueryAllowanceResponse](#lbm.feegrant.v1.QueryAllowanceResponse)
+    - [QueryAllowancesRequest](#lbm.feegrant.v1.QueryAllowancesRequest)
+    - [QueryAllowancesResponse](#lbm.feegrant.v1.QueryAllowancesResponse)
+  
+    - [Query](#lbm.feegrant.v1.Query)
+  
+- [lbm/feegrant/v1/tx.proto](#lbm/feegrant/v1/tx.proto)
+    - [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance)
+    - [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse)
+    - [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance)
+    - [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse)
+  
+    - [Msg](#lbm.feegrant.v1.Msg)
+  
 - [lbm/genutil/v1/genesis.proto](#lbm/genutil/v1/genesis.proto)
     - [GenesisState](#lbm.genutil.v1.GenesisState)
   
@@ -469,6 +520,7 @@
     - [TextProposal](#lbm.gov.v1.TextProposal)
     - [Vote](#lbm.gov.v1.Vote)
     - [VotingParams](#lbm.gov.v1.VotingParams)
+    - [WeightedVoteOption](#lbm.gov.v1.WeightedVoteOption)
   
     - [ProposalStatus](#lbm.gov.v1.ProposalStatus)
     - [VoteOption](#lbm.gov.v1.VoteOption)
@@ -503,6 +555,8 @@
     - [MsgSubmitProposalResponse](#lbm.gov.v1.MsgSubmitProposalResponse)
     - [MsgVote](#lbm.gov.v1.MsgVote)
     - [MsgVoteResponse](#lbm.gov.v1.MsgVoteResponse)
+    - [MsgVoteWeighted](#lbm.gov.v1.MsgVoteWeighted)
+    - [MsgVoteWeightedResponse](#lbm.gov.v1.MsgVoteWeightedResponse)
   
     - [Msg](#lbm.gov.v1.Msg)
   
@@ -670,6 +724,7 @@
   
 - [lbm/upgrade/v1/upgrade.proto](#lbm/upgrade/v1/upgrade.proto)
     - [CancelSoftwareUpgradeProposal](#lbm.upgrade.v1.CancelSoftwareUpgradeProposal)
+    - [ModuleVersion](#lbm.upgrade.v1.ModuleVersion)
     - [Plan](#lbm.upgrade.v1.Plan)
     - [SoftwareUpgradeProposal](#lbm.upgrade.v1.SoftwareUpgradeProposal)
   
@@ -678,6 +733,8 @@
     - [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse)
     - [QueryCurrentPlanRequest](#lbm.upgrade.v1.QueryCurrentPlanRequest)
     - [QueryCurrentPlanResponse](#lbm.upgrade.v1.QueryCurrentPlanResponse)
+    - [QueryModuleVersionsRequest](#lbm.upgrade.v1.QueryModuleVersionsRequest)
+    - [QueryModuleVersionsResponse](#lbm.upgrade.v1.QueryModuleVersionsResponse)
     - [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1.QueryUpgradedConsensusStateRequest)
     - [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1.QueryUpgradedConsensusStateResponse)
   
@@ -4799,6 +4856,37 @@ Msg defines the bank Msg service.
 
 
 
+<a name="lbm/bankplus/v1/bankplus.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/bankplus/v1/bankplus.proto
+
+
+
+<a name="lbm.bankplus.v1.InactiveAddr"></a>
+
+### InactiveAddr
+InactiveAddr models the blocked address for the bankplus module
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
 <a name="lbm/base/abci/v1/abci.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -5743,6 +5831,283 @@ GenesisState defines the capability module's genesis state.
  <!-- end enums -->
 
  <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/consortium/v1/consortium.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/consortium/v1/consortium.proto
+
+
+
+<a name="lbm.consortium.v1.Params"></a>
+
+### Params
+Params defines the parameters for the consortium module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `enabled` | [bool](#bool) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.UpdateConsortiumParamsProposal"></a>
+
+### UpdateConsortiumParamsProposal
+UpdateConsortiumParamsProposal details a proposal to update params of cosortium module.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.UpdateValidatorAuthsProposal"></a>
+
+### UpdateValidatorAuthsProposal
+UpdateValidatorAuthsProposal details a proposal to update validator auths on consortium.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `title` | [string](#string) |  |  |
+| `description` | [string](#string) |  |  |
+| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.ValidatorAuth"></a>
+
+### ValidatorAuth
+ValidatorAuth defines authorization info of a validator.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `operator_address` | [string](#string) |  |  |
+| `creation_allowed` | [bool](#bool) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/consortium/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/consortium/v1/event.proto
+
+
+
+<a name="lbm.consortium.v1.EventUpdateConsortiumParams"></a>
+
+### EventUpdateConsortiumParams
+EventUpdateConsortiumParams is emitted after updating consortium parameters.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.EventUpdateValidatorAuths"></a>
+
+### EventUpdateValidatorAuths
+EventUpdateValidatorAuths is emitted after updating validator auth info.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/consortium/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/consortium/v1/genesis.proto
+
+
+
+<a name="lbm.consortium.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the consortium module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.consortium.v1.Params) |  | params defines the module parameters at genesis. |
+| `validator_auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated | allowed_validators defines the allowed validator addresses at genesis. provided empty, the module gathers information from staking module. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/consortium/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/consortium/v1/query.proto
+
+
+
+<a name="lbm.consortium.v1.QueryParamsRequest"></a>
+
+### QueryParamsRequest
+QueryParamsRequest is the request type for the Query/Params RPC method.
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryParamsResponse"></a>
+
+### QueryParamsResponse
+QueryParamsResponse is the response type for the Query/Params RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.consortium.v1.Params) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryValidatorAuthRequest"></a>
+
+### QueryValidatorAuthRequest
+QueryValidatorAuthRequest is the request type for the
+Query/ValidatorAuth RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `validator_address` | [string](#string) |  | validator_address defines the validator address to query for. |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryValidatorAuthResponse"></a>
+
+### QueryValidatorAuthResponse
+QueryValidatorAuthResponse is the request type for the
+Query/ValidatorAuth RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auth` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) |  |  |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryValidatorAuthsRequest"></a>
+
+### QueryValidatorAuthsRequest
+QueryValidatorAuthsRequest is the request type for the
+Query/ValidatorAuths RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.consortium.v1.QueryValidatorAuthsResponse"></a>
+
+### QueryValidatorAuthsResponse
+QueryValidatorAuthsResponse is the response type for the
+Query/ValidatorAuths RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `auths` | [ValidatorAuth](#lbm.consortium.v1.ValidatorAuth) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines the pagination in the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.consortium.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service for consortium module.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Params` | [QueryParamsRequest](#lbm.consortium.v1.QueryParamsRequest) | [QueryParamsResponse](#lbm.consortium.v1.QueryParamsResponse) | Params queries the module params. | GET|/lbm/consortium/v1/params|
+| `ValidatorAuth` | [QueryValidatorAuthRequest](#lbm.consortium.v1.QueryValidatorAuthRequest) | [QueryValidatorAuthResponse](#lbm.consortium.v1.QueryValidatorAuthResponse) | ValidatorAuth queries authorization info of a validator. | GET|/lbm/consortium/v1/validators/{validator_address}|
+| `ValidatorAuths` | [QueryValidatorAuthsRequest](#lbm.consortium.v1.QueryValidatorAuthsRequest) | [QueryValidatorAuthsResponse](#lbm.consortium.v1.QueryValidatorAuthsResponse) | ValidatorAuths queries authorization infos of validators. | GET|/lbm/consortium/v1/validators|
 
  <!-- end services -->
 
@@ -6949,6 +7314,294 @@ Msg defines the evidence Msg service.
 
 
 
+<a name="lbm/feegrant/v1/feegrant.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/feegrant.proto
+
+
+
+<a name="lbm.feegrant.v1.AllowedMsgAllowance"></a>
+
+### AllowedMsgAllowance
+AllowedMsgAllowance creates allowance only for specified message types.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+| `allowed_messages` | [string](#string) | repeated | allowed_messages are the messages for which the grantee has the access. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.BasicAllowance"></a>
+
+### BasicAllowance
+BasicAllowance implements Allowance with a one-time grant of tokens
+that optionally expires. The grantee can use up to SpendLimit to cover fees.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | spend_limit specifies the maximum amount of tokens that can be spent by this allowance and will be updated as tokens are spent. If it is empty, there is no spend limit and any amount of coins can be spent. |
+| `expiration` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | expiration specifies an optional time when this allowance expires |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.Grant"></a>
+
+### Grant
+Grant is stored in the KVStore to record a grant with full context
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.PeriodicAllowance"></a>
+
+### PeriodicAllowance
+PeriodicAllowance extends Allowance to allow for both a maximum cap,
+as well as a limit per time period.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `basic` | [BasicAllowance](#lbm.feegrant.v1.BasicAllowance) |  | basic specifies a struct of `BasicAllowance` |
+| `period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | period specifies the time duration in which period_spend_limit coins can be spent before that allowance is reset |
+| `period_spend_limit` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | period_spend_limit specifies the maximum number of coins that can be spent in the period |
+| `period_can_spend` | [lbm.base.v1.Coin](#lbm.base.v1.Coin) | repeated | period_can_spend is the number of coins left to be spent before the period_reset time |
+| `period_reset` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | period_reset is the time at which this period resets and a new one begins, it is calculated from the start time of the first transaction after the last period ended |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/genesis.proto
+
+
+
+<a name="lbm.feegrant.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState contains a set of fee allowances, persisted from the store
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowances` | [Grant](#lbm.feegrant.v1.Grant) | repeated |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/query.proto
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowanceRequest"></a>
+
+### QueryAllowanceRequest
+QueryAllowanceRequest is the request type for the Query/Allowance RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowanceResponse"></a>
+
+### QueryAllowanceResponse
+QueryAllowanceResponse is the response type for the Query/Allowance RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowance` | [Grant](#lbm.feegrant.v1.Grant) |  | allowance is a allowance granted for grantee by granter. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowancesRequest"></a>
+
+### QueryAllowancesRequest
+QueryAllowancesRequest is the request type for the Query/Allowances RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.QueryAllowancesResponse"></a>
+
+### QueryAllowancesResponse
+QueryAllowancesResponse is the response type for the Query/Allowances RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `allowances` | [Grant](#lbm.feegrant.v1.Grant) | repeated | allowances are allowance's granted for grantee by granter. |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  | pagination defines an pagination for the response. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.feegrant.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Allowance` | [QueryAllowanceRequest](#lbm.feegrant.v1.QueryAllowanceRequest) | [QueryAllowanceResponse](#lbm.feegrant.v1.QueryAllowanceResponse) | Allowance returns fee granted to the grantee by the granter. | GET|/lbm/feegrant/v1/allowance/{granter}/{grantee}|
+| `Allowances` | [QueryAllowancesRequest](#lbm.feegrant.v1.QueryAllowancesRequest) | [QueryAllowancesResponse](#lbm.feegrant.v1.QueryAllowancesResponse) | Allowances returns all the grants for address. | GET|/lbm/feegrant/v1/allowances/{grantee}|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/feegrant/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/feegrant/v1/tx.proto
+
+
+
+<a name="lbm.feegrant.v1.MsgGrantAllowance"></a>
+
+### MsgGrantAllowance
+MsgGrantAllowance adds permission for Grantee to spend up to Allowance
+of fees from the account of Granter.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+| `allowance` | [google.protobuf.Any](#google.protobuf.Any) |  | allowance can be any of basic and filtered fee allowance. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgGrantAllowanceResponse"></a>
+
+### MsgGrantAllowanceResponse
+MsgGrantAllowanceResponse defines the Msg/GrantAllowanceResponse response type.
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgRevokeAllowance"></a>
+
+### MsgRevokeAllowance
+MsgRevokeAllowance removes any existing Allowance from Granter to Grantee.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `granter` | [string](#string) |  | granter is the address of the user granting an allowance of their funds. |
+| `grantee` | [string](#string) |  | grantee is the address of the user being granted an allowance of another user's funds. |
+
+
+
+
+
+
+<a name="lbm.feegrant.v1.MsgRevokeAllowanceResponse"></a>
+
+### MsgRevokeAllowanceResponse
+MsgRevokeAllowanceResponse defines the Msg/RevokeAllowanceResponse response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.feegrant.v1.Msg"></a>
+
+### Msg
+Msg defines the feegrant msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `GrantAllowance` | [MsgGrantAllowance](#lbm.feegrant.v1.MsgGrantAllowance) | [MsgGrantAllowanceResponse](#lbm.feegrant.v1.MsgGrantAllowanceResponse) | GrantAllowance grants fee allowance to the grantee on the granter's account with the provided expiration time. | |
+| `RevokeAllowance` | [MsgRevokeAllowance](#lbm.feegrant.v1.MsgRevokeAllowance) | [MsgRevokeAllowanceResponse](#lbm.feegrant.v1.MsgRevokeAllowanceResponse) | RevokeAllowance revokes any fee allowance of granter's account that has been granted to the grantee. | |
+
+ <!-- end services -->
+
+
+
 <a name="lbm/genutil/v1/genesis.proto"></a>
 <p align="right"><a href="#top">Top</a></p>
 
@@ -7107,7 +7760,8 @@ A Vote consists of a proposal ID, the voter, and the vote option.
 | ----- | ---- | ----- | ----------- |
 | `proposal_id` | [uint64](#uint64) |  |  |
 | `voter` | [string](#string) |  |  |
-| `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  |  |
+| `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  | **Deprecated.** Deprecated: Prefer to use `options` instead. This field is set in queries if and only if `len(options) == 1` and that option has weight 1. In all other cases, this field will default to VOTE_OPTION_UNSPECIFIED. |
+| `options` | [WeightedVoteOption](#lbm.gov.v1.WeightedVoteOption) | repeated |  |
 
 
 
@@ -7123,6 +7777,22 @@ VotingParams defines the params for voting on governance proposals.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `voting_period` | [google.protobuf.Duration](#google.protobuf.Duration) |  | Length of the voting period. |
+
+
+
+
+
+
+<a name="lbm.gov.v1.WeightedVoteOption"></a>
+
+### WeightedVoteOption
+WeightedVoteOption defines a unit of vote for vote split.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `option` | [VoteOption](#lbm.gov.v1.VoteOption) |  |  |
+| `weight` | [string](#string) |  |  |
 
 
 
@@ -7585,6 +8255,33 @@ MsgVoteResponse defines the Msg/Vote response type.
 
 
 
+
+<a name="lbm.gov.v1.MsgVoteWeighted"></a>
+
+### MsgVoteWeighted
+MsgVoteWeighted defines a message to cast a vote.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `proposal_id` | [uint64](#uint64) |  |  |
+| `voter` | [string](#string) |  |  |
+| `options` | [WeightedVoteOption](#lbm.gov.v1.WeightedVoteOption) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.gov.v1.MsgVoteWeightedResponse"></a>
+
+### MsgVoteWeightedResponse
+MsgVoteWeightedResponse defines the Msg/VoteWeighted response type.
+
+
+
+
+
  <!-- end messages -->
 
  <!-- end enums -->
@@ -7601,6 +8298,7 @@ Msg defines the bank Msg service.
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
 | `SubmitProposal` | [MsgSubmitProposal](#lbm.gov.v1.MsgSubmitProposal) | [MsgSubmitProposalResponse](#lbm.gov.v1.MsgSubmitProposalResponse) | SubmitProposal defines a method to create new proposal given a content. | |
 | `Vote` | [MsgVote](#lbm.gov.v1.MsgVote) | [MsgVoteResponse](#lbm.gov.v1.MsgVoteResponse) | Vote defines a method to add a vote on a specific proposal. | |
+| `VoteWeighted` | [MsgVoteWeighted](#lbm.gov.v1.MsgVoteWeighted) | [MsgVoteWeightedResponse](#lbm.gov.v1.MsgVoteWeightedResponse) | VoteWeighted defines a method to add a weighted vote on a specific proposal. | |
 | `Deposit` | [MsgDeposit](#lbm.gov.v1.MsgDeposit) | [MsgDepositResponse](#lbm.gov.v1.MsgDepositResponse) | Deposit defines a method to add deposit on a specific proposal. | |
 
  <!-- end services -->
@@ -7941,11 +8639,10 @@ liveness activity.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `address` | [string](#string) |  |  |
-| `start_height` | [int64](#int64) |  | height at which validator was first a candidate OR was unjailed |
-| `index_offset` | [int64](#int64) |  | index offset into signed block bit array |
 | `jailed_until` | [google.protobuf.Timestamp](#google.protobuf.Timestamp) |  | timestamp validator cannot be unjailed until |
 | `tombstoned` | [bool](#bool) |  | whether or not a validator has been tombstoned (killed out of validator set) |
 | `missed_blocks_counter` | [int64](#int64) |  | missed blocks counter (to avoid scanning the array every time) |
+| `voter_set_counter` | [int64](#int64) |  | how many times the validator joined to voter set |
 
 
 
@@ -9847,6 +10544,22 @@ upgrade.
 
 
 
+<a name="lbm.upgrade.v1.ModuleVersion"></a>
+
+### ModuleVersion
+ModuleVersion specifies a module and its consensus version.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `name` | [string](#string) |  | name of the app module |
+| `version` | [uint64](#uint64) |  | consensus version of the app module |
+
+
+
+
+
+
 <a name="lbm.upgrade.v1.Plan"></a>
 
 ### Plan
@@ -9959,6 +10672,38 @@ method.
 
 
 
+<a name="lbm.upgrade.v1.QueryModuleVersionsRequest"></a>
+
+### QueryModuleVersionsRequest
+QueryModuleVersionsRequest is the request type for the Query/ModuleVersions
+RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `module_name` | [string](#string) |  | module_name is a field to query a specific module consensus version from state. Leaving this empty will fetch the full list of module versions from state |
+
+
+
+
+
+
+<a name="lbm.upgrade.v1.QueryModuleVersionsResponse"></a>
+
+### QueryModuleVersionsResponse
+QueryModuleVersionsResponse is the response type for the Query/ModuleVersions
+RPC method.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `module_versions` | [ModuleVersion](#lbm.upgrade.v1.ModuleVersion) | repeated | module_versions is a list of module names with their consensus versions. |
+
+
+
+
+
+
 <a name="lbm.upgrade.v1.QueryUpgradedConsensusStateRequest"></a>
 
 ### QueryUpgradedConsensusStateRequest
@@ -10007,6 +10752,7 @@ Query defines the gRPC upgrade querier service.
 | `CurrentPlan` | [QueryCurrentPlanRequest](#lbm.upgrade.v1.QueryCurrentPlanRequest) | [QueryCurrentPlanResponse](#lbm.upgrade.v1.QueryCurrentPlanResponse) | CurrentPlan queries the current upgrade plan. | GET|/lbm/upgrade/v1/current_plan|
 | `AppliedPlan` | [QueryAppliedPlanRequest](#lbm.upgrade.v1.QueryAppliedPlanRequest) | [QueryAppliedPlanResponse](#lbm.upgrade.v1.QueryAppliedPlanResponse) | AppliedPlan queries a previously applied upgrade plan by its name. | GET|/lbm/upgrade/v1/applied_plan/{name}|
 | `UpgradedConsensusState` | [QueryUpgradedConsensusStateRequest](#lbm.upgrade.v1.QueryUpgradedConsensusStateRequest) | [QueryUpgradedConsensusStateResponse](#lbm.upgrade.v1.QueryUpgradedConsensusStateResponse) | UpgradedConsensusState queries the consensus state that will serve as a trusted kernel for the next version of this chain. It will only be stored at the last height of this chain. UpgradedConsensusState RPC not supported with legacy querier | GET|/lbm/upgrade/v1/upgraded_consensus_state/{last_height}|
+| `ModuleVersions` | [QueryModuleVersionsRequest](#lbm.upgrade.v1.QueryModuleVersionsRequest) | [QueryModuleVersionsResponse](#lbm.upgrade.v1.QueryModuleVersionsResponse) | ModuleVersions queries the list of module versions from state. | GET|/lbm/upgrade/v1/module_versions|
 
  <!-- end services -->
 
@@ -11002,6 +11748,7 @@ CodeInfoResponse contains code meta data from CodeInfo
 | `data_hash` | [bytes](#bytes) |  |  |
 | `source` | [string](#string) |  |  |
 | `builder` | [string](#string) |  |  |
+| `instantiate_permission` | [AccessConfig](#lbm.wasm.v1.AccessConfig) |  |  |
 
 
 
