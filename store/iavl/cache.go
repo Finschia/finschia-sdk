@@ -64,11 +64,7 @@ func (c *ristrettoCache) Has(key []byte) bool {
 
 func (c *ristrettoCache) Stats() (hits, misses, entries, bytes uint64) {
 	m := c.Cache.Metrics
-	hits = m.Hits()
-	misses = m.Misses()
-	entries = m.KeysAdded() - m.KeysEvicted()
-	bytes = m.CostAdded() - m.CostEvicted()
-	return
+	return m.Hits(), m.Misses(), m.KeysAdded() - m.KeysEvicted(), m.CostAdded() - m.CostEvicted()
 }
 
 type freeCache struct {
@@ -103,6 +99,5 @@ func (c *freeCache) Del(key []byte) {
 }
 
 func (c *freeCache) Stats() (hits, misses, entries, bytes uint64) {
-	hits, misses, entries = uint64(c.HitCount()), uint64(c.MissCount()), uint64(c.EntryCount())
-	return
+	return uint64(c.HitCount()), uint64(c.MissCount()), uint64(c.EntryCount()), 0
 }
