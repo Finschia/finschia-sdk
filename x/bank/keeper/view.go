@@ -134,7 +134,7 @@ func (k BaseViewKeeper) Prefetch(ctx sdk.Context, tx sdk.Tx) {
 				addr := sdk.AccAddress(a)
 				k.ak.Prefetch(ctx, addr, isReceiver)
 				accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
-				for denom, _ := range denoms {
+				for denom := range denoms {
 					accountStore.Prefetch([]byte(denom), isReceiver)
 				}
 			}
@@ -158,7 +158,7 @@ func (k BaseViewKeeper) Prefetch(ctx sdk.Context, tx sdk.Tx) {
 				addr := sdk.AccAddress(a)
 				k.ak.Prefetch(ctx, addr, isReceiver)
 				accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(addr))
-				for denom, _ := range denoms {
+				for denom := range denoms {
 					accountStore.Prefetch([]byte(denom), isReceiver)
 				}
 			}
