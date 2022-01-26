@@ -122,10 +122,10 @@ func (cms Store) Write() {
 						panicMsg = msg
 					}
 				}
+				wg.Done()
 			}()
 
 			s.Write()
-			wg.Done()
 		}(store)
 	}
 	wg.Wait()
