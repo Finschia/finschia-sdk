@@ -4,13 +4,14 @@ import (
 	"github.com/VictoriaMetrics/fastcache"
 	"github.com/coocood/freecache"
 	"github.com/dgraph-io/ristretto"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 type fastCache struct {
 	*fastcache.Cache
 }
 
-func newFastCache(cacheSize int) *fastCache {
+func NewFastCache(cacheSize int) types.Cache {
 	return &fastCache{
 		Cache: fastcache.New(cacheSize),
 	}
@@ -26,7 +27,7 @@ type ristrettoCache struct {
 	*ristretto.Cache
 }
 
-func newRistrettoCache(cacheSize int) *ristrettoCache {
+func NewRistrettoCache(cacheSize int) types.Cache {
 	cache, err := ristretto.NewCache(&ristretto.Config{
 		NumCounters: int64(cacheSize) * 10,
 		MaxCost:     int64(cacheSize),
@@ -71,7 +72,7 @@ type freeCache struct {
 	*freecache.Cache
 }
 
-func newFreeCache(cacheSize int) *freeCache {
+func NewFreeCache(cacheSize int) types.Cache {
 	return &freeCache{
 		Cache: freecache.NewCache(cacheSize),
 	}
