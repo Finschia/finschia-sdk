@@ -133,11 +133,12 @@ func queryCodeList(ctx sdk.Context, keeper types.ViewKeeper) ([]types.CodeInfoRe
 	var info []types.CodeInfoResponse
 	keeper.IterateCodeInfos(ctx, func(i uint64, res types.CodeInfo) bool {
 		info = append(info, types.CodeInfoResponse{
-			CodeID:   i,
-			Creator:  res.Creator,
-			DataHash: res.CodeHash,
-			Source:   res.Source,
-			Builder:  res.Builder,
+			CodeID:                i,
+			Creator:               res.Creator,
+			DataHash:              res.CodeHash,
+			Source:                res.Source,
+			Builder:               res.Builder,
+			InstantiatePermission: res.InstantiateConfig,
 		})
 		return false
 	})

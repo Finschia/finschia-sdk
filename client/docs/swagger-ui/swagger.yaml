@@ -13490,23 +13490,23 @@ paths:
                         type: object
                         properties:
                           option:
-                      type: string
-                      enum:
-                        - VOTE_OPTION_UNSPECIFIED
-                        - VOTE_OPTION_YES
-                        - VOTE_OPTION_ABSTAIN
-                        - VOTE_OPTION_NO
-                        - VOTE_OPTION_NO_WITH_VETO
-                      default: VOTE_OPTION_UNSPECIFIED
-                      description: >-
+                            type: string
+                            enum:
+                              - VOTE_OPTION_UNSPECIFIED
+                              - VOTE_OPTION_YES
+                              - VOTE_OPTION_ABSTAIN
+                              - VOTE_OPTION_NO
+                              - VOTE_OPTION_NO_WITH_VETO
+                            default: VOTE_OPTION_UNSPECIFIED
+                            description: >-
                               VoteOption enumerates the valid vote options for a
                               given governance proposal.
 
-                         - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-                         - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-                         - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-                         - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-                         - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                               - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                               - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                               - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                               - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                               - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
                           weight:
                             type: string
                         description: >-
@@ -13826,23 +13826,23 @@ paths:
                       type: object
                       properties:
                         option:
-                    type: string
-                    enum:
-                      - VOTE_OPTION_UNSPECIFIED
-                      - VOTE_OPTION_YES
-                      - VOTE_OPTION_ABSTAIN
-                      - VOTE_OPTION_NO
-                      - VOTE_OPTION_NO_WITH_VETO
-                    default: VOTE_OPTION_UNSPECIFIED
-                    description: >-
+                          type: string
+                          enum:
+                            - VOTE_OPTION_UNSPECIFIED
+                            - VOTE_OPTION_YES
+                            - VOTE_OPTION_ABSTAIN
+                            - VOTE_OPTION_NO
+                            - VOTE_OPTION_NO_WITH_VETO
+                          default: VOTE_OPTION_UNSPECIFIED
+                          description: >-
                             VoteOption enumerates the valid vote options for a
                             given governance proposal.
 
-                       - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-                       - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-                       - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-                       - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-                       - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                             - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                             - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                             - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                             - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                             - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
                         weight:
                           type: string
                       description: >-
@@ -31011,6 +31011,27 @@ paths:
                       type: string
                     builder:
                       type: string
+                    instantiate_permission:
+                      type: object
+                      properties:
+                        permission:
+                          type: string
+                          enum:
+                            - ACCESS_TYPE_UNSPECIFIED
+                            - ACCESS_TYPE_NOBODY
+                            - ACCESS_TYPE_ONLY_ADDRESS
+                            - ACCESS_TYPE_EVERYBODY
+                          default: ACCESS_TYPE_UNSPECIFIED
+                          description: >-
+                            - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
+                            placeholder for empty value
+                             - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                             - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                             - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                          title: AccessType permission types
+                        address:
+                          type: string
+                      description: AccessConfig access control type.
                   title: CodeInfoResponse contains code meta data from CodeInfo
               pagination:
                 description: pagination defines the pagination in the response.
@@ -31297,6 +31318,27 @@ paths:
                     type: string
                   builder:
                     type: string
+                  instantiate_permission:
+                    type: object
+                    properties:
+                      permission:
+                        type: string
+                        enum:
+                          - ACCESS_TYPE_UNSPECIFIED
+                          - ACCESS_TYPE_NOBODY
+                          - ACCESS_TYPE_ONLY_ADDRESS
+                          - ACCESS_TYPE_EVERYBODY
+                        default: ACCESS_TYPE_UNSPECIFIED
+                        description: >-
+                          - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified
+                          placeholder for empty value
+                           - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                           - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                        title: AccessType permission types
+                      address:
+                        type: string
+                    description: AccessConfig access control type.
                 title: CodeInfoResponse contains code meta data from CodeInfo
               data:
                 type: string
@@ -33277,6 +33319,216 @@ paths:
           required: false
           type: boolean
           format: boolean
+      tags:
+        - Query
+  /lbm/consortium/v1/params:
+    get:
+      summary: Params queries the module params.
+      operationId: ConsortiumParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                type: object
+                properties:
+                  enabled:
+                    type: boolean
+                    format: boolean
+                description: Params defines the parameters for the consortium module.
+            description: >-
+              QueryParamsResponse is the response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      tags:
+        - Query
+  /lbm/consortium/v1/validators:
+    get:
+      summary: ValidatorAuths queries authorization infos of validators.
+      operationId: ValidatorAuths
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              auths:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    operator_address:
+                      type: string
+                    creation_allowed:
+                      type: boolean
+                      format: boolean
+                  description: ValidatorAuth defines authorization info of a validator.
+              pagination:
+                description: pagination defines the pagination in the response.
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+            description: |-
+              QueryValidatorAuthsResponse is the response type for the
+              Query/ValidatorAuths RPC method.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  '/lbm/consortium/v1/validators/{validator_address}':
+    get:
+      summary: ValidatorAuth queries authorization info of a validator.
+      operationId: ValidatorAuth
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              auth:
+                type: object
+                properties:
+                  operator_address:
+                    type: string
+                  creation_allowed:
+                    type: boolean
+                    format: boolean
+                description: ValidatorAuth defines authorization info of a validator.
+            description: |-
+              QueryValidatorAuthResponse is the request type for the
+              Query/ValidatorAuth RPC method.
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: validator_address
+          description: validator_address defines the validator address to query for.
+          in: path
+          required: true
+          type: string
       tags:
         - Query
 securityDefinitions:
@@ -42571,23 +42823,23 @@ definitions:
               type: object
               properties:
                 option:
-            type: string
-            enum:
-              - VOTE_OPTION_UNSPECIFIED
-              - VOTE_OPTION_YES
-              - VOTE_OPTION_ABSTAIN
-              - VOTE_OPTION_NO
-              - VOTE_OPTION_NO_WITH_VETO
-            default: VOTE_OPTION_UNSPECIFIED
-            description: >-
-              VoteOption enumerates the valid vote options for a given
-              governance proposal.
+                  type: string
+                  enum:
+                    - VOTE_OPTION_UNSPECIFIED
+                    - VOTE_OPTION_YES
+                    - VOTE_OPTION_ABSTAIN
+                    - VOTE_OPTION_NO
+                    - VOTE_OPTION_NO_WITH_VETO
+                  default: VOTE_OPTION_UNSPECIFIED
+                  description: >-
+                    VoteOption enumerates the valid vote options for a given
+                    governance proposal.
 
-               - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-               - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-               - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-               - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-               - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                     - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                     - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                     - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                     - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                     - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
                 weight:
                   type: string
               description: WeightedVoteOption defines a unit of vote for vote split.
@@ -42631,23 +42883,23 @@ definitions:
                 type: object
                 properties:
                   option:
-              type: string
-              enum:
-                - VOTE_OPTION_UNSPECIFIED
-                - VOTE_OPTION_YES
-                - VOTE_OPTION_ABSTAIN
-                - VOTE_OPTION_NO
-                - VOTE_OPTION_NO_WITH_VETO
-              default: VOTE_OPTION_UNSPECIFIED
-              description: >-
-                VoteOption enumerates the valid vote options for a given
-                governance proposal.
+                    type: string
+                    enum:
+                      - VOTE_OPTION_UNSPECIFIED
+                      - VOTE_OPTION_YES
+                      - VOTE_OPTION_ABSTAIN
+                      - VOTE_OPTION_NO
+                      - VOTE_OPTION_NO_WITH_VETO
+                    default: VOTE_OPTION_UNSPECIFIED
+                    description: >-
+                      VoteOption enumerates the valid vote options for a given
+                      governance proposal.
 
-                 - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-                 - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-                 - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-                 - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-                 - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                       - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                       - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                       - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                       - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                       - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
                   weight:
                     type: string
                 description: WeightedVoteOption defines a unit of vote for vote split.
@@ -42739,23 +42991,23 @@ definitions:
           type: object
           properties:
             option:
-        type: string
-        enum:
-          - VOTE_OPTION_UNSPECIFIED
-          - VOTE_OPTION_YES
-          - VOTE_OPTION_ABSTAIN
-          - VOTE_OPTION_NO
-          - VOTE_OPTION_NO_WITH_VETO
-        default: VOTE_OPTION_UNSPECIFIED
-        description: >-
+              type: string
+              enum:
+                - VOTE_OPTION_UNSPECIFIED
+                - VOTE_OPTION_YES
+                - VOTE_OPTION_ABSTAIN
+                - VOTE_OPTION_NO
+                - VOTE_OPTION_NO_WITH_VETO
+              default: VOTE_OPTION_UNSPECIFIED
+              description: >-
                 VoteOption enumerates the valid vote options for a given
                 governance proposal.
 
-           - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
-           - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
-           - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
-           - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
-           - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
+                 - VOTE_OPTION_UNSPECIFIED: VOTE_OPTION_UNSPECIFIED defines a no-op vote option.
+                 - VOTE_OPTION_YES: VOTE_OPTION_YES defines a yes vote option.
+                 - VOTE_OPTION_ABSTAIN: VOTE_OPTION_ABSTAIN defines an abstain vote option.
+                 - VOTE_OPTION_NO: VOTE_OPTION_NO defines a no vote option.
+                 - VOTE_OPTION_NO_WITH_VETO: VOTE_OPTION_NO_WITH_VETO defines a no with veto vote option.
             weight:
               type: string
           description: WeightedVoteOption defines a unit of vote for vote split.
@@ -43591,8 +43843,8 @@ definitions:
 
             multiplied by exchange rate.
     description: >-
-      HistoricalInfo contains header and validator information for a given
-      block.
+      HistoricalInfo contains header and validator, voter information for a
+      given block.
 
       It is stored as part of staking module's state, which persists the `n`
       most
@@ -46866,6 +47118,15 @@ definitions:
               appropriate fee grant does not exist or the chain does
 
               not support fee grants, this will fail
+      sig_block_height:
+        type: string
+        format: uint64
+        description: >-
+          sig block height is available between current block height and current
+          block height - `VALID_SIG_BLOCK_PERIOD`
+
+          this is used for distinguish signatures instead of account number.
+          this is mandatory.
     description: |-
       AuthInfo describes the fee and signer modes that are used to sign a
       transaction.
@@ -48368,15 +48629,6 @@ definitions:
               whole
 
               transaction.
-          sig_block_height:
-            type: string
-            format: uint64
-            description: >-
-              sig block height is available between current block height and
-              current block height - `VALID_SIG_BLOCK_PERIOD`
-
-              this is used for distinguish signatures instead of account number.
-              this is mandatory.
           memo:
             type: string
             title: memo is any arbitrary memo to be added to the transaction
@@ -48947,15 +49199,6 @@ definitions:
           is referred to as the primary signer and pays the fee for the whole
 
           transaction.
-      sig_block_height:
-        type: string
-        format: uint64
-        description: >-
-          sig block height is available between current block height and current
-          block height - `VALID_SIG_BLOCK_PERIOD`
-
-          this is used for distinguish signatures instead of account number.
-          this is mandatory.
       memo:
         type: string
         title: memo is any arbitrary memo to be added to the transaction
@@ -53724,7 +53967,7 @@ definitions:
 
               chain.
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
-  cosmwasm.wasm.v1.AbsoluteTxPosition:
+  lbm.wasm.v1.AbsoluteTxPosition:
     type: object
     properties:
       block_height:
@@ -53742,7 +53985,43 @@ definitions:
     description: |-
       AbsoluteTxPosition is a unique transaction position that allows for global
       ordering of transactions.
-  cosmwasm.wasm.v1.CodeInfoResponse:
+  lbm.wasm.v1.AccessConfig:
+    type: object
+    properties:
+      permission:
+        type: string
+        enum:
+          - ACCESS_TYPE_UNSPECIFIED
+          - ACCESS_TYPE_NOBODY
+          - ACCESS_TYPE_ONLY_ADDRESS
+          - ACCESS_TYPE_EVERYBODY
+        default: ACCESS_TYPE_UNSPECIFIED
+        description: >-
+          - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
+          value
+           - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+           - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+           - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+        title: AccessType permission types
+      address:
+        type: string
+    description: AccessConfig access control type.
+  lbm.wasm.v1.AccessType:
+    type: string
+    enum:
+      - ACCESS_TYPE_UNSPECIFIED
+      - ACCESS_TYPE_NOBODY
+      - ACCESS_TYPE_ONLY_ADDRESS
+      - ACCESS_TYPE_EVERYBODY
+    default: ACCESS_TYPE_UNSPECIFIED
+    description: >-
+      - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for empty
+      value
+       - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+       - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+       - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+    title: AccessType permission types
+  lbm.wasm.v1.CodeInfoResponse:
     type: object
     properties:
       code_id:
@@ -53757,8 +54036,29 @@ definitions:
         type: string
       builder:
         type: string
+      instantiate_permission:
+        type: object
+        properties:
+          permission:
+            type: string
+            enum:
+              - ACCESS_TYPE_UNSPECIFIED
+              - ACCESS_TYPE_NOBODY
+              - ACCESS_TYPE_ONLY_ADDRESS
+              - ACCESS_TYPE_EVERYBODY
+            default: ACCESS_TYPE_UNSPECIFIED
+            description: >-
+              - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder for
+              empty value
+               - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+               - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+               - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+            title: AccessType permission types
+          address:
+            type: string
+        description: AccessConfig access control type.
     title: CodeInfoResponse contains code meta data from CodeInfo
-  cosmwasm.wasm.v1.ContractCodeHistoryEntry:
+  lbm.wasm.v1.ContractCodeHistoryEntry:
     type: object
     properties:
       operation:
@@ -53801,7 +54101,7 @@ definitions:
         type: string
         format: byte
     description: ContractCodeHistoryEntry metadata to a contract.
-  cosmwasm.wasm.v1.ContractCodeHistoryOperationType:
+  lbm.wasm.v1.ContractCodeHistoryOperationType:
     type: string
     enum:
       - CONTRACT_CODE_HISTORY_OPERATION_TYPE_UNSPECIFIED
@@ -53816,7 +54116,7 @@ definitions:
        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_MIGRATE: ContractCodeHistoryOperationTypeMigrate code migration
        - CONTRACT_CODE_HISTORY_OPERATION_TYPE_GENESIS: ContractCodeHistoryOperationTypeGenesis based on genesis data
     title: ContractCodeHistoryOperationType actions that caused a code change
-  cosmwasm.wasm.v1.ContractInfo:
+  lbm.wasm.v1.ContractInfo:
     type: object
     properties:
       code_id:
@@ -54033,7 +54333,7 @@ definitions:
                 "value": "1.212s"
               }
     title: ContractInfo stores a WASM contract instance
-  cosmwasm.wasm.v1.ContractStatus:
+  lbm.wasm.v1.ContractStatus:
     type: string
     enum:
       - CONTRACT_STATUS_UNSPECIFIED
@@ -54045,7 +54345,7 @@ definitions:
        - CONTRACT_STATUS_ACTIVE: ContractStatus active
        - CONTRACT_STATUS_INACTIVE: ContractStatus inactive
     title: ContractStatus types
-  cosmwasm.wasm.v1.Model:
+  lbm.wasm.v1.Model:
     type: object
     properties:
       key:
@@ -54057,7 +54357,7 @@ definitions:
         format: byte
         title: base64-encode raw value
     title: Model is a struct that holds a KV pair
-  cosmwasm.wasm.v1.QueryAllContractStateResponse:
+  lbm.wasm.v1.QueryAllContractStateResponse:
     type: object
     properties:
       models:
@@ -54095,7 +54395,7 @@ definitions:
     title: |-
       QueryAllContractStateResponse is the response type for the
       Query/AllContractState RPC method
-  cosmwasm.wasm.v1.QueryCodeResponse:
+  lbm.wasm.v1.QueryCodeResponse:
     type: object
     properties:
       code_info:
@@ -54113,12 +54413,33 @@ definitions:
             type: string
           builder:
             type: string
+          instantiate_permission:
+            type: object
+            properties:
+              permission:
+                type: string
+                enum:
+                  - ACCESS_TYPE_UNSPECIFIED
+                  - ACCESS_TYPE_NOBODY
+                  - ACCESS_TYPE_ONLY_ADDRESS
+                  - ACCESS_TYPE_EVERYBODY
+                default: ACCESS_TYPE_UNSPECIFIED
+                description: >-
+                  - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
+                  for empty value
+                   - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                   - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                   - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                title: AccessType permission types
+              address:
+                type: string
+            description: AccessConfig access control type.
         title: CodeInfoResponse contains code meta data from CodeInfo
       data:
         type: string
         format: byte
     title: QueryCodeResponse is the response type for the Query/Code RPC method
-  cosmwasm.wasm.v1.QueryCodesResponse:
+  lbm.wasm.v1.QueryCodesResponse:
     type: object
     properties:
       code_infos:
@@ -54138,6 +54459,27 @@ definitions:
               type: string
             builder:
               type: string
+            instantiate_permission:
+              type: object
+              properties:
+                permission:
+                  type: string
+                  enum:
+                    - ACCESS_TYPE_UNSPECIFIED
+                    - ACCESS_TYPE_NOBODY
+                    - ACCESS_TYPE_ONLY_ADDRESS
+                    - ACCESS_TYPE_EVERYBODY
+                  default: ACCESS_TYPE_UNSPECIFIED
+                  description: >-
+                    - ACCESS_TYPE_UNSPECIFIED: AccessTypeUnspecified placeholder
+                    for empty value
+                     - ACCESS_TYPE_NOBODY: AccessTypeNobody forbidden
+                     - ACCESS_TYPE_ONLY_ADDRESS: AccessTypeOnlyAddress restricted to an address
+                     - ACCESS_TYPE_EVERYBODY: AccessTypeEverybody unrestricted
+                  title: AccessType permission types
+                address:
+                  type: string
+              description: AccessConfig access control type.
           title: CodeInfoResponse contains code meta data from CodeInfo
       pagination:
         description: pagination defines the pagination in the response.
@@ -54158,7 +54500,7 @@ definitions:
 
               was set, its value is undefined otherwise
     title: QueryCodesResponse is the response type for the Query/Codes RPC method
-  cosmwasm.wasm.v1.QueryContractHistoryResponse:
+  lbm.wasm.v1.QueryContractHistoryResponse:
     type: object
     properties:
       entries:
@@ -54229,7 +54571,7 @@ definitions:
     title: >-
       QueryContractHistoryResponse is the response type for the
       Query/ContractHistory RPC method
-  cosmwasm.wasm.v1.QueryContractInfoResponse:
+  lbm.wasm.v1.QueryContractInfoResponse:
     type: object
     properties:
       address:
@@ -54461,7 +54803,7 @@ definitions:
     title: >-
       QueryContractInfoResponse is the response type for the Query/ContractInfo
       RPC method
-  cosmwasm.wasm.v1.QueryContractsByCodeResponse:
+  lbm.wasm.v1.QueryContractsByCodeResponse:
     type: object
     properties:
       contracts:
@@ -54490,7 +54832,7 @@ definitions:
     title: |-
       QueryContractsByCodeResponse is the response type for the
       Query/ContractsByCode RPC method
-  cosmwasm.wasm.v1.QueryRawContractStateResponse:
+  lbm.wasm.v1.QueryRawContractStateResponse:
     type: object
     properties:
       data:
@@ -54500,7 +54842,7 @@ definitions:
     title: |-
       QueryRawContractStateResponse is the response type for the
       Query/RawContractState RPC method
-  cosmwasm.wasm.v1.QuerySmartContractStateResponse:
+  lbm.wasm.v1.QuerySmartContractStateResponse:
     type: object
     properties:
       data:
@@ -54510,3 +54852,80 @@ definitions:
     title: |-
       QuerySmartContractStateResponse is the response type for the
       Query/SmartContractState RPC method
+  lbm.consortium.v1.Params:
+    type: object
+    properties:
+      enabled:
+        type: boolean
+        format: boolean
+    description: Params defines the parameters for the consortium module.
+  lbm.consortium.v1.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        type: object
+        properties:
+          enabled:
+            type: boolean
+            format: boolean
+        description: Params defines the parameters for the consortium module.
+    description: QueryParamsResponse is the response type for the Query/Params RPC method.
+  lbm.consortium.v1.QueryValidatorAuthResponse:
+    type: object
+    properties:
+      auth:
+        type: object
+        properties:
+          operator_address:
+            type: string
+          creation_allowed:
+            type: boolean
+            format: boolean
+        description: ValidatorAuth defines authorization info of a validator.
+    description: |-
+      QueryValidatorAuthResponse is the request type for the
+      Query/ValidatorAuth RPC method.
+  lbm.consortium.v1.QueryValidatorAuthsResponse:
+    type: object
+    properties:
+      auths:
+        type: array
+        items:
+          type: object
+          properties:
+            operator_address:
+              type: string
+            creation_allowed:
+              type: boolean
+              format: boolean
+          description: ValidatorAuth defines authorization info of a validator.
+      pagination:
+        description: pagination defines the pagination in the response.
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+    description: |-
+      QueryValidatorAuthsResponse is the response type for the
+      Query/ValidatorAuths RPC method.
+  lbm.consortium.v1.ValidatorAuth:
+    type: object
+    properties:
+      operator_address:
+        type: string
+      creation_allowed:
+        type: boolean
+        format: boolean
+    description: ValidatorAuth defines authorization info of a validator.

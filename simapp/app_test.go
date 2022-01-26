@@ -26,6 +26,7 @@ import (
 	"github.com/line/lbm-sdk/x/evidence"
 	"github.com/line/lbm-sdk/x/genutil"
 	"github.com/line/lbm-sdk/x/gov"
+	"github.com/line/lbm-sdk/x/consortium"
 	transfer "github.com/line/lbm-sdk/x/ibc/applications/transfer"
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
 	"github.com/line/lbm-sdk/x/mint"
@@ -41,11 +42,11 @@ func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
 
 	for acc := range maccPerms {
-		require.True(
-			t,
+		ex, _ := allowedReceivingModAcc[acc]
+		require.Equal(t,
+			!ex,
 			app.BankKeeper.BlockedAddr(app.AccountKeeper.GetModuleAddress(acc)),
-			"ensure that blocked addresses are properly set in bank keeper",
-		)
+			"ensure that blocked addresses are properly set in bank keeper")
 	}
 
 	genesisState := NewDefaultGenesisState(encCfg.Marshaler)
@@ -182,6 +183,7 @@ func TestRunMigrations(t *testing.T) {
 					"crisis":       crisis.AppModule{}.ConsensusVersion(),
 					"genutil":      genutil.AppModule{}.ConsensusVersion(),
 					"capability":   capability.AppModule{}.ConsensusVersion(),
+					"consortium":   consortium.AppModule{}.ConsensusVersion(),
 				},
 			)
 			if tc.expRunErr {
@@ -234,6 +236,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 			"crisis":       crisis.AppModule{}.ConsensusVersion(),
 			"genutil":      genutil.AppModule{}.ConsensusVersion(),
 			"capability":   capability.AppModule{}.ConsensusVersion(),
+			"consortium":   consortium.AppModule{}.ConsensusVersion(),
 		},
 	)
 
