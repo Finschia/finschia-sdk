@@ -1,6 +1,7 @@
 package client
 
 import (
+	rpchttp "github.com/line/ostracon/rpc/client/http"
 	"github.com/spf13/pflag"
 
 	"github.com/line/lbm-sdk/client/flags"
@@ -70,4 +71,12 @@ func NewPageRequest(pageKey string, offset, limit, page uint64, countTotal bool)
 		Limit:      limit,
 		CountTotal: countTotal,
 	}, nil
+}
+
+// NewClientFromNode sets up Client implementation that communicates with a Tendermint node over
+// JSON RPC and WebSockets
+// TODO: We might not need to manually append `/websocket`:
+// https://github.com/cosmos/cosmos-sdk/issues/8986
+func NewClientFromNode(nodeURI string) (*rpchttp.HTTP, error) {
+	return rpchttp.New(nodeURI, "/websocket")
 }

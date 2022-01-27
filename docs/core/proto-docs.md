@@ -719,6 +719,7 @@
     - [SimulateResponse](#lbm.tx.v1.SimulateResponse)
   
     - [BroadcastMode](#lbm.tx.v1.BroadcastMode)
+    - [OrderBy](#lbm.tx.v1.OrderBy)
   
     - [Service](#lbm.tx.v1.Service)
   
@@ -5425,6 +5426,7 @@ VersionInfo is the type for the GetNodeInfoResponse message.
 | `build_tags` | [string](#string) |  |  |
 | `go_version` | [string](#string) |  |  |
 | `build_deps` | [Module](#lbm.base.ostracon.v1.Module) | repeated |  |
+| `lbm_sdk_version` | [string](#string) |  |  |
 
 
 
@@ -10427,6 +10429,7 @@ RPC method.
 | `events` | [string](#string) | repeated | events is the list of transaction event type. |
 | `prove` | [bool](#bool) |  | prove is Include proofs of the transactions inclusion in the block |
 | `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
+| `order_by` | [OrderBy](#lbm.tx.v1.OrderBy) |  |  |
 
 
 
@@ -10497,6 +10500,19 @@ BroadcastMode specifies the broadcast mode for the TxService.Broadcast RPC metho
 | BROADCAST_MODE_BLOCK | 1 | BROADCAST_MODE_BLOCK defines a tx broadcasting mode where the client waits for the tx to be committed in a block. |
 | BROADCAST_MODE_SYNC | 2 | BROADCAST_MODE_SYNC defines a tx broadcasting mode where the client waits for a CheckTx execution response only. |
 | BROADCAST_MODE_ASYNC | 3 | BROADCAST_MODE_ASYNC defines a tx broadcasting mode where the client returns immediately. |
+
+
+
+<a name="lbm.tx.v1.OrderBy"></a>
+
+### OrderBy
+OrderBy defines the sorting order
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| ORDER_BY_UNSPECIFIED | 0 | ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case. |
+| ORDER_BY_ASC | 1 | ORDER_BY_ASC defines ascending order |
+| ORDER_BY_DESC | 2 | ORDER_BY_DESC defines descending order |
 
 
  <!-- end enums -->

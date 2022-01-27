@@ -597,12 +597,6 @@ func (chain *TestChain) CurrentOCClientHeader() *ibctmtypes.Header {
 // CreateOCClientHeader creates a TM header to update the OC client. Args are passed in to allow
 // caller flexibility to use params that differ from the chain.
 func (chain *TestChain) CreateOCClientHeader(chainID string, blockHeight int64, trustedHeight clienttypes.Height, timestamp time.Time, ocValSet, ocTrustedVals *octypes.ValidatorSet, ocVoterSet, ocTrustedVoterSet *octypes.VoterSet, signers []octypes.PrivValidator) *ibctmtypes.Header {
-	var (
-		valSet        *ocproto.ValidatorSet
-		trustedVals   *ocproto.ValidatorSet
-		voterSet      *ocproto.VoterSet
-		trustedVoters *ocproto.VoterSet
-	)
 	require.NotNil(chain.t, ocValSet)
 	require.NotNil(chain.t, ocVoterSet)
 
@@ -624,7 +618,7 @@ func (chain *TestChain) CreateOCClientHeader(chainID string, blockHeight int64, 
 		AppHash:            chain.CurrentHeader.AppHash,
 		LastResultsHash:    tmhash.Sum([]byte("last_results_hash")),
 		EvidenceHash:       tmhash.Sum([]byte("evidence_hash")),
-		ProposerAddress:    proposer.Address, //nolint:staticcheck
+		ProposerAddress:    proposer.Address,
 	}
 	hhash := ocHeader.Hash()
 	blockID := MakeBlockID(hhash, 3, tmhash.Sum([]byte("part_set")))
@@ -638,23 +632,22 @@ func (chain *TestChain) CreateOCClientHeader(chainID string, blockHeight int64, 
 		Commit: commit.ToProto(),
 	}
 
-	valSet, err = ocValSet.ToProto()
+	valSet, err := ocValSet.ToProto()
 	if err != nil {
 		panic(err)
 	}
-
-	voterSet, err = ocVoterSet.ToProto()
+	voterSet, err := ocVoterSet.ToProto()
 	if err != nil {
 		panic(err)
 	}
-
+	var trustedVals *ocproto.ValidatorSet
 	if ocTrustedVals != nil {
 		trustedVals, err = ocTrustedVals.ToProto()
 		if err != nil {
 			panic(err)
 		}
 	}
-
+	var trustedVoters *ocproto.VoterSet
 	if ocTrustedVoterSet != nil {
 		trustedVoters, err = ocTrustedVoterSet.ToProto()
 		if err != nil {

@@ -688,6 +688,9 @@ func BenchmarkMultistoreSnapshotRestore1M(b *testing.B) {
 }
 
 func benchmarkMultistoreSnapshot(b *testing.B, stores uint8, storeKeys uint64) {
+	b.Skip("Noisy with slow setup time, please see https://github.com/cosmos/cosmos-sdk/issues/8855.")
+
+	b.ReportAllocs()
 	b.StopTimer()
 	source := newMultiStoreWithGeneratedData(memdb.NewDB(), stores, storeKeys)
 	version := source.LastCommitID().Version
@@ -715,6 +718,9 @@ func benchmarkMultistoreSnapshot(b *testing.B, stores uint8, storeKeys uint64) {
 }
 
 func benchmarkMultistoreSnapshotRestore(b *testing.B, stores uint8, storeKeys uint64) {
+	b.Skip("Noisy with slow setup time, please see https://github.com/cosmos/cosmos-sdk/issues/8855.")
+
+	b.ReportAllocs()
 	b.StopTimer()
 	source := newMultiStoreWithGeneratedData(memdb.NewDB(), stores, storeKeys)
 	version := uint64(source.LastCommitID().Version)

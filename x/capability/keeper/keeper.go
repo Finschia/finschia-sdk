@@ -89,38 +89,58 @@ func (k *Keeper) ScopeToModule(moduleName string) ScopedKeeper {
 	}
 }
 
-// InitializeAndSeal loads all capabilities from the persistent KVStore into the
-// in-memory store and seals the keeper to prevent further modules from creating
-// a scoped keeper. InitializeAndSeal must be called once after the application
-// state is loaded.
+// InitializeAndSeal seals the keeper to prevent further modules from creating
+// a scoped keeper. It also panics if the memory store is not of storetype `StoreTypeMemory`.
 func (k *Keeper) InitializeAndSeal(ctx sdk.Context) {
 	if k.sealed {
 		panic("cannot initialize and seal an already sealed capability keeper")
 	}
 
-	memStore := ctx.KVStore(k.memKey)
+	k.sealed = true
+}
+
+// InitMemStore will initialize the memory store if it hasn't been initialized yet.
+// The function is safe to be called multiple times.
+// InitMemStore must be called every time the app starts before the keeper is used (so
+// `BeginBlock` or `InitChain` - whichever is first). We need access to the store so we
+// can't initialize it in a constructor.
+func (k *Keeper) InitMemStore(ctx sdk.Context) {
+	// create context with no block gas meter to ensure we do not consume gas during local initialization logic.
+	noGasCtx := ctx.WithBlockGasMeter(sdk.NewInfiniteGasMeter())
+
+	memStore := noGasCtx.KVStore(k.memKey)
 	memStoreType := memStore.GetStoreType()
 
 	if memStoreType != sdk.StoreTypeMemory {
 		panic(fmt.Sprintf("invalid memory store type; got %s, expected: %s", memStoreType, sdk.StoreTypeMemory))
 	}
 
-	prefixStore := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefixIndexCapability)
-	iterator := sdk.KVStorePrefixIterator(prefixStore, nil)
+	// check if memory store has not been initialized yet by checking if initialized flag is nil.
+	if !k.IsInitialized(noGasCtx) {
+		prefixStore := prefix.NewStore(noGasCtx.KVStore(k.storeKey), types.KeyPrefixIndexCapability)
+		iterator := sdk.KVStorePrefixIterator(prefixStore, nil)
 
-	// initialize the in-memory store for all persisted capabilities
-	defer iterator.Close()
+		// initialize the in-memory store for all persisted capabilities
+		defer iterator.Close()
 
-	for ; iterator.Valid(); iterator.Next() {
-		index := types.IndexFromKey(iterator.Key())
+		for ; iterator.Valid(); iterator.Next() {
+			index := types.IndexFromKey(iterator.Key())
 
-		var capOwners types.CapabilityOwners
+			var capOwners types.CapabilityOwners
 
-		k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &capOwners)
-		k.InitializeCapability(ctx, index, capOwners)
+			k.cdc.MustUnmarshalBinaryBare(iterator.Value(), &capOwners)
+			k.InitializeCapability(noGasCtx, index, capOwners)
+		}
+
+		// set the initialized flag so we don't rerun initialization logic
+		memStore.Set(types.KeyMemInitialized, []byte{1})
 	}
+}
 
-	k.sealed = true
+// IsInitialized returns true if the keeper is properly initialized, and false otherwise
+func (k *Keeper) IsInitialized(ctx sdk.Context) bool {
+	memStore := ctx.KVStore(k.memKey)
+	return memStore.Get(types.KeyMemInitialized) != nil
 }
 
 // InitializeIndex sets the index to one (or greater) in InitChain according
@@ -358,6 +378,7 @@ func (sk ScopedKeeper) GetCapability(ctx sdk.Context, name string) (*types.Capab
 		// so we delete here to remove unnecessary values in map
 		// TODO: Delete index correctly from capMap by storing some reverse lookup
 		// in-memory map. Issue: https://github.com/cosmos/cosmos-sdk/issues/7805
+
 		return nil, false
 	}
 
