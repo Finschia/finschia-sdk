@@ -166,7 +166,7 @@ func BankQuerier(bankKeeper types.BankViewKeeper) func(ctx sdk.Context, request 
 			}
 			coins := bankKeeper.GetAllBalances(ctx, sdk.AccAddress(request.AllBalances.Address))
 			res := wasmvmtypes.AllBalancesResponse{
-				Amount: convertSdkCoinsToWasmCoins(coins),
+				Amount: ConvertSdkCoinsToWasmCoins(coins),
 			}
 			return json.Marshal(res)
 		}
@@ -409,7 +409,7 @@ func sdkToDelegations(ctx sdk.Context, keeper types.StakingKeeper, delegations [
 		result[i] = wasmvmtypes.Delegation{
 			Delegator: sdk.AccAddress(d.DelegatorAddress).String(),
 			Validator: sdk.ValAddress(d.ValidatorAddress).String(),
-			Amount:    convertSdkCoinToWasmCoin(amount),
+			Amount:    ConvertSdkCoinToWasmCoin(amount),
 		}
 	}
 	return result, nil
@@ -431,7 +431,7 @@ func sdkToFullDelegation(ctx sdk.Context, keeper types.StakingKeeper, distKeeper
 	bondDenom := keeper.BondDenom(ctx)
 	amount := sdk.NewCoin(bondDenom, val.TokensFromShares(delegation.Shares).TruncateInt())
 
-	delegationCoins := convertSdkCoinToWasmCoin(amount)
+	delegationCoins := ConvertSdkCoinToWasmCoin(amount)
 
 	// FIXME: this is very rough but better than nothing...
 	// https://github.com/line/lbm-sdk/issues/225
@@ -529,15 +529,17 @@ func WasmQuerier(k wasmQueryKeeper) func(ctx sdk.Context, request *wasmvmtypes.W
 	}
 }
 
-func convertSdkCoinsToWasmCoins(coins []sdk.Coin) wasmvmtypes.Coins {
+// ConvertSdkCoinsToWasmCoins covert sdk type to wasmvm coins type
+func ConvertSdkCoinsToWasmCoins(coins []sdk.Coin) wasmvmtypes.Coins {
 	converted := make(wasmvmtypes.Coins, len(coins))
 	for i, c := range coins {
-		converted[i] = convertSdkCoinToWasmCoin(c)
+		converted[i] = ConvertSdkCoinToWasmCoin(c)
 	}
 	return converted
 }
 
-func convertSdkCoinToWasmCoin(coin sdk.Coin) wasmvmtypes.Coin {
+// ConvertSdkCoinToWasmCoin covert sdk type to wasmvm coin type
+func ConvertSdkCoinToWasmCoin(coin sdk.Coin) wasmvmtypes.Coin {
 	return wasmvmtypes.Coin{
 		Denom:  coin.Denom,
 		Amount: coin.Amount.String(),

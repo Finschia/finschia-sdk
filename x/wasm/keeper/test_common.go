@@ -124,15 +124,16 @@ var TestingStakeParams = stakingtypes.Params{
 }
 
 type TestFaucet struct {
-	t          testing.TB
-	bankKeeper bankkeeper.Keeper
-	sender     sdk.AccAddress
-	balance    sdk.Coins
+	t                testing.TB
+	bankKeeper       bankkeeper.Keeper
+	sender           sdk.AccAddress
+	balance          sdk.Coins
+	minterModuleName string
 }
 
-func NewTestFaucet(t testing.TB, ctx sdk.Context, bankKeeper bankkeeper.Keeper, initialAmount ...sdk.Coin) *TestFaucet {
+func NewTestFaucet(t testing.TB, ctx sdk.Context, bankKeeper bankkeeper.Keeper, minterModuleName string, initialAmount ...sdk.Coin) *TestFaucet {
 	require.NotEmpty(t, initialAmount)
-	r := &TestFaucet{t: t, bankKeeper: bankKeeper}
+	r := &TestFaucet{t: t, bankKeeper: bankKeeper, minterModuleName: minterModuleName}
 	_, _, addr := keyPubAddr()
 	r.sender = addr
 	r.Mint(ctx, addr, initialAmount...)
@@ -143,9 +144,9 @@ func NewTestFaucet(t testing.TB, ctx sdk.Context, bankKeeper bankkeeper.Keeper, 
 func (f *TestFaucet) Mint(parentCtx sdk.Context, addr sdk.AccAddress, amounts ...sdk.Coin) {
 	require.NotEmpty(f.t, amounts)
 	ctx := parentCtx.WithEventManager(sdk.NewEventManager()) // discard all faucet related events
-	err := f.bankKeeper.MintCoins(ctx, minttypes.ModuleName, amounts)
+	err := f.bankKeeper.MintCoins(ctx, f.minterModuleName, amounts)
 	require.NoError(f.t, err)
-	err = f.bankKeeper.SendCoinsFromModuleToAccount(ctx, minttypes.ModuleName, addr, amounts)
+	err = f.bankKeeper.SendCoinsFromModuleToAccount(ctx, f.minterModuleName, addr, amounts)
 	require.NoError(f.t, err)
 	f.balance = f.balance.Add(amounts...)
 }
@@ -328,7 +329,7 @@ func createTestInput(
 		nil,
 	)
 
-	faucet := NewTestFaucet(t, ctx, bankKeeper, sdk.NewCoin("stake", sdk.NewInt(100_000_000_000)))
+	faucet := NewTestFaucet(t, ctx, bankKeeper, minttypes.ModuleName, sdk.NewCoin("stake", sdk.NewInt(100_000_000_000)))
 
 	// set some funds ot pay out validatores, based on code from:
 	// https://github.com/line/lbm-sdk/blob/95b22d3a685f7eb531198e0023ef06873835e632/x/distribution/keeper/keeper_test.go#L49-L56
@@ -702,7 +703,7 @@ func fundAccounts(t testing.TB, ctx sdk.Context, am authkeeper.AccountKeeper, ba
 	for _, coin := range coins {
 		require.NoError(t, bank.SetBalance(ctx, addr, coin))
 	}
-	NewTestFaucet(t, ctx, bank, coins...).Fund(ctx, addr, coins...)
+	NewTestFaucet(t, ctx, bank, minttypes.ModuleName, coins...).Fund(ctx, addr, coins...)
 }
 
 var keyCounter uint64

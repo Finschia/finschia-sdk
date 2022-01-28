@@ -216,7 +216,7 @@ func TestMigrateProposal(t *testing.T) {
 }
 
 func TestExecuteProposal(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, "staking")
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, bankKeeper := keepers.GovKeeper, keepers.BankKeeper
 
 	exampleContract := InstantiateHackatomExampleContract(t, ctx, keepers)
@@ -276,7 +276,7 @@ func TestExecuteProposal(t *testing.T) {
 }
 
 func TestSudoProposal(t *testing.T) {
-	ctx, keepers := CreateTestInput(t, false, "staking")
+	ctx, keepers := CreateTestInput(t, false, "staking", nil, nil)
 	govKeeper, bankKeeper := keepers.GovKeeper, keepers.BankKeeper
 
 	exampleContract := InstantiateHackatomExampleContract(t, ctx, keepers)
