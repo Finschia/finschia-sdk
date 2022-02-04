@@ -20,6 +20,7 @@ func testCache(t *testing.T, cache types.Cache) {
 	buf := make([]byte, 0, len(val))
 	buf = cache.Get(buf, key)
 	require.Equal(t, val, buf)
+	require.Nil(t, cache.Get(nil, []byte("non-existing")))
 	cache.Del(key)
 	hits, misses, entries, bytes := cache.Stats()
 	_, _, _, _ = hits, misses, entries, bytes

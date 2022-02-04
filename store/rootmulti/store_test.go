@@ -95,6 +95,8 @@ func TestCacheMultiStoreWithVersion(t *testing.T) {
 	kvStore := cms.GetKVStore(ms.keysByName["store1"])
 	require.NotNil(t, kvStore)
 	require.Equal(t, kvStore.Get(k), v)
+	kvStore.Prefetch(k, true)
+	kvStore.Prefetch(k, false)
 
 	// require we cannot commit (write) to a cache-versioned multi-store
 	require.Panics(t, func() {
