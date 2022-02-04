@@ -497,8 +497,8 @@ github.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20190605223551-b
 github.com/lightstep/lightstep-tracer-go v0.18.1/go.mod h1:jlF1pusYV4pidLvZ+XD0UBX0ZE6WURAspgAczcDHrL4=
 github.com/line/gorocksdb v0.0.0-20210406043732-d4bea34b6d55 h1:cXVtMiJkvQ4kn0pxM2svH1ncJbFgQsLHtnFC9qJj2VM=
 github.com/line/gorocksdb v0.0.0-20210406043732-d4bea34b6d55/go.mod h1:DHRJroSL7NaRkpvocRx3OtRsleXVsYSxBI9SfHFlTQ0=
-github.com/line/iavl/v2 v2.0.0-init.1.0.20220126073746-02ca7abb4214 h1:LOh34Ju2lBLYm46y0rw6ABn6HssmXp1Ra3+cAtzrel8=
-github.com/line/iavl/v2 v2.0.0-init.1.0.20220126073746-02ca7abb4214/go.mod h1:rchB/g/7tqt2uHeiPlhz8X1APwIWaEdWZWiGG3I9uj8=
+github.com/line/iavl/v2 v2.0.0-init.1.0.20220203230657-a2e297a6cebd h1:41GDdiJNglMjlns6dc9CHuLG+Fo9D+g8M806FH5cQJ0=
+github.com/line/iavl/v2 v2.0.0-init.1.0.20220203230657-a2e297a6cebd/go.mod h1:rchB/g/7tqt2uHeiPlhz8X1APwIWaEdWZWiGG3I9uj8=
 github.com/line/ostracon v0.34.9-0.20210429084710-ef4fe0a40c7d/go.mod h1:ttnbq+yQJMQ9a2MT5SEisOoa/+pOgh2KenTiK/rVdiw=
 github.com/line/ostracon v1.0.2 h1:sbZtNrLYFKDP74tXYgMVkrzKJKk2Sqn1Oczl1+f7sgI=
 github.com/line/ostracon v1.0.2/go.mod h1:elTiUFLvBz6Yaze+ZZLlbUnhqKWLJ7cMy/P9rSabafQ=
