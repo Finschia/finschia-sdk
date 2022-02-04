@@ -379,7 +379,9 @@ func (rs *Store) Commit() types.CommitID {
 		// - KeepEvery % (height - KeepRecent) != 0 as that means the height is not
 		// a 'snapshot' height.
 		if rs.pruningOpts.KeepEvery == 0 || pruneHeight%int64(rs.pruningOpts.KeepEvery) != 0 {
+			rs.pruneLock.Lock()
 			rs.pruneHeights = append(rs.pruneHeights, pruneHeight)
+			rs.pruneLock.Unlock()
 		}
 	}
 
@@ -388,7 +390,10 @@ func (rs *Store) Commit() types.CommitID {
 		go rs.pruneStores()
 	}
 
-	flushMetadata(rs.db, version, rs.lastCommitInfo, rs.pruneHeights)
+	rs.pruneLock.Lock()
+	pruneHeights := rs.pruneHeights
+	rs.pruneLock.Unlock()
+	flushMetadata(rs.db, version, rs.lastCommitInfo, pruneHeights)
 
 	return types.CommitID{
 		Version: version,

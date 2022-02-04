@@ -261,7 +261,7 @@ func init() {
 	} else {
 		usePrefetch = -1
 	}
-	go prefetcher()
+	prefetcher()
 }
 
 // DeleteVersions deletes a series of versions from the MutableTree. An error

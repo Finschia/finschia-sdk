@@ -15,6 +15,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
+	iavltree "github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/line/tm-db/v2/memdb"
@@ -536,7 +537,9 @@ func TestMultiStore_PruningRestart(t *testing.T) {
 	ms.Commit()
 	// pruning is background job, sleeps for a few seconds for the pruning to finish
 	time.Sleep(5 * time.Second)
+	ms.pruneLock.Lock()
 	require.Empty(t, ms.pruneHeights)
+	ms.pruneLock.Unlock()
 
 	for _, v := range pruneHeights {
 		_, err := ms.CacheMultiStoreWithVersion(v)
@@ -897,4 +900,8 @@ func hashStores(stores map[types.StoreKey]types.CommitKVStore) []byte {
 		}.GetHash()
 	}
 	return sdkmaps.HashFromMap(m)
+}
+
+func init() {
+	iavltree.PruningThreshold = 1 << 20
 }
