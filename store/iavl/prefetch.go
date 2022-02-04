@@ -48,18 +48,20 @@ func prefetcher() {
 	prefetchLocks = make(chan bool, workers)
 	prefetchToken = make(chan bool, 1)
 
-	for {
-		f := <-prefetchJobs
-		if len(prefetchToken) != 0 {
-			prefetchToken <- true
-			<-prefetchToken
+	go func() {
+		for {
+			f := <-prefetchJobs
+			if len(prefetchToken) != 0 {
+				prefetchToken <- true
+				<-prefetchToken
+			}
+			prefetchLocks <- true
+			go func(f func()) {
+				f()
+				<-prefetchLocks
+			}(f)
 		}
-		prefetchLocks <- true
-		go func(f func()) {
-			f()
-			<-prefetchLocks
-		}(f)
-	}
+	}()
 }
 
 // Implements type.KVStore.
