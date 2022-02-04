@@ -10,7 +10,6 @@ require (
 	github.com/bgentry/speakeasy v0.1.0
 	github.com/btcsuite/btcd v0.22.0-beta
 	github.com/btcsuite/btcutil v1.0.3-0.20201208143702-a53e38424cce
-	github.com/cespare/xxhash/v2 v2.1.2
 	github.com/confio/ics23/go v0.6.6
 	github.com/coocood/freecache v1.2.0
 	github.com/cosmos/go-bip39 v1.0.0
@@ -29,7 +28,7 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/line/iavl/v2 v2.0.0-init.1.0.20220126073746-02ca7abb4214
+	github.com/line/iavl/v2 v2.0.0-init.1.0.20220203230657-a2e297a6cebd
 	github.com/line/ostracon v1.0.2
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
 	github.com/line/wasmvm v0.14.0-0.8.0
