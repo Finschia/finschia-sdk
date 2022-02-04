@@ -1,0 +1,44 @@
+syntax = "proto3";
+package lbm.token.v1;
+
+import "gogoproto/gogo.proto";
+import "lbm/token/v1/token.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/token";
+
+// GenesisState defines the token module's genesis state.
+message GenesisState {
+  // params defines all the paramaters of the module.
+  Params params = 1 [(gogoproto.nullable) = false];
+
+  // next_class_id is the next class id to issue.
+  uint64 next_class_id = 2;
+
+  // balances is an array containing the balances of all the accounts.
+  repeated Balance balances = 3 [(gogoproto.nullable) = false];
+
+  // supplies represents the total supply of FTs.
+  repeated lbm.token.v1.FT supplies = 4 [(gogoproto.nullable) = false];
+
+  // token defines the metadata of the differents tokens.
+  repeated Token token = 5 [(gogoproto.nullable) = false];
+
+  //
+}
+
+// Balance defines an account address and balance pair used in the token module's
+// genesis state.
+message Balance {
+  string   address                = 1;
+  repeated lbm.token.v1.FT tokens = 2 [(gogoproto.nullable) = false];
+}
+
+// Supply represents a struct that passively keeps track of the total supply,
+// minted and burned amounts in the network.
+message Supply {
+  string class_id = 1;
+
+  string total  = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string minted = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string burned = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}

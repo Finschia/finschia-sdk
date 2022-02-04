@@ -1,0 +1,156 @@
+syntax = "proto3";
+package lbm.token.v1;
+
+import "gogoproto/gogo.proto";
+import "lbm/token/v1/token.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/token";
+
+option (gogoproto.equal_all)           = false;
+option (gogoproto.goproto_getters_all) = false;
+
+// Msg defines the token Msg service.
+service Msg {
+  // Transfer defines a method to transfer tokens from one account to another account
+  rpc Transfer(MsgTransfer) returns (MsgTransferResponse);
+
+  // TransferFrom defines a method to transfer tokens from one account to another account by the proxy
+  rpc TransferFrom(MsgTransferFrom) returns (MsgTransferFromResponse);
+
+  // Approve allows one to transfer tokens on behalf of the approver
+  rpc Approve(MsgApprove) returns (MsgApproveResponse);
+
+  // Issue defines a method to issue a token
+  rpc Issue(MsgIssue) returns (MsgIssueResponse);
+
+  // Grant allows one to mint or burn tokens or modify a token metadata
+  rpc Grant(MsgGrant) returns (MsgGrantResponse);
+
+  // Revoke revokes the grant
+  rpc Revoke(MsgRevoke) returns (MsgRevokeResponse);
+
+  // Mint defines a method to mint tokens
+  rpc Mint(MsgMint) returns (MsgMintResponse);
+
+  // Burn defines a method to burn tokens
+  rpc Burn(MsgBurn) returns (MsgBurnResponse);
+
+  // BurnFrom defines a method to burn tokens
+  rpc BurnFrom(MsgBurnFrom) returns (MsgBurnFromResponse);
+
+  // Modify defines a method to modify a token metadata
+  rpc Modify(MsgModify) returns (MsgModifyResponse);
+}
+
+// MsgTransfer represents a message to transfer tokens from one account to another.
+message MsgTransfer {
+  string class_id = 1;
+  string from     = 2;
+  string to       = 3;
+  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgTransferResponse defines the Msg/Transfer response type.
+message MsgTransferResponse {}
+
+// MsgTransferFrom represents a message to transfer tokens from one account to another by the proxy.
+message MsgTransferFrom {
+  string class_id = 1;
+  string proxy    = 2;
+  string from     = 3;
+  string to       = 4;
+  string amount   = 5 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgTransferFromResponse defines the Msg/TransferFrom response type.
+message MsgTransferFromResponse {}
+
+// MsgApprove represents a message to transfer tokens on behalf of the approver
+message MsgApprove {
+  string class_id = 1;
+  string approver = 2;
+  string proxy    = 3;
+}
+
+// MsgApproveResponse defines the Msg/Approve response type.
+message MsgApproveResponse {}
+
+// MsgIssue represents a message to issue a token.
+message MsgIssue {
+  string owner = 1;
+  string to    = 2;
+
+  string name      = 3;
+  string symbol    = 4;
+  string image_uri = 5;
+  string meta      = 6;
+  string amount    = 7 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  bool   mintable  = 8;
+  string decimals  = 9 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgIssueResponse defines the Msg/Issue response type.
+message MsgIssueResponse {}
+
+// MsgGrant represents a message to allow one to mint or burn tokens or modify a token metadata
+message MsgGrant {
+  string class_id = 1;
+  string granter  = 2;
+  string grantee  = 3;
+  string action   = 4;
+}
+
+// MsgGrantResponse defines the Msg/Grant response type.
+message MsgGrantResponse {}
+
+// MsgRevoke represents a message to revoke a grant.
+message MsgRevoke {
+  string class_id = 1;
+  string grantee  = 2;
+  string action   = 3;
+}
+
+// MsgRevokeResponse defines the Msg/Revoke response type.
+message MsgRevokeResponse {}
+
+// MsgMint represents a message to mint tokens.
+message MsgMint {
+  string class_id = 1;
+  string grantee  = 2;
+  string to       = 3;
+  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgMintResponse defines the Msg/Mint response type.
+message MsgMintResponse {}
+
+// MsgBurn represents a message to burn tokens.
+message MsgBurn {
+  string class_id = 1;
+  string from     = 2;
+  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgBurnResponse defines the Msg/Burn response type.
+message MsgBurnResponse {}
+
+// MsgBurnFrom represents a message to burn tokens.
+message MsgBurnFrom {
+  string class_id = 1;
+  string grantee  = 2;
+  string from     = 3;
+  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// MsgBurnFromResponse defines the Msg/BurnFrom response type.
+message MsgBurnFromResponse {}
+
+// MsgModify represents a message to modify a token metadata.
+message MsgModify {
+  string        class_id = 1;
+  string        grantee  = 2;
+  repeated Pair changes  = 3 [(gogoproto.nullable) = false];
+}
+
+// MsgModifyResponse defines the Msg/Modify response type.
+message MsgModifyResponse {}

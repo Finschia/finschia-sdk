@@ -687,6 +687,57 @@
   
     - [Msg](#lbm.staking.v1.Msg)
   
+- [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
+    - [EventApproval](#lbm.token.v1.EventApproval)
+    - [EventTransfer](#lbm.token.v1.EventTransfer)
+  
+- [lbm/token/v1/token.proto](#lbm/token/v1/token.proto)
+    - [FT](#lbm.token.v1.FT)
+    - [Pair](#lbm.token.v1.Pair)
+    - [Params](#lbm.token.v1.Params)
+    - [Token](#lbm.token.v1.Token)
+  
+- [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
+    - [Balance](#lbm.token.v1.Balance)
+    - [GenesisState](#lbm.token.v1.GenesisState)
+    - [Supply](#lbm.token.v1.Supply)
+  
+- [lbm/token/v1/query.proto](#lbm/token/v1/query.proto)
+    - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
+    - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
+    - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
+    - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
+    - [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest)
+    - [QueryTokenResponse](#lbm.token.v1.QueryTokenResponse)
+    - [QueryTokensRequest](#lbm.token.v1.QueryTokensRequest)
+    - [QueryTokensResponse](#lbm.token.v1.QueryTokensResponse)
+  
+    - [Query](#lbm.token.v1.Query)
+  
+- [lbm/token/v1/tx.proto](#lbm/token/v1/tx.proto)
+    - [MsgApprove](#lbm.token.v1.MsgApprove)
+    - [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse)
+    - [MsgBurn](#lbm.token.v1.MsgBurn)
+    - [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom)
+    - [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse)
+    - [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse)
+    - [MsgGrant](#lbm.token.v1.MsgGrant)
+    - [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse)
+    - [MsgIssue](#lbm.token.v1.MsgIssue)
+    - [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse)
+    - [MsgMint](#lbm.token.v1.MsgMint)
+    - [MsgMintResponse](#lbm.token.v1.MsgMintResponse)
+    - [MsgModify](#lbm.token.v1.MsgModify)
+    - [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse)
+    - [MsgRevoke](#lbm.token.v1.MsgRevoke)
+    - [MsgRevokeResponse](#lbm.token.v1.MsgRevokeResponse)
+    - [MsgTransfer](#lbm.token.v1.MsgTransfer)
+    - [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom)
+    - [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse)
+    - [MsgTransferResponse](#lbm.token.v1.MsgTransferResponse)
+  
+    - [Msg](#lbm.token.v1.Msg)
+  
 - [lbm/tx/signing/v1/signing.proto](#lbm/tx/signing/v1/signing.proto)
     - [SignatureDescriptor](#lbm.tx.signing.v1.SignatureDescriptor)
     - [SignatureDescriptor.Data](#lbm.tx.signing.v1.SignatureDescriptor.Data)
@@ -10030,6 +10081,677 @@ Msg defines the staking Msg service.
 | `Delegate` | [MsgDelegate](#lbm.staking.v1.MsgDelegate) | [MsgDelegateResponse](#lbm.staking.v1.MsgDelegateResponse) | Delegate defines a method for performing a delegation of coins from a delegator to a validator. | |
 | `BeginRedelegate` | [MsgBeginRedelegate](#lbm.staking.v1.MsgBeginRedelegate) | [MsgBeginRedelegateResponse](#lbm.staking.v1.MsgBeginRedelegateResponse) | BeginRedelegate defines a method for performing a redelegation of coins from a delegator and source validator to a destination validator. | |
 | `Undelegate` | [MsgUndelegate](#lbm.staking.v1.MsgUndelegate) | [MsgUndelegateResponse](#lbm.staking.v1.MsgUndelegateResponse) | Undelegate defines a method for performing an undelegation from a delegate and a validator. | |
+
+ <!-- end services -->
+
+
+
+<a name="lbm/token/v1/event.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/token/v1/event.proto
+
+
+
+<a name="lbm.token.v1.EventApproval"></a>
+
+### EventApproval
+EventApproval is emitted on Msg/Approve
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `owner` | [string](#string) |  |  |
+| `spender` | [string](#string) |  |  |
+| `value` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventTransfer"></a>
+
+### EventTransfer
+EventTransfer is emitted on Msg/Transfer
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `from` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `value` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/token/v1/token.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/token/v1/token.proto
+
+
+
+<a name="lbm.token.v1.FT"></a>
+
+### FT
+FT defines a token with a class id and an amount.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  | class_id associated with the FT. |
+| `amount` | [string](#string) |  | amount of FT |
+
+
+
+
+
+
+<a name="lbm.token.v1.Pair"></a>
+
+### Pair
+Pair defines a key-value pair.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `key` | [string](#string) |  |  |
+| `value` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.Params"></a>
+
+### Params
+Params defines the parameters for the token module.
+
+
+
+
+
+
+<a name="lbm.token.v1.Token"></a>
+
+### Token
+Token defines token information.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `id` | [string](#string) |  | id defines the unique identifier of the token. |
+| `name` | [string](#string) |  | name defines the human-readable name of the token. |
+| `symbol` | [string](#string) |  | symbol is an abbreviated name for token. |
+| `meta` | [string](#string) |  | meta is a brief description of token. |
+| `image_uri` | [string](#string) |  | image_uri is an uri for the token image stored off chain. |
+| `decimals` | [int32](#int32) |  | decimals is the number of decimals which one must divide the amount by to get its user representation. |
+| `mintable` | [bool](#bool) |  | mintable represents whether the token is allowed to mint. |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/token/v1/genesis.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/token/v1/genesis.proto
+
+
+
+<a name="lbm.token.v1.Balance"></a>
+
+### Balance
+Balance defines an account address and balance pair used in the token module's
+genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `address` | [string](#string) |  |  |
+| `tokens` | [FT](#lbm.token.v1.FT) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.GenesisState"></a>
+
+### GenesisState
+GenesisState defines the token module's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `params` | [Params](#lbm.token.v1.Params) |  | params defines all the paramaters of the module. |
+| `next_class_id` | [uint64](#uint64) |  | next_class_id is the next class id to issue. |
+| `balances` | [Balance](#lbm.token.v1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
+| `supplies` | [FT](#lbm.token.v1.FT) | repeated | supplies represents the total supply of FTs. |
+| `token` | [Token](#lbm.token.v1.Token) | repeated | token defines the metadata of the differents tokens. |
+
+
+
+
+
+
+<a name="lbm.token.v1.Supply"></a>
+
+### Supply
+Supply represents a struct that passively keeps track of the total supply,
+minted and burned amounts in the network.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `total` | [string](#string) |  |  |
+| `minted` | [string](#string) |  |  |
+| `burned` | [string](#string) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+ <!-- end services -->
+
+
+
+<a name="lbm/token/v1/query.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/token/v1/query.proto
+
+
+
+<a name="lbm.token.v1.QueryBalanceRequest"></a>
+
+### QueryBalanceRequest
+QueryBalanceRequest is the request type for the Query/Balance RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryBalanceResponse"></a>
+
+### QueryBalanceResponse
+QueryBalanceResponse is the response type for the Query/Balance RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QuerySupplyRequest"></a>
+
+### QuerySupplyRequest
+QuerySupplyRequest is the request type for the Query/Supply RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `type` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QuerySupplyResponse"></a>
+
+### QuerySupplyResponse
+QuerySupplyResponse is the response type for the Query/Supply RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryTokenRequest"></a>
+
+### QueryTokenRequest
+QueryTokenRequest is the request type for the Query/Token RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryTokenResponse"></a>
+
+### QueryTokenResponse
+QueryTokenResponse is the response type for the Query/Token RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `token` | [Token](#lbm.token.v1.Token) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryTokensRequest"></a>
+
+### QueryTokensRequest
+QueryTokensRequest is the request type for the Query/Tokens RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryTokensResponse"></a>
+
+### QueryTokensResponse
+QueryTokensResponse is the response type for the Query/Tokens RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `tokens` | [Token](#lbm.token.v1.Token) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  |  |
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.token.v1.Query"></a>
+
+### Query
+Query defines the gRPC querier service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Balance` | [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse) | Balance queries the number of tokens of a given class owned by the address. | GET|/lbm/token/v1/balance/{address}/{class_id}|
+| `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given class id. | GET|/lbm/token/v1/supply/{class_id}|
+| `Token` | [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.token.v1.QueryTokenResponse) | Token queries an token metadata based on its class id. | GET|/lbm/token/v1/tokens/{class_id}|
+| `Tokens` | [QueryTokensRequest](#lbm.token.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.token.v1.QueryTokensResponse) | Tokens queries all token metadata. | GET|/lbm/token/v1/tokens|
+
+ <!-- end services -->
+
+
+
+<a name="lbm/token/v1/tx.proto"></a>
+<p align="right"><a href="#top">Top</a></p>
+
+## lbm/token/v1/tx.proto
+
+
+
+<a name="lbm.token.v1.MsgApprove"></a>
+
+### MsgApprove
+MsgApprove represents a message to transfer tokens on behalf of the approver
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `approver` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgApproveResponse"></a>
+
+### MsgApproveResponse
+MsgApproveResponse defines the Msg/Approve response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgBurn"></a>
+
+### MsgBurn
+MsgBurn represents a message to burn tokens.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `from` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgBurnFrom"></a>
+
+### MsgBurnFrom
+MsgBurnFrom represents a message to burn tokens.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `from` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgBurnFromResponse"></a>
+
+### MsgBurnFromResponse
+MsgBurnFromResponse defines the Msg/BurnFrom response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgBurnResponse"></a>
+
+### MsgBurnResponse
+MsgBurnResponse defines the Msg/Burn response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgGrant"></a>
+
+### MsgGrant
+MsgGrant represents a message to allow one to mint or burn tokens or modify a token metadata
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `granter` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `action` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgGrantResponse"></a>
+
+### MsgGrantResponse
+MsgGrantResponse defines the Msg/Grant response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgIssue"></a>
+
+### MsgIssue
+MsgIssue represents a message to issue a token.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `owner` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `name` | [string](#string) |  |  |
+| `symbol` | [string](#string) |  |  |
+| `image_uri` | [string](#string) |  |  |
+| `meta` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+| `mintable` | [bool](#bool) |  |  |
+| `decimals` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgIssueResponse"></a>
+
+### MsgIssueResponse
+MsgIssueResponse defines the Msg/Issue response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgMint"></a>
+
+### MsgMint
+MsgMint represents a message to mint tokens.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgMintResponse"></a>
+
+### MsgMintResponse
+MsgMintResponse defines the Msg/Mint response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgModify"></a>
+
+### MsgModify
+MsgModify represents a message to modify a token metadata.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `changes` | [Pair](#lbm.token.v1.Pair) | repeated |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgModifyResponse"></a>
+
+### MsgModifyResponse
+MsgModifyResponse defines the Msg/Modify response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgRevoke"></a>
+
+### MsgRevoke
+MsgRevoke represents a message to revoke a grant.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `action` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgRevokeResponse"></a>
+
+### MsgRevokeResponse
+MsgRevokeResponse defines the Msg/Revoke response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgTransfer"></a>
+
+### MsgTransfer
+MsgTransfer represents a message to transfer tokens from one account to another.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `from` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgTransferFrom"></a>
+
+### MsgTransferFrom
+MsgTransferFrom represents a message to transfer tokens from one account to another by the proxy.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+| `from` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgTransferFromResponse"></a>
+
+### MsgTransferFromResponse
+MsgTransferFromResponse defines the Msg/TransferFrom response type.
+
+
+
+
+
+
+<a name="lbm.token.v1.MsgTransferResponse"></a>
+
+### MsgTransferResponse
+MsgTransferResponse defines the Msg/Transfer response type.
+
+
+
+
+
+ <!-- end messages -->
+
+ <!-- end enums -->
+
+ <!-- end HasExtensions -->
+
+
+<a name="lbm.token.v1.Msg"></a>
+
+### Msg
+Msg defines the token Msg service.
+
+| Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
+| ----------- | ------------ | ------------- | ------------| ------- | -------- |
+| `Transfer` | [MsgTransfer](#lbm.token.v1.MsgTransfer) | [MsgTransferResponse](#lbm.token.v1.MsgTransferResponse) | Transfer defines a method to transfer tokens from one account to another account | |
+| `TransferFrom` | [MsgTransferFrom](#lbm.token.v1.MsgTransferFrom) | [MsgTransferFromResponse](#lbm.token.v1.MsgTransferFromResponse) | TransferFrom defines a method to transfer tokens from one account to another account by the proxy | |
+| `Approve` | [MsgApprove](#lbm.token.v1.MsgApprove) | [MsgApproveResponse](#lbm.token.v1.MsgApproveResponse) | Approve allows one to transfer tokens on behalf of the approver | |
+| `Issue` | [MsgIssue](#lbm.token.v1.MsgIssue) | [MsgIssueResponse](#lbm.token.v1.MsgIssueResponse) | Issue defines a method to issue a token | |
+| `Grant` | [MsgGrant](#lbm.token.v1.MsgGrant) | [MsgGrantResponse](#lbm.token.v1.MsgGrantResponse) | Grant allows one to mint or burn tokens or modify a token metadata | |
+| `Revoke` | [MsgRevoke](#lbm.token.v1.MsgRevoke) | [MsgRevokeResponse](#lbm.token.v1.MsgRevokeResponse) | Revoke revokes the grant | |
+| `Mint` | [MsgMint](#lbm.token.v1.MsgMint) | [MsgMintResponse](#lbm.token.v1.MsgMintResponse) | Mint defines a method to mint tokens | |
+| `Burn` | [MsgBurn](#lbm.token.v1.MsgBurn) | [MsgBurnResponse](#lbm.token.v1.MsgBurnResponse) | Burn defines a method to burn tokens | |
+| `BurnFrom` | [MsgBurnFrom](#lbm.token.v1.MsgBurnFrom) | [MsgBurnFromResponse](#lbm.token.v1.MsgBurnFromResponse) | BurnFrom defines a method to burn tokens | |
+| `Modify` | [MsgModify](#lbm.token.v1.MsgModify) | [MsgModifyResponse](#lbm.token.v1.MsgModifyResponse) | Modify defines a method to modify a token metadata | |
 
  <!-- end services -->
 

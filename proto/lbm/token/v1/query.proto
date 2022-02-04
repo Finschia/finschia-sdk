@@ -1,0 +1,77 @@
+syntax = "proto3";
+package lbm.token.v1;
+
+import "lbm/base/query/v1/pagination.proto";
+import "google/api/annotations.proto";
+import "lbm/token/v1/token.proto";
+
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/line/lbm-sdk/x/token";
+
+// Query defines the gRPC querier service.
+service Query {
+  // Balance queries the number of tokens of a given class owned by the address.
+  rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
+    option (google.api.http).get = "/lbm/token/v1/balance/{address}/{class_id}";
+  }
+
+  // Supply queries the number of tokens from the given class id.
+  rpc Supply(QuerySupplyRequest) returns (QuerySupplyResponse) {
+    option (google.api.http).get = "/lbm/token/v1/supply/{class_id}";
+  }
+
+  // Token queries an token metadata based on its class id.
+  rpc Token(QueryTokenRequest) returns (QueryTokenResponse) {
+    option (google.api.http).get = "/lbm/token/v1/tokens/{class_id}";
+  }
+
+  // Tokens queries all token metadata.
+  rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
+    option (google.api.http).get = "/lbm/token/v1/tokens";
+  }
+}
+
+// QueryBalanceRequest is the request type for the Query/Balance RPC method
+message QueryBalanceRequest {
+  string class_id = 1;
+  string address  = 2;
+}
+
+// QueryBalanceResponse is the response type for the Query/Balance RPC method
+message QueryBalanceResponse {
+  string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// QuerySupplyRequest is the request type for the Query/Supply RPC method
+message QuerySupplyRequest {
+  string class_id = 1;
+  string type     = 2;
+}
+
+// QuerySupplyResponse is the response type for the Query/Supply RPC method
+message QuerySupplyResponse {
+  string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// QueryTokenRequest is the request type for the Query/Token RPC method
+message QueryTokenRequest {
+  string class_id = 1;
+}
+
+// QueryTokenResponse is the response type for the Query/Token RPC method
+message QueryTokenResponse {
+  lbm.token.v1.Token token = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryTokensRequest is the request type for the Query/Tokens RPC method
+message QueryTokensRequest {
+  // pagination defines an optional pagination for the request.
+  lbm.base.query.v1.PageRequest pagination = 1;
+}
+
+// QueryTokensResponse is the response type for the Query/Tokens RPC method
+message QueryTokensResponse {
+  repeated lbm.token.v1.Token    tokens     = 1 [(gogoproto.nullable) = false];
+  lbm.base.query.v1.PageResponse pagination = 2;
+}
