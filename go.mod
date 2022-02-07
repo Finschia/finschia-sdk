@@ -58,6 +58,6 @@ require (
 
 replace (
 	github.com/gogo/protobuf => github.com/regen-network/protobuf v1.3.3-alpha.regen.1
-	github.com/line/wasmvm => /Users/user/go/src/github.com/line/wasmvm
+	github.com/line/wasmvm => ../wasmvm
 	google.golang.org/grpc => google.golang.org/grpc v1.33.2
 )
