@@ -11,6 +11,15 @@ func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddre
 		return err
 	}
 
+	ownerActions := []string{
+		token.ActionMint,
+		token.ActionBurn,
+		token.ActionModify,
+	}
+	for _, action := range ownerActions {
+		k.setGrant(ctx, owner, class.Id, action, true)
+	}
+
 	// zero check?
 	amounts := []token.FT{
 		token.FT{
@@ -54,7 +63,7 @@ func (k Keeper) setClass(ctx sdk.Context, class token.Token) error {
 func (k Keeper) mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
 		if ok := k.GetGrant(ctx, grantee, amount.ClassId, token.ActionMint); !ok {
-			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for mint %s tokens", grantee, amount.ClassId)
+			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens", grantee, token.ActionMint, amount.ClassId)
 		}
 	}
 
@@ -92,7 +101,7 @@ func (k Keeper) mintTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token
 func (k Keeper) burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
 		if ok := k.GetGrant(ctx, from, amount.ClassId, token.ActionBurn); !ok {
-			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for burn %s tokens", from, amount.ClassId)
+			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens", from, token.ActionBurn, amount.ClassId)
 		}
 	}
 
@@ -111,7 +120,7 @@ func (k Keeper) burnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []
 		} else if ok := k.GetProxy(ctx, from, proxy, amount.ClassId); ok {
 			continue
 		}
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for burn %s tokens of %s", proxy, amount.ClassId, from)
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens of %s", proxy, token.ActionBurn, amount.ClassId, from)
 	}
 
 	if err := k.burnTokens(ctx, from, amounts); err != nil {
@@ -178,7 +187,59 @@ func (k Keeper) setSupply(ctx sdk.Context, supplyType string, supply token.FT) e
 	return nil
 }
 
-func (k Keeper) modify() {
+func (k Keeper) modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, changes []token.Pair) error {
+	if !k.GetGrant(ctx, grantee, classId, token.ActionModify) {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", grantee, token.ActionModify)
+	}
+
+	class, err := k.GetClass(ctx, classId)
+	if err != nil {
+		return err
+	}
+
+	modifiers := map[string]func(string){
+		token.AttributeKeyName: func(name string) {
+			class.Name = name
+		},
+		token.AttributeKeyImageUri: func(uri string) {
+			class.ImageUri = uri
+		},
+		token.AttributeKeyMeta: func(meta string) {
+			class.Meta = meta
+		},
+	}
+	for _, change := range changes {
+		modifiers[change.Key](change.Value)
+	}
+
+	k.setClass(ctx, *class)
+
+	return nil
+}
+
+func (k Keeper) grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classId, action string) error {
+	if !k.GetGrant(ctx, granter, classId, action) {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", granter, action)
+	}
+
+	k.setGrant(ctx, grantee, classId, action, true)
+
+	// TODO: replace it to HasAccount()
+	if acc := k.accountKeeper.GetAccount(ctx, grantee); acc == nil {
+		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, grantee))
+	}
+
+	return nil
+}
+
+func (k Keeper) revoke(ctx sdk.Context, grantee sdk.AccAddress, classId, action string) error {
+	if !k.GetGrant(ctx, grantee, classId, action) {
+		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", grantee, action)
+	}
+
+	k.setGrant(ctx, grantee, classId, action, false)
+
+	return nil
 }
 
 func (k Keeper) GetGrant(ctx sdk.Context, grantee sdk.AccAddress, classId, action string) bool {

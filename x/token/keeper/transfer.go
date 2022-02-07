@@ -35,6 +35,14 @@ func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, am
 	return k.transfer(ctx, from, to, amounts)
 }
 
+func (k Keeper) approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) error {
+	if k.GetProxy(ctx, approver, proxy, classId) {
+		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Already approved")
+	}
+	k.setProxy(ctx, approver, proxy, classId, true)
+	return nil
+}
+
 func (k Keeper) GetProxy(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(proxyKey(classId, proxy, approver))
