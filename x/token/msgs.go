@@ -32,6 +32,10 @@ const (
 	maxName = 20
 	maxImageUri = 1000
 	maxMeta = 1000
+
+	SupplyTotal = "total"
+	SupplyMint = "mint"
+	SupplyBurn = "burn"
 )
 
 func validateAmount(amount sdk.Int) error {
