@@ -317,13 +317,23 @@ func TestPaginatedVotesQuery(t *testing.T) {
 	app.GovKeeper.SetProposal(ctx, proposal)
 
 	votes := make([]types.Vote, 20)
-	rand := rand.New(rand.NewSource(time.Now().UnixNano()))
-	addrBytes := make([]byte, 20)
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	addrMap := make(map[string]struct{})
+	genAddr := func() string {
+		addrBytes := make([]byte, 20)
+		for {
+			random.Read(addrBytes)
+			addrStr := sdk.BytesToAccAddress(addrBytes).String()
+			if _, ok := addrMap[addrStr]; !ok {
+				addrMap[addrStr] = struct{}{}
+				return addrStr
+			}
+		}
+	}
 	for i := range votes {
-		rand.Read(addrBytes)
 		vote := types.Vote{
 			ProposalId: proposal.ProposalId,
-			Voter:      sdk.BytesToAccAddress(addrBytes).String(),
+			Voter:      genAddr(),
 			Option:     types.OptionYes,
 		}
 		votes[i] = vote

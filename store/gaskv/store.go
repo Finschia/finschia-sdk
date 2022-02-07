@@ -19,7 +19,6 @@ type Store struct {
 }
 
 // NewStore returns a reference to a new GasKVStore.
-// nolint
 func NewStore(parent types.KVStore, gasMeter types.GasMeter, gasConfig types.GasConfig) *Store {
 	kvs := &Store{
 		gasMeter:  gasMeter,
@@ -72,6 +71,12 @@ func (gs *Store) Delete(key []byte) {
 	// charge gas to prevent certain attack vectors even though space is being freed
 	gs.gasMeter.ConsumeGas(gs.gasConfig.DeleteCost, types.GasDeleteDesc)
 	gs.parent.Delete(key)
+}
+
+// Implements KVStore.
+func (gs *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
+	defer telemetry.MeasureSince(time.Now(), "store", "gaskv", "load")
+	return gs.parent.Prefetch(key, forSet)
 }
 
 // Iterator implements the KVStore interface. It returns an iterator which
