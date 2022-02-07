@@ -3,7 +3,7 @@ go 1.15
 module github.com/line/lbm-sdk
 
 require (
-	github.com/99designs/keyring v1.1.6
+	github.com/99designs/keyring v1.2.0
 	github.com/DataDog/zstd v1.4.5 // indirect
 	github.com/VictoriaMetrics/fastcache v1.7.0
 	github.com/armon/go-metrics v0.3.10
@@ -15,7 +15,7 @@ require (
 	github.com/cosmos/ledger-cosmos-go v0.11.1
 	github.com/dgraph-io/ristretto v0.1.0
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
-	github.com/dvsekhvalnov/jose2go v0.0.0-20200901110807-248326c1351b
+	github.com/dvsekhvalnov/jose2go v1.5.0
 	github.com/enigmampc/btcutil v1.0.3-0.20200723161021-e2fb6adb2a25
 	github.com/go-kit/kit v0.12.0
 	github.com/gogo/gateway v1.1.0
@@ -49,7 +49,7 @@ require (
 	github.com/tendermint/btcd v0.1.1
 	github.com/tendermint/crypto v0.0.0-20191022145703-50d29ede1e15
 	github.com/tendermint/go-amino v0.16.0
-	golang.org/x/crypto v0.0.0-20211215165025-cf75a172585e
+	golang.org/x/crypto v0.0.0-20220131195533-30dcbda58838
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa
 	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.27.1
