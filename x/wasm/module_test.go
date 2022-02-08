@@ -450,7 +450,7 @@ func TestHandleExecute(t *testing.T) {
 	assertExecuteResponse(t, res.Data, []byte{0xf0, 0x0b, 0xaa})
 
 	// this should be standard message event, plus x/wasm init event, plus 2 bank send event, plus a special event from the contract
-	require.Equal(t, 5, len(res.Events), prettyEvents(res.Events))
+	require.Equal(t, 6, len(res.Events), prettyEvents(res.Events))
 
 	require.Equal(t, "transfer", res.Events[0].Type)
 	require.Len(t, res.Events[0].Attributes, 3)
@@ -473,8 +473,8 @@ func TestHandleExecute(t *testing.T) {
 	// finally, standard x/wasm tag
 	assert.Equal(t, "message", res.Events[4].Type)
 	assertAttribute(t, "module", "wasm", res.Events[4].Attributes[0])
-	assert.Equal(t, "execute_contract", res.Events[4].Type)
-	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[4].Attributes[0])
+	assert.Equal(t, "execute_contract", res.Events[5].Type)
+	assertAttribute(t, "contract_address", contractBech32Addr, res.Events[5].Attributes[0])
 
 	// ensure bob now exists and got both payments released
 	bobAcct = data.acctKeeper.GetAccount(data.ctx, bob)
