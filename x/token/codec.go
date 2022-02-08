@@ -7,9 +7,9 @@ import (
 
 // RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
 func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	panic("Not implemented")
+	// panic("Not implemented")
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	panic("Not implemented")
+	// panic("Not implemented")
 }

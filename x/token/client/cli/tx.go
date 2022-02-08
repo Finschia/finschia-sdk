@@ -66,9 +66,10 @@ func NewTxCmdTransfer() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[3])
+			amountStr := args[3]
+			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s")
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
 			msg := token.MsgTransfer{
 				ClassId:  args[0],
@@ -98,9 +99,10 @@ func NewTxCmdTransferFrom() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[4])
+			amountStr := args[4]
+			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s")
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
 			msg := token.MsgTransferFrom{
 				ClassId:  args[0],
@@ -174,7 +176,7 @@ func NewTxCmdIssue() *cobra.Command {
 			}
 			supply, ok := sdk.NewIntFromString(supplyStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set supply: %s")
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set supply: %s", supplyStr)
 			}
 
 			mintable, err := cmd.Flags().GetBool(flagMintable)
@@ -285,9 +287,10 @@ func NewTxCmdMint() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[3])
+			amountStr := args[3]
+			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s")
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
 
 			msg := token.MsgMint{
@@ -318,9 +321,10 @@ func NewTxCmdBurn() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[2])
+			amountStr := args[2]
+			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s")
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
 
 			msg := token.MsgBurn{
@@ -350,9 +354,10 @@ func NewTxCmdBurnFrom() *cobra.Command {
 				return err
 			}
 
-			amount, ok := sdk.NewIntFromString(args[3])
+			amountStr := args[3]
+			amount, ok := sdk.NewIntFromString(amountStr)
 			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s")
+				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
 
 			msg := token.MsgBurnFrom{

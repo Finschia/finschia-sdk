@@ -28,7 +28,7 @@ func (k Keeper) transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []tok
 func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
 		if ok := k.GetApprove(ctx, from, proxy, amount.ClassId); !ok {
-			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized to send % tokens of %s", proxy, amount.ClassId, from)
+			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized to send %s tokens of %s", proxy, amount.ClassId, from)
 		}
 	}
 
