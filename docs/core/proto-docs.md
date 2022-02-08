@@ -699,8 +699,9 @@
   
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
     - [Balance](#lbm.token.v1.Balance)
+    - [ClassGenesisState](#lbm.token.v1.ClassGenesisState)
     - [GenesisState](#lbm.token.v1.GenesisState)
-    - [Supply](#lbm.token.v1.Supply)
+    - [Grant](#lbm.token.v1.Grant)
   
 - [lbm/token/v1/query.proto](#lbm/token/v1/query.proto)
     - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
@@ -10241,6 +10242,21 @@ genesis state.
 
 
 
+<a name="lbm.token.v1.ClassGenesisState"></a>
+
+### ClassGenesisState
+ClassGenesisState defines the classs keeper's genesis state.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `nonce` | [string](#string) |  | nonce is the next class nonce to issue. |
+
+
+
+
+
+
 <a name="lbm.token.v1.GenesisState"></a>
 
 ### GenesisState
@@ -10250,29 +10266,22 @@ GenesisState defines the token module's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `params` | [Params](#lbm.token.v1.Params) |  | params defines all the paramaters of the module. |
-| `next_class_id` | [uint64](#uint64) |  | next_class_id is the next class id to issue. |
+| `class_state` | [ClassGenesisState](#lbm.token.v1.ClassGenesisState) |  | class_state is the class keeper's genesis state. |
 | `balances` | [Balance](#lbm.token.v1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
-| `supplies` | [FT](#lbm.token.v1.FT) | repeated | supplies represents the total supply of FTs. |
-| `token` | [Token](#lbm.token.v1.Token) | repeated | token defines the metadata of the differents tokens. |
+| `classes` | [Token](#lbm.token.v1.Token) | repeated | classes defines the metadata of the differents tokens. |
+| `supplies` | [FT](#lbm.token.v1.FT) | repeated | supplies represents the total supplies of tokens. |
+| `mints` | [FT](#lbm.token.v1.FT) | repeated | mints represents the total mints of tokens. |
+| `burns` | [FT](#lbm.token.v1.FT) | repeated | burns represents the total burns of tokens. |
 
 
 
 
 
 
-<a name="lbm.token.v1.Supply"></a>
+<a name="lbm.token.v1.Grant"></a>
 
-### Supply
-Supply represents a struct that passively keeps track of the total supply,
-minted and burned amounts in the network.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
-| `total` | [string](#string) |  |  |
-| `minted` | [string](#string) |  |  |
-| `burned` | [string](#string) |  |  |
+### Grant
+Grant defines grant information.
 
 
 
@@ -10573,7 +10582,7 @@ MsgIssue represents a message to issue a token.
 | `meta` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 | `mintable` | [bool](#bool) |  |  |
-| `decimals` | [string](#string) |  |  |
+| `decimals` | [int32](#int32) |  |  |
 
 
 

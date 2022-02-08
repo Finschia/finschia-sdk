@@ -82,15 +82,15 @@ func (k Keeper) mintTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token
 	}
 
 	for _, amount := range amounts {
-		supplyMint := k.GetSupply(ctx, token.SupplyMint, amount.ClassId)
-		supplyMint.Amount = supplyMint.Amount.Add(amount.Amount)
-		if err := k.setSupply(ctx, token.SupplyMint, supplyMint); err != nil {
+		mint := k.GetMint(ctx, amount.ClassId)
+		mint.Amount = mint.Amount.Add(amount.Amount)
+		if err := k.setMint(ctx, mint); err != nil {
 			return err
 		}
 
-		supplyTotal := k.GetSupply(ctx, token.SupplyTotal, amount.ClassId)
-		supplyTotal.Amount = supplyTotal.Amount.Add(amount.Amount)
-		if err := k.setSupply(ctx, token.SupplyTotal, supplyTotal); err != nil {
+		supply := k.GetSupply(ctx, amount.ClassId)
+		supply.Amount = supply.Amount.Add(amount.Amount)
+		if err := k.setSupply(ctx, supply); err != nil {
 			return err
 		}
 	}
@@ -138,15 +138,15 @@ func (k Keeper) burnTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token
 	}
 
 	for _, amount := range amounts {
-		supplyBurn := k.GetSupply(ctx, token.SupplyBurn, amount.ClassId)
-		supplyBurn.Amount = supplyBurn.Amount.Add(amount.Amount)
-		if err := k.setSupply(ctx, token.SupplyBurn, supplyBurn); err != nil {
+		burn := k.GetBurn(ctx, amount.ClassId)
+		burn.Amount = burn.Amount.Add(amount.Amount)
+		if err := k.setBurn(ctx, burn); err != nil {
 			return err
 		}
 
-		supplyTotal := k.GetSupply(ctx, token.SupplyTotal, amount.ClassId)
-		supplyTotal.Amount = supplyTotal.Amount.Sub(amount.Amount)
-		if err := k.setSupply(ctx, token.SupplyTotal, supplyTotal); err != nil {
+		supply := k.GetSupply(ctx, amount.ClassId)
+		supply.Amount = supply.Amount.Sub(amount.Amount)
+		if err := k.setSupply(ctx, supply); err != nil {
 			return err
 		}
 	}
@@ -154,10 +154,10 @@ func (k Keeper) burnTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token
 	return nil
 }
 
-func (k Keeper) GetSupply(ctx sdk.Context, supplyType, classId string) token.FT {
+func (k Keeper) getStatistics(ctx sdk.Context, classId string, keyPrefix []byte) token.FT {
 	store := ctx.KVStore(k.storeKey)
 	amount := sdk.ZeroInt()
-	bz := store.Get(supplyKey(supplyType, classId))
+	bz := store.Get(statisticsKey(keyPrefix, classId))
 	if bz != nil {
 		if err := amount.Unmarshal(bz); err != nil {
 			panic(err)
@@ -170,14 +170,14 @@ func (k Keeper) GetSupply(ctx sdk.Context, supplyType, classId string) token.FT 
 	}
 }
 
-// The caller must validate `supply`.
-func (k Keeper) setSupply(ctx sdk.Context, supplyType string, supply token.FT) error {
+// The caller must validate `amount`.
+func (k Keeper) setStatistics(ctx sdk.Context, amount token.FT, keyPrefix []byte) error {
 	store := ctx.KVStore(k.storeKey)
-	key := supplyKey(supplyType, supply.ClassId)
-	if supply.Amount.IsZero() {
+	key := statisticsKey(keyPrefix, amount.ClassId)
+	if amount.Amount.IsZero() {
 		store.Delete(key)
 	} else {
-		bz, err := supply.Amount.Marshal()
+		bz, err := amount.Amount.Marshal()
 		if err != nil {
 			return err
 		}
@@ -185,6 +185,30 @@ func (k Keeper) setSupply(ctx sdk.Context, supplyType string, supply token.FT) e
 	}
 
 	return nil
+}
+
+func (k Keeper) GetSupply(ctx sdk.Context, classId string) token.FT {
+	return k.getStatistics(ctx, classId, supplyKeyPrefix)
+}
+
+func (k Keeper) GetMint(ctx sdk.Context, classId string) token.FT {
+	return k.getStatistics(ctx, classId, mintKeyPrefix)
+}
+
+func (k Keeper) GetBurn(ctx sdk.Context, classId string) token.FT {
+	return k.getStatistics(ctx, classId, burnKeyPrefix)
+}
+
+func (k Keeper) setSupply(ctx sdk.Context, amount token.FT) error {
+	return k.setStatistics(ctx, amount, supplyKeyPrefix)
+}
+
+func (k Keeper) setMint(ctx sdk.Context, amount token.FT) error {
+	return k.setStatistics(ctx, amount, mintKeyPrefix)
+}
+
+func (k Keeper) setBurn(ctx sdk.Context, amount token.FT) error {
+	return k.setStatistics(ctx, amount, burnKeyPrefix)
 }
 
 func (k Keeper) modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, changes []token.Pair) error {

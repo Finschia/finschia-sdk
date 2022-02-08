@@ -63,7 +63,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 		Symbol: req.Symbol,
 		ImageUri: req.ImageUri,
 		Meta: req.Meta,
-		Decimals: int32(req.Decimals.Int64()),
+		Decimals: req.Decimals,
 		Mintable: req.Mintable,
 	}
 	if err := s.keeper.issue(ctx, class, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount); err != nil {

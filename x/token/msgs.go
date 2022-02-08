@@ -32,10 +32,6 @@ const (
 	maxName = 20
 	maxImageUri = 1000
 	maxMeta = 1000
-
-	SupplyTotal = "total"
-	SupplyMint = "mint"
-	SupplyBurn = "burn"
 )
 
 func validateAmount(amount sdk.Int) error {
@@ -187,9 +183,9 @@ func validateMeta(meta string) error {
 	return nil
 }
 
-func validateDecimals(decimals sdk.Int) error {
-	if decimals.GT(sdk.NewInt(18)) || decimals.IsNegative() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid decimals: %s", decimals.String())
+func validateDecimals(decimals int32) error {
+	if decimals < 0 || decimals > 18 {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid decimals: %d", decimals)
 	}
 	return nil
 }

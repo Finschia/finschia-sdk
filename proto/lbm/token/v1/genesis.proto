@@ -11,19 +11,31 @@ message GenesisState {
   // params defines all the paramaters of the module.
   Params params = 1 [(gogoproto.nullable) = false];
 
-  // next_class_id is the next class id to issue.
-  uint64 next_class_id = 2;
+  // class_state is the class keeper's genesis state.
+  ClassGenesisState class_state = 2;
 
   // balances is an array containing the balances of all the accounts.
   repeated Balance balances = 3 [(gogoproto.nullable) = false];
 
-  // supplies represents the total supply of FTs.
-  repeated lbm.token.v1.FT supplies = 4 [(gogoproto.nullable) = false];
+  // classes defines the metadata of the differents tokens.
+  repeated Token classes = 4 [(gogoproto.nullable) = false];
 
-  // token defines the metadata of the differents tokens.
-  repeated Token token = 5 [(gogoproto.nullable) = false];
+  // grants defines the grant information.
 
-  //
+  // supplies represents the total supplies of tokens.
+  repeated FT supplies = 5 [(gogoproto.nullable) = false];
+
+  // mints represents the total mints of tokens.
+  repeated FT mints = 6 [(gogoproto.nullable) = false];
+
+  // burns represents the total burns of tokens.
+  repeated FT burns = 7 [(gogoproto.nullable) = false];
+}
+
+// ClassGenesisState defines the classs keeper's genesis state.
+message ClassGenesisState {
+  // nonce is the next class nonce to issue.
+  string nonce = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int"];
 }
 
 // Balance defines an account address and balance pair used in the token module's
@@ -33,12 +45,5 @@ message Balance {
   repeated lbm.token.v1.FT tokens = 2 [(gogoproto.nullable) = false];
 }
 
-// Supply represents a struct that passively keeps track of the total supply,
-// minted and burned amounts in the network.
-message Supply {
-  string class_id = 1;
-
-  string total  = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-  string minted = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-  string burned = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
-}
+// Grant defines grant information.
+message Grant {}

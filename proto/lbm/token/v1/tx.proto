@@ -86,7 +86,7 @@ message MsgIssue {
   string meta      = 6;
   string amount    = 7 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
   bool   mintable  = 8;
-  string decimals  = 9 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  int32  decimals  = 9;
 }
 
 // MsgIssueResponse defines the Msg/Issue response type.

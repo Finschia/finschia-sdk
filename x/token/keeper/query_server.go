@@ -45,7 +45,7 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	supply := s.keeper.GetSupply(ctx, req.Type, req.ClassId)
+	supply := s.keeper.GetSupply(ctx, req.ClassId)
 
 	return &token.QuerySupplyResponse{Amount: supply.Amount}, nil
 }

@@ -186,9 +186,9 @@ func NewTxCmdIssue() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			decimals, ok := sdk.NewIntFromString(decimalsStr)
-			if !ok {
-				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set decimals: %s")
+			decimals, err := cmd.Flags().GetInt32(decimalsStr)
+			if err != nil {
+				return err
 			}
 
 			msg := token.MsgIssue{
