@@ -45,7 +45,17 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	supply := s.keeper.GetSupply(ctx, req.ClassId)
+	queriers := map[string]func(ctx sdk.Context, classId string)token.FT{
+		"supply": s.keeper.GetSupply,
+		"mint": s.keeper.GetMint,
+		"burn": s.keeper.GetBurn,
+	}
+	querier, ok := queriers[req.Type]
+	if !ok {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid supply type: %s", req.Type)
+	}
+
+	supply := querier(ctx, req.ClassId)
 
 	return &token.QuerySupplyResponse{Amount: supply.Amount}, nil
 }
