@@ -117,7 +117,7 @@ func (k Keeper) burnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []
 	for _, amount := range amounts {
 		if ok := k.GetGrant(ctx, proxy, amount.ClassId, token.ActionBurn); ok {
 			continue
-		} else if ok := k.GetProxy(ctx, from, proxy, amount.ClassId); ok {
+		} else if ok := k.GetApprove(ctx, from, proxy, amount.ClassId); ok {
 			continue
 		}
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens of %s", proxy, token.ActionBurn, amount.ClassId, from)

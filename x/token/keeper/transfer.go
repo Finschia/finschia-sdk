@@ -27,7 +27,7 @@ func (k Keeper) transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []tok
 
 func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
-		if ok := k.GetProxy(ctx, from, proxy, amount.ClassId); !ok {
+		if ok := k.GetApprove(ctx, from, proxy, amount.ClassId); !ok {
 			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized to send % tokens of %s", proxy, amount.ClassId, from)
 		}
 	}
@@ -36,21 +36,21 @@ func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, am
 }
 
 func (k Keeper) approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) error {
-	if k.GetProxy(ctx, approver, proxy, classId) {
+	if k.GetApprove(ctx, approver, proxy, classId) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Already approved")
 	}
-	k.setProxy(ctx, approver, proxy, classId, true)
+	k.setApprove(ctx, approver, proxy, classId, true)
 	return nil
 }
 
-func (k Keeper) GetProxy(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) bool {
+func (k Keeper) GetApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) bool {
 	store := ctx.KVStore(k.storeKey)
-	return store.Has(proxyKey(classId, proxy, approver))
+	return store.Has(approveKey(classId, proxy, approver))
 }
 
-func (k Keeper) setProxy(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string, set bool) {
+func (k Keeper) setApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string, set bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := proxyKey(classId, proxy, approver)
+	key := approveKey(classId, proxy, approver)
 	if set {
 		store.Set(key, []byte{})
 	} else {

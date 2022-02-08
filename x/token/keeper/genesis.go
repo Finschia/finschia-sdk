@@ -19,6 +19,14 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 		}
 	}
 
+	for _, grant := range data.Grants {
+		k.setGrant(ctx, sdk.AccAddress(grant.Grantee), grant.ClassId, grant.Action, true)
+	}
+
+	for _, approve := range data.Approves {
+		k.setApprove(ctx, sdk.AccAddress(approve.Approver), sdk.AccAddress(approve.Proxy), approve.ClassId, true)
+	}
+
 	for _, amount := range data.Supplies {
 		if err := k.setSupply(ctx, amount); err != nil {
 			panic(err)
@@ -80,10 +88,19 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 		burns = append(burns, amount)
 		return false
 	})
+
+	var grants []token.Grant
+	k.iterateGrants(ctx, func(grant token.Grant) (stop bool) {
+		grants = append(grants, grant)
+		return false
+	})
+
+	var approves []token.Approve
+	k.iterateApproves(ctx, func(approve token.Approve) (stop bool) {
+		approves = append(approves, approve)
+		return false
+	})
 	
-	if true {
-		panic("Not implemented")
-	}
 	return &token.GenesisState{
 		Balances: balances,
 		Classes: classes,

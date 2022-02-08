@@ -49,6 +49,48 @@ func (k Keeper) iterateClasses(ctx sdk.Context, fn func(class token.Token) (stop
 	}
 }
 
+func (k Keeper) iterateGrants(ctx sdk.Context, fn func(grant token.Grant) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+
+	iterator := sdk.KVStorePrefixIterator(store, grantKeyPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		grantee, classId, action := splitGrantKey(iterator.Key())
+		grant := token.Grant{
+			Grantee: grantee.String(),
+			ClassId: classId,
+			Action: action,
+		}
+
+		stop := fn(grant)
+		if stop {
+			break
+		}
+	}
+}
+
+func (k Keeper) iterateApproves(ctx sdk.Context, fn func(approve token.Approve) (stop bool)) {
+	store := ctx.KVStore(k.storeKey)
+
+	iterator := sdk.KVStorePrefixIterator(store, approveKeyPrefix)
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		classId, proxy, approver := splitApproveKey(iterator.Key())
+		approve := token.Approve{
+			Approver: approver.String(),
+			Proxy: proxy.String(),
+			ClassId: classId,
+		}
+
+		stop := fn(approve)
+		if stop {
+			break
+		}
+	}
+}
+
 func (k Keeper) iterateStatistics(ctx sdk.Context, fn func(amount token.FT) (stop bool), keyPrefix []byte) {
 	store := ctx.KVStore(k.storeKey)
 

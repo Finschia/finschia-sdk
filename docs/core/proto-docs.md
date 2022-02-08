@@ -698,6 +698,7 @@
     - [Token](#lbm.token.v1.Token)
   
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
+    - [Approve](#lbm.token.v1.Approve)
     - [Balance](#lbm.token.v1.Balance)
     - [ClassGenesisState](#lbm.token.v1.ClassGenesisState)
     - [GenesisState](#lbm.token.v1.GenesisState)
@@ -10225,6 +10226,23 @@ Token defines token information.
 
 
 
+<a name="lbm.token.v1.Approve"></a>
+
+### Approve
+Approve defines approve information.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approver` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.token.v1.Balance"></a>
 
 ### Balance
@@ -10269,6 +10287,8 @@ GenesisState defines the token module's genesis state.
 | `class_state` | [ClassGenesisState](#lbm.token.v1.ClassGenesisState) |  | class_state is the class keeper's genesis state. |
 | `balances` | [Balance](#lbm.token.v1.Balance) | repeated | balances is an array containing the balances of all the accounts. |
 | `classes` | [Token](#lbm.token.v1.Token) | repeated | classes defines the metadata of the differents tokens. |
+| `grants` | [Grant](#lbm.token.v1.Grant) | repeated | grants defines the grant information. |
+| `approves` | [Approve](#lbm.token.v1.Approve) | repeated | approves defines the approve information. |
 | `supplies` | [FT](#lbm.token.v1.FT) | repeated | supplies represents the total supplies of tokens. |
 | `mints` | [FT](#lbm.token.v1.FT) | repeated | mints represents the total mints of tokens. |
 | `burns` | [FT](#lbm.token.v1.FT) | repeated | burns represents the total burns of tokens. |
@@ -10282,6 +10302,13 @@ GenesisState defines the token module's genesis state.
 
 ### Grant
 Grant defines grant information.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `action` | [string](#string) |  |  |
 
 
 

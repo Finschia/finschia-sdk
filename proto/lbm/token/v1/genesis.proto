@@ -21,15 +21,19 @@ message GenesisState {
   repeated Token classes = 4 [(gogoproto.nullable) = false];
 
   // grants defines the grant information.
+  repeated Grant grants = 5;
+
+  // approves defines the approve information.
+  repeated Approve approves = 6;
 
   // supplies represents the total supplies of tokens.
-  repeated FT supplies = 5 [(gogoproto.nullable) = false];
+  repeated FT supplies = 7 [(gogoproto.nullable) = false];
 
   // mints represents the total mints of tokens.
-  repeated FT mints = 6 [(gogoproto.nullable) = false];
+  repeated FT mints = 8 [(gogoproto.nullable) = false];
 
   // burns represents the total burns of tokens.
-  repeated FT burns = 7 [(gogoproto.nullable) = false];
+  repeated FT burns = 9 [(gogoproto.nullable) = false];
 }
 
 // ClassGenesisState defines the classs keeper's genesis state.
@@ -46,4 +50,15 @@ message Balance {
 }
 
 // Grant defines grant information.
-message Grant {}
+message Grant {
+  string grantee  = 1;
+  string class_id = 2;
+  string action   = 3;
+}
+
+// Approve defines approve information.
+message Approve {
+  string approver = 1;
+  string proxy    = 2;
+  string class_id = 3;
+}

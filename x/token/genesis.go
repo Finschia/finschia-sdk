@@ -35,6 +35,21 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
+	for _, grant := range data.Grants {
+		if err := sdk.ValidateAccAddress(grant.Grantee); err != nil {
+			return err
+		}
+	}
+
+	for _, approve := range data.Approves {
+		if err := sdk.ValidateAccAddress(approve.Approver); err != nil {
+			return err
+		}
+		if err := sdk.ValidateAccAddress(approve.Proxy); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 

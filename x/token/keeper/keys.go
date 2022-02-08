@@ -8,7 +8,7 @@ var (
 	classKeyPrefix = []byte{0x01}
 	balanceKeyPrefix = []byte{0x02}
 	grantKeyPrefix = []byte{0x03}
-	proxyKeyPrefix = []byte{0x04}
+	approveKeyPrefix = []byte{0x04}
 
 	// statistics keys
 	supplyKeyPrefix = []byte{0x05}
@@ -91,9 +91,9 @@ func grantKey(grantee sdk.AccAddress, classId, action string) []byte {
 	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(classId)+len(action))
 
 	begin := 0
-	copy(key, proxyKeyPrefix)
+	copy(key, approveKeyPrefix)
 
-	begin += len(proxyKeyPrefix)
+	begin += len(approveKeyPrefix)
 	key[begin] = byte(len(grantee))
 
 	begin += 1
@@ -126,8 +126,8 @@ func splitGrantKey(key []byte) (grantee sdk.AccAddress, classId, action string) 
 	return
 }
 
-func proxyKey(classId string, proxy, approver sdk.AccAddress) []byte {
-	key := make([]byte, len(proxyKeyPrefix)+1+len(classId)+1+len(proxy)+len(approver))
+func approveKey(classId string, proxy, approver sdk.AccAddress) []byte {
+	key := make([]byte, len(approveKeyPrefix)+1+len(classId)+1+len(proxy)+len(approver))
 
 	begin := 0
 	copy(key, grantKeyPrefix)
@@ -150,8 +150,8 @@ func proxyKey(classId string, proxy, approver sdk.AccAddress) []byte {
 	return key
 }
 
-func splitProxyKey(key []byte) (classId string, proxy, approver sdk.AccAddress) {
-	begin := len(proxyKeyPrefix) + 1
+func splitApproveKey(key []byte) (classId string, proxy, approver sdk.AccAddress) {
+	begin := len(approveKeyPrefix) + 1
 	end := begin + int(key[begin - 1])
 	classId = string(key[begin:end])
 
