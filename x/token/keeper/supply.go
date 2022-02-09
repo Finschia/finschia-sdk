@@ -62,6 +62,14 @@ func (k Keeper) setClass(ctx sdk.Context, class token.Token) error {
 
 func (k Keeper) mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
+		class, err := k.GetClass(ctx, amount.ClassId)
+		if err != nil {
+			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No token found for: %s", amount.ClassId)
+		}
+		if !class.Mintable {
+			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Not mintable: %s", amount.ClassId)
+		}
+
 		if ok := k.GetGrant(ctx, grantee, amount.ClassId, token.ActionMint); !ok {
 			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens", grantee, token.ActionMint, amount.ClassId)
 		}
