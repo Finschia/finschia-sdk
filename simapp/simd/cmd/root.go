@@ -2,6 +2,9 @@ package cmd
 
 import (
 	"errors"
+	"github.com/line/lbm-sdk/x/wasm"
+	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
+	"github.com/prometheus/client_golang/prometheus"
 	"io"
 	"os"
 	"path/filepath"
@@ -189,6 +192,10 @@ func (a appCreator) newApp(logger log.Logger, db tmdb.DB, traceStore io.Writer, 
 	if err != nil {
 		panic(err)
 	}
+	var wasmOpts []wasm.Option
+	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
+		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
+	}
 
 	return simapp.NewSimApp(
 		logger, db, traceStore, true, skipUpgradeHeights,
@@ -196,6 +203,7 @@ func (a appCreator) newApp(logger log.Logger, db tmdb.DB, traceStore io.Writer, 
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encCfg,
 		appOpts,
+		wasmOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(server.FlagHaltHeight))),
@@ -224,13 +232,13 @@ func (a appCreator) appExport(
 	}
 
 	if height != -1 {
-		simApp = simapp.NewSimApp(logger, db, traceStore, false, map[int64]bool{}, homePath, uint(1), a.encCfg, appOpts)
+		simApp = simapp.NewSimApp(logger, db, traceStore, false, map[int64]bool{}, homePath, uint(1), a.encCfg, appOpts, nil)
 
 		if err := simApp.LoadHeight(height); err != nil {
 			return servertypes.ExportedApp{}, err
 		}
 	} else {
-		simApp = simapp.NewSimApp(logger, db, traceStore, true, map[int64]bool{}, homePath, uint(1), a.encCfg, appOpts)
+		simApp = simapp.NewSimApp(logger, db, traceStore, true, map[int64]bool{}, homePath, uint(1), a.encCfg, appOpts, nil)
 	}
 
 	return simApp.ExportAppStateAndValidators(forZeroHeight, jailAllowedAddrs)

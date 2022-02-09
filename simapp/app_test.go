@@ -21,12 +21,12 @@ import (
 	"github.com/line/lbm-sdk/x/auth/vesting"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/capability"
+	"github.com/line/lbm-sdk/x/consortium"
 	"github.com/line/lbm-sdk/x/crisis"
 	"github.com/line/lbm-sdk/x/distribution"
 	"github.com/line/lbm-sdk/x/evidence"
 	"github.com/line/lbm-sdk/x/genutil"
 	"github.com/line/lbm-sdk/x/gov"
-	"github.com/line/lbm-sdk/x/consortium"
 	transfer "github.com/line/lbm-sdk/x/ibc/applications/transfer"
 	ibc "github.com/line/lbm-sdk/x/ibc/core"
 	"github.com/line/lbm-sdk/x/mint"
@@ -39,7 +39,7 @@ import (
 func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
 	db := memdb.NewDB()
-	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
 
 	for acc := range maccPerms {
 		ex, _ := allowedReceivingModAcc[acc]
@@ -63,7 +63,7 @@ func TestSimAppExportAndBlockedAddrs(t *testing.T) {
 	app.Commit()
 
 	// Making a new app object with the db, so that initchain hasn't been called
-	app2 := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	app2 := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
 	_, err = app2.ExportAppStateAndValidators(false, []string{})
 	require.NoError(t, err, "ExportAppStateAndValidators should not have an error")
 }
@@ -77,7 +77,7 @@ func TestRunMigrations(t *testing.T) {
 	db := memdb.NewDB()
 	encCfg := MakeTestEncodingConfig()
 	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
-	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
 
 	// Create a new baseapp and configurator for the purpose of this test.
 	bApp := baseapp.NewBaseApp(appName, logger, db, encCfg.TxConfig.TxDecoder())
@@ -200,7 +200,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 	db := memdb.NewDB()
 	encCfg := MakeTestEncodingConfig()
 	logger := log.NewOCLogger(log.NewSyncWriter(os.Stdout))
-	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	app := NewSimApp(logger, db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
 	ctx := app.NewContext(true, ocproto.Header{Height: app.LastBlockHeight()})
 
 	// Create a mock module. This module will serve as the new module we're
@@ -246,7 +246,7 @@ func TestInitGenesisOnMigration(t *testing.T) {
 func TestUpgradeStateOnGenesis(t *testing.T) {
 	encCfg := MakeTestEncodingConfig()
 	db := memdb.NewDB()
-	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{})
+	app := NewSimApp(log.NewOCLogger(log.NewSyncWriter(os.Stdout)), db, nil, true, map[int64]bool{}, DefaultNodeHome, 0, encCfg, EmptyAppOptions{}, nil)
 	genesisState := NewDefaultGenesisState(encCfg.Marshaler)
 	stateBytes, err := json.MarshalIndent(genesisState, "", "  ")
 	require.NoError(t, err)

@@ -12,6 +12,7 @@ MOCKS_DIR = $(CURDIR)/tests/mocks
 HTTPS_GIT := https://github.com/line/lbm-sdk.git
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf
+CGO_ENABLED ?= 1
 
 export GO111MODULE = on
 
@@ -50,6 +51,9 @@ else
     CGO_ENABLED=1
     BUILD_TAGS += gcc cleveldb
     DB_BACKEND = cleveldb
+    CLEVELDB_DIR = leveldb
+	CGO_CFLAGS=-I$(shell pwd)/$(CLEVELDB_DIR)/include
+	CGO_LDFLAGS="-L$(shell pwd)/$(CLEVELDB_DIR)/build -L$(shell pwd)/snappy/build -lleveldb -lm -lstdc++ -lsnappy"
   endif
   ifeq (badgerdb,$(findstring badgerdb,$(LBM_BUILD_OPTIONS)))
     BUILD_TAGS += badgerdb
@@ -59,6 +63,9 @@ else
     CGO_ENABLED=1
     BUILD_TAGS += gcc rocksdb
     DB_BACKEND = rocksdb
+    ROCKSDB_DIR=$(shell pwd)/rocksdb
+	CGO_CFLAGS=-I$(ROCKSDB_DIR)/include
+	CGO_LDFLAGS="-L$(ROCKSDB_DIR) -lrocksdb -lm -lstdc++ $(shell awk '/PLATFORM_LDFLAGS/ {sub("PLATFORM_LDFLAGS=", ""); print}' < $(ROCKSDB_DIR)/make_config.mk)"
   endif
   ifeq (boltdb,$(findstring boltdb,$(LBM_BUILD_OPTIONS)))
     BUILD_TAGS += boltdb
@@ -113,6 +120,11 @@ include contrib/devtools/Makefile
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
+
+build: go.sum $(BUILDDIR)/ dbbackend
+	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+
+# todo: should be fix
 build-linux:
 	GOOS=linux GOARCH=amd64 LEDGER_ENABLED=false $(MAKE) build
 
@@ -121,6 +133,42 @@ $(BUILD_TARGETS): go.sum $(BUILDDIR)/
 
 $(BUILDDIR)/:
 	mkdir -p $(BUILDDIR)/
+
+.PHONY: dbbackend
+# for more faster building use -j8; but it will be failed in docker building because of low memory
+ifeq ($(DB_BACKEND), rocksdb)
+dbbackend:
+	@if [ ! -e $(ROCKSDB_DIR) ]; then          \
+		sh ./contrib/get_rocksdb.sh;         \
+	fi
+	@if [ ! -e $(ROCKSDB_DIR)/librocksdb.a ]; then    \
+		cd $(ROCKSDB_DIR) && make -j2 static_lib; \
+	fi
+	@if [ ! -e $(ROCKSDB_DIR)/libsnappy.a ]; then    \
+                cd $(ROCKSDB_DIR) && make libsnappy.a DEBUG_LEVEL=0; \
+        fi
+else ifeq ($(DB_BACKEND), cleveldb)
+dbbackend:
+	@if [ ! -e $(CLEVELDB_DIR) ]; then         \
+		sh contrib/get_cleveldb.sh;        \
+	fi
+	@if [ ! -e $(CLEVELDB_DIR)/libcleveldb.a ]; then   \
+		cd $(CLEVELDB_DIR);                        \
+		mkdir build;                               \
+		cd build;                                  \
+		cmake -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF -DLEVELDB_BUILD_TESTS=OFF -DLEVELDB_BUILD_BENCHMARKS=OFF ..; \
+		make;                                      \
+	fi
+	@if [ ! -e snappy ]; then \
+		sh contrib/get_snappy.sh; \
+		cd snappy; \
+		mkdir build && cd build; \
+		cmake -DBUILD_SHARED_LIBS=OFF -DSNAPPY_BUILD_TESTS=OFF -DSNAPPY_REQUIRE_AVX2=ON ..;\
+		make; \
+	fi
+else
+dbbackend:
+endif
 
 build-simd-all: go.sum
 	$(DOCKER) rm latest-build || true

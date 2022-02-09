@@ -27,7 +27,7 @@ var (
 
 func createTestApp() (*simapp.SimApp, sdk.Context, []sdk.AccAddress) {
 	db := memdb.NewDB()
-	app := simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, 1, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{})
+	app := simapp.NewSimApp(log.NewNopLogger(), db, nil, true, map[int64]bool{}, simapp.DefaultNodeHome, 1, simapp.MakeTestEncodingConfig(), simapp.EmptyAppOptions{}, nil)
 	ctx := app.NewContext(true, ocproto.Header{})
 
 	constantFee := sdk.NewInt64Coin(sdk.DefaultBondDenom, 10)

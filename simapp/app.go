@@ -1,6 +1,8 @@
 package simapp
 
 import (
+	"github.com/line/lbm-sdk/x/wasm"
+	wasmclient "github.com/line/lbm-sdk/x/wasm/client"
 	"io"
 	"net/http"
 	"os"
@@ -120,12 +122,15 @@ var (
 		distr.AppModuleBasic{},
 		consortium.AppModuleBasic{},
 		gov.NewAppModuleBasic(
-			consortiumclient.UpdateConsortiumParamsProposalHandler,
-			consortiumclient.UpdateValidatorAuthsProposalHandler,
-			paramsclient.ProposalHandler,
-			distrclient.ProposalHandler,
-			upgradeclient.ProposalHandler,
-			upgradeclient.CancelProposalHandler,
+			append(
+				wasmclient.ProposalHandlers,
+				consortiumclient.UpdateConsortiumParamsProposalHandler,
+				consortiumclient.UpdateValidatorAuthsProposalHandler,
+				paramsclient.ProposalHandler,
+				distrclient.ProposalHandler,
+				upgradeclient.ProposalHandler,
+				upgradeclient.CancelProposalHandler,
+			)...,
 		),
 		params.AppModuleBasic{},
 		crisis.AppModuleBasic{},
@@ -136,6 +141,7 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		wasm.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -192,11 +198,13 @@ type SimApp struct {
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
+	WasmKeeper       wasm.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper capabilitykeeper.ScopedKeeper
 	ScopedIBCMockKeeper  capabilitykeeper.ScopedKeeper
+	ScopedWasmKeeper     capabilitykeeper.ScopedKeeper
 
 	// the module manager
 	mm *module.Manager
@@ -221,7 +229,7 @@ func init() {
 func NewSimApp(
 	logger log.Logger, db tmdb.DB, traceStore io.Writer, loadLatest bool, skipUpgradeHeights map[int64]bool,
 	homePath string, invCheckPeriod uint, encodingConfig simappparams.EncodingConfig,
-	appOpts servertypes.AppOptions, baseAppOptions ...func(*baseapp.BaseApp),
+	appOpts servertypes.AppOptions, wasmOpts []wasm.Option, baseAppOptions ...func(*baseapp.BaseApp),
 ) *SimApp {
 
 	// TODO: Remove cdc in favor of appCodec once all modules are migrated.
@@ -239,7 +247,7 @@ func NewSimApp(
 		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
 		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
 		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		feegranttypes.StoreKey, consortiumtypes.StoreKey,
+		feegranttypes.StoreKey, consortiumtypes.StoreKey, wasm.StoreKey,
 	)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
 
@@ -262,6 +270,8 @@ func NewSimApp(
 	app.CapabilityKeeper = capabilitykeeper.NewKeeper(appCodec, keys[capabilitytypes.StoreKey], memKeys[capabilitytypes.MemStoreKey])
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibchost.ModuleName)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
+	scopedWasmKeeper := app.CapabilityKeeper.ScopeToModule(wasm.ModuleName)
+
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
 	scopedIBCMockKeeper := app.CapabilityKeeper.ScopeToModule(ibcmock.ModuleName)
@@ -305,6 +315,38 @@ func NewSimApp(
 		appCodec, keys[ibchost.StoreKey], app.GetSubspace(ibchost.ModuleName), app.StakingKeeper, scopedIBCKeeper,
 	)
 
+	wasmDir := filepath.Join(homePath, "wasm")
+	wasmConfig, err := wasm.ReadWasmConfig(appOpts)
+	if err != nil {
+		panic("error while reading wasm config: " + err.Error())
+	}
+
+	// The last arguments can contain custom message handlers, and custom query handlers,
+	// if we want to allow any custom callbacks
+	supportedFeatures := "staking,stargate"
+	app.WasmKeeper = wasm.NewKeeper(
+		appCodec,
+		keys[wasm.StoreKey],
+		app.GetSubspace(wasm.ModuleName),
+		app.AccountKeeper,
+		app.BankKeeper,
+		app.StakingKeeper,
+		app.DistrKeeper,
+		app.IBCKeeper.ChannelKeeper,
+		&app.IBCKeeper.PortKeeper,
+		scopedWasmKeeper,
+		app.TransferKeeper,
+		app.Router(),
+		nil,
+		app.GRPCQueryRouter(),
+		wasmDir,
+		wasmConfig,
+		supportedFeatures,
+		nil,
+		nil,
+		wasmOpts...,
+	)
+
 	// register the proposal types
 	govRouter := govtypes.NewRouter()
 	govRouter.AddRoute(govtypes.RouterKey, govtypes.ProposalHandler).
@@ -334,6 +376,7 @@ func NewSimApp(
 	ibcRouter := porttypes.NewRouter()
 	ibcRouter.AddRoute(ibctransfertypes.ModuleName, transferModule)
 	ibcRouter.AddRoute(ibcmock.ModuleName, mockModule)
+	ibcRouter.AddRoute(wasm.ModuleName, wasm.NewIBCHandler(app.WasmKeeper, app.IBCKeeper.ChannelKeeper))
 	app.IBCKeeper.SetRouter(ibcRouter)
 
 	// create evidence keeper with router
@@ -369,6 +412,7 @@ func NewSimApp(
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		stakingplus.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.ConsortiumKeeper),
 		upgrade.NewAppModule(app.UpgradeKeeper),
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
@@ -395,6 +439,8 @@ func NewSimApp(
 		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
 		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
 		feegranttypes.ModuleName, consortiumtypes.ModuleName,
+		// wasm after ibc transfer
+		wasm.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -420,6 +466,7 @@ func NewSimApp(
 		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		wasm.NewAppModule(appCodec, &app.WasmKeeper, app.StakingKeeper),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
@@ -457,12 +504,18 @@ func NewSimApp(
 		ctx := app.BaseApp.NewUncachedContext(true, ocproto.Header{})
 		app.CapabilityKeeper.InitializeAndSeal(ctx)
 
+		// Initialize pinned codes in wasmvm as they are not persisted there
+		if err := app.WasmKeeper.InitializePinnedCodes(ctx); err != nil {
+			panic(err)
+		}
+
 		// Initialize the keeper of bankkeeper
 		app.BankKeeper.(bankpluskeeper.Keeper).InitializeBankPlus(ctx)
 	}
 
 	app.ScopedIBCKeeper = scopedIBCKeeper
 	app.ScopedTransferKeeper = scopedTransferKeeper
+	app.ScopedWasmKeeper = scopedWasmKeeper
 
 	// NOTE: the IBC mock keeper and application module is used only for testing core IBC. Do
 	// note replicate if you do not need to test core IBC or light clients.
@@ -664,6 +717,7 @@ func initParamsKeeper(appCodec codec.BinaryMarshaler, legacyAmino *codec.LegacyA
 	paramsKeeper.Subspace(crisistypes.ModuleName)
 	paramsKeeper.Subspace(ibctransfertypes.ModuleName)
 	paramsKeeper.Subspace(ibchost.ModuleName)
+	paramsKeeper.Subspace(wasm.ModuleName)
 
 	return paramsKeeper
 }
