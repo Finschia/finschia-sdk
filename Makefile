@@ -120,9 +120,10 @@ include contrib/devtools/Makefile
 BUILD_TARGETS := build install
 
 build: BUILD_ARGS=-o $(BUILDDIR)/
-
-build: go.sum $(BUILDDIR)/ dbbackend
 	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
+
+#build: go.sum $(BUILDDIR)/ dbbackend
+#	CGO_CFLAGS=$(CGO_CFLAGS) CGO_LDFLAGS=$(CGO_LDFLAGS) CGO_ENABLED=$(CGO_ENABLED) go build -mod=readonly $(BUILD_FLAGS) $(BUILD_ARGS) ./...
 
 # todo: should be fix
 build-linux:
@@ -409,11 +410,13 @@ benchmark:
 ###############################################################################
 
 lint: golangci-lint
-	golangci-lint run --out-format=tab
-	find . -name '*.go' -type f -not -path "*.git*" | xargs gofmt -d -s
+	@golangci-lint run --out-format=tab
+	find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -path "*_test.go" | xargs gofmt -d -s
 
 golangci-lint:
-	@go get github.com/golangci/golangci-lint/cmd/golangci-lint
+ifneq (,$(shell which golangci-lint>/dev/null))
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.28.0
+endif
 
 lint-fix:
 	golangci-lint run --fix --out-format=tab --issues-exit-code=0

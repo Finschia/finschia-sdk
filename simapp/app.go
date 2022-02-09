@@ -1,8 +1,6 @@
 package simapp
 
 import (
-	"github.com/line/lbm-sdk/x/wasm"
-	wasmclient "github.com/line/lbm-sdk/x/wasm/client"
 	"io"
 	"net/http"
 	"os"
@@ -98,6 +96,8 @@ import (
 	upgradeclient "github.com/line/lbm-sdk/x/upgrade/client"
 	upgradekeeper "github.com/line/lbm-sdk/x/upgrade/keeper"
 	upgradetypes "github.com/line/lbm-sdk/x/upgrade/types"
+	"github.com/line/lbm-sdk/x/wasm"
+	wasmclient "github.com/line/lbm-sdk/x/wasm/client"
 
 	// unnamed import of statik for swagger UI support
 	_ "github.com/line/lbm-sdk/client/docs/statik"

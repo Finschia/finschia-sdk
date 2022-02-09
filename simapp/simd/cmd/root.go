@@ -2,9 +2,7 @@ package cmd
 
 import (
 	"errors"
-	"github.com/line/lbm-sdk/x/wasm"
-	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
-	"github.com/prometheus/client_golang/prometheus"
+
 	"io"
 	"os"
 	"path/filepath"
@@ -12,6 +10,7 @@ import (
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/libs/log"
 	tmdb "github.com/line/tm-db/v2"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
@@ -36,6 +35,8 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/crisis"
 	genutilcli "github.com/line/lbm-sdk/x/genutil/client/cli"
+	"github.com/line/lbm-sdk/x/wasm"
+	wasmkeeper "github.com/line/lbm-sdk/x/wasm/keeper"
 )
 
 // NewRootCmd creates a new root command for simd. It is called once in the
