@@ -10,18 +10,18 @@ import (
 
 // NewId returns a brand new ID.
 func (k Keeper) NewId(ctx sdk.Context) string {
-	for nextId := k.getNextId(ctx); nextId.IsUint64(); nextId = nextId.Add(sdk.OneInt()) {
-		encoded := encodeId(nextId.Uint64())
+	for nonce := k.getNonce(ctx); nonce.IsUint64(); nonce = nonce.Add(sdk.OneInt()) {
+		encoded := nonceToId(nonce.Uint64())
 		if !k.HasId(ctx, encoded) {
 			k.addId(ctx, encoded)
-			k.setNextId(ctx, nextId.Add(sdk.OneInt()))
+			k.setNonce(ctx, nonce.Add(sdk.OneInt()))
 			return encoded
 		}
 	}
 	panic("Class id space exhausted: uint64")
 }
 
-func encodeId(id uint64) string {
+func nonceToId(id uint64) string {
 	hash := fnv.New32()
 	bz := make([]byte, 8)
 	binary.LittleEndian.PutUint64(bz, id)
@@ -36,26 +36,26 @@ func encodeId(id uint64) string {
 	return idStr
 }
 
-func (k Keeper) getNextId(ctx sdk.Context) sdk.Int {
+func (k Keeper) getNonce(ctx sdk.Context) sdk.Int {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(nextIdKey)
+	bz := store.Get(nonceKey)
 	if bz == nil {
 		panic("next id must exist")
 	}
-	var nextId sdk.Int
-	if err := nextId.Unmarshal(bz); err != nil {
+	var nonce sdk.Int
+	if err := nonce.Unmarshal(bz); err != nil {
 		panic(err)
 	}
-	return nextId
+	return nonce
 }
 
-func (k Keeper) setNextId(ctx sdk.Context, id sdk.Int) {
+func (k Keeper) setNonce(ctx sdk.Context, nonce sdk.Int) {
 	store := ctx.KVStore(k.storeKey)
-	bz, err := id.Marshal()
+	bz, err := nonce.Marshal()
 	if err != nil {
 		panic(err)
 	}
-	store.Set(nextIdKey, bz)
+	store.Set(nonceKey, bz)
 }
 
 func (k Keeper) addId(ctx sdk.Context, id string) {

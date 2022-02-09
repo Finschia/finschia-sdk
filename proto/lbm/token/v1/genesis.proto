@@ -39,7 +39,10 @@ message GenesisState {
 // ClassGenesisState defines the classs keeper's genesis state.
 message ClassGenesisState {
   // nonce is the next class nonce to issue.
-  string nonce = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int"];
+  string nonce = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+
+  // ids represents the issued ids.
+  repeated string ids = 2;
 }
 
 // Balance defines an account address and balance pair used in the token module's

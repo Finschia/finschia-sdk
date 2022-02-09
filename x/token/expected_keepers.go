@@ -19,5 +19,8 @@ type (
 		NewId(ctx sdk.Context) string
 		HasId(ctx sdk.Context, id string) bool
 		DeleteId(ctx sdk.Context, id string)
+
+		InitGenesis(ctx sdk.Context, data *ClassGenesisState)
+		ExportGenesis(ctx sdk.Context) *ClassGenesisState
 	}
 )

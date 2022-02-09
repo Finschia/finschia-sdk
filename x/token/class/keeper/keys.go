@@ -1,7 +1,7 @@
 package keeper
 
 var (
-	nextIdKey = []byte{0x01}
+	nonceKey = []byte{0x01}
 	idKeyPrefix = []byte{0x02}
 )
 
@@ -10,4 +10,8 @@ func idKey(id string) []byte {
 	copy(key, idKeyPrefix)
 	copy(key[len(idKeyPrefix):], id)
 	return key
+}
+
+func splitIdKey(key []byte) (id string) {
+	return string(key[len(idKeyPrefix):])
 }

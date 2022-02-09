@@ -10269,6 +10269,7 @@ ClassGenesisState defines the classs keeper's genesis state.
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `nonce` | [string](#string) |  | nonce is the next class nonce to issue. |
+| `ids` | [string](#string) | repeated | ids represents the issued ids. |
 
 
 

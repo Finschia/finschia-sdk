@@ -7,6 +7,8 @@ import (
 
 // InitGenesis new token genesis
 func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
+	k.classKeeper.InitGenesis(ctx, data.ClassState)
+
 	for _, balance := range data.Balances {
 		if err := k.addTokens(ctx, sdk.AccAddress(balance.Address), balance.Tokens); err != nil {
 			panic(err)
@@ -102,6 +104,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 	})
 	
 	return &token.GenesisState{
+		ClassState: k.classKeeper.ExportGenesis(ctx),
 		Balances: balances,
 		Classes: classes,
 		Supplies: supplies,

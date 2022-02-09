@@ -2,10 +2,15 @@ package token
 
 import (
 	sdk "github.com/line/lbm-sdk/types"
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
 
 // ValidateGenesis check the given genesis state has no integrity issues
 func ValidateGenesis(data GenesisState) error {
+	if err := validateClassGenesis(*data.ClassState); err != nil {
+		return err
+	}
+
 	for _, balance := range data.Balances {
 		if err := sdk.ValidateAccAddress(balance.Address); err != nil {
 			return err
@@ -55,5 +60,20 @@ func ValidateGenesis(data GenesisState) error {
 
 // DefaultGenesisState - Return a default genesis state
 func DefaultGenesisState() *GenesisState {
-	return &GenesisState{}
+	return &GenesisState{ClassState: defaultClassGenesisState()}
+}
+
+// For Class keeper
+func validateClassGenesis(data ClassGenesisState) error {
+	if !data.Nonce.IsUint64() {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "nonce must reside on uint64 range")
+	}
+	
+	return nil
+}
+
+func defaultClassGenesisState() *ClassGenesisState {
+	return &ClassGenesisState{
+		Nonce: sdk.ZeroInt(),
+	}
 }
