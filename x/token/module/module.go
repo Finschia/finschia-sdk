@@ -41,9 +41,7 @@ func (AppModuleBasic) Name() string {
 }
 
 // RegisterLegacyAminoCodec registers the token types on the LegacyAmino codec
-func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	token.RegisterLegacyAminoCodec(cdc)
-}
+func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
 // DefaultGenesis returns default genesis state as raw bytes for the token
 // module.
@@ -92,38 +90,30 @@ type AppModule struct {
 	AppModuleBasic
 
 	keeper        keeper.Keeper
-	accountKeeper token.AccountKeeper
-	classKeeper   token.ClassKeeper
 }
 
 // NewAppModule creates a new AppModule object
-func NewAppModule(cdc codec.Marshaler, keeper keeper.Keeper, ak token.AccountKeeper, ck token.ClassKeeper) AppModule {
+func NewAppModule(cdc codec.Marshaler, keeper keeper.Keeper) AppModule {
 	return AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
-		accountKeeper:  ak,
-		classKeeper:    ck,
 	}
 }
 
 // RegisterInvariants does nothing, there are no invariants to enforce
 func (AppModule) RegisterInvariants(_ sdk.InvariantRegistry) {}
 
-// Route is empty, as we do not handle Messages (just proposals)
-
 // Route returns the message routing key for the token module.
-func (AppModule) Route() sdk.Route {
-	// return sdk.Route{}
-	return sdk.NewRoute(token.RouterKey, nil)
+func (am AppModule) Route() sdk.Route {
+	return sdk.NewRoute(token.RouterKey, keeper.NewHandler(am.keeper))
 }
 
 // QuerierRoute returns the route we respond to for abci queries
-func (AppModule) QuerierRoute() string { return "" /* token.RouterKey */ }
+func (AppModule) QuerierRoute() string { return "" }
 
 // LegacyQuerierHandler registers a query handler to respond to the module-specific queries
 func (am AppModule) LegacyQuerierHandler(legacyQuerierCdc *codec.LegacyAmino) sdk.Querier {
 	return nil
-	// return keeper.NewQuerier(am.keeper, legacyQuerierCdc)
 }
 
 // RegisterServices registers a GRPC query service to respond to the

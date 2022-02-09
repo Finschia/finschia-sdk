@@ -20,7 +20,7 @@ const (
 func NewQueryCmd() *cobra.Command {
 	nftQueryCmd := &cobra.Command{
 		Use:                        token.ModuleName,
-		Short:                      "Querying commands for the nft module",
+		Short:                      "Querying commands for the token module",
 		Long:                       "",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,

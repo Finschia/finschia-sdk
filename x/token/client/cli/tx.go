@@ -22,7 +22,7 @@ const (
 	flagMeta = "meta"
 	flagImageUri = "image-uri"
 
-	DefaultDecimals = "8"
+	DefaultDecimals = 8
 	DefaultSupply = "1"
 )
 
@@ -71,13 +71,13 @@ func NewTxCmdTransfer() *cobra.Command {
 			if !ok {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
-			msg := token.MsgTransfer{
+			msg := &token.MsgTransfer{
 				ClassId:  args[0],
 				From: args[1],
 				To: args[2],
 				Amount: amount,
 			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
+			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
 
@@ -184,11 +184,7 @@ func NewTxCmdIssue() *cobra.Command {
 				return err
 			}
 
-			decimalsStr, err := cmd.Flags().GetString(flagDecimals)
-			if err != nil {
-				return err
-			}
-			decimals, err := cmd.Flags().GetInt32(decimalsStr)
+			decimals, err := cmd.Flags().GetInt32(flagDecimals)
 			if err != nil {
 				return err
 			}
@@ -213,7 +209,7 @@ func NewTxCmdIssue() *cobra.Command {
 	cmd.Flags().String(flagMeta, "", "set meta")
 	cmd.Flags().String(flagSupply, DefaultSupply, "initial supply")
 	cmd.Flags().Bool(flagMintable, false, "set mintable")
-	cmd.Flags().String(flagDecimals, DefaultDecimals, "set decimals")
+	cmd.Flags().Int32(flagDecimals, DefaultDecimals, "set decimals")
 
 	return cmd
 }

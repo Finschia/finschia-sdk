@@ -1,6 +1,7 @@
 package token
 
 import (
+	"math"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
@@ -65,8 +66,8 @@ func DefaultGenesisState() *GenesisState {
 
 // For Class keeper
 func validateClassGenesis(data ClassGenesisState) error {
-	if !data.Nonce.IsUint64() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "nonce must reside on uint64 range")
+	if data.Nonce.GT(sdk.NewUint(math.MaxUint64)) {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid nonce: %s", data.Nonce)
 	}
 	
 	return nil
@@ -74,6 +75,6 @@ func validateClassGenesis(data ClassGenesisState) error {
 
 func defaultClassGenesisState() *ClassGenesisState {
 	return &ClassGenesisState{
-		Nonce: sdk.ZeroInt(),
+		Nonce: sdk.ZeroUint(),
 	}
 }

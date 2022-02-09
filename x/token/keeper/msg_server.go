@@ -66,6 +66,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 		Decimals: req.Decimals,
 		Mintable: req.Mintable,
 	}
+
 	if err := s.keeper.issue(ctx, class, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}

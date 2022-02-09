@@ -36,10 +36,11 @@ const (
 
 func validateAmount(amount sdk.Int) error {
 	if !amount.IsPositive() {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Amount must be positive: %s", amount)
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Amount must be positive: %s", amount)
 	}
 	return nil
 }
+
 var _ sdk.Msg = (*MsgTransfer)(nil)
 
 // Route implements Msg.

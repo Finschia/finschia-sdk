@@ -1,15 +1,24 @@
 package token
 
 import (
-	"github.com/line/lbm-sdk/codec"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/codec/types"
+	"github.com/line/lbm-sdk/types/msgservice"
 )
 
-// RegisterLegacyAminoCodec registers concrete types on the LegacyAmino codec
-func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
-	// panic("Not implemented")
-}
-
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	// panic("Not implemented")
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgTransfer{},
+		&MsgTransferFrom{},
+		&MsgApprove{},
+		&MsgIssue{},
+		&MsgGrant{},
+		&MsgRevoke{},
+		&MsgMint{},
+		&MsgBurn{},
+		&MsgBurnFrom{},
+		&MsgModify{},
+	)
+
+	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

@@ -4,17 +4,18 @@ import (
 	"encoding/binary"
 	"fmt"
 	"hash/fnv"
+	"math"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
 
 // NewId returns a brand new ID.
 func (k Keeper) NewId(ctx sdk.Context) string {
-	for nonce := k.getNonce(ctx); nonce.IsUint64(); nonce = nonce.Add(sdk.OneInt()) {
+	for nonce := k.getNonce(ctx); nonce.LTE(sdk.NewUint(math.MaxUint64)); nonce = nonce.Incr() {
 		encoded := nonceToId(nonce.Uint64())
 		if !k.HasId(ctx, encoded) {
 			k.addId(ctx, encoded)
-			k.setNonce(ctx, nonce.Add(sdk.OneInt()))
+			k.setNonce(ctx, nonce.Incr())
 			return encoded
 		}
 	}
@@ -36,20 +37,20 @@ func nonceToId(id uint64) string {
 	return idStr
 }
 
-func (k Keeper) getNonce(ctx sdk.Context) sdk.Int {
+func (k Keeper) getNonce(ctx sdk.Context) sdk.Uint {
 	store := ctx.KVStore(k.storeKey)
 	bz := store.Get(nonceKey)
 	if bz == nil {
 		panic("next id must exist")
 	}
-	var nonce sdk.Int
+	var nonce sdk.Uint
 	if err := nonce.Unmarshal(bz); err != nil {
 		panic(err)
 	}
 	return nonce
 }
 
-func (k Keeper) setNonce(ctx sdk.Context, nonce sdk.Int) {
+func (k Keeper) setNonce(ctx sdk.Context, nonce sdk.Uint) {
 	store := ctx.KVStore(k.storeKey)
 	bz, err := nonce.Marshal()
 	if err != nil {
