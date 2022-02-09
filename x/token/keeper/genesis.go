@@ -107,6 +107,8 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 		ClassState: k.classKeeper.ExportGenesis(ctx),
 		Balances: balances,
 		Classes: classes,
+		Grants: grants,
+		Approves: approves,
 		Supplies: supplies,
 		Mints: mints,
 		Burns: burns,

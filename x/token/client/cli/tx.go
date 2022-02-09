@@ -16,11 +16,11 @@ import (
 )
 
 const (
-	flagSupply = "supply"
-	flagDecimals = "decimals"
-	flagMintable = "mintable"
-	flagMeta = "meta"
-	flagImageUri = "image-uri"
+	FlagSupply = "supply"
+	FlagDecimals = "decimals"
+	FlagMintable = "mintable"
+	FlagMeta = "meta"
+	FlagImageUri = "image-uri"
 
 	DefaultDecimals = 8
 	DefaultSupply = "1"
@@ -160,17 +160,17 @@ func NewTxCmdIssue() *cobra.Command {
 				return err
 			}
 
-			imageUri, err := cmd.Flags().GetString(flagImageUri)
+			imageUri, err := cmd.Flags().GetString(FlagImageUri)
 			if err != nil {
 				return err
 			}
 
-			meta, err := cmd.Flags().GetString(flagMeta)
+			meta, err := cmd.Flags().GetString(FlagMeta)
 			if err != nil {
 				return err
 			}
 
-			supplyStr, err := cmd.Flags().GetString(flagSupply)
+			supplyStr, err := cmd.Flags().GetString(FlagSupply)
 			if err != nil {
 				return err
 			}
@@ -179,12 +179,12 @@ func NewTxCmdIssue() *cobra.Command {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set supply: %s", supplyStr)
 			}
 
-			mintable, err := cmd.Flags().GetBool(flagMintable)
+			mintable, err := cmd.Flags().GetBool(FlagMintable)
 			if err != nil {
 				return err
 			}
 
-			decimals, err := cmd.Flags().GetInt32(flagDecimals)
+			decimals, err := cmd.Flags().GetInt32(FlagDecimals)
 			if err != nil {
 				return err
 			}
@@ -205,11 +205,11 @@ func NewTxCmdIssue() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(flagImageUri, "", "set image-uri")
-	cmd.Flags().String(flagMeta, "", "set meta")
-	cmd.Flags().String(flagSupply, DefaultSupply, "initial supply")
-	cmd.Flags().Bool(flagMintable, false, "set mintable")
-	cmd.Flags().Int32(flagDecimals, DefaultDecimals, "set decimals")
+	cmd.Flags().String(FlagImageUri, "", "set image-uri")
+	cmd.Flags().String(FlagMeta, "", "set meta")
+	cmd.Flags().String(FlagSupply, DefaultSupply, "initial supply")
+	cmd.Flags().Bool(FlagMintable, false, "set mintable")
+	cmd.Flags().Int32(FlagDecimals, DefaultDecimals, "set decimals")
 
 	return cmd
 }

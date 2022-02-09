@@ -21,10 +21,10 @@ message GenesisState {
   repeated Token classes = 4 [(gogoproto.nullable) = false];
 
   // grants defines the grant information.
-  repeated Grant grants = 5;
+  repeated Grant grants = 5 [(gogoproto.nullable) = false];
 
   // approves defines the approve information.
-  repeated Approve approves = 6;
+  repeated Approve approves = 6 [(gogoproto.nullable) = false];
 
   // supplies represents the total supplies of tokens.
   repeated FT supplies = 7 [(gogoproto.nullable) = false];
