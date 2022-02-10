@@ -7,6 +7,9 @@ import (
 
 // InitGenesis new token genesis
 func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
+	if data.ClassState == nil {
+		data.ClassState = token.DefaultClassGenesisState()
+	}
 	k.classKeeper.InitGenesis(ctx, data.ClassState)
 
 	for _, balance := range data.Balances {

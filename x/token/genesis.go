@@ -8,13 +8,18 @@ import (
 
 // ValidateGenesis check the given genesis state has no integrity issues
 func ValidateGenesis(data GenesisState) error {
-	if err := validateClassGenesis(*data.ClassState); err != nil {
-		return err
+	if data.ClassState != nil {
+		if err := ValidateClassGenesis(*data.ClassState); err != nil {
+			return err
+		}
 	}
 
 	for _, balance := range data.Balances {
 		if err := sdk.ValidateAccAddress(balance.Address); err != nil {
 			return err
+		}
+		if len(balance.Tokens) == 0 {
+			return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "tokens cannot be empty")
 		}
 		for _, amount := range balance.Tokens {
 			if err := validateAmount(amount.Amount); err != nil {
@@ -61,11 +66,11 @@ func ValidateGenesis(data GenesisState) error {
 
 // DefaultGenesisState - Return a default genesis state
 func DefaultGenesisState() *GenesisState {
-	return &GenesisState{ClassState: defaultClassGenesisState()}
+	return &GenesisState{ClassState: DefaultClassGenesisState()}
 }
 
 // For Class keeper
-func validateClassGenesis(data ClassGenesisState) error {
+func ValidateClassGenesis(data ClassGenesisState) error {
 	if data.Nonce.GT(sdk.NewUint(math.MaxUint64)) {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid nonce: %s", data.Nonce)
 	}
@@ -73,7 +78,7 @@ func validateClassGenesis(data ClassGenesisState) error {
 	return nil
 }
 
-func defaultClassGenesisState() *ClassGenesisState {
+func DefaultClassGenesisState() *ClassGenesisState {
 	return &ClassGenesisState{
 		Nonce: sdk.ZeroUint(),
 	}
