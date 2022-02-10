@@ -28,6 +28,10 @@ func NewMockDB(ctrl *gomock.Controller) *MockDB {
 	return mock
 }
 
+func (m *MockDB) Name() string {
+	return "mockdb"
+}
+
 // EXPECT returns an object that allows the caller to indicate expected use
 func (m *MockDB) EXPECT() *MockDBMockRecorder {
 	return m.recorder

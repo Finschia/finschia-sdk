@@ -60,6 +60,9 @@ type Store struct {
 
 	interBlockCache  types.MultiStorePersistentCache
 	iavlCacheManager types.CacheManager
+
+	pruneLock *sync.Mutex
+	prunePass chan bool
 }
 
 var (
@@ -79,6 +82,8 @@ func NewStore(db tmdb.DB) *Store {
 		stores:       make(map[types.StoreKey]types.CommitKVStore),
 		keysByName:   make(map[string]types.StoreKey),
 		pruneHeights: make([]int64, 0),
+		pruneLock:    &sync.Mutex{},
+		prunePass:    make(chan bool, 1),
 	}
 }
 
@@ -374,16 +379,21 @@ func (rs *Store) Commit() types.CommitID {
 		// - KeepEvery % (height - KeepRecent) != 0 as that means the height is not
 		// a 'snapshot' height.
 		if rs.pruningOpts.KeepEvery == 0 || pruneHeight%int64(rs.pruningOpts.KeepEvery) != 0 {
+			rs.pruneLock.Lock()
 			rs.pruneHeights = append(rs.pruneHeights, pruneHeight)
+			rs.pruneLock.Unlock()
 		}
 	}
 
 	// batch prune if the current height is a pruning interval height
 	if rs.pruningOpts.Interval > 0 && version%int64(rs.pruningOpts.Interval) == 0 {
-		rs.pruneStores()
+		go rs.pruneStores()
 	}
 
-	flushMetadata(rs.db, version, rs.lastCommitInfo, rs.pruneHeights)
+	rs.pruneLock.Lock()
+	pruneHeights := rs.pruneHeights
+	rs.pruneLock.Unlock()
+	flushMetadata(rs.db, version, rs.lastCommitInfo, pruneHeights)
 
 	return types.CommitID{
 		Version: version,
@@ -391,10 +401,32 @@ func (rs *Store) Commit() types.CommitID {
 	}
 }
 
+func (rs *Store) prunePassEnter() bool {
+	select {
+	case rs.prunePass <- true:
+		return true
+	default:
+		return false
+	}
+}
+
+func (rs *Store) prunePassLeave() {
+	<-rs.prunePass
+}
+
 // pruneStores will batch delete a list of heights from each mounted sub-store.
 // Afterwards, pruneHeights is reset.
 func (rs *Store) pruneStores() {
-	if len(rs.pruneHeights) == 0 {
+	if !rs.prunePassEnter() {
+		return
+	}
+	defer rs.prunePassLeave()
+
+	rs.pruneLock.Lock()
+	pruneHeights := make([]int64, len(rs.pruneHeights))
+	copy(pruneHeights, rs.pruneHeights)
+	rs.pruneLock.Unlock()
+	if len(pruneHeights) == 0 {
 		return
 	}
 
@@ -404,7 +436,10 @@ func (rs *Store) pruneStores() {
 			// it to get the underlying IAVL store.
 			store = rs.GetCommitKVStore(key)
 
-			if err := store.(*iavl.Store).DeleteVersions(rs.pruneHeights...); err != nil {
+			if err := store.(*iavl.Store).DeleteVersions(pruneHeights...); err != nil {
+				if err == iavltree.ErrBusy {
+					return
+				}
 				if errCause := errors.Cause(err); errCause != nil && errCause != iavltree.ErrVersionDoesNotExist {
 					panic(err)
 				}
@@ -412,7 +447,21 @@ func (rs *Store) pruneStores() {
 		}
 	}
 
-	rs.pruneHeights = make([]int64, 0)
+	// remove pruned heights from rs.pruneHeights
+	// new rs.pruneHeights will be updated by next flushMetaData cycle
+	rs.pruneLock.Lock()
+	rph := map[int64]bool{}
+	for _, h := range pruneHeights {
+		rph[h] = true
+	}
+	nph := make([]int64, 0, len(rs.pruneHeights))
+	for _, h := range rs.pruneHeights {
+		if _, ok := rph[h]; !ok {
+			nph = append(nph, h)
+		}
+	}
+	rs.pruneHeights = nph
+	rs.pruneLock.Unlock()
 }
 
 // CacheWrap implements CacheWrapper/Store/CommitStore.
@@ -488,7 +537,11 @@ func (rs *Store) GetStore(key types.StoreKey) types.Store {
 // NOTE: The returned KVStore may be wrapped in an inter-block cache if it is
 // set on the root store.
 func (rs *Store) GetKVStore(key types.StoreKey) types.KVStore {
-	store := rs.stores[key].(types.KVStore)
+	s := rs.stores[key]
+	if s == nil {
+		panic(fmt.Sprintf("store does not exist for key: %s", key.Name()))
+	}
+	store := s.(types.KVStore)
 
 	if rs.TracingEnabled() {
 		store = tracekv.NewStore(store, rs.traceWriter, rs.traceContext)

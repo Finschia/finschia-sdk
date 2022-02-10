@@ -1548,7 +1548,7 @@ paths:
                 type: string
                 description: bech32 encoded address
                 example: cosmosvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l
-              delegation:
+              amount:
                 type: object
                 properties:
                   denom:
@@ -1763,9 +1763,15 @@ paths:
                 type: string
                 description: bech32 encoded address
                 example: cosmosvaloper16xyempempp92x9hyzz9wrgf94r6j9h5f2w4n2l
-              shares:
-                type: string
-                example: '100'
+              amount:
+                type: object
+                properties:
+                  denom:
+                    type: string
+                    example: stake
+                  amount:
+                    type: string
+                    example: '50'
       tags:
         - Staking
       consumes:
@@ -8550,6 +8556,8 @@ paths:
                           type: string
                           title: checksum
                       title: Module is the type for VersionInfo
+                  lbm_sdk_version:
+                    type: string
                 description: VersionInfo is the type for the GetNodeInfoResponse message.
             description: >-
               GetNodeInfoResponse is the request type for the Query/GetNodeInfo
@@ -20608,6 +20616,19 @@ paths:
           required: false
           type: boolean
           format: boolean
+        - name: order_by
+          description: |2-
+             - ORDER_BY_UNSPECIFIED: ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case.
+             - ORDER_BY_ASC: ORDER_BY_ASC defines ascending order
+             - ORDER_BY_DESC: ORDER_BY_DESC defines descending order
+          in: query
+          required: false
+          type: string
+          enum:
+            - ORDER_BY_UNSPECIFIED
+            - ORDER_BY_ASC
+            - ORDER_BY_DESC
+          default: ORDER_BY_UNSPECIFIED
       tags:
         - Service
     post:
@@ -37884,6 +37905,8 @@ definitions:
                   type: string
                   title: checksum
               title: Module is the type for VersionInfo
+          lbm_sdk_version:
+            type: string
         description: VersionInfo is the type for the GetNodeInfoResponse message.
     description: >-
       GetNodeInfoResponse is the request type for the Query/GetNodeInfo RPC
@@ -38321,6 +38344,8 @@ definitions:
               type: string
               title: checksum
           title: Module is the type for VersionInfo
+      lbm_sdk_version:
+        type: string
     description: VersionInfo is the type for the GetNodeInfoResponse message.
   ostracon.abci.BlockParams:
     type: object
@@ -48168,6 +48193,19 @@ definitions:
       Single is the mode info for a single signer. It is structured as a message
       to allow for additional fields such as locale for SIGN_MODE_TEXTUAL in the
       future
+  lbm.tx.v1.OrderBy:
+    type: string
+    enum:
+      - ORDER_BY_UNSPECIFIED
+      - ORDER_BY_ASC
+      - ORDER_BY_DESC
+    default: ORDER_BY_UNSPECIFIED
+    description: >-
+      - ORDER_BY_UNSPECIFIED: ORDER_BY_UNSPECIFIED specifies an unknown sorting
+      order. OrderBy defaults to ASC in this case.
+       - ORDER_BY_ASC: ORDER_BY_ASC defines ascending order
+       - ORDER_BY_DESC: ORDER_BY_DESC defines descending order
+    title: OrderBy defines the sorting order
   lbm.tx.v1.SignerInfo:
     type: object
     properties:
