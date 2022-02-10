@@ -314,7 +314,7 @@ func (p SudoContractProposal) String() string {
   Title:       %s
   Description: %s
   Contract:    %s
-  Msg          %q
+  Msg:         %q
 `, p.Title, p.Description, p.Contract, p.Msg)
 }
 
