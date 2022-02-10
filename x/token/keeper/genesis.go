@@ -13,8 +13,10 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 	k.classKeeper.InitGenesis(ctx, data.ClassState)
 
 	for _, balance := range data.Balances {
-		if err := k.addTokens(ctx, sdk.AccAddress(balance.Address), balance.Tokens); err != nil {
-			panic(err)
+		for _, amount := range balance.Tokens {
+			if err := k.setBalance(ctx, sdk.AccAddress(balance.Address), amount); err != nil {
+				panic(err)
+			}
 		}
 	}
 
@@ -54,7 +56,7 @@ func (k Keeper) InitGenesis(ctx sdk.Context, data *token.GenesisState) {
 // ExportGenesis returns a GenesisState for a given context.
 func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 	var balances []token.Balance
-	var addrToIndex map[string]int
+	addrToIndex := map[string]int{}
 	k.iterateBalances(ctx, func(addr sdk.AccAddress, amount token.FT) (stop bool) {
 		if index, ok := addrToIndex[addr.String()]; ok {
 			balances[index].Tokens = append(balances[index].Tokens, amount)
@@ -65,8 +67,8 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 			Address: addr.String(),
 			Tokens: []token.FT{amount},
 		}
+		addrToIndex[addr.String()] = len(balances)
 		balances = append(balances, balance)
-		addrToIndex[addr.String()] = len(balances) - 1
 		return false
 	})
 

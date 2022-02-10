@@ -6,6 +6,15 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
+func (k Keeper) Issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddress, amount sdk.Int) error {
+	if err := k.issue(ctx, class, owner, to, amount); err != nil {
+		return err
+	}
+
+	// TODO: emit event
+	return nil
+}
+
 func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddress, amount sdk.Int) error {
 	if err := k.setClass(ctx, class); err != nil {
 		return err
@@ -22,7 +31,7 @@ func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddre
 
 	// zero check?
 	amounts := []token.FT{
-		token.FT{
+		{
 			ClassId: class.Id,
 			Amount: amount,
 		},
@@ -31,7 +40,6 @@ func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddre
 		return err
 	}
 
-	// TODO: emit events
 	return nil
 }
 
@@ -46,6 +54,7 @@ func (k Keeper) GetClass(ctx sdk.Context, classId string) (*token.Token, error) 
 	if err := k.cdc.UnmarshalBinaryBare(bz, &class); err != nil {
 		return nil, err
 	}
+
 	return &class, nil
 }
 
@@ -57,6 +66,16 @@ func (k Keeper) setClass(ctx sdk.Context, class token.Token) error {
 	}
 
 	store.Set(classKey(class.Id), bz)
+
+	return nil
+}
+
+func (k Keeper) Mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []token.FT) error {
+	if err := k.mint(ctx, grantee, to, amounts); err != nil {
+		return err
+	}
+
+	// TODO: emit events
 	return nil
 }
 
@@ -78,8 +97,6 @@ func (k Keeper) mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []toke
 	if err := k.mintTokens(ctx, to, amounts); err != nil {
 		return err
 	}
-
-	// TODO: emit events
 
 	return nil
 }
@@ -106,6 +123,15 @@ func (k Keeper) mintTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token
 	return nil
 }
 
+func (k Keeper) Burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) error {
+	if err := k.burn(ctx, from, amounts); err != nil {
+		return err
+	}
+
+	// TODO: emit events
+	return nil
+}
+
 func (k Keeper) burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
 		if ok := k.GetGrant(ctx, from, amount.ClassId, token.ActionBurn); !ok {
@@ -114,6 +140,14 @@ func (k Keeper) burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) e
 	}
 
 	if err := k.burnTokens(ctx, from, amounts); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) BurnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []token.FT) error {
+	if err := k.burnFrom(ctx, proxy, from, amounts); err != nil {
 		return err
 	}
 
@@ -134,8 +168,6 @@ func (k Keeper) burnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []
 	if err := k.burnTokens(ctx, from, amounts); err != nil {
 		return err
 	}
-
-	// TODO: emit events
 
 	return nil
 }
@@ -219,6 +251,15 @@ func (k Keeper) setBurn(ctx sdk.Context, amount token.FT) error {
 	return k.setStatistics(ctx, amount, burnKeyPrefix)
 }
 
+func (k Keeper) Modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, changes []token.Pair) error {
+	if err := k.modify(ctx, classId, grantee, changes); err != nil {
+		return err
+	}
+
+	// TODO: emit events
+	return nil
+}
+
 func (k Keeper) modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, changes []token.Pair) error {
 	if !k.GetGrant(ctx, grantee, classId, token.ActionModify) {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", grantee, token.ActionModify)
@@ -249,6 +290,15 @@ func (k Keeper) modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, 
 	return nil
 }
 
+func (k Keeper) Grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classId, action string) error {
+	if err := k.grant(ctx, granter, grantee, classId, action); err != nil {
+		return err
+	}
+
+	// TODO: emit events
+	return nil
+}
+
 func (k Keeper) grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classId, action string) error {
 	if !k.GetGrant(ctx, granter, classId, action) {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", granter, action)
@@ -261,6 +311,15 @@ func (k Keeper) grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classId,
 		k.accountKeeper.SetAccount(ctx, k.accountKeeper.NewAccountWithAddress(ctx, grantee))
 	}
 
+	return nil
+}
+
+func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, classId, action string) error {
+	if err := k.revoke(ctx, grantee, classId, action); err != nil {
+		return err
+	}
+
+	// TODO: emit events
 	return nil
 }
 

@@ -25,7 +25,7 @@ var _ token.MsgServer = msgServer{}
 func (s msgServer) Transfer(c context.Context, req *token.MsgTransfer) (*token.MsgTransferResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.transfer(ctx, sdk.AccAddress(req.From), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
+	if err := s.keeper.Transfer(ctx, sdk.AccAddress(req.From), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
 		return nil, err
 	}
 
@@ -36,7 +36,7 @@ func (s msgServer) Transfer(c context.Context, req *token.MsgTransfer) (*token.M
 func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (*token.MsgTransferFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.transferFrom(ctx, sdk.AccAddress(req.Proxy), sdk.AccAddress(req.From), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
+	if err := s.keeper.TransferFrom(ctx, sdk.AccAddress(req.Proxy), sdk.AccAddress(req.From), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
 		return nil, err
 	}
 
@@ -46,7 +46,7 @@ func (s msgServer) TransferFrom(c context.Context, req *token.MsgTransferFrom) (
 // Approve allows one to transfer tokens on behalf of the approver
 func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.MsgApproveResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.approve(ctx, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy), req.ClassId); err != nil {
+	if err := s.keeper.Approve(ctx, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy), req.ClassId); err != nil {
 		return nil, err
 	}
 
@@ -67,7 +67,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 		Mintable: req.Mintable,
 	}
 
-	if err := s.keeper.issue(ctx, class, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount); err != nil {
+	if err := s.keeper.Issue(ctx, class, sdk.AccAddress(req.Owner), sdk.AccAddress(req.To), req.Amount); err != nil {
 		return nil, err
 	}
 
@@ -77,7 +77,7 @@ func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssu
 // Grant allows one to mint or burn tokens or modify a token metadata
 func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGrantResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.grant(ctx, sdk.AccAddress(req.Granter), sdk.AccAddress(req.Grantee), req.ClassId, req.Action); err != nil {
+	if err := s.keeper.Grant(ctx, sdk.AccAddress(req.Granter), sdk.AccAddress(req.Grantee), req.ClassId, req.Action); err != nil {
 		return nil, err
 	}
 
@@ -87,7 +87,7 @@ func (s msgServer) Grant(c context.Context, req *token.MsgGrant) (*token.MsgGran
 // Revoke revokes the grant
 func (s msgServer) Revoke(c context.Context, req *token.MsgRevoke) (*token.MsgRevokeResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.revoke(ctx, sdk.AccAddress(req.Grantee), req.ClassId, req.Action); err != nil {
+	if err := s.keeper.Revoke(ctx, sdk.AccAddress(req.Grantee), req.ClassId, req.Action); err != nil {
 		return nil, err
 	}
 
@@ -98,7 +98,7 @@ func (s msgServer) Revoke(c context.Context, req *token.MsgRevoke) (*token.MsgRe
 func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.mint(ctx, sdk.AccAddress(req.Grantee), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
+	if err := s.keeper.Mint(ctx, sdk.AccAddress(req.Grantee), sdk.AccAddress(req.To), []token.FT{amount}); err != nil {
 		return nil, err
 	}
 
@@ -109,7 +109,7 @@ func (s msgServer) Mint(c context.Context, req *token.MsgMint) (*token.MsgMintRe
 func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.burn(ctx, sdk.AccAddress(req.From), []token.FT{amount}); err != nil {
+	if err := s.keeper.Burn(ctx, sdk.AccAddress(req.From), []token.FT{amount}); err != nil {
 		return nil, err
 	}
 
@@ -120,7 +120,7 @@ func (s msgServer) Burn(c context.Context, req *token.MsgBurn) (*token.MsgBurnRe
 func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.MsgBurnFromResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 	amount := token.FT{ClassId: req.ClassId, Amount: req.Amount}
-	if err := s.keeper.burnFrom(ctx, sdk.AccAddress(req.Grantee), sdk.AccAddress(req.From), []token.FT{amount}); err != nil {
+	if err := s.keeper.BurnFrom(ctx, sdk.AccAddress(req.Grantee), sdk.AccAddress(req.From), []token.FT{amount}); err != nil {
 		return nil, err
 	}
 
@@ -130,7 +130,7 @@ func (s msgServer) BurnFrom(c context.Context, req *token.MsgBurnFrom) (*token.M
 // Modify defines a method to modify a token metadata
 func (s msgServer) Modify(c context.Context, req *token.MsgModify) (*token.MsgModifyResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	if err := s.keeper.modify(ctx, req.ClassId, sdk.AccAddress(req.Grantee), req.Changes); err != nil {
+	if err := s.keeper.Modify(ctx, req.ClassId, sdk.AccAddress(req.Grantee), req.Changes); err != nil {
 		return nil, err
 	}
 

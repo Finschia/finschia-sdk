@@ -6,8 +6,8 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-func (k Keeper) transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []token.FT) error {
-	if err := k.sendTokens(ctx, from, to, amounts); err != nil {
+func (k Keeper) Transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []token.FT) error {
+	if err := k.transfer(ctx, from, to, amounts); err != nil {
 		return err
 	}
 
@@ -25,6 +25,23 @@ func (k Keeper) transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []tok
 	return nil
 }
 
+func (k Keeper) transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []token.FT) error {
+	if err := k.sendTokens(ctx, from, to, amounts); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (k Keeper) TransferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, amounts []token.FT) error {
+	if err := k.transferFrom(ctx, proxy, from, to, amounts); err != nil {
+		return err
+	}
+
+	// TODO: emit events
+	return nil
+}
+
 func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
 		if ok := k.GetApprove(ctx, from, proxy, amount.ClassId); !ok {
@@ -33,6 +50,15 @@ func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, am
 	}
 
 	return k.transfer(ctx, from, to, amounts)
+}
+
+func (k Keeper) Approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) error {
+	if err := k.approve(ctx, approver, proxy, classId); err != nil {
+		return err
+	}
+
+	// TODO: emit events
+	return nil
 }
 
 func (k Keeper) approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) error {

@@ -460,7 +460,7 @@ func (m MsgModify) ValidateBasic() error {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid grantee address: %s", m.Grantee)
 	}
 
-	var checkedFields map[string]bool
+	checkedFields := map[string]bool{}
 	for _, change := range m.Changes {
 		if checkedFields[change.Key] {
 			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Duplicated field: %s", change.Key)

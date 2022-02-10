@@ -91,9 +91,9 @@ func grantKey(grantee sdk.AccAddress, classId, action string) []byte {
 	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(classId)+len(action))
 
 	begin := 0
-	copy(key, approveKeyPrefix)
+	copy(key, grantKeyPrefix)
 
-	begin += len(approveKeyPrefix)
+	begin += len(grantKeyPrefix)
 	key[begin] = byte(len(grantee))
 
 	begin += 1
@@ -130,9 +130,9 @@ func approveKey(classId string, proxy, approver sdk.AccAddress) []byte {
 	key := make([]byte, len(approveKeyPrefix)+1+len(classId)+1+len(proxy)+len(approver))
 
 	begin := 0
-	copy(key, grantKeyPrefix)
+	copy(key, approveKeyPrefix)
 
-	begin += len(grantKeyPrefix)
+	begin += len(approveKeyPrefix)
 	key[begin] = byte(len(classId))
 
 	begin += 1

@@ -102,8 +102,10 @@ func (k Keeper) iterateStatistics(ctx sdk.Context, fn func(amount token.FT) (sto
 		if err := amt.Unmarshal(iterator.Value()); err != nil {
 			panic(err)
 		}
+
+		classId := splitStatisticsKey(iterator.Key(), keyPrefix)
 		amount := token.FT{
-			ClassId: splitStatisticsKey(iterator.Key(), keyPrefix),
+			ClassId: classId,
 			Amount: amt,
 		}
 
