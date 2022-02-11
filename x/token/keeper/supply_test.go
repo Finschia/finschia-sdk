@@ -1,8 +1,6 @@
 package keeper_test
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/token"
 )
 
 func (s *KeeperTestSuite) TestIssue() {

@@ -1,6 +1,7 @@
 package keeper_test
 
 import (
+	"context"
 	"testing"
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
@@ -16,7 +17,10 @@ import (
 type KeeperTestSuite struct {
 	suite.Suite
 	ctx sdk.Context
+	goCtx context.Context
 	keeper keeper.Keeper
+	queryServer token.QueryServer
+	msgServer token.MsgServer
 
 	vendor sdk.AccAddress
 	operator sdk.AccAddress
@@ -32,7 +36,11 @@ func (s *KeeperTestSuite) SetupTest() {
 	checkTx := false
 	app := simapp.Setup(checkTx)
 	s.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{})
+	s.goCtx = sdk.WrapSDKContext(s.ctx)
 	s.keeper = app.TokenKeeper
+
+	s.queryServer = keeper.NewQueryServer(s.keeper)
+	s.msgServer = keeper.NewMsgServer(s.keeper)
 
 	s.vendor = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	s.operator = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
