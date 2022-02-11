@@ -71,12 +71,16 @@ message TxBody {
   // transaction.
   repeated google.protobuf.Any messages = 1;
 
+  // sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_PERIOD`
+  // this is used for distinguish signatures instead of account number. this is mandatory.
+  uint64 sig_block_height = 2;
+
   // memo is any arbitrary memo to be added to the transaction
-  string memo = 2;
+  string memo = 3;
 
   // timeout is the block height after which this transaction will not
   // be processed by the chain
-  uint64 timeout_height = 3;
+  uint64 timeout_height = 4;
 
   // extension_options are arbitrary options that can be added by chains
   // when the default options are not sufficient. If any of these are present
@@ -103,10 +107,6 @@ message AuthInfo {
   // based on the cost of evaluating the body and doing signature verification
   // of the signers. This can be estimated via simulation.
   Fee fee = 2;
-
-  // sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_PERIOD`
-  // this is used for distinguish signatures instead of account number. this is mandatory.
-  uint64 sig_block_height = 3;
 }
 
 // SignerInfo describes the public key and signing mode of a single top-level
