@@ -2,6 +2,7 @@ package testutil
 
 import (
 	"fmt"
+	"github.com/line/lbm-sdk/client"
 	"strings"
 	"testing"
 	"time"
@@ -11,7 +12,6 @@ import (
 	tmcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/hd"
 	"github.com/line/lbm-sdk/crypto/keyring"

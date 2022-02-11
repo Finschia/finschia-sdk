@@ -134,10 +134,6 @@ var (
 	// supported.
 	ErrNotSupported = Register(RootCodespace, 37, "feature not supported")
 
-	// ErrInvalidSigBlockHeight is returned when SigBlockHeight of tx is either greater than current block height or
-	// less than (current block height - ValidSigBlockPeriod)
-	ErrInvalidSigBlockHeight = Register(RootCodespace, 38, "invalid sig block height")
-
 	// ErrNotFound defines an error when requested entity doesn't exist in the state.
 	ErrNotFound = Register(RootCodespace, 39, "not found")
 
