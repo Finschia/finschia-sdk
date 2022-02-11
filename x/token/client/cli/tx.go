@@ -77,6 +77,9 @@ func NewTxCmdTransfer() *cobra.Command {
 				To: args[2],
 				Amount: amount,
 			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
 		},
 	}
@@ -111,6 +114,9 @@ func NewTxCmdTransferFrom() *cobra.Command {
 				To: args[3],
 				Amount: amount,
 			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -137,6 +143,9 @@ func NewTxCmdApprove() *cobra.Command {
 				ClassId:  args[0],
 				Approver: args[1],
 				Proxy: args[2],
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -200,6 +209,9 @@ func NewTxCmdIssue() *cobra.Command {
 				Mintable: mintable,
 				Decimals: decimals,
 			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -234,6 +246,9 @@ func NewTxCmdGrant() *cobra.Command {
 				Grantee: args[2],
 				Action: args[3],
 			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -260,6 +275,9 @@ func NewTxCmdRevoke() *cobra.Command {
 				ClassId:  args[0],
 				Grantee: args[1],
 				Action: args[2],
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -295,6 +313,9 @@ func NewTxCmdMint() *cobra.Command {
 				To: args[2],
 				Amount: amount,
 			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -327,6 +348,9 @@ func NewTxCmdBurn() *cobra.Command {
 				ClassId:  args[0],
 				From: args[1],
 				Amount: amount,
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
@@ -362,6 +386,9 @@ func NewTxCmdBurnFrom() *cobra.Command {
 				From: args[2],
 				Amount: amount,
 			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
+			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
 	}
@@ -389,6 +416,9 @@ func NewTxCmdModify() *cobra.Command {
 				ClassId:  args[0],
 				Grantee: args[1],
 				Changes: []token.Pair{change},
+			}
+			if err := msg.ValidateBasic(); err != nil {
+				return err
 			}
 			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), &msg)
 		},
