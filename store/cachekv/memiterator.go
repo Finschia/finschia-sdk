@@ -1,116 +1,50 @@
 package cachekv
 
 import (
-	"bytes"
-	"errors"
+	tmdb "github.com/line/tm-db/v2"
 
-	"github.com/line/lbm-sdk/types/kv"
+	"github.com/line/lbm-sdk/store/types"
 )
 
 // Iterates over iterKVCache items.
 // if key is nil, means it was deleted.
 // Implements Iterator.
 type memIterator struct {
-	start, end []byte
-	items      []*kv.Pair
-	ascending  bool
+	types.Iterator
+
+	deleted map[string]struct{}
 }
 
-func IsKeyInDomain(key, start, end []byte) bool {
-	if bytes.Compare(key, start) < 0 {
-		return false
+func newMemIterator(start, end []byte, items *tmdb.MemDB, deleted map[string]struct{}, ascending bool) *memIterator {
+	var iter types.Iterator
+	var err error
+
+	if ascending {
+		iter, err = items.Iterator(start, end)
+	} else {
+		iter, err = items.ReverseIterator(start, end)
 	}
-	if end != nil && bytes.Compare(end, key) <= 0 {
-		return false
+
+	if err != nil {
+		panic(err)
 	}
-	return true
-}
 
-func newMemIterator(start, end []byte, items *kv.List, ascending bool) *memIterator {
-	itemsInDomain := make([]*kv.Pair, 0, items.Len())
-
-	var entered bool
-
-	for e := items.Front(); e != nil; e = e.Next() {
-		item := e.Value
-		if !IsKeyInDomain(item.Key, start, end) {
-			if entered {
-				break
-			}
-
-			continue
-		}
-
-		itemsInDomain = append(itemsInDomain, item)
-		entered = true
+	newDeleted := make(map[string]struct{})
+	for k, v := range deleted {
+		newDeleted[k] = v
 	}
 
 	return &memIterator{
-		start:     start,
-		end:       end,
-		items:     itemsInDomain,
-		ascending: ascending,
+		Iterator: iter,
+
+		deleted: newDeleted,
 	}
-}
-
-func (mi *memIterator) Domain() ([]byte, []byte) {
-	return mi.start, mi.end
-}
-
-func (mi *memIterator) Valid() bool {
-	return len(mi.items) > 0
-}
-
-func (mi *memIterator) assertValid() {
-	if err := mi.Error(); err != nil {
-		panic(err)
-	}
-}
-
-func (mi *memIterator) Next() {
-	mi.assertValid()
-
-	if mi.ascending {
-		mi.items = mi.items[1:]
-	} else {
-		mi.items = mi.items[:len(mi.items)-1]
-	}
-}
-
-func (mi *memIterator) Key() []byte {
-	mi.assertValid()
-
-	if mi.ascending {
-		return mi.items[0].Key
-	}
-
-	return mi.items[len(mi.items)-1].Key
 }
 
 func (mi *memIterator) Value() []byte {
-	mi.assertValid()
-
-	if mi.ascending {
-		return mi.items[0].Value
+	key := mi.Iterator.Key()
+	if _, ok := mi.deleted[string(key)]; ok {
+		return nil
 	}
-
-	return mi.items[len(mi.items)-1].Value
-}
-
-func (mi *memIterator) Close() error {
-	mi.start = nil
-	mi.end = nil
-	mi.items = nil
-
-	return nil
-}
-
-// Error returns an error if the memIterator is invalid defined by the Valid
-// method.
-func (mi *memIterator) Error() error {
-	if !mi.Valid() {
-		return errors.New("invalid memIterator")
-	}
-
-	return nil
+	return mi.Iterator.Value()
 }

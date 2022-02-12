@@ -143,9 +143,6 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONMarshaler) json
 	return cdc.MustMarshalJSON(genState)
 }
 
-// ConsensusVersion implements AppModule/ConsensusVersion.
-func (AppModule) ConsensusVersion() uint64 { return 1 }
-
 // BeginBlocker will call InitMemStore to initialize the memory stores in the case
 // that this is the first time the node is executing a block since restarting (wiping memory).
 // In this case, the BeginBlocker method will reinitialize the memory stores locally, so that subsequent
