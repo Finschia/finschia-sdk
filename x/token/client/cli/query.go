@@ -18,23 +18,23 @@ const (
 
 // NewQueryCmd returns the cli query commands for this module
 func NewQueryCmd() *cobra.Command {
-	nftQueryCmd := &cobra.Command{
+	queryCmd := &cobra.Command{
 		Use:                        token.ModuleName,
-		Short:                      "Querying commands for the token module",
+		Short:                      fmt.Sprintf("Querying commands for the %s module", token.ModuleName),
 		Long:                       "",
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
 
-	nftQueryCmd.AddCommand(
+	queryCmd.AddCommand(
 		NewQueryCmdBalance(),
 		NewQueryCmdSupply(),
 		NewQueryCmdToken(),
 		NewQueryCmdTokens(),
 	)
 
-	return nftQueryCmd
+	return queryCmd
 }
 
 func NewQueryCmdBalance() *cobra.Command {
