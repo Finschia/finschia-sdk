@@ -692,21 +692,27 @@
     - [EventTransfer](#lbm.token.v1.EventTransfer)
   
 - [lbm/token/v1/token.proto](#lbm/token/v1/token.proto)
+    - [Approve](#lbm.token.v1.Approve)
     - [FT](#lbm.token.v1.FT)
+    - [Grant](#lbm.token.v1.Grant)
     - [Pair](#lbm.token.v1.Pair)
     - [Params](#lbm.token.v1.Params)
     - [Token](#lbm.token.v1.Token)
   
 - [lbm/token/v1/genesis.proto](#lbm/token/v1/genesis.proto)
-    - [Approve](#lbm.token.v1.Approve)
     - [Balance](#lbm.token.v1.Balance)
     - [ClassGenesisState](#lbm.token.v1.ClassGenesisState)
     - [GenesisState](#lbm.token.v1.GenesisState)
-    - [Grant](#lbm.token.v1.Grant)
   
 - [lbm/token/v1/query.proto](#lbm/token/v1/query.proto)
+    - [QueryApproveRequest](#lbm.token.v1.QueryApproveRequest)
+    - [QueryApproveResponse](#lbm.token.v1.QueryApproveResponse)
+    - [QueryApprovesRequest](#lbm.token.v1.QueryApprovesRequest)
+    - [QueryApprovesResponse](#lbm.token.v1.QueryApprovesResponse)
     - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
     - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
+    - [QueryGrantsRequest](#lbm.token.v1.QueryGrantsRequest)
+    - [QueryGrantsResponse](#lbm.token.v1.QueryGrantsResponse)
     - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
     - [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest)
@@ -10147,6 +10153,23 @@ EventTransfer is emitted on Msg/Transfer
 
 
 
+<a name="lbm.token.v1.Approve"></a>
+
+### Approve
+Approve defines approve information.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approver` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
 <a name="lbm.token.v1.FT"></a>
 
 ### FT
@@ -10157,6 +10180,23 @@ FT defines a token with a class id and an amount.
 | ----- | ---- | ----- | ----------- |
 | `class_id` | [string](#string) |  | class_id associated with the FT. |
 | `amount` | [string](#string) |  | amount of FT |
+
+
+
+
+
+
+<a name="lbm.token.v1.Grant"></a>
+
+### Grant
+Grant defines grant information.
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grantee` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  |  |
+| `action` | [string](#string) |  |  |
 
 
 
@@ -10226,23 +10266,6 @@ Token defines token information.
 
 
 
-<a name="lbm.token.v1.Approve"></a>
-
-### Approve
-Approve defines approve information.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `approver` | [string](#string) |  |  |
-| `proxy` | [string](#string) |  |  |
-| `class_id` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="lbm.token.v1.Balance"></a>
 
 ### Balance
@@ -10298,23 +10321,6 @@ GenesisState defines the token module's genesis state.
 
 
 
-
-<a name="lbm.token.v1.Grant"></a>
-
-### Grant
-Grant defines grant information.
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `grantee` | [string](#string) |  |  |
-| `class_id` | [string](#string) |  |  |
-| `action` | [string](#string) |  |  |
-
-
-
-
-
  <!-- end messages -->
 
  <!-- end enums -->
@@ -10329,6 +10335,71 @@ Grant defines grant information.
 <p align="right"><a href="#top">Top</a></p>
 
 ## lbm/token/v1/query.proto
+
+
+
+<a name="lbm.token.v1.QueryApproveRequest"></a>
+
+### QueryApproveRequest
+QueryApproveRequest is the request type for the Query/Approve RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+| `approver` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryApproveResponse"></a>
+
+### QueryApproveResponse
+QueryApproveResponse is the response type for the Query/Approve RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approve` | [Approve](#lbm.token.v1.Approve) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryApprovesRequest"></a>
+
+### QueryApprovesRequest
+QueryApprovesRequest is the request type for the Query/Approves RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+| `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryApprovesResponse"></a>
+
+### QueryApprovesResponse
+QueryApprovesResponse is the response type for the Query/Approves RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `approves` | [Approve](#lbm.token.v1.Approve) | repeated |  |
+| `pagination` | [lbm.base.query.v1.PageResponse](#lbm.base.query.v1.PageResponse) |  |  |
+
+
+
 
 
 
@@ -10357,6 +10428,37 @@ QueryBalanceResponse is the response type for the Query/Balance RPC method
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryGrantsRequest"></a>
+
+### QueryGrantsRequest
+QueryGrantsRequest is the request type for the Query/Grants RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryGrantsResponse"></a>
+
+### QueryGrantsResponse
+QueryGrantsResponse is the response type for the Query/Grants RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `grants` | [Grant](#lbm.token.v1.Grant) | repeated |  |
 
 
 
@@ -10472,6 +10574,9 @@ Query defines the gRPC querier service.
 | `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given class id. | GET|/lbm/token/v1/supply/{class_id}|
 | `Token` | [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.token.v1.QueryTokenResponse) | Token queries an token metadata based on its class id. | GET|/lbm/token/v1/tokens/{class_id}|
 | `Tokens` | [QueryTokensRequest](#lbm.token.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.token.v1.QueryTokensResponse) | Tokens queries all token metadata. | GET|/lbm/token/v1/tokens|
+| `Grants` | [QueryGrantsRequest](#lbm.token.v1.QueryGrantsRequest) | [QueryGrantsResponse](#lbm.token.v1.QueryGrantsResponse) | Grants queries grants on a given grantee. | GET|/lbm/token/v1/grants/{grantee}/{class_id}|
+| `Approve` | [QueryApproveRequest](#lbm.token.v1.QueryApproveRequest) | [QueryApproveResponse](#lbm.token.v1.QueryApproveResponse) | Approve queries approve on a given proxy approver pair. | GET|/lbm/token/v1/approve/{class_id}/{proxy}/{approver}|
+| `Approves` | [QueryApprovesRequest](#lbm.token.v1.QueryApprovesRequest) | [QueryApprovesResponse](#lbm.token.v1.QueryApprovesResponse) | Approves queries all approves on a given proxy. | GET|/lbm/token/v1/approves/{class_id}/{proxy}|
 
  <!-- end services -->
 

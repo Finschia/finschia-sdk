@@ -48,3 +48,17 @@ message Pair {
   string key   = 1;
   string value = 2;
 }
+
+// Grant defines grant information.
+message Grant {
+  string grantee  = 1;
+  string class_id = 2;
+  string action   = 3;
+}
+
+// Approve defines approve information.
+message Approve {
+  string approver = 1;
+  string proxy    = 2;
+  string class_id = 3;
+}

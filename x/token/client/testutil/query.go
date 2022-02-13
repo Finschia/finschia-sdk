@@ -181,3 +181,210 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 		})
 	}
 }
+
+func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.mintableClass.Id,
+				s.vendor.String(),
+			},
+			true,
+			&token.QueryGrantsResponse{
+				Grants: []token.Grant{
+					{
+						Grantee: s.vendor.String(),
+						ClassId: s.mintableClass.Id,
+						Action: "mint",
+					},
+					{
+						Grantee: s.vendor.String(),
+						ClassId: s.mintableClass.Id,
+						Action: "burn",
+					},
+					{
+						Grantee: s.vendor.String(),
+						ClassId: s.mintableClass.Id,
+						Action: "modify",
+					},
+				},
+			},
+		},
+		"extra args": {
+			[]string{
+				s.mintableClass.Id,
+				s.vendor.String(),
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{
+				s.mintableClass.Id,
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdGrants()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual token.QueryGrantsResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.mintableClass.Id,
+				s.vendor.String(),
+				s.customer.String(),
+			},
+			true,
+			&token.QueryApproveResponse{
+				Approve: &token.Approve{
+					ClassId: s.mintableClass.Id,
+					Approver: s.customer.String(),
+					Proxy: s.vendor.String(),
+				},
+			},
+		},
+		"extra args": {
+			[]string{
+				s.mintableClass.Id,
+				s.vendor.String(),
+				s.customer.String(),
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{
+				s.mintableClass.Id,
+				s.vendor.String(),
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdApprove()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual token.QueryApproveResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}
+
+func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
+	val := s.network.Validators[0]
+	commonArgs := []string{
+		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
+	}
+
+	testCases := map[string]struct {
+		args           []string
+		valid bool
+		expected proto.Message
+	}{
+		"valid query": {
+			[]string{
+				s.mintableClass.Id,
+				s.vendor.String(),
+			},
+			true,
+			&token.QueryApprovesResponse{
+				Approves: []token.Approve{
+					{
+						ClassId: s.mintableClass.Id,
+						Approver: s.customer.String(),
+						Proxy: s.vendor.String(),
+					},
+				},
+				Pagination: &query.PageResponse{},
+			},
+		},
+		"extra args": {
+			[]string{
+				s.mintableClass.Id,
+				s.vendor.String(),
+				"extra",
+			},
+			false,
+			nil,
+		},
+		"not enough args": {
+			[]string{
+				s.mintableClass.Id,
+			},
+			false,
+			nil,
+		},
+	}
+
+	for name, tc := range testCases {
+		tc := tc
+
+		s.Run(name, func() {
+			cmd := cli.NewQueryCmdApproves()
+			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			var actual token.QueryApprovesResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			s.Require().Equal(tc.expected, &actual)
+		})
+	}
+}

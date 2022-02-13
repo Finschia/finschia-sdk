@@ -101,3 +101,84 @@ func (s queryServer) Tokens(c context.Context, req *token.QueryTokensRequest) (*
 
 	return &token.QueryTokensResponse{Tokens: classes, Pagination: pageRes}, nil
 }
+
+func (s queryServer) Grants(c context.Context, req *token.QueryGrantsRequest) (*token.QueryGrantsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	var grants []token.Grant
+	actions := []string{"mint", "burn", "modify"}
+	for _, action := range actions {
+		granted := s.keeper.GetGrant(ctx, sdk.AccAddress(req.Grantee), req.ClassId, action)
+		if granted {
+			grants = append(grants, token.Grant{
+				ClassId: req.ClassId,
+				Grantee: req.Grantee,
+				Action: action,
+			})
+		}
+	}
+
+	return &token.QueryGrantsResponse{Grants: grants}, nil
+}
+
+func (s queryServer) Approve(c context.Context, req *token.QueryApproveRequest) (*token.QueryApproveResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := sdk.ValidateAccAddress(req.Proxy); err != nil {
+		return nil, err
+	}
+	if err := sdk.ValidateAccAddress(req.Approver); err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	approved := s.keeper.GetApprove(ctx, sdk.AccAddress(req.Approver), sdk.AccAddress(req.Proxy), req.ClassId)
+	var approve *token.Approve
+	if approved {
+		approve = &token.Approve{
+			ClassId: req.ClassId,
+			Approver: req.Approver,
+			Proxy: req.Proxy,
+		}
+	}
+
+	return &token.QueryApproveResponse{Approve: approve}, nil
+}
+
+func (s queryServer) Approves(c context.Context, req *token.QueryApprovesRequest) (*token.QueryApprovesResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := sdk.ValidateAccAddress(req.Proxy); err != nil {
+		return nil, err
+	}
+
+	ctx := sdk.UnwrapSDKContext(c)
+	store := ctx.KVStore(s.keeper.storeKey)
+	approveStore := prefix.NewStore(store, approveKeyPrefixByProxy(req.ClassId, sdk.AccAddress(req.Proxy)))
+	var approves []token.Approve
+	pageRes, err := query.Paginate(approveStore, req.Pagination, func(key []byte, value []byte) error {
+		approver := string(key)
+		approves = append(approves, token.Approve{
+			ClassId: req.ClassId,
+			Approver: approver,
+			Proxy: req.Proxy,
+		})
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &token.QueryApprovesResponse{Approves: approves, Pagination: pageRes}, nil
+}

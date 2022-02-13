@@ -127,7 +127,15 @@ func splitGrantKey(key []byte) (grantee sdk.AccAddress, classId, action string) 
 }
 
 func approveKey(classId string, proxy, approver sdk.AccAddress) []byte {
-	key := make([]byte, len(approveKeyPrefix)+1+len(classId)+1+len(proxy)+len(approver))
+	prefix := approveKeyPrefixByProxy(classId, proxy)
+	key := make([]byte, len(prefix)+len(approver))
+	copy(key, prefix)
+	copy(key[len(prefix):], approver)
+	return key
+}
+
+func approveKeyPrefixByProxy(classId string, proxy sdk.AccAddress) []byte {
+	key := make([]byte, len(approveKeyPrefix)+1+len(classId)+1+len(proxy))
 
 	begin := 0
 	copy(key, approveKeyPrefix)
@@ -143,9 +151,6 @@ func approveKey(classId string, proxy, approver sdk.AccAddress) []byte {
 
 	begin += 1
 	copy(key[begin:], proxy)
-
-	begin += len(proxy)
-	copy(key[begin:], approver)
 
 	return key
 }

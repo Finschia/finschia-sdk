@@ -30,6 +30,21 @@ service Query {
   rpc Tokens(QueryTokensRequest) returns (QueryTokensResponse) {
     option (google.api.http).get = "/lbm/token/v1/tokens";
   }
+
+  // Grants queries grants on a given grantee.
+  rpc Grants(QueryGrantsRequest) returns (QueryGrantsResponse) {
+    option (google.api.http).get = "/lbm/token/v1/grants/{grantee}/{class_id}";
+  }
+
+  // Approve queries approve on a given proxy approver pair.
+  rpc Approve(QueryApproveRequest) returns (QueryApproveResponse) {
+    option (google.api.http).get = "/lbm/token/v1/approve/{class_id}/{proxy}/{approver}";
+  }
+
+  // Approves queries all approves on a given proxy.
+  rpc Approves(QueryApprovesRequest) returns (QueryApprovesResponse) {
+    option (google.api.http).get = "/lbm/token/v1/approves/{class_id}/{proxy}";
+  }
 }
 
 // QueryBalanceRequest is the request type for the Query/Balance RPC method
@@ -73,5 +88,43 @@ message QueryTokensRequest {
 // QueryTokensResponse is the response type for the Query/Tokens RPC method
 message QueryTokensResponse {
   repeated lbm.token.v1.Token    tokens     = 1 [(gogoproto.nullable) = false];
+  lbm.base.query.v1.PageResponse pagination = 2;
+}
+
+// QueryGrantsRequest is the request type for the Query/Grants RPC method
+message QueryGrantsRequest {
+  string class_id = 1;
+  string grantee  = 2;
+}
+
+// QueryGrantsResponse is the response type for the Query/Grants RPC method
+message QueryGrantsResponse {
+  repeated Grant grants = 1 [(gogoproto.nullable) = false];
+}
+
+// QueryApproveRequest is the request type for the Query/Approve RPC method
+message QueryApproveRequest {
+  string class_id = 1;
+  string proxy    = 2;
+  string approver = 3;
+}
+
+// QueryApproveResponse is the response type for the Query/Approve RPC method
+message QueryApproveResponse {
+  Approve approve = 1;
+}
+
+// QueryApprovesRequest is the request type for the Query/Approves RPC method
+message QueryApprovesRequest {
+  string class_id = 1;
+  string proxy    = 2;
+
+  // pagination defines an optional pagination for the request.
+  lbm.base.query.v1.PageRequest pagination = 3;
+}
+
+// QueryApprovesResponse is the response type for the Query/Approves RPC method
+message QueryApprovesResponse {
+  repeated Approve               approves   = 1 [(gogoproto.nullable) = false];
   lbm.base.query.v1.PageResponse pagination = 2;
 }
