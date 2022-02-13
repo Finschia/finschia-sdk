@@ -4,10 +4,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"sync"
 	"time"
 
-	"github.com/VictoriaMetrics/fastcache"
 	ics23 "github.com/confio/ics23/go"
 	"github.com/line/iavl/v2"
 	abci "github.com/line/ostracon/abci/types"
@@ -40,47 +40,54 @@ var (
 // Store Implements types.KVStore and CommitKVStore.
 type Store struct {
 	tree    Tree
-	cache   *fastcache.Cache
+	cache   types.Cache
 	metrics *Metrics
 }
 
 type CacheManagerSingleton struct {
-	cache   *fastcache.Cache
+	cache   types.Cache
 	metrics *Metrics
 }
 
-func (cms *CacheManagerSingleton) GetCache() *fastcache.Cache {
+func (cms *CacheManagerSingleton) GetCache() types.Cache {
 	return cms.cache
 }
 
 func NewCacheManagerSingleton(cacheSize int, provider MetricsProvider) types.CacheManager {
 	cm := &CacheManagerSingleton{
-		cache:   fastcache.New(cacheSize),
+		cache: NewFastCache(cacheSize),
+		// cache: NewRistrettoCache(cacheSize),
+		// cache: NewFreeCache(cacheSize),
 		metrics: provider(),
 	}
 	startCacheMetricUpdator(cm.cache, cm.metrics)
 	return cm
 }
 
-func startCacheMetricUpdator(cache *fastcache.Cache, metrics *Metrics) {
+var peakCacheBytes uint64
+
+func startCacheMetricUpdator(cache types.Cache, metrics *Metrics) {
 	// Execution time of `fastcache.UpdateStats()` can increase linearly as cache entries grows
 	// So we update the metrics with a separate go route.
 	go func() {
 		for {
-			stats := fastcache.Stats{}
-			cache.UpdateStats(&stats)
-			metrics.IAVLCacheHits.Set(float64(stats.GetCalls - stats.Misses))
-			metrics.IAVLCacheMisses.Set(float64(stats.Misses))
-			metrics.IAVLCacheEntries.Set(float64(stats.EntriesCount))
-			metrics.IAVLCacheBytes.Set(float64(stats.BytesSize))
-			time.Sleep(1 * time.Minute)
+			hits, misses, entries, bytes := cache.Stats()
+			metrics.IAVLCacheHits.Set(float64(hits))
+			metrics.IAVLCacheMisses.Set(float64(misses))
+			metrics.IAVLCacheEntries.Set(float64(entries))
+			metrics.IAVLCacheBytes.Set(float64(bytes))
+			if bytes > peakCacheBytes {
+				peakCacheBytes = bytes
+				metrics.IAVLCachePeakBytes.Set(float64(bytes))
+			}
+			time.Sleep(10 * time.Second)
 		}
 	}()
 }
 
 type CacheManagerNoCache struct{}
 
-func (cmn *CacheManagerNoCache) GetCache() *fastcache.Cache {
+func (cmn *CacheManagerNoCache) GetCache() types.Cache {
 	return nil
 }
 
@@ -246,6 +253,15 @@ func (st *Store) Has(key []byte) (exists bool) {
 func (st *Store) Delete(key []byte) {
 	defer telemetry.MeasureSince(time.Now(), "store", "iavl", "delete")
 	st.tree.Remove(key)
+}
+
+func init() {
+	if os.Getenv("USE_PREFETCH") != "NO" {
+		usePrefetch = 1
+	} else {
+		usePrefetch = -1
+	}
+	prefetcher()
 }
 
 // DeleteVersions deletes a series of versions from the MutableTree. An error

@@ -80,7 +80,7 @@ func precisionMultiplier(prec int64) *big.Int {
 	return precisionMultipliers[prec]
 }
 
-//______________________________________________________________________________________________
+// ______________________________________________________________________________________________
 
 // create a new Dec from integer assuming whole number
 func NewDec(i int64) Dec {
@@ -179,6 +179,9 @@ func NewDecFromStr(str string) (Dec, error) {
 	if !ok {
 		return Dec{}, fmt.Errorf("failed to set decimal string: %s", combinedStr)
 	}
+	if combined.BitLen() > maxBitLen {
+		return Dec{}, fmt.Errorf("decimal out of range; bitLen: got %d, max %d", combined.BitLen(), maxBitLen)
+	}
 	if neg {
 		combined = new(big.Int).Neg(combined)
 	}
@@ -195,8 +198,7 @@ func MustNewDecFromStr(s string) Dec {
 	return dec
 }
 
-//______________________________________________________________________________________________
-//nolint
+// ______________________________________________________________________________________________
 func (d Dec) IsNil() bool       { return d.i == nil }                 // is decimal nil
 func (d Dec) IsZero() bool      { return (d.i).Sign() == 0 }          // is equal to zero
 func (d Dec) IsNegative() bool  { return (d.i).Sign() == -1 }         // is negative
@@ -561,7 +563,7 @@ func (d Dec) RoundInt() Int {
 	return NewIntFromBigInt(chopPrecisionAndRoundNonMutative(d.i))
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 
 // similar to chopPrecisionAndRound, but always rounds down
 func chopPrecisionAndTruncate(d *big.Int) *big.Int {
@@ -612,7 +614,7 @@ func (d Dec) Ceil() Dec {
 	return NewDecFromBigInt(quo.Add(quo, oneInt))
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 
 // MaxSortableDec is the largest Dec that can be passed into SortableDecBytes()
 // Its negative form is the least Dec that can be passed in.
@@ -648,7 +650,7 @@ func SortableDecBytes(dec Dec) []byte {
 	return []byte(fmt.Sprintf(fmt.Sprintf("%%0%ds", Precision*2+1), dec.String()))
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 
 // reuse nil values
 var nilJSON []byte
@@ -758,7 +760,7 @@ func (dp DecProto) String() string {
 	return dp.Dec.String()
 }
 
-//___________________________________________________________________________________
+// ___________________________________________________________________________________
 // helpers
 
 // test if two decimal arrays are equal

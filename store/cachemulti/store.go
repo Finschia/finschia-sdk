@@ -3,6 +3,7 @@ package cachemulti
 import (
 	"fmt"
 	"io"
+	"sync"
 
 	tmdb "github.com/line/tm-db/v2"
 
@@ -110,8 +111,26 @@ func (cms Store) GetStoreType() types.StoreType {
 // Write calls Write on each underlying store.
 func (cms Store) Write() {
 	cms.db.Write()
+	var wg sync.WaitGroup
+	var panicMsg interface{}
 	for _, store := range cms.stores {
-		store.Write()
+		wg.Add(1)
+		go func(s types.CacheWrap) {
+			defer func() {
+				if msg := recover(); msg != nil {
+					if panicMsg == nil {
+						panicMsg = msg
+					}
+				}
+				wg.Done()
+			}()
+
+			s.Write()
+		}(store)
+	}
+	wg.Wait()
+	if panicMsg != nil {
+		panic(panicMsg)
 	}
 }
 
@@ -141,13 +160,17 @@ func (cms Store) CacheMultiStoreWithVersion(_ int64) (types.CacheMultiStore, err
 
 // GetStore returns an underlying Store by key.
 func (cms Store) GetStore(key types.StoreKey) types.Store {
-	return cms.stores[key].(types.Store)
+	s := cms.stores[key]
+	if key == nil || s == nil {
+		panic(fmt.Sprintf("kv store with key %v has not been registered in stores", key))
+	}
+	return s.(types.Store)
 }
 
 // GetKVStore returns an underlying KVStore by key.
 func (cms Store) GetKVStore(key types.StoreKey) types.KVStore {
 	store := cms.stores[key]
-	if store == nil {
+	if key == nil || store == nil {
 		panic(fmt.Sprintf("kv store with key %v has not been registered in stores", key))
 	}
 	return store.(types.KVStore)

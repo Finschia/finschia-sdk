@@ -33,6 +33,6 @@ func NewAnteHandler(
 		NewValidateSigCountDecorator(ak),
 		NewSigGasConsumeDecorator(ak, sigGasConsumer),
 		NewSigVerificationDecorator(ak, signModeHandler),
-		NewIncrementSequenceDecorator(ak),
+		NewIncrementSequenceDecorator(ak, bankKeeper),
 	)
 }
