@@ -20,7 +20,7 @@ func NewKeeper(
 	key sdk.StoreKey,
 ) Keeper {
 	return Keeper{
-		storeKey:      key,
-		cdc:           cdc,
+		storeKey: key,
+		cdc:      cdc,
 	}
 }

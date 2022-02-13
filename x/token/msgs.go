@@ -1,8 +1,8 @@
 package token
 
 import (
-	"unicode/utf8"
 	"regexp"
+	"unicode/utf8"
 
 	"github.com/line/lbm-sdk/codec/legacy"
 	sdk "github.com/line/lbm-sdk/types"
@@ -10,28 +10,28 @@ import (
 )
 
 const (
-	TypeMsgTransfer = "transfer"
+	TypeMsgTransfer     = "transfer"
 	TypeMsgTransferFrom = "transfer-from"
-	TypeMsgApprove = "approve"
-	TypeMsgIssue = "issue"
-	TypeMsgGrant = "grant"
-	TypeMsgRevoke = "revoke"
-	TypeMsgMint = "mint"
-	TypeMsgBurn = "burn"
-	TypeMsgBurnFrom = "burn-from"
-	TypeMsgModify = "modify"
+	TypeMsgApprove      = "approve"
+	TypeMsgIssue        = "issue"
+	TypeMsgGrant        = "grant"
+	TypeMsgRevoke       = "revoke"
+	TypeMsgMint         = "mint"
+	TypeMsgBurn         = "burn"
+	TypeMsgBurnFrom     = "burn-from"
+	TypeMsgModify       = "modify"
 
-	ActionMint = "mint"
-	ActionBurn = "burn"
+	ActionMint   = "mint"
+	ActionBurn   = "burn"
 	ActionModify = "modify"
 
-	AttributeKeyName = "name"
-	AttributeKeyImageUri = "image_uri"
-	AttributeKeyMeta = "meta"
+	AttributeKeyName     = "name"
+	AttributeKeyImageURI = "image_uri"
+	AttributeKeyMeta     = "meta"
 
-	maxName = 20
-	maxImageUri = 1000
-	maxMeta = 1000
+	maxName     = 20
+	maxImageURI = 1000
+	maxMeta     = 1000
 )
 
 func validateAmount(amount sdk.Int) error {
@@ -170,9 +170,9 @@ func validateSymbol(symbol string) error {
 	return nil
 }
 
-func validateImageUri(uri string) error {
-	if !stringInSize(uri, maxImageUri) {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "ImageUri cannot be longer than %d", maxImageUri)
+func validateImageURI(uri string) error {
+	if !stringInSize(uri, maxImageURI) {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "ImageUri cannot be longer than %d", maxImageURI)
 	}
 	return nil
 }
@@ -217,7 +217,7 @@ func (m MsgIssue) ValidateBasic() error {
 		return err
 	}
 
-	if err := validateImageUri(m.ImageUri); err != nil {
+	if err := validateImageURI(m.ImageUri); err != nil {
 		return err
 	}
 
@@ -434,10 +434,10 @@ func (m MsgBurnFrom) GetSigners() []sdk.AccAddress {
 }
 
 func validateChange(change Pair) error {
-	validators := map[string]func(string)error{
-		AttributeKeyName: validateName,
-		AttributeKeyImageUri: validateImageUri,
-		AttributeKeyMeta: validateMeta,
+	validators := map[string]func(string) error{
+		AttributeKeyName:     validateName,
+		AttributeKeyImageURI: validateImageURI,
+		AttributeKeyMeta:     validateMeta,
 	}
 	validator, ok := validators[change.Key]
 	if !ok {
@@ -445,7 +445,7 @@ func validateChange(change Pair) error {
 	}
 	return validator(change.Value)
 }
-	
+
 var _ sdk.Msg = (*MsgModify)(nil)
 
 // Route implements Msg.
@@ -488,4 +488,3 @@ func (m MsgModify) GetSigners() []sdk.AccAddress {
 	signer := sdk.AccAddress(m.Grantee)
 	return []sdk.AccAddress{signer}
 }
-

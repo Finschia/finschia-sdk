@@ -81,7 +81,7 @@ func NewQueryCmdSupply() *cobra.Command {
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.Supply(cmd.Context(), &token.QuerySupplyRequest{
 				ClassId: args[0],
-				Type: args[1],
+				Type:    args[1],
 			})
 			if err != nil {
 				return err
@@ -191,8 +191,8 @@ func NewQueryCmdApprove() *cobra.Command {
 			}
 			queryClient := token.NewQueryClient(clientCtx)
 			res, err := queryClient.Approve(cmd.Context(), &token.QueryApproveRequest{
-				ClassId: args[0],
-				Proxy: args[1],
+				ClassId:  args[0],
+				Proxy:    args[1],
 				Approver: args[2],
 			})
 			if err != nil {
@@ -223,8 +223,8 @@ func NewQueryCmdApproves() *cobra.Command {
 				return err
 			}
 			res, err := queryClient.Approves(cmd.Context(), &token.QueryApprovesRequest{
-				ClassId: args[0],
-				Proxy: args[1],
+				ClassId:    args[0],
+				Proxy:      args[1],
 				Pagination: pageReq,
 			})
 			if err != nil {

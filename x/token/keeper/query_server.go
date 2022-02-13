@@ -49,10 +49,10 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
-	queriers := map[string]func(ctx sdk.Context, classId string)token.FT{
+	queriers := map[string]func(ctx sdk.Context, classId string) token.FT{
 		"supply": s.keeper.GetSupply,
-		"mint": s.keeper.GetMint,
-		"burn": s.keeper.GetBurn,
+		"mint":   s.keeper.GetMint,
+		"burn":   s.keeper.GetBurn,
 	}
 	querier, ok := queriers[req.Type]
 	if !ok {
@@ -120,7 +120,7 @@ func (s queryServer) Grants(c context.Context, req *token.QueryGrantsRequest) (*
 			grants = append(grants, token.Grant{
 				ClassId: req.ClassId,
 				Grantee: req.Grantee,
-				Action: action,
+				Action:  action,
 			})
 		}
 	}
@@ -145,9 +145,9 @@ func (s queryServer) Approve(c context.Context, req *token.QueryApproveRequest) 
 	var approve *token.Approve
 	if approved {
 		approve = &token.Approve{
-			ClassId: req.ClassId,
+			ClassId:  req.ClassId,
 			Approver: req.Approver,
-			Proxy: req.Proxy,
+			Proxy:    req.Proxy,
 		}
 	}
 
@@ -170,9 +170,9 @@ func (s queryServer) Approves(c context.Context, req *token.QueryApprovesRequest
 	pageRes, err := query.Paginate(approveStore, req.Pagination, func(key []byte, value []byte) error {
 		approver := string(key)
 		approves = append(approves, token.Approve{
-			ClassId: req.ClassId,
+			ClassId:  req.ClassId,
 			Approver: approver,
-			Proxy: req.Proxy,
+			Proxy:    req.Proxy,
 		})
 		return nil
 	})

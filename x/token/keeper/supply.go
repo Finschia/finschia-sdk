@@ -33,7 +33,7 @@ func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddre
 	amounts := []token.FT{
 		{
 			ClassId: class.Id,
-			Amount: amount,
+			Amount:  amount,
 		},
 	}
 	if err := k.mintTokens(ctx, to, amounts); err != nil {
@@ -43,11 +43,11 @@ func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddre
 	return nil
 }
 
-func (k Keeper) GetClass(ctx sdk.Context, classId string) (*token.Token, error) {
+func (k Keeper) GetClass(ctx sdk.Context, classID string) (*token.Token, error) {
 	store := ctx.KVStore(k.storeKey)
-	bz := store.Get(classKey(classId))
+	bz := store.Get(classKey(classID))
 	if bz == nil {
-		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "No information for %s", classId)
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "No information for %s", classID)
 	}
 
 	var class token.Token
@@ -194,10 +194,10 @@ func (k Keeper) burnTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token
 	return nil
 }
 
-func (k Keeper) getStatistics(ctx sdk.Context, classId string, keyPrefix []byte) token.FT {
+func (k Keeper) getStatistics(ctx sdk.Context, classID string, keyPrefix []byte) token.FT {
 	store := ctx.KVStore(k.storeKey)
 	amount := sdk.ZeroInt()
-	bz := store.Get(statisticsKey(keyPrefix, classId))
+	bz := store.Get(statisticsKey(keyPrefix, classID))
 	if bz != nil {
 		if err := amount.Unmarshal(bz); err != nil {
 			panic(err)
@@ -205,8 +205,8 @@ func (k Keeper) getStatistics(ctx sdk.Context, classId string, keyPrefix []byte)
 	}
 
 	return token.FT{
-		ClassId: classId,
-		Amount: amount,
+		ClassId: classID,
+		Amount:  amount,
 	}
 }
 
@@ -227,16 +227,16 @@ func (k Keeper) setStatistics(ctx sdk.Context, amount token.FT, keyPrefix []byte
 	return nil
 }
 
-func (k Keeper) GetSupply(ctx sdk.Context, classId string) token.FT {
-	return k.getStatistics(ctx, classId, supplyKeyPrefix)
+func (k Keeper) GetSupply(ctx sdk.Context, classID string) token.FT {
+	return k.getStatistics(ctx, classID, supplyKeyPrefix)
 }
 
-func (k Keeper) GetMint(ctx sdk.Context, classId string) token.FT {
-	return k.getStatistics(ctx, classId, mintKeyPrefix)
+func (k Keeper) GetMint(ctx sdk.Context, classID string) token.FT {
+	return k.getStatistics(ctx, classID, mintKeyPrefix)
 }
 
-func (k Keeper) GetBurn(ctx sdk.Context, classId string) token.FT {
-	return k.getStatistics(ctx, classId, burnKeyPrefix)
+func (k Keeper) GetBurn(ctx sdk.Context, classID string) token.FT {
+	return k.getStatistics(ctx, classID, burnKeyPrefix)
 }
 
 func (k Keeper) setSupply(ctx sdk.Context, amount token.FT) error {
@@ -251,8 +251,8 @@ func (k Keeper) setBurn(ctx sdk.Context, amount token.FT) error {
 	return k.setStatistics(ctx, amount, burnKeyPrefix)
 }
 
-func (k Keeper) Modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, changes []token.Pair) error {
-	if err := k.modify(ctx, classId, grantee, changes); err != nil {
+func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, changes []token.Pair) error {
+	if err := k.modify(ctx, classID, grantee, changes); err != nil {
 		return err
 	}
 
@@ -260,12 +260,12 @@ func (k Keeper) Modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, changes []token.Pair) error {
-	if !k.GetGrant(ctx, grantee, classId, token.ActionModify) {
+func (k Keeper) modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, changes []token.Pair) error {
+	if !k.GetGrant(ctx, grantee, classID, token.ActionModify) {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", grantee, token.ActionModify)
 	}
 
-	class, err := k.GetClass(ctx, classId)
+	class, err := k.GetClass(ctx, classID)
 	if err != nil {
 		return err
 	}
@@ -274,7 +274,7 @@ func (k Keeper) modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, 
 		token.AttributeKeyName: func(name string) {
 			class.Name = name
 		},
-		token.AttributeKeyImageUri: func(uri string) {
+		token.AttributeKeyImageURI: func(uri string) {
 			class.ImageUri = uri
 		},
 		token.AttributeKeyMeta: func(meta string) {
@@ -290,8 +290,8 @@ func (k Keeper) modify(ctx sdk.Context, classId string, grantee sdk.AccAddress, 
 	return nil
 }
 
-func (k Keeper) Grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classId, action string) error {
-	if err := k.grant(ctx, granter, grantee, classId, action); err != nil {
+func (k Keeper) Grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classID, action string) error {
+	if err := k.grant(ctx, granter, grantee, classID, action); err != nil {
 		return err
 	}
 
@@ -299,12 +299,12 @@ func (k Keeper) Grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classId,
 	return nil
 }
 
-func (k Keeper) grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classId, action string) error {
-	if !k.GetGrant(ctx, granter, classId, action) {
+func (k Keeper) grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classID, action string) error {
+	if !k.GetGrant(ctx, granter, classID, action) {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", granter, action)
 	}
 
-	k.setGrant(ctx, grantee, classId, action, true)
+	k.setGrant(ctx, grantee, classID, action, true)
 
 	// TODO: replace it to HasAccount()
 	if acc := k.accountKeeper.GetAccount(ctx, grantee); acc == nil {
@@ -314,8 +314,8 @@ func (k Keeper) grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classId,
 	return nil
 }
 
-func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, classId, action string) error {
-	if err := k.revoke(ctx, grantee, classId, action); err != nil {
+func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, classID, action string) error {
+	if err := k.revoke(ctx, grantee, classID, action); err != nil {
 		return err
 	}
 
@@ -323,24 +323,24 @@ func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, classId, action 
 	return nil
 }
 
-func (k Keeper) revoke(ctx sdk.Context, grantee sdk.AccAddress, classId, action string) error {
-	if !k.GetGrant(ctx, grantee, classId, action) {
+func (k Keeper) revoke(ctx sdk.Context, grantee sdk.AccAddress, classID, action string) error {
+	if !k.GetGrant(ctx, grantee, classID, action) {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", grantee, action)
 	}
 
-	k.setGrant(ctx, grantee, classId, action, false)
+	k.setGrant(ctx, grantee, classID, action, false)
 
 	return nil
 }
 
-func (k Keeper) GetGrant(ctx sdk.Context, grantee sdk.AccAddress, classId, action string) bool {
+func (k Keeper) GetGrant(ctx sdk.Context, grantee sdk.AccAddress, classID, action string) bool {
 	store := ctx.KVStore(k.storeKey)
-	return store.Has(grantKey(grantee, classId, action))
+	return store.Has(grantKey(grantee, classID, action))
 }
 
-func (k Keeper) setGrant(ctx sdk.Context, grantee sdk.AccAddress, classId, action string, set bool) {
+func (k Keeper) setGrant(ctx sdk.Context, grantee sdk.AccAddress, classID, action string, set bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := grantKey(grantee, classId, action)
+	key := grantKey(grantee, classID, action)
 	if set {
 		store.Set(key, []byte{})
 	} else {

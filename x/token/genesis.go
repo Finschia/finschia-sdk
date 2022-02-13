@@ -2,6 +2,7 @@ package token
 
 import (
 	"math"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
@@ -35,7 +36,7 @@ func ValidateGenesis(data GenesisState) error {
 		if err := validateSymbol(class.Symbol); err != nil {
 			return err
 		}
-		if err := validateImageUri(class.ImageUri); err != nil {
+		if err := validateImageURI(class.ImageUri); err != nil {
 			return err
 		}
 		if err := validateMeta(class.Meta); err != nil {
@@ -74,7 +75,7 @@ func ValidateClassGenesis(data ClassGenesisState) error {
 	if data.Nonce.GT(sdk.NewUint(math.MaxUint64)) {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Invalid nonce: %s", data.Nonce)
 	}
-	
+
 	return nil
 }
 

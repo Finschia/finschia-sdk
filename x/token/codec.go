@@ -1,8 +1,8 @@
 package token
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/codec/types"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 )
 

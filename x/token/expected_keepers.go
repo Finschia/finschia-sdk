@@ -14,11 +14,11 @@ type (
 		NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) authtypes.AccountI
 	}
 
-	// ClassKeeper defines the contract needed to be fullfilled for class dependencies.
+	// ClassKeeper defines the contract needed to be fulfilled for class dependencies.
 	ClassKeeper interface {
-		NewId(ctx sdk.Context) string
-		HasId(ctx sdk.Context, id string) bool
-		DeleteId(ctx sdk.Context, id string)
+		NewID(ctx sdk.Context) string
+		HasID(ctx sdk.Context, id string) bool
+		DeleteID(ctx sdk.Context, id string)
 
 		InitGenesis(ctx sdk.Context, data *ClassGenesisState)
 		ExportGenesis(ctx sdk.Context) *ClassGenesisState

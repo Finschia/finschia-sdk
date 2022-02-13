@@ -3,9 +3,9 @@ package testutil
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/token/client/cli"
 )
@@ -20,7 +20,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -89,7 +89,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -162,7 +162,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -219,7 +219,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdIssue() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -228,7 +228,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdIssue() {
 				s.vendor.String(),
 				"Test class",
 				"TT",
-				fmt.Sprintf("--%s=%s", cli.FlagImageUri, "URI"),
+				fmt.Sprintf("--%s=%s", cli.FlagImageURI, "URI"),
 				fmt.Sprintf("--%s=%s", cli.FlagMeta, "META"),
 				fmt.Sprintf("--%s=%d", cli.FlagDecimals, 8),
 				fmt.Sprintf("--%s=%s", cli.FlagSupply, "10000000000"),
@@ -284,7 +284,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -344,7 +344,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -401,7 +401,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -461,7 +461,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -518,7 +518,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {
@@ -578,7 +578,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
+		args  []string
 		valid bool
 	}{
 		"valid transaction": {

@@ -9,12 +9,12 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-// NewId returns a brand new ID.
-func (k Keeper) NewId(ctx sdk.Context) string {
+// NewID returns a brand new ID.
+func (k Keeper) NewID(ctx sdk.Context) string {
 	for nonce := k.getNonce(ctx); nonce.LTE(sdk.NewUint(math.MaxUint64)); nonce = nonce.Incr() {
-		encoded := nonceToId(nonce.Uint64())
-		if !k.HasId(ctx, encoded) {
-			k.addId(ctx, encoded)
+		encoded := nonceToID(nonce.Uint64())
+		if !k.HasID(ctx, encoded) {
+			k.addID(ctx, encoded)
 			k.setNonce(ctx, nonce.Incr())
 			return encoded
 		}
@@ -22,7 +22,7 @@ func (k Keeper) NewId(ctx sdk.Context) string {
 	panic("Class id space exhausted: uint64")
 }
 
-func nonceToId(id uint64) string {
+func nonceToID(id uint64) string {
 	hash := fnv.New32()
 	bz := make([]byte, 8)
 	binary.LittleEndian.PutUint64(bz, id)
@@ -59,17 +59,17 @@ func (k Keeper) setNonce(ctx sdk.Context, nonce sdk.Uint) {
 	store.Set(nonceKey, bz)
 }
 
-func (k Keeper) addId(ctx sdk.Context, id string) {
+func (k Keeper) addID(ctx sdk.Context, id string) {
 	store := ctx.KVStore(k.storeKey)
 	store.Set(idKey(id), []byte{})
 }
 
-func (k Keeper) HasId(ctx sdk.Context, id string) bool {
+func (k Keeper) HasID(ctx sdk.Context, id string) bool {
 	store := ctx.KVStore(k.storeKey)
 	return store.Has(idKey(id))
 }
 
-func (k Keeper) DeleteId(ctx sdk.Context, id string) {
+func (k Keeper) DeleteID(ctx sdk.Context, id string) {
 	store := ctx.KVStore(k.storeKey)
 	store.Delete(idKey(id))
 }

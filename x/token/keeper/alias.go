@@ -18,10 +18,10 @@ func (k Keeper) iterateBalances(ctx sdk.Context, fn func(addr sdk.AccAddress, to
 			panic(err)
 		}
 
-		addr, classId := splitBalanceKey(iterator.Key())
+		addr, classID := splitBalanceKey(iterator.Key())
 		token := token.FT{
-			ClassId: classId,
-			Amount: amount,
+			ClassId: classID,
+			Amount:  amount,
 		}
 
 		stop := fn(addr, token)
@@ -56,11 +56,11 @@ func (k Keeper) iterateGrants(ctx sdk.Context, fn func(grant token.Grant) (stop 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		grantee, classId, action := splitGrantKey(iterator.Key())
+		grantee, classID, action := splitGrantKey(iterator.Key())
 		grant := token.Grant{
 			Grantee: grantee.String(),
-			ClassId: classId,
-			Action: action,
+			ClassId: classID,
+			Action:  action,
 		}
 
 		stop := fn(grant)
@@ -77,11 +77,11 @@ func (k Keeper) iterateApproves(ctx sdk.Context, fn func(approve token.Approve) 
 	defer iterator.Close()
 
 	for ; iterator.Valid(); iterator.Next() {
-		classId, proxy, approver := splitApproveKey(iterator.Key())
+		classID, proxy, approver := splitApproveKey(iterator.Key())
 		approve := token.Approve{
 			Approver: approver.String(),
-			Proxy: proxy.String(),
-			ClassId: classId,
+			Proxy:    proxy.String(),
+			ClassId:  classID,
 		}
 
 		stop := fn(approve)
@@ -103,10 +103,10 @@ func (k Keeper) iterateStatistics(ctx sdk.Context, fn func(amount token.FT) (sto
 			panic(err)
 		}
 
-		classId := splitStatisticsKey(iterator.Key(), keyPrefix)
+		classID := splitStatisticsKey(iterator.Key(), keyPrefix)
 		amount := token.FT{
-			ClassId: classId,
-			Amount: amt,
+			ClassId: classID,
+			Amount:  amt,
 		}
 
 		stop := fn(amount)

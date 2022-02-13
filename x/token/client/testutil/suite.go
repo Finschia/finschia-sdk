@@ -12,9 +12,9 @@ import (
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
+	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
 	"github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/token/client/cli"
-	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -25,10 +25,10 @@ type IntegrationTestSuite struct {
 
 	setupHeight int64
 
-	vendor sdk.AccAddress
+	vendor   sdk.AccAddress
 	customer sdk.AccAddress
 
-	mintableClass token.Token
+	mintableClass    token.Token
 	notMintableClass token.Token
 
 	balance sdk.Int
@@ -59,16 +59,16 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.customer = s.createAccount("customer")
 
 	s.mintableClass = token.Token{
-		Id: "9be17165",
-		Name: "Mintable",
-		Symbol: "OK",
+		Id:       "9be17165",
+		Name:     "Mintable",
+		Symbol:   "OK",
 		Decimals: 8,
 		Mintable: true,
 	}
 	s.notMintableClass = token.Token{
-		Id: "678c146a",
-		Name: "NotMintable",
-		Symbol: "NO",
+		Id:       "678c146a",
+		Name:     "NotMintable",
+		Symbol:   "NO",
 		Decimals: 8,
 		Mintable: false,
 	}
@@ -98,7 +98,6 @@ func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbo
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, owner),
 	}, commonArgs...)
 
-
 	_, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdIssue(), args)
 	s.Require().NoError(err)
 }
@@ -122,10 +121,10 @@ func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	return addr
 }
 
-func (s *IntegrationTestSuite) approve(classId string, approver, proxy sdk.AccAddress) {
+func (s *IntegrationTestSuite) approve(classID string, approver, proxy sdk.AccAddress) {
 	val := s.network.Validators[0]
 	args := append([]string{
-		classId,
+		classID,
 		approver.String(),
 		proxy.String(),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, approver),

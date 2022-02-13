@@ -56,13 +56,13 @@ func (s msgServer) Approve(c context.Context, req *token.MsgApprove) (*token.Msg
 // Issue defines a method to issue a token
 func (s msgServer) Issue(c context.Context, req *token.MsgIssue) (*token.MsgIssueResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
-	classId := s.keeper.classKeeper.NewId(ctx)
+	classID := s.keeper.classKeeper.NewID(ctx)
 	class := token.Token{
-		Id: classId,
-		Name: req.Name,
-		Symbol: req.Symbol,
+		Id:       classID,
+		Name:     req.Name,
+		Symbol:   req.Symbol,
 		ImageUri: req.ImageUri,
-		Meta: req.Meta,
+		Meta:     req.Meta,
 		Decimals: req.Decimals,
 		Mintable: req.Mintable,
 	}

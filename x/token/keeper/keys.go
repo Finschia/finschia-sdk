@@ -5,15 +5,15 @@ import (
 )
 
 var (
-	classKeyPrefix = []byte{0x01}
+	classKeyPrefix   = []byte{0x01}
 	balanceKeyPrefix = []byte{0x02}
-	grantKeyPrefix = []byte{0x03}
+	grantKeyPrefix   = []byte{0x03}
 	approveKeyPrefix = []byte{0x04}
 
 	// statistics keys
 	supplyKeyPrefix = []byte{0x05}
-	mintKeyPrefix = []byte{0x06}
-	burnKeyPrefix = []byte{0x07}
+	mintKeyPrefix   = []byte{0x06}
+	burnKeyPrefix   = []byte{0x07}
 )
 
 func classKey(id string) []byte {
@@ -23,8 +23,8 @@ func classKey(id string) []byte {
 	return key
 }
 
-func balanceKey(addr sdk.AccAddress, classId string) []byte {
-	key := make([]byte, len(balanceKeyPrefix)+1+len(addr)+len(classId))
+func balanceKey(addr sdk.AccAddress, classID string) []byte {
+	key := make([]byte, len(balanceKeyPrefix)+1+len(addr)+len(classID))
 
 	begin := 0
 	copy(key, balanceKeyPrefix)
@@ -32,63 +32,63 @@ func balanceKey(addr sdk.AccAddress, classId string) []byte {
 	begin += len(balanceKeyPrefix)
 	key[begin] = byte(len(addr))
 
-	begin += 1
+	begin++
 	copy(key[begin:], addr)
 
 	begin += len(addr)
-	copy(key[begin:], classId)
+	copy(key[begin:], classID)
 
 	return key
 }
 
-func splitBalanceKey(key []byte) (addr sdk.AccAddress, classId string) {
+func splitBalanceKey(key []byte) (addr sdk.AccAddress, classID string) {
 	begin := len(balanceKeyPrefix) + 1
-	end := begin + int(key[begin - 1])
+	end := begin + int(key[begin-1])
 	addr = sdk.AccAddress(key[begin:end])
 
 	begin = end
-	classId = string(key[begin:])
+	classID = string(key[begin:])
 
 	return
 }
 
-func statisticsKey(keyPrefix []byte, classId string) []byte {
-	key := make([]byte, len(keyPrefix)+len(classId))
+func statisticsKey(keyPrefix []byte, classID string) []byte {
+	key := make([]byte, len(keyPrefix)+len(classID))
 	copy(key, keyPrefix)
-	copy(key[len(keyPrefix):], classId)
+	copy(key[len(keyPrefix):], classID)
 	return key
 }
 
-func supplyKey(classId string) []byte {
-	return statisticsKey(supplyKeyPrefix, classId)
-}
+// func supplyKey(classID string) []byte {
+// 	return statisticsKey(supplyKeyPrefix, classID)
+// }
 
-func mintKey(classId string) []byte {
-	return statisticsKey(mintKeyPrefix, classId)
-}
+// func mintKey(classID string) []byte {
+// 	return statisticsKey(mintKeyPrefix, classID)
+// }
 
-func burnKey(classId string) []byte {
-	return statisticsKey(burnKeyPrefix, classId)
-}
+// func burnKey(classID string) []byte {
+// 	return statisticsKey(burnKeyPrefix, classID)
+// }
 
-func splitStatisticsKey(key, keyPrefix []byte) (classId string) {
+func splitStatisticsKey(key, keyPrefix []byte) (classID string) {
 	return string(key[len(keyPrefix):])
 }
 
-func splitSupplyKey(key []byte) (classId string) {
-	return splitStatisticsKey(key, supplyKeyPrefix)
-}
+// func splitSupplyKey(key []byte) (classID string) {
+// 	return splitStatisticsKey(key, supplyKeyPrefix)
+// }
 
-func splitMintKey(key []byte) (classId string) {
-	return splitStatisticsKey(key, mintKeyPrefix)
-}
+// func splitMintKey(key []byte) (classID string) {
+// 	return splitStatisticsKey(key, mintKeyPrefix)
+// }
 
-func splitBurnKey(key []byte) (classId string) {
-	return splitStatisticsKey(key, burnKeyPrefix)
-}
+// func splitBurnKey(key []byte) (classID string) {
+// 	return splitStatisticsKey(key, burnKeyPrefix)
+// }
 
-func grantKey(grantee sdk.AccAddress, classId, action string) []byte {
-	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(classId)+len(action))
+func grantKey(grantee sdk.AccAddress, classID, action string) []byte {
+	key := make([]byte, len(grantKeyPrefix)+1+len(grantee)+1+len(classID)+len(action))
 
 	begin := 0
 	copy(key, grantKeyPrefix)
@@ -96,29 +96,29 @@ func grantKey(grantee sdk.AccAddress, classId, action string) []byte {
 	begin += len(grantKeyPrefix)
 	key[begin] = byte(len(grantee))
 
-	begin += 1
+	begin++
 	copy(key[begin:], grantee)
 
 	begin += len(grantee)
-	key[begin] = byte(len(classId))
+	key[begin] = byte(len(classID))
 
-	begin += 1
-	copy(key[begin:], classId)
+	begin++
+	copy(key[begin:], classID)
 
-	begin += len(classId)
+	begin += len(classID)
 	copy(key[begin:], action)
 
 	return key
 }
 
-func splitGrantKey(key []byte) (grantee sdk.AccAddress, classId, action string) {
+func splitGrantKey(key []byte) (grantee sdk.AccAddress, classID, action string) {
 	begin := len(grantKeyPrefix) + 1
-	end := begin + int(key[begin - 1])
+	end := begin + int(key[begin-1])
 	grantee = sdk.AccAddress(key[begin:end])
 
 	begin = end + 1
-	end = begin + int(key[begin - 1])
-	classId = string(key[begin:end])
+	end = begin + int(key[begin-1])
+	classID = string(key[begin:end])
 
 	begin = end
 	action = string(key[begin:])
@@ -126,42 +126,42 @@ func splitGrantKey(key []byte) (grantee sdk.AccAddress, classId, action string) 
 	return
 }
 
-func approveKey(classId string, proxy, approver sdk.AccAddress) []byte {
-	prefix := approveKeyPrefixByProxy(classId, proxy)
+func approveKey(classID string, proxy, approver sdk.AccAddress) []byte {
+	prefix := approveKeyPrefixByProxy(classID, proxy)
 	key := make([]byte, len(prefix)+len(approver))
 	copy(key, prefix)
 	copy(key[len(prefix):], approver)
 	return key
 }
 
-func approveKeyPrefixByProxy(classId string, proxy sdk.AccAddress) []byte {
-	key := make([]byte, len(approveKeyPrefix)+1+len(classId)+1+len(proxy))
+func approveKeyPrefixByProxy(classID string, proxy sdk.AccAddress) []byte {
+	key := make([]byte, len(approveKeyPrefix)+1+len(classID)+1+len(proxy))
 
 	begin := 0
 	copy(key, approveKeyPrefix)
 
 	begin += len(approveKeyPrefix)
-	key[begin] = byte(len(classId))
+	key[begin] = byte(len(classID))
 
-	begin += 1
-	copy(key[begin:], classId)
+	begin++
+	copy(key[begin:], classID)
 
-	begin += len(classId)
+	begin += len(classID)
 	key[begin] = byte(len(proxy))
 
-	begin += 1
+	begin++
 	copy(key[begin:], proxy)
 
 	return key
 }
 
-func splitApproveKey(key []byte) (classId string, proxy, approver sdk.AccAddress) {
+func splitApproveKey(key []byte) (classID string, proxy, approver sdk.AccAddress) {
 	begin := len(approveKeyPrefix) + 1
-	end := begin + int(key[begin - 1])
-	classId = string(key[begin:end])
+	end := begin + int(key[begin-1])
+	classID = string(key[begin:end])
 
 	begin = end + 1
-	end = begin + int(key[begin - 1])
+	end = begin + int(key[begin-1])
 	proxy = sdk.AccAddress(key[begin:end])
 
 	begin = end

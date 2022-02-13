@@ -9,7 +9,7 @@ import (
 // Keeper defines the token module Keeper
 type Keeper struct {
 	accountKeeper token.AccountKeeper
-	classKeeper token.ClassKeeper
+	classKeeper   token.ClassKeeper
 
 	// The (unexposed) keys used to access the stores from the Context.
 	storeKey sdk.StoreKey
@@ -27,7 +27,7 @@ func NewKeeper(
 ) Keeper {
 	return Keeper{
 		accountKeeper: ak,
-		classKeeper: ck,
+		classKeeper:   ck,
 		storeKey:      key,
 		cdc:           cdc,
 	}

@@ -52,8 +52,8 @@ func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, am
 	return k.transfer(ctx, from, to, amounts)
 }
 
-func (k Keeper) Approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) error {
-	if err := k.approve(ctx, approver, proxy, classId); err != nil {
+func (k Keeper) Approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string) error {
+	if err := k.approve(ctx, approver, proxy, classID); err != nil {
 		return err
 	}
 
@@ -61,22 +61,22 @@ func (k Keeper) Approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classId
 	return nil
 }
 
-func (k Keeper) approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) error {
-	if k.GetApprove(ctx, approver, proxy, classId) {
+func (k Keeper) approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string) error {
+	if k.GetApprove(ctx, approver, proxy, classID) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Already approved")
 	}
-	k.setApprove(ctx, approver, proxy, classId, true)
+	k.setApprove(ctx, approver, proxy, classID, true)
 	return nil
 }
 
-func (k Keeper) GetApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string) bool {
+func (k Keeper) GetApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string) bool {
 	store := ctx.KVStore(k.storeKey)
-	return store.Has(approveKey(classId, proxy, approver))
+	return store.Has(approveKey(classID, proxy, approver))
 }
 
-func (k Keeper) setApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, classId string, set bool) {
+func (k Keeper) setApprove(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string, set bool) {
 	store := ctx.KVStore(k.storeKey)
-	key := approveKey(classId, proxy, approver)
+	key := approveKey(classID, proxy, approver)
 	if set {
 		store.Set(key, []byte{})
 	} else {
@@ -115,7 +115,7 @@ func (k Keeper) subtractTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []t
 
 		newBalance := token.FT{
 			ClassId: amount.ClassId,
-			Amount: newAmount,
+			Amount:  newAmount,
 		}
 
 		if err := k.setBalance(ctx, addr, newBalance); err != nil {
@@ -137,7 +137,7 @@ func (k Keeper) addTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token.
 
 		newBalance := token.FT{
 			ClassId: amount.ClassId,
-			Amount: newAmount,
+			Amount:  newAmount,
 		}
 
 		if err := k.setBalance(ctx, addr, newBalance); err != nil {
@@ -148,10 +148,10 @@ func (k Keeper) addTokens(ctx sdk.Context, addr sdk.AccAddress, amounts []token.
 	return nil
 }
 
-func (k Keeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, classId string) token.FT {
+func (k Keeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, classID string) token.FT {
 	store := ctx.KVStore(k.storeKey)
 	amount := sdk.ZeroInt()
-	bz := store.Get(balanceKey(addr, classId))
+	bz := store.Get(balanceKey(addr, classID))
 	if bz != nil {
 		if err := amount.Unmarshal(bz); err != nil {
 			panic(err)
@@ -159,8 +159,8 @@ func (k Keeper) GetBalance(ctx sdk.Context, addr sdk.AccAddress, classId string)
 	}
 
 	return token.FT{
-		ClassId: classId,
-		Amount: amount,
+		ClassId: classID,
+		Amount:  amount,
 	}
 }
 

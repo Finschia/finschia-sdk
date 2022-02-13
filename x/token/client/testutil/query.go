@@ -20,8 +20,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
-		valid bool
+		args     []string
+		valid    bool
 		expected proto.Message
 	}{
 		"valid query": {
@@ -87,8 +87,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
-		valid bool
+		args     []string
+		valid    bool
 		expected proto.Message
 	}{
 		"valid query": {
@@ -142,15 +142,15 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
-		valid bool
+		args     []string
+		valid    bool
 		expected proto.Message
 	}{
 		"query all": {
 			[]string{},
 			true,
 			&token.QueryTokensResponse{
-				Tokens: []token.Token{s.notMintableClass, s.mintableClass},
+				Tokens:     []token.Token{s.notMintableClass, s.mintableClass},
 				Pagination: &query.PageResponse{},
 			},
 		},
@@ -190,8 +190,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
-		valid bool
+		args     []string
+		valid    bool
 		expected proto.Message
 	}{
 		"valid query": {
@@ -205,17 +205,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 					{
 						Grantee: s.vendor.String(),
 						ClassId: s.mintableClass.Id,
-						Action: "mint",
+						Action:  "mint",
 					},
 					{
 						Grantee: s.vendor.String(),
 						ClassId: s.mintableClass.Id,
-						Action: "burn",
+						Action:  "burn",
 					},
 					{
 						Grantee: s.vendor.String(),
 						ClassId: s.mintableClass.Id,
-						Action: "modify",
+						Action:  "modify",
 					},
 				},
 			},
@@ -265,8 +265,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
-		valid bool
+		args     []string
+		valid    bool
 		expected proto.Message
 	}{
 		"valid query": {
@@ -278,9 +278,9 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 			true,
 			&token.QueryApproveResponse{
 				Approve: &token.Approve{
-					ClassId: s.mintableClass.Id,
+					ClassId:  s.mintableClass.Id,
 					Approver: s.customer.String(),
-					Proxy: s.vendor.String(),
+					Proxy:    s.vendor.String(),
 				},
 			},
 		},
@@ -331,8 +331,8 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 	}
 
 	testCases := map[string]struct {
-		args           []string
-		valid bool
+		args     []string
+		valid    bool
 		expected proto.Message
 	}{
 		"valid query": {
@@ -344,9 +344,9 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 			&token.QueryApprovesResponse{
 				Approves: []token.Approve{
 					{
-						ClassId: s.mintableClass.Id,
+						ClassId:  s.mintableClass.Id,
 						Approver: s.customer.String(),
-						Proxy: s.vendor.String(),
+						Proxy:    s.vendor.String(),
 					},
 				},
 				Pagination: &query.PageResponse{},

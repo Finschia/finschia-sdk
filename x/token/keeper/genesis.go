@@ -65,7 +65,7 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 
 		balance := token.Balance{
 			Address: addr.String(),
-			Tokens: []token.FT{amount},
+			Tokens:  []token.FT{amount},
 		}
 		addrToIndex[addr.String()] = len(balances)
 		balances = append(balances, balance)
@@ -83,13 +83,13 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 		supplies = append(supplies, amount)
 		return false
 	})
-	
+
 	var mints []token.FT
 	k.iterateMints(ctx, func(amount token.FT) (stop bool) {
 		mints = append(mints, amount)
 		return false
 	})
-	
+
 	var burns []token.FT
 	k.iterateBurns(ctx, func(amount token.FT) (stop bool) {
 		burns = append(burns, amount)
@@ -107,15 +107,15 @@ func (k Keeper) ExportGenesis(ctx sdk.Context) *token.GenesisState {
 		approves = append(approves, approve)
 		return false
 	})
-	
+
 	return &token.GenesisState{
 		ClassState: k.classKeeper.ExportGenesis(ctx),
-		Balances: balances,
-		Classes: classes,
-		Grants: grants,
-		Approves: approves,
-		Supplies: supplies,
-		Mints: mints,
-		Burns: burns,
+		Balances:   balances,
+		Classes:    classes,
+		Grants:     grants,
+		Approves:   approves,
+		Supplies:   supplies,
+		Mints:      mints,
+		Burns:      burns,
 	}
 }

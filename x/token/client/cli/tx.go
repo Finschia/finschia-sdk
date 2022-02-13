@@ -16,14 +16,14 @@ import (
 )
 
 const (
-	FlagSupply = "supply"
+	FlagSupply   = "supply"
 	FlagDecimals = "decimals"
 	FlagMintable = "mintable"
-	FlagMeta = "meta"
-	FlagImageUri = "image-uri"
+	FlagMeta     = "meta"
+	FlagImageURI = "image-uri"
 
 	DefaultDecimals = 8
-	DefaultSupply = "1"
+	DefaultSupply   = "1"
 )
 
 // NewTxCmd returns the transaction commands for this module
@@ -72,10 +72,10 @@ func NewTxCmdTransfer() *cobra.Command {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
 			msg := &token.MsgTransfer{
-				ClassId:  args[0],
-				From: args[1],
-				To: args[2],
-				Amount: amount,
+				ClassId: args[0],
+				From:    args[1],
+				To:      args[2],
+				Amount:  amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -108,11 +108,11 @@ func NewTxCmdTransferFrom() *cobra.Command {
 				return sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "failed to set amount: %s", amountStr)
 			}
 			msg := token.MsgTransferFrom{
-				ClassId:  args[0],
-				Proxy: args[1],
-				From: args[2],
-				To: args[3],
-				Amount: amount,
+				ClassId: args[0],
+				Proxy:   args[1],
+				From:    args[2],
+				To:      args[3],
+				Amount:  amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -142,7 +142,7 @@ func NewTxCmdApprove() *cobra.Command {
 			msg := token.MsgApprove{
 				ClassId:  args[0],
 				Approver: args[1],
-				Proxy: args[2],
+				Proxy:    args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -169,7 +169,7 @@ func NewTxCmdIssue() *cobra.Command {
 				return err
 			}
 
-			imageUri, err := cmd.Flags().GetString(FlagImageUri)
+			imageURI, err := cmd.Flags().GetString(FlagImageURI)
 			if err != nil {
 				return err
 			}
@@ -199,13 +199,13 @@ func NewTxCmdIssue() *cobra.Command {
 			}
 
 			msg := token.MsgIssue{
-				Owner: args[0],
-				To: args[1],
-				Name: args[2],
-				Symbol: args[3],
-				ImageUri: imageUri,
-				Meta: meta,
-				Amount: supply,
+				Owner:    args[0],
+				To:       args[1],
+				Name:     args[2],
+				Symbol:   args[3],
+				ImageUri: imageURI,
+				Meta:     meta,
+				Amount:   supply,
 				Mintable: mintable,
 				Decimals: decimals,
 			}
@@ -217,7 +217,7 @@ func NewTxCmdIssue() *cobra.Command {
 	}
 
 	flags.AddTxFlagsToCmd(cmd)
-	cmd.Flags().String(FlagImageUri, "", "set image-uri")
+	cmd.Flags().String(FlagImageURI, "", "set image-uri")
 	cmd.Flags().String(FlagMeta, "", "set meta")
 	cmd.Flags().String(FlagSupply, DefaultSupply, "initial supply")
 	cmd.Flags().Bool(FlagMintable, false, "set mintable")
@@ -241,10 +241,10 @@ func NewTxCmdGrant() *cobra.Command {
 			}
 
 			msg := token.MsgGrant{
-				ClassId:  args[0],
+				ClassId: args[0],
 				Granter: args[1],
 				Grantee: args[2],
-				Action: args[3],
+				Action:  args[3],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -272,9 +272,9 @@ func NewTxCmdRevoke() *cobra.Command {
 			}
 
 			msg := token.MsgRevoke{
-				ClassId:  args[0],
+				ClassId: args[0],
 				Grantee: args[1],
-				Action: args[2],
+				Action:  args[2],
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -308,10 +308,10 @@ func NewTxCmdMint() *cobra.Command {
 			}
 
 			msg := token.MsgMint{
-				ClassId:  args[0],
+				ClassId: args[0],
 				Grantee: args[1],
-				To: args[2],
-				Amount: amount,
+				To:      args[2],
+				Amount:  amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -345,9 +345,9 @@ func NewTxCmdBurn() *cobra.Command {
 			}
 
 			msg := token.MsgBurn{
-				ClassId:  args[0],
-				From: args[1],
-				Amount: amount,
+				ClassId: args[0],
+				From:    args[1],
+				Amount:  amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -381,10 +381,10 @@ func NewTxCmdBurnFrom() *cobra.Command {
 			}
 
 			msg := token.MsgBurnFrom{
-				ClassId:  args[0],
+				ClassId: args[0],
 				Grantee: args[1],
-				From: args[2],
-				Amount: amount,
+				From:    args[2],
+				Amount:  amount,
 			}
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -413,7 +413,7 @@ func NewTxCmdModify() *cobra.Command {
 
 			change := token.Pair{Key: args[2], Value: args[3]}
 			msg := token.MsgModify{
-				ClassId:  args[0],
+				ClassId: args[0],
 				Grantee: args[1],
 				Changes: []token.Pair{change},
 			}
