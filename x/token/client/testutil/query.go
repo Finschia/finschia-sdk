@@ -3,7 +3,6 @@ package testutil
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/gogo/protobuf/proto"
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
@@ -28,7 +27,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 		"valid query": {
 			[]string{
 				s.mintableClass.Id,
-				s.vendor.Address.String(),
+				s.customer.String(),
 			},
 			true,
 			&token.QueryBalanceResponse{
@@ -38,40 +37,23 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 		"extra args": {
 			[]string{
 				s.mintableClass.Id,
-				s.vendor.Address.String(),
+				s.customer.String(),
 				"extra",
 			},
 			false,
 			nil,
 		},
-		"no such an id": {
-			[]string{
-				"invalid",
-				s.vendor.Address.String(),
-			},
-			true,
-			&token.QueryBalanceResponse{
-				Amount: sdk.ZeroInt(),
-			},
-		},
-		"no such an address": {
+		"not enough args": {
 			[]string{
 				s.mintableClass.Id,
-				"invalid",
 			},
-			true,
-			&token.QueryBalanceResponse{
-				Amount: sdk.ZeroInt(),
-			},
-		},
-		"no arguments": {
-			[]string{},
 			false,
 			nil,
 		},
-		"empty address": {
+		"invalid address": {
 			[]string{
 				s.mintableClass.Id,
+				"invalid",
 			},
 			false,
 			nil,
@@ -126,19 +108,10 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 			false,
 			nil,
 		},
-		"no such an id": {
-			[]string{
-				"invalid",
-			},
-			false,
-			nil,
-		},
-		"no class id": {
+		"not enough args": {
 			[]string{},
 			false,
-			&token.QueryTokenResponse{
-				Token: s.mintableClass,
-			},
+			nil,
 		},
 	}
 

@@ -6,13 +6,15 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/keyring"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/token/client/cli"
+	bankcli "github.com/line/lbm-sdk/x/bank/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -23,9 +25,8 @@ type IntegrationTestSuite struct {
 
 	setupHeight int64
 
-	vendor *network.Validator
-	operator *network.Validator
-	customer *network.Validator
+	vendor sdk.AccAddress
+	customer sdk.AccAddress
 
 	mintableClass token.Token
 	notMintableClass token.Token
@@ -54,9 +55,8 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	_, err := s.network.WaitForHeight(1)
 	s.Require().NoError(err)
 
-	s.vendor = s.network.Validators[0]
-	s.operator = s.network.Validators[1]
-	s.customer = s.network.Validators[2]
+	s.vendor = s.createAccount("vendor")
+	s.customer = s.createAccount("customer")
 
 	s.mintableClass = token.Token{
 		Id: "9be17165",
@@ -75,32 +75,64 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.balance = sdk.NewInt(1000000)
 
-	err = createClass(s.vendor.ClientCtx, s.vendor.Address,
-		s.mintableClass.Name, s.mintableClass.Symbol, s.balance, s.mintableClass.Mintable)
-	s.Require().NoError(err)
-	err = createClass(s.vendor.ClientCtx, s.vendor.Address,
-		s.notMintableClass.Name, s.notMintableClass.Symbol, s.balance, s.notMintableClass.Mintable)
-	s.Require().NoError(err)
+	s.createClass(s.vendor, s.customer, s.mintableClass.Name, s.mintableClass.Symbol, s.balance, s.mintableClass.Mintable)
+	s.createClass(s.vendor, s.customer, s.notMintableClass.Name, s.notMintableClass.Symbol, s.balance, s.notMintableClass.Mintable)
+
+	s.approve(s.mintableClass.Id, s.customer, s.vendor)
+	s.approve(s.notMintableClass.Id, s.customer, s.vendor)
 
 	s.Require().NoError(s.network.WaitForNextBlock())
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
 }
 
-func createClass(clientCtx client.Context, owner sdk.AccAddress, name, symbol string, supply sdk.Int, mintable bool) error {
+func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbol string, supply sdk.Int, mintable bool) {
+	val := s.network.Validators[0]
 	args := append([]string{
 		owner.String(),
-		owner.String(),
+		to.String(),
 		name,
 		symbol,
+		fmt.Sprintf("--%s=%v", cli.FlagMintable, mintable),
+		fmt.Sprintf("--%s=%s", cli.FlagSupply, supply),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, owner),
 	}, commonArgs...)
 
-	args = append(args, fmt.Sprintf("--%s=%v", cli.FlagMintable, mintable))
-	args = append(args, fmt.Sprintf("--%s=%s", cli.FlagSupply, supply))
-	args = append(args, fmt.Sprintf("--%s=%s", flags.FlagFrom, owner))
 
-	_, err := clitestutil.ExecTestCLICmd(clientCtx, cli.NewTxCmdIssue(), args)
-	return err
+	_, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdIssue(), args)
+	s.Require().NoError(err)
+}
+
+func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
+	val := s.network.Validators[0]
+	keyInfo, _, err := val.ClientCtx.Keyring.NewMnemonic(uid, keyring.English, sdk.FullFundraiserPath, hd.Secp256k1)
+	s.Require().NoError(err)
+	addr := keyInfo.GetAddress()
+
+	fee := sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(200)))
+	args := append([]string{
+		val.Address.String(),
+		addr.String(),
+		fee.String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
+	}, commonArgs...)
+	_, err = clitestutil.ExecTestCLICmd(val.ClientCtx, bankcli.NewSendTxCmd(), args)
+	s.Require().NoError(err)
+
+	return addr
+}
+
+func (s *IntegrationTestSuite) approve(classId string, approver, proxy sdk.AccAddress) {
+	val := s.network.Validators[0]
+	args := append([]string{
+		classId,
+		approver.String(),
+		proxy.String(),
+		fmt.Sprintf("--%s=%s", flags.FlagFrom, approver),
+	}, commonArgs...)
+
+	_, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
+	s.Require().NoError(err)
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {

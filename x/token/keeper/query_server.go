@@ -29,7 +29,11 @@ var _ token.QueryServer = queryServer{}
 // Balance queries the number of tokens of a given class owned by the owner.
 func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) (*token.QueryBalanceResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := sdk.ValidateAccAddress(req.Address); err != nil {
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -41,7 +45,7 @@ func (s queryServer) Balance(c context.Context, req *token.QueryBalanceRequest) 
 // Supply queries the number of tokens from the given class id.
 func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*token.QuerySupplyResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -63,7 +67,7 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 // Token queries an token metadata based on its class id.
 func (s queryServer) Token(c context.Context, req *token.QueryTokenRequest) (*token.QueryTokenResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -78,7 +82,7 @@ func (s queryServer) Token(c context.Context, req *token.QueryTokenRequest) (*to
 // Tokens queries all token metadata.
 func (s queryServer) Tokens(c context.Context, req *token.QueryTokensRequest) (*token.QueryTokensResponse, error) {
 	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
+		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)

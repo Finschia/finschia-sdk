@@ -28,15 +28,15 @@ const (
 
 // NewTxCmd returns the transaction commands for this module
 func NewTxCmd() *cobra.Command {
-	nftTxCmd := &cobra.Command{
+	txCmd := &cobra.Command{
 		Use:                        token.ModuleName,
-		Short:                      "token transactions subcommands",
+		Short:                      fmt.Sprintf("%s transactions subcommands", token.ModuleName),
 		DisableFlagParsing:         true,
 		SuggestionsMinimumDistance: 2,
 		RunE:                       client.ValidateCmd,
 	}
 
-	nftTxCmd.AddCommand(
+	txCmd.AddCommand(
 		NewTxCmdTransfer(),
 		NewTxCmdTransferFrom(),
 		NewTxCmdApprove(),
@@ -49,7 +49,7 @@ func NewTxCmd() *cobra.Command {
 		NewTxCmdModify(),
 	)
 
-	return nftTxCmd
+	return txCmd
 }
 
 func NewTxCmdTransfer() *cobra.Command {
