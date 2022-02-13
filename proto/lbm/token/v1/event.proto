@@ -5,18 +5,57 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/line/lbm-sdk/x/token";
 
-// EventTransfer is emitted on Msg/Transfer
+// EventTransfer is emitted on Msg/Transfer and Msg/TransferFrom
 message EventTransfer {
   string class_id = 1;
   string from     = 2;
   string to       = 3;
-  string value    = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string amount   = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
-// EventApproval is emitted on Msg/Approve
-message EventApproval {
+// EventApprove is emitted on Msg/Approve
+message EventApprove {
   string class_id = 1;
-  string owner    = 2;
-  string spender  = 3;
-  string value    = 4 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+  string approver = 2;
+  string proxy    = 3;
+}
+
+// EventIssue is emitted on Msg/Issue
+message EventIssue {
+  string class_id = 1;
+}
+
+// EventGrant is emitted on Msg/Grant
+message EventGrant {
+  string class_id = 1;
+  string grantee  = 2;
+  string action   = 3;
+}
+
+// EventRevoke is emitted on Msg/Revoke
+message EventRevoke {
+  string class_id = 1;
+  string grantee  = 2;
+  string action   = 3;
+}
+
+// EventMint is emitted on Msg/Mint
+message EventMint {
+  string class_id = 1;
+  string to       = 2;
+  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventBurn is emitted on Msg/Burn
+message EventBurn {
+  string class_id = 1;
+  string from     = 2;
+  string amount   = 3 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// EventModify is emitted on Msg/Modify
+message EventModify {
+  string class_id = 1;
+  string key      = 2;
+  string value    = 3;
 }

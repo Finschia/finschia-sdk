@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/gogo/protobuf/proto"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
@@ -11,8 +12,9 @@ func (k Keeper) Issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddre
 		return err
 	}
 
-	// TODO: emit event
-	return nil
+	return ctx.EventManager().EmitTypedEvent(&token.EventIssue{
+		ClassId: class.Id,
+	})
 }
 
 func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddress, amount sdk.Int) error {
@@ -75,8 +77,15 @@ func (k Keeper) Mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []toke
 		return err
 	}
 
-	// TODO: emit events
-	return nil
+	events := make([]proto.Message, len(amounts))
+	for _, amount := range amounts {
+		events = append(events, &token.EventMint{
+			ClassId: amount.ClassId,
+			To:      to.String(),
+			Amount:  amount.Amount,
+		})
+	}
+	return ctx.EventManager().EmitTypedEvents(events...)
 }
 
 func (k Keeper) mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []token.FT) error {
@@ -128,8 +137,15 @@ func (k Keeper) Burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) e
 		return err
 	}
 
-	// TODO: emit events
-	return nil
+	events := make([]proto.Message, len(amounts))
+	for _, amount := range amounts {
+		events = append(events, &token.EventBurn{
+			ClassId: amount.ClassId,
+			From:    from.String(),
+			Amount:  amount.Amount,
+		})
+	}
+	return ctx.EventManager().EmitTypedEvents(events...)
 }
 
 func (k Keeper) burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) error {
@@ -151,8 +167,15 @@ func (k Keeper) BurnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []
 		return err
 	}
 
-	// TODO: emit events
-	return nil
+	events := make([]proto.Message, len(amounts))
+	for _, amount := range amounts {
+		events = append(events, &token.EventBurn{
+			ClassId: amount.ClassId,
+			From:    from.String(),
+			Amount:  amount.Amount,
+		})
+	}
+	return ctx.EventManager().EmitTypedEvents(events...)
 }
 
 func (k Keeper) burnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []token.FT) error {
@@ -256,8 +279,15 @@ func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 		return err
 	}
 
-	// TODO: emit events
-	return nil
+	events := make([]proto.Message, len(changes))
+	for _, change := range changes {
+		events = append(events, &token.EventModify{
+			ClassId: classID,
+			Key:     change.Key,
+			Value:   change.Value,
+		})
+	}
+	return ctx.EventManager().EmitTypedEvents(events...)
 }
 
 func (k Keeper) modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, changes []token.Pair) error {
@@ -295,8 +325,11 @@ func (k Keeper) Grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classID,
 		return err
 	}
 
-	// TODO: emit events
-	return nil
+	return ctx.EventManager().EmitTypedEvent(&token.EventGrant{
+		ClassId: classID,
+		Grantee: grantee.String(),
+		Action:  action,
+	})
 }
 
 func (k Keeper) grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classID, action string) error {
@@ -319,8 +352,11 @@ func (k Keeper) Revoke(ctx sdk.Context, grantee sdk.AccAddress, classID, action 
 		return err
 	}
 
-	// TODO: emit events
-	return nil
+	return ctx.EventManager().EmitTypedEvent(&token.EventRevoke{
+		ClassId: classID,
+		Grantee: grantee.String(),
+		Action:  action,
+	})
 }
 
 func (k Keeper) revoke(ctx sdk.Context, grantee sdk.AccAddress, classID, action string) error {

@@ -688,7 +688,13 @@
     - [Msg](#lbm.staking.v1.Msg)
   
 - [lbm/token/v1/event.proto](#lbm/token/v1/event.proto)
-    - [EventApproval](#lbm.token.v1.EventApproval)
+    - [EventApprove](#lbm.token.v1.EventApprove)
+    - [EventBurn](#lbm.token.v1.EventBurn)
+    - [EventGrant](#lbm.token.v1.EventGrant)
+    - [EventIssue](#lbm.token.v1.EventIssue)
+    - [EventMint](#lbm.token.v1.EventMint)
+    - [EventModify](#lbm.token.v1.EventModify)
+    - [EventRevoke](#lbm.token.v1.EventRevoke)
     - [EventTransfer](#lbm.token.v1.EventTransfer)
   
 - [lbm/token/v1/token.proto](#lbm/token/v1/token.proto)
@@ -10101,18 +10107,117 @@ Msg defines the staking Msg service.
 
 
 
-<a name="lbm.token.v1.EventApproval"></a>
+<a name="lbm.token.v1.EventApprove"></a>
 
-### EventApproval
-EventApproval is emitted on Msg/Approve
+### EventApprove
+EventApprove is emitted on Msg/Approve
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
 | `class_id` | [string](#string) |  |  |
-| `owner` | [string](#string) |  |  |
-| `spender` | [string](#string) |  |  |
+| `approver` | [string](#string) |  |  |
+| `proxy` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventBurn"></a>
+
+### EventBurn
+EventBurn is emitted on Msg/Burn
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `from` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventGrant"></a>
+
+### EventGrant
+EventGrant is emitted on Msg/Grant
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `action` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventIssue"></a>
+
+### EventIssue
+EventIssue is emitted on Msg/Issue
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventMint"></a>
+
+### EventMint
+EventMint is emitted on Msg/Mint
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `to` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventModify"></a>
+
+### EventModify
+EventModify is emitted on Msg/Modify
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `key` | [string](#string) |  |  |
 | `value` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.EventRevoke"></a>
+
+### EventRevoke
+EventRevoke is emitted on Msg/Revoke
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  |  |
+| `action` | [string](#string) |  |  |
 
 
 
@@ -10122,7 +10227,7 @@ EventApproval is emitted on Msg/Approve
 <a name="lbm.token.v1.EventTransfer"></a>
 
 ### EventTransfer
-EventTransfer is emitted on Msg/Transfer
+EventTransfer is emitted on Msg/Transfer and Msg/TransferFrom
 
 
 | Field | Type | Label | Description |
@@ -10130,7 +10235,7 @@ EventTransfer is emitted on Msg/Transfer
 | `class_id` | [string](#string) |  |  |
 | `from` | [string](#string) |  |  |
 | `to` | [string](#string) |  |  |
-| `value` | [string](#string) |  |  |
+| `amount` | [string](#string) |  |  |
 
 
 

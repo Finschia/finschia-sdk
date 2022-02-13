@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"github.com/gogo/protobuf/proto"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"
@@ -11,18 +12,16 @@ func (k Keeper) Transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []tok
 		return err
 	}
 
-	// TODO: emit events
-	// var events []token.EventTransfer
-	// for _, amount := range amounts {
-	// 	events = append(events, token.EventTransfer{
-	// 		ClassId: amount.ClassId,
-	// 		From: from.String(),
-	// 		To: to.String(),
-	// 		Value: amount.Amount,
-	// 	})
-	// }
-	// return ctx.EventManager().EmitTypedEvents(events...)
-	return nil
+	events := make([]proto.Message, len(amounts))
+	for _, amount := range amounts {
+		events = append(events, &token.EventTransfer{
+			ClassId: amount.ClassId,
+			From:    from.String(),
+			To:      to.String(),
+			Amount:  amount.Amount,
+		})
+	}
+	return ctx.EventManager().EmitTypedEvents(events...)
 }
 
 func (k Keeper) transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []token.FT) error {
@@ -38,8 +37,16 @@ func (k Keeper) TransferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, am
 		return err
 	}
 
-	// TODO: emit events
-	return nil
+	events := make([]proto.Message, len(amounts))
+	for _, amount := range amounts {
+		events = append(events, &token.EventTransfer{
+			ClassId: amount.ClassId,
+			From:    from.String(),
+			To:      to.String(),
+			Amount:  amount.Amount,
+		})
+	}
+	return ctx.EventManager().EmitTypedEvents(events...)
 }
 
 func (k Keeper) transferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, amounts []token.FT) error {
@@ -57,8 +64,11 @@ func (k Keeper) Approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classID
 		return err
 	}
 
-	// TODO: emit events
-	return nil
+	return ctx.EventManager().EmitTypedEvent(&token.EventApprove{
+		ClassId:  classID,
+		Approver: approver.String(),
+		Proxy:    proxy.String(),
+	})
 }
 
 func (k Keeper) approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classID string) error {
