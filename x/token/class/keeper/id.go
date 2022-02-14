@@ -22,19 +22,19 @@ func (k Keeper) NewID(ctx sdk.Context) string {
 	panic("Class id space exhausted: uint64")
 }
 
-func nonceToID(id uint64) string {
+func nonceToID(nonce uint64) string {
 	hash := fnv.New32()
 	bz := make([]byte, 8)
-	binary.LittleEndian.PutUint64(bz, id)
+	binary.LittleEndian.PutUint64(bz, nonce)
 	_, err := hash.Write(bz)
 	if err != nil {
 		panic("hash should not fail")
 	}
-	idStr := fmt.Sprintf("%x", hash.Sum32())
-	if len(idStr) < 8 {
-		idStr = "00000000"[len(idStr):] + idStr
+	id := fmt.Sprintf("%x", hash.Sum32())
+	if len(id) < 8 {
+		id = "00000000"[len(id):] + id
 	}
-	return idStr
+	return id
 }
 
 func (k Keeper) getNonce(ctx sdk.Context) sdk.Uint {
