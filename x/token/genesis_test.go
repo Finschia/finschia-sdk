@@ -24,7 +24,7 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid class nonce": {
 			&token.GenesisState{
 				ClassState: &token.ClassGenesisState{
-					Nonce: sdk.NewUint(math.MaxUint).Incr(),
+					Nonce: sdk.NewUint(math.MaxUint64).Incr(),
 				},
 			},
 			false,
