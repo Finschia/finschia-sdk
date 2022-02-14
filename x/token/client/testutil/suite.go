@@ -57,6 +57,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.vendor = s.createAccount("vendor")
 	s.customer = s.createAccount("customer")
+	s.Require().NoError(s.network.WaitForNextBlock())
 
 	s.mintableClass = token.Token{
 		Id:       "9be17165",
@@ -108,7 +109,7 @@ func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	s.Require().NoError(err)
 	addr := keyInfo.GetAddress()
 
-	fee := sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(200)))
+	fee := sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000000)))
 	args := append([]string{
 		val.Address.String(),
 		addr.String(),
