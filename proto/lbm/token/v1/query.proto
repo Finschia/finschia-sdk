@@ -12,7 +12,7 @@ option go_package = "github.com/line/lbm-sdk/x/token";
 // Query defines the gRPC querier service.
 service Query {
   // TokenBalance queries the number of tokens of a given class owned by the address.
-  rpc TokenBalance(QueryBalanceRequest) returns (QueryBalanceResponse) {
+  rpc TokenBalance(QueryTokenBalanceRequest) returns (QueryTokenBalanceResponse) {
     option (google.api.http).get = "/lbm/token/v1/balance/{address}/{class_id}";
   }
 
@@ -47,14 +47,14 @@ service Query {
   }
 }
 
-// QueryBalanceRequest is the request type for the Query/Balance RPC method
-message QueryBalanceRequest {
+// QueryTokenBalanceRequest is the request type for the Query/TokenBalance RPC method
+message QueryTokenBalanceRequest {
   string class_id = 1;
   string address  = 2;
 }
 
-// QueryBalanceResponse is the response type for the Query/Balance RPC method
-message QueryBalanceResponse {
+// QueryTokenBalanceResponse is the response type for the Query/TokenBalance RPC method
+message QueryTokenBalanceResponse {
   string amount = 1 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 

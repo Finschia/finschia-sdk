@@ -28,7 +28,7 @@ func NewQueryCmd() *cobra.Command {
 	}
 
 	queryCmd.AddCommand(
-		NewQueryCmdBalance(),
+		NewQueryCmdTokenBalance(),
 		NewQueryCmdSupply(),
 		NewQueryCmdToken(),
 		NewQueryCmdTokens(),
@@ -40,19 +40,19 @@ func NewQueryCmd() *cobra.Command {
 	return queryCmd
 }
 
-func NewQueryCmdBalance() *cobra.Command {
+func NewQueryCmdTokenBalance() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:     "balance [class-id] [address]",
+		Use:     "token-balance [class-id] [address]",
 		Args:    cobra.ExactArgs(2),
 		Short:   "query for token balances by a given address",
-		Example: fmt.Sprintf(`$ %s query %s balance <class-id> <address>`, version.AppName, token.ModuleName),
+		Example: fmt.Sprintf(`$ %s query %s token-balance <class-id> <address>`, version.AppName, token.ModuleName),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			clientCtx, err := client.GetClientQueryContext(cmd)
 			if err != nil {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.TokenBalance(cmd.Context(), &token.QueryBalanceRequest{
+			res, err := queryClient.TokenBalance(cmd.Context(), &token.QueryTokenBalanceRequest{
 				ClassId: args[0],
 				Address: args[1],
 			})

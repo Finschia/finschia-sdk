@@ -12,7 +12,7 @@ import (
 	ostcli "github.com/line/ostracon/libs/cli"
 )
 
-func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
+func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 	val := s.network.Validators[0]
 	commonArgs := []string{
 		fmt.Sprintf("--%s=%d", flags.FlagHeight, s.setupHeight),
@@ -30,7 +30,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 				s.customer.String(),
 			},
 			true,
-			&token.QueryBalanceResponse{
+			&token.QueryTokenBalanceResponse{
 				Amount: s.balance,
 			},
 		},
@@ -64,7 +64,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 		tc := tc
 
 		s.Run(name, func() {
-			cmd := cli.NewQueryCmdBalance()
+			cmd := cli.NewQueryCmdTokenBalance()
 			out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cmd, append(tc.args, commonArgs...))
 			if !tc.valid {
 				s.Require().Error(err)
@@ -72,7 +72,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdBalance() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.QueryBalanceResponse
+			var actual token.QueryTokenBalanceResponse
 			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
 			s.Require().Equal(tc.expected, &actual)
 		})

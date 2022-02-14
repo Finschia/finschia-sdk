@@ -715,12 +715,12 @@
     - [QueryApproveResponse](#lbm.token.v1.QueryApproveResponse)
     - [QueryApprovesRequest](#lbm.token.v1.QueryApprovesRequest)
     - [QueryApprovesResponse](#lbm.token.v1.QueryApprovesResponse)
-    - [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest)
-    - [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse)
     - [QueryGrantsRequest](#lbm.token.v1.QueryGrantsRequest)
     - [QueryGrantsResponse](#lbm.token.v1.QueryGrantsResponse)
     - [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest)
     - [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse)
+    - [QueryTokenBalanceRequest](#lbm.token.v1.QueryTokenBalanceRequest)
+    - [QueryTokenBalanceResponse](#lbm.token.v1.QueryTokenBalanceResponse)
     - [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest)
     - [QueryTokenResponse](#lbm.token.v1.QueryTokenResponse)
     - [QueryTokensRequest](#lbm.token.v1.QueryTokensRequest)
@@ -10510,37 +10510,6 @@ QueryApprovesResponse is the response type for the Query/Approves RPC method
 
 
 
-<a name="lbm.token.v1.QueryBalanceRequest"></a>
-
-### QueryBalanceRequest
-QueryBalanceRequest is the request type for the Query/Balance RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
-| `address` | [string](#string) |  |  |
-
-
-
-
-
-
-<a name="lbm.token.v1.QueryBalanceResponse"></a>
-
-### QueryBalanceResponse
-QueryBalanceResponse is the response type for the Query/Balance RPC method
-
-
-| Field | Type | Label | Description |
-| ----- | ---- | ----- | ----------- |
-| `amount` | [string](#string) |  |  |
-
-
-
-
-
-
 <a name="lbm.token.v1.QueryGrantsRequest"></a>
 
 ### QueryGrantsRequest
@@ -10592,6 +10561,37 @@ QuerySupplyRequest is the request type for the Query/Supply RPC method
 
 ### QuerySupplyResponse
 QuerySupplyResponse is the response type for the Query/Supply RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `amount` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryTokenBalanceRequest"></a>
+
+### QueryTokenBalanceRequest
+QueryTokenBalanceRequest is the request type for the Query/TokenBalance RPC method
+
+
+| Field | Type | Label | Description |
+| ----- | ---- | ----- | ----------- |
+| `class_id` | [string](#string) |  |  |
+| `address` | [string](#string) |  |  |
+
+
+
+
+
+
+<a name="lbm.token.v1.QueryTokenBalanceResponse"></a>
+
+### QueryTokenBalanceResponse
+QueryTokenBalanceResponse is the response type for the Query/TokenBalance RPC method
 
 
 | Field | Type | Label | Description |
@@ -10677,7 +10677,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `TokenBalance` | [QueryBalanceRequest](#lbm.token.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.token.v1.QueryBalanceResponse) | TokenBalance queries the number of tokens of a given class owned by the address. | GET|/lbm/token/v1/balance/{address}/{class_id}|
+| `TokenBalance` | [QueryTokenBalanceRequest](#lbm.token.v1.QueryTokenBalanceRequest) | [QueryTokenBalanceResponse](#lbm.token.v1.QueryTokenBalanceResponse) | TokenBalance queries the number of tokens of a given class owned by the address. | GET|/lbm/token/v1/balance/{address}/{class_id}|
 | `Supply` | [QuerySupplyRequest](#lbm.token.v1.QuerySupplyRequest) | [QuerySupplyResponse](#lbm.token.v1.QuerySupplyResponse) | Supply queries the number of tokens from the given class id. | GET|/lbm/token/v1/supply/{class_id}|
 | `Token` | [QueryTokenRequest](#lbm.token.v1.QueryTokenRequest) | [QueryTokenResponse](#lbm.token.v1.QueryTokenResponse) | Token queries an token metadata based on its class id. | GET|/lbm/token/v1/tokens/{class_id}|
 | `Tokens` | [QueryTokensRequest](#lbm.token.v1.QueryTokensRequest) | [QueryTokensResponse](#lbm.token.v1.QueryTokensResponse) | Tokens queries all token metadata. | GET|/lbm/token/v1/tokens|

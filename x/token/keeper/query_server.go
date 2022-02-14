@@ -26,8 +26,8 @@ func NewQueryServer(keeper Keeper) token.QueryServer {
 
 var _ token.QueryServer = queryServer{}
 
-// Balance queries the number of tokens of a given class owned by the owner.
-func (s queryServer) TokenBalance(c context.Context, req *token.QueryBalanceRequest) (*token.QueryBalanceResponse, error) {
+// TokenBalance queries the number of tokens of a given class owned by the owner.
+func (s queryServer) TokenBalance(c context.Context, req *token.QueryTokenBalanceRequest) (*token.QueryTokenBalanceResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
@@ -39,7 +39,7 @@ func (s queryServer) TokenBalance(c context.Context, req *token.QueryBalanceRequ
 	ctx := sdk.UnwrapSDKContext(c)
 	balance := s.keeper.GetBalance(ctx, sdk.AccAddress(req.Address), req.ClassId)
 
-	return &token.QueryBalanceResponse{Amount: balance.Amount}, nil
+	return &token.QueryTokenBalanceResponse{Amount: balance.Amount}, nil
 }
 
 // Supply queries the number of tokens from the given class id.
