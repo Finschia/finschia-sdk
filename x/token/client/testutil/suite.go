@@ -76,6 +76,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.balance = sdk.NewInt(1000000)
 
+// vendor creates 2 tokens: mintable and not mintable one. And mint to customer.
 	s.createClass(s.vendor, s.customer, s.mintableClass.Name, s.mintableClass.Symbol, s.balance, s.mintableClass.Mintable)
 	s.createClass(s.vendor, s.customer, s.notMintableClass.Name, s.notMintableClass.Symbol, s.balance, s.notMintableClass.Mintable)
 
