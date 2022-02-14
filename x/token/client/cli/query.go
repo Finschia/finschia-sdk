@@ -52,7 +52,7 @@ func NewQueryCmdBalance() *cobra.Command {
 				return err
 			}
 			queryClient := token.NewQueryClient(clientCtx)
-			res, err := queryClient.Balance(cmd.Context(), &token.QueryBalanceRequest{
+			res, err := queryClient.TokenBalance(cmd.Context(), &token.QueryBalanceRequest{
 				ClassId: args[0],
 				Address: args[1],
 			})

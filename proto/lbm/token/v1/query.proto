@@ -11,8 +11,8 @@ option go_package = "github.com/line/lbm-sdk/x/token";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Balance queries the number of tokens of a given class owned by the address.
-  rpc Balance(QueryBalanceRequest) returns (QueryBalanceResponse) {
+  // TokenBalance queries the number of tokens of a given class owned by the address.
+  rpc TokenBalance(QueryBalanceRequest) returns (QueryBalanceResponse) {
     option (google.api.http).get = "/lbm/token/v1/balance/{address}/{class_id}";
   }
 
