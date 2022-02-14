@@ -10,17 +10,6 @@ import (
 )
 
 const (
-	TypeMsgTransfer     = "transfer"
-	TypeMsgTransferFrom = "transfer-from"
-	TypeMsgApprove      = "approve"
-	TypeMsgIssue        = "issue"
-	TypeMsgGrant        = "grant"
-	TypeMsgRevoke       = "revoke"
-	TypeMsgMint         = "mint"
-	TypeMsgBurn         = "burn"
-	TypeMsgBurnFrom     = "burn-from"
-	TypeMsgModify       = "modify"
-
 	ActionMint   = "mint"
 	ActionBurn   = "burn"
 	ActionModify = "modify"
