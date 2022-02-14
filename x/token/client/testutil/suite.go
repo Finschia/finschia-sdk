@@ -80,6 +80,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.createClass(s.vendor, s.customer, s.mintableClass.Name, s.mintableClass.Symbol, s.balance, s.mintableClass.Mintable)
 	s.createClass(s.vendor, s.customer, s.notMintableClass.Name, s.notMintableClass.Symbol, s.balance, s.notMintableClass.Mintable)
 
+// customer approves vendor to transfer its tokens of the both classes, so vendor can do transferFrom later.
 	s.approve(s.mintableClass.Id, s.customer, s.vendor)
 	s.approve(s.notMintableClass.Id, s.customer, s.vendor)
 
