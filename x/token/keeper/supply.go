@@ -77,7 +77,7 @@ func (k Keeper) Mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []toke
 		return err
 	}
 
-	events := make([]proto.Message, len(amounts))
+	events := make([]proto.Message, 0, len(amounts))
 	for _, amount := range amounts {
 		events = append(events, &token.EventMint{
 			ClassId: amount.ClassId,
@@ -137,7 +137,7 @@ func (k Keeper) Burn(ctx sdk.Context, from sdk.AccAddress, amounts []token.FT) e
 		return err
 	}
 
-	events := make([]proto.Message, len(amounts))
+	events := make([]proto.Message, 0, len(amounts))
 	for _, amount := range amounts {
 		events = append(events, &token.EventBurn{
 			ClassId: amount.ClassId,
@@ -167,7 +167,7 @@ func (k Keeper) BurnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []
 		return err
 	}
 
-	events := make([]proto.Message, len(amounts))
+	events := make([]proto.Message, 0, len(amounts))
 	for _, amount := range amounts {
 		events = append(events, &token.EventBurn{
 			ClassId: amount.ClassId,
@@ -279,7 +279,7 @@ func (k Keeper) Modify(ctx sdk.Context, classID string, grantee sdk.AccAddress, 
 		return err
 	}
 
-	events := make([]proto.Message, len(changes))
+	events := make([]proto.Message, 0, len(changes))
 	for _, change := range changes {
 		events = append(events, &token.EventModify{
 			ClassId: classID,

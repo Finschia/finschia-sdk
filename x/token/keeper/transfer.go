@@ -12,7 +12,7 @@ func (k Keeper) Transfer(ctx sdk.Context, from, to sdk.AccAddress, amounts []tok
 		return err
 	}
 
-	events := make([]proto.Message, len(amounts))
+	events := make([]proto.Message, 0, len(amounts))
 	for _, amount := range amounts {
 		events = append(events, &token.EventTransfer{
 			ClassId: amount.ClassId,
@@ -37,7 +37,7 @@ func (k Keeper) TransferFrom(ctx sdk.Context, proxy, from, to sdk.AccAddress, am
 		return err
 	}
 
-	events := make([]proto.Message, len(amounts))
+	events := make([]proto.Message, 0, len(amounts))
 	for _, amount := range amounts {
 		events = append(events, &token.EventTransfer{
 			ClassId: amount.ClassId,

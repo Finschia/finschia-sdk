@@ -53,7 +53,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	mintableClass := token.Token{
 		Id: s.mintableClass,
 		Name: "Mintable",
-		Symbol: "O",
+		Symbol: "OK",
 		Mintable: true,
 	}
 	err := s.keeper.Issue(s.ctx, mintableClass, s.vendor, s.vendor, s.balance)
@@ -64,7 +64,7 @@ func (s *KeeperTestSuite) SetupTest() {
 	notMintableClass := token.Token{
 		Id: s.notMintableClass,
 		Name: "NOT Mintable",
-		Symbol: "X",
+		Symbol: "NO",
 		Mintable: false,
 	}
 	err = s.keeper.Issue(s.ctx, notMintableClass, s.vendor, s.vendor, s.balance)
