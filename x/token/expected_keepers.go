@@ -18,7 +18,6 @@ type (
 	ClassKeeper interface {
 		NewID(ctx sdk.Context) string
 		HasID(ctx sdk.Context, id string) bool
-		DeleteID(ctx sdk.Context, id string)
 
 		InitGenesis(ctx sdk.Context, data *ClassGenesisState)
 		ExportGenesis(ctx sdk.Context) *ClassGenesisState
