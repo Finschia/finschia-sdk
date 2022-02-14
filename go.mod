@@ -27,14 +27,13 @@ require (
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/line/iavl/v2 v2.0.0-init.1.0.20220204054249-bc24184afa8c
+	github.com/line/iavl/v2 v2.0.0-init.1.0.20220126182233-76c57efa2e11
 	github.com/line/ostracon v1.0.2
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
 	github.com/line/wasmvm v0.14.0-0.8.0
 	github.com/magiconair/properties v1.8.5
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.14
-	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/onsi/ginkgo v1.16.4 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.0
@@ -55,7 +54,6 @@ require (
 	google.golang.org/genproto v0.0.0-20211208223120-3a66f561d7aa
 	google.golang.org/grpc v1.43.0
 	google.golang.org/protobuf v1.27.1
-	gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b // indirect
 	gopkg.in/yaml.v2 v2.4.0
 )
 

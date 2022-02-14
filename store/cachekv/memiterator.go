@@ -1,7 +1,10 @@
 package cachekv
 
 import (
-	tmdb "github.com/line/tm-db/v2"
+	"bytes"
+	"sync"
+
+	memdb "github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/store/types"
 )
@@ -15,7 +18,17 @@ type memIterator struct {
 	deleted map[string]struct{}
 }
 
-func newMemIterator(start, end []byte, items *tmdb.MemDB, deleted map[string]struct{}, ascending bool) *memIterator {
+func IsKeyInDomain(key, start, end []byte) bool {
+	if bytes.Compare(key, start) < 0 {
+		return false
+	}
+	if end != nil && bytes.Compare(end, key) <= 0 {
+		return false
+	}
+	return true
+}
+
+func newMemIterator(start, end []byte, items *memdb.MemDB, deleted *sync.Map, ascending bool) *memIterator {
 	var iter types.Iterator
 	var err error
 
@@ -30,9 +43,10 @@ func newMemIterator(start, end []byte, items *tmdb.MemDB, deleted map[string]str
 	}
 
 	newDeleted := make(map[string]struct{})
-	for k, v := range deleted {
-		newDeleted[k] = v
-	}
+	deleted.Range(func(key, value interface{}) bool {
+		newDeleted[key.(string)] = value.(struct{})
+		return true
+	})
 
 	return &memIterator{
 		Iterator: iter,

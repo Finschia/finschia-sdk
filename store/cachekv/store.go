@@ -9,7 +9,7 @@ import (
 	"time"
 	"unsafe"
 
-	tmdb "github.com/line/tm-db/v2"
+	memdb "github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
@@ -31,7 +31,7 @@ type Store struct {
 	cache         sync.Map
 	deleted       sync.Map
 	unsortedCache sync.Map
-	sortedCache   *tmdb.MemDB // always ascending sorted
+	sortedCache   *memdb.MemDB // always ascending sorted
 	parent        types.KVStore
 }
 
@@ -43,7 +43,7 @@ func NewStore(parent types.KVStore) *Store {
 		cache:         sync.Map{},
 		deleted:       sync.Map{},
 		unsortedCache: sync.Map{},
-		sortedCache:   tmdb.NewMemDB(),
+		sortedCache:   memdb.NewDB(),
 		parent:        parent,
 	}
 }
@@ -143,7 +143,7 @@ func (store *Store) Write() {
 	store.cache = sync.Map{}
 	store.deleted = sync.Map{}
 	store.unsortedCache = sync.Map{}
-	store.sortedCache = tmdb.NewMemDB()
+	store.sortedCache = memdb.NewDB()
 }
 
 // CacheWrap implements CacheWrapper.
@@ -182,12 +182,12 @@ func (store *Store) iterator(start, end []byte, ascending bool) types.Iterator {
 	}
 
 	store.dirtyItems(start, end)
-	cache = newMemIterator(start, end, store.sortedCache, store.deleted, ascending)
+	cache = newMemIterator(start, end, store.sortedCache, &store.deleted, ascending)
 
 	return newCacheMergeIterator(parent, cache, ascending)
 }
 
-// strToByte is meant to make a zero allocation conversion
+// strToBytes is meant to make a zero allocation conversion
 // from string -> []byte to speed up operations, it is not meant
 // to be used generally, but for a specific pattern to check for available
 // keys within a domain.
@@ -211,7 +211,6 @@ func byteSliceToStr(b []byte) string {
 
 // Constructs a slice of dirty items, to use w/ memIterator.
 func (store *Store) dirtyItems(start, end []byte) {
-	n := len(store.unsortedCache)
 	unsorted := make([]*kv.Pair, 0)
 	// If the unsortedCache is too big, its costs too much to determine
 	// whats in the subset we are concerned about.
@@ -221,33 +220,20 @@ func (store *Store) dirtyItems(start, end []byte) {
 	// than just not having the cache.
 	store.unsortedCache.Range(func(k, _ interface{}) bool {
 		key := k.(string)
-		if n >= 1024 {
+		if IsKeyInDomain(strToBytes(key), start, end) {
 			cacheValue, ok := store.cache.Load(key)
 			if ok {
 				unsorted = append(unsorted, &kv.Pair{Key: []byte(key), Value: cacheValue.(*cValue).value})
 			}
-		} else {
-			if tmdb.IsKeyInDomain(strToByte(key), start, end) {
-				cacheValue, ok := store.cache.Load(key)
-				if ok {
-					unsorted = append(unsorted, &kv.Pair{Key: []byte(key), Value: cacheValue.(*cValue).value})
-				}
-			}
 		}
+		return true
 	})
 	store.clearUnsortedCacheSubset(unsorted)
 }
 
 func (store *Store) clearUnsortedCacheSubset(unsorted []*kv.Pair) {
-	n := len(store.unsortedCache)
-	if len(unsorted) == n { // This pattern allows the Go compiler to emit the map clearing idiom for the entire map.
-		for key := range store.unsortedCache {
-			delete(store.unsortedCache, key)
-		}
-	} else { // Otherwise, normally delete the unsorted keys from the map.
-		for _, kv := range unsorted {
-			delete(store.unsortedCache, byteSliceToStr(kv.Key))
-		}
+	for _, kv := range unsorted {
+		store.unsortedCache.Delete(byteSliceToStr(kv.Key))
 	}
 	sort.Slice(unsorted, func(i, j int) bool {
 		return bytes.Compare(unsorted[i].Key, unsorted[j].Key) < 0
@@ -288,6 +274,6 @@ func (store *Store) setCacheValue(key, value []byte, deleted bool, dirty bool) {
 }
 
 func (store *Store) isDeleted(key string) bool {
-	_, ok := store.deleted[key]
+	_, ok := store.deleted.Load(key)
 	return ok
 }

@@ -2,6 +2,7 @@ package keys
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -10,6 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/line/lbm-sdk/client"
+	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/testutil"
 	sdk "github.com/line/lbm-sdk/types"
