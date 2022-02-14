@@ -105,6 +105,7 @@ func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbo
 	s.Require().NoError(err)
 }
 
+// creates an account and send some coins to it for the future transactions.
 func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	val := s.network.Validators[0]
 	keyInfo, _, err := val.ClientCtx.Keyring.NewMnemonic(uid, keyring.English, sdk.FullFundraiserPath, hd.Secp256k1)
