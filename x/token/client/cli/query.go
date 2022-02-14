@@ -11,11 +11,6 @@ import (
 	"github.com/line/lbm-sdk/x/token"
 )
 
-// Flag names and values
-const (
-	FlagClassID = "class-id"
-)
-
 // NewQueryCmd returns the cli query commands for this module
 func NewQueryCmd() *cobra.Command {
 	queryCmd := &cobra.Command{
