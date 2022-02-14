@@ -12,7 +12,7 @@ import (
 )
 
 func TestValidateGenesis(t *testing.T) {
-	addr := secp256k1.GenPrivKey().PubKey().Address().String()
+	addr := sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	testCases := map[string]struct{
 		gs *token.GenesisState
 		valid bool
@@ -29,7 +29,7 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
-		"invalid balances (invalid address)": {
+		"invalid address in a balance": {
 			&token.GenesisState{
 				Balances: []token.Balance{
 					{
@@ -45,11 +45,11 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
-		"invalid balances (invalid amount)": {
+		"invalid amount in a balance": {
 			&token.GenesisState{
 				Balances: []token.Balance{
 					{
-						Address: addr,
+						Address: addr.String(),
 						Tokens: []token.FT{
 							{
 								ClassId: "deadbeef",
@@ -61,13 +61,89 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
-		"invalid balances (empty tokens)": {
+		"empty tokens in a balance": {
 			&token.GenesisState{
 				Balances: []token.Balance{
 					{
-						Address: addr,
+						Address: addr.String(),
 					},
 				},
+			},
+			false,
+		},
+		"invalid name of class": {
+			&token.GenesisState{
+				Classes: []token.Token{{
+					Name: string(make([]rune, 21)),
+				}},
+			},
+			false,
+		},
+		"invalid symbol of class": {
+			&token.GenesisState{
+				Classes: []token.Token{{
+					Symbol: "t",
+				}},
+			},
+			false,
+		},
+		"invalid image uri of class": {
+			&token.GenesisState{
+				Classes: []token.Token{{
+					ImageUri: string(make([]rune, 1001)),
+				}},
+			},
+			false,
+		},
+		"invalid meta of class": {
+			&token.GenesisState{
+				Classes: []token.Token{{
+					Meta: string(make([]rune, 1001)),
+				}},
+			},
+			false,
+		},
+		"invalid decimals of class": {
+			&token.GenesisState{
+				Classes: []token.Token{{
+					Decimals: -1,
+				}},
+			},
+			false,
+		},
+		"invalid grantee of grant": {
+			&token.GenesisState{
+				Grants: []token.Grant{{
+					Grantee: "invalid",
+					Action: "mint",
+				}},
+			},
+			false,
+		},
+		"invalid action of grant": {
+			&token.GenesisState{
+				Grants: []token.Grant{{
+					Grantee: addr.String(),
+					Action: "invalid",
+				}},
+			},
+			false,
+		},
+		"invalid approver of approval": {
+			&token.GenesisState{
+				Approves: []token.Approve{{
+					Approver: "invalid",
+					Proxy: addr.String(),
+				}},
+			},
+			false,
+		},
+		"invalid proxy of approval": {
+			&token.GenesisState{
+				Approves: []token.Approve{{
+					Approver: addr.String(),
+					Proxy: "invalid",
+				}},
 			},
 			false,
 		},

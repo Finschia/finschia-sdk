@@ -59,6 +59,9 @@ func TestMsgTransfer(t *testing.T) {
 			To: tc.to.String(),
 			Amount: tc.amount,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -132,6 +135,9 @@ func TestMsgTransferFrom(t *testing.T) {
 			To: tc.to.String(),
 			Amount: tc.amount,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.proxy}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -179,6 +185,9 @@ func TestMsgApprove(t *testing.T) {
 			Approver: tc.approver.String(),
 			Proxy: tc.proxy.String(),
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.approver}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -328,6 +337,9 @@ func TestMsgIssue(t *testing.T) {
 			Decimals: tc.decimals,
 			Amount: tc.amount,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.owner}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -387,6 +399,9 @@ func TestMsgMint(t *testing.T) {
 			To: tc.to.String(),
 			Amount: tc.amount,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -434,6 +449,9 @@ func TestMsgBurn(t *testing.T) {
 			From: tc.from.String(),
 			Amount: tc.amount,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.from}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -493,6 +511,9 @@ func TestMsgBurnFrom(t *testing.T) {
 			From: tc.from.String(),
 			Amount: tc.amount,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -545,6 +566,15 @@ func TestMsgModify(t *testing.T) {
 			changes: []token.Pair{},
 			valid: false,
 		},
+		"duplicated changes": {
+			classId: "deadbeef",
+			grantee: addrs[0],
+			changes: []token.Pair{
+				{Key: "name", Value: "hello"},
+				{Key: "name", Value: "world"},
+			},
+			valid: false,
+		},
 	}
 
 	for name, tc := range testCases {
@@ -553,6 +583,9 @@ func TestMsgModify(t *testing.T) {
 			Grantee: tc.grantee.String(),
 			Changes: tc.changes,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -612,6 +645,9 @@ func TestMsgGrant(t *testing.T) {
 			Grantee: tc.grantee.String(),
 			Action: tc.action,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.granter}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
@@ -659,6 +695,9 @@ func TestMsgRevoke(t *testing.T) {
 			Grantee: tc.grantee.String(),
 			Action: tc.action,
 		}
+
+		require.Equal(t, []sdk.AccAddress{tc.grantee}, msg.GetSigners())
+
 		err := msg.ValidateBasic()
 		if tc.valid {
 			require.NoError(t, err, name)
