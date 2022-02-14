@@ -612,21 +612,21 @@ func TestMsgGrant(t *testing.T) {
 			classId: "deadbeef",
 			granter: addrs[0],
 			grantee: addrs[1],
-			action: "mint",
+			action: token.ActionMint,
 			valid: true,
 		},
 		"empty granter": {
 			classId: "deadbeef",
 			granter: "",
 			grantee: addrs[1],
-			action: "mint",
+			action: token.ActionMint,
 			valid: false,
 		},
 		"invalid grantee": {
 			classId: "deadbeef",
 			granter: addrs[0],
 			grantee: "invalid",
-			action: "mint",
+			action: token.ActionMint,
 			valid: false,
 		},
 		"invalid action": {
@@ -672,13 +672,13 @@ func TestMsgRevoke(t *testing.T) {
 		"valid msg": {
 			classId: "deadbeef",
 			grantee: addrs[0],
-			action: "mint",
+			action: token.ActionMint,
 			valid: true,
 		},
 		"invalid grantee": {
 			classId: "deadbeef",
 			grantee: "invalid",
-			action: "mint",
+			action: token.ActionMint,
 			valid: false,
 		},
 		"invalid action": {

@@ -14,7 +14,7 @@ func (s *KeeperTestSuite) TestQueryTokenBalance() {
 		postTest func(res *token.QueryTokenBalanceResponse)
 	}{
 		"valid request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			address: s.vendor,
 			valid: true,
 			postTest: func(res *token.QueryTokenBalanceResponse) {
@@ -48,7 +48,7 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 		postTest func(res *token.QuerySupplyResponse)
 	}{
 		"valid supply request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			reqType: "supply",
 			valid: true,
 			postTest: func(res *token.QuerySupplyResponse) {
@@ -56,23 +56,23 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 			},
 		},
 		"valid mint request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			reqType: "mint",
 			valid: true,
 			postTest: func(res *token.QuerySupplyResponse) {
-				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Amount)
+				s.Require().Equal(s.balance.Mul(sdk.NewInt(4)), res.Amount)
 			},
 		},
 		"valid burn request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			reqType: "burn",
 			valid: true,
 			postTest: func(res *token.QuerySupplyResponse) {
-				s.Require().Equal(sdk.ZeroInt(), res.Amount)
+				s.Require().Equal(s.balance, res.Amount)
 			},
 		},
 		"invalid request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			reqType: "invalid",
 			valid: false,
 		},
@@ -102,10 +102,10 @@ func (s *KeeperTestSuite) TestQueryToken() {
 		postTest func(res *token.QueryTokenResponse)
 	}{
 		"valid request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			valid: true,
 			postTest: func(res *token.QueryTokenResponse) {
-				s.Require().Equal(s.mintableClass, res.Token.Id)
+				s.Require().Equal(s.classID, res.Token.Id)
 			},
 		},
 		"invalid request": {
@@ -138,14 +138,14 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 		postTest func(res *token.QueryTokensResponse)
 	}{
 		"valid request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			valid: true,
 			postTest: func(res *token.QueryTokensResponse) {
 				s.Require().Equal(2, len(res.Tokens))
 			},
 		},
 		"valid request with limit": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			count: 1,
 			valid: true,
 			postTest: func(res *token.QueryTokensResponse) {

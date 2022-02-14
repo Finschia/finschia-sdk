@@ -113,7 +113,7 @@ func (s queryServer) Grants(c context.Context, req *token.QueryGrantsRequest) (*
 
 	ctx := sdk.UnwrapSDKContext(c)
 	var grants []token.Grant
-	actions := []string{"mint", "burn", "modify"}
+	actions := []string{token.ActionMint, token.ActionBurn, token.ActionModify}
 	for _, action := range actions {
 		granted := s.keeper.GetGrant(ctx, sdk.AccAddress(req.Grantee), req.ClassId, action)
 		if granted {

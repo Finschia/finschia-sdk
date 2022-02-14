@@ -8,35 +8,39 @@ import (
 )
 
 func (s *KeeperTestSuite) TestTransfer() {
-	class := s.mintableClass
-	amount := token.FT{ClassId: class, Amount: s.balance}
+	amount := token.FT{ClassId: s.classID, Amount: s.balance}
 
-	// successful transfer
-	err := s.keeper.Transfer(s.ctx, s.vendor, s.operator, []token.FT{amount})
-	s.Require().NoError(err)
-	s.Require().Equal(
-		token.FT{ClassId: class, Amount: s.balance.Add(s.balance)},
-		s.keeper.GetBalance(s.ctx, s.operator, class))
-	s.Require().Equal(
-		token.FT{ClassId: class, Amount: sdk.ZeroInt()},
-		s.keeper.GetBalance(s.ctx, s.vendor, class))
-
-	// invalid transfers
-	invalids := map[string]token.FT{
-		"insufficient tokens": amount,
-		"invalid class id": {
-			ClassId: "INVALID",
-			Amount: sdk.OneInt(),
+	testCases := map[string]struct{
+		amount token.FT
+		valid bool
+	}{
+		"valid transfer": {
+			amount,
+			true,
 		},
-		// "invalid amount": {
-		// 	ClassId: amount.ClassId,
-		// 	Amount: sdk.ZeroInt(),
-		// },
+		"insufficient tokens": {
+			token.FT{
+				ClassId: amount.ClassId,
+				Amount: amount.Amount.Mul(sdk.NewInt(2)),
+			},
+			false,
+		},
 	}
-	for name, amt := range invalids {
+
+	for name, tc := range testCases {
 		s.Run(name, func() {
-			err = s.keeper.Transfer(s.ctx, s.vendor, s.operator, []token.FT{amt})
-			s.Require().Error(err)
+			err := s.keeper.Transfer(s.ctx, s.vendor, s.operator, []token.FT{tc.amount})
+			if !tc.valid {
+				s.Require().Error(err)
+				return
+			}
+			s.Require().NoError(err)
+
+			vendorBalance := s.keeper.GetBalance(s.ctx, s.vendor, tc.amount.ClassId).Amount
+			s.Require().True(s.balance.Sub(tc.amount.Amount).Equal(vendorBalance))
+
+			operatorBalance := s.keeper.GetBalance(s.ctx, s.operator, tc.amount.ClassId).Amount
+			s.Require().True(s.balance.Add(tc.amount.Amount).Equal(operatorBalance))
 		})
 	}
 }
@@ -44,13 +48,12 @@ func (s *KeeperTestSuite) TestTransfer() {
 func (s *KeeperTestSuite) TestTransferFrom() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
 	to := s.vendor
-	class := s.mintableClass
-	amount := token.FT{ClassId: class, Amount: s.balance}
+	amount := token.FT{ClassId: s.classID, Amount: s.balance}
 	for _, proxy := range users {
 		for _, from := range users {
 			name := fmt.Sprintf("Proxy: %s, From: %s", proxy, from)
 			s.Run(name, func() {
-				approved := s.keeper.GetApprove(s.ctx, from, proxy, class)
+				approved := s.keeper.GetApprove(s.ctx, from, proxy, amount.ClassId)
 				err := s.keeper.TransferFrom(s.ctx, proxy, from, to, []token.FT{amount})
 				if approved {
 					s.Require().NoError(err)
@@ -64,16 +67,15 @@ func (s *KeeperTestSuite) TestTransferFrom() {
 
 func (s *KeeperTestSuite) TestApprove() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	class := s.mintableClass
 	for _, proxy := range users {
 		for _, from := range users {
 			name := fmt.Sprintf("Proxy: %s, From: %s", proxy, from)
 			s.Run(name, func() {
-				approved := s.keeper.GetApprove(s.ctx, from, proxy, class)
+				approved := s.keeper.GetApprove(s.ctx, from, proxy, s.classID)
 				if !approved {
-					err := s.keeper.Approve(s.ctx, from, proxy, class)
+					err := s.keeper.Approve(s.ctx, from, proxy, s.classID)
 					s.Require().NoError(err)
-					approved = s.keeper.GetApprove(s.ctx, from, proxy, class)
+					approved = s.keeper.GetApprove(s.ctx, from, proxy, s.classID)
 					s.Require().True(approved)
 				}
 			})

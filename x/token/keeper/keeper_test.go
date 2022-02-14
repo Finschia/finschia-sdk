@@ -26,8 +26,7 @@ type KeeperTestSuite struct {
 	operator sdk.AccAddress
 	customer sdk.AccAddress
 
-	mintableClass string
-	notMintableClass string
+	classID string
 
 	balance sdk.Int
 }
@@ -46,55 +45,42 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.operator = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	s.customer = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
-	s.balance = sdk.NewInt(10000)
+	s.balance = sdk.NewInt(1000000)
 
 	// create a mintable class
-	s.mintableClass = "foodbabe"
-	mintableClass := token.Token{
-		Id: s.mintableClass,
+	s.classID = "foodbabe"
+	class := token.Token{
+		Id: s.classID,
 		Name: "Mintable",
 		Symbol: "OK",
 		Mintable: true,
 	}
-	err := s.keeper.Issue(s.ctx, mintableClass, s.vendor, s.vendor, s.balance)
+	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	s.Require().NoError(err)
+	amount := []token.FT{{ClassId: s.classID, Amount: s.balance}}
+	err = s.keeper.Burn(s.ctx, s.vendor, amount)
 	s.Require().NoError(err)
 
-	// create a not mintable class
-	s.notMintableClass = "fee1dead"
-	notMintableClass := token.Token{
-		Id: s.notMintableClass,
-		Name: "NOT Mintable",
-		Symbol: "NO",
-		Mintable: false,
-	}
-	err = s.keeper.Issue(s.ctx, notMintableClass, s.vendor, s.vendor, s.balance)
+	// create another class for the query test
+	class.Id = "deadbeef"
+	err = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
 	s.Require().NoError(err)
 
 	// mint to the others
-	for _, to := range []sdk.AccAddress{s.operator, s.customer} {
-		amounts := []token.FT{
-			{
-				ClassId: s.mintableClass,
-				Amount: s.balance,
-			},
-		}
-		err = s.keeper.Mint(s.ctx, s.vendor, to, amounts)
+	for _, to := range []sdk.AccAddress{s.vendor, s.operator, s.customer} {
+		err = s.keeper.Mint(s.ctx, s.vendor, to, amount)
 		s.Require().NoError(err)
 	}
 
 	// grant operator
-	for _, class := range []string{s.mintableClass, s.notMintableClass} {
-		for _, action := range []string{"mint", "burn", "modify"} {
-			err = s.keeper.Grant(s.ctx, s.vendor, s.operator, class, action)
-			s.Require().NoError(err)
-		}
+	for _, action := range []string{token.ActionMint, token.ActionBurn} {
+		err = s.keeper.Grant(s.ctx, s.vendor, s.operator, s.classID, action)
+		s.Require().NoError(err)
 	}
 
 	// approve operator
-	for _, class := range []string{s.mintableClass, s.notMintableClass} {
-		err = s.keeper.Approve(s.ctx, s.customer, s.operator, class)
-		s.Require().NoError(err)
-	}
+	err = s.keeper.Approve(s.ctx, s.customer, s.operator, s.classID)
+	s.Require().NoError(err)
 }
 
 func TestKeeperTestSuite(t *testing.T) {

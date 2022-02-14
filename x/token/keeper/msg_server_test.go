@@ -12,12 +12,12 @@ func (s *KeeperTestSuite) TestMsgTransfer() {
 		valid bool
 	}{
 		"valid request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			amount: s.balance,
 			valid: true,
 		},
 		"insufficient funds (amount)": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			amount: s.balance.Add(sdk.OneInt()),
 			valid: false,
 		},
@@ -54,13 +54,13 @@ func (s *KeeperTestSuite) TestMsgTransferFrom() {
 		valid bool
 	}{
 		"valid request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			proxy: s.operator,
 			from: s.customer,
 			valid: true,
 		},
 		"not approved": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			proxy: s.vendor,
 			from: s.customer,
 			valid: false,
@@ -94,13 +94,13 @@ func (s *KeeperTestSuite) TestMsgApprove() {
 		valid bool
 	}{
 		"valid request": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			approver: s.customer,
 			proxy: s.vendor,
 			valid: true,
 		},
 		"already approved": {
-			classId: s.mintableClass,
+			classId: s.classID,
 			approver: s.customer,
 			proxy: s.operator,
 			valid: false,

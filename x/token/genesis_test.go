@@ -115,7 +115,7 @@ func TestValidateGenesis(t *testing.T) {
 			&token.GenesisState{
 				Grants: []token.Grant{{
 					Grantee: "invalid",
-					Action: "mint",
+					Action: token.ActionMint,
 				}},
 			},
 			false,

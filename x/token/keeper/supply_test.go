@@ -1,25 +1,141 @@
 package keeper_test
 
 import (
+	"fmt"
+
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/token"
 )
 
 func (s *KeeperTestSuite) TestIssue() {
+	// create a not mintable class
+	class := token.Token{
+		Id: "fee1dead",
+		Name: "NOT Mintable",
+		Symbol: "NO",
+		Mintable: false,
+	}
+	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	s.Require().NoError(err)
+
+	mintActions := []string{
+		token.ActionMint,
+		token.ActionBurn,
+	}
+	for _, action := range mintActions {
+		s.Require().False(s.keeper.GetGrant(s.ctx, s.vendor, class.Id, action))
+	}
+	s.Require().True(s.keeper.GetGrant(s.ctx, s.vendor, class.Id, token.ActionModify))
 }
 
 func (s *KeeperTestSuite) TestMint() {
+	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
+	to := s.vendor
+	amount := token.FT{ClassId: s.classID, Amount: s.balance}
+	for _, grantee := range users {
+		name := fmt.Sprintf("Grantee: %s", grantee)
+		s.Run(name, func() {
+			granted := s.keeper.GetGrant(s.ctx, grantee, amount.ClassId, token.ActionMint)
+			err := s.keeper.Mint(s.ctx, grantee, to, []token.FT{amount})
+			if granted {
+				s.Require().NoError(err)
+			} else {
+				s.Require().Error(err)
+			}
+		})
+	}
 }
 
 func (s *KeeperTestSuite) TestBurn() {
+	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
+	amount := token.FT{ClassId: s.classID, Amount: s.balance}
+	for _, from := range users {
+		name := fmt.Sprintf("From: %s", from)
+		s.Run(name, func() {
+			granted := s.keeper.GetGrant(s.ctx, from, amount.ClassId, token.ActionBurn)
+			err := s.keeper.Burn(s.ctx, from, []token.FT{amount})
+			if granted {
+				s.Require().NoError(err)
+			} else {
+				s.Require().Error(err)
+			}
+		})
+	}
 }
 
 func (s *KeeperTestSuite) TestBurnFrom() {
+	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
+	amount := token.FT{ClassId: s.classID, Amount: s.balance}
+	for _, grantee := range users {
+		for _, from := range users {
+			name := fmt.Sprintf("Grantee: %s, From: %s", grantee, from)
+			s.Run(name, func() {
+				granted := s.keeper.GetGrant(s.ctx, grantee, amount.ClassId, token.ActionBurn)
+				approved := s.keeper.GetApprove(s.ctx, from, grantee, amount.ClassId)
+				err := s.keeper.BurnFrom(s.ctx, grantee, from, []token.FT{amount})
+				if granted && approved {
+					s.Require().NoError(err)
+				} else {
+					s.Require().Error(err)
+				}
+			})
+		}
+	}
 }
 
 func (s *KeeperTestSuite) TestModify() {
+	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
+	changes := []token.Pair{
+		{Key: "name", Value: "new name"},
+		{Key: "image_uri", Value: "new uri"},
+		{Key: "meta", Value: "new meta"},
+	}
+	for _, grantee := range users {
+		name := fmt.Sprintf("Grantee: %s", grantee)
+		s.Run(name, func() {
+			granted := s.keeper.GetGrant(s.ctx, grantee, s.classID, token.ActionModify)
+			err := s.keeper.Modify(s.ctx, s.classID, grantee, changes)
+			if granted {
+				s.Require().NoError(err)
+			} else {
+				s.Require().Error(err)
+			}
+		})
+	}
 }
 
 func (s *KeeperTestSuite) TestGrant() {
+	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
+	actions := []string{token.ActionMint, token.ActionBurn, token.ActionModify}
+	for _, grantee := range users {
+		for _, action := range actions {
+			name := fmt.Sprintf("Grantee: %s", grantee)
+			s.Run(name, func() {
+				granted := s.keeper.GetGrant(s.ctx, grantee, s.classID, action)
+				if !granted {
+					err := s.keeper.Grant(s.ctx, s.vendor, grantee, s.classID, action)
+					s.Require().NoError(err)
+					s.Require().True(s.keeper.GetGrant(s.ctx, grantee, s.classID, action))
+				}
+			})
+		}
+	}
 }
 
 func (s *KeeperTestSuite) TestRevoke() {
+	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
+	actions := []string{token.ActionMint, token.ActionBurn, token.ActionModify}
+	for _, grantee := range users {
+		for _, action := range actions {
+			name := fmt.Sprintf("Grantee: %s", grantee)
+			s.Run(name, func() {
+				granted := s.keeper.GetGrant(s.ctx, grantee, s.classID, action)
+				if granted {
+					err := s.keeper.Revoke(s.ctx, grantee, s.classID, action)
+					s.Require().NoError(err)
+					s.Require().False(s.keeper.GetGrant(s.ctx, grantee, s.classID, action))
+				}
+			})
+		}
+	}
 }

@@ -205,17 +205,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 					{
 						Grantee: s.vendor.String(),
 						ClassId: s.mintableClass.Id,
-						Action:  "mint",
+						Action:  token.ActionMint,
 					},
 					{
 						Grantee: s.vendor.String(),
 						ClassId: s.mintableClass.Id,
-						Action:  "burn",
+						Action:  token.ActionBurn,
 					},
 					{
 						Grantee: s.vendor.String(),
 						ClassId: s.mintableClass.Id,
-						Action:  "modify",
+						Action:  token.ActionModify,
 					},
 				},
 			},

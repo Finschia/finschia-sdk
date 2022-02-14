@@ -22,14 +22,16 @@ func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddre
 		return err
 	}
 
-	ownerActions := []string{
-		token.ActionMint,
-		token.ActionBurn,
-		token.ActionModify,
+	if class.Mintable {
+		mintActions := []string{
+			token.ActionMint,
+			token.ActionBurn,
+		}
+		for _, action := range mintActions {
+			k.setGrant(ctx, owner, class.Id, action, true)
+		}
 	}
-	for _, action := range ownerActions {
-		k.setGrant(ctx, owner, class.Id, action, true)
-	}
+	k.setGrant(ctx, owner, class.Id, token.ActionModify, true)
 
 	// zero check?
 	amounts := []token.FT{
@@ -90,14 +92,6 @@ func (k Keeper) Mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []toke
 
 func (k Keeper) mint(ctx sdk.Context, grantee, to sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
-		class, err := k.GetClass(ctx, amount.ClassId)
-		if err != nil {
-			return sdkerrors.Wrapf(sdkerrors.ErrNotFound, "No token found for: %s", amount.ClassId)
-		}
-		if !class.Mintable {
-			return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "Not mintable: %s", amount.ClassId)
-		}
-
 		if ok := k.GetGrant(ctx, grantee, amount.ClassId, token.ActionMint); !ok {
 			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens", grantee, token.ActionMint, amount.ClassId)
 		}
@@ -180,12 +174,11 @@ func (k Keeper) BurnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []
 
 func (k Keeper) burnFrom(ctx sdk.Context, proxy, from sdk.AccAddress, amounts []token.FT) error {
 	for _, amount := range amounts {
-		if ok := k.GetGrant(ctx, proxy, amount.ClassId, token.ActionBurn); ok {
-			continue
-		} else if ok := k.GetApprove(ctx, from, proxy, amount.ClassId); ok {
-			continue
+		granted := k.GetGrant(ctx, proxy, amount.ClassId, token.ActionBurn)
+		approved := k.GetApprove(ctx, from, proxy, amount.ClassId)
+		if !granted || !approved {
+			return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens of %s", proxy, token.ActionBurn, amount.ClassId, from)
 		}
-		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s %s tokens of %s", proxy, token.ActionBurn, amount.ClassId, from)
 	}
 
 	if err := k.burnTokens(ctx, from, amounts); err != nil {
