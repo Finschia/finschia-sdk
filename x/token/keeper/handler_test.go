@@ -8,7 +8,6 @@ import (
 )
 
 func (s *KeeperTestSuite) TestNewHandler() {
-	amount := sdk.OneInt()
 	testCases := map[string]struct{
 		msg sdk.Msg
 		valid bool
@@ -18,7 +17,7 @@ func (s *KeeperTestSuite) TestNewHandler() {
 				ClassId: s.classID,
 				From: s.vendor.String(),
 				To: s.customer.String(),
-				Amount: amount,
+				Amount: sdk.OneInt(),
 			},
 			true,
 		},
@@ -28,7 +27,7 @@ func (s *KeeperTestSuite) TestNewHandler() {
 				Proxy: s.operator.String(),
 				From: s.customer.String(),
 				To: s.vendor.String(),
-				Amount: amount,
+				Amount: sdk.OneInt(),
 			},
 			true,
 		},
@@ -72,7 +71,7 @@ func (s *KeeperTestSuite) TestNewHandler() {
 				ClassId: s.classID,
 				Grantee: s.vendor.String(),
 				To: s.customer.String(),
-				Amount: amount,
+				Amount: sdk.OneInt(),
 			},
 			true,
 		},
@@ -80,7 +79,7 @@ func (s *KeeperTestSuite) TestNewHandler() {
 			&token.MsgBurn{
 				ClassId: s.classID,
 				From: s.operator.String(),
-				Amount: amount,
+				Amount: sdk.OneInt(),
 			},
 			true,
 		},
@@ -89,7 +88,7 @@ func (s *KeeperTestSuite) TestNewHandler() {
 				ClassId: s.classID,
 				Grantee: s.operator.String(),
 				From: s.customer.String(),
-				Amount: amount,
+				Amount: sdk.OneInt(),
 			},
 			true,
 		},

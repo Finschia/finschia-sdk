@@ -8,21 +8,16 @@ import (
 )
 
 func (s *KeeperTestSuite) TestTransfer() {
-	amount := token.FT{ClassId: s.classID, Amount: s.balance}
-
 	testCases := map[string]struct{
 		amount token.FT
 		valid bool
 	}{
 		"valid transfer": {
-			amount,
+			token.FT{ClassId: s.classID, Amount: sdk.OneInt()},
 			true,
 		},
 		"insufficient tokens": {
-			token.FT{
-				ClassId: amount.ClassId,
-				Amount: amount.Amount.Mul(sdk.NewInt(2)),
-			},
+			token.FT{ClassId: s.classID, Amount: s.balance.Mul(sdk.NewInt(2))},
 			false,
 		},
 	}
@@ -48,7 +43,7 @@ func (s *KeeperTestSuite) TestTransfer() {
 func (s *KeeperTestSuite) TestTransferFrom() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
 	to := s.vendor
-	amount := token.FT{ClassId: s.classID, Amount: s.balance}
+	amount := token.FT{ClassId: s.classID, Amount: sdk.OneInt()}
 	for _, proxy := range users {
 		for _, from := range users {
 			name := fmt.Sprintf("Proxy: %s, From: %s", proxy, from)

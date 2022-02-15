@@ -45,10 +45,10 @@ func (s *KeeperTestSuite) SetupTest() {
 	s.operator = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 	s.customer = sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
 
-	s.balance = sdk.NewInt(1000000)
+	s.balance = sdk.NewInt(1000)
 
 	// create a mintable class
-	s.classID = "foodbabe"
+	s.classID = "f00dbabe"
 	class := token.Token{
 		Id: s.classID,
 		Name: "Mintable",
@@ -79,8 +79,10 @@ func (s *KeeperTestSuite) SetupTest() {
 	}
 
 	// approve operator
-	err = s.keeper.Approve(s.ctx, s.customer, s.operator, s.classID)
-	s.Require().NoError(err)
+	for _, approver := range []sdk.AccAddress{s.vendor, s.customer} {
+		err = s.keeper.Approve(s.ctx, approver, s.operator, s.classID)
+		s.Require().NoError(err)
+	}
 }
 
 func TestKeeperTestSuite(t *testing.T) {

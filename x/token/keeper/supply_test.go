@@ -15,7 +15,7 @@ func (s *KeeperTestSuite) TestIssue() {
 		Symbol: "NO",
 		Mintable: false,
 	}
-	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, sdk.OneInt())
 	s.Require().NoError(err)
 
 	mintActions := []string{
@@ -29,14 +29,14 @@ func (s *KeeperTestSuite) TestIssue() {
 
 	// override fails
 	class.Id = s.classID
-	err = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	err = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, sdk.OneInt())
 	s.Require().Error(err)
 }
 
 func (s *KeeperTestSuite) TestMint() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
 	to := s.vendor
-	amount := token.FT{ClassId: s.classID, Amount: s.balance}
+	amount := token.FT{ClassId: s.classID, Amount: sdk.OneInt()}
 	for _, grantee := range users {
 		name := fmt.Sprintf("Grantee: %s", grantee)
 		s.Run(name, func() {
@@ -53,7 +53,7 @@ func (s *KeeperTestSuite) TestMint() {
 
 func (s *KeeperTestSuite) TestBurn() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	amount := token.FT{ClassId: s.classID, Amount: s.balance}
+	amount := token.FT{ClassId: s.classID, Amount: sdk.OneInt()}
 	for _, from := range users {
 		name := fmt.Sprintf("From: %s", from)
 		s.Run(name, func() {
@@ -70,7 +70,7 @@ func (s *KeeperTestSuite) TestBurn() {
 
 func (s *KeeperTestSuite) TestBurnFrom() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
-	amount := token.FT{ClassId: s.classID, Amount: s.balance}
+	amount := token.FT{ClassId: s.classID, Amount: sdk.OneInt()}
 	for _, grantee := range users {
 		for _, from := range users {
 			name := fmt.Sprintf("Grantee: %s, From: %s", grantee, from)

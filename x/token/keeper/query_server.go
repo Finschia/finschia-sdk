@@ -10,6 +10,7 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/token"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 type queryServer struct {
@@ -32,6 +33,9 @@ func (s queryServer) TokenBalance(c context.Context, req *token.QueryTokenBalanc
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	if err := class.ValidateID(req.ClassId); err != nil {
+		return nil, err
+	}
 	if err := sdk.ValidateAccAddress(req.Address); err != nil {
 		return nil, err
 	}
@@ -46,6 +50,10 @@ func (s queryServer) TokenBalance(c context.Context, req *token.QueryTokenBalanc
 func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*token.QuerySupplyResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := class.ValidateID(req.ClassId); err != nil {
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -68,6 +76,10 @@ func (s queryServer) Supply(c context.Context, req *token.QuerySupplyRequest) (*
 func (s queryServer) Token(c context.Context, req *token.QueryTokenRequest) (*token.QueryTokenResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "empty request")
+	}
+
+	if err := class.ValidateID(req.ClassId); err != nil {
+		return nil, err
 	}
 
 	ctx := sdk.UnwrapSDKContext(c)
@@ -107,6 +119,9 @@ func (s queryServer) Grants(c context.Context, req *token.QueryGrantsRequest) (*
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	if err := class.ValidateID(req.ClassId); err != nil {
+		return nil, err
+	}
 	if err := sdk.ValidateAccAddress(req.Grantee); err != nil {
 		return nil, err
 	}
@@ -133,6 +148,9 @@ func (s queryServer) Approve(c context.Context, req *token.QueryApproveRequest) 
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	if err := class.ValidateID(req.ClassId); err != nil {
+		return nil, err
+	}
 	if err := sdk.ValidateAccAddress(req.Proxy); err != nil {
 		return nil, err
 	}
@@ -159,6 +177,9 @@ func (s queryServer) Approves(c context.Context, req *token.QueryApprovesRequest
 		return nil, status.Error(codes.InvalidArgument, "empty request")
 	}
 
+	if err := class.ValidateID(req.ClassId); err != nil {
+		return nil, err
+	}
 	if err := sdk.ValidateAccAddress(req.Proxy); err != nil {
 		return nil, err
 	}
