@@ -7,6 +7,7 @@ import (
 	"github.com/line/lbm-sdk/codec/legacy"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 const (
@@ -40,6 +41,9 @@ func (m MsgTransfer) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgTransfer) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.From); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid from address: %s", m.From)
 	}
@@ -76,6 +80,9 @@ func (m MsgTransferFrom) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgTransferFrom) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.Proxy); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid proxy address: %s", m.Proxy)
 	}
@@ -116,6 +123,9 @@ func (m MsgApprove) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgApprove) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.Approver); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid approver address: %s", m.Approver)
 	}
@@ -260,6 +270,9 @@ func (m MsgGrant) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgGrant) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.Granter); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid granter address: %s", m.Granter)
 	}
@@ -296,6 +309,9 @@ func (m MsgRevoke) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgRevoke) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid grantee address: %s", m.Grantee)
 	}
@@ -328,6 +344,9 @@ func (m MsgMint) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgMint) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid grantee address: %s", m.Grantee)
 	}
@@ -364,6 +383,9 @@ func (m MsgBurn) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgBurn) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.From); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid from address: %s", m.From)
 	}
@@ -396,6 +418,9 @@ func (m MsgBurnFrom) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgBurnFrom) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid grantee address: %s", m.Grantee)
 	}
@@ -445,6 +470,9 @@ func (m MsgModify) Type() string { return sdk.MsgTypeURL(&m) }
 
 // ValidateBasic implements Msg.
 func (m MsgModify) ValidateBasic() error {
+	if err := class.ValidateID(m.ClassId); err != nil {
+		return err
+	}
 	if err := sdk.ValidateAccAddress(m.Grantee); err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "Invalid grantee address: %s", m.Grantee)
 	}

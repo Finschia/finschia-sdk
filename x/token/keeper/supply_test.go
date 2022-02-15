@@ -92,8 +92,8 @@ func (s *KeeperTestSuite) TestModify() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
 	changes := []token.Pair{
 		{Key: token.AttributeKeyName, Value: "new name"},
-		{Key: "image_uri", Value: "new uri"},
-		{Key: "meta", Value: "new meta"},
+		{Key: token.AttributeKeyImageURI, Value: "new uri"},
+		{Key: token.AttributeKeyMeta, Value: "new meta"},
 	}
 	for _, grantee := range users {
 		name := fmt.Sprintf("Grantee: %s", grantee)

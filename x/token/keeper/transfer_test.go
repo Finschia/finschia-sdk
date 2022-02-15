@@ -72,13 +72,19 @@ func (s *KeeperTestSuite) TestApprove() {
 			name := fmt.Sprintf("Proxy: %s, From: %s", proxy, from)
 			s.Run(name, func() {
 				approved := s.keeper.GetApprove(s.ctx, from, proxy, s.classID)
+				err := s.keeper.Approve(s.ctx, from, proxy, s.classID)
 				if !approved {
-					err := s.keeper.Approve(s.ctx, from, proxy, s.classID)
 					s.Require().NoError(err)
 					approved = s.keeper.GetApprove(s.ctx, from, proxy, s.classID)
 					s.Require().True(approved)
+				} else {
+					s.Require().Error(err)
 				}
 			})
 		}
 	}
+
+	// no such a class
+	err := s.keeper.Approve(s.ctx, s.vendor, s.customer, "00000000")
+	s.Require().Error(err)
 }

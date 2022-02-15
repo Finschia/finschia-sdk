@@ -75,6 +75,10 @@ func (k Keeper) approve(ctx sdk.Context, approver, proxy sdk.AccAddress, classID
 	if k.GetApprove(ctx, approver, proxy, classID) {
 		return sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Already approved")
 	}
+	if _, err := k.GetClass(ctx, classID); err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "ID not exists: %s", classID)
+	}
+
 	k.setApprove(ctx, approver, proxy, classID, true)
 	return nil
 }
