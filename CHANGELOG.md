@@ -54,28 +54,28 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [v0.44.0-rc0](https://github.com/line/lbm-sdk/releases/tag/v0.44.0-rc0) - 2022-02-04
 
 ### Features
-* (feat) [\#352] (https://github.com/line/lbm-sdk/pull/352) iavl, db & disk stats logging
+* (feat) [\#352](https://github.com/line/lbm-sdk/pull/352) iavl, db & disk stats logging
 * (x/gov) [\#368](https://github.com/line/lbm-sdk/pull/368) Governance Split Votes, use `MsgWeightedVote` to send a split vote. Sending a regular `MsgVote` will convert the underlying vote option into a weighted vote with weight 1.
-* (x/upgrade) [\#377] (https://github.com/line/lbm-sdk/pull/377) To smoothen the update to the latest stable release, the SDK includes vesion map for managing migrations between SDK versions.
-* (x/wasm) [\#358] (https://github.com/line/lbm-sdk/pull/358) change wasm metrics method to using prometheus directly
-* (x/feegrant) [\#380] (https://github.com/line/lbm-sdk/pull/380) Feegrant module
-* (x/wasm) [\#395] (https://github.com/line/lbm-sdk/pull/395) Add the instantiate_permission in the CodeInfoResponse
-* (x/consortium) [\#406] (https://github.com/line/lbm-sdk/pull/406) Add CreateValidator access control feature
-* (x/bank) [\#400] (https://github.com/line/lbm-sdk/pull/400) add `bankplus` function to restrict to send coin to inactive smart contract.
+* (x/upgrade) [\#377](https://github.com/line/lbm-sdk/pull/377) To smoothen the update to the latest stable release, the SDK includes vesion map for managing migrations between SDK versions.
+* (x/wasm) [\#358](https://github.com/line/lbm-sdk/pull/358) change wasm metrics method to using prometheus directly
+* (x/feegrant) [\#380](https://github.com/line/lbm-sdk/pull/380) Feegrant module
+* (x/wasm) [\#395](https://github.com/line/lbm-sdk/pull/395) Add the instantiate_permission in the CodeInfoResponse
+* (x/consortium) [\#406](https://github.com/line/lbm-sdk/pull/406) Add CreateValidator access control feature
+* (x/bank) [\#400](https://github.com/line/lbm-sdk/pull/400) add `bankplus` function to restrict to send coin to inactive smart contract.
 
 ### Improvements
 * (slashing) [\#347](https://github.com/line/lbm-sdk/pull/347) Introduce VoterSetCounter
 * (auth) [\#348](https://github.com/line/lbm-sdk/pull/348) Increase default valid_sig_block_period
 
 ### Bug Fixes
-* (x/feegrant) [\#383] (https://github.com/line/lbm-sdk/pull/383) Update allowance inside AllowedMsgAllowance
-* (tm-db) [\#388] (https://github.com/line/lbm-sdk/pull/388) Bump up tm-db fixing invalid memory reference
-* (swagger) [\#391] (https://github.com/line/lbm-sdk/pull/391) fix swagger's config path for wasm
-* (x/wasm) [\#393] (https://github.com/line/lbm-sdk/pull/393) fix bug where `StoreCodeAndInstantiateContract`, `UpdateContractStatus`, `UpdateContractStatusProposal` API does not work
-* (x/slashing) [\#407] (https://github.com/line/lbm-sdk/pull/407) Fix query signing infos command
+* (x/feegrant) [\#383](https://github.com/line/lbm-sdk/pull/383) Update allowance inside AllowedMsgAllowance
+* (tm-db) [\#388](https://github.com/line/lbm-sdk/pull/388) Bump up tm-db fixing invalid memory reference
+* (swagger) [\#391](https://github.com/line/lbm-sdk/pull/391) fix swagger's config path for wasm
+* (x/wasm) [\#393](https://github.com/line/lbm-sdk/pull/393) fix bug where `StoreCodeAndInstantiateContract`, `UpdateContractStatus`, `UpdateContractStatusProposal` API does not work
+* (x/slashing) [\#407](https://github.com/line/lbm-sdk/pull/407) Fix query signing infos command
 
 ### Breaking Changes
-* (x/consortium) [\#411] (https://github.com/line/lbm-sdk/pull/411) Validate validator addresses in update-validator-auths proposal
+* (x/consortium) [\#411](https://github.com/line/lbm-sdk/pull/411) Validate validator addresses in update-validator-auths proposal
 
 ### Build, CI
 * (ci) [\#350](https://github.com/line/lbm-sdk/pull/350) Reduce sim test time
