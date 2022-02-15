@@ -38,11 +38,12 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ## [Unreleased](https://github.com/line/lbm-sdk/compare/v0.44.0-rc...HEAD)
 
 ### Features
-* (feat) [\#434] (https://github.com/line/lbm-sdk/pull/434) Revert signature mechanism using `sig_block_height`
+* (feat) [\#434](https://github.com/line/lbm-sdk/pull/434) Revert signature mechanism using `sig_block_height`
 
 ### Improvements
 
 ### Bug Fixes
+* (x/wasm) [\#436](https://github.com/line/lbm-sdk/pull/436) remove `x/wasm/linkwasmd`
 
 ### Breaking Changes
 
