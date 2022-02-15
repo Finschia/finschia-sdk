@@ -255,7 +255,7 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 
 	newSigKeys := make([]string, 0, len(sigs))
 	defer func() {
-		// remove txHashCash if got an error
+		// remove txHashCache if got an error
 		if err != nil {
 			for _, sigKey := range newSigKeys {
 				svd.txHashCache.Delete(sigKey)
