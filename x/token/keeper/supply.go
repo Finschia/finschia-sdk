@@ -18,6 +18,9 @@ func (k Keeper) Issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddre
 }
 
 func (k Keeper) issue(ctx sdk.Context, class token.Token, owner, to sdk.AccAddress, amount sdk.Int) error {
+	if _, err := k.GetClass(ctx, class.Id); err == nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "ID already exists: %s", class.Id)
+	}
 	if err := k.setClass(ctx, class); err != nil {
 		return err
 	}

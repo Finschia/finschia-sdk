@@ -26,6 +26,11 @@ func (s *KeeperTestSuite) TestIssue() {
 		s.Require().False(s.keeper.GetGrant(s.ctx, s.vendor, class.Id, action))
 	}
 	s.Require().True(s.keeper.GetGrant(s.ctx, s.vendor, class.Id, token.ActionModify))
+
+	// override fails
+	class.Id = s.classID
+	err = s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)
+	s.Require().Error(err)
 }
 
 func (s *KeeperTestSuite) TestMint() {
