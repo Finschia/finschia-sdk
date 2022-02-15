@@ -91,7 +91,7 @@ func (s *KeeperTestSuite) TestBurnFrom() {
 func (s *KeeperTestSuite) TestModify() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
 	changes := []token.Pair{
-		{Key: "name", Value: "new name"},
+		{Key: token.AttributeKeyName, Value: "new name"},
 		{Key: "image_uri", Value: "new uri"},
 		{Key: "meta", Value: "new meta"},
 	}
@@ -117,10 +117,12 @@ func (s *KeeperTestSuite) TestGrant() {
 			name := fmt.Sprintf("Grantee: %s", grantee)
 			s.Run(name, func() {
 				granted := s.keeper.GetGrant(s.ctx, grantee, s.classID, action)
+				err := s.keeper.Grant(s.ctx, s.vendor, grantee, s.classID, action)
 				if !granted {
-					err := s.keeper.Grant(s.ctx, s.vendor, grantee, s.classID, action)
 					s.Require().NoError(err)
 					s.Require().True(s.keeper.GetGrant(s.ctx, grantee, s.classID, action))
+				} else {
+					s.Require().Error(err)
 				}
 			})
 		}
@@ -135,10 +137,12 @@ func (s *KeeperTestSuite) TestRevoke() {
 			name := fmt.Sprintf("Grantee: %s", grantee)
 			s.Run(name, func() {
 				granted := s.keeper.GetGrant(s.ctx, grantee, s.classID, action)
+				err := s.keeper.Revoke(s.ctx, grantee, s.classID, action)
 				if granted {
-					err := s.keeper.Revoke(s.ctx, grantee, s.classID, action)
 					s.Require().NoError(err)
 					s.Require().False(s.keeper.GetGrant(s.ctx, grantee, s.classID, action))
+				} else {
+					s.Require().Error(err)
 				}
 			})
 		}

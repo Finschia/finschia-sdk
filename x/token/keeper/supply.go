@@ -332,6 +332,9 @@ func (k Keeper) grant(ctx sdk.Context, granter, grantee sdk.AccAddress, classID,
 	if !k.GetGrant(ctx, granter, classID, action) {
 		return sdkerrors.Wrapf(sdkerrors.ErrUnauthorized, "%s is not authorized for %s", granter, action)
 	}
+	if k.GetGrant(ctx, grantee, classID, action) {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidRequest, "%s already granted for %s", grantee, action)
+	}
 
 	k.setGrant(ctx, grantee, classID, action, true)
 
