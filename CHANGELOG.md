@@ -6,6 +6,10 @@
 
 * (x/token) [\#416] (https://github.com/line/lbm-sdk/pull/416) Migrate token module from line/link
 
+### Bug Fixes
+* [x/wasm](https://github.com/line/lbm-sdk/pull/434) remove `x/wasm/linkwasmd`
+
+
 ## [v0.42.9](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.9) - 2021-08-04
 
 ### Bug Fixes
