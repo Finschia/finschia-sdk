@@ -10117,7 +10117,7 @@ EventApprove is emitted on Msg/Approve
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `approver` | [string](#string) |  |  |
 | `proxy` | [string](#string) |  |  |
 
@@ -10134,7 +10134,7 @@ EventBurn is emitted on Msg/Burn
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `from` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 
@@ -10151,9 +10151,9 @@ EventGrant is emitted on Msg/Grant
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
-| `grantee` | [string](#string) |  |  |
-| `action` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
+| `grantee` | [string](#string) |  | address of the granted account. |
+| `action` | [string](#string) |  | action on the token class. Must be one of "mint", "burn" and "modify". |
 
 
 
@@ -10168,7 +10168,7 @@ EventIssue is emitted on Msg/Issue
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 
 
 
@@ -10183,7 +10183,7 @@ EventMint is emitted on Msg/Mint
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `to` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
 
@@ -10200,7 +10200,7 @@ EventModify is emitted on Msg/Modify
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `key` | [string](#string) |  |  |
 | `value` | [string](#string) |  |  |
 
@@ -10217,9 +10217,9 @@ EventRevoke is emitted on Msg/Revoke
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
-| `grantee` | [string](#string) |  |  |
-| `action` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
+| `grantee` | [string](#string) |  | address of the revoked account. |
+| `action` | [string](#string) |  | action on the token class. Must be one of "mint", "burn" and "modify". |
 
 
 
@@ -10234,7 +10234,7 @@ EventTransfer is emitted on Msg/Transfer and Msg/TransferFrom
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `from` | [string](#string) |  |  |
 | `to` | [string](#string) |  |  |
 | `amount` | [string](#string) |  |  |
@@ -10270,7 +10270,7 @@ Approve defines approve information.
 | ----- | ---- | ----- | ----------- |
 | `approver` | [string](#string) |  |  |
 | `proxy` | [string](#string) |  |  |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 
 
 
@@ -10280,13 +10280,13 @@ Approve defines approve information.
 <a name="lbm.token.v1.FT"></a>
 
 ### FT
-FT defines a token with a class id and an amount.
+FT defines a fungible token with a class id and an amount.
 
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  | class_id associated with the FT. |
-| `amount` | [string](#string) |  | amount of FT |
+| `class_id` | [string](#string) |  | class id associated with the token. |
+| `amount` | [string](#string) |  | amount of the token |
 
 
 
@@ -10301,9 +10301,9 @@ Grant defines grant information.
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `grantee` | [string](#string) |  |  |
-| `class_id` | [string](#string) |  |  |
-| `action` | [string](#string) |  |  |
+| `grantee` | [string](#string) |  | address of the granted account. |
+| `class_id` | [string](#string) |  | class id associated with the token. |
+| `action` | [string](#string) |  | action on the token class. Must be one of "mint", "burn" and "modify". |
 
 
 
@@ -10453,7 +10453,7 @@ QueryApproveRequest is the request type for the Query/Approve RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `proxy` | [string](#string) |  |  |
 | `approver` | [string](#string) |  |  |
 
@@ -10485,7 +10485,7 @@ QueryApprovesRequest is the request type for the Query/Approves RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `proxy` | [string](#string) |  |  |
 | `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an optional pagination for the request. |
 
@@ -10518,7 +10518,7 @@ QueryGrantsRequest is the request type for the Query/Grants RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `grantee` | [string](#string) |  |  |
 
 
@@ -10549,7 +10549,7 @@ QuerySupplyRequest is the request type for the Query/Supply RPC method
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `type` | [string](#string) |  |  |
 
 
@@ -10580,7 +10580,7 @@ QueryTokenBalanceRequest is the request type for the Query/TokenBalance RPC meth
 
 | Field | Type | Label | Description |
 | ----- | ---- | ----- | ----------- |
-| `class_id` | [string](#string) |  |  |
+| `class_id` | [string](#string) |  | class id associated with the token. |
 | `address` | [string](#string) |  |  |
 
 

@@ -33,6 +33,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // QueryTokenBalanceRequest is the request type for the Query/TokenBalance RPC method
 type QueryTokenBalanceRequest struct {
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 }
@@ -124,6 +125,7 @@ var xxx_messageInfo_QueryTokenBalanceResponse proto.InternalMessageInfo
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method
 type QuerySupplyRequest struct {
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	Type    string `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`
 }
@@ -404,6 +406,7 @@ func (m *QueryTokensResponse) GetPagination() *query.PageResponse {
 
 // QueryGrantsRequest is the request type for the Query/Grants RPC method
 type QueryGrantsRequest struct {
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
 }
@@ -502,6 +505,7 @@ func (m *QueryGrantsResponse) GetGrants() []Grant {
 
 // QueryApproveRequest is the request type for the Query/Approve RPC method
 type QueryApproveRequest struct {
+	// class id associated with the token.
 	ClassId  string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	Proxy    string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
 	Approver string `protobuf:"bytes,3,opt,name=approver,proto3" json:"approver,omitempty"`
@@ -608,6 +612,7 @@ func (m *QueryApproveResponse) GetApprove() *Approve {
 
 // QueryApprovesRequest is the request type for the Query/Approves RPC method
 type QueryApprovesRequest struct {
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	Proxy   string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
 	// pagination defines an optional pagination for the request.

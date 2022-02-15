@@ -34,12 +34,12 @@ message Token {
   bool mintable = 7;
 }
 
-// FT defines a token with a class id and an amount.
+// FT defines a fungible token with a class id and an amount.
 message FT {
-  // class_id associated with the FT.
+  // class id associated with the token.
   string class_id = 1;
 
-  // amount of FT
+  // amount of the token
   string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
 }
 
@@ -51,8 +51,13 @@ message Pair {
 
 // Grant defines grant information.
 message Grant {
+  // address of the granted account.
   string grantee  = 1;
+
+  // class id associated with the token.
   string class_id = 2;
+
+  // action on the token class. Must be one of "mint", "burn" and "modify".
   string action   = 3;
 }
 
@@ -60,5 +65,7 @@ message Grant {
 message Approve {
   string approver = 1;
   string proxy    = 2;
+
+  // class id associated with the token.
   string class_id = 3;
 }

@@ -26,6 +26,7 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // EventTransfer is emitted on Msg/Transfer and Msg/TransferFrom
 type EventTransfer struct {
+	// class id associated with the token.
 	ClassId string                            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	From    string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
 	To      string                            `protobuf:"bytes,3,opt,name=to,proto3" json:"to,omitempty"`
@@ -88,6 +89,7 @@ func (m *EventTransfer) GetTo() string {
 
 // EventApprove is emitted on Msg/Approve
 type EventApprove struct {
+	// class id associated with the token.
 	ClassId  string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	Approver string `protobuf:"bytes,2,opt,name=approver,proto3" json:"approver,omitempty"`
 	Proxy    string `protobuf:"bytes,3,opt,name=proxy,proto3" json:"proxy,omitempty"`
@@ -149,6 +151,7 @@ func (m *EventApprove) GetProxy() string {
 
 // EventIssue is emitted on Msg/Issue
 type EventIssue struct {
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 }
 
@@ -194,9 +197,12 @@ func (m *EventIssue) GetClassId() string {
 
 // EventGrant is emitted on Msg/Grant
 type EventGrant struct {
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	// address of the granted account.
 	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
+	// action on the token class. Must be one of "mint", "burn" and "modify".
+	Action string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
 }
 
 func (m *EventGrant) Reset()         { *m = EventGrant{} }
@@ -255,9 +261,12 @@ func (m *EventGrant) GetAction() string {
 
 // EventRevoke is emitted on Msg/Revoke
 type EventRevoke struct {
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	// address of the revoked account.
 	Grantee string `protobuf:"bytes,2,opt,name=grantee,proto3" json:"grantee,omitempty"`
-	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
+	// action on the token class. Must be one of "mint", "burn" and "modify".
+	Action string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
 }
 
 func (m *EventRevoke) Reset()         { *m = EventRevoke{} }
@@ -316,6 +325,7 @@ func (m *EventRevoke) GetAction() string {
 
 // EventMint is emitted on Msg/Mint
 type EventMint struct {
+	// class id associated with the token.
 	ClassId string                            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	To      string                            `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
 	Amount  github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
@@ -370,6 +380,7 @@ func (m *EventMint) GetTo() string {
 
 // EventBurn is emitted on Msg/Burn
 type EventBurn struct {
+	// class id associated with the token.
 	ClassId string                            `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	From    string                            `protobuf:"bytes,2,opt,name=from,proto3" json:"from,omitempty"`
 	Amount  github_com_line_lbm_sdk_types.Int `protobuf:"bytes,3,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
@@ -424,6 +435,7 @@ func (m *EventBurn) GetFrom() string {
 
 // EventModify is emitted on Msg/Modify
 type EventModify struct {
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 	Key     string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
 	Value   string `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`

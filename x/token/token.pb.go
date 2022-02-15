@@ -112,11 +112,11 @@ func (m *Token) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Token proto.InternalMessageInfo
 
-// FT defines a token with a class id and an amount.
+// FT defines a fungible token with a class id and an amount.
 type FT struct {
-	// class_id associated with the FT.
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,1,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	// amount of FT
+	// amount of the token
 	Amount github_com_line_lbm_sdk_types.Int `protobuf:"bytes,2,opt,name=amount,proto3,customtype=github.com/line/lbm-sdk/types.Int" json:"amount"`
 }
 
@@ -194,9 +194,12 @@ var xxx_messageInfo_Pair proto.InternalMessageInfo
 
 // Grant defines grant information.
 type Grant struct {
+	// address of the granted account.
 	Grantee string `protobuf:"bytes,1,opt,name=grantee,proto3" json:"grantee,omitempty"`
+	// class id associated with the token.
 	ClassId string `protobuf:"bytes,2,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
-	Action  string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
+	// action on the token class. Must be one of "mint", "burn" and "modify".
+	Action string `protobuf:"bytes,3,opt,name=action,proto3" json:"action,omitempty"`
 }
 
 func (m *Grant) Reset()         { *m = Grant{} }
@@ -236,7 +239,8 @@ var xxx_messageInfo_Grant proto.InternalMessageInfo
 type Approve struct {
 	Approver string `protobuf:"bytes,1,opt,name=approver,proto3" json:"approver,omitempty"`
 	Proxy    string `protobuf:"bytes,2,opt,name=proxy,proto3" json:"proxy,omitempty"`
-	ClassId  string `protobuf:"bytes,3,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
+	// class id associated with the token.
+	ClassId string `protobuf:"bytes,3,opt,name=class_id,json=classId,proto3" json:"class_id,omitempty"`
 }
 
 func (m *Approve) Reset()         { *m = Approve{} }

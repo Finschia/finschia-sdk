@@ -33571,6 +33571,7 @@ paths:
                     type: string
                   class_id:
                     type: string
+                    description: class id associated with the token.
                 description: Approve defines approve information.
             title: >-
               QueryApproveResponse is the response type for the Query/Approve
@@ -33599,6 +33600,7 @@ paths:
                       format: byte
       parameters:
         - name: class_id
+          description: class id associated with the token.
           in: path
           required: true
           type: string
@@ -33633,6 +33635,7 @@ paths:
                       type: string
                     class_id:
                       type: string
+                      description: class id associated with the token.
                   description: Approve defines approve information.
               pagination:
                 type: object
@@ -33688,6 +33691,7 @@ paths:
                       format: byte
       parameters:
         - name: class_id
+          description: class id associated with the token.
           in: path
           required: true
           type: string
@@ -33759,8 +33763,8 @@ paths:
               amount:
                 type: string
             title: >-
-              QueryBalanceResponse is the response type for the Query/Balance
-              RPC method
+              QueryTokenBalanceResponse is the response type for the
+              Query/TokenBalance RPC method
         default:
           description: An unexpected error response
           schema:
@@ -33789,6 +33793,7 @@ paths:
           required: true
           type: string
         - name: class_id
+          description: class id associated with the token.
           in: path
           required: true
           type: string
@@ -33811,10 +33816,15 @@ paths:
                   properties:
                     grantee:
                       type: string
+                      description: address of the granted account.
                     class_id:
                       type: string
+                      description: class id associated with the token.
                     action:
                       type: string
+                      description: >-
+                        action on the token class. Must be one of "mint", "burn"
+                        and "modify".
                   description: Grant defines grant information.
             title: >-
               QueryGrantsResponse is the response type for the Query/Grants RPC
@@ -33847,6 +33857,7 @@ paths:
           required: true
           type: string
         - name: class_id
+          description: class id associated with the token.
           in: path
           required: true
           type: string
@@ -33891,6 +33902,7 @@ paths:
                       format: byte
       parameters:
         - name: class_id
+          description: class id associated with the token.
           in: path
           required: true
           type: string
@@ -55542,16 +55554,20 @@ definitions:
         type: string
       class_id:
         type: string
+        description: class id associated with the token.
     description: Approve defines approve information.
   lbm.token.v1.Grant:
     type: object
     properties:
       grantee:
         type: string
+        description: address of the granted account.
       class_id:
         type: string
+        description: class id associated with the token.
       action:
         type: string
+        description: 'action on the token class. Must be one of "mint", "burn" and "modify".'
     description: Grant defines grant information.
   lbm.token.v1.QueryApproveResponse:
     type: object
@@ -55565,6 +55581,7 @@ definitions:
             type: string
           class_id:
             type: string
+            description: class id associated with the token.
         description: Approve defines approve information.
     title: QueryApproveResponse is the response type for the Query/Approve RPC method
   lbm.token.v1.QueryApprovesResponse:
@@ -55581,6 +55598,7 @@ definitions:
               type: string
             class_id:
               type: string
+              description: class id associated with the token.
           description: Approve defines approve information.
       pagination:
         type: object
@@ -55610,12 +55628,6 @@ definitions:
     title: >-
       QueryApprovesResponse is the response type for the Query/Approves RPC
       method
-  lbm.token.v1.QueryBalanceResponse:
-    type: object
-    properties:
-      amount:
-        type: string
-    title: QueryBalanceResponse is the response type for the Query/Balance RPC method
   lbm.token.v1.QueryGrantsResponse:
     type: object
     properties:
@@ -55626,10 +55638,15 @@ definitions:
           properties:
             grantee:
               type: string
+              description: address of the granted account.
             class_id:
               type: string
+              description: class id associated with the token.
             action:
               type: string
+              description: >-
+                action on the token class. Must be one of "mint", "burn" and
+                "modify".
           description: Grant defines grant information.
     title: QueryGrantsResponse is the response type for the Query/Grants RPC method
   lbm.token.v1.QuerySupplyResponse:
@@ -55638,6 +55655,14 @@ definitions:
       amount:
         type: string
     title: QuerySupplyResponse is the response type for the Query/Supply RPC method
+  lbm.token.v1.QueryTokenBalanceResponse:
+    type: object
+    properties:
+      amount:
+        type: string
+    title: >-
+      QueryTokenBalanceResponse is the response type for the Query/TokenBalance
+      RPC method
   lbm.token.v1.QueryTokenResponse:
     type: object
     properties:

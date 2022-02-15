@@ -49,6 +49,7 @@ service Query {
 
 // QueryTokenBalanceRequest is the request type for the Query/TokenBalance RPC method
 message QueryTokenBalanceRequest {
+  // class id associated with the token.
   string class_id = 1;
   string address  = 2;
 }
@@ -60,6 +61,7 @@ message QueryTokenBalanceResponse {
 
 // QuerySupplyRequest is the request type for the Query/Supply RPC method
 message QuerySupplyRequest {
+  // class id associated with the token.
   string class_id = 1;
   string type     = 2;
 }
@@ -93,6 +95,7 @@ message QueryTokensResponse {
 
 // QueryGrantsRequest is the request type for the Query/Grants RPC method
 message QueryGrantsRequest {
+  // class id associated with the token.
   string class_id = 1;
   string grantee  = 2;
 }
@@ -104,6 +107,7 @@ message QueryGrantsResponse {
 
 // QueryApproveRequest is the request type for the Query/Approve RPC method
 message QueryApproveRequest {
+  // class id associated with the token.
   string class_id = 1;
   string proxy    = 2;
   string approver = 3;
@@ -116,6 +120,7 @@ message QueryApproveResponse {
 
 // QueryApprovesRequest is the request type for the Query/Approves RPC method
 message QueryApprovesRequest {
+  // class id associated with the token.
   string class_id = 1;
   string proxy    = 2;
 
