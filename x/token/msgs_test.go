@@ -36,6 +36,13 @@ func TestMsgTransfer(t *testing.T) {
 			amount: sdk.OneInt(),
 			valid: false,
 		},
+		"invalid class id": {
+			classId: "invalid",
+			from: addrs[0],
+			to: addrs[1],
+			amount: sdk.OneInt(),
+			valid: false,
+		},
 		"invalid to": {
 			classId: "deadbeef",
 			from: addrs[0],
@@ -96,6 +103,14 @@ func TestMsgTransferFrom(t *testing.T) {
 		"invalid proxy": {
 			classId: "deadbeef",
 			proxy: "invalid",
+			from: addrs[1],
+			to: addrs[2],
+			amount: sdk.OneInt(),
+			valid: false,
+		},
+		"invalid class id": {
+			classId: "invalid",
+			proxy: addrs[0],
 			from: addrs[1],
 			to: addrs[2],
 			amount: sdk.OneInt(),
@@ -164,6 +179,12 @@ func TestMsgApprove(t *testing.T) {
 			approver: addrs[0],
 			proxy: addrs[1],
 			valid: true,
+		},
+		"invalid class id": {
+			classId: "invalid",
+			approver: addrs[0],
+			proxy: addrs[1],
+			valid: false,
 		},
 		"invalid approver": {
 			classId: "deadbeef",
@@ -369,6 +390,13 @@ func TestMsgMint(t *testing.T) {
 			amount: sdk.OneInt(),
 			valid: true,
 		},
+		"invalid class id": {
+			classId: "invalid",
+			grantee: addrs[0],
+			to: addrs[1],
+			amount: sdk.OneInt(),
+			valid: false,
+		},
 		"invalid grantee": {
 			classId: "deadbeef",
 			grantee: "invalid",
@@ -429,6 +457,12 @@ func TestMsgBurn(t *testing.T) {
 			amount: sdk.OneInt(),
 			valid: true,
 		},
+		"invalid class id": {
+			classId: "invalid",
+			from: addrs[0],
+			amount: sdk.OneInt(),
+			valid: false,
+		},
 		"invalid from": {
 			classId: "deadbeef",
 			from: "invalid",
@@ -480,6 +514,13 @@ func TestMsgBurnFrom(t *testing.T) {
 			from: addrs[1],
 			amount: sdk.OneInt(),
 			valid: true,
+		},
+		"invalid class id": {
+			classId: "invalid",
+			grantee: addrs[0],
+			from: addrs[1],
+			amount: sdk.OneInt(),
+			valid: false,
 		},
 		"invalid grantee": {
 			classId: "deadbeef",
@@ -541,6 +582,12 @@ func TestMsgModify(t *testing.T) {
 			grantee: addrs[0],
 			changes: []token.Pair{validChange},
 			valid: true,
+		},
+		"invalid class id": {
+			classId: "invalid",
+			grantee: addrs[0],
+			changes: []token.Pair{validChange},
+			valid: false,
 		},
 		"invalid grantee": {
 			classId: "deadbeef",
@@ -615,6 +662,13 @@ func TestMsgGrant(t *testing.T) {
 			action: token.ActionMint,
 			valid: true,
 		},
+		"invalid class id": {
+			classId: "invalid",
+			granter: addrs[0],
+			grantee: addrs[1],
+			action: token.ActionMint,
+			valid: false,
+		},
 		"empty granter": {
 			classId: "deadbeef",
 			granter: "",
@@ -674,6 +728,12 @@ func TestMsgRevoke(t *testing.T) {
 			grantee: addrs[0],
 			action: token.ActionMint,
 			valid: true,
+		},
+		"invalid class id": {
+			classId: "invalid",
+			grantee: addrs[0],
+			action: token.ActionMint,
+			valid: false,
 		},
 		"invalid grantee": {
 			classId: "deadbeef",
