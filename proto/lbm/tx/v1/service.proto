@@ -8,7 +8,7 @@ import "gogoproto/gogo.proto";
 import "lbm/base/query/v1/pagination.proto";
 
 option (gogoproto.goproto_registration) = true;
-option go_package = "github.com/line/lbm-sdk/types/tx";
+option go_package                       = "github.com/line/lbm-sdk/types/tx";
 
 // Service defines a gRPC service for interacting with transactions.
 service Service {
@@ -45,7 +45,7 @@ message GetTxsEventRequest {
   bool prove = 2;
   // pagination defines an pagination for the request.
   lbm.base.query.v1.PageRequest pagination = 3;
-  OrderBy order_by = 4;
+  OrderBy                       order_by   = 4;
 }
 
 // OrderBy defines the sorting order
@@ -53,9 +53,9 @@ enum OrderBy {
   // ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case.
   ORDER_BY_UNSPECIFIED = 0;
   // ORDER_BY_ASC defines ascending order
-  ORDER_BY_ASC     = 1;
+  ORDER_BY_ASC = 1;
   // ORDER_BY_DESC defines descending order
-  ORDER_BY_DESC    = 2;
+  ORDER_BY_DESC = 2;
 }
 
 // GetTxsEventResponse is the response type for the Service.TxsByEvents
