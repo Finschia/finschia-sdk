@@ -289,6 +289,12 @@ func (s *KeeperTestSuite) TestQueryApprove() {
 			approver: s.customer,
 			valid: false,
 		},
+		"invalid proxy": {
+			classId: s.classID,
+			proxy: "invalid",
+			approver: s.customer,
+			valid: false,
+		},
 		"invalid approver": {
 			classId: s.classID,
 			proxy: s.operator,
