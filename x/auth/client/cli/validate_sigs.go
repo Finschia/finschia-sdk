@@ -99,15 +99,16 @@ func printAndValidateSigs(
 		// Validate the actual signature over the transaction bytes since we can
 		// reach out to a full node to query accounts.
 		if !offline && success {
-			accSeq, err := clientCtx.AccountRetriever.GetAccountSequence(clientCtx, sigAddr)
+			accNum, accSeq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, sigAddr)
 			if err != nil {
 				cmd.Printf("failed to get account: %s\n", sigAddr)
 				return false
 			}
 
 			signingData := authsigning.SignerData{
-				ChainID:  chainID,
-				Sequence: accSeq,
+				ChainID:       chainID,
+				AccountNumber: accNum,
+				Sequence:      accSeq,
 			}
 			err = authsigning.VerifySignature(pubKey, signingData, sig.Data, signModeHandler, sigTx)
 			if err != nil {
