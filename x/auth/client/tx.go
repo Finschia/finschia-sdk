@@ -158,12 +158,12 @@ func populateAccountFromState(
 	txBldr tx.Factory, clientCtx client.Context, addr sdk.AccAddress,
 ) (tx.Factory, error) {
 
-	seq, err := clientCtx.AccountRetriever.GetAccountSequence(clientCtx, addr)
+	num, seq, err := clientCtx.AccountRetriever.GetAccountNumberSequence(clientCtx, addr)
 	if err != nil {
 		return txBldr, err
 	}
 
-	return txBldr.WithSequence(seq), nil
+	return txBldr.WithAccountNumber(num).WithSequence(seq), nil
 }
 
 // GetTxEncoder return tx encoder from global sdk configuration if ones is defined.

@@ -4926,9 +4926,6 @@ paths:
                   sig_verify_cost_secp256k1:
                     type: string
                     format: uint64
-                  valid_sig_block_period:
-                    type: string
-                    format: uint64
             description: >-
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
@@ -35758,9 +35755,6 @@ definitions:
       sig_verify_cost_secp256k1:
         type: string
         format: uint64
-      valid_sig_block_period:
-        type: string
-        format: uint64
     description: Params defines the parameters for the auth module.
   lbm.auth.v1.QueryAccountResponse:
     type: object
@@ -35850,9 +35844,6 @@ definitions:
             type: string
             format: uint64
           sig_verify_cost_secp256k1:
-            type: string
-            format: uint64
-          valid_sig_block_period:
             type: string
             format: uint64
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
@@ -47721,15 +47712,6 @@ definitions:
               appropriate fee grant does not exist or the chain does
 
               not support fee grants, this will fail
-      sig_block_height:
-        type: string
-        format: uint64
-        description: >-
-          sig block height is available between current block height and current
-          block height - `VALID_SIG_BLOCK_PERIOD`
-
-          this is used for distinguish signatures instead of account number.
-          this is mandatory.
     description: |-
       AuthInfo describes the fee and signer modes that are used to sign a
       transaction.
