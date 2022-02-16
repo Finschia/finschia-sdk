@@ -81,7 +81,6 @@ func SimulateMsgSend(ak types.AccountKeeper, bk keeper.Keeper) simtypes.Operatio
 }
 
 // sendMsgSend sends a transaction with a MsgSend from a provided random account.
-// nolint: interfacer
 func sendMsgSend(
 	r *rand.Rand, app *baseapp.BaseApp, bk keeper.Keeper, ak types.AccountKeeper,
 	msg *types.MsgSend, ctx sdk.Context, chainID string, privkeys []cryptotypes.PrivKey,
@@ -111,7 +110,7 @@ func sendMsgSend(
 		fees,
 		helpers.DefaultGenTxGas,
 		chainID,
-		[]uint64{0},
+		[]uint64{account.GetAccountNumber()},
 		[]uint64{account.GetSequence()},
 		privkeys...,
 	)
@@ -219,20 +218,18 @@ func SimulateMsgMultiSend(ak types.AccountKeeper, bk keeper.Keeper) simtypes.Ope
 }
 
 // sendMsgMultiSend sends a transaction with a MsgMultiSend from a provided random
-// account.
-// nolint: interfacer
 func sendMsgMultiSend(
 	r *rand.Rand, app *baseapp.BaseApp, bk keeper.Keeper, ak types.AccountKeeper,
 	msg *types.MsgMultiSend, ctx sdk.Context, chainID string, privkeys []cryptotypes.PrivKey,
 ) error {
 
-	sbh := make([]uint64, len(msg.Inputs))
+	accountNumbers := make([]uint64, len(msg.Inputs))
 	sequenceNumbers := make([]uint64, len(msg.Inputs))
 
 	for i := 0; i < len(msg.Inputs); i++ {
 		addr := sdk.AccAddress(msg.Inputs[i].Address)
 		acc := ak.GetAccount(ctx, addr)
-		sbh[i] = 0
+		accountNumbers[i] = acc.GetAccountNumber()
 		sequenceNumbers[i] = acc.GetSequence()
 	}
 
@@ -262,7 +259,7 @@ func sendMsgMultiSend(
 		fees,
 		helpers.DefaultGenTxGas,
 		chainID,
-		sbh,
+		accountNumbers,
 		sequenceNumbers,
 		privkeys...,
 	)
@@ -280,7 +277,6 @@ func sendMsgMultiSend(
 
 // randomSendFields returns the sender and recipient simulation accounts as well
 // as the transferred amount.
-// nolint: interfacer
 func randomSendFields(
 	r *rand.Rand, ctx sdk.Context, accs []simtypes.Account, bk keeper.Keeper, ak types.AccountKeeper,
 ) (simtypes.Account, simtypes.Account, sdk.Coins, bool) {

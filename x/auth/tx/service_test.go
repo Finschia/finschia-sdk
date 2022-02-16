@@ -174,6 +174,14 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPC() {
 			true, "event foobar should be of the format: {eventType}.{eventAttribute}={value}",
 		},
 		{
+			"request with order-by",
+			&tx.GetTxsEventRequest{
+				Events:  []string{"message.action='send'"},
+				OrderBy: tx.OrderBy_ORDER_BY_ASC,
+			},
+			false, "",
+		},
+		{
 			"without pagination",
 			&tx.GetTxsEventRequest{
 				Events: []string{"message.action='send'"},
@@ -247,6 +255,24 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPCGateway() {
 			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&pagination.offset=%d&pagination.limit=%d", val.APIAddress, "message.action='send'", 0, 10),
 			false,
 			"",
+		},
+		{
+			"valid request: order by asc",
+			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&events=%s&order_by=ORDER_BY_ASC", val.APIAddress, "message.action='send'", "message.module='bank'"),
+			false,
+			"",
+		},
+		{
+			"valid request: order by desc",
+			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&events=%s&order_by=ORDER_BY_DESC", val.APIAddress, "message.action='send'", "message.module='bank'"),
+			false,
+			"",
+		},
+		{
+			"invalid request: invalid order by",
+			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&events=%s&order_by=invalid_order", val.APIAddress, "message.action='send'", "message.module='bank'"),
+			true,
+			"is not a valid tx.OrderBy",
 		},
 		{
 			"expect pass with multiple-events",
@@ -454,6 +480,7 @@ func (s IntegrationTestSuite) mkTxBuilder() client.TxBuilder {
 	)
 	txBuilder.SetFeeAmount(feeAmount)
 	txBuilder.SetGasLimit(gasLimit)
+	txBuilder.SetMemo("foobar")
 
 	// setup txFactory
 	txFactory := clienttx.Factory{}.

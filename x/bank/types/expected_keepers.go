@@ -8,11 +8,13 @@ import (
 // AccountKeeper defines the account contract that must be fulfilled when
 // creating a x/bank keeper.
 type AccountKeeper interface {
+	NewAccount(sdk.Context, types.AccountI) types.AccountI
 	NewAccountWithAddress(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
 
 	GetAccount(ctx sdk.Context, addr sdk.AccAddress) types.AccountI
 	GetAllAccounts(ctx sdk.Context) []types.AccountI
 	SetAccount(ctx sdk.Context, acc types.AccountI)
+	Prefetch(ctx sdk.Context, addr sdk.AccAddress, forSet bool)
 
 	IterateAccounts(ctx sdk.Context, process func(types.AccountI) bool)
 

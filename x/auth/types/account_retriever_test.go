@@ -36,7 +36,8 @@ func TestAccountRetriever(t *testing.T) {
 
 	require.NoError(t, ar.EnsureExists(clientCtx, val.Address))
 
-	accSeq, err := ar.GetAccountSequence(clientCtx, val.Address)
+	accNum, accSeq, err := ar.GetAccountNumberSequence(clientCtx, val.Address)
 	require.NoError(t, err)
+	require.Equal(t, accNum, uint64(0))
 	require.Equal(t, accSeq, uint64(1))
 }

@@ -15,7 +15,6 @@ const UndefinedCodespace = "undefined"
 
 var (
 	// errInternal should never be exposed, but we reserve this code for non-specified errors
-	//nolint
 	errInternal = Register(UndefinedCodespace, 1, "internal")
 
 	// ErrTxDecode is returned if we cannot parse a transaction
@@ -134,10 +133,6 @@ var (
 	// ErrNotSupported is returned when we call a branch of a code which is currently not
 	// supported.
 	ErrNotSupported = Register(RootCodespace, 37, "feature not supported")
-
-	// ErrInvalidSigBlockHeight is returned when SigBlockHeight of tx is either greater than current block height or
-	// less than (current block height - ValidSigBlockPeriod)
-	ErrInvalidSigBlockHeight = Register(RootCodespace, 38, "invalid sig block height")
 
 	// ErrNotFound defines an error when requested entity doesn't exist in the state.
 	ErrNotFound = Register(RootCodespace, 39, "not found")

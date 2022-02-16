@@ -4,11 +4,15 @@ package rest_test
 
 import (
 	"fmt"
+	"io/ioutil"
+	"net/http"
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/crypto/hd"
+	"github.com/line/lbm-sdk/crypto/keyring"
 	"github.com/line/lbm-sdk/testutil"
 	"github.com/line/lbm-sdk/testutil/network"
 	sdk "github.com/line/lbm-sdk/types"
@@ -399,6 +403,35 @@ func (s *IntegrationTestSuite) TestQueryUnbondingDelegationGRPC() {
 			}
 		})
 	}
+}
+
+func (s *IntegrationTestSuite) TestQueryDelegationsResponseCode() {
+	val := s.network.Validators[0]
+
+	// Create new account in the keyring.
+	info, _, err := val.ClientCtx.Keyring.NewMnemonic("test", keyring.English, sdk.FullFundraiserPath, hd.Secp256k1)
+	s.Require().NoError(err)
+	newAddr := sdk.BytesToAccAddress(info.GetPubKey().Address())
+
+	s.T().Log("expect 404 error for address without delegations")
+	res, statusCode, err := getRequest(fmt.Sprintf("%s/lbm/staking/v1/delegations/%s", val.APIAddress, newAddr.String()))
+	s.Require().NoError(err)
+	s.Require().Contains(string(res), "\"code\": 5")
+	s.Require().Equal(404, statusCode)
+}
+
+func getRequest(url string) ([]byte, int, error) {
+	res, err := http.Get(url) // nolint:gosec
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, res.StatusCode, err
+	}
+
+	if err = res.Body.Close(); err != nil {
+		return nil, res.StatusCode, err
+	}
+
+	return body, res.StatusCode, nil
 }
 
 func (s *IntegrationTestSuite) TestQueryDelegatorDelegationsGRPC() {

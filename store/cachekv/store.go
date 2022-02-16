@@ -2,7 +2,6 @@ package cachekv
 
 import (
 	"bytes"
-	"container/list"
 	"io"
 	"reflect"
 	"sort"
@@ -30,7 +29,7 @@ type Store struct {
 	mtx           sync.RWMutex
 	cache         sync.Map
 	unsortedCache sync.Map
-	sortedCache   *list.List // always ascending sorted
+	sortedCache   *kv.List // always ascending sorted
 	parent        types.KVStore
 }
 
@@ -41,7 +40,7 @@ func NewStore(parent types.KVStore) *Store {
 	return &Store{
 		cache:         sync.Map{},
 		unsortedCache: sync.Map{},
-		sortedCache:   list.New(),
+		sortedCache:   kv.NewList(),
 		parent:        parent,
 	}
 }
@@ -96,6 +95,15 @@ func (store *Store) Delete(key []byte) {
 	store.setCacheValue(key, nil, true, true)
 }
 
+// Prefetch implements types.KVStore.
+func (store *Store) Prefetch(key []byte, forSet bool) (hits, misses int, value []byte) {
+	defer telemetry.MeasureSince(time.Now(), "store", "cachekv", "prefetch")
+
+	// do not update cache
+	types.AssertValidKey(key)
+	return store.parent.Prefetch(key, forSet)
+}
+
 // Implements Cachetypes.KVStore.
 func (store *Store) Write() {
 	store.mtx.Lock()
@@ -133,7 +141,7 @@ func (store *Store) Write() {
 	// Clear the cache
 	store.cache = sync.Map{}
 	store.unsortedCache = sync.Map{}
-	store.sortedCache = list.New()
+	store.sortedCache = kv.NewList()
 }
 
 // CacheWrap implements CacheWrapper.
@@ -224,7 +232,7 @@ func (store *Store) dirtyItems(start, end []byte) {
 
 	for e := store.sortedCache.Front(); e != nil && len(unsorted) != 0; {
 		uitem := unsorted[0]
-		sitem := e.Value.(*kv.Pair)
+		sitem := e.Value
 		comp := bytes.Compare(uitem.Key, sitem.Key)
 
 		switch comp {

@@ -719,6 +719,7 @@
     - [SimulateResponse](#lbm.tx.v1.SimulateResponse)
   
     - [BroadcastMode](#lbm.tx.v1.BroadcastMode)
+    - [OrderBy](#lbm.tx.v1.OrderBy)
   
     - [Service](#lbm.tx.v1.Service)
   
@@ -4132,6 +4133,7 @@ type for additional functionality (e.g. vesting).
 | `ed25519_pub_key` | [lbm.crypto.ed25519.PubKey](#lbm.crypto.ed25519.PubKey) |  |  |
 | `secp256k1_pub_key` | [lbm.crypto.secp256k1.PubKey](#lbm.crypto.secp256k1.PubKey) |  |  |
 | `multisig_pub_key` | [lbm.crypto.multisig.LegacyAminoPubKey](#lbm.crypto.multisig.LegacyAminoPubKey) |  |  |
+| `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
 
@@ -4169,7 +4171,6 @@ Params defines the parameters for the auth module.
 | `tx_size_cost_per_byte` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_ed25519` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_secp256k1` | [uint64](#uint64) |  |  |
-| `valid_sig_block_period` | [uint64](#uint64) |  |  |
 
 
 
@@ -5425,6 +5426,7 @@ VersionInfo is the type for the GetNodeInfoResponse message.
 | `build_tags` | [string](#string) |  |  |
 | `go_version` | [string](#string) |  |  |
 | `build_deps` | [Module](#lbm.base.ostracon.v1.Module) | repeated |  |
+| `lbm_sdk_version` | [string](#string) |  |  |
 
 
 
@@ -10166,7 +10168,6 @@ transaction.
 | ----- | ---- | ----- | ----------- |
 | `signer_infos` | [SignerInfo](#lbm.tx.v1.SignerInfo) | repeated | signer_infos defines the signing modes for the required signers. The number and order of elements must match the required signers from TxBody's messages. The first element is the primary signer and the one which pays the fee. |
 | `fee` | [Fee](#lbm.tx.v1.Fee) |  | Fee is the fee and gas limit for the transaction. The first signer is the primary signer and the one which pays the fee. The fee can be calculated based on the cost of evaluating the body and doing signature verification of the signers. This can be estimated via simulation. |
-| `sig_block_height` | [uint64](#uint64) |  | sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_PERIOD` this is used for distinguish signatures instead of account number. this is mandatory. |
 
 
 
@@ -10253,6 +10254,7 @@ SignDoc is the type used for generating sign bytes for SIGN_MODE_DIRECT.
 | `body_bytes` | [bytes](#bytes) |  | body_bytes is protobuf serialization of a TxBody that matches the representation in TxRaw. |
 | `auth_info_bytes` | [bytes](#bytes) |  | auth_info_bytes is a protobuf serialization of an AuthInfo that matches the representation in TxRaw. |
 | `chain_id` | [string](#string) |  | chain_id is the unique identifier of the chain this transaction targets. It prevents signed transactions from being used on another chain by an attacker |
+| `account_number` | [uint64](#uint64) |  | account_number is the account number of the account in state |
 
 
 
@@ -10427,6 +10429,7 @@ RPC method.
 | `events` | [string](#string) | repeated | events is the list of transaction event type. |
 | `prove` | [bool](#bool) |  | prove is Include proofs of the transactions inclusion in the block |
 | `pagination` | [lbm.base.query.v1.PageRequest](#lbm.base.query.v1.PageRequest) |  | pagination defines an pagination for the request. |
+| `order_by` | [OrderBy](#lbm.tx.v1.OrderBy) |  |  |
 
 
 
@@ -10497,6 +10500,19 @@ BroadcastMode specifies the broadcast mode for the TxService.Broadcast RPC metho
 | BROADCAST_MODE_BLOCK | 1 | BROADCAST_MODE_BLOCK defines a tx broadcasting mode where the client waits for the tx to be committed in a block. |
 | BROADCAST_MODE_SYNC | 2 | BROADCAST_MODE_SYNC defines a tx broadcasting mode where the client waits for a CheckTx execution response only. |
 | BROADCAST_MODE_ASYNC | 3 | BROADCAST_MODE_ASYNC defines a tx broadcasting mode where the client returns immediately. |
+
+
+
+<a name="lbm.tx.v1.OrderBy"></a>
+
+### OrderBy
+OrderBy defines the sorting order
+
+| Name | Number | Description |
+| ---- | ------ | ----------- |
+| ORDER_BY_UNSPECIFIED | 0 | ORDER_BY_UNSPECIFIED specifies an unknown sorting order. OrderBy defaults to ASC in this case. |
+| ORDER_BY_ASC | 1 | ORDER_BY_ASC defines ascending order |
+| ORDER_BY_DESC | 2 | ORDER_BY_DESC defines descending order |
 
 
  <!-- end enums -->
