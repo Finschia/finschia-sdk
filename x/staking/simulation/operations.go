@@ -159,7 +159,7 @@ func SimulateMsgCreateValidator(ak types.AccountKeeper, bk types.BankKeeper, k k
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -229,7 +229,7 @@ func SimulateMsgEditValidator(ak types.AccountKeeper, bk types.BankKeeper, k kee
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -301,7 +301,7 @@ func SimulateMsgDelegate(ak types.AccountKeeper, bk types.BankKeeper, k keeper.K
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -390,7 +390,7 @@ func SimulateMsgUndelegate(ak types.AccountKeeper, bk types.BankKeeper, k keeper
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -502,7 +502,7 @@ func SimulateMsgBeginRedelegate(ak types.AccountKeeper, bk types.BankKeeper, k k
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)

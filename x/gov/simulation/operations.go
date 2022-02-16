@@ -161,7 +161,7 @@ func SimulateMsgSubmitProposal(
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -248,7 +248,7 @@ func SimulateMsgDeposit(ak types.AccountKeeper, bk types.BankKeeper, k keeper.Ke
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -310,7 +310,7 @@ func operationSimulateMsgVote(ak types.AccountKeeper, bk types.BankKeeper, k kee
 			fees,
 			helpers.DefaultGenTxGas,
 			chainID,
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)
@@ -373,7 +373,7 @@ func operationSimulateMsgVoteWeighted(ak types.AccountKeeper, bk types.BankKeepe
 			fees,
 			helpers.DefaultGenTxGas,
 			ctx.ChainID(),
-			[]uint64{0},
+			[]uint64{account.GetAccountNumber()},
 			[]uint64{account.GetSequence()},
 			simAccount.PrivKey,
 		)

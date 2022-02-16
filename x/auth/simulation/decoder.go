@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"fmt"
 
+	gogotypes "github.com/gogo/protobuf/types"
+
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/types/kv"
 	"github.com/line/lbm-sdk/x/auth/types"
@@ -31,6 +33,13 @@ func NewDecodeStore(ak AuthUnmarshaler) func(kvA, kvB kv.Pair) string {
 			}
 
 			return fmt.Sprintf("%v\n%v", accA, accB)
+
+		case bytes.Equal(kvA.Key, types.GlobalAccountNumberKey):
+			var globalAccNumberA, globalAccNumberB gogotypes.UInt64Value
+			ak.GetCodec().MustUnmarshalBinaryBare(kvA.Value, &globalAccNumberA)
+			ak.GetCodec().MustUnmarshalBinaryBare(kvB.Value, &globalAccNumberB)
+
+			return fmt.Sprintf("GlobalAccNumberA: %d\nGlobalAccNumberB: %d", globalAccNumberA, globalAccNumberB)
 
 		default:
 			panic(fmt.Sprintf("unexpected %s key %X (%s)", types.ModuleName, kvA.Key, kvA.Key))
