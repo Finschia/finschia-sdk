@@ -57,7 +57,6 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.vendor = s.createAccount("vendor")
 	s.customer = s.createAccount("customer")
-	s.Require().NoError(s.network.WaitForNextBlock())
 
 	s.mintableClass = token.Token{
 		Id:       "9be17165",
@@ -79,12 +78,10 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	// vendor creates 2 tokens: mintable and not mintable one. And mint to customer.
 	s.createClass(s.vendor, s.customer, s.mintableClass.Name, s.mintableClass.Symbol, s.balance, s.mintableClass.Mintable)
 	s.createClass(s.vendor, s.customer, s.notMintableClass.Name, s.notMintableClass.Symbol, s.balance, s.notMintableClass.Mintable)
-	s.Require().NoError(s.network.WaitForNextBlock())
 
 	// customer approves vendor to transfer its tokens of the both classes, so vendor can do transferFrom later.
 	s.approve(s.mintableClass.Id, s.customer, s.vendor)
 	s.approve(s.notMintableClass.Id, s.customer, s.vendor)
-	s.Require().NoError(s.network.WaitForNextBlock())
 
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
@@ -104,6 +101,7 @@ func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbo
 
 	_, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdIssue(), args)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
 // creates an account and send some coins to it for the future transactions.
@@ -122,6 +120,7 @@ func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	}, commonArgs...)
 	_, err = clitestutil.ExecTestCLICmd(val.ClientCtx, bankcli.NewSendTxCmd(), args)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 
 	return addr
 }
@@ -137,6 +136,7 @@ func (s *IntegrationTestSuite) approve(classID string, approver, proxy sdk.AccAd
 
 	_, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
