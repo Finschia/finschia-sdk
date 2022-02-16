@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
+	"github.com/line/lbm-sdk/x/token/class"
 )
 
 // ValidateGenesis check the given genesis state has no integrity issues
@@ -29,20 +30,23 @@ func ValidateGenesis(data GenesisState) error {
 		}
 	}
 
-	for _, class := range data.Classes {
-		if err := validateName(class.Name); err != nil {
+	for _, c := range data.Classes {
+		if err := class.ValidateID(c.Id); err != nil {
 			return err
 		}
-		if err := validateSymbol(class.Symbol); err != nil {
+		if err := validateName(c.Name); err != nil {
 			return err
 		}
-		if err := validateImageURI(class.ImageUri); err != nil {
+		if err := validateSymbol(c.Symbol); err != nil {
 			return err
 		}
-		if err := validateMeta(class.Meta); err != nil {
+		if err := validateImageURI(c.ImageUri); err != nil {
 			return err
 		}
-		if err := validateDecimals(class.Decimals); err != nil {
+		if err := validateMeta(c.Meta); err != nil {
+			return err
+		}
+		if err := validateDecimals(c.Decimals); err != nil {
 			return err
 		}
 	}

@@ -71,10 +71,22 @@ func TestValidateGenesis(t *testing.T) {
 			},
 			false,
 		},
+		"invalid id of class": {
+			&token.GenesisState{
+				Classes: []token.Token{{
+					Id: "invalid",
+					Name: "test",
+					Symbol: "TT",
+				}},
+			},
+			false,
+		},
 		"invalid name of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
+					Id: "deadbeef",
 					Name: string(make([]rune, 21)),
+					Symbol: "TT",
 				}},
 			},
 			false,
@@ -82,7 +94,9 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid symbol of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
-					Symbol: "t",
+					Id: "deadbeef",
+					Name: "test",
+					Symbol: "tt",
 				}},
 			},
 			false,
@@ -90,6 +104,9 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid image uri of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
+					Id: "deadbeef",
+					Name: "test",
+					Symbol: "TT",
 					ImageUri: string(make([]rune, 1001)),
 				}},
 			},
@@ -98,6 +115,9 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid meta of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
+					Id: "deadbeef",
+					Name: "test",
+					Symbol: "TT",
 					Meta: string(make([]rune, 1001)),
 				}},
 			},
@@ -106,6 +126,9 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid decimals of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
+					Id: "deadbeef",
+					Name: "test",
+					Symbol: "TT",
 					Decimals: -1,
 				}},
 			},
