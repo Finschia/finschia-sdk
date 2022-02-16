@@ -26,7 +26,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 	}{
 		"valid query": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.customer.String(),
 			},
 			true,
@@ -36,7 +36,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.customer.String(),
 				"extra",
 			},
@@ -45,14 +45,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 			},
 			false,
 			nil,
 		},
 		"invalid address": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				"invalid",
 			},
 			false,
@@ -93,16 +93,16 @@ func (s *IntegrationTestSuite) TestNewQueryCmdToken() {
 	}{
 		"valid query": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 			},
 			true,
 			&token.QueryTokenResponse{
-				Token: s.mintableClass,
+				Token: s.classes[0],
 			},
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				"extra",
 			},
 			false,
@@ -150,7 +150,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdTokens() {
 			[]string{},
 			true,
 			&token.QueryTokensResponse{
-				Tokens:     []token.Token{s.notMintableClass, s.mintableClass},
+				Tokens:     s.classes,
 				Pagination: &query.PageResponse{},
 			},
 		},
@@ -196,7 +196,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 	}{
 		"valid query": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 			},
 			true,
@@ -204,17 +204,17 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 				Grants: []token.Grant{
 					{
 						Grantee: s.vendor.String(),
-						ClassId: s.mintableClass.Id,
+						ClassId: s.classes[0].Id,
 						Action:  token.ActionMint,
 					},
 					{
 						Grantee: s.vendor.String(),
-						ClassId: s.mintableClass.Id,
+						ClassId: s.classes[0].Id,
 						Action:  token.ActionBurn,
 					},
 					{
 						Grantee: s.vendor.String(),
-						ClassId: s.mintableClass.Id,
+						ClassId: s.classes[0].Id,
 						Action:  token.ActionModify,
 					},
 				},
@@ -222,7 +222,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				"extra",
 			},
@@ -231,7 +231,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdGrants() {
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 			},
 			false,
 			nil,
@@ -271,14 +271,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 	}{
 		"valid query": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
 			true,
 			&token.QueryApproveResponse{
 				Approve: &token.Approve{
-					ClassId:  s.mintableClass.Id,
+					ClassId:  s.classes[0].Id,
 					Approver: s.customer.String(),
 					Proxy:    s.vendor.String(),
 				},
@@ -286,7 +286,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				"extra",
@@ -296,7 +296,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApprove() {
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 			},
 			false,
@@ -337,14 +337,14 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 	}{
 		"valid query": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 			},
 			true,
 			&token.QueryApprovesResponse{
 				Approves: []token.Approve{
 					{
-						ClassId:  s.mintableClass.Id,
+						ClassId:  s.classes[0].Id,
 						Approver: s.customer.String(),
 						Proxy:    s.vendor.String(),
 					},
@@ -354,7 +354,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				"extra",
 			},
@@ -363,7 +363,7 @@ func (s *IntegrationTestSuite) TestNewQueryCmdApproves() {
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 			},
 			false,
 			nil,

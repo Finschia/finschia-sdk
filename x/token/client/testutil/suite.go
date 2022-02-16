@@ -27,8 +27,7 @@ type IntegrationTestSuite struct {
 	vendor   sdk.AccAddress
 	customer sdk.AccAddress
 
-	mintableClass    token.Token
-	notMintableClass token.Token
+	classes []token.Token
 
 	balance sdk.Int
 }
@@ -53,30 +52,33 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	s.vendor = s.createAccount("vendor")
 	s.customer = s.createAccount("customer")
 
-	s.mintableClass = token.Token{
-		Id:       "9be17165",
-		Name:     "Mintable",
-		Symbol:   "OK",
-		Decimals: 8,
-		Mintable: true,
-	}
-	s.notMintableClass = token.Token{
-		Id:       "678c146a",
-		Name:     "NotMintable",
-		Symbol:   "NO",
-		Decimals: 8,
-		Mintable: false,
+	s.classes = []token.Token{
+		{
+			Id:       "678c146a",
+			Name:     "test",
+			Symbol:   "ZERO",
+			Decimals: 8,
+			Mintable: true,
+		},
+		{
+			Id:       "9be17165",
+			Name:     "test",
+			Symbol:   "ONE",
+			Decimals: 8,
+			Mintable: true,
+		},
 	}
 
-	s.balance = sdk.NewInt(1000000)
+	s.balance = sdk.NewInt(1000)
 
-	// vendor creates 2 tokens: mintable and not mintable one. And mint to customer.
-	s.createClass(s.vendor, s.customer, s.mintableClass.Name, s.mintableClass.Symbol, s.balance, s.mintableClass.Mintable)
-	s.createClass(s.vendor, s.customer, s.notMintableClass.Name, s.notMintableClass.Symbol, s.balance, s.notMintableClass.Mintable)
+	// vendor creates 2 tokens
+	s.createClass(s.vendor, s.vendor, s.classes[1].Name, s.classes[1].Symbol, s.balance, s.classes[1].Mintable)
+	s.createClass(s.vendor, s.customer, s.classes[0].Name, s.classes[0].Symbol, s.balance, s.classes[0].Mintable)
 
 	// customer approves vendor to transfer its tokens of the both classes, so vendor can do transferFrom later.
-	s.approve(s.mintableClass.Id, s.customer, s.vendor)
-	s.approve(s.notMintableClass.Id, s.customer, s.vendor)
+	for _, class := range s.classes {
+		s.approve(class.Id, s.customer, s.vendor)
+	}
 
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
@@ -94,8 +96,13 @@ func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbo
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, owner),
 	}, commonArgs...)
 
-	_, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdIssue(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdIssue(), args)
 	s.Require().NoError(err)
+
+	var res sdk.TxResponse
+	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+	s.Require().EqualValues(0, res.Code, out.String())
+
 	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
@@ -106,15 +113,20 @@ func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	s.Require().NoError(err)
 	addr := keyInfo.GetAddress()
 
-	fee := sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000000)))
+	fee := sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1000)))
 	args := append([]string{
 		val.Address.String(),
 		addr.String(),
 		fee.String(),
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, val.Address),
 	}, commonArgs...)
-	_, err = clitestutil.ExecTestCLICmd(val.ClientCtx, bankcli.NewSendTxCmd(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, bankcli.NewSendTxCmd(), args)
 	s.Require().NoError(err)
+
+	var res sdk.TxResponse
+	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+	s.Require().EqualValues(0, res.Code, out.String())
+
 	s.Require().NoError(s.network.WaitForNextBlock())
 
 	return addr
@@ -129,8 +141,13 @@ func (s *IntegrationTestSuite) approve(classID string, approver, proxy sdk.AccAd
 		fmt.Sprintf("--%s=%s", flags.FlagFrom, approver),
 	}, commonArgs...)
 
-	_, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
+	out, err := clitestutil.ExecTestCLICmd(val.ClientCtx, cli.NewTxCmdApprove(), args)
 	s.Require().NoError(err)
+
+	var res sdk.TxResponse
+	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+	s.Require().EqualValues(0, res.Code, out.String())
+
 	s.Require().NoError(s.network.WaitForNextBlock())
 }
 

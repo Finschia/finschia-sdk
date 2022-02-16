@@ -25,26 +25,26 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.customer.String(),
 				s.vendor.String(),
-				s.balance.String(),
+				"1",
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.customer.String(),
 				s.vendor.String(),
-				s.balance.String(),
+				"1",
 				"extra",
 			},
 			false,
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.customer.String(),
 				s.vendor.String(),
 			},
@@ -52,7 +52,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 		},
 		"amount out of range": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.customer.String(),
 				s.vendor.String(),
 				"10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
@@ -73,8 +73,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransfer() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgTransferResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -94,28 +95,28 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
-				s.balance.String(),
+				"1",
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
-				s.balance.String(),
+				"1",
 				"extra",
 			},
 			false,
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -124,7 +125,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 		},
 		"amount out of range": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				s.vendor.String(),
@@ -146,8 +147,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdTransferFrom() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgTransferFromResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -167,7 +169,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -175,7 +177,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				"extra",
@@ -184,7 +186,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 			},
 			false,
@@ -203,8 +205,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdApprove() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgApproveResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -268,8 +271,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdIssue() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgIssueResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -289,7 +293,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				token.ActionMint,
@@ -298,7 +302,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 				token.ActionMint,
@@ -308,7 +312,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -328,8 +332,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdGrant() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgGrantResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -349,7 +354,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				token.ActionMint,
 			},
@@ -357,7 +362,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				token.ActionMint,
 				"extra",
@@ -366,7 +371,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 			},
 			false,
@@ -385,8 +390,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdRevoke() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgRevokeResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -406,26 +412,26 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
-				s.balance.String(),
+				"1",
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
-				s.balance.String(),
+				"1",
 				"extra",
 			},
 			false,
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -445,8 +451,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdMint() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgMintResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -466,24 +473,24 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[1].Id,
 				s.vendor.String(),
-				s.balance.String(),
+				"1",
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[1].Id,
 				s.vendor.String(),
-				s.balance.String(),
+				"1",
 				"extra",
 			},
 			false,
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[1].Id,
 				s.vendor.String(),
 			},
 			false,
@@ -502,8 +509,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurn() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgBurnResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -523,26 +531,26 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
-				s.balance.String(),
+				"1",
 			},
 			true,
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
-				s.balance.String(),
+				"1",
 				"extra",
 			},
 			false,
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				s.customer.String(),
 			},
@@ -562,8 +570,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdBurnFrom() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgBurnFromResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
@@ -583,7 +592,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 	}{
 		"valid transaction": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				"name",
 				"cool token",
@@ -592,7 +601,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 		},
 		"extra args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				"name",
 				"cool token",
@@ -602,7 +611,7 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 		},
 		"not enough args": {
 			[]string{
-				s.mintableClass.Id,
+				s.classes[0].Id,
 				s.vendor.String(),
 				"name",
 			},
@@ -622,8 +631,9 @@ func (s *IntegrationTestSuite) TestNewTxCmdModify() {
 			}
 			s.Require().NoError(err)
 
-			var actual token.MsgModifyResponse
-			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &actual), out.String())
+			var res sdk.TxResponse
+			s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
+			s.Require().EqualValues(0, res.Code, out.String())
 		})
 	}
 }
