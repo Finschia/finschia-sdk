@@ -445,7 +445,8 @@ proto-format:
 		find ./ -not -path "./third_party/*" -name *.proto -exec clang-format -i {} \;
 
 proto-lint:
-	@$(DOCKER_BUF) lint --error-format=json
+	@$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace cellink/clang-format-lint \
+		--clang-format-executable /clang-format/clang-format9 -r --extensions proto --exclude ./third_party/* .
 
 proto-check-breaking:
 	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
