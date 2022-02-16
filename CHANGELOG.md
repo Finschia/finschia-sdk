@@ -48,6 +48,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 ### Breaking Changes
 
 ### Build, CI
+* (makefile, ci) [\#438](https://github.com/line/lbm-sdk/pull/438) fix `make proto-format` and `make proto-check-breaking` error
 
 ### Document Updates
 
