@@ -82,7 +82,11 @@ func (dfd DeductFeeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate bo
 	}
 
 	feePayer := feeTx.FeePayer()
-	feePayerAcc := dfd.ak.NewAccountWithAddress(ctx, feePayer)
+	feePayerAcc := dfd.ak.GetAccount(ctx, feePayer)
+
+	if feePayerAcc == nil {
+		return ctx, sdkerrors.Wrapf(sdkerrors.ErrUnknownAddress, "fee payer address: %s does not exist", feePayer)
+	}
 
 	// deduct the fees
 	if !feeTx.GetFee().IsZero() {

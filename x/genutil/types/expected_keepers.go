@@ -18,6 +18,7 @@ type StakingKeeper interface {
 
 // AccountKeeper defines the expected account keeper (noalias)
 type AccountKeeper interface {
+	NewAccount(sdk.Context, auth.AccountI) auth.AccountI
 	SetAccount(sdk.Context, auth.AccountI)
 	IterateAccounts(ctx sdk.Context, process func(auth.AccountI) (stop bool))
 }
