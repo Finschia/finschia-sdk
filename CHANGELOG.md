@@ -1,7 +1,6 @@
 <!--
 Guiding Principles:
 
-
 Changelogs are for humans, not machines.
 There should be an entry for every single version.
 The same types of changes should be grouped.
