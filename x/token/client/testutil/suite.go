@@ -79,12 +79,13 @@ func (s *IntegrationTestSuite) SetupSuite() {
 	// vendor creates 2 tokens: mintable and not mintable one. And mint to customer.
 	s.createClass(s.vendor, s.customer, s.mintableClass.Name, s.mintableClass.Symbol, s.balance, s.mintableClass.Mintable)
 	s.createClass(s.vendor, s.customer, s.notMintableClass.Name, s.notMintableClass.Symbol, s.balance, s.notMintableClass.Mintable)
+	s.Require().NoError(s.network.WaitForNextBlock())
 
 	// customer approves vendor to transfer its tokens of the both classes, so vendor can do transferFrom later.
 	s.approve(s.mintableClass.Id, s.customer, s.vendor)
 	s.approve(s.notMintableClass.Id, s.customer, s.vendor)
-
 	s.Require().NoError(s.network.WaitForNextBlock())
+
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
 }
