@@ -112,19 +112,22 @@ func (s *KeeperTestSuite) TestModify() {
 func (s *KeeperTestSuite) TestGrant() {
 	users := []sdk.AccAddress{s.vendor, s.operator, s.customer}
 	actions := []string{token.ActionMint, token.ActionBurn, token.ActionModify}
-	for _, grantee := range users {
-		for _, action := range actions {
-			name := fmt.Sprintf("Grantee: %s", grantee)
-			s.Run(name, func() {
-				granted := s.keeper.GetGrant(s.ctx, grantee, s.classID, action)
-				err := s.keeper.Grant(s.ctx, s.vendor, grantee, s.classID, action)
-				if !granted {
-					s.Require().NoError(err)
-					s.Require().True(s.keeper.GetGrant(s.ctx, grantee, s.classID, action))
-				} else {
-					s.Require().Error(err)
-				}
-			})
+	for _, granter := range users {
+		for _, grantee := range users {
+			for _, action := range actions {
+				name := fmt.Sprintf("Granter: %s, Grantee: %s", granter, grantee)
+				s.Run(name, func() {
+					granterGranted := s.keeper.GetGrant(s.ctx, granter, s.classID, action)
+					granteeGranted := s.keeper.GetGrant(s.ctx, grantee, s.classID, action)
+					err := s.keeper.Grant(s.ctx, granter, grantee, s.classID, action)
+					if granterGranted && !granteeGranted {
+						s.Require().NoError(err)
+						s.Require().True(s.keeper.GetGrant(s.ctx, grantee, s.classID, action))
+					} else {
+						s.Require().Error(err)
+					}
+				})
+			}
 		}
 	}
 }

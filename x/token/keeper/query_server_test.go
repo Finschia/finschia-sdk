@@ -351,6 +351,16 @@ func (s *KeeperTestSuite) TestQueryApproves() {
 				s.Require().Equal(1, len(res.Approves))
 			},
 		},
+		"invalid class id": {
+			classId: "invalid",
+			proxy: s.operator,
+			valid: false,
+		},
+		"invalid proxy": {
+			classId: s.classID,
+			proxy: "invalid",
+			valid: false,
+		},
 	}
 
 	for name, tc := range testCases {

@@ -2,7 +2,6 @@ package testutil
 
 import (
 	"fmt"
-	"testing"
 
 	"github.com/stretchr/testify/suite"
 
@@ -46,10 +45,6 @@ func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
 
 func (s *IntegrationTestSuite) SetupSuite() {
 	s.T().Log("setting up integration test suite")
-
-	if testing.Short() {
-		s.T().Skip("skipping test in unit-tests mode.")
-	}
 
 	s.network = network.New(s.T(), s.cfg)
 	_, err := s.network.WaitForHeight(1)
