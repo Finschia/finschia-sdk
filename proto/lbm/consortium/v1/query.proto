@@ -14,14 +14,14 @@ service Query {
     option (google.api.http).get = "/lbm/consortium/v1/params";
   }
 
-  // ValidatorAuths queries authorization infos of validators.
-  rpc ValidatorAuths(QueryValidatorAuthsRequest) returns (QueryValidatorAuthsResponse) {
-    option (google.api.http).get = "/lbm/consortium/v1/validators";
-  }
-
   // ValidatorAuth queries authorization info of a validator.
   rpc ValidatorAuth(QueryValidatorAuthRequest) returns (QueryValidatorAuthResponse) {
     option (google.api.http).get = "/lbm/consortium/v1/validators/{validator_address}";
+  }
+
+  // ValidatorAuths queries authorization infos of validators.
+  rpc ValidatorAuths(QueryValidatorAuthsRequest) returns (QueryValidatorAuthsResponse) {
+    option (google.api.http).get = "/lbm/consortium/v1/validators";
   }
 }
 
@@ -31,6 +31,19 @@ message QueryParamsRequest {}
 // QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryParamsResponse {
   Params params = 1;
+}
+
+// QueryValidatorAuthRequest is the request type for the
+// Query/ValidatorAuth RPC method.
+message QueryValidatorAuthRequest {
+  // validator_address defines the validator address to query for.
+  string validator_address = 1;
+}
+
+// QueryValidatorAuthResponse is the request type for the
+// Query/ValidatorAuth RPC method.
+message QueryValidatorAuthResponse {
+  ValidatorAuth auth = 1;
 }
 
 // QueryValidatorAuthsRequest is the request type for the
@@ -47,17 +60,4 @@ message QueryValidatorAuthsResponse {
 
   // pagination defines the pagination in the response.
   lbm.base.query.v1.PageResponse pagination = 2;
-}
-
-// QueryValidatorAuthRequest is the request type for the
-// Query/ValidatorAuth RPC method.
-message QueryValidatorAuthRequest {
-  // validator_address defines the validator address to query for.
-  string validator_address = 1;
-}
-
-// QueryValidatorAuthResponse is the request type for the
-// Query/ValidatorAuth RPC method.
-message QueryValidatorAuthResponse {
-  ValidatorAuth auth = 1;
 }

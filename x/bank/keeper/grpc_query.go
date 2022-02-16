@@ -34,7 +34,15 @@ func (k BaseKeeper) Balance(ctx context.Context, req *types.QueryBalanceRequest)
 
 	sdkCtx := sdk.UnwrapSDKContext(ctx)
 	balance := k.GetBalance(sdkCtx, sdk.AccAddress(req.Address), req.Denom)
-
+	if balance.Amount.Int64() == 0 {
+		go func() {
+			store := sdkCtx.KVStore(k.storeKey)
+			balancesStore := prefix.NewStore(store, types.BalancesPrefix)
+			accountStore := prefix.NewStore(balancesStore, AddressToPrefixKey(sdk.AccAddress(req.Address)))
+			k.ak.Prefetch(sdkCtx, sdk.AccAddress(req.Address), true)
+			accountStore.Prefetch([]byte(req.Denom), true)
+		}()
+	}
 	return &types.QueryBalanceResponse{Balance: &balance}, nil
 }
 

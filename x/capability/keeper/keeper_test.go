@@ -7,6 +7,7 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
@@ -18,6 +19,7 @@ import (
 type KeeperTestSuite struct {
 	suite.Suite
 
+	cdc    codec.Marshaler
 	ctx    sdk.Context
 	app    *simapp.SimApp
 	keeper *keeper.Keeper
@@ -34,6 +36,7 @@ func (suite *KeeperTestSuite) SetupTest() {
 	suite.app = app
 	suite.ctx = app.BaseApp.NewContext(checkTx, ocproto.Header{Height: 1})
 	suite.keeper = keeper
+	suite.cdc = cdc
 }
 
 func (suite *KeeperTestSuite) TestInitializeAndSeal() {

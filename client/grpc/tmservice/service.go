@@ -234,13 +234,14 @@ func (s queryServer) GetNodeInfo(ctx context.Context, req *GetNodeInfoRequest) (
 	resp := GetNodeInfoResponse{
 		DefaultNodeInfo: protoNodeInfo,
 		ApplicationVersion: &VersionInfo{
-			AppName:   nodeInfo.AppName,
-			Name:      nodeInfo.Name,
-			GitCommit: nodeInfo.GitCommit,
-			GoVersion: nodeInfo.GoVersion,
-			Version:   nodeInfo.Version,
-			BuildTags: nodeInfo.BuildTags,
-			BuildDeps: deps,
+			AppName:       nodeInfo.AppName,
+			Name:          nodeInfo.Name,
+			GitCommit:     nodeInfo.GitCommit,
+			GoVersion:     nodeInfo.GoVersion,
+			Version:       nodeInfo.Version,
+			BuildTags:     nodeInfo.BuildTags,
+			BuildDeps:     deps,
+			LbmSdkVersion: nodeInfo.LbmSdkVersion,
 		},
 	}
 	return &resp, nil

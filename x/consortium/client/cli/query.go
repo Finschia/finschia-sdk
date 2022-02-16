@@ -11,24 +11,24 @@ import (
 	"github.com/line/lbm-sdk/x/consortium/types"
 )
 
-// GetQueryCmd returns the parent command for all x/consortium CLi query commands.
-func GetQueryCmd() *cobra.Command {
+// NewQueryCmd returns the parent command for all x/consortium CLi query commands.
+func NewQueryCmd() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   types.ModuleName,
 		Short: "Querying commands for the consortium module",
 	}
 
 	cmd.AddCommand(
-		GetParamsCmd(),
-		GetValidatorAuthsCmd(),
-		GetValidatorAuthCmd(),
+		NewQueryCmdParams(),
+		NewQueryCmdValidatorAuth(),
+		NewQueryCmdValidatorAuths(),
 	)
 
 	return cmd
 }
 
-// GetParamsCmd returns the query consortium parameters command.
-func GetParamsCmd() *cobra.Command {
+// NewQueryCmdParams returns the query consortium parameters command.
+func NewQueryCmdParams() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "params",
 		Short: "Query consortium params",
@@ -56,8 +56,42 @@ func GetParamsCmd() *cobra.Command {
 	return cmd
 }
 
-// GetValidatorAuthsCmd returns validator authorization by consortium
-func GetValidatorAuthsCmd() *cobra.Command {
+// NewQueryCmdValidatorAuth returns validator authorization by consortium
+func NewQueryCmdValidatorAuth() *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "validator-auth [validator-address]",
+		Short: "Query validator authorization",
+		Long:  "Gets validator authorization by consortium",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
+			queryClient := types.NewQueryClient(clientCtx)
+
+			valAddr := args[0]
+			if err = sdk.ValidateValAddress(valAddr); err != nil {
+				return err
+			}
+
+			params := types.QueryValidatorAuthRequest{ValidatorAddress: valAddr}
+			res, err := queryClient.ValidatorAuth(context.Background(), &params)
+			if err != nil {
+				return err
+			}
+
+			return clientCtx.PrintProto(res)
+		},
+	}
+
+	flags.AddQueryFlagsToCmd(cmd)
+
+	return cmd
+}
+
+// NewQueryCmdValidatorAuths returns validator authorizations by consortium
+func NewQueryCmdValidatorAuths() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "validator-auths",
 		Short: "Query validator authorizations",
@@ -87,40 +121,6 @@ func GetValidatorAuthsCmd() *cobra.Command {
 
 	flags.AddQueryFlagsToCmd(cmd)
 	flags.AddPaginationFlagsToCmd(cmd, "validator auths")
-
-	return cmd
-}
-
-// GetValidatorAuthCmd returns validator authorizations by consortium
-func GetValidatorAuthCmd() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "validator-auth [validator-address]",
-		Short: "Query validator authorization",
-		Long:  "Gets validator authorization by consortium",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx, err := client.GetClientQueryContext(cmd)
-			if err != nil {
-				return err
-			}
-			queryClient := types.NewQueryClient(clientCtx)
-
-			valAddr := args[0]
-			if err = sdk.ValidateValAddress(valAddr); err != nil {
-				return err
-			}
-
-			params := types.QueryValidatorAuthRequest{ValidatorAddress: valAddr}
-			res, err := queryClient.ValidatorAuth(context.Background(), &params)
-			if err != nil {
-				return err
-			}
-
-			return clientCtx.PrintProto(res)
-		},
-	}
-
-	flags.AddQueryFlagsToCmd(cmd)
 
 	return cmd
 }

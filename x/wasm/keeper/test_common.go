@@ -24,6 +24,7 @@ import (
 	"github.com/line/lbm-sdk/x/bank"
 	bankkeeper "github.com/line/lbm-sdk/x/bank/keeper"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
+	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	"github.com/line/lbm-sdk/x/capability"
 	capabilitykeeper "github.com/line/lbm-sdk/x/capability/keeper"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
@@ -233,7 +234,7 @@ func createTestInput(
 	}
 
 	bankSubsp, _ := paramsKeeper.GetSubspace(banktypes.ModuleName)
-	bankKeeper := bankkeeper.NewBaseKeeper(
+	bankKeeper := bankpluskeeper.NewBaseKeeper(
 		appCodec,
 		keyBank,
 		authKeeper,

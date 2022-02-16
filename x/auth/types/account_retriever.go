@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/line/lbm-sdk/client/grpc/tmservice"
 	grpc "google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
@@ -30,19 +29,9 @@ func (ar AccountRetriever) GetAccount(clientCtx client.Context, addr sdk.AccAddr
 	return account, err
 }
 
-func (ar AccountRetriever) GetLatestHeight(clientCtx client.Context) (uint64, error) {
-	queryClient := tmservice.NewServiceClient(clientCtx)
-	res, err := queryClient.GetLatestBlock(context.Background(), &tmservice.GetLatestBlockRequest{})
-	if err != nil {
-		return 0, err
-	}
-	return uint64(res.Block.Header.Height), nil
-}
-
 // GetAccountWithHeight queries for an account given an address. Returns the
 // height of the query with the account. An error is returned if the query
 // or decoding fails.
-//nolint:interfacer
 func (ar AccountRetriever) GetAccountWithHeight(clientCtx client.Context, addr sdk.AccAddress) (client.Account, int64, error) {
 	var header metadata.MD
 
@@ -79,13 +68,13 @@ func (ar AccountRetriever) EnsureExists(clientCtx client.Context, addr sdk.AccAd
 	return nil
 }
 
-// GetAccountSequence returns sequence for the given address.
+// GetAccountNumberSequence returns sequence and account number for the given address.
 // It returns an error if the account couldn't be retrieved from the state.
-func (ar AccountRetriever) GetAccountSequence(clientCtx client.Context, addr sdk.AccAddress) (uint64, error) {
+func (ar AccountRetriever) GetAccountNumberSequence(clientCtx client.Context, addr sdk.AccAddress) (uint64, uint64, error) {
 	acc, err := ar.GetAccount(clientCtx, addr)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
-	return acc.GetSequence(), nil
+	return acc.GetAccountNumber(), acc.GetSequence(), nil
 }

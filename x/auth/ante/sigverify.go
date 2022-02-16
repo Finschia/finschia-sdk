@@ -3,6 +3,7 @@ package ante
 import (
 	"bytes"
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/hex"
 	"fmt"
 	"sync"
@@ -79,11 +80,8 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 
 		acc, err := GetSignerAcc(ctx, spkd.ak, signers[i])
 		if err != nil {
-			// At this point, the signer may not be in account keeper.
-			// So we make an account with address.
-			acc = spkd.ak.NewAccountWithAddress(ctx, signers[i])
+			return ctx, err
 		}
-
 		// account already has pubkey set,no need to reset
 		if acc.GetPubKey() != nil {
 			continue
@@ -92,8 +90,36 @@ func (spkd SetPubKeyDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simulate b
 		if err != nil {
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrInvalidPubKey, err.Error())
 		}
-		spkd.ak.SetAccount(ctx, acc) // After here, we can call `GetAccount` or `GetSignerAcc` from other ante handlers
+		spkd.ak.SetAccount(ctx, acc)
 	}
+
+	// Also emit the following events, so that txs can be indexed by these
+	// indices:
+	// - signature (via `tx.signature='<sig_as_base64>'`),
+	// - concat(address,"/",sequence) (via `tx.acc_seq='cosmos1abc...def/42'`).
+	sigs, err := sigTx.GetSignaturesV2()
+	if err != nil {
+		return ctx, err
+	}
+
+	var events sdk.Events
+	for i, sig := range sigs {
+		events = append(events, sdk.NewEvent(sdk.EventTypeTx,
+			sdk.NewAttribute(sdk.AttributeKeyAccountSequence, fmt.Sprintf("%s/%d", signers[i], sig.Sequence)),
+		))
+
+		sigBzs, err := signatureDataToBz(sig.Data)
+		if err != nil {
+			return ctx, err
+		}
+		for _, sigBz := range sigBzs {
+			events = append(events, sdk.NewEvent(sdk.EventTypeTx,
+				sdk.NewAttribute(sdk.AttributeKeySignature, base64.StdEncoding.EncodeToString(sigBz)),
+			))
+		}
+	}
+
+	ctx.EventManager().EmitEvents(events)
 
 	return next(ctx, tx, simulate)
 }
@@ -126,7 +152,7 @@ func (sgcd SigGasConsumeDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simula
 		return ctx, err
 	}
 
-	// stdSigs contains the sequence number, signatures.
+	// stdSigs contains the sequence number, account number, and signatures.
 	// When simulating, this would just be a 0-length slice.
 	signerAddrs := sigTx.GetSigners()
 
@@ -213,7 +239,7 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		return ctx, sdkerrors.Wrap(sdkerrors.ErrTxDecode, "invalid transaction type")
 	}
 
-	// stdSigs contains the sequence number, signatures.
+	// stdSigs contains the sequence number, account number, and signatures.
 	// When simulating, this would just be a 0-length slice.
 	sigs, err := sigTx.GetSignaturesV2()
 	if err != nil {
@@ -272,14 +298,18 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 		// retrieve signer data
 		genesis := ctx.BlockHeight() == 0
 		chainID := ctx.ChainID()
+		var accNum uint64
+		if !genesis {
+			accNum = acc.GetAccountNumber()
+		}
 		signerData := authsigning.SignerData{
-			ChainID:  chainID,
-			Sequence: acc.GetSequence(),
+			ChainID:       chainID,
+			AccountNumber: accNum,
+			Sequence:      acc.GetSequence(),
 		}
 
 		if !genesis {
-			sigKey := fmt.Sprintf("%s:%d:%d", acc.GetAddress().String(),
-				tx.GetSigBlockHeight(), signerData.Sequence)
+			sigKey := fmt.Sprintf("%d:%d", signerData.AccountNumber, signerData.Sequence)
 			// TODO could we use `tx.(*wrapper).getBodyBytes()` instead of `ctx.TxBytes()`?
 			txHash := sha256.Sum256(ctx.TxBytes())
 			stored := false
@@ -298,9 +328,9 @@ func (svd *SigVerificationDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, simu
 			if onlyAminoSigners {
 				// If all signers are using SIGN_MODE_LEGACY_AMINO, we rely on VerifySignature to check account sequence number,
 				// and therefore communicate sequence number as a potential cause of error.
-				errMsg = fmt.Sprintf("signature verification failed; please verify sequence (%d) and chain-id (%s)", acc.GetSequence(), chainID)
+				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d), sequence (%d) and chain-id (%s)", accNum, acc.GetSequence(), chainID)
 			} else {
-				errMsg = fmt.Sprintf("signature verification failed; please verify chain-id (%s)", chainID)
+				errMsg = fmt.Sprintf("signature verification failed; please verify account number (%d) and chain-id (%s)", accNum, chainID)
 			}
 			return ctx, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, errMsg)
 		}
@@ -365,11 +395,13 @@ func (svd *SigVerificationDecorator) checkCache(sigKey string, txHash []byte) (v
 // client. It is recommended to instead use multiple messages in a tx.
 type IncrementSequenceDecorator struct {
 	ak AccountKeeper
+	bk types.BankKeeper
 }
 
-func NewIncrementSequenceDecorator(ak AccountKeeper) IncrementSequenceDecorator {
+func NewIncrementSequenceDecorator(ak AccountKeeper, bk types.BankKeeper) IncrementSequenceDecorator {
 	return IncrementSequenceDecorator{
 		ak: ak,
+		bk: bk,
 	}
 }
 
@@ -387,6 +419,11 @@ func (isd IncrementSequenceDecorator) AnteHandle(ctx sdk.Context, tx sdk.Tx, sim
 		}
 
 		isd.ak.SetAccount(ctx, acc)
+	}
+
+	// prefetching
+	if ctx.IsCheckTx() {
+		isd.bk.Prefetch(ctx, tx)
 	}
 
 	return next(ctx, tx, simulate)
@@ -510,4 +547,43 @@ func CountSubKeys(pub cryptotypes.PubKey) int {
 	}
 
 	return numKeys
+}
+
+// signatureDataToBz converts a SignatureData into raw bytes signature.
+// For SingleSignatureData, it returns the signature raw bytes.
+// For MultiSignatureData, it returns an array of all individual signatures,
+// as well as the aggregated signature.
+func signatureDataToBz(data signing.SignatureData) ([][]byte, error) {
+	if data == nil {
+		return nil, fmt.Errorf("got empty SignatureData")
+	}
+
+	switch data := data.(type) {
+	case *signing.SingleSignatureData:
+		return [][]byte{data.Signature}, nil
+	case *signing.MultiSignatureData:
+		sigs := [][]byte{}
+		var err error
+
+		for _, d := range data.Signatures {
+			nestedSigs, err := signatureDataToBz(d)
+			if err != nil {
+				return nil, err
+			}
+			sigs = append(sigs, nestedSigs...)
+		}
+
+		multisig := cryptotypes.MultiSignature{
+			Signatures: sigs,
+		}
+		aggregatedSig, err := multisig.Marshal()
+		if err != nil {
+			return nil, err
+		}
+		sigs = append(sigs, aggregatedSig)
+
+		return sigs, nil
+	default:
+		return nil, sdkerrors.Wrapf(sdkerrors.ErrInvalidType, "unexpected signature data type %T", data)
+	}
 }

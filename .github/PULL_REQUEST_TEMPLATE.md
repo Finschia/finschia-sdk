@@ -1,29 +1,26 @@
-<!-- < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < < ☺
-v                               ✰  Thanks for creating a PR! ✰
-v    Before smashing the submit button please review the checkboxes.
-v    If a checkbox is n/a - please still include it but + a little note why
-☺ > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > > >  -->
+<!--- Provide a general summary of your changes in the Title above -->
 
 ## Description
-
-<!-- Add a description of the changes that this PR introduces and the files that
-are the most critical to review.
--->
-
+<!--- Describe your changes in detail -->
 closes: #XXXX
 
----
+## Motivation and context
+<!--- Why is this change required? What problem does it solve? -->
+<!--- If it fixes an open issue, please link to the issue here. -->
 
-Before we can merge this PR, please make sure that all the following items have been
-checked off. If any of the checklist items are not applicable, please leave them but
-write a little note why.
+## How has this been tested?
+<!--- Please describe in detail how you tested your changes. -->
+<!--- Include details of your testing environment, and the tests you ran to -->
+<!--- see how your change affects other areas of the code, etc. -->
 
-- [ ] Targeted PR against correct branch (see [CONTRIBUTING.md](https://github.com/cosmos/cosmos-sdk/blob/master/CONTRIBUTING.md#pr-targeting))
-- [ ] Linked to Github issue with discussion and accepted design OR link to spec that describes this work.
-- [ ] Code follows the [module structure standards](https://github.com/cosmos/cosmos-sdk/blob/master/docs/building-modules/structure.md).
-- [ ] Wrote unit and integration [tests](https://github.com/cosmos/cosmos-sdk/blob/master/CONTRIBUTING.md#testing)
-- [ ] Updated relevant documentation (`docs/`) or specification (`x/<module>/spec/`)
-- [ ] Added relevant `godoc` [comments](https://blog.golang.org/godoc-documenting-go-code).
-- [ ] Added a relevant changelog entry to the `Unreleased` section in `CHANGELOG.md`
-- [ ] Re-reviewed `Files changed` in the Github PR explorer
-- [ ] Review `Codecov Report` in the comment section below once CI passes
+## Screenshots (if appropriate):
+
+## Checklist:
+<!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
+<!--- If any of the checklist items are not applicable, leave it `[ ]` and write a little note why. --->
+<!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
+- [ ] I followed the [contributing guidelines](https://github.com/line/lbm-sdk/blob/main/CONTRIBUTING.md) and [code of conduct](https://github.com/line/lbm-sdk/blob/main/CODE_OF_CONDUCT.md).
+- [ ] I have added a relevant changelog to `CHANGELOG.md`
+- [ ] I have added tests to cover my changes.
+- [ ] I have updated the documentation accordingly.
+- [ ] I have updated API documentation `client/docs/swagger-ui/swagger.yaml`

@@ -696,9 +696,8 @@ func (tx *txTest) setFailOnHandler(fail bool) {
 }
 
 // Implements Tx
-func (tx txTest) GetMsgs() []sdk.Msg        { return tx.Msgs }
-func (tx txTest) ValidateBasic() error      { return nil }
-func (tx txTest) GetSigBlockHeight() uint64 { return 0 }
+func (tx txTest) GetMsgs() []sdk.Msg   { return tx.Msgs }
+func (tx txTest) ValidateBasic() error { return nil }
 
 const (
 	routeMsgCounter  = "msgCounter"
@@ -952,7 +951,11 @@ func TestCheckTx(t *testing.T) {
 
 	// If a block is committed, CheckTx state should be reset.
 	header := ocproto.Header{Height: 1}
-	app.BeginBlock(abci.RequestBeginBlock{Header: header})
+	app.BeginBlock(abci.RequestBeginBlock{Header: header, Hash: []byte("hash")})
+
+	require.NotNil(t, app.checkState.ctx.BlockGasMeter(), "block gas meter should have been set to checkState")
+	require.NotEmpty(t, app.checkState.ctx.HeaderHash())
+
 	app.EndBlock(abci.RequestEndBlock{})
 	app.Commit()
 

@@ -61,6 +61,8 @@ func TestAccountMapperGetSet(t *testing.T) {
 	require.EqualValues(t, 0, acc.GetSequence())
 
 	// NewAccount doesn't call Set, so it's still nil
+	app.AccountKeeper.Prefetch(ctx, addr, true)
+	app.AccountKeeper.Prefetch(ctx, addr, false)
 	require.Nil(t, app.AccountKeeper.GetAccount(ctx, addr))
 
 	// set some values on the account and save it

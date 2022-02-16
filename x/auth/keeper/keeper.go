@@ -3,6 +3,7 @@ package keeper
 import (
 	"fmt"
 
+	gogotypes "github.com/gogo/protobuf/types"
 	"github.com/line/ostracon/libs/log"
 
 	"github.com/line/lbm-sdk/codec"
@@ -15,8 +16,11 @@ import (
 
 // AccountKeeperI is the interface contract that x/auth's keeper implements.
 type AccountKeeperI interface {
-	// Return a new account with the specified address. Does not save the new account to the store.
+	// Return a new account with the next account number and the specified address. Does not save the new account to the store.
 	NewAccountWithAddress(sdk.Context, sdk.AccAddress) types.AccountI
+
+	// Return a new account with the next account number. Does not save the new account to the store.
+	NewAccount(sdk.Context, types.AccountI) types.AccountI
 
 	// Retrieve an account from the store.
 	GetAccount(sdk.Context, sdk.AccAddress) types.AccountI
@@ -35,6 +39,11 @@ type AccountKeeperI interface {
 
 	// Fetch the sequence of an account at a specified address.
 	GetSequence(sdk.Context, sdk.AccAddress) (uint64, error)
+
+	// Prefetch an account, i.e. pre-fetch
+	Prefetch(sdk.Context, sdk.AccAddress, bool)
+	// Fetch the next account number, and increment the internal counter.
+	GetNextAccountNumber(sdk.Context) uint64
 }
 
 // AccountKeeper encodes/decodes accounts using the go-amino (binary)
@@ -102,6 +111,33 @@ func (ak AccountKeeper) GetSequence(ctx sdk.Context, addr sdk.AccAddress) (uint6
 	return acc.GetSequence(), nil
 }
 
+// GetNextAccountNumber returns and increments the global account number counter.
+// If the global account number is not set, it initializes it with value 0.
+func (ak AccountKeeper) GetNextAccountNumber(ctx sdk.Context) uint64 {
+	var accNumber uint64
+	store := ctx.KVStore(ak.key)
+
+	bz := store.Get(types.GlobalAccountNumberKey)
+	if bz == nil {
+		// initialize the account numbers
+		accNumber = 0
+	} else {
+		val := gogotypes.UInt64Value{}
+
+		err := ak.cdc.UnmarshalBinaryBare(bz, &val)
+		if err != nil {
+			panic(err)
+		}
+
+		accNumber = val.GetValue()
+	}
+
+	bz = ak.cdc.MustMarshalBinaryBare(&gogotypes.UInt64Value{Value: accNumber + 1})
+	store.Set(types.GlobalAccountNumberKey, bz)
+
+	return accNumber
+}
+
 // ValidatePermissions validates that the module account has been granted
 // permissions within its set of allowed permissions.
 func (ak AccountKeeper) ValidatePermissions(macc types.ModuleAccountI) error {
@@ -154,9 +190,10 @@ func (ak AccountKeeper) GetModuleAccountAndPermissions(ctx sdk.Context, moduleNa
 
 	// create a new module account
 	macc := types.NewEmptyModuleAccount(moduleName, perms...)
-	ak.SetModuleAccount(ctx, macc)
+	maccI := (ak.NewAccount(ctx, macc)).(types.ModuleAccountI) // set the account number
+	ak.SetModuleAccount(ctx, maccI)
 
-	return macc, perms
+	return maccI, perms
 }
 
 // GetModuleAccount gets the module account from the auth account store, if the account does not

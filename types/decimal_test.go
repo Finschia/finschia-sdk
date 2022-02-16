@@ -8,7 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/suite"
-	yaml "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 
 	sdk "github.com/line/lbm-sdk/types"
 )
@@ -29,7 +29,7 @@ func (s *decimalTestSuite) mustNewDecFromStr(str string) (d sdk.Dec) {
 	return d
 }
 
-//_______________________________________
+// _______________________________________
 
 func (s *decimalTestSuite) TestNewDecFromStr() {
 	largeBigInt, success := new(big.Int).SetString("3144605511029693144278234343371835", 10)
@@ -59,6 +59,7 @@ func (s *decimalTestSuite) TestNewDecFromStr() {
 		{"foobar", true, sdk.Dec{}},
 		{"0.foobar", true, sdk.Dec{}},
 		{"0.foobar.", true, sdk.Dec{}},
+		{"88888888888888888888888888888888888888888888888888888888888888888888844444440", true, sdk.Dec{}},
 	}
 
 	for tcIndex, tc := range tests {

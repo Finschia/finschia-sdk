@@ -49,7 +49,7 @@ const (
 	FlagGasAdjustment    = "gas-adjustment"
 	FlagFrom             = "from"
 	FlagName             = "name"
-	FlagSigBlockHeight   = "sig-block-height"
+	FlagAccountNumber    = "account-number"
 	FlagSequence         = "sequence"
 	FlagMemo             = "memo"
 	FlagFees             = "fees"
@@ -98,9 +98,10 @@ func AddQueryFlagsToCmd(cmd *cobra.Command) {
 
 // AddTxFlagsToCmd adds common flags to a module tx command.
 func AddTxFlagsToCmd(cmd *cobra.Command) {
+	cmd.Flags().StringP(ostcli.OutputFlag, "o", "json", "Output format (text|json)")
 	cmd.Flags().String(FlagKeyringDir, "", "The client Keyring directory; if omitted, the default 'home' directory will be used")
 	cmd.Flags().String(FlagFrom, "", "Name or address of private key with which to sign")
-	cmd.Flags().Uint64P(FlagSigBlockHeight, "n", 0, "The block height to be included in the tx body to protect from replaying")
+	cmd.Flags().Uint64P(FlagAccountNumber, "a", 0, "The account number of the signing account (offline mode only)")
 	cmd.Flags().Uint64P(FlagSequence, "s", 0, "The sequence number of the signing account (offline mode only)")
 	cmd.Flags().String(FlagMemo, "", "Memo to send along with transaction")
 	cmd.Flags().String(FlagFees, "", "Fees to pay along with transaction; eg: 10uatom")
@@ -113,7 +114,7 @@ func AddTxFlagsToCmd(cmd *cobra.Command) {
 	cmd.Flags().Bool(FlagGenerateOnly, false, "Build an unsigned transaction and write it to STDOUT (when enabled, the local Keybase is not accessible)")
 	cmd.Flags().Bool(FlagOffline, false, "Offline mode (does not allow any online functionality")
 	cmd.Flags().BoolP(FlagSkipConfirmation, "y", false, "Skip tx broadcasting prompt confirmation")
-	cmd.Flags().String(FlagKeyringBackend, DefaultKeyringBackend, "Select keyring's backend (os|file|kwallet|pass|test)")
+	cmd.Flags().String(FlagKeyringBackend, DefaultKeyringBackend, "Select keyring's backend (os|file|kwallet|pass|test|memory)")
 	cmd.Flags().String(FlagSignMode, "", "Choose sign mode (direct|amino-json), this is an advanced feature")
 	cmd.Flags().Uint64(FlagTimeoutHeight, 0, "Set a block timeout height to prevent the tx from being committed past a certain height")
 	cmd.Flags().String(FlagPrivKeyType, DefaultPrivKeyType, "specify validator's private key type (ed25519|composite). \n"+

@@ -16,7 +16,7 @@ import (
 )
 
 // TxConfigTestSuite provides a test suite that can be used to test that a TxConfig implementation is correct
-//nolint:golint  // type name will be used as tx.TxConfigTestSuite by other packages, and that stutters; consider calling this GeneratorTestSuite
+// type name will be used as tx.TxConfigTestSuite by other packages, and that stutters; consider calling this GeneratorTestSuite
 type TxConfigTestSuite struct {
 	suite.Suite
 	TxConfig client.TxConfig
@@ -128,8 +128,9 @@ func (s *TxConfigTestSuite) TestTxBuilderSetSignatures() {
 
 	// sign transaction
 	signerData := signing.SignerData{
-		ChainID:  "test",
-		Sequence: seq1,
+		ChainID:       "test",
+		AccountNumber: 1,
+		Sequence:      seq1,
 	}
 	signBytes, err := signModeHandler.GetSignBytes(signModeHandler.DefaultMode(), signerData, sigTx)
 	s.Require().NoError(err)
@@ -137,8 +138,9 @@ func (s *TxConfigTestSuite) TestTxBuilderSetSignatures() {
 	s.Require().NoError(err)
 
 	signerData = signing.SignerData{
-		ChainID:  "test",
-		Sequence: mseq,
+		ChainID:       "test",
+		AccountNumber: 3,
+		Sequence:      mseq,
 	}
 	mSignBytes, err := signModeHandler.GetSignBytes(signModeHandler.DefaultMode(), signerData, sigTx)
 	s.Require().NoError(err)
