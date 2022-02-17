@@ -1,7 +1,7 @@
 package class
 
 import (
-	fmt "fmt"
+	"fmt"
 	"regexp"
 
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
