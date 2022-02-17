@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"sync"
 
-	memdb "github.com/line/tm-db/v2/memdb"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/store/types"
 )

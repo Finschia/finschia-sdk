@@ -9,7 +9,7 @@ import (
 	"time"
 	"unsafe"
 
-	memdb "github.com/line/tm-db/v2/memdb"
+	"github.com/line/tm-db/v2/memdb"
 
 	"github.com/line/lbm-sdk/store/tracekv"
 	"github.com/line/lbm-sdk/store/types"
