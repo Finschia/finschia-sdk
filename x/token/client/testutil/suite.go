@@ -35,7 +35,7 @@ type IntegrationTestSuite struct {
 var commonArgs = []string{
 	fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
 	fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(10))).String()),
+	fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(sdk.DefaultBondDenom, sdk.NewInt(100))).String()),
 }
 
 func NewIntegrationTestSuite(cfg network.Config) *IntegrationTestSuite {
@@ -82,6 +82,7 @@ func (s *IntegrationTestSuite) SetupSuite() {
 
 	s.setupHeight, err = s.network.LatestHeight()
 	s.Require().NoError(err)
+	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
 func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbol string, supply sdk.Int, mintable bool) {
@@ -102,8 +103,6 @@ func (s *IntegrationTestSuite) createClass(owner, to sdk.AccAddress, name, symbo
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
-
-	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
 // creates an account and send some coins to it for the future transactions.
@@ -127,8 +126,6 @@ func (s *IntegrationTestSuite) createAccount(uid string) sdk.AccAddress {
 	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
 
-	s.Require().NoError(s.network.WaitForNextBlock())
-
 	return addr
 }
 
@@ -147,8 +144,6 @@ func (s *IntegrationTestSuite) approve(classID string, approver, proxy sdk.AccAd
 	var res sdk.TxResponse
 	s.Require().NoError(val.ClientCtx.LegacyAmino.UnmarshalJSON(out.Bytes(), &res), out.String())
 	s.Require().EqualValues(0, res.Code, out.String())
-
-	s.Require().NoError(s.network.WaitForNextBlock())
 }
 
 func (s *IntegrationTestSuite) TearDownSuite() {
