@@ -57,7 +57,7 @@ func (s *IntegrationTestSuite) TestQueryABCIHeight() {
 			s.Require().NoError(err)
 
 			// Line: block height could be higher if execution gets slowed down
-			s.Require().GreaterOrEqual(tc.expHeight, res.Height)
+			s.Require().LessOrEqual(tc.expHeight, res.Height)
 		})
 	}
 }
