@@ -118,6 +118,165 @@ This release fixes a security vulnerability identified in x/bank.
 * (crypto) [\#8841](https://github.com/cosmos/cosmos-sdk/pull/8841) Fix legacy multisig amino marshaling, allowing migrations to work between v0.39 and v0.40+.
 * (cli) [\#8873](https://github.com/cosmos/cosmos-sdk/pull/8873) add --output-document to multisign-batch.
 
+## Unreleased
+
+## [v0.42.11](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.11) - 2021-12-07
+
+### Improvements
+
+* (types) [\#10630](https://github.com/cosmos/cosmos-sdk/pull/10630) Add an `Events` field to the `TxResponse` type that captures _all_ events emitted by a transaction, unlike `Logs` which only contains events emitted during message execution.
+* [\#10327](https://github.com/cosmos/cosmos-sdk/pull/10327) Add null guard for possible nil `Amount` in tx fee `Coins`
+* [\#10339](https://github.com/cosmos/cosmos-sdk/pull/10339) Improve performance of `removeZeroCoins` by only allocating memory when necessary
+* (deps) [\#10376](https://github.com/cosmos/cosmos-sdk/pull/10376) Bump Tendermint to [v0.34.14](https://github.com/tendermint/tendermint/releases/tag/v0.34.14).
+* (deps) [\#10654](https://github.com/cosmos/cosmos-sdk/pull/10654) Bump IAVL version to 0.17.3.
+* (deps) [\#10201](https://github.com/cosmos/cosmos-sdk/pull/10201) Migrate from `enigmampc/btcutil` to `cosmos/btcutil`.
+
+
+### Bug Fixes
+
+* (client) [#10226](https://github.com/cosmos/cosmos-sdk/pull/10226) Fix --home flag parsing. 
+
+### Client Breaking Changes
+
+* [\#10394](https://github.com/cosmos/cosmos-sdk/issues/10394) Fixes issue related to grpc-gateway of account balance by ibc-denom. Please use `/cosmos/bank/v1beta1/balances/{address}/by_denom?denom={DENOM or IBC-DENOM}` for querying balances by denom.
+
+## [v0.42.10](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.10) - 2021-09-28
+
+### Improvements
+
+* (store) [\#10026](https://github.com/cosmos/cosmos-sdk/pull/10026) Improve CacheKVStore datastructures / algorithms, to no longer take O(N^2) time when interleaving iterators and insertions.
+* (store) [\#10040](https://github.com/cosmos/cosmos-sdk/pull/10040) Bump IAVL to v0.17.1 which includes performance improvements on a batch load.
+* [\#10211](https://github.com/cosmos/cosmos-sdk/pull/10211) Backport of the mechanism to reject redundant IBC transactions from [ibc-go \#235](https://github.com/cosmos/ibc-go/pull/235).
+
+### Bug Fixes
+
+* [\#9969](https://github.com/cosmos/cosmos-sdk/pull/9969) fix: use keyring in config for add-genesis-account cmd.
+* [\#10061](https://github.com/cosmos/cosmos-sdk/pull/10061) Ensure that `LegacyAminoPubKey` struct correctly unmarshals from JSON
+
+### Client Breaking Changes
+
+* [\#9879](https://github.com/cosmos/cosmos-sdk/pull/9879) Modify ABCI Queries to use `abci.QueryRequest` Height field if it is non-zero, otherwise continue using context height.
+
+### API Breaking Changes
+
++ [\#10077](https://github.com/cosmos/cosmos-sdk/pull/10077) Remove telemetry on `GasKV` and `CacheKV` store Get/Set operations, significantly improving their performance.
+
+## [v0.42.9](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.9) - 2021-08-04
+
+### Bug Fixes
+
+* [\#9835](https://github.com/cosmos/cosmos-sdk/pull/9835) Moved capability initialization logic to BeginBlocker to fix nondeterminsim issue mentioned in [\#9800](https://github.com/cosmos/cosmos-sdk/issues/9800). Applications must now include the capability module in their BeginBlocker order before any module that uses capabilities gets run.
+* [\#9201](https://github.com/cosmos/cosmos-sdk/pull/9201) Fixed `<app> init --recover` flag.
+
+### API Breaking Changes
+
+* [\#9835](https://github.com/cosmos/cosmos-sdk/pull/9835) The `InitializeAndSeal` API has not changed, however it no longer initializes the in-memory state. `InitMemStore` has been introduced to serve this function, which will be called either in `InitChain` or `BeginBlock` (whichever is first after app start). Nodes may run this version on a network running 0.42.x, however, they must update their app.go files to include the capability module in their begin blockers.
+
+### Client Breaking Changes
+
+* [\#9781](https://github.com/cosmos/cosmos-sdk/pull/9781) Improve`withdraw-all-rewards` UX when broadcast mode `async` or `async` is used.
+
+## [v0.42.8](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.8) - 2021-07-30
+
+### Features
+
+* [\#9750](https://github.com/cosmos/cosmos-sdk/pull/9750) Emit events for tx signature and sequence, so clients can now query txs by signature (`tx.signature='<base64_sig>'`) or by address and sequence combo (`tx.acc_seq='<addr>/<seq>'`).
+
+### Improvements
+
+* (deps) [\#9956](https://github.com/cosmos/cosmos-sdk/pull/9956) Bump Tendermint to [v0.34.12](https://github.com/tendermint/tendermint/releases/tag/v0.34.12).
+* (cli) [\#9717](https://github.com/cosmos/cosmos-sdk/pull/9717) Added CLI flag `--output json/text` to `tx` cli commands.
+
+### Bug Fixes
+
+* [\#9766](https://github.com/cosmos/cosmos-sdk/pull/9766) Fix hardcoded ledger signing algorithm on `keys add` command.
+
+## [v0.42.7](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.7) - 2021-07-09
+
+### Improvements
+
+* (baseapp) [\#9578](https://github.com/cosmos/cosmos-sdk/pull/9578) Return `Baseapp`'s `trace` value for logging error stack traces.
+* (cli) [\#9593](https://github.com/cosmos/cosmos-sdk/pull/9593) Check if chain-id is blank before verifying signatures in multisign and error.
+
+### Bug Fixes
+
+* (x/ibc) [\#9640](https://github.com/cosmos/cosmos-sdk/pull/9640) Fix IBC Transfer Ack Success event as it was initially emitting opposite value.
+* [\#9645](https://github.com/cosmos/cosmos-sdk/pull/9645) Use correct Prometheus format for metric labels.
+* [\#9299](https://github.com/cosmos/cosmos-sdk/pull/9299) Fix `[appd] keys parse cosmos1...` freezing.
+* (keyring) [\#9563](https://github.com/cosmos/cosmos-sdk/pull/9563) fix keyring kwallet backend when using with empty wallet.
+* (x/capability) [\#9392](https://github.com/cosmos/cosmos-sdk/pull/9392) initialization fix, which fixes the consensus error when using statesync.
+
+
+## [v0.42.6](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.6) - 2021-06-18
+
+### Improvements
+
+* [\#9428](https://github.com/cosmos/cosmos-sdk/pull/9428) Optimize bank InitGenesis. Added `k.initBalances`.
+* [\#9429](https://github.com/cosmos/cosmos-sdk/pull/9429) Add `cosmos_sdk_version` to node_info
+* [\#9541](https://github.com/cosmos/cosmos-sdk/pull/9541) Bump tendermint dependency to v0.34.11.
+
+### Bug Fixes
+
+* [\#9385](https://github.com/cosmos/cosmos-sdk/pull/9385) Fix IBC `query ibc client header` cli command. Support historical queries for query header/node-state commands.
+* [\#9401](https://github.com/cosmos/cosmos-sdk/pull/9401) Fixes incorrect export of IBC identifier sequences. Previously, the next identifier sequence for clients/connections/channels was not set during genesis export. This resulted in the next identifiers being generated on the new chain to reuse old identifiers (the sequences began again from 0).
+* [\#9408](https://github.com/cosmos/cosmos-sdk/pull/9408) Update simapp to use correct default broadcast mode.
+* [\#9513](https://github.com/cosmos/cosmos-sdk/pull/9513) Fixes testnet CLI command. Testnet now updates the supply in genesis. Previously, when using add-genesis-account and testnet together, inconsistent genesis files would be produced, as only add-genesis-account was updating the supply.
+* (x/gov) [\#8813](https://github.com/cosmos/cosmos-sdk/pull/8813) fix `GET /cosmos/gov/v1beta1/proposals/{proposal_id}/deposits` to include initial deposit
+
+### Features
+
+* [\#9383](https://github.com/cosmos/cosmos-sdk/pull/9383) New CLI command `query ibc-transfer escrow-address <port> <channel id>` to get the escrow address for a channel; can be used to then query balance of escrowed tokens
+* (baseapp, types) [#\9390](https://github.com/cosmos/cosmos-sdk/pull/9390) Add current block header hash to `Context`
+* (store) [\#9403](https://github.com/cosmos/cosmos-sdk/pull/9403) Add `RefundGas` function to `GasMeter` interface
+
+## [v0.42.5](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.5) - 2021-05-18
+
+### Bug Fixes
+
+* [\#9514](https://github.com/cosmos/cosmos-sdk/issues/9514) Fix panic when retrieving the `BlockGasMeter` on `(Re)CheckTx` mode.
+* [\#9235](https://github.com/cosmos/cosmos-sdk/pull/9235) CreateMembershipProof/CreateNonMembershipProof now returns an error
+if input key is empty, or input data contains empty key.
+* [\#9108](https://github.com/cosmos/cosmos-sdk/pull/9108) Fixed the bug with querying multisig account, which is not showing threshold and public_keys.
+* [\#9345](https://github.com/cosmos/cosmos-sdk/pull/9345) Fix ARM support.
+* [\#9040](https://github.com/cosmos/cosmos-sdk/pull/9040) Fix ENV variables binding to CLI flags for client config.
+
+### Features
+
+* [\#8953](https://github.com/cosmos/cosmos-sdk/pull/8953) Add the `config` CLI subcommand back to the SDK, which saves client-side configuration in a `client.toml` file.
+
+
+## [v0.42.4](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.4) - 2021-04-08
+
+### Client Breaking Changes
+
+* [\#9026](https://github.com/cosmos/cosmos-sdk/pull/9026) By default, the `tx sign` and `tx sign-batch` CLI commands use SIGN_MODE_DIRECT to sign transactions for local pubkeys. For multisigs and ledger keys, the default LEGACY_AMINO_JSON is used.
+
+### Bug Fixes
+
+* (gRPC) [\#9015](https://github.com/cosmos/cosmos-sdk/pull/9015) Fix invalid status code when accessing gRPC endpoints.
+* [\#9026](https://github.com/cosmos/cosmos-sdk/pull/9026) Fixed the bug that caused the `gentx` command to fail for Ledger keys.
+
+### Improvements
+
+* [\#9081](https://github.com/cosmos/cosmos-sdk/pull/9081) Upgrade Tendermint to v0.34.9 that includes a security issue fix for Tendermint light clients.
+
+## [v0.42.3](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.3) - 2021-03-24
+
+This release fixes a security vulnerability identified in x/bank.
+
+## [v0.42.2](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.2) - 2021-03-19
+
+### Improvements
+
+* (grpc) [\#8815](https://github.com/cosmos/cosmos-sdk/pull/8815) Add orderBy parameter to `TxsByEvents` endpoint.
+* (cli) [\#8826](https://github.com/cosmos/cosmos-sdk/pull/8826) Add trust to macOS Keychain for caller app by default.
+* (store) [\#8811](https://github.com/cosmos/cosmos-sdk/pull/8811) store/cachekv: use typed types/kv.List instead of container/list.List
+
+### Bug Fixes
+
+* (crypto) [\#8841](https://github.com/cosmos/cosmos-sdk/pull/8841) Fix legacy multisig amino marshaling, allowing migrations to work between v0.39 and v0.40+.
+* (cli) [\#8873](https://github.com/cosmos/cosmos-sdk/pull/8873) add --output-document to multisign-batch.
+
 ## [v0.42.1](https://github.com/cosmos/cosmos-sdk/releases/tag/v0.42.1) - 2021-03-10
 
 This release fixes security vulnerability identified in the simapp.
