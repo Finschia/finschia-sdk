@@ -2,9 +2,9 @@ package keeper
 
 import (
 	"context"
+	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

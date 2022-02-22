@@ -127,7 +127,7 @@ func TestOnConnectChannel(t *testing.T) {
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
 			expContractGas: myContractGas + 10,
-			contractResp:   &wasmvmtypes.IBCBasicResponse{
+			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
 			expEventTypes: []string{types.WasmModuleEventType},
@@ -240,7 +240,7 @@ func TestOnCloseChannel(t *testing.T) {
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
 			expContractGas: myContractGas + 10,
-			contractResp:   &wasmvmtypes.IBCBasicResponse{
+			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
 			expEventTypes: []string{types.WasmModuleEventType},
@@ -513,7 +513,7 @@ func TestOnAckPacket(t *testing.T) {
 		"emit contract events on success": {
 			contractAddr:   example.Contract,
 			expContractGas: myContractGas + 10,
-			contractResp:   &wasmvmtypes.IBCBasicResponse{
+			contractResp: &wasmvmtypes.IBCBasicResponse{
 				Attributes: []wasmvmtypes.EventAttribute{{Key: "Foo", Value: "Bar"}},
 			},
 			expEventTypes: []string{types.WasmModuleEventType},
@@ -612,7 +612,7 @@ func TestOnTimeoutPacket(t *testing.T) {
 			expErr:      true,
 		},
 		"dispatch contract messages on success": {
-			contractAddr: example.Contract,
+			contractAddr:   example.Contract,
 			expContractGas: myContractGas,
 
 			contractResp: &wasmvmtypes.IBCBasicResponse{

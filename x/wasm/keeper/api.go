@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/line/lbm-sdk/types"
 	types "github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 type cosmwasmAPIImpl struct {

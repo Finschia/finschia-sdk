@@ -4,21 +4,21 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
+	"github.com/golang/protobuf/proto"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	ibctransfertypes "github.com/line/lbm-sdk/x/ibc/applications/transfer/types"
 	clienttypes "github.com/line/lbm-sdk/x/ibc/core/02-client/types"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
-	"github.com/golang/protobuf/proto"
+	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 	sdk "github.com/line/lbm-sdk/types"
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	distributiontypes "github.com/line/lbm-sdk/x/distribution/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
+	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/require"
 )
 

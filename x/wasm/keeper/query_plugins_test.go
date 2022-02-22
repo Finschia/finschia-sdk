@@ -1,8 +1,8 @@
 package keeper
 
 import (
-	"testing"
 	"encoding/json"
+	"testing"
 
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
