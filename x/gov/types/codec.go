@@ -2,6 +2,7 @@ package types
 
 import (
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
@@ -60,4 +61,8 @@ var (
 func init() {
 	RegisterLegacyAminoCodec(amino)
 	cryptocodec.RegisterCrypto(amino)
+
+	// Register all Amino interfaces and concrete types on the global Amino codec so that this can later be
+	// used to properly serialize x/authz MsgExec instances
+	RegisterLegacyAminoCodec(legacy.Cdc)
 }

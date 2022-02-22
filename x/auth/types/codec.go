@@ -1,12 +1,21 @@
 package types
 
 import (
+	//<<<<<<< HEAD
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
+	//=======
+	//	"github.com/cosmos/cosmos-sdk/codec"
+	//	"github.com/cosmos/cosmos-sdk/codec/legacy"
+	//	"github.com/cosmos/cosmos-sdk/codec/types"
+	//	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	//	"github.com/cosmos/cosmos-sdk/x/auth/migrations/legacytx"
+	//>>>>>>> 81cfc6cc85 (fix: implement Amino serialization for x/authz and x/feegrant (#11224))
 )
 
 // RegisterLegacyAminoCodec registers the account interfaces and concrete types on the
@@ -53,4 +62,8 @@ var (
 func init() {
 	RegisterLegacyAminoCodec(amino)
 	cryptocodec.RegisterCrypto(amino)
+
+	// Register all Amino interfaces and concrete types on the global Amino codec so that this can later be
+	// used to properly serialize x/authz MsgExec instances
+	RegisterLegacyAminoCodec(legacy.Cdc)
 }
