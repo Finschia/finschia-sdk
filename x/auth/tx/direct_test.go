@@ -69,7 +69,8 @@ func TestDirectModeHandler(t *testing.T) {
 	require.Len(t, modeHandler.Modes(), 1)
 
 	signingData := signing.SignerData{
-		ChainID: "test-chain",
+		ChainID:       "test-chain",
+		AccountNumber: 1,
 	}
 
 	signBytes, err := modeHandler.GetSignBytes(signingtypes.SignMode_SIGN_MODE_DIRECT, signingData, txBuilder.GetTx())
@@ -102,6 +103,7 @@ func TestDirectModeHandler(t *testing.T) {
 
 	t.Log("verify GetSignBytes with generating sign bytes by marshaling SignDoc")
 	signDoc := txtypes.SignDoc{
+		AccountNumber: 1,
 		AuthInfoBytes: authInfoBytes,
 		BodyBytes:     bodyBytes,
 		ChainId:       "test-chain",
@@ -147,9 +149,8 @@ func TestDirectModeHandler_nonDIRECT_MODE(t *testing.T) {
 
 type nonProtoTx int
 
-func (npt *nonProtoTx) GetMsgs() []sdk.Msg        { return nil }
-func (npt *nonProtoTx) ValidateBasic() error      { return nil }
-func (npt *nonProtoTx) GetSigBlockHeight() uint64 { return 0 }
+func (npt *nonProtoTx) GetMsgs() []sdk.Msg   { return nil }
+func (npt *nonProtoTx) ValidateBasic() error { return nil }
 
 var _ sdk.Tx = (*nonProtoTx)(nil)
 

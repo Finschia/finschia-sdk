@@ -15,6 +15,7 @@ var (
 // TestAccount represents a client Account that can be used in unit tests
 type TestAccount struct {
 	Address sdk.AccAddress
+	Num     uint64
 	Seq     uint64
 }
 
@@ -26,6 +27,11 @@ func (t TestAccount) GetAddress() sdk.AccAddress {
 // GetPubKey implements client Account.GetPubKey
 func (t TestAccount) GetPubKey() cryptotypes.PubKey {
 	return nil
+}
+
+// GetAccountNumber implements client Account.GetAccountNumber
+func (t TestAccount) GetAccountNumber() uint64 {
+	return t.Num
 }
 
 // GetSequence implements client Account.GetSequence
@@ -48,10 +54,6 @@ func (t TestAccountRetriever) GetAccount(_ Context, addr sdk.AccAddress) (Accoun
 	return acc, nil
 }
 
-func (t TestAccountRetriever) GetLatestHeight(_ Context) (uint64, error) {
-	return 0, nil
-}
-
 // GetAccountWithHeight implements AccountRetriever.GetAccountWithHeight
 func (t TestAccountRetriever) GetAccountWithHeight(clientCtx Context, addr sdk.AccAddress) (Account, int64, error) {
 	acc, err := t.GetAccount(clientCtx, addr)
@@ -71,11 +73,11 @@ func (t TestAccountRetriever) EnsureExists(_ Context, addr sdk.AccAddress) error
 	return nil
 }
 
-// GetAccountSequence implements AccountRetriever.GetAccountSequence
-func (t TestAccountRetriever) GetAccountSequence(_ Context, addr sdk.AccAddress) (accSeq uint64, err error) {
+// GetAccountNumberSequence implements AccountRetriever.GetAccountNumberSequence
+func (t TestAccountRetriever) GetAccountNumberSequence(_ Context, addr sdk.AccAddress) (accNum uint64, accSeq uint64, err error) {
 	acc, ok := t.Accounts[addr.String()]
 	if !ok {
-		return 0, fmt.Errorf("account %s not found", addr)
+		return 0, 0, fmt.Errorf("account %s not found", addr)
 	}
-	return acc.Seq, nil
+	return acc.Num, acc.Seq, nil
 }
