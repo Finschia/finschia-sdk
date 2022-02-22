@@ -7,12 +7,13 @@ import (
 	"os"
 	"testing"
 
-	"github.com/line/lbm-sdk/store/cache"
 	abci "github.com/line/ostracon/abci/types"
 	"github.com/line/ostracon/libs/log"
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/line/tm-db/v2/memdb"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/lbm-sdk/store/cache"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/simapp/helpers"

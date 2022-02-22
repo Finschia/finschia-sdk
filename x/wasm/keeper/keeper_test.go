@@ -9,6 +9,12 @@ import (
 	"testing"
 	"time"
 
+	tmproto "github.com/line/ostracon/proto/ostracon/types"
+	wasmvm "github.com/line/wasmvm"
+	wasmvmtypes "github.com/line/wasmvm/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	stypes "github.com/line/lbm-sdk/store/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -16,11 +22,6 @@ import (
 	banktypes "github.com/line/lbm-sdk/x/bank/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	tmproto "github.com/line/ostracon/proto/ostracon/types"
-	wasmvm "github.com/line/wasmvm"
-	wasmvmtypes "github.com/line/wasmvm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 // When migrated to go 1.16, embed package should be used instead.

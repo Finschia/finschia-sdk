@@ -5,9 +5,10 @@ import (
 	"encoding/binary"
 	"runtime/debug"
 
-	"github.com/line/lbm-sdk/codec"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+
+	"github.com/line/lbm-sdk/codec"
 
 	"github.com/line/lbm-sdk/store/prefix"
 	sdk "github.com/line/lbm-sdk/types"

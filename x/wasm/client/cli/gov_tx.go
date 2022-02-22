@@ -3,14 +3,15 @@ package cli
 import (
 	"fmt"
 
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/tx"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/gov/client/cli"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
 )
 
 func ProposalStoreCodeCmd() *cobra.Command {

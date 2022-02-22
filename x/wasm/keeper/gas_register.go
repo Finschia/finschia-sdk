@@ -1,8 +1,9 @@
 package keeper
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 const (

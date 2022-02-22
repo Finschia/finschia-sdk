@@ -6,13 +6,14 @@ import (
 	"math"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
-	"github.com/line/lbm-sdk/x/wasm/types"
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 func TestOnOpenChannel(t *testing.T) {

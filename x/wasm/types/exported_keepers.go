@@ -1,9 +1,10 @@
 package types
 
 import (
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	sdk "github.com/line/lbm-sdk/types"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 // ViewKeeper provides read only operations

@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"testing"
 
+	wasmvmtypes "github.com/line/wasmvm/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestIBCQuerier(t *testing.T) {

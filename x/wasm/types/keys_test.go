@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"testing"
 
-	sdk "github.com/line/lbm-sdk/types"
 	"github.com/stretchr/testify/assert"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 func TestGetContractByCodeIDSecondaryIndexPrefix(t *testing.T) {

@@ -5,15 +5,16 @@ import (
 	"testing"
 	"time"
 
+	"github.com/line/ostracon/libs/rand"
+	wasmvmtypes "github.com/line/wasmvm/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/codec"
 	"github.com/line/lbm-sdk/codec/types"
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
-	"github.com/line/ostracon/libs/rand"
-	wasmvmtypes "github.com/line/wasmvm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestContractInfoValidateBasic(t *testing.T) {

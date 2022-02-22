@@ -4,13 +4,14 @@ import (
 	"errors"
 	"fmt"
 
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 // msgEncoder is an extension point to customize encodings

@@ -3,8 +3,9 @@ package wasmtesting
 import (
 	"errors"
 
-	sdk "github.com/line/lbm-sdk/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 type MockMessageHandler struct {

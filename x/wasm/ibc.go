@@ -3,6 +3,8 @@ package wasm
 import (
 	"math"
 
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	capabilitytypes "github.com/line/lbm-sdk/x/capability/types"
@@ -10,7 +12,6 @@ import (
 	porttypes "github.com/line/lbm-sdk/x/ibc/core/05-port/types"
 	host "github.com/line/lbm-sdk/x/ibc/core/24-host"
 	wasmTypes "github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 var _ porttypes.IBCModule = IBCHandler{}

@@ -5,10 +5,11 @@ import (
 	"reflect"
 	"strconv"
 
+	abci "github.com/line/ostracon/abci/types"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	abci "github.com/line/ostracon/abci/types"
 )
 
 const (

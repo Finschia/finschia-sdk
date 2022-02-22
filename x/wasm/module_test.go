@@ -7,6 +7,12 @@ import (
 	"testing"
 
 	"github.com/dvsekhvalnov/jose2go/base64url"
+	abci "github.com/line/ostracon/abci/types"
+	"github.com/line/ostracon/crypto"
+	"github.com/line/ostracon/crypto/ed25519"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/module"
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
@@ -14,11 +20,6 @@ import (
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	abci "github.com/line/ostracon/abci/types"
-	"github.com/line/ostracon/crypto"
-	"github.com/line/ostracon/crypto/ed25519"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type testData struct {

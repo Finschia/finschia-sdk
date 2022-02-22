@@ -8,6 +8,13 @@ import (
 	"path"
 	"testing"
 
+	"github.com/line/ostracon/libs/log"
+	octypes "github.com/line/ostracon/types"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/crypto/hd"
@@ -22,12 +29,6 @@ import (
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/line/ostracon/libs/log"
-	octypes "github.com/line/ostracon/types"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 var wasmIdent = []byte("\x00\x61\x73\x6D")

@@ -10,8 +10,8 @@ import (
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	localhoctypes "github.com/line/lbm-sdk/x/ibc/light-clients/09-localhost/types"
+	ibctmtypes "github.com/line/lbm-sdk/x/ibc/light-clients/99-ostracon/types"
 	ibctesting "github.com/line/lbm-sdk/x/ibc/testing"
 	ibctestingmock "github.com/line/lbm-sdk/x/ibc/testing/mock"
 )

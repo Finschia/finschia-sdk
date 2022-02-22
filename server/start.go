@@ -8,8 +8,6 @@ import (
 	"runtime/pprof"
 	"time"
 
-	"github.com/line/lbm-sdk/store/cache"
-	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/ostracon/abci/server"
 	ostcmd "github.com/line/ostracon/cmd/ostracon/commands"
 	ostos "github.com/line/ostracon/libs/os"
@@ -20,6 +18,9 @@ import (
 	"github.com/line/ostracon/rpc/client/local"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+
+	"github.com/line/lbm-sdk/store/cache"
+	"github.com/line/lbm-sdk/store/iavl"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"

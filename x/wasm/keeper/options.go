@@ -3,8 +3,9 @@ package keeper
 import (
 	"fmt"
 
-	"github.com/line/lbm-sdk/x/wasm/types"
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 type optsFn func(*Keeper)
@@ -106,7 +107,7 @@ func WithVMMetrics(provider MetricsProvider) Option {
 }
 
 // WithGasRegister set a new gas register to implement custom gas costs.
-// When the "gas multiplier" for wasmvm gas convertion is modified inside the new register,
+// When the "gas multiplier" for wasmvm gas conversion is modified inside the new register,
 // make sure to also use `WithApiCosts` option for non default values
 func WithGasRegister(x WasmGasRegister) Option {
 	return optsFn(func(k *Keeper) {

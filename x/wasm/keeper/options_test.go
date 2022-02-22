@@ -3,6 +3,9 @@ package keeper
 import (
 	"testing"
 
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	authkeeper "github.com/line/lbm-sdk/x/auth/keeper"
 	bankpluskeeper "github.com/line/lbm-sdk/x/bankplus/keeper"
 	distributionkeeper "github.com/line/lbm-sdk/x/distribution/keeper"
@@ -10,8 +13,6 @@ import (
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestConstructorOptions(t *testing.T) {

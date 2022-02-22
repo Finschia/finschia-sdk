@@ -53,7 +53,7 @@ func TestProposalHandler(t *testing.T) {
 	keeper := app.ConsortiumKeeper
 	params_on := newParams(true)
 	keeper.SetParams(ctx, params_on)
-	
+
 	handler := consortium.NewProposalHandler(keeper)
 
 	// test adding creation allowed validators

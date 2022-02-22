@@ -1,9 +1,11 @@
 package wasm
 
 import (
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // ensure store code returns the expected response

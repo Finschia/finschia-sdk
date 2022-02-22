@@ -5,11 +5,12 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/jsonpb"
+	"github.com/pkg/errors"
+	"gopkg.in/yaml.v2"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	paramtypes "github.com/line/lbm-sdk/x/params/types"
-	"github.com/pkg/errors"
-	"gopkg.in/yaml.v2"
 )
 
 const (

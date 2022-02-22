@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/lbm-sdk/x/feegrant/types"
 	tmcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"

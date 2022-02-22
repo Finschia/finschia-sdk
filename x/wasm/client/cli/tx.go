@@ -6,6 +6,9 @@ import (
 	"io/ioutil"
 	"strconv"
 
+	"github.com/spf13/cobra"
+	flag "github.com/spf13/pflag"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
@@ -13,8 +16,6 @@ import (
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	wasmUtils "github.com/line/lbm-sdk/x/wasm/client/utils"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/spf13/cobra"
-	flag "github.com/spf13/pflag"
 )
 
 const (

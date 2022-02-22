@@ -7,6 +7,10 @@ import (
 
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/types"
 
+	wasmvmtypes "github.com/line/wasmvm/types"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	sdk "github.com/line/lbm-sdk/types"
@@ -18,9 +22,6 @@ import (
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	"github.com/line/lbm-sdk/x/staking/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 type StakingInitMsg struct {
@@ -88,7 +89,7 @@ type InvestmentResponse struct {
 	Validator    sdk.ValAddress `json:"validator"`
 	ExitTax      sdk.Dec        `json:"exit_tax"`
 	// MinWithdrawl is uint128 encoded as a string (use sdk.Int?)
-	MinWithdrawl string `json:"min_withdrawl"`
+	MinWithdrawl string `json:"min_withdrawal"`
 }
 
 func TestInitializeStaking(t *testing.T) {

@@ -4,9 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/line/lbm-sdk/x/feegrant/types"
 	tmproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"

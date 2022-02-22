@@ -10,8 +10,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	sdk "github.com/line/lbm-sdk/types"
 	abci "github.com/line/ostracon/abci/types"
+
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 type Recurse struct {

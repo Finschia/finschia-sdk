@@ -3,6 +3,9 @@ package keeper
 import (
 	"encoding/json"
 	"fmt"
+
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -14,7 +17,6 @@ import (
 	channeltypes "github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 type BankEncoder func(sender sdk.AccAddress, msg *wasmvmtypes.BankMsg) ([]sdk.Msg, error)

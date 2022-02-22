@@ -8,6 +8,8 @@ import (
 
 	"github.com/line/tm-db/v2/memdb"
 
+	abci "github.com/line/ostracon/abci/types"
+
 	"github.com/line/lbm-sdk/simapp"
 	"github.com/line/lbm-sdk/store/iavl"
 	"github.com/line/lbm-sdk/store/rootmulti"
@@ -17,7 +19,6 @@ import (
 	"github.com/line/lbm-sdk/x/ibc/core/04-channel/types"
 	commitmenttypes "github.com/line/lbm-sdk/x/ibc/core/23-commitment/types"
 	"github.com/line/lbm-sdk/x/ibc/core/exported"
-	abci "github.com/line/ostracon/abci/types"
 )
 
 const (

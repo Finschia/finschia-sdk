@@ -7,9 +7,6 @@ import (
 	"path/filepath"
 
 	"github.com/gorilla/mux"
-	"github.com/line/lbm-sdk/x/feegrant"
-	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
-	feegranttypes "github.com/line/lbm-sdk/x/feegrant/types"
 	abci "github.com/line/ostracon/abci/types"
 	ostjson "github.com/line/ostracon/libs/json"
 	"github.com/line/ostracon/libs/log"
@@ -18,6 +15,10 @@ import (
 	tmdb "github.com/line/tm-db/v2"
 	"github.com/rakyll/statik/fs"
 	"github.com/spf13/cast"
+
+	"github.com/line/lbm-sdk/x/feegrant"
+	feegrantkeeper "github.com/line/lbm-sdk/x/feegrant/keeper"
+	feegranttypes "github.com/line/lbm-sdk/x/feegrant/types"
 
 	"github.com/line/lbm-sdk/baseapp"
 	"github.com/line/lbm-sdk/client"

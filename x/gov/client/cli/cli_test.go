@@ -9,8 +9,9 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	"github.com/line/lbm-sdk/testutil"
 	"github.com/stretchr/testify/suite"
+
+	"github.com/line/lbm-sdk/testutil"
 
 	ostcli "github.com/line/ostracon/libs/cli"
 

@@ -2,11 +2,13 @@ package keeper
 
 import (
 	"context"
-	sdk "github.com/line/lbm-sdk/types"
-	"github.com/line/lbm-sdk/x/wasm/types"
+	"testing"
+
 	wasmvmtypes "github.com/line/wasmvm/types"
 	"github.com/stretchr/testify/assert"
-	"testing"
+
+	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/x/wasm/types"
 )
 
 func TestHasWasmModuleEvent(t *testing.T) {

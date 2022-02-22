@@ -3,12 +3,13 @@ package cli
 import (
 	"strconv"
 
+	"github.com/spf13/cobra"
+
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
 	"github.com/line/lbm-sdk/client/tx"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/spf13/cobra"
 )
 
 // MigrateContractCmd will migrate a contract to a new code version

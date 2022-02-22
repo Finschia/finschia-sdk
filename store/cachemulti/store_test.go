@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/line/lbm-sdk/store/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/line/lbm-sdk/store/types"
 )
 
 func TestStoreGetKVStore(t *testing.T) {

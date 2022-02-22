@@ -8,7 +8,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+
 	"github.com/line/lbm-sdk/x/wasm/keeper"
+
+	"github.com/line/ostracon/crypto"
+	octypes "github.com/line/ostracon/types"
+	"github.com/spf13/cobra"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -20,9 +25,6 @@ import (
 	"github.com/line/lbm-sdk/x/genutil"
 	genutiltypes "github.com/line/lbm-sdk/x/genutil/types"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	"github.com/line/ostracon/crypto"
-	octypes "github.com/line/ostracon/types"
-	"github.com/spf13/cobra"
 )
 
 // GenesisReader reads genesis data. Extension point for custom genesis state readers.

@@ -7,10 +7,11 @@ import (
 
 	"github.com/gogo/protobuf/jsonpb"
 	"github.com/gogo/protobuf/proto"
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	codectypes "github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
-	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 const (

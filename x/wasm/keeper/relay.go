@@ -3,11 +3,12 @@ package keeper
 import (
 	"time"
 
+	wasmvmtypes "github.com/line/wasmvm/types"
+
 	"github.com/line/lbm-sdk/telemetry"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvmtypes "github.com/line/wasmvm/types"
 )
 
 var _ types.IBCContractKeeper = (*Keeper)(nil)

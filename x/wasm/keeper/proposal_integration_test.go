@@ -8,14 +8,15 @@ import (
 	"io/ioutil"
 	"testing"
 
+	wasmvm "github.com/line/wasmvm"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
 	sdk "github.com/line/lbm-sdk/types"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
 	"github.com/line/lbm-sdk/x/params/types/proposal"
 	"github.com/line/lbm-sdk/x/wasm/keeper/wasmtesting"
 	"github.com/line/lbm-sdk/x/wasm/types"
-	wasmvm "github.com/line/wasmvm"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
 func TestStoreCodeProposal(t *testing.T) {

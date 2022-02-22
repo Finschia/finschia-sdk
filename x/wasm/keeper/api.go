@@ -3,10 +3,11 @@ package keeper
 import (
 	"fmt"
 
-	sdk "github.com/line/lbm-sdk/types"
-	types "github.com/line/lbm-sdk/x/wasm/types"
 	wasmvm "github.com/line/wasmvm"
 	wasmvmtypes "github.com/line/wasmvm/types"
+
+	sdk "github.com/line/lbm-sdk/types"
+	types "github.com/line/lbm-sdk/x/wasm/types"
 )
 
 type cosmwasmAPIImpl struct {

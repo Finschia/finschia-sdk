@@ -10,12 +10,13 @@ import (
 	"testing"
 	"time"
 
-	ed255192 "github.com/line/lbm-sdk/crypto/keys/ed25519"
 	abci_server "github.com/line/ostracon/abci/server"
 	"github.com/line/ostracon/libs/cli"
 	"github.com/line/ostracon/libs/log"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
+
+	ed255192 "github.com/line/lbm-sdk/crypto/keys/ed25519"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/codec"

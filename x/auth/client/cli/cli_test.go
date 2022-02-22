@@ -13,10 +13,11 @@ import (
 	"testing"
 
 	"github.com/gogo/protobuf/proto"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
+
+	sdkerrors "github.com/line/lbm-sdk/types/errors"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
