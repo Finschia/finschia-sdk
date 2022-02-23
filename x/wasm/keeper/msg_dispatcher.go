@@ -1,10 +1,13 @@
 package keeper
 
 import (
+	"fmt"
+
 	abci "github.com/line/ostracon/abci/types"
 	wasmvmtypes "github.com/line/wasmvm/types"
 
 	sdk "github.com/line/lbm-sdk/types"
+	"github.com/line/lbm-sdk/types/errors"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/wasm/types"
 )
@@ -131,8 +134,10 @@ func (d MessageDispatcher) DispatchSubmessages(ctx sdk.Context, contractAddr sdk
 				},
 			}
 		} else {
+			// Issue #759 - we don't return error string for worries of non-determinism
+			ctx.Logger().Info("Redacting submessage error", "error", err.Error())
 			result = wasmvmtypes.SubcallResult{
-				Err: err.Error(),
+				Err: redactError(err),
 			}
 		}
 
@@ -153,6 +158,11 @@ func (d MessageDispatcher) DispatchSubmessages(ctx sdk.Context, contractAddr sdk
 		}
 	}
 	return rsp, nil
+}
+
+func redactError(err error) string {
+	codespace, code, _ := errors.ABCIInfo(err, false)
+	return fmt.Sprintf("Error: %s/%d", codespace, code)
 }
 
 func filterEvents(events []sdk.Event) []sdk.Event {
