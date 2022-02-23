@@ -4,6 +4,7 @@ import (
 	"github.com/line/lbm-sdk/codec"
 	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	cryptotypes "github.com/line/lbm-sdk/crypto/types"
+	sdk "github.com/line/lbm-sdk/types"
 )
 
 // Cdc defines a global generic sealed Amino codec to be used throughout sdk. It
@@ -15,6 +16,7 @@ var Cdc = codec.NewLegacyAmino()
 func init() {
 	cryptocodec.RegisterCrypto(Cdc)
 	codec.RegisterEvidences(Cdc)
+	sdk.RegisterLegacyAminoCodec(Cdc)
 }
 
 // PrivKeyFromBytes unmarshals private key bytes and returns a PrivKey

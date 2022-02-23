@@ -2,8 +2,8 @@ package types
 
 import (
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
-	cryptocodec "github.com/line/lbm-sdk/crypto/codec"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
 	govtypes "github.com/line/lbm-sdk/x/gov/types"
@@ -61,16 +61,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 
-var (
-	amino = codec.NewLegacyAmino()
-
-	// ModuleCdc references the global x/wasm module codec.
-
-	ModuleCdc = codec.NewAminoCodec(amino)
-)
-
 func init() {
-	RegisterLegacyAminoCodec(amino)
-	cryptocodec.RegisterCrypto(amino)
-	amino.Seal()
+	RegisterLegacyAminoCodec(legacy.Cdc)
 }

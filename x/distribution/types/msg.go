@@ -1,6 +1,7 @@
 package types
 
 import (
+	"github.com/line/lbm-sdk/codec/legacy"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 )
@@ -37,7 +38,7 @@ func (msg MsgSetWithdrawAddress) GetSigners() []sdk.AccAddress {
 
 // get the bytes for the message signer to sign on
 func (msg MsgSetWithdrawAddress) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
+	bz := legacy.Cdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -74,7 +75,7 @@ func (msg MsgWithdrawDelegatorReward) GetSigners() []sdk.AccAddress {
 
 // get the bytes for the message signer to sign on
 func (msg MsgWithdrawDelegatorReward) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
+	bz := legacy.Cdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -109,7 +110,7 @@ func (msg MsgWithdrawValidatorCommission) GetSigners() []sdk.AccAddress {
 
 // get the bytes for the message signer to sign on
 func (msg MsgWithdrawValidatorCommission) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
+	bz := legacy.Cdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 
@@ -149,7 +150,7 @@ func (msg MsgFundCommunityPool) GetSigners() []sdk.AccAddress {
 // GetSignBytes returns the raw bytes for a MsgFundCommunityPool message that
 // the expected signer needs to sign.
 func (msg MsgFundCommunityPool) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(&msg)
+	bz := legacy.Cdc.MustMarshalJSON(&msg)
 	return sdk.MustSortJSON(bz)
 }
 

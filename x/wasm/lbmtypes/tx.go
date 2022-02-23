@@ -1,6 +1,7 @@
 package lbmtypes
 
 import (
+	"github.com/line/lbm-sdk/codec/legacy"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	wasmtypes "github.com/line/lbm-sdk/x/wasm/types"
@@ -50,7 +51,7 @@ func (msg MsgStoreCodeAndInstantiateContract) ValidateBasic() error {
 }
 
 func (msg MsgStoreCodeAndInstantiateContract) GetSignBytes() []byte {
-	return sdk.MustSortJSON(wasmtypes.ModuleCdc.MustMarshalJSON(&msg))
+	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&msg))
 }
 
 func (msg MsgStoreCodeAndInstantiateContract) GetSigners() []sdk.AccAddress {

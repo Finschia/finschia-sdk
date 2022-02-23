@@ -5,6 +5,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
@@ -62,7 +63,7 @@ func (m MsgSubmitEvidence) ValidateBasic() error {
 // GetSignBytes returns the raw bytes a signer is expected to sign when submitting
 // a MsgSubmitEvidence message.
 func (m MsgSubmitEvidence) GetSignBytes() []byte {
-	return sdk.MustSortJSON(ModuleCdc.MustMarshalJSON(&m))
+	return sdk.MustSortJSON(legacy.Cdc.MustMarshalJSON(&m))
 }
 
 // GetSigners returns the single expected signer for a MsgSubmitEvidence.

@@ -10,6 +10,7 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/require"
 
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/simapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
@@ -113,7 +114,8 @@ func TestSimulateMsgSubmitProposal(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgSubmitProposal
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, "link1p8wcgrjr4pjju90xg6u9cgq55dxwq8j7fmx8x8", msg.Proposer)
@@ -156,7 +158,8 @@ func TestSimulateMsgDeposit(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgDeposit
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, uint64(1), msg.ProposalId)
@@ -198,7 +201,8 @@ func TestSimulateMsgVote(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgVote
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, uint64(1), msg.ProposalId)
@@ -240,7 +244,8 @@ func TestSimulateMsgVoteWeighted(t *testing.T) {
 	require.NoError(t, err)
 
 	var msg types.MsgVoteWeighted
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	err = legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	require.NoError(t, err)
 
 	require.True(t, operationMsg.OK)
 	require.Equal(t, uint64(1), msg.ProposalId)

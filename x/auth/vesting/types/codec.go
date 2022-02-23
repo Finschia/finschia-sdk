@@ -2,6 +2,7 @@ package types
 
 import (
 	"github.com/line/lbm-sdk/codec"
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/codec/types"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/types/msgservice"
@@ -58,9 +59,6 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
 
-var amino = codec.NewLegacyAmino()
-
 func init() {
-	RegisterLegacyAminoCodec(amino)
-	amino.Seal()
+	RegisterLegacyAminoCodec(legacy.Cdc)
 }

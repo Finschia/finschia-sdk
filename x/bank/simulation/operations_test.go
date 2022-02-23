@@ -8,6 +8,7 @@ import (
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	"github.com/stretchr/testify/suite"
 
+	"github.com/line/lbm-sdk/codec/legacy"
 	"github.com/line/lbm-sdk/simapp"
 	simappparams "github.com/line/lbm-sdk/simapp/params"
 	sdk "github.com/line/lbm-sdk/types"
@@ -79,7 +80,7 @@ func (suite *SimTestSuite) TestSimulateMsgSend() {
 	suite.Require().NoError(err)
 
 	var msg types.MsgSend
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	suite.Require().True(operationMsg.OK)
 	suite.Require().Equal("65337742stake", msg.Amount.String())
@@ -108,7 +109,7 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSend() {
 	require.NoError(err)
 
 	var msg types.MsgMultiSend
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	require.True(operationMsg.OK)
 	require.Len(msg.Inputs, 3)
@@ -146,7 +147,7 @@ func (suite *SimTestSuite) TestSimulateModuleAccountMsgSend() {
 	suite.Require().NoError(err)
 
 	var msg types.MsgSend
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	suite.Require().True(operationMsg.OK)
 	suite.Require().Empty(operationMsg.Comment)
@@ -176,7 +177,7 @@ func (suite *SimTestSuite) TestSimulateMsgMultiSendToModuleAccount() {
 	suite.Require().NoError(err)
 
 	var msg types.MsgMultiSend
-	types.ModuleCdc.UnmarshalJSON(operationMsg.Msg, &msg)
+	legacy.Cdc.UnmarshalJSON(operationMsg.Msg, &msg)
 
 	suite.Require().True(operationMsg.OK) // sending tokens to a module account should fail
 	suite.Require().Empty(operationMsg.Comment)
