@@ -52,13 +52,13 @@ message Pair {
 // Grant defines grant information.
 message Grant {
   // address of the granted account.
-  string grantee  = 1;
+  string grantee = 1;
 
   // class id associated with the token.
   string class_id = 2;
 
   // action on the token class. Must be one of "mint", "burn" and "modify".
-  string action   = 3;
+  string action = 3;
 }
 
 // Approve defines approve information.

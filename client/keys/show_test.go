@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/line/ostracon/libs/cli"
+	ostcli "github.com/line/ostracon/libs/cli"
 
 	"github.com/line/lbm-sdk/client"
 	"github.com/line/lbm-sdk/client/flags"
@@ -93,7 +93,7 @@ func TestShowCmdWithMultisigAccount(t *testing.T) {
 		fmt.Sprintf("--%s=%s", flags.FlagHome, kbHome),
 		fmt.Sprintf("--%s=%s", flags.FlagKeyringBackend, keyring.BackendTest),
 		fmt.Sprintf("--%s=%s", FlagBechPrefix, sdk.PrefixAccount),
-		fmt.Sprintf("--%s=json", cli.OutputFlag),
+		fmt.Sprintf("--%s=json", ostcli.OutputFlag),
 	}
 
 	var res keyring.KeyOutput
@@ -124,7 +124,7 @@ func Test_runShowCmd(t *testing.T) {
 	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid is not a valid name or address: decoding bech32 failed: invalid bech32 string length 7")
 
 	cmd.SetArgs([]string{"invalid1", "invalid2"})
-	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid1 is not a valid name or address: decoding bech32 failed: invalid index of 1")
+	require.EqualError(t, cmd.ExecuteContext(ctx), "invalid1 is not a valid name or address: decoding bech32 failed: invalid separator index 7")
 
 	fakeKeyName1 := "runShowCmd_Key1"
 	fakeKeyName2 := "runShowCmd_Key2"

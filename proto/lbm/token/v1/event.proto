@@ -34,10 +34,10 @@ message EventGrant {
   string class_id = 1;
 
   // address of the granted account.
-  string grantee  = 2;
+  string grantee = 2;
 
   // action on the token class. Must be one of "mint", "burn" and "modify".
-  string action   = 3;
+  string action = 3;
 }
 
 // EventRevoke is emitted on Msg/Revoke
@@ -46,10 +46,10 @@ message EventRevoke {
   string class_id = 1;
 
   // address of the revoked account.
-  string grantee  = 2;
+  string grantee = 2;
 
   // action on the token class. Must be one of "mint", "burn" and "modify".
-  string action   = 3;
+  string action = 3;
 }
 
 // EventMint is emitted on Msg/Mint

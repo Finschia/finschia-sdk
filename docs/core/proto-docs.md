@@ -4830,7 +4830,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Balance` | [QueryBalanceRequest](#lbm.bank.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.bank.v1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/lbm/bank/v1/balances/{address}/{denom}|
+| `Balance` | [QueryBalanceRequest](#lbm.bank.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.bank.v1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/lbm/bank/v1/balances/{address}/by_denom|
 | `AllBalances` | [QueryAllBalancesRequest](#lbm.bank.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.bank.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all coins for a single account. | GET|/lbm/bank/v1/balances/{address}|
 | `TotalSupply` | [QueryTotalSupplyRequest](#lbm.bank.v1.QueryTotalSupplyRequest) | [QueryTotalSupplyResponse](#lbm.bank.v1.QueryTotalSupplyResponse) | TotalSupply queries the total supply of all coins. | GET|/lbm/bank/v1/supply|
 | `SupplyOf` | [QuerySupplyOfRequest](#lbm.bank.v1.QuerySupplyOfRequest) | [QuerySupplyOfResponse](#lbm.bank.v1.QuerySupplyOfResponse) | SupplyOf queries the supply of a single coin. | GET|/lbm/bank/v1/supply/{denom}|
@@ -5135,6 +5135,9 @@ tags are stringified and the log is JSON decoded.
 | `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
 | `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
 | `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
+| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
+
+Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
 
 
 
