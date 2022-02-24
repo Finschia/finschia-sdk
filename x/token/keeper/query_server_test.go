@@ -11,16 +11,16 @@ func (s *KeeperTestSuite) TestQueryTokenBalance() {
 	_, err := s.queryServer.TokenBalance(s.goCtx, nil)
 	s.Require().Error(err)
 
-	testCases := map[string]struct{
-		classId string
-		address sdk.AccAddress
-		valid bool
+	testCases := map[string]struct {
+		classId  string
+		address  sdk.AccAddress
+		valid    bool
 		postTest func(res *token.QueryTokenBalanceResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
 			address: s.vendor,
-			valid: true,
+			valid:   true,
 			postTest: func(res *token.QueryTokenBalanceResponse) {
 				s.Require().Equal(s.balance, res.Amount)
 			},
@@ -28,12 +28,12 @@ func (s *KeeperTestSuite) TestQueryTokenBalance() {
 		"invalid class id": {
 			classId: "invalid",
 			address: s.vendor,
-			valid: false,
+			valid:   false,
 		},
 		"invalid address": {
 			classId: s.classID,
 			address: "invalid",
-			valid: false,
+			valid:   false,
 		},
 	}
 
@@ -60,16 +60,16 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 	_, err := s.queryServer.Supply(s.goCtx, nil)
 	s.Require().Error(err)
 
-	testCases := map[string]struct{
-		classId string
-		reqType string
-		valid bool
+	testCases := map[string]struct {
+		classId  string
+		reqType  string
+		valid    bool
 		postTest func(res *token.QuerySupplyResponse)
 	}{
 		"valid supply request": {
 			classId: s.classID,
 			reqType: "supply",
-			valid: true,
+			valid:   true,
 			postTest: func(res *token.QuerySupplyResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(3)), res.Amount)
 			},
@@ -77,7 +77,7 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 		"valid mint request": {
 			classId: s.classID,
 			reqType: "mint",
-			valid: true,
+			valid:   true,
 			postTest: func(res *token.QuerySupplyResponse) {
 				s.Require().Equal(s.balance.Mul(sdk.NewInt(4)), res.Amount)
 			},
@@ -85,7 +85,7 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 		"valid burn request": {
 			classId: s.classID,
 			reqType: "burn",
-			valid: true,
+			valid:   true,
 			postTest: func(res *token.QuerySupplyResponse) {
 				s.Require().Equal(s.balance, res.Amount)
 			},
@@ -93,12 +93,12 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 		"invalid class id": {
 			classId: "invalid",
 			reqType: "burn",
-			valid: false,
+			valid:   false,
 		},
 		"invalid request": {
 			classId: s.classID,
 			reqType: "invalid",
-			valid: false,
+			valid:   false,
 		},
 	}
 
@@ -106,7 +106,7 @@ func (s *KeeperTestSuite) TestQuerySupply() {
 		s.Run(name, func() {
 			req := &token.QuerySupplyRequest{
 				ClassId: tc.classId,
-				Type: tc.reqType,
+				Type:    tc.reqType,
 			}
 			res, err := s.queryServer.Supply(s.goCtx, req)
 			if !tc.valid {
@@ -125,25 +125,25 @@ func (s *KeeperTestSuite) TestQueryToken() {
 	_, err := s.queryServer.Token(s.goCtx, nil)
 	s.Require().Error(err)
 
-	testCases := map[string]struct{
-		classId string
-		valid bool
+	testCases := map[string]struct {
+		classId  string
+		valid    bool
 		postTest func(res *token.QueryTokenResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
-			valid: true,
+			valid:   true,
 			postTest: func(res *token.QueryTokenResponse) {
 				s.Require().Equal(s.classID, res.Token.Id)
 			},
 		},
 		"invalid class id": {
 			classId: "invalid",
-			valid: false,
+			valid:   false,
 		},
 		"no such an id": {
 			classId: "00000000",
-			valid: false,
+			valid:   false,
 		},
 	}
 
@@ -169,23 +169,23 @@ func (s *KeeperTestSuite) TestQueryTokens() {
 	_, err := s.queryServer.Tokens(s.goCtx, nil)
 	s.Require().Error(err)
 
-	testCases := map[string]struct{
-		classId string
-		valid bool
-		count uint64
+	testCases := map[string]struct {
+		classId  string
+		valid    bool
+		count    uint64
 		postTest func(res *token.QueryTokensResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
-			valid: true,
+			valid:   true,
 			postTest: func(res *token.QueryTokensResponse) {
 				s.Require().Equal(2, len(res.Tokens))
 			},
 		},
 		"valid request with limit": {
 			classId: s.classID,
-			valid: true,
-			count: 1,
+			valid:   true,
+			count:   1,
 			postTest: func(res *token.QueryTokensResponse) {
 				s.Require().Equal(1, len(res.Tokens))
 			},
@@ -218,16 +218,16 @@ func (s *KeeperTestSuite) TestQueryGrants() {
 	_, err := s.queryServer.Grants(s.goCtx, nil)
 	s.Require().Error(err)
 
-	testCases := map[string]struct{
-		classId string
-		grantee sdk.AccAddress
-		valid bool
+	testCases := map[string]struct {
+		classId  string
+		grantee  sdk.AccAddress
+		valid    bool
 		postTest func(res *token.QueryGrantsResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
 			grantee: s.vendor,
-			valid: true,
+			valid:   true,
 			postTest: func(res *token.QueryGrantsResponse) {
 				s.Require().Equal(3, len(res.Grants))
 			},
@@ -235,12 +235,12 @@ func (s *KeeperTestSuite) TestQueryGrants() {
 		"invalid class id": {
 			classId: "invalid",
 			grantee: s.vendor,
-			valid: false,
+			valid:   false,
 		},
 		"invalid grantee": {
 			classId: s.classID,
 			grantee: "invalid",
-			valid: false,
+			valid:   false,
 		},
 	}
 
@@ -267,47 +267,47 @@ func (s *KeeperTestSuite) TestQueryApprove() {
 	_, err := s.queryServer.Approve(s.goCtx, nil)
 	s.Require().Error(err)
 
-	testCases := map[string]struct{
-		classId string
-		proxy sdk.AccAddress
+	testCases := map[string]struct {
+		classId  string
+		proxy    sdk.AccAddress
 		approver sdk.AccAddress
-		valid bool
+		valid    bool
 		postTest func(res *token.QueryApproveResponse)
 	}{
 		"valid request": {
-			classId: s.classID,
-			proxy: s.operator,
+			classId:  s.classID,
+			proxy:    s.operator,
 			approver: s.customer,
-			valid: true,
+			valid:    true,
 			postTest: func(res *token.QueryApproveResponse) {
 				s.Require().NotNil(res.Approve)
 			},
 		},
 		"invalid class id": {
-			classId: "invalid",
-			proxy: s.operator,
+			classId:  "invalid",
+			proxy:    s.operator,
 			approver: s.customer,
-			valid: false,
+			valid:    false,
 		},
 		"invalid proxy": {
-			classId: s.classID,
-			proxy: "invalid",
+			classId:  s.classID,
+			proxy:    "invalid",
 			approver: s.customer,
-			valid: false,
+			valid:    false,
 		},
 		"invalid approver": {
-			classId: s.classID,
-			proxy: s.operator,
+			classId:  s.classID,
+			proxy:    s.operator,
 			approver: "invalid",
-			valid: false,
+			valid:    false,
 		},
 	}
 
 	for name, tc := range testCases {
 		s.Run(name, func() {
 			req := &token.QueryApproveRequest{
-				ClassId: tc.classId,
-				Proxy: tc.proxy.String(),
+				ClassId:  tc.classId,
+				Proxy:    tc.proxy.String(),
 				Approver: tc.approver.String(),
 			}
 			res, err := s.queryServer.Approve(s.goCtx, req)
@@ -327,39 +327,39 @@ func (s *KeeperTestSuite) TestQueryApproves() {
 	_, err := s.queryServer.Approves(s.goCtx, nil)
 	s.Require().Error(err)
 
-	testCases := map[string]struct{
-		classId string
-		proxy sdk.AccAddress
-		valid bool
-		count uint64
+	testCases := map[string]struct {
+		classId  string
+		proxy    sdk.AccAddress
+		valid    bool
+		count    uint64
 		postTest func(res *token.QueryApprovesResponse)
 	}{
 		"valid request": {
 			classId: s.classID,
-			proxy: s.operator,
-			valid: true,
+			proxy:   s.operator,
+			valid:   true,
 			postTest: func(res *token.QueryApprovesResponse) {
 				s.Require().Equal(2, len(res.Approves))
 			},
 		},
 		"valid request with limit": {
 			classId: s.classID,
-			proxy: s.operator,
-			valid: true,
-			count: 1,
+			proxy:   s.operator,
+			valid:   true,
+			count:   1,
 			postTest: func(res *token.QueryApprovesResponse) {
 				s.Require().Equal(1, len(res.Approves))
 			},
 		},
 		"invalid class id": {
 			classId: "invalid",
-			proxy: s.operator,
-			valid: false,
+			proxy:   s.operator,
+			valid:   false,
 		},
 		"invalid proxy": {
 			classId: s.classID,
-			proxy: "invalid",
-			valid: false,
+			proxy:   "invalid",
+			valid:   false,
 		},
 	}
 
@@ -370,8 +370,8 @@ func (s *KeeperTestSuite) TestQueryApproves() {
 				pageReq.Limit = tc.count
 			}
 			req := &token.QueryApprovesRequest{
-				ClassId: tc.classId,
-				Proxy: tc.proxy.String(),
+				ClassId:    tc.classId,
+				Proxy:      tc.proxy.String(),
 				Pagination: pageReq,
 			}
 			res, err := s.queryServer.Approves(s.goCtx, req)

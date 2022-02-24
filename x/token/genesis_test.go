@@ -1,8 +1,8 @@
 package token_test
 
 import (
-	"testing"
 	"math"
+	"testing"
 
 	"github.com/stretchr/testify/require"
 
@@ -13,8 +13,8 @@ import (
 
 func TestValidateGenesis(t *testing.T) {
 	addr := sdk.BytesToAccAddress(secp256k1.GenPrivKey().PubKey().Address())
-	testCases := map[string]struct{
-		gs *token.GenesisState
+	testCases := map[string]struct {
+		gs    *token.GenesisState
 		valid bool
 	}{
 		"default genesis": {
@@ -37,7 +37,7 @@ func TestValidateGenesis(t *testing.T) {
 						Tokens: []token.FT{
 							{
 								ClassId: "deadbeef",
-								Amount: sdk.OneInt(),
+								Amount:  sdk.OneInt(),
 							},
 						},
 					},
@@ -53,7 +53,7 @@ func TestValidateGenesis(t *testing.T) {
 						Tokens: []token.FT{
 							{
 								ClassId: "deadbeef",
-								Amount: sdk.ZeroInt(),
+								Amount:  sdk.ZeroInt(),
 							},
 						},
 					},
@@ -74,8 +74,8 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid id of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
-					Id: "invalid",
-					Name: "test",
+					Id:     "invalid",
+					Name:   "test",
 					Symbol: "TT",
 				}},
 			},
@@ -84,8 +84,8 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid name of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
-					Id: "deadbeef",
-					Name: string(make([]rune, 21)),
+					Id:     "deadbeef",
+					Name:   string(make([]rune, 21)),
 					Symbol: "TT",
 				}},
 			},
@@ -94,8 +94,8 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid symbol of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
-					Id: "deadbeef",
-					Name: "test",
+					Id:     "deadbeef",
+					Name:   "test",
 					Symbol: "tt",
 				}},
 			},
@@ -104,9 +104,9 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid image uri of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
-					Id: "deadbeef",
-					Name: "test",
-					Symbol: "TT",
+					Id:       "deadbeef",
+					Name:     "test",
+					Symbol:   "TT",
 					ImageUri: string(make([]rune, 1001)),
 				}},
 			},
@@ -115,10 +115,10 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid meta of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
-					Id: "deadbeef",
-					Name: "test",
+					Id:     "deadbeef",
+					Name:   "test",
 					Symbol: "TT",
-					Meta: string(make([]rune, 1001)),
+					Meta:   string(make([]rune, 1001)),
 				}},
 			},
 			false,
@@ -126,9 +126,9 @@ func TestValidateGenesis(t *testing.T) {
 		"invalid decimals of class": {
 			&token.GenesisState{
 				Classes: []token.Token{{
-					Id: "deadbeef",
-					Name: "test",
-					Symbol: "TT",
+					Id:       "deadbeef",
+					Name:     "test",
+					Symbol:   "TT",
 					Decimals: -1,
 				}},
 			},
@@ -138,7 +138,7 @@ func TestValidateGenesis(t *testing.T) {
 			&token.GenesisState{
 				Grants: []token.Grant{{
 					Grantee: "invalid",
-					Action: token.ActionMint,
+					Action:  token.ActionMint,
 				}},
 			},
 			false,
@@ -147,7 +147,7 @@ func TestValidateGenesis(t *testing.T) {
 			&token.GenesisState{
 				Grants: []token.Grant{{
 					Grantee: addr.String(),
-					Action: "invalid",
+					Action:  "invalid",
 				}},
 			},
 			false,
@@ -156,7 +156,7 @@ func TestValidateGenesis(t *testing.T) {
 			&token.GenesisState{
 				Approves: []token.Approve{{
 					Approver: "invalid",
-					Proxy: addr.String(),
+					Proxy:    addr.String(),
 				}},
 			},
 			false,
@@ -165,7 +165,7 @@ func TestValidateGenesis(t *testing.T) {
 			&token.GenesisState{
 				Approves: []token.Approve{{
 					Approver: addr.String(),
-					Proxy: "invalid",
+					Proxy:    "invalid",
 				}},
 			},
 			false,

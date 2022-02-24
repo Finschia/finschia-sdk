@@ -6,23 +6,24 @@ import (
 
 	ocproto "github.com/line/ostracon/proto/ostracon/types"
 
+	"github.com/stretchr/testify/suite"
+
 	"github.com/line/lbm-sdk/crypto/keys/secp256k1"
 	"github.com/line/lbm-sdk/simapp"
 	sdk "github.com/line/lbm-sdk/types"
 	"github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/token/keeper"
-	"github.com/stretchr/testify/suite"
 )
 
 type KeeperTestSuite struct {
 	suite.Suite
-	ctx sdk.Context
-	goCtx context.Context
-	keeper keeper.Keeper
+	ctx         sdk.Context
+	goCtx       context.Context
+	keeper      keeper.Keeper
 	queryServer token.QueryServer
-	msgServer token.MsgServer
+	msgServer   token.MsgServer
 
-	vendor sdk.AccAddress
+	vendor   sdk.AccAddress
 	operator sdk.AccAddress
 	customer sdk.AccAddress
 
@@ -50,9 +51,9 @@ func (s *KeeperTestSuite) SetupTest() {
 	// create a mintable class
 	s.classID = "f00dbabe"
 	class := token.Token{
-		Id: s.classID,
-		Name: "Mintable",
-		Symbol: "OK",
+		Id:       s.classID,
+		Name:     "Mintable",
+		Symbol:   "OK",
 		Mintable: true,
 	}
 	err := s.keeper.Issue(s.ctx, class, s.vendor, s.vendor, s.balance)

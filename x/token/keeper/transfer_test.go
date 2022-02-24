@@ -8,9 +8,9 @@ import (
 )
 
 func (s *KeeperTestSuite) TestTransfer() {
-	testCases := map[string]struct{
+	testCases := map[string]struct {
 		amount token.FT
-		valid bool
+		valid  bool
 	}{
 		"valid transfer": {
 			token.FT{ClassId: s.classID, Amount: sdk.OneInt()},

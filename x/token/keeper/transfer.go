@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"github.com/gogo/protobuf/proto"
+
 	sdk "github.com/line/lbm-sdk/types"
 	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	"github.com/line/lbm-sdk/x/token"

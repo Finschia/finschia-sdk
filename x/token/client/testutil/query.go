@@ -4,12 +4,13 @@ import (
 	"fmt"
 
 	"github.com/gogo/protobuf/proto"
+	ostcli "github.com/line/ostracon/libs/cli"
+
 	"github.com/line/lbm-sdk/client/flags"
 	clitestutil "github.com/line/lbm-sdk/testutil/cli"
 	"github.com/line/lbm-sdk/types/query"
 	"github.com/line/lbm-sdk/x/token"
 	"github.com/line/lbm-sdk/x/token/client/cli"
-	ostcli "github.com/line/ostracon/libs/cli"
 )
 
 func (s *IntegrationTestSuite) TestNewQueryCmdTokenBalance() {
