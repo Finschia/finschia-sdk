@@ -1,0 +1,71 @@
+syntax = "proto3";
+package lbm.token.v1;
+
+option go_package                      = "github.com/line/lbm-sdk/x/token";
+option (gogoproto.equal_all)           = false;
+option (gogoproto.goproto_getters_all) = false;
+
+import "gogoproto/gogo.proto";
+
+// Params defines the parameters for the token module.
+message Params {}
+
+// Token defines token information.
+message Token {
+  // id defines the unique identifier of the token.
+  string id = 1;
+
+  // name defines the human-readable name of the token.
+  string name = 2;
+
+  // symbol is an abbreviated name for token.
+  string symbol = 3;
+
+  // meta is a brief description of token.
+  string meta = 4;
+
+  // image_uri is an uri for the token image stored off chain.
+  string image_uri = 5;
+
+  // decimals is the number of decimals which one must divide the amount by to get its user representation.
+  int32 decimals = 6;
+
+  // mintable represents whether the token is allowed to mint.
+  bool mintable = 7;
+}
+
+// FT defines a fungible token with a class id and an amount.
+message FT {
+  // class id associated with the token.
+  string class_id = 1;
+
+  // amount of the token
+  string amount = 2 [(gogoproto.customtype) = "github.com/line/lbm-sdk/types.Int", (gogoproto.nullable) = false];
+}
+
+// Pair defines a key-value pair.
+message Pair {
+  string key   = 1;
+  string value = 2;
+}
+
+// Grant defines grant information.
+message Grant {
+  // address of the granted account.
+  string grantee = 1;
+
+  // class id associated with the token.
+  string class_id = 2;
+
+  // action on the token class. Must be one of "mint", "burn" and "modify".
+  string action = 3;
+}
+
+// Approve defines approve information.
+message Approve {
+  string approver = 1;
+  string proxy    = 2;
+
+  // class id associated with the token.
+  string class_id = 3;
+}

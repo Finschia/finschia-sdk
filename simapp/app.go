@@ -93,6 +93,11 @@ import (
 	stakingkeeper "github.com/line/lbm-sdk/x/staking/keeper"
 	stakingtypes "github.com/line/lbm-sdk/x/staking/types"
 	"github.com/line/lbm-sdk/x/stakingplus"
+	"github.com/line/lbm-sdk/x/token"
+	"github.com/line/lbm-sdk/x/token/class"
+	classkeeper "github.com/line/lbm-sdk/x/token/class/keeper"
+	tokenkeeper "github.com/line/lbm-sdk/x/token/keeper"
+	tokenmodule "github.com/line/lbm-sdk/x/token/module"
 	"github.com/line/lbm-sdk/x/upgrade"
 	upgradeclient "github.com/line/lbm-sdk/x/upgrade/client"
 	upgradekeeper "github.com/line/lbm-sdk/x/upgrade/keeper"
@@ -137,6 +142,7 @@ var (
 		evidence.AppModuleBasic{},
 		transfer.AppModuleBasic{},
 		vesting.AppModuleBasic{},
+		tokenmodule.AppModuleBasic{},
 	)
 
 	// module account permissions
@@ -193,6 +199,7 @@ type SimApp struct {
 	EvidenceKeeper   evidencekeeper.Keeper
 	TransferKeeper   ibctransferkeeper.Keeper
 	FeeGrantKeeper   feegrantkeeper.Keeper
+	TokenKeeper      tokenkeeper.Keeper
 
 	// make scoped keepers public for test purposes
 	ScopedIBCKeeper      capabilitykeeper.ScopedKeeper
@@ -236,11 +243,23 @@ func NewSimApp(
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 
 	keys := sdk.NewKVStoreKeys(
-		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey,
-		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
-		govtypes.StoreKey, paramstypes.StoreKey, ibchost.StoreKey, upgradetypes.StoreKey,
-		evidencetypes.StoreKey, ibctransfertypes.StoreKey, capabilitytypes.StoreKey,
-		feegranttypes.StoreKey, consortiumtypes.StoreKey,
+		authtypes.StoreKey,
+		banktypes.StoreKey,
+		stakingtypes.StoreKey,
+		minttypes.StoreKey,
+		distrtypes.StoreKey,
+		slashingtypes.StoreKey,
+		govtypes.StoreKey,
+		paramstypes.StoreKey,
+		ibchost.StoreKey,
+		upgradetypes.StoreKey,
+		evidencetypes.StoreKey,
+		ibctransfertypes.StoreKey,
+		capabilitytypes.StoreKey,
+		feegranttypes.StoreKey,
+		consortiumtypes.StoreKey,
+		class.StoreKey,
+		token.StoreKey,
 	)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, "testing")
 
@@ -294,6 +313,9 @@ func NewSimApp(
 	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, keys[feegranttypes.StoreKey], app.AccountKeeper)
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(skipUpgradeHeights, keys[upgradetypes.StoreKey], appCodec, homePath)
 	app.ConsortiumKeeper = consortiumkeeper.NewKeeper(appCodec, keys[consortiumtypes.StoreKey], stakingKeeper)
+
+	classKeeper := classkeeper.NewKeeper(appCodec, keys[class.StoreKey])
+	app.TokenKeeper = tokenkeeper.NewKeeper(appCodec, keys[token.StoreKey], app.AccountKeeper, classKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -373,6 +395,7 @@ func NewSimApp(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		params.NewAppModule(app.ParamsKeeper),
+		tokenmodule.NewAppModule(appCodec, app.TokenKeeper),
 		transferModule,
 	)
 
@@ -392,10 +415,22 @@ func NewSimApp(
 	// so that other modules that want to create or claim capabilities afterwards in InitChain
 	// can do so safely.
 	app.mm.SetOrderInitGenesis(
-		capabilitytypes.ModuleName, authtypes.ModuleName, banktypes.ModuleName, distrtypes.ModuleName, stakingtypes.ModuleName,
-		slashingtypes.ModuleName, govtypes.ModuleName, minttypes.ModuleName, crisistypes.ModuleName,
-		ibchost.ModuleName, genutiltypes.ModuleName, evidencetypes.ModuleName, ibctransfertypes.ModuleName,
-		feegranttypes.ModuleName, consortiumtypes.ModuleName,
+		capabilitytypes.ModuleName,
+		authtypes.ModuleName,
+		banktypes.ModuleName,
+		distrtypes.ModuleName,
+		stakingtypes.ModuleName,
+		slashingtypes.ModuleName,
+		govtypes.ModuleName,
+		minttypes.ModuleName,
+		crisistypes.ModuleName,
+		ibchost.ModuleName,
+		genutiltypes.ModuleName,
+		evidencetypes.ModuleName,
+		ibctransfertypes.ModuleName,
+		feegranttypes.ModuleName,
+		consortiumtypes.ModuleName,
+		token.ModuleName,
 	)
 
 	app.mm.RegisterInvariants(&app.CrisisKeeper)
@@ -436,9 +471,10 @@ func NewSimApp(
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetAnteHandler(
-		ante.NewAnteHandler(
-			app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, ante.DefaultSigVerificationGasConsumer,
-			encodingConfig.TxConfig.SignModeHandler(),
+		NewAnteHandler(
+			app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper,
+			ante.DefaultSigVerificationGasConsumer,
+			encodingConfig.TxConfig.SignModeHandler(), app.IBCKeeper.ChannelKeeper,
 		),
 	)
 	app.SetEndBlocker(app.EndBlocker)
