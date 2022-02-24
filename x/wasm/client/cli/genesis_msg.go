@@ -4,14 +4,12 @@ import (
 	"bufio"
 	"bytes"
 	"crypto/sha256"
-	"encoding/binary"
 	"encoding/json"
 	"errors"
 	"fmt"
 
 	"github.com/line/lbm-sdk/x/wasm/keeper"
 
-	"github.com/line/ostracon/crypto"
 	octypes "github.com/line/ostracon/types"
 	"github.com/spf13/cobra"
 
@@ -508,12 +506,4 @@ func getActorAddress(cmd *cobra.Command) (sdk.AccAddress, error) {
 		return "", fmt.Errorf("failed to get address from Keybase: %w", err)
 	}
 	return info.GetAddress(), nil
-}
-
-// addrFromUint64 is a helper for address generation, copied from keeper
-func addrFromUint64(id uint64) sdk.AccAddress {
-	addr := make([]byte, 20)
-	addr[0] = 'C'
-	binary.PutUvarint(addr[1:], id)
-	return sdk.BytesToAccAddress(crypto.AddressHash(addr))
 }

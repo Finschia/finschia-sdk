@@ -126,7 +126,7 @@ func (d MessageDispatcher) DispatchSubmessages(ctx sdk.Context, contractAddr sdk
 			}
 			result = wasmvmtypes.SubcallResult{
 				Ok: &wasmvmtypes.SubcallResponse{
-					Events: sdkEventsToWasmVmEvents(filteredEvents),
+					Events: sdkEventsToWasmVMEvents(filteredEvents),
 					Data:   responseData,
 				},
 			}
@@ -166,7 +166,7 @@ func filterEvents(events []sdk.Event) []sdk.Event {
 	return res
 }
 
-func sdkEventsToWasmVmEvents(events []sdk.Event) []wasmvmtypes.Event {
+func sdkEventsToWasmVMEvents(events []sdk.Event) []wasmvmtypes.Event {
 	res := make([]wasmvmtypes.Event, len(events))
 	for i, ev := range events {
 		res[i] = wasmvmtypes.Event{
