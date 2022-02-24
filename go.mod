@@ -30,7 +30,7 @@ require (
 	github.com/line/iavl/v2 v2.0.0-init.1.0.20220215225951-cb11c91d8857
 	github.com/line/ostracon v1.0.3
 	github.com/line/tm-db/v2 v2.0.0-init.1.0.20220121012851-61d2bc1d9486
-	github.com/line/wasmvm v0.14.0-0.8.0
+	github.com/line/wasmvm v0.16.3-testing
 	github.com/magiconair/properties v1.8.5
 	github.com/mailru/easyjson v0.7.7
 	github.com/mattn/go-isatty v0.0.14
