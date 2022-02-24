@@ -33596,6 +33596,584 @@ paths:
           type: string
       tags:
         - Query
+  '/lbm/token/v1/approve/{class_id}/{proxy}/{approver}':
+    get:
+      summary: Approve queries approve on a given proxy approver pair.
+      operationId: Approve
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              approve:
+                type: object
+                properties:
+                  approver:
+                    type: string
+                  proxy:
+                    type: string
+                  class_id:
+                    type: string
+                    description: class id associated with the token.
+                description: Approve defines approve information.
+            title: >-
+              QueryApproveResponse is the response type for the Query/Approve
+              RPC method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+        - name: proxy
+          in: path
+          required: true
+          type: string
+        - name: approver
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/token/v1/approves/{class_id}/{proxy}':
+    get:
+      summary: Approves queries all approves on a given proxy.
+      operationId: Approves
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              approves:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    approver:
+                      type: string
+                    proxy:
+                      type: string
+                    class_id:
+                      type: string
+                      description: class id associated with the token.
+                  description: Approve defines approve information.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+            title: >-
+              QueryApprovesResponse is the response type for the Query/Approves
+              RPC method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+        - name: proxy
+          in: path
+          required: true
+          type: string
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  '/lbm/token/v1/balance/{address}/{class_id}':
+    get:
+      summary: >-
+        TokenBalance queries the number of tokens of a given class owned by the
+        address.
+      operationId: TokenBalance
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: string
+            title: >-
+              QueryTokenBalanceResponse is the response type for the
+              Query/TokenBalance RPC method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: address
+          in: path
+          required: true
+          type: string
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/token/v1/grants/{grantee}/{class_id}':
+    get:
+      summary: Grants queries grants on a given grantee.
+      operationId: Grants
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              grants:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    grantee:
+                      type: string
+                      description: address of the granted account.
+                    class_id:
+                      type: string
+                      description: class id associated with the token.
+                    action:
+                      type: string
+                      description: >-
+                        action on the token class. Must be one of "mint", "burn"
+                        and "modify".
+                  description: Grant defines grant information.
+            title: >-
+              QueryGrantsResponse is the response type for the Query/Grants RPC
+              method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: grantee
+          in: path
+          required: true
+          type: string
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  '/lbm/token/v1/supply/{class_id}':
+    get:
+      summary: Supply queries the number of tokens from the given class id.
+      operationId: Supply
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              amount:
+                type: string
+            title: >-
+              QuerySupplyResponse is the response type for the Query/Supply RPC
+              method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          description: class id associated with the token.
+          in: path
+          required: true
+          type: string
+        - name: type
+          in: query
+          required: false
+          type: string
+      tags:
+        - Query
+  /lbm/token/v1/tokens:
+    get:
+      summary: Tokens queries all token metadata.
+      operationId: Tokens
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              tokens:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      description: id defines the unique identifier of the token.
+                    name:
+                      type: string
+                      description: name defines the human-readable name of the token.
+                    symbol:
+                      type: string
+                      description: symbol is an abbreviated name for token.
+                    meta:
+                      type: string
+                      description: meta is a brief description of token.
+                    image_uri:
+                      type: string
+                      description: >-
+                        image_uri is an uri for the token image stored off
+                        chain.
+                    decimals:
+                      type: integer
+                      format: int32
+                      description: >-
+                        decimals is the number of decimals which one must divide
+                        the amount by to get its user representation.
+                    mintable:
+                      type: boolean
+                      format: boolean
+                      description: >-
+                        mintable represents whether the token is allowed to
+                        mint.
+                  description: Token defines token information.
+              pagination:
+                type: object
+                properties:
+                  next_key:
+                    type: string
+                    format: byte
+                    title: |-
+                      next_key is the key to be passed to PageRequest.key to
+                      query the next page most efficiently
+                  total:
+                    type: string
+                    format: uint64
+                    title: >-
+                      total is total number of results available if
+                      PageRequest.count_total
+
+                      was set, its value is undefined otherwise
+                description: >-
+                  PageResponse is to be embedded in gRPC response messages where
+                  the
+
+                  corresponding request message has used PageRequest.
+
+                   message SomeResponse {
+                           repeated Bar results = 1;
+                           PageResponse page = 2;
+                   }
+            title: >-
+              QueryTokensResponse is the response type for the Query/Tokens RPC
+              method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: >-
+            offset is a numeric offset that can be used when key is unavailable.
+
+            It is less efficient than using key. Only one of offset or key
+            should
+
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: >-
+            limit is the total number of results to be returned in the result
+            page.
+
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.count_total
+          description: >-
+            count_total is set to true  to indicate that the result set should
+            include
+
+            a count of the total number of items available for pagination in
+            UIs.
+
+            count_total is only respected when offset is used. It is ignored
+            when key
+
+            is set.
+          in: query
+          required: false
+          type: boolean
+          format: boolean
+      tags:
+        - Query
+  '/lbm/token/v1/tokens/{class_id}':
+    get:
+      summary: Token queries an token metadata based on its class id.
+      operationId: Token
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              token:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: id defines the unique identifier of the token.
+                  name:
+                    type: string
+                    description: name defines the human-readable name of the token.
+                  symbol:
+                    type: string
+                    description: symbol is an abbreviated name for token.
+                  meta:
+                    type: string
+                    description: meta is a brief description of token.
+                  image_uri:
+                    type: string
+                    description: image_uri is an uri for the token image stored off chain.
+                  decimals:
+                    type: integer
+                    format: int32
+                    description: >-
+                      decimals is the number of decimals which one must divide
+                      the amount by to get its user representation.
+                  mintable:
+                    type: boolean
+                    format: boolean
+                    description: mintable represents whether the token is allowed to mint.
+                description: Token defines token information.
+            title: >-
+              QueryTokenResponse is the response type for the Query/Token RPC
+              method
+        default:
+          description: An unexpected error response
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    type_url:
+                      type: string
+                    value:
+                      type: string
+                      format: byte
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
 securityDefinitions:
   kms:
     type: basic
@@ -55179,3 +55757,243 @@ definitions:
         type: boolean
         format: boolean
     description: ValidatorAuth defines authorization info of a validator.
+  lbm.token.v1.Approve:
+    type: object
+    properties:
+      approver:
+        type: string
+      proxy:
+        type: string
+      class_id:
+        type: string
+        description: class id associated with the token.
+    description: Approve defines approve information.
+  lbm.token.v1.Grant:
+    type: object
+    properties:
+      grantee:
+        type: string
+        description: address of the granted account.
+      class_id:
+        type: string
+        description: class id associated with the token.
+      action:
+        type: string
+        description: 'action on the token class. Must be one of "mint", "burn" and "modify".'
+    description: Grant defines grant information.
+  lbm.token.v1.QueryApproveResponse:
+    type: object
+    properties:
+      approve:
+        type: object
+        properties:
+          approver:
+            type: string
+          proxy:
+            type: string
+          class_id:
+            type: string
+            description: class id associated with the token.
+        description: Approve defines approve information.
+    title: QueryApproveResponse is the response type for the Query/Approve RPC method
+  lbm.token.v1.QueryApprovesResponse:
+    type: object
+    properties:
+      approves:
+        type: array
+        items:
+          type: object
+          properties:
+            approver:
+              type: string
+            proxy:
+              type: string
+            class_id:
+              type: string
+              description: class id associated with the token.
+          description: Approve defines approve information.
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+    title: >-
+      QueryApprovesResponse is the response type for the Query/Approves RPC
+      method
+  lbm.token.v1.QueryGrantsResponse:
+    type: object
+    properties:
+      grants:
+        type: array
+        items:
+          type: object
+          properties:
+            grantee:
+              type: string
+              description: address of the granted account.
+            class_id:
+              type: string
+              description: class id associated with the token.
+            action:
+              type: string
+              description: >-
+                action on the token class. Must be one of "mint", "burn" and
+                "modify".
+          description: Grant defines grant information.
+    title: QueryGrantsResponse is the response type for the Query/Grants RPC method
+  lbm.token.v1.QuerySupplyResponse:
+    type: object
+    properties:
+      amount:
+        type: string
+    title: QuerySupplyResponse is the response type for the Query/Supply RPC method
+  lbm.token.v1.QueryTokenBalanceResponse:
+    type: object
+    properties:
+      amount:
+        type: string
+    title: >-
+      QueryTokenBalanceResponse is the response type for the Query/TokenBalance
+      RPC method
+  lbm.token.v1.QueryTokenResponse:
+    type: object
+    properties:
+      token:
+        type: object
+        properties:
+          id:
+            type: string
+            description: id defines the unique identifier of the token.
+          name:
+            type: string
+            description: name defines the human-readable name of the token.
+          symbol:
+            type: string
+            description: symbol is an abbreviated name for token.
+          meta:
+            type: string
+            description: meta is a brief description of token.
+          image_uri:
+            type: string
+            description: image_uri is an uri for the token image stored off chain.
+          decimals:
+            type: integer
+            format: int32
+            description: >-
+              decimals is the number of decimals which one must divide the
+              amount by to get its user representation.
+          mintable:
+            type: boolean
+            format: boolean
+            description: mintable represents whether the token is allowed to mint.
+        description: Token defines token information.
+    title: QueryTokenResponse is the response type for the Query/Token RPC method
+  lbm.token.v1.QueryTokensResponse:
+    type: object
+    properties:
+      tokens:
+        type: array
+        items:
+          type: object
+          properties:
+            id:
+              type: string
+              description: id defines the unique identifier of the token.
+            name:
+              type: string
+              description: name defines the human-readable name of the token.
+            symbol:
+              type: string
+              description: symbol is an abbreviated name for token.
+            meta:
+              type: string
+              description: meta is a brief description of token.
+            image_uri:
+              type: string
+              description: image_uri is an uri for the token image stored off chain.
+            decimals:
+              type: integer
+              format: int32
+              description: >-
+                decimals is the number of decimals which one must divide the
+                amount by to get its user representation.
+            mintable:
+              type: boolean
+              format: boolean
+              description: mintable represents whether the token is allowed to mint.
+          description: Token defines token information.
+      pagination:
+        type: object
+        properties:
+          next_key:
+            type: string
+            format: byte
+            title: |-
+              next_key is the key to be passed to PageRequest.key to
+              query the next page most efficiently
+          total:
+            type: string
+            format: uint64
+            title: >-
+              total is total number of results available if
+              PageRequest.count_total
+
+              was set, its value is undefined otherwise
+        description: |-
+          PageResponse is to be embedded in gRPC response messages where the
+          corresponding request message has used PageRequest.
+
+           message SomeResponse {
+                   repeated Bar results = 1;
+                   PageResponse page = 2;
+           }
+    title: QueryTokensResponse is the response type for the Query/Tokens RPC method
+  lbm.token.v1.Token:
+    type: object
+    properties:
+      id:
+        type: string
+        description: id defines the unique identifier of the token.
+      name:
+        type: string
+        description: name defines the human-readable name of the token.
+      symbol:
+        type: string
+        description: symbol is an abbreviated name for token.
+      meta:
+        type: string
+        description: meta is a brief description of token.
+      image_uri:
+        type: string
+        description: image_uri is an uri for the token image stored off chain.
+      decimals:
+        type: integer
+        format: int32
+        description: >-
+          decimals is the number of decimals which one must divide the amount by
+          to get its user representation.
+      mintable:
+        type: boolean
+        format: boolean
+        description: mintable represents whether the token is allowed to mint.
+    description: Token defines token information.

@@ -41,6 +41,7 @@ Ref: https://keepachangelog.com/en/1.0.0/
 * (cosmos-sdk) [\#437](https://github.com/line/lbm-sdk/pull/437) dump up to cosmos-sdk v0.42.11
   * [changelog of cosmos-sdk v0.42.11](https://github.com/cosmos/cosmos-sdk/blob/v0.42.11/CHANGELOG.md)
 * (feat) [\#434](https://github.com/line/lbm-sdk/pull/434) Revert signature mechanism using `sig_block_height`
+* (x/token) [\#416](https://github.com/line/lbm-sdk/pull/416) Migrate token module from line/link
 
 ### Improvements
 
