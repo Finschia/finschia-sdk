@@ -3,6 +3,7 @@ package tmservice
 import (
 	"context"
 
+	ocproto "github.com/line/ostracon/proto/ostracon/types"
 	ctypes "github.com/line/ostracon/rpc/core/types"
 
 	"github.com/line/lbm-sdk/client"
@@ -36,4 +37,18 @@ func getBlockResultsByHeight(clientCtx client.Context, height *int64) (*ctypes.R
 	}
 
 	return node.BlockResults(context.Background(), height)
+}
+
+func GetProtoBlock(ctx context.Context, clientCtx client.Context, height *int64) (ocproto.BlockID, *ocproto.Block, error) {
+	block, err := getBlock(ctx, clientCtx, height)
+	if err != nil {
+		return ocproto.BlockID{}, nil, err
+	}
+	protoBlock, err := block.Block.ToProto()
+	if err != nil {
+		return ocproto.BlockID{}, nil, err
+	}
+	protoBlockId := block.BlockID.ToProto()
+
+	return protoBlockId, protoBlock, nil
 }
