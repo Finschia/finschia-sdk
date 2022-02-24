@@ -1,3 +1,4 @@
+//go:build norace
 // +build norace
 
 package cli_test
@@ -12,8 +13,6 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/gogo/protobuf/proto"
-	sdkerrors "github.com/line/lbm-sdk/types/errors"
 	ostcli "github.com/line/ostracon/libs/cli"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -127,7 +126,7 @@ func (s *IntegrationTestSuite) TestCLISignBatch() {
 
 	// sign-batch file - offline is set but account-number and sequence are not
 	res, err := authtest.TxSignBatchExec(val.ClientCtx, val.Address, outputFile.Name(), fmt.Sprintf("--%s=%s", flags.FlagChainID, val.ClientCtx.ChainID), "--offline")
-	s.Require().EqualError(err, "required flag(s) \"sequence\" not set")
+	s.Require().EqualError(err, "required flag(s) \"account-number\", \"sequence\" not set")
 
 	// sign-batch file
 	res, err = authtest.TxSignBatchExec(val.ClientCtx, val.Address, outputFile.Name(), fmt.Sprintf("--%s=%s", flags.FlagChainID, val.ClientCtx.ChainID))
@@ -555,11 +554,11 @@ func (s *IntegrationTestSuite) TestCLISendGenerateSignAndBroadcast() {
 
 	// Does not work in offline mode
 	res, err = authtest.TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name(), "--offline")
-	s.Require().EqualError(err, "required flag(s) \"sequence\" not set")
+	s.Require().EqualError(err, "required flag(s) \"account-number\", \"sequence\" not set")
 
-	// But works offline if we set sequence
+	// But works offline if we set account number and sequence
 	val1.ClientCtx.HomeDir = strings.Replace(val1.ClientCtx.HomeDir, "simd", "simcli", 1)
-	res, err = authtest.TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name(), "--offline", "--sequence", "1", "--sig-block-height", "1")
+	res, err = authtest.TxSignExec(val1.ClientCtx, val1.Address, unsignedTxFile.Name(), "--offline", "--account-number", "1", "--sequence", "1")
 	s.Require().NoError(err)
 
 	// Sign transaction
@@ -878,9 +877,9 @@ func (s *IntegrationTestSuite) TestCLIMultisign() {
 
 	sign2File := testutil.WriteToNewTempFile(s.T(), account2Signature.String())
 
-	// Offline mode requires --sequence flag
+	// Does not work in offline mode.
 	_, err = authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), "--offline", sign1File.Name(), sign2File.Name())
-	s.Require().EqualError(err, "required flag(s) \"sequence\" not set")
+	s.Require().EqualError(err, "couldn't verify signature: unable to verify single signer signature")
 
 	val1.ClientCtx.Offline = false
 	multiSigWith2Signatures, err := authtest.TxMultiSignExec(val1.ClientCtx, multisigInfo.GetName(), multiGeneratedTxFile.Name(), sign1File.Name(), sign2File.Name())
@@ -1009,14 +1008,14 @@ func (s *IntegrationTestSuite) TestMultisignBatch() {
 	s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalInterfaceJSON(queryResJSON.Bytes(), &account))
 
 	// sign-batch file
-	res, err := authtest.TxSignBatchExec(val.ClientCtx, account1.GetAddress(), filename.Name(), fmt.Sprintf("--%s=%s", flags.FlagChainID, val.ClientCtx.ChainID), "--multisig", multisigInfo.GetAddress().String(), fmt.Sprintf("--%s", flags.FlagOffline), fmt.Sprintf("--%s=%s", flags.FlagSequence, fmt.Sprint(account.GetSequence())))
+	res, err := authtest.TxSignBatchExec(val.ClientCtx, account1.GetAddress(), filename.Name(), fmt.Sprintf("--%s=%s", flags.FlagChainID, val.ClientCtx.ChainID), "--multisig", multisigInfo.GetAddress().String(), fmt.Sprintf("--%s", flags.FlagOffline), fmt.Sprintf("--%s=%s", flags.FlagAccountNumber, fmt.Sprint(account.GetAccountNumber())), fmt.Sprintf("--%s=%s", flags.FlagSequence, fmt.Sprint(account.GetSequence())))
 	s.Require().NoError(err)
 	s.Require().Equal(3, len(strings.Split(strings.Trim(res.String(), "\n"), "\n")))
 	// write sigs to file
 	file1 := testutil.WriteToNewTempFile(s.T(), res.String())
 
 	// sign-batch file with account2
-	res, err = authtest.TxSignBatchExec(val.ClientCtx, account2.GetAddress(), filename.Name(), fmt.Sprintf("--%s=%s", flags.FlagChainID, val.ClientCtx.ChainID), "--multisig", multisigInfo.GetAddress().String(), fmt.Sprintf("--%s", flags.FlagOffline), fmt.Sprintf("--%s=%s", flags.FlagSequence, fmt.Sprint(account.GetSequence())))
+	res, err = authtest.TxSignBatchExec(val.ClientCtx, account2.GetAddress(), filename.Name(), fmt.Sprintf("--%s=%s", flags.FlagChainID, val.ClientCtx.ChainID), "--multisig", multisigInfo.GetAddress().String(), fmt.Sprintf("--%s", flags.FlagOffline), fmt.Sprintf("--%s=%s", flags.FlagAccountNumber, fmt.Sprint(account.GetAccountNumber())), fmt.Sprintf("--%s=%s", flags.FlagSequence, fmt.Sprint(account.GetSequence())))
 	s.Require().NoError(err)
 	s.Require().Equal(3, len(strings.Split(strings.Trim(res.String(), "\n"), "\n")))
 
@@ -1252,11 +1251,11 @@ func (s *IntegrationTestSuite) TestSignWithMultiSigners_AminoJSON() {
 	signedByVal0File := testutil.WriteToNewTempFile(s.T(), signedByVal0.String())
 
 	// Then let val1 sign the file with signedByVal0.
-	val1Seq, err := val0.ClientCtx.AccountRetriever.GetAccountSequence(val0.ClientCtx, val1.Address)
+	val1AccNum, val1Seq, err := val0.ClientCtx.AccountRetriever.GetAccountNumberSequence(val0.ClientCtx, val1.Address)
 	require.NoError(err)
 	signedTx, err := authtest.TxSignExec(
 		val1.ClientCtx, val1.Address, signedByVal0File.Name(),
-		"--offline", fmt.Sprintf("--sequence=%d", val1Seq), "--sign-mode=amino-json",
+		"--offline", fmt.Sprintf("--account-number=%d", val1AccNum), fmt.Sprintf("--sequence=%d", val1Seq), "--sign-mode=amino-json",
 	)
 	require.NoError(err)
 	signedTxFile := testutil.WriteToNewTempFile(s.T(), signedTx.String())
@@ -1286,87 +1285,6 @@ func (s *IntegrationTestSuite) createBankMsg(val *network.Validator, toAddr sdk.
 
 	flags = append(flags, extraFlags...)
 	return bankcli.MsgSendExec(val.ClientCtx, val.Address, toAddr, amount, flags...)
-}
-
-func (s *IntegrationTestSuite) TestNewEmptyTxCmd() {
-	val := s.network.Validators[0]
-
-	testCases := []struct {
-		name         string
-		from         sdk.AccAddress
-		args         []string
-		expectErr    bool
-		respType     proto.Message
-		expectedCode uint32
-	}{
-		{
-			"valid transaction",
-			val.Address,
-			[]string{
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-			},
-			false,
-			&sdk.TxResponse{},
-			0,
-		},
-		{
-			"not enough fees",
-			val.Address,
-			[]string{
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(1))).String()),
-			},
-			false,
-			&sdk.TxResponse{},
-			sdkerrors.ErrInsufficientFee.ABCICode(),
-		},
-		{
-			"not enough gas",
-			val.Address,
-			[]string{
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-				"--gas=10",
-			},
-			false,
-			&sdk.TxResponse{},
-			sdkerrors.ErrOutOfGas.ABCICode(),
-		},
-		{
-			"no from",
-			sdk.AccAddress(""),
-			[]string{
-				fmt.Sprintf("--%s=true", flags.FlagSkipConfirmation),
-				fmt.Sprintf("--%s=%s", flags.FlagBroadcastMode, flags.BroadcastBlock),
-				fmt.Sprintf("--%s=%s", flags.FlagFees, sdk.NewCoins(sdk.NewCoin(s.cfg.BondDenom, sdk.NewInt(10))).String()),
-			},
-			true,
-			&sdk.TxResponse{},
-			0,
-		},
-	}
-
-	for _, tc := range testCases {
-		tc := tc
-
-		s.Run(tc.name, func() {
-			bz, err := clitestutil.ExecTestCLICmd(val.ClientCtx, authcli.NewEmptyTxCmd(),
-				append([]string{tc.from.String()}, tc.args...))
-			if tc.expectErr {
-				s.Require().Error(err)
-			} else {
-				s.Require().NoError(err)
-
-				s.Require().NoError(val.ClientCtx.JSONMarshaler.UnmarshalJSON(bz.Bytes(), tc.respType), bz.String())
-				txResp := tc.respType.(*sdk.TxResponse)
-				s.Require().Equal(tc.expectedCode, txResp.Code)
-			}
-		})
-	}
 }
 
 func TestIntegrationTestSuite(t *testing.T) {

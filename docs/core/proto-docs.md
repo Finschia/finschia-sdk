@@ -4133,6 +4133,7 @@ type for additional functionality (e.g. vesting).
 | `ed25519_pub_key` | [lbm.crypto.ed25519.PubKey](#lbm.crypto.ed25519.PubKey) |  |  |
 | `secp256k1_pub_key` | [lbm.crypto.secp256k1.PubKey](#lbm.crypto.secp256k1.PubKey) |  |  |
 | `multisig_pub_key` | [lbm.crypto.multisig.LegacyAminoPubKey](#lbm.crypto.multisig.LegacyAminoPubKey) |  |  |
+| `account_number` | [uint64](#uint64) |  |  |
 | `sequence` | [uint64](#uint64) |  |  |
 
 
@@ -4170,7 +4171,6 @@ Params defines the parameters for the auth module.
 | `tx_size_cost_per_byte` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_ed25519` | [uint64](#uint64) |  |  |
 | `sig_verify_cost_secp256k1` | [uint64](#uint64) |  |  |
-| `valid_sig_block_period` | [uint64](#uint64) |  |  |
 
 
 
@@ -4765,7 +4765,7 @@ Query defines the gRPC querier service.
 
 | Method Name | Request Type | Response Type | Description | HTTP Verb | Endpoint |
 | ----------- | ------------ | ------------- | ------------| ------- | -------- |
-| `Balance` | [QueryBalanceRequest](#lbm.bank.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.bank.v1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/lbm/bank/v1/balances/{address}/{denom}|
+| `Balance` | [QueryBalanceRequest](#lbm.bank.v1.QueryBalanceRequest) | [QueryBalanceResponse](#lbm.bank.v1.QueryBalanceResponse) | Balance queries the balance of a single coin for a single account. | GET|/lbm/bank/v1/balances/{address}/by_denom|
 | `AllBalances` | [QueryAllBalancesRequest](#lbm.bank.v1.QueryAllBalancesRequest) | [QueryAllBalancesResponse](#lbm.bank.v1.QueryAllBalancesResponse) | AllBalances queries the balance of all coins for a single account. | GET|/lbm/bank/v1/balances/{address}|
 | `TotalSupply` | [QueryTotalSupplyRequest](#lbm.bank.v1.QueryTotalSupplyRequest) | [QueryTotalSupplyResponse](#lbm.bank.v1.QueryTotalSupplyResponse) | TotalSupply queries the total supply of all coins. | GET|/lbm/bank/v1/supply|
 | `SupplyOf` | [QuerySupplyOfRequest](#lbm.bank.v1.QuerySupplyOfRequest) | [QuerySupplyOfResponse](#lbm.bank.v1.QuerySupplyOfResponse) | SupplyOf queries the supply of a single coin. | GET|/lbm/bank/v1/supply/{denom}|
@@ -5070,6 +5070,9 @@ tags are stringified and the log is JSON decoded.
 | `gas_used` | [int64](#int64) |  | Amount of gas consumed by transaction. |
 | `tx` | [google.protobuf.Any](#google.protobuf.Any) |  | The request transaction bytes. |
 | `timestamp` | [string](#string) |  | Time of the previous block. For heights > 1, it's the weighted median of the timestamps of the valid votes in the block.LastCommit. For height == 1, it's genesis time. |
+| `events` | [ostracon.abci.Event](#ostracon.abci.Event) | repeated | Events defines all the events emitted by processing a transaction. Note, these events include those emitted by processing all the messages and those emitted from the ante handler. Whereas Logs contains the events, with additional metadata, emitted only by processing the messages.
+
+Since: cosmos-sdk 0.42.11, 0.44.5, 0.45 |
 
 
 
@@ -10168,7 +10171,6 @@ transaction.
 | ----- | ---- | ----- | ----------- |
 | `signer_infos` | [SignerInfo](#lbm.tx.v1.SignerInfo) | repeated | signer_infos defines the signing modes for the required signers. The number and order of elements must match the required signers from TxBody's messages. The first element is the primary signer and the one which pays the fee. |
 | `fee` | [Fee](#lbm.tx.v1.Fee) |  | Fee is the fee and gas limit for the transaction. The first signer is the primary signer and the one which pays the fee. The fee can be calculated based on the cost of evaluating the body and doing signature verification of the signers. This can be estimated via simulation. |
-| `sig_block_height` | [uint64](#uint64) |  | sig block height is available between current block height and current block height - `VALID_SIG_BLOCK_PERIOD` this is used for distinguish signatures instead of account number. this is mandatory. |
 
 
 
@@ -10255,6 +10257,7 @@ SignDoc is the type used for generating sign bytes for SIGN_MODE_DIRECT.
 | `body_bytes` | [bytes](#bytes) |  | body_bytes is protobuf serialization of a TxBody that matches the representation in TxRaw. |
 | `auth_info_bytes` | [bytes](#bytes) |  | auth_info_bytes is a protobuf serialization of an AuthInfo that matches the representation in TxRaw. |
 | `chain_id` | [string](#string) |  | chain_id is the unique identifier of the chain this transaction targets. It prevents signed transactions from being used on another chain by an attacker |
+| `account_number` | [uint64](#uint64) |  | account_number is the account number of the account in state |
 
 
 

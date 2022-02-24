@@ -72,6 +72,13 @@ func (t *Tx) ValidateBasic() error {
 		)
 	}
 
+	if fee.Amount.IsAnyNil() {
+		return sdkerrors.Wrapf(
+			sdkerrors.ErrInsufficientFee,
+			"invalid fee provided: null",
+		)
+	}
+
 	if fee.Amount.IsAnyNegative() {
 		return sdkerrors.Wrapf(
 			sdkerrors.ErrInsufficientFee,
@@ -141,10 +148,6 @@ func (t *Tx) UnpackInterfaces(unpacker codectypes.AnyUnpacker) error {
 	}
 
 	return nil
-}
-
-func (t *Tx) GetSigBlockHeight() uint64 {
-	return t.AuthInfo.SigBlockHeight
 }
 
 // UnpackInterfaces implements the UnpackInterfaceMessages.UnpackInterfaces method

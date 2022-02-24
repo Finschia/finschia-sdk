@@ -106,7 +106,7 @@ func GenAndDeliverTx(txCtx OperationInput, fees types.Coins) (simtype.OperationM
 		fees,
 		helpers.DefaultGenTxGas,
 		txCtx.Context.ChainID(),
-		[]uint64{0},
+		[]uint64{account.GetAccountNumber()},
 		[]uint64{account.GetSequence()},
 		txCtx.SimAccount.PrivKey,
 	)

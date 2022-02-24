@@ -196,16 +196,17 @@ func TestPublicKeyHDPath(t *testing.T) {
 	}
 }
 
-func getFakeTx() []byte {
+func getFakeTx(accountNumber uint32) []byte {
 	tmp := fmt.Sprintf(
-		`{"chain_id":"1234","fee":{"amount":[{"amount":"150","denom":"atom"}],"gas":"5000"},"memo":"memo","msgs":[[""]],"sequence":"6"}`)
+		`{"account_number":"%d","chain_id":"1234","fee":{"amount":[{"amount":"150","denom":"atom"}],"gas":"5000"},"memo":"memo","msgs":[[""]],"sequence":"6"}`,
+		accountNumber)
 
 	return []byte(tmp)
 }
 
 func TestSignaturesHD(t *testing.T) {
 	for account := uint32(0); account < 100; account += 30 {
-		msg := getFakeTx()
+		msg := getFakeTx(account)
 
 		path := *hd.NewFundraiserParams(account, sdk.CoinType, account/5)
 		t.Logf("Checking signature at %v    ---   PLEASE REVIEW AND ACCEPT IN THE DEVICE\n", path)
@@ -223,7 +224,7 @@ func TestSignaturesHD(t *testing.T) {
 }
 
 func TestRealDeviceSecp256k1(t *testing.T) {
-	msg := getFakeTx()
+	msg := getFakeTx(50)
 	path := *hd.NewFundraiserParams(0, sdk.CoinType, 0)
 	priv, err := NewPrivKeySecp256k1Unsafe(path)
 	require.NoError(t, err)

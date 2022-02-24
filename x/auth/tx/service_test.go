@@ -269,6 +269,18 @@ func (s IntegrationTestSuite) TestGetTxEvents_GRPCGateway() {
 			"",
 		},
 		{
+			"valid request: order by asc",
+			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&events=%s&order_by=ORDER_BY_ASC", val.APIAddress, "message.action='send'", "message.module='bank'"),
+			false,
+			"",
+		},
+		{
+			"valid request: order by desc",
+			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&events=%s&order_by=ORDER_BY_DESC", val.APIAddress, "message.action='send'", "message.module='bank'"),
+			false,
+			"",
+		},
+		{
 			"invalid request: invalid order by",
 			fmt.Sprintf("%s/lbm/tx/v1/txs?events=%s&events=%s&order_by=invalid_order", val.APIAddress, "message.action='send'", "message.module='bank'"),
 			true,

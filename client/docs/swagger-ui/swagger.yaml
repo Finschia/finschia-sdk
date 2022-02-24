@@ -4926,9 +4926,6 @@ paths:
                   sig_verify_cost_secp256k1:
                     type: string
                     format: uint64
-                  valid_sig_block_period:
-                    type: string
-                    format: uint64
             description: >-
               QueryParamsResponse is the response type for the Query/Params RPC
               method.
@@ -5251,7 +5248,7 @@ paths:
           format: boolean
       tags:
         - Query
-  '/lbm/bank/v1/balances/{address}/{denom}':
+  '/lbm/bank/v1/balances/{address}/by_denom':
     get:
       summary: Balance queries the balance of a single coin for a single account.
       operationId: Balance
@@ -5309,8 +5306,8 @@ paths:
           type: string
         - name: denom
           description: denom is the coin denom to query balances for.
-          in: path
-          required: true
+          in: query
+          required: false
           type: string
       tags:
         - Query
@@ -20911,6 +20908,53 @@ paths:
                       For height == 1,
 
                       it's genesis time.
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        type:
+                          type: string
+                        attributes:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              key:
+                                type: string
+                                format: byte
+                              value:
+                                type: string
+                                format: byte
+                              index:
+                                type: boolean
+                                format: boolean
+                            description: >-
+                              EventAttribute is a single key-value pair,
+                              associated with an event.
+                      description: >-
+                        Event allows application developers to attach additional
+                        information to
+
+                        ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx
+                        and ResponseDeliverTx.
+
+                        Later, transactions may be queried using these events.
+                    description: >-
+                      Events defines all the events emitted by processing a
+                      transaction. Note,
+
+                      these events include those emitted by processing all the
+                      messages and those
+
+                      emitted from the ante handler. Whereas Logs contains the
+                      events, with
+
+                      additional metadata, emitted only by processing the
+                      messages.
+
+
+                      Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
                 description: >-
                   TxResponse defines a structure containing relevant tx data and
                   metadata. The
@@ -35180,9 +35224,6 @@ definitions:
       sig_verify_cost_secp256k1:
         type: string
         format: uint64
-      valid_sig_block_period:
-        type: string
-        format: uint64
     description: Params defines the parameters for the auth module.
   lbm.auth.v1.QueryAccountResponse:
     type: object
@@ -35272,9 +35313,6 @@ definitions:
             type: string
             format: uint64
           sig_verify_cost_secp256k1:
-            type: string
-            format: uint64
-          valid_sig_block_period:
             type: string
             format: uint64
     description: QueryParamsResponse is the response type for the Query/Params RPC method.
@@ -47026,6 +47064,51 @@ definitions:
           == 1,
 
           it's genesis time.
+      events:
+        type: array
+        items:
+          type: object
+          properties:
+            type:
+              type: string
+            attributes:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                    format: byte
+                  value:
+                    type: string
+                    format: byte
+                  index:
+                    type: boolean
+                    format: boolean
+                description: >-
+                  EventAttribute is a single key-value pair, associated with an
+                  event.
+          description: >-
+            Event allows application developers to attach additional information
+            to
+
+            ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+            ResponseDeliverTx.
+
+            Later, transactions may be queried using these events.
+        description: >-
+          Events defines all the events emitted by processing a transaction.
+          Note,
+
+          these events include those emitted by processing all the messages and
+          those
+
+          emitted from the ante handler. Whereas Logs contains the events, with
+
+          additional metadata, emitted only by processing the messages.
+
+
+          Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
     description: >-
       TxResponse defines a structure containing relevant tx data and metadata.
       The
@@ -47143,15 +47226,6 @@ definitions:
               appropriate fee grant does not exist or the chain does
 
               not support fee grants, this will fail
-      sig_block_height:
-        type: string
-        format: uint64
-        description: >-
-          sig block height is available between current block height and current
-          block height - `VALID_SIG_BLOCK_PERIOD`
-
-          this is used for distinguish signatures instead of account number.
-          this is mandatory.
     description: |-
       AuthInfo describes the fee and signer modes that are used to sign a
       transaction.
@@ -47465,6 +47539,52 @@ definitions:
               height == 1,
 
               it's genesis time.
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        format: byte
+                      value:
+                        type: string
+                        format: byte
+                      index:
+                        type: boolean
+                        format: boolean
+                    description: >-
+                      EventAttribute is a single key-value pair, associated with
+                      an event.
+              description: >-
+                Event allows application developers to attach additional
+                information to
+
+                ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+                ResponseDeliverTx.
+
+                Later, transactions may be queried using these events.
+            description: >-
+              Events defines all the events emitted by processing a transaction.
+              Note,
+
+              these events include those emitted by processing all the messages
+              and those
+
+              emitted from the ante handler. Whereas Logs contains the events,
+              with
+
+              additional metadata, emitted only by processing the messages.
+
+
+              Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
         description: >-
           TxResponse defines a structure containing relevant tx data and
           metadata. The
@@ -47792,6 +47912,52 @@ definitions:
               height == 1,
 
               it's genesis time.
+          events:
+            type: array
+            items:
+              type: object
+              properties:
+                type:
+                  type: string
+                attributes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      key:
+                        type: string
+                        format: byte
+                      value:
+                        type: string
+                        format: byte
+                      index:
+                        type: boolean
+                        format: boolean
+                    description: >-
+                      EventAttribute is a single key-value pair, associated with
+                      an event.
+              description: >-
+                Event allows application developers to attach additional
+                information to
+
+                ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+                ResponseDeliverTx.
+
+                Later, transactions may be queried using these events.
+            description: >-
+              Events defines all the events emitted by processing a transaction.
+              Note,
+
+              these events include those emitted by processing all the messages
+              and those
+
+              emitted from the ante handler. Whereas Logs contains the events,
+              with
+
+              additional metadata, emitted only by processing the messages.
+
+
+              Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
         description: >-
           TxResponse defines a structure containing relevant tx data and
           metadata. The
@@ -48071,6 +48237,52 @@ definitions:
                 height == 1,
 
                 it's genesis time.
+            events:
+              type: array
+              items:
+                type: object
+                properties:
+                  type:
+                    type: string
+                  attributes:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                          format: byte
+                        value:
+                          type: string
+                          format: byte
+                        index:
+                          type: boolean
+                          format: boolean
+                      description: >-
+                        EventAttribute is a single key-value pair, associated
+                        with an event.
+                description: >-
+                  Event allows application developers to attach additional
+                  information to
+
+                  ResponseBeginBlock, ResponseEndBlock, ResponseCheckTx and
+                  ResponseDeliverTx.
+
+                  Later, transactions may be queried using these events.
+              description: >-
+                Events defines all the events emitted by processing a
+                transaction. Note,
+
+                these events include those emitted by processing all the
+                messages and those
+
+                emitted from the ante handler. Whereas Logs contains the events,
+                with
+
+                additional metadata, emitted only by processing the messages.
+
+
+                Since: cosmos-sdk 0.42.11, 0.44.5, 0.45
           description: >-
             TxResponse defines a structure containing relevant tx data and
             metadata. The

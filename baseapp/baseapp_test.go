@@ -696,9 +696,8 @@ func (tx *txTest) setFailOnHandler(fail bool) {
 }
 
 // Implements Tx
-func (tx txTest) GetMsgs() []sdk.Msg        { return tx.Msgs }
-func (tx txTest) ValidateBasic() error      { return nil }
-func (tx txTest) GetSigBlockHeight() uint64 { return 0 }
+func (tx txTest) GetMsgs() []sdk.Msg   { return tx.Msgs }
+func (tx txTest) ValidateBasic() error { return nil }
 
 const (
 	routeMsgCounter  = "msgCounter"
