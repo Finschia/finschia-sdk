@@ -2,18 +2,10 @@ package rootmulti
 
 import (
 	"bytes"
-	"crypto/sha256"
-	"encoding/binary"
-	"encoding/hex"
-	"errors"
 	"fmt"
-	"io"
-	"io/ioutil"
-	"math/rand"
 	"testing"
 	"time"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	abci "github.com/line/ostracon/abci/types"
@@ -88,7 +80,7 @@ func TestCacheMultiStoreWithVersion(t *testing.T) {
 
 	k, v := []byte("wind"), []byte("blows")
 
-	store1 := ms.getStoreByName("store1").(types.KVStore)
+	store1 := ms.GetStoreByName("store1").(types.KVStore)
 	store1.Set(k, v)
 
 	cID := ms.Commit()
@@ -125,7 +117,7 @@ func TestHashStableWithEmptyCommit(t *testing.T) {
 
 	k, v := []byte("wind"), []byte("blows")
 
-	store1 := ms.getStoreByName("store1").(types.KVStore)
+	store1 := ms.GetStoreByName("store1").(types.KVStore)
 	store1.Set(k, v)
 
 	cID := ms.Commit()
@@ -149,11 +141,11 @@ func TestMultistoreCommitLoad(t *testing.T) {
 	checkStore(t, store, commitID, commitID)
 
 	// Make sure we can get stores by name.
-	s1 := store.getStoreByName("store1")
+	s1 := store.GetStoreByName("store1")
 	require.NotNil(t, s1)
-	s3 := store.getStoreByName("store3")
+	s3 := store.GetStoreByName("store3")
 	require.NotNil(t, s3)
-	s77 := store.getStoreByName("store77")
+	s77 := store.GetStoreByName("store77")
 	require.Nil(t, s77)
 
 	// Make a few commits and check them.
@@ -193,21 +185,21 @@ func TestMultistoreLoadWithUpgrade(t *testing.T) {
 
 	// write some data in all stores
 	k1, v1 := []byte("first"), []byte("store")
-	s1, _ := store.getStoreByName("store1").(types.KVStore)
+	s1, _ := store.GetStoreByName("store1").(types.KVStore)
 	require.NotNil(t, s1)
 	s1.Set(k1, v1)
 
 	k2, v2 := []byte("second"), []byte("restore")
-	s2, _ := store.getStoreByName("store2").(types.KVStore)
+	s2, _ := store.GetStoreByName("store2").(types.KVStore)
 	require.NotNil(t, s2)
 	s2.Set(k2, v2)
 
 	k3, v3 := []byte("third"), []byte("dropped")
-	s3, _ := store.getStoreByName("store3").(types.KVStore)
+	s3, _ := store.GetStoreByName("store3").(types.KVStore)
 	require.NotNil(t, s3)
 	s3.Set(k3, v3)
 
-	s4, _ := store.getStoreByName("store4").(types.KVStore)
+	s4, _ := store.GetStoreByName("store4").(types.KVStore)
 	require.Nil(t, s4)
 
 	// do one commit
@@ -230,7 +222,7 @@ func TestMultistoreLoadWithUpgrade(t *testing.T) {
 	checkStore(t, store, commitID, commitID)
 
 	// let's query data to see it was saved properly
-	s2, _ = store.getStoreByName("store2").(types.KVStore)
+	s2, _ = store.GetStoreByName("store2").(types.KVStore)
 	require.NotNil(t, s2)
 	require.Equal(t, v2, s2.Get(k2))
 
@@ -240,17 +232,17 @@ func TestMultistoreLoadWithUpgrade(t *testing.T) {
 	require.Nil(t, err)
 
 	// s1 was not changed
-	s1, _ = restore.getStoreByName("store1").(types.KVStore)
+	s1, _ = restore.GetStoreByName("store1").(types.KVStore)
 	require.NotNil(t, s1)
 	require.Equal(t, v1, s1.Get(k1))
 
 	// store3 is mounted, but data deleted are gone
-	s3, _ = restore.getStoreByName("store3").(types.KVStore)
+	s3, _ = restore.GetStoreByName("store3").(types.KVStore)
 	require.NotNil(t, s3)
 	require.Nil(t, s3.Get(k3)) // data was deleted
 
 	// store4 is mounted, with empty data
-	s4, _ = restore.getStoreByName("store4").(types.KVStore)
+	s4, _ = restore.GetStoreByName("store4").(types.KVStore)
 	require.NotNil(t, s4)
 
 	iterator := s4.Iterator(nil, nil)
@@ -268,11 +260,11 @@ func TestMultistoreLoadWithUpgrade(t *testing.T) {
 	s4.Set(k4, v4)
 
 	// store2 is no longer mounted
-	st2 := restore.getStoreByName("store2")
+	st2 := restore.GetStoreByName("store2")
 	require.Nil(t, st2)
 
 	// restore2 has the old data
-	rs2, _ := restore.getStoreByName("restore2").(types.KVStore)
+	rs2, _ := restore.GetStoreByName("restore2").(types.KVStore)
 	require.NotNil(t, rs2)
 	require.Equal(t, v2, rs2.Get(k2))
 
@@ -286,15 +278,15 @@ func TestMultistoreLoadWithUpgrade(t *testing.T) {
 	require.Equal(t, migratedID, reload.LastCommitID())
 
 	// query this new store
-	rl1, _ := reload.getStoreByName("store1").(types.KVStore)
+	rl1, _ := reload.GetStoreByName("store1").(types.KVStore)
 	require.NotNil(t, rl1)
 	require.Equal(t, v1, rl1.Get(k1))
 
-	rl2, _ := reload.getStoreByName("restore2").(types.KVStore)
+	rl2, _ := reload.GetStoreByName("restore2").(types.KVStore)
 	require.NotNil(t, rl2)
 	require.Equal(t, v2, rl2.Get(k2))
 
-	rl4, _ := reload.getStoreByName("store4").(types.KVStore)
+	rl4, _ := reload.GetStoreByName("store4").(types.KVStore)
 	require.NotNil(t, rl4)
 	require.Equal(t, v4, rl4.Get(k4))
 
@@ -346,15 +338,15 @@ func TestMultiStoreRestart(t *testing.T) {
 
 	for i := 1; i < 3; i++ {
 		// Set and commit data in one store.
-		store1 := multi.getStoreByName("store1").(types.KVStore)
+		store1 := multi.GetStoreByName("store1").(types.KVStore)
 		store1.Set([]byte(k), []byte(fmt.Sprintf("%s:%d", v, i)))
 
 		// ... and another.
-		store2 := multi.getStoreByName("store2").(types.KVStore)
+		store2 := multi.GetStoreByName("store2").(types.KVStore)
 		store2.Set([]byte(k2), []byte(fmt.Sprintf("%s:%d", v2, i)))
 
 		// ... and another.
-		store3 := multi.getStoreByName("store3").(types.KVStore)
+		store3 := multi.GetStoreByName("store3").(types.KVStore)
 		store3.Set([]byte(k3), []byte(fmt.Sprintf("%s:%d", v3, i)))
 
 		multi.Commit()
@@ -365,11 +357,11 @@ func TestMultiStoreRestart(t *testing.T) {
 	}
 
 	// Set and commit data in one store.
-	store1 := multi.getStoreByName("store1").(types.KVStore)
+	store1 := multi.GetStoreByName("store1").(types.KVStore)
 	store1.Set([]byte(k), []byte(fmt.Sprintf("%s:%d", v, 3)))
 
 	// ... and another.
-	store2 := multi.getStoreByName("store2").(types.KVStore)
+	store2 := multi.GetStoreByName("store2").(types.KVStore)
 	store2.Set([]byte(k2), []byte(fmt.Sprintf("%s:%d", v2, 3)))
 
 	multi.Commit()
@@ -379,7 +371,7 @@ func TestMultiStoreRestart(t *testing.T) {
 	require.NotEqual(t, initCid, flushedCinfo, "CID is different after flush to disk")
 
 	// ... and another.
-	store3 := multi.getStoreByName("store3").(types.KVStore)
+	store3 := multi.GetStoreByName("store3").(types.KVStore)
 	store3.Set([]byte(k3), []byte(fmt.Sprintf("%s:%d", v3, 3)))
 
 	multi.Commit()
@@ -396,16 +388,16 @@ func TestMultiStoreRestart(t *testing.T) {
 	require.Equal(t, int64(4), reloadedCid.Version, "Reloaded CID is not the same as last flushed CID")
 
 	// Check that store1 and store2 retained date from 3rd commit
-	store1 = multi.getStoreByName("store1").(types.KVStore)
+	store1 = multi.GetStoreByName("store1").(types.KVStore)
 	val := store1.Get([]byte(k))
 	require.Equal(t, []byte(fmt.Sprintf("%s:%d", v, 3)), val, "Reloaded value not the same as last flushed value")
 
-	store2 = multi.getStoreByName("store2").(types.KVStore)
+	store2 = multi.GetStoreByName("store2").(types.KVStore)
 	val2 := store2.Get([]byte(k2))
 	require.Equal(t, []byte(fmt.Sprintf("%s:%d", v2, 3)), val2, "Reloaded value not the same as last flushed value")
 
 	// Check that store3 still has data from last commit even though update happened on 2nd commit
-	store3 = multi.getStoreByName("store3").(types.KVStore)
+	store3 = multi.GetStoreByName("store3").(types.KVStore)
 	val3 := store3.Get([]byte(k3))
 	require.Equal(t, []byte(fmt.Sprintf("%s:%d", v3, 3)), val3, "Reloaded value not the same as last flushed value")
 }
@@ -423,15 +415,15 @@ func TestMultiStoreQuery(t *testing.T) {
 	cid := multi.Commit()
 
 	// Make sure we can get by name.
-	garbage := multi.getStoreByName("bad-name")
+	garbage := multi.GetStoreByName("bad-name")
 	require.Nil(t, garbage)
 
 	// Set and commit data in one store.
-	store1 := multi.getStoreByName("store1").(types.KVStore)
+	store1 := multi.GetStoreByName("store1").(types.KVStore)
 	store1.Set(k, v)
 
 	// ... and another.
-	store2 := multi.getStoreByName("store2").(types.KVStore)
+	store2 := multi.GetStoreByName("store2").(types.KVStore)
 	store2.Set(k2, v2)
 
 	// Commit the multistore.
@@ -859,79 +851,6 @@ func TestTraceConcurrency(t *testing.T) {
 	stopW <- struct{}{}
 }
 
-func BenchmarkMultistoreSnapshot100K(b *testing.B) {
-	benchmarkMultistoreSnapshot(b, 10, 10000)
-}
-
-func BenchmarkMultistoreSnapshot1M(b *testing.B) {
-	benchmarkMultistoreSnapshot(b, 10, 100000)
-}
-
-func BenchmarkMultistoreSnapshotRestore100K(b *testing.B) {
-	benchmarkMultistoreSnapshotRestore(b, 10, 10000)
-}
-
-func BenchmarkMultistoreSnapshotRestore1M(b *testing.B) {
-	benchmarkMultistoreSnapshotRestore(b, 10, 100000)
-}
-
-func benchmarkMultistoreSnapshot(b *testing.B, stores uint8, storeKeys uint64) {
-	b.Skip("Noisy with slow setup time, please see https://github.com/cosmos/cosmos-sdk/issues/8855.")
-
-	b.ReportAllocs()
-	b.StopTimer()
-	source := newMultiStoreWithGeneratedData(dbm.NewMemDB(), stores, storeKeys)
-	version := source.LastCommitID().Version
-	require.EqualValues(b, 1, version)
-	b.StartTimer()
-
-	for i := 0; i < b.N; i++ {
-		target := NewStore(dbm.NewMemDB())
-		for key := range source.stores {
-			target.MountStoreWithDB(key, types.StoreTypeIAVL, nil)
-		}
-		err := target.LoadLatestVersion()
-		require.NoError(b, err)
-		require.EqualValues(b, 0, target.LastCommitID().Version)
-
-		chunks, err := source.Snapshot(uint64(version), snapshottypes.CurrentFormat)
-		require.NoError(b, err)
-		for reader := range chunks {
-			_, err := io.Copy(ioutil.Discard, reader)
-			require.NoError(b, err)
-			err = reader.Close()
-			require.NoError(b, err)
-		}
-	}
-}
-
-func benchmarkMultistoreSnapshotRestore(b *testing.B, stores uint8, storeKeys uint64) {
-	b.Skip("Noisy with slow setup time, please see https://github.com/cosmos/cosmos-sdk/issues/8855.")
-
-	b.ReportAllocs()
-	b.StopTimer()
-	source := newMultiStoreWithGeneratedData(dbm.NewMemDB(), stores, storeKeys)
-	version := uint64(source.LastCommitID().Version)
-	require.EqualValues(b, 1, version)
-	b.StartTimer()
-
-	for i := 0; i < b.N; i++ {
-		target := NewStore(dbm.NewMemDB())
-		for key := range source.stores {
-			target.MountStoreWithDB(key, types.StoreTypeIAVL, nil)
-		}
-		err := target.LoadLatestVersion()
-		require.NoError(b, err)
-		require.EqualValues(b, 0, target.LastCommitID().Version)
-
-		chunks, err := source.Snapshot(version, snapshottypes.CurrentFormat)
-		require.NoError(b, err)
-		err = target.Restore(version, snapshottypes.CurrentFormat, chunks, nil)
-		require.NoError(b, err)
-		require.Equal(b, source.LastCommitID(), target.LastCommitID())
-	}
-}
-
 //-----------------------------------------------------------------------
 // utils
 
@@ -1036,25 +955,6 @@ func newMultiStoreWithModifiedMounts(db dbm.DB, pruningOpts types.PruningOptions
 	}
 
 	return store, upgrades
-}
-
-func assertStoresEqual(t *testing.T, expect, actual types.CommitKVStore, msgAndArgs ...interface{}) {
-	assert.Equal(t, expect.LastCommitID(), actual.LastCommitID())
-	expectIter := expect.Iterator(nil, nil)
-	expectMap := map[string][]byte{}
-	for ; expectIter.Valid(); expectIter.Next() {
-		expectMap[string(expectIter.Key())] = expectIter.Value()
-	}
-	require.NoError(t, expectIter.Error())
-
-	actualIter := expect.Iterator(nil, nil)
-	actualMap := map[string][]byte{}
-	for ; actualIter.Valid(); actualIter.Next() {
-		actualMap[string(actualIter.Key())] = actualIter.Value()
-	}
-	require.NoError(t, actualIter.Error())
-
-	assert.Equal(t, expectMap, actualMap, msgAndArgs...)
 }
 
 func checkStore(t *testing.T, store *Store, expect, got types.CommitID) {
