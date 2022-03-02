@@ -20,7 +20,6 @@ message StoreCodeProposal {
   string run_as = 3;
   // WASMByteCode can be raw or gzip compressed
   bytes wasm_byte_code = 4 [(gogoproto.customname) = "WASMByteCode"];
-  // Source is a valid absolute HTTPS URI to the contract's source code, optional
   // Used in v1beta1
   reserved 5, 6;
   // InstantiatePermission to apply on contract creation, optional
