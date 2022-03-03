@@ -32,8 +32,8 @@ import (
 	"github.com/line/lbm-sdk/x/auth/legacy/legacytx"
 	bankcli "github.com/line/lbm-sdk/x/bank/client/testutil"
 	"github.com/line/lbm-sdk/x/bank/types"
+	ibcclientcli "github.com/line/lbm-sdk/x/ibc/core/02-client/client/cli"
 	ibccli "github.com/line/lbm-sdk/x/ibc/core/04-channel/client/cli"
-	ibcsolomachinecli "github.com/line/lbm-sdk/x/ibc/light-clients/06-solomachine/client/cli"
 )
 
 type IntegrationTestSuite struct {
@@ -501,7 +501,7 @@ func (s *IntegrationTestSuite) TestLegacyRestErrMessages() {
 	// a solo machine client state
 	clientStateJSON := testutil.WriteToNewTempFile(
 		s.T(),
-		`{"@type":"/ibc.lightclients.solomachine.v1.ClientState","sequence":"1","frozen_sequence":"0","consensus_state":{"public_key":{"@type":"/cosmos.crypto.secp256k1.PubKey","key":"AtK50+5pJOoaa04qqAqrnyAqsYrwrR/INnA6UPIaYZlp"},"diversifier":"testing","timestamp":"10"},"allow_update_after_proposal":false}`,
+		`{"@type":"/ibc.lightclients.solomachine.v1.ClientState","sequence":"1","frozen_sequence":"0","consensus_state":{"public_key":{"@type":"/lbm.crypto.secp256k1.PubKey","key":"AtK50+5pJOoaa04qqAqrnyAqsYrwrR/INnA6UPIaYZlp"},"diversifier":"testing","timestamp":"10"},"allow_update_after_proposal":false}`,
 	)
 
 	// Write consensus json to temp file, used for an IBC message.

@@ -18,12 +18,11 @@ import (
 var (
 	granterPk   = ed25519.GenPrivKey().PubKey()
 	granterAddr = sdk.AccAddress(granterPk.Address())
-	granteePk   = ed25519.GenPrivKey().PubKey()
 	granteeAddr = sdk.AccAddress(granterPk.Address())
 )
 
 func TestDecodeStore(t *testing.T) {
-	cdc, _ := simapp.MakeCodecs()
+	cdc := simapp.MakeTestEncodingConfig().Marshaler
 	dec := simulation.NewDecodeStore(cdc)
 
 	grant, err := types.NewGrant(granterAddr, granteeAddr, &types.BasicAllowance{
