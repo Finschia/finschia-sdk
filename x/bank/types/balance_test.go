@@ -18,7 +18,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"valid balance",
 			Balance{
-				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins:   sdk.Coins{sdk.NewInt64Coin("uatom", 1)},
 			},
 			false,
@@ -27,14 +27,14 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"nil balance coins",
 			Balance{
-				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 			},
 			true,
 		},
 		{
 			"dup coins",
 			Balance{
-				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.NewInt64Coin("uatom", 1),
 					sdk.NewInt64Coin("uatom", 1),
@@ -45,7 +45,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"invalid coin denom",
 			Balance{
-				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.Coin{Denom: "", Amount: sdk.OneInt()},
 				},
@@ -55,7 +55,7 @@ func TestBalanceValidate(t *testing.T) {
 		{
 			"negative coin",
 			Balance{
-				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2559g0t",
+				Address: "link1yq8lgssgxlx9smjhes6ryjasmqmd3ts2p6925r",
 				Coins: sdk.Coins{
 					sdk.Coin{Denom: "uatom", Amount: sdk.NewInt(-1)},
 				},

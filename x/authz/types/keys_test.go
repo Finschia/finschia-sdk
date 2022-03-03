@@ -9,8 +9,8 @@ import (
 	sdk "github.com/line/lbm-sdk/types"
 )
 
-var granter = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
-var grantee = sdk.AccAddress(ed25519.GenPrivKey().PubKey().Address())
+var granter = sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
+var grantee = sdk.BytesToAccAddress(ed25519.GenPrivKey().PubKey().Address().Bytes())
 var msgType = SendAuthorization{}.MethodName()
 
 func TestGrantkey(t *testing.T) {

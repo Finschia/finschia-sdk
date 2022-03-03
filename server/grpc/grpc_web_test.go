@@ -63,7 +63,7 @@ func (s *GRPCWebTestSuite) Test_Latest_Validators() {
 	val := s.network.Validators[0]
 	for _, contentType := range []string{grpcWebContentType} {
 		headers, trailers, responses, err := s.makeGrpcRequest(
-			"/lbm.base.tendermint.v1.Service/GetLatestValidatorSet",
+			"/lbm.base.ostracon.v1.Service/GetLatestValidatorSet",
 			headerWithFlag(),
 			serializeProtoMessages([]proto.Message{&tmservice.GetLatestValidatorSetRequest{}}), false)
 

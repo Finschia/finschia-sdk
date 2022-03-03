@@ -264,6 +264,7 @@ func NewSimApp(
 		consortiumtypes.StoreKey,
 		class.StoreKey,
 		token.StoreKey,
+		authztypes.StoreKey,
 	)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey, "testing")
 

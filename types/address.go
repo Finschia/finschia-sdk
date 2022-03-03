@@ -29,7 +29,7 @@ const (
 	//	config.Seal()
 
 	BytesAddrLen = 20
-	//AddrLen = len(Bech32MainPrefix) + 1 + 38
+	AddrLen      = len(Bech32MainPrefix) + 1 + 38
 
 	// Bech32MainPrefix defines the main SDK Bech32 prefix of an account's address
 	Bech32MainPrefix = "link"

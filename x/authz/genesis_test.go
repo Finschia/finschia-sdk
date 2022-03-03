@@ -33,8 +33,8 @@ func (suite *GenesisTestSuite) SetupTest() {
 var (
 	granteePub  = secp256k1.GenPrivKey().PubKey()
 	granterPub  = secp256k1.GenPrivKey().PubKey()
-	granteeAddr = sdk.AccAddress(granteePub.Address())
-	granterAddr = sdk.AccAddress(granterPub.Address())
+	granteeAddr = sdk.BytesToAccAddress(granteePub.Address().Bytes())
+	granterAddr = sdk.BytesToAccAddress(granterPub.Address().Bytes())
 )
 
 func (suite *GenesisTestSuite) TestImportExportGenesis() {
